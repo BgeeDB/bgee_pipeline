@@ -1,0 +1,11 @@
+#GSM	GSE	ftp_adress	old_cel_name	new_cel_name
+GSM589328	GSE23528	ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM589nnn/GSM589328/suppl/GSM589328_C.elegans_LD6_4_rep1.CEL.gz	GSM589328_C.elegans_LD6_4_rep1.CEL.gz	GSM589328_1.CEL.gz
+GSM589328	GSE23528	ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM589nnn/GSM589328/suppl/GSM589328_C.elegans_LD6_4_rep2.CEL.gz	GSM589328_C.elegans_LD6_4_rep2.CEL.gz	GSM589328_2.CEL.gz
+GSM589331	GSE23528	ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM589nnn/GSM589331/suppl/GSM589331_C.elegans_LD18_4_rep1.CEL.gz	GSM589331_C.elegans_LD18_4_rep1.CEL.gz	GSM589331_1.CEL.gz
+GSM589331	GSE23528	ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM589nnn/GSM589331/suppl/GSM589331_C.elegans_LD18_4_rep2.CEL.gz	GSM589331_C.elegans_LD18_4_rep2.CEL.gz	GSM589331_2.CEL.gz
+GSM589381	GSE23528	ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM589nnn/GSM589381/suppl/GSM589381_C.elegans_CC30_3_rep1.CEL.gz	GSM589381_C.elegans_CC30_3_rep1.CEL.gz	GSM589381_1.CEL.gz
+GSM589381	GSE23528	ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM589nnn/GSM589381/suppl/GSM589381_C.elegans_CC30_3_rep2.CEL.gz	GSM589381_C.elegans_CC30_3_rep2.CEL.gz	GSM589381_2.CEL.gz
+GSM589382	GSE23528	ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM589nnn/GSM589382/suppl/GSM589382_C.elegans_CC34_3_rep1.CEL.gz	GSM589382_C.elegans_CC34_3_rep1.CEL.gz	GSM589382_1.CEL.gz
+GSM589382	GSE23528	ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM589nnn/GSM589382/suppl/GSM589382_C.elegans_CC34_3_rep2.CEL.gz	GSM589382_C.elegans_CC34_3_rep2.CEL.gz	GSM589382_2.CEL.gz
+GSM589407	GSE23528	ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM589nnn/GSM589407/suppl/GSM589407_C.elegans_CC38_6_rep1.CEL.gz	GSM589407_C.elegans_CC38_6_rep1.CEL.gz	GSM589407_1.CEL.gz
+GSM589407	GSE23528	ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM589nnn/GSM589407/suppl/GSM589407_C.elegans_CC38_6_rep2.CEL.gz	GSM589407_C.elegans_CC38_6_rep2.CEL.gz	GSM589407_2.CEL.gz

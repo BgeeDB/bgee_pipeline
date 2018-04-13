@@ -1,0 +1,9 @@
+1)	Extract data with "extract_affy_info.pl" on the provided csv file
+	Take care of what is parsed AND what is not!
+	Column order and content may change.
+2)	Create fake  affymetrixChip, chipType, microarrayExperiment  files
+	based on Marta's computed files
+	with "marta2annot.pl"
+3)	Insert data with "make insertion" using previously created fake
+	annotation file sheets.
+	Take care of the path in make statement for those files.

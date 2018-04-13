@@ -1,0 +1,311 @@
+Experiment	Tissue	Life stage	Sex	Treatment	GEO Record	Platform
+WBPaper00024532:N2_1	whole animal	WBls:0000002	N.A.	N.A.	N.A.	GPL200
+WBPaper00024532:N2_2	whole animal	WBls:0000002	N.A.	N.A.	N.A.	GPL200
+WBPaper00024654:Total_RNA_N2_1	whole animal	N.A.	N.A.	N.A.	N.A.	GPL200
+WBPaper00024654:Total_RNA_N2_2	whole animal	N.A.	N.A.	N.A.	N.A.	GPL200
+WBPaper00024654:Total_RNA_N2_3	whole animal	N.A.	N.A.	N.A.	N.A.	GPL200
+WBPaper00025032:N2_0_min	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00025032:N2_23_min	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00025032:N2_41_min	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00025032:N2_53_min	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00025032:N2_66_min	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00025032:N2_83_min	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00025032:N2_101_min	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00025032:N2_122_min	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00025032:N2_143_min	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00025032:N2_186_min	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00025040:DMR28_N2_1	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00025040:DMR30_N2_2	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00025040:DMR32_N2_3	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00025040:DMR34_N2_4	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00026714:wt_1	whole animal	N.A.	N.A.	N.A.	N.A.	GPL200
+WBPaper00026714:wt_2	whole animal	N.A.	N.A.	N.A.	N.A.	GPL200
+WBPaper00026714:wt_3	whole animal	N.A.	N.A.	N.A.	N.A.	GPL200
+WBPaper00026714:wt_4	whole animal	N.A.	N.A.	N.A.	N.A.	GPL200
+WBPaper00026830:N2_no_tunicamycin_1	whole animal	N.A.	N.A.	N.A.	N.A.	GPL200
+WBPaper00026830:N2_no_tunicamycin_2	whole animal	N.A.	N.A.	N.A.	N.A.	GPL200
+WBPaper00026830:N2_no_tunicamycin_3	whole animal	N.A.	N.A.	N.A.	N.A.	GPL200
+WBPaper00026950:Em_N2-1	whole animal	WBls:0000003	N.A.	N.A.	N.A.	GPL200
+WBPaper00026950:Em_N2-2	whole animal	WBls:0000003	N.A.	N.A.	N.A.	GPL200
+WBPaper00026950:Em_N2-3	whole animal	WBls:0000003	N.A.	N.A.	N.A.	GPL200
+WBPaper00026950:L1_N2-1	whole animal	WBls:0000024	N.A.	N.A.	N.A.	GPL200
+WBPaper00026950:L1_N2-2	whole animal	WBls:0000024	N.A.	N.A.	N.A.	GPL200
+WBPaper00026950:L2_N2-1	whole animal	WBls:0000027	N.A.	N.A.	N.A.	GPL200
+WBPaper00026950:L2_N2-2	whole animal	WBls:0000027	N.A.	N.A.	N.A.	GPL200
+WBPaper00026950:L3_N2-1	whole animal	WBls:0000035	N.A.	N.A.	N.A.	GPL200
+WBPaper00026950:L3_N2-2	whole animal	WBls:0000035	N.A.	N.A.	N.A.	GPL200
+WBPaper00026950:L4_N2-1	whole animal	WBls:0000038	N.A.	N.A.	N.A.	GPL200
+WBPaper00026950:L4_N2-2	whole animal	WBls:0000038	N.A.	N.A.	N.A.	GPL200
+WBPaper00026950:Oocyte_N2	WBbt:0006797	N.A.	N.A.	N.A.	N.A.	GPL200
+WBPaper00026950:YA_N2-1	whole animal	WBls:0000041	N.A.	N.A.	N.A.	GPL200
+WBPaper00026950:YA_N2-2	whole animal	WBls:0000041	N.A.	N.A.	N.A.	GPL200
+WBPaper00027111:N2_1	whole animal	WBls:0000002	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00027111:N2_2	whole animal	WBls:0000002	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00027111:N2_3	whole animal	WBls:0000002	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00028809:control_rep1	whole animal	WBls:0000023	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00028809:control_rep2	whole animal	WBls:0000023	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00028809:control_rep3	whole animal	WBls:0000023	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00029115:N2_A-class_rep1	WBbt:0005278|WBbt:0005339	WBls:0000027	Hermaphrodite	N.A.	GEO record: GSM803567	GPL200
+WBPaper00029115:N2_A-class_rep2	WBbt:0005278|WBbt:0005339	WBls:0000027	Hermaphrodite	N.A.	GEO record: GSM803568	GPL200
+WBPaper00029115:N2_A-class_rep3	WBbt:0005278|WBbt:0005339	WBls:0000027	Hermaphrodite	N.A.	GEO record: GSM803569	GPL200
+WBPaper00029190:N2_worms_at_embryonic_stage_rep1	whole animal	WBls:0000003	N.A.	N.A.	N.A.	GPL200
+WBPaper00029190:N2_worms_at_embryonic_stage_rep2	whole animal	WBls:0000003	N.A.	N.A.	N.A.	GPL200
+WBPaper00029190:N2_worms_at_embryonic_stage_rep3	whole animal	WBls:0000003	N.A.	N.A.	N.A.	GPL200
+WBPaper00029190:N2_worms_at_L1_stage_rep1	whole animal	WBls:0000024	N.A.	N.A.	N.A.	GPL200
+WBPaper00029190:N2_worms_at_L1_stage_rep2	whole animal	WBls:0000024	N.A.	N.A.	N.A.	GPL200
+WBPaper00029190:N2_worms_at_L1_stage_rep3	whole animal	WBls:0000024	N.A.	N.A.	N.A.	GPL200
+WBPaper00029190:N2_worms_at_L4_stage_rep1	whole animal	WBls:0000038	N.A.	N.A.	N.A.	GPL200
+WBPaper00029190:N2_worms_at_L4_stage_rep2	whole animal	WBls:0000038	N.A.	N.A.	N.A.	GPL200
+WBPaper00029190:N2_worms_at_L4_stage_rep3	whole animal	WBls:0000038	N.A.	N.A.	N.A.	GPL200
+WBPaper00029226:N2_1	whole animal	WBls:0000027	N.A.	N.A.	N.A.	GPL200
+WBPaper00029226:N2_2	whole animal	WBls:0000027	N.A.	N.A.	N.A.	GPL200
+WBPaper00029226:N2_3	whole animal	WBls:0000027	N.A.	N.A.	N.A.	GPL200
+WBPaper00029437:N2	whole animal	WBls:0000041	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00030839:Embryonic_Reference_Rep1_Set1	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00030839:Embryonic_Reference_Rep2_Set1	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00030839:Embryonic_Reference_Rep3_Set1	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00030839:Embryonic_Reference_Rep4_Set1	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00030839:Larval_Reference_Rep1_Set1	whole animal	WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00030839:Larval_Reference_Rep1_Set3	whole animal	WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00030839:Larval_Reference_Rep2_Set1	whole animal	WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00030839:Larval_Reference_Rep2_Set3	whole animal	WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00030839:Larval_Reference_Rep3_Set1	whole animal	WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00030839:Larval_Reference_Rep3_Set3	whole animal	WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00030839:Larval_Reference_Rep4_Set2	whole animal	WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00030839:Larval_Reference_Rep4_Set3	whole animal	WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00030839:Larval_Reference_Rep5_Set2	whole animal	WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00030839:Larval_Reference_Rep5_Set3	whole animal	WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00031003:DM18_N2_0hr_1	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00031003:DM22_N2_0hr_2	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00031003:DM32_N2_0hr_3	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00031003:DMR28_N2_24hr_1	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00031003:DMR30_N2_24hr_2	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00031003:DMR32_N2_24hr_3	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00031003:DMR34_N2_24hr_4	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00031070:N2_1	whole animal	WBls:0000038	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00031070:N2_2	whole animal	WBls:0000038	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00031070:N2_3	whole animal	WBls:0000038	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00031532:Larval_Reference_rep_1	whole animal	WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00031532:Larval_Reference_rep_2	whole animal	WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00031532:Larval_Reference_rep_3	whole animal	WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00031832:N2_1	whole animal	WBls:0000024	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00031832:N2_2	whole animal	WBls:0000024	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00031832:N2_3	whole animal	WBls:0000024	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00032425:WT_1	whole animal	WBls:0000024|WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00032425:WT_2	whole animal	WBls:0000024|WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00032425:WT_3	whole animal	WBls:0000024|WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00032430:N2-controlRNAi-fasting_1	whole animal	WBls:0000067	Hermaphrodite	Worms grown on control RNAi plates were fasted for 48 h.	N.A.	GPL200
+WBPaper00032430:N2-controlRNAi-fasting_2	whole animal	WBls:0000067	Hermaphrodite	Worms grown on control RNAi plates were fasted for 48 h.	N.A.	GPL200
+WBPaper00032430:N2-controlRNAi-fasting_3	whole animal	WBls:0000067	Hermaphrodite	Worms grown on control RNAi plates were fasted for 48 h.	N.A.	GPL200
+WBPaper00032430:N2-controlRNAi-fasting_4	whole animal	WBls:0000067	Hermaphrodite	Worms grown on control RNAi plates were fasted for 48 h.	N.A.	GPL200
+WBPaper00032430:N2-controlRNAi-fasting_5	whole animal	WBls:0000067	Hermaphrodite	Worms grown on control RNAi plates were fasted for 48 h.	N.A.	GPL200
+WBPaper00032430:N2-controlRNAi-fed_1	whole animal	WBls:0000067	Hermaphrodite	Worms grown on control RNAi plates were fed ad libitum for 48 h.	N.A.	GPL200
+WBPaper00032430:N2-controlRNAi-fed_2	whole animal	WBls:0000067	Hermaphrodite	Worms grown on control RNAi plates were fed ad libitum for 48 h.	N.A.	GPL200
+WBPaper00032430:N2-controlRNAi-fed_3	whole animal	WBls:0000067	Hermaphrodite	Worms grown on control RNAi plates were fed ad libitum for 48 h.	N.A.	GPL200
+WBPaper00032430:N2-controlRNAi-fed_4	whole animal	WBls:0000067	Hermaphrodite	Worms grown on control RNAi plates were fed ad libitum for 48 h.	N.A.	GPL200
+WBPaper00032430:N2-controlRNAi-fed_5	whole animal	WBls:0000067	Hermaphrodite	Worms grown on control RNAi plates were fed ad libitum for 48 h.	N.A.	GPL200
+WBPaper00032528:N2-1	whole animal	WBls:0000035	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00032528:N2-2	whole animal	WBls:0000035	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00032528:N2-3	whole animal	WBls:0000035	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00032948:emb_2hr	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00032948:L1_0hr_fed	whole animal	WBls:0000024	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00032948:L1_1hr_fed	whole animal	WBls:0000024	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00032948:L1_3hr_fed	whole animal	WBls:0000024	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00032948:L1_6hr_fed	whole animal	WBls:0000024	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00032948:L1_12hr_fed	whole animal	WBls:0000024	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00032948:L1_15hr_fed	whole animal	WBls:0000024	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00032948:L1_24hr_fed	whole animal	WBls:0000024	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00032976:XX_WT-E-080307_A	whole animal	WBls:0000003	Hermaphrodite	Wild Type controls for XO_TY2222-E.	GEO record: GSM365580	GPL200
+WBPaper00032976:XX_WT-E-080307_B	whole animal	WBls:0000003	Hermaphrodite	Wild Type controls for XO_TY2222-E.	GEO record: GSM365581	GPL200
+WBPaper00032976:XX_WT-E-080307_C	whole animal	WBls:0000003	Hermaphrodite	Wild Type controls for XO_TY2222-E.	GEO record: GSM365582	GPL200
+WBPaper00032976:XX_WT-E-090707_A	whole animal	WBls:0000003	Hermaphrodite	Wild Type controls for XO_TY2222-E.	GEO record: GSM365583	GPL200
+WBPaper00032976:XX_WT-E-090707_B	whole animal	WBls:0000003	Hermaphrodite	Wild Type controls for XO_TY2222-E.	GEO record: GSM365584	GPL200
+WBPaper00032976:XX_WT-E-090707_C	whole animal	WBls:0000003	Hermaphrodite	Wild Type controls for XO_TY2222-E.	GEO record: GSM365585	GPL200
+WBPaper00032976:XX_WT-N-080307_A	whole animal	WBls:0000003	Hermaphrodite	Wild Type control for dpy-27.	GEO record: GSM365595	GPL200
+WBPaper00032976:XX_WT-N-080307_B	whole animal	WBls:0000003	Hermaphrodite	Wild Type control for dpy-27.	GEO record: GSM365596	GPL200
+WBPaper00032976:XX_WT-N-080307_C	whole animal	WBls:0000003	Hermaphrodite	Wild Type control for dpy-27.	GEO record: GSM365597	GPL200
+WBPaper00032976:XX_WT-P-081407_A	whole animal	WBls:0000003	Hermaphrodite	Wild Type controls for sdc-2. N2 worms were fed Ahringer library feeding bacteria bearing a plasmid lacking an insert.	GEO record: GSM365589	GPL200
+WBPaper00032976:XX_WT-P-081407_B	whole animal	WBls:0000003	Hermaphrodite	Wild Type controls for sdc-2. N2 worms were fed Ahringer library feeding bacteria bearing a plasmid lacking an insert.	GEO record: GSM365590	GPL200
+WBPaper00032976:XX_WT-P-081407_C	whole animal	WBls:0000003	Hermaphrodite	Wild Type controls for sdc-2. N2 worms were fed Ahringer library feeding bacteria bearing a plasmid lacking an insert.	GEO record: GSM365591	GPL200
+WBPaper00033099:dichlorvos_control-rep1	whole animal	WBls:0000038	Hermaphrodite	Animals were develop as a control with no treatment of dichlorvos.	N.A.	GPL200
+WBPaper00033099:dichlorvos_control-rep2	whole animal	WBls:0000038	Hermaphrodite	Animals were develop as a control with no treatment of dichlorvos.	N.A.	GPL200
+WBPaper00033099:dichlorvos_control-rep3	whole animal	WBls:0000038	Hermaphrodite	Animals were develop as a control with no treatment of dichlorvos.	N.A.	GPL200
+WBPaper00033099:fenamiphos_control-rep1	whole animal	WBls:0000038	Hermaphrodite	Animals were develop as a control with no treatment of fenamiphos.	N.A.	GPL200
+WBPaper00033099:fenamiphos_control-rep2	whole animal	WBls:0000038	Hermaphrodite	Animals were develop as a control with no treatment of fenamiphos.	N.A.	GPL200
+WBPaper00033099:fenamiphos_control-rep3	whole animal	WBls:0000038	Hermaphrodite	Animals were develop as a control with no treatment of fenamiphos.	N.A.	GPL200
+WBPaper00033099:mefloquine_control-rep1	whole animal	WBls:0000038	Hermaphrodite	Animals were develop as a control with no treatment of mefloquine.	N.A.	GPL200
+WBPaper00033099:mefloquine_control-rep2	whole animal	WBls:0000038	Hermaphrodite	Animals were develop as a control with no treatment of mefloquine.	N.A.	GPL200
+WBPaper00033099:mefloquine_control-rep3	whole animal	WBls:0000038	Hermaphrodite	Animals were develop as a control with no treatment of mefloquine.	N.A.	GPL200
+WBPaper00034739:N2_dauer_1	whole animal	WBls:0000024|WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00034739:N2_dauer_2	whole animal	WBls:0000024|WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00034739:N2_dauer_3	whole animal	WBls:0000024|WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00034739:N2_non_dauer_1	whole animal	WBls:0000024|WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00034739:N2_non_dauer_2	whole animal	WBls:0000024|WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00034739:N2_non_dauer_3	whole animal	WBls:0000024|WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00034761:N2_1	whole animal	WBls:0000024|WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00034761:N2_2	whole animal	WBls:0000024|WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00034761:N2_3	whole animal	WBls:0000024|WBls:0000027	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00035197:N2_3	whole animal	WBls:0000064	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00035197:N2_4	whole animal	WBls:0000064	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00035197:N2_5	whole animal	WBls:0000064	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00035197:N2_6	whole animal	WBls:0000064	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00035227:bio-electrospray	whole animal	WBls:0000024	Hermaphrodite	Maintained as control nematodes but passed with an applied voltage (bio-electrosprayed).  Bio-electrospraying was carried out with a stainless steel needle with an internal and external bore diameter of ~6 and ~8mm respectively. The mid-section of the needle, held firmly in resin, was connected to a high voltage power supply (FP-30, Glassman Europe Ltd, Tadley, UK) capable of providing a voltage of up to 30kV with a drawing current of ~4mA with high resolution. The inlet of the needle was connected to medical grade silicone tubing with a similar internal bore diameter. The inlet end of the silicone tube was connected to a reservoir of M9 buffer containing age synchronous C. elegans larvae (L1s). The flow of suspended nematodes was controlled by way of gravitational flow and could be varied from ~10-5-10-8m3s-1.	N.A.	GPL200
+WBPaper00035227:control_exposure	whole animal	WBls:0000024	Hermaphrodite	Control nematodes.	N.A.	GPL200
+WBPaper00035429:N2_control_2007_rep1	whole animal	WBls:0000064	Hermaphrodite	Young adult (24 h post-vulval crescent L4 stage) whole nematodes were reared at 25 centigrade in control conditions.	N.A.	GPL200
+WBPaper00035429:N2_control_2007_rep2	whole animal	WBls:0000064	Hermaphrodite	Young adult (24 h post-vulval crescent L4 stage) whole nematodes were reared at 25 centigrade in control conditions.	N.A.	GPL200
+WBPaper00035429:N2_control_2008_rep1	whole animal	WBls:0000064	Hermaphrodite	Young adult (24 h post-vulval crescent L4 stage) whole nematodes were reared at 25 centigrade in control conditions.	N.A.	GPL200
+WBPaper00035429:N2_control_2008_rep2	whole animal	WBls:0000064	Hermaphrodite	Young adult (24 h post-vulval crescent L4 stage) whole nematodes were reared at 25 centigrade in control conditions.	N.A.	GPL200
+WBPaper00035891:control_OP50_rep1	whole animal	WBls:0000064	Hermaphrodite	control, OP50.	GEO record: GSM1220540	GPL200
+WBPaper00035891:control_OP50_rep2	whole animal	WBls:0000064	Hermaphrodite	control, OP50.	GEO record: GSM1220544	GPL200
+WBPaper00035891:control_OP50_rep3	whole animal	WBls:0000064	Hermaphrodite	control, OP50.	GEO record: GSM1220548	GPL200
+WBPaper00035891:control_PA14_rep1	whole animal	WBls:0000064	Hermaphrodite	control, PA14.	GEO record: GSM1220541	GPL200
+WBPaper00035891:control_PA14_rep2	whole animal	WBls:0000064	Hermaphrodite	control, PA14.	GEO record: GSM1220545	GPL200
+WBPaper00035891:control_PA14_rep3	whole animal	WBls:0000064	Hermaphrodite	control, PA14.	GEO record: GSM1220549	GPL200
+WBPaper00036135:N2__1	whole animal	N.A.	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00036135:N2__2	whole animal	N.A.	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00036291:N2_bio_rep1	whole animal	N.A.	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00036291:N2_bio_rep2	whole animal	N.A.	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00036291:N2_bio_rep3	whole animal	N.A.	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00036383:Day8_N2_EV_rep1	whole animal	WBls:0000070	Hermaphrodite	control empty vector	GEO record: GSM756685	GPL200
+WBPaper00036383:Day8_N2_EV_rep2	whole animal	WBls:0000070	Hermaphrodite	control empty vector	GEO record: GSM756686	GPL200
+WBPaper00036383:L3_N2_EV_rep1	whole animal	WBls:0000035	Hermaphrodite	control empty vector	GEO record: GSM756612	GPL200
+WBPaper00036383:L3_N2_EV_rep2	whole animal	WBls:0000035	Hermaphrodite	control empty vector	GEO record: GSM756613	GPL200
+WBPaper00036383:L3_N2_EV_rep3	whole animal	WBls:0000035	Hermaphrodite	control empty vector	GEO record: GSM756614	GPL200
+WBPaper00037611:wt_total_RNA_bio_rep1	WBbt:0007849	WBls:0000041	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00037611:wt_total_RNA_bio_rep2	WBbt:0007849	WBls:0000041	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00037611:wt_total_RNA_bio_rep3	WBbt:0007849	WBls:0000041	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00037611:wt_total_RNA_bio_rep4	WBbt:0007849	WBls:0000041	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00037695:T1_control_4	whole animal	WBls:0000041	Hermaphrodite	N.A.	GEO record: GSM589355	GPL200
+WBPaper00037695:T1_control_6	whole animal	WBls:0000041	Hermaphrodite	N.A.	GEO record: GSM589360	GPL200
+WBPaper00037695:T2_control_4	whole animal	WBls:0000041	Hermaphrodite	N.A.	GEO record: GSM589356	GPL200
+WBPaper00037695:T2_control_6	whole animal	WBls:0000041	Hermaphrodite	N.A.	GEO record: GSM589361	GPL200
+WBPaper00037695:T6_control_4	whole animal	WBls:0000041	Hermaphrodite	N.A.	GEO record: GSM589352	GPL200
+WBPaper00038060:N2_1	whole animal	WBls:0000024	Hermaphrodite	N.A.	GEO record: GSM499032	GPL200
+WBPaper00038060:N2_2	whole animal	WBls:0000024	Hermaphrodite	N.A.	GEO record: GSM499033	GPL200
+WBPaper00038060:N2_3	whole animal	WBls:0000024	Hermaphrodite	N.A.	GEO record: GSM499034	GPL200
+WBPaper00038172:WT_1	whole animal	WBls:0000038	Hermaphrodite	N.A.	GEO record: GSM627440	GPL200
+WBPaper00038172:WT_2	whole animal	WBls:0000038	Hermaphrodite	N.A.	GEO record: GSM627441	GPL200
+WBPaper00038172:WT_3	whole animal	WBls:0000038	Hermaphrodite	N.A.	GEO record: GSM627442	GPL200
+WBPaper00038180:WT_fedL1_rep1	whole animal	WBls:0000024	Hermaphrodite	N.A.	GEO record: GSM634543	GPL200
+WBPaper00038180:WT_fedL1_rep2	whole animal	WBls:0000024	Hermaphrodite	N.A.	GEO record: GSM634544	GPL200
+WBPaper00038180:WT_fedL1_rep3	whole animal	WBls:0000024	Hermaphrodite	N.A.	GEO record: GSM634545	GPL200
+WBPaper00038180:XX_mixedEmbryo-WT-N_080307_A	whole animal	WBls:0000003	Hermaphrodite	N.A.	GEO record: GSM635241	GPL200
+WBPaper00038180:XX_mixedEmbryo-WT-N_080307_B	whole animal	WBls:0000003	Hermaphrodite	N.A.	GEO record: GSM635242	GPL200
+WBPaper00038180:XX_mixedEmbryo-WT-N_080307_C	whole animal	WBls:0000003	Hermaphrodite	N.A.	GEO record: GSM635243	GPL200
+WBPaper00038304:wt_rep1	whole animal	WBls:0000038	Hermaphrodite	N.A.	GEO record: GSM688037	GPL200
+WBPaper00038304:wt_rep2	whole animal	WBls:0000038	Hermaphrodite	N.A.	GEO record: GSM688038	GPL200
+WBPaper00038304:wt_rep3	whole animal	WBls:0000038	Hermaphrodite	N.A.	GEO record: GSM688039	GPL200
+WBPaper00038462:day_6_adults_rep1	whole animal	WBls:0000069	Hermaphrodite	N.A.	GEO record: GSM542655	GPL200
+WBPaper00038462:day_6_adults_rep2	whole animal	WBls:0000069	Hermaphrodite	N.A.	GEO record: GSM542656	GPL200
+WBPaper00038462:day_6_adults_rep3	whole animal	WBls:0000069	Hermaphrodite	N.A.	GEO record: GSM542657	GPL200
+WBPaper00038462:day_15_adults_rep1	whole animal	WBls:0000074	Hermaphrodite	N.A.	GEO record: GSM542658	GPL200
+WBPaper00038462:day_15_adults_rep2	whole animal	WBls:0000074	Hermaphrodite	N.A.	GEO record: GSM542659	GPL200
+WBPaper00038462:day_15_adults_rep3	whole animal	WBls:0000074	Hermaphrodite	N.A.	GEO record: GSM542660	GPL200
+WBPaper00038462:L4_rep1	whole animal	WBls:0000038	Hermaphrodite	N.A.	GEO record: GSM542652	GPL200
+WBPaper00038462:L4_rep2	whole animal	WBls:0000038	Hermaphrodite	N.A.	GEO record: GSM542653	GPL200
+WBPaper00038462:L4_rep3	whole animal	WBls:0000038	Hermaphrodite	N.A.	GEO record: GSM542654	GPL200
+WBPaper00040185:Control_rep1	whole animal	WBls:0000027	Hermaphrodite	N.A.	GEO record: GSM794220	GPL200
+WBPaper00040185:Control_rep2	whole animal	WBls:0000027	Hermaphrodite	N.A.	GEO record: GSM794221	GPL200
+WBPaper00040185:Control_rep3	whole animal	WBls:0000027	Hermaphrodite	N.A.	GEO record: GSM794222	GPL200
+WBPaper00040420:FLP_1	WBbt:0004798|WBbt:0004797	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00040420:FLP_2	WBbt:0004798|WBbt:0004797	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00040420:FLP_3	WBbt:0004798|WBbt:0004797	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00040420:TRN_1	WBbt:0008431	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00040420:TRN_2	WBbt:0008431	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00040420:TRN_3	WBbt:0008431	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00040420:TRN_4	WBbt:0008431	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00040420:WholeAnimal_1	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00040420:WholeAnimal_2	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00040420:WholeAnimal_3	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00040420:WholeAnimal_4	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00040603:wild-type_1	whole animal	N.A.	Hermaphrodite	N.A.	GEO record: GSM842065	GPL200
+WBPaper00040603:wild-type_2	whole animal	N.A.	Hermaphrodite	N.A.	GEO record: GSM842066	GPL200
+WBPaper00040603:wild-type_3	whole animal	N.A.	Hermaphrodite	N.A.	GEO record: GSM842067	GPL200
+WBPaper00040821:Control_Replicate1	whole animal	WBls:0000035	Hermaphrodite	Control.	GEO record: GSM805419	GPL200
+WBPaper00040821:Control_Replicate2	whole animal	WBls:0000035	Hermaphrodite	Control.	GEO record: GSM805420	GPL200
+WBPaper00040821:Control_Replicate3	whole animal	WBls:0000035	Hermaphrodite	Control.	GEO record: GSM805421	GPL200
+WBPaper00041163:N2_OP50_rep1	whole animal	WBls:0000035	Hermaphrodite	N.A.	GEO record: GSM840606	GPL200
+WBPaper00041163:N2_OP50_rep2	whole animal	WBls:0000035	Hermaphrodite	N.A.	GEO record: GSM840607	GPL200
+WBPaper00041163:N2_OP50_rep3	whole animal	WBls:0000035	Hermaphrodite	N.A.	GEO record: GSM840608	GPL200
+WBPaper00041191:N2_rep1	whole animal	WBls:0000064	Hermaphrodite	N.A.	GEO record: GSM919250	GPL200
+WBPaper00041191:N2_rep2	whole animal	WBls:0000064	Hermaphrodite	N.A.	GEO record: GSM919251	GPL200
+WBPaper00041191:N2_rep3	whole animal	WBls:0000064	Hermaphrodite	N.A.	GEO record: GSM919252	GPL200
+WBPaper00041370:wild-type-control_Rep1	whole animal	WBls:0000038	Hermaphrodite	Worms were fed control (RNAi) and harvested at L4 stage.	GEO record: GSM936472	GPL200
+WBPaper00041370:wild-type-control_Rep2	whole animal	WBls:0000038	Hermaphrodite	Worms were fed control (RNAi) and harvested at L4 stage.	GEO record: GSM936476	GPL200
+WBPaper00041370:wild-type-control_Rep3	whole animal	WBls:0000038	Hermaphrodite	Worms were fed control (RNAi) and harvested at L4 stage.	GEO record: GSM936480	GPL200
+WBPaper00042128:N2_rep1	whole animal	WBls:0000027	Hermaphrodite	N.A.	GEO record: GSM986045	GPL200
+WBPaper00042128:N2_rep2	whole animal	WBls:0000027	Hermaphrodite	N.A.	GEO record: GSM986047	GPL200
+WBPaper00042128:N2_rep4	whole animal	WBls:0000027	Hermaphrodite	N.A.	GEO record: GSM986049	GPL200
+WBPaper00042234:N2_rep1	whole animal	WBls:0000002	Hermaphrodite	N.A.	GEO record: GSM958827	GPL200
+WBPaper00042234:N2_rep2	whole animal	WBls:0000002	Hermaphrodite	N.A.	GEO record: GSM958828	GPL200
+WBPaper00042234:N2_rep3	whole animal	WBls:0000002	Hermaphrodite	N.A.	GEO record: GSM958829	GPL200
+WBPaper00042234:N2_rep4	whole animal	WBls:0000002	Hermaphrodite	N.A.	GEO record: GSM958830	GPL200
+WBPaper00042234:N2_rep5	whole animal	WBls:0000002	Hermaphrodite	N.A.	GEO record: GSM958831	GPL200
+WBPaper00042258:N2_gravid-adult_OP50_rep1	whole animal	WBls:0000065	Hermaphrodite	N.A.	GEO record: GSM1074935	GPL200
+WBPaper00042258:N2_gravid-adult_OP50_rep2	whole animal	WBls:0000065	Hermaphrodite	N.A.	GEO record: GSM1074936	GPL200
+WBPaper00042258:N2_gravid-adult_OP50_rep3	whole animal	WBls:0000065	Hermaphrodite	N.A.	GEO record: GSM1074937	GPL200
+WBPaper00042258:N2_young-adult_OP50_rep1	whole animal	WBls:0000064	Hermaphrodite	N.A.	GEO record: GSM1074938	GPL200
+WBPaper00042258:N2_young-adult_OP50_rep2	whole animal	WBls:0000064	Hermaphrodite	N.A.	GEO record: GSM1074939	GPL200
+WBPaper00042258:N2_young-adult_OP50_rep3	whole animal	WBls:0000064	Hermaphrodite	N.A.	GEO record: GSM1074940	GPL200
+WBPaper00042404:NGM_SL1	whole animal	WBls:0000064	Hermaphrodite	Nematode Growth Medium, Control	GEO record: GSM1083003	GPL200
+WBPaper00042404:NGM_SL5	whole animal	WBls:0000064	Hermaphrodite	Nematode Growth Medium, Control	GEO record: GSM1083004	GPL200
+WBPaper00042404:NGM_SL9	whole animal	WBls:0000064	Hermaphrodite	Nematode Growth Medium, Control	GEO record: GSM1083005	GPL200
+WBPaper00042404:NGM_SL69	whole animal	WBls:0000064	Hermaphrodite	Nematode Growth Medium, Control	GEO record: GSM1083006	GPL200
+WBPaper00042574:N2_Control_rep1	whole animal	WBls:0000064	Hermaphrodite	N.A.	GEO record: GSM1008087	GPL200
+WBPaper00042574:N2_Control_rep2	whole animal	WBls:0000064	Hermaphrodite	N.A.	GEO record: GSM1008088	GPL200
+WBPaper00042574:N2_Control_rep3	whole animal	WBls:0000064	Hermaphrodite	N.A.	GEO record: GSM1008089	GPL200
+WBPaper00042574:N2_Control_rep4	whole animal	WBls:0000064	Hermaphrodite	N.A.	GEO record: GSM1008090	GPL200
+WBPaper00043980:L3_arsenic_Control_rep1	whole animal	WBls:0000035	Hermaphrodite	N.A.	GEO record: GSM953772	GPL200
+WBPaper00043980:L3_arsenic_Control_rep2	whole animal	WBls:0000035	Hermaphrodite	N.A.	GEO record: GSM953773	GPL200
+WBPaper00043980:L3_arsenic_Control_rep3	whole animal	WBls:0000035	Hermaphrodite	N.A.	GEO record: GSM953774	GPL200
+WBPaper00044163:N2_I	whole animal	WBls:0000002	Hermaphrodite	N.A.	GEO record: GSM956921	GPL200
+WBPaper00044163:N2_II	whole animal	WBls:0000002	Hermaphrodite	N.A.	GEO record: GSM956922	GPL200
+WBPaper00044163:N2_III	whole animal	WBls:0000002	Hermaphrodite	N.A.	GEO record: GSM956923	GPL200
+WBPaper00044163:N2_IV	whole animal	WBls:0000002	Hermaphrodite	N.A.	GEO record: GSM956924	GPL200
+WBPaper00044197:N2_rep1	whole animal	WBls:0000003	Hermaphrodite	N.A.	GEO record: GSM1175369	GPL200
+WBPaper00044197:N2_rep2	whole animal	WBls:0000003	Hermaphrodite	N.A.	GEO record: GSM1175370	GPL200
+WBPaper00044197:N2_rep3	whole animal	WBls:0000003	Hermaphrodite	N.A.	GEO record: GSM1175371	GPL200
+WBPaper00044545:N2_1	WBbt:0005784	WBls:0000064	Hermaphrodite	N.A.	GEO record: GSM1258141	GPL200
+WBPaper00044545:N2_2	WBbt:0005784	WBls:0000064	Hermaphrodite	N.A.	GEO record: GSM1258142	GPL200
+WBPaper00044545:N2_3	WBbt:0005784	WBls:0000064	Hermaphrodite	N.A.	GEO record: GSM1258143	GPL200
+WBPaper00045263:N2_rep1	whole animal	WBls:0000064	Hermaphrodite	N.A.	GEO record: GSM1305989	GPL200
+WBPaper00045263:N2_rep2	whole animal	WBls:0000064	Hermaphrodite	N.A.	GEO record: GSM1305990	GPL200
+WBPaper00045263:N2_rep3	whole animal	WBls:0000064	Hermaphrodite	N.A.	GEO record: GSM1305991	GPL200
+WBPaper00045263:N2_rep4	whole animal	WBls:0000064	Hermaphrodite	N.A.	GEO record: GSM1305992	GPL200
+WBPaper00045374:control_rep1	whole animal	WBls:0000064	Hermaphrodite	N.A.	GEO record: GSM567790	GPL200
+WBPaper00045807:Control-mRNA_Rep1	whole animal	WBls:0000064	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00045807:Control-mRNA_Rep2	whole animal	WBls:0000064	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00045807:Control-mRNA_Rep3	whole animal	WBls:0000064	Hermaphrodite	N.A.	N.A.	GPL200
+WBPaper00045960:Adult_rep1	whole animal	WBls:0000064	Hermaphrodite	N.A.	GEO record: GSM1128182	GPL200
+WBPaper00045960:Adult_rep2	whole animal	WBls:0000064	Hermaphrodite	N.A.	GEO record: GSM1128183	GPL200
+WBPaper00045960:Adult_rep3	whole animal	WBls:0000064	Hermaphrodite	N.A.	GEO record: GSM1128184	GPL200
+WBPaper00045960:Adult_rep4	whole animal	WBls:0000064	Hermaphrodite	N.A.	GEO record: GSM1128185	GPL200
+WBPaper00045960:Adult_rep5	whole animal	WBls:0000064	Hermaphrodite	N.A.	GEO record: GSM1128186	GPL200
+WBPaper00045960:L3-lethargus_rep1	whole animal	WBls:0000036	Hermaphrodite	N.A.	GEO record: GSM1128169	GPL200
+WBPaper00045960:L3-lethargus_rep2	whole animal	WBls:0000036	Hermaphrodite	N.A.	GEO record: GSM1128170	GPL200
+WBPaper00045960:L3-lethargus_rep3	whole animal	WBls:0000036	Hermaphrodite	N.A.	GEO record: GSM1128171	GPL200
+WBPaper00045960:L3_rep1	whole animal	WBls:0000035	Hermaphrodite	N.A.	GEO record: GSM1128166	GPL200
+WBPaper00045960:L3_rep2	whole animal	WBls:0000035	Hermaphrodite	N.A.	GEO record: GSM1128167	GPL200
+WBPaper00045960:L3_rep3	whole animal	WBls:0000035	Hermaphrodite	N.A.	GEO record: GSM1128168	GPL200
+WBPaper00045960:L4-lethargus_rep1	whole animal	WBls:0000039	Hermaphrodite	N.A.	GEO record: GSM1128177	GPL200
+WBPaper00045960:L4-lethargus_rep2	whole animal	WBls:0000039	Hermaphrodite	N.A.	GEO record: GSM1128178	GPL200
+WBPaper00045960:L4-lethargus_rep3	whole animal	WBls:0000039	Hermaphrodite	N.A.	GEO record: GSM1128179	GPL200
+WBPaper00045960:L4-lethargus_rep4	whole animal	WBls:0000039	Hermaphrodite	N.A.	GEO record: GSM1128180	GPL200
+WBPaper00045960:L4-lethargus_rep5	whole animal	WBls:0000039	Hermaphrodite	N.A.	GEO record: GSM1128181	GPL200
+WBPaper00045960:L4_rep1	whole animal	WBls:0000038	Hermaphrodite	N.A.	GEO record: GSM1128172	GPL200
+WBPaper00045960:L4_rep2	whole animal	WBls:0000038	Hermaphrodite	N.A.	GEO record: GSM1128173	GPL200
+WBPaper00045960:L4_rep3	whole animal	WBls:0000038	Hermaphrodite	N.A.	GEO record: GSM1128174	GPL200
+WBPaper00045960:L4_rep4	whole animal	WBls:0000038	Hermaphrodite	N.A.	GEO record: GSM1128175	GPL200
+WBPaper00045960:L4_rep5	whole animal	WBls:0000038	Hermaphrodite	N.A.	GEO record: GSM1128176	GPL200
+[cgc5767]:0_min	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+[cgc5767]:23_min	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+[cgc5767]:41_min	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+[cgc5767]:53_min	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+[cgc5767]:66_min	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+[cgc5767]:83_min	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+[cgc5767]:101_min	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+[cgc5767]:122_min	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+[cgc5767]:143_min	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+[cgc5767]:186_min	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+[cgc5767]:PC6	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200
+[cgc5767]:PC32	whole animal	WBls:0000003	Hermaphrodite	N.A.	N.A.	GPL200

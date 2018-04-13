@@ -1,0 +1,30 @@
+speciesId	genus	species	speciesCommonName	displayOrder	genomeFilePath	genomeVersion	dataSourceId	genomeSpeciesId	fakeGeneIdPrefix	keywords
+9606	Homo	sapiens	human	1	homo_sapiens/Homo_sapiens.GRCh38	GRCh38.p5	2	9606		
+10090	Mus	musculus	mouse	2	mus_musculus/Mus_musculus.GRCm38	GRCm38.p4	2	10090		house mouse|mice
+7955	Danio	rerio	zebrafish	3	danio_rerio/Danio_rerio.GRCz10	GRCz10	2	7955		leopard danio|zebra danio
+8364	Xenopus	tropicalis	western clawed frog	23	xenopus_tropicalis/Xenopus_tropicalis.JGI_4.2	JGI 4.2	2	8364		xenopus
+7227	Drosophila	melanogaster	fruit fly	4	drosophila_melanogaster/Drosophila_melanogaster.BDGP6	BDGP6	2	7227		vinegar fly|fruitfly
+7217	Drosophila	ananassae		24	drosophila_ananassae/Drosophila_ananassae.GCA_000005115.1	GCA_000005115.1	24	7217		
+7230	Drosophila	mojavensis		25	drosophila_mojavensis/Drosophila_mojavensis.GCA_000005175.1	GCA_000005175.1	24	7230		
+7237	Drosophila	pseudoobscura		26	drosophila_pseudoobscura/Drosophila_pseudoobscura.GCA_000001765.2	GCA_000001765.2	24	7237		
+7240	Drosophila	simulans		27	drosophila_simulans/Drosophila_simulans.GCA_000259055.1	GCA_000259055.1	24	7240		
+7244	Drosophila	virilis		28	drosophila_virilis/Drosophila_virilis.GCA_000005245.1	GCA_000005245.1	24	7244		
+7245	Drosophila	yakuba		29	drosophila_yakuba/Drosophila_yakuba.GCA_000005975.1	GCA_000005975.1	24	7245		
+9031	Gallus	gallus	chicken	21	gallus_gallus/Gallus_gallus.Galgal4	Galgal4	2	9031		bantam|red junglefowl|red jungle fowl
+9593	Gorilla	gorilla	gorilla	8	gorilla_gorilla/Gorilla_gorilla.gorGor3.1	gorGor3.1	2	9593		western gorilla
+9544	Macaca	mulatta	macaque	9	macaca_mulatta/Macaca_mulatta.MMUL_1	MMUL 1.0	2	9544		rhesus monkey
+13616	Monodelphis	domestica	opossum	19	monodelphis_domestica/Monodelphis_domestica.BROADO5	monDom5	2	13616		gray short-tailed opossum|gray short tailed opossum
+9258	Ornithorhynchus	anatinus	platypus	20	ornithorhynchus_anatinus/Ornithorhynchus_anatinus.OANA5	OANA5	2	9258		duckbill platypus|duck-billed platypus
+9598	Pan	troglodytes	chimpanzee	6	pan_troglodytes/Pan_troglodytes.CHIMP2.1.4	CHIMP2.1.4	2	9598		
+9597	Pan	paniscus	bonobo	7	pan_troglodytes/Pan_troglodytes.CHIMP2.1.4	CHIMP2.1.4	2	9598	PPAG	pygmy chimpanzee
+9913	Bos	taurus	cattle	11	bos_taurus/Bos_taurus.UMD3.1	UMD3.1	2	9913		cow|domestic cow|domestic cattle|bovine cow
+10116	Rattus	norvegicus	rat	10	rattus_norvegicus/Rattus_norvegicus.Rnor_6.0	Rnor_6.0	2	10116		brown rat
+28377	Anolis	carolinensis	green anole	22	anolis_carolinensis/Anolis_carolinensis.AnoCar2.0	AnoCar2.0	2	28377		anolis|carolina anole
+9823	Sus	scrofa	pig	12	sus_scrofa/Sus_scrofa.Sscrofa10.2	Sscrofa10.2	2	9823		domestic pig|swine
+6239	Caenorhabditis	elegans	nematode	5	caenorhabditis_elegans/Caenorhabditis_elegans.WBcel235	WBcel235	2	6239		C. elegans|worm|roundworm
+9365	Erinaceus	europaeus	hedgehog	18	erinaceus_europaeus/Erinaceus_europaeus.HEDGEHOG	eriEur1	2	9365		
+9615	Canis	lupus familiaris	dog	15	canis_familiaris/Canis_familiaris.CanFam3.1	CanFam3.1	2	9615		
+9685	Felis	catus	cat	16	felis_catus/Felis_catus.Felis_catus_6.2	Felis_catus_6.2	2	9685		
+9796	Equus	caballus	horse	13	equus_caballus/Equus_caballus.EquCab2	Equ Cab 2	2	9796		
+9986	Oryctolagus	cuniculus	rabbit	14	oryctolagus_cuniculus/Oryctolagus_cuniculus.OryCun2.0	OryCun2.0	2	9986		
+10141	Cavia	porcellus	guinea pig	17	cavia_porcellus/Cavia_porcellus.cavPor3	cavPor3	2	10141		

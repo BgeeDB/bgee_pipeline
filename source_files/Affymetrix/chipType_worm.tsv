@@ -1,0 +1,2 @@
+"#chipTypeId"	"chipTypeName"	"speciesId"	"Ensembl_Xref_table"	"Comments"
+"#A-AFFY-60"	"Affymetrix GeneChip C. elegans Genome Array [Celegans]"	6239	"C_elegans"	commented because already in main chip type file

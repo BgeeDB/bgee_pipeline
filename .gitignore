@@ -1,0 +1,62 @@
+########################################################################
+# From https://github.com/github/gitignore/blob/master/Java.gitignore
+########################################################################
+*.class
+
+# Package Files
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+###############################################
+# From https://gist.github.com/octocat/9257657
+###############################################
+
+nohup.out*
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+~*
+
+
+##########################################################
+# From https://gist.github.com/zpetr/e783d537f8a40bb6ec16
+##########################################################
+
+# IDE files #
+#############
+nbproject
+.~lock.*
+.buildpath
+.idea
+
+###############################
+
+# We ignore Eclipse .project and .classpath files, all their configuration
+# can be auto-generated thanks to m2e using the pom.xml configuration
+.project
+.classpath
+
+# We do NOT ignore Eclipse .settings/ directories: if only using "project specific settings"
+# in Eclipse, they allow to standardize development environment, e.g.,
+# to share the compiler errors/warnings settings
+#.settings
+
+# Ignore local Makefile.Config file with passwords
+pipeline/Makefile.Config
+# Exclude files that are simply fetched from bgee curation GIT
+pipeline/Affymetrix/affymetrixChip_full.tsv
+pipeline/Affymetrix/chipType_full.tsv
+pipeline/Affymetrix/microarrayExperiment_full.tsv
+pipeline/RNA_Seq/RNASeqExperiment_full.tsv
+pipeline/RNA_Seq/RNASeqLibrary_full.tsv

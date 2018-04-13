@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="OFF">
+  <appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %level %class{36} %L %M - %m%ex%n"/>
+    </Console>
+    
+  </appenders>
+  <loggers>
+    <root level="off">
+      <appender-ref ref="Console"/>
+    </root>  
+    <logger name="org.bgee" level="info" additivity="false">
+      <appender-ref ref="Console"/>
+    </logger>
+    <logger name="log4jdbc.log4j2" level="warn" additivity="false">
+      <MarkerFilter marker="LOG4JDBC_OTHER" onMatch="DENY" onMismatch="NEUTRAL"/>
+      <appender-ref ref="Console"/>
+    </logger>
+  </loggers>
+</configuration>

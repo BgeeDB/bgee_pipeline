@@ -1,0 +1,30 @@
+# common makefile holding variables with sensitive information
+
+# MySQL database connection parameters
+DBUSER  := login
+DBPASS  := pass
+DBUSERV := login
+DBPASSV := pass
+
+# Annotator machine
+ANNOTATORLOGIN := login
+
+# Vital-IT account
+VITLOGIN := login
+VITPASSW := pass
+
+# Machine used for the pipeline
+PIPELOGIN  := login
+PIPEPASSWD := pass
+
+# Machine used for RNA-seq data storage
+DATALOGIN  := login
+DATAPASSWD := pass
+
+# Our local Ensembl DB on Annotators' computer annotbioinfo
+ENSDBUSER  := login
+ENSDBPASS  := pass
+
+# MGI
+MGIDBUSER := login
+MGIDBPASS := pass

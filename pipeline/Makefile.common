@@ -1,0 +1,426 @@
+# common makefile holding variables needed by all makefiles.
+# First, we import secured variables
+include $(PIPELINEROOT)Makefile.Config
+# Force bash because we use bash constructions in Makefiles and default Makefile shell on Ubuntu is /bin/sh (different from /bin/bash)
+SHELL = /bin/bash
+
+.PHONY: all clean
+
+# ===================================
+#  GENERAL PARAMETERS
+# ===================================
+RELEASE          := 14
+
+# MySQL database connection parameters
+# DBUSER and DBPASS defined in Makefile.Config
+# DBUSERV and DBPASSV defined in Makefile.Config
+DBNAME := bgee_v$(RELEASE)
+DBHOST := 127.0.0.1
+DBPORT := 3306
+
+
+# Annotator machine
+# ANNOTATORLOGIN defined in Makefile.Config
+ANNOTATORHOST  := annotbioinfo.unil.ch
+
+# Vital-IT account
+# VITLOGIN and VITPASSW defined in Makefile.Config
+VITHOST  := dev.vital-it.ch
+
+# Machine used for the pipeline
+# PIPELOGIN and PIPEPASSWD defined in Makefile.Config
+PIPEHOST   := altbioinfo.unil.ch
+
+# Machine used for RNA-seq/Affymetrix data storage (backup)
+# DATALOGIN and DATAPASSWD defined in Makefile.Config
+DATAHOST   := bigbgee.unil.ch
+DATAPATH   := /opt/gtexfile/PIPELINE_RESULTS_STORAGE
+
+# Ensembl
+ENSRELEASE             := 84
+ENSMETAZOARELEASE      := 30
+ENS_API_RELEASE        := $(ENSRELEASE)
+ENSMETAZOA_API_RELEASE := 83
+#   for our local Ensembl DB on Annotators' computer annotbioinfo
+# ENSDBUSER and ENSDBPASS defined in Makefile.Config
+ENSDBHOST  := $(ANNOTATORHOST)
+ENSDBPORT  := 3306
+#   Default, remote Ensembl db
+#ENSDBUSER  := anonymous
+#ENSDBPASS  := ''
+#ENSDBHOST  := ensembldb.ensembl.org
+#ENSDBPORT  := 5306
+#   Default, remote Ensembl genomes db
+#ENSDBUSER  := anonymous
+#ENSDBPASS  := ''
+#ENSDBHOST  := mysql.ebi.ac.uk
+#ENSDBPORT  := 4157
+
+
+# MGI
+# MGIDBUSER and MGIDBPASS defined in Makefile.Config
+MGIDBNAME := mgd
+MGIDBHOST := adhoc.informatics.jax.org
+MGIDBPORT := 5432
+
+
+# local BDGP
+BDGPDBNAME := bdgp
+
+
+# Bgee    connection command line argument for Perl scripts
+BGEECMD  := user=$(DBUSER)__pass=$(DBPASS)__host=$(DBHOST)__port=$(DBPORT)__name=$(DBNAME)
+BGEECMDV := user=$(DBUSERV)__pass=$(DBPASSV)__host=$(PIPEHOST)__port=$(DBPORT)__name=$(DBNAME)
+# Ensembl connection command line argument for Perl scripts
+ENSCMD   := user=$(ENSDBUSER)__pass=$(ENSDBPASS)__host=$(ENSDBHOST)__port=$(ENSDBPORT)
+# MGI     connection command line argument for Perl scripts
+MGICMD   := user=$(MGIDBUSER)__pass=$(MGIDBPASS)__host=$(MGIDBHOST)__port=$(MGIDBPORT)__name=$(MGIDBNAME)
+# BDGP    connection command line argument for Perl scripts
+BDGPCMD  := user=$(DBUSER)__pass=$(DBPASS)__host=$(DBHOST)__port=$(DBPORT)__name=$(BDGPDBNAME)
+
+
+# ===================================
+#  COMMANDS
+# ===================================
+
+JAVALIBDIR          := ../java/
+BGEEPIPELINEJARNAME := bgee-pipeline-$(RELEASE)-with-dependencies.jar
+BGEEPIPELINEJAR     := $(JAVALIBDIR)$(BGEEPIPELINEJARNAME)
+
+JAVA_NO_JAR := java -Xmx32g -Dbgee.dao.jdbc.username=$(DBUSER) -Dbgee.dao.jdbc.password=$(DBPASS) -Dbgee.dao.jdbc.driver.names=com.mysql.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST):$(DBPORT)/$(DBNAME)?enableQueryTimeouts=false&sessionVariables=net_write_timeout=86400,net_read_timeout=86400,wait_timeout=86400'
+JAVA := $(JAVA_NO_JAR) -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)
+# to pass arguments to Java command line
+ENTRY_SEP :=,
+KEY_VAL_SEP :=//
+VAL_SEP :=--
+EMPTY_LIST :=-
+LIST_SEP :=,
+SPACE :=__
+
+MYSQLNODBNAME := mysql -u $(DBUSER) -p$(DBPASS) -h $(DBHOST) -P $(DBPORT) --init-command='SET SESSION net_write_timeout=86400; SET SESSION net_read_timeout=86400; SET SESSION wait_timeout=86400'
+MYSQL := $(MYSQLNODBNAME) $(DBNAME)
+
+GIT    := git
+WGET   := wget -N -nv
+#RSYNC  := rsync -a --exclude=.DS_Store # some permission problems so don't strickly speaking use -a (== -rlptgoD)
+RSYNC  := rsync -rlgoD --exclude=.DS_Store --exclude=.svn --exclude=.git
+CAT    := cat
+RM     := rm -f
+MV     := mv -f
+CP     := cp -f
+GUNZIP := gunzip -f
+
+# cURL command, to download files only if more recently changed
+# (it was not working correctly with wget in our case)
+# -s: silent, no progress bar displayed;
+# -S: if silent, still shows error message if it fails;
+# -L: in case of redirection, follow it and redo the request, this is necessary to correctly get modification date;
+# -f: in case of error do not display the document returned.
+# -R: make the local file have the same timestamp as remote file
+# Sould be used with option -z filename: download remote file only if more recent than the provided file
+# And with -o option to choose output file name.
+# See variable APPEND_CURL_COMMAND.
+CURL := curl -s -S -L -f -R
+# variable to append to cURL command to download a file only if remote file more recent than targeted file,
+# download in a temp file and move to stable location on success; delete temp file on error
+# Variable to be recursively expanded.
+# -z filename: download remote file only if last modification date more recent that modification date of downloadfile
+# -o filename: store downloaded file into filename
+# Redirect stderr of mv to /dev/null in case the file was not redownloaded so that the temp file does not exist
+APPEND_CURL_COMMAND = -z $@ -o $@.tmp && mv -f $@.tmp $@ 2>/dev/null || rm -f $@.tmp $@
+
+# Paths to files used in several Makefiles, relative to the Makefile pipeline root (bgee/pipeline/pipeline)
+
+# Needs to be included after we defined some variables used in the file
+include $(PIPELINEROOT)Makefile.taxon_info
+
+# ===================================
+#  VITAL-IT  COMMANDS
+# ===================================
+
+#NOTE Think to add ; at the end to ease insertion in other command lines
+VIT_ASPERA_CMD     := module add Utility/aspera_connect/3.7.4.147727;
+#VIT_BEDTOOLS_CMD   := module add UHTS/Analysis/BEDTools/2.17.0;
+#VIT_BOWTIE2_CMD    := module add UHTS/Aligner/bowtie2/2.2.4;
+#VIT_HTSEQ_CMD      := module add UHTS/Analysis/HTSeq/0.6.1;
+VIT_KALLISTO_CMD   := module add UHTS/Analysis/kallisto/0.43.1;
+#VIT_PICARD_CMD     := module add UHTS/Analysis/picard-tools/1.127; java -jar /software/UHTS/Analysis/picard-tools/1.127/picard.jar SortSam
+VIT_R_CMD          := module add R/3.4.2;
+#VIT_SAMTOOLS_CMD   := module add UHTS/Analysis/samtools/0.1.19;
+VIT_SRATOOLKIT_CMD := module add UHTS/Analysis/sratoolkit/2.8.2.1;
+VIT_TOPHAT_CMD     := module add UHTS/Aligner/tophat/2.1.1;
+VIT_FASTQC_CMD     := module add UHTS/Quality_control/fastqc/0.11.5;
+
+
+# ===================================
+#  PATHS TO FILES
+# ===================================
+
+# Tmp path (if not enough disk space)
+TMPDIR := /var/lib/mysql/tmp_bgee/
+
+# Path to the directory storing source files
+# PIPELINEROOT and DIR_NAME are specified by each individul Makefile
+# before importing Makefile.common
+SOURCE_FILES_DIR := $(PIPELINEROOT)../source_files/
+INPUT_DIR := $(SOURCE_FILES_DIR)$(DIR_NAME)
+GENERATED_FILES_DIR := $(PIPELINEROOT)../generated_files/
+OUTPUT_DIR := $(GENERATED_FILES_DIR)$(DIR_NAME)
+
+VERIFICATIONFILE := $(OUTPUT_DIR)step_verification_$(RELEASE).txt
+
+
+# =========== FILES FROM ANNOTATORS ===============
+# URL to git annotation files
+ANNOTATION_GIT_URL            := https://gitlab.sib.swiss/Bgee/expression-annotations/raw/master
+
+# Directory with curator files, from the root directory of the pipeline
+CURATIONPATH                  := ../../curation/
+
+## AFFYMETRIX
+AFFY_CURATION_PATH            := $(CURATIONPATH)expression_data/affymetrix/
+AFFY_CURATION_FILEPATH        := $(AFFY_CURATION_PATH)annotation.xls
+
+## SIMILARITY
+SIMILARITY_CURATION_PATH      := $(CURATIONPATH)similarity/
+SIMILARITY_CURATION_FILEPATH  := $(SIMILARITY_CURATION_PATH)homology.xlsx
+
+## ESTs
+EST_CURATION_PATH             := $(CURATIONPATH)expression_data/est/
+EST_UNIGENE_CURATION_PATH     := $(EST_CURATION_PATH)unigene/
+EST_SMIRNADB_CURATION_PATH    := $(EST_CURATION_PATH)smirnadb/
+# the list of species with UniGene/EST annotation
+EST_SPECIES_CURATION_FILEPATH := $(SOURCE_FILES_DIR)ESTs/unigene/species_EST_file.txt
+# smiRNAdb libs mapping file
+SMIRNADB_CURATION_MAPFILEPATH := $(SOURCE_FILES_DIR)ESTs/smirnadb/mapping_libs_smiRNAdb.csv
+
+## In Situ
+BDGP_PATH                     := $(CURATIONPATH)expression_data/in_situ/bdgp/
+BDGP2FBBT_MAPPING_FILE        := BDGP_terms_to_FBbt_terms.tsv
+BDGP2FBBT_MAPPING_NEW         := BDGP_terms_to_FBbt_terms_$(DBNAME).tsv
+STAGECORRESP_FILE             := BDGP_stages_correspondence.txt
+WORMBASE_EXPR_DUMP            := expr_pattern.ace.20160829
+
+## RNA Seq
+RNASEQ_CURATION_PATH          := $(CURATIONPATH)expression_data/rna_seq/
+RNASEQ_CURATION_FILEPATH      := $(RNASEQ_CURATION_PATH)annotations.xls
+
+
+# =========== SPECIES FILES ===============
+
+# a TSV file containing the IDs of the species used in Bgee
+SPECIESFILEPATH     := $(SOURCE_FILES_DIR)species/bgeeSpecies.tsv
+
+# file containing the IDs of all the taxa used in our annotations
+ANNOTTAXIDSFILEPATH := $(GENERATED_FILES_DIR)species/annotTaxIds.tsv
+
+# file containing the IDs of the species used in Bgee, of all the taxa used in our annotations,
+# and of all the taxa used in Uberon
+ALLTAXIDSFILEPATH   := $(GENERATED_FILES_DIR)species/allTaxIds.tsv
+
+# our custom taxonomy ontology
+TAXONOMYFILEPATH    := $(GENERATED_FILES_DIR)species/bgee_ncbitaxon.owl
+TAX_DAT_DOWNLOAD_URL := ftp://ftp.ebi.ac.uk/pub/databases/taxonomy/taxonomy.dat
+
+
+# =========== UBERON FILES ===============
+UBERON_SOURCE_PATH := $(SOURCE_FILES_DIR)uberon/
+UBERON_OUTPUT_PATH := $(GENERATED_FILES_DIR)uberon/
+
+UBERON_DOWNLOAD_URL_START := http://purl.obolibrary.org/obo/uberon/
+EXT_DOWNLOAD_URL := $(UBERON_DOWNLOAD_URL_START)ext.owl
+COMPOSITE_DOWNLOAD_URL := $(UBERON_DOWNLOAD_URL_START)composite-metazoan.owl
+DEV_STAGE_DOWNLOAD_URL := https://raw.githubusercontent.com/obophenotype/developmental-stage-ontologies/master/external/bgee/dev_stage_ont.obo
+
+# Sex-related info about anatomical terms
+UBERON_SEX_INFO_FILE := uberon_sex_info.tsv
+UBERON_SEX_INFO_FILE_PATH := $(UBERON_OUTPUT_PATH)$(UBERON_SEX_INFO_FILE)
+
+# taxon constraints
+TAXONCONSTRAINTSFILE     := taxonConstraints.tsv
+TAXONCONSTRAINTSFILEPATH := $(UBERON_OUTPUT_PATH)$(TAXONCONSTRAINTSFILE)
+# OVERRIDE_TAXON_CONSTRAINTS := HsapDv:$(KEY_VAL_SEP)9606$(ENTRY_SEP)MmusDv:$(KEY_VAL_SEP)10090$(ENTRY_SEP)ZFS:$(KEY_VAL_SEP)7955$(ENTRY_SEP)XAO:$(KEY_VAL_SEP)8364$(ENTRY_SEP)FBdv:$(KEY_VAL_SEP)7227$(ENTRY_SEP)GgalDv:$(KEY_VAL_SEP)9031$(ENTRY_SEP)GgorDv:$(KEY_VAL_SEP)9593$(ENTRY_SEP)MmulDv:$(KEY_VAL_SEP)9544$(ENTRY_SEP)MdomDv:$(KEY_VAL_SEP)13616$(ENTRY_SEP)OanaDv:$(KEY_VAL_SEP)9258$(ENTRY_SEP)PtroDv:$(KEY_VAL_SEP)9598$(ENTRY_SEP)PpanDv:$(KEY_VAL_SEP)9597$(ENTRY_SEP)PpygDv:$(KEY_VAL_SEP)9600$(ENTRY_SEP)BtauDv:$(KEY_VAL_SEP)9913$(ENTRY_SEP)RnorDv:$(KEY_VAL_SEP)10116$(ENTRY_SEP)AcarDv:$(KEY_VAL_SEP)28377$(ENTRY_SEP)TnigDv:$(KEY_VAL_SEP)99883$(ENTRY_SEP)SscrDv:$(KEY_VAL_SEP)9823$(ENTRY_SEP)WBls:$(KEY_VAL_SEP)6239$(ENTRY_SEP)UBERON:0007220$(KEY_VAL_SEP)7227$(VAL_SEP)9606$(VAL_SEP)10090$(VAL_SEP)10116$(ENTRY_SEP)UBERON:0004707$(KEY_VAL_SEP)7955$(ENTRY_SEP)UBERON:0000069$(KEY_VAL_SEP)6239$(VAL_SEP)7227$(VAL_SEP)7955$(VAL_SEP)8364$(ENTRY_SEP)UBERON:0000070$(KEY_VAL_SEP)7227$(ENTRY_SEP)UBERON:0000111$(KEY_VAL_SEP)9606$(VAL_SEP)10090$(VAL_SEP)8364$(VAL_SEP)9031$(VAL_SEP)9593$(VAL_SEP)9544$(VAL_SEP)13616$(VAL_SEP)9258$(VAL_SEP)9598$(VAL_SEP)9597$(VAL_SEP)9600$(VAL_SEP)9913$(VAL_SEP)28377$(VAL_SEP)99883$(VAL_SEP)9823$(VAL_SEP)6239$(VAL_SEP)10116$(ENTRY_SEP)UBERON:0000110$(KEY_VAL_SEP)9606$(VAL_SEP)10090$(VAL_SEP)8364$(VAL_SEP)9031$(VAL_SEP)9593$(VAL_SEP)9544$(VAL_SEP)13616$(VAL_SEP)9258$(VAL_SEP)9598$(VAL_SEP)9597$(VAL_SEP)9600$(VAL_SEP)9913$(VAL_SEP)28377$(VAL_SEP)99883$(VAL_SEP)9823$(VAL_SEP)6239$(VAL_SEP)10116$(ENTRY_SEP)UBERON:0000107$(KEY_VAL_SEP)9606$(VAL_SEP)10090$(VAL_SEP)7955$(VAL_SEP)8364$(VAL_SEP)7227$(VAL_SEP)9031$(VAL_SEP)9593$(VAL_SEP)9544$(VAL_SEP)13616$(VAL_SEP)9258$(VAL_SEP)9598$(VAL_SEP)9597$(VAL_SEP)9600$(VAL_SEP)9913$(VAL_SEP)28377$(VAL_SEP)99883$(VAL_SEP)9823$(VAL_SEP)6239$(ENTRY_SEP)UBERON:0000108$(KEY_VAL_SEP)9606$(VAL_SEP)10090$(VAL_SEP)7955$(VAL_SEP)8364$(VAL_SEP)7227$(VAL_SEP)9031$(VAL_SEP)9593$(VAL_SEP)9544$(VAL_SEP)13616$(VAL_SEP)9258$(VAL_SEP)9598$(VAL_SEP)9597$(VAL_SEP)9600$(VAL_SEP)9913$(VAL_SEP)28377$(VAL_SEP)99883$(VAL_SEP)9823$(VAL_SEP)6239$(ENTRY_SEP)UBERON:0000106$(KEY_VAL_SEP)9606$(VAL_SEP)10090$(VAL_SEP)7955$(VAL_SEP)8364$(VAL_SEP)7227$(VAL_SEP)9031$(VAL_SEP)9593$(VAL_SEP)9544$(VAL_SEP)13616$(VAL_SEP)9258$(VAL_SEP)9598$(VAL_SEP)9597$(VAL_SEP)9600$(VAL_SEP)9913$(VAL_SEP)28377$(VAL_SEP)99883$(VAL_SEP)9823$(VAL_SEP)6239$(ENTRY_SEP)UBERON:0004729$(KEY_VAL_SEP)6239$(ENTRY_SEP)UBERON:0004730$(KEY_VAL_SEP)7227$(ENTRY_SEP)UBERON:0007234$(KEY_VAL_SEP)7955$(VAL_SEP)8364$(ENTRY_SEP)UBERON:0007232$(KEY_VAL_SEP)7955$(VAL_SEP)8364$(ENTRY_SEP)UBERON:0000112$(KEY_VAL_SEP)9606$(VAL_SEP)10090$(VAL_SEP)7955$(VAL_SEP)8364$(VAL_SEP)9031$(VAL_SEP)9593$(VAL_SEP)9544$(VAL_SEP)13616$(VAL_SEP)9258$(VAL_SEP)9598$(VAL_SEP)9597$(VAL_SEP)9600$(VAL_SEP)9913$(VAL_SEP)28377$(VAL_SEP)99883$(VAL_SEP)9823$(VAL_SEP)6239$(VAL_SEP)10116$(ENTRY_SEP)UBERON:0000113$(KEY_VAL_SEP)9606$(VAL_SEP)10090$(VAL_SEP)7955$(VAL_SEP)8364$(VAL_SEP)9031$(VAL_SEP)9593$(VAL_SEP)9544$(VAL_SEP)13616$(VAL_SEP)9258$(VAL_SEP)9598$(VAL_SEP)9597$(VAL_SEP)9600$(VAL_SEP)9913$(VAL_SEP)28377$(VAL_SEP)99883$(VAL_SEP)9823$(VAL_SEP)6239$(VAL_SEP)10116$(ENTRY_SEP)UBERON:0009849$(KEY_VAL_SEP)8364$(ENTRY_SEP)UBERON:0014405$(KEY_VAL_SEP)$(EMPTY_LIST)$(ENTRY_SEP)UBERON:0014862$(KEY_VAL_SEP)$(EMPTY_LIST)$(ENTRY_SEP)UBERON:0014864$(KEY_VAL_SEP)$(EMPTY_LIST)$(ENTRY_SEP)UBERON:0007221$(KEY_VAL_SEP)9606$(VAL_SEP)10090$(VAL_SEP)8364$(VAL_SEP)7227$(VAL_SEP)9031$(VAL_SEP)9593$(VAL_SEP)9544$(VAL_SEP)13616$(VAL_SEP)9258$(VAL_SEP)9598$(VAL_SEP)9597$(VAL_SEP)9600$(VAL_SEP)9913$(VAL_SEP)28377$(VAL_SEP)99883$(VAL_SEP)9823$(VAL_SEP)6239$(VAL_SEP)10116$(ENTRY_SEP)UBERON:0007222$(KEY_VAL_SEP)10090$(VAL_SEP)7955$(VAL_SEP)8364$(VAL_SEP)7227$(VAL_SEP)9593$(VAL_SEP)9544$(VAL_SEP)9258$(VAL_SEP)9598$(VAL_SEP)9597$(VAL_SEP)9600$(VAL_SEP)99883$(VAL_SEP)9823$(VAL_SEP)6239$(VAL_SEP)10116$(ENTRY_SEP)UBERON:0018241$(KEY_VAL_SEP)10090$(VAL_SEP)7955$(VAL_SEP)8364$(VAL_SEP)7227$(VAL_SEP)9593$(VAL_SEP)9544$(VAL_SEP)9258$(VAL_SEP)9598$(VAL_SEP)9597$(VAL_SEP)9600$(VAL_SEP)99883$(VAL_SEP)9823$(VAL_SEP)6239$(VAL_SEP)10116$(ENTRY_SEP)AAO:$(KEY_VAL_SEP)8364$(ENTRY_SEP)ABA:$(KEY_VAL_SEP)10090$(ENTRY_SEP)EHDAA2:$(KEY_VAL_SEP)9606$(ENTRY_SEP)EMAPA:$(KEY_VAL_SEP)10090$(ENTRY_SEP)FBbt:$(KEY_VAL_SEP)7227$(ENTRY_SEP)FMA:$(KEY_VAL_SEP)9606$(ENTRY_SEP)HAO:$(KEY_VAL_SEP)7399$(ENTRY_SEP)MA:$(KEY_VAL_SEP)10090$(ENTRY_SEP)MFO:$(KEY_VAL_SEP)8089$(ENTRY_SEP)SPD:$(KEY_VAL_SEP)6893$(ENTRY_SEP)TADS:$(KEY_VAL_SEP)6939$(ENTRY_SEP)TAO:$(KEY_VAL_SEP)7955$(VAL_SEP)99883$(ENTRY_SEP)TGMA:$(KEY_VAL_SEP)44484$(ENTRY_SEP)WBbt:$(KEY_VAL_SEP)6239$(ENTRY_SEP)XAO:$(KEY_VAL_SEP)8364$(ENTRY_SEP)ZFA:$(KEY_VAL_SEP)7955$(ENTRY_SEP)EHDAA:$(KEY_VAL_SEP)9606$(ENTRY_SEP)EV:$(KEY_VAL_SEP)9606
+# taxon constraints with no hacks:
+# OVERRIDE_TAXON_CONSTRAINTS := HsapDv:$(KEY_VAL_SEP)9606$(ENTRY_SEP)MmusDv:$(KEY_VAL_SEP)10090$(ENTRY_SEP)ZFS:$(KEY_VAL_SEP)7955$(ENTRY_SEP)XAO:$(KEY_VAL_SEP)8364$(ENTRY_SEP)FBdv:$(KEY_VAL_SEP)7227$(ENTRY_SEP)GgalDv:$(KEY_VAL_SEP)9031$(ENTRY_SEP)GgorDv:$(KEY_VAL_SEP)9593$(ENTRY_SEP)MmulDv:$(KEY_VAL_SEP)9544$(ENTRY_SEP)MdomDv:$(KEY_VAL_SEP)13616$(ENTRY_SEP)OanaDv:$(KEY_VAL_SEP)9258$(ENTRY_SEP)PtroDv:$(KEY_VAL_SEP)9598$(ENTRY_SEP)PpanDv:$(KEY_VAL_SEP)9597$(ENTRY_SEP)PpygDv:$(KEY_VAL_SEP)9600$(ENTRY_SEP)BtauDv:$(KEY_VAL_SEP)9913$(ENTRY_SEP)RnorDv:$(KEY_VAL_SEP)10116$(ENTRY_SEP)AcarDv:$(KEY_VAL_SEP)28377$(ENTRY_SEP)TnigDv:$(KEY_VAL_SEP)99883$(ENTRY_SEP)SscrDv:$(KEY_VAL_SEP)9823$(ENTRY_SEP)WBls:$(KEY_VAL_SEP)6239$(ENTRY_SEP)PdumDv:$(KEY_VAL_SEP)6358$(ENTRY_SEP)UBERON:0000069$(KEY_VAL_SEP)6239$(VAL_SEP)7227$(VAL_SEP)7955$(VAL_SEP)8364$(ENTRY_SEP)AAO:$(KEY_VAL_SEP)8364$(ENTRY_SEP)ABA:$(KEY_VAL_SEP)10090$(ENTRY_SEP)EHDAA2:$(KEY_VAL_SEP)9606$(ENTRY_SEP)EMAPA:$(KEY_VAL_SEP)10090$(ENTRY_SEP)FBbt:$(KEY_VAL_SEP)7227$(ENTRY_SEP)FMA:$(KEY_VAL_SEP)9606$(ENTRY_SEP)HAO:$(KEY_VAL_SEP)7399$(ENTRY_SEP)MA:$(KEY_VAL_SEP)10090$(ENTRY_SEP)MFO:$(KEY_VAL_SEP)8089$(ENTRY_SEP)SPD:$(KEY_VAL_SEP)6893$(ENTRY_SEP)TADS:$(KEY_VAL_SEP)6939$(ENTRY_SEP)TAO:$(KEY_VAL_SEP)7955$(VAL_SEP)99883$(ENTRY_SEP)TGMA:$(KEY_VAL_SEP)44484$(ENTRY_SEP)WBbt:$(KEY_VAL_SEP)6239$(ENTRY_SEP)ZFA:$(KEY_VAL_SEP)7955$(ENTRY_SEP)EHDAA:$(KEY_VAL_SEP)9606$(ENTRY_SEP)EV:$(KEY_VAL_SEP)9606$(ENTRY_SEP)CEPH:$(KEY_VAL_SEP)6605$(ENTRY_SEP)CTENO:$(KEY_VAL_SEP)10197$(ENTRY_SEP)PORO:$(KEY_VAL_SEP)6040
+
+ROOTS_OF_SUBGRAPHS_TO_IGNORE := NCBITaxon:1
+
+## Uberon
+UBERON_EXT_FILE_PATH       := $(UBERON_SOURCE_PATH)ext.owl
+UBERON_COMPOSITE_FILE_PATH := $(UBERON_SOURCE_PATH)composite-metazoan.owl
+UBERONFILE                 := $(UBERON_COMPOSITE_FILE_PATH)
+UBERONFILEPATH             := $(UBERON_SOURCE_PATH)$(UBERONFILE)
+
+CUSTOM_UBERON_PREFIX       := custom_composite
+CUSTOM_UBERON_FILE         := $(CUSTOM_UBERON_PREFIX).owl
+CUSTOM_UBERON_FILE_PATH    := $(UBERON_OUTPUT_PATH)$(CUSTOM_UBERON_FILE)
+
+DEV_STAGE_ONT_PREFIX       := dev_stage_ontology
+DEV_STAGE_ONT_FILE         := $(DEV_STAGE_ONT_PREFIX).obo
+DEV_STAGE_ONT_FILE_PATH    := $(UBERON_SOURCE_PATH)$(DEV_STAGE_ONT_FILE)
+
+
+# Command to get list of stages between start and end stages
+# Missing arguments are SPECIES_ID   INBETWEENSTAGESPORT
+INBETWEENSTAGESPORT := 15444
+INBETWEENSTAGES := $(JAVA) UberonSocketTool stageRange $(DEV_STAGE_ONT_FILE_PATH) $(TAXONOMYFILEPATH) $(TAXONCONSTRAINTSFILEPATH) $(OVERRIDE_TAXON_CONSTRAINTS)
+
+# Command to get mapping of IDs to Uberon
+# Missing arguments is: IDMAPPINGPORT
+IDMAPPINGPORT   := 14555
+# Note: was changed to use our custom version with only terms included in Bgee
+IDMAPPING       := $(JAVA) UberonSocketTool idMapping $(CUSTOM_UBERON_FILE_PATH)
+
+STGMAPPINGPORT  := 13222
+STGMAPPING      := $(JAVA) UberonSocketTool idMapping $(DEV_STAGE_ONT_FILE_PATH)
+
+
+# =========== SIMILARITY ANNOTATION FILES ===============
+SIM_ANNOT_DOWNLOAD_URL_START := https://raw.githubusercontent.com/BgeeDB/anatomical-similarity-annotations/master/release/
+RAW_SIM_ANNOT_DOWNLOAD_URL := $(SIM_ANNOT_DOWNLOAD_URL_START)raw_similarity_annotations.tsv
+
+# the similarity annotation file
+
+
+# =========== EST FILES ===============
+
+
+
+# =========== AFFYMETRIX FILES ===============
+AFFYPATH                            := Affymetrix/
+AFFY_CHIP_FILEPATH                  := $(SOURCE_FILES_DIR)$(AFFYPATH)affymetrixChip.tsv
+AFFY_CHIP_FILEPATH_WORM             := $(SOURCE_FILES_DIR)$(AFFYPATH)affymetrixChip_worm.tsv
+AFFY_CHIP_FILEPATH_FULL             := $(AFFYPATH)affymetrixChip_full.tsv
+AFFY_CHIPINFO_FILEPATH              := $(AFFYPATH)affymetrixChipInformation
+MICROARRAY_EXPERIMENT_FILEPATH      := $(SOURCE_FILES_DIR)$(AFFYPATH)microarrayExperiment.tsv
+MICROARRAY_EXPERIMENT_FILEPATH_WORM := $(SOURCE_FILES_DIR)$(AFFYPATH)microarrayExperiment_worm.tsv
+MICROARRAY_EXPERIMENT_FILEPATH_FULL := $(AFFYPATH)microarrayExperiment_full.tsv
+AFFY_CHIPTYPE_FILEPATH              := $(SOURCE_FILES_DIR)$(AFFYPATH)chipType.tsv
+AFFY_CHIPTYPE_FILEPATH_WORM         := $(SOURCE_FILES_DIR)$(AFFYPATH)chipType_worm.tsv
+AFFY_CHIPTYPE_FILEPATH_FULL         := $(AFFYPATH)chipType_full.tsv
+AFFY_CHIPTYPEQUAL_FILEPATH          := $(AFFYPATH)chipTypeCorrespondencesAndQualityThresholds
+AFFY_NORMTYPE_FILEPATH              := $(AFFYPATH)normalizationType
+AFFY_DETCTYPE_FILEPATH              := $(AFFYPATH)detectionType
+
+# Affymetrix data path
+AFFYDATAPATH      := /var/bgee/extra/pipeline/Affymetrix/
+AFFYNEWDATAPATH   := $(AFFYDATAPATH)new_files/
+AFFYANNOTATORPATH := /Users/anikneja/Documents/bgee/extra/pipeline/curation/Affymetrix/
+
+# Cel file path
+CELPATH           := $(AFFYDATAPATH)cel_data/
+CELNEWPATH        := $(AFFYNEWDATAPATH)cel_data/
+CELANNPATH        := $(AFFYANNOTATORPATH)cel_data/
+# MAS5 file path
+MAS5PATH          := $(AFFYDATAPATH)processed_mas5/
+MAS5NEWPATH       := $(AFFYNEWDATAPATH)processed_mas5/
+MAS5ANNPATH       := $(AFFYANNOTATORPATH)processed_mas5/
+# MAS5 original file path
+MAS5ORIPATH       := $(AFFYDATAPATH)processed_mas5_original_files/
+MAS5ORINEWPATH    := $(AFFYNEWDATAPATH)processed_mas5_original_files/
+MAS5ORIANNPATH    := $(AFFYANNOTATORPATH)processed_mas5_original_files/
+# SCHUSTER file path
+SCHUSTERPATH      := $(AFFYDATAPATH)processed_schuster/
+# Differential file path
+DIFFEXPRPATH      := $(AFFYDATAPATH)processed_differential/
+# Bioconductor file path
+BIOCONDUCTOR      := $(AFFYDATAPATH)bioconductor/
+BIOCONDUCTOROUT   := $(BIOCONDUCTOR)out/
+BIOCONDUCTORAFFIN := $(BIOCONDUCTOR)affinities/
+BIOCONDUCTORDIFF  := $(BIOCONDUCTOR)differential/
+BIOCONDUCTORTARG  := $(BIOCONDUCTOR)targets/
+# Annotation file path
+ANNOTATIONPATH    := $(AFFYDATAPATH)annotations/
+
+
+# =========== RNA_Seq FILES ===============
+RNASEQPATH                         := RNA_Seq/
+RNASEQ_EXPERIMENT_FILEPATH         := $(SOURCE_FILES_DIR)$(RNASEQPATH)RNASeqExperiment.tsv
+RNASEQ_EXPERIMENT_FILEPATH_WORM    := $(SOURCE_FILES_DIR)$(RNASEQPATH)RNASeqExperiment_worm.tsv
+RNASEQ_EXPERIMENT_FILEPATH_FULL    := $(PIPELINEROOT)$(RNASEQPATH)RNASeqExperiment_full.tsv
+RNASEQ_LIB_FILEPATH                := $(SOURCE_FILES_DIR)$(RNASEQPATH)RNASeqLibrary.tsv
+RNASEQ_LIB_FILEPATH_WORM           := $(SOURCE_FILES_DIR)$(RNASEQPATH)RNASeqLibrary_worm.tsv
+RNASEQ_LIB_FILEPATH_FULL           := $(PIPELINEROOT)$(RNASEQPATH)RNASeqLibrary_full.tsv
+RNASEQ_LIB_EXCLUSION_FILEPATH_WORM := $(SOURCE_FILES_DIR)$(RNASEQPATH)RNASeqLibrary_worm_exclusion.tsv
+RNASEQ_LIB_CHECKS_FILEPATH         := $(SOURCE_FILES_DIR)$(RNASEQPATH)RNASeqLibraryPlatformChecks.tsv
+RNASEQ_SAMPINFO_FILEPATH           := $(GENERATED_FILES_DIR)$(RNASEQPATH)rna_seq_sample_info.txt
+RNASEQ_SAMPEXCLUDED_FILEPATH       := $(GENERATED_FILES_DIR)$(RNASEQPATH)rna_seq_sample_excluded.txt
+RNASEQ_LENGTH_INFO_FILEPATH        := $(GENERATED_FILES_DIR)$(RNASEQPATH)rna_seq_length_info.txt
+
+# RNAseq Vital-IT paths
+# TODO: clean-up and remove unused ones
+RNASEQ_VITALIT_READONLY        := /data/ul/dee/bgee/
+RNASEQ_VITALIT_SCRIPTS         := $(RNASEQ_VITALIT_READONLY)/GIT/pipeline/
+RNASEQ_VITALIT_GTF             := $(RNASEQ_VITALIT_READONLY)rna_seq/GTF/
+RNASEQ_VITALIT_ALL_RES_BACKUP  := $(RNASEQ_VITALIT_READONLY)rna_seq/all_results/
+RNASEQ_VITALIT_SCRATCH         := /scratch/cluster/monthly/bbgee/
+RNASEQ_VITALIT_ALL_RES         := $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME)/
+RNASEQ_VITALIT_SUM_RES         := $(RNASEQ_VITALIT_SCRATCH)sum_by_species_$(DBNAME)/
+RNASEQ_VITALIT_GAUSSIAN_CHOICE := $(GENERATED_FILES_DIR)$(RNASEQPATH)gaussian_choice_by_species.txt
+RNASEQ_VITALIT_PRESENCE_RES    := $(RNASEQ_VITALIT_SCRATCH)presence_absence_$(DBNAME)/
+RNASEQ_VITALIT_LOG             := $(RNASEQ_VITALIT_ALL_RES)
+RNASEQ_VITALIT_R_LOG           := $(RNASEQ_VITALIT_ALL_RES)
+ENCRYPT_PASSWD_FILE            := /home/bbgee/.passw
+
+# RNAseq bigbgee paths
+RNASEQ_BIGBGEE_FASTQ       := /opt/gtexfile/FASTQ/
+
+# RNAseq data path
+RNASEQDATAPATH             := /var/bgee/extra/pipeline/rna_seq/
+RNASEQALLRES               := $(RNASEQDATAPATH)all_results_$(DBNAME)/
+RNASEQGTFDATAPATH          := $(RNASEQDATAPATH)GTF/
+RNASEQLOGS                 := $(RNASEQALLRES)
+RNASEQSAMPSTATS            := $(RNASEQALLRES)presence_absence_all_samples.txt
+#TODO: should this file be put in $(GENERATED_FILES_DIR)$(RNASEQPATH)?
+RNASEQREPORTINFO           := $(RNASEQALLRES)reports_info_all_samples.txt
+#TODO: should this file be put in $(GENERATED_FILES_DIR)$(RNASEQPATH)?
+
+# Differential file path
+RNASEQDIFFEXPRPATH         := $(RNASEQDATAPATH)processed_differential_$(DBNAME)/
+# Bioconductor file path
+RNASEQBIOCONDUCTOR         := $(RNASEQDATAPATH)bioconductor_$(DBNAME)/
+RNASEQBIOCONDUCTORDIFF     := $(RNASEQBIOCONDUCTOR)differential/
+RNASEQBIOCONDUCTORTARG     := $(RNASEQBIOCONDUCTOR)targets/
+# TMM normalization files
+RNASEQTMMTARG              := $(RNASEQBIOCONDUCTOR)targets_TMM/
+RNASEQTMMPATH              := $(RNASEQDATAPATH)processed_TMM_$(DBNAME)/
+
+
+# =========== DOWNLOAD FILES ===============
+
+# path to the root of the directory to use to store generated download files
+DOWNLOAD_FILE_ROOT_PATH := $(GENERATED_FILES_DIR)download_files/
+
+# paths of the different file types, relative to DOWNLOAD_FILE_ROOT_PATH
+CALLS_PATH := calls/
+EXPR_CALLS_PATH := $(CALLS_PATH)expr_calls/
+DIFF_EXPR_CALLS_PATH := $(CALLS_PATH)diff_expr_calls/
+ORTHOLOGS_PATH := orthologs/
+MULTI_SPE_DIFF_EXPR_CALL_PATH := $(CALLS_PATH)multi_species_diff_expr_calls/
+
+EXPR_VALUES_PATH := processed_expr_values/
+RNA_SEQ_EXPR_VALUES_PATH := $(EXPR_VALUES_PATH)rna_seq/
+AFFYMETRIX_EXPR_VALUES_PATH := $(EXPR_VALUES_PATH)affymetrix/
+
+# file suffixes
+EXPR_SIMPLE_SUF := _expr_simple.tsv
+EXPR_SIMPLE_DEV_SUF := _expr_simple_development.tsv
+EXPR_COMPLETE_SUF := _expr_advanced.tsv
+EXPR_COMPLETE_DEV_SUF := _expr_advanced_development.tsv
+DIFF_EXPR_ANATOMY_SIMPLE_SUF := _diffexpr-anatomy-simple.tsv
+DIFF_EXPR_ANATOMY_COMPLETE_SUF := _diffexpr-anatomy-complete.tsv
+DIFF_EXPR_DEV_SIMPLE_SUF := _diffexpr-development-simple.tsv
+DIFF_EXPR_DEV_COMPLETE_SUF := _diffexpr-development-complete.tsv
+ORTHOLOGS_SUF := _orthologs.tsv
+MULTI_SPE_DIFF_EXPR_ANATOMY_SIMPLE_SUF := _multi-diffexpr-anatomy-simple.tsv
+MULTI_SPE_DIFF_EXPR_ANATOMY_COMPLETE_SUF := _multi-diffexpr-anatomy-complete.tsv
+
+RNA_SEQ_EXP_LIB_SUF_ZIP := _RNA-Seq_experiments_libraries.zip
+RNA_SEQ_COUNT_SUF_ZIP := _RNA-Seq_read_counts_TPM_FPKM.zip
+AFFYMETRIX_EXP_CHIP_SUF_ZIP := _Affymetrix_experiments_chips.zip
+AFFYMETRIX_PROBESET_SUF_ZIP := _Affymetrix_probesets.zip
+
+# =========== RANK DOWNLOAD FILES ===============
+# Directories related to $(OUTPUT_DIR)
+RANKS_PER_ANAT := ranks/anat_entity/
+RANKS_PER_CONDITION := ranks/condition/

@@ -1,0 +1,2666 @@
+----------Number of developmental stages inserted: 
+count(*)
+941
+----------Number of terms in the ontology: 
+   2157    2157   15099
+----------Stages existing in all species: 
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000066	fully formed stage	863	1880	3
+----------UBERON stages with taxon constraints: 
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel	speciesIdList
+UBERON:0000104	life cycle	1	1882	1	NULL
+UBERON:0000068	embryo stage	80	639	2	NULL
+UBERON:0000106	zygote stage	81	82	3	NULL
+UBERON:0000107	cleavage stage	83	142	3	6239,7227,7955,8364,9606,10090,10116
+UBERON:0007232	2 cell stage	112	113	4	6239,7955,8364,10116
+UBERON:0007233	4 cell stage	114	115	4	6239,7955,8364,10116
+UBERON:0007236	8 cell stage	116	117	4	6239,7955,8364
+UBERON:0000108	blastula stage	143	210	3	6239,7227,7955,8364,9606,10090,10116
+UBERON:0000109	gastrula stage	211	286	3	6239,7227,7955,8364,9606,10090,10116
+UBERON:0000110	neurula stage	333	364	3	8364,9606,10090,10116
+UBERON:0000111	organogenesis stage	365	432	3	7955,9606,10090,10116
+UBERON:0004707	pharyngula stage	366	375	4	7955
+UBERON:0007220	late embryonic stage	529	638	3	6239,7227,9606,10090,10116
+UBERON:0000092	post-embryonic stage	640	1881	2	NULL
+UBERON:0000069	larval stage	647	806	3	6239,7217,7227,7230,7237,7240,7244,7245,7955,8364
+UBERON:0004729	nematode larval stage	648	711	4	6239
+UBERON:0004730	instar larval stage	712	735	4	7227
+UBERON:0004728	amphibian larval stage	750	805	4	8364
+UBERON:0009849	tadpole stage	751	804	5	8364
+UBERON:0000070	pupal stage	821	832	3	7217,7227,7230,7237,7240,7244,7245
+UBERON:0000066	fully formed stage	863	1880	3	NULL
+UBERON:0000112	sexually immature stage	1080	1239	4	8364,9031,9258,9365,9544,9593,9597,9598,9606,9615,9685,9796,9823,9913,9986,10090,10116,10141,13616,28377
+UBERON:0018685	nursing stage	1081	1156	5	9544,9593,9597,9598,9606,9823,10090,10116,13616
+UBERON:0007221	neonate stage	1102	1107	6	9606,10090,10116,13616
+UBERON:0035946	start of neonate stage	1103	1104	7	9606,10090,10116,13616
+UBERON:0034920	infant stage	1108	1155	6	9606,10090,10116
+UBERON:0034919	juvenile stage	1157	1238	5	8364,9031,9258,9365,9544,9593,9597,9598,9606,9615,9685,9796,9823,9913,9986,10090,10116,10141,13616
+UBERON:0000113	post-juvenile adult stage	1240	1879	4	8364,9031,9258,9365,9544,9593,9597,9598,9606,9615,9685,9796,9823,9913,9986,10090,10116,10141,13616,28377
+UBERON:0018241	prime adult stage	1241	1418	5	8364,9031,9258,9365,9544,9593,9597,9598,9615,9685,9796,9823,9913,9986,10141,13616
+UBERON:0007222	late adult stage	1419	1512	5	8364,9031,9258,9365,9544,9593,9597,9598,9615,9685,9796,9823,9913,9986,10141,13616,28377
+----------Number of developmental stages per species: 
+speciesId	genus	species	allStageCount	stageWithTaxonConstraintsCount
+6239	Caenorhabditis	elegans	89	84
+7217	Drosophila	ananassae	10	5
+7227	Drosophila	melanogaster	190	185
+7230	Drosophila	mojavensis	10	5
+7237	Drosophila	pseudoobscura	10	5
+7240	Drosophila	simulans	10	5
+7244	Drosophila	virilis	10	5
+7245	Drosophila	yakuba	10	5
+7955	Danio	rerio	55	50
+8364	Xenopus	tropicalis	99	94
+9031	Gallus	gallus	35	30
+9258	Ornithorhynchus	anatinus	10	5
+9365	Erinaceus	europaeus	10	5
+9544	Macaca	mulatta	54	49
+9593	Gorilla	gorilla	34	29
+9597	Pan	paniscus	43	38
+9598	Pan	troglodytes	54	49
+9606	Homo	sapiens	224	219
+9615	Canis	lupus familiaris	10	5
+9685	Felis	catus	10	5
+9796	Equus	caballus	10	5
+9823	Sus	scrofa	11	6
+9913	Bos	taurus	10	5
+9986	Oryctolagus	cuniculus	10	5
+10090	Mus	musculus	106	101
+10116	Rattus	norvegicus	57	52
+10141	Cavia	porcellus	10	5
+13616	Monodelphis	domestica	36	31
+28377	Anolis	carolinensis	8	3
+----------Developmental stages with a parent not existing in the species considered. There must be only 'UBERON:0000104 life cycle' (the parent of a term must always exist in the species where one of its children exist): 
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel	speciesId
+UBERON:0000104	life cycle	1	1882	1	NULL
+----------Now, dev. stages per species in readable format: 
+---Species: 9606 Homo sapiens	human	1	homo_sapiens/Homo_sapiens.GRCh38	GRCh38.p5	2	9606
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+        UBERON:0000107 cleavage stage
+            HsapDv:0000005 Carnegie stage 02 (human)
+                HsapDv:0000205 morula stage (human)
+        UBERON:0000108 blastula stage
+            HsapDv:0000007 CS03
+            HsapDv:0000008 Carnegie stage 04 (human)
+            HsapDv:0000009 Carnegie stage 05 (human)
+                HsapDv:0000031 CS05a
+                HsapDv:0000032 CS05b
+                HsapDv:0000033 CS05c
+        UBERON:0000109 gastrula stage
+            HsapDv:0000011 Carnegie stage 06 (human)
+                HsapDv:0000034 CS06a
+                HsapDv:0000035 CS06b
+        UBERON:0000110 neurula stage
+            HsapDv:0000013 Carnegie stage 07 (human)
+            HsapDv:0000014 Carnegie stage 08 (human)
+        UBERON:0000111 organogenesis stage
+            HsapDv:0000016 CS09
+            HsapDv:0000017 Carnegie stage 10 (human)
+            HsapDv:0000018 CS11
+            HsapDv:0000019 Carnegie stage 12 (human)
+            HsapDv:0000020 CS13
+            HsapDv:0000021 Carnegie stage 14 (human)
+            HsapDv:0000022 Carnegie stage 15 (human)
+            HsapDv:0000023 Carnegie stage 16 (human)
+            HsapDv:0000024 CS17
+            HsapDv:0000025 CS18
+            HsapDv:0000026 Carnegie stage 19 (human)
+            HsapDv:0000027 CS20
+            HsapDv:0000028 Carnegie stage 21 (human)
+            HsapDv:0000029 Carnegie stage 22 (human)
+            HsapDv:0000030 Carnegie stage 23 (human)
+        UBERON:0007220 late embryonic stage
+            HsapDv:0000197 third LMP month human stage (human)
+                HsapDv:0000046 9th week post-fertilization human stage (human)
+                HsapDv:0000047 10th week post-fertilization human stage (human)
+                HsapDv:0000048 11th week post-fertilization human stage (human)
+            HsapDv:0000198 fourth LMP month human stage (human)
+                HsapDv:0000049 12th week post-fertilization human stage (human)
+                HsapDv:0000050 13th week post-fertilization human stage (human)
+                HsapDv:0000051 14th week post-fertilization human stage (human)
+                HsapDv:0000052 15th week post-fertilization human stage (human)
+            HsapDv:0000199 fifth LMP month human stage (human)
+                HsapDv:0000053 16th week post-fertilization human stage (human)
+                HsapDv:0000054 17th week post-fertilization human stage (human)
+                HsapDv:0000055 18th week post-fertilization human stage (human)
+                HsapDv:0000056 19th week post-fertilization human stage (human)
+            HsapDv:0000200 sixth LMP month human stage (human)
+                HsapDv:0000057 20th week post-fertilization human stage (human)
+                HsapDv:0000058 21st week post-fertilization human stage (human)
+                HsapDv:0000059 22nd week post-fertilization human stage (human)
+                HsapDv:0000060 23rd week post-fertilization human stage (human)
+                HsapDv:0000061 24th week post-fertilization human stage (human)
+            HsapDv:0000201 seventh LMP month human stage (human)
+                HsapDv:0000062 25th week post-fertilization human stage (human)
+                HsapDv:0000063 26th week post-fertilization human stage (human)
+                HsapDv:0000064 27th week post-fertilization human stage (human)
+                HsapDv:0000065 28th week post-fertilization human stage (human)
+            HsapDv:0000202 eighth LMP month human stage (human)
+                HsapDv:0000066 29th week post-fertilization human stage (human)
+                HsapDv:0000067 30th week post-fertilization human stage (human)
+                HsapDv:0000068 31st week post-fertilization human stage (human)
+                HsapDv:0000069 32nd week post-fertilization human stage (human)
+                HsapDv:0000070 33rd week post-fertilization human stage (human)
+            HsapDv:0000203 ninth LMP month human stage (human)
+                HsapDv:0000071 34th week post-fertilization human stage (human)
+                HsapDv:0000072 35th week post-fertilization human stage (human)
+                HsapDv:0000073 36th week post-fertilization human stage (human)
+                HsapDv:0000074 37th week post-fertilization human stage (human)
+                HsapDv:0000075 38th week post-fertilization and over human stage (human)
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000066 fully formed stage
+            UBERON:0000112 sexually immature stage
+                UBERON:0018685 nursing stage
+                    UBERON:0007221 neonate stage
+                        UBERON:0035946 start of neonate stage
+                        HsapDv:0000082 newborn human stage (human)
+                    UBERON:0034920 infant stage
+                        HsapDv:0000174 1 month-old human stage (human)
+                        HsapDv:0000175 2-month-old human stage (human)
+                        HsapDv:0000176 3-month-old human stage (human)
+                        HsapDv:0000177 4-month-old human stage (human)
+                        HsapDv:0000178 5-month-old human stage (human)
+                        HsapDv:0000179 6-month-old human stage (human)
+                        HsapDv:0000180 7-month-old human stage (human)
+                        HsapDv:0000181 8-month-old human stage (human)
+                        HsapDv:0000182 9-month-old human stage (human)
+                        HsapDv:0000183 10-month-old human stage (human)
+                        HsapDv:0000184 11-month-old human stage (human)
+                        HsapDv:0000185 12-month-old human stage (human)
+                        HsapDv:0000186 13-month-old human stage (human)
+                        HsapDv:0000187 14-month-old human stage (human)
+                        HsapDv:0000188 15-month-old human stage (human)
+                        HsapDv:0000189 16-month-old human stage (human)
+                        HsapDv:0000190 17-month-old human stage (human)
+                        HsapDv:0000191 18-month-old human stage (human)
+                        HsapDv:0000192 19-month-old human stage (human)
+                        HsapDv:0000193 20-month-old human stage (human)
+                        HsapDv:0000194 21-month-old human stage (human)
+                        HsapDv:0000195 22-month-old human stage (human)
+                        HsapDv:0000196 23-month-old human stage (human)
+                UBERON:0034919 juvenile stage
+                    HsapDv:0000084 2-5 year-old child stage (human)
+                        HsapDv:0000096 2-year-old human stage (human)
+                        HsapDv:0000097 3-year-old human stage (human)
+                        HsapDv:0000098 4-year-old human stage (human)
+                        HsapDv:0000099 5-year-old human stage (human)
+                    HsapDv:0000085 6-12 year-old child stage (human)
+                        HsapDv:0000100 6-year-old human stage (human)
+                        HsapDv:0000101 7-year-old human stage (human)
+                        HsapDv:0000102 8-year-old human stage (human)
+                        HsapDv:0000103 9-year-old human stage (human)
+                        HsapDv:0000104 10-year-old human stage (human)
+                        HsapDv:0000105 11-year-old human stage (human)
+                        HsapDv:0000106 12-year-old human stage (human)
+            UBERON:0000113 post-juvenile adult stage
+                HsapDv:0000086 adolescent stage (human)
+                    HsapDv:0000107 13-year-old human stage (human)
+                    HsapDv:0000108 14-year-old human stage (human)
+                    HsapDv:0000109 15-year-old human stage (human)
+                    HsapDv:0000110 16-year-old human stage (human)
+                    HsapDv:0000111 17-year-old human stage (human)
+                    HsapDv:0000112 18-year-old human stage (human)
+                HsapDv:0000087 human adult stage (human)
+                    HsapDv:0000088 human early adulthood stage (human)
+                        HsapDv:0000089 young adult stage (human)
+                            HsapDv:0000113 19-year-old human stage (human)
+                            HsapDv:0000114 20-year-old human stage (human)
+                            HsapDv:0000115 21-year-old human stage (human)
+                            HsapDv:0000116 22-year-old human stage (human)
+                            HsapDv:0000117 23-year-old human stage (human)
+                            HsapDv:0000118 24-year-old human stage (human)
+                        HsapDv:0000090 25-44 year-old human stage (human)
+                            HsapDv:0000119 25-year-old human stage (human)
+                            HsapDv:0000120 26-year-old human stage (human)
+                            HsapDv:0000121 27-year-old human stage (human)
+                            HsapDv:0000122 28-year-old human stage (human)
+                            HsapDv:0000123 29-year-old human stage (human)
+                            HsapDv:0000124 30-year-old human stage (human)
+                            HsapDv:0000125 31-year-old human stage (human)
+                            HsapDv:0000126 32-year-old human stage (human)
+                            HsapDv:0000127 33-year-old human stage (human)
+                            HsapDv:0000128 34-year-old human stage (human)
+                            HsapDv:0000129 35-year-old human stage (human)
+                            HsapDv:0000130 36-year-old human stage (human)
+                            HsapDv:0000131 37-year-old human stage (human)
+                            HsapDv:0000132 38-year-old human stage (human)
+                            HsapDv:0000133 39-year-old human stage (human)
+                            HsapDv:0000134 40-year-old human stage (human)
+                            HsapDv:0000135 41-year-old human stage (human)
+                            HsapDv:0000136 42-year-old human stage (human)
+                            HsapDv:0000137 43-year-old human stage (human)
+                            HsapDv:0000138 44-year-old human stage (human)
+                    HsapDv:0000091 human late adulthood stage (human)
+                        HsapDv:0000092 human middle aged stage (human)
+                            HsapDv:0000139 45-year-old human stage (human)
+                            HsapDv:0000140 46-year-old human stage (human)
+                            HsapDv:0000141 47-year-old human stage (human)
+                            HsapDv:0000142 48-year-old human stage (human)
+                            HsapDv:0000143 49-year-old human stage (human)
+                            HsapDv:0000144 50-year-old human stage (human)
+                            HsapDv:0000145 51-year-old human stage (human)
+                            HsapDv:0000146 52-year-old human stage (human)
+                            HsapDv:0000147 53-year-old human stage (human)
+                            HsapDv:0000148 54-year-old human stage (human)
+                            HsapDv:0000149 55-year-old human stage (human)
+                            HsapDv:0000150 56-year-old human stage (human)
+                            HsapDv:0000151 57-year-old human stage (human)
+                            HsapDv:0000152 58-year-old human stage (human)
+                            HsapDv:0000153 59-year-old human stage (human)
+                            HsapDv:0000154 60-year-old human stage (human)
+                            HsapDv:0000155 61-year-old human stage (human)
+                            HsapDv:0000156 62-year-old human stage (human)
+                            HsapDv:0000157 63-year-old human stage (human)
+                            HsapDv:0000158 64-year-old human stage (human)
+                        HsapDv:0000093 human aged stage
+                            HsapDv:0000094 65-79 year-old human stage (human)
+                                HsapDv:0000159 65-year-old human stage (human)
+                                HsapDv:0000160 66-year-old human stage (human)
+                                HsapDv:0000161 67-year-old human stage (human)
+                                HsapDv:0000162 68-year-old human stage (human)
+                                HsapDv:0000163 69-year-old human stage (human)
+                                HsapDv:0000164 70-year-old human stage (human)
+                                HsapDv:0000165 71-year-old human stage (human)
+                                HsapDv:0000166 72-year-old human stage (human)
+                                HsapDv:0000167 73-year-old human stage (human)
+                                HsapDv:0000168 74-year-old human stage (human)
+                                HsapDv:0000169 75-year-old human stage (human)
+                                HsapDv:0000170 76-year-old human stage (human)
+                                HsapDv:0000171 77-year-old human stage (human)
+                                HsapDv:0000172 78-year-old human stage (human)
+                                HsapDv:0000173 79-year-old human stage (human)
+                            HsapDv:0000095 80 year-old and over human stage (human)
+                                HsapDv:0000206 80-year-old human stage (human)
+                                HsapDv:0000207 81-year-old human stage (human)
+                                HsapDv:0000208 82-year-old human stage (human)
+                                HsapDv:0000209 83-year-old human stage (human)
+                                HsapDv:0000210 84-year-old human stage (human)
+                                HsapDv:0000211 85-year-old human stage (human)
+                                HsapDv:0000212 86-year-old human stage (human)
+                                HsapDv:0000213 87-year-old human stage (human)
+                                HsapDv:0000214 88-year-old human stage (human)
+                                HsapDv:0000215 89-year-old human stage (human)
+                                HsapDv:0000216 90-year-old human stage (human)
+                                HsapDv:0000217 91-year-old human stage (human)
+                                HsapDv:0000218 92-year-old human stage (human)
+                                HsapDv:0000219 93-year-old human stage (human)
+                                HsapDv:0000220 94-year-old human stage (human)
+                                HsapDv:0000221 95-year-old human stage (human)
+                                HsapDv:0000222 96-year-old human stage (human)
+                                HsapDv:0000223 97-year-old human stage (human)
+                                HsapDv:0000224 98-year-old human stage (human)
+                                HsapDv:0000225 99-year-old human stage (human)
+                                HsapDv:0000228 100-year-old human stage (human)
+                                HsapDv:0000229 101-year-old human stage (human)
+                                HsapDv:0000230 102-year-old human stage (human)
+                                HsapDv:0000231 103-year-old human stage (human)
+                                HsapDv:0000232 104-year-old human stage (human)
+                                HsapDv:0000233 105-year-old human stage (human)
+                                HsapDv:0000234 106-year-old human stage (human)
+---Species: 10090 Mus musculus	mouse	2	mus_musculus/Mus_musculus.GRCm38	GRCm38.p4	2	10090		house mouse|mice
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+        UBERON:0000107 cleavage stage
+            MmusDv:0000005 Theiler stage 02 (mouse)
+            MmusDv:0000006 Theiler stage 03 (mouse)
+        UBERON:0000108 blastula stage
+            MmusDv:0000008 Theiler stage 04 (mouse)
+            MmusDv:0000009 Theiler stage 05 (mouse)
+            MmusDv:0000010 Theiler stage 06 (mouse)
+            MmusDv:0000011 Theiler stage 07 (mouse)
+            MmusDv:0000012 Theiler stage 08 (mouse)
+        UBERON:0000109 gastrula stage
+            MmusDv:0000014 Theiler stage 09 (mouse)
+                MmusDv:0000103 Theiler stage 09a (mouse)
+                MmusDv:0000104 Theiler stage 09b (mouse)
+            MmusDv:0000015 Theiler stage 10 (mouse)
+                MmusDv:0000105 Theiler stage 10a (mouse)
+                MmusDv:0000106 Theiler stage 10b (mouse)
+                MmusDv:0000107 Theiler stage 10c (mouse)
+        UBERON:0000110 neurula stage
+            MmusDv:0000111 Theiler stage 11a (mouse)
+            MmusDv:0000093 Theiler stage 11b (mouse)
+            MmusDv:0000094 Theiler stage 11c (mouse)
+            MmusDv:0000095 Theiler stage 11d (mouse)
+        UBERON:0000111 organogenesis stage
+            MmusDv:0000019 Theiler stage 12 (mouse)
+                MmusDv:0000108 Theiler stage 12a (mouse)
+                MmusDv:0000109 Theiler stage 12b (mouse)
+            MmusDv:0000020 Theiler stage 13 (mouse)
+            MmusDv:0000021 Theiler stage 14 (mouse)
+            MmusDv:0000022 Theiler stage 15 (mouse)
+            MmusDv:0000023 Theiler stage 16 (mouse)
+            MmusDv:0000024 Theiler stage 17 (mouse)
+            MmusDv:0000025 Theiler stage 18 (mouse)
+            MmusDv:0000026 Theiler stage 19 (mouse)
+            MmusDv:0000027 Theiler stage 20 (mouse)
+            MmusDv:0000028 Theiler stage 21 (mouse)
+            MmusDv:0000029 Theiler stage 22 (mouse)
+        UBERON:0007220 late embryonic stage
+            MmusDv:0000032 Theiler stage 23 (mouse)
+            MmusDv:0000033 Theiler stage 24 (mouse)
+            MmusDv:0000034 Theiler stage 25 (mouse)
+            MmusDv:0000035 Theiler stage 26 (mouse)
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000066 fully formed stage
+            UBERON:0000112 sexually immature stage
+                UBERON:0018685 nursing stage
+                    UBERON:0007221 neonate stage
+                        UBERON:0035946 start of neonate stage
+                    UBERON:0034920 infant stage
+                UBERON:0034919 juvenile stage
+                    MmusDv:0000113 4-7 days (mouse)
+                    MmusDv:0000045 1 week (mouse)
+                    MmusDv:0000046 2 weeks (mouse)
+                    MmusDv:0000047 3 weeks (mouse)
+                    MmusDv:0000048 4 weeks (mouse)
+                    MmusDv:0000049 5 weeks (mouse)
+            UBERON:0000113 post-juvenile adult stage
+                MmusDv:0000061 early adult stage
+                    MmusDv:0000050 6 weeks (mouse)
+                    MmusDv:0000051 7 weeks (mouse)
+                    MmusDv:0000062 2 month-old stage (mouse)
+                        MmusDv:0000052 8 weeks (mouse)
+                        MmusDv:0000053 9 weeks (mouse)
+                        MmusDv:0000054 10 weeks (mouse)
+                        MmusDv:0000055 11 weeks (mouse)
+                    MmusDv:0000063 3 month-old stage (mouse)
+                        MmusDv:0000056 12 weeks (mouse)
+                        MmusDv:0000057 13 weeks (mouse)
+                        MmusDv:0000058 14 weeks (mouse)
+                        MmusDv:0000059 15 weeks (mouse)
+                    MmusDv:0000064 4 month-old stage (mouse)
+                        MmusDv:0000065 16 weeks (mouse)
+                        MmusDv:0000066 17 weeks (mouse)
+                        MmusDv:0000067 18 weeks (mouse)
+                        MmusDv:0000068 19 weeks (mouse)
+                        MmusDv:0000070 20 weeks (mouse)
+                    MmusDv:0000069 5 month-old stage (mouse)
+                        MmusDv:0000071 21 weeks (mouse)
+                        MmusDv:0000072 22 weeks (mouse)
+                        MmusDv:0000073 23 weeks (mouse)
+                        MmusDv:0000074 24 weeks (mouse)
+                    MmusDv:0000077 6 month-old stage (mouse)
+                        MmusDv:0000098 25 weeks (mouse)
+                        MmusDv:0000099 26 weeks (mouse)
+                        MmusDv:0000100 27 weeks (mouse)
+                        MmusDv:0000101 28 weeks (mouse)
+                        MmusDv:0000102 29 weeks (mouse)
+                MmusDv:0000097 late adult stage
+                    MmusDv:0000075 middle aged stage (mouse)
+                        MmusDv:0000078 7 month-old stage (mouse)
+                        MmusDv:0000079 8 month-old stage (mouse)
+                        MmusDv:0000080 9 month-old stage (mouse)
+                        MmusDv:0000081 10 month-old stage (mouse)
+                        MmusDv:0000082 11 month-old stage (mouse)
+                        MmusDv:0000083 12 month-old stage (mouse)
+                        MmusDv:0000084 13 month-old stage (mouse)
+                        MmusDv:0000085 14 month-old stage (mouse)
+                    MmusDv:0000076 aged adult stage (mouse)
+                        MmusDv:0000086 15 month-old stage (mouse)
+                        MmusDv:0000087 16 month-old stage (mouse)
+                        MmusDv:0000088 17 month-old stage (mouse)
+                        MmusDv:0000089 18 month-old stage (mouse)
+                        MmusDv:0000090 19 month-old stage (mouse)
+                        MmusDv:0000091 20 month-old stage and over (mouse)
+---Species: 7955 Danio rerio	zebrafish	3	danio_rerio/Danio_rerio.GRCz10	GRCz10	2	7955		leopard danio|zebra danio
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+        UBERON:0000107 cleavage stage
+            UBERON:0007232 2 cell stage
+            UBERON:0007233 4 cell stage
+            UBERON:0007236 8 cell stage
+            ZFS:0000005 Cleavage:16-cell
+            ZFS:0000006 Cleavage:32-cell
+            ZFS:0000007 Cleavage:64-cell
+        UBERON:0000108 blastula stage
+            ZFS:0000008 Blastula:128-cell
+            ZFS:0000009 Blastula:256-cell
+            ZFS:0000010 Blastula:512-cell
+            ZFS:0000011 Blastula:1k-cell
+            ZFS:0000012 Blastula:High
+            ZFS:0000013 Blastula:Oblong
+            ZFS:0000014 Blastula:Sphere
+            ZFS:0000015 Blastula:Dome
+            ZFS:0000016 Blastula:30%-epiboly
+        UBERON:0000109 gastrula stage
+            ZFS:0000017 Gastrula:50%-epiboly
+            ZFS:0000018 Gastrula:Germ-ring
+            ZFS:0000019 Gastrula:Shield
+            ZFS:0000020 Gastrula:75%-epiboly
+            ZFS:0000021 Gastrula:90%-epiboly
+            ZFS:0000022 Gastrula:Bud
+        ZFS:0000049 segmentation
+            ZFS:0000023 Segmentation:1-4 somites
+            ZFS:0000024 Segmentation:5-9 somites
+            ZFS:0000025 Segmentation:10-13 somites
+            ZFS:0000026 Segmentation:14-19 somites
+            ZFS:0000027 Segmentation:20-25 somites
+            ZFS:0000028 Segmentation:26+ somites
+        UBERON:0000111 organogenesis stage
+            UBERON:0004707 pharyngula stage
+                ZFS:0000029 Pharyngula:Prim-5
+                ZFS:0000030 Pharyngula:Prim-15
+                ZFS:0000031 Pharyngula:Prim-25
+                ZFS:0000032 Pharyngula:High-pec
+    UBERON:0000092 post-embryonic stage
+        ZFS:0007000 hatching
+            ZFS:0000033 Hatching:Long-pec
+            ZFS:0000034 Hatching:Pec-fin
+        UBERON:0000069 larval stage
+            ZFS:0000035 Larval:Protruding-mouth
+            ZFS:0000036 Larval:Day 4
+            ZFS:0000037 Larval:Day 5
+            ZFS:0000038 Larval:Day 6
+            ZFS:0000039 Larval:Days 7-13
+            ZFS:0000040 Larval:Days 14-20
+            ZFS:0000041 Larval:Days 21-29
+        UBERON:0000066 fully formed stage
+            ZFS:0000042 Juvenile:Days 30-44
+            ZFS:0000043 Juvenile:Days 45-89
+---Species: 8364 Xenopus tropicalis	western clawed frog	23	xenopus_tropicalis/Xenopus_tropicalis.JGI_4.2	JGI 4.2	2	8364		xenopus
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    XAO:1000082 unfertilized egg stage (Xenopus)
+        XAO:1000083 oocyte stage I (Xenopus)
+        XAO:1000084 oocyte stage II (Xenopus)
+        XAO:1000085 oocyte stage III (Xenopus)
+        XAO:1000086 oocyte stage IV (Xenopus)
+        XAO:1000087 oocyte stage V (Xenopus)
+        XAO:1000088 oocyte stage VI (Xenopus)
+        XAO:1000092 mature egg stage (Xenopus)
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+        UBERON:0000107 cleavage stage
+            XAO:1000028 NF stage 2- (Xenopus)
+            UBERON:0007232 2 cell stage
+            UBERON:0007233 4 cell stage
+            UBERON:0007236 8 cell stage
+            XAO:1000015 NF stage 5 (16-cell) (Xenopus)
+            XAO:1000016 NF stage 6 (32-cell) (Xenopus)
+            XAO:1000029 NF stage 6.5 (Xenopus)
+        UBERON:0000108 blastula stage
+            XAO:1000017 NF stage 7 (Xenopus)
+            XAO:1000018 NF stage 8 (Xenopus)
+            XAO:1000019 NF stage 9 (Xenopus)
+        UBERON:0000109 gastrula stage
+            XAO:1000020 NF stage 10 (Xenopus)
+            XAO:1000030 NF stage 10.25 (Xenopus)
+            XAO:1000031 NF stage 10.5 (Xenopus)
+            XAO:1000021 NF stage 11 (Xenopus)
+            XAO:1000032 NF stage 11.5 (Xenopus)
+            XAO:1000022 NF stage 12 (Xenopus)
+            XAO:1000033 NF stage 12.5 (Xenopus)
+        UBERON:0000110 neurula stage
+            XAO:1000023 NF stage 13 (Xenopus)
+            XAO:1000024 NF stage 14 (Xenopus)
+            XAO:1000025 NF stage 15 (Xenopus)
+            XAO:1000026 NF stage 16 (Xenopus)
+            XAO:1000027 NF stage 17 (Xenopus)
+            XAO:1000034 NF stage 18 (Xenopus)
+            XAO:1000035 NF stage 19 (Xenopus)
+            XAO:1000036 NF stage 20 (Xenopus)
+            XAO:1000037 NF stage 21 (Xenopus)
+        XAO:1000007 tailbud stage (Xenopus)
+            XAO:1000002 early tailbud stage (Xenopus)
+                XAO:1000038 NF stage 22 (Xenopus)
+                XAO:1000039 NF stage 23 (Xenopus)
+                XAO:1000040 NF stage 24 (Xenopus)
+                XAO:1000041 NF stage 25 (Xenopus)
+                XAO:1000042 NF stage 26 (Xenopus)
+                XAO:1000043 NF stage 27 (Xenopus)
+                XAO:1000044 NF stage 28 (Xenopus)
+            XAO:1000080 late tailbud stage (Xenopus)
+                XAO:1000045 NF stage 29 and 30 (Xenopus)
+                XAO:1000046 NF stage 31 (Xenopus)
+                XAO:1000047 NF stage 32 (Xenopus)
+                XAO:1000048 NF stage 33 and 34 (Xenopus)
+                XAO:1000049 NF stage 35 and 36 (Xenopus)
+                XAO:1000050 NF stage 37 and 38 (Xenopus)
+                XAO:1000051 NF stage 39 (Xenopus)
+                XAO:1000052 NF stage 40 (Xenopus)
+                XAO:1000053 NF stage 41 (Xenopus)
+                XAO:1000054 NF stage 42 (Xenopus)
+                XAO:1000055 NF stage 43 (Xenopus)
+                XAO:1000056 NF stage 44 (Xenopus)
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000069 larval stage
+            UBERON:0004728 amphibian larval stage
+                UBERON:0009849 tadpole stage
+                    XAO:1000089 premetamorphosis stage (Xenopus)
+                        XAO:1000057 NF stage 45 (Xenopus)
+                        XAO:1000058 NF stage 46 (Xenopus)
+                        XAO:1000059 NF stage 47 (Xenopus)
+                        XAO:1000060 NF stage 48 (Xenopus)
+                        XAO:1000061 NF stage 49 (Xenopus)
+                        XAO:1000062 NF stage 50 (Xenopus)
+                        XAO:1000063 NF stage 51 (Xenopus)
+                        XAO:1000064 NF stage 52 (Xenopus)
+                        XAO:1000065 NF stage 53 (Xenopus)
+                        XAO:1000066 NF stage 54 (Xenopus)
+                    XAO:1000079 metamorphosing tadpole stage (Xenopus)
+                        XAO:1000090 prometamorphosis stage (Xenopus)
+                            XAO:1000067 NF stage 55 (Xenopus)
+                            XAO:1000068 NF stage 56 (Xenopus)
+                            XAO:1000069 NF stage 57 (Xenopus)
+                        XAO:1000091 climax stage (Xenopus)
+                            XAO:1000070 NF stage 58 (Xenopus)
+                            XAO:1000071 NF stage 59 (Xenopus)
+                            XAO:1000072 NF stage 60 (Xenopus)
+                            XAO:1000073 NF stage 61 (Xenopus)
+                            XAO:1000074 NF stage 62 (Xenopus)
+                            XAO:1000075 NF stage 63 (Xenopus)
+                            XAO:1000076 NF stage 64 (Xenopus)
+                            XAO:1000077 NF stage 65 (Xenopus)
+                            XAO:1000078 NF stage 66 (Xenopus)
+        UBERON:0000066 fully formed stage
+            UBERON:0000112 sexually immature stage
+                UBERON:0034919 juvenile stage
+            UBERON:0000113 post-juvenile adult stage
+                UBERON:0018241 prime adult stage
+                UBERON:0007222 late adult stage
+---Species: 7227 Drosophila melanogaster	fruit fly	4	drosophila_melanogaster/Drosophila_melanogaster.BDGP6	BDGP6	2	7227		vinegar fly|fruitfly
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    FBdv:00005286 egg stage
+        FBdv:00005261 oogenesis stage S1
+        FBdv:00005262 oogenesis stage S2
+        FBdv:00005263 oogenesis stage S3
+        FBdv:00005264 oogenesis stage S4
+        FBdv:00005265 oogenesis stage S5
+        FBdv:00005266 oogenesis stage S6
+        FBdv:00005267 oogenesis stage S7
+        FBdv:00005268 oogenesis stage S8
+        FBdv:00005269 oogenesis stage S9
+        FBdv:00005270 oogenesis stage S10
+            FBdv:00005271 oogenesis stage S10A
+            FBdv:00005272 oogenesis stage S10B
+        FBdv:00005273 oogenesis stage S11
+            FBdv:00007002 oogenesis stage S11a
+            FBdv:00007003 oogenesis stage S11b
+        FBdv:00005274 oogenesis stage S12
+            FBdv:00005275 oogenesis stage S12A
+            FBdv:00005276 oogenesis stage S12B
+            FBdv:00005277 oogenesis stage S12C
+        FBdv:00005278 oogenesis stage S13
+            FBdv:00005279 oogenesis stage S13A
+            FBdv:00005280 oogenesis stage S13B
+            FBdv:00005281 oogenesis stage S13C
+            FBdv:00005282 oogenesis stage S13D
+            FBdv:00007006 oogenesis stage S13E
+        FBdv:00005283 oogenesis stage S14
+            FBdv:00005284 oogenesis stage S14A
+            FBdv:00005285 oogenesis stage S14B
+        FBdv:00005287 unfertilized egg stage
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+        UBERON:0000107 cleavage stage
+            FBdv:00005290 pre-blastoderm stage (Drosophila)
+                FBdv:00005291 embryonic stage 1 (Drosophila)
+                    FBdv:00005292 embryonic cycle 1 (Drosophila)
+                FBdv:00005293 embryonic stage 2 (Drosophila)
+                    FBdv:00005294 embryonic cycle 2 (Drosophila)
+                    FBdv:00005295 embryonic cycle 3 (Drosophila)
+                    FBdv:00005296 embryonic cycle 4 (Drosophila)
+                    FBdv:00005297 embryonic cycle 5 (Drosophila)
+                    FBdv:00005298 embryonic cycle 6 (Drosophila)
+                    FBdv:00005299 embryonic cycle 7 (Drosophila)
+                    FBdv:00005300 embryonic cycle 8 (Drosophila)
+                FBdv:00005301 embryonic stage 3 (Drosophila)
+                    FBdv:00005302 embryonic cycle 9 (Drosophila)
+        UBERON:0000108 blastula stage
+            FBdv:00005304 blastoderm stage (Drosophila)
+                FBdv:00005306 embryonic stage 4 (Drosophila)
+                    FBdv:00005303 embryonic cycle 10 (Drosophila)
+                    FBdv:00005307 embryonic cycle 11 (Drosophila)
+                    FBdv:00005308 embryonic cycle 12 (Drosophila)
+                    FBdv:00005309 embryonic cycle 13 (Drosophila)
+                FBdv:00005311 embryonic stage 5 (Drosophila)
+        UBERON:0000109 gastrula stage
+            FBdv:00005318 embryonic stage 6 (Drosophila)
+            FBdv:00005319 embryonic stage 7 (Drosophila)
+            FBdv:00005322 embryonic stage 8 (Drosophila)
+        FBdv:00005312 embryonic cycle 14 (Drosophila)
+            FBdv:00005313 embryonic cycle 14A (Drosophila)
+            FBdv:00005314 embryonic cycle 14B (Drosophila)
+        FBdv:00005315 embryonic cycle 15 (Drosophila)
+        FBdv:00005316 embryonic cycle 16 (Drosophila)
+        FBdv:00005321 extended germ band stage (Drosophila)
+            FBdv:00014201 early extended germ band stage (Drosophila)
+                FBdv:00005323 embryonic stage 9 (Drosophila)
+                FBdv:00005324 embryonic stage 10 (Drosophila)
+            FBdv:00004450 late extended germ band stage (Drosophila)
+                FBdv:00005325 embryonic stage 11 (Drosophila)
+                FBdv:00005327 embryonic stage 12 (Drosophila)
+        FBdv:00005331 dorsal closure stage (Drosophila)
+            FBdv:00005328 embryonic stage 13 (Drosophila)
+            FBdv:00005330 embryonic stage 14 (Drosophila)
+            FBdv:00005332 embryonic stage 15 (Drosophila)
+        UBERON:0007220 late embryonic stage
+            FBdv:00005334 embryonic stage 16 (Drosophila)
+            FBdv:00005335 embryonic stage 17 (Drosophila)
+                FBdv:00007015 embryonic stage 17(i) (Drosophila)
+                FBdv:00007016 embryonic stage 17(ii) (Drosophila)
+                FBdv:00007017 embryonic stage 17(iii) (Drosophila)
+                FBdv:00007018 embryonic stage 17(iv) (Drosophila)
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000069 larval stage
+            UBERON:0004730 instar larval stage
+                FBdv:00005337 first instar larval stage (Drosophila)
+                FBdv:00005338 second instar larval stage (Drosophila)
+                FBdv:00005339 third instar larval stage (Drosophila)
+                    FBdv:00005340 early third instar larval stage (Drosophila)
+                    FBdv:00007007 late third instar larval stage (Drosophila)
+                        FBdv:00005341 wandering third instar larval stage (Drosophila)
+                            FBdv:00007019 third instar - uncleared gut stage (Drosophila)
+                            FBdv:00007020 third instar - partially cleared gut stage (Drosophila)
+                            FBdv:00007021 third instar - cleared gut stage (Drosophila)
+                        FBdv:00007004 third instar larval stage L1 (Drosophila)
+                        FBdv:00007005 third instar larval stage L2 (Drosophila)
+        FBdv:00005342 prepupal stage (Drosophila)
+            FBdv:00005343 prepupal stage P1 (Drosophila)
+            FBdv:00005344 prepupal stage P2 (Drosophila)
+            FBdv:00005345 prepupal stage P3 (Drosophila)
+            FBdv:00005346 prepupal stage P4 (Drosophila)
+                FBdv:00005347 prepupal stage P4(i) (Drosophila)
+                FBdv:00005348 prepupal stage P4(ii) (Drosophila)
+        UBERON:0000070 pupal stage
+            FBdv:00005350 pupal stage P5 (Drosophila)
+                FBdv:00005351 pupal stage P5(i) (Drosophila)
+                FBdv:00005352 pupal stage P5(ii) (Drosophila)
+            FBdv:00005353 pupal stage P6 (Drosophila)
+            FBdv:00005354 pupal stage P7 (Drosophila)
+        FBdv:00006011 pharate adult stage (Drosophila)
+            FBdv:00005355 pharate adult stage P8 (Drosophila)
+            FBdv:00005356 pharate adult stage P9 (Drosophila)
+            FBdv:00005357 pharate adult stage P10 (Drosophila)
+            FBdv:00005358 pharate adult stage P11 (Drosophila)
+                FBdv:00005359 pharate adult stage P11(i) (Drosophila)
+                FBdv:00005360 pharate adult stage P11(ii) (Drosophila)
+            FBdv:00005361 pharate adult stage P12 (Drosophila)
+                FBdv:00005362 pharate adult stage P12(i) (Drosophila)
+                FBdv:00005363 pharate adult stage P12(ii) (Drosophila)
+            FBdv:00005364 pharate adult stage P13 (Drosophila)
+            FBdv:00005365 pharate adult stage P14 (Drosophila)
+            FBdv:00005366 pharate adult stage P15 (Drosophila)
+                FBdv:00005367 pharate adult stage P15(i) (Drosophila)
+                FBdv:00005368 pharate adult stage P15(ii) (Drosophila)
+        UBERON:0000066 fully formed stage
+            FBdv:00007075 day 0 of adulthood (Drosophila)
+                FBdv:00007025 immature adult stage (Drosophila)
+                    FBdv:00005370 adult stage A1 (Drosophila)
+                    FBdv:00005371 adult stage A2 (Drosophila)
+                    FBdv:00006012 adult stage A3 (Drosophila)
+            FBdv:00007076 day 1 of adulthood (Drosophila)
+            FBdv:00007077 day 2 of adulthood (Drosophila)
+            FBdv:00007078 day 3 of adulthood (Drosophila)
+            FBdv:00007079 day 4 of adulthood (Drosophila)
+            FBdv:00007080 day 5 of adulthood (Drosophila)
+            FBdv:00007081 day 6 of adulthood (Drosophila)
+            FBdv:00007082 day 7 of adulthood (Drosophila)
+            FBdv:00007083 day 8 of adulthood (Drosophila)
+            FBdv:00007084 day 9 of adulthood (Drosophila)
+            FBdv:00007085 day 10 of adulthood (Drosophila)
+            FBdv:00007086 day 11 of adulthood (Drosophila)
+            FBdv:00007087 day 12 of adulthood (Drosophila)
+            FBdv:00007088 day 13 of adulthood (Drosophila)
+            FBdv:00007089 day 14 of adulthood (Drosophila)
+            FBdv:00007090 day 15 of adulthood (Drosophila)
+            FBdv:00007091 day 16 of adulthood (Drosophila)
+            FBdv:00007092 day 17 of adulthood (Drosophila)
+            FBdv:00007093 day 18 of adulthood (Drosophila)
+            FBdv:00007094 day 19 of adulthood (Drosophila)
+            FBdv:00007095 day 20 of adulthood (Drosophila)
+            FBdv:00007096 day 21 of adulthood (Drosophila)
+            FBdv:00007097 day 22 of adulthood (Drosophila)
+            FBdv:00007098 day 23 of adulthood (Drosophila)
+            FBdv:00007099 day 24 of adulthood (Drosophila)
+            FBdv:00007100 day 25 of adulthood (Drosophila)
+            FBdv:00007101 day 26 of adulthood (Drosophila)
+            FBdv:00007102 day 27 of adulthood (Drosophila)
+            FBdv:00007103 day 28 of adulthood (Drosophila)
+            FBdv:00007104 day 29 of adulthood (Drosophila)
+            FBdv:00007105 day 30 of adulthood (Drosophila)
+            FBdv:00007106 day 31 of adulthood (Drosophila)
+            FBdv:00007107 day 32 of adulthood (Drosophila)
+            FBdv:00007108 day 33 of adulthood (Drosophila)
+            FBdv:00007109 day 34 of adulthood (Drosophila)
+            FBdv:00007110 day 35 of adulthood (Drosophila)
+            FBdv:00007111 day 36 of adulthood (Drosophila)
+            FBdv:00007112 day 37 of adulthood (Drosophila)
+            FBdv:00007113 day 38 of adulthood (Drosophila)
+            FBdv:00007114 day 39 of adulthood (Drosophila)
+            FBdv:00007115 day 40 of adulthood (Drosophila)
+            FBdv:00007116 day 41 of adulthood (Drosophila)
+            FBdv:00007117 day 42 of adulthood (Drosophila)
+            FBdv:00007118 day 43 of adulthood (Drosophila)
+            FBdv:00007119 day 44 of adulthood (Drosophila)
+            FBdv:00007120 day 45 of adulthood (Drosophila)
+            FBdv:00007121 day 46 of adulthood (Drosophila)
+            FBdv:00007122 day 47 of adulthood (Drosophila)
+            FBdv:00007123 day 48 of adulthood (Drosophila)
+            FBdv:00007124 day 49 of adulthood (Drosophila)
+            FBdv:00007125 day 50 of adulthood (Drosophila)
+            FBdv:00007126 day 51 of adulthood (Drosophila)
+            FBdv:00007127 day 52 of adulthood (Drosophila)
+            FBdv:00007128 day 53 of adulthood (Drosophila)
+            FBdv:00007129 day 54 of adulthood (Drosophila)
+            FBdv:00007130 day 55 of adulthood (Drosophila)
+            FBdv:00007131 day 56 of adulthood (Drosophila)
+            FBdv:00007132 day 57 of adulthood (Drosophila)
+            FBdv:00007133 day 58 of adulthood (Drosophila)
+            FBdv:00007134 day 59 of adulthood (Drosophila)
+            FBdv:00007135 day 60 of adulthood (Drosophila)
+---Species: 7217 Drosophila ananassae		24	drosophila_ananassae/Drosophila_ananassae.GCA_000005115.1	GCA_000005115.1	24	7217
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000069 larval stage
+        UBERON:0000070 pupal stage
+        UBERON:0000066 fully formed stage
+            DanaDv:0000006 days 1-4 of fully formed stage (Drosophila ananassae)
+            DanaDv:0000007 days 5-8 of fully formed stage (Drosophila ananassae)
+            DanaDv:0000008 day 9 and more of fully formed stage (Drosophila ananassae)
+---Species: 7230 Drosophila mojavensis		25	drosophila_mojavensis/Drosophila_mojavensis.GCA_000005175.1	GCA_000005175.1	24	7230
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000069 larval stage
+        UBERON:0000070 pupal stage
+        UBERON:0000066 fully formed stage
+            DmojDv:0000006 days 1-4 of fully formed stage (Drosophila mojavensis)
+            DmojDv:0000007 days 5-8 of fully formed stage (Drosophila mojavensis)
+            DmojDv:0000008 day 9 and more of fully formed stage (Drosophila mojavensis)
+---Species: 7237 Drosophila pseudoobscura		26	drosophila_pseudoobscura/Drosophila_pseudoobscura.GCA_000001765.2	GCA_000001765.2	24	7237
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000069 larval stage
+        UBERON:0000070 pupal stage
+        UBERON:0000066 fully formed stage
+            DpseDv:0000006 days 1-4 of fully formed stage (Drosophila pseudobscura)
+            DpseDv:0000007 days 5-8 of fully formed stage (Drosophila pseudobscura)
+            DpseDv:0000008 day 9 and more of fully formed stage (Drosophila pseudobscura)
+---Species: 7240 Drosophila simulans		27	drosophila_simulans/Drosophila_simulans.GCA_000259055.1	GCA_000259055.1	24	7240
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000069 larval stage
+        UBERON:0000070 pupal stage
+        UBERON:0000066 fully formed stage
+            DsimDv:0000006 days 1-4 of fully formed stage (Drosophila simulans)
+            DsimDv:0000007 days 5-8 of fully formed stage (Drosophila simulans)
+            DsimDv:0000008 day 9 and more of fully formed stage (Drosophila simulans)
+---Species: 7244 Drosophila virilis		28	drosophila_virilis/Drosophila_virilis.GCA_000005245.1	GCA_000005245.1	24	7244
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000069 larval stage
+        UBERON:0000070 pupal stage
+        UBERON:0000066 fully formed stage
+            DvirDv:0000006 days 1-4 of fully formed stage (Drosophila virilis)
+            DvirDv:0000007 days 5-8 of fully formed stage (Drosophila virilis)
+            DvirDv:0000008 day 9 and more of fully formed stage (Drosophila virilis)
+---Species: 7245 Drosophila yakuba		29	drosophila_yakuba/Drosophila_yakuba.GCA_000005975.1	GCA_000005975.1	24	7245
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000069 larval stage
+        UBERON:0000070 pupal stage
+        UBERON:0000066 fully formed stage
+            DyakDv:0000006 days 1-4 of fully formed stage (Drosophila yakuba)
+            DyakDv:0000007 days 5-8 of fully formed stage (Drosophila yakuba)
+            DyakDv:0000008 day 9 and more of fully formed stage (Drosophila yakuba)
+---Species: 9031 Gallus gallus	chicken	21	gallus_gallus/Gallus_gallus.Galgal4	Galgal4	2	9031		bantam|red junglefowl|red jungle fowl
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+        GgalDv:0000010 Hamburger Hamilton stage 1 (chicken)
+        GgalDv:0000011 Hamburger Hamilton stages 1-2 (chicken)
+        GgalDv:0000012 Hamburger Hamilton stage 3 (chicken)
+        GgalDv:0000013 Hamburger Hamilton stage 4 (chicken)
+        GgalDv:0000014 Hamburger Hamilton stages 5-6 (chicken)
+        GgalDv:0000015 Hamburger Hamilton stage 7 (chicken)
+        GgalDv:0000016 Hamburger Hamilton stages 7 to 8- (chicken)
+        GgalDv:0000017 Hamburger Hamilton stage 8 (chicken)
+        GgalDv:0000018 Hamburger Hamilton stage 9 (chicken)
+        GgalDv:0000019 Hamburger Hamilton stages 9+ to 10- (chicken)
+        GgalDv:0000020 Hamburger Hamilton stage 10 (chicken)
+        GgalDv:0000021 Hamburger Hamilton stage 11 (chicken)
+        GgalDv:0000022 Hamburger Hamilton stage 12 (chicken)
+        GgalDv:0000023 Hamburger Hamilton stage 13 (chicken)
+        GgalDv:0000024 Hamburger Hamilton stages 13+ to 14- (chicken)
+        GgalDv:0000025 Hamburger Hamilton stage 14 (chicken)
+        GgalDv:0000026 Hamburger Hamilton stages 14+ to 15- (chicken)
+        GgalDv:0000027 Hamburger Hamilton stage 15 (chicken)
+        GgalDv:0000028 Hamburger Hamilton stage 16 (chicken)
+        GgalDv:0000029 Hamburger Hamilton stage 17 (chicken)
+        GgalDv:0000030 Hamburger Hamilton stage 18 (chicken)
+        GgalDv:0000031 Hamburger Hamilton stage 19 (chicken)
+        GgalDv:0000032 Hamburger Hamilton stage 20 (chicken)
+        GgalDv:0000033 Hamburger Hamilton stage 21 (chicken)
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000066 fully formed stage
+            UBERON:0000112 sexually immature stage
+                UBERON:0034919 juvenile stage
+            UBERON:0000113 post-juvenile adult stage
+                UBERON:0018241 prime adult stage
+                    GgalDv:0000008 1-year-old chicken stage (chicken)
+                UBERON:0007222 late adult stage
+---Species: 9593 Gorilla gorilla	gorilla	8	gorilla_gorilla/Gorilla_gorilla.gorGor3.1	gorGor3.1	2	9593		western gorilla
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000066 fully formed stage
+            UBERON:0000112 sexually immature stage
+                UBERON:0018685 nursing stage
+                UBERON:0034919 juvenile stage
+            UBERON:0000113 post-juvenile adult stage
+                UBERON:0018241 prime adult stage
+                UBERON:0007222 late adult stage
+                    GgorDv:0000009 30-year-old stage (gorilla)
+                    GgorDv:0000010 31-year-old stage (gorilla)
+                    GgorDv:0000011 32-year-old stage (gorilla)
+                    GgorDv:0000012 33-year-old stage (gorilla)
+                    GgorDv:0000013 34-year-old stage (gorilla)
+                    GgorDv:0000014 35-year-old stage (gorilla)
+                    GgorDv:0000015 36-year-old stage (gorilla)
+                    GgorDv:0000016 37-year-old stage (gorilla)
+                    GgorDv:0000017 38-year-old stage (gorilla)
+                    GgorDv:0000018 39-year-old stage (gorilla)
+                    GgorDv:0000019 40-year-old stage (gorilla)
+                    GgorDv:0000020 41-year-old stage (gorilla)
+                    GgorDv:0000021 42-year-old stage (gorilla)
+                    GgorDv:0000022 43-year-old stage (gorilla)
+                    GgorDv:0000023 44-year-old stage (gorilla)
+                    GgorDv:0000024 45-year-old stage (gorilla)
+                    GgorDv:0000025 46-year-old stage (gorilla)
+                    GgorDv:0000026 47-year-old stage (gorilla)
+                    GgorDv:0000027 48-year-old stage (gorilla)
+                    GgorDv:0000028 49-year-old stage (gorilla)
+                    GgorDv:0000029 50-year-old stage (gorilla)
+                    GgorDv:0000030 51-year-old stage (gorilla)
+                    GgorDv:0000031 52-year-old and over stage (gorilla)
+---Species: 9544 Macaca mulatta	macaque	9	macaca_mulatta/Macaca_mulatta.MMUL_1	MMUL 1.0	2	9544		rhesus monkey
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000066 fully formed stage
+            UBERON:0000112 sexually immature stage
+                UBERON:0018685 nursing stage
+                    MmulDv:0000046 newborn stage (macaque)
+                    MmulDv:0000005 1-month-old stage (macaque)
+                    MmulDv:0000006 2-month-old stage (macaque)
+                    MmulDv:0000007 3-month-old stage (macaque)
+                    MmulDv:0000008 4-month-old stage (macaque)
+                    MmulDv:0000009 5-month-old stage (macaque)
+                    MmulDv:0000010 6-month-old stage (macaque)
+                    MmulDv:0000011 7-month-old stage (macaque)
+                    MmulDv:0000012 8-month-old stage (macaque)
+                    MmulDv:0000013 9-month-old nursing stage (macaque)
+                UBERON:0034919 juvenile stage
+                    MmulDv:0000015 9-month-old weaning stage (macaque)
+                    MmulDv:0000016 10-month-old stage (macaque)
+                    MmulDv:0000017 11-month-old stage (macaque)
+                    MmulDv:0000018 1-year-old stage (macaque)
+                    MmulDv:0000019 2-year-old stage (macaque)
+                    MmulDv:0000020 3-year-old immature stage (macaque)
+            UBERON:0000113 post-juvenile adult stage
+                UBERON:0018241 prime adult stage
+                    MmulDv:0000023 3-year-old mature stage (macaque)
+                    MmulDv:0000024 4-year-old stage (macaque)
+                    MmulDv:0000025 5-year-old stage (macaque)
+                    MmulDv:0000026 6-year-old stage (macaque)
+                    MmulDv:0000027 7-year-old stage (macaque)
+                    MmulDv:0000028 8-year-old stage (macaque)
+                    MmulDv:0000029 9-year-old stage (macaque)
+                    MmulDv:0000030 10-year-old stage (macaque)
+                    MmulDv:0000031 11-year-old stage (macaque)
+                    MmulDv:0000032 12-year-old stage (macaque)
+                    MmulDv:0000033 13-year-old stage (macaque)
+                    MmulDv:0000034 14-year-old stage (macaque)
+                    MmulDv:0000035 15-year-old stage (macaque)
+                    MmulDv:0000036 16-year-old stage (macaque)
+                    MmulDv:0000037 17-year-old stage (macaque)
+                    MmulDv:0000038 18-year-old stage (macaque)
+                    MmulDv:0000039 19-year-old stage (macaque)
+                    MmulDv:0000040 20-year-old stage (macaque)
+                    MmulDv:0000041 21-year-old stage (macaque)
+                    MmulDv:0000042 22-year-old stage (macaque)
+                    MmulDv:0000043 23-year-old stage (macaque)
+                    MmulDv:0000044 24-year-old stage (macaque)
+                UBERON:0007222 late adult stage
+                    MmulDv:0000047 25-year-old stage (macaque)
+                    MmulDv:0000048 26-year-old stage (macaque)
+                    MmulDv:0000049 27-year-old stage (macaque)
+                    MmulDv:0000050 28-year-old stage (macaque)
+                    MmulDv:0000051 29 year-old and over stage (macaque)
+---Species: 13616 Monodelphis domestica	opossum	19	monodelphis_domestica/Monodelphis_domestica.BROADO5	monDom5	2	13616		gray short-tailed opossum|gray short tailed opossum
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000066 fully formed stage
+            UBERON:0000112 sexually immature stage
+                UBERON:0018685 nursing stage
+                    UBERON:0007221 neonate stage
+                        UBERON:0035946 start of neonate stage
+                UBERON:0034919 juvenile stage
+            UBERON:0000113 post-juvenile adult stage
+                UBERON:0018241 prime adult stage
+                    MdomDv:0000008 4-month-old stage (opossum)
+                    MdomDv:0000009 5-month-old stage (opossum)
+                    MdomDv:0000010 6-month-old stage (opossum)
+                    MdomDv:0000011 7-month-old stage (opossum)
+                    MdomDv:0000012 8-month-old stage (opossum)
+                    MdomDv:0000013 9-month-old stage (opossum)
+                    MdomDv:0000014 10-month-old stage (opossum)
+                    MdomDv:0000015 11-month-old stage (opossum)
+                    MdomDv:0000016 12-month-old stage (opossum)
+                    MdomDv:0000017 13-month-old stage (opossum)
+                    MdomDv:0000018 14-month-old stage (opossum)
+                    MdomDv:0000019 15-month-old stage (opossum)
+                    MdomDv:0000020 16-month-old stage (opossum)
+                    MdomDv:0000021 17-month-old stage (opossum)
+                    MdomDv:0000022 18-month-old stage (opossum)
+                    MdomDv:0000023 19-month-old stage (opossum)
+                    MdomDv:0000024 20-month-old stage (opossum)
+                UBERON:0007222 late adult stage
+                    MdomDv:0000026 21-month-old stage (opossum)
+                    MdomDv:0000027 22-month-old stage (opossum)
+                    MdomDv:0000028 23-month-old stage (opossum)
+                    MdomDv:0000029 24-month-old stage (opossum)
+                    MdomDv:0000030 25-month-old stage (opossum)
+                    MdomDv:0000031 26-month-old and over stage (opossum)
+---Species: 9258 Ornithorhynchus anatinus	platypus	20	ornithorhynchus_anatinus/Ornithorhynchus_anatinus.OANA5	OANA5	2	9258		duckbill platypus|duck-billed platypus
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000066 fully formed stage
+            UBERON:0000112 sexually immature stage
+                UBERON:0034919 juvenile stage
+            UBERON:0000113 post-juvenile adult stage
+                UBERON:0018241 prime adult stage
+                UBERON:0007222 late adult stage
+---Species: 9598 Pan troglodytes	chimpanzee	6	pan_troglodytes/Pan_troglodytes.CHIMP2.1.4	CHIMP2.1.4	2	9598
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000066 fully formed stage
+            UBERON:0000112 sexually immature stage
+                UBERON:0018685 nursing stage
+                UBERON:0034919 juvenile stage
+                    PtroDv:0000006 3-year-old stage (chimpanzee)
+                    PtroDv:0000007 4-year-old stage (chimpanzee)
+                    PtroDv:0000008 5-year-old stage (chimpanzee)
+                    PtroDv:0000009 6-year-old stage (chimpanzee)
+                    PtroDv:0000010 7-year-old stage (chimpanzee)
+            UBERON:0000113 post-juvenile adult stage
+                UBERON:0018241 prime adult stage
+                    PtroDv:0000013 8-year-old stage (chimpanzee)
+                    PtroDv:0000014 9-year-old stage (chimpanzee)
+                    PtroDv:0000015 10-year-old stage (chimpanzee)
+                    PtroDv:0000016 11-year-old stage (chimpanzee)
+                    PtroDv:0000017 12-year-old stage (chimpanzee)
+                    PtroDv:0000018 13-year-old stage (chimpanzee)
+                    PtroDv:0000019 14-year-old stage (chimpanzee)
+                    PtroDv:0000020 15-year-old stage (chimpanzee)
+                    PtroDv:0000021 16-year-old stage (chimpanzee)
+                    PtroDv:0000022 17-year-old stage (chimpanzee)
+                    PtroDv:0000023 18-year-old stage (chimpanzee)
+                    PtroDv:0000024 19-year-old stage (chimpanzee)
+                    PtroDv:0000025 20-year-old stage (chimpanzee)
+                    PtroDv:0000026 21-year-old stage (chimpanzee)
+                    PtroDv:0000027 22-year-old stage (chimpanzee)
+                    PtroDv:0000028 23-year-old stage (chimpanzee)
+                    PtroDv:0000029 24-year-old stage (chimpanzee)
+                    PtroDv:0000030 25-year-old stage (chimpanzee)
+                    PtroDv:0000031 26-year-old stage (chimpanzee)
+                    PtroDv:0000032 27-year-old stage (chimpanzee)
+                    PtroDv:0000033 28-year-old stage (chimpanzee)
+                    PtroDv:0000034 29-year-old stage (chimpanzee)
+                    PtroDv:0000035 30-year-old stage (chimpanzee)
+                    PtroDv:0000036 31-year-old stage (chimpanzee)
+                    PtroDv:0000037 32-year-old stage (chimpanzee)
+                    PtroDv:0000038 33-year-old stage (chimpanzee)
+                UBERON:0007222 late adult stage
+                    PtroDv:0000040 34-year-old stage (chimpanzee)
+                    PtroDv:0000041 35-year-old stage (chimpanzee)
+                    PtroDv:0000042 36-year-old stage (chimpanzee)
+                    PtroDv:0000043 37-year-old stage (chimpanzee)
+                    PtroDv:0000044 38-year-old stage (chimpanzee)
+                    PtroDv:0000045 39-year-old stage (chimpanzee)
+                    PtroDv:0000046 40-year-old stage (chimpanzee)
+                    PtroDv:0000047 41-year-old stage (chimpanzee)
+                    PtroDv:0000048 42-year-old stage (chimpanzee)
+                    PtroDv:0000049 43-year-old stage (chimpanzee)
+                    PtroDv:0000050 44-year-old stage (chimpanzee)
+                    PtroDv:0000051 45-year-old and over stage (chimpanzee)
+---Species: 9597 Pan paniscus	bonobo	7	pan_troglodytes/Pan_troglodytes.CHIMP2.1.4	CHIMP2.1.4	2	9598	PPAG	pygmy chimpanzee
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000066 fully formed stage
+            UBERON:0000112 sexually immature stage
+                UBERON:0018685 nursing stage
+                UBERON:0034919 juvenile stage
+                    PpanDv:0000006 21-month-old stage (bonobo)
+                    PpanDv:0000007 22-month-old stage (bonobo)
+                    PpanDv:0000008 23-month-old stage (bonobo)
+                    PpanDv:0000009 2-year-old stage (bonobo)
+                    PpanDv:0000010 3-year-old stage (bonobo)
+                    PpanDv:0000011 4-year-old stage (bonobo)
+                    PpanDv:0000012 5-year-old stage (bonobo)
+                    PpanDv:0000013 6-year-old stage (bonobo)
+                    PpanDv:0000014 7-year-old stage (bonobo)
+                    PpanDv:0000015 8-year-old immature stage (bonobo)
+            UBERON:0000113 post-juvenile adult stage
+                UBERON:0018241 prime adult stage
+                    PpanDv:0000018 8-year-old mature stage (bonobo)
+                    PpanDv:0000019 9-year-old stage (bonobo)
+                    PpanDv:0000020 10-year-old stage (bonobo)
+                    PpanDv:0000021 11-year-old stage (bonobo)
+                    PpanDv:0000022 12-year-old stage (bonobo)
+                    PpanDv:0000023 13-year-old stage (bonobo)
+                    PpanDv:0000024 14-year-old stage (bonobo)
+                    PpanDv:0000025 15-year-old stage (bonobo)
+                    PpanDv:0000026 16-year-old stage (bonobo)
+                    PpanDv:0000027 17-year-old stage (bonobo)
+                    PpanDv:0000028 18-year-old stage (bonobo)
+                    PpanDv:0000029 19-year-old stage (bonobo)
+                    PpanDv:0000030 20-year-old stage (bonobo)
+                    PpanDv:0000031 21-year-old stage (bonobo)
+                    PpanDv:0000032 22-year-old stage (bonobo)
+                    PpanDv:0000033 23-year-old stage (bonobo)
+                    PpanDv:0000034 24-year-old stage (bonobo)
+                    PpanDv:0000035 25-year-old stage (bonobo)
+                    PpanDv:0000036 26-year-old stage (bonobo)
+                    PpanDv:0000037 27-year-old stage (bonobo)
+                    PpanDv:0000038 28-year-old stage (bonobo)
+                    PpanDv:0000039 29-year-old stage (bonobo)
+                UBERON:0007222 late adult stage
+---Species: 9913 Bos taurus	cattle	11	bos_taurus/Bos_taurus.UMD3.1	UMD3.1	2	9913		cow|domestic cow|domestic cattle|bovine cow
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000066 fully formed stage
+            UBERON:0000112 sexually immature stage
+                UBERON:0034919 juvenile stage
+            UBERON:0000113 post-juvenile adult stage
+                UBERON:0018241 prime adult stage
+                UBERON:0007222 late adult stage
+---Species: 10116 Rattus norvegicus	rat	10	rattus_norvegicus/Rattus_norvegicus.Rnor_6.0	Rnor_6.0	2	10116		brown rat
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+        UBERON:0000107 cleavage stage
+            UBERON:0007232 2 cell stage
+            UBERON:0007233 4 cell stage
+            RnorDv:0000052 Witschi stage 4 (rat)
+            RnorDv:0000053 Witschi stage 5 (rat)
+        UBERON:0000108 blastula stage
+        UBERON:0000109 gastrula stage
+            RnorDv:0000006 primitive streak stage (rat)
+        UBERON:0000110 neurula stage
+        UBERON:0000111 organogenesis stage
+        RnorDv:0000009 complete embryo stage (rat)
+        RnorDv:0000010 metamorphosing embryo stage (rat)
+        UBERON:0007220 late embryonic stage
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000066 fully formed stage
+            UBERON:0000112 sexually immature stage
+                UBERON:0018685 nursing stage
+                    UBERON:0007221 neonate stage
+                        UBERON:0035946 start of neonate stage
+                    UBERON:0034920 infant stage
+                UBERON:0034919 juvenile stage
+            UBERON:0000113 post-juvenile adult stage
+                RnorDv:0000016 10-week-old stage (rat)
+                RnorDv:0000017 11-week-old stage (rat)
+                RnorDv:0000018 3-month-old stage (rat)
+                RnorDv:0000019 4-6-month-old stage (rat)
+                    RnorDv:0000020 4-month-old stage (rat)
+                    RnorDv:0000021 5-month-old stage (rat)
+                    RnorDv:0000022 6-month-old stage (rat)
+                RnorDv:0000023 7-month-old stage (rat)
+                RnorDv:0000024 8-month-old stage (rat)
+                RnorDv:0000025 9-month-old stage (rat)
+                RnorDv:0000026 10-month-old stage (rat)
+                RnorDv:0000027 11-month-old stage (rat)
+                RnorDv:0000028 12-month-old stage (rat)
+                RnorDv:0000029 13-month-old stage (rat)
+                RnorDv:0000030 14-month-old stage (rat)
+                RnorDv:0000031 15-month-old stage (rat)
+                RnorDv:0000032 16-month-old stage (rat)
+                RnorDv:0000033 17-month-old stage (rat)
+                RnorDv:0000034 18-month-old stage (rat)
+                RnorDv:0000035 19-month-old stage (rat)
+                RnorDv:0000036 20-month-old stage (rat)
+                RnorDv:0000037 21-month-old stage (rat)
+                RnorDv:0000038 22-month-old stage (rat)
+                RnorDv:0000039 23-month-old stage (rat)
+                RnorDv:0000040 24-26-month-old stage (rat)
+                    RnorDv:0000041 24-month-old stage (rat)
+                    RnorDv:0000042 25-month-old stage (rat)
+                    RnorDv:0000043 26-month-old stage (rat)
+                RnorDv:0000044 27-month-old stage (rat)
+                RnorDv:0000045 28-month-old stage (rat)
+                RnorDv:0000046 29-month-old stage (rat)
+                RnorDv:0000047 30-month-old stage (rat)
+---Species: 28377 Anolis carolinensis	green anole	22	anolis_carolinensis/Anolis_carolinensis.AnoCar2.0	AnoCar2.0	2	28377		anolis|carolina anole
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000066 fully formed stage
+            UBERON:0000112 sexually immature stage
+            UBERON:0000113 post-juvenile adult stage
+                UBERON:0007222 late adult stage
+---Species: 9823 Sus scrofa	pig	12	sus_scrofa/Sus_scrofa.Sscrofa10.2	Sscrofa10.2	2	9823		domestic pig|swine
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000066 fully formed stage
+            UBERON:0000112 sexually immature stage
+                UBERON:0018685 nursing stage
+                UBERON:0034919 juvenile stage
+            UBERON:0000113 post-juvenile adult stage
+                UBERON:0018241 prime adult stage
+                UBERON:0007222 late adult stage
+---Species: 6239 Caenorhabditis elegans	nematode	5	caenorhabditis_elegans/Caenorhabditis_elegans.WBcel235	WBcel235	2	6239		C. elegans|worm|roundworm
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    WBls:0000669 unfertilized egg Ce (C elegans)
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+        UBERON:0000107 cleavage stage
+            UBERON:0007232 2 cell stage
+            UBERON:0007233 4 cell stage
+            UBERON:0007236 8 cell stage
+        UBERON:0000108 blastula stage
+            WBls:0000072 12-cell embryo Ce (C elegans)
+            WBls:0000084 14-cell embryo Ce (C elegans)
+            WBls:0000085 24-cell embryo Ce (C elegans)
+        UBERON:0000109 gastrula stage
+            WBls:0000009 28-cell embryo Ce (C elegans)
+            WBls:0000086 44-cell embryo Ce (C elegans)
+            WBls:0000011 51-cell embryo Ce (C elegans)
+            WBls:0000087 68-cell embryo Ce (C elegans)
+            WBls:0000088 86-cell embryo Ce (C elegans)
+            WBls:0000012 88-cell embryo Ce (C elegans)
+            WBls:0000090 96-cell embryo Ce (C elegans)
+            WBls:0000089 190-cells embryo Ce (C elegans)
+            WBls:0000014 late cleavage stage embryo Ce (C elegans)
+                WBls:0000013 enclosing embryo Ce (C elegans)
+        UBERON:0007220 late embryonic stage
+            WBls:0000015 elongating embryo Ce (C elegans)
+                WBls:0000016 bean embryo Ce (C elegans)
+                WBls:0000017 comma embryo Ce (C elegans)
+                WBls:0000018 1.5-fold embryo Ce (C elegans)
+                WBls:0000019 2-fold embryo Ce (C elegans)
+                WBls:0000020 3-fold embryo Ce (C elegans)
+            WBls:0000021 fully-elongated embryo Ce (C elegans)
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000069 larval stage
+            UBERON:0004729 nematode larval stage
+                WBls:0000024 L1 larva Ce (C elegans)
+                WBls:0000026 L1-L2 molt Ce (C elegans)
+                    WBls:0000025 L1-L2 lethargus Ce (C elegans)
+                    WBls:0000042 L1-L2 ecdysis Ce (C elegans)
+                WBls:0000043 L1-L2d molt Ce (C elegans)
+                    WBls:0000044 L1-L2d lethargus Ce (C elegans)
+                    WBls:0000045 L1-L2d ecdysis Ce (C elegans)
+                WBls:0000027 L2 larva Ce (C elegans)
+                WBls:0000046 L2d larva Ce (C elegans)
+                WBls:0000029 L2-L3 molt Ce (C elegans)
+                    WBls:0000028 L2-L3 lethargus Ce (C elegans)
+                    WBls:0000047 L2-L3 ecdysis Ce (C elegans)
+                WBls:0000031 L2d-dauer molt Ce (C elegans)
+                    WBls:0000030 L2d-dauer lethargus Ce (C elegans)
+                    WBls:0000048 L2d-dauer ecdysis Ce (C elegans)
+                WBls:0000053 L2d-L3 molt Ce (C elegans)
+                    WBls:0000054 L2d-L3 lethargus Ce (C elegans)
+                    WBls:0000055 L2d-L3 ecdysis Ce (C elegans)
+                WBls:0000035 L3 larva Ce (C elegans)
+                WBls:0000032 dauer larva Ce (C elegans)
+                WBls:0000037 L3-L4 molt Ce (C elegans)
+                    WBls:0000036 L3-L4 lethargus Ce (C elegans)
+                    WBls:0000049 L3-L4 ecdysis Ce (C elegans)
+                WBls:0000052 post dauer stage Ce (C elegans)
+                WBls:0000034 postdauer-L4 molt Ce (C elegans)
+                    WBls:0000033 postdauer-L4 lethargus Ce (C elegans)
+                    WBls:0000051 postdauer-L4 ecdysis Ce (C elegans)
+                WBls:0000038 L4 larva Ce (C elegans)
+                WBls:0000040 L4-adult molt Ce (C elegans)
+                    WBls:0000039 L4-adult lethargus Ce (C elegans)
+                    WBls:0000050 L4-adult ecdysis (C elegans)
+        UBERON:0000066 fully formed stage
+            WBls:0000056 adult male Ce (C elegans)
+            WBls:0000057 adult hermaphrodite Ce (C elegans)
+                WBls:0000058 pre-reproductive stage adult hermaphrodite Ce (C elegans)
+                WBls:0000060 reproductive stage adult hermaphrodite Ce (C elegans)
+                    WBls:0000061 oocyte-laying stage adult hermaphrodite Ce (C elegans)
+                WBls:0000062 post-reproductive stage adult hermaphrodite Ce (C elegans)
+                WBls:0000063 newly molted young adult hermaphrodite Ce (C elegans)
+                WBls:0000064 1-day post-L4 adult hermaphrodite Ce (C elegans)
+                WBls:0000065 2-days post-L4 adult hermaphrodite Ce (C elegans)
+                WBls:0000066 3-days post-L4 adult hermaphrodite Ce (C elegans)
+                WBls:0000069 4-7 days post-L4 adult hermaphrodite Ce (C elegans)
+                    WBls:0000067 4-days post-L4 adult hermaphrodite Ce (C elegans)
+                    WBls:0000068 5-days post-L4 adult hermaphrodite Ce (C elegans)
+                    WBls:0000670 6-days post-L4 adult hermaphrodite Ce (C elegans)
+                    WBls:0000671 7-days post-L4 adult hermaphrodite Ce (C elegans)
+                WBls:0000070 7-10 days post-L4 adult hermaphrodite Ce (C elegans)
+                    WBls:0000672 8-days post-L4 adult hermaphrodite Ce (C elegans)
+                    WBls:0000673 9-days post-L4 adult hermaphrodite Ce (C elegans)
+                    WBls:0000674 10-days post-L4 adult hermaphrodite Ce (C elegans)
+                WBls:0000074 11-15 days post-L4 adult hermaphrodite (C elegans)
+                    WBls:0000675 15-days post-L4 adult hermaphrodite Ce (C elegans)
+                WBls:0000111 16-18 days post-L4 adult hermaphrodite Ce (C elegans)
+                WBls:0000676 20-days post-L4 adult hermaphrodite Ce (C elegans)
+---Species: 9365 Erinaceus europaeus	hedgehog	18	erinaceus_europaeus/Erinaceus_europaeus.HEDGEHOG	eriEur1	2	9365
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000066 fully formed stage
+            UBERON:0000112 sexually immature stage
+                UBERON:0034919 juvenile stage
+            UBERON:0000113 post-juvenile adult stage
+                UBERON:0018241 prime adult stage
+                UBERON:0007222 late adult stage
+---Species: 9615 Canis lupus familiaris	dog	15	canis_familiaris/Canis_familiaris.CanFam3.1	CanFam3.1	2	9615
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000066 fully formed stage
+            UBERON:0000112 sexually immature stage
+                UBERON:0034919 juvenile stage
+            UBERON:0000113 post-juvenile adult stage
+                UBERON:0018241 prime adult stage
+                UBERON:0007222 late adult stage
+---Species: 9685 Felis catus	cat	16	felis_catus/Felis_catus.Felis_catus_6.2	Felis_catus_6.2	2	9685
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000066 fully formed stage
+            UBERON:0000112 sexually immature stage
+                UBERON:0034919 juvenile stage
+            UBERON:0000113 post-juvenile adult stage
+                UBERON:0018241 prime adult stage
+                UBERON:0007222 late adult stage
+---Species: 9796 Equus caballus	horse	13	equus_caballus/Equus_caballus.EquCab2	Equ Cab 2	2	9796
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000066 fully formed stage
+            UBERON:0000112 sexually immature stage
+                UBERON:0034919 juvenile stage
+            UBERON:0000113 post-juvenile adult stage
+                UBERON:0018241 prime adult stage
+                UBERON:0007222 late adult stage
+---Species: 9986 Oryctolagus cuniculus	rabbit	14	oryctolagus_cuniculus/Oryctolagus_cuniculus.OryCun2.0	OryCun2.0	2	9986
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000066 fully formed stage
+            UBERON:0000112 sexually immature stage
+                UBERON:0034919 juvenile stage
+            UBERON:0000113 post-juvenile adult stage
+                UBERON:0018241 prime adult stage
+                UBERON:0007222 late adult stage
+---Species: 10141 Cavia porcellus	guinea pig	17	cavia_porcellus/Cavia_porcellus.cavPor3	cavPor3	2	10141
+CONCAT(REPEAT(' ', (4*(t1.stageLevel-1))), t1.stageId, ' ', t1.stageName)
+UBERON:0000104 life cycle
+    UBERON:0000068 embryo stage
+        UBERON:0000106 zygote stage
+    UBERON:0000092 post-embryonic stage
+        UBERON:0000066 fully formed stage
+            UBERON:0000112 sexually immature stage
+                UBERON:0034919 juvenile stage
+            UBERON:0000113 post-juvenile adult stage
+                UBERON:0018241 prime adult stage
+                UBERON:0007222 late adult stage
+----------Now, dev. stages per species: 
+---Species: 9606 Homo sapiens	human	1	homo_sapiens/Homo_sapiens.GRCh38	GRCh38.p5	2	9606
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000107	cleavage stage	83	142	3
+HsapDv:0000005	Carnegie stage 02 (human)	130	133	4
+HsapDv:0000205	morula stage (human)	131	132	5
+UBERON:0000108	blastula stage	143	210	3
+HsapDv:0000007	CS03	188	189	4
+HsapDv:0000008	Carnegie stage 04 (human)	190	191	4
+HsapDv:0000009	Carnegie stage 05 (human)	192	199	4
+HsapDv:0000031	CS05a	193	194	5
+HsapDv:0000032	CS05b	195	196	5
+HsapDv:0000033	CS05c	197	198	5
+UBERON:0000109	gastrula stage	211	286	3
+HsapDv:0000011	Carnegie stage 06 (human)	264	269	4
+HsapDv:0000034	CS06a	265	266	5
+HsapDv:0000035	CS06b	267	268	5
+UBERON:0000110	neurula stage	333	364	3
+HsapDv:0000013	Carnegie stage 07 (human)	352	353	4
+HsapDv:0000014	Carnegie stage 08 (human)	354	355	4
+UBERON:0000111	organogenesis stage	365	432	3
+HsapDv:0000016	CS09	376	377	4
+HsapDv:0000017	Carnegie stage 10 (human)	378	379	4
+HsapDv:0000018	CS11	380	381	4
+HsapDv:0000019	Carnegie stage 12 (human)	382	383	4
+HsapDv:0000020	CS13	384	385	4
+HsapDv:0000021	Carnegie stage 14 (human)	386	387	4
+HsapDv:0000022	Carnegie stage 15 (human)	388	389	4
+HsapDv:0000023	Carnegie stage 16 (human)	390	391	4
+HsapDv:0000024	CS17	392	393	4
+HsapDv:0000025	CS18	394	395	4
+HsapDv:0000026	Carnegie stage 19 (human)	396	397	4
+HsapDv:0000027	CS20	398	399	4
+HsapDv:0000028	Carnegie stage 21 (human)	400	401	4
+HsapDv:0000029	Carnegie stage 22 (human)	402	403	4
+HsapDv:0000030	Carnegie stage 23 (human)	404	405	4
+UBERON:0007220	late embryonic stage	529	638	3
+HsapDv:0000197	third LMP month human stage (human)	556	563	4
+HsapDv:0000046	9th week post-fertilization human stage (human)	557	558	5
+HsapDv:0000047	10th week post-fertilization human stage (human)	559	560	5
+HsapDv:0000048	11th week post-fertilization human stage (human)	561	562	5
+HsapDv:0000198	fourth LMP month human stage (human)	564	573	4
+HsapDv:0000049	12th week post-fertilization human stage (human)	565	566	5
+HsapDv:0000050	13th week post-fertilization human stage (human)	567	568	5
+HsapDv:0000051	14th week post-fertilization human stage (human)	569	570	5
+HsapDv:0000052	15th week post-fertilization human stage (human)	571	572	5
+HsapDv:0000199	fifth LMP month human stage (human)	574	583	4
+HsapDv:0000053	16th week post-fertilization human stage (human)	575	576	5
+HsapDv:0000054	17th week post-fertilization human stage (human)	577	578	5
+HsapDv:0000055	18th week post-fertilization human stage (human)	579	580	5
+HsapDv:0000056	19th week post-fertilization human stage (human)	581	582	5
+HsapDv:0000200	sixth LMP month human stage (human)	584	595	4
+HsapDv:0000057	20th week post-fertilization human stage (human)	585	586	5
+HsapDv:0000058	21st week post-fertilization human stage (human)	587	588	5
+HsapDv:0000059	22nd week post-fertilization human stage (human)	589	590	5
+HsapDv:0000060	23rd week post-fertilization human stage (human)	591	592	5
+HsapDv:0000061	24th week post-fertilization human stage (human)	593	594	5
+HsapDv:0000201	seventh LMP month human stage (human)	596	605	4
+HsapDv:0000062	25th week post-fertilization human stage (human)	597	598	5
+HsapDv:0000063	26th week post-fertilization human stage (human)	599	600	5
+HsapDv:0000064	27th week post-fertilization human stage (human)	601	602	5
+HsapDv:0000065	28th week post-fertilization human stage (human)	603	604	5
+HsapDv:0000202	eighth LMP month human stage (human)	606	617	4
+HsapDv:0000066	29th week post-fertilization human stage (human)	607	608	5
+HsapDv:0000067	30th week post-fertilization human stage (human)	609	610	5
+HsapDv:0000068	31st week post-fertilization human stage (human)	611	612	5
+HsapDv:0000069	32nd week post-fertilization human stage (human)	613	614	5
+HsapDv:0000070	33rd week post-fertilization human stage (human)	615	616	5
+HsapDv:0000203	ninth LMP month human stage (human)	618	629	4
+HsapDv:0000071	34th week post-fertilization human stage (human)	619	620	5
+HsapDv:0000072	35th week post-fertilization human stage (human)	621	622	5
+HsapDv:0000073	36th week post-fertilization human stage (human)	623	624	5
+HsapDv:0000074	37th week post-fertilization human stage (human)	625	626	5
+HsapDv:0000075	38th week post-fertilization and over human stage (human)	627	628	5
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000066	fully formed stage	863	1880	3
+UBERON:0000112	sexually immature stage	1080	1239	4
+UBERON:0018685	nursing stage	1081	1156	5
+UBERON:0007221	neonate stage	1102	1107	6
+UBERON:0035946	start of neonate stage	1103	1104	7
+HsapDv:0000082	newborn human stage (human)	1105	1106	7
+UBERON:0034920	infant stage	1108	1155	6
+HsapDv:0000174	1 month-old human stage (human)	1109	1110	7
+HsapDv:0000175	2-month-old human stage (human)	1111	1112	7
+HsapDv:0000176	3-month-old human stage (human)	1113	1114	7
+HsapDv:0000177	4-month-old human stage (human)	1115	1116	7
+HsapDv:0000178	5-month-old human stage (human)	1117	1118	7
+HsapDv:0000179	6-month-old human stage (human)	1119	1120	7
+HsapDv:0000180	7-month-old human stage (human)	1121	1122	7
+HsapDv:0000181	8-month-old human stage (human)	1123	1124	7
+HsapDv:0000182	9-month-old human stage (human)	1125	1126	7
+HsapDv:0000183	10-month-old human stage (human)	1127	1128	7
+HsapDv:0000184	11-month-old human stage (human)	1129	1130	7
+HsapDv:0000185	12-month-old human stage (human)	1131	1132	7
+HsapDv:0000186	13-month-old human stage (human)	1133	1134	7
+HsapDv:0000187	14-month-old human stage (human)	1135	1136	7
+HsapDv:0000188	15-month-old human stage (human)	1137	1138	7
+HsapDv:0000189	16-month-old human stage (human)	1139	1140	7
+HsapDv:0000190	17-month-old human stage (human)	1141	1142	7
+HsapDv:0000191	18-month-old human stage (human)	1143	1144	7
+HsapDv:0000192	19-month-old human stage (human)	1145	1146	7
+HsapDv:0000193	20-month-old human stage (human)	1147	1148	7
+HsapDv:0000194	21-month-old human stage (human)	1149	1150	7
+HsapDv:0000195	22-month-old human stage (human)	1151	1152	7
+HsapDv:0000196	23-month-old human stage (human)	1153	1154	7
+UBERON:0034919	juvenile stage	1157	1238	5
+HsapDv:0000084	2-5 year-old child stage (human)	1200	1209	6
+HsapDv:0000096	2-year-old human stage (human)	1201	1202	7
+HsapDv:0000097	3-year-old human stage (human)	1203	1204	7
+HsapDv:0000098	4-year-old human stage (human)	1205	1206	7
+HsapDv:0000099	5-year-old human stage (human)	1207	1208	7
+HsapDv:0000085	6-12 year-old child stage (human)	1210	1225	6
+HsapDv:0000100	6-year-old human stage (human)	1211	1212	7
+HsapDv:0000101	7-year-old human stage (human)	1213	1214	7
+HsapDv:0000102	8-year-old human stage (human)	1215	1216	7
+HsapDv:0000103	9-year-old human stage (human)	1217	1218	7
+HsapDv:0000104	10-year-old human stage (human)	1219	1220	7
+HsapDv:0000105	11-year-old human stage (human)	1221	1222	7
+HsapDv:0000106	12-year-old human stage (human)	1223	1224	7
+UBERON:0000113	post-juvenile adult stage	1240	1879	4
+HsapDv:0000086	adolescent stage (human)	1513	1526	5
+HsapDv:0000107	13-year-old human stage (human)	1514	1515	6
+HsapDv:0000108	14-year-old human stage (human)	1516	1517	6
+HsapDv:0000109	15-year-old human stage (human)	1518	1519	6
+HsapDv:0000110	16-year-old human stage (human)	1520	1521	6
+HsapDv:0000111	17-year-old human stage (human)	1522	1523	6
+HsapDv:0000112	18-year-old human stage (human)	1524	1525	6
+HsapDv:0000087	human adult stage (human)	1527	1720	5
+HsapDv:0000088	human early adulthood stage (human)	1528	1585	6
+HsapDv:0000089	young adult stage (human)	1529	1542	7
+HsapDv:0000113	19-year-old human stage (human)	1530	1531	8
+HsapDv:0000114	20-year-old human stage (human)	1532	1533	8
+HsapDv:0000115	21-year-old human stage (human)	1534	1535	8
+HsapDv:0000116	22-year-old human stage (human)	1536	1537	8
+HsapDv:0000117	23-year-old human stage (human)	1538	1539	8
+HsapDv:0000118	24-year-old human stage (human)	1540	1541	8
+HsapDv:0000090	25-44 year-old human stage (human)	1543	1584	7
+HsapDv:0000119	25-year-old human stage (human)	1544	1545	8
+HsapDv:0000120	26-year-old human stage (human)	1546	1547	8
+HsapDv:0000121	27-year-old human stage (human)	1548	1549	8
+HsapDv:0000122	28-year-old human stage (human)	1550	1551	8
+HsapDv:0000123	29-year-old human stage (human)	1552	1553	8
+HsapDv:0000124	30-year-old human stage (human)	1554	1555	8
+HsapDv:0000125	31-year-old human stage (human)	1556	1557	8
+HsapDv:0000126	32-year-old human stage (human)	1558	1559	8
+HsapDv:0000127	33-year-old human stage (human)	1560	1561	8
+HsapDv:0000128	34-year-old human stage (human)	1562	1563	8
+HsapDv:0000129	35-year-old human stage (human)	1564	1565	8
+HsapDv:0000130	36-year-old human stage (human)	1566	1567	8
+HsapDv:0000131	37-year-old human stage (human)	1568	1569	8
+HsapDv:0000132	38-year-old human stage (human)	1570	1571	8
+HsapDv:0000133	39-year-old human stage (human)	1572	1573	8
+HsapDv:0000134	40-year-old human stage (human)	1574	1575	8
+HsapDv:0000135	41-year-old human stage (human)	1576	1577	8
+HsapDv:0000136	42-year-old human stage (human)	1578	1579	8
+HsapDv:0000137	43-year-old human stage (human)	1580	1581	8
+HsapDv:0000138	44-year-old human stage (human)	1582	1583	8
+HsapDv:0000091	human late adulthood stage (human)	1586	1719	6
+HsapDv:0000092	human middle aged stage (human)	1587	1628	7
+HsapDv:0000139	45-year-old human stage (human)	1588	1589	8
+HsapDv:0000140	46-year-old human stage (human)	1590	1591	8
+HsapDv:0000141	47-year-old human stage (human)	1592	1593	8
+HsapDv:0000142	48-year-old human stage (human)	1594	1595	8
+HsapDv:0000143	49-year-old human stage (human)	1596	1597	8
+HsapDv:0000144	50-year-old human stage (human)	1598	1599	8
+HsapDv:0000145	51-year-old human stage (human)	1600	1601	8
+HsapDv:0000146	52-year-old human stage (human)	1602	1603	8
+HsapDv:0000147	53-year-old human stage (human)	1604	1605	8
+HsapDv:0000148	54-year-old human stage (human)	1606	1607	8
+HsapDv:0000149	55-year-old human stage (human)	1608	1609	8
+HsapDv:0000150	56-year-old human stage (human)	1610	1611	8
+HsapDv:0000151	57-year-old human stage (human)	1612	1613	8
+HsapDv:0000152	58-year-old human stage (human)	1614	1615	8
+HsapDv:0000153	59-year-old human stage (human)	1616	1617	8
+HsapDv:0000154	60-year-old human stage (human)	1618	1619	8
+HsapDv:0000155	61-year-old human stage (human)	1620	1621	8
+HsapDv:0000156	62-year-old human stage (human)	1622	1623	8
+HsapDv:0000157	63-year-old human stage (human)	1624	1625	8
+HsapDv:0000158	64-year-old human stage (human)	1626	1627	8
+HsapDv:0000093	human aged stage	1629	1718	7
+HsapDv:0000094	65-79 year-old human stage (human)	1630	1661	8
+HsapDv:0000159	65-year-old human stage (human)	1631	1632	9
+HsapDv:0000160	66-year-old human stage (human)	1633	1634	9
+HsapDv:0000161	67-year-old human stage (human)	1635	1636	9
+HsapDv:0000162	68-year-old human stage (human)	1637	1638	9
+HsapDv:0000163	69-year-old human stage (human)	1639	1640	9
+HsapDv:0000164	70-year-old human stage (human)	1641	1642	9
+HsapDv:0000165	71-year-old human stage (human)	1643	1644	9
+HsapDv:0000166	72-year-old human stage (human)	1645	1646	9
+HsapDv:0000167	73-year-old human stage (human)	1647	1648	9
+HsapDv:0000168	74-year-old human stage (human)	1649	1650	9
+HsapDv:0000169	75-year-old human stage (human)	1651	1652	9
+HsapDv:0000170	76-year-old human stage (human)	1653	1654	9
+HsapDv:0000171	77-year-old human stage (human)	1655	1656	9
+HsapDv:0000172	78-year-old human stage (human)	1657	1658	9
+HsapDv:0000173	79-year-old human stage (human)	1659	1660	9
+HsapDv:0000095	80 year-old and over human stage (human)	1662	1717	8
+HsapDv:0000206	80-year-old human stage (human)	1663	1664	9
+HsapDv:0000207	81-year-old human stage (human)	1665	1666	9
+HsapDv:0000208	82-year-old human stage (human)	1667	1668	9
+HsapDv:0000209	83-year-old human stage (human)	1669	1670	9
+HsapDv:0000210	84-year-old human stage (human)	1671	1672	9
+HsapDv:0000211	85-year-old human stage (human)	1673	1674	9
+HsapDv:0000212	86-year-old human stage (human)	1675	1676	9
+HsapDv:0000213	87-year-old human stage (human)	1677	1678	9
+HsapDv:0000214	88-year-old human stage (human)	1679	1680	9
+HsapDv:0000215	89-year-old human stage (human)	1681	1682	9
+HsapDv:0000216	90-year-old human stage (human)	1683	1684	9
+HsapDv:0000217	91-year-old human stage (human)	1685	1686	9
+HsapDv:0000218	92-year-old human stage (human)	1687	1688	9
+HsapDv:0000219	93-year-old human stage (human)	1689	1690	9
+HsapDv:0000220	94-year-old human stage (human)	1691	1692	9
+HsapDv:0000221	95-year-old human stage (human)	1693	1694	9
+HsapDv:0000222	96-year-old human stage (human)	1695	1696	9
+HsapDv:0000223	97-year-old human stage (human)	1697	1698	9
+HsapDv:0000224	98-year-old human stage (human)	1699	1700	9
+HsapDv:0000225	99-year-old human stage (human)	1701	1702	9
+HsapDv:0000228	100-year-old human stage (human)	1703	1704	9
+HsapDv:0000229	101-year-old human stage (human)	1705	1706	9
+HsapDv:0000230	102-year-old human stage (human)	1707	1708	9
+HsapDv:0000231	103-year-old human stage (human)	1709	1710	9
+HsapDv:0000232	104-year-old human stage (human)	1711	1712	9
+HsapDv:0000233	105-year-old human stage (human)	1713	1714	9
+HsapDv:0000234	106-year-old human stage (human)	1715	1716	9
+---Species: 10090 Mus musculus	mouse	2	mus_musculus/Mus_musculus.GRCm38	GRCm38.p4	2	10090		house mouse|mice
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000107	cleavage stage	83	142	3
+MmusDv:0000005	Theiler stage 02 (mouse)	134	135	4
+MmusDv:0000006	Theiler stage 03 (mouse)	136	137	4
+UBERON:0000108	blastula stage	143	210	3
+MmusDv:0000008	Theiler stage 04 (mouse)	200	201	4
+MmusDv:0000009	Theiler stage 05 (mouse)	202	203	4
+MmusDv:0000010	Theiler stage 06 (mouse)	204	205	4
+MmusDv:0000011	Theiler stage 07 (mouse)	206	207	4
+MmusDv:0000012	Theiler stage 08 (mouse)	208	209	4
+UBERON:0000109	gastrula stage	211	286	3
+MmusDv:0000014	Theiler stage 09 (mouse)	270	275	4
+MmusDv:0000103	Theiler stage 09a (mouse)	271	272	5
+MmusDv:0000104	Theiler stage 09b (mouse)	273	274	5
+MmusDv:0000015	Theiler stage 10 (mouse)	276	283	4
+MmusDv:0000105	Theiler stage 10a (mouse)	277	278	5
+MmusDv:0000106	Theiler stage 10b (mouse)	279	280	5
+MmusDv:0000107	Theiler stage 10c (mouse)	281	282	5
+UBERON:0000110	neurula stage	333	364	3
+MmusDv:0000111	Theiler stage 11a (mouse)	356	357	4
+MmusDv:0000093	Theiler stage 11b (mouse)	358	359	4
+MmusDv:0000094	Theiler stage 11c (mouse)	360	361	4
+MmusDv:0000095	Theiler stage 11d (mouse)	362	363	4
+UBERON:0000111	organogenesis stage	365	432	3
+MmusDv:0000019	Theiler stage 12 (mouse)	406	411	4
+MmusDv:0000108	Theiler stage 12a (mouse)	407	408	5
+MmusDv:0000109	Theiler stage 12b (mouse)	409	410	5
+MmusDv:0000020	Theiler stage 13 (mouse)	412	413	4
+MmusDv:0000021	Theiler stage 14 (mouse)	414	415	4
+MmusDv:0000022	Theiler stage 15 (mouse)	416	417	4
+MmusDv:0000023	Theiler stage 16 (mouse)	418	419	4
+MmusDv:0000024	Theiler stage 17 (mouse)	420	421	4
+MmusDv:0000025	Theiler stage 18 (mouse)	422	423	4
+MmusDv:0000026	Theiler stage 19 (mouse)	424	425	4
+MmusDv:0000027	Theiler stage 20 (mouse)	426	427	4
+MmusDv:0000028	Theiler stage 21 (mouse)	428	429	4
+MmusDv:0000029	Theiler stage 22 (mouse)	430	431	4
+UBERON:0007220	late embryonic stage	529	638	3
+MmusDv:0000032	Theiler stage 23 (mouse)	630	631	4
+MmusDv:0000033	Theiler stage 24 (mouse)	632	633	4
+MmusDv:0000034	Theiler stage 25 (mouse)	634	635	4
+MmusDv:0000035	Theiler stage 26 (mouse)	636	637	4
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000066	fully formed stage	863	1880	3
+UBERON:0000112	sexually immature stage	1080	1239	4
+UBERON:0018685	nursing stage	1081	1156	5
+UBERON:0007221	neonate stage	1102	1107	6
+UBERON:0035946	start of neonate stage	1103	1104	7
+UBERON:0034920	infant stage	1108	1155	6
+UBERON:0034919	juvenile stage	1157	1238	5
+MmusDv:0000113	4-7 days (mouse)	1226	1227	6
+MmusDv:0000045	1 week (mouse)	1228	1229	6
+MmusDv:0000046	2 weeks (mouse)	1230	1231	6
+MmusDv:0000047	3 weeks (mouse)	1232	1233	6
+MmusDv:0000048	4 weeks (mouse)	1234	1235	6
+MmusDv:0000049	5 weeks (mouse)	1236	1237	6
+UBERON:0000113	post-juvenile adult stage	1240	1879	4
+MmusDv:0000061	early adult stage	1721	1780	5
+MmusDv:0000050	6 weeks (mouse)	1722	1723	6
+MmusDv:0000051	7 weeks (mouse)	1724	1725	6
+MmusDv:0000062	2 month-old stage (mouse)	1726	1735	6
+MmusDv:0000052	8 weeks (mouse)	1727	1728	7
+MmusDv:0000053	9 weeks (mouse)	1729	1730	7
+MmusDv:0000054	10 weeks (mouse)	1731	1732	7
+MmusDv:0000055	11 weeks (mouse)	1733	1734	7
+MmusDv:0000063	3 month-old stage (mouse)	1736	1745	6
+MmusDv:0000056	12 weeks (mouse)	1737	1738	7
+MmusDv:0000057	13 weeks (mouse)	1739	1740	7
+MmusDv:0000058	14 weeks (mouse)	1741	1742	7
+MmusDv:0000059	15 weeks (mouse)	1743	1744	7
+MmusDv:0000064	4 month-old stage (mouse)	1746	1757	6
+MmusDv:0000065	16 weeks (mouse)	1747	1748	7
+MmusDv:0000066	17 weeks (mouse)	1749	1750	7
+MmusDv:0000067	18 weeks (mouse)	1751	1752	7
+MmusDv:0000068	19 weeks (mouse)	1753	1754	7
+MmusDv:0000070	20 weeks (mouse)	1755	1756	7
+MmusDv:0000069	5 month-old stage (mouse)	1758	1767	6
+MmusDv:0000071	21 weeks (mouse)	1759	1760	7
+MmusDv:0000072	22 weeks (mouse)	1761	1762	7
+MmusDv:0000073	23 weeks (mouse)	1763	1764	7
+MmusDv:0000074	24 weeks (mouse)	1765	1766	7
+MmusDv:0000077	6 month-old stage (mouse)	1768	1779	6
+MmusDv:0000098	25 weeks (mouse)	1769	1770	7
+MmusDv:0000099	26 weeks (mouse)	1771	1772	7
+MmusDv:0000100	27 weeks (mouse)	1773	1774	7
+MmusDv:0000101	28 weeks (mouse)	1775	1776	7
+MmusDv:0000102	29 weeks (mouse)	1777	1778	7
+MmusDv:0000097	late adult stage	1781	1814	5
+MmusDv:0000075	middle aged stage (mouse)	1782	1799	6
+MmusDv:0000078	7 month-old stage (mouse)	1783	1784	7
+MmusDv:0000079	8 month-old stage (mouse)	1785	1786	7
+MmusDv:0000080	9 month-old stage (mouse)	1787	1788	7
+MmusDv:0000081	10 month-old stage (mouse)	1789	1790	7
+MmusDv:0000082	11 month-old stage (mouse)	1791	1792	7
+MmusDv:0000083	12 month-old stage (mouse)	1793	1794	7
+MmusDv:0000084	13 month-old stage (mouse)	1795	1796	7
+MmusDv:0000085	14 month-old stage (mouse)	1797	1798	7
+MmusDv:0000076	aged adult stage (mouse)	1800	1813	6
+MmusDv:0000086	15 month-old stage (mouse)	1801	1802	7
+MmusDv:0000087	16 month-old stage (mouse)	1803	1804	7
+MmusDv:0000088	17 month-old stage (mouse)	1805	1806	7
+MmusDv:0000089	18 month-old stage (mouse)	1807	1808	7
+MmusDv:0000090	19 month-old stage (mouse)	1809	1810	7
+MmusDv:0000091	20 month-old stage and over (mouse)	1811	1812	7
+---Species: 7955 Danio rerio	zebrafish	3	danio_rerio/Danio_rerio.GRCz10	GRCz10	2	7955		leopard danio|zebra danio
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000107	cleavage stage	83	142	3
+UBERON:0007232	2 cell stage	112	113	4
+UBERON:0007233	4 cell stage	114	115	4
+UBERON:0007236	8 cell stage	116	117	4
+ZFS:0000005	Cleavage:16-cell	118	119	4
+ZFS:0000006	Cleavage:32-cell	120	121	4
+ZFS:0000007	Cleavage:64-cell	122	123	4
+UBERON:0000108	blastula stage	143	210	3
+ZFS:0000008	Blastula:128-cell	164	165	4
+ZFS:0000009	Blastula:256-cell	166	167	4
+ZFS:0000010	Blastula:512-cell	168	169	4
+ZFS:0000011	Blastula:1k-cell	170	171	4
+ZFS:0000012	Blastula:High	172	173	4
+ZFS:0000013	Blastula:Oblong	174	175	4
+ZFS:0000014	Blastula:Sphere	176	177	4
+ZFS:0000015	Blastula:Dome	178	179	4
+ZFS:0000016	Blastula:30%-epiboly	180	181	4
+UBERON:0000109	gastrula stage	211	286	3
+ZFS:0000017	Gastrula:50%-epiboly	238	239	4
+ZFS:0000018	Gastrula:Germ-ring	240	241	4
+ZFS:0000019	Gastrula:Shield	242	243	4
+ZFS:0000020	Gastrula:75%-epiboly	244	245	4
+ZFS:0000021	Gastrula:90%-epiboly	246	247	4
+ZFS:0000022	Gastrula:Bud	248	249	4
+ZFS:0000049	segmentation	319	332	3
+ZFS:0000023	Segmentation:1-4 somites	320	321	4
+ZFS:0000024	Segmentation:5-9 somites	322	323	4
+ZFS:0000025	Segmentation:10-13 somites	324	325	4
+ZFS:0000026	Segmentation:14-19 somites	326	327	4
+ZFS:0000027	Segmentation:20-25 somites	328	329	4
+ZFS:0000028	Segmentation:26+ somites	330	331	4
+UBERON:0000111	organogenesis stage	365	432	3
+UBERON:0004707	pharyngula stage	366	375	4
+ZFS:0000029	Pharyngula:Prim-5	367	368	5
+ZFS:0000030	Pharyngula:Prim-15	369	370	5
+ZFS:0000031	Pharyngula:Prim-25	371	372	5
+ZFS:0000032	Pharyngula:High-pec	373	374	5
+UBERON:0000092	post-embryonic stage	640	1881	2
+ZFS:0007000	hatching	641	646	3
+ZFS:0000033	Hatching:Long-pec	642	643	4
+ZFS:0000034	Hatching:Pec-fin	644	645	4
+UBERON:0000069	larval stage	647	806	3
+ZFS:0000035	Larval:Protruding-mouth	736	737	4
+ZFS:0000036	Larval:Day 4	738	739	4
+ZFS:0000037	Larval:Day 5	740	741	4
+ZFS:0000038	Larval:Day 6	742	743	4
+ZFS:0000039	Larval:Days 7-13	744	745	4
+ZFS:0000040	Larval:Days 14-20	746	747	4
+ZFS:0000041	Larval:Days 21-29	748	749	4
+UBERON:0000066	fully formed stage	863	1880	3
+ZFS:0000042	Juvenile:Days 30-44	1076	1077	4
+ZFS:0000043	Juvenile:Days 45-89	1078	1079	4
+---Species: 8364 Xenopus tropicalis	western clawed frog	23	xenopus_tropicalis/Xenopus_tropicalis.JGI_4.2	JGI 4.2	2	8364		xenopus
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+XAO:1000082	unfertilized egg stage (Xenopus)	64	79	2
+XAO:1000083	oocyte stage I (Xenopus)	65	66	3
+XAO:1000084	oocyte stage II (Xenopus)	67	68	3
+XAO:1000085	oocyte stage III (Xenopus)	69	70	3
+XAO:1000086	oocyte stage IV (Xenopus)	71	72	3
+XAO:1000087	oocyte stage V (Xenopus)	73	74	3
+XAO:1000088	oocyte stage VI (Xenopus)	75	76	3
+XAO:1000092	mature egg stage (Xenopus)	77	78	3
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000107	cleavage stage	83	142	3
+XAO:1000028	NF stage 2- (Xenopus)	110	111	4
+UBERON:0007232	2 cell stage	112	113	4
+UBERON:0007233	4 cell stage	114	115	4
+UBERON:0007236	8 cell stage	116	117	4
+XAO:1000015	NF stage 5 (16-cell) (Xenopus)	124	125	4
+XAO:1000016	NF stage 6 (32-cell) (Xenopus)	126	127	4
+XAO:1000029	NF stage 6.5 (Xenopus)	128	129	4
+UBERON:0000108	blastula stage	143	210	3
+XAO:1000017	NF stage 7 (Xenopus)	182	183	4
+XAO:1000018	NF stage 8 (Xenopus)	184	185	4
+XAO:1000019	NF stage 9 (Xenopus)	186	187	4
+UBERON:0000109	gastrula stage	211	286	3
+XAO:1000020	NF stage 10 (Xenopus)	250	251	4
+XAO:1000030	NF stage 10.25 (Xenopus)	252	253	4
+XAO:1000031	NF stage 10.5 (Xenopus)	254	255	4
+XAO:1000021	NF stage 11 (Xenopus)	256	257	4
+XAO:1000032	NF stage 11.5 (Xenopus)	258	259	4
+XAO:1000022	NF stage 12 (Xenopus)	260	261	4
+XAO:1000033	NF stage 12.5 (Xenopus)	262	263	4
+UBERON:0000110	neurula stage	333	364	3
+XAO:1000023	NF stage 13 (Xenopus)	334	335	4
+XAO:1000024	NF stage 14 (Xenopus)	336	337	4
+XAO:1000025	NF stage 15 (Xenopus)	338	339	4
+XAO:1000026	NF stage 16 (Xenopus)	340	341	4
+XAO:1000027	NF stage 17 (Xenopus)	342	343	4
+XAO:1000034	NF stage 18 (Xenopus)	344	345	4
+XAO:1000035	NF stage 19 (Xenopus)	346	347	4
+XAO:1000036	NF stage 20 (Xenopus)	348	349	4
+XAO:1000037	NF stage 21 (Xenopus)	350	351	4
+XAO:1000007	tailbud stage (Xenopus)	433	476	3
+XAO:1000002	early tailbud stage (Xenopus)	434	449	4
+XAO:1000038	NF stage 22 (Xenopus)	435	436	5
+XAO:1000039	NF stage 23 (Xenopus)	437	438	5
+XAO:1000040	NF stage 24 (Xenopus)	439	440	5
+XAO:1000041	NF stage 25 (Xenopus)	441	442	5
+XAO:1000042	NF stage 26 (Xenopus)	443	444	5
+XAO:1000043	NF stage 27 (Xenopus)	445	446	5
+XAO:1000044	NF stage 28 (Xenopus)	447	448	5
+XAO:1000080	late tailbud stage (Xenopus)	450	475	4
+XAO:1000045	NF stage 29 and 30 (Xenopus)	451	452	5
+XAO:1000046	NF stage 31 (Xenopus)	453	454	5
+XAO:1000047	NF stage 32 (Xenopus)	455	456	5
+XAO:1000048	NF stage 33 and 34 (Xenopus)	457	458	5
+XAO:1000049	NF stage 35 and 36 (Xenopus)	459	460	5
+XAO:1000050	NF stage 37 and 38 (Xenopus)	461	462	5
+XAO:1000051	NF stage 39 (Xenopus)	463	464	5
+XAO:1000052	NF stage 40 (Xenopus)	465	466	5
+XAO:1000053	NF stage 41 (Xenopus)	467	468	5
+XAO:1000054	NF stage 42 (Xenopus)	469	470	5
+XAO:1000055	NF stage 43 (Xenopus)	471	472	5
+XAO:1000056	NF stage 44 (Xenopus)	473	474	5
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000069	larval stage	647	806	3
+UBERON:0004728	amphibian larval stage	750	805	4
+UBERON:0009849	tadpole stage	751	804	5
+XAO:1000089	premetamorphosis stage (Xenopus)	752	773	6
+XAO:1000057	NF stage 45 (Xenopus)	753	754	7
+XAO:1000058	NF stage 46 (Xenopus)	755	756	7
+XAO:1000059	NF stage 47 (Xenopus)	757	758	7
+XAO:1000060	NF stage 48 (Xenopus)	759	760	7
+XAO:1000061	NF stage 49 (Xenopus)	761	762	7
+XAO:1000062	NF stage 50 (Xenopus)	763	764	7
+XAO:1000063	NF stage 51 (Xenopus)	765	766	7
+XAO:1000064	NF stage 52 (Xenopus)	767	768	7
+XAO:1000065	NF stage 53 (Xenopus)	769	770	7
+XAO:1000066	NF stage 54 (Xenopus)	771	772	7
+XAO:1000079	metamorphosing tadpole stage (Xenopus)	774	803	6
+XAO:1000090	prometamorphosis stage (Xenopus)	775	782	7
+XAO:1000067	NF stage 55 (Xenopus)	776	777	8
+XAO:1000068	NF stage 56 (Xenopus)	778	779	8
+XAO:1000069	NF stage 57 (Xenopus)	780	781	8
+XAO:1000091	climax stage (Xenopus)	783	802	7
+XAO:1000070	NF stage 58 (Xenopus)	784	785	8
+XAO:1000071	NF stage 59 (Xenopus)	786	787	8
+XAO:1000072	NF stage 60 (Xenopus)	788	789	8
+XAO:1000073	NF stage 61 (Xenopus)	790	791	8
+XAO:1000074	NF stage 62 (Xenopus)	792	793	8
+XAO:1000075	NF stage 63 (Xenopus)	794	795	8
+XAO:1000076	NF stage 64 (Xenopus)	796	797	8
+XAO:1000077	NF stage 65 (Xenopus)	798	799	8
+XAO:1000078	NF stage 66 (Xenopus)	800	801	8
+UBERON:0000066	fully formed stage	863	1880	3
+UBERON:0000112	sexually immature stage	1080	1239	4
+UBERON:0034919	juvenile stage	1157	1238	5
+UBERON:0000113	post-juvenile adult stage	1240	1879	4
+UBERON:0018241	prime adult stage	1241	1418	5
+UBERON:0007222	late adult stage	1419	1512	5
+---Species: 7227 Drosophila melanogaster	fruit fly	4	drosophila_melanogaster/Drosophila_melanogaster.BDGP6	BDGP6	2	7227		vinegar fly|fruitfly
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+FBdv:00005286	egg stage	4	63	2
+FBdv:00005261	oogenesis stage S1	5	6	3
+FBdv:00005262	oogenesis stage S2	7	8	3
+FBdv:00005263	oogenesis stage S3	9	10	3
+FBdv:00005264	oogenesis stage S4	11	12	3
+FBdv:00005265	oogenesis stage S5	13	14	3
+FBdv:00005266	oogenesis stage S6	15	16	3
+FBdv:00005267	oogenesis stage S7	17	18	3
+FBdv:00005268	oogenesis stage S8	19	20	3
+FBdv:00005269	oogenesis stage S9	21	22	3
+FBdv:00005270	oogenesis stage S10	23	28	3
+FBdv:00005271	oogenesis stage S10A	24	25	4
+FBdv:00005272	oogenesis stage S10B	26	27	4
+FBdv:00005273	oogenesis stage S11	29	34	3
+FBdv:00007002	oogenesis stage S11a	30	31	4
+FBdv:00007003	oogenesis stage S11b	32	33	4
+FBdv:00005274	oogenesis stage S12	35	42	3
+FBdv:00005275	oogenesis stage S12A	36	37	4
+FBdv:00005276	oogenesis stage S12B	38	39	4
+FBdv:00005277	oogenesis stage S12C	40	41	4
+FBdv:00005278	oogenesis stage S13	43	54	3
+FBdv:00005279	oogenesis stage S13A	44	45	4
+FBdv:00005280	oogenesis stage S13B	46	47	4
+FBdv:00005281	oogenesis stage S13C	48	49	4
+FBdv:00005282	oogenesis stage S13D	50	51	4
+FBdv:00007006	oogenesis stage S13E	52	53	4
+FBdv:00005283	oogenesis stage S14	55	60	3
+FBdv:00005284	oogenesis stage S14A	56	57	4
+FBdv:00005285	oogenesis stage S14B	58	59	4
+FBdv:00005287	unfertilized egg stage	61	62	3
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000107	cleavage stage	83	142	3
+FBdv:00005290	pre-blastoderm stage (Drosophila)	84	109	4
+FBdv:00005291	embryonic stage 1 (Drosophila)	85	88	5
+FBdv:00005292	embryonic cycle 1 (Drosophila)	86	87	6
+FBdv:00005293	embryonic stage 2 (Drosophila)	89	104	5
+FBdv:00005294	embryonic cycle 2 (Drosophila)	90	91	6
+FBdv:00005295	embryonic cycle 3 (Drosophila)	92	93	6
+FBdv:00005296	embryonic cycle 4 (Drosophila)	94	95	6
+FBdv:00005297	embryonic cycle 5 (Drosophila)	96	97	6
+FBdv:00005298	embryonic cycle 6 (Drosophila)	98	99	6
+FBdv:00005299	embryonic cycle 7 (Drosophila)	100	101	6
+FBdv:00005300	embryonic cycle 8 (Drosophila)	102	103	6
+FBdv:00005301	embryonic stage 3 (Drosophila)	105	108	5
+FBdv:00005302	embryonic cycle 9 (Drosophila)	106	107	6
+UBERON:0000108	blastula stage	143	210	3
+FBdv:00005304	blastoderm stage (Drosophila)	150	163	4
+FBdv:00005306	embryonic stage 4 (Drosophila)	151	160	5
+FBdv:00005303	embryonic cycle 10 (Drosophila)	152	153	6
+FBdv:00005307	embryonic cycle 11 (Drosophila)	154	155	6
+FBdv:00005308	embryonic cycle 12 (Drosophila)	156	157	6
+FBdv:00005309	embryonic cycle 13 (Drosophila)	158	159	6
+FBdv:00005311	embryonic stage 5 (Drosophila)	161	162	5
+UBERON:0000109	gastrula stage	211	286	3
+FBdv:00005318	embryonic stage 6 (Drosophila)	232	233	4
+FBdv:00005319	embryonic stage 7 (Drosophila)	234	235	4
+FBdv:00005322	embryonic stage 8 (Drosophila)	236	237	4
+FBdv:00005312	embryonic cycle 14 (Drosophila)	287	292	3
+FBdv:00005313	embryonic cycle 14A (Drosophila)	288	289	4
+FBdv:00005314	embryonic cycle 14B (Drosophila)	290	291	4
+FBdv:00005315	embryonic cycle 15 (Drosophila)	293	294	3
+FBdv:00005316	embryonic cycle 16 (Drosophila)	295	296	3
+FBdv:00005321	extended germ band stage (Drosophila)	297	310	3
+FBdv:00014201	early extended germ band stage (Drosophila)	298	303	4
+FBdv:00005323	embryonic stage 9 (Drosophila)	299	300	5
+FBdv:00005324	embryonic stage 10 (Drosophila)	301	302	5
+FBdv:00004450	late extended germ band stage (Drosophila)	304	309	4
+FBdv:00005325	embryonic stage 11 (Drosophila)	305	306	5
+FBdv:00005327	embryonic stage 12 (Drosophila)	307	308	5
+FBdv:00005331	dorsal closure stage (Drosophila)	311	318	3
+FBdv:00005328	embryonic stage 13 (Drosophila)	312	313	4
+FBdv:00005330	embryonic stage 14 (Drosophila)	314	315	4
+FBdv:00005332	embryonic stage 15 (Drosophila)	316	317	4
+UBERON:0007220	late embryonic stage	529	638	3
+FBdv:00005334	embryonic stage 16 (Drosophila)	544	545	4
+FBdv:00005335	embryonic stage 17 (Drosophila)	546	555	4
+FBdv:00007015	embryonic stage 17(i) (Drosophila)	547	548	5
+FBdv:00007016	embryonic stage 17(ii) (Drosophila)	549	550	5
+FBdv:00007017	embryonic stage 17(iii) (Drosophila)	551	552	5
+FBdv:00007018	embryonic stage 17(iv) (Drosophila)	553	554	5
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000069	larval stage	647	806	3
+UBERON:0004730	instar larval stage	712	735	4
+FBdv:00005337	first instar larval stage (Drosophila)	713	714	5
+FBdv:00005338	second instar larval stage (Drosophila)	715	716	5
+FBdv:00005339	third instar larval stage (Drosophila)	717	734	5
+FBdv:00005340	early third instar larval stage (Drosophila)	718	719	6
+FBdv:00007007	late third instar larval stage (Drosophila)	720	733	6
+FBdv:00005341	wandering third instar larval stage (Drosophila)	721	728	7
+FBdv:00007019	third instar - uncleared gut stage (Drosophila)	722	723	8
+FBdv:00007020	third instar - partially cleared gut stage (Drosophila)	724	725	8
+FBdv:00007021	third instar - cleared gut stage (Drosophila)	726	727	8
+FBdv:00007004	third instar larval stage L1 (Drosophila)	729	730	7
+FBdv:00007005	third instar larval stage L2 (Drosophila)	731	732	7
+FBdv:00005342	prepupal stage (Drosophila)	807	820	3
+FBdv:00005343	prepupal stage P1 (Drosophila)	808	809	4
+FBdv:00005344	prepupal stage P2 (Drosophila)	810	811	4
+FBdv:00005345	prepupal stage P3 (Drosophila)	812	813	4
+FBdv:00005346	prepupal stage P4 (Drosophila)	814	819	4
+FBdv:00005347	prepupal stage P4(i) (Drosophila)	815	816	5
+FBdv:00005348	prepupal stage P4(ii) (Drosophila)	817	818	5
+UBERON:0000070	pupal stage	821	832	3
+FBdv:00005350	pupal stage P5 (Drosophila)	822	827	4
+FBdv:00005351	pupal stage P5(i) (Drosophila)	823	824	5
+FBdv:00005352	pupal stage P5(ii) (Drosophila)	825	826	5
+FBdv:00005353	pupal stage P6 (Drosophila)	828	829	4
+FBdv:00005354	pupal stage P7 (Drosophila)	830	831	4
+FBdv:00006011	pharate adult stage (Drosophila)	833	862	3
+FBdv:00005355	pharate adult stage P8 (Drosophila)	834	835	4
+FBdv:00005356	pharate adult stage P9 (Drosophila)	836	837	4
+FBdv:00005357	pharate adult stage P10 (Drosophila)	838	839	4
+FBdv:00005358	pharate adult stage P11 (Drosophila)	840	845	4
+FBdv:00005359	pharate adult stage P11(i) (Drosophila)	841	842	5
+FBdv:00005360	pharate adult stage P11(ii) (Drosophila)	843	844	5
+FBdv:00005361	pharate adult stage P12 (Drosophila)	846	851	4
+FBdv:00005362	pharate adult stage P12(i) (Drosophila)	847	848	5
+FBdv:00005363	pharate adult stage P12(ii) (Drosophila)	849	850	5
+FBdv:00005364	pharate adult stage P13 (Drosophila)	852	853	4
+FBdv:00005365	pharate adult stage P14 (Drosophila)	854	855	4
+FBdv:00005366	pharate adult stage P15 (Drosophila)	856	861	4
+FBdv:00005367	pharate adult stage P15(i) (Drosophila)	857	858	5
+FBdv:00005368	pharate adult stage P15(ii) (Drosophila)	859	860	5
+UBERON:0000066	fully formed stage	863	1880	3
+FBdv:00007075	day 0 of adulthood (Drosophila)	916	925	4
+FBdv:00007025	immature adult stage (Drosophila)	917	924	5
+FBdv:00005370	adult stage A1 (Drosophila)	918	919	6
+FBdv:00005371	adult stage A2 (Drosophila)	920	921	6
+FBdv:00006012	adult stage A3 (Drosophila)	922	923	6
+FBdv:00007076	day 1 of adulthood (Drosophila)	926	927	4
+FBdv:00007077	day 2 of adulthood (Drosophila)	928	929	4
+FBdv:00007078	day 3 of adulthood (Drosophila)	930	931	4
+FBdv:00007079	day 4 of adulthood (Drosophila)	932	933	4
+FBdv:00007080	day 5 of adulthood (Drosophila)	934	935	4
+FBdv:00007081	day 6 of adulthood (Drosophila)	936	937	4
+FBdv:00007082	day 7 of adulthood (Drosophila)	938	939	4
+FBdv:00007083	day 8 of adulthood (Drosophila)	940	941	4
+FBdv:00007084	day 9 of adulthood (Drosophila)	942	943	4
+FBdv:00007085	day 10 of adulthood (Drosophila)	944	945	4
+FBdv:00007086	day 11 of adulthood (Drosophila)	946	947	4
+FBdv:00007087	day 12 of adulthood (Drosophila)	948	949	4
+FBdv:00007088	day 13 of adulthood (Drosophila)	950	951	4
+FBdv:00007089	day 14 of adulthood (Drosophila)	952	953	4
+FBdv:00007090	day 15 of adulthood (Drosophila)	954	955	4
+FBdv:00007091	day 16 of adulthood (Drosophila)	956	957	4
+FBdv:00007092	day 17 of adulthood (Drosophila)	958	959	4
+FBdv:00007093	day 18 of adulthood (Drosophila)	960	961	4
+FBdv:00007094	day 19 of adulthood (Drosophila)	962	963	4
+FBdv:00007095	day 20 of adulthood (Drosophila)	964	965	4
+FBdv:00007096	day 21 of adulthood (Drosophila)	966	967	4
+FBdv:00007097	day 22 of adulthood (Drosophila)	968	969	4
+FBdv:00007098	day 23 of adulthood (Drosophila)	970	971	4
+FBdv:00007099	day 24 of adulthood (Drosophila)	972	973	4
+FBdv:00007100	day 25 of adulthood (Drosophila)	974	975	4
+FBdv:00007101	day 26 of adulthood (Drosophila)	976	977	4
+FBdv:00007102	day 27 of adulthood (Drosophila)	978	979	4
+FBdv:00007103	day 28 of adulthood (Drosophila)	980	981	4
+FBdv:00007104	day 29 of adulthood (Drosophila)	982	983	4
+FBdv:00007105	day 30 of adulthood (Drosophila)	984	985	4
+FBdv:00007106	day 31 of adulthood (Drosophila)	986	987	4
+FBdv:00007107	day 32 of adulthood (Drosophila)	988	989	4
+FBdv:00007108	day 33 of adulthood (Drosophila)	990	991	4
+FBdv:00007109	day 34 of adulthood (Drosophila)	992	993	4
+FBdv:00007110	day 35 of adulthood (Drosophila)	994	995	4
+FBdv:00007111	day 36 of adulthood (Drosophila)	996	997	4
+FBdv:00007112	day 37 of adulthood (Drosophila)	998	999	4
+FBdv:00007113	day 38 of adulthood (Drosophila)	1000	1001	4
+FBdv:00007114	day 39 of adulthood (Drosophila)	1002	1003	4
+FBdv:00007115	day 40 of adulthood (Drosophila)	1004	1005	4
+FBdv:00007116	day 41 of adulthood (Drosophila)	1006	1007	4
+FBdv:00007117	day 42 of adulthood (Drosophila)	1008	1009	4
+FBdv:00007118	day 43 of adulthood (Drosophila)	1010	1011	4
+FBdv:00007119	day 44 of adulthood (Drosophila)	1012	1013	4
+FBdv:00007120	day 45 of adulthood (Drosophila)	1014	1015	4
+FBdv:00007121	day 46 of adulthood (Drosophila)	1016	1017	4
+FBdv:00007122	day 47 of adulthood (Drosophila)	1018	1019	4
+FBdv:00007123	day 48 of adulthood (Drosophila)	1020	1021	4
+FBdv:00007124	day 49 of adulthood (Drosophila)	1022	1023	4
+FBdv:00007125	day 50 of adulthood (Drosophila)	1024	1025	4
+FBdv:00007126	day 51 of adulthood (Drosophila)	1026	1027	4
+FBdv:00007127	day 52 of adulthood (Drosophila)	1028	1029	4
+FBdv:00007128	day 53 of adulthood (Drosophila)	1030	1031	4
+FBdv:00007129	day 54 of adulthood (Drosophila)	1032	1033	4
+FBdv:00007130	day 55 of adulthood (Drosophila)	1034	1035	4
+FBdv:00007131	day 56 of adulthood (Drosophila)	1036	1037	4
+FBdv:00007132	day 57 of adulthood (Drosophila)	1038	1039	4
+FBdv:00007133	day 58 of adulthood (Drosophila)	1040	1041	4
+FBdv:00007134	day 59 of adulthood (Drosophila)	1042	1043	4
+FBdv:00007135	day 60 of adulthood (Drosophila)	1044	1045	4
+---Species: 7217 Drosophila ananassae		24	drosophila_ananassae/Drosophila_ananassae.GCA_000005115.1	GCA_000005115.1	24	7217
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000069	larval stage	647	806	3
+UBERON:0000070	pupal stage	821	832	3
+UBERON:0000066	fully formed stage	863	1880	3
+DanaDv:0000006	days 1-4 of fully formed stage (Drosophila ananassae)	910	911	4
+DanaDv:0000007	days 5-8 of fully formed stage (Drosophila ananassae)	912	913	4
+DanaDv:0000008	day 9 and more of fully formed stage (Drosophila ananassae)	914	915	4
+---Species: 7230 Drosophila mojavensis		25	drosophila_mojavensis/Drosophila_mojavensis.GCA_000005175.1	GCA_000005175.1	24	7230
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000069	larval stage	647	806	3
+UBERON:0000070	pupal stage	821	832	3
+UBERON:0000066	fully formed stage	863	1880	3
+DmojDv:0000006	days 1-4 of fully formed stage (Drosophila mojavensis)	1046	1047	4
+DmojDv:0000007	days 5-8 of fully formed stage (Drosophila mojavensis)	1048	1049	4
+DmojDv:0000008	day 9 and more of fully formed stage (Drosophila mojavensis)	1050	1051	4
+---Species: 7237 Drosophila pseudoobscura		26	drosophila_pseudoobscura/Drosophila_pseudoobscura.GCA_000001765.2	GCA_000001765.2	24	7237
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000069	larval stage	647	806	3
+UBERON:0000070	pupal stage	821	832	3
+UBERON:0000066	fully formed stage	863	1880	3
+DpseDv:0000006	days 1-4 of fully formed stage (Drosophila pseudobscura)	1052	1053	4
+DpseDv:0000007	days 5-8 of fully formed stage (Drosophila pseudobscura)	1054	1055	4
+DpseDv:0000008	day 9 and more of fully formed stage (Drosophila pseudobscura)	1056	1057	4
+---Species: 7240 Drosophila simulans		27	drosophila_simulans/Drosophila_simulans.GCA_000259055.1	GCA_000259055.1	24	7240
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000069	larval stage	647	806	3
+UBERON:0000070	pupal stage	821	832	3
+UBERON:0000066	fully formed stage	863	1880	3
+DsimDv:0000006	days 1-4 of fully formed stage (Drosophila simulans)	1058	1059	4
+DsimDv:0000007	days 5-8 of fully formed stage (Drosophila simulans)	1060	1061	4
+DsimDv:0000008	day 9 and more of fully formed stage (Drosophila simulans)	1062	1063	4
+---Species: 7244 Drosophila virilis		28	drosophila_virilis/Drosophila_virilis.GCA_000005245.1	GCA_000005245.1	24	7244
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000069	larval stage	647	806	3
+UBERON:0000070	pupal stage	821	832	3
+UBERON:0000066	fully formed stage	863	1880	3
+DvirDv:0000006	days 1-4 of fully formed stage (Drosophila virilis)	1064	1065	4
+DvirDv:0000007	days 5-8 of fully formed stage (Drosophila virilis)	1066	1067	4
+DvirDv:0000008	day 9 and more of fully formed stage (Drosophila virilis)	1068	1069	4
+---Species: 7245 Drosophila yakuba		29	drosophila_yakuba/Drosophila_yakuba.GCA_000005975.1	GCA_000005975.1	24	7245
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000069	larval stage	647	806	3
+UBERON:0000070	pupal stage	821	832	3
+UBERON:0000066	fully formed stage	863	1880	3
+DyakDv:0000006	days 1-4 of fully formed stage (Drosophila yakuba)	1070	1071	4
+DyakDv:0000007	days 5-8 of fully formed stage (Drosophila yakuba)	1072	1073	4
+DyakDv:0000008	day 9 and more of fully formed stage (Drosophila yakuba)	1074	1075	4
+---Species: 9031 Gallus gallus	chicken	21	gallus_gallus/Gallus_gallus.Galgal4	Galgal4	2	9031		bantam|red junglefowl|red jungle fowl
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+GgalDv:0000010	Hamburger Hamilton stage 1 (chicken)	477	478	3
+GgalDv:0000011	Hamburger Hamilton stages 1-2 (chicken)	479	480	3
+GgalDv:0000012	Hamburger Hamilton stage 3 (chicken)	481	482	3
+GgalDv:0000013	Hamburger Hamilton stage 4 (chicken)	483	484	3
+GgalDv:0000014	Hamburger Hamilton stages 5-6 (chicken)	485	486	3
+GgalDv:0000015	Hamburger Hamilton stage 7 (chicken)	487	488	3
+GgalDv:0000016	Hamburger Hamilton stages 7 to 8- (chicken)	489	490	3
+GgalDv:0000017	Hamburger Hamilton stage 8 (chicken)	491	492	3
+GgalDv:0000018	Hamburger Hamilton stage 9 (chicken)	493	494	3
+GgalDv:0000019	Hamburger Hamilton stages 9+ to 10- (chicken)	495	496	3
+GgalDv:0000020	Hamburger Hamilton stage 10 (chicken)	497	498	3
+GgalDv:0000021	Hamburger Hamilton stage 11 (chicken)	499	500	3
+GgalDv:0000022	Hamburger Hamilton stage 12 (chicken)	501	502	3
+GgalDv:0000023	Hamburger Hamilton stage 13 (chicken)	503	504	3
+GgalDv:0000024	Hamburger Hamilton stages 13+ to 14- (chicken)	505	506	3
+GgalDv:0000025	Hamburger Hamilton stage 14 (chicken)	507	508	3
+GgalDv:0000026	Hamburger Hamilton stages 14+ to 15- (chicken)	509	510	3
+GgalDv:0000027	Hamburger Hamilton stage 15 (chicken)	511	512	3
+GgalDv:0000028	Hamburger Hamilton stage 16 (chicken)	513	514	3
+GgalDv:0000029	Hamburger Hamilton stage 17 (chicken)	515	516	3
+GgalDv:0000030	Hamburger Hamilton stage 18 (chicken)	517	518	3
+GgalDv:0000031	Hamburger Hamilton stage 19 (chicken)	519	520	3
+GgalDv:0000032	Hamburger Hamilton stage 20 (chicken)	521	522	3
+GgalDv:0000033	Hamburger Hamilton stage 21 (chicken)	523	524	3
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000066	fully formed stage	863	1880	3
+UBERON:0000112	sexually immature stage	1080	1239	4
+UBERON:0034919	juvenile stage	1157	1238	5
+UBERON:0000113	post-juvenile adult stage	1240	1879	4
+UBERON:0018241	prime adult stage	1241	1418	5
+GgalDv:0000008	1-year-old chicken stage (chicken)	1242	1243	6
+UBERON:0007222	late adult stage	1419	1512	5
+---Species: 9593 Gorilla gorilla	gorilla	8	gorilla_gorilla/Gorilla_gorilla.gorGor3.1	gorGor3.1	2	9593		western gorilla
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000066	fully formed stage	863	1880	3
+UBERON:0000112	sexually immature stage	1080	1239	4
+UBERON:0018685	nursing stage	1081	1156	5
+UBERON:0034919	juvenile stage	1157	1238	5
+UBERON:0000113	post-juvenile adult stage	1240	1879	4
+UBERON:0018241	prime adult stage	1241	1418	5
+UBERON:0007222	late adult stage	1419	1512	5
+GgorDv:0000009	30-year-old stage (gorilla)	1430	1431	6
+GgorDv:0000010	31-year-old stage (gorilla)	1432	1433	6
+GgorDv:0000011	32-year-old stage (gorilla)	1434	1435	6
+GgorDv:0000012	33-year-old stage (gorilla)	1436	1437	6
+GgorDv:0000013	34-year-old stage (gorilla)	1438	1439	6
+GgorDv:0000014	35-year-old stage (gorilla)	1440	1441	6
+GgorDv:0000015	36-year-old stage (gorilla)	1442	1443	6
+GgorDv:0000016	37-year-old stage (gorilla)	1444	1445	6
+GgorDv:0000017	38-year-old stage (gorilla)	1446	1447	6
+GgorDv:0000018	39-year-old stage (gorilla)	1448	1449	6
+GgorDv:0000019	40-year-old stage (gorilla)	1450	1451	6
+GgorDv:0000020	41-year-old stage (gorilla)	1452	1453	6
+GgorDv:0000021	42-year-old stage (gorilla)	1454	1455	6
+GgorDv:0000022	43-year-old stage (gorilla)	1456	1457	6
+GgorDv:0000023	44-year-old stage (gorilla)	1458	1459	6
+GgorDv:0000024	45-year-old stage (gorilla)	1460	1461	6
+GgorDv:0000025	46-year-old stage (gorilla)	1462	1463	6
+GgorDv:0000026	47-year-old stage (gorilla)	1464	1465	6
+GgorDv:0000027	48-year-old stage (gorilla)	1466	1467	6
+GgorDv:0000028	49-year-old stage (gorilla)	1468	1469	6
+GgorDv:0000029	50-year-old stage (gorilla)	1470	1471	6
+GgorDv:0000030	51-year-old stage (gorilla)	1472	1473	6
+GgorDv:0000031	52-year-old and over stage (gorilla)	1474	1475	6
+---Species: 9544 Macaca mulatta	macaque	9	macaca_mulatta/Macaca_mulatta.MMUL_1	MMUL 1.0	2	9544		rhesus monkey
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000066	fully formed stage	863	1880	3
+UBERON:0000112	sexually immature stage	1080	1239	4
+UBERON:0018685	nursing stage	1081	1156	5
+MmulDv:0000046	newborn stage (macaque)	1082	1083	6
+MmulDv:0000005	1-month-old stage (macaque)	1084	1085	6
+MmulDv:0000006	2-month-old stage (macaque)	1086	1087	6
+MmulDv:0000007	3-month-old stage (macaque)	1088	1089	6
+MmulDv:0000008	4-month-old stage (macaque)	1090	1091	6
+MmulDv:0000009	5-month-old stage (macaque)	1092	1093	6
+MmulDv:0000010	6-month-old stage (macaque)	1094	1095	6
+MmulDv:0000011	7-month-old stage (macaque)	1096	1097	6
+MmulDv:0000012	8-month-old stage (macaque)	1098	1099	6
+MmulDv:0000013	9-month-old nursing stage (macaque)	1100	1101	6
+UBERON:0034919	juvenile stage	1157	1238	5
+MmulDv:0000015	9-month-old weaning stage (macaque)	1158	1159	6
+MmulDv:0000016	10-month-old stage (macaque)	1160	1161	6
+MmulDv:0000017	11-month-old stage (macaque)	1162	1163	6
+MmulDv:0000018	1-year-old stage (macaque)	1164	1165	6
+MmulDv:0000019	2-year-old stage (macaque)	1166	1167	6
+MmulDv:0000020	3-year-old immature stage (macaque)	1168	1169	6
+UBERON:0000113	post-juvenile adult stage	1240	1879	4
+UBERON:0018241	prime adult stage	1241	1418	5
+MmulDv:0000023	3-year-old mature stage (macaque)	1244	1245	6
+MmulDv:0000024	4-year-old stage (macaque)	1246	1247	6
+MmulDv:0000025	5-year-old stage (macaque)	1248	1249	6
+MmulDv:0000026	6-year-old stage (macaque)	1250	1251	6
+MmulDv:0000027	7-year-old stage (macaque)	1252	1253	6
+MmulDv:0000028	8-year-old stage (macaque)	1254	1255	6
+MmulDv:0000029	9-year-old stage (macaque)	1256	1257	6
+MmulDv:0000030	10-year-old stage (macaque)	1258	1259	6
+MmulDv:0000031	11-year-old stage (macaque)	1260	1261	6
+MmulDv:0000032	12-year-old stage (macaque)	1262	1263	6
+MmulDv:0000033	13-year-old stage (macaque)	1264	1265	6
+MmulDv:0000034	14-year-old stage (macaque)	1266	1267	6
+MmulDv:0000035	15-year-old stage (macaque)	1268	1269	6
+MmulDv:0000036	16-year-old stage (macaque)	1270	1271	6
+MmulDv:0000037	17-year-old stage (macaque)	1272	1273	6
+MmulDv:0000038	18-year-old stage (macaque)	1274	1275	6
+MmulDv:0000039	19-year-old stage (macaque)	1276	1277	6
+MmulDv:0000040	20-year-old stage (macaque)	1278	1279	6
+MmulDv:0000041	21-year-old stage (macaque)	1280	1281	6
+MmulDv:0000042	22-year-old stage (macaque)	1282	1283	6
+MmulDv:0000043	23-year-old stage (macaque)	1284	1285	6
+MmulDv:0000044	24-year-old stage (macaque)	1286	1287	6
+UBERON:0007222	late adult stage	1419	1512	5
+MmulDv:0000047	25-year-old stage (macaque)	1420	1421	6
+MmulDv:0000048	26-year-old stage (macaque)	1422	1423	6
+MmulDv:0000049	27-year-old stage (macaque)	1424	1425	6
+MmulDv:0000050	28-year-old stage (macaque)	1426	1427	6
+MmulDv:0000051	29 year-old and over stage (macaque)	1428	1429	6
+---Species: 13616 Monodelphis domestica	opossum	19	monodelphis_domestica/Monodelphis_domestica.BROADO5	monDom5	2	13616		gray short-tailed opossum|gray short tailed opossum
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000066	fully formed stage	863	1880	3
+UBERON:0000112	sexually immature stage	1080	1239	4
+UBERON:0018685	nursing stage	1081	1156	5
+UBERON:0007221	neonate stage	1102	1107	6
+UBERON:0035946	start of neonate stage	1103	1104	7
+UBERON:0034919	juvenile stage	1157	1238	5
+UBERON:0000113	post-juvenile adult stage	1240	1879	4
+UBERON:0018241	prime adult stage	1241	1418	5
+MdomDv:0000008	4-month-old stage (opossum)	1384	1385	6
+MdomDv:0000009	5-month-old stage (opossum)	1386	1387	6
+MdomDv:0000010	6-month-old stage (opossum)	1388	1389	6
+MdomDv:0000011	7-month-old stage (opossum)	1390	1391	6
+MdomDv:0000012	8-month-old stage (opossum)	1392	1393	6
+MdomDv:0000013	9-month-old stage (opossum)	1394	1395	6
+MdomDv:0000014	10-month-old stage (opossum)	1396	1397	6
+MdomDv:0000015	11-month-old stage (opossum)	1398	1399	6
+MdomDv:0000016	12-month-old stage (opossum)	1400	1401	6
+MdomDv:0000017	13-month-old stage (opossum)	1402	1403	6
+MdomDv:0000018	14-month-old stage (opossum)	1404	1405	6
+MdomDv:0000019	15-month-old stage (opossum)	1406	1407	6
+MdomDv:0000020	16-month-old stage (opossum)	1408	1409	6
+MdomDv:0000021	17-month-old stage (opossum)	1410	1411	6
+MdomDv:0000022	18-month-old stage (opossum)	1412	1413	6
+MdomDv:0000023	19-month-old stage (opossum)	1414	1415	6
+MdomDv:0000024	20-month-old stage (opossum)	1416	1417	6
+UBERON:0007222	late adult stage	1419	1512	5
+MdomDv:0000026	21-month-old stage (opossum)	1500	1501	6
+MdomDv:0000027	22-month-old stage (opossum)	1502	1503	6
+MdomDv:0000028	23-month-old stage (opossum)	1504	1505	6
+MdomDv:0000029	24-month-old stage (opossum)	1506	1507	6
+MdomDv:0000030	25-month-old stage (opossum)	1508	1509	6
+MdomDv:0000031	26-month-old and over stage (opossum)	1510	1511	6
+---Species: 9258 Ornithorhynchus anatinus	platypus	20	ornithorhynchus_anatinus/Ornithorhynchus_anatinus.OANA5	OANA5	2	9258		duckbill platypus|duck-billed platypus
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000066	fully formed stage	863	1880	3
+UBERON:0000112	sexually immature stage	1080	1239	4
+UBERON:0034919	juvenile stage	1157	1238	5
+UBERON:0000113	post-juvenile adult stage	1240	1879	4
+UBERON:0018241	prime adult stage	1241	1418	5
+UBERON:0007222	late adult stage	1419	1512	5
+---Species: 9598 Pan troglodytes	chimpanzee	6	pan_troglodytes/Pan_troglodytes.CHIMP2.1.4	CHIMP2.1.4	2	9598
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000066	fully formed stage	863	1880	3
+UBERON:0000112	sexually immature stage	1080	1239	4
+UBERON:0018685	nursing stage	1081	1156	5
+UBERON:0034919	juvenile stage	1157	1238	5
+PtroDv:0000006	3-year-old stage (chimpanzee)	1190	1191	6
+PtroDv:0000007	4-year-old stage (chimpanzee)	1192	1193	6
+PtroDv:0000008	5-year-old stage (chimpanzee)	1194	1195	6
+PtroDv:0000009	6-year-old stage (chimpanzee)	1196	1197	6
+PtroDv:0000010	7-year-old stage (chimpanzee)	1198	1199	6
+UBERON:0000113	post-juvenile adult stage	1240	1879	4
+UBERON:0018241	prime adult stage	1241	1418	5
+PtroDv:0000013	8-year-old stage (chimpanzee)	1332	1333	6
+PtroDv:0000014	9-year-old stage (chimpanzee)	1334	1335	6
+PtroDv:0000015	10-year-old stage (chimpanzee)	1336	1337	6
+PtroDv:0000016	11-year-old stage (chimpanzee)	1338	1339	6
+PtroDv:0000017	12-year-old stage (chimpanzee)	1340	1341	6
+PtroDv:0000018	13-year-old stage (chimpanzee)	1342	1343	6
+PtroDv:0000019	14-year-old stage (chimpanzee)	1344	1345	6
+PtroDv:0000020	15-year-old stage (chimpanzee)	1346	1347	6
+PtroDv:0000021	16-year-old stage (chimpanzee)	1348	1349	6
+PtroDv:0000022	17-year-old stage (chimpanzee)	1350	1351	6
+PtroDv:0000023	18-year-old stage (chimpanzee)	1352	1353	6
+PtroDv:0000024	19-year-old stage (chimpanzee)	1354	1355	6
+PtroDv:0000025	20-year-old stage (chimpanzee)	1356	1357	6
+PtroDv:0000026	21-year-old stage (chimpanzee)	1358	1359	6
+PtroDv:0000027	22-year-old stage (chimpanzee)	1360	1361	6
+PtroDv:0000028	23-year-old stage (chimpanzee)	1362	1363	6
+PtroDv:0000029	24-year-old stage (chimpanzee)	1364	1365	6
+PtroDv:0000030	25-year-old stage (chimpanzee)	1366	1367	6
+PtroDv:0000031	26-year-old stage (chimpanzee)	1368	1369	6
+PtroDv:0000032	27-year-old stage (chimpanzee)	1370	1371	6
+PtroDv:0000033	28-year-old stage (chimpanzee)	1372	1373	6
+PtroDv:0000034	29-year-old stage (chimpanzee)	1374	1375	6
+PtroDv:0000035	30-year-old stage (chimpanzee)	1376	1377	6
+PtroDv:0000036	31-year-old stage (chimpanzee)	1378	1379	6
+PtroDv:0000037	32-year-old stage (chimpanzee)	1380	1381	6
+PtroDv:0000038	33-year-old stage (chimpanzee)	1382	1383	6
+UBERON:0007222	late adult stage	1419	1512	5
+PtroDv:0000040	34-year-old stage (chimpanzee)	1476	1477	6
+PtroDv:0000041	35-year-old stage (chimpanzee)	1478	1479	6
+PtroDv:0000042	36-year-old stage (chimpanzee)	1480	1481	6
+PtroDv:0000043	37-year-old stage (chimpanzee)	1482	1483	6
+PtroDv:0000044	38-year-old stage (chimpanzee)	1484	1485	6
+PtroDv:0000045	39-year-old stage (chimpanzee)	1486	1487	6
+PtroDv:0000046	40-year-old stage (chimpanzee)	1488	1489	6
+PtroDv:0000047	41-year-old stage (chimpanzee)	1490	1491	6
+PtroDv:0000048	42-year-old stage (chimpanzee)	1492	1493	6
+PtroDv:0000049	43-year-old stage (chimpanzee)	1494	1495	6
+PtroDv:0000050	44-year-old stage (chimpanzee)	1496	1497	6
+PtroDv:0000051	45-year-old and over stage (chimpanzee)	1498	1499	6
+---Species: 9597 Pan paniscus	bonobo	7	pan_troglodytes/Pan_troglodytes.CHIMP2.1.4	CHIMP2.1.4	2	9598	PPAG	pygmy chimpanzee
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000066	fully formed stage	863	1880	3
+UBERON:0000112	sexually immature stage	1080	1239	4
+UBERON:0018685	nursing stage	1081	1156	5
+UBERON:0034919	juvenile stage	1157	1238	5
+PpanDv:0000006	21-month-old stage (bonobo)	1170	1171	6
+PpanDv:0000007	22-month-old stage (bonobo)	1172	1173	6
+PpanDv:0000008	23-month-old stage (bonobo)	1174	1175	6
+PpanDv:0000009	2-year-old stage (bonobo)	1176	1177	6
+PpanDv:0000010	3-year-old stage (bonobo)	1178	1179	6
+PpanDv:0000011	4-year-old stage (bonobo)	1180	1181	6
+PpanDv:0000012	5-year-old stage (bonobo)	1182	1183	6
+PpanDv:0000013	6-year-old stage (bonobo)	1184	1185	6
+PpanDv:0000014	7-year-old stage (bonobo)	1186	1187	6
+PpanDv:0000015	8-year-old immature stage (bonobo)	1188	1189	6
+UBERON:0000113	post-juvenile adult stage	1240	1879	4
+UBERON:0018241	prime adult stage	1241	1418	5
+PpanDv:0000018	8-year-old mature stage (bonobo)	1288	1289	6
+PpanDv:0000019	9-year-old stage (bonobo)	1290	1291	6
+PpanDv:0000020	10-year-old stage (bonobo)	1292	1293	6
+PpanDv:0000021	11-year-old stage (bonobo)	1294	1295	6
+PpanDv:0000022	12-year-old stage (bonobo)	1296	1297	6
+PpanDv:0000023	13-year-old stage (bonobo)	1298	1299	6
+PpanDv:0000024	14-year-old stage (bonobo)	1300	1301	6
+PpanDv:0000025	15-year-old stage (bonobo)	1302	1303	6
+PpanDv:0000026	16-year-old stage (bonobo)	1304	1305	6
+PpanDv:0000027	17-year-old stage (bonobo)	1306	1307	6
+PpanDv:0000028	18-year-old stage (bonobo)	1308	1309	6
+PpanDv:0000029	19-year-old stage (bonobo)	1310	1311	6
+PpanDv:0000030	20-year-old stage (bonobo)	1312	1313	6
+PpanDv:0000031	21-year-old stage (bonobo)	1314	1315	6
+PpanDv:0000032	22-year-old stage (bonobo)	1316	1317	6
+PpanDv:0000033	23-year-old stage (bonobo)	1318	1319	6
+PpanDv:0000034	24-year-old stage (bonobo)	1320	1321	6
+PpanDv:0000035	25-year-old stage (bonobo)	1322	1323	6
+PpanDv:0000036	26-year-old stage (bonobo)	1324	1325	6
+PpanDv:0000037	27-year-old stage (bonobo)	1326	1327	6
+PpanDv:0000038	28-year-old stage (bonobo)	1328	1329	6
+PpanDv:0000039	29-year-old stage (bonobo)	1330	1331	6
+UBERON:0007222	late adult stage	1419	1512	5
+---Species: 9913 Bos taurus	cattle	11	bos_taurus/Bos_taurus.UMD3.1	UMD3.1	2	9913		cow|domestic cow|domestic cattle|bovine cow
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000066	fully formed stage	863	1880	3
+UBERON:0000112	sexually immature stage	1080	1239	4
+UBERON:0034919	juvenile stage	1157	1238	5
+UBERON:0000113	post-juvenile adult stage	1240	1879	4
+UBERON:0018241	prime adult stage	1241	1418	5
+UBERON:0007222	late adult stage	1419	1512	5
+---Species: 10116 Rattus norvegicus	rat	10	rattus_norvegicus/Rattus_norvegicus.Rnor_6.0	Rnor_6.0	2	10116		brown rat
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000107	cleavage stage	83	142	3
+UBERON:0007232	2 cell stage	112	113	4
+UBERON:0007233	4 cell stage	114	115	4
+RnorDv:0000052	Witschi stage 4 (rat)	138	139	4
+RnorDv:0000053	Witschi stage 5 (rat)	140	141	4
+UBERON:0000108	blastula stage	143	210	3
+UBERON:0000109	gastrula stage	211	286	3
+RnorDv:0000006	primitive streak stage (rat)	284	285	4
+UBERON:0000110	neurula stage	333	364	3
+UBERON:0000111	organogenesis stage	365	432	3
+RnorDv:0000009	complete embryo stage (rat)	525	526	3
+RnorDv:0000010	metamorphosing embryo stage (rat)	527	528	3
+UBERON:0007220	late embryonic stage	529	638	3
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000066	fully formed stage	863	1880	3
+UBERON:0000112	sexually immature stage	1080	1239	4
+UBERON:0018685	nursing stage	1081	1156	5
+UBERON:0007221	neonate stage	1102	1107	6
+UBERON:0035946	start of neonate stage	1103	1104	7
+UBERON:0034920	infant stage	1108	1155	6
+UBERON:0034919	juvenile stage	1157	1238	5
+UBERON:0000113	post-juvenile adult stage	1240	1879	4
+RnorDv:0000016	10-week-old stage (rat)	1815	1816	5
+RnorDv:0000017	11-week-old stage (rat)	1817	1818	5
+RnorDv:0000018	3-month-old stage (rat)	1819	1820	5
+RnorDv:0000019	4-6-month-old stage (rat)	1821	1828	5
+RnorDv:0000020	4-month-old stage (rat)	1822	1823	6
+RnorDv:0000021	5-month-old stage (rat)	1824	1825	6
+RnorDv:0000022	6-month-old stage (rat)	1826	1827	6
+RnorDv:0000023	7-month-old stage (rat)	1829	1830	5
+RnorDv:0000024	8-month-old stage (rat)	1831	1832	5
+RnorDv:0000025	9-month-old stage (rat)	1833	1834	5
+RnorDv:0000026	10-month-old stage (rat)	1835	1836	5
+RnorDv:0000027	11-month-old stage (rat)	1837	1838	5
+RnorDv:0000028	12-month-old stage (rat)	1839	1840	5
+RnorDv:0000029	13-month-old stage (rat)	1841	1842	5
+RnorDv:0000030	14-month-old stage (rat)	1843	1844	5
+RnorDv:0000031	15-month-old stage (rat)	1845	1846	5
+RnorDv:0000032	16-month-old stage (rat)	1847	1848	5
+RnorDv:0000033	17-month-old stage (rat)	1849	1850	5
+RnorDv:0000034	18-month-old stage (rat)	1851	1852	5
+RnorDv:0000035	19-month-old stage (rat)	1853	1854	5
+RnorDv:0000036	20-month-old stage (rat)	1855	1856	5
+RnorDv:0000037	21-month-old stage (rat)	1857	1858	5
+RnorDv:0000038	22-month-old stage (rat)	1859	1860	5
+RnorDv:0000039	23-month-old stage (rat)	1861	1862	5
+RnorDv:0000040	24-26-month-old stage (rat)	1863	1870	5
+RnorDv:0000041	24-month-old stage (rat)	1864	1865	6
+RnorDv:0000042	25-month-old stage (rat)	1866	1867	6
+RnorDv:0000043	26-month-old stage (rat)	1868	1869	6
+RnorDv:0000044	27-month-old stage (rat)	1871	1872	5
+RnorDv:0000045	28-month-old stage (rat)	1873	1874	5
+RnorDv:0000046	29-month-old stage (rat)	1875	1876	5
+RnorDv:0000047	30-month-old stage (rat)	1877	1878	5
+---Species: 28377 Anolis carolinensis	green anole	22	anolis_carolinensis/Anolis_carolinensis.AnoCar2.0	AnoCar2.0	2	28377		anolis|carolina anole
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000066	fully formed stage	863	1880	3
+UBERON:0000112	sexually immature stage	1080	1239	4
+UBERON:0000113	post-juvenile adult stage	1240	1879	4
+UBERON:0007222	late adult stage	1419	1512	5
+---Species: 9823 Sus scrofa	pig	12	sus_scrofa/Sus_scrofa.Sscrofa10.2	Sscrofa10.2	2	9823		domestic pig|swine
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000066	fully formed stage	863	1880	3
+UBERON:0000112	sexually immature stage	1080	1239	4
+UBERON:0018685	nursing stage	1081	1156	5
+UBERON:0034919	juvenile stage	1157	1238	5
+UBERON:0000113	post-juvenile adult stage	1240	1879	4
+UBERON:0018241	prime adult stage	1241	1418	5
+UBERON:0007222	late adult stage	1419	1512	5
+---Species: 6239 Caenorhabditis elegans	nematode	5	caenorhabditis_elegans/Caenorhabditis_elegans.WBcel235	WBcel235	2	6239		C. elegans|worm|roundworm
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+WBls:0000669	unfertilized egg Ce (C elegans)	2	3	2
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000107	cleavage stage	83	142	3
+UBERON:0007232	2 cell stage	112	113	4
+UBERON:0007233	4 cell stage	114	115	4
+UBERON:0007236	8 cell stage	116	117	4
+UBERON:0000108	blastula stage	143	210	3
+WBls:0000072	12-cell embryo Ce (C elegans)	144	145	4
+WBls:0000084	14-cell embryo Ce (C elegans)	146	147	4
+WBls:0000085	24-cell embryo Ce (C elegans)	148	149	4
+UBERON:0000109	gastrula stage	211	286	3
+WBls:0000009	28-cell embryo Ce (C elegans)	212	213	4
+WBls:0000086	44-cell embryo Ce (C elegans)	214	215	4
+WBls:0000011	51-cell embryo Ce (C elegans)	216	217	4
+WBls:0000087	68-cell embryo Ce (C elegans)	218	219	4
+WBls:0000088	86-cell embryo Ce (C elegans)	220	221	4
+WBls:0000012	88-cell embryo Ce (C elegans)	222	223	4
+WBls:0000090	96-cell embryo Ce (C elegans)	224	225	4
+WBls:0000089	190-cells embryo Ce (C elegans)	226	227	4
+WBls:0000014	late cleavage stage embryo Ce (C elegans)	228	231	4
+WBls:0000013	enclosing embryo Ce (C elegans)	229	230	5
+UBERON:0007220	late embryonic stage	529	638	3
+WBls:0000015	elongating embryo Ce (C elegans)	530	541	4
+WBls:0000016	bean embryo Ce (C elegans)	531	532	5
+WBls:0000017	comma embryo Ce (C elegans)	533	534	5
+WBls:0000018	1.5-fold embryo Ce (C elegans)	535	536	5
+WBls:0000019	2-fold embryo Ce (C elegans)	537	538	5
+WBls:0000020	3-fold embryo Ce (C elegans)	539	540	5
+WBls:0000021	fully-elongated embryo Ce (C elegans)	542	543	4
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000069	larval stage	647	806	3
+UBERON:0004729	nematode larval stage	648	711	4
+WBls:0000024	L1 larva Ce (C elegans)	649	650	5
+WBls:0000026	L1-L2 molt Ce (C elegans)	651	656	5
+WBls:0000025	L1-L2 lethargus Ce (C elegans)	652	653	6
+WBls:0000042	L1-L2 ecdysis Ce (C elegans)	654	655	6
+WBls:0000043	L1-L2d molt Ce (C elegans)	657	662	5
+WBls:0000044	L1-L2d lethargus Ce (C elegans)	658	659	6
+WBls:0000045	L1-L2d ecdysis Ce (C elegans)	660	661	6
+WBls:0000027	L2 larva Ce (C elegans)	663	664	5
+WBls:0000046	L2d larva Ce (C elegans)	665	666	5
+WBls:0000029	L2-L3 molt Ce (C elegans)	667	672	5
+WBls:0000028	L2-L3 lethargus Ce (C elegans)	668	669	6
+WBls:0000047	L2-L3 ecdysis Ce (C elegans)	670	671	6
+WBls:0000031	L2d-dauer molt Ce (C elegans)	673	678	5
+WBls:0000030	L2d-dauer lethargus Ce (C elegans)	674	675	6
+WBls:0000048	L2d-dauer ecdysis Ce (C elegans)	676	677	6
+WBls:0000053	L2d-L3 molt Ce (C elegans)	679	684	5
+WBls:0000054	L2d-L3 lethargus Ce (C elegans)	680	681	6
+WBls:0000055	L2d-L3 ecdysis Ce (C elegans)	682	683	6
+WBls:0000035	L3 larva Ce (C elegans)	685	686	5
+WBls:0000032	dauer larva Ce (C elegans)	687	688	5
+WBls:0000037	L3-L4 molt Ce (C elegans)	689	694	5
+WBls:0000036	L3-L4 lethargus Ce (C elegans)	690	691	6
+WBls:0000049	L3-L4 ecdysis Ce (C elegans)	692	693	6
+WBls:0000052	post dauer stage Ce (C elegans)	695	696	5
+WBls:0000034	postdauer-L4 molt Ce (C elegans)	697	702	5
+WBls:0000033	postdauer-L4 lethargus Ce (C elegans)	698	699	6
+WBls:0000051	postdauer-L4 ecdysis Ce (C elegans)	700	701	6
+WBls:0000038	L4 larva Ce (C elegans)	703	704	5
+WBls:0000040	L4-adult molt Ce (C elegans)	705	710	5
+WBls:0000039	L4-adult lethargus Ce (C elegans)	706	707	6
+WBls:0000050	L4-adult ecdysis (C elegans)	708	709	6
+UBERON:0000066	fully formed stage	863	1880	3
+WBls:0000056	adult male Ce (C elegans)	864	865	4
+WBls:0000057	adult hermaphrodite Ce (C elegans)	866	909	4
+WBls:0000058	pre-reproductive stage adult hermaphrodite Ce (C elegans)	867	868	5
+WBls:0000060	reproductive stage adult hermaphrodite Ce (C elegans)	869	872	5
+WBls:0000061	oocyte-laying stage adult hermaphrodite Ce (C elegans)	870	871	6
+WBls:0000062	post-reproductive stage adult hermaphrodite Ce (C elegans)	873	874	5
+WBls:0000063	newly molted young adult hermaphrodite Ce (C elegans)	875	876	5
+WBls:0000064	1-day post-L4 adult hermaphrodite Ce (C elegans)	877	878	5
+WBls:0000065	2-days post-L4 adult hermaphrodite Ce (C elegans)	879	880	5
+WBls:0000066	3-days post-L4 adult hermaphrodite Ce (C elegans)	881	882	5
+WBls:0000069	4-7 days post-L4 adult hermaphrodite Ce (C elegans)	883	892	5
+WBls:0000067	4-days post-L4 adult hermaphrodite Ce (C elegans)	884	885	6
+WBls:0000068	5-days post-L4 adult hermaphrodite Ce (C elegans)	886	887	6
+WBls:0000670	6-days post-L4 adult hermaphrodite Ce (C elegans)	888	889	6
+WBls:0000671	7-days post-L4 adult hermaphrodite Ce (C elegans)	890	891	6
+WBls:0000070	7-10 days post-L4 adult hermaphrodite Ce (C elegans)	893	900	5
+WBls:0000672	8-days post-L4 adult hermaphrodite Ce (C elegans)	894	895	6
+WBls:0000673	9-days post-L4 adult hermaphrodite Ce (C elegans)	896	897	6
+WBls:0000674	10-days post-L4 adult hermaphrodite Ce (C elegans)	898	899	6
+WBls:0000074	11-15 days post-L4 adult hermaphrodite (C elegans)	901	904	5
+WBls:0000675	15-days post-L4 adult hermaphrodite Ce (C elegans)	902	903	6
+WBls:0000111	16-18 days post-L4 adult hermaphrodite Ce (C elegans)	905	906	5
+WBls:0000676	20-days post-L4 adult hermaphrodite Ce (C elegans)	907	908	5
+---Species: 9365 Erinaceus europaeus	hedgehog	18	erinaceus_europaeus/Erinaceus_europaeus.HEDGEHOG	eriEur1	2	9365
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000066	fully formed stage	863	1880	3
+UBERON:0000112	sexually immature stage	1080	1239	4
+UBERON:0034919	juvenile stage	1157	1238	5
+UBERON:0000113	post-juvenile adult stage	1240	1879	4
+UBERON:0018241	prime adult stage	1241	1418	5
+UBERON:0007222	late adult stage	1419	1512	5
+---Species: 9615 Canis lupus familiaris	dog	15	canis_familiaris/Canis_familiaris.CanFam3.1	CanFam3.1	2	9615
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000066	fully formed stage	863	1880	3
+UBERON:0000112	sexually immature stage	1080	1239	4
+UBERON:0034919	juvenile stage	1157	1238	5
+UBERON:0000113	post-juvenile adult stage	1240	1879	4
+UBERON:0018241	prime adult stage	1241	1418	5
+UBERON:0007222	late adult stage	1419	1512	5
+---Species: 9685 Felis catus	cat	16	felis_catus/Felis_catus.Felis_catus_6.2	Felis_catus_6.2	2	9685
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000066	fully formed stage	863	1880	3
+UBERON:0000112	sexually immature stage	1080	1239	4
+UBERON:0034919	juvenile stage	1157	1238	5
+UBERON:0000113	post-juvenile adult stage	1240	1879	4
+UBERON:0018241	prime adult stage	1241	1418	5
+UBERON:0007222	late adult stage	1419	1512	5
+---Species: 9796 Equus caballus	horse	13	equus_caballus/Equus_caballus.EquCab2	Equ Cab 2	2	9796
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000066	fully formed stage	863	1880	3
+UBERON:0000112	sexually immature stage	1080	1239	4
+UBERON:0034919	juvenile stage	1157	1238	5
+UBERON:0000113	post-juvenile adult stage	1240	1879	4
+UBERON:0018241	prime adult stage	1241	1418	5
+UBERON:0007222	late adult stage	1419	1512	5
+---Species: 9986 Oryctolagus cuniculus	rabbit	14	oryctolagus_cuniculus/Oryctolagus_cuniculus.OryCun2.0	OryCun2.0	2	9986
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000066	fully formed stage	863	1880	3
+UBERON:0000112	sexually immature stage	1080	1239	4
+UBERON:0034919	juvenile stage	1157	1238	5
+UBERON:0000113	post-juvenile adult stage	1240	1879	4
+UBERON:0018241	prime adult stage	1241	1418	5
+UBERON:0007222	late adult stage	1419	1512	5
+---Species: 10141 Cavia porcellus	guinea pig	17	cavia_porcellus/Cavia_porcellus.cavPor3	cavPor3	2	10141
+stageId	stageName	stageLeftBound	stageRightBound	stageLevel
+UBERON:0000104	life cycle	1	1882	1
+UBERON:0000068	embryo stage	80	639	2
+UBERON:0000106	zygote stage	81	82	3
+UBERON:0000092	post-embryonic stage	640	1881	2
+UBERON:0000066	fully formed stage	863	1880	3
+UBERON:0000112	sexually immature stage	1080	1239	4
+UBERON:0034919	juvenile stage	1157	1238	5
+UBERON:0000113	post-juvenile adult stage	1240	1879	4
+UBERON:0018241	prime adult stage	1241	1418	5
+UBERON:0007222	late adult stage	1419	1512	5

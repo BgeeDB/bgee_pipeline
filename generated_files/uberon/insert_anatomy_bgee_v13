@@ -1,0 +1,177 @@
+----------Number of anatomical entities: 
+Number of anatomical entities	With taxon constraints defined (should be equal)	Number of non-informative anatomical entities	Anatomical entities existing in all species	Anatomical entities with taxon-specific constraints
+34636	34636	174	6877	27759
+----------Number of anatomical entities per ontology: 
+ontology	count(DISTINCT anatEntityId)
+AEO	27
+CARO	3
+CL	2131
+EHDAA2	1103
+EMAPA	3027
+FBbt	8208
+GO	82
+HsapDv	1
+MA	199
+UBERON	12116
+WBbt	6673
+XAO	646
+ZFA	420
+----------Number of anatomical entities defined by taxon constraints: 
+commonAncestor	species_list	speciesCount	count	anatEntityExamples
+NULL	All species	0	6877	muscle of pelvic girdle,CD24-positive CD38-negative IgG-negative class switched memory B cell,promonocyte,hyoid apparatus,urinary bladder muscularis mucosa,coronary artery,mucous gland,dorsal zone of median tuberal portion of hypothalamus,nephron tubule epithelium,hyomandibula-metapterygoid joint,common atrial chamber,pupa,spleen germinal center,glutamatergic neuron,ileal mucosa,cardiac septum,lamina densa of glomerular basement membrane,non keratinizing barrier epithelial cell,tunica intima of artery,CD8_alpha-positive plasmactyoid dendritic cell,pronephric glomerular capsule epithelium,telencephalon neural crest,CD27-low, CD11b-high natural killer cell,presumptive midbrain hindbrain boundary,middle cerebral artery,larval midgut cell,carpal region,nipple,dorsal fin lepidotrichium 1,fenestrated capillary,hyoid bone greater horn,optic eminence,preural 1 vertebra,chorionic mesenchyme,sclerotome somite 7,substantia nigra,metatarsal bone of digit 1,ligament cell,stratum basale of epidermis,pedal digit metatarsal 
+Amniota	anolis,bonobo,chicken,chimpanzee,cow,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat	14	78	superior phrenic vein,supralabial gland,vitelline blood vessel,seminiferous tubule epithelium,primitive red blood cell,primitive erythroid progenitor,trophectoderm,palatal muscle,oropharyngeal choana,mucosa of hard palate,left crus of diaphragm,salpingopharyngeus muscle,spermatic cord,phrenic vein,epididymis glandular cell,entepicondylar foramen,transverse palatine fold,palatine raphe,proper hepatic artery,efferent duct epithelium,vasa efferentia,velar vocal fold,infralabial gland,deferent duct vein,palatopharyngeus muscle,mucosa of palate,duct of epididymis,duct of seminal vesicle,foramina of scarpa,superior suprarenal artery,median arcuate ligament,mural trophectoderm,mucosa of soft palate,temporal fenestra,esophageal hiatus,suspensory ligament of duodenum,ejaculatory duct epithelium,ambiens muscle,gastralium,raphe of hard palate,pyrenocyte,primitive reticulocyte,yolk sac hematopoietic stem cell,inferior phrenic artery,right crus of diaphragm,visceral yolk sac,visceral yolk sac cavity,inferior phrenic vein,
+Anolis	anolis	1	12	femoral gland,hemipenial holocrine gland,hemipenial mucuous gland,lumen of hemipenial sheath,hemipenal sheath,retractor lateralis posterior muscle,retractor lateralis muscle,hemipenis,horn of hemipenis,retractor lateralis anterior muscle,femoral pore,hemipenis keratinized epithelium
+Boreoeutheria	bonobo,chimpanzee,cow,gorilla,human,macaque,mouse,orangutan,pig,rat	10	67	hemomonochorial placental membrane,quadrigeminal cistern,placental membrane,decidua cell,decidua capsularis,deep artery of clitoris,urachal lumen,umbilical artery endothelium,hemotrichorial placental membrane,superficial external pudendal artery,corpus callosum,internal pudendal artery,placenta labyrinth,choroidal tapetum cellulosum,epithelial cell of umbilical artery,embryo portion of umbilical vein,dorsal artery of clitoris,placental epithelial cell,mesenchymal stem cell of Wharton's jelly,inferior vesical artery,placental cotyledon,ampullary gland,placental labyrinth vasculature,choroidal tapetum fibrosum,placental labyrinth villous,superficial circumflex iliac artery,umbilicus,endothelial cell of umbilical vein,placenta fetal blood space,extraembryonic portion of umbilical artery,umbilical cord blood,smooth muscle cell of the umbilical vein,rostrum of corpus callosum,deep circumflex iliac artery,placental hematopoietic stem cell,dorsal artery of penis,tapetum of corpus callosum,smooth muscle cell of the u
+Bos	cow	1	14	omasum,rumen,abomasum,inner lining mucosa of the abomasum,ruminant reticulum,cud,ruminant esophageal groove,rumen papilla,omasal lamina,ruminant stomach,reticulorumen,ruminant forestomach,ruminal fluid,rumen epithelium
+Caenorhabditis	c.elegans	1	6675	TL.a (C elegans),V5L.pppppap nucleus (C elegans),RMDVL (C elegans),ABplpaapapa nucleus (C elegans),V5L.ppppa nucleus (C elegans),TL.ap (C elegans),ABprpaaaapa nucleus (C elegans),V4L.pappp nucleus (C elegans),B.al nucleus (C elegans),ABalaaapprr nucleus (C elegans),P9.aapp nucleus (C elegans),Z1.ppaapp (5R) (C elegans),ABprpapapp nucleus (C elegans),MSpaaaap nucleus (C elegans),V6L.pppapaa (C elegans),ABpraaappaa nucleus (C elegans),Capppa (C elegans),ABpraapapppp nucleus (C elegans),SM2L.pap (C elegans),ABprappapp (C elegans),V6R.ppppaaa (C elegans),P5.ap (C elegans),Cppaaa (C elegans),ABprppapaaa (C elegans),Caaa nucleus (C elegans),Z1.ppppppa (5L) (C elegans),P7.aaap nucleus (C elegans),mc3V (C elegans),R8stR (C elegans),P7.aap nucleus hermaphrodite (C elegans),ABalpaaaaa (C elegans),Z4.aaa (5L) (C elegans),B.al (C elegans),ABprapppappp nucleus (C elegans),MSaaappp nucleus (C elegans),V6R.ppppp hermaphrodite (C elegans),SM1L.apa nucleus (C elegans),ABarpp nucleus (C elegans),P7 (C elegans),gon_herm_prsh_P 
+Catarrhini	bonobo,chimpanzee,gorilla,human,macaque,orangutan	6	4	sesamoid bone of the peroneus longus muscle,palatine uvula,mucosa of uvula,uvular muscle
+Cetartiodactyla	cow,pig	2	1	spiral colon
+Clupeocephala	tetraodon,zebrafish	2	5	tail electric organ,gas gland,electric organ,intracranial diverticulum of swimbladder,head electric organ
+Danio	zebrafish	1	420	parasympathetic neuron (Danio),lG2 (Danio),fast muscle cell somite 28 (Danio),vmG5 (Danio),slow muscle cell somite 26 (Danio),premaxillo-rostroid ligament (Danio),pectoral fin motor nerve 1 (Danio),CiA (Danio),hyomandibula-pterotic joint (Danio),lacuna (Danio),subcutaneous fat (Danio),MiV2 (Danio),anterior lateral process of autopalatine (Danio),immature hair cell posterior macula (Danio),fast muscle cell somite 7 (Danio),slow muscle cell somite 6 (Danio),dorsal zone olfactory bulb (Danio),ventral habenular nucleus (Danio),rostral pars anterior (Danio),esophageal striated muscle (Danio),anguloarticular-retroarticular joint (Danio),lateral protoglomerulus 2 (Danio),islet (Danio),supraneural 10 (Danio),maGx (Danio),second tier layer of breeding tubercle (Danio),t-interneuron (Danio),VeLD (Danio),lG3 (Danio),dorsomedial optic tract (Danio),intestinal rod (Danio),lateral ethmoid-supraethmoid (Danio),CoB (Danio),fast muscle cell somite 2 (Danio),atrium of sinus impar (Danio),lateral mesoderm (Danio),lG5 (Danio),Ro
+Ecdysozoa	c.elegans,fruitfly	2	1	hepatopancreas
+Euteleostomi	anolis,bonobo,chicken,chimpanzee,cow,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat,tetraodon,xenopus,zebrafish	17	5285	hypothalamus native cell,epithelial cell of upper respiratory tract,mature eosinophil,natural T-regulatory cell,endothelium,conus arteriosus,thoracodorsal artery,margo orbitalis of maxilla,periosteum,levator anguli oris,blood nerve barrier,Brodmann area,medial cartilage of palatine,dorsal tegmental nucleus pars dorsalis,outer mental barbel,metanephric glomerulus vasculature,horizontal limb of the diagonal band,interdental cell of cochlea,efferent spiracular artery,paired limb/fin segment,dorsal fin distal radial cartilage 4,upper right incisor tusk,M. gemellus,smooth muscle fiber of jejunum,oral part of ventral posterolateral nucleus,right renal medulla interstitium,neck of bone element,craniopalatine foramina,processus ventrolateralis of thoracic vertebra,hypothalamus-pituitary axis,premaxilla dentigerous process,distal tubular epithelium,lung microvascular endothelial cell,lateral nasal cartilage,type 2 vestibular sensory cell of epithelium of macula of utricle of membranous labyrinth,inferior vestibular nu
+Gallus	chicken	1	115	inner epidermal layer of feather follicle,comb and wattle,syrinx organ,crop,cavity of feather follicle,manual major digit (Aves),cervical air sac,uterine tube magnum,appendicocostalis muscle,primary remex feather,down feather,cecal tonsil,lumen of parabronchus,beak,dorsobronchus,outer epidermal layer of feather follicle,air capillary of parabronchus,posterior thoracic air sac,mucosa of infraorbital sinus,pessulus,hyperpallium,feather vane,manual major digit (Aves) digitopodial skeleton,epidermis of feather follicle,carpometacarpus,manual minor digit (Aves),lower beak,nucleus isthmo-opticus,posterior air sac,dermis of feather follicle,anterior thoracic air sac,hypocleideum,upper beak,lateroobronchus,flight feather,manual minor digit (Aves) plus metapodial segment,manual major digit (Aves) plus metapodial segment,feather bud, epidermal component,breast feather tract,rhamphotheca,maxillary rhamphotheca,cavity of feather shaft,afterfeather,interclavicular air sac,gizzard smooth muscle,feather barbule,supracoracoi
+Hominidae	bonobo,chimpanzee,gorilla,human,orangutan	5	1	simian shelf
+Homo	human	1	1108	future diencephalon D1  roof plate (human),early trigeminal pontine sensory nucleus (human),early isthmus ventricular layer (human),trigeminal medullary sensory nucleus (human),telencephalon pia mater capillaries,coccygeal vertebral cartilage condensation CC1 (human),primary palate bone (human),future myelencephalon floor plate (human),urogenital sinus epithelium vesical part (human),future metencephalon lateral wall (human),medulla oblongata basal plate (human),sclerotome 16 (human),trunk neural ectoderm (human),costal pre-cartilage condensation 10 (human),isthmus floor plate (human),foregut dorsal mesentery (human),head somite group (human),CNS cranial ganglion (human),cerebellum mantle layer (human),perineum ectodermal component (human),diencephalon future dura mater (human),somite 12 (human),somite 36 (human),vertebra C7 pre-cartilage condensation (human),sclerotome 02 (human),future metencephalon floor plate (human),early nucleus ambiguus (human),pancreas ventral primordium parenchyma (human),left lung l
+Mammalia	bonobo,chimpanzee,cow,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat	12	573	urethral gland,secondary canine tooth,major vestibular gland,mucosa of major calyx,connective tissue of prostate,postcingulum,epithelial cell of prostate,collection of hair on ear,inferior temporal sulcus,vernix caseosa,mammary placode,dentate gyrus molecular layer,molar 1 posteroloph,myoepithelial cell of sweat gland,collection of hair on forehead,mammary alveolar cell,stapes base,malleus neck,precommissural fornix of forebrain,crus of ear,fibroblast of connective tissue of nonglandular part of prostate,cingulum of lower canine tooth,intraparietal sulcus,conchal part of pinna,proisocortex,mammary gland smooth muscle,annular ligament of stapes,postcentral sulcus,prostatic utricle,lobe of prostate,inferior temporal gyrus,central amygdaloid nucleus,cardia of stomach,preprotocrista,lower primary canine tooth,luminal cell of prostate epithelium,lateral sulcus,alveolar primary septum,hippocampus glial cell,strand of auchene hair,antitragus,layer of dentate gyrus,myoepithelial cell of lactiferous gland,barbed kerat
+melanogaster subgroup	fruitfly	1	8226	horizontal fiber system neuron pb7 (Drosophila),abdominal 3 anterior ventral multidendritic neuron vdaa (Drosophila),abdominal tergite 2 (Drosophila),larval dopaminergic TM2 neuron (Drosophila),mushroom body medial lobe arborizing neuron 7 (Drosophila),antennal lobe glomerulus DA4 (Drosophila),adult metathoracic segment (Drosophila),embryonic hemocyte anlage (Drosophila),hair plate of prothoracic coxa (Drosophila),ventral abdominal td1 (Drosophila),wing branch (Drosophila),anterior deuterocerebral neuromere (Drosophila),wide field transmedullary neuron (Drosophila),skeletal muscle of prothoracic leg (Drosophila),perineurium (Drosophila),prothoracic pleural promotor and abductor muscle 29 (Drosophila),adult ostiolar valve (Drosophila),mesothoracic femoral bract (Drosophila),spiracle primordium (Drosophila),central protocerebral neuromere (Drosophila),thoracic 2 posterior commissure (Drosophila),ellipsoid body layer (Drosophila),metathoracic unguitractor plate (Drosophila),adult abdominal spiracular branch 9 (D
+Monodelphis	opossum	1	6	branch of ilio-marsupialis muscle,marsupial pouch,median vaginal canal,pouch sphincter,ilio-marsupialis muscle,lateral vaginal canal
+Murinae	mouse,rat	2	5	spongiotrophoblast layer,Zymbal's gland,anterior tegmental nucleus,barrel cortex,copula pyramidis
+Mus	mouse	1	3227	epithelium of caput of epididymis (mouse),pineal venous plexus (mouse),submucosa of dorsal pelvic urethra of female (mouse),rhombomere 04 ventricular layer (mouse),intraembryonic coelom pericardio-peritoneal component (mouse),ureteral smooth muscle layer (mouse),C7 foramen transversarium (mouse),lower leg epidermis (mouse),S4 neural arch pedicle (mouse),rest of renal interstitium (mouse),rhombomere 08 mantle layer (mouse),rest of foregut mesentery (mouse),muscularis mucosa of ventral pelvic urethra of male (mouse),midgut loop lamina propria (mouse),stomach fundus lamina propria (mouse),oesophagus vascular element (mouse),T10 annulus fibrosus (mouse),upper jaw incisor enamel organ (mouse),interdigital region between forelimb digits 2 and 3 dermis (mouse),Tl11 vertebra neural arch (mouse),upper arm rest of mesenchyme (mouse),cartilage primordium of future S4 spinous process (mouse),future spinal cord neural fold (mouse),Tl16 dorsal root ganglion (mouse),cranial mesonephric tubule of male (mouse),Tl2 dorsal root
+Ornithorhynchus	platypus	1	1	platypus crural gland
+Sauria	anolis,chicken	2	6	bursa of Fabricius,bursal plica,brille,bursal follicle,pecten oculi,palpebral bone
+Silurana	xenopus	1	651	mesonephric early proximal tubule (Xenopus),sclerotome of trunk somite 16 (Xenopus),sclerotome of trunk somite 15 (Xenopus),posterior branchial crest (Xenopus),animal pole (Xenopus),pre-chordal neural plate border (Xenopus),sensory epithelial cell (Xenopus),m. interhyoideus (Xenopus),skeletal myocyte (Xenopus),mm. levator arcuum branchialium III primordium (Xenopus),sclerotome of trunk somite 17 (Xenopus),hindlimb digit 5 (Xenopus),right lymph heart (Xenopus),sensorial layer (Xenopus),interneuron (Xenopus),hindlimb stylopod (Xenopus),fenestra basicranialis (Xenopus),mineralized extracellular matrix (Xenopus),laryngeal muscle (Xenopus),m. levator mandibulae longus internus primordium (Xenopus),ischiadic vein (Xenopus),anterodorsal lateral line placode (Xenopus),craniofacial region (Xenopus),m. levator mandibulae articularis primordium (Xenopus),claw of hindlimb digit 4 (Xenopus),middle lateral line placode (Xenopus),m. transversus ventralis II primordium (Xenopus),myotome of head somite 2 (Xenopus),tail somite
+Tetrapoda	anolis,bonobo,chicken,chimpanzee,cow,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat,xenopus	15	1165	pedal digit 5 digitopodial skeleton,epithelial cell of lacrimal canaliculus,forelimb epitrochlearis muscle,lateral tubercle of astragalus,inferior horn of thyroid cartilage,olecranon,gracile fasciculus,superficial epigastric vein,third phalanx,manual digit blood vessel,mesopodium bone,distal tarsal bone 2,thyroepiglottic ligament,distal interphalangeal joint of manural digit 5,base of crypt of lieberkuhn,clavicle blade,esophageal process,arm blood vessel,distal phalanx of digit 2,third trochanter,limb basal cell of epidermis,radius endochondral element,distal carpal bone 4 pre-cartilage condensation,auditory hair cell,mesopodium region,hyoepiglottic ligament,distal carpal bone 1,metapodium bone 8,tibial plateaux,styloid process of ulna,entepicondyle fossa,sesamoid bone of gastrocnemius,crypt of Lieberkuhn of jejunum,flexor cruris lateralis pars accessoria muscle,femoral ridge,obturator externus,plagiopatagium,cuneiform cartilage,coronoid process of ulna,tarsus endochondral element,pedal toe disc,proximal epip
+Theria	bonobo,chimpanzee,cow,gorilla,human,macaque,mouse,opossum,orangutan,pig,rat	11	113	uterine cervix squamous cell,serosa of uterine tube,ovarian ligament,tertiary chorionic villus,endometrium glandular epithelium,mammary duct,gubernaculum (female),secondary trophoblast giant cell,primary chorionic villus,nipple sheath,cervical squamo-columnar junction,connecting stalk,cervical mucosa,cuboidal oviduct epithelium,endometrium epithelium,areolar tubercle,trophoblast,lenticular process of incus,endometrium luminal epithelium,mammary gland cord,trophoblast cell,endocervix,inner cell mass,submucosa of uterine tube,uterine wall,bilaminar disc,internal cervical os,right uterine tube,uterine cervix,cervical cavity,uterine smooth muscle cell,duct of areolar gland,endometrial blood vessel,mesometrium,epithelial cell of uterus,bicornuate uterus,embryonic uterus,vagina squamous cell,main lactiferous duct,left nipple,primary lactiferous duct,uterine gland,bipartite uterus,squamous cell of ectocervix,right nipple,endocervical epithelium,quarternary lactiferous duct,intermediate trophoblast cell,vagina squamo
+----------Roots of the ontology by any relation: 
+anatEntityId	anatEntityName	anatEntityDescription	startStageId	endStageId	nonInformative
+GO:0005575	cellular_component	NULL	UBERON:0000104	UBERON:0000104	0
+UBERON:0001062	anatomical entity	Biological entity that is either an individual member of a biological species or constitutes the structural organization of an individual member of a biological species.	UBERON:0000104	UBERON:0000104	1
+----------Roots of the ontology by is_a/part_of relations: 
+anatEntityId	anatEntityName	anatEntityDescription	startStageId	endStageId	nonInformative
+GO:0005575	cellular_component	NULL	UBERON:0000104	UBERON:0000104	0
+UBERON:0001062	anatomical entity	Biological entity that is either an individual member of a biological species or constitutes the structural organization of an individual member of a biological species.	UBERON:0000104	UBERON:0000104	1
+----------Number of relations between anatomical entities: 
+Number of relations	With taxon constraints defined (should be equal)	Relations existing in all species	Relations with taxon-specific constraints
+2082515	2082515	191899	1890616
+----------Relations per status and type: 
+relationStatus	relationType	count
+indirect	is_a part_of	1249610
+indirect	develops_from	732807
+direct	is_a part_of	60712
+reflexive	is_a part_of	34636
+direct	develops_from	4430
+indirect	transformation_of	254
+direct	transformation_of	66
+----------Relations existing in all species per status and type: 
+relationStatus	relationType	count
+indirect	is_a part_of	115161
+indirect	develops_from	58117
+direct	is_a part_of	10558
+reflexive	is_a part_of	6877
+direct	develops_from	1037
+indirect	transformation_of	93
+direct	transformation_of	56
+----------Relations existing in some species per status and type: 
+relationStatus	relationType	count
+indirect	is_a part_of	1134449
+indirect	develops_from	674690
+direct	is_a part_of	50154
+reflexive	is_a part_of	27759
+direct	develops_from	3393
+indirect	transformation_of	161
+direct	transformation_of	10
+----------Number of relations defined by taxon constraints: 
+commonAncestor	species_list	speciesCount	relationCount
+NULL	All species	0	191899
+Amniota	anolis,bonobo,chicken,chimpanzee,cow,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat	14	8819
+Amniota	anolis,bonobo,chicken,chimpanzee,cow,gorilla,human,macaque,opossum,orangutan,pig,platypus,rat	13	3
+Amniota	chicken,human,mouse	3	76
+Amniota	chicken,human	2	17
+Anolis	anolis	1	341
+Bilateria	anolis,bonobo,chicken,chimpanzee,cow,fruitfly,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat,tetraodon,xenopus,zebrafish	18	1210
+Bilateria	anolis,bonobo,c.elegans,chicken,chimpanzee,cow,fruitfly,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat,tetraodon,xenopus	18	157
+Bilateria	anolis,bonobo,c.elegans,chicken,chimpanzee,cow,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat,tetraodon,xenopus,zebrafish	18	113
+Bilateria	anolis,bonobo,c.elegans,chicken,chimpanzee,cow,fruitfly,gorilla,human,macaque,opossum,orangutan,pig,platypus,rat,tetraodon,xenopus,zebrafish	18	95
+Bilateria	anolis,bonobo,c.elegans,chicken,chimpanzee,cow,fruitfly,gorilla,macaque,mouse,opossum,orangutan,pig,platypus,rat,tetraodon,xenopus,zebrafish	18	6
+Bilateria	anolis,bonobo,c.elegans,chimpanzee,cow,fruitfly,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat,tetraodon,xenopus,zebrafish	18	2
+Bilateria	anolis,bonobo,c.elegans,chicken,chimpanzee,cow,fruitfly,gorilla,human,macaque,opossum,orangutan,pig,platypus,rat,tetraodon,xenopus	17	35
+Bilateria	anolis,bonobo,chicken,chimpanzee,cow,fruitfly,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat,tetraodon,zebrafish	17	20
+Bilateria	anolis,bonobo,chicken,chimpanzee,cow,fruitfly,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat,xenopus,zebrafish	17	6
+Bilateria	anolis,bonobo,c.elegans,chicken,chimpanzee,cow,fruitfly,gorilla,macaque,mouse,opossum,orangutan,pig,platypus,rat,tetraodon,xenopus	17	1
+Bilateria	anolis,bonobo,c.elegans,chicken,chimpanzee,cow,fruitfly,gorilla,macaque,opossum,orangutan,pig,platypus,rat,tetraodon,xenopus,zebrafish	17	1
+Bilateria	anolis,bonobo,c.elegans,chicken,chimpanzee,cow,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat,tetraodon,xenopus	17	1
+Bilateria	anolis,bonobo,c.elegans,chicken,chimpanzee,cow,gorilla,human,macaque,opossum,orangutan,pig,platypus,rat,tetraodon,xenopus,zebrafish	17	1
+Bilateria	anolis,bonobo,chicken,chimpanzee,cow,fruitfly,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat,xenopus	16	31
+Bilateria	anolis,bonobo,chicken,chimpanzee,cow,fruitfly,gorilla,human,macaque,opossum,orangutan,pig,platypus,rat,tetraodon,xenopus	16	2
+Bilateria	bonobo,chimpanzee,cow,fruitfly,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat,zebrafish	14	7
+Bilateria	bonobo,c.elegans,chimpanzee,cow,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat,zebrafish	14	2
+Bilateria	bonobo,chimpanzee,cow,fruitfly,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat	13	13
+Bilateria	bonobo,c.elegans,chimpanzee,cow,fruitfly,gorilla,human,macaque,mouse,opossum,orangutan,pig,rat	13	6
+Bilateria	bonobo,c.elegans,chimpanzee,cow,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat	13	3
+Bilateria	bonobo,chimpanzee,cow,fruitfly,gorilla,human,macaque,mouse,opossum,orangutan,pig,rat	12	27
+Bilateria	bonobo,chimpanzee,cow,fruitfly,gorilla,human,macaque,mouse,orangutan,pig,rat	11	4
+Bilateria	anolis,c.elegans,chicken,cow,fruitfly,opossum,pig,platypus,tetraodon,xenopus,zebrafish	11	1
+Bilateria	bonobo,c.elegans,chimpanzee,cow,gorilla,human,macaque,mouse,orangutan,pig,rat	11	1
+Bilateria	anolis,c.elegans,chicken,cow,fruitfly,opossum,pig,platypus,tetraodon,xenopus	10	1
+Bilateria	anolis,c.elegans,chicken,fruitfly,tetraodon,xenopus,zebrafish	7	4
+Bilateria	anolis,c.elegans,chicken,fruitfly,tetraodon,xenopus	6	1
+Bilateria	anolis,chicken,fruitfly,tetraodon,xenopus,zebrafish	6	1
+Bilateria	c.elegans,fruitfly,tetraodon,xenopus,zebrafish	5	2
+Bilateria	c.elegans,fruitfly,mouse,zebrafish	4	112
+Bilateria	c.elegans,fruitfly,tetraodon,xenopus	4	1
+Bilateria	c.elegans,human,mouse,zebrafish	4	1
+Bilateria	c.elegans,fruitfly,zebrafish	3	125
+Bilateria	fruitfly,mouse,zebrafish	3	76
+Bilateria	c.elegans,mouse,zebrafish	3	26
+Bilateria	c.elegans,fruitfly,mouse	3	20
+Bilateria	fruitfly,human,zebrafish	3	17
+Bilateria	fruitfly,zebrafish	2	1258
+Bilateria	c.elegans,zebrafish	2	225
+Bilateria	fruitfly,human	2	97
+Bilateria	c.elegans,mouse	2	57
+Bilateria	fruitfly,mouse	2	55
+Bilateria	c.elegans,human	2	22
+Boreoeutheria	bonobo,chimpanzee,cow,gorilla,human,macaque,mouse,orangutan,pig,rat	10	5062
+Bos	cow	1	509
+Caenorhabditis	c.elegans	1	179202
+Catarrhini	bonobo,chimpanzee,gorilla,human,macaque,orangutan	6	358
+Cetartiodactyla	cow,pig	2	37
+Clupeocephala	tetraodon,zebrafish	2	102
+Danio	zebrafish	1	155197
+Ecdysozoa	c.elegans,fruitfly	2	594
+Euarchontoglires	bonobo,chimpanzee,gorilla,human,macaque,mouse,orangutan,rat	8	161
+Euarchontoglires	human,mouse	2	625
+Euteleostomi	anolis,bonobo,chicken,chimpanzee,cow,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat,tetraodon,xenopus,zebrafish	17	385938
+Euteleostomi	anolis,bonobo,chicken,chimpanzee,cow,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat,tetraodon,zebrafish	16	2686
+Euteleostomi	anolis,bonobo,chicken,chimpanzee,cow,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat,xenopus,zebrafish	16	156
+Euteleostomi	anolis,bonobo,chicken,chimpanzee,cow,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat,tetraodon,xenopus	16	65
+Euteleostomi	anolis,bonobo,chicken,chimpanzee,cow,gorilla,human,macaque,opossum,orangutan,pig,platypus,rat,tetraodon,xenopus,zebrafish	16	43
+Euteleostomi	anolis,bonobo,chicken,chimpanzee,cow,gorilla,macaque,mouse,opossum,orangutan,pig,platypus,rat,tetraodon,xenopus,zebrafish	16	2
+Euteleostomi	anolis,bonobo,chicken,chimpanzee,cow,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat,zebrafish	15	1512
+Euteleostomi	anolis,bonobo,chicken,chimpanzee,cow,gorilla,human,macaque,opossum,orangutan,pig,platypus,rat,tetraodon,xenopus	15	18
+Euteleostomi	bonobo,chimpanzee,cow,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat,zebrafish	13	470
+Euteleostomi	bonobo,chimpanzee,cow,gorilla,human,macaque,mouse,opossum,orangutan,pig,rat,zebrafish	12	10
+Euteleostomi	bonobo,chimpanzee,gorilla,human,macaque,mouse,orangutan,rat,zebrafish	9	320
+Euteleostomi	anolis,chicken,cow,opossum,pig,platypus,tetraodon,xenopus,zebrafish	9	1
+Euteleostomi	anolis,chicken,tetraodon,xenopus	4	1
+Euteleostomi	human,mouse,zebrafish	3	354
+Euteleostomi	tetraodon,xenopus,zebrafish	3	1
+Euteleostomi	mouse,zebrafish	2	22424
+Euteleostomi	human,zebrafish	2	2311
+Gallus	chicken	1	4533
+Hominidae	bonobo,chimpanzee,gorilla,human,orangutan	5	130
+Homo	human	1	132656
+Mammalia	bonobo,chimpanzee,cow,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat	12	35769
+Mammalia	bonobo,chimpanzee,cow,gorilla,human,macaque,opossum,orangutan,pig,platypus,rat	11	3
+melanogaster subgroup	fruitfly	1	565490
+Monodelphis	opossum	1	179
+Murinae	mouse,rat	2	292
+Mus	mouse	1	248666
+Ornithorhynchus	platypus	1	39
+Rattus	rat	1	15
+Sauria	anolis,chicken	2	342
+Silurana	xenopus	1	20937
+Tetrapoda	anolis,bonobo,chicken,chimpanzee,cow,gorilla,human,macaque,mouse,opossum,orangutan,pig,platypus,rat,xenopus	15	104500
+Tetrapoda	anolis,bonobo,chicken,chimpanzee,cow,gorilla,human,macaque,opossum,orangutan,pig,platypus,rat,xenopus	14	6
+Theria	bonobo,chimpanzee,cow,gorilla,human,macaque,mouse,opossum,orangutan,pig,rat	11	5798

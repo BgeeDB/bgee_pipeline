@@ -1,0 +1,1 @@
+../0Before/check_rna_seq_curation.pl
