@@ -1,10 +1,9 @@
-Goal: Create the Bgee database, and insert data source information.
+**Goal**: create the Bgee database, and insert data source information.
 
 ## Details
 
 This step will call in order the following files, after creating a new database:
-`bgeeSchema.sql`, `insert_data_sources.sql`, `bgeeConstraint.sql`, `bgeeIndex.sql`,
-`bgeeForeignKey.sql`. The new database is named `bgee_vRELEASE` (e.g., `bgee_v14`).
+[bgeeSchema.sql](bgeeSchema.sql), [insert_data_sources.sql](insert_data_sources.sql), [bgeeConstraint.sql](bgeeConstraint.sql), [bgeeIndex.sql](bgeeIndex.sql), [bgeeForeignKey.sql](bgeeForeignKey.sql). The new database is named `bgee_vRELEASE` (e.g., `bgee_v14`).
 
 ## Data generation
 
@@ -41,7 +40,7 @@ To manually install the Bgee database:
 6. create the foreign key constraints (that will create required indexes as well), e.g.:
 `mysql -u root -p bgee_vXX < bgeeForeignKey.sql`
 
-Important remark: altering a table after data insertion, to add indexes and constraints,
+**Important remark**: altering a table after data insertion, to add indexes and constraints,
 is faster than doing it before data insertion,
 but can fail if the table is very large, with the error 1206:
 "ERROR 1206 (HY000): The total number of locks exceeds the lock table size".

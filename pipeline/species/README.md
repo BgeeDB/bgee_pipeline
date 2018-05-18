@@ -1,13 +1,13 @@
-Requirements: having successfully run the steps in [database creation](../db_creation/).
+**Requirements**: having successfully run the steps in [database creation](../db_creation/).
 
-Requirements2: Check that the species are available in Ensembl or EnsemblMetazoa.
+**Requirements2**: check that the species are available in Ensembl or EnsemblMetazoa.
 
-Goal: Insert the species used in Bgee, the related taxonomy from NCBI, and sex information about species.
+**Goal**: insert the species used in Bgee, the related taxonomy from NCBI, and sex information about species.
 
 ## Details
 
 * The file `source_files/species/bgeeSpecies.tsv` contains the species used in Bgee. This is the file to modify to add/remove a species.
-* If you add/remove some species, you need to also update the files `pipeline/db_creation/insert_data_sources_to_species.sql` and `source_files/species/insert_species_sex_info.sql`.
+* If you add/remove some species, you need to also update the files [pipeline/db_creation/insert_data_sources_to_species.sql](../db_creation/insert_data_sources_to_species.sql) and `source_files/species/insert_species_sex_info.sql`.
 
 * Details about `source_files/species/bgeeSpecies.tsv` file:
 The first line is a header line, it must contain the following columns:
@@ -32,15 +32,13 @@ Note that it is from this file that the information about names of species are o
 If a line starts with `#`, it is commented and the species will not be inserted
 
 * This pipeline step requires the NCBI taxonomy, provided as an ontology.
-  * We cannot use the [http://www.obofoundry.org/cgi-bin/detail.cgi?id=ncbi_taxonomy official taxonomy ontology] because, as of Bgee 13, it does not include the last modifications that we requested to NCBI, and that were accepted (e.g., addition of a <i>Dipnotetrapodomorpha</i> term). Also, to correctly infer taxon constraints at later steps, we need this ontology to include disjoint classes axioms between sibling taxa, as explained in a Chris Mungall [http://douroucouli.wordpress.com/2012/04/24/taxon-constraints-in-owl blog post]. The default ontology does not include those.
+  * We cannot use the [official taxonomy ontology](http://www.obofoundry.org/cgi-bin/detail.cgi?id=ncbi_taxonomy) because, as of Bgee 13, it does not include the last modifications that we requested to NCBI, and that were accepted (e.g., addition of a _Dipnotetrapodomorpha_ term). Also, to correctly infer taxon constraints at later steps, we need this ontology to include disjoint classes axioms between sibling taxa, as explained in a Chris Mungall [blog post](http://douroucouli.wordpress.com/2012/04/24/taxon-constraints-in-owl). The default ontology does not include those.
 
-  * This pipeline step is thus capable of generating its own version of the NCBI taxonomy ontology, in the exact same way as for the official ontology, as described [on the OBOFoundry wiki](http://www.obofoundry.org/wiki/index.php/NCBITaxon:Main_Page#Methods) (see notably the [Makefile](https://sourceforge.net/p/obo/svn/HEAD/tree/ncbitaxon/trunk/src/ontology/Makefile) generating the ontology). It is based on files available from the NCBI FTP (ftp://ftp.ebi.ac.uk/pub/databases/taxonomy/ taxonomy.dat). The code to generate disjoint classes axioms is based on the code from the [owltools](https://github.com/owlcollab/owltools) Java class `owltools.cli.TaxonCommandRunner`, in the module `OWLTools-Runner`.
+  * This pipeline step is thus capable of generating its own version of the NCBI taxonomy ontology, in the exact same way as for the official ontology, as described [on the OBOFoundry wiki](http://www.obofoundry.org/wiki/index.php/NCBITaxon:Main_Page#Methods) (see notably the [Makefile](https://sourceforge.net/p/obo/svn/HEAD/tree/ncbitaxon/trunk/src/ontology/Makefile) generating the ontology). It is based on files available from the NCBI FTP (ftp://ftp.ebi.ac.uk/pub/databases/taxonomy/taxonomy.dat). The code to generate disjoint classes axioms is based on the code from the [owltools](https://github.com/owlcollab/owltools) Java class `owltools.cli.TaxonCommandRunner`, in the module `OWLTools-Runner`.
 
   * This custom taxonomy will include the species used in Bgee and their ancestors, the taxa used in our annotations and their ancestors, the taxa used in Uberon an their ancestors. To extract taxa used in Uberon, we use the `ext` version (this is the one containing more taxa).
 
   * Note that the generation of the taxonomy requires about 15Go of memory.
-
-* This pipeline steps will insert sex information about species, see `source_files/species/insert_species_sex_info.sql`.
 
 * This pipeline steps will insert sex information about species, see `source_files/species/insert_species_sex_info.sql`.
 
@@ -52,7 +50,7 @@ If a line starts with `#`, it is commented and the species will not be inserted
 * Run Makefile:
   `make`
 
-* Modify the file `pipeline/db_creation/update_data_sources.sql`: you need to add the last modification date of the taxonomy used. This information can be found by looking at the file `taxonomy.dat` at ftp://ftp.ebi.ac.uk/pub/databases/taxonomy/.
+* Modify the file [pipeline/db_creation/update_data_sources.sql](../db_creation/update_data_sources.sql): you need to add the last modification date of the taxonomy used. This information can be found by looking at the file `taxonomy.dat` at ftp://ftp.ebi.ac.uk/pub/databases/taxonomy/.
 
 ## Data verification
 
@@ -68,7 +66,7 @@ If a line starts with `#`, it is commented and the species will not be inserted
 
 ## Error handling
 
-* You can have an exception thrown, saying that a specified taxon does not exist in the taxonomy ontology, for instance `java.lang.IllegalArgumentException: Taxon NCBITaxon:71164 was not found in the ontology`. It likely means that an incorrect/deprecated taxon is used in Uberon. Remove the ID of the taxon in the file `allTaxIds.tsv` (so if the exception is related to a taxon `NCBITaxon_71164`, remove the ID `71164`). Check if the taxon ID is present in the file `annotTaxIds.tsv`, if it is, the error is on us. Otherwise, report the problem on the Uberon tracker, if you identified the taxon in Uberon. You will most likely need to manually modify the ontology to remove the offending taxa in the mean time.
+* You can have an exception thrown, saying that a specified taxon does not exist in the taxonomy ontology, for instance `java.lang.IllegalArgumentException: Taxon NCBITaxon:71164 was not found in the ontology`. It likely means that an incorrect/deprecated taxon is used in Uberon. Remove the ID of the taxon in the file `generated_files/species/allTaxIds.tsv` (so if the exception is related to a taxon `NCBITaxon_71164`, remove the ID `71164`). Check if the taxon ID is present in the file `generated_files/species/annotTaxIds.tsv`, if it is, the error is on us. Otherwise, report the problem on the Uberon tracker, if you identified the taxon in Uberon. You will most likely need to manually modify the ontology to remove the offending taxa in the mean time.
 
 * If you need to re-insert the data in the database, use `make deleteSpeciesAndTaxa`, then `make clean`.
 
