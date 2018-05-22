@@ -8,6 +8,7 @@ use diagnostics;
 # Frederic Bastian, Feb. 2017
 
 # prefill the various condition and expression tables based on %UTILS::conditionCombinations
+# DEPRECATED, NOT USED ANYMORE, CONDITION PARAMETER COMBINATIONS ARE DETERMINED IN THE JAVA PIPELINE (see InsertPropagatedCalls.java)
 
 #############################################################
 

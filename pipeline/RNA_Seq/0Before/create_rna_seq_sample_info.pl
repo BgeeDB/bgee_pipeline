@@ -173,7 +173,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         if ( exists $checked_libraries_worm{$libraryId} ){
             #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/33
             # if the library was excluded:
-            #SRP001010
+            #SRP001010, SRP000401(SRX035162, SRX036882, SRX036967, SRX036969, SRX036970, SRX047787)
             if ( $checked_libraries_worm{$libraryId} eq 'TRUE' ){
                 warn "\tInfo: [$libraryId] [$experimentId] from Wormbase was excluded following manual curation (see file $RNAseqLibWormExclusion). This library was not printed in output file.\n";
                 next SAMPLE
@@ -210,7 +210,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         # Particular types of RNA-seq. See https://www.ncbi.nlm.nih.gov/books/NBK49283/ or https://www.ebi.ac.uk/ena/submit/preparing-xmls
         my @valid_selection_methods = ('cDNA', 'oligo-dT', 'PCR', 'PolyA', 'RANDOM', 'RANDOM PCR', 'RT-PCR');
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
-        my @valid_lib_selection     = ('E-MTAB-5895');
+        my @valid_lib_selection     = ('E-MTAB-5895', 'SRP058036');
         $info =~ /<LIBRARY_SELECTION>([^<]+)<\/LIBRARY_SELECTION>/; # [^<] prevents matching to '<' character
         my $selection = $1;
         if ( $selection =~ /CAGE/ ){

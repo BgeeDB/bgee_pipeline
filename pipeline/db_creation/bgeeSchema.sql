@@ -26,42 +26,42 @@ ALTER DATABASE CHARACTER SET utf8 COLLATE utf8_general_ci;
 -- GENERAL
 -- ****************************************************
 create table author (
-    authorId smallInt unsigned not null,
-    authorName varchar(255) not null COMMENT 'Bgee team author names'
+    authorId   smallInt unsigned not null,
+    authorName varchar(255)      not null COMMENT 'Bgee team author names'
 ) engine = innodb;
 
 create table dataSource (
-    dataSourceId smallInt unsigned not null,
-    dataSourceName varchar(255) not null COMMENT 'Data source name',
-    XRefUrl varchar(255) not null default '' COMMENT 'URL for cross-references to data sources',
+    dataSourceId          smallInt unsigned not null,
+    dataSourceName        varchar(255)       not null             COMMENT 'Data source name',
+    XRefUrl               varchar(255)      not null default ''  COMMENT 'URL for cross-references to data sources',
 -- path to experiment for expression data sources (ArrayExpress, GEO, NCBI, in situ databases, ...)
 -- parameters such as experimentId are defined by the syntax [experimentId] for instance
-    experimentUrl varchar(255) not null default '' COMMENT 'URL to experiment for expression data sources',
+    experimentUrl         varchar(255)      not null default ''  COMMENT 'URL to experiment for expression data sources',
 -- path to in situ evidence for in situ databases,
 -- to Affymetrix chips for affymetrix data
 -- parameters such as experimentId are defined by the syntax [experimentId] for instance
-    evidenceUrl varchar(255) not null default '' COMMENT 'URL to evidence for expression data sources',
+    evidenceUrl           varchar(255)      not null default ''  COMMENT 'URL to evidence for expression data sources',
 -- url to the home page of the ressource
-    baseUrl varchar(255) not null default '' COMMENT 'URL to the home page of data sources',
-    releaseDate timestamp null COMMENT 'Date of data source used',
--- e.g.: Ensembl 67, cvs version xxx
-    releaseVersion varchar(255) not null default '' COMMENT 'Version of data source used',
-    dataSourceDescription TEXT COMMENT 'Description of data source',
+    baseUrl               varchar(255)      not null default ''  COMMENT 'URL to the home page of data sources',
+    releaseDate           date                  null             COMMENT 'Date of data source used',
+-- e.g.: Ensembl 87, git version xxx
+    releaseVersion        varchar(255)       not null default ''  COMMENT 'Version of data source used',
+    dataSourceDescription TEXT                                   COMMENT 'Description of data source',
 -- to define if this dataSource should be displayed on the page listing data sources
-    toDisplay boolean not null default 0 COMMENT 'Display this data source in listing data source page?',
+    toDisplay             boolean           not null default 0   COMMENT 'Display this data source in listing data source page?',
 -- a cat to organize the display
-    category enum('', 'Genomics database', 'Proteomics database',
-        'In situ data source', 'Affymetrix data source', 'EST data source', 'RNA-Seq data source',
-        'Ontology') COMMENT 'Data source category to organize the display',
+    category              enum('', 'Genomics database', 'Proteomics database',
+                               'In situ data source', 'Affymetrix data source', 'EST data source', 'RNA-Seq data source',
+                               'Ontology')                       COMMENT 'Data source category to organize the display',
 -- to organize the display. Default value is the highest value, so that this field is the last to be displayed
-    displayOrder tinyint unsigned not null default 255 COMMENT 'Data source display ordering'
+    displayOrder          tinyint unsigned  not null default 255 COMMENT 'Data source display ordering'
 ) engine = innodb;
 
 create table dataSourceToSpecies (
-    dataSourceId smallInt unsigned not null COMMENT 'Data source id',
-    speciesId mediumint unsigned not null COMMENT 'NCBI species taxon id',
-    dataType enum('affymetrix', 'est', 'in situ', 'rna-seq') not null COMMENT 'Data type',
-    infoType enum('data', 'annotation') not null COMMENT 'Information type'
+    dataSourceId smallInt  unsigned                              not null COMMENT 'Data source id',
+    speciesId    mediumint unsigned                              not null COMMENT 'NCBI species taxon id',
+    dataType     enum('affymetrix', 'est', 'in situ', 'rna-seq') not null COMMENT 'Data type',
+    infoType     enum('data', 'annotation')                      not null COMMENT 'Information type'
 ) engine = innodb;
 
 create table keyword (

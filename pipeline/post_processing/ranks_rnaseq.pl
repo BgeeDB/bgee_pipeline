@@ -205,7 +205,7 @@ if ( !$ranks_computed ) {
 
 
 ####################################################################################
-# NORMALIZE RANKS PER CONDITION AND COMPUTE WEIGHTED MEAN RANKS PER GENE-CONDITION #
+# COMPUTE WEIGHTED MEAN RANKS PER GENE-CONDITION #
 ####################################################################################
 
 # Store max rank in each species, for later normalization between conditions, data types and species

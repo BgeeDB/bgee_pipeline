@@ -19,6 +19,11 @@ my $FASTQ_PATH         = $BASE.'/FASTQ';
 my @private_exp_id     = ('SRP012682'); # E.g. GTEx
 
 
+if ( !$SRATK_PATH || !$ASPERA_CONNECT_DIR ){
+    die "\n\tSRATK_PATH and/or ASPERA_CONNECT_DIR not defined! They are used to find NCBI SRA & ASPERA executables\n\n";
+}
+
+
 open(my $ANNOTATION, '<', "$annotation_file")  or die "\n\tCannot read/open [$annotation_file]\n\n";
 #libraryId   experimentId   speciesId   organism        genomeFilePath                        database   platform                       libraryType   libraryInfo   readLength   runIds
 #SRX081869   GSE30352       9031        Gallus gallus   gallus_gallus/Gallus_gallus.Galgal4   Ensembl    Illumina Genome Analyzer IIx   SINGLE                      76           SRR306710

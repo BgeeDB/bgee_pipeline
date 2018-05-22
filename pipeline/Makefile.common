@@ -17,6 +17,9 @@ RELEASE          := 14
 DBNAME := bgee_v$(RELEASE)
 DBHOST := 127.0.0.1
 DBPORT := 3306
+DBNAME_BGEELIGHT := bgeelight_v$(RELEASE)
+DBHOST_BGEELIGHT := 127.0.0.1
+
 
 
 # Annotator machine
@@ -88,7 +91,11 @@ BGEEPIPELINEJARNAME := bgee-pipeline-$(RELEASE)-with-dependencies.jar
 BGEEPIPELINEJAR     := $(JAVALIBDIR)$(BGEEPIPELINEJARNAME)
 
 JAVA_NO_JAR := java -Xmx32g -Dbgee.dao.jdbc.username=$(DBUSER) -Dbgee.dao.jdbc.password=$(DBPASS) -Dbgee.dao.jdbc.driver.names=com.mysql.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST):$(DBPORT)/$(DBNAME)?enableQueryTimeouts=false&sessionVariables=net_write_timeout=86400,net_read_timeout=86400,wait_timeout=86400'
+# Java command allowing to connect to bgeelight without Jar. Never used without JAR for the moment but created to follow the same pattern than JAVA_NO_JAR/JAVA variables for Bgee
+JAVA_NO_JAR_BGEE_LIGHT := java -Xmx32g -Dbgee.dao.jdbc.username=$(DBUSER_BGEELIGHT) -Dbgee.dao.jdbc.password=$(DBPASS_BGEELIGHT) -Dbgee.dao.jdbc.driver.names=com.mysql.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST_BGEELIGHT):$(DBPORT)/$(DBNAME_BGEELIGHT)?enableQueryTimeouts=false&sessionVariables=net_write_timeout=86400,net_read_timeout=86400,wait_timeout=86400'
+
 JAVA := $(JAVA_NO_JAR) -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)
+JAVA_BGEE_LIGHT := $(JAVA_NO_JAR_BGEE_LIGHT) -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)
 # to pass arguments to Java command line
 ENTRY_SEP :=,
 KEY_VAL_SEP :=//
@@ -99,6 +106,8 @@ SPACE :=__
 
 MYSQLNODBNAME := mysql -u $(DBUSER) -p$(DBPASS) -h $(DBHOST) -P $(DBPORT) --init-command='SET SESSION net_write_timeout=86400; SET SESSION net_read_timeout=86400; SET SESSION wait_timeout=86400'
 MYSQL := $(MYSQLNODBNAME) $(DBNAME)
+MYSQLNODBNAME_BGEELIGHT := mysql -u $(DBUSER_BGEELIGHT) -p$(DBPASS_BGEELIGHT) -h $(DBHOST_BGEELIGHT) -P $(DBPORT) --init-command='SET SESSION net_write_timeout=86400; SET SESSION net_read_timeout=86400; SET SESSION wait_timeout=86400'
+MYSQL_BGEELIGHT := $(MYSQLNODBNAME_BGEELIGHT) $(DBNAME_BGEELIGHT)
 
 GIT    := git
 WGET   := wget -N -nv
@@ -367,6 +376,7 @@ RNASEQ_BIGBGEE_FASTQ       := /opt/gtexfile/FASTQ/
 
 # RNAseq data path
 RNASEQDATAPATH             := /var/bgee/extra/pipeline/rna_seq/
+RNASEQABUNDANCEFILE        := abundance_gene_level+new_tpm+new_fpkm+calls.tsv
 RNASEQALLRES               := $(RNASEQDATAPATH)all_results_$(DBNAME)/
 RNASEQGTFDATAPATH          := $(RNASEQDATAPATH)GTF/
 RNASEQLOGS                 := $(RNASEQALLRES)
@@ -376,15 +386,19 @@ RNASEQREPORTINFO           := $(RNASEQALLRES)reports_info_all_samples.txt
 #TODO: should this file be put in $(GENERATED_FILES_DIR)$(RNASEQPATH)?
 
 # Differential file path
-RNASEQDIFFEXPRPATH         := $(RNASEQDATAPATH)processed_differential_$(DBNAME)/
+RNASEQDIFFEXPRPATH                  := $(RNASEQDATAPATH)processed_differential_$(DBNAME)/
+RNASEQDIFFEXPRPATH_DEVANDANAT       := $(RNASEQDIFFEXPRPATH)devAndAnat/
+RNASEQDIFFEXPRPATH_SEX              := $(RNASEQDIFFEXPRPATH)sex/
 # Bioconductor file path
-RNASEQBIOCONDUCTOR         := $(RNASEQDATAPATH)bioconductor_$(DBNAME)/
-RNASEQBIOCONDUCTORDIFF     := $(RNASEQBIOCONDUCTOR)differential/
-RNASEQBIOCONDUCTORTARG     := $(RNASEQBIOCONDUCTOR)targets/
+RNASEQBIOCONDUCTOR                  := $(RNASEQDATAPATH)bioconductor_$(DBNAME)/
+#XXX is it used anymore???
+RNASEQBIOCONDUCTORDIFF              := $(RNASEQBIOCONDUCTOR)differential/
+RNASEQBIOCONDUCTORTARG              := $(RNASEQBIOCONDUCTOR)targets/
+RNASEQBIOCONDUCTORTARG_SEX          := $(RNASEQBIOCONDUCTORTARG)sex/
+RNASEQBIOCONDUCTORTARG_DEVANDANAT   := $(RNASEQBIOCONDUCTORTARG)devAndAnat/
 # TMM normalization files
-RNASEQTMMTARG              := $(RNASEQBIOCONDUCTOR)targets_TMM/
-RNASEQTMMPATH              := $(RNASEQDATAPATH)processed_TMM_$(DBNAME)/
-
+RNASEQTMMTARG                       := $(RNASEQBIOCONDUCTOR)targets_TMM/
+RNASEQTMMPATH                       := $(RNASEQDATAPATH)processed_TMM_$(DBNAME)/
 
 # =========== DOWNLOAD FILES ===============
 
@@ -395,6 +409,7 @@ DOWNLOAD_FILE_ROOT_PATH := $(GENERATED_FILES_DIR)download_files/
 CALLS_PATH := calls/
 EXPR_CALLS_PATH := $(CALLS_PATH)expr_calls/
 DIFF_EXPR_CALLS_PATH := $(CALLS_PATH)diff_expr_calls/
+PROC_EXPR_VALUES_PATH := processed_expr_values/
 ORTHOLOGS_PATH := orthologs/
 MULTI_SPE_DIFF_EXPR_CALL_PATH := $(CALLS_PATH)multi_species_diff_expr_calls/
 

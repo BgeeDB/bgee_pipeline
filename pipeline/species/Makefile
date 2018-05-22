@@ -33,7 +33,10 @@ $(ALLTAXIDSFILEPATH): $(ANNOTTAXIDSFILEPATH) $(SPECIESFILEPATH)
 TAXDAT := $(INPUT_DIR)taxonomy.dat
 $(TAXONOMYFILEPATH): $(ALLTAXIDSFILEPATH)
 	@$(CURL) $(TAX_DAT_DOWNLOAD_URL) -z $(TAXDAT) -o $(TAXDAT).tmp && $(MV) $(TAXDAT).tmp $(TAXDAT) 2>/dev/null || rm -f $(TAXDAT).tmp
-	@$(JAVA) GenerateTaxonOntology $(TAXDAT) $^ $@
+	@$(JAVA) GenerateTaxonOntology $(TAXDAT) $^ $@.tmp
+	@xz -9 $(TAXDAT)
+	@$(MV) $@.tmp $@
+	
 
 # Generate a file containing all IDs of all taxa and species used in Bgee, all taxa
 # used in our annotations, all taxa used in Uberon,
@@ -63,7 +66,7 @@ $(VERIFICATIONFILE): $(SPECIESFILEPATH) $(ANNOTTAXIDSFILEPATH) $(ALLTAXIDSFILEPA
 	@$(MV) $@.temp $@
 
 clean:
-	-@$(RM) $(TAXDAT).tmp $(TAXDAT) $(ALLTAXIDSFILEPATH).tmp $(ALLTAXIDSFILEPATH) $(ANNOTTAXIDSFILEPATH).tmp $(ANNOTTAXIDSFILEPATH) $(TAXONOMYFILEPATH) $(VERIFICATIONFILE) $(ALL_TAX_IDS_FOR_UBERON)
+	-@$(RM) $(TAXDAT).tmp $(TAXDAT) $(TAXDAT).xz $(ALLTAXIDSFILEPATH).tmp $(ALLTAXIDSFILEPATH) $(ANNOTTAXIDSFILEPATH).tmp $(ANNOTTAXIDSFILEPATH) $(TAXONOMYFILEPATH) $(VERIFICATIONFILE) $(ALL_TAX_IDS_FOR_UBERON)
 
 # special target to remove species and taxa from database. We make the name long on purpose, and does not
 # incude it in the clean target, to not wipe the database accidentally

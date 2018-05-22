@@ -693,7 +693,7 @@ sub get_condition_equivalences {
 }
 
 
-# Load from a file the putative sexes related to organs, e.g., an oocyte can be assigned
+# Load from a file the putative sex related to organs, e.g., an oocyte can be assigned
 # either a female or hermaphrodite sex information.
 # The file is a TSV file with 5 columns: Uberon ID, Uberon name, female (T/F values),
 # male (T/F values), hermaphrodite (T/F values).
