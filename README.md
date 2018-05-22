@@ -1,3 +1,5 @@
+# Pipeline of Bgee release 14.0
+
 # Bgee pipeline documentation: content
 
 **General information**
