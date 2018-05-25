@@ -49,10 +49,7 @@ This means that all expression data coming from the following developmental stag
 				
 sex : The sex corresponding to samples where expression data come from, when known.
 
-Pres/Abs : Define if we detected presence or absence of expression. Based on mapping RNA-seq reads both to genes and to intergenic regions; genes are called â€œpresentâ€ if 
-their TPM in one sample is significantly above the distribution of TPMs for intergenic regions in the same sample.
-An expression defined as 'present' means that expression is found present for this gene in this condition in at least one experiment, but it does not mean that all 
-experiments detect the presence of expression. An expression defined as â€˜absentâ€™ means that all experiments report absence of expression for this gene in this condition. 
+Pres/Abs : Define if we detected presence or absence of expression. Based on mapping RNA-seq reads both to genes and to intergenic regions; genes are called "present" if their TPM in one sample is significantly above the distribution of TPMs for intergenic regions in the same sample. An expression defined as 'present' means that expression is found present for this gene in this condition in at least one experiment, but it does not mean that all experiments detect the presence of expression. An expression defined as "absent" means that all experiments report absence of expression for this gene in this condition. 
 
 
 
