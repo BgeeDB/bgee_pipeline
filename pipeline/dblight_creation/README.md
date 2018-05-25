@@ -1,9 +1,9 @@
-Goal: Create the Bgee database, and insert data source information.
+Goal: Create the Bgee light database, and insert data source information.
 
 ## Details
 
 This step will create a light version of bgee following the DB schema defined in the file bgeeLightSchema.sql 
-The new database is named `bgeelight_vRELEASE` (e.g., `bgee_v14`).
+The new database is named `bgeelight_vRELEASE` (e.g., `bgeelight_v14`).
 
 ## Data generation
 
