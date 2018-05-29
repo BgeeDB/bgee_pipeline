@@ -1,4 +1,4 @@
-# run differentail expression analysis
+# run differential expression analysis
 
 
 
@@ -36,6 +36,7 @@ make
 * Done only if at least 2 replicates for a given condition in one experiment
 * Done only if at least 3 condition have replicates in one experiment. The more condition you have the more you will be able to detect tissue/stade differentially expressed genes 
 (e.g a comparison of only liver and heart will not allow to determine that a gene is more expressed in liver than in other tisues but only that it is more expressed in liver than in heart. It is totally different if the comparison is between liver, heart, lung, kidney, ...)
+
 **diff_analysis_rna_seq.R** and **diff_analysis_affymetrix.R**
 * calcNormFactors function: 
 	* normalize biological differences in RNA composition between samples (because the proportion of reads attributed to a given gene in a library depends on the expression properties of the whole sample rather than just the expression level of that gene)
@@ -56,6 +57,7 @@ make
 * Remove "life stage" (UBERON:0000104) from analyses because it is the development stage root!
 * Done only if at least 2 replicates of both male and female for a given condition in one experiment
 * Only biological replicates are used for the analyses. Technical replicates are removed using the annotation files (source_files/RNA-Seq/RNASeqLibrary.tsv AND source_files/RNA-Seq/RNASeqLibrary_worm.tsv)
+
 **diff_sex_analysis_rna_seq.R**
 * calcNormFactors function: 
 	* normalize biological differences in RNA composition between samples (because the proportion of reads attributed to a given gene in a library depends on the expression properties of the whole sample rather than just the expression level of that gene)
