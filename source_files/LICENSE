@@ -1,0 +1,60 @@
+All code and data are distributed under the
+            CC0 1.0 Universal
+license unless specified.
+
+
+Some of the data included in the directory source_files/ may be
+subject to third-party constraints. Users of the data are solely
+responsible for establishing the nature of and complying with
+any such restrictions.
+
+Bgee provides this data in good faith, but make no warranty,
+express or implied, nor assume any legal liability or responsibility
+for any purpose for which they are used.
+
+#########################  Uberon  #########################
+- source_files/uberon/composite-metazoan.owl.zip
+  source_files/uberon/composite-metazoan.obo
+  source_files/uberon/ext.owl
+	See http://uberon.github.io/
+
+
+#########################  In situ  ########################
+- source_files/In_situ/expr_pattern.ace.20160829
+	See https://www.wormbase.org/
+
+- source_files/In_situ/GeneExpression_tropicalis.txt
+	See http://www.xenbase.org/
+
+- source_files/In_situ/insitu.sql.gz
+  source_files/In_situ/insitu_annot.csv
+	See http://insitu.fruitfly.org/
+
+
+##########################  ESTs  ##########################
+- source_files/ESTs/smirnadb/
+	See http://www.mirz.unibas.ch/
+
+- source_files/ESTs/library.report
+	See ftp://ftp.ncbi.nih.gov/repository/UniLib/
+
+- source_files/ESTs/Dm.seq.uniq.gz
+	See https://www.ncbi.nlm.nih.gov/unigene/
+
+- source_files/ESTs/miRNA.dat.gz
+	See http://www.mirbase.org/
+	    ftp://mirbase.org/pub/mirbase/CURRENT/README
+
+
+##########################  genes  #########################
+- source_files/genes/go
+	See http://www.geneontology.org/page/use-and-license
+
+- source_files/genes/hogs_for_bgee.orthoxml.xz
+	See https://omabrowser.org/oma/FAQ/
+
+
+##########################  species ########################
+- source_files/species/taxonomy.dat.xz
+	See https://www.ncbi.nlm.nih.gov/taxonomy
+
