@@ -30,7 +30,7 @@ make
 ## Details on stage/organ differential expression
 
 **launch_diff_analysis_rna_seq.pl** and **launch_diff_analysis_affymetrix.pl**
-* Retrieve information from the bgee database
+* Retrieve expression data from the bgee database
 * Remove "life stage" (UBERON:0000104) from analyses because it is the development stage root!
 * Run run differential expression analysis for one stage and different anatomical entities AND for one anatomical entity and different stages
 * Done only if at least 2 replicates for a given condition in one experiment
@@ -53,7 +53,7 @@ make
 ## Details on sex differential expression
 
 **launch_sex_diff_analysis_rna_seq.pl**
-* Retrieve information from the bgee database
+* Retrieve expression data from the bgee database
 * Remove "life stage" (UBERON:0000104) from analyses because it is the development stage root!
 * Done only if at least 2 replicates of both male and female for a given condition in one experiment
 * Only biological replicates are used for the analyses. Technical replicates are removed using the annotation files (source_files/RNA-Seq/RNASeqLibrary.tsv AND source_files/RNA-Seq/RNASeqLibrary_worm.tsv)
