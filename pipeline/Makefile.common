@@ -181,7 +181,7 @@ VERIFICATIONFILE := $(OUTPUT_DIR)step_verification_$(RELEASE).txt
 
 # =========== FILES FROM ANNOTATORS ===============
 # URL to git annotation files
-ANNOTATION_GIT_URL            := https://gitlab.sib.swiss/Bgee/expression-annotations/raw/master
+ANNOTATION_GIT_URL            := https://gitlab.sib.swiss/Bgee/expression-annotations/raw/develop
 
 # Directory with curator files, from the root directory of the pipeline
 CURATIONPATH                  := ../../curation/
