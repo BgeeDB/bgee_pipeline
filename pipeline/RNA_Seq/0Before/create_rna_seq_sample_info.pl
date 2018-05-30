@@ -289,7 +289,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         # If read length defined and it seems very short, issue a warning
         if ( $readLength ne '' ){
             #NOTE Currently those short read length libraries look fine (in those experiments):
-            #     GSE36026 GSE38998 SRP003822 SRP003823 SRP003826 SRP003829 SRP003831
+            #     GSE36026 GSE38998 ERP000787 SRP003822 SRP003823 SRP003826 SRP003829 SRP003831
             if ( (($libraryType eq 'SINGLE') or ($libraryType eq '')) and ($readLength < 36) ){
                 warn "\tInfo: Read length is [$readLength] for SE library [$libraryId][$experimentId], which seems low and could indicate that the library is not a classical RNA-seq library. Please check.\n";
             }
