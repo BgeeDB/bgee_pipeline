@@ -46,7 +46,7 @@ my %opts = ('bgee=s'                 => \$bgee_connector,     # Bgee connector s
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $bgee_connector eq '' ){
     print "\n\tInvalid or missing argument:
-\te.g. $0  -bgee=\S(BGEECMD) -normalizationType=\$(AFFY_NORMTYPE_FILEPATH) -detectionType=\$(AFFY_DETCTYPE_FILEPATH) -chipType=\$(AFFY_CHIPTYPE_FILEPATH) -microarrayExperiment=\$(MICROARRAY_EXPERIMENT_FILEPATH) -cel_data=\$(CELPATH) -processed_mas5=\$(MAS5PATH) -affyChipInformation=\$(AFFY_CHIPINFO_FILEPATH) -chipTypeQual=\$(AFFY_CHIPTYPEQUAL_FILEPATH) -affymetrixChip=\$(AFFY_CHIP_FILEPATH) -processed_schuster=\$(SCHUSTERPATH)   --  before/after
+\te.g. $0  -bgee=\$(BGEECMD) -normalizationType=\$(AFFY_NORMTYPE_FILEPATH) -detectionType=\$(AFFY_DETCTYPE_FILEPATH) -chipType=\$(AFFY_CHIPTYPE_FILEPATH) -microarrayExperiment=\$(MICROARRAY_EXPERIMENT_FILEPATH) -cel_data=\$(CELPATH) -processed_mas5=\$(MAS5PATH) -affyChipInformation=\$(AFFY_CHIPINFO_FILEPATH) -chipTypeQual=\$(AFFY_CHIPTYPEQUAL_FILEPATH) -affymetrixChip=\$(AFFY_CHIP_FILEPATH) -processed_schuster=\$(SCHUSTERPATH)   --  before/after
 \t-bgee                       Bgee connector string
 \t-normalizationType          normalizationType                             pipeline   file
 \t-detectionType              detectionType                                 pipeline   file
@@ -299,28 +299,12 @@ closedir($IMD1);
 # retrieve all organs/stages from Bgee
 ########################################
 
-# $organs{anatEntityId}{'startStageId'} = startStageId
-# $organs{anatEntityId}{'endStageId'}   = endStageId
-my %organs;
-# $stages{stageId}{'leftBound'}  = leftBound
-# $stages{stageId}{'rightBound'} = rightBound
-my %stages;
-
-my $selOrgan = $dbh->prepare('SELECT anatEntityId, startStageId, endStageId FROM anatEntity');
-$selOrgan->execute()  or die $selOrgan->errstr;
-while ( my @data = $selOrgan->fetchrow_array ){
-    $organs{$data[0]}{'startStageId'} = $data[1];
-    $organs{$data[0]}{'endStageId'}   = $data[2];
-}
-$selOrgan->finish;
-
-my $selStage = $dbh->prepare('SELECT stageId, stageLeftBound, stageRightBound FROM stage');
-$selStage->execute()  or die $selStage->errstr;
-while ( my @data = $selStage->fetchrow_array ){
-  $stages{$data[0]}{'leftBound'}  = $data[1];
-  $stages{$data[0]}{'rightBound'} = $data[2];
-}
-$selStage->finish;
+# $organs{anatEntityId}->{'startStageId'} = startStageId
+# $organs{anatEntityId}->{'endStageId'}   = endStageId
+my %organs = %{ Utils::getBgeedbOrgans($dbh) };
+# $stages{stageId}->{'leftBound'}  = leftBound
+# $stages{stageId}->{'rightBound'} = rightBound
+my %stages = %{ Utils::getBgeedbStages($dbh) };
 
 
 ########################
@@ -381,9 +365,9 @@ while ( defined ($line = <$IN5>) ){
     my $stageId      = $tmp[9];
     # Check impossible annotation: organ not existing at the annotated stage
     if ( exists $organs{$anatEntityId} && exists $stages{$stageId} ){
-        my $startStageId = $organs{$anatEntityId}{'startStageId'};
-        my $endStageId   = $organs{$anatEntityId}{'endStageId'};
-        if ( $stages{$startStageId}{'leftBound'} <= $stages{$stageId}{'rightBound'} && $stages{$endStageId}{'rightBound'} >= $stages{$stageId}{'leftBound'} ){
+        my $startStageId = $organs{$anatEntityId}->{'startStageId'};
+        my $endStageId   = $organs{$anatEntityId}->{'endStageId'};
+        if ( $stages{$startStageId}->{'leftBound'} <= $stages{$stageId}->{'rightBound'} && $stages{$endStageId}->{'rightBound'} >= $stages{$stageId}->{'leftBound'} ){
             #OK
         }
         else {

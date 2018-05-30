@@ -72,7 +72,7 @@ if ( !$test_options || $bgee_connector eq '' || $RNAseqLib eq '' || $RNAseqLibCh
     exit 1;
 }
 
-print 'Connecting to Bgee to retrieve species information... ';
+print 'Connecting to Bgee to retrieve species/stage/organ information... ';
 # Bgee db connection
 my $dbh = Utils::connect_bgee_db($bgee_connector);
 
@@ -81,11 +81,16 @@ my %species;
 my $selSpecies = $dbh->prepare('SELECT species.speciesId, CONCAT(species.genus, " ", species.species), species.genomeFilePath, dataSource.dataSourceName FROM species INNER JOIN dataSource ON species.dataSourceId = dataSource.dataSourceId;');
 $selSpecies->execute()  or die $selSpecies->errstr;
 while ( my @data = $selSpecies->fetchrow_array ){
-    $species{$data[0]}->{'organism'} = $data[1];
+    $species{$data[0]}->{'organism'}       = $data[1];
     $species{$data[0]}->{'genomeFilePath'} = $data[2];
-    $species{$data[0]}->{'database'} = $data[3];
+    $species{$data[0]}->{'database'}       = $data[3];
 }
 $selSpecies->finish;
+
+# Retrieve all organs/stages from Bgee
+my %organs = %{ Utils::getBgeedbOrgans($dbh) };
+my %stages = %{ Utils::getBgeedbStages($dbh) };
+
 $dbh->disconnect;
 print "Done\n";
 
@@ -135,6 +140,8 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
     my $libraryId    = $tsv{'libraryId'}[$i];
     my $experimentId = $tsv{'experimentId'}[$i];
     my $tag          = $tsv{'tags'}[$i] // '';
+    my $anatID       = $tsv{'uberonId'}[$i];
+    my $stageID      = $tsv{'stageId'}[$i];
 
     # line commented: skipped
     next SAMPLE  if ( $libraryId =~ /^#/ );
@@ -142,8 +149,17 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
     print "\t$libraryId\t$experimentId\n";
 
     # skipped if no species matching the annotated speciesId in the database
-    if ( ! exists($species{ $tsv{'speciesId'}[$i] }) ) {
+    if ( ! exists($species{ $tsv{'speciesId'}[$i] }) ){
         warn "\tWarning: No species/genome assembly defined in the database for [$libraryId] [$experimentId]: [$tsv{'speciesId'}[$i]]. This library was not printed in output file.\n";
+        next SAMPLE;
+    }
+    # skipped if anatID or stageID not in bgee db (e.g. too recent Uberon used by annotators)
+    if ( ! exists($organs{ $anatID })  || !$anatID ){
+        warn "\tWarning: [$anatID] anatId  does not exist in the database for [$libraryId] [$experimentId]. This library was not printed in output file.\n";
+        next SAMPLE;
+    }
+    if ( ! exists($stages{ $stageID }) || !$stageID ){
+        warn "\tWarning: [$stageID] stageId does not exist in the database for [$libraryId] [$experimentId]. This library was not printed in output file.\n";
         next SAMPLE;
     }
 

@@ -102,29 +102,13 @@ print "Done\n"  if ( $debug );
 #######################################
 # retrieve all organs/stages from Bgee
 #######################################
-my %organs;
+my %organs = %{ Utils::getBgeedbOrgans($dbh) };
 # $organs{organId}->{'startStageId'} = startStageId
 # $organs{organId}->{'endStageId'}   = endStageId
 
-my %stages;
+my %stages = %{ Utils::getBgeedbStages($dbh) };
 # $stages{stageId}->{'leftBound'}  = leftBound
 # $stages{stageId}->{'rightBound'} = rightBound
-
-my $selAnat = $dbh->prepare('SELECT anatEntityId, startStageId, endStageId FROM anatEntity');
-$selAnat->execute()  or die $selAnat->errstr;
-while ( my @data = $selAnat->fetchrow_array ) {
-    $organs{$data[0]}->{'startStageId'} = $data[1];
-    $organs{$data[0]}->{'endStageId'}   = $data[2];
-}
-$selAnat->finish;
-
-my $selStage = $dbh->prepare('SELECT stageId, stageLeftBound, stageRightBound FROM stage');
-$selStage->execute()  or die $selStage->errstr;
-while ( my @data = $selStage->fetchrow_array ) {
-    $stages{$data[0]}->{'leftBound'}  = $data[1];
-    $stages{$data[0]}->{'rightBound'} = $data[2];
-}
-$selStage->finish;
 $dbh->disconnect;
 
 ######################

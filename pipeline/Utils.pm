@@ -1139,5 +1139,40 @@ sub revhash(\%)
     return ( %result );
 }
 
+
+# Return hash of stageId contained in Bgee database
+# with leftBound and rightBound stage associated
+sub getBgeedbStages {
+    my ($dbh) = @_;
+
+    my %stages;
+    my $selStage = $dbh->prepare('SELECT stageId, stageLeftBound, stageRightBound FROM stage');
+    $selStage->execute()  or die $selStage->errstr;
+    while ( my @data = $selStage->fetchrow_array ) {
+        $stages{$data[0]}->{'leftBound'}  = $data[1];
+        $stages{$data[0]}->{'rightBound'} = $data[2];
+    }
+    $selStage->finish;
+
+    return \%stages;
+}
+
+# Return hash of anatEntityId contained in Bgee database
+# with start and end stages associated
+sub getBgeedbOrgans {
+    my ($dbh) = @_;
+
+    my %organs;
+    my $selAnat = $dbh->prepare('SELECT anatEntityId, startStageId, endStageId FROM anatEntity');
+    $selAnat->execute()  or die $selAnat->errstr;
+    while ( my @data = $selAnat->fetchrow_array ) {
+        $organs{$data[0]}->{'startStageId'} = $data[1];
+        $organs{$data[0]}->{'endStageId'}   = $data[2];
+    }
+    $selAnat->finish;
+
+    return \%organs;
+}
+
 1;
 
