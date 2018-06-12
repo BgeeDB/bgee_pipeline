@@ -55,6 +55,9 @@ global_check:
 	@R -e 'library("methods")'           >> $@.tmp  2>/dev/null
 	@R -e 'library("RCurl")'             >> $@.tmp  2>/dev/null
 	@R -e 'library("XML")'               >> $@.tmp  2>/dev/null
+# R annotator script
+	@R -e 'library("SRAdb")'             >> $@.tmp  2>/dev/null
+	@R -e 'library("gsubfn")'            >> $@.tmp  2>/dev/null
 # For topAnat
 	@R -e 'library("Rgraphviz")'         >> $@.tmp  2>/dev/null
 	@R -e 'library("rJava")'             >> $@.tmp  2>/dev/null
