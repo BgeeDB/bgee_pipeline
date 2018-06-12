@@ -300,7 +300,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
 
         ## Issue warning is the XML entry includes keywords suggesting that the library is not classical RNA-seq
         my @not_traditional = ('DeepSAGE', 'DeepCAGE', 'CAGE', 'RACE', 'SAGE', 'DpnII', 'DpnIII', 'NlaIII', 'capture', 'CEL-seq');
-        my @verified        = ('ERP104395', 'GSE22410', 'GSE64283', 'SRP000401', 'SRP013825', 'SRP041131', 'SRP092799', 'SRP098705', 'SRP112616', 'SRP125959');
+        my @verified        = ('ERP000787', 'ERP104395', 'GSE22410', 'GSE64283', 'SRP000401', 'SRP013825', 'SRP041131', 'SRP092799', 'SRP098705', 'SRP112616', 'SRP125959');
         if ( all { $experimentId ne $_ } @verified and any { $info =~ /$_/ } @not_traditional ){
             warn "\tWarning: [$libraryId][$experimentId] may not be traditional RNA-seq (SAGE, CAGE, RACE, DpnII or NlaIII tag-based, capture array, CEL-seq, etc). Please check.\n";
         }
