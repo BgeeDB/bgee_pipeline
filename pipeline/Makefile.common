@@ -344,6 +344,7 @@ ANNOTATIONPATH    := $(AFFYDATAPATH)annotations/
 
 # =========== RNA_Seq FILES ===============
 RNASEQPATH                         := RNA_Seq/
+EXTRAMAPPING_FILEPATH              := $(SOURCE_FILES_DIR)$(RNASEQPATH)Bgee$(RELEASE)_mapToUberon.tsv
 RNASEQ_EXPERIMENT_FILEPATH         := $(SOURCE_FILES_DIR)$(RNASEQPATH)RNASeqExperiment.tsv
 RNASEQ_EXPERIMENT_FILEPATH_WORM    := $(SOURCE_FILES_DIR)$(RNASEQPATH)RNASeqExperiment_worm.tsv
 RNASEQ_EXPERIMENT_FILEPATH_FULL    := $(GENERATED_FILES_DIR)$(RNASEQPATH)RNASeqExperiment_full.tsv
@@ -357,7 +358,7 @@ RNASEQ_SAMPEXCLUDED_FILEPATH       := $(GENERATED_FILES_DIR)$(RNASEQPATH)rna_seq
 RNASEQ_LENGTH_INFO_FILEPATH        := $(GENERATED_FILES_DIR)$(RNASEQPATH)rna_seq_length_info.txt
 
 # RNAseq Vital-IT paths
-# TODO: clean-up and remove unused ones
+# TODO clean-up and remove unused ones
 RNASEQ_VITALIT_READONLY        := /data/ul/dee/bgee/
 RNASEQ_VITALIT_SCRIPTS         := $(RNASEQ_VITALIT_READONLY)/GIT/pipeline/
 RNASEQ_VITALIT_GTF             := $(RNASEQ_VITALIT_READONLY)rna_seq/GTF/
@@ -381,9 +382,9 @@ RNASEQALLRES               := $(RNASEQDATAPATH)all_results_$(DBNAME)/
 RNASEQGTFDATAPATH          := $(RNASEQDATAPATH)GTF/
 RNASEQLOGS                 := $(RNASEQALLRES)
 RNASEQSAMPSTATS            := $(RNASEQALLRES)presence_absence_all_samples.txt
-#TODO: should this file be put in $(GENERATED_FILES_DIR)$(RNASEQPATH)?
+#TODO should this file be put in $(GENERATED_FILES_DIR)$(RNASEQPATH)?
 RNASEQREPORTINFO           := $(RNASEQALLRES)reports_info_all_samples.txt
-#TODO: should this file be put in $(GENERATED_FILES_DIR)$(RNASEQPATH)?
+#TODO should this file be put in $(GENERATED_FILES_DIR)$(RNASEQPATH)?
 
 # Differential file path
 RNASEQDIFFEXPRPATH                  := $(RNASEQDATAPATH)processed_differential_$(DBNAME)/

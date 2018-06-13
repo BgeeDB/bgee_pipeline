@@ -19,7 +19,7 @@
 # Mar 29, 2016
 # - Added if the species comes from ensembl or ensembl metazoa, in rna_seq_sample_info.txt
 #
-# TODO? a lot of information could be extracted from SRA for the annotators, who will just have to check. We could make a new script that is run for each SRX ID and outputs the annotation line to copy paste in annotation spreadsheet
+# TODO a lot of information could be extracted from SRA for the annotators, who will just have to check. We could make a new script that is run for each SRX ID and outputs the annotation line to copy paste in annotation spreadsheet
 # We could get tissue source to compare to annotation. Problem: info not present in most SRA records
 # if ( $info =~ /<TAG>OrganismPart<\/TAG><VALUE>([^<]+?)<\/VALUE>/ ) {
 #   $source = $1;
@@ -39,6 +39,7 @@ use Getopt::Long;
 use FindBin;
 use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
 use Utils;
+use File::Slurp;
 use List::MoreUtils qw(all any);
 use LWP::Simple;
 
@@ -47,12 +48,14 @@ my ($bgee_connector)         = ('');
 my ($RNAseqLib)              = ('');
 my ($RNAseqLibChecks)        = ('');
 my ($RNAseqLibWormExclusion) = ('');
+my ($extraMapping)           = ('');
 my ($outFile)                = ('');
 my ($debug)                  = (0);
 my %opts = ('bgee=s'                   => \$bgee_connector,     # Bgee connector string
             'RNAseqLib=s'              => \$RNAseqLib,
             'RNAseqLibChecks=s'        => \$RNAseqLibChecks,
             'RNAseqLibWormExclusion=s' => \$RNAseqLibWormExclusion,
+            'extraMapping=s'           => \$extraMapping,
             'outFile=s'                => \$outFile,
             'debug'                    => \$debug,
            );
@@ -90,6 +93,12 @@ $selSpecies->finish;
 # Retrieve all organs/stages from Bgee
 my %organs = %{ Utils::getBgeedbOrgans($dbh) };
 my %stages = %{ Utils::getBgeedbStages($dbh) };
+
+# Parse extra mapping info for currently too up-to-date annotations
+##UnmappedId    UnmappedName    UberonID    UberonName    Comment
+my %extra = map  { my @tmp = split(/\t/, $_, -1); if ( $tmp[2] ne '' && $tmp[0] ne '' ){ $tmp[0] => $tmp[2] } else { 'nonono' => 'nonono' } }
+            grep { !/^#/ }
+            read_file("$extraMapping", chomp => 1);
 
 $dbh->disconnect;
 print "Done\n";
@@ -154,11 +163,11 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         next SAMPLE;
     }
     # skipped if anatID or stageID not in bgee db (e.g. too recent Uberon used by annotators)
-    if ( ! exists($organs{ $anatID })  || !$anatID ){
+    if ( (! exists($organs{ $anatID })  && ! exists($extra{ $anatID }))  || !$anatID ){
         warn "\tWarning: [$anatID] anatId  does not exist in the database for [$libraryId] [$experimentId]. This library was not printed in output file.\n";
         next SAMPLE;
     }
-    if ( ! exists($stages{ $stageID }) || !$stageID ){
+    if ( (! exists($stages{ $stageID }) && ! exists($extra{ $stageID })) || !$stageID ){
         warn "\tWarning: [$stageID] stageId does not exist in the database for [$libraryId] [$experimentId]. This library was not printed in output file.\n";
         next SAMPLE;
     }
@@ -249,13 +258,13 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         $info =~ /<SCIENTIFIC_NAME>([^<]+)<\/SCIENTIFIC_NAME>/;
         $organism = $1;
         if ( $organism ne $species{ $tsv{'speciesId'}[$i] }->{'organism'} ){
-            warn "\tProblem: the organism (scientific name) is not matching between the annotation file [", $species{ $tsv{'speciesId'}[$i] }->{'organism'}, "] and the SRA record [$organism], please verify. The information from the annotation file is printed in output file.\n";
+            warn "\tProblem: the organism (scientific name) is not matching between the annotation file [", $species{ $tsv{'speciesId'}[$i] }->{'organism'}, "] and the SRA record [$organism], please verify for [$libraryId][$experimentId]. The information from the annotation file is printed in output file.\n";
         }
         # platform
         $info =~ /<PLATFORM><[^<]+><INSTRUMENT_MODEL>([^<]+)<\/INSTRUMENT_MODEL><\/[^<]+><\/PLATFORM>/;
         $platform = $1;
         if (($platform ne $tsv{'platform'}[$i]) and (!exists $checked_libraries{$libraryId})) {
-            warn "\tProblem: the platform is not matching between the annotation file [", $tsv{'platform'}[$i], "] and the SRA record [$platform], please verify and update $RNAseqLibChecks. The information from the annotation file is printed in output file.\n";
+            warn "\tProblem: the platform is not matching between the annotation file [", $tsv{'platform'}[$i], "] and the SRA record [$platform], please verify for [$libraryId][$experimentId] and update $RNAseqLibChecks. The information from the annotation file is printed in output file.\n";
         }
         # Run IDs
         while ( $info =~ /<PRIMARY_ID>([SEDC]RR\d+)<\/PRIMARY_ID>/g ) {
@@ -289,7 +298,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         # If read length defined and it seems very short, issue a warning
         if ( $readLength ne '' ){
             #NOTE Currently those short read length libraries look fine (in those experiments):
-            #     GSE36026 GSE38998 ERP000787 SRP003822 SRP003823 SRP003826 SRP003829 SRP003831
+            #     GSE36026 GSE38998 DRP000415 ERP000787 SRP003822 SRP003823 SRP003826 SRP003829 SRP003831
             if ( (($libraryType eq 'SINGLE') or ($libraryType eq '')) and ($readLength < 36) ){
                 warn "\tInfo: Read length is [$readLength] for SE library [$libraryId][$experimentId], which seems low and could indicate that the library is not a classical RNA-seq library. Please check.\n";
             }
