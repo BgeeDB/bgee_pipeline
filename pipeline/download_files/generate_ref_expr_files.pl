@@ -122,7 +122,7 @@ while ( my @data = $sourceStmt->fetchrow_array ){
 # Now, for each species, generate the files
 
 # Link to FTP storing our files
-my $ftpFilePath = 'ftp://bgee.org/';
+my $ftpFilePath = 'ftp://ftp.bgee.org/';
 
 for my $speId ( keys %species ){
     print "Generating files for species $speId...\n";
