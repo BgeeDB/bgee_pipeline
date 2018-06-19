@@ -138,7 +138,7 @@ add foreign key (OMAParentNodeId) references OMAHierarchicalGroup(OMANodeId) on 
 /*!40000 ALTER TABLE `geneToOma` DISABLE KEYS */;
 alter table geneToOma
 add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade,
-add foreign key (OMANodeId) references OMAHierarchicalGroup(OMANodeId) on delete cascade,
+add foreign key (OMAGroupId) references OMAHierarchicalGroup(OMAGroupId) on delete cascade,
 add foreign key (taxonId) references taxon(taxonId) on delete cascade;
 /*!40000 ALTER TABLE `geneToOma` ENABLE KEYS */;
 

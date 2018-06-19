@@ -190,7 +190,7 @@ add unique(geneId, speciesId);
 
 /*!40000 ALTER TABLE `geneToOma` DISABLE KEYS */;
 alter table geneToOma
-add primary key (bgeeGeneId, omaNodeId, taxonId);
+add primary key (bgeeGeneId, OMAGroupId, taxonId);
 /*!40000 ALTER TABLE `geneToOma` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `geneNameSynonym` DISABLE KEYS */;

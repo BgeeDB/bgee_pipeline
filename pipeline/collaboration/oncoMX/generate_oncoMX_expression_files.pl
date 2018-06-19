@@ -59,7 +59,7 @@ if ( !$test_options || $bgee_connector eq '' || $speciesArg eq '' || $devStageAr
 \t-speciesArg           A comma-separated list of species IDs to generate files for, or '-' to generate files for all species
 \t-devStageArg          Parent dev. stage of all stages that will be taken into account to create the file, or '-' to generate files without dev stage restriction
 \t-outputDir            Path to the directory where oncoMX files will be generated (one file per species)
-\t-bgeeVersion          The Bgee release for which the files are being generated, to generate FTP links to correct version, e.g. 'bgee_v14'.
+\t-bgeeVersion          The Bgee release for which the files are being generated, e.g. 'bgee_v14'.
 \t-debug                more verbose output
 \n";
     exit 1;
@@ -104,10 +104,6 @@ while ( my @data = $speciesStmt->fetchrow_array ){
 ######################################         
 #for each species, generate the files
 ######################################         
-
-
-# Link to FTP storing our files
-my $ftpFilePath = 'ftp://ftp.bgee.org/';
 
 for my $speId ( keys %species ){
     print "Generating file for species $speId...\n";
