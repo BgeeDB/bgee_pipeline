@@ -233,9 +233,9 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         }
 
         # Particular types of RNA-seq. See https://www.ncbi.nlm.nih.gov/books/NBK49283/ or https://www.ebi.ac.uk/ena/submit/preparing-xmls
-        my @valid_selection_methods = ('cDNA', 'oligo-dT', 'PCR', 'PolyA', 'RANDOM', 'RANDOM PCR', 'RT-PCR');
+        my @valid_selection_methods = ('cDNA', 'oligo-dT', 'Oligo-dT', 'PCR', 'PolyA', 'RANDOM', 'RANDOM PCR', 'RT-PCR');
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
-        my @valid_lib_selection     = ('E-MTAB-5895', 'SRP058036');
+        my @valid_lib_selection     = ('E-MTAB-5895', 'SRP012049', 'SRP058036', 'SRP082291', 'SRP082342', 'SRP082454', 'SRP106023');
         $info =~ /<LIBRARY_SELECTION>([^<]+)<\/LIBRARY_SELECTION>/; # [^<] prevents matching to '<' character
         my $selection = $1;
         if ( $selection =~ /CAGE/ ){
@@ -308,10 +308,13 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         }
 
         ## Issue warning is the XML entry includes keywords suggesting that the library is not classical RNA-seq
-        my @not_traditional = ('DeepSAGE', 'DeepCAGE', 'CAGE', 'RACE', 'SAGE', 'DpnII', 'DpnIII', 'NlaIII', 'capture', 'CEL-seq');
-        my @verified        = ('ERP000787', 'ERP104395', 'GSE22410', 'GSE64283', 'SRP000401', 'SRP013825', 'SRP041131', 'SRP092799', 'SRP098705', 'SRP112616', 'SRP125959');
-        if ( all { $experimentId ne $_ } @verified and any { $info =~ /$_/ } @not_traditional ){
-            warn "\tWarning: [$libraryId][$experimentId] may not be traditional RNA-seq (SAGE, CAGE, RACE, DpnII or NlaIII tag-based, capture array, CEL-seq, etc). Please check.\n";
+        #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
+        my @not_traditional = ('DeepSAGE', 'DeepCAGE', 'CAGE', 'RACE', 'SAGE', 'DpnII', 'DpnIII', 'NlaIII', 'capture', 'CEL-seq', 'globin reduction', 'globin depletion');
+        my @verified        = ('ERP000787', 'ERP001694', 'ERP104395',
+                               'GSE22410', 'GSE64283',
+                               'SRP000401', 'SRP013825', 'SRP021940', 'SRP022567', 'SRP041131', 'SRP082284', 'SRP092799', 'SRP098705', 'SRP112616', 'SRP125959');
+        if ( all { $experimentId ne $_ } @verified and any { $info =~ /($_)/i } @not_traditional ){
+            warn "\tWarning: [$libraryId][$experimentId] may not be traditional RNA-seq, mentions ''$1''. Please check.\n";
         }
 
         # TODO Any other info to get?
