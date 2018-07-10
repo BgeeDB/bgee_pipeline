@@ -208,7 +208,7 @@ for my $run ( @run_ids ){
         # reads too short for Kallisto index with default k-mer length
         if ( length($read) < $lengthCutoff ){
             $shortReads = 1;
-            warn "\nWarning: length of reads [", length($read), "] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 15nt run [$run]\n";
+            warn "\nWarning: length of reads [", length($read), "] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 21nt run [$run]\n";
         }
     }
     elsif ( $libraryType eq 'PAIRED' ){
@@ -248,7 +248,7 @@ for my $run ( @run_ids ){
         # reads too short for Kallisto index with default k-mer length
         if ( ( length($read1) < $lengthCutoff ) or ( length($read2) < $lengthCutoff ) ){
             $shortReads = 1;
-            warn "\nWarning: length of left and/or right reads [", length($read1), '/', length($read2), "] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 15nt run [$run]\n";
+            warn "\nWarning: length of left and/or right reads [", length($read1), '/', length($read2), "] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 21nt run [$run]\n";
         }
     }
 }
@@ -260,13 +260,13 @@ print {$REPORT} "\nMaximum read length across runs: ", max @allLengths, "\n";
 close $REPORT;
 
 
-# reads too short for Kallisto index with default k-mer length, use index built with k-mer size = 15nt
+# reads too short for Kallisto index with default k-mer length, use index built with k-mer size = 21nt
 #  See: https://www.biostars.org/p/104321/
 #       https://groups.google.com/forum/#!topic/kallisto-sleuth-users/clOeSROnnFI
 my $index = $index_folder.'/';
 $genomeFilePath =~ m/.+\/(.+)/;
 if ( $shortReads eq 1 ){
-    $index .= $1.'.'.$ens_release.'.transcriptome_k15.idx';
+    $index .= $1.'.'.$ens_release.'.transcriptome_k21.idx';
 }
 else {
     $index .= $1.'.'.$ens_release.'.transcriptome.idx';
