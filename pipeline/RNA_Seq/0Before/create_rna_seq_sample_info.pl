@@ -298,7 +298,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         # If read length defined and it seems very short, issue a warning
         if ( $readLength ne '' ){
             #NOTE Currently those short read length libraries look fine (in those experiments):
-            #     GSE36026 GSE38998 DRP000415 ERP000787 SRP003822 SRP003823 SRP003826 SRP003829 SRP003831
+            #     GSE36026 GSE38998 DRP000415 ERP000787 SRP003276 SRP003822 SRP003823 SRP003826 SRP003829 SRP003831
             if ( (($libraryType eq 'SINGLE') or ($libraryType eq '')) and ($readLength < 36) ){
                 warn "\tInfo: Read length is [$readLength] for SE library [$libraryId][$experimentId], which seems low and could indicate that the library is not a classical RNA-seq library. Please check.\n";
             }
@@ -313,8 +313,8 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         my @verified        = ('ERP000787', 'ERP001694', 'ERP104395',
                                'GSE22410', 'GSE64283',
                                'SRP000401', 'SRP013825', 'SRP021940', 'SRP022567', 'SRP041131', 'SRP082284', 'SRP092799', 'SRP098705', 'SRP112616', 'SRP125959');
-        if ( all { $experimentId ne $_ } @verified and any { $info =~ /($_)/i } @not_traditional ){
-            warn "\tWarning: [$libraryId][$experimentId] may not be traditional RNA-seq, mentions ''$1''. Please check.\n";
+        if ( all { $experimentId ne $_ } @verified and any { $info =~ /\W$_\W/i } @not_traditional ){
+            warn "\tWarning: [$libraryId][$experimentId] may not be traditional RNA-seq, found word(s) subject to caution. Please check.\n";
         }
 
         # TODO Any other info to get?
