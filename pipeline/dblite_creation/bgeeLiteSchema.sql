@@ -14,7 +14,9 @@ create table species (
 -- example: sapiens
     species varchar(70) not null COMMENT 'Species name',
 -- exemple: human
-    speciesCommonName varchar(70) not null COMMENT 'NCBI species common name',
+-- warning, this column in the bgee schema is defined as not null but contains empty values. 
+-- In bgeelite we added a default value corresponding to an empty string ''
+    speciesCommonName varchar(70) not null default '' COMMENT 'NCBI species common name',
     genomeVersion varchar(50) not null,
 -- ID of the species whose the genome was used for this species. This is used
 -- when a genome is not in Ensembl. For instance, for bonobo (ID 9597), we use the chimp

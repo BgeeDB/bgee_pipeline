@@ -15,10 +15,10 @@ RELEASE          := 14
 # DBUSER and DBPASS defined in Makefile.Config
 # DBUSERV and DBPASSV defined in Makefile.Config
 DBNAME := bgee_v$(RELEASE)
-DBHOST := 127.0.0.1
+DBHOST := altbioinfo
 DBPORT := 3306
-DBNAME_BGEELIGHT := bgeelight_v$(RELEASE)
-DBHOST_BGEELIGHT := 127.0.0.1
+DBNAME_BGEELITE := bgeelite_v$(RELEASE)
+DBHOST_BGEELITE := 127.0.0.1
 
 
 
@@ -91,11 +91,11 @@ BGEEPIPELINEJARNAME := bgee-pipeline-$(RELEASE)-with-dependencies.jar
 BGEEPIPELINEJAR     := $(JAVALIBDIR)$(BGEEPIPELINEJARNAME)
 
 JAVA_NO_JAR := java -Xmx32g -Dbgee.dao.jdbc.username=$(DBUSER) -Dbgee.dao.jdbc.password=$(DBPASS) -Dbgee.dao.jdbc.driver.names=com.mysql.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST):$(DBPORT)/$(DBNAME)?enableQueryTimeouts=false&sessionVariables=net_write_timeout=86400,net_read_timeout=86400,wait_timeout=86400'
-# Java command allowing to connect to bgeelight without Jar. Never used without JAR for the moment but created to follow the same pattern than JAVA_NO_JAR/JAVA variables for Bgee
-JAVA_NO_JAR_BGEE_LIGHT := java -Xmx32g -Dbgee.dao.jdbc.username=$(DBUSER_BGEELIGHT) -Dbgee.dao.jdbc.password=$(DBPASS_BGEELIGHT) -Dbgee.dao.jdbc.driver.names=com.mysql.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST_BGEELIGHT):$(DBPORT)/$(DBNAME_BGEELIGHT)?enableQueryTimeouts=false&sessionVariables=net_write_timeout=86400,net_read_timeout=86400,wait_timeout=86400'
+# Java command allowing to connect to bgeelite without Jar. Never used without JAR for the moment but created to follow the same pattern than JAVA_NO_JAR/JAVA variables for Bgee
+JAVA_NO_JAR_BGEE_LITE := java -Xmx32g -Dbgee.dao.jdbc.username=$(DBUSER_BGEELITE) -Dbgee.dao.jdbc.password=$(DBPASS_BGEELITE) -Dbgee.dao.jdbc.driver.names=com.mysql.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST_BGEELITE):$(DBPORT)/$(DBNAME_BGEELITE)?enableQueryTimeouts=false&sessionVariables=net_write_timeout=86400,net_read_timeout=86400,wait_timeout=86400'
 
 JAVA := $(JAVA_NO_JAR) -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)
-JAVA_BGEE_LIGHT := $(JAVA_NO_JAR_BGEE_LIGHT) -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)
+JAVA_BGEE_LITE := $(JAVA_NO_JAR_BGEE_LITE) -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)
 # to pass arguments to Java command line
 ENTRY_SEP :=,
 KEY_VAL_SEP :=//
@@ -106,8 +106,8 @@ SPACE :=__
 
 MYSQLNODBNAME := mysql -u $(DBUSER) -p$(DBPASS) -h $(DBHOST) -P $(DBPORT) --init-command='SET SESSION net_write_timeout=86400; SET SESSION net_read_timeout=86400; SET SESSION wait_timeout=86400'
 MYSQL := $(MYSQLNODBNAME) $(DBNAME)
-MYSQLNODBNAME_BGEELIGHT := mysql -u $(DBUSER_BGEELIGHT) -p$(DBPASS_BGEELIGHT) -h $(DBHOST_BGEELIGHT) -P $(DBPORT) --init-command='SET SESSION net_write_timeout=86400; SET SESSION net_read_timeout=86400; SET SESSION wait_timeout=86400'
-MYSQL_BGEELIGHT := $(MYSQLNODBNAME_BGEELIGHT) $(DBNAME_BGEELIGHT)
+MYSQLNODBNAME_BGEELITE := mysql -u $(DBUSER_BGEELITE) -p$(DBPASS_BGEELITE) -h $(DBHOST_BGEELITE) -P $(DBPORT) --init-command='SET SESSION net_write_timeout=86400; SET SESSION net_read_timeout=86400; SET SESSION wait_timeout=86400'
+MYSQL_BGEELITE := $(MYSQLNODBNAME_BGEELITE) $(DBNAME_BGEELITE)
 
 GIT    := git
 WGET   := wget -N -nv
