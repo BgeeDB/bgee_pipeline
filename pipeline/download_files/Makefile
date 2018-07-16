@@ -244,9 +244,9 @@ $(OUTPUT_DIR)rank_files_info:
 	@$(JAVA) GenerateRankFile generateRankFiles - $(UBERONFILEPATH) true $(OUTPUT_DIR)$(RANKS_PER_ANAT) > $@.temp 2>> $@.warnings
 # Now, files with all conditions
 	@$(JAVA) GenerateRankFile generateRankFiles - $(UBERONFILEPATH) false $(OUTPUT_DIR)$(RANKS_PER_CONDITION) >> $@.temp 2>> $@.warnings
-# zip all files
-	@find $(OUTPUT_DIR)$(RANKS_PER_ANAT) -type f -not -name "*.zip" -not -name "*.tmp" -execdir zip -9 '{}.zip' '{}' \;
-	@find $(OUTPUT_DIR)$(RANKS_PER_CONDITION) -type f -not -name "*.zip" -not -name "*.tmp" -execdir zip -9 '{}.zip' '{}' \;
+# gzip all files
+	@find $(OUTPUT_DIR)$(RANKS_PER_ANAT) -type f -not -name '*.gz' -not -name '*.tmp' -execdir gzip --verbose --best {} \;
+	@find $(OUTPUT_DIR)$(RANKS_PER_CONDITION) -type f -not -name '*.gz' -not -name '*.tmp' -execdir gzip --verbose --best {} \;
 # generate a step verification file
 	@echo "Content of directory $(OUTPUT_DIR)$(RANKS_PER_ANAT)" >> $@.temp
 	@ls -lh $(OUTPUT_DIR)$(RANKS_PER_ANAT) >> $@.temp
