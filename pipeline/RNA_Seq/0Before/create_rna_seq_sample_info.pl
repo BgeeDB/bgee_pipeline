@@ -309,7 +309,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
 
         ## Issue warning is the XML entry includes keywords suggesting that the library is not classical RNA-seq
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
-        my @not_traditional = ('DeepSAGE', 'DeepCAGE', 'CAGE', 'RACE', 'SAGE', 'DpnII', 'DpnIII', 'NlaIII', 'capture', 'CEL-seq', 'globin reduction', 'globin depletion');
+        my @not_traditional = ('DeepSAGE', 'DeepCAGE', 'CAGE', 'RACE', 'SAGE', 'DpnII', 'DpnIII', 'NlaIII', 'capture', 'CEL-seq', 'globin reduction', 'globin depletion', 'multiplex', 'UMI');
         my @verified        = ('ERP000787', 'ERP001694', 'ERP104395',
                                'GSE22410', 'GSE64283',
                                'SRP000401', 'SRP013825', 'SRP021940', 'SRP022567', 'SRP041131', 'SRP082284', 'SRP092799', 'SRP098705', 'SRP112616', 'SRP125959');
