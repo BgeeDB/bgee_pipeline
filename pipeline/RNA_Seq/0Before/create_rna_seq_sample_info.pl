@@ -81,7 +81,7 @@ my $dbh = Utils::connect_bgee_db($bgee_connector);
 
 # Get species list in bgee db
 my %species;
-my $selSpecies = $dbh->prepare('SELECT species.speciesId, CONCAT(species.genus, " ", species.species), species.genomeFilePath, dataSource.dataSourceName FROM species INNER JOIN dataSource ON species.dataSourceId = dataSource.dataSourceId;');
+my $selSpecies = $dbh->prepare('SELECT species.speciesId, CONCAT(species.genus, " ", species.species), species.genomeFilePath, dataSource.dataSourceName FROM species INNER JOIN dataSource ON species.dataSourceId = dataSource.dataSourceId');
 $selSpecies->execute()  or die $selSpecies->errstr;
 while ( my @data = $selSpecies->fetchrow_array ){
     $species{$data[0]}->{'organism'}       = $data[1];
@@ -198,7 +198,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         if ( exists $checked_libraries_worm{$libraryId} ){
             #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/33
             # if the library was excluded:
-            #SRP001010, SRP000401(SRX035162, SRX036882, SRX036967, SRX036969, SRX036970, SRX047787)
+            #SRP000401(SRX035162, SRX036882, SRX036967, SRX036969, SRX036970, SRX047787), SRP001010, SRP015688
             if ( $checked_libraries_worm{$libraryId} eq 'TRUE' ){
                 warn "\tInfo: [$libraryId] [$experimentId] from Wormbase was excluded following manual curation (see file $RNAseqLibWormExclusion). This library was not printed in output file.\n";
                 next SAMPLE
@@ -235,7 +235,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         # Particular types of RNA-seq. See https://www.ncbi.nlm.nih.gov/books/NBK49283/ or https://www.ebi.ac.uk/ena/submit/preparing-xmls
         my @valid_selection_methods = ('cDNA', 'oligo-dT', 'Oligo-dT', 'PCR', 'PolyA', 'RANDOM', 'RANDOM PCR', 'RT-PCR');
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
-        my @valid_lib_selection     = ('E-MTAB-5895', 'SRP012049', 'SRP058036', 'SRP082291', 'SRP082342', 'SRP082454', 'SRP106023');
+        my @valid_lib_selection     = ('E-MTAB-5895', 'SRP012049', 'SRP021223', 'SRP051959', 'SRP058036', 'SRP082291', 'SRP082342', 'SRP082454', 'SRP106023');
         $info =~ /<LIBRARY_SELECTION>([^<]+)<\/LIBRARY_SELECTION>/; # [^<] prevents matching to '<' character
         my $selection = $1;
         if ( $selection =~ /CAGE/ ){
@@ -297,7 +297,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
 
         # If read length defined and it seems very short, issue a warning
         if ( $readLength ne '' ){
-            #NOTE Currently those short read length libraries look fine (in those experiments):
+            #NOTE Currently those short read length libraries look fine (in those experiments), need to check how read alignments are
             #     GSE36026 GSE38998 DRP000415 ERP000787 SRP003276 SRP003822 SRP003823 SRP003826 SRP003829 SRP003831
             if ( (($libraryType eq 'SINGLE') or ($libraryType eq '')) and ($readLength < 36) ){
                 warn "\tInfo: Read length is [$readLength] for SE library [$libraryId][$experimentId], which seems low and could indicate that the library is not a classical RNA-seq library. Please check.\n";
@@ -309,10 +309,12 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
 
         ## Issue warning is the XML entry includes keywords suggesting that the library is not classical RNA-seq
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
-        my @not_traditional = ('DeepSAGE', 'DeepCAGE', 'CAGE', 'RACE', 'SAGE', 'DpnII', 'DpnIII', 'NlaIII', 'capture', 'CEL-seq', 'globin reduction', 'globin depletion', 'multiplex', 'multiplexing', 'UMI', 'UMIs');
+        #FIXME SRP070951 is kept till we know what to do with "globin reduction" see https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
+        my @not_traditional = ('DeepSAGE', 'DeepCAGE', 'LongSAGE', 'SuperSAGE', 'CAGE', 'RACE', 'SAGE', 'DpnII', 'DpnIII', 'NlaIII', 'capture', 'CEL-seq', 'DGE-Seq', 'TagSeq', 'globin reduction', 'globin depletion', 'UMI', 'UMIs');
         my @verified        = ('ERP000787', 'ERP001694', 'ERP104395',
                                'GSE22410', 'GSE64283',
-                               'SRP000401', 'SRP013825', 'SRP021940', 'SRP022567', 'SRP041131', 'SRP082284', 'SRP092799', 'SRP098705', 'SRP112616', 'SRP125959');
+                               'SRP000401', 'SRP013825', 'SRP021940', 'SRP022567', 'SRP041131', 'SRP076617', 'SRP082284',
+                               'SRP091779', 'SRP092799', 'SRP098705', 'SRP112616', 'SRP125959');
         if ( all { $experimentId ne $_ } @verified and any { $info =~ /\W$_\W/i } @not_traditional ){
             warn "\tWarning: [$libraryId][$experimentId] may not be traditional RNA-seq, found word(s) subject to caution. Please check.\n";
         }

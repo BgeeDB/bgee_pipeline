@@ -113,3 +113,9 @@ GgorDv:0000001	gorilla life cycle	UBERON:0000104	life cycle
 HsapDv:0000000	human life cycle stage	UBERON:0000104	life cycle	
 PtroDv:0000003	immature stage	UBERON:0000112	sexually immature stage	
 PtroDv:0000004	nursing stage	UBERON:0018685	nursing stage	
+GgalDv:0000006	mature stage	UBERON:0000113	post-juvenile adult stage	
+HsapDv:0000204	mature stage	UBERON:0000113	post-juvenile adult stage	
+MdomDv:0000001	opossum life cycle	UBERON:0000104	life cycle	
+MdomDv:0000002	prenatal stage	UBERON:0000068	embryo stage	
+MdomDv:0000004	neonate stage	UBERON:0007221	neonate stage	
+MdomDv:0000036	4-week-old stage	UBERON:0018685	nursing stage	
