@@ -53,7 +53,7 @@ print(dim(sampleInfo))
 ## write header of file number_libraries.txt
 cat("speciesId\tspeciesName\tnumberLibrariesUsed\tnumberLibraries\n", file = paste0(sum_by_species_folder, "/number_libraries.txt"), sep = "\t")
 ## write header of file gaussian_choice_by_species.txt
-cat("speciesId\tnumberGaussiansCoding\tnumberGaussiansIntergenic\tselectedGaussianCoding\tselectedGaussianIntergenic\tcomment\tannotatorId\n", file = paste0(sum_by_species_folder, "/gaussian_choice_by_species_TO_FILL.txt"), sep = "\t")
+cat("speciesId\torganism\tnumberGaussiansCoding\tnumberGaussiansIntergenic\tselectedGaussianCoding\tselectionSideCoding\tselectedGaussianIntergenic\tselectionSideIntergenic\tcomment\tannotatorId\n", file = paste0(sum_by_species_folder, "/gaussian_choice_by_species_TO_FILL.txt"), sep = "\t")
 
 for(species in unique(sampleInfo$speciesId)){
   cat(paste0("Summing data for ", as.character(unique(sampleInfo$organism[sampleInfo$speciesId == species])), " (species ID: ", species,")\n"))
