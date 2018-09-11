@@ -60,3 +60,5 @@ pipeline/Affymetrix/chipType_full.tsv
 pipeline/Affymetrix/microarrayExperiment_full.tsv
 pipeline/RNA_Seq/RNASeqExperiment_full.tsv
 pipeline/RNA_Seq/RNASeqLibrary_full.tsv
+
+pipeline/web/sitemap*.xml
