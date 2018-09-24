@@ -228,6 +228,10 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
             warn "\tProblem: [$libraryId] [$experimentId] is non-coding RNA-seq (e.g., snRNA, snoRNA, siRNA, piRNA), which is not supported by our pipeline for now. Please comment out. This library was not printed in output file.\n";
             next SAMPLE;
         }
+        elsif ( $strategy =~ /ATAC-seq/ ){
+            warn "\tProblem: [$libraryId] [$experimentId] is kind of Chip-seq, which is not supported by our pipeline for now. Please comment out. This library was not printed in output file.\n";
+            next SAMPLE;
+        }
         elsif ( $strategy !~ /^RNA-Seq$/ and (all { $experimentId ne $_ } @valid_lib_strategy) ){
             warn "\tProblem: [$libraryId][$experimentId] does not seem to be RNA-seq but [$strategy]. Please check. This library was printed in output file.\n";
         }
@@ -310,7 +314,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         ## Issue warning is the XML entry includes keywords suggesting that the library is not classical RNA-seq
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
         #FIXME SRP070951 is kept till we know what to do with "globin reduction" see https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
-        my @not_traditional = ('DeepSAGE', 'DeepCAGE', 'LongSAGE', 'SuperSAGE', 'CAGE', 'RACE', 'SAGE', 'DpnII', 'DpnIII', 'NlaIII', 'capture', 'CEL-seq', 'DGE-Seq', 'TagSeq', 'globin reduction', 'globin depletion', 'UMI', 'UMIs');
+        my @not_traditional = ('DeepSAGE', 'DeepCAGE', 'LongSAGE', 'SuperSAGE', 'CAGE', 'RACE', 'SAGE', 'DpnII', 'DpnIII', 'NlaIII', 'capture', 'CEL-seq', 'DGE-Seq', 'TagSeq', 'globin reduction', 'globin depletion', 'UMI', 'UMIs', 'ATAC-seq');
         my @verified        = ('ERP000787', 'ERP001694', 'ERP104395',
                                'GSE22410', 'GSE64283',
                                'SRP000401', 'SRP013825', 'SRP021940', 'SRP022567', 'SRP041131', 'SRP076617', 'SRP082284',
