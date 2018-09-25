@@ -218,18 +218,11 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         # E-MTAB-2449   'validated with lower confidence'
         # SRP003905     '"EST" but that it is Illumina paired-end, so I think it is RNA-seq'
         # GSE16552      'Contradictory info but for now kept'. Also in https://gitlab.sib.swiss/Bgee/expression-annotations/issues/33
+        my @invalid_lib_strategies = ('miRNA-Seq', 'ncRNA-Seq', 'ATAC-seq', 'MAINE-Seq', 'MNase-Seq', 'FAIRE-seq', 'DNase-Hypersensitivity', 'DNase-seq');
         $info =~ /<LIBRARY_STRATEGY>([^<]+)<\/LIBRARY_STRATEGY>/; # [^<] prevents matching to '<' character
         $strategy = $1;
-        if ( $strategy =~ /miRNA-Seq/i ){
-            warn "\tProblem: [$libraryId] [$experimentId] is miRNA-seq, which is not supported by our pipeline for now. Please comment out. This library was not printed in output file.\n";
-            next SAMPLE;
-        }
-        elsif ( $strategy =~ /ncRNA-Seq/i ){
-            warn "\tProblem: [$libraryId] [$experimentId] is non-coding RNA-seq (e.g., snRNA, snoRNA, siRNA, piRNA), which is not supported by our pipeline for now. Please comment out. This library was not printed in output file.\n";
-            next SAMPLE;
-        }
-        elsif ( $strategy =~ /ATAC-seq/i ){
-            warn "\tProblem: [$libraryId] [$experimentId] is kind of Chip-seq, which is not supported by our pipeline for now. Please comment out. This library was not printed in output file.\n";
+        if ( any { lc($strategy) eq lc($_) } @invalid_lib_strategies ){
+            warn "\tProblem: [$libraryId] [$experimentId] is [$strategy], which is not supported by our pipeline for now. Please comment out. This library was not printed in output file.\n";
             next SAMPLE;
         }
         elsif ( $strategy !~ /^RNA-Seq$/i and (all { $experimentId ne $_ } @valid_lib_strategy) ){
