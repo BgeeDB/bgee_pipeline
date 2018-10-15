@@ -208,7 +208,7 @@ for my $run ( @run_ids ){
         # reads too short for Kallisto index with default k-mer length
         if ( length($read) < $lengthCutoff ){
             $shortReads = 1;
-            warn "\nWarning: length of reads [", length($read), "] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 21nt run [$run]\n";
+            warn "\nWarning: length of reads [", length($read), "] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 15nt run [$run]\n";
         }
     }
     elsif ( $libraryType eq 'PAIRED' ){
@@ -248,7 +248,7 @@ for my $run ( @run_ids ){
         # reads too short for Kallisto index with default k-mer length
         if ( ( length($read1) < $lengthCutoff ) or ( length($read2) < $lengthCutoff ) ){
             $shortReads = 1;
-            warn "\nWarning: length of left and/or right reads [", length($read1), '/', length($read2), "] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 21nt run [$run]\n";
+            warn "\nWarning: length of left and/or right reads [", length($read1), '/', length($read2), "] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 15nt run [$run]\n";
         }
     }
 }
@@ -260,18 +260,19 @@ print {$REPORT} "\nMaximum read length across runs: ", max @allLengths, "\n";
 close $REPORT;
 
 
-# reads too short for Kallisto index with default k-mer length, use index built with k-mer size = 21nt
+#TODO reads too short for Kallisto index with default k-mer length, use index built with k-mer size = 21nt
 #  See: https://www.biostars.org/p/104321/
 #       https://groups.google.com/forum/#!topic/kallisto-sleuth-users/clOeSROnnFI
 my $index = $index_folder.'/';
 $genomeFilePath =~ m/.+\/(.+)/;
 if ( $shortReads eq 1 ){
-    $index .= $1.'.'.$ens_release.'.transcriptome_k21.idx';
+    $index .= $1.'.'.$ens_release.'.transcriptome_k15.idx';
 }
 else {
     $index .= $1.'.'.$ens_release.'.transcriptome.idx';
 }
 print "\tKallisto index $index will be used for pseudo-mapping\n";
+
 
 #############################################################################################
 # Before launching Kallisto, launch a FastQC run. Each fastq file is run through FastQC
@@ -280,6 +281,7 @@ print "\tKallisto index $index will be used for pseudo-mapping\n";
 my $fastqc_command = $vit_fastqc_cmd.'; '; # command to load module. ; added at the end because was removed in bsub_scheduler.pl (hard to pass without messing with command line)
 my $to_run = 0; # Is there at least one run that needs to be launched?
 
+#TODO Store fastqc computation on bigbgee to avoid doing computing several times!
 for my $run ( @run_ids ){
     if ( $libraryType eq 'SINGLE' ){
         # Check if FastQC needs to be launched
@@ -338,6 +340,7 @@ if ( $to_run eq 1 ){
 else {
     print "\tFastQC was already successfully run for all runs of this library. Skipping this step.\n";
 }
+
 # Extract the number of reads in .fastq files
 print "\tExtracting total number of reads from FastQC report...\n";
 my %number_reads;
@@ -386,9 +389,10 @@ close $REPORT2;
 
 ## TODO For each SRR, we should also store a file on bigbgee with the number of lines (wc -l). On this side, we can verify it is consistent with the number of reads in FASTQC reports (and number of reads processed by Kalisto = sum of all runs $total_reads_fastqc too).
 
-## TODO? To speed up things for next pipeline run, we could store FastQC results on bigbgee. This would require implementing a scp transfer of reports, and a test to know if the results are already calculated.
+##TODO To speed up things for next pipeline run, we could store FastQC results on bigbgee. This would require implementing a scp transfer of reports, and a test to know if the results are already calculated.
 
 ## TODO? we could extract too the sequence lenghts from FastQC reports, instead of what is done above.
+
 
 #############################################################################################
 # Pseudo-mapping to transcriptome with kallisto:
@@ -485,7 +489,7 @@ if ( ( -s $kallisto_out_folder.'/abundance.tsv' ) && ( -s $kallisto_out_folder.'
         }
         # Note: this arbitrary threshold of 20% can be changed
 
-        if ( $total_reads_kallisto ne $total_reads_fastqc ){
+        if ( $total_reads_kallisto != $total_reads_fastqc ){
             warn "\nProblem: The number of reads processed by FastQC and Kallisto differs. Please check for a problem.\n";
         }
         ## TODO add step to check that the number of reads is also consistent wiht the original fastq files on bigbgee (see TODO above)
