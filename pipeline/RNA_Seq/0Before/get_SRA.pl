@@ -66,6 +66,15 @@ while (<$ANNOTATION>){
             system("cd $BASE; $SRATK_PATH/bin/fastq-dump --split-3 --gzip --outdir $FASTQ_PATH/$library_id/  $SRA_PATH/$sra_id.sra")==0
                 or do { warn "\tFailed to convert [$library_id/$sra_id]\n"; next SRA };
 
+            # Compute FastQC (A quality control tool for high throughput sequence data) for ALL SRR (runs)
+            mkdir "$FASTQ_PATH/$library_id/FASTQC";
+            #TODO Test this step!
+            QC:
+            for my $fastq ( glob("$FASTQ_PATH/$library_id/*.gz") ){
+                my ($run_id) = $fastq =~ /([^\/]+)\.fastq\.gz/;
+                system("fastqc -o $FASTQ_PATH/$library_id/FASTQC $fastq > $FASTQ_PATH/$library_id/FASTQC/$run_id.fastqc.log 2>&1")==0
+                    or do { warn "\tfastqc failed for [$FASTQ_PATH/$library_id/FASTQC/$run_id]\n"; next QC };
+            }
 
             # If private (need encryption):
             if ( (scalar grep { /^$exp_id$/ } @private_exp_id) >= 1 ){
