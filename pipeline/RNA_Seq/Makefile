@@ -152,12 +152,12 @@ prepare_indexed_transcriptome: get_genome prepare_GTF
 	# Preparing indexed transcriptome for every species
 # Extract transcriptome.fa from gtf_all and genome.fa files
 # perl one liner to remove arbitrary numbering in fasta header from gtf_to_fasta
-# Prepare indexes for kallisto: one with default k-mer size (31nt), one with short k-mer size (21nt)
+# Prepare indexes for kallisto: one with default k-mer size (31nt), one with short k-mer size (15nt)
 	@for genome in $(RNASEQ_VITALIT_GTF)/*.gtf_all; do \
 		$(VIT_TOPHAT_CMD)    gtf_to_fasta  $$genome $${genome/gtf_all/genome.fa} $${genome/gtf_all/transcriptome.fa}              >>$@.tmp 2>&1; \
 		perl -i -pe 's/^>\d+ +/>/' $${genome/gtf_all/transcriptome.fa}                                                            >>$@.tmp 2>&1; \
 		$(VIT_KALLISTO_CMD)  kallisto index       -i $${genome/gtf_all/transcriptome.idx}     $${genome/gtf_all/transcriptome.fa} >>$@.tmp 2>&1; \
-		$(VIT_KALLISTO_CMD)  kallisto index -k 21 -i $${genome/gtf_all/transcriptome_k21.idx} $${genome/gtf_all/transcriptome.fa} >>$@.tmp 2>&1; \
+		$(VIT_KALLISTO_CMD)  kallisto index -k 15 -i $${genome/gtf_all/transcriptome_k15.idx} $${genome/gtf_all/transcriptome.fa} >>$@.tmp 2>&1; \
 		echo rm -f $${genome/gtf_all/genome.fa}; \
 		xz --threads=2 -9 $${genome/gtf_all/transcriptome.fa}; \
 		xz --threads=2 -9 $${genome/gtf_all/transcriptome.fa.tlst}; \
