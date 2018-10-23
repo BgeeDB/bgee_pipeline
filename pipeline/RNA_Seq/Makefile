@@ -124,6 +124,8 @@ clean_vital-it_folders: check_tools
 	@echo "rm -Rf $(RNASEQ_VITALIT_GTF)*.genome.* $(RNASEQ_VITALIT_GTF)*.gtf.gz"
 	@echo "xz -9 $(RNASEQ_VITALIT_GTF)*.gtf_all $(RNASEQ_VITALIT_GTF)*.transcriptome.* $(RNASEQ_VITALIT_GTF)*.gene2transcript $(RNASEQ_VITALIT_GTF)*.gene2biotype"
 	@echo "rm -Rf $(RNASEQ_VITALIT_SCRATCH)*"
+	@echo
+	@echo "Those scripts have to be run from $(RNASEQ_VITALIT_SCRIPTS)$(RNASEQPATH) on dev/frt/rserv01 (can write on /data/)!"
 	@touch $@
 
 get_GTF: clean_vital-it_folders create_rna_seq_sample_info
@@ -169,9 +171,7 @@ prepare_indexed_transcriptome: get_genome prepare_GTF
 
 run_pipeline: prepare_indexed_transcriptome $(RNASEQ_SAMPINFO_FILEPATH)
 	# Running the pipeline
-#TODO add message to say that this script has to be run from $(RNASEQ_VITALIT_SCRIPTS)$(RNASEQPATH) on dev/frt/rserv01 (can write on /data/)
-	@perl $(RNASEQ_VITALIT_SCRIPTS)$(RNASEQPATH)1Run/bsub_scheduler.pl -sample_info_file=$(RNASEQ_VITALIT_SCRIPTS)$(RNASEQ_SAMPINFO_FILEPATH) -output_log_folder=$(RNASEQ_VITALIT_LOG) -index_folder=$(RNASEQ_VITALIT_GTF) -fastq_folder=$(RNASEQ_BIGBGEE_FASTQ) -kallisto_out_folder=$(RNASEQ_VITALIT_ALL_RES) -ens_release=$(ENSRELEASE) -ens_metazoa_release=$(ENSMETAZOARELEASE) -data_host=$(DATAHOST) -data_login=$(DATALOGIN) -data_passwd=$(DATAPASSWD) -enc_passwd_file=$(ENCRYPT_PASSWD_FILE) -vit_kallisto_cmd="$(VIT_KALLISTO_CMD)" -vit_R_cmd="$(VIT_R_CMD)" >$@.tmp 2>&1
-#TODO get rid of -data_passwd argument. It is not needed with auto login for ssh/scp. Needs to be removed as argument of rna_seq_mapping_and_analysis.pl script as well (called by bsub_scheduler.pl)
+	@perl $(RNASEQ_VITALIT_SCRIPTS)$(RNASEQPATH)1Run/bsub_scheduler.pl -sample_info_file=$(RNASEQ_VITALIT_SCRIPTS)$(RNASEQ_SAMPINFO_FILEPATH) -output_log_folder=$(RNASEQ_VITALIT_LOG) -index_folder=$(RNASEQ_VITALIT_GTF) -fastq_folder=$(RNASEQ_BIGBGEE_FASTQ) -kallisto_out_folder=$(RNASEQ_VITALIT_ALL_RES) -ens_release=$(ENSRELEASE) -ens_metazoa_release=$(ENSMETAZOARELEASE) -data_host=$(DATAHOST) -data_login=$(DATALOGIN) -enc_passwd_file=$(ENCRYPT_PASSWD_FILE) -vit_kallisto_cmd="$(VIT_KALLISTO_CMD)" -vit_R_cmd="$(VIT_R_CMD)" >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
 
 check_pipeline: run_pipeline
