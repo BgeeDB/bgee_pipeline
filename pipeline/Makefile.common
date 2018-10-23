@@ -360,7 +360,7 @@ RNASEQ_LENGTH_INFO_FILEPATH        := $(GENERATED_FILES_DIR)$(RNASEQPATH)rna_seq
 # RNAseq Vital-IT paths
 # TODO clean-up and remove unused ones
 RNASEQ_VITALIT_READONLY        := /data/ul/dee/bgee/
-RNASEQ_VITALIT_SCRIPTS         := $(RNASEQ_VITALIT_READONLY)/GIT/pipeline/
+RNASEQ_VITALIT_SCRIPTS         := $(RNASEQ_VITALIT_READONLY)GIT/pipeline/
 RNASEQ_VITALIT_GTF             := $(RNASEQ_VITALIT_READONLY)rna_seq/GTF/
 RNASEQ_VITALIT_ALL_RES_BACKUP  := $(RNASEQ_VITALIT_READONLY)rna_seq/all_results/
 RNASEQ_VITALIT_SCRATCH         := /scratch/cluster/monthly/bbgee/
