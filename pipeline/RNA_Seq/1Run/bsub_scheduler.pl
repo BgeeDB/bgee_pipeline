@@ -83,97 +83,101 @@ my $jobs_during_night = 10;
 my $count = 0;
 JOB:
 for my $line ( read_file("$sample_info_file", chomp=>1) ){
-  my @fields    = split ("\t", $line);
-  my $library_id = $fields[0];
+    next JOB  if ( $line =~ /^#/); # header
 
-  next JOB  if ( $line =~ /^#/); # header
+    my @fields     = split ("\t", $line);
+    my $library_id = $fields[0];
 
-  # test to not re-run already finished jobs
-  if ( -s "$output_log_folder/$library_id/DONE.txt" ){
-    print "\n$library_id not launched because it was already analyzed\n";
-    next JOB;
-  }
-  # Check running jobs to not resubmit them while running
-  if ( `bjobs -w | grep ' $library_id '` =~ / (RUN|PEND) / ){
-    print "\n$library_id not launched because it is currently being analyzed (see bjobs)\n";
-    next JOB;
-  }
+    # Test to not re-run already finished jobs
+    if ( -s "$output_log_folder/$library_id/DONE.txt" ){
+        print "\n$library_id not launched because already analyzed\n";
+        next JOB;
+    }
+    # Check running jobs to not resubmit them while running
+    if ( `bjobs -w | grep ' $library_id '` =~ / (RUN|PEND) / ){
+        print "\n$library_id not launched because it is currently being analyzed (see bjobs)\n";
+        next JOB;
+    }
 
-  # Let's launch this library!
-  print "\nLaunching $library_id...\n";
-  $count++;
+    # Let's launch this library!
+    print "\nLaunching $library_id...\n";
+    $count++;
 
-  # Create output folder for library
-  make_path "$output_log_folder/$library_id", {verbose=>0, mode=>0775};
+    # Create output folder for library
+    make_path "$output_log_folder/$library_id", {verbose=>0, mode=>0775};
 
-  # library-specific arguments
-  my $output_file = $output_log_folder.'/'.$library_id.'/'.$library_id.'.out';
-  my $rm_output_command = 'rm -f '.$output_file.";\n";
+    # library-specific arguments
+    my $output_file = $output_log_folder.'/'.$library_id.'/'.$library_id.'.out';
+    my $rm_output_command = 'rm -f '.$output_file.";\n";
 
-  my $error_file = $output_log_folder.'/'.$library_id.'/'.$library_id.'.err';
-  my $rm_error_command = 'rm -f '.$error_file.";\n";
+    my $error_file = $output_log_folder.'/'.$library_id.'/'.$library_id.'.err';
+    my $rm_error_command = 'rm -f '.$error_file.";\n";
 
-  my $report_file = $output_log_folder.'/'.$library_id.'/'.$library_id.'.report';
+    my $report_file = $output_log_folder.'/'.$library_id.'/'.$library_id.'.report';
 
-  # remove ending ";" at end of module loading commands, which can mess up job submission command line
-  $vit_kallisto_cmd =~ s/\;$//;
-  $vit_R_cmd =~ s/\;$//;
-  # espace spaces so that the arguments are not cut after first space by GetOpt
-  ##$vit_kallisto_cmd =~ s/\s/\\ /g;
-  ##$vit_R_cmd =~ s/\s/\\ /g;
+    # remove ending ";" at end of module loading commands, which can mess up job submission command line
+    $vit_kallisto_cmd =~ s/\;$//;
+    $vit_R_cmd =~ s/\;$//;
+    # espace spaces so that the arguments are not cut after first space by GetOpt
+    ##$vit_kallisto_cmd =~ s/\s/\\ /g;
+    ##$vit_R_cmd =~ s/\s/\\ /g;
 
-  my $script_plus_args = "time perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -index_folder=$index_folder -fastq_folder=$fastq_folder -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -ens_release=$ens_release -ens_metazoa_release=$ens_metazoa_release -data_host=$data_host -data_login=$data_login -enc_passwd_file=$enc_passwd_file -vit_kallisto_cmd=\\\"$vit_kallisto_cmd\\\" -vit_R_cmd=\\\"$vit_R_cmd\\\"";
 
-  # Adjust number of jobs to time and day
-  my $job_limit = $jobs_during_day;
-  # Get current date and time to set $job_limit upper if during nights or week-end days.
-  # Get Week Day
-  if ( localtime()->[6]==0 || localtime()->[6]==6 ){
-    $job_limit = $jobs_during_night;
-    # More jobs at the same time if current day is Sunday (0) or Saturday (6)
-  }
-  # Get Hour
-  else {
-    my $hour = localtime()->[2];
-    $job_limit = $jobs_during_night  if ( $hour<=6 || $hour>=19 );
-    # More jobs at the same time if during night, from 19h00 to 06h59
-  }
+    my $script_plus_args = "time perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -index_folder=$index_folder -fastq_folder=$fastq_folder -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -ens_release=$ens_release -ens_metazoa_release=$ens_metazoa_release -data_host=$data_host -data_login=$data_login -enc_passwd_file=$enc_passwd_file -vit_kallisto_cmd=\\\"$vit_kallisto_cmd\\\" -vit_R_cmd=\\\"$vit_R_cmd\\\"";
 
-  # Wait for free places in job queue
-  my $running_jobs = check_running_jobs();
- WAIT_FREE_JOB_IN_QUEUE:
-  while ( $running_jobs >= $job_limit ){
-    print "No more possible slot for the job, waiting and resubmitting\n";
-    sleep 30;
-    $running_jobs = check_running_jobs();
-  }
+    # Adjust number of jobs to time and day
+    my $job_limit = $jobs_during_day;
+    # Get current date and time to set $job_limit upper if during nights or week-end days.
+    # Get Week Day
+    if ( localtime()->[6]==0 || localtime()->[6]==6 ){
+        $job_limit = $jobs_during_night;
+        # More jobs at the same time if current day is Sunday (0) or Saturday (6)
+    }
+    # Get Hour
+    else {
+        my $hour = localtime()->[2];
+        $job_limit = $jobs_during_night  if ( $hour<=6 || $hour>=19 );
+        # More jobs at the same time if during night, from 19h00 to 06h59
+    }
 
-  # Script can be launched! Construct bsub command:
+    # Wait for free places in job queue
+    my $running_jobs = check_running_jobs();
+    WAIT_FREE_JOB_IN_QUEUE:
+    while ( $running_jobs >= $job_limit ){
+        print "No more possible slot for the job, waiting and resubmitting\n";
+        sleep 30;
+        $running_jobs = check_running_jobs();
+    }
 
-  # First, remove previous .out and .err files
-  my $bsub_command = $rm_output_command.$rm_error_command;
-  # Add main bsub command and options
-  # Potential other options:
-  # -R span[ptile=$nr_processors]
-  # -u $user_email
 
-  $bsub_command   .= "echo $script_plus_args | bsub -n $nr_processors -M $memory_limit -R rusage[mem=$memory_usage] -o $output_file -e $error_file -q $queue -J \"$library_id\";";
-  print "Command submitted to vital-IT:\n$bsub_command\n";
-  # also print the command on .out file
-  open (my $OUT, '>', "$report_file")  or die "Cannot write [$report_file]\n";
-  print $OUT "Vital-IT / Bsub command submitted:\n$bsub_command\n";
-  close $OUT;
+    # Script can be launched! Construct bsub command:
 
-  # Then, run the job
-  system(". /mnt/common/lsf/conf/profile.lsf; $bsub_command")==0
-      or print "Failed to submit job [$library_id]\n";
+    # First, remove previous .out and .err files
+    my $bsub_command = $rm_output_command.$rm_error_command;
+    # Add main bsub command and options
+    # Potential other options:
+    # -R span[ptile=$nr_processors]
+    # -u $user_email
+
+    $bsub_command .= "echo $script_plus_args | bsub -n $nr_processors -M $memory_limit -R rusage[mem=$memory_usage] -o $output_file -e $error_file -q $queue -J \"$library_id\";";
+    print "Command submitted to Vital-IT:\n$bsub_command\n";
+    # also print the command on .out file
+    open (my $OUT, '>', "$report_file")  or die "Cannot write [$report_file]\n";
+    print {$OUT} "Vital-IT / Bsub command submitted:\n$bsub_command\n";
+    close $OUT;
+
+    # Then, run the job
+    system(". /mnt/common/lsf/conf/profile.lsf; $bsub_command")==0
+        or print "Failed to submit job [$library_id]\n";
 }
 
 print "\n######################################################\nAll done. $count jobs submitted.\n######################################################\n";
+exit 0;
+
 
 sub check_running_jobs {
     my $running_jobs = `. /mnt/common/lsf/conf/profile.lsf; bjobs | grep -v 'JOBID' | wc -l` || 0;
     chomp($running_jobs);
     return $running_jobs;
 }
-exit 0;
+
