@@ -251,8 +251,8 @@ for my $run ( @run_ids ){
 
 # report min and max read length across runs
 open (my $REPORT, '>>', "$report_file")  or die "Cannot write [$report_file]\n";
-print {$REPORT} "\nMinimum read length across runs: ", min @allLengths, "\n";
-print {$REPORT} "\nMaximum read length across runs: ", max @allLengths, "\n";
+print {$REPORT} "\nMinimum read length across runs: ".min(@allLengths)."\n";
+print {$REPORT} "\nMaximum read length across runs: ".max(@allLengths)."\n";
 close $REPORT;
 
 
