@@ -473,5 +473,6 @@ open (my $REPORT6, '>', $kallisto_out_folder.'/DONE.txt')  or die "Cannot write 
 print {$REPORT6} "$library_id was succesfully processed!\n";
 close $REPORT6;
 ############################################################################################
+
 exit 0;
 
