@@ -173,11 +173,12 @@ prepare_indexed_transcriptome: get_genome prepare_GTF
 run_pipeline: prepare_indexed_transcriptome $(RNASEQ_SAMPINFO_FILEPATH)
 	# Running the pipeline
 	@perl $(RNASEQ_VITALIT_SCRIPTS)$(RNASEQPATH)1Run/bsub_scheduler.pl -sample_info_file=$(RNASEQ_VITALIT_SCRIPTS)RNA_Seq/$(RNASEQ_SAMPINFO_FILEPATH) -output_log_folder=$(RNASEQ_VITALIT_LOG) -index_folder=$(RNASEQ_VITALIT_GTF) -fastq_folder=$(RNASEQ_BIGBGEE_FASTQ) -kallisto_out_folder=$(RNASEQ_VITALIT_ALL_RES) -ens_release=$(ENSRELEASE) -ens_metazoa_release=$(ENSMETAZOARELEASE) -data_host=$(DATAHOST) -data_login=$(DATALOGIN) -enc_passwd_file=$(ENCRYPT_PASSWD_FILE) -vit_kallisto_cmd="$(VIT_KALLISTO_CMD)" -vit_R_cmd="$(VIT_R_CMD)" >$@.tmp 2>&1
+	@echo "TODO: At the end it is a good idea to relaunch the run_pipeline step to be sure everything was run!"
 	@$(MV) $@.tmp $@
 
 check_pipeline: run_pipeline
 #TODO - Add a steps to automatically look for problems? See README.md in pipeline/RNA_Seq/ folder
-#     - It is probably easier to relaunch the problematic samples manually. At the end it is a good idea to relaunch the run_pipeline step to be sure everything was run.
+#     - It is probably easier to relaunch the problematic samples manually.
 #     - Flagged / excluded samples with low % genes mapped / low number of reads mapped / for which mapping failed: added manually to file $(RNASEQ_SAMPEXCLUDED_FILEPATH).
 
 export_length: check_pipeline
