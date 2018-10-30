@@ -100,7 +100,7 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
     }
 
     # Let's launch this library!
-    print "\nLaunching $library_id...\n";
+    print "\nLaunching $library_id ...\n";
     $count++;
 
     # Create output folder for library
