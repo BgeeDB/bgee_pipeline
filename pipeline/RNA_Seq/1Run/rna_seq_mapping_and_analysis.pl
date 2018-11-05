@@ -204,7 +204,7 @@ for my $run ( @run_ids ){
         # reads too short for Kallisto index with default k-mer length
         if ( length($read) < $lengthCutoff ){
             $shortReads = 1;
-            warn "\nWarning: length of reads [", length($read), "] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 15nt run [$run]\n";
+            warn "\nWarning: length of reads [", length($read), "] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 15nt  [$run]\n";
         }
     }
     elsif ( $libraryType eq 'PAIRED' ){
@@ -244,7 +244,7 @@ for my $run ( @run_ids ){
         # reads too short for Kallisto index with default k-mer length
         if ( ( length($read1) < $lengthCutoff ) or ( length($read2) < $lengthCutoff ) ){
             $shortReads = 1;
-            warn "\nWarning: length of left and/or right reads [", length($read1), '/', length($read2), "] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 15nt run [$run]\n";
+            warn "\nWarning: length of left and/or right reads [", length($read1), '/', length($read2), "] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 15nt  [$run]\n";
         }
     }
 }
