@@ -179,7 +179,7 @@ See [post_processing/](../post_processing/) for this pipeline step.
     ```
   * Potential types of errors:
   ```
-    Problem: read length in fastq file [85] is not consistent with SRA record [100]. Please check run [SRR1051537]
+    Problem: read length in fastq file [85] is not consistent with SRA record [100]. Please check [SRR1051537]
     # Usually a problem on the SRA record side
     Problem: The number of reads processed by FastQC and Kallisto differs. Please check for a problem.
     # This one is important! It usually shows a streaning issue
