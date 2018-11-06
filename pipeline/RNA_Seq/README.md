@@ -196,6 +196,7 @@ See [post_processing/](../post_processing/) for this pipeline step.
     Problem: system call to FastQC failed [...]
     Problem: no abundance.tsv or run_info.json file found for this library. Kallisto run was probably not successful
     Problem: system analyze_count_command failed
+	No such file or directory
   ```
   * Warnings:
   ```
