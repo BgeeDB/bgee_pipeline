@@ -4,3 +4,10 @@ SRX616976	FALSE	Streaming failure during Kallisto step. 33M reads used instead o
 SRX099901	TRUE	Nematode sample with very few reads sequenced, and < 300,000 mapped. This is not enough to get good estimation of expression levels.	JR	2016-04-22
 SRX589537	TRUE	Library with very low complexity, and a lot of duplicated reads from adapters. Excluded because very few reads mapped, not enough to get good estimation of expression levels.	JR	2016-04-22
 SRX589538	TRUE	Library with only 132,987 reads sequenced. This is not enough to get good estimation of expression levels.	JR	2016-05-20
+SRR1509499	TRUE	Bad quality single-end run mixed with paired-end runs	SM	2018-11-06
+SRR1509502	TRUE	Bad quality single-end run mixed with paired-end runs	SM	2018-11-06
+SRR1509500	TRUE	Bad quality single-end run mixed with paired-end runs	SM	2018-11-06
+SRR1509505	TRUE	Bad quality single-end run mixed with paired-end runs	SM	2018-11-06
+SRR1509504	TRUE	Bad quality single-end run mixed with paired-end runs	SM	2018-11-06
+SRR1509503	TRUE	Bad quality single-end run mixed with paired-end runs	SM	2018-11-06
+SRR1509501	TRUE	Bad quality single-end run mixed with paired-end runs	SM	2018-11-06

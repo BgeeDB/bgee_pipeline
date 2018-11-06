@@ -17,9 +17,10 @@ use Getopt::Long;
 use Time::localtime;
 
 # Define arguments & their default value
-my ($sample_info_file, $output_log_folder, $index_folder, $fastq_folder, $kallisto_out_folder, $ens_release, $ens_metazoa_release, $data_host, $data_login, $enc_passwd_file, $vit_kallisto_cmd, $vit_R_cmd) = ('', '', '', '', '', '', '', '', '', '', '', '', '', '');
-my %opts = ('sample_info_file=s'    => \$sample_info_file,
-            'output_log_folder=s'   => \$output_log_folder,
+my ($sample_info_file, $exclude_sample_file, $output_log_folder, $index_folder, $fastq_folder, $kallisto_out_folder, $ens_release, $ens_metazoa_release, $data_host, $data_login, $enc_passwd_file, $vit_kallisto_cmd, $vit_R_cmd) = ('', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
+my %opts = ('sample_info_file=s'     => \$sample_info_file,
+            'exclude_sample_file=s'  => \$exclude_sample_file,
+            'output_log_folder=s'    => \$output_log_folder,
             'index_folder=s'         => \$index_folder, # same as GTF folder
             'fastq_folder=s'         => \$fastq_folder,
             'kallisto_out_folder=s'  => \$kallisto_out_folder,
@@ -36,8 +37,9 @@ my %opts = ('sample_info_file=s'    => \$sample_info_file,
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $sample_info_file eq '' || $output_log_folder eq '' || $index_folder eq '' || $fastq_folder eq '' || $kallisto_out_folder eq '' || $ens_release eq '' || $ens_metazoa_release eq '' || $data_host eq '' || $data_login eq '' || $enc_passwd_file eq '' || $vit_kallisto_cmd eq '' || $vit_R_cmd eq ''){
     print "\n\tInvalid or missing argument:
-\te.g. $0 -sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -output_log_folder=\$(RNASEQ_VITALIT_LOG) -index_folder=\$(RNASEQ_VITALIT_GTF)  -fastq_folder=\$(RNASEQ_BIGBGEE_FASTQ) -kallisto_out_folder=\$(RNASEQ_VITALIT_ALL_RES) -ens_release=\$(ENSRELEASE) -ens_metazoa_release=\$(ENSMETAZOARELEASE) -data_host=\$(DATAHOST) -data_login=\$(DATA_LOGIN) -enc_passwd_file=\$(ENCRYPT_PASSWD_FILE) -vit_kallisto_cmd=\$(VIT_KALLISTO_CMD) $vit_R_cmd=\$(VIT_R_CMD)
+\te.g. $0 -sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=\$(RNASEQ_VITALIT_LOG) -index_folder=\$(RNASEQ_VITALIT_GTF)  -fastq_folder=\$(RNASEQ_BIGBGEE_FASTQ) -kallisto_out_folder=\$(RNASEQ_VITALIT_ALL_RES) -ens_release=\$(ENSRELEASE) -ens_metazoa_release=\$(ENSMETAZOARELEASE) -data_host=\$(DATAHOST) -data_login=\$(DATA_LOGIN) -enc_passwd_file=\$(ENCRYPT_PASSWD_FILE) -vit_kallisto_cmd=\$(VIT_KALLISTO_CMD) $vit_R_cmd=\$(VIT_R_CMD)
 \t-sample_info_file       rna_seq_sample_info.txt
+\t-exclude_sample_file    rna_seq_sample_excluded.txt
 \t-output_log_folder      folder for .out and .err files (produced by LSF system), and .Rout files produced by R
 \t-index_folder=s         Folder with Kallisto indexes (same as GTF folder)
 \t-fastq_folder=s         Folder with Fastq files on big bgee
@@ -79,6 +81,19 @@ my $user_email    = 'bgee@sib.swiss'; # for email notification
 my $jobs_during_day   = 10;
 my $jobs_during_night = 10;
 
+# Sample to exclude if any
+my %manually_excluded;
+EXCLUSION:
+for my $line ( read_file("$exclude_sample_file", chomp=>1) ){
+    #libraryId    excluded    comment    annotatorId    lastModificationDate
+    next EXCLUSION  if ( $line =~ /^#/); # header or comment
+
+    my ($sampleId, $to_exclude) = split(/\t/, $line);
+    next EXCLUSION  if ( $to_exclude ne 'TRUE' );
+
+    $manually_excluded{$sampleId} = 1;
+}
+
 # reading library infos
 my $count = 0;
 JOB:
@@ -87,6 +102,8 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
 
     my @fields     = split ("\t", $line);
     my $library_id = $fields[0];
+    # Excluded library
+    next JOB  if ( exists $manually_excluded{$library_id} );
 
     # Test to not re-run already finished jobs
     if ( -s "$output_log_folder/$library_id/DONE.txt" ){
@@ -123,7 +140,7 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
     ##$vit_R_cmd =~ s/\s/\\ /g;
 
 
-    my $script_plus_args = "time perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -index_folder=$index_folder -fastq_folder=$fastq_folder -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -ens_release=$ens_release -ens_metazoa_release=$ens_metazoa_release -data_host=$data_host -data_login=$data_login -enc_passwd_file=$enc_passwd_file -vit_kallisto_cmd=\\\"$vit_kallisto_cmd\\\" -vit_R_cmd=\\\"$vit_R_cmd\\\"";
+    my $script_plus_args = "time perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -exclude_sample_file=$exclude_sample_file -index_folder=$index_folder -fastq_folder=$fastq_folder -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -ens_release=$ens_release -ens_metazoa_release=$ens_metazoa_release -data_host=$data_host -data_login=$data_login -enc_passwd_file=$enc_passwd_file -vit_kallisto_cmd=\\\"$vit_kallisto_cmd\\\" -vit_R_cmd=\\\"$vit_R_cmd\\\"";
 
     # Adjust number of jobs to time and day
     my $job_limit = $jobs_during_day;

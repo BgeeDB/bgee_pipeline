@@ -21,9 +21,10 @@ my $GTEX_exp_id = 'SRP012682';
 ## All output files are written in the results folder, as well as log files (e.g. SRX081872.out, SRX081872.err, and SRX081872.Rout)
 
 # Define arguments & their default value
-my ($library_id, $sample_info_file, $index_folder, $fastq_folder, $kallisto_out_folder, $output_log_folder, $ens_release, $ens_metazoa_release, $data_host, $data_login, $enc_passwd_file, $vit_kallisto_cmd, $vit_R_cmd) = ('', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
+my ($library_id, $sample_info_file, $exclude_sample_file, $index_folder, $fastq_folder, $kallisto_out_folder, $output_log_folder, $ens_release, $ens_metazoa_release, $data_host, $data_login, $enc_passwd_file, $vit_kallisto_cmd, $vit_R_cmd) = ('', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
 my %opts = ('library_id=s'           => \$library_id,
             'sample_info_file=s'     => \$sample_info_file,
+            'exclude_sample_file=s'  => \$exclude_sample_file,
             'index_folder=s'         => \$index_folder, # same as GTF folder
             'fastq_folder=s'         => \$fastq_folder,
             'kallisto_out_folder=s'  => \$kallisto_out_folder,
@@ -40,9 +41,10 @@ my %opts = ('library_id=s'           => \$library_id,
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $library_id eq '' || $sample_info_file eq '' || $index_folder eq '' || $fastq_folder eq '' || $kallisto_out_folder eq '' || $output_log_folder eq '' || $ens_release eq '' || $ens_metazoa_release eq '' || $data_host eq '' || $data_login eq '' || $enc_passwd_file eq '' || $vit_kallisto_cmd eq '' || $vit_R_cmd eq '' ){
     print "\n\tInvalid or missing argument:
-\te.g. $0 -library_id=... -sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -index_folder=\$(RNASEQ_VITALIT_GTF)  -fastq_folder=\$(RNASEQ_BIGBGEE_FASTQ) -kallisto_out_folder=\$(RNASEQ_VITALIT_ALL_RES) -ens_release=\$(ENSRELEASE) -ens_metazoa_release=\$(ENSMETAZOARELEASE) -data_host=\$(DATAHOST) -data_login=\$(DATA_LOGIN) -enc_passwd_file=\$(ENCRYPT_PASSWD_FILE) -vit_kallisto_cmd=\$(VIT_KALLISTO_CMD) $vit_R_cmd=\$(VIT_R_CMD)
+\te.g. $0 -library_id=... -sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -index_folder=\$(RNASEQ_VITALIT_GTF)  -fastq_folder=\$(RNASEQ_BIGBGEE_FASTQ) -kallisto_out_folder=\$(RNASEQ_VITALIT_ALL_RES) -ens_release=\$(ENSRELEASE) -ens_metazoa_release=\$(ENSMETAZOARELEASE) -data_host=\$(DATAHOST) -data_login=\$(DATA_LOGIN) -enc_passwd_file=\$(ENCRYPT_PASSWD_FILE) -vit_kallisto_cmd=\$(VIT_KALLISTO_CMD) $vit_R_cmd=\$(VIT_R_CMD)
 \t-library_id=s           Library to process
 \t-sample_info_file=s     TSV with information on species and runs for each library
+\t-exclude_sample_file=s  rna_seq_sample_excluded.txt
 \t-index_folder=s         Folder with Kallisto indexes (same as GTF folder)
 \t-fastq_folder=s         Folder with Fastq files on big bgee
 \t-kallisto_out_folder=s  Folder with Kallisto output and results
@@ -59,6 +61,21 @@ if ( !$test_options || $library_id eq '' || $sample_info_file eq '' || $index_fo
 }
 
 die "Invalid or missing [$sample_info_file]: $?\n"  if ( !-e $sample_info_file || !-s $sample_info_file );
+
+# Sample to exclude if any
+my %manually_excluded;
+EXCLUSION:
+for my $line ( read_file("$exclude_sample_file", chomp=>1) ){
+    #libraryId    excluded    comment    annotatorId    lastModificationDate
+    next EXCLUSION  if ( $line =~ /^#/); # header or comment
+
+    my ($sampleId, $to_exclude) = split(/\t/, $line);
+    next EXCLUSION  if ( $to_exclude ne 'TRUE' );
+
+    $manually_excluded{$sampleId} = 1;
+}
+die "Excluded library [$library_id]\n"  if ( exists $manually_excluded{$library_id} );
+
 
 # Reading $sample_info_file
 my $libraryExists = 'FALSE';
@@ -88,7 +105,16 @@ for my $line ( read_file($sample_info_file, chomp => 1) ){
         $database       = $fields[5];
         $libraryType    = $fields[7];
         $readLength     = $fields[9];
-        push @run_ids, split(',', $fields[10]);
+        my @tmp_runs;
+        for my $run ( split(',', $fields[10]) ){
+            push @tmp_runs, $run  if ( !exists $manually_excluded{$run} );
+        }
+        if ( scalar @tmp_runs >= 1 ){
+            push @run_ids, @tmp_runs;
+        }
+        else {
+            die "All runs are excluded for [$library_id]!\n";
+        }
     }
 }
 die "Library [$library_id] is not present in [$sample_info_file]\n"  unless ( $libraryExists );
