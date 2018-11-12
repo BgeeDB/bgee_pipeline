@@ -196,8 +196,9 @@ See [post_processing/](../post_processing/) for this pipeline step.
     Problem: system call to FastQC failed [...]
     Problem: no abundance.tsv or run_info.json file found for this library. Kallisto run was probably not successful
     Problem: system analyze_count_command failed
-	No such file or directory
   ```
+	**fastqc.html: No such file or directory**  The FastQC report file is missing. Run FastQC on those missed runs.
+
   * Warnings:
   ```
     # grep "Warning" all_results_bgee_v14/*/*.err #too broad, most of warning indicate mapping on 15nt index
