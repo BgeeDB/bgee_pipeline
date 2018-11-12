@@ -216,7 +216,7 @@ for my $run ( @run_ids ){
             chomp($read);
         }
         if ( (!defined $read) or ($read eq '') ){
-            die "\tProblem: read length could not be extracted for run [$run]\n";
+            die "\tProblem: Read length could not be extracted for run [$run]\n";
         }
         print "\tRead length = ", length($read), " for run [$run]\n";
 
@@ -225,12 +225,12 @@ for my $run ( @run_ids ){
 
         # verify that extracted read length is consistent with SRA info
         if ( (length($read) ne $readLength) and ($readLength ne '') ){
-            warn "\nProblem: read length in fastq file [", length($read), "] is not consistent with SRA record [$readLength]. Please check [$run]\n";
+            warn "\nProblem: Read length in fastq file [", length($read), "] is not consistent with SRA record [$readLength]. Please check [$run]\n";
         }
         # reads too short for Kallisto index with default k-mer length
         if ( length($read) < $lengthCutoff ){
             $shortReads = 1;
-            warn "\nWarning: length of reads [", length($read), "] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 15nt  [$run]\n";
+            warn "\nWarning: Length of reads [", length($read), "] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 15nt  [$run]\n";
         }
     }
     elsif ( $libraryType eq 'PAIRED' ){
@@ -248,10 +248,10 @@ for my $run ( @run_ids ){
             chomp($read2);
         }
         if ( (!defined $read1) or ($read1 eq '') ){
-            die "\tProblem: length of left read could not be extracted for run [$run]\n";
+            die "\tProblem: Length of left read could not be extracted for run [$run]\n";
         }
         if ( (!defined $read2) or ($read2 eq '') ){
-            die "\tProblem: length of right read could not be extracted for run [$run]\n";
+            die "\tProblem: Length of right read could not be extracted for run [$run]\n";
         }
         print "\tRead lengths = ", length($read1), '/', length($read2), " for run [$run]\n";
 
@@ -261,16 +261,16 @@ for my $run ( @run_ids ){
 
         # verify that same length for both PE reads. If not, probably an error
         if ( length($read1) ne length($read2) ){
-            warn "\nWarning: length of left and right reads are different [", length($read1), '/', length($read2), "]. Please check [$run]\n";
+            warn "\nWarning: Length of left and right reads are different [", length($read1), '/', length($read2), "]. Please check [$run]\n";
         }
         # verify that extracted read length is consistent with SRA info
         if ( ((length($read1) + length($read2)) ne $readLength) and ($readLength ne '') ){
-            warn "\nProblem: length of left and right reads in fastq files [", length($read1), '+', length($read2), "=", length($read1) + length($read2), "] are not consistent with SRA record [$readLength]. Please check [$run]\n";
+            warn "\nProblem: Length of left and right reads in fastq files [", length($read1), '+', length($read2), "=", length($read1) + length($read2), "] are not consistent with SRA record [$readLength]. Please check [$run]\n";
         }
         # reads too short for Kallisto index with default k-mer length
         if ( ( length($read1) < $lengthCutoff ) or ( length($read2) < $lengthCutoff ) ){
             $shortReads = 1;
-            warn "\nWarning: length of left and/or right reads [", length($read1), '/', length($read2), "] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 15nt  [$run]\n";
+            warn "\nWarning: Length of left and/or right reads [", length($read1), '/', length($read2), "] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 15nt  [$run]\n";
         }
     }
 }
@@ -386,7 +386,7 @@ else {
     close $REPORT3;
     # Submit command. Bash syntax is needed to be able to have parentheses and pipes. See http://stackoverflow.com/questions/571368/how-can-i-use-bash-syntax-in-perls-system
     my @args = ( "bash", "-c",  $kallisto_command );
-    system(@args)==0  or die "\tProblem: system call to Kallisto failed\n";
+    system(@args)==0  or die "\tProblem: System call to Kallisto failed\n";
     print "\tDone\n";
 }
 
@@ -447,7 +447,7 @@ if ( ( -s $kallisto_out_folder.'/abundance.tsv' ) && ( -s $kallisto_out_folder.'
     # h5dump -d /aux/fld all_results_bgee_v14/SRX567038/abundance.h5 | less
 }
 else {
-    die "\tProblem: no abundance.tsv or run_info.json file found for this library. Kallisto run was probably not successful.\n";
+    die "\tProblem: No abundance.tsv or run_info.json file found for this library. Kallisto run was probably not successful.\n";
 }
 
 ############################################################################################
@@ -489,7 +489,7 @@ else {
     print {$REPORT5} "\nComputing node / R command submitted:\n$analyze_count_command\n";
     close $REPORT5;
     # Submit command
-    system($analyze_count_command)==0  or die "\tProblem: system call to analyze_count_command failed\n";
+    system($analyze_count_command)==0  or die "\tProblem: System call to analyze_count_command failed\n";
     print "\tDone\n";
 }
 

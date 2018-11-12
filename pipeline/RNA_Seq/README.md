@@ -120,7 +120,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
   * `screen`
   * `make run_pipeline`
   * `Ctrl-a Ctrl-d` to exit the screen session, `screen -r` to come back
-  * Results are written in `/scratch/beegfs/monthly/bbgee/all_results_bgee_v14`. Beware that one month is passing fast! Please add to your calendar to do a touch of all files in less than a month.
+  * Results are written in `$RNASEQ_VITALIT_ALL_RES`. Beware that one month is passing fast! Please add to your calendar to do a touch of all files in less than a month.
   ```
   find . -exec touch {} \;
   ```
@@ -131,11 +131,11 @@ Gene expression ranks allow to identify the most functionally-relevant condition
    # number of launched jobs
    grep -c "is submitted to queue <bgee>" /data/ul/dee/bgee/GIT/pipeline/RNA_Seq/run_pipeline.tmp
    # results fodler
-   ll /scratch/beegfs/monthly/bbgee/all_results_bgee_v14/
+   ll $RNASEQ_VITALIT_ALL_RES
    # number of successful jobs
-   ll /scratch/beegfs/monthly/bbgee/all_results_bgee_v14/*/DONE.txt | wc -l
+   ll $RNASEQ_VITALIT_ALL_RES/*/DONE.txt | wc -l
    # list of unsuccessful jobs (has no DONE.txt and has a .out file)
-   find /scratch/beegfs/monthly/bbgee/all_results_bgee_v14/ -maxdepth 1 -mindepth 1 -type d -exec sh -c 'if ! test -s {}/DONE.txt && test -s {}/*.out; then echo {}; fi' \; | sort
+   find $RNASEQ_VITALIT_ALL_RES/ -maxdepth 1 -mindepth 1 -type d -exec sh -c 'if ! test -s {}/DONE.txt && test -s {}/*.out; then echo {}; fi' \; | sort
   ```
   * If run is interrupted, do not forget to backup the file run_pipeline.tmp, as well as .report, .err and .out files
   ```
@@ -149,55 +149,69 @@ Gene expression ranks allow to identify the most functionally-relevant condition
     * Kallisto bug... Streaming too slow, streaming interrupted, sometimes everything is just fine but Kallisto bugs after reporting output... Beware, these libraries can move to further steps and generate a `DONE.txt`. Very important to check if number of reads processed corresponds to number of reads in fastq files (see below).
     * How to track these bugs:
     ```
-    grep "Write failed: Broken pipe" all_results_bgee_v14/*/*.err # usually some samples with streaming issues
-    grep "gzip: stdin: unexpected end of file" all_results_bgee_v14/*/*.err
-    grep "bad decrypt" all_results_bgee_v14/*/*.err
-    # grep "Your file is probably truncated" all_results_bgee_v14/*/*.err # FastQC error, seen joint with previous one
-    # grep "error writing output file" all_results_bgee_v14/*/*.err # This one is present in many fastqc outputs, which doesn't seem to be really problematic...
-    grep "Failed to process file stdin" all_results_bgee_v14/*/*.err
-    grep "Problem" all_results_bgee_v14/*/*.err
+    grep 'Broken pipe' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    # Usually some samples with streaming issues
+    grep 'gzip: stdin: unexpected end of file' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    # Most of the time linked to streaming issues, but could also be to wrongly compressed FastQ files. So check them if repeated
+    grep 'packet_write_wait'                                              $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'ssh_exchange_identification: Connection closed by remote host'  $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'ssh_exchange_identification: read: Connection reset by peer'    $RNASEQ_VITALIT_ALL_RES/*/*.err
+    # Most of the time linked to streaming issues. So check them if repeated
+    grep 'Uncaught exception from user code' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    # Exception from the code. Check the error message next to it carefully!
+    grep 'bad decrypt' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    #
+    grep 'Your file is probably truncated' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    # FastQC error, seen joint with previous one
+    grep 'error writing output file' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    # This one is present in many fastqc outputs, which doesn't seem to be really problematic...
+    grep 'Failed to process file stdin' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    #
     ```
   * Potential types of errors:
   ```
-    Problem: read length in fastq file [85] is not consistent with SRA record [100]. Please check [SRR1051537]
-    # Usually a problem on the SRA record side
+    grep 'Problem' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    # too broad
+    Problem: Read length in fastq file [85] is not consistent with SRA record [100]. Please check [SRR1051537]
+    Problem: Length of left and right reads in fastq files [101+101=202] are not consistent with SRA record [210]. Please check run [SRR391652]
+    Problem: Length of left and right reads in fastq files [104+96=200] are not consistent with SRA record [208]. Please check run [SRR606898]
+    # Usually a problem on the SRA record side. Could be runs trimmed at different times. Usually Kallisto manages to use them properly anyway.
     Problem: The number of reads processed by FastQC and Kallisto differs. Please check for a problem.
-    # This one is important! It usually shows a streaning issue
+    # This one is important! It usually shows a streaming issue
     Problem: It seems that less than 20% of the reads were pseudo-aligned by Kallisto, please check for a problem.
     # Usually samples with low quality reads or a lot of adapters sequenced. At this step, if all libraries are classical RNA-seq, there is no reason to exclude these libraries... Unless very few reads are mapped, see below
     Problem: Less than 1,000,000 reads were pseudo-aligned by Kallisto, please check for a problem.
     # If very few reads are mapped, the expression levels estimation might be off. I suggest to discard samples with only thousands of reads mapped. See below exclusion file.
-    Problem: system call to Kallisto failed
-	#
+    Problem: System call to Kallisto failed
+    # Kallisto command failure. Could be Kallisto not found in the PATH, ...
     Problem: Kallisto TPM results include numerous [...]
-	#
+    # Too many NAN in Kallisto output, check for problem.
     Problem: fastq.gz.enc file [...]
-	#
     Problem: fastq.gz file [...]
-	#
-    Problem: read length could not be extracted for run [...]
-	#
-    Problem: length of [...]
-	#
-    Problem: system call to FastQC failed [...]
-	#
-    Problem: no abundance.tsv or run_info.json file found for this library. Kallisto run was probably not successful
-	#
-    Problem: system analyze_count_command failed
-	#
-	fastqc.html: No such file or directory
-    # The FastQC report file is missing. Run FastQC on those missed runs
+    # FastQ file not found. Is missing and/or paired-end sample that is not really paired-end, ...
+    Problem: Read length could not be extracted for run [...]
+    # Read length could not be extracted, so file is missing, truncated or unaccessible
+    Problem: No abundance.tsv or run_info.json file found for this library. Kallisto run was probably not successful
+    # Issue with kallisto run. Better to delete the library folder and rerun the pipeline for that library
+    Problem: System call to analyze_count_command failed
+    # R command failure. Could R not found in the PATH, missing R library, ...
   ```
 
   * Warnings:
   ```
-    # grep "Warning" all_results_bgee_v14/*/*.err #too broad, most of warning indicate mapping on 15nt index
-    grep "Warning: length of left and right reads are different" all_results_bgee_v14/*/*.err
+    grep 'Warning' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    # too broad, most of warning indicate mapping on 15nt index
+    grep 'Warning: Length of left and right reads are different' $RNASEQ_VITALIT_ALL_RES/*/*.err
     # Usually this is not a problem and SRA agrees
+    grep 'Warning: Length of left and/or right reads [75/1] too short for pseudo-mapping ...'  $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'Warning: Length of reads [25] too short for pseudo-mapping ...'                      $RNASEQ_VITALIT_ALL_RES/*/*.err
+    # Mapping will switch to short index. What to do when length of reads lower than short index k-mer size? => check % mapping
+    grep 'fastqc.html: No such file or directory'
+    # The FastQC report file is missing. Run FastQC on those missed runs
   ```
   * **TODO** any other messages that could have been missed?
   * Management of bugged samples:
-    * It is good to keep a copy of the whole folder, for example: `mv all_results_bgee_v14/SRX.../ failed_results_bgee_v14/`
+    * It is good to keep a copy of the whole folder, for example: `mv $RNASEQ_VITALIT_ALL_RES/SRX.../ failed_results_bgee_v14/`
    Samples can be relaunched by hand one by one: you can find the bsub command for each library in the '.report' file.
     * All samples to rerun can be relaunched by rerunning [bsub_scheduler.pl](1Run/bsub_scheduler.pl) in `make run_pipeline` step
 
@@ -211,7 +225,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
     * Run `make finalize_pipeline` to:
       * Backup the file `run_pipeline.tmp`, as well as '.report', '.err' and '.out' files
       * Touch all files so that they can stay in `/scratch/beegfs/monthly` for one more month
-      * Tar and compress all data and copy them to `/data/` drive (for Bgee_v14 the whole all_results_bgee_v14 has been backuped on nas.unil.ch!)
+      * Tar and compress all data and copy them to `/data/` drive (for Bgee_v14 the whole $RNASEQ_VITALIT_ALL_RES has been backuped on nas.unil.ch!)
 
 ## Mapping the libraries: TODOs
   * Should we increase the number of parallel jobs (10) to a higher number (20 for example)? Maybe need to change SSH configuration on `bigbgee` to open more than 10 SSH ports. Check machine status during run:
@@ -311,7 +325,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
     ll presence_absence_bgee_v14_v4/*/distribution_TPM_genic_intergenic+cutoff.pdf | wc
     ```
 
-  * Copy files of `$(RNASEQ_VITALIT_PRESENCE_RES)` subfolders (1 per sample) to subfolders of `all_results_bgee_v14`
+  * Copy files of `$(RNASEQ_VITALIT_PRESENCE_RES)` subfolders (1 per sample) to subfolders of `$RNASEQ_VITALIT_ALL_RES`
   ```
   cd $(RNASEQ_VITALIT_PRESENCE_RES)
   for folder in *; do echo $folder; /bin/cp $folder/* $(RNASEQ_VITALIT_ALL_RES)/$folder/; done
