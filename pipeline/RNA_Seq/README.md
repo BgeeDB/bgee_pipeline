@@ -115,7 +115,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
   * **TODO**: add here command to redownload 1 library only
 
 ## Mapping the libraries:
-  * On Vital-IT, got to `/data/ul/dee/bgee/GIT/pipeline/RNA_Seq/`. Script are in folder [1Run/](1Run)
+  * On Vital-IT, got to `/data/ul/dee/bgee/GIT/pipeline/RNA_Seq/`. Scripts are in folder [1Run/](1Run)
   * `git pull`
   * `screen`
   * `make run_pipeline`
@@ -295,7 +295,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
   * Example 3: hedgehog in Bgee v14
     * Tricky example! Intergenic regions have almost the same distribution of signal as protein coding regions!
     * We only keep the left-part of the gaussian 1. To do this, we must set `selectionSideIntergenic` to `Right` and choose gaussian 2 in `selectedGaussianIntergenic`. The selected gaussian will be on the right of the maximum TPM intensity of selected intergenic regions.
-    * The exact row in the `generated_files/RNA_Seq/gaussian_choice_by_species.txt` file will be: `9365\tErinaceus europaeus\t2\t2\tNA\tNA\t2\tRight\t"Intergenic regions are are deconvoluted into 2 gaussians, but they overlap (1 is broader than 2). Intergenic overlaps a lot with coding too. Keeping gaussian 2 was removing some regions on the right of the distribution, but very few, which resulted in extermely low proportion of coding expressed. Now removing gaussian 2, i.e., set it to be on the right of the selected regions"\tJR`
+    * The exact row in the `generated_files/RNA_Seq/gaussian_choice_by_species.txt` file will be: `9365\tErinaceus europaeus\t2\t2\tNA\tNA\t2\tRight\t"Intergenic regions are deconvoluted into 2 gaussians, but they overlap (1 is broader than 2). Intergenic overlaps a lot with coding too. Keeping gaussian 2 was removing some regions on the right of the distribution, but very few, which resulted in extermely low proportion of coding expressed. Now removing gaussian 2, i.e., set it to be on the right of the selected regions"\tJR`
 
   * **TODO** add some more interesting/delicate examples when encountered.
 
