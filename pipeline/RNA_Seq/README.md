@@ -115,7 +115,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
   * **TODO**: add here command to redownload 1 library only
 
 ## Mapping the libraries:
-  * On vital-IT, got to `/data/ul/dee/bgee/GIT/pipeline/RNA_Seq/`. Script are in folder [1Run/](1Run)
+  * On Vital-IT, got to `/data/ul/dee/bgee/GIT/pipeline/RNA_Seq/`. Script are in folder [1Run/](1Run)
   * `git pull`
   * `screen`
   * `make run_pipeline`
@@ -231,7 +231,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
   * Should we increase the number of parallel jobs (10) to a higher number (20 for example)? Maybe need to change SSH configuration on `bigbgee` to open more than 10 SSH ports. Check machine status during run:
   ```
     ssh bgee@bigbgee.unil.ch
-    # The 3 machines used on vital-it
+    # The 3 machines used on Vital-IT
     ssh cpt172.prdclst.vital-it.ch
     ssh cpt171.prdclst.vital-it.ch
     ssh cpt133.prdclst.vital-it.ch
@@ -375,7 +375,7 @@ in wildly used strain names.
 
 ## Insert feature length
 
-* `make export_length` to be run on vital-it
+* `make export_length` to be run on Vital-IT
 * Add length info file to GIT project ([generated_files/RNA_seq/](../../generated_files/RNA_seq/) folder)
 * `make insert_feature_length` to be run on our server
 * Check the `transcript` table in database to check for good insertion
