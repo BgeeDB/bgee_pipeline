@@ -111,8 +111,8 @@ Gene expression ranks allow to identify the most functionally-relevant condition
 
 ## Preparation steps:
   See [README.md](0Before/README.md) file in folder [0Before/](0Before)
-  * If a fastq file is corrupted, it can be redownlaoded using [get_SRA.pl](0Before/get_SRA.pl) script
-  * **TODO**: add here command to redownload 1 library only
+  * If a fastq file is corrupted, it can be re-downloaded using [get_SRA.pl](0Before/get_SRA.pl) script
+  * **TODO**: add here command to re-download 1 library only
 
 ## Mapping the libraries:
   * On Vital-IT, got to `/data/ul/dee/bgee/GIT/pipeline/RNA_Seq/`. Scripts are in folder [1Run/](1Run)
@@ -130,7 +130,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
    less /data/ul/dee/bgee/GIT/pipeline/RNA_Seq/run_pipeline.tmp
    # number of launched jobs
    grep -c "is submitted to queue <bgee>" /data/ul/dee/bgee/GIT/pipeline/RNA_Seq/run_pipeline.tmp
-   # results fodler
+   # results folder
    ll $RNASEQ_VITALIT_ALL_RES
    # number of successful jobs
    ll $RNASEQ_VITALIT_ALL_RES/*/DONE.txt | wc -l
@@ -218,7 +218,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
   * File with excluded samples:
     * If we notice bad samples, add them to file `generated_files/RNA_Seq/rna_seq_sample_excluded.txt` (file name in variable `$(RNASEQ_SAMPEXCLUDED_FILEPATH)` in [pipeline/Makefile.common](../Makefile.common)).
     * Bad samples include those with a very low proportion of reads mapped, usually because of low library complexity, or a lot of adapter contamination. Samples with very few reads mapped should also be removed because the expression level estimates are probably not reliable.
-    * Some samples could be problematic or suspicious during the mapping step, but we might want ot include them. It is better to add them this file too (with FALSE in `excluded` column), so that a record of what happened is kept. For example I included two samples which had streaming failure during Kallisto step, but still several millions are reads mapped (rerunning them gave the same results, maybe because corruption of fastq files? Redownload was not possible at the time because of issues with dbGap), which is enough to get confident estimates of expression levels.
+    * Some samples could be problematic or suspicious during the mapping step, but we might want to include them. It is better to add them this file too (with FALSE in `excluded` column), so that a record of what happened is kept. For example I included two samples which had streaming failure during Kallisto step, but still several millions are reads mapped (rerunning them gave the same results, maybe because corruption of fastq files? Redownload was not possible at the time because of issues with dbGap), which is enough to get confident estimates of expression levels.
 
   * At the end of mapping step
     * It is good to rerun `make run_pipeline` step to be sure nothing was forgotten.
@@ -295,7 +295,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
   * Example 3: hedgehog in Bgee v14
     * Tricky example! Intergenic regions have almost the same distribution of signal as protein coding regions!
     * We only keep the left-part of the gaussian 1. To do this, we must set `selectionSideIntergenic` to `Right` and choose gaussian 2 in `selectedGaussianIntergenic`. The selected gaussian will be on the right of the maximum TPM intensity of selected intergenic regions.
-    * The exact row in the `generated_files/RNA_Seq/gaussian_choice_by_species.txt` file will be: `9365\tErinaceus europaeus\t2\t2\tNA\tNA\t2\tRight\t"Intergenic regions are deconvoluted into 2 gaussians, but they overlap (1 is broader than 2). Intergenic overlaps a lot with coding too. Keeping gaussian 2 was removing some regions on the right of the distribution, but very few, which resulted in extermely low proportion of coding expressed. Now removing gaussian 2, i.e., set it to be on the right of the selected regions"\tJR`
+    * The exact row in the `generated_files/RNA_Seq/gaussian_choice_by_species.txt` file will be: `9365\tErinaceus europaeus\t2\t2\tNA\tNA\t2\tRight\t"Intergenic regions are deconvoluted into 2 gaussians, but they overlap (1 is broader than 2). Intergenic overlaps a lot with coding too. Keeping gaussian 2 was removing some regions on the right of the distribution, but very few, which resulted in extremely low proportion of coding expressed. Now removing gaussian 2, i.e., set it to be on the right of the selected regions"\tJR`
 
   * **TODO** add some more interesting/delicate examples when encountered.
 
@@ -397,7 +397,7 @@ in wildly used strain names.
    ```
    cd bgee_pipeline/pipeline/RNA_Seq/3Insertion
    PIPELINEROOT="../"
-   BGEECMD="user=bgee__pass=bgee__host=127.0.0.1__port=3306__name=bgee_v13"
+   BGEECMD="user=bgee__pass=bgee__host=127.0.0.1__port=3306__name=bgee_v14"
    RNASEQALLRES="/var/bgee/bgee/extra/pipeline/rna_seq/all_results/"
    RNASEQTMMTARG="/var/bgee/bgee/extra/pipeline/rna_seq/bioconductor/targets_TMM_bgee_v14"
    RNASEQTMMPATH="/var/bgee/bgee/extra/pipeline/rna_seq/processed_TMM_bgee_v14/"
