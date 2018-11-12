@@ -23,8 +23,7 @@
 7. [Calculation of TMM normalization factors](#calculation-of-tmm-normalization-factors)
 8. [Back-up](#back-up)
 
-(Note that the developer guidelines include information about how we select valid sets of intergenic 
-regions, allowing to estimate the background transcriptional noise in each library).
+(Note that the developer guidelines include information about how we select valid sets of intergenic regions, allowing to estimate the background transcriptional noise in each library).
 
 # General Information
 
@@ -36,30 +35,20 @@ RNA-Seq data are used to produce:
 * ranking of these baseline calls to identify the most important conditions with expression, for each gene
 * calls of differential over-/under-expression
 
-These results are then integrated in a consistent manner with all other results from other data types, 
-to produce global calls of presence/absence of expression, and to compute gene expression ranks 
-for calls of presence/absence of expression.
+These results are then integrated in a consistent manner with all other results from other data types, to produce global calls of presence/absence of expression, and to compute gene expression ranks for calls of presence/absence of expression.
 
-You can check the most up-to-date versions of all parameters, softwares, and scripts used, 
-directly in the [Makefile of this pipeline step](Makefile).
+You can check the most up-to-date versions of all parameters, softwares, and scripts used, directly in the [Makefile of this pipeline step](Makefile).
 
 ## Step 1: Data annotation
 
-RNA-Seq data present in SRA are selected and annotated using information present in GEO, 
-or in papers, or provided by the Model Organism Database Wormbase.
+RNA-Seq data present in SRA are selected and annotated using information present in GEO, or in papers, or provided by the Model Organism Database Wormbase.
 
 ## Step 2: data download and preparation
 
-Bgee annotations are parsed in order to retrieve the relevant information about SRA files to download, 
-using the NCBI e-utils (for instance, SRR IDs of runs part of a library).
-Data annotated are downloaded from SRA using the Aspera software, and then converted to FastQ files. 
-For GTEx data, FastQ files are downloaded through the dbGaP Authorized Access System using Aspera. 
+Bgee annotations are parsed in order to retrieve the relevant information about SRA files to download, using the NCBI e-utils (for instance, SRR IDs of runs part of a library).
+Data annotated are downloaded from SRA using the Aspera software, and then converted to FastQ files. For GTEx data, FastQ files are downloaded through the dbGaP Authorized Access System using Aspera.
 
-GTF annotation files and genome sequence fasta files are retrieved from Ensembl and Ensembl metazoa 
-for all species included in Bgee. Check "data sources" to see the Ensembl version used for this release 
-of Bgee. This information is used to identify sequences of genic regions, exonic regions, 
-and intergenic regions. It is also used to generate indexed transcriptome files for all species 
-in Bgee, using the TopHat and Kallisto softwares.
+GTF annotation files and genome sequence fasta files are retrieved from Ensembl and Ensembl metazoa for all species included in Bgee. Check "data sources" to see the Ensembl version used for this release of Bgee. This information is used to identify sequences of genic regions, exonic regions, and intergenic regions. It is also used to generate indexed transcriptome files for all species in Bgee, using the TopHat and Kallisto softwares.
 
 ## Step 3: RNA-Seq library analyses
 
@@ -69,14 +58,12 @@ For each library:
 
 * For each run, check for presence of single-end FastQ read file, or of the two FastQ files for paired-end runs.
 * For each run, estimation of read length, to make sure the information provided in SRA is correct, and for checking that the reads are not too short for Kallisto indexing with default k-mer length. This is done by extracting the first read/read pair from the fastQ file. Note that this can potentially provide incorrect information if all reads do not have the same length (for instance, if some reads were trimmed).
-* If the reads are too short for Kallisto indexing with default k-mer length, the k-mer length is set to 15 nucleotides. Otherwise, use of the default Kallisto k-mer length (you can also check 
-the most up-to-date value of this parameter directly in the [Makefile of this pipeline step](Makefile)).
+* If the reads are too short for Kallisto indexing with default k-mer length, the k-mer length is set to 15 nucleotides. Otherwise, use of the default Kallisto k-mer length (you can also check the most up-to-date value of this parameter directly in the [Makefile of this pipeline step](Makefile)).
 * A FastQC file is generated for each FastQ file, to check for potential problems.
 
 ### Pseudo-mapping to transcriptome with Kallisto
 
-The following parameters are used (you can check the most up-to-date values of these parameters 
-directly in the [Makefile of this pipeline step](Makefile)):
+The following parameters are used (you can check the most up-to-date values of these parameters directly in the [Makefile of this pipeline step](Makefile)):
 
 * No bootstrapping
 * Sequence bias correction enabled
@@ -89,11 +76,11 @@ directly in the [Makefile of this pipeline step](Makefile)):
 * We sum at the gene level the counts of pseudo-aligned reads computed at the transcript level by Kallisto.
 * The pseudo-aligned read counts, and the genomic feature effective lengths, are used to compute TPM and FPKM values. The values provided in Bgee are computed on the basis of genic regions only, but we also compute this information considering other genomic features, for sanity checks, and for calling genes as present/absent (see [post-processing](#post-processing-normalization-and-generation-of-expression-calls) below).
 
-### Sanity checks: 
+### Sanity checks:
 
 We check for each library:
 
-* The fastQC file produced 
+* The fastQC file produced
 * The density plot of TPM values for various groups of genomic features (protein-coding genes, intergenic regions, etc)
 * Sum of counts of pseudo-aligned reads, assigned TPM values (for instance, presence of high number of “NA” in Kallisto output)
 
@@ -105,20 +92,13 @@ We compute TMM normalization factors to normalize in each experiment the FPKM an
 
 #### Generation of baseline calls of presence/absence of expression
 
-To define the call of expression of a gene in a library as "present", we check whether its level 
-of expression is over the background transcriptional noise in this library. To estimate 
-the background transcriptional noise in each library, we use the level of expression 
-of a set of intergenic regions. How we define this set of intergenic regions 
-is described below in this document, in the developer documentation section (see 
-[Presence/absence calls](#presenceabsence-calls)).
+To define the call of expression of a gene in a library as "present", we check whether its level of expression is over the background transcriptional noise in this library. To estimate the background transcriptional noise in each library, we use the level of expression of a set of intergenic regions. How we define this set of intergenic regions is described below in this document, in the developer documentation section (see [Presence/absence calls](#presenceabsence-calls)).
 
 #### Expression rank computations
 
-Gene expression ranks allow to identify the most functionally-relevant conditions related to 
-the expression of a gene. It is computed from integrating all data types used in Bgee. 
-See [post_processing/](../post_processing/) for this pipeline step.
+Gene expression ranks allow to identify the most functionally-relevant conditions related to the expression of a gene. It is computed from integrating all data types used in Bgee. See [post_processing/](../post_processing/) for this pipeline step.
 
-# Developer guidelines 
+# Developer guidelines
 
 1. [Preparation steps](#preparation-steps)
 2. [Mapping the libraries](#mapping-the-libraries)
@@ -188,16 +168,27 @@ See [post_processing/](../post_processing/) for this pipeline step.
     Problem: Less than 1,000,000 reads were pseudo-aligned by Kallisto, please check for a problem.
     # If very few reads are mapped, the expression levels estimation might be off. I suggest to discard samples with only thousands of reads mapped. See below exclusion file.
     Problem: system call to Kallisto failed
+	#
     Problem: Kallisto TPM results include numerous [...]
+	#
     Problem: fastq.gz.enc file [...]
+	#
     Problem: fastq.gz file [...]
+	#
     Problem: read length could not be extracted for run [...]
+	#
     Problem: length of [...]
+	#
     Problem: system call to FastQC failed [...]
+	#
     Problem: no abundance.tsv or run_info.json file found for this library. Kallisto run was probably not successful
+	#
     Problem: system analyze_count_command failed
-	No such file or directory
+	#
+	fastqc.html: No such file or directory
+    # The FastQC report file is missing. Run FastQC on those missed runs
   ```
+
   * Warnings:
   ```
     # grep "Warning" all_results_bgee_v14/*/*.err #too broad, most of warning indicate mapping on 15nt index
@@ -358,7 +349,7 @@ in wildly used strain names.
 
   * The script can be run in `-debug` mode. At the end of the script, the number of rows expected in the `rnaSeqResult` table is given (and number excluded rows as well).
   * Once everything is good, we can launch the insertion in expression table.
-  
+
 * `make check_conditions`
   * It will check validity of inserted conditions: before running `insert_expression`, you should generate the file `check_conditions`, to detect invalid conditions not supposed to exist in the related species. See 'Details' section of [pipeline/post_processing/README.md](../post_processing/README.md) for an explanation on how to fix such issues (in case the annotations were not incorrect).
 
