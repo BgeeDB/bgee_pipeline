@@ -261,7 +261,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
       * `comment`: please fill this to justify your choice of gaussians (see tips below, but also if someone else comes back and tries to understand your choices)
       * `annotatorId`: your initials
 
-    * To select the intergenic gaussians, it is necessary to have a look at the density plots generated! These are located in the output folder of the [1Run/rna_seq_sum_by_species.R](1Run/rna_seq_sum_by_species.R) script, for example `sum_by_species_bgee_v14`. In this folder, for each species, there is a PDF file named `distribution_TPM_genic_intergenic_sum_deconvolution_XXXXX.pdf`, where `XXXXX represents the speciesId. For example, here is the density plot automatically generated for mouse in Bgee v14.0:
+    * To select the intergenic gaussians, it is necessary to have a look at the density plots generated! These are located in the output folder of the [1Run/rna_seq_sum_by_species.R](1Run/rna_seq_sum_by_species.R) script, for example `sum_by_species_bgee_v14`. In this folder, for each species, there is a PDF file named `distribution_TPM_genic_intergenic_sum_deconvolution_XXXXX.pdf`, where `XXXXX represents the speciesId. For example, here is the density plot automatically generated for mouse in Bgee v14:
 
     ![Boxplot](img/distribution_TPM_genic_intergenic_sum_deconvolution_10090.png)
 
@@ -350,14 +350,14 @@ in wildly used strain names.
   Warning: no uberonId specified for [SRP009247--SRX105066]. Commented: 1
   ```
   * Check carefully the statistics and strains inserted, in file `insert_RNA_seq`
-  * **TODO**? At beginning of script, we check if each library has indeed a non empty file with results. This doesn't prevent truncated files to be considered, should we add more sophisticated checks (when reading the actual files)?
-  * At beginning of log messages in standard output file, the number of libraries to insert is indicated. It is different than the number of annotated libraries
+  * **TODO**? At the beginning of the script, we check if each library has indeed a non empty file with results. This doesn't prevent truncated files to be considered, should we add more sophisticated checks (when reading the actual files)?
+  * At the beginning of log messages in standard output file, the number of libraries to insert is indicated. It is different than the number of annotated libraries
     * Some libraries are annotated but commented out
     * Some libraries are from species not inserted in Bgee
     * Some libraries are excluded because not from RNA-Seq (CAGE-Seq, miRNA-Seq, etc)
     * Some libraries are excluded because not found in SRA
     * Some libraries are excluded from WormBase annotation file
-    * The difference: number annotated libraries - all reasons above should give the number of libraries in `generated_files/RNA_seq/rna_seq_sample_info.txt` file
+    * The difference: number annotated libraries - all reasons above should give the number of libraries in `generated_files/RNA_Seq/rna_seq_sample_info.txt` file
     * In addition some libraries are excluded after mapping, usually because of low quality mapping
     * This gives the final number of libraries to be inserted for the Bgee release (5745 for Bgee v14)
 
@@ -376,17 +376,17 @@ in wildly used strain names.
 ## Insert feature length
 
 * `make export_length` to be run on Vital-IT
-* Add length info file to GIT project ([generated_files/RNA_seq/](../../generated_files/RNA_seq/) folder)
+* Add length info file to GIT project ([generated_files/RNA_Seq/](../../generated_files/RNA_Seq/) folder)
 * `make insert_feature_length` to be run on our server
 * Check the `transcript` table in database to check for good insertion
-* Effective length refers to the number of possible start sites a feature could have generated a fragment of that particular length. It is lower than transcript size. We do not insert it because is is not in the Kallisto output files. Indeed, the effective length is used to incorporate the bias correction in Kallisto, so it differs from library to library within the same species.
+* Effective length refers to the number of possible start sites a feature could have generated a fragment of that particular length. It is lower than transcript size. We do not insert it because it is not in the Kallisto output files. Indeed, the effective length is used to incorporate the bias correction in Kallisto, so it differs from library to library within the same species.
 * Note: Ensembl transcript IDs are not unique (same ones for chimp and bonobo for example). `bgeeTranscriptId` is unique though
 
 ## Calculation of TMM normalization factors
 
 * We inserted TPMs and FPKMs recalculated based on genic regions only, so we calculate TMM factors using the read counts on genic regions only.
 
-* [3Insertion/calculate_TMM_factors.R](3Insertion/calculate_TMM_factors.R): inspired from [pipeline/Differential_expression/diff_analysis_rna_seq.R](../Differential_expression/diff_analysis_rna_seq.R) (function `calcNormFactors`). This scripts calculates the TMM factors using the Bioconductor package edgeR, for a set of samples listed in a '.target' file (typically, all samples of an experiment, within one species, platform, library type and library orientation). The output is identical to the '.target' file, with one column appended that includes the TMM factors for all samples.
+* [3Insertion/calculate_TMM_factors.R](3Insertion/calculate_TMM_factors.R): inspired from [pipeline/Differential_expression/diff_analysis_rna_seq.R](../Differential_expression/diff_analysis_rna_seq.R) (function `calcNormFactors`). This script calculates the TMM factors using the Bioconductor package edgeR, for a set of samples listed in a '.target' file (typically, all samples of an experiment, within one species, platform, library type and library orientation). The output is identical to the '.target' file, with one column appended that includes the TMM factors for all samples.
   * This script is launched by the perl script [3Insertion/launch_calculate_TMM_factors.pl](3Insertion/launch_calculate_TMM_factors.pl).
 
 * [3Insertion/launch_calculate_TMM_factors.pl](3Insertion/launch_calculate_TMM_factors.pl): inspired from [pipeline/Differential_expression/launch_diff_analysis_rna_seq.pl](../Differential_expression/launch_diff_analysis_rna_seq.pl) to launch the calculation of TMM normalization factors.
