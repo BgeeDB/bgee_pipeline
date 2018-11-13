@@ -225,7 +225,7 @@ for my $run ( @run_ids ){
 
         # verify that extracted read length is consistent with SRA info
         if ( (length($read) ne $readLength) and ($readLength ne '') ){
-            warn "\nProblem: Read length in fastq file [", length($read), "] is not consistent with SRA record [$readLength]. Please check [$run]\n";
+            warn "\nProblem: Read length in FASTQ file [", length($read), "] is not consistent with SRA record [$readLength]. Please check [$run]\n";
         }
         # reads too short for Kallisto index with default k-mer length
         if ( length($read) < $lengthCutoff ){
@@ -265,7 +265,7 @@ for my $run ( @run_ids ){
         }
         # verify that extracted read length is consistent with SRA info
         if ( ((length($read1) + length($read2)) ne $readLength) and ($readLength ne '') ){
-            warn "\nProblem: Length of left and right reads in fastq files [", length($read1), '+', length($read2), "=", length($read1) + length($read2), "] are not consistent with SRA record [$readLength]. Please check [$run]\n";
+            warn "\nProblem: Length of left and right reads in FASTQ files [", length($read1), '+', length($read2), "=", length($read1) + length($read2), "] are not consistent with SRA record [$readLength]. Please check [$run]\n";
         }
         # reads too short for Kallisto index with default k-mer length
         if ( ( length($read1) < $lengthCutoff ) or ( length($read2) < $lengthCutoff ) ){
