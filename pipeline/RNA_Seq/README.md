@@ -18,7 +18,7 @@
 2. [Mapping the libraries](#mapping-the-libraries)
 3. [Mapping the libraries: TODOs](#mapping-the-libraries-todos)
 4. [Presence/absence calls](#presenceabsence-calls)
-5. [RNA-seq insertion](#rna-seq-insertion)
+5. [RNA-Seq insertion](#rna-seq-insertion)
 6. [Insert feature length](#insert-feature-length)
 7. [Calculation of TMM normalization factors](#calculation-of-tmm-normalization-factors)
 8. [Back-up](#back-up)
@@ -37,18 +37,18 @@ RNA-Seq data are used to produce:
 
 These results are then integrated in a consistent manner with all other results from other data types, to produce global calls of presence/absence of expression, and to compute gene expression ranks for calls of presence/absence of expression.
 
-You can check the most up-to-date versions of all parameters, softwares, and scripts used, directly in the [Makefile of this pipeline step](Makefile).
+You can check the most up-to-date versions of all parameters, software, and scripts used, directly in the [Makefile of this pipeline step](Makefile).
 
 ## Step 1: Data annotation
 
-RNA-Seq data present in SRA are selected and annotated using information present in GEO, or in papers, or provided by the Model Organism Database Wormbase.
+RNA-Seq data present in SRA are selected and annotated using information present in GEO, or in papers, or provided by the Model Organism Database WormBase.
 
-## Step 2: data download and preparation
+## Step 2: Data download and preparation
 
 Bgee annotations are parsed in order to retrieve the relevant information about SRA files to download, using the NCBI e-utils (for instance, SRR IDs of runs part of a library).
-Data annotated are downloaded from SRA using the Aspera software, and then converted to FastQ files. For GTEx data, FastQ files are downloaded through the dbGaP Authorized Access System using Aspera.
+Data annotated are downloaded from SRA using the NCBI SRA Toolkit and the Aspera software, and then converted to FASTQ files. For GTEx data, FASTQ files are downloaded through the dbGaP Authorized Access System using Aspera.
 
-GTF annotation files and genome sequence fasta files are retrieved from Ensembl and Ensembl metazoa for all species included in Bgee. Check "data sources" to see the Ensembl version used for this release of Bgee. This information is used to identify sequences of genic regions, exonic regions, and intergenic regions. It is also used to generate indexed transcriptome files for all species in Bgee, using the TopHat and Kallisto softwares.
+GTF annotation files and genome sequence fasta files are retrieved from Ensembl and Ensembl metazoa for all species included in Bgee. Check "data sources" to see the Ensembl version used for this release of Bgee. This information is used to identify sequences of genic regions, exonic regions, and intergenic regions. It is also used to generate indexed transcriptome files for all species in Bgee, using the TopHat and Kallisto software.
 
 ## Step 3: RNA-Seq library analyses
 
@@ -56,10 +56,10 @@ For each library:
 
 ### Data preparation:
 
-* For each run, check for presence of single-end FastQ read file, or of the two FastQ files for paired-end runs.
-* For each run, estimation of read length, to make sure the information provided in SRA is correct, and for checking that the reads are not too short for Kallisto indexing with default k-mer length. This is done by extracting the first read/read pair from the fastQ file. Note that this can potentially provide incorrect information if all reads do not have the same length (for instance, if some reads were trimmed).
+* For each run, check for presence of single-end FASTQ read file, or of the two FASTQ files for paired-end runs.
+* For each run, estimation of read length, to make sure the information provided in SRA is correct, and for checking that the reads are not too short for Kallisto indexing with default k-mer length. This is done by extracting the first read/read pair from the FASTQ file. Note that this can potentially provide incorrect information if all reads do not have the same length (for instance, if some reads were trimmed).
 * If the reads are too short for Kallisto indexing with default k-mer length, the k-mer length is set to 15 nucleotides. Otherwise, use of the default Kallisto k-mer length (you can also check the most up-to-date value of this parameter directly in the [Makefile of this pipeline step](Makefile)).
-* A FastQC file is generated for each FastQ file, to check for potential problems.
+* A FastQC file is generated for each FASTQ file, to check for potential problems.
 
 ### Pseudo-mapping to transcriptome with Kallisto
 
@@ -80,7 +80,7 @@ The following parameters are used (you can check the most up-to-date values of t
 
 We check for each library:
 
-* The fastQC file produced
+* The FastQC file produced
 * The density plot of TPM values for various groups of genomic features (protein-coding genes, intergenic regions, etc)
 * Sum of counts of pseudo-aligned reads, assigned TPM values (for instance, presence of high number of “NA” in Kallisto output)
 
@@ -104,14 +104,14 @@ Gene expression ranks allow to identify the most functionally-relevant condition
 2. [Mapping the libraries](#mapping-the-libraries)
 3. [Mapping the libraries: TODOs](#mapping-the-libraries-todos)
 4. [Presence/absence calls](#presenceabsence-calls)
-5. [RNA-seq insertion](#rna-seq-insertion)
+5. [RNA-Seq insertion](#rna-seq-insertion)
 6. [Insert feature length](#insert-feature-length)
 7. [Calculation of TMM normalization factors](#calculation-of-tmm-normalization-factors)
 8. [Back-up](#back-up)
 
 ## Preparation steps:
   See [README.md](0Before/README.md) file in folder [0Before/](0Before)
-  * If a fastq file is corrupted, it can be re-downloaded using [get_SRA.pl](0Before/get_SRA.pl) script
+  * If a FASTQ file is corrupted, it can be re-downloaded using [get_SRA.pl](0Before/get_SRA.pl) script
   * **TODO**: add here command to re-download 1 library only
 
 ## Mapping the libraries:
@@ -122,19 +122,19 @@ Gene expression ranks allow to identify the most functionally-relevant condition
   * `Ctrl-a Ctrl-d` to exit the screen session, `screen -r` to come back
   * Results are written in `$RNASEQ_VITALIT_ALL_RES`. Beware that one month is passing fast! Please add to your calendar to do a touch of all files in less than a month.
   ```
-  find . -exec touch {} \;
+  find $RNASEQ_VITALIT_ALL_RES/ -exec touch {} \;
   ```
   * Checks during run:
   ```
    bjobs
    less /data/ul/dee/bgee/GIT/pipeline/RNA_Seq/run_pipeline.tmp
    # number of launched jobs
-   grep -c "is submitted to queue <bgee>" /data/ul/dee/bgee/GIT/pipeline/RNA_Seq/run_pipeline.tmp
-   # results folder
+   grep -c 'is submitted to queue <bgee>' /data/ul/dee/bgee/GIT/pipeline/RNA_Seq/run_pipeline.tmp
+   # result folder
    ll $RNASEQ_VITALIT_ALL_RES
    # number of successful jobs
    ll $RNASEQ_VITALIT_ALL_RES/*/DONE.txt | wc -l
-   # list of unsuccessful jobs (has no DONE.txt and has a .out file)
+   # list of unsuccessful jobs (have no DONE.txt and have a .out file)
    find $RNASEQ_VITALIT_ALL_RES/ -maxdepth 1 -mindepth 1 -type d -exec sh -c 'if ! test -s {}/DONE.txt && test -s {}/*.out; then echo {}; fi' \; | sort
   ```
   * If run is interrupted, do not forget to backup the file run_pipeline.tmp, as well as .report, .err and .out files
@@ -146,13 +146,13 @@ Gene expression ranks allow to identify the most functionally-relevant condition
   * Potential problems
     * Problem with `bigbgee` mounting
     * FastQC bug or streaming problem. Beware, these libraries can move to further steps and generate a `DONE.txt` (see below).
-    * Kallisto bug... Streaming too slow, streaming interrupted, sometimes everything is just fine but Kallisto bugs after reporting output... Beware, these libraries can move to further steps and generate a `DONE.txt`. Very important to check if number of reads processed corresponds to number of reads in fastq files (see below).
+    * Kallisto bug... Streaming too slow, streaming interrupted, sometimes everything is just fine but Kallisto bugs after reporting output... Beware, these libraries can move to further steps and generate a `DONE.txt`. Very important to check if number of reads processed corresponds to number of reads in FASTQ files (see below).
     * How to track these bugs:
     ```
     grep 'Broken pipe' $RNASEQ_VITALIT_ALL_RES/*/*.err
     # Usually some samples with streaming issues
     grep 'gzip: stdin: unexpected end of file' $RNASEQ_VITALIT_ALL_RES/*/*.err
-    # Most of the time linked to streaming issues, but could also be to wrongly compressed FastQ files. So check them if repeated
+    # Most of the time linked to streaming issues, but could also be to wrongly compressed FASTQ files. So check them if repeated
     grep 'packet_write_wait'                                              $RNASEQ_VITALIT_ALL_RES/*/*.err
     grep 'ssh_exchange_identification: Connection closed by remote host'  $RNASEQ_VITALIT_ALL_RES/*/*.err
     grep 'ssh_exchange_identification: read: Connection reset by peer'    $RNASEQ_VITALIT_ALL_RES/*/*.err
@@ -162,9 +162,9 @@ Gene expression ranks allow to identify the most functionally-relevant condition
     grep 'bad decrypt' $RNASEQ_VITALIT_ALL_RES/*/*.err
     #
     grep 'Your file is probably truncated' $RNASEQ_VITALIT_ALL_RES/*/*.err
-    # FastQC error, seen joint with previous one
+    # FastQC error, seem joint with previous one
     grep 'error writing output file' $RNASEQ_VITALIT_ALL_RES/*/*.err
-    # This one is present in many fastqc outputs, which doesn't seem to be really problematic...
+    # This one is present in many FastQC outputs, which doesn't seem to be really problematic...
     grep 'Failed to process file stdin' $RNASEQ_VITALIT_ALL_RES/*/*.err
     #
     ```
@@ -172,14 +172,14 @@ Gene expression ranks allow to identify the most functionally-relevant condition
   ```
     grep 'Problem' $RNASEQ_VITALIT_ALL_RES/*/*.err
     # too broad
-    Problem: Read length in fastq file [85] is not consistent with SRA record [100]. Please check [SRR1051537]
-    Problem: Length of left and right reads in fastq files [101+101=202] are not consistent with SRA record [210]. Please check run [SRR391652]
-    Problem: Length of left and right reads in fastq files [104+96=200] are not consistent with SRA record [208]. Please check run [SRR606898]
+    Problem: Read length in FASTQ file [85] is not consistent with SRA record [100]. Please check [SRR1051537]
+    Problem: Length of left and right reads in FASTQ files [101+101=202] are not consistent with SRA record [210]. Please check run [SRR391652]
+    Problem: Length of left and right reads in FASTQ files [104+96=200] are not consistent with SRA record [208]. Please check run [SRR606898]
     # Usually a problem on the SRA record side. Could be runs trimmed at different times. Usually Kallisto manages to use them properly anyway.
     Problem: The number of reads processed by FastQC and Kallisto differs. Please check for a problem.
     # This one is important! It usually shows a streaming issue
     Problem: It seems that less than 20% of the reads were pseudo-aligned by Kallisto, please check for a problem.
-    # Usually samples with low quality reads or a lot of adapters sequenced. At this step, if all libraries are classical RNA-seq, there is no reason to exclude these libraries... Unless very few reads are mapped, see below
+    # Usually samples with low quality reads or a lot of adapters sequenced. At this step, if all libraries are classical RNA-Seq, there is no reason to exclude these libraries... Unless very few reads are mapped, see below
     Problem: Less than 1,000,000 reads were pseudo-aligned by Kallisto, please check for a problem.
     # If very few reads are mapped, the expression levels estimation might be off. I suggest to discard samples with only thousands of reads mapped. See below exclusion file.
     Problem: System call to Kallisto failed
@@ -188,11 +188,11 @@ Gene expression ranks allow to identify the most functionally-relevant condition
     # Too many NAN in Kallisto output, check for problem.
     Problem: fastq.gz.enc file [...]
     Problem: fastq.gz file [...]
-    # FastQ file not found. Is missing and/or paired-end sample that is not really paired-end, ...
+    # FASTQ file not found. Is missing and/or paired-end sample that is not really paired-end, ...
     Problem: Read length could not be extracted for run [...]
     # Read length could not be extracted, so file is missing, truncated or unaccessible
     Problem: No abundance.tsv or run_info.json file found for this library. Kallisto run was probably not successful
-    # Issue with kallisto run. Better to delete the library folder and rerun the pipeline for that library
+    # Issue with Kallisto run. Better to delete the library folder and rerun the pipeline for that library
     Problem: System call to analyze_count_command failed
     # R command failure. Could R not found in the PATH, missing R library, ...
   ```
@@ -200,7 +200,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
   * Warnings:
   ```
     grep 'Warning' $RNASEQ_VITALIT_ALL_RES/*/*.err
-    # too broad, most of warning indicate mapping on 15nt index
+    # too broad, most of warnings indicate mapping on 15nt index
     grep 'Warning: Length of left and right reads are different' $RNASEQ_VITALIT_ALL_RES/*/*.err
     # Usually this is not a problem and SRA agrees
     grep 'Warning: Length of left and/or right reads [75/1] too short for pseudo-mapping ...'  $RNASEQ_VITALIT_ALL_RES/*/*.err
@@ -217,14 +217,14 @@ Gene expression ranks allow to identify the most functionally-relevant condition
 
   * File with excluded samples:
     * If we notice bad samples, add them to file `generated_files/RNA_Seq/rna_seq_sample_excluded.txt` (file name in variable `$(RNASEQ_SAMPEXCLUDED_FILEPATH)` in [pipeline/Makefile.common](../Makefile.common)).
-    * Bad samples include those with a very low proportion of reads mapped, usually because of low library complexity, or a lot of adapter contamination. Samples with very few reads mapped should also be removed because the expression level estimates are probably not reliable.
-    * Some samples could be problematic or suspicious during the mapping step, but we might want to include them. It is better to add them this file too (with FALSE in `excluded` column), so that a record of what happened is kept. For example I included two samples which had streaming failure during Kallisto step, but still several millions are reads mapped (rerunning them gave the same results, maybe because corruption of fastq files? Redownload was not possible at the time because of issues with dbGap), which is enough to get confident estimates of expression levels.
+    * Bad samples include those with a very low proportion of reads mapped, usually because of low library complexity, or a lot of adapter contaminations. Samples with very few reads mapped should also be removed because the expression level estimates are probably not reliable.
+    * Some samples could be problematic or suspicious during the mapping step, but we might want to include them. It is better to add them this file too (with FALSE in `excluded` column), so that a record of what happened is kept. For example I included two samples which had streaming failure during Kallisto step, but still several millions are reads mapped (rerunning them gave the same results, maybe because corruption of FASTQ files? Redownload was not possible at the time because of issues with dbGaP), which is enough to get confident estimates of expression levels.
 
   * At the end of mapping step
     * It is good to rerun `make run_pipeline` step to be sure nothing was forgotten.
     * Run `make finalize_pipeline` to:
       * Backup the file `run_pipeline.tmp`, as well as '.report', '.err' and '.out' files
-      * Touch all files so that they can stay in `/scratch/beegfs/monthly` for one more month
+      * Touch all files so that they can stay in `/scratch/cluster/monthly` for one more month
       * Tar and compress all data and copy them to `/data/` drive (for Bgee_v14 the whole $RNASEQ_VITALIT_ALL_RES has been backuped on nas.unil.ch!)
 
 ## Mapping the libraries: TODOs
@@ -237,11 +237,11 @@ Gene expression ranks allow to identify the most functionally-relevant condition
     ssh cpt133.prdclst.vital-it.ch
   ```
   * Transfer FastQC reports to `bigbgee`. Add a checking step to [1Run/rna_seq_mapping_and_analysis.pl](1Run/rna_seq_mapping_and_analysis.pl) not to rerun it.
-  * Create a file, with number of lines for each fastq file. Add a checking step to [1Run/rna_seq_mapping_and_analysis.pl](1Run/rna_seq_mapping_and_analysis.pl) to check if this is consistent with number of reads in FastQC reports and Kallisto input reads (# reads in fastq = 4 * #number of reads).
-  * Modify the download scripts, to use ENA instead of SRA when possible: Fastq files are available directly there, so this would save us a lot of time!
+  * Create a file, with number of lines for each FASTQ file. Add a checking step to [1Run/rna_seq_mapping_and_analysis.pl](1Run/rna_seq_mapping_and_analysis.pl) to check if this is consistent with number of reads in FastQC reports and Kallisto input reads (# reads in fastq = 4 * #number of reads).
+  * Modify the download scripts, to use ENA instead of SRA when possible: FASTQ files are available directly there, so this would save us a lot of time!
   * Add `check_pipeline` to Makefile to be sure to check many potential problems automatically
   * Kallisto doesn't care about strandness, so we are not retrieving this info from SRA: will we miss this info one day? Check developments on this
-  * Fragment length (/!\ not read length) is needed for kallisto for single-end libraries but we do not have this info usually (it is usually given by a Bioanalyzer/Fragment analyzer run on the final library before sequencing). So we put an arbitrary, plausible value of 180bp, and 30bp for sd. It seems that this has not big influence on the results, but it's better to be aware of this limitation. For paired-end libraries, Kallisto can estimate the fragment length and sd, no need to provide it.
+  * Fragment length (/!\ not read length) is needed for kallisto for single-end libraries but we do not have this info usually (it is usually given by a Bioanalyzer/Fragment analyzer run on the final library before sequencing). So we put an arbitrary, plausible value of 180bp, and 30bp for sd. It seems that this has not big influence on the results, but it's better to be aware of this limitation. For paired-end libraries, Kallisto can estimate the fragment length and sd, no need to provide them.
 
 ## Presence/absence calls
   * Launch `make sum_by_species`. This steps launches the [1Run/rna_seq_sum_by_species.R](1Run/rna_seq_sum_by_species.R) script to sum TPMs from all samples of each species to deconvolute automatically the coding genes and intergenic regions distributions
@@ -250,7 +250,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
   * **IMPORTANT TO READ: procedure to fill this file**
     * Remember that we do not choose the number of gaussians that is deconvoluted: we let `mclust` choose based on the BIC criterion.
 
-    * The `generated_files/RNA_Seq/gaussian_choice_by_species.txt` to be filled includes one line per species. The columns to fill or each species are: `speciesId`, `organism`, `numberGaussiansCoding`, `numberGaussiansIntergenic`, `selectedGaussianCoding`, `selectionSideCoding`, `selectedGaussianIntergenic`, `selectionSideIntergenic`, `comment`, `annotatorId`.
+    * The `generated_files/RNA_Seq/gaussian_choice_by_species.txt` to be filled includes one line per species. The columns to fill for each species are: `speciesId`, `organism`, `numberGaussiansCoding`, `numberGaussiansIntergenic`, `selectedGaussianCoding`, `selectionSideCoding`, `selectedGaussianIntergenic`, `selectionSideIntergenic`, `comment`, `annotatorId`.
 
     * `numberGaussiansCoding`, `selectedGaussianCoding`, `selectionSideCoding` are not used for now since we always consider all coding gaussians. This may be changed in the future though. For now these fields can be set to `NA`.
 
@@ -261,7 +261,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
       * `comment`: please fill this to justify your choice of gaussians (see tips below, but also if someone else comes back and tries to understand your choices)
       * `annotatorId`: your initials
 
-    * To select the intergenic gaussians, it is necessary to have a look at the density plots generated! These are located in the output folder of the [1Run/rna_seq_sum_by_species.R](1Run/rna_seq_sum_by_species.R) script, for example `sum_by_species_bgee_v14`. In this folder, for each species there is a PDF file named `distribution_TPM_genic_intergenic_sum_deconvolution_XXXXX.pdf`, where `XXXXX represents the speciesId. For example, here is the density plot automatically generated for mouse in Bgee v14:
+    * To select the intergenic gaussians, it is necessary to have a look at the density plots generated! These are located in the output folder of the [1Run/rna_seq_sum_by_species.R](1Run/rna_seq_sum_by_species.R) script, for example `sum_by_species_bgee_v14`. In this folder, for each species, there is a PDF file named `distribution_TPM_genic_intergenic_sum_deconvolution_XXXXX.pdf`, where `XXXXX represents the speciesId. For example, here is the density plot automatically generated for mouse in Bgee v14:
 
     ![Boxplot](img/distribution_TPM_genic_intergenic_sum_deconvolution_10090.png)
 
@@ -272,7 +272,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
     * The grey dashed curves are the deconvoluted coding gaussians, and the numbers in italics give their identification number
     * The grey plain curves are the deconvoluted intergenic gaussians, and the numbers (not in italics) give their identification number
     * The gaussians identification numbers can be a bit tricky to visualize. They are located at the peak of max density of the corresponding gaussian
-    * In this density plots, the gaussians do not always look like gaussians, because what we are seeing here is the a-posteriori attribution of regions to deconvoluted gaussians. For example if two overlapping gaussians were deconvoluted, one broad and one sharp in the middle of the broad one, the regions in the middle will all be attributed to the sharp gaussians, and the remaining regions on both sides will be attributed to the broad gaussian.
+    * In this density plots, the gaussians do not always look like gaussians, because what we are seeing here is the _a posteriori_ attribution of regions to deconvoluted gaussians. For example if two overlapping gaussians were deconvoluted, one broad and one sharp in the middle of the broad one, the regions in the middle will all be attributed to the sharp gaussians, and the remaining regions on both sides will be attributed to the broad gaussian.
 
   * The rationale to select intergenic gaussians is to keep "real" intergenic that are never seen highly expressed. These gaussians are the left-most on the density plots. We want to eliminate false intergenic regions, that are seen expressed in some samples (right-most gaussians).
 
@@ -336,7 +336,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
 
   * Back-up results and send useful files to `altbioinfo` server: `make save_and_send_results_back`
 
-## RNA-seq insertion
+## RNA-Seq insertion
 * Before insertion, list all unique strains present in our annotations, to merge inconsistent strains, e.g., 'Wild Type' or 'wild type' instead of 'wild-type' (see, e.g., https://gitlab.isb-sib.ch/Bgee/bgee_pipeline/issues/67#note_4654)
 
 * See [pipeline/Affymetrix/README.md](../Affymetrix/README.md) for a list of useful grep commands allowing to catch inconsistencies
@@ -350,14 +350,14 @@ in wildly used strain names.
   Warning: no uberonId specified for [SRP009247--SRX105066]. Commented: 1
   ```
   * Check carefully the statistics and strains inserted, in file `insert_RNA_seq`
-  * **TODO**? At beginning of script, we check if each library has indeed a non empty file with results. This doesn't prevent truncated files to be considered, should we add more sophisticated checks (when reading the actual files)?
-  * At beginning of log messages in standard output file, the number of libraries to insert is indicated. It is different than the number of annotated libraries
+  * **TODO**? At the beginning of the script, we check if each library has indeed a non empty file with results. This doesn't prevent truncated files to be considered, should we add more sophisticated checks (when reading the actual files)?
+  * At the beginning of log messages in standard output file, the number of libraries to insert is indicated. It is different than the number of annotated libraries
     * Some libraries are annotated but commented out
     * Some libraries are from species not inserted in Bgee
-    * Some libraries are excluded because not from RNA-seq (CAGE-seq, miRNA-seq, etc)
+    * Some libraries are excluded because not from RNA-Seq (CAGE-Seq, miRNA-Seq, etc)
     * Some libraries are excluded because not found in SRA
-    * Some libraries are excluded from wormbase annotation file
-    * The difference: number annotated libraries - all reasons above should give the number of libraries in `generated_files/RNA_seq/rna_seq_sample_info.txt` file
+    * Some libraries are excluded from WormBase annotation file
+    * The difference: number annotated libraries - all reasons above should give the number of libraries in `generated_files/RNA_Seq/rna_seq_sample_info.txt` file
     * In addition some libraries are excluded after mapping, usually because of low quality mapping
     * This gives the final number of libraries to be inserted for the Bgee release (5745 for Bgee v14)
 
@@ -376,17 +376,17 @@ in wildly used strain names.
 ## Insert feature length
 
 * `make export_length` to be run on Vital-IT
-* Add length info file to GIT project ([generated_files/RNA_seq/](../../generated_files/RNA_seq/) folder)
+* Add length info file to GIT project ([generated_files/RNA_Seq/](../../generated_files/RNA_Seq/) folder)
 * `make insert_feature_length` to be run on our server
 * Check the `transcript` table in database to check for good insertion
-* Effective length refers to the number of possible start sites a feature could have generated a fragment of that particular length. It is lower than transcript size. We do not insert it because is is not in the Kallisto output files. Indeed, the effective length is used to incorporate the bias correction in Kallisto, so it differs from library to library within the same species.
+* Effective length refers to the number of possible start sites a feature could have generated a fragment of that particular length. It is lower than transcript size. We do not insert it because it is not in the Kallisto output files. Indeed, the effective length is used to incorporate the bias correction in Kallisto, so it differs from library to library within the same species.
 * Note: Ensembl transcript IDs are not unique (same ones for chimp and bonobo for example). `bgeeTranscriptId` is unique though
 
 ## Calculation of TMM normalization factors
 
 * We inserted TPMs and FPKMs recalculated based on genic regions only, so we calculate TMM factors using the read counts on genic regions only.
 
-* [3Insertion/calculate_TMM_factors.R](3Insertion/calculate_TMM_factors.R): inspired from [pipeline/Differential_expression/diff_analysis_rna_seq.R](../Differential_expression/diff_analysis_rna_seq.R) (function `calcNormFactors`). This scripts calculates the TMM factors using the Bioconductor package edgeR, for a set of samples listed in a '.target' file (typically, all samples of an experiment, within one species, platform, library type and library orientation). The output is identical to the '.target' file, with one column appended that includes the TMM factors for all samples.
+* [3Insertion/calculate_TMM_factors.R](3Insertion/calculate_TMM_factors.R): inspired from [pipeline/Differential_expression/diff_analysis_rna_seq.R](../Differential_expression/diff_analysis_rna_seq.R) (function `calcNormFactors`). This script calculates the TMM factors using the Bioconductor package edgeR, for a set of samples listed in a '.target' file (typically, all samples of an experiment, within one species, platform, library type and library orientation). The output is identical to the '.target' file, with one column appended that includes the TMM factors for all samples.
   * This script is launched by the perl script [3Insertion/launch_calculate_TMM_factors.pl](3Insertion/launch_calculate_TMM_factors.pl).
 
 * [3Insertion/launch_calculate_TMM_factors.pl](3Insertion/launch_calculate_TMM_factors.pl): inspired from [pipeline/Differential_expression/launch_diff_analysis_rna_seq.pl](../Differential_expression/launch_diff_analysis_rna_seq.pl) to launch the calculation of TMM normalization factors.
@@ -403,7 +403,7 @@ in wildly used strain names.
    RNASEQTMMPATH="/var/bgee/bgee/extra/pipeline/rna_seq/processed_TMM_bgee_v14/"
    perl launch_calculate_TMM_factors.pl -bgee=$BGEECMD -path_generes=$RNASEQALLRES -path_target=$RNASEQTMMTARG -path_processed=$RNASEQTMMPATH GSE30352
    ```
-   * When whole pipeline was run once, it is a good idea to check the amplitude and distribution of TMM values across all experiments. Do we get aberrant values? For bgee v14, values range from 0.096838 (in SRP012682 experiment / GTEx) to 2.695775 (in SRP000401 experiment). These are totally reasonable values
+   * When whole pipeline was run once, it is a good idea to check the amplitude and distribution of TMM values across all experiments. Do we get aberrant values? For Bgee v14, values range from 0.096838 (in SRP012682 experiment / GTEx) to 2.695775 (in SRP000401 experiment). These are totally reasonable values
 
 * Check step in Makefile: `make check_TMM_factors`.
   * **TODO**? Add a check to see if each inserted library got a TMM factor generated
