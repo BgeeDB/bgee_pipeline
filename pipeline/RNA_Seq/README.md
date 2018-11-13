@@ -80,7 +80,7 @@ The following parameters are used (you can check the most up-to-date values of t
 
 We check for each library:
 
-* The fastQC file produced
+* The FastQC file produced
 * The density plot of TPM values for various groups of genomic features (protein-coding genes, intergenic regions, etc)
 * Sum of counts of pseudo-aligned reads, assigned TPM values (for instance, presence of high number of “NA” in Kallisto output)
 
@@ -122,19 +122,19 @@ Gene expression ranks allow to identify the most functionally-relevant condition
   * `Ctrl-a Ctrl-d` to exit the screen session, `screen -r` to come back
   * Results are written in `$RNASEQ_VITALIT_ALL_RES`. Beware that one month is passing fast! Please add to your calendar to do a touch of all files in less than a month.
   ```
-  find . -exec touch {} \;
+  find $RNASEQ_VITALIT_ALL_RES/ -exec touch {} \;
   ```
   * Checks during run:
   ```
    bjobs
    less /data/ul/dee/bgee/GIT/pipeline/RNA_Seq/run_pipeline.tmp
    # number of launched jobs
-   grep -c "is submitted to queue <bgee>" /data/ul/dee/bgee/GIT/pipeline/RNA_Seq/run_pipeline.tmp
-   # results folder
+   grep -c 'is submitted to queue <bgee>' /data/ul/dee/bgee/GIT/pipeline/RNA_Seq/run_pipeline.tmp
+   # result folder
    ll $RNASEQ_VITALIT_ALL_RES
    # number of successful jobs
    ll $RNASEQ_VITALIT_ALL_RES/*/DONE.txt | wc -l
-   # list of unsuccessful jobs (has no DONE.txt and has a .out file)
+   # list of unsuccessful jobs (have no DONE.txt and have a .out file)
    find $RNASEQ_VITALIT_ALL_RES/ -maxdepth 1 -mindepth 1 -type d -exec sh -c 'if ! test -s {}/DONE.txt && test -s {}/*.out; then echo {}; fi' \; | sort
   ```
   * If run is interrupted, do not forget to backup the file run_pipeline.tmp, as well as .report, .err and .out files
@@ -162,9 +162,9 @@ Gene expression ranks allow to identify the most functionally-relevant condition
     grep 'bad decrypt' $RNASEQ_VITALIT_ALL_RES/*/*.err
     #
     grep 'Your file is probably truncated' $RNASEQ_VITALIT_ALL_RES/*/*.err
-    # FastQC error, seen joint with previous one
+    # FastQC error, seem joint with previous one
     grep 'error writing output file' $RNASEQ_VITALIT_ALL_RES/*/*.err
-    # This one is present in many fastqc outputs, which doesn't seem to be really problematic...
+    # This one is present in many FastQC outputs, which doesn't seem to be really problematic...
     grep 'Failed to process file stdin' $RNASEQ_VITALIT_ALL_RES/*/*.err
     #
     ```
@@ -200,7 +200,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
   * Warnings:
   ```
     grep 'Warning' $RNASEQ_VITALIT_ALL_RES/*/*.err
-    # too broad, most of warning indicate mapping on 15nt index
+    # too broad, most of warnings indicate mapping on 15nt index
     grep 'Warning: Length of left and right reads are different' $RNASEQ_VITALIT_ALL_RES/*/*.err
     # Usually this is not a problem and SRA agrees
     grep 'Warning: Length of left and/or right reads [75/1] too short for pseudo-mapping ...'  $RNASEQ_VITALIT_ALL_RES/*/*.err
@@ -217,14 +217,14 @@ Gene expression ranks allow to identify the most functionally-relevant condition
 
   * File with excluded samples:
     * If we notice bad samples, add them to file `generated_files/RNA_Seq/rna_seq_sample_excluded.txt` (file name in variable `$(RNASEQ_SAMPEXCLUDED_FILEPATH)` in [pipeline/Makefile.common](../Makefile.common)).
-    * Bad samples include those with a very low proportion of reads mapped, usually because of low library complexity, or a lot of adapter contamination. Samples with very few reads mapped should also be removed because the expression level estimates are probably not reliable.
+    * Bad samples include those with a very low proportion of reads mapped, usually because of low library complexity, or a lot of adapter contaminations. Samples with very few reads mapped should also be removed because the expression level estimates are probably not reliable.
     * Some samples could be problematic or suspicious during the mapping step, but we might want to include them. It is better to add them this file too (with FALSE in `excluded` column), so that a record of what happened is kept. For example I included two samples which had streaming failure during Kallisto step, but still several millions are reads mapped (rerunning them gave the same results, maybe because corruption of FASTQ files? Redownload was not possible at the time because of issues with dbGaP), which is enough to get confident estimates of expression levels.
 
   * At the end of mapping step
     * It is good to rerun `make run_pipeline` step to be sure nothing was forgotten.
     * Run `make finalize_pipeline` to:
       * Backup the file `run_pipeline.tmp`, as well as '.report', '.err' and '.out' files
-      * Touch all files so that they can stay in `/scratch/beegfs/monthly` for one more month
+      * Touch all files so that they can stay in `/scratch/cluster/monthly` for one more month
       * Tar and compress all data and copy them to `/data/` drive (for Bgee_v14 the whole $RNASEQ_VITALIT_ALL_RES has been backuped on nas.unil.ch!)
 
 ## Mapping the libraries: TODOs
@@ -241,7 +241,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
   * Modify the download scripts, to use ENA instead of SRA when possible: FASTQ files are available directly there, so this would save us a lot of time!
   * Add `check_pipeline` to Makefile to be sure to check many potential problems automatically
   * Kallisto doesn't care about strandness, so we are not retrieving this info from SRA: will we miss this info one day? Check developments on this
-  * Fragment length (/!\ not read length) is needed for kallisto for single-end libraries but we do not have this info usually (it is usually given by a Bioanalyzer/Fragment analyzer run on the final library before sequencing). So we put an arbitrary, plausible value of 180bp, and 30bp for sd. It seems that this has not big influence on the results, but it's better to be aware of this limitation. For paired-end libraries, Kallisto can estimate the fragment length and sd, no need to provide it.
+  * Fragment length (/!\ not read length) is needed for kallisto for single-end libraries but we do not have this info usually (it is usually given by a Bioanalyzer/Fragment analyzer run on the final library before sequencing). So we put an arbitrary, plausible value of 180bp, and 30bp for sd. It seems that this has not big influence on the results, but it's better to be aware of this limitation. For paired-end libraries, Kallisto can estimate the fragment length and sd, no need to provide them.
 
 ## Presence/absence calls
   * Launch `make sum_by_species`. This steps launches the [1Run/rna_seq_sum_by_species.R](1Run/rna_seq_sum_by_species.R) script to sum TPMs from all samples of each species to deconvolute automatically the coding genes and intergenic regions distributions
@@ -250,7 +250,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
   * **IMPORTANT TO READ: procedure to fill this file**
     * Remember that we do not choose the number of gaussians that is deconvoluted: we let `mclust` choose based on the BIC criterion.
 
-    * The `generated_files/RNA_Seq/gaussian_choice_by_species.txt` to be filled includes one line per species. The columns to fill or each species are: `speciesId`, `organism`, `numberGaussiansCoding`, `numberGaussiansIntergenic`, `selectedGaussianCoding`, `selectionSideCoding`, `selectedGaussianIntergenic`, `selectionSideIntergenic`, `comment`, `annotatorId`.
+    * The `generated_files/RNA_Seq/gaussian_choice_by_species.txt` to be filled includes one line per species. The columns to fill for each species are: `speciesId`, `organism`, `numberGaussiansCoding`, `numberGaussiansIntergenic`, `selectedGaussianCoding`, `selectionSideCoding`, `selectedGaussianIntergenic`, `selectionSideIntergenic`, `comment`, `annotatorId`.
 
     * `numberGaussiansCoding`, `selectedGaussianCoding`, `selectionSideCoding` are not used for now since we always consider all coding gaussians. This may be changed in the future though. For now these fields can be set to `NA`.
 
@@ -261,7 +261,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
       * `comment`: please fill this to justify your choice of gaussians (see tips below, but also if someone else comes back and tries to understand your choices)
       * `annotatorId`: your initials
 
-    * To select the intergenic gaussians, it is necessary to have a look at the density plots generated! These are located in the output folder of the [1Run/rna_seq_sum_by_species.R](1Run/rna_seq_sum_by_species.R) script, for example `sum_by_species_bgee_v14`. In this folder, for each species there is a PDF file named `distribution_TPM_genic_intergenic_sum_deconvolution_XXXXX.pdf`, where `XXXXX represents the speciesId. For example, here is the density plot automatically generated for mouse in Bgee v14:
+    * To select the intergenic gaussians, it is necessary to have a look at the density plots generated! These are located in the output folder of the [1Run/rna_seq_sum_by_species.R](1Run/rna_seq_sum_by_species.R) script, for example `sum_by_species_bgee_v14`. In this folder, for each species, there is a PDF file named `distribution_TPM_genic_intergenic_sum_deconvolution_XXXXX.pdf`, where `XXXXX represents the speciesId. For example, here is the density plot automatically generated for mouse in Bgee v14.0:
 
     ![Boxplot](img/distribution_TPM_genic_intergenic_sum_deconvolution_10090.png)
 
@@ -272,7 +272,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
     * The grey dashed curves are the deconvoluted coding gaussians, and the numbers in italics give their identification number
     * The grey plain curves are the deconvoluted intergenic gaussians, and the numbers (not in italics) give their identification number
     * The gaussians identification numbers can be a bit tricky to visualize. They are located at the peak of max density of the corresponding gaussian
-    * In this density plots, the gaussians do not always look like gaussians, because what we are seeing here is the a-posteriori attribution of regions to deconvoluted gaussians. For example if two overlapping gaussians were deconvoluted, one broad and one sharp in the middle of the broad one, the regions in the middle will all be attributed to the sharp gaussians, and the remaining regions on both sides will be attributed to the broad gaussian.
+    * In this density plots, the gaussians do not always look like gaussians, because what we are seeing here is the _a posteriori_ attribution of regions to deconvoluted gaussians. For example if two overlapping gaussians were deconvoluted, one broad and one sharp in the middle of the broad one, the regions in the middle will all be attributed to the sharp gaussians, and the remaining regions on both sides will be attributed to the broad gaussian.
 
   * The rationale to select intergenic gaussians is to keep "real" intergenic that are never seen highly expressed. These gaussians are the left-most on the density plots. We want to eliminate false intergenic regions, that are seen expressed in some samples (right-most gaussians).
 
