@@ -68,7 +68,6 @@ while (<$ANNOTATION>){
 
             # Compute FastQC (A quality control tool for high throughput sequence data) for ALL SRR (runs)
             mkdir "$FASTQ_PATH/$library_id/FASTQC";
-            #TODO Test this step!
             QC:
             for my $fastq ( glob("$FASTQ_PATH/$library_id/*.gz") ){
                 my ($run_id) = $fastq =~ /([^\/]+)\.fastq\.gz/;
