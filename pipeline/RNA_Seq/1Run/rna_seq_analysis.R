@@ -61,28 +61,28 @@ if( file.exists(gene2biotype_file) ){
 }
 
 ###############################################################################
-## Add gene ids to the kallisto output. Effectively, this removes all intergenic regions, 
+## Add gene ids to the kallisto output. Effectively, this removes all intergenic regions
 genic_count <- merge(kallisto_count, gene2transcript, by.x=1, by.y=2)[, c(1,6,2,3,4,5)]
 names(genic_count)[2] <- "gene_id"
 ## Add biotype for all genes
 genic_count <- merge(genic_count, gene2biotype, by.x=2, by.y=1)[, c(2,1,7,3,4,5,6)]
 ## Resort the table by transcript_id
-genic_count <- genic_count[order(genic_count$target_id), ] 
+genic_count <- genic_count[order(genic_count$target_id), ]
 
 ## Add gene id column to kallisto's output (genic regions only)
 kallisto_count$gene_id <- rep(NA, times=length(kallisto_count$target_id))
 kallisto_count <- kallisto_count[order(kallisto_count$target_id),] ## sort by transcript_id
-## Check transcripts are matching 
+## Check transcripts are matching
 ## summary(kallisto_count$target_id[kallisto_count$target_id %in% genic_count$target_id] == genic_count$target_id)
 kallisto_count$gene_id[kallisto_count$target_id %in% genic_count$target_id] <- as.character(genic_count$gene_id)
 ## Add region type
 kallisto_count$type <- rep("intergenic", times=length(kallisto_count$target_id))
 kallisto_count$type[kallisto_count$target_id %in% genic_count$target_id] <- "genic"
-## Add biotype for genic regions 
+## Add biotype for genic regions
 kallisto_count$biotype <- rep(NA, times=length(kallisto_count$target_id))
 kallisto_count$biotype[kallisto_count$target_id %in% genic_count$target_id] <- as.character(genic_count$biotype)
 
-## Calculate FPKMs for all transcripts + intergenic regions, from their TPM values 
+## Calculate FPKMs for all transcripts + intergenic regions, from their TPM values
 ## TPM = RPKM * 10^6 / sum(RPKM)
 fpkmToTpm <- function(fpkm){
   exp(log(fpkm) - log(sum(fpkm)) + log(1e6))
@@ -169,7 +169,7 @@ axis(2, las=1)
 ## See http://stackoverflow.com/questions/8443820/r-multiple-x-axis-with-annotations
 axis(1, at=seq(-30 , 30, by=10), line=0, mgp = c(3, 0.5, 0), cex.axis=0.8)
 mtext(expression(log[2]('TPM'+10^-6)), 1,  adj = 1, padj = 0, line=0.2, at=par("usr")[1], col="black", cex=0.8)
-## To make FPKM scale, we need to know what log2(TPM + 10^-6) value corresponds to any log2(FPKM + 10^-6) value. We know that for any given gene, TPMg/FPKMg = coef 
+## To make FPKM scale, we need to know what log2(TPM + 10^-6) value corresponds to any log2(FPKM + 10^-6) value. We know that for any given gene, TPMg/FPKMg = coef
 ##    log2(FPKM + 10^-6) = x
 ## <=>              FPKM = exp(x*log(2)) - 10^-6
 ## <=>               TPM = coef * (exp(x*log(2)) - 10^-6)

@@ -21,12 +21,12 @@
   * This scripts parses the annotation file, and retrieves information on the species using the Bgee database, and on the SRA records (species, platform, SRR IDs) using NCBI e-utils
   * The script is launched on our annotation merged with Wormbase annotation. An external file is checked for libraries which were manually checked (with decision to include them or not).
   * The script `get_sra_id.pl` from the old pipeline was merged into this script for simplification, and to create less intermediate information files.
-  * The script issues warnings if the organism and platform information in the annotation do not match the information on the SRA record (before, TRUE or FALSE flags columns were written in output file). 
-  * **Thus the output of this script needs to be verified!**. 
+  * The script issues warnings if the organism and platform information in the annotation do not match the information on the SRA record (before, TRUE or FALSE flags columns were written in output file).
+  * **Thus the output of this script needs to be verified!**.
    Some warnings are minor and can be ignored, for example: `Problem: the organism (scientific name) is not matching between the annotation file [Xenopus tropicalis] and the SRA record [Xenopus (Silurana) tropicalis], please verify. The information from the annotation file is printed in output file`.
    Some samples are annotated but from species not yet in Bgee, for example not GSM1054987 is from _Acomys cahirinus_ (rodent) Rat
    Some inconsistencies between annotation and SRA record shall be retained over releases if SRA is wrong. For platform, we remember those cases from release to release, so that we don't have to verify everytime. See issue #98 on annotation GitHub.
-   Some warnings are issued for miRNA-seq, ncRNA-seq, and other non-conventional RNA-seq libraries (CAGE-seq, RACE-seq, SAGE, DeepSage, etc). Of course some will be missed because meta-data in SRA are often incomplete... 
+   Some warnings are issued for miRNA-seq, ncRNA-seq, and other non-conventional RNA-seq libraries (CAGE-seq, RACE-seq, SAGE, DeepSage, etc). Of course some will be missed because meta-data in SRA are often incomplete...
    Some warnings are issued if read length too short (<36nt): if the library is recent enough, this is suspicious and could denote a non-conventional RNA-seq library
 
 * [get_SRA.pl](get_SRA.pl)
@@ -35,5 +35,4 @@
   * Compress these files
   * For GTEx data, encrypt the '.fastq' files.
   * [get_SRA-reverseOrder.pl](get_SRA-reverseOrder.pl) is launched on vital-IT. It parses the `generated_files/RNA_Seq/rna_seq_sample_info.txt` file in the reverse order, using only odd or even number rows, allowing to launch downloads in parallel on two machines (in addition to bigbgee)
-  
 

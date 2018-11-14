@@ -58,7 +58,7 @@ cat("speciesId\torganism\tnumberGaussiansCoding\tnumberGaussiansIntergenic\tsele
 for(species in unique(sampleInfo$speciesId)){
   cat(paste0("Summing data for ", as.character(unique(sampleInfo$organism[sampleInfo$speciesId == species])), " (species ID: ", species,")\n"))
   numLibs = 0
-  
+
   for(libraryId in sampleInfo$libraryId[sampleInfo$speciesId == species]){
     file <- paste0(kallisto_count_folder, "/", libraryId, "/abundance_gene_level+fpkm+intergenic.tsv")
     if (file.exists(file)){
@@ -80,7 +80,7 @@ for(species in unique(sampleInfo$speciesId)){
   }
   ## Export number of libraries (and total number of libraries for this species) used in this species
   cat(c(species, as.character(unique(sampleInfo$organism[sampleInfo$speciesId == species])), numLibs, paste0(length(sampleInfo$libraryId[sampleInfo$speciesId == species]), "\n")), file = paste0(sum_by_species_folder, "/number_libraries.txt"), sep = "\t", append = TRUE)
-  
+
   ## if no library ws found for this species
   if (numLibs == 0){
     cat("  No library found for this species, skipping it.")
@@ -113,7 +113,7 @@ for(species in unique(sampleInfo$speciesId)){
   ## legend
   legend("topleft", c(paste0("all (", length(summed[,1]),")"), paste0("genic (", sum(summed$type == "genic"), ")"), paste0("coding (", sum(summed$biotype %in% "protein_coding"), ")"), paste0("intergenic (", sum(summed$type == "intergenic"), ")")), lwd=2, col=c("black", "firebrick3", "firebrick3", "dodgerblue3"), lty=c(1, 1, 2, 1), bty="n")
   dev.off()
-  
+
   ## Redo plot for log2(FPKMs) (probably not proportional anymore)
   pdf(file = paste0(sum_by_species_folder, "/distribution_FPKM_genic_intergenic_sum_", species, ".pdf"), width = 6, height = 5)
   ## par(mar=c(5,6,1,1)) ## bottom, left, top and right margins
@@ -164,7 +164,7 @@ for(species in unique(sampleInfo$speciesId)){
   legend("topleft", c(paste0("all (", length(summed[,1]),")"), paste0("genic (", sum(summed$type == "genic"), ")"), paste0("coding (", sum(summed$biotype %in% "protein_coding"), ")"), paste0("intergenic (", sum(summed$type == "intergenic"), ")")), lwd=2, col=c("black", "firebrick3", "firebrick3", "dodgerblue3"), lty=c(1, 1, 2, 1), bty="n")
   dev.off()
 
-  
+
   ## Deconvolute TPM intergenic and genic distributions
   ## As in Hebenstreit 2011 Mol Syst Biol: use clustering approach
   ## Mclust: Normal Mixture Modelling for Model-Based Clustering, Classification, and Density Estimation
@@ -177,20 +177,20 @@ for(species in unique(sampleInfo$speciesId)){
 
   ## open PDF device
   pdf(file = paste0(sum_by_species_folder, "/distribution_TPM_genic_intergenic_sum_deconvolution_", species, ".pdf"), width = 6, height = 5)
-  
+
   ## Coding regions
   mod1 = densityMclust(log2(summed_filtered$tpm[summed_filtered$biotype %in% "protein_coding"]))
   plot(mod1, what = "BIC")
   cat("    Protein-coding genes:\n")
   print(summary(mod1, parameters = TRUE))
-  plot(mod1, what = "density", data = log2(summed_filtered$tpm[summed_filtered$biotype %in% "protein_coding"]), breaks = 100, xlab="log2(TPM) - protein-coding genes") 
-  
+  plot(mod1, what = "density", data = log2(summed_filtered$tpm[summed_filtered$biotype %in% "protein_coding"]), breaks = 100, xlab="log2(TPM) - protein-coding genes")
+
   ## Intergenic regions
   mod2 = densityMclust(log2(summed_filtered$tpm[summed_filtered$type == "intergenic"]))
   plot(mod2, what = "BIC")
   cat("    Intergenic regions:\n")
   print(summary(mod2, parameters = TRUE))
-  plot(mod2, what = "density", data = log2(summed_filtered$tpm[summed_filtered$type == "intergenic"]), breaks = 100, xlab="log2(TPM) - intergenic") 
+  plot(mod2, what = "density", data = log2(summed_filtered$tpm[summed_filtered$type == "intergenic"]), breaks = 100, xlab="log2(TPM) - intergenic")
 
   ## Plot the density of the original data, and the density of regions classified to different gaussians
   cat("  Plotting density of deconvoluted genic and intergenic regions\n")
@@ -212,7 +212,7 @@ for(species in unique(sampleInfo$speciesId)){
       dens_coding_sub$y <- dens_coding_sub$y * length(summed_filtered$tpm[summed_filtered$biotype %in% "protein_coding"][mod1$classification == i]) / length(summed_filtered$tpm)
       lines(dens_coding_sub, col=paste0("grey", trunc(100/(mod1$G+1))*i), lwd=2, lty=2)
       ## Print gaussian number on plot: at location of max value of gaussian (italics)
-      text(dens_coding_sub$x[dens_coding_sub$y == max(dens_coding_sub$y)], 0.005, labels = i, col=paste0("grey", trunc(100/(mod1$G+1))*i), font=3) 
+      text(dens_coding_sub$x[dens_coding_sub$y == max(dens_coding_sub$y)], 0.005, labels = i, col=paste0("grey", trunc(100/(mod1$G+1))*i), font=3)
     }
   }
   ## intergenic
@@ -233,18 +233,18 @@ for(species in unique(sampleInfo$speciesId)){
   ## legend
   legend("topleft", c(paste0("all (", length(summed_filtered[,1]),")"), paste0("coding (", sum(summed_filtered$biotype %in% "protein_coding"), ")"), paste0("intergenic (", sum(summed_filtered$type == "intergenic"), ")")), lwd=2, col=c("black", "firebrick3", "dodgerblue3"), lty=c(1, 2, 1), bty="n")
   dev.off()
-  
+
   ## Export file with summed data and classification of intergenic and coding regions
   cat("  Exporting aggregated data and classification of coding and intergenic regions\n")
   ## Add new column to summed object
-  summed$classification <- NA  
+  summed$classification <- NA
   summed$classification[summed$tpm > 10^-6 & summed$biotype %in% "protein_coding"] <- paste("coding_", mod1$classification, sep="")
   summed$classification[summed$tpm > 10^-6 & summed$type == "intergenic"] <- paste("intergenic_", mod2$classification, sep="")
   write.table(summed, file = paste0(sum_by_species_folder, "/sum_abundance_gene_level+fpkm+intergenic+classification_", species, ".tsv"), quote = FALSE, sep = "\t", col.names = TRUE, row.names = FALSE)
 
-  ## Export file with speciesId and number of coding and intergenic gaussians (to be filled manually with selected gaussians) 
+  ## Export file with speciesId and number of coding and intergenic gaussians (to be filled manually with selected gaussians)
   cat(paste0(species, "\t", mod1$G, "\t", mod2$G, "\n"), file = paste0(sum_by_species_folder, "/gaussian_choice_by_species_TO_FILL.txt"), sep = "\t", append=T)
-  
+
   rm(summed)
   rm(summed_filtered)
   rm(numLibs)

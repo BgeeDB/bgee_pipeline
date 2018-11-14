@@ -4,12 +4,12 @@
 # modified 13/05/2014: the script was corrected to work with new version of ENSEMBL gtf format
 
 # Julien Roux
-# modified 10/12/2015: updated and simplified script for better readability; checked compatibility with kallisto-based pipeline; removed length calculation and export; added export of table to map transcript IDs to gene IDs; modified to read directly compressed GTF file 
+# modified 10/12/2015: updated and simplified script for better readability; checked compatibility with kallisto-based pipeline; removed length calculation and export; added export of table to map transcript IDs to gene IDs; modified to read directly compressed GTF file
 # modified 22/02/2016: clarified and simplified even more the script (removed variables used only once); added export of gene biotypes table; fixed small bug in coordinates of intergenic region: because of using round(), there were too short by 1bp. Now using ceiling() and floor()
 
 ## From GTF file downloaded from Ensembl, this script prepares a new GTF file (gtf_all) with:
 ## - exonic regions from all transcripts of each gene
-## - intergenic regions. The 500nt flanking genes are excluded (the minimal distance from start or stop of intergenic region to boundary of the nearest gene: 500nt). The intergenic region length is limited to min 2000 max 20000. Intergenic regions with lower size are discarded. Larger regions are limited to +/- 10000 around the center of the intergenic region. 
+## - intergenic regions. The 500nt flanking genes are excluded (the minimal distance from start or stop of intergenic region to boundary of the nearest gene: 500nt). The intergenic region length is limited to min 2000 max 20000. Intergenic regions with lower size are discarded. Larger regions are limited to +/- 10000 around the center of the intergenic region.
 ## A conversion table (transcript ID to gene ID) is exported: extension .gene2transcript
 ## A gene biotype table is exported: extension .gene2biotype
 
@@ -158,7 +158,7 @@ for(chr in chromosomes){
     inter_gene_data$size[inter_gene_data$size > 20000] <- 20000 ## limit the size of usable regions to max 20000
 
     ## storing information (chr, start, stop, size) for selected intergenic regions on this chromosome
-    intergenic_regions <- rbind(intergenic_regions, cbind(chr, inter_gene_data$center - ceiling(inter_gene_data$size/2) + 1 , inter_gene_data$center + floor(inter_gene_data$size/2)))    
+    intergenic_regions <- rbind(intergenic_regions, cbind(chr, inter_gene_data$center - ceiling(inter_gene_data$size/2) + 1 , inter_gene_data$center + floor(inter_gene_data$size/2)))
 }
 
 ## preparing intergenic gtf data
