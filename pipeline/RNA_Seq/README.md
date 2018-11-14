@@ -228,7 +228,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
       * Tar and compress all data and copy them to `/data/` drive (for Bgee_v14 the whole $RNASEQ_VITALIT_ALL_RES has been backuped on nas.unil.ch!)
 
 ## Mapping the libraries: TODOs
-  * Should we increase the number of parallel jobs (10) to a higher number (20 for example)? Maybe need to change SSH configuration on `bigbgee` to open more than 10 SSH ports. Check machine status during run:
+  * Should we increase the number of parallel jobs (10) to a higher number (20 for example)? Maybe need to change SSH configuration on `bigbgee` to open more than 10 SSH ports. Need also to consider simultaneous accesses to Kallisto index files... Check machine status during run:
   ```
     ssh bgee@bigbgee.unil.ch
     # The 3 machines used on Vital-IT
