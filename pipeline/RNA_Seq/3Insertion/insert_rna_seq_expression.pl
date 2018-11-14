@@ -56,7 +56,7 @@ while ( my @data = $queryConditions->fetchrow_array ){
     push(@exprMappedConditions, $data[0]);
 }
 
-print "Done, ", scalar(@exprMappedConditions), " conditions retrieved.\n";
+print 'Done, ', scalar(@exprMappedConditions), " conditions retrieved.\n";
 
 ##########################################
 # PREPARE QUERIES                        #
@@ -130,7 +130,7 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
         # where this gene is analyzed (for this condition)
         my ($reasonForExclusion, $summary) = Utils::summarizeExperimentCallAndQuality(\%{$results{$geneId}});
 
-        my $expressionId   = undef;
+        my $expressionId = undef;
 
         # insert or update the expression table if not only undefined calls
         if ( $reasonForExclusion eq $Utils::CALL_NOT_EXCLUDED ){

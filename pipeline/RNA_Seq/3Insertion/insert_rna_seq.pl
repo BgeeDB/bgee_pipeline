@@ -70,18 +70,18 @@ print "\t", scalar keys %excludedLibraries, " libraries excluded.\n";
 
 my $count_libs = 0;
 my %all_species; # record all species
-foreach my $expId ( sort keys %libraries ) {
-  foreach my $libraryId ( sort keys %{$libraries{$expId}} ) {
-    if (exists($excludedLibraries{$libraryId})){
-      delete $libraries{$expId}->{$libraryId};
-    } else {
-      $all_species{$libraries{$expId}->{$libraryId}->{'speciesId'}}++;
-      $count_libs++;
-      unless (-s $all_results.'/'.$libraryId.'/abundance_gene_level+new_tpm+new_fpkm+calls.tsv'){
-        die "Missing or empty processed data file for library $libraryId! Please check that the transfer from vital-IT was successful. Otherwise this library should maybe be added to the file of excluded libraries?\n";
-      }
+foreach my $expId ( sort keys %libraries ){
+    foreach my $libraryId ( sort keys %{$libraries{$expId}} ){
+        if ( exists($excludedLibraries{$libraryId}) ){
+            delete $libraries{$expId}->{$libraryId};
+        } else {
+            $all_species{$libraries{$expId}->{$libraryId}->{'speciesId'}}++;
+            $count_libs++;
+            unless ( -s $all_results.'/'.$libraryId.'/abundance_gene_level+new_tpm+new_fpkm+calls.tsv' ){
+                die "Missing or empty processed data file for library $libraryId! Please check that the transfer from Vital-IT was successful. Otherwise this library should maybe be added to the file of excluded libraries?\n";
+            }
+        }
     }
-  }
 }
 print "\t", $count_libs, " libraries mapped and to be inserted.\n";
 
@@ -101,17 +101,17 @@ my %annotations       = getAllRnaSeqAnnotations($rnaSeqLibrary);
 my $commented = 0;
 my $species_not_included = 0;
 $count_libs = 0;
-foreach my $expId ( sort keys %annotations ) {
-  foreach my $libraryId ( sort keys %{$annotations{$expId}} ) {
-    $count_libs++;
-    if ( $annotations{$expId}->{$libraryId}->{'commented'} ){
-      $commented++;
-    } elsif (!exists($all_species{ $annotations{$expId}->{$libraryId}->{'speciesId'} })){
-      $species_not_included++;
-    } elsif ((!exists $libraries{$expId}->{$libraryId}) and (!exists $excludedLibraries{$libraryId})){
-      print "\t", $libraryId, " library annotated but not mapped. This may be for different reasons: is it in the RNASeqLibrary_worm_exclusion.tsv file? Is it a miRNA-Seq/ncRNA-seq/CAGE/RACE/weird experiment? Is it in SRA format (SRX/ERX)?\n";
+foreach my $expId ( sort keys %annotations ){
+    foreach my $libraryId ( sort keys %{$annotations{$expId}} ){
+        $count_libs++;
+        if ( $annotations{$expId}->{$libraryId}->{'commented'} ){
+            $commented++;
+        } elsif ( !exists($all_species{ $annotations{$expId}->{$libraryId}->{'speciesId'} }) ){
+            $species_not_included++;
+        } elsif ( (!exists $libraries{$expId}->{$libraryId}) and (!exists $excludedLibraries{$libraryId}) ){
+            print "\t", $libraryId, " library annotated but not mapped. This may be for different reasons: is it in the RNASeqLibrary_worm_exclusion.tsv file? Is it a miRNA-Seq/ncRNA-seq/CAGE/RACE/weird experiment? Is it in SRA format (SRX/ERX)?\n";
+        }
     }
-  }
 }
 print "\t", scalar keys %annotations, " experiments annotated.\n";
 print "\t", $count_libs, " libraries annotated.\n";
@@ -126,7 +126,7 @@ my $speciesSexInfo = Utils::get_species_sex_info($bgee);
 # DATA SOURCES #
 ################
 my %bgeeDataSources = ();
-my $selSrc = $bgee->prepare("SELECT dataSourceName, dataSourceId FROM dataSource WHERE category =\'RNA-Seq data source\';");
+my $selSrc = $bgee->prepare("SELECT dataSourceName, dataSourceId FROM dataSource WHERE category =\'RNA-Seq data source\'");
 $selSrc->execute()  or die $selSrc->errstr;
 while ( my @data = $selSrc->fetchrow_array ){
     $bgeeDataSources{$data[0]} = $data[1];
@@ -138,22 +138,21 @@ $selSrc->finish;
 ######################
 print "Inserting experiments...\n";
 my $insExp = $bgee->prepare('INSERT INTO rnaSeqExperiment (rnaSeqExperimentId, rnaSeqExperimentName, rnaSeqExperimentDescription, dataSourceId) VALUES (?, ?, ?, ?)');
-foreach my $expId ( sort keys %experiments ) {
-  print "\t$expId\n";
-  if ( $debug ) {
-    binmode(STDOUT, ":utf8");
-    print 'INSERT INTO rnaSeqExperiment: ',
-        $expId, ' - ', $experiments{$expId}->{'name'}, ' - ',
-        $experiments{$expId}->{'description'}, ' - ',
-        $bgeeDataSources{$experiments{$expId}->{'source'}}, "\n";
-  }
-  else {
-    $insExp->execute($expId, $experiments{$expId}->{'name'}, $experiments{$expId}->{'description'}, $bgeeDataSources{$experiments{$expId}->{'source'}})  or die $insExp->errstr;
-  }
+foreach my $expId ( sort keys %experiments ){
+    print "\t$expId\n";
+    if ( $debug ){
+        binmode(STDOUT, ':utf8');
+        print 'INSERT INTO rnaSeqExperiment: ',
+            $expId, ' - ', $experiments{$expId}->{'name'}, ' - ',
+            $experiments{$expId}->{'description'}, ' - ',
+            $bgeeDataSources{$experiments{$expId}->{'source'}}, "\n";
+    }
+    else {
+        $insExp->execute($expId, $experiments{$expId}->{'name'}, $experiments{$expId}->{'description'}, $bgeeDataSources{$experiments{$expId}->{'source'}})  or die $insExp->errstr;
+    }
 }
 $insExp->finish();
-print "Done\n";
-print "\n";
+print "Done\n\n";
 
 ######################
 # INSERT PLATFORMS   #
@@ -161,28 +160,27 @@ print "\n";
 print "Inserting platforms...\n";
 # Retrieve all platforms used for the analyzed libraries
 my %platforms = ();
-foreach my $expId ( keys %libraries ) {
-  foreach my $libraryId ( keys %{$libraries{$expId}} ) {
-    if ($libraries{$expId}->{$libraryId}->{'platform'} ne ''){
-      $platforms{$libraries{$expId}->{$libraryId}->{'platform'}}++;
+foreach my $expId ( keys %libraries ){
+    foreach my $libraryId ( keys %{$libraries{$expId}} ){
+        if ( $libraries{$expId}->{$libraryId}->{'platform'} ne '' ){
+            $platforms{$libraries{$expId}->{$libraryId}->{'platform'}}++;
+        }
     }
-  }
 }
 
 my $insPlatform = $bgee->prepare('INSERT INTO rnaSeqPlatform (rnaSeqPlatformId, rnaSeqPlatformDescription) VALUES (?, ?)');
 # now insert the platform(s)
-foreach my $platformId ( sort keys %platforms ) {
-  print "\t$platformId\n";
-  if ( $debug ) {
-    print 'INSERT INTO rnaSeqPlatform: ', $platformId, ' - ', "\n";
-  }
-  else {
-    $insPlatform->execute($platformId, '')  or die $insPlatform->errstr;
-  }
+foreach my $platformId ( sort keys %platforms ){
+    print "\t$platformId\n";
+    if ( $debug ){
+        print 'INSERT INTO rnaSeqPlatform: ', $platformId, ' - ', "\n";
+    }
+    else {
+        $insPlatform->execute($platformId, '')  or die $insPlatform->errstr;
+    }
 }
 $insPlatform->finish();
-print "Done\n";
-print "\n";
+print "Done\n\n";
 
 ################################################
 # GET GENE INTERNAL IDS                        #
@@ -191,14 +189,14 @@ print "\n";
 
 my %genes;
 # go over all libraries to check all species with data
-foreach my $expId ( keys %libraries ) {
-  foreach my $libraryId ( keys %{$libraries{$expId}} ) {
-    $genes{$libraries{$expId}->{$libraryId}->{'speciesId'}} = ();
-  }
+foreach my $expId ( keys %libraries ){
+    foreach my $libraryId ( keys %{$libraries{$expId}} ){
+        $genes{$libraries{$expId}->{$libraryId}->{'speciesId'}} = ();
+    }
 }
 # Get hash of geneId to bgeeGeneId mapping per species
-foreach my $speciesId (keys %genes) {
-  $genes{$speciesId} = Utils::query_bgeeGene($bgee, $speciesId);
+foreach my $speciesId ( keys %genes ){
+    $genes{$speciesId} = Utils::query_bgeeGene($bgee, $speciesId);
 }
 
 # Get used stages & anatEntityId from annotation sheet
@@ -222,21 +220,21 @@ print "Examining all gene results to find genes never seen as 'expressed'...\n";
 # We use the bgeeGeneIds which are distinct for all species. Ensembl IDs used in the results files are not distinct for some species (e.g., chimpanzee and bonobo)
 my %presentGenes = ();
 
-foreach my $expId ( keys %libraries ) {
- LIBRARY:
-  foreach my $libraryId ( keys %{$libraries{$expId}} ) {
-    # skip libraryId if this library was excluded
-    next LIBRARY if (exists $excludedLibraries{$libraryId});
+foreach my $expId ( keys %libraries ){
+    LIBRARY:
+    foreach my $libraryId ( keys %{$libraries{$expId}} ){
+        # skip libraryId if this library was excluded
+        next LIBRARY  if ( exists $excludedLibraries{$libraryId} );
 
-    print "\t$expId $libraryId\n";
+        print "\t$expId $libraryId\n";
 
-    my %genesResults = getGenesResults($all_results.'/'.$libraryId.'/abundance_gene_level+new_tpm+new_fpkm+calls.tsv');
-    foreach my $geneId ( keys %genesResults ) {
-      if ( $genesResults{$geneId}->{'expressionCall'} eq $Utils::PRESENT_CALL ) {
-        $presentGenes{ $genes{ $libraries{$expId}->{$libraryId}->{'speciesId'}}->{ $geneId } }++;
-      }
+        my %genesResults = getGenesResults($all_results.'/'.$libraryId.'/abundance_gene_level+new_tpm+new_fpkm+calls.tsv');
+        foreach my $geneId ( keys %genesResults ){
+            if ( $genesResults{$geneId}->{'expressionCall'} eq $Utils::PRESENT_CALL ){
+                $presentGenes{ $genes{ $libraries{$expId}->{$libraryId}->{'speciesId'}}->{ $geneId } }++;
+            }
+        }
     }
-  }
 }
 
 print "Done\n";
@@ -256,13 +254,13 @@ my $insLib = $bgee->prepare('INSERT INTO rnaSeqLibrary (rnaSeqLibraryId, rnaSeqE
 
 # Excluded libraries
 my $insExcludedLib = $bgee->prepare('INSERT INTO rnaSeqLibraryDiscarded (rnaSeqLibraryId) VALUES (?)');
-foreach my $libraryId (keys %excludedLibraries) {
-  if ( $debug ) {
-    print 'INSERT INTO rnaSeqLibraryDiscarded: ', $libraryId, "\n";
-  }
-  else {
-    $insExcludedLib->execute($libraryId)  or die insExcludedLib->errstr;
-  }
+foreach my $libraryId ( keys %excludedLibraries ){
+    if ( $debug ){
+        print 'INSERT INTO rnaSeqLibraryDiscarded: ', $libraryId, "\n";
+    }
+    else {
+        $insExcludedLib->execute($libraryId)  or die insExcludedLib->errstr;
+    }
 }
 
 # query for runs insertion
@@ -275,116 +273,118 @@ my $insResult = $bgee->prepare('INSERT INTO rnaSeqResult (rnaSeqLibraryId, bgeeG
 
 my $inserted = 0;
 my $excluded = 0;
-foreach my $expId ( sort keys %libraries ) {
- LIBRARY:
-  foreach my $libraryId ( sort keys %{$libraries{$expId}} ) {
-    print "\t$expId $libraryId\n";
+foreach my $expId ( sort keys %libraries ){
+    LIBRARY:
+    foreach my $libraryId ( sort keys %{$libraries{$expId}} ){
+        print "\t$expId $libraryId\n";
 
-    if ( !exists $doneAnat->{$annotations{$expId}->{$libraryId}->{'uberonId'}} || $doneAnat->{$annotations{$expId}->{$libraryId}->{'uberonId'}} eq '' ) {
-      warn "[$annotations{$expId}->{$libraryId}->{'uberonId'}] unmapped organ id\n";
-      next LIBRARY;
-    }
-    if ( !exists $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}}  || $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}}  eq '' ) {
-      warn "[$annotations{$expId}->{$libraryId}->{'stageId'}] unmapped stage id\n";
-      next LIBRARY;
-    }
+        if ( !exists $doneAnat->{$annotations{$expId}->{$libraryId}->{'uberonId'}} || $doneAnat->{$annotations{$expId}->{$libraryId}->{'uberonId'}} eq '' ){
+            warn "[$annotations{$expId}->{$libraryId}->{'uberonId'}] unmapped organ id\n";
+            next LIBRARY;
+        }
+        if ( !exists $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}}  || $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}}  eq '' ){
+            warn "[$annotations{$expId}->{$libraryId}->{'stageId'}] unmapped stage id\n";
+            next LIBRARY;
+        }
 
-    # Get conditionId/exprMappedConditionId for this library
-    # Updates also the hash of existing conditions
-    my $condKeyMap;
-    ($condKeyMap, $conditions) = Utils::insert_get_condition($bgee,
-                                                             $conditions,
-                                                             $stage_equivalences,
-                                                             $doneAnat->{$annotations{$expId}->{$libraryId}->{'uberonId'}},
-                                                             $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}},
-                                                             $annotations{$expId}->{$libraryId}->{'speciesId'},
-                                                             $annotations{$expId}->{$libraryId}->{'sex'},
-                                                             $annotations{$expId}->{$libraryId}->{'strain'},
-                                                             $anatSexInfo, $speciesSexInfo,
-                                                             $libraryId, '');
-    # We consider the fine-grained (low-level) conditionId for insertion: $condKeyMap->{'conditionId'}
+        # Get conditionId/exprMappedConditionId for this library
+        # Updates also the hash of existing conditions
+        my $condKeyMap;
+        ($condKeyMap, $conditions) = Utils::insert_get_condition($bgee,
+                                                                 $conditions,
+                                                                 $stage_equivalences,
+                                                                 $doneAnat->{$annotations{$expId}->{$libraryId}->{'uberonId'}},
+                                                                 $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}},
+                                                                 $annotations{$expId}->{$libraryId}->{'speciesId'},
+                                                                 $annotations{$expId}->{$libraryId}->{'sex'},
+                                                                 $annotations{$expId}->{$libraryId}->{'strain'},
+                                                                 $anatSexInfo, $speciesSexInfo,
+                                                                 $libraryId, '',
+                                                                );
+        # We consider the fine-grained (low-level) conditionId for insertion: $condKeyMap->{'conditionId'}
 
-    # insert sample
-    if ( $debug ) {
-      print 'INSERT INTO rnaSeqLibrary: ', $libraryId,                       ' - ',
-          $expId, ' - ', $libraries{$expId}->{$libraryId}->{'platform'}, ' - ',
-          $condKeyMap->{'conditionId'},                                      ' - ',
-          $librariesStats{$libraryId}->{'cutoffFPKM'},                       ' - ',
-          $librariesStats{$libraryId}->{'cutoffTPM'},                        ' - ',
-          $librariesStats{$libraryId}->{'allGenesPercentPresent'},           ' - ',
-          $librariesStats{$libraryId}->{'proteinCodingPercentPresent'},      ' - ',
-          $librariesStats{$libraryId}->{'intergenicRegionsPercentPresent'},  ' - ',
-          $librariesStats{$libraryId}->{'ratioIntergenicCodingPresent'},  ' - ',
-          $reportInfo{$libraryId}->{'allReadsCount'},              ' - ',
-          $reportInfo{$libraryId}->{'mappedReadsCount'},          ' - ',
-          $reportInfo{$libraryId}->{'minReadLength'},              ' - ',
-          $reportInfo{$libraryId}->{'maxReadLength'},              ' - ',
-          $libraries{$expId}->{$libraryId}->{'libraryType'}, ' - ',
-          "NA\n";
-    }
-    else {
-      $insLib->execute($libraryId,
-                       $expId,
-                       $libraries{$expId}->{$libraryId}->{'platform'},
-                       $condKeyMap->{'conditionId'},
-                       $librariesStats{$libraryId}->{'cutoffFPKM'},
-                       $librariesStats{$libraryId}->{'cutoffTPM'},
-                       $librariesStats{$libraryId}->{'allGenesPercentPresent'},
-                       $librariesStats{$libraryId}->{'proteinCodingPercentPresent'},
-                       $librariesStats{$libraryId}->{'intergenicRegionsPercentPresent'},
-                       $librariesStats{$libraryId}->{'ratioIntergenicCodingPresent'},
-                       $reportInfo{$libraryId}->{'allReadsCount'},
-                       $reportInfo{$libraryId}->{'mappedReadsCount'},
-                       $reportInfo{$libraryId}->{'minReadLength'},
-                       $reportInfo{$libraryId}->{'maxReadLength'},
-                       $libraries{$expId}->{$libraryId}->{'libraryType'},
-                       'NA')  or die $insLib->errstr;
-    }
+        # insert sample
+        if ( $debug ){
+            print 'INSERT INTO rnaSeqLibrary: ', $libraryId,                        ' - ',
+                  $expId, ' - ', $libraries{$expId}->{$libraryId}->{'platform'},    ' - ',
+                  $condKeyMap->{'conditionId'},                                     ' - ',
+                  $librariesStats{$libraryId}->{'cutoffFPKM'},                      ' - ',
+                  $librariesStats{$libraryId}->{'cutoffTPM'},                       ' - ',
+                  $librariesStats{$libraryId}->{'allGenesPercentPresent'},          ' - ',
+                  $librariesStats{$libraryId}->{'proteinCodingPercentPresent'},     ' - ',
+                  $librariesStats{$libraryId}->{'intergenicRegionsPercentPresent'}, ' - ',
+                  $librariesStats{$libraryId}->{'ratioIntergenicCodingPresent'},    ' - ',
+                  $reportInfo{$libraryId}->{'allReadsCount'},                       ' - ',
+                  $reportInfo{$libraryId}->{'mappedReadsCount'},                    ' - ',
+                  $reportInfo{$libraryId}->{'minReadLength'},                       ' - ',
+                  $reportInfo{$libraryId}->{'maxReadLength'},                       ' - ',
+                  $libraries{$expId}->{$libraryId}->{'libraryType'},                ' - ',
+                  "NA\n";
+        }
+        else {
+            $insLib->execute($libraryId,
+                             $expId,
+                             $libraries{$expId}->{$libraryId}->{'platform'},
+                             $condKeyMap->{'conditionId'},
+                             $librariesStats{$libraryId}->{'cutoffFPKM'},
+                             $librariesStats{$libraryId}->{'cutoffTPM'},
+                             $librariesStats{$libraryId}->{'allGenesPercentPresent'},
+                             $librariesStats{$libraryId}->{'proteinCodingPercentPresent'},
+                             $librariesStats{$libraryId}->{'intergenicRegionsPercentPresent'},
+                             $librariesStats{$libraryId}->{'ratioIntergenicCodingPresent'},
+                             $reportInfo{$libraryId}->{'allReadsCount'},
+                             $reportInfo{$libraryId}->{'mappedReadsCount'},
+                             $reportInfo{$libraryId}->{'minReadLength'},
+                             $reportInfo{$libraryId}->{'maxReadLength'},
+                             $libraries{$expId}->{$libraryId}->{'libraryType'},
+                            'NA',
+                           )  or die $insLib->errstr;
+        }
 
-    # insert runs
-    foreach my $runId ( keys %{$libraries{$expId}->{$libraryId}->{'runIds'}} ) {
-      if ( $debug ) {
-        print 'INSERT INTO rnaSeqRun: ', $runId, ' - ', $libraryId, "\n";
-      }
-      else {
-        $insRun->execute($runId, $libraryId)  or die $insRun->errstr;
-      }
-    }
+        # insert runs
+        foreach my $runId ( keys %{$libraries{$expId}->{$libraryId}->{'runIds'}} ){
+            if ( $debug ){
+                print 'INSERT INTO rnaSeqRun: ', $runId, ' - ', $libraryId, "\n";
+            }
+            else {
+                $insRun->execute($runId, $libraryId)  or die $insRun->errstr;
+            }
+        }
 
-    # insert genes results
-    my %genesResults = getGenesResults($all_results.'/'.$libraryId.'/abundance_gene_level+new_tpm+new_fpkm+calls.tsv');
-    foreach my $geneId ( keys %genesResults ) {
-      $inserted++;
-      # if gene never seen as 'present', exclude it
-      my $exclusion = $Utils::CALL_NOT_EXCLUDED;
-      if ( !exists $presentGenes{ $genes{ $libraries{$expId}->{$libraryId}->{'speciesId'}}->{ $geneId } } ) {
-       $exclusion = $Utils::EXCLUDED_FOR_PRE_FILTERED;
-       $excluded++;
-      }
-      if ( $debug ) {
-        print 'INSERT INTO rnaSeqResult: ', $libraryId, ' - ', $genes{ $libraries{$expId}->{$libraryId}->{'speciesId'}}->{ $geneId }, ' - ',
-            $genesResults{$geneId}->{'FPKM'},           ' - ',
-            $genesResults{$geneId}->{'TPM'},            ' - ',
-            $genesResults{$geneId}->{'estimatedCount'},     ' - ',
-            $genesResults{$geneId}->{'expressionCall'}, ' - ',
-            'high quality',                             ' - ',
-            $exclusion, "\n";
-      }
-      else {
-        $insResult->execute($libraryId,
-                            # geneId is an ensembl ID, we need to get the bgeeGeneId
-                            $genes{ $libraries{$expId}->{$libraryId}->{'speciesId'}}->{ $geneId },
-                            $genesResults{$geneId}->{'FPKM'},
-                            $genesResults{$geneId}->{'TPM'},
-                            $genesResults{$geneId}->{'estimatedCount'},
-                            $genesResults{$geneId}->{'expressionCall'},
-                            # rnaSeqData field always 'high quality' for now
-                            $Utils::HIGH_QUAL,
-                            $exclusion)
-            or die $insResult->errstr;
-      }
+        # insert genes results
+        my %genesResults = getGenesResults($all_results.'/'.$libraryId.'/abundance_gene_level+new_tpm+new_fpkm+calls.tsv');
+        foreach my $geneId ( keys %genesResults ){
+            $inserted++;
+            # if gene never seen as 'present', exclude it
+            my $exclusion = $Utils::CALL_NOT_EXCLUDED;
+            if ( !exists $presentGenes{ $genes{ $libraries{$expId}->{$libraryId}->{'speciesId'}}->{ $geneId } } ){
+                $exclusion = $Utils::EXCLUDED_FOR_PRE_FILTERED;
+                $excluded++;
+            }
+            if ( $debug ){
+                print 'INSERT INTO rnaSeqResult: ', $libraryId,   ' - ', $genes{ $libraries{$expId}->{$libraryId}->{'speciesId'}}->{ $geneId }, ' - ',
+                      $genesResults{$geneId}->{'FPKM'},           ' - ',
+                      $genesResults{$geneId}->{'TPM'},            ' - ',
+                      $genesResults{$geneId}->{'estimatedCount'}, ' - ',
+                      $genesResults{$geneId}->{'expressionCall'}, ' - ',
+                      'high quality',                             ' - ',
+                      $exclusion, "\n";
+            }
+            else {
+                $insResult->execute($libraryId,
+                                    # geneId is an ensembl ID, we need to get the bgeeGeneId
+                                    $genes{ $libraries{$expId}->{$libraryId}->{'speciesId'}}->{ $geneId },
+                                    $genesResults{$geneId}->{'FPKM'},
+                                    $genesResults{$geneId}->{'TPM'},
+                                    $genesResults{$geneId}->{'estimatedCount'},
+                                    $genesResults{$geneId}->{'expressionCall'},
+                                    # rnaSeqData field always 'high quality' for now
+                                    $Utils::HIGH_QUAL,
+                                    $exclusion,
+                                   )  or die $insResult->errstr;
+            }
+        }
     }
-  }
 }
 $insLib->finish();
 $insRun->finish();

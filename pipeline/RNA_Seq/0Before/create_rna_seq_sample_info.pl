@@ -109,8 +109,8 @@ print "Reading annotation file $RNAseqLib... ";
 die "[$RNAseqLib] file is empty\n"  if ( -z $RNAseqLib );
 my %tsv = %{ Utils::read_spreadsheet("$RNAseqLib", "\t", 'csv', '"', 1) };
 # See modified headers, issue #90 on gitHub:
-# libraryId	experimentId	chipTypeId	organId	organName	uberonId	uberonName	stageId	stageName	infoOrgan	infoStage	sampleTitle	sampleSource	sampleDescription	sampleCharacteristics	organAnnotationStatus	organBiologicalStatus	stageAnnotationStatus	stageBiologicalStatus	sex	strain	speciesId	comment	annotatorId	lastModificationDate	replicate	infoReplicate    SRSId    tags
-# SRX081869	GSE30352	Illumina Genome Analyzer IIx			UBERON:0000955	brain	GgalDv:0000008	1-year-old chicken stage	Brain	~1 year, adult	gga br F 1				perfect match	not documented	other	partial sampling	F	Red Junglefowl	9031	Chicken	ANN	2013-08-23	1	GEO - [...] we generated RNA-Seq data [...] of brain (cerebral cortex or whole brain without cerebellum), cerebellum, heart, kidney, liver and testis (usually from one male and one female per somatic tissue and two males for testis)[...]
+# libraryId    experimentId    chipTypeId    organId    organName    uberonId    uberonName    stageId    stageName    infoOrgan    infoStage    sampleTitle    sampleSource    sampleDescription    sampleCharacteristics    organAnnotationStatus    organBiologicalStatus    stageAnnotationStatus    stageBiologicalStatus    sex    strain    speciesId    comment    annotatorId    lastModificationDate    replicate    infoReplicate    SRSId    tags
+# SRX081869    GSE30352    Illumina Genome Analyzer IIx            UBERON:0000955    brain    GgalDv:0000008    1-year-old chicken stage    Brain    ~1 year, adult    gga br F 1                perfect match    not documented    other    partial sampling    F    Red Junglefowl    9031    Chicken    ANN    2013-08-23    1    GEO - [...] we generated RNA-Seq data [...] of brain (cerebral cortex or whole brain without cerebellum), cerebellum, heart, kidney, liver and testis (usually from one male and one female per somatic tissue and two males for testis)[...]
 print "Done\n";
 
 print "Reading annotation file $RNAseqLibChecks... ";
@@ -127,7 +127,7 @@ print "Done\n";
 print "Reading annotation file $RNAseqLibWormExclusion... ";
 warn "Warning: [$RNAseqLibWormExclusion] file is empty.\n"  if ( -z $RNAseqLibWormExclusion );
 %tsv_checks = %{ Utils::read_spreadsheet("$RNAseqLibWormExclusion", "\t", 'csv', '"', 1) };
-#libraryId 	excluded 	comment 	annotatorId 	lastModificationDate
+#libraryId    excluded    comment    annotatorId    lastModificationDate
 my %checked_libraries_worm;
 for my $i ( 0..$#{$tsv_checks{'libraryId'}} ) {
     $checked_libraries_worm{$tsv_checks{'libraryId'}[$i]} = $tsv_checks{'excluded'}[$i];
