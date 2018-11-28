@@ -69,9 +69,9 @@ my $main_script = $RealBin.'/rna_seq_mapping_and_analysis.pl';
 # kallisto is no multithreaded unless bootstraps are used
 my $nr_processors = 1;
 # memory limit: should match the limit of the queue
-my $memory_limit  = 160_000_000;
+my $memory_limit  = 160_000_000; # in KB
 # RAM needed: 4GB should be enough
-my $memory_usage  = 4000;
+my $memory_usage  = 10_000;      # in MB
 my $queue         = 'bgee';
 my $user_email    = 'bgee@sib.swiss'; # for email notification
 

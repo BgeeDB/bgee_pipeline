@@ -152,7 +152,10 @@ Gene expression ranks allow to identify the most functionally-relevant condition
     grep 'Broken pipe' $RNASEQ_VITALIT_ALL_RES/*/*.err
     # Usually some samples with streaming issues
     grep 'gzip: stdin: unexpected end of file' $RNASEQ_VITALIT_ALL_RES/*/*.err
-    # Most of the time linked to streaming issues, but could also be to wrongly compressed FASTQ files. So check them if repeated
+    # Most of the time linked to streaming issues, but could also be to wrongly compressed FASTQ files.
+    # Streaming issues come most of the time from long Kallisto computations and/or lots of runs which increase the probability of
+    # network issues, log rotations, ... that could interrupt the streaming.
+    # Run those libraries locally, not through streaming, if gzip issue is repeated itself.
     grep 'packet_write_wait'                                              $RNASEQ_VITALIT_ALL_RES/*/*.err
     grep 'ssh_exchange_identification: Connection closed by remote host'  $RNASEQ_VITALIT_ALL_RES/*/*.err
     grep 'ssh_exchange_identification: read: Connection reset by peer'    $RNASEQ_VITALIT_ALL_RES/*/*.err
