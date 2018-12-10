@@ -334,6 +334,7 @@ print {$REPORT2} "\tTotal number reads\t", $total_reads_fastqc, "\n";
 close $REPORT2;
 
 ## TODO For each SRR, we should also store a file on bigbgee with the number of lines (wc -l). On this side, we can verify it is consistent with the number of reads in FASTQC reports (and number of reads processed by Kalisto = sum of all runs $total_reads_fastqc too).
+## TODO Use a faster tool to compute FastQ Quality Control (e.g. fastp) to also get read lengths min/max AND median or mean!!!
 
 ## TODO? we could extract too the sequence lenghts from FastQC reports, instead of what is done above.
 
@@ -414,7 +415,7 @@ if ( ( -s $kallisto_out_folder.'/abundance.tsv' ) && ( -s $kallisto_out_folder.'
     if ( $nan > 1000 ){
         # rename abundance file
         system('mv ', $kallisto_out_folder, '/abundance.tsv ', $kallisto_out_folder, '/abundance.tsv.problem');
-        die "\tProblem: Kallisto TPM results include numerous \"-nan\", please check for a problem.\n";
+        die "\tProblem: Kallisto TPM results include numerous \"-nan\", please check for a problem [$library_id]\n";
     }
 
     my $total_reads_kallisto;
@@ -432,17 +433,17 @@ if ( ( -s $kallisto_out_folder.'/abundance.tsv' ) && ( -s $kallisto_out_folder.'
         close $REPORT4;
 
         if ( $aligned / $total_reads_kallisto < 0.2 ){
-            warn "\nProblem: It seems that less than 20% of the reads were pseudo-aligned by Kallisto, please check for a problem.\n";
+            warn "\nProblem: It seems that less than 20% of the reads were pseudo-aligned by Kallisto, please check for a problem [$library_id]\n";
         }
         # Note: this arbitrary threshold of 20% can be changed
 
         if ( $total_reads_kallisto != $total_reads_fastqc ){
-            warn "\nProblem: The number of reads processed by FastQC and Kallisto differs. Please check for a problem.\n";
+            warn "\nProblem: The number of reads processed by FastQC and Kallisto differs. Please check for a problem [$library_id]\n";
         }
         ## TODO add step to check that the number of reads is also consistent with the original fastq files on bigbgee (see TODO above)
     }
     if ( $aligned < 1000000 ){
-        warn "\nProblem: Less than 1,000,000 reads were pseudo-aligned by Kallisto, please check for a problem.\n";
+        warn "\nProblem: Less than 1,000,000 reads were pseudo-aligned by Kallisto, please check for a problem [$library_id]\n";
     }
     # Note: this arbitrary threshold of 1,000,000 reads can be changed
 
@@ -450,7 +451,7 @@ if ( ( -s $kallisto_out_folder.'/abundance.tsv' ) && ( -s $kallisto_out_folder.'
     # h5dump -d /aux/fld all_results_bgee_v14/SRX567038/abundance.h5 | less
 }
 else {
-    die "\tProblem: No abundance.tsv or run_info.json file found for this library. Kallisto run was probably not successful.\n";
+    die "\tProblem: No abundance.tsv or run_info.json file found for this library. Kallisto run was probably not successful [$library_id]\n";
 }
 
 ############################################################################################
