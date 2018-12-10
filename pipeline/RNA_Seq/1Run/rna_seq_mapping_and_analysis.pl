@@ -200,7 +200,7 @@ for my $run ( @run_ids ){
 
 print "\tExtracting read length for all runs\n";
 my $shortReads   = 0;
-my $lengthCutoff = 50; # Read shorter than 50nt will be pseudo-mapped using shorter k-mer length. This parameter can be changed, but I assumed most recent RNA-seq data produce at least 50nt-long reads.
+my $lengthCutoff = 36; # Read shorter than $lengthCutoff nt will be pseudo-mapped using shorter k-mer length. This parameter can be changed, but I assumed most recent RNA-seq data produce at least $lengthCutoff nt-long reads.
 my @allLengths;
 my $maxLength;
 
@@ -287,7 +287,7 @@ close $REPORT;
 #       https://groups.google.com/forum/#!topic/kallisto-sleuth-users/clOeSROnnFI
 my $index = $index_folder.'/';
 $genomeFilePath =~ m/.+\/(.+)/;
-if ( $shortReads eq 1 ){
+if ( $shortReads == 1 ){
     $index .= $1.'.'.$ens_release.'.transcriptome_k15.idx';
 }
 else {
@@ -349,6 +349,7 @@ close $REPORT2;
 # - output folder looks something like: all_results_bgee_v14/
 # - for next Bgee releases, if for a species the genome version and annotation did not change, it is possible to copy paste the results for the the concerned libraries, so that these are not rerun. But be careful with this! In most cases folders of it is probably faster to rerun everything.
 
+#my $local_not_remote_path = '...';
 # First check that this library was not previously successfully processed
 if ( ( -s $kallisto_out_folder.'/abundance.tsv' ) && ( -s $kallisto_out_folder.'/run_info.json' ) ){
     print "\tKallisto was already successfully run for this library. Skipping this step.\n";
@@ -361,10 +362,11 @@ else {
         $kallisto_command .= "kallisto quant -i $index -o $kallisto_out_folder -t 1 --single -l 180 -s 30 --bias ";
         for my $run ( @run_ids ){
             if ( $exp_id ne $GTEX_exp_id ){
-                $kallisto_command .= '<(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'.fastq.gz | zcat ) ';
+                #$kallisto_command .= $local_not_remote_path.'/'.$library_id.'/'.$run.'.fastq.gz ';
+                $kallisto_command .= '<(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'.fastq.gz) ';
             }
             if ( $exp_id eq $GTEX_exp_id ){
-                $kallisto_command .= '<(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.' | zcat ) ';
+                $kallisto_command .= '<(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.') ';
             }
         }
     }
@@ -372,10 +374,11 @@ else {
         $kallisto_command .= "kallisto quant -i $index -o $kallisto_out_folder -t 1 --bias ";
         for my $run ( @run_ids ){
             if ( $exp_id ne $GTEX_exp_id ){
-                $kallisto_command .= '<(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'_1.fastq.gz | zcat ) <(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'_2.fastq.gz | zcat) ';
+                #$kallisto_command .= $local_not_remote_path.'/'.$library_id.'/'.$run.'_1.fastq.gz '.$local_not_remote_path.'/'.$library_id.'/'.$run.'_2.fastq.gz ';
+                $kallisto_command .= '<(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'_1.fastq.gz) <(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'_2.fastq.gz) ';
             }
             if ( $exp_id eq $GTEX_exp_id ){
-                $kallisto_command .= '<(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'_1.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.' | zcat ) <(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'_2.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.' | zcat ) ';
+                $kallisto_command .= '<(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'_1.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.') <(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'_2.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.') ';
             }
         }
     }
