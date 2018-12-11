@@ -442,7 +442,7 @@ if ( ( -s $kallisto_out_folder.'/abundance.tsv' ) && ( -s $kallisto_out_folder.'
         }
         ## TODO add step to check that the number of reads is also consistent with the original fastq files on bigbgee (see TODO above)
     }
-    if ( $aligned < 1000000 ){
+    if ( $aligned < 1_000_000 ){
         warn "\nProblem: Less than 1,000,000 reads were pseudo-aligned by Kallisto, please check for a problem [$library_id]\n";
     }
     # Note: this arbitrary threshold of 1,000,000 reads can be changed
