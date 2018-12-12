@@ -36,6 +36,7 @@ global_check:
 	@perl -MList::MoreUtils         -e 1 >> $@.tmp
 	@perl -MList::Util              -e 1 >> $@.tmp
 	@perl -MNet::FTP                -e 1 >> $@.tmp
+	@perl -MSort::Naturally         -e 1 >> $@.tmp
 	@perl -MSpreadsheet::Read       -e 1 >> $@.tmp
 	@perl -MSpreadsheet::ParseExcel -e 1 >> $@.tmp
 	@perl -MText::CSV               -e 1 >> $@.tmp

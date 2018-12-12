@@ -183,13 +183,13 @@ check_pipeline: run_pipeline
 
 export_length: check_pipeline
 	#Export transcript length to a file to export
-	@perl 3Insertion/export_feature_length.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -all_results=$(RNASEQ_VITALIT_ALL_RES) -length_info=$(RNASEQ_LENGTH_INFO_FILEPATH) > $@.tmp 2>warnings.$@
-	@echo -e "\tTranscript length are not exported into $(RNASEQ_LENGTH_INFO_FILEPATH) file. Please add the file to the GIT project with:\ngit commit -a -m \"Exported transcript length info file\"\ngit push\n"
+	@perl 3Insertion/export_feature_length.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -all_results=$(RNASEQ_VITALIT_ALL_RES) -length_info=$(RNASEQ_LENGTH_INFO_FILEPATH) > $@.tmp 2>warnings.$@
+	@echo -e "\tTranscript length are now exported into $(RNASEQ_LENGTH_INFO_FILEPATH) file\n"
 	@$(MV) $@.tmp $@
 
-finalize_pipeline: run_pipeline
+finalize_pipeline: check_pipeline
 	# Collect infos from .report files
-	@perl 3Insertion/create_rna_seq_report_info.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -report_info=$(RNASEQREPORTINFO) -all_results=$(RNASEQ_VITALIT_ALL_RES) > $@.tmp 2>warnings.$@
+	@perl 3Insertion/create_rna_seq_report_info.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -report_info=$(RNASEQREPORTINFO) -all_results=$(RNASEQ_VITALIT_ALL_RES) > $@.tmp 2>warnings.$@
 	# We use tail -n+1 instead of cat because it writes the name of the file in the concatenated file
 	tail -n+1 $(RNASEQ_VITALIT_LOG)/*/*.err    >> $(RNASEQ_VITALIT_LOG)/all_std_err.txt
 	tail -n+1 $(RNASEQ_VITALIT_LOG)/*/*.out    >> $(RNASEQ_VITALIT_LOG)/all_std_out.txt
@@ -220,7 +220,7 @@ presence_absence: sum_by_species $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUD
 # /bin/cp used because cp is an alias to cp -i
 # Also copy presence_absence_all_samples.txt, presence_absence_all_samples.RDa and presence_absence_boxplots.pdf
 
-save_and_send_results_back: run_pipeline
+save_and_send_results_back: check_pipeline
 	# Touch all files so that they are not removed from /scratch/cluster/monthly
 	find $(RNASEQ_VITALIT_SCRATCH) -exec touch {} \;
 	#back-up all data
