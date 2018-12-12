@@ -191,6 +191,7 @@ export_length: check_pipeline
 finalize_pipeline: check_pipeline
 	# Collect infos from .report files
 	@perl 3Insertion/create_rna_seq_report_info.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -report_info=$(RNASEQREPORTINFO) -all_results=$(RNASEQ_VITALIT_ALL_RES) > $@.tmp 2>warnings.$@
+	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	# We use tail -n+1 instead of cat because it writes the name of the file in the concatenated file
 	tail -n+1 $(RNASEQ_VITALIT_LOG)/*/*.err    >> $(RNASEQ_VITALIT_LOG)/all_std_err.txt
 	tail -n+1 $(RNASEQ_VITALIT_LOG)/*/*.out    >> $(RNASEQ_VITALIT_LOG)/all_std_out.txt
