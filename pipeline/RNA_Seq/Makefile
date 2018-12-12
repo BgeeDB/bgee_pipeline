@@ -184,6 +184,7 @@ check_pipeline: run_pipeline
 export_length: check_pipeline
 	#Export transcript length to a file to export
 	@perl 3Insertion/export_feature_length.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -all_results=$(RNASEQ_VITALIT_ALL_RES) -length_info=$(RNASEQ_LENGTH_INFO_FILEPATH) > $@.tmp 2>warnings.$@
+	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@echo -e "\tTranscript length are now exported into $(RNASEQ_LENGTH_INFO_FILEPATH) file\n"
 	@$(MV) $@.tmp $@
 
