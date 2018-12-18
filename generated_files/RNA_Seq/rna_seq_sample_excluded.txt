@@ -5,6 +5,12 @@ SRX099901	FALSE	Nematode sample with very few reads sequenced, and < 300,000 map
 SRX589537	TRUE	Library with very low complexity, and a lot of duplicated reads from adapters. Excluded because very few reads mapped, not enough to get good estimation of expression levels.	JR	2016-04-22
 SRX589538	FALSE	Library with only 132,987 reads sequenced. This is not enough to get good estimation of expression levels.	JR	2016-05-20
 SRX1629206	TRUE	Mediocre quality!	SM	2018-12-10
+ERX016344	TRUE	Mediocre quality!	SM	2018-12-18
+SRX028836	TRUE	Weak quality and contaminante	SM	2018-12-18
+SRX2532335	TRUE	Bad quality	SM	2018-12-18
+SRX502869	TRUE	Bad mapping because of contaminantes?	SM	2018-12-18
+SRX502871	TRUE	Bad mapping because of contaminantes?	SM	2018-12-18
+SRX589537	TRUE	Bad mapping because of contaminantes	SM	2018-12-18
 SRR1509499	TRUE	Bad quality single-end run mixed with paired-end runs	SM	2018-11-06
 SRR1509502	TRUE	Bad quality single-end run mixed with paired-end runs	SM	2018-11-06
 SRR1509500	TRUE	Bad quality single-end run mixed with paired-end runs	SM	2018-11-06
