@@ -66,9 +66,9 @@ print "\t", $count_libs, " libraries mapped and to be inserted.\n";
 
 
 # Read the .report file for each library, extract infos and print them out
-open (OUT, '>>', $report_info)  or die "Cannot write [$report_info]\n";
+open (my $OUT, '>>', $report_info)  or die "Cannot write [$report_info]\n";
 # header
-print OUT "#libraryId\tallReadsCount\tmappedReadsCount\tminReadLength\tmaxReadLength\n";
+print {$OUT} "#libraryId\tallReadsCount\tmappedReadsCount\tminReadLength\tmaxReadLength\n";
 
 foreach my $expId ( sort keys %libraries ){
     LIBRARY:
@@ -78,30 +78,30 @@ foreach my $expId ( sort keys %libraries ){
 
         # test if .report file exists
         if ( -s $all_results.'/'.$libraryId.'/'.$libraryId.'.report' ){
-            open(IN, '<', $all_results.'/'.$libraryId.'/'.$libraryId.'.report') or die "could not read .report file\n";
-            while ( defined (my $line = <IN>) ){
+            open(my $IN, '<', $all_results.'/'.$libraryId.'/'.$libraryId.'.report') or die "could not read .report file\n";
+            while ( defined (my $line = <$IN>) ){
                 if ( $line =~ m/Kallisto\spseudo\-aligned\s(\d+)\sreads\sout\sof\s(\d+)\s/ ){
                     $allReadsCount    = $2;
                     $mappedReadsCount = $1;
                 }
-                if ( $line =~ m/Minimum read length across runs\:\s(\d+)/ ){
+                elsif ( $line =~ m/Minimum read length across runs\:\s(\d+)/ ){
                     $minReadLength = $1;
                 }
-                if ( $line =~ m/Maximum read length across runs\:\s(\d+)/ ){
+                elsif ( $line =~ m/Maximum read length across runs\:\s(\d+)/ ){
                     $maxReadLength = $1;
                 }
             }
-            close IN;
+            close $IN;
 
             # output infos
-            print OUT "$libraryId\t$allReadsCount\t$mappedReadsCount\t$minReadLength\t$maxReadLength\n";
+            print {$OUT} "$libraryId\t$allReadsCount\t$mappedReadsCount\t$minReadLength\t$maxReadLength\n";
         }
         else {
             print "Missing .report file for library $libraryId!\n";
         }
     }
 }
-close OUT;
+close $OUT;
 exit;
 # Warning: if the info is several time in the report file (e.g., if sample was launched several time), only the last occurence will be considered
 
