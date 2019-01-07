@@ -190,7 +190,7 @@ export_length: check_pipeline
 
 finalize_pipeline: check_pipeline
 	# Collect infos from .report files
-	@perl 3Insertion/create_rna_seq_report_info.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -report_info=$(RNASEQREPORTINFO) -all_results=$(RNASEQ_VITALIT_ALL_RES) > $@.tmp 2>warnings.$@
+	@perl 3Insertion/create_rna_seq_report_info.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -report_info=$(RNASEQ_VITALIT_REPORTINFO) -all_results=$(RNASEQ_VITALIT_ALL_RES) > $@.tmp 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	# We use tail -n+1 instead of cat because it writes the name of the file in the concatenated file
 	tail -n+1 $(RNASEQ_VITALIT_LOG)/*/*.err    >> $(RNASEQ_VITALIT_LOG)/all_std_err.txt
@@ -235,7 +235,7 @@ save_and_send_results_back: check_pipeline
 	# @scp $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar.gz  $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES) >>$@.tmp 2>&1
   # Whole archive is probably too big to be copied to our servers (>100Gb). Copy only the final gene-level expression + calls files:
 	@rsync -rav -e ssh --include='*/' --include='*abundance_gene_level+new_tpm+new_fpkm+calls.tsv' --exclude='*' $(RNASEQ_VITALIT_ALL_RES) $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES) >>$@.tmp 2>&1
-	@rsync -av -e ssh $(RNASEQREPORTINFO) $(RNASEQSAMPSTATS) $(RNASEQALLRES)/presence_absence_all_samples.RDa $(RNASEQALLRES)/presence_absence_boxplots.pdf $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES)/ >>$@.tmp 2>&1
+	@rsync -av -e ssh $(RNASEQ_VITALIT_REPORTINFO) $(RNASEQSAMPSTATS) $(RNASEQALLRES)/presence_absence_all_samples.RDa $(RNASEQALLRES)/presence_absence_boxplots.pdf $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES)/ >>$@.tmp 2>&1
 
 	@$(MV) $@.tmp $@
 	@touch $@
