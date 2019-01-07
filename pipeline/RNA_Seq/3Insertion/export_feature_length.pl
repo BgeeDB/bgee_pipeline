@@ -81,6 +81,7 @@ print "\n";
 # EXPORT LENGTH #
 #################
 open (my $OUT, '>', $length_info)  or die "Cannot write [$length_info]\n";
+print {$OUT} join("\t", '#taxid', 'transcript', 'geneId', 'transcript_length'), "\n";
 foreach my $species ( nsort keys %all_species ){
     print 'Exporting length for species ', $species, "\n";
     foreach my $transcript ( sort keys %{$all_species{$species}} ){

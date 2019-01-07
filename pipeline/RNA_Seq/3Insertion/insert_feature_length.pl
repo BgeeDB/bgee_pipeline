@@ -51,6 +51,8 @@ print "Retrieving transcript mapping and length info...\n";
 my %all_transcripts;
 open(my $IN, '<', $length_info)  or die "Could not read file [$length_info]\n";
 while ( defined (my $line = <$IN>) ){
+    next  if ( $line =~ /^#/ );
+
     chomp $line;
     # file format: speciesId transcriptId, geneId, length
     my @tmp = map { bgeeTrim($_) } split(/\t/, $line);
