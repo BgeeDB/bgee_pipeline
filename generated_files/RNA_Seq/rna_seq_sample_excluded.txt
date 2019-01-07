@@ -18,3 +18,5 @@ SRR1509505	TRUE	Bad quality single-end run mixed with paired-end runs	SM	2018-11
 SRR1509504	TRUE	Bad quality single-end run mixed with paired-end runs	SM	2018-11-06
 SRR1509503	TRUE	Bad quality single-end run mixed with paired-end runs	SM	2018-11-06
 SRR1509501	TRUE	Bad quality single-end run mixed with paired-end runs	SM	2018-11-06
+SRR125338	TRUE	Bad quality and very low number of total sequences	SM	2019-01-07
+SRR125339	TRUE	Bad quality and very low number of total sequences	SM	2019-01-07

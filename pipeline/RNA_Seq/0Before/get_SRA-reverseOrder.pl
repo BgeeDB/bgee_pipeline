@@ -79,6 +79,13 @@ while (<$REVERSE_ANNOTATION>){
             system("cd $BASE; $SRATK_PATH/bin/fastq-dump --split-3 --gzip --outdir $FASTQ_PATH/$library_id/  $SRA_PATH/$sra_id.sra")==0
                 or do { warn "\tFailed to convert [$library_id/$sra_id]\n"; next SRA };
 
+            # Check FastQ file size
+            for my $fastq ( glob("$FASTQ_PATH/$library_id/*.gz") ){
+                if ( -s $fastq < 1_000_000 ){
+                    warn "$fastq file size looks very small!";
+                }
+            }
+
             # Compute FastQC (A quality control tool for high throughput sequence data) for ALL SRR (runs)
             mkdir "$FASTQ_PATH/$library_id/FASTQC";
             QC:
