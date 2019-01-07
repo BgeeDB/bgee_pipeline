@@ -46,6 +46,7 @@ my %all_species;
 foreach my $expId ( sort keys %libraries ){
     foreach my $libraryId ( sort keys %{$libraries{$expId}} ){
         next  if ( exists($excludedLibraries{$libraryId}) );
+
         # use only for first library found for each species
         unless ( exists $all_species{$libraries{$expId}->{$libraryId}->{'speciesId'}} ){
             print 'Recording length for species ', $libraries{$expId}->{$libraryId}->{'speciesId'}, " [$libraries{$expId}->{$libraryId}->{'organism'}]\n";
