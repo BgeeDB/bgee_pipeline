@@ -30,7 +30,7 @@ for( c_arg in command_arg ){
 
 ## Read rna_seq_sample_info.txt file. If file not exists, script stops
 if( file.exists(rna_seq_sample_info) ){
-	sampleInfo <- read.table(rna_seq_sample_info, h=T, sep="\t", comment.char="")
+  sampleInfo <- read.table(rna_seq_sample_info, h=T, sep="\t", comment.char="")
   names(sampleInfo)[1] <- "libraryId"
 } else {
   stop( paste("rna_seq_sample_info.txt file not found [", rna_seq_sample_info, "]\n"))
@@ -39,9 +39,9 @@ print(dim(sampleInfo))
 
 ## Remove excluded libraries from sample info file (mapping failed, or bad quality)
 if( file.exists(rna_seq_sample_excluded) ){
-	sampleExcluded <- read.table(rna_seq_sample_excluded, h=T, sep="\t", comment.char="")
+  sampleExcluded <- read.table(rna_seq_sample_excluded, h=T, sep="\t", comment.char="")
   names(sampleExcluded)[1] <- "libraryId"
-	sampleInfo <- sampleInfo[ !sampleInfo$libraryId %in% sampleExcluded$libraryId[sampleExcluded$excluded == TRUE], ]
+  sampleInfo <- sampleInfo[ !sampleInfo$libraryId %in% sampleExcluded$libraryId[sampleExcluded$excluded == TRUE], ]
 } else {
   warning( paste("rna_seq_sample_excluded.txt file not found [", rna_seq_sample_excluded, "]\n"))
 }

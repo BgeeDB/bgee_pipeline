@@ -62,7 +62,7 @@ foreach my $expId ( sort keys %libraries ){
         }
     }
 }
-print "\t", $count_libs, " libraries mapped and to be inserted.\n";
+print "\t", $count_libs, " libraries mapped and to be inserted.\n\n";
 
 
 # Read the .report file for each library, extract infos and print them out
