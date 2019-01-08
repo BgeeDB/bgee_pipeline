@@ -191,18 +191,18 @@ export_length: check_pipeline
 finalize_pipeline: check_pipeline
 	# Collect infos from .report files
 	@perl 3Insertion/create_rna_seq_report_info.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -report_info=$(RNASEQ_VITALIT_REPORTINFO) -all_results=$(RNASEQ_VITALIT_ALL_RES) > $@.tmp 2>warnings.$@
-	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
-# We use tail -n+1 instead of cat because it writes the name of the file in the concatenated file
-	@tail -n+1 $(RNASEQ_VITALIT_LOG)/*/*.err    >> $(RNASEQ_VITALIT_LOG)/all_std_err.txt
-	@tail -n+1 $(RNASEQ_VITALIT_LOG)/*/*.out    >> $(RNASEQ_VITALIT_LOG)/all_std_out.txt
-	@tail -n+1 $(RNASEQ_VITALIT_LOG)/*/*.report >> $(RNASEQ_VITALIT_LOG)/all_reports.txt
 	# Touch all files so that they are not removed from /scratch/cluster/monthly
 	@find $(RNASEQ_VITALIT_SCRATCH) -exec touch {} \;
+# We use tail -n+1 instead of cat because it writes the name of the file in the concatenated file
+	@tail -n+1 $(RNASEQ_VITALIT_LOG)/*/*.err    > $(RNASEQ_VITALIT_LOG)/all_std_err.txt 2>warnings.$@
+	@tail -n+1 $(RNASEQ_VITALIT_LOG)/*/*.out    > $(RNASEQ_VITALIT_LOG)/all_std_out.txt 2>warnings.$@
+	@tail -n+1 $(RNASEQ_VITALIT_LOG)/*/*.report > $(RNASEQ_VITALIT_LOG)/all_reports.txt 2>warnings.$@
 	# Back-up all data (not final but it's worth doing an intermediate backup here)
-	@tar -cf $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar $(RNASEQ_VITALIT_ALL_RES)
-	@gzip -9 $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar
+	@tar -cf $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar $(RNASEQ_VITALIT_ALL_RES) 2>warnings.$@
+	@gzip -9 $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar                           2>warnings.$@
 	# Move back-up data to /data/
-	@$(MV) $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar.gz $(RNASEQ_VITALIT_ALL_RES_BACKUP)
+	@$(MV) $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar.gz $(RNASEQ_VITALIT_ALL_RES_BACKUP) 2>warnings.$@
+	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
 sum_by_species: check_pipeline $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH)
