@@ -217,23 +217,23 @@ presence_absence: sum_by_species $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUD
 	@mkdir -p $(RNASEQ_VITALIT_PRESENCE_RES)
 	@$(VIT_R_CMD) R CMD BATCH --vanilla --slave '--args rna_seq_sample_info="$(RNASEQ_SAMPINFO_FILEPATH)" rna_seq_sample_excluded="$(RNASEQ_SAMPEXCLUDED_FILEPATH)" kallisto_count_folder="$(RNASEQ_VITALIT_ALL_RES)" sum_by_species_folder="$(RNASEQ_VITALIT_SUM_RES)" gaussian_choice="$(RNASEQ_VITALIT_GAUSSIAN_CHOICE)" out_folder="$(RNASEQ_VITALIT_PRESENCE_RES)" plot_only=FALSE' $(RNASEQ_VITALIT_SCRIPTS)$(RNASEQPATH)1Run/rna_seq_presence_absence.R $(RNASEQ_VITALIT_PRESENCE_RES)rna_seq_presence_absence.Rout
 	@touch $@
-#TODO if output directory is not $(RNASEQ_VITALIT_ALL_RES): copy all files with calls to this directory, as well as summary stats and plot files
+#NOTE: if output directory is not $(RNASEQ_VITALIT_ALL_RES): copy all files with calls to this directory, as well as summary stats and plot files
 #for folder in *; do echo $folder; /bin/cp $folder/* ../all_results_bgee_v14/$folder/; done
 # /bin/cp used because cp is an alias to cp -i
 # Also copy presence_absence_all_samples.txt, presence_absence_all_samples.RDa and presence_absence_boxplots.pdf
 
 save_and_send_results_back: check_pipeline
 	# Touch all files so that they are not removed from /scratch/cluster/monthly
-	find $(RNASEQ_VITALIT_SCRATCH) -exec touch {} \;
-	#back-up all data
-	tar -cvf $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar $(RNASEQ_VITALIT_ALL_RES)
-	gzip -9 $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar
-	#copy back-up data to /data/
-	cp $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar.gz $(RNASEQ_VITALIT_ALL_RES_BACKUP)
+	@find $(RNASEQ_VITALIT_SCRATCH) -exec touch {} \;
+	# Back-up all data
+	@tar -cf $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar $(RNASEQ_VITALIT_ALL_RES)
+	@gzip -9 $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar
+	# Move back-up data to /data/
+	@$(MV) $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar.gz $(RNASEQ_VITALIT_ALL_RES_BACKUP)
 
 	# Send results back to our server: $(PIPELOGIN)@$(PIPEHOST)  password: $(PIPEPASSWD)
 	# @scp $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar.gz  $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES) >>$@.tmp 2>&1
-  # Whole archive is probably too big to be copied to our servers (>100Gb). Copy only the final gene-level expression + calls files:
+# Whole archive is probably too big to be copied to our servers (>100Gb). Copy only the final gene-level expression + calls files:
 	@rsync -rav -e ssh --include='*/' --include='*abundance_gene_level+new_tpm+new_fpkm+calls.tsv' --exclude='*' $(RNASEQ_VITALIT_ALL_RES) $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES) >>$@.tmp 2>&1
 	@rsync -av -e ssh $(RNASEQ_VITALIT_REPORTINFO) $(RNASEQSAMPSTATS) $(RNASEQALLRES)/presence_absence_all_samples.RDa $(RNASEQALLRES)/presence_absence_boxplots.pdf $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES)/ >>$@.tmp 2>&1
 
