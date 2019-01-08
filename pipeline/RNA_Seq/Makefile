@@ -209,8 +209,8 @@ sum_by_species: check_pipeline $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED
 # Script using all data from each species to deconvolute the coding genes and intergenic regions underlying distributions
 	@mkdir -p $(RNASEQ_VITALIT_SUM_RES)
 	@$(VIT_R_CMD) R CMD BATCH --no-save --no-restore '--args rna_seq_sample_info="$(RNASEQ_SAMPINFO_FILEPATH)" rna_seq_sample_excluded="$(RNASEQ_SAMPEXCLUDED_FILEPATH)" kallisto_count_folder="$(RNASEQ_VITALIT_ALL_RES)" sum_by_species_folder="$(RNASEQ_VITALIT_SUM_RES)"' $(RNASEQ_VITALIT_SCRIPTS)$(RNASEQPATH)1Run/rna_seq_sum_by_species.R $(RNASEQ_VITALIT_SUM_RES)rna_seq_sum_by_species.Rout
+	@echo -e "You HAVE TO create MANUALLY a file [$(RNASEQ_VITALIT_GAUSSIAN_CHOICE)] with selected gaussians for coding and intergenic regions!\n"
 	@touch $@
-#TODO Add echo to remind to create manually a file with selected gaussians for coding and intergenic regions. File will be: $(RNASEQ_VITALIT_GAUSSIAN_CHOICE), see README.md. Put the file in the generated_file folders
 
 presence_absence: sum_by_species $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH) $(RNASEQ_VITALIT_GAUSSIAN_CHOICE)
 #	Script to calculate presence/absence threshold for all samples and call genes present/absent + generate density plots + generate statistics on % present (cutoff info files)
