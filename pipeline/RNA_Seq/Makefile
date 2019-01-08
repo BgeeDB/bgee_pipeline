@@ -215,7 +215,7 @@ sum_by_species: check_pipeline $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED
 presence_absence: sum_by_species $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH) $(RNASEQ_VITALIT_GAUSSIAN_CHOICE)
 #	Script to calculate presence/absence threshold for all samples and call genes present/absent + generate density plots + generate statistics on % present (cutoff info files)
 	@mkdir -p $(RNASEQ_VITALIT_PRESENCE_RES)
-	@$(VIT_R_CMD) R CMD BATCH --vanilla --slave '--args rna_seq_sample_info="$(RNASEQ_SAMPINFO_FILEPATH)" rna_seq_sample_excluded="$(RNASEQ_SAMPEXCLUDED_FILEPATH)" kallisto_count_folder= "$(RNASEQ_VITALIT_ALL_RES)" sum_by_species_folder="$(RNASEQ_VITALIT_SUM_RES)" gaussian_choice="$(RNASEQ_VITALIT_GAUSSIAN_CHOICE)" out_folder="$(RNASEQ_VITALIT_PRESENCE_RES)" plot_only=FALSE' $(RNASEQ_VITALIT_SCRIPTS)$(RNASEQPATH)1Run/rna_seq_presence_absence.R $(RNASEQ_VITALIT_PRESENCE_RES)rna_seq_presence_absence.Rout
+	@$(VIT_R_CMD) R CMD BATCH --vanilla --slave '--args rna_seq_sample_info="$(RNASEQ_SAMPINFO_FILEPATH)" rna_seq_sample_excluded="$(RNASEQ_SAMPEXCLUDED_FILEPATH)" kallisto_count_folder="$(RNASEQ_VITALIT_ALL_RES)" sum_by_species_folder="$(RNASEQ_VITALIT_SUM_RES)" gaussian_choice="$(RNASEQ_VITALIT_GAUSSIAN_CHOICE)" out_folder="$(RNASEQ_VITALIT_PRESENCE_RES)" plot_only=FALSE' $(RNASEQ_VITALIT_SCRIPTS)$(RNASEQPATH)1Run/rna_seq_presence_absence.R $(RNASEQ_VITALIT_PRESENCE_RES)rna_seq_presence_absence.Rout
 	@touch $@
 #TODO if output directory is not $(RNASEQ_VITALIT_ALL_RES): copy all files with calls to this directory, as well as summary stats and plot files
 #for folder in *; do echo $folder; /bin/cp $folder/* ../all_results_bgee_v14/$folder/; done
