@@ -175,7 +175,7 @@ calculate_and_plot_r <- function(counts, selected_coding, selected_intergenic){
   if (sum(r < 0.05) == 0){
     TPM_cutoff <- sort(unique(counts$tpm[selected_coding]))[which(r == min(r))[1]]
     r_cutoff <- min(r)
-    cat(paste0("    There is no TPM cutoff for which 95% of the expressed genes would be coding. TPM cutoff is fixed at the first value with maximum coding/intergenic ratio. r=", r_cutoff, "at TPM=", TPM_cutoff,"\n"))
+    cat(paste0("    There is no TPM cutoff for which 95% of the expressed genes would be coding. TPM cutoff is fixed at the first value with maximum coding/intergenic ratio. r=", r_cutoff, " at TPM=", TPM_cutoff,"\n"))
   } else {
     TPM_cutoff <- sort(unique(counts$tpm[selected_coding]))[which(r < 0.05)[1]]
     r_cutoff <- 0.05
@@ -207,7 +207,7 @@ if ( !plot_only ){
       cat("Sum by species data file is missing for", species, "\n")
     } else {
       organism <- as.character(unique(sampleInfo$organism[sampleInfo$speciesId == species]))
-      cat(paste0("Treating data for ", organism, " (species ID: ", species,")\n"))
+      cat(paste0("\n\nTreating data for ", organism, " (species ID: ", species,")\n"))
       ## Read sum by species data
       sum_by_species <- read.table(file, h=T, sep="\t")
 
