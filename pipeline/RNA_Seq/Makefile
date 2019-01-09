@@ -233,7 +233,7 @@ save_and_send_results_back: check_pipeline
 
 	# Send results back to our server: $(PIPELOGIN)@$(PIPEHOST)  password: $(PIPEPASSWD)
 	# @scp $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar.gz  $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES) >>$@.tmp 2>&1
-# Whole archive is probably too big to be copied to our servers (>100Gb). Copy only the final gene-level expression + calls files:
+	# Whole archive is probably too big to be copied to our servers (>100Gb). Copy only the final gene-level expression + calls files:
 	@rsync -rav -e ssh --include='*/' --include='*abundance_gene_level+new_tpm+new_fpkm+calls.tsv' --exclude='*' $(RNASEQ_VITALIT_ALL_RES) $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES) >>$@.tmp 2>&1
 	@rsync -av -e ssh $(RNASEQ_VITALIT_REPORTINFO) $(RNASEQSAMPSTATS) $(RNASEQALLRES)/presence_absence_all_samples.RDa $(RNASEQALLRES)/presence_absence_boxplots.pdf $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES)/ >>$@.tmp 2>&1
 
