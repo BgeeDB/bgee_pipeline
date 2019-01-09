@@ -16,6 +16,8 @@
 ## Session info
 print(sessionInfo())
 
+options(warn=1000)
+
 ## reading in arguments provided in command line
 cmd_args = commandArgs(TRUE);
 print(cmd_args)
@@ -309,13 +311,15 @@ if ( !plot_only ){
   }
   ## backup of data for plotting
   save(all_samples, file=paste0(out_folder, "/presence_absence_all_samples.RDa"))
+  ## get library number here because after that "libraryId" field name becomes "#libraryId"
+  libraryIdNbr <- length(unique(all_samples$libraryId))
   ## Add a # at beginning of header line
   names(all_samples)[1] <- paste0('#', names(all_samples)[1])
   ## export tsv file
   write.table(all_samples, file=paste0(out_folder, "/presence_absence_all_samples.txt"), sep="\t", quote=F, col.names=TRUE, row.names=FALSE)
   ## TODO give name of the output file as argument of this script
 
-  cat(paste0("Done. ", length(unique(all_samples$libraryId)), " libraries successfully treated in ", length(unique(all_samples$organism)), " species.\n"))
+  cat(paste0("Done. ", libraryIdNbr, " libraries successfully treated in ", length(unique(all_samples$organism)), " species.\n"))
 }
 
 cat("Now plotting the presence / absence parameters and results\n")
