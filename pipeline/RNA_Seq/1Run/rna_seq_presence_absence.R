@@ -16,8 +16,6 @@
 ## Session info
 print(sessionInfo())
 
-options(warn=1000)
-
 ## reading in arguments provided in command line
 cmd_args = commandArgs(TRUE);
 print(cmd_args)
