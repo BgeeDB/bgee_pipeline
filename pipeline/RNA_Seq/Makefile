@@ -222,7 +222,7 @@ presence_absence: sum_by_species $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUD
 # /bin/cp used because cp is an alias to cp -i
 # Also copy presence_absence_all_samples.txt, presence_absence_all_samples.RDa and presence_absence_boxplots.pdf
 
-save_and_send_results_back: check_pipeline
+save_and_send_results_back: finalize_pipeline presence_absence export_length
 	# Touch all files so that they are not removed from /scratch/cluster/monthly
 	@find $(RNASEQ_VITALIT_SCRATCH) -exec touch {} \; 2>warnings.$@
 	# Back-up all data
@@ -240,7 +240,7 @@ save_and_send_results_back: check_pipeline
 	@$(MV) $@.tmp $@
 	@touch $@
 
-vitalit2: send_results_back
+vitalit2: save_and_send_results_back
 	@echo -e "\tYou can go out of Vital-IT now\n"
 	@touch $@
 ##############################################################################################
