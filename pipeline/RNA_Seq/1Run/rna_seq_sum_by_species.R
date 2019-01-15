@@ -56,7 +56,7 @@ cat("speciesId\tspeciesName\tnumberLibrariesUsed\tnumberLibraries\n", file = pas
 cat("speciesId\torganism\tnumberGaussiansCoding\tnumberGaussiansIntergenic\tselectedGaussianCoding\tselectionSideCoding\tselectedGaussianIntergenic\tselectionSideIntergenic\tcomment\tannotatorId\n", file = paste0(sum_by_species_folder, "/gaussian_choice_by_species_TO_FILL.txt"), sep = "\t")
 
 for(species in unique(sampleInfo$speciesId)){
-  cat(paste0("Summing data for ", as.character(unique(sampleInfo$organism[sampleInfo$speciesId == species])), " (species ID: ", species,")\n"))
+  cat(paste0("\nSumming data for ", as.character(unique(sampleInfo$organism[sampleInfo$speciesId == species])), " (species ID: ", species,")\n"))
   numLibs = 0
 
   for(libraryId in sampleInfo$libraryId[sampleInfo$speciesId == species]){
