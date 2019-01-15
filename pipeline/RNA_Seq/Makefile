@@ -238,7 +238,6 @@ save_and_send_results_back: finalize_pipeline presence_absence export_length
 	@rsync -av -e ssh $(RNASEQ_VITALIT_REPORTINFO) $(RNASEQ_VITALIT_PRESENCE_RES)/presence_absence_all_samples.txt $(RNASEQ_VITALIT_PRESENCE_RES)/presence_absence_all_samples.RDa $(RNASEQ_VITALIT_PRESENCE_RES)/presence_absence_boxplots.pdf $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES)/ >>$@.tmp 2>&1
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
-	@touch $@
 
 vitalit2: save_and_send_results_back
 	@echo -e "\tYou can go out of Vital-IT now\n"
