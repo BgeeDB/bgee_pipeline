@@ -165,6 +165,7 @@ prepare_indexed_transcriptome: get_genome prepare_GTF
 		xz --threads=2 -9 $${genome/gtf_all/transcriptome.fa.tlst}; \
 	done
 	@$(MV) $@.tmp $@
+#TODO Use short k-mer size = 21nt instead of 15
 #TODO The gffread utility in cufflinks package seems more flexible and reliable
 #TODO add step to copy .passw file to bbgee's home on vital-it / or maybe just echo a message to tell the user scp it? Path and name of this file on vital-it is stored in ENCRYPT_PASSWD_FILE. We should store this file somewhere (altbioinfo?) because it cannot be added to the gitlab project
 #Or just put it in /home/bbgee/? in read only mode, only for bbgee user
