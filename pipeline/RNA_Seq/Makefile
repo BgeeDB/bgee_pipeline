@@ -102,6 +102,7 @@ check_tools: vitalit1
 	@$(VIT_R_CMD) R -e 'library("chipseq")'           >> $@.tmp  2>/dev/null
 	@$(VIT_R_CMD) R -e 'library("edgeR")'             >> $@.tmp  2>/dev/null
 	@$(VIT_R_CMD) R -e 'library("GenomicFeatures")'   >> $@.tmp  2>/dev/null
+	@$(VIT_R_CMD) R -e 'library("Biostrings")' 		  >> $@.tmp  2>/dev/null
 	@$(VIT_R_CMD) R -e 'library("limma")'             >> $@.tmp  2>/dev/null
 	@$(VIT_R_CMD) R -e 'library("mclust")'            >> $@.tmp  2>/dev/null
 	@which xz                                         >> $@.tmp
@@ -134,21 +135,23 @@ get_GTF: clean_vital-it_folders create_rna_seq_sample_info
 	@$(MV) $@.tmp $@
 #TODO implement use of new "database" field in rna_seq_sample_info.txt (instead of trying both Ensembl and Ensembl Metazoa URLs)
 
-prepare_GTF: get_GTF
+get_genome: get_GTF
+	# Download genome from Ensembl databases
+	@perl 0Before/get_genome_files.pl  -GTF_dir=$(RNASEQ_VITALIT_GTF) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_VITALIT_GTF) >$@.tmp 2>&1
+	@$(MV) $@.tmp $@
+#TODO implement use of new "database" field in rna_seq_sample_info.txt (instead of trying both Ensembl and Ensembl Metazoa URLs)
+
+prepare_GTF: get_GTF get_genome
 	# Prepare GTF files
-	@for gtf in $(RNASEQ_VITALIT_GTF)/*.gtf.gz; do \
-		echo "$(VIT_R_CMD) R CMD BATCH --vanilla '--args gene_gtf_path=\"$$gtf\" output_gtf_path=\"$${gtf/.gtf.gz/}\"'  0Before/prepare_GTF.R  $@.tmp" >run.sh; \
+	@for gtf in $(RNASEQ_VITALIT_GTF)*.gtf.gz; do \
+		echo "$(VIT_R_CMD) R CMD BATCH --vanilla '--args gene_gtf_path=\"$$gtf\" genome_fasta_path=\"$${gtf/.gtf.gz/}.genome.fa\" output_gtf_path=\"$${gtf/.gtf.gz/}\"'  0Before/prepare_GTF.R  $@.tmp" >run.sh; \
 		sh run.sh; \
 	done
 	@$(RM) run.sh
 	@echo rm -f $(RNASEQ_VITALIT_GTF)/*.gtf.gz
 	@$(MV) $@.tmp $@
 
-get_genome: prepare_GTF
-	# Download genome from Ensembl databases
-	@perl 0Before/get_genome_files.pl  -GTF_dir=$(RNASEQ_VITALIT_GTF) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_VITALIT_GTF) >$@.tmp 2>&1
-	@$(MV) $@.tmp $@
-#TODO implement use of new "database" field in rna_seq_sample_info.txt (instead of trying both Ensembl and Ensembl Metazoa URLs)
+
 
 prepare_indexed_transcriptome: get_genome prepare_GTF
 	# Preparing indexed transcriptome for every species
