@@ -14,18 +14,21 @@
 ## From GTF file downloaded from Ensembl, this script prepares a new GTF file (gtf_all) with:
 ## - exonic regions from all transcripts of each gene
 ## - intergenic regions. The 500nt flanking genes are excluded (the minimal distance from start or stop of intergenic region to boundary of the nearest gene: 500nt). The intergenic region length is limited to min 2000 max 20000. Intergenic regions with lower size are discarded. Larger regions are limited to +/- 10000 around the center of the intergenic region.
-## A conversion table (transcript ID to gene ID) is exported: extension .gene2transcript
-## A gene biotype table is exported: extension .gene2biotype
+## - remove Ns from intergenic sequences. Genome is used to retrieve sequence of previously detected intergenic regions. If the sequence contains more than `block_size` consucutive Ns the sequence is splitted in 2. At the end all intergenic sequences without block of Ns but with a higher proportion of N than `N_proportion` OR shorter than 1000bp are discarded  
+## - A conversion table (transcript ID to gene ID) is exported: extension .gene2transcript
+## - A gene biotype table is exported: extension .gene2biotype
 
 ## Invoking:
-# R CMD BATCH --no-save --no-restore '--args gene_gtf_path="gene_gtf_path" genome_fasta_path="genome_fasta_path" output_gtf_path="output_gtf_path"' prepare_gtf.R Rout_path
+# R CMD BATCH --no-save --no-restore '--args gene_gtf_path="gene_gtf_path" genome_fasta_path="genome_fasta_path" N_block_size = 31 N_proportion = 0.05 output_gtf_path="output_gtf_path"' prepare_gtf.R Rout_path
 
 ## Example:
-# R CMD BATCH --no-save --no-restore '--args gene_gtf_path="~/Desktop/RNAseq/pipeline_Ensembl_73/Mus_musculus.GRCm38.73.gtf.gz" genome_fasta_path="~/Desktop/RNAseq/pipeline_Ensembl_73/Mus_musculus.GRCm38.73.genome.fa" output_gtf_path="~/Desktop/RNAseq/pipeline_Ensembl_73/gtf_folder/Mus_musculus.GRCm38.73"' prepare_GTF.R
+# R CMD BATCH --no-save --no-restore '--args gene_gtf_path="~/Desktop/RNAseq/pipeline_Ensembl_73/Mus_musculus.GRCm38.73.gtf.gz" genome_fasta_path="~/Desktop/RNAseq/pipeline_Ensembl_73/Mus_musculus.GRCm38.73.genome.fa" N_block_size = 31 N_proportion = 0.05 output_gtf_path="~/Desktop/RNAseq/pipeline_Ensembl_73/gtf_folder/Mus_musculus.GRCm38.73"' prepare_GTF.R
 
 ## Arguments to provide:
 # "gene_gtf_path" - full path to input gene gtf file
 # "genome_fasta_path" - full path to input genome fasta file
+# "N_block_size" - number of successive N from which it is considered as a block of N (and removed)
+# "N_proportion" - higher proportion of N than this threshold results in removing the sequence
 # "output_gtf_path" - full path to output folder + base name for output files
 # Rout_path - path to  output .Rout file (optional)
 
@@ -65,6 +68,8 @@ if(length(cmd_args)==0){
 if (!exists("gene_gtf_path")){ stop("gene_gtf_path not defined") }
 if (!exists("genome_fasta_path")){ stop("genome_fasta_path not defined") }
 if (!exists("output_gtf_path")){ stop("output_gtf_path not defined") }
+if (!exists("N_block_size")){ stop("Threshold of consecutive N in a sequence not defined") }
+if (!exists("N_proportion")){ stop("Threshold of N proportion in a sequence not defined") }
 
 ######################## Functions #############################
 
@@ -86,7 +91,6 @@ get_annot_value <- function(split_annotation, field_name){
 
 ## Function used to remove Ns from intergenic regions.
 ## Historicaly intergenic regions were detected only using the gtf file. 
-## An intergenic region is a region of the genome having no annotation in the GTF file.
 ## These regions should contain ATGC bp but sometimes it happens that they contain a lot of N (sequencing errors).
 ## These N are mainly present in big blocks (more than `max_block_size bp) and are pseudorandomly transformed to A, T, G or C during the index generation step of kallisto.
 ## The purpose of this function is to remove N using some rules:
@@ -96,13 +100,13 @@ get_annot_value <- function(split_annotation, field_name){
 ## Attributs:
 ## - chr_number: the id of the chromosome/contig
 ## - chr_intergenic_regions: intergenic regions defined using gtf file
-## - max_block_size : threshold on maximum size of a block of N. If a sequence contains a block of N bigger that this threshold we remove the block and 
-##	 potentially create 2 intergenic sequences (if the block is not at the beginning nor the end of the sequence).
+## - max_block_size : threshold on maximum size of a block of N. If a sequence contains a block of N bigger or equals to this threshold we remove the block and split the 
+##	 sequence in 2. It will potentially create 2 intergenic sequences (if the block is not at the beginning nor the end of the sequence).
 ## - min_intergenic_length : minimum length of an intergenic region we want to keep. We remove all intergenic sequences smaller than this minimmum length.
 ## - max_proportion_N : maximum proportion of N in a sequence. If the proportion of N in a sequence is bigger than this threshold we do not keep the sequence.
 ## TODO: we should maybe also take into account the composition (GC content, ...?) or size distribution of genic regions to create/filter these intergenic regions.
 
-remove_Ns <- function (chr_number, chr_intergenic_regions, max_block_size = 31, min_intergenic_length = 1000, max_proportion_N = 0.05) {
+remove_Ns_from_intergenic <- function (chr_number, chr_intergenic_regions, max_block_size = 31, max_proportion_N = 0.05, min_intergenic_length = 1000) {
   ## Intergenic regions after removing unwanted N 
   intergenic_regions_without_N <- matrix(ncol=4, nrow=0)
   colnames(intergenic_regions_without_N) <- c("chr", "start", "end", "sequence")
@@ -113,23 +117,25 @@ remove_Ns <- function (chr_number, chr_intergenic_regions, max_block_size = 31, 
     # absolut start and end positions in the chromosome
     chr_start <- as.numeric(chr_intergenic_regions[line,"start"])
     chr_end <- as.numeric(chr_intergenic_regions[line,"end"])
+
     # start position in the intergenic sequence. Allows to retrieve the sequence
     intergenic_start <- 1
     
     # retrieve intergenic sequence from fasta file using subseq function from BioStrings library
     intergenic_sequence <- chr_intergenic_regions[line,"sequence"]
+
     # if less N than the minimum size of a block we add the intergenic sequence to corrected intergenic regions
-    if (max_block_size > count_number_of_occurences("N", intergenic_sequence)) {
+    if (max_block_size >= count_number_of_occurences("N", intergenic_sequence)) {
       intergenic_regions_without_N <- rbind(intergenic_regions_without_N, chr_intergenic_regions[line,])
       
       # if no block of N and proportion of N lower than threshold then we add the sequence to corrected intergenic regions
     } else if (count_number_of_occurences(strrep("N", max_block_size), intergenic_sequence) == 0 
                & proportion_of_N(intergenic_sequence) <= max_proportion_N) {
       intergenic_regions_without_N <- rbind(intergenic_regions_without_N, chr_intergenic_regions[line,])
-    
+
     # Now need to parse the sequence in order to find potential block of N
     } else {	
-    
+      
       # for each bp of the sequence
       seq_position <- 0
       while (seq_position + 1 <= nchar(intergenic_sequence)) {
@@ -156,7 +162,7 @@ remove_Ns <- function (chr_number, chr_intergenic_regions, max_block_size = 31, 
             # check size and proportion of N of the subsequence
             if (current_size >= min_intergenic_length && proportion_of_N(substr(intergenic_sequence, intergenic_start, current_intergenic_stop)) <= max_proportion_N) {
               intergenic_regions_without_N <- rbind(intergenic_regions_without_N, 
-                                cbind(chr_number, chr_start, current_chr_stop, substr(intergenic_sequence, intergenic_start, current_intergenic_stop))[1,])
+                                                    cbind(chr_number, chr_start, current_chr_stop, substr(intergenic_sequence, intergenic_start, current_intergenic_stop))[1,])
             }
             intergenic_start <- 1 + seq_position
             chr_start <- as.numeric(chr_intergenic_regions[line,"start"]) + seq_position
@@ -168,7 +174,7 @@ remove_Ns <- function (chr_number, chr_intergenic_regions, max_block_size = 31, 
       # check size and proportion of N of the subsequence
       if (last_portion_size >= min_intergenic_length && proportion_of_N(substr(intergenic_sequence, intergenic_start, seq_position)) <= max_proportion_N) {
         intergenic_regions_without_N <- rbind(intergenic_regions_without_N, 
-                                cbind(chr_number, chr_start, chr_end, substr(intergenic_sequence, intergenic_start, seq_position))[1,])
+                                              cbind(chr_number, chr_start, chr_end, substr(intergenic_sequence, intergenic_start, seq_position))[1,])
       }
     }
     
@@ -304,14 +310,15 @@ for(chr in chromosomes){
   
   ## storing information (chr, start, stop) for selected intergenic regions on this chromosome
   chr_intergenic_regions <- rbind(chr_intergenic_regions, cbind(chr,  inter_gene_data$corrected_start, inter_gene_data$corrected_end,
-        apply(inter_gene_data, 1, function(x) substr(chr_sequence, x["corrected_start"], x["corrected_end"]))))
+                                                                apply(inter_gene_data, 1, function(x) substr(chr_sequence, x["corrected_start"], x["corrected_end"]))))
   # Keep information of number of N, bp and number of intergenic regions before removing blocks of N 
   summary_N_removal["before","total_N"] <- summary_N_removal["before","total_N"] + sum(apply(chr_intergenic_regions, 1, function(x) count_number_of_occurences("N", x["sequence"])))
   summary_N_removal["before","intergenic_regions"] <- summary_N_removal["before","intergenic_regions"] + nrow(chr_intergenic_regions)
   summary_N_removal["before","total_bp"] <- summary_N_removal["before","total_bp"] + sum(as.numeric(inter_gene_data$size))
   
+  
   # Remove blocks of N and intergenic regions with big proportion of N
-  chr_intergenic_regions_after_N_removal <- remove_Ns(chr, chr_intergenic_regions)
+  chr_intergenic_regions_after_N_removal <- remove_Ns_from_intergenic(chr, chr_intergenic_regions, as.numeric(N_block_size), as.numeric(N_proportion))
   
   # Keep information of number of N, bp and number of intergenic regions before removing blocks of N 
   summary_N_removal["after","total_N"] <- summary_N_removal["after","total_N"] + sum(apply(chr_intergenic_regions_after_N_removal, 1, function(x) count_number_of_occurences("N", x["sequence"])))
