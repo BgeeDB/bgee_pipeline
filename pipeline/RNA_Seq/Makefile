@@ -246,8 +246,9 @@ vitalit2: save_and_send_results_back
 ##############################################################################################
 
 backup:
-	# Rsync files for backup on 'bigbgee' (see wiki for password)
+	# Rsync files for backup by '$(DATALOGIN)' user on '$(DATAHOST)' (see wiki for password)
 	@echo -e "\t\e[1m\e[37m\e[41mRsync files in '$(RNASEQALLRES)' to bigbgee machine!\e[m\n"
+	@ssh $(DATALOGIN)@$(DATAHOST) mkdir -p $(DATAPATH)/rna_seq/all_results_$(DBNAME)/
 	@rsync -av --del -f "- /lost+found" --exclude=.svn --exclude=.git $(RNASEQALLRES)  $(DATALOGIN)@$(DATAHOST):$(DATAPATH)/rna_seq/all_results_$(DBNAME)/  >   $@.tmp
 	@$(MV) $@.tmp $@
 #TODO backup log files too + backup other files? We should keep as much as we can otherwise it's impossible to trace back things after a run
