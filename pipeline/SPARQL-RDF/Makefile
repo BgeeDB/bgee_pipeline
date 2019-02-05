@@ -24,6 +24,12 @@ create_bgeeLite_db: get_bgeeLite_dump
 	@$(MV) $@.tmp $@
 
 
+create_property_file:
+	# Create a property file for server connection to database
+	@echo -e "jdbc.url=jdbc:mysql://$(DBHOST_BGEELITE):$(DBPORT)/$(DBNAME_BGEELITE)\njdbc.driver=com.mysql.jdbc.Driver\njdbc.user=$(DBUSER_BGEELITE)\njdbc.name=$(DBNAME_BGEELITE)\njdbc.password=$(DBPASS_BGEELITE)" > bgee_connection.properties
+	@touch $@
+
+
 drop_bgeeLite_db:
 	# Drop $(DBNAME_BGEELITE) database in $(DBHOST_BGEELITE)
 	@$(MYSQLNODBNAME_BGEELITE) -e "DROP DATABASE $(DBNAME_BGEELITE)" > $@.tmp 2> $@.warnings
