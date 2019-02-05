@@ -8,10 +8,10 @@ all: $(OUTPUT_DIR)extract_data_from_bgee $(OUTPUT_DIR)import_to_bgeelite
 
 $(OUTPUT_DIR)create_schema: bgeeLiteSchema.sql
 	# create the database $(DBNAME_BGEELITE) in $(DBHOST_BGEELITE)
-	@$(MYSQLNODBNAME_BGEELITE) -e "CREATE DATABASE $(DBNAME_BGEELITE)" > $@.tmp 2>> $@.warnings
-	@$(MYSQL_BGEELITE) < bgeeLiteSchema.sql > $@.tmp 2>> $@.warnings
+	@$(MYSQLNODBNAME_BGEELITE) -e "CREATE DATABASE $(DBNAME_BGEELITE)" > $@.tmp 2> $@.warnings
+	@$(MYSQL_BGEELITE) < bgeeLiteSchema.sql >> $@.tmp 2>> $@.warnings
 	# get the number of tables as a verification
-	@$(MYSQL_BGEELITE) -e "SELECT (SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '$(DBNAME_BGEELITE)' and TABLE_TYPE='BASE TABLE') as \`Table count\`" > $@.tmp 2>> $@.warnings
+	@$(MYSQL_BGEELITE) -e "SELECT (SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '$(DBNAME_BGEELITE)' and TABLE_TYPE='BASE TABLE') as \`Table count\`" >> $@.tmp 2>> $@.warnings
 	@$(MV) $@.tmp $@
 
 # As there is really a file named update_data_sources.sql in this directory, this target will never be executed,
@@ -19,12 +19,12 @@ $(OUTPUT_DIR)create_schema: bgeeLiteSchema.sql
 # this step also insert data into table dataSourceToSpecies
 $(OUTPUT_DIR)extract_data_from_bgee:
 	# extract data from the $(DBNAME) database in $(DBHOST)
-	@$(JAVA) GenerateBgeeLite extractFromBgee $(OUTPUT_DIR) - > $@.tmp 2>> $@.warnings
+	@$(JAVA) GenerateBgeeLite extractFromBgee $(OUTPUT_DIR) - > $@.tmp 2> $@.warnings
 	@$(MV) $@.tmp $@
 
 $(OUTPUT_DIR)import_to_bgeelite: $(OUTPUT_DIR)create_schema
 	# import data to the $(DBNAME_BGEELITE) database in $(DBHOST_BGEELITE)
-	@$(JAVA_BGEE_LITE) GenerateBgeeLite tsvToBgeeLite $(OUTPUT_DIR) > $@.tmp 2>> $@.warnings
+	@$(JAVA_BGEE_LITE) GenerateBgeeLite tsvToBgeeLite $(OUTPUT_DIR) > $@.tmp 2> $@.warnings
 	@$(MV) $@.tmp $@
 
 clean:
@@ -32,7 +32,7 @@ clean:
 
 drop_bgee_lite:
 	# drop $(DBNAME_BGEELITE) database in $(DBHOST_BGEELITE)
-	@$(MYSQLNODBNAME_BGEELITE) -e "DROP DATABASE $(DBNAME_BGEELITE)" > $@.tmp 2>> $@.warnings
+	@$(MYSQLNODBNAME_BGEELITE) -e "DROP DATABASE $(DBNAME_BGEELITE)" > $@.tmp 2> $@.warnings
 	@$(MV) $@.tmp $@
 
 .PHONY := $(.PHONY) dropDatabaseBgee$(RELEASE)
