@@ -4,7 +4,7 @@ include $(PIPELINEROOT)Makefile.common
 
 
 
-all: $(OUTPUT_DIR)extract_data_from_bgee $(OUTPUT_DIR)import_to_bgeelite 
+all: $(OUTPUT_DIR)extract_data_from_bgee $(OUTPUT_DIR)import_to_bgeelite
 
 $(OUTPUT_DIR)create_schema: bgeeLiteSchema.sql
 	# create the database $(DBNAME_BGEELITE) in $(DBHOST_BGEELITE)
@@ -21,15 +21,15 @@ $(OUTPUT_DIR)extract_data_from_bgee:
 	# extract data from the $(DBNAME) database in $(DBHOST)
 	@$(JAVA) GenerateBgeeLite extractFromBgee $(OUTPUT_DIR) - > $@.tmp 2>> $@.warnings
 	@$(MV) $@.tmp $@
-	
-$(OUTPUT_DIR)import_to_bgeelite: $(OUTPUT_DIR)create_schema 
+
+$(OUTPUT_DIR)import_to_bgeelite: $(OUTPUT_DIR)create_schema
 	# import data to the $(DBNAME_BGEELITE) database in $(DBHOST_BGEELITE)
 	@$(JAVA_BGEE_LITE) GenerateBgeeLite tsvToBgeeLite $(OUTPUT_DIR) > $@.tmp 2>> $@.warnings
 	@$(MV) $@.tmp $@
 
 clean:
 	-@$(RM) $(OUTPUT_DIR)create_schema $(OUTPUT_DIR)create_schema.tmp $(OUTPUT_DIR)extract_data_from_bgee $(OUTPUT_DIR)extract_data_from_bgee.tmp $(OUTPUT_DIR)import_to_bgeelite $(OUTPUT_DIR)import_to_bgeelite.tmp drop_bgee_lite drop_bgee_lite.tmp
-	
+
 drop_bgee_lite:
 	# drop $(DBNAME_BGEELITE) database in $(DBHOST_BGEELITE)
 	@$(MYSQLNODBNAME_BGEELITE) -e "DROP DATABASE $(DBNAME_BGEELITE)" > $@.tmp 2>> $@.warnings
