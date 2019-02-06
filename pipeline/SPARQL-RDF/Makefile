@@ -2,8 +2,9 @@ PIPELINEROOT := ../
 DIR_NAME := SPARQL-RDF/
 include $(PIPELINEROOT)Makefile.common
 
-FTP_RELEASE := `echo $(RELEASE)| sed -e 's@\.@_@'`
-
+FTP_RELEASE   := $(subst .,_,$(RELEASE))
+ONTOP_VERSION := '3.0.0-beta-2'
+TOMCAT_FOLDER := '/var/lib/tomcat8'
 
 all: $(VERIFICATIONFILE)
 
@@ -39,6 +40,15 @@ download_ontology_file:
 	@$(WGET) 'https://raw.githubusercontent.com/biosoda/genex/master/genex.owl'  && $(MV) genex.owl $(SOURCE_FILES_DIR)/$(DIR_NAME)/  || rm -f genex.owl
 	@touch $@
 
+download_ontop_webapps:
+	# Download ontop webapps
+	@$(WGET) 'https://sourceforge.net/projects/ontop4obda/files/ontop-$(ONTOP_VERSION)/ontop-webapps-$(ONTOP_VERSION).zip/download' -O ontop-webapps-$(ONTOP_VERSION).zip  && $(MV) ontop-webapps-$(ONTOP_VERSION).zip $(SOURCE_FILES_DIR)/$(DIR_NAME)/  || rm -f ontop-webapps-$(ONTOP_VERSION).zip
+	@touch $@
+
+install_RDF_webapp: create_property_file download_mapping_file download_ontology_file download_ontop_webapps
+	@echo -e 'Copy extracted files from $(SOURCE_FILES_DIR)/$(DIR_NAME)ontop-webapps-$(ONTOP_VERSION).zip in the tomcat webapp folder: **$(TOMCAT_FOLDER)/webapps/**\n'
+	@echo -e 'Copy bgee_connection.properties, $(SOURCE_FILES_DIR)/$(DIR_NAME)genex.owl and $(SOURCE_FILES_DIR)/$(DIR_NAME)bgee_genex.obda in **$(TOMCAT_FOLDER)/bgee_webapps/$(DBNAME_BGEELITE)_conf/**\n'
+
 
 
 drop_bgeeLite_db:
@@ -48,8 +58,8 @@ drop_bgeeLite_db:
 	@$(MV) $@.tmp $@
 
 
-$(VERIFICATIONFILE): create_bgeeLite_db
+$(VERIFICATIONFILE): create_bgeeLite_db install_RDF_webapp
 	@touch $@
 
 clean:
-	-@$(RM) -R $(VERIFICATIONFILE) get_bgeeLite_dump create_bgeeLite_db create_property_file download_mapping_file download_ontology_file drop_bgeeLite_db
+	-@$(RM) -R $(VERIFICATIONFILE) get_bgeeLite_dump create_bgeeLite_db create_property_file download_mapping_file download_ontology_file download_ontop_webapps install_RDF_webapp drop_bgeeLite_db
