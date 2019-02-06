@@ -46,9 +46,14 @@ download_ontop_webapps:
 	@touch $@
 
 install_RDF_webapp: create_property_file download_mapping_file download_ontology_file download_ontop_webapps
-	@echo -e 'Copy extracted files from $(SOURCE_FILES_DIR)/$(DIR_NAME)ontop-webapps-$(ONTOP_VERSION).zip in the tomcat webapp folder: **$(TOMCAT_FOLDER)/webapps/**\n'
-	@echo -e 'Copy bgee_connection.properties, $(SOURCE_FILES_DIR)/$(DIR_NAME)genex.owl and $(SOURCE_FILES_DIR)/$(DIR_NAME)bgee_genex.obda in **$(TOMCAT_FOLDER)/bgee_webapps/$(DBNAME_BGEELITE)_conf/**\n'
-
+	@echo -e 'Copy extracted files from $(SOURCE_FILES_DIR)/$(DIR_NAME)ontop-webapps-$(ONTOP_VERSION).zip\n\tin the tomcat webapp folder: **$(TOMCAT_FOLDER)/webapps/**\n'
+	@echo -e 'Configure tomcat proxy through apache accordingly\n\t# Ontop settings\n\tJkMount /rdf4j-server      default\n\tJkMount /rdf4j-server/*    default\n\tJkMount /rdf4j-workbench   default\n\tJkMount /rdf4j-workbench/* default\n'
+	@echo -e 'Restart apache service\n'
+	@echo -e 'Copy bgee_connection.properties, $(SOURCE_FILES_DIR)/$(DIR_NAME)genex.owl and $(SOURCE_FILES_DIR)/$(DIR_NAME)bgee_genex.obda files\n\tin **$(TOMCAT_FOLDER)/bgee_webapps/$(DBNAME_BGEELITE)_conf/**\n'
+	@echo -e 'Browse to <YOUR SERVER URL>/rdf4j-workbench\n'
+	@echo -e 'On the <YOUR SERVER URL>/rdf4j-workbench web interface click on\n\t**SYSTEM** link, then on\n\t**Repositories -> New repository**\n'
+	@echo -e 'IF IT DOES NOT WORK!\nCheck in tomcat log for permission issues regarding\n\tlog folder, .RDF4J/ folder, ...\n'
+	@echo -e 'Create a new repository\n\tType: Ontop Virtual RDF Store\n\tID: $(DBNAME_BGEELITE)\n\tTitle: $(DBNAME_BGEELITE)\n'
 
 
 drop_bgeeLite_db:
