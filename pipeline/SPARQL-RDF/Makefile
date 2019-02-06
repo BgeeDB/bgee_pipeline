@@ -53,7 +53,10 @@ install_RDF_webapp: create_property_file download_mapping_file download_ontology
 	@echo -e 'Browse to <YOUR SERVER URL>/rdf4j-workbench\n'
 	@echo -e 'On the <YOUR SERVER URL>/rdf4j-workbench web interface click on\n\t**SYSTEM** link, then on\n\t**Repositories -> New repository**\n'
 	@echo -e 'IF IT DOES NOT WORK!\nCheck in tomcat log for permission issues regarding\n\tlog folder, .RDF4J/ folder, ...\n'
-	@echo -e 'Create a new repository\n\tType: Ontop Virtual RDF Store\n\tID: $(DBNAME_BGEELITE)\n\tTitle: $(DBNAME_BGEELITE)\n'
+	@echo -e 'Create a new repository\n\tType: \tOntop Virtual RDF Store\n\tID: \t$(DBNAME_BGEELITE)\n\tTitle: \t$(DBNAME_BGEELITE)\n'
+	@echo -e 'Click on **Next**\n'
+	@echo -e 'Fill the input text fields in the form according to the directory path $(TOMCAT_FOLDER)/bgee_webapps/$(DBNAME_BGEELITE)_conf/\n\tOWL ontology file: \t$(TOMCAT_FOLDER)/bgee_webapps/$(DBNAME_BGEELITE)_conf/genex.owl\n\tMapping file: \t\t$(TOMCAT_FOLDER)/bgee_webapps/$(DBNAME_BGEELITE)_conf/bgee_genex.obda\n\tOntop properties file: \t$(TOMCAT_FOLDER)/bgee_webapps/$(DBNAME_BGEELITE)_conf/bgee_connection.properties\n'
+	@echo -e 'Click on **Create**\n'
 
 
 drop_bgeeLite_db:
