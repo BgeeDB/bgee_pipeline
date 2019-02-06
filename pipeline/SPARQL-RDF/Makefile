@@ -9,7 +9,7 @@ all: $(VERIFICATIONFILE)
 
 get_bgeeLite_dump:
 	# Download bgee lite dump
-	@$(WGET) "ftp://ftp.bgee.org/bgee_v${FTP_RELEASE}/sql_lite_dump.tar.gz" && $(MV) sql_lite_dump.tar.gz /tmp/ || rm -f sql_lite_dump.tar.gz
+	@$(WGET) "ftp://ftp.bgee.org/bgee_v${FTP_RELEASE}/sql_lite_dump.tar.gz"  && $(MV) sql_lite_dump.tar.gz /tmp/  || rm -f sql_lite_dump.tar.gz
 #Do not store sql_lite_dump.tar.gz in source_files/ because big and in our FTP
 	@tar xvfz /tmp/sql_lite_dump.tar.gz && rm -f /tmp/sql_lite_dump.tar.gz
 	@touch $@
@@ -29,6 +29,17 @@ create_property_file:
 	@echo -e "jdbc.url=jdbc:mysql://$(DBHOST_BGEELITE):$(DBPORT)/$(DBNAME_BGEELITE)\njdbc.driver=com.mysql.jdbc.Driver\njdbc.user=$(DBUSER_BGEELITE)\njdbc.name=$(DBNAME_BGEELITE)\njdbc.password=$(DBPASS_BGEELITE)" > bgee_connection.properties
 	@touch $@
 
+download_mapping_file:
+	# Download mapping file
+	@$(WGET) 'https://raw.githubusercontent.com/biosoda/bioquery/master/Bgee_OBDA_mappings/bgee_genex.obda'  && $(MV) bgee_genex.obda $(GENERATED_FILES_DIR)/$(DIR_NAME)/  || rm -f bgee_genex.obda
+	@touch $@
+
+download_ontology_file:
+	# Download OWL ontology file
+	@$(WGET) 'https://raw.githubusercontent.com/biosoda/genex/master/genex.owl'  && $(MV) genex.owl $(GENERATED_FILES_DIR)/$(DIR_NAME)/  || rm -f genex.owl
+	@touch $@
+
+
 
 drop_bgeeLite_db:
 	# Drop $(DBNAME_BGEELITE) database in $(DBHOST_BGEELITE)
@@ -41,4 +52,4 @@ $(VERIFICATIONFILE): create_bgeeLite_db
 	@touch $@
 
 clean:
-	-@$(RM) -R $(VERIFICATIONFILE) get_bgeeLite_dump create_bgeeLite_db drop_bgeeLite_db
+	-@$(RM) -R $(VERIFICATIONFILE) get_bgeeLite_dump create_bgeeLite_db create_property_file download_mapping_file download_ontology_file drop_bgeeLite_db
