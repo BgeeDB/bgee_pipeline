@@ -31,12 +31,12 @@ create_property_file:
 
 download_mapping_file:
 	# Download mapping file
-	@$(WGET) 'https://raw.githubusercontent.com/biosoda/bioquery/master/Bgee_OBDA_mappings/bgee_genex.obda'  && $(MV) bgee_genex.obda $(GENERATED_FILES_DIR)/$(DIR_NAME)/  || rm -f bgee_genex.obda
+	@$(WGET) 'https://raw.githubusercontent.com/biosoda/bioquery/master/Bgee_OBDA_mappings/bgee_genex.obda'  && $(MV) bgee_genex.obda $(SOURCE_FILES_DIR)/$(DIR_NAME)/  || rm -f bgee_genex.obda
 	@touch $@
 
 download_ontology_file:
 	# Download OWL ontology file
-	@$(WGET) 'https://raw.githubusercontent.com/biosoda/genex/master/genex.owl'  && $(MV) genex.owl $(GENERATED_FILES_DIR)/$(DIR_NAME)/  || rm -f genex.owl
+	@$(WGET) 'https://raw.githubusercontent.com/biosoda/genex/master/genex.owl'  && $(MV) genex.owl $(SOURCE_FILES_DIR)/$(DIR_NAME)/  || rm -f genex.owl
 	@touch $@
 
 
