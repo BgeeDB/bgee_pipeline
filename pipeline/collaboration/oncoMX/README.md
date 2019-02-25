@@ -34,14 +34,14 @@ with the categories "high/medium/low/absent" (see [Computation of the expression
 ### Selection of the anatomical entities
 
 We retrieve the anatomical entities selected by OncoMX (stored in the file
-[human_doid_slim_uberon_mapping.csv](../../../source_files/collaboration/oncoMX/human_doid_slim_uberon_mapping.csv),
+[human_doid_slim_uberon_mapping.csv](../../../source_files/collaboration/oncoMX/human_doid_slim_uberon_mapping.csv)),
 column `UBERON_doid.owl`), and all the children of these terms in the Uberon ontology
 by `part_of` and `is_a` relationships.
 
 ### Selection of the developmental stages
 
 In order to be consistent between human and mouse data, we have selected the developmental stage
-`UBERON:0000113 post-juvenile adult stage`. We retrieve data for these stage, and all its child stages
+`UBERON:0000113 post-juvenile adult stage`. We retrieve data for this stage, and all its child stages
 by `part_of` relations.
 
 * In human, this covers the stages from adolescent (13 yo) to death
@@ -55,13 +55,13 @@ Note: since OncoMX wanted only data in adult stages, maybe a better dev. stage f
 ### Computation of the expression levels
 
 We produce for OncoMX expression level categories. For `absent` expression calls, the category is alway `ABSENT`.
-For `present` expression calls, we retrieve one expression level category relative to the expression levels
+For `present` expression calls, we produce one expression level category relative to the expression levels
 of the gene, and one expression level category relative to the expression levels in the anatomical entity.
 The value for these categories is one of `HIGH`, `MEDIUM`, and `LOW`.
 
 
-For `present` expression calls, the category is computed by comparing the expression rank of the expression call
-to the min. and max expression ranks of an entity. So, for a same expression call, we compute several expression level categories:
+For `present` expression calls, the category is computed by comparing the rank score of the expression call
+to the min. and max rank scores of an entity. So, for a same expression call, we compute two expression level categories:
 * one relative to the gene (by comparing the expression rank score of the call to the min. and max ranks
 of the gene, in any anatomical structure where it is expressed).
 * one relative to the anatomical entity (by comparing to the min. and max ranks in the anatomical entity,
@@ -99,7 +99,8 @@ relative to the expression levels in `AnatEntity1`, is `MEDIUM`
 As shown above, the category is computed by dividing the range between the min. and the max ranks
 into three categories. Only `present` expression calls are considered for retrieving
 the min. and max ranks.
-** Important: ** if the difference between the max and the min. ranks is less than `100`,
+
+**Important:** if the difference between the max and the min. ranks is less than `100`,
 the category of the expression call is always `HIGH`.
 
 ### Header of the generated files
