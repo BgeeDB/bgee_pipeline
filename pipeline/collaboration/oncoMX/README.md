@@ -16,9 +16,108 @@ Goal: generate expression data for the oncoMX project (Analyze of gene expressio
 
 ## Data verification
 
-* Check the files generated_files/colaboration_output_files/oncoMX/oncoMX_expression_'speciesId'.tsv
+* Check the files in `generated_files/collaboration/oncoMX/`, notably the verification file `oncoMX`.
 
-## Description of the expression data file
+## Information about the files generated for OncoMX
+
+### Specifications for the files containing calls of presence/absence of expression:
+
+* generates one file for human, one file for mouse
+* based only on bulk RNA-Seq data
+* includes only data corresponding to OncoMX cancer types (see file
+[human_doid_slim_uberon_mapping.csv](../../../source_files/collaboration/oncoMX/human_doid_slim_uberon_mapping.csv).
+We retrieve data for the Uberon terms in this file, and all their children.
+* includes only data for adult developmental stages (and their children)
+* Compute a gene-centric qualitative expression level and an organ-centric qualitative expression level
+with the categories "high/medium/low/absent" (see [Computation of the expression levels](#computation-of-the-expression-levels))
+
+### Selection of the anatomical entities
+
+We retrieve the anatomical entities selected by OncoMX (stored in the file
+[human_doid_slim_uberon_mapping.csv](../../../source_files/collaboration/oncoMX/human_doid_slim_uberon_mapping.csv),
+column `UBERON_doid.owl`), and all the children of these terms in the Uberon ontology
+by `part_of` and `is_a` relationships.
+
+### Selection of the developmental stages
+
+In order to be consistent between human and mouse data, we have selected the developmental stage
+`UBERON:0000113 post-juvenile adult stage`. We retrieve data for these stage, and all its child stages
+by `part_of` relations.
+
+* In human, this covers the stages from adolescent (13 yo) to death
+(see [report for human dev. stages](https://github.com/obophenotype/developmental-stage-ontologies/blob/master/external/bgee/report.md#homo-sapiens))
+* In mouse, this covers the stages from early adult stage (6 weeks) to death
+(see [report for mouse dev. stages](https://github.com/obophenotype/developmental-stage-ontologies/blob/master/external/bgee/report.md#mus-musculus))
+
+Note: since OncoMX wanted only data in adult stages, maybe a better dev. stage for human would be `HsapDv:0000087 human adult stage (human)`
+(from 19yo to death).
+
+### Computation of the expression levels
+
+We produce for OncoMX expression level categories. For `absent` expression calls, the category is alway `ABSENT`.
+For `present` expression calls, we retrieve one expression level category relative to the expression levels
+of the gene, and one expression level category relative to the expression levels in the anatomical entity.
+The value for these categories is one of `HIGH`, `MEDIUM`, and `LOW`.
+
+
+For `present` expression calls, the category is computed by comparing the expression rank of the expression call
+to the min. and max expression ranks of an entity. So, for a same expression call, we compute several expression level categories:
+* one relative to the gene (by comparing the expression rank score of the call to the min. and max ranks
+of the gene, in any anatomical structure where it is expressed).
+* one relative to the anatomical entity (by comparing to the min. and max ranks in the anatomical entity,
+considering any gene expressed in it)
+
+
+As an example, if a gene has the following expression calls:
+
+```
+Gene ID  Anat. entity ID Expression call Expression rank
+Gene1    AnatEntity1     EXPRESSED       2500
+Gene1    AnatEntity2     EXPRESSED       10000
+Gene1    AnatEntity3     EXPRESSED       22500
+</pre>
+And the following genes are expressed in {@code AnatEntity1}:
+<pre>
+Gene ID  Anat. entity ID Expression call Expression rank
+Gene2    AnatEntity1     EXPRESSED       1000
+Gene1    AnatEntity1     EXPRESSED       2500
+Gene3    AnatEntity1     EXPRESSED       4000
+```
+
+As a result:
+* The min. and max ranks for `Gene1` are respectively `2500` and `22500`.
+The expression level category for `Gene1` in `AnatEntity1`,
+relative to the expression levels of `Gene1`, is `HIGH`
+(threshold for HIGH: 9167; threshold for MEDIUM: 15833).
+* The min. and max ranks in `AnatEntity1` are respectively `1000` and `4000`.
+The expression level category for `Gene1` in `AnatEntity1`,
+relative to the expression levels in `AnatEntity1`, is `MEDIUM`
+(threshold for HIGH: 2000; threshold for MEDIUM: 3000).
+
+As shown above, the category is computed by dividing the range between the min. and the max ranks
+into three categories. Only `present` expression calls are considered for retrieving
+the min. and max ranks.
+** Important: ** if the difference between the max and the min. ranks is less than `100`,
+the category of the expression call is always `HIGH`.
+
+### Header of the generated files
+
+* Ensembl gene ID
+* Gene name
+* Anatomical entity ID
+* Anatomical entity name
+* Developmental stage ID
+* Developmental stage name
+* Expression level relative to gene
+* Expression level relative to anatomical entity
+* Call quality
+* Expression rank score
+
+## Former version of the file generated for OncoMX
+
+**OUTDATED, NOT USED ANYMORE, AS OF FEB. 2019**
+
+This version of the file was generated by the perl script `generate_oncoMX_expression_files.pl`
 
 * This file contains expression data represented in 6 columns:
 

@@ -9,6 +9,10 @@
 # This script is based on the generate_ref_expr_files.pl script
 # written by Frederic Bastian
 
+# NOTE FB FEB. 2019: SCRIPT NOT USED ANYMORE!
+# The OncoMX file is now generated using the Java pipeline,
+# following changes requested by the OncoMX team.
+
 #############################################################
 
 use strict;
