@@ -75,9 +75,11 @@ Gene ID  Anat. entity ID Expression call Expression rank
 Gene1    AnatEntity1     EXPRESSED       2500
 Gene1    AnatEntity2     EXPRESSED       10000
 Gene1    AnatEntity3     EXPRESSED       22500
-</pre>
-And the following genes are expressed in {@code AnatEntity1}:
-<pre>
+```
+
+And the following genes are expressed in `AnatEntity1`:
+
+```
 Gene ID  Anat. entity ID Expression call Expression rank
 Gene2    AnatEntity1     EXPRESSED       1000
 Gene1    AnatEntity1     EXPRESSED       2500
