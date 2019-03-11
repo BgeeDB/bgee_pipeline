@@ -241,7 +241,10 @@ for my $gene (sort {$a->stable_id cmp $b->stable_id} (@genes)) { #Sort to always
         my $content = get("http://www.uniprot.org/uniprot/?query=id:$pid&format=tab&columns=entry%20name");
         if ( defined $content ){
             my (undef, $uniprot_id) = split("\n", $content, -1);
-            $xrefs{"$dbname##$uniprot_id"} = $uniprot_id;
+            #TODO CHECK !!!
+            for my $uid ( split(/\s*;\s*/, $uniprot_id) ){
+                $xrefs{"$dbname##$uid"} = $uid;
+            }
         }
         else {
             warn "\tCannot get UniProt ID for [$pid]\n";
@@ -250,6 +253,8 @@ for my $gene (sort {$a->stable_id cmp $b->stable_id} (@genes)) { #Sort to always
 
     XREF:
     for my $xref ( sort keys %xrefs ){
+        #TODO CHECK !!!
+        next  if ( $xref =~ /;/ );
         my ($dbname, $pid) = split('##', $xref);
         $xrefs{$xref} = ''  if ( $xrefs{$xref} eq $pid );
         if ( ! $debug ){
