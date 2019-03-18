@@ -57,6 +57,8 @@ install_RDF_webapp: create_property_file download_mapping_file download_ontology
 	@echo -e 'Click on **Next**\n'
 	@echo -e 'Fill the input text fields in the form according to the directory path $(TOMCAT_FOLDER)/bgee_webapps/$(DBNAME_BGEELITE)_conf/\n\tOWL ontology file: \t$(TOMCAT_FOLDER)/bgee_webapps/$(DBNAME_BGEELITE)_conf/genex.owl\n\tMapping file: \t\t$(TOMCAT_FOLDER)/bgee_webapps/$(DBNAME_BGEELITE)_conf/bgee_genex.obda\n\tOntop properties file: \t$(TOMCAT_FOLDER)/bgee_webapps/$(DBNAME_BGEELITE)_conf/bgee_connection.properties\n'
 	@echo -e 'Click on **Create**\n'
+	@echo -e '... \n'
+	@echo -e 'rdf4j-workbench MUST be accessible ONLY internally for admin tasks!\nrdf4j-server    MUST be accessible to all RDF/SPARQL users!\n'
 
 
 drop_bgeeLite_db:
