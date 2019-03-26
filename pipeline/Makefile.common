@@ -17,7 +17,7 @@ RELEASE          := 14.1
 DBNAME := bgee_v$(RELEASE)
 DBHOST := 127.0.0.1
 DBPORT := 3306
-DBNAME_BGEELITE := bgeelite_v$(RELEASE)
+DBNAME_BGEELITE := bgeelite_v$(subst .,_,$(RELEASE))
 DBHOST_BGEELITE := 127.0.0.1
 
 

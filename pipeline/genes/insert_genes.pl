@@ -201,6 +201,7 @@ for my $gene (sort {$a->stable_id cmp $b->stable_id} (@genes)) { #Sort to always
     ## Get gene synonyms, if any
     #NOTE Synonyms shown on the web site appear to come from THE main gene xref synonyms
     #     But we need all of them, so no filtering based on main external_db !!!
+#TODO Remove part of synonym within "{...}" and split the rest on "|" !!!
     my @synonyms = uniq sort                                                              # non-redundant & sorted
                    map  { s{^\s+}{}; s{\s+$}{}; lc $_ }                                   # Trim & lowercase
                    grep { $_ ne $stable_id && $_ ne $display_id && $_ ne $external_name } # Avoid putting $display_id as synonym
@@ -241,7 +242,10 @@ for my $gene (sort {$a->stable_id cmp $b->stable_id} (@genes)) { #Sort to always
         my $content = get("http://www.uniprot.org/uniprot/?query=id:$pid&format=tab&columns=entry%20name");
         if ( defined $content ){
             my (undef, $uniprot_id) = split("\n", $content, -1);
-            $xrefs{"$dbname##$uniprot_id"} = $uniprot_id;
+            #TODO CHECK !!!
+            for my $uid ( split(/\s*;\s*/, $uniprot_id) ){
+                $xrefs{"$dbname##$uid"} = $uid;
+            }
         }
         else {
             warn "\tCannot get UniProt ID for [$pid]\n";
@@ -250,6 +254,8 @@ for my $gene (sort {$a->stable_id cmp $b->stable_id} (@genes)) { #Sort to always
 
     XREF:
     for my $xref ( sort keys %xrefs ){
+        #TODO CHECK !!!
+        next  if ( $xref =~ /;/ );
         my ($dbname, $pid) = split('##', $xref);
         $xrefs{$xref} = ''  if ( $xrefs{$xref} eq $pid );
         if ( ! $debug ){
