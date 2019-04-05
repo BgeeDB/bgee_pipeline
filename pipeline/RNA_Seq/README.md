@@ -22,6 +22,7 @@
 6. [Insert feature length](#insert-feature-length)
 7. [Calculation of TMM normalization factors](#calculation-of-tmm-normalization-factors)
 8. [Back-up](#back-up)
+9. [Partial update of Bgee to add RNA-Seq data only](#partial-update-of-bgee-to-add-rna-seq-data-only)
 
 (Note that the developer guidelines include information about how we select valid sets of intergenic regions, allowing to estimate the background transcriptional noise in each library).
 
@@ -419,3 +420,295 @@ in wildly used strain names.
 ## BACK-UP
 * There are diverse steps in the Makefile
 * **TODO** we need a final back-up stage, where we backup all the processed files on our server. For now this is not in the Makefile
+
+## Partial update of Bgee to add RNA-Seq data only
+
+* Create a new database from the previous version:
+
+  * To update only RNA-Seq data for Bgee 14.1, following tables were dumped from Bgee 14.0:
+(63 tables dumped over 74 tables in total)
+
+```
+author dataSource dataSourceToSpecies keyword taxon species speciesToSex speciesToKeyword CIOStatement
+evidenceOntology stage stageTaxonConstraint stageNameSynonym stageXRef anatEntity anatEntityTaxonConstraint
+anatEntityXRef anatEntityNameSynonym anatEntityRelation anatEntityRelationTaxonConstraint
+summarySimilarityAnnotation similarityAnnotationToAnatEntityId rawSimilarityAnnotation OMAHierarchicalGroup
+geneOntologyTerm geneOntologyTermAltId geneOntologyRelation geneBioType gene geneToOma geneNameSynonym geneXRef
+geneToTerm geneToGeneOntologyTerm transcript cond estLibrary estLibraryToKeyword expressedSequenceTag
+estLibraryExpression microarrayExperiment microarrayExperimentToKeyword chipType affymetrixChip affymetrixProbeset
+microarrayExperimentExpression inSituExperiment inSituExperimentToKeyword inSituEvidence inSituSpot
+inSituExperimentExpression rnaSeqExperiment rnaSeqExperimentToKeyword rnaSeqPlatform rnaSeqLibrary rnaSeqRun
+rnaSeqLibraryDiscarded rnaSeqResult rnaSeqTranscriptResult expression downloadFile speciesDataGroup speciesToDataGroup
+```
+
+  * To update only RNA-Seq data for Bgee 14.1, following tables were **NOT** dumped from Bgee 14.0:
+(4 tables not dumped over 74 tables in total)
+
+```
+globalCond
+globalCondToCond
+rnaSeqExperimentExpression
+globalExpression
+```
+
+  * Following tables were not dumped because unused for now:
+(7 tables not dumped over 74 tables in total)
+
+```
+differentialExpressionAnalysis
+deaSampleGroup
+deaSampleGroupToAffymetrixChip
+deaSampleGroupToRnaSeqLibrary
+deaAffymetrixProbesetSummary
+deaRNASeqSummary
+differentialExpression
+```
+
+* Remove some runs/libraries/experiments if needed (see end of this section)
+* Do NOT dump the table `rnaSeqExperimentExpression`
+* clean table `cond` and `expression` to remove lines related only to RNA-Seq data
+  * reset `expressionId` field in `rnaSeqResult` table, i.e., `UPDATE rnaSeqResult SET expressionId = NULL;`
+  * Note that the table `rnaSeqExperimentExpression` should NOT have been dumped
+  * delete lines in table `expression` that are not used anymore (i.e., that were used only for RNA-Seq data), i.e., from Bgee 14.0 tables: `DELETE t1 FROM expression AS t1 LEFT OUTER JOIN expressedSequenceTag AS t2 ON t1.expressionId = t2.expressionId LEFT OUTER JOIN estLibraryExpression AS t3 ON t1.expressionId = t3.expressionId LEFT OUTER JOIN affymetrixProbeset AS t4 ON t1.expressionId = t4.expressionId LEFT OUTER JOIN microarrayExperimentExpression AS t5 ON t1.expressionId = t5.expressionId LEFT OUTER JOIN inSituSpot AS t6 ON t1.expressionId = t6.expressionId LEFT OUTER JOIN inSituExperimentExpression AS t7 ON t1.expressionId = t7.expressionId LEFT OUTER JOIN rnaSeqResult AS t8 ON t1.expressionId = t8.expressionId LEFT OUTER JOIN rnaSeqExperimentExpression AS t9 ON t1.expressionId = t9.expressionId WHERE t2.expressionId IS NULL AND t3.expressionId IS NULL AND t4.expressionId IS NULL AND t5.expressionId IS NULL AND t6.expressionId IS NULL AND t7.expressionId IS NULL AND t8.expressionId IS NULL AND t9.expressionId IS NULL;`
+  * remove cond not used anywhere, i.e., `DELETE t1 FROM cond AS t1 LEFT OUTER JOIN estLibrary AS t2 ON t1.conditionId = t2.conditionId LEFT OUTER JOIN affymetrixChip AS t3 ON t1.conditionId = t3.conditionId LEFT OUTER JOIN inSituSpot AS t4 ON t1.conditionId = t4.conditionId LEFT OUTER JOIN rnaSeqLibrary AS t5 ON t1.conditionId = t5.conditionId LEFT OUTER JOIN expression AS t6 ON t1.conditionId = t6.conditionId LEFT OUTER JOIN differentialExpression AS t7 ON t1.conditionId = t7.conditionId LEFT OUTER JOIN deaSampleGroup AS t8 ON t1.conditionId = t8.conditionId LEFT OUTER JOIN globalCondToCond AS t9 ON t1.conditionId = t9.conditionId WHERE t2.conditionId IS NULL AND t3.conditionId IS NULL AND t4.conditionId IS NULL AND t5.conditionId IS NULL AND t6.conditionId IS NULL AND t7.conditionId IS NULL AND t8.conditionId IS NULL AND t9.conditionId IS NULL;`
+* Insert the new RNA-Seq data for the partial update; this should also reinsert the necessary lines in `expression` and `cond` tables.
+* relaunch insertion in `globalExpression` and `globalCond`
+* relaunch rank generation
+* check basically all post-processing steps
+* update values in table `downloadFile`
+
+* To remove runs:
+  * remove lines from rnaSeqRun with matching rnaSeqRunId
+  * search for libraries with no remaining runs and remove them, e.g., `SELECT t1.* FROM rnaSeqLibrary AS t1 LEFT OUTER JOIN rnaSeqRun AS t2 ON t1.rnaSeqLibraryId = t2.rnaSeqLibraryId WHERE t2.rnaSeqLibraryId IS NULL;`
+  * search for experiments with no remaining libraries and delete them (see below)
+* To remove libraries:
+  * remove lines from `rnaSeqResult` with matching rnaSeqLibraryId
+  * remove lines from `rnaSeqLibrary` with matching rnaSeqLibraryId
+  * Search for experiments with no remaining libraries and delete them, e.g. `SELECT t1.* FROM rnaSeqExperiment AS t1 LEFT OUTER JOIN rnaSeqLibrary AS t2 ON t1.rnaSeqExperimentId = t2.rnaSeqExperimentId WHERE t2.rnaSeqExperimentId IS NULL;`
+  * Add the rnaSeqLibraryIds to the table rnaSeqLibraryDiscarded
+
+
+Removal of some libraries/runs:
+
+For Bgee 14.1, as compared to Bgee 14.0, following runs were removed:
+
+```
+SRR069493
+SRR069510
+SRR069576
+SRR069577
+SRR069580
+SRR070036
+SRR085466
+SRR085467
+SRR089302
+SRR089303
+SRR089304
+SRR089352
+SRR089353
+SRR089354
+SRR089358
+SRR089359
+SRR089360
+SRR089361
+SRR089362
+SRR089363
+SRR1051537
+SRR1051538
+SRR1051539
+SRR1051540
+SRR1051541
+SRR1051542
+SRR1051543
+SRR1051544
+SRR1051545
+SRR1051546
+SRR1051547
+SRR1051548
+SRR1051549
+SRR1051550
+SRR1051551
+SRR1051570
+SRR1051571
+SRR1051572
+SRR1051573
+SRR1051574
+SRR1051575
+SRR1051576
+SRR1051577
+SRR1051578
+SRR1051579
+SRR1051580
+SRR1051581
+SRR1051602
+SRR1051603
+SRR1051604
+SRR1051626
+SRR1051627
+SRR1051628
+SRR1051629
+SRR1051630
+SRR1051631
+SRR1051632
+SRR1051633
+SRR1051634
+SRR1051635
+SRR1051636
+SRR1051637
+SRR1051638
+SRR1051639
+SRR1051640
+SRR1051662
+SRR1051663
+SRR1051664
+SRR1073899
+SRR1081259
+SRR1084917
+SRR1092136
+SRR1093290
+SRR1097076
+SRR1100564
+SRR125481
+SRR125482
+SRR330557
+SRR330558
+SRR330559
+SRR330560
+SRR330565
+SRR330566
+SRR330567
+SRR330568
+SRR654754
+SRR656758
+SRR660066
+SRR660957
+SRR661361
+SRR820938
+```
+
+For Bgee 14.1, as compared to Bgee 14.0, following libraries were removed:
+
+```
+SRX007069
+SRX007170
+SRX007173
+SRX035162
+SRX036882
+SRX036967
+SRX036969
+SRX036970
+SRX047787
+SRX091556
+SRX091557
+SRX091558
+SRX091559
+SRX091564
+SRX091565
+SRX091566
+SRX091567
+SRX221189
+SRX221861
+SRX222609
+SRX222921
+SRX223154
+SRX261929
+SRX393267
+SRX393268
+SRX393269
+SRX393270
+SRX393271
+SRX393272
+SRX393273
+SRX393274
+SRX393275
+SRX393276
+SRX393277
+SRX393278
+SRX393279
+SRX393280
+SRX393281
+SRX393300
+SRX393301
+SRX393302
+SRX393303
+SRX393304
+SRX393305
+SRX393306
+SRX393307
+SRX393308
+SRX393309
+SRX393310
+SRX393311
+SRX393332
+SRX393333
+SRX393334
+SRX393356
+SRX393357
+SRX393358
+SRX393359
+SRX393360
+SRX393361
+SRX393362
+SRX393363
+SRX393364
+SRX393365
+SRX393366
+SRX393367
+SRX393368
+SRX393369
+SRX393370
+SRX393392
+SRX393393
+SRX393394
+SRX407339
+SRX411093
+SRX412945
+SRX416615
+SRX417198
+SRX419414
+SRX421312
+```
+
+For Bgee 14.1, as compared to Bgee 14.0, following experiments were removed because no remaining libraries:
+
+```
+GSE53690
+GSE57369
+SRP001010
+SRP009247
+SRP015688
+```
+
+### Steps done for partial update 14.1
+
+#### Removal of some RNA-Seq libraries/experiments
+
+* 3 more conditions are not used anywhere, because they were remapped for insertion in the `expression` table:
+
+```
++-------------+-----------------------+----------------+----------------+-----------+-----+-------------+--------+
+| conditionId | exprMappedConditionId | anatEntityId   | stageId        | speciesId | sex | sexInferred | strain |
++-------------+-----------------------+----------------+----------------+-----------+-----+-------------+--------+
+|         650 |                   649 | CL:2000001     | UBERON:0000113 |      9544 | NA  |           0 | NA     |
+|         652 |                   651 | CL:0000492     | UBERON:0000113 |      9544 | NA  |           0 | NA     |
+|         654 |                   653 | UBERON:0001052 | UBERON:0000113 |      9544 | NA  |           0 | NA     |
++-------------+-----------------------+----------------+----------------+-----------+-----+-------------+--------+
+```
+
+They were remapped to:
+
+```
++-------------+-----------------------+----------------+----------------+-----------+---------------+-------------+-----------+
+| conditionId | exprMappedConditionId | anatEntityId   | stageId        | speciesId | sex           | sexInferred | strain    |
++-------------+-----------------------+----------------+----------------+-----------+---------------+-------------+-----------+
+|         649 |                   649 | CL:2000001     | UBERON:0000113 |      9544 | not annotated |           0 | wild-type |
+|         651 |                   651 | CL:0000492     | UBERON:0000113 |      9544 | not annotated |           0 | wild-type |
+|         653 |                   653 | UBERON:0001052 | UBERON:0000113 |      9544 | not annotated |           0 | wild-type |
++-------------+-----------------------+----------------+----------------+-----------+---------------+-------------+-----------+
+```
+
+* number of rows in `rnaSeqResult` went from 327,090,880 to 324,297,865 (2,793,015 rows deleted)
+* number of rows in `rnaSeqLibrary` went from 5,745 to 5,667 (78 rows deleted)
+* number of rows in `rnaSeqExperiment` went from 41 to 36 (5 rows deleted)
+
+#### Reset `expressionId` field in `rnaSeqResult` table
