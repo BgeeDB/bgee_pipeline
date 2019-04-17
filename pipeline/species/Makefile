@@ -33,9 +33,8 @@ $(ALLTAXIDSFILEPATH): $(ANNOTTAXIDSFILEPATH) $(SPECIESFILEPATH)
 TAXDAT := $(INPUT_DIR)taxonomy.dat
 $(TAXONOMYFILEPATH): $(ALLTAXIDSFILEPATH)
 	@$(CURL) $(TAX_DAT_DOWNLOAD_URL) -z $(TAXDAT) -o $(TAXDAT).tmp && $(MV) $(TAXDAT).tmp $(TAXDAT) 2>/dev/null || rm -f $(TAXDAT).tmp
-	@$(JAVA) GenerateTaxonOntology $(TAXDAT) $^ $@.tmp
+	@$(JAVA) GenerateTaxonOntology $(TAXDAT) $^ $@
 	@xz -9 $(TAXDAT)
-	@$(MV) $@.tmp $@
 	
 
 # Generate a file containing all IDs of all taxa and species used in Bgee, all taxa
