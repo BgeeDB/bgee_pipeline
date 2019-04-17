@@ -33,8 +33,10 @@ $(ALLTAXIDSFILEPATH): $(ANNOTTAXIDSFILEPATH) $(SPECIESFILEPATH)
 TAXDAT := $(INPUT_DIR)taxonomy.dat
 $(TAXONOMYFILEPATH): $(ALLTAXIDSFILEPATH)
 	@$(CURL) $(TAX_DAT_DOWNLOAD_URL) -z $(TAXDAT) -o $(TAXDAT).tmp && $(MV) $(TAXDAT).tmp $(TAXDAT) 2>/dev/null || rm -f $(TAXDAT).tmp
-	@$(JAVA) GenerateTaxonOntology $(TAXDAT) $^ $@
+# the extension of the ontology file must be .owl. That is why we add the ".tmp.owl" suffix rather than the usual .tmp
+	@$(JAVA) GenerateTaxonOntology $(TAXDAT) $^ $@.tmp.owl
 	@xz -9 $(TAXDAT)
+	@$(MV) $@.tmp.owl $@
 	
 
 # Generate a file containing all IDs of all taxa and species used in Bgee, all taxa
@@ -52,7 +54,7 @@ $(VERIFICATIONFILE): $(SPECIESFILEPATH) $(ANNOTTAXIDSFILEPATH) $(ALLTAXIDSFILEPA
 	@$(MYSQL) -e "SELECT (SELECT COUNT(*) FROM species) as \`species count\`, (SELECT COUNT(*) FROM taxon) as \`all taxon count\`, (SELECT COUNT(*) FROM taxon WHERE bgeeSpeciesLCA = TRUE) as \`LCA taxon count\`" > $@.temp
 # Display species with no sex info
 	@echo "----------Looking for species with no sex information: " >> $@.temp
-	@$(MYSQL) -e "SELECT t1.speciesId AS \'ERROR: SPECIES IDS WITH NO SEX INFO\' FROM species AS t1 LEFT OUTER JOIN speciesToSex AS t2 ON t1.speciesId = t2.speciesId WHERE t2.speciesId IS NULL" >> $@.temp
+	@$(MYSQL) -e "SELECT t1.speciesId AS \`ERROR: SPECIES IDS WITH NO SEX INFO\` FROM species AS t1 LEFT OUTER JOIN speciesToSex AS t2 ON t1.speciesId = t2.speciesId WHERE t2.speciesId IS NULL" >> $@.temp
 # Display all the species
 	@echo "----------All species inserted: " >> $@.temp
 	@$(MYSQL) -e "SELECT * FROM species order by speciesId" >> $@.temp
