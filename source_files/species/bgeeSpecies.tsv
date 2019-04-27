@@ -28,3 +28,13 @@ speciesId	genus	species	speciesCommonName	displayOrder	genomeFilePath	genomeVers
 9796	Equus	caballus	horse	13	equus_caballus/Equus_caballus.EquCab2	Equ Cab 2	2	9796		
 9986	Oryctolagus	cuniculus	rabbit	14	oryctolagus_cuniculus/Oryctolagus_cuniculus.OryCun2.0	OryCun2.0	2	9986		
 10141	Cavia	porcellus	guinea pig	17	cavia_porcellus/Cavia_porcellus.cavPor3	cavPor3	2	10141		
+170557	Timema	poppensis	walking sticks poppensis	30	timema_data/1_Tps_b3v08.fasta	b3v08	33	170557		walking sticks poppensis
+61478	Timema	douglasi	walking sticks douglasi	31	timema_data/1_Tdi_b3v08.fasta	b3v08	33	61478		walking sticks douglasi
+61474	Timema	californicum	walking sticks californicum	32	timema_data/2_Tcm_b3v08.fasta	b3v08	33	61474		walking sticks californicum|California timema|Timema californica
+629360	Timema	shepardi	walking sticks shepardi	33	timema_data/2_Tsi_b3v08.fasta	b3v08	33	629360		walking sticks shepardi
+61476	Timema	cristinae	walking sticks cristinae	34	timema_data/3_Tce_b3v08.fasta	b3v08	33	61476		walking sticks cristinae
+170555	Timema	monikensis	walking sticks monikensis	35	timema_data/3_Tms_b3v08.fasta	b3v08	33	170555		walking sticks monikensis
+61472	Timema	bartmani	walking sticks bartmani	36	timema_data/4_Tbi_b3v08.fasta	b3v08	33	61472		walking sticks bartmani
+61484	Timema	tahoe	walking sticks tahoe	37	timema_data/4_Tte_b3v08.fasta	b3v08	33	61484		walking sticks tahoe
+61482	Timema	podura	walking sticks podura	38	timema_data/5_Tpa_b3v08.fasta	b3v08	33	61482		walking sticks podura
+629358	Timema	genevievae	walking sticks genevievae	39	timema_data/5_Tge_b3v08.fasta	b3v08	33	629358		walking sticks genevievae

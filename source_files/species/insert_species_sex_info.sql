@@ -32,3 +32,14 @@ INSERT INTO speciesToSex (speciesId, sex) VALUES (9685, 'female'), (9685, 'male'
 INSERT INTO speciesToSex (speciesId, sex) VALUES (9796, 'female'), (9796, 'male');
 INSERT INTO speciesToSex (speciesId, sex) VALUES (9986, 'female'), (9986, 'male');
 INSERT INTO speciesToSex (speciesId, sex) VALUES (10141, 'female'), (10141, 'male');
+INSERT INTO speciesToSex (speciesId, sex) VALUES (7227, 'female'), (7227, 'male');
+INSERT INTO speciesToSex (speciesId, sex) VALUES (170557, 'female'), (170557, 'male');
+INSERT INTO speciesToSex (speciesId, sex) VALUES (61478, 'female'), (61478, 'male');
+INSERT INTO speciesToSex (speciesId, sex) VALUES (61474, 'female'), (61474, 'male');
+INSERT INTO speciesToSex (speciesId, sex) VALUES (629360, 'female'), (629360, 'male');
+INSERT INTO speciesToSex (speciesId, sex) VALUES (61476, 'female'), (61476, 'male');
+INSERT INTO speciesToSex (speciesId, sex) VALUES (170555, 'female'), (170555, 'male');
+INSERT INTO speciesToSex (speciesId, sex) VALUES (61472, 'female'), (61472, 'male');
+INSERT INTO speciesToSex (speciesId, sex) VALUES (61484, 'female'), (61484, 'male');
+INSERT INTO speciesToSex (speciesId, sex) VALUES (61482, 'female'), (61482, 'male');
+INSERT INTO speciesToSex (speciesId, sex) VALUES (629358, 'female'), (629358, 'male');

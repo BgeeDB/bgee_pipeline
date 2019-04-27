@@ -79,3 +79,7 @@ If a line starts with `#`, it is commented and the species will not be inserted
   `make ../../generated_files/species/bgee_ncbitaxon.owl`
 * Remove the species and taxa from the database (this is not done when calling `clean`, to avoid wiping the database by accident)
   `make deleteSpeciesAndTaxa`
+
+## non Ensembl modifications
+
+* Adding the 10 *Timema* species in `bgeeSpecies.tsv` and insert_species_sex_info.sql` files.
