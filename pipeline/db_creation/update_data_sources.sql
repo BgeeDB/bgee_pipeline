@@ -64,4 +64,6 @@ update dataSource set releaseDate = '2015-03-10', releaseVersion = '',          
 update dataSource set releaseDate = '2015-10-03', releaseVersion = '6.p1',                         displayOrder = 3  where dataSourceId = 31;
 -- GEO (RNASeq)
 update dataSource set releaseDate = '2016-04-01', releaseVersion = '',                             displayOrder = 2  where dataSourceId = 100;
+-- non Ensembl genomes and annotations by Maker + Blast2GO
+update dataSource set releaseDate = '2019-04-22', releaseVersion = '',                             displayOrder = 12  where dataSourceId = 33;
 

@@ -46,3 +46,22 @@ but can fail if the table is very large, with the error 1206:
 "ERROR 1206 (HY000): The total number of locks exceeds the lock table size".
 To solve this problem, you have to increase the buffer pool size (see e.g. http://bugs.mysql.com/bug.php?id=9975), or you have to insert the data AFTER indexes and foreign key constraints generation.
 You'd rather increase the buffer pool size.
+
+## non Ensembl modifications
+
+* In `insert_data_sources.sql` file. Add the line: 
+
+```
+(33, 'nonEnsembl', '', '', '', '', 'Independent genome assemblies and annotations (by Maker and Blast2GO)', 0, '');
+```
+
+* In `update_data_sources.sql` file. Add the line: 
+
+```
+-- non Ensembl genomes and annotations by Maker + Blast2GO
+update dataSource set releaseDate = '2019-04-22', releaseVersion = '',                             displayOrder = 12  where dataSourceId = 33;
+```
+
+
+
+
