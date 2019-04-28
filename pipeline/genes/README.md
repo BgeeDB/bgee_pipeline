@@ -4,12 +4,37 @@
 * **Goal**:         insert the genes used in Bgee.
 
 ## Details
+### General informations
 * This script will insert species gene information based on already inserted species (in the table `species`). It takes between 15 and 60 min per species.
-* It uses the Ensembl API.
 * It will fill the gene table with `geneId`, `geneName` and `geneDescription` (+ `geneBioTypeId` + `speciesId`).
 * It will also fill the tables `geneBioType`, `geneOntologyTerm` + `geneOntologyTermAltId` (and provides a file for obsolete GO terms), `geneNameSynonym`, `geneToGeneOntologyTerm`, and `geneXRef`. The insertion in `geneXRef` makes use of the `dataSource` table.
+
+### Ensembl genes
+
+* It uses the Ensembl API.
 * **Important note regarding bonobo genes**: for bonobo, we take the same genome as chimpanzee (there is no bonobo genome in Ensembl, and it is debatable whether bonobo and chimp represent the same species). We use a SQL query at the end of the Makefile, to duplicate all chimpanzee genes, while providing new IDs. Consequently, it also duplicates the entries in `geneNameSynonym`, `geneToTerm` and `geneToGeneOntologyTerm` (with the appropriate IDs). **As a result, if you add or modify any fields in any of the tables `gene`, `geneNameSynonym`, `geneToTerm`, or `geneToGeneOntologyTerm`, you might need to modify the query used in this Makefile.**
 
+### Non Ensembl genes
+
+* Genome has been annotated with Maker and Blast2GO and the GFF file need to have the Maker and Blast2GO syntax. Example:
+
+```
+3_Tce_b3v08_scaf000380	maker	gene	161294	162727	.	+	.	ID=TCE_13833;Name=TCE_13833;Alias=augustus_masked-3_Tce_b3v08_scaf000380-processed-gene-0.31;ontology_term=GO:0003700,GO:0045944,GO:0046983,GO:0000977,GO:0008134,GO:0050767,GO:0030182,GO:0090575,GO:0007423;topblasthit=gi|1330930827|gb|PNF41753.1|hypothetical protein B7P43_G03461 [Cryptotermes secundus];
+```
+
+The `description` field (last column) need to have the entries `ontology_term` and `topblasthit` (both obtained via Blast2GO).
+
+* The annotation file need to have the same base name than the genome file (with `_vbgee`) and has to be in the same directory (ie. `genomeFilePath` of the `species` table). Example:
+
+Genome : `timema_data/1_Tdi_b3v08.fasta`
+Annotation: `timema_data/1_Tdi_b3v08_vbgee.gff`
+
+* Genome has only protein coding genes annotation. Therefore, Ensembl genes has to be inserted first in order to retrieve the `geneBioTypeId` of the `gene` table.
+
+* Documentations:
+	* [Maker](https://www.yandell-lab.org/software/maker.html)
+	* [Blast2GO](https://www.blast2go.com/)
+	
 ## Data generation
 * If it is the first time you execute this step in this pipeline run:
 ```
@@ -53,3 +78,8 @@ $InsertedDataSources{'xenopus_jamboree'} = $InsertedDataSources{'xenbase'};
 ## Details
 * NEED TO THINK ABOUT HOW TO HANDLE MIRBASE FAMILIES, OUTSIDE OF THE TABLES DESIGNED FOR OMA HOG. OR FIND A WAY TO INTEGRATE THEM INTO THE OMA HOG TABLES?
 
+## non Ensembl modifications
+
+* Creation of the directory `generated_files/genes/`.
+* Some parts are in common between `insert_genes.pl` and `insert_genes_nonEnsembl.pl` and have been factored in `Utils_insert_genes.pm`.
+* For non Ensembl genes, `geneToTerm` table is not filled.

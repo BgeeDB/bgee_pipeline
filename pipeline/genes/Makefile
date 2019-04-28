@@ -7,7 +7,7 @@ all: $(VERIFICATIONFILE)
 
 $(OUTPUT_DIR)go:
 	# Download Gene Ontology
-	@$(WGET) 'http://www.geneontology.org/ontology/obo_format_1_2/gene_ontology.1_2.obo' -O $(INPUT_DIR)go.tmp && $(MV) $(INPUT_DIR)go.tmp $(INPUT_DIR)go 2>/dev/null  || rm -f $(INPUT_DIR)go.tmp
+	@$(WGET) 'ftp://ftp.geneontology.org/pub/go/ontology/obo_format_1_2/gene_ontology.1_2.obo' -O $(INPUT_DIR)go.tmp && $(MV) $(INPUT_DIR)go.tmp $(INPUT_DIR)go 2>/dev/null  || rm -f $(INPUT_DIR)go.tmp
 	# Insert Gene Ontology
 	@$(JAVA) InsertGO $(INPUT_DIR)go >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
@@ -26,12 +26,15 @@ genes: $(SPECIESFILEPATH) $(OUTPUT_DIR)go go.obsolete
 	@for sp in `cat $@.tmp`; do \
 		export PERL5LIBORI=$$PERL5LIB; \
 		echo "species: $$sp"; \
-		if [[ `echo $$sp | grep 'Ensembl$$'` ]]; then \
-			export PERL5LIB=`echo $$PERL5LIB | perl -ne 'print join ":", map { s/\/ensembl\//\/ensembl_$(ENS_API_RELEASE)\//; $$_ } grep { /\w/ } split(/:/, $$_)'`; \
+		if [[ `echo $$sp | grep 'nonEnsembl$$'` ]]; then \
+			perl insert_genes_nonEnsembl.pl -species=$$sp -bgee=$(BGEECMD) -obsGO=go.obsolete >> $@.tmp 2>>$@.err; \
+		elif [[ `echo $$sp | grep 'Ensembl$$'` ]]; then \
+				export PERL5LIB=`echo $$PERL5LIB | perl -ne 'print join ":", map { s/\/ensembl\//\/ensembl_$(ENS_API_RELEASE)\//; $$_ } grep { /\w/ } split(/:/, $$_)'`; \
+				perl insert_genes.pl -species=$$sp -bgee=$(BGEECMD) -ensembl=$(ENSCMD) -obsGO=go.obsolete >> $@.tmp 2>>$@.err; \
 		elif [[ `echo $$sp | grep 'EnsemblMetazoa$$'` ]]; then \
-			export PERL5LIB=`echo $$PERL5LIB | perl -ne 'print join ":", map { s/\/ensembl\//\/ensembl_$(ENSMETAZOA_API_RELEASE)\//; $$_ } grep { /\w/ } split(/:/, $$_)'`; \
+				export PERL5LIB=`echo $$PERL5LIB | perl -ne 'print join ":", map { s/\/ensembl\//\/ensembl_$(ENSMETAZOA_API_RELEASE)\//; $$_ } grep { /\w/ } split(/:/, $$_)'`; \
+				perl insert_genes.pl -species=$$sp -bgee=$(BGEECMD) -ensembl=$(ENSCMD) -obsGO=go.obsolete >> $@.tmp 2>>$@.err; \
 		fi; \
-		perl insert_genes.pl -species=$$sp -bgee=$(BGEECMD) -ensembl=$(ENSCMD) -obsGO=go.obsolete >> $@.tmp 2>>$@.err; \
 		export PERL5LIB=$$PERL5LIBORI; \
 	done
 	@if [[ -s $@.err ]]; then echo -n; else $(RM) $@.err; fi

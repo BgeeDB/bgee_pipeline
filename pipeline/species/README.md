@@ -82,4 +82,4 @@ If a line starts with `#`, it is commented and the species will not be inserted
 
 ## non Ensembl modifications
 
-* Adding the 10 *Timema* species in `bgeeSpecies.tsv` and insert_species_sex_info.sql` files.
+* Adding the 10 *Timema* species in `bgeeSpecies.tsv` and `insert_species_sex_info.sql` files.

@@ -13,7 +13,15 @@ use File::Slurp;
 use FindBin;
 use lib "$FindBin::Bin/.."; # Get lib path for Utils.pm
 use Utils;
+use Utils_insert_genes;
 
+# Patrick Tran Van, updated April 2019
+#
+# Insertion of Ensembl genes
+#
+# Integration of module "Utils_insert_genes" for function factorization
+# with "insert_genes_nonEnsembl.pl"
+###############################################################################
 
 # Define arguments & their default value
 my ($species, $bgee_connector, $ensembl_connector) = ('', '', '');
@@ -45,23 +53,12 @@ my $reg = Utils::connect_ensembl_registry($ensembl_connector, 1);
 # Bgee db connection
 my $dbh = Utils::connect_bgee_db($bgee_connector);
 
+# Factor 1: Need to map to another genomeSpeciesId?
 
-# Need to map to another genomeSpeciesId?
-my ($speciesBgee, $newSpecies, $scientific_name, $ensSource) = split('__', $species, -1);
-my @prefix;
-if ( $speciesBgee == $newSpecies || $newSpecies == 0 ){
-    # No mapping to another species
-    $species = $speciesBgee;
-}
-else {
-    $species = $newSpecies;
-    my $selSpecies = $dbh->prepare('SELECT fakeGeneIdPrefix FROM species WHERE speciesId=? AND genomeSpeciesId=?');
-    $selSpecies->execute($speciesBgee, $newSpecies)  or die $selSpecies->errstr;
-    @prefix = map { $_->[0] } @{$selSpecies->fetchall_arrayref};
-    $selSpecies->finish();
-    die "Too many prefixes returned [@prefix]\n"  if ( exists $prefix[1] );
-}
+my ($prefix, $species_tmp, $speciesBgee, $newSpecies, $scientific_name, $ensSource) = Utils_insert_genes::map_species($dbh, $species);
 
+my @prefix = @$prefix;
+$species = $species_tmp;
 
 # Get a slice adaptor for the  $species  core database
 my $gene_adaptor;
@@ -78,8 +75,6 @@ else {
 # Fetch all clones from a slice adaptor (returns a list reference)
 my @genes = @{$gene_adaptor->fetch_all()};
 
-
-
 ## Biotypes
 # Get previously inserted BioTypes
 my $biotypeDB = $dbh->prepare('SELECT geneBioTypeName FROM geneBioType');
@@ -87,10 +82,12 @@ $biotypeDB->execute()  or die $biotypeDB->errstr;
 my @InsertedBioTypes = uniq map { $_->[0] } @{$biotypeDB->fetchall_arrayref};
 $biotypeDB->finish;
 
+
 # Get BioTypes for this species
 my @specificBioTypes = uniq
                        map { $_->biotype() }
                        @genes; # Get through genes list and return uniq (non-redundant) biotype from it
+
 
 # Insert only new BioTypes
 my $lc = List::Compare->new(\@specificBioTypes, \@InsertedBioTypes);
@@ -112,29 +109,17 @@ if ( exists $newBioTypes[0] ){
     print "Inserting new BioTypes\n", join("\t", @newBioTypes), "\n";
 }
 
+## Factor 2: Get alternatives GO
 
-## Alt GO
-# Get alt_id GO
-my $altgoDB = $dbh->prepare('SELECT goAltId, goId FROM geneOntologyTermAltId');
-$altgoDB->execute()  or die $altgoDB->errstr;
-my %altid_go = map { lc $_->[0] => lc $_->[1] }
-               @{$altgoDB->fetchall_arrayref};
-$altgoDB->finish;
+my %altid_go = Utils_insert_genes::get_alt_go($dbh);
 
+## Factor 3: Get Obsolete GO
 
-## Obsolete GO
-# Get obsolete GO to not insert them later on
-die "Missing [go.obsolete] file\n"  if ( !-e 'go.obsolete' || -z 'go.obsolete' );
-my %obs_go = map { lc $_ => 1 }
-             read_file("$obsGO", chomp => 1);
+my %obs_go = Utils_insert_genes::get_obs_go($dbh, $obsGO);
 
+## Factor 4: Get used dataSources
 
-## DataSources
-# Get used dataSources
-my $sourceDB = $dbh->prepare('SELECT dataSourceId, dataSourceName FROM dataSource');
-$sourceDB->execute()  or die $sourceDB->errstr;
-my %InsertedDataSources = map { $_->[1] = lc $_->[1]; $_->[1] => $_->[0] } @{$sourceDB->fetchall_arrayref}; # List already inserted dataSources and return it in a hash dataSourceName (lowercase) => dataSourceId
-$sourceDB->finish;
+my %InsertedDataSources = Utils_insert_genes::get_source_id($dbh);
 
 # Add extra dataSource aliases
 # MUST be in lowercase to ease comparison
