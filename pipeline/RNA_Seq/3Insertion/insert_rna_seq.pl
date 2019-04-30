@@ -58,7 +58,7 @@ if ( !$test_options || $bgee_connector eq '' || $rnaSeqLibrary eq '' || $rnaSeqE
     exit 1;
 }
 
-require('rna_seq_utils.pl');
+require("$FindBin::Bin/rna_seq_utils.pl");
 
 # Bgee db connection
 my $bgee = Utils::connect_bgee_db($bgee_connector);

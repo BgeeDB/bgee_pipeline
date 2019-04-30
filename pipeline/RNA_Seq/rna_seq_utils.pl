@@ -336,7 +336,7 @@ sub getAllRnaSeqAnnotations2 {
         }
         else {
             warn 'Warning: library present several times in the annotation file: experiment: ',
-            $experimentId, ' - library: ', $libraryId, "\n";
+            $experimentId, ' - library: ', $libraryId, ". Commented: $commented\n";
         }
     }
     return %rnaSeqAnnotations;
@@ -442,7 +442,7 @@ sub getAllRnaSeqAnnotations {
         }
         else {
             warn 'Warning: library present several times in the annotation file: experiment: ',
-            $experimentId, ' - library: ', $libraryId, "\n";
+            $experimentId, ' - library: ', $libraryId, ". Commented: $commented\n";
         }
     }
     close $IN;
