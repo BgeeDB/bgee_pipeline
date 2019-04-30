@@ -1,5 +1,5 @@
-insert into dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, evidenceUrl,
-                        baseUrl, dataSourceDescription, toDisplay, category) values
+INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, evidenceUrl,
+                        baseUrl, dataSourceDescription, toDisplay, category) VALUES
 -- [species_ensembl_link]: e.g., Drosophila_melanogaster
 (1, 'NCBI Taxonomy', '', '', '',
     'https://www.ncbi.nlm.nih.gov/taxonomy', 'Source taxonomy used in Bgee', 1, ''),
@@ -74,8 +74,10 @@ insert into dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
 
 -- Add "ghost" sources, because a source can only be part of one category, so rather than
 -- creating a link table, we do this ugly hack
-insert into dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, evidenceUrl,
-                        baseUrl, dataSourceDescription, toDisplay, category) values
+INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, evidenceUrl,
+                        baseUrl, dataSourceDescription, toDisplay, category) VALUES
 
 (100, 'GEO', '', 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=[experiment_id]', 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=[evidence_id]',
-    'https://www.ncbi.nlm.nih.gov/geo/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source');
+    'https://www.ncbi.nlm.nih.gov/geo/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source'),
+(101, 'ArrayExpress', '', 'https://www.ebi.ac.uk/arrayexpress/experiments/[experiment_id]', '',
+	'https://www.ebi.ac.uk/arrayexpress/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source');
