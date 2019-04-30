@@ -119,3 +119,7 @@ MdomDv:0000001	opossum life cycle	UBERON:0000104	life cycle
 MdomDv:0000002	prenatal stage	UBERON:0000068	embryo stage	
 MdomDv:0000004	neonate stage	UBERON:0007221	neonate stage	
 MdomDv:0000036	4-week-old stage	UBERON:0018685	nursing stage	
+BtauDv:0000003	immature stage	UBERON:0000112	sexually immature stage	
+MmusDv:0000058	14 weeks (mouse)	UBERON:0018241	prime adult stage	
+MmusDv:0000074	24 weeks (mouse)	UBERON:0018241	prime adult stage	
+SscrDv:0000022	25-day-old stage	UBERON:0018685	nursing stage	
