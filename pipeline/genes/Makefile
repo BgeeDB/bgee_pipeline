@@ -7,7 +7,7 @@ all: $(VERIFICATIONFILE)
 
 $(OUTPUT_DIR)go:
 	# Download Gene Ontology
-	@$(WGET) 'http://www.geneontology.org/ontology/obo_format_1_2/gene_ontology.1_2.obo' -O $(INPUT_DIR)go.tmp && $(MV) $(INPUT_DIR)go.tmp $(INPUT_DIR)go 2>/dev/null  || rm -f $(INPUT_DIR)go.tmp
+	@$(WGET) 'ftp://ftp.geneontology.org/pub/go/ontology/obo_format_1_2/gene_ontology.1_2.obo' -O $(INPUT_DIR)go.tmp && $(MV) $(INPUT_DIR)go.tmp $(INPUT_DIR)go 2>/dev/null  || rm -f $(INPUT_DIR)go.tmp
 	# Insert Gene Ontology
 	@$(JAVA) InsertGO $(INPUT_DIR)go >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
