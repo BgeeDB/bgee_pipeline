@@ -14,7 +14,7 @@ RELEASE          := 14.1
 # MySQL database connection parameters
 # DBUSER and DBPASS defined in Makefile.Config
 # DBUSERV and DBPASSV defined in Makefile.Config
-DBNAME := bgee_v$(RELEASE)
+DBNAME := bgee_v$(subst .,_,$(RELEASE))
 DBHOST := 127.0.0.1
 DBPORT := 3306
 DBNAME_BGEELITE := bgeelite_v$(subst .,_,$(RELEASE))
