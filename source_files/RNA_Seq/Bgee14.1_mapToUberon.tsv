@@ -123,3 +123,8 @@ BtauDv:0000003	immature stage	UBERON:0000112	sexually immature stage
 MmusDv:0000058	14 weeks (mouse)	UBERON:0018241	prime adult stage	
 MmusDv:0000074	24 weeks (mouse)	UBERON:0018241	prime adult stage	
 SscrDv:0000022	25-day-old stage	UBERON:0018685	nursing stage	
+OariDv:0000005	juvenile stage	UBERON:0034919	juvenile stage	
+OariDv:0000016	day 12 embryonic stage	UBERON:0000068	embryo stage	
+OariDv:0000018	day 14 embryonic stage	UBERON:0000068	embryo stage	
+OariDv:0000020	day 16 embryonic stage	UBERON:0000068	embryo stage	
+OariDv:0000022	day 20 embryonic stage	UBERON:0000068	embryo stage	
