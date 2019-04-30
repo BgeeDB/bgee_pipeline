@@ -14,6 +14,9 @@ $| = 1; # no buffering of output
 # Julien Roux, updated Oct 2016
 #####################################################################
 
+
+my $abundance_file = 'abundance_gene_level+new_tpm+new_fpkm+calls.tsv';
+
 # Define arguments & their default value
 my ($bgee_connector) = ('');
 my ($rnaSeqLibrary, $all_results, $sex_info)  = ('', '', '');
@@ -77,7 +80,7 @@ foreach my $expId ( sort keys %libraries ){
         } else {
             $all_species{$libraries{$expId}->{$libraryId}->{'speciesId'}}++;
             $count_libs++;
-            unless ( -s $all_results.'/'.$libraryId.'/abundance_gene_level+new_tpm+new_fpkm+calls.tsv' ){
+            unless ( -s "$all_results/$libraryId/$abundance_file" ){
                 die "Missing or empty processed data file for library $libraryId! Please check that the transfer from Vital-IT was successful. Otherwise this library should maybe be added to the file of excluded libraries?\n";
             }
         }
@@ -228,7 +231,7 @@ foreach my $expId ( keys %libraries ){
 
         print "\t$expId $libraryId\n";
 
-        my %genesResults = getGenesResults($all_results.'/'.$libraryId.'/abundance_gene_level+new_tpm+new_fpkm+calls.tsv');
+        my %genesResults = getGenesResults("$all_results/$libraryId/$abundance_file");
         foreach my $geneId ( keys %genesResults ){
             if ( $genesResults{$geneId}->{'expressionCall'} eq $Utils::PRESENT_CALL ){
                 $presentGenes{ $genes{ $libraries{$expId}->{$libraryId}->{'speciesId'}}->{ $geneId } }++;
@@ -352,7 +355,7 @@ foreach my $expId ( sort keys %libraries ){
         }
 
         # insert genes results
-        my %genesResults = getGenesResults($all_results.'/'.$libraryId.'/abundance_gene_level+new_tpm+new_fpkm+calls.tsv');
+        my %genesResults = getGenesResults("$all_results/$libraryId/$abundance_file");
         foreach my $geneId ( keys %genesResults ){
             $inserted++;
             # if gene never seen as 'present', exclude it
