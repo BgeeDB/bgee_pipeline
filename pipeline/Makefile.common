@@ -382,10 +382,8 @@ RNASEQABUNDANCEFILE        := abundance_gene_level+new_tpm+new_fpkm+calls.tsv
 RNASEQALLRES               := $(RNASEQDATAPATH)all_results_$(DBNAME)/
 RNASEQGTFDATAPATH          := $(RNASEQDATAPATH)GTF/
 RNASEQLOGS                 := $(RNASEQALLRES)
-RNASEQSAMPSTATS            := $(RNASEQALLRES)presence_absence_all_samples.txt
-#TODO should this file be put in $(GENERATED_FILES_DIR)$(RNASEQPATH)?
-RNASEQREPORTINFO           := $(RNASEQALLRES)reports_info_all_samples.txt
-#TODO should this file be put in $(GENERATED_FILES_DIR)$(RNASEQPATH)?
+RNASEQSAMPSTATS            := $(GENERATED_FILES_DIR)$(RNASEQPATH)presence_absence_all_samples.txt
+RNASEQREPORTINFO           := $(GENERATED_FILES_DIR)$(RNASEQPATH)reports_info_all_samples.txt
 
 # Differential file path
 RNASEQDIFFEXPRPATH                  := $(RNASEQDATAPATH)processed_differential_$(DBNAME)/

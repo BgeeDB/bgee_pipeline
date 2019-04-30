@@ -66,7 +66,8 @@ print "\t", $count_libs, " libraries mapped and to be inserted.\n\n";
 
 
 # Read the .report file for each library, extract infos and print them out
-open (my $OUT, '>>', $report_info)  or die "Cannot write [$report_info]\n";
+#NOTE $report_info is rewritten everytime this script runs!
+open (my $OUT, '>', $report_info)  or die "Cannot write [$report_info]\n";
 # header
 print {$OUT} "#libraryId\tallReadsCount\tmappedReadsCount\tminReadLength\tmaxReadLength\n";
 
