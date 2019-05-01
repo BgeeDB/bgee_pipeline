@@ -283,9 +283,9 @@ TMP_TABLE_CLAUSE   := SELECT t10.expressionId, IF((SELECT COUNT(rnaSeqExperiment
 
 check_conditions: insert_RNA_seq
 	@echo "Conditions with anat. entity not existing in related species: " > $@.tmp
-	@$(MYSQL) -e "select DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.sex, t1.strain from cond as t1 left outer join anatEntityTaxonConstraint as t2 on t1.anatEntityId = t2.anatEntityId and (t2.speciesId is null or t1.speciesId = t2.speciesId) left outer join anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId left outer join rnaSeqLibrary as t10 on t1.conditionId = t10.conditionId where t2.anatEntityId is null AND t10.conditionId IS NOT NULL order by t1.speciesId;" >> $@.tmp 2> $@.warn
+	@$(MYSQL) -e "SELECT DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.sex, t1.strain FROM cond AS t1 LEFT OUTER JOIN anatEntityTaxonConstraint AS t2 ON t1.anatEntityId = t2.anatEntityId AND (t2.speciesId IS NULL OR t1.speciesId = t2.speciesId) LEFT OUTER JOIN anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId LEFT OUTER JOIN rnaSeqLibrary AS t10 ON t1.conditionId = t10.conditionId WHERE t2.anatEntityId IS NULL AND t10.conditionId IS NOT NULL ORDER BY t1.speciesId" >> $@.tmp 2> $@.warn
 	@echo "Conditions with dev. stage not existing in related species: " >> $@.tmp
-	@$(MYSQL) -e "select DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.sex, t1.strain from cond as t1 left outer join stageTaxonConstraint as t2 on t1.stageId = t2.stageId and (t2.speciesId is null or t1.speciesId = t2.speciesId) left outer join anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId left outer join rnaSeqLibrary as t10 on t1.conditionId = t10.conditionId where t2.stageId is null AND t10.conditionId IS NOT NULL order by t1.speciesId;" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "SELECT DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.sex, t1.strain FROM cond AS t1 LEFT OUTER JOIN stageTaxonConstraint AS t2 ON t1.stageId = t2.stageId AND (t2.speciesId IS NULL OR t1.speciesId = t2.speciesId) LEFT OUTER JOIN anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId LEFT OUTER JOIN rnaSeqLibrary AS t10 ON t1.conditionId = t10.conditionId WHERE t2.stageId IS NULL AND t10.conditionId IS NOT NULL ORDER BY t1.speciesId" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
 insert_expression: check_conditions insert_RNA_seq
@@ -313,29 +313,31 @@ insert_feature_length: $(RNASEQ_LENGTH_INFO_FILEPATH)
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
-launch_calculate_TMM_factors: insert_RNA_seq
+launch_calculate_TMM_factors: insert_RNA_seq $(RNASEQALLRES)
 	# Launch calculation of TMM factors for RNA-seq
 	@perl 3Insertion/launch_calculate_TMM_factors.pl -bgee=$(BGEECMD) -path_generes=$(RNASEQALLRES) -path_target=$(RNASEQTMMTARG) -path_processed=$(RNASEQTMMPATH) >$@.tmp 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
-check_TMM_factors: launch_calculate_TMM_factors
+check_TMM_factors: launch_calculate_TMM_factors $(RNASEQTMMPATH)
 	# Check results
 	@grep -H -c 'proc.time' $(RNASEQTMMPATH)/*.log | grep ':0$$'  >$@.tmp
 	# Check warnings
 	@grep 'Warning' -A 5 $(RNASEQTMMPATH)/*.log                   >>$@.tmp
 	@$(MV) $@.tmp $@
 #TODO check that all libraries in database have a TMM factor calculated:
-# cat /var/bgee/extra/pipeline/rna_seq/processed_TMM_bgee_v14/*.tsv | grep -v rnaSeqExperimentId | wc -l
+# cat /var/bgee/extra/pipeline/rna_seq/processed_TMM_$(DBNAME)/*.tsv | grep -v rnaSeqExperimentId | wc -l
 # This should correspond to: SELECT count(*) FROM rnaSeqLibrary;
 
-insert_TMM_factors: check_TMM_factors
+insert_TMM_factors: check_TMM_factors $(RNASEQTMMPATH)
 	# Insert TMM factors into rnaSeqLibrary table
 	@perl 3Insertion/insert_TMM_factors.pl -bgee=$(BGEECMD) -tmm_results=$(RNASEQTMMPATH) >$@.tmp 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
+
 #TODO Keep a way to use an external annotation file
+#FIXME Useful? As Wormbase annotations are merged within RNASeq*_full.tsv files used in the main part!
 wormbase:
 	# Get Annotation file from WormBase
 	@$(WGET) 'http://athena.caltech.edu/MrExpTable.csv' && $(MV) MrExpTable.csv 4External/$@.tsv 2>/dev/null  || rm -f MrExpTable.csv
@@ -346,6 +348,7 @@ wormbase:
 	@echo TODO
 
 external: wormbase
+
 
 #TODO Add 1st steps
 #TODO add a verification that each transcriptId is uniquely used in a given species

@@ -9,8 +9,10 @@ use Getopt::Long;
 use FindBin;
 use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
 use Utils;
+
 $| = 1;
-require('rna_seq_utils.pl');
+require("$FindBin::Bin/rna_seq_utils.pl");
+
 
 # Julien Roux, created October 2015; updated Nov 2016
 # Insert TMM normalization factor for each RNA-Seq librarie.
@@ -21,8 +23,8 @@ require('rna_seq_utils.pl');
 my ($bgee_connector) = ('');
 my ($tmm_results)    = ('');
 my ($debug)          = (0); # = former -v option
-my %opts = ('bgee=s'                => \$bgee_connector,   # Bgee connector string
-            'tmm_results=s'         => \$tmm_results,     # /var/bgee/extra/pipeline/rna_seq/processed_TMM_bgee_v14/
+my %opts = ('bgee=s'                => \$bgee_connector,  # Bgee connector string
+            'tmm_results=s'         => \$tmm_results,     # /var/bgee/extra/pipeline/rna_seq/processed_TMM_$(DBNAME)/
             'debug|v'               => \$debug,
            );
 
@@ -40,6 +42,7 @@ if ( !$test_options || $bgee_connector eq '' || $tmm_results eq '' ){
 
 # Bgee db connection
 my $bgee = Utils::connect_bgee_db($bgee_connector);
+
 
 ####################
 # READ TMM FACTORS #
@@ -61,12 +64,13 @@ for my $file ( glob($tmm_results.'/*.tsv') ){
     close $IN0;
 }
 
+
 ######################
 # INSERT TMM FACTORS #
 ######################
 print "Inserting TMM factors...\n";
 
-my $insTMM = $bgee->prepare('UPDATE rnaSeqLibrary SET tmmFactor = ? WHERE rnaSeqLibraryId = ?;');
+my $insTMM = $bgee->prepare('UPDATE rnaSeqLibrary SET tmmFactor = ? WHERE rnaSeqLibraryId = ?');
 for my $library ( keys %toInsert ){
     print "\t$library\n";
 
