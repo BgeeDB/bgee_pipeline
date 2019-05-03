@@ -14,9 +14,9 @@ Need to find homologous organs in human, mouse, cow, rat, macaque, gorilla and c
 
 * brain: UBERON:0000955
 * embryo: UBERON:0000922
-* gills: UBERON:0011150
+* pharyngeal gill: UBERON:0000206
 * heart: UBERON:0000948
-* bones: UBERON:0001474
+* bone element: UBERON:0001474
 * intestine: UBERON:0000160
 * kidney: UBERON:0002113
 * liver: UBERON:0002107
