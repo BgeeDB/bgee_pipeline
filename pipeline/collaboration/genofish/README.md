@@ -20,7 +20,7 @@ Need to find homologous organs in human, mouse, cow, rat, macaque, gorilla and c
 * intestine: UBERON:0000160
 * kidney: UBERON:0002113
 * liver: UBERON:0002107
-* muscle: UBERON:0005090
+* muscle organ: UBERON:0001630
 * ovary: UBERON:0000992
 * testis: UBERON:0000473
 
@@ -29,6 +29,8 @@ Need to find homologous organs in human, mouse, cow, rat, macaque, gorilla and c
 Two files are generated: one containing the homologous entities existing in at least one of the provided species;
 one containing the list of anatomical entities for which no homology relation existed, or that did not exist
 in any of the requested species.
+
+See [output directory](../../../generated_files/collaboration/genofish/).
 
 ### Pipeline details
 
