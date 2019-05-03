@@ -488,9 +488,11 @@ differentialExpression
   * Add the rnaSeqLibraryIds to the table rnaSeqLibraryDiscarded
 
 
-Removal of some libraries/runs:
+### Steps done for partial update 14.1
 
-For Bgee 14.1, as compared to Bgee 14.0, following runs were removed:
+#### Removal of some RNA-Seq libraries/experiments
+
+* For Bgee 14.1, as compared to Bgee 14.0, following runs were removed:
 
 ```
 SRR069493
@@ -586,7 +588,7 @@ SRR661361
 SRR820938
 ```
 
-For Bgee 14.1, as compared to Bgee 14.0, following libraries were removed:
+* For Bgee 14.1, as compared to Bgee 14.0, following libraries were removed:
 
 ```
 SRX007069
@@ -669,7 +671,7 @@ SRX419414
 SRX421312
 ```
 
-For Bgee 14.1, as compared to Bgee 14.0, following experiments were removed because no remaining libraries:
+* For Bgee 14.1, as compared to Bgee 14.0, following experiments were removed because no remaining libraries:
 
 ```
 GSE53690
@@ -678,10 +680,6 @@ SRP001010
 SRP009247
 SRP015688
 ```
-
-### Steps done for partial update 14.1
-
-#### Removal of some RNA-Seq libraries/experiments
 
 * 3 more conditions are not used anywhere, because they were remapped for insertion in the `expression` table:
 
@@ -711,4 +709,18 @@ They were remapped to:
 * number of rows in `rnaSeqLibrary` went from 5,745 to 5,667 (78 rows deleted)
 * number of rows in `rnaSeqExperiment` went from 41 to 36 (5 rows deleted)
 
-#### Reset `expressionId` field in `rnaSeqResult` table
+#### Clean table `cond` and `expression` to remove lines related only to RNA-Seq data
+
+* number of rows in `expression` went from 94,981,552 to 50,486,926 (44,494,626 rows deleted)
+* number of rows in `cond` table went from 39,317 to 38,566 (751 rows deleted). Of note, some conditions
+were unused in bgee_v14, it is unclear why. We have kept these unused conditions in bgee_v14_1, just in case.
+
+
+* number of conditions not used anywhere went from 524 to 1,272 (748 more conditions unused; as compared to
+previous database version, 751 more conditions unused, with the 3 from the previous step)
+* Of note, many conditions used in the annotations of RNA-Seq libraries (inserted in table `rnaSeqLibrary`)
+are remapped to a different condition for insertion in the `expression` table:
+  * Of the 991 conditions used in the table `rnaSeqLibrary` after discarding some libraries,
+    856 are remapped to another condition.
+  * This explains why 748 more conditions are not used anywhere. These conditions inserted in the table `expression`
+    were produced only from RNA-Seq data. If we had more than 856, then we would have a bug :)
