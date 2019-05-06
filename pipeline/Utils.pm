@@ -1004,8 +1004,8 @@ sub get_max_condition_id_and_check_strain {
     my $strainToCheck = $strain;
     $strainToCheck =~ s/[^a-zA-Z0-9]//g;
 
-    foreach my $key (keys %{ $conditions }) {
-        if( $conditions->{ $key }->{ 'conditionId' } > $maxId ) {
+    for my $key ( keys %{ $conditions } ){
+        if( $conditions->{ $key }->{ 'conditionId' } > $maxId ){
             $maxId = $conditions->{ $key }->{ 'conditionId' };
         }
 
