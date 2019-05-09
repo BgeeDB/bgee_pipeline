@@ -862,7 +862,7 @@ sub insert_get_condition {
     my $condKey = generate_condition_key($anatEntityId, $stageId, $speciesId, $sexToUse, $sexInference, $strain);
 
     # If this condition is already available, nothing to do
-    if (defined $conditions->{$condKey}) {
+    if ( defined $conditions->{$condKey} ){
         #TODO is it a good idea to pass back the modified hash since it is passed as a reference?
         #=> I now return the condition, Sebastien must be informed!
         return ($conditions->{ $condKey }, $conditions);
@@ -873,7 +873,7 @@ sub insert_get_condition {
     # CREATE NEW CONDITION IF NOT EXISTING
     # ====================================
     # First, if sex was inferred and it is the first time we see this condition, we log a message
-    if ($sexInference) {
+    if ( $sexInference ){
         print "Using inferred sex info '$inferredSex' for organ '$anatEntityId' and species '$speciesId' for experiment [$expId] and gene [$geneId]\n";
     }
     # OK, now, retrieve the max conditionId: To avoid to first insert the condition,
@@ -902,11 +902,11 @@ sub insert_get_condition {
     # 'wild-type' in expression table (since everything is wild-type anyway in Bgee so far).
 
     my $mappedSexToUse = $sexToUse;
-    if ($sexToUse eq $NA_SEX) {
+    if ( $sexToUse eq $NA_SEX ){
         $mappedSexToUse = $NOT_ANNOTATED_SEX;
     }
     my $mappedStrainToUse = $strain;
-    if ($strain eq $NA_STRAIN || $strain eq $NOT_ANNOTATED_STRAIN || $strain eq $CRD_STRAIN) {
+    if ( $strain eq $NA_STRAIN || $strain eq $NOT_ANNOTATED_STRAIN || $strain eq $CRD_STRAIN ){
         $mappedStrainToUse = $WILD_TYPE_STRAIN;
     }
 
@@ -915,9 +915,9 @@ sub insert_get_condition {
     my $exprMappedCondId = $condId;
 
     # condition too granular or with sex inferred or NA
-    if ($condKey ne $exprMappedCondKey) {
+    if ( $condKey ne $exprMappedCondKey ){
         # Does the condition, not-too-granular and with no sex inference and no NA, already exist?
-        if (defined $conditions->{$exprMappedCondKey}) {
+        if ( defined $conditions->{$exprMappedCondKey} ){
             $exprMappedCondId = $conditions->{$exprMappedCondKey}->{'conditionId'};
         } else {
             # Does not exist, update the condition IDs and insert into database
@@ -935,12 +935,12 @@ sub insert_get_condition {
         }
     }
     # Assertion test: at this point, if sex was inferred or was equal to NA, we should always have a "mapped" condition
-    if ( ($sexInference || $sexToUse eq $NA_SEX) && $condId == $exprMappedCondId) {
+    if ( ($sexInference || $sexToUse eq $NA_SEX) && $condId == $exprMappedCondId ){
         die "Assertion error, inferred or NA sex conditions should be seen as too granular\n";
     }
     # Same for strains mapped to 'wild-type'
     if ( ($strain eq $NA_STRAIN || $strain eq $NOT_ANNOTATED_STRAIN || $strain eq $CRD_STRAIN) &&
-          $condId == $exprMappedCondId ) {
+          $condId == $exprMappedCondId ){
         die "Assertion error, strain info '$strain' should be seen as too granular\n";
     }
 
