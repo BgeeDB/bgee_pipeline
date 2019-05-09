@@ -69,7 +69,7 @@ insert into dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
 (31, 'GTEx - dbGAP', '', 'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000424.v6.p1', 'https://www.ncbi.nlm.nih.gov/sra/?term=[evidence_id]',
     'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000424', 'GTEx RNA-Seq data', 1, 'RNA-Seq data source'),
 (32, 'VGNC', 'http://vertebrate.genenames.org/data/gene-symbol-report/#!/vgnc_id/[xref_id]', '', '',
-     'http://vertebrate.genenames.org', 'Vertebrate Gene Nomenclature Committee', 0, 'Genomics database');
+     'http://vertebrate.genenames.org', 'Vertebrate Gene Nomenclature Committee', 0, 'Genomics database'),
 (33, 'nonEnsembl', '', '', '', '', 'Independent genome assemblies and annotations (by Maker and Blast2GO)', 0, '');
 
 -- Add "ghost" sources, because a source can only be part of one category, so rather than

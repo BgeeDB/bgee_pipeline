@@ -19,10 +19,10 @@
 * Genome has been annotated with Maker and Blast2GO and the GFF file need to have the Maker and Blast2GO syntax. Example:
 
 ```
-3_Tce_b3v08_scaf000380	maker	gene	161294	162727	.	+	.	ID=TCE_13833;Name=TCE_13833;Alias=augustus_masked-3_Tce_b3v08_scaf000380-processed-gene-0.31;ontology_term=GO:0003700,GO:0045944,GO:0046983,GO:0000977,GO:0008134,GO:0050767,GO:0030182,GO:0090575,GO:0007423;topblasthit=gi|1330930827|gb|PNF41753.1|hypothetical protein B7P43_G03461 [Cryptotermes secundus];
+2_Tcm_b3v06_scaf001768	maker	mRNA	92518	119828	.	+	.	ID=TCM_04500-RA;Parent=TCM_04500;Name=TCM_04500-RA;Alias=maker-2_Tcm_b3v06_scaf001768-augustus-gene-0.2-mRNA-1;_AED=0.27;_QI=0|0|0|0.71|0.83|0.71|7|0|365;_eAED=0.27;ontology_term=GO:0016020,GO:0004767,GO:0005525,GO:0007165,GO:0003924;topblasthit_gene=;topblasthit_description=ras-related protein Ral-a;topblasthit_taxon=Halyomorpha halys;topblasthit_xref=XP_014294062.1;
 ```
 
-The `description` field (last column) need to have the entries `ontology_term` and `topblasthit` (both obtained via Blast2GO).
+The `description` field (last column) need to have the entries `ontology_term`, `topblasthit_gene`, `topblasthit_description`,  `topblasthit_taxon` and  `topblasthit_xref`, otherwise the tables will be filled with `undef`.
 
 * The annotation file need to have the same base name than the genome file (with `_vbgee`) and has to be in the same directory (ie. `genomeFilePath` of the `species` table). Example:
 

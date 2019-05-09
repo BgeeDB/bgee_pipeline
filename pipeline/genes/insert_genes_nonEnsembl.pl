@@ -17,11 +17,9 @@ use Utils_insert_genes;
 
 use Data::Dumper qw(Dumper);
 
-###############################################################################
-# Patrick Tran Van, created April 2019
-#
-# Insertion of non Ensembl genes.
-###############################################################################
+# Patrick Tran Van, updated May 2019
+# Insertion of non Ensembl genes
+#############################################################
 
 ### Function : Formatting the GO annotation
 
@@ -87,53 +85,6 @@ sub go_formatting {
 	#print join(", ", @sorted_go_list) . "\n\n";	
 	return (@sorted_go_list);
 	
-}
-
-### Function : Formatting the functional annotation
-
-sub func_formatting {
-	
-	my ($func_description) = @_; 
-	
-	my @annotation = split /=/, $func_description;
-	# 'arth_topblasthit=gi|1330931529|gb|PNF42263.1|cGMP-dependent protein kinase, isozyme 1 [Cryptotermes secundus]'
-	
-	# become
-	
-	# $VAR1 = [
-    #      'arth_topblasthit',
-    #      'gi|1330931529|gb|PNF42263.1|cGMP-dependent protein kinase, isozyme 1 [Cryptotermes secundus]'
-    #    ];
-
-	my $original_annotation = $annotation[1];
-	# 'gi|1330931529|gb|PNF42263.1|cGMP-dependent protein kinase, isozyme 1 [Cryptotermes secundus]'
-	
-	my $index_sep_acc_annot = rindex($original_annotation,"|");
-	
-	# rindex STR,SUBSTR :
-	# Returns the position of the last occurrence of SUBSTR in STR. If POSITION is specified, returns the last occurrence beginning at or before that position.
-
-	my $all_acc = substr($original_annotation, 0, $index_sep_acc_annot+1);
-	my $annot = substr($original_annotation, $index_sep_acc_annot+1);
-	
-	# substr EXPR,INDEX,LENGTH:
-	# Extracts a substring out of EXPR and returns it.
-
-	my $intermed_annotation = $annot =~ s/\Q[/[Taxon hit id: /r;	# Replace '[' by '[Taxon hit id:'
-	
-	# RNA-binding protein fusilli isoform X1 [Taxon hit id: Zootermopsis nevadensis]
-	
-	my $final_annotation = $intermed_annotation =~ s/\Q]/, Acc: $all_acc]/r;	# Replace ']' by ', Acc: ...]'
-	
-	# RNA-binding protein fusilli isoform X1 [Hit tax id: Zootermopsis nevadensis, Acc: gi|1227956332|ref|XP_021916099.1|]
-	# Include functional description, taxon hit and ncbi accessions.
-	
-	# Get the last accession (searcheable on uniprot)
-	my @all_acc_list = split /\|/, $all_acc;
-	my $acc = $all_acc_list[3];
-	
-	# Return description and accession
-	return ($final_annotation, $acc);
 }
 
 #################### MAIN
@@ -229,7 +180,7 @@ while (<FILE>) {
 	my @field = split("\t+");
 	my $type = $field[2];	# gene, mRNA, exon, CDS, five_prime_UTR, three_prime_UTR
 	
-	# Look only for gene
+	# Look only for genes
 	if ($type eq "gene") {
 		
 		my @gene_description = split /;/, $field[8];
@@ -241,55 +192,179 @@ while (<FILE>) {
 		
 		my $target;
 		my $idx;
+		my $idx_taxon;
+		my $id_species;
 		my $gene_description_ref  = \@gene_description;
-			
-		# ... the functional annotation 
-	
-		$target = "topblasthit";
+						
+		# ... the GO annotation (1)
+
+		$target = "ontology_term";
 		$idx = undef;
 		
-		# Get the index of "xxx_topblasthit" in the array @gene_description
+		# Get the index of "ontology_term" in the array @gene_description
 		
 		foreach ( 0 .. $#gene_description ) {
-		    if ( index ( $gene_description_ref->[ $_ ], $target ) >= 0 ) {
-		        $idx = $_;
-		        last;
-		    }
+			if ( index ( $gene_description_ref->[ $_ ], $target ) >= 0 ) {
+				$idx = $_;
+				last;
+			}
 		}
 		
 		if (defined $idx){
 			
-			my @result = func_formatting($gene_description[$idx]);
-			$gene_hash{$gene_id}{Function} = $result[0];
-			$gene_hash{$gene_id}{Accession} = $result[1];
+			my @annotation = split /=/, $gene_description[$idx];
+			# ontology_term=GO:0005634,GO:0003677
 			
-			# ... the GO annotation 
-	
-			$target = "ontology_term";
-			$idx = undef;
+			# become
 			
-			# Get the index of "xxx_ontology_term" in the array @gene_description
-			
-			foreach ( 0 .. $#gene_description ) {
-			    if ( index ( $gene_description_ref->[ $_ ], $target ) >= 0 ) {
-			        $idx = $_;
-			        last;
-			    }
-			}
-			
-			if (defined $idx){
-				
-				#print Dumper \%obs_go;
+			# $VAR1 = [
+            # 'ontology_term',
+            # 'GO:0005634,GO:0003677'
+            # ];
+            
+			if ( scalar @annotation == 2 ) {			
 				my @go = go_formatting($gene_description[$idx], \%altid_go, \%obs_go);
 				$gene_hash{$gene_id}{GO} = \@go;	# Create a reference to the array by using backslash
-				
 			}
 			
-		} 
+			else {
+				$gene_hash{$gene_id}{GO} = "undef";
+			}
+			
+		}			 
 		
-		else {	# Gene has no function 
-			$gene_hash{$gene_id} = "undef";
-		}		
+		else {	# Gene has no GO or "ontology_term" not present
+			$gene_hash{$gene_id}{GO} = "undef";
+		}	
+		
+		# ... the functional annotation 
+		# Gene name (2)
+	
+		$target = "topblasthit_gene";
+		$idx = undef;
+		
+		# Get the index of "topblasthit_gene" in the array @gene_description
+		
+		foreach ( 0 .. $#gene_description ) {
+			if ( index ( $gene_description_ref->[ $_ ], $target ) >= 0 ) {
+				$idx = $_;
+				last;
+			}
+		}
+		
+		if (defined $idx){
+			
+			my @annotation = split /=/, $gene_description[$idx];
+
+			if ( scalar @annotation == 2 ) {			
+				$gene_hash{$gene_id}{Name} = $annotation[1];
+			}
+			
+			else {
+				$gene_hash{$gene_id}{Name} = "undef";
+			}
+			
+		}			 
+		
+		else {	# Gene has no gene name or "topblasthit_gene" not present
+			$gene_hash{$gene_id}{Name} = "undef";
+		}	
+
+		# Gene accession (3)
+	
+		$target = "topblasthit_xref";
+		$idx = undef;
+		
+		# Get the index of "topblasthit_xref" in the array @gene_description
+		
+		foreach ( 0 .. $#gene_description ) {
+			if ( index ( $gene_description_ref->[ $_ ], $target ) >= 0 ) {
+				$idx = $_;
+				last;
+			}
+		}
+		
+		if (defined $idx){
+			
+			my @annotation = split /=/, $gene_description[$idx];
+
+			if ( scalar @annotation == 2 ) {			
+				$gene_hash{$gene_id}{Accession} = $annotation[1];
+			}
+			
+			else {
+				$gene_hash{$gene_id}{Accession} = "undef";
+			}
+			
+		}			 
+		
+		else {	# Gene has no gene name or "topblasthit_gene" not present
+			$gene_hash{$gene_id}{Accession} = "undef";
+		}	
+
+
+		# Gene description (4) + Taxon best hit
+	
+		$target = "topblasthit_description";
+		$idx = undef;
+		
+		# Get the index of "topblasthit_description" in the array @gene_description
+		
+		foreach ( 0 .. $#gene_description ) {
+			if ( index ( $gene_description_ref->[ $_ ], $target ) >= 0 ) {
+				$idx = $_;
+				last;
+			}
+		}
+		
+		if (defined $idx){
+			
+			$target = "topblasthit_taxon";
+			$idx_taxon = undef;
+		
+			# Get the index of "topblasthit_description" in the array @gene_description
+		
+			foreach ( 0 .. $#gene_description ) {
+				if ( index ( $gene_description_ref->[ $_ ], $target ) >= 0 ) {
+					$idx_taxon = $_;
+					last;
+				}
+			}
+			
+			if (defined $idx_taxon){
+				my @taxon_annotation = split /=/, $gene_description[$idx_taxon];
+				
+				if ( scalar @taxon_annotation == 2 ) {	
+					$id_species = $taxon_annotation[1];
+				}
+				
+				else {
+					$id_species = "undef";
+				}
+			
+			}
+			
+			else {
+				$id_species = "undef";
+			}
+			
+			my @annotation = split /=/, $gene_description[$idx];
+
+			if ( scalar @annotation == 2 ) {			
+				$gene_hash{$gene_id}{Description} = $annotation[1] . " [Hit tax id: " . $id_species . ", Acc: " . $gene_hash{$gene_id}{Accession} ."]";
+				# RNA-binding protein fusilli isoform X1 [Hit tax id: Zootermopsis nevadensis, Acc: gi|1227956332|ref|XP_021916099.1|]
+				# Include functional description, taxon hit and ncbi accessions.
+			}
+			
+			else {
+				$gene_hash{$gene_id}{Description} = "undef";
+			}
+			
+		}			 
+		
+		else {	# Gene has no gene name or "topblasthit_description" not present
+			$gene_hash{$gene_id}{Description} = "undef";
+		}	
 	 
 	} 
 
@@ -297,27 +372,31 @@ while (<FILE>) {
 close (FILE);
 
 
-
+my $gene_name;
 my $description;
 my $accession;
 my $biotype = "protein_coding";
+
+#print Dumper \%gene_hash;
+
 
 #=for comment
 
 foreach my $id2insert (sort {lc $a cmp lc $b} keys %gene_hash) {	# Sort to always get the same order
 
 	my $bgeeGeneId;
-		       
+
 	if (ref($gene_hash{$id2insert}) eq 'HASH') {	# Gene has a function
 
-    	$description = $gene_hash{$id2insert}{Function};
+		$gene_name = $gene_hash{$id2insert}{Name};
+    	$description = $gene_hash{$id2insert}{Description};
     	$accession = $gene_hash{$id2insert}{Accession};
     	
 #=for comment
 		## Insert gene info
 
 		if ( ! $debug ){
-			$geneDB->execute($id2insert, "", $description, $biotype, $speciesBgee)  or die $geneDB->errstr;
+			$geneDB->execute($id2insert, $gene_name, $description, $biotype, $speciesBgee)  or die $geneDB->errstr;
 			$bgeeGeneId = $dbh->{mysql_insertid};
 			die "Cannot get bgeeGeneId [$bgeeGeneId]\n"  if ( $bgeeGeneId !~ /^\d+$/ );
 		}
@@ -386,11 +465,12 @@ foreach my $id2insert (sort {lc $a cmp lc $b} keys %gene_hash) {	# Sort to alway
 		else {
 			print "\n[$id2insert] [] [$description]   [$biotype] [$speciesBgee]\n";
 		}
+
 	}
 	
 }
-
 #=cut
+
 
 # Update ensemblGene to 0
 my $updt_geneDB  = $dbh->prepare('UPDATE gene SET ensemblGene = 0 WHERE speciesId = (?)');                             
