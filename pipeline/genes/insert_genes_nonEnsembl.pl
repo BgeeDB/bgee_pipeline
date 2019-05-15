@@ -117,7 +117,7 @@ my $dbh = Utils::connect_bgee_db($bgee_connector);
 
 # Factor 1: Need to map to another genomeSpeciesId?
 
-my ($prefix, $species_tmp, $speciesBgee, $newSpecies, $scientific_name, $ensSource) = Utils_insert_genes::map_species($dbh, $species);
+my ($species_tmp, $speciesBgee, $newSpecies, $scientific_name, $ensSource) = Utils_insert_genes::map_species($dbh, $species);
 
 # 7227__0__Timema__Maker
 # become 7227 0 Timema Maker

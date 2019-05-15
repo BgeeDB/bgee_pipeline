@@ -29,21 +29,15 @@ sub map_species {
 	# Need to map to another genomeSpeciesId?
 	my ($speciesBgee, $newSpecies, $scientific_name, $ensSource) = split('__', $species, -1);
 	
-	my @prefix;
 	if ( $speciesBgee == $newSpecies || $newSpecies == 0 ){
 	    # No mapping to another species
 	    $species = $speciesBgee;
 	}
 	else {
 	    $species = $newSpecies;
-	    my $selSpecies = $dbh->prepare('SELECT fakeGeneIdPrefix FROM species WHERE speciesId=? AND genomeSpeciesId=?');
-	    $selSpecies->execute($speciesBgee, $newSpecies)  or die $selSpecies->errstr;
-	    @prefix = map { $_->[0] } @{$selSpecies->fetchall_arrayref};
-	    $selSpecies->finish();
-	    die "Too many prefixes returned [@prefix]\n"  if ( exists $prefix[1] );
 	}
 
-	return(\@prefix, $species, $speciesBgee, $newSpecies, $scientific_name, $ensSource);
+	return($species, $speciesBgee, $newSpecies, $scientific_name, $ensSource);
 
 }
 

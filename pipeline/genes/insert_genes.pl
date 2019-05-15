@@ -55,9 +55,8 @@ my $dbh = Utils::connect_bgee_db($bgee_connector);
 
 # Factor 1: Need to map to another genomeSpeciesId?
 
-my ($prefix, $species_tmp, $speciesBgee, $newSpecies, $scientific_name, $ensSource) = Utils_insert_genes::map_species($dbh, $species);
+my ($species_tmp, $speciesBgee, $newSpecies, $scientific_name, $ensSource) = Utils_insert_genes::map_species($dbh, $species);
 
-my @prefix = @$prefix;
 $species = $species_tmp;
 
 # Get a slice adaptor for the  $species  core database
@@ -164,22 +163,15 @@ for my $gene (sort {$a->stable_id cmp $b->stable_id} (@genes)) { #Sort to always
 
     warn "Different ids [$display_id] [$stable_id]\n"  if ( $display_id ne $stable_id);
 
-    ## external genome mapping
-    my $id2insert = $stable_id;
-    if ( exists $prefix[0] && $prefix[0] ne '' ){
-        #FIXME only for Ensembl ids now, AND non-human Ensembl ids
-        $id2insert =~ s{^ENS[A-Z][A-Z][A-Z]G}{$prefix[0]};
-    }
-
     ## Insert gene info
     my $bgeeGeneId;
     if ( ! $debug ){
-        $geneDB->execute($id2insert, $external_name, $description, $biotype, $speciesBgee)  or die $geneDB->errstr;
+        $geneDB->execute($stable_id, $external_name, $description, $biotype, $speciesBgee)  or die $geneDB->errstr;
         $bgeeGeneId = $dbh->{mysql_insertid};
         die "Cannot get bgeeGeneId [$bgeeGeneId]\n"  if ( $bgeeGeneId !~ /^\d+$/ );
     }
     else {
-        print "\n[$id2insert] [$external_name] [$description]   [$biotype] [$speciesBgee]\n";
+        print "\n[$stable_id] [$external_name] [$description]   [$biotype] [$speciesBgee]\n";
     }
 
 
@@ -247,7 +239,7 @@ for my $gene (sort {$a->stable_id cmp $b->stable_id} (@genes)) { #Sort to always
             $xrefDB->execute($bgeeGeneId, $pid, $xrefs{$xref}, $InsertedDataSources{lc $dbname})  or die $xrefDB->errstr;
         }
         else {
-            print "xref: [$id2insert] [$pid] [$xrefs{$xref}] [$dbname]\n";
+            print "xref: [$stable_id] [$pid] [$xrefs{$xref}] [$dbname]\n";
         }
     }
 
@@ -266,10 +258,10 @@ for my $gene (sort {$a->stable_id cmp $b->stable_id} (@genes)) { #Sort to always
     GO:
     for my $go ( sort keys %GO ){
         if ( ! $debug ){
-            $goDB->execute($bgeeGeneId, uc $go, $GO{$go})  or do {warn "[$id2insert] [$go] [$GO{$go}]\n"; die $goDB->errstr};
+            $goDB->execute($bgeeGeneId, uc $go, $GO{$go})  or do {warn "[$stable_id] [$go] [$GO{$go}]\n"; die $goDB->errstr};
         }
         else {
-            print "go:   [$id2insert] [$go] [$GO{$go}]\n";
+            print "go:   [$stable_id] [$go] [$GO{$go}]\n";
         }
     }
 
@@ -278,10 +270,10 @@ for my $gene (sort {$a->stable_id cmp $b->stable_id} (@genes)) { #Sort to always
     # gene_id + version
     my @all;
     push @all, $display_id                      if ( $display_id );
-    push @all, $id2insert                       if ( $id2insert );
+    push @all, $stable_id                       if ( $stable_id );
     push @all, $external_name                   if ( $external_name );
     #NOTE version() does not seem to return something for species with non Ensembl gene ids such as C. elegans WBGene00000001
-    push @all, $id2insert.'.'.$gene->version()  if ( $id2insert && $gene->version() );
+    push @all, $stable_id.'.'.$gene->version()  if ( $stable_id && $gene->version() );
     # transcript ids
     push @all, map  { if ( $_->version() ){ ($_->stable_id(), $_->stable_id().'.'.$_->version()) } else { $_->stable_id() } }
                grep { defined $_->stable_id() }
@@ -329,7 +321,7 @@ for my $gene (sort {$a->stable_id cmp $b->stable_id} (@genes)) { #Sort to always
             $geneToTermDB->execute($bgeeGeneId, $term)  or die $geneToTermDB->errstr;
         }
         else {
-            print "term: [$id2insert] [$term]\n";
+            print "term: [$stable_id] [$term]\n";
         }
     }
 }
