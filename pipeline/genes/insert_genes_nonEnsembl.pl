@@ -431,7 +431,7 @@ foreach my $id2insert (sort {lc $a cmp lc $b} keys %gene_hash) {	# Sort to alway
 
 		# Fill geneXRef table with uniprot information
 		
-		my $dbname = "UniProtKB/Swiss-Prot";
+		my $dbname = "Uniprot/SWISSPROT";
 		
 		#print $uniprot_gene;
 		
