@@ -436,7 +436,7 @@ foreach my $id2insert (sort {lc $a cmp lc $b} keys %gene_hash) {	# Sort to alway
 		#print $uniprot_gene;
 		
 		if ( ! $debug ){
-	    	$xrefDB->execute($bgeeGeneId, $id2insert, $uniprot_gene, $dbname)  or die $xrefDB->errstr;
+	    	$xrefDB->execute($bgeeGeneId, $uniprot_gene, "", $dbname)  or die $xrefDB->errstr;
 		}
 		else {
 		    print "xref: [$id2insert] [$id2insert] [$uniprot_gene] [$dbname]\n";
