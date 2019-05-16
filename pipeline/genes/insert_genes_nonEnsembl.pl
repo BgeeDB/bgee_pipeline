@@ -162,13 +162,13 @@ my %gene_hash;
 
 # Get the annotation file
 
-my $get_annotation_path  = $dbh->prepare('SELECT genomeFilePath FROM species WHERE speciesId = (?)'); 
-$get_annotation_path->execute($speciesBgee);
-my $ann_file = "";
-$ann_file = $get_annotation_path->fetchrow_array(); 
-$get_annotation_path->finish();
+my $get_genome_path = $dbh->prepare('SELECT genomeFilePath FROM species WHERE speciesId = (?)'); 
+$get_genome_path->execute($speciesBgee);
+my $genome_file = $get_genome_path->fetchrow_array(); 
+$get_genome_path->finish();
 
-$ann_file =~ s/.fasta/_vbgee.gff/; 
+#NOTE : why do we need this _vbee suffix?
+(my $ann_file = $genome_file) =~ s/.fasta/_vbgee.gff/; 
 $ann_file = "$annot_dir$ann_file";
 
 print "Parsing the annotation file: " . $ann_file . " ...\n";

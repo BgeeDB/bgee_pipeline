@@ -63,8 +63,9 @@ sub get_alt_go {
 sub get_obs_go {
 	
 	my ($dbh, $obsGO)= @_;
-
-	die "Missing [go.obsolete] file\n"  if ( !-e 'go.obsolete' || -z 'go.obsolete' );
+	
+	print "obsGO : [$obsGO]\n";
+	die "Missing [$obsGO] file\n"  if ( !-e "$obsGO" || -z "$obsGO" );
 	my %obs_go = map { lc $_ => 1 }
              read_file("$obsGO", chomp => 1);
 
