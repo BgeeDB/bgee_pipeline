@@ -8,6 +8,7 @@ use Getopt::Long;
 use List::MoreUtils qw{uniq};
 use List::Compare;
 use LWP::Simple;
+use LWP::Protocol::https;
 use File::Slurp;
 
 use FindBin;
