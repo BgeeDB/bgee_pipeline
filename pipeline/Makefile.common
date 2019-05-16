@@ -231,6 +231,10 @@ ALLTAXIDSFILEPATH   := $(GENERATED_FILES_DIR)species/allTaxIds.tsv
 TAXONOMYFILEPATH    := $(GENERATED_FILES_DIR)species/bgee_ncbitaxon.owl
 TAX_DAT_DOWNLOAD_URL := ftp://ftp.ebi.ac.uk/pub/databases/taxonomy/taxonomy.dat
 
+# =========== GENE FILES ===============
+
+# path to the parent directory containing fasta and GFF files of all non ensembl species 
+PATH_NON_ENSEMBL_SPECIES  := /Users/jwollbrett/Documents/temp/
 
 # =========== UBERON FILES ===============
 UBERON_SOURCE_PATH := $(SOURCE_FILES_DIR)uberon/

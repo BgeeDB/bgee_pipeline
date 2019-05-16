@@ -91,11 +91,12 @@ sub go_formatting {
 
 # Define arguments & their default value
 my ($species, $bgee_connector) = ('', '');
-my ($obsGO) = ('');
+my ($obsGO, $annot_dir) = ('', '');
 my ($debug) = (0);
 my %opts = ('species=s'    => \$species,            # speciesCommonName from TSV for or Bgee db
             'bgee=s'       => \$bgee_connector,     # Bgee connector string
             'obsGO=s'      => \$obsGO,              # go.obsolete file
+            'annot_dir=s'  => \$annot_dir,          # path to the directory containing fasta and GFF files of all non ensembl species
             'debug'        => \$debug,              # debug mode, do not insert/update in database
            );
 
@@ -107,6 +108,7 @@ if ( !$test_options || $species eq '' || $bgee_connector eq ''){
 \t-species         speciesId from Bgee db with the genomeSpeciesId concatenated
 \t-bgee            Bgee connector string
 \t-obsGO           go.obsolete file
+\tannot_dir'  	   Directory containing fasta and GFF files of all non ensembl species
 \t-debug           Debug mode, do not insert/update in database
 \n";
     exit 1;
@@ -166,6 +168,7 @@ $ann_file = $get_annotation_path->fetchrow_array();
 $get_annotation_path->finish();
 
 $ann_file =~ s/.fasta/_vbgee.gff/; 
+$ann_file = "$annot_dir$ann_file";
 
 print "Parsing the annotation file: " . $ann_file . " ...\n";
 
@@ -175,7 +178,6 @@ open (FILE, $ann_file);
 
 while (<FILE>) {
 	chomp;
-	
 	
 	my @field = split("\t+");
 	my $type = $field[2];	# gene, mRNA, exon, CDS, five_prime_UTR, three_prime_UTR

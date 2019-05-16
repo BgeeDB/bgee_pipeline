@@ -27,7 +27,7 @@ genes: $(SPECIESFILEPATH) $(OUTPUT_DIR)go go.obsolete
 		export PERL5LIBORI=$$PERL5LIB; \
 		echo "species: $$sp"; \
 		if [[ `echo $$sp | grep 'nonEnsembl$$'` ]]; then \
-			perl insert_genes_nonEnsembl.pl -species=$$sp -bgee=$(BGEECMD) -obsGO=go.obsolete >> $@.tmp 2>>$@.err; \
+			perl insert_genes_nonEnsembl.pl -species=$$sp -bgee=$(BGEECMD) -obsGO=go.obsolete -annot_dir=$(PATH_NON_ENSEMBL_SPECIES) >> $@.tmp 2>>$@.err; \
 		elif [[ `echo $$sp | grep 'Ensembl$$'` ]]; then \
 				export PERL5LIB=`echo $$PERL5LIB | perl -ne 'print join ":", map { s/\/ensembl\//\/ensembl_$(ENS_API_RELEASE)\//; $$_ } grep { /\w/ } split(/:/, $$_)'`; \
 				perl insert_genes.pl -species=$$sp -bgee=$(BGEECMD) -ensembl=$(ENSCMD) -obsGO=go.obsolete >> $@.tmp 2>>$@.err; \
