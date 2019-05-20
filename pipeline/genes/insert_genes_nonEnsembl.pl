@@ -264,13 +264,13 @@ while (<FILE>) {
 			}
 			
 			else {
-				$gene_hash{$gene_id}{Name} = "undef";
+				$gene_hash{$gene_id}{Name} = "";
 			}
 			
 		}			 
 		
 		else {	# Gene has no gene name or "topblasthit_gene" not present
-			$gene_hash{$gene_id}{Name} = "undef";
+			$gene_hash{$gene_id}{Name} = "";
 		}	
 
 		# Gene accession (3)
@@ -360,13 +360,13 @@ while (<FILE>) {
 			}
 			
 			else {
-				$gene_hash{$gene_id}{Description} = "undef";
+				$gene_hash{$gene_id}{Description} = "";
 			}
 			
 		}			 
 		
 		else {	# Gene has no gene name or "topblasthit_description" not present
-			$gene_hash{$gene_id}{Description} = "undef";
+			$gene_hash{$gene_id}{Description} = "";
 		}	
 	 
 	} 
@@ -413,21 +413,24 @@ foreach my $id2insert (sort {lc $a cmp lc $b} keys %gene_hash) {	# Sort to alway
 		
 		#print Dumper \$gene_hash{$id2insert};
 		
-		my $uniprot_gene = "";
+		my $uniprot_gene = undef;
 		my $content = "";
 		my $uniprot_result = "";
 		
-		$content = get("https://www.uniprot.org/uniprot/?query=" . $accession . "&format=tab&columns=entry%20name");
+		if ( $accession != "undef" {
+			$content = get("https://www.uniprot.org/uniprot/?query=" . $accession . "&format=tab&columns=entry%20name");
 
-		if ( defined $content ){
-			(undef, $uniprot_result) = split("\n", $content, -1);
+			if ( defined $content ){
+				(undef, $uniprot_result) = split("\n", $content, -1);
 			
-			if ( defined $uniprot_result ){ $uniprot_gene = $uniprot_result;}
-			else { $uniprot_gene = "undef"; }
+				if ( defined $uniprot_result ){ 
+					$uniprot_gene = $uniprot_result;
+				}
+			}
+			else {
+				warn "\tCannot get UniProt ID for [$accession]\n";
+			}
 		}	
-		else {
-			warn "\tCannot get UniProt ID for [$accession]\n";
-		}
 
 		# Fill geneXRef table with uniprot information
 		
@@ -435,13 +438,14 @@ foreach my $id2insert (sort {lc $a cmp lc $b} keys %gene_hash) {	# Sort to alway
 		
 		#print $uniprot_gene;
 		
-		if ( ! $debug ){
-	    	$xrefDB->execute($bgeeGeneId, $uniprot_gene, "", $dbname)  or die $xrefDB->errstr;
+		if ( defined $uniprot_gene ){ 
+			if ( ! $debug ){
+	    		$xrefDB->execute($bgeeGeneId, $uniprot_gene, "", $dbname)  or die $xrefDB->errstr;
+			}
+			else {
+		    	print "xref: [$id2insert] [$uniprot_gene] [] [$dbname]\n";
+			}
 		}
-		else {
-		    print "xref: [$id2insert] [$id2insert] [$uniprot_gene] [$dbname]\n";
-		}
- 
         	
     	if (ref($gene_hash{$id2insert}{GO}) eq 'ARRAY') {	# Gene has GO terms
     		
