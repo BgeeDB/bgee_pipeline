@@ -417,7 +417,7 @@ foreach my $id2insert (sort {lc $a cmp lc $b} keys %gene_hash) {	# Sort to alway
 		my $content = "";
 		my $uniprot_result = "";
 		
-		if ( $accession != "undef" {
+		if ( $accession ne "undef" ) {
 			$content = get("https://www.uniprot.org/uniprot/?query=" . $accession . "&format=tab&columns=entry%20name");
 
 			if ( defined $content ){
