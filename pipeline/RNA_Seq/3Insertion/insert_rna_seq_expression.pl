@@ -173,8 +173,8 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
         } else {
             $updResult->execute($expressionId, $reasonForExclusion, $geneId, $exprMappedConditionId)
                 or die $updResult->errstr;
-            if ( $reasonForExclusion eq $Utils::CALL_NOT_EXCLUDED ) {
-                for my $expId ( keys %{ $summary } ) {
+            if ( $reasonForExclusion eq $Utils::CALL_NOT_EXCLUDED ){
+                for my $expId ( keys %{ $summary } ){
                     $insExpSummary->execute($expressionId, $expId,
                         $summary->{$expId}->{'pstHighEvidenceCount'},
                         $summary->{$expId}->{'pstLowEvidenceCount'},
