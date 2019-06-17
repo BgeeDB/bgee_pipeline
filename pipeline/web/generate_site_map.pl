@@ -54,17 +54,21 @@ my $sitemap_footer = "\n</urlset>";
 print "Write main/static pages\n"  if ( $debug );
 my @static_pages;
 push @static_pages, "<loc>$homepage/</loc><priority>0.8</priority>";
-my @basic_cgi      = ('about', 'doc', 'download', 'gene', 'source', 'top_anat');
+my @basic_cgi      = ('about', 'anat_similarities', 'collaborations', 'doc', 'download', 'expression_comparison', 'gene', 'privacy_policy', 'source', 'sparql', 'top_anat');
 for my $baseUrlName ( sort @basic_cgi ){
     push @static_pages, "<loc>$homepage/?page=$baseUrlName</loc><priority>0.7</priority>";
 }
-my @basic_doc      = ('access', 'top_anat', 'call_files');
+my @basic_doc      = ('access', 'call_files', 'data_sets', 'faq', 'top_anat');
 for my $baseUrlName ( sort @basic_doc ){
     push @static_pages, "<loc>$homepage/?page=doc&amp;action=$baseUrlName</loc><priority>0.7</priority>";
 }
-my @basic_download = ('expr_calls', 'proc_values');
+my @basic_download = ('expr_calls', 'mysql_dumps', 'proc_values');
 for my $baseUrlName ( sort @basic_download ){
     push @static_pages, "<loc>$homepage/?page=download&amp;action=$baseUrlName</loc><priority>0.7</priority>";
+}
+my @basic_resources = ('annotations', 'ontologies', 'r_packages', 'source_code');
+for my $baseUrlName ( sort @basic_resources ){
+    push @static_pages, "<loc>$homepage/?page=resources&amp;action=$baseUrlName</loc><priority>0.7</priority>";
 }
 
 #NOTE FTP links are invalid because different namespace (not bgee.org)
