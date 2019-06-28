@@ -4,9 +4,7 @@ include $(PIPELINEROOT)Makefile.common
 
 all : $(VERIFICATIONFILE)
 
-$(OUTPUT_DIR)oncoMX :
-	# Create subdirectories if they don't exist
-	@mkdir -p $(OUTPUT_DIR)oncoMX
+$(OUTPUT_DIR)generateFiles :
 	# Launch file generation
 	@$(JAVA) GenerateOncoMXFile $(INPUT_DIR)human_doid_slim_uberon_mapping.csv $(OUTPUT_DIR) 9606//UBERON:0000113,10090//UBERON:0000113 > $@.tmp
 	# compress generated files
@@ -16,8 +14,8 @@ $(OUTPUT_DIR)oncoMX :
 # ======================
 # Verification file
 # ======================
-$(VERIFICATIONFILE): $(OUTPUT_DIR)oncoMX
+$(VERIFICATIONFILE): $(OUTPUT_DIR)generateFiles
 	@touch $(VERIFICATIONFILE)
 
 clean :
-	-@$(RM) $(OUTPUT_DIR)oncoMX $(VERIFICATIONFILE)
+	-@$(RM) $(OUTPUT_DIR)generateFiles $(VERIFICATIONFILE)

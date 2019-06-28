@@ -4,7 +4,7 @@ Goal: generate expression data for the oncoMX project (Analyze of gene expressio
 
 ## Details
 
-* `make oncoMX`: generates the processed expression files for oncoMX
+* `make generateFiles`: generates the processed expression files for oncoMX
 
 ## Data generation
 
@@ -16,7 +16,7 @@ Goal: generate expression data for the oncoMX project (Analyze of gene expressio
 
 ## Data verification
 
-* Check the files in `generated_files/collaboration/oncoMX/`, notably the verification file `oncoMX`.
+* Check the files in `generated_files/collaboration/oncoMX/`, notably the verification file `generateFiles`.
 
 ## Information about the files generated for OncoMX
 
@@ -115,6 +115,7 @@ the category of the expression call is always `HIGH`.
 * Expression level relative to anatomical entity
 * Call quality
 * Expression rank score
+* Expression score
 
 ## Former version of the file generated for OncoMX
 
