@@ -12,21 +12,21 @@ use diagnostics;
 # Run this script on vital-IT:
 # To do:
 #
-# rsync -Wav -essh ~/work/bgee/extra/pipeline/pipeline/*.pl jroux@Rserv.vital-it.ch:/scratch/frt/yearly/jroux/pipeline/pipeline/
-# rsync -Wav -essh ~/work/bgee/extra/pipeline/Affymetrix/cel_data/ jroux@Rserv.vital-it.ch:/scratch/frt/yearly/jroux/pipeline/Affymetrix/cel_data/
-# rsync -Wav -essh ~/work/bgee/extra/pipeline/Affymetrix/processed_schuster/ jroux@Rserv.vital-it.ch:/scratch/frt/yearly/jroux/pipeline/Affymetrix/processed_schuster/
-# rsync -Wav -essh ~/work/bgee/extra/pipeline/Affymetrix/bioconductor/ jroux@Rserv.vital-it.ch:/scratch/frt/yearly/jroux/pipeline/Affymetrix/bioconductor/
-# rsync -Wav -essh ~/work/bgee/extra/pipeline/Affymetrix/affymetrixChip jroux@Rserv.vital-it.ch:/scratch/frt/yearly/jroux/pipeline/Affymetrix/
+# rsync -Wav -essh ~/work/bgee/extra/pipeline/pipeline/*.pl jroux@Rserv.vital-it.ch:/scratch/temporary/jroux/pipeline/pipeline/
+# rsync -Wav -essh ~/work/bgee/extra/pipeline/Affymetrix/cel_data/ jroux@Rserv.vital-it.ch:/scratch/temporary/jroux/pipeline/Affymetrix/cel_data/
+# rsync -Wav -essh ~/work/bgee/extra/pipeline/Affymetrix/processed_schuster/ jroux@Rserv.vital-it.ch:/scratch/temporary/jroux/pipeline/Affymetrix/processed_schuster/
+# rsync -Wav -essh ~/work/bgee/extra/pipeline/Affymetrix/bioconductor/ jroux@Rserv.vital-it.ch:/scratch/temporary/jroux/pipeline/Affymetrix/bioconductor/
+# rsync -Wav -essh ~/work/bgee/extra/pipeline/Affymetrix/affymetrixChip jroux@Rserv.vital-it.ch:/scratch/temporary/jroux/pipeline/Affymetrix/
 #
 #
 # ssh jroux@prd.vital-it.ch
-# cd /scratch/frt/yearly/jroux/pipeline/pipeline/
+# cd /scratch/temporary/jroux/pipeline/pipeline/
 # perl launch_affy_analysis.pl exp_id
 # perl launch_affy_analysis.pl (for all experiments not already normalized)
 #
-# rsync -Wav -essh /scratch/frt/yearly/jroux/pipeline/Affymetrix/bioconductor/out/ admin@130.223.48.225:~/work/bgee/extra/pipeline/Affymetrix/bioconductor/out/
-# rsync -Wav -essh /scratch/frt/yearly/jroux/pipeline/Affymetrix/bioconductor/affinities/ admin@130.223.48.225:~/work/bgee/extra/pipeline/Affymetrix/bioconductor/affinities/
-# rsync -Wav -essh /scratch/frt/yearly/jroux/pipeline/Affymetrix/processed_schuster/ admin@130.223.48.225:~/work/bgee/extra/pipeline/Affymetrix/processed_schuster/
+# rsync -Wav -essh /scratch/temporary/jroux/pipeline/Affymetrix/bioconductor/out/ admin@130.223.48.225:~/work/bgee/extra/pipeline/Affymetrix/bioconductor/out/
+# rsync -Wav -essh /scratch/temporary/jroux/pipeline/Affymetrix/bioconductor/affinities/ admin@130.223.48.225:~/work/bgee/extra/pipeline/Affymetrix/bioconductor/affinities/
+# rsync -Wav -essh /scratch/temporary/jroux/pipeline/Affymetrix/processed_schuster/ admin@130.223.48.225:~/work/bgee/extra/pipeline/Affymetrix/processed_schuster/
 ####################################
 
 use Getopt::Long;
