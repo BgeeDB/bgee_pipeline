@@ -17,6 +17,9 @@ use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
 use Utils;
 $| = 1;
 
+
+my $abundance_file = 'abundance_gene_level+new_tpm+new_fpkm+calls.tsv';
+
 # Define arguments & their default value
 my ($bgee_connector) = ('');
 my ($debug) = (0);
@@ -28,6 +31,7 @@ my %opts = ('debug'             => \$debug,            # more verbose
             'path_processed=s'  => \$path_processed,   # final result dir rna_seq/processed_TMM/
            );
 
+#FIXME should mkdir $path_target have to be done?
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $bgee_connector eq '' || $path_generes eq '' || $path_target eq '' || $path_processed eq '' ){
@@ -45,6 +49,7 @@ if ( !$test_options || $bgee_connector eq '' || $path_generes eq '' || $path_tar
 # Bgee db connection
 my $dbh = Utils::connect_bgee_db($bgee_connector);
 
+
 my %experiments;
 my $selExpr = $dbh->prepare('SELECT (SELECT t5.speciesId FROM gene AS t5 WHERE t5.bgeeGeneId = (SELECT t4.bgeeGeneId FROM rnaSeqResult AS t4 WHERE t4.rnaSeqLibraryId = t1.rnaSeqLibraryId LIMIT 1)) AS speciesId, rnaSeqExperimentId, rnaSeqLibraryId, rnaSeqPlatformId, libraryType, libraryOrientation FROM rnaSeqLibrary AS t1 ORDER BY speciesId, rnaSeqExperimentId, rnaSeqPlatformId, libraryType, libraryOrientation');
 # Output looks like:
@@ -61,7 +66,7 @@ while ( my @data = $selExpr->fetchrow_array ){
 
         # check that the read counts were generated for this sample in this experiment
         my $fileName;
-        unless ( -e $path_generes.'/'.$data[2].'/abundance_gene_level+new_tpm+new_fpkm+calls.tsv' && -s $path_generes.'/'.$data[2].'/abundance_gene_level+new_tpm+new_fpkm+calls.tsv' ){
+        unless ( -e "$path_generes/$data[2]/$abundance_file" && -s "$path_generes/$data[2]/$abundance_file" ){
             die "Error, no processed file found for expId: [$data[1]] - libId: [$data[2]]\n";
         }
 
@@ -73,14 +78,15 @@ while ( my @data = $selExpr->fetchrow_array ){
 $selExpr->finish;
 $dbh->disconnect;
 
-foreach my $experimentId ( keys %experiments ){
-    foreach my $rnaSeqPlatformId ( keys %{$experiments{$experimentId}} ){
+
+for my $experimentId ( keys %experiments ){
+    for my $rnaSeqPlatformId ( keys %{$experiments{$experimentId}} ){
         my $rnaSeqPlatformIdForFileOutput = $rnaSeqPlatformId;
         $rnaSeqPlatformIdForFileOutput =~ s/\s/\_/g; # for output file name, we need to replace spaces by _ in the platform IDs.
 
-        foreach my $libraryType ( keys %{$experiments{$experimentId}->{$rnaSeqPlatformId}} ){
-            foreach my $libraryOrientation ( keys %{$experiments{$experimentId}->{$rnaSeqPlatformId}->{$libraryType}} ){
-                foreach my $speciesId ( keys %{$experiments{$experimentId}->{$rnaSeqPlatformId}->{$libraryType}->{$libraryOrientation}} ){
+        for my $libraryType ( keys %{$experiments{$experimentId}->{$rnaSeqPlatformId}} ){
+            for my $libraryOrientation ( keys %{$experiments{$experimentId}->{$rnaSeqPlatformId}->{$libraryType}} ){
+                for my $speciesId ( keys %{$experiments{$experimentId}->{$rnaSeqPlatformId}->{$libraryType}->{$libraryOrientation}} ){
                     unless ( -e $path_processed ){
                         mkdir $path_processed;
                     }
@@ -108,14 +114,14 @@ foreach my $experimentId ( keys %experiments ){
                         if ( $debug ){
                             print "Target file: $target\nrnaSeqExperimentId\trnaSeqLibraryId\tfile\n";
                             for my $rnaSeqLibraryId ( keys %{$experiments{$experimentId}->{$rnaSeqPlatformId}->{$libraryType}->{$libraryOrientation}->{$speciesId}} ){
-                                print "$experimentId\t$rnaSeqLibraryId\t", $path_generes.$rnaSeqLibraryId.'/abundance_gene_level+new_tpm+new_fpkm+calls.tsv', "\n";
+                                print "$experimentId\t$rnaSeqLibraryId\t", $path_generes.$rnaSeqLibraryId."/$abundance_file\n";
                             }
                             print "\n";
                         } else {
                             open(my $TARGET, '>', "$target")  or die 'Cannot open TARGET file';
                             print {$TARGET} "rnaSeqExperimentId\trnaSeqLibraryId\tfile\n";
                             for my $rnaSeqLibraryId ( keys %{$experiments{$experimentId}->{$rnaSeqPlatformId}->{$libraryType}->{$libraryOrientation}->{$speciesId}} ){
-                                print {$TARGET} "$experimentId\t$rnaSeqLibraryId\t", $path_generes.$rnaSeqLibraryId.'/abundance_gene_level+new_tpm+new_fpkm+calls.tsv', "\n";
+                                print {$TARGET} "$experimentId\t$rnaSeqLibraryId\t", $path_generes.$rnaSeqLibraryId."/$abundance_file\n";
                             }
                             close $TARGET;
 
@@ -130,5 +136,6 @@ foreach my $experimentId ( keys %experiments ){
         }
     }
 }
+
 exit 0;
 

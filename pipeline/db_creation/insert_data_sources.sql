@@ -1,5 +1,5 @@
-insert into dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, evidenceUrl,
-                        baseUrl, dataSourceDescription, toDisplay, category) values
+INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, evidenceUrl,
+                        baseUrl, dataSourceDescription, toDisplay, category) VALUES
 -- [species_ensembl_link]: e.g., Drosophila_melanogaster
 (1, 'NCBI Taxonomy', '', '', '',
     'https://www.ncbi.nlm.nih.gov/taxonomy', 'Source taxonomy used in Bgee', 1, ''),
@@ -7,12 +7,12 @@ insert into dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
     'http://dec2015.archive.ensembl.org/',
     'Source for gene annotations, mappings to the Gene Ontology, mappings to Affymetrix probeset IDs, and cross-references to other databases',
     1, 'Genomics database'),
-(3, 'EMBL', 'https://www.ebi.ac.uk/Tools/dbfetch/dbfetch?db=EMBL&id=[xref_id]', '', '',
+(3, 'EMBL', 'https://www.ebi.ac.uk/ena/data/view/[xref_id]', '', '',
     'https://www.ebi.ac.uk/', 'European Nucleotide Archive', 0, ''),
-(4, 'UniProtKB/TrEMBL', 'http://www.uniprot.org/uniprot/[xref_id]', '', '',
-    'http://www.uniprot.org/', 'Computationally analyzed functional information on proteins', 0, ''),
-(5, 'UniProtKB/Swiss-Prot', 'http://www.uniprot.org/uniprot/[xref_id]', '', '',
-    'http://www.uniprot.org/', 'Manually annotated functional information on proteins', 0, ''),
+(4, 'UniProtKB/TrEMBL', 'https://www.uniprot.org/uniprot/[xref_id]', '', '',
+    'https://www.uniprot.org/', 'Computationally analyzed functional information on proteins', 0, ''),
+(5, 'UniProtKB/Swiss-Prot', 'https://www.uniprot.org/uniprot/[xref_id]', '', '',
+    'https://www.uniprot.org/', 'Manually annotated functional information on proteins', 0, ''),
 (6, 'miRBase', 'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=[xref_id]', '', '',
     'http://www.mirbase.org/', 'Source for miRNA families', 1, 'Genomics database'),
 (7, '4DXpress', 'http://4dx.embl.de/4DXpress/reg/all/search/bquery.do?id=[gene_id]', '', '',
@@ -69,13 +69,21 @@ insert into dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
 (31, 'GTEx - dbGAP', '', 'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000424.v6.p1', 'https://www.ncbi.nlm.nih.gov/sra/?term=[evidence_id]',
     'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000424', 'GTEx RNA-Seq data', 1, 'RNA-Seq data source'),
 (32, 'VGNC', 'http://vertebrate.genenames.org/data/gene-symbol-report/#!/vgnc_id/[xref_id]', '', '',
-     'http://vertebrate.genenames.org', 'Vertebrate Gene Nomenclature Committee', 0, 'Genomics database');
+     'http://vertebrate.genenames.org', 'Vertebrate Gene Nomenclature Committee', 0, 'Genomics database'),
+(33, 'ENA', '', 'https://www.ebi.ac.uk/ena/data/view/[experiment_id]', 'https://www.ebi.ac.uk/ena/data/view/[evidence_id]',
+     'https://www.ebi.ac.uk/ena', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source'),
+(34, 'DDBJ', '', 'https://ddbj.nig.ac.jp/DRASearch/study?acc=[experiment_id]', 'https://ddbj.nig.ac.jp/DRASearch/experiment?acc=[evidence_id]',
+     'https://ddbj.nig.ac.jp/DRASearch/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source'),
+(35, 'GSA', '', 'http://bigd.big.ac.cn/search?dbId=gsa&q=[experiment_id]', 'http://bigd.big.ac.cn/gsa/browse/[experiment_id]/[evidence_id]',
+     'http://bigd.big.ac.cn/gsa/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source');
 
 
 -- Add "ghost" sources, because a source can only be part of one category, so rather than
 -- creating a link table, we do this ugly hack
-insert into dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, evidenceUrl,
-                        baseUrl, dataSourceDescription, toDisplay, category) values
+INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, evidenceUrl,
+                        baseUrl, dataSourceDescription, toDisplay, category) VALUES
 
 (100, 'GEO', '', 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=[experiment_id]', 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=[evidence_id]',
-    'https://www.ncbi.nlm.nih.gov/geo/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source');
+    'https://www.ncbi.nlm.nih.gov/geo/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source'),
+(101, 'ArrayExpress', '', 'https://www.ebi.ac.uk/arrayexpress/experiments/[experiment_id]', '',
+	'https://www.ebi.ac.uk/arrayexpress/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source');

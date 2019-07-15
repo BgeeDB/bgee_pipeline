@@ -6,8 +6,11 @@ use warnings;
 use diagnostics;
 
 use Getopt::Long;
-require('rna_seq_utils.pl');
+use FindBin;
+
+require("$FindBin::Bin/rna_seq_utils.pl");
 $| = 1; # no buffering of output
+
 # Julien Roux, Nov 2016
 
 # script aimed at parsing the .report files in each folder and collect the % reads aligned and read length infos
@@ -66,7 +69,8 @@ print "\t", $count_libs, " libraries mapped and to be inserted.\n\n";
 
 
 # Read the .report file for each library, extract infos and print them out
-open (my $OUT, '>>', $report_info)  or die "Cannot write [$report_info]\n";
+#NOTE $report_info is rewritten everytime this script runs!
+open (my $OUT, '>', $report_info)  or die "Cannot write [$report_info]\n";
 # header
 print {$OUT} "#libraryId\tallReadsCount\tmappedReadsCount\tminReadLength\tmaxReadLength\n";
 

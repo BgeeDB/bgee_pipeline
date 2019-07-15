@@ -64,12 +64,13 @@ my %opts = ('bgee=s'                   => \$bgee_connector,     # Bgee connector
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $bgee_connector eq '' || $RNAseqLib eq '' || $RNAseqLibChecks eq '' || $RNAseqLibWormExclusion eq '' || $outFile eq ''){
     print "\n\tInvalid or missing argument:
-\te.g. $0  -bgee=\$(BGEECMD) -RNAseqLib=\$(RNASEQ_LIB_FILEPATH_FULL) -RNAseqLibChecks=\$(RNASEQ_LIB_CHECKS_FILEPATH_FULL) -RNAseqLibWormExclusion=\$(RNASEQ_LIB_EXCLUSION_FILEPATH_WORM) -outFile=\$(RNASEQ_SAMPINFO_FILEPATH)
+\te.g. $0  -bgee=\$(BGEECMD) -RNAseqLib=\$(RNASEQ_LIB_FILEPATH_FULL) -RNAseqLibChecks=\$(RNASEQ_LIB_CHECKS_FILEPATH_FULL) -RNAseqLibWormExclusion=\$(RNASEQ_LIB_EXCLUSION_FILEPATH_WORM) -outFile=\$(RNASEQ_SAMPINFO_FILEPATH) -extraMapping=\$(EXTRAMAPPING_FILEPATH)
 \t-bgee                   Bgee connector string
 \t-RNAseqLib              RNAseq Libraries from annotation file
 \t-RNAseqLibChecks        RNAseq Libraries previously checked for platform annotation errors
 \t-RNAseqLibWormExclusion RNAseq Libraries excluded from WormBase annotation
 \t-outFile                Output file: TSV with all species and SRA information from NCBI
+\t-extraMapping           Extra mapping file
 \t-debug                  more verbose output
 \n";
     exit 1;

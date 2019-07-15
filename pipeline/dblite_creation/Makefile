@@ -14,9 +14,6 @@ $(OUTPUT_DIR)create_schema: bgeeLiteSchema.sql
 	@$(MYSQL_BGEELITE) -e "SELECT (SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '$(DBNAME_BGEELITE)' and TABLE_TYPE='BASE TABLE') as \`Table count\`" >> $@.tmp 2>> $@.warnings
 	@$(MV) $@.tmp $@
 
-# As there is really a file named update_data_sources.sql in this directory, this target will never be executed,
-# unless explicitly called. This is the expected behavior, as this file should be used at the very end of the pipeline run.
-# this step also insert data into table dataSourceToSpecies
 $(OUTPUT_DIR)extract_data_from_bgee:
 	# extract data from the $(DBNAME) database in $(DBHOST)
 	@$(JAVA) GenerateBgeeLite extractFromBgee $(OUTPUT_DIR) - > $@.tmp 2> $@.warnings
@@ -36,5 +33,3 @@ drop_bgee_lite:
 	@$(MV) $@.tmp $@
 
 .PHONY := $(.PHONY) dropDatabaseBgee$(RELEASE)
-dropDatabaseBgeeLite$(RELEASE):
-	@$(MYSQL_BGEELITE) -e "DROP DATABASE $(DBNAME_BGEELITE)"

@@ -8,8 +8,10 @@ use Getopt::Long;
 use FindBin;
 use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
 use Utils;
-require('rna_seq_utils.pl');
+
+require("$FindBin::Bin/rna_seq_utils.pl");
 $| = 1;
+
 # Julien Roux, created November 2016
 
 # USAGE: perl insert_feature_length -length_info=<...> <OPTIONAL: -debug=1>
@@ -69,7 +71,7 @@ while ( defined (my $line = <$IN>) ){
 print "retrieving mapping from bgeeGeneId to geneId...\n";
 my %genes;
 # Get hash of geneId to bgeeGeneId mapping per species
-foreach my $speciesId ( keys %all_transcripts ){
+for my $speciesId ( keys %all_transcripts ){
     $genes{$speciesId} = Utils::query_bgeeGene($bgee, $speciesId);
 }
 
@@ -77,8 +79,8 @@ print "Inserting data into the database...\n";
 # query for feature length insertion
 my $insLength = $bgee->prepare('INSERT INTO transcript (bgeeGeneId, transcriptId, transcriptLength) VALUES (?,?,?)');
 
-foreach my $species ( keys %all_transcripts ){
-    foreach my $transcript ( keys %{$all_transcripts{$species}} ){
+for my $species ( keys %all_transcripts ){
+    for my $transcript ( keys %{$all_transcripts{$species}} ){
         if ( $debug ){
             print 'INSERT INTO transcript (bgeeGeneId, transcriptId, transcriptLength) VALUES (', $genes{$species}->{ $all_transcripts{$species}->{$transcript}->{'geneId'}}, ',', $transcript, ',', $all_transcripts{$species}->{$transcript}->{'length'}, ")\n";
         }
@@ -87,6 +89,7 @@ foreach my $species ( keys %all_transcripts ){
         }
     }
 }
+
 $insLength->finish();
 print "Done\n";
 exit 0;

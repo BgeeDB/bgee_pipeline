@@ -43,6 +43,7 @@ my $bgee = Utils::connect_bgee_db($bgee_connector);
 
 $| = 1;
 
+
 ##########################################
 # GET CONDITIONS STUDIED WITH RNA-SEQ    #
 ##########################################
@@ -58,11 +59,12 @@ while ( my @data = $queryConditions->fetchrow_array ){
 
 print 'Done, ', scalar(@exprMappedConditions), " conditions retrieved.\n";
 
+
 ##########################################
 # PREPARE QUERIES                        #
 ##########################################
 
-# insert/update expression
+# Insert/update expression
 my $insUpExpr   = $bgee->prepare('INSERT INTO expression (bgeeGeneId, conditionId) VALUES (?, ?)
                                   ON DUPLICATE KEY UPDATE expressionId=LAST_INSERT_ID(expressionId)');
 
@@ -91,6 +93,7 @@ my $queryResults = $bgee->prepare("SELECT t1.bgeeGeneId, t2.rnaSeqExperimentId, 
                                    INNER JOIN cond AS t3 ON t2.conditionId = t3.conditionId
                                    WHERE t3.exprMappedConditionId = ? AND t1.reasonForExclusion = '".$Utils::CALL_NOT_EXCLUDED."'");
 
+
 ##########################################
 # SUBROUTINES                            #
 ##########################################
@@ -102,6 +105,7 @@ sub add_expression {
     $insUpExpr->execute($bgeeGeneId, $exprMappedConditionId)  or die $insUpExpr->errstr;
     return $bgee->{'mysql_insertid'}; # expr_id
 }
+
 
 ##########################################
 # ITERATING CONDITIONS TO INSERT DATA    #
@@ -169,8 +173,8 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
         } else {
             $updResult->execute($expressionId, $reasonForExclusion, $geneId, $exprMappedConditionId)
                 or die $updResult->errstr;
-            if ( $reasonForExclusion eq $Utils::CALL_NOT_EXCLUDED ) {
-                for my $expId ( keys %{ $summary } ) {
+            if ( $reasonForExclusion eq $Utils::CALL_NOT_EXCLUDED ){
+                for my $expId ( keys %{ $summary } ){
                     $insExpSummary->execute($expressionId, $expId,
                         $summary->{$expId}->{'pstHighEvidenceCount'},
                         $summary->{$expId}->{'pstLowEvidenceCount'},

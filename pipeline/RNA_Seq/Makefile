@@ -5,6 +5,7 @@ include $(PIPELINEROOT)Makefile.common
 
 all: $(VERIFICATIONFILE)
 
+#FIXME Fix strain names to be more consistent with Anne's strain file!
 get_annot:
 	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations. Store them in the source_files directory
 	@$(WGET) $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqLibrary.tsv                && $(MV) RNASeqLibrary.tsv                $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibrary.tsv                2>/dev/null  || rm -f RNASeqLibrary.tsv
@@ -27,7 +28,7 @@ check_annot: get_annot $(RNASEQ_EXPERIMENT_FILEPATH) $(RNASEQ_EXPERIMENT_FILEPAT
 	@$(MV) $@.tmp $@
 #TODO the script needs better check of annotation files for leading and trailing spaces (only done for experimentId now, but needs to be done for other fields as well)
 
-create_rna_seq_sample_info: check_annot
+create_rna_seq_sample_info: check_annot $(EXTRAMAPPING_FILEPATH)
 	# Generate rna_seq_sample_info.txt from RNASeq lib annotation file
 	@perl 0Before/create_rna_seq_sample_info.pl -bgee=$(BGEECMD) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -RNAseqLibChecks=$(RNASEQ_LIB_CHECKS_FILEPATH) -RNAseqLibWormExclusion=$(RNASEQ_LIB_EXCLUSION_FILEPATH_WORM) -extraMapping=$(EXTRAMAPPING_FILEPATH) -outFile=$(RNASEQ_SAMPINFO_FILEPATH) >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
@@ -218,7 +219,7 @@ presence_absence: sum_by_species $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUD
 	@mkdir -p $(RNASEQ_VITALIT_PRESENCE_RES)
 	@$(VIT_R_CMD) R CMD BATCH --vanilla --slave '--args rna_seq_sample_info="$(RNASEQ_SAMPINFO_FILEPATH)" rna_seq_sample_excluded="$(RNASEQ_SAMPEXCLUDED_FILEPATH)" kallisto_count_folder="$(RNASEQ_VITALIT_ALL_RES)" sum_by_species_folder="$(RNASEQ_VITALIT_SUM_RES)" gaussian_choice="$(RNASEQ_VITALIT_GAUSSIAN_CHOICE)" out_folder="$(RNASEQ_VITALIT_PRESENCE_RES)" plot_only=FALSE' $(RNASEQ_VITALIT_SCRIPTS)$(RNASEQPATH)1Run/rna_seq_presence_absence.R $(RNASEQ_VITALIT_PRESENCE_RES)rna_seq_presence_absence.Rout
 	@touch $@
-#NOTE: if output directory is not $(RNASEQ_VITALIT_ALL_RES): copy all files with calls to this directory, as well as summary stats and plot files
+#NOTE if output directory is not $(RNASEQ_VITALIT_ALL_RES): copy all files with calls to this directory, as well as summary stats and plot files
 #for folder in *; do echo $folder; /bin/cp $folder/* ../all_results_bgee_v14/$folder/; done
 # /bin/cp used because cp is an alias to cp -i
 # Also copy presence_absence_all_samples.txt, presence_absence_all_samples.RDa and presence_absence_boxplots.pdf
@@ -236,6 +237,8 @@ save_and_send_results_back: finalize_pipeline presence_absence export_length
 	# @scp $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar.gz  $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES) >$@.tmp 2>&1
 	# Whole archive is probably too big to be copied to our servers (>100Gb). Copy only the final gene-level expression + calls files:
 	@rsync -rav -e ssh --include='*/' --include='*abundance_gene_level+new_tpm+new_fpkm+calls.tsv' --exclude='*' $(RNASEQ_VITALIT_PRESENCE_RES) $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES) >>$@.tmp 2>&1
+	@$(CP) $(RNASEQ_VITALIT_REPORTINFO) $(RNASEQREPORTINFO)
+	@$(CP) $(RNASEQ_VITALIT_PRESENCE_RES)/presence_absence_all_samples.txt $(RNASEQSAMPSTATS)
 	@rsync -av -e ssh $(RNASEQ_VITALIT_REPORTINFO) $(RNASEQ_VITALIT_PRESENCE_RES)/presence_absence_all_samples.txt $(RNASEQ_VITALIT_PRESENCE_RES)/presence_absence_all_samples.RDa $(RNASEQ_VITALIT_PRESENCE_RES)/presence_absence_boxplots.pdf $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES)/ >>$@.tmp 2>&1
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
@@ -245,7 +248,7 @@ vitalit2: save_and_send_results_back
 	@touch $@
 ##############################################################################################
 
-backup:
+backup: $(RNASEQALLRES)
 	# Rsync files for backup by '$(DATALOGIN)' user on '$(DATAHOST)' (see wiki for password)
 	@echo -e "\t\e[1m\e[37m\e[41mRsync files in '$(RNASEQALLRES)' to bigbgee machine!\e[m\n"
 	@ssh $(DATALOGIN)@$(DATAHOST) mkdir -p $(DATAPATH)/rna_seq/all_results_$(DBNAME)/
@@ -253,20 +256,13 @@ backup:
 	@$(MV) $@.tmp $@
 #TODO backup log files too + backup other files? We should keep as much as we can otherwise it's impossible to trace back things after a run
 
-## Removed because did not add any important test (just checking that processed files were present, but based on the wrong file and this is already checked in insert_RNA_seq...)
-#check_curation: backup $(RNASEQ_EXPERIMENT_FILEPATH_FULL) $(RNASEQ_LIB_FILEPATH_FULL) $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH)
-#	# Check data curation
-#	@perl 3Insertion/check_rna_seq_curation.pl -bgee=$(BGEECMD) -RNAseqExperiment=$(RNASEQ_EXPERIMENT_FILEPATH_FULL) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -ensRelease=$(ENSRELEASE) -allRes=$(RNASEQALLRES) after >$@.tmp 2>warnings.$@
-#	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
-#	@$(MV) $@.tmp $@
-
-insert_RNA_seq: backup $(RNASEQSAMPSTATS) $(RNASEQREPORTINFO) $(RNASEQ_LIB_FILEPATH_FULL) $(RNASEQ_EXPERIMENT_FILEPATH_FULL) $(UBERON_SEX_INFO_FILE_PATH) $(CUSTOM_UBERON_FILE_PATH) $(DEV_STAGE_ONT_FILE_PATH)
+insert_RNA_seq: backup $(RNASEQSAMPSTATS) $(RNASEQREPORTINFO) $(RNASEQ_LIB_FILEPATH_FULL) $(RNASEQ_EXPERIMENT_FILEPATH_FULL) $(UBERON_SEX_INFO_FILE_PATH) $(CUSTOM_UBERON_FILE_PATH) $(DEV_STAGE_ONT_FILE_PATH) $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH) $(EXTRAMAPPING_FILEPATH)
 	# Launch the organ stage mapping tool (using $(CUSTOM_UBERON_FILE_PATH) and $(DEV_STAGE_ONT_FILE_PATH))
 	@$(IDMAPPING)  $(IDMAPPINGPORT) &
 	@$(STGMAPPING) $(STGMAPPINGPORT) &
 	@sleep 50 # sleep because mappers need time to load Uberon
 	# Insert RNA Seq data
-	@perl 3Insertion/insert_rna_seq.pl -bgee=$(BGEECMD) -rnaSeqLibrary=$(RNASEQ_LIB_FILEPATH_FULL) -rnaSeqExperiment=$(RNASEQ_EXPERIMENT_FILEPATH_FULL) -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -library_stats=$(RNASEQSAMPSTATS) -report_info=$(RNASEQREPORTINFO) -all_results=$(RNASEQALLRES) -sex_info=$(UBERON_SEX_INFO_FILE_PATH) -Aport=$(IDMAPPINGPORT) -Sport=$(STGMAPPINGPORT) > $@.tmp 2>warnings.$@
+	@perl 3Insertion/insert_rna_seq.pl -bgee=$(BGEECMD) -rnaSeqLibrary=$(RNASEQ_LIB_FILEPATH_FULL) -rnaSeqExperiment=$(RNASEQ_EXPERIMENT_FILEPATH_FULL) -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -library_stats=$(RNASEQSAMPSTATS) -report_info=$(RNASEQREPORTINFO) -all_results=$(RNASEQALLRES) -sex_info=$(UBERON_SEX_INFO_FILE_PATH) -extraMapping=$(EXTRAMAPPING_FILEPATH) -Aport=$(IDMAPPINGPORT) -Sport=$(STGMAPPINGPORT) > $@.tmp 2>warnings.$@
 	@echo "Check inconsistencies between condition species and gene species (there should be none): " >> $@.tmp
 	@$(MYSQL) -e "SELECT t1.* FROM rnaSeqResult AS t1 INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId INNER JOIN rnaSeqLibrary AS t3 ON t1.rnaSeqLibraryId = t3.rnaSeqLibraryId INNER JOIN cond AS t4 on t3.conditionId = t4.conditionId WHERE t2.speciesId != t4.speciesId" >> $@.tmp
 	@echo >> $@.tmp
@@ -288,9 +284,9 @@ TMP_TABLE_CLAUSE   := SELECT t10.expressionId, IF((SELECT COUNT(rnaSeqExperiment
 
 check_conditions: insert_RNA_seq
 	@echo "Conditions with anat. entity not existing in related species: " > $@.tmp
-	@$(MYSQL) -e "select DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.sex, t1.strain from cond as t1 left outer join anatEntityTaxonConstraint as t2 on t1.anatEntityId = t2.anatEntityId and (t2.speciesId is null or t1.speciesId = t2.speciesId) left outer join anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId left outer join rnaSeqLibrary as t10 on t1.conditionId = t10.conditionId where t2.anatEntityId is null AND t10.conditionId IS NOT NULL order by t1.speciesId;" >> $@.tmp 2> $@.warn
+	@$(MYSQL) -e "SELECT DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.sex, t1.strain FROM cond AS t1 LEFT OUTER JOIN anatEntityTaxonConstraint AS t2 ON t1.anatEntityId = t2.anatEntityId AND (t2.speciesId IS NULL OR t1.speciesId = t2.speciesId) LEFT OUTER JOIN anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId LEFT OUTER JOIN rnaSeqLibrary AS t10 ON t1.conditionId = t10.conditionId WHERE t2.anatEntityId IS NULL AND t10.conditionId IS NOT NULL ORDER BY t1.speciesId" >> $@.tmp 2> $@.warn
 	@echo "Conditions with dev. stage not existing in related species: " >> $@.tmp
-	@$(MYSQL) -e "select DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.sex, t1.strain from cond as t1 left outer join stageTaxonConstraint as t2 on t1.stageId = t2.stageId and (t2.speciesId is null or t1.speciesId = t2.speciesId) left outer join anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId left outer join rnaSeqLibrary as t10 on t1.conditionId = t10.conditionId where t2.stageId is null AND t10.conditionId IS NOT NULL order by t1.speciesId;" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "SELECT DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.sex, t1.strain FROM cond AS t1 LEFT OUTER JOIN stageTaxonConstraint AS t2 ON t1.stageId = t2.stageId AND (t2.speciesId IS NULL OR t1.speciesId = t2.speciesId) LEFT OUTER JOIN anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId LEFT OUTER JOIN rnaSeqLibrary AS t10 ON t1.conditionId = t10.conditionId WHERE t2.stageId IS NULL AND t10.conditionId IS NOT NULL ORDER BY t1.speciesId" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
 insert_expression: check_conditions insert_RNA_seq
@@ -318,29 +314,31 @@ insert_feature_length: $(RNASEQ_LENGTH_INFO_FILEPATH)
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
-launch_calculate_TMM_factors: insert_RNA_seq
+launch_calculate_TMM_factors: insert_RNA_seq $(RNASEQALLRES)
 	# Launch calculation of TMM factors for RNA-seq
 	@perl 3Insertion/launch_calculate_TMM_factors.pl -bgee=$(BGEECMD) -path_generes=$(RNASEQALLRES) -path_target=$(RNASEQTMMTARG) -path_processed=$(RNASEQTMMPATH) >$@.tmp 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
-check_TMM_factors: launch_calculate_TMM_factors
+check_TMM_factors: launch_calculate_TMM_factors $(RNASEQTMMPATH)
 	# Check results
 	@grep -H -c 'proc.time' $(RNASEQTMMPATH)/*.log | grep ':0$$'  >$@.tmp
 	# Check warnings
 	@grep 'Warning' -A 5 $(RNASEQTMMPATH)/*.log                   >>$@.tmp
 	@$(MV) $@.tmp $@
 #TODO check that all libraries in database have a TMM factor calculated:
-# cat /var/bgee/extra/pipeline/rna_seq/processed_TMM_bgee_v14/*.tsv | grep -v rnaSeqExperimentId | wc -l
+# cat /var/bgee/extra/pipeline/rna_seq/processed_TMM_$(DBNAME)/*.tsv | grep -v rnaSeqExperimentId | wc -l
 # This should correspond to: SELECT count(*) FROM rnaSeqLibrary;
 
-insert_TMM_factors: check_TMM_factors
+insert_TMM_factors: check_TMM_factors $(RNASEQTMMPATH)
 	# Insert TMM factors into rnaSeqLibrary table
 	@perl 3Insertion/insert_TMM_factors.pl -bgee=$(BGEECMD) -tmm_results=$(RNASEQTMMPATH) >$@.tmp 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
+
 #TODO Keep a way to use an external annotation file
+#FIXME Useful? As Wormbase annotations are merged within RNASeq*_full.tsv files used in the main part!
 wormbase:
 	# Get Annotation file from WormBase
 	@$(WGET) 'http://athena.caltech.edu/MrExpTable.csv' && $(MV) MrExpTable.csv 4External/$@.tsv 2>/dev/null  || rm -f MrExpTable.csv
@@ -351,6 +349,7 @@ wormbase:
 	@echo TODO
 
 external: wormbase
+
 
 #TODO Add 1st steps
 #TODO add a verification that each transcriptId is uniquely used in a given species
