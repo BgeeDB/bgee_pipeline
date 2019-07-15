@@ -228,7 +228,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
     * It is good to rerun `make run_pipeline` step to be sure nothing was forgotten.
     * Run `make finalize_pipeline` to:
       * Backup the file `run_pipeline.tmp`, as well as '.report', '.err' and '.out' files
-      * Touch all files so that they can stay in `/scratch/cluster/monthly` for one more month
+      * Touch all files so that they can stay in `/scratch/temporary` for one more month
       * Tar and compress all data and copy them to `/data/` drive (for Bgee_v14 the whole $RNASEQ_VITALIT_ALL_RES has been backuped on nas.unil.ch!)
 
 ## Mapping the libraries: TODOs

@@ -64,7 +64,7 @@ make_path "$output_log_folder",   {verbose=>0, mode=>0775};
 my $main_script = $RealBin.'/rna_seq_mapping_and_analysis.pl';
 ## TODO launch bsub_scheduler.pl from /data/ul/dee/bgee/GIT/pipeline/RNA_Seq/
 ##        Beware that git pull command should be executed before
-##        kallisto_out_folder should be on /scratch/cluster/monthly. if too slow, consider using /scratch/local/ + cp of results file to /scratch/cluster/monthly/ or /home/bbgee, or /data/ (read-only, but should be fine via scp)
+##        kallisto_out_folder should be on /scratch/temporary. If too slow, consider using /scratch/local/ + cp of results file to /scratch/temporary/ or /home/bbgee, or /data/ (read-only, but should be fine via scp)
 
 # kallisto is no multithreaded unless bootstraps are used
 my $nr_processors = 1;
