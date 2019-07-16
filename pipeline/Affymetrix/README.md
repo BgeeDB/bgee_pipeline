@@ -300,17 +300,17 @@ It is now possible to normalize using only one CEL file, this part should not be
 ### Note for large ".cel" files
 If large cel files have to be normalized, you can use Vital-IT computers with a lot of memory. Copy required files, data structure and scripts there:
 ```
-rsync -Wav -essh --exclude '*.gz' $(CELPATH)       YYYYYY@dee-serv02.vital-it.ch:/scratch/cluster/monthly/YYYYYY/bgee/Affymetrix/cel_data/
-rsync -Wav -essh                  $(BIOCONDUCTOR)  YYYYYY@dee-serv02.vital-it.ch:/scratch/cluster/monthly/YYYYYY/bgee/Affymetrix/bioconductor/
-rsync -Wav -essh                  $(AFFYPATH)      YYYYYY@dee-serv02.vital-it.ch:/scratch/cluster/monthly/YYYYYY/bgee/Affymetrix/
+rsync -Wav -essh --exclude '*.gz' $(CELPATH)       YYYYYY@dee-serv02.vital-it.ch:/scratch/temporary/YYYYYY/bgee/Affymetrix/cel_data/
+rsync -Wav -essh                  $(BIOCONDUCTOR)  YYYYYY@dee-serv02.vital-it.ch:/scratch/temporary/YYYYYY/bgee/Affymetrix/bioconductor/
+rsync -Wav -essh                  $(AFFYPATH)      YYYYYY@dee-serv02.vital-it.ch:/scratch/temporary/YYYYYY/bgee/Affymetrix/
 ssh YYYYYY@dee-serv02.vital-it.ch
 module add R/3.2.2
-cd /scratch/cluster/monthly/YYYYYY/bgee/Affymetrix/
+cd /scratch/temporary/YYYYYY/bgee/Affymetrix/
 RUN normalization scripts
 ```
-* `YYYYYY` being your login account on Vital-IT, and the repository in `/scratch/cluster/monthly/` you need to ask for.
+* `YYYYYY` being your login account on Vital-IT, and the repository in `/scratch/temporary/` you need to ask for.
 * `dee-serv03.vital-it.ch` could also be used !
-* You may have to change some paths in order to reach `/scratch/cluster/monthly/YYYYYY/bgee/Affymetrix/` properly!
+* You may have to change some paths in order to reach `/scratch/temporary/YYYYYY/bgee/Affymetrix/` properly!
 
 
 ### Note if you need to re-run some normalizations
