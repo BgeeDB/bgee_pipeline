@@ -166,7 +166,7 @@ sub getAllAnnotatedExperiments {
         # 6th line: either optional COMMENT, or experiment separator //
 
         my @tmp;
-        ($tmp[0], $tmp[1]) = map { bgeeTrim($_) } split(/\t/, $line);
+        ($tmp[0], $tmp[1]) = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
         # first line describing an experiment
         if ( $lineCount == 0 && !defined $expId ){
             if ( $tmp[0] eq 'experimentId' && length($tmp[1]) < 255 && $tmp[1] !~ /\s/ ){
@@ -365,12 +365,9 @@ sub getAllRnaSeqAnnotations {
 
         # file format: libraryId experimentId platform ... organId stageId
 # #libraryId        experimentId   platform      organId organName       uberonId        uberonName      stageId stageName       infoOrgan       infoStage       libraryTitle     librarySource    libraryDescription       libraryCharacteristics    organAnnotationStatus   organBiologicalStatus   stageAnnotationStatus   stageBiologicalStatus   sex     strain  speciesId   comment annotatorId     lastModificationDate
-        my @tmp = map { bgeeTrim($_) } split(/\t/, $line);
-        # remove quotes
-        for my $i (0 .. $#tmp){
-          $tmp[$i] =~ s/^\"//;
-          $tmp[$i] =~ s/\"$//;
-        }
+        my @tmp = map { bgeeTrim($_) }
+                  map { s/^\"//; s/\"$//; $_ } # remove quotes
+                  split(/\t/, $line);
 
         my $libraryId    = $tmp[0];
         my $experimentId = $tmp[1];
@@ -470,7 +467,7 @@ sub getAllRnaSeqLibrariesInfo {
     for my $line ( read_file("$rnaSeqLibraryFile", chomp=>1) ){
         next  if ( $line =~ /^#/ or $line =~ /^\"#/ );
         #libraryId      experimentId    speciesId       organism        genomeFilePath  database        platform        libraryType     libraryInfo     readLength      runIds
-        my @tmp = map { bgeeTrim($_) } split(/\t/, $line);
+        my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
 
         my $experimentId                    = $tmp[1];
         my $libraryId                       = $tmp[0];
@@ -567,7 +564,7 @@ sub getExcludedLibraries {
 
     for my $line ( read_file("$excludedLibraryFile", chomp=>1) ){
         next  if ( $line =~ /^#/ or $line =~ /^\"#/ );
-        my @tmp = map { bgeeTrim($_) } split(/\t/, $line);
+        my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
         if ( $tmp[1] eq 'TRUE' ){
             $excludedLibraries{$tmp[0]} = ();
         }
@@ -586,7 +583,7 @@ sub getAllRnaSeqLibrariesStats {
         next  if ( $line =~ /^#/ or $line =~ /^\"#/ );
         #libraryId      max_intergenic  cutoffTPM       cutoffGenicTPM  cutoffFPKM      cutoffGenicFPKM proportionGenicPresent  numberGenicPresent      numberGenic     proportionCodingPresent numberPresentCoding     numberCoding    proportionIntergenicPresent     numberIntergenicPresent numberIntergenic        ratioIntergenicCodingPresent    species organism
 
-        my @tmp = map { bgeeTrim($_) } split(/\t/, $line);
+        my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
 
         my $libraryId                       = $tmp[0];
         my $cutoffTPM                       = $tmp[3];
@@ -671,7 +668,7 @@ sub getAllRnaSeqReportInfo {
     for my $line ( read_file("$rnaSeqReportFile", chomp=>1) ){
         next  if ( $line =~ /^#/ or $line =~ /^\"#/ ); # this includes the header
 
-        my @tmp = map { bgeeTrim($_) } split(/\t/, $line);
+        my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
 
         # columns: libraryId, allReadsCount, mappedReadsCount, minReadLength, maxReadLength
 
@@ -749,7 +746,7 @@ sub getGenesResults {
     while ( defined ($line = <$IN>) ){
         chomp $line;
         # file format: geneId, estimatedCount, FPKM, TPM, biotype, expression call
-        my @tmp = map { bgeeTrim($_) } split(/\t/, $line);
+        my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
         my $geneId         = $tmp[0];
         my $estimatedCount = $tmp[1];
         my $TPM            = $tmp[2];
@@ -818,7 +815,7 @@ sub getFeatureLength {
         while ( defined (my $line = <$IN>) ) {
             chomp $line;
             # file format: geneId, featureLength, biotype
-            my @tmp = map { bgeeTrim($_) } split(/\t/, $line);
+            my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
             my $geneId         = $tmp[0];
             my $featureLength  = $tmp[1];
             my $biotype        = $tmp[2];
