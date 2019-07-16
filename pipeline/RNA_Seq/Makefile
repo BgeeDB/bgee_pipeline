@@ -272,10 +272,13 @@ insert_RNA_seq: backup $(RNASEQSAMPSTATS) $(RNASEQREPORTINFO) $(RNASEQ_LIB_FILEP
 	@echo >> $@.tmp
 	@echo "Distinct strains in RNA-Seq conditions, check that they are correct (e.g., no 'wild type' instead of 'wild-type')" >> $@.tmp
 	@$(MYSQL) -e "SELECT DISTINCT t1.strain FROM cond AS t1 INNER JOIN rnaSeqLibrary AS t2 ON t1.conditionId = t2.conditionId ORDER BY t1.strain" >> $@.tmp
+	@echo >> $@.tmp
 	@echo "Statistics on libraries" >> $@.tmp
 	@$(MYSQL) -e "SELECT t1.speciesId, COUNT(DISTINCT t2.rnaSeqLibraryId), MIN(t2.tmmFactor), MAX(t2.tmmFactor), AVG(t2.tmmFactor), MIN(t2.fpkmThreshold), MAX(t2.fpkmThreshold), AVG(t2.fpkmThreshold), MIN(t2.tpmThreshold), MAX(t2.tpmThreshold), AVG(t2.tpmThreshold), MIN(t2.allGenesPercentPresent), MAX(t2.allGenesPercentPresent), AVG(t2.allGenesPercentPresent), MIN(t2.proteinCodingGenesPercentPresent), MAX(t2.proteinCodingGenesPercentPresent), AVG(t2.proteinCodingGenesPercentPresent), MIN(t2.mappedReadsCount), MAX(t2.mappedReadsCount), AVG(t2.mappedReadsCount) FROM cond AS t1 INNER JOIN rnaSeqLibrary AS t2 ON t1.conditionId = t2.conditionId GROUP BY t1.speciesId ORDER BY COUNT(DISTINCT t2.rnaSeqLibraryId) DESC" >> $@.tmp
+	@echo >> $@.tmp
 	@echo "Statistics on conditions" >> $@.tmp
 	@$(MYSQL) -e "SELECT t1.speciesId, COUNT(DISTINCT t2.rnaSeqLibraryId), COUNT(DISTINCT t2.conditionId), COUNT(DISTINCT t1.exprMappedConditionId), COUNT(DISTINCT t1.anatEntityId), COUNT(DISTINCT t1.stageId), COUNT(DISTINCT t1.anatEntityId, t1.stageId, t1.sex), GROUP_CONCAT(DISTINCT t1.sex ORDER BY t1.sex SEPARATOR ', '), GROUP_CONCAT(DISTINCT t1.strain ORDER BY t1.strain SEPARATOR ', ') FROM cond AS t1 INNER JOIN rnaSeqLibrary AS t2 ON t1.conditionId = t2.conditionId GROUP BY t1.speciesId ORDER BY COUNT(DISTINCT t2.rnaSeqLibraryId) DESC" >> $@.tmp
+	@echo >> $@.tmp
 	@echo "Same condition information, but for mapped conditions of expression tables" >> $@.tmp
 	@$(MYSQL) -e "SELECT t3.speciesId, COUNT(DISTINCT t2.rnaSeqLibraryId), COUNT(DISTINCT t3.anatEntityId), COUNT(DISTINCT t3.stageId), COUNT(DISTINCT t3.anatEntityId, t3.stageId, t3.sex), GROUP_CONCAT(DISTINCT t3.sex ORDER BY t3.sex SEPARATOR ', '), GROUP_CONCAT(DISTINCT t3.strain ORDER BY t3.strain SEPARATOR ', ') FROM cond AS t1 INNER JOIN rnaSeqLibrary AS t2 ON t1.conditionId = t2.conditionId INNER JOIN cond AS t3 ON t1.exprMappedConditionId = t3.conditionId GROUP BY t3.speciesId ORDER BY COUNT(DISTINCT t2.rnaSeqLibraryId) DESC" >> $@.tmp
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
