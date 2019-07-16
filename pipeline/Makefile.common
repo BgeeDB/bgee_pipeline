@@ -32,7 +32,7 @@ VITHOST  := dev.vital-it.ch
 
 # Machine used for the pipeline
 # PIPELOGIN and PIPEPASSWD defined in Makefile.Config
-PIPEHOST   := altbioinfo.unil.ch
+PIPEHOST   := devbioinfo.unil.ch
 
 # Machine used for RNA-seq/Affymetrix data storage (backup)
 # DATALOGIN and DATAPASSWD defined in Makefile.Config

@@ -338,7 +338,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
 
   NOTE: `$(RNASEQ_VITALIT_PRESENCE_RES)` could possibly be set to `$(RNASEQ_VITALIT_ALL_RES)` and the presence calls files be written directly in the subfolders with the mapping results. I considered it safer to generate in a separate folder and then copy.
 
-  * Back-up results and send useful files to `altbioinfo` server: `make save_and_send_results_back`
+  * Back-up results and send useful files to `devbioinfo` server: `make save_and_send_results_back`
 
 ## RNA-Seq insertion
 * Before insertion, list all unique strains present in our annotations, to merge inconsistent strains, e.g., 'Wild Type' or 'wild type' instead of 'wild-type' (see, e.g., https://gitlab.isb-sib.ch/Bgee/bgee_pipeline/issues/67#note_4654)

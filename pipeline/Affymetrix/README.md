@@ -90,7 +90,7 @@ for i in *.raw;       do mv $i ${i/.raw/};       done
 for i in *.raw.[0-9]; do mv $i ${i/.raw.[0-9]/}; done
 ```
 
-* Data files (".cel") and MAS5 are stored on `devbioinfo` or `altbioinfo` and are not on the git because too BIG -> find a better solution? They are mirrored on `annotbioinfo` and Fred's machines.
+* Data files (".cel") and MAS5 are stored on `devbioinfo` and are not on the git because too BIG -> find a better solution? They are mirrored on `annotbioinfo` and Fred's machines.
 
 
 ## Check new chipType(s) supported by Ensembl
