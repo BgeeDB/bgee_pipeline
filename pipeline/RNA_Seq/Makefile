@@ -168,7 +168,7 @@ prepare_indexed_transcriptome: get_genome prepare_GTF
 	@$(MV) $@.tmp $@
 #TODO Use short k-mer size = 21nt instead of 15
 #TODO The gffread utility in cufflinks package seems more flexible and reliable
-#TODO add step to copy .passw file to bbgee's home on vital-it / or maybe just echo a message to tell the user scp it? Path and name of this file on vital-it is stored in ENCRYPT_PASSWD_FILE. We should store this file somewhere (altbioinfo?) because it cannot be added to the gitlab project
+#TODO add step to copy .passw file to bbgee's home on vital-it / or maybe just echo a message to tell the user scp it? Path and name of this file on vital-it is stored in ENCRYPT_PASSWD_FILE. We should store this file somewhere (devbioinfo?) because it cannot be added to the gitlab project
 #Or just put it in /home/bbgee/? in read only mode, only for bbgee user
 
 #NOTE Better to run this step in screen or with nohup as submission is done X jobs per X jobs to not overload the system (and not decrease our user priority)!
@@ -207,6 +207,10 @@ finalize_pipeline: check_pipeline
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
+
+#NOTE For iterative updates the  sum_by_species  step has to be skipped if you want to reuse the previous gaussian curves as they are!
+#     So use the previous release $(RNASEQ_VITALIT_GAUSSIAN_CHOICE) file and $(RNASEQ_VITALIT_SUM_RES) result folder (Just update the database version if required)
+#     for the  presence_absence  step!
 sum_by_species: check_pipeline $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH)
 # Script using all data from each species to deconvolute the coding genes and intergenic regions underlying distributions
 	@mkdir -p $(RNASEQ_VITALIT_SUM_RES)
@@ -228,7 +232,7 @@ save_and_send_results_back: finalize_pipeline presence_absence export_length
 	# Touch all files so that they are not removed from /scratch/temporary
 	@find $(RNASEQ_VITALIT_SCRATCH) -exec touch {} \; 2>warnings.$@
 	# Back-up all data
-	@tar -cf $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar $(RNASEQ_VITALIT_ALL_RES) $(RNASEQ_VITALIT_SUM_RES) $(RNASEQ_VITALIT_PRESENCE_RES) 2>>warnings.$@
+	@tar -cf $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar --absolute-names $(RNASEQ_VITALIT_ALL_RES) $(RNASEQ_VITALIT_SUM_RES) $(RNASEQ_VITALIT_PRESENCE_RES) 2>>warnings.$@
 	@gzip -9 $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar 2>>warnings.$@
 	# Move back-up data to /data/
 	@$(MV) $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar.gz $(RNASEQ_VITALIT_ALL_RES_BACKUP) 2>>warnings.$@
