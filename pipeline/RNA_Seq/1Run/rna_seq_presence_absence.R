@@ -171,7 +171,7 @@ calculate_and_plot_r <- function(counts, selected_coding, selected_intergenic, d
   r <- ( summed_intergenic / sum(selected_intergenic) ) /
        ( summed_coding / sum(selected_coding) )
   ## This is twice faster as code above!
-  
+
   percent <- (1-desired_r_cutoff)*100
 
   ## Select the minimal value of TPM for which the ratio of genes and intergenic regions is equal to 0.05 or lower (first test if at least 1 TPM value has this property):
