@@ -824,6 +824,7 @@ sub generateRnaSeqFiles {
     # $lib{'expId'}                            = experiment ID
     # $lib{'libId'}                            = library ID
     # $lib{'platformId'}                       = RNA-Seq  platform ID
+    # $lib{'tmmFactor'}                        = TMM normalization factor
     # $lib{'tpmThreshold'}                     = Threshold of TPM value to consider a gene as expressed
     # $lib{'fpkmThreshold'}                    = Threshold of FPKM value to consider a gene as expressed
     # $lib{'allGenesPercentPresent'}           = percentage of genes called present
@@ -846,7 +847,7 @@ sub generateRnaSeqFiles {
     my @libs = ();
 
     $sql = 'SELECT t1.rnaSeqExperimentId, t1.rnaSeqLibraryId, t1.rnaSeqPlatformId, '
-              .'t1.tpmThreshold, t1.fpkmThreshold, t1.allGenesPercentPresent, t1.proteinCodingGenesPercentPresent, '
+              .'t1.tmmFactor, t1.tpmThreshold, t1.fpkmThreshold, t1.allGenesPercentPresent, t1.proteinCodingGenesPercentPresent, '
               .'t1.intergenicRegionsPercentPresent, t1.allReadsCount, t1.mappedReadsCount, '
               .'t1.minReadLength, t1.maxReadLength, '
               .'t1.libraryType, t1.libraryOrientation, '
@@ -874,25 +875,26 @@ sub generateRnaSeqFiles {
         $lib{'expId'}                            = $data[0];
         $lib{'libId'}                            = $data[1];
         $lib{'platformId'}                       = $data[2];
-        $lib{'tpmThreshold'}                     = $data[3];
-        $lib{'fpkmThreshold'}                    = $data[4];
-        $lib{'allGenesPercentPresent'}           = $data[5];
-        $lib{'proteinCodingGenesPercentPresent'} = $data[6];
-        $lib{'intergenicRegionsPercentPresent'}  = $data[7];
-        $lib{'allReadsCount'}                    = $data[8];
-        $lib{'mappedReadsCount'}                 = $data[9];
-        $lib{'minReadLength'}                    = $data[10];
-        $lib{'maxReadLength'}                    = $data[11];
-        $lib{'libraryType'}                      = $data[12];
-        $lib{'libraryOrientation'}               = $data[13];
-        $lib{'anatEntityId'}                     = $data[14];
-        $lib{'anatEntityName'}                   = $data[15];
-        $lib{'stageId'}                          = $data[16];
-        $lib{'stageName'}                        = $data[17];
-        $lib{'sex'}                              = $data[18];
-        $lib{'strain'}                           = $data[19];
-        $lib{'sourceId'}                         = $data[20];
-        $lib{'runIds'}                           = $data[21];
+        $lib{'tmmFactor'}                        = $data[3];
+        $lib{'tpmThreshold'}                     = $data[4];
+        $lib{'fpkmThreshold'}                    = $data[5];
+        $lib{'allGenesPercentPresent'}           = $data[6];
+        $lib{'proteinCodingGenesPercentPresent'} = $data[7];
+        $lib{'intergenicRegionsPercentPresent'}  = $data[8];
+        $lib{'allReadsCount'}                    = $data[9];
+        $lib{'mappedReadsCount'}                 = $data[10];
+        $lib{'minReadLength'}                    = $data[11];
+        $lib{'maxReadLength'}                    = $data[12];
+        $lib{'libraryType'}                      = $data[13];
+        $lib{'libraryOrientation'}               = $data[14];
+        $lib{'anatEntityId'}                     = $data[15];
+        $lib{'anatEntityName'}                   = $data[16];
+        $lib{'stageId'}                          = $data[17];
+        $lib{'stageName'}                        = $data[18];
+        $lib{'sex'}                              = $data[19];
+        $lib{'strain'}                           = $data[20];
+        $lib{'sourceId'}                         = $data[21];
+        $lib{'runIds'}                           = $data[22];
         push @libs, \%lib;
     }
 
@@ -902,7 +904,7 @@ sub generateRnaSeqFiles {
     print $fh "Experiment ID\tLibrary ID\tAnatomical entity ID\tAnatomical entity name\t"
               ."Stage ID\tStage name\tSex\tStrain\t"
               ."Platform ID\tLibrary type\tLibrary orientation\t"
-              ."TPM expression threshold\tFPKM expression threshold\t"
+              ."TMM normalization factor\tTPM expression threshold\tFPKM expression threshold\t"
               ."Read count\tMapped read count\t"
               ."Min. read length\tMax. read length\tAll genes percent present\t"
               ."Protein coding genes percent present\tIntergenic regions percent present\t"
@@ -931,7 +933,7 @@ sub generateRnaSeqFiles {
         print $fh '"'.$toPrint.'"'."\t";
 
         print $fh $lib->{'platformId'}."\t".$lib->{'libraryType'}."\t".$lib->{'libraryOrientation'}."\t"
-            .$lib->{'tpmThreshold'}."\t".$lib->{'fpkmThreshold'}."\t"
+            .$lib->{'tmmFactor'}."\t".$lib->{'tpmThreshold'}."\t".$lib->{'fpkmThreshold'}."\t"
             .$lib->{'allReadsCount'}."\t".$lib->{'mappedReadsCount'}."\t";
 
         print $fh $lib->{'minReadLength'}."\t".$lib->{'maxReadLength'}."\t"
