@@ -208,6 +208,7 @@ for my $run ( @run_ids ){
     if ( $libraryType eq 'SINGLE' ){
         my $read;
         if ( $exp_id ne $GTEX_exp_id ){
+            #FIXME use R to get min/max/mean/median/mod instead of this that is not representative
             $read = `ssh $data_login\@$data_host cat $fastqSamplePath\/$run\.fastq.gz | zcat | tail -n +2 | head -n1`;
             chomp($read);
         }
@@ -308,6 +309,7 @@ my %number_reads;
 for my $run ( @run_ids ){
     my $FASTQC_REPORT;
     if ( $libraryType eq 'SINGLE' ){
+        #FIXME Move to FastP tool instead of FastQC
         open($FASTQC_REPORT, "ssh $data_login\@$data_host  cat $fastqSamplePath/FASTQC/${run}_fastqc.html |")
             or warn "\nWarning: missing FastQC report for run $run\n";
     }
