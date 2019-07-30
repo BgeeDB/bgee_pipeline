@@ -259,7 +259,7 @@ if ( !plot_only ){
           ## TODO ideally this could be done only once per species
 
           selected_intergenic <- (kallisto_gene_counts$type == "intergenic"
-                                  & sum_by_species$tpm < max_intergenic)
+                                  & sum_by_species$tpm <= max_intergenic)
 
           ## Print what the max level of summed TPM for intergenic regions kept is
           cat(paste0("    The max (summed by species) TPM level of selected intergenic is ", max_intergenic,"\n"))
