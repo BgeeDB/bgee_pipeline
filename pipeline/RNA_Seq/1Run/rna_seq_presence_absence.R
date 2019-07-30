@@ -4,13 +4,14 @@
 ## Output is written in kallisto results folder
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args rna_seq_sample_info="rna_seq_sample_info.txt" rna_seq_sample_excluded="rna_seq_sample_excluded.txt" kallisto_count_folder= "all_results_bgee_v14" sum_by_species_folder="$(RNASEQ_VITALIT_SUM_RES)" gaussian_choice="$(RNASEQ_VITALIT_GAUSSIAN_CHOICE)" out_folder="all_results_bgee_v14" plot_only=FALSE' rna_seq_presence_absence.R rna_seq_presence_absence.Rout
+## R CMD BATCH --no-save --no-restore '--args rna_seq_sample_info="rna_seq_sample_info.txt" rna_seq_sample_excluded="rna_seq_sample_excluded.txt" kallisto_count_folder= "all_results_bgee_v14" sum_by_species_folder="$(RNASEQ_VITALIT_SUM_RES)" gaussian_choice="$(RNASEQ_VITALIT_GAUSSIAN_CHOICE)" out_folder="all_results_bgee_v14" desired_r_cutoff="r_cutoff_value" plot_only=FALSE' rna_seq_presence_absence.R rna_seq_presence_absence.Rout
 ## rna_seq_sample_info      - file with info on mapped libraries
 ## rna_seq_sample_excluded  - file with excluded libraries
 ## kallisto_count_folder    - path to kallisto result folder
 ## sum_by_species_folder    - path to folder where summed data where exported by rna_seq_sum_by_species.pl script.
 ## gaussian_choice          - path to file with manually chosen deconvoluted gaussians
 ## out_folder               - path to folder where to write results
+## desired_r_cutoff         - desired cutoff value (proportion of intergenic, value between 0 and 1)
 ## plot_only                - specify if only plotting of final boxplots should be made (using .RDa file presence_absence_all_samples.RDa)
 
 ## Session info
@@ -26,7 +27,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed in command line
-command_arg <- c("rna_seq_sample_info", "rna_seq_sample_excluded", "kallisto_count_folder", "sum_by_species_folder", "gaussian_choice", "out_folder", "plot_only")
+command_arg <- c("rna_seq_sample_info", "rna_seq_sample_excluded", "kallisto_count_folder", "sum_by_species_folder", "gaussian_choice", "out_folder", "desired_r_cutoff", "plot_only")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -139,7 +140,7 @@ cutoff_info <- function(library_id, counts, column, max_intergenic, TPM_cutoff, 
   return(to_export)
 }
 
-calculate_and_plot_r <- function(counts, selected_coding, selected_intergenic){
+calculate_and_plot_r <- function(counts, selected_coding, selected_intergenic, desired_r_cutoff){
   ## r = (number of intergenic regions with TPM values higher than x * number of coding regions) /
   ##     (number of coding regions with TPM values higher than x * number of intergenic regions)
   ##   = 0.05
@@ -171,22 +172,24 @@ calculate_and_plot_r <- function(counts, selected_coding, selected_intergenic){
        ( summed_coding / sum(selected_coding) )
   ## This is twice faster as code above!
 
+  percent <- (1-desired_r_cutoff)*100
+
   ## Select the minimal value of TPM for which the ratio of genes and intergenic regions is equal to 0.05 or lower (first test if at least 1 TPM value has this property):
-  if (sum(r < 0.05) == 0){
+  if (sum(r < desired_r_cutoff) == 0){
     TPM_cutoff <- sort(unique(counts$tpm[selected_coding]))[which(r == min(r))[1]]
     r_cutoff <- min(r)
-    cat(paste0("    There is no TPM cutoff for which 95% of the expressed genes would be coding. TPM cutoff is fixed at the first value with maximum coding/intergenic ratio. r=", r_cutoff, " at TPM=", TPM_cutoff,"\n"))
+    cat(paste0("    There is no TPM cutoff for which " , percent,"%", " of the expressed genes would be coding. TPM cutoff is fixed at the first value with maximum coding/intergenic ratio. r=", r_cutoff, " at TPM=", TPM_cutoff,"\n"))
   } else {
-    TPM_cutoff <- sort(unique(counts$tpm[selected_coding]))[which(r < 0.05)[1]]
-    r_cutoff <- 0.05
-    cat(paste0("    TPM cutoff for which 95% of the expressed genes are be coding found at TPM=", TPM_cutoff,"\n"))
+    TPM_cutoff <- sort(unique(counts$tpm[selected_coding]))[which(r < desired_r_cutoff)[1]]
+    r_cutoff <- desired_r_cutoff
+    cat(paste0("    TPM cutoff for which " , percent,"%", " of the expressed genes are be coding found at TPM=", TPM_cutoff,"\n"))
   }
 
   ## Plot TPMs vs. ratio: should mostly go down
   plot(log2(sort(unique(counts$tpm[selected_coding]))+10e-6), r, pch=16, xlab="log2(TPM + 10^-6)", type="l")
-  abline(h=0.05, lty=2, col="gray")
-  if (r_cutoff > 0.05){
-    abline(h=0.05, lty=3, col="gray")
+  abline(h=desired_r_cutoff, lty=2, col="gray")
+  if (r_cutoff > desired_r_cutoff){
+    abline(h=desired_r_cutoff, lty=3, col="gray")
   }
   arrows(log2(TPM_cutoff + 10e-6), par("usr")[3], log2(TPM_cutoff + 10e-6), par("usr")[4]/2, col="gray", lty=1, lwd=2, angle=160, length=0.1)
   return(c(TPM_cutoff, r_cutoff))
@@ -262,7 +265,7 @@ if ( !plot_only ){
           cat(paste0("    The max (summed by species) TPM level of selected intergenic is ", max_intergenic,"\n"))
 
           ## Function to calculate TPM cutoff at r of 5% or the minimal r across all TPM range
-          results <- calculate_and_plot_r(kallisto_gene_counts, selected_coding, selected_intergenic)
+          results <- calculate_and_plot_r(kallisto_gene_counts, selected_coding, selected_intergenic, as.numeric(desired_r_cutoff))
           TPM_cutoff <- results[1]
           r_cutoff <- results[2]
 
