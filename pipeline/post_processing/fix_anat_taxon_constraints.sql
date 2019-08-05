@@ -121,7 +121,8 @@ INSERT INTO anatEntityRelationTaxonConstraint (anatEntityRelationId, speciesId)
     FROM anatProblem AS t1 
     INNER JOIN anatEntityRelation AS t2 
         ON (t1.anatEntityId = t2.anatEntitySourceId AND t1.anatEntityId = t2.anatEntityTargetId)
-    INNER JOIN anatEntityRelationTaxonConstraint AS t3 ON (t2.anatEntityRelationId = t3.anatEntityRelationId AND t1.speciesId=t3.speciesId);
+    LEFT OUTER JOIN anatEntityRelationTaxonConstraint AS t3 ON (t2.anatEntityRelationId = t3.anatEntityRelationId AND (t1.speciesId = t3.speciesId OR t3.speciesId IS NULL))
+    WHERE t3.anatEntityRelationId IS NULL;
 
 -- Some relations might now be defined as existing in all species,
 -- in which case we use a NULL speciesId in the table anatEntityRelationTaxonConstraint,
