@@ -1,6 +1,6 @@
 -- in that case we only wanted to remap some developmental stages.
 -- create a table to define the stage remapping.
-CREATE TEMPORARY TABLE remapStage (
+CREATE TABLE remapStage (
     incorrectStageId varchar(20) not null,
     remappedStageId varchar(20) not null,
     speciesId mediumint unsigned not null,
@@ -9,14 +9,29 @@ CREATE TEMPORARY TABLE remapStage (
 );
 INSERT INTO remapStage (incorrectStageId, remappedStageId, speciesId) VALUES
 ('UBERON:0000113', 'UBERON:0000066', 7955),
+('UBERON:0007222', 'UBERON:0000066', 7955),
 ('FBdv:00007083', 'DpseDv:0000007', 7237),
 ('FBdv:00007083', 'DmojDv:0000007', 7230),
 ('UBERON:0018241', 'UBERON:0000113', 10090),
-('UBERON:0018241', 'UBERON:0000113', 10116);
+('UBERON:0018241', 'UBERON:0000113', 10116),
+('UBERON:0007222', 'HsapDv:0000091', 9606),
+('UBERON:0007221', 'UBERON:0018685', 9823),
+('UBERON:0034920', 'UBERON:0018685', 13616);
 
 
 -- now, identify if there are some existings conditions to remap the incorrect conditions to.
-CREATE TEMPORARY TABLE remapCond (PRIMARY KEY(incorrectConditionId, remappedConditionId))
+CREATE TABLE remapCond (
+    incorrectConditionId mediumint(8) unsigned NOT NULL,
+    remappedConditionId mediumint(8) unsigned NOT NULL,
+    PRIMARY KEY(incorrectConditionId, remappedConditionId)
+);
+
+-- !!!!!!!!!!!!!!!!!!!!!!
+-- NOW USE THE PERL SCRIPT TO POPULATE THE TABLE `remapCond`, AND `cond` ACCORDINGLY.
+-- !!!!!!!!!!!!!!!!!!!!!!
+
+
+
 SELECT DISTINCT t1.conditionId AS incorrectConditionId, t3.conditionId AS remappedConditionId
 FROM cond AS t1
 INNER JOIN remapStage AS t2 ON t1.stageId = t2.incorrectStageId AND t1.speciesId = t2.speciesId
@@ -25,6 +40,11 @@ LEFT OUTER JOIN cond AS t3 ON t1.speciesId = t3.speciesId AND t1.anatEntityId = 
     AND t1.strain = t3.strain;
 
 -- For incorrect conditions with no existing conditions to remap to,
+-- create a temp table with the new conditions, and with a mapping old condition IDs -> new condition IDs
+--
+-- FROM HERE IT'S BROKEN!!! WE NEED TO USE THE METHOD WRITTEN IN PERL insert_get_condition IN UTILS.PM
+-- TO INSERT CONDITIONS!!
+
 -- simply update the incorrect field in the condition table.
 UPDATE cond AS t1
 INNER JOIN remapCond AS t2 ON t2.incorrectConditionId = t1.conditionId
