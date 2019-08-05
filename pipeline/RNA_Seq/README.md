@@ -724,6 +724,34 @@ SRP009247
 SRP015688
 ```
 
+* Among the new experiments added for Bgee 14.1, the followings were discarded:
+
+```
+SRP041131 (single-cell protocol, proportion of protein coding genes detected as present too low)
+```
+
+* Among the new libraries added for Bgee 14.1, the followings were discarded.
+For all of them, the reason was: proportion of protein coding genes detected as present too low.
+
+```
+SRX1125042
+SRX028802
+SRX028803
+SRX028810
+SRX028812
+SRX028813
+SRX028908
+SRX028909
+SRX028910
+SRX494044
+ERX016327
+ERX016345
+SRX737153
+SRX037197
+SRX050630
+SRX099901
+```
+
 * 3 more conditions are not used anywhere, because they were remapped for insertion in the `expression` table:
 
 ```
