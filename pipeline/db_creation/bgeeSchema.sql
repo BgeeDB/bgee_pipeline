@@ -553,6 +553,11 @@ create table cond (
     COMMENT 'Strain information. NA: not available from source information; not annotated: information not captured by Bgee; confidential_restricted_data: information cannot be disclosed publicly. Note that all conditions used in the expression tables have "NA", "not annotated" and "confidential_restricted_data" replaced with "wild-type"'
 ) engine = innodb COMMENT 'This table stores the "raw" conditions used to annotate data and used in the "raw" expression table, where data are not propagated nor precomputed';
 
+create table remapCond (
+    incorrectConditionId mediumint unsigned not null,
+    remappedConditionId mediumint unsigned not null
+) engine = innodb COMMENT 'This table is used as an intermediary step for condition remapping, see remap_conditions.pl';
+
 create table globalCond (
     globalConditionId mediumint unsigned not null,
     anatEntityId          varchar(20)  COMMENT 'Uberon anatomical entity ID. Can be null in this table if this condition aggregates data according to other condition parameters (e.g., grouping all data in a same stage whatever the organ is).',

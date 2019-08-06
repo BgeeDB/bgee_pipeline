@@ -180,6 +180,11 @@ add foreign key (stageId) references stage(stageId) on delete cascade,
 add foreign key (speciesId) references species(speciesId) on delete cascade;
 /*!40000 ALTER TABLE `cond` ENABLE KEYS */;
 
+/*!40000 ALTER TABLE `remapCond` DISABLE KEYS */;
+alter table remapCond
+add foreign key (remappedConditionId) references cond(conditionId) on delete cascade;
+/*!40000 ALTER TABLE `remapCond` ENABLE KEYS */;
+
 /*!40000 ALTER TABLE `globalCond` DISABLE KEYS */;
 alter table globalCond
 add foreign key (anatEntityId) references anatEntity(anatEntityId) on delete cascade,
