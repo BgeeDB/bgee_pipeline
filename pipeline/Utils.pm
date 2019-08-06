@@ -666,6 +666,8 @@ sub query_conditions {
         $conditions->{ $condKey }->{'conditionId'}           = $_->[0];
         $conditions->{ $condKey }->{'exprMappedConditionId'} = $_->[1];
         $conditions->{ $condKey }->{'strain'}                = $_->[7];
+        $conditions->{ $condKey }->{'speciesId'}             = $_->[4];
+        $conditions->{ $condKey }->{ 'sexInference' }        = $_->[6];
     }  @{ $cond_ref };
 
     return $conditions;
@@ -932,6 +934,8 @@ sub insert_get_condition {
             $conditions->{ $exprMappedCondKey }->{ 'conditionId' }           = $exprMappedCondId;
             $conditions->{ $exprMappedCondKey }->{ 'exprMappedConditionId' } = $exprMappedCondId;
             $conditions->{ $exprMappedCondKey }->{ 'strain' }                = $mappedStrainToUse;
+            $conditions->{ $exprMappedCondKey }->{ 'speciesId' }             = $speciesId;
+            $conditions->{ $exprMappedCondKey }->{ 'sexInference' }          = $sexNotInferred;
         }
     }
     # Assertion test: at this point, if sex was inferred or was equal to NA, we should always have a "mapped" condition
@@ -950,6 +954,8 @@ sub insert_get_condition {
     $conditions->{ $condKey }->{ 'conditionId' }           = $condId;
     $conditions->{ $condKey }->{ 'exprMappedConditionId' } = $exprMappedCondId;
     $conditions->{ $condKey }->{ 'strain' }                = $strain;
+    $conditions->{ $condKey }->{ 'speciesId' }             = $speciesId;
+    $conditions->{ $condKey }->{ 'sexInference' }          = $sexInference;
 
     # ====================================
     # RETURN CONDITION
