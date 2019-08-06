@@ -73,14 +73,14 @@ REMAP: for my $line ( grep { !/^#/ && !/^Condition ID/} read_file("$remapping_fi
     my $sexInferred = 0;
     # Get the species ID and sex inferrence of the existing condition to remap
     COND: for my $condHashKey (keys %{ $conditions }) {
-        if ($condIdToRemap == $conditions{$condHashKey}->{'conditionId'}) {
-            $speciesId   = $conditions{$condHashKey}->{'speciesId'};
-            $sexInferred = $conditions{$condHashKey}->{'sexInference'};
+        if ($condIdToRemap == $conditions->{$condHashKey}->{'conditionId'}) {
+            $speciesId   = $conditions->{$condHashKey}->{'speciesId'};
+            $sexInferred = $conditions->{$condHashKey}->{'sexInference'};
             last COND;
         }
     }
     if (!$speciesId) {
-        print "Condition with ID $condIdToRemap could not be found and is skipped\n";
+        warn "Condition with ID $condIdToRemap could not be found and is skipped\n";
         next REMAP;
     }
     # If the sex was inferred, we'll let the function infer it again,
@@ -110,6 +110,9 @@ REMAP: for my $line ( grep { !/^#/ && !/^Condition ID/} read_file("$remapping_fi
             " - old condition ID: ".$condIdToRemap;
     }
     my $newCondId = $condKeyMap->{'conditionId'};
+    if ($condIdToRemap == $newCondId) {
+        warn "Old condition ID $condIdToRemap has been remapped to itself\n";
+    }
 
     $insertMapping->execute($condIdToRemap, $newCondId)  or die $insertMapping->errstr;
     print "Old condition ID $condIdToRemap to remap to condition ID $newCondId\n";
