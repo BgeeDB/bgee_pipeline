@@ -318,6 +318,8 @@ insert_expression: check_conditions insert_RNA_seq
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
+#NOTE For iterative updates die commands after insert/update/delete statement failure have to be changed to warn
+#     because with iterative updates the database may contain duplicates in regard to what you are inserting/updating/deleting!
 insert_feature_length: $(RNASEQ_LENGTH_INFO_FILEPATH)
 	# Insert the feature length information
 	@perl 3Insertion/insert_feature_length.pl -bgee=$(BGEECMD) -length_info=$(RNASEQ_LENGTH_INFO_FILEPATH) > $@.tmp 2>warnings.$@
