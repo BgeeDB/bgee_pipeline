@@ -47,9 +47,10 @@ $| = 1;
 #############################################################
 COMB: for my $combination ( keys %Utils::conditionCombinations ){
     # do nothing for the raw conditions and expression calls, already computed by pipeline
-    if ( $combination eq $Utils::allFieldCombination ) {
-        next COMB;
-    }
+#NOTE Seb: $Utils::allFieldCombination is not defined!
+#    if ( $combination eq $Utils::allFieldCombination ) {
+#    next COMB;
+#    }
     print "***** combination $combination *****\n";
 
     my $condTable = $Utils::conditionCombinations{$combination}->{'condTable'};
