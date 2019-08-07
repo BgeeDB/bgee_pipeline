@@ -103,6 +103,7 @@ check_tools: vitalit1
 	@$(VIT_R_CMD) R -e 'library("chipseq")'           >> $@.tmp  2>/dev/null
 	@$(VIT_R_CMD) R -e 'library("edgeR")'             >> $@.tmp  2>/dev/null
 	@$(VIT_R_CMD) R -e 'library("GenomicFeatures")'   >> $@.tmp  2>/dev/null
+	@$(VIT_R_CMD) R -e 'library("Biostrings")' 		  >> $@.tmp  2>/dev/null
 	@$(VIT_R_CMD) R -e 'library("limma")'             >> $@.tmp  2>/dev/null
 	@$(VIT_R_CMD) R -e 'library("mclust")'            >> $@.tmp  2>/dev/null
 	@which xz                                         >> $@.tmp
@@ -135,32 +136,34 @@ get_GTF: clean_vital-it_folders create_rna_seq_sample_info
 	@$(MV) $@.tmp $@
 #TODO implement use of new "database" field in rna_seq_sample_info.txt (instead of trying both Ensembl and Ensembl Metazoa URLs)
 
-prepare_GTF: get_GTF
+get_genome: get_GTF
+	# Download genome from Ensembl databases
+	@perl 0Before/get_genome_files.pl  -GTF_dir=$(RNASEQ_VITALIT_GTF) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_VITALIT_GTF) >$@.tmp 2>&1
+	@$(MV) $@.tmp $@
+#TODO implement use of new "database" field in rna_seq_sample_info.txt (instead of trying both Ensembl and Ensembl Metazoa URLs)
+
+prepare_GTF: get_GTF get_genome
 	# Prepare GTF files
-	@for gtf in $(RNASEQ_VITALIT_GTF)/*.gtf.gz; do \
-		echo "$(VIT_R_CMD) R CMD BATCH --vanilla --slave '--args gene_gtf_path=\"$$gtf\" output_gtf_path=\"$${gtf/.gtf.gz/}\"'  0Before/prepare_GTF.R  $@.tmp" >run.sh; \
+	@for gtf in $(RNASEQ_VITALIT_GTF)*.gtf.gz; do \
+		echo "$(VIT_R_CMD) R CMD BATCH --vanilla --slave '--args gene_gtf_path=\"$$gtf\" genome_fasta_path=\"$${gtf/.gtf.gz/}.genome.fa\" N_block_size=$(RNASEQ_KALLISTO_KMER_DEFAULT) N_proportion=$(RNASEQ_N_PROPORTION) output_gtf_path=\"$${gtf/.gtf.gz/}\"'  0Before/prepare_GTF.R  $@.tmp" >run.sh; \
 		sh run.sh; \
 	done
 	@$(RM) run.sh
 	@echo rm -f $(RNASEQ_VITALIT_GTF)/*.gtf.gz
 	@$(MV) $@.tmp $@
 
-get_genome: prepare_GTF
-	# Download genome from Ensembl databases
-	@perl 0Before/get_genome_files.pl  -GTF_dir=$(RNASEQ_VITALIT_GTF) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_VITALIT_GTF) >$@.tmp 2>&1
-	@$(MV) $@.tmp $@
-#TODO implement use of new "database" field in rna_seq_sample_info.txt (instead of trying both Ensembl and Ensembl Metazoa URLs)
+
 
 prepare_indexed_transcriptome: get_genome prepare_GTF
 	# Preparing indexed transcriptome for every species
 # Extract transcriptome.fa from gtf_all and genome.fa files
 # perl one liner to remove arbitrary numbering in fasta header from gtf_to_fasta
-# Prepare indexes for kallisto: one with default k-mer size (31nt), one with short k-mer size (15nt)
+# Prepare indexes for kallisto: one with default k-mer size $(RNASEQ_KALLISTO_KMER_DEFAULT), one with short k-mer size $(RNASEQ_KALLISTO_KMER_SHORT)
 	@for genome in $(RNASEQ_VITALIT_GTF)/*.gtf_all; do \
 		$(VIT_TOPHAT_CMD)    gtf_to_fasta  $$genome $${genome/gtf_all/genome.fa} $${genome/gtf_all/transcriptome.fa}              >>$@.tmp 2>&1; \
 		perl -i -pe 's/^>\d+ +/>/' $${genome/gtf_all/transcriptome.fa}                                                            >>$@.tmp 2>&1; \
-		$(VIT_KALLISTO_CMD)  kallisto index       -i $${genome/gtf_all/transcriptome.idx}     $${genome/gtf_all/transcriptome.fa} >>$@.tmp 2>&1; \
-		$(VIT_KALLISTO_CMD)  kallisto index -k 15 -i $${genome/gtf_all/transcriptome_k15.idx} $${genome/gtf_all/transcriptome.fa} >>$@.tmp 2>&1; \
+		$(VIT_KALLISTO_CMD)  kallisto index -k $(RNASEQ_KALLISTO_KMER_DEFAULT) -i $${genome/gtf_all/transcriptome.idx}     $${genome/gtf_all/transcriptome.fa} >>$@.tmp 2>&1; \
+		$(VIT_KALLISTO_CMD)  kallisto index -k $(RNASEQ_KALLISTO_KMER_SHORT) -i $${genome/gtf_all/transcriptome_k15.idx} $${genome/gtf_all/transcriptome.fa} >>$@.tmp 2>&1; \
 		echo rm -f $${genome/gtf_all/genome.fa}; \
 		xz --threads=2 -9 $${genome/gtf_all/transcriptome.fa}; \
 		xz --threads=2 -9 $${genome/gtf_all/transcriptome.fa.tlst}; \
