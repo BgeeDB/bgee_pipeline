@@ -375,7 +375,7 @@ ENCRYPT_PASSWD_FILE            := /home/bbgee/.passw
 
 # RNAseq kallisto index kmer size 
 RNASEQ_KALLISTO_KMER_DEFAULT	:= 31
-RNASEQ_KALLISTO_KMER_SHORT		:= 21
+RNASEQ_KALLISTO_KMER_SHORT		:= 15
 RNASEQ_N_PROPORTION				:= 0.05
 
 # RNAseq bigbgee paths
