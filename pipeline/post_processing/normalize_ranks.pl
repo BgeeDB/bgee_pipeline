@@ -24,27 +24,27 @@ my %opts = ( 'bgee=s' => \$bgee_connector );    # Bgee connector string
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $bgee_connector eq '' ) {
-	print "\n\tInvalid or missing argument:
+    print "\n\tInvalid or missing argument:
 \te.g. $0 -bgee=\$(BGEECMD)
 \t-bgee      Bgee    connector string
 \n";
-	exit 1;
+    exit 1;
 }
 
 my $blacklisted = "('XAO:0003003', 'ZFA:0001093')";
 my $auto = 1;
 
-	my $dbh = Utils::connect_bgee_db($bgee_connector);
-	if ( $auto == 0 ) {
-		$dbh->{AutoCommit} = 0;
-	}
+    my $dbh = Utils::connect_bgee_db($bgee_connector);
+    if ( $auto == 0 ) {
+        $dbh->{AutoCommit} = 0;
+    }
 
-	#we get the absolute max rank across all conditions for each species
-	my $getAbsoluteMax = $dbh->prepare(
-	"SELECT speciesId, GREATEST(IFNULL(max(rnaSeqMaxRank), 0.0),
+    #we get the absolute max rank across all conditions for each species
+    my $getAbsoluteMax = $dbh->prepare(
+    "SELECT speciesId, GREATEST(IFNULL(max(rnaSeqMaxRank), 0.0),
                  IFNULL(max(estMaxRank),0.0),
                  IFNULL(max(inSituMaxRank),0.0),
-                 IFNULL(max(affymetrixMaxRank),0.0), 
+                 IFNULL(max(affymetrixMaxRank),0.0),
                  IFNULL(max(rnaSeqGlobalMaxRank), 0.0),
                  IFNULL(max(estGlobalMaxRank),0.0),
                  IFNULL(max(inSituGlobalMaxRank),0.0),
@@ -53,7 +53,7 @@ my $auto = 1;
     WHERE anatEntityId NOT IN $blacklisted
     GROUP BY speciesId
    " );
-    
+
     $getAbsoluteMax->execute()  or die $getAbsoluteMax->errstr;
     my %maxRanks = ();
     while ( my @data = $getAbsoluteMax->fetchrow_array ){
@@ -61,8 +61,8 @@ my $auto = 1;
         print("Max rank for species $data[0] : $data[1]\n");
     }
 
-	# update the expression table with normalized mean ranks
-	my $updateExpression = $dbh->prepare( "
+    # update the expression table with normalized mean ranks
+    my $updateExpression = $dbh->prepare( "
     UPDATE gene
     STRAIGHT_JOIN globalExpression ON gene.bgeeGeneId = globalExpression.bgeeGeneId
     STRAIGHT_JOIN globalCond ON globalCond.globalConditionId = globalExpression.globalConditionId
@@ -78,7 +78,7 @@ my $auto = 1;
     " );
 
     # Quick and dirty blacklisting of unspecified anatEntities: set the mean rank to the max value
-	my $blacklistUnspecifiedEST = $dbh->prepare( "
+    my $blacklistUnspecifiedEST = $dbh->prepare( "
     UPDATE gene
     STRAIGHT_JOIN globalCond ON gene.speciesId = globalCond.speciesId
     STRAIGHT_JOIN globalExpression ON gene.bgeeGeneId = globalExpression.bgeeGeneId
@@ -86,7 +86,7 @@ my $auto = 1;
     SET estRankNorm = ?, estGlobalRankNorm = ?
     WHERE gene.speciesId = ? AND globalCond.anatEntityId IN $blacklisted AND estRank IS NOT NULL;
     " );
-	my $blacklistUnspecifiedInSitu = $dbh->prepare( "
+    my $blacklistUnspecifiedInSitu = $dbh->prepare( "
     UPDATE gene
     STRAIGHT_JOIN globalCond ON gene.speciesId = globalCond.speciesId
     STRAIGHT_JOIN globalExpression ON gene.bgeeGeneId = globalExpression.bgeeGeneId
@@ -94,7 +94,7 @@ my $auto = 1;
     SET inSituRankNorm = ?, inSituGlobalRankNorm = ?
     WHERE gene.speciesId = ? AND globalCond.anatEntityId IN $blacklisted AND inSituRank IS NOT NULL;
     " );
-	my $blacklistUnspecifiedAffymetrix = $dbh->prepare( "
+    my $blacklistUnspecifiedAffymetrix = $dbh->prepare( "
     UPDATE gene
     STRAIGHT_JOIN globalCond ON gene.speciesId = globalCond.speciesId
     STRAIGHT_JOIN globalExpression ON gene.bgeeGeneId = globalExpression.bgeeGeneId
@@ -102,7 +102,7 @@ my $auto = 1;
     SET affymetrixMeanRankNorm = ?, affymetrixGlobalMeanRankNorm = ?
     WHERE gene.speciesId = ? AND globalCond.anatEntityId IN $blacklisted AND affymetrixMeanRank IS NOT NULL;
     " );
-	my $blacklistUnspecifiedRnaSeq = $dbh->prepare( "
+    my $blacklistUnspecifiedRnaSeq = $dbh->prepare( "
     UPDATE gene
     STRAIGHT_JOIN globalCond ON gene.speciesId = globalCond.speciesId
     STRAIGHT_JOIN globalExpression ON gene.bgeeGeneId = globalExpression.bgeeGeneId
@@ -110,30 +110,30 @@ my $auto = 1;
     SET rnaSeqMeanRankNorm = ?, rnaSeqGlobalMeanRankNorm = ?
     WHERE gene.speciesId = ? AND globalCond.anatEntityId IN $blacklisted AND rnaSeqMeanRank IS NOT NULL;
     " );
-    
+
 for my $speciesId ( keys %maxRanks ){
     my $absMax = $maxRanks{$speciesId};
-	print "Updating ranks for species $speciesId with max rank $absMax\n";
+    print "Updating ranks for species $speciesId with max rank $absMax\n";
 
-	my $t0 = time();
-	printf("Update expression table with normalized mean ranks per type:  ");
-	$updateExpression->execute( $absMax, $absMax, $absMax, $absMax, $absMax, $absMax, $absMax, $absMax,
-	                            $speciesId)
-	  or die $updateExpression->errstr;
-	printf( "OK in %.2fs\n", ( time() - $t0 ) );
+    my $t0 = time();
+    printf("Update expression table with normalized mean ranks per type:  ");
+    $updateExpression->execute( $absMax, $absMax, $absMax, $absMax, $absMax, $absMax, $absMax, $absMax,
+                                $speciesId)
+      or die $updateExpression->errstr;
+    printf( "OK in %.2fs\n", ( time() - $t0 ) );
 
-	$t0 = time();
-	printf("Blacklisting unspecified anat entities:    ");
-	my $blacklistAbsMax = $absMax + 1;
-	$blacklistUnspecifiedEST->execute($blacklistAbsMax, $blacklistAbsMax, $speciesId)
-	  or die $blacklistUnspecifiedEST->errstr;
-	$blacklistUnspecifiedInSitu->execute($blacklistAbsMax, $blacklistAbsMax, $speciesId)
-	  or die $blacklistUnspecifiedInSitu->errstr;
-	$blacklistUnspecifiedAffymetrix->execute($blacklistAbsMax, $blacklistAbsMax, $speciesId)
-	  or die $blacklistUnspecifiedAffymetrix->errstr;
-	$blacklistUnspecifiedRnaSeq->execute($blacklistAbsMax, $blacklistAbsMax, $speciesId)
-	  or die $blacklistUnspecifiedRnaSeq->errstr;
-	printf( "OK in %.2fs\n", ( time() - $t0 ) );
+    $t0 = time();
+    printf('Blacklisting unspecified anat entities:    ');
+    my $blacklistAbsMax = $absMax + 1;
+    $blacklistUnspecifiedEST->execute($blacklistAbsMax, $blacklistAbsMax, $speciesId)
+      or die $blacklistUnspecifiedEST->errstr;
+    $blacklistUnspecifiedInSitu->execute($blacklistAbsMax, $blacklistAbsMax, $speciesId)
+      or die $blacklistUnspecifiedInSitu->errstr;
+    $blacklistUnspecifiedAffymetrix->execute($blacklistAbsMax, $blacklistAbsMax, $speciesId)
+      or die $blacklistUnspecifiedAffymetrix->errstr;
+    $blacklistUnspecifiedRnaSeq->execute($blacklistAbsMax, $blacklistAbsMax, $speciesId)
+      or die $blacklistUnspecifiedRnaSeq->errstr;
+    printf( "OK in %.2fs\n", ( time() - $t0 ) );
 
     if ($auto == 0) {
         $dbh->commit() or die("Failed commit");
@@ -142,3 +142,4 @@ for my $speciesId ( keys %maxRanks ){
 $dbh->disconnect();
 
 exit 0;
+

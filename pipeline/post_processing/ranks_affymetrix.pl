@@ -18,7 +18,7 @@ $|=1;
 
 # Define arguments and their default value
 my ($bgee_connector) = ('');
-my ($ranks_computed) = (0); 
+my ($ranks_computed) = (0);
 my %opts = ('bgee=s'         => \$bgee_connector, # Bgee connector string
             'ranks_computed' => \$ranks_computed,
            );
@@ -43,27 +43,27 @@ if ($auto == 0) {
     $dbh->{AutoCommit} = 0;
 }
 
-# NOTE: this script assumes that we don't use in Bgee chip types allowing to hybridize samples 
+# NOTE: this script assumes that we don't use in Bgee chip types allowing to hybridize samples
 # from two different species at the same time.
 #
-# Reasonning of the computations: 
-# 1) compute fractional ranks of genes in table affymetrixProbeset, for each affymetrix chip, 
+# Reasonning of the computations:
+# 1) compute fractional ranks of genes in table affymetrixProbeset, for each affymetrix chip,
 # based on the highest signal intensity from all the probesets mapped to a given gene.
 # 2) normalize ranks between chips in a same condition-species of the expression table (mapped condition).
-# First, for each chip type, compute its max rank over all conditions. Then, normalize ranks of each chip, 
-# based on the max rank of this type of chip, as compared to the max of the max ranks of other chip types 
-# present in the same mapped condition. The idea is to correct for the different genomic coverage 
-# of different chip types. We do not normalize simply based on the max rank in a given condition, 
-# to not penalize conditions with a lower number of expressed genes, and thus higher number 
-# of ex-aequo genes, and lower fractional max ranks. 
-# 3) compute weighted mean of normalized ranks per gene and mapped condition, 
-# weighted by the number of distinct ranks in each chip: we assume that chips with higher 
-# number of distinct ranks have a higher power for ranking genes. The higher power 
-# at ranking genes of a chip is taken into account by weighting the mean 
-# by the number of distinct ranks in the chip, not by "normalizing" away chips with lower max ranks, 
+# First, for each chip type, compute its max rank over all conditions. Then, normalize ranks of each chip,
+# based on the max rank of this type of chip, as compared to the max of the max ranks of other chip types
+# present in the same mapped condition. The idea is to correct for the different genomic coverage
+# of different chip types. We do not normalize simply based on the max rank in a given condition,
+# to not penalize conditions with a lower number of expressed genes, and thus higher number
+# of ex-aequo genes, and lower fractional max ranks.
+# 3) compute weighted mean of normalized ranks per gene and mapped condition,
+# weighted by the number of distinct ranks in each chip: we assume that chips with higher
+# number of distinct ranks have a higher power for ranking genes. The higher power
+# at ranking genes of a chip is taken into account by weighting the mean
+# by the number of distinct ranks in the chip, not by "normalizing" away chips with lower max ranks,
 # again, for not penalizing conditions with lower number of expressed genes;
-# 5) also, insert max of max ranks of chip types represented in each mapped condition, in condition table  
-# (will allow to normalize ranks between conditions and data types), and sum of numbers of distinct ranks 
+# 5) also, insert max of max ranks of chip types represented in each mapped condition, in condition table
+# (will allow to normalize ranks between conditions and data types), and sum of numbers of distinct ranks
 # per gene and condition, in expression table (used to compute weigthed mean over all data types in a condition)
 
 
@@ -71,14 +71,14 @@ if ($auto == 0) {
 # COMPUTE RANKS PER CHIP                     #
 ##############################################
 if ( !$ranks_computed ) {
-	
-#	# Clean potentially already computed ranks
-#	my $cleanProbeset = $dbh->prepare("UPDATE affymetrixProbeset SET rank = null");
+
+#    # Clean potentially already computed ranks
+#    my $cleanProbeset = $dbh->prepare("UPDATE affymetrixProbeset SET rank = null");
 #    my $cleanChip     = $dbh->prepare("UPDATE affymetrixChip SET chipMaxRank = null,
 #                                                                 chipDistinctRankCount = null");
 #    my $cleanChipType = $dbh->prepare("UPDATE chipType SET chipTypeMaxRank = null");
 #    printf("Cleaning existing data: ");
-#	$cleanProbeset->execute() or die $cleanProbeset->errstr;
+#    $cleanProbeset->execute() or die $cleanProbeset->errstr;
 #    $cleanChip->execute() or die $cleanProbeset->errstr;
 #    $cleanChipType->execute() or die $cleanProbeset->errstr;
 #    if ($auto == 0) {
@@ -87,18 +87,18 @@ if ( !$ranks_computed ) {
 #    printf("Done\n");
 
     # Queries to compute gene ranks per chip. We rank over all not-excluded genes, not only over expressed genes
-    my $affymChipStmt            = $dbh->prepare("SELECT t1.bgeeAffymetrixChipId FROM affymetrixChip AS t1 
-                                                 WHERE EXISTS (SELECT 1 FROM affymetrixProbeset AS t2 
-                                                    WHERE t2.expressionId IS NOT NULL 
+    my $affymChipStmt            = $dbh->prepare("SELECT t1.bgeeAffymetrixChipId FROM affymetrixChip AS t1
+                                                 WHERE EXISTS (SELECT 1 FROM affymetrixProbeset AS t2
+                                                    WHERE t2.expressionId IS NOT NULL
                                                     AND t2.bgeeAffymetrixChipId = t1.bgeeAffymetrixChipId) ");
     my $affymProbeSetStmt        = $dbh->prepare("SELECT bgeeGeneId, MAX(normalizedSignalIntensity) AS maxIntensity
                                                   FROM affymetrixProbeset
                                                   WHERE bgeeAffymetrixChipId = ?
-                                                  AND reasonForExclusion NOT IN ('$Utils::EXCLUDED_FOR_PRE_FILTERED', '$Utils::EXCLUDED_FOR_UNDEFINED') 
-                                                  GROUP BY bgeeGeneId 
+                                                  AND reasonForExclusion NOT IN ('$Utils::EXCLUDED_FOR_PRE_FILTERED', '$Utils::EXCLUDED_FOR_UNDEFINED')
+                                                  GROUP BY bgeeGeneId
                                                   ORDER BY maxIntensity DESC");
-    # if several genes at a same rank, we'll update them at once with a 'bgeeGeneId IN (?,?, ...)' clause. 
-    # If only one gene at a given rank, updated with the prepared statement below. 
+    # if several genes at a same rank, we'll update them at once with a 'bgeeGeneId IN (?,?, ...)' clause.
+    # If only one gene at a given rank, updated with the prepared statement below.
     my $rankUpdateStart   = "UPDATE affymetrixProbeset SET rank = ?
                              WHERE bgeeAffymetrixChipId = ? AND bgeeGeneId ";
     my $affymeProbeSetUpdateStmt = $dbh->prepare($rankUpdateStart."= ?");
@@ -167,10 +167,10 @@ if ( !$ranks_computed ) {
 
     # ##############
     # Store max rank and number of distinct ranks per chip, and max rank per chip type
-    my $sql = 
+    my $sql =
     "UPDATE affymetrixChip AS t0
      INNER JOIN (
-         SELECT t1.bgeeAffymetrixChipId, MAX(t1.rank) AS maxRank, COUNT(DISTINCT t1.rank) AS distinctRankCount  
+         SELECT t1.bgeeAffymetrixChipId, MAX(t1.rank) AS maxRank, COUNT(DISTINCT t1.rank) AS distinctRankCount
          FROM affymetrixProbeset AS t1
          WHERE t1.reasonForExclusion NOT IN ('$Utils::EXCLUDED_FOR_PRE_FILTERED', '$Utils::EXCLUDED_FOR_UNDEFINED')
          GROUP BY t1.bgeeAffymetrixChipId
@@ -188,13 +188,13 @@ if ( !$ranks_computed ) {
     printf("Done in %.2fs\n", (time() - $t0));
 
 
-    # Store max ranks per chip type over all conditions, 
-    # for later normalization                               
+    # Store max ranks per chip type over all conditions,
+    # for later normalization
     my $affyChipTypeMaxStmt = $dbh->prepare(
     "UPDATE chipType AS t1
      INNER JOIN (
-         SELECT chipTypeId, MAX(chipMaxRank) AS maxRank 
-         FROM affymetrixChip 
+         SELECT chipTypeId, MAX(chipMaxRank) AS maxRank
+         FROM affymetrixChip
          GROUP BY chipTypeId
      ) AS chipMaxRanks ON t1.chipTypeId = chipMaxRanks.chipTypeId
      SET t1.chipTypeMaxRank = chipMaxRanks.maxRank");
@@ -234,11 +234,11 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
     # Queries to first clean data
 #    my $cleanExpr = $dbh->prepare("UPDATE globalExpression AS t1
 #                                   INNER JOIN globalCond AS t2 ON t1.globalConditionId = t2.globalConditionId
-#                                   SET affymetrixMeanRank              = null, 
-#                                       affymetrixMeanRankNorm          = null, 
+#                                   SET affymetrixMeanRank              = null,
+#                                       affymetrixMeanRankNorm          = null,
 #                                       affymetrixDistinctRankSum       = null,
-#                                       affymetrixGlobalMeanRank        = null, 
-#                                       affymetrixGlobalMeanRankNorm    = null, 
+#                                       affymetrixGlobalMeanRank        = null,
+#                                       affymetrixGlobalMeanRankNorm    = null,
 #                                       affymetrixGlobalDistinctRankSum = null
 #                                   WHERE ".Utils::get_cond_param_comb_sql_clause($condParamCombArrRef, "t2"));
 #    my $cleanCond = $dbh->prepare("UPDATE globalCond SET affymetrixMaxRank = null,
@@ -264,20 +264,20 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
     my $globalRanks = 0;
 
     while (!$selfRanks || !$globalRanks) {
-    	if (!$selfRanks) {
-    		print "** Computation of self ranks\n"
-    	} else {
+        if (!$selfRanks) {
+            print "** Computation of self ranks\n"
+        } else {
             print "** Computation of global ranks\n"
-    	}
+        }
         $dbh = Utils::connect_bgee_db($bgee_connector);
         if ($auto == 0) {
             $dbh->{AutoCommit} = 0;
         }
 
         # Store an association between each globalCondition and the chips considered in it
-        my $sql = 
+        my $sql =
         "CREATE TEMPORARY TABLE globalCondToChip (
-             PRIMARY KEY(bgeeAffymetrixChipId, globalConditionId), INDEX(globalConditionId)) 
+             PRIMARY KEY(bgeeAffymetrixChipId, globalConditionId), INDEX(globalConditionId))
              SELECT DISTINCT t1.globalConditionId, t4.bgeeAffymetrixChipId ".
              # Retrieve the valid raw conditions mapped to each globalCondition
              "FROM globalCond AS t1
@@ -303,8 +303,8 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
         # Store the max rank of the chip type with the highest max rank
         # present in each valid global condition (this is different than retrieving the max rank
         # of the *chips* present in the condition)
-        $sql = 
-        "CREATE TEMPORARY TABLE maxForCond (PRIMARY KEY(globalConditionId)) 
+        $sql =
+        "CREATE TEMPORARY TABLE maxForCond (PRIMARY KEY(globalConditionId))
              SELECT t1.globalConditionId, MAX(t3.chipTypeMaxRank) AS maxRank ".
              # Retrieve all chips present in each globalCondition
              "FROM globalCondToChip AS t1 ".
@@ -320,12 +320,12 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
         printf("OK in %.2fs\n", (time() - $t0));
 
 
-        # 1) We normalized the ranks between chips in a same condition of the expression table (mapped condition), 
-        # based on the max rank that can get their respective chip type to, and the max of the max ranks 
+        # 1) We normalized the ranks between chips in a same condition of the expression table (mapped condition),
+        # based on the max rank that can get their respective chip type to, and the max of the max ranks
         # of chip types represented in the condition.
-        # 2) We compute a weighted mean of the normalized gene ranks from all chips in a condition, 
-        # weighted by the number of distinct ranks in each chip. We also sum the numbers of distinct ranks   
-        # in chips where a gene is expressed, to be able to later compute a weighted mean per gene-condition 
+        # 2) We compute a weighted mean of the normalized gene ranks from all chips in a condition,
+        # weighted by the number of distinct ranks in each chip. We also sum the numbers of distinct ranks
+        # in chips where a gene is expressed, to be able to later compute a weighted mean per gene-condition
         # over all data types.
 
         # Now, the problem is that the ranks from individual chips are normalized differently
@@ -342,11 +342,11 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
            SELECT STRAIGHT_JOIN
                   affymetrixProbeset.bgeeGeneId, affymetrixProbeset.bgeeAffymetrixChipId, ".
            # within data-type normalization:
-           # (we use the best normalized rank of genes from each Affymetrix chip, 
+           # (we use the best normalized rank of genes from each Affymetrix chip,
            # to not count genes multiple times because of multiple probesets)
            "      (MIN(affymetrixProbeset.rank) +
                         (MIN(affymetrixProbeset.rank) * (maxForCond.maxRank / chipType.chipTypeMaxRank)) )
-                   /2 AS rank 
+                   /2 AS rank
            FROM globalCondToChip ".
            # get the max rank in the global condition
            "INNER JOIN maxForCond ON globalCondToChip.globalConditionId = maxForCond.globalConditionId ".
@@ -365,13 +365,13 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
 
         # compute weighted mean normalized ranks, and sum of numbers of distinct ranks
         $sql = "CREATE TEMPORARY TABLE weightedMeanRank
-                SELECT STRAIGHT_JOIN 
-                      chipNormalizedRank.bgeeGeneId, 
+                SELECT STRAIGHT_JOIN
+                      chipNormalizedRank.bgeeGeneId,
                       SUM(chipNormalizedRank.rank * affymetrixChip.chipDistinctRankCount)
-                          /SUM(affymetrixChip.chipDistinctRankCount) AS meanRank, 
-                      SUM(affymetrixChip.chipDistinctRankCount) AS distinctRankCountSum 
+                          /SUM(affymetrixChip.chipDistinctRankCount) AS meanRank,
+                      SUM(affymetrixChip.chipDistinctRankCount) AS distinctRankCountSum
                 FROM chipNormalizedRank
-                INNER JOIN affymetrixChip ON affymetrixChip.bgeeAffymetrixChipId = chipNormalizedRank.bgeeAffymetrixChipId 
+                INNER JOIN affymetrixChip ON affymetrixChip.bgeeAffymetrixChipId = chipNormalizedRank.bgeeAffymetrixChipId
                 GROUP BY chipNormalizedRank.bgeeGeneId";
         my $affyWeightedMeanStmt = $dbh->prepare($sql);
         my $dropAffyWeightedMeanStmt = $dbh->prepare("DROP TABLE weightedMeanRank");
@@ -384,15 +384,15 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
                "ON globalExpression.bgeeGeneId = weightedMeanRank.bgeeGeneId
                     AND globalExpression.globalConditionId = ? ";
         if (!$selfRanks) {
-            $sql .= "SET globalExpression.affymetrixMeanRank = weightedMeanRank.meanRank, 
+            $sql .= "SET globalExpression.affymetrixMeanRank = weightedMeanRank.meanRank,
                 globalExpression.affymetrixDistinctRankSum = weightedMeanRank.distinctRankCountSum";
         } else {
-            $sql .= "SET globalExpression.affymetrixGlobalMeanRank = weightedMeanRank.meanRank, 
+            $sql .= "SET globalExpression.affymetrixGlobalMeanRank = weightedMeanRank.meanRank,
                 globalExpression.affymetrixGlobalDistinctRankSum = weightedMeanRank.distinctRankCountSum";
         }
         my $expressionUpdateMeanRank = $dbh->prepare($sql);
-        
-        
+
+
         # ###################
         # Run computations per globalCondition
         # ###################
@@ -424,12 +424,12 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
 #            printf("Updating expression table with normalized mean ranks and sum of numbers of distinct ranks: ");
             $expressionUpdateMeanRank->execute($globalConditionId) or die $expressionUpdateMeanRank->errstr;
 #            printf("OK in %.2fs\n", (time() - $t0));
-            
+
             $dropAffyChipNormRank->execute() or die $dropAffyChipNormRank->errstr;
             $dropAffyWeightedMeanStmt->execute() or die $dropAffyWeightedMeanStmt->errstr;
-            
+
             if (($i / 100 - int($i / 100)) == 0) {
-            	printf("$i conditions done.\n");
+                printf("$i conditions done.\n");
             }
         }
 
@@ -455,12 +455,13 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
         # closing the connection will destroy the temporary tables
         $dbh->disconnect();
 
-    	if (!$selfRanks) {
-    		$selfRanks = 1;
-    	} else {
-    		$globalRanks = 1;
-    	}
+        if (!$selfRanks) {
+            $selfRanks = 1;
+        } else {
+            $globalRanks = 1;
+        }
     }
 }
 
 exit 0;
+

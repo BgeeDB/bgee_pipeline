@@ -40,11 +40,11 @@ from all the probesets mapped to a given gene.
     and thus higher number of ex-aequo genes, and lower fractional max ranks.
 3. Compute weighted mean of normalized ranks per gene and condition, weighted by the number of distinct ranks
 in each chip: we assume that chips with higher number of distinct ranks have a higher power for ranking genes.
-The higher power at ranking genes of a chip is taken into account by weighting the mean 
-by the number of distinct ranks in the chip, not by "normalizing" away chips with lower max ranks, 
+The higher power at ranking genes of a chip is taken into account by weighting the mean
+by the number of distinct ranks in the chip, not by "normalizing" away chips with lower max ranks,
 again, not to penalize conditions with lower numbers of expressed genes.
 4. Store the max of max ranks of chip types represented in each condition
-(will allow to normalize ranks between conditions and data types), and sums of numbers of distinct ranks 
+(will allow to normalize ranks between conditions and data types), and sums of numbers of distinct ranks
 per gene and condition (used afterwards to compute the global weigthed mean rank over all data types in a condition,
 in the application).
 
@@ -52,19 +52,19 @@ in the application).
 
 [See RNA-Seq rank script](ranks_rnaseq.pl)
 
-1. Identify the valid set of genes that should be considered for ranking in all libraries: 
-the set of all genes that received at least one read over all libraries in Bgee. 
-2. Compute gene fractional ranks for each RNA-Seq library, based on TPM values. 
+1. Identify the valid set of genes that should be considered for ranking in all libraries:
+the set of all genes that received at least one read over all libraries in Bgee.
+2. Compute gene fractional ranks for each RNA-Seq library, based on TPM values.
 3. Compute weighted mean of ranks per gene and per condition, weighted by the number of distinct ranks
-in each library: we assume that libraries with a higher number of distinct ranks have a higher power for ranking genes. 
-Note that we do not "normalize" ranks between samples before computing the mean, as for Affymetrix data: 
-all libraries are used to produce ranking over always the same set of genes in a given species, 
-so the genomic coverage is always the same, and no "normalization" is required. The higher power 
-at ranking genes of a library (for instance, thanks to a higher number of mapped reads) 
-is taken into account by weighting the mean by the number of distinct ranks in the library, 
-not by "normalizing" away libraries with lower max ranks; this would penalize conditions 
-with a lower number of expressed genes, and thus with more ex-aequo ranked genes, corresponding 
-to genes receiving 0 read. 
+in each library: we assume that libraries with a higher number of distinct ranks have a higher power for ranking genes.
+Note that we do not "normalize" ranks between samples before computing the mean, as for Affymetrix data:
+all libraries are used to produce ranking over always the same set of genes in a given species,
+so the genomic coverage is always the same, and no "normalization" is required. The higher power
+at ranking genes of a library (for instance, thanks to a higher number of mapped reads)
+is taken into account by weighting the mean by the number of distinct ranks in the library,
+not by "normalizing" away libraries with lower max ranks; this would penalize conditions
+with a lower number of expressed genes, and thus with more ex-aequo ranked genes, corresponding
+to genes receiving 0 read.
 4. Store the max ranks in each condition (will allow to normalize ranks between conditions and data types),
 and the sum of distinct rank counts per gene and condition (used afterwards to compute the global weigthed mean rank
 over all data types in a condition, in the application)

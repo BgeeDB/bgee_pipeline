@@ -61,56 +61,56 @@ INNER JOIN anatRelProblem AS t2 ON t1.anatEntityRelationId = t2.anatEntityRelati
 INNER JOIN anatEntityRelation AS t3 ON t1.anatEntityRelationId = t3.anatEntityRelationId
 GROUP BY t1.anatEntityRelationId;
 
--- **REMOVAL STEPS. CHECK THEM BEFORE DELETING**     
+-- **REMOVAL STEPS. CHECK THEM BEFORE DELETING**
 -- Queries used to delete instances from the anatRelProblem table for bgee14
 -- Check the queries to be sure that they are still correct
 -- delete from anatRelProblem all anatEntityRelationId for 7955 (zebrafish) when there is 2 or less
 -- already existing taxonConstraints with one being 9606 or 10090
-DELETE FROM anatRelProblem WHERE anatEntityRelationId IN 
-    (SELECT DISTINCT t1.anatEntityRelationId FROM anatEntityRelationTaxonConstraint AS t1 
-    INNER JOIN (select * from anatRelProblem) AS t2 ON t1.anatEntityRelationId = t2.anatEntityRelationId 
-    INNER JOIN anatEntityRelation AS t3 ON t1.anatEntityRelationId = t3.anatEntityRelationId 
-    WHERE t2.speciesId = 7955 GROUP BY t1.anatEntityRelationId 
+DELETE FROM anatRelProblem WHERE anatEntityRelationId IN
+    (SELECT DISTINCT t1.anatEntityRelationId FROM anatEntityRelationTaxonConstraint AS t1
+    INNER JOIN (select * from anatRelProblem) AS t2 ON t1.anatEntityRelationId = t2.anatEntityRelationId
+    INNER JOIN anatEntityRelation AS t3 ON t1.anatEntityRelationId = t3.anatEntityRelationId
+    WHERE t2.speciesId = 7955 GROUP BY t1.anatEntityRelationId
     HAVING COUNT(DISTINCT t1.speciesId) <= 2
     	AND ((GROUP_CONCAT(DISTINCT t1.speciesId) LIKE "%9606%") OR (GROUP_CONCAT(DISTINCT t1.speciesId) LIKE "%10090%")));
--- delete from anatRelProblem all anatEntityRelationId for 13616 (Monodelphis domestica) when there is only 1 
+-- delete from anatRelProblem all anatEntityRelationId for 13616 (Monodelphis domestica) when there is only 1
 -- already existing taxonConstraint for 9606
-DELETE FROM anatRelProblem WHERE anatEntityRelationId IN 
-    (SELECT DISTINCT t1.anatEntityRelationId FROM anatEntityRelationTaxonConstraint AS t1 
-    INNER JOIN (select * from anatRelProblem) AS t2 ON t1.anatEntityRelationId = t2.anatEntityRelationId 
-    INNER JOIN anatEntityRelation AS t3 ON t1.anatEntityRelationId = t3.anatEntityRelationId 
-    WHERE t2.speciesId = 13616 GROUP BY t1.anatEntityRelationId 
+DELETE FROM anatRelProblem WHERE anatEntityRelationId IN
+    (SELECT DISTINCT t1.anatEntityRelationId FROM anatEntityRelationTaxonConstraint AS t1
+    INNER JOIN (select * from anatRelProblem) AS t2 ON t1.anatEntityRelationId = t2.anatEntityRelationId
+    INNER JOIN anatEntityRelation AS t3 ON t1.anatEntityRelationId = t3.anatEntityRelationId
+    WHERE t2.speciesId = 13616 GROUP BY t1.anatEntityRelationId
     HAVING COUNT(DISTINCT t1.speciesId) = 1
     	AND (GROUP_CONCAT(DISTINCT t1.speciesId) LIKE "%9606%"));
--- delete from anatRelProblem all anatEntityRelationId for 10090 (Mus musculus) when the only already 
--- already existing taxonConstraint is for 9606  	
-DELETE FROM anatRelProblem WHERE anatEntityRelationId IN 
-    (SELECT DISTINCT t1.anatEntityRelationId FROM anatEntityRelationTaxonConstraint AS t1 
-    INNER JOIN (select * from anatRelProblem) AS t2 ON t1.anatEntityRelationId = t2.anatEntityRelationId 
-    INNER JOIN anatEntityRelation AS t3 ON t1.anatEntityRelationId = t3.anatEntityRelationId 
-    WHERE t2.speciesId = 10090 GROUP BY t1.anatEntityRelationId 
+-- delete from anatRelProblem all anatEntityRelationId for 10090 (Mus musculus) when the only already
+-- already existing taxonConstraint is for 9606
+DELETE FROM anatRelProblem WHERE anatEntityRelationId IN
+    (SELECT DISTINCT t1.anatEntityRelationId FROM anatEntityRelationTaxonConstraint AS t1
+    INNER JOIN (select * from anatRelProblem) AS t2 ON t1.anatEntityRelationId = t2.anatEntityRelationId
+    INNER JOIN anatEntityRelation AS t3 ON t1.anatEntityRelationId = t3.anatEntityRelationId
+    WHERE t2.speciesId = 10090 GROUP BY t1.anatEntityRelationId
     HAVING COUNT(DISTINCT t1.speciesId) = 1
     	AND (GROUP_CONCAT(DISTINCT t1.speciesId) LIKE "%9606%"));
--- delete from anatRelProblem all anatEntityRelationId for 10116 (Rattus) when the only already 
--- existing taxonConstraint is for 9606  	
-DELETE FROM anatRelProblem WHERE anatEntityRelationId IN 
-    (SELECT DISTINCT t1.anatEntityRelationId FROM anatEntityRelationTaxonConstraint AS t1 
-    INNER JOIN (select * from anatRelProblem) AS t2 ON t1.anatEntityRelationId = t2.anatEntityRelationId 
-    INNER JOIN anatEntityRelation AS t3 ON t1.anatEntityRelationId = t3.anatEntityRelationId 
-    WHERE t2.speciesId = 10116 GROUP BY t1.anatEntityRelationId 
+-- delete from anatRelProblem all anatEntityRelationId for 10116 (Rattus) when the only already
+-- existing taxonConstraint is for 9606
+DELETE FROM anatRelProblem WHERE anatEntityRelationId IN
+    (SELECT DISTINCT t1.anatEntityRelationId FROM anatEntityRelationTaxonConstraint AS t1
+    INNER JOIN (select * from anatRelProblem) AS t2 ON t1.anatEntityRelationId = t2.anatEntityRelationId
+    INNER JOIN anatEntityRelation AS t3 ON t1.anatEntityRelationId = t3.anatEntityRelationId
+    WHERE t2.speciesId = 10116 GROUP BY t1.anatEntityRelationId
     HAVING COUNT(DISTINCT t1.speciesId) = 1
     	AND (GROUP_CONCAT(DISTINCT t1.speciesId) LIKE "%9606%"));
--- delete from anatRelProblem all anatEntityRelationId for 9031 (Gallus gallus) when the only already 
--- existing taxonConstraint is for 9606  	
-DELETE FROM anatRelProblem WHERE anatEntityRelationId IN 
-    (SELECT DISTINCT t1.anatEntityRelationId FROM anatEntityRelationTaxonConstraint AS t1 
-    INNER JOIN (select * from anatRelProblem) AS t2 ON t1.anatEntityRelationId = t2.anatEntityRelationId 
-    INNER JOIN anatEntityRelation AS t3 ON t1.anatEntityRelationId = t3.anatEntityRelationId 
-    WHERE t2.speciesId = 9031 GROUP BY t1.anatEntityRelationId 
+-- delete from anatRelProblem all anatEntityRelationId for 9031 (Gallus gallus) when the only already
+-- existing taxonConstraint is for 9606
+DELETE FROM anatRelProblem WHERE anatEntityRelationId IN
+    (SELECT DISTINCT t1.anatEntityRelationId FROM anatEntityRelationTaxonConstraint AS t1
+    INNER JOIN (select * from anatRelProblem) AS t2 ON t1.anatEntityRelationId = t2.anatEntityRelationId
+    INNER JOIN anatEntityRelation AS t3 ON t1.anatEntityRelationId = t3.anatEntityRelationId
+    WHERE t2.speciesId = 9031 GROUP BY t1.anatEntityRelationId
     HAVING COUNT(DISTINCT t1.speciesId) = 1
     	AND (GROUP_CONCAT(DISTINCT t1.speciesId) LIKE "%7955%"));
-    	
-    	    	
+
+
 -- Insert missing relation taxon constraints
 INSERT INTO anatEntityRelationTaxonConstraint (anatEntityRelationId, speciesId)
     SELECT anatEntityRelationId, speciesId FROM anatRelProblem;
@@ -118,8 +118,8 @@ INSERT INTO anatEntityRelationTaxonConstraint (anatEntityRelationId, speciesId)
 -- Insert reflexive "is_a part_of" anatEntityRelationTaxonConstraints for problematic anatEntityTaxonConstraint
 INSERT INTO anatEntityRelationTaxonConstraint (anatEntityRelationId, speciesId)
     SELECT distinct t2.anatEntityRelationId, t1.speciesId
-    FROM anatProblem AS t1 
-    INNER JOIN anatEntityRelation AS t2 
+    FROM anatProblem AS t1
+    INNER JOIN anatEntityRelation AS t2
         ON (t1.anatEntityId = t2.anatEntitySourceId AND t1.anatEntityId = t2.anatEntityTargetId)
     LEFT OUTER JOIN anatEntityRelationTaxonConstraint AS t3 ON (t2.anatEntityRelationId = t3.anatEntityRelationId AND (t1.speciesId = t3.speciesId OR t3.speciesId IS NULL))
     WHERE t3.anatEntityRelationId IS NULL;

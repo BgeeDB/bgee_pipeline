@@ -59,7 +59,7 @@ if ($auto == 0) {
 #                                                               estGlobalRankNorm = NULL");
 #    my $cleanCond = $dbh->prepare("UPDATE globalCond SET estMaxRank = NULL,
 #                                                         estGlobalMaxRank = NULL");
-#    
+#
 #    printf("Cleaning existing data: ");
 #    $cleanExpr->execute() or die $cleanExpr->errstr;
 #    $cleanCond->execute() or die $cleanCond->errstr;
@@ -102,9 +102,9 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
         }
 
         # Store an association between each globalCondition and the libraries considered in it
-        my $sql = 
+        my $sql =
         "CREATE TEMPORARY TABLE globalCondToLib (
-             PRIMARY KEY(estLibraryId, globalConditionId), INDEX(globalConditionId)) 
+             PRIMARY KEY(estLibraryId, globalConditionId), INDEX(globalConditionId))
              SELECT DISTINCT t1.globalConditionId, t4.estLibraryId ".
              # Retrieve the valid raw conditions mapped to each globalCondition
              "FROM globalCond AS t1
@@ -238,7 +238,7 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
 #            printf("OK in %.2fs\n", (time() - $t0));
 
             $dropLibRankStmt->execute() or die $dropLibRankStmt->errstr;
-            
+
             if (($i / 100 - int($i / 100)) == 0) {
                 printf("$i conditions done.\n");
             }

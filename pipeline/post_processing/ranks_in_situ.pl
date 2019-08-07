@@ -64,7 +64,7 @@ if ($auto == 0) {
 #                                                               inSituGlobalRankNorm = NULL");
 #    my $cleanCond = $dbh->prepare("UPDATE globalCond SET inSituMaxRank = NULL,
 #                                                         inSituGlobalMaxRank = NULL");
-#    
+#
 #    printf("Cleaning existing data: ");
 #    $cleanExpr->execute() or die $cleanExpr->errstr;
 #    $cleanCond->execute() or die $cleanCond->errstr;
@@ -106,9 +106,9 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
         }
 
         # Store an association between each globalCondition and the inSituSpots considered in it
-        my $sql = 
+        my $sql =
         "CREATE TEMPORARY TABLE globalCondToSpot (
-             PRIMARY KEY(inSituSpotId, globalConditionId), INDEX(globalConditionId)) 
+             PRIMARY KEY(inSituSpotId, globalConditionId), INDEX(globalConditionId))
              SELECT DISTINCT t1.globalConditionId, t4.inSituSpotId ".
              # Retrieve the valid raw conditions mapped to each globalCondition
              "FROM globalCond AS t1
@@ -129,7 +129,7 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
         my $spotToGlobalCondStmt = $dbh->prepare($sql);
         $spotToGlobalCondStmt->execute() or die $spotToGlobalCondStmt->errstr;
         printf("Done in %.2fs\n", (time() - $t0));
-    
+
         # give a score to spots, depending on their detectionFlag and quality:
         # present - high quality = 1
         # present - low quality = 0.5
@@ -137,9 +137,9 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
         # absent - high quality = -1
         # We sum these sores for each gene in a given mapped condition of the expression table,
         # and we will rank genes in each mapped condition based on this score.
-        my $sql = "CREATE TEMPORARY TABLE inSituRanking (
+        $sql = "CREATE TEMPORARY TABLE inSituRanking (
             PRIMARY KEY(bgeeGeneId), INDEX(rank))
-            SELECT STRAIGHT_JOIN inSituSpot.bgeeGeneId, 
+            SELECT STRAIGHT_JOIN inSituSpot.bgeeGeneId,
 
             SUM(
                 IF(inSituSpot.detectionFlag = '$Utils::PRESENT_CALL' AND inSituData = '$Utils::HIGH_QUAL', 1,
@@ -152,7 +152,7 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
             FROM globalCondToSpot
             INNER JOIN inSituSpot ON globalCondToSpot.inSituSpotId = inSituSpot.inSituSpotId
             WHERE globalCondToSpot.globalConditionId = ?
-            AND inSituSpot.detectionFlag != '$Utils::UNDEFINED_CALL' AND inSituSpot.inSituData != 'no data' 
+            AND inSituSpot.detectionFlag != '$Utils::UNDEFINED_CALL' AND inSituSpot.inSituData != 'no data'
             AND inSituSpot.reasonForExclusion NOT IN ('$Utils::EXCLUDED_FOR_PRE_FILTERED', '$Utils::EXCLUDED_FOR_UNDEFINED')
             GROUP BY inSituSpot.bgeeGeneId;";
 
@@ -258,7 +258,7 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
 #            printf("OK in %.2fs\n", (time() - $t0));
 
             $dropSpotRankStmt->execute() or die $dropSpotRankStmt->errstr;
-            
+
             if (($i / 100 - int($i / 100)) == 0) {
                 printf("$i conditions done.\n");
             }

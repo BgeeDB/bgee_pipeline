@@ -18,7 +18,7 @@ $|=1;
 
 # Define arguments and their default value
 my ($bgee_connector) = ('');
-my ($ranks_computed) = (0); 
+my ($ranks_computed) = (0);
 my %opts = ('bgee=s'         => \$bgee_connector, # Bgee connector string
             'ranks_computed' => \$ranks_computed,
            );
@@ -43,38 +43,38 @@ if ($auto == 0) {
     $dbh->{AutoCommit} = 0;
 }
 
-# Reasonning of the computations: 
-# 1) identify the valid set of genes that should be considered for ranking in all libraries: 
-# the set of all genes that received at least one read over all libraries in Bgee. 
-# 2) compute gene fractional ranks in table rnaSeqResult, for each RNA-Seq library, based on TPM values 
-# 3) update expression table: compute weighted mean of ranks per gene and condition, 
-# weighted by the number of distinct ranks in each library: we assume that libraries with higher 
-# number of distinct ranks have a higher power for ranking genes. 
-# Note that we do not "normalize" ranks between samples before computing the mean, as for Affymetrix data: 
-# all libraries are used to produce ranking over always the same set of genes in a given species, 
-# so the genomic coverage is always the same, and no "normalization" is required. The higher power 
-# at ranking genes of a library (for instance, thanks to a higher number of mapped reads) 
-# is taken into account by weighting the mean by the number of distinct ranks in the library, 
-# not by "normalizing" away libraries with lower max ranks; this would penalize conditions 
-# with a lower number of expressed genes, and thus with more ex-aequo ranked genes, corresponding 
-# to genes receiving 0 read. 
-# 4) also, insert max ranks per mapped condition in condition table  
-# (will allow to normalize ranks between conditions and data types), and sum of distinct rank counts 
+# Reasonning of the computations:
+# 1) identify the valid set of genes that should be considered for ranking in all libraries:
+# the set of all genes that received at least one read over all libraries in Bgee.
+# 2) compute gene fractional ranks in table rnaSeqResult, for each RNA-Seq library, based on TPM values
+# 3) update expression table: compute weighted mean of ranks per gene and condition,
+# weighted by the number of distinct ranks in each library: we assume that libraries with higher
+# number of distinct ranks have a higher power for ranking genes.
+# Note that we do not "normalize" ranks between samples before computing the mean, as for Affymetrix data:
+# all libraries are used to produce ranking over always the same set of genes in a given species,
+# so the genomic coverage is always the same, and no "normalization" is required. The higher power
+# at ranking genes of a library (for instance, thanks to a higher number of mapped reads)
+# is taken into account by weighting the mean by the number of distinct ranks in the library,
+# not by "normalizing" away libraries with lower max ranks; this would penalize conditions
+# with a lower number of expressed genes, and thus with more ex-aequo ranked genes, corresponding
+# to genes receiving 0 read.
+# 4) also, insert max ranks per mapped condition in condition table
+# (will allow to normalize ranks between conditions and data types), and sum of distinct rank counts
 # per gene and condition, in expression table (used to compute weigthed mean over all data types in a condition)
 
 
 ##############################################
 # IDENTIFY VALID GENES                       #
 ##############################################
-# We rank all genes that have received at least one read in any condition. 
+# We rank all genes that have received at least one read in any condition.
 # So we always rank the same set of gene in a given species over all libraries.
 # We don't use a temp table to be able to close/open the connection for each condition parameter combination.
 # So we have to drop the table at the end.
 my $dropValidGenesStmt = $dbh->prepare("DROP TABLE IF EXISTS rnaSeqValidGenes;");
-my $validGenesStmt     = $dbh->prepare("CREATE TABLE rnaSeqValidGenes 
-                                            (PRIMARY KEY(bgeeGeneId)) 
-                                            SELECT DISTINCT t1.bgeeGeneId  
-                                            FROM rnaSeqResult AS t1 
+my $validGenesStmt     = $dbh->prepare("CREATE TABLE rnaSeqValidGenes
+                                            (PRIMARY KEY(bgeeGeneId))
+                                            SELECT DISTINCT t1.bgeeGeneId
+                                            FROM rnaSeqResult AS t1
                                             WHERE t1.readsCount > 0;");
 
 printf("Identifying set of valid genes for ranking: ");
@@ -86,7 +86,7 @@ printf("Done\n");
 # COMPUTE RANKS PER LIBRARY                  #
 ##############################################
 if ( !$ranks_computed ) {
-    
+
     # Clean potentially already computed ranks
 #    my $cleanRNASeq = $dbh->prepare("UPDATE rnaSeqResult SET rank = NULL");
 #    my $cleanLib    = $dbh->prepare("UPDATE rnaSeqLibrary SET libraryMaxRank = NULL,
@@ -95,25 +95,25 @@ if ( !$ranks_computed ) {
 #    $cleanRNASeq->execute() or die $cleanRNASeq->errstr;
 #    $cleanLib->execute() or die $cleanLib->errstr;
 #    printf("Done\n");
-    
-    # Queries to compute gene ranks per library. 
-    # We rank all genes that have received at least one read in any condition. 
-    # So we always rank the same set of gene in a given species over all libraries. 
+
+    # Queries to compute gene ranks per library.
+    # We rank all genes that have received at least one read in any condition.
+    # So we always rank the same set of gene in a given species over all libraries.
     # We assume that each library maps to only one species through its contained genes.
-    my $rnaSeqLibStmt          = $dbh->prepare("SELECT t1.rnaSeqLibraryId FROM rnaSeqLibrary AS t1 
-                                                WHERE EXISTS (SELECT 1 FROM rnaSeqResult AS t2 
-                                                              WHERE t1.rnaSeqLibraryId = t2.rnaSeqLibraryId 
+    my $rnaSeqLibStmt          = $dbh->prepare("SELECT t1.rnaSeqLibraryId FROM rnaSeqLibrary AS t1
+                                                WHERE EXISTS (SELECT 1 FROM rnaSeqResult AS t2
+                                                              WHERE t1.rnaSeqLibraryId = t2.rnaSeqLibraryId
                                                               AND t2.readsCount > 0)");
-    my $rnaSeqResultsStmt      = $dbh->prepare("SELECT DISTINCT t1.bgeeGeneId, t1.tpm 
+    my $rnaSeqResultsStmt      = $dbh->prepare("SELECT DISTINCT t1.bgeeGeneId, t1.tpm
                                                 FROM rnaSeqResult AS t1 ".
-                                                # join to table rnaSeqValidGenes to force 
+                                                # join to table rnaSeqValidGenes to force
                                                 # the selection of valid genes
-                                                "INNER JOIN rnaSeqValidGenes AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId 
-                                                WHERE t1.rnaSeqLibraryId = ? 
+                                                "INNER JOIN rnaSeqValidGenes AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId
+                                                WHERE t1.rnaSeqLibraryId = ?
                                                 AND t1.reasonForExclusion NOT IN ('$Utils::EXCLUDED_FOR_PRE_FILTERED', '$Utils::EXCLUDED_FOR_UNDEFINED')
                                                 ORDER BY t1.tpm DESC");
-    # if several genes at a same rank, we'll update them at once with a 'bgeeGeneId IN (?,?, ...)' clause. 
-    # If only one gene at a given rank, updated with the prepared statement below. 
+    # if several genes at a same rank, we'll update them at once with a 'bgeeGeneId IN (?,?, ...)' clause.
+    # If only one gene at a given rank, updated with the prepared statement below.
     my $rankUpdateStart   = "UPDATE rnaSeqResult SET rank = ? WHERE rnaSeqLibraryId = ? and bgeeGeneId ";
     my $rnaSeqResultUpdateStmt = $dbh->prepare($rankUpdateStart."= ?");
 
@@ -177,10 +177,10 @@ if ( !$ranks_computed ) {
 
     # ##############
     # Store max rank and number of distinct ranks per library
-    my $sql = 
+    my $sql =
     "UPDATE rnaSeqLibrary AS t0
      INNER JOIN (
-         SELECT t1.rnaSeqLibraryId, MAX(t1.rank) AS maxRank, COUNT(DISTINCT t1.rank) AS distinctRankCount  
+         SELECT t1.rnaSeqLibraryId, MAX(t1.rank) AS maxRank, COUNT(DISTINCT t1.rank) AS distinctRankCount
          FROM rnaSeqResult AS t1
          WHERE t1.reasonForExclusion NOT IN ('$Utils::EXCLUDED_FOR_PRE_FILTERED', '$Utils::EXCLUDED_FOR_UNDEFINED')
          GROUP BY t1.rnaSeqLibraryId
@@ -211,10 +211,10 @@ if ( !$ranks_computed ) {
 # Store max rank in each species, for later normalization between conditions, data types and species
 my $dropMaxRankSpeciesStmt = $dbh->prepare("DROP TABLE IF EXISTS rnaSeqMaxSpecies;");
 my $maxRankSpeciesStmt  = $dbh->prepare("
-CREATE TABLE rnaSeqMaxSpecies (PRIMARY KEY(speciesId)) 
-    SELECT t2.speciesId, MAX(t1.libraryMaxRank) AS maxRank  
+CREATE TABLE rnaSeqMaxSpecies (PRIMARY KEY(speciesId))
+    SELECT t2.speciesId, MAX(t1.libraryMaxRank) AS maxRank
     FROM rnaSeqLibrary AS t1
-    INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId 
+    INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId
     GROUP BY t2.speciesId;");
 
 my $t0 = time();
@@ -247,11 +247,11 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
     # Queries to first clean data
 #    my $cleanExpr = $dbh->prepare("UPDATE globalExpression AS t1
 #                                   INNER JOIN globalCond AS t2 ON t1.globalConditionId = t2.globalConditionId
-#                                   SET rnaSeqMeanRank              = null, 
-#                                       rnaSeqMeanRankNorm          = null, 
+#                                   SET rnaSeqMeanRank              = null,
+#                                       rnaSeqMeanRankNorm          = null,
 #                                       rnaSeqDistinctRankSum       = null,
-#                                       rnaSeqGlobalMeanRank        = null, 
-#                                       rnaSeqGlobalMeanRankNorm    = null, 
+#                                       rnaSeqGlobalMeanRank        = null,
+#                                       rnaSeqGlobalMeanRankNorm    = null,
 #                                       rnaSeqGlobalDistinctRankSum = null
 #                                   WHERE ".Utils::get_cond_param_comb_sql_clause($condParamCombArrRef, "t2"));
 #    my $cleanCond = $dbh->prepare("UPDATE globalCond SET rnaSeqMaxRank = null,
@@ -288,9 +288,9 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
         }
 
         # Store an association between each globalCondition and the libraries considered in it
-        my $sql = 
+        my $sql =
         "CREATE TEMPORARY TABLE globalCondToLib (
-             PRIMARY KEY(rnaSeqLibraryId, globalConditionId), INDEX(globalConditionId)) 
+             PRIMARY KEY(rnaSeqLibraryId, globalConditionId), INDEX(globalConditionId))
              SELECT DISTINCT t1.globalConditionId, t4.rnaSeqLibraryId ".
              # Retrieve the valid raw conditions mapped to each globalCondition
              "FROM globalCond AS t1
@@ -313,25 +313,25 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
         printf("Done in %.2fs\n", (time() - $t0));
 
 
-        # No within-datatype normalization, because we consider that all libraries in each species 
-        # could access a same putative max rank, and because we don't normalize between species at this point, 
-        # we're only supposed to normalize samples in a same condition and species (for Affymetrix data). 
+        # No within-datatype normalization, because we consider that all libraries in each species
+        # could access a same putative max rank, and because we don't normalize between species at this point,
+        # we're only supposed to normalize samples in a same condition and species (for Affymetrix data).
 
 
         # compute weighted mean normalized ranks, and sum of numbers of distinct ranks
         $sql = "CREATE TEMPORARY TABLE weightedMeanRank
-                SELECT STRAIGHT_JOIN 
-                      rnaSeqResult.bgeeGeneId, 
+                SELECT STRAIGHT_JOIN
+                      rnaSeqResult.bgeeGeneId,
                       SUM(rnaSeqResult.rank * rnaSeqLibrary.libraryDistinctRankCount)
-                          /SUM(rnaSeqLibrary.libraryDistinctRankCount) AS meanRank, 
-                      SUM(rnaSeqLibrary.libraryDistinctRankCount) AS distinctRankCountSum 
+                          /SUM(rnaSeqLibrary.libraryDistinctRankCount) AS meanRank,
+                      SUM(rnaSeqLibrary.libraryDistinctRankCount) AS distinctRankCountSum
                 FROM globalCondToLib
                 INNER JOIN rnaSeqLibrary ON rnaSeqLibrary.rnaSeqLibraryId = globalCondToLib.rnaSeqLibraryId
                 INNER JOIN rnaSeqResult ON rnaSeqResult.rnaSeqLibraryId = rnaSeqLibrary.rnaSeqLibraryId
-                INNER JOIN rnaSeqValidGenes ON rnaSeqResult.bgeeGeneId = rnaSeqValidGenes.bgeeGeneId 
+                INNER JOIN rnaSeqValidGenes ON rnaSeqResult.bgeeGeneId = rnaSeqValidGenes.bgeeGeneId
                 WHERE rnaSeqResult.expressionId IS NOT NULL AND globalCondToLib.globalConditionId = ?
                 GROUP BY rnaSeqResult.bgeeGeneId";
-                       
+
         my $rnaSeqWeightedMeanStmt = $dbh->prepare($sql);
         my $dropLibWeightedMeanStmt = $dbh->prepare("DROP TABLE weightedMeanRank");
 
@@ -343,15 +343,15 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
                "ON globalExpression.bgeeGeneId = weightedMeanRank.bgeeGeneId
                     AND globalExpression.globalConditionId = ? ";
         if (!$selfRanks) {
-            $sql .= "SET globalExpression.rnaSeqMeanRank = weightedMeanRank.meanRank, 
+            $sql .= "SET globalExpression.rnaSeqMeanRank = weightedMeanRank.meanRank,
                 globalExpression.rnaSeqDistinctRankSum = weightedMeanRank.distinctRankCountSum";
         } else {
-            $sql .= "SET globalExpression.rnaSeqGlobalMeanRank = weightedMeanRank.meanRank, 
+            $sql .= "SET globalExpression.rnaSeqGlobalMeanRank = weightedMeanRank.meanRank,
                 globalExpression.rnaSeqGlobalDistinctRankSum = weightedMeanRank.distinctRankCountSum";
         }
         my $expressionUpdateMeanRank = $dbh->prepare($sql);
-        
-        
+
+
         # ###################
         # Run computations per globalCondition
         # ###################
@@ -379,7 +379,7 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
 #            printf("OK in %.2fs\n", (time() - $t0));
 
             $dropLibWeightedMeanStmt->execute() or die $dropLibWeightedMeanStmt->errstr;
-            
+
             if (($i / 100 - int($i / 100)) == 0) {
                 printf("$i conditions done.\n");
             }
@@ -419,7 +419,7 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
 }
 
 
-# reopen the connection that was closed at the last parameter combination iteration, 
+# reopen the connection that was closed at the last parameter combination iteration,
 # to drop non-temporary tables
 $dbh = Utils::connect_bgee_db($bgee_connector);
 if ($auto == 0) {
@@ -437,3 +437,4 @@ if ($auto == 0) {
 $dbh->disconnect();
 
 exit 0;
+
