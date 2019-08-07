@@ -15,14 +15,13 @@
 ## - exonic regions from all transcripts of each gene
 ## - intergenic regions. The 500nt flanking genes are excluded (the minimal distance from start or stop of intergenic region to boundary of the nearest gene: 500nt). The intergenic region length is limited to min 2000 max 20000. Intergenic regions with lower size are discarded. Larger regions are limited to +/- 10000 around the center of the intergenic region.
 ## - remove Ns from intergenic sequences. Genome is used to retrieve sequence of previously detected intergenic regions. If the sequence contains more than `block_size` consucutive Ns the sequence is splitted in 2. At the end all intergenic sequences without block of Ns but with a higher proportion of N than `N_proportion` OR shorter than 1000bp are discarded  
-## - A conversion table (transcript ID to gene ID) is exported: extension .gene2transcript
-## - A gene biotype table is exported: extension .gene2biotype
+## - A summary of N removal is provided: extension .Nremoval
 
 ## Invoking:
-# R CMD BATCH --no-save --no-restore '--args gene_gtf_path="gene_gtf_path" genome_fasta_path="genome_fasta_path" N_block_size = 31 N_proportion = 0.05 output_gtf_path="output_gtf_path"' prepare_gtf.R Rout_path
+# R CMD BATCH --no-save --no-restore --slave '--args gene_gtf_path="gene_gtf_path" genome_fasta_path="genome_fasta_path" N_block_size = 31 N_proportion = 0.05 output_gtf_path="output_gtf_path"' prepare_gtf.R Rout_path
 
 ## Example:
-# R CMD BATCH --no-save --no-restore '--args gene_gtf_path="~/Desktop/RNAseq/pipeline_Ensembl_73/Mus_musculus.GRCm38.73.gtf.gz" genome_fasta_path="~/Desktop/RNAseq/pipeline_Ensembl_73/Mus_musculus.GRCm38.73.genome.fa" N_block_size = 31 N_proportion = 0.05 output_gtf_path="~/Desktop/RNAseq/pipeline_Ensembl_73/gtf_folder/Mus_musculus.GRCm38.73"' prepare_GTF.R
+# R CMD BATCH --no-save --no-restore --slave'--args gene_gtf_path="~/Desktop/RNAseq/pipeline_Ensembl_73/Mus_musculus.GRCm38.73.gtf.gz" genome_fasta_path="~/Desktop/RNAseq/pipeline_Ensembl_73/Mus_musculus.GRCm38.73.genome.fa" N_block_size = 31 N_proportion = 0.05 output_gtf_path="~/Desktop/RNAseq/pipeline_Ensembl_73/gtf_folder/Mus_musculus.GRCm38.73"' prepare_GTF.R
 
 ## Arguments to provide:
 # "gene_gtf_path" - full path to input gene gtf file
@@ -45,8 +44,6 @@ if(!file.exists(Rlib_folder_path)){
 
 library("GenomicFeatures")
 library("Biostrings")
-# library("chipseq")
-## TODO Are these packages really needed? We seem to use functions from packages that depend on them, not from them
 
 ## Session info
 print(sessionInfo())
