@@ -45,7 +45,8 @@ $| = 1;
 #############################################################
 # PREFILL CONDITION TABLES                                  #
 #############################################################
-COMB: for my $combination ( keys %Utils::conditionCombinations ){
+COMB:
+for my $combination ( keys %Utils::conditionCombinations ){
     # do nothing for the raw conditions and expression calls, already computed by pipeline
 #NOTE Seb: $Utils::allFieldCombination is not defined!
 #    if ( $combination eq $Utils::allFieldCombination ) {
@@ -93,3 +94,4 @@ $bgee->disconnect;
 print "Done\n"  if ( $debug );
 
 exit 0;
+

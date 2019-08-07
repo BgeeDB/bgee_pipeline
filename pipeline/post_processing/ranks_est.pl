@@ -49,8 +49,8 @@ my $auto = 0;
 # COMPUTE RANKS PER CONDITION                #
 ##############################################
 my $dbh = Utils::connect_bgee_db($bgee_connector);
-if ($auto == 0) {
-    $dbh->{AutoCommit} = 0;
+if ( $auto == 0 ){
+    $dbh->{'AutoCommit'} = 0;
 }
 #    # Queries to first clean data
 #    my $cleanExpr = $dbh->prepare("UPDATE globalExpression SET estRank = NULL,
@@ -71,7 +71,7 @@ if ($auto == 0) {
 # Retrieve codition parameter combinations to compute EST ranks for.
 my $condParamCombinationsArrRef = Utils::get_cond_param_combinations($dbh, $Utils::EST_DATA_TYPE);
 print "All condition parameter combinations to compute for EST data:\n";
-print "@$_\n" for @{$condParamCombinationsArrRef};
+print "@$_\n"  for @{$condParamCombinationsArrRef};
 
 # connection will be opened/closed at each combination iteration to delete all temp tables
 $dbh->disconnect();
@@ -87,93 +87,93 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
     # we will compute two different rank information for each combination: one taking into account
     # all rank info mapped to a given condition ('self'), or all rank info mappd to a given condition
     # plus all its sub-conditions ('global').
-    my $selfRanks = 0;
+    my $selfRanks   = 0;
     my $globalRanks = 0;
 
-    while (!$selfRanks || !$globalRanks) {
-        if (!$selfRanks) {
+    while ( !$selfRanks || !$globalRanks ){
+        if ( !$selfRanks ){
             print "** Computation of self ranks\n"
         } else {
             print "** Computation of global ranks\n"
         }
         $dbh = Utils::connect_bgee_db($bgee_connector);
-        if ($auto == 0) {
-            $dbh->{AutoCommit} = 0;
+        if ( $auto == 0 ){
+            $dbh->{'AutoCommit'} = 0;
         }
 
         # Store an association between each globalCondition and the libraries considered in it
         my $sql =
-        "CREATE TEMPORARY TABLE globalCondToLib (
+        'CREATE TEMPORARY TABLE globalCondToLib (
              PRIMARY KEY(estLibraryId, globalConditionId), INDEX(globalConditionId))
-             SELECT DISTINCT t1.globalConditionId, t4.estLibraryId ".
+             SELECT DISTINCT t1.globalConditionId, t4.estLibraryId '.
              # Retrieve the valid raw conditions mapped to each globalCondition
-             "FROM globalCond AS t1
-              INNER JOIN globalCondToCond AS t2 ON t1.globalConditionId = t2.globalConditionId ";
-        if (!$selfRanks) {
+             'FROM globalCond AS t1
+              INNER JOIN globalCondToCond AS t2 ON t1.globalConditionId = t2.globalConditionId ';
+        if ( !$selfRanks ){
             $sql .= "AND t2.conditionRelationOrigin = 'self' ";
         } else {
             $sql .= "AND t2.conditionRelationOrigin IN ('self', 'descendant') ";
         }
-        $sql .= "INNER JOIN cond AS t3 ON t3.exprMappedConditionId = t2.conditionId ".
+        $sql .= 'INNER JOIN cond AS t3 ON t3.exprMappedConditionId = t2.conditionId '.
                 # retrieve the libraries present in this globalCondition
-                "INNER JOIN estLibrary AS t4 ON t3.conditionId = t4.conditionId".
+                'INNER JOIN estLibrary AS t4 ON t3.conditionId = t4.conditionId'.
                 # Use only globalConditions for the requested condition parameter combination
-                " WHERE ".Utils::get_cond_param_comb_sql_clause($condParamCombArrRef, "t1");
+                ' WHERE '.Utils::get_cond_param_comb_sql_clause($condParamCombArrRef, 't1');
 
         my $t0 = time();
-        printf("Creating temp table mapping EST libraries to globalConditions: ");
+        printf('Creating temp table mapping EST libraries to globalConditions: ');
         my $libToGlobalCondStmt = $dbh->prepare($sql);
-        $libToGlobalCondStmt->execute() or die $libToGlobalCondStmt->errstr;
+        $libToGlobalCondStmt->execute()  or die $libToGlobalCondStmt->errstr;
         printf("Done in %.2fs\n", (time() - $t0));
 
 
         # buid this table by using the fact that there is always an expressionId associated to each EST
-        $sql = "CREATE TEMPORARY TABLE estRanking (
+        $sql = 'CREATE TEMPORARY TABLE estRanking (
             PRIMARY KEY(bgeeGeneId), INDEX(rank))
             SELECT STRAIGHT_JOIN expressedSequenceTag.bgeeGeneId, COUNT(1) AS estCount, 0 AS rank
             FROM globalCondToLib
             INNER JOIN expressedSequenceTag ON globalCondToLib.estLibraryId = expressedSequenceTag.estLibraryId
             WHERE globalCondToLib.globalConditionId = ?
-            GROUP BY expressedSequenceTag.bgeeGeneId;";
+            GROUP BY expressedSequenceTag.bgeeGeneId';
 
         my $rankingStmt = $dbh->prepare($sql);
 
 
         # Queries to compute gene ranks per condition
-        my $ranksForCondStmt = $dbh->prepare("
+        my $ranksForCondStmt = $dbh->prepare('
             SELECT bgeeGeneId, estCount FROM estRanking
-            ORDER BY estCount DESC;
-        ");
+            ORDER BY estCount DESC');
+
         # if several genes at a same rank, we'll update them at once with a 'bgeeGeneId IN (?,?, ...)' clause.
         # If only one gene at a given rank, updated with the prepared statement below.
-        my $rankUpdateStart   = "UPDATE estRanking SET rank = ?
-                                 WHERE bgeeGeneId ";
-        my $updateRankingStmt = $dbh->prepare($rankUpdateStart."= ?");
-        my $dropLibRankStmt = $dbh->prepare("DROP TABLE estRanking");
+        my $rankUpdateStart   = 'UPDATE estRanking SET rank = ?
+                                 WHERE bgeeGeneId ';
+        my $updateRankingStmt = $dbh->prepare($rankUpdateStart.'= ?');
+        my $dropLibRankStmt   = $dbh->prepare('DROP TABLE estRanking');
 
         #update the expression table
-        $sql = "UPDATE estRanking
-                STRAIGHT_JOIN globalExpression ".
+        $sql = 'UPDATE estRanking
+                STRAIGHT_JOIN globalExpression '.
                 # we build the query this way in order to benefit from the clustered index
                 # on (bgeeGeneId, globalConditionId) of the globalExpression table
-               "ON globalExpression.bgeeGeneId = estRanking.bgeeGeneId
-                    AND globalExpression.globalConditionId = ? ";
-        if (!$selfRanks) {
-            $sql .= "SET globalExpression.estRank = estRanking.rank";
+               'ON globalExpression.bgeeGeneId = estRanking.bgeeGeneId
+                    AND globalExpression.globalConditionId = ? ';
+        if ( !$selfRanks ){
+            $sql .= 'SET globalExpression.estRank = estRanking.rank';
         } else {
-            $sql .= "SET globalExpression.estGlobalRank = estRanking.rank";
+            $sql .= 'SET globalExpression.estGlobalRank = estRanking.rank';
         }
         my $expressionUpdateMeanRank = $dbh->prepare($sql);
 
 
-        $sql = "UPDATE globalCond ";
-        if (!$selfRanks) {
-            $sql .= "SET globalCond.estMaxRank ";
+        $sql = 'UPDATE globalCond ';
+        if ( !$selfRanks ){
+            $sql .= 'SET globalCond.estMaxRank ';
         } else {
-            $sql .= "SET globalCond.estGlobalMaxRank ";
+            $sql .= 'SET globalCond.estGlobalMaxRank ';
         }
-        $sql .= "= (SELECT MAX(rank) FROM estRanking)
-                 WHERE globalConditionId = ?";
+        $sql .= '= (SELECT MAX(rank) FROM estRanking)
+                 WHERE globalConditionId = ?';
         my $updateExpressionMaxRank = $dbh->prepare($sql);
 
 
@@ -195,10 +195,10 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
 
             $t0 = time();
 #            printf("Creating temp table for EST ranking: ");
-            $rankingStmt->execute($globalConditionId) or die $rankingStmt->errstr;
+            $rankingStmt->execute($globalConditionId)  or die $rankingStmt->errstr;
 #            printf("OK in %.2fs\n", (time() - $t0));
 
-            $ranksForCondStmt->execute() or die $ranksForCondStmt->errstr;
+            $ranksForCondStmt->execute()  or die $ranksForCondStmt->errstr;
 
             my @results = map { {"id" => $_->[0], "val" => $_->[1]} } @{$ranksForCondStmt->fetchall_arrayref};
 
@@ -206,24 +206,24 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
             # we get ranks as keys, with reference to an array of expression IDs with that rank as value
             my %reverseHash = Utils::revhash(%sorted);
 
-            for my $rank(keys(%reverseHash)) {
+            for my $rank ( keys %reverseHash ){
                 my $geneIds_arrRef = $reverseHash{$rank};
                 my @geneIds_arr = @$geneIds_arrRef;
                 my $exprCount = scalar @geneIds_arr;
-                if ($exprCount == 1) {
+                if ( $exprCount == 1 ){
                     my $geneId = $geneIds_arr[0];
-                    $updateRankingStmt->execute($rank, $geneId) or die $updateRankingStmt->errstr;
+                    $updateRankingStmt->execute($rank, $geneId)  or die $updateRankingStmt->errstr;
                 } else {
-                    my $query = $rankUpdateStart."IN (";
-                    for (my $i = 0; $i < $exprCount; $i++) {
-                        if ($i > 0) {
-                            $query .= ", ";
+                    my $query = $rankUpdateStart.'IN (';
+                    for ( my $i = 0; $i < $exprCount; $i++ ){
+                        if ( $i > 0 ){
+                            $query .= ', ';
                         }
-                    $query .= "?";
+                        $query .= '?';
                     }
-                    $query .= ")";
+                    $query .= ')';
                     my $rankMultiUpdateStmt = $dbh->prepare($query);
-                    $rankMultiUpdateStmt->execute($rank, @geneIds_arr) or die $rankMultiUpdateStmt->errstr;
+                    $rankMultiUpdateStmt->execute($rank, @geneIds_arr)  or die $rankMultiUpdateStmt->errstr;
                 }
             }
 
@@ -234,24 +234,24 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
 
             $t0 = time();
 #            printf("Updating globalCond table with EST max rank: ");
-            $updateExpressionMaxRank->execute($globalConditionId) or die $updateExpressionMaxRank->errstr;
+            $updateExpressionMaxRank->execute($globalConditionId)  or die $updateExpressionMaxRank->errstr;
 #            printf("OK in %.2fs\n", (time() - $t0));
 
-            $dropLibRankStmt->execute() or die $dropLibRankStmt->errstr;
+            $dropLibRankStmt->execute()  or die $dropLibRankStmt->errstr;
 
-            if (($i / 100 - int($i / 100)) == 0) {
+            if ( ($i / 100 - int($i / 100)) == 0 ){
                 printf("$i conditions done.\n");
             }
         }
 
-        if ($auto == 0) {
-            $dbh->commit() or die("Failed commit");
+        if ( $auto == 0 ){
+            $dbh->commit()  or die('Failed commit');
         }
 
         # closing the connection will destroy the temporary tables
         $dbh->disconnect();
 
-        if (!$selfRanks) {
+        if ( !$selfRanks ){
             $selfRanks = 1;
         } else {
             $globalRanks = 1;
@@ -260,3 +260,4 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
 }
 
 exit 0;
+
