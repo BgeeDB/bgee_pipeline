@@ -75,7 +75,7 @@ SELECT * FROM remapCond WHERE incorrectConditionId = remappedConditionId;
 For instance, if you wanted to change annotation of RNA-Seq libraries, and only RNA-Seq libraries:
 
 ```
-UPDATE t1 FROM rnaSeqLibrary AS t1
+UPDATE rnaSeqLibrary AS t1
 INNER JOIN remapCond AS t2 ON t1.conditionId = t2.incorrectConditionId
 SET t1.conditionId = t2.remappedConditionId;
 ```
