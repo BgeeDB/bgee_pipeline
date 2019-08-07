@@ -100,12 +100,16 @@ check_tools: vitalit1
 	@perl -MTime::localtime       -e 1                >> $@.tmp
 	@perl -Mwarnings              -e 1                >> $@.tmp
 	@$(VIT_R_CMD) which R                             >> $@.tmp
-	@$(VIT_R_CMD) R -e 'library("chipseq")'           >> $@.tmp  2>/dev/null
 	@$(VIT_R_CMD) R -e 'library("edgeR")'             >> $@.tmp  2>/dev/null
 	@$(VIT_R_CMD) R -e 'library("GenomicFeatures")'   >> $@.tmp  2>/dev/null
 	@$(VIT_R_CMD) R -e 'library("Biostrings")' 		  >> $@.tmp  2>/dev/null
 	@$(VIT_R_CMD) R -e 'library("limma")'             >> $@.tmp  2>/dev/null
 	@$(VIT_R_CMD) R -e 'library("mclust")'            >> $@.tmp  2>/dev/null
+	@$(VIT_R_CMD) R -e 'library("rhdf5")'             >> $@.tmp  2>/dev/null
+	@$(VIT_R_CMD) R -e 'library("tximport")'          >> $@.tmp  2>/dev/null
+	@$(VIT_R_CMD) R -e 'library("rtracklayer")'       >> $@.tmp  2>/dev/null
+	@$(VIT_R_CMD) R -e 'library("biomaRt")'           >> $@.tmp  2>/dev/null
+	@$(VIT_R_CMD) R -e 'library("jsonlite")'          >> $@.tmp  2>/dev/null
 	@which xz                                         >> $@.tmp
 	@which bsub                                       >> $@.tmp
 	@$(VIT_ASPERA_CMD)     which ascp                 >> $@.tmp
