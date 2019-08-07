@@ -324,17 +324,20 @@ insert_feature_length: $(RNASEQ_LENGTH_INFO_FILEPATH)
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
+#NOTE For iterative updates die commands to warn
+#     because with iterative updates tries to calculate TMM for already processed RNA-Seq libraries not available here!
 launch_calculate_TMM_factors: insert_RNA_seq $(RNASEQALLRES)
 	# Launch calculation of TMM factors for RNA-seq
+	@mkdir -p $(RNASEQTMMTARG) $(RNASEQTMMPATH)
 	@perl 3Insertion/launch_calculate_TMM_factors.pl -bgee=$(BGEECMD) -path_generes=$(RNASEQALLRES) -path_target=$(RNASEQTMMTARG) -path_processed=$(RNASEQTMMPATH) >$@.tmp 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
 check_TMM_factors: launch_calculate_TMM_factors $(RNASEQTMMPATH)
-	# Check results
-	@grep -H -c 'proc.time' $(RNASEQTMMPATH)/*.log | grep ':0$$'  >$@.tmp
-	# Check warnings
-	@grep 'Warning' -A 5 $(RNASEQTMMPATH)/*.log                   >>$@.tmp
+	# Check results: all were calculated (none :0$ expected)
+	@grep -H -c 'proc.time' $(RNASEQTMMPATH)/*.log | grep ':0$$'  >$@.tmp   || true
+	# Check warnings: no warnings
+	@grep 'Warning' -A 5 $(RNASEQTMMPATH)/*.log                   >>$@.tmp  || true
 	@$(MV) $@.tmp $@
 #TODO check that all libraries in database have a TMM factor calculated:
 # cat /var/bgee/extra/pipeline/rna_seq/processed_TMM_$(DBNAME)/*.tsv | grep -v rnaSeqExperimentId | wc -l

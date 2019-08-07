@@ -68,6 +68,7 @@ while ( my @data = $selExpr->fetchrow_array ){
         my $fileName;
         unless ( -e "$path_generes/$data[2]/$abundance_file" && -s "$path_generes/$data[2]/$abundance_file" ){
             die "Error, no processed file found for expId: [$data[1]] - libId: [$data[2]]\n";
+            next;
         }
 
         # Store the samples
