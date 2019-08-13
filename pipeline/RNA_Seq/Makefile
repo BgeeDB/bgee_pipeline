@@ -5,6 +5,9 @@ include $(PIPELINEROOT)Makefile.common
 
 all: $(VERIFICATIONFILE)
 
+
+################################ RETRIEVE BGEE ANNOTATIONS ################################
+
 #FIXME Fix strain names to be more consistent with Anne's strain file!
 get_annot:
 	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations. Store them in the source_files directory
@@ -41,6 +44,9 @@ commit_rna_seq_sample_info: create_rna_seq_sample_info $(RNASEQ_SAMPINFO_FILEPAT
 	@$(GIT) push
 	@echo -e "\t$(RNASEQ_SAMPINFO_FILEPATH) is ready, you can go to bigbgee to download new SRA files with get_SRA.pl as *admin* user\n\tDo a 'git pull' before starting\n"
 	@$(MV) $@.tmp $@
+	
+
+################################ SEND FILES TO CLUSTER ################################
 
 send_files_to_vital-it: create_rna_seq_sample_info $(RNASEQ_LIB_FILEPATH_FULL) $(RNASEQ_EXPERIMENT_FILEPATH_FULL) $(RNASEQ_LIB_CHECKS_FILEPATH)
 	# Send not-versionned annotation files to Vital-IT  with login/password $(VITLOGIN)/$(VITPASSW)
@@ -52,8 +58,10 @@ send_files_to_vital-it: create_rna_seq_sample_info $(RNASEQ_LIB_FILEPATH_FULL) $
      $(VITLOGIN)@$(VITHOST):$(RNASEQ_VITALIT_READONLY)GIT/pipeline/RNA_Seq/
 	@echo -e "\tNext steps have to be done on Vital-IT\n\tGo to '$(RNASEQ_VITALIT_READONLY)GIT/', do a 'git pull' and copy missing files in '$(RNASEQ_VITALIT_READONLY)GIT/pipeline/RNA_Seq/'\n\tThen restart with 'make vitalit1' to start the pipeline run step\n"
 	@touch $@
+	
 
-##############################################################################################
+################################ DOWNLOAD RNA-SEQ LIBRARIES ################################
+
 # Bigbgee downloading step
 get_sra: create_rna_seq_sample_info
 	# Maybe write an echo to describe how to run this step
@@ -65,8 +73,10 @@ check_sra: get_sra
 	@echo -e "\tRe-run 0Before/get_SRA.pl to be sure all SRA are downloaded and FASTQ prepared\n"
 	@scp  $<  $(VITLOGIN)@$(VITHOST):$(RNASEQ_VITALIT_READONLY)GIT/pipeline/RNA_Seq/
 	@touch $@
+	
 
-##############################################################################################
+################################ PREPARE CLUSTER ENVIRONMENT ################################
+
 # Start here on Vital-IT
 vitalit1:
 	@echo -e "\tBe sure everything is up-to-date before running RNASeq pipeline\n"
@@ -133,6 +143,9 @@ clean_vital-it_folders: check_tools
 	@echo
 	@echo "Those scripts have to be run from $(RNASEQ_VITALIT_SCRIPTS)$(RNASEQPATH) on dev/frt/rserv01 (can write on /data/)!"
 	@touch $@
+	
+	
+################################ DOWNLOAD GENOMES AND ANNOTATIONS ################################
 
 get_GTF: clean_vital-it_folders create_rna_seq_sample_info
 	# Get GTF files from Ensembl FTP
@@ -146,6 +159,9 @@ get_genome: get_GTF
 	@$(MV) $@.tmp $@
 #TODO implement use of new "database" field in rna_seq_sample_info.txt (instead of trying both Ensembl and Ensembl Metazoa URLs)
 
+
+################################ GENERATE INTERGENIC SEQUENCES ################################
+
 prepare_GTF: get_GTF get_genome
 	# Prepare GTF files
 	@for gtf in $(RNASEQ_VITALIT_GTF)*.gtf.gz; do \
@@ -155,7 +171,6 @@ prepare_GTF: get_GTF get_genome
 	@$(RM) run.sh
 	@echo rm -f $(RNASEQ_VITALIT_GTF)/*.gtf.gz
 	@$(MV) $@.tmp $@
-
 
 
 prepare_indexed_transcriptome: get_genome prepare_GTF
@@ -174,7 +189,7 @@ prepare_indexed_transcriptome: get_genome prepare_GTF
 	done
 	@$(MV) $@.tmp $@
 #TODO Use short k-mer size = 21nt instead of 15
-#TODO The gffread utility in cufflinks package seems more flexible and reliable
+#TODO The gffread utility in cufflinks package seems more flexible and reliable than gtf_to_fasta
 #TODO add step to copy .passw file to bbgee's home on vital-it / or maybe just echo a message to tell the user scp it? Path and name of this file on vital-it is stored in ENCRYPT_PASSWD_FILE. We should store this file somewhere (devbioinfo?) because it cannot be added to the gitlab project
 #Or just put it in /home/bbgee/? in read only mode, only for bbgee user
 
@@ -224,6 +239,9 @@ sum_by_species: check_pipeline $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED
 	@$(VIT_R_CMD) R CMD BATCH --vanilla --slave '--args rna_seq_sample_info="$(RNASEQ_SAMPINFO_FILEPATH)" rna_seq_sample_excluded="$(RNASEQ_SAMPEXCLUDED_FILEPATH)" kallisto_count_folder="$(RNASEQ_VITALIT_ALL_RES)" sum_by_species_folder="$(RNASEQ_VITALIT_SUM_RES)"' $(RNASEQ_VITALIT_SCRIPTS)$(RNASEQPATH)1Run/rna_seq_sum_by_species.R $(RNASEQ_VITALIT_SUM_RES)rna_seq_sum_by_species.Rout
 	@echo -e "You HAVE TO create/update MANUALLY a file [$(RNASEQ_VITALIT_GAUSSIAN_CHOICE)] with selected gaussians for coding and intergenic regions!\n"
 	@touch $@
+	
+
+################################ GENERATE PRESENT/ABSENT CALLS ################################
 
 presence_absence: sum_by_species $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH) $(RNASEQ_VITALIT_GAUSSIAN_CHOICE)
 #	Script to calculate presence/absence threshold for all samples and call genes present/absent + generate density plots + generate statistics on % present (cutoff info files)
@@ -257,7 +275,9 @@ save_and_send_results_back: finalize_pipeline presence_absence export_length
 vitalit2: save_and_send_results_back
 	@echo -e "\tYou can go out of Vital-IT now\n"
 	@touch $@
-##############################################################################################
+
+
+################################ INSERT CALLS IN DATABASE ################################
 
 backup: $(RNASEQALLRES)
 	# Rsync files for backup by '$(DATALOGIN)' user on '$(DATAHOST)' (see wiki for password)
