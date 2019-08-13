@@ -230,13 +230,15 @@ gene_ids <- sapply(split_annotation_list, function(x){ get_annot_value(x, 'gene_
 ## getting the vector of the transcript IDs (1 for every exon)
 transcript_ids <- sapply(split_annotation_list, function(x){ get_annot_value(x, 'transcript_id') })
 
-## getting the table with mappings between transcript and gene IDs (for export)
+## getting the table with mappings between gene IDs and transcript (for tximport)
 gene_transcript_ids <- unique(cbind(gene_ids, transcript_ids), MARGIN=1)
 
 ## getting the vector of gene_biotypes: splitting gene gtf
 split_annotation_list <- strsplit(gene_gtf[,9], "; ",  fixed =T)
-gene_biotypes <- sapply(split_annotation_list, function(x){ get_annot_value(x, 'gene_biotype') })
-names(gene_biotypes) <- sapply(split_annotation_list, function(x){ get_annot_value(x, 'gene_id') })
+gene_biotypes <- cbind(
+    sapply(split_annotation_list, function(x){ get_annot_value(x, 'gene_id') }),
+    sapply(split_annotation_list, function(x){ get_annot_value(x, 'gene_biotype') }),
+    "genic")
 
 ## getting the chromosome, start and the end of the gene
 ## For start, take the minimum exon start position
@@ -255,8 +257,8 @@ chromosomes <- chromosomes[grep('PATCH', chromosomes, invert=TRUE, ignore.case=T
 cat("Selecting set of intergenic regions...\n")
 
 ## This object will include the coordinates of the selected intergenic regions
-intergenic_regions <- matrix(ncol=3, nrow=0)
-colnames(intergenic_regions) <- c("chr", "start", "end")
+final_intergenic_regions <- matrix(ncol=3, nrow=0)
+colnames(final_intergenic_regions) <- c("chr", "start", "end")
 
 ## Matrix summarizing impact of N removal
 summary_N_removal <- matrix(ncol=4, nrow=2, data = 0)
@@ -350,7 +352,40 @@ summary_N_removal[,"proportion_N"] <- summary_N_removal[,"total_N"] / summary_N_
 ####################################
 ## Output:
 ## GTF file with both genic exons and intergenic regions
-write.table(rbind(gene_gtf_exon, intergenic_regions_gtf), file=paste(output_gtf_path, ".gtf_all", sep=""), sep="\t", row.names=FALSE, col.names=FALSE, quote=FALSE)
+write.table(x = rbind(gene_gtf_exon, intergenic_regions_gtf), 
+            file=paste(output_gtf_path, ".gtf_all", sep=""), 
+            sep="\t", 
+            row.names=FALSE, 
+            col.names=FALSE, 
+            quote=FALSE)
 
 ## Table summaryzing the step of block of Ns removal
-write.table(summary_N_removal, file=paste(output_gtf_path, ".Nremoval", sep=""), sep="\t", row.names=TRUE, col.names=TRUE, quote=FALSE)
+write.table(x = summary_N_removal, 
+            file=paste(output_gtf_path, ".Nremoval", sep=""), 
+            sep="\t", 
+            row.names=TRUE, 
+            col.names=TRUE, 
+            quote=FALSE)
+
+## Table of mapping between transcript_id and gene_id
+intergenic_gene_transcript_ids <- cbind(intergenic_id, intergenic_id)
+gene_transcript_ids <- rbind(gene_transcript_ids, intergenic_gene_transcript_ids)
+write.table(x = gene_transcript_ids, 
+            file=paste(output_gtf_path, ".gene2transcript", sep=""), 
+            sep="\t", 
+            row.names=FALSE, 
+            col.names=c("TXNAME", "GENEID"), 
+            quote=FALSE)
+
+## Table of mapping between gene_id and both biotype and type (genic or intergenic) 
+intergenic_gene_biotypes <- cbind(
+    intergenic_id,
+    NA,
+    "intergenic")
+gene_biotypes <- rbind(gene_biotypes, intergenic_gene_biotypes)
+write.table(x = gene_biotypes, 
+            file=paste(output_gtf_path, ".gene2biotype", sep=""), 
+            sep="\t", 
+            row.names=FALSE, 
+            col.names=c("id", "biotype", "type"), 
+            quote=FALSE)
