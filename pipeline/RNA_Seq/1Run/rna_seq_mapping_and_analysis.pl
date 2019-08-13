@@ -200,7 +200,7 @@ for my $run ( @run_ids ){
 
 print "\tExtracting read length for all runs\n";
 my $shortReads   = 0;
-my $lengthCutoff = 36; # Read shorter than $lengthCutoff nt will be pseudo-mapped using shorter k-mer length. This parameter can be changed, but I assumed most recent RNA-seq data produce at least $lengthCutoff nt-long reads.
+my $lengthCutoff = 50; # Read shorter than $lengthCutoff nt will be pseudo-mapped using shorter k-mer length. This parameter can be changed, but I assumed most recent RNA-seq data produce at least $lengthCutoff nt-long reads.
 my @allLengths;
 my $maxLength;
 
@@ -284,7 +284,7 @@ print {$REPORT} 'Maximum read length across runs: ', max(@allLengths), "\n";
 close $REPORT;
 
 
-#TODO reads too short for Kallisto index with default k-mer length, use index built with k-mer size = 21nt
+#TODO reads too short for Kallisto index with default k-mer length, use index built with k-mer size = 15nt
 #  See: https://www.biostars.org/p/104321/
 #       https://groups.google.com/forum/#!topic/kallisto-sleuth-users/clOeSROnnFI
 my $index = $index_folder.'/';
