@@ -174,7 +174,7 @@ prepare_GTF: get_GTF get_genome
 
 
 prepare_indexed_transcriptome: get_genome prepare_GTF
-	# Preparing indexed transcriptome for every species
+# Preparing indexed transcriptome for every species
 # Extract transcriptome.fa from gtf_all and genome.fa files
 # perl one liner to remove arbitrary numbering in fasta header from gtf_to_fasta
 # Prepare indexes for kallisto: one with default k-mer size $(RNASEQ_KALLISTO_KMER_DEFAULT), one with short k-mer size $(RNASEQ_KALLISTO_KMER_SHORT)
@@ -194,25 +194,25 @@ prepare_indexed_transcriptome: get_genome prepare_GTF
 #Or just put it in /home/bbgee/? in read only mode, only for bbgee user
 
 #NOTE Better to run this step in screen or with nohup as submission is done X jobs per X jobs to not overload the system (and not decrease our user priority)!
-run_pipeline: prepare_indexed_transcriptome $(RNASEQ_SAMPINFO_FILEPATH)
+abundance_all_intergenic: prepare_indexed_transcriptome $(RNASEQ_SAMPINFO_FILEPATH)
 	# Running the pipeline
 	@perl $(RNASEQ_VITALIT_SCRIPTS)$(RNASEQPATH)1Run/bsub_scheduler.pl -sample_info_file=$(RNASEQ_VITALIT_SCRIPTS)RNA_Seq/$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=$(RNASEQ_VITALIT_LOG) -index_folder=$(RNASEQ_VITALIT_GTF) -fastq_folder=$(RNASEQ_BIGBGEE_FASTQ) -kallisto_out_folder=$(RNASEQ_VITALIT_ALL_RES) -ens_release=$(ENSRELEASE) -ens_metazoa_release=$(ENSMETAZOARELEASE) -data_host=$(DATAHOST) -data_login=$(DATALOGIN) -enc_passwd_file=$(ENCRYPT_PASSWD_FILE) -vit_kallisto_cmd="$(VIT_KALLISTO_CMD)" -vit_R_cmd="$(VIT_R_CMD)" >$@.tmp 2>&1
-	@echo "TODO: At the end it is a good idea to relaunch the run_pipeline step to be sure everything was run!"
+	@echo "TODO: At the end it is a good idea to relaunch the abundance_all_intergenic step to be sure everything was run!"
 	@$(MV) $@.tmp $@
 
-check_pipeline: run_pipeline
+check_abundance_all_intergenic: abundance_all_intergenic
 #TODO - Add a steps to automatically look for problems? See README.md in pipeline/RNA_Seq/ folder
 #     - It is probably easier to relaunch the problematic samples manually.
 #     - Flagged / excluded samples with low % genes mapped / low number of reads mapped / for which mapping failed: added manually to file $(RNASEQ_SAMPEXCLUDED_FILEPATH).
 
-export_length: check_pipeline
+export_length: check_abundance_all_intergenic
 	#Export transcript length to a file to export
 	@perl 3Insertion/export_feature_length.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -all_results=$(RNASEQ_VITALIT_ALL_RES) -length_info=$(RNASEQ_LENGTH_INFO_FILEPATH) > $@.tmp 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@echo -e "\tTranscript length are now exported into $(RNASEQ_LENGTH_INFO_FILEPATH) file\n"
 	@$(MV) $@.tmp $@
 
-finalize_pipeline: check_pipeline
+finalize_pipeline: check_abundance_all_intergenic
 	# Collect infos from .report files
 	@perl 3Insertion/create_rna_seq_report_info.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -report_info=$(RNASEQ_VITALIT_REPORTINFO) -all_results=$(RNASEQ_VITALIT_ALL_RES) > $@.tmp 2>warnings.$@
 	# Touch all files so that they are not removed from /scratch/temporary
