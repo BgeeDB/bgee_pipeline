@@ -485,7 +485,7 @@ else {
     my $analyze_count_command = $vit_R_cmd.'; ';
     $analyze_count_command .= "R CMD BATCH --no-save --no-restore \'--args".
                               ' kallisto_count_folder="'.$kallisto_out_folder.'"'.
-                              ' gene2transcript_file="'.$gene2transcript.'"'.
+                              ' tx2gene_file="'.$gene2transcript.'"'.
                               ' gene2biotype_file="'.$gene2biotype.'"'.
                               ' gene_count_file="'.$count_info_file.'"'.
                               ' library_id="'.$library_id.'"\' '.

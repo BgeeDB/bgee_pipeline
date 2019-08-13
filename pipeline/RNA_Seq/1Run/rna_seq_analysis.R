@@ -11,6 +11,7 @@
 
 ## Session info
 print(sessionInfo())
+library(tximport)
 
 ## reading in arguments provided in command line
 cmd_args = commandArgs(TRUE);
@@ -22,7 +23,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed in command line
-command_arg <- c("kallisto_count_folder", "gene2transcript_file", "gene2biotype_file", "library_id")
+command_arg <- c("kallisto_count_folder", "tx2gene_file", "gene2biotype_file", "library_id")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -30,8 +31,8 @@ for( c_arg in command_arg ){
 }
 
 ## reading kallisto's output. If file not exists, script stops
-kallisto_count_file <- paste0(kallisto_count_folder, "/abundance.tsv")
-if( file.exists(kallisto_count_file) ){
+kallisto_count_tsv_file <- paste0(kallisto_count_folder, "/abundance.tsv")
+if( !file.exists(kallisto_count_file) ){
 	kallisto_count <- read.table(kallisto_count_file, h=T, sep="\t")
 } else {
   stop( paste("Kallisto results file not found [", kallisto_count_file, "]\n"))
@@ -43,24 +44,33 @@ if ( sum(is.na(kallisto_count$tpm)) == length(kallisto_count$tpm)){
   warning( paste("Kallisto results include >20% NAs, please check for a problem [", kallisto_count_file, "]\n"))
 }
 
-## reading gene to transcript file. If file not exists, script stops
-if( file.exists(gene2transcript_file) ){
-	gene2transcript <- read.table(gene2transcript_file, h=F, sep="\t")
-  names(gene2transcript) <- c("gene_id", "transcript_id")
-} else {
-  stop( paste("Gene to transcript file not found [", gene2transcript_file, "]\n"))
+## If transcript to gene file does not exists, script stops
+if( !file.exists(tx2gene_file) ){
+  stop( paste("transcript to gene file not found [", tx2gene_file, "]\n"))
 }
 
 ## reading gene biotype file. If file not exists, script stops
 if( file.exists(gene2biotype_file) ){
 	gene2biotype <- read.table(gene2biotype_file, h=F, sep="\t")
-  names(gene2biotype) <- c("gene_id", "biotype")
+  names(gene2biotype) <- c("gene_id", "biotype", "type")
   gene2biotype <- gene2biotype[order(gene2biotype$gene_id), ] ## order by gene Id
 } else {
   stop( paste("Gene biotype file not found [", gene2biotype_file, "]\n"))
 }
 
 ###############################################################################
+
+tximportObject <- tximport(kallisto_count_tsv_file, type = "kallisto", tx2gene = tx2gene, 
+                txOut = FALSE, ignoreTxVersion = ignoreTxVersion)
+tx_df <- as.data.frame(tximportObject)
+tx_df$id <- rownames(tx_df)
+tx_df$countsFromAbundance <- NULL
+abundance <- merge(tx_df, gene2biotype, by = "id", all = FALSE)
+
+
+
+###############################################################################
+
 ## Add gene ids to the kallisto output. Effectively, this removes all intergenic regions
 genic_count <- merge(kallisto_count, gene2transcript, by.x=1, by.y=2)[, c(1,6,2,3,4,5)]
 names(genic_count)[2] <- "gene_id"
