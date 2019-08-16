@@ -239,6 +239,20 @@ sum_by_species: check_pipeline $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED
 	@$(VIT_R_CMD) R CMD BATCH --vanilla --slave '--args rna_seq_sample_info="$(RNASEQ_SAMPINFO_FILEPATH)" rna_seq_sample_excluded="$(RNASEQ_SAMPEXCLUDED_FILEPATH)" kallisto_count_folder="$(RNASEQ_VITALIT_ALL_RES)" sum_by_species_folder="$(RNASEQ_VITALIT_SUM_RES)"' $(RNASEQ_VITALIT_SCRIPTS)$(RNASEQPATH)1Run/rna_seq_sum_by_species.R $(RNASEQ_VITALIT_SUM_RES)rna_seq_sum_by_species.Rout
 	@echo -e "You HAVE TO create/update MANUALLY a file [$(RNASEQ_VITALIT_GAUSSIAN_CHOICE)] with selected gaussians for coding and intergenic regions!\n"
 	@touch $@
+
+## variables used only to generate intergenic sequences.
+## should potentialy be moved at the top of the file or in the Makefile.common file
+TRANSCRIPTOME_COMPRESSION_EXT	:= .xz
+SUM_ABUNDANCE_FILE_PATH			:= $(RNASEQ_VITALIT_SUM_RES)sum_abundance_gene_level+fpkm+intergenic+classification_SPECIES_ID.tsv
+## Generate 2 intergenic fasta files for each species. One for reference intergenic sequences and one for other reference intergenic sequences
+## 
+generate_intergenic_sequences: sum_by_species
+	@perl create_intergenic_fasta.pl -bgee=$(BGEECMD) -ens_release=$(ENSRELEASE) -transcriptomes_folder=$(RNASEQ_VITALIT_GTF) -transcriptome_compression_ext=$(TRANSCRIPTOME_FILE_EXT) -sum_abundance_file_path=$(SUM_ABUNDANCE_FILE_PATH) -gaussian_file_path=$(RNASEQ_VITALIT_GAUSSIAN_CHOICE) -ref_intergenic_dir=$(VITALIT_REF_INTERGENIC_FOLDER) -other_intergenic_dir=$(VITALIT_OTHER_INTERGENIC_FOLDER) >> $@.tmp 2> $@.warn
+	@perl create_intergenic_fasta.pl -bgee=$(BGEECMD) -ens_release=$(ENSMETAZOARELEASE) -transcriptomes_folder=$(RNASEQ_VITALIT_GTF) -transcriptome_compression_ext=$(TRANSCRIPTOME_FILE_EXT) -sum_abundance_file_path=$(SUM_ABUNDANCE_FILE_PATH) -gaussian_file_path=$(RNASEQ_VITALIT_GAUSSIAN_CHOICE) -ref_intergenic_dir=$(VITALIT_REF_INTERGENIC_FOLDER) -other_intergenic_dir=$(VITALIT_OTHER_INTERGENIC_FOLDER) >> $@.tmp 2> $@.warn
+
+	# compress intergenic fasta files
+	@find $(VITALIT_REF_INTERGENIC_FOLDER) -type f -name '*_intergenic.fa' -exec gzip --verbose --best {} \; >> $@.tmp 2> $@.warn
+	@find $(VITALIT_OTHER_INTERGENIC_FOLDER) -type f -name '*_intergenic.fa' -exec gzip --verbose --best {} \; >> $@.tmp 2> $@.warn
 	
 
 ################################ GENERATE PRESENT/ABSENT CALLS ################################
