@@ -78,7 +78,7 @@ while (<$ANNOTATION>){
             QC:
             for my $fastq ( glob("$FASTQ_PATH/$library_id/*.gz") ){
                 my ($run_id) = $fastq =~ /([^\/]+)\.fastq\.gz/;
-                #FIXME Move to FastP (much faster) and precompute min/max/mean/median/mod of read lengths
+                #FIXME Move to FastP (much faster) and precompute min/max/mean/median of read lengths
                 system("fastqc -o $FASTQ_PATH/$library_id/FASTQC $fastq > $FASTQ_PATH/$library_id/FASTQC/$run_id.fastqc.log 2>&1")==0
                     or do { warn "\tfastqc failed for [$FASTQ_PATH/$library_id/FASTQC/$run_id]\n"; next QC };
             }
