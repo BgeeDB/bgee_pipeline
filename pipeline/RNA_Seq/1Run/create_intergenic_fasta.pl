@@ -21,29 +21,29 @@ use Data::Dumper;
 ## Basically, this script will :
 ##	1. Uncompress transcriptome files (keep compressed files)
 ##  2. Use gaussian choice and sum by species files to distinguish reference and other intergenic regions
-##	3. create intergenic fasta files
-##	4. remove uncompressed transcriptome fasta files
+##	3. create tsv files with coordinates of intergenic regions
+##	4. create intergenic fasta files
+##	5. remove uncompressed transcriptome fasta files
 
 
 ## Define arguments & their default value
-my ($bgee_connector, $ens_release, $transcriptomes_folder, $transcriptome_suffix, $transcriptome_compression_ext, $ref_intergenic_dir) = ('', '', '', '', '');
+my ($bgee_connector, $ens_release, $transcriptomes_folder, $transcriptome_compression_ext, $sum_abundance_file_path, $gaussian_file_path, $ref_intergenic_dir, $other_intergenic_dir) = ('', '', '', '', '', '', '', '', '');
 my %opts = ('bgee=s'       						=> \$bgee_connector,     # Bgee connector string
 			'ens_release=s'      				=> \$ens_release,
             'transcriptomes_folder=s'  			=> \$transcriptomes_folder, 
             'transcriptome_compression_ext=s'	=> \$transcriptome_compression_ext, 
-            'sum_abundance_file_path=s'			=> \$sum_abundance_file_path
-			'gaussian_file_path=s'				=> \$gaussian_file_path
-			'ref_intergenic_dir=s'				=> \$ref_intergenic_dir
+            'sum_abundance_file_path=s'			=> \$sum_abundance_file_path,
+			'gaussian_file_path=s'				=> \$gaussian_file_path,
+			'ref_intergenic_dir=s'				=> \$ref_intergenic_dir,
 			'other_intergenic_dir=s'			=> \$other_intergenic_dir
            );
 
 
 ######################## Check arguments ########################
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $bgee_connector eq '' || $ens_release eq '' || $transcriptomes_folder eq '' || $transcriptome_compression_ext eq '' || $sum_abundance_file_path eq '' ||
-	$gaussian_file_path eq '' || $ref_intergenic_dir eq '' || $other_intergenic_dir eq '') {
+if ( !$test_options || $bgee_connector eq '' || $ens_release eq '' || $transcriptomes_folder eq '' || $transcriptome_compression_ext eq '' || $sum_abundance_file_path eq '' || $gaussian_file_path eq '' || $ref_intergenic_dir eq '' || $other_intergenic_dir eq '') {
     print "\n\tInvalid or missing argument:
-\te.g. $0 -ens_release=... -transcriptomes_folder=\$(OUTPUT_DIR) -transcriptome_suffix=\$(TRANSCRIPTOME_FILE_SUFFIX)  -transcriptome_compression_ext=\$(TRANSCRIPTOME_FILE_EXT) -intergenic_pattern=\$(INTERGENIC_PATTERN)
+\te.g. $0 -ens_release=... -transcriptomes_folder=RNASEQ_VITALIT_GTF -transcriptome_compression_ext=TRANSCRIPTOME_FILE_EXT -sum_abundance_file_path=SUM_ABUNDANCE_FILE_PATH -gaussian_file_path=RNASEQ_VITALIT_GAUSSIAN_CHOICE -ref_intergenic_dir=VITALIT_REF_INTERGENIC_FOLDER -other_intergenic_dir=VITALIT_OTHER_INTERGENIC_FOLDER >> $@.tmp 2> $@.warn
 \t-bgee      						Bgee connector string
 \t-ens_release=s          			Release version of ensembl (e.g 84).
 \t-transcriptomes_folder=s     		Folder where transcriptome fasta files are stored.
@@ -77,11 +77,11 @@ while(my @row = $bgeeSpecies->fetchrow_array()){
 }
 
 ## Retrieve gaussian choice information
-my %gaussiansInfo;
+my %rnaSeqLibrary;
 my $header = 0;
 for my $line ( read_file($gaussian_file_path, chomp => 1) ){
 	# do not parse the header
-	next  if ( ($line =~ m/^speciesId/);
+	next  if ( $line =~ m/^speciesId/);
 	my @fields = split("\t", $line);
 	# if not all fields are present in the gaussian choice file
 	if(scalar @fields != 10) {
@@ -97,6 +97,28 @@ for my $line ( read_file($gaussian_file_path, chomp => 1) ){
 ## open directory containing all compressed transcriptome fasta files
 die "Invalid or missing [$transcriptomes_folder]: $?\n"  if ( !-e $transcriptomes_folder || !-d $transcriptomes_folder );
 opendir (DIR, $transcriptomes_folder) or die $!;
+
+
+########################          Functions            ########################
+
+## function that create coordinate tsv file of intergenic regions
+## This file will contain 3 columns : chr, start, end
+sub create_coordinate_file {
+	my ($coordinate_file, @intergenic_ids)= @_;
+	print "Start creation of : $coordinate_file\n";
+	open(my $df, '>', $coordinate_file);
+	print $df "chr\tstart\tend";
+	for my $intergenic_id (0 .. $#intergenic_ids) {
+    	my @splitted = split("_", $intergenic_id);
+    	my $end = $splitted[$#splitted];
+    	my $start = $splitted[$#splitted - 1];
+    	#remove 2 last elements of the array
+    	splice @splitted, $#splitted, ($#splitted - 1);
+    	my $chr_name = join('_', @splitted);
+    	print $df "$chr_name\t$start\t$end";
+	}
+	close $df;
+}
 
 ######################## Generate intergenic sequences ########################
 
@@ -134,8 +156,8 @@ while (my $file = readdir(DIR)) {
 		$sum_abundance_file_path =~ s/SPECIES_ID/$speciesId/g;
 		my @ref_intergenic_ids;
 		my @other_intergenic_ids;
-		my $selectedRefIntergenic = $rnaSeqLibrary{$speciesId}{'selectedGaussiansIntergenic'}
-		my $selectionSideIntergenic = $rnaSeqLibrary{$speciesId}{'selectionSideIntergenic'}
+		my $selectedRefIntergenic = $rnaSeqLibrary{$speciesId}{'selectedGaussiansIntergenic'};
+		my $selectionSideIntergenic = $rnaSeqLibrary{$speciesId}{'selectionSideIntergenic'};
 		## init with value allowing to detect tpmThreshold
 		my $tpmCutoff = 9**9**9;
 		if ($selectionSideIntergenic eq "Left") {
@@ -152,7 +174,7 @@ while (my $file = readdir(DIR)) {
 			if ($fields[6] eq "intergenic_$selectedRefIntergenic") {
 				if ($selectionSideIntergenic eq "Left" && $tpmCutoff < $fields[2]) {
 					$tpmCutoff = $fields[2];
-				} else if ($selectionSideIntergenic eq "Right" && $tpmCutoff > $fields[2]) {
+				} elsif ($selectionSideIntergenic eq "Right" && $tpmCutoff > $fields[2]) {
 					$tpmCutoff = $fields[2];
 				}
 			}
@@ -164,27 +186,35 @@ while (my $file = readdir(DIR)) {
 			if ($fields[5] eq "intergenic") {
 				if ($selectionSideIntergenic eq "Right") {
 					if ($fields[2] < $tpmCutoff) {
-						push @ref_intergenic_ids, fields[0];
+						push @ref_intergenic_ids, $fields[0];
 					} else {
-						push @other_intergenic_ids, fields[0];
+						push @other_intergenic_ids, $fields[0];
 					}
-				} else if ($selectionSideIntergenic eq "Left") {
+				} elsif ($selectionSideIntergenic eq "Left") {
 					if ($fields[2] <= $tpmCutoff) {
-						push @ref_intergenic_ids, fields[0];
+						push @ref_intergenic_ids, $fields[0];
 					} else {
-						push @other_intergenic_ids, fields[0];
+						push @other_intergenic_ids, $fields[0];
 					}
 				}
 			}
 		}
 		
-		## Create intergenic fasta files
+		## Create output directories
 		if(!-e $ref_intergenic_dir) {mkdir $ref_intergenic_dir;}
 		if(!-e $other_intergenic_dir) {mkdir $other_intergenic_dir;}
+		
+		## Create coordinate tsv file for ref. intergenic and other intergenic sequences.
+		my $ref_intergenic_coordinate_file = $ref_intergenic_dir.$speciesId."_coordinates.tsv";
+		my $other_intergenic_coordinate_file = $other_intergenic_dir.$speciesId."_coordinates.tsv";
+		create_coordinate_file($ref_intergenic_coordinate_file, $speciesId, @ref_intergenic_ids);
+		create_coordinate_file($other_intergenic_coordinate_file, @other_intergenic_ids);
+		
+		## Create intergenic fasta files
 		my $ref_intergenic_file = $ref_intergenic_dir.$speciesId."_intergenic.fa";
 		my $other_intergenic_file = $other_intergenic_dir.$speciesId."_other_intergenic.fa";
 
-		print "Start creation of : $intergenic_file\n";
+		print "Start creation of intergenic sequence files for species $speciesId\n";
 		my $seq_in  = Bio::SeqIO->new(-file => "$uncompressed_file", -format => "fasta");
 		my $ref_intergenic_out = Bio::SeqIO->new(-file => ">$ref_intergenic_file", -format => "fasta");
 		my $other_intergenic_out = Bio::SeqIO->new(-file => ">$other_intergenic_file", -format => "fasta");
@@ -193,11 +223,11 @@ while (my $file = readdir(DIR)) {
 			# keep only intergenic regions
 			if ( grep {$_ eq $transcript_id} @ref_intergenic_ids) {
 				$ref_intergenic_out->write_seq($seq);
-  			} else if ( grep {$_ eq $transcript_id} @other_intergenic_ids) {
+  			} elsif ( grep {$_ eq $transcript_id} @other_intergenic_ids) {
 				$other_intergenic_out->write_seq($seq);
   			}   			
  		}
-  		print "$intergenic files have been created successfully for species $speciesId\n";
+  		print "intergenic files have been created successfully for species $speciesId\n";
   		# remove uncompressed transcriptomic file
   		unlink $uncompressed_file;
   		
