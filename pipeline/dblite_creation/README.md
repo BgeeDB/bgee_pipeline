@@ -37,7 +37,7 @@ The aims of the Bgee lite database are :
 ## Description
 
 This step will create a lite version of Bgee following the database schema defined in the file bgeeLiteSchema.sql
-The new database is named `bgeelite_vRELEASE` (e.g., `bgeelite_v14`).
+The new database is named `bgeelite_vRELEASE` (e.g., `bgeelite_v15`).
 
 ## Data generation
 

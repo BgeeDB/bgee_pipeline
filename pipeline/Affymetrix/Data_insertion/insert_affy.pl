@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 # Julien Roux, created 24/07/09
-# modified 15/08/16, JR: revamped whole script for bgee v14 with condition Ids
+# modified 15/08/16, JR: revamped whole script for bgee v15 with condition Ids
 # last modified Dec 2016, Frederic Bastian: split script between insert_affy.pl and insert_affy_expression.pl.
 # and adapt to new global vars in Utils.pm
 

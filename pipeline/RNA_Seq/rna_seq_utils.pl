@@ -449,7 +449,7 @@ sub getAllRnaSeqAnnotations {
 
 # Retrieve information on libraries
 sub getAllRnaSeqLibrariesInfo {
-    # Updated to be compatible with new Bgee v14 RNA-seq pipeline. This is reading rna_seq_sample_info.txt file
+    # Updated to be compatible with new Bgee v15 RNA-seq pipeline. This is reading rna_seq_sample_info.txt file
     my ($rnaSeqLibraryFile) = @_;
     # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'speciesId'} = ...
     # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'organism'} = ...
@@ -575,7 +575,7 @@ sub getExcludedLibraries {
 
 ## function to read cutoff and percent present infos
 sub getAllRnaSeqLibrariesStats {
-    # Updated to be compatible with new Bgee v14 RNA-seq pipeline. This is reading presence_absence_all_samples.txt file
+    # Updated to be compatible with new Bgee v15 RNA-seq pipeline. This is reading presence_absence_all_samples.txt file
     my ($rnaSeqLibraryFile) = @_;
     my %rnaSeqLibraries;
 

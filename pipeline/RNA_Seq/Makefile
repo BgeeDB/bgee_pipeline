@@ -224,7 +224,7 @@ presence_absence: sum_by_species $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUD
 	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args rna_seq_sample_info="$(RNASEQ_SAMPINFO_FILEPATH)" rna_seq_sample_excluded="$(RNASEQ_SAMPEXCLUDED_FILEPATH)" kallisto_count_folder="$(RNASEQ_CLUSTER_ALL_RES)" sum_by_species_folder="$(RNASEQ_CLUSTER_SUM_RES)" gaussian_choice="$(RNASEQ_CLUSTER_GAUSSIAN_CHOICE)" out_folder="$(RNASEQ_CLUSTER_PRESENCE_RES)" plot_only=FALSE desired_r_cutoff="0.05"' $(RNASEQ_CLUSTER_SCRIPTS)$(RNASEQPATH)1Run/rna_seq_presence_absence.R $(RNASEQ_CLUSTER_PRESENCE_RES)rna_seq_presence_absence.Rout
 	@touch $@
 #NOTE if output directory is not $(RNASEQ_CLUSTER_ALL_RES): copy all files with calls to this directory, as well as summary stats and plot files
-#for folder in *; do echo $folder; /bin/cp $folder/* ../all_results_bgee_v14/$folder/; done
+#for folder in *; do echo $folder; /bin/cp $folder/* ../all_results_bgee_v15/$folder/; done
 # /bin/cp used because cp is an alias to cp -i
 # Also copy presence_absence_all_samples.txt, presence_absence_all_samples.RDa and presence_absence_boxplots.pdf
 

@@ -36,7 +36,7 @@ print "Done\n";
 
 print "Retrieving data from Bgee database...\n";
 # Get the chips that passed our QC procedures
-my $bgee_connector = 'user=root__pass=XXX__host=127.0.0.1__port=3306__name=bgee_v14';
+my $bgee_connector = 'user=root__pass=XXX__host=127.0.0.1__port=3306__name=bgee_v15';
 my $bgee  = Utils::connect_bgee_db($bgee_connector);
 my @chips = ();
 

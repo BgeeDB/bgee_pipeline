@@ -26,7 +26,7 @@ $| = 1; # no buffering of output
 
 # Define arguments & their default value
 my ($all_results, $library_info, $excluded_libraries, $report_info) = ('', '', '', '');
-my %opts = ('all_results=s'         => \$all_results,        # /var/bgee/extra/pipeline/rna_seq/all_results_bgee_v14/
+my %opts = ('all_results=s'         => \$all_results,        # /var/bgee/extra/pipeline/rna_seq/all_results_bgee_v15/
             'library_info=s'        => \$library_info,       # rna_seq_sample_info.txt file
             'excluded_libraries=s'  => \$excluded_libraries, # rna_seq_sample_excluded.txt file
             'report_info=s'         => \$report_info,        # reports_info_all_samples.txt

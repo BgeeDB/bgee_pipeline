@@ -3,7 +3,7 @@
 ## Details
 
 This step will call in order the following files, after creating a new database:
-[bgeeSchema.sql](bgeeSchema.sql), [insert_data_sources.sql](insert_data_sources.sql), [bgeeConstraint.sql](bgeeConstraint.sql), [bgeeIndex.sql](bgeeIndex.sql), [bgeeForeignKey.sql](bgeeForeignKey.sql). The new database is named `bgee_vRELEASE` (e.g., `bgee_v14`).
+[bgeeSchema.sql](bgeeSchema.sql), [insert_data_sources.sql](insert_data_sources.sql), [bgeeConstraint.sql](bgeeConstraint.sql), [bgeeIndex.sql](bgeeIndex.sql), [bgeeForeignKey.sql](bgeeForeignKey.sql). The new database is named `bgee_vRELEASE` (e.g., `bgee_v15`).
 
 ## Data generation
 

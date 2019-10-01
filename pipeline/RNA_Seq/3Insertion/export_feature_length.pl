@@ -21,7 +21,7 @@ $| = 1; # no buffering of output
 my ($all_results, $library_info, $excluded_libraries, $length_info) = ('', '', '', '');
 my %opts = ('library_info=s'        => \$library_info,       # rna_seq_sample_info.txt file
             'excluded_libraries=s'  => \$excluded_libraries, # rna_seq_sample_excluded.txt file
-            'all_results=s'         => \$all_results,        # /var/bgee/extra/pipeline/rna_seq/all_results_bgee_v14/
+            'all_results=s'         => \$all_results,        # /var/bgee/extra/pipeline/rna_seq/all_results_bgee_v15/
             'length_info=s'         => \$length_info,        # rna_seq_length_info.txt file
            );
 

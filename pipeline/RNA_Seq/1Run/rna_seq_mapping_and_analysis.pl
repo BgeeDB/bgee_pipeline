@@ -350,7 +350,7 @@ close $REPORT2;
 # - for single-end libraries we should provide fragment length, but it is not possible to estimate since we do not have BioAnalyzer results. So we give 180 bp by default, which should be close to real value, see https://groups.google.com/forum/#!topic/kallisto-sleuth-users/h5LeAlWS33w
 # - We also need to provide sd for fragment size, but I have found very little info on this. Based on this post (https://groups.google.com/forum/#!topic/rsem-users/S31Rx01Xd18) I plugged sd=30. This can be changed later
 # - For Kallisto's ssh streaming input, I asked on their Google group: https://groups.google.com/forum/#!msg/kallisto-sleuth-users/L83OxRCwuMM/iZFFahVsCgAJ. Both options I was suggesting could work. We'll use the second one which is more explicit
-# - output folder looks something like: all_results_bgee_v14/
+# - output folder looks something like: all_results_bgee_v15/
 # - for next Bgee releases, if for a species the genome version and annotation did not change, it is possible to copy paste the results for the the concerned libraries, so that these are not rerun. But be careful with this! In most cases folders of it is probably faster to rerun everything.
 
 #my $local_not_remote_path = '...';
@@ -451,7 +451,7 @@ if ( ( -s $kallisto_out_folder.'/abundance.tsv' ) && ( -s $kallisto_out_folder.'
     # Note: this arbitrary threshold of 1,000,000 reads can be changed
 
     # TODO? Also export other info, such as fragment length distribution:
-    # h5dump -d /aux/fld all_results_bgee_v14/SRX567038/abundance.h5 | less
+    # h5dump -d /aux/fld all_results_bgee_v15/SRX567038/abundance.h5 | less
 }
 else {
     die "\tProblem: No abundance.tsv or run_info.json file found for this library. Kallisto run was probably not successful [$library_id]\n";

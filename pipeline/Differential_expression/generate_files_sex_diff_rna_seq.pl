@@ -38,9 +38,9 @@ if ( !$test_options || $bgee_connector eq '' || ($#ARGV ne -1 && $#ARGV ne 1) ||
     print "\n\tInvalid or missing argument:
 \te.g. $0 -bgee=\$(BGEECMD) -path_target=\$(RNASEQBIOCONDUCTORTARG_DEVANDANAT) -path_processed=\$(RNASEQDIFFEXPRPATH_DEVANDANAT) -path_download_file=\$(RNASEQDIFFEXPRPATH_DEVANDANAT)  <speciesId>
 \t-bgee             	Bgee connector string
-\t-path_target      	rna_seq/bioconductor_bgee_v14/targets/sex				directory path
-\t-path_processed   	rna_seq/processed_differential_bgee_v14/sex  			directory path
-\t-path_download_file	rna_seq/processed_differential_bgee_v14/sex			 	directory path
+\t-path_target      	rna_seq/bioconductor_bgee_v15/targets/sex				directory path
+\t-path_processed   	rna_seq/processed_differential_bgee_v15/sex  			directory path
+\t-path_download_file	rna_seq/processed_differential_bgee_v15/sex			 	directory path
 \t-debug            	More verbose
 \n";
     exit 1;
