@@ -12,7 +12,7 @@ my $ASPERA_CONNECT_DIR = $ENV{'ASPERA_CONNECT_DIR'};
 
 my $BASE               = '/opt/gtexfile'; # == project's workspace directory
 my $SRA_PATH           = $BASE.'/sra';
-my $FASTQ_PATH         = $BASE.'/FASTQ';
+my $FASTQ_PATH         = $BASE.'/FASTQ/RNAseq';
 
 
 # Private experimentId to store encrypted

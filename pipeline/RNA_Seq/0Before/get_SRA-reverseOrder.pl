@@ -14,7 +14,7 @@ my $ASPERA_CONNECT_DIR = '/software/Utility/aspera_connect/3.6.1.110647';
 my $BASE               = '/scratch/temporary/bbgee'; # == project's workspace directory
 my $SRA_PATH           = $BASE.'/sra';
 my $FASTQ_PATH         = $BASE.'/FASTQ';
-my $REMOTE_BASE        = '/opt/gtexfile/FASTQ';
+my $REMOTE_BASE        = '/opt/gtexfile/FASTQ/RNAseq';
 my $REMOTE_CONNECT     = 'adminbgee@bigbgee.unil.ch';
 
 
