@@ -21,7 +21,7 @@ my $GTEX_exp_id = 'SRP012682';
 ## All output files are written in the results folder, as well as log files (e.g. SRX081872.out, SRX081872.err, and SRX081872.Rout)
 
 # Define arguments & their default value
-my ($library_id, $sample_info_file, $exclude_sample_file, $index_folder, $fastq_folder, $kallisto_out_folder, $output_log_folder, $ens_release, $ens_metazoa_release, $data_host, $data_login, $enc_passwd_file, $vit_kallisto_cmd, $vit_R_cmd) = ('', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
+my ($library_id, $sample_info_file, $exclude_sample_file, $index_folder, $fastq_folder, $kallisto_out_folder, $output_log_folder, $ens_release, $ens_metazoa_release, $data_host, $data_login, $enc_passwd_file, $cluster_kallisto_cmd, $cluster_R_cmd) = ('', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
 my %opts = ('library_id=s'           => \$library_id,
             'sample_info_file=s'     => \$sample_info_file,
             'exclude_sample_file=s'  => \$exclude_sample_file,
@@ -34,14 +34,14 @@ my %opts = ('library_id=s'           => \$library_id,
             'data_host=s'            => \$data_host,
             'data_login=s'           => \$data_login,
             'enc_passwd_file=s'      => \$enc_passwd_file,
-            'vit_kallisto_cmd=s'     => \$vit_kallisto_cmd,
-            'vit_R_cmd=s'            => \$vit_R_cmd,
+            'cluster_kallisto_cmd=s' => \$cluster_kallisto_cmd,
+            'cluster_R_cmd=s'        => \$cluster_R_cmd,
            );
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $library_id eq '' || $sample_info_file eq '' || $index_folder eq '' || $fastq_folder eq '' || $kallisto_out_folder eq '' || $output_log_folder eq '' || $ens_release eq '' || $ens_metazoa_release eq '' || $data_host eq '' || $data_login eq '' || $enc_passwd_file eq '' || $vit_kallisto_cmd eq '' || $vit_R_cmd eq '' ){
+if ( !$test_options || $library_id eq '' || $sample_info_file eq '' || $index_folder eq '' || $fastq_folder eq '' || $kallisto_out_folder eq '' || $output_log_folder eq '' || $ens_release eq '' || $ens_metazoa_release eq '' || $data_host eq '' || $data_login eq '' || $enc_passwd_file eq '' || $cluster_kallisto_cmd eq '' || $cluster_R_cmd eq '' ){
     print "\n\tInvalid or missing argument:
-\te.g. $0 -library_id=... -sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -index_folder=\$(RNASEQ_VITALIT_GTF)  -fastq_folder=\$(RNASEQ_BIGBGEE_FASTQ) -kallisto_out_folder=\$(RNASEQ_VITALIT_ALL_RES) -ens_release=\$(ENSRELEASE) -ens_metazoa_release=\$(ENSMETAZOARELEASE) -data_host=\$(DATAHOST) -data_login=\$(DATA_LOGIN) -enc_passwd_file=\$(ENCRYPT_PASSWD_FILE) -vit_kallisto_cmd=\$(VIT_KALLISTO_CMD) $vit_R_cmd=\$(VIT_R_CMD)
+\te.g. $0 -library_id=... -sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -index_folder=\$(RNASEQ_CLUSTER_GTF)  -fastq_folder=\$(RNASEQ_BIGBGEE_FASTQ) -kallisto_out_folder=\$(RNASEQ_CLUSTER_ALL_RES) -ens_release=\$(ENSRELEASE) -ens_metazoa_release=\$(ENSMETAZOARELEASE) -data_host=\$(DATAHOST) -data_login=\$(DATA_LOGIN) -enc_passwd_file=\$(ENCRYPT_PASSWD_FILE) -cluster_kallisto_cmd=\$(CLUSTER_KALLISTO_CMD) $cluster_R_cmd=\$(CLUSTER_R_CMD)
 \t-library_id=s           Library to process
 \t-sample_info_file=s     TSV with information on species and runs for each library
 \t-exclude_sample_file=s  rna_seq_sample_excluded.txt
@@ -54,8 +54,8 @@ if ( !$test_options || $library_id eq '' || $sample_info_file eq '' || $index_fo
 \t-data_host=s            Bigbgee machine with RNA-seq fastq files
 \t-data_login=s           Login for bigbgee
 \t-enc_passwd_file=s      File with password necessary to decrypt the GTEx data
-\t-vit_kallisto_cmd=s     Command to load kallisto module on vital-it
-\t-vit_R_cmd=s            Command to load R module on vital-it
+\t-cluster_kallisto_cmd=s Command to load kallisto module on cluster
+\t-cluster_R_cmd=s        Command to load R module on cluster
 \n";
     exit 1;
 }
@@ -361,7 +361,7 @@ if ( ( -s $kallisto_out_folder.'/abundance.tsv' ) && ( -s $kallisto_out_folder.'
 # if Kallisto needs to be launched
 else {
     # creating and invoking the full kallisto command
-    my $kallisto_command = $vit_kallisto_cmd.'; '; # command to load module. ; added at the end because was removed in bsub_scheduler.pl (hard to pass without messing with command line)
+    my $kallisto_command = $cluster_kallisto_cmd.'; '; # command to load module. ; added at the end because was removed in bsub_scheduler.pl (hard to pass without messing with command line)
     if ( $libraryType eq 'SINGLE' ){
         $kallisto_command .= "kallisto quant -i $index -o $kallisto_out_folder -t 1 --single -l 180 -s 30 --bias ";
         for my $run ( @run_ids ){
@@ -482,7 +482,7 @@ if ( -s $count_info_file && -s $R_log_file ){
 }
 else {
     #creating and invoking command that launches rna_seq_analysis.R script
-    my $analyze_count_command = $vit_R_cmd.'; ';
+    my $analyze_count_command = $cluster_R_cmd.'; ';
     $analyze_count_command .= "R CMD BATCH --no-save --no-restore \'--args".
                               ' kallisto_count_folder="'.$kallisto_out_folder.'"'.
                               ' gene2transcript_file="'.$gene2transcript.'"'.

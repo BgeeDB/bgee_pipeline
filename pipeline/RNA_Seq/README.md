@@ -116,14 +116,14 @@ Gene expression ranks allow to identify the most functionally-relevant condition
   * **TODO**: add here command to re-download 1 library only
 
 ## Mapping the libraries:
-  * On Vital-IT, got to `/data/ul/dee/bgee/GIT/pipeline/RNA_Seq/`. Scripts are in folder [1Run/](1Run)
+  * On cluster, got to `/data/ul/dee/bgee/GIT/pipeline/RNA_Seq/`. Scripts are in folder [1Run/](1Run)
   * `git pull`
   * `screen`
   * `make run_pipeline`
   * `Ctrl-a Ctrl-d` to exit the screen session, `screen -r` to come back
-  * Results are written in `$RNASEQ_VITALIT_ALL_RES`. Beware that one month is passing fast! Please add to your calendar to do a touch of all files in less than a month.
+  * Results are written in `$RNASEQ_CLUSTER_ALL_RES`. Beware that one month is passing fast! Please add to your calendar to do a touch of all files in less than a month.
   ```
-  find $RNASEQ_VITALIT_ALL_RES/ -exec touch {} \;
+  find $RNASEQ_CLUSTER_ALL_RES/ -exec touch {} \;
   ```
   * Checks during run:
   ```
@@ -132,11 +132,11 @@ Gene expression ranks allow to identify the most functionally-relevant condition
    # number of launched jobs
    grep -c 'is submitted to queue <bgee>' /data/ul/dee/bgee/GIT/pipeline/RNA_Seq/run_pipeline.tmp
    # result folder
-   ll $RNASEQ_VITALIT_ALL_RES
+   ll $RNASEQ_CLUSTER_ALL_RES
    # number of successful jobs
-   ll $RNASEQ_VITALIT_ALL_RES/*/DONE.txt | wc -l
+   ll $RNASEQ_CLUSTER_ALL_RES/*/DONE.txt | wc -l
    # list of unsuccessful jobs (have no DONE.txt and have a .out file)
-   find $RNASEQ_VITALIT_ALL_RES/ -maxdepth 1 -mindepth 1 -type d -exec sh -c 'if ! test -s {}/DONE.txt && test -s {}/*.out; then echo {}; fi' \; | sort
+   find $RNASEQ_CLUSTER_ALL_RES/ -maxdepth 1 -mindepth 1 -type d -exec sh -c 'if ! test -s {}/DONE.txt && test -s {}/*.out; then echo {}; fi' \; | sort
   ```
   * If run is interrupted, do not forget to backup the file run_pipeline.tmp, as well as .report, .err and .out files
   ```
@@ -150,31 +150,31 @@ Gene expression ranks allow to identify the most functionally-relevant condition
     * Kallisto bug... Streaming too slow, streaming interrupted, sometimes everything is just fine but Kallisto bugs after reporting output... Beware, these libraries can move to further steps and generate a `DONE.txt`. Very important to check if number of reads processed corresponds to number of reads in FASTQ files (see below).
     * How to track these bugs:
     ```
-    grep 'Broken pipe' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'Broken pipe' $RNASEQ_CLUSTER_ALL_RES/*/*.err
     # Usually some samples with streaming issues
-    grep 'gzip: stdin: unexpected end of file' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'gzip: stdin: unexpected end of file' $RNASEQ_CLUSTER_ALL_RES/*/*.err
     # Most of the time linked to streaming issues, but could also be to wrongly compressed FASTQ files.
     # Streaming issues come most of the time from long Kallisto computations and/or lots of runs which increase the probability of
     # network issues, log rotations, ... that could interrupt the streaming.
     # Run those libraries locally, not through streaming, if gzip issue is repeated itself.
-    grep 'packet_write_wait'                                              $RNASEQ_VITALIT_ALL_RES/*/*.err
-    grep 'ssh_exchange_identification: Connection closed by remote host'  $RNASEQ_VITALIT_ALL_RES/*/*.err
-    grep 'ssh_exchange_identification: read: Connection reset by peer'    $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'packet_write_wait'                                              $RNASEQ_CLUSTER_ALL_RES/*/*.err
+    grep 'ssh_exchange_identification: Connection closed by remote host'  $RNASEQ_CLUSTER_ALL_RES/*/*.err
+    grep 'ssh_exchange_identification: read: Connection reset by peer'    $RNASEQ_CLUSTER_ALL_RES/*/*.err
     # Most of the time linked to streaming issues. So check them if repeated
-    grep 'Uncaught exception from user code' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'Uncaught exception from user code' $RNASEQ_CLUSTER_ALL_RES/*/*.err
     # Exception from the code. Check the error message next to it carefully!
-    grep 'bad decrypt' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'bad decrypt' $RNASEQ_CLUSTER_ALL_RES/*/*.err
     #
-    grep 'Your file is probably truncated' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'Your file is probably truncated' $RNASEQ_CLUSTER_ALL_RES/*/*.err
     # FastQC error, seem joint with previous one
-    grep 'error writing output file' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'error writing output file' $RNASEQ_CLUSTER_ALL_RES/*/*.err
     # This one is present in many FastQC outputs, which doesn't seem to be really problematic...
-    grep 'Failed to process file stdin' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'Failed to process file stdin' $RNASEQ_CLUSTER_ALL_RES/*/*.err
     #
     ```
   * Potential types of errors:
   ```
-    grep 'Problem' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'Problem' $RNASEQ_CLUSTER_ALL_RES/*/*.err
     # too broad
     Problem: Read length in FASTQ file [85] is not consistent with SRA record [100]. Please check [SRR1051537]
     Problem: Length of left and right reads in FASTQ files [101+101=202] are not consistent with SRA record [210]. Please check run [SRR391652]
@@ -203,19 +203,19 @@ Gene expression ranks allow to identify the most functionally-relevant condition
 
   * Warnings:
   ```
-    grep 'Warning' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'Warning' $RNASEQ_CLUSTER_ALL_RES/*/*.err
     # too broad, most of warnings indicate mapping on 15nt index
-    grep 'Warning: Length of left and right reads are different' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'Warning: Length of left and right reads are different' $RNASEQ_CLUSTER_ALL_RES/*/*.err
     # Usually this is not a problem and SRA agrees
-    grep 'Warning: Length of left and/or right reads [75/1] too short for pseudo-mapping ...'  $RNASEQ_VITALIT_ALL_RES/*/*.err
-    grep 'Warning: Length of reads [25] too short for pseudo-mapping ...'                      $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'Warning: Length of left and/or right reads [75/1] too short for pseudo-mapping ...'  $RNASEQ_CLUSTER_ALL_RES/*/*.err
+    grep 'Warning: Length of reads [25] too short for pseudo-mapping ...'                      $RNASEQ_CLUSTER_ALL_RES/*/*.err
     # Mapping will switch to short index. What to do when length of reads lower than short index k-mer size? => check % mapping
     grep 'fastqc.html: No such file or directory'
     # The FastQC report file is missing. Run FastQC on those missed runs
   ```
   * **TODO** any other messages that could have been missed?
   * Management of bugged samples:
-    * It is good to keep a copy of the whole folder, for example: `mv $RNASEQ_VITALIT_ALL_RES/SRX.../ failed_results_bgee_v14/`
+    * It is good to keep a copy of the whole folder, for example: `mv $RNASEQ_CLUSTER_ALL_RES/SRX.../ failed_results_bgee_v15/`
    Samples can be relaunched by hand one by one: you can find the bsub command for each library in the '.report' file.
     * All samples to rerun can be relaunched by rerunning [bsub_scheduler.pl](1Run/bsub_scheduler.pl) in `make run_pipeline` step
 
@@ -229,17 +229,10 @@ Gene expression ranks allow to identify the most functionally-relevant condition
     * Run `make finalize_pipeline` to:
       * Backup the file `run_pipeline.tmp`, as well as '.report', '.err' and '.out' files
       * Touch all files so that they can stay in `/scratch/temporary` for one more month
-      * Tar and compress all data and copy them to `/data/` drive (for Bgee_v14 the whole $RNASEQ_VITALIT_ALL_RES has been backuped on nas.unil.ch!)
+      * Tar and compress all data and copy them to `/data/` drive (for Bgee_v15 the whole $RNASEQ_CLUSTER_ALL_RES has been backuped on nas.unil.ch!)
 
 ## Mapping the libraries: TODOs
-  * Should we increase the number of parallel jobs (10) to a higher number (20 for example)? Maybe need to change SSH configuration on `bigbgee` to open more than 10 SSH ports. Need also to consider simultaneous accesses to Kallisto index files... Check machine status during run:
-  ```
-    ssh bgee@bigbgee.unil.ch
-    # The 3 machines used on Vital-IT
-    ssh cpt172.prdclst.vital-it.ch
-    ssh cpt171.prdclst.vital-it.ch
-    ssh cpt133.prdclst.vital-it.ch
-  ```
+  * Should we increase the number of parallel jobs (10) to a higher number (20 for example)? Maybe need to change SSH configuration on `bigbgee` to open more than 10 SSH ports. Need also to consider simultaneous accesses to Kallisto index files... Check machine status during run.
   * Transfer FastQC reports to `bigbgee`. Add a checking step to [1Run/rna_seq_mapping_and_analysis.pl](1Run/rna_seq_mapping_and_analysis.pl) not to rerun it.
   * Create a file, with number of lines for each FASTQ file. Add a checking step to [1Run/rna_seq_mapping_and_analysis.pl](1Run/rna_seq_mapping_and_analysis.pl) to check if this is consistent with number of reads in FastQC reports and Kallisto input reads (# reads in fastq = 4 * #number of reads).
   * Modify the download scripts, to use ENA instead of SRA when possible: FASTQ files are available directly there, so this would save us a lot of time!
@@ -249,8 +242,8 @@ Gene expression ranks allow to identify the most functionally-relevant condition
 
 ## Presence/absence calls
   * Launch `make sum_by_species`. This steps launches the [1Run/rna_seq_sum_by_species.R](1Run/rna_seq_sum_by_species.R) script to sum TPMs from all samples of each species to deconvolute automatically the coding genes and intergenic regions distributions
-  * Results are written in the `$(RNASEQ_VITALIT_SUM_RES)` folder
-  * A file (`generated_files/RNA_Seq/gaussian_choice_by_species.txt`, see variable `$(RNASEQ_VITALIT_GAUSSIAN_CHOICE)`) has to be manually edited to indicate which of the intergenic regions gaussians are chosen. This file is located in the `$(GENERATED_FILES_DIR)` folder.
+  * Results are written in the `$(RNASEQ_CLUSTER_SUM_RES)` folder
+  * A file (`generated_files/RNA_Seq/gaussian_choice_by_species.txt`, see variable `$(RNASEQ_CLUSTER_GAUSSIAN_CHOICE)`) has to be manually edited to indicate which of the intergenic regions gaussians are chosen. This file is located in the `$(GENERATED_FILES_DIR)` folder.
   * **IMPORTANT TO READ: procedure to fill this file**
     * Remember that we do not choose the number of gaussians that is deconvoluted: we let `mclust` choose based on the BIC criterion.
 
@@ -265,7 +258,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
       * `comment`: please fill this to justify your choice of gaussians (see tips below, but also if someone else comes back and tries to understand your choices)
       * `annotatorId`: your initials
 
-    * To select the intergenic gaussians, it is necessary to have a look at the density plots generated! These are located in the output folder of the [1Run/rna_seq_sum_by_species.R](1Run/rna_seq_sum_by_species.R) script, for example `sum_by_species_bgee_v14`. In this folder, for each species, there is a PDF file named `distribution_TPM_genic_intergenic_sum_deconvolution_XXXXX.pdf`, where `XXXXX represents the speciesId. For example, here is the density plot automatically generated for mouse in Bgee v14:
+    * To select the intergenic gaussians, it is necessary to have a look at the density plots generated! These are located in the output folder of the [1Run/rna_seq_sum_by_species.R](1Run/rna_seq_sum_by_species.R) script, for example `sum_by_species_bgee_v15`. In this folder, for each species, there is a PDF file named `distribution_TPM_genic_intergenic_sum_deconvolution_XXXXX.pdf`, where `XXXXX represents the speciesId. For example, here is the density plot automatically generated for mouse in Bgee v15:
 
     ![Boxplot](img/distribution_TPM_genic_intergenic_sum_deconvolution_10090.png)
 
@@ -280,7 +273,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
 
   * The rationale to select intergenic gaussians is to keep "real" intergenic that are never seen highly expressed. These gaussians are the left-most on the density plots. We want to eliminate false intergenic regions, that are seen expressed in some samples (right-most gaussians).
 
-  * Example 1: mouse data in Bgee v14 (above plot)
+  * Example 1: mouse data in Bgee v15 (above plot)
     * In this example, we decide to remove the gaussian 3 (light gray) and the right part of the broad gaussian 1 (dark gray), because they overlap a lot with coding regions.
     * We set `numberGaussiansIntergenic` to 3: `mclust` deconvoluted 3 intergenic regions
     * We set `selectionSideIntergenic` to `Left` (default): the selected gaussian will delinate the maximum intergenic expression value (i.e., whole gaussian will be on the left of the maximum value)
@@ -289,14 +282,14 @@ Gene expression ranks allow to identify the most functionally-relevant condition
 
   ![Boxplot](img/distribution_TPM_genic_intergenic_sum_deconvolution_9823.png)
 
-  * Example 2: pig in Bgee v14
+  * Example 2: pig in Bgee v15
     * In this example, there are only 10 libraries summed, this is not a lot
     * We decide to remove right-most part of broad gaussian 2 because it overlaps a lot with coding regions
     * The exact row in the `generated_files/RNA_Seq/gaussian_choice_by_species.txt` file will be: `9823\tSus scrofa\t2\t2\tNA\tNA\t1\tLeft\t"Removed right-most intergenic gaussian (2)"\tJR`
 
   ![Boxplot](img/distribution_TPM_genic_intergenic_sum_deconvolution_9365.png)
 
-  * Example 3: hedgehog in Bgee v14
+  * Example 3: hedgehog in Bgee v15
     * Tricky example! Intergenic regions have almost the same distribution of signal as protein coding regions!
     * We only keep the left-part of the gaussian 1. To do this, we must set `selectionSideIntergenic` to `Right` and choose gaussian 2 in `selectedGaussianIntergenic`. The selected gaussian will be on the right of the maximum TPM intensity of selected intergenic regions.
     * The exact row in the `generated_files/RNA_Seq/gaussian_choice_by_species.txt` file will be: `9365\tErinaceus europaeus\t2\t2\tNA\tNA\t2\tRight\t"Intergenic regions are deconvoluted into 2 gaussians, but they overlap (1 is broader than 2). Intergenic overlaps a lot with coding too. Keeping gaussian 2 was removing some regions on the right of the distribution, but very few, which resulted in extremely low proportion of coding expressed. Now removing gaussian 2, i.e., set it to be on the right of the selected regions"\tJR`
@@ -305,7 +298,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
 
   * Tips:
     * If only 1 gaussian, take all the intergenic regions.
-    * Often the choice of gaussians is not obvious. For example, we could eliminate one or two gaussians on the right. In mouse example 1 above, we could have retained gaussian 3. In these cases, make a choice arbitrarily and document it in the `comment` field. Then run the script to call presence/absence ([1Run/rna_seq_presence_absence.R](1Run/rna_seq_presence_absence.R) see below). And check the `presence_absence_boxplots.pdf` plot. There is a boxplot showing the proportion of coding regions considered expressed in each species, looking like this (here, this is the final one for Bgee v14, so it looks quite good. The first round didn't look good for some species):
+    * Often the choice of gaussians is not obvious. For example, we could eliminate one or two gaussians on the right. In mouse example 1 above, we could have retained gaussian 3. In these cases, make a choice arbitrarily and document it in the `comment` field. Then run the script to call presence/absence ([1Run/rna_seq_presence_absence.R](1Run/rna_seq_presence_absence.R) see below). And check the `presence_absence_boxplots.pdf` plot. There is a boxplot showing the proportion of coding regions considered expressed in each species, looking like this (here, this is the final one for Bgee v15, so it looks quite good. The first round didn't look good for some species):
 
 ![Boxplot](img/presence_absence_boxplots.png)
 
@@ -317,26 +310,26 @@ Gene expression ranks allow to identify the most functionally-relevant condition
     * In some cases, it is possible that the density plot in PDF is not clear enough and lead to wrong choice of gaussians. After running the [1Run/rna_seq_presence_absence.R](1Run/rna_seq_presence_absence.R) script, you can check the TPM threshold used for each individual library, and the maximum summed TPM expression of the intergenic regions selected for a given species. This can help detect strange things happening.
 
   * After choosing all gaussians and when the `gaussian_choice_by_species.txt` file is ready, launch `make presence_absence` to run the [1Run/rna_seq_presence_absence.R](1Run/rna_seq_presence_absence.R) script to call presence/absence for each library and generate summary boxplots.
-    * Results are written in `$(RNASEQ_VITALIT_PRESENCE_RES)` folder, for example `presence_absence_bgee_v14`.
+    * Results are written in `$(RNASEQ_CLUSTER_PRESENCE_RES)` folder, for example `presence_absence_bgee_v15`.
     * This script takes ~1 day to complete
     * It creates one subfolder per sample, with 4 files: `abundance_gene_level+fpkm+intergenic+calls.tsv`, `cutoff_info_file.tsv`, `abundance_gene_level+new_tpm+new_fpkm+calls.tsv`, and `distribution_TPM_genic_intergenic+cutoff.pdf`
     * NOTE: the script can be run to produce the final boxplots only (the .RDa file needs to be present in the output folder already). Set `plot_only` option to TRUE.
     * Check success of script with the following commands. You should get the number of samples mapped, minus the number of samples excluded.
     ```
-    ll presence_absence_bgee_v14_v4/*/abundance_gene_level+fpkm+intergenic+calls.tsv | wc
-    ll presence_absence_bgee_v14_v4/*/abundance_gene_level+new_tpm+new_fpkm+calls.tsv | wc
-    ll presence_absence_bgee_v14_v4/*/cutoff_info_file.tsv | wc
-    ll presence_absence_bgee_v14_v4/*/distribution_TPM_genic_intergenic+cutoff.pdf | wc
+    ll presence_absence_bgee_v15/*/abundance_gene_level+fpkm+intergenic+calls.tsv | wc
+    ll presence_absence_bgee_v15/*/abundance_gene_level+new_tpm+new_fpkm+calls.tsv | wc
+    ll presence_absence_bgee_v15/*/cutoff_info_file.tsv | wc
+    ll presence_absence_bgee_v15/*/distribution_TPM_genic_intergenic+cutoff.pdf | wc
     ```
 
-  * Copy files of `$(RNASEQ_VITALIT_PRESENCE_RES)` subfolders (1 per sample) to subfolders of `$RNASEQ_VITALIT_ALL_RES`
+  * Copy files of `$(RNASEQ_CLUSTER_PRESENCE_RES)` subfolders (1 per sample) to subfolders of `$RNASEQ_CLUSTER_ALL_RES`
   ```
-  cd $(RNASEQ_VITALIT_PRESENCE_RES)
-  for folder in *; do echo $folder; /bin/cp $folder/* $(RNASEQ_VITALIT_ALL_RES)/$folder/; done
+  cd $(RNASEQ_CLUSTER_PRESENCE_RES)
+  for folder in *; do echo $folder; /bin/cp $folder/* $(RNASEQ_CLUSTER_ALL_RES)/$folder/; done
   ## /bin/cp used because cp is an alias to cp -i
   ```
 
-  NOTE: `$(RNASEQ_VITALIT_PRESENCE_RES)` could possibly be set to `$(RNASEQ_VITALIT_ALL_RES)` and the presence calls files be written directly in the subfolders with the mapping results. I considered it safer to generate in a separate folder and then copy.
+  NOTE: `$(RNASEQ_CLUSTER_PRESENCE_RES)` could possibly be set to `$(RNASEQ_CLUSTER_ALL_RES)` and the presence calls files be written directly in the subfolders with the mapping results. I considered it safer to generate in a separate folder and then copy.
 
   * Back-up results and send useful files to `devbioinfo` server: `make save_and_send_results_back`
 
@@ -363,7 +356,7 @@ in wildly used strain names.
     * Some libraries are excluded from WormBase annotation file
     * The difference: number annotated libraries - all reasons above should give the number of libraries in `generated_files/RNA_Seq/rna_seq_sample_info.txt` file
     * In addition some libraries are excluded after mapping, usually because of low quality mapping
-    * This gives the final number of libraries to be inserted for the Bgee release (5745 for Bgee v14)
+    * This gives the final number of libraries to be inserted for the Bgee release (5745 for Bgee v15)
 
   * The script can be run in `-debug` mode. At the end of the script, the number of rows expected in the `rnaSeqResult` table is given (and number excluded rows as well).
   * Once everything is good, we can launch the insertion in expression table.
@@ -379,7 +372,7 @@ in wildly used strain names.
 
 ## Insert feature length
 
-* `make export_length` to be run on Vital-IT
+* `make export_length` to be run on cluster
 * Add length info file to GIT project ([generated_files/RNA_Seq/](../../generated_files/RNA_Seq/) folder)
 * `make insert_feature_length` to be run on our server
 * Check the `transcript` table in database to check for good insertion
@@ -401,13 +394,13 @@ in wildly used strain names.
    ```
    cd bgee_pipeline/pipeline/RNA_Seq/3Insertion
    PIPELINEROOT="../"
-   BGEECMD="user=bgee__pass=bgee__host=127.0.0.1__port=3306__name=bgee_v14"
+   BGEECMD="user=bgee__pass=bgee__host=127.0.0.1__port=3306__name=bgee_v15"
    RNASEQALLRES="/var/bgee/bgee/extra/pipeline/rna_seq/all_results/"
-   RNASEQTMMTARG="/var/bgee/bgee/extra/pipeline/rna_seq/bioconductor/targets_TMM_bgee_v14"
-   RNASEQTMMPATH="/var/bgee/bgee/extra/pipeline/rna_seq/processed_TMM_bgee_v14/"
+   RNASEQTMMTARG="/var/bgee/bgee/extra/pipeline/rna_seq/bioconductor/targets_TMM_bgee_v15"
+   RNASEQTMMPATH="/var/bgee/bgee/extra/pipeline/rna_seq/processed_TMM_bgee_v15/"
    perl launch_calculate_TMM_factors.pl -bgee=$BGEECMD -path_generes=$RNASEQALLRES -path_target=$RNASEQTMMTARG -path_processed=$RNASEQTMMPATH GSE30352
    ```
-   * When whole pipeline was run once, it is a good idea to check the amplitude and distribution of TMM values across all experiments. Do we get aberrant values? For Bgee v14, values range from 0.096838 (in SRP012682 experiment / GTEx) to 2.695775 (in SRP000401 experiment). These are totally reasonable values
+   * When whole pipeline was run once, it is a good idea to check the amplitude and distribution of TMM values across all experiments. Do we get aberrant values? For Bgee v15, values range from 0.096838 (in SRP012682 experiment / GTEx) to 2.695775 (in SRP000401 experiment). These are totally reasonable values
 
 * Check step in Makefile: `make check_TMM_factors`.
   * **TODO**? Add a check to see if each inserted library got a TMM factor generated
@@ -756,7 +749,7 @@ They were remapped to:
 
 * number of rows in `expression` went from 94,981,552 to 50,486,926 (44,494,626 rows deleted)
 * number of rows in `cond` table went from 39,317 to 38,793 (524 rows deleted). Of note, some conditions
-were unused in bgee_v14 (511 conditions), it is unclear why. The 524 rows deleted also include these 511 conditions.
+were unused in bgee_v15 (511 conditions), it is unclear why. The 524 rows deleted also include these 511 conditions.
 * number of conditions not used anywhere went from 511 to 524 (13 more conditions unused, including the 3 from the previous step)
 * Of note, many conditions used in the annotations of RNA-Seq libraries (inserted in table `rnaSeqLibrary`)
 are remapped to a different condition for insertion in the `expression` table:

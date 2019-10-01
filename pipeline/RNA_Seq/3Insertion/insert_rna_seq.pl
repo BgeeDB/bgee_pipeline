@@ -32,7 +32,7 @@ my %opts = ('bgee=s'                => \$bgee_connector,     # Bgee connector st
             'excluded_libraries=s'  => \$excluded_libraries, # rna_seq_sample_excluded.txt file
             'library_stats=s'       => \$library_stats,      # presence_absence_all_samples.txt
             'report_info=s'         => \$report_info,        # reports_info_all_samples.txt
-            'all_results=s'         => \$all_results,        # /var/bgee/extra/pipeline/rna_seq/all_results_bgee_v14/
+            'all_results=s'         => \$all_results,        # /var/bgee/extra/pipeline/rna_seq/all_results_bgee_v15/
             'sex_info=s'            => \$sex_info,           # generated_files/uberon/uberon_sex_info.tsv
             'extraMapping=s'        => \$extraMapping,       # Extra mapping for too up-to-date ontology terms
             'debug'                 => \$debug,
@@ -85,7 +85,7 @@ for my $expId ( sort keys %libraries ){
             $all_species{$libraries{$expId}->{$libraryId}->{'speciesId'}}++;
             $count_libs++;
             unless ( -s "$all_results/$libraryId/$abundance_file" ){
-                die "Missing or empty processed data file for library $libraryId! Please check that the transfer from Vital-IT was successful. Otherwise this library should maybe be added to the file of excluded libraries?\n";
+                die "Missing or empty processed data file for library $libraryId! Please check that the transfer from cluster was successful. Otherwise this library should maybe be added to the file of excluded libraries?\n";
             }
         }
     }

@@ -11,9 +11,9 @@ DBPASS_BGEELITE := pass
 # Annotator machine
 ANNOTATORLOGIN := login
 
-# Vital-IT account
-VITLOGIN := login
-VITPASSW := pass
+# Cluster account
+CLUSTERLOGIN := login
+CLUSTERPASSW := pass
 
 # Machine used for the pipeline
 PIPELOGIN  := login

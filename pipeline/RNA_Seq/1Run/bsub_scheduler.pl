@@ -17,7 +17,7 @@ use Getopt::Long;
 use Time::localtime;
 
 # Define arguments & their default value
-my ($sample_info_file, $exclude_sample_file, $output_log_folder, $index_folder, $fastq_folder, $kallisto_out_folder, $ens_release, $ens_metazoa_release, $data_host, $data_login, $enc_passwd_file, $vit_kallisto_cmd, $vit_R_cmd) = ('', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
+my ($sample_info_file, $exclude_sample_file, $output_log_folder, $index_folder, $fastq_folder, $kallisto_out_folder, $ens_release, $ens_metazoa_release, $data_host, $data_login, $enc_passwd_file, $cluster_kallisto_cmd, $cluster_R_cmd) = ('', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
 my %opts = ('sample_info_file=s'     => \$sample_info_file,
             'exclude_sample_file=s'  => \$exclude_sample_file,
             'output_log_folder=s'    => \$output_log_folder,
@@ -29,18 +29,18 @@ my %opts = ('sample_info_file=s'     => \$sample_info_file,
             'data_host=s'            => \$data_host,
             'data_login=s'           => \$data_login,
             'enc_passwd_file=s'      => \$enc_passwd_file,
-            'vit_kallisto_cmd=s'     => \$vit_kallisto_cmd,
-            'vit_R_cmd=s'            => \$vit_R_cmd,
+            'cluster_kallisto_cmd=s' => \$cluster_kallisto_cmd,
+            'cluster_R_cmd=s'        => \$cluster_R_cmd,
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $sample_info_file eq '' || $output_log_folder eq '' || $index_folder eq '' || $fastq_folder eq '' || $kallisto_out_folder eq '' || $ens_release eq '' || $ens_metazoa_release eq '' || $data_host eq '' || $data_login eq '' || $enc_passwd_file eq '' || $vit_kallisto_cmd eq '' || $vit_R_cmd eq ''){
+if ( !$test_options || $sample_info_file eq '' || $output_log_folder eq '' || $index_folder eq '' || $fastq_folder eq '' || $kallisto_out_folder eq '' || $ens_release eq '' || $ens_metazoa_release eq '' || $data_host eq '' || $data_login eq '' || $enc_passwd_file eq '' || $cluster_kallisto_cmd eq '' || $cluster_R_cmd eq ''){
     print "\n\tInvalid or missing argument:
-\te.g. $0 -sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=\$(RNASEQ_VITALIT_LOG) -index_folder=\$(RNASEQ_VITALIT_GTF)  -fastq_folder=\$(RNASEQ_BIGBGEE_FASTQ) -kallisto_out_folder=\$(RNASEQ_VITALIT_ALL_RES) -ens_release=\$(ENSRELEASE) -ens_metazoa_release=\$(ENSMETAZOARELEASE) -data_host=\$(DATAHOST) -data_login=\$(DATA_LOGIN) -enc_passwd_file=\$(ENCRYPT_PASSWD_FILE) -vit_kallisto_cmd=\$(VIT_KALLISTO_CMD) $vit_R_cmd=\$(VIT_R_CMD)
+\te.g. $0 -sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=\$(RNASEQ_CLUSTER_LOG) -index_folder=\$(RNASEQ_CLUSTER_GTF)  -fastq_folder=\$(RNASEQ_BIGBGEE_FASTQ) -kallisto_out_folder=\$(RNASEQ_CLUSTER_ALL_RES) -ens_release=\$(ENSRELEASE) -ens_metazoa_release=\$(ENSMETAZOARELEASE) -data_host=\$(DATAHOST) -data_login=\$(DATA_LOGIN) -enc_passwd_file=\$(ENCRYPT_PASSWD_FILE) -cluster_kallisto_cmd=\$(CLUSTER_KALLISTO_CMD) $cluster_R_cmd=\$(CLUSTER_R_CMD)
 \t-sample_info_file       rna_seq_sample_info.txt
 \t-exclude_sample_file    rna_seq_sample_excluded.txt
-\t-output_log_folder      folder for .out and .err files (produced by LSF system), and .Rout files produced by R
+\t-output_log_folder      folder for .out and .err files (produced by queuing system), and .Rout files produced by R
 \t-index_folder=s         Folder with Kallisto indexes (same as GTF folder)
 \t-fastq_folder=s         Folder with Fastq files on big bgee
 \t-kallisto_out_folder=s  Folder with Kallisto output and results
@@ -49,8 +49,8 @@ if ( !$test_options || $sample_info_file eq '' || $output_log_folder eq '' || $i
 \t-data_host=s            Bigbgee machine with RNA-seq fastq files
 \t-data_login=s           Login for bigbgee
 \t-enc_passwd_file=s      File with password necessary to decrypt the GTEx data
-\t-vit_kallisto_cmd=s     Command to load kallisto module on vital-it
-\t-vit_R_cmd=s            Command to load R module on vital-it
+\t-cluster_kallisto_cmd=s Command to load kallisto module on cluster
+\t-cluster_R_cmd=s        Command to load R module on cluster
 \n";
     exit 1;
 }
@@ -133,14 +133,14 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
     my $report_file = $output_log_folder.'/'.$library_id.'/'.$library_id.'.report';
 
     # remove ending ";" at end of module loading commands, which can mess up job submission command line
-    $vit_kallisto_cmd =~ s/\;$//;
-    $vit_R_cmd =~ s/\;$//;
+    $cluster_kallisto_cmd =~ s/\;$//;
+    $cluster_R_cmd =~ s/\;$//;
     # espace spaces so that the arguments are not cut after first space by GetOpt
-    ##$vit_kallisto_cmd =~ s/\s/\\ /g;
-    ##$vit_R_cmd =~ s/\s/\\ /g;
+    ##$cluster_kallisto_cmd =~ s/\s/\\ /g;
+    ##$cluster_R_cmd =~ s/\s/\\ /g;
 
 
-    my $script_plus_args = "time perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -exclude_sample_file=$exclude_sample_file -index_folder=$index_folder -fastq_folder=$fastq_folder -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -ens_release=$ens_release -ens_metazoa_release=$ens_metazoa_release -data_host=$data_host -data_login=$data_login -enc_passwd_file=$enc_passwd_file -vit_kallisto_cmd=\\\"$vit_kallisto_cmd\\\" -vit_R_cmd=\\\"$vit_R_cmd\\\"";
+    my $script_plus_args = "time perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -exclude_sample_file=$exclude_sample_file -index_folder=$index_folder -fastq_folder=$fastq_folder -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -ens_release=$ens_release -ens_metazoa_release=$ens_metazoa_release -data_host=$data_host -data_login=$data_login -enc_passwd_file=$enc_passwd_file -cluster_kallisto_cmd=\\\"$cluster_kallisto_cmd\\\" -cluster_R_cmd=\\\"$cluster_R_cmd\\\"";
 
     # Adjust number of jobs to time and day
     my $job_limit = $jobs_during_day;
@@ -177,15 +177,14 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
     # -u $user_email
 
     $bsub_command .= "echo $script_plus_args | bsub -n $nr_processors -M $memory_limit -R rusage[mem=$memory_usage] -o $output_file -e $error_file -q $queue -J \"$library_id\";";
-    print "Command submitted to Vital-IT:\n$bsub_command\n";
+    print "Command submitted to cluster:\n$bsub_command\n";
     # also print the command on .out file
     open (my $OUT, '>', "$report_file")  or die "Cannot write [$report_file]\n";
-    print {$OUT} "Vital-IT / Bsub command submitted:\n$bsub_command\n";
+    print {$OUT} "Bsub command submitted:\n$bsub_command\n";
     close $OUT;
 
     # Then, run the job
-    system(". /mnt/common/lsf/conf/profile.lsf; $bsub_command")==0
-        or print "Failed to submit job [$library_id]\n";
+    system("$bsub_command")==0  or print "Failed to submit job [$library_id]\n";
 }
 
 print "\n######################################################\nAll done. $count jobs submitted.\n######################################################\n";
@@ -193,7 +192,7 @@ exit 0;
 
 
 sub check_running_jobs {
-    my $running_jobs = `. /mnt/common/lsf/conf/profile.lsf; bjobs | grep -v 'JOBID' | wc -l` || 0;
+    my $running_jobs = `bjobs | grep -v 'JOBID' | wc -l` || 0;
     chomp($running_jobs);
     return $running_jobs;
 }
