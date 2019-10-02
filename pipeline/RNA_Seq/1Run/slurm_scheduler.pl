@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 
 ## Julien Roux, Jan 11, 2016
-# This script launches the bsub jobs
+# This script launches the slurm jobs
 # The script rna_seq_mapping_and_analysis.pl is launched for each library
 # It is inspired from https://svn.vital-it.ch/svn/Selectome/trunk/scripts/pipeline/bsub_scheduler.pl
 
@@ -60,20 +60,19 @@ die "Invalid or missing [$sample_info_file]: $?\n"  if ( !-e $sample_info_file |
 # Create output folder if not present
 make_path "$output_log_folder",   {verbose=>0, mode=>0775};
 
-# Setting up bsub parameters #################################
+# Setting up SLURM parameters #################################
 my $main_script = $RealBin.'/rna_seq_mapping_and_analysis.pl';
-## TODO launch bsub_scheduler.pl from /data/ul/dee/bgee/GIT/pipeline/RNA_Seq/
+## TODO launch slurm_scheduler.pl from /data/ul/dee/bgee/GIT/pipeline/RNA_Seq/
 ##        Beware that git pull command should be executed before
 ##        kallisto_out_folder should be on /scratch/temporary. If too slow, consider using /scratch/local/ + cp of results file to /scratch/temporary/ or /home/bbgee, or /data/ (read-only, but should be fine via scp)
 
 # kallisto is no multithreaded unless bootstraps are used
-my $nr_processors = 1;
-# memory limit: should match the limit of the queue
-my $memory_limit  = 160_000_000; # in KB
-# RAM needed: 4GB should be enough
-my $memory_usage  = 10_000;      # in MB
-my $queue         = 'bgee';
-my $user_email    = 'bgee@sib.swiss'; # for email notification
+my $nbr_processors = 1;
+# RAM needed: 10GB should be enough
+my $memory_usage   = 10;      # in GB
+my $user_email     = 'bgee@sib.swiss'; # for email notification
+my $account        = 'mrobinso_bgee';
+my $queue          = 'ax-long';
 
 # my $jobs_during_day   = 250; # Number of simultaneous jobs during working days
 # my $jobs_during_night = 300; # Number of simultaneous jobs during week-end & night
@@ -111,8 +110,8 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
         next JOB;
     }
     # Check running jobs to not resubmit them while running
-    if ( `bjobs -w | grep ' $library_id '` =~ / (RUN|PEND) / ){
-        print "\n$library_id not launched because it is currently being analyzed (see bjobs)\n";
+    if ( `squeue --user=\$USER --account=$account --long | grep ' $library_id '` =~ / (RUNN|PEND)ING / ){
+        print "\n$library_id not launched because it is currently being analyzed (see squeue/sacct)\n";
         next JOB;
     }
 
@@ -130,7 +129,7 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
     my $error_file = $output_log_folder.'/'.$library_id.'/'.$library_id.'.err';
     my $rm_error_command = 'rm -f '.$error_file.";\n";
 
-    my $report_file = $output_log_folder.'/'.$library_id.'/'.$library_id.'.report';
+    my $sbatch_file = $output_log_folder.'/'.$library_id.'/'.$library_id.'.sbatch';
 
     # remove ending ";" at end of module loading commands, which can mess up job submission command line
     $cluster_kallisto_cmd =~ s/\;$//;
@@ -167,24 +166,21 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
     }
 
 
-    # Script can be launched! Construct bsub command:
-
+    # Script can be launched! Construct SLURM sbatch command:
     # First, remove previous .out and .err files
-    my $bsub_command = $rm_output_command.$rm_error_command;
-    # Add main bsub command and options
-    # Potential other options:
-    # -R span[ptile=$nr_processors]
-    # -u $user_email
+    my $sbatch_command = $rm_output_command.$rm_error_command;
 
-    $bsub_command .= "echo $script_plus_args | bsub -n $nr_processors -M $memory_limit -R rusage[mem=$memory_usage] -o $output_file -e $error_file -q $queue -J \"$library_id\";";
-    print "Command submitted to cluster:\n$bsub_command\n";
-    # also print the command on .out file
-    open (my $OUT, '>', "$report_file")  or die "Cannot write [$report_file]\n";
-    print {$OUT} "Bsub command submitted:\n$bsub_command\n";
+    $sbatch_command .= $script_plus_args;
+    print "Command submitted to cluster:\n$sbatch_command\n";
+
+    # Create the SBATCH script
+    open (my $OUT, '>', "$sbatch_file")  or die "Cannot write [$sbatch_file]\n";
+    print {$OUT} sbatch_template($queue, $account, $nbr_processors, $memory_usage, $output_file, $error_file, $library_id);
+    print {$OUT} "$sbatch_command\n";
     close $OUT;
 
     # Then, run the job
-    system("$bsub_command")==0  or print "Failed to submit job [$library_id]\n";
+    system("sbatch $sbatch_file")==0  or print "Failed to submit job [$library_id]\n";
 }
 
 print "\n######################################################\nAll done. $count jobs submitted.\n######################################################\n";
@@ -192,8 +188,35 @@ exit 0;
 
 
 sub check_running_jobs {
-    my $running_jobs = `bjobs | grep -v 'JOBID' | wc -l` || 0;
+    my $running_jobs = `squeue --user=\$USER --account=$account | grep -v 'JOBID' | wc -l` || 0;
     chomp($running_jobs);
     return $running_jobs;
 }
 
+# Add main sbatch command and options
+sub sbatch_template {
+    my ($queue, $account, $nbr_processors, $memory_usage, $output_file, $error_file, $library_id) = @_;
+    # Potential other options:
+    # #SBATCH --mail-user=$user_email
+    # #SBATCH --mail-type=ALL
+
+    my $template="#!/bin/bash
+
+#SBATCH --partition=$queue
+#SBATCH --account=$account
+
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=$nbr_processors
+#SBATCH --mem=${memory_usage}G
+##SBATCH --time=...
+
+#SBATCH --output=$output_file
+#SBATCH --error=$error_file
+#SBATCH --export=NONE
+#SBATCH --job-name=$library_id
+
+";
+
+    return $template;
+}

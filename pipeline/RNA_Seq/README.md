@@ -127,7 +127,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
   ```
   * Checks during run:
   ```
-   bjobs
+   squeue --user=$USER --account=mrobinso_bgee
    less /data/ul/dee/bgee/GIT/pipeline/RNA_Seq/run_pipeline.tmp
    # number of launched jobs
    grep -c 'is submitted to queue <bgee>' /data/ul/dee/bgee/GIT/pipeline/RNA_Seq/run_pipeline.tmp
@@ -216,8 +216,8 @@ Gene expression ranks allow to identify the most functionally-relevant condition
   * **TODO** any other messages that could have been missed?
   * Management of bugged samples:
     * It is good to keep a copy of the whole folder, for example: `mv $RNASEQ_CLUSTER_ALL_RES/SRX.../ failed_results_bgee_v15/`
-   Samples can be relaunched by hand one by one: you can find the bsub command for each library in the '.report' file.
-    * All samples to rerun can be relaunched by rerunning [bsub_scheduler.pl](1Run/bsub_scheduler.pl) in `make run_pipeline` step
+   Samples can be relaunched by hand one by one: you can find the slurm command for each library in the '.report' file.
+    * All samples to rerun can be relaunched by rerunning [slurm_scheduler.pl](1Run/slurm_scheduler.pl) in `make run_pipeline` step
 
   * File with excluded samples:
     * If we notice bad samples, add them to file `generated_files/RNA_Seq/rna_seq_sample_excluded.txt` (file name in variable `$(RNASEQ_SAMPEXCLUDED_FILEPATH)` in [pipeline/Makefile.common](../Makefile.common)).

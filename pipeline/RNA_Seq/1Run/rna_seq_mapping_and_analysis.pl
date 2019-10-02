@@ -361,7 +361,7 @@ if ( ( -s $kallisto_out_folder.'/abundance.tsv' ) && ( -s $kallisto_out_folder.'
 # if Kallisto needs to be launched
 else {
     # creating and invoking the full kallisto command
-    my $kallisto_command = $cluster_kallisto_cmd.'; '; # command to load module. ; added at the end because was removed in bsub_scheduler.pl (hard to pass without messing with command line)
+    my $kallisto_command = $cluster_kallisto_cmd.'; '; # command to load module. ; added at the end because was removed in slurm_scheduler.pl (hard to pass without messing with command line)
     if ( $libraryType eq 'SINGLE' ){
         $kallisto_command .= "kallisto quant -i $index -o $kallisto_out_folder -t 1 --single -l 180 -s 30 --bias ";
         for my $run ( @run_ids ){
