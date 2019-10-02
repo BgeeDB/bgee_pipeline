@@ -99,6 +99,7 @@ check_tools: cluster1
 	@perl -Mstrict                -e 1                >> $@.tmp
 	@perl -MTime::localtime       -e 1                >> $@.tmp
 	@perl -Mwarnings              -e 1                >> $@.tmp
+	@module add Bioinformatics/Software/vital-it
 	@$(CLUSTER_R_CMD) which R                         >> $@.tmp
 	@$(CLUSTER_R_CMD) R -e 'library("chipseq")'       >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("edgeR")'         >> $@.tmp  2>/dev/null
