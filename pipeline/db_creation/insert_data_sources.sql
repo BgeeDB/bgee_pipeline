@@ -3,7 +3,7 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
 -- [species_ensembl_link]: e.g., Drosophila_melanogaster
 (1, 'NCBI Taxonomy', '', '', '',
     'https://www.ncbi.nlm.nih.gov/taxonomy', 'Source taxonomy used in Bgee', 1, ''),
-(2, 'Ensembl', 'http://dec2015.archive.ensembl.org/[species_ensembl_link]/Gene/Summary?g=[gene_id];gene_summary=das:http://bgee.unil.ch/das/bgee=label', '', '',
+(2, 'Ensembl', 'http://dec2015.archive.ensembl.org/[species_ensembl_link]/Gene/Summary?g=[gene_id]', '', '',
     'http://dec2015.archive.ensembl.org/',
     'Source for gene annotations, mappings to the Gene Ontology, mappings to Affymetrix probeset IDs, and cross-references to other databases',
     1, 'Genomics database'),
