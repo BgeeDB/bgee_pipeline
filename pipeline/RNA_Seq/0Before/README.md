@@ -34,5 +34,4 @@
   * Extracts the '.fastq' files from the '.sra' files
   * Compress these files
   * For GTEx data, encrypt the '.fastq' files.
-  * [get_SRA-reverseOrder.pl](get_SRA-reverseOrder.pl) is launched on cluster. It parses the `generated_files/RNA_Seq/rna_seq_sample_info.txt` file in the reverse order, using only odd or even number rows, allowing to launch downloads in parallel on two machines (in addition to bigbgee)
 
