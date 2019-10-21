@@ -82,6 +82,7 @@ check_tools: cluster1
 	@if [[ `hostname -d` != 'axiom.unil.ch' ]]; then false; fi
 	# Check if all required tools/libs are available
 	@which perl                                        > $@.tmp
+	@perl -MCpanel::JSON::XS      -e 1                >> $@.tmp
 	@perl -Mdiagnostics           -e 1                >> $@.tmp
 	@perl -MDBI                   -e 1                >> $@.tmp
 	@perl -MDigest::SHA           -e 1                >> $@.tmp
@@ -112,7 +113,6 @@ check_tools: cluster1
 	@$(CLUSTER_TOPHAT_CMD)     which gtf_to_fasta     >> $@.tmp
 	@$(CLUSTER_SRATOOLKIT_CMD) which fastq-dump       >> $@.tmp
 	@$(CLUSTER_KALLISTO_CMD)   which kallisto         >> $@.tmp
-	@$(CLUSTER_FASTQC_CMD)     which fastqc           >> $@.tmp
 	@mkdir -p $(RNASEQ_CLUSTER_GTF)
 	@if [[ -d $(RNASEQ_CLUSTER_GTF) ]]; then echo -n; else echo "Directory [$(RNASEQ_CLUSTER_GTF)] does not exist"  >> $@.tmp; false; fi
 	@if [[ -w $(RNASEQ_CLUSTER_GTF) ]]; then echo -n; else echo "Directory [$(RNASEQ_CLUSTER_GTF)] is not writable" >> $@.tmp; false; fi

@@ -210,8 +210,6 @@ Gene expression ranks allow to identify the most functionally-relevant condition
     grep 'Warning: Length of left and/or right reads [75/1] too short for pseudo-mapping ...'  $RNASEQ_CLUSTER_ALL_RES/*/*.err
     grep 'Warning: Length of reads [25] too short for pseudo-mapping ...'                      $RNASEQ_CLUSTER_ALL_RES/*/*.err
     # Mapping will switch to short index. What to do when length of reads lower than short index k-mer size? => check % mapping
-    grep 'fastqc.html: No such file or directory'
-    # The FastQC report file is missing. Run FastQC on those missed runs
   ```
   * **TODO** any other messages that could have been missed?
   * Management of bugged samples:

@@ -11,6 +11,8 @@ use File::Slurp;
 use List::Util qw(min max);
 use List::MoreUtils qw(uniq);
 use Getopt::Long;
+#use JSON::XS; # See http://blogs.perl.org/users/e_choroba/2018/03/numbers-and-strings-in-json.html
+use Cpanel::JSON::XS;
 
 my $GTEX_exp_id = 'SRP012682';
 
@@ -299,47 +301,46 @@ print "\tKallisto index $index will be used for pseudo-mapping\n";
 
 
 #############################################################################################
-# Before launching Kallisto, check FastQC run. Each fastq file has its own FastQC!
+# Before launching Kallisto, check FastP run. Each fastq file has its own FastP!
 # This can help investigate problems (low number of reads pseudo-mapped, etc).
 #TODO For future pipeline, if we trim adapters, this can also be useful
 #
-# Extract the number of reads in FastQC files
-print "\tExtracting total number of reads from FastQC report...\n";
+# Extract the number of reads in FastP files
+print "\tExtracting total number of reads from FastP report...\n";
 my %number_reads;
 for my $run ( @run_ids ){
-    my $FASTQC_REPORT;
+    my $FASTP_REPORT;
     if ( $libraryType eq 'SINGLE' ){
-        #FIXME Move to FastP tool instead of FastQC
-        open($FASTQC_REPORT, "ssh $data_login\@$data_host  cat $fastqSamplePath/FASTQC/${run}_fastqc.html |")
-            or warn "\nWarning: missing FastQC report for run $run\n";
+        open($FASTP_REPORT, "ssh $data_login\@$data_host  xzcat $fastqSamplePath/${run}.fastp.json.xz |")
+            or warn "\nWarning: missing FastP report for run $run\n";
     }
     else {# $libraryType eq 'PAIRED'
-        #NOTE Only paired-end _1 is used here (but _2 has also FastQC report)
-        open($FASTQC_REPORT, "ssh $data_login\@$data_host  cat $fastqSamplePath/FASTQC/${run}_1_fastqc.html |")
-            or warn "\nWarning: missing FastQC report for run $run\n";
+        #NOTE Only paired-end _1 is used here (but _2 has also FastP report)
+        open($FASTP_REPORT, "ssh $data_login\@$data_host  xzcat $fastqSamplePath/${run}_1.fastp.json.xz |")
+            or warn "\nWarning: missing FastP report for run $run\n";
     }
 
-    while ( defined (my $line = <$FASTQC_REPORT>) ){
-        if ( $line =~ m/<td>Total\sSequences<\/td><td>(\d+)<\/td>/ ){
-            $number_reads{$run} = $1;
-        }
-    }
-    close $FASTQC_REPORT;
+    my $json_report = '';
+    $json_report .= $_  while <$FASTP_REPORT>;
+    close $FASTP_REPORT;
+
+    my $datastructure = decode_json($json_report);
+    $number_reads{$run} = $datastructure->{'summary'}->{'before_filtering'}->{'total_reads'};
 }
+
 open (my $REPORT2, '>>', "$report_file")  or die "Cannot write [$report_file]\n";
-print {$REPORT2} "\nNumber of reads (from FastQC reports):\n";
-my $total_reads_fastqc = 0;
+print {$REPORT2} "\nNumber of reads (from FastP reports):\n";
+my $total_reads_fastp = 0;
 for my $run ( keys %number_reads ){
     print {$REPORT2} "\t", $run, "\t", $number_reads{$run}, "\n";
-    $total_reads_fastqc += $number_reads{$run};
+    $total_reads_fastp += $number_reads{$run};
 }
-print {$REPORT2} "\tTotal number reads\t", $total_reads_fastqc, "\n";
+print {$REPORT2} "\tTotal number reads\t", $total_reads_fastp, "\n";
 close $REPORT2;
 
-## TODO For each SRR, we should also store a file on bigbgee with the number of lines (wc -l). On this side, we can verify it is consistent with the number of reads in FASTQC reports (and number of reads processed by Kalisto = sum of all runs $total_reads_fastqc too).
-## TODO Use a faster tool to compute FastQ Quality Control (e.g. fastp) to also get read lengths min/max AND median or mean!!!
+## TODO For each SRR, we should also store a file on bigbgee with the number of lines (wc -l). On this side, we can verify it is consistent with the number of reads in FastP reports (and number of reads processed by Kalisto = sum of all runs $total_reads_fastp too).
 
-## TODO? we could extract too the sequence lenghts from FastQC reports, instead of what is done above.
+## TODO? we could extract too the sequence lenghts from FastP reports, instead of what is done above.
 
 
 #############################################################################################
@@ -440,8 +441,8 @@ if ( ( -s $kallisto_out_folder.'/abundance.tsv' ) && ( -s $kallisto_out_folder.'
         }
         # Note: this arbitrary threshold of 20% can be changed
 
-        if ( $total_reads_kallisto != $total_reads_fastqc ){
-            warn "\nProblem: The number of reads processed by FastQC and Kallisto differs. Please check for a problem [$library_id]\n";
+        if ( $total_reads_kallisto != $total_reads_fastp ){
+            warn "\nProblem: The number of reads processed by FastP and Kallisto differs. Please check for a problem [$library_id]\n";
         }
         ## TODO add step to check that the number of reads is also consistent with the original fastq files on bigbgee (see TODO above)
     }

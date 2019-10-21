@@ -158,7 +158,7 @@ CLUSTER_R_CMD          := module add R/3.4.2;
 #CLUSTER_SAMTOOLS_CMD   := module add UHTS/Analysis/samtools/0.1.19;
 CLUSTER_SRATOOLKIT_CMD := module add UHTS/Analysis/sratoolkit/2.8.2.1;
 CLUSTER_TOPHAT_CMD     := module add UHTS/Aligner/tophat/2.1.1;
-CLUSTER_FASTQC_CMD     := module add UHTS/Quality_control/fastqc/0.11.7;
+#CLUSTER_FASTQC_CMD     := module add UHTS/Quality_control/fastqc/0.11.7;
 
 
 # ===================================

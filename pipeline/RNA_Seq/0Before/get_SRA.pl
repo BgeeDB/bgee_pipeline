@@ -73,14 +73,17 @@ while (<$ANNOTATION>){
                 }
             }
 
-            # Compute FastQC (A quality control tool for high throughput sequence data) for ALL SRR (runs)
-            mkdir "$FASTQ_PATH/$library_id/FASTQC";
+            # Run FastP (A quality control tool for high throughput sequence data) for ALL SRR (runs)
+            # as well as basic read length statistics with R
             QC:
             for my $fastq ( glob("$FASTQ_PATH/$library_id/*.gz") ){
                 my ($run_id) = $fastq =~ /([^\/]+)\.fastq\.gz/;
-                #FIXME Move to FastP (much faster) and precompute min/max/mean/median/mod of read lengths
-                system("fastqc -o $FASTQ_PATH/$library_id/FASTQC $fastq > $FASTQ_PATH/$library_id/FASTQC/$run_id.fastqc.log 2>&1")==0
-                    or do { warn "\tfastqc failed for [$FASTQ_PATH/$library_id/FASTQC/$run_id]\n"; next QC };
+                system("fastp -i $fastq --json $FASTQ_PATH/$library_id/${run_id}.fastp.json --html $FASTQ_PATH/$library_id/${run_id}.fastp.html --thread 2  > $FASTQ_PATH/$library_id/${run_id}.fastp.log 2>&1")==0
+                    or do { warn "\tfastp failed for [$FASTQ_PATH/$library_id/$run_id]\n"; next QC };
+                system("xz -9 $FASTQ_PATH/$library_id/${run_id}.fastp.html $FASTQ_PATH/$library_id/${run_id}.fastp.json");
+                # Basic read length stats
+                system("echo -e \"#min\tmax\tmedian\tmean\" > $FASTQ_PATH/$library_id/${run_id}.R.stat");
+                system("zcat $fastq | sed -n '2~4p' | awk '{print length($0)}' | Rscript -e 'd<-scan(\"stdin\", quiet=TRUE);cat(min(d), max(d), median(d), mean(d), sep=\"\t\");cat(\"\n\")' >> $FASTQ_PATH/$library_id/${run_id}.R.stat");
             }
 
             # If private (need encryption):
