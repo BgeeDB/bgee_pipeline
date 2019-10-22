@@ -80,6 +80,8 @@ UNIPROT_DATASOURCE := Uniprot/SWISSPROT
 ONCOMX_DATASOURCE := OncoMX
 
 $(OUTPUT_DIR)insert_oncoMX_XRefs:
+	@if [ ! -d $(INPUT_DIR) ]; then mkdir -p $(INPUT_DIR); fi
+	@if [ ! -d $(OUTPUT_DIR) ]; then mkdir -p $(OUTPUT_DIR); fi
 	# Download oncoMX ids (uniprot ID and gene name)
 	# TODO : OncoMX is supposed to update the tsv file containing their IDs. Please be sure that the URL used to download this dataset is still up to date
 	@$(WGET) --no-check-certificate 'https://data.oncomx.org/ln2wwwdata/reviewed/human_cancer_genes.csv' -O $(INPUT_DIR)oncoMX.csv.tmp >>$@.tmp 2>>$@.err && $(MV) $(INPUT_DIR)oncoMX.csv.tmp $(INPUT_DIR)oncoMX.csv 2>/dev/null  || rm -f $(INPUT_DIR)oncoMX.csv.tmp
