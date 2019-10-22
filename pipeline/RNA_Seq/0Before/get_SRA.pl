@@ -81,6 +81,7 @@ while (<$ANNOTATION>){
                 system("fastp -i $fastq --json $FASTQ_PATH/$library_id/${run_id}.fastp.json --html $FASTQ_PATH/$library_id/${run_id}.fastp.html --thread 2  > $FASTQ_PATH/$library_id/${run_id}.fastp.log 2>&1")==0
                     or do { warn "\tfastp failed for [$FASTQ_PATH/$library_id/$run_id]\n"; next QC };
                 system("xz -9 $FASTQ_PATH/$library_id/${run_id}.fastp.html $FASTQ_PATH/$library_id/${run_id}.fastp.json");
+                #TODO Would be nice to have all basic stats from FastP
                 # Basic read length stats
                 system("echo -e \"#min\tmax\tmedian\tmean\" > $FASTQ_PATH/$library_id/${run_id}.R.stat");
                 system("zcat $fastq | sed -n '2~4p' | awk '{print length($0)}' | Rscript -e 'd<-scan(\"stdin\", quiet=TRUE);cat(min(d), max(d), median(d), mean(d), sep=\"\t\");cat(\"\n\")' >> $FASTQ_PATH/$library_id/${run_id}.R.stat");

@@ -208,72 +208,54 @@ my $maxLength;
 
 for my $run ( @run_ids ){
     if ( $libraryType eq 'SINGLE' ){
-        my $read;
-        if ( $exp_id ne $GTEX_exp_id ){
-            #FIXME use R to get min/max/mean/median/mod instead of this that is not representative
-            $read = `ssh $data_login\@$data_host cat $fastqSamplePath\/$run\.fastq.gz | zcat | tail -n +2 | head -n1`;
-            chomp($read);
-        }
-        if ( $exp_id eq $GTEX_exp_id ){
-            $read = `ssh $data_login\@$data_host cat $fastqSamplePath\/$run\.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:$enc_passwd_file | zcat | tail -n +2 | head -n1`;
-            chomp($read);
-        }
+        my $read = `ssh $data_login\@$data_host  grep -v '^#' $fastqSamplePath\/$run\.R.stat | cut -f3`;
+        chomp($read);
         if ( (!defined $read) or ($read eq '') ){
             die "\tProblem: Read length could not be extracted for run [$run]\n";
         }
-        print "\tRead length = ", length($read), " for run [$run]\n";
+        print "\tMedian read length = $read for run [$run]\n";
 
         # record min and max lengths across runs
-        push @allLengths, length($read);
+        push @allLengths, $read;
 
         # verify that extracted read length is consistent with SRA info
-        if ( (length($read) ne $readLength) and ($readLength ne '') ){
-            warn "\nProblem: Read length in FASTQ file [", length($read), "] is not consistent with SRA record [$readLength]. Please check [$run]\n";
+        if ( ($read != $readLength) and ($readLength ne '') ){
+            warn "\nProblem: Read length in FASTQ file [$read] is not consistent with SRA record [$readLength]. Please check [$run]\n";
         }
         # reads too short for Kallisto index with default k-mer length
-        if ( length($read) < $lengthCutoff ){
+        if ( $read < $lengthCutoff ){
             $shortReads = 1;
-            warn "\nWarning: Length of reads [", length($read), "] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 15nt  [$run]\n";
+            warn "\nWarning: Length of reads [$read] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 15nt [$run]\n";
         }
     }
     elsif ( $libraryType eq 'PAIRED' ){
-        my ($read1, $read2);
-        if ( $exp_id ne $GTEX_exp_id ){
-            $read1 = `ssh $data_login\@$data_host cat $fastqSamplePath\/$run\_1.fastq.gz | zcat | tail -n +2 | head -n1`;
-            $read2 = `ssh $data_login\@$data_host cat $fastqSamplePath\/$run\_2.fastq.gz | zcat | tail -n +2 | head -n1`;
-            chomp($read1);
-            chomp($read2);
-        }
-        if ( $exp_id eq $GTEX_exp_id ){
-            $read1 = `ssh $data_login\@$data_host cat $fastqSamplePath\/$run\_1.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:$enc_passwd_file | zcat | tail -n +2 | head -n1`;
-            $read2 = `ssh $data_login\@$data_host cat $fastqSamplePath\/$run\_2.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:$enc_passwd_file | zcat | tail -n +2 | head -n1`;
-            chomp($read1);
-            chomp($read2);
-        }
+        my $read1 = `ssh $data_login\@$data_host  grep -v '^#' $fastqSamplePath\/$run\_1.R.stat | cut -f3`;
+        my $read2 = `ssh $data_login\@$data_host  grep -v '^#' $fastqSamplePath\/$run\_2.R.stat | cut -f3`;
+        chomp($read1);
+        chomp($read2);
         if ( (!defined $read1) or ($read1 eq '') ){
             die "\tProblem: Length of left read could not be extracted for run [$run]\n";
         }
         if ( (!defined $read2) or ($read2 eq '') ){
             die "\tProblem: Length of right read could not be extracted for run [$run]\n";
         }
-        print "\tRead lengths = ", length($read1), '/', length($read2), " for run [$run]\n";
+        print "\tRead lengths = $read1/$read2 for run [$run]\n";
 
         # record min and max lengths across pairs and runs. Here the length is recorded for each subread of each pair
-        push @allLengths, length($read1);
-        push @allLengths, length($read2);
+        push @allLengths, $read1, $read2;
 
         # verify that same length for both PE reads. If not, probably an error
-        if ( length($read1) ne length($read2) ){
-            warn "\nWarning: Length of left and right reads are different [", length($read1), '/', length($read2), "]. Please check [$run]\n";
+        if ( $read1 != $read2 ){
+            warn "\nWarning: Length of left and right reads are different [$read1/$read2]. Please check [$run]\n";
         }
         # verify that extracted read length is consistent with SRA info
-        if ( ((length($read1) + length($read2)) ne $readLength) and ($readLength ne '') ){
-            warn "\nProblem: Length of left and right reads in FASTQ files [", length($read1), '+', length($read2), "=", length($read1) + length($read2), "] are not consistent with SRA record [$readLength]. Please check [$run]\n";
+        if ( (($read1 + $read2) != $readLength) and ($readLength ne '') ){
+            warn "\nProblem: Length of left and right reads in FASTQ files [$read1+$read2=", ($read1 + $read2), "] are not consistent with SRA record [$readLength]. Please check [$run]\n";
         }
         # reads too short for Kallisto index with default k-mer length
-        if ( ( length($read1) < $lengthCutoff ) or ( length($read2) < $lengthCutoff ) ){
+        if ( ( $read1 < $lengthCutoff ) or ( $read2 < $lengthCutoff ) ){
             $shortReads = 1;
-            warn "\nWarning: Length of left and/or right reads [", length($read1), '/', length($read2), "] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 15nt  [$run]\n";
+            warn "\nWarning: Length of left and/or right reads [$read1/$read2] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 15nt [$run]\n";
         }
     }
 }
@@ -339,8 +321,6 @@ print {$REPORT2} "\tTotal number reads\t", $total_reads_fastp, "\n";
 close $REPORT2;
 
 ## TODO For each SRR, we should also store a file on bigbgee with the number of lines (wc -l). On this side, we can verify it is consistent with the number of reads in FastP reports (and number of reads processed by Kalisto = sum of all runs $total_reads_fastp too).
-
-## TODO? we could extract too the sequence lenghts from FastP reports, instead of what is done above.
 
 
 #############################################################################################
