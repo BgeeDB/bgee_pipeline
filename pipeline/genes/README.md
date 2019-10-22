@@ -8,6 +8,7 @@
 * It uses the Ensembl API.
 * It will fill the gene table with `geneId`, `geneName` and `geneDescription` (+ `geneBioTypeId` + `speciesId`).
 * It will also fill the tables `geneBioType`, `geneOntologyTerm` + `geneOntologyTermAltId` (and provides a file for obsolete GO terms), `geneNameSynonym`, `geneToGeneOntologyTerm`, and `geneXRef`. The insertion in `geneXRef` makes use of the `dataSource` table.
+* It will also insert OncoMX XRefs in the `geneXRef` table. This step has to be run separately using the command : `make ../../generated_file/insert_oncoMX_XRefs`
 * **Important note regarding bonobo genes**: for bonobo, we take the same genome as chimpanzee (there is no bonobo genome in Ensembl, and it is debatable whether bonobo and chimp represent the same species). We use a SQL query at the end of the Makefile, to duplicate all chimpanzee genes, while providing new IDs. Consequently, it also duplicates the entries in `geneNameSynonym`, `geneToTerm` and `geneToGeneOntologyTerm` (with the appropriate IDs). **As a result, if you add or modify any fields in any of the tables `gene`, `geneNameSynonym`, `geneToTerm`, or `geneToGeneOntologyTerm`, you might need to modify the query used in this Makefile.**
 
 ## Data generation
@@ -45,6 +46,8 @@ $InsertedDataSources{'xenopus_jamboree'} = $InsertedDataSources{'xenbase'};
 
 * Update `gene` table with count of genes in database with an identical Ensembl gene ID (in Bgee, for some species with no genome available, we use the genome of a closely-related species, such as chimpanzee genome for analyzing bonobo data. For this reason, a same Ensembl gene ID can be mapped to several species in Bgee.):
     `make sameIdGeneCount`
+* Insert OncoMX XRefs based on a file provided by OncoMX and a mapping to bgeeGeneId based on UniProt IDs. Please be sure that the URL of the file is up to date before running the rule :
+	`make ../../generated_file/insert_oncoMX_XRefs`
 
 # Gene Homology
 * **Requirements**: **having contacted Adrian Altenhoff <adrian.altenhoff@inf.ethz.ch> one month in advance to request an update of the OMA HOGs based on our list of species. This is different from the data available from their download page...** Having successfully run the step insert genes.

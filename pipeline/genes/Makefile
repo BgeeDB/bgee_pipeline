@@ -74,6 +74,19 @@ $(VERIFICATIONFILE): $(OUTPUT_DIR)go go.obsolete genes sameIdGeneCount hogs
 	-@$(GIT) add $@
 	-@$(GIT) commit $@ -m "Commit verification file for gene and hierarchical group insertion"
 	@$(GIT) push
+	
+# Init variables used to insert OncoMX XRefs in the database
+UNIPROT_DATASOURCE := Uniprot/SWISSPROT
+ONCOMX_DATASOURCE := OncoMX
+
+$(OUTPUT_DIR)insert_oncoMX_XRefs:
+	# Download oncoMX ids (uniprot ID and gene name)
+	# TODO : OncoMX is supposed to update the tsv file containing their IDs. Please be sure that the URL used to download this dataset is still up to date
+	@$(WGET) --no-check-certificate 'https://data.oncomx.org/ln2wwwdata/reviewed/human_cancer_genes.csv' -O $(INPUT_DIR)oncoMX.csv.tmp >>$@.tmp 2>>$@.err && $(MV) $(INPUT_DIR)oncoMX.csv.tmp $(INPUT_DIR)oncoMX.csv 2>/dev/null  || rm -f $(INPUT_DIR)oncoMX.csv.tmp
+	# Insert OncoMX XRefs into the database
+	@perl insert_oncoMX_xrefs.pl -bgee=$(BGEECMD) -oncoMX_ids_file=$(INPUT_DIR)oncoMX.csv -oncoMX_datasource_name=$(ONCOMX_DATASOURCE) -uniProt_datasource_name=$(UNIPROT_DATASOURCE) >>$@.tmp 2>>$@.err
+	@if [[ -s $@.err ]]; then echo -n; else $(RM) $@.err; fi
+	@$(MV) $@.tmp $@
 
 clean:
 	-@$(RM) $(VERIFICATIONFILE) $(OUTPUT_DIR)go go.obsolete genes genes.err species *.tmp $(INPUT_DIR)$(ORTHOXMLFILE).gz $(INPUT_DIR)$(ORTHOXMLFILE) hogs
