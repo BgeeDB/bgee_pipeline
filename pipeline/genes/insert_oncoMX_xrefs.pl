@@ -8,7 +8,6 @@ use Getopt::Long;
 use FindBin;
 use lib "$FindBin::Bin/.."; # Get lib path for Utils.pm
 use Utils;
-use Data::Dumper;
 use Text::CSV;
 
 my ($bgee_connector, $oncoMX_ids_file, $oncoMX_datasource_name, $uniProt_datasource_name) = ('', '', '','');
@@ -92,6 +91,10 @@ foreach my $bgeeGeneId (keys %gene_to_xrefs){
 	} else {
 		print "$bgeeGeneId, $gene_to_xrefs{$bgeeGeneId}{'xref_id'}, $gene_to_xrefs{$bgeeGeneId}{'xref_name'}, $oncoMX_id\n";
 	}
+}
+if(!$debug) {
+	my $size = keys %gene_to_xrefs;
+	print "$size OncoMX XRefs have been inserted successfully in database $dbh->{Name}\n";
 }
 $sth->finish();
 $dbh->disconnect;
