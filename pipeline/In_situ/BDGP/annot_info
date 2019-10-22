@@ -6,14 +6,15 @@
 1	4	dorsal ridge anlage
 1	5	adult clypeolabrum anlage
 1	5	adult hindgut specific anlage
+1	5	anterior endoderm anterior primordium
 1	5	embryonic dorsal pouch primordium
 1	5	embryonic outer optic lobe primordium
 1	5	esophageal ganglion primordium
 1	5	gastric caecum primordium
 1	5	salivary common duct primordium
+1	6	anterior adult midgut precursors
 1	6	embryonic outer optic lobe
 1	6	embryonic proventricular ganglion
-1	6	posterior adult midgut precursors
 2	2	mesectoderm anlage
 2	3	esophagus anlage
 2	3	posterior
@@ -21,38 +22,37 @@
 2	4	posterior
 2	4	salivary gland duct specific anlage
 2	5	cuprophilic cells primordium
-2	5	maternal
 2	5	tracheole specific anlage
 2	6	imaginal tracheal precursor
 2	6	macrophage
+2	6	posterior adult midgut precursors
 2	6	procephalic vascular rudiment
 2	6	procephalon
 3	1	epi_combo
-3	2	middle
 3	3	amnioserosa
 3	4	head epidermis ventral P2
 3	5	corpus cardiacum primordium
 3	5	embryonic central brain
 3	5	head epidermis ventral P1
 3	5	Malpighian tubule tip cell primordium
+3	5	maternal
 3	5	mushroom body primordium
-3	5	neuroblasts of central brain
-3	5	posterior adult midgut precursors primordium
 3	5	procephalic glioblasts
 3	6	adult clypeo-labral primordium
 3	6	adult salivary primordium
 3	6	embryonic inner optic lobe
 3	6	visual system
 4	2	antennal primordium anlage in statu nascendi
+4	2	middle
 4	2	posterior endoderm anlage
 4	3	proventriculus anlage
 4	4	labial complex specific anlage
 4	4	main segment of Malpighian tubule specific anlage
 4	4	maxillary organ specific anlage
-4	5	anterior adult midgut precursors primordium
 4	5	corpus allatum primordium
 4	5	dorsomedial neurosecretory cell
 4	5	glioblasts of ventral nervous system
+4	5	neuroblasts of central brain
 4	5	ventral apodeme specific anlage
 4	6	embryonic hypocerebral ganglion
 5	1	fertilized egg
@@ -60,11 +60,11 @@
 5	4	garland cell primordium
 5	4	proventriculus primordium
 5	4	salivary gland anlage
-5	5	anterior spiracle specific anlage
+5	5	anterior adult midgut precursors primordium
 5	5	dorsal imaginal precursor specific anlage
 5	5	head epidermis lateral primordium P1
 5	5	interstitial cells primordium
-5	6	dorsal histoblast nest abdominal
+5	5	posterior adult midgut precursors primordium
 5	6	dorsal mesothoracic disc
 5	6	dorsal metathoracic disc
 6	2	head epidermis anlage in statu nascendi
@@ -73,317 +73,324 @@
 6	4	dorsal pharyngeal muscle primordium
 6	4	esophagus primordium P2
 6	4	stomatogastric nervous system primordium P2
+6	5	anterior spiracle specific anlage
 6	5	dorsal ridge primordium P1
 6	5	embryonic inner optic lobe primordium
 6	5	lymph gland specific anlage
 6	5	oenocyte specific anlage
-6	5	ring gland primordium
-6	6	embryonic frontal ganglion
+6	6	dorsal histoblast nest abdominal
 6	6	head epidermis lateral
-6	6	head epidermis ventral
-7	2	posterior
 7	3	antennal primordium anlage
 7	4	gap
 7	4	proventriculus primordium P2
 7	5	dorsal apodeme specific anlage
+7	5	ring gland primordium
 7	6	adult muscle precursor primordium
-7	6	dorsal ridge
 7	6	embryonic esophageal ganglion
+7	6	embryonic frontal ganglion
 7	6	embryonic tracheole
 8	2	central brain anlage in statu nascendi
 8	4	Malpighian tubule anlage
 8	5	embryonic central brain surface glia
 8	5	hypopharyngeal sense organ primordium
 8	5	lateral cord surface glia
+8	6	dorsal ridge
+8	6	head epidermis ventral
 8	6	hypopharyngeal sense organ
-9	2	hypopharynx anlage in statu nascendi
 9	4	pair_rule
 9	5	primary segmental branch specific anlage
-9	5	rectum specific anlage
 9	5	ventral imaginal precursor specific anlage
 9	5	visual primordium2
-10	2	anterior
-10	6	neuroblasts of ventral nervous system
+10	2	hypopharynx anlage in statu nascendi
+10	5	rectum specific anlage
 10	6	segmentally repeated
 11	5	visceral branch specific anlage
-12	4	plasmatocytes primordium
+11	6	neuroblasts of ventral nervous system
+12	2	anterior
+12	2	posterior
 12	5	pericardial cell specific anlage
 12	5	small intestine specific anlage
-13	4	tracheal system anlage
-13	5	esophagus primordium P1
+13	4	plasmatocytes primordium
 13	5	ventral midline neuroblast
 13	6	adult foregut precursor
-13	6	neuroblasts of central brain
 14	3	head epidermis dorsal anlage
-14	3	hypopharynx anlage
-14	5	circular visceral mesoderm primordium
 14	5	embryonic leading edge cell specific anlage
-14	5	epipharynx primordium P1
+14	5	esophagus primordium P1
 14	5	lateral cord
-15	2	head mesoderm anlage
-15	4	hindgut proper anlage
-15	6	dorsal imaginal precursor
+14	6	neuroblasts of central brain
+15	3	hypopharynx anlage
+15	4	tracheal system anlage
+15	5	circular visceral mesoderm primordium
+15	5	epipharynx primordium P1
 15	6	prothoracic gland
-16	5	head epidermis dorsal primordium P1
+16	2	head mesoderm anlage
 16	5	Malpighian tubule main body primordium
 16	6	ventral midline neuron
 17	1	flag_as_nonspecific
 17	4	gnathal lobes anlage
-17	4	head epidermis dorsal primordium P4
 17	4	head epidermis lateral primordium P2
-17	4	hypopharynx primordium P2
+17	4	hindgut proper anlage
 17	5	need new term(larval eye primordium)
 17	5	salivary duct primordium
 17	6	adult eye primordium
+17	6	dorsal imaginal precursor
 17	6	embryonic Malpighian tubule tip cell
-18	2	trunk mesoderm anlage
 18	4	antennal primordium2
+18	4	head epidermis dorsal primordium P4
+18	4	hypopharynx primordium P2
+18	5	head epidermis dorsal primordium P1
 18	5	segmentally repeated
 19	3	pair_rule
-19	3	segmentally repeated
 19	5	dorsal trunk specific anlage
-20	5	dorsal vessel specific anlage
 20	5	head visceral muscle primordium
 20	6	embryonic central brain mushroom body
 21	1	need new term(localised)
 21	2	head epidermis dorsal anlage in statu nascendi
-22	4	segmentally repeated
+21	2	trunk mesoderm anlage
+21	3	segmentally repeated
+21	5	dorsal vessel specific anlage
 23	3	gap
 23	4	crystal cell specific anlage
-24	4	ventral epidermis primordium P2
-25	2	yolk
-26	3	central brain anlage
+23	4	segmentally repeated
+26	2	yolk
+26	4	ventral epidermis primordium P2
 26	6	embryonic leading edge cell
 27	2	ventral ectoderm anlage
-28	2	clypeolabrum anlage in statu nascendi
-28	2	dorsal ectoderm anlage
 28	6	embryonic corpus allatum
 28	6	embryonic/larval dorsal branch
 28	6	embryonic proventriculus intermediate layer
-29	2	segmentally repeated
-29	4	dorsal epidermis anlage
-29	6	adult midgut precursor
+29	2	clypeolabrum anlage in statu nascendi
+29	2	dorsal ectoderm anlage
+30	6	adult midgut precursor
 31	2	pair rule
 31	5	large intestine specific anlage
-31	6	circular visceral muscle fibers
-31	6	strong ubiquitous
-31	6	ventral imaginal precursor
+31	6	gonadal sheath
 32	5	embryonic ganglion mother cell
-32	6	embryonic/larval anterior spiracle
+32	6	circular visceral muscle fibers
 32	6	lateral cord
+32	6	ventral imaginal precursor
 33	2	mesectoderm anlage in statu nascendi
-33	3	clypeolabrum anlage
-33	5	procephalon primordium
+33	2	segmentally repeated
 33	5	ventral midline glia
 33	6	embryonic central brain pars intercerebralis
-34	5	hypopharynx primordium P1
-34	6	embryonic main segment of Malpighian tubule
+34	3	clypeolabrum anlage
+34	4	dorsal epidermis anlage
+34	5	procephalon primordium
+35	3	central brain anlage
+35	5	hypopharynx primordium P1
+35	6	embryonic main segment of Malpighian tubule
 35	6	embryonic salivary gland common duct
-35	6	visceral muscle of esophagus
-36	1	faint ubiquitous
+36	6	embryonic/larval anterior spiracle
+36	6	visceral muscle of esophagus
 37	5	pars intercerebralis primordium
-38	2	pole plasm
 38	5	fat body specific anlage
 38	6	apoptotic amnioserosa
-38	6	embryonic/larval circulatory system
 38	6	embryonic/larval pericardial cell
 39	6	embryonic central brain
-40	5	labral sensory complex primordium
+40	6	embryonic/larval circulatory system
 40	6	embryonic ventral apodeme
+40	6	strong ubiquitous
 41	5	antennal primordium1
-41	6	embryonic small intestine
+41	5	labral sensory complex primordium
+42	6	embryonic small intestine
 44	5	gnathal primordium
 44	6	longitudinal visceral muscle fibers
-45	3	mesectoderm primordium
-45	5	labial sensory complex primordium
+45	2	pole plasm
 45	6	adult hindgut precursor
-45	6	clypeolabrum
-45	6	embryonic dorsal apodeme
 45	6	embryonic foregut sensory structure
-45	6	embryonic proventriculus outer layer
+46	3	mesectoderm primordium
+46	5	labial sensory complex primordium
+46	6	embryonic dorsal apodeme
+46	6	embryonic proventriculus outer layer
 46	6	ventral midline glia
-47	4	clypeolabrum primordium P2
-49	2	endoderm anlage in statu nascendi
-49	5	cardiac mesoderm primordium
+48	4	clypeolabrum primordium P2
 49	6	lateral cord surface glia
-50	5	maxillary sensory complex primordium
+50	2	endoderm anlage in statu nascendi
+50	5	cardiac mesoderm primordium
 50	6	embryonic/larval visceral branch
-51	5	strong ubiquitous
+51	5	maxillary sensory complex primordium
 53	5	stomatogastric nervous system primordium
 53	5	ventral sensory complex specific anlage
-53	6	embryonic rectum
+53	6	clypeolabrum
+56	2	head mesoderm anlage in statu nascendi
 56	2	visual anlage in statu nascendi
-57	5	dorsal/lateral sensory complexes primordium
+56	5	sensory nervous system specific anlage
 57	6	embryonic salivary gland duct
-58	5	anal pad specific anlage
-59	6	embryonic midgut interstitial cell
-59	6	embryonic stomatogastric nervous system
+58	6	embryonic rectum
 60	2	amnioserosa anlage in statu nascendi
-60	2	ectoderm anlage in statu nascendi
-60	5	atrium primordium
-60	6	embryonic labial sensory complex
+60	6	embryonic midgut interstitial cell
 60	6	embryonic proventriculus inner layer
-61	3	amnioserosa anlage
-61	3	visual anlage
-64	4	mesectoderm primordium
-65	6	embryonic Bolwig's organ
-65	6	embryonic optic lobe
-66	5	embryonic optic lobe primordium
-68	2	trunk mesoderm anlage in statu nascendi
+61	2	ectoderm anlage in statu nascendi
+61	5	atrium primordium
+62	3	amnioserosa anlage
+62	3	visual anlage
+62	5	anal pad specific anlage
+63	5	dorsal/lateral sensory complexes primordium
+64	6	embryonic stomatogastric nervous system
+65	5	strong ubiquitous
+66	4	mesectoderm primordium
+66	6	embryonic Bolwig's organ
+66	6	embryonic labial sensory complex
+66	6	embryonic optic lobe
+68	5	embryonic optic lobe primordium
+69	2	trunk mesoderm anlage in statu nascendi
 69	6	embryonic central brain surface glia
-71	6	embryonic maxillary sensory complex
-72	6	embryonic/larval oenocyte
-74	4	strong ubiquitous
-78	4	amnioserosa primordium
-79	2	hindgut anlage in statu nascendi
-79	5	head epidermis primordium P1
-81	2	foregut anlage in statu nascendi
-82	5	proventriculus primordium
+75	6	embryonic maxillary sensory complex
+77	6	embryonic/larval oenocyte
+80	5	head epidermis primordium P1
+81	2	hindgut anlage in statu nascendi
+82	2	foregut anlage in statu nascendi
 83	6	embryonic antennal sense organ
-84	5	posterior spiracle specific anlage
-86	6	embryonic/larval dorsal trunk
-87	2	apically cleared
-87	3	strong ubiquitous
-88	1	pole plasm
-89	1	strong ubiquitous
-89	6	labral sensory complex
+84	4	amnioserosa primordium
+86	5	proventriculus primordium
+87	5	posterior spiracle specific anlage
+87	6	embryonic/larval dorsal trunk
+90	1	strong ubiquitous
 90	5	procrystal cell
-93	2	gap
-93	6	head epidermis dorsal
+91	1	pole plasm
+93	4	strong ubiquitous
+95	6	head epidermis dorsal
+95	6	labral sensory complex
+96	2	gap
 96	3	foregut anlage
-96	4	visual primordium
-97	3	yolk nuclei
-98	6	plasmatocytes
-103	2	mesoderm anlage in statu nascendi
-103	5	garland cell primordium
+97	2	apically cleared
+97	4	visual primordium
+98	3	yolk nuclei
+101	6	plasmatocytes
+106	2	mesoderm anlage in statu nascendi
+106	3	strong ubiquitous
 106	5	lateral cord glia
-108	2	yolk nuclei
+108	5	garland cell primordium
+109	2	anterior endoderm anlage in statu nascendi
+109	2	yolk nuclei
 110	6	crystal cell
-111	5	embryonic central brain neuron
-111	5	midline primordium
 111	5	procephalic neuroblasts
 112	5	embryonic central brain glia
+112	5	embryonic central brain neuron
 112	5	longitudinal visceral mesoderm primordium
-113	6	embryonic gastric caecum
-115	5	salivary gland primordium
-116	6	embryonic/larval dorsal vessel
-123	2	posterior endoderm anlage in statu nascendi
-123	2	strong ubiquitous
-123	4	yolk nuclei
-127	5	neuroblasts of ventral nervous system
+113	5	midline primordium
+115	6	embryonic gastric caecum
+117	6	embryonic/larval dorsal vessel
+120	6	lymph gland
+125	2	posterior endoderm anlage in statu nascendi
+126	4	yolk nuclei
+127	5	salivary gland primordium
+128	5	neuroblasts of ventral nervous system
 128	6	embryonic salivary gland body
-129	6	ring gland
-132	5	plasmatocytes anlage
-143	5	fat body/gonad primordium
-145	5	germ cell
-149	6	germ cell
-151	5	clypeo-labral primordium
+131	6	ring gland
+137	5	plasmatocytes anlage
+149	5	germ cell
 151	5	lateral cord neuron
-153	4	central brain primordium P3
-158	6	amnioserosa
-161	4	foregut primordium
-166	6	embryonic large intestine
+151	6	germ cell
+152	5	fat body/gonad primordium
+155	5	clypeo-labral primordium
+162	2	strong ubiquitous
+165	4	foregut primordium
+168	6	embryonic large intestine
 169	4	amnioserosa
-170	2	pole cell
-170	4	germ cell
-175	6	embryonic/larval garland cell
-178	6	dorsal/lateral sensory complexes
-180	3	ventral nerve cord anlage
+170	4	central brain primordium P3
+172	6	amnioserosa
+180	4	germ cell
+180	6	embryonic/larval garland cell
+186	2	pole cell
 188	6	ventral sensory complex primordium
-191	5	tracheal primordium
-193	6	sensory nervous system primordium
+194	5	tracheal primordium
+194	6	sensory nervous system primordium
 195	2	anlage in statu nascendi
-197	5	dorsal pharyngeal muscle primordium
-199	6	embryonic esophagus
-200	5	Malpighian tubule primordium
-209	3	pole cell
-212	6	embryonic central brain glia
+197	6	dorsal/lateral sensory complexes
+202	3	ventral nerve cord anlage
+205	5	dorsal pharyngeal muscle primordium
+205	5	Malpighian tubule primordium
+207	6	embryonic esophagus
+213	6	embryonic central brain glia
 213	6	lateral cord neuron
-217	2	rapidly degraded
-219	6	ventral midline
-220	4	dorsal ectoderm primordium
-220	6	lateral cord glia
-222	3	dorsal ectoderm primordium
-225	6	atrium
-226	6	embryonic midgut chamber
-227	6	embryonic central brain neuron
-231	5	amnioserosa
-234	3	hindgut anlage
-234	5	muscle system primordium
-234	6	yolk nuclei
-238	5	yolk nuclei
-238	6	embryonic/larval posterior spiracle
-243	2	ventral ectoderm anlage in statu nascendi
-246	2	procephalic ectoderm anlage in statu nascendi
-261	6	embryonic salivary gland
-271	2	dorsal ectoderm anlage in statu nascendi
-298	6	embryonic/larval fat body
-300	6	gonad
-301	4	ventral ectoderm primordium
-301	6	sensory system head
-303	4	inclusive hindgut primordium
-303	5	visceral muscle primordium
-307	6	embryonic/larval tracheal system
-315	5	somatic muscle primordium
-317	5	ventral epidermis primordium
-326	1	flag_for_volker
-334	5	foregut primordium
-335	6	embryonic epipharynx
-342	5	head mesoderm primordium
-344	6	embryonic Malpighian tubule
-347	3	procephalic ectoderm anlage
-348	6	embryonic anal pad
-351	6	embryonic hypopharynx
-367	6	embryonic proventriculus
-376	5	dorsal epidermis primordium
-395	1	ubiquitous
-397	3	ventral ectoderm primordium P2
-397	6	embryonic/larval somatic muscle
-402	2	subset
-424	6	embryonic/larval visceral muscle
-434	6	embryonic foregut
-435	4	procephalic ectoderm primordium
-475	4	ventral nerve cord primordium P3
-489	6	dorsal prothoracic pharyngeal muscle
-492	6	embryonic head epidermis
-496	3	anterior endoderm anlage
-499	2	faint ubiquitous
-529	3	head mesoderm primordium P4
-537	3	posterior endoderm primordium P2
-581	5	hindgut proper primordium
-597	3	trunk mesoderm primordium P2
+221	6	lateral cord glia
+222	3	pole cell
+223	4	dorsal ectoderm primordium
+223	6	ventral midline
+226	6	atrium
+228	6	embryonic central brain neuron
+229	3	dorsal ectoderm primordium
+237	6	embryonic midgut chamber
+239	2	rapidly degraded
+239	3	hindgut anlage
+239	6	yolk nuclei
+240	5	muscle system primordium
+246	2	ventral ectoderm anlage in statu nascendi
+246	5	amnioserosa
+246	5	yolk nuclei
+251	2	procephalic ectoderm anlage in statu nascendi
+257	6	embryonic/larval posterior spiracle
+275	5	salivary gland body primordium
+277	6	embryonic salivary gland
+278	2	dorsal ectoderm anlage in statu nascendi
+304	4	ventral ectoderm primordium
+306	4	inclusive hindgut primordium
+311	6	embryonic/larval fat body
+311	6	sensory system head
+316	6	gonad
+317	6	embryonic/larval tracheal system
+318	5	visceral muscle primordium
+328	5	somatic muscle primordium
+329	5	ventral epidermis primordium
+341	5	foregut primordium
+347	6	embryonic epipharynx
+349	3	procephalic ectoderm anlage
+356	5	head mesoderm primordium
+358	6	embryonic Malpighian tubule
+364	6	embryonic hypopharynx
+368	6	embryonic anal pad
+376	6	embryonic proventriculus
+380	1	flag_for_volker
+393	5	dorsal epidermis primordium
+399	3	ventral ectoderm primordium P2
+403	2	subset
+406	1	ubiquitous
+416	6	embryonic/larval somatic muscle
+438	4	procephalic ectoderm primordium
+444	6	embryonic foregut
+450	6	embryonic/larval visceral muscle
+499	6	embryonic head epidermis
+505	4	ventral nerve cord primordium P3
+511	3	anterior endoderm anlage
+519	6	dorsal prothoracic pharyngeal muscle
+546	2	faint ubiquitous
+548	3	head mesoderm primordium P4
+554	3	posterior endoderm primordium P2
+591	5	hindgut proper primordium
 611	6	embryonic central nervous system
-632	4	head mesoderm primordium P2
-663	5	trunk mesoderm primordium
-667	6	embryonic ventral epidermis
-690	4	anterior endoderm primordium
-695	6	faint ubiquitous
-708	6	embryonic/larval muscle system
-716	4	trunk mesoderm primordium
-728	4	posterior endoderm primordium
-742	6	embryonic dorsal epidermis
-826	5	faint ubiquitous
-836	5	ventral nerve cord primordium
-839	3	faint ubiquitous
-861	4	faint ubiquitous
-876	6	embryonic hindgut
-885	5	brain primordium
-893	2	cellular blastoderm
-1200	6	ubiquitous
-1216	5	anterior midgut primordium
-1272	5	posterior midgut primordium
-1344	6	embryonic brain
-1346	6	ventral nerve cord
-1448	2	maternal
-1591	5	ubiquitous
-1686	6	embryonic midgut
-1845	4	ubiquitous
-1858	2	ubiquitous
-1933	3	ubiquitous
-2696	1	no staining
-3028	6	no staining
-4003	5	no staining
-4145	2	no staining
-4465	1	maternal
-4647	4	no staining
-4744	3	no staining
+622	3	trunk mesoderm primordium P2
+656	4	head mesoderm primordium P2
+678	5	trunk mesoderm primordium
+694	6	embryonic ventral epidermis
+719	4	anterior endoderm primordium
+720	6	embryonic/larval muscle system
+746	4	trunk mesoderm primordium
+750	6	faint ubiquitous
+754	4	posterior endoderm primordium
+769	6	embryonic dorsal epidermis
+874	5	faint ubiquitous
+889	3	faint ubiquitous
+895	5	ventral nerve cord primordium
+898	2	cellular blastoderm
+907	4	faint ubiquitous
+912	6	embryonic hindgut
+937	5	brain primordium
+1289	5	anterior midgut primordium
+1315	6	ubiquitous
+1341	5	posterior midgut primordium
+1431	6	ventral nerve cord
+1432	6	embryonic brain
+1494	2	maternal
+1722	5	ubiquitous
+1782	6	embryonic midgut
+1986	4	ubiquitous
+2058	2	ubiquitous
+2077	3	ubiquitous
+2886	1	no staining
+3184	6	no staining
+4207	5	no staining
+4343	2	no staining
+4749	1	maternal
+4895	4	no staining
+4995	3	no staining

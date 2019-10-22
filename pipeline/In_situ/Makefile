@@ -9,7 +9,7 @@ all: $(VERIFICATIONFILE)
 
 map_zfin:
 	# Get data from ZebrafishMine
-	@python ZFIN/zebra_query.py  > $(SOURCE_FILES_DIR)$(DIR_NAME)ZebrafishMine.data 2>warnings.$@
+	@python3 ZFIN/zebra_query.py  > $(SOURCE_FILES_DIR)$(DIR_NAME)ZebrafishMine.data 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@touch $@
 
