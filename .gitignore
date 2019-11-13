@@ -8,6 +8,9 @@
 *.war
 *.ear
 
+# R history file
+.Rhistory
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
@@ -16,6 +19,9 @@ hs_err_pid*
 ###############################################
 
 nohup.out*
+warnings.*
+*.warn
+*.tmp
 
 # OS generated files #
 ######################
@@ -60,3 +66,7 @@ pipeline/Affymetrix/chipType_full.tsv
 pipeline/Affymetrix/microarrayExperiment_full.tsv
 pipeline/RNA_Seq/RNASeqExperiment_full.tsv
 pipeline/RNA_Seq/RNASeqLibrary_full.tsv
+
+pipeline/web/sitemap*.xml
+pipeline/SPARQL-RDF/bgee_connection.properties
+

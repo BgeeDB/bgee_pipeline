@@ -1,0 +1,12 @@
+Anat. entity IDs	Anat. entity names	Exists in selected species
+UBERON:0000160	intestine	cattle, chimpanzee, gorilla, human, macaque, mouse, rat, zebrafish
+UBERON:0000206	pharyngeal gill	zebrafish
+UBERON:0000473	testis	cattle, chimpanzee, gorilla, human, macaque, mouse, rat, zebrafish
+UBERON:0000922	embryo	cattle, chimpanzee, gorilla, human, macaque, mouse, rat, zebrafish
+UBERON:0000948	heart	cattle, chimpanzee, gorilla, human, macaque, mouse, rat, zebrafish
+UBERON:0000955	brain	cattle, chimpanzee, gorilla, human, macaque, mouse, rat, zebrafish
+UBERON:0000992	female gonad	cattle, chimpanzee, gorilla, human, macaque, mouse, rat, zebrafish
+UBERON:0001474	bone element	cattle, chimpanzee, gorilla, human, macaque, mouse, rat, zebrafish
+UBERON:0001630	muscle organ	cattle, chimpanzee, gorilla, human, macaque, mouse, rat, zebrafish
+UBERON:0002107	liver	cattle, chimpanzee, gorilla, human, macaque, mouse, rat, zebrafish
+UBERON:0002113	kidney	cattle, chimpanzee, gorilla, human, macaque, mouse, rat, zebrafish

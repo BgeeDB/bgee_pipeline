@@ -190,7 +190,7 @@ add unique(geneId, speciesId);
 
 /*!40000 ALTER TABLE `geneToOma` DISABLE KEYS */;
 alter table geneToOma
-add primary key (bgeeGeneId, omaNodeId, taxonId);
+add primary key (bgeeGeneId, OMAGroupId, taxonId);
 /*!40000 ALTER TABLE `geneToOma` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `geneNameSynonym` DISABLE KEYS */;
@@ -235,6 +235,11 @@ modify conditionId mediumint unsigned not null auto_increment,
 add primary key(anatEntityId, stageId, speciesId, sex, sexInferred, strain),
 add unique(conditionId);
 /*!40000 ALTER TABLE `cond` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `remapCond` DISABLE KEYS */;
+alter table remapCond
+add primary key(incorrectConditionId, remappedConditionId);
+/*!40000 ALTER TABLE `remapCond` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `globalCond` DISABLE KEYS */;
 alter table globalCond

@@ -19,6 +19,11 @@ my $FASTQ_PATH         = $BASE.'/FASTQ';
 my @private_exp_id     = ('SRP012682'); # E.g. GTEx
 
 
+if ( !$SRATK_PATH || !$ASPERA_CONNECT_DIR ){
+    die "\n\tSRATK_PATH and/or ASPERA_CONNECT_DIR not defined! They are used to find NCBI SRA & ASPERA executables\n\n";
+}
+
+
 open(my $ANNOTATION, '<', "$annotation_file")  or die "\n\tCannot read/open [$annotation_file]\n\n";
 #libraryId   experimentId   speciesId   organism        genomeFilePath                        database   platform                       libraryType   libraryInfo   readLength   runIds
 #SRX081869   GSE30352       9031        Gallus gallus   gallus_gallus/Gallus_gallus.Galgal4   Ensembl    Illumina Genome Analyzer IIx   SINGLE                      76           SRR306710
@@ -61,6 +66,22 @@ while (<$ANNOTATION>){
             system("cd $BASE; $SRATK_PATH/bin/fastq-dump --split-3 --gzip --outdir $FASTQ_PATH/$library_id/  $SRA_PATH/$sra_id.sra")==0
                 or do { warn "\tFailed to convert [$library_id/$sra_id]\n"; next SRA };
 
+            # Check FastQ file size
+            for my $fastq ( glob("$FASTQ_PATH/$library_id/*.gz") ){
+                if ( -s $fastq < 1_000_000 ){
+                    warn "$fastq file size looks very small!";
+                }
+            }
+
+            # Compute FastQC (A quality control tool for high throughput sequence data) for ALL SRR (runs)
+            mkdir "$FASTQ_PATH/$library_id/FASTQC";
+            QC:
+            for my $fastq ( glob("$FASTQ_PATH/$library_id/*.gz") ){
+                my ($run_id) = $fastq =~ /([^\/]+)\.fastq\.gz/;
+                #FIXME Move to FastP (much faster) and precompute min/max/mean/median of read lengths
+                system("fastqc -o $FASTQ_PATH/$library_id/FASTQC $fastq > $FASTQ_PATH/$library_id/FASTQC/$run_id.fastqc.log 2>&1")==0
+                    or do { warn "\tfastqc failed for [$FASTQ_PATH/$library_id/FASTQC/$run_id]\n"; next QC };
+            }
 
             # If private (need encryption):
             if ( (scalar grep { /^$exp_id$/ } @private_exp_id) >= 1 ){

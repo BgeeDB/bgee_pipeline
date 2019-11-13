@@ -11,7 +11,7 @@ my $oddeven         = $ARGV[1]  // 'odd';
 my $SRATK_PATH         = '/software/UHTS/Analysis/sratoolkit/2.5.2';
 my $ASPERA_CONNECT_DIR = '/software/Utility/aspera_connect/3.6.1.110647';
 
-my $BASE               = '/scratch/local/weekly/bbgee'; # == project's workspace directory
+my $BASE               = '/scratch/temporary/bbgee'; # == project's workspace directory
 my $SRA_PATH           = $BASE.'/sra';
 my $FASTQ_PATH         = $BASE.'/FASTQ';
 my $REMOTE_BASE        = '/opt/gtexfile/FASTQ';
@@ -79,6 +79,22 @@ while (<$REVERSE_ANNOTATION>){
             system("cd $BASE; $SRATK_PATH/bin/fastq-dump --split-3 --gzip --outdir $FASTQ_PATH/$library_id/  $SRA_PATH/$sra_id.sra")==0
                 or do { warn "\tFailed to convert [$library_id/$sra_id]\n"; next SRA };
 
+            # Check FastQ file size
+            for my $fastq ( glob("$FASTQ_PATH/$library_id/*.gz") ){
+                if ( -s $fastq < 1_000_000 ){
+                    warn "$fastq file size looks very small!";
+                }
+            }
+
+            # Compute FastQC (A quality control tool for high throughput sequence data) for ALL SRR (runs)
+            mkdir "$FASTQ_PATH/$library_id/FASTQC";
+            QC:
+            for my $fastq ( glob("$FASTQ_PATH/$library_id/*.gz") ){
+                my ($run_id) = $fastq =~ /([^\/]+)\.fastq\.gz/;
+                #FIXME Move to FastP (much faster) and precompute min/max/mean/median of read lengths
+                system("fastqc -o $FASTQ_PATH/$library_id/FASTQC $fastq > $FASTQ_PATH/$library_id/FASTQC/$run_id.fastqc.log 2>&1")==0
+                    or do { warn "\tfastqc failed for [$FASTQ_PATH/$library_id/FASTQC/$run_id]\n"; next QC };
+            }
 
             # If private (need encryption):
             if ( (scalar grep { /^$exp_id$/ } @private_exp_id) >= 1 ){

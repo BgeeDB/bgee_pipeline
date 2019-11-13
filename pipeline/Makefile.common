@@ -9,14 +9,17 @@ SHELL = /bin/bash
 # ===================================
 #  GENERAL PARAMETERS
 # ===================================
-RELEASE          := 14
+RELEASE          := 15.0
 
 # MySQL database connection parameters
 # DBUSER and DBPASS defined in Makefile.Config
 # DBUSERV and DBPASSV defined in Makefile.Config
-DBNAME := bgee_v$(RELEASE)
+DBNAME := bgee_v$(subst .,_,$(RELEASE))
 DBHOST := 127.0.0.1
 DBPORT := 3306
+DBNAME_BGEELITE := bgeelite_v$(subst .,_,$(RELEASE))
+DBHOST_BGEELITE := 127.0.0.1
+
 
 
 # Annotator machine
@@ -29,7 +32,7 @@ VITHOST  := dev.vital-it.ch
 
 # Machine used for the pipeline
 # PIPELOGIN and PIPEPASSWD defined in Makefile.Config
-PIPEHOST   := altbioinfo.unil.ch
+PIPEHOST   := devbioinfo.unil.ch
 
 # Machine used for RNA-seq/Affymetrix data storage (backup)
 # DATALOGIN and DATAPASSWD defined in Makefile.Config
@@ -88,7 +91,11 @@ BGEEPIPELINEJARNAME := bgee-pipeline-$(RELEASE)-with-dependencies.jar
 BGEEPIPELINEJAR     := $(JAVALIBDIR)$(BGEEPIPELINEJARNAME)
 
 JAVA_NO_JAR := java -Xmx32g -Dbgee.dao.jdbc.username=$(DBUSER) -Dbgee.dao.jdbc.password=$(DBPASS) -Dbgee.dao.jdbc.driver.names=com.mysql.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST):$(DBPORT)/$(DBNAME)?enableQueryTimeouts=false&sessionVariables=net_write_timeout=86400,net_read_timeout=86400,wait_timeout=86400'
+# Java command allowing to connect to bgeelite without Jar. Never used without JAR for the moment but created to follow the same pattern than JAVA_NO_JAR/JAVA variables for Bgee
+JAVA_NO_JAR_BGEE_LITE := java -Xmx32g -Dbgee.dao.jdbc.username=$(DBUSER_BGEELITE) -Dbgee.dao.jdbc.password=$(DBPASS_BGEELITE) -Dbgee.dao.jdbc.driver.names=com.mysql.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST_BGEELITE):$(DBPORT)/$(DBNAME_BGEELITE)?enableQueryTimeouts=false&sessionVariables=net_write_timeout=86400,net_read_timeout=86400,wait_timeout=86400'
+
 JAVA := $(JAVA_NO_JAR) -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)
+JAVA_BGEE_LITE := $(JAVA_NO_JAR_BGEE_LITE) -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)
 # to pass arguments to Java command line
 ENTRY_SEP :=,
 KEY_VAL_SEP :=//
@@ -99,6 +106,8 @@ SPACE :=__
 
 MYSQLNODBNAME := mysql -u $(DBUSER) -p$(DBPASS) -h $(DBHOST) -P $(DBPORT) --init-command='SET SESSION net_write_timeout=86400; SET SESSION net_read_timeout=86400; SET SESSION wait_timeout=86400'
 MYSQL := $(MYSQLNODBNAME) $(DBNAME)
+MYSQLNODBNAME_BGEELITE := mysql -u $(DBUSER_BGEELITE) -p$(DBPASS_BGEELITE) -h $(DBHOST_BGEELITE) -P $(DBPORT) --init-command='SET SESSION net_write_timeout=86400; SET SESSION net_read_timeout=86400; SET SESSION wait_timeout=86400'
+MYSQL_BGEELITE := $(MYSQLNODBNAME_BGEELITE) $(DBNAME_BGEELITE)
 
 GIT    := git
 WGET   := wget -N -nv
@@ -140,16 +149,16 @@ include $(PIPELINEROOT)Makefile.taxon_info
 
 #NOTE Think to add ; at the end to ease insertion in other command lines
 VIT_ASPERA_CMD     := module add Utility/aspera_connect/3.7.4.147727;
-#VIT_BEDTOOLS_CMD   := module add UHTS/Analysis/BEDTools/2.17.0;
-#VIT_BOWTIE2_CMD    := module add UHTS/Aligner/bowtie2/2.2.4;
-#VIT_HTSEQ_CMD      := module add UHTS/Analysis/HTSeq/0.6.1;
-VIT_KALLISTO_CMD   := module add UHTS/Analysis/kallisto/0.43.1;
-#VIT_PICARD_CMD     := module add UHTS/Analysis/picard-tools/1.127; java -jar /software/UHTS/Analysis/picard-tools/1.127/picard.jar SortSam
+#VIT_BEDTOOLS_CMD   := module add UHTS/Analysis/BEDTools/2.26.0;
+#VIT_BOWTIE2_CMD    := module add UHTS/Aligner/bowtie2/2.3.4.1;
+#VIT_HTSEQ_CMD      := module add UHTS/Analysis/HTSeq/0.9.1;
+VIT_KALLISTO_CMD   := module add UHTS/Analysis/kallisto/0.44.0;
+#VIT_PICARD_CMD     := module add UHTS/Analysis/picard-tools/2.18.11; java -jar /software/UHTS/Analysis/picard-tools/2.18.11/picard.jar SortSam
 VIT_R_CMD          := module add R/3.4.2;
 #VIT_SAMTOOLS_CMD   := module add UHTS/Analysis/samtools/0.1.19;
 VIT_SRATOOLKIT_CMD := module add UHTS/Analysis/sratoolkit/2.8.2.1;
 VIT_TOPHAT_CMD     := module add UHTS/Aligner/tophat/2.1.1;
-VIT_FASTQC_CMD     := module add UHTS/Quality_control/fastqc/0.11.5;
+VIT_FASTQC_CMD     := module add UHTS/Quality_control/fastqc/0.11.7;
 
 
 # ===================================
@@ -172,7 +181,7 @@ VERIFICATIONFILE := $(OUTPUT_DIR)step_verification_$(RELEASE).txt
 
 # =========== FILES FROM ANNOTATORS ===============
 # URL to git annotation files
-ANNOTATION_GIT_URL            := https://gitlab.sib.swiss/Bgee/expression-annotations/raw/master
+ANNOTATION_GIT_URL            := https://gitlab.sib.swiss/Bgee/expression-annotations/raw/develop
 
 # Directory with curator files, from the root directory of the pipeline
 CURATIONPATH                  := ../../curation/
@@ -199,7 +208,7 @@ BDGP_PATH                     := $(CURATIONPATH)expression_data/in_situ/bdgp/
 BDGP2FBBT_MAPPING_FILE        := BDGP_terms_to_FBbt_terms.tsv
 BDGP2FBBT_MAPPING_NEW         := BDGP_terms_to_FBbt_terms_$(DBNAME).tsv
 STAGECORRESP_FILE             := BDGP_stages_correspondence.txt
-WORMBASE_EXPR_DUMP            := expr_pattern.ace.20160829
+WORMBASE_EXPR_DUMP            := expr_pattern.ace.20190721
 
 ## RNA Seq
 RNASEQ_CURATION_PATH          := $(CURATIONPATH)expression_data/rna_seq/
@@ -335,12 +344,13 @@ ANNOTATIONPATH    := $(AFFYDATAPATH)annotations/
 
 # =========== RNA_Seq FILES ===============
 RNASEQPATH                         := RNA_Seq/
+EXTRAMAPPING_FILEPATH              := $(SOURCE_FILES_DIR)$(RNASEQPATH)Bgee$(RELEASE)_mapToUberon.tsv
 RNASEQ_EXPERIMENT_FILEPATH         := $(SOURCE_FILES_DIR)$(RNASEQPATH)RNASeqExperiment.tsv
 RNASEQ_EXPERIMENT_FILEPATH_WORM    := $(SOURCE_FILES_DIR)$(RNASEQPATH)RNASeqExperiment_worm.tsv
-RNASEQ_EXPERIMENT_FILEPATH_FULL    := $(PIPELINEROOT)$(RNASEQPATH)RNASeqExperiment_full.tsv
+RNASEQ_EXPERIMENT_FILEPATH_FULL    := $(GENERATED_FILES_DIR)$(RNASEQPATH)RNASeqExperiment_full.tsv
 RNASEQ_LIB_FILEPATH                := $(SOURCE_FILES_DIR)$(RNASEQPATH)RNASeqLibrary.tsv
 RNASEQ_LIB_FILEPATH_WORM           := $(SOURCE_FILES_DIR)$(RNASEQPATH)RNASeqLibrary_worm.tsv
-RNASEQ_LIB_FILEPATH_FULL           := $(PIPELINEROOT)$(RNASEQPATH)RNASeqLibrary_full.tsv
+RNASEQ_LIB_FILEPATH_FULL           := $(GENERATED_FILES_DIR)$(RNASEQPATH)RNASeqLibrary_full.tsv
 RNASEQ_LIB_EXCLUSION_FILEPATH_WORM := $(SOURCE_FILES_DIR)$(RNASEQPATH)RNASeqLibrary_worm_exclusion.tsv
 RNASEQ_LIB_CHECKS_FILEPATH         := $(SOURCE_FILES_DIR)$(RNASEQPATH)RNASeqLibraryPlatformChecks.tsv
 RNASEQ_SAMPINFO_FILEPATH           := $(GENERATED_FILES_DIR)$(RNASEQPATH)rna_seq_sample_info.txt
@@ -348,18 +358,19 @@ RNASEQ_SAMPEXCLUDED_FILEPATH       := $(GENERATED_FILES_DIR)$(RNASEQPATH)rna_seq
 RNASEQ_LENGTH_INFO_FILEPATH        := $(GENERATED_FILES_DIR)$(RNASEQPATH)rna_seq_length_info.txt
 
 # RNAseq Vital-IT paths
-# TODO: clean-up and remove unused ones
+# TODO clean-up and remove unused ones
 RNASEQ_VITALIT_READONLY        := /data/ul/dee/bgee/
-RNASEQ_VITALIT_SCRIPTS         := $(RNASEQ_VITALIT_READONLY)/GIT/pipeline/
+RNASEQ_VITALIT_SCRIPTS         := $(RNASEQ_VITALIT_READONLY)GIT/pipeline/
 RNASEQ_VITALIT_GTF             := $(RNASEQ_VITALIT_READONLY)rna_seq/GTF/
 RNASEQ_VITALIT_ALL_RES_BACKUP  := $(RNASEQ_VITALIT_READONLY)rna_seq/all_results/
-RNASEQ_VITALIT_SCRATCH         := /scratch/cluster/monthly/bbgee/
+RNASEQ_VITALIT_SCRATCH         := /scratch/temporary/bbgee/
 RNASEQ_VITALIT_ALL_RES         := $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME)/
 RNASEQ_VITALIT_SUM_RES         := $(RNASEQ_VITALIT_SCRATCH)sum_by_species_$(DBNAME)/
 RNASEQ_VITALIT_GAUSSIAN_CHOICE := $(GENERATED_FILES_DIR)$(RNASEQPATH)gaussian_choice_by_species.txt
 RNASEQ_VITALIT_PRESENCE_RES    := $(RNASEQ_VITALIT_SCRATCH)presence_absence_$(DBNAME)/
 RNASEQ_VITALIT_LOG             := $(RNASEQ_VITALIT_ALL_RES)
 RNASEQ_VITALIT_R_LOG           := $(RNASEQ_VITALIT_ALL_RES)
+RNASEQ_VITALIT_REPORTINFO      := $(RNASEQ_VITALIT_ALL_RES)/reports_info_all_samples.txt
 ENCRYPT_PASSWD_FILE            := /home/bbgee/.passw
 
 # RNAseq bigbgee paths
@@ -367,24 +378,27 @@ RNASEQ_BIGBGEE_FASTQ       := /opt/gtexfile/FASTQ/
 
 # RNAseq data path
 RNASEQDATAPATH             := /var/bgee/extra/pipeline/rna_seq/
+RNASEQABUNDANCEFILE        := abundance_gene_level+new_tpm+new_fpkm+calls.tsv
 RNASEQALLRES               := $(RNASEQDATAPATH)all_results_$(DBNAME)/
 RNASEQGTFDATAPATH          := $(RNASEQDATAPATH)GTF/
 RNASEQLOGS                 := $(RNASEQALLRES)
-RNASEQSAMPSTATS            := $(RNASEQALLRES)presence_absence_all_samples.txt
-#TODO: should this file be put in $(GENERATED_FILES_DIR)$(RNASEQPATH)?
-RNASEQREPORTINFO           := $(RNASEQALLRES)reports_info_all_samples.txt
-#TODO: should this file be put in $(GENERATED_FILES_DIR)$(RNASEQPATH)?
+RNASEQSAMPSTATS            := $(GENERATED_FILES_DIR)$(RNASEQPATH)presence_absence_all_samples.txt
+RNASEQREPORTINFO           := $(GENERATED_FILES_DIR)$(RNASEQPATH)reports_info_all_samples.txt
 
 # Differential file path
-RNASEQDIFFEXPRPATH         := $(RNASEQDATAPATH)processed_differential_$(DBNAME)/
+RNASEQDIFFEXPRPATH                  := $(RNASEQDATAPATH)processed_differential_$(DBNAME)/
+RNASEQDIFFEXPRPATH_DEVANDANAT       := $(RNASEQDIFFEXPRPATH)devAndAnat/
+RNASEQDIFFEXPRPATH_SEX              := $(RNASEQDIFFEXPRPATH)sex/
 # Bioconductor file path
-RNASEQBIOCONDUCTOR         := $(RNASEQDATAPATH)bioconductor_$(DBNAME)/
-RNASEQBIOCONDUCTORDIFF     := $(RNASEQBIOCONDUCTOR)differential/
-RNASEQBIOCONDUCTORTARG     := $(RNASEQBIOCONDUCTOR)targets/
+RNASEQBIOCONDUCTOR                  := $(RNASEQDATAPATH)bioconductor_$(DBNAME)/
+#XXX is it used anymore???
+RNASEQBIOCONDUCTORDIFF              := $(RNASEQBIOCONDUCTOR)differential/
+RNASEQBIOCONDUCTORTARG              := $(RNASEQBIOCONDUCTOR)targets/
+RNASEQBIOCONDUCTORTARG_SEX          := $(RNASEQBIOCONDUCTORTARG)sex/
+RNASEQBIOCONDUCTORTARG_DEVANDANAT   := $(RNASEQBIOCONDUCTORTARG)devAndAnat/
 # TMM normalization files
-RNASEQTMMTARG              := $(RNASEQBIOCONDUCTOR)targets_TMM/
-RNASEQTMMPATH              := $(RNASEQDATAPATH)processed_TMM_$(DBNAME)/
-
+RNASEQTMMTARG                       := $(RNASEQBIOCONDUCTOR)targets_TMM/
+RNASEQTMMPATH                       := $(RNASEQDATAPATH)processed_TMM_$(DBNAME)/
 
 # =========== DOWNLOAD FILES ===============
 
@@ -395,6 +409,7 @@ DOWNLOAD_FILE_ROOT_PATH := $(GENERATED_FILES_DIR)download_files/
 CALLS_PATH := calls/
 EXPR_CALLS_PATH := $(CALLS_PATH)expr_calls/
 DIFF_EXPR_CALLS_PATH := $(CALLS_PATH)diff_expr_calls/
+PROC_EXPR_VALUES_PATH := processed_expr_values/
 ORTHOLOGS_PATH := orthologs/
 MULTI_SPE_DIFF_EXPR_CALL_PATH := $(CALLS_PATH)multi_species_diff_expr_calls/
 

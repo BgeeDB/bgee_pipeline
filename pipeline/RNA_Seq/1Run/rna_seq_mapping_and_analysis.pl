@@ -15,15 +15,16 @@ use Getopt::Long;
 my $GTEX_exp_id = 'SRP012682';
 
 ## Julien Roux 05/01/2016
-## This script executes the main RNA-seq analysis, including FastQC run, pseudo-mapping of reads with Kallisto, summing the counts at the transcripts level to the gene level, ...
+## This script executes the main RNA-seq analysis, including pseudo-mapping of reads with Kallisto, summing the counts at the transcripts level to the gene level, ...
 ## It is inspired by Marta's previous script which used Tophat to map reads, but it is greatly simplified: no config file, download of files removed, no generation of BAM files, no HT-seq counting step
 ## The script should be launched for a given libraryId (e.g. SRX081872), and the analysis will be executed only for this library
 ## All output files are written in the results folder, as well as log files (e.g. SRX081872.out, SRX081872.err, and SRX081872.Rout)
 
 # Define arguments & their default value
-my ($library_id, $sample_info_file, $index_folder, $fastq_folder, $kallisto_out_folder, $output_log_folder, $ens_release, $ens_metazoa_release, $data_host, $data_login, $data_passwd, $enc_passwd_file, $vit_fastqc_cmd, $vit_kallisto_cmd, $vit_R_cmd) = ('', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
+my ($library_id, $sample_info_file, $exclude_sample_file, $index_folder, $fastq_folder, $kallisto_out_folder, $output_log_folder, $ens_release, $ens_metazoa_release, $data_host, $data_login, $enc_passwd_file, $vit_kallisto_cmd, $vit_R_cmd) = ('', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
 my %opts = ('library_id=s'           => \$library_id,
             'sample_info_file=s'     => \$sample_info_file,
+            'exclude_sample_file=s'  => \$exclude_sample_file,
             'index_folder=s'         => \$index_folder, # same as GTF folder
             'fastq_folder=s'         => \$fastq_folder,
             'kallisto_out_folder=s'  => \$kallisto_out_folder,
@@ -32,19 +33,18 @@ my %opts = ('library_id=s'           => \$library_id,
             'ens_metazoa_release=s'  => \$ens_metazoa_release,
             'data_host=s'            => \$data_host,
             'data_login=s'           => \$data_login,
-            'data_passwd=s'          => \$data_passwd,
             'enc_passwd_file=s'      => \$enc_passwd_file,
-            'vit_fastqc_cmd=s'       => \$vit_fastqc_cmd,
             'vit_kallisto_cmd=s'     => \$vit_kallisto_cmd,
             'vit_R_cmd=s'            => \$vit_R_cmd,
            );
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $library_id eq '' || $sample_info_file eq '' || $index_folder eq '' || $fastq_folder eq '' || $kallisto_out_folder eq '' || $output_log_folder eq '' || $ens_release eq '' || $ens_metazoa_release eq '' || $data_host eq '' || $data_login eq '' || $data_passwd eq '' || $enc_passwd_file eq '' || $vit_fastqc_cmd eq '' || $vit_kallisto_cmd eq '' || $vit_R_cmd eq '' ){
+if ( !$test_options || $library_id eq '' || $sample_info_file eq '' || $index_folder eq '' || $fastq_folder eq '' || $kallisto_out_folder eq '' || $output_log_folder eq '' || $ens_release eq '' || $ens_metazoa_release eq '' || $data_host eq '' || $data_login eq '' || $enc_passwd_file eq '' || $vit_kallisto_cmd eq '' || $vit_R_cmd eq '' ){
     print "\n\tInvalid or missing argument:
-\te.g. $0 -library_id=... -sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -index_folder=\$(RNASEQ_VITALIT_GTF)  -fastq_folder=\$(RNASEQ_BIGBGEE_FASTQ) -kallisto_out_folder=\$(RNASEQ_VITALIT_ALL_RES) -ens_release=\$(ENSRELEASE) -ens_metazoa_release=\$(ENSMETAZOARELEASE) -data_host=\$(DATAHOST) -data_login=\$(DATA_LOGIN) -data_passwd=\$(DATA_PASSWD) -enc_passwd_file=\$(ENCRYPT_PASSWD_FILE) -vit_fastqc_cmd=\$(VIT_FASTQC_CMD) -vit_kallisto_cmd=\$(VIT_KALLISTO_CMD) $vit_R_cmd=\$(VIT_R_CMD)
+\te.g. $0 -library_id=... -sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -index_folder=\$(RNASEQ_VITALIT_GTF)  -fastq_folder=\$(RNASEQ_BIGBGEE_FASTQ) -kallisto_out_folder=\$(RNASEQ_VITALIT_ALL_RES) -ens_release=\$(ENSRELEASE) -ens_metazoa_release=\$(ENSMETAZOARELEASE) -data_host=\$(DATAHOST) -data_login=\$(DATA_LOGIN) -enc_passwd_file=\$(ENCRYPT_PASSWD_FILE) -vit_kallisto_cmd=\$(VIT_KALLISTO_CMD) $vit_R_cmd=\$(VIT_R_CMD)
 \t-library_id=s           Library to process
 \t-sample_info_file=s     TSV with information on species and runs for each library
+\t-exclude_sample_file=s  rna_seq_sample_excluded.txt
 \t-index_folder=s         Folder with Kallisto indexes (same as GTF folder)
 \t-fastq_folder=s         Folder with Fastq files on big bgee
 \t-kallisto_out_folder=s  Folder with Kallisto output and results
@@ -53,9 +53,7 @@ if ( !$test_options || $library_id eq '' || $sample_info_file eq '' || $index_fo
 \t-ens_metazoa_release=s  Ensembl Metazoa release,
 \t-data_host=s            Bigbgee machine with RNA-seq fastq files
 \t-data_login=s           Login for bigbgee
-\t-data_passwd=s          Password for bigbgee
 \t-enc_passwd_file=s      File with password necessary to decrypt the GTEx data
-\t-vit_fastqc_cmd=s       Command to load FastQC module on vital-it
 \t-vit_kallisto_cmd=s     Command to load kallisto module on vital-it
 \t-vit_R_cmd=s            Command to load R module on vital-it
 \n";
@@ -63,6 +61,21 @@ if ( !$test_options || $library_id eq '' || $sample_info_file eq '' || $index_fo
 }
 
 die "Invalid or missing [$sample_info_file]: $?\n"  if ( !-e $sample_info_file || !-s $sample_info_file );
+
+# Sample to exclude if any
+my %manually_excluded;
+EXCLUSION:
+for my $line ( read_file("$exclude_sample_file", chomp=>1) ){
+    #libraryId    excluded    comment    annotatorId    lastModificationDate
+    next EXCLUSION  if ( $line =~ /^#/); # header or comment
+
+    my ($sampleId, $to_exclude) = split(/\t/, $line);
+    next EXCLUSION  if ( $to_exclude ne 'TRUE' );
+
+    $manually_excluded{$sampleId} = 1;
+}
+die "Excluded library [$library_id]\n"  if ( exists $manually_excluded{$library_id} );
+
 
 # Reading $sample_info_file
 my $libraryExists = 'FALSE';
@@ -92,7 +105,16 @@ for my $line ( read_file($sample_info_file, chomp => 1) ){
         $database       = $fields[5];
         $libraryType    = $fields[7];
         $readLength     = $fields[9];
-        push @run_ids, split(',', $fields[10]);
+        my @tmp_runs;
+        for my $run ( split(',', $fields[10]) ){
+            push @tmp_runs, $run  if ( !exists $manually_excluded{$run} );
+        }
+        if ( scalar @tmp_runs >= 1 ){
+            push @run_ids, @tmp_runs;
+        }
+        else {
+            die "All runs are excluded for [$library_id]!\n";
+        }
     }
 }
 die "Library [$library_id] is not present in [$sample_info_file]\n"  unless ( $libraryExists );
@@ -178,7 +200,7 @@ for my $run ( @run_ids ){
 
 print "\tExtracting read length for all runs\n";
 my $shortReads   = 0;
-my $lengthCutoff = 50; # Read shorter than 50nt will be pseudo-mapped using shorter k-mer length. This parameter can be changed, but I assumed most recent RNA-seq data produce at least 50nt-long reads.
+my $lengthCutoff = 36; # Read shorter than $lengthCutoff nt will be pseudo-mapped using shorter k-mer length. This parameter can be changed, but I assumed most recent RNA-seq data produce at least $lengthCutoff nt-long reads.
 my @allLengths;
 my $maxLength;
 
@@ -186,6 +208,7 @@ for my $run ( @run_ids ){
     if ( $libraryType eq 'SINGLE' ){
         my $read;
         if ( $exp_id ne $GTEX_exp_id ){
+            #FIXME use R to get min/max/mean/median/mod instead of this that is not representative
             $read = `ssh $data_login\@$data_host cat $fastqSamplePath\/$run\.fastq.gz | zcat | tail -n +2 | head -n1`;
             chomp($read);
         }
@@ -194,7 +217,7 @@ for my $run ( @run_ids ){
             chomp($read);
         }
         if ( (!defined $read) or ($read eq '') ){
-            die "\tProblem: read length could not be extracted for run [$run]\n";
+            die "\tProblem: Read length could not be extracted for run [$run]\n";
         }
         print "\tRead length = ", length($read), " for run [$run]\n";
 
@@ -203,12 +226,12 @@ for my $run ( @run_ids ){
 
         # verify that extracted read length is consistent with SRA info
         if ( (length($read) ne $readLength) and ($readLength ne '') ){
-            warn "\nProblem: read length in fastq file [", length($read), "] is not consistent with SRA record [$readLength]. Please check run [$run]\n";
+            warn "\nProblem: Read length in FASTQ file [", length($read), "] is not consistent with SRA record [$readLength]. Please check [$run]\n";
         }
         # reads too short for Kallisto index with default k-mer length
         if ( length($read) < $lengthCutoff ){
             $shortReads = 1;
-            warn "\nWarning: length of reads [", length($read), "] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 15nt run [$run]\n";
+            warn "\nWarning: Length of reads [", length($read), "] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 15nt  [$run]\n";
         }
     }
     elsif ( $libraryType eq 'PAIRED' ){
@@ -226,10 +249,10 @@ for my $run ( @run_ids ){
             chomp($read2);
         }
         if ( (!defined $read1) or ($read1 eq '') ){
-            die "\tProblem: length of left read could not be extracted for run [$run]\n";
+            die "\tProblem: Length of left read could not be extracted for run [$run]\n";
         }
         if ( (!defined $read2) or ($read2 eq '') ){
-            die "\tProblem: length of right read could not be extracted for run [$run]\n";
+            die "\tProblem: Length of right read could not be extracted for run [$run]\n";
         }
         print "\tRead lengths = ", length($read1), '/', length($read2), " for run [$run]\n";
 
@@ -239,33 +262,34 @@ for my $run ( @run_ids ){
 
         # verify that same length for both PE reads. If not, probably an error
         if ( length($read1) ne length($read2) ){
-            warn "\nWarning: length of left and right reads are different [", length($read1), '/', length($read2), "]. Please check run [$run]\n";
+            warn "\nWarning: Length of left and right reads are different [", length($read1), '/', length($read2), "]. Please check [$run]\n";
         }
         # verify that extracted read length is consistent with SRA info
         if ( ((length($read1) + length($read2)) ne $readLength) and ($readLength ne '') ){
-            warn "\nProblem: length of left and right reads in fastq files [", length($read1), '+', length($read2), "=", length($read1) + length($read2), "] are not consistent with SRA record [$readLength]. Please check run [$run]\n";
+            warn "\nProblem: Length of left and right reads in FASTQ files [", length($read1), '+', length($read2), "=", length($read1) + length($read2), "] are not consistent with SRA record [$readLength]. Please check [$run]\n";
         }
         # reads too short for Kallisto index with default k-mer length
         if ( ( length($read1) < $lengthCutoff ) or ( length($read2) < $lengthCutoff ) ){
             $shortReads = 1;
-            warn "\nWarning: length of left and/or right reads [", length($read1), '/', length($read2), "] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 15nt run [$run]\n";
+            warn "\nWarning: Length of left and/or right reads [", length($read1), '/', length($read2), "] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 15nt  [$run]\n";
         }
     }
 }
 
 # report min and max read length across runs
 open (my $REPORT, '>>', "$report_file")  or die "Cannot write [$report_file]\n";
-print {$REPORT} "\nMinimum read length across runs: ", min @allLengths, "\n";
-print {$REPORT} "\nMaximum read length across runs: ", max @allLengths, "\n";
+print {$REPORT} "\n";
+print {$REPORT} 'Minimum read length across runs: ', min(@allLengths), "\n";
+print {$REPORT} 'Maximum read length across runs: ', max(@allLengths), "\n";
 close $REPORT;
 
 
-# reads too short for Kallisto index with default k-mer length, use index built with k-mer size = 15nt
+#TODO reads too short for Kallisto index with default k-mer length, use index built with k-mer size = 21nt
 #  See: https://www.biostars.org/p/104321/
 #       https://groups.google.com/forum/#!topic/kallisto-sleuth-users/clOeSROnnFI
 my $index = $index_folder.'/';
 $genomeFilePath =~ m/.+\/(.+)/;
-if ( $shortReads eq 1 ){
+if ( $shortReads == 1 ){
     $index .= $1.'.'.$ens_release.'.transcriptome_k15.idx';
 }
 else {
@@ -273,106 +297,34 @@ else {
 }
 print "\tKallisto index $index will be used for pseudo-mapping\n";
 
+
 #############################################################################################
-# Before launching Kallisto, launch a FastQC run. Each fastq file is run through FastQC
-# This can help investigate problems (low number of reads pseudo-mapped, etc). For future pipeline, if we trim adapters, this can also be useful
-
-my $fastqc_command = $vit_fastqc_cmd.'; '; # command to load module. ; added at the end because was removed in bsub_scheduler.pl (hard to pass without messing with command line)
-my $to_run = 0; # Is there at least one run that needs to be launched?
-
-for my $run ( @run_ids ){
-    if ( $libraryType eq 'SINGLE' ){
-        # Check if FastQC needs to be launched
-        if ( -s $kallisto_out_folder.'/FASTQC/'.$run.'/stdin_fastqc.html' ){
-            print "\tFastQC was previously run for [$run].\n";
-        }
-        else {
-            $to_run = 1;
-            # Create output directory
-            my $fastqc_out_folder = $kallisto_out_folder.'/FASTQC/'.$run;
-            make_path $fastqc_out_folder, {verbose=>0, mode=>0775};
-            # GTEx
-            if ( $exp_id eq $GTEX_exp_id ){
-                $fastqc_command .= 'ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.' | zcat | fastqc --outdir='.$fastqc_out_folder.' stdin; ';
-            }
-            else {
-                $fastqc_command .= 'ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'.fastq.gz | zcat | fastqc --outdir='.$fastqc_out_folder.' stdin; ';
-            }
-        }
-    }
-    elsif ( $libraryType eq 'PAIRED' ){
-        # Check if FastQC needs to be launched
-        if ( ( -s $kallisto_out_folder.'/FASTQC/'.$run.'_1/stdin_fastqc.html') and ( -s $kallisto_out_folder.'/FASTQC/'.$run.'_2/stdin_fastqc.html') ){
-            print "\tFastQC was previously run for [$run].\n";
-        }
-        else {
-            $to_run = 1;
-            # Create output directories
-            my $fastqc_out_folder_1 = $kallisto_out_folder.'/FASTQC/'.$run.'_1';
-            make_path $fastqc_out_folder_1, {verbose=>0, mode=>0775};
-            my $fastqc_out_folder_2 = $kallisto_out_folder.'/FASTQC/'.$run.'_2';
-            make_path $fastqc_out_folder_2, {verbose=>0, mode=>0775};
-
-            # Run each pair-end file separately
-            # GTEx
-            if ( $exp_id eq $GTEX_exp_id ){
-                $fastqc_command .= 'ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'_1.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.' | zcat | fastqc --outdir='.$fastqc_out_folder_1.' stdin; ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'_2.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.' | zcat | fastqc --outdir='.$fastqc_out_folder_2.' stdin; ';
-            }
-            else {
-                $fastqc_command .= 'ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'_1.fastq.gz | zcat | fastqc --outdir='.$fastqc_out_folder_1.' stdin; ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'_2.fastq.gz | zcat | fastqc --outdir='.$fastqc_out_folder_2.' stdin; ';
-            }
-        }
-    }
-}
-if ( $to_run eq 1 ){
-    print "\tFastQC command was built: \"", $fastqc_command, "\"\n\tNow launching FastQC...\n";
-    # Print command to .report file
-    open (my $REPORT1, '>>', "$report_file")  or die "Cannot write [$report_file]\n";
-    print {$REPORT1} "\nComputing node / FastQC command submitted:\n$fastqc_command\n";
-    close $REPORT1;
-    # Submit command. Bash syntax is needed to be able to have parentheses and pipes. See http://stackoverflow.com/questions/571368/how-can-i-use-bash-syntax-in-perls-system
-    my @args = ( "bash", "-c",  $fastqc_command );
-    system(@args)==0  or die "\tProblem: system call to FastQC failed\n";
-    print "\tDone\n";
-}
-else {
-    print "\tFastQC was already successfully run for all runs of this library. Skipping this step.\n";
-}
-# Extract the number of reads in .fastq files
+# Before launching Kallisto, check FastQC run. Each fastq file has its own FastQC!
+# This can help investigate problems (low number of reads pseudo-mapped, etc).
+#TODO For future pipeline, if we trim adapters, this can also be useful
+#
+# Extract the number of reads in FastQC files
 print "\tExtracting total number of reads from FastQC report...\n";
 my %number_reads;
 for my $run ( @run_ids ){
+    my $FASTQC_REPORT;
     if ( $libraryType eq 'SINGLE' ){
-        # Check if FastQC report is here
-        if ( -s $kallisto_out_folder.'/FASTQC/'.$run.'/stdin_fastqc.html' ){
-            open(my $IN_SINGLE, '<', $kallisto_out_folder.'/FASTQC/'.$run.'/stdin_fastqc.html')  or die "could not read FastQC report\n";
-            while ( defined (my $line = <$IN_SINGLE>) ){
-                if ( $line =~ m/<td>Total\sSequences<\/td><td>(\d+)<\/td>/ ){
-                    $number_reads{$run} = $1;
-                }
-            }
-            close $IN_SINGLE;
-        }
-        else {
-            warn "\nWarning: missing FastQC report for run $run\n";
+        #FIXME Move to FastP tool instead of FastQC
+        open($FASTQC_REPORT, "ssh $data_login\@$data_host  cat $fastqSamplePath/FASTQC/${run}_fastqc.html |")
+            or warn "\nWarning: missing FastQC report for run $run\n";
+    }
+    else {# $libraryType eq 'PAIRED'
+        #NOTE Only paired-end _1 is used here (but _2 has also FastQC report)
+        open($FASTQC_REPORT, "ssh $data_login\@$data_host  cat $fastqSamplePath/FASTQC/${run}_1_fastqc.html |")
+            or warn "\nWarning: missing FastQC report for run $run\n";
+    }
+
+    while ( defined (my $line = <$FASTQC_REPORT>) ){
+        if ( $line =~ m/<td>Total\sSequences<\/td><td>(\d+)<\/td>/ ){
+            $number_reads{$run} = $1;
         }
     }
-    elsif ( $libraryType eq 'PAIRED' ){
-        # Check if FastQC reports are here
-        if ( ( -s $kallisto_out_folder.'/FASTQC/'.$run.'_1/stdin_fastqc.html') and ( -s $kallisto_out_folder.'/FASTQC/'.$run.'_2/stdin_fastqc.html') ){
-            # Only use the report of the first read
-            open(my $IN_PAIRED, '<', $kallisto_out_folder.'/FASTQC/'.$run.'_1/stdin_fastqc.html') or die "could not read FastQC report\n";
-            while ( defined (my $line = <$IN_PAIRED>) ){
-                if ( $line =~ m/<td>Total\sSequences<\/td><td>(\d+)<\/td>/ ){
-                    $number_reads{$run} = $1;
-                }
-            }
-            close $IN_PAIRED;
-        }
-        else {
-            warn "\nWarning: missing FastQC report for run $run\n";
-        }
-    }
+    close $FASTQC_REPORT;
 }
 open (my $REPORT2, '>>', "$report_file")  or die "Cannot write [$report_file]\n";
 print {$REPORT2} "\nNumber of reads (from FastQC reports):\n";
@@ -385,10 +337,10 @@ print {$REPORT2} "\tTotal number reads\t", $total_reads_fastqc, "\n";
 close $REPORT2;
 
 ## TODO For each SRR, we should also store a file on bigbgee with the number of lines (wc -l). On this side, we can verify it is consistent with the number of reads in FASTQC reports (and number of reads processed by Kalisto = sum of all runs $total_reads_fastqc too).
-
-## TODO? To speed up things for next pipeline run, we could store FastQC results on bigbgee. This would require implementing a scp transfer of reports, and a test to know if the results are already calculated.
+## TODO Use a faster tool to compute FastQ Quality Control (e.g. fastp) to also get read lengths min/max AND median or mean!!!
 
 ## TODO? we could extract too the sequence lenghts from FastQC reports, instead of what is done above.
+
 
 #############################################################################################
 # Pseudo-mapping to transcriptome with kallisto:
@@ -401,6 +353,7 @@ close $REPORT2;
 # - output folder looks something like: all_results_bgee_v14/
 # - for next Bgee releases, if for a species the genome version and annotation did not change, it is possible to copy paste the results for the the concerned libraries, so that these are not rerun. But be careful with this! In most cases folders of it is probably faster to rerun everything.
 
+#my $local_not_remote_path = '...';
 # First check that this library was not previously successfully processed
 if ( ( -s $kallisto_out_folder.'/abundance.tsv' ) && ( -s $kallisto_out_folder.'/run_info.json' ) ){
     print "\tKallisto was already successfully run for this library. Skipping this step.\n";
@@ -413,10 +366,11 @@ else {
         $kallisto_command .= "kallisto quant -i $index -o $kallisto_out_folder -t 1 --single -l 180 -s 30 --bias ";
         for my $run ( @run_ids ){
             if ( $exp_id ne $GTEX_exp_id ){
-                $kallisto_command .= '<(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'.fastq.gz | zcat ) ';
+                #$kallisto_command .= $local_not_remote_path.'/'.$library_id.'/'.$run.'.fastq.gz ';
+                $kallisto_command .= '<(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'.fastq.gz) ';
             }
             if ( $exp_id eq $GTEX_exp_id ){
-                $kallisto_command .= '<(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.' | zcat ) ';
+                $kallisto_command .= '<(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.') ';
             }
         }
     }
@@ -424,10 +378,11 @@ else {
         $kallisto_command .= "kallisto quant -i $index -o $kallisto_out_folder -t 1 --bias ";
         for my $run ( @run_ids ){
             if ( $exp_id ne $GTEX_exp_id ){
-                $kallisto_command .= '<(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'_1.fastq.gz | zcat ) <(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'_2.fastq.gz | zcat) ';
+                #$kallisto_command .= $local_not_remote_path.'/'.$library_id.'/'.$run.'_1.fastq.gz '.$local_not_remote_path.'/'.$library_id.'/'.$run.'_2.fastq.gz ';
+                $kallisto_command .= '<(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'_1.fastq.gz) <(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'_2.fastq.gz) ';
             }
             if ( $exp_id eq $GTEX_exp_id ){
-                $kallisto_command .= '<(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'_1.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.' | zcat ) <(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'_2.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.' | zcat ) ';
+                $kallisto_command .= '<(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'_1.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.') <(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'_2.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.') ';
             }
         }
     }
@@ -438,7 +393,7 @@ else {
     close $REPORT3;
     # Submit command. Bash syntax is needed to be able to have parentheses and pipes. See http://stackoverflow.com/questions/571368/how-can-i-use-bash-syntax-in-perls-system
     my @args = ( "bash", "-c",  $kallisto_command );
-    system(@args)==0  or die "\tProblem: system call to Kallisto failed\n";
+    system(@args)==0  or die "\tProblem: System call to Kallisto failed\n";
     print "\tDone\n";
 }
 
@@ -463,7 +418,7 @@ if ( ( -s $kallisto_out_folder.'/abundance.tsv' ) && ( -s $kallisto_out_folder.'
     if ( $nan > 1000 ){
         # rename abundance file
         system('mv ', $kallisto_out_folder, '/abundance.tsv ', $kallisto_out_folder, '/abundance.tsv.problem');
-        die "\tProblem: Kallisto TPM results include numerous \"-nan\", please check for a problem.\n";
+        die "\tProblem: Kallisto TPM results include numerous \"-nan\", please check for a problem [$library_id]\n";
     }
 
     my $total_reads_kallisto;
@@ -481,17 +436,17 @@ if ( ( -s $kallisto_out_folder.'/abundance.tsv' ) && ( -s $kallisto_out_folder.'
         close $REPORT4;
 
         if ( $aligned / $total_reads_kallisto < 0.2 ){
-            warn "\nProblem: It seems that less than 20% of the reads were pseudo-aligned by Kallisto, please check for a problem.\n";
+            warn "\nProblem: It seems that less than 20% of the reads were pseudo-aligned by Kallisto, please check for a problem [$library_id]\n";
         }
         # Note: this arbitrary threshold of 20% can be changed
 
-        if ( $total_reads_kallisto ne $total_reads_fastqc ){
-            warn "\nProblem: The number of reads processed by FastQC and Kallisto differs. Please check for a problem.\n";
+        if ( $total_reads_kallisto != $total_reads_fastqc ){
+            warn "\nProblem: The number of reads processed by FastQC and Kallisto differs. Please check for a problem [$library_id]\n";
         }
-        ## TODO add step to check that the number of reads is also consistent wiht the original fastq files on bigbgee (see TODO above)
+        ## TODO add step to check that the number of reads is also consistent with the original fastq files on bigbgee (see TODO above)
     }
-    if ( $aligned < 1000000 ){
-        warn "\nProblem: Less than 1,000,000 reads were pseudo-aligned by Kallisto, please check for a problem.\n";
+    if ( $aligned < 1_000_000 ){
+        warn "\nProblem: Less than 1,000,000 reads were pseudo-aligned by Kallisto, please check for a problem [$library_id]\n";
     }
     # Note: this arbitrary threshold of 1,000,000 reads can be changed
 
@@ -499,7 +454,7 @@ if ( ( -s $kallisto_out_folder.'/abundance.tsv' ) && ( -s $kallisto_out_folder.'
     # h5dump -d /aux/fld all_results_bgee_v14/SRX567038/abundance.h5 | less
 }
 else {
-    die "\tProblem: no abundance.tsv or run_info.json file found for this library. Kallisto run was probably not successful.\n";
+    die "\tProblem: No abundance.tsv or run_info.json file found for this library. Kallisto run was probably not successful [$library_id]\n";
 }
 
 ############################################################################################
@@ -541,7 +496,7 @@ else {
     print {$REPORT5} "\nComputing node / R command submitted:\n$analyze_count_command\n";
     close $REPORT5;
     # Submit command
-    system($analyze_count_command)==0  or die "\tProblem: system call to analyze_count_command failed\n";
+    system($analyze_count_command)==0  or die "\tProblem: System call to analyze_count_command failed\n";
     print "\tDone\n";
 }
 
@@ -551,5 +506,6 @@ open (my $REPORT6, '>', $kallisto_out_folder.'/DONE.txt')  or die "Cannot write 
 print {$REPORT6} "$library_id was succesfully processed!\n";
 close $REPORT6;
 ############################################################################################
+
 exit 0;
 

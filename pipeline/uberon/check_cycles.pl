@@ -12,7 +12,7 @@ use diagnostics;
 use Getopt::Long;
 
 use FindBin;
-use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
+use lib "$FindBin::Bin/.."; # Get lib path for Utils.pm
 use Utils;
 
 # Define arguments & their default value

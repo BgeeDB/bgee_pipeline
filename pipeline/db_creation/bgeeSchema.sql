@@ -26,42 +26,42 @@ ALTER DATABASE CHARACTER SET utf8 COLLATE utf8_general_ci;
 -- GENERAL
 -- ****************************************************
 create table author (
-    authorId smallInt unsigned not null,
-    authorName varchar(255) not null COMMENT 'Bgee team author names'
+    authorId   smallInt unsigned not null,
+    authorName varchar(255)      not null COMMENT 'Bgee team author names'
 ) engine = innodb;
 
 create table dataSource (
-    dataSourceId smallInt unsigned not null,
-    dataSourceName varchar(255) not null COMMENT 'Data source name',
-    XRefUrl varchar(255) not null default '' COMMENT 'URL for cross-references to data sources',
+    dataSourceId          smallInt unsigned not null,
+    dataSourceName        varchar(255)       not null             COMMENT 'Data source name',
+    XRefUrl               varchar(255)      not null default ''  COMMENT 'URL for cross-references to data sources',
 -- path to experiment for expression data sources (ArrayExpress, GEO, NCBI, in situ databases, ...)
 -- parameters such as experimentId are defined by the syntax [experimentId] for instance
-    experimentUrl varchar(255) not null default '' COMMENT 'URL to experiment for expression data sources',
+    experimentUrl         varchar(255)      not null default ''  COMMENT 'URL to experiment for expression data sources',
 -- path to in situ evidence for in situ databases,
 -- to Affymetrix chips for affymetrix data
 -- parameters such as experimentId are defined by the syntax [experimentId] for instance
-    evidenceUrl varchar(255) not null default '' COMMENT 'URL to evidence for expression data sources',
+    evidenceUrl           varchar(255)      not null default ''  COMMENT 'URL to evidence for expression data sources',
 -- url to the home page of the ressource
-    baseUrl varchar(255) not null default '' COMMENT 'URL to the home page of data sources',
-    releaseDate timestamp null COMMENT 'Date of data source used',
--- e.g.: Ensembl 67, cvs version xxx
-    releaseVersion varchar(255) not null default '' COMMENT 'Version of data source used',
-    dataSourceDescription TEXT COMMENT 'Description of data source',
+    baseUrl               varchar(255)      not null default ''  COMMENT 'URL to the home page of data sources',
+    releaseDate           date                  null             COMMENT 'Date of data source used',
+-- e.g.: Ensembl 87, git version xxx
+    releaseVersion        varchar(255)       not null default ''  COMMENT 'Version of data source used',
+    dataSourceDescription TEXT                                   COMMENT 'Description of data source',
 -- to define if this dataSource should be displayed on the page listing data sources
-    toDisplay boolean not null default 0 COMMENT 'Display this data source in listing data source page?',
+    toDisplay             boolean           not null default 0   COMMENT 'Display this data source in listing data source page?',
 -- a cat to organize the display
-    category enum('', 'Genomics database', 'Proteomics database',
-        'In situ data source', 'Affymetrix data source', 'EST data source', 'RNA-Seq data source',
-        'Ontology') COMMENT 'Data source category to organize the display',
+    category              enum('', 'Genomics database', 'Proteomics database',
+                               'In situ data source', 'Affymetrix data source', 'EST data source', 'RNA-Seq data source',
+                               'Ontology')                       COMMENT 'Data source category to organize the display',
 -- to organize the display. Default value is the highest value, so that this field is the last to be displayed
-    displayOrder tinyint unsigned not null default 255 COMMENT 'Data source display ordering'
+    displayOrder          tinyint unsigned  not null default 255 COMMENT 'Data source display ordering'
 ) engine = innodb;
 
 create table dataSourceToSpecies (
-    dataSourceId smallInt unsigned not null COMMENT 'Data source id',
-    speciesId mediumint unsigned not null COMMENT 'NCBI species taxon id',
-    dataType enum('affymetrix', 'est', 'in situ', 'rna-seq') not null COMMENT 'Data type',
-    infoType enum('data', 'annotation') not null COMMENT 'Information type'
+    dataSourceId smallInt  unsigned                              not null COMMENT 'Data source id',
+    speciesId    mediumint unsigned                              not null COMMENT 'NCBI species taxon id',
+    dataType     enum('affymetrix', 'est', 'in situ', 'rna-seq') not null COMMENT 'Data type',
+    infoType     enum('data', 'annotation')                      not null COMMENT 'Information type'
 ) engine = innodb;
 
 create table keyword (
@@ -486,7 +486,7 @@ create table gene (
 
 create table geneToOma (
     bgeeGeneId mediumint unsigned not null,
-    OMANodeId int unsigned not null COMMENT 'OMA Hierarchical Orthologous node id',
+    OMAGroupId varchar(255) not null COMMENT 'OMA Hierarchical Orthologous Group id',
     taxonId mediumint unsigned not null
 ) engine = innodb;
 
@@ -552,6 +552,11 @@ create table cond (
     strain varchar(100) not null default 'not annotated'
     COMMENT 'Strain information. NA: not available from source information; not annotated: information not captured by Bgee; confidential_restricted_data: information cannot be disclosed publicly. Note that all conditions used in the expression tables have "NA", "not annotated" and "confidential_restricted_data" replaced with "wild-type"'
 ) engine = innodb COMMENT 'This table stores the "raw" conditions used to annotate data and used in the "raw" expression table, where data are not propagated nor precomputed';
+
+create table remapCond (
+    incorrectConditionId mediumint unsigned not null,
+    remappedConditionId mediumint unsigned not null
+) engine = innodb COMMENT 'This table is used as an intermediary step for condition remapping, see remap_conditions.pl';
 
 create table globalCond (
     globalConditionId mediumint unsigned not null,
@@ -947,6 +952,8 @@ create table rnaSeqLibraryDiscarded (
 create table rnaSeqResult (
     rnaSeqLibraryId varchar(70) not null,
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
+-- FPRKM and TPM values inserted here are NOT TMM normalized,
+-- these are the raw data before any normalization
     fpkm decimal(16, 6) not null,
     tpm decimal(16, 6) not null,
 -- rank is not "not null" because we update this information afterwards

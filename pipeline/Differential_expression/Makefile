@@ -6,12 +6,13 @@ all: $(VERIFICATIONFILE)
 
 backup_previous_data:
 	# Backup previous release data
-	@cd $(DIFFEXPRPATH);           let PREV=$(RELEASE)-1; if [[ ! -e bgee_v$$PREV.tar.gz ]]; then tar cf bgee_v$$PREV.tar --exclude=bgee_v$$PREV.tar --exclude=*.gz *; gzip -9 bgee_v$$PREV.tar; rm -Rf *[^gz]; fi
-	@cd $(BIOCONDUCTORDIFF);       let PREV=$(RELEASE)-1; if [[ ! -e bgee_v$$PREV.tar.gz ]]; then tar cf bgee_v$$PREV.tar --exclude=bgee_v$$PREV.tar --exclude=*.gz *; gzip -9 bgee_v$$PREV.tar; rm -Rf *[^gz]; fi
-	@cd $(BIOCONDUCTORTARG);       let PREV=$(RELEASE)-1; if [[ ! -e bgee_v$$PREV.tar.gz ]]; then tar cf bgee_v$$PREV.tar --exclude=bgee_v$$PREV.tar --exclude=*.gz *; gzip -9 bgee_v$$PREV.tar; rm -Rf *[^gz]; fi
-	@cd $(RNASEQDIFFEXPRPATH);     let PREV=$(RELEASE)-1; if [[ ! -e bgee_v$$PREV.tar.gz ]]; then tar cf bgee_v$$PREV.tar --exclude=bgee_v$$PREV.tar --exclude=*.gz *; gzip -9 bgee_v$$PREV.tar; rm -Rf *[^gz]; fi
-	@cd $(RNASEQBIOCONDUCTORDIFF); let PREV=$(RELEASE)-1; if [[ ! -e bgee_v$$PREV.tar.gz ]]; then tar cf bgee_v$$PREV.tar --exclude=bgee_v$$PREV.tar --exclude=*.gz *; gzip -9 bgee_v$$PREV.tar; rm -Rf *[^gz]; fi
-	@cd $(RNASEQBIOCONDUCTORTARG); let PREV=$(RELEASE)-1; if [[ ! -e bgee_v$$PREV.tar.gz ]]; then tar cf bgee_v$$PREV.tar --exclude=bgee_v$$PREV.tar --exclude=*.gz *; gzip -9 bgee_v$$PREV.tar; rm -Rf *[^gz]; fi
+	@cd $(DIFFEXPRPATH);                        let PREV=$(RELEASE)-1; if [[ ! -e bgee_v$$PREV.tar.gz ]]; then tar cf bgee_v$$PREV.tar --exclude=bgee_v$$PREV.tar --exclude=*.gz *; gzip -9 bgee_v$$PREV.tar; rm -Rf *[^gz]; fi
+	@cd $(BIOCONDUCTORDIFF);                    let PREV=$(RELEASE)-1; if [[ ! -e bgee_v$$PREV.tar.gz ]]; then tar cf bgee_v$$PREV.tar --exclude=bgee_v$$PREV.tar --exclude=*.gz *; gzip -9 bgee_v$$PREV.tar; rm -Rf *[^gz]; fi
+	@cd $(BIOCONDUCTORTARG);                    let PREV=$(RELEASE)-1; if [[ ! -e bgee_v$$PREV.tar.gz ]]; then tar cf bgee_v$$PREV.tar --exclude=bgee_v$$PREV.tar --exclude=*.gz *; gzip -9 bgee_v$$PREV.tar; rm -Rf *[^gz]; fi
+	@cd $(RNASEQDIFFEXPRPATH_DEVANDANAT);       let PREV=$(RELEASE)-1; if [[ ! -e bgee_v$$PREV.tar.gz ]]; then tar cf bgee_v$$PREV.tar --exclude=bgee_v$$PREV.tar --exclude=*.gz *; gzip -9 bgee_v$$PREV.tar; rm -Rf *[^gz]; fi
+	#XXX Is this directory used anymore?
+	@cd $(RNASEQBIOCONDUCTORDIFF);              let PREV=$(RELEASE)-1; if [[ ! -e bgee_v$$PREV.tar.gz ]]; then tar cf bgee_v$$PREV.tar --exclude=bgee_v$$PREV.tar --exclude=*.gz *; gzip -9 bgee_v$$PREV.tar; rm -Rf *[^gz]; fi
+	@cd $(RNASEQBIOCONDUCTORTARG_DEVANDANAT);   let PREV=$(RELEASE)-1; if [[ ! -e bgee_v$$PREV.tar.gz ]]; then tar cf bgee_v$$PREV.tar --exclude=bgee_v$$PREV.tar --exclude=*.gz *; gzip -9 bgee_v$$PREV.tar; rm -Rf *[^gz]; fi
 	# Rsync files for backup on 'bigbgee' (see wiki for password)
 	@echo -e "\t\e[1m\e[37m\e[41mRsync files in '$(AFFYDATAPATH) | $(RNASEQDATAPATH) '\n bigbgee machine!\e[m\n"
 	@rsync -av --del -f "- /lost+found" --exclude=.svn --exclude=.git $(AFFYDATAPATH)    $(DATALOGIN)@$(DATAHOST):$(DATAPATH)/Affymetrix/   >  $@.tmp
@@ -27,7 +28,20 @@ launch_diff_expression_affy: backup_previous_data
 
 launch_diff_expression_rna_seq: backup_previous_data
 	# Launch differential analysis RNA-seq
-	@perl launch_diff_analysis_rna_seq.pl -bgee=$(BGEECMD) -path_generes=$(RNASEQGENERES) -ensRelease=$(ENSRELEASE) -path_target=$(RNASEQBIOCONDUCTORTARG) -path_processed=$(RNASEQDIFFEXPRPATH)   >>$@.tmp 2>>warnings.$@
+	@perl launch_diff_analysis_rna_seq.pl -bgee=$(BGEECMD) -path_generes=$(RNASEQGENERES) -ensRelease=$(ENSRELEASE) -path_target=$(RNASEQBIOCONDUCTORTARG_DEVANDANAT) -path_processed=$(RNASEQDIFFEXPRPATH_DEVANDANAT)   >>$@.tmp 2>>warnings.$@
+	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
+	@$(MV) $@.tmp $@
+	
+launch_sex_diff_expression_rna_seq:
+	# Launch differential analysis RNA-seq
+	@perl launch_sex_diff_analysis_rna_seq.pl -bgee=$(BGEECMD) -path_generes=$(RNASEQALLRES) -abundance_file=$(RNASEQABUNDANCEFILE) -path_library=$(RNASEQ_LIB_FILEPATH) -path_library_worm=$(RNASEQ_LIB_FILEPATH_WORM) -path_target=$(RNASEQBIOCONDUCTORTARG_SEX) -path_processed=$(RNASEQDIFFEXPRPATH_SEX)   >>$@.tmp 2>>warnings.$@
+	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
+	@$(MV) $@.tmp $@
+
+generate_files_sex_diff_expression_rna_seq: # launch_sex_diff_expression_rna_seq
+	# Generate download files for sex differential expression from RNA-Seq
+	@perl generate_files_sex_diff_rna_seq.pl -bgee=$(BGEECMD) -path_target=$(RNASEQBIOCONDUCTORTARG_SEX) -path_processed=$(RNASEQDIFFEXPRPATH_SEX) -path_download_file=$(RNASEQDIFFEXPRPATH_SEX)   >>$@.tmp 2>>warnings.$@
+	@find $(RNASEQDIFFEXPRPATH_SEX) -maxdepth 1 -type f  -name '*sex-single.tsv' -exec gzip --verbose --best --force {} \; 2>$@.tmp
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
@@ -35,11 +49,11 @@ check_diff_expression: launch_diff_expression
 	# Check results
 	@-ls -l $(DIFFEXPRPATH)/*/*.out.PROB 2>/dev/null                       >$@.tmp
 	@-grep -H -c 'proc.time' $(DIFFEXPRPATH)/*/*.log       | grep ':0$$'  >>$@.tmp
-	@-ls -l $(RNASEQDIFFEXPRPATH)/*/*.out.PROB 2>/dev/null                >>$@.tmp
-	@-grep -H -c 'proc.time' $(RNASEQDIFFEXPRPATH)/*/*.log | grep ':0$$'  >>$@.tmp
+	@-ls -l $(RNASEQDIFFEXPRPATH_DEVANDANAT)/*/*.out.PROB 2>/dev/null                >>$@.tmp
+	@-grep -H -c 'proc.time' $(RNASEQDIFFEXPRPATH_DEVANDANAT)/*/*.log | grep ':0$$'  >>$@.tmp
 	# Check warnings
 	@-grep -i 'warning' -A 5 $(DIFFEXPRPATH)/*/*.log                      >>$@.tmp
-	@-grep -i 'warning' -A 5 $(RNASEQDIFFEXPRPATH)/*/*.log                >>$@.tmp
+	@-grep -i 'warning' -A 5 $(RNASEQDIFFEXPRPATH_DEVANDANAT)/*/*.log                >>$@.tmp
 	@$(MV) $@.tmp $@
 
 
@@ -55,7 +69,7 @@ fill_summary_tables: check_diff_expression
 	@$(MYSQL) -e "UPDATE deaAffymetrixProbesetSummary AS t1 INNER JOIN deaSampleGroup AS t2 ON t1.deaSampleGroupId = t2.deaSampleGroupId INNER JOIN (SELECT t4.deaAffymetrixProbesetSummaryId, t3.deaId FROM deaSampleGroup AS t3 INNER JOIN deaAffymetrixProbesetSummary AS t4 ON t3.deaSampleGroupId = t4.deaSampleGroupId GROUP BY t4.deaAffymetrixProbesetSummaryId, t3.deaId HAVING GROUP_CONCAT(DISTINCT (IF (differentialExpressionAffymetrixData = 'no data' OR differentialExpressionAffymetrixData = 'not expressed', 0, 1))) = '0') AS t5 ON t1.deaAffymetrixProbesetSummaryId = t5.deaAffymetrixProbesetSummaryId AND t2.deaId = t5.deaId SET t1.reasonForExclusion = 'not expressed'" >>$@.tmp
 	# Fill the deaRNASeqSummary table
 	@echo >>$@.tmp
-	@perl insert_diff_rna_seq.pl -bgee=$(BGEECMD) -path_target=$(RNASEQBIOCONDUCTORTARG) -path_processed=$(RNASEQDIFFEXPRPATH) >>$@.tmp 2>>warnings.$@
+	@perl insert_diff_rna_seq.pl -bgee=$(BGEECMD) -path_target=$(RNASEQBIOCONDUCTORTARG_DEVANDANAT) -path_processed=$(RNASEQDIFFEXPRPATH_DEVANDANAT) >>$@.tmp 2>>warnings.$@
 	# Check RNASeq p-values
 	@$(MYSQL) -e "SELECT 'At least one deaRNASeqSummary with incorrect p-value' AS errorMessage, deaRNASeqSummary.* FROM deaRNASeqSummary WHERE deaRawPValue < 0 OR deaRawPValue > 1 LIMIT 1" 2>>warnings.$@
 # The sub-query identified geneSummaryIds that should be excluded for a given deaId, because the gene was always seen as 'not expressed'
@@ -125,13 +139,13 @@ $(VERIFICATIONFILE): check_diff_expression fill_summary_tables fill_dea_table
 	@echo >>$@.tmp
 	@$(MYSQL) -e "SELECT t3.speciesCommonName, t2.geneBioTypeName, t10.diffExprCallAffymetrix, t10.diffExprCallRNASeq, COUNT(DISTINCT t1.geneId) AS geneCount, COUNT(DISTINCT t10.differentialExpressionId) diffCallCount FROM gene AS t1 LEFT OUTER JOIN geneBioType AS t2 ON t1.geneBioTypeId = t2.geneBioTypeId LEFT OUTER JOIN differentialExpression AS t10 ON t1.geneId = t10.geneId INNER JOIN species AS t3 ON t1.speciesId = t3.speciesId GROUP BY t1.speciesId, t2.geneBioTypeName, t10.diffExprCallAffymetrix, t10.diffExprCallRNASeq ORDER BY t1.speciesId, diffCallCount DESC, geneCount DESC" >> $@.tmp
 	@echo >>$@.tmp
-	# Check if the number of successful analysis (*.log files in $(DIFFEXPRPATH)/*/ & $(RNASEQDIFFEXPRPATH)/*/ with proc.time()) is the same than the one in the db
-	@echo "Check if the number of successful analysis (*.log files in $(DIFFEXPRPATH)/*/ & $(RNASEQDIFFEXPRPATH)/*/ with proc.time()) is the same than the one in the db" >>$@.tmp
-	@grep '^> proc.time()$$' $(DIFFEXPRPATH)/*/*.log $(RNASEQDIFFEXPRPATH)/*/*.log | wc -l >> $@.tmp
+	# Check if the number of successful analysis (*.log files in $(DIFFEXPRPATH)/*/ & $(RNASEQDIFFEXPRPATH_DEVANDANAT)/*/ with proc.time()) is the same than the one in the db
+	@echo "Check if the number of successful analysis (*.log files in $(DIFFEXPRPATH)/*/ & $(RNASEQDIFFEXPRPATH_DEVANDANAT)/*/ with proc.time()) is the same than the one in the db" >>$@.tmp
+	@grep '^> proc.time()$$' $(DIFFEXPRPATH)/*/*.log $(RNASEQDIFFEXPRPATH_DEVANDANAT)/*/*.log | wc -l >> $@.tmp
 	@tail -1 $@.tmp
 	@$(MYSQL) -e "SELECT COUNT(*) FROM differentialExpressionAnalysis" | tail -1 >>$@.tmp
 	@tail -1 $@.tmp
-	@if [[ `tail -1 $@.tmp` -ne `tail -2 $@.tmp | head -1` ]]; then echo "Number of $(DIFFEXPRPATH)/*/*.out & $(RNASEQDIFFEXPRPATH)/*/*.out files is NOT the same than the number of rows in the differentialExpressionAnalysis table" >>$@.tmp | tail -1 $@.tmp; fi
+	@if [[ `tail -1 $@.tmp` -ne `tail -2 $@.tmp | head -1` ]]; then echo "Number of $(DIFFEXPRPATH)/*/*.out & $(RNASEQDIFFEXPRPATH_DEVANDANAT)/*/*.out files is NOT the same than the number of rows in the differentialExpressionAnalysis table" >>$@.tmp | tail -1 $@.tmp; fi
 	@$(MV) $@.tmp $@
 
 clean:
@@ -142,4 +156,3 @@ clean:
 .PHONY := $(.PHONY) deleteDiffExpr
 deleteDiffExpr:
 	@$(MYSQL) -e "DELETE FROM deaAffymetrixProbesetSummary; DELETE FROM deaRNASeqSummary; DELETE FROM deaSampleGroupToAffymetrixChip; DELETE FROM deaSampleGroupToRnaSeqLibrary; DELETE FROM deaSampleGroup; DELETE FROM differentialExpressionAnalysis; DELETE FROM differentialExpression;"
-

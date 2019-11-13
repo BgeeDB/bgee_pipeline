@@ -5,6 +5,7 @@ include $(PIPELINEROOT)Makefile.common
 
 all: $(VERIFICATIONFILE)
 
+#FIXME Fix strain names to be more consistent with Anne's strain file!
 get_annot:
 	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations. Store them in the source_files directory
 	@$(WGET) $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqLibrary.tsv                && $(MV) RNASeqLibrary.tsv                $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibrary.tsv                2>/dev/null  || rm -f RNASeqLibrary.tsv
@@ -19,19 +20,17 @@ get_annot:
 
 check_annot: get_annot $(RNASEQ_EXPERIMENT_FILEPATH) $(RNASEQ_EXPERIMENT_FILEPATH_WORM) $(RNASEQ_LIB_FILEPATH) $(RNASEQ_LIBRARY_FILEPATH_WORM)
 	# Concatenate our annotation file with wormbase annotations (without header, and sorted by experiments and libraries)
-	tail -n+2 $(RNASEQ_EXPERIMENT_FILEPATH_WORM) | sort -k1,1 | cat $(RNASEQ_EXPERIMENT_FILEPATH) - > $(RNASEQ_EXPERIMENT_FILEPATH_FULL)
-	tail -n+2 $(RNASEQ_LIB_FILEPATH_WORM) | sort -k2,2 -k1,1 | cat $(RNASEQ_LIB_FILEPATH) - > $(RNASEQ_LIB_FILEPATH_FULL)
+	@tail -n+2 $(RNASEQ_EXPERIMENT_FILEPATH_WORM) | sort -k1,1       | cat $(RNASEQ_EXPERIMENT_FILEPATH) - > $(RNASEQ_EXPERIMENT_FILEPATH_FULL)
+	@tail -n+2 $(RNASEQ_LIB_FILEPATH_WORM)        | sort -k2,2 -k1,1 | cat $(RNASEQ_LIB_FILEPATH)        - > $(RNASEQ_LIB_FILEPATH_FULL)
 	# First check of annotations
-	@echo "perl 0Before/check_rna_seq_curation.pl -bgee=$(BGEECMD) -RNAseqExperiment=$(RNASEQ_EXPERIMENT_FILEPATH_FULL) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -allRes=$(RNASEQALLRES) before >$@.tmp 2>&1"
-	@perl 0Before/check_rna_seq_curation.pl -bgee=$(BGEECMD) -RNAseqExperiment=$(RNASEQ_EXPERIMENT_FILEPATH_FULL) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -allRes=$(RNASEQALLRES) before >$@.tmp 2>&1
+	perl 0Before/check_rna_seq_curation.pl -bgee=$(BGEECMD) -RNAseqExperiment=$(RNASEQ_EXPERIMENT_FILEPATH_FULL) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -allRes=$(RNASEQALLRES) before >$@.tmp 2>&1
 	@echo "Check file \"check_annot\" for the output of the script 0Before/check_rna_seq_curation.pl, which indicates potential errors to correct in the annotation files.\n"
 	@$(MV) $@.tmp $@
-#TODO copy the *_full.tsv files in the generated_files/ folder, and add them to the GIT project?
 #TODO the script needs better check of annotation files for leading and trailing spaces (only done for experimentId now, but needs to be done for other fields as well)
 
-create_rna_seq_sample_info: check_annot
+create_rna_seq_sample_info: check_annot $(EXTRAMAPPING_FILEPATH)
 	# Generate rna_seq_sample_info.txt from RNASeq lib annotation file
-	@perl 0Before/create_rna_seq_sample_info.pl -bgee=$(BGEECMD) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -RNAseqLibChecks=$(RNASEQ_LIB_CHECKS_FILEPATH) -RNAseqLibWormExclusion=$(RNASEQ_LIB_EXCLUSION_FILEPATH_WORM) -outFile=$(RNASEQ_SAMPINFO_FILEPATH) >$@.tmp 2>&1
+	@perl 0Before/create_rna_seq_sample_info.pl -bgee=$(BGEECMD) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -RNAseqLibChecks=$(RNASEQ_LIB_CHECKS_FILEPATH) -RNAseqLibWormExclusion=$(RNASEQ_LIB_EXCLUSION_FILEPATH_WORM) -extraMapping=$(EXTRAMAPPING_FILEPATH) -outFile=$(RNASEQ_SAMPINFO_FILEPATH) >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
 	@echo "Check file \"create_rna_seq_sample_info\" for the output of the script 0Before/create_rna_seq_sample_info.pl, which indicates potential errors to correct in the annotation files.\n"
 
@@ -126,6 +125,8 @@ clean_vital-it_folders: check_tools
 	@echo "rm -Rf $(RNASEQ_VITALIT_GTF)*.genome.* $(RNASEQ_VITALIT_GTF)*.gtf.gz"
 	@echo "xz -9 $(RNASEQ_VITALIT_GTF)*.gtf_all $(RNASEQ_VITALIT_GTF)*.transcriptome.* $(RNASEQ_VITALIT_GTF)*.gene2transcript $(RNASEQ_VITALIT_GTF)*.gene2biotype"
 	@echo "rm -Rf $(RNASEQ_VITALIT_SCRATCH)*"
+	@echo
+	@echo "Those scripts have to be run from $(RNASEQ_VITALIT_SCRIPTS)$(RNASEQPATH) on dev/frt/rserv01 (can write on /data/)!"
 	@touch $@
 
 get_GTF: clean_vital-it_folders create_rna_seq_sample_info
@@ -137,7 +138,7 @@ get_GTF: clean_vital-it_folders create_rna_seq_sample_info
 prepare_GTF: get_GTF
 	# Prepare GTF files
 	@for gtf in $(RNASEQ_VITALIT_GTF)/*.gtf.gz; do \
-		echo "$(VIT_R_CMD) R CMD BATCH --vanilla '--args gene_gtf_path=\"$$gtf\" output_gtf_path=\"$${gtf/.gtf.gz/}\"'  0Before/prepare_GTF.R  $@.tmp" >run.sh; \
+		echo "$(VIT_R_CMD) R CMD BATCH --vanilla --slave '--args gene_gtf_path=\"$$gtf\" output_gtf_path=\"$${gtf/.gtf.gz/}\"'  0Before/prepare_GTF.R  $@.tmp" >run.sh; \
 		sh run.sh; \
 	done
 	@$(RM) run.sh
@@ -165,114 +166,121 @@ prepare_indexed_transcriptome: get_genome prepare_GTF
 		xz --threads=2 -9 $${genome/gtf_all/transcriptome.fa.tlst}; \
 	done
 	@$(MV) $@.tmp $@
+#TODO Use short k-mer size = 21nt instead of 15
 #TODO The gffread utility in cufflinks package seems more flexible and reliable
-#TODO add step to copy .passw file to bbgee's home on vital-it / or maybe just echo a message to tell the user scp it? Path and name of this file on vital-it is stored in ENCRYPT_PASSWD_FILE. We should store this file somewhere (altbioinfo?) because it cannot be added to the gitlab project
+#TODO add step to copy .passw file to bbgee's home on vital-it / or maybe just echo a message to tell the user scp it? Path and name of this file on vital-it is stored in ENCRYPT_PASSWD_FILE. We should store this file somewhere (devbioinfo?) because it cannot be added to the gitlab project
 #Or just put it in /home/bbgee/? in read only mode, only for bbgee user
 
+#NOTE Better to run this step in screen or with nohup as submission is done X jobs per X jobs to not overload the system (and not decrease our user priority)!
 run_pipeline: prepare_indexed_transcriptome $(RNASEQ_SAMPINFO_FILEPATH)
 	# Running the pipeline
-#TODO add message to say that this script has to be run from $(RNASEQ_VITALIT_SCRIPTS)$(RNASEQPATH) on dev/frt/rserv01 (can write on /data/)
-	@perl $(RNASEQ_VITALIT_SCRIPTS)$(RNASEQPATH)1Run/bsub_scheduler.pl -sample_info_file=$(RNASEQ_VITALIT_SCRIPTS)$(RNASEQ_SAMPINFO_FILEPATH) -output_log_folder=$(RNASEQ_VITALIT_LOG) -index_folder=$(RNASEQ_VITALIT_GTF) -fastq_folder=$(RNASEQ_BIGBGEE_FASTQ) -kallisto_out_folder=$(RNASEQ_VITALIT_ALL_RES) -ens_release=$(ENSRELEASE) -ens_metazoa_release=$(ENSMETAZOARELEASE) -data_host=$(DATAHOST) -data_login=$(DATALOGIN) -data_passwd=$(DATAPASSWD) -enc_passwd_file=$(ENCRYPT_PASSWD_FILE) -vit_fastqc_cmd="$(VIT_FASTQC_CMD)" -vit_kallisto_cmd="$(VIT_KALLISTO_CMD)" -vit_R_cmd="$(VIT_R_CMD)" >$@.tmp 2>&1
-#TODO get rid of -data_passwd argument. It is not needed with auto login for ssh/scp. Needs to be removed as argument of rna_seq_mapping_and_analysis.pl script as well (called by bsub_scheduler.pl)
+	@perl $(RNASEQ_VITALIT_SCRIPTS)$(RNASEQPATH)1Run/bsub_scheduler.pl -sample_info_file=$(RNASEQ_VITALIT_SCRIPTS)RNA_Seq/$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=$(RNASEQ_VITALIT_LOG) -index_folder=$(RNASEQ_VITALIT_GTF) -fastq_folder=$(RNASEQ_BIGBGEE_FASTQ) -kallisto_out_folder=$(RNASEQ_VITALIT_ALL_RES) -ens_release=$(ENSRELEASE) -ens_metazoa_release=$(ENSMETAZOARELEASE) -data_host=$(DATAHOST) -data_login=$(DATALOGIN) -enc_passwd_file=$(ENCRYPT_PASSWD_FILE) -vit_kallisto_cmd="$(VIT_KALLISTO_CMD)" -vit_R_cmd="$(VIT_R_CMD)" >$@.tmp 2>&1
+	@echo "TODO: At the end it is a good idea to relaunch the run_pipeline step to be sure everything was run!"
 	@$(MV) $@.tmp $@
 
 check_pipeline: run_pipeline
 #TODO - Add a steps to automatically look for problems? See README.md in pipeline/RNA_Seq/ folder
-#     - It is probably easier to relaunch the problematic samples manually. At the end it is a good idea to relaunch the run_pipeline step to be sure everything was run.
+#     - It is probably easier to relaunch the problematic samples manually.
 #     - Flagged / excluded samples with low % genes mapped / low number of reads mapped / for which mapping failed: added manually to file $(RNASEQ_SAMPEXCLUDED_FILEPATH).
 
 export_length: check_pipeline
 	#Export transcript length to a file to export
-	@perl 3Insertion/export_feature_length.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -all_results=$(RNASEQ_VITALIT_ALL_RES) -length_info=$(RNASEQ_LENGTH_INFO_FILEPATH) > $@.tmp 2>warnings.$@
-	@echo -e "\tTranscript length are not exported into $(RNASEQ_LENGTH_INFO_FILEPATH) file. Please add the file to the GIT project with:\ngit commit -a -m \"Exported transcript length info file\"\ngit push\n"
+	@perl 3Insertion/export_feature_length.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -all_results=$(RNASEQ_VITALIT_ALL_RES) -length_info=$(RNASEQ_LENGTH_INFO_FILEPATH) > $@.tmp 2>warnings.$@
+	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
+	@echo -e "\tTranscript length are now exported into $(RNASEQ_LENGTH_INFO_FILEPATH) file\n"
 	@$(MV) $@.tmp $@
 
-finalize_pipeline: run_pipeline
+finalize_pipeline: check_pipeline
 	# Collect infos from .report files
-	@perl 3Insertion/create_rna_seq_report_info.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -report_info=$(RNASEQREPORTINFO) -all_results=$(RNASEQ_VITALIT_ALL_RES) > $@.tmp 2>warnings.$@
-	# We use tail -n+1 instead of cat because it writes the name of the file in the concatenated file
-	tail -n+1 $(RNASEQ_VITALIT_LOG)/*/*.err    >> $(RNASEQ_VITALIT_LOG)/all_std_err.txt
-	tail -n+1 $(RNASEQ_VITALIT_LOG)/*/*.out    >> $(RNASEQ_VITALIT_LOG)/all_std_out.txt
-	tail -n+1 $(RNASEQ_VITALIT_LOG)/*/*.report >> $(RNASEQ_VITALIT_LOG)/all_reports.txt
-	# Touch all files so that they are not removed from /scratch/cluster/monthly
-	find $(RNASEQ_VITALIT_SCRATCH) -exec touch {} \;
-	#back-up all data (not final but it's worth doing an intermediate backup here)
-	tar -cvf $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar $(RNASEQ_VITALIT_ALL_RES)
-	gzip -9 $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar
-	#copy back-up data to /data/
-	cp $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar.gz $(RNASEQ_VITALIT_ALL_RES_BACKUP)
+	@perl 3Insertion/create_rna_seq_report_info.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -report_info=$(RNASEQ_VITALIT_REPORTINFO) -all_results=$(RNASEQ_VITALIT_ALL_RES) > $@.tmp 2>warnings.$@
+	# Touch all files so that they are not removed from /scratch/temporary
+	@find $(RNASEQ_VITALIT_SCRATCH) -exec touch {} \;
+# We use tail -n+1 instead of cat because it writes the name of the file in the concatenated file
+	@tail -n+1 $(RNASEQ_VITALIT_LOG)/*/*.err    > $(RNASEQ_VITALIT_LOG)/all_std_err.txt 2>>warnings.$@
+	@tail -n+1 $(RNASEQ_VITALIT_LOG)/*/*.out    > $(RNASEQ_VITALIT_LOG)/all_std_out.txt 2>>warnings.$@
+	@tail -n+1 $(RNASEQ_VITALIT_LOG)/*/*.report > $(RNASEQ_VITALIT_LOG)/all_reports.txt 2>>warnings.$@
+	# Back-up all data (not final but it's worth doing an intermediate backup here)
+	@tar -cf $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar $(RNASEQ_VITALIT_ALL_RES) 2>>warnings.$@
+	@gzip -9 $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar                           2>>warnings.$@
+	# Move back-up data to /data/
+	@$(MV) $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar.gz $(RNASEQ_VITALIT_ALL_RES_BACKUP) 2>>warnings.$@
+	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
+
+#NOTE For iterative updates the  sum_by_species  step has to be skipped if you want to reuse the previous gaussian curves as they are!
+#     So use the previous release $(RNASEQ_VITALIT_GAUSSIAN_CHOICE) file and $(RNASEQ_VITALIT_SUM_RES) result folder (Just update the database version if required)
+#     for the  presence_absence  step!
 sum_by_species: check_pipeline $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH)
 # Script using all data from each species to deconvolute the coding genes and intergenic regions underlying distributions
 	@mkdir -p $(RNASEQ_VITALIT_SUM_RES)
-	@$(VIT_R_CMD) R CMD BATCH --no-save --no-restore '--args rna_seq_sample_info="$(RNASEQ_SAMPINFO_FILEPATH)" rna_seq_sample_excluded="$(RNASEQ_SAMPEXCLUDED_FILEPATH)" kallisto_count_folder="$(RNASEQ_VITALIT_ALL_RES)" sum_by_species_folder="$(RNASEQ_VITALIT_SUM_RES)"' $(RNASEQ_VITALIT_SCRIPTS)$(RNASEQPATH)1Run/rna_seq_sum_by_species.R $(RNASEQ_VITALIT_SUM_RES)rna_seq_sum_by_species.Rout
+	@$(VIT_R_CMD) R CMD BATCH --vanilla --slave '--args rna_seq_sample_info="$(RNASEQ_SAMPINFO_FILEPATH)" rna_seq_sample_excluded="$(RNASEQ_SAMPEXCLUDED_FILEPATH)" kallisto_count_folder="$(RNASEQ_VITALIT_ALL_RES)" sum_by_species_folder="$(RNASEQ_VITALIT_SUM_RES)"' $(RNASEQ_VITALIT_SCRIPTS)$(RNASEQPATH)1Run/rna_seq_sum_by_species.R $(RNASEQ_VITALIT_SUM_RES)rna_seq_sum_by_species.Rout
+	@echo -e "You HAVE TO create/update MANUALLY a file [$(RNASEQ_VITALIT_GAUSSIAN_CHOICE)] with selected gaussians for coding and intergenic regions!\n"
 	@touch $@
-#TODO Add echo to remind to create manually a file with selected gaussians for coding and intergenic regions. File will be: $(RNASEQ_VITALIT_GAUSSIAN_CHOICE), see README.md. Put the file in the generated_file folders
 
 presence_absence: sum_by_species $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH) $(RNASEQ_VITALIT_GAUSSIAN_CHOICE)
 #	Script to calculate presence/absence threshold for all samples and call genes present/absent + generate density plots + generate statistics on % present (cutoff info files)
 	@mkdir -p $(RNASEQ_VITALIT_PRESENCE_RES)
-	@$(VIT_R_CMD) R CMD BATCH --no-save --no-restore '--args rna_seq_sample_info="$(RNASEQ_SAMPINFO_FILEPATH)" rna_seq_sample_excluded="$(RNASEQ_SAMPEXCLUDED_FILEPATH)" kallisto_count_folder= "$(RNASEQ_VITALIT_ALL_RES)" sum_by_species_folder="$(RNASEQ_VITALIT_SUM_RES)" gaussian_choice="$(RNASEQ_VITALIT_GAUSSIAN_CHOICE)" out_folder="$(RNASEQ_VITALIT_PRESENCE_RES)" plot_only=FALSE' $(RNASEQ_VITALIT_SCRIPTS)$(RNASEQPATH)1Run/rna_seq_presence_absence.R $(RNASEQ_VITALIT_PRESENCE_RES)rna_seq_presence_absence.Rout
+	@$(VIT_R_CMD) R CMD BATCH --vanilla --slave '--args rna_seq_sample_info="$(RNASEQ_SAMPINFO_FILEPATH)" rna_seq_sample_excluded="$(RNASEQ_SAMPEXCLUDED_FILEPATH)" kallisto_count_folder="$(RNASEQ_VITALIT_ALL_RES)" sum_by_species_folder="$(RNASEQ_VITALIT_SUM_RES)" gaussian_choice="$(RNASEQ_VITALIT_GAUSSIAN_CHOICE)" out_folder="$(RNASEQ_VITALIT_PRESENCE_RES)" plot_only=FALSE desired_r_cutoff="0.05"' $(RNASEQ_VITALIT_SCRIPTS)$(RNASEQPATH)1Run/rna_seq_presence_absence.R $(RNASEQ_VITALIT_PRESENCE_RES)rna_seq_presence_absence.Rout
 	@touch $@
-#TODO if output directory is not $(RNASEQ_VITALIT_ALL_RES): copy all files with calls to this directory, as well as summary stats and plot files
+#NOTE if output directory is not $(RNASEQ_VITALIT_ALL_RES): copy all files with calls to this directory, as well as summary stats and plot files
 #for folder in *; do echo $folder; /bin/cp $folder/* ../all_results_bgee_v14/$folder/; done
 # /bin/cp used because cp is an alias to cp -i
 # Also copy presence_absence_all_samples.txt, presence_absence_all_samples.RDa and presence_absence_boxplots.pdf
 
-save_and_send_results_back: run_pipeline
-	# Touch all files so that they are not removed from /scratch/cluster/monthly
-	find $(RNASEQ_VITALIT_SCRATCH) -exec touch {} \;
-	#back-up all data
-	tar -cvf $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar $(RNASEQ_VITALIT_ALL_RES)
-	gzip -9 $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar
-	#copy back-up data to /data/
-	cp $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar.gz $(RNASEQ_VITALIT_ALL_RES_BACKUP)
-
+save_and_send_results_back: finalize_pipeline presence_absence export_length
+	# Touch all files so that they are not removed from /scratch/temporary
+	@find $(RNASEQ_VITALIT_SCRATCH) -exec touch {} \; 2>warnings.$@
+	# Back-up all data
+	@tar -cf $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar --absolute-names $(RNASEQ_VITALIT_ALL_RES) $(RNASEQ_VITALIT_SUM_RES) $(RNASEQ_VITALIT_PRESENCE_RES) 2>>warnings.$@
+	@gzip -9 $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar 2>>warnings.$@
+	# Move back-up data to /data/
+	@$(MV) $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar.gz $(RNASEQ_VITALIT_ALL_RES_BACKUP) 2>>warnings.$@
 	# Send results back to our server: $(PIPELOGIN)@$(PIPEHOST)  password: $(PIPEPASSWD)
-	# @scp $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar.gz  $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES) >>$@.tmp 2>&1
-  # Whole archive is probably too big to be copied to our servers (>100Gb). Copy only the final gene-level expression + calls files:
-	@rsync -rav -e ssh --include='*/' --include='*abundance_gene_level+new_tpm+new_fpkm+calls.tsv' --exclude='*' $(RNASEQ_VITALIT_ALL_RES) $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES) >>$@.tmp 2>&1
-	@rsync -av -e ssh $(RNASEQREPORTINFO) $(RNASEQSAMPSTATS) $(RNASEQALLRES)/presence_absence_all_samples.RDa $(RNASEQALLRES)/presence_absence_boxplots.pdf $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES)/ >>$@.tmp 2>&1
-
+	@ssh $(PIPELOGIN)@$(PIPEHOST) mkdir -p $(RNASEQALLRES)
+	# @scp $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar.gz  $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES) >$@.tmp 2>&1
+	# Whole archive is probably too big to be copied to our servers (>100Gb). Copy only the final gene-level expression + calls files:
+	@rsync -rav -e ssh --include='*/' --include='*abundance_gene_level+new_tpm+new_fpkm+calls.tsv' --exclude='*' $(RNASEQ_VITALIT_PRESENCE_RES) $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES) >>$@.tmp 2>&1
+	@$(CP) $(RNASEQ_VITALIT_REPORTINFO) $(RNASEQREPORTINFO)
+	@$(CP) $(RNASEQ_VITALIT_PRESENCE_RES)/presence_absence_all_samples.txt $(RNASEQSAMPSTATS)
+	@rsync -av -e ssh $(RNASEQ_VITALIT_REPORTINFO) $(RNASEQ_VITALIT_PRESENCE_RES)/presence_absence_all_samples.txt $(RNASEQ_VITALIT_PRESENCE_RES)/presence_absence_all_samples.RDa $(RNASEQ_VITALIT_PRESENCE_RES)/presence_absence_boxplots.pdf $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES)/ >>$@.tmp 2>&1
+	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
-	@touch $@
 
-vitalit2: send_results_back
+vitalit2: save_and_send_results_back
 	@echo -e "\tYou can go out of Vital-IT now\n"
 	@touch $@
 ##############################################################################################
 
-backup:
-	# Rsync files for backup on 'bigbgee' (see wiki for password)
+backup: $(RNASEQALLRES)
+	# Rsync files for backup by '$(DATALOGIN)' user on '$(DATAHOST)' (see wiki for password)
 	@echo -e "\t\e[1m\e[37m\e[41mRsync files in '$(RNASEQALLRES)' to bigbgee machine!\e[m\n"
+	@ssh $(DATALOGIN)@$(DATAHOST) mkdir -p $(DATAPATH)/rna_seq/all_results_$(DBNAME)/
 	@rsync -av --del -f "- /lost+found" --exclude=.svn --exclude=.git $(RNASEQALLRES)  $(DATALOGIN)@$(DATAHOST):$(DATAPATH)/rna_seq/all_results_$(DBNAME)/  >   $@.tmp
 	@$(MV) $@.tmp $@
 #TODO backup log files too + backup other files? We should keep as much as we can otherwise it's impossible to trace back things after a run
 
-## Removed because did not add any important test (just checking that processed files were present, but based on the wrong file and this is already checked in insert_RNA_seq...)
-#check_curation: backup $(RNASEQ_EXPERIMENT_FILEPATH_FULL) $(RNASEQ_LIB_FILEPATH_FULL) $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH)
-#	# Check data curation
-#	@perl 3Insertion/check_rna_seq_curation.pl -bgee=$(BGEECMD) -RNAseqExperiment=$(RNASEQ_EXPERIMENT_FILEPATH_FULL) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -ensRelease=$(ENSRELEASE) -allRes=$(RNASEQALLRES) after >$@.tmp 2>warnings.$@
-#	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
-#	@$(MV) $@.tmp $@
-
-insert_RNA_seq: $(RNASEQSAMPSTATS) $(RNASEQREPORTINFO) $(RNASEQ_LIB_FILEPATH_FULL) $(RNASEQ_EXPERIMENT_FILEPATH_FULL) $(UBERON_SEX_INFO_FILE_PATH) $(CUSTOM_UBERON_FILE_PATH) $(DEV_STAGE_ONT_FILE_PATH)
+#NOTE For iterative updates die commands after insert/update/delete statement failure have to be changed to warn
+#     because with iterative updates the database may contain duplicates in regard to what you are inserting/updating/deleting!
+insert_RNA_seq: backup $(RNASEQSAMPSTATS) $(RNASEQREPORTINFO) $(RNASEQ_LIB_FILEPATH_FULL) $(RNASEQ_EXPERIMENT_FILEPATH_FULL) $(UBERON_SEX_INFO_FILE_PATH) $(CUSTOM_UBERON_FILE_PATH) $(DEV_STAGE_ONT_FILE_PATH) $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH) $(EXTRAMAPPING_FILEPATH)
 	# Launch the organ stage mapping tool (using $(CUSTOM_UBERON_FILE_PATH) and $(DEV_STAGE_ONT_FILE_PATH))
 	@$(IDMAPPING)  $(IDMAPPINGPORT) &
 	@$(STGMAPPING) $(STGMAPPINGPORT) &
 	@sleep 50 # sleep because mappers need time to load Uberon
 	# Insert RNA Seq data
-	@perl 3Insertion/insert_rna_seq.pl -bgee=$(BGEECMD) -rnaSeqLibrary=$(RNASEQ_LIB_FILEPATH_FULL) -rnaSeqExperiment=$(RNASEQ_EXPERIMENT_FILEPATH_FULL) -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -library_stats=$(RNASEQSAMPSTATS) -report_info=$(RNASEQREPORTINFO) -all_results=$(RNASEQALLRES) -sex_info=$(UBERON_SEX_INFO_FILE_PATH) -Aport=$(IDMAPPINGPORT) -Sport=$(STGMAPPINGPORT) > $@.tmp 2>warnings.$@
+	@perl 3Insertion/insert_rna_seq.pl -bgee=$(BGEECMD) -rnaSeqLibrary=$(RNASEQ_LIB_FILEPATH_FULL) -rnaSeqExperiment=$(RNASEQ_EXPERIMENT_FILEPATH_FULL) -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -library_stats=$(RNASEQSAMPSTATS) -report_info=$(RNASEQREPORTINFO) -all_results=$(RNASEQALLRES) -sex_info=$(UBERON_SEX_INFO_FILE_PATH) -extraMapping=$(EXTRAMAPPING_FILEPATH) -Aport=$(IDMAPPINGPORT) -Sport=$(STGMAPPINGPORT) > $@.tmp 2>warnings.$@
 	@echo "Check inconsistencies between condition species and gene species (there should be none): " >> $@.tmp
 	@$(MYSQL) -e "SELECT t1.* FROM rnaSeqResult AS t1 INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId INNER JOIN rnaSeqLibrary AS t3 ON t1.rnaSeqLibraryId = t3.rnaSeqLibraryId INNER JOIN cond AS t4 on t3.conditionId = t4.conditionId WHERE t2.speciesId != t4.speciesId" >> $@.tmp
 	@echo >> $@.tmp
 	@echo "Distinct strains in RNA-Seq conditions, check that they are correct (e.g., no 'wild type' instead of 'wild-type')" >> $@.tmp
 	@$(MYSQL) -e "SELECT DISTINCT t1.strain FROM cond AS t1 INNER JOIN rnaSeqLibrary AS t2 ON t1.conditionId = t2.conditionId ORDER BY t1.strain" >> $@.tmp
+	@echo >> $@.tmp
 	@echo "Statistics on libraries" >> $@.tmp
 	@$(MYSQL) -e "SELECT t1.speciesId, COUNT(DISTINCT t2.rnaSeqLibraryId), MIN(t2.tmmFactor), MAX(t2.tmmFactor), AVG(t2.tmmFactor), MIN(t2.fpkmThreshold), MAX(t2.fpkmThreshold), AVG(t2.fpkmThreshold), MIN(t2.tpmThreshold), MAX(t2.tpmThreshold), AVG(t2.tpmThreshold), MIN(t2.allGenesPercentPresent), MAX(t2.allGenesPercentPresent), AVG(t2.allGenesPercentPresent), MIN(t2.proteinCodingGenesPercentPresent), MAX(t2.proteinCodingGenesPercentPresent), AVG(t2.proteinCodingGenesPercentPresent), MIN(t2.mappedReadsCount), MAX(t2.mappedReadsCount), AVG(t2.mappedReadsCount) FROM cond AS t1 INNER JOIN rnaSeqLibrary AS t2 ON t1.conditionId = t2.conditionId GROUP BY t1.speciesId ORDER BY COUNT(DISTINCT t2.rnaSeqLibraryId) DESC" >> $@.tmp
+	@echo >> $@.tmp
 	@echo "Statistics on conditions" >> $@.tmp
 	@$(MYSQL) -e "SELECT t1.speciesId, COUNT(DISTINCT t2.rnaSeqLibraryId), COUNT(DISTINCT t2.conditionId), COUNT(DISTINCT t1.exprMappedConditionId), COUNT(DISTINCT t1.anatEntityId), COUNT(DISTINCT t1.stageId), COUNT(DISTINCT t1.anatEntityId, t1.stageId, t1.sex), GROUP_CONCAT(DISTINCT t1.sex ORDER BY t1.sex SEPARATOR ', '), GROUP_CONCAT(DISTINCT t1.strain ORDER BY t1.strain SEPARATOR ', ') FROM cond AS t1 INNER JOIN rnaSeqLibrary AS t2 ON t1.conditionId = t2.conditionId GROUP BY t1.speciesId ORDER BY COUNT(DISTINCT t2.rnaSeqLibraryId) DESC" >> $@.tmp
+	@echo >> $@.tmp
 	@echo "Same condition information, but for mapped conditions of expression tables" >> $@.tmp
 	@$(MYSQL) -e "SELECT t3.speciesId, COUNT(DISTINCT t2.rnaSeqLibraryId), COUNT(DISTINCT t3.anatEntityId), COUNT(DISTINCT t3.stageId), COUNT(DISTINCT t3.anatEntityId, t3.stageId, t3.sex), GROUP_CONCAT(DISTINCT t3.sex ORDER BY t3.sex SEPARATOR ', '), GROUP_CONCAT(DISTINCT t3.strain ORDER BY t3.strain SEPARATOR ', ') FROM cond AS t1 INNER JOIN rnaSeqLibrary AS t2 ON t1.conditionId = t2.conditionId INNER JOIN cond AS t3 ON t1.exprMappedConditionId = t3.conditionId GROUP BY t3.speciesId ORDER BY COUNT(DISTINCT t2.rnaSeqLibraryId) DESC" >> $@.tmp
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
@@ -284,10 +292,11 @@ insert_RNA_seq: $(RNASEQSAMPSTATS) $(RNASEQREPORTINFO) $(RNASEQ_LIB_FILEPATH_FUL
 TMP_TABLE_CLAUSE   := SELECT t10.expressionId, IF((SELECT COUNT(rnaSeqExperimentId) FROM rnaSeqExperimentExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.rnaSeqExperimentCallDirection = 'present' AND t11.rnaSeqExperimentCallQuality = 'high quality') >= 2, 'pstGold', IF((SELECT COUNT(rnaSeqExperimentId) FROM rnaSeqExperimentExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.rnaSeqExperimentCallDirection = 'present' AND t11.rnaSeqExperimentCallQuality = 'high quality') = 1, 'pstSilverFromHigh', IF((SELECT COUNT(rnaSeqExperimentId) FROM rnaSeqExperimentExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.rnaSeqExperimentCallDirection = 'present' AND t11.rnaSeqExperimentCallQuality = 'poor quality') >= 2, 'pstSilverFromLow', IF((SELECT COUNT(rnaSeqExperimentId) FROM rnaSeqExperimentExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.rnaSeqExperimentCallDirection = 'present' AND t11.rnaSeqExperimentCallQuality = 'poor quality') = 1, 'pstBronze', IF((SELECT COUNT(rnaSeqExperimentId) FROM rnaSeqExperimentExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.rnaSeqExperimentCallDirection = 'absent' AND t11.rnaSeqExperimentCallQuality = 'high quality') >= 2, 'absGold', IF((SELECT COUNT(rnaSeqExperimentId) FROM rnaSeqExperimentExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.rnaSeqExperimentCallDirection = 'absent' AND t11.rnaSeqExperimentCallQuality = 'high quality') = 1, 'absSilverFromHigh', IF((SELECT COUNT(rnaSeqExperimentId) FROM rnaSeqExperimentExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.rnaSeqExperimentCallDirection = 'absent' AND t11.rnaSeqExperimentCallQuality = 'poor quality') >= 2, 'absSilverFromLow', IF((SELECT COUNT(rnaSeqExperimentId) FROM rnaSeqExperimentExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.rnaSeqExperimentCallDirection = 'absent' AND t11.rnaSeqExperimentCallQuality = 'poor quality') = 1, 'absBronze', 'IMPOSSIBLE')))))))) AS expressionCall FROM rnaSeqExperimentExpression AS t10
 
 check_conditions: insert_RNA_seq
-	@echo "Conditions with anat. entity not existing in related species: " > $@.tmp
-	@$(MYSQL) -e "select DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.sex, t1.strain from cond as t1 left outer join anatEntityTaxonConstraint as t2 on t1.anatEntityId = t2.anatEntityId and (t2.speciesId is null or t1.speciesId = t2.speciesId) left outer join anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId left outer join rnaSeqLibrary as t10 on t1.conditionId = t10.conditionId where t2.anatEntityId is null AND t10.conditionId IS NOT NULL order by t1.speciesId;" >> $@.tmp 2> $@.warn
-	@echo "Conditions with dev. stage not existing in related species: " >> $@.tmp
-	@$(MYSQL) -e "select DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.sex, t1.strain from cond as t1 left outer join stageTaxonConstraint as t2 on t1.stageId = t2.stageId and (t2.speciesId is null or t1.speciesId = t2.speciesId) left outer join anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId left outer join rnaSeqLibrary as t10 on t1.conditionId = t10.conditionId where t2.stageId is null AND t10.conditionId IS NOT NULL order by t1.speciesId;" >> $@.tmp 2>> $@.warn
+	@echo "Conditions with anat. entity not existing in related species:" > $@.tmp
+	@$(MYSQL) -e "SELECT DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.sex, t1.strain FROM cond AS t1 LEFT OUTER JOIN anatEntityTaxonConstraint AS t2 ON t1.anatEntityId = t2.anatEntityId AND (t2.speciesId IS NULL OR t1.speciesId = t2.speciesId) LEFT OUTER JOIN anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId LEFT OUTER JOIN rnaSeqLibrary AS t10 ON t1.conditionId = t10.conditionId WHERE t2.anatEntityId IS NULL AND t10.conditionId IS NOT NULL ORDER BY t1.speciesId" >> $@.tmp 2> $@.warn
+	@echo >> $@.tmp
+	@echo "Conditions with dev. stage not existing in related species:" >> $@.tmp
+	@$(MYSQL) -e "SELECT DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.sex, t1.strain FROM cond AS t1 LEFT OUTER JOIN stageTaxonConstraint AS t2 ON t1.stageId = t2.stageId AND (t2.speciesId IS NULL OR t1.speciesId = t2.speciesId) LEFT OUTER JOIN anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId LEFT OUTER JOIN rnaSeqLibrary AS t10 ON t1.conditionId = t10.conditionId WHERE t2.stageId IS NULL AND t10.conditionId IS NOT NULL ORDER BY t1.speciesId" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
 insert_expression: check_conditions insert_RNA_seq
@@ -309,35 +318,42 @@ insert_expression: check_conditions insert_RNA_seq
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
+#NOTE For iterative updates die commands after insert/update/delete statement failure have to be changed to warn
+#     because with iterative updates the database may contain duplicates in regard to what you are inserting/updating/deleting!
 insert_feature_length: $(RNASEQ_LENGTH_INFO_FILEPATH)
 	# Insert the feature length information
 	@perl 3Insertion/insert_feature_length.pl -bgee=$(BGEECMD) -length_info=$(RNASEQ_LENGTH_INFO_FILEPATH) > $@.tmp 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
-launch_calculate_TMM_factors: insert_RNA_seq
+#NOTE For iterative updates die commands to warn
+#     because with iterative updates tries to calculate TMM for already processed RNA-Seq libraries not available here!
+launch_calculate_TMM_factors: insert_RNA_seq $(RNASEQALLRES)
 	# Launch calculation of TMM factors for RNA-seq
+	@mkdir -p $(RNASEQTMMTARG) $(RNASEQTMMPATH)
 	@perl 3Insertion/launch_calculate_TMM_factors.pl -bgee=$(BGEECMD) -path_generes=$(RNASEQALLRES) -path_target=$(RNASEQTMMTARG) -path_processed=$(RNASEQTMMPATH) >$@.tmp 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
-check_TMM_factors: launch_calculate_TMM_factors
-	# Check results
-	@grep -H -c 'proc.time' $(RNASEQTMMPATH)/*.log | grep ':0$$'  >$@.tmp
-	# Check warnings
-	@grep 'Warning' -A 5 $(RNASEQTMMPATH)/*.log                   >>$@.tmp
+check_TMM_factors: launch_calculate_TMM_factors $(RNASEQTMMPATH)
+	# Check results: all were calculated (none :0$ expected)
+	@grep -H -c 'proc.time' $(RNASEQTMMPATH)/*.log | grep ':0$$'  >$@.tmp   || true
+	# Check warnings: no warnings
+	@grep 'Warning' -A 5 $(RNASEQTMMPATH)/*.log                   >>$@.tmp  || true
 	@$(MV) $@.tmp $@
 #TODO check that all libraries in database have a TMM factor calculated:
-# cat /var/bgee/extra/pipeline/rna_seq/processed_TMM_bgee_v14/*.tsv | grep -v rnaSeqExperimentId | wc -l
+# cat /var/bgee/extra/pipeline/rna_seq/processed_TMM_$(DBNAME)/*.tsv | grep -v rnaSeqExperimentId | wc -l
 # This should correspond to: SELECT count(*) FROM rnaSeqLibrary;
 
-insert_TMM_factors: check_TMM_factors
+insert_TMM_factors: check_TMM_factors $(RNASEQTMMPATH)
 	# Insert TMM factors into rnaSeqLibrary table
 	@perl 3Insertion/insert_TMM_factors.pl -bgee=$(BGEECMD) -tmm_results=$(RNASEQTMMPATH) >$@.tmp 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
+
 #TODO Keep a way to use an external annotation file
+#FIXME Useful? As Wormbase annotations are merged within RNASeq*_full.tsv files used in the main part!
 wormbase:
 	# Get Annotation file from WormBase
 	@$(WGET) 'http://athena.caltech.edu/MrExpTable.csv' && $(MV) MrExpTable.csv 4External/$@.tsv 2>/dev/null  || rm -f MrExpTable.csv
@@ -348,6 +364,7 @@ wormbase:
 	@echo TODO
 
 external: wormbase
+
 
 #TODO Add 1st steps
 #TODO add a verification that each transcriptId is uniquely used in a given species

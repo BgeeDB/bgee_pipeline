@@ -1,0 +1,1 @@
+Folder for storing outputs of the steps in pipeline/annotations/

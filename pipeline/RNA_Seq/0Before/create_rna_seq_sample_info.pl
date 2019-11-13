@@ -19,7 +19,7 @@
 # Mar 29, 2016
 # - Added if the species comes from ensembl or ensembl metazoa, in rna_seq_sample_info.txt
 #
-# TODO? a lot of information could be extracted from SRA for the annotators, who will just have to check. We could make a new script that is run for each SRX ID and outputs the annotation line to copy paste in annotation spreadsheet
+# TODO a lot of information could be extracted from SRA for the annotators, who will just have to check. We could make a new script that is run for each SRX ID and outputs the annotation line to copy paste in annotation spreadsheet
 # We could get tissue source to compare to annotation. Problem: info not present in most SRA records
 # if ( $info =~ /<TAG>OrganismPart<\/TAG><VALUE>([^<]+?)<\/VALUE>/ ) {
 #   $source = $1;
@@ -39,6 +39,7 @@ use Getopt::Long;
 use FindBin;
 use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
 use Utils;
+use File::Slurp;
 use List::MoreUtils qw(all any);
 use LWP::Simple;
 
@@ -47,12 +48,14 @@ my ($bgee_connector)         = ('');
 my ($RNAseqLib)              = ('');
 my ($RNAseqLibChecks)        = ('');
 my ($RNAseqLibWormExclusion) = ('');
+my ($extraMapping)           = ('');
 my ($outFile)                = ('');
 my ($debug)                  = (0);
 my %opts = ('bgee=s'                   => \$bgee_connector,     # Bgee connector string
             'RNAseqLib=s'              => \$RNAseqLib,
             'RNAseqLibChecks=s'        => \$RNAseqLibChecks,
             'RNAseqLibWormExclusion=s' => \$RNAseqLibWormExclusion,
+            'extraMapping=s'           => \$extraMapping,
             'outFile=s'                => \$outFile,
             'debug'                    => \$debug,
            );
@@ -61,31 +64,43 @@ my %opts = ('bgee=s'                   => \$bgee_connector,     # Bgee connector
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $bgee_connector eq '' || $RNAseqLib eq '' || $RNAseqLibChecks eq '' || $RNAseqLibWormExclusion eq '' || $outFile eq ''){
     print "\n\tInvalid or missing argument:
-\te.g. $0  -bgee=\$(BGEECMD) -RNAseqLib=\$(RNASEQ_LIB_FILEPATH_FULL) -RNAseqLibChecks=\$(RNASEQ_LIB_CHECKS_FILEPATH_FULL) -RNAseqLibWormExclusion=\$(RNASEQ_LIB_EXCLUSION_FILEPATH_WORM) -outFile=\$(RNASEQ_SAMPINFO_FILEPATH)
+\te.g. $0  -bgee=\$(BGEECMD) -RNAseqLib=\$(RNASEQ_LIB_FILEPATH_FULL) -RNAseqLibChecks=\$(RNASEQ_LIB_CHECKS_FILEPATH_FULL) -RNAseqLibWormExclusion=\$(RNASEQ_LIB_EXCLUSION_FILEPATH_WORM) -outFile=\$(RNASEQ_SAMPINFO_FILEPATH) -extraMapping=\$(EXTRAMAPPING_FILEPATH)
 \t-bgee                   Bgee connector string
 \t-RNAseqLib              RNAseq Libraries from annotation file
 \t-RNAseqLibChecks        RNAseq Libraries previously checked for platform annotation errors
 \t-RNAseqLibWormExclusion RNAseq Libraries excluded from WormBase annotation
 \t-outFile                Output file: TSV with all species and SRA information from NCBI
+\t-extraMapping           Extra mapping file
 \t-debug                  more verbose output
 \n";
     exit 1;
 }
 
-print 'Connecting to Bgee to retrieve species information... ';
+print 'Connecting to Bgee to retrieve species/stage/organ information... ';
 # Bgee db connection
 my $dbh = Utils::connect_bgee_db($bgee_connector);
 
 # Get species list in bgee db
 my %species;
-my $selSpecies = $dbh->prepare('SELECT species.speciesId, CONCAT(species.genus, " ", species.species), species.genomeFilePath, dataSource.dataSourceName FROM species INNER JOIN dataSource ON species.dataSourceId = dataSource.dataSourceId;');
+my $selSpecies = $dbh->prepare('SELECT species.speciesId, CONCAT(species.genus, " ", species.species), species.genomeFilePath, dataSource.dataSourceName FROM species INNER JOIN dataSource ON species.dataSourceId = dataSource.dataSourceId');
 $selSpecies->execute()  or die $selSpecies->errstr;
 while ( my @data = $selSpecies->fetchrow_array ){
-    $species{$data[0]}->{'organism'} = $data[1];
+    $species{$data[0]}->{'organism'}       = $data[1];
     $species{$data[0]}->{'genomeFilePath'} = $data[2];
-    $species{$data[0]}->{'database'} = $data[3];
+    $species{$data[0]}->{'database'}       = $data[3];
 }
 $selSpecies->finish;
+
+# Retrieve all organs/stages from Bgee
+my %organs = %{ Utils::getBgeedbOrgans($dbh) };
+my %stages = %{ Utils::getBgeedbStages($dbh) };
+
+# Parse extra mapping info for currently too up-to-date annotations
+##UnmappedId    UnmappedName    UberonID    UberonName    Comment
+my %extra = map  { my @tmp = split(/\t/, $_, -1); if ( $tmp[2] ne '' && $tmp[0] ne '' ){ $tmp[0] => $tmp[2] } else { 'nonono' => 'nonono' } }
+            grep { !/^#/ }
+            read_file("$extraMapping", chomp => 1);
+
 $dbh->disconnect;
 print "Done\n";
 
@@ -95,8 +110,8 @@ print "Reading annotation file $RNAseqLib... ";
 die "[$RNAseqLib] file is empty\n"  if ( -z $RNAseqLib );
 my %tsv = %{ Utils::read_spreadsheet("$RNAseqLib", "\t", 'csv', '"', 1) };
 # See modified headers, issue #90 on gitHub:
-# libraryId	experimentId	chipTypeId	organId	organName	uberonId	uberonName	stageId	stageName	infoOrgan	infoStage	sampleTitle	sampleSource	sampleDescription	sampleCharacteristics	organAnnotationStatus	organBiologicalStatus	stageAnnotationStatus	stageBiologicalStatus	sex	strain	speciesId	comment	annotatorId	lastModificationDate	replicate	infoReplicate    SRSId    tags
-# SRX081869	GSE30352	Illumina Genome Analyzer IIx			UBERON:0000955	brain	GgalDv:0000008	1-year-old chicken stage	Brain	~1 year, adult	gga br F 1				perfect match	not documented	other	partial sampling	F	Red Junglefowl	9031	Chicken	ANN	2013-08-23	1	GEO - [...] we generated RNA-Seq data [...] of brain (cerebral cortex or whole brain without cerebellum), cerebellum, heart, kidney, liver and testis (usually from one male and one female per somatic tissue and two males for testis)[...]
+# libraryId    experimentId    chipTypeId    organId    organName    uberonId    uberonName    stageId    stageName    infoOrgan    infoStage    sampleTitle    sampleSource    sampleDescription    sampleCharacteristics    organAnnotationStatus    organBiologicalStatus    stageAnnotationStatus    stageBiologicalStatus    sex    strain    speciesId    comment    annotatorId    lastModificationDate    replicate    infoReplicate    SRSId    tags
+# SRX081869    GSE30352    Illumina Genome Analyzer IIx            UBERON:0000955    brain    GgalDv:0000008    1-year-old chicken stage    Brain    ~1 year, adult    gga br F 1                perfect match    not documented    other    partial sampling    F    Red Junglefowl    9031    Chicken    ANN    2013-08-23    1    GEO - [...] we generated RNA-Seq data [...] of brain (cerebral cortex or whole brain without cerebellum), cerebellum, heart, kidney, liver and testis (usually from one male and one female per somatic tissue and two males for testis)[...]
 print "Done\n";
 
 print "Reading annotation file $RNAseqLibChecks... ";
@@ -113,7 +128,7 @@ print "Done\n";
 print "Reading annotation file $RNAseqLibWormExclusion... ";
 warn "Warning: [$RNAseqLibWormExclusion] file is empty.\n"  if ( -z $RNAseqLibWormExclusion );
 %tsv_checks = %{ Utils::read_spreadsheet("$RNAseqLibWormExclusion", "\t", 'csv', '"', 1) };
-#libraryId 	excluded 	comment 	annotatorId 	lastModificationDate
+#libraryId    excluded    comment    annotatorId    lastModificationDate
 my %checked_libraries_worm;
 for my $i ( 0..$#{$tsv_checks{'libraryId'}} ) {
     $checked_libraries_worm{$tsv_checks{'libraryId'}[$i]} = $tsv_checks{'excluded'}[$i];
@@ -135,15 +150,26 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
     my $libraryId    = $tsv{'libraryId'}[$i];
     my $experimentId = $tsv{'experimentId'}[$i];
     my $tag          = $tsv{'tags'}[$i] // '';
+    my $anatID       = $tsv{'uberonId'}[$i];
+    my $stageID      = $tsv{'stageId'}[$i];
 
     # line commented: skipped
     next SAMPLE  if ( $libraryId =~ /^#/ );
-    next SAMPLE  if ( $tag =~ /^ScRNA-seq$/i ); #NOTE Discard Single-cell sequencing for now
+    next SAMPLE  if ( $tag =~ /^ScRNA-seq$/i ); #NOTE Discard Single-cell sequencing, not this pipeline part
     print "\t$libraryId\t$experimentId\n";
 
     # skipped if no species matching the annotated speciesId in the database
-    if ( ! exists($species{ $tsv{'speciesId'}[$i] }) ) {
+    if ( ! exists($species{ $tsv{'speciesId'}[$i] }) ){
         warn "\tWarning: No species/genome assembly defined in the database for [$libraryId] [$experimentId]: [$tsv{'speciesId'}[$i]]. This library was not printed in output file.\n";
+        next SAMPLE;
+    }
+    # skipped if anatID or stageID not in bgee db (e.g. too recent Uberon used by annotators)
+    if ( (! exists($organs{ $anatID })  && ! exists($extra{ $anatID }))  || !$anatID ){
+        warn "\tWarning: [$anatID] anatId  does not exist in the database for [$libraryId] [$experimentId]. This library was not printed in output file.\n";
+        next SAMPLE;
+    }
+    if ( (! exists($stages{ $stageID }) && ! exists($extra{ $stageID })) || !$stageID ){
+        warn "\tWarning: [$stageID] stageId does not exist in the database for [$libraryId] [$experimentId]. This library was not printed in output file.\n";
         next SAMPLE;
     }
 
@@ -173,7 +199,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         if ( exists $checked_libraries_worm{$libraryId} ){
             #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/33
             # if the library was excluded:
-            #SRP001010
+            #SRP000401(SRX035162, SRX036882, SRX036967, SRX036969, SRX036970, SRX047787), SRP001010, SRP015688
             if ( $checked_libraries_worm{$libraryId} eq 'TRUE' ){
                 warn "\tInfo: [$libraryId] [$experimentId] from Wormbase was excluded following manual curation (see file $RNAseqLibWormExclusion). This library was not printed in output file.\n";
                 next SAMPLE
@@ -193,24 +219,21 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         # E-MTAB-2449   'validated with lower confidence'
         # SRP003905     '"EST" but that it is Illumina paired-end, so I think it is RNA-seq'
         # GSE16552      'Contradictory info but for now kept'. Also in https://gitlab.sib.swiss/Bgee/expression-annotations/issues/33
+        my @invalid_lib_strategies = ('miRNA-Seq', 'ncRNA-Seq', 'ATAC-seq', 'MAINE-Seq', 'MNase-Seq', 'FAIRE-seq', 'DNase-Hypersensitivity', 'DNase-seq');
         $info =~ /<LIBRARY_STRATEGY>([^<]+)<\/LIBRARY_STRATEGY>/; # [^<] prevents matching to '<' character
         $strategy = $1;
-        if ( $strategy =~ /miRNA-Seq/ ){
-            warn "\tProblem: [$libraryId] [$experimentId] is miRNA-seq, which is not supported by our pipeline for now. Please comment out. This library was not printed in output file.\n";
+        if ( any { lc($strategy) eq lc($_) } @invalid_lib_strategies ){
+            warn "\tProblem: [$libraryId] [$experimentId] is [$strategy], which is not supported by our pipeline for now. Please comment out. This library was not printed in output file.\n";
             next SAMPLE;
         }
-        elsif ( $strategy =~ /ncRNA-Seq/ ){
-            warn "\tProblem: [$libraryId] [$experimentId] is non-coding RNA-seq (e.g., snRNA, snoRNA, siRNA, piRNA), which is not supported by our pipeline for now. Please comment out. This library was not printed in output file.\n";
-            next SAMPLE;
-        }
-        elsif ( $strategy !~ /^RNA-Seq$/ and (all { $experimentId ne $_ } @valid_lib_strategy) ){
+        elsif ( $strategy !~ /^RNA-Seq$/i and (all { $experimentId ne $_ } @valid_lib_strategy) ){
             warn "\tProblem: [$libraryId][$experimentId] does not seem to be RNA-seq but [$strategy]. Please check. This library was printed in output file.\n";
         }
 
         # Particular types of RNA-seq. See https://www.ncbi.nlm.nih.gov/books/NBK49283/ or https://www.ebi.ac.uk/ena/submit/preparing-xmls
-        my @valid_selection_methods = ('cDNA', 'oligo-dT', 'PCR', 'PolyA', 'RANDOM', 'RANDOM PCR', 'RT-PCR');
+        my @valid_selection_methods = ('cDNA', 'oligo-dT', 'Oligo-dT', 'PCR', 'PolyA', 'RANDOM', 'RANDOM PCR', 'RT-PCR');
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
-        my @valid_lib_selection     = ('E-MTAB-5895');
+        my @valid_lib_selection     = ('E-MTAB-5895', 'SRP012049', 'SRP021223', 'SRP051959', 'SRP058036', 'SRP082291', 'SRP082342', 'SRP082454', 'SRP106023');
         $info =~ /<LIBRARY_SELECTION>([^<]+)<\/LIBRARY_SELECTION>/; # [^<] prevents matching to '<' character
         my $selection = $1;
         if ( $selection =~ /CAGE/ ){
@@ -233,13 +256,13 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         $info =~ /<SCIENTIFIC_NAME>([^<]+)<\/SCIENTIFIC_NAME>/;
         $organism = $1;
         if ( $organism ne $species{ $tsv{'speciesId'}[$i] }->{'organism'} ){
-            warn "\tProblem: the organism (scientific name) is not matching between the annotation file [", $species{ $tsv{'speciesId'}[$i] }->{'organism'}, "] and the SRA record [$organism], please verify. The information from the annotation file is printed in output file.\n";
+            warn "\tProblem: the organism (scientific name) is not matching between the annotation file [", $species{ $tsv{'speciesId'}[$i] }->{'organism'}, "] and the SRA record [$organism], please verify for [$libraryId][$experimentId]. The information from the annotation file is printed in output file.\n";
         }
         # platform
         $info =~ /<PLATFORM><[^<]+><INSTRUMENT_MODEL>([^<]+)<\/INSTRUMENT_MODEL><\/[^<]+><\/PLATFORM>/;
         $platform = $1;
         if (($platform ne $tsv{'platform'}[$i]) and (!exists $checked_libraries{$libraryId})) {
-            warn "\tProblem: the platform is not matching between the annotation file [", $tsv{'platform'}[$i], "] and the SRA record [$platform], please verify and update $RNAseqLibChecks. The information from the annotation file is printed in output file.\n";
+            warn "\tProblem: the platform is not matching between the annotation file [", $tsv{'platform'}[$i], "] and the SRA record [$platform], please verify for [$libraryId][$experimentId] and update $RNAseqLibChecks. The information from the annotation file is printed in output file.\n";
         }
         # Run IDs
         while ( $info =~ /<PRIMARY_ID>([SEDC]RR\d+)<\/PRIMARY_ID>/g ) {
@@ -272,8 +295,8 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
 
         # If read length defined and it seems very short, issue a warning
         if ( $readLength ne '' ){
-            #NOTE Currently those short read length libraries look fine (in those experiments):
-            #     GSE36026 GSE38998 SRP003822 SRP003823 SRP003826 SRP003829 SRP003831
+            #NOTE Currently those short read length libraries look fine (in those experiments), need to check how read alignments are
+            #     GSE36026 GSE38998 DRP000415 ERP000787 SRP003276 SRP003822 SRP003823 SRP003826 SRP003829 SRP003831
             if ( (($libraryType eq 'SINGLE') or ($libraryType eq '')) and ($readLength < 36) ){
                 warn "\tInfo: Read length is [$readLength] for SE library [$libraryId][$experimentId], which seems low and could indicate that the library is not a classical RNA-seq library. Please check.\n";
             }
@@ -283,10 +306,15 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         }
 
         ## Issue warning is the XML entry includes keywords suggesting that the library is not classical RNA-seq
-        my @not_traditional = ('DeepSAGE', 'DeepCAGE', 'CAGE', 'RACE', 'SAGE', 'DpnII', 'DpnIII', 'NlaIII', 'capture', 'CEL-seq');
-        my @verified        = ('ERP104395', 'GSE22410', 'GSE64283', 'SRP000401', 'SRP013825', 'SRP041131', 'SRP092799', 'SRP098705', 'SRP112616', 'SRP125959');
-        if ( all { $experimentId ne $_ } @verified and any { $info =~ /$_/ } @not_traditional ){
-            warn "\tWarning: [$libraryId][$experimentId] may not be traditional RNA-seq (SAGE, CAGE, RACE, DpnII or NlaIII tag-based, capture array, CEL-seq, etc). Please check.\n";
+        #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
+        #FIXME SRP070951 is kept till we know what to do with "globin reduction" see https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
+        my @not_traditional = ('DeepSAGE', 'DeepCAGE', 'LongSAGE', 'SuperSAGE', 'CAGE', 'RACE', 'SAGE', 'DpnII', 'DpnIII', 'NlaIII', 'capture', 'CEL-seq', 'DGE-Seq', 'TagSeq', 'globin reduction', 'globin depletion', 'UMI', 'UMIs', 'ATAC-seq', 'MAINE-Seq', 'Mnase-Seq', 'FAIRE-Seq', 'DNase-seq', 'MACE-Seq', 'QuantSeq', 'piRNA', 'piRNAs');
+        my @verified        = ('ERP000787', 'ERP001694', 'ERP104395',
+                               'GSE22410', 'GSE64283',
+                               'SRP000401', 'SRP013825', 'SRP021940', 'SRP022567', 'SRP041131', 'SRP076617', 'SRP082284',
+                               'SRP091779', 'SRP092799', 'SRP098705', 'SRP112616', 'SRP125959');
+        if ( all { $experimentId ne $_ } @verified and any { $info =~ /\W$_\W/i } @not_traditional ){
+            warn "\tWarning: [$libraryId][$experimentId] may not be traditional RNA-seq, found word(s) subject to caution. Please check.\n";
         }
 
         # TODO Any other info to get?

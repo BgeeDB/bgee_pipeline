@@ -47,7 +47,7 @@ my %platform = %{ Utils::read_spreadsheet("$platform", "\t", 'csv', '', 1) };
 
 
 # Fake RNAseqLibrary file
-my $to_write = "#Chip ID\tExperiment ID\tchipTypeId\torganId\torganName\tUberonId\tUberonName\tstageId\tstageName\tinfoOrgan\tinfoStage\tsampleTitle\tsampleSource\tSampleDescription\tSampleCharacteristics\torganAnnotationStatus\torganBiologicalStatus\tstageAnnotationStatus\tstageBiologicalStatus\tsex\tstrain\tTaxID\tcomment\tannotatorId\tlastModificationDate\t\n";
+my $to_write = "#Chip ID\tExperiment ID\tchipTypeId\torganId\torganName\tuberonId\tuberonName\tstageId\tstageName\tinfoOrgan\tinfoStage\tsampleTitle\tsampleSource\tSampleDescription\tSampleCharacteristics\torganAnnotationStatus\torganBiologicalStatus\tstageAnnotationStatus\tstageBiologicalStatus\tsex\tstrain\tTaxID\tcomment\tannotatorId\tlastModificationDate\t\n";
 my %GSE;
 for my $tsv_line ( 0..$#{$tsv{'GSM'}} ){
     # Find new RNA Seq file name based on this GSM

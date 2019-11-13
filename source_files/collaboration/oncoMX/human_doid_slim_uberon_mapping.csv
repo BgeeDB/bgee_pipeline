@@ -1,0 +1,78 @@
+Slim,UBERON_doid.owl,UBERON_name_ontobee,Notes
+DOID:2706 / synovium cancer,UBERON_0007616,layer of synovial tissue,
+DOID:0060119 / pharynx cancer,UBERON_0006562,pharynx,
+DOID:0060073 / lymphatic system cancer,UBERON_0006558,lymphatic part of lymphoid system,
+DOID:1964 / fallopian tube cancer,UBERON_0003889,fallopian tube,
+DOID:5559 / mediastinal cancer,UBERON_0003728,mediastinum,
+DOID:11920 / tracheal cancer,UBERON_0003126,trachea,
+DOID:4045 / muscle cancer,UBERON_0002385,muscle tissue,
+DOID:201 / connective tissue cancer,UBERON_0002384,connective tissue,
+DOID:3277 / thymus cancer,UBERON_0002370,thymus,
+DOID:1192 / peripheral nervous system neoplasm & DOID:3953 / adrenal gland cancer,UBERON_0002369,adrenal gland,"NOTE - maps to 3953, not 1192"
+DOID:3953 / adrenal gland cancer,UBERON_0002369,adrenal gland,
+DOID:10283 / prostate cancer,UBERON_0002367,prostate gland,
+DOID:1725 / peritoneum cancer,UBERON_0002358,peritoneum,
+DOID:4203 / brain stem cancer,UBERON_0002298,brainstem,
+DOID:5612 / spinal cancer,UBERON_0002240,spinal cord,
+DOID:10153 / ileum cancer,UBERON_0002116,ileum,
+DOID:13499 / jejunal cancer,UBERON_0002115,jejenum,
+DOID:10021 / duodenum cancer,UBERON_0002114,duodenum,
+DOID:263 / kidney cancer,UBERON_0002113,kidney,
+DOID:3121 / gallbladder cancer,UBERON_0002110,gall bladder,
+DOID:3571 / liver cancer,UBERON_0002107,liver,
+DOID:1324 / lung cancer,UBERON_0002048,lung,
+DOID:1781 / thyroid cancer,UBERON_0002046,thyroid gland,
+DOID:2021 / placenta cancer,UBERON_0001987,placenta,
+DOID:5099 / middle ear cancer,UBERON_0001756,middle ear,
+DOID:2596 / larynx cancer,UBERON_0001737,larynx,
+DOID:10811 / nasal cavity cancer,UBERON_0001707,nasal cavity,
+DOID:184 / bone cancer,UBERON_0001474,bone element,
+DOID:1793 / pancreatic cancer,UBERON_0001264,pancreas,
+DOID:11054 / urinary bladder cancer,UBERON_0001255,urinary bladder,
+DOID:14110 / anus cancer,UBERON_0001245,anus,
+DOID:11239 / appendix cancer,UBERON_0001154,vermiform appendix,
+DOID:1521 / cecum cancer,UBERON_0001153,caecum,
+DOID:1540 / parathyroid carcinoma,UBERON_0001132,parathyroid gland,
+DOID:5041 / esophageal cancer,UBERON_0001043,esophagus,
+DOID:0060103 / neuroectodermal neoplasm,UBERON_0001017,nasal cavity,
+DOID:3996 / urinary system cancer,UBERON_0001008,renal system,
+DOID:1245 / vulva cancer,UBERON_0000997,mammalian vulva,
+DOID:119 / vaginal cancer,UBERON_0000996,vagina,
+DOID:363 / uterine cancer,UBERON_0000995,uterus,
+DOID:2394 / ovarian cancer,UBERON_0000992,ovary,
+DOID:11615 / penile cancer,UBERON_0000989,penis,
+DOID:2174 / ocular cancer,UBERON_0000970,eye,
+DOID:1319 / brain cancer,UBERON_0000955,brain,
+DOID:117 / heart cancer,UBERON_0000948,heart,
+DOID:10534 / stomach cancer,UBERON_0000945,stomach,
+DOID:2998 / testicular cancer,UBERON_0000473,testis,
+DOID:1612 / breast cancer,UBERON_0000310,breast,
+DOID:8618 / oral cavity cancer,UBERON_0000167,oral cavity,
+DOID:11819 / ureter cancer,UBERON_0000056,ureter,
+DOID:4159 / skin cancer,UBERON_0000014,zone of skin,
+DOID:1785 / pituitary cancer,UBERON_0000007,pituitary gland,
+DOID:4362 / cervical cancer,UBERON_0000002,uterine cervix,
+Paratesticular tumour,N/A,,No DOID - closest is DOID:10207 / paratesticular lipoma
+DOID:2531 / hematologic cancer,N/A,,subclass
+DOID:4606 / bile duct cancer,N/A,,subclass
+DOID:9256 / colorectal cancer,N/A,,subclass
+DOID:9253 / gastrointestinal stromal tumor,N/A,,subclass
+DOID:3070 / malignant glioma,N/A,,subclass
+DOID:1192 / peripheral nervous system neoplasm,N/A,,subclass
+DOID:11934 / head and neck cancer,N/A,,subclass
+DOID:169 / neuroendocrine tumor,N/A,,subclass
+DOID:3355 / fibrosarcoma,N/A,,subclass
+DOID:3565 / meningioma,N/A,,subclass
+DOID:3939 / lipomatous cancer,N/A,,subclass
+DOID:4231 / histiocytoma,N/A,,subclass
+DOID:5158 / pleural cancer,N/A,,subclass
+DOID:5875 / retroperitoneal cancer,N/A,,subclass
+DOID:8632 / Kaposi's sarcoma,N/A,,subclass
+DOID:1909 / melanoma,N/A,,subclass
+DOID:1790 / malignant mesothelioma,N/A,,subclass
+DOID:3371 / chondrosarcoma,N/A,,subclass
+DOID:0080189 / malignant hemangioma,N/A,,subclass
+DOID:200 / giant cell tumor,N/A,,subclass
+DOID:2994 / germ cell cancer,N/A,,subclass; equivalent class
+DOID:4706 / brain cancer,N/A,,subclass; infratentorial cancer
+DOID:175 / vascular cancer,N/A,,subclass

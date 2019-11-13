@@ -4,12 +4,15 @@
 # modified 13/05/2014: the script was corrected to work with new version of ENSEMBL gtf format
 
 # Julien Roux
-# modified 10/12/2015: updated and simplified script for better readability; checked compatibility with kallisto-based pipeline; removed length calculation and export; added export of table to map transcript IDs to gene IDs; modified to read directly compressed GTF file 
+# modified 10/12/2015: updated and simplified script for better readability; checked compatibility with kallisto-based pipeline; removed length calculation and export; added export of table to map transcript IDs to gene IDs; modified to read directly compressed GTF file
 # modified 22/02/2016: clarified and simplified even more the script (removed variables used only once); added export of gene biotypes table; fixed small bug in coordinates of intergenic region: because of using round(), there were too short by 1bp. Now using ceiling() and floor()
+
+# Julien Wollbrett
+# modified 07/01/2019: remove potential scientific notation for start or stop position of intergenic regions
 
 ## From GTF file downloaded from Ensembl, this script prepares a new GTF file (gtf_all) with:
 ## - exonic regions from all transcripts of each gene
-## - intergenic regions. The 500nt flanking genes are excluded (the minimal distance from start or stop of intergenic region to boundary of the nearest gene: 500nt). The intergenic region length is limited to min 2000 max 20000. Intergenic regions with lower size are discarded. Larger regions are limited to +/- 10000 around the center of the intergenic region. 
+## - intergenic regions. The 500nt flanking genes are excluded (the minimal distance from start or stop of intergenic region to boundary of the nearest gene: 500nt). The intergenic region length is limited to min 2000 max 20000. Intergenic regions with lower size are discarded. Larger regions are limited to +/- 10000 around the center of the intergenic region.
 ## A conversion table (transcript ID to gene ID) is exported: extension .gene2transcript
 ## A gene biotype table is exported: extension .gene2biotype
 
@@ -131,6 +134,10 @@ cat("Selecting set of intergenic regions...\n")
 intergenic_regions <- matrix(ncol=3, nrow=0)
 colnames(intergenic_regions) <- c("chr", "start", "end")
 
+# To avoid scientific notation we change the value of option "scipen" to 999. At the end of the script we will change to its initial value
+scipen_initial_value <- getOption("scipen")
+options(scipen = 999) 
+
 for(chr in chromosomes){
     cat(chr, " ")
     ## keeping genes from selected chromosome
@@ -158,8 +165,9 @@ for(chr in chromosomes){
     inter_gene_data$size[inter_gene_data$size > 20000] <- 20000 ## limit the size of usable regions to max 20000
 
     ## storing information (chr, start, stop, size) for selected intergenic regions on this chromosome
-    intergenic_regions <- rbind(intergenic_regions, cbind(chr, inter_gene_data$center - ceiling(inter_gene_data$size/2) + 1 , inter_gene_data$center + floor(inter_gene_data$size/2)))    
+    intergenic_regions <- rbind(intergenic_regions, cbind(chr, inter_gene_data$center - ceiling(inter_gene_data$size/2) + 1 , inter_gene_data$center + floor(inter_gene_data$size/2)))
 }
+options(scipen = scipen_initial_value)
 
 ## preparing intergenic gtf data
 cat("\nPreparing intergenic GTF data...\n")

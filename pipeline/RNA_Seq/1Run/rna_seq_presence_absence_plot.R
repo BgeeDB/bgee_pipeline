@@ -85,10 +85,10 @@ for (column in c(4:9, 11:12, 14:15)){
     subsetNames <- names(all_samples)[column]
     subsetData <- as.numeric(as.character(all_samples[all_samples$method == method, column]))
     organism <- as.factor(as.character(all_samples$organism[all_samples$method == method]))
- 
+
     ## reoder organism levels to get boxes ordered by median values in boxplot
     organism <- reorder(organism, subsetData, median)
-  
+
     ## For each method, boxplot split by species of each column
     par(mar=c(12,4,2,1)) ## bottom, left, top and right margins
     if (is.na(ylimits[[i]][1])){
@@ -118,8 +118,8 @@ for (column in c(4:9, 11:12, 14:15)){
     }
   ## }
   i = i+1
-}   
-## close PDF device        
+}
+## close PDF device
 dev.off()
 
 ## TODO - cross with annotation file to get tissue and redo same plot split by tissue?

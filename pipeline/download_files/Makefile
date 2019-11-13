@@ -139,7 +139,7 @@ STAGE_PARAM := DEV_STAGE_ID
 # Processed data download files
 # =========================
 $(OUTPUT_DIR)generate_processed_files:
-	@perl generate_ref_expr_files.pl -bgee=$(BGEECMD) -speciesArg=- -affyDir=$(OUTPUT_DIR)affymetrix/ -estDir=- -inSituDir=- -rnaSeqDir=$(OUTPUT_DIR)rna_seq_processed/ -bgeeVersion=bgee_v14 > $@.tmp 2>$@.warnings
+	@perl generate_ref_expr_files.pl -bgee=$(BGEECMD) -speciesArg=- -affyDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)affymetrix/ -estDir=- -inSituDir=- -rnaSeqDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)rna_seq_processed/ -bgeeVersion=$(DBNAME) > $@.tmp 2>$@.warnings
 	@$(MV) $@.tmp $@
 
 # =========================
@@ -155,13 +155,13 @@ $(OUTPUT_DIR)generate_anatomy_development_call_files:
 	@$(MV) $@.tmp $@
 
 #TODO check it, not used because of usage of different servers
-$(OUTPUT_DIR)zip_call_files:
-	@find $(DOWNLOAD_FILE_ROOT_PATH)$(EXPR_CALLS_PATH) -type f -not -name "*.zip" -not -name "*.tmp" -execdir zip -9 '{}.zip' '{}' \;
+$(OUTPUT_DIR)gzip_call_files:
+	@find $(DOWNLOAD_FILE_ROOT_PATH)$(EXPR_CALLS_PATH) -type f ! -name '*.gz' ! -name '*.tmp' -exec gzip --verbose --best {} \;
 
 # =========================
 # Insert info about download files
 # =========================
-#TODO add $(OUTPUT_DIR)zip_call_files
+#TODO add $(OUTPUT_DIR)gzip_call_files
 #TODO instead of using insert_download_file_info.sql to insert data into downloadFile table, fix InsertSpeciesDataGroups
 $(OUTPUT_DIR)insert_download_files_info: $(OUTPUT_DIR)generate_processed_files $(OUTPUT_DIR)generate_anatomy_call_files $(OUTPUT_DIR)generate_anatomy_development_call_files
 	@$(MYSQL)  insert_download_file_info.sql > $@.tmp 2>$@.warnings
@@ -186,7 +186,7 @@ XREF_FILE := $(OUTPUT_DIR)XRefBgee.txt
 
 # The SQL query run to generate the XRefFile, in readable format: 
 # 
-# SELECT DISTINCT CONCAT(t1.XRefId, '   DR   Bgee; ', uniqueMapping.uniqueGeneId, '; -.') AS xrefRow 
+# SELECT DISTINCT t1.XRefId as uniprotId, uniqueMapping.uniqueGeneId as ensemblId, uniqueMapping.speciesId as speciesId
 # FROM geneXRef AS t1 
 # INNER JOIN (
 # -- Some xRefIds are mapped to multiple genes, we retrieve a unique gene ID with expression data
@@ -194,20 +194,28 @@ XREF_FILE := $(OUTPUT_DIR)XRefBgee.txt
 #                        INNER JOIN gene AS t4 ON t2.bgeeGeneId = t4.bgeeGeneId
 #                        WHERE t2.XRefId = t1.XRefId 
 #                        AND EXISTS (SELECT 1 FROM expression as t3 WHERE t3.bgeeGeneId = t2.bgeeGeneId)
-#                        ORDER BY t4.geneId LIMIT 1) AS uniqueGeneId 
+#                        ORDER BY t4.geneId LIMIT 1) AS uniqueGeneId,
+#						 (SELECT t4.geneId FROM geneXRef AS t2 
+#                        INNER JOIN gene AS t4 ON t2.bgeeGeneId = t4.bgeeGeneId
+#                        WHERE t2.XRefId = t1.XRefId 
+#                        AND EXISTS (SELECT 1 FROM expression as t3 WHERE t3.bgeeGeneId = t2.bgeeGeneId)
+#                        ORDER BY t4.geneId LIMIT 1) AS speciesId 
 #     FROM geneXRef AS t1 
 # ) AS uniqueMapping ON t1.XRefId = uniqueMapping.XRefId 
 # WHERE t1.dataSourceId IN ($(TREMBL_ID), $(SWISSPROT_ID)) AND t1.XRefId IS NOT NULL AND t1.XRefId != '' AND t1.XRefId NOT LIKE '%\_%' 
 # AND uniqueMapping.uniqueGeneId IS NOT NULL 
 # ORDER BY uniqueMapping.uniqueGeneId, t1.XRefId;
 
-XREF_SQL_QUERY := SELECT DISTINCT CONCAT(t1.XRefId, '   DR   Bgee; ', uniqueMapping.uniqueGeneId, '; -.') AS xRefRow FROM geneXRef AS t1 INNER JOIN (SELECT t1.XRefId, (SELECT t4.geneId FROM geneXRef AS t2 INNER JOIN gene AS t4 ON t2.bgeeGeneId = t4.bgeeGeneId WHERE t2.XRefId = t1.XRefId AND EXISTS (SELECT 1 FROM expression as t3 WHERE t3.bgeeGeneId = t2.bgeeGeneId) ORDER BY t4.geneId LIMIT 1) AS uniqueGeneId FROM geneXRef AS t1) AS uniqueMapping ON t1.XRefId = uniqueMapping.XRefId WHERE t1.dataSourceId IN ($(TREMBL_ID), $(SWISSPROT_ID)) AND t1.XRefId IS NOT NULL AND t1.XRefId != '' AND t1.XRefId NOT LIKE '%\_%' AND uniqueMapping.uniqueGeneId IS NOT NULL ORDER BY uniqueMapping.uniqueGeneId, t1.XRefId;
+XREF_SQL_QUERY := SELECT DISTINCT t1.XRefId as uniprotId, uniqueMapping.uniqueGeneId as ensemblId, uniqueMapping.speciesId as speciesId FROM geneXRef AS t1 INNER JOIN (SELECT t1.XRefId, (SELECT t4.geneId FROM geneXRef AS t2 INNER JOIN gene AS t4 ON t2.bgeeGeneId = t4.bgeeGeneId WHERE t2.XRefId = t1.XRefId AND EXISTS (SELECT 1 FROM expression as t3 WHERE t3.bgeeGeneId = t2.bgeeGeneId) ORDER BY t4.geneId LIMIT 1) AS uniqueGeneId, (SELECT t4.speciesId FROM geneXRef AS t2 INNER JOIN gene AS t4 ON t2.bgeeGeneId = t4.bgeeGeneId WHERE t2.XRefId = t1.XRefId AND EXISTS (SELECT 1 FROM expression as t3 WHERE t3.bgeeGeneId = t2.bgeeGeneId) ORDER BY t4.geneId LIMIT 1) AS speciesId  FROM geneXRef AS t1) AS uniqueMapping ON t1.XRefId = uniqueMapping.XRefId WHERE t1.dataSourceId IN ($(TREMBL_ID), $(SWISSPROT_ID)) AND t1.XRefId IS NOT NULL AND t1.XRefId != '' AND t1.XRefId NOT LIKE '%\_%' AND uniqueMapping.uniqueGeneId IS NOT NULL ORDER BY uniqueMapping.uniqueGeneId, t1.XRefId;
 
+##TODO Remove the XREF_SQL_QUERY query and implement all steps of uniprot XRef generation in Java
 $(OUTPUT_DIR)xref_uniprot_info: 
 	@$(MYSQL) -e "$(XREF_SQL_QUERY)" > $(XREF_FILE).tmp 2>$@.warnings
-# Remove header line
-	@sed 1d $(XREF_FILE).tmp > $(XREF_FILE).tmp.noheader && $(MV) $(XREF_FILE).tmp.noheader $(XREF_FILE)
-	@$(RM) $(XREF_FILE).tmp
+	@$(JAVA) GenerateUniprotXRef $(XREF_FILE).tmp $(XREF_FILE).tmp.withexpr
+	$(MV) $(XREF_FILE).tmp.withexpr $(XREF_FILE)
+	@$(RM) $(XREF_FILE).tmp $(XREF_FILE).tmp.withexpr
+ 
+	
 # create a verification file
 # First, we display the targeted data sources, so that we can detect 
 # incorrect data source IDs used (TREMBL_ID and SWISSPROT_ID)
@@ -236,9 +244,9 @@ $(OUTPUT_DIR)rank_files_info:
 	@$(JAVA) GenerateRankFile generateRankFiles - $(UBERONFILEPATH) true $(OUTPUT_DIR)$(RANKS_PER_ANAT) > $@.temp 2>> $@.warnings
 # Now, files with all conditions
 	@$(JAVA) GenerateRankFile generateRankFiles - $(UBERONFILEPATH) false $(OUTPUT_DIR)$(RANKS_PER_CONDITION) >> $@.temp 2>> $@.warnings
-# zip all files
-	@find $(OUTPUT_DIR)$(RANKS_PER_ANAT) -type f -not -name "*.zip" -not -name "*.tmp" -execdir zip -9 '{}.zip' '{}' \;
-	@find $(OUTPUT_DIR)$(RANKS_PER_CONDITION) -type f -not -name "*.zip" -not -name "*.tmp" -execdir zip -9 '{}.zip' '{}' \;
+# gzip all files
+	@find $(OUTPUT_DIR)$(RANKS_PER_ANAT) -type f -not -name '*.gz' -not -name '*.tmp' -execdir gzip --verbose --best {} \;
+	@find $(OUTPUT_DIR)$(RANKS_PER_CONDITION) -type f -not -name '*.gz' -not -name '*.tmp' -execdir gzip --verbose --best {} \;
 # generate a step verification file
 	@echo "Content of directory $(OUTPUT_DIR)$(RANKS_PER_ANAT)" >> $@.temp
 	@ls -lh $(OUTPUT_DIR)$(RANKS_PER_ANAT) >> $@.temp
@@ -251,7 +259,7 @@ $(OUTPUT_DIR)rank_files_info:
 # ======================
 # Verification file
 # ======================
-$(VERIFICATIONFILE): $(OUTPUT_DIR)insert_download_files_info $(OUTPUT_DIR)xref_uniprot_info $(OUTPUT_DIR)rank_files_info $(OUTPUT_DIR)generate_processed_files $(OUTPUT_DIR)generate_anatomy_call_files $(OUTPUT_DIR)generate_anatomy_development_call_files $(OUTPUT_DIR)zip_call_files
+$(VERIFICATIONFILE): $(OUTPUT_DIR)insert_download_files_info $(OUTPUT_DIR)xref_uniprot_info $(OUTPUT_DIR)rank_files_info $(OUTPUT_DIR)generate_processed_files $(OUTPUT_DIR)generate_anatomy_call_files $(OUTPUT_DIR)generate_anatomy_development_call_files $(OUTPUT_DIR)gzip_call_files
 
 clean:
-	-@$(RM) -R $(VERIFICATIONFILE) $(OUTPUT_DIR)xref_uniprot_info.tmp $(OUTPUT_DIR)xref_uniprot_info $(XREF_FILE).tmp.noheader $(XREF_FILE).tmp $(XREF_FILE) $(OUTPUT_DIR)insert_download_files_info $(OUTPUT_DIR)rank_files_info $(OUTPUT_DIR)generate_processed_files $(OUTPUT_DIR)generate_anatomy_call_files $(OUTPUT_DIR)generate_anatomy_development_call_files $(OUTPUT_DIR)zip_call_files
+	-@$(RM) -R $(VERIFICATIONFILE) $(OUTPUT_DIR)xref_uniprot_info.tmp $(OUTPUT_DIR)xref_uniprot_info $(XREF_FILE).tmp.noheader $(XREF_FILE).tmp $(XREF_FILE) $(OUTPUT_DIR)insert_download_files_info $(OUTPUT_DIR)rank_files_info $(OUTPUT_DIR)generate_processed_files $(OUTPUT_DIR)generate_anatomy_call_files $(OUTPUT_DIR)generate_anatomy_development_call_files $(OUTPUT_DIR)gzip_call_files

@@ -47,6 +47,14 @@ for any purpose for which they are used.
 
 
 ##########################  genes  #########################
-- source_files/go
+- source_files/genes/go
 	See http://www.geneontology.org/page/use-and-license
+
+- source_files/genes/hogs_for_bgee.orthoxml.xz
+	See https://omabrowser.org/oma/FAQ/
+
+
+##########################  species ########################
+- source_files/species/taxonomy.dat.xz
+	See https://www.ncbi.nlm.nih.gov/taxonomy
 

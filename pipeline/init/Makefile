@@ -36,6 +36,7 @@ global_check:
 	@perl -MList::MoreUtils         -e 1 >> $@.tmp
 	@perl -MList::Util              -e 1 >> $@.tmp
 	@perl -MNet::FTP                -e 1 >> $@.tmp
+	@perl -MSort::Naturally         -e 1 >> $@.tmp
 	@perl -MSpreadsheet::Read       -e 1 >> $@.tmp
 	@perl -MSpreadsheet::ParseExcel -e 1 >> $@.tmp
 	@perl -MText::CSV               -e 1 >> $@.tmp
@@ -55,6 +56,9 @@ global_check:
 	@R -e 'library("methods")'           >> $@.tmp  2>/dev/null
 	@R -e 'library("RCurl")'             >> $@.tmp  2>/dev/null
 	@R -e 'library("XML")'               >> $@.tmp  2>/dev/null
+# R annotator script
+	@R -e 'library("SRAdb")'             >> $@.tmp  2>/dev/null
+	@R -e 'library("gsubfn")'            >> $@.tmp  2>/dev/null
 # For topAnat
 	@R -e 'library("Rgraphviz")'         >> $@.tmp  2>/dev/null
 	@R -e 'library("rJava")'             >> $@.tmp  2>/dev/null
@@ -75,8 +79,8 @@ global_check:
 	@R -e 'library("rhesuscdf")'         >> $@.tmp  2>/dev/null
 	@R -e 'library("rhesusprobe")'       >> $@.tmp  2>/dev/null
 # Python libraries for Zebrafish intermine
-	@python -c "import intermine"        >> $@.tmp  2>/dev/null
-	@python -c "import simplejson"       >> $@.tmp  2>/dev/null
+	@python3 -c "import intermine"       >> $@.tmp  2>/dev/null
+	@python3 -c "import simplejson"      >> $@.tmp  2>/dev/null
 ## Binaries
 # network
 	@which wget          >> $@.tmp

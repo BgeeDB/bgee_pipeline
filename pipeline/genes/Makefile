@@ -1,22 +1,25 @@
 PIPELINEROOT := ../
+DIR_NAME := genes/
 include $(PIPELINEROOT)Makefile.common
 
 
 all: $(VERIFICATIONFILE)
 
-go:
+$(OUTPUT_DIR)go:
 	# Download Gene Ontology
-	@$(WGET) 'http://www.geneontology.org/ontology/obo_format_1_2/gene_ontology.1_2.obo' -O $@.tmp && $(MV) $@.tmp $(SOURCE_FILES_DIR)/$@ 2>/dev/null  || rm -f $@.tmp
+	@$(WGET) 'ftp://ftp.geneontology.org/pub/go/ontology/obo_format_1_2/gene_ontology.1_2.obo' -O $(INPUT_DIR)go.tmp && $(MV) $(INPUT_DIR)go.tmp $(INPUT_DIR)go 2>/dev/null  || rm -f $(INPUT_DIR)go.tmp
 	# Insert Gene Ontology
-	@$(JAVA) InsertGO $(SOURCE_FILES_DIR)/$@  >$@ 2>&1
+	@$(JAVA) InsertGO $(INPUT_DIR)go >$@.tmp 2>&1
+	@$(MV) $@.tmp $@
 
-go.obsolete: go
+go.obsolete: $(OUTPUT_DIR)go
 	# Get obsolete GO term list
-	@$(JAVA) OntologyTools ExtractObsoleteIds $(SOURCE_FILES_DIR)/$^ $@
+	@$(JAVA) OntologyTools ExtractObsoleteIds $(INPUT_DIR)go $@.tmp
+	@$(MV) $@.tmp $@
 
 # Deal with different Ensembl API versions for Ensembl and Ensembl Metazoa/Genomes
 # Keep default for Ensembl
-genes: $(SPECIESFILEPATH) go go.obsolete
+genes: $(SPECIESFILEPATH) $(OUTPUT_DIR)go go.obsolete
 	@$(MYSQL) -e "SELECT CONCAT(s.speciesId, '__', s.genomeSpeciesId, '__', s.genus, '_', REPLACE(s.species, ' ', '_'), '__', d.dataSourceName) FROM species s, dataSource d WHERE s.dataSourceId=d.dataSourceId ORDER BY s.speciesId" | grep -v 'speciesId' >$@.tmp
 	@if [[ -s $@.tmp ]]; then echo -n; else echo "NO species in file"; exit 2; fi
 	# Insert gene information for all species (may be long: between 1 and 10 hours per species)
@@ -42,17 +45,18 @@ sameIdGeneCount: genes
 ORTHOXMLFILE := hogs_for_bgee.orthoxml
 hogs: genes
 # Download OMA OrthoXML file
-	@$(WGET) http://omabrowser.org/All/$(ORTHOXMLFILE).gz -O $(ORTHOXMLFILE).gz.tmp && mv $(ORTHOXMLFILE).gz.tmp $(ORTHOXMLFILE).gz 2>/dev/null  || rm -f $(ORTHOXMLFILE).gz.tmp
+	@$(WGET) http://omabrowser.org/All/$(ORTHOXMLFILE).gz -O $(ORTHOXMLFILE).gz.tmp && $(MV) $(ORTHOXMLFILE).gz.tmp $(INPUT_DIR)$(ORTHOXMLFILE).gz 2>/dev/null  || rm -f $(ORTHOXMLFILE).gz.tmp
 # Gunzip it
-	@$(GUNZIP) $(ORTHOXMLFILE).gz
+	@$(GUNZIP) $(INPUT_DIR)$(ORTHOXMLFILE).gz
 # Insert hierarchical groups and update genes
-	@$(JAVA) ParseOrthoXML $(ORTHOXMLFILE)
+	@$(JAVA) ParseOrthoXML $(INPUT_DIR)$(ORTHOXMLFILE)
 # Get the number of hierarchical groups inserted as a verification
 	@$(MYSQL) -e "SELECT (SELECT COUNT(*) FROM OMAHierarchicalGroup) AS 'Total HOGs count', (SELECT COUNT(*) FROM OMAHierarchicalGroup where taxonId is not null) AS 'Number of HOGs with a taxonId not null', (SELECT COUNT(distinct taxonId) FROM OMAHierarchicalGroup where taxonId is not null) AS 'number of distinct taxonIds used', (SELECT COUNT(*) FROM gene WHERE OMAParentNodeId is not null) AS 'Number of genes with OMAParentNodeId not null', (SELECT COUNT(distinct OMAParentNodeId) FROM gene WHERE OMAParentNodeId is not null) AS 'Number of distinct OMAParentNodeId not null'"> $@.temp
+	@xz -9 $(INPUT_DIR)$(ORTHOXMLFILE)
 	@$(MV) $@.temp $@
 
 
-$(VERIFICATIONFILE): go go.obsolete genes sameIdGeneCount hogs
+$(VERIFICATIONFILE): $(OUTPUT_DIR)go go.obsolete genes sameIdGeneCount hogs
 	# Check overview for all species
 	@$(MYSQL) -e "SELECT t1.speciesId, COUNT(DISTINCT t1.geneId) AS geneCount, COUNT(t2.geneId) AS synonymCount, COUNT(t2.geneId)/COUNT(DISTINCT t1.geneId) AS synonymsByGene FROM gene AS t1 LEFT OUTER JOIN geneNameSynonym AS t2 ON t1.geneId = t2.geneId GROUP BY speciesId" > $@.temp
 	# Check insertion of genes & generation of geneToTerm
@@ -70,9 +74,24 @@ $(VERIFICATIONFILE): go go.obsolete genes sameIdGeneCount hogs
 	-@$(GIT) add $@
 	-@$(GIT) commit $@ -m "Commit verification file for gene and hierarchical group insertion"
 	@$(GIT) push
+	
+# Init variables used to insert OncoMX XRefs in the database
+UNIPROT_DATASOURCE := Uniprot/SWISSPROT
+ONCOMX_DATASOURCE := OncoMX
+
+$(OUTPUT_DIR)insert_oncoMX_XRefs:
+	@if [ ! -d $(INPUT_DIR) ]; then mkdir -p $(INPUT_DIR); fi
+	@if [ ! -d $(OUTPUT_DIR) ]; then mkdir -p $(OUTPUT_DIR); fi
+	# Download oncoMX ids (uniprot ID and gene name)
+	# TODO : OncoMX is supposed to update the tsv file containing their IDs. Please be sure that the URL used to download this dataset is still up to date
+	@$(WGET) --no-check-certificate 'https://data.oncomx.org/ln2wwwdata/reviewed/human_cancer_genes.csv' -O $(INPUT_DIR)oncoMX.csv.tmp >>$@.tmp 2>>$@.err && $(MV) $(INPUT_DIR)oncoMX.csv.tmp $(INPUT_DIR)oncoMX.csv 2>/dev/null  || rm -f $(INPUT_DIR)oncoMX.csv.tmp
+	# Insert OncoMX XRefs into the database
+	@perl insert_oncoMX_xrefs.pl -bgee=$(BGEECMD) -oncoMX_ids_file=$(INPUT_DIR)oncoMX.csv -oncoMX_datasource_name=$(ONCOMX_DATASOURCE) -uniProt_datasource_name=$(UNIPROT_DATASOURCE) >>$@.tmp 2>>$@.err
+	@if [[ -s $@.err ]]; then echo -n; else $(RM) $@.err; fi
+	@$(MV) $@.tmp $@
 
 clean:
-	-@$(RM) $(VERIFICATIONFILE) go go.obsolete genes genes.err species *.tmp $(ORTHOXMLFILE).gz $(ORTHOXMLFILE) hogs
+	-@$(RM) $(VERIFICATIONFILE) $(OUTPUT_DIR)go go.obsolete genes genes.err species *.tmp $(INPUT_DIR)$(ORTHOXMLFILE).gz $(INPUT_DIR)$(ORTHOXMLFILE) hogs
 	-@$(GIT) rm $(VERIFICATIONFILE)
 	-@$(GIT) commit $(VERIFICATIONFILE) -m "Removing verification file for gene (and related) and hierarchical group insertion"
 	@$(GIT) push

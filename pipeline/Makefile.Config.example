@@ -5,6 +5,8 @@ DBUSER  := login
 DBPASS  := pass
 DBUSERV := login
 DBPASSV := pass
+DBUSER_BGEELITE := login
+DBPASS_BGEELITE := pass
 
 # Annotator machine
 ANNOTATORLOGIN := login

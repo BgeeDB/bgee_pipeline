@@ -1,24 +1,22 @@
-insert into dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, evidenceUrl,
-                        baseUrl, dataSourceDescription, toDisplay, category) values
+INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, evidenceUrl,
+                        baseUrl, dataSourceDescription, toDisplay, category) VALUES
 -- [species_ensembl_link]: e.g., Drosophila_melanogaster
 (1, 'NCBI Taxonomy', '', '', '',
-    'https://www.ncbi.nlm.nih.gov/taxonomy',
-    'Source taxonomy used in Bgee',
-    1, ''),
-(2, 'Ensembl', 'http://dec2015.archive.ensembl.org/[species_ensembl_link]/Gene/Summary?g=[gene_id];gene_summary=das:http://bgee.unil.ch/das/bgee=label', '', '',
-    'http://dec2015.archive.ensembl.org/',
+    'https://www.ncbi.nlm.nih.gov/taxonomy', 'Source taxonomy used in Bgee', 1, ''),
+(2, 'Ensembl', 'http://mar2016.archive.ensembl.org/[species_ensembl_link]/Gene/Summary?g=[gene_id]', '', '',
+    'http://mar2016.archive.ensembl.org/',
     'Source for gene annotations, mappings to the Gene Ontology, mappings to Affymetrix probeset IDs, and cross-references to other databases',
     1, 'Genomics database'),
-(3, 'EMBL', 'https://www.ebi.ac.uk/Tools/dbfetch/dbfetch?db=EMBL&id=[xref_id]', '', '',
-    'https://www.ebi.ac.uk/', '', 0, ''),
-(4, 'UniProtKB/TrEMBL', 'http://www.uniprot.org/uniprot/[xref_id]', '', '',
-    'http://www.uniprot.org/', '', 0, ''),
-(5, 'UniProtKB/Swiss-Prot', 'http://www.uniprot.org/uniprot/[xref_id]', '', '',
-    'http://www.uniprot.org/', '', 0, ''),
+(3, 'EMBL', 'https://www.ebi.ac.uk/ena/data/view/[xref_id]', '', '',
+    'https://www.ebi.ac.uk/', 'European Nucleotide Archive', 0, ''),
+(4, 'UniProtKB/TrEMBL', 'https://www.uniprot.org/uniprot/[xref_id]', '', '',
+    'https://www.uniprot.org/', 'Computationally analyzed functional information on proteins', 0, ''),
+(5, 'UniProtKB/Swiss-Prot', 'https://www.uniprot.org/uniprot/[xref_id]', '', '',
+    'https://www.uniprot.org/', 'Manually annotated functional information on proteins', 0, ''),
 (6, 'miRBase', 'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=[xref_id]', '', '',
     'http://www.mirbase.org/', 'Source for miRNA families', 1, 'Genomics database'),
 (7, '4DXpress', 'http://4dx.embl.de/4DXpress/reg/all/search/bquery.do?id=[gene_id]', '', '',
-    'http://4dx.embl.de/4DXpress/', '', 0, ''),
+    'http://4dx.embl.de/4DXpress/', 'Gene expression data comparison during the development', 0, ''),
 (8, 'ZFIN', 'https://zfin.org/[xref_id]', 'https://zfin.org/[experiment_id]',
     'https://zfin.org/[evidence_id]',
     'https://zfin.org/', 'Zebrafish in situ data source', 1, 'In situ data source'),
@@ -38,7 +36,7 @@ insert into dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
 (15, 'Xenbase', 'http://www.xenbase.org/gene/showgene.do?method=displayGeneSummary&geneId=[xref_id]', '', '',
     'http://www.xenbase.org/', 'Xenopus in situ data source', 1, 'In situ data source'),
 (16, 'neXtProt', 'https://www.nextprot.org/entry/[xref_id]', '', '',
-    'https://www.nextprot.org/', '', 0, ''),
+    'https://www.nextprot.org/', 'Exploring the universe of human proteins', 0, ''),
 (17, 'GEO', '', 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=[experiment_id]', 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=[evidence_id]',
     'https://www.ncbi.nlm.nih.gov/geo/', 'Affymetrix data source for various species', 1, 'Affymetrix data source'),
 (18, 'Gene Ontology', 'http://amigo.geneontology.org/amigo/term/[xref_id]', '', '',
@@ -57,15 +55,13 @@ insert into dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
     'http://metazoa.ensembl.org/',
     'Source for gene annotations, mappings to the Gene Ontology, mappings to Affymetrix probeset IDs, and cross-references to other databases',
     1, 'Genomics database'),
-(25, 'Bgee', '', '', '', 'https://bgee.org/', '', 0, ''),
+(25, 'Bgee', '', '', '', 'https://bgee.org/', 'Gene expression data in animals', 0, ''),
 (26, 'Uberon', '', '', '',
     'http://uberon.org/', 'Integrated cross-species ontology covering anatomical structures in animals. Use of the subset "composite-metazoan".', 1, 'Ontology'),
 (27, 'Developmental stage ontologies', '', '', '',
     'https://github.com/obophenotype/developmental-stage-ontologies/', 'Collection of developmental and life stage ontologies in animals. Integrated into Uberon.', 1, 'Ontology'),
 (28, 'OMA', '', '', '',
-    'http://omabrowser.org/',
-    'Source of gene orthology information',
-    1, 'Genomics database'),
+    'http://omabrowser.org/', 'Source of gene orthology information', 1, 'Genomics database'),
 (29, 'Anatomical similarity annotations', '', '', '',
     'https://github.com/BgeeDB/anatomical-similarity-annotations/', 'Define evolutionary relations between anatomical entities described in the Uberon ontology', 1, ''),
 (30, 'CIO', '', '', '',
@@ -73,13 +69,22 @@ insert into dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
 (31, 'GTEx - dbGAP', '', 'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000424.v6.p1', 'https://www.ncbi.nlm.nih.gov/sra/?term=[evidence_id]',
     'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000424', 'GTEx RNA-Seq data', 1, 'RNA-Seq data source'),
 (32, 'VGNC', 'http://vertebrate.genenames.org/data/gene-symbol-report/#!/vgnc_id/[xref_id]', '', '',
-     'http://vertebrate.genenames.org', 'Vertebrate Gene Nomenclature Committee', 0, 'Genomics database');
+     'http://vertebrate.genenames.org', 'Vertebrate Gene Nomenclature Committee', 0, 'Genomics database'),
+(33, 'ENA', '', 'https://www.ebi.ac.uk/ena/data/view/[experiment_id]', 'https://www.ebi.ac.uk/ena/data/view/[evidence_id]',
+     'https://www.ebi.ac.uk/ena', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source'),
+(34, 'DDBJ', '', 'https://ddbj.nig.ac.jp/DRASearch/study?acc=[experiment_id]', 'https://ddbj.nig.ac.jp/DRASearch/experiment?acc=[evidence_id]',
+     'https://ddbj.nig.ac.jp/DRASearch/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source'),
+(35, 'GSA', '', 'http://bigd.big.ac.cn/search?dbId=gsa&q=[experiment_id]', 'http://bigd.big.ac.cn/gsa/browse/[experiment_id]/[evidence_id]',
+     'http://bigd.big.ac.cn/gsa/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source'),
+(36, 'OncoMX', 'https://oncomx.org/searchview/?gene=[xref_id]', '', '', 'https://www.oncomx.org', 'Integrated cancer mutation and expression resource', 0, '');
 
 
 -- Add "ghost" sources, because a source can only be part of one category, so rather than
 -- creating a link table, we do this ugly hack
-insert into dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, evidenceUrl,
-                        baseUrl, dataSourceDescription, toDisplay, category) values
+INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, evidenceUrl,
+                        baseUrl, dataSourceDescription, toDisplay, category) VALUES
 
 (100, 'GEO', '', 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=[experiment_id]', 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=[evidence_id]',
-    'https://www.ncbi.nlm.nih.gov/geo/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source');
+    'https://www.ncbi.nlm.nih.gov/geo/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source'),
+(101, 'ArrayExpress', '', 'https://www.ebi.ac.uk/arrayexpress/experiments/[experiment_id]', '',
+	'https://www.ebi.ac.uk/arrayexpress/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source');

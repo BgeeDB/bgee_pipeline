@@ -13,11 +13,12 @@ use strict;
 use warnings;
 use diagnostics;
 
-use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
+use Archive::Tar;
 use Getopt::Long;
 use File::Spec;
 use File::Path qw(make_path remove_tree);
 use File::Copy qw(move);
+use File::Basename qw(basename);
 use FindBin;
 use lib "$FindBin::Bin/.."; # Get lib path for Utils.pm
 use Utils;
@@ -121,7 +122,7 @@ while ( my @data = $sourceStmt->fetchrow_array ){
 # Now, for each species, generate the files
 
 # Link to FTP storing our files
-my $ftpFilePath = 'ftp://bgee.org/';
+my $ftpFilePath = 'ftp://ftp.bgee.org/';
 
 for my $speId ( keys %species ){
     print "Generating files for species $speId...\n";
@@ -169,12 +170,9 @@ sub generateAffyFiles {
     my $speciesDirName = $speciesNameForFile;
     my $expFileName = $speciesNameForFile.'_Affymetrix_experiments.tsv';
     my $chipFileName = $speciesNameForFile.'_Affymetrix_chips.tsv';
-    # recreate directory for experiment and chip information
-    remove_tree(File::Spec->catdir( $filesDir, $tmpDirName));
+	# recreate temp directory for experiment and chip information
+	remove_tree(File::Spec->catdir( $filesDir, $tmpDirName));
     make_path(File::Spec->catdir( $filesDir, $tmpDirName));
-    remove_tree(File::Spec->catdir( $filesDir, $speciesDirName));
-    make_path(File::Spec->catdir( $filesDir, $speciesDirName));
-
     # path to cel files directory relative to FTP dir
     my $celFilePath = 'affymetrix_data/cel_files/';
     # path to MAS5 files directory relative to FTP dir
@@ -257,6 +255,12 @@ sub generateAffyFiles {
 
         push @experiments, \%exp;
     }
+    
+    if( @experiments > 0 ){
+	    # recreate directory for experiment and chip information
+    	remove_tree(File::Spec->catdir( $filesDir, $speciesDirName));
+    	make_path(File::Spec->catdir( $filesDir, $speciesDirName));
+    }
 
     # Print experiment information into file
     my $expFile = File::Spec->catfile($filesDir, $tmpDirName, $expFileName);
@@ -293,7 +297,7 @@ sub generateAffyFiles {
         }
         print $fh $sourceName."\t".$sourceUrl."\t";
 
-        my $probesetFileName = $speciesNameForFile.'_Affymetrix_probesets_'.$exp->{'expId'}.'.zip';
+        my $probesetFileName = $speciesNameForFile.'_Affymetrix_probesets_'.$exp->{'expId'}.'.tar.gz';
         $probesetFileName =~ s/ /_/g;
         print $fh $ftpFilePath.$exprFilePath.$probesetFileName."\t";
 
@@ -471,7 +475,7 @@ sub generateAffyFiles {
         }
         print $fh $sourceName."\t".$sourceUrl."\t";
 
-        my $expFileName = $speciesNameForFile.'_Affymetrix_probesets_'.$chip->{'expId'}.'.zip';
+        my $expFileName = $speciesNameForFile.'_Affymetrix_probesets_'.$chip->{'expId'}.'.tar.gz';
         $expFileName =~ s/ /_/g;
         print $fh $ftpFilePath.$exprFilePath.$expFileName."\t";
 
@@ -504,9 +508,9 @@ sub generateAffyFiles {
         $fileParams{$chip->{'expId'}}{$chip->{'chipTypeId'}}{$chip->{'normalizationType'}} = 1;
     }
 
-    # Now, generate the files. We'll store the path to all zip files generated,
-    # to make one giant zip at the end.
-    my @zipFileNames = ();
+    # Now, generate the files. We'll store the path to all tar.gz files generated,
+    # to make one giant tar.gz at the end.
+    my @tarFileNames = ();
     for my $expId ( keys %fileParams ){
         # we will store all names of files generated for an experiment, to pack all of them together
         my @probesetFileNames = ();
@@ -599,68 +603,73 @@ sub generateAffyFiles {
                 close $fh;
             }
         }
-        # we zip all files for an experiment together, and delete the uncompressed files
+        # we compress all files for an experiment together, and delete the uncompressed files
         # to save disk space
         
-        # We close the connection before zipping the files, it can take quite some time
+        # We close the connection before compressing the files, it can take quite some time
         $dbh->disconnect;
         
-        my $fileName = $speciesNameForFile.'_Affymetrix_probesets_'.$expId.'.zip';
+        my $fileName = $speciesNameForFile.'_Affymetrix_probesets_'.$expId.'.tar.gz';
         $fileName =~ s/ /_/g;
+        # remove old archive
         unlink File::Spec->catfile($filesDir, $speciesDirName, $fileName);
-        my $experimentZip = Archive::Zip->new();
+        # create new archive 
+        my $experimentTar = Archive::Tar->new();
+        my @probesetFilePaths = ();
         for my $probesetFileName ( @probesetFileNames ) {
-            $experimentZip->addFile(File::Spec->catfile($filesDir, $tmpDirName, $probesetFileName),
-                $probesetFileName, 9);
+        	push @probesetFilePaths, File::Spec->catfile($filesDir, $tmpDirName, $probesetFileName);
         }
-        unless ( $experimentZip->writeToFileNamed(
-                 File::Spec->catfile($filesDir, $speciesDirName, $fileName)) == AZ_OK ) {
-            die 'write error';
+        $experimentTar->add_files(@probesetFilePaths);
+        my @file_objs = $experimentTar->get_files;
+        for my $file_objs (@file_objs){
+        	$experimentTar->rename( $file_objs, basename($file_objs->full_path)) 
         }
+        #write the tar file as a compressed tar.gz file
+        $experimentTar->write(File::Spec->catfile($filesDir, $speciesDirName, $fileName), COMPRESS_GZIP);
+        
         # Remove uncompressed files to store disk space
         for my $probesetFileName ( @probesetFileNames ) {
             unlink File::Spec->catfile($filesDir, $tmpDirName, $probesetFileName);
         }
-        # Store the name of this experiment zip file, to make one giant zip of all experiments
+        # Store the name of this experiment tar.gz file, to make one giant tar.gz of all experiments
         # at the end.
-        push @zipFileNames, $fileName;
+        push @tarFileNames, $fileName;
         
         # reopen the connection for further use 
         $dbh = Utils::connect_bgee_db($bgee_connector);
     }
 
-
-    # -------------------------------------------------
-    #everything went fine, we move and zip the tmp files
-    #File::Copy::move "File::Spec->catfile($filesDir, $tmpDirName, $expFileName)",
-    #    "File::Spec->catfile($filesDir, $tmpDirName, $expFileName)";
     
-    # We close the connection before zipping the files, it can take quite some time
+    # We close the connection before compressing the files, it can take quite some time
     $dbh->disconnect;
+	if (scalar(keys %fileParams) > 0){
+    	unlink File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_Affymetrix_experiments_chips.tar.gz');
+    	my $tar = Archive::Tar->new();
+    	$tar->add_files(File::Spec->catfile($filesDir, $tmpDirName, $expFileName),
+    		File::Spec->catfile($filesDir, $tmpDirName, $chipFileName));
 
-    unlink File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_Affymetrix_experiments_chips.zip');
-    my $zip = Archive::Zip->new();
-    # $zip->addDirectory($tmpDirName);
-    $zip->addFile(File::Spec->catfile($filesDir, $tmpDirName, $expFileName),
-        $expFileName, 9);
-    $zip->addFile(File::Spec->catfile($filesDir, $tmpDirName, $chipFileName),
-        $chipFileName, 9);
-    unless ( $zip->writeToFileNamed(
-        File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_Affymetrix_experiments_chips.zip')) == AZ_OK ) {
-        die 'write error';
-    }
+    	for my $file_objs ($tar->get_files){
+      		$tar->rename( $file_objs, File::Spec->catfile($speciesNameForFile.'_Affymetrix_experiments_chips', 
+      			basename($file_objs->full_path)));
+    	}
+   		$tar->write(File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_Affymetrix_experiments_chips.tar.gz'), 
+    		COMPRESS_GZIP);
 
-    # Zip each file with probesets independently, and add them to a global zip file
-    unlink File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_Affymetrix_probesets.zip');
-    $zip = Archive::Zip->new();
-    for my $zipFileName ( @zipFileNames ) {
-        $zip->addFile(File::Spec->catfile($filesDir, $speciesDirName, $zipFileName), $zipFileName, 9);
-    }
-    unless ( $zip->writeToFileNamed(
-        File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_Affymetrix_probesets.zip')) == AZ_OK ) {
-        die 'write error';
-    }
-
+	    # Compress each file with probesets independently, and add them to a global tar.gz file
+    	unlink File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_Affymetrix_probesets.tar.gz');
+    	$tar = Archive::Tar->new();
+    	my @tarFilePaths = ();
+    	for my $tarFileName ( @tarFileNames ) {
+        	push @tarFilePaths, File::Spec->catfile($filesDir, $speciesDirName, $tarFileName);
+    	}
+    	$tar->add_files(@tarFilePaths);
+    	for my $file_objs ($tar->get_files){
+       		$tar->rename( $file_objs, File::Spec->catfile($speciesNameForFile.'_Affymetrix_probesets', 
+       			basename($file_objs->full_path)));
+    	}
+    	$tar->write(File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_Affymetrix_probesets.tar.gz'), 
+    		COMPRESS_GZIP);
+	}
     remove_tree(File::Spec->catdir( $filesDir, $tmpDirName));
     
     # reopen the connection for further use 
@@ -680,11 +689,10 @@ sub generateRnaSeqFiles {
     my $speciesDirName = $speciesNameForFile;
     my $expFileName = $speciesNameForFile.'_RNA-Seq_experiments.tsv';
     my $libFileName = $speciesNameForFile.'_RNA-Seq_libraries.tsv';
-    # recreate directory for experiment and library information
+    # recreate temp directory for experiment and library information
     remove_tree(File::Spec->catdir( $filesDir, $tmpDirName));
     make_path(File::Spec->catdir( $filesDir, $tmpDirName));
-    remove_tree(File::Spec->catdir( $filesDir, $speciesDirName));
-    make_path(File::Spec->catdir( $filesDir, $speciesDirName));
+    
 
     # path to processed expression data on FTP
     my $exprFilePath = $bgeeVersion.'/download/processed_expr_values/rna_seq/'
@@ -753,6 +761,12 @@ sub generateRnaSeqFiles {
 
         push @experiments, \%exp;
     }
+    
+    # recreate species directory for experiment and library information
+    if( @experiments > 0){
+    	remove_tree(File::Spec->catdir( $filesDir, $speciesDirName));
+    	make_path(File::Spec->catdir( $filesDir, $speciesDirName));
+    }
 
     # Print experiment information into file
     my $expFile = File::Spec->catfile($filesDir, $tmpDirName, $expFileName);
@@ -789,7 +803,7 @@ sub generateRnaSeqFiles {
         }
         print $fh $sourceName."\t".$sourceUrl."\t";
 
-        my $resultsFileName = $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM_'.$exp->{'expId'}.'.tsv.zip';
+        my $resultsFileName = $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM_'.$exp->{'expId'}.'.tsv.tar.gz';
         $resultsFileName =~ s/ /_/g;
         print $fh $ftpFilePath.$exprFilePath.$resultsFileName."\t";
 
@@ -810,6 +824,7 @@ sub generateRnaSeqFiles {
     # $lib{'expId'}                            = experiment ID
     # $lib{'libId'}                            = library ID
     # $lib{'platformId'}                       = RNA-Seq  platform ID
+    # $lib{'tmmFactor'}                        = TMM normalization factor
     # $lib{'tpmThreshold'}                     = Threshold of TPM value to consider a gene as expressed
     # $lib{'fpkmThreshold'}                    = Threshold of FPKM value to consider a gene as expressed
     # $lib{'allGenesPercentPresent'}           = percentage of genes called present
@@ -832,7 +847,7 @@ sub generateRnaSeqFiles {
     my @libs = ();
 
     $sql = 'SELECT t1.rnaSeqExperimentId, t1.rnaSeqLibraryId, t1.rnaSeqPlatformId, '
-              .'t1.tpmThreshold, t1.fpkmThreshold, t1.allGenesPercentPresent, t1.proteinCodingGenesPercentPresent, '
+              .'t1.tmmFactor, t1.tpmThreshold, t1.fpkmThreshold, t1.allGenesPercentPresent, t1.proteinCodingGenesPercentPresent, '
               .'t1.intergenicRegionsPercentPresent, t1.allReadsCount, t1.mappedReadsCount, '
               .'t1.minReadLength, t1.maxReadLength, '
               .'t1.libraryType, t1.libraryOrientation, '
@@ -860,25 +875,26 @@ sub generateRnaSeqFiles {
         $lib{'expId'}                            = $data[0];
         $lib{'libId'}                            = $data[1];
         $lib{'platformId'}                       = $data[2];
-        $lib{'tpmThreshold'}                     = $data[3];
-        $lib{'fpkmThreshold'}                    = $data[4];
-        $lib{'allGenesPercentPresent'}           = $data[5];
-        $lib{'proteinCodingGenesPercentPresent'} = $data[6];
-        $lib{'intergenicRegionsPercentPresent'}  = $data[7];
-        $lib{'allReadsCount'}                    = $data[8];
-        $lib{'mappedReadsCount'}                 = $data[9];
-        $lib{'minReadLength'}                    = $data[10];
-        $lib{'maxReadLength'}                    = $data[11];
-        $lib{'libraryType'}                      = $data[12];
-        $lib{'libraryOrientation'}               = $data[13];
-        $lib{'anatEntityId'}                     = $data[14];
-        $lib{'anatEntityName'}                   = $data[15];
-        $lib{'stageId'}                          = $data[16];
-        $lib{'stageName'}                        = $data[17];
-        $lib{'sex'}                              = $data[18];
-        $lib{'strain'}                           = $data[19];
-        $lib{'sourceId'}                         = $data[20];
-        $lib{'runIds'}                           = $data[21];
+        $lib{'tmmFactor'}                        = $data[3];
+        $lib{'tpmThreshold'}                     = $data[4];
+        $lib{'fpkmThreshold'}                    = $data[5];
+        $lib{'allGenesPercentPresent'}           = $data[6];
+        $lib{'proteinCodingGenesPercentPresent'} = $data[7];
+        $lib{'intergenicRegionsPercentPresent'}  = $data[8];
+        $lib{'allReadsCount'}                    = $data[9];
+        $lib{'mappedReadsCount'}                 = $data[10];
+        $lib{'minReadLength'}                    = $data[11];
+        $lib{'maxReadLength'}                    = $data[12];
+        $lib{'libraryType'}                      = $data[13];
+        $lib{'libraryOrientation'}               = $data[14];
+        $lib{'anatEntityId'}                     = $data[15];
+        $lib{'anatEntityName'}                   = $data[16];
+        $lib{'stageId'}                          = $data[17];
+        $lib{'stageName'}                        = $data[18];
+        $lib{'sex'}                              = $data[19];
+        $lib{'strain'}                           = $data[20];
+        $lib{'sourceId'}                         = $data[21];
+        $lib{'runIds'}                           = $data[22];
         push @libs, \%lib;
     }
 
@@ -888,7 +904,7 @@ sub generateRnaSeqFiles {
     print $fh "Experiment ID\tLibrary ID\tAnatomical entity ID\tAnatomical entity name\t"
               ."Stage ID\tStage name\tSex\tStrain\t"
               ."Platform ID\tLibrary type\tLibrary orientation\t"
-              ."TPM expression threshold\tFPKM expression threshold\t"
+              ."TMM normalization factor\tTPM expression threshold\tFPKM expression threshold\t"
               ."Read count\tMapped read count\t"
               ."Min. read length\tMax. read length\tAll genes percent present\t"
               ."Protein coding genes percent present\tIntergenic regions percent present\t"
@@ -917,7 +933,7 @@ sub generateRnaSeqFiles {
         print $fh '"'.$toPrint.'"'."\t";
 
         print $fh $lib->{'platformId'}."\t".$lib->{'libraryType'}."\t".$lib->{'libraryOrientation'}."\t"
-            .$lib->{'tpmThreshold'}."\t".$lib->{'fpkmThreshold'}."\t"
+            .$lib->{'tmmFactor'}."\t".$lib->{'tpmThreshold'}."\t".$lib->{'fpkmThreshold'}."\t"
             .$lib->{'allReadsCount'}."\t".$lib->{'mappedReadsCount'}."\t";
 
         print $fh $lib->{'minReadLength'}."\t".$lib->{'maxReadLength'}."\t"
@@ -943,7 +959,7 @@ sub generateRnaSeqFiles {
         }
         print $fh $sourceName."\t".$sourceUrl."\t";
 
-        my $resultsFileName = $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM_'.$lib->{'expId'}.'.tsv.zip';
+        my $resultsFileName = $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM_'.$lib->{'expId'}.'.tsv.tar.gz';
         $resultsFileName =~ s/ /_/g;
         print $fh $ftpFilePath.$exprFilePath.$resultsFileName."\t";
 
@@ -967,9 +983,9 @@ sub generateRnaSeqFiles {
     	push @{$fileParams{$lib->{'expId'}}}, $lib->{'libId'};
     }
 
-    # Now, generate the files. We'll store the path to all zip files generated,
-    # to make one giant zip at the end.
-    my @zipFileNames = ();
+    # Now, generate the files. We'll store the path to all tar.gz files generated,
+    # to make one giant tar.gz at the end.
+    my @tarFileNames = ();
     for my $expId ( keys %fileParams ){
         # we will store all names of files generated for an experiment, to pack all of them together
         my @resultsFileNames = ();
@@ -1068,30 +1084,31 @@ sub generateRnaSeqFiles {
 
         #}
         
-        # We close the connection before zipping the files, it can take quite some time
+        # We close the connection before compressing the files, it can take quite some time
         $dbh->disconnect;
 
-        # we zip all files for an experiment together, and delete the uncompressed files
+        # we compress all files for an experiment together, and delete the uncompressed files
         # to save disk space
-        my $fileName = $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM_'.$expId.'.tsv.zip';
+        my $fileName = $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM_'.$expId.'.tsv.tar.gz';
         $fileName =~ s/ /_/g;
         unlink File::Spec->catfile($filesDir, $speciesDirName, $fileName);
-        my $experimentZip = Archive::Zip->new();
+        my $experimentTar = Archive::Tar->new();
+        my @resultsFilePaths = ();
         for my $resultsFileName ( @resultsFileNames ) {
-            $experimentZip->addFile(File::Spec->catfile($filesDir, $tmpDirName, $resultsFileName),
-                $resultsFileName, 9);
+        	push @resultsFilePaths, File::Spec->catfile($filesDir, $tmpDirName, $resultsFileName);
         }
-        unless ( $experimentZip->writeToFileNamed(
-                 File::Spec->catfile($filesDir, $speciesDirName, $fileName)) == AZ_OK ) {
-            die 'write error';
+        $experimentTar->add_files(@resultsFilePaths);
+        for my $file_objs ($experimentTar->get_files){
+        	$experimentTar->rename( $file_objs, basename($file_objs->full_path)) 
         }
+        $experimentTar->write(File::Spec->catfile($filesDir, $speciesDirName, $fileName), COMPRESS_GZIP);
         # Remove uncompressed files to store disk space
         for my $resultsFileName ( @resultsFileNames ) {
             unlink File::Spec->catfile($filesDir, $tmpDirName, $resultsFileName);
         }
-        # Store the name of this experiment zip file, to make one giant zip of all experiments
+        # Store the name of this experiment tar.gz file, to make one giant tar.gz of all experiments
         # at the end.
-        push @zipFileNames, $fileName;
+        push @tarFileNames, $fileName;
 
         # reopen the connection for further use 
         $dbh = Utils::connect_bgee_db($bgee_connector);
@@ -1101,31 +1118,39 @@ sub generateRnaSeqFiles {
     # -------------------------------------------------
     #everything went fine, we move and zip the tmp files
     
-    # We close the connection before zipping the files, it can take quite some time
+    # We close the connection before compressing the files, it can take quite some time
     $dbh->disconnect;
 
-    unlink File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_RNA-Seq_experiments_libraries.zip');
-    my $zip = Archive::Zip->new();
-    # $zip->addDirectory($tmpDirName);
-    $zip->addFile(File::Spec->catfile($filesDir, $tmpDirName, $expFileName),
-        $expFileName, 9);
-    $zip->addFile(File::Spec->catfile($filesDir, $tmpDirName, $libFileName),
-        $libFileName, 9);
-    unless ( $zip->writeToFileNamed(
-        File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_RNA-Seq_experiments_libraries.zip')) == AZ_OK ) {
-        die 'write error';
-    }
+	if (scalar(keys %fileParams) > 0){
+    	unlink File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_RNA-Seq_experiments_libraries.tar.gz');
+	    my $tar = Archive::Tar->new();
+	    $tar->add_files(File::Spec->catfile($filesDir, $tmpDirName, $expFileName),
+	    	File::Spec->catfile($filesDir, $tmpDirName, $libFileName));
+	    for my $file_objs ($tar->get_files){
+		   	$tar->rename( $file_objs, File::Spec->catfile($speciesNameForFile.'_RNA-Seq_experiments_libraries', 
+		   		basename($file_objs->full_path))); 
+	    }
+	    $tar->write(
+	        File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_RNA-Seq_experiments_libraries.tar.gz'), 
+		        COMPRESS_GZIP);
 
-    # Zip each file with RNA-Seq results independently, and add them to a global zip file
-    unlink File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM.zip');
-    $zip = Archive::Zip->new();
-    for my $zipFileName ( @zipFileNames ) {
-        $zip->addFile(File::Spec->catfile($filesDir, $speciesDirName, $zipFileName), $zipFileName, 9);
-    }
-    unless ( $zip->writeToFileNamed(
-        File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM.zip')) == AZ_OK ) {
-        die 'write error';
-    }
+ 	   	# Compress each file with RNA-Seq results independently, and add them to a global tar.gz file
+ 	   	unlink File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM.tar.gz');
+   		$tar = Archive::Tar->new();
+    
+    	my @tarFilePaths = ();
+	    for my $tarFileName ( @tarFileNames ) {
+	       	push @tarFilePaths, File::Spec->catfile($filesDir, $speciesDirName, $tarFileName);
+	    }
+	    $tar->add_files(@tarFilePaths);
+	    for my $file_objs ($tar->get_files){
+	       	$tar->rename( $file_objs, File::Spec->catfile($speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM', 
+	       		basename($file_objs->full_path))); 
+	    }
+	    $tar->write(
+	        File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM.tar.gz'),
+	        COMPRESS_GZIP);
+	}
 
     remove_tree(File::Spec->catdir( $filesDir, $tmpDirName));
     

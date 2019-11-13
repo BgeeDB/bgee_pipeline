@@ -8,6 +8,7 @@ use diagnostics;
 # Frederic Bastian, Feb. 2017
 
 # prefill the various condition and expression tables based on %UTILS::conditionCombinations
+# DEPRECATED, NOT USED ANYMORE, CONDITION PARAMETER COMBINATIONS ARE DETERMINED IN THE JAVA PIPELINE (see InsertPropagatedCalls.java)
 
 #############################################################
 
@@ -19,7 +20,7 @@ use Utils;
 
 # Define arguments & their default value
 my ($bgee_connector) = ('');
-my ($debug)          = (0); 
+my ($debug)          = (0);
 my %opts = ('bgee=s'     => \$bgee_connector,   # Bgee connector string
             'debug'      => \$debug,
            );
@@ -44,33 +45,35 @@ $| = 1;
 #############################################################
 # PREFILL CONDITION TABLES                                  #
 #############################################################
-COMB: for my $combination ( keys %Utils::conditionCombinations ){
-	# do nothing for the raw conditions and expression calls, already computed by pipeline
-	if ( $combination eq $Utils::allFieldCombination ) {
-		next COMB;
-	}
-	print "***** combination $combination *****\n";
-	
-	my $condTable = $Utils::conditionCombinations{$combination}->{'condTable'};
-	my $condId    = $Utils::conditionCombinations{$combination}->{'condId'};
+COMB:
+for my $combination ( keys %Utils::conditionCombinations ){
+    # do nothing for the raw conditions and expression calls, already computed by pipeline
+#NOTE Seb: $Utils::allFieldCombination is not defined!
+#    if ( $combination eq $Utils::allFieldCombination ) {
+#    next COMB;
+#    }
+    print "***** combination $combination *****\n";
+
+    my $condTable = $Utils::conditionCombinations{$combination}->{'condTable'};
+    my $condId    = $Utils::conditionCombinations{$combination}->{'condId'};
     my $exprTable = $Utils::conditionCombinations{$combination}->{'exprTable'};
     my @fields    = @{ $Utils::conditionCombinations{$combination}->{'condFields'} };
-	
-	######################################
-	# INSERT CONDITIONS                  #
-	######################################
-	my $sql = 'INSERT INTO '.$condTable.' ('
-	    .Utils::get_fields_for_sql_select(\@fields)
-	    .') SELECT DISTINCT '
-	    .Utils::get_fields_for_sql_select(\@fields)
-	    .' FROM cond WHERE cond.conditionId = cond.exprMappedConditionId'; # we use only conditions used in expression table
-	if ( $debug ) {
-		print $sql."\n";
-	} else {
-	    my $insCond   = $bgee->prepare($sql);
-	    $insCond->execute()  or die $insCond->errstr;
-	}
-	
+
+    ######################################
+    # INSERT CONDITIONS                  #
+    ######################################
+    my $sql = 'INSERT INTO '.$condTable.' ('
+        .Utils::get_fields_for_sql_select(\@fields)
+        .') SELECT DISTINCT '
+        .Utils::get_fields_for_sql_select(\@fields)
+        .' FROM cond WHERE cond.conditionId = cond.exprMappedConditionId'; # we use only conditions used in expression table
+    if ( $debug ) {
+        print $sql."\n";
+    } else {
+        my $insCond   = $bgee->prepare($sql);
+        $insCond->execute()  or die $insCond->errstr;
+    }
+
     ######################################
     # INSERT CONDITIONS                  #
     ######################################
@@ -78,7 +81,7 @@ COMB: for my $combination ( keys %Utils::conditionCombinations ){
         .') SELECT DISTINCT t1.bgeeGeneId, t3.'.$condId
         .' FROM expression AS t1 INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId'
         .' INNER JOIN '.$condTable.' AS t3 ON '.Utils::get_fields_for_sql_join(\@fields, 't2', 't3');
-    
+
     if ( $debug ) {
         print $sql."\n";
     } else {
@@ -91,3 +94,4 @@ $bgee->disconnect;
 print "Done\n"  if ( $debug );
 
 exit 0;
+

@@ -666,6 +666,8 @@ sub query_conditions {
         $conditions->{ $condKey }->{'conditionId'}           = $_->[0];
         $conditions->{ $condKey }->{'exprMappedConditionId'} = $_->[1];
         $conditions->{ $condKey }->{'strain'}                = $_->[7];
+        $conditions->{ $condKey }->{'speciesId'}             = $_->[4];
+        $conditions->{ $condKey }->{ 'sexInference' }        = $_->[6];
     }  @{ $cond_ref };
 
     return $conditions;
@@ -693,7 +695,7 @@ sub get_condition_equivalences {
 }
 
 
-# Load from a file the putative sexes related to organs, e.g., an oocyte can be assigned
+# Load from a file the putative sex related to organs, e.g., an oocyte can be assigned
 # either a female or hermaphrodite sex information.
 # The file is a TSV file with 5 columns: Uberon ID, Uberon name, female (T/F values),
 # male (T/F values), hermaphrodite (T/F values).
@@ -862,7 +864,7 @@ sub insert_get_condition {
     my $condKey = generate_condition_key($anatEntityId, $stageId, $speciesId, $sexToUse, $sexInference, $strain);
 
     # If this condition is already available, nothing to do
-    if (defined $conditions->{$condKey}) {
+    if ( defined $conditions->{$condKey} ){
         #TODO is it a good idea to pass back the modified hash since it is passed as a reference?
         #=> I now return the condition, Sebastien must be informed!
         return ($conditions->{ $condKey }, $conditions);
@@ -873,7 +875,7 @@ sub insert_get_condition {
     # CREATE NEW CONDITION IF NOT EXISTING
     # ====================================
     # First, if sex was inferred and it is the first time we see this condition, we log a message
-    if ($sexInference) {
+    if ( $sexInference ){
         print "Using inferred sex info '$inferredSex' for organ '$anatEntityId' and species '$speciesId' for experiment [$expId] and gene [$geneId]\n";
     }
     # OK, now, retrieve the max conditionId: To avoid to first insert the condition,
@@ -902,11 +904,11 @@ sub insert_get_condition {
     # 'wild-type' in expression table (since everything is wild-type anyway in Bgee so far).
 
     my $mappedSexToUse = $sexToUse;
-    if ($sexToUse eq $NA_SEX) {
+    if ( $sexToUse eq $NA_SEX ){
         $mappedSexToUse = $NOT_ANNOTATED_SEX;
     }
     my $mappedStrainToUse = $strain;
-    if ($strain eq $NA_STRAIN || $strain eq $NOT_ANNOTATED_STRAIN || $strain eq $CRD_STRAIN) {
+    if ( $strain eq $NA_STRAIN || $strain eq $NOT_ANNOTATED_STRAIN || $strain eq $CRD_STRAIN ){
         $mappedStrainToUse = $WILD_TYPE_STRAIN;
     }
 
@@ -915,9 +917,9 @@ sub insert_get_condition {
     my $exprMappedCondId = $condId;
 
     # condition too granular or with sex inferred or NA
-    if ($condKey ne $exprMappedCondKey) {
+    if ( $condKey ne $exprMappedCondKey ){
         # Does the condition, not-too-granular and with no sex inference and no NA, already exist?
-        if (defined $conditions->{$exprMappedCondKey}) {
+        if ( defined $conditions->{$exprMappedCondKey} ){
             $exprMappedCondId = $conditions->{$exprMappedCondKey}->{'conditionId'};
         } else {
             # Does not exist, update the condition IDs and insert into database
@@ -932,15 +934,17 @@ sub insert_get_condition {
             $conditions->{ $exprMappedCondKey }->{ 'conditionId' }           = $exprMappedCondId;
             $conditions->{ $exprMappedCondKey }->{ 'exprMappedConditionId' } = $exprMappedCondId;
             $conditions->{ $exprMappedCondKey }->{ 'strain' }                = $mappedStrainToUse;
+            $conditions->{ $exprMappedCondKey }->{ 'speciesId' }             = $speciesId;
+            $conditions->{ $exprMappedCondKey }->{ 'sexInference' }          = $sexNotInferred;
         }
     }
     # Assertion test: at this point, if sex was inferred or was equal to NA, we should always have a "mapped" condition
-    if ( ($sexInference || $sexToUse eq $NA_SEX) && $condId == $exprMappedCondId) {
+    if ( ($sexInference || $sexToUse eq $NA_SEX) && $condId == $exprMappedCondId ){
         die "Assertion error, inferred or NA sex conditions should be seen as too granular\n";
     }
     # Same for strains mapped to 'wild-type'
     if ( ($strain eq $NA_STRAIN || $strain eq $NOT_ANNOTATED_STRAIN || $strain eq $CRD_STRAIN) &&
-          $condId == $exprMappedCondId ) {
+          $condId == $exprMappedCondId ){
         die "Assertion error, strain info '$strain' should be seen as too granular\n";
     }
 
@@ -950,6 +954,8 @@ sub insert_get_condition {
     $conditions->{ $condKey }->{ 'conditionId' }           = $condId;
     $conditions->{ $condKey }->{ 'exprMappedConditionId' } = $exprMappedCondId;
     $conditions->{ $condKey }->{ 'strain' }                = $strain;
+    $conditions->{ $condKey }->{ 'speciesId' }             = $speciesId;
+    $conditions->{ $condKey }->{ 'sexInference' }          = $sexInference;
 
     # ====================================
     # RETURN CONDITION
@@ -1004,8 +1010,8 @@ sub get_max_condition_id_and_check_strain {
     my $strainToCheck = $strain;
     $strainToCheck =~ s/[^a-zA-Z0-9]//g;
 
-    foreach my $key (keys %{ $conditions }) {
-        if( $conditions->{ $key }->{ 'conditionId' } > $maxId ) {
+    for my $key ( keys %{ $conditions } ){
+        if( $conditions->{ $key }->{ 'conditionId' } > $maxId ){
             $maxId = $conditions->{ $key }->{ 'conditionId' };
         }
 
@@ -1137,6 +1143,41 @@ sub revhash(\%)
         push @{$result{$$orighash{$key}}}, $key;
     }
     return ( %result );
+}
+
+
+# Return hash of stageId contained in Bgee database
+# with leftBound and rightBound stage associated
+sub getBgeedbStages {
+    my ($dbh) = @_;
+
+    my %stages;
+    my $selStage = $dbh->prepare('SELECT stageId, stageLeftBound, stageRightBound FROM stage');
+    $selStage->execute()  or die $selStage->errstr;
+    while ( my @data = $selStage->fetchrow_array ) {
+        $stages{$data[0]}->{'leftBound'}  = $data[1];
+        $stages{$data[0]}->{'rightBound'} = $data[2];
+    }
+    $selStage->finish;
+
+    return \%stages;
+}
+
+# Return hash of anatEntityId contained in Bgee database
+# with start and end stages associated
+sub getBgeedbOrgans {
+    my ($dbh) = @_;
+
+    my %organs;
+    my $selAnat = $dbh->prepare('SELECT anatEntityId, startStageId, endStageId FROM anatEntity');
+    $selAnat->execute()  or die $selAnat->errstr;
+    while ( my @data = $selAnat->fetchrow_array ) {
+        $organs{$data[0]}->{'startStageId'} = $data[1];
+        $organs{$data[0]}->{'endStageId'}   = $data[2];
+    }
+    $selAnat->finish;
+
+    return \%organs;
 }
 
 1;

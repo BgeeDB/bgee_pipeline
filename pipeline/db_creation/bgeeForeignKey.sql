@@ -138,7 +138,7 @@ add foreign key (OMAParentNodeId) references OMAHierarchicalGroup(OMANodeId) on 
 /*!40000 ALTER TABLE `geneToOma` DISABLE KEYS */;
 alter table geneToOma
 add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade,
-add foreign key (OMANodeId) references OMAHierarchicalGroup(OMANodeId) on delete cascade,
+add foreign key (OMAGroupId) references OMAHierarchicalGroup(OMAGroupId) on delete cascade,
 add foreign key (taxonId) references taxon(taxonId) on delete cascade;
 /*!40000 ALTER TABLE `geneToOma` ENABLE KEYS */;
 
@@ -179,6 +179,11 @@ add foreign key (anatEntityId) references anatEntity(anatEntityId) on delete cas
 add foreign key (stageId) references stage(stageId) on delete cascade, 
 add foreign key (speciesId) references species(speciesId) on delete cascade;
 /*!40000 ALTER TABLE `cond` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `remapCond` DISABLE KEYS */;
+alter table remapCond
+add foreign key (remappedConditionId) references cond(conditionId) on delete cascade;
+/*!40000 ALTER TABLE `remapCond` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `globalCond` DISABLE KEYS */;
 alter table globalCond
