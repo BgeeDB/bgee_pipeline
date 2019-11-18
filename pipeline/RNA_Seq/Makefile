@@ -160,7 +160,7 @@ get_genome: get_GTF
 #TODO implement use of new "database" field in rna_seq_sample_info.txt (instead of trying both Ensembl and Ensembl Metazoa URLs)
 
 
-################################ GENERATE INTERGENIC SEQUENCES ################################
+################################ GENERATE REFERENCE INTERGENIC SEQUENCES ################################
 
 prepare_GTF: get_GTF get_genome
 	# Prepare GTF files
@@ -256,6 +256,14 @@ generate_intergenic_sequences: sum_by_species
 	
 
 ################################ GENERATE PRESENT/ABSENT CALLS ################################
+
+# Run BgeeCall R package on all libraries
+# generate index for all species
+#      	- based on sample info file outside of BgeeCall?
+#	   	- based on sample info file using one function present in BgeeCall (to develop) ?
+# reuse script generating abundance with all intergenic and adapt it to generate abundance per library using BgeeCall
+
+
 
 presence_absence: sum_by_species $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH) $(RNASEQ_VITALIT_GAUSSIAN_CHOICE)
 #	Script to calculate presence/absence threshold for all samples and call genes present/absent + generate density plots + generate statistics on % present (cutoff info files)
