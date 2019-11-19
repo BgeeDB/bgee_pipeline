@@ -26,7 +26,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed....
-command_arg <- c("rna_seq_sample_info", "kallisto_count_folder", "argumentsList", "output")
+command_arg <- c("rna_seq_sample_info", "kallisto_count_folder", "argumentsList", "output", "ensembl_version", "metazoa_version")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -48,31 +48,34 @@ if( file.exists(argumentsList) ){
 
 ######################################## FUNCTIONS  #################################################################
 ## Function to collect genome_stats from ensembl
-collectStats <- function(speciesID){
-  setwd(output)
+collectStats <- function(speciesID, database){
   metazoaDro <- grepl("drosophila_",speciesID)
   metazoaCel <- grepl("caenorhabditis_",speciesID)
   
-  if (metazoaDro == "TRUE" || metazoaCel == "TRUE"){
-    url1 <- "ftp://ftp.ensemblgenomes.org/pub/metazoa/current/mysql/"
-    cat("Download from metazoa ensembl!", "\n")
-    result <- getURL(url1,verbose=TRUE,ftp.use.epsv=TRUE, dirlistonly = TRUE)
-    } else {
-    cat("Download from ensembl!", "\n")
-    url2 <- "ftp://ftp.ensembl.org/pub/current_mysql/"
-    result <- getURL(url2,verbose=TRUE,ftp.use.epsv=TRUE, dirlistonly = TRUE)
-    }
-  
-  result <- gsub("\n", " ", result, fixed=TRUE)
-  collectInfo <- as.vector(unlist(strsplit(result," ")),mode="list") 
+  if (database == "EnsemblMetazoa"){
+    url <- paste0("ftp://ftp.ensemblgenomes.org/pub/metazoa/release-",metazoa_version,"/mysql/")
+    message("Download from metazoa ensembl!", "\n")
+  } else if (database == "Ensembl"){
+    message("Download from ensembl!", "\n")
+    url <- paste0("ftp://ftp.ensembl.org/pub/release-",ensembl_version,"/mysql/")
+  } else {
+    exit("unknown database to collect genome statistics ",database)  
+  }
+  message(url)
+  result <- getURL(url,verbose=TRUE,ftp.use.epsv=TRUE, dirlistonly = TRUE)
+  collectInfo <- as.vector(unlist(strsplit(result,"\n", fixed = TRUE)),mode="list") 
   collectInfo <- do.call(rbind.data.frame, collectInfo)
   colnames(collectInfo) <- "species"
   result2 <- grep(paste0(speciesID,"_core_"),collectInfo$species)
-  speciesBgeeNme <- collectInfo[paste0(result2),]
-  genomeStats.gz <- system(sprintf('%s %s', paste0("wget"), paste0(url2, speciesBgeeNme, "/", "genome_statistics.txt.gz")))
+  speciesBgeeNme <- collectInfo[result2,]
+  genomeStatsFileName <- "genome_statistics.txt.gz"
+  download.file(url = file.path(url, speciesBgeeNme, "genome_statistics.txt.gz"),
+                destfile = file.path(output, genomeStatsFileName), 
+                method = "wget", quiet = FALSE)
   gzFiles <- list.files(path = output, pattern = "*.gz$", full.names = TRUE)
   unzipFile <- gunzip(gzFiles, remove=TRUE)
-  system(sprintf('%s %s %s', paste0("mv"), paste0(output, "genome_statistics.txt"), paste0(output, "genome_statistics_", speciesID, ".txt")))
+  renamed_file <- file.rename(file.path(output, "genome_statistics.txt"), 
+                              file.path(output, paste0("genome_statistics_", speciesID, ".txt")))
 }
 
 ## Function to collect information for each library using the fastp.json output file
@@ -83,10 +86,10 @@ collectInformationFASTP <- function(annotation, kallisto_count_folder, library){
   
   if(libraryInfo == "SINGLE"){
     fastpFile <- list.files(path=fastpInfo, pattern = "\\.fastp.json.xz$")
-    fastpFile <- paste0(fastpInfo, "/", fastpFile)
+    fastpFile <- file.path(fastpInfo, fastpFile)
   } else {
     fastpFile <- list.files(path=fastpInfo, pattern = "\\_1.fastp.json.xz$")
-    fastpFile <- paste0(fastpInfo, "/", fastpFile)
+    fastpFile <- file.path(fastpInfo, fastpFile)
   }
   ## If lanes exist, the reads would be summed and calculated the average for reads length 
   readsMapInfo <- 0
@@ -138,7 +141,7 @@ qc <- function(fastpLibrary, kallistoInfo, abundaceFile, genomeSize, library, ar
   lncRNA <- dplyr::filter(abundaceFile, type == "genic" & biotype == "lncRNA")
   
   if (protocol == "polyA"){
-    cat("Library ", library, "is PolyA", "\n")
+    message("Library ", library, "is PolyA", "\n")
     ## calculate proportion of protein_coding with TPM value higher then zero
     sizeProteinCoding <- nrow(proteinCoding)
     proteinCodingFilter <- nrow(proteinCoding[proteinCoding$tpm > 0, ])
@@ -148,7 +151,7 @@ qc <- function(fastpLibrary, kallistoInfo, abundaceFile, genomeSize, library, ar
     argumentsUsed <- dplyr::filter(arguments, library == "polyA")
     
     } else if (protocol == "miRNA"){
-      cat("Library is: miRNA", "\n")
+      message("Library is: miRNA", "\n")
       ## calculate proportion of miRNA with TPM value higher then zero
       sizemiRNA <- nrow(miRNA)
       miRNAFilter <- nrow(miRNA[miRNA$tpm > 0, ])
@@ -158,7 +161,7 @@ qc <- function(fastpLibrary, kallistoInfo, abundaceFile, genomeSize, library, ar
       argumentsUsed <- dplyr::filter(arguments, library == "miRNA")
     
       } else if (protocol == "lncRNA"){
-        cat("Library is: lncRNA", "\n")
+      message("Library is: lncRNA", "\n")
       ## calculate proportion of lncRNA with TPM value higher then zero
       sizelncRNA <- nrow(lncRNA)
       lncRNAFilter <- nrow(lncRNA[lncRNA$tpm > 0, ])
@@ -168,7 +171,7 @@ qc <- function(fastpLibrary, kallistoInfo, abundaceFile, genomeSize, library, ar
       argumentsUsed <- dplyr::filter(arguments, library == "lncRNA")
       
       } else {
-    cat("Protocol not recognized!", "\n")
+    message("Protocol not recognized!", "\n")
   }
   collectInfo$InfoQC <- ""
   collectInfo <- cbind(libraryInfo, collectInfo)
@@ -192,48 +195,44 @@ qc <- function(fastpLibrary, kallistoInfo, abundaceFile, genomeSize, library, ar
 
 ######################################### CREATING OUTPUT FILES  ####################################################
 ## Export new rna_seq_sample_info file with information about quality control (pass or not pass library)
-rna_seq_sample_info_QC <- paste0(output, "rna_seq_sample_info_QC.txt")
+rna_seq_sample_info_QC <- file.path(output, "rna_seq_sample_info_QC.txt")
 if (!file.exists(rna_seq_sample_info_QC)){
   file.create(rna_seq_sample_info_QC)
-  cat("libraryId\texperimentId\tspeciesId\torganism\tgenomeFilePath\tdatabase\tplatform\tlibraryType\tlibraryInfo\treadLength\trunIds\tRNASeqProtocol\tInfoQC\n",file = paste0(output, "/","rna_seq_sample_info_QC.txt"), sep = "\t")	
+  cat("libraryId\texperimentId\tspeciesId\torganism\tgenomeFilePath\tdatabase\tplatform\tlibraryType\tlibraryInfo\treadLength\trunIds\tRNASeqProtocol\tInfoQC\n",file = rna_seq_sample_info_QC, sep = "\t")	
 } else {
-  print("File already exist.....", "\n")
+  message("File ", rna_seq_sample_info_QC, " already exists.....\n")
 }
 ## Export detailed file with summary stats
-SummaryInformation_QC <- paste0(output, "SummaryInformation_QC.txt")
-if (!file.exists(SummaryInformation_QC)){
-  file.create(SummaryInformation_QC)
-  cat("libraryId\texperimentId\tspeciesId\torganism\tlibraryType\tlibraryInfo\treadLength\tRNASeqProtocol\treadsLib\tcoverage\tCG\tp_alignmentKallisto\tdetectedRNA\tInfoQC\tdescription\n",file = paste0(output, "/","SummaryInformation_QC.txt"), sep = "\t")	
+summaryInformation_QC <- file.path(output, "SummaryInformation_QC.txt")
+if (!file.exists(summaryInformation_QC)){
+  file.create(summaryInformation_QC)
+  cat("libraryId\texperimentId\tspeciesId\torganism\tlibraryType\tlibraryInfo\treadLength\tRNASeqProtocol\treadsLib\tcoverage\tCG\tp_alignmentKallisto\tdetectedRNA\tInfoQC\tdescription\n",file = summaryInformation_QC, sep = "\t")	
 } else {
-  print("File already exist.....", "\n")
+  message("File already exist.....", "\n")
 }
 
 ######################################### APPLY FOR EACH LIBRARY ######################################################
 ## Download for all species present in the annotation file (rna_seq_sample_info)!
 for (species in unique(annotation$organism)) {
-  cat("Collect genome stats from ensembl!", "\n")
+  message("Collect genome stats from ensembl!")
+  database <- as.character(unique(annotation$database[annotation$organism == species]))
   speciesInfo <- gsub(" ","_",species)
-  speciesID <- tolower(speciesInfo)
-  collectStats(speciesID = speciesID)
-}
-
-for (speciesID in unique(annotation$organism)) {
-  speciesInfo <- gsub(" ","_",speciesID)
   speciesInfo <- tolower(speciesInfo)
- 
+  collectStats(speciesID = speciesInfo, database = database)
+  
+  message("Read genome stats")
   ## read download file from ensembl to collect genome size
-  genomeSize <- read.table(paste0(output, "genome_statistics_", speciesInfo, ".txt"), header=FALSE, sep="\t")
+  genomeSize <- read.table(file.path(output, paste0("genome_statistics_", speciesInfo, ".txt")), header=FALSE, sep="\t")
   genomeSize <- dplyr::filter(genomeSize, V2 == "ref_length")
   genomeSize <- genomeSize$V3
   
   ## collect libraries that belong to same species!
-  for (libraryID in annotation$X.libraryId[annotation$organism == speciesID]) {
+  for (libraryID in annotation$X.libraryId[annotation$organism == species]) {
     
-    fastpInfo <- paste0(kallisto_count_folder, libraryID)
     ## collect stats from fastp.json file
     fastpLibrary <- collectInformationFASTP(annotation = annotation, kallisto_count_folder = kallisto_count_folder, library = libraryID)
-    kallistoInfo <- fromJSON(file = paste0(kallisto_count_folder, libraryID, "/" , "run_info.json"))
-    abundaceFilePath <- paste0(kallisto_count_folder, libraryID, "/" , "abundance_gene_level+fpkm+intergenic.tsv")
+    kallistoInfo <- fromJSON(file = file.path(kallisto_count_folder, libraryID, "run_info.json"))
+    abundaceFilePath <- file.path(kallisto_count_folder, libraryID, "abundance_gene_level+fpkm+intergenic.tsv")
     abundaceFile <- read.table(abundaceFilePath, header=TRUE, sep="\t")
     ## collect stats + QC information for the library
     finalInfo <- qc(fastpLibrary = fastpLibrary, kallistoInfo = kallistoInfo, abundaceFile = abundaceFile, genomeSize = genomeSize, library = libraryID, arguments = arguments)
