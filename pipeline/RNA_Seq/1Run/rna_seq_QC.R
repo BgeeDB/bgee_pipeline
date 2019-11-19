@@ -5,11 +5,13 @@
 ## In the end, 2 files are exported with information about the libraries that pass or not the QC and a summary stats: rna_seq_sample_info_QC.txt and SummaryInformation_QC.txt
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args rna_seq_sample_info="rna_seq_sample_info.txt" kallisto_count_folder="kallisto_count_folder" argumentsList="argumentsList" output="output""' rna_seq_QR.R rna_seq_QR.Rout
+## R CMD BATCH --no-save --no-restore '--args rna_seq_sample_info="rna_seq_sample_info.txt" kallisto_count_folder="kallisto_count_folder" argumentsList="argumentsList" output="output" ensembl_version=98 metazoa_version=45' rna_seq_QR.R rna_seq_QR.Rout
 ## rna_seq_sample_info --> file with info on mapped libraries
 ## kallisto_count_folder --> path to kallisto result folder
 ## argumentsList --> file with cutoff information
 ## output --> path where the files of genome_stats + QC and .Rout will be saved
+## ensembl_version --> version of ensembl.org
+## metazoa_version --> version of ensembl metazoa
 
 ## Libraries used
 library(RCurl)
@@ -49,9 +51,7 @@ if( file.exists(argumentsList) ){
 ######################################## FUNCTIONS  #################################################################
 ## Function to collect genome_stats from ensembl
 collectStats <- function(speciesID, database){
-  metazoaDro <- grepl("drosophila_",speciesID)
-  metazoaCel <- grepl("caenorhabditis_",speciesID)
-  
+ 
   if (database == "EnsemblMetazoa"){
     url <- paste0("ftp://ftp.ensemblgenomes.org/pub/metazoa/release-",metazoa_version,"/mysql/")
     message("Download from metazoa ensembl!", "\n")
