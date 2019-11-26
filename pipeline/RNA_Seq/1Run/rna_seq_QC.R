@@ -1,7 +1,7 @@
 ## SFonsecaCosta Nov 4, 2019
 
 ## This script is used to do the quality control of RNA-Seq libraries.
-## The QC criteria are based on: 1) % reads mapped to transcriptome 2) coverage 3) p_pseudoaligned and 4) % protein coding genes detected (as exemple, for polyA)
+## The QC criteria are based on: 1) reads depth  2) coverage 3) % p_pseudoaligned and 4) % protein coding genes detected (as exemple, for polyA)
 ## In the end, 2 files are exported with information about the libraries that pass or not the QC and a summary stats: rna_seq_sample_info_QC.txt and SummaryInformation_QC.txt
 
 ## Usage:
@@ -12,6 +12,8 @@
 ## output --> path where the files of genome_stats + QC and .Rout will be saved
 ## ensembl_version --> version of ensembl.org
 ## metazoa_version --> version of ensembl metazoa
+
+## Note: To run this script you should run Kallisto version > 0.44 or higher
 
 ## Libraries used
 library(RCurl)
@@ -141,7 +143,7 @@ qc <- function(fastpLibrary, kallistoInfo, abundaceFile, genomeSize, library, ar
   lncRNA <- dplyr::filter(abundaceFile, type == "genic" & biotype == "lncRNA")
   
   if (protocol == "polyA"){
-    message("Library ", library, "is PolyA", "\n")
+    message("Library ", library, " is PolyA", "\n")
     ## calculate proportion of protein_coding with TPM value higher then zero
     sizeProteinCoding <- nrow(proteinCoding)
     proteinCodingFilter <- nrow(proteinCoding[proteinCoding$tpm > 0, ])
@@ -151,7 +153,7 @@ qc <- function(fastpLibrary, kallistoInfo, abundaceFile, genomeSize, library, ar
     argumentsUsed <- dplyr::filter(arguments, library == "polyA")
     
     } else if (protocol == "miRNA"){
-      message("Library is: miRNA", "\n")
+      message("Library ", library, " is miRNA", "\n")
       ## calculate proportion of miRNA with TPM value higher then zero
       sizemiRNA <- nrow(miRNA)
       miRNAFilter <- nrow(miRNA[miRNA$tpm > 0, ])
@@ -161,7 +163,7 @@ qc <- function(fastpLibrary, kallistoInfo, abundaceFile, genomeSize, library, ar
       argumentsUsed <- dplyr::filter(arguments, library == "miRNA")
     
       } else if (protocol == "lncRNA"){
-      message("Library is: lncRNA", "\n")
+      message("Library ", library, " is lncRNA", "\n")
       ## calculate proportion of lncRNA with TPM value higher then zero
       sizelncRNA <- nrow(lncRNA)
       lncRNAFilter <- nrow(lncRNA[lncRNA$tpm > 0, ])
@@ -216,8 +218,15 @@ if (!file.exists(summaryInformation_QC)){
 for (species in unique(annotation$organism)) {
   message("Collect genome stats from ensembl!")
   database <- as.character(unique(annotation$database[annotation$organism == species]))
-  speciesInfo <- gsub(" ","_",species)
-  speciesInfo <- tolower(speciesInfo)
+  lengthName <- sapply(strsplit(species, " "), length)
+  if (lengthName == 2){
+    speciesInfo <- gsub(" ","_",species)
+    speciesInfo <- tolower(speciesInfo)
+  } else if (lengthName > 2) {
+    speciesInfo <- strsplit(species, "\\s+")[[1]]
+    speciesInfo <- paste0(speciesInfo[1], "_", speciesInfo[3])
+    speciesInfo <- tolower(speciesInfo)
+  }
   collectStats(speciesID = speciesInfo, database = database)
   
   message("Read genome stats")
@@ -228,16 +237,24 @@ for (species in unique(annotation$organism)) {
   
   ## collect libraries that belong to same species!
   for (libraryID in annotation$X.libraryId[annotation$organism == species]) {
-    
-    ## collect stats from fastp.json file
-    fastpLibrary <- collectInformationFASTP(annotation = annotation, kallisto_count_folder = kallisto_count_folder, library = libraryID)
-    kallistoInfo <- fromJSON(file = file.path(kallisto_count_folder, libraryID, "run_info.json"))
-    abundaceFilePath <- file.path(kallisto_count_folder, libraryID, "abundance_gene_level+fpkm+intergenic.tsv")
-    abundaceFile <- read.table(abundaceFilePath, header=TRUE, sep="\t")
-    ## collect stats + QC information for the library
-    finalInfo <- qc(fastpLibrary = fastpLibrary, kallistoInfo = kallistoInfo, abundaceFile = abundaceFile, genomeSize = genomeSize, library = libraryID, arguments = arguments)
-    write.table(finalInfo[c(1:12,18)], file = paste0(output, "rna_seq_sample_info_QC.txt"), quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
-    write.table(finalInfo[c(1:4,8:10,12:19)], file = paste0(output, "SummaryInformation_QC.txt"), quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
-    
+      message("Treating ", libraryID)
+    ## verify if library exist
+    if (!dir.exists(file.path(kallisto_count_folder, libraryID))){
+      message("The folder for this library is not present!")
+      ## check if all files necessary are present
+    } else if (dir.exists(file.path(kallisto_count_folder, libraryID)) &&  !file.exists(file.path(kallisto_count_folder, libraryID, "abundance_gene_level+fpkm+intergenic.tsv")) || !file.exists(file.path(kallisto_count_folder, libraryID, "run_info.json")) || length(list.files(path = file.path(kallisto_count_folder, libraryID), pattern = "\\.fastp.json.xz$")) == 0){
+      message("For this library: ", libraryID, " missing files to run the QC!")
+    } else {
+      ## collect stats from fastp.json file
+      fastpLibrary <- collectInformationFASTP(annotation = annotation, kallisto_count_folder = kallisto_count_folder, library = libraryID)
+      kallistoInfo <- fromJSON(file = file.path(kallisto_count_folder, libraryID, "run_info.json"))
+      abundaceFilePath <- file.path(kallisto_count_folder, libraryID, "abundance_gene_level+fpkm+intergenic.tsv")
+      abundaceFile <- read.table(abundaceFilePath, header=TRUE, sep="\t")
+      ## collect stats + QC information for the library
+      finalInfo <- qc(fastpLibrary = fastpLibrary, kallistoInfo = kallistoInfo, abundaceFile = abundaceFile, genomeSize = genomeSize, library = libraryID, arguments = arguments)
+      write.table(finalInfo[c(1:12,18)], file = paste0(output, "rna_seq_sample_info_QC.txt"), quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
+      write.table(finalInfo[c(1:4,8:10,12:19)], file = paste0(output, "SummaryInformation_QC.txt"), quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
+    }
   }
 }
+
