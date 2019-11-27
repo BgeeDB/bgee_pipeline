@@ -58,6 +58,7 @@ print "\t", scalar keys %excludedLibraries, " libraries excluded.\n";
 my $count_libs = 0;
 foreach my $expId ( sort keys %libraries ){
     foreach my $libraryId ( sort keys %{$libraries{$expId}} ){
+        #FIXME be able to exclude only some run(s) and not the whole library!
         if ( exists($excludedLibraries{$libraryId}) ){
             delete $libraries{$expId}->{$libraryId};
         } else {
