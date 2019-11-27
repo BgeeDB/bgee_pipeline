@@ -274,13 +274,13 @@ my $insLib = $bgee->prepare('INSERT INTO rnaSeqLibrary (rnaSeqLibraryId, rnaSeqE
                              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
 # Excluded libraries
-my $insExcludedLib = $bgee->prepare('INSERT INTO rnaSeqLibraryDiscarded (rnaSeqLibraryId) VALUES (?)');
+my $insExcludedLib = $bgee->prepare('INSERT INTO rnaSeqLibraryDiscarded (rnaSeqLibraryId, rnaSeqLibraryDiscardReason) VALUES (?, ?)');
 for my $libraryId ( sort keys %excludedLibraries ){
     if ( $debug ){
         print 'INSERT INTO rnaSeqLibraryDiscarded: ', $libraryId, "\n";
     }
     else {
-        $insExcludedLib->execute($libraryId)  or die $insExcludedLib->errstr;
+        $insExcludedLib->execute($libraryId, $excludedLibraries{$libraryId})  or die $insExcludedLib->errstr;
     }
 }
 
