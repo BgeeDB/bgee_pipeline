@@ -54,6 +54,36 @@ while ( my @data = $queryConditions->fetchrow_array ){
 
 print "Done, ", scalar(@exprMappedConditions), " conditions retrieved.\n";
 
+#####################################################
+# EXAMINE EXPRESSION CALLS ACROSS ALL SAMPLES       #
+# TO KNOW WHICH PROBESETS ARE NEVER SEEN AS PRESENT #
+#####################################################
+print "Examining all results to update probesets never seen as 'present'...\n";
+my $findFilteredPbts = $bgee->prepare('CREATE TEMPORARY TABLE tempFilteredAffy (PRIMARY KEY (affymetrixProbesetId, chipTypeId)) ENGINE=InnoDB 
+                                        AS (
+                                            SELECT DISTINCT t1.affymetrixProbesetId, t2.chipTypeId
+                                            FROM affymetrixProbeset AS t1
+                                            INNER JOIN affymetrixChip AS t2 ON t1.bgeeAffymetrixChipId = t2.bgeeAffymetrixChipId
+                                            WHERE NOT EXISTS (
+                                                SELECT 1 FROM affymetrixProbeset AS t10
+                                                INNER JOIN affymetrixChip AS t20 ON t10.bgeeAffymetrixChipId = t20.bgeeAffymetrixChipId
+                                                WHERE t1.affymetrixProbesetId = t10.affymetrixProbesetId AND t2.chipTypeId = t20.chipTypeId
+                                                AND t10.detectionFlag = "'.$Utils::PRESENT_CALL.'"
+                                            )
+                                        )');
+$findFilteredPbts->execute()  or die $findFilteredPbts->errstr;
+
+my $preFilteringUp = $bgee->prepare('UPDATE affymetrixProbeset AS t1
+                                     INNER JOIN affymetrixChip AS t2 ON t1.bgeeAffymetrixChipId = t2.bgeeAffymetrixChipId
+                                     INNER JOIN tempFilteredAffy AS t3
+                                     ON t1.affymetrixProbesetId = t3.affymetrixProbesetId AND t2.chipTypeId = t3.chipTypeId
+                                     SET reasonForExclusion = "'.$Utils::EXCLUDED_FOR_PRE_FILTERED.'"');
+$preFilteringUp->execute()  or die $preFilteringUp->errstr;
+
+my $dropTempFiltered = $bgee->prepare('DROP TABLE tempFilteredAffy');
+$dropTempFiltered->execute()  or die $dropTempFiltered->errstr;
+
+print "Done\n";
 
 ##########################################
 # PREPARE QUERIES                        #

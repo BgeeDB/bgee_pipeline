@@ -60,6 +60,31 @@ while ( my @data = $queryConditions->fetchrow_array ){
 print 'Done, ', scalar(@exprMappedConditions), " conditions retrieved.\n";
 
 
+#################################################
+# EXAMINE EXPRESSION CALLS ACROSS ALL SAMPLES   #
+# TO KNOW WHICH GENES ARE NEVER SEEN AS PRESENT #
+#################################################
+print "Examining all gene results to update genes never seen as 'present'...\n";
+my $findFilteredGenes = $bgee->prepare('CREATE TEMPORARY TABLE tempFilteredRnaSeq (PRIMARY KEY (bgeeGeneId)) ENGINE=InnoDB 
+                                        AS (
+                                            SELECT DISTINCT bgeeGeneId
+                                            FROM rnaSeqResult AS t1 WHERE NOT EXISTS (
+                                                SELECT 1 FROM rnaSeqResult AS t2 WHERE t1.bgeeGeneId = t2.bgeeGeneId
+                                                AND t2.detectionFlag = "'.$Utils::PRESENT_CALL.'"
+                                            )
+                                        )');
+$findFilteredGenes->execute()  or die $findFilteredGenes->errstr;
+
+my $preFilteringUp = $bgee->prepare('UPDATE rnaSeqResult AS t1
+                                     INNER JOIN tempFilteredRnaSeq AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId
+                                     SET reasonForExclusion = "'.$Utils::EXCLUDED_FOR_PRE_FILTERED.'"');
+$preFilteringUp->execute()  or die $preFilteringUp->errstr;
+
+my $dropTempFiltered = $bgee->prepare('DROP TABLE tempFilteredRnaSeq');
+$dropTempFiltered->execute()  or die $dropTempFiltered->errstr;
+
+print "Done\n";
+
 ##########################################
 # PREPARE QUERIES                        #
 ##########################################
