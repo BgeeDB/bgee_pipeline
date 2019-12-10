@@ -19,7 +19,7 @@ $| = 1; # no buffering of output
 
 # Define arguments & their default value
 my ($bgee_connector) = ('');
-my ($debug)          = (0); 
+my ($debug)          = (0);
 my %opts = ('bgee=s'     => \$bgee_connector,   # Bgee connector string
             'debug'      => \$debug,
            );
@@ -28,7 +28,7 @@ my %opts = ('bgee=s'     => \$bgee_connector,   # Bgee connector string
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $bgee_connector eq '' ){
     print "\n\tInvalid or missing argument:
-\te.g. $0  -bgee=\$(BGEECMD) 
+\te.g. $0  -bgee=\$(BGEECMD)
 \t-bgee             Bgee connector string
 \t-debug            printing the update/insert SQL queries, not executing them
 \n";
@@ -59,7 +59,7 @@ print "Done, ", scalar(@exprMappedConditions), " conditions retrieved.\n";
 # TO KNOW WHICH PROBESETS ARE NEVER SEEN AS PRESENT #
 #####################################################
 print "Examining all results to update probesets never seen as 'present'...\n";
-my $findPresentGenes = $bgee->prepare('CREATE TEMPORARY TABLE tempPresentAffy (PRIMARY KEY (affymetrixProbesetId, chipTypeId)) ENGINE=InnoDB 
+my $findPresentGenes = $bgee->prepare('CREATE TEMPORARY TABLE tempPresentAffy (PRIMARY KEY (affymetrixProbesetId, chipTypeId)) ENGINE=InnoDB
                                         AS (
                                             SELECT DISTINCT t1.affymetrixProbesetId, t2.chipTypeId
                                             FROM affymetrixProbeset AS t1
@@ -109,7 +109,7 @@ my $insExpSummary = $bgee->prepare('INSERT INTO microarrayExperimentExpression
                                     (expressionId, microarrayExperimentId,
                                         presentHighMicroarrayChipCount, presentLowMicroarrayChipCount,
                                         absentHighMicroarrayChipCount, absentLowMicroarrayChipCount,
-                                        microarrayExperimentCallDirection, microarrayExperimentCallQuality) 
+                                        microarrayExperimentCallDirection, microarrayExperimentCallQuality)
                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
 
 # query to get all the Affymetrix probesets for a condition
@@ -169,7 +169,7 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
                 # pst high > pst low > abs high > abs low
                 for my $pbset ( keys %{$results{$geneId}->{$expId}->{$chip}} ) {
                     # present wins in all cases: at least one probeset present leads to summarize call as present
-                    if ($results{$geneId}->{$expId}->{$chip}->{$pbset}->{'call'} eq $Utils::PRESENT_CALL || 
+                    if ($results{$geneId}->{$expId}->{$chip}->{$pbset}->{'call'} eq $Utils::PRESENT_CALL ||
                             $results{$geneId}->{$expId}->{$chip}->{$pbset}->{'call'} eq $Utils::MARGINAL_CALL){
                         $pst = 1;
                         # is there at least one present high quality?
@@ -177,7 +177,7 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
                             $pst_high_qual = 1;
                         }
                     }
-                    if ($results{$geneId}->{$expId}->{$chip}->{$pbset}->{'call'} eq $Utils::ABSENT_CALL 
+                    if ($results{$geneId}->{$expId}->{$chip}->{$pbset}->{'call'} eq $Utils::ABSENT_CALL
                             and $results{$geneId}->{$expId}->{$chip}->{$pbset}->{'quality'} eq $Utils::HIGH_QUAL){
                         $abs_high_qual = 1;
                     }
@@ -223,24 +223,24 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
         # Now update the related affymetrixProbesets
         if ( $debug ){
             my $printExprId = 'notRetrievedForLog';
-            print "UPDATE affymetrixProbeset AS t1 ", 
+            print "UPDATE affymetrixProbeset AS t1 ",
                   "INNER JOIN affymetrixChip AS t2 ON t1.bgeeAffymetrixChipId = t2.bgeeAffymetrixChipId ",
-                  "INNER JOIN cond AS t3 ON t2.conditionId = t3.conditionId ", 
+                  "INNER JOIN cond AS t3 ON t2.conditionId = t3.conditionId ",
                   "SET expressionId = $printExprId, reasonForExclusion = $reasonForExclusion ",
                   "WHERE t1.bgeeGeneId = $geneId AND t3.exprMappedConditionId = $exprMappedConditionId ",
                   "and t1.reasonForExclusion != '".$Utils::EXCLUDED_FOR_PRE_FILTERED."'\n";
             if ( $reasonForExclusion eq $Utils::CALL_NOT_EXCLUDED ) {
                 for my $expId ( keys %{ $summary } ) {
-                	print "INSERT INTO microarrayExperimentExpression ", 
-                	           "(expressionId, microarrayExperimentId, ", 
-                	           "presentHighMicroarrayChipCount, presentLowMicroarrayChipCount, ", 
-                	           "absentHighMicroarrayChipCount, absentLowMicroarrayChipCount, ", 
-                	           "microarrayExperimentCallDirection, microarrayExperimentCallQuality) ", 
-                	       "VALUES ($printExprId, $expId, ", 
-                               "$summary->{$expId}->{'pstHighEvidenceCount'}, ", 
-                               "$summary->{$expId}->{'pstLowEvidenceCount'}, ", 
-                               "$summary->{$expId}->{'absHighEvidenceCount'}, ", 
-                               "$summary->{$expId}->{'absLowEvidenceCount'}, ", 
+                    print "INSERT INTO microarrayExperimentExpression ",
+                               "(expressionId, microarrayExperimentId, ",
+                               "presentHighMicroarrayChipCount, presentLowMicroarrayChipCount, ",
+                               "absentHighMicroarrayChipCount, absentLowMicroarrayChipCount, ",
+                               "microarrayExperimentCallDirection, microarrayExperimentCallQuality) ",
+                           "VALUES ($printExprId, $expId, ",
+                               "$summary->{$expId}->{'pstHighEvidenceCount'}, ",
+                               "$summary->{$expId}->{'pstLowEvidenceCount'}, ",
+                               "$summary->{$expId}->{'absHighEvidenceCount'}, ",
+                               "$summary->{$expId}->{'absLowEvidenceCount'}, ",
                                "$summary->{$expId}->{'expCall'}, $summary->{$expId}->{'expCallQuality'})\n";
                 }
             }
@@ -249,7 +249,7 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
                 or die $updResult->errstr;
             if ( $reasonForExclusion eq $Utils::CALL_NOT_EXCLUDED ) {
                 for my $expId ( keys %{ $summary } ) {
-                    $insExpSummary->execute($expressionId, $expId, 
+                    $insExpSummary->execute($expressionId, $expId,
                         $summary->{$expId}->{'pstHighEvidenceCount'},
                         $summary->{$expId}->{'pstLowEvidenceCount'},
                         $summary->{$expId}->{'absHighEvidenceCount'},

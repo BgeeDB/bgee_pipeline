@@ -65,7 +65,7 @@ print 'Done, ', scalar(@exprMappedConditions), " conditions retrieved.\n";
 # TO KNOW WHICH GENES ARE NEVER SEEN AS PRESENT #
 #################################################
 print "Examining all gene results to update genes never seen as 'present'...\n";
-my $findPresentGenes = $bgee->prepare('CREATE TEMPORARY TABLE tempPresentRnaSeq (PRIMARY KEY (bgeeGeneId)) ENGINE=InnoDB 
+my $findPresentGenes = $bgee->prepare('CREATE TEMPORARY TABLE tempPresentRnaSeq (PRIMARY KEY (bgeeGeneId)) ENGINE=InnoDB
                                         AS (
                                             SELECT DISTINCT bgeeGeneId
                                             FROM rnaSeqResult WHERE detectionFlag = "'.$Utils::PRESENT_CALL.'"
