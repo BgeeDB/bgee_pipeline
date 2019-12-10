@@ -65,23 +65,26 @@ print 'Done, ', scalar(@exprMappedConditions), " conditions retrieved.\n";
 # TO KNOW WHICH GENES ARE NEVER SEEN AS PRESENT #
 #################################################
 print "Examining all gene results to update genes never seen as 'present'...\n";
-my $findFilteredGenes = $bgee->prepare('CREATE TEMPORARY TABLE tempFilteredRnaSeq (PRIMARY KEY (bgeeGeneId)) ENGINE=InnoDB 
+my $findPresentGenes = $bgee->prepare('CREATE TEMPORARY TABLE tempPresentRnaSeq (PRIMARY KEY (bgeeGeneId)) ENGINE=InnoDB 
                                         AS (
                                             SELECT DISTINCT bgeeGeneId
-                                            FROM rnaSeqResult AS t1 WHERE NOT EXISTS (
-                                                SELECT 1 FROM rnaSeqResult AS t2 WHERE t1.bgeeGeneId = t2.bgeeGeneId
-                                                AND t2.detectionFlag = "'.$Utils::PRESENT_CALL.'"
-                                            )
+                                            FROM rnaSeqResult WHERE detectionFlag = "'.$Utils::PRESENT_CALL.'"
                                         )');
-$findFilteredGenes->execute()  or die $findFilteredGenes->errstr;
+$findPresentGenes->execute()  or die $findPresentGenes->errstr;
 
+# The "not excluded" status has to be set first, for the next query to properly take into account "undefined" status
+my $presentUp = $bgee->prepare('UPDATE rnaSeqResult AS t1
+                                INNER JOIN tempPresentRnaSeq AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId
+                                SET reasonForExclusion = "'.$Utils::CALL_NOT_EXCLUDED.'"');
+$presentUp->execute()  or die $presentUp->errstr;
 my $preFilteringUp = $bgee->prepare('UPDATE rnaSeqResult AS t1
-                                     INNER JOIN tempFilteredRnaSeq AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId
-                                     SET reasonForExclusion = "'.$Utils::EXCLUDED_FOR_PRE_FILTERED.'"');
+                                     LEFT OUTER JOIN tempPresentRnaSeq AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId
+                                     SET reasonForExclusion = "'.$Utils::EXCLUDED_FOR_PRE_FILTERED.'"
+                                     WHERE t2.bgeeGeneId IS NULL AND reasonForExclusion != "'.$Utils::EXCLUDED_FOR_UNDEFINED.'"');
 $preFilteringUp->execute()  or die $preFilteringUp->errstr;
 
-my $dropTempFiltered = $bgee->prepare('DROP TABLE tempFilteredRnaSeq');
-$dropTempFiltered->execute()  or die $dropTempFiltered->errstr;
+my $dropTempPresent = $bgee->prepare('DROP TABLE tempPresentRnaSeq');
+$dropTempPresent->execute()  or die $dropTempPresent->errstr;
 
 print "Done\n";
 
