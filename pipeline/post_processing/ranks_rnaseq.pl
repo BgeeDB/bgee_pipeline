@@ -9,6 +9,10 @@ use diagnostics;
 # Frederic Bastian, updated June 2016.
 # Frederic Bastian, last updated Feb. 2017: adapt to new conditions and new schema in Bgee 14
 
+use Parallel::ForkManager;
+my $parallel_jobs  = 15;
+my $pm             = new Parallel::ForkManager($parallel_jobs);
+
 use FindBin;
 use lib "$FindBin::Bin/.."; # Get lib path for Utils.pm
 use Utils;
@@ -130,6 +134,8 @@ if ( !$ranks_computed ) {
     my $start = time();
 
     for my $k ( 0..$l-1 ){
+        #   Forks and returns the pid for the child
+        my $pid = $pm->start and next;
         my $rnaSeqLibraryId = $libs[$k];
 
         #print status
@@ -170,6 +176,8 @@ if ( !$ranks_computed ) {
         }
 
 
+        #   Terminates the child process
+        $pm->finish;
         $done += 1;
         my $end = time();
         my $rem = ($end-$start)/$done * ($l-$done);
@@ -369,6 +377,8 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
         for my $globalConditionId ( @conditions ){
             $i++;
 
+            #   Forks and returns the pid for the child
+            my $pid = $pm->start and next;
             $t0 = time();
 #            printf("Creating temp table for weighted mean ranks: ");
             $rnaSeqWeightedMeanStmt->execute($globalConditionId)  or die $rnaSeqWeightedMeanStmt->errstr;
@@ -381,6 +391,8 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
 
             $dropLibWeightedMeanStmt->execute()  or die $dropLibWeightedMeanStmt->errstr;
 
+            #   Terminates the child process
+            $pm->finish;
             if ( ($i / 100 - int($i / 100)) == 0 ){
                 printf("$i conditions done.\n");
             }
