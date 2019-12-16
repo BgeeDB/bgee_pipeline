@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # This is an automatically generated script to run your query
 # to use it you will require the intermine python client.
@@ -56,10 +56,10 @@ query.outerjoin("expressions.figures.images")
 query.outerjoin("expressions.probe")
 query.outerjoin("expressions.publication")
 
-print "\t".join(map(str, ["#primaryIdentifier", "expressions.expressionFound", "symbol", "expressions.anatomy.name", "expressions.anatomy.identifier", "expressions.startStage.name", "expressions.startStage.identifier",  "expressions.endStage.name", "expressions.endStage.identifier", "expressions.figures.images.primaryIdentifier", "expressions.figures.images.label", "expressions.figures.primaryIdentifier", "expressions.publication.primaryIdentifier", "organism.taxonId", "expressions.assay", "probe.quality"]))
+print("\t".join(map(str, ["#primaryIdentifier", "expressions.expressionFound", "symbol", "expressions.anatomy.name", "expressions.anatomy.identifier", "expressions.startStage.name", "expressions.startStage.identifier",  "expressions.endStage.name", "expressions.endStage.identifier", "expressions.figures.images.primaryIdentifier", "expressions.figures.images.label", "expressions.figures.primaryIdentifier", "expressions.publication.primaryIdentifier", "organism.taxonId", "expressions.assay", "probe.quality"])))
 for row in query.rows():
     # Join list of strings and int, stringified, by tab
-    print "\t".join(map(str, [row["primaryIdentifier"], row["expressions.expressionFound"], row["symbol"], \
+    print("\t".join(map(str, [row["primaryIdentifier"], row["expressions.expressionFound"], row["symbol"], \
         row["expressions.anatomy.name"], row["expressions.anatomy.identifier"], \
         row["expressions.startStage.name"], row["expressions.startStage.identifier"], \
         row["expressions.endStage.name"], row["expressions.endStage.identifier"], \
@@ -67,7 +67,7 @@ for row in query.rows():
         row["expressions.figures.images.label"], row["expressions.figures.primaryIdentifier"], \
         row["expressions.publication.primaryIdentifier"], \
         row["organism.taxonId"], row["expressions.assay"], \
-        row["expressions.probe.ThisseCloneRating"]]))
+        row["expressions.probe.ThisseCloneRating"]])))
 
 exit()
 

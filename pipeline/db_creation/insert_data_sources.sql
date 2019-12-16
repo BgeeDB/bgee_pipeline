@@ -3,8 +3,8 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
 -- [species_ensembl_link]: e.g., Drosophila_melanogaster
 (1, 'NCBI Taxonomy', '', '', '',
     'https://www.ncbi.nlm.nih.gov/taxonomy', 'Source taxonomy used in Bgee', 1, ''),
-(2, 'Ensembl', 'http://dec2015.archive.ensembl.org/[species_ensembl_link]/Gene/Summary?g=[gene_id]', '', '',
-    'http://dec2015.archive.ensembl.org/',
+(2, 'Ensembl', 'http://mar2016.archive.ensembl.org/[species_ensembl_link]/Gene/Summary?g=[gene_id]', '', '',
+    'http://mar2016.archive.ensembl.org/',
     'Source for gene annotations, mappings to the Gene Ontology, mappings to Affymetrix probeset IDs, and cross-references to other databases',
     1, 'Genomics database'),
 (3, 'EMBL', 'https://www.ebi.ac.uk/ena/data/view/[xref_id]', '', '',
@@ -75,7 +75,8 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
 (34, 'DDBJ', '', 'https://ddbj.nig.ac.jp/DRASearch/study?acc=[experiment_id]', 'https://ddbj.nig.ac.jp/DRASearch/experiment?acc=[evidence_id]',
      'https://ddbj.nig.ac.jp/DRASearch/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source'),
 (35, 'GSA', '', 'http://bigd.big.ac.cn/search?dbId=gsa&q=[experiment_id]', 'http://bigd.big.ac.cn/gsa/browse/[experiment_id]/[evidence_id]',
-     'http://bigd.big.ac.cn/gsa/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source');
+     'http://bigd.big.ac.cn/gsa/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source'),
+(36, 'OncoMX', 'https://oncomx.org/searchview/?gene=[xref_id]', '', '', 'https://www.oncomx.org', 'Integrated cancer mutation and expression resource', 0, '');
 
 
 -- Add "ghost" sources, because a source can only be part of one category, so rather than

@@ -233,33 +233,6 @@ my $conditions = Utils::query_conditions($bgee);
 my $stage_equivalences = Utils::get_stage_equivalences($bgee);
 
 
-#################################################
-# EXAMINE EXPRESSION CALLS ACROSS ALL SAMPLES   #
-# TO KNOW WHICH GENES ARE NEVER SEEN AS PRESENT #
-#################################################
-print "Examining all gene results to find genes never seen as 'expressed'...\n";
-# We use the bgeeGeneIds which are distinct for all species. Ensembl IDs used in the results files are not distinct for some species (e.g., chimpanzee and bonobo)
-my %presentGenes = ();
-
-for my $expId ( sort keys %libraries ){
-    LIBRARY:
-    for my $libraryId ( sort keys %{$libraries{$expId}} ){
-        # skip libraryId if this library was excluded
-        next LIBRARY  if ( exists $excludedLibraries{$libraryId} );
-
-        print "\t$expId $libraryId\n";
-
-        my %genesResults = getGenesResults("$all_results/$libraryId/$abundance_file");
-        for my $geneId ( keys %genesResults ){
-            if ( $genesResults{$geneId}->{'expressionCall'} eq $Utils::PRESENT_CALL ){
-                $presentGenes{ $genes{ $libraries{$expId}->{$libraryId}->{'speciesId'}}->{ $geneId } }++;
-            }
-        }
-    }
-}
-print "Done\n";
-
-
 ################################
 # INSERT LIBRARIES AND RESULTS #
 ################################
@@ -293,7 +266,6 @@ my $insResult = $bgee->prepare('INSERT INTO rnaSeqResult (rnaSeqLibraryId, bgeeG
                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
 
 my $inserted = 0;
-my $excluded = 0;
 for my $expId ( sort keys %libraries ){
     LIBRARY:
     for my $libraryId ( sort keys %{$libraries{$expId}} ){
@@ -380,12 +352,9 @@ for my $expId ( sort keys %libraries ){
         my %genesResults = getGenesResults("$all_results/$libraryId/$abundance_file");
         for my $geneId ( keys %genesResults ){
             $inserted++;
-            # if gene never seen as 'present', exclude it
+            # Note: pre-filtering exclusion is now managed in the script insert_rna_seq_expression.pl,
+            # it used to be managed here.
             my $exclusion = $Utils::CALL_NOT_EXCLUDED;
-            if ( !exists $presentGenes{ $genes{ $libraries{$expId}->{$libraryId}->{'speciesId'}}->{ $geneId } } ){
-                $exclusion = $Utils::EXCLUDED_FOR_PRE_FILTERED;
-                $excluded++;
-            }
             if ( $debug ){
                 print 'INSERT INTO rnaSeqResult: ', $libraryId,   ' - ', $genes{ $libraries{$expId}->{$libraryId}->{'speciesId'}}->{ $geneId }, ' - ',
                       $genesResults{$geneId}->{'FPKM'},           ' - ',
@@ -414,7 +383,7 @@ for my $expId ( sort keys %libraries ){
 $insLib->finish();
 $insRun->finish();
 $insResult->finish();
-print "Done. You should have $inserted rows in the rnaSeqResult table, and amongst them, $excluded excluded rows.\nExiting\n";
+print "Done. You should have $inserted rows in the rnaSeqResult table.\nExiting\n";
 
 exit 0;
 

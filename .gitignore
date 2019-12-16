@@ -20,6 +20,8 @@ hs_err_pid*
 
 nohup.out*
 warnings.*
+*.warn
+*.tmp
 
 # OS generated files #
 ######################

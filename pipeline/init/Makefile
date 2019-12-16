@@ -80,8 +80,8 @@ global_check:
 	@R -e 'library("rhesuscdf")'         >> $@.tmp  2>/dev/null
 	@R -e 'library("rhesusprobe")'       >> $@.tmp  2>/dev/null
 # Python libraries for Zebrafish intermine
-	@python -c "import intermine"        >> $@.tmp  2>/dev/null
-	@python -c "import simplejson"       >> $@.tmp  2>/dev/null
+	@python3 -c "import intermine"       >> $@.tmp  2>/dev/null
+	@python3 -c "import simplejson"      >> $@.tmp  2>/dev/null
 ## Binaries
 # network
 	@which wget          >> $@.tmp

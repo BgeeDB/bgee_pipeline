@@ -430,41 +430,6 @@ for my $chip ( sort keys %all_chipTypes ){
 }
 print "\n\n" if ( $debug );
 
-###############################################################
-# Filter probesets to keep only those seen once pst/high qual #
-###############################################################
-print("Filtering probesets...\n") if ( $debug );
-# list probesets to not exclude in a hash:
-# chipTypeId -> probesetIds
-my %kept_pbsets;
-# Note: we cannot store all probesets at once, it takes too much memory.
-# We'll have to extract probesets from file a second time, after determining which probesets to keep.
-for my $bgeeChipId (sort { $a <=> $b } keys %all_chips) {
-  print("\tChip $bgeeChipId\n") if ( $debug );
-  my $experiment = $all_chips{$bgeeChipId}->{'experimentId'};
-  my $chip       = $all_chips{$bgeeChipId}->{'chipId'};
-  my $norm       = $all_chips{$bgeeChipId}->{'norm'};
-  my $chipType   = $all_chips{$bgeeChipId}->{'chipTypeId'};
-
-  # return a hash probesetId -> call/signal/quality
-  my $chip_pbsets = extractProbesetsFromFile($experiment, $chip, $norm, $processed_mas5, $processed_schuster, 1);
-  for my $pbsetId (keys %{$chip_pbsets} ) {
-
-    ## Testing (the call is not supposed to be always defined but we had a warning)
-    if (!exists $chip_pbsets->{$pbsetId}->{'call'}){
-      warn "No call exists for probeset $pbsetId in chip $bgeeChipId ($experiment - $chip - $norm - $chipType)!\n";
-    } elsif (!defined $chip_pbsets->{$pbsetId}->{'call'}){
-      warn "The call is undefined for probeset $pbsetId in chip $bgeeChipId ($experiment - $chip - $norm - $chipType)!\n";
-    }
-    ## end of testing (TO DO: remove when problem fixed)
-
-  	if ( $chip_pbsets->{$pbsetId}->{'call'} eq $Utils::PRESENT_CALL ) {
-      $kept_pbsets{$chipType}->{$pbsetId}++;
-    }
-  }
-  print "\t\t", scalar keys %{$kept_pbsets{$chipType}}, " probesets retained (so far) for $chipType\n";
-}
-print "Done.\n" if ( $debug );
 
 ###########################
 # restart Bgee connection #
@@ -514,10 +479,9 @@ CHIP: for my $bgeeAffymetrixChipId (sort { $a <=> $b } keys %all_chips) {
     if ( !exists $annotation{$chipTypeId}->{$pbsetId} || !defined $annotation{$chipTypeId}->{$pbsetId} ) {
       next PROBESET;
     }
+    # Note: pre-filtering exclusion is now managed in the script insert_affy_expression.pl,
+    # it used to be managed here.
     my $reasonForExclusion = $Utils::CALL_NOT_EXCLUDED;
-    if ( !exists $kept_pbsets{$chipTypeId}->{$pbsetId} ) {
-      $reasonForExclusion = $Utils::EXCLUDED_FOR_PRE_FILTERED;
-    }
     if ( !$test ) {
       $insAffyPset->execute($pbsetId, $bgeeAffymetrixChipId,
                             $annotation{$chipTypeId}->{$pbsetId},  #bgeeGeneId
