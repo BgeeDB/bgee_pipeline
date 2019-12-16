@@ -75,7 +75,7 @@ my $validGenesStmt     = $dbh->prepare('CREATE TABLE rnaSeqValidGenes
                                             (PRIMARY KEY(bgeeGeneId))
                                             SELECT DISTINCT t1.bgeeGeneId
                                             FROM rnaSeqResult AS t1
-                                            WHERE t1.readsCount > 0');
+                                            WHERE t1.reasonForExclusion = "'.$Utils::CALL_NOT_EXCLUDED.'"');
 
 printf('Identifying set of valid genes for ranking: ');
 $dropValidGenesStmt->execute()  or die $dropValidGenesStmt->errstr;
