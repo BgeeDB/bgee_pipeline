@@ -183,6 +183,7 @@ if ( !$ranks_computed ) {
         my $rem = ($end-$start)/$done * ($l-$done);
         printf("\tElasped:%.2fs\tRemaining: %.2fs\n", $end - $start, $rem);
     }
+    $pm->wait_all_children;
 
     # ##############
     # Store max rank and number of distinct ranks per library
@@ -397,6 +398,7 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
                 printf("$i conditions done.\n");
             }
         }
+        $pm->wait_all_children;
 
         # update the globalCond table
         # We apply the same max rank to all expression calls of a same species, in all gene-condition
