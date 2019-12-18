@@ -328,40 +328,6 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
         # we're only supposed to normalize samples in a same condition and species (for Affymetrix data).
 
 
-        # compute weighted mean normalized ranks, and sum of numbers of distinct ranks
-        $sql = 'CREATE TEMPORARY TABLE weightedMeanRank
-                SELECT STRAIGHT_JOIN
-                      rnaSeqResult.bgeeGeneId,
-                      SUM(rnaSeqResult.rank * rnaSeqLibrary.libraryDistinctRankCount)
-                          /SUM(rnaSeqLibrary.libraryDistinctRankCount) AS meanRank,
-                      SUM(rnaSeqLibrary.libraryDistinctRankCount) AS distinctRankCountSum
-                FROM globalCondToLib
-                INNER JOIN rnaSeqLibrary ON rnaSeqLibrary.rnaSeqLibraryId = globalCondToLib.rnaSeqLibraryId
-                INNER JOIN rnaSeqResult ON rnaSeqResult.rnaSeqLibraryId = rnaSeqLibrary.rnaSeqLibraryId
-                INNER JOIN rnaSeqValidGenes ON rnaSeqResult.bgeeGeneId = rnaSeqValidGenes.bgeeGeneId
-                WHERE rnaSeqResult.expressionId IS NOT NULL AND globalCondToLib.globalConditionId = ?
-                GROUP BY rnaSeqResult.bgeeGeneId';
-
-        my $rnaSeqWeightedMeanStmt  = $dbh->prepare($sql);
-        my $dropLibWeightedMeanStmt = $dbh->prepare('DROP TABLE weightedMeanRank');
-
-        #update the expression table
-        $sql = 'UPDATE weightedMeanRank
-                STRAIGHT_JOIN globalExpression '.
-                # we build the query this way in order to benefit from the clustered index
-                # on (bgeeGeneId, globalConditionId) of the globalExpression table
-               'ON globalExpression.bgeeGeneId = weightedMeanRank.bgeeGeneId
-                    AND globalExpression.globalConditionId = ? ';
-        if ( !$selfRanks ){
-            $sql .= 'SET globalExpression.rnaSeqMeanRank = weightedMeanRank.meanRank,
-                globalExpression.rnaSeqDistinctRankSum = weightedMeanRank.distinctRankCountSum';
-        } else {
-            $sql .= 'SET globalExpression.rnaSeqGlobalMeanRank = weightedMeanRank.meanRank,
-                globalExpression.rnaSeqGlobalDistinctRankSum = weightedMeanRank.distinctRankCountSum';
-        }
-        my $expressionUpdateMeanRank = $dbh->prepare($sql);
-
-
         # ###################
         # Run computations per globalCondition
         # ###################
@@ -381,6 +347,42 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
             #   Forks and returns the pid for the child
             my $pid = $pm->start and next;
             $t0 = time();
+
+#           Prepare queries
+            my $tableName = 'weightedMeanRank_'.$globalConditionId;
+            # compute weighted mean normalized ranks, and sum of numbers of distinct ranks
+            $sql = 'CREATE TEMPORARY TABLE '.tableName.'
+                    SELECT STRAIGHT_JOIN
+                          rnaSeqResult.bgeeGeneId,
+                          SUM(rnaSeqResult.rank * rnaSeqLibrary.libraryDistinctRankCount)
+                              /SUM(rnaSeqLibrary.libraryDistinctRankCount) AS meanRank,
+                          SUM(rnaSeqLibrary.libraryDistinctRankCount) AS distinctRankCountSum
+                    FROM globalCondToLib
+                    INNER JOIN rnaSeqLibrary ON rnaSeqLibrary.rnaSeqLibraryId = globalCondToLib.rnaSeqLibraryId
+                    INNER JOIN rnaSeqResult ON rnaSeqResult.rnaSeqLibraryId = rnaSeqLibrary.rnaSeqLibraryId
+                    INNER JOIN rnaSeqValidGenes ON rnaSeqResult.bgeeGeneId = rnaSeqValidGenes.bgeeGeneId
+                    WHERE rnaSeqResult.expressionId IS NOT NULL AND globalCondToLib.globalConditionId = ?
+                    GROUP BY rnaSeqResult.bgeeGeneId';
+
+            my $rnaSeqWeightedMeanStmt  = $dbh->prepare($sql);
+            my $dropLibWeightedMeanStmt = $dbh->prepare('DROP TABLE '.tableName);
+
+            #update the expression table
+            $sql = 'UPDATE '.tableName.'
+                    STRAIGHT_JOIN globalExpression '.
+                    # we build the query this way in order to benefit from the clustered index
+                    # on (bgeeGeneId, globalConditionId) of the globalExpression table
+                   'ON globalExpression.bgeeGeneId = '.tableName.'.bgeeGeneId
+                        AND globalExpression.globalConditionId = ? ';
+            if ( !$selfRanks ){
+                $sql .= 'SET globalExpression.rnaSeqMeanRank = '.tableName.'.meanRank,
+                    globalExpression.rnaSeqDistinctRankSum = '.tableName.'.distinctRankCountSum';
+            } else {
+                $sql .= 'SET globalExpression.rnaSeqGlobalMeanRank = '.tableName.'.meanRank,
+                    globalExpression.rnaSeqGlobalDistinctRankSum = '.tableName.'.distinctRankCountSum';
+            }
+            my $expressionUpdateMeanRank = $dbh->prepare($sql);
+
 #            printf("Creating temp table for weighted mean ranks: ");
             $rnaSeqWeightedMeanStmt->execute($globalConditionId)  or die $rnaSeqWeightedMeanStmt->errstr;
 #            printf("OK in %.2fs\n", (time() - $t0));
