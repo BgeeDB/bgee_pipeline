@@ -19,7 +19,8 @@ OR t8.conditionId IS NOT NULL OR t9.conditionId IS NOT NULL;
 -- (we get an error 'Can't specify target table for update in FROM clause'),
 -- so we first store the conditions to delete in another table.
 -- Select a condition for deletion if:
-CREATE TEMPORARY TABLE condToDelete SELECT DISTINCT t1.conditionId FROM cond AS t1
+CREATE TEMPORARY TABLE condToDelete (PRIMARY KEY(conditionId))
+SELECT DISTINCT t1.conditionId FROM cond AS t1
 -- 1) the condition is itself not used, and;
 WHERE t1.conditionId NOT IN (SELECT conditionId from tempSafeToDropCondUsed)
 -- 2) the condition is not the expression table mapping for a condition that is used
