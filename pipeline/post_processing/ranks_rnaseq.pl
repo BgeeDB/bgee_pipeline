@@ -137,10 +137,10 @@ if ( !$ranks_computed ) {
                                                     FROM rnaSeqResult AS t1 '.
                                                     # join to table rnaSeqValidGenes to force
                                                     # the selection of valid genes
-                                                    "INNER JOIN rnaSeqValidGenes AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId
+                                                    'INNER JOIN rnaSeqValidGenes AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId
                                                     WHERE t1.rnaSeqLibraryId = ?
-                                                    AND t1.reasonForExclusion NOT IN ('$Utils::EXCLUDED_FOR_PRE_FILTERED', '$Utils::EXCLUDED_FOR_UNDEFINED')
-                                                    ORDER BY t1.tpm DESC");
+                                                    AND t1.reasonForExclusion = "'.$Utils::CALL_NOT_EXCLUDED.'"
+                                                    ORDER BY t1.tpm DESC');
 
         my $rnaSeqResultUpdateStmt = $dbh_thread->prepare($rankUpdateStart.'= ?');
 
