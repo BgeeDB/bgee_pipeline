@@ -109,18 +109,9 @@ if ( !$ranks_computed ) {
                                                 WHERE EXISTS (SELECT 1 FROM rnaSeqResult AS t2
                                                               WHERE t1.rnaSeqLibraryId = t2.rnaSeqLibraryId
                                                               AND t2.readsCount > 0)');
-    my $rnaSeqResultsStmt      = $dbh->prepare('SELECT DISTINCT t1.bgeeGeneId, t1.tpm
-                                                FROM rnaSeqResult AS t1 '.
-                                                # join to table rnaSeqValidGenes to force
-                                                # the selection of valid genes
-                                                "INNER JOIN rnaSeqValidGenes AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId
-                                                WHERE t1.rnaSeqLibraryId = ?
-                                                AND t1.reasonForExclusion NOT IN ('$Utils::EXCLUDED_FOR_PRE_FILTERED', '$Utils::EXCLUDED_FOR_UNDEFINED')
-                                                ORDER BY t1.tpm DESC");
     # if several genes at a same rank, we'll update them at once with a 'bgeeGeneId IN (?,?, ...)' clause.
     # If only one gene at a given rank, updated with the prepared statement below.
     my $rankUpdateStart = 'UPDATE rnaSeqResult SET rank = ? WHERE rnaSeqLibraryId = ? and bgeeGeneId ';
-    my $rnaSeqResultUpdateStmt = $dbh->prepare($rankUpdateStart.'= ?');
 
     my $t0 = time();
     # Get the list of all rna-seq libraries
@@ -136,6 +127,23 @@ if ( !$ranks_computed ) {
     for my $k ( 0..$l-1 ){
         #   Forks and returns the pid for the child
         my $pid = $pm->start and next;
+        # Get a new database connection for each thread
+        my $dbh_thread = Utils::connect_bgee_db($bgee_connector);
+        #Set to 0 in order to disable autocommit to optimize speed
+        if ( $auto == 0 ){
+            $dbh_thread->{'AutoCommit'} = 0;
+        }
+        my $rnaSeqResultsStmt      = $dbh_thread->prepare('SELECT DISTINCT t1.bgeeGeneId, t1.tpm
+                                                    FROM rnaSeqResult AS t1 '.
+                                                    # join to table rnaSeqValidGenes to force
+                                                    # the selection of valid genes
+                                                    "INNER JOIN rnaSeqValidGenes AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId
+                                                    WHERE t1.rnaSeqLibraryId = ?
+                                                    AND t1.reasonForExclusion NOT IN ('$Utils::EXCLUDED_FOR_PRE_FILTERED', '$Utils::EXCLUDED_FOR_UNDEFINED')
+                                                    ORDER BY t1.tpm DESC");
+
+        my $rnaSeqResultUpdateStmt = $dbh_thread->prepare($rankUpdateStart.'= ?');
+
         my $rnaSeqLibraryId = $libs[$k];
 
         #print status
@@ -165,19 +173,20 @@ if ( !$ranks_computed ) {
                     $query .= '?';
                 }
                 $query .= ')';
-                my $rnaSeqRankMultiUpdateStmt = $dbh->prepare($query);
+                my $rnaSeqRankMultiUpdateStmt = $dbh_thread->prepare($query);
                 $rnaSeqRankMultiUpdateStmt->execute($rank, $rnaSeqLibraryId, @geneIds_arr)  or die $rnaSeqRankMultiUpdateStmt->errstr;
             }
         }
 
         # commit here if auto-commit is disabled
         if ( $auto == 0 ){
-            $dbh->commit()  or die('Failed commit');
+            $dbh_thread->commit()  or die('Failed commit');
         }
-
-
+        # Close the thread connection
+        $dbh_thread->disconnect();
         #   Terminates the child process
         $pm->finish;
+
         $done += 1;
         my $end = time();
         my $rem = ($end-$start)/$done * ($l-$done);
@@ -346,6 +355,12 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
 
             #   Forks and returns the pid for the child
             my $pid = $pm->start and next;
+            # Get a new database connection for each thread
+            my $dbh_thread = Utils::connect_bgee_db($bgee_connector);
+            #Set to 0 in order to disable autocommit to optimize speed
+            if ( $auto == 0 ){
+                $dbh_thread->{'AutoCommit'} = 0;
+            }
             $t0 = time();
 
 #           Prepare queries
@@ -364,8 +379,8 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
                     WHERE rnaSeqResult.expressionId IS NOT NULL AND globalCondToLib.globalConditionId = ?
                     GROUP BY rnaSeqResult.bgeeGeneId';
 
-            my $rnaSeqWeightedMeanStmt  = $dbh->prepare($sql);
-            my $dropLibWeightedMeanStmt = $dbh->prepare('DROP TABLE '.tableName);
+            my $rnaSeqWeightedMeanStmt  = $dbh_thread->prepare($sql);
+            my $dropLibWeightedMeanStmt = $dbh_thread->prepare('DROP TABLE '.tableName);
 
             #update the expression table
             $sql = 'UPDATE '.tableName.'
@@ -381,7 +396,7 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
                 $sql .= 'SET globalExpression.rnaSeqGlobalMeanRank = '.tableName.'.meanRank,
                     globalExpression.rnaSeqGlobalDistinctRankSum = '.tableName.'.distinctRankCountSum';
             }
-            my $expressionUpdateMeanRank = $dbh->prepare($sql);
+            my $expressionUpdateMeanRank = $dbh_thread->prepare($sql);
 
 #            printf("Creating temp table for weighted mean ranks: ");
             $rnaSeqWeightedMeanStmt->execute($globalConditionId)  or die $rnaSeqWeightedMeanStmt->errstr;
@@ -394,6 +409,12 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
 
             $dropLibWeightedMeanStmt->execute()  or die $dropLibWeightedMeanStmt->errstr;
 
+            # commit here if auto-commit is disabled
+            if ( $auto == 0 ){
+                $dbh_thread->commit()  or die('Failed commit');
+            }
+            # Close the thread connection
+            $dbh_thread->disconnect();
             #   Terminates the child process
             $pm->finish;
             if ( ($i / 100 - int($i / 100)) == 0 ){
