@@ -1,0 +1,5 @@
+Currently (January 2020) there is a column named 'RNASeqProtocol' in RNASeqLibrary.tsv with the following content:
+
+- circRNA
+- miRNA
+- polyA
