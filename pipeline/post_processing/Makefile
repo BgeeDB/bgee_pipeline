@@ -119,71 +119,23 @@ $(OUTPUT_DIR)globalExpression: $(OUTPUT_DIR)conditions_not_existing
 # The previous query wrongly identified an issue: the E-TABM-20 "present low quality" call was not found in the corresponding global call,
 # because this experiment was (correctly) counted only once, as contributing a "present high quality". So, we needed to modify these queries
 #
-# They now look like this:
-# (note: a cool thing is that with this query, all condition parameter combinations
-# are all tested, and independently; e.g., we cannot miss an experiment not used in an anat./stage call because already used in an anat.-only call.
-# Works only if each raw condition is correctly associated to global conditions with correct condition parameter combinations,
-# but we have other queries checking that earlier)
-#
-# SELECT DISTINCT microarrayExperimentId AS 'Missing Affymetrix global expression calls, microarrayExperimentId', bgeeGeneId, globalConditionId FROM
-# -- First, we make a temp table to compute for each experiment, gene, and *global* condition,
-# -- whether there exists a call present high, present low, absent high, absent low.
-# -- This step is needed since several raw conditions can be aggregated to a same globalCondition
-# (
-#   SELECT t1.microarrayExperimentId, t2.bgeeGeneId, t3.globalConditionId, t3.conditionRelationOrigin,
-#   SUM(presentLowMicroarrayChipCount) AS presentLowCount, SUM(presentHighMicroarrayChipCount) AS presentHighCount,
-#   SUM(absentLowMicroarrayChipCount) AS absentLowCount, SUM(absentHighMicroarrayChipCount) AS absentHighCount
-#   FROM microarrayExperimentExpression AS t1
-#   LEFT OUTER JOIN expression AS t2 ON t1.expressionId = t2.expressionId
-#   LEFT OUTER JOIN globalCondToCond AS t3 ON t2.conditionId = t3.conditionId
-#   GROUP BY t1.microarrayExperimentId, t2.bgeeGeneId, t3.globalConditionId
-# ) AS tempTable
-# -- No propagation of absent calls to parent conditions and of present calls to descendant conditions,
-# -- So maybe this bgeeGeneId - globalConditionId does not even exist in the globalExpression table,
-# -- we exclude these cases
-# WHERE (tempTable.conditionRelationOrigin = 'self'
-# OR tempTable.conditionRelationOrigin = 'descendant' AND (presentLowCount > 0 OR presentHighCount > 0)
-# OR tempTable.conditionRelationOrigin = 'parent' AND presentLowCount = 0 AND presentHighCount = 0)
-# -- Now, try to identify potentially missing/incorrect global expression calls
-# AND (tempTable.bgeeGeneId IS NULL OR tempTable.globalConditionId IS NULL
-# OR NOT EXISTS (
-#   SELECT 1 FROM globalExpression AS t1
-#   WHERE t1.bgeeGeneId = tempTable.bgeeGeneId AND t1.globalConditionId = tempTable.globalConditionId
-# -- If the raw condition is mapped to the global condition itself, then we look at the "self" counts
-#   AND (
-#   tempTable.conditionRelationOrigin = 'self' AND
-# -- The order of the IF is important, considering the previous bug:
-# -- we need to consider first the present high calls, then present low, then absent high, then absent low
-#     IF(presentHighCount > 0, IF(affymetrixExpPresentHighSelfCount > 0, 1, 0),
-#       IF(presentLowCount > 0, IF(affymetrixExpPresentLowSelfCount > 0, 1, 0),
-#         IF(absentHighCount > 0, IF(affymetrixExpAbsentHighSelfCount > 0, 1, 0),
-#           IF(absentLowCount > 0, IF(affymetrixExpAbsentLowSelfCount > 0, 1, 0), 0))))
-#     = 1
-# -- If the raw condition is a descendant of the global condition, we look only at "descendant" present calls
-#   OR tempTable.conditionRelationOrigin = 'descendant' AND
-#     IF(presentHighCount > 0, IF(affymetrixExpPresentHighDescendantCount > 0, 1, 0),
-#       IF(presentLowCount > 0, IF(affymetrixExpPresentLowDescendantCount > 0, 1, 0), 0))
-#     = 1
-# -- If the raw condition is a parent of the global condition, we look only at "parent" absent calls
-#   OR tempTable.conditionRelationOrigin = 'parent' AND
-#     IF(absentHighCount > 0, IF(affymetrixExpAbsentHighParentCount > 0, 1, 0),
-#       IF(absentLowCount > 0, IF(affymetrixExpAbsentLowParentCount > 0, 1, 0), 0))
-#     = 1
-#   ))
-# )
-# LIMIT 10;
+# So actually, it's very complicated to check extensively the association
+# between raw data and global calls without duplicating all the Java code
+# producing the global calls in some sort of SQL stored procedure.
+# Instead, we are simply going to check that for each row in a experimentExpression table,
+# there is at least a corresponding globalExpression call.
 #
 # ESTs
-	@$(MYSQL) -e "SELECT DISTINCT estLibraryId AS 'Missing EST global expression calls, estLibraryId', bgeeGeneId, globalConditionId FROM (SELECT t1.estLibraryId, t2.bgeeGeneId, t3.globalConditionId, t3.conditionRelationOrigin, estLibraryCallQuality FROM estLibraryExpression AS t1 LEFT OUTER JOIN expression AS t2 ON t1.expressionId = t2.expressionId LEFT OUTER JOIN globalCondToCond AS t3 ON t2.conditionId = t3.conditionId WHERE t3.conditionRelationOrigin IS NULL or t3.conditionRelationOrigin != 'parent' GROUP BY t1.estLibraryId, t2.bgeeGeneId, t3.globalConditionId) AS tempTable WHERE (tempTable.conditionRelationOrigin = 'self' OR tempTable.conditionRelationOrigin = 'descendant') AND (tempTable.bgeeGeneId IS NULL OR tempTable.globalConditionId IS NULL OR NOT EXISTS (SELECT 1 FROM globalExpression AS t1 WHERE t1.bgeeGeneId = tempTable.bgeeGeneId AND t1.globalConditionId = tempTable.globalConditionId AND (tempTable.conditionRelationOrigin = 'self' AND IF(estLibraryCallQuality = 'high quality', IF(estLibPresentHighSelfCount > 0, 1, 0), IF(estLibraryCallQuality = 'poor quality', IF(estLibPresentLowSelfCount > 0, 1, 0), 0)) = 1 OR tempTable.conditionRelationOrigin = 'descendant' AND IF(estLibraryCallQuality = 'high quality', IF(estLibPresentHighDescendantCount > 0, 1, 0), IF(estLibraryCallQuality = 'poor quality', IF(estLibPresentLowDescendantCount > 0, 1, 0), 0)) = 1))) LIMIT 10;" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "SELECT t1.estLibraryId AS 'Missing EST global expression calls - estLibraryId', t1.expressionId FROM estLibraryExpression AS t1 LEFT OUTER JOIN expression AS t2 ON t1.expressionId = t2.expressionId LEFT OUTER JOIN globalCondToCond AS t3 ON t2.conditionId = t3.conditionId AND t3.conditionRelationOrigin = 'self' LEFT OUTER JOIN globalExpression AS t4 ON t2.bgeeGeneId = t4.bgeeGeneId AND t3.globalConditionId = t4.globalConditionId WHERE t4.globalExpressionId IS NULL OR estLibPresentHighSelfCount + estLibPresentLowSelfCount = 0 LIMIT 10;" >> $@.tmp 2>> $@.warn
 #
 # Affymetrix
-	@$(MYSQL) -e "SELECT DISTINCT microarrayExperimentId AS 'Missing Affymetrix global expression calls, microarrayExperimentId', bgeeGeneId, globalConditionId FROM (SELECT t1.microarrayExperimentId, t2.bgeeGeneId, t3.globalConditionId, t3.conditionRelationOrigin, SUM(presentLowMicroarrayChipCount) AS presentLowCount, SUM(presentHighMicroarrayChipCount) AS presentHighCount, SUM(absentLowMicroarrayChipCount) AS absentLowCount, SUM(absentHighMicroarrayChipCount) AS absentHighCount FROM microarrayExperimentExpression AS t1 LEFT OUTER JOIN expression AS t2 ON t1.expressionId = t2.expressionId LEFT OUTER JOIN globalCondToCond AS t3 ON t2.conditionId = t3.conditionId GROUP BY t1.microarrayExperimentId, t2.bgeeGeneId, t3.globalConditionId) AS tempTable WHERE (tempTable.conditionRelationOrigin = 'self' OR tempTable.conditionRelationOrigin = 'descendant' AND (presentLowCount > 0 OR presentHighCount > 0) OR tempTable.conditionRelationOrigin = 'parent' AND presentLowCount = 0 AND presentHighCount = 0) AND (tempTable.bgeeGeneId IS NULL OR tempTable.globalConditionId IS NULL OR NOT EXISTS (SELECT 1 FROM globalExpression AS t1 WHERE t1.bgeeGeneId = tempTable.bgeeGeneId AND t1.globalConditionId = tempTable.globalConditionId AND (tempTable.conditionRelationOrigin = 'self' AND IF(presentHighCount > 0, IF(affymetrixExpPresentHighSelfCount > 0, 1, 0), IF(presentLowCount > 0, IF(affymetrixExpPresentLowSelfCount > 0, 1, 0), IF(absentHighCount > 0, IF(affymetrixExpAbsentHighSelfCount > 0, 1, 0), IF(absentLowCount > 0, IF(affymetrixExpAbsentLowSelfCount > 0, 1, 0), 0)))) = 1 OR tempTable.conditionRelationOrigin = 'descendant' AND IF(presentHighCount > 0, IF(affymetrixExpPresentHighDescendantCount > 0, 1, 0), IF(presentLowCount > 0, IF(affymetrixExpPresentLowDescendantCount > 0, 1, 0), 0)) = 1 OR tempTable.conditionRelationOrigin = 'parent' AND IF(absentHighCount > 0, IF(affymetrixExpAbsentHighParentCount > 0, 1, 0), IF(absentLowCount > 0, IF(affymetrixExpAbsentLowParentCount > 0, 1, 0), 0)) = 1))) LIMIT 10;" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "SELECT t1.microarrayExperimentId AS 'Missing Affymetrix global expression calls - microarrayExperimentId', t1.expressionId FROM microarrayExperimentExpression AS t1 LEFT OUTER JOIN expression AS t2 ON t1.expressionId = t2.expressionId LEFT OUTER JOIN globalCondToCond AS t3 ON t2.conditionId = t3.conditionId AND t3.conditionRelationOrigin = 'self' LEFT OUTER JOIN globalExpression AS t4 ON t2.bgeeGeneId = t4.bgeeGeneId AND t3.globalConditionId = t4.globalConditionId WHERE t4.globalExpressionId IS NULL OR affymetrixExpPresentHighSelfCount + affymetrixExpPresentLowSelfCount + affymetrixExpAbsentHighSelfCount + affymetrixExpAbsentLowSelfCount = 0 LIMIT 10;" >> $@.tmp 2>> $@.warn
 #
 # RNA-Seq
-	@$(MYSQL) -e "SELECT DISTINCT rnaSeqExperimentId AS 'Missing RNA-Seq global expression calls, rnaSeqExperimentId', bgeeGeneId, globalConditionId FROM (SELECT t1.rnaSeqExperimentId, t2.bgeeGeneId, t3.globalConditionId, t3.conditionRelationOrigin, SUM(presentLowRNASeqLibraryCount) AS presentLowCount, SUM(presentHighRNASeqLibraryCount) AS presentHighCount, SUM(absentLowRNASeqLibraryCount) AS absentLowCount, SUM(absentHighRNASeqLibraryCount) AS absentHighCount FROM rnaSeqExperimentExpression AS t1 LEFT OUTER JOIN expression AS t2 ON t1.expressionId = t2.expressionId LEFT OUTER JOIN globalCondToCond AS t3 ON t2.conditionId = t3.conditionId GROUP BY t1.rnaSeqExperimentId, t2.bgeeGeneId, t3.globalConditionId) AS tempTable WHERE (tempTable.conditionRelationOrigin = 'self' OR tempTable.conditionRelationOrigin = 'descendant' AND (presentLowCount > 0 OR presentHighCount > 0) OR tempTable.conditionRelationOrigin = 'parent' AND presentLowCount = 0 AND presentHighCount = 0) AND (tempTable.bgeeGeneId IS NULL OR tempTable.globalConditionId IS NULL OR NOT EXISTS (SELECT 1 FROM globalExpression AS t1 WHERE t1.bgeeGeneId = tempTable.bgeeGeneId AND t1.globalConditionId = tempTable.globalConditionId AND (tempTable.conditionRelationOrigin = 'self' AND IF(presentHighCount > 0, IF(rnaSeqExpPresentHighSelfCount > 0, 1, 0), IF(presentLowCount > 0, IF(rnaSeqExpPresentLowSelfCount > 0, 1, 0), IF(absentHighCount > 0, IF(rnaSeqExpAbsentHighSelfCount > 0, 1, 0), IF(absentLowCount > 0, IF(rnaSeqExpAbsentLowSelfCount > 0, 1, 0), 0)))) = 1 OR tempTable.conditionRelationOrigin = 'descendant' AND IF(presentHighCount > 0, IF(rnaSeqExpPresentHighDescendantCount > 0, 1, 0), IF(presentLowCount > 0, IF(rnaSeqExpPresentLowDescendantCount > 0, 1, 0), 0)) = 1 OR tempTable.conditionRelationOrigin = 'parent' AND IF(absentHighCount > 0, IF(rnaSeqExpAbsentHighParentCount > 0, 1, 0), IF(absentLowCount > 0, IF(rnaSeqExpAbsentLowParentCount > 0, 1, 0), 0)) = 1))) LIMIT 10;" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "SELECT t1.rnaSeqExperimentId AS 'Missing RNA-Seq global expression calls - rnaSeqExperimentId', t1.expressionId FROM rnaSeqExperimentExpression AS t1 LEFT OUTER JOIN expression AS t2 ON t1.expressionId = t2.expressionId LEFT OUTER JOIN globalCondToCond AS t3 ON t2.conditionId = t3.conditionId AND t3.conditionRelationOrigin = 'self' LEFT OUTER JOIN globalExpression AS t4 ON t2.bgeeGeneId = t4.bgeeGeneId AND t3.globalConditionId = t4.globalConditionId WHERE t4.globalExpressionId IS NULL OR rnaSeqExpPresentHighSelfCount + rnaSeqExpPresentLowSelfCount + rnaSeqExpAbsentHighSelfCount + rnaSeqExpAbsentLowSelfCount = 0 LIMIT 10;" >> $@.tmp 2>> $@.warn
 #
 # In situ hybridization
-	@$(MYSQL) -e "SELECT DISTINCT inSituExperimentId AS 'Missing in situ global expression calls, inSituExperimentId', bgeeGeneId, globalConditionId FROM (SELECT t1.inSituExperimentId, t2.bgeeGeneId, t3.globalConditionId, t3.conditionRelationOrigin, SUM(presentLowInSituSpotCount) AS presentLowCount, SUM(presentHighInSituSpotCount) AS presentHighCount, SUM(absentLowInSituSpotCount) AS absentLowCount, SUM(absentHighInSituSpotCount) AS absentHighCount FROM inSituExperimentExpression AS t1 LEFT OUTER JOIN expression AS t2 ON t1.expressionId = t2.expressionId LEFT OUTER JOIN globalCondToCond AS t3 ON t2.conditionId = t3.conditionId GROUP BY t1.inSituExperimentId, t2.bgeeGeneId, t3.globalConditionId) AS tempTable WHERE (tempTable.conditionRelationOrigin = 'self' OR tempTable.conditionRelationOrigin = 'descendant' AND (presentLowCount > 0 OR presentHighCount > 0) OR tempTable.conditionRelationOrigin = 'parent' AND presentLowCount = 0 AND presentHighCount = 0) AND (tempTable.bgeeGeneId IS NULL OR tempTable.globalConditionId IS NULL OR NOT EXISTS (SELECT 1 FROM globalExpression AS t1 WHERE t1.bgeeGeneId = tempTable.bgeeGeneId AND t1.globalConditionId = tempTable.globalConditionId AND (tempTable.conditionRelationOrigin = 'self' AND IF(presentHighCount > 0, IF(inSituExpPresentHighSelfCount > 0, 1, 0), IF(presentLowCount > 0, IF(inSituExpPresentLowSelfCount > 0, 1, 0), IF(absentHighCount > 0, IF(inSituExpAbsentHighSelfCount > 0, 1, 0), IF(absentLowCount > 0, IF(inSituExpAbsentLowSelfCount > 0, 1, 0), 0)))) = 1 OR tempTable.conditionRelationOrigin = 'descendant' AND IF(presentHighCount > 0, IF(inSituExpPresentHighDescendantCount > 0, 1, 0), IF(presentLowCount > 0, IF(inSituExpPresentLowDescendantCount > 0, 1, 0), 0)) = 1 OR tempTable.conditionRelationOrigin = 'parent' AND IF(absentHighCount > 0, IF(inSituExpAbsentHighParentCount > 0, 1, 0), IF(absentLowCount > 0, IF(inSituExpAbsentLowParentCount > 0, 1, 0), 0)) = 1))) LIMIT 10;" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "SELECT t1.inSituExperimentId AS 'Missing in situ global expression calls - inSituExperimentId', t1.expressionId FROM inSituExperimentExpression AS t1 LEFT OUTER JOIN expression AS t2 ON t1.expressionId = t2.expressionId LEFT OUTER JOIN globalCondToCond AS t3 ON t2.conditionId = t3.conditionId AND t3.conditionRelationOrigin = 'self' LEFT OUTER JOIN globalExpression AS t4 ON t2.bgeeGeneId = t4.bgeeGeneId AND t3.globalConditionId = t4.globalConditionId WHERE t4.globalExpressionId IS NULL OR inSituExpPresentHighSelfCount + inSituExpPresentLowSelfCount + inSituExpAbsentHighSelfCount + inSituExpAbsentLowSelfCount = 0 LIMIT 10;" >> $@.tmp 2>> $@.warn
 #
 # ############################################
 # DATA STATISTICS
