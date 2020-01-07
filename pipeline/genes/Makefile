@@ -84,7 +84,7 @@ $(OUTPUT_DIR)insert_oncoMX_XRefs:
 	@if [ ! -d $(OUTPUT_DIR) ]; then mkdir -p $(OUTPUT_DIR); fi
 	# Download oncoMX ids (uniprot ID and gene name)
 	# TODO : OncoMX is supposed to update the tsv file containing their IDs. Please be sure that the URL used to download this dataset is still up to date
-	@$(WGET) --no-check-certificate 'https://data.oncomx.org/ln2wwwdata/reviewed/human_cancer_genes.csv' -O $(INPUT_DIR)oncoMX.csv.tmp >>$@.tmp 2>>$@.err && $(MV) $(INPUT_DIR)oncoMX.csv.tmp $(INPUT_DIR)oncoMX.csv 2>/dev/null  || rm -f $(INPUT_DIR)oncoMX.csv.tmp
+	@$(WGET) --no-check-certificate 'https://data.oncomx.org/ln2wwwdata/reviewed/biomarker_masterlist.csv' -O $(INPUT_DIR)oncoMX.csv.tmp >>$@.tmp 2>>$@.err && $(MV) $(INPUT_DIR)oncoMX.csv.tmp $(INPUT_DIR)oncoMX.csv 2>/dev/null  || rm -f $(INPUT_DIR)oncoMX.csv.tmp
 	# Insert OncoMX XRefs into the database
 	@perl insert_oncoMX_xrefs.pl -bgee=$(BGEECMD) -oncoMX_ids_file=$(INPUT_DIR)oncoMX.csv -oncoMX_datasource_name=$(ONCOMX_DATASOURCE) -uniProt_datasource_name=$(UNIPROT_DATASOURCE) >>$@.tmp 2>>$@.err
 	@if [[ -s $@.err ]]; then echo -n; else $(RM) $@.err; fi
