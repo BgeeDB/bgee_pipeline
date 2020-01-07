@@ -1,0 +1,30 @@
+ID	GENUS	SPECIES_NAME	COMMON_NAME	GENOME_VERSION	GENOME_SPECIES_ID
+9606	Homo	sapiens	human	GRCh38.p5	0
+10090	Mus	musculus	mouse	GRCm38.p4	0
+7955	Danio	rerio	zebrafish	GRCz10	0
+7227	Drosophila	melanogaster	fruit fly	BDGP6	0
+6239	Caenorhabditis	elegans	nematode	WBcel235	0
+9598	Pan	troglodytes	chimpanzee	CHIMP2.1.4	0
+9597	Pan	paniscus	bonobo	CHIMP2.1.4	9598
+9593	Gorilla	gorilla	gorilla	gorGor3.1	0
+9544	Macaca	mulatta	macaque	MMUL 1.0	0
+10116	Rattus	norvegicus	rat	Rnor_6.0	0
+9913	Bos	taurus	cattle	UMD3.1	0
+9823	Sus	scrofa	pig	Sscrofa10.2	0
+9796	Equus	caballus	horse	Equ Cab 2	0
+9986	Oryctolagus	cuniculus	rabbit	OryCun2.0	0
+9615	Canis	lupus familiaris	dog	CanFam3.1	0
+9685	Felis	catus	cat	Felis_catus_6.2	0
+10141	Cavia	porcellus	guinea pig	cavPor3	0
+9365	Erinaceus	europaeus	hedgehog	eriEur1	0
+13616	Monodelphis	domestica	opossum	monDom5	0
+9258	Ornithorhynchus	anatinus	platypus	OANA5	0
+9031	Gallus	gallus	chicken	Galgal4	0
+28377	Anolis	carolinensis	green anole	AnoCar2.0	0
+8364	Xenopus	tropicalis	western clawed frog	JGI 4.2	0
+7217	Drosophila	ananassae		GCA_000005115.1	0
+7230	Drosophila	mojavensis		GCA_000005175.1	0
+7237	Drosophila	pseudoobscura		GCA_000001765.2	0
+7240	Drosophila	simulans		GCA_000259055.1	0
+7244	Drosophila	virilis		GCA_000005245.1	0
+7245	Drosophila	yakuba		GCA_000005975.1	0
