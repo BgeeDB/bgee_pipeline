@@ -69,10 +69,13 @@ create table globalExpression (
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID, not stable between releases.',
     globalConditionId mediumint unsigned not null COMMENT 'ID of condition in the related condition table ("globalCond"), not stable between releases.',
     summaryQuality varchar(10) not null,
-	PRIMARY KEY(bgeeGeneId, globalConditionId),
-	UNIQUE(globalExpressionId),
-	FOREIGN KEY(bgeeGeneId) REFERENCES gene(bgeeGeneId) ON DELETE CASCADE,
-	FOREIGN KEY(globalConditionId) REFERENCES globalCond(globalConditionId) ON DELETE CASCADE
+    rank decimal(9, 2) unsigned COMMENT 'Normalized rank for this gene-condition after normalization over all data types, conditions and species',
+    score decimal(9, 5) unsigned COMMENT 'Use the minimum and maximum rank of the species to normalize the expression to a value between 0 and 100',
+    callType varchar(20) not null COMMENT 'The origin of the propagated expression calls : self, self and descendant, self and ancestor, or all',
+    PRIMARY KEY(bgeeGeneId, globalConditionId),
+    UNIQUE(globalExpressionId),
+    FOREIGN KEY(bgeeGeneId) REFERENCES gene(bgeeGeneId) ON DELETE CASCADE,
+    FOREIGN KEY(globalConditionId) REFERENCES globalCond(globalConditionId) ON DELETE CASCADE
 ) engine = innodb;
 -- COMMENT = 'This table is a summary of expression calls for a given gene-condition (anatomical entity - developmental stage), over all the experiments and data types, with all data propagated and reconciled.';
 
