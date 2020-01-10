@@ -21,7 +21,7 @@ $(OUTPUT_DIR)extract_data_from_bgee:
 
 $(OUTPUT_DIR)import_to_easybgee: $(OUTPUT_DIR)create_schema
 	# import data to the $(DBNAME_EASYBGEE) database in $(DBHOST_EASYBGEE)
-	@$(JAVA_EASY_BGEE) GenerateEasyBgee tsvToEasyBgee $(OUTPUT_DIR) > $@.tmp 2> $@.warnings
+	@$(JAVA_EASYBGEE) GenerateEasyBgee tsvToEasyBgee $(OUTPUT_DIR) > $@.tmp 2> $@.warnings
 	@$(MV) $@.tmp $@
 
 clean:
