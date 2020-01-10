@@ -55,8 +55,8 @@ while (my $line = <$lines>) {
 
 ##### MYSQL QUERIES ######
 
-# retrieve bgeeGeneId and XRefId of all genes from Bgee having a uniprot id XRef
-my $retrieve_uniprot_xrefs = "SELECT t1.bgeeGeneId, t2.XRefId FROM gene AS t1 INNER JOIN geneXRef AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId INNER JOIN dataSource AS t3 ON t2.dataSourceId = t3.dataSourceId where t3.datasourceName = ? and t2.XRefId NOT LIKE ? ";
+# retrieve internal bgeeGeneId, ensembl gene Id and gene name for all human genes in Bgee
+my $retrieve_human_genes = "SELECT bgeeGeneId, geneId, geneName FROM gene where speciesId = 9606";
 # retrieve oncoMX datasource ID
 my $retrieve_oncoMX_id = "SELECT dataSourceId from dataSource where datasourceName = ? ";
 # retrieve oncoMX datasource ID
@@ -67,16 +67,19 @@ my $insert_oncoMX_xrefs = "INSERT INTO geneXRef(bgeeGeneId, XRefId, XRefName, da
 
 # Bgee db connection
 my $dbh = Utils::connect_bgee_db($bgee_connector);
-
-my %gene_to_xrefs;
-my $sth = $dbh->prepare($retrieve_uniprot_xrefs);
-$sth->execute($uniProt_datasource_name, $unwanted_xref_pattern)  or die $sth->errstr;
+my %bgeeId_to_xrefId;
+my $sth = $dbh->prepare($retrieve_human_genes);
+$sth->execute()  or die $sth->errstr;
 while(my @values = $sth -> fetchrow_array()){
 	my $bgeeGeneId = $values[0];
-	my $uniprotId = $values[1];
-	if (exists($oncoMX_ids{$uniprotId})) {
-		$gene_to_xrefs{$bgeeGeneId}{'xref_id'} = $uniprotId;
-		$gene_to_xrefs{$bgeeGeneId}{'xref_name'} = $oncoMX_ids{$uniprotId};
+	my $ensemblId = $values[1];
+	my $geneName = $values[2];
+	if (exists($oncoMX_ids{$geneName})) {
+		$bgeeId_to_xrefId{$bgeeGeneId}{'xref_id'} = $geneName;
+		$bgeeId_to_xrefId{$bgeeGeneId}{'xref_name'} = $geneName;
+	} elsif (exists($oncoMX_ids{$ensemblId})) {
+		$bgeeId_to_xrefId{$bgeeGeneId}{'xref_id'} = $ensemblId;
+		$bgeeId_to_xrefId{$bgeeGeneId}{'xref_name'} = $geneName;
 	}
 }
 $sth->finish();
@@ -84,16 +87,16 @@ $sth->finish();
 ##### Insert oncoMX XRefs in Bgee ######
 my $oncoMX_id = $dbh->selectrow_array($retrieve_oncoMX_id, undef, $oncoMX_datasource_name);
 
-$sth = $dbh->prepare($insert_oncoMX_xrefs);
-foreach my $bgeeGeneId (keys %gene_to_xrefs){
+#$sth = $dbh->prepare($insert_oncoMX_xrefs);
+foreach my $bgeeGeneId (keys %bgeeId_to_xrefId){
 	if(!$debug) {
-		$sth->execute($bgeeGeneId, $gene_to_xrefs{$bgeeGeneId}{'xref_id'}, $gene_to_xrefs{$bgeeGeneId}{'xref_name'}, $oncoMX_id)  or die $sth->errstr;
+		$sth->execute($bgeeGeneId, $bgeeId_to_xrefId{$bgeeGeneId}{'xref_id'}, $bgeeId_to_xrefId{$bgeeGeneId}{'xref_name'}, $oncoMX_id)  or die $sth->errstr;
 	} else {
-		print "$bgeeGeneId, $gene_to_xrefs{$bgeeGeneId}{'xref_id'}, $gene_to_xrefs{$bgeeGeneId}{'xref_name'}, $oncoMX_id\n";
+		print "$bgeeGeneId, $bgeeId_to_xrefId{$bgeeGeneId}{'xref_id'}, $bgeeId_to_xrefId{$bgeeGeneId}{'xref_name'}, $oncoMX_id\n";
 	}
 }
 if(!$debug) {
-	my $size = keys %gene_to_xrefs;
+	my $size = keys %bgeeId_to_xrefId;
 	print "$size OncoMX XRefs have been inserted successfully in database $dbh->{Name}\n";
 }
 $sth->finish();
