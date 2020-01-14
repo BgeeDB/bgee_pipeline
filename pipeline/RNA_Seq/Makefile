@@ -82,7 +82,6 @@ check_tools: cluster1
 	@if [[ `hostname -d` != 'axiom.unil.ch' ]]; then false; fi
 	# Check if all required tools/libs are available
 	@which perl                                        > $@.tmp
-	@perl -MCpanel::JSON::XS      -e 1                >> $@.tmp
 	@perl -Mdiagnostics           -e 1                >> $@.tmp
 	@perl -MDBI                   -e 1                >> $@.tmp
 	@perl -MDigest::SHA           -e 1                >> $@.tmp
@@ -100,6 +99,7 @@ check_tools: cluster1
 	@perl -Mstrict                -e 1                >> $@.tmp
 	@perl -MTime::localtime       -e 1                >> $@.tmp
 	@perl -Mwarnings              -e 1                >> $@.tmp
+	@perl -MCpanel::JSON::XS      -e 1                >> $@.tmp
 	@module add Bioinformatics/Software/vital-it
 	@$(CLUSTER_R_CMD) which R                         >> $@.tmp
 	@$(CLUSTER_R_CMD) R -e 'library("chipseq")'       >> $@.tmp  2>/dev/null
@@ -153,24 +153,21 @@ get_genome: prepare_GTF
 #TODO implement use of new "database" field in rna_seq_sample_info.txt (instead of trying both Ensembl and Ensembl Metazoa URLs)
 
 prepare_indexed_transcriptome: get_genome prepare_GTF
-	# Preparing indexed transcriptome for every species
-# Extract transcriptome.fa from gtf_all and genome.fa files
-# perl one liner to remove arbitrary numbering in fasta header from gtf_to_fasta
-# Prepare indexes for kallisto: one with default k-mer size (31nt), one with short k-mer size (15nt)
-	@for genome in $(RNASEQ_CLUSTER_GTF)/*.gtf_all; do \
-		$(CLUSTER_TOPHAT_CMD)    gtf_to_fasta  $$genome $${genome/gtf_all/genome.fa} $${genome/gtf_all/transcriptome.fa}              >>$@.tmp 2>&1; \
-		perl -i -pe 's/^>\d+ +/>/' $${genome/gtf_all/transcriptome.fa}                                                            >>$@.tmp 2>&1; \
-		$(CLUSTER_KALLISTO_CMD)  kallisto index       -i $${genome/gtf_all/transcriptome.idx}     $${genome/gtf_all/transcriptome.fa} >>$@.tmp 2>&1; \
-		$(CLUSTER_KALLISTO_CMD)  kallisto index -k 15 -i $${genome/gtf_all/transcriptome_k15.idx} $${genome/gtf_all/transcriptome.fa} >>$@.tmp 2>&1; \
-		echo rm -f $${genome/gtf_all/genome.fa}; \
-		xz --threads=2 -9 $${genome/gtf_all/transcriptome.fa}; \
-		xz --threads=2 -9 $${genome/gtf_all/transcriptome.fa.tlst}; \
-	done
+	#Preparing indexed transcriptome for every species
+	#Extract transcriptome.fa from gtf_all and genome.fa files
+	#perl one liner to remove arbitrary numbering in fasta header from gtf_to_fasta
+	#Prepare indexes for kallisto: one with default k-mer size (31nt), one with short k-mer size ($(KALLISTO_SHORT_KMER_SIZE)nt)
+	@perl 1Run/slurm_index_creation.pl -transcriptome_folder=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(OUTPUT_DIR) -ens_release=$(ENSRELEASE) -ens_metazoa_release=$(ENSMETAZOARELEASE) -short_index_length=$(KALLISTO_SHORT_KMER_SIZE)  -cluster_kallisto_cmd="$(CLUSTER_KALLISTO_CMD)" -cluster_tophat_cmd="$(CLUSTER_TOPHAT_CMD)" >$@.tmp 2>&1
+	#TODO Use short k-mer size = 21nt instead of 15
+	#TODO The gffread utility in cufflinks package seems more flexible and reliable
+	#TODO add step to copy .passw file to bbgee's home on cluster / or maybe just echo a message to tell the user scp it? Path and name of this file on cluster is stored in ENCRYPT_PASSWD_FILE. We should store this file somewhere (devbioinfo?) because it cannot be added to the gitlab project
+	#Or just put it in /home/bbgee/? in read only mode, only for bbgee user
 	@$(MV) $@.tmp $@
 #TODO Use short k-mer size = 21nt instead of 15
 #TODO The gffread utility in cufflinks package seems more flexible and reliable
 #TODO add step to copy .passw file to bbgee's home on cluster / or maybe just echo a message to tell the user scp it? Path and name of this file on cluster is stored in ENCRYPT_PASSWD_FILE. We should store this file somewhere (devbioinfo?) because it cannot be added to the gitlab project
 #Or just put it in /home/bbgee/? in read only mode, only for bbgee user
+
 
 #NOTE Better to run this step in screen or with nohup as submission is done X jobs per X jobs to not overload the system (and not decrease our user priority)!
 run_pipeline: prepare_indexed_transcriptome $(RNASEQ_SAMPINFO_FILEPATH)
