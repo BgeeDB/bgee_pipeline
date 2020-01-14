@@ -87,7 +87,7 @@ $sth->finish();
 ##### Insert oncoMX XRefs in Bgee ######
 my $oncoMX_id = $dbh->selectrow_array($retrieve_oncoMX_id, undef, $oncoMX_datasource_name);
 
-#$sth = $dbh->prepare($insert_oncoMX_xrefs);
+$sth = $dbh->prepare($insert_oncoMX_xrefs);
 foreach my $bgeeGeneId (keys %bgeeId_to_xrefId){
 	if(!$debug) {
 		$sth->execute($bgeeGeneId, $bgeeId_to_xrefId{$bgeeGeneId}{'xref_id'}, $bgeeId_to_xrefId{$bgeeGeneId}{'xref_name'}, $oncoMX_id)  or die $sth->errstr;
