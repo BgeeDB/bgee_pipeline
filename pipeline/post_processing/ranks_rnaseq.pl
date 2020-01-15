@@ -366,7 +366,7 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
 #           Prepare queries
             my $tableName = 'weightedMeanRank_'.$globalConditionId;
             # compute weighted mean normalized ranks, and sum of numbers of distinct ranks
-            $sql = 'CREATE TEMPORARY TABLE '.tableName.'
+            $sql = 'CREATE TEMPORARY TABLE '.$tableName.'
                     SELECT STRAIGHT_JOIN
                           rnaSeqResult.bgeeGeneId,
                           SUM(rnaSeqResult.rank * rnaSeqLibrary.libraryDistinctRankCount)
@@ -380,21 +380,21 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
                     GROUP BY rnaSeqResult.bgeeGeneId';
 
             my $rnaSeqWeightedMeanStmt  = $dbh_thread->prepare($sql);
-            my $dropLibWeightedMeanStmt = $dbh_thread->prepare('DROP TABLE '.tableName);
+            my $dropLibWeightedMeanStmt = $dbh_thread->prepare('DROP TABLE '.$tableName);
 
             #update the expression table
-            $sql = 'UPDATE '.tableName.'
+            $sql = 'UPDATE '.$tableName.'
                     STRAIGHT_JOIN globalExpression '.
                     # we build the query this way in order to benefit from the clustered index
                     # on (bgeeGeneId, globalConditionId) of the globalExpression table
-                   'ON globalExpression.bgeeGeneId = '.tableName.'.bgeeGeneId
+                   'ON globalExpression.bgeeGeneId = '.$tableName.'.bgeeGeneId
                         AND globalExpression.globalConditionId = ? ';
             if ( !$selfRanks ){
-                $sql .= 'SET globalExpression.rnaSeqMeanRank = '.tableName.'.meanRank,
-                    globalExpression.rnaSeqDistinctRankSum = '.tableName.'.distinctRankCountSum';
+                $sql .= 'SET globalExpression.rnaSeqMeanRank = '.$tableName.'.meanRank,
+                    globalExpression.rnaSeqDistinctRankSum = '.$tableName.'.distinctRankCountSum';
             } else {
-                $sql .= 'SET globalExpression.rnaSeqGlobalMeanRank = '.tableName.'.meanRank,
-                    globalExpression.rnaSeqGlobalDistinctRankSum = '.tableName.'.distinctRankCountSum';
+                $sql .= 'SET globalExpression.rnaSeqGlobalMeanRank = '.$tableName.'.meanRank,
+                    globalExpression.rnaSeqGlobalDistinctRankSum = '.$tableName.'.distinctRankCountSum';
             }
             my $expressionUpdateMeanRank = $dbh_thread->prepare($sql);
 
