@@ -48,6 +48,8 @@ $InsertedDataSources{'xenopus_jamboree'} = $InsertedDataSources{'xenbase'};
     `make sameIdGeneCount`
 * Insert OncoMX XRefs based on a file provided by OncoMX and a mapping to bgeeGeneId based on UniProt IDs. Please be sure that the URL of the file is up to date before running the rule :
 	`make ../../generated_file/insert_oncoMX_XRefs`
+* Delete OncoMX XRefs. Has to be run only if oncoMX provided a new file to generate XRefs.
+    `make ../../generated_file/remove_oncoMX_XRefs`
 
 # Gene Homology
 * **Requirements**: **having contacted Adrian Altenhoff <adrian.altenhoff@inf.ethz.ch> one month in advance to request an update of the OMA HOGs based on our list of species. This is different from the data available from their download page...** Having successfully run the step insert genes.

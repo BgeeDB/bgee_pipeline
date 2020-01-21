@@ -541,33 +541,11 @@ WHERE t2.microarrayExperimentId IS NULL
 
 
 * The script [Annotation_checking/check_affy_curation.pl](Annotation_checking/check_affy_curation.pl) could be modified to signal when an experiment is both in the annotation file and the "not_included" or "not_included_for_now" files.
-* Consensus concerning probeset quality (when multiple probesets are present for the same genes):
 
-| Pst/High | Pst/Low | Abs/High | Abs/Low | Consensus                 |
-|:--------:|:-------:|:--------:|:-------:|---------------------------|
-| 1        | 1       | 0        | 0       | Pst/High                  |
-| 1        | 0       | 0        | 0       | Pst/High                  |
-| 1        | 1       | 1        | 1       | Pst/Low                   |
-| 1        | 1       | 1        | 0       | Pst/Low                   |
-| 1        | 1       | 0        | 1       | Pst/Low                   |
-| 1        | 0       | 1        | 1       | Pst/Low                   |
-| 1        | 0       | 1        | 0       | Pst/Low                   |
-| 1        | 0       | 0        | 1       | Pst/Low                   |
-| 0        | 1       | 1        | 1       | Pst/Bronze (not inserted) |
-| 0        | 1       | 1        | 0       | Pst/Bronze (not inserted) |
-| 0        | 1       | 0        | 1       | Pst/Bronze (not inserted) |
-| 0        | 1       | 0        | 0       | Pst/Low                   |
-| 0        | 0       | 1        | 0       | Abs/High                  |
-| 0        | 0       | 1        | 1       | Abs/High                  |
-| 0        | 0       | 0        | 1       | Abs/Low (not inserted)    |
-| 0        | 0       | 0        | 0       | Not possible              |
+* Consensus concerning probeset quality. When multiple probesets are present for the same genes, we reconcile this information to produce one call per gene and per chip, by retaining the best probeset signal, in this order: high quality present, low quality present, high quality absent, low quality absent
 
 * Note that in some cases the probesets are inserted in `affymetrixProbeset` table, but nothing is inserted into the `expression`/`noExpression` tables. This is the case for:
-  * Consensus Abs/Low (Abs seen only by mas5)
-  * Consensus Pst/Bronze (no probeset Pst/High is seen for this gene/stage/organ)
-  * Pre-filtering: probesets that are never Pst/High on the whole dataset with gcRMA, and never Pst(/Low) with mas5. Detection flags are always absent or marginal.
-
-* Note: the same consensus table is used for _in situ_ data
+  * Pre-filtering: probesets that are never Pst/high on the whole dataset, detection flags are always absent or marginal.
 
 
 ## Expression data insertion

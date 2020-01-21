@@ -9,6 +9,10 @@ use diagnostics;
 # Frederic Bastian, updated June 2016.
 # Frederic Bastian, last updated Feb. 2017: adapt to new conditions and new schema in Bgee 14
 
+use Parallel::ForkManager;
+my $parallel_jobs  = 15;
+my $pm             = new Parallel::ForkManager($parallel_jobs);
+
 use FindBin;
 use lib "$FindBin::Bin/.."; # Get lib path for Utils.pm
 use Utils;
@@ -75,7 +79,7 @@ my $validGenesStmt     = $dbh->prepare('CREATE TABLE rnaSeqValidGenes
                                             (PRIMARY KEY(bgeeGeneId))
                                             SELECT DISTINCT t1.bgeeGeneId
                                             FROM rnaSeqResult AS t1
-                                            WHERE t1.readsCount > 0');
+                                            WHERE t1.reasonForExclusion = "'.$Utils::CALL_NOT_EXCLUDED.'"');
 
 printf('Identifying set of valid genes for ranking: ');
 $dropValidGenesStmt->execute()  or die $dropValidGenesStmt->errstr;
@@ -105,18 +109,9 @@ if ( !$ranks_computed ) {
                                                 WHERE EXISTS (SELECT 1 FROM rnaSeqResult AS t2
                                                               WHERE t1.rnaSeqLibraryId = t2.rnaSeqLibraryId
                                                               AND t2.readsCount > 0)');
-    my $rnaSeqResultsStmt      = $dbh->prepare('SELECT DISTINCT t1.bgeeGeneId, t1.tpm
-                                                FROM rnaSeqResult AS t1 '.
-                                                # join to table rnaSeqValidGenes to force
-                                                # the selection of valid genes
-                                                "INNER JOIN rnaSeqValidGenes AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId
-                                                WHERE t1.rnaSeqLibraryId = ?
-                                                AND t1.reasonForExclusion NOT IN ('$Utils::EXCLUDED_FOR_PRE_FILTERED', '$Utils::EXCLUDED_FOR_UNDEFINED')
-                                                ORDER BY t1.tpm DESC");
     # if several genes at a same rank, we'll update them at once with a 'bgeeGeneId IN (?,?, ...)' clause.
     # If only one gene at a given rank, updated with the prepared statement below.
     my $rankUpdateStart = 'UPDATE rnaSeqResult SET rank = ? WHERE rnaSeqLibraryId = ? and bgeeGeneId ';
-    my $rnaSeqResultUpdateStmt = $dbh->prepare($rankUpdateStart.'= ?');
 
     my $t0 = time();
     # Get the list of all rna-seq libraries
@@ -130,6 +125,25 @@ if ( !$ranks_computed ) {
     my $start = time();
 
     for my $k ( 0..$l-1 ){
+        #   Forks and returns the pid for the child
+        my $pid = $pm->start and next;
+        # Get a new database connection for each thread
+        my $dbh_thread = Utils::connect_bgee_db($bgee_connector);
+        #Set to 0 in order to disable autocommit to optimize speed
+        if ( $auto == 0 ){
+            $dbh_thread->{'AutoCommit'} = 0;
+        }
+        my $rnaSeqResultsStmt      = $dbh_thread->prepare('SELECT DISTINCT t1.bgeeGeneId, t1.tpm
+                                                    FROM rnaSeqResult AS t1 '.
+                                                    # join to table rnaSeqValidGenes to force
+                                                    # the selection of valid genes
+                                                    'INNER JOIN rnaSeqValidGenes AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId
+                                                    WHERE t1.rnaSeqLibraryId = ?
+                                                    AND t1.reasonForExclusion = "'.$Utils::CALL_NOT_EXCLUDED.'"
+                                                    ORDER BY t1.tpm DESC');
+
+        my $rnaSeqResultUpdateStmt = $dbh_thread->prepare($rankUpdateStart.'= ?');
+
         my $rnaSeqLibraryId = $libs[$k];
 
         #print status
@@ -159,22 +173,26 @@ if ( !$ranks_computed ) {
                     $query .= '?';
                 }
                 $query .= ')';
-                my $rnaSeqRankMultiUpdateStmt = $dbh->prepare($query);
+                my $rnaSeqRankMultiUpdateStmt = $dbh_thread->prepare($query);
                 $rnaSeqRankMultiUpdateStmt->execute($rank, $rnaSeqLibraryId, @geneIds_arr)  or die $rnaSeqRankMultiUpdateStmt->errstr;
             }
         }
 
         # commit here if auto-commit is disabled
         if ( $auto == 0 ){
-            $dbh->commit()  or die('Failed commit');
+            $dbh_thread->commit()  or die('Failed commit');
         }
-
+        # Close the thread connection
+        $dbh_thread->disconnect();
+        #   Terminates the child process
+        $pm->finish;
 
         $done += 1;
         my $end = time();
         my $rem = ($end-$start)/$done * ($l-$done);
         printf("\tElasped:%.2fs\tRemaining: %.2fs\n", $end - $start, $rem);
     }
+    $pm->wait_all_children;
 
     # ##############
     # Store max rank and number of distinct ranks per library
@@ -319,40 +337,6 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
         # we're only supposed to normalize samples in a same condition and species (for Affymetrix data).
 
 
-        # compute weighted mean normalized ranks, and sum of numbers of distinct ranks
-        $sql = 'CREATE TEMPORARY TABLE weightedMeanRank
-                SELECT STRAIGHT_JOIN
-                      rnaSeqResult.bgeeGeneId,
-                      SUM(rnaSeqResult.rank * rnaSeqLibrary.libraryDistinctRankCount)
-                          /SUM(rnaSeqLibrary.libraryDistinctRankCount) AS meanRank,
-                      SUM(rnaSeqLibrary.libraryDistinctRankCount) AS distinctRankCountSum
-                FROM globalCondToLib
-                INNER JOIN rnaSeqLibrary ON rnaSeqLibrary.rnaSeqLibraryId = globalCondToLib.rnaSeqLibraryId
-                INNER JOIN rnaSeqResult ON rnaSeqResult.rnaSeqLibraryId = rnaSeqLibrary.rnaSeqLibraryId
-                INNER JOIN rnaSeqValidGenes ON rnaSeqResult.bgeeGeneId = rnaSeqValidGenes.bgeeGeneId
-                WHERE rnaSeqResult.expressionId IS NOT NULL AND globalCondToLib.globalConditionId = ?
-                GROUP BY rnaSeqResult.bgeeGeneId';
-
-        my $rnaSeqWeightedMeanStmt  = $dbh->prepare($sql);
-        my $dropLibWeightedMeanStmt = $dbh->prepare('DROP TABLE weightedMeanRank');
-
-        #update the expression table
-        $sql = 'UPDATE weightedMeanRank
-                STRAIGHT_JOIN globalExpression '.
-                # we build the query this way in order to benefit from the clustered index
-                # on (bgeeGeneId, globalConditionId) of the globalExpression table
-               'ON globalExpression.bgeeGeneId = weightedMeanRank.bgeeGeneId
-                    AND globalExpression.globalConditionId = ? ';
-        if ( !$selfRanks ){
-            $sql .= 'SET globalExpression.rnaSeqMeanRank = weightedMeanRank.meanRank,
-                globalExpression.rnaSeqDistinctRankSum = weightedMeanRank.distinctRankCountSum';
-        } else {
-            $sql .= 'SET globalExpression.rnaSeqGlobalMeanRank = weightedMeanRank.meanRank,
-                globalExpression.rnaSeqGlobalDistinctRankSum = weightedMeanRank.distinctRankCountSum';
-        }
-        my $expressionUpdateMeanRank = $dbh->prepare($sql);
-
-
         # ###################
         # Run computations per globalCondition
         # ###################
@@ -369,7 +353,51 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
         for my $globalConditionId ( @conditions ){
             $i++;
 
+            #   Forks and returns the pid for the child
+            my $pid = $pm->start and next;
+            # Get a new database connection for each thread
+            my $dbh_thread = Utils::connect_bgee_db($bgee_connector);
+            #Set to 0 in order to disable autocommit to optimize speed
+            if ( $auto == 0 ){
+                $dbh_thread->{'AutoCommit'} = 0;
+            }
             $t0 = time();
+
+#           Prepare queries
+            my $tableName = 'weightedMeanRank_'.$globalConditionId;
+            # compute weighted mean normalized ranks, and sum of numbers of distinct ranks
+            $sql = 'CREATE TEMPORARY TABLE '.$tableName.'
+                    SELECT STRAIGHT_JOIN
+                          rnaSeqResult.bgeeGeneId,
+                          SUM(rnaSeqResult.rank * rnaSeqLibrary.libraryDistinctRankCount)
+                              /SUM(rnaSeqLibrary.libraryDistinctRankCount) AS meanRank,
+                          SUM(rnaSeqLibrary.libraryDistinctRankCount) AS distinctRankCountSum
+                    FROM globalCondToLib
+                    INNER JOIN rnaSeqLibrary ON rnaSeqLibrary.rnaSeqLibraryId = globalCondToLib.rnaSeqLibraryId
+                    INNER JOIN rnaSeqResult ON rnaSeqResult.rnaSeqLibraryId = rnaSeqLibrary.rnaSeqLibraryId
+                    INNER JOIN rnaSeqValidGenes ON rnaSeqResult.bgeeGeneId = rnaSeqValidGenes.bgeeGeneId
+                    WHERE rnaSeqResult.expressionId IS NOT NULL AND globalCondToLib.globalConditionId = ?
+                    GROUP BY rnaSeqResult.bgeeGeneId';
+
+            my $rnaSeqWeightedMeanStmt  = $dbh_thread->prepare($sql);
+            my $dropLibWeightedMeanStmt = $dbh_thread->prepare('DROP TABLE '.$tableName);
+
+            #update the expression table
+            $sql = 'UPDATE '.$tableName.'
+                    STRAIGHT_JOIN globalExpression '.
+                    # we build the query this way in order to benefit from the clustered index
+                    # on (bgeeGeneId, globalConditionId) of the globalExpression table
+                   'ON globalExpression.bgeeGeneId = '.$tableName.'.bgeeGeneId
+                        AND globalExpression.globalConditionId = ? ';
+            if ( !$selfRanks ){
+                $sql .= 'SET globalExpression.rnaSeqMeanRank = '.$tableName.'.meanRank,
+                    globalExpression.rnaSeqDistinctRankSum = '.$tableName.'.distinctRankCountSum';
+            } else {
+                $sql .= 'SET globalExpression.rnaSeqGlobalMeanRank = '.$tableName.'.meanRank,
+                    globalExpression.rnaSeqGlobalDistinctRankSum = '.$tableName.'.distinctRankCountSum';
+            }
+            my $expressionUpdateMeanRank = $dbh_thread->prepare($sql);
+
 #            printf("Creating temp table for weighted mean ranks: ");
             $rnaSeqWeightedMeanStmt->execute($globalConditionId)  or die $rnaSeqWeightedMeanStmt->errstr;
 #            printf("OK in %.2fs\n", (time() - $t0));
@@ -381,10 +409,19 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
 
             $dropLibWeightedMeanStmt->execute()  or die $dropLibWeightedMeanStmt->errstr;
 
+            # commit here if auto-commit is disabled
+            if ( $auto == 0 ){
+                $dbh_thread->commit()  or die('Failed commit');
+            }
+            # Close the thread connection
+            $dbh_thread->disconnect();
+            #   Terminates the child process
+            $pm->finish;
             if ( ($i / 100 - int($i / 100)) == 0 ){
                 printf("$i conditions done.\n");
             }
         }
+        $pm->wait_all_children;
 
         # update the globalCond table
         # We apply the same max rank to all expression calls of a same species, in all gene-condition
