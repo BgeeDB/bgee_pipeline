@@ -11,6 +11,11 @@
    3. [Result processing](#result-processing)
    4. [Sanity checks](#sanity-checks)
    5. [TMM normalization, present/absent expression calls, expression ranks](#post-processing-normalization-and-generation-of-expression-calls)
+   
+   
+**User tutorial:** 
+
+1. [Notebook](#notebook)
 
 **Developer guidelines**
 
@@ -98,6 +103,360 @@ To define the call of expression of a gene in a library as "present", we check w
 #### Expression rank computations
 
 Gene expression ranks allow to identify the most functionally-relevant conditions related to the expression of a gene. It is computed from integrating all data types used in Bgee. See [post_processing/](../post_processing/) for this pipeline step.
+
+
+# User tutorial
+
+## Notebook
+
+This notebook can be used to run the different steps of the RNA-Seq pipeline.
+
+The scripts provided in this documentation can be runned directly in LSF servers. 
+
+To run in your local machine just remove all #BSUB and the referent module.
+
+&nbsp;
+
+#### **Data**
+
+The data provided by the user to run the full pipeline should be fastq files (lanes that belongs to the same sample should be merged into one fastq file, but this is not mandatory to run the pipeline).
+
+#### **Reference files**
+
+In order to run the pipeline 3 mandatory files should be present:
+
+* Species.cdna.all.fa.gz
+* Species.gtf.gz
+* Species.dna.toplevel.fa
+
+This files can be downloaded from the following source:
+ftp://ftp.ensemblgenomes.org/pub/ or ftp://ftp.ensembl.org/pub/ (for vertebrates)
+
+#### **Create info files**
+
+The Bgee pipeline runs based on a file describing each library, as shown below:
+
+* rna_seq_sample_info --> a text input file that organize libraries (samples) per experiment.
+
+In case you also discard some samples a file should also be provided, in this case with the referent libraries:
+
+* rna_seq_sample_excluded --> a text input file that exclude libraries (samples) per experiment.
+
+&nbsp;
+
+![Figure 1: example_info_file](img/example_file.png){width=100%}
+&nbsp;
+&nbsp;
+&nbsp;
+
+### **Important files to be generated**
+
+In order to run the pipeline, 3 files are fundamental and need to be generated as a first step:
+
+* gene2transcript --> file that links gene to transcripts mapping.
+* gene2biotype --> a file that collects biotype for all genes.
+* gtf_all --> a file that contains intergenic regions in the reference.
+
+#### **Generate the files**
+
+Generate **gene2transcript** and **gene2biotype** by using **prepareGTF.R**, the R script is present here [0Before/prepare_GTF.R](0Before/prepare_GTF.R).
+
+From this script we are also able to retrive a **gtf_all** file that contains the exonic regions from all transcripts of each gene and the intergenic regions annotated.
+
+```
+#!/bin/bash
+#BSUB -L /bin/bash
+#BSUB -o out_prepareGTF
+#BSUB -e error_prepareGTF
+#BSUB -M 5000000
+#BSUB -R "rusage[mem=5192]"
+#BSUB -R "span[ptile=8]"
+#BSUB -n 8
+#BSUB -J prepareGTF
+#BSUB -u user@email
+
+## How to use:
+## ./prepareGTF.sh @gene_gtf_path @output_gtf_name @new_output @input_file @script
+
+module add R/3.5.1;
+module add UHTS/Aligner/tophat/2.1.1;
+module add UHTS/Analysis/kallisto/0.44.0;
+
+gene_gtf_path=$1
+output_gtf_name=$2
+new_output=$3
+input_file_genome_file=$4
+script=$5
+
+echo prepare gtf...
+R CMD BATCH --no-save --no-restore "--args gene_gtf_path=\"$gene_gtf_path\" output_gtf_path=\"$output_gtf_name\"" $script
+```
+
+This new reference **gtf_all** is used to:
+
+* Generate a modified transcriptome.fa file by using tophat,
+
+```
+echo generate new transcriptome...
+gtf_to_fasta $new_output/Species.gtf_all $input_file_genome_file  $new_output/Species_transcriptome.fa
+
+sed -E 's/>[0-9]* />/g' $new_output/Species_transcriptome.fa > $new_output/Species_transcriptome_final.fa
+
+```
+
+that a posteriori will be used to
+
+* build a transcriptome index that later on is used by kallisto quant.
+
+```
+echo run kallisto index...
+
+## we use by default kmer size = 31, if your read length are smaller please add -k followed by the kmer size that you intends to the command bellow
+kallisto index -i $new_output/Species_transcripts.idx $new_output/Species_transcriptome_final.fa
+```
+
+**run the bash script on server directly:**
+
+```
+bsub -o out_prepareGTF -e error_prepareGTF -M 5000000 -R "rusage[mem=5192]" -J prepareGTF -u user@email -q normal "./prepareGTF.sh Species.gtf prepareGTF_output/Species prepareGTF_output/ Species.dna.toplevel.fa prepare_GTF.R"
+
+```
+
+### **Starting analysis per library**
+
+#### **1) Control quality + Kallisto pseudo-alignment**
+
+```
+#!/bin/bash
+#BSUB -L /bin/bash
+#BSUB -o out_QC_Kall
+#BSUB -e error_QC_Kall
+#BSUB -M 20000000
+#BSUB -R "rusage[mem=20192]"
+#BSUB -R "span[ptile=8]"
+#BSUB -n 8
+#BSUB -J ControlQuality_Kallisto
+#BSUB -u user@email
+
+### This script run the control quality (FASTQC) + Kallisto (QUANT) per library
+## How to use:
+## ./QC_Kall.sh @library @index_file 
+## library --> Folder where we have all *.fastq.gz files per library referent to one experiment
+## index_file --> Transcriptome index file to run Kallisto
+
+module add UHTS/Quality_control/fastqc/0.11.7;
+module add UHTS/Analysis/kallisto/0.44.0;
+
+library=$1
+index_file=$2
+
+for i in `find $library -name *.fastq.gz`
+do
+  
+## Extract name of the library and pathway...
+file=$(basename $i)
+file=${file%.fastq.gz}
+DIR=$(dirname "${i}")
+  
+## Run fastqc and write the output directlly in same directory...   
+echo Running fastqc $file .....
+## -exec gunzip -c  '{}' ';' | 
+fastqc  $i
+ 
+## Run Kallisto per library and save in the same directory...
+echo Running Kallisto $file .....
+
+## note the example is done for single-end libraries 
+## if you use paired-end you should remove: --single -l 180 -s 20
+## by default kallisto running mode is paired-end
+kallisto quant -i $index_file -o $DIR --single -l 180 -s 20 $i --bias
+ 
+done
+```
+
+**run the bash script on server directly:**
+
+```
+bsub -o out_QC_kall -e error_QC_kall -M 5000000 -R "rusage[mem=5192]" -J QC_Kall -u user@email -q normal "./QC_Kall.sh All_Data/ prepareGTF_output/Species_transcripts.idx"
+```
+
+
+#### **2) Run the analysis per library and sum over all libraries from the same species**
+
+2.1) The script for the analysis is present in [1Run/rna_seq_analysis.R](1Run/rna_seq_analysis.R)
+
+2.2) The script for the sum across species is present in [1Run/rna_seq_sum_by_species.R](1Run/rna_seq_sum_by_species.R)
+
+```
+#!/bin/bash
+#BSUB -L /bin/bash
+#BSUB -o out_pipeline_1-2
+#BSUB -e error_pipeline_1-2
+#BSUB -M 20000000
+#BSUB -R "rusage[mem=20192]"
+#BSUB -R "span[ptile=8]"
+#BSUB -n 8
+#BSUB -J pipeline_1-2
+#BSUB -u user@email
+
+module add R/3.5.1;
+
+## How to use:
+## ./pipeline_1-2.sh @kallisto_count_folder @gene2transcript_file @gene2biotype_file \
+## @rna_seq_sample_info @rna_seq_sample_excluded @DIR @script_analysis @script_sum
+
+## kallisto_count_folder --> Folder experiment
+## gene2transcript_file --> output file from prepare_gtf.r
+## gene2biotype_file --> output file from prepare_gtf.r
+## rna_seq_sample_info --> info about each library
+## rna_seq_sample_excluded --> info about library excluded
+## DIR --> where we should create a sum folder for the species
+## script_analysis --> rna_seq_analysis.R
+## script_sum --> rna_seq_sum_by_species.R
+
+kallisto_count_folder=$1
+gene2transcript_file=$2
+gene2biotype_file=$3
+rna_seq_sample_info=$4
+rna_seq_sample_excluded=$5
+DIR=$6
+script_analysis=$7
+script_sum=$8
+
+mkdir $DIR/sum_by_species_folder
+
+echo Start running the first script of the pipeline ...
+## Per library
+for folder in $kallisto_count_folder/*
+do
+
+R CMD BATCH --no-save --no-restore "--args  kallisto_count_folder=\"$folder\" \
+gene2transcript_file=\"$gene2transcript_file\" gene2biotype_file=\"$gene2biotype_file\" \
+library_id=\"$folder\"" $script_analysis $folder/library_id.Rout
+
+done
+
+echo Start running the second script of the pipeline ...
+
+R CMD BATCH --no-save --no-restore "--args rna_seq_sample_info=\"$rna_seq_sample_info\" rna_seq_sample_excluded=\"$rna_seq_sample_excluded\" \
+kallisto_count_folder=\"$kallisto_count_folder\" sum_by_species_folder=\"$DIR/sum_by_species_folder\"" $script_sum $DIR/sum_by_species_folder/sum_by_species.Rout
+
+```
+
+**run the bash script on server directly:**
+
+```
+bsub -o out_pipeline_1-2 -e error_QC_pipeline_1-2 -M 5000000 -R "rusage[mem=5192]" -J pipeline_1-2 -u user@email -q normal "./pipeline_1-2.sh All_Data/ prepareGTF_output/Species.gene2transcript prepareGTF_output/Species.gene2biotype rna_seq_sample_info.txt rna_seq_sample_excluded.txt /PATH/Species_All_files/ rna_seq_analysis.R rna_seq_sum_by_species.R"
+```
+
+
+**Select gaussian distribution based on the plot:**
+
+After the summing of the all libraries that belongs to the same species a file need to be filled manualy, *gaussian_choice_by_species_TO_FILL.txt*.
+
+This file allow to specify the chosen deconvoluted gaussians to coding and intergenic regions, as demonstrated in the figure below.
+
+&nbsp;
+
+![Figure 2: sum](img/distribution_TPM_genic_intergenic_sum_deconvolution_10090.png){width=50%}
+&nbsp;
+&nbsp;
+&nbsp;
+
+**Fill the gaussian_choice**
+
+Example of gaussian file used to specify the selected distributions to coding and intergenic regions.
+
+![Figure 3: gaussian](img/gaussian_choice_by_species_TO_FILL.png){width=100%}
+&nbsp;
+&nbsp;
+&nbsp;
+
+
+#### **3) Run the calls of present and absent genes per library**
+
+3.1) The script to call present/absent genes is present in [1Run/rna_seq_presence_absence.R](1Run/rna_seq_presence_absence.R)
+
+
+```
+#!/bin/bash
+#BSUB -L /bin/bash
+#BSUB -o out_pipeline_3
+#BSUB -e error_pipeline_3
+#BSUB -M 20000000
+#BSUB -R "rusage[mem=20192]"
+#BSUB -R "span[ptile=8]"
+#BSUB -n 8
+#BSUB -J pipeline_3
+#BSUB -u user@email
+
+module add R/3.5.1;
+
+## How to use:
+## ./pipeline_3.sh @rna_seq_sample_info @rna_seq_sample_excluded @kallisto_count_folder @sum_by_species_folder @gaussian_choice @out_folder @desired_r_cutoff @script_present_absent
+
+## rna_seq_sample_info --> info about each library
+## rna_seq_sample_excluded --> info about library excluded
+## kallisto_count_folder --> Folder experiment
+## sum_by_species_folder --> Folder where is the output of the sum
+## gaussian_choice --> gaussian file
+## out_folder --> output present and absent genes 
+## desired_r_cutoff --> desired cutoff value (proportion of intergenic, value between 0 and 1)
+## R script
+
+rna_seq_sample_info=$1
+rna_seq_sample_excluded=$2
+kallisto_count_folder=$3
+sum_by_species_folder=$4
+gaussian_choice=$5
+out_folder=$6
+desired_r_cutoff=$7
+script_present_absent=$8
+
+mkdir $out_folder/output_present_absent
+
+echo running the last script of the pipeline: Call present and absent genes ...
+## Per library
+
+R CMD BATCH --no-save --no-restore "--args rna_seq_sample_info=\"$rna_seq_sample_info\" rna_seq_sample_excluded=\"$rna_seq_sample_excluded\" \
+kallisto_count_folder=\"$kallisto_count_folder\" sum_by_species_folder=\"$sum_by_species_folder\" gaussian_choice=\"$gaussian_choice\" \
+out_folder=\"$out_folder/output_present_absent\" desired_r_cutoff=\"$desired_r_cutoff\" plot_only=FALSE" $script_present_absent $out_folder/output_present_absent/rna_seq_presence_absence.Rout
+```
+
+**run the bash script on server directly:**
+
+```
+bsub -o out_pipeline_3 -e error_pipeline_3 -M 5000000 -R "rusage[mem=5192]" -J pipeline_3 -u user@email -q normal "./pipeline_3.sh rna_seq_sample_info.txt rna_seq_sample_excluded.txt All_Data/ sum_by_species_folder/ sum_by_species_folder/gaussian_choice_by_species_TO_FILL.txt /PATH/Species_All_files/ 0.05 rna_seq_presence_absence.R"
+```
+
+
+### **General information about the output files**
+
+After running the present/absent calls each library will contain 4 output files:
+
+* abundance_gene_level+fpkm+intergenic+calls.tsv --> calls for genic and intergenic regions
+
+* abundance_gene_level+new_tpm+new_fpkm+calls.tsv --> calls just for genic regions
+
+* cutoff_info_file.tsv --> Descriptive file with cut-off information
+
+* distribution_TPM_genic_intergenic+cutoff.pdf --> plot of the destribution for a particular library
+
+&nbsp;
+
+Just looking in particular the calls output for one library:
+
+![Figure 4: example_info_file](img/present_absent.png){width=80%}
+&nbsp;
+&nbsp;
+&nbsp;
+
+You will obtain also an output file that contain a boxplot for each different feature, as for example proportion of protein coding genes for each species across all libraries (if you are running just one species you will get just one boxplot per feature, as demonstrated in the boxplot below).
+
+![Figure 5: proportion of coding present.](img/ProportionCodingPresent.png){width=80%}
+&nbsp;
+&nbsp;
+&nbsp;
 
 # Developer guidelines
 
