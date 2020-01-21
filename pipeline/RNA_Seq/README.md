@@ -115,8 +115,6 @@ The scripts provided in this documentation can be runned directly in LSF servers
 
 To run in your local machine just remove all #BSUB and the referent module.
 
-&nbsp;
-
 #### **Data**
 
 The data provided by the user to run the full pipeline should be fastq files (lanes that belongs to the same sample should be merged into one fastq file, but this is not mandatory to run the pipeline).
@@ -144,7 +142,7 @@ In case you also discard some samples a file should also be provided, in this ca
 
 &nbsp;
 
-![Figure 1: example_info_file](img/example_file.png){width=100%}
+![Boxplot](img/example_file.png)
 &nbsp;
 &nbsp;
 &nbsp;
@@ -358,7 +356,7 @@ This file allow to specify the chosen deconvoluted gaussians to coding and inter
 
 &nbsp;
 
-![Figure 2: sum](img/distribution_TPM_genic_intergenic_sum_deconvolution_10090.png){width=50%}
+![Boxplot](img/distribution_TPM_genic_intergenic_sum_deconvolution_10090.png)
 &nbsp;
 &nbsp;
 &nbsp;
@@ -367,7 +365,7 @@ This file allow to specify the chosen deconvoluted gaussians to coding and inter
 
 Example of gaussian file used to specify the selected distributions to coding and intergenic regions.
 
-![Figure 3: gaussian](img/gaussian_choice_by_species_TO_FILL.png){width=100%}
+![Boxplot](img/gaussian_choice_by_species_TO_FILL.png)
 &nbsp;
 &nbsp;
 &nbsp;
@@ -446,14 +444,14 @@ After running the present/absent calls each library will contain 4 output files:
 
 Just looking in particular the calls output for one library:
 
-![Figure 4: example_info_file](img/present_absent.png){width=80%}
+![Boxplot](img/present_absent.png)
 &nbsp;
 &nbsp;
 &nbsp;
 
 You will obtain also an output file that contain a boxplot for each different feature, as for example proportion of protein coding genes for each species across all libraries (if you are running just one species you will get just one boxplot per feature, as demonstrated in the boxplot below).
 
-![Figure 5: proportion of coding present.](img/ProportionCodingPresent.png){width=80%}
+![Boxplot](img/ProportionCodingPresent.png)
 &nbsp;
 &nbsp;
 &nbsp;
