@@ -10,24 +10,22 @@ use lib "$FindBin::Bin/.."; # Get lib path for Utils.pm
 use Utils;
 use Text::CSV;
 
-my ($bgee_connector, $oncoMX_ids_file, $oncoMX_datasource_name, $uniProt_datasource_name) = ('', '', '','');
+my ($bgee_connector, $oncoMX_ids_file, $oncoMX_datasource_name) = ('', '', '');
 my $debug = 0;
 my %opts = ('bgee=s'                     => \$bgee_connector,     		 # Bgee connector string
 			'oncoMX_ids_file=s'   		 => \$oncoMX_ids_file,           # path to file containing all oncoMX ids
 			'oncoMX_datasource_name=s'   => \$oncoMX_datasource_name,    # name of the OncoMX datasource in the Bgee database
-			'uniProt_datasource_name=s'   => \$uniProt_datasource_name,  # name of the UniProt datasource in the Bgee database
             'debug'                      => \$debug,                     # debug mode, do not insert/update in database
            );
            
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( $bgee_connector eq '' || $oncoMX_ids_file eq '' || $oncoMX_datasource_name eq '' || $uniProt_datasource_name eq '' ){
+if ( $bgee_connector eq '' || $oncoMX_ids_file eq '' || $oncoMX_datasource_name eq '' ){
     print "\n\tInvalid or missing argument:
-\te.g. perl $0 -bgee=\$(BGEECMD) -oncoMX_ids_file=path/to/file.tsv oncoMX_datasource_name=OncoMX uniProt_datasource_name=Uniprot/SWISSPROT
+\te.g. perl $0 -bgee=\$(BGEECMD) -oncoMX_ids_file=path/to/file.tsv oncoMX_datasource_name=OncoMX
 \t-bgee      				Bgee connector string
 \t-oncoMX_ids_file      	path to file containing all oncoMX ids
 \t-oncoMX_datasource_name   name of the OncoMX datasource in the Bgee database
-\t-uniProt_datasource_name  name of the UniProt/SWISSPROT datasource in the Bgee database
 \t-debug                	Debug mode, do not insert/update in database
 \n";
     exit 1;

@@ -56,11 +56,13 @@ hogs: genes
 	@$(MV) $@.temp $@
 
 
-$(VERIFICATIONFILE): $(OUTPUT_DIR)go go.obsolete genes sameIdGeneCount hogs
+$(VERIFICATIONFILE): $(OUTPUT_DIR)go go.obsolete genes sameIdGeneCount hogs $(OUTPUT_DIR)insert_oncoMX_XRefs
 	# Check overview for all species
 	@$(MYSQL) -e "SELECT t1.speciesId, COUNT(DISTINCT t1.geneId) AS geneCount, COUNT(t2.geneId) AS synonymCount, COUNT(t2.geneId)/COUNT(DISTINCT t1.geneId) AS synonymsByGene FROM gene AS t1 LEFT OUTER JOIN geneNameSynonym AS t2 ON t1.geneId = t2.geneId GROUP BY speciesId" > $@.temp
 	# Check insertion of genes & generation of geneToTerm
 	@$(MYSQL) -e "SELECT speciesId FROM species ORDER BY speciesId" | grep -v 'speciesId' >species
+	# Check insertion of oncoMX XRefs
+	@$(MYSQL) -e "select COUNT(DISTINCT t1.bgeeGeneId, t1.XRefId) AS "number of oncoMX XRefs" from geneXRef AS t1 INNER JOIN dataSource AS t2 ON t1.datasourceId = t2.datasourceId WHERE t2.dataSourceName = 'OncoMX' > $@.temp
 	@for sp in `cat species`; do \
 		$(MYSQL) -e "SELECT t1.speciesId, t2.geneBioTypeName, COUNT(DISTINCT t1.geneId) AS geneCount, COUNT(t3.geneId) AS xrefCount, COUNT(t3.geneId)/COUNT(DISTINCT t1.geneId) AS XRefsByGene FROM gene AS t1 LEFT OUTER JOIN geneBioType AS t2 ON t1.geneBioTypeId = t2.geneBioTypeId LEFT OUTER JOIN geneXRef AS t3 ON t1.geneId = t3.geneId WHERE t1.speciesId = $$sp GROUP BY t1.speciesId, t2.geneBioTypeName ORDER BY geneCount DESC, xrefCount DESC" >> $@.temp; \
 		$(MYSQL) -e "SELECT t1.speciesId, t2.dataSourceName, COUNT(DISTINCT t1.geneId) AS geneCount, COUNT(t3.geneId) AS xrefCount, COUNT(t3.geneId)/COUNT(DISTINCT t1.geneId) AS XRefsByGene FROM gene AS t1 LEFT OUTER JOIN geneXRef AS t3 ON t1.geneId = t3.geneId LEFT OUTER JOIN dataSource AS t2 ON t2.dataSourceId = t3.dataSourceId WHERE t1.speciesId = $$sp GROUP BY t1.speciesId, t2.dataSourceName ORDER BY geneCount DESC, xrefCount DESC" >> $@.temp; \
@@ -76,18 +78,20 @@ $(VERIFICATIONFILE): $(OUTPUT_DIR)go go.obsolete genes sameIdGeneCount hogs
 	@$(GIT) push
 	
 # Init variables used to insert OncoMX XRefs in the database
-UNIPROT_DATASOURCE := Uniprot/SWISSPROT
-ONCOMX_DATASOURCE := OncoMX
+ONCOMX_DATASOURCE_NAME := OncoMX
 
 $(OUTPUT_DIR)insert_oncoMX_XRefs:
-	@if [ ! -d $(INPUT_DIR) ]; then mkdir -p $(INPUT_DIR); fi
-	@if [ ! -d $(OUTPUT_DIR) ]; then mkdir -p $(OUTPUT_DIR); fi
 	# Download oncoMX ids (uniprot ID and gene name)
 	# TODO : OncoMX is supposed to update the tsv file containing their IDs. Please be sure that the URL used to download this dataset is still up to date
 	@$(WGET) --no-check-certificate 'https://data.oncomx.org/ln2wwwdata/reviewed/biomarker_masterlist.csv' -O $(INPUT_DIR)oncoMX.csv.tmp >>$@.tmp 2>>$@.err && $(MV) $(INPUT_DIR)oncoMX.csv.tmp $(INPUT_DIR)oncoMX.csv 2>/dev/null  || rm -f $(INPUT_DIR)oncoMX.csv.tmp
 	# Insert OncoMX XRefs into the database
-	@perl insert_oncoMX_xrefs.pl -bgee=$(BGEECMD) -oncoMX_ids_file=$(INPUT_DIR)oncoMX.csv -oncoMX_datasource_name=$(ONCOMX_DATASOURCE) -uniProt_datasource_name=$(UNIPROT_DATASOURCE) >>$@.tmp 2>>$@.err
+	@perl insert_oncoMX_xrefs.pl -bgee=$(BGEECMD) -oncoMX_ids_file=$(INPUT_DIR)oncoMX.csv -oncoMX_datasource_name=$(ONCOMX_DATASOURCE_NAME) >>$@.tmp 2>>$@.err
 	@if [[ -s $@.err ]]; then echo -n; else $(RM) $@.err; fi
+	@$(MV) $@.tmp $@
+
+# Rule to run if oncoMX ids changed. Will remove all oncoMX XRefs already present in the Bgee database
+$(OUTPUT_DIR)delete_oncoMX_XRefs:
+	@$(MYSQL) -e "DELETE FROM geneXRef INNER JOIN dataSource ON dataSource.dataSourceId = geneXRef.dataSourceId WHERE dataSource.dataSourceName = $(ONCOMX_DATASOURCE_NAME);" > $@.tmp
 	@$(MV) $@.tmp $@
 
 clean:
