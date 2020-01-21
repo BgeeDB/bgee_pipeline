@@ -24,7 +24,7 @@
 2. [Mapping the libraries](#mapping-the-libraries)
 3. [Validate cell-type and experiment](#validate-cell-type-and-experiment)
 4. [Export global information per cell population ](#export-global-information-per-cell-population )
-5. [Presence and absence calls](#presence-and-absence-calls)
+5. [Presence calls](#presence-calls)
   
 
 ## General information:
@@ -187,7 +187,7 @@ For this we quantify how many times the TPM value is higher then zero for each g
 In order to provide to the user a global information per cell-type, experiment and species we provide a abundance file with sum of est_counts from kallisto for each transcript, followed by the weight mean of effective length across all cells and then the recalculation of TPM and FPKM. The information in the end is reported at gene level.
 This is executed using the script: [1Run/Sum_RawCounts.R](1Run/Sum_RawCounts.R).
 
-### Presence and absence calls
+### Presence calls
 
 In this step of the pipeline to call present genes (note that in single cell RNA-Seq data we don't call absent genes) we use the reference intergenic regions from the RNA-Seq pipeline. This comes from the fact that the density of deconvolute intergenic regions are tendencialy less noisy, as is showed in the graphics below, where the summed by species using just single cell data or by pulling all libraries together, this means RNA-Seq and scRNA-Seq, provide a more high overlap between intergenic and coding regions.
 
