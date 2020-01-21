@@ -161,6 +161,7 @@ CLUSTER_TOPHAT_CMD     := module add UHTS/Aligner/tophat/2.1.1;
 #CLUSTER_FASTQC_CMD     := module add UHTS/Quality_control/fastqc/0.11.7;
 
 
+
 # ===================================
 #  PATHS TO FILES
 # ===================================
@@ -371,7 +372,16 @@ RNASEQ_CLUSTER_PRESENCE_RES    := $(RNASEQ_CLUSTER_SCRATCH)presence_absence_$(DB
 RNASEQ_CLUSTER_LOG             := $(RNASEQ_CLUSTER_ALL_RES)
 RNASEQ_CLUSTER_R_LOG           := $(RNASEQ_CLUSTER_ALL_RES)
 RNASEQ_CLUSTER_REPORTINFO      := $(RNASEQ_CLUSTER_ALL_RES)/reports_info_all_samples.txt
+CLUSTER_REF_INTERGENIC_FOLDER  := $(RNASEQ_VITALIT_SCRATCH)ref_intergenic_$(DBNAME)/
+CLUSTER_OTHER_INTERGENIC_FOLDER	 := $(RNASEQ_VITALIT_SCRATCH)other_intergenic_$(DBNAME)/
 ENCRYPT_PASSWD_FILE            := /home/bbgee/.passw
+
+# RNAseq kallisto index kmer size 
+RNASEQ_KALLISTO_KMER_DEFAULT	:= 31
+RNASEQ_KALLISTO_KMER_SHORT      := 15
+
+# Max proportion of Ns allowed in intergenic sequences
+INTERGENIC_N_PROPORTION         := 0.05
 
 # RNAseq bigbgee paths
 RNASEQ_BIGBGEE_FASTQ       := /opt/gtexfile/FASTQ/
