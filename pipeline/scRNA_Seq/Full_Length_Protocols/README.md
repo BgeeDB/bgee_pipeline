@@ -195,7 +195,7 @@ In this step of the pipeline to call present genes (note that in single cell RNA
 
 * Per cell
 
-In order to call present genes using the intergenic regions the script [1Run/scRNA-Seq_Callpresent.R](1Run/scRNA-Seq_Callpresent.R) should be executed.
+In order to call present genes using the intergenic regions the script [1Run/scRNAseq_Callpresent.R](1Run/scRNAseq_Callpresent.R) should be executed.
 After call expressed genes for each individual cell, the output is exported with information about present genes in each library, as well as, is collected a global information about each library in the file `All_samples.tsv`. In order to summarize the information in a visual way a global plot with the distribution of proportion of coding present is exported, as represented below for each species.
 We should have in consideration, that because of high propotion of zeros in single cell RNA-Seq data, exist a proportional effect in the proportion of protein coding genes called present.
 
