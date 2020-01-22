@@ -185,7 +185,7 @@ For this we quantify how many times the TPM value is higher then zero for each g
 * Sum of raw counts
 
 In order to provide to the user a global information per cell-type, experiment and species we provide a abundance file with sum of est_counts from kallisto for each transcript, followed by the weight mean of effective length across all cells and then the recalculation of TPM and FPKM. The information in the end is reported at gene level.
-This is executed using the script: [1Run/Sum_RawCounts.R](1Run/Sum_RawCounts.R).
+This is executed using the script: [1Run/Sum_RawCounts_cellPopulation.R](1Run/Sum_RawCounts_cellPopulation.R).
 
 ### Presence calls
 
