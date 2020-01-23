@@ -210,8 +210,8 @@ The confidente approach at population level allow us to call expressed genes bas
 
 Based on this approach we are able to call "high confident" expressed genes at population level (all genes at the right of the threshold ratio cut-off) and "low confident" expressed genes (all genes between the density cut-off and threshold ratio cut-off).
 
-At the population level a `Sum_Calls file` is exported for each cell-type population, as well as, the plot with cut-offs.
-In a global way a `Stats_SumFile.tsv` is exported as well as the plot about all cells and species present in the annotation file, as represented below.
+At the population level a `Sum_Calls` file is exported for each cell-type population, as well as, the graphic plot with referent cut-offs.
+In order to summarize all information from all different cell types, experiments and species a `Stats_SumFile.tsv` file is exported collecting all important information, as well as, the graphic plots of all cells and species present in the annotation file, as represented below.
 
 
 ![Boxplot](img/SumCalls_allinfo.png)
