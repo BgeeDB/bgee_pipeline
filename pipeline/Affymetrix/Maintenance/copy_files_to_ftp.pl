@@ -8,7 +8,7 @@
 # that the username is bbgee, and that the files must be put in /db/ftp/pub/databases/Bgee/affymetrix_data/
 #
 #FIXME to redo completely: too many hard coded paths and mysql connection info
-#FIXME FTP is now on ftpbgee and files are on bigbgee !!!
+#FIXME FTP is now on ftpbgee and files are on sensitive cluster !!!
 #
 #############################################################
 

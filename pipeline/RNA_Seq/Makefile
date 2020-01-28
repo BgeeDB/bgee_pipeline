@@ -39,7 +39,7 @@ commit_rna_seq_sample_info: create_rna_seq_sample_info $(RNASEQ_SAMPINFO_FILEPAT
 	@$(GIT) add $(RNASEQ_SAMPINFO_FILEPATH)
 	@$(GIT) commit -m 'Update $(RNASEQ_SAMPINFO_FILEPATH) for $(DBNAME)' $(RNASEQ_SAMPINFO_FILEPATH)
 	@$(GIT) push
-	@echo -e "\t$(RNASEQ_SAMPINFO_FILEPATH) is ready, you can go to bigbgee to download new SRA files with get_SRA.pl as *admin* user\n\tDo a 'git pull' before starting\n"
+	@echo -e "\t$(RNASEQ_SAMPINFO_FILEPATH) is ready, you can go to regular cluster to download new SRA files with get_SRA.pl as *admin* user\n\tDo a 'git pull' before starting\n"
 	@$(MV) $@.tmp $@
 
 send_files_to_cluster: create_rna_seq_sample_info $(RNASEQ_LIB_FILEPATH_FULL) $(RNASEQ_EXPERIMENT_FILEPATH_FULL) $(RNASEQ_LIB_CHECKS_FILEPATH)
@@ -54,13 +54,15 @@ send_files_to_cluster: create_rna_seq_sample_info $(RNASEQ_LIB_FILEPATH_FULL) $(
 	@touch $@
 
 ##############################################################################################
-# Bigbgee downloading step
-get_sra: create_rna_seq_sample_info
+# RNASeq library download
+#NOTE to be done on regular cluster, with network access
+get_sra: create_rna_seq_sample_info $(RNASEQ_ALREADY_DOWNLOADED)
 	# Maybe write an echo to describe how to run this step
 	@$(GIT) pull
 	@perl 0Before/get_SRA.pl $(RNASEQ_SAMPINFO_FILEPATH)
 	@touch $@
 
+#TODO Add a step to tranfer folders to sensitive cluster!
 check_sra: get_sra
 	@echo -e "\tRe-run 0Before/get_SRA.pl to be sure all SRA are downloaded and FASTQ prepared\n"
 	@scp  $<  $(CLUSTERLOGIN)@$(CLUSTERHOST):$(RNASEQ_CLUSTER_READONLY)GIT/pipeline/RNA_Seq/
@@ -175,7 +177,7 @@ prepare_indexed_transcriptome: get_genome prepare_GTF
 #NOTE Better to run this step in screen or with nohup as submission is done X jobs per X jobs to not overload the system (and not decrease our user priority)!
 run_pipeline: prepare_indexed_transcriptome $(RNASEQ_SAMPINFO_FILEPATH)
 	# Running the pipeline
-	@perl $(RNASEQ_CLUSTER_SCRIPTS)$(RNASEQPATH)1Run/slurm_scheduler.pl -sample_info_file=$(RNASEQ_CLUSTER_SCRIPTS)RNA_Seq/$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=$(RNASEQ_CLUSTER_LOG) -index_folder=$(RNASEQ_CLUSTER_GTF) -fastq_folder=$(RNASEQ_BIGBGEE_FASTQ) -kallisto_out_folder=$(RNASEQ_CLUSTER_ALL_RES) -ens_release=$(ENSRELEASE) -ens_metazoa_release=$(ENSMETAZOARELEASE) -data_host=$(DATAHOST) -data_login=$(DATALOGIN) -enc_passwd_file=$(ENCRYPT_PASSWD_FILE) -cluster_kallisto_cmd="$(CLUSTER_KALLISTO_CMD)" -cluster_R_cmd="$(CLUSTER_R_CMD)" >$@.tmp 2>&1
+	@perl $(RNASEQ_CLUSTER_SCRIPTS)$(RNASEQPATH)1Run/slurm_scheduler.pl -sample_info_file=$(RNASEQ_CLUSTER_SCRIPTS)RNA_Seq/$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=$(RNASEQ_CLUSTER_LOG) -index_folder=$(RNASEQ_CLUSTER_GTF) -fastq_folder=$(RNASEQ_SENSITIVE_FASTQ) -kallisto_out_folder=$(RNASEQ_CLUSTER_ALL_RES) -ens_release=$(ENSRELEASE) -ens_metazoa_release=$(ENSMETAZOARELEASE) -data_host=$(DATAHOST) -data_login=$(DATALOGIN) -enc_passwd_file=$(ENCRYPT_PASSWD_FILE) -cluster_kallisto_cmd="$(CLUSTER_KALLISTO_CMD)" -cluster_R_cmd="$(CLUSTER_R_CMD)" >$@.tmp 2>&1
 	@echo "TODO: At the end it is a good idea to relaunch the run_pipeline step to be sure everything was run!"
 	@$(MV) $@.tmp $@
 
@@ -255,7 +257,7 @@ cluster2: save_and_send_results_back
 
 backup: $(RNASEQALLRES)
 	# Rsync files for backup by '$(DATALOGIN)' user on '$(DATAHOST)' (see wiki for password)
-	@echo -e "\t\e[1m\e[37m\e[41mRsync files in '$(RNASEQALLRES)' to bigbgee machine!\e[m\n"
+	@echo -e "\t\e[1m\e[37m\e[41mRsync files in '$(RNASEQALLRES)' to backup (NAS) storage!\e[m\n"
 	@ssh $(DATALOGIN)@$(DATAHOST) mkdir -p $(DATAPATH)/rna_seq/all_results_$(DBNAME)/
 	@rsync -av --del -f "- /lost+found" --exclude=.svn --exclude=.git $(RNASEQALLRES)  $(DATALOGIN)@$(DATAHOST):$(DATAPATH)/rna_seq/all_results_$(DBNAME)/  >   $@.tmp
 	@$(MV) $@.tmp $@

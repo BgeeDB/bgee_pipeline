@@ -43,7 +43,7 @@ my %opts = ('library_id=s'           => \$library_id,
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $library_id eq '' || $sample_info_file eq '' || $index_folder eq '' || $fastq_folder eq '' || $kallisto_out_folder eq '' || $output_log_folder eq '' || $ens_release eq '' || $ens_metazoa_release eq '' || $data_host eq '' || $data_login eq '' || $enc_passwd_file eq '' || $cluster_kallisto_cmd eq '' || $cluster_R_cmd eq '' ){
     print "\n\tInvalid or missing argument:
-\te.g. $0 -library_id=... -sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -index_folder=\$(RNASEQ_CLUSTER_GTF)  -fastq_folder=\$(RNASEQ_BIGBGEE_FASTQ) -kallisto_out_folder=\$(RNASEQ_CLUSTER_ALL_RES) -ens_release=\$(ENSRELEASE) -ens_metazoa_release=\$(ENSMETAZOARELEASE) -data_host=\$(DATAHOST) -data_login=\$(DATA_LOGIN) -enc_passwd_file=\$(ENCRYPT_PASSWD_FILE) -cluster_kallisto_cmd=\$(CLUSTER_KALLISTO_CMD) $cluster_R_cmd=\$(CLUSTER_R_CMD)
+\te.g. $0 -library_id=... -sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -index_folder=\$(RNASEQ_CLUSTER_GTF)  -fastq_folder=\$(RNASEQ_SENSITIVE_FASTQ) -kallisto_out_folder=\$(RNASEQ_CLUSTER_ALL_RES) -ens_release=\$(ENSRELEASE) -ens_metazoa_release=\$(ENSMETAZOARELEASE) -data_host=\$(DATAHOST) -data_login=\$(DATA_LOGIN) -enc_passwd_file=\$(ENCRYPT_PASSWD_FILE) -cluster_kallisto_cmd=\$(CLUSTER_KALLISTO_CMD) $cluster_R_cmd=\$(CLUSTER_R_CMD)
 \t-library_id=s           Library to process
 \t-sample_info_file=s     TSV with information on species and runs for each library
 \t-exclude_sample_file=s  rna_seq_sample_excluded.txt
@@ -53,8 +53,8 @@ if ( !$test_options || $library_id eq '' || $sample_info_file eq '' || $index_fo
 \t-output_log_folder=s    Folder where R output is written
 \t-ens_release=s          Ensembl release,
 \t-ens_metazoa_release=s  Ensembl Metazoa release,
-\t-data_host=s            Bigbgee machine with RNA-seq fastq files
-\t-data_login=s           Login for bigbgee
+\t-data_host=s            Sensitive machine with RNA-seq fastq files
+\t-data_login=s           Login for sensitive cluster
 \t-enc_passwd_file=s      File with password necessary to decrypt the GTEx data
 \t-cluster_kallisto_cmd=s Command to load kallisto module on cluster
 \t-cluster_R_cmd=s        Command to load R module on cluster
@@ -320,7 +320,7 @@ for my $run ( keys %number_reads ){
 print {$REPORT2} "\tTotal number reads\t", $total_reads_fastp, "\n";
 close $REPORT2;
 
-## TODO For each SRR, we should also store a file on bigbgee with the number of lines (wc -l). On this side, we can verify it is consistent with the number of reads in FastP reports (and number of reads processed by Kalisto = sum of all runs $total_reads_fastp too).
+## TODO For each SRR, we should also store a file with the number of lines (wc -l). On this side, we can verify it is consistent with the number of reads in FastP reports (and number of reads processed by Kalisto = sum of all runs $total_reads_fastp too).
 
 
 #############################################################################################
@@ -424,7 +424,7 @@ if ( ( -s $kallisto_out_folder.'/abundance.tsv' ) && ( -s $kallisto_out_folder.'
         if ( $total_reads_kallisto != $total_reads_fastp ){
             warn "\nProblem: The number of reads processed by FastP and Kallisto differs. Please check for a problem [$library_id]\n";
         }
-        ## TODO add step to check that the number of reads is also consistent with the original fastq files on bigbgee (see TODO above)
+        ## TODO add step to check that the number of reads is also consistent with the original fastq files on storage (see TODO above)
     }
     if ( $aligned < 1_000_000 ){
         warn "\nProblem: Less than 1,000,000 reads were pseudo-aligned by Kallisto, please check for a problem [$library_id]\n";

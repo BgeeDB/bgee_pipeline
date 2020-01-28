@@ -145,8 +145,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
     tail -n+1 */*.report > all_reports.txt.backup
   ```
   * Potential problems
-    * Problem with `bigbgee` mounting
-    * FastQC bug or streaming problem. Beware, these libraries can move to further steps and generate a `DONE.txt` (see below).
+    * FastP bug. Beware, these libraries can move to further steps and generate a `DONE.txt` (see below).
     * Kallisto bug... Streaming too slow, streaming interrupted, sometimes everything is just fine but Kallisto bugs after reporting output... Beware, these libraries can move to further steps and generate a `DONE.txt`. Very important to check if number of reads processed corresponds to number of reads in FASTQ files (see below).
     * How to track these bugs:
     ```
@@ -230,8 +229,7 @@ Gene expression ranks allow to identify the most functionally-relevant condition
       * Tar and compress all data and copy them to `/data/` drive (for Bgee_v15 the whole $RNASEQ_CLUSTER_ALL_RES has been backuped on nas.unil.ch!)
 
 ## Mapping the libraries: TODOs
-  * Should we increase the number of parallel jobs (10) to a higher number (20 for example)? Maybe need to change SSH configuration on `bigbgee` to open more than 10 SSH ports. Need also to consider simultaneous accesses to Kallisto index files... Check machine status during run.
-  * Transfer FastQC reports to `bigbgee`. Add a checking step to [1Run/rna_seq_mapping_and_analysis.pl](1Run/rna_seq_mapping_and_analysis.pl) not to rerun it.
+  * Should we increase the number of parallel jobs (10) to a higher number (20 for example)? Need also to consider simultaneous accesses to Kallisto index files... Check machine status during run.
   * Create a file, with number of lines for each FASTQ file. Add a checking step to [1Run/rna_seq_mapping_and_analysis.pl](1Run/rna_seq_mapping_and_analysis.pl) to check if this is consistent with number of reads in FastQC reports and Kallisto input reads (# reads in fastq = 4 * #number of reads).
   * Modify the download scripts, to use ENA instead of SRA when possible: FASTQ files are available directly there, so this would save us a lot of time!
   * Add `check_pipeline` to Makefile to be sure to check many potential problems automatically
@@ -466,7 +464,7 @@ differentialExpression
     * remove lines from `rnaSeqLibrary` with matching rnaSeqLibraryId
     * Search for experiments with no remaining libraries and delete them, e.g. `SELECT t1.* FROM rnaSeqExperiment AS t1 LEFT OUTER JOIN rnaSeqLibrary AS t2 ON t1.rnaSeqExperimentId = t2.rnaSeqExperimentId WHERE t2.rnaSeqExperimentId IS NULL;`
     * Add the rnaSeqLibraryIds to the table rnaSeqLibraryDiscarded
-  
+
 * Do NOT dump the table `rnaSeqExperimentExpression`
 
 * clean table `cond` and `expression` to remove lines related only to RNA-Seq data

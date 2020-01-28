@@ -37,7 +37,7 @@ my %opts = ('sample_info_file=s'     => \$sample_info_file,
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $sample_info_file eq '' || $output_log_folder eq '' || $index_folder eq '' || $fastq_folder eq '' || $kallisto_out_folder eq '' || $ens_release eq '' || $ens_metazoa_release eq '' || $data_host eq '' || $data_login eq '' || $enc_passwd_file eq '' || $cluster_kallisto_cmd eq '' || $cluster_R_cmd eq ''){
     print "\n\tInvalid or missing argument:
-\te.g. $0 -sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=\$(RNASEQ_CLUSTER_LOG) -index_folder=\$(RNASEQ_CLUSTER_GTF)  -fastq_folder=\$(RNASEQ_BIGBGEE_FASTQ) -kallisto_out_folder=\$(RNASEQ_CLUSTER_ALL_RES) -ens_release=\$(ENSRELEASE) -ens_metazoa_release=\$(ENSMETAZOARELEASE) -data_host=\$(DATAHOST) -data_login=\$(DATA_LOGIN) -enc_passwd_file=\$(ENCRYPT_PASSWD_FILE) -cluster_kallisto_cmd=\$(CLUSTER_KALLISTO_CMD) $cluster_R_cmd=\$(CLUSTER_R_CMD)
+\te.g. $0 -sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=\$(RNASEQ_CLUSTER_LOG) -index_folder=\$(RNASEQ_CLUSTER_GTF)  -fastq_folder=\$(RNASEQ_SENSITIVE_FASTQ) -kallisto_out_folder=\$(RNASEQ_CLUSTER_ALL_RES) -ens_release=\$(ENSRELEASE) -ens_metazoa_release=\$(ENSMETAZOARELEASE) -data_host=\$(DATAHOST) -data_login=\$(DATA_LOGIN) -enc_passwd_file=\$(ENCRYPT_PASSWD_FILE) -cluster_kallisto_cmd=\$(CLUSTER_KALLISTO_CMD) $cluster_R_cmd=\$(CLUSTER_R_CMD)
 \t-sample_info_file       rna_seq_sample_info.txt
 \t-exclude_sample_file    rna_seq_sample_excluded.txt
 \t-output_log_folder      folder for .out and .err files (produced by queuing system), and .Rout files produced by R
@@ -46,8 +46,8 @@ if ( !$test_options || $sample_info_file eq '' || $output_log_folder eq '' || $i
 \t-kallisto_out_folder=s  Folder with Kallisto output and results
 \t-ens_release=s          Ensembl release
 \t-ens_metazoa_release=s  Ensembl Metazoa release
-\t-data_host=s            Bigbgee machine with RNA-seq fastq files
-\t-data_login=s           Login for bigbgee
+\t-data_host=s            Sensitive machine with RNA-seq fastq files
+\t-data_login=s           Login for sensitive cluster
 \t-enc_passwd_file=s      File with password necessary to decrypt the GTEx data
 \t-cluster_kallisto_cmd=s Command to load kallisto module on cluster
 \t-cluster_R_cmd=s        Command to load R module on cluster
@@ -74,11 +74,8 @@ my $user_email     = 'bgee@sib.swiss'; # for email notification
 my $account        = 'mrobinso_bgee';
 my $queue          = 'ax-long';
 
-# my $jobs_during_day   = 250; # Number of simultaneous jobs during working days
-# my $jobs_during_night = 300; # Number of simultaneous jobs during week-end & night
-# But this is a lot too much for the IO on bigbgee by ssh. Let's limit for now
-my $jobs_during_day   = 10;
-my $jobs_during_night = 10;
+my $jobs_during_day   = 100; # Number of simultaneous jobs during working days
+my $jobs_during_night = 120; # Number of simultaneous jobs during week-end & night
 
 # Sample to exclude if any
 my %manually_excluded;

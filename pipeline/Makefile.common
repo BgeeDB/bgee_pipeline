@@ -34,10 +34,10 @@ CLUSTERHOST  := axiom-front1.unil.ch
 # PIPELOGIN and PIPEPASSWD defined in Makefile.Config
 PIPEHOST   := devbioinfo.unil.ch
 
-# Machine used for RNA-seq/Affymetrix data storage (backup)
+# Machine used for RNA-seq/Affymetrix data transfer
 # DATALOGIN and DATAPASSWD defined in Makefile.Config
-DATAHOST   := bigbgee.unil.ch
-DATAPATH   := /opt/gtexfile/PIPELINE_RESULTS_STORAGE
+DATAHOST   := jura0.sib.swiss
+DATAPATH   := /data
 
 # Ensembl
 ENSRELEASE             := 84
@@ -356,6 +356,7 @@ RNASEQ_LIB_CHECKS_FILEPATH         := $(SOURCE_FILES_DIR)$(RNASEQPATH)RNASeqLibr
 RNASEQ_SAMPINFO_FILEPATH           := $(GENERATED_FILES_DIR)$(RNASEQPATH)rna_seq_sample_info.txt
 RNASEQ_SAMPEXCLUDED_FILEPATH       := $(GENERATED_FILES_DIR)$(RNASEQPATH)rna_seq_sample_excluded.txt
 RNASEQ_LENGTH_INFO_FILEPATH        := $(GENERATED_FILES_DIR)$(RNASEQPATH)rna_seq_length_info.txt
+RNASEQ_ALREADY_DOWNLOADED          := $(GENERATED_FILES_DIR)$(RNASEQPATH)rna_seq_sample_downloaded.txt
 
 # RNAseq cluster paths
 # TODO clean-up and remove unused ones
@@ -373,8 +374,8 @@ RNASEQ_CLUSTER_R_LOG           := $(RNASEQ_CLUSTER_ALL_RES)
 RNASEQ_CLUSTER_REPORTINFO      := $(RNASEQ_CLUSTER_ALL_RES)/reports_info_all_samples.txt
 ENCRYPT_PASSWD_FILE            := /home/bbgee/.passw
 
-# RNAseq bigbgee paths
-RNASEQ_BIGBGEE_FASTQ       := /opt/gtexfile/FASTQ/
+# RNAseq sensitive cluster path
+RNASEQ_SENSITIVE_FASTQ       := /data/unil/dee/dee_robi/FASTQ
 
 # RNAseq data path
 RNASEQDATAPATH             := /var/bgee/extra/pipeline/rna_seq/
