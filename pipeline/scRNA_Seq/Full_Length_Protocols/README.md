@@ -49,7 +49,7 @@ The protocols selected at present are only full-length protocols, mainly `SMART-
 
 #### Verification: metadata from source and quantity of cells
 
-After the annotation process, where each library corresponds to an individual cell, we verify if the Bgee annotations are in concordance with repository metadata from where we download the data. 
+After the annotation process, where each library corresponds to an individual cell, we verify if the Bgee annotations are in concordance with repository metadata from where we download the data. If they are not, we save this information in metadata_notMatch.txt and do not further use these libraries.
 In the next step we validate experiments based on a minimum quantity of cells (100) per cell-type in each experiment and species.
 
 #### Data download
@@ -73,7 +73,7 @@ For each independent library, we do:
 * Check for presence of single-end FASTQ read file, or of the two FASTQ files for paired-end runs.
 * Estimation of read length, by using the mean of all reads of FASTQ file determined by `FASTP`, in order to check which K-mer length should be applied.
 * If the reads are less than 31 bp they are too short for Kallisto indexing with default k-mer length, and the k-mer length is set to 15 nucleotides. 
-* A FASTP file is generated for each FASTQ file to check for potential problems; it also provide stats information about possible trimmed samples.
+* A FASTP file is generated for each FASTQ file to check for potential problems; it also provide information about possible trimmed samples.
 
 #### Pseudo-alignment
 
@@ -101,7 +101,7 @@ For calling genes present (see `Expression Calls`), we compute not only for geni
 
 * Sum calls
 
-Computation of the ratio for each gene that belongs to the same cell-type population per experiment and species.
+Computation of the ratio for each gene that belongs to the same cell-type population per experiment and species. At this step we use simple TPM>0 calls, more elaborate calls are computed later in the pipeline.
 
 ![Boxplot](img/CodeCogsEqn.png)
 
