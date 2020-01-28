@@ -9,8 +9,8 @@
 #SBATCH --mem=10G
 #SBATCH --time=10-00:00:00
 
-#SBATCH --output=/home/smoretti/QC_on_encrypted_FASTQ.out
-#SBATCH --error=/home/smoretti/QC_on_encrypted_FASTQ.err
+#SBATCH --output=/users/smoretti/bgee_pipeline.git/pipeline/RNA_Seq/get_sra.out
+#SBATCH --error=/users/smoretti/bgee_pipeline.git/pipeline/RNA_Seq/get_sra.err
 #SBATCH --export=NONE
 #SBATCH --job-name=Download_new_RNASeq_lib
 
@@ -23,9 +23,9 @@ module add UHTS/Quality_control/fastp/0.19.5
 module add R/3.6.1
 
 
-export SCRIPT_PATH=...
-export ANNOTATION_FILE=...
-export DONE_FILE=...
+export SCRIPT_PATH=/users/smoretti/bgee_pipeline.git/pipeline/RNA_Seq
+export ANNOTATION_FILE=../../generated_files/RNA_Seq/rna_seq_sample_info.txt
+export DONE_FILE=../../generated_files/RNA_Seq/rna_seq_sample_downloaded.txt
 
 perl $SCRIPT_PATH/0Before/get_SRA.pl  $SCRIPT_PATH/$ANNOTATION_FILE  $SCRIPT_PATH/$DONE_FILE
 

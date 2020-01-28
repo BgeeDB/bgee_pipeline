@@ -42,7 +42,7 @@ commit_rna_seq_sample_info: create_rna_seq_sample_info $(RNASEQ_SAMPINFO_FILEPAT
 	@echo -e "\t$(RNASEQ_SAMPINFO_FILEPATH) is ready, you can go to regular cluster to download new SRA files with get_SRA.pl as *admin* user\n\tDo a 'git pull' before starting\n"
 	@$(MV) $@.tmp $@
 
-send_files_to_cluster: create_rna_seq_sample_info $(RNASEQ_LIB_FILEPATH_FULL) $(RNASEQ_EXPERIMENT_FILEPATH_FULL) $(RNASEQ_LIB_CHECKS_FILEPATH)
+send_files_to_cluster: commit_rna_seq_sample_info $(RNASEQ_LIB_FILEPATH_FULL) $(RNASEQ_EXPERIMENT_FILEPATH_FULL) $(RNASEQ_LIB_CHECKS_FILEPATH)
 	# Send not-versionned annotation files to cluster  with login/password $(CLUSTERLOGIN)/$(CLUSTERPASSW)
 	@scp get_annot \
 		 check_annot \
@@ -56,10 +56,9 @@ send_files_to_cluster: create_rna_seq_sample_info $(RNASEQ_LIB_FILEPATH_FULL) $(
 ##############################################################################################
 # RNASeq library download
 #NOTE to be done on regular cluster, with network access
-get_sra: create_rna_seq_sample_info $(RNASEQ_ALREADY_DOWNLOADED)
-	# Maybe write an echo to describe how to run this step
+get_sra: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_ALREADY_DOWNLOADED)
 	@$(GIT) pull
-	@sed -i 's@\(BASE *= \).*$@\1"$(RNASEQ_DOWNLOAD_LIB_DIR)";@'                0Before/get_SRA.pl
+	@sed -i 's@\(BASE *= \).*@\1"$(RNASEQ_DOWNLOAD_LIB_DIR)";@'                 0Before/get_SRA.pl
 	@sed -i 's@--output=.*@--output=${PWD}/get_sra.out@'                        0Before/download_lib.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/get_sra.err@'                          0Before/download_lib.sbatch
 	@sed -i 's@SCRIPT_PATH=.*@SCRIPT_PATH=${PWD}@'                              0Before/download_lib.sbatch

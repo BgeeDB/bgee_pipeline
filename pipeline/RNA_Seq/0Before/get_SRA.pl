@@ -13,7 +13,7 @@ my $downloaded_lib  = $ARGV[1]  // die "\n\t$0 <RNASeq library annotation file (
 my $SRATK_PATH         = $ENV{'SRATK_PATH'};
 my $ASPERA_CONNECT_DIR = $ENV{'ASPERA_CONNECT_DIR'};
 
-my $BASE               = '/scratch/wally/FAC/FBM/DEE/mrobinso/bgee'; # == project's workspace directory
+my $BASE               = "/scratch/wally/FAC/FBM/DEE/mrobinso/bgee";
 my $SRA_PATH           = $BASE.'/sra';
 my $FASTQ_PATH         = $BASE.'/FASTQ/RNAseq';
 
