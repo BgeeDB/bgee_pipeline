@@ -60,12 +60,12 @@ get_sra: create_rna_seq_sample_info $(RNASEQ_ALREADY_DOWNLOADED)
 	# Maybe write an echo to describe how to run this step
 	@$(GIT) pull
 	@sed -i 's@\(BASE *= \).*$@\1"$(RNASEQ_DOWNLOAD_LIB_DIR)";@'                0Before/get_SRA.pl
-	@sed -i 's@--output=.*@--output=${PWD}/get_sra.out@'                        0Before/download_lib
-	@sed -i 's@--error=.*@--error=${PWD}/get_sra.err@'                          0Before/download_lib
-	@sed -i 's@SCRIPT_PATH=.*@SCRIPT_PATH=${PWD}@'                              0Before/download_lib
-	@sed -i 's@ANNOTATION_FILE=.*@ANNOTATION_FILE=$(RNASEQ_SAMPINFO_FILEPATH)@' 0Before/download_lib
-	@sed -i 's@DONE_FILE=.*@DONE_FILE=$(RNASEQ_ALREADY_DOWNLOADED)@'            0Before/download_lib
-	@sbatch --test-only 0Before/download_lib
+	@sed -i 's@--output=.*@--output=${PWD}/get_sra.out@'                        0Before/download_lib.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/get_sra.err@'                          0Before/download_lib.sbatch
+	@sed -i 's@SCRIPT_PATH=.*@SCRIPT_PATH=${PWD}@'                              0Before/download_lib.sbatch
+	@sed -i 's@ANNOTATION_FILE=.*@ANNOTATION_FILE=$(RNASEQ_SAMPINFO_FILEPATH)@' 0Before/download_lib.sbatch
+	@sed -i 's@DONE_FILE=.*@DONE_FILE=$(RNASEQ_ALREADY_DOWNLOADED)@'            0Before/download_lib.sbatch
+	@sbatch --test-only 0Before/download_lib.sbatch
 	@touch $@
 
 list_new_downloads: get_sra
