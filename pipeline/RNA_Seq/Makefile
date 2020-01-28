@@ -67,7 +67,7 @@ get_sra: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_ALREADY_DOWNLOADED)
 	@sbatch 0Before/download_lib.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo '!!! Rerun this step several times to complete downloads !!!'
-	@touch $@
+	@$(MV) $@.out $@
 
 list_new_downloads: get_sra
 	@find $(RNASEQ_DOWNLOAD_LIB_DIR) -type f -name \*.fastq.gz\* | xargs dirname | sed -e 's@^.*/@@' | sort -u > /tmp/new_downloads
