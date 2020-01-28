@@ -31,7 +31,7 @@
 
 ### Introduction
 
-scRNA-Seq data are used to produce:
+scRNA-Seq data are used in Bgee to produce:
 
 * baseline calls of presence of expression
 * ranking of these baseline calls to identify the most important conditions with expression, for each gene
@@ -41,34 +41,28 @@ These results are then integrated in a consistent manner with all other results 
 
 ### Step 1: Data annotation
 
-For scRNA-Seq we manualy annotated healthy WT data using information from GEO or papers, or provided by the Model Organism Database WormBase.
-All the data treated are present in SRA repository. 
-The protocols selected are full-length protocols, mainly `SMART-Seq`, `SMART-Seq2` and `SMARTer Ultra Low`.
-
-The annotation of each cell-type is done by using the scientific information provided by the previous sources.
-
+For scRNA-Seq we manualy annotated healthy WT data using information from GEO or from papers, or provided by WormBase. The annotation of each cell-type is done by using the scientific information provided by these sources.
+All the data treated are present in the SRA repository. 
+The protocols selected at present are only full-length protocols, mainly `SMART-Seq`, `SMART-Seq2` and `SMARTer Ultra Low`.
 
 ### Step 2: Verification, data download and preparation of info file
 
 #### Verification: metadata from source and quantity of cells
 
-After the annotation process, were each library correspond to an individual cell, we verify if the Bgee annotation are in concordance with repository metadata from where we download the data. 
-In the next step we validate experiments based on a minimum quantity of cells per cell-type in each experiment and species.
-
-We retrieve experiments to the next step of the pipeline if they have at least 100 cells per cell-type.
+After the annotation process, where each library corresponds to an individual cell, we verify if the Bgee annotations are in concordance with repository metadata from where we download the data. 
+In the next step we validate experiments based on a minimum quantity of cells (100) per cell-type in each experiment and species.
 
 #### Data download
 
-The download of the data is done after cleaning the experiments that not match the requirement in the previous step.
-This allow us to save computation time in the dowloading process.
-The cleaning data annotated are downloaded from SRA using wget function in R. All files extracted are FASTQ files.
+The download of the data is done only for the experiments that match the requirements in the previous steps.
+These data are downloaded from SRA using the wget function in R. All files extracted are FASTQ files.
 
-GTF annotation files and genome sequence fasta files are retrieved from Ensembl and Ensembl metazoa for all species included in Bgee (see RNA-Seq pipeline). 
+GTF annotation files and genome sequence fasta files are retrieved from Ensembl and Ensembl metazoa for all species included in Bgee (see `RNA-Seq pipeline`). 
 This information is used to identify sequences of genic regions, exonic regions, and intergenic regions, as described in the `RNA-Seq pipeline`. It is also used to generate indexed transcriptome files for all species in Bgee, using the `TopHat` and `Kallisto` software.
 
-#### Preparation of informative file
+#### Preparation of information file
 
-An informative file is created in the following step of the pipeline by collecting information from the manual annotation and from the first quality control step using `FASTP` software for each FASTQ file that correspond to each individual cell. 
+An information file is created by collecting information from the manual annotation and from the first quality control step using `FASTP` software for each FASTQ file, which correspond to each individual cell. 
 
 ### Step 3: scRNA-Seq library analyses
 
@@ -76,11 +70,10 @@ For each independent library, we do:
 
 #### Data preparation
 
-* For each cell/library, check for presence of single-end FASTQ read file, or of the two FASTQ files for paired-end runs.
-* For each cell/library, estimation of read length, by using the mean of all reads of FASTQ file determined by `FASTP`, in order to check which K-mer length should be applied.
-* If the reads are too short, less 31 bp, for Kallisto indexing with default k-mer length, the k-mer length is set to 15 nucleotides. 
-* A FASTP file is generated for each FASTQ file, this means each individual cell, to check for potential problems.
-* FASTP file also provide stats information about possible trimmed sample.
+* Check for presence of single-end FASTQ read file, or of the two FASTQ files for paired-end runs.
+* Estimation of read length, by using the mean of all reads of FASTQ file determined by `FASTP`, in order to check which K-mer length should be applied.
+* If the reads are less than 31 bp they are too short for Kallisto indexing with default k-mer length, and the k-mer length is set to 15 nucleotides. 
+* A FASTP file is generated for each FASTQ file to check for potential problems; it also provide stats information about possible trimmed samples.
 
 #### Pseudo-alignment
 
@@ -88,20 +81,20 @@ The following parameters are used:
 
 * No bootstrapping
 * K-mer length for indexing: see `RNA-Seq pipeline`
-* For single-end libraries, it is needed to provide the fragment length, we use by default: 180 bp and a value of 20bp for sd.
-* For paired-end libraries, Kallisto can estimate the fragment length and sd, so it is not needed to provide this information.
+* For single-end libraries, we provide as default fragment length 180 bp, with a sd of 20bp.
+* For paired-end libraries, Kallisto can estimate the fragment length and sd, so we do not provide this information.
 
 #### Quality control for cell population
 
-* For each cell-type population we compute the ratio of how many times a gene is detected across the number of cells (TPM > 0).
-* Verify if the cell-type population follow a bimodal distribution.
+* For each cell-type population we compute the ratio of how many times a gene is detected across the number of cells with a simple threshold (TPM > 0).
+* Verify if the cell-type population follow a bimodal distribution, i.e. most genes are either present in almost all cells, or absent in almost all cells.
 
 #### Result processing at individual cell
 
 From the Kallisto output, for each genomic feature, counts of pseudo-aligned reads are retrieved.
 The pseudo-aligned read counts, and the genomic feature effective lengths, are used to compute TPM and FPKM values. 
 We sum at the gene level the counts of pseudo-aligned reads computed at the transcript level by Kallisto.
-The values provided in Bgee are computed on the basis of genic regions only, but we also compute this information considering other genomic features,this means for calling genes as present.
+For calling genes present (see `Expression Calls`), we compute not only for genic regions, but also for intergenic regions.
 
 
 #### Result processing at cell population
@@ -116,8 +109,8 @@ Bgee also provide information about the cut-off values applied to call genes as 
 
 * Sum raw counts
 
-From the Kallisto output, for each cell-type population that belongs to same experiment and species the counts of pseudo-aligned reads are retrieved and summed, the effective length are recalculated based on the weigth mean.
-The pseudo-aligned summed read counts, and the genomic feature weigthed mean effective lengths, are used to compute TPM and FPKM values. 
+From the Kallisto output, for each cell-type population that belongs to same experiment and species the counts of pseudo-aligned reads are retrieved and summed, and the effective length are recalculated based on the weighted mean.
+The pseudo-aligned summed read counts, and the genomic feature weighted mean effective lengths, are used to compute TPM and FPKM values. 
 We sum at the gene level the counts of pseudo-aligned reads computed at the transcript level by Kallisto.
 
 #### Post-processing: expression calls and rank computation
@@ -131,13 +124,11 @@ How we define this set of intergenic regions is described in the developer docum
 
 * Per cell population
 
-To define the call of expression of a gene in a cell population as "present", we compute the density ratio.
-Based on the densoty ratio the gene can be classified as present with high confidence or low confidence of expression.
-The classification is based on 2 main cut-offs: proportion (proportion intergenic/proportion coding = 0.05) and density (density ratio where the density of intergenic region is low then the density of protein coding).
+To define the call of expression of a gene in a cell population as "present", we compute the density ratio. We compute 2 cut-offs: "proportion" (proportion intergenic/proportion coding = 0.05) and "density" (density ratio where the density of intergenic region is lower then the density of protein coding). A gene is classified as present with high confidence if its expression is above the "proportion" cut-off, and with low confidence if it is below that but above the "density" cut-off. SARA PLEASE CHECK THIS.
 
 ##### Rank computation
 
-To calculate the ranks we used the TPM values at cell population level (output file from the Sum Raw Counts).
+To calculate the ranks of expression of genes per cell type we use the TPM values at cell population level (output file from the Sum Raw Counts).
 
 ## Detailed guidelines:
 
@@ -146,10 +137,10 @@ To calculate the ranks we used the TPM values at cell population level (output f
 The preparation step is done by executing 4 main R scripts available in the folder [0Preparation/](0Preparation/)
 
 * [pre_process_control_annotation.R](#pre-process-control-annotation-R)
-   * Clean experiments that not pass requirement of minimum number of cells.
+   * Remove experiments that not pass requirement of minimum number of cells.
    
 * [retrieve_metadata.R](#retrive-metadata-R)
-   * Retrive metadata of the libraries that need to be downloaded.
+   * Retrieve metadata of the libraries that need to be downloaded.
 
 * [download_cleaning_data.R](#download-cleaning-data-R)
    * Download all data annotated with minimum requirements.
@@ -163,10 +154,10 @@ The preparation step is done by executing 4 main R scripts available in the fold
 To run the mapping for each library a R script from the folder [1Run/](1Run/) should be executed:
 
 * [kallisto_analysis.R](#kallisto-analysis-R)
-   * The first step of this script allow to run the pseudo-alignment for each individual library.
-   * The second step allow to perform the analysis where the transcript are summed to gene level and the TPM and FPKM recalculated, more details can be founded in the RNA-Seq pipeline for this second step.
+   * The first step of this script runs the pseudo-alignment for each individual library.
+   * The second step performs the analysis where the transcripts are summed to gene level and the TPM and FPKM recalculated, more details can be founded in the RNA-Seq pipeline for this second step.
 
-In this step we have in consideration that exist a folder that was generated from RNA-Seq pipeline for all species with the following information:
+In this step note that there is a folder that was generated from the RNA-Seq pipeline for each species with the following information:
    * transcriptome index (15 k-mer and 31 k-mer)
    * gene2transcript file
    * gene2biotype file
@@ -184,8 +175,8 @@ For this we quantify how many times the TPM value is higher then zero for each g
 
 * Sum of raw counts
 
-In order to provide to the user a global information per cell-type, experiment and species we provide a abundance file with sum of est_counts from kallisto for each transcript, followed by the weight mean of effective length across all cells and then the recalculation of TPM and FPKM. The information in the end is reported at gene level.
-This is executed using the script: [1Run/Sum_RawCounts_cellPopulation.R](1Run/Sum_RawCounts_cellPopulation.R).
+In order to provide to the user a global information per cell-type, experiment, and species we provide a abundance file with sum of est_counts from kallisto for each transcript, followed by the weight mean of effective length across all cells and then the recalculation of TPM and FPKM. The information in the end is reported at gene level.
+This is done using the script: [1Run/Sum_RawCounts_cellPopulation.R](1Run/Sum_RawCounts_cellPopulation.R).
 
 ### Presence calls
 
