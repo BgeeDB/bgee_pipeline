@@ -11,6 +11,9 @@
 
 ## Session info
 print(sessionInfo())
+library(tximport)
+
+#################### PRELIMINARY STEPS ####################
 
 ## reading in arguments provided in command line
 cmd_args = commandArgs(TRUE);
@@ -22,7 +25,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed in command line
-command_arg <- c("kallisto_count_folder", "gene2transcript_file", "gene2biotype_file", "library_id")
+command_arg <- c("kallisto_count_folder", "tx2gene_file", "gene2biotype_file", "library_id")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -30,8 +33,8 @@ for( c_arg in command_arg ){
 }
 
 ## reading kallisto's output. If file not exists, script stops
-kallisto_count_file <- paste0(kallisto_count_folder, "/abundance.tsv")
-if( file.exists(kallisto_count_file) ){
+kallisto_count_tsv_file <- paste0(kallisto_count_folder, "/abundance.tsv")
+if( !file.exists(kallisto_count_file) ){
 	kallisto_count <- read.table(kallisto_count_file, h=T, sep="\t")
 } else {
   stop( paste("Kallisto results file not found [", kallisto_count_file, "]\n"))
@@ -43,108 +46,44 @@ if ( sum(is.na(kallisto_count$tpm)) == length(kallisto_count$tpm)){
   warning( paste("Kallisto results include >20% NAs, please check for a problem [", kallisto_count_file, "]\n"))
 }
 
-## reading gene to transcript file. If file not exists, script stops
-if( file.exists(gene2transcript_file) ){
-	gene2transcript <- read.table(gene2transcript_file, h=F, sep="\t")
-  names(gene2transcript) <- c("gene_id", "transcript_id")
+## If transcript to gene file does not exists, script stops
+if( file.exists(tx2gene_file) ){
+  tx2gene <- read.table(tx2gene_file, header = TRUE, sep="\t")
 } else {
-  stop( paste("Gene to transcript file not found [", gene2transcript_file, "]\n"))
+  stop( paste("transcript to gene file not found [", tx2gene_file, "]\n"))
 }
 
 ## reading gene biotype file. If file not exists, script stops
 if( file.exists(gene2biotype_file) ){
-	gene2biotype <- read.table(gene2biotype_file, h=F, sep="\t")
-  names(gene2biotype) <- c("gene_id", "biotype")
-  gene2biotype <- gene2biotype[order(gene2biotype$gene_id), ] ## order by gene Id
+	gene2biotype <- read.table(gene2biotype_file, h=T, sep="\t")
+  gene2biotype <- gene2biotype[order(gene2biotype$id), ] ## order by gene Id
 } else {
   stop( paste("Gene biotype file not found [", gene2biotype_file, "]\n"))
 }
 
-###############################################################################
-## Add gene ids to the kallisto output. Effectively, this removes all intergenic regions
-genic_count <- merge(kallisto_count, gene2transcript, by.x=1, by.y=2)[, c(1,6,2,3,4,5)]
-names(genic_count)[2] <- "gene_id"
-## Add biotype for all genes
-genic_count <- merge(genic_count, gene2biotype, by.x=2, by.y=1)[, c(2,1,7,3,4,5,6)]
-## Resort the table by transcript_id
-genic_count <- genic_count[order(genic_count$target_id), ]
+#################### FUNCTIONS ####################
 
-## Add gene id column to kallisto's output (genic regions only)
-kallisto_count$gene_id <- rep(NA, times=length(kallisto_count$target_id))
-kallisto_count <- kallisto_count[order(kallisto_count$target_id),] ## sort by transcript_id
-## Check transcripts are matching
-## summary(kallisto_count$target_id[kallisto_count$target_id %in% genic_count$target_id] == genic_count$target_id)
-kallisto_count$gene_id[kallisto_count$target_id %in% genic_count$target_id] <- as.character(genic_count$gene_id)
-## Add region type
-kallisto_count$type <- rep("intergenic", times=length(kallisto_count$target_id))
-kallisto_count$type[kallisto_count$target_id %in% genic_count$target_id] <- "genic"
-## Add biotype for genic regions
-kallisto_count$biotype <- rep(NA, times=length(kallisto_count$target_id))
-kallisto_count$biotype[kallisto_count$target_id %in% genic_count$target_id] <- as.character(genic_count$biotype)
-
-## Calculate FPKMs for all transcripts + intergenic regions, from their TPM values
-## TPM = RPKM * 10^6 / sum(RPKM)
-fpkmToTpm <- function(fpkm){
-  exp(log(fpkm) - log(sum(fpkm)) + log(1e6))
-}
-## RPKM = TPM * (sum(rg / flg)/ R) * 10^3
-##      = TPM * (sum(estimated counts/effective length) / sum(estimated counts)) * 10^3
+## calculate FPKMs, using functions from 
+## https://haroldpimentel.wordpress.com/2014/05/08/what-the-fpkm-a-review-rna-seq-expressio
 tpmToFpkm <- function(tpm, counts, effLen){
   exp(log(tpm) + log(sum(counts/effLen)) - log(sum(counts)) + log(1e3))
 }
-kallisto_count$fpkm <- tpmToFpkm(kallisto_count$tpm, kallisto_count$est_counts, kallisto_count$eff_length)
-## reorder columns and rows before exporting
-kallisto_count <- kallisto_count[order(kallisto_count$gene_id), c(1, 6, 2:5, 9, 7, 8)]
-## Saving to Kallisto output folder
-write.table(kallisto_count, file = paste0(kallisto_count_folder, "/abundance+gene_id+fpkm+intergenic.tsv"), quote = FALSE, sep = "\t", col.names = TRUE, row.names = FALSE)
 
 ###############################################################################
-## All reads mapped to both genic and intergenic regions are used for the total number of reads, and for the length of the transcriptome. This is the only way to have comparable FPKM/TPM values between genic and intergenic regions, for example to be able to compute a cutoff for presence/absence of expression. But for users, these TPMs or FPKMs are not correct. It is easy to recalculate them using only genic regions!
 
-## Recalculate TPMs and calculate FPKMs, using functions from https://haroldpimentel.wordpress.com/2014/05/08/what-the-fpkm-a-review-rna-seq-expression-units/
-countToTpm <- function(counts, effLen){
-  rate <- log(counts) - log(effLen)
-  denom <- log(sum(exp(rate)))
-  exp(rate - denom + log(1e6))
-}
-countToFpkm <- function(counts, effLen){
-  N <- sum(counts)
-  exp( log(counts) + log(1e9) - log(effLen) - log(N) )
-}
-genic_count$tpm <- countToTpm(genic_count$est_counts, genic_count$eff_length)
-genic_count$fpkm <- countToFpkm(genic_count$est_counts, genic_count$eff_length)
-## reorder columns and rows before exporting
-genic_count <- genic_count[order(genic_count$gene_id), c(1:2, 4:8, 3)]
-## Saving to Kallisto output folder
-write.table(genic_count, file = paste0(kallisto_count_folder, "/abundance+gene_id+new_genic_tpm+new_genic_fpkm.tsv"), quote = FALSE, sep = "\t", col.names = TRUE, row.names = FALSE)
+tximportObject <- tximport(kallisto_count_tsv_file, type = "kallisto", tx2gene = tx2gene)
+tx_df <- as.data.frame(tximportObject)
+tx_df$id <- rownames(tx_df)
+tx_df$countsFromAbundance <- NULL
+kallisto_gene_count <- merge(tx_df, gene2biotype, by = "id", all = FALSE)
+kallisto_gene_count$fpkm <- tpmToFpkm(abundance$abundance, counts = abundance$counts, effLen = abundance$length)
+kallisto_gene_count <- kallisto_gene_count[order(kallisto_gene_count[,6], kallisto_gene_count[,1]),]
+# order first by type (genic first) and then by gene id
+# the pipeline did not use tximport to summarize abundance at gene level. It uses an homemade script.
+# We modify the output of tximport in order to create the same file than the old homemade script
+kallisto_gene_count <- kallisto_gene_count[,c(1, 3, 2, 7, 6, 5)]
+names(kallisto_gene_count) <- c("gene_id", "est_counts", "tpm", "fpkm", "type", "biotype")
 
-###############################################################################
-## Gene-level expression
-## Sum TPMs, FPKMs and counts of all transcripts of each gene
-gene_count <- aggregate(genic_count[,5:7], list(genic_count$gene_id), sum)
-names(gene_count)[1] <- "gene_id"
-## These are the values that will be inserted into the database
-## Add biotype for all genes. First, check:
-## summary(gene_count$gene_id == gene2biotype$gene_id)
-gene_count$biotype <- gene2biotype$biotype
-
-## Gene-level expression for kallisto's output:
-## Nothing is summed for intergenic regions
-kallisto_gene_count <- kallisto_count[kallisto_count$type == "intergenic", c(1, 5, 6, 7, 8, 9)]
-names(kallisto_gene_count)[1] <- "gene_id"
-## For genic regions sum read counts, TPMs and FPKMs
-temp <- kallisto_count[kallisto_count$type == "genic", c(2, 5, 6, 7)]
-temp <- aggregate(temp[,2:4], list(temp$gene_id), sum)
-names(temp)[1] <- "gene_id"
-temp$type <-  rep("genic", times=length(temp$gene_id))
-## summary(temp$gene_id == gene2biotype$gene_id)
-temp$biotype <- gene2biotype$biotype
-## Make final table with both genic and intergenic regions
-kallisto_gene_count <- rbind(temp, kallisto_gene_count)
-## This will be used for presence / absence cutoff calculation
-
-## Export gene level files
-write.table(gene_count, file = paste0(kallisto_count_folder, "/abundance_gene_level+new_tpm+new_fpkm.tsv"), quote = FALSE, sep = "\t", col.names = TRUE, row.names = FALSE)
 write.table(kallisto_gene_count, file = paste0(kallisto_count_folder, "/abundance_gene_level+fpkm+intergenic.tsv"), quote = FALSE, sep = "\t", col.names = TRUE, row.names = FALSE)
 
 

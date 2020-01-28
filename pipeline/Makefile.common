@@ -40,8 +40,8 @@ DATAHOST   := jura0.sib.swiss
 DATAPATH   := /data
 
 # Ensembl
-ENSRELEASE             := 84
-ENSMETAZOARELEASE      := 30
+ENSRELEASE             := 99
+ENSMETAZOARELEASE      := 46
 ENS_API_RELEASE        := $(ENSRELEASE)
 ENSMETAZOA_API_RELEASE := 83
 #   for our local Ensembl DB on Annotators' computer annotbioinfo
@@ -159,6 +159,7 @@ CLUSTER_R_CMD          := module add R/3.4.2;
 CLUSTER_SRATOOLKIT_CMD := module add UHTS/Analysis/sratoolkit/2.8.2.1;
 CLUSTER_TOPHAT_CMD     := module add UHTS/Aligner/tophat/2.1.1;
 #CLUSTER_FASTQC_CMD     := module add UHTS/Quality_control/fastqc/0.11.7;
+
 
 
 # ===================================
@@ -377,6 +378,17 @@ ENCRYPT_PASSWD_FILE            := /data/unil/dee/dee_robi/.passw
 
 # RNAseq sensitive cluster path
 RNASEQ_SENSITIVE_FASTQ         := /data/unil/dee/dee_robi/FASTQ
+
+# Intergenic folders
+CLUSTER_REF_INTERGENIC_FOLDER  := $(RNASEQ_VITALIT_SCRATCH)ref_intergenic_$(DBNAME)/
+CLUSTER_OTHER_INTERGENIC_FOLDER	 := $(RNASEQ_VITALIT_SCRATCH)other_intergenic_$(DBNAME)/
+
+# RNAseq kallisto index kmer size 
+RNASEQ_KALLISTO_KMER_DEFAULT	:= 31
+RNASEQ_KALLISTO_KMER_SHORT      := 15
+
+# Max proportion of Ns allowed in intergenic sequences
+INTERGENIC_N_PROPORTION         := 0.05
 
 # RNAseq data path
 RNASEQDATAPATH             := /var/bgee/extra/pipeline/rna_seq/
