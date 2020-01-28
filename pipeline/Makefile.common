@@ -9,13 +9,13 @@ SHELL = /bin/bash
 # ===================================
 #  GENERAL PARAMETERS
 # ===================================
-RELEASE          := 15.0
+RELEASE          := 14.1
 
 # MySQL database connection parameters
 # DBUSER and DBPASS defined in Makefile.Config
 # DBUSERV and DBPASSV defined in Makefile.Config
 DBNAME := bgee_v$(subst .,_,$(RELEASE))
-DBHOST := 127.0.0.1
+DBHOST := devbioinfo.unil.ch
 DBPORT := 3306
 DBNAME_BGEELITE := bgeelite_v$(subst .,_,$(RELEASE))
 DBHOST_BGEELITE := 127.0.0.1
@@ -40,8 +40,8 @@ DATAHOST   := bigbgee.unil.ch
 DATAPATH   := /opt/gtexfile/PIPELINE_RESULTS_STORAGE
 
 # Ensembl
-ENSRELEASE             := 84
-ENSMETAZOARELEASE      := 30
+ENSRELEASE             := 98
+ENSMETAZOARELEASE      := 45
 ENS_API_RELEASE        := $(ENSRELEASE)
 ENSMETAZOA_API_RELEASE := 83
 #   for our local Ensembl DB on Annotators' computer annotbioinfo
@@ -58,6 +58,7 @@ ENSDBPORT  := 3306
 #ENSDBPASS  := ''
 #ENSDBHOST  := mysql.ebi.ac.uk
 #ENSDBPORT  := 4157
+KALLISTO_SHORT_KMER_SIZE := 15
 
 
 # MGI
@@ -360,11 +361,11 @@ RNASEQ_LENGTH_INFO_FILEPATH        := $(GENERATED_FILES_DIR)$(RNASEQPATH)rna_seq
 
 # RNAseq cluster paths
 # TODO clean-up and remove unused ones
-RNASEQ_CLUSTER_READONLY        := /data/ul/dee/bgee/
-RNASEQ_CLUSTER_SCRIPTS         := $(RNASEQ_CLUSTER_READONLY)GIT/pipeline/
-RNASEQ_CLUSTER_GTF             := $(RNASEQ_CLUSTER_READONLY)rna_seq/GTF/
+RNASEQ_CLUSTER_READONLY        := /users/jwollbre/
+RNASEQ_CLUSTER_SCRATCH         := /scratch/axiom/FAC/FBM/DEE/mrobinso/bgee/
+RNASEQ_CLUSTER_SCRIPTS         := $(RNASEQ_CLUSTER_READONLY)GIT/pipeline/pipeline/
+RNASEQ_CLUSTER_GTF             := $(RNASEQ_CLUSTER_SCRATCH)data/GTF/
 RNASEQ_CLUSTER_ALL_RES_BACKUP  := $(RNASEQ_CLUSTER_READONLY)rna_seq/all_results/
-RNASEQ_CLUSTER_SCRATCH         := /scratch/temporary/bbgee/
 RNASEQ_CLUSTER_ALL_RES         := $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME)/
 RNASEQ_CLUSTER_SUM_RES         := $(RNASEQ_CLUSTER_SCRATCH)sum_by_species_$(DBNAME)/
 RNASEQ_CLUSTER_GAUSSIAN_CHOICE := $(GENERATED_FILES_DIR)$(RNASEQPATH)gaussian_choice_by_species.txt

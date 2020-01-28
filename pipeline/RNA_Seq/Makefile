@@ -88,6 +88,7 @@ cluster1:
 check_tools: cluster1
 	@echo -e "\n\tFirst of all, go to '$(RNASEQ_CLUSTER_READONLY)GIT/' and do a 'git pull'"
 	@echo -e "\tThen 'cd pipeline/RNA_Seq/' and be prepared to work\n"
+	@echo -e "\n\tRun this command to give access to all modules installed on vital-it\n\tmodule add Bioinformatics/Software/vital-it\n"
 	@echo -e "\n\tRun this command to prevent errors with Utils.pm\n\tmodule add Development/Ensembl_API/$(ENSRELEASE);\n"
 	# Check if logged on cluster
 	@if [[ `hostname -d` != 'axiom.unil.ch' ]]; then false; fi
@@ -164,16 +165,16 @@ get_genome: get_GTF
 
 ################################ GENERATE REFERENCE INTERGENIC SEQUENCES ################################
 
-prepare_GTF: get_GTF get_genome
+prepare_GTF: get_genome
 	# Prepare GTF files
-
-	@for gtf in $(RNASEQ_CLUSTER_GTF)*.gtf.gz; do \
-		echo "$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args gene_gtf_path=\"$$gtf\" genome_fasta_path=\"$${gtf/.gtf.gz/}.genome.fa\" N_block_size=$(RNASEQ_KALLISTO_KMER_DEFAULT) N_proportion=$(INTERGENIC_N_PROPORTION) output_gtf_path=\"$${gtf/.gtf.gz/}\"'  0Before/prepare_GTF.R  $@.tmp" >run.sh; \
-		sh run.sh; \
+	@for gtf in $(RNASEQ_CLUSTER_GTF)/*.gtf.gz; do \
+		echo "#!/bin/sh" > run.sh; \
+		echo "$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args gene_gtf_path=\"$$gtf\" output_gtf_path=\"$${gtf/.gtf.gz/}\"'  0Before/prepare_GTF.R  $@.tmp" >> run.sh; \
+		sbatch  --account=mrobinso_bgee --time=12:00:00 --mem=20G --partition=ax-normal --nodes=1 --ntasks=1 --cpus-per-task=1 run.sh ; \
 	done
 	@$(RM) run.sh
 	@echo rm -f $(RNASEQ_CLUSTER_GTF)/*.gtf.gz
-	@$(MV) $@.tmp $@
+	@touch $@
 
 prepare_indexed_transcriptome: get_genome prepare_GTF
 	#Preparing indexed transcriptome for every species
@@ -193,7 +194,7 @@ prepare_indexed_transcriptome: get_genome prepare_GTF
 #NOTE Better to run this step in screen or with nohup as submission is done X jobs per X jobs to not overload the system (and not decrease our user priority)!
 abundance_all_intergenic: prepare_indexed_transcriptome $(RNASEQ_SAMPINFO_FILEPATH)
 	# Running the pipeline
-	@perl $(RNASEQ_CLUSTER_SCRIPTS)$(RNASEQPATH)1Run/slurm_scheduler.pl -sample_info_file=$(RNASEQ_CLUSTER_SCRIPTS)RNA_Seq/$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=$(RNASEQ_CLUSTER_LOG) -index_folder=$(RNASEQ_CLUSTER_GTF) -fastq_folder=$(RNASEQ_BIGBGEE_FASTQ) -kallisto_out_folder=$(RNASEQ_CLUSTER_ALL_RES) -ens_release=$(ENSRELEASE) -ens_metazoa_release=$(ENSMETAZOARELEASE) -data_host=$(DATAHOST) -data_login=$(DATALOGIN) -enc_passwd_file=$(ENCRYPT_PASSWD_FILE) -cluster_kallisto_cmd="$(CLUSTER_KALLISTO_CMD)" -cluster_R_cmd="$(CLUSTER_R_CMD)" >$@.tmp 2>&1
+	@perl 1Run/slurm_scheduler.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=$(RNASEQ_CLUSTER_LOG) -index_folder=$(RNASEQ_CLUSTER_GTF) -fastq_folder=$(RNASEQ_BIGBGEE_FASTQ) -kallisto_out_folder=$(RNASEQ_CLUSTER_ALL_RES) -ens_release=$(ENSRELEASE) -ens_metazoa_release=$(ENSMETAZOARELEASE) -data_host=$(DATAHOST) -data_login=$(DATALOGIN) -enc_passwd_file=$(ENCRYPT_PASSWD_FILE) -cluster_kallisto_cmd="$(CLUSTER_KALLISTO_CMD)" -cluster_R_cmd="$(CLUSTER_R_CMD)" >$@.tmp 2>&1
 	@echo "TODO: At the end it is a good idea to relaunch the abundance_all_intergenic step to be sure everything was run!"
 	@$(MV) $@.tmp $@
 
