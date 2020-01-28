@@ -360,11 +360,12 @@ RNASEQ_ALREADY_DOWNLOADED          := $(GENERATED_FILES_DIR)$(RNASEQPATH)rna_seq
 
 # RNAseq cluster paths
 # TODO clean-up and remove unused ones
-RNASEQ_CLUSTER_READONLY        := /data/ul/dee/bgee/
+RNASEQ_DOWNLOAD_LIB_DIR        := /scratch/wally/FAC/FBM/DEE/mrobinso/bgee
+RNASEQ_CLUSTER_READONLY        := /data/unil/dee/dee_robi/
 RNASEQ_CLUSTER_SCRIPTS         := $(RNASEQ_CLUSTER_READONLY)GIT/pipeline/
 RNASEQ_CLUSTER_GTF             := $(RNASEQ_CLUSTER_READONLY)rna_seq/GTF/
 RNASEQ_CLUSTER_ALL_RES_BACKUP  := $(RNASEQ_CLUSTER_READONLY)rna_seq/all_results/
-RNASEQ_CLUSTER_SCRATCH         := /scratch/temporary/bbgee/
+RNASEQ_CLUSTER_SCRATCH         := /scratch/beegfs/FAC/FBM/DEE/bgee_sensitive/
 RNASEQ_CLUSTER_ALL_RES         := $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME)/
 RNASEQ_CLUSTER_SUM_RES         := $(RNASEQ_CLUSTER_SCRATCH)sum_by_species_$(DBNAME)/
 RNASEQ_CLUSTER_GAUSSIAN_CHOICE := $(GENERATED_FILES_DIR)$(RNASEQPATH)gaussian_choice_by_species.txt
@@ -372,10 +373,10 @@ RNASEQ_CLUSTER_PRESENCE_RES    := $(RNASEQ_CLUSTER_SCRATCH)presence_absence_$(DB
 RNASEQ_CLUSTER_LOG             := $(RNASEQ_CLUSTER_ALL_RES)
 RNASEQ_CLUSTER_R_LOG           := $(RNASEQ_CLUSTER_ALL_RES)
 RNASEQ_CLUSTER_REPORTINFO      := $(RNASEQ_CLUSTER_ALL_RES)/reports_info_all_samples.txt
-ENCRYPT_PASSWD_FILE            := /home/bbgee/.passw
+ENCRYPT_PASSWD_FILE            := /data/unil/dee/dee_robi/.passw
 
 # RNAseq sensitive cluster path
-RNASEQ_SENSITIVE_FASTQ       := /data/unil/dee/dee_robi/FASTQ
+RNASEQ_SENSITIVE_FASTQ         := /data/unil/dee/dee_robi/FASTQ
 
 # RNAseq data path
 RNASEQDATAPATH             := /var/bgee/extra/pipeline/rna_seq/

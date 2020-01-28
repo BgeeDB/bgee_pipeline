@@ -59,7 +59,21 @@ send_files_to_cluster: create_rna_seq_sample_info $(RNASEQ_LIB_FILEPATH_FULL) $(
 get_sra: create_rna_seq_sample_info $(RNASEQ_ALREADY_DOWNLOADED)
 	# Maybe write an echo to describe how to run this step
 	@$(GIT) pull
-	@perl 0Before/get_SRA.pl $(RNASEQ_SAMPINFO_FILEPATH)
+	@sed -i 's@\(BASE *= \).*$@\1"$(RNASEQ_DOWNLOAD_LIB_DIR)";@'                0Before/get_SRA.pl
+	@sed -i 's@--output=.*@--output=${PWD}/get_sra.out@'                        0Before/download_lib
+	@sed -i 's@--error=.*@--error=${PWD}/get_sra.err@'                          0Before/download_lib
+	@sed -i 's@SCRIPT_PATH=.*@SCRIPT_PATH=${PWD}@'                              0Before/download_lib
+	@sed -i 's@ANNOTATION_FILE=.*@ANNOTATION_FILE=$(RNASEQ_SAMPINFO_FILEPATH)@' 0Before/download_lib
+	@sed -i 's@DONE_FILE=.*@DONE_FILE=$(RNASEQ_ALREADY_DOWNLOADED)@'            0Before/download_lib
+	@sbatch --test-only 0Before/download_lib
+	@touch $@
+
+list_new_downloads: get_sra
+	@find $(RNASEQ_DOWNLOAD_LIB_DIR) -type f -name \*.fastq.gz\* | xargs dirname | sed -e 's@^.*/@@' | sort -u > /tmp/new_downloads
+	@cat $(RNASEQ_ALREADY_DOWNLOADED) >>/tmp/new_downloads
+	@sort -u /tmp/new_downloads >$(RNASEQ_ALREADY_DOWNLOADED)
+	@rm -f /tmp/new_downloads
+	@git status
 	@touch $@
 
 #TODO Add a step to tranfer folders to sensitive cluster!

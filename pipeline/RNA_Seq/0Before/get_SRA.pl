@@ -4,13 +4,16 @@ use strict;
 use warnings;
 use diagnostics;
 
-my $annotation_file = $ARGV[0]  // die "\n\t$0 <RNASeq library annotation file (rna_seq_sample_info.txt)>\n\n";
+use File::Slurp;
+
+my $annotation_file = $ARGV[0]  // die "\n\t$0 <RNASeq library annotation file (rna_seq_sample_info.txt)> <RNASeq library already downloaded (rna_seq_sample_downloaded.txt)>\n\n";
+my $downloaded_lib  = $ARGV[1]  // die "\n\t$0 <RNASeq library annotation file (rna_seq_sample_info.txt)> <RNASeq library already downloaded (rna_seq_sample_downloaded.txt)>\n\n";
 
 
 my $SRATK_PATH         = $ENV{'SRATK_PATH'};
 my $ASPERA_CONNECT_DIR = $ENV{'ASPERA_CONNECT_DIR'};
 
-my $BASE               = '/opt/gtexfile'; # == project's workspace directory
+my $BASE               = '/scratch/wally/FAC/FBM/DEE/mrobinso/bgee'; # == project's workspace directory
 my $SRA_PATH           = $BASE.'/sra';
 my $FASTQ_PATH         = $BASE.'/FASTQ/RNAseq';
 
@@ -22,6 +25,12 @@ my @private_exp_id     = ('SRP012682'); # E.g. GTEx
 if ( !$SRATK_PATH || !$ASPERA_CONNECT_DIR ){
     die "\n\tSRATK_PATH and/or ASPERA_CONNECT_DIR not defined! They are used to find NCBI SRA & ASPERA executables\n\n";
 }
+
+
+# Read already downloaded libraries
+my %already_downloaded = read_file("$downloaded_lib", chomp=>1);
+print scalar keys %already_downloaded, "\n";
+exit;
 
 
 open(my $ANNOTATION, '<', "$annotation_file")  or die "\n\tCannot read/open [$annotation_file]\n\n";
@@ -36,6 +45,7 @@ while (<$ANNOTATION>){
     my $library_id = $tmp[0];
     my $exp_id     = $tmp[1];
     next LIB  if ( $library_id =~ /^#/ || $sra_list =~ /^#/ ); # Header or commented line
+    next LIB  if ( exists $already_downloaded{$library_id} );
 
     SRA:
     for my $sra_id ( sort split(/,/, $sra_list) ){
