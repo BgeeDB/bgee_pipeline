@@ -78,7 +78,7 @@ list_new_downloads: get_sra
 	@touch $@
 
 #TODO Add a step to tranfer folders to sensitive cluster!
-check_sra: get_sra
+check_sra: list_new_downloads
 	@echo -e "\tRe-run 0Before/get_SRA.pl to be sure all SRA are downloaded and FASTQ prepared\n"
 	@scp  $<  $(CLUSTERLOGIN)@$(CLUSTERHOST):$(RNASEQ_CLUSTER_READONLY)GIT/pipeline/RNA_Seq/
 	@touch $@
