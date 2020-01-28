@@ -64,7 +64,9 @@ get_sra: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_ALREADY_DOWNLOADED)
 	@sed -i 's@SCRIPT_PATH=.*@SCRIPT_PATH=${PWD}@'                              0Before/download_lib.sbatch
 	@sed -i 's@ANNOTATION_FILE=.*@ANNOTATION_FILE=$(RNASEQ_SAMPINFO_FILEPATH)@' 0Before/download_lib.sbatch
 	@sed -i 's@DONE_FILE=.*@DONE_FILE=$(RNASEQ_ALREADY_DOWNLOADED)@'            0Before/download_lib.sbatch
-	@sbatch --test-only 0Before/download_lib.sbatch
+	@sbatch 0Before/download_lib.sbatch
+	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
+	@echo '!!! Rerun this step several times to complete downloads !!!'
 	@touch $@
 
 list_new_downloads: get_sra

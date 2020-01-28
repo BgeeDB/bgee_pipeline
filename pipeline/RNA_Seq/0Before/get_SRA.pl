@@ -28,9 +28,7 @@ if ( !$SRATK_PATH || !$ASPERA_CONNECT_DIR ){
 
 
 # Read already downloaded libraries
-my %already_downloaded = read_file("$downloaded_lib", chomp=>1);
-print scalar keys %already_downloaded, "\n";
-exit;
+my %already_downloaded = map { $_ => 1 } read_file("$downloaded_lib", chomp=>1);
 
 
 open(my $ANNOTATION, '<', "$annotation_file")  or die "\n\tCannot read/open [$annotation_file]\n\n";
