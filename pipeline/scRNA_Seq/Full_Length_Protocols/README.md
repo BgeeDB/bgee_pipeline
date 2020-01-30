@@ -8,13 +8,13 @@
 3. [Step 2: Verification, data download and preparation of info file](#step-2-verification-data-download-and-preparation-of-info-file)
    1. [Verification: metadata from source and quantity of cells](#verification-metadata-from-source-and-quantity-of-cells)
    2. [Data download](#data-download)
-   3. [Preparation of informative file](#preparation-of-informative-file)
+   3. [Preparation of information file](#preparation-of-information-file)
    
 4. [Step 3: scRNA-Seq library analyses](#step-3-scrna-seq-library-analyses)
    1. [Data preparation](#data-preparation)
    2. [Pseudo-alignment](#pseudo-alignment)
-   3. [Quality control for cell population](#quality-control-for-cell-population)  
-   4. [Result processing at individual cell](#result-processing-at-individual-cell)
+   3. [Result processing at individual cell](#result-processing-at-individual-cell)
+   4. [Quality control for cell population](#quality-control-for-cell-population) 
    5. [Result processing at cell population](#result-processing-at-cell-population)
    6. [Post-processing: expression calls and rank computation](#post-processing-expression-calls-and-rank-computation)
 
@@ -84,11 +84,6 @@ The following parameters are used:
 * For single-end libraries, we provide as default fragment length 180 bp, with a sd of 20bp.
 * For paired-end libraries, Kallisto can estimate the fragment length and sd, so we do not provide this information.
 
-#### Quality control for cell population
-
-* For each cell-type population we compute the ratio of how many times a gene is detected across the number of cells with a simple threshold (TPM > 0).
-* Verify if the cell-type population follow a bimodal distribution, i.e. most genes are either present in almost all cells, or absent in almost all cells.
-
 #### Result processing at individual cell
 
 From the Kallisto output, for each genomic feature, counts of pseudo-aligned reads are retrieved.
@@ -96,16 +91,13 @@ The pseudo-aligned read counts, and the genomic feature effective lengths, are u
 We sum at the gene level the counts of pseudo-aligned reads computed at the transcript level by Kallisto.
 For calling genes present (see `Expression Calls`), we compute not only for genic regions, but also for intergenic regions.
 
+#### Quality control for cell population
+
+* For each cell-type population we compute the ratio of how many times a gene is detected across the number of cells with a simple threshold (TPM > 0).
+* Verify if the cell-type population follow a bimodal distribution, i.e. most genes are either present in almost all cells, or absent in almost all cells.
+
 
 #### Result processing at cell population
-
-* Sum calls
-
-Computation of the ratio for each gene that belongs to the same cell-type population per experiment and species. At this step we use simple TPM>0 calls, more elaborate calls are computed later in the pipeline.
-
-![Boxplot](img/CodeCogsEqn.png)
-
-Bgee also provide information about the cut-off values applied to call genes as present for the cell-type population.
 
 * Sum raw counts
 
@@ -124,7 +116,11 @@ How we define this set of intergenic regions is described in the developer docum
 
 * Per cell population
 
-To define the call of expression of a gene in a cell population as "present", we compute the density ratio. We compute 2 cut-offs: "proportion" (proportion intergenic/proportion coding = 0.05) and "density" (density ratio where the density of intergenic region is lower then the density of protein coding). A gene is classified as present with high confidence if its expression is above the "proportion" cut-off, and with low confidence if it is below that but above the "density" cut-off. SARA PLEASE CHECK THIS.
+Computation of the ratio calls for each gene that belongs to the same cell-type population, experiment and species. 
+
+![Boxplot](img/CodeCogsEqn.png)
+
+To define the call of expression of a gene in a cell population as "present", we compute the density ratio. We compute 2 cut-offs: "proportion" (proportion intergenic/proportion coding = 0.05) and "density" (density ratio where the density of intergenic region is lower then the density of protein coding). A gene is classified as present with high confidence if its expression is above the "proportion" cut-off, and with low confidence if it is below that but above the "density" cut-off.
 
 ##### Rank computation
 
