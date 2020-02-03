@@ -62,7 +62,8 @@ while (<$ANNOTATION>){
             # Run prefetch to get SRA file
             #NOTE prefetch automatically checks what has already been downloaded and completes if needed
             #NOTE cd to the "project's workspace directory" the ONLY place where the SRA download works for private SRR
-            system("cd $BASE; $SRATK_PATH/bin/prefetch --quiet --max-size 500G -t ascp -a \"$ASPERA_CONNECT_DIR/bin/ascp|$ASPERA_CONNECT_DIR/etc/asperaweb_id_dsa.openssh\" $sra_id")==0
+#            system("cd $BASE; $SRATK_PATH/bin/prefetch --quiet --max-size 500G -t ascp -a \"$ASPERA_CONNECT_DIR/bin/ascp|$ASPERA_CONNECT_DIR/etc/asperaweb_id_dsa.openssh\" $sra_id")==0
+            system("cd $BASE; $SRATK_PATH/bin/prefetch --quiet --max-size 500G $sra_id")==0
                 or do { warn "\tFailed to get [$library_id/$sra_id]\n"; next SRA };
 
             # Convert in FastQ
@@ -92,7 +93,7 @@ while (<$ANNOTATION>){
                 #TODO Would be nice to have all basic stats from FastP
                 # Basic read length stats
                 system("echo -e \"#min\tmax\tmedian\tmean\" > $FASTQ_PATH/$library_id/${run_id}.R.stat");
-                system("zcat $fastq | sed -n '2~4p' | awk '{print length($0)}' | Rscript -e 'd<-scan(\"stdin\", quiet=TRUE);cat(min(d), max(d), median(d), mean(d), sep=\"\t\");cat(\"\n\")' >> $FASTQ_PATH/$library_id/${run_id}.R.stat");
+                system("zcat $fastq | sed -n '2~4p' | awk '{print length(\$0)}' | Rscript -e 'd<-scan(\"stdin\", quiet=TRUE);cat(min(d), max(d), median(d), mean(d), sep=\"\\t\");cat(\"\\n\")' >> $FASTQ_PATH/$library_id/${run_id}.R.stat");
             }
 
             # If private (need encryption):
