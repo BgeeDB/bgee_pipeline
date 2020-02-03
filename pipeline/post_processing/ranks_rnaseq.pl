@@ -7,11 +7,11 @@ use diagnostics;
 # Updates the ranks in rnaSeqResult table and RNA-Seq mean rank in the expression table.
 # Philippe Moret, created Oct 2015.
 # Frederic Bastian, updated June 2016.
-# Frederic Bastian, last updated Feb. 2017: adapt to new conditions and new schema in Bgee 14
+# Frederic Bastian, updated Feb. 2017: adapt to new conditions and new schema in Bgee 14
+# Frederic Bastian, updated Jan. 2020: parallelize rank computations
 
 use Parallel::ForkManager;
 my $parallel_jobs  = 15;
-my $pm             = new Parallel::ForkManager($parallel_jobs);
 
 use FindBin;
 use lib "$FindBin::Bin/.."; # Get lib path for Utils.pm
@@ -40,7 +40,6 @@ if ( !$test_options || $bgee_connector eq ''){
 
 my $dbh = Utils::connect_bgee_db($bgee_connector);
 
-#Set to 0 in order to disable autocommit to optimize speed
 my $auto = 0;
 
 if ( $auto == 0 ){
@@ -109,9 +108,6 @@ if ( !$ranks_computed ) {
                                                 WHERE EXISTS (SELECT 1 FROM rnaSeqResult AS t2
                                                               WHERE t1.rnaSeqLibraryId = t2.rnaSeqLibraryId
                                                               AND t2.readsCount > 0)');
-    # if several genes at a same rank, we'll update them at once with a 'bgeeGeneId IN (?,?, ...)' clause.
-    # If only one gene at a given rank, updated with the prepared statement below.
-    my $rankUpdateStart = 'UPDATE rnaSeqResult SET rank = ? WHERE rnaSeqLibraryId = ? and bgeeGeneId ';
 
     my $t0 = time();
     # Get the list of all rna-seq libraries
@@ -121,11 +117,32 @@ if ( !$ranks_computed ) {
     my $l = @libs;
 
     printf("Found %d libraries\n", $l);
-    my $done = 0;
-    my $start = time();
+
+
+    my $pm = new Parallel::ForkManager($parallel_jobs);
+    # Returning ranks computed from each thread to the main thread for update
+    # (reading and updating the table at the same time leads to deadlock issues).
+    # We will put everything in memory
+    my @allLibRankInfo = ();  # for collecting responses
+    $pm -> run_on_finish ( # called BEFORE the first call to start()
+        sub {
+            my ($pid, $exit_code, $ident, $exit_signal, $core_dump, $data_structure_reference) = @_;
+ 
+            # retrieve data structure from child
+            # $data_structure_reference is a reference to a hash.
+            # Key "libraryId" associated to a value being the ID of a RNA-Seq library
+            # Key "ranks" associated to a value being a reference to a hash,
+            # with ranks as keys, and reference to an array of gene IDs with that rank as value
+            if (defined($data_structure_reference)) {
+                push @allLibRankInfo, $data_structure_reference;
+            } else {  # problems occurring during storage or retrieval will throw a warning
+                warn "No message received from child process $pid!\n";
+            }
+        }
+    );
 
     for my $k ( 0..$l-1 ){
-        #   Forks and returns the pid for the child
+        # Forks and returns the pid for the child
         my $pid = $pm->start and next;
         # Get a new database connection for each thread
         my $dbh_thread = Utils::connect_bgee_db($bgee_connector);
@@ -142,23 +159,38 @@ if ( !$ranks_computed ) {
                                                     AND t1.reasonForExclusion = "'.$Utils::CALL_NOT_EXCLUDED.'"
                                                     ORDER BY t1.tpm DESC');
 
-        my $rnaSeqResultUpdateStmt = $dbh_thread->prepare($rankUpdateStart.'= ?');
-
         my $rnaSeqLibraryId = $libs[$k];
 
         #print status
-        printf("[%d/%d] Lib: %s\tIdx:%d", $done+1, $l , $rnaSeqLibraryId, $k);
-
+        printf("Lib: %s\tIdx:%d/%d", $rnaSeqLibraryId, $k, $l);
         $rnaSeqResultsStmt->execute($rnaSeqLibraryId)  or die $rnaSeqResultsStmt->errstr;
 
         my @results = map { {'id' => $_->[0], 'val' => $_->[1]} } @{$rnaSeqResultsStmt->fetchall_arrayref};
-
         my %sorted = Utils::fractionnal_ranking(@results);
         # we get ranks as keys, with reference to an array of gene IDs with that rank as value
         my %reverseHash = Utils::revhash(%sorted);
+        # We add the info of library ID in the hash to be used by the main thread
+        my %returnedInfo;
+        $returnedInfo{'libraryId'} = $rnaSeqLibraryId;
+        $returnedInfo{'ranks'} = \%reverseHash;
+        # Terminates the child process and send the results to the main thread
+        $pm->finish(0, \%returnedInfo);
+    }
+    $pm->wait_all_children;
+    print("rank computation done\n");
 
-        for my $rank ( keys %reverseHash ){
-            my $geneIds_arrRef = $reverseHash{$rank};
+    # if several genes at a same rank, we'll update them at once with a 'bgeeGeneId IN (?,?, ...)' clause.
+    # If only one gene at a given rank, updated with the prepared statement below.
+    my $rankUpdateStart = 'UPDATE rnaSeqResult SET rank = ? WHERE rnaSeqLibraryId = ? and bgeeGeneId ';
+    my $rnaSeqResultUpdateStmt = $dbh->prepare($rankUpdateStart.'= ?');
+
+    my $done = 1;
+    print("Update of ranks\n");
+    for my $libRankInfoRef (@allLibRankInfo) {
+        my $rnaSeqLibraryId = $libRankInfoRef->{'libraryId'};
+        my $libRankRef      = $libRankInfoRef->{'ranks'};
+        for my $rank ( keys %{ $libRankRef } ){
+            my $geneIds_arrRef = $libRankRef->{$rank};
             my @geneIds_arr = @$geneIds_arrRef;
             my $geneCount = scalar @geneIds_arr;
             if ( $geneCount == 1 ){
@@ -173,26 +205,18 @@ if ( !$ranks_computed ) {
                     $query .= '?';
                 }
                 $query .= ')';
-                my $rnaSeqRankMultiUpdateStmt = $dbh_thread->prepare($query);
+                my $rnaSeqRankMultiUpdateStmt = $dbh->prepare($query);
                 $rnaSeqRankMultiUpdateStmt->execute($rank, $rnaSeqLibraryId, @geneIds_arr)  or die $rnaSeqRankMultiUpdateStmt->errstr;
             }
         }
 
         # commit here if auto-commit is disabled
         if ( $auto == 0 ){
-            $dbh_thread->commit()  or die('Failed commit');
+            $dbh->commit()  or die('Failed commit');
         }
-        # Close the thread connection
-        $dbh_thread->disconnect();
-        #   Terminates the child process
-        $pm->finish;
-
+        printf("Lib updated: %s\tIdx:%d/%d", $rnaSeqLibraryId, $done, $l);
         $done += 1;
-        my $end = time();
-        my $rem = ($end-$start)/$done * ($l-$done);
-        printf("\tElasped:%.2fs\tRemaining: %.2fs\n", $end - $start, $rem);
     }
-    $pm->wait_all_children;
 
     # ##############
     # Store max rank and number of distinct ranks per library
@@ -352,15 +376,6 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
         my $i = 0;
         for my $globalConditionId ( @conditions ){
             $i++;
-
-            #   Forks and returns the pid for the child
-            my $pid = $pm->start and next;
-            # Get a new database connection for each thread
-            my $dbh_thread = Utils::connect_bgee_db($bgee_connector);
-            #Set to 0 in order to disable autocommit to optimize speed
-            if ( $auto == 0 ){
-                $dbh_thread->{'AutoCommit'} = 0;
-            }
             $t0 = time();
 
 #           Prepare queries
@@ -379,8 +394,8 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
                     WHERE rnaSeqResult.expressionId IS NOT NULL AND globalCondToLib.globalConditionId = ?
                     GROUP BY rnaSeqResult.bgeeGeneId';
 
-            my $rnaSeqWeightedMeanStmt  = $dbh_thread->prepare($sql);
-            my $dropLibWeightedMeanStmt = $dbh_thread->prepare('DROP TABLE '.$tableName);
+            my $rnaSeqWeightedMeanStmt  = $dbh->prepare($sql);
+            my $dropLibWeightedMeanStmt = $dbh->prepare('DROP TABLE '.$tableName);
 
             #update the expression table
             $sql = 'UPDATE '.$tableName.'
@@ -396,13 +411,13 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
                 $sql .= 'SET globalExpression.rnaSeqGlobalMeanRank = '.$tableName.'.meanRank,
                     globalExpression.rnaSeqGlobalDistinctRankSum = '.$tableName.'.distinctRankCountSum';
             }
-            my $expressionUpdateMeanRank = $dbh_thread->prepare($sql);
+            my $expressionUpdateMeanRank = $dbh->prepare($sql);
 
 #            printf("Creating temp table for weighted mean ranks: ");
             $rnaSeqWeightedMeanStmt->execute($globalConditionId)  or die $rnaSeqWeightedMeanStmt->errstr;
 #            printf("OK in %.2fs\n", (time() - $t0));
 
-            $t0 = time();
+#            $t0 = time();
 #            printf("Updating expression table with normalized mean ranks and sum of numbers of distinct ranks: ");
             $expressionUpdateMeanRank->execute($globalConditionId)  or die $expressionUpdateMeanRank->errstr;
 #            printf("OK in %.2fs\n", (time() - $t0));
@@ -411,17 +426,12 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
 
             # commit here if auto-commit is disabled
             if ( $auto == 0 ){
-                $dbh_thread->commit()  or die('Failed commit');
+                $dbh->commit()  or die('Failed commit');
             }
-            # Close the thread connection
-            $dbh_thread->disconnect();
-            #   Terminates the child process
-            $pm->finish;
             if ( ($i / 100 - int($i / 100)) == 0 ){
                 printf("$i conditions done.\n");
             }
         }
-        $pm->wait_all_children;
 
         # update the globalCond table
         # We apply the same max rank to all expression calls of a same species, in all gene-condition
