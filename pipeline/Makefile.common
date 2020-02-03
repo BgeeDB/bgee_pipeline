@@ -182,7 +182,7 @@ VERIFICATIONFILE := $(OUTPUT_DIR)step_verification_$(RELEASE).txt
 
 # =========== FILES FROM ANNOTATORS ===============
 # URL to git annotation files
-ANNOTATION_GIT_URL            := https://gitlab.sib.swiss/Bgee/expression-annotations/raw/develop
+ANNOTATION_GIT_URL            := https://gitlab.sib.swiss/Bgee/expression-annotations/tree/develop
 
 # Directory with curator files, from the root directory of the pipeline
 CURATIONPATH                  := ../../curation/
@@ -375,6 +375,9 @@ RNASEQ_CLUSTER_LOG             := $(RNASEQ_CLUSTER_ALL_RES)
 RNASEQ_CLUSTER_R_LOG           := $(RNASEQ_CLUSTER_ALL_RES)
 RNASEQ_CLUSTER_REPORTINFO      := $(RNASEQ_CLUSTER_ALL_RES)/reports_info_all_samples.txt
 ENCRYPT_PASSWD_FILE            := /data/unil/dee/dee_robi/.passw
+
+# scRNAseq cluster paths
+SC_RNASEQ_DOWNLOAD_LIB_DIR        := $(RNASEQ_DOWNLOAD_LIB_DIR)scRNASeq_libraries/
 
 # RNAseq sensitive cluster path
 RNASEQ_SENSITIVE_FASTQ         := /data/unil/dee/dee_robi/FASTQ
