@@ -45,6 +45,7 @@ while (<$ANNOTATION>){
     next LIB  if ( $library_id =~ /^#/ || $sra_list =~ /^#/ ); # Header or commented line
     next LIB  if ( exists $already_downloaded{$library_id} );
 
+    print "Starting [$library_id]\t";
     SRA:
     for my $sra_id ( sort split(/,/, $sra_list) ){
         if ( $sra_id =~ /^[SEDC]RR\d+/ ){ #S: SRA/NCBI; E: EBI; D: DDBJ; C: GSA_China
@@ -62,8 +63,8 @@ while (<$ANNOTATION>){
             # Run prefetch to get SRA file
             #NOTE prefetch automatically checks what has already been downloaded and completes if needed
             #NOTE cd to the "project's workspace directory" the ONLY place where the SRA download works for private SRR
-#            system("cd $BASE; $SRATK_PATH/bin/prefetch --quiet --max-size 500G -t ascp -a \"$ASPERA_CONNECT_DIR/bin/ascp|$ASPERA_CONNECT_DIR/etc/asperaweb_id_dsa.openssh\" $sra_id")==0
-            system("cd $BASE; $SRATK_PATH/bin/prefetch --quiet --max-size 500G $sra_id")==0
+            system("cd $BASE; $SRATK_PATH/bin/prefetch --quiet --max-size 500G -t ascp -a \"$ASPERA_CONNECT_DIR/bin/ascp|$ASPERA_CONNECT_DIR/etc/asperaweb_id_dsa.openssh\" $sra_id")==0
+                or system("cd $BASE; $SRATK_PATH/bin/prefetch --quiet --max-size 500G $sra_id")==0
                 or do { warn "\tFailed to get [$library_id/$sra_id]\n"; next SRA };
 
             # Convert in FastQ
@@ -87,13 +88,17 @@ while (<$ANNOTATION>){
             QC:
             for my $fastq ( glob("$FASTQ_PATH/$library_id/*.gz") ){
                 my ($run_id) = $fastq =~ /([^\/]+)\.fastq\.gz/;
-                system("fastp -i $fastq --json $FASTQ_PATH/$library_id/${run_id}.fastp.json --html $FASTQ_PATH/$library_id/${run_id}.fastp.html --thread 2  > $FASTQ_PATH/$library_id/${run_id}.fastp.log 2>&1")==0
-                    or do { warn "\tfastp failed for [$FASTQ_PATH/$library_id/$run_id]\n"; next QC };
-                system("xz -9 $FASTQ_PATH/$library_id/${run_id}.fastp.html $FASTQ_PATH/$library_id/${run_id}.fastp.json");
+                if ( !-e "$FASTQ_PATH/$library_id/${run_id}.fastp.html.xz" || !-e "$FASTQ_PATH/$library_id/${run_id}.fastp.json.xz" ){
+                    system("fastp -i $fastq --json $FASTQ_PATH/$library_id/${run_id}.fastp.json --html $FASTQ_PATH/$library_id/${run_id}.fastp.html --thread 2  > $FASTQ_PATH/$library_id/${run_id}.fastp.log 2>&1")==0
+                        or do { warn "\tfastp failed for [$FASTQ_PATH/$library_id/$run_id]\n"; next QC };
+                    system("xz -9 $FASTQ_PATH/$library_id/${run_id}.fastp.html $FASTQ_PATH/$library_id/${run_id}.fastp.json");
+                }
                 #TODO Would be nice to have all basic stats from FastP
                 # Basic read length stats
-                system("echo -e \"#min\tmax\tmedian\tmean\" > $FASTQ_PATH/$library_id/${run_id}.R.stat");
-                system("zcat $fastq | sed -n '2~4p' | awk '{print length(\$0)}' | Rscript -e 'd<-scan(\"stdin\", quiet=TRUE);cat(min(d), max(d), median(d), mean(d), sep=\"\\t\");cat(\"\\n\")' >> $FASTQ_PATH/$library_id/${run_id}.R.stat");
+                if ( !-e "$FASTQ_PATH/$library_id/${run_id}.R.stat" ){
+                    system("echo -e \"#min\tmax\tmedian\tmean\" > $FASTQ_PATH/$library_id/${run_id}.R.stat");
+                    system("zcat $fastq | sed -n '2~4p' | awk '{print length(\$0)}' | Rscript -e 'd<-scan(\"stdin\", quiet=TRUE);cat(min(d), max(d), median(d), mean(d), sep=\"\\t\");cat(\"\\n\")' >> $FASTQ_PATH/$library_id/${run_id}.R.stat");
+                }
             }
 
             # If private (need encryption):
@@ -112,6 +117,7 @@ while (<$ANNOTATION>){
             warn "\t[$sra_id] is not an SRA id\n";
         }
     }
+    print "Ending [$library_id]\n\n";
 }
 close $ANNOTATION;
 
