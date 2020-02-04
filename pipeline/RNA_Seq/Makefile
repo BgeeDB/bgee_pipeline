@@ -44,7 +44,7 @@ commit_rna_seq_sample_info: create_rna_seq_sample_info $(RNASEQ_SAMPINFO_FILEPAT
 	@$(GIT) push
 	@echo -e "\t$(RNASEQ_SAMPINFO_FILEPATH) is ready, you can go to regular cluster to download new SRA files with get_SRA.pl as *admin* user\n\tDo a 'git pull' before starting\n"
 	@$(MV) $@.tmp $@
-	
+
 
 ################################ SEND FILES TO CLUSTER ################################
 
@@ -58,7 +58,7 @@ send_files_to_cluster: commit_rna_seq_sample_info $(RNASEQ_LIB_FILEPATH_FULL) $(
      $(CLUSTERLOGIN)@$(CLUSTERHOST):$(RNASEQ_CLUSTER_READONLY)GIT/pipeline/RNA_Seq/
 	@echo -e "\tNext steps have to be done on cluster\n\tGo to '$(RNASEQ_CLUSTER_READONLY)GIT/', do a 'git pull' and copy missing files in '$(RNASEQ_CLUSTER_READONLY)GIT/pipeline/RNA_Seq/'\n\tThen restart with 'make cluster1' to start the pipeline run step\n"
 	@touch $@
-	
+
 
 ################################ DOWNLOAD RNA-SEQ LIBRARIES ################################
 
@@ -91,7 +91,7 @@ check_sra: list_new_downloads
 	@echo -e "\tRe-run 0Before/get_SRA.pl to be sure all SRA are downloaded and FASTQ prepared\n"
 	@scp  $<  $(CLUSTERLOGIN)@$(CLUSTERHOST):$(RNASEQ_CLUSTER_READONLY)GIT/pipeline/RNA_Seq/
 	@touch $@
-	
+
 
 ################################ PREPARE CLUSTER ENVIRONMENT ################################
 
@@ -164,8 +164,8 @@ clean_cluster_folders: check_tools
 	@echo
 	@echo "Those scripts have to be run from $(RNASEQ_CLUSTER_SCRIPTS)$(RNASEQPATH) on dev/frt/rserv01 (can write on /data/)!"
 	@touch $@
-	
-	
+
+
 ################################ DOWNLOAD GENOMES AND ANNOTATIONS ################################
 
 get_GTF: clean_cluster_folders create_rna_seq_sample_info
@@ -261,7 +261,7 @@ sum_by_species: check_pipeline $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED
 TRANSCRIPTOME_COMPRESSION_EXT	:= .xz
 SUM_ABUNDANCE_FILE_PATH			:= $(RNASEQ_VITALIT_SUM_RES)sum_abundance_gene_level+fpkm+intergenic+classification_SPECIES_ID.tsv
 ## Generate 2 intergenic fasta files for each species. One for reference intergenic sequences and one for other reference intergenic sequences
-## 
+##
 generate_intergenic_sequences: sum_by_species
 	@perl create_intergenic_fasta.pl -bgee=$(BGEECMD) -ens_release=$(ENSRELEASE) -transcriptomes_folder=$(RNASEQ_VITALIT_GTF) -transcriptome_compression_ext=$(TRANSCRIPTOME_FILE_EXT) -sum_abundance_file_path=$(SUM_ABUNDANCE_FILE_PATH) -gaussian_file_path=$(RNASEQ_VITALIT_GAUSSIAN_CHOICE) -ref_intergenic_dir=$(VITALIT_REF_INTERGENIC_FOLDER) -other_intergenic_dir=$(VITALIT_OTHER_INTERGENIC_FOLDER) >> $@.tmp 2> $@.warn
 	@perl create_intergenic_fasta.pl -bgee=$(BGEECMD) -ens_release=$(ENSMETAZOARELEASE) -transcriptomes_folder=$(RNASEQ_VITALIT_GTF) -transcriptome_compression_ext=$(TRANSCRIPTOME_FILE_EXT) -sum_abundance_file_path=$(SUM_ABUNDANCE_FILE_PATH) -gaussian_file_path=$(RNASEQ_VITALIT_GAUSSIAN_CHOICE) -ref_intergenic_dir=$(VITALIT_REF_INTERGENIC_FOLDER) -other_intergenic_dir=$(VITALIT_OTHER_INTERGENIC_FOLDER) >> $@.tmp 2> $@.warn
@@ -269,7 +269,7 @@ generate_intergenic_sequences: sum_by_species
 	# compress intergenic fasta files
 	@find $(VITALIT_REF_INTERGENIC_FOLDER) -type f -name '*_intergenic.fa' -exec gzip --verbose --best {} \; >> $@.tmp 2> $@.warn
 	@find $(VITALIT_OTHER_INTERGENIC_FOLDER) -type f -name '*_intergenic.fa' -exec gzip --verbose --best {} \; >> $@.tmp 2> $@.warn
-	
+
 
 ################################ GENERATE PRESENT/ABSENT CALLS ################################
 

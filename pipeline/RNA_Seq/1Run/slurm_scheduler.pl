@@ -136,7 +136,7 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
     ##$cluster_R_cmd =~ s/\s/\\ /g;
 
 
-    my $script_plus_args = "time perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -exclude_sample_file=$exclude_sample_file -index_folder=$index_folder -fastq_folder=$fastq_folder -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -ens_release=$ens_release -ens_metazoa_release=$ens_metazoa_release -data_host=$data_host -data_login=$data_login -enc_passwd_file=$enc_passwd_file -cluster_kallisto_cmd=\\\"$cluster_kallisto_cmd\\\" -cluster_R_cmd=\\\"$cluster_R_cmd\\\"";
+    my $script_plus_args = "/usr/bin/time -v perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -exclude_sample_file=$exclude_sample_file -index_folder=$index_folder -fastq_folder=$fastq_folder -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -ens_release=$ens_release -ens_metazoa_release=$ens_metazoa_release -data_host=$data_host -data_login=$data_login -enc_passwd_file=$enc_passwd_file -cluster_kallisto_cmd=\\\"$cluster_kallisto_cmd\\\" -cluster_R_cmd=\\\"$cluster_R_cmd\\\"";
 
     # Adjust number of jobs to time and day
     my $job_limit = $jobs_during_day;
