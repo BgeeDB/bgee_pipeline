@@ -120,6 +120,9 @@ if ( !$ranks_computed ) {
     printf("Found %d libraries\n", $l);
 
 
+    # Disconnect the DBI connection open in parent process, otherwise it will generate errors
+    # (ForkManager and DBI don't go well together, see https://www.perlmonks.org/?node_id=752289)
+    $dbh->disconnect();
     my $pm = new Parallel::ForkManager($parallel_jobs);
     # Returning ranks computed from each thread to the main thread for update
     # (reading and updating the table at the same time leads to deadlock issues).
@@ -182,6 +185,11 @@ if ( !$ranks_computed ) {
     $pm->wait_all_children;
     print("Rank computation done\n");
 
+    # Reopen the connection in parent process that we disconnected before launching the child processes
+    $dbh = Utils::connect_bgee_db($bgee_connector);
+    if ( $auto == 0 ){
+        $dbh->{'AutoCommit'} = 0;
+    }
     # if several genes at a same rank, we'll update them at once with a 'bgeeGeneId IN (?,?, ...)' clause.
     # If only one gene at a given rank, updated with the prepared statement below.
     my $rankUpdateStart = 'UPDATE rnaSeqResult SET rank = ? WHERE rnaSeqLibraryId = ? and bgeeGeneId ';
