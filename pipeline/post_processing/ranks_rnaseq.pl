@@ -40,6 +40,7 @@ if ( !$test_options || $bgee_connector eq ''){
 
 my $dbh = Utils::connect_bgee_db($bgee_connector);
 
+#Set to 0 in order to disable autocommit to optimize speed
 my $auto = 0;
 
 if ( $auto == 0 ){
@@ -127,7 +128,7 @@ if ( !$ranks_computed ) {
     $pm -> run_on_finish ( # called BEFORE the first call to start()
         sub {
             my ($pid, $exit_code, $ident, $exit_signal, $core_dump, $data_structure_reference) = @_;
- 
+
             # retrieve data structure from child
             # $data_structure_reference is a reference to a hash.
             # Key "libraryId" associated to a value being the ID of a RNA-Seq library
@@ -141,6 +142,7 @@ if ( !$ranks_computed ) {
         }
     );
 
+    print("Rank computation...\n");
     for my $k ( 0..$l-1 ){
         # Forks and returns the pid for the child
         my $pid = $pm->start and next;
@@ -177,7 +179,7 @@ if ( !$ranks_computed ) {
         $pm->finish(0, \%returnedInfo);
     }
     $pm->wait_all_children;
-    print("rank computation done\n");
+    print("Rank computation done\n");
 
     # if several genes at a same rank, we'll update them at once with a 'bgeeGeneId IN (?,?, ...)' clause.
     # If only one gene at a given rank, updated with the prepared statement below.
@@ -185,7 +187,7 @@ if ( !$ranks_computed ) {
     my $rnaSeqResultUpdateStmt = $dbh->prepare($rankUpdateStart.'= ?');
 
     my $done = 1;
-    print("Update of ranks\n");
+    print("Update of ranks...\n");
     for my $libRankInfoRef (@allLibRankInfo) {
         my $rnaSeqLibraryId = $libRankInfoRef->{'libraryId'};
         my $libRankRef      = $libRankInfoRef->{'ranks'};
@@ -217,6 +219,7 @@ if ( !$ranks_computed ) {
         printf("Lib updated: %s\tIdx:%d/%d", $rnaSeqLibraryId, $done, $l);
         $done += 1;
     }
+    print("Update of ranks done\n");
 
     # ##############
     # Store max rank and number of distinct ranks per library
@@ -235,7 +238,7 @@ if ( !$ranks_computed ) {
      )";
 
     $t0 = time();
-    printf('Inserting max ranks and distinct rank counts in rnaSeqLibrary table: ');
+    printf('Inserting max ranks and distinct rank counts in rnaSeqLibrary table...');
     my $maxRankLibStmt = $dbh->prepare($sql);
     $maxRankLibStmt->execute()  or die $maxRankLibStmt->errstr;
     printf("Done in %.2fs\n", (time() - $t0));
@@ -314,7 +317,7 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
     $dbh->disconnect();
 
     # we will compute two different rank information for each combination: one taking into account
-    # all rank info mapped to a given condition ('self'), or all rank info mappd to a given condition
+    # all rank info mapped to a given condition ('self'), or all rank info mapped to a given condition
     # plus all its sub-conditions ('global').
     my $selfRanks   = 0;
     my $globalRanks = 0;
@@ -364,6 +367,42 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
         # ###################
         # Run computations per globalCondition
         # ###################
+
+#       Prepare queries
+        my $tableName = 'weightedMeanRank';
+        # compute weighted mean normalized ranks, and sum of numbers of distinct ranks
+        $sql = 'CREATE TEMPORARY TABLE '.$tableName.'
+                SELECT STRAIGHT_JOIN
+                      rnaSeqResult.bgeeGeneId,
+                      SUM(rnaSeqResult.rank * rnaSeqLibrary.libraryDistinctRankCount)
+                          /SUM(rnaSeqLibrary.libraryDistinctRankCount) AS meanRank,
+                      SUM(rnaSeqLibrary.libraryDistinctRankCount) AS distinctRankCountSum
+                FROM globalCondToLib
+                INNER JOIN rnaSeqLibrary ON rnaSeqLibrary.rnaSeqLibraryId = globalCondToLib.rnaSeqLibraryId
+                INNER JOIN rnaSeqResult ON rnaSeqResult.rnaSeqLibraryId = rnaSeqLibrary.rnaSeqLibraryId
+                INNER JOIN rnaSeqValidGenes ON rnaSeqResult.bgeeGeneId = rnaSeqValidGenes.bgeeGeneId
+                WHERE rnaSeqResult.expressionId IS NOT NULL AND globalCondToLib.globalConditionId = ?
+                GROUP BY rnaSeqResult.bgeeGeneId';
+        my $rnaSeqWeightedMeanStmt  = $dbh->prepare($sql);
+        my $dropLibWeightedMeanStmt = $dbh->prepare('DROP TABLE '.$tableName);
+
+        #update the expression table
+        $sql = 'UPDATE '.$tableName.'
+                STRAIGHT_JOIN globalExpression '.
+                # we build the query this way in order to benefit from the clustered index
+                # on (bgeeGeneId, globalConditionId) of the globalExpression table
+               'ON globalExpression.bgeeGeneId = '.$tableName.'.bgeeGeneId
+                    AND globalExpression.globalConditionId = ? ';
+        if ( !$selfRanks ){
+            $sql .= 'SET globalExpression.rnaSeqMeanRank = '.$tableName.'.meanRank,
+                globalExpression.rnaSeqDistinctRankSum = '.$tableName.'.distinctRankCountSum';
+        } else {
+            $sql .= 'SET globalExpression.rnaSeqGlobalMeanRank = '.$tableName.'.meanRank,
+                globalExpression.rnaSeqGlobalDistinctRankSum = '.$tableName.'.distinctRankCountSum';
+        }
+        my $expressionUpdateMeanRank = $dbh->prepare($sql);
+
+        # Retrieve all global conditions
         my $queryConditions = $dbh->prepare('SELECT DISTINCT globalConditionId FROM globalCondToLib');
         $queryConditions->execute()  or die $queryConditions->errstr;
         my @conditions = ();
@@ -377,41 +416,6 @@ for my $condParamCombArrRef ( @{$condParamCombinationsArrRef} ){
         for my $globalConditionId ( @conditions ){
             $i++;
             $t0 = time();
-
-#           Prepare queries
-            my $tableName = 'weightedMeanRank_'.$globalConditionId;
-            # compute weighted mean normalized ranks, and sum of numbers of distinct ranks
-            $sql = 'CREATE TEMPORARY TABLE '.$tableName.'
-                    SELECT STRAIGHT_JOIN
-                          rnaSeqResult.bgeeGeneId,
-                          SUM(rnaSeqResult.rank * rnaSeqLibrary.libraryDistinctRankCount)
-                              /SUM(rnaSeqLibrary.libraryDistinctRankCount) AS meanRank,
-                          SUM(rnaSeqLibrary.libraryDistinctRankCount) AS distinctRankCountSum
-                    FROM globalCondToLib
-                    INNER JOIN rnaSeqLibrary ON rnaSeqLibrary.rnaSeqLibraryId = globalCondToLib.rnaSeqLibraryId
-                    INNER JOIN rnaSeqResult ON rnaSeqResult.rnaSeqLibraryId = rnaSeqLibrary.rnaSeqLibraryId
-                    INNER JOIN rnaSeqValidGenes ON rnaSeqResult.bgeeGeneId = rnaSeqValidGenes.bgeeGeneId
-                    WHERE rnaSeqResult.expressionId IS NOT NULL AND globalCondToLib.globalConditionId = ?
-                    GROUP BY rnaSeqResult.bgeeGeneId';
-
-            my $rnaSeqWeightedMeanStmt  = $dbh->prepare($sql);
-            my $dropLibWeightedMeanStmt = $dbh->prepare('DROP TABLE '.$tableName);
-
-            #update the expression table
-            $sql = 'UPDATE '.$tableName.'
-                    STRAIGHT_JOIN globalExpression '.
-                    # we build the query this way in order to benefit from the clustered index
-                    # on (bgeeGeneId, globalConditionId) of the globalExpression table
-                   'ON globalExpression.bgeeGeneId = '.$tableName.'.bgeeGeneId
-                        AND globalExpression.globalConditionId = ? ';
-            if ( !$selfRanks ){
-                $sql .= 'SET globalExpression.rnaSeqMeanRank = '.$tableName.'.meanRank,
-                    globalExpression.rnaSeqDistinctRankSum = '.$tableName.'.distinctRankCountSum';
-            } else {
-                $sql .= 'SET globalExpression.rnaSeqGlobalMeanRank = '.$tableName.'.meanRank,
-                    globalExpression.rnaSeqGlobalDistinctRankSum = '.$tableName.'.distinctRankCountSum';
-            }
-            my $expressionUpdateMeanRank = $dbh->prepare($sql);
 
 #            printf("Creating temp table for weighted mean ranks: ");
             $rnaSeqWeightedMeanStmt->execute($globalConditionId)  or die $rnaSeqWeightedMeanStmt->errstr;
