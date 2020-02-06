@@ -168,6 +168,7 @@ if ( !$ranks_computed ) {
         $rnaSeqResultsStmt->execute($rnaSeqLibraryId)  or die $rnaSeqResultsStmt->errstr;
 
         my @results = map { {'id' => $_->[0], 'val' => $_->[1]} } @{$rnaSeqResultsStmt->fetchall_arrayref};
+        $dbh_thread->disconnect();
         my %sorted = Utils::fractionnal_ranking(@results);
         # we get ranks as keys, with reference to an array of gene IDs with that rank as value
         my %reverseHash = Utils::revhash(%sorted);
