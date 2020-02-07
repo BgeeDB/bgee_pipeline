@@ -90,6 +90,136 @@ printf("Done\n");
 ##############################################
 # COMPUTE RANKS PER LIBRARY                  #
 ##############################################
+sub compute_rank_lib_batch {
+    my ($libBatchRef) = @_;
+    my $batchLength = scalar @{ $libBatchRef };
+
+    # Connection to database in the parent process must have been closed
+    # before calling this sub, otherwise it will generate errors
+    # (ForkManager and DBI don't go well together, see https://www.perlmonks.org/?node_id=752289)
+    my $pm = new Parallel::ForkManager($parallel_jobs);
+    # Returning ranks computed from each thread to the main thread for update
+    # (reading and updating the table at the same time leads to deadlock issues).
+    # We will put everything in memory
+    my @batchLibRankInfo = ();  # for collecting responses
+    $pm -> run_on_finish ( # called BEFORE the first call to start()
+        sub {
+            my ($pid, $exit_code, $ident, $exit_signal, $core_dump, $data_structure_reference) = @_;
+
+            # retrieve data structure from child
+            # $data_structure_reference is a reference to a hash.
+            # Key "libraryId" associated to a value being the ID of a RNA-Seq library
+            # Key "ranks" associated to a value being a reference to a hash,
+            # with ranks as keys, and reference to an array of gene IDs with that rank as value
+            if (defined($data_structure_reference)) {
+                push @batchLibRankInfo, $data_structure_reference;
+            } else {  # problems occurring during storage or retrieval will throw a warning
+                warn "No message received from child process $pid!\n";
+            }
+        }
+    );
+
+    # Compute ranks
+    for my $k ( 0..$batchLength-1 ) {
+
+        # Forks and returns the pid for the child
+        my $pid = $pm->start and next;
+        # Get a new database connection for each thread
+        my $dbh_thread = Utils::connect_bgee_db($bgee_connector);
+        #Set to 0 in order to disable autocommit to optimize speed
+        if ( $auto == 0 ){
+            $dbh_thread->{'AutoCommit'} = 0;
+        }
+        my $rnaSeqLibraryId = ${$libBatchRef}[$k];
+        my $rnaSeqResultsStmt = $dbh_thread->prepare(
+            'SELECT DISTINCT t1.bgeeGeneId, t1.tpm
+             FROM rnaSeqResult AS t1 '.
+             # join to table rnaSeqValidGenes to force
+             # the selection of valid genes
+             'INNER JOIN rnaSeqValidGenes AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId
+             WHERE t1.rnaSeqLibraryId = ?
+             AND t1.reasonForExclusion = "'.$Utils::CALL_NOT_EXCLUDED.'"
+             ORDER BY t1.tpm DESC');
+
+        $rnaSeqResultsStmt->execute($rnaSeqLibraryId)  or die $rnaSeqResultsStmt->errstr;
+
+        my @results = map { {'id' => $_->[0], 'val' => $_->[1]} } @{$rnaSeqResultsStmt->fetchall_arrayref};
+        $dbh_thread->disconnect();
+        my %sorted = Utils::fractionnal_ranking(@results);
+        # we get ranks as keys, with reference to an array of gene IDs with that rank as value
+        my %reverseHash = Utils::revhash(%sorted);
+        # We add the info of library ID in the returned hash to be used by the main thread
+        my %returnedInfo;
+        $returnedInfo{'libraryId'} = $rnaSeqLibraryId;
+        $returnedInfo{'ranks'} = \%reverseHash;
+        #print status
+        printf("Lib: %s - %d/%d", $rnaSeqLibraryId, $k+1, $batchLength);
+        # Terminates the child process and send the results to the main thread
+        $pm->finish(0, \%returnedInfo);
+    }
+    $pm->wait_all_children;
+
+    return \@batchLibRankInfo;
+}
+
+# We are going to update the ranks in batches to not overload memory,
+# this sub will be called every x child processes terminate
+sub update_ranks {
+    my ($batchLibRankInfoRef, $done) = @_;
+
+    # Reopen the connection in parent process that we disconnected before launching
+    # the child processes
+    $dbh_sub = Utils::connect_bgee_db($bgee_connector);
+    if ( $auto == 0 ){
+        $dbh_sub->{'AutoCommit'} = 0;
+    }
+    # if several genes at a same rank, we'll update them at once
+    # with a 'bgeeGeneId IN (?,?, ...)' clause.
+    # If only one gene at a given rank, updated with the prepared statement below.
+    my $rankUpdateStart = 'UPDATE rnaSeqResult SET rank = ? WHERE rnaSeqLibraryId = ? and bgeeGeneId ';
+    my $rnaSeqResultUpdateStmt = $dbh_sub->prepare($rankUpdateStart.'= ?');
+
+    for my $libRankInfoRef (@{ $batchLibRankInfoRef }) {
+        my $rnaSeqLibraryId = $libRankInfoRef->{'libraryId'};
+        my $libRankRef      = $libRankInfoRef->{'ranks'};
+        for my $rank ( keys %{ $libRankRef } ){
+            my $geneIds_arrRef = $libRankRef->{$rank};
+            my @geneIds_arr = @$geneIds_arrRef;
+            my $geneCount = scalar @geneIds_arr;
+            if ( $geneCount == 1 ){
+                my $geneId = $geneIds_arr[0];
+                $rnaSeqResultUpdateStmt->execute($rank, $rnaSeqLibraryId, $geneId)
+                    or die $rnaSeqResultUpdateStmt->errstr;
+            } else {
+                my $query = $rankUpdateStart.'IN (';
+                for ( my $i = 0; $i < $geneCount; $i++ ){
+                    if ( $i > 0 ){
+                        $query .= ', ';
+                    }
+                    $query .= '?';
+                }
+                $query .= ')';
+                my $rnaSeqRankMultiUpdateStmt = $dbh_sub->prepare($query);
+                $rnaSeqRankMultiUpdateStmt->execute($rank, $rnaSeqLibraryId, @geneIds_arr)
+                    or die $rnaSeqRankMultiUpdateStmt->errstr;
+            }
+        }
+
+        printf("Lib updated: %s\tIdx:%d", $rnaSeqLibraryId, $done);
+        $done += 1;
+    }
+    # commit here if auto-commit is disabled
+    if ( $auto == 0 ){
+        $dbh_sub->commit()  or die('Failed commit');
+    }
+    # Important to disconnect the DBI connection open in parent process,
+    # otherwise it will generate errors
+    # (ForkManager and DBI don't go well together, see https://www.perlmonks.org/?node_id=752289)
+    $dbh_sub->disconnect();
+}
+
+
+
 if ( !$ranks_computed ) {
 
     # Clean potentially already computed ranks
@@ -105,10 +235,10 @@ if ( !$ranks_computed ) {
     # We rank all genes that have received at least one read in any condition.
     # So we always rank the same set of gene in a given species over all libraries.
     # We assume that each library maps to only one species through its contained genes.
-    my $rnaSeqLibStmt          = $dbh->prepare('SELECT t1.rnaSeqLibraryId FROM rnaSeqLibrary AS t1
-                                                WHERE EXISTS (SELECT 1 FROM rnaSeqResult AS t2
-                                                              WHERE t1.rnaSeqLibraryId = t2.rnaSeqLibraryId
-                                                              AND t2.readsCount > 0)');
+    my $rnaSeqLibStmt = $dbh->prepare('SELECT t1.rnaSeqLibraryId FROM rnaSeqLibrary AS t1
+                                       WHERE EXISTS (SELECT 1 FROM rnaSeqResult AS t2
+                                       WHERE t1.rnaSeqLibraryId = t2.rnaSeqLibraryId
+                                       AND t2.readsCount > 0)');
 
     my $t0 = time();
     # Get the list of all rna-seq libraries
@@ -116,122 +246,34 @@ if ( !$ranks_computed ) {
 
     my @libs = map { $_->[0] } @{$rnaSeqLibStmt->fetchall_arrayref};
     my $l = @libs;
-
     printf("Found %d libraries\n", $l);
 
 
+    print("Rank computation per library...\n");
     # Disconnect the DBI connection open in parent process, otherwise it will generate errors
     # (ForkManager and DBI don't go well together, see https://www.perlmonks.org/?node_id=752289)
     $dbh->disconnect();
-    my $pm = new Parallel::ForkManager($parallel_jobs);
-    # Returning ranks computed from each thread to the main thread for update
-    # (reading and updating the table at the same time leads to deadlock issues).
-    # We will put everything in memory
-    my @allLibRankInfo = ();  # for collecting responses
-    $pm -> run_on_finish ( # called BEFORE the first call to start()
-        sub {
-            my ($pid, $exit_code, $ident, $exit_signal, $core_dump, $data_structure_reference) = @_;
-
-            # retrieve data structure from child
-            # $data_structure_reference is a reference to a hash.
-            # Key "libraryId" associated to a value being the ID of a RNA-Seq library
-            # Key "ranks" associated to a value being a reference to a hash,
-            # with ranks as keys, and reference to an array of gene IDs with that rank as value
-            if (defined($data_structure_reference)) {
-                push @allLibRankInfo, $data_structure_reference;
-            } else {  # problems occurring during storage or retrieval will throw a warning
-                warn "No message received from child process $pid!\n";
-            }
-        }
-    );
-
-    print("Rank computation...\n");
-    for my $k ( 0..$l-1 ){
-        # Forks and returns the pid for the child
-        my $pid = $pm->start and next;
-        # Get a new database connection for each thread
-        my $dbh_thread = Utils::connect_bgee_db($bgee_connector);
-        #Set to 0 in order to disable autocommit to optimize speed
-        if ( $auto == 0 ){
-            $dbh_thread->{'AutoCommit'} = 0;
-        }
-        my $rnaSeqResultsStmt      = $dbh_thread->prepare('SELECT DISTINCT t1.bgeeGeneId, t1.tpm
-                                                    FROM rnaSeqResult AS t1 '.
-                                                    # join to table rnaSeqValidGenes to force
-                                                    # the selection of valid genes
-                                                    'INNER JOIN rnaSeqValidGenes AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId
-                                                    WHERE t1.rnaSeqLibraryId = ?
-                                                    AND t1.reasonForExclusion = "'.$Utils::CALL_NOT_EXCLUDED.'"
-                                                    ORDER BY t1.tpm DESC');
-
-        my $rnaSeqLibraryId = $libs[$k];
-
-        #print status
-        printf("Lib: %s\tIdx:%d/%d", $rnaSeqLibraryId, $k, $l);
-        $rnaSeqResultsStmt->execute($rnaSeqLibraryId)  or die $rnaSeqResultsStmt->errstr;
-
-        my @results = map { {'id' => $_->[0], 'val' => $_->[1]} } @{$rnaSeqResultsStmt->fetchall_arrayref};
-        $dbh_thread->disconnect();
-        my %sorted = Utils::fractionnal_ranking(@results);
-        # we get ranks as keys, with reference to an array of gene IDs with that rank as value
-        my %reverseHash = Utils::revhash(%sorted);
-        # We add the info of library ID in the hash to be used by the main thread
-        my %returnedInfo;
-        $returnedInfo{'libraryId'} = $rnaSeqLibraryId;
-        $returnedInfo{'ranks'} = \%reverseHash;
-        # Terminates the child process and send the results to the main thread
-        $pm->finish(0, \%returnedInfo);
+    # We are going to compute/store ranks using parallelization,
+    # by batch of libraries not to overload memory
+    my $libCountBeforeUpdate = 1000;
+    my $count = 0;
+    while ( my @next_libs = splice(@libs, 0, $libCountBeforeUpdate) ) {
+        print($count*$libCountBeforeUpdate.' done/'.$l.' libraries, batch of '.scalar(@next_libs)
+            ." libraries to analyze\n")
+        my $rankBatchRef = compute_rank_lib_batch(\@next_libs);
+        update_ranks($rankBatchRef, $count*$libCountBeforeUpdate);
+        $count += 1;
     }
-    $pm->wait_all_children;
-    print("Rank computation done\n");
+    print("Rank computation per library done\n");
 
-    # Reopen the connection in parent process that we disconnected before launching the child processes
+
+    # ##############
+    # Store max rank and number of distinct ranks per library.
+    # Reopen connection that was closed
     $dbh = Utils::connect_bgee_db($bgee_connector);
     if ( $auto == 0 ){
         $dbh->{'AutoCommit'} = 0;
     }
-    # if several genes at a same rank, we'll update them at once with a 'bgeeGeneId IN (?,?, ...)' clause.
-    # If only one gene at a given rank, updated with the prepared statement below.
-    my $rankUpdateStart = 'UPDATE rnaSeqResult SET rank = ? WHERE rnaSeqLibraryId = ? and bgeeGeneId ';
-    my $rnaSeqResultUpdateStmt = $dbh->prepare($rankUpdateStart.'= ?');
-
-    my $done = 1;
-    print("Update of ranks...\n");
-    for my $libRankInfoRef (@allLibRankInfo) {
-        my $rnaSeqLibraryId = $libRankInfoRef->{'libraryId'};
-        my $libRankRef      = $libRankInfoRef->{'ranks'};
-        for my $rank ( keys %{ $libRankRef } ){
-            my $geneIds_arrRef = $libRankRef->{$rank};
-            my @geneIds_arr = @$geneIds_arrRef;
-            my $geneCount = scalar @geneIds_arr;
-            if ( $geneCount == 1 ){
-                my $geneId = $geneIds_arr[0];
-                $rnaSeqResultUpdateStmt->execute($rank, $rnaSeqLibraryId, $geneId)  or die $rnaSeqResultUpdateStmt->errstr;
-            } else {
-                my $query = $rankUpdateStart.'IN (';
-                for ( my $i = 0; $i < $geneCount; $i++ ){
-                    if ( $i > 0 ){
-                        $query .= ', ';
-                    }
-                    $query .= '?';
-                }
-                $query .= ')';
-                my $rnaSeqRankMultiUpdateStmt = $dbh->prepare($query);
-                $rnaSeqRankMultiUpdateStmt->execute($rank, $rnaSeqLibraryId, @geneIds_arr)  or die $rnaSeqRankMultiUpdateStmt->errstr;
-            }
-        }
-
-        # commit here if auto-commit is disabled
-        if ( $auto == 0 ){
-            $dbh->commit()  or die('Failed commit');
-        }
-        printf("Lib updated: %s\tIdx:%d/%d", $rnaSeqLibraryId, $done, $l);
-        $done += 1;
-    }
-    print("Update of ranks done\n");
-
-    # ##############
-    # Store max rank and number of distinct ranks per library
     my $sql =
     "UPDATE rnaSeqLibrary AS t0
      INNER JOIN (
