@@ -169,7 +169,7 @@ sub update_ranks {
 
     # Reopen the connection in parent process that we disconnected before launching
     # the child processes
-    $dbh_sub = Utils::connect_bgee_db($bgee_connector);
+    my $dbh_sub = Utils::connect_bgee_db($bgee_connector);
     if ( $auto == 0 ){
         $dbh_sub->{'AutoCommit'} = 0;
     }
@@ -259,7 +259,7 @@ if ( !$ranks_computed ) {
     my $count = 0;
     while ( my @next_libs = splice(@libs, 0, $libCountBeforeUpdate) ) {
         print($count*$libCountBeforeUpdate.' done/'.$l.' libraries, batch of '.scalar(@next_libs)
-            ." libraries to analyze\n")
+            ." libraries to analyze\n");
         my $rankBatchRef = compute_rank_lib_batch(\@next_libs);
         update_ranks($rankBatchRef, $count*$libCountBeforeUpdate);
         $count += 1;
