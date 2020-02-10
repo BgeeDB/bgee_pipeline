@@ -83,7 +83,9 @@ list_new_downloads: get_sra
 	@cat $(RNASEQ_ALREADY_DOWNLOADED) >>/tmp/new_downloads
 	@sort -u /tmp/new_downloads >$(RNASEQ_ALREADY_DOWNLOADED)
 	@rm -f /tmp/new_downloads
-	@git status
+	@$(GIT) add $(RNASEQ_ALREADY_DOWNLOADED)
+	@$(GIT) commit -m 'Add new downloaded libraries' $(RNASEQ_ALREADY_DOWNLOADED)
+	@$(GIT) push
 	@touch $@
 
 #TODO Add a step to tranfer folders to sensitive cluster!
