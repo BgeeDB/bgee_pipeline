@@ -95,6 +95,12 @@ for (library in  unique(generalInfo$LibInfo)) {
   ## select URL for the correspondent library
   ftpID <- generalInfo[generalInfo$LibInfo %like% library,][,2]
   setwd(InfoFile)
+  
+  
+  ## control in the downloading process if killed!
+  
+  
   ## download data
   wget(c(paste0(ftpID)))
+
 }
