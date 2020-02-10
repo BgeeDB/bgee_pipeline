@@ -376,9 +376,6 @@ RNASEQ_CLUSTER_R_LOG           := $(RNASEQ_CLUSTER_ALL_RES)
 RNASEQ_CLUSTER_REPORTINFO      := $(RNASEQ_CLUSTER_ALL_RES)/reports_info_all_samples.txt
 ENCRYPT_PASSWD_FILE            := /data/unil/dee/dee_robi/.passw
 
-# scRNAseq cluster paths
-SC_RNASEQ_DOWNLOAD_LIB_DIR        := $(RNASEQ_DOWNLOAD_LIB_DIR)scRNASeq_libraries/
-
 # RNAseq sensitive cluster path
 RNASEQ_SENSITIVE_FASTQ         := /data/unil/dee/dee_robi/FASTQ
 
@@ -416,6 +413,25 @@ RNASEQBIOCONDUCTORTARG_DEVANDANAT   := $(RNASEQBIOCONDUCTORTARG)devAndAnat/
 # TMM normalization files
 RNASEQTMMTARG                       := $(RNASEQBIOCONDUCTOR)targets_TMM/
 RNASEQTMMPATH                       := $(RNASEQDATAPATH)processed_TMM_$(DBNAME)/
+
+# =========== SINGLE CELL RNA_Seq FILES  ===============
+# scRNASeq github file paths
+SCRNASEQPATH                         := scRNA_Seq/
+SCRNASEQ_EXPERIMENT_FILEPATH         := $(SOURCE_FILES_DIR)$(SCRNASEQPATH)scRNASeqExperiment.tsv
+SCRNASEQ_LIB_FILEPATH                := $(SOURCE_FILES_DIR)$(SCRNASEQPATH)scRNASeqLibrary.tsv
+SCRNASEQ_JURA_LIB                    := $(SOURCE_FILES_DIR)$(SCRNASEQPATH)juraLibrariesDownloaded.tsv
+
+# scRNAseq cluster paths
+SC_RNASEQ_DOWNLOAD_PATH                       := /scratch/wally/FAC/FBM/DEE/mrobinso/bgee
+SC_RNASEQ_DOWNLOAD_LIB_DIR                    := $(SC_RNASEQ_DOWNLOAD_PATH)scRNASeq_libraries/
+SC_RNASEQ_SAMPINFO_FILEPATH                   := $(GENERATED_FILES_DIR)$(SCRNASEQPATH)scrna_seq_sample_info.txt
+SC_RNASEQ_CLUSTER_ALL_RES                     := $(SC_RNASEQ_DOWNLOAD_PATH)scRNA-Seq_all_results_$(DBNAME)/
+SC_RNASEQ_CLUSTER_QC_CELLPOP_RES              := $(SC_RNASEQ_CLUSTER_ALL_RES)Quality_Control_Cell_Population/
+SC_RNASEQ_CLUSTER_SUM_RAW_COUNTS_CELLPOP_RES  := $(SC_RNASEQ_CLUSTER_ALL_RES)Sum_Raw_Counts_Cell_Population/
+SC_RNASEQ_CLUSTER_CALL_PRESENT_CELLPOP_RES    := $(SC_RNASEQ_CLUSTER_ALL_RES)Calls_present_Cell_Population/
+
+# proportion of intergenic allowed in the cell population to make the ratio cut-off
+SC_RNASEQ_RATIO_PROPORTION         := 0.05
 
 # =========== DOWNLOAD FILES ===============
 
