@@ -14,7 +14,6 @@ use File::Path qw(make_path);
 use File::Slurp;
 use FindBin qw( $RealBin ); # directory where the script is lying
 use Getopt::Long;
-use Time::localtime;
 
 # Define arguments & their default value
 my ($sample_info_file, $exclude_sample_file, $output_log_folder, $index_folder, $fastq_folder, $kallisto_out_folder, $ens_release, $ens_metazoa_release, $data_host, $data_login, $enc_passwd_file, $cluster_kallisto_cmd, $cluster_R_cmd) = ('', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
@@ -74,8 +73,7 @@ my $user_email     = 'bgee@sib.swiss'; # for email notification
 my $account        = 'mrobinso_bgee';
 my $queue          = 'ax-long';
 
-my $jobs_during_day   = 100; # Number of simultaneous jobs during working days
-my $jobs_during_night = 120; # Number of simultaneous jobs during week-end & night
+my $job_limit      = 120; # Number of simultaneous jobs running
 
 # Sample to exclude if any
 my %manually_excluded;
@@ -131,27 +129,11 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
     # remove ending ";" at end of module loading commands, which can mess up job submission command line
     $cluster_kallisto_cmd =~ s/\;$//;
     $cluster_R_cmd =~ s/\;$//;
-    # espace spaces so that the arguments are not cut after first space by GetOpt
-    ##$cluster_kallisto_cmd =~ s/\s/\\ /g;
-    ##$cluster_R_cmd =~ s/\s/\\ /g;
 
 
-    my $script_plus_args = "time perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -exclude_sample_file=$exclude_sample_file -index_folder=$index_folder -fastq_folder=$fastq_folder -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -ens_release=$ens_release -ens_metazoa_release=$ens_metazoa_release -data_host=$data_host -data_login=$data_login -enc_passwd_file=$enc_passwd_file -cluster_kallisto_cmd=\\\"$cluster_kallisto_cmd\\\" -cluster_R_cmd=\\\"$cluster_R_cmd\\\"";
+#TODO Update for paths in Jura
+    my $script_plus_args = "/usr/bin/time -v perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -exclude_sample_file=$exclude_sample_file -index_folder=$index_folder -fastq_folder=$fastq_folder -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -ens_release=$ens_release -ens_metazoa_release=$ens_metazoa_release -data_host=$data_host -data_login=$data_login -enc_passwd_file=$enc_passwd_file -cluster_kallisto_cmd=\\\"$cluster_kallisto_cmd\\\" -cluster_R_cmd=\\\"$cluster_R_cmd\\\"";
 
-    # Adjust number of jobs to time and day
-    my $job_limit = $jobs_during_day;
-    # Get current date and time to set $job_limit upper if during nights or week-end days.
-    # Get Week Day
-    if ( localtime()->[6]==0 || localtime()->[6]==6 ){
-        $job_limit = $jobs_during_night;
-        # More jobs at the same time if current day is Sunday (0) or Saturday (6)
-    }
-    # Get Hour
-    else {
-        my $hour = localtime()->[2];
-        $job_limit = $jobs_during_night  if ( $hour<=6 || $hour>=19 );
-        # More jobs at the same time if during night, from 19h00 to 06h59
-    }
 
     # Wait for free places in job queue
     my $running_jobs = check_running_jobs();
@@ -167,6 +149,8 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
     # First, remove previous .out and .err files
     my $sbatch_command = $rm_output_command.$rm_error_command;
     $sbatch_command .= 'module add Bioinformatics/Software/vital-it'."\n";
+    $sbatch_command .= "$cluster_kallisto_cmd\n";
+    $sbatch_command .= "$cluster_R_cmd\n\n";
     $sbatch_command .= $script_plus_args;
     print "Command submitted to cluster:\n$sbatch_command\n";
 
