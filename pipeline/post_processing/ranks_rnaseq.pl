@@ -90,6 +90,78 @@ printf("Done\n");
 ##############################################
 # COMPUTE RANKS PER LIBRARY                  #
 ##############################################
+sub compute_update_rank_lib_batch {
+    my ($libBatchRef, $pid) = @_;
+    my $batchLength = scalar @{ $libBatchRef };
+
+    # Connection to database in the parent process must have been closed
+    # before calling this sub, otherwise it will generate errors
+    # (ForkManager and DBI don't go well together, see https://www.perlmonks.org/?node_id=752289).
+    # Get a new database connection for each thread.
+    # We set the autocommit to 1 because we want parallel updates
+    # (we changed temporarily the table engine to MyISAM for this purpose)
+    my $dbh_thread = Utils::connect_bgee_db($bgee_connector);
+    $dbh_thread->{'AutoCommit'} = 1;
+
+    for my $k ( 0..$batchLength-1 ) {
+
+        # ======= Compute ranks ========
+        my $rnaSeqLibraryId = ${$libBatchRef}[$k];
+        my $rnaSeqResultsStmt = $dbh_thread->prepare(
+            'SELECT DISTINCT t1.bgeeGeneId, t1.tpm
+             FROM rnaSeqResult AS t1 '.
+             # join to table rnaSeqValidGenes to force
+             # the selection of valid genes
+             'INNER JOIN rnaSeqValidGenes AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId
+             WHERE t1.rnaSeqLibraryId = ?
+             AND t1.reasonForExclusion = "'.$Utils::CALL_NOT_EXCLUDED.'"
+             ORDER BY t1.tpm DESC');
+
+        $rnaSeqResultsStmt->execute($rnaSeqLibraryId) or die $rnaSeqResultsStmt->errstr;
+
+        my @results = map { {'id' => $_->[0], 'val' => $_->[1]} } @{$rnaSeqResultsStmt->fetchall_arrayref};
+        my %sorted = Utils::fractionnal_ranking(@results);
+        # we get ranks as keys, with reference to an array of gene IDs with that rank as value
+        my %reverseHash = Utils::revhash(%sorted);
+
+
+        # ======= Update ranks ========
+        # if several genes at a same rank, we'll update them at once
+        # with a 'bgeeGeneId IN (?,?, ...)' clause.
+        # If only one gene at a given rank, updated with the prepared statement below.
+        my $rankUpdateStart = 'UPDATE rnaSeqResult SET rank = ? WHERE rnaSeqLibraryId = ? and bgeeGeneId ';
+        my $rnaSeqResultUpdateStmt = $dbh_thread->prepare($rankUpdateStart.'= ?');
+
+        for my $rank ( keys %reverseHash ){
+            my $geneIds_arrRef = $reverseHash{$rank};
+            my @geneIds_arr = @$geneIds_arrRef;
+            my $geneCount = scalar @geneIds_arr;
+            if ( $geneCount == 1 ){
+                my $geneId = $geneIds_arr[0];
+                $rnaSeqResultUpdateStmt->execute($rank, $rnaSeqLibraryId, $geneId)
+                    or die $rnaSeqResultUpdateStmt->errstr;
+            } else {
+                my $query = $rankUpdateStart.'IN (';
+                for ( my $i = 0; $i < $geneCount; $i++ ){
+                    if ( $i > 0 ){
+                        $query .= ', ';
+                    }
+                    $query .= '?';
+                }
+                $query .= ')';
+                my $rnaSeqRankMultiUpdateStmt = $dbh_thread->prepare($query);
+                $rnaSeqRankMultiUpdateStmt->execute($rank, $rnaSeqLibraryId, @geneIds_arr)
+                    or die $rnaSeqRankMultiUpdateStmt->errstr;
+            }
+        }
+
+        #print status
+        printf("Lib: %s - PID: %s - %d/%d", $rnaSeqLibraryId, $pid, $k+1, $batchLength);
+    }
+
+    $dbh_thread->disconnect();
+}
+
 sub compute_rank_lib_batch {
     my ($libBatchRef) = @_;
     my $batchLength = scalar @{ $libBatchRef };
@@ -250,30 +322,44 @@ if ( !$ranks_computed ) {
 
 
     print("Rank computation per library...\n");
+    # First, we change the table engine to MyISAM to avoid having locks when updating the InnoDB table
+    # from multiple processes
+    print("Altering table to MyISAM...\n");
+    my $alterToMyisam = $dbh->prepare('ALTER TABLE rnaSeqResult ENGINE = MyISAM');
+    $alterToMyisam->execute() or die $alterToMyisam->errstr;
+
+    print("Done, start computation/update of ranks.\n");
     # Disconnect the DBI connection open in parent process, otherwise it will generate errors
     # (ForkManager and DBI don't go well together, see https://www.perlmonks.org/?node_id=752289)
     $dbh->disconnect();
+    my $pm = new Parallel::ForkManager($parallel_jobs);
     # We are going to compute/store ranks using parallelization,
-    # by batch of libraries not to overload memory
-    my $libCountBeforeUpdate = 1000;
-    my $count = 0;
-    while ( my @next_libs = splice(@libs, 0, $libCountBeforeUpdate) ) {
-        print($count*$libCountBeforeUpdate.' done/'.$l.' libraries, batch of '.scalar(@next_libs)
-            ." libraries to analyze\n");
-        my $rankBatchRef = compute_rank_lib_batch(\@next_libs);
-        update_ranks($rankBatchRef, $count*$libCountBeforeUpdate);
-        $count += 1;
+    # each child process will be responsible to compute/update ranks for a batch of libraries
+    my $libBatchSize = 100;
+    while ( my @next_libs = splice(@libs, 0, $libBatchSize) ) {
+        # Forks and returns the pid for the child
+        my $pid = $pm->start and next;
+        print("\nStart batch of $libBatchSize libraries, process ID $pid...\n");
+        compute_update_rank_lib_batch(\@next_libs, $pid);
+        print("\nDone batch of $libBatchSize libraries, process ID $pid.\n");
+        $pm->finish;
     }
-    print("Rank computation per library done\n");
+    $pm->wait_all_children;
 
-
-    # ##############
-    # Store max rank and number of distinct ranks per library.
+    print("Computation/update of ranks done, altering table back to InnoDB...\n");
     # Reopen connection that was closed
     $dbh = Utils::connect_bgee_db($bgee_connector);
     if ( $auto == 0 ){
         $dbh->{'AutoCommit'} = 0;
     }
+    # Switch back the table engine to InnoDB
+    my $alterToInnodb = $dbh->prepare('ALTER TABLE rnaSeqResult ENGINE = InnoDB');
+    $alterToInnodb->execute() or die $alterToInnodb->errstr;
+    print("Rank computation per library done\n");
+
+
+    # ##############
+    # Store max rank and number of distinct ranks per library.
     my $sql =
     "UPDATE rnaSeqLibrary AS t0
      INNER JOIN (
