@@ -9,11 +9,8 @@
 ## output_folder -> Path where should be saved the output results for each library
 
 ## libraries used
-library(dplyr)
-library(stringr)
 library(data.table)
 library(HelpersMG)
-library(tools)
 
 ## reading arguments
 cmd_args = commandArgs(TRUE);
@@ -78,29 +75,31 @@ for (i in 1:nrow(finalLibsToDown)) {
   }
 }
 
-## create final information of library and FASZQ.gz file path
+## create final information of the library and FASZQ.gz file path
 generalInfo <- data.frame(LibInfo, ftp)
 
 for (library in  unique(generalInfo$LibInfo)) {
-  
+
   ## create output for each library
   cat("treating the library: ", library, "\n")
   InfoFile <- file.path(output_folder, library)
-  if (!dir.create(InfoFile)){
-    dir.create(InfoFile)
-  } else {
-    print("File already exist.....")
-  }
-  
-  ## select URL for the correspondent library
-  ftpID <- generalInfo[generalInfo$LibInfo %like% library,][,2]
-  setwd(InfoFile)
-  
-  
-  ## control in the downloading process if killed!
-  
-  
-  ## download data
-  wget(c(paste0(ftpID)))
+  dir.create(InfoFile, showWarnings = FALSE)
+  files<-list.files(path = InfoFile, pattern="*.fastq.gz$")
 
+  ## control the downloading process if stops
+  if (dir.exists(InfoFile) == TRUE && file_test("-f", paste0(InfoFile,"/",files)) == TRUE){
+    
+    cat("The folder for the library ", library, " was already created and the FASTQ.gz files downloaded.", "\n")
+  
+  } else {
+    
+    cat("The folder for the library ", library, " exist but .gz files are missing.", "\n")
+    ## select URL for the correspondent library
+    ftpID <- generalInfo[generalInfo$LibInfo %like% library,][,2]
+    setwd(InfoFile)
+    ## download data
+    wget(c(paste0(ftpID)))
+    
+  } 
 }
+
