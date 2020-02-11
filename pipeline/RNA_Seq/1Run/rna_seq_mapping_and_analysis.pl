@@ -23,7 +23,7 @@ my $GTEX_exp_id = 'SRP012682';
 ## All output files are written in the results folder, as well as log files (e.g. SRX081872.out, SRX081872.err, and SRX081872.Rout)
 
 # Define arguments & their default value
-my ($library_id, $sample_info_file, $exclude_sample_file, $index_folder, $fastq_folder, $kallisto_out_folder, $output_log_folder, $ens_release, $ens_metazoa_release, $data_host, $data_login, $enc_passwd_file, $cluster_kallisto_cmd, $cluster_R_cmd) = ('', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
+my ($library_id, $sample_info_file, $exclude_sample_file, $index_folder, $fastq_folder, $kallisto_out_folder, $output_log_folder, $ens_release, $ens_metazoa_release, $enc_passwd_file) = ('', '', '', '', '', '', '', '', '', '', '', '', '', '');
 my %opts = ('library_id=s'           => \$library_id,
             'sample_info_file=s'     => \$sample_info_file,
             'exclude_sample_file=s'  => \$exclude_sample_file,
@@ -33,17 +33,13 @@ my %opts = ('library_id=s'           => \$library_id,
             'output_log_folder=s'    => \$output_log_folder,
             'ens_release=s'          => \$ens_release,
             'ens_metazoa_release=s'  => \$ens_metazoa_release,
-            'data_host=s'            => \$data_host,
-            'data_login=s'           => \$data_login,
             'enc_passwd_file=s'      => \$enc_passwd_file,
-            'cluster_kallisto_cmd=s' => \$cluster_kallisto_cmd,
-            'cluster_R_cmd=s'        => \$cluster_R_cmd,
            );
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $library_id eq '' || $sample_info_file eq '' || $index_folder eq '' || $fastq_folder eq '' || $kallisto_out_folder eq '' || $output_log_folder eq '' || $ens_release eq '' || $ens_metazoa_release eq '' || $data_host eq '' || $data_login eq '' || $enc_passwd_file eq '' || $cluster_kallisto_cmd eq '' || $cluster_R_cmd eq '' ){
+if ( !$test_options || $library_id eq '' || $sample_info_file eq '' || $index_folder eq '' || $fastq_folder eq '' || $kallisto_out_folder eq '' || $output_log_folder eq '' || $ens_release eq '' || $ens_metazoa_release eq '' || $enc_passwd_file eq '' ){
     print "\n\tInvalid or missing argument:
-\te.g. $0 -library_id=... -sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -index_folder=\$(RNASEQ_CLUSTER_GTF)  -fastq_folder=\$(RNASEQ_SENSITIVE_FASTQ) -kallisto_out_folder=\$(RNASEQ_CLUSTER_ALL_RES) -ens_release=\$(ENSRELEASE) -ens_metazoa_release=\$(ENSMETAZOARELEASE) -data_host=\$(DATAHOST) -data_login=\$(DATA_LOGIN) -enc_passwd_file=\$(ENCRYPT_PASSWD_FILE) -cluster_kallisto_cmd=\$(CLUSTER_KALLISTO_CMD) $cluster_R_cmd=\$(CLUSTER_R_CMD)
+\te.g. $0 -library_id=... -sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -index_folder=\$(RNASEQ_CLUSTER_GTF)  -fastq_folder=\$(RNASEQ_SENSITIVE_FASTQ) -kallisto_out_folder=\$(RNASEQ_CLUSTER_ALL_RES) -ens_release=\$(ENSRELEASE) -ens_metazoa_release=\$(ENSMETAZOARELEASE) -enc_passwd_file=\$(ENCRYPT_PASSWD_FILE)
 \t-library_id=s           Library to process
 \t-sample_info_file=s     TSV with information on species and runs for each library
 \t-exclude_sample_file=s  rna_seq_sample_excluded.txt
@@ -53,11 +49,7 @@ if ( !$test_options || $library_id eq '' || $sample_info_file eq '' || $index_fo
 \t-output_log_folder=s    Folder where R output is written
 \t-ens_release=s          Ensembl release,
 \t-ens_metazoa_release=s  Ensembl Metazoa release,
-\t-data_host=s            Sensitive machine with RNA-seq fastq files
-\t-data_login=s           Login for sensitive cluster
 \t-enc_passwd_file=s      File with password necessary to decrypt the GTEx data
-\t-cluster_kallisto_cmd=s Command to load kallisto module on cluster
-\t-cluster_R_cmd=s        Command to load R module on cluster
 \n";
     exit 1;
 }
@@ -139,7 +131,6 @@ if ( $database eq 'EnsemblMetazoa' ){
 
 # defining the path to folder with fastq.gz files for run
 my $fastqSamplePath = $fastq_folder.'/'.$library_id;
-print "\tFastq files path on $data_host machine: $fastqSamplePath\n";
 
 print "\tChecking presence of Fastq files for all runs\n";
 for my $run ( @run_ids ){
@@ -147,7 +138,7 @@ for my $run ( @run_ids ){
     if ( $libraryType eq 'SINGLE' ){
         # GTEx files are encrypted. Files have .enc
         if ( $exp_id eq $GTEX_exp_id ){
-            if ( system('ssh '.$data_login.'@'.$data_host.' test -s '.$fastqSamplePath.'/'.$run.'.fastq.gz.enc') eq 0 ){
+            if ( system('test -f '.$fastqSamplePath.'/'.$run.'.fastq.gz.enc') eq 0 ){
                 print "\tFound fastq.gz.enc file for single-end library (run $run)\n";
             }
             else {
@@ -155,7 +146,7 @@ for my $run ( @run_ids ){
             }
         }
         else {
-            if ( system('ssh '.$data_login.'@'.$data_host.' test -s '.$fastqSamplePath.'/'.$run.'.fastq.gz') eq 0 ){
+            if ( system('test -f '.$fastqSamplePath.'/'.$run.'.fastq.gz') eq 0 ){
                 print "\tFound fastq.gz file for single-end library (run $run)\n";
             }
             else {
@@ -166,13 +157,13 @@ for my $run ( @run_ids ){
     elsif ( $libraryType eq 'PAIRED' ){
         # GTEx files are encrypted. Files have .enc
         if ( $exp_id eq $GTEX_exp_id ){
-            if ( system('ssh '.$data_login.'@'.$data_host.' test -s '.$fastqSamplePath.'/'.$run.'_1.fastq.gz.enc') eq 0 ){
+            if ( system('test -f '.$fastqSamplePath.'/'.$run.'_1.fastq.gz.enc') eq 0 ){
                 print "\tFound fastq.gz.enc file for left reads for paired-end library (run $run)\n";
             }
             else {
                 die "\tProblem: fastq.gz.enc file for left reads not found for single-end library (run $run) [$fastqSamplePath/$run\_1.fastq.gz.enc]\n";
             }
-            if ( system('ssh '.$data_login.'@'.$data_host.' test -s '.$fastqSamplePath.'/'.$run.'_2.fastq.gz.enc') eq 0 ){
+            if ( system('test -f '.$fastqSamplePath.'/'.$run.'_2.fastq.gz.enc') eq 0 ){
                 print "\tFound fastq.gz.enc file for right reads for paired-end library (run $run)\n";
             }
             else {
@@ -180,13 +171,13 @@ for my $run ( @run_ids ){
             }
         }
         else {
-            if ( system('ssh '.$data_login.'@'.$data_host.' test -s '.$fastqSamplePath.'/'.$run.'_1.fastq.gz') eq 0 ){
+            if ( system('test -f '.$fastqSamplePath.'/'.$run.'_1.fastq.gz') eq 0 ){
                 print "\tFound fastq.gz file for left reads for paired-end library (run $run)\n";
             }
             else {
                 die "\tProblem: fastq.gz file for left reads not found for single-end library (run $run) [$fastqSamplePath/$run\_1.fastq.gz]\n";
             }
-            if ( system('ssh '.$data_login.'@'.$data_host.' test -s '.$fastqSamplePath.'/'.$run.'_2.fastq.gz') eq 0 ){
+            if ( system('test -f '.$fastqSamplePath.'/'.$run.'_2.fastq.gz') eq 0 ){
                 print "\tFound fastq.gz file for right reads for paired-end library (run $run)\n";
             }
             else {
@@ -208,7 +199,7 @@ my $maxLength;
 
 for my $run ( @run_ids ){
     if ( $libraryType eq 'SINGLE' ){
-        my $read = `ssh $data_login\@$data_host  grep -v '^#' $fastqSamplePath\/$run\.R.stat | cut -f3`;
+        my $read = `grep -v '^#' $fastqSamplePath\/$run\.R.stat | cut -f3`;
         chomp($read);
         if ( (!defined $read) or ($read eq '') ){
             die "\tProblem: Read length could not be extracted for run [$run]\n";
@@ -229,8 +220,8 @@ for my $run ( @run_ids ){
         }
     }
     elsif ( $libraryType eq 'PAIRED' ){
-        my $read1 = `ssh $data_login\@$data_host  grep -v '^#' $fastqSamplePath\/$run\_1.R.stat | cut -f3`;
-        my $read2 = `ssh $data_login\@$data_host  grep -v '^#' $fastqSamplePath\/$run\_2.R.stat | cut -f3`;
+        my $read1 = `grep -v '^#' $fastqSamplePath\/$run\_1.R.stat | cut -f3`;
+        my $read2 = `grep -v '^#' $fastqSamplePath\/$run\_2.R.stat | cut -f3`;
         chomp($read1);
         chomp($read2);
         if ( (!defined $read1) or ($read1 eq '') ){
@@ -293,12 +284,12 @@ my %number_reads;
 for my $run ( @run_ids ){
     my $FASTP_REPORT;
     if ( $libraryType eq 'SINGLE' ){
-        open($FASTP_REPORT, "ssh $data_login\@$data_host  xzcat $fastqSamplePath/${run}.fastp.json.xz |")
+        open($FASTP_REPORT, "xzcat $fastqSamplePath/${run}.fastp.json.xz |")
             or warn "\nWarning: missing FastP report for run $run\n";
     }
     else {# $libraryType eq 'PAIRED'
         #NOTE Only paired-end _1 is used here (but _2 has also FastP report)
-        open($FASTP_REPORT, "ssh $data_login\@$data_host  xzcat $fastqSamplePath/${run}_1.fastp.json.xz |")
+        open($FASTP_REPORT, "xzcat $fastqSamplePath/${run}_1.fastp.json.xz |")
             or warn "\nWarning: missing FastP report for run $run\n";
     }
 
@@ -330,7 +321,6 @@ close $REPORT2;
 # - Sequence bias correction enabled
 # - for single-end libraries we should provide fragment length, but it is not possible to estimate since we do not have BioAnalyzer results. So we give 180 bp by default, which should be close to real value, see https://groups.google.com/forum/#!topic/kallisto-sleuth-users/h5LeAlWS33w
 # - We also need to provide sd for fragment size, but I have found very little info on this. Based on this post (https://groups.google.com/forum/#!topic/rsem-users/S31Rx01Xd18) I plugged sd=30. This can be changed later
-# - For Kallisto's ssh streaming input, I asked on their Google group: https://groups.google.com/forum/#!msg/kallisto-sleuth-users/L83OxRCwuMM/iZFFahVsCgAJ. Both options I was suggesting could work. We'll use the second one which is more explicit
 # - output folder looks something like: all_results_bgee_v15/
 # - for next Bgee releases, if for a species the genome version and annotation did not change, it is possible to copy paste the results for the the concerned libraries, so that these are not rerun. But be careful with this! In most cases folders of it is probably faster to rerun everything.
 
@@ -342,16 +332,15 @@ if ( ( -s $kallisto_out_folder.'/abundance.tsv' ) && ( -s $kallisto_out_folder.'
 # if Kallisto needs to be launched
 else {
     # creating and invoking the full kallisto command
-    my $kallisto_command = $cluster_kallisto_cmd.'; '; # command to load module. ; added at the end because was removed in slurm_scheduler.pl (hard to pass without messing with command line)
+    my $kallisto_command = '';
     if ( $libraryType eq 'SINGLE' ){
         $kallisto_command .= "kallisto quant -i $index -o $kallisto_out_folder -t 1 --single -l 180 -s 30 --bias ";
         for my $run ( @run_ids ){
             if ( $exp_id ne $GTEX_exp_id ){
-                #$kallisto_command .= $local_not_remote_path.'/'.$library_id.'/'.$run.'.fastq.gz ';
-                $kallisto_command .= '<(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'.fastq.gz) ';
+                $kallisto_command .= '<(cat '.$fastqSamplePath.'/'.$run.'.fastq.gz) ';
             }
             if ( $exp_id eq $GTEX_exp_id ){
-                $kallisto_command .= '<(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.') ';
+                $kallisto_command .= '<(cat '.$fastqSamplePath.'/'.$run.'.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.') ';
             }
         }
     }
@@ -359,11 +348,10 @@ else {
         $kallisto_command .= "kallisto quant -i $index -o $kallisto_out_folder -t 1 --bias ";
         for my $run ( @run_ids ){
             if ( $exp_id ne $GTEX_exp_id ){
-                #$kallisto_command .= $local_not_remote_path.'/'.$library_id.'/'.$run.'_1.fastq.gz '.$local_not_remote_path.'/'.$library_id.'/'.$run.'_2.fastq.gz ';
-                $kallisto_command .= '<(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'_1.fastq.gz) <(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'_2.fastq.gz) ';
+                $kallisto_command .= '<(cat '.$fastqSamplePath.'/'.$run.'_1.fastq.gz) <(cat '.$fastqSamplePath.'/'.$run.'_2.fastq.gz) ';
             }
             if ( $exp_id eq $GTEX_exp_id ){
-                $kallisto_command .= '<(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'_1.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.') <(ssh '.$data_login.'@'.$data_host.' cat '.$fastqSamplePath.'/'.$run.'_2.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.') ';
+                $kallisto_command .= '<(cat '.$fastqSamplePath.'/'.$run.'_1.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.') <(cat '.$fastqSamplePath.'/'.$run.'_2.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.') ';
             }
         }
     }
@@ -463,8 +451,7 @@ if ( -s $count_info_file && -s $R_log_file ){
 }
 else {
     #creating and invoking command that launches rna_seq_analysis.R script
-    my $analyze_count_command = $cluster_R_cmd.'; ';
-    $analyze_count_command .= "R CMD BATCH --no-save --no-restore \'--args".
+    my $analyze_count_command = "R CMD BATCH --no-save --no-restore \'--args".
                               ' kallisto_count_folder="'.$kallisto_out_folder.'"'.
                               ' tx2gene_file="'.$gene2transcript.'"'.
                               ' gene2biotype_file="'.$gene2biotype.'"'.

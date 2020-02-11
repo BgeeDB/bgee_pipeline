@@ -214,7 +214,7 @@ prepare_indexed_transcriptome: get_genome prepare_GTF
 #NOTE Better to run this step in screen or with nohup as submission is done X jobs per X jobs to not overload the system (and not decrease our user priority)!
 abundance_all_intergenic: prepare_indexed_transcriptome $(RNASEQ_SAMPINFO_FILEPATH)
 	# Running the pipeline
-	@perl 1Run/slurm_scheduler.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=$(RNASEQ_CLUSTER_LOG) -index_folder=$(RNASEQ_CLUSTER_GTF) -fastq_folder=$(RNASEQ_BIGBGEE_FASTQ) -kallisto_out_folder=$(RNASEQ_CLUSTER_ALL_RES) -ens_release=$(ENSRELEASE) -ens_metazoa_release=$(ENSMETAZOARELEASE) -data_host=$(DATAHOST) -data_login=$(DATALOGIN) -enc_passwd_file=$(ENCRYPT_PASSWD_FILE) -cluster_kallisto_cmd="$(CLUSTER_KALLISTO_CMD)" -cluster_R_cmd="$(CLUSTER_R_CMD)" >$@.tmp 2>&1
+	@perl 1Run/slurm_scheduler.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=$(RNASEQ_CLUSTER_LOG) -index_folder=$(RNASEQ_CLUSTER_GTF) -fastq_folder=$(RNASEQ_BIGBGEE_FASTQ) -kallisto_out_folder=$(RNASEQ_CLUSTER_ALL_RES) -ens_release=$(ENSRELEASE) -ens_metazoa_release=$(ENSMETAZOARELEASE) -enc_passwd_file=$(ENCRYPT_PASSWD_FILE) -cluster_kallisto_cmd="$(CLUSTER_KALLISTO_CMD)" -cluster_R_cmd="$(CLUSTER_R_CMD)" >$@.tmp 2>&1
 	@echo "TODO: At the end it is a good idea to relaunch the abundance_all_intergenic step to be sure everything was run!"
 	@$(MV) $@.tmp $@
 
