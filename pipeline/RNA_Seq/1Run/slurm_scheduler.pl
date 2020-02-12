@@ -123,7 +123,6 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
     my $sbatch_file = $output_log_folder.'/'.$library_id.'/'.$library_id.'.sbatch';
 
 
-    #TODO Update for paths in Jura +simplify
     my $script_plus_args = "/usr/bin/time -v perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -exclude_sample_file=$exclude_sample_file -index_folder=$index_folder -fastq_folder=$fastq_folder -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -ens_release=$ens_release -ens_metazoa_release=$ens_metazoa_release -enc_passwd_file=$enc_passwd_file";
 
 
