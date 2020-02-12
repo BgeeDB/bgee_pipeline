@@ -4,14 +4,12 @@
 use strict;
 use warnings;
 use diagnostics;
-use Data::Dumper;
 use File::Path qw(make_path);
 use Getopt::Long;
 use Bio::SeqIO;
 use FindBin;
 use lib "$FindBin::Bin/.."; # Get lib path for Utils.pm
 use Utils;
-use Data::Dumper;
 
 
 
@@ -30,8 +28,8 @@ use Data::Dumper;
 my ($bgee_connector, $ens_release, $transcriptomes_folder, $transcriptome_compression_ext, $sum_abundance_file_path, $gaussian_file_path, $ref_intergenic_dir, $other_intergenic_dir) = ('', '', '', '', '', '', '', '', '');
 my %opts = ('bgee=s'       						=> \$bgee_connector,     # Bgee connector string
 			'ens_release=s'      				=> \$ens_release,
-            'transcriptomes_folder=s'  			=> \$transcriptomes_folder, 
-            'transcriptome_compression_ext=s'	=> \$transcriptome_compression_ext, 
+            'transcriptomes_folder=s'  			=> \$transcriptomes_folder,
+            'transcriptome_compression_ext=s'	=> \$transcriptome_compression_ext,
             'sum_abundance_file_path=s'			=> \$sum_abundance_file_path,
 			'gaussian_file_path=s'				=> \$gaussian_file_path,
 			'ref_intergenic_dir=s'				=> \$ref_intergenic_dir,
@@ -61,13 +59,13 @@ if ( !$test_options || $bgee_connector eq '' || $ens_release eq '' || $transcrip
 ## Retrieve species information from Bgee database
 
 my $dbh = Utils::connect_bgee_db($bgee_connector);
-# retrieve a map where key correspond to species and genus of species (e.g Homo_sapiens) 
+# retrieve a map where key correspond to species and genus of species (e.g Homo_sapiens)
 # and value correspond to ensembl id of the species
 my $bgeeSpecies = $dbh->prepare('SELECT genus, species, speciesId FROM species');
 $bgeeSpecies->execute()  or die $bgeeSpecies->errstr;
 my %speNameToSpeId;
 while(my @row = $bgeeSpecies->fetchrow_array()){
-	# Some species names in bgee db contain more than one word (e.g lupus familiaris). 
+	# Some species names in bgee db contain more than one word (e.g lupus familiaris).
 	# For bgee transcriptome files, the species name always correspond to the last word of the name (e.g familiaris)
 	# That's why we only keep the last word of species name
 	my @speciesNames = split(/ /,$row[1]);
@@ -91,7 +89,7 @@ for my $line ( read_file($gaussian_file_path, chomp => 1) ){
 	$rnaSeqLibrary{$speciesId}->{'numberGaussiansIntergenic'} = $fields[4];
 	$rnaSeqLibrary{$speciesId}->{'selectedGaussiansIntergenic'} = $fields[6];
 	$rnaSeqLibrary{$speciesId}->{'selectionSideIntergenic'} = $fields[7];
-	
+
 }
 
 ## open directory containing all compressed transcriptome fasta files
@@ -126,15 +124,15 @@ sub create_coordinate_file {
 while (my $file = readdir(DIR)) {
 	if ($file =~ /.+$ens_release\.transcriptome\.fa$transcriptome_compression_ext$/) {
 		my $file_path = "$transcriptomes_folder$file";
-		
+
 		# remove archive extension to file name
 		my $uncompressed_file = substr($file_path, 0, length($file_path) - length($transcriptome_compression_ext));
 		# if file already exist we remove it
-		if (-e $uncompressed_file) {  
+		if (-e $uncompressed_file) {
 			unlink $uncompressed_file;
 		}
-		
-		
+
+
 		## uncompress xz archive
 		if ($transcriptome_compression_ext =~ /\.xz/) {
 			print("Uncompress archive : $file_path\n");
@@ -145,12 +143,12 @@ while (my $file = readdir(DIR)) {
 		} else {
 			exit("The script only uncompress .xz archives");
 		}
-		
+
 		## retrieve speciesId from file name thanks to species info from the DB
 		$file =~ /^([^_]+_[a-zA-Z]+).*/;
 		my $speciesId = $speNameToSpeId{$1};
-		
-		
+
+
 		## retrieve ids of reference and other intergenic sequences from gaussian
 		## choice file and sum by species file.
 		$sum_abundance_file_path =~ s/SPECIES_ID/$speciesId/g;
@@ -199,17 +197,17 @@ while (my $file = readdir(DIR)) {
 				}
 			}
 		}
-		
+
 		## Create output directories
 		if(!-e $ref_intergenic_dir) {mkdir $ref_intergenic_dir;}
 		if(!-e $other_intergenic_dir) {mkdir $other_intergenic_dir;}
-		
+
 		## Create coordinate tsv file for ref. intergenic and other intergenic sequences.
 		my $ref_intergenic_coordinate_file = $ref_intergenic_dir.$speciesId."_coordinates.tsv";
 		my $other_intergenic_coordinate_file = $other_intergenic_dir.$speciesId."_coordinates.tsv";
 		create_coordinate_file($ref_intergenic_coordinate_file, $speciesId, @ref_intergenic_ids);
 		create_coordinate_file($other_intergenic_coordinate_file, @other_intergenic_ids);
-		
+
 		## Create intergenic fasta files
 		my $ref_intergenic_file = $ref_intergenic_dir.$speciesId."_intergenic.fa";
 		my $other_intergenic_file = $other_intergenic_dir.$speciesId."_other_intergenic.fa";
@@ -225,12 +223,12 @@ while (my $file = readdir(DIR)) {
 				$ref_intergenic_out->write_seq($seq);
   			} elsif ( grep {$_ eq $transcript_id} @other_intergenic_ids) {
 				$other_intergenic_out->write_seq($seq);
-  			}   			
+  			}
  		}
   		print "intergenic files have been created successfully for species $speciesId\n";
   		# remove uncompressed transcriptomic file
   		unlink $uncompressed_file;
-  		
+
 	}
 }
 closedir DIR;

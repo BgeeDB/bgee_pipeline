@@ -9,7 +9,6 @@ use FindBin qw( $RealBin ); # directory where the script is lying
 use File::Path qw(make_path);
 use File::Slurp;
 use List::Util qw(min max);
-use List::MoreUtils qw(uniq);
 use Getopt::Long;
 #use JSON::XS; # See http://blogs.perl.org/users/e_choroba/2018/03/numbers-and-strings-in-json.html
 use Cpanel::JSON::XS;

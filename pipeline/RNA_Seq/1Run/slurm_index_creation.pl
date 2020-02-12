@@ -17,16 +17,16 @@ use Time::localtime;
 # Define arguments & their default value
 my ($transcriptome_folder, $output_log_folder, $ens_release, $ens_metazoa_release, $short_index_length, $cluster_kallisto_cmd, $cluster_tophat_cmd) = ('', '', '', '', '', '', '');
 my %opts = ('transcriptome_folder=s' => \$transcriptome_folder, # same as GTF folder
-			'output_log_folder=s'    => \$output_log_folder,            
+			'output_log_folder=s'    => \$output_log_folder,
             'ens_release=s'          => \$ens_release,
             'ens_metazoa_release=s'  => \$ens_metazoa_release,
 			'short_index_length=s'   => \$short_index_length,
             'cluster_kallisto_cmd=s' => \$cluster_kallisto_cmd,
             'cluster_tophat_cmd=s'   => \$cluster_tophat_cmd
            );
-           
+
 my $test_options = Getopt::Long::GetOptions(%opts);
-           
+
 # TO IMPLEMENT
 # kallisto index generation is no multithreaded
 my $nbr_processors = 1;
@@ -36,17 +36,17 @@ my $user_email     = 'julien.wollbrett@unil.ch'; # for email notification
 my $account        = 'mrobinso_bgee';
 my $queue          = 'ax-normal';
 my $time_limit	   = '12:00:00';
-          
+
 # retrieve path to all transcriptome
 # for each
-#	create string for sbatch file with header, command to generate index, 
+#	create string for sbatch file with header, command to generate index,
 #	check number of jobs running
 #   run jobs for one species ( k31 and k15)
 
 opendir (DIR, $transcriptome_folder) or die "cannot open directory [$transcriptome_folder]";
 while (my $file = readdir(DIR)) {
 	if($file =~ ($ens_release.'.gtf_all$') || $file =~ ($ens_metazoa_release.'.gtf_all$')) {
-	
+
 		# initialise path to all files
 		my $genome_file_path = $transcriptome_folder.'/'.($file =~ s/gtf_all/genome.fa/r);
 		my $transcriptome_file_path = $transcriptome_folder.'/'.($file =~ s/gtf_all/transcriptome.fa/r);
@@ -55,14 +55,14 @@ while (my $file = readdir(DIR)) {
 		my $sbatch_file_path = $transcriptome_folder.'/'.($file =~ s/gtf_all/index.sbatch/r);
 		my $output_file_path = $output_log_folder.'/'.($file =~ s/gtf_all/index.out/r);
 		my $error_file_path = $output_log_folder.'/'.($file =~ s/gtf_all/index.err/r);
-		
+
 		# generate sbatch commands
-		
+
 		next if (-e $short_transcriptome_index_path && -e $transcriptome_index_path);
-		
+
 		# load vital-it softwares
 		my $sbatch_commands = "module add Bioinformatics/Software/vital-it\n";
-		
+
 		if (!-e $transcriptome_file_path) {
 			if (-e "$transcriptome_file_path.xz") {
 				$sbatch_commands .= "# unxz already existing transcriptome file\n";
@@ -80,10 +80,10 @@ while (my $file = readdir(DIR)) {
 				$sbatch_commands .= 'perl -i -pe \'s/^>\\d+ +/>/\' '.$transcriptome_file_path."\n";
 			}
 		}
-		
+
 		# load kallisto module
 		$sbatch_commands .= "$cluster_kallisto_cmd\n";
-		
+
 		# generate index with default kmer size
 		if (!-e $transcriptome_index_path) {
 			$sbatch_commands .= "generate index with default kmer size\n";
@@ -95,32 +95,32 @@ while (my $file = readdir(DIR)) {
 			$sbatch_commands .= "#generate index with a kmer size of $short_index_length\n";
 			$sbatch_commands .= "kallisto index -k $short_index_length -i $short_transcriptome_index_path $transcriptome_file_path\n";
 		}
-		
+
 		# delete genome file not useful for next steps of the pipeline
 		$sbatch_commands .= "# rm -rf $genome_file_path\n";
-		
+
 		# compress transcriptome file
 		$sbatch_commands .= "xz --threads=2 -9 $transcriptome_file_path\n";
-		
+
 		# compress tlst transcriptome file
 		$sbatch_commands .= "if [ -f \"$transcriptome_file_path.tlst\" ]; then\n";
 		$sbatch_commands .= "	xz --threads=2 -9 $transcriptome_file_path.tlst\n";
 		$sbatch_commands .= "fi\n";
-		
+
 		# generate sbatch file
 		open (my $OUT, '>', "$sbatch_file_path")  or die "Cannot write [$sbatch_file_path]\n";
 		print {$OUT} sbatch_header($queue, $account, $nbr_processors, $memory_usage, $output_file_path, $error_file_path, $file, $time_limit);
 		print {$OUT} $sbatch_commands;
 		close $OUT;
-		
+
 		# Then, run the job
 		print "run sbatch script $sbatch_file_path => ";
     	system("sbatch $sbatch_file_path")==0  or print "Failed to submit job [$file]\n";
     	# TODO: should check number of jobs running in order to remove .sbatch files once all indexes have been generate
 	}
-	
+
 }
-          
+
 ############ Functions #############
 
 # Add main sbatch command and options
