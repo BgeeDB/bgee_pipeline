@@ -51,7 +51,7 @@ kallisto <- function(library_id, raw_cells_folder, infoFolder, output_folder){
   fastqFile <- list.files(path=libTarget, pattern = ".*gz$", full.names=T, recursive = TRUE)
   
   ## create a folder for each library in the output directory and write pseudo-alignment
-  dir.create(paste0(output_folder, library_id))
+  ifelse(!dir.exists(file.path(output_folder, library_id)), dir.create(file.path(output_folder, library_id)), FALSE)
   outputLib <- file.path(output_folder, library_id)
   
   if (libraryTypeInfo == "SINGLE" && libraryReadLengthInfo >= 50){

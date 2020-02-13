@@ -14,22 +14,24 @@ use FindBin qw( $RealBin ); # directory where the script is lying
 use Getopt::Long;
 
 # Define arguments & their default value
-my ($scrna_seq_sample_info, $cells_folder, $infoFolder, $cluster_kallisto_cmd, $cluster_R_cmd) = ('', '', '', '', '');
+my ($scrna_seq_sample_info, $raw_cells_folder, $infoFolder, $output_folder, $cluster_kallisto_cmd, $cluster_R_cmd) = ('', '', '', '', '', '');
 my %opts = ('scrna_seq_sample_info=s'     => \$scrna_seq_sample_info,
-            'cells_folder=s'              => \$cells_folder,
+            'raw_cells_folder=s'          => \$raw_cells_folder,
             'infoFolder=s'                => \$infoFolder, # same as GTF folder
+            'output_folder'               => \output_folder,
             'cluster_kallisto_cmd=s'      => \$cluster_kallisto_cmd,
             'cluster_R_cmd=s'             => \$cluster_R_cmd,
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $scrna_seq_sample_info eq '' || $cells_folder eq '' ||  $infoFolder eq '' || $cluster_kallisto_cmd eq '' || $cluster_R_cmd eq ''){
+if ( !$test_options || $scrna_seq_sample_info eq '' || $raw_cells_folder eq '' ||  $infoFolder eq '' || $output_folder eq '' || $cluster_kallisto_cmd eq '' || $cluster_R_cmd eq ''){
     print "\n\tInvalid or missing argument:
-\te.g. $0 -scrna_seq_sample_info=\$(SC_RNASEQ_SAMPINFO_FILEPATH) -cells_folder=\$(SC_RNASEQ_FASTQ) -infoFolder=\$(RNASEQ_CLUSTER_GTF) -cluster_kallisto_cmd=\$(CLUSTER_KALLISTO_CMD) -cluster_R_cmd=\$(CLUSTER_R_CMD)
+\te.g. $0 -scrna_seq_sample_info=\$(SC_RNASEQ_SAMPINFO_FILEPATH) -raw_cells_folder=\$(SC_RNASEQ_FASTQ_FULL_LENGTH) -infoFolder=\$(RNASEQ_CLUSTER_GTF) -output_folder=\$(SC_RNASEQ_CLUSTER_KALLISTO) -cluster_kallisto_cmd=\$(CLUSTER_KALLISTO_CMD) -cluster_R_cmd=\$(CLUSTER_R_CMD)
 \t-scrna_seq_sample_info    scrna_seq_sample_info
-\t-cells_folder=s           Folder with are all libraries with Fastq files
+\t-raw_cells_folder=s       Folder with are all libraries with Fastq files
 \t-infoFolder=s             Folder with Kallisto indexes (same as GTF folder)
+\t-output_folder=s          Folder where the kallisto output should be saved
 \t-cluster_kallisto_cmd=s   Command to load kallisto module on cluster
 \t-cluster_R_cmd=s          Command to load R module on cluster
 \n";
@@ -60,7 +62,7 @@ for my $line ( read_file("$scrna_seq_sample_info", chomp=>1) ){
     my $library_id = $fields[0];
 
     # Test to not re-run already finished jobs
-    if ( -s "$cells_folder/$library_id/DONE.txt" ){
+    if ( -s "$output_folder/$library_id/DONE.txt" ){
         print "\n$library_id not launched because already analyzed\n";
         next JOB;
     }
@@ -75,15 +77,15 @@ for my $line ( read_file("$scrna_seq_sample_info", chomp=>1) ){
     $count++;
 
     # library-specific arguments
-    my $output_file = $cells_folder.'/'.$library_id.'/'.$library_id.'.out';
+    my $output_file = $output_folder.'/'.$library_id.'/'.$library_id.'.out';
     my $rm_output_command = 'rm -f '.$output_file.";\n";
 
-    my $error_file = $cells_folder.'/'.$library_id.'/'.$library_id.'.err';
+    my $error_file = $output_folder.'/'.$library_id.'/'.$library_id.'.err';
     my $rm_error_command = 'rm -f '.$error_file.";\n";
 
-    my $sbatch_file = $cells_folder.'/'.$library_id.'/'.$library_id.'.sbatch';
+    my $sbatch_file = $output_folder.'/'.$library_id.'/'.$library_id.'.sbatch';
 
-    my $script_plus_args = "/usr/bin/time -v R CMD BATCH --no-save --no-restore '--args library_id=\"$library_id\" scrna_seq_sample_info=\"$scrna_seq_sample_info\" cells_folder=\"$cells_folder\" infoFolder=\"$infoFolder\"' $main_script $cells_folder/$library_id/kallisto.Rout";
+    my $script_plus_args = "/usr/bin/time -v R CMD BATCH --no-save --no-restore '--args library_id=\"$library_id\" scrna_seq_sample_info=\"$scrna_seq_sample_info\" raw_cells_folder=\"$raw_cells_folder\" infoFolder=\"$infoFolder\" output_folder=\"$output_folder\"' $main_script $output_folder/$library_id/kallisto.Rout";
 
     # Wait for free places in job queue
     my $running_jobs = check_running_jobs();
