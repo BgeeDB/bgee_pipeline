@@ -56,7 +56,7 @@ foreach my $expId ( sort keys %libraries ){
         unless ( exists $all_species{$libraries{$expId}->{$libraryId}->{'speciesId'}} ){
         	my $speciesId = $libraries{$expId}->{$libraryId}->{'speciesId'};
             print 'Recording length for species ', $speciesId, " [$libraries{$expId}->{$libraryId}->{'organism'}]\n";
-            
+
             ## retrieve mapping between transcript ids and gene ids (without intergenic regions)
             my $genomeFilePath = $libraries{$expId}->{$libraryId}->{'genomeFilePath'};
             my %tx2gene_mapping
@@ -71,7 +71,7 @@ foreach my $expId ( sort keys %libraries ){
                 	$tx2gene_mapping{$tmp[0]} = $column[1]
                 }
             }
-			
+
 			## open kallisto abundance file to retrieve transcript id and corresponding read length
 			my $kallisto_file = $all_results.'/'.$libraryId.'/abundance.tsv';
 			unless ( -s $kallisto_file ){
@@ -86,7 +86,7 @@ foreach my $expId ( sort keys %libraries ){
                 my @tmp = map { bgeeTrim($_) } split(/\t/, $line);
                 if (!exists($intergenic{$someparam})
                 my $transcriptId = $tmp[0];
-                
+
                 my $geneId       = $tx2gene_mapping{$transcriptId};
                 my $length       = $tmp[2];
 

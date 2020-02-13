@@ -63,7 +63,7 @@ if( file.exists(gene2biotype_file) ){
 
 #################### FUNCTIONS ####################
 
-## calculate FPKMs, using functions from 
+## calculate FPKMs, using functions from
 ## https://haroldpimentel.wordpress.com/2014/05/08/what-the-fpkm-a-review-rna-seq-expressio
 tpmToFpkm <- function(tpm, counts, effLen){
   exp(log(tpm) + log(sum(counts/effLen)) - log(sum(counts)) + log(1e3))
