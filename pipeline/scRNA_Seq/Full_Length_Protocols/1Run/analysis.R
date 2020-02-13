@@ -4,7 +4,7 @@
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args scrna_seq_sample_info="scrna_seq_sample_info.txt" cells_folder="cells_folder" infoFolder="infoFolder"' analysis.R analysis.Rout
 ## scrna_seq_sample_info --> annotation file that collect information about each cell/experiment
-## cells_folder --> where we is located the raw data fastq.gz files
+## cells_folder --> where we is located all the libraries/cells after Kallisto (treated data)
 ## infoFolder --> folder where is localized the transcriptome index + gene2transcript + gene2biotype
 
 ## reading arguments

@@ -6,7 +6,7 @@
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args NEW_scRNASeq_sample_info="NEW_scRNASeq_sample_info.tsv" cells_folder="cells_folder" output_folder="output_folder"' Sum_RawCounts_cellPopulation.R Sum_RawCounts_cellPopulation.Rout
 ## NEW_scRNASeq_sample_info --> info of samples per library/experiment/species.
-## cells_folder --> folder where we have all cells (libraries) that belongs to different experiment (experimentID) and different cell-types.
+## cells_folder --> where we is located all the libraries/cells after Kallisto (treated data)
 ## output_folder --> folder where we should save each new abundance.tsv file that belong to each different cell type and experimemnt.
 
 ## Libraries used
