@@ -415,23 +415,39 @@ RNASEQTMMTARG                       := $(RNASEQBIOCONDUCTOR)targets_TMM/
 RNASEQTMMPATH                       := $(RNASEQDATAPATH)processed_TMM_$(DBNAME)/
 
 # =========== SINGLE CELL RNA_Seq FILES  ===============
-# scRNASeq github file paths
-SCRNASEQPATH                         := scRNA_Seq/
-SCRNASEQ_EXPERIMENT_FILEPATH         := $(SOURCE_FILES_DIR)$(SCRNASEQPATH)scRNASeqExperiment.tsv
-SCRNASEQ_LIB_FILEPATH                := $(SOURCE_FILES_DIR)$(SCRNASEQPATH)scRNASeqLibrary.tsv
-SCRNASEQ_JURA_LIB                    := $(SOURCE_FILES_DIR)$(SCRNASEQPATH)juraLibrariesDownloaded.tsv
+# scRNASeq github file paths in the source directory
+SC_RNASEQ_PATH                         := scRNA_Seq/
+SC_RNASEQ_EXPERIMENT_FILEPATH          := $(SOURCE_FILES_DIR)$(SC_RNASEQ_PATH)scRNASeqExperiment.tsv
+SC_RNASEQ_LIB_FILEPATH                 := $(SOURCE_FILES_DIR)$(SC_RNASEQ_PATH)scRNASeqLibrary.tsv
+SC_RNASEQ_JURA_LIB_FILEPATH            := $(SOURCE_FILES_DIR)$(SC_RNASEQ_PATH)juraLibrariesDownloaded.tsv
 
-# scRNAseq cluster paths
-SC_RNASEQ_DOWNLOAD_PATH                       := /scratch/wally/FAC/FBM/DEE/mrobinso/bgee
-SC_RNASEQ_DOWNLOAD_LIB_DIR                    := $(SC_RNASEQ_DOWNLOAD_PATH)scRNASeq_libraries/
-SC_RNASEQ_SAMPINFO_FILEPATH                   := $(GENERATED_FILES_DIR)$(SCRNASEQPATH)scrna_seq_sample_info.txt
-SC_RNASEQ_CLUSTER_ALL_RES                     := $(SC_RNASEQ_DOWNLOAD_PATH)scRNA-Seq_all_results_$(DBNAME)/
+# scRNASeq github file paths in the generated_files directory
+SC_RNASEQ_NEW_LIB_FILEPATH             := $(GENERATED_FILES_DIR)$(SC_RNASEQ_PATH)NEW_scRNASeqLibrary.tsv
+SC_RNASEQ_METADATA_FILEPATH            := $(GENERATED_FILES_DIR)$(SC_RNASEQ_PATH)metadata_info.txt
+SC_RNASEQ_SAMPINFO_FILEPATH            := $(GENERATED_FILES_DIR)$(SC_RNASEQ_PATH)scrna_seq_sample_info.txt
+
+# scRNAseq cluster paths (AXIOM)
+SC_RNASEQ_DOWNLOAD_PATH                 := /scratch/wally/FAC/FBM/DEE/mrobinso/bgee
+SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH     := $(SC_RNASEQ_DOWNLOAD_PATH)scRNA_Seq_All/
+SC_RNASEQ_DOWNLOAD_LIB_DIR              := $(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH)scRNASeq_libraries_FullLength/
+
+# scRNAseq cluster paths (JURA)
+SENSITIVE_GENERAL_PATH                        := /data/unil/dee/dee_robi/
+SC_RNASEQ_FASTQ_FULL_LENGTH                   := $(SENSITIVE_GENERAL_PATH)FASTQ/scRNAseq/Full_length/
+SC_RNASEQ_CLUSTER_ALL_RES                     := $(SENSITIVE_GENERAL_PATH)scRNA-Seq_all_results/
+SC_RNASEQ_CLUSTER_KALLISTO                    := $(SC_RNASEQ_CLUSTER_ALL_RES)Kallisto_All_Cells/
 SC_RNASEQ_CLUSTER_QC_CELLPOP_RES              := $(SC_RNASEQ_CLUSTER_ALL_RES)Quality_Control_Cell_Population/
 SC_RNASEQ_CLUSTER_SUM_RAW_COUNTS_CELLPOP_RES  := $(SC_RNASEQ_CLUSTER_ALL_RES)Sum_Raw_Counts_Cell_Population/
+SC_RNASEQ_CLUSTER_CALL_PRESENT                := $(SC_RNASEQ_CLUSTER_ALL_RES)scRNAseq_Callpresent/
 SC_RNASEQ_CLUSTER_CALL_PRESENT_CELLPOP_RES    := $(SC_RNASEQ_CLUSTER_ALL_RES)Calls_present_Cell_Population/
 
+# scRNASeq file paths
+SC_RNASEQ_MODALITY_CELL_POP                   := $(SC_RNASEQ_CLUSTER_QC_CELLPOP_RES)Modality_Cell_type_per_experiment.tsv
+SC_RNASEQ_SAMPINFO_NEW_FILEPATH               := $(SC_RNASEQ_CLUSTER_QC_CELLPOP_RES)NEW_scRNASeq_sample_info.txt
+SC_RNASEQ_STATS_CELL_POP                      := $(SC_RNASEQ_CLUSTER_CALL_PRESENT_CELLPOP_RES)Stats_SumFile.tsv
+
 # proportion of intergenic allowed in the cell population to make the ratio cut-off
-SC_RNASEQ_RATIO_PROPORTION         := 0.05
+SC_RNASEQ_RATIO_PROPORTION                    := 0.05
 
 # =========== DOWNLOAD FILES ===============
 
