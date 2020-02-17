@@ -428,7 +428,7 @@ SC_RNASEQ_METADATA_FILEPATH            := $(GENERATED_FILES_DIR)$(SC_RNASEQ_PATH
 SC_RNASEQ_SAMPINFO_FILEPATH            := $(GENERATED_FILES_DIR)$(SC_RNASEQ_PATH)scrna_seq_sample_info.txt
 
 # scRNAseq cluster paths (AXIOM)
-SC_RNASEQ_DOWNLOAD_PATH                 := /scratch/wally/FAC/FBM/DEE/mrobinso/bgee
+SC_RNASEQ_DOWNLOAD_PATH                 := /scratch/wally/FAC/FBM/DEE/mrobinso/bgee/
 SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH     := $(SC_RNASEQ_DOWNLOAD_PATH)scRNA_Seq_All/
 SC_RNASEQ_DOWNLOAD_LIB_DIR              := $(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH)scRNASeq_libraries_FullLength/
 
