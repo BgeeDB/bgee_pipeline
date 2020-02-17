@@ -5,7 +5,7 @@
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args NEW_scRNASeq_sample_info="NEW_scRNASeq_sample_info" cells_folder="cells_folder" sum_species="sum_species" gaussian_choice="gaussian_choice" ratioValue="ratioValue" output_folder="output_folder"' scRNAseq_Callpresent.R scRNAseq_Callpresent.Rout
 ## NEW_scRNASeq_sample_info --> file with info on mapped libraries
-## cells_folder --> path where is localized all cells
+## cells_folder --> where we is located all the libraries/cells after Kallisto (treated data)
 ## sum_species --> where is localized sum per species
 ## gaussian_choice --> gaussian choice
 ## ratioValue --> ratio used to perform the cutoff (should be between 0 and 1, where 1 menas 100%)

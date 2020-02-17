@@ -6,7 +6,7 @@
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args NEW_scRNASeq_sample_info="NEW_scRNASeq_sample_info.tsv" cells_folder="cells_folder" output_folder="output_folder" ratioValue="ratioValue"' Sum_Calls_cellPopulation.R Sum_Calls_cellPopulation.Rout
 ## NEW_scRNASeq_sample_info --> info file with all libraries/cell
-## cells_folder --> folder with all libraries/cells
+## cells_folder --> where we is located all the libraries/cells after Kallisto (treated data)
 ## output_folder --> output where should be written the Sum_Calls_cellPopulation
 ## ratioValue --> proportion of intergenic allowed for the ratio cut-off
 

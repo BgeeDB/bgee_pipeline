@@ -10,7 +10,7 @@
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args scrna_seq_sample_info="scrna_seq_sample_info.tsv" cells_folder="cells_folder" output_folder="output_folder" plot="no"' QC_cellPopulation.R QC_cellPopulation.Rout
 ## scrna_seq_sample_info --> collect information about each cell/experiment/species
-## cells_folder --> where we is located the data (raw and treated data)
+## cells_folder --> where we is located all the libraries/cells after Kallisto (treated data)
 ## output_folder --> where we save the output's (files and plots)
 ## plot --> if should plot the graphic results of each experiment (by default is no)
 
