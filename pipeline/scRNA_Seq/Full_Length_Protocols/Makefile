@@ -22,14 +22,14 @@ control_annotation: get_annot 0Preparation/pre_process_control_annotation.R
 ## Retrieve metadata (run rule with sbatch)
 retrieve_metadata: control_annotation 0Preparation/retrieve_metadata.R
 	@echo --- Retrieve metadata information ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SC_RNASEQ_DOWNLOAD_PATH)";@'                 					 Full_Length_Protocols/0Preparation/retrieve_metadata.R
-	@sed -i 's@--output=.*@--output=${PWD}/retrieve_metadata.out@'            						 Full_Length_Protocols/0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/retrieve_metadata.err@'              						 Full_Length_Protocols/0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@SCRIPT_PATH=.*@SCRIPT_PATH=${PWD}@'                            					   Full_Length_Protocols/0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@NEW_scRNASeqLibrary=.*@NEW_scRNASeqLibrary=$(SC_RNASEQ_NEW_LIB_FILEPATH)@'  Full_Length_Protocols/0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@output_folder=.*@output_folder=$(OUTPUT_DIR)@'                 						 Full_Length_Protocols/0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@ROUT=.*@ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES)@' 																 Full_Length_Protocols/0Preparation/retrieve_metadata.sbatch
-	@sbatch Full_Length_Protocols/0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@\(BASE *= \).*@\1"$(SC_RNASEQ_DOWNLOAD_PATH)";@'                 					 0Preparation/retrieve_metadata.R
+	@sed -i 's@--output=.*@--output=${PWD}/retrieve_metadata.out@'            						 0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/retrieve_metadata.err@'              						 0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@SCRIPT_PATH=.*@SCRIPT_PATH=${PWD}@'                            					   0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@NEW_scRNASeqLibrary=.*@NEW_scRNASeqLibrary=$(SC_RNASEQ_NEW_LIB_FILEPATH)@'  0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@output_folder=.*@output_folder=$(OUTPUT_DIR)@'                 						 0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@ROUT=.*@ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES)@' 																 0Preparation/retrieve_metadata.sbatch
+	@sbatch 0Preparation/retrieve_metadata.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
 	@touch $@	
