@@ -28,7 +28,7 @@ retrieve_metadata: control_annotation 0Preparation/retrieve_metadata.R
 	@sed -i 's@SCRIPT_PATH=.*@SCRIPT_PATH=${PWD}@'                            					   0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@NEW_scRNASeqLibrary=.*@NEW_scRNASeqLibrary=$(SC_RNASEQ_NEW_LIB_FILEPATH)@'  0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@output_folder=.*@output_folder=$(OUTPUT_DIR)@'                 						 0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@ROUT=.*@ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES)@' 																 0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@ROUT=.*@ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH)@' 											 0Preparation/retrieve_metadata.sbatch
 	@sbatch 0Preparation/retrieve_metadata.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
