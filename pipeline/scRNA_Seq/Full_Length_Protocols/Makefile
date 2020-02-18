@@ -58,7 +58,6 @@ list_new_downloads: download_cleaning_data
 	@rm -f /tmp/new_downloads
 	@$(GIT) add $(SC_RNASEQ_JURA_LIB_FILEPATH)
 	@$(GIT) commit -m 'Add new downloaded libraries' $(SC_RNASEQ_JURA_LIB_FILEPATH)
-	@$(GIT) push
 	@touch $@
 	
 commit_annotation_and_metadata: list_new_downloads
