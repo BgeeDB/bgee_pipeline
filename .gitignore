@@ -60,12 +60,6 @@ nbproject
 
 # Ignore local Makefile.Config file with passwords
 pipeline/Makefile.Config
-# Exclude files that are simply fetched from bgee curation GIT
-pipeline/Affymetrix/affymetrixChip_full.tsv
-pipeline/Affymetrix/chipType_full.tsv
-pipeline/Affymetrix/microarrayExperiment_full.tsv
-pipeline/RNA_Seq/RNASeqExperiment_full.tsv
-pipeline/RNA_Seq/RNASeqLibrary_full.tsv
 
 pipeline/web/sitemap*.xml
 pipeline/SPARQL-RDF/bgee_connection.properties
