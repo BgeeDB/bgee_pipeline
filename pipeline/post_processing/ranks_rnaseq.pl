@@ -22,17 +22,20 @@ $|=1;
 
 # Define arguments and their default value
 my ($bgee_connector) = ('');
+my ($db_name)        = ('');
 my ($ranks_computed) = (0);
 my %opts = ('bgee=s'         => \$bgee_connector, # Bgee connector string
-            'ranks_computed' => \$ranks_computed,
+            'db_name'        => \$db_name,
+            'ranks_computed' => \$ranks_computed
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $bgee_connector eq ''){
+if ( !$test_options || $bgee_connector eq '' || $db_name eq ''){
     print "\n\tInvalid or missing argument:
 \te.g. $0 -bgee=\$(BGEECMD)
 \t-bgee             Bgee connector string
+\t-db_name          Name of the database
 \t-ranks_computed   Skip generation of raw ranks per library
 \n";
     exit 1;
@@ -325,6 +328,31 @@ if ( !$ranks_computed ) {
     # First, we change the table engine to MyISAM to avoid having locks when updating the InnoDB table
     # from multiple processes
     print("Altering table to MyISAM...\n");
+    my $getFKs = $dbh->prepare('SELECT CONSTRAINT_NAME, TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME,
+                                       REFERENCED_TABLE_SCHEMA, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME
+                               FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+                               WHERE (REFERENCED_TABLE_SCHEMA = ? and REFERENCED_TABLE_NAME = ?)
+                               OR (TABLE_SCHEMA = ? AND TABLE_NAME = ? AND REFERENCED_TABLE_NAME IS NOT NULL)');
+    $getFKs->execute($db_name, 'rnaSeqResult', $db_name, 'rnaSeqResult')  or die $getFKs->errstr;
+    my @fks = map { {'constraint_name' => $_->[0], 'table_schema' => $_->[1], 'table_name' => $_->[2], 'column_name' => $_->[3],
+                     'referenced_table_schema' => $_->[4], 'referenced_table_name' => $_->[5],
+                     'referenced_column_name' => $_->[6]} } @{$getFKs->fetchall_arrayref};
+    my $getDeleteRule = $dbh->prepare("SELECT DELETE_RULE FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS
+                                       WHERE CONSTRAINT_SCHEMA = ? AND CONSTRAINT_NAME = ?");
+    my %deleteRules = ();
+    foreach my $fk (@fks) {
+        $getDeleteRule->execute($fk->{"table_schema"}, $fk->{"constraint_name"})  or die $getDeleteRule->errstr;
+        while (($deleteRule) = $getDeleteRule->fetchrow()) {
+            $deleteRules{$fk->{"table_schema"}.'.'.$fk->{"constraint_name"}} = $deleteRule;
+        }
+    }
+
+    my $dropFK = $dbh->prepare("ALTER TABLE ? DROP FOREIGN KEY ?");
+    foreach (@fks) {
+        $dropFK->execute($_->{"table_schema"}.'.'.$_->{"table_name"}, $_->{"constraint_name"})  or die $dropFK->errstr;
+        print 'Dropped '.$_->{"table_schema"}.'.'.$_->{"table_name"}.', '.$_->{"constraint_name"}."\n";
+    }
+
     my $alterToMyisam = $dbh->prepare('ALTER TABLE rnaSeqResult ENGINE = MyISAM');
     $alterToMyisam->execute() or die $alterToMyisam->errstr;
 
@@ -355,6 +383,16 @@ if ( !$ranks_computed ) {
     # Switch back the table engine to InnoDB
     my $alterToInnodb = $dbh->prepare('ALTER TABLE rnaSeqResult ENGINE = InnoDB');
     $alterToInnodb->execute() or die $alterToInnodb->errstr;
+    my $createFK = $dbh->prepare("ALTER TABLE ? ADD FOREIGN KEY (?) REFERENCES ? (?) ON DELETE ?");
+    foreach (@fks) {
+        $createFK->execute($_->{"table_schema"}.'.'.$_->{"table_name"}, $_->{"column_name"},
+                           $_->{"referenced_table_schema"}.'.'.$_->{"referenced_table_name"}, $_->{"referenced_column_name"},
+                           $deleteRules{$_->{"table_schema"}.'.'.$_->{"constraint_name"}})
+                           or die $createFK->errstr;
+        print 'Created '.$_->{"table_schema"}.'.'.$_->{"table_name"}.', '.$_->{"column_name"}.', '.
+                         $_->{"referenced_table_schema"}.'.'.$_->{"referenced_table_name"}.', '.$_->{"referenced_column_name"}.', '.
+                         $deleteRules{$_->{"table_schema"}.'.'.$_->{"constraint_name"}}."\n";
+    }
     print("Rank computation per library done\n");
 
 
