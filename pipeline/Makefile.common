@@ -153,11 +153,11 @@ CLUSTER_ASPERA_CMD     := $(CLUSTER_SOFT_CMD) module add Utility/aspera_connect/
 #CLUSTER_BEDTOOLS_CMD   := $(CLUSTER_SOFT_CMD) module add UHTS/Analysis/BEDTools/2.26.0;
 #CLUSTER_BOWTIE2_CMD    := $(CLUSTER_SOFT_CMD) module add UHTS/Aligner/bowtie2/2.3.4.1;
 #CLUSTER_HTSEQ_CMD      := $(CLUSTER_SOFT_CMD) module add UHTS/Analysis/HTSeq/0.9.1;
-CLUSTER_KALLISTO_CMD   := $(CLUSTER_SOFT_CMD) module add UHTS/Analysis/kallisto/0.44.0;
-#CLUSTER_PICARD_CMD     := $(CLUSTER_SOFT_CMD) module add UHTS/Analysis/picard-tools/2.18.11; java -jar /software/UHTS/Analysis/picard-tools/2.18.11/picard.jar SortSam
+CLUSTER_KALLISTO_CMD   := $(CLUSTER_SOFT_CMD) module add UHTS/Analysis/kallisto/0.46.0;
+#CLUSTER_PICARD_CMD     := $(CLUSTER_SOFT_CMD) module add UHTS/Analysis/picard-tools/2.21.8; java -jar /software/UHTS/Analysis/picard-tools/2.21.8/picard.jar SortSam
 CLUSTER_R_CMD          := $(CLUSTER_SOFT_CMD) module add R/3.6.1;
-#CLUSTER_SAMTOOLS_CMD   := $(CLUSTER_SOFT_CMD) module add UHTS/Analysis/samtools/0.1.19;
-CLUSTER_SRATOOLKIT_CMD := $(CLUSTER_SOFT_CMD) module add UHTS/Analysis/sratoolkit/2.8.2.1;
+#CLUSTER_SAMTOOLS_CMD   := $(CLUSTER_SOFT_CMD) module add UHTS/Analysis/samtools/1.10;
+CLUSTER_SRATOOLKIT_CMD := $(CLUSTER_SOFT_CMD) module add UHTS/Analysis/sratoolkit/2.9.6.1;
 CLUSTER_TOPHAT_CMD     := $(CLUSTER_SOFT_CMD) module add UHTS/Aligner/tophat/2.1.1;
 #CLUSTER_FASTQC_CMD     := $(CLUSTER_SOFT_CMD) module add UHTS/Quality_control/fastqc/0.11.7;
 CLUSTER_FASTP_CMD     := $(CLUSTER_SOFT_CMD) module add UHTS/Quality_control/fastp/0.19.5;
@@ -367,7 +367,7 @@ RNASEQ_CLUSTER_READONLY        := /data/unil/dee/dee_robi/
 RNASEQ_CLUSTER_SCRIPTS         := $(RNASEQ_CLUSTER_READONLY)GIT/pipeline/
 RNASEQ_CLUSTER_GTF             := $(RNASEQ_CLUSTER_READONLY)rna_seq/GTF/
 RNASEQ_CLUSTER_ALL_RES_BACKUP  := $(RNASEQ_CLUSTER_READONLY)rna_seq/all_results/
-RNASEQ_CLUSTER_SCRATCH         := /scratch/beegfs/FAC/FBM/DEE/bgee_sensitive/
+RNASEQ_CLUSTER_SCRATCH         := /scratch/beegfs/FAC/FBM/DEE/mrobinso/bgee_sensitive/
 RNASEQ_CLUSTER_ALL_RES         := $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME)/
 RNASEQ_CLUSTER_SUM_RES         := $(RNASEQ_CLUSTER_SCRATCH)sum_by_species_$(DBNAME)/
 RNASEQ_CLUSTER_GAUSSIAN_CHOICE := $(GENERATED_FILES_DIR)$(RNASEQPATH)gaussian_choice_by_species.txt
@@ -381,12 +381,12 @@ ENCRYPT_PASSWD_FILE            := /data/unil/dee/dee_robi/.passw
 RNASEQ_SENSITIVE_FASTQ         := /data/unil/dee/dee_robi/FASTQ
 
 # Intergenic folders
-CLUSTER_REF_INTERGENIC_FOLDER  := $(RNASEQ_VITALIT_SCRATCH)ref_intergenic_$(DBNAME)/
-CLUSTER_OTHER_INTERGENIC_FOLDER	 := $(RNASEQ_VITALIT_SCRATCH)other_intergenic_$(DBNAME)/
+CLUSTER_REF_INTERGENIC_FOLDER   := $(RNASEQ_VITALIT_SCRATCH)ref_intergenic_$(DBNAME)/
+CLUSTER_OTHER_INTERGENIC_FOLDER := $(RNASEQ_VITALIT_SCRATCH)other_intergenic_$(DBNAME)/
 
-# RNAseq kallisto index kmer size 
-RNASEQ_KALLISTO_KMER_DEFAULT	:= 31
-RNASEQ_KALLISTO_KMER_SHORT      := 15
+# RNAseq kallisto index kmer size
+RNASEQ_KALLISTO_KMER_DEFAULT  := 31
+RNASEQ_KALLISTO_KMER_SHORT    := 15
 
 # Max proportion of Ns allowed in intergenic sequences
 INTERGENIC_N_PROPORTION         := 0.05

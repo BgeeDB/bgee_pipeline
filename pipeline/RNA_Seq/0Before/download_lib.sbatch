@@ -15,8 +15,6 @@
 #SBATCH --job-name=Download_new_RNASeq_lib
 
 
-module load Bioinformatics/Software/vital-it
-
 module add UHTS/Analysis/sratoolkit/2.9.6.1
 module add Utility/aspera_connect/3.7.4.147727
 module add UHTS/Quality_control/fastp/0.19.5

@@ -22,6 +22,6 @@ module add R/3.6.1
 export SCRIPT_PATH=/users/sfonseca1/bgee_pipeline/pipeline/scRNA_Seq/Full_Length_Protocols
 export NEW_scRNASeqLibrary=../../../generated_files/scRNA_Seq/NEW_scRNASeqLibrary.tsv
 export output_folder=../../../generated_files/scRNA_Seq/
-export ROUT=/data/unil/dee/dee_robi/scRNA-Seq_all_results/
+export ROUT=/scratch/wally/FAC/FBM/DEE/mrobinso/bgee/scRNA_Seq_All/
 
 R CMD BATCH --no-save --no-restore "--args NEW_scRNASeqLibrary=\"$NEW_scRNASeqLibrary\" output_folder=\"$output_folder\"" $SCRIPT_PATH/0Preparation/retrieve_metadata.R $ROUT/retrieve_metadata.Rout
