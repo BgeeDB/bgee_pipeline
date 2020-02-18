@@ -52,12 +52,12 @@ download_cleaning_data: retrieve_metadata 0Preparation/download_cleaning_data.R
 
 ## Add new libraries download to the jura file list (run rule in front)
 list_new_downloads: download_cleaning_data
-	@find $(SC_RNASEQ_DOWNLOAD_LIB_DIR) -type f -name \*.fastq.gz\* | xargs dirname | sed -e 's@^.*/@@' | sort -u > /tmp/new_downloads
-	@cat $(SC_RNASEQ_DOWNLOAD_LIB_DIR) >>/tmp/new_downloads
-	@sort -u /tmp/new_downloads >$(SC_RNASEQ_DOWNLOAD_LIB_DIR)
+	@find $(SC_RNASEQ_DOWNLOAD_LIB_DIR) -type f -name \*.fastq.gz\* | xargs -r dirname | sed -e 's@^.*/@@' | sort -u > /tmp/new_downloads
+	@cat $(SC_RNASEQ_JURA_LIB_FILEPATH) >>/tmp/new_downloads
+	@sort -u /tmp/new_downloads >$(SC_RNASEQ_JURA_LIB_FILEPATH)
 	@rm -f /tmp/new_downloads
-	@$(GIT) add $(SC_RNASEQ_DOWNLOAD_LIB_DIR)
-	@$(GIT) commit -m 'Add new downloaded libraries' $(SC_RNASEQ_DOWNLOAD_LIB_DIR)
+	@$(GIT) add $(SC_RNASEQ_JURA_LIB_FILEPATH)
+	@$(GIT) commit -m 'Add new downloaded libraries' $(SC_RNASEQ_JURA_LIB_FILEPATH)
 	@$(GIT) push
 	@touch $@
 	
