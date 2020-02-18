@@ -83,7 +83,7 @@ get_sra: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_ALREADY_DOWNLOADED)
 	@touch $@
 
 list_new_downloads: get_sra
-	@find $(RNASEQ_DOWNLOAD_LIB_DIR) -type f -name \*.fastq.gz\* | xargs dirname | sed -e 's@^.*/@@' | sort -u > /tmp/new_downloads
+	@find $(RNASEQ_DOWNLOAD_LIB_DIR) -type f -name \*.fastq.gz\* | xargs -r dirname | sed -e 's@^.*/@@' | sort -u > /tmp/new_downloads
 	@cat $(RNASEQ_ALREADY_DOWNLOADED) >>/tmp/new_downloads
 	@sort -u /tmp/new_downloads >$(RNASEQ_ALREADY_DOWNLOADED)
 	@rm -f /tmp/new_downloads
