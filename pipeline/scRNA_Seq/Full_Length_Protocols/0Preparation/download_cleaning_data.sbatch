@@ -19,9 +19,9 @@ module load Bioinformatics/Software/vital-it
 module add R/3.6.1
 
 
-export SCRIPT_PATH=/users/sfonseca1/bgee_pipeline/pipeline/scRNA_Seq/Full_Length_Protocols/
-export metadata_info=../../generated_files/scRNA_Seq/metadata_info.txt
-export librariesDownloadedJura=../../source_files/scRNA_Seq/juraLibrariesDownloaded.tsv
+export SCRIPT_PATH=/users/sfonseca1/bgee_pipeline/pipeline/scRNA_Seq/Full_Length_Protocols
+export metadata_info=../../../generated_files/scRNA_Seq/metadata_info.txt
+export librariesDownloadedJura=../../../source_files/scRNA_Seq/juraLibrariesDownloaded.tsv
 export output_folder=/scratch/wally/FAC/FBM/DEE/mrobinso/bgee/scRNA_Seq_All/scRNASeq_libraries_FullLength/
 export ROUT=/scratch/wally/FAC/FBM/DEE/mrobinso/bgee/scRNA_Seq_All/
 
