@@ -57,7 +57,7 @@ list_new_downloads: download_cleaning_data
 	@sort -u /tmp/new_downloads >$(SC_RNASEQ_JURA_LIB_FILEPATH)
 	@rm -f /tmp/new_downloads
 	@$(GIT) add $(SC_RNASEQ_JURA_LIB_FILEPATH)
-	@$(GIT) commit -m 'Add new downloaded libraries' $(SC_RNASEQ_JURA_LIB_FILEPATH)
+	@$(GIT) commit -m 'Add new downloaded libraries' $(SC_RNASEQ_JURA_LIB_FILEPATH) || true
 	@touch $@
 	
 commit_annotation_and_metadata: list_new_downloads
@@ -65,10 +65,10 @@ commit_annotation_and_metadata: list_new_downloads
 	@$(GIT) add $(INPUT_DIR)scRNASeqLibrary.tsv
 	@$(GIT) add $(OUTPUT_DIR)NEW_scRNASeqLibrary.tsv
 	@$(GIT) add $(OUTPUT_DIR)metadata_info.txt
-	@$(GIT) commit -m 'Update metadata for scRNASeq for $(DBNAME)' $(INPUT_DIR)scRNASeqLibrary.tsv $(OUTPUT_DIR)NEW_scRNASeqLibrary.tsv $(OUTPUT_DIR)metadata_info.txt
+	@$(GIT) commit -m 'Update metadata for scRNASeq for $(DBNAME)' $(INPUT_DIR)scRNASeqLibrary.tsv $(OUTPUT_DIR)NEW_scRNASeqLibrary.tsv $(OUTPUT_DIR)metadata_info.txt || true
 	@$(GIT) push
 	@echo -e "All information is ready, you can go to JURA cluster to prepare the scRNA-Seq information file and continue the pipeline \n"
-	@$(MV) $@.tmp $@
+	@touch $@
 
 	
 ## NOTE: Copy all git repository to JURA!
