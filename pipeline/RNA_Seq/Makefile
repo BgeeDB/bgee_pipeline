@@ -40,7 +40,7 @@ create_rna_seq_sample_info: check_annot $(EXTRAMAPPING_FILEPATH)
 commit_rna_seq_sample_info: create_rna_seq_sample_info $(RNASEQ_SAMPINFO_FILEPATH)
 	# Commit the library information file thta will be used for the rest of the pipeline
 	@$(GIT) add $(RNASEQ_SAMPINFO_FILEPATH)
-	@$(GIT) commit -m 'Update $(RNASEQ_SAMPINFO_FILEPATH) for $(DBNAME)' $(RNASEQ_SAMPINFO_FILEPATH)
+	@$(GIT) commit -m 'Update $(RNASEQ_SAMPINFO_FILEPATH) for $(DBNAME)' $(RNASEQ_SAMPINFO_FILEPATH) || true
 	@$(GIT) push
 	@echo -e "\t$(RNASEQ_SAMPINFO_FILEPATH) is ready, you can go to regular cluster to download new SRA files with get_SRA.pl as *admin* user\n\tDo a 'git pull' before starting\n"
 	@$(MV) $@.tmp $@
@@ -88,7 +88,7 @@ list_new_downloads: get_sra
 	@sort -u /tmp/new_downloads >$(RNASEQ_ALREADY_DOWNLOADED)
 	@rm -f /tmp/new_downloads
 	@$(GIT) add $(RNASEQ_ALREADY_DOWNLOADED)
-	@$(GIT) commit -m 'Add new downloaded libraries' $(RNASEQ_ALREADY_DOWNLOADED)
+	@$(GIT) commit -m 'Add new downloaded libraries' $(RNASEQ_ALREADY_DOWNLOADED) || true
 	@$(GIT) push
 	@touch $@
 
@@ -450,7 +450,7 @@ $(VERIFICATIONFILE): send_files_to_cluster check_conditions insert_expression
 	@$(MV) $@.tmp $@
 # add the verification file to git
 	-@$(GIT) add $@
-	-@$(GIT) commit $@ -m "Commit verification file for RNA Seq"
+	-@$(GIT) commit $@ -m "Commit verification file for RNA Seq" || true
 	-@$(GIT) push
 
 #TODO Clean added/removed steps
@@ -458,7 +458,7 @@ $(VERIFICATIONFILE): send_files_to_cluster check_conditions insert_expression
 clean:
 	-@$(RM) -R $(VERIFICATIONFILE)  check_annot check_tools create_rna_seq_sample_info get_annot get_GTF prepare_GTF get_genome prepare_indexed_transcriptome generate_genome_info prepare_run_info_final create_config_file cluster backup check_curation check_runs insert_RNA_seq insert_expression wormbase external $(RNASEQGTFDATAPATH)/*.gtf $(RNASEQGTFDATAPATH)/*.gtf.gz *.tmp check_conditions insert_expression
 	-@$(GIT) rm $(VERIFICATIONFILE)
-	-@$(GIT) commit $(VERIFICATIONFILE) -m "Removing verification file for RNA Seq"
+	-@$(GIT) commit $(VERIFICATIONFILE) -m "Removing verification file for RNA Seq" || true
 	-@$(GIT) push
 
 # special target to remove RNA_seq from database. We make the name long on purpose, and does not
