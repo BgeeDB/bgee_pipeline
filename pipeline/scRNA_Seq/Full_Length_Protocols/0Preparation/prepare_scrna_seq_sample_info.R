@@ -45,32 +45,34 @@ collectInformationFASTP <- function(raw_cells_folder, library){
   nameRaw <- sub("\\..*", "", rawFiles)
   
   ## check if fastp has already run
-  fastpJSON <- list.files(path=file.path(raw_cells_folder, library), pattern = "*_fastp.json")
+  fastpJSON <- list.files(path=file.path(raw_cells_folder, library), pattern = "*.fastp.json.xz")
  
   if (isTRUE(file.exists(fastpJSON))){
     cat("The fastpJSON file already exist for this library ", library, "\n")
     libraryType <- ifelse(length(rawFiles) == 1, "SINGLE", "PAIRED")
-    readJsonOutput <- fromJSON(file = (list.files(path=file.path(raw_cells_folder, library), pattern = "*_fastp.json")))
+    readJsonOutput <- fromJSON(file = (list.files(path=file.path(raw_cells_folder, library), pattern = "*.fastp.json.xz")))
     readLength <- readJsonOutput$summary$before_filtering$read1_mean_length
   } else {
     cat("Need to run fastp", "\n")
     if (length(rawFiles) == 1){
       cat("The library, ", library ," is SINGLE-end ", "\n")
-      system(sprintf('%s -i %s -h %s -j %s', paste0("fastp"), file.path(raw_cells_folder, library, rawFiles), paste0(nameRaw, "_fastp.html"), paste0(nameRaw, "_fastp.json")))
+      system(sprintf('%s -i %s -h %s -j %s', paste0("fastp"), file.path(raw_cells_folder, library, rawFiles), paste0(nameRaw, ".fastp.html"), paste0(nameRaw, ".fastp.json")))
       libraryType <- "SINGLE"
       ## collect readLength
-      readJsonOutput <- fromJSON(file = (list.files(path=file.path(raw_cells_folder, library), pattern = "*_fastp.json$")))
+      readJsonOutput <- fromJSON(file = (list.files(path=file.path(raw_cells_folder, library), pattern = "*.fastp.json$")))
       readLength <- readJsonOutput$summary$before_filtering$read1_mean_length
+      system(sprintf('%s %s %s %s', paste0("xz"), paste0("-9"), paste0(nameRaw, ".fastp.html"), paste0(nameRaw, ".fastp.json")))
     } else {
       cat("The library, ", library ," is PAIRED-end ", "\n")
       read1 <- rawFiles[1]
       read2 <- rawFiles[2]
       nameFile <-  nameRaw <- sub("\\_.*", "", rawFiles)
-      system(sprintf('%s -i %s -I %s -h %s -j %s', paste0("fastp"), file.path(raw_cells_folder, library, read1), file.path(raw_cells_folder, library, read2), paste0(unique(nameFile), "_fastp.html"), paste0(unique(nameFile), "_fastp.json")))
+      system(sprintf('%s -i %s -I %s -h %s -j %s', paste0("fastp"), file.path(raw_cells_folder, library, read1), file.path(raw_cells_folder, library, read2), paste0(unique(nameFile), ".fastp.html"), paste0(unique(nameFile), ".fastp.json")))
       libraryType <- "PAIRED"
       ## collect readLength
-      readJsonOutput <- fromJSON(file = (list.files(path=file.path(raw_cells_folder, library), pattern = "*_fastp.json$")))
+      readJsonOutput <- fromJSON(file = (list.files(path=file.path(raw_cells_folder, library), pattern = "*.fastp.json$")))
       readLength <- readJsonOutput$summary$before_filtering$read1_mean_length
+      system(sprintf('%s %s %s %s', paste0("xz"), paste0("-9"), paste0(nameRaw, ".fastp.html"), paste0(nameRaw, ".fastp.json")))
     } 
   }
 
