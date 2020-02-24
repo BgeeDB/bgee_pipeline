@@ -84,7 +84,7 @@ check_tools: clusterJURA
 	@echo -e "\n\tRun this command to give access to all modules installed on vital-it\n\tmodule add Bioinformatics/Software/vital-it\n"
 	# Check if all required tools/libs are available 
 	@module add Bioinformatics/Software/vital-it || true
-	@$(CLUSTER_R_CMD) which R                         >> $@.tmp
+	@$(CLUSTER_R_CMD) which R                          > $@.tmp
 	@$(CLUSTER_R_CMD) R -e 'library("dplyr")'         >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("stringr")'       >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("data.table")'    >> $@.tmp  2>/dev/null
@@ -101,13 +101,14 @@ check_tools: clusterJURA
 	@which xz                                         >> $@.tmp
 	@which sbatch                                     >> $@.tmp
 	@$(CLUSTER_KALLISTO_CMD)   which kallisto         >> $@.tmp
+	@$(CLUSTER_FASTP_CMD)      which fastp            >> $@.tmp
 	@$(MV) $@.tmp $@
 
 
 ## Prepare single cell info file (run rule in front)
 prepare_singlecell_info: check_tools $(SC_RNASEQ_NEW_LIB_FILEPATH) 0Preparation/prepare_scrna_seq_sample_info.R
 	@echo --- prepare single cell information file ---
-	$(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args NEW_scRNASeqLibrary="$(SC_RNASEQ_NEW_LIB_FILEPATH)" raw_cells_folder="$(SC_RNASEQ_FASTQ_FULL_LENGTH)" output_folder="${PWD}/$(OUTPUT_DIR)"' 0Preparation/prepare_scrna_seq_sample_info.R 0Preparation/prepare_scrna_seq_sample_info.Rout > $@.tmp
+	@$(CLUSTER_FASTP_CMD) $(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args NEW_scRNASeqLibrary="$(SC_RNASEQ_NEW_LIB_FILEPATH)" raw_cells_folder="$(SC_RNASEQ_FASTQ_FULL_LENGTH)" output_folder="${PWD}/$(OUTPUT_DIR)"' 0Preparation/prepare_scrna_seq_sample_info.R 0Preparation/prepare_scrna_seq_sample_info.Rout > $@.tmp
 	@echo --- DONE ---
 	@$(MV) $@.tmp $@
 
@@ -118,7 +119,7 @@ kallisto: prepare_singlecell_info $SC_RNASEQ_SAMPINFO_FILEPATH
 	@$(MV) $@.tmp $@
 	
 ## Convert TranscriptID to GeneID and recalculations (TPM/FPKM)
-analysis:	kallisto 1Run/analysis.R
+analysis: kallisto 1Run/analysis.R
 	@echo --- Starting the analysis ---
 	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                    								 1Run/analysis.R
 	@sed -i 's@--output=.*@--output=${PWD}/analysis.out@'             							 								  						 1Run/analysis.sbatch
