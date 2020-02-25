@@ -66,8 +66,8 @@ my $nbr_processors = 1;
 # RAM needed: 10GB should be enough
 my $memory_usage   = 10;      # in GB
 my $user_email     = 'bgee@sib.swiss'; # for email notification
-my $account        = 'mrobinso_bgee';
-my $queue          = 'ax-long';
+my $account        = 'mrobinso_bgee_sensitive';
+my $queue          = 'normal';
 
 my $job_limit      = 120; # Number of simultaneous jobs running
 
