@@ -86,13 +86,8 @@ collectInformationFASTP <- function(annotation, kallisto_count_folder, library){
   libraryInfo <- annotation$libraryType[annotation$X.libraryId == library]
   fastpInfo <- paste0(kallisto_count_folder, library)
 
-  if(libraryInfo == "SINGLE"){
-    fastpFile <- list.files(path=fastpInfo, pattern = "\\.fastp.json.xz$")
-    fastpFile <- file.path(fastpInfo, fastpFile)
-  } else {
-    fastpFile <- list.files(path=fastpInfo, pattern = "\\_1.fastp.json.xz$")
-    fastpFile <- file.path(fastpInfo, fastpFile)
-  }
+  fastpFile <- list.files(path=fastpInfo, pattern = "\\.fastp.json.xz$")
+  fastpFile <- file.path(fastpInfo, fastpFile)
   ## If lanes exist, the reads would be summed and calculated the average for reads length
   readsMapInfo <- 0
   readLength <- c()
