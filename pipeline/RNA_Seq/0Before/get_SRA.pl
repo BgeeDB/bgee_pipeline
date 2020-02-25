@@ -83,36 +83,30 @@ while (<$ANNOTATION>){
                 }
             }
 
-            # Run FastP (A quality control tool for high throughput sequence data) for ALL SRR (runs)
-            # as well as basic read length statistics with R
-            #NOTE Would be nice to have all basic stats from FastP (currently some are done in R)
-            my $prefix = "$FASTQ_PATH/$library_id/$sra_id";
+            my $prefix      = "$FASTQ_PATH/$library_id/$sra_id";
+            my $fastq_fastp = '';
+            my $fastq_R     = '';
             ## Single-end
             if ( -s "$prefix.fastq.gz" ){
-                if ( !-e "$prefix.fastp.html.xz" || !-e "$prefix.fastp.json.xz" ){
-                    system("fastp -i $prefix.fastq.gz --json $prefix.fastp.json --html $prefix.fastp.html --thread 2  > $prefix.fastp.log 2>&1")==0
-                        or do { warn "\tfastp failed for [$prefix]\n" };
-                    system("xz -9 $prefix.fastp.html $prefix.fastp.json");
-                }
-                if ( !-e "$prefix.R.stat" ){
-                    system("echo -e \"#min\tmax\tmedian\tmean\" > $prefix.R.stat");
-                    system("zcat $prefix.fastq.gz | sed -n '2~4p' | awk '{print length(\$0)}' | Rscript -e 'd<-scan(\"stdin\", quiet=TRUE);cat(min(d), max(d), median(d), mean(d), sep=\"\\t\");cat(\"\\n\")' >> $prefix.R.stat");
-                }
+                $fastq_fastp = "$prefix.fastq.gz";
+                $fastq_R     = $fastq_fastp;
             }
             ## Paired-end
             elsif ( -s "${prefix}_1.fastq.gz" && -s "${prefix}_2.fastq.gz" ){
-                if ( !-e "$prefix.fastp.html.xz" || !-e "$prefix.fastp.json.xz" ){
-                    system("fastp -i ${prefix}_1.fastq.gz -I ${prefix}_2.fastq.gz --json $prefix.fastp.json --html $prefix.fastp.html --thread 2  > $prefix.fastp.log 2>&1")==0
-                        or do { warn "\tfastp failed for [$prefix]\n" };
-                    system("xz -9 $prefix.fastp.html $prefix.fastp.json");
-                }
-                if ( !-e "$prefix.R.stat" ){
-                    system("echo -e \"#min\tmax\tmedian\tmean\" > $prefix.R.stat");
-                    system("zcat ${prefix}_1.fastq.gz ${prefix}_2.fastq.gz | sed -n '2~4p' | awk '{print length(\$0)}' | Rscript -e 'd<-scan(\"stdin\", quiet=TRUE);cat(min(d), max(d), median(d), mean(d), sep=\"\\t\");cat(\"\\n\")' >> $prefix.R.stat");
-                }
+                $fastq_fastp = "${prefix}_1.fastq.gz -I ${prefix}_2.fastq.gz";
+                $fastq_R     = "${prefix}_1.fastq.gz    ${prefix}_2.fastq.gz";
             }
-            else {
-                warn "Something weird for [$prefix]\n";
+            # Run FastP (A quality control tool for high throughput sequence data) for ALL SRR (runs)
+            # as well as basic read length statistics with R
+            #NOTE Would be nice to have all basic stats from FastP (currently some are done in R)
+            if ( !-e "$prefix.fastp.html.xz" || !-e "$prefix.fastp.json.xz" ){
+                system("fastp -i $fastq_fastp --json $prefix.fastp.json --html $prefix.fastp.html --thread 2  > $prefix.fastp.log 2>&1")==0
+                    or do { warn "\tfastp failed for [$prefix]\n" };
+                system("xz -9 $prefix.fastp.html $prefix.fastp.json");
+            }
+            if ( !-e "$prefix.R.stat" ){
+                system("echo -e \"#min\tmax\tmedian\tmean\" > $prefix.R.stat");
+                system("zcat $fastq_R | sed -n '2~4p' | awk '{print length(\$0)}' | Rscript -e 'd<-scan(\"stdin\", quiet=TRUE);cat(min(d), max(d), median(d), mean(d), sep=\"\\t\");cat(\"\\n\")' >> $prefix.R.stat");
             }
 
             # If private (need encryption):
