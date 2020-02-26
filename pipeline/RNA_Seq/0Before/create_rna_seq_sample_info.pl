@@ -212,14 +212,16 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         }
         # Perform a series of sanity checks
         # Check it is a RNA-seq library
-        my @valid_lib_strategy = ('GSE30617', 'SRP000401', 'E-MTAB-2449', 'SRP003905', 'GSE16552', 'DRP000571');
+        my @valid_lib_strategy = ('GSE30617', 'SRP000401', 'E-MTAB-2449', 'SRP003905', 'GSE16552', 'DRP000571', 'SRP000304', 'SRP004363', 'SRP005402');
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/31
+        #     See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/82
         # GSE30617      OK for Anne
         # SRP000401     OK for Anne
         # E-MTAB-2449   'validated with lower confidence'
         # SRP003905     '"EST" but that it is Illumina paired-end, so I think it is RNA-seq'
         # GSE16552      'Contradictory info but for now kept'. Also in https://gitlab.sib.swiss/Bgee/expression-annotations/issues/33
         # DRP000571     OK for Anne 
+        # SRP000304     OK, FL-cDNA is RNA-Seq
         my @invalid_lib_strategies = ('miRNA-Seq', 'ncRNA-Seq', 'ATAC-seq', 'MAINE-Seq', 'MNase-Seq', 'FAIRE-seq', 'DNase-Hypersensitivity', 'DNase-seq');
         $info =~ /<LIBRARY_STRATEGY>([^<]+)<\/LIBRARY_STRATEGY>/; # [^<] prevents matching to '<' character
         $strategy = $1;
@@ -234,7 +236,8 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         # Particular types of RNA-seq. See https://www.ncbi.nlm.nih.gov/books/NBK49283/ or https://www.ebi.ac.uk/ena/submit/preparing-xmls
         my @valid_selection_methods = ('cDNA', 'oligo-dT', 'Oligo-dT', 'PCR', 'PolyA', 'RANDOM', 'RANDOM PCR', 'RT-PCR');
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
-        my @valid_lib_selection     = ('DRP003809', 'E-MTAB-5895', 'SRP012049', 'SRP021223', 'SRP051959', 'SRP058036', 'SRP082291', 'SRP082342', 'SRP082454', 'SRP106023');
+        #     See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/82
+        my @valid_lib_selection     = ('DRP003809', 'E-MTAB-5895', 'SRP012049', 'SRP021223', 'SRP051959', 'SRP058036', 'SRP082291', 'SRP082342', 'SRP082454', 'SRP106023', 'SRP116580', 'SRP045680', 'SRP018725', 'SRP056073', 'SRP072263', 'SRP036185', 'SRP058798');
         $info =~ /<LIBRARY_SELECTION>([^<]+)<\/LIBRARY_SELECTION>/; # [^<] prevents matching to '<' character
         my $selection = $1;
         if ( $selection =~ /CAGE/ ){
@@ -310,7 +313,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
         #FIXME SRP070951 is kept till we know what to do with "globin reduction" see https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
         my @not_traditional = ('DeepSAGE', 'DeepCAGE', 'LongSAGE', 'SuperSAGE', 'CAGE', 'RACE', 'SAGE', 'DpnII', 'DpnIII', 'NlaIII', 'capture', 'CEL-seq', 'DGE-Seq', 'TagSeq', 'globin reduction', 'globin depletion', 'UMI', 'UMIs', 'ATAC-seq', 'MAINE-Seq', 'Mnase-Seq', 'FAIRE-Seq', 'DNase-seq', 'MACE-Seq', 'QuantSeq');
-        my @verified        = ('ERP000787', 'ERP001694', 'ERP104395',
+        my @verified        = ('ERP000787', 'ERP001694', 'ERP013973', 'ERP104395',
                                'GSE22410', 'GSE64283',
                                'SRP000401', 'SRP013825', 'SRP021940', 'SRP022567', 'SRP041131', 'SRP076617', 'SRP082284',
                                'SRP091779', 'SRP092799', 'SRP098705', 'SRP099849', 'SRP112616', 'SRP125959');
