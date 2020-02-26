@@ -6,7 +6,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
-#SBATCH --mem=10G
+#SBATCH --mem=6G
 #SBATCH --time=10-00:00:00
 
 #SBATCH --output=/users/smoretti/bgee_pipeline.git/pipeline/RNA_Seq/get_sra.out
