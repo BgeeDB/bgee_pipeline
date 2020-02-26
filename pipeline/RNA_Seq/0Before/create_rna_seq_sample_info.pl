@@ -51,6 +51,7 @@ my ($RNAseqLibWormExclusion) = ('');
 my ($extraMapping)           = ('');
 my ($outFile)                = ('');
 my ($debug)                  = (0);
+my ($sample)                 = '';
 my %opts = ('bgee=s'                   => \$bgee_connector,     # Bgee connector string
             'RNAseqLib=s'              => \$RNAseqLib,
             'RNAseqLibChecks=s'        => \$RNAseqLibChecks,
@@ -58,6 +59,7 @@ my %opts = ('bgee=s'                   => \$bgee_connector,     # Bgee connector
             'extraMapping=s'           => \$extraMapping,
             'outFile=s'                => \$outFile,
             'debug'                    => \$debug,
+            'sample=s'                 => \$sample,
            );
 
 # Check arguments
@@ -72,6 +74,7 @@ if ( !$test_options || $bgee_connector eq '' || $RNAseqLib eq '' || $RNAseqLibCh
 \t-outFile                Output file: TSV with all species and SRA information from NCBI
 \t-extraMapping           Extra mapping file
 \t-debug                  more verbose output
+\t-sample                 Analyse this specific sample ONLY
 \n";
     exit 1;
 }
@@ -153,6 +156,11 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
     my $anatID       = $tsv{'uberonId'}[$i];
     my $stageID      = $tsv{'stageId'}[$i];
 
+    #NOTE Restrict analysis to this specific sample id (library or experiment)
+    if ( $sample ne '' ){
+        next SAMPLE  if ( $libraryId ne $sample && $experimentId ne $sample );
+    }
+
     # line commented: skipped
     next SAMPLE  if ( $libraryId =~ /^#/ );
     next SAMPLE  if ( $tag =~ /^ScRNA-seq$/i ); #NOTE Discard Single-cell sequencing, not this pipeline part
@@ -220,7 +228,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         # E-MTAB-2449   'validated with lower confidence'
         # SRP003905     '"EST" but that it is Illumina paired-end, so I think it is RNA-seq'
         # GSE16552      'Contradictory info but for now kept'. Also in https://gitlab.sib.swiss/Bgee/expression-annotations/issues/33
-        # DRP000571     OK for Anne 
+        # DRP000571     OK for Anne
         # SRP000304     OK, FL-cDNA is RNA-Seq
         my @invalid_lib_strategies = ('miRNA-Seq', 'ncRNA-Seq', 'ATAC-seq', 'MAINE-Seq', 'MNase-Seq', 'FAIRE-seq', 'DNase-Hypersensitivity', 'DNase-seq');
         $info =~ /<LIBRARY_STRATEGY>([^<]+)<\/LIBRARY_STRATEGY>/; # [^<] prevents matching to '<' character
