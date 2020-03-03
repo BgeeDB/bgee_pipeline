@@ -67,16 +67,16 @@ send_files_to_cluster: commit_rna_seq_sample_info $(RNASEQ_LIB_FILEPATH_FULL) $(
 #NOTE to be done on regular cluster, with network access
 get_sra: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_ALREADY_DOWNLOADED)
 	@$(GIT) pull
-	@sed -i 's@\(BASE *= \).*@\1"$(RNASEQ_DOWNLOAD_LIB_DIR)";@'                   0Before/get_SRA.pl
-	@sed -i 's@--output=.*@--output=${PWD}/get_sra.out@'                          0Before/download_lib.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/get_sra.err@'                            0Before/download_lib.sbatch
-	@sed -i 's@SCRIPT_PATH=.*@SCRIPT_PATH=${PWD}@'                                0Before/download_lib.sbatch
-	@sed -i 's@ANNOTATION_FILE=.*@ANNOTATION_FILE=$(RNASEQ_SAMPINFO_FILEPATH)@'   0Before/download_lib.sbatch
-	@sed -i 's@DONE_FILE=.*@DONE_FILE=$(RNASEQ_ALREADY_DOWNLOADED)@'              0Before/download_lib.sbatch
-	@sed -i 's@module add UHTS/Analysis/sratoolkit/.*@$(CLUSTER_SRATOOLKIT_CMD)@' 0Before/download_lib.sbatch
-	@sed -i 's@module add Utility/aspera_connect/.*@$(CLUSTER_ASPERA_CMD)@'       0Before/download_lib.sbatch
-	@sed -i 's@module add UHTS/Quality_control/fastp/.*@$(CLUSTER_FASTP_CMD)@'    0Before/download_lib.sbatch
-	@sed -i 's@module add R/.*@$(CLUSTER_R_CMD)@'                                 0Before/download_lib.sbatch
+	@sed -i 's@\(BASE *= \).*@\1"$(RNASEQ_DOWNLOAD_LIB_DIR)";@'                      0Before/get_SRA.pl
+	@sed -i 's@--output=.*@--output=${PWD}/get_sra.out@'                             0Before/download_lib.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/get_sra.err@'                               0Before/download_lib.sbatch
+	@sed -i 's@SCRIPT_PATH=.*@SCRIPT_PATH=${PWD}@'                                   0Before/download_lib.sbatch
+	@sed -i 's@ANNOTATION_FILE=.*@ANNOTATION_FILE=$(RNASEQ_SAMPINFO_FILEPATH)@'      0Before/download_lib.sbatch
+	@sed -i 's@DONE_FILE=.*@DONE_FILE=$(RNASEQ_ALREADY_DOWNLOADED)@'                 0Before/download_lib.sbatch
+	@sed -i 's@^.*module add UHTS/Analysis/sratoolkit/.*@$(CLUSTER_SRATOOLKIT_CMD)@' 0Before/download_lib.sbatch
+	@sed -i 's@^.*module add Utility/aspera_connect/.*@$(CLUSTER_ASPERA_CMD)@'       0Before/download_lib.sbatch
+	@sed -i 's@^.*module add UHTS/Quality_control/fastp/.*@$(CLUSTER_FASTP_CMD)@'    0Before/download_lib.sbatch
+	@sed -i 's@^.*module add R/.*@$(CLUSTER_R_CMD)@'                                 0Before/download_lib.sbatch
 	@sbatch 0Before/download_lib.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo '!!! Rerun this step several times to complete downloads !!!'

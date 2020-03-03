@@ -66,8 +66,8 @@ my $nbr_processors = 1;
 # RAM needed: 10GB should be enough
 my $memory_usage   = 10;      # in GB
 my $user_email     = 'bgee@sib.swiss'; # for email notification
-my $account        = 'mrobinso_bgee';
-my $queue          = 'ax-long';
+my $account        = 'mrobinso_bgee_sensitive';
+my $queue          = 'normal';
 
 my $job_limit      = 120; # Number of simultaneous jobs running
 
@@ -123,7 +123,8 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
     my $sbatch_file = $output_log_folder.'/'.$library_id.'/'.$library_id.'.sbatch';
 
 
-    my $script_plus_args = "/usr/bin/time -v perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -exclude_sample_file=$exclude_sample_file -index_folder=$index_folder -fastq_folder=$fastq_folder -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -ens_release=$ens_release -ens_metazoa_release=$ens_metazoa_release -enc_passwd_file=$enc_passwd_file";
+    #NOTE check memory usage with  grep 'Maximum resident set size' *.time
+    my $script_plus_args = "/usr/bin/time -vo $output_log_folder/$library_id.time  perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -exclude_sample_file=$exclude_sample_file -index_folder=$index_folder -fastq_folder=$fastq_folder -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -ens_release=$ens_release -ens_metazoa_release=$ens_metazoa_release -enc_passwd_file=$enc_passwd_file";
 
 
     # Wait for free places in job queue

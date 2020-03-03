@@ -83,22 +83,30 @@ while (<$ANNOTATION>){
                 }
             }
 
+            my $prefix      = "$FASTQ_PATH/$library_id/$sra_id";
+            my $fastq_fastp = '';
+            my $fastq_R     = '';
+            ## Single-end
+            if ( -s "$prefix.fastq.gz" ){
+                $fastq_fastp = "$prefix.fastq.gz";
+                $fastq_R     = $fastq_fastp;
+            }
+            ## Paired-end
+            elsif ( -s "${prefix}_1.fastq.gz" && -s "${prefix}_2.fastq.gz" ){
+                $fastq_fastp = "${prefix}_1.fastq.gz -I ${prefix}_2.fastq.gz";
+                $fastq_R     = "${prefix}_1.fastq.gz    ${prefix}_2.fastq.gz";
+            }
             # Run FastP (A quality control tool for high throughput sequence data) for ALL SRR (runs)
             # as well as basic read length statistics with R
-            QC:
-            for my $fastq ( glob("$FASTQ_PATH/$library_id/*.gz") ){
-                my ($run_id) = $fastq =~ /([^\/]+)\.fastq\.gz/;
-                if ( !-e "$FASTQ_PATH/$library_id/${run_id}.fastp.html.xz" || !-e "$FASTQ_PATH/$library_id/${run_id}.fastp.json.xz" ){
-                    system("fastp -i $fastq --json $FASTQ_PATH/$library_id/${run_id}.fastp.json --html $FASTQ_PATH/$library_id/${run_id}.fastp.html --thread 2  > $FASTQ_PATH/$library_id/${run_id}.fastp.log 2>&1")==0
-                        or do { warn "\tfastp failed for [$FASTQ_PATH/$library_id/$run_id]\n"; next QC };
-                    system("xz -9 $FASTQ_PATH/$library_id/${run_id}.fastp.html $FASTQ_PATH/$library_id/${run_id}.fastp.json");
-                }
-                #TODO Would be nice to have all basic stats from FastP
-                # Basic read length stats
-                if ( !-e "$FASTQ_PATH/$library_id/${run_id}.R.stat" ){
-                    system("echo -e \"#min\tmax\tmedian\tmean\" > $FASTQ_PATH/$library_id/${run_id}.R.stat");
-                    system("zcat $fastq | sed -n '2~4p' | awk '{print length(\$0)}' | Rscript -e 'd<-scan(\"stdin\", quiet=TRUE);cat(min(d), max(d), median(d), mean(d), sep=\"\\t\");cat(\"\\n\")' >> $FASTQ_PATH/$library_id/${run_id}.R.stat");
-                }
+            #NOTE Would be nice to have all basic stats from FastP (currently some are done in R)
+            if ( !-e "$prefix.fastp.html.xz" || !-e "$prefix.fastp.json.xz" ){
+                system("fastp -i $fastq_fastp --json $prefix.fastp.json --html $prefix.fastp.html --thread 2  > $prefix.fastp.log 2>&1")==0
+                    or do { warn "\tfastp failed for [$prefix]\n" };
+                system("xz -9 $prefix.fastp.html $prefix.fastp.json");
+            }
+            if ( !-e "$prefix.R.stat" ){
+                system("echo -e \"#min\tmax\tmedian\tmean\" > $prefix.R.stat");
+                system("zcat $fastq_R | sed -n '2~4p' | awk '{print length(\$0)}' | Rscript -e 'd<-scan(\"stdin\", quiet=TRUE);cat(min(d), max(d), median(d), mean(d), sep=\"\\t\");cat(\"\\n\")' >> $prefix.R.stat");
             }
 
             # If private (need encryption):

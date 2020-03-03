@@ -197,56 +197,23 @@ my @allLengths;
 my $maxLength;
 
 for my $run ( @run_ids ){
-    if ( $libraryType eq 'SINGLE' ){
-        my $read = `grep -v '^#' $fastqSamplePath\/$run\.R.stat | cut -f3`;
-        chomp($read);
-        if ( (!defined $read) or ($read eq '') ){
-            die "\tProblem: Read length could not be extracted for run [$run]\n";
-        }
-        print "\tMedian read length = $read for run [$run]\n";
-
-        # record min and max lengths across runs
-        push @allLengths, $read;
-
-        # verify that extracted read length is consistent with SRA info
-        if ( ($read != $readLength) and ($readLength ne '') ){
-            warn "\nProblem: Read length in FASTQ file [$read] is not consistent with SRA record [$readLength]. Please check [$run]\n";
-        }
-        # reads too short for Kallisto index with default k-mer length
-        if ( $read < $lengthCutoff ){
-            $shortReads = 1;
-            warn "\nWarning: Length of reads [$read] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 15nt [$run]\n";
-        }
+    my $read = `grep -v '^#' $fastqSamplePath\/$run\.R.stat | cut -f3`;
+    chomp($read);
+    if ( (!defined $read) or ($read eq '') ){
+        die "\tProblem: Read length could not be extracted for run [$run]\n";
     }
-    elsif ( $libraryType eq 'PAIRED' ){
-        my $read1 = `grep -v '^#' $fastqSamplePath\/$run\_1.R.stat | cut -f3`;
-        my $read2 = `grep -v '^#' $fastqSamplePath\/$run\_2.R.stat | cut -f3`;
-        chomp($read1);
-        chomp($read2);
-        if ( (!defined $read1) or ($read1 eq '') ){
-            die "\tProblem: Length of left read could not be extracted for run [$run]\n";
-        }
-        if ( (!defined $read2) or ($read2 eq '') ){
-            die "\tProblem: Length of right read could not be extracted for run [$run]\n";
-        }
-        print "\tRead lengths = $read1/$read2 for run [$run]\n";
+    print "\tMedian read length = $read for run [$run]\n";
 
-        # record min and max lengths across pairs and runs. Here the length is recorded for each subread of each pair
-        push @allLengths, $read1, $read2;
-
-        # verify that same length for both PE reads. If not, probably an error
-        if ( $read1 != $read2 ){
-            warn "\nWarning: Length of left and right reads are different [$read1/$read2]. Please check [$run]\n";
-        }
-        # verify that extracted read length is consistent with SRA info
-        if ( (($read1 + $read2) != $readLength) and ($readLength ne '') ){
-            warn "\nProblem: Length of left and right reads in FASTQ files [$read1+$read2=", ($read1 + $read2), "] are not consistent with SRA record [$readLength]. Please check [$run]\n";
-        }
-        # reads too short for Kallisto index with default k-mer length
-        if ( ( $read1 < $lengthCutoff ) or ( $read2 < $lengthCutoff ) ){
-            $shortReads = 1;
-            warn "\nWarning: Length of left and/or right reads [$read1/$read2] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 15nt [$run]\n";
-        }
+    # record min and max lengths across runs
+    push @allLengths, $read;
+    # verify that extracted read length is consistent with SRA info
+    if ( ($read != $readLength) and ($readLength ne '') ){
+        warn "\nProblem: Read length in FASTQ file [$read] is not consistent with SRA record [$readLength]. Please check [$run]\n";
+    }
+    # reads too short for Kallisto index with default k-mer length
+    if ( $read < $lengthCutoff ){
+        $shortReads = 1;
+        warn "\nWarning: Length of reads [$read] too short for pseudo-mapping on index with k-mer length of 31nt. Library will be pseudo-mapped on index with k-mer length of 15nt [$run]\n";
     }
 }
 
@@ -281,16 +248,8 @@ print "\tKallisto index $index will be used for pseudo-mapping\n";
 print "\tExtracting total number of reads from FastP report...\n";
 my %number_reads;
 for my $run ( @run_ids ){
-    my $FASTP_REPORT;
-    if ( $libraryType eq 'SINGLE' ){
-        open($FASTP_REPORT, "xzcat $fastqSamplePath/${run}.fastp.json.xz |")
-            or warn "\nWarning: missing FastP report for run $run\n";
-    }
-    else {# $libraryType eq 'PAIRED'
-        #NOTE Only paired-end _1 is used here (but _2 has also FastP report)
-        open($FASTP_REPORT, "xzcat $fastqSamplePath/${run}_1.fastp.json.xz |")
-            or warn "\nWarning: missing FastP report for run $run\n";
-    }
+    open(my $FASTP_REPORT, "xzcat $fastqSamplePath/${run}.fastp.json.xz |")
+        or warn "\nWarning: missing FastP report for run $run\n";
 
     my $json_report = '';
     $json_report .= $_  while <$FASTP_REPORT>;
