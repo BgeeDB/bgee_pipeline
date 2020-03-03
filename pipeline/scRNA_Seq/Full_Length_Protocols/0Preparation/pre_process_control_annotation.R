@@ -13,6 +13,7 @@ library(tools)
 library(readr)
 library(stringr)
 library(dplyr)
+library(forcats)
 
 ## reading arguments
 cmd_args = commandArgs(TRUE);
@@ -36,6 +37,9 @@ if( file.exists(scRNASeqLibrary) ){
   annotation <- read.table(scRNASeqLibrary, h=T, sep="\t", comment.char="")
   names(annotation)[1] <- "libraryId"
   annotation <- dplyr::filter(annotation, annotation$protocolType == "Full-length")
+  ## just replace NA in sex and strain per "missing information" to be a level in factor (levels())
+  annotation$sex <- forcats::fct_explicit_na(annotation$sex)
+  annotation$strain <- forcats::fct_explicit_na(annotation$strain)
   pathAnnotation <- dirname(scRNASeqLibrary)
 } else {
   stop( paste("scRNASeqLibrary file not found [", scRNASeqLibrary, "]\n"))
@@ -58,28 +62,41 @@ outfile_NOT_PASS <- file.path(output_folder, "NOT_PASS_scRNASeqLibrary.tsv")
 for (species in unique(annotation$speciesId)) {
   cat("Species:", species, "\n")
   for (experiment in unique(annotation$experimentId[annotation$speciesId == species])){
-    cat("Name of Experiments:", experiment, "\n")
-    for (cellId in unique(annotation$cellTypeName[annotation$experimentId == experiment])){
-    cat("Name of cells:", cellId, "\n")
-      
-      infoLib <- annotation$libraryId[annotation$experimentId == experiment & annotation$cellTypeName == cellId]
-      infoLib2 <- as.data.frame(infoLib); colnames(infoLib2) <- "libraryId"
-      cat("Libraries for this cell-type, experiment and species: ", length(infoLib), "\n")
- 
+    cat("Name of experiments that belongs to the species:", experiment, "\n")
+    for (cellId in unique(annotation$cellTypeId[annotation$experimentId == experiment])){
+      cat("CellId info:", cellId, "\n")
+      for (stageId in unique(annotation$stageId[annotation$cellTypeId == cellId])){
+        cat("StageId info:", stageId, "\n")
+        for (strain in unique(annotation$strain[annotation$stageId == stageId])){
+          cat("Strain info:", strain, "\n")
+          for (uberonId in unique(annotation$uberonId[annotation$strain == strain])){
+            cat("UberonId info:", uberonId, "\n")
+            for (sex in unique(annotation$sex[annotation$uberonId == uberonId])){
+              cat("sex info:", sex, "\n")
+     
+        infoLib <- annotation$libraryId[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]
+        infoLib2 <- as.data.frame(infoLib); colnames(infoLib2) <- "libraryId"
+        cat("Libraries retrieved : ", length(infoLib), "\n")
+        
         if(length(infoLib) >= 100){
-        extractInfo <- merge(infoLib2, annotation, by="libraryId")
-        information_file <- data.frame(extractInfo)
-        information_file <- information_file %>% filter(!str_detect(information_file$libraryId, "^#"))
-        write.table(information_file, file = outfile_PASS, col.names = FALSE , row.names = FALSE ,append = TRUE, quote = FALSE, sep = "\t")
-      } else {
-        extractInfo <- merge(infoLib2, annotation, by="libraryId")
-        information_file <- data.frame(extractInfo)
-        information_file <- information_file %>% filter(!str_detect(information_file$libraryId, "^#"))
-        write.table(information_file, file = outfile_NOT_PASS, col.names = FALSE, row.names = FALSE , append = TRUE, quote = FALSE, sep = "\t")
+          extractInfo <- merge(infoLib2, annotation, by="libraryId")
+          information_file <- data.frame(extractInfo)
+          information_file <- information_file %>% filter(!str_detect(information_file$libraryId, "^#"))
+          write.table(information_file, file = outfile_PASS, col.names = FALSE , row.names = FALSE ,append = TRUE, quote = FALSE, sep = "\t")
+        } else {
+          extractInfo <- merge(infoLib2, annotation, by="libraryId")
+          information_file <- data.frame(extractInfo)
+          information_file <- information_file %>% filter(!str_detect(information_file$libraryId, "^#"))
+          write.table(information_file, file = outfile_NOT_PASS, col.names = FALSE, row.names = FALSE , append = TRUE, quote = FALSE, sep = "\t") 
+        }
+            }
+          }
+        }
       }
     }
   }
 }
+
 ## samples that passed
 info1 <- file.info(outfile_PASS)
 if (info1$size == "0"){
