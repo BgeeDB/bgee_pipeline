@@ -25,7 +25,7 @@ my ($bgee_connector) = ('');
 my ($db_name)        = ('');
 my ($ranks_computed) = (0);
 my %opts = ('bgee=s'         => \$bgee_connector, # Bgee connector string
-            'db_name'        => \$db_name,
+            'db_name=s'      => \$db_name,
             'ranks_computed' => \$ranks_computed
            );
 
@@ -165,135 +165,6 @@ sub compute_update_rank_lib_batch {
     $dbh_thread->disconnect();
 }
 
-sub compute_rank_lib_batch {
-    my ($libBatchRef) = @_;
-    my $batchLength = scalar @{ $libBatchRef };
-
-    # Connection to database in the parent process must have been closed
-    # before calling this sub, otherwise it will generate errors
-    # (ForkManager and DBI don't go well together, see https://www.perlmonks.org/?node_id=752289)
-    my $pm = new Parallel::ForkManager($parallel_jobs);
-    # Returning ranks computed from each thread to the main thread for update
-    # (reading and updating the table at the same time leads to deadlock issues).
-    # We will put everything in memory
-    my @batchLibRankInfo = ();  # for collecting responses
-    $pm -> run_on_finish ( # called BEFORE the first call to start()
-        sub {
-            my ($pid, $exit_code, $ident, $exit_signal, $core_dump, $data_structure_reference) = @_;
-
-            # retrieve data structure from child
-            # $data_structure_reference is a reference to a hash.
-            # Key "libraryId" associated to a value being the ID of a RNA-Seq library
-            # Key "ranks" associated to a value being a reference to a hash,
-            # with ranks as keys, and reference to an array of gene IDs with that rank as value
-            if (defined($data_structure_reference)) {
-                push @batchLibRankInfo, $data_structure_reference;
-            } else {  # problems occurring during storage or retrieval will throw a warning
-                warn "No message received from child process $pid!\n";
-            }
-        }
-    );
-
-    # Compute ranks
-    for my $k ( 0..$batchLength-1 ) {
-
-        # Forks and returns the pid for the child
-        my $pid = $pm->start and next;
-        # Get a new database connection for each thread
-        my $dbh_thread = Utils::connect_bgee_db($bgee_connector);
-        #Set to 0 in order to disable autocommit to optimize speed
-        if ( $auto == 0 ){
-            $dbh_thread->{'AutoCommit'} = 0;
-        }
-        my $rnaSeqLibraryId = ${$libBatchRef}[$k];
-        my $rnaSeqResultsStmt = $dbh_thread->prepare(
-            'SELECT DISTINCT t1.bgeeGeneId, t1.tpm
-             FROM rnaSeqResult AS t1 '.
-             # join to table rnaSeqValidGenes to force
-             # the selection of valid genes
-             'INNER JOIN rnaSeqValidGenes AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId
-             WHERE t1.rnaSeqLibraryId = ?
-             AND t1.reasonForExclusion = "'.$Utils::CALL_NOT_EXCLUDED.'"
-             ORDER BY t1.tpm DESC');
-
-        $rnaSeqResultsStmt->execute($rnaSeqLibraryId)  or die $rnaSeqResultsStmt->errstr;
-
-        my @results = map { {'id' => $_->[0], 'val' => $_->[1]} } @{$rnaSeqResultsStmt->fetchall_arrayref};
-        $dbh_thread->disconnect();
-        my %sorted = Utils::fractionnal_ranking(@results);
-        # we get ranks as keys, with reference to an array of gene IDs with that rank as value
-        my %reverseHash = Utils::revhash(%sorted);
-        # We add the info of library ID in the returned hash to be used by the main thread
-        my %returnedInfo;
-        $returnedInfo{'libraryId'} = $rnaSeqLibraryId;
-        $returnedInfo{'ranks'} = \%reverseHash;
-        #print status
-        printf("Lib: %s - %d/%d", $rnaSeqLibraryId, $k+1, $batchLength);
-        # Terminates the child process and send the results to the main thread
-        $pm->finish(0, \%returnedInfo);
-    }
-    $pm->wait_all_children;
-
-    return \@batchLibRankInfo;
-}
-
-# We are going to update the ranks in batches to not overload memory,
-# this sub will be called every x child processes terminate
-sub update_ranks {
-    my ($batchLibRankInfoRef, $done) = @_;
-
-    # Reopen the connection in parent process that we disconnected before launching
-    # the child processes
-    my $dbh_sub = Utils::connect_bgee_db($bgee_connector);
-    if ( $auto == 0 ){
-        $dbh_sub->{'AutoCommit'} = 0;
-    }
-    # if several genes at a same rank, we'll update them at once
-    # with a 'bgeeGeneId IN (?,?, ...)' clause.
-    # If only one gene at a given rank, updated with the prepared statement below.
-    my $rankUpdateStart = 'UPDATE rnaSeqResult SET rank = ? WHERE rnaSeqLibraryId = ? and bgeeGeneId ';
-    my $rnaSeqResultUpdateStmt = $dbh_sub->prepare($rankUpdateStart.'= ?');
-
-    for my $libRankInfoRef (@{ $batchLibRankInfoRef }) {
-        my $rnaSeqLibraryId = $libRankInfoRef->{'libraryId'};
-        my $libRankRef      = $libRankInfoRef->{'ranks'};
-        for my $rank ( keys %{ $libRankRef } ){
-            my $geneIds_arrRef = $libRankRef->{$rank};
-            my @geneIds_arr = @$geneIds_arrRef;
-            my $geneCount = scalar @geneIds_arr;
-            if ( $geneCount == 1 ){
-                my $geneId = $geneIds_arr[0];
-                $rnaSeqResultUpdateStmt->execute($rank, $rnaSeqLibraryId, $geneId)
-                    or die $rnaSeqResultUpdateStmt->errstr;
-            } else {
-                my $query = $rankUpdateStart.'IN (';
-                for ( my $i = 0; $i < $geneCount; $i++ ){
-                    if ( $i > 0 ){
-                        $query .= ', ';
-                    }
-                    $query .= '?';
-                }
-                $query .= ')';
-                my $rnaSeqRankMultiUpdateStmt = $dbh_sub->prepare($query);
-                $rnaSeqRankMultiUpdateStmt->execute($rank, $rnaSeqLibraryId, @geneIds_arr)
-                    or die $rnaSeqRankMultiUpdateStmt->errstr;
-            }
-        }
-
-        printf("Lib updated: %s\tIdx:%d", $rnaSeqLibraryId, $done);
-        $done += 1;
-    }
-    # commit here if auto-commit is disabled
-    if ( $auto == 0 ){
-        $dbh_sub->commit()  or die('Failed commit');
-    }
-    # Important to disconnect the DBI connection open in parent process,
-    # otherwise it will generate errors
-    # (ForkManager and DBI don't go well together, see https://www.perlmonks.org/?node_id=752289)
-    $dbh_sub->disconnect();
-}
-
-
 
 if ( !$ranks_computed ) {
 
@@ -342,19 +213,23 @@ if ( !$ranks_computed ) {
     my %deleteRules = ();
     foreach my $fk (@fks) {
         $getDeleteRule->execute($fk->{"table_schema"}, $fk->{"constraint_name"})  or die $getDeleteRule->errstr;
-        while (($deleteRule) = $getDeleteRule->fetchrow()) {
+        while ((my $deleteRule) = $getDeleteRule->fetchrow()) {
             $deleteRules{$fk->{"table_schema"}.'.'.$fk->{"constraint_name"}} = $deleteRule;
         }
     }
 
-    my $dropFK = $dbh->prepare("ALTER TABLE ? DROP FOREIGN KEY ?");
     foreach (@fks) {
-        $dropFK->execute($_->{"table_schema"}.'.'.$_->{"table_name"}, $_->{"constraint_name"})  or die $dropFK->errstr;
+        # table/FK name cannot be parameterized
+        my $dropFK = $dbh->prepare('ALTER TABLE '.$_->{"table_schema"}.'.'.$_->{"table_name"}.' DROP FOREIGN KEY '.$_->{"constraint_name"});
+        $dropFK->execute()  or die $dropFK->errstr;
         print 'Dropped '.$_->{"table_schema"}.'.'.$_->{"table_name"}.', '.$_->{"constraint_name"}."\n";
     }
 
     my $alterToMyisam = $dbh->prepare('ALTER TABLE rnaSeqResult ENGINE = MyISAM');
     $alterToMyisam->execute() or die $alterToMyisam->errstr;
+    if ( $auto == 0 ){
+        $dbh->commit()  or die('Failed commit');
+    }
 
     print("Done, start computation/update of ranks.\n");
     # Disconnect the DBI connection open in parent process, otherwise it will generate errors
@@ -383,15 +258,20 @@ if ( !$ranks_computed ) {
     # Switch back the table engine to InnoDB
     my $alterToInnodb = $dbh->prepare('ALTER TABLE rnaSeqResult ENGINE = InnoDB');
     $alterToInnodb->execute() or die $alterToInnodb->errstr;
-    my $createFK = $dbh->prepare("ALTER TABLE ? ADD FOREIGN KEY (?) REFERENCES ? (?) ON DELETE ?");
     foreach (@fks) {
-        $createFK->execute($_->{"table_schema"}.'.'.$_->{"table_name"}, $_->{"column_name"},
-                           $_->{"referenced_table_schema"}.'.'.$_->{"referenced_table_name"}, $_->{"referenced_column_name"},
-                           $deleteRules{$_->{"table_schema"}.'.'.$_->{"constraint_name"}})
-                           or die $createFK->errstr;
+        # table/FK name cannot be parameterized
+        my $createFK = $dbh->prepare('ALTER TABLE '.$_->{"table_schema"}.'.'.$_->{"table_name"}.
+                                     ' ADD FOREIGN KEY ('.$_->{"column_name"}.') REFERENCES '.
+                                     $_->{"referenced_table_schema"}.'.'.$_->{"referenced_table_name"}.' ('.
+                                     $_->{"referenced_column_name"}.') ON DELETE '.
+                                     $deleteRules{$_->{"table_schema"}.'.'.$_->{"constraint_name"}});
+        $createFK->execute() or die $createFK->errstr;
         print 'Created '.$_->{"table_schema"}.'.'.$_->{"table_name"}.', '.$_->{"column_name"}.', '.
                          $_->{"referenced_table_schema"}.'.'.$_->{"referenced_table_name"}.', '.$_->{"referenced_column_name"}.', '.
                          $deleteRules{$_->{"table_schema"}.'.'.$_->{"constraint_name"}}."\n";
+    }
+    if ( $auto == 0 ){
+        $dbh->commit()  or die('Failed commit');
     }
     print("Rank computation per library done\n");
 
