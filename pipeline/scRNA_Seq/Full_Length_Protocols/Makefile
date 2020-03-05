@@ -65,7 +65,7 @@ commit_annotation_and_metadata: list_new_downloads
 	@$(GIT) add $(INPUT_DIR)scRNASeqLibrary.tsv
 	@$(GIT) add $(OUTPUT_DIR)NEW_scRNASeqLibrary.tsv
 	@$(GIT) add $(OUTPUT_DIR)metadata_info.txt
-	@$(GIT) commit -m 'Update metadata for scRNASeq for $(DBNAME)' $(INPUT_DIR)scRNASeqLibrary.tsv $(OUTPUT_DIR)NEW_scRNASeqLibrary.tsv $(OUTPUT_DIR)metadata_info.txt || true
+	@$(GIT) commit -m 'Update metadata for scRNASeq for $(DBNAME)' $(INPUT_DIR)scRNASeqLibrary.tsv $(OUTPUT_DIR)NEW_scRNASeqLibrary.tsv $(OUTPUT_DIR)NOT_PASS_scRNASeqLibrary.tsv $(OUTPUT_DIR)metadata_info.txt $(OUTPUT_DIR)metadata_notMatch.txt || true
 	@$(GIT) push
 	@echo -e "All information is ready, you can go to JURA cluster to prepare the scRNA-Seq information file and continue the pipeline \n"
 	@touch $@

@@ -143,7 +143,7 @@ fileInfo <- read.table(fileInfo, header=TRUE, sep="\t")
 
 ## Create the scrna_seq_sample_info
 scrna_seq_sample_info <- merge(annotation, fileInfo, by = "libraryId", incomparables = NaN)
-scrna_seq_sample_info <- scrna_seq_sample_info[c(1,2,7,6,23,3,33,31,32,34,11)]
+scrna_seq_sample_info <- scrna_seq_sample_info[c(1,2,7,6,23,3,33,31,32,34,11,9,4,21,22)]
 scrna_seq_sample_info$organism <- "NaN"
 finalTable <- speciesName(scrna_seq_sample_info = scrna_seq_sample_info)
 write.table(finalTable,file = file.path(output_folder, "scrna_seq_sample_info.txt"),quote = FALSE, sep = "\t", col.names = TRUE, row.names = FALSE)
