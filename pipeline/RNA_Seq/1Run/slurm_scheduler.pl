@@ -140,7 +140,6 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
     # Script can be launched! Construct SLURM sbatch command:
     # First, remove previous .out and .err files
     my $sbatch_command = $rm_output_command.$rm_error_command;
-    $sbatch_command .= 'module add Bioinformatics/Software/vital-it'."\n";
     $sbatch_command .= "$cluster_kallisto_cmd\n";
     $sbatch_command .= "$cluster_R_cmd\n\n";
     $sbatch_command .= $script_plus_args;
