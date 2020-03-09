@@ -107,16 +107,18 @@ check_tools: clusterJURA
 
 ## Prepare single cell info file (run rule in front)
 prepare_singlecell_info: check_tools $(SC_RNASEQ_NEW_LIB_FILEPATH) 0Preparation/prepare_scrna_seq_sample_info.R
+	rm $(SC_RNASEQ_SAMPINFO_FILEPATH)
 	@echo --- prepare single cell information file ---
 	@$(CLUSTER_FASTP_CMD) $(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args NEW_scRNASeqLibrary="$(SC_RNASEQ_NEW_LIB_FILEPATH)" raw_cells_folder="$(SC_RNASEQ_FASTQ_FULL_LENGTH)" output_folder="${PWD}/$(OUTPUT_DIR)"' 0Preparation/prepare_scrna_seq_sample_info.R 0Preparation/prepare_scrna_seq_sample_info.Rout > $@.tmp
 	@echo --- DONE ---
 	@$(MV) $@.tmp $@
 
 ## Run kallisto for all library/cells
-kallisto: prepare_singlecell_info $SC_RNASEQ_SAMPINFO_FILEPATH
-	@perl 1Run/slurm_scheduler_Kallisto_scRNASeq.pl -scrna_seq_sample_info=$(SC_RNASEQ_SAMPINFO_FILEPATH) -raw_cells_folder=$(SC_RNASEQ_FASTQ_FULL_LENGTH) -infoFolder=$(RNASEQ_CLUSTER_GTF) -output_folder=$(SC_RNASEQ_CLUSTER_KALLISTO) -cluster_kallisto_cmd=\\\"$(CLUSTER_KALLISTO_CMD)\\\" -cluster_R_cmd=\\\"$(CLUSTER_R_CMD)\\\"";
+kallisto: prepare_singlecell_info $(SC_RNASEQ_SAMPINFO_FILEPATH)
+	mkdir -p $(SC_RNASEQ_CLUSTER_KALLISTO)
+	@perl 1Run/slurm_scheduler_Kallisto_scRNASeq.pl -scrna_seq_sample_info=$(SC_RNASEQ_SAMPINFO_FILEPATH) -raw_cells_folder=$(SC_RNASEQ_FASTQ_FULL_LENGTH) -infoFolder=$(RNASEQ_CLUSTER_GTF) -output_folder=$(SC_RNASEQ_CLUSTER_KALLISTO) -cluster_kallisto_cmd='$(CLUSTER_KALLISTO_CMD)' -cluster_R_cmd='$(CLUSTER_R_CMD)'
 	@echo "At the end it is a good idea to relaunch the kallisto rule step to be sure everything was run!"
-	@$(MV) $@.tmp $@
+	@touch $@
 	
 ## Convert TranscriptID to GeneID and recalculations (TPM/FPKM)
 analysis: kallisto 1Run/analysis.R

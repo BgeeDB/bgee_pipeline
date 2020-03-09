@@ -18,7 +18,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
   }
 }
 ## checking if all necessary arguments were passed....
-command_arg <- c("libraryID", "scrna_seq_sample_info", "raw_cells_folder", "infoFolder", "output_folder")
+command_arg <- c("library_id", "scrna_seq_sample_info", "raw_cells_folder", "infoFolder", "output_folder")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -69,10 +69,9 @@ kallisto <- function(library_id, raw_cells_folder, infoFolder, output_folder){
   }
   
   ## control file in case server stops in the middle of the job.
-  file.create("DONE.txt")
+  file.create(file.path(outputLib, "DONE.txt"))
 }
 ############################################### APPLY PER LIBRARY ############################################################
 ## Apply for all libraries from different species
-for(libraryID in unique(annotation$libraryId)){
-  kallisto(library_id = libraryID, raw_cells_folder = raw_cells_folder, infoFolder = infoFolder, output_folder = output_folder)
-}
+kallisto(library_id = library_id, raw_cells_folder = raw_cells_folder, infoFolder = infoFolder, output_folder = output_folder)
+

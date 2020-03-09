@@ -18,7 +18,7 @@ my ($scrna_seq_sample_info, $raw_cells_folder, $infoFolder, $output_folder, $clu
 my %opts = ('scrna_seq_sample_info=s'     => \$scrna_seq_sample_info,
             'raw_cells_folder=s'          => \$raw_cells_folder,
             'infoFolder=s'                => \$infoFolder, # same as GTF folder
-            'output_folder'               => \output_folder,
+            'output_folder=s'             => \$output_folder,
             'cluster_kallisto_cmd=s'      => \$cluster_kallisto_cmd,
             'cluster_R_cmd=s'             => \$cluster_R_cmd,
            );
@@ -28,7 +28,7 @@ my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $scrna_seq_sample_info eq '' || $raw_cells_folder eq '' ||  $infoFolder eq '' || $output_folder eq '' || $cluster_kallisto_cmd eq '' || $cluster_R_cmd eq ''){
     print "\n\tInvalid or missing argument:
 \te.g. $0 -scrna_seq_sample_info=\$(SC_RNASEQ_SAMPINFO_FILEPATH) -raw_cells_folder=\$(SC_RNASEQ_FASTQ_FULL_LENGTH) -infoFolder=\$(RNASEQ_CLUSTER_GTF) -output_folder=\$(SC_RNASEQ_CLUSTER_KALLISTO) -cluster_kallisto_cmd=\$(CLUSTER_KALLISTO_CMD) -cluster_R_cmd=\$(CLUSTER_R_CMD)
-\t-scrna_seq_sample_info    scrna_seq_sample_info
+\t-scrna_seq_sample_info=s  scrna_seq_sample_info
 \t-raw_cells_folder=s       Folder with are all libraries with Fastq files
 \t-infoFolder=s             Folder with Kallisto indexes (same as GTF folder)
 \t-output_folder=s          Folder where the kallisto output should be saved
@@ -47,7 +47,7 @@ my $main_script = $RealBin.'/kallisto.R';
 my $nbr_processors = 1;
 my $memory_usage   = 10;      # in GB
 my $user_email     = 'sara.fonsecacosta@unil.ch'; # for email notification
-my $account        = 'mrobinso_bgee';
+my $account        = 'mrobinso_bgee_sensitive';
 my $queue          = 'normal';
 
 my $job_limit      = 120; # Number of simultaneous jobs running
@@ -56,7 +56,7 @@ my $job_limit      = 120; # Number of simultaneous jobs running
 my $count = 0;
 JOB:
 for my $line ( read_file("$scrna_seq_sample_info", chomp=>1) ){
-    next JOB  if ( $line =~ /^#/); # header
+    next JOB  if ( $line =~ /^#/ || $line =~ /^libraryId/ ); # header
 
     my @fields     = split ("\t", $line);
     my $library_id = $fields[0];
@@ -67,7 +67,7 @@ for my $line ( read_file("$scrna_seq_sample_info", chomp=>1) ){
         next JOB;
     }
     # Check running jobs to not resubmit them while running
-    if ( "`squeue --user=\$USER --account=$account --long | grep ' $library_id '` =~ / (RUNN|PEND)ING /"){
+    if (`squeue --user=\$USER --account=$account --long | grep ' $library_id '` =~ / (RUNN|PEND)ING /){
         print "\n$library_id not launched because it is currently being analyzed (see squeue/sacct)\n";
         next JOB;
     }
@@ -85,7 +85,7 @@ for my $line ( read_file("$scrna_seq_sample_info", chomp=>1) ){
 
     my $sbatch_file = $output_folder.'/'.$library_id.'/'.$library_id.'.sbatch';
 
-    my $script_plus_args = "/usr/bin/time -v R CMD BATCH --no-save --no-restore '--args library_id=\"$library_id\" scrna_seq_sample_info=\"$scrna_seq_sample_info\" raw_cells_folder=\"$raw_cells_folder\" infoFolder=\"$infoFolder\" output_folder=\"$output_folder\"' $main_script $output_folder/$library_id/kallisto.Rout";
+    my $script_plus_args = "R CMD BATCH --no-save --no-restore '--args library_id=\"$library_id\" scrna_seq_sample_info=\"$scrna_seq_sample_info\" raw_cells_folder=\"$raw_cells_folder\" infoFolder=\"$infoFolder\" output_folder=\"$output_folder\"' $main_script $output_folder/$library_id/kallisto.Rout";
 
     # Wait for free places in job queue
     my $running_jobs = check_running_jobs();
@@ -99,13 +99,13 @@ for my $line ( read_file("$scrna_seq_sample_info", chomp=>1) ){
     # Script can be launched! Construct SLURM sbatch command:
     # First, remove previous .out and .err files
     my $sbatch_command = $rm_output_command.$rm_error_command;
-    $sbatch_command .= 'module add Bioinformatics/Software/vital-it'."\n";
     $sbatch_command .= "$cluster_kallisto_cmd\n";
     $sbatch_command .= "$cluster_R_cmd\n\n";
     $sbatch_command .= $script_plus_args;
     print "Command submitted to cluster:\n$sbatch_command\n";
 
     # Create the SBATCH script
+    mkdir $output_folder.'/'.$library_id.'/';
     open (my $OUT, '>', "$sbatch_file")  or die "Cannot write [$sbatch_file]\n";
     print {$OUT} sbatch_template($queue, $account, $nbr_processors, $memory_usage, $output_file, $error_file, $library_id);
     print {$OUT} "$sbatch_command\n";
