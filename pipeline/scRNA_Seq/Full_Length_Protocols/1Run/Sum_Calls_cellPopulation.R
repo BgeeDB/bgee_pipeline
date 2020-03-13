@@ -38,7 +38,10 @@ for( c_arg in command_arg ){
 if( file.exists(NEW_scRNASeq_sample_info) ){
   annotation <- read.table(NEW_scRNASeq_sample_info, h=T, sep="\t", comment.char="")
   names(annotation)[1] <- "libraryId"
-} else {
+  ## remove special characters in strain
+  annotation$strain <- gsub('\\/', '_', annotation$strain)
+  annotation$strain <- gsub('\\s+', '_', annotation$strain)
+  } else {
   stop( paste("NEW_scRNASeq_sample_info file not found [", NEW_scRNASeq_sample_info, "]\n"))
 }
 
@@ -186,7 +189,7 @@ cutoff_used <- function(finalMatrix, output_folder, ratioValue){
   InfoProportionCoding$ID <- c("without_cutoff", "cutoff_density","cutoff_ratio")
   
   ## plot the results
-  pdf(file = file.path(output_folder, paste0("Genes_present_per_cell_ratio", "_", experiment, "_", cellId ,"_",species ,".pdf")), width = 14, height = 7)
+  pdf(file = file.path(output_folder, paste0("Genes_present_per_cell_ratio", "_", experiment, "_", cellId ,"_", stageId, "_", strain, "_", uberonId, "_", sex, "_",species ,".pdf")), width = 14, height = 7)
   p1 <- p$plot + 
     labs(title = "Density distribution of genic/intergenic present", x="ratio (gene_call_present_cell/number_cells)",y="Density") + 
     scale_color_discrete(name = "Region", labels = c("Protein coding", "Intergenic")) +
@@ -203,9 +206,9 @@ cutoff_used <- function(finalMatrix, output_folder, ratioValue){
   dev.off()
   
   ## write informative matrix for each independent experiment
-  write.table(finalMatrix, file = file.path(output_folder, paste0("Sum_Call_", experiment, "_", cellId ,"_",species ,".tsv")), quote = FALSE, sep = "\t", col.names = TRUE, row.names = FALSE)
+  write.table(finalMatrix, file = file.path(output_folder, paste0("Sum_Call_", experiment, "_", cellId ,"_", stageId, "_", strain, "_", uberonId, "_", sex, "_", species ,".tsv")), quote = FALSE, sep = "\t", col.names = TRUE, row.names = FALSE)
   return(finalMatrix)
-} 
+}
 
 ################################################################################
 statsFile <- file.path(output_folder, "Stats_SumFile.tsv")
@@ -216,15 +219,25 @@ if (!file.exists(statsFile)){
   print("File already exist.....")
 }
 
+
 for (species in unique(annotation$speciesId)) {
   cat("Species:", species, "\n")
   for (experiment in unique(annotation$experimentId[annotation$speciesId == species])){
-    cat("Name of Experiments:", experiment, "\n")
-    for (cellId in unique(annotation$cellTypeName[annotation$experimentId == experiment])){
-      cat("Name of cells:", cellId, "\n")
+    cat("Name of experiments that belongs to the species:", experiment, "\n")
+    for (cellId in unique(annotation$cellTypeId[annotation$experimentId == experiment])){
+      cat("CellId info:", cellId, "\n")
+      for (stageId in unique(annotation$stageId[annotation$cellTypeId == cellId])){
+        cat("StageId info:", stageId, "\n")
+        for (strain in unique(annotation$strain[annotation$stageId == stageId])){
+          cat("Strain info:", strain, "\n")
+          for (uberonId in unique(annotation$uberonId[annotation$strain == strain])){
+            cat("UberonId info:", uberonId, "\n")
+            for (sex in unique(annotation$sex[annotation$uberonId == uberonId])){
+              cat("sex info:", sex, "\n")
+                    
       
       organism <- as.character(unique(annotation$organism[annotation$speciesId == species]))
-      infoLib <- annotation$libraryId[annotation$cellTypeName == cellId]
+      infoLib <- annotation$libraryId[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]                              
       file <- file.path(cells_folder, infoLib)
       AllFiles <- list.files(file,  pattern="abundance_gene_level\\+fpkm\\+intergenic\\+calls.tsv$", full.names=T, recursive = TRUE)
       print(AllFiles)
@@ -255,7 +268,11 @@ for (species in unique(annotation$speciesId)) {
       this_sample <- as.data.frame(t(statistics_experiment), stringsAsFactors=F)
       ## write informative matrix for each independent experiment
       write.table(this_sample, file = statsFile,col.names =F , row.names = F,append = T,quote = FALSE, sep = "\t")
-    }  
+            }
+          }
+        }
+      }
+    }
   }
 }
 

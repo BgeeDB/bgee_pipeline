@@ -1,10 +1,10 @@
 ## SFonsecaCosta, Sept 2018
 
 ### This script is used to do the quality control of the data.
-### In this script we work with abundance_gene_level+fpkm+intergenic.tsv output file from the previous step (kallisto_analysis.R)
+### In this script we work with abundance_gene_level+fpkm+intergenic.tsv output file from the previous step (kallisto followed by the analysis)
 
-## 1 Step --> Create a matrix with all cells that belong to the same cell-type, same experiment and same species.
-## 2 Step --> Verify if each cell-type per experiment and species follow a bimodal distribution
+## 1 Step --> Create a matrix with all cells that belong to the same: cellTypeId, stageId, strain, uberonId, sex that belongs to same experiment and same species.
+## 2 Step --> Verify if each of the combinations selected in the 1 Step follow a bimodal distribution
 ## 3 Step --> generate output file with experiments that pass the requirement
 
 ## Usage:
@@ -39,19 +39,22 @@ for( c_arg in command_arg ){
 if( file.exists(scrna_seq_sample_info) ){
   annotation <- read.table(scrna_seq_sample_info, h=T, sep="\t", comment.char="")
   names(annotation)[1] <- "libraryId"
+  ## remove special characters in strain
+  annotation$strain <- gsub('\\/', '_', annotation$strain)
+  annotation$strain <- gsub('\\s+', '_', annotation$strain)
 } else {
   stop( paste("scrna_seq_sample_info file not found [", scrna_seq_sample_info, "]\n"))
 }
 
 ## Create output files
 if (dir.exists(output_folder)){
- 
-   file.create("Modality_Cell_type_per_experiment.tsv")
-  cat("experiment\tcellId\tspecies\tmodeDistribution\n",file = file.path(output_folder, "Modality_Cell_type_per_experiment.tsv"), sep = "\t")
+  
+  file.create("Modality_Cell_type_per_experiment.tsv")
+  cat("experiment\tcellTypeId\tspeciesId\tstageId\tuberonId\tsex\tstrain\tmodeDistribution\n",file = file.path(output_folder, "Modality_Cell_type_per_experiment.tsv"), sep = "\t")
   file.create("NEW_scRNASeq_sample_info.tsv")
-  cat("libraryId\texperimentId\tcellTypeName\tcellTypeId\tspeciesId\tplatform\tlibraryType\tprotocol\tprotocolType\treadLength\tinfoOrgan\torganism\n",file = file.path(output_folder,"NEW_scRNASeq_sample_info.tsv"), sep = "\t")	
+  cat("libraryId\texperimentId\tcellTypeName\tcellTypeId\tspeciesId\tplatform\twhiteList\tprotocol\tprotocolType\tlibraryType\tinfoOrgan\tstageId\tuberonId\tsex\tstrain\treadLength\torganism\n",file = file.path(output_folder,"NEW_scRNASeq_sample_info.tsv"), sep = "\t")	
   file.create("Discard_scRNASeq_sample_info.tsv")
-  cat("libraryId\texperimentId\tcellTypeName\tcellTypeId\tspeciesId\tplatform\tlibraryType\tprotocol\tprotocolType\treadLength\tinfoOrgan\torganism\n",file = file.path(output_folder, "Discard_scRNASeq_sample_info.tsv"), sep = "\t")	
+  cat("libraryId\texperimentId\tcellTypeName\tcellTypeId\tspeciesId\tplatform\twhiteList\tprotocol\tprotocolType\tlibraryType\tinfoOrgan\tstageId\tuberonId\tsex\tstrain\treadLength\torganism\n",file = file.path(output_folder,"Discard_scRNASeq_sample_info.tsv"), sep = "\t")	
   
 } else {
   print("Directoty not exists.....")
@@ -99,10 +102,10 @@ checkDataPlot <- function(matrixData, output, plot){
       scale_color_manual(name="Proportion of cells",values=c("black", "gray","purple"),labels=c("=< 25%","25% < gene < 100%",paste0("all cells (", all_cells,")"))) +
       theme(legend.position=c(0.85, 0.1))
     
-    pdf(file = file.path(output_folder, paste0("Plot","_", cellId, "_",experiment ,".pdf")), width = 12, height = 12)   
+    pdf(file = file.path(output_folder, paste0("Plot","_", cellId, "_", stageId, "_", uberonId, "_", strain, "_", sex,"_", experiment , "_", species,".pdf")), width = 12, height = 12)   
     grid.arrange(p1,p2,p3,ncol = 1, nrow = 3)
     dev.off()
-   } else {
+  } else {
     cat("Analysis done without reporting graphics.", "\n")
   }
   
@@ -119,7 +122,7 @@ checkDataPlot <- function(matrixData, output, plot){
     cat("The cell-type ",cellId," from the experiment:", experiment, "is bimodal!", "\n")
     modeIs <- paste0("bimodal")
   }
-  collectInfoFile <- c(experiment, cellId, species, modeIs)
+  collectInfoFile <- c(experiment, cellId, species, stageId, uberonId, sex, strain, modeIs)
   ## Export all information
   write.table(t(collectInfoFile), file = ModalFile, col.names = FALSE , row.names = FALSE ,append = TRUE, quote = FALSE, sep = "\t")
 }
@@ -127,28 +130,43 @@ checkDataPlot <- function(matrixData, output, plot){
 ## Function to split scrna_seq_sample_info into 2 files: NEW_scRNASeq_info_file_final.tsv and Discard_scRNASeq_sample_info.tsv
 splitInfoFiles <- function(ModalityFIle){
   
-  for (species in unique(ModalityFIle$species)) {
+  for (species in unique(ModalityFIle$speciesId)) {
     cat("Species:", species, "\n")
-    for (experiment in unique(ModalityFIle$experiment[ModalityFIle$species == species])){
-      cat("Name of Experiments:", experiment, "\n")
-      for (cellId in unique(ModalityFIle$cellId[ModalityFIle$experiment == experiment])){
-        cat("Name of cells:", cellId, "\n")
-        modality <- as.character(ModalityFIle$modeDistribution[ModalityFIle$cellId == cellId]) 
-        cat("Modality:", modality, "\n")
-        
-          if (modality == "bimodal"){
-          cat("Cell-type is bimodal!", "\n")
-          infoLib <- data.frame(annotation$libraryId[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeName == cellId])
-          colnames(infoLib) <- "libraries"
-          passQC <- annotation[annotation$libraryId %in% infoLib$libraries,]
-          write.table(passQC, file = file.path(output_folder, "NEW_scRNASeq_sample_info.tsv"), col.names = FALSE, row.names = FALSE , append = TRUE, quote = FALSE, sep = "\t")
-        } else {
-          cat("Discard cell-type/experiment from the scRNASeq_info_file", "\n")
-          infoLib <- data.frame(annotation$libraryId[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeName == cellId])
-          colnames(infoLib) <- "libraries"
-          addDiscardToDiscardFile <- annotation[annotation$libraryId %in% infoLib$libraries,]
-          write.table(addDiscardToDiscardFile, file = file.path(output_folder, "Discard_scRNASeq_sample_info.tsv"), col.names = FALSE, row.names = FALSE , append = TRUE, quote = FALSE, sep = "\t")
-        } 
+    for (experiment in unique(ModalityFIle$experiment[ModalityFIle$speciesId == species])){
+      cat("Name of experiments that belongs to the species:", experiment, "\n")
+      for (cellId in unique(ModalityFIle$cellTypeId[ModalityFIle$experiment == experiment])){
+        cat("CellId info:", cellId, "\n")
+        for (stageId in unique(ModalityFIle$stageId[ModalityFIle$cellTypeId == cellId])){
+          cat("StageId info:", stageId, "\n")
+          for (strain in unique(ModalityFIle$strain[ModalityFIle$stageId == stageId])){
+            cat("Strain info:", strain, "\n")
+            for (uberonId in unique(ModalityFIle$uberonId[ModalityFIle$strain == strain])){
+              cat("UberonId info:", uberonId, "\n")
+              for (sex in unique(ModalityFIle$sex[ModalityFIle$uberonId == uberonId])){
+                cat("sex info:", sex, "\n")
+                
+                modality <- as.character(ModalityFIle$modeDistribution[ModalityFIle$speciesId == species & ModalityFIle$experiment == experiment & ModalityFIle$cellTypeId == cellId & ModalityFIle$stageId == stageId & ModalityFIle$strain == strain & ModalityFIle$uberonId == uberonId & ModalityFIle$sex == sex])    
+                cat("Modality:", modality, "\n")
+                
+                if (length(modality != 0) && modality == "bimodal"){
+                  cat("Cell-type is bimodal!", "\n")
+                  infoLib <- data.frame(annotation$libraryId[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex])
+                  colnames(infoLib) <- "libraries"
+                  passQC <- annotation[annotation$libraryId %in% infoLib$libraries,]
+                  write.table(passQC, file = file.path(output_folder, "NEW_scRNASeq_sample_info.tsv"), col.names = FALSE, row.names = FALSE , append = TRUE, quote = FALSE, sep = "\t")
+                } else if (length(modality != 0) && modality != "bimodal") {
+                  cat("Discard cell-type/experiment from the scRNASeq_info_file", "\n")
+                  infoLib <- data.frame(annotation$libraryId[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex])
+                  colnames(infoLib) <- "libraries"
+                  addDiscardToDiscardFile <- annotation[annotation$libraryId %in% infoLib$libraries,]
+                  write.table(addDiscardToDiscardFile, file = file.path(output_folder, "Discard_scRNASeq_sample_info.tsv"), col.names = FALSE, row.names = FALSE , append = TRUE, quote = FALSE, sep = "\t")
+                } else {
+                  cat("Not take in consideration this combination to split scRNA-Seq info file.", "\n")
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -158,29 +176,47 @@ splitInfoFiles <- function(ModalityFIle){
 for (species in unique(annotation$speciesId)) {
   cat("Species:", species, "\n")
   for (experiment in unique(annotation$experimentId[annotation$speciesId == species])){
-    cat("Name of Experiments:", experiment, "\n")
-    for (cellId in unique(annotation$cellTypeName[annotation$experimentId == experiment])){
-      cat("Name of cells:", cellId, "\n")
-      
-      ### 1 STEP --> create matrix
-      infoLib <- annotation$libraryId[annotation$experimentId == experiment & annotation$cellTypeName == cellId]
-      file <- file.path(cells_folder, infoLib, "abundance_gene_level+fpkm+intergenic.tsv")
-      cat("Number of cells:", length(file), "\n")
-      All_libs <- lapply(file, read.delim)
-      DATA <- do.call("cbind", All_libs)
-      ## select colummns with gene_id, type and biotype
-      Info_table <- DATA[,c(1,5,6)]
-      colnames(Info_table) <- c("gene_id","type", "biotype")
-      # select all columns with tpm info referent to each cell
-      tpm <- DATA[, grepl("tpm", names( DATA))]
-      mergeCells <- data.frame(Info_table, tpm)
-      
-      ### 2 STEP --> Check bimodality and plot cell distribution per experiment/species
-      bimodality <- checkDataPlot(matrixData = mergeCells, output = output_folder, plot = plot)
-      
-      ### 3 Step --> generate output with experiments that pass or not the QC
-      readModalityFile <- read.table(file.path(output_folder, "Modality_Cell_type_per_experiment.tsv"), header = TRUE, sep="\t")
-      QC <- splitInfoFiles(ModalityFIle = readModalityFile)
+    cat("Name of experiments that belongs to the species:", experiment, "\n")
+    for (cellId in unique(annotation$cellTypeId[annotation$experimentId == experiment])){
+      cat("CellId info:", cellId, "\n")
+      for (stageId in unique(annotation$stageId[annotation$cellTypeId == cellId])){
+        cat("StageId info:", stageId, "\n")
+        for (strain in unique(annotation$strain[annotation$stageId == stageId])){
+          cat("Strain info:", strain, "\n")
+          for (uberonId in unique(annotation$uberonId[annotation$strain == strain])){
+            cat("UberonId info:", uberonId, "\n")
+            for (sex in unique(annotation$sex[annotation$uberonId == uberonId])){
+              cat("sex info:", sex, "\n")
+              
+              ### 1 STEP --> create matrix
+              infoLib <- annotation$libraryId[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]
+              file <- file.path(cells_folder, infoLib, "abundance_gene_level+fpkm+intergenic.tsv")
+              cat("Number of cells:", length(file), "\n")
+              
+              if (length(file) != 0){
+                All_libs <- lapply(file, read.delim)
+                DATA <- do.call("cbind", All_libs)
+                ## select colummns with gene_id, type and biotype
+                Info_table <- DATA[,c(1,5,6)]
+                colnames(Info_table) <- c("gene_id","type", "biotype")
+                # select all columns with tpm info referent to each cell
+                tpm <- DATA[, grepl("tpm", names( DATA))]
+                mergeCells <- data.frame(Info_table, tpm)
+                
+                ### 2 STEP --> Check bimodality and plot cell distribution per experiment/species
+                bimodality <- checkDataPlot(matrixData = mergeCells, output = output_folder, plot = plot)
+                
+              } else {
+                cat("Not take in consideration this combination to analyse the QC (0 cells).", "\n")
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
+
+### 3 Step --> generate output with experiments that pass or not the QC
+readModalityFile <- read.table(file.path(output_folder, "Modality_Cell_type_per_experiment.tsv"), header = TRUE, sep="\t")
+QC <- splitInfoFiles(ModalityFIle = readModalityFile)

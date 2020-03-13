@@ -1,6 +1,6 @@
 ## SFonsecaCosta 2019
-## This script allow to verify the number of cells per cell-type regarding the experimentID and species after the annotation process.
-## Just cell-types that belongs to the same experiment and species that have at least 100 cells will be keeped to continue in the pipeline.
+## This script allow to verify the number of cells per cell-population regarding the: experimentID, species, cellTypeId, stageId, strain, uberonId and sex after the annotation process.
+## Just cell-population that belongs to the same experimentID, species, cellTypeId, stageId, strain, uberonId and sex and have at least 50 cells will be keeped to continue in the pipeline.
 ## The output file generated (NEW_scRNASeqLibrary.tsv) will be used to download the data and to continue in the pipeline.
 
 ## Usage:
@@ -78,7 +78,7 @@ for (species in unique(annotation$speciesId)) {
         infoLib2 <- as.data.frame(infoLib); colnames(infoLib2) <- "libraryId"
         cat("Libraries retrieved : ", length(infoLib), "\n")
         
-        if(length(infoLib) >= 100){
+        if(length(infoLib) >= 50){
           extractInfo <- merge(infoLib2, annotation, by="libraryId")
           information_file <- data.frame(extractInfo)
           information_file <- information_file %>% filter(!str_detect(information_file$libraryId, "^#"))

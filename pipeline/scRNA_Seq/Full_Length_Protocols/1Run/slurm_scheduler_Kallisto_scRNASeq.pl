@@ -45,7 +45,7 @@ my $main_script = $RealBin.'/kallisto.R';
 
 # kallisto is no multithreaded unless bootstraps are used
 my $nbr_processors = 1;
-my $memory_usage   = 10;      # in GB
+my $memory_usage   = 50;      # in GB
 my $user_email     = 'sara.fonsecacosta@unil.ch'; # for email notification
 my $account        = 'mrobinso_bgee_sensitive';
 my $queue          = 'normal';
