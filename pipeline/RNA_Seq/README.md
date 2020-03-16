@@ -347,7 +347,7 @@ in wildly used strain names.
   * At the beginning of log messages in standard output file, the number of libraries to insert is indicated. It is different than the number of annotated libraries
     * Some libraries are annotated but commented out
     * Some libraries are from species not inserted in Bgee
-    * Some libraries are excluded because not from RNA-Seq (CAGE-Seq, miRNA-Seq, etc)
+    * Some libraries are excluded because not from RNA-Seq (e.g. CAGE-Seq, etc)
     * Some libraries are excluded because not found in SRA
     * Some libraries are excluded from WormBase annotation file
     * The difference: number annotated libraries - all reasons above should give the number of libraries in `generated_files/RNA_Seq/rna_seq_sample_info.txt` file

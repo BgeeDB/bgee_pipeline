@@ -230,7 +230,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         # GSE16552      'Contradictory info but for now kept'. Also in https://gitlab.sib.swiss/Bgee/expression-annotations/issues/33
         # DRP000571     OK for Anne
         # SRP000304     OK, FL-cDNA is RNA-Seq
-        my @invalid_lib_strategies = ('miRNA-Seq', 'ncRNA-Seq', 'ATAC-seq', 'MAINE-Seq', 'MNase-Seq', 'FAIRE-seq', 'DNase-Hypersensitivity', 'DNase-seq');
+        my @invalid_lib_strategies = ('ncRNA-Seq', 'ATAC-seq', 'MAINE-Seq', 'MNase-Seq', 'FAIRE-seq', 'DNase-Hypersensitivity', 'DNase-seq');
         $info =~ /<LIBRARY_STRATEGY>([^<]+)<\/LIBRARY_STRATEGY>/; # [^<] prevents matching to '<' character
         $strategy = $1;
         if ( any { lc($strategy) eq lc($_) } @invalid_lib_strategies ){
