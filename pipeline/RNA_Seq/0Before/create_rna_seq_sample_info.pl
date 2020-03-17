@@ -242,7 +242,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         }
 
         # Particular types of RNA-seq. See https://www.ncbi.nlm.nih.gov/books/NBK49283/ or https://www.ebi.ac.uk/ena/submit/preparing-xmls
-        my @valid_selection_methods = ('cDNA', 'oligo-dT', 'Oligo-dT', 'PCR', 'PolyA', 'RANDOM', 'RANDOM PCR', 'RT-PCR');
+        my @valid_selection_methods = ('cDNA', 'Inverse rRNA', 'oligo-dT', 'Oligo-dT', 'PCR', 'PolyA', 'RANDOM', 'RANDOM PCR', 'RT-PCR');
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
         #     See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/82
         my @valid_lib_selection     = ('DRP003809', 'E-MTAB-5895', 'SRP012049', 'SRP021223', 'SRP051959', 'SRP058036', 'SRP082291', 'SRP082342', 'SRP082454', 'SRP106023', 'SRP116580', 'SRP045680', 'SRP018725', 'SRP056073', 'SRP072263', 'SRP036185', 'SRP058798');
