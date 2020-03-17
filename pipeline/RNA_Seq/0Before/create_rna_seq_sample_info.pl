@@ -245,7 +245,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         my @valid_selection_methods = ('cDNA', 'Inverse rRNA', 'oligo-dT', 'Oligo-dT', 'PCR', 'PolyA', 'RANDOM', 'RANDOM PCR', 'RT-PCR');
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
         #     See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/82
-        my @valid_lib_selection     = ('DRP003809', 'E-MTAB-5895', 'SRP012049', 'SRP021223', 'SRP051959', 'SRP058036', 'SRP082291', 'SRP082342', 'SRP082454', 'SRP106023', 'SRP116580', 'SRP045680', 'SRP018725', 'SRP056073', 'SRP072263', 'SRP036185', 'SRP058798');
+        my @valid_lib_selection     = ('DRP003809', 'E-MTAB-5895', 'SRP012049', 'SRP021223', 'SRP051959', 'SRP058036', 'SRP082291', 'SRP082342', 'SRP082454', 'SRP106023', 'SRP116580', 'SRP045680', 'SRP018725', 'SRP053164', 'SRP056073', 'SRP072263', 'SRP036185', 'SRP058798');
         $info =~ /<LIBRARY_SELECTION>([^<]+)<\/LIBRARY_SELECTION>/; # [^<] prevents matching to '<' character
         my $selection = $1;
         if ( $selection =~ /CAGE/ ){
@@ -323,8 +323,8 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         my @not_traditional = ('DeepSAGE', 'DeepCAGE', 'LongSAGE', 'SuperSAGE', 'CAGE', 'RACE', 'SAGE', 'DpnII', 'DpnIII', 'NlaIII', 'capture', 'CEL-seq', 'DGE-Seq', 'TagSeq', 'globin reduction', 'globin depletion', 'UMI', 'UMIs', 'ATAC-seq', 'MAINE-Seq', 'Mnase-Seq', 'FAIRE-Seq', 'DNase-seq', 'MACE-Seq', 'QuantSeq');
         my @verified        = ('ERP000787', 'ERP001694', 'ERP013973', 'ERP104395',
                                'GSE22410', 'GSE64283',
-                               'SRP000401', 'SRP013825', 'SRP021940', 'SRP022567', 'SRP041131', 'SRP076617', 'SRP082284',
-                               'SRP091779', 'SRP092799', 'SRP098705', 'SRP099849', 'SRP112616', 'SRP123447', 'SRP125959');
+                               'SRP000401', 'SRP013825', 'SRP021940', 'SRP022567', 'SRP041131', 'SRP076617', 'SRP082284', 'SRP090001',
+                               'SRP091779', 'SRP092799', 'SRP098705', 'SRP099849', 'SRP112616', 'SRP123447', 'SRP125768', 'SRP125959');
         if ( all { $experimentId ne $_ } @verified and any { $info =~ /\W$_\W/i } @not_traditional ){
             my @words = grep { $info =~ /\W$_\W/i } @not_traditional;
             warn "\tWarning: [$libraryId][$experimentId] may not be traditional RNA-seq, found word(s) [".join('/', @words)."] subject to caution. Please check.\n";
