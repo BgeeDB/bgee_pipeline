@@ -220,7 +220,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         }
         # Perform a series of sanity checks
         # Check it is a RNA-seq library
-        my @valid_lib_strategy = ('GSE30617', 'SRP000401', 'E-MTAB-2449', 'SRP003905', 'GSE16552', 'DRP000571', 'SRP000304', 'SRP004363', 'SRP005402');
+        my @valid_lib_strategy = ('GSE30606', 'GSE30617', 'SRP000401', 'E-MTAB-2449', 'SRP003905', 'GSE16552', 'DRP000571', 'SRP000304', 'SRP004363', 'SRP005402', 'SRP033585');
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/31
         #     See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/82
         # GSE30617      OK for Anne
@@ -245,7 +245,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         my @valid_selection_methods = ('cDNA', 'Inverse rRNA', 'oligo-dT', 'Oligo-dT', 'PCR', 'PolyA', 'RANDOM', 'RANDOM PCR', 'RT-PCR');
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
         #     See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/82
-        my @valid_lib_selection     = ('DRP003809', 'E-MTAB-5895', 'SRP012049', 'SRP021223', 'SRP051959', 'SRP058036', 'SRP081080', 'SRP082291', 'SRP082342', 'SRP082454', 'SRP106023', 'SRP116580', 'SRP045680', 'SRP018725', 'SRP053164', 'SRP056073', 'SRP072263', 'SRP036185', 'SRP058798');
+        my @valid_lib_selection     = ('DRP003809', 'E-MTAB-5895', 'SRP012049', 'SRP018740', 'SRP021223', 'SRP051959', 'SRP055497', 'SRP058036', 'SRP081080', 'SRP082291', 'SRP082342', 'SRP082454', 'SRP092904', 'SRP106023', 'SRP116580', 'SRP045680', 'SRP018725', 'SRP053164', 'SRP056073', 'SRP072263', 'SRP036185', 'SRP058798');
         $info =~ /<LIBRARY_SELECTION>([^<]+)<\/LIBRARY_SELECTION>/; # [^<] prevents matching to '<' character
         my $selection = $1;
         if ( $selection =~ /CAGE/ ){
