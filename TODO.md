@@ -17,6 +17,10 @@
 
 * Check discarded libraries, see which one should be recovered
 
+* Globin reduction on blood samples: we need a test to determine whether blood samples
+had globin reduction or not. Let's implement the test and look at the distribution
+of samples with/without reduction.
+
 ## scRNA-Seq
 
 Integrate pipeline code from Sara.
