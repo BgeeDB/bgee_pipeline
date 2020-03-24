@@ -116,7 +116,7 @@ for my $expId ( sort keys %annotations ){
         } elsif ( !exists($all_species{ $annotations{$expId}->{$libraryId}->{'speciesId'} }) ){
             $species_not_included++;
         } elsif ( (!exists $libraries{$expId}->{$libraryId}) and (!exists $excludedLibraries{$libraryId}) ){
-            print "\t", $libraryId, " library annotated but not mapped. This may be for different reasons: is it in the RNASeqLibrary_worm_exclusion.tsv file? Is it a ncRNA-seq/CAGE/RACE/weird experiment? Is it in SRA format (SRX/ERX)?\n";
+            print "\t", $libraryId, " library annotated but not mapped. This may be for different reasons: is it in the RNASeqLibrary_worm_exclusion.tsv file? Is it a CAGE/RACE/weird experiment? Is it in SRA format (SRX/ERX)?\n";
         }
     }
 }
