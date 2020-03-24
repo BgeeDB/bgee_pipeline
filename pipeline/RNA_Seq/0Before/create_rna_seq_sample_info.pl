@@ -220,7 +220,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         }
         # Perform a series of sanity checks
         # Check it is a RNA-seq library
-        my @valid_lib_strategy = ('ERP001525', 'ERP001954', 'ERP002055', 'GSE30606', 'GSE30617', 'SRP000401', 'E-MTAB-2449', 'SRP003905', 'SRP006209', 'GSE16552', 'DRP000571', 'SRP000304', 'SRP004363', 'SRP005402', 'SRP033585', 'SRP043163', 'SRP058340', 'SRP068231');
+        my @valid_lib_strategy = ('ERP001525', 'ERP001954', 'ERP002055', 'GSE30606', 'GSE30617', 'SRP000401', 'E-MTAB-2449', 'SRP003905', 'SRP006208', 'SRP006209', 'GSE16552', 'DRP000571', 'SRP000304', 'SRP004363', 'SRP005402', 'SRP033585', 'SRP043163', 'SRP058340', 'SRP068231');
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/31
         #     See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/82
         # GSE30617      OK for Anne
