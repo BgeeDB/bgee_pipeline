@@ -1,16 +1,17 @@
-Goal: Create the Bgee lite database.
+Goal: Create the Easy Bgee database.
 
-## Information about the Bgee lite database
+## Information about the Easy Bgee database
 
-### Why creating a Bgee lite database ?
+### Why creating a Easy Bgee database ?
 
-The aims of the Bgee lite database are :
-* usable in the BioSODA project
+The aims of the Easy Bgee database are :
+* used to generate Bgee triple store
 * creating a dump lighter than the bgee database one
 * allowing users to use a local database containing all expressed calls
 * allowing users to use a database with an easy to understand schema
+* usable in the BioSODA project
 
-### Tables present in the schema of Bgee lite
+### Tables present in the schema of Easy Bgee
 
 * species : all species present in Bgee database
 * gene : all genes (the primary key is an internal bgeeGeneId that is not comparable in different releases of the DB)
@@ -19,15 +20,13 @@ The aims of the Bgee lite database are :
 * globalExpression : calls as shown in the gene page of the Bgee 14 webapp. 
 * globalCond : condition describing under which globalExpression were studied. One condition correspond to one dev. stage, one anat. entity and one species.  
 
-### Information available only in Bgee lite
+### Information available only in Easy Bgee
 
-* gene expression calls corresponding to presence of expression with their quality (SILVER or GOLD)
+* gene expression calls corresponding to presence/absence of expression with their quality (SILVER or GOLD), rank and expression score
 * condition (developmental stage, anatomical entity, and species) under which the gene expression calls have been detected
 
-### Information NOT available in Bgee lite
+### Information NOT available in Easy Bgee
 
-* Bgee normalized expression rank
-* calls corresponding to absence of expression
 * Evidence (raw data) used to generate the calls.
 * transcript
 * Xrefs, synonymes
@@ -36,8 +35,8 @@ The aims of the Bgee lite database are :
 
 ## Description
 
-This step will create a lite version of Bgee following the database schema defined in the file bgeeLiteSchema.sql
-The new database is named `bgeelite_vRELEASE` (e.g., `bgeelite_v14`).
+This step will create a database containing a subset of information present in the Bgee database following the database schema defined in the file easyBgeeSchema.sql
+The new database is named `easybgee_vRELEASE` (e.g., `easybgee_v14`).
 
 ## Data generation
 
@@ -49,13 +48,13 @@ The new database is named `bgeelite_vRELEASE` (e.g., `bgeelite_v14`).
   
 ## Detail all rules
 
-* `make create_schema`: create the schema of the Bgee lite database
-* `make extract_data_from_bgee`: create a tsv file containing all data extracted from Bgee database that should be persisted in the Bgee lite database
-* `make import_to_bgeelite`: use the previously generated tsv file and import all data it contains in the Bgee lite database
-* `make drop_bgee_lite`: drop the Bgee lite database. 
+* `make create_schema`: create the schema of the Easy Bgee database
+* `make extract_data_from_bgee`: create a tsv file containing all data extracted from Bgee database that should be persisted in the Easy Bgee database
+* `make import_to_easybgee`: use the previously generated tsv file and import all data it contains in the Easy Bgee database
+* `make drop_easybgee`: drop the Easy Bgee database. 
 
 ## Data verification
 
-* Check all tsv files in `generated_files/dblite_creation/`. One file is created for each table of the Bgee lite database
+* Check all tsv files in `generated_files/easybgee_creation/`. One file is created for each table of the Bgee lite database
 
 
