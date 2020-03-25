@@ -60,7 +60,7 @@ foreach my $expId ( sort keys %libraries ){
             ## retrieve mapping between transcript ids and gene ids (without intergenic regions)
             my $genomeFilePath = $libraries{$expId}->{$libraryId}->{'genomeFilePath'};
             my %tx2gene_mapping
-            $genomeFilePath =~ m/.+\/(.+)/;
+            $genomeFilePath =~ m/.+/(.+)/;
             open(my $IN_TX2GENE, '<', $tx2gene_dir.'/'.$1.'*.tx2gene')
             my $line_tx2gene = <$IN_TX2GENE>;    #header
             while ( defined ($line_tx2gene = <$IN_TX2GENE>) ){
