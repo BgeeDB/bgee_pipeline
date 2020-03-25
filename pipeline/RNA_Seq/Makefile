@@ -99,9 +99,25 @@ check_sra: list_new_downloads
 	@touch $@
 
 
+################################ DOWNLOAD GENOMES AND ANNOTATIONS ################################
+
+#NOTE to be done on regular cluster, with network access
+get_GTF: clean_cluster_folders create_rna_seq_sample_info
+	# Get GTF files from Ensembl FTP
+	@perl 0Before/get_GTF_files.pl  -RNAseqSample=$(RNASEQ_SAMPINFO_FILEPATH) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_CLUSTER_GTF)  >$@.tmp 2>&1
+	@$(MV) $@.tmp $@
+#TODO implement use of new "database" field in rna_seq_sample_info.txt (instead of trying both Ensembl and Ensembl Metazoa URLs)
+
+get_genome: get_GTF
+	# Download genome from Ensembl databases
+	@perl 0Before/get_genome_files.pl  -GTF_dir=$(RNASEQ_CLUSTER_GTF) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_CLUSTER_GTF) >$@.tmp 2>&1
+	@$(MV) $@.tmp $@
+#TODO implement use of new "database" field in rna_seq_sample_info.txt (instead of trying both Ensembl and Ensembl Metazoa URLs)
+#TODO Add a step to transfer fasta and GTF files to Jura cluster
+
 ################################ PREPARE CLUSTER ENVIRONMENT ################################
 
-# Start here on cluster
+# Start here on sensitive cluster
 cluster1:
 
 	@echo -e "\tBe sure everything is up-to-date before running RNASeq pipeline\n"
@@ -173,48 +189,26 @@ clean_cluster_folders: check_tools
 	@touch $@
 
 
-################################ DOWNLOAD GENOMES AND ANNOTATIONS ################################
+################################ GENERATE INTERGENIC SEQUENCES FOR EACH SPECIES ################################
 
-get_GTF: clean_cluster_folders create_rna_seq_sample_info
-	# Get GTF files from Ensembl FTP
-	@perl 0Before/get_GTF_files.pl  -RNAseqSample=$(RNASEQ_SAMPINFO_FILEPATH) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_CLUSTER_GTF)  >$@.tmp 2>&1
-	@$(MV) $@.tmp $@
-#TODO implement use of new "database" field in rna_seq_sample_info.txt (instead of trying both Ensembl and Ensembl Metazoa URLs)
-
-get_genome: get_GTF
-	# Download genome from Ensembl databases
-	@perl 0Before/get_genome_files.pl  -GTF_dir=$(RNASEQ_VITALIT_GTF) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_VITALIT_GTF) >$@.tmp 2>&1
-	@$(MV) $@.tmp $@
-#TODO implement use of new "database" field in rna_seq_sample_info.txt (instead of trying both Ensembl and Ensembl Metazoa URLs)
-
-
-################################ GENERATE REFERENCE INTERGENIC SEQUENCES ################################
-
-prepare_GTF: get_genome
-	# Prepare GTF files
-	@for gtf in $(RNASEQ_CLUSTER_GTF)/*.gtf.gz; do \
-		echo "#!/bin/sh" > run.sh; \
-		echo "$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args gene_gtf_path=\"$$gtf\" output_gtf_path=\"$${gtf/.gtf.gz/}\"'  0Before/prepare_GTF.R  $@.tmp" >> run.sh; \
-		sbatch  --account=mrobinso_bgee --time=12:00:00 --mem=20G --partition=ax-normal --nodes=1 --ntasks=1 --cpus-per-task=1 run.sh ; \
-	done
-	@$(RM) run.sh
+prepare_GTF: get_genome get_GTF
+	# Prepare GTF files : $(CLUSTER_R_CMD)
+	@perl 0Before/slurm_prepare_GTF.pl -gtf_dir=$(RNASEQ_CLUSTER_GTF) -block_size_N=31 -proportion_N=0.05 -output_gtf_path=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(OUTPUT_DIR) -cluster_R_cmd="$(CLUSTER_R_CMD)" >$@.tmp 2>&1
 	@echo rm -f $(RNASEQ_CLUSTER_GTF)/*.gtf.gz
-	@touch $@
+	@$(MV) $@.tmp $@
 
-prepare_indexed_transcriptome: get_genome prepare_GTF
+
+prepare_indexed_transcriptome: prepare_GTF
 	#Preparing indexed transcriptome for every species
 	#Extract transcriptome.fa from gtf_all and genome.fa files
 	#perl one liner to remove arbitrary numbering in fasta header from gtf_to_fasta
 	# Prepare indexes for kallisto: one with default k-mer size $(RNASEQ_KALLISTO_KMER_DEFAULT), one with short k-mer size $(RNASEQ_KALLISTO_KMER_SHORT)
-	@perl 1Run/slurm_index_creation.pl -transcriptome_folder=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(OUTPUT_DIR) -ens_release=$(ENSRELEASE) -ens_metazoa_release=$(ENSMETAZOARELEASE) -short_index_length=$(KALLISTO_SHORT_KMER_SIZE)  -cluster_kallisto_cmd='$(CLUSTER_KALLISTO_CMD)' -cluster_tophat_cmd='$(CLUSTER_TOPHAT_CMD)' >$@.tmp 2>&1
+	@perl 1Run/slurm_index_creation.pl -transcriptome_folder=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(OUTPUT_DIR) -short_index_length=$(RNASEQ_KALLISTO_KMER_SHORT)  -cluster_kallisto_cmd="$(CLUSTER_KALLISTO_CMD)" -cluster_tophat_cmd="$(CLUSTER_TOPHAT_CMD)" >$@.tmp 2>&1
 	#TODO Use short k-mer size = 21nt instead of 15
 	#TODO The gffread utility in cufflinks package seems more flexible and reliable
 	#TODO add step to copy .passw file to bbgee's home on cluster / or maybe just echo a message to tell the user scp it? Path and name of this file on cluster is stored in ENCRYPT_PASSWD_FILE. We should store this file somewhere (devbioinfo?) because it cannot be added to the gitlab project
 	#Or just put it in /home/bbgee/? in read only mode, only for bbgee user
 	@$(MV) $@.tmp $@
-#TODO Use short k-mer size = 21nt instead of 15
-#TODO The gffread utility in cufflinks package seems more flexible and reliable
-#TODO add step to copy .passw file to bbgee's home on cluster / or maybe just echo a message to tell the user scp it? Path and name of this file on cluster is stored in ENCRYPT_PASSWD_FILE. We should store this file somewhere (devbioinfo?) because it cannot be added to the gitlab project
 
 #NOTE Better to run this step in screen or with nohup as submission is done X jobs per X jobs to not overload the system (and not decrease our user priority)!
 abundance_all_intergenic: prepare_indexed_transcriptome $(RNASEQ_SAMPINFO_FILEPATH)
@@ -230,17 +224,36 @@ check_abundance_all_intergenic: abundance_all_intergenic
 
 export_length: check_abundance_all_intergenic
 	#Export transcript length to a file to export
-	@perl 3Insertion/export_feature_length.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -tx2gene_dir=$(OUTPUT_DIR) -all_results=$(RNASEQ_CLUSTER_ALL_RES) -length_info=$(RNASEQ_LENGTH_INFO_FILEPATH) > $@.tmp 2>warnings.$@
-	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
+	$(eval TIME_LENGTH := $(shell date +'%Y%m%d-%H%M%S'))
+	@echo "#!/bin/sh" > $@_$(TIME_LENGTH).sh
+	@echo "perl 3Insertion/export_feature_length.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -tx2gene_dir=$(OUTPUT_DIR) -all_results=$(RNASEQ_CLUSTER_ALL_RES) -length_info=$(RNASEQ_LENGTH_INFO_FILEPATH)" >> $@_$(TIME_LENGTH).sh
+	@sbatch --account=mrobinso_bgee --time=2:00:00 --mem=2G --partition=normal --output=$@_$(TIME_LENGTH).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_LENGTH) $@_$(TIME_LENGTH).sh > $@.tmp
+	NUMBER_JOBS=$$(squeue --name=$@_$(TIME_LENGTH) --noheader | wc -l) ; \
+	while [ $$NUMBER_JOBS -gt 0 ] ; do \
+		sleep 30 ; \
+		NUMBER_JOBS=$$(squeue --name=$@_$(TIME_LENGTH) --noheader | wc -l) ; \
+	done ; \
+
+	#@rm -r $@_$(TIME_LENGTH).*
 	@echo -e "\tTranscript length are now exported into $(RNASEQ_LENGTH_INFO_FILEPATH) file\n"
 	@$(MV) $@.tmp $@
 
 finalize_pipeline: check_abundance_all_intergenic
 	# Collect infos from .report files
-	@perl 3Insertion/create_rna_seq_report_info.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -report_info=$(RNASEQ_CLUSTER_REPORTINFO) -all_results=$(RNASEQ_CLUSTER_ALL_RES) > $@.tmp 2>warnings.$@
+	$(eval TIME_FINALIZE := $(shell date +'%Y%m%d-%H%M%S'))
+	@echo "#!/bin/sh" > $@_$(TIME_FINALIZE).sh
+	@echo "perl 3Insertion/create_rna_seq_report_info.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -report_info=$(RNASEQ_CLUSTER_REPORTINFO) -all_results=$(RNASEQ_CLUSTER_ALL_RES)" >> $@_$(TIME_FINALIZE).sh
+	@sbatch --account=mrobinso_bgee --time=2:00:00 --mem=2G --partition=normal --output=$@_$(TIME_FINALIZE).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_FINALIZE) $@_$(TIME_FINALIZE).sh > $@.tmp
+	# Wait end of the job
+	NUMBER_JOBS=$$(squeue --name=$@_$(TIME_FINALIZE) --noheader | wc -l) ; \
+	while [ $$NUMBER_JOBS -gt 0 ] ; do \
+		sleep 30 ; \
+		NUMBER_JOBS=$$(squeue --name=$@_$(TIME_FINALIZE) --noheader | wc -l) ; \
+	done ; \
+
 	# Touch all files so that they are not removed from /scratch/temporary
 	@find $(RNASEQ_CLUSTER_SCRATCH) -exec touch {} \;
-# We use tail -n+1 instead of cat because it writes the name of the file in the concatenated file
+	# We use tail -n+1 instead of cat because it writes the name of the file in the concatenated file
 	@tail -n+1 $(RNASEQ_CLUSTER_LOG)/*/*.err    > $(RNASEQ_CLUSTER_LOG)/all_std_err.txt 2>>warnings.$@
 	@tail -n+1 $(RNASEQ_CLUSTER_LOG)/*/*.out    > $(RNASEQ_CLUSTER_LOG)/all_std_out.txt 2>>warnings.$@
 	@tail -n+1 $(RNASEQ_CLUSTER_LOG)/*/*.report > $(RNASEQ_CLUSTER_LOG)/all_reports.txt 2>>warnings.$@
@@ -256,22 +269,40 @@ finalize_pipeline: check_abundance_all_intergenic
 #NOTE For iterative updates the  sum_by_species  step has to be skipped if you want to reuse the previous gaussian curves as they are!
 #     So use the previous release $(RNASEQ_CLUSTER_GAUSSIAN_CHOICE) file and $(RNASEQ_CLUSTER_SUM_RES) result folder (Just update the database version if required)
 #     for the  presence_absence  step!
-sum_by_species: check_pipeline $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH)
-# Script using all data from each species to deconvolute the coding genes and intergenic regions underlying distributions
+sum_by_species: check_abundance_all_intergenic $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH)
+	# Script using all data from each species to deconvolute the coding genes and intergenic regions underlying distributions
 	@mkdir -p $(RNASEQ_CLUSTER_SUM_RES)
-	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args rna_seq_sample_info="$(RNASEQ_SAMPINFO_FILEPATH)" rna_seq_sample_excluded="$(RNASEQ_SAMPEXCLUDED_FILEPATH)" kallisto_count_folder="$(RNASEQ_CLUSTER_ALL_RES)" sum_by_species_folder="$(RNASEQ_CLUSTER_SUM_RES)"' $(RNASEQ_CLUSTER_SCRIPTS)$(RNASEQPATH)1Run/rna_seq_sum_by_species.R $(RNASEQ_CLUSTER_SUM_RES)rna_seq_sum_by_species.Rout
+
+	$(eval TIME_SUM := $(shell date +'%Y%m%d-%H%M%S'))
+	@echo "#!/bin/sh" > $@_$(TIME_SUM).sh
+	@echo "$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args rna_seq_sample_info=\"$(RNASEQ_SAMPINFO_FILEPATH)\" rna_seq_sample_excluded=\"$(RNASEQ_SAMPEXCLUDED_FILEPATH)\" kallisto_count_folder=\"$(RNASEQ_CLUSTER_ALL_RES)\" tx2gene_folder=\"$(RNASEQ_CLUSTER_GTF)\" sum_by_species_folder=\"$(RNASEQ_CLUSTER_SUM_RES)\"' 1Run/rna_seq_sum_by_species.R $(OUTPUT_DIR)rna_seq_sum_by_species.Rout" >> $@_$(TIME_SUM).sh
+	@sbatch --account=mrobinso_bgee --time=2:00:00 --mem=2G --partition=ax-normal --output=$@_$(TIME_SUM).out --error=$@_$(TIME_SUM).err  --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_SUM) $@_$(TIME_SUM).sh > $@.tmp
+	NUMBER_JOBS=$$(squeue --name=$@_$(TIME_SUM) --noheader | wc -l) ; \
+	echo $$NUMBER_JOBS ; \
+	while [ $$NUMBER_JOBS -gt 0 ] ; do \
+		sleep 30 ; \
+		NUMBER_JOBS=$$(squeue --name=$@_$(TIME_SUM) --noheader | wc -l) ; \
+	done ; \
+
 	@echo -e "You HAVE TO create/update MANUALLY a file [$(RNASEQ_CLUSTER_GAUSSIAN_CHOICE)] with selected gaussians for coding and intergenic regions!\n"
-	@touch $@
+	@$(MV) $@.tmp $@
 
 ## variables used only to generate intergenic sequences.
 ## should potentialy be moved at the top of the file or in the Makefile.common file
 TRANSCRIPTOME_COMPRESSION_EXT	:= .xz
-SUM_ABUNDANCE_FILE_PATH			:= $(RNASEQ_VITALIT_SUM_RES)sum_abundance_gene_level+fpkm+intergenic+classification_SPECIES_ID.tsv
+SUM_ABUNDANCE_FILE_PATH			:= $(RNASEQ_CLUSTER_SUM_RES)sum_abundance_gene_level+fpkm+intergenic+classification_SPECIES_ID.tsv
 ## Generate 2 intergenic fasta files for each species. One for reference intergenic sequences and one for other reference intergenic sequences
 ##
 generate_intergenic_sequences: sum_by_species
-	@perl create_intergenic_fasta.pl -bgee=$(BGEECMD) -ens_release=$(ENSRELEASE) -transcriptomes_folder=$(RNASEQ_VITALIT_GTF) -transcriptome_compression_ext=$(TRANSCRIPTOME_FILE_EXT) -sum_abundance_file_path=$(SUM_ABUNDANCE_FILE_PATH) -gaussian_file_path=$(RNASEQ_VITALIT_GAUSSIAN_CHOICE) -ref_intergenic_dir=$(VITALIT_REF_INTERGENIC_FOLDER) -other_intergenic_dir=$(VITALIT_OTHER_INTERGENIC_FOLDER) >> $@.tmp 2> $@.warn
-	@perl create_intergenic_fasta.pl -bgee=$(BGEECMD) -ens_release=$(ENSMETAZOARELEASE) -transcriptomes_folder=$(RNASEQ_VITALIT_GTF) -transcriptome_compression_ext=$(TRANSCRIPTOME_FILE_EXT) -sum_abundance_file_path=$(SUM_ABUNDANCE_FILE_PATH) -gaussian_file_path=$(RNASEQ_VITALIT_GAUSSIAN_CHOICE) -ref_intergenic_dir=$(VITALIT_REF_INTERGENIC_FOLDER) -other_intergenic_dir=$(VITALIT_OTHER_INTERGENIC_FOLDER) >> $@.tmp 2> $@.warn
+	$(eval TIME_INTERGENIC := $(shell date +'%Y%m%d-%H%M%S'))
+	@echo "#!/bin/sh" > $@_$(TIME_INTERGENIC).sh
+	@echo "perl 1Run/create_intergenic_fasta.pl -sample_info_path=$(RNASEQ_SAMPINFO_FILEPATH) -transcriptomes_folder=$(RNASEQ_CLUSTER_GTF) -transcriptome_compression_ext=$(TRANSCRIPTOME_COMPRESSION_EXT) -sum_abundance_file_path=$(SUM_ABUNDANCE_FILE_PATH) -gaussian_file_path=$(RNASEQ_CLUSTER_GAUSSIAN_CHOICE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) -other_intergenic_dir=$(CLUSTER_OTHER_INTERGENIC_FOLDER) > $@.tmp 2> $@.warn" >> $@_$(TIME_INTERGENIC).sh
+	@sbatch --account=mrobinso_bgee --time=2:00:00 --mem=2G --partition=ax-normal --output=$@_$(TIME_INTERGENIC).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_INTERGENIC) $@_$(TIME_INTERGENIC).sh > $@.tmp
+	NUMBER_JOBS=$$(squeue --name=$@_$(TIME_INTERGENIC) --noheader | wc -l) ; \
+	while [ $$NUMBER_JOBS -gt 0 ] ; do \
+		sleep 30 ; \
+		NUMBER_JOBS=$$(squeue --name=$@_$(TIME_INTERGENIC) --noheader | wc -l) ; \
+	done ; \
 
 	# compress intergenic fasta files
 	@find $(VITALIT_REF_INTERGENIC_FOLDER) -type f -name '*_intergenic.fa' -exec gzip --verbose --best {} \; >> $@.tmp 2> $@.warn
@@ -281,13 +312,24 @@ generate_intergenic_sequences: sum_by_species
 ################################ GENERATE PRESENT/ABSENT CALLS ################################
 
 # Run BgeeCall R package on all libraries
+#	1. create arboresence of needed files
+#		- ref_intergenic directory
+#		- transcriptome without intergenic regions
+#	2. small script to modify smaple info file in order to be compatible with BgeeCall input
+#	3. be sure that all files are generated perfectly without internet connexion (gene2transcript, gene2biotype, index) 
+#	4. run BgeeCall using slurm array_list OR create a RSlurm function inside of the BgeeCall 
+
+# BE CAREFUL
+# - need to know libraries already mapped in order not to reanalyse libraries if the job stop (time limit, error)
+# Modifs to BgeeCall
+#  -
 # generate index for all species
-#      	- based on sample info file outside of BgeeCall?
+#      	- based on sample info file outside of BgeeCall? Maybe create one script that transform the sample info file to file compatible to BgeeCall (should be easy)
 #	   	- based on sample info file using one function present in BgeeCall (to develop) ?
 # reuse script generating abundance with all intergenic and adapt it to generate abundance per library using BgeeCall
 
 
-presence_absence: sum_by_species $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH) $(RNASEQ_VITALIT_GAUSSIAN_CHOICE)
+presence_absence: sum_by_species $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH) $(RNASEQ_CLUSTER_GAUSSIAN_CHOICE)
 #	Script to calculate presence/absence threshold for all samples and call genes present/absent + generate density plots + generate statistics on % present (cutoff info files)
 	@mkdir -p $(RNASEQ_CLUSTER_PRESENCE_RES)
 	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args rna_seq_sample_info="$(RNASEQ_SAMPINFO_FILEPATH)" rna_seq_sample_excluded="$(RNASEQ_SAMPEXCLUDED_FILEPATH)" kallisto_count_folder="$(RNASEQ_CLUSTER_ALL_RES)" sum_by_species_folder="$(RNASEQ_CLUSTER_SUM_RES)" gaussian_choice="$(RNASEQ_CLUSTER_GAUSSIAN_CHOICE)" out_folder="$(RNASEQ_CLUSTER_PRESENCE_RES)" plot_only=FALSE desired_r_cutoff="0.05"' $(RNASEQ_CLUSTER_SCRIPTS)$(RNASEQPATH)1Run/rna_seq_presence_absence.R $(RNASEQ_CLUSTER_PRESENCE_RES)rna_seq_presence_absence.Rout
