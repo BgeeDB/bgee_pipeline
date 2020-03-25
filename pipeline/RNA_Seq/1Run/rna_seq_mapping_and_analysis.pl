@@ -397,7 +397,7 @@ print "\tR log file: $R_log_file\n";
 # defining gene to transcript mapping file
 my $gene2transcript = $index_folder.'/';
 $genomeFilePath =~ m/.+\/(.+)/;
-$gene2transcript .= $1.'.'.$ens_release.'.gene2transcript';
+$gene2transcript .= $1.'.'.$ens_release.'.tx2gene';
 # defining gene to gene biotype file
 my $gene2biotype = $index_folder.'/';
 $genomeFilePath =~ m/.+\/(.+)/;

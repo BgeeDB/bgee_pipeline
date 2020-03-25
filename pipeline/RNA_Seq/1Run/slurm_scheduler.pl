@@ -66,8 +66,9 @@ my $nbr_processors = 1;
 # RAM needed: 10GB should be enough
 my $memory_usage   = 10;      # in GB
 my $user_email     = 'bgee@sib.swiss'; # for email notification
-my $account        = 'mrobinso_bgee_sensitive';
-my $queue          = 'normal';
+my $account        = 'mrobinso_bgee';
+my $queue          = 'ax-normal';
+
 
 my $job_limit      = 120; # Number of simultaneous jobs running
 
@@ -139,8 +140,13 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
 
     # Script can be launched! Construct SLURM sbatch command:
     # First, remove previous .out and .err files
+<<<<<<< Updated upstream
     my $sbatch_command = $rm_output_command.$rm_error_command;
     $sbatch_command .= "$cluster_kallisto_cmd\n";
+=======
+    #my $sbatch_command = $rm_output_command.$rm_error_command;
+    my $sbatch_command = "$cluster_kallisto_cmd\n";
+>>>>>>> Stashed changes
     $sbatch_command .= "$cluster_R_cmd\n\n";
     $sbatch_command .= $script_plus_args;
     print "Command submitted to cluster:\n$sbatch_command\n";

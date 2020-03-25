@@ -33,8 +33,8 @@ for( c_arg in command_arg ){
 }
 
 ## reading kallisto's output. If file not exists, script stops
-kallisto_count_tsv_file <- paste0(kallisto_count_folder, "/abundance.tsv")
-if( !file.exists(kallisto_count_file) ){
+kallisto_count_file <- paste0(kallisto_count_folder, "/abundance.tsv")
+if( file.exists(kallisto_count_file) ){
 	kallisto_count <- read.table(kallisto_count_file, h=T, sep="\t")
 } else {
   stop( paste("Kallisto results file not found [", kallisto_count_file, "]\n"))
@@ -71,12 +71,12 @@ tpmToFpkm <- function(tpm, counts, effLen){
 
 ###############################################################################
 
-tximportObject <- tximport(kallisto_count_tsv_file, type = "kallisto", tx2gene = tx2gene)
+tximportObject <- tximport(kallisto_count_file, type = "kallisto", tx2gene = tx2gene)
 tx_df <- as.data.frame(tximportObject)
 tx_df$id <- rownames(tx_df)
 tx_df$countsFromAbundance <- NULL
 kallisto_gene_count <- merge(tx_df, gene2biotype, by = "id", all = FALSE)
-kallisto_gene_count$fpkm <- tpmToFpkm(abundance$abundance, counts = abundance$counts, effLen = abundance$length)
+kallisto_gene_count$fpkm <- tpmToFpkm(kallisto_gene_count$abundance, counts = kallisto_gene_count$counts, effLen = kallisto_gene_count$length)
 kallisto_gene_count <- kallisto_gene_count[order(kallisto_gene_count[,6], kallisto_gene_count[,1]),]
 # order first by type (genic first) and then by gene id
 # the pipeline did not use tximport to summarize abundance at gene level. It uses an homemade script.
@@ -88,7 +88,7 @@ write.table(kallisto_gene_count, file = paste0(kallisto_count_folder, "/abundanc
 
 
 ###############################################################################
-## Plotting of the distribution of TPMs for genic and intergenic regions
+## Plotting of the distribution of TPMs f§or genic and intergenic regions
 pdf(file = paste0(kallisto_count_folder, "/distribution_TPM_genic_intergenic.pdf"), width = 6, height = 5)
 par(mar=c(5,6,1,1)) ## bottom, left, top and right margins
 
