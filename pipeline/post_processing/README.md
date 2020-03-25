@@ -36,12 +36,12 @@ from all the probesets mapped to a given gene.
     The idea is to correct for the different genomic coverages of different chip types.
     We do not normalize simply based on the max rank in a given condition, but based on the max rank of the chip types represented in that condition, to not penalize conditions with a lower number of expressed genes, and thus higher number of ex-aequo genes, and lower fractional max ranks.
     For gene `g`, condition `c`, chip type `t`, sample (chip) `s`
-<code>
-normalized_rank<sub>gs</sub> = (rank<sub>gs</sub> * (1 + max_rank<sub>c</sub> / max_rank<sub>t</sub>)) / 2
-</code>
+    <code>
+    normalized_rank<sub>gs</sub> = (rank<sub>gs</sub> * (1 + max_rank<sub>c</sub> / max_rank<sub>t</sub>)) / 2
+    </code>
 
-<samp>max_rank<sub>t</sub></samp>: max rank over all chips of type `t` over all conditions; <samp>max_rank<sub>c</sub></samp>: max of <samp>max_rank<sub>t</sub></samp> from the chip types `t` used in the condition `c`.
-3. Compute weighted mean of normalized ranks per gene and condition, weighted by the number of distinct ranks in each chip: we assume that chips with higher number of distinct ranks have a higher power for ranking genes.
+    <samp>max_rank<sub>t</sub></samp>: max rank over all chips of type `t` over all conditions; <samp>max_rank<sub>c</sub></samp>: max of <samp>max_rank<sub>t</sub></samp> from the chip types `t` used in the condition `c`.
+    3. Compute weighted mean of normalized ranks per gene and condition, weighted by the number of distinct ranks in each chip: we assume that chips with a higher number of distinct ranks have a higher power for ranking genes.
 The higher power at ranking genes of a chip is taken into account by weighting the mean
 by the number of distinct ranks in the chip, not by "normalizing" away chips with lower max ranks,
 again, not to penalize conditions with lower numbers of expressed genes.
