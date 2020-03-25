@@ -18,7 +18,7 @@ $| = 1; # no buffering of output
 # database.
 #####################################################################
 
-my ($all_results, $library_info, $excluded_libraries, $length_info) = ('', '', '', '', '');
+my ($all_results, $library_info, $excluded_libraries, $length_info, $tx2gene_dir) = ('', '', '', '', '');
 my %opts = ('library_info=s'        => \$library_info,       # rna_seq_sample_info.txt file
             'excluded_libraries=s'  => \$excluded_libraries, # rna_seq_sample_excluded.txt file
             'tx2gene_dir=s'         => \$tx2gene_dir,        # directory containing transcript to gene mapping file for all species
@@ -59,18 +59,21 @@ foreach my $expId ( sort keys %libraries ){
 
             ## retrieve mapping between transcript ids and gene ids (without intergenic regions)
             my $genomeFilePath = $libraries{$expId}->{$libraryId}->{'genomeFilePath'};
+
             my %tx2gene_mapping
             $genomeFilePath =~ m/.+/(.+)/;
-            open(my $IN_TX2GENE, '<', $tx2gene_dir.'/'.$1.'*.tx2gene')
+            open(my $IN_TX2GENE, '<', $tx2gene_dir.'/'.$1.'.tx2gene') or die "Could not read tx2gene file\n";
+
             my $line_tx2gene = <$IN_TX2GENE>;    #header
             while ( defined ($line_tx2gene = <$IN_TX2GENE>) ){
-            	chomp $line;
-                my @column = split(/\t/, $line);
+            	chomp $line_tx2gene;
+                my @column = split(/\t/, $line_tx2gene);
                 # intergenic regions have same transcript id and gene id
                 if ($column[0] ne $column[1]) {
-                	$tx2gene_mapping{$tmp[0]} = $column[1]
+                	$tx2gene_mapping{$column[0]} = $column[1];
                 }
             }
+            close $IN_TX2GENE;
 
 			## open kallisto abundance file to retrieve transcript id and corresponding read length
 			my $kallisto_file = $all_results.'/'.$libraryId.'/abundance.tsv';
@@ -79,20 +82,20 @@ foreach my $expId ( sort keys %libraries ){
             }
             open(my $IN, '<', $kallisto_file)  or die "Could not read file [$kallisto_file]\n";
             my $line = <$IN>;    #header
-            my $line = <$IN>;    #header
             while ( defined ($line = <$IN>) ){
                 chomp $line;
                 # file format: target_id    gene_id    length    eff_length    est_counts    tpm    fpkm    biotype
                 my @tmp = map { bgeeTrim($_) } split(/\t/, $line);
-                if (!exists($intergenic{$someparam})
-                my $transcriptId = $tmp[0];
 
+                my $transcriptId = $tmp[0];
                 my $geneId       = $tx2gene_mapping{$transcriptId};
                 my $length       = $tmp[2];
 
                 # record the length
-                $all_species{$speciesId}->{$transcriptId}->{'geneId'} = $geneId;
-                $all_species{$speciesId}->{$transcriptId}->{'length'} = $length;
+                if (!exists($tx2gene_mapping{$transcriptId})) {
+                    $all_species{$speciesId}->{$transcriptId}->{'geneId'} = $geneId;
+                    $all_species{$speciesId}->{$transcriptId}->{'length'} = $length;
+                }
             }
             close $IN;
         }
