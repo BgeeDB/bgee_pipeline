@@ -210,9 +210,9 @@ gene_gtf <- as.matrix(read.table(file = gzfile(gene_gtf_path, "r"), sep = "\t", 
 ## Header lines starting with # are not read
 
 ## selecting exon lines
-gene_gtf_exon <- gene_gtf[gene_gtf[,3] =  = "exon",]
+gene_gtf_exon <- gene_gtf[gene_gtf[,3] == "exon",]
 ## selecting gene lines
-gene_gtf <- gene_gtf[gene_gtf[,3] =  = "gene",]
+gene_gtf <- gene_gtf[gene_gtf[,3] == "gene",]
 
 ##  selecting only genes from assembled chromosome sequence (potentially useful code to select only fully asembled genome sequence)
 ##  chromosomes_all <- c(1:100, "X", "Y", "MT")
@@ -231,7 +231,7 @@ gene_ids <- sapply(split_annotation_list, function(x){ get_annot_value(x, 'gene_
 transcript_ids <- sapply(split_annotation_list, function(x){ get_annot_value(x, 'transcript_id') })
 
 ## getting the table with mappings between gene IDs and transcript (for tximport)
-tx2gene_ids <- unique(cbind(gene_ids, transcript_ids), MARGIN = 1)
+tx2gene_ids <- unique(cbind(transcript_ids, gene_ids), MARGIN = 1)
 
 ## getting the vector of gene_biotypes: splitting gene gtf
 split_annotation_list <- strsplit(gene_gtf[,9], "; ",  fixed  = T)
@@ -278,10 +278,10 @@ for(chr in chromosomes){
   cat(paste0("start generation of intergenic regions for chromosome ", chr, "\n"))
   ## keeping genes from selected chromosome
   ## skip chromosome/contig if 1 or less gene
-  if(( sum(gene_chr =  = as.character(chr)) <=  1 )){ next }
+  if(( sum(gene_chr == as.character(chr)) <=  1 )){ next }
 
   ## constructing coverage map of the chromosomes using start and stop coordinates of the genes and selecting regions with 0 coverage (intergenic)
-  gene_IR <- IRanges(as.numeric(gene_start[gene_chr =  = as.character(chr)]), as.numeric(gene_stop[gene_chr =  = as.character(chr)]))
+  gene_IR <- IRanges(as.numeric(gene_start[gene_chr == as.character(chr)]), as.numeric(gene_stop[gene_chr == as.character(chr)]))
   inter_IR <- slice(coverage(gene_IR), lower = 0, upper = 0, rangesOnly = TRUE)
   inter_gene_data <- as.data.frame(cbind(inter_IR@start, end(inter_IR), inter_IR@width))
   colnames(inter_gene_data) <- c("start", "end", "width")
@@ -350,18 +350,31 @@ intergenic_regions_gtf[,9] <- apply(cbind(gene_id, transcript_id), 1, function(x
 summary_N_removal[,"proportion_N"] <- summary_N_removal[,"total_N"] / summary_N_removal[,"total_bp"]
 
 ####################################
+output_file_path <- file.path(output_gtf_path, basename(substring(gene_gtf_path, 1, (nchar(gene_gtf_path) -7))))
+
 ## Output:
 ## GTF file with both genic exons and intergenic regions
+message("write file : ", paste(output_file_path, ".gtf_all", sep = ""))
 write.table(x = rbind(gene_gtf_exon, intergenic_regions_gtf),
-            file = paste(output_gtf_path, ".gtf_all", sep = ""),
+            file = paste(output_file_path, ".gtf_all", sep = ""),
+            sep = "\t",
+            row.names = FALSE,
+            col.names = FALSE,
+            quote = FALSE)
+
+## GTF file with both genic exons and intergenic regions
+message("write file : ", paste(output_file_path, ".gtf_transcriptome", sep = ""))
+write.table(x = gene_gtf_exon,
+            file = paste(output_file_path, ".gtf_transcriptome", sep = ""),
             sep = "\t",
             row.names = FALSE,
             col.names = FALSE,
             quote = FALSE)
 
 ## Table summaryzing the step of block of Ns removal
+message("write file : ", paste(output_file_path, ".Nremoval", sep = ""))
 write.table(x = summary_N_removal,
-            file = paste(output_gtf_path, ".Nremoval", sep = ""),
+            file = paste(output_file_path, ".Nremoval", sep = ""),
             sep = "\t",
             row.names = TRUE,
             col.names = TRUE,
@@ -370,8 +383,9 @@ write.table(x = summary_N_removal,
 ## Table of mapping between transcript_id and gene_id
 intergenic_tx2gene_ids <- cbind(intergenic_id, intergenic_id)
 all_tx2gene_ids <- rbind(tx2gene_ids, intergenic_tx2gene_ids)
+message("write file : ", paste(output_file_path, ".tx2gene", sep = ""))
 write.table(x = all_tx2gene_ids,
-            file = paste(output_gtf_path, ".tx2gene", sep = ""),
+            file = paste(output_file_path, ".tx2gene", sep = ""),
             sep = "\t",
             row.names = FALSE,
             col.names = c("TXNAME", "GENEID"),
@@ -383,8 +397,9 @@ intergenic_gene_biotypes <- cbind(
     NA,
     "intergenic")
 gene_biotypes <- rbind(gene_biotypes, intergenic_gene_biotypes)
+message("write file : ", paste(output_file_path, ".gene2biotype", sep = ""))
 write.table(x = gene_biotypes,
-            file = paste(output_gtf_path, ".gene2biotype", sep = ""),
+            file = paste(output_file_path, ".gene2biotype", sep = ""),
             sep = "\t",
             row.names = FALSE,
             col.names = c("id", "biotype", "type"),

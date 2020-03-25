@@ -38,37 +38,31 @@ die "Invalid or missing [$outDir]: $?\n"  if ( !-d $outDir || !-w $outDir );
 
 
 chdir $outDir; # Go into output/genome folder
-for my $gtf ( (glob($GTF_dir."/*.$ensRelease.gtf.gz"), glob($GTF_dir."/*.$ensMetazoaRelease.gtf.gz")) ){
+for my $gtf (glob($GTF_dir."/*.gtf.gz") ){
     die "Problem with GTF files [$gtf]\n"  if ( -z "$gtf" );
 
     my $species_name = basename($gtf);
     $species_name   =~ s{^(\w+).+$}{$1};
     $species_name    = lc $species_name;
 
-    my $prefixEns   = basename($gtf);
-    $prefixEns     =~ s{\.$ensRelease\.gtf.gz$}{};
-    next  if ( -e "$prefixEns.$ensRelease.genome.fa"    && -s "$prefixEns.$ensRelease.genome.fa" );
-    next  if ( -e "$prefixEns.$ensRelease.genome.fa.gz" && -s "$prefixEns.$ensRelease.genome.fa.gz" );
-    my $prefixEnsM  = basename($gtf);
-    $prefixEnsM    =~ s{\.$ensMetazoaRelease\.gtf.gz$}{};
-    next  if ( -e "$prefixEnsM.$ensMetazoaRelease.genome.fa"    && -s "$prefixEnsM.$ensMetazoaRelease.genome.fa" );
-    next  if ( -e "$prefixEnsM.$ensMetazoaRelease.genome.fa.gz" && -s "$prefixEnsM.$ensMetazoaRelease.genome.fa.gz" );
-    if ( is_success( getstore("ftp://ftp.ensembl.org/pub/release-$ensRelease/fasta/$species_name/dna/$prefixEns.dna.toplevel.fa.gz", "$prefixEns.$ensRelease.genome.fa.gz") ) ){
+    my $prefix   = basename($gtf);
+    $prefix     =~ s{\.gtf.gz$}{};
+    next  if ( -e "$prefix.genome.fa"    && -s "$prefix.genome.fa" );
+    if ( is_success( getstore("ftp://ftp.ensembl.org/pub/release-$ensRelease/fasta/$species_name/dna/$prefix.dna.toplevel.fa.gz", "$prefix.genome.fa.gz") ) ){
         # exists in Ensembl FTP && genome file downloaded
+        # uncompress downloaded fasta file
+        system("gunzip -f $prefix.genome.fa.gz")==0  or die "Failed to unzip genome files: $?\n";
+
     }
-    elsif ( is_success( getstore("ftp://ftp.ensemblgenomes.org/pub/release-$ensMetazoaRelease/metazoa/fasta/$species_name/dna/$prefixEnsM.$ensMetazoaRelease.dna.toplevel.fa.gz", "$prefixEnsM.$ensMetazoaRelease.genome.fa.gz") ) ){
+    elsif ( is_success( getstore("ftp://ftp.ensemblgenomes.org/pub/release-$ensMetazoaRelease/metazoa/fasta/$species_name/dna/$prefix.$ensMetazoaRelease.dna.toplevel.fa.gz", "$prefix.genome.fa.gz") ) ){
         # exists in Ensembl Metazoa FTP && GTF file downloaded
-        #NOTE release is still in file names for Ensembl Metazoa
+        # uncompress downloaded fasta file
+        system("gunzip -f $prefix.genome.fa.gz")==0  or die "Failed to unzip genome files: $?\n";
+
     }
     else {
         warn "No genome GTF file found for [$species_name] in Ensembl $ensRelease or Ensembl Metazoa $ensMetazoaRelease\n";
     }
-}
-
-
-# Unzip genome files
-if ( glob('*.genome.fa.gz') ){
-    system("gunzip -f *.genome.fa.gz")==0  or die "Failed to unzip genome files: $?\n";
 }
 
 exit 0;
