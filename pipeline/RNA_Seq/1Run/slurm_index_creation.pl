@@ -15,11 +15,9 @@ use Getopt::Long;
 use Time::localtime;
 
 # Define arguments & their default value
-my ($transcriptome_folder, $output_log_folder, $ens_release, $ens_metazoa_release, $short_index_length, $cluster_kallisto_cmd, $cluster_tophat_cmd) = ('', '', '', '', '', '', '');
+my ($transcriptome_folder, $output_log_folder, $short_index_length, $cluster_kallisto_cmd, $cluster_tophat_cmd) = ('', '', '', '', '', '', '');
 my %opts = ('transcriptome_folder=s' => \$transcriptome_folder, # same as GTF folder
 			'output_log_folder=s'    => \$output_log_folder,
-            'ens_release=s'          => \$ens_release,
-            'ens_metazoa_release=s'  => \$ens_metazoa_release,
 			'short_index_length=s'   => \$short_index_length,
             'cluster_kallisto_cmd=s' => \$cluster_kallisto_cmd,
             'cluster_tophat_cmd=s'   => \$cluster_tophat_cmd
@@ -45,7 +43,7 @@ my $time_limit	   = '12:00:00';
 
 opendir (DIR, $transcriptome_folder) or die "cannot open directory [$transcriptome_folder]";
 while (my $file = readdir(DIR)) {
-	if($file =~ ($ens_release.'.gtf_all$') || $file =~ ($ens_metazoa_release.'.gtf_all$')) {
+	if($file =~ ('.gtf_all$')) {
 
 		# initialise path to all files
 		my $genome_file_path = $transcriptome_folder.'/'.($file =~ s/gtf_all/genome.fa/r);
