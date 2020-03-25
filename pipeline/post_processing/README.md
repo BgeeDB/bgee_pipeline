@@ -20,9 +20,8 @@ Third, ranks are normalized over all data types and species.
 The main steps are the following:
 
 1. we compute ranks using different approaches for each data type.
-2. we "normalize" ranks inside each data type (except for RNA-Seq, no normalization)
-3. we "normalize" ranks over all genes, conditions and data types for each species
-4. we compute a global weighted mean rank for each gene in each condition over all data types
+2. we "normalize" ranks over all genes, conditions and data types for each species
+3. we compute a global weighted mean rank for each gene in each condition over all data types
 
 #### Affymetrix data
 
@@ -43,8 +42,7 @@ normalized_rank<sub>gs</sub> = (rank<sub>gs</sub> * (1 + max_rank<sub>c</sub> / 
 <samp>max_rank<sub>t</sub></samp>: max rank over all chips of type `t` over all conditions; <samp>max_rank<sub>c</sub></samp>: max of <samp>max_rank<sub>t</sub></samp> from the chip types `t` used in the condition `c`.
 3. Compute weighted mean of normalized ranks per gene and condition, weighted by the number of distinct ranks in each chip: we assume that chips with higher number of distinct ranks have a higher power for ranking genes.
 The higher power at ranking genes of a chip is taken into account by weighting the mean
-by the number of distinct ranks in the chip, not by "normalizing" away chips with lower max ranks,
-again, not to penalize conditions with lower numbers of expressed genes.
+by the number of distinct ranks in the chip (gave better results than by using the max rank of the chip).
 4. Store the max of max ranks of chip types represented in each condition <samp>max_rank<sub>c</sub></samp> (will allow to normalize ranks between conditions and data types), and sums of numbers of distinct ranks per gene and condition (used afterwards to compute the global weigthed mean rank over all data types in a condition, in the application).
 
 #### RNA-Seq data
@@ -60,10 +58,8 @@ Note that we do not "normalize" ranks between samples before computing the mean,
 all libraries are used to produce ranking over always the same set of genes in a given species,
 so the genomic coverage is always the same, and no "normalization" is required. The higher power
 at ranking genes of a library (for instance, thanks to a higher number of mapped reads)
-is taken into account by weighting the mean by the number of distinct ranks in the library,
-not by "normalizing" away libraries with lower max ranks; this would penalize conditions
-with a lower number of expressed genes, and thus with more ex-aequo ranked genes, corresponding
-to genes receiving 0 read.
+is taken into account by weighting the mean by the number of distinct ranks in the library
+(gave better results than by using the max rank in the library).
 4. Store the max ranks in each condition (will allow to normalize ranks between conditions and data types),
 and the sum of distinct rank counts per gene and condition (used afterwards to compute the global weigthed mean rank over all data types in a condition, in the application). As of Bgee 14.1, the same max rank is considered in all conditions, because we assume that the same set of genes is accessible to all libraries.
 
