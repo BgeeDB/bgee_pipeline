@@ -1174,5 +1174,42 @@ sub getBgeedbOrgans {
     return \%organs;
 }
 
+
+# Return the number of active jobs that map one job name
+sub check_active_jobs_number {
+    my ($job_name) = @_;
+    my $running_jobs = `squeue --name=$job_name --noheader | wc -l` || 0;
+    chomp($running_jobs);
+    return $running_jobs;
+}
+
+# Add main sbatch command and options
+sub sbatch_template {
+    my ($queue, $account, $nbr_processors, $memory_usage, $output_file, $error_file, $job_name) = @_;
+    # Potential other options:
+    # #SBATCH --mail-user=$user_email
+    # #SBATCH --mail-type=ALL
+
+    my $template="#!/bin/bash
+
+#SBATCH --partition=$queue
+#SBATCH --account=$account
+
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=$nbr_processors
+#SBATCH --mem=${memory_usage}G
+##SBATCH --time=...
+
+#SBATCH --output=$output_file
+#SBATCH --error=$error_file
+#SBATCH --export=NONE
+#SBATCH --job-name=$job_name
+
+";
+
+    return $template;
+}
+
 1;
 
