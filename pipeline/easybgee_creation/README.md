@@ -36,7 +36,7 @@ The aims of the Easy Bgee database are :
 ## Description
 
 This step will create a database containing a subset of information present in the Bgee database following the database schema defined in the file easyBgeeSchema.sql
-The new database is named `easybgee_vRELEASE` (e.g., `easybgee_v14`).
+The new database is named `easybgee_vRELEASE` (e.g., `easybgee_v15`).
 
 ## Data generation
 

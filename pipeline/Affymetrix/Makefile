@@ -140,8 +140,8 @@ check_after: normalization $(PIPELINEROOT)$(AFFY_NORMTYPE_FILEPATH) $(PIPELINERO
 	@echo >> $@.tmp
 # Gzip new cel files normalized, if any
 	@find $(CELPATH) ! -name \*.gz -type f -exec gzip -9 {} \; >> $@.tmp
-	# Rsync files for backup on 'bigbgee' (see wiki for password)
-	@echo -e "\t\e[1m\e[37m\e[41mRsync files in '$(AFFYDATAPATH)' to bigbgee machine!\e[m\n"
+	# Rsync files for backup on sensitive cluster (see wiki for password)
+	@echo -e "\t\e[1m\e[37m\e[41mRsync files in '$(AFFYDATAPATH)' to sensitive machine!\e[m\n"
 	@rsync -av --del -f "- /lost+found" --exclude=.svn --exclude=.git $(AFFYDATAPATH)  $(DATALOGIN)@$(DATAHOST):$(DATAPATH)/Affymetrix/  >>  $@.tmp
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@

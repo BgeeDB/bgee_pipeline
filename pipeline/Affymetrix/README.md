@@ -298,7 +298,7 @@ It is now possible to normalize using only one CEL file, this part should not be
 
 
 ### Note for large ".cel" files
-If large cel files have to be normalized, you can use Vital-IT computers with a lot of memory. Copy required files, data structure and scripts there:
+If large cel files have to be normalized, you can use cluster computers with a lot of memory. Copy required files, data structure and scripts there:
 ```
 rsync -Wav -essh --exclude '*.gz' $(CELPATH)       YYYYYY@dee-serv02.vital-it.ch:/scratch/temporary/YYYYYY/bgee/Affymetrix/cel_data/
 rsync -Wav -essh                  $(BIOCONDUCTOR)  YYYYYY@dee-serv02.vital-it.ch:/scratch/temporary/YYYYYY/bgee/Affymetrix/bioconductor/
@@ -308,7 +308,7 @@ module add R/3.2.2
 cd /scratch/temporary/YYYYYY/bgee/Affymetrix/
 RUN normalization scripts
 ```
-* `YYYYYY` being your login account on Vital-IT, and the repository in `/scratch/temporary/` you need to ask for.
+* `YYYYYY` being your login account on cluster, and the repository in `/scratch/temporary/` you need to ask for.
 * `dee-serv03.vital-it.ch` could also be used !
 * You may have to change some paths in order to reach `/scratch/temporary/YYYYYY/bgee/Affymetrix/` properly!
 
@@ -321,11 +321,11 @@ If you need to re-run normalization for some experiments or all experiments:
 
 
 ### Potential problems
-* If the annotation package for the chipType is missing check the list of all annotations packages [here](http://www.bioconductor.org/packages/2.2/ChipName.html). You may need to install it on the devbioinfo server. If it's on vital-IT, ask them to install it [mailto:projects@vital-it.ch](mailto:projects@vital-it.ch).
+* If the annotation package for the chipType is missing check the list of all annotations packages [here](http://www.bioconductor.org/packages/2.2/ChipName.html). You may need to install it on the devbioinfo server. If it's on cluster, ask them to install it [mailto:projects@vital-it.ch](mailto:projects@vital-it.ch).
 * Annotations errors. A problem happens if annotators put the wrong chip type. This is often the case when multiple chip types are used in the same experiment. Sometimes the mistake is present in ArrayExpress! -> You can have a look at the chip type directly in the header of the CEL file.
 * Corrupted files. Usually there is nothing to do... You can remove the problematic chip from the experiment in the annotation file.
 * Custom chips: the annotation package does not exist in bioconductor (encode chips for example)
-* Memory problems: shouldn't occur on vital-IT (256Go memory)
+* Memory problems: shouldn't occur on cluster (256Go memory)
 * Other problems may be solved using the [bioconductor mailing list](http://dir.gmane.org/gmane.science.biology.informatics.conductor) usually. If the problem is strange, you may want to avoid losing too much time and be pragmatic: throw away the experiment or chip (remove it from `affymetrixChip` and `microarrayExperiment`).
 
 

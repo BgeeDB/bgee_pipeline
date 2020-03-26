@@ -58,7 +58,7 @@ if ( !$test_options || $bgee_connector eq '' || $speciesArg eq '' ||
 \t-estDir               The path to generate EST related files, or '-' for not generating data for EST
 \t-inSituDir            The path to generate in situ hybridization related files, or '-' for not generating data for in situ hybridization
 \t-rnaSeqDir            The path to generate RNA-Seq related files, or '-' for not generating data for RNA-Seq
-\t-bgeeVersion          The Bgee release for which the files are being generated, to generate FTP links to correct version, e.g. 'bgee_v13'.
+\t-bgeeVersion          The Bgee release for which the files are being generated, to generate FTP links to correct version, e.g. 'bgee_v15'.
 \t-debug                more verbose output
 \n";
     exit 1;

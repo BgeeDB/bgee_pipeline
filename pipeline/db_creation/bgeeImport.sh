@@ -7,7 +7,7 @@
 DIR=$(dirname $([ -L $0 ] && readlink -f $0 || echo $0))
 PASSWD=`grep '^DBPASS ' $DIR/../Makefile.Config | awk '{print $3}'`
 LOGIN=`grep '^DBUSER '  $DIR/../Makefile.Config | awk '{print $3}'`
-DBNAME=bgee_v14
+DBNAME=bgee_v15
 
 set -e
 

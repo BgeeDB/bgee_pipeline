@@ -12,7 +12,6 @@
 # Mar 14, 2016
 # - Now should work on out annotation file merged with the Wormbase annotation
 # - An external file is checked for libraries which were manually checked (with decision to include them or not).
-# - warnings issues for miRNA-seq and ncRNA-seq
 # - try to detect CAGE-seq ("Library selection" == CAGE flag in XML), SAGE-seq, DeepSage and issues warning
 # - issue warning if read length too short (<36nt): miRNA or special library?
 
@@ -51,6 +50,7 @@ my ($RNAseqLibWormExclusion) = ('');
 my ($extraMapping)           = ('');
 my ($outFile)                = ('');
 my ($debug)                  = (0);
+my ($sample)                 = '';
 my %opts = ('bgee=s'                   => \$bgee_connector,     # Bgee connector string
             'RNAseqLib=s'              => \$RNAseqLib,
             'RNAseqLibChecks=s'        => \$RNAseqLibChecks,
@@ -58,6 +58,7 @@ my %opts = ('bgee=s'                   => \$bgee_connector,     # Bgee connector
             'extraMapping=s'           => \$extraMapping,
             'outFile=s'                => \$outFile,
             'debug'                    => \$debug,
+            'sample=s'                 => \$sample,
            );
 
 # Check arguments
@@ -72,6 +73,7 @@ if ( !$test_options || $bgee_connector eq '' || $RNAseqLib eq '' || $RNAseqLibCh
 \t-outFile                Output file: TSV with all species and SRA information from NCBI
 \t-extraMapping           Extra mapping file
 \t-debug                  more verbose output
+\t-sample                 Analyse this specific sample ONLY
 \n";
     exit 1;
 }
@@ -153,6 +155,11 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
     my $anatID       = $tsv{'uberonId'}[$i];
     my $stageID      = $tsv{'stageId'}[$i];
 
+    #NOTE Restrict analysis to this specific sample id (library or experiment)
+    if ( $sample ne '' ){
+        next SAMPLE  if ( $libraryId ne $sample && $experimentId ne $sample );
+    }
+
     # line commented: skipped
     next SAMPLE  if ( $libraryId =~ /^#/ );
     next SAMPLE  if ( $tag =~ /^ScRNA-seq$/i ); #NOTE Discard Single-cell sequencing, not this pipeline part
@@ -212,14 +219,17 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         }
         # Perform a series of sanity checks
         # Check it is a RNA-seq library
-        my @valid_lib_strategy = ('GSE30617', 'SRP000401', 'E-MTAB-2449', 'SRP003905', 'GSE16552');
+        my @valid_lib_strategy = ('ERP001525', 'ERP001954', 'ERP002055', 'GSE30606', 'GSE30617', 'SRP000401', 'E-MTAB-2449', 'SRP003905', 'SRP006208', 'SRP006209', 'GSE16552', 'DRP000571', 'SRP000304', 'SRP004363', 'SRP005402', 'SRP033585', 'SRP043163', 'SRP058340', 'SRP068231');
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/31
+        #     See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/82
         # GSE30617      OK for Anne
         # SRP000401     OK for Anne
         # E-MTAB-2449   'validated with lower confidence'
         # SRP003905     '"EST" but that it is Illumina paired-end, so I think it is RNA-seq'
         # GSE16552      'Contradictory info but for now kept'. Also in https://gitlab.sib.swiss/Bgee/expression-annotations/issues/33
-        my @invalid_lib_strategies = ('miRNA-Seq', 'ncRNA-Seq', 'ATAC-seq', 'MAINE-Seq', 'MNase-Seq', 'FAIRE-seq', 'DNase-Hypersensitivity', 'DNase-seq');
+        # DRP000571     OK for Anne
+        # SRP000304     OK, FL-cDNA is RNA-Seq
+        my @invalid_lib_strategies = ('ATAC-seq', 'MAINE-Seq', 'MNase-Seq', 'FAIRE-seq', 'DNase-Hypersensitivity', 'DNase-seq');
         $info =~ /<LIBRARY_STRATEGY>([^<]+)<\/LIBRARY_STRATEGY>/; # [^<] prevents matching to '<' character
         $strategy = $1;
         if ( any { lc($strategy) eq lc($_) } @invalid_lib_strategies ){
@@ -231,9 +241,11 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         }
 
         # Particular types of RNA-seq. See https://www.ncbi.nlm.nih.gov/books/NBK49283/ or https://www.ebi.ac.uk/ena/submit/preparing-xmls
-        my @valid_selection_methods = ('cDNA', 'oligo-dT', 'Oligo-dT', 'PCR', 'PolyA', 'RANDOM', 'RANDOM PCR', 'RT-PCR');
+        my @valid_selection_methods = ('cDNA', 'Inverse rRNA', 'oligo-dT', 'Oligo-dT', 'PCR', 'PolyA', 'RANDOM', 'RANDOM PCR', 'RT-PCR');
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
-        my @valid_lib_selection     = ('E-MTAB-5895', 'SRP012049', 'SRP021223', 'SRP051959', 'SRP058036', 'SRP082291', 'SRP082342', 'SRP082454', 'SRP106023');
+        #     See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/82
+        #     See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/84
+        my @valid_lib_selection     = ('DRP003809', 'E-MTAB-5895', 'ERP001525', 'ERP006380', 'SRP012049', 'SRP018740', 'SRP021223', 'SRP024250', 'SRP027560', 'SRP033402', 'SRP043521', 'SRP051959', 'SRP055497', 'SRP058036', 'SRP066548', 'SRP081080', 'SRP082291', 'SRP082342', 'SRP082454', 'SRP092904', 'SRP106023', 'SRP116580', 'SRP045680', 'SRP018725', 'SRP053164', 'SRP056073', 'SRP072263', 'SRP036185', 'SRP058798');
         $info =~ /<LIBRARY_SELECTION>([^<]+)<\/LIBRARY_SELECTION>/; # [^<] prevents matching to '<' character
         my $selection = $1;
         if ( $selection =~ /CAGE/ ){
@@ -308,13 +320,14 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         ## Issue warning is the XML entry includes keywords suggesting that the library is not classical RNA-seq
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
         #FIXME SRP070951 is kept till we know what to do with "globin reduction" see https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
-        my @not_traditional = ('DeepSAGE', 'DeepCAGE', 'LongSAGE', 'SuperSAGE', 'CAGE', 'RACE', 'SAGE', 'DpnII', 'DpnIII', 'NlaIII', 'capture', 'CEL-seq', 'DGE-Seq', 'TagSeq', 'globin reduction', 'globin depletion', 'UMI', 'UMIs', 'ATAC-seq', 'MAINE-Seq', 'Mnase-Seq', 'FAIRE-Seq', 'DNase-seq', 'MACE-Seq', 'QuantSeq', 'piRNA', 'piRNAs');
-        my @verified        = ('ERP000787', 'ERP001694', 'ERP104395',
+        my @not_traditional = ('DeepSAGE', 'DeepCAGE', 'LongSAGE', 'SuperSAGE', 'CAGE', 'RACE', 'SAGE', 'DpnII', 'DpnIII', 'NlaIII', 'capture', 'CEL-seq', 'DGE-Seq', 'TagSeq', 'globin reduction', 'globin depletion', 'UMI', 'UMIs', 'ATAC-seq', 'MAINE-Seq', 'Mnase-Seq', 'FAIRE-Seq', 'DNase-seq', 'MACE-Seq', 'QuantSeq');
+        my @verified        = ('ERP000787', 'ERP001694', 'ERP013973', 'ERP104395',
                                'GSE22410', 'GSE64283',
-                               'SRP000401', 'SRP013825', 'SRP021940', 'SRP022567', 'SRP041131', 'SRP076617', 'SRP082284',
-                               'SRP091779', 'SRP092799', 'SRP098705', 'SRP112616', 'SRP125959');
+                               'SRP000401', 'SRP013825', 'SRP021940', 'SRP022567', 'SRP041131', 'SRP076617', 'SRP082284', 'SRP090001',
+                               'SRP091779', 'SRP092799', 'SRP098705', 'SRP099849', 'SRP112616', 'SRP123447', 'SRP125768', 'SRP125959');
         if ( all { $experimentId ne $_ } @verified and any { $info =~ /\W$_\W/i } @not_traditional ){
-            warn "\tWarning: [$libraryId][$experimentId] may not be traditional RNA-seq, found word(s) subject to caution. Please check.\n";
+            my @words = grep { $info =~ /\W$_\W/i } @not_traditional;
+            warn "\tWarning: [$libraryId][$experimentId] may not be traditional RNA-seq, found word(s) [".join('/', @words)."] subject to caution. Please check.\n";
         }
 
         # TODO Any other info to get?

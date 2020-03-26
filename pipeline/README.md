@@ -24,7 +24,7 @@ Shortcut note: for the RNA-Seq analysis pipeline, see [RNA_Seq/](RNA_Seq/).
 ## Introduction
 
 Through all the documentation, `RELEASE` will denote the current Bgee version
-(e.g., if the current release number is `14`, `bgee_vRELEASE` means `bgee_v14`).
+(e.g., if the current release number is `15`, `bgee_vRELEASE` means `bgee_v15`).
 
 Each step in the Bgee pipeline is represented by a specific folder,
 containing a Makefile, and related scripts. Variables common

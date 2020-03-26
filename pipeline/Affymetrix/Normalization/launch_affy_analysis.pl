@@ -9,7 +9,7 @@ use diagnostics;
 # USAGE: perl launch_affy_analysis.pl
 #        perl launch_affy_analysis.pl <EXP_ID>
 
-# Run this script on vital-IT:
+# Run this script on cluster:
 # To do:
 #
 # rsync -Wav -essh ~/work/bgee/extra/pipeline/pipeline/*.pl jroux@Rserv.vital-it.ch:/scratch/temporary/jroux/pipeline/pipeline/

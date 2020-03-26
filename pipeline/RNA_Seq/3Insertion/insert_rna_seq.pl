@@ -32,7 +32,7 @@ my %opts = ('bgee=s'                => \$bgee_connector,     # Bgee connector st
             'excluded_libraries=s'  => \$excluded_libraries, # rna_seq_sample_excluded.txt file
             'library_stats=s'       => \$library_stats,      # presence_absence_all_samples.txt
             'report_info=s'         => \$report_info,        # reports_info_all_samples.txt
-            'all_results=s'         => \$all_results,        # /var/bgee/extra/pipeline/rna_seq/all_results_bgee_v14/
+            'all_results=s'         => \$all_results,        # /var/bgee/extra/pipeline/rna_seq/all_results_bgee_v15/
             'sex_info=s'            => \$sex_info,           # generated_files/uberon/uberon_sex_info.tsv
             'extraMapping=s'        => \$extraMapping,       # Extra mapping for too up-to-date ontology terms
             'debug'                 => \$debug,
@@ -85,7 +85,7 @@ for my $expId ( sort keys %libraries ){
             $all_species{$libraries{$expId}->{$libraryId}->{'speciesId'}}++;
             $count_libs++;
             unless ( -s "$all_results/$libraryId/$abundance_file" ){
-                die "Missing or empty processed data file for library $libraryId! Please check that the transfer from Vital-IT was successful. Otherwise this library should maybe be added to the file of excluded libraries?\n";
+                die "Missing or empty processed data file for library $libraryId! Please check that the transfer from cluster was successful. Otherwise this library should maybe be added to the file of excluded libraries?\n";
             }
         }
     }
@@ -116,7 +116,7 @@ for my $expId ( sort keys %annotations ){
         } elsif ( !exists($all_species{ $annotations{$expId}->{$libraryId}->{'speciesId'} }) ){
             $species_not_included++;
         } elsif ( (!exists $libraries{$expId}->{$libraryId}) and (!exists $excludedLibraries{$libraryId}) ){
-            print "\t", $libraryId, " library annotated but not mapped. This may be for different reasons: is it in the RNASeqLibrary_worm_exclusion.tsv file? Is it a miRNA-Seq/ncRNA-seq/CAGE/RACE/weird experiment? Is it in SRA format (SRX/ERX)?\n";
+            print "\t", $libraryId, " library annotated but not mapped. This may be for different reasons: is it in the RNASeqLibrary_worm_exclusion.tsv file? Is it a CAGE/RACE/weird experiment? Is it in SRA format (SRX/ERX)?\n";
         }
     }
 }
@@ -247,13 +247,13 @@ my $insLib = $bgee->prepare('INSERT INTO rnaSeqLibrary (rnaSeqLibraryId, rnaSeqE
                              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
 # Excluded libraries
-my $insExcludedLib = $bgee->prepare('INSERT INTO rnaSeqLibraryDiscarded (rnaSeqLibraryId) VALUES (?)');
+my $insExcludedLib = $bgee->prepare('INSERT INTO rnaSeqLibraryDiscarded (rnaSeqLibraryId, rnaSeqLibraryDiscardReason) VALUES (?, ?)');
 for my $libraryId ( sort keys %excludedLibraries ){
     if ( $debug ){
         print 'INSERT INTO rnaSeqLibraryDiscarded: ', $libraryId, "\n";
     }
     else {
-        $insExcludedLib->execute($libraryId)  or die $insExcludedLib->errstr;
+        $insExcludedLib->execute($libraryId, $excludedLibraries{$libraryId})  or die $insExcludedLib->errstr;
     }
 }
 

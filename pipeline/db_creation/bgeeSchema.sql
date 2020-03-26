@@ -946,7 +946,8 @@ create table rnaSeqRun (
 -- UPDATE Bgee 14: for pseudo-mapping using Kallisto, runs are pooled, so we can only exclude libraries,
 -- not specific runs.
 create table rnaSeqLibraryDiscarded (
-    rnaSeqLibraryId varchar(70) not null
+    rnaSeqLibraryId varchar(70) not null,
+    rnaSeqLibraryDiscardReason varchar(255) not null default ''
 ) engine = innodb;
 
 -- This table contains TPM/RPKM/read count values for each gene for each library

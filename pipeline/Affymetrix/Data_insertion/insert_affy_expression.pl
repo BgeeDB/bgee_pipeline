@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 # Julien Roux, created 24/07/09
-# modified 15/08/16, JR: revamped whole script for bgee v14 with condition Ids
+# modified 15/08/16, JR: revamped whole script for bgee v15 with condition Ids
 # modified Nov 2016, Frederic Bastian: split former create_files_affy.pl script between insert_affy.pl and insert_affy_expression.pl.
 # last modified Dec. 2016 for use of new microarrayExperimentExpression table
 
