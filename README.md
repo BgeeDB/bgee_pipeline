@@ -13,6 +13,7 @@
 1. [Documenting the pipeline](#documenting-the-pipeline)
 2. [Writing Makefiles](#writing-makefiles)
 3. [Versioning input/output files](#versioning-inputoutput-files)
+3. [To do at each release of the pipeline](#to-do-at-each-release-of-the-pipeline)
 
 # General information
 
@@ -155,3 +156,15 @@ than to encrypt the file)
 Source and generated files should be versioned using git, if not too large.
 This versioning is not performed automatically by the Makefiles. It is the responsibility
 of the person in charge to version the relevant files when a step is completed.
+
+## To do at each release of the pipeline
+
+Branch `master` always reflects the pipeline for the current release of Bgee,
+`develop` is the pipeline in development for the next version of Bgee. When you do a new release:
+
+* Before the merge, in `develop` branch, check and update the information in `pipeline/db_creation/update_data_sources.sql` about the release about to be made. Notably, check the information about the Bgee release, the date of freeze of import of the data, etc.
+  * Update the database to be released using this file BEFORE generating the full dump for archiving
+* Before the merge, in `develop` branch, check the file `TODO.md`, remove/strikeout what has been done and is not to do anymore.
+* merge `develop` into `master`
+* In `develop`, update the version number in the top title of this README.md file to be the next release of Bgee.
+* In `develop`, update `pipeline/Makefile.common` to reflect the new login info to connect to databases etc.

@@ -156,7 +156,16 @@ add primary key (summarySimilarityAnnotationId, negated, ECOId, CIOId, reference
 -- ****************************************************
 /*!40000 ALTER TABLE `OMAHierarchicalGroup` DISABLE KEYS */;
 alter table OMAHierarchicalGroup
-add primary key (OMANodeId),
+-- The PK is only OMANodeId, but we also add OMAGroupId for queries using both fields,
+-- it's better to use the clustered index in such cases.
+-- TODO: to reevaluate when used, do we have any query requesting both?
+-- If only OMAGroupId is mainly used, switch the PK to primary key (OMAGroupId, OMANodeId),
+-- and remove index on OMAGroupId from bgeeIndex.sql.
+-- If only OMANodeId is mainly used, switch the PK to primary key (OMANodeId),
+-- and remove the unique index on OMANodeId?
+add primary key (OMANodeId, OMAGroupId),
+-- To check the PK, we also add a unique index on OMANodeId
+add unique (OMANodeId),
 add unique (OMANodeLeftBound),
 add unique (OMANodeRightBound);
 /*!40000 ALTER TABLE `OMAHierarchicalGroup` ENABLE KEYS */;
