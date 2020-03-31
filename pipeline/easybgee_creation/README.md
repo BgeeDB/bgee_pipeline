@@ -17,8 +17,8 @@ The aims of the Easy Bgee database are :
 * gene : all genes (the primary key is an internal bgeeGeneId that is not comparable in different releases of the DB)
 * anatEntity : anatomical entities as described in the Uberon ontology (https://uberon.github.io/)
 * stage : stages as described in the dev. stage ontology (https://github.com/obophenotype/developmental*stage*ontologies)
-* globalExpression : calls as shown in the gene page of the Bgee 14 webapp. 
-* globalCond : condition describing under which globalExpression were studied. One condition correspond to one dev. stage, one anat. entity and one species.  
+* globalExpression : calls as shown in the gene page of the Bgee 14 webapp.
+* globalCond : condition describing under which globalExpression were studied. One condition correspond to one dev. stage, one anat. entity and one species.
 
 ### Information available only in Easy Bgee
 
@@ -45,13 +45,13 @@ The new database is named `easybgee_vRELEASE` (e.g., `easybgee_v15`).
 
 * Run Makefile:
   `make`
-  
+
 ## Detail all rules
 
 * `make create_schema`: create the schema of the Easy Bgee database
 * `make extract_data_from_bgee`: create a tsv file containing all data extracted from Bgee database that should be persisted in the Easy Bgee database
 * `make import_to_easybgee`: use the previously generated tsv file and import all data it contains in the Easy Bgee database
-* `make drop_easybgee`: drop the Easy Bgee database. 
+* `make drop_easybgee`: drop the Easy Bgee database.
 
 ## Data verification
 

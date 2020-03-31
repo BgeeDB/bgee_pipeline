@@ -14,7 +14,7 @@ create table species (
 -- example: sapiens
     species varchar(70) not null COMMENT 'Species name',
 -- exemple: human
--- warning, this column in the bgee schema is defined as not null but contains empty values. 
+-- warning, this column in the bgee schema is defined as not null but contains empty values.
 -- In bgeelite we added a default value corresponding to an empty string ''
     speciesCommonName varchar(70) default '' COMMENT 'NCBI species common name',
     genomeVersion varchar(50) not null,
@@ -25,7 +25,7 @@ create table species (
 -- was used does not have any data in Bgee, and thus is not in the taxon table.
 -- If the correct genome of the species was used, the value of this field is 0.
     genomeSpeciesId mediumint unsigned not null default 0 COMMENT 'NCBI species taxon id used for mapping (0 if the same species)',
-    PRIMARY KEY(speciesId), 
+    PRIMARY KEY(speciesId),
 	UNIQUE(species, genus)
 ) engine = innodb;
 
@@ -58,7 +58,7 @@ create table globalCond (
 -- not a primary key as for table cond, because some field can be null
 	UNIQUE(anatEntityId, stageId, speciesId),
 	FOREIGN KEY(anatEntityId) REFERENCES anatEntity(anatEntityId) ON DELETE CASCADE,
-	FOREIGN KEY(stageId) REFERENCES stage(stageId) ON DELETE CASCADE, 
+	FOREIGN KEY(stageId) REFERENCES stage(stageId) ON DELETE CASCADE,
 	FOREIGN KEY(speciesId) REFERENCES species(speciesId) ON DELETE CASCADE
 ) engine = innodb;
 -- COMMENT 'This table contains all condition used in the globalExpression table. It thus includes "real" conditions, but mostly conditions resulting from the propagation of expression calls in the globalExpression table. It results from the computation of propagated calls according to different condition parameters combination (e.g., grouping all data in a same anat. entity, or all data in a same anat. entity - stage). This is why the fields anatEntityId or stageId can be null in this table (but not all of them at the same time).';
