@@ -7,6 +7,10 @@
   * See email 19.11.19 02:04, Tom Conlin
   * We could add the values from `PropagationState` (see `org.bgee.model.expressiondata.Call.ExpressionCall#getDataPropagation()`)
   
+## Affymetrix
+
+* Rerun Affymetrix analyses to be able to store p-values (Sara, for new FDR correction)
+
 ## RNA-Seq
 
 * Do not produce absent calls for some gene biotypes, depending on the library type
