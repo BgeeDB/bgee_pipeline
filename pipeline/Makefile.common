@@ -9,7 +9,7 @@ SHELL = /bin/bash
 # ===================================
 #  GENERAL PARAMETERS
 # ===================================
-RELEASE          := 14.1
+RELEASE          := 15.0
 
 # MySQL database connection parameters
 # DBUSER and DBPASS defined in Makefile.Config
