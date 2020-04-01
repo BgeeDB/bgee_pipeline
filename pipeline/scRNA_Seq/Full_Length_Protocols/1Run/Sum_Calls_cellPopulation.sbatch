@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --partition=long
+#SBATCH --partition=wally
 #SBATCH --account=mrobinso_bgee
 
 #SBATCH --nodes=1
