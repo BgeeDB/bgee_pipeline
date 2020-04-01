@@ -57,7 +57,7 @@ my $nbr_processors = 1;
 my $memory_usage   = 10;      # in GB
 my $user_email     = 'bgee@sib.swiss'; # for email notification
 my $account        = 'mrobinso_bgee';
-my $queue          = 'ax-normal';
+my $queue          = 'axiom';
 
 my $jobs_during_day   = 100; # Number of simultaneous jobs during working days
 my $jobs_during_night = 120; # Number of simultaneous jobs during week-end & night

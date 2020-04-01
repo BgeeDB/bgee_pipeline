@@ -227,7 +227,7 @@ export_length: check_abundance_all_intergenic
 	$(eval TIME_LENGTH := $(shell date +'%Y%m%d-%H%M%S'))
 	@echo "#!/bin/sh" > $@_$(TIME_LENGTH).sh
 	@echo "perl 3Insertion/export_feature_length.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -tx2gene_dir=$(OUTPUT_DIR) -all_results=$(RNASEQ_CLUSTER_ALL_RES) -length_info=$(RNASEQ_LENGTH_INFO_FILEPATH)" >> $@_$(TIME_LENGTH).sh
-	@sbatch --account=mrobinso_bgee --time=2:00:00 --mem=2G --partition=normal --output=$@_$(TIME_LENGTH).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_LENGTH) $@_$(TIME_LENGTH).sh > $@.tmp
+	@sbatch --account=mrobinso_bgee --time=2:00:00 --mem=2G --partition=wally --output=$@_$(TIME_LENGTH).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_LENGTH) $@_$(TIME_LENGTH).sh > $@.tmp
 	NUMBER_JOBS=$$(squeue --name=$@_$(TIME_LENGTH) --noheader | wc -l) ; \
 	while [ $$NUMBER_JOBS -gt 0 ] ; do \
 		sleep 30 ; \
@@ -243,7 +243,7 @@ finalize_pipeline: check_abundance_all_intergenic
 	$(eval TIME_FINALIZE := $(shell date +'%Y%m%d-%H%M%S'))
 	@echo "#!/bin/sh" > $@_$(TIME_FINALIZE).sh
 	@echo "perl 3Insertion/create_rna_seq_report_info.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -report_info=$(RNASEQ_CLUSTER_REPORTINFO) -all_results=$(RNASEQ_CLUSTER_ALL_RES)" >> $@_$(TIME_FINALIZE).sh
-	@sbatch --account=mrobinso_bgee --time=2:00:00 --mem=2G --partition=normal --output=$@_$(TIME_FINALIZE).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_FINALIZE) $@_$(TIME_FINALIZE).sh > $@.tmp
+	@sbatch --account=mrobinso_bgee --time=2:00:00 --mem=2G --partition=wally --output=$@_$(TIME_FINALIZE).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_FINALIZE) $@_$(TIME_FINALIZE).sh > $@.tmp
 	# Wait end of the job
 	NUMBER_JOBS=$$(squeue --name=$@_$(TIME_FINALIZE) --noheader | wc -l) ; \
 	while [ $$NUMBER_JOBS -gt 0 ] ; do \
@@ -276,7 +276,7 @@ sum_by_species: check_abundance_all_intergenic $(RNASEQ_SAMPINFO_FILEPATH) $(RNA
 	$(eval TIME_SUM := $(shell date +'%Y%m%d-%H%M%S'))
 	@echo "#!/bin/sh" > $@_$(TIME_SUM).sh
 	@echo "$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args rna_seq_sample_info=\"$(RNASEQ_SAMPINFO_FILEPATH)\" rna_seq_sample_excluded=\"$(RNASEQ_SAMPEXCLUDED_FILEPATH)\" kallisto_count_folder=\"$(RNASEQ_CLUSTER_ALL_RES)\" tx2gene_folder=\"$(RNASEQ_CLUSTER_GTF)\" sum_by_species_folder=\"$(RNASEQ_CLUSTER_SUM_RES)\"' 1Run/rna_seq_sum_by_species.R $(OUTPUT_DIR)rna_seq_sum_by_species.Rout" >> $@_$(TIME_SUM).sh
-	@sbatch --account=mrobinso_bgee --time=2:00:00 --mem=2G --partition=ax-normal --output=$@_$(TIME_SUM).out --error=$@_$(TIME_SUM).err  --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_SUM) $@_$(TIME_SUM).sh > $@.tmp
+	@sbatch --account=mrobinso_bgee --time=2:00:00 --mem=2G --partition=axiom --output=$@_$(TIME_SUM).out --error=$@_$(TIME_SUM).err  --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_SUM) $@_$(TIME_SUM).sh > $@.tmp
 	NUMBER_JOBS=$$(squeue --name=$@_$(TIME_SUM) --noheader | wc -l) ; \
 	echo $$NUMBER_JOBS ; \
 	while [ $$NUMBER_JOBS -gt 0 ] ; do \
@@ -297,7 +297,7 @@ generate_intergenic_sequences: sum_by_species
 	$(eval TIME_INTERGENIC := $(shell date +'%Y%m%d-%H%M%S'))
 	@echo "#!/bin/sh" > $@_$(TIME_INTERGENIC).sh
 	@echo "perl 1Run/create_intergenic_fasta.pl -sample_info_path=$(RNASEQ_SAMPINFO_FILEPATH) -transcriptomes_folder=$(RNASEQ_CLUSTER_GTF) -transcriptome_compression_ext=$(TRANSCRIPTOME_COMPRESSION_EXT) -sum_abundance_file_path=$(SUM_ABUNDANCE_FILE_PATH) -gaussian_file_path=$(RNASEQ_CLUSTER_GAUSSIAN_CHOICE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) -other_intergenic_dir=$(CLUSTER_OTHER_INTERGENIC_FOLDER) > $@.tmp 2> $@.warn" >> $@_$(TIME_INTERGENIC).sh
-	@sbatch --account=mrobinso_bgee --time=2:00:00 --mem=2G --partition=ax-normal --output=$@_$(TIME_INTERGENIC).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_INTERGENIC) $@_$(TIME_INTERGENIC).sh > $@.tmp
+	@sbatch --account=mrobinso_bgee --time=2:00:00 --mem=2G --partition=axiom --output=$@_$(TIME_INTERGENIC).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_INTERGENIC) $@_$(TIME_INTERGENIC).sh > $@.tmp
 	NUMBER_JOBS=$$(squeue --name=$@_$(TIME_INTERGENIC) --noheader | wc -l) ; \
 	while [ $$NUMBER_JOBS -gt 0 ] ; do \
 		sleep 30 ; \

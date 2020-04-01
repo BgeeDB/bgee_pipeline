@@ -32,7 +32,7 @@ my $nbr_processors = 1;
 my $memory_usage   = 90;      # in GB
 my $user_email     = 'julien.wollbrett@unil.ch'; # for email notification
 my $account        = 'mrobinso_bgee';
-my $queue          = 'ax-normal';
+my $queue          = 'axiom';
 my $time_limit	   = '12:00:00';
 
 # retrieve path to all transcriptome
