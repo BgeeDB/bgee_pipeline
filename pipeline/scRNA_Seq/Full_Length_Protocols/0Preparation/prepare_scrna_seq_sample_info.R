@@ -43,10 +43,10 @@ collectInformationFASTP <- function(raw_cells_folder, library){
   setwd(file.path(raw_cells_folder, library))
   rawFiles <- (list.files(path=file.path(raw_cells_folder, library), pattern = "*.gz"))
   nameRaw <- sub("\\..*", "", rawFiles)
-  
+
   ## check if fastp has already run
   fastpJSON <- list.files(path=file.path(raw_cells_folder, library), pattern = "*.fastp.json.xz")
- 
+
   if (isTRUE(file.exists(fastpJSON))){
     cat("The fastpJSON file already exist for this library ", library, "\n")
     libraryType <- ifelse(length(rawFiles) == 1, "SINGLE", "PAIRED")
@@ -73,7 +73,7 @@ collectInformationFASTP <- function(raw_cells_folder, library){
       readJsonOutput <- fromJSON(file = (list.files(path=file.path(raw_cells_folder, library), pattern = "*.fastp.json$")))
       readLength <- readJsonOutput$summary$before_filtering$read1_mean_length
       system(sprintf('%s %s %s %s', paste0("xz"), paste0("-9"), paste0(nameRaw, ".fastp.html"), paste0(nameRaw, ".fastp.json")))
-    } 
+    }
   }
 
   ## collect information per library
@@ -83,7 +83,7 @@ collectInformationFASTP <- function(raw_cells_folder, library){
 
 ## Function to add species name
 speciesName <- function(scrna_seq_sample_info){
-  
+
   scrna_seq_sample_info$organism[scrna_seq_sample_info$speciesId == 6239] <- "Caenorhabditis_elegans"
   scrna_seq_sample_info$organism[scrna_seq_sample_info$speciesId == 7217] <- "Drosophila_ananassae"
   scrna_seq_sample_info$organism[scrna_seq_sample_info$speciesId == 7227] <- "Drosophila_melanogaster"
@@ -123,21 +123,21 @@ speciesName <- function(scrna_seq_sample_info){
 InfoFile <- file.path(output_folder, "InfoFile.tsv")
 if (!file.exists(InfoFile)){
   file.create(InfoFile)
-  cat("libraryId\tlibraryType\treadLength\n",file = file.path(output_folder, "InfoFile.tsv"), sep = "\t")	
-  
+  cat("libraryId\tlibraryType\treadLength\n",file = file.path(output_folder, "InfoFile.tsv"), sep = "\t")
+
 } else {
   print("File already exist.....")
 }
 
 ###################################### RUN PER lIBRARY ##################################################################################
 for (libraryID in unique(annotation$libraryId)) {
-  
+
   fastpInfo <- collectInformationFASTP(raw_cells_folder = raw_cells_folder, library = libraryID)
-  
+
   write.table(fastpInfo, file = InfoFile, row.names = FALSE , col.names = FALSE , append = TRUE, quote = FALSE, sep = "\t")
 }
 
-### read final output file --> InfoFile 
+### read final output file --> InfoFile
 fileInfo <- file.path(output_folder,"InfoFile.tsv")
 fileInfo <- read.table(fileInfo, header=TRUE, sep="\t")
 

@@ -4,7 +4,7 @@
 
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args metadata_info="metadata_info.txt" librariesDownloadedJura="librariesDownloadedJura.tsv" output_folder="output_folder"' download_cleaning_data.R download_cleaning_data.Rout
-## metadata_info -> File with all libraries that need to be download 
+## metadata_info -> File with all libraries that need to be download
 ## librariesDownloadedJura -> File with information about the libraries that already exist in jura server and don't need to be downloaded
 ## output_folder -> Path where should be saved the output results for each library
 
@@ -51,61 +51,61 @@ finalLibsToDown <- dplyr::filter(readFile, experiment_accession %in% checkId$exp
 
 ##########################################################################################
 if (nrow(finalLibsToDown) == 0){
-  
+
   cat("All the libraries present in metadata are already downloaded in the server")
-  
+
 } else {
   ftp <- as.character(finalLibsToDown$fastq_ftp)
   ftp <- data.frame(unlist(strsplit(ftp, ";")))
   colnames(ftp)<- "ftp_link"
   ftp$ftp_link <- as.character(ftp$ftp_link)
   ftp[is.na(ftp)] <- 0
-  
+
   LibInfo <- c()
   for (i in 1:nrow(finalLibsToDown)) {
-    
+
     rowinfo <- finalLibsToDown[i,]
     infoL <- rowinfo$experiment_accession
-    
+
     if(rowinfo$library_layout == "PAIRED"){
-      
-      infoL <- as.character(rowinfo$experiment_accession) 
-      infoL1 <- as.character(rowinfo$experiment_accession) 
+
+      infoL <- as.character(rowinfo$experiment_accession)
+      infoL1 <- as.character(rowinfo$experiment_accession)
       infoL2 <- rbind(infoL,infoL1)
       LibInfo <- rbind(LibInfo,infoL2)
-      
+
     } else {
-      libdup <- as.character(rowinfo$experiment_accession) 
+      libdup <- as.character(rowinfo$experiment_accession)
       LibInfo <- rbind(LibInfo, libdup)
     }
   }
-  
+
   ## create final information of the library and FASZQ.gz file path
   generalInfo <- data.frame(LibInfo, ftp)
-  
+
   for (library in  unique(generalInfo$LibInfo)) {
-    
+
     ## create output for each library
     cat("treating the library: ", library, "\n")
     InfoFile <- file.path(output_folder, library)
     dir.create(InfoFile, showWarnings = FALSE)
     files<-list.files(path = InfoFile, pattern="*.fastq.gz$")
-    
+
     ## control the downloading process if stops
     if (dir.exists(InfoFile) == TRUE && file_test("-f", paste0(InfoFile,"/",files)) == TRUE){
-      
+
       cat("The folder for the library ", library, " was already created and the FASTQ.gz files downloaded.", "\n")
-      
+
     } else {
-      
+
       cat("The folder for the library ", library, " exist but .gz files are missing.", "\n")
       ## select URL for the correspondent library
       ftpID <- generalInfo[generalInfo$LibInfo %like% library,][,2]
       setwd(InfoFile)
       ## download data
       wget(c(paste0(ftpID)))
-      
-    } 
+
+    }
   }
 }
 

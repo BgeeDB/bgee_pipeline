@@ -46,7 +46,7 @@ if( file.exists(scRNASeqLibrary) ){
 }
 
 #################################################################################
-## create output files 
+## create output files
 setwd(output_folder)
 if (dir.exists(output_folder)){
   file.create("NEW_scRNASeqLibrary.tsv")
@@ -73,11 +73,11 @@ for (species in unique(annotation$speciesId)) {
             cat("UberonId info:", uberonId, "\n")
             for (sex in unique(annotation$sex[annotation$uberonId == uberonId])){
               cat("sex info:", sex, "\n")
-     
+
         infoLib <- annotation$libraryId[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]
         infoLib2 <- as.data.frame(infoLib); colnames(infoLib2) <- "libraryId"
         cat("Libraries retrieved : ", length(infoLib), "\n")
-        
+
         if(length(infoLib) >= 50){
           extractInfo <- merge(infoLib2, annotation, by="libraryId")
           information_file <- data.frame(extractInfo)
@@ -87,7 +87,7 @@ for (species in unique(annotation$speciesId)) {
           extractInfo <- merge(infoLib2, annotation, by="libraryId")
           information_file <- data.frame(extractInfo)
           information_file <- information_file %>% filter(!str_detect(information_file$libraryId, "^#"))
-          write.table(information_file, file = outfile_NOT_PASS, col.names = FALSE, row.names = FALSE , append = TRUE, quote = FALSE, sep = "\t") 
+          write.table(information_file, file = outfile_NOT_PASS, col.names = FALSE, row.names = FALSE , append = TRUE, quote = FALSE, sep = "\t")
         }
             }
           }
@@ -106,7 +106,7 @@ if (info1$size == "0"){
   colnames(newFile) <- colnames(annotation)
   write.table(newFile, file = file.path(output_folder, "NEW_scRNASeqLibrary.tsv"), col.names =T , row.names = F, quote = FALSE, sep = "\t")
 }
-## samples that should be excluded 
+## samples that should be excluded
 info2 <- file.info(outfile_NOT_PASS)
 if (info2$size == "0"){
   cat("File is empty", "\n")

@@ -55,27 +55,27 @@ cat("libraryId\texperimentId\tcellTypeName\tcellTypeId\tspeciesId\tplataform\twh
 collectInfoSum <- function(scrna_seq_sample_infoFile){
   libraryId <- paste0(experiment, "_", cellId, "_", stageId, "_", strain, "_", uberonId, "_", sex)
   experimentId <- paste0(experiment, "_", cellId, "_", stageId, "_", strain, "_", uberonId, "_", sex)
-  cellTypeName <- as.character(unique(annotation$cellTypeName[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]))                             
+  cellTypeName <- as.character(unique(annotation$cellTypeName[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]))
   cellTypeId <- paste0(cellId)
   speciesId <- species
-  plataform <- as.character(unique(annotation$platform[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]))                             
-  whiteList <- as.character(unique(annotation$whiteList[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]))          
-  protocol <- as.character(unique(annotation$protocol[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]))          
-  protocolType <- as.character(unique(annotation$protocolType[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]))          
-  libraryType <- as.character(unique(annotation$libraryType[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]))[1]          
-  infoOrgan <- as.character(unique(annotation$infoOrgan[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]))          
+  plataform <- as.character(unique(annotation$platform[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]))
+  whiteList <- as.character(unique(annotation$whiteList[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]))
+  protocol <- as.character(unique(annotation$protocol[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]))
+  protocolType <- as.character(unique(annotation$protocolType[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]))
+  libraryType <- as.character(unique(annotation$libraryType[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]))[1]
+  infoOrgan <- as.character(unique(annotation$infoOrgan[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]))
   stageId <- paste0(stageId)
-  uberonId <- paste0(uberonId)  
+  uberonId <- paste0(uberonId)
   sex <- paste0(sex)
   strain <- paste0(strain)
   readLength <- "NA"
   organism <- as.character(unique(annotation$organism[annotation$speciesId == species]))
-  
+
   ## Export information of the sum
-  collectInfo <- c(libraryId, experimentId, cellTypeName, cellTypeId, speciesId, plataform, 
-                   whiteList, protocol, protocolType, libraryType,  infoOrgan, stageId, 
+  collectInfo <- c(libraryId, experimentId, cellTypeName, cellTypeId, speciesId, plataform,
+                   whiteList, protocol, protocolType, libraryType,  infoOrgan, stageId,
                    uberonId, sex, strain, readLength, organism)
-  names(collectInfo) <- c("libraryId", "experimentId", "cellTypeName", "cellTypeId", "speciesId", "plataform", 
+  names(collectInfo) <- c("libraryId", "experimentId", "cellTypeName", "cellTypeId", "speciesId", "plataform",
                           "whiteList", "protocol", "protocolType", "libraryType", "infoOrgan", "stageId",
                           "uberonId", "sex", "strain", "readLength", "organism")
   return(collectInfo)
@@ -96,35 +96,35 @@ for (species in unique(annotation$speciesId)) {
             cat("UberonId info:", uberonId, "\n")
             for (sex in unique(annotation$sex[annotation$uberonId == uberonId])){
               cat("sex info:", sex, "\n")
-              
-              
-              infoLib <- annotation$libraryId[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]                              
+
+
+              infoLib <- annotation$libraryId[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]
               ## print information
               print(length(infoLib))
               if (length(infoLib) != 0){
-                
+
                 file <- file.path(cells_folder, infoLib)
                 AllFiles <- list.files(file, pattern="abundance.tsv", full.names=T, recursive = TRUE)
                 print(AllFiles)
-                
+
                 AllFiles <- lapply(AllFiles, read.delim)
                 DATA <- do.call("cbind", AllFiles)
                 ## select target info and length
                 select_info <- DATA[,1:2]
-                
+
                 ## select all columns with -> est_count and obtain the sum
                 select_est_count = DATA[, grepl("^est_count", names( DATA))]
                 select_est_count_sum <- apply(select_est_count, 1, sum)
                 ## select all columns with -> eff_length
                 select_effec_length = DATA[, grepl("^eff_length", names( DATA))]
-                
+
                 ## calculate effect_lengh by using weighted.mean for each transcrip...
                 calculate_effect_length <- function(counts, effec_length){
                   myWeightedMean <- c()
                   ## transpose the matrix (this means each column is a transcript ID and each row a cell)
                   rawcounts <- t(counts)
                   raw_effeclength <- t(effec_length)
-                  
+
                   for (i in 1:ncol(raw_effeclength)) {
                     if (sum(rawcounts[,i]) == 0 ){
                       ## provide the same weight for all transcripts in case the est_count is always zero
@@ -134,41 +134,41 @@ for (species in unique(annotation$speciesId)) {
                     } else {
                       weightedMean <-  weighted.mean(x=raw_effeclength[,i], w=rawcounts[,i])
                       myWeightedMean[i] <- weightedMean
-                    }       
+                    }
                   }
                   return(myWeightedMean)
-                }  
-                
+                }
+
                 ## export result where each row is the weighted.mean of eff_length of each transcript
                 select_effec_length_Wmean <- as.data.frame(calculate_effect_length(select_est_count, select_effec_length))
                 colnames(select_effec_length_Wmean) <- "select_effec_length_Wmean"
                 ## re-build the information by using weighted.mean...
                 final_Final_weightMean <- data.frame(select_info, select_effec_length_Wmean, select_est_count_sum)
-                
+
                 ## calculate TPM after collect the weighted.mean of the eff_length and sum of est_count
                 estCount_to_tpm <- function(est_count, effec_length){
                   rate <- log(est_count) - log(effec_length)
                   denom <- log(sum(exp(rate)))
                   exp(rate - denom + log(1e6))
                 }
-                tpmValues_wMean <- estCount_to_tpm(final_Final_weightMean$select_est_count_sum, final_Final_weightMean$select_effec_length_Wmean) 
-                
+                tpmValues_wMean <- estCount_to_tpm(final_Final_weightMean$select_est_count_sum, final_Final_weightMean$select_effec_length_Wmean)
+
                 ## export the final file by using weighted.mean of effective_Lenght....
                 AllCells_sum_wMean <- data.frame(final_Final_weightMean, tpmValues_wMean)
                 colnames(AllCells_sum_wMean) <- c("target_id","length", "eff_length","est_counts", "tpm")
                 ## create a sub-directory for each experimentID
                 output_dir <- paste0(output_folder, "/", experiment, "_", cellId, "_", stageId, "_", strain, "_", uberonId, "_", sex)
-                
+
                 if (!dir.exists(output_dir)){
                   dir.create((output_dir))
                 } else {
                   print("Directory already exists.....")
                 }
-                
+
                 write.table(AllCells_sum_wMean, file = file.path(output_dir, "abundance.tsv"), quote = FALSE, sep = "\t", col.names = TRUE, row.names = FALSE)
                 collectInfo <- collectInfoSum(scrna_seq_sample_infoFile=annotation)
                 write.table(t(collectInfo), file = sum_infoFile,col.names =F , row.names = F, append = T,quote = FALSE, sep = "\t")
-                
+
               } else {
                 cat("Combination with zero cells!")
               }

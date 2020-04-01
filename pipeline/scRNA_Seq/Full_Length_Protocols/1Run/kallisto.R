@@ -39,21 +39,21 @@ kallisto <- function(library_id, raw_cells_folder, infoFolder, output_folder){
   libraryTypeInfo <- as.character(annotation$libraryType[annotation$libraryId == library_id])
   libraryReadLengthInfo <- annotation$readLength[annotation$libraryId == library_id]
   species <- as.character(annotation$organism[annotation$libraryId == library_id])
-  
+
   ## collect path to transcriptome
   indexFile31 <- list.files(path=infoFolder, pattern = paste0("*.transcriptome.idx$"), full.names=T, recursive = TRUE)
   indexFile31 <- grep(species,indexFile31, value = TRUE)
   indexFile15 <- list.files(path=infoFolder, pattern = paste0("*.transcriptome_k15.idx$"), full.names=T, recursive = TRUE)
   indexFile15 <- grep(species,indexFile15, value = TRUE)
-  
+
   ## path to fastq.gz files
   libTarget <- file.path(raw_cells_folder,library_id)
   fastqFile <- list.files(path=libTarget, pattern = ".*gz$", full.names=T, recursive = TRUE)
-  
+
   ## create a folder for each library in the output directory and write pseudo-alignment
   ifelse(!dir.exists(file.path(output_folder, library_id)), dir.create(file.path(output_folder, library_id)), FALSE)
   outputLib <- file.path(output_folder, library_id)
-  
+
   if (libraryTypeInfo == "SINGLE" && libraryReadLengthInfo >= 50){
     cat("The library ", library_id, " is SINGLE and read length > 50", "\n")
     system(sprintf('%s -i %s -o %s  --single -l 180 -s 20 %s',paste0("kallisto quant"), indexFile31, outputLib, fastqFile))
@@ -67,7 +67,7 @@ kallisto <- function(library_id, raw_cells_folder, infoFolder, output_folder){
     cat("The library ", library_id, " is PAIRED and read length < 50", "\n")
     system(sprintf('%s -i %s -o %s %s %s',paste0("kallisto quant"), indexFile15, outputLib, fastqFile[1],fastqFile[2]))
   }
-  
+
   ## control file in case server stops in the middle of the job.
   file.create(file.path(outputLib, "DONE.txt"))
 }

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#SBATCH --partition=wally
-#SBATCH --account=mrobinso_bgee
+#SBATCH --partition=normal
+#SBATCH --account=mrobinso_bgee_sensitive
 
 #SBATCH --nodes=1
 #SBATCH --ntasks=1

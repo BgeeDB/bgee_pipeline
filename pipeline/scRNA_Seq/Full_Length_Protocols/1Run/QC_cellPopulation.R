@@ -48,14 +48,14 @@ if( file.exists(scrna_seq_sample_info) ){
 
 ## Create output files
 if (dir.exists(output_folder)){
-  
+
   file.create("Modality_Cell_type_per_experiment.tsv")
   cat("experiment\tcellTypeId\tspeciesId\tstageId\tuberonId\tsex\tstrain\tmodeDistribution\n",file = file.path(output_folder, "Modality_Cell_type_per_experiment.tsv"), sep = "\t")
   file.create("NEW_scRNASeq_sample_info.tsv")
-  cat("libraryId\texperimentId\tcellTypeName\tcellTypeId\tspeciesId\tplatform\twhiteList\tprotocol\tprotocolType\tlibraryType\tinfoOrgan\tstageId\tuberonId\tsex\tstrain\treadLength\torganism\n",file = file.path(output_folder,"NEW_scRNASeq_sample_info.tsv"), sep = "\t")	
+  cat("libraryId\texperimentId\tcellTypeName\tcellTypeId\tspeciesId\tplatform\twhiteList\tprotocol\tprotocolType\tlibraryType\tinfoOrgan\tstageId\tuberonId\tsex\tstrain\treadLength\torganism\n",file = file.path(output_folder,"NEW_scRNASeq_sample_info.tsv"), sep = "\t")
   file.create("Discard_scRNASeq_sample_info.tsv")
-  cat("libraryId\texperimentId\tcellTypeName\tcellTypeId\tspeciesId\tplatform\twhiteList\tprotocol\tprotocolType\tlibraryType\tinfoOrgan\tstageId\tuberonId\tsex\tstrain\treadLength\torganism\n",file = file.path(output_folder,"Discard_scRNASeq_sample_info.tsv"), sep = "\t")	
-  
+  cat("libraryId\texperimentId\tcellTypeName\tcellTypeId\tspeciesId\tplatform\twhiteList\tprotocol\tprotocolType\tlibraryType\tinfoOrgan\tstageId\tuberonId\tsex\tstrain\treadLength\torganism\n",file = file.path(output_folder,"Discard_scRNASeq_sample_info.tsv"), sep = "\t")
+
 } else {
   print("Directoty not exists.....")
 }
@@ -64,57 +64,57 @@ ModalFile <- file.path(output_folder, "Modality_Cell_type_per_experiment.tsv")
 
 ## Check bimodality + plot distribution of the protein coding for each cell-type
 checkDataPlot <- function(matrixData, output, plot){
-  
+
   ### Just protein coding genes
   proteinCoding <- dplyr::filter(matrixData, biotype == "protein_coding")
   ## Count TPM different zero for each cell
   cellsTPM <- as.data.frame(colSums(proteinCoding[,4:length(proteinCoding)] != 0))
   colnames(cellsTPM) <- "Sum_cells"
   cellsTPM$seq <- seq(1, nrow(cellsTPM), by=1)
-  
+
   ### Verify in how many cells the gene have a TPM higher then zero
   codingGenes <- as.data.frame(apply(proteinCoding[,4:length(proteinCoding)],1,function(x)sum(x != 0)))
   colnames(codingGenes) <- "genes"
   codingGenes$seq <- seq(1, nrow(codingGenes), by=1)
-  
+
   ## Create final table
   finalTable <- data.frame(proteinCoding[,1], codingGenes)
   colnames(finalTable) <- c("gene", "number_of_cells_geneDetected", "seq")
   finalTable <- as.data.frame(finalTable[order(finalTable$number_of_cells_geneDetected),])
   finalTable$seq <- seq(1, nrow(finalTable), by=1)
-  
+
   number_cells <- length(matrixData[,4:length(matrixData)])
   cell_25 <- number_cells*0.25
   cell_100 <- number_cells*1
   all_cells <- sum(finalTable$number_of_cells_geneDetected >= cell_100)
-  
+
   ##### PLOTING #####
   if (plot == "yes"){
     p1 <- ggplot(cellsTPM, aes(x=seq,y=Sum_cells)) +
-      geom_point() + 
+      geom_point() +
       labs(title = "Protein Coding (Normalized values - TPM)", x="Number of cells",y="Number of genes")
-    p2 <- ggplot(codingGenes, aes(x = genes)) + 
-      geom_density(alpha=1, color="#E69F00", fill="#E69F00") + 
+    p2 <- ggplot(codingGenes, aes(x = genes)) +
+      geom_density(alpha=1, color="#E69F00", fill="#E69F00") +
       labs(title = "Distribution protein coding", x="Number of cells",y="Density")
     p3 <- ggplot(finalTable) +
-      geom_point(aes(x=seq,y=number_of_cells_geneDetected, color=ifelse(finalTable$number_of_cells_geneDetected < cell_25, "black", ifelse(finalTable$number_of_cells_geneDetected == cell_100,"purple", "gray")))) + 
+      geom_point(aes(x=seq,y=number_of_cells_geneDetected, color=ifelse(finalTable$number_of_cells_geneDetected < cell_25, "black", ifelse(finalTable$number_of_cells_geneDetected == cell_100,"purple", "gray")))) +
       labs(title = "Proportion of genes expressed over cells", x="Number of genes",y="Number of cells") +
       scale_color_manual(name="Proportion of cells",values=c("black", "gray","purple"),labels=c("=< 25%","25% < gene < 100%",paste0("all cells (", all_cells,")"))) +
       theme(legend.position=c(0.85, 0.1))
-    
-    pdf(file = file.path(output_folder, paste0("Plot","_", cellId, "_", stageId, "_", uberonId, "_", strain, "_", sex,"_", experiment , "_", species,".pdf")), width = 12, height = 12)   
+
+    pdf(file = file.path(output_folder, paste0("Plot","_", cellId, "_", stageId, "_", uberonId, "_", strain, "_", sex,"_", experiment , "_", species,".pdf")), width = 12, height = 12)
     grid.arrange(p1,p2,p3,ncol = 1, nrow = 3)
     dev.off()
   } else {
     cat("Analysis done without reporting graphics.", "\n")
   }
-  
+
   ## test modality of the data
   if ( is.unimodal(codingGenes$genes) == TRUE){
     cat("The cell-type ",cellId," from the experiment:", experiment,"is unimodal for the protein coding genes!", "\n", "Warning: this experiment can be removed...", "\n")
     modeIs <- paste0("unimodal")
   } else if (is.bimodal(codingGenes$genes) == FALSE){
-    multimodal <- is.multimodal(codingGenes$genes) 
+    multimodal <- is.multimodal(codingGenes$genes)
     trimodal <- is.trimodal(codingGenes$genes)
     cat("The cell-type ",cellId," from the experiment:", experiment,"is trimodal", trimodal, "or multimodal:", multimodal, "\n")
     modeIs <- paste0("multimodal")
@@ -129,7 +129,7 @@ checkDataPlot <- function(matrixData, output, plot){
 
 ## Function to split scrna_seq_sample_info into 2 files: NEW_scRNASeq_info_file_final.tsv and Discard_scRNASeq_sample_info.tsv
 splitInfoFiles <- function(ModalityFIle){
-  
+
   for (species in unique(ModalityFIle$speciesId)) {
     cat("Species:", species, "\n")
     for (experiment in unique(ModalityFIle$experiment[ModalityFIle$speciesId == species])){
@@ -144,10 +144,10 @@ splitInfoFiles <- function(ModalityFIle){
               cat("UberonId info:", uberonId, "\n")
               for (sex in unique(ModalityFIle$sex[ModalityFIle$uberonId == uberonId])){
                 cat("sex info:", sex, "\n")
-                
-                modality <- as.character(ModalityFIle$modeDistribution[ModalityFIle$speciesId == species & ModalityFIle$experiment == experiment & ModalityFIle$cellTypeId == cellId & ModalityFIle$stageId == stageId & ModalityFIle$strain == strain & ModalityFIle$uberonId == uberonId & ModalityFIle$sex == sex])    
+
+                modality <- as.character(ModalityFIle$modeDistribution[ModalityFIle$speciesId == species & ModalityFIle$experiment == experiment & ModalityFIle$cellTypeId == cellId & ModalityFIle$stageId == stageId & ModalityFIle$strain == strain & ModalityFIle$uberonId == uberonId & ModalityFIle$sex == sex])
                 cat("Modality:", modality, "\n")
-                
+
                 if (length(modality != 0) && modality == "bimodal"){
                   cat("Cell-type is bimodal!", "\n")
                   infoLib <- data.frame(annotation$libraryId[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex])
@@ -187,12 +187,12 @@ for (species in unique(annotation$speciesId)) {
             cat("UberonId info:", uberonId, "\n")
             for (sex in unique(annotation$sex[annotation$uberonId == uberonId])){
               cat("sex info:", sex, "\n")
-              
+
               ### 1 STEP --> create matrix
               infoLib <- annotation$libraryId[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]
               file <- file.path(cells_folder, infoLib, "abundance_gene_level+fpkm+intergenic.tsv")
               cat("Number of cells:", length(file), "\n")
-              
+
               if (length(file) != 0){
                 All_libs <- lapply(file, read.delim)
                 DATA <- do.call("cbind", All_libs)
@@ -202,10 +202,10 @@ for (species in unique(annotation$speciesId)) {
                 # select all columns with tpm info referent to each cell
                 tpm <- DATA[, grepl("tpm", names( DATA))]
                 mergeCells <- data.frame(Info_table, tpm)
-                
+
                 ### 2 STEP --> Check bimodality and plot cell distribution per experiment/species
                 bimodality <- checkDataPlot(matrixData = mergeCells, output = output_folder, plot = plot)
-                
+
               } else {
                 cat("Not take in consideration this combination to analyse the QC (0 cells).", "\n")
               }

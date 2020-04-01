@@ -9,12 +9,12 @@
    1. [Verification: metadata from source and quantity of cells](#verification-metadata-from-source-and-quantity-of-cells)
    2. [Data download](#data-download)
    3. [Preparation of information file](#preparation-of-information-file)
-   
+
 4. [Step 3: scRNA-Seq library analyses](#step-3-scrna-seq-library-analyses)
    1. [Data preparation](#data-preparation)
    2. [Pseudo-alignment](#pseudo-alignment)
    3. [Result processing at individual cell](#result-processing-at-individual-cell)
-   4. [Quality control for cell population](#quality-control-for-cell-population) 
+   4. [Quality control for cell population](#quality-control-for-cell-population)
    5. [Result processing at cell population](#result-processing-at-cell-population)
    6. [Post-processing: expression calls and rank computation](#post-processing-expression-calls-and-rank-computation)
 
@@ -25,7 +25,7 @@
 3. [Validate cell-type and experiment](#validate-cell-type-and-experiment)
 4. [Export global information per cell population ](#export-global-information-per-cell-population )
 5. [Presence calls](#presence-calls)
-  
+
 
 ## General information:
 
@@ -42,7 +42,7 @@ These results are then integrated in a consistent manner with all other results 
 ### Step 1: Data annotation
 
 For scRNA-Seq we manualy annotated healthy WT data using information from GEO or from papers, or provided by WormBase. The annotation of each cell-type is done by using the scientific information provided by these sources.
-All the data treated are present in the SRA repository. 
+All the data treated are present in the SRA repository.
 The protocols selected at present are only full-length protocols, mainly `SMART-Seq`, `SMART-Seq2` and `SMARTer Ultra Low`.
 
 ### Step 2: Verification, data download and preparation of info file
@@ -57,12 +57,12 @@ In the next step we validate experiments based on a minimum quantity of cells (5
 The download of the data is done only for the experiments that match the requirements in the previous steps.
 These data are downloaded from SRA using the wget function in R. All files extracted are FASTQ files.
 
-GTF annotation files and genome sequence fasta files are retrieved from Ensembl and Ensembl metazoa for all species included in Bgee (see `RNA-Seq pipeline`). 
+GTF annotation files and genome sequence fasta files are retrieved from Ensembl and Ensembl metazoa for all species included in Bgee (see `RNA-Seq pipeline`).
 This information is used to identify sequences of genic regions, exonic regions, and intergenic regions, as described in the `RNA-Seq pipeline`. It is also used to generate indexed transcriptome files for all species in Bgee, using the `TopHat` and `Kallisto` software.
 
 #### Preparation of information file
 
-An information file is created by collecting information from the manual annotation and from the first quality control step using `FASTP` software for each FASTQ file, which correspond to each individual cell. 
+An information file is created by collecting information from the manual annotation and from the first quality control step using `FASTP` software for each FASTQ file, which correspond to each individual cell.
 
 ### Step 3: scRNA-Seq library analyses
 
@@ -72,7 +72,7 @@ For each independent library, we do:
 
 * Check for presence of single-end FASTQ read file, or of the two FASTQ files for paired-end runs.
 * Estimation of read length, by using the mean of all reads of FASTQ file determined by `FASTP`, in order to check which K-mer length should be applied.
-* If the reads are less than 31 bp they are too short for Kallisto indexing with default k-mer length, and the k-mer length is set to 15 nucleotides. 
+* If the reads are less than 31 bp they are too short for Kallisto indexing with default k-mer length, and the k-mer length is set to 15 nucleotides.
 * A FASTP file is generated for each FASTQ file to check for potential problems; it also provide information about possible trimmed samples.
 
 #### Pseudo-alignment
@@ -87,7 +87,7 @@ The following parameters are used:
 #### Result processing at individual cell
 
 From the Kallisto output, for each genomic feature, counts of pseudo-aligned reads are retrieved.
-The pseudo-aligned read counts, and the genomic feature effective lengths, are used to compute TPM and FPKM values. 
+The pseudo-aligned read counts, and the genomic feature effective lengths, are used to compute TPM and FPKM values.
 We sum at the gene level the counts of pseudo-aligned reads computed at the transcript level by Kallisto.
 For calling genes present (see `Expression Calls`), we compute not only for genic regions, but also for intergenic regions.
 
@@ -105,7 +105,7 @@ Then we:
 * Sum raw counts
 
 From the Kallisto output, for each cell population that belongs to same experiment and species, as well as, cell-typeId, stageId, uberonId, strain and sex the counts of pseudo-aligned reads are retrieved and summed, and the effective length are recalculated based on the weighted mean.
-The pseudo-aligned summed read counts, and the genomic feature weighted mean effective lengths, are used to compute TPM and FPKM values. 
+The pseudo-aligned summed read counts, and the genomic feature weighted mean effective lengths, are used to compute TPM and FPKM values.
 We sum at the gene level the counts of pseudo-aligned reads computed at the transcript level by Kallisto.
 
 #### Post-processing: expression calls and rank computation
@@ -114,7 +114,7 @@ We sum at the gene level the counts of pseudo-aligned reads computed at the tran
 
 * Per individual cell
 
-To define the call of expression of a gene in a library as "present", we check whether its level of expression is over the background transcriptional noise in this library. To estimate the background transcriptional noise in each library, we use the level of expression of a set of intergenic regions (described in the RNA-Seq pipeline). 
+To define the call of expression of a gene in a library as "present", we check whether its level of expression is over the background transcriptional noise in this library. To estimate the background transcriptional noise in each library, we use the level of expression of a set of intergenic regions (described in the RNA-Seq pipeline).
 How we define this set of intergenic regions is described in the developer documentation section of RNA-Seq pipeline.
 
 * Per cell population
@@ -137,7 +137,7 @@ The preparation step is done by executing 4 main R scripts available in the fold
 
 * [pre_process_control_annotation.R](#pre-process-control-annotation-R)
    * Remove experiments that not pass requirement of minimum number of cells.
-   
+
 * [retrieve_metadata.R](#retrive-metadata-R)
    * Retrieve metadata of the libraries that need to be downloaded.
 
@@ -157,12 +157,12 @@ In order to execute the initial part of the pipeline the following rules from th
 `make download_cleaning_data` (Note: this rule is executed using a sbatch script, specifically: `download_cleaning_data.sbatch`)
 
 The sbatch scripts allow to pass the arguments necessary to the R scripts in SLURM.
-   
-After this, 2 extra rules should be executed: one to list the new files downloaded and present at the time in sensitive server (JURA) `make list_new_downloads` and other one to commit the new modification on the files generated for single cell full-length protocols `make commit_annotation_and_metadata`. 
-   
+
+After this, 2 extra rules should be executed: one to list the new files downloaded and present at the time in sensitive server (JURA) `make list_new_downloads` and other one to commit the new modification on the files generated for single cell full-length protocols `make commit_annotation_and_metadata`.
+
 Then the rest of the pipeline will be executed in the sensitive server.
 
-Initially, we should check if all tools are available, by executing the rule `make check_tools`. 
+Initially, we should check if all tools are available, by executing the rule `make check_tools`.
 After that the last step of the preparation step, of the full-length protocols, can be done by executing the rule `make prepare_singlecell_info` in the front of the sensitive server.
 
 * [prepare_scrna_seq_sample_info.R](#prepare-scrna-seq-sample-info-R)
@@ -176,7 +176,7 @@ To run the mapping for each library a R script from the folder [1Run/](1Run/) sh
    * The script runs the pseudo-alignment for each individual library.
 
 This script is launched by using a perl script `slurm_scheduler_Kallisto_scRNASeq.pl` that allow to launch multiple jobs at the same time in the sensitive server.
-   
+
 The second step is done by performing the analysis of each library, where the transcripts are summed to gene level and the TPM and FPKM recalculated, more details can be founded in the RNA-Seq pipeline for this second step.
 
 Note that the scRNA-Seq pipeline is dependent of a folder that is generated in the RNA-Seq pipeline for each species, with the following files:
@@ -191,12 +191,12 @@ At this point, the rule `analysis` should be executed from the `Makefile`.
 
 In order to validate if an experiment should be integrated in Bgee, a validation createria is applied by using a quality control script [1Run/QC_cellPopulation.R](1Run/QC_cellPopulation.R) launched in the server by using a sbatch script named `QC_cellPopulation.sbatch`.
 The criteria is to verify if a cell population follow a bimodal distribution (as described before).
-For this we quantify how many times the TPM value is higher then zero for each gene that belongs to biotype protein coding across the number of the cells and then calculate the ratio. After that a R `package LaplacesDemon` is applied to determine if the ratio distribution is indeed bimodal. 
+For this we quantify how many times the TPM value is higher then zero for each gene that belongs to biotype protein coding across the number of the cells and then calculate the ratio. After that a R `package LaplacesDemon` is applied to determine if the ratio distribution is indeed bimodal.
 
 ![Boxplot](img/validation_experiment.png)
 
 
-### Export global information per cell population 
+### Export global information per cell population
 
 * Sum of raw counts
 
