@@ -70,3 +70,4 @@ pipeline/RNA_Seq/RNASeqLibrary_full.tsv
 pipeline/web/sitemap*.xml
 pipeline/SPARQL-RDF/bgee_connection.properties
 
+.Rproj.user
