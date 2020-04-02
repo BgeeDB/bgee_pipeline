@@ -10,7 +10,7 @@ $(UBERON_COMPOSITE_FILE_PATH):
 $(UBERON_EXT_FILE_PATH):
 	@$(CURL) $(EXT_DOWNLOAD_URL) $(APPEND_CURL_COMMAND)
 
-# As of Bgee_v14, the composite-metazoan.owl does not contain "never_in_taxon" relations,
+# As of Bgee_v15, the composite-metazoan.owl does not contain "never_in_taxon" relations,
 # see https://github.com/obophenotype/uberon/issues/705#issuecomment-233767158
 # So only ext.owl is usable to generate taxon constraints. We will then miss constraints
 # for all species-specific terms, and will need to enforce later them

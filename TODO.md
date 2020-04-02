@@ -7,6 +7,10 @@
   * See email 19.11.19 02:04, Tom Conlin
   * We could add the values from `PropagationState` (see `org.bgee.model.expressiondata.Call.ExpressionCall#getDataPropagation()`)
   
+## Affymetrix
+
+* Rerun Affymetrix analyses to be able to store p-values (Sara, for new FDR correction)
+
 ## RNA-Seq
 
 * Do not produce absent calls for some gene biotypes, depending on the library type
@@ -16,6 +20,10 @@
 * Have different calls quality depending on the threshold intergenic/genes
 
 * Check discarded libraries, see which one should be recovered
+
+* Globin reduction on blood samples: we need a test to determine whether blood samples
+had globin reduction or not. Let's implement the test and look at the distribution
+of samples with/without reduction.
 
 ## scRNA-Seq
 
@@ -28,3 +36,6 @@ Note: this filter already exists for Affy and RNA-Seq data independently. EST on
 Such a situation should then only happens from in situ data where only absence of expression of a gene was reported,
 and with no present calls from other data types. => Do we really need a post-processing filtering step for this?
   
+## Issues
+
+Check https://github.com/BgeeDB/bgee_pipeline/issues

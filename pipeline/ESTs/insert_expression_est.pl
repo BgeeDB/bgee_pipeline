@@ -24,7 +24,7 @@ my %opts = ('bgee=s' => \$bgee_connector,     # Bgee connector string
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $bgee_connector eq '' ){
     print "\n\tInvalid or missing argument:
-\te.g. $0  -bgee=user=username__pass=mypass__host=127.0.0.1__port=3306__name=bgee_v14
+\te.g. $0  -bgee=user=username__pass=mypass__host=127.0.0.1__port=3306__name=bgee_v15
 \t-bgee      Bgee connector string
 \t-debug     printing the update/insert SQL queries, not executing them
 \n";

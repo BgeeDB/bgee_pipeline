@@ -4,7 +4,7 @@
 ## Output is written in kallisto results folder
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args rna_seq_sample_info="rna_seq_sample_info.txt" rna_seq_sample_excluded="rna_seq_sample_excluded.txt" kallisto_count_folder= "all_results_bgee_v14" sum_by_species_folder="$(RNASEQ_VITALIT_SUM_RES)" gaussian_choice="$(RNASEQ_VITALIT_GAUSSIAN_CHOICE)" out_folder="all_results_bgee_v14" desired_r_cutoff="r_cutoff_value" plot_only=FALSE' rna_seq_presence_absence.R rna_seq_presence_absence.Rout
+## R CMD BATCH --no-save --no-restore '--args rna_seq_sample_info="rna_seq_sample_info.txt" rna_seq_sample_excluded="rna_seq_sample_excluded.txt" kallisto_count_folder= "all_results_bgee_v15" sum_by_species_folder="$(RNASEQ_CLUSTER_SUM_RES)" gaussian_choice="$(RNASEQ_CLUSTER_GAUSSIAN_CHOICE)" out_folder="all_results_bgee_v15" desired_r_cutoff="r_cutoff_value" plot_only=FALSE' rna_seq_presence_absence.R rna_seq_presence_absence.Rout
 ## rna_seq_sample_info      - file with info on mapped libraries
 ## rna_seq_sample_excluded  - file with excluded libraries
 ## kallisto_count_folder    - path to kallisto result folder

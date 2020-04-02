@@ -3,7 +3,7 @@
 ## IMPORTANT: this plotting script was merged to the end of rna_seq_presence_absence.pl, the current script is left for reference only and should be eventually removed
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args rna_seq_sample_info="rna_seq_sample_info.txt" rna_seq_sample_excluded="rna_seq_sample_excluded.txt" presence_folder="presence_absence_bgee_v14"' rna_seq_presence_absence_plot.R rna_seq_presence_absence_plot.Rout
+## R CMD BATCH --no-save --no-restore '--args rna_seq_sample_info="rna_seq_sample_info.txt" rna_seq_sample_excluded="rna_seq_sample_excluded.txt" presence_folder="presence_absence_bgee_v15"' rna_seq_presence_absence_plot.R rna_seq_presence_absence_plot.Rout
 ## rna_seq_sample_info      - file with info on mapped libraries
 ## rna_seq_sample_excluded  - file with excluded libraries
 ## presence_folder          - path to folder where presence_absence files are stored

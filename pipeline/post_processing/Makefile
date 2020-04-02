@@ -164,7 +164,7 @@ $(OUTPUT_DIR)ranksAffy: $(OUTPUT_DIR)globalExpression
 	@$(MV) $@.tmp $@
 
 $(OUTPUT_DIR)ranksRnaSeq: $(OUTPUT_DIR)globalExpression
-	@perl ranks_rnaseq.pl -bgee=$(BGEECMD) > $@.tmp 2> $@.warn
+	@perl ranks_rnaseq.pl -bgee=$(BGEECMD) -db_name=$(DBNAME) > $@.tmp 2> $@.warn
 	@printf "Min, max, average RNA-Seq mean rank: \n" >> $@.tmp
 	@$(MYSQL) -e "SELECT MIN(rnaSeqMeanRank), MAX(rnaSeqMeanRank), AVG(rnaSeqMeanRank) FROM globalExpression AS t1 WHERE rnaSeqMeanRank IS NOT NULL" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@

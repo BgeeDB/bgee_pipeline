@@ -19,6 +19,7 @@ global_check:
 	@perl -MBio::EnsEMBL::Registry  -e 1 >> $@.tmp
 # other Perl modules
 	@perl -MArray::Utils            -e 1 >> $@.tmp
+	@perl -MCpanel::JSON::XS        -e 1 >> $@.tmp
 	@perl -MDBI                     -e 1 >> $@.tmp
 	@perl -MDigest::SHA             -e 1 >> $@.tmp
 	@perl -MFile::Basename          -e 1 >> $@.tmp

@@ -37,7 +37,7 @@ update dataSource set releaseDate = '2016-08-22', releaseVersion = '',          
 -- GO
 update dataSource set releaseDate = '2016-04-30', releaseVersion = ''                                                where dataSourceId = 18;
 -- SRA
-update dataSource set releaseDate = '2016-04-01', releaseVersion = '',                             displayOrder = 2  where dataSourceId = 19;
+update dataSource set releaseDate = '2018-08-07', releaseVersion = '',                             displayOrder = 2  where dataSourceId = 19;
 -- HGNC (taken from Ensembl xrefs)
 update dataSource set releaseDate = null,         releaseVersion = '',                             displayOrder = 1  where dataSourceId = 20;
 -- CCDS (taken from Ensembl xrefs)
@@ -49,7 +49,7 @@ update dataSource set releaseDate = '2016-08-29', releaseVersion = '',          
 -- EnsemblMetazoa
 update dataSource set releaseDate = '2016-03-18', releaseVersion = '30',                           displayOrder = 1  where dataSourceId = 24;
 -- Bgee
-update dataSource set releaseDate = '2019-11-14', releaseVersion = '14.1',                         displayOrder = 1  where dataSourceId = 25;
+update dataSource set releaseDate = '2020-03-26', releaseVersion = '14.1',                         displayOrder = 1  where dataSourceId = 25;
 -- Uberon
 update dataSource set releaseDate = '2016-07-14', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 26;
 -- Developmental stage ontologies
@@ -63,5 +63,5 @@ update dataSource set releaseDate = '2015-03-10', releaseVersion = '',          
 -- GTEx-dbGAP
 update dataSource set releaseDate = '2015-10-03', releaseVersion = '6.p1',                         displayOrder = 3  where dataSourceId = 31;
 -- GEO (RNASeq)
-update dataSource set releaseDate = '2016-04-01', releaseVersion = '',                             displayOrder = 2  where dataSourceId = 100;
+update dataSource set releaseDate = '2018-08-07', releaseVersion = '',                             displayOrder = 2  where dataSourceId = 100;
 
