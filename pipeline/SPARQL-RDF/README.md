@@ -20,16 +20,27 @@ Set up the Bgee SPARQL endpoint with easyBgee_v*RELEASE* database and mapping fi
 
 To run the bgee_rdf.sh bash script:
  easyBgee to RDF triples and load into a Virtuoso data store
+ 
                 [ {-x | --ontop} <ontop directory> ]
+                
                 [ {-m | --mapping-file} <mapping file> ]
+                
                 [ {-o | --output-dir-path} <Turtle file output> ]
+                
                 [ {-p | --ontop-property-file} <property file>  ]
+                
                 [ {-t | --ontology-file} <ontology file> ]
+                
                 [ {-i | --isql} <iSQL tool from Virtuoso> ]
+                
                 [ {-s | --host-port} <host and port to connect to Virtuoso, e.g. locahost:1111> ]
+                
                 [ {-w | --virtuoso-pwd} <Virtuoso password> ]
+                
                 [ {-u | --virtuoso-user} <Virtuoso username> ]
+                
                 [ {-v | --bgee-version} <the bgee version, e.g. '14_1'> ]
+                
                 [ {-h | --help} <usage help> ]
 
    Example:              
