@@ -1,11 +1,11 @@
 **Requirements**: having successfully run dblite_creation
 
-##Prerequirements 
+## Prerequirements 
 [Install Virtuoso 7.2](http://vos.openlinksw.com/owiki/wiki/VOS#How%20Do%20I%20Install%20Virtuoso%3F)
 
 Edit [virtuoso.ini](http://docs.openlinksw.com/virtuoso/dbadm/) configuration file to allow for reading/writing files in the directory that contains the RDF-based files.
 
-virtuoso.ini line to edit: DirsAllowed = ., ../vad, /new/path/bgee/ttl
+virtuoso.ini line to edit: **DirsAllowed = ., ../vad, /new/path/bgee/ttl**
 
 Download and extract [Ontop-cli 3.0.1](https://sourceforge.net/projects/ontop4obda/files/ontop-3.0.1/ontop-cli-3.0.1.zip/download) command line tool. 
 
@@ -33,7 +33,7 @@ To run the bgee_rdf.sh bash script:
                 [ {-h | --help} <usage help> ]
 
    Example:              
-    ./bgee_rdf.sh -m ./conf/genex_adapt.obda -o /new/path/bgee/ttl -p  ./conf/genex_adapt.properties -x ./ontop-cli-3 -t ./conf/genex_adapt.owl -i ~/not_save/virtuoso/bin/isql -s 1111 -w dba -u dba -v '14_1'
+    ./bgee_rdf.sh -m ./conf/genex_adapt.obda -o **/new/path/bgee/ttl** -p  ./conf/genex_adapt.properties -x ./ontop-cli-3 -t ./conf/genex_adapt.owl -i ~/not_save/virtuoso/bin/isql -s 1111 -w dba -u dba -v '14_1'
 
 
 
