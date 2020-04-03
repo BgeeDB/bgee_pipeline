@@ -88,10 +88,6 @@ sed -i 's," \.,"^^xsd:double.,g' $output_dir_path/http___purl_org_genex_hasExpre
 
 echo "The RDF data were created and saved as TURTLE files..."
 
-##### README #######
-#To place and execute at the directory that cotains the TTL files. Afterwards, in rbioinfo
-#/usr/local/virtuoso-opensource/bin/isql enviroment, run the command LOAD Path/To/Generated/add_bgee_virtuoso.sql
-####################
 
 echo "Generating iSQL script to load RDF data into a virtuoso data store..."
 dir_temp=`pwd`
