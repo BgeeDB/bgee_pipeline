@@ -1,6 +1,8 @@
 **Requirements**: having successfully run dblite_creation
+
 ##Prerequirements 
 [Install Virtuoso 7.2](http://vos.openlinksw.com/owiki/wiki/VOS#How%20Do%20I%20Install%20Virtuoso%3F)
+
 Edit [virtuoso.ini](http://docs.openlinksw.com/virtuoso/dbadm/) configuration file to allow for reading/writing files in the directory that contains the RDF-based files.
 
 virtuoso.ini line to edit: DirsAllowed = ., ../vad, /new/path/bgee/ttl
