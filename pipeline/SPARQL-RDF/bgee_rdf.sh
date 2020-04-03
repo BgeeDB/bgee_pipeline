@@ -94,7 +94,7 @@ echo "The RDF data were created and saved as TURTLE files..."
 ####################
 
 echo "Generating iSQL script to load RDF data into a virtuoso data store..."
-dir_temp= `pwd`
+dir_temp=`pwd`
 
 cd $output_dir_path
 ls *.ttl > "./ttl_files.txt"
