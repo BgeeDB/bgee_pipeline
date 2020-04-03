@@ -96,7 +96,7 @@ echo "The RDF data were created and saved as TURTLE files..."
 echo "Generating iSQL script to load RDF data into a virtuoso data store..."
 dir_temp= `pwd`
 
-cd $output_dir_path/
+cd $output_dir_path
 ls *.ttl > "./ttl_files.txt"
 input="./ttl_files.txt"
 output="./add_bgee_virtuoso.sql"
@@ -108,7 +108,7 @@ do
 done < "$input"
 echo "SPARQL LOAD <http://purl.org/genex#> INTO <https://bgee.org/rdf_v$bgee_version>;" >>  "$output"
 rm -f ./ttl_files.txt
-cd dir_temp
+cd $dir_temp
 
 echo "Executing iSQL script to load RDF data into a virtuoso data store..."
 $isql_file_path  $virtuoso_host $virtuoso_user $virtuoso_pwd "EXEC=LOAD '$output_dir_path'/add_bgee_virtuoso.sql"
