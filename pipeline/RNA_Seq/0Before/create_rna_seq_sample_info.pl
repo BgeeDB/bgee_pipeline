@@ -304,6 +304,10 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         if ( $info =~ /<SPOT_LENGTH>(\d+)<\/SPOT_LENGTH>/ ) {
             $readLength = $1;
         }
+        #NOTE it looks the SRA XML format changed at some point!
+        elsif ( $info =~ /<Statistics nreads="2" nspots="\d+"><Read index="0" count="\d+" average="(\d+)" stdev="[^"]+"\/><Read index="1" count="\d+" average="(\d+)" stdev="[^"]+"\/><\/Statistics>/ ){
+            $readLength = ($1 + $2)/2;
+        }
 
         # If read length defined and it seems very short, issue a warning
         if ( $readLength ne '' ){
@@ -315,6 +319,9 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
             elsif ( ($libraryType eq 'PAIRED') and ($readLength < 72) ){
                 warn "\tInfo: Read length is [$readLength / 2] for PE library [$libraryId][$experimentId], which seems low and could indicate that the library is not a classical RNA-seq library. Please check.\n";
             }
+        }
+        else {
+            warn "\tWarning: read length is empty for [$libraryId][$experimentId]\n";
         }
 
         ## Issue warning is the XML entry includes keywords suggesting that the library is not classical RNA-seq
