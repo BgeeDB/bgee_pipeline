@@ -236,7 +236,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
             warn "\tProblem: [$libraryId] [$experimentId] is [$strategy], which is not supported by our pipeline for now. Please comment out. This library was not printed in output file.\n";
             next SAMPLE;
         }
-        elsif ( $strategy !~ /^RNA-Seq$/i and (all { $experimentId ne $_ } @valid_lib_strategy) ){
+        elsif ( $strategy !~ /^(mi)?RNA-Seq$/i and (all { $experimentId ne $_ } @valid_lib_strategy) ){
             warn "\tProblem: [$libraryId][$experimentId] does not seem to be RNA-seq but [$strategy]. Please check. This library was printed in output file.\n";
         }
 
