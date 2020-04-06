@@ -125,7 +125,7 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
 
 
     #NOTE check memory usage with  grep 'Maximum resident set size' *.time
-    my $script_plus_args = "/usr/bin/time -vo $output_log_folder/$library_id/$library_id.time  perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -exclude_sample_file=$exclude_sample_file -index_folder=$index_folder -fastq_folder=$fastq_folder -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -ens_release=$ens_release -ens_metazoa_release=$ens_metazoa_release -enc_passwd_file=$enc_passwd_file";
+    my $script_plus_args = "/software/bin/time -vo $output_log_folder/$library_id/$library_id.time  perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -exclude_sample_file=$exclude_sample_file -index_folder=$index_folder -fastq_folder=$fastq_folder -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -ens_release=$ens_release -ens_metazoa_release=$ens_metazoa_release -enc_passwd_file=$enc_passwd_file";
 
 
     # Wait for free places in job queue
@@ -140,13 +140,8 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
 
     # Script can be launched! Construct SLURM sbatch command:
     # First, remove previous .out and .err files
-<<<<<<< Updated upstream
     my $sbatch_command = $rm_output_command.$rm_error_command;
     $sbatch_command .= "$cluster_kallisto_cmd\n";
-=======
-    #my $sbatch_command = $rm_output_command.$rm_error_command;
-    my $sbatch_command = "$cluster_kallisto_cmd\n";
->>>>>>> Stashed changes
     $sbatch_command .= "$cluster_R_cmd\n\n";
     $sbatch_command .= $script_plus_args;
     print "Command submitted to cluster:\n$sbatch_command\n";

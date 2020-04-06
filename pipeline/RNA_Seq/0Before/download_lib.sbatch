@@ -25,5 +25,5 @@ export SCRIPT_PATH=/users/smoretti/bgee_pipeline.git/pipeline/RNA_Seq
 export ANNOTATION_FILE=../../generated_files/RNA_Seq/rna_seq_sample_info.txt
 export DONE_FILE=../../generated_files/RNA_Seq/rna_seq_sample_downloaded.txt
 
-/usr/bin/time -vo $SCRIPT_PATH/get_sra.time  perl $SCRIPT_PATH/0Before/get_SRA.pl  $SCRIPT_PATH/$ANNOTATION_FILE  $SCRIPT_PATH/$DONE_FILE
+/software/bin/time -vo $SCRIPT_PATH/get_sra.time  perl $SCRIPT_PATH/0Before/get_SRA.pl  $SCRIPT_PATH/$ANNOTATION_FILE  $SCRIPT_PATH/$DONE_FILE
 
