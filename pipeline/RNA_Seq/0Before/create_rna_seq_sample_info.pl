@@ -243,7 +243,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
         #     See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/82
         #     See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/84
-        my @valid_lib_selection     = ('DRP003809', 'E-MTAB-5895', 'ERP001524', 'ERP001525', 'ERP006380', 'SRP012049', 'SRP018740', 'SRP021223', 'SRP024250', 'SRP027560', 'SRP033402', 'SRP043521', 'SRP051959', 'SRP055497', 'SRP058036', 'SRP066548', 'SRP081080', 'SRP082291', 'SRP082342', 'SRP082454', 'SRP092904', 'SRP106023', 'SRP116580', 'SRP045680', 'SRP018725', 'SRP053164', 'SRP056073', 'SRP072263', 'SRP036185', 'SRP058798');
+        my @valid_lib_selection     = ('DRP003809', 'E-MTAB-5895', 'ERP001524', 'ERP001525', 'ERP006380', 'SRP012049', 'SRP018740', 'SRP021223', 'SRP024250', 'SRP027560', 'SRP030211', 'SRP033402', 'SRP043521', 'SRP051959', 'SRP055497', 'SRP058036', 'SRP066548', 'SRP081080', 'SRP082291', 'SRP082342', 'SRP082454', 'SRP092904', 'SRP106023', 'SRP116580', 'SRP045680', 'SRP018725', 'SRP053164', 'SRP056073', 'SRP072263', 'SRP036185', 'SRP058798');
         $info =~ /<LIBRARY_SELECTION>([^<]+)<\/LIBRARY_SELECTION>/; # [^<] prevents matching to '<' character
         my $selection = $1;
         if ( $selection =~ /CAGE/ ){
@@ -328,7 +328,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         my @not_traditional = ('DeepSAGE', 'DeepCAGE', 'LongSAGE', 'SuperSAGE', 'CAGE', 'RACE', 'SAGE', 'DpnII', 'DpnIII', 'NlaIII', 'capture', 'CEL-seq', 'DGE-Seq', 'TagSeq', 'globin reduction', 'globin depletion', 'UMI', 'UMIs', 'ATAC-seq', 'MAINE-Seq', 'Mnase-Seq', 'FAIRE-Seq', 'DNase-seq', 'MACE-Seq', 'QuantSeq');
         my @verified        = ('ERP000787', 'ERP001694', 'ERP013973', 'ERP104395',
                                'GSE22410', 'GSE64283',
-                               'SRP000401', 'SRP013825', 'SRP021940', 'SRP022567', 'SRP041131', 'SRP076617', 'SRP082284', 'SRP090001',
+                               'SRP000401', 'SRP013825', 'SRP021940', 'SRP022567', 'SRP030211', 'SRP041131', 'SRP076617', 'SRP082284', 'SRP090001',
                                'SRP091779', 'SRP092799', 'SRP098705', 'SRP099849', 'SRP112616', 'SRP123447', 'SRP125768', 'SRP125959');
         if ( all { $experimentId ne $_ } @verified and any { $info =~ /\W$_\W/i } @not_traditional ){
             my @words = grep { $info =~ /\W$_\W/i } @not_traditional;
