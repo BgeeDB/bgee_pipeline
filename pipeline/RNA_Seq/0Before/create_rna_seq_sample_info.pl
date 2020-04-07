@@ -219,15 +219,13 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         }
         # Perform a series of sanity checks
         # Check it is a RNA-seq library
-        my @valid_lib_strategy = ('ERP001525', 'ERP001954', 'ERP002055', 'GSE30606', 'GSE30617', 'SRP000401', 'E-MTAB-2449', 'SRP003905', 'SRP006208', 'SRP006209', 'GSE16552', 'DRP000571', 'SRP000304', 'SRP004363', 'SRP005402', 'SRP033585', 'SRP043163', 'SRP058340', 'SRP068231');
+        my @valid_lib_strategy = ('ERP001524', 'ERP001525', 'ERP001954', 'ERP002055', 'GSE30606', 'GSE30617', 'SRP000401', 'E-MTAB-2449', 'SRP003905', 'SRP006208', 'SRP006209', 'GSE16552', 'DRP000571', 'SRP000304', 'SRP004363', 'SRP005402', 'SRP033585', 'SRP043163', 'SRP058340', 'SRP068231');
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/31
         #     See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/82
-        # GSE30617      OK for Anne
-        # SRP000401     OK for Anne
+        #     See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/84
         # E-MTAB-2449   'validated with lower confidence'
         # SRP003905     '"EST" but that it is Illumina paired-end, so I think it is RNA-seq'
         # GSE16552      'Contradictory info but for now kept'. Also in https://gitlab.sib.swiss/Bgee/expression-annotations/issues/33
-        # DRP000571     OK for Anne
         # SRP000304     OK, FL-cDNA is RNA-Seq
         my @invalid_lib_strategies = ('ATAC-seq', 'MAINE-Seq', 'MNase-Seq', 'FAIRE-seq', 'DNase-Hypersensitivity', 'DNase-seq');
         $info =~ /<LIBRARY_STRATEGY>([^<]+)<\/LIBRARY_STRATEGY>/; # [^<] prevents matching to '<' character
@@ -245,7 +243,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
         #     See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/82
         #     See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/84
-        my @valid_lib_selection     = ('DRP003809', 'E-MTAB-5895', 'ERP001525', 'ERP006380', 'SRP012049', 'SRP018740', 'SRP021223', 'SRP024250', 'SRP027560', 'SRP033402', 'SRP043521', 'SRP051959', 'SRP055497', 'SRP058036', 'SRP066548', 'SRP081080', 'SRP082291', 'SRP082342', 'SRP082454', 'SRP092904', 'SRP106023', 'SRP116580', 'SRP045680', 'SRP018725', 'SRP053164', 'SRP056073', 'SRP072263', 'SRP036185', 'SRP058798');
+        my @valid_lib_selection     = ('DRP003809', 'E-MTAB-5895', 'ERP001524', 'ERP001525', 'ERP006380', 'SRP012049', 'SRP018740', 'SRP021223', 'SRP024250', 'SRP027560', 'SRP033402', 'SRP043521', 'SRP051959', 'SRP055497', 'SRP058036', 'SRP066548', 'SRP081080', 'SRP082291', 'SRP082342', 'SRP082454', 'SRP092904', 'SRP106023', 'SRP116580', 'SRP045680', 'SRP018725', 'SRP053164', 'SRP056073', 'SRP072263', 'SRP036185', 'SRP058798');
         $info =~ /<LIBRARY_SELECTION>([^<]+)<\/LIBRARY_SELECTION>/; # [^<] prevents matching to '<' character
         my $selection = $1;
         if ( $selection =~ /CAGE/ ){
