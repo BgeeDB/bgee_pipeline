@@ -243,7 +243,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
         #     See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/82
         #     See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/84
-        my @valid_lib_selection     = ('DRP003809', 'E-MTAB-5895', 'ERP001524', 'ERP001525', 'ERP006380', 'SRP012049', 'SRP018725', 'SRP018740', 'SRP021223', 'SRP024250', 'SRP027560', 'SRP030211', 'SRP033402', 'SRP036185', 'SRP043521', 'SRP045680', 'SRP051959', 'SRP053164', 'SRP055497', 'SRP056073', 'SRP058036', 'SRP058798', 'SRP066400', 'SRP066548', 'SRP072263', 'SRP081080', 'SRP082291', 'SRP082342', 'SRP082454', 'SRP092904', 'SRP106023', 'SRP116580');
+        my @valid_lib_selection     = ('DRP003809', 'E-MTAB-5895', 'ERP001524', 'ERP001525', 'ERP006380', 'SRP012049', 'SRP018725', 'SRP018740', 'SRP021223', 'SRP024250', 'SRP027560', 'SRP030211', 'SRP033402', 'SRP036185', 'SRP043521', 'SRP045680', 'SRP051725', 'SRP051959', 'SRP053164', 'SRP055497', 'SRP056073', 'SRP058036', 'SRP058798', 'SRP066400', 'SRP066548', 'SRP072263', 'SRP081080', 'SRP082291', 'SRP082342', 'SRP082454', 'SRP092904', 'SRP106023', 'SRP116580');
         $info =~ /<LIBRARY_SELECTION>([^<]+)<\/LIBRARY_SELECTION>/; # [^<] prevents matching to '<' character
         my $selection = $1;
         if ( $selection =~ /CAGE/ ){
