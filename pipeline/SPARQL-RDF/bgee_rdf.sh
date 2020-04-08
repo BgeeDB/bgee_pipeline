@@ -12,10 +12,11 @@ usage()
                 [ {-w | --virtuoso-pwd} <Virtuoso password> ]
                 [ {-u | --virtuoso-user} <Virtuoso username> ]
                 [ {-v | --bgee-version} <the bgee version, e.g. '14_1'> ]
+                [ {-j | --java-ontop-args } <Java Ontop memory arguments > (optional) ]
                 [ {-h | --help} <usage help> ]
 
    Example:              
-    ./bgee_rdf.sh -m ./conf/genex_adapt.obda -o ./ttl -p  ./conf/genex_adapt.properties -x ./ontop-cli-3 -t ./conf/genex_adapt.owl -i ~/not_save/virtuoso/bin/isql -s 1111 -w dba -u dba -v '14_1'
+    ./bgee_rdf.sh -m ./conf/genex_adapt.obda -o ./ttl -p  ./conf/genex_adapt.properties -x ./ontop-cli-3 -t ./conf/genex_adapt.owl -i ~/not_save/virtuoso/bin/isql -s 1111 -w dba -u dba -v '14_1' -j '-Xmx128G'
     "
 
 }
@@ -30,6 +31,7 @@ virtuoso_host=
 virtuoso_user=
 virtuoso_pwd=
 bgee_version=
+java_ontop_args=
 
 if [ "$1" == "" ]
 then usage
@@ -67,7 +69,10 @@ while [ "$1" != "" ]; do
                                 ;;
         -v | --bgee-version )   shift
                                 bgee_version=${1%/}
-                                ;;                                                                                                       
+                                ;;     
+        -j | --java-ontop-args )   shift
+                                java_ontop_args=${1%/}
+                                ;;                                                                                                          
         -h | --help )           usage
                                 exit
                                 ;;
@@ -79,6 +84,14 @@ done
 
 echo "Starting RDF creation and loading into Virtuoso data store..."
 echo "Creating RDF data and serializing them as TURTLE files..."
+#ontop edit java max memory
+if [ "$java_ontop_args" != "" ]
+then 
+    java_ontop_args=`echo $java_ontop_args | tr -d \"`
+    sed -i  's,ONTOP_JAVA_ARGS=.*.,ONTOP_JAVA_ARGS="'$java_ontop_args'",g' $ontop_dir_path/ontop
+fi
+
+#Run ontop tool
 $ontop_dir_path/ontop materialize --separate-files -m $obda_file_path -f turtle -o $output_dir_path -p $ontop_property_file -t $ontology_file  
 #--disable-reasoning 
 
