@@ -116,6 +116,8 @@ do
   echo "DB.DBA.TTLP_MT(file_to_string_output('$file'), '', 'https://bgee.org/rdf_v$bgee_version');" >>  "$output"
 done < "$input"
 echo "SPARQL LOAD <http://purl.org/genex#> INTO <https://bgee.org/rdf_v$bgee_version>;" >>  "$output"
+#Remove empty string statements, if any
+echo "SPARQL with <https://bgee.org/rdf_v$bgee_version> delete {?z ?d "" } where {?z ?d "". };" >>  "$output"
 rm -f ./ttl_files.txt
 cd $dir_temp
 
