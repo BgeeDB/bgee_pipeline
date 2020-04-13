@@ -351,7 +351,7 @@
 "SRP129900"	"Scophthalmus maximus Raw sequence reads"	"Transcriptomic profiling revealed the signatures of crowding stress on the immune response in juvenile turbot"	"SRA"	"total"	"PRJNA430115"	
 "SRP188583"	"Different expression of genes on gills from turbot scophthalmus maximus that fed with different contents of myo-inositol"	"In this study, whole genome transcription profiling of turbot as it fed with different contents myo-inositol was performed to decipher the mechanisms by which myo-inositol modulates physiological functions"	"SRA"	"partial"	"PRJNA527368"	
 "ERP005899"	"7tissues"	"To measure gene expression, mRNA from seven different tissues was extracted (adipose, muscle, hypothalamus, duodenum, liver, lung and kidney) from frozen tissues using TRIzol (Invitrogen). Messenger RNA from 7~14 animals was pooled equally before sequencing"	"SRA"	"total"	"E-MTAB-2596, PRJEB6377"	
-"SRP016073"	"Felis catus Transcriptome or Gene expression"	"RNA-seq of testicle transcriptome."	"SRA"	"total"	"NA"	"NA"
+"#SRP016073"	"Felis catus Transcriptome or Gene expression"	"RNA-seq of testicle transcriptome."	"SRA"	"total"	"(discarded, it is 454-seq, means similar to ESTs)"	"NA"
 "SRP042944"	"Felis catus strain:domestic short hair Transcriptome or Gene expression"	"Directional Transcriptome RNAseq"	"SRA"	"total"	"NA"	"NA"
 "SRP024250"	"Canis lupus familiaris Transcriptome RNA-seq"	"RNA-seq of spontaneous canine mammary cancers and normal samples."	"SRA"	"partial"	"NA"	"NA"
 "SRP066652"	"transcriptome of Canis lupus  familiaris"	"transcriptome of Canis lupus familiaris"	"SRA"	"total"	"NA"	"NA"
