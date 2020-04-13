@@ -127,6 +127,6 @@ thres.calls <- mas5calls(data.PM, tau=0.015, alpha1 = 0.024, alpha2 = 0.111 )
 
 for (i in 1:length(filenames)){
 	# probeset names are taken from the row.names of exprs(data.gcrma)[,i] & exprs(thres.calls)[,i]
-	write.table(cbind(exprs(data.gcrma)[,i],exprs(thres.calls)[,i]), file=paste(processed,filenames[i],".out",sep=""), sep="\t",quote=F,col.names=F,row.names=T)
+	write.table(cbind(exprs(data.gcrma)[,i],assayData(thres.calls)[["se.exprs"]][,i],exprs(thres.calls)[,i]), file=paste(processed,filenames[i],".out",sep=""), sep="\t",quote=F,col.names=F,row.names=T)
 }
 
