@@ -264,6 +264,13 @@ finalize_pipeline: check_abundance_all_intergenic
 	@$(MV) $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar.gz $(RNASEQ_CLUSTER_ALL_RES_BACKUP) 2>>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
+	
+# Infer blood libraries: provide info for each library (rule can be run in front)
+infer_blood_samples: check_abundance_all_intergenic
+	@echo --- start infering the blood libraries ---
+	@$(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args RNASeqLibrary="$(RNASEQ_LIB_FILEPATH)" globin_file="$(RNASEQ_GLOBIN_FILEPATH)" kallisto_count_folder="$(RNASEQ_CLUSTER_ALL_RES)" output="$(GENERATED_FILES_DIR)$(RNASEQPATH)"' 1Run/blood_protocols_inference.R 1Run/blood_protocols_inference.Rout > $@.tmp
+	@echo --- DONE ---
+	@$(MV) $@.tmp $@
 
 
 #NOTE For iterative updates the  sum_by_species  step has to be skipped if you want to reuse the previous gaussian curves as they are!

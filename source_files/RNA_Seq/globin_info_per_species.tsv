@@ -1,0 +1,48 @@
+ensembl_ID	gene_name	description	Organism	speciesId
+ENSG00000206177	HBM	hemoglobin subunit mu	Homo_sapiens	9606
+ENSG00000244734	HBB	hemoglobin subunit beta	Homo_sapiens	9606
+ENSG00000130656	HBZ	hemoglobin subunit zeta	Homo_sapiens	9606
+ENSG00000223609	HBD	hemoglobin subunit delta	Homo_sapiens	9606
+ENSG00000206172	HBA1	hemoglobin subunit alpha 1	Homo_sapiens	9606
+ENSG00000188536	HBA2	hemoglobin subunit alpha 2	Homo_sapiens	9606
+ENSG00000213934	HBG1	hemoglobin subunit gamma 1	Homo_sapiens	9606
+ENSG00000196565	HBG2	hemoglobin subunit gamma 2	Homo_sapiens	9606
+ENSG00000086506	HBQ1	hemoglobin subunit theta 1	Homo_sapiens	9606
+ENSG00000213931	HBE1	hemoglobin subunit epsilon 1	Homo_sapiens	9606
+ENSG00000229988	HBBP1	hemoglobin subunit beta pseudogene 1	Homo_sapiens	9606
+ENSG00000206178	HBZP1	hemoglobin subunit zeta pseudogene 1	Homo_sapiens	9606
+ENSCAFG00000029224	HBM	hemoglobin subunit mu	Canis_lupus _familiaris	9615
+ENSECAG00000010020	HBB	hemoglobin subunit beta	Equus_caballus	9796
+ENSECAG00000016460	HBZ	hemoglobin subunit zeta	Equus_caballus	9796
+ENSECAG00000009879	HBQ1	hemoglobin subunit theta 1	Equus_caballus	9796
+ENSECAG00000012269	HBE1	hemoglobin subunit epsilon 1	Equus_caballus	9796
+ENSECAG00000032728	HBA1	Hemoglobin subunit alpha 1	Equus_caballus	9796
+ENSECAG00000031859	HBA2	hemoglobin subunit alpha 2	Equus_caballus	9796
+ENSSSCG00000007977	HBM	hemoglobin subunit mu	Sus_scrofa	9823
+ENSSSCG00000007975	HBZ	hemoglobin subunit zeta	Sus_scrofa	9823
+ENSSSCG00000014726	HBE1	hemoglobin subunit epsilon 1	Sus_scrofa	9823
+ENSSSCG00000014725	HBB	hemoglobin subunit beta	Sus_scrofa	9823
+ENSSSCG00000038804	HBQ1	hemoglobin subunit theta 1	Sus_scrofa	9823
+ENSBTAG00000051412	HBA	Hemoglobin subunit alpha	Bos_taurus	9913
+ENSBTAG00000037644	HBB	Hemoglobin subunit beta	Bos_taurus	9913
+ENSBTAG00000037815	HBE1	hemoglobin subunit epsilon 1	Bos_taurus	9913
+ENSBTAG00000039178	HBE2	Hemoglobin subunit epsilon-2	Bos_taurus	9913
+ENSBTAG00000037751	HBE4	Hemoglobin subunit epsilon-4	Bos_taurus	9913
+ENSBTAG00000038748	HBG	hemoglobin subunit gamma	Bos_taurus	9913
+ENSBTAG00000038757	HBM	hemoglobin subunit mu	Bos_taurus	9913
+ENSBTAG00000016567	HBQ1	hemoglobin subunit theta 1	Bos_taurus	9913
+ENSBTAG00000038921	HBZ	hemoglobin subunit zeta	Bos_taurus	9913
+ENSOCUG00000000568	HBB2	hemoglobin subunit beta 2	Oryctolagus_cuniculus	9986
+ENSOCUG00000027533	HBG1	hemoglobin subunit gamma 1	Oryctolagus_cuniculus	9986
+ENSOCUG00000014162	HBZ	hemoglobin subunit zeta	Oryctolagus_cuniculus	9986
+ENSOCUG00000021180	HBG	Hemoglobin subunit gamma	Oryctolagus_cuniculus	9986
+ENSMODG00000016635	HBA	hemoglobin subunit alpha	Monodelphis_domestica	13616
+ENSNBRG00000018453	HBAE5	Hemoglobin subunit alpha embryonic 5	Neolamprologus_brichardi	32507
+ENSNBRG00000017797	HBBE2	Hemoglobin subunit beta embryonic 2	Neolamprologus_brichardi	32507
+ENSCSAG00000013100	HBA	Hemoglobin subunit alpha	Chlorocebus_sabaeus	60711
+ENSCSAG00000004264	HBB	hemoglobin subunit beta	Chlorocebus_sabaeus	60711
+ENSCSAG00000004265	HBD	hemoglobin subunit delta	Chlorocebus_sabaeus	60711
+ENSCSAG00000004267	HBE1	hemoglobin subunit epsilon 1	Chlorocebus_sabaeus	60711
+ENSCSAG00000004266	HBG	hemoglobin subunit gamma	Chlorocebus_sabaeus	60711
+ENSCSAG00000013121	HBM	hemoglobin subunit mu	Chlorocebus_sabaeus	60711
+ENSCSAG00000013085	HBQ1	hemoglobin subunit theta 1	Chlorocebus_sabaeus	60711

@@ -112,4 +112,4 @@ for (species in unique(annotation$speciesId)) {
 
 ## re-write annotation file with information about globin protocol
 annotation <- merge(annotation, allInfoPerSpecies, by="libraryId", incomparables=NaN, all = TRUE)
-write.table(annotation, file = file.path(dirname(RNASeqLibrary),"RNASeqLibrary.tsv"), sep = "\t", col.names = TRUE, row.names = FALSE)
+write.table(annotation, file = file.path(output,"RNASeqLibrary_PostProcessing.tsv"), sep = "\t", col.names = TRUE, row.names = FALSE)
