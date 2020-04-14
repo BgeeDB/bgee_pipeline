@@ -458,6 +458,7 @@ $selInsertedChip->finish;
 print("Inserting probesets...\n") if ( $debug );
 
 # affymetrixProbeset
+#TODO Add p-value in the db
 my $insAffyPset = $dbh->prepare('INSERT INTO affymetrixProbeset
                                 (affymetrixProbesetId, bgeeAffymetrixChipId, bgeeGeneId,
                                 normalizedSignalIntensity, detectionFlag, affymetrixData, reasonForExclusion)

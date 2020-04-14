@@ -76,30 +76,30 @@ sub getAllChips {
     return %affyChips;
 }
 
-# Sub to extract probesets from a MAS5 of Schuster Affymetrix file. 
+# Sub to extract probesets from a MAS5 of Schuster Affymetrix file.
 # This sub also logs some warnings if incorrectly formatted files are seen.
 #
-# Arguments: 
+# Arguments:
 #   * $experimentId: ID of the experiment
 #   * $chipId: ID of the chip
 #   * $normType: normalization type
 #   * $processedMas5Dir: directory where processed MAS5 files are stored
 #   * $processedSchusterDir: directory where processed Schuster files are stored
-#   * $logWarn: whether warnings should be logged. 
+#   * $logWarn: whether warnings should be logged.
 #
-# Returns a reference to a hash defined as: 
+# Returns a reference to a hash defined as:
 # $hashRef->{$probesetId}->{'call'}
 # $hashRef->{$probesetId}->{'signal'}
 # $hashRef->{$probesetId}->{'quality'}
 sub extractProbesetsFromFile {
     my ($experimentId, $chipId, $normType, $processedMas5Dir, $processedSchusterDir, $logWarn) = @_;
-    
+
     my %pbsets;
     my %correspCall = get_corresp_call(); ## mas5_utils.pl
     my $problems = 0; #count the number of problems for harmonizing the calls
     my $nbr_line = 0;
     my $nbr_null = 0;
-    
+
     # mas5 normalization & detection
     if ( $normType eq 'MAS5' ) {
         my $file_name = $processedMas5Dir.'/'.$experimentId.'/'.$chipId;
@@ -160,7 +160,8 @@ sub extractProbesetsFromFile {
             my @tmp = split(/\t/, $line);
             my $probesetId = bgeeTrim($tmp[0]);
             my $signal     = bgeeTrim($tmp[1]);
-            my $call       = bgeeTrim($tmp[2]);
+            my $p_value    = bgeeTrim($tmp[2]);
+            my $call       = bgeeTrim($tmp[3]);
 
             if ( exists $correspCall{$call} && defined $signal && $signal ne 'null' ) {
                 #pbset -> quality, call and signal
@@ -178,6 +179,8 @@ sub extractProbesetsFromFile {
                 elsif ( $correspCall{$call} eq $Utils::MARGINAL_CALL ) {
                     $pbsets{$probesetId}->{'quality'} = $Utils::LOW_QUAL;
                 }
+
+                $pbsets{$probesetId}->{'p_value'} = $p_value;
             }
             elsif ( exists $correspCall{$call} && defined $signal && $signal eq 'null' ) {
                 $nbr_null++;
