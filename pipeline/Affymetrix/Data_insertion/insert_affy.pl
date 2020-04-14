@@ -88,7 +88,7 @@ my $speciesSexInfo = Utils::get_species_sex_info($dbh);
 ##############
 # Check AE not already in dataSource
 my %bgeeDataSources = ();
-my $selSource = $dbh->prepare('SELECT dataSourceName, dataSourceId FROM dataSource WHERE category =\'Affymetrix data source\';');
+my $selSource = $dbh->prepare('SELECT dataSourceName, dataSourceId FROM dataSource WHERE category =\'Affymetrix data source\'');
 $selSource->execute()  or die $selSource->errstr;
 while ( my @data = $selSource->fetchrow_array ){
     $bgeeDataSources{$data[0]} = $data[1];
@@ -445,7 +445,7 @@ $dbh = Utils::connect_bgee_db($bgee_connector);
 # This assumes that each chip was inserted in full.
 
 my %insertedChips;
-my $selInsertedChip = $dbh->prepare('SELECT DISTINCT bgeeAffymetrixChipId FROM affymetrixProbeset;');
+my $selInsertedChip = $dbh->prepare('SELECT DISTINCT bgeeAffymetrixChipId FROM affymetrixProbeset');
 $selInsertedChip->execute()  or die $selInsertedChip->errstr;
 while ( my @data = $selInsertedChip->fetchrow_array ){
   $insertedChips{$data[0]} = ();
@@ -455,7 +455,7 @@ $selInsertedChip->finish;
 ###############################
 # Insert probesets            #
 ###############################
-print("Inserting probesets...\n") if ( $debug );
+print("Inserting probesets...\n")  if ( $debug );
 
 # affymetrixProbeset
 #TODO Add p-value in the db
