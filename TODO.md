@@ -23,7 +23,13 @@
 
 * Globin reduction on blood samples: we need a test to determine whether blood samples
 had globin reduction or not. Let's implement the test and look at the distribution
-of samples with/without reduction.
+of samples with/without reduction. Notes about that in the Bgee meeting minutes
+from 2020-04-07
+  * for all samples that are blood, we will run a test to check the globin depletion status
+  * insert the information in the database. Maybe a specific column,
+  or same information as the type of targeting of the library (miRNA, lncRNA, etc)
+  * either the depletion will be known from annotation, provided by the data providers, or from the test.
+  * add the result of the test in the rnaSeqInfo file already used by the pipeline.
 
 ## scRNA-Seq
 
