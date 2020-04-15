@@ -301,12 +301,18 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         }
         # Read length, not compulsory
         # Beware, this is the sum of both pairs for paired-end! E.g., SRX1152842, lenght=500, corresponding to 2*250bp
-        if ( $info =~ /<SPOT_LENGTH>(\d+)<\/SPOT_LENGTH>/ ) {
+        if ( $info =~ /<SPOT_LENGTH>(\d+(\.\d+)?)<\/SPOT_LENGTH>/ ) {
             $readLength = $1;
         }
         #NOTE it looks the SRA XML format changed at some point!
-        elsif ( $info =~ /<Statistics nreads="2" nspots="\d+"><Read index="0" count="\d+" average="(\d+)" stdev="[^"]+"\/><Read index="1" count="\d+" average="(\d+)" stdev="[^"]+"\/><\/Statistics>/ ){
-            $readLength = ($1 + $2)/2;
+        elsif ( $info =~ /<Statistics nreads="2" nspots="\d+"><Read index="0" count="\d+" average="(\d+(\.\d+)?)" stdev="[^"]+"\/><Read index="1" count="\d+" average="(\d+(\.\d+)?)" stdev="[^"]+"\/><\/Statistics>/ ){
+            $readLength = ($1 + $3)/2;
+        }
+        elsif ( $info =~ /<Statistics nreads="1" nspots="\d+"><Read index="0" count="\d+" average="(\d+(\.\d+)?)" stdev="[^"]+"\/><\/Statistics>/ ){
+            $readLength = $1;
+        }
+        elsif ( $info =~ /<Statistics nreads="variable"\/>/ ){
+            $readLength = '0.0'; #NCBI nor EBI gives read length info because "This run has variable number of reads per spot"
         }
 
         # If read length defined and it seems very short, issue a warning
