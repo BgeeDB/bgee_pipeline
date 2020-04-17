@@ -842,6 +842,14 @@ sub generateRnaSeqFiles {
     # $lib{'stageName'}                        = stage name annotated for this library
     # $lib{'sex'}                              = annotated sex info (not mapped for expression table)
     # $lib{'strain'}                           = annotated strain info (not mapped for expression table)
+    # $lib{'exprMappedAnatEntityId'}           = anat. entity ID remapped for expression table for this library
+    # $lib{'exprMappedAnatEntityName'}         = anat. entity name remapped for expression table for this library
+    # $lib{'exprMappedStageId'}                = stage ID remapped for expression table for this library
+    # $lib{'exprMappedStageName'}              = stage name remapped for expression table for this library
+    # $lib{'exprMappedSex'}                    = sex info remapped for expression table
+    # $lib{'exprMappedStrain'}                 = strain info remapped for expression table
+    # $lib{'libraryDistinctRankCount'}         = count of distinct ranks in the library
+    # $lib{'maxRank'}                          = maximum rank in the corresponding global condition
     # $lib{'sourceId'}                         = data source ID
     # $lib{'runIds'}                           = IDs of runs used, separated by '|'
     my @libs = ();
@@ -852,15 +860,33 @@ sub generateRnaSeqFiles {
               .'t1.minReadLength, t1.maxReadLength, '
               .'t1.libraryType, t1.libraryOrientation, '
               .'t2.anatEntityId, t3.anatEntityName, t2.stageId, t4.stageName, t2.sex, t2.strain, '
+              .'t20.anatEntityId AS exprMappedAnatEntityId, t30.anatEntityName AS exprMappedAnatEntityName, '
+              .'t20.stageId AS exprMappedStageId, t40.stageName AS exprMappedStageName, '
+              .'t20.sex AS exprMappedSex, t20.strain AS exprMappedStrain, '
+              .'t1.libraryDistinctRankCount, '
+              # TODO to change if we ever use globalMaxRank instead of maxRank?
+              # But then we would have ranks not only for conditions with data,
+              # so I guess it would not be present in this file. To rethink in this case.
+              .'t60.rnaSeqMaxRank, '
               .'t5.dataSourceId, '
               .'GROUP_CONCAT(DISTINCT t6.rnaSeqRunId ORDER BY t6.rnaSeqRunId SEPARATOR "|") AS runIds '
               .'FROM rnaSeqLibrary AS t1 '
               .'INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId '
               .'INNER JOIN anatEntity AS t3 ON t2.anatEntityId = t3.anatEntityId '
               .'INNER JOIN stage AS t4 ON t2.stageId = t4.stageId '
+              .'INNER JOIN cond AS t20 ON t2.exprMappedConditionId = t20.conditionId '
+              .'INNER JOIN anatEntity AS t30 ON t20.anatEntityId = t30.anatEntityId '
+              .'INNER JOIN stage AS t40 ON t20.stageId = t40.stageId '
+              .'INNER JOIN globalCondToCond AS t50 '
+              .'ON t2.exprMappedConditionId = t50.conditionId AND t50.conditionRelationOrigin = "self" '
+              .'INNER JOIN globalCond AS t60 ON t50.globalConditionId = t60.globalConditionId '
               .'INNER JOIN ('.$sqlExpPart.') AS t5 ON t1.rnaSeqExperimentId = t5.rnaSeqExperimentId '
               .'LEFT OUTER JOIN rnaSeqRun AS t6 ON t1.rnaSeqLibraryId = t6.rnaSeqLibraryId '
               .'WHERE t2.speciesId = ? '
+              .'AND t60.anatEntityId IS NOT NULL AND t60.stageId IS NOT NULL '
+              # As of Bgee 14.1, sex and strain are not considered for globalCalls
+              # TODO: update this query when they will be considered
+              .'AND t60.sex IS NULL AND t60.strain IS NULL '
               .'GROUP BY t1.rnaSeqLibraryId '
               .'ORDER BY libCount DESC, conditionCount DESC, anatEntityStageCount DESC, '
               .'anatEntityCount DESC, stageCount DESC, sexCount DESC, strainCount DESC, '
@@ -893,8 +919,16 @@ sub generateRnaSeqFiles {
         $lib{'stageName'}                        = $data[18];
         $lib{'sex'}                              = $data[19];
         $lib{'strain'}                           = $data[20];
-        $lib{'sourceId'}                         = $data[21];
-        $lib{'runIds'}                           = $data[22];
+        $lib{'exprMappedAnatEntityId'}           = $data[21];
+        $lib{'exprMappedAnatEntityName'}         = $data[22];
+        $lib{'exprMappedStageId'}                = $data[23];
+        $lib{'exprMappedStageName'}              = $data[24];
+        $lib{'exprMappedSex'}                    = $data[25];
+        $lib{'exprMappedStrain'}                 = $data[26];
+        $lib{'libraryDistinctRankCount'}         = $data[27];
+        $lib{'maxRank'}                          = $data[28];
+        $lib{'sourceId'}                         = $data[29];
+        $lib{'runIds'}                           = $data[30];
         push @libs, \%lib;
     }
 
@@ -903,12 +937,15 @@ sub generateRnaSeqFiles {
     open($fh, '>', $libFile) or die "Could not open file '$libFile' $!";
     print $fh "Experiment ID\tLibrary ID\tAnatomical entity ID\tAnatomical entity name\t"
               ."Stage ID\tStage name\tSex\tStrain\t"
+              ."Expression mapped anatomical entity ID\tExpression mapped anatomical entity name\t"
+              ."Expression mapped stage ID\tExpression mapped stage name\t"
+              ."Expression mapped sex\tExpression mapped strain\t"
               ."Platform ID\tLibrary type\tLibrary orientation\t"
               ."TMM normalization factor\tTPM expression threshold\tFPKM expression threshold\t"
               ."Read count\tMapped read count\t"
               ."Min. read length\tMax. read length\tAll genes percent present\t"
               ."Protein coding genes percent present\tIntergenic regions percent present\t"
-              ."Run IDs\t"
+              ."Distinct rank count\tMax rank in the expression mapped condition\tRun IDs\t"
               ."Data source\tData source URL\tBgee normalized data URL\tRaw file URL\n";
     for my $lib ( @libs ){
         print $fh $lib->{'expId'}."\t"
@@ -932,6 +969,24 @@ sub generateRnaSeqFiles {
         $toPrint =~ s/"/'/g;
         print $fh '"'.$toPrint.'"'."\t";
 
+        print $fh $lib->{'exprMappedAnatEntityId'}."\t";
+        # we replace double quotes with simple quotes, and we surround with double quotes
+        # the values to escape potential special characters
+        $toPrint = $lib->{'exprMappedAnatEntityName'};
+        $toPrint =~ s/"/'/g;
+        print $fh '"'.$toPrint.'"'."\t";
+
+        print $fh $lib->{'exprMappedStageId'}."\t";
+        $toPrint = $lib->{'exprMappedStageName'};
+        $toPrint =~ s/"/'/g;
+        print $fh '"'.$toPrint.'"'."\t";
+
+        print $fh $lib->{'exprMappedSex'}."\t";
+
+        $toPrint = $lib->{'exprMappedStrain'};
+        $toPrint =~ s/"/'/g;
+        print $fh '"'.$toPrint.'"'."\t";
+
         print $fh $lib->{'platformId'}."\t".$lib->{'libraryType'}."\t".$lib->{'libraryOrientation'}."\t"
             .$lib->{'tmmFactor'}."\t".$lib->{'tpmThreshold'}."\t".$lib->{'fpkmThreshold'}."\t"
             .$lib->{'allReadsCount'}."\t".$lib->{'mappedReadsCount'}."\t";
@@ -939,6 +994,8 @@ sub generateRnaSeqFiles {
         print $fh $lib->{'minReadLength'}."\t".$lib->{'maxReadLength'}."\t"
             .$lib->{'allGenesPercentPresent'}."\t".$lib->{'proteinCodingGenesPercentPresent'}."\t"
             .$lib->{'intergenicRegionsPercentPresent'}."\t";
+
+        print $fh $lib->{'libraryDistinctRankCount'}."\t".$lib->{'maxRank'}."\t";
 
         if (defined $lib->{'runIds'} && $lib->{'runIds'}) {
             print $fh $lib->{'runIds'};
@@ -994,7 +1051,7 @@ sub generateRnaSeqFiles {
         # XXX: left outer join to expression to retrieve the global call quality?
         $sql = 'SELECT t3.rnaSeqExperimentId, t1.rnaSeqLibraryId, t3.libraryType, t2.geneId, '
               .'t4.anatEntityId, t5.anatEntityName, t4.stageId, t6.stageName, t4.sex, t4.strain, '
-              .'t1.readsCount, t1.tpm, t1.fpkm, t1.detectionFlag, t1.rnaSeqData, '
+              .'t1.readsCount, t1.tpm, t1.fpkm, t1.rank, t1.detectionFlag, t1.rnaSeqData, '
               .'t1.expressionId, t1.reasonForExclusion, '
               # FIXME retrieve call type
               .'IF(t1.expressionId IS NOT NULL, "data", "no data") AS globalRnaSeqData '
@@ -1033,7 +1090,7 @@ sub generateRnaSeqFiles {
                 print $fh "Experiment ID\tLibrary ID\tLibrary type\tGene ID\t"
                           ."Anatomical entity ID\tAnatomical entity name\t"
                           ."Stage ID\tStage name\tSex\tStrain\tRead count\tTPM\tFPKM\t"
-                          ."Detection flag\tDetection quality\tState in Bgee\n";
+                          ."Rank\tDetection flag\tDetection quality\tState in Bgee\n";
                 
                 $getExpLibs->execute($expId, $speciesId) or die $getExpLibs->errstr;
 
@@ -1062,20 +1119,25 @@ sub generateRnaSeqFiles {
                         $toPrint =~ s/"/'/g;
                         print $fh '"'.$toPrint.'"'."\t";
 
-                        # Read count, TPM, FPKM, detection
-                        print $fh $data[10]."\t".$data[11]."\t".$data[12]."\t".$data[13]."\t".$data[14]."\t";
+                        # Read count, TPM, FPKM, rank, detection
+                        my $rank = "NA";
+                        if (defined $data[13]) {
+                            $rank = $data[13];
+                        }
+                        print $fh $data[10]."\t".$data[11]."\t".$data[12]."\t".$rank
+                                 ."\t".$data[14]."\t".$data[15]."\t";
 
-                        if ($data[16] eq $Utils::CALL_NOT_EXCLUDED) {
+                        if ($data[17] eq $Utils::CALL_NOT_EXCLUDED) {
                         	print $fh 'Part of a call';
                             # TODO manage according to retrieved call type
-                            #if (defined $data[14] && $data[14]) {
+                            #if (defined $data[15] && $data[15]) {
                             #    print $fh 'present ';
                             #} else {
                             #    print $fh 'absent ';
                             #}
-                            #print $fh $data[17];
+                            #print $fh $data[18];
                         } else {
-                            print $fh 'Result excluded, reason: '.$data[16];
+                            print $fh 'Result excluded, reason: '.$data[17];
                         }
                         print $fh "\n";
                     }
