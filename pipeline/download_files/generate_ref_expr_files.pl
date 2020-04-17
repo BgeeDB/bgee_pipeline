@@ -842,6 +842,12 @@ sub generateRnaSeqFiles {
     # $lib{'stageName'}                        = stage name annotated for this library
     # $lib{'sex'}                              = annotated sex info (not mapped for expression table)
     # $lib{'strain'}                           = annotated strain info (not mapped for expression table)
+    # $lib{'exprMappedAnatEntityId'}           = anat. entity ID remapped for expression table for this library
+    # $lib{'exprMappedAnatEntityName'}         = anat. entity name remapped for expression table for this library
+    # $lib{'exprMappedStageId'}                = stage ID remapped for expression table for this library
+    # $lib{'exprMappedStageName'}              = stage name remapped for expression table for this library
+    # $lib{'exprMappedSex'}                    = sex info remapped for expression table
+    # $lib{'exprMappedStrain'}                 = strain info remapped for expression table
     # $lib{'sourceId'}                         = data source ID
     # $lib{'runIds'}                           = IDs of runs used, separated by '|'
     my @libs = ();
@@ -852,12 +858,18 @@ sub generateRnaSeqFiles {
               .'t1.minReadLength, t1.maxReadLength, '
               .'t1.libraryType, t1.libraryOrientation, '
               .'t2.anatEntityId, t3.anatEntityName, t2.stageId, t4.stageName, t2.sex, t2.strain, '
+              .'t20.anatEntityId AS exprMappedAnatEntityId, t30.anatEntityName AS exprMappedAnatEntityName, '
+              .'t20.stageId AS exprMappedStageId, t40.stageName AS exprMappedStageName, '
+              .'t20.sex AS exprMappedSex, t20.strain AS exprMappedStrain, '
               .'t5.dataSourceId, '
               .'GROUP_CONCAT(DISTINCT t6.rnaSeqRunId ORDER BY t6.rnaSeqRunId SEPARATOR "|") AS runIds '
               .'FROM rnaSeqLibrary AS t1 '
               .'INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId '
               .'INNER JOIN anatEntity AS t3 ON t2.anatEntityId = t3.anatEntityId '
               .'INNER JOIN stage AS t4 ON t2.stageId = t4.stageId '
+              .'INNER JOIN cond AS t20 ON t2.exprMappedConditionId = t20.conditionId '
+              .'INNER JOIN anatEntity AS t30 ON t20.anatEntityId = t30.anatEntityId '
+              .'INNER JOIN stage AS t40 ON t20.stageId = t40.stageId '
               .'INNER JOIN ('.$sqlExpPart.') AS t5 ON t1.rnaSeqExperimentId = t5.rnaSeqExperimentId '
               .'LEFT OUTER JOIN rnaSeqRun AS t6 ON t1.rnaSeqLibraryId = t6.rnaSeqLibraryId '
               .'WHERE t2.speciesId = ? '
@@ -893,8 +905,14 @@ sub generateRnaSeqFiles {
         $lib{'stageName'}                        = $data[18];
         $lib{'sex'}                              = $data[19];
         $lib{'strain'}                           = $data[20];
-        $lib{'sourceId'}                         = $data[21];
-        $lib{'runIds'}                           = $data[22];
+        $lib{'exprMappedAnatEntityId'}           = $data[21];
+        $lib{'exprMappedAnatEntityName'}         = $data[22];
+        $lib{'exprMappedStageId'}                = $data[23];
+        $lib{'exprMappedStageName'}              = $data[24];
+        $lib{'exprMappedSex'}                    = $data[25];
+        $lib{'exprMappedStrain'}                 = $data[26];
+        $lib{'sourceId'}                         = $data[27];
+        $lib{'runIds'}                           = $data[28];
         push @libs, \%lib;
     }
 
@@ -903,6 +921,9 @@ sub generateRnaSeqFiles {
     open($fh, '>', $libFile) or die "Could not open file '$libFile' $!";
     print $fh "Experiment ID\tLibrary ID\tAnatomical entity ID\tAnatomical entity name\t"
               ."Stage ID\tStage name\tSex\tStrain\t"
+              ."Expression mapped anatomical entity ID\tExpression mapped anatomical entity name\t"
+              ."Expression mapped stage ID\tExpression mapped stage name\t"
+              ."Expression mapped sex\tExpression mapped strain\t"
               ."Platform ID\tLibrary type\tLibrary orientation\t"
               ."TMM normalization factor\tTPM expression threshold\tFPKM expression threshold\t"
               ."Read count\tMapped read count\t"
@@ -929,6 +950,24 @@ sub generateRnaSeqFiles {
         print $fh $lib->{'sex'}."\t";
         
         $toPrint = $lib->{'strain'};
+        $toPrint =~ s/"/'/g;
+        print $fh '"'.$toPrint.'"'."\t";
+
+        print $fh $lib->{'exprMappedAnatEntityId'}."\t";
+        # we replace double quotes with simple quotes, and we surround with double quotes
+        # the values to escape potential special characters
+        $toPrint = $lib->{'exprMappedAnatEntityName'};
+        $toPrint =~ s/"/'/g;
+        print $fh '"'.$toPrint.'"'."\t";
+
+        print $fh $lib->{'exprMappedStageId'}."\t";
+        $toPrint = $lib->{'exprMappedStageName'};
+        $toPrint =~ s/"/'/g;
+        print $fh '"'.$toPrint.'"'."\t";
+
+        print $fh $lib->{'exprMappedSex'}."\t";
+
+        $toPrint = $lib->{'exprMappedStrain'};
         $toPrint =~ s/"/'/g;
         print $fh '"'.$toPrint.'"'."\t";
 
