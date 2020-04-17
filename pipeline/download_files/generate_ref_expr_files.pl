@@ -1051,7 +1051,7 @@ sub generateRnaSeqFiles {
         # XXX: left outer join to expression to retrieve the global call quality?
         $sql = 'SELECT t3.rnaSeqExperimentId, t1.rnaSeqLibraryId, t3.libraryType, t2.geneId, '
               .'t4.anatEntityId, t5.anatEntityName, t4.stageId, t6.stageName, t4.sex, t4.strain, '
-              .'t1.readsCount, t1.tpm, t1.fpkm, t1.detectionFlag, t1.rnaSeqData, '
+              .'t1.readsCount, t1.tpm, t1.fpkm, t1.rank, t1.detectionFlag, t1.rnaSeqData, '
               .'t1.expressionId, t1.reasonForExclusion, '
               # FIXME retrieve call type
               .'IF(t1.expressionId IS NOT NULL, "data", "no data") AS globalRnaSeqData '
@@ -1090,7 +1090,7 @@ sub generateRnaSeqFiles {
                 print $fh "Experiment ID\tLibrary ID\tLibrary type\tGene ID\t"
                           ."Anatomical entity ID\tAnatomical entity name\t"
                           ."Stage ID\tStage name\tSex\tStrain\tRead count\tTPM\tFPKM\t"
-                          ."Detection flag\tDetection quality\tState in Bgee\n";
+                          ."Rank\tDetection flag\tDetection quality\tState in Bgee\n";
                 
                 $getExpLibs->execute($expId, $speciesId) or die $getExpLibs->errstr;
 
@@ -1119,20 +1119,25 @@ sub generateRnaSeqFiles {
                         $toPrint =~ s/"/'/g;
                         print $fh '"'.$toPrint.'"'."\t";
 
-                        # Read count, TPM, FPKM, detection
-                        print $fh $data[10]."\t".$data[11]."\t".$data[12]."\t".$data[13]."\t".$data[14]."\t";
+                        # Read count, TPM, FPKM, rank, detection
+                        my $rank = "NA";
+                        if (defined $data[13]) {
+                            $rank = $data[13];
+                        }
+                        print $fh $data[10]."\t".$data[11]."\t".$data[12]."\t".$rank
+                                 ."\t".$data[14]."\t".$data[15]."\t";
 
-                        if ($data[16] eq $Utils::CALL_NOT_EXCLUDED) {
+                        if ($data[17] eq $Utils::CALL_NOT_EXCLUDED) {
                         	print $fh 'Part of a call';
                             # TODO manage according to retrieved call type
-                            #if (defined $data[14] && $data[14]) {
+                            #if (defined $data[15] && $data[15]) {
                             #    print $fh 'present ';
                             #} else {
                             #    print $fh 'absent ';
                             #}
-                            #print $fh $data[17];
+                            #print $fh $data[18];
                         } else {
-                            print $fh 'Result excluded, reason: '.$data[16];
+                            print $fh 'Result excluded, reason: '.$data[17];
                         }
                         print $fh "\n";
                     }
