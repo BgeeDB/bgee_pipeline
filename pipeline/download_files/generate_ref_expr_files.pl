@@ -849,6 +849,7 @@ sub generateRnaSeqFiles {
     # $lib{'exprMappedSex'}                    = sex info remapped for expression table
     # $lib{'exprMappedStrain'}                 = strain info remapped for expression table
     # $lib{'libraryDistinctRankCount'}         = count of distinct ranks in the library
+    # $lib{'maxRank'}                          = maximum rank in the corresponding global condition
     # $lib{'sourceId'}                         = data source ID
     # $lib{'runIds'}                           = IDs of runs used, separated by '|'
     my @libs = ();
@@ -863,6 +864,10 @@ sub generateRnaSeqFiles {
               .'t20.stageId AS exprMappedStageId, t40.stageName AS exprMappedStageName, '
               .'t20.sex AS exprMappedSex, t20.strain AS exprMappedStrain, '
               .'t1.libraryDistinctRankCount, '
+              # TODO to change if we ever use globalMaxRank instead of maxRank?
+              # But then we would have ranks not only for conditions with data,
+              # so I guess it would not be present in this file. To rethink in this case.
+              .'t60.rnaSeqMaxRank, '
               .'t5.dataSourceId, '
               .'GROUP_CONCAT(DISTINCT t6.rnaSeqRunId ORDER BY t6.rnaSeqRunId SEPARATOR "|") AS runIds '
               .'FROM rnaSeqLibrary AS t1 '
@@ -872,9 +877,16 @@ sub generateRnaSeqFiles {
               .'INNER JOIN cond AS t20 ON t2.exprMappedConditionId = t20.conditionId '
               .'INNER JOIN anatEntity AS t30 ON t20.anatEntityId = t30.anatEntityId '
               .'INNER JOIN stage AS t40 ON t20.stageId = t40.stageId '
+              .'INNER JOIN globalCondToCond AS t50 '
+              .'ON t2.exprMappedConditionId = t50.conditionId AND t50.conditionRelationOrigin = "self" '
+              .'INNER JOIN globalCond AS t60 ON t50.globalConditionId = t60.globalConditionId '
               .'INNER JOIN ('.$sqlExpPart.') AS t5 ON t1.rnaSeqExperimentId = t5.rnaSeqExperimentId '
               .'LEFT OUTER JOIN rnaSeqRun AS t6 ON t1.rnaSeqLibraryId = t6.rnaSeqLibraryId '
               .'WHERE t2.speciesId = ? '
+              .'AND t60.anatEntityId IS NOT NULL AND t60.stageId IS NOT NULL '
+              # As of Bgee 14.1, sex and strain are not considered for globalCalls
+              # TODO: update this query when they will be considered
+              .'AND t60.sex IS NULL AND t60.strain IS NULL '
               .'GROUP BY t1.rnaSeqLibraryId '
               .'ORDER BY libCount DESC, conditionCount DESC, anatEntityStageCount DESC, '
               .'anatEntityCount DESC, stageCount DESC, sexCount DESC, strainCount DESC, '
@@ -914,8 +926,9 @@ sub generateRnaSeqFiles {
         $lib{'exprMappedSex'}                    = $data[25];
         $lib{'exprMappedStrain'}                 = $data[26];
         $lib{'libraryDistinctRankCount'}         = $data[27];
-        $lib{'sourceId'}                         = $data[28];
-        $lib{'runIds'}                           = $data[29];
+        $lib{'maxRank'}                          = $data[28];
+        $lib{'sourceId'}                         = $data[29];
+        $lib{'runIds'}                           = $data[30];
         push @libs, \%lib;
     }
 
@@ -932,7 +945,7 @@ sub generateRnaSeqFiles {
               ."Read count\tMapped read count\t"
               ."Min. read length\tMax. read length\tAll genes percent present\t"
               ."Protein coding genes percent present\tIntergenic regions percent present\t"
-              ."Distinct rank count\tRun IDs\t"
+              ."Distinct rank count\tMax rank in the expression mapped condition\tRun IDs\t"
               ."Data source\tData source URL\tBgee normalized data URL\tRaw file URL\n";
     for my $lib ( @libs ){
         print $fh $lib->{'expId'}."\t"
@@ -982,7 +995,7 @@ sub generateRnaSeqFiles {
             .$lib->{'allGenesPercentPresent'}."\t".$lib->{'proteinCodingGenesPercentPresent'}."\t"
             .$lib->{'intergenicRegionsPercentPresent'}."\t";
 
-        print $fh $lib->{'libraryDistinctRankCount'}."\t";
+        print $fh $lib->{'libraryDistinctRankCount'}."\t".$lib->{'maxRank'}."\t";
 
         if (defined $lib->{'runIds'} && $lib->{'runIds'}) {
             print $fh $lib->{'runIds'};
