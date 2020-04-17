@@ -848,6 +848,7 @@ sub generateRnaSeqFiles {
     # $lib{'exprMappedStageName'}              = stage name remapped for expression table for this library
     # $lib{'exprMappedSex'}                    = sex info remapped for expression table
     # $lib{'exprMappedStrain'}                 = strain info remapped for expression table
+    # $lib{'libraryDistinctRankCount'}         = count of distinct ranks in the library
     # $lib{'sourceId'}                         = data source ID
     # $lib{'runIds'}                           = IDs of runs used, separated by '|'
     my @libs = ();
@@ -861,6 +862,7 @@ sub generateRnaSeqFiles {
               .'t20.anatEntityId AS exprMappedAnatEntityId, t30.anatEntityName AS exprMappedAnatEntityName, '
               .'t20.stageId AS exprMappedStageId, t40.stageName AS exprMappedStageName, '
               .'t20.sex AS exprMappedSex, t20.strain AS exprMappedStrain, '
+              .'t1.libraryDistinctRankCount, '
               .'t5.dataSourceId, '
               .'GROUP_CONCAT(DISTINCT t6.rnaSeqRunId ORDER BY t6.rnaSeqRunId SEPARATOR "|") AS runIds '
               .'FROM rnaSeqLibrary AS t1 '
@@ -911,8 +913,9 @@ sub generateRnaSeqFiles {
         $lib{'exprMappedStageName'}              = $data[24];
         $lib{'exprMappedSex'}                    = $data[25];
         $lib{'exprMappedStrain'}                 = $data[26];
-        $lib{'sourceId'}                         = $data[27];
-        $lib{'runIds'}                           = $data[28];
+        $lib{'libraryDistinctRankCount'}         = $data[27];
+        $lib{'sourceId'}                         = $data[28];
+        $lib{'runIds'}                           = $data[29];
         push @libs, \%lib;
     }
 
@@ -929,7 +932,7 @@ sub generateRnaSeqFiles {
               ."Read count\tMapped read count\t"
               ."Min. read length\tMax. read length\tAll genes percent present\t"
               ."Protein coding genes percent present\tIntergenic regions percent present\t"
-              ."Run IDs\t"
+              ."Distinct rank count\tRun IDs\t"
               ."Data source\tData source URL\tBgee normalized data URL\tRaw file URL\n";
     for my $lib ( @libs ){
         print $fh $lib->{'expId'}."\t"
@@ -978,6 +981,8 @@ sub generateRnaSeqFiles {
         print $fh $lib->{'minReadLength'}."\t".$lib->{'maxReadLength'}."\t"
             .$lib->{'allGenesPercentPresent'}."\t".$lib->{'proteinCodingGenesPercentPresent'}."\t"
             .$lib->{'intergenicRegionsPercentPresent'}."\t";
+
+        print $fh $lib->{'libraryDistinctRankCount'}."\t";
 
         if (defined $lib->{'runIds'} && $lib->{'runIds'}) {
             print $fh $lib->{'runIds'};
