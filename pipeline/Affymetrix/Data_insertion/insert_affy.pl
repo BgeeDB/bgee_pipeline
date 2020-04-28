@@ -461,8 +461,9 @@ print("Inserting probesets...\n")  if ( $debug );
 #TODO Add p-value in the db
 my $insAffyPset = $dbh->prepare('INSERT INTO affymetrixProbeset
                                 (affymetrixProbesetId, bgeeAffymetrixChipId, bgeeGeneId,
-                                normalizedSignalIntensity, detectionFlag, affymetrixData, reasonForExclusion)
-                                VALUES (?, ?, ?, ?, ?, ?, ?)');
+                                normalizedSignalIntensity, rawDetectionFlag, affymetrixData, reasonForExclusion,
+                                pValue, qValue, detectionFlag)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
 CHIP: for my $bgeeAffymetrixChipId (sort { $a <=> $b } keys %all_chips) {
   print("\tChip $bgeeAffymetrixChipId\n") if ( $debug );
@@ -489,7 +490,10 @@ CHIP: for my $bgeeAffymetrixChipId (sort { $a <=> $b } keys %all_chips) {
                             $chip_pbsets->{$pbsetId}->{'signal'},
                             $chip_pbsets->{$pbsetId}->{'call'},
                             $chip_pbsets->{$pbsetId}->{'quality'},
-                            $reasonForExclusion)
+                            $reasonForExclusion,
+                            $chip_pbsets->{$pbsetId}->{'p_value'},
+                            $chip_pbsets->{$pbsetId}->{'q_value'},
+                            $chip_pbsets->{$pbsetId}->{'adjusted_call'})
       or warn $insAffyPset->errstr, " for [$bgeeAffymetrixChipId][$pbsetId]\n";
     }
   }

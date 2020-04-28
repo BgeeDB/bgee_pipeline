@@ -122,7 +122,10 @@ sub extractProbesetsFromFile {
                 # check that the call  and the signal intensity are defined
                 if ( exists $correspCall{$call} && defined $signal && $signal ne 'null' ) {
                     #pbset -> quality, call and signal
-                    $pbsets{$probesetId}->{'call'} = $correspCall{$call};
+                    $pbsets{$probesetId}->{'call'}          = $correspCall{$call};
+                    $pbsets{$probesetId}->{'p_value'}       = 1.0;
+                    $pbsets{$probesetId}->{'q_value'}       = 1.0;
+                    $pbsets{$probesetId}->{'adjusted_call'} = $correspCall{$call};
                     # a way to convert signal to numeric
                     if ( $signal + 0 >= 0 ) {
                         $pbsets{$probesetId}->{'signal'} = $signal;
@@ -158,10 +161,12 @@ sub extractProbesetsFromFile {
             chomp $line;
             $nbr_line++;
             my @tmp = split(/\t/, $line);
-            my $probesetId = bgeeTrim($tmp[0]);
-            my $signal     = bgeeTrim($tmp[1]);
-            my $p_value    = bgeeTrim($tmp[2]);
-            my $call       = bgeeTrim($tmp[3]);
+            my $probesetId    = bgeeTrim($tmp[0]);
+            my $signal        = bgeeTrim($tmp[1]);
+            my $p_value       = bgeeTrim($tmp[2]);
+            my $call          = bgeeTrim($tmp[3]);
+            my $q_value       = bgeeTrim($tmp[4]);
+            my $adjusted_call = bgeeTrim($tmp[5]);
 
             if ( exists $correspCall{$call} && defined $signal && $signal ne 'null' ) {
                 #pbset -> quality, call and signal
@@ -180,7 +185,9 @@ sub extractProbesetsFromFile {
                     $pbsets{$probesetId}->{'quality'} = $Utils::LOW_QUAL;
                 }
 
-                $pbsets{$probesetId}->{'p_value'} = $p_value;
+                $pbsets{$probesetId}->{'p_value'}       = $p_value;
+                $pbsets{$probesetId}->{'q_value'}       = $q_value;
+                $pbsets{$probesetId}->{'adjusted_call'} = $adjusted_call;
             }
             elsif ( exists $correspCall{$call} && defined $signal && $signal eq 'null' ) {
                 $nbr_null++;
@@ -192,7 +199,7 @@ sub extractProbesetsFromFile {
         close INGCRMA2;
     }
     else {
-    	die "Unrecognized normalization type: $normType\n";
+        die "Unrecognized normalization type: $normType\n";
     }
 
     # Data are cleaner now, so should rarely meet this warning!
