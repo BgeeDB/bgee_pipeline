@@ -739,6 +739,14 @@ create table affymetrixProbeset (
     normalizedSignalIntensity decimal(13,5) unsigned not null default 0,
 -- Warning, flags must be ordered, the index in the enum is used in many queries
     detectionFlag enum('undefined', 'absent', 'marginal', 'present') not null default 'undefined',
+-- p-value
+-- "number of digits to the right of the decimal point (the scale). It has a range of 0 to 30"
+    pValue decimal(31, 30) unsigned not null default 1,
+-- p-value adjusted by Benjamini-Hochberg procedure
+-- "number of digits to the right of the decimal point (the scale). It has a range of 0 to 30"
+    qValue decimal(31, 30) unsigned not null default 1,
+-- detectionFlag after FDR correction
+    detectionFlagCorrected enum('undefined', 'absent', 'marginal', 'present') not null default 'undefined',
     expressionId int unsigned,
 -- rank is not "not null" because we update this information afterwards.
 -- note that this corresponds to the rank of the gene, not of the probeset
