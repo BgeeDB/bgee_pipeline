@@ -314,7 +314,7 @@ AFFY_NORMTYPE_FILEPATH              := $(AFFYPATH)normalizationType
 AFFY_DETCTYPE_FILEPATH              := $(AFFYPATH)detectionType
 
 # Affymetrix data path
-AFFYDATAPATH      := /var/bgee/extra/pipeline/Affymetrix/
+AFFYDATAPATH      := /data/unil/dee/dee_robi/pipeline/Affymetrix/
 AFFYNEWDATAPATH   := $(AFFYDATAPATH)new_files/
 AFFYANNOTATORPATH := /Users/anikneja/Documents/bgee/extra/pipeline/curation/Affymetrix/
 

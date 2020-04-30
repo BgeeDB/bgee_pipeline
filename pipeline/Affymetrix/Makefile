@@ -71,10 +71,16 @@ check_mas5: clean_mas5 $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL)
 	@perl MAS5/check_mas5_filtered.pl  -affyChipFilesDir=$(AFFYDATAPATH)  -affymetrixChip=$(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL) >> $@.tmp
 	@$(MV) $@.tmp $@
 
+adj_call: check_mas5 $(AFFY_CHIP_FILEPATH) $(MAS5PATH)
+	# Correction of the calls
+	@echo --- starting the calls correction for all MAS5 files ---
+	@$(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args affy_anno="$(AFFY_CHIP_FILEPATH)" mas5_path="$(MAS5PATH)" cut_off="0.01"' MAS5/adj_calls_mas5.R MAS5/adj_calls_mas5.Rout > $@.tmp
+	@echo --- DONE ---
+	@$(MV) $@.tmp $@
 
 #######################
 # Generate information
-gen_info: $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL) $(PIPELINEROOT)$(AFFY_CHIPINFO_FILEPATH) $(PIPELINEROOT)$(AFFY_CHIPTYPEQUAL_FILEPATH) check_mas5
+gen_info: $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL) $(PIPELINEROOT)$(AFFY_CHIPINFO_FILEPATH) $(PIPELINEROOT)$(AFFY_CHIPTYPEQUAL_FILEPATH) adj_call
 	@which R >/dev/null
 	# Generate information
 	@perl Generate_information/generate_affy_chips_information.pl  -affyChipFilesDir=$(AFFYDATAPATH)  -affymetrixChip=$(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL) \
