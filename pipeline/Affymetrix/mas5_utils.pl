@@ -101,6 +101,8 @@ sub get_mas5_columns_from_header {
             $proper_columns{'call'}        = 1;
             $proper_columns{'signal'}      = 2;
         }
+        $proper_columns{'q_value'}       = 3;
+        $proper_columns{'adjusted_call'} = 4;
     }
 
     return %proper_columns;

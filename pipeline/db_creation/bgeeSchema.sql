@@ -738,6 +738,15 @@ create table affymetrixProbeset (
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
     normalizedSignalIntensity decimal(13,5) unsigned not null default 0,
 -- Warning, flags must be ordered, the index in the enum is used in many queries
+-- detectionFlag before FDR correction
+    rawDetectionFlag enum('undefined', 'absent', 'marginal', 'present') not null default 'undefined',
+-- p-value
+-- "number of digits to the right of the decimal point (the scale). It has a range of 0 to 30"
+    pValue double unsigned not null default 1.0,
+-- p-value adjusted by Benjamini-Hochberg procedure
+-- "number of digits to the right of the decimal point (the scale). It has a range of 0 to 30"
+    qValue double unsigned not null default 1.0,
+-- detectionFlag after FDR correction
     detectionFlag enum('undefined', 'absent', 'marginal', 'present') not null default 'undefined',
     expressionId int unsigned,
 -- rank is not "not null" because we update this information afterwards.
