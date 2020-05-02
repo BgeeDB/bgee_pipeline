@@ -177,17 +177,21 @@ exportAllInfo <- c()
 for (library in unique(annotation$libraryId)) {
   
   pathLibrary <- file.path(RNASeq_folder_calls, library) 
-  libraryCalls <- list.files(pathLibrary,  pattern="abundance_gene_level\\+fpkm\\+intergenic\\+calls.tsv$", full.names=T, recursive = TRUE)
-  nameFile <- basename(libraryCalls)
+  if(file.exists(pathLibrary)){
+    libraryCalls <- list.files(pathLibrary,  pattern="abundance_gene_level\\+fpkm\\+intergenic\\+calls.tsv$", full.names=T, recursive = TRUE)
+    nameFile <- basename(libraryCalls)
     
-  ## adj the calls
-  callsAdjustment <- libraryAdjCall(libraryFile = libraryCalls, cutoff = cutoff)
-  ## retrieve info
-  infoLibrary <- collectInfoAdjCalls(adjCalls = callsAdjustment, annotation = annotation, libraryId = library)
-  exportAllInfo <- rbind(exportAllInfo, infoLibrary)
-  ## re-write the calls file with extra information: qValue + adj_call
-  write.table(callsAdjustment, file = paste0(pathLibrary, "/", nameFile), row.names = F, col.names = T, quote = FALSE, sep = "\t")
-}
+    ## adj the calls
+    callsAdjustment <- libraryAdjCall(libraryFile = libraryCalls, cutoff = cutoff)
+    ## retrieve info
+    infoLibrary <- collectInfoAdjCalls(adjCalls = callsAdjustment, annotation = annotation, libraryId = library)
+    exportAllInfo <- rbind(exportAllInfo, infoLibrary)
+    ## re-write the calls file with extra information: qValue + adj_call
+    write.table(callsAdjustment, file = paste0(pathLibrary, "/", nameFile), row.names = F, col.names = T, quote = FALSE, sep = "\t")
+  } else{
+    cat("Folder not exist for this library", library , "\n")
+  }
+  }
 ## write info file
 write.table(exportAllInfo, file = infoFileLibraries, row.names = F, col.names = F, quote = FALSE, append = T, sep = "\t")
  
