@@ -346,7 +346,24 @@ presence_absence: sum_by_species $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUD
 # /bin/cp used because cp is an alias to cp -i
 # Also copy presence_absence_all_samples.txt, presence_absence_all_samples.RDa and presence_absence_boxplots.pdf
 
-save_and_send_results_back: finalize_pipeline presence_absence export_length
+
+adj_calls: presence_absence 1Run/rna_seq_calls_adjustment.R
+	@echo --- Start adjustment of the calls per library ---
+	@sed -i 's@\(BASE *= \).*@\1"$(RNASEQ_CLUSTER_READONLY)";@'                                               1Run/rna_seq_calls_adjustment.R
+	@sed -i 's@--output=.*@--output=${PWD}/calls_adjustment.out@'                                             1Run/rna_seq_calls_adjustment.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/calls_adjustment.err@'                                               1Run/rna_seq_calls_adjustment.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                              1Run/rna_seq_calls_adjustment.sbatch
+	@sed -i 's@export rna_seq_sample_info=.*@export rna_seq_sample_info=${RNASEQ_SAMPINFO_FILEPATH}@'         1Run/rna_seq_calls_adjustment.sbatch
+	@sed -i 's@export RNASeq_folder_calls=.*@export RNASeq_folder_calls=$(RNASEQ_CLUSTER_PRESENCE_RES)@'      1Run/rna_seq_calls_adjustment.sbatch
+	@sed -i 's@export cutoff=.*@export cutoff=$(CUTOFF_QVALUE)@'      																				1Run/rna_seq_calls_adjustment.sbatch
+	@sed -i 's@export ROUT=.*@export ROUT=$(RNASEQ_CLUSTER_PRESENCE_RES)@'                                    1Run/rna_seq_calls_adjustment.sbatch
+	@sbatch 1Run/rna_seq_calls_adjustment.sbatch
+	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
+	@echo --- DONE ---
+	@touch $@
+
+
+save_and_send_results_back: finalize_pipeline adj_calls export_length
 	# Touch all files so that they are not removed from /scratch/temporary
 	@find $(RNASEQ_CLUSTER_SCRATCH) -exec touch {} \; 2>warnings.$@
 	# Back-up all data

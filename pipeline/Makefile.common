@@ -392,6 +392,9 @@ RNASEQ_KALLISTO_KMER_SHORT    := 15
 # Max proportion of Ns allowed in intergenic sequences
 INTERGENIC_N_PROPORTION         := 0.05
 
+# qValue cut-off for calls
+CUTOFF_QVALUE         := 0.01
+
 # RNAseq data path
 RNASEQDATAPATH             := /var/bgee/extra/pipeline/rna_seq/
 RNASEQABUNDANCEFILE        := abundance_gene_level+new_tpm+new_fpkm+calls.tsv
