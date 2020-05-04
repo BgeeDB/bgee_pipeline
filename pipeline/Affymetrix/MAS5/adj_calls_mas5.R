@@ -40,12 +40,12 @@ if( file.exists(affy_anno) ){
 #########################################################################
 ## function to add qValue and than do adj_call
 mas5 <- function(chipID, cut_off){
-  
+
   chip <- fread(chipID)
   ## get character column with P,M,A info to attribute q-value
   columnCalls <- chip[, sapply(chip[,2:3], class) == 'character']
   columnCalls <- names(columnCalls[columnCalls == TRUE])
-  
+
   ## target column with call info and based on that add qValue and than adjusted call
   if (columnCalls == "V2"){
     colnames(chip) <- c("probeId", "call", "expression")
@@ -65,12 +65,12 @@ mas5 <- function(chipID, cut_off){
 
 ## loop through all chips in each experimentId
 for (experimentId in unique(annotation$experimentId)) {
-  
+
   filePath <- file.path(mas5_path, experimentId)
-  
+
   if (file.exists(filePath) == "TRUE"){
     AllFiles <- list.files(filePath, full.names = TRUE, recursive = TRUE)
-    
+
     for (chip in AllFiles) {
       nameChipFile <- basename(chip)
       adjCalls <- mas5(chipID = chip, cut_off = cut_off)
@@ -78,7 +78,7 @@ for (experimentId in unique(annotation$experimentId)) {
       write.table(adjCalls, file = file.path(filePath, nameChipFile), sep = "\t", row.names = FALSE)
     }
     cat("Adjusted calls added to all chipId files in", experimentId, "experiment.")
-    
+
   } else {
     cat("Folder not exit for this experiment,", experimentId, "\n")
   }
