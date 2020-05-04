@@ -81,7 +81,7 @@ libraryAdjCall <- function(libraryFile, cutoff){
     qValue <- "1"
     qValueInfo <- rbind(qValueInfo,qValue)
       
-    } else if (log2TpmValue != "-Inf" & is.na(intergenicY_info) == TRUE & is.na(genicY_info) == FALSE){
+    } else if (log2TpmValue != "-Inf" & (is.na(intergenicY_info) == TRUE & is.na(genicY_info) == FALSE) | (is.na(intergenicY_info) == FALSE & is.na(genicY_info) == TRUE)){
     
       ## retrieve log2TPM value where was possible to calculate the linear interpolation for genic and intergenic
       maxNumIntegration <- dplyr::filter(interpolationInfo, genicY != "NaN" & intergenicY != "NaN" )
@@ -118,9 +118,10 @@ libraryAdjCall <- function(libraryFile, cutoff){
       } else {
         
         ## integrate for genic and intergenic region for a particular log2TPM and than calculate qValue
-        unscaled_genic <- integrate(genicRegion, log2TpmValue, max(dens_genic$x))$value
+        ## note in some really particular cases the argument stop.on.error is used in the function integrate().
+        unscaled_genic <- integrate(genicRegion, log2TpmValue, max(dens_genic$x), stop.on.error = FALSE)$value
         scaled_genic <- unscaled_genic / numInt_geniRegion
-        unscaled_intergenic <- integrate(intergenicRegion, log2TpmValue, max(dens_intergenic$x))$value
+        unscaled_intergenic <- integrate(intergenicRegion, log2TpmValue, max(dens_intergenic$x), stop.on.error = FALSE)$value
         scaled_intergenic <- unscaled_intergenic / numInt_intergenicRegion
         ## calculate q-Value
         qValue <- scaled_intergenic / (scaled_intergenic + scaled_genic)
@@ -158,8 +159,7 @@ collectInfoAdjCalls <- function(adjCalls, annotation, libraryId){
   
   tpmCutoff <-  min(adjCalls$tpm[adjCalls$adjusted_call == "present"])
   speciesId <- annotation$speciesId[annotation$libraryId == libraryId]
-  organism <- annotation$organism[annotation$libraryId == libraryId]
-  
+  organism <- as.character(unique(annotation$organism[annotation$libraryId == libraryId]))
   infoLibrary <- c(libraryId, genic, proteinCoding, intergenic, genicInfo_call, genicInfo_adjCall, proteinCodingInfo_call, proteinCodingInfo_adjCall,
                    intergnicInfo_call, intergnicInfo_adjcall, tpmCutoff, speciesId, organism)
 }
@@ -173,25 +173,26 @@ if (!file.exists(infoFileLibraries)){
 }
 
 ## apply libraryAdjCall() to all libraries and retrieve info from all libraries
-exportAllInfo <- c()
 for (library in unique(annotation$libraryId)) {
   
   pathLibrary <- file.path(RNASeq_folder_calls, library) 
-  if(file.exists(pathLibrary)){
-    libraryCalls <- list.files(pathLibrary,  pattern="abundance_gene_level\\+fpkm\\+intergenic\\+calls.tsv$", full.names=T, recursive = TRUE)
+  libraryCalls <- list.files(pathLibrary,  pattern="abundance_gene_level\\+fpkm\\+intergenic\\+calls.tsv$", full.names=T, recursive = TRUE)
+ 
+  if(file.exists(pathLibrary) & length(libraryCalls) != 0){
     nameFile <- basename(libraryCalls)
-    
     ## adj the calls
     callsAdjustment <- libraryAdjCall(libraryFile = libraryCalls, cutoff = cutoff)
     ## retrieve info
     infoLibrary <- collectInfoAdjCalls(adjCalls = callsAdjustment, annotation = annotation, libraryId = library)
-    exportAllInfo <- rbind(exportAllInfo, infoLibrary)
     ## re-write the calls file with extra information: qValue + adj_call
     write.table(callsAdjustment, file = paste0(pathLibrary, "/", nameFile), row.names = F, col.names = T, quote = FALSE, sep = "\t")
-  } else{
+    ## write info file
+    write.table(t(infoLibrary), file = infoFileLibraries, row.names = F, col.names = F, quote = FALSE, append = T, sep = "\t")
+    cat("DONE library ", library, "\n")
+  } else if (file.exists(pathLibrary) & length(libraryCalls) == 0){
+      cat("File with calls not found for the library ", library , "\n")
+    } else{
     cat("Folder not exist for this library", library , "\n")
   }
-  }
-## write info file
-write.table(exportAllInfo, file = infoFileLibraries, row.names = F, col.names = F, quote = FALSE, append = T, sep = "\t")
- 
+}
+
