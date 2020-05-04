@@ -78,12 +78,12 @@ if(length(filenames)==1){
     ##gcrma background correction
     ##no quantile nomrlization in case of one cel file
     ##GSB.adjust=FALSE: no comparisons between chips in case of only  cel file
-	data_bg_cor<-bg.adjust.gcrma(data,affinity.info=ai,type="affinities",GSB.adjust=FALSE)
-	data.gcrma<-rma(data_bg_cor, subset=NULL, verbose=TRUE, destructive=TRUE, normalize=FALSE,
+    data_bg_cor<-bg.adjust.gcrma(data,affinity.info=ai,type="affinities",GSB.adjust=FALSE)
+    data.gcrma<-rma(data_bg_cor, subset=NULL, verbose=TRUE, destructive=TRUE, normalize=FALSE,
     background=FALSE)
-	}else {
-	    data.gcrma <- gcrma(data, affinity.info=ai, type="affinities")
-	}
+}else {
+    data.gcrma <- gcrma(data, affinity.info=ai, type="affinities")
+}
 
 
 ################################
@@ -107,7 +107,7 @@ ab.50 <- gn[ab.50]
 ## pipepline adjusted for experiments with single celfile
 if(length(filenames)==1){
     ##GSB.adjust=FALSE: no comparisons between chips in case of only  cel file
-	data.PM <- bg.adjust.gcrma(data, affinity.info=ai, type="fullmodel", GSB.adjust=FALSE,fast=FALSE)
+    data.PM <- bg.adjust.gcrma(data, affinity.info=ai, type="fullmodel", GSB.adjust=FALSE,fast=FALSE)
 }else{
     data.PM <- bg.adjust.gcrma(data, affinity.info=ai, type="fullmodel", fast=FALSE)
 }
@@ -130,15 +130,15 @@ qValue_cutoff <- "0.01"
 
 for (i in 1:length(filenames)){
   # probeset names are taken from the row.names of exprs(data.gcrma)[,i] & exprs(thres.calls)[,i]
-  finalTable <- cbind(exprs(data.gcrma)[,i],assayData(thres.calls)[["se.exprs"]][,i],exprs(thres.calls)[,i]) 
+  finalTable <- cbind(exprs(data.gcrma)[,i],assayData(thres.calls)[["se.exprs"]][,i],exprs(thres.calls)[,i])
   finalTable <- data.frame(as.numeric(finalTable[,1]), as.numeric(finalTable[,2]),finalTable[,3])
-  
+
   ## correction of p-values
   qValue <- fdrtool(finalTable[,2], statistic="pvalue", plot = FALSE)
   finalTable <-cbind(finalTable, qValue$qval)
   colnames(finalTable) <- c("expression", "pValue", "call", "qValue")
   finalTable$adjusted_call <- ifelse(finalTable$qValue <= qValue_cutoff, "P", "A")
-  
+
   finalTable <- setDT(finalTable, keep.rownames = TRUE)[]
   colnames(finalTable)[1] <- "probeId"
   write.table(finalTable, file=paste(processed,filenames[i],".out",sep=""), sep="\t",quote=F,col.names=T,row.names=F)
