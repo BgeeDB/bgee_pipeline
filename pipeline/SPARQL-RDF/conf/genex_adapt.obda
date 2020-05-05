@@ -39,10 +39,6 @@ mappingId	AnatomicalEntity
 target		obo:{anatEntityIdSPARQL} a genex:AnatomicalEntity ; terms:description {anatEntityDescription}^^xsd:string ; rdfs:label {anatEntityName}^^xsd:string . 
 source		select anatEntityId, replace(anatEntityId,":","_") as anatEntityIdSPARQL, anatEntityName, anatEntityDescription from anatEntity
 
-mappingId	GeneInTaxon
-target		bgee:ORGANISM_{speciesId} obo:RO_0002162 <http://purl.uniprot.org/taxonomy/{speciesId}> . 
-source		select speciesId from gene
-
 mappingId	ExpressionCondition
 target		bgee:EXPRESSION_CONDITION_{globalConditionId} a genex:ExpressionCondition ; genex:hasDevelopmentalStage obo:{stageIdSPARQL} ; genex:hasAnatomicalEntity obo:{anatEntityIdSPARQL} ; obo:RO_0002162 <http://purl.uniprot.org/taxonomy/{speciesId}> . 
 source		select globalConditionId, replace(stageId,":","_") as stageIdSPARQL, replace(anatEntityId,":","_") as anatEntityIdSPARQL, speciesId from globalCond
