@@ -7,16 +7,12 @@ usage()
                 [ {-o | --output-dir-path} <Turtle file output> ]
                 [ {-p | --ontop-property-file} <property file>  ]
                 [ {-t | --ontology-file} <ontology file> ]
-                [ {-i | --isql} <iSQL tool from Virtuoso> ]
-                [ {-s | --host-port} <host and port to connect to Virtuoso, e.g. locahost:1111> ]
-                [ {-w | --virtuoso-pwd} <Virtuoso password> ]
-                [ {-u | --virtuoso-user} <Virtuoso username> ]
                 [ {-v | --bgee-version} <the bgee version, e.g. '14_1'> ]
                 [ {-j | --java-ontop-args } <Java Ontop memory arguments > (optional) ]
                 [ {-h | --help} <usage help> ]
 
    Example:              
-    ./bgee_rdf.sh -m ./conf/genex_adapt.obda -o ./ttl -p  ./conf/genex_adapt.properties -x ./ontop-cli-3 -t ./conf/genex_adapt.owl -i ~/not_save/virtuoso/bin/isql -s 1111 -w dba -u dba -v '14_1' -j '-Xmx128G'
+    ./bgee_rdf.sh -m ./conf/genex_adapt.obda -o ./ttl -p  ./conf/genex_adapt.properties -x ./ontop-cli-3 -t ./conf/genex_adapt.owl -v '14_1' -j '-Xmx128G'
     "
 
 }
@@ -26,10 +22,6 @@ obda_file_path=
 output_dir_path=
 ontop_property_file=
 ontology_file=
-isql_file_path=
-virtuoso_host=
-virtuoso_user=
-virtuoso_pwd=
 bgee_version=
 java_ontop_args=
 
@@ -54,18 +46,6 @@ while [ "$1" != "" ]; do
                                     ;;  
         -t | --ontology-file )  shift
                                 ontology_file=${1%/}
-                                ;;          
-        -i | --isql )            shift
-                                isql_file_path=${1%/}
-                                ;;
-        -s | --host-port )       shift
-                                virtuoso_host=${1%/}
-                                ;;      
-        -w | --virtuoso-pwd )  shift
-                                virtuoso_pwd=${1%/}
-                                ;;
-        -u | --virtuoso-user )   shift
-                                virtuoso_user=${1%/}
                                 ;;
         -v | --bgee-version )   shift
                                 bgee_version=${1%/}
