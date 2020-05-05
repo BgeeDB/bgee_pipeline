@@ -439,3 +439,18 @@ AFFYMETRIX_PROBESET_SUF_ZIP := _Affymetrix_probesets.zip
 # Directories related to $(OUTPUT_DIR)
 RANKS_PER_ANAT := ranks/anat_entity/
 RANKS_PER_CONDITION := ranks/condition/
+
+
+# =========== TRIPLE STORE FILES ===============
+
+ONTOP_BGEE_PROP_TEMPLATE := $(INPUT_DIR)bgee_connection.template
+GENEX_ONTOLOGY_URL := https://raw.githubusercontent.com/biosoda/genex/master/genex.owl
+ONTOP_DOWNLOAD_URL := https://ayera.dl.sourceforge.net/project/ontop4obda/ontop-3.0.0/ontop-cli-3.0.0.zip
+GENEX_MAPPING_URL := https://raw.githubusercontent.com/biosoda/bioquery/master/Bgee_OBDA_mappings/bgee_genex.obda
+ONTOP_DOWNLOAD_FILE := ontop.zip
+GENEX_ONTOLOGY_FILE := genex.owl
+GENEX_MAPPING_FILE := bgee_genex.obda
+ONTOP_INSTALL_DIR := /usr/local/ontop/
+ISQL_PATH := /usr/local/virtuoso-open-source/bin/isql
+VIRTUOSO_HOST := localhost:1111
+FTP_SAVE_DUMP_PATH := /u01/ftp/$(DBNAME)/rdf_easybgee.zip
