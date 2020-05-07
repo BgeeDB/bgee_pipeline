@@ -7,19 +7,25 @@ Edit [virtuoso.ini](http://docs.openlinksw.com/virtuoso/dbadm/) configuration fi
 
 virtuoso.ini line to edit: **DirsAllowed = ., ../vad, /new/path/bgee/ttl**
 
-Download and extract [Ontop-cli 3.0.1](https://sourceforge.net/projects/ontop4obda/files/ontop-3.0.1/ontop-cli-3.0.1.zip/download) command line tool. 
-
 **Goals**:
 * Set up the Bgee SPARQL endpoint
 
 
+## Data generation
+
+* If it is the first time you execute this step in this pipeline run:
+  `make clean`
+
+* Run Makefile:
+  `make`
+
 
 ## Running the easyBgee to RDF converter
 
-Set up the Bgee SPARQL endpoint with easyBgee_v*RELEASE* database and mapping files for Ontop tool.
+Generate triples to integrate in the triple store (virtuoso) with easyBgee_v*RELEASE* database and mapping files for Ontop tool.
 
 To run the bgee_rdf.sh bash script:
- easyBgee to RDF triples and load into a Virtuoso data store
+ easyBgee to RDF triples
  
                 [ {-x | --ontop} <ontop directory> ]
                 
@@ -30,31 +36,15 @@ To run the bgee_rdf.sh bash script:
                 [ {-p | --ontop-property-file} <property file>  ]
                 
                 [ {-t | --ontology-file} <ontology file> ]
-                
-                [ {-i | --isql} <iSQL tool from Virtuoso> ]
-                
-                [ {-s | --host-port} <host and port to connect to Virtuoso, e.g. locahost:1111> ]
-                
-                [ {-w | --virtuoso-pwd} <Virtuoso password> ]
-                
-                [ {-u | --virtuoso-user} <Virtuoso username> ]
-                
+                                
                 [ {-v | --bgee-version} <the bgee version, e.g. '14_1'> ]
                 
                 [ {-h | --help} <usage help> ]
 
    Example:              
-    ./bgee_rdf.sh -m ./conf/genex_adapt.obda -o **/new/path/bgee/ttl** -p  ./conf/genex_adapt.properties -x ./ontop-cli-3 -t ./conf/genex_adapt.owl -i ~/not_save/virtuoso/bin/isql -s 1111 -w dba -u dba -v '14_1'
+    ./bgee_rdf.sh -m ./conf/genex_adapt.obda -o **/new/path/bgee/ttl** -p  ./conf/genex_adapt.properties -x ./ontop-cli-3 -t ./conf/genex_adapt.owl -v '14_1'
 
 
-
-## Data generation
-
-* If it is the first time you execute this step in this pipeline run:
-  `make clean`
-
-* Run Makefile:
-  `make`
 
 ## Data verification
 
