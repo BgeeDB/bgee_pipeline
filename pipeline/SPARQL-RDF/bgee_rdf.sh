@@ -81,28 +81,3 @@ sed -i 's," \.,"^^xsd:double.,g' $output_dir_path/http___purl_org_genex_hasExpre
 
 echo "The RDF data were created and saved as TURTLE files..."
 
-
-echo "Generating iSQL script to load RDF data into a virtuoso data store..."
-dir_temp=`pwd`
-
-cd $output_dir_path
-ls *.ttl > "./ttl_files.txt"
-input="./ttl_files.txt"
-output="./add_bgee_virtuoso.sql"
-
-while IFS= read -r line
-do
-  file=`pwd`"/$line"   
-  echo "DB.DBA.TTLP_MT(file_to_string_output('$file'), '', 'https://bgee.org/rdf_v$bgee_version');" >>  "$output"
-done < "$input"
-echo "SPARQL LOAD <http://purl.org/genex#> INTO <https://bgee.org/rdf_v$bgee_version>;" >>  "$output"
-echo "SPARQL LOAD <http://purl.org/lscr#> INTO <https://bgee.org/rdf_v$bgee_version>;" >>  "$output"
-#Remove empty string statements, if any
-echo "SPARQL with <https://bgee.org/rdf_v$bgee_version> delete {?z ?d '' } where {?z ?d ''. };" >>  "$output"
-rm -f ./ttl_files.txt
-cd $dir_temp
-
-echo "Executing iSQL script to load RDF data into a virtuoso data store..."
-$isql_file_path  $virtuoso_host $virtuoso_user $virtuoso_pwd "EXEC=LOAD '$output_dir_path'/add_bgee_virtuoso.sql"
-
-echo "Finished. All files were loaded into a virtuoso data store."
