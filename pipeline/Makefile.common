@@ -456,3 +456,6 @@ ISQL_PATH := /usr/local/virtuoso-open-source/bin/isql
 VIRTUOSO_HOST := localhost:1111
 TTL_DIRECTORY_FULL_PATH := $(OUTPUT_DIR)
 FTP_SAVE_DUMP_PATH := /u01/ftp/$(DBNAME)/rdf_easybgee.zip
+TTL_FILE_LIST      := $(TTL_DIRECTORY_FULL_PATH)ttl_files.txt
+BGEE_VIRTUOSO_FILE := $(TTL_DIRECTORY_FULL_PATH)add_bgee_virtuoso.sql
+ZIP_TTL_FILE       := $(TTL_DIRECTORY_FULL_PATH)rdf_easybgee.zip
