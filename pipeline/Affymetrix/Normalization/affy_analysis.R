@@ -123,24 +123,35 @@ mm(data.PM)[,i] <- mean(pm(data.PM, ab.50)[,i], trim=0.02)}
 
 thres.calls <- mas5calls(data.PM, tau=0.015, alpha1 = 0.024, alpha2 = 0.111 )
 
-#########################
-## table with all info ##
-#########################
+################################################################################################
+## Output table with expression values + pValues + calls + qValues + adjustment of the calls  ##
+################################################################################################
 qValue_cutoff <- "0.01"
 
 for (i in 1:length(filenames)){
   # probeset names are taken from the row.names of exprs(data.gcrma)[,i] & exprs(thres.calls)[,i]
-  finalTable <- cbind(exprs(data.gcrma)[,i],assayData(thres.calls)[["se.exprs"]][,i],exprs(thres.calls)[,i])
-  finalTable <- data.frame(as.numeric(finalTable[,1]), as.numeric(finalTable[,2]),finalTable[,3])
+  normalizedTable <- cbind(exprs(data.gcrma)[,i],assayData(thres.calls)[["se.exprs"]][,i],exprs(thres.calls)[,i])
+  normalizedTable <- data.frame(as.numeric(normalizedTable[,1]), as.numeric(normalizedTable[,2]),normalizedTable[,3])
+  colnames(normalizedTable) <- c("expression", "pValue", "call")
+  normalizedTable <- setDT(normalizedTable, keep.rownames = TRUE)[]
+  colnames(normalizedTable)[1] <- "probeId"
+  
+  ## select probes with value of expression == minimum value of expression AND probes with value of expression != minimum value of expression
+  minExpression <- min(normalizedTable$expression)
+  probeMinExp <- dplyr::filter(normalizedTable, expression == minExpression)
+  probesets <- dplyr::filter(normalizedTable, expression != minExpression)
 
-  ## correction of p-values
-  qValue <- fdrtool(finalTable[,2], statistic="pvalue", plot = FALSE)
-  finalTable <-cbind(finalTable, qValue$qval)
-  colnames(finalTable) <- c("expression", "pValue", "call", "qValue")
+  ## calculate q-value just using the p-values from probes that don't have a value of expression equal to the minimum of expression
+  qValue <- fdrtool(probesets$pValue, statistic="pvalue", plot = FALSE)
+  probesets <-cbind(probesets, qValue$qval)
+  colnames(probesets)[5] <- "qValue"
+  
+  ## attribute qValue to probes with minimum value of expression
+  probeMinExp$qValue <- 1
+  
+  ## final table with all information
+  finalTable <- rbind(probesets, probeMinExp)
   finalTable$adjusted_call <- ifelse(finalTable$qValue <= qValue_cutoff, "P", "A")
-
-  finalTable <- setDT(finalTable, keep.rownames = TRUE)[]
-  colnames(finalTable)[1] <- "probeId"
   write.table(finalTable, file=paste(processed,filenames[i],".out",sep=""), sep="\t",quote=F,col.names=T,row.names=F)
 }
 
