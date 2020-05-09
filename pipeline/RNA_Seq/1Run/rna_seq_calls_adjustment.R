@@ -50,8 +50,8 @@ libraryAdjCall <- function(libraryFile, cutoff){
   genicRegion <- approxfun(dens_genic$x, dens_genic$y)
   intergenicRegion <- approxfun(dens_intergenic$x, dens_intergenic$y)
   ## numerical integration
-  numInt_geniRegion <- integrate(genicRegion, min(dens_genic$x), max(dens_genic$x))$value
-  numInt_intergenicRegion <- integrate(intergenicRegion, min(dens_intergenic$x), max(dens_intergenic$x))$value
+  numInt_geniRegion <- integrate(genicRegion, min(dens_genic$x), max(dens_genic$x), subdivisions=1000)$value
+  numInt_intergenicRegion <- integrate(intergenicRegion, min(dens_intergenic$x), max(dens_intergenic$x), subdivisions=1000)$value
 
   ## for each TPM value collect the genic and intergenic linear interpolation
   interpolationInfo <- c()
@@ -119,9 +119,9 @@ libraryAdjCall <- function(libraryFile, cutoff){
         
         ## integrate for genic and intergenic region for a particular log2TPM and than calculate qValue
         ## note in some really particular cases the argument stop.on.error is used in the function integrate().
-        unscaled_genic <- integrate(genicRegion, log2TpmValue, max(dens_genic$x), stop.on.error = FALSE)$value
+        unscaled_genic <- integrate(genicRegion, log2TpmValue, max(dens_genic$x), subdivisions=1000, stop.on.error = FALSE)$value
         scaled_genic <- unscaled_genic / numInt_geniRegion
-        unscaled_intergenic <- integrate(intergenicRegion, log2TpmValue, max(dens_intergenic$x), stop.on.error = FALSE)$value
+        unscaled_intergenic <- integrate(intergenicRegion, log2TpmValue, max(dens_intergenic$x), subdivisions=1000, stop.on.error = FALSE)$value
         scaled_intergenic <- unscaled_intergenic / numInt_intergenicRegion
         ## calculate q-Value
         qValue <- scaled_intergenic / (scaled_intergenic + scaled_genic)
