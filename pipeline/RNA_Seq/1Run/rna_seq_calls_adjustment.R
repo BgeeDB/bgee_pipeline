@@ -92,9 +92,9 @@ libraryAdjCall <- function(libraryFile, cutoff){
         
         log2TpmValue <- min(maxNumIntegration$log2TpmValue)
         ## integrate for genic and intergenic region
-        unscaled_genic <- integrate(genicRegion, log2TpmValue, max(dens_genic$x))$value
+        unscaled_genic <- integrate(genicRegion, log2TpmValue, max(dens_genic$x), subdivisions=1000)$value
         scaled_genic <- unscaled_genic / numInt_geniRegion
-        unscaled_intergenic <- integrate(intergenicRegion, log2TpmValue, max(dens_intergenic$x))$value
+        unscaled_intergenic <- integrate(intergenicRegion, log2TpmValue, max(dens_intergenic$x), subdivisions=1000)$value
         scaled_intergenic <- unscaled_intergenic / numInt_intergenicRegion
         ## calculate qValue for target gene
         qValue <- scaled_intergenic / (scaled_intergenic + scaled_genic)
@@ -107,9 +107,9 @@ libraryAdjCall <- function(libraryFile, cutoff){
         ## we attribute qValue for this cases based on the last log2TPM value where was possible to calculate the linear interpolation for both of the types
         log2TpmValue <- max(maxNumIntegration$log2TpmValue)
         ## integrate for genic and intergenic region
-        unscaled_genic <- integrate(genicRegion, log2TpmValue, max(dens_genic$x))$value
+        unscaled_genic <- integrate(genicRegion, log2TpmValue, max(dens_genic$x), subdivisions=1000)$value
         scaled_genic <- unscaled_genic / numInt_geniRegion
-        unscaled_intergenic <- integrate(intergenicRegion, log2TpmValue, max(dens_intergenic$x))$value
+        unscaled_intergenic <- integrate(intergenicRegion, log2TpmValue, max(dens_intergenic$x), subdivisions=1000)$value
         scaled_intergenic <- unscaled_intergenic / numInt_intergenicRegion
         ## calculate qValue for target gene
         qValue <- scaled_intergenic / (scaled_intergenic + scaled_genic)
