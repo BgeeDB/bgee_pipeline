@@ -30,3 +30,11 @@ ENSDBPASS  := pass
 # MGI
 MGIDBUSER := login
 MGIDBPASS := pass
+
+# FTP
+FTPUSER := login
+FTPPASS := pass
+
+# VIRTUOSO
+VIRTUSER := login
+VIRTPASS := pass
