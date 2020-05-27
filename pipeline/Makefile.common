@@ -18,7 +18,7 @@ DBNAME := bgee_v$(subst .,_,$(RELEASE))
 DBHOST := 127.0.0.1
 DBPORT := 3306
 DBNAME_EASYBGEE := easybgee_v$(subst .,_,$(RELEASE))
-DBHOST_EASYBGEE := 127.0.0.1
+DBHOST_EASYBGEE := devbgee.unil.ch
 
 
 
@@ -439,3 +439,23 @@ AFFYMETRIX_PROBESET_SUF_ZIP := _Affymetrix_probesets.zip
 # Directories related to $(OUTPUT_DIR)
 RANKS_PER_ANAT := ranks/anat_entity/
 RANKS_PER_CONDITION := ranks/condition/
+
+
+# =========== TRIPLE STORE FILES ===============
+
+ONTOP_BGEE_PROP_TEMPLATE := $(INPUT_DIR)bgee_connection.template
+GENEX_ONTOLOGY_URL := https://raw.githubusercontent.com/biosoda/genex/master/genex.owl
+ONTOP_DOWNLOAD_URL := https://ayera.dl.sourceforge.net/project/ontop4obda/ontop-3.0.0/ontop-cli-3.0.0.zip
+ONTOP_MYSQL_JDBC_URL := https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.48/mysql-connector-java-5.1.48.jar
+GENEX_MAPPING_URL := https://raw.githubusercontent.com/biosoda/bioquery/master/Bgee_OBDA_mappings/bgee_genex.obda
+ONTOP_DOWNLOAD_FILE := ontop.zip
+GENEX_ONTOLOGY_FILE := genex.owl
+GENEX_MAPPING_FILE := bgee_genex.obda
+ONTOP_INSTALL_DIR := /usr/local/ontop/
+ISQL_PATH := /usr/local/virtuoso-open-source/bin/isql
+VIRTUOSO_HOST := localhost:1111
+TTL_DIRECTORY_FULL_PATH := $(OUTPUT_DIR)
+FTP_SAVE_DUMP_PATH := /u01/ftp/$(DBNAME)/rdf_easybgee.zip
+TTL_FILE_LIST      := $(TTL_DIRECTORY_FULL_PATH)ttl_files.txt
+BGEE_VIRTUOSO_FILE := $(TTL_DIRECTORY_FULL_PATH)add_bgee_virtuoso.sql
+ZIP_TTL_FILE       := $(TTL_DIRECTORY_FULL_PATH)rdf_easybgee.zip
