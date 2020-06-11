@@ -11,7 +11,7 @@ my $downloaded_lib  = $ARGV[1]  // die "\n\t$0 <RNASeq library annotation file (
 
 
 my $SRATK_PATH         = $ENV{'SRATK_PATH'};
-my $ASPERA_CONNECT_DIR = $ENV{'ASPERA_CONNECT_DIR'};
+#my $ASPERA_CONNECT_DIR = $ENV{'ASPERA_CONNECT_DIR'};
 
 my $BASE               = "/scratch/wally/FAC/FBM/DEE/mrobinso/bgee";
 my $SRA_PATH           = $BASE.'/sra';
@@ -22,8 +22,11 @@ my $FASTQ_PATH         = $BASE.'/FASTQ/RNAseq';
 my @private_exp_id     = ('SRP012682'); # E.g. GTEx
 
 
-if ( !$SRATK_PATH || !$ASPERA_CONNECT_DIR ){
-    die "\n\tSRATK_PATH and/or ASPERA_CONNECT_DIR not defined! They are used to find NCBI SRA & ASPERA executables\n\n";
+#if ( !$SRATK_PATH || !$ASPERA_CONNECT_DIR ){
+#    die "\n\tSRATK_PATH and/or ASPERA_CONNECT_DIR not defined! They are used to find NCBI SRA & ASPERA executables\n\n";
+#}
+if ( !$SRATK_PATH ){
+    die "\n\tSRATK_PATH not defined! It is used to find NCBI SRA executables\n\n";
 }
 
 
@@ -64,8 +67,8 @@ while (<$ANNOTATION>){
             # Run prefetch to get SRA file
             #NOTE prefetch automatically checks what has already been downloaded and completes if needed
             #NOTE cd to the "project's workspace directory" the ONLY place where the SRA download works for private SRR
-            system("cd $BASE; $SRATK_PATH/bin/prefetch --quiet --max-size 500G -t ascp -a \"$ASPERA_CONNECT_DIR/bin/ascp|$ASPERA_CONNECT_DIR/etc/asperaweb_id_dsa.openssh\" $sra_id")==0
-                or system("cd $BASE; $SRATK_PATH/bin/prefetch --quiet --max-size 500G $sra_id")==0
+#            system("cd $BASE; $SRATK_PATH/bin/prefetch --max-size 500G -t ascp -a \"$ASPERA_CONNECT_DIR/bin/ascp|$ASPERA_CONNECT_DIR/etc/asperaweb_id_dsa.openssh\" $sra_id")==0
+             system("cd $BASE; $SRATK_PATH/bin/prefetch --max-size 500G $sra_id")==0
                 or do { warn "\tFailed to get [$library_id/$sra_id]\n"; next SRA };
 
             # Convert in FastQ
@@ -74,7 +77,7 @@ while (<$ANNOTATION>){
             #NOTE fastq-dump has problems with paths containing //
             #NOTE cd to the "project's workspace directory" the ONLY place where the SRA download works for private SRR
             mkdir "$FASTQ_PATH/$library_id";
-            system("cd $BASE; $SRATK_PATH/bin/fastq-dump --split-3 --gzip --outdir $FASTQ_PATH/$library_id/  $SRA_PATH/$sra_id.sra")==0
+            system("cd $BASE; $SRATK_PATH/bin/fastq-dump --split-e --gzip --outdir $FASTQ_PATH/$library_id/  $SRA_PATH/$sra_id.sra")==0
                 or do { warn "\tFailed to convert [$library_id/$sra_id]\n"; next SRA };
 
             # Check FastQ file size
