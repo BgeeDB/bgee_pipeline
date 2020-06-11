@@ -36,14 +36,14 @@ for( c_arg in command_arg ){
 if( file.exists(metadata_info) ){
   readFile <- read.table(metadata_info, h=T, sep="\t")
 } else {
-  stop( paste("EBI file not found [", ENAfile, "]\n"))
+  stop( paste("EBI file not found [", metadata_info, "]\n"))
 }
 
 ## Read EBI file. If file not exists, script stops
 if( file.exists(librariesDownloadedJura) ){
   libDownloadJura <- read.table(librariesDownloadedJura, h=T, sep="\t")
 } else {
-  stop( paste("Libraries from JURA file not found [", ENAfile, "]\n"))
+  stop( paste("Libraries from JURA file not found [", librariesDownloadedJura, "]\n"))
 }
 
 ###### Check libraries ######################################################################################################################
