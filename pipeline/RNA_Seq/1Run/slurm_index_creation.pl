@@ -53,6 +53,11 @@ while (my $file = readdir(DIR)) {
 		my $sbatch_file_path = $transcriptome_folder.'/'.($file =~ s/gtf_all/index.sbatch/r);
 		my $output_file_path = $output_log_folder.'/'.($file =~ s/gtf_all/index.out/r);
 		my $error_file_path = $output_log_folder.'/'.($file =~ s/gtf_all/index.err/r);
+		# initialise path to files that will be use by BgeeCall to generate cluster_kallisto_cmd
+		my $annotation_wo_intergenic_file = $transcriptome_folder.'/'.($file =~ s/gtf_all/gtf_transcriptome/r);
+		my $transcriptome_wo_intergenic_file_path = $transcriptome_folder.'/'.($file =~ s/gtf_all/transcriptome_wo_intergenic.fa/r);
+
+
 
 		# generate sbatch commands
 
@@ -61,6 +66,7 @@ while (my $file = readdir(DIR)) {
 		# load vital-it softwares
 		my $sbatch_commands = "module add Bioinformatics/Software/vital-it\n";
 
+		# generate transcriptome with all intergenic sequences
 		if (!-e $transcriptome_file_path) {
 			if (-e "$transcriptome_file_path.xz") {
 				$sbatch_commands .= "# unxz already existing transcriptome file\n";
@@ -76,6 +82,25 @@ while (my $file = readdir(DIR)) {
 				$sbatch_commands .= "gtf_to_fasta $transcriptome_folder/$file $genome_file_path $transcriptome_file_path\n";
 				$sbatch_commands .= "# update transcriptome file to correct the header of each sequence\n";
 				$sbatch_commands .= 'perl -i -pe \'s/^>\\d+ +/>/\' '.$transcriptome_file_path."\n";
+			}
+		}
+
+		#generate transcriptome without intergenic sequences
+		if (!-e $transcriptome_wo_intergenic_file_path) {
+			if (-e "$transcriptome_wo_intergenic_file_path.xz") {
+				$sbatch_commands .= "# unxz already existing transcriptome without intergenic file\n";
+				$sbatch_commands .= "unxz $transcriptome_wo_intergenic_file_path.xz\n";
+			} else {
+				if (!-e $genome_file_path) {
+					die "can not acces to genome file $genome_file_path";
+				}
+				# generate transcriptome with tophat gtf_to_fasta
+				# load tophat module
+				$sbatch_commands .= "$cluster_tophat_cmd\n";
+				# generate transcriptome
+				$sbatch_commands .= "gtf_to_fasta $transcriptome_folder/$annotation_wo_intergenic_file $genome_file_path $transcriptome_wo_intergenic_file_path\n";
+				$sbatch_commands .= "# update transcriptome without intergenic file to correct the header of each sequence\n";
+				$sbatch_commands .= 'perl -i -pe \'s/^>\\d+ +/>/\' '.$transcriptome_wo_intergenic_file_path."\n";
 			}
 		}
 
