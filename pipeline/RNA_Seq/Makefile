@@ -320,22 +320,28 @@ generate_intergenic_sequences: sum_by_species
 
 # Run BgeeCall R package on all libraries
 #	1. create arboresence of needed files
-#		- ref_intergenic directory
-#		- transcriptome without intergenic regions
-#	2. small script to modify smaple info file in order to be compatible with BgeeCall input
-#	3. be sure that all files are generated perfectly without internet connexion (gene2transcript, gene2biotype, index) 
-#	4. run BgeeCall using slurm array_list OR create a RSlurm function inside of the BgeeCall 
-
-# BE CAREFUL
-# - need to know libraries already mapped in order not to reanalyse libraries if the job stop (time limit, error)
-# Modifs to BgeeCall
-#  -
-# generate index for all species
-#      	- based on sample info file outside of BgeeCall? Maybe create one script that transform the sample info file to file compatible to BgeeCall (should be easy)
-#	   	- based on sample info file using one function present in BgeeCall (to develop) ?
-# reuse script generating abundance with all intergenic and adapt it to generate abundance per library using BgeeCall
+#		- ref_intergenic directory => DONE
+#		- transcriptome without intergenic regions => DONE
+#	2. small script to modify smaple info file in order to be compatible with BgeeCall input => DONE
+#	3. be sure that all files are generated perfectly without internet connexion (gene2transcript, gene2biotype, index) => TO DO
+#	4. run BgeeCall using slurm array_list OR create a RSlurm function inside of the BgeeCall => DONE
 
 
+indexes_bgeecall: generate_intergenic_sequences
+	# generate BgeeCall input file from the rna_seq_sample_info.txt file
+	@perl 1Run/sample_info_to_bgeecall.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >>$@.tmp 2>&1
+	# generate kallisto indexes with BgeeCall
+	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file=\"$(RNASEQ_BGEECALL_FILE)\" account=\"mrobinso_bgee\" time=\"2:00:00\" partition=\"axiom\" working_path=\"$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)\"' bgeecall_index.R bgeecall_index.Rout
+	@$(MV) $@.tmp $@
+
+presence_absence_bgeecall: indexes_bgeecall
+	# generate present/absent expression calls with BgeeCall
+	# TODO IMPORTANT for the moment tx2gene and gene2biotype files are created at the same time than calls. Should be created before to avoid simultaneous writing problems!!!!!!
+	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file=\"$(RNASEQ_BGEECALL_FILE)\" account=\"mrobinso_bgee\" time=\"2:00:00\" partition=\"axiom\" working_path=\"$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)\"' bgeecall_calls.R bgeecall_calls.Rout
+	# TODO generate summary plot once all calls have been generated
+	@touch $@
+
+	
 presence_absence: sum_by_species $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH) $(RNASEQ_CLUSTER_GAUSSIAN_CHOICE)
 #	Script to calculate presence/absence threshold for all samples and call genes present/absent + generate density plots + generate statistics on % present (cutoff info files)
 	@mkdir -p $(RNASEQ_CLUSTER_PRESENCE_RES)

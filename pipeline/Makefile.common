@@ -360,6 +360,7 @@ RNASEQ_SAMPEXCLUDED_FILEPATH       := $(GENERATED_FILES_DIR)$(RNASEQPATH)rna_seq
 RNASEQ_LENGTH_INFO_FILEPATH        := $(GENERATED_FILES_DIR)$(RNASEQPATH)rna_seq_length_info.txt
 RNASEQ_ALREADY_DOWNLOADED          := $(GENERATED_FILES_DIR)$(RNASEQPATH)rna_seq_sample_downloaded.txt
 RNASEQ_GLOBIN_FILEPATH             := $(SOURCE_FILES_DIR)$(RNASEQPATH)globin_info_per_species.tsv
+RNASEQ_BGEECALL_FILE               := $(GENERATED_FILES_DIR)$(RNASEQPATH)bgeecall_input.tsv
 
 # RNAseq cluster paths
 # TODO clean-up and remove unused ones
@@ -376,6 +377,7 @@ RNASEQ_CLUSTER_PRESENCE_RES    := $(RNASEQ_CLUSTER_SCRATCH)presence_absence_$(DB
 RNASEQ_CLUSTER_LOG             := $(RNASEQ_CLUSTER_ALL_RES)
 RNASEQ_CLUSTER_R_LOG           := $(RNASEQ_CLUSTER_ALL_RES)
 RNASEQ_CLUSTER_REPORTINFO      := $(RNASEQ_CLUSTER_ALL_RES)/reports_info_all_samples.txt
+RNASEQ_CLUSTER_BGEECALL_OUTPUT  := $(RNASEQ_CLUSTER_READONLY)rna_seq/calls/
 ENCRYPT_PASSWD_FILE            := /data/unil/dee/dee_robi/.passw
 
 # RNAseq sensitive cluster path
