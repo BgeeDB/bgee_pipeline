@@ -123,10 +123,11 @@ while (<$ANNOTATION>){
             }
 
             # If fine, SRA cleaning
-            unlink "$SRA_PATH/$sra_id.sra";
+            system("rm -f $SRA_PATH/$sra_id.sra*");
         }
         else {
             warn "\t[$sra_id] is not an SRA id\n";
+            system("rm -f $SRA_PATH/$sra_id.sra*");
         }
     }
     print "Ending [$library_id]\n\n";
