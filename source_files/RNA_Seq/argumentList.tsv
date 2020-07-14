@@ -1,0 +1,4 @@
+library	reads	coverage	p_alignment	RNA
+polyA	1000000	2	40	40
+miRNA	1000000	2	30	NA
+lncRNA	1000000	2	30	NA

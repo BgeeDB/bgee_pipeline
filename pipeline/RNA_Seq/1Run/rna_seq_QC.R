@@ -39,13 +39,14 @@ for( c_arg in command_arg ){
 
 ## Read annotation file. If file not exists, script stops
 if( file.exists(rna_seq_sample_info) ){
-  annotation <- read.table(rna_seq_sample_info, header = TRUE , sep="\t", comment.char = "", quote = "")
+  annotation <- read.table(rna_seq_sample_info, header = TRUE , sep="\t")
+  colnames(annotation)[1] <- "libraryId"
 } else {
   stop( paste("The rna_seq_sample_info file not found [", rna_seq_sample_info, "]\n"))
 }
 ## Read argumentsList file. If file not exists, script stops
 if( file.exists(argumentsList) ){
-  arguments <- read.table(argumentsList, header = TRUE , sep="\t", comment.char = "", quote = "")
+  arguments <- read.table(argumentsList, header = TRUE , sep="\t", stringsAsFactors=FALSE)
 } else {
   stop( paste("The rna_seq_sample_info file not found [", argumentsList, "]\n"))
 }
@@ -53,7 +54,7 @@ if( file.exists(argumentsList) ){
 ######################################## FUNCTIONS  #################################################################
 ## Function to collect genome_stats from ensembl
 collectStats <- function(speciesID, database){
-
+  
   if (database == "EnsemblMetazoa"){
     url <- paste0("ftp://ftp.ensemblgenomes.org/pub/metazoa/release-",metazoa_version,"/mysql/")
     message("Download from metazoa ensembl!", "\n")
@@ -82,10 +83,10 @@ collectStats <- function(speciesID, database){
 
 ## Function to collect information for each library using the fastp.json output file
 collectInformationFASTP <- function(annotation, kallisto_count_folder, library){
-
-  libraryInfo <- annotation$libraryType[annotation$X.libraryId == library]
+  
+  libraryInfo <- annotation$libraryType[annotation$libraryId == library]
   fastpInfo <- paste0(kallisto_count_folder, library)
-
+  
   fastpFile <- list.files(path=fastpInfo, pattern = "\\.fastp.json.xz$")
   fastpFile <- file.path(fastpInfo, fastpFile)
   ## If lanes exist, the reads would be summed and calculated the average for reads length
@@ -109,7 +110,7 @@ collectInformationFASTP <- function(annotation, kallisto_count_folder, library){
   }
   readLength <- mean(readLength)
   cgInfo <- mean(cgInfo)
-
+  
   ## Export info about library
   libraryInfo <- data.frame(readsMapInfo, readLength, cgInfo)
   return(libraryInfo)
@@ -117,10 +118,10 @@ collectInformationFASTP <- function(annotation, kallisto_count_folder, library){
 
 ## Function to do the QC per library
 qc <- function(fastpLibrary, kallistoInfo, abundaceFile, genomeSize, library, arguments){
-
-  libraryInfo <- annotation[annotation$X.libraryId == library,]
-  protocol <- annotation$RNASeqProtocol[annotation$X.libraryId == library]
-  libraryType <- annotation$libraryType[annotation$X.libraryId == library]
+  
+  libraryInfo <- annotation[annotation$libraryId == library,]
+  protocol <- annotation$RNASeqProtocol[annotation$libraryId == library]
+  libraryType <- annotation$libraryType[annotation$libraryId == library]
   readsMap <- fastpLibrary$readsMapInfo
   ## Coverage = read Length * Number of reads / genome size
   if (libraryType == "SINGLE"){
@@ -130,13 +131,13 @@ qc <- function(fastpLibrary, kallistoInfo, abundaceFile, genomeSize, library, ar
   }
   CG <- fastpLibrary$cgInfo
   p_alignmentKallisto <- kallistoInfo$p_pseudoaligned
-
+  
   ## calculate propotion (for protein coding, lncRNA or miRNA)
   genicRegion <- nrow(dplyr::filter(abundaceFile, type == "genic"))
   proteinCoding <- dplyr::filter(abundaceFile, type == "genic" & biotype == "protein_coding")
   miRNA <- dplyr::filter(abundaceFile, type == "genic" & biotype == "miRNA")
   lncRNA <- dplyr::filter(abundaceFile, type == "genic" & biotype == "lncRNA")
-
+  
   if (protocol == "polyA"){
     message("Library ", library, " is PolyA", "\n")
     ## calculate proportion of protein_coding with TPM value higher then zero
@@ -146,33 +147,33 @@ qc <- function(fastpLibrary, kallistoInfo, abundaceFile, genomeSize, library, ar
     ## collec all info for the library
     collectInfo <- data.frame(readsMap, coverage, CG, p_alignmentKallisto, detected)
     argumentsUsed <- dplyr::filter(arguments, library == "polyA")
-
-    } else if (protocol == "miRNA"){
-      message("Library ", library, " is miRNA", "\n")
-      ## calculate proportion of miRNA with TPM value higher then zero
-      sizemiRNA <- nrow(miRNA)
-      miRNAFilter <- nrow(miRNA[miRNA$tpm > 0, ])
-      detected <- (miRNAFilter/sizemiRNA)*100
-      ## collec all info for the library
-      collectInfo <- data.frame(readsMap, coverage, CG, p_alignmentKallisto, detected)
-      argumentsUsed <- dplyr::filter(arguments, library == "miRNA")
-
-      } else if (protocol == "lncRNA"){
-      message("Library ", library, " is lncRNA", "\n")
-      ## calculate proportion of lncRNA with TPM value higher then zero
-      sizelncRNA <- nrow(lncRNA)
-      lncRNAFilter <- nrow(lncRNA[lncRNA$tpm > 0, ])
-      detected <- (lncRNAFilter/sizemlncRNA)*100
-      ## collec all info for the library
-      collectInfo <- data.frame(readsMap, coverage, CG, p_alignmentKallisto, detected)
-      argumentsUsed <- dplyr::filter(arguments, library == "lncRNA")
-
-      } else {
+    
+  } else if (protocol == "miRNA"){
+    message("Library ", library, " is miRNA", "\n")
+    ## calculate proportion of miRNA with TPM value higher then zero
+    sizemiRNA <- nrow(miRNA)
+    miRNAFilter <- nrow(miRNA[miRNA$tpm > 0, ])
+    detected <- (miRNAFilter/sizemiRNA)*100
+    ## collec all info for the library
+    collectInfo <- data.frame(readsMap, coverage, CG, p_alignmentKallisto, detected)
+    argumentsUsed <- dplyr::filter(arguments, library == "miRNA")
+    
+  } else if (protocol == "lncRNA"){
+    message("Library ", library, " is lncRNA", "\n")
+    ## calculate proportion of lncRNA with TPM value higher then zero
+    sizelncRNA <- nrow(lncRNA)
+    lncRNAFilter <- nrow(lncRNA[lncRNA$tpm > 0, ])
+    detected <- (lncRNAFilter/sizelncRNA)*100
+    ## collec all info for the library
+    collectInfo <- data.frame(readsMap, coverage, CG, p_alignmentKallisto, detected)
+    argumentsUsed <- dplyr::filter(arguments, library == "lncRNA")
+    
+  } else {
     message("Protocol not recognized!", "\n")
   }
   collectInfo$InfoQC <- ""
   collectInfo <- cbind(libraryInfo, collectInfo)
-
+  
   ## filter library based on the arguments cutoff
   if (collectInfo$readsMap < argumentsUsed$reads && collectInfo$coverage < argumentsUsed$coverage){
     collectInfo$InfoQC <- "1"
@@ -223,16 +224,16 @@ for (species in unique(annotation$organism)) {
     speciesInfo <- tolower(speciesInfo)
   }
   collectStats(speciesID = speciesInfo, database = database)
-
+  
   message("Read genome stats")
   ## read download file from ensembl to collect genome size
   genomeSize <- read.table(file.path(output, paste0("genome_statistics_", speciesInfo, ".txt")), header=FALSE, sep="\t")
   genomeSize <- dplyr::filter(genomeSize, V2 == "ref_length")
   genomeSize <- genomeSize$V3
-
+  
   ## collect libraries that belong to same species!
-  for (libraryID in annotation$X.libraryId[annotation$organism == species]) {
-      message("Treating ", libraryID)
+  for (libraryID in annotation$libraryId[annotation$organism == species]) {
+    message("Treating ", libraryID)
     ## verify if library exist
     if (!dir.exists(file.path(kallisto_count_folder, libraryID))){
       message("The folder for this library is not present!")
@@ -252,4 +253,3 @@ for (species in unique(annotation$organism)) {
     }
   }
 }
-
