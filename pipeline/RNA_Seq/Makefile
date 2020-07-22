@@ -316,7 +316,7 @@ generate_intergenic_sequences: sum_by_species
 	@find $(VITALIT_OTHER_INTERGENIC_FOLDER) -type f -name '*_intergenic.fa' -exec gzip --verbose --best {} \; >> $@.tmp 2> $@.warn
 
 
-################################ GENERATE PRESENT/ABSENT CALLS ################################
+################################ GENERATE PRESENT/ABSENT CALLS WITH BgeeCall ################################
 
 
 indexes_bgeecall: generate_intergenic_sequences
@@ -337,12 +337,7 @@ check_presence_absence: presence_absence_bgeecall
 	# check that presence absence calls have been generated for all libraries present in the rna_seq_sample_info file
 	# generate file containing calls info for all libraries and use this file to generate different plots 
 	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args sample_info=\"$(RNASEQ_SAMPINFO_FILEPATH)\" calls_dir=\"$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)\"' rna_seq_calls_plot.R rna_seq_calls_plot.Rout >>$@.tmp 2>$@.warn
-	
-presence_absence: sum_by_species $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH) $(RNASEQ_CLUSTER_GAUSSIAN_CHOICE)
-#	Script to calculate presence/absence threshold for all samples and call genes present/absent + generate density plots + generate statistics on % present (cutoff info files)
-	@mkdir -p $(RNASEQ_CLUSTER_PRESENCE_RES)
-	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args rna_seq_sample_info="$(RNASEQ_SAMPINFO_FILEPATH)" rna_seq_sample_excluded="$(RNASEQ_SAMPEXCLUDED_FILEPATH)" kallisto_count_folder="$(RNASEQ_CLUSTER_ALL_RES)" sum_by_species_folder="$(RNASEQ_CLUSTER_SUM_RES)" gaussian_choice="$(RNASEQ_CLUSTER_GAUSSIAN_CHOICE)" out_folder="$(RNASEQ_CLUSTER_PRESENCE_RES)" plot_only=FALSE desired_r_cutoff="0.05"' $(RNASEQ_CLUSTER_SCRIPTS)$(RNASEQPATH)1Run/rna_seq_presence_absence.R $(RNASEQ_CLUSTER_PRESENCE_RES)rna_seq_presence_absence.Rout
-	@touch $@
+
 #NOTE if output directory is not $(RNASEQ_CLUSTER_ALL_RES): copy all files with calls to this directory, as well as summary stats and plot files
 #for folder in *; do echo $folder; /bin/cp $folder/* ../all_results_bgee_v15/$folder/; done
 # /bin/cp used because cp is an alias to cp -i
