@@ -318,14 +318,6 @@ generate_intergenic_sequences: sum_by_species
 
 ################################ GENERATE PRESENT/ABSENT CALLS ################################
 
-# Run BgeeCall R package on all libraries
-#	1. create arboresence of needed files
-#		- ref_intergenic directory => DONE
-#		- transcriptome without intergenic regions => DONE
-#	2. small script to modify smaple info file in order to be compatible with BgeeCall input => DONE
-#	3. be sure that all files are generated perfectly without internet connexion (gene2transcript, gene2biotype, index) => TO DO
-#	4. run BgeeCall using slurm array_list OR create a RSlurm function inside of the BgeeCall => DONE
-
 
 indexes_bgeecall: generate_intergenic_sequences
 	# generate BgeeCall input file from the rna_seq_sample_info.txt file
@@ -337,10 +329,14 @@ indexes_bgeecall: generate_intergenic_sequences
 presence_absence_bgeecall: indexes_bgeecall
 	# generate present/absent expression calls with BgeeCall
 	# TODO IMPORTANT for the moment tx2gene and gene2biotype files are created at the same time than calls. Should be created before to avoid simultaneous writing problems!!!!!!
-	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file=\"$(RNASEQ_BGEECALL_FILE)\" account=\"mrobinso_bgee\" time=\"2:00:00\" partition=\"axiom\" working_path=\"$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)\"' bgeecall_calls.R bgeecall_calls.Rout
+	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file=\"$(RNASEQ_BGEECALL_FILE)\" account=\"mrobinso_bgee\" time=\"2:00:00\" partition=\"axiom\" working_path=\"$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)\"' bgeecall_calls.R bgeecall_calls.Rout 
 	# TODO generate summary plot once all calls have been generated
 	@touch $@
 
+check_presence_absence: presence_absence_bgeecall
+	# check that presence absence calls have been generated for all libraries present in the rna_seq_sample_info file
+	# generate file containing calls info for all libraries and use this file to generate different plots 
+	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args sample_info=\"$(RNASEQ_SAMPINFO_FILEPATH)\" calls_dir=\"$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)\"' rna_seq_calls_plot.R rna_seq_calls_plot.Rout >>$@.tmp 2>$@.warn
 	
 presence_absence: sum_by_species $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH) $(RNASEQ_CLUSTER_GAUSSIAN_CHOICE)
 #	Script to calculate presence/absence threshold for all samples and call genes present/absent + generate density plots + generate statistics on % present (cutoff info files)
