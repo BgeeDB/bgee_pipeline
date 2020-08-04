@@ -41,7 +41,8 @@ my $auto = 1;
 
     #we get the absolute max rank across all conditions for each species
     my $getAbsoluteMax = $dbh->prepare(
-    "SELECT speciesId, GREATEST(IFNULL(max(rnaSeqMaxRank), 0.0),
+    "SELECT speciesId, GREATEST(
+                 IFNULL(max(rnaSeqMaxRank), 0.0),
                  IFNULL(max(estMaxRank),0.0),
                  IFNULL(max(inSituMaxRank),0.0),
                  IFNULL(max(affymetrixMaxRank),0.0),
@@ -81,32 +82,60 @@ my $auto = 1;
     STRAIGHT_JOIN globalCond ON gene.speciesId = globalCond.speciesId
     STRAIGHT_JOIN globalExpression ON gene.bgeeGeneId = globalExpression.bgeeGeneId
         AND globalCond.globalConditionId = globalExpression.globalConditionId
-    SET estRankNorm = ?, estGlobalRankNorm = ?
+    SET estRankNorm = ?
     WHERE gene.speciesId = ? AND globalCond.anatEntityId IN $blacklisted AND estRank IS NOT NULL" );
+    my $blacklistGlobalUnspecifiedEST = $dbh->prepare( "
+    UPDATE gene
+    STRAIGHT_JOIN globalCond ON gene.speciesId = globalCond.speciesId
+    STRAIGHT_JOIN globalExpression ON gene.bgeeGeneId = globalExpression.bgeeGeneId
+        AND globalCond.globalConditionId = globalExpression.globalConditionId
+    SET estGlobalRankNorm = ?
+    WHERE gene.speciesId = ? AND globalCond.anatEntityId IN $blacklisted AND estGlobalRank IS NOT NULL" );
 
     my $blacklistUnspecifiedInSitu = $dbh->prepare( "
     UPDATE gene
     STRAIGHT_JOIN globalCond ON gene.speciesId = globalCond.speciesId
     STRAIGHT_JOIN globalExpression ON gene.bgeeGeneId = globalExpression.bgeeGeneId
         AND globalCond.globalConditionId = globalExpression.globalConditionId
-    SET inSituRankNorm = ?, inSituGlobalRankNorm = ?
+    SET inSituRankNorm = ?
     WHERE gene.speciesId = ? AND globalCond.anatEntityId IN $blacklisted AND inSituRank IS NOT NULL" );
+    my $blacklistGlobalUnspecifiedInSitu = $dbh->prepare( "
+    UPDATE gene
+    STRAIGHT_JOIN globalCond ON gene.speciesId = globalCond.speciesId
+    STRAIGHT_JOIN globalExpression ON gene.bgeeGeneId = globalExpression.bgeeGeneId
+        AND globalCond.globalConditionId = globalExpression.globalConditionId
+    SET inSituGlobalRankNorm = ?
+    WHERE gene.speciesId = ? AND globalCond.anatEntityId IN $blacklisted AND inSituGlobalRank IS NOT NULL" );
 
     my $blacklistUnspecifiedAffymetrix = $dbh->prepare( "
     UPDATE gene
     STRAIGHT_JOIN globalCond ON gene.speciesId = globalCond.speciesId
     STRAIGHT_JOIN globalExpression ON gene.bgeeGeneId = globalExpression.bgeeGeneId
         AND globalCond.globalConditionId = globalExpression.globalConditionId
-    SET affymetrixMeanRankNorm = ?, affymetrixGlobalMeanRankNorm = ?
+    SET affymetrixMeanRankNorm = ?
     WHERE gene.speciesId = ? AND globalCond.anatEntityId IN $blacklisted AND affymetrixMeanRank IS NOT NULL" );
+    my $blacklistGlobalUnspecifiedAffymetrix = $dbh->prepare( "
+    UPDATE gene
+    STRAIGHT_JOIN globalCond ON gene.speciesId = globalCond.speciesId
+    STRAIGHT_JOIN globalExpression ON gene.bgeeGeneId = globalExpression.bgeeGeneId
+        AND globalCond.globalConditionId = globalExpression.globalConditionId
+    SET affymetrixGlobalMeanRankNorm = ?
+    WHERE gene.speciesId = ? AND globalCond.anatEntityId IN $blacklisted AND affymetrixGlobalMeanRank IS NOT NULL" );
 
     my $blacklistUnspecifiedRnaSeq = $dbh->prepare( "
     UPDATE gene
     STRAIGHT_JOIN globalCond ON gene.speciesId = globalCond.speciesId
     STRAIGHT_JOIN globalExpression ON gene.bgeeGeneId = globalExpression.bgeeGeneId
         AND globalCond.globalConditionId = globalExpression.globalConditionId
-    SET rnaSeqMeanRankNorm = ?, rnaSeqGlobalMeanRankNorm = ?
+    SET rnaSeqMeanRankNorm = ?
     WHERE gene.speciesId = ? AND globalCond.anatEntityId IN $blacklisted AND rnaSeqMeanRank IS NOT NULL" );
+    my $blacklistGlobalUnspecifiedRnaSeq = $dbh->prepare( "
+    UPDATE gene
+    STRAIGHT_JOIN globalCond ON gene.speciesId = globalCond.speciesId
+    STRAIGHT_JOIN globalExpression ON gene.bgeeGeneId = globalExpression.bgeeGeneId
+        AND globalCond.globalConditionId = globalExpression.globalConditionId
+    SET rnaSeqGlobalMeanRankNorm = ?
+    WHERE gene.speciesId = ? AND globalCond.anatEntityId IN $blacklisted AND rnaSeqGlobalMeanRank IS NOT NULL" );
 
 for my $speciesId ( keys %maxRanks ){
     my $absMax = $maxRanks{$speciesId};
@@ -122,13 +151,21 @@ for my $speciesId ( keys %maxRanks ){
     $t0 = time();
     printf('Blacklisting unspecified anat entities:    ');
     my $blacklistAbsMax = $absMax + 1;
-    $blacklistUnspecifiedEST->execute($blacklistAbsMax, $blacklistAbsMax, $speciesId)
+    $blacklistUnspecifiedEST->execute($blacklistAbsMax, $speciesId)
       or die $blacklistUnspecifiedEST->errstr;
-    $blacklistUnspecifiedInSitu->execute($blacklistAbsMax, $blacklistAbsMax, $speciesId)
+    $blacklistGlobalUnspecifiedEST->execute($blacklistAbsMax, $speciesId)
+      or die $blacklistUnspecifiedEST->errstr;
+    $blacklistUnspecifiedInSitu->execute($blacklistAbsMax, $speciesId)
       or die $blacklistUnspecifiedInSitu->errstr;
-    $blacklistUnspecifiedAffymetrix->execute($blacklistAbsMax, $blacklistAbsMax, $speciesId)
+    $blacklistGlobalUnspecifiedInSitu->execute($blacklistAbsMax, $speciesId)
+      or die $blacklistUnspecifiedInSitu->errstr;
+    $blacklistUnspecifiedAffymetrix->execute($blacklistAbsMax, $speciesId)
       or die $blacklistUnspecifiedAffymetrix->errstr;
-    $blacklistUnspecifiedRnaSeq->execute($blacklistAbsMax, $blacklistAbsMax, $speciesId)
+    $blacklistGlobalUnspecifiedAffymetrix->execute($blacklistAbsMax, $speciesId)
+      or die $blacklistUnspecifiedAffymetrix->errstr;
+    $blacklistUnspecifiedRnaSeq->execute($blacklistAbsMax, $speciesId)
+      or die $blacklistUnspecifiedRnaSeq->errstr;
+    $blacklistGlobalUnspecifiedRnaSeq->execute($blacklistAbsMax, $speciesId)
       or die $blacklistUnspecifiedRnaSeq->errstr;
     printf( "OK in %.2fs\n", ( time() - $t0 ) );
 
