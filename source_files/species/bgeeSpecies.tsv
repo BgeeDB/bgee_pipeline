@@ -32,6 +32,7 @@ speciesId	genus	species	speciesCommonName	displayOrder	genomeFilePath	genomeVers
 7220	Drosophila	erecta	Fruit fly					7220		DROER	
 7460	Apis	mellifera	Honeybee					7460		APIME|Apis mellifera Linnaeus, 1758|Apis mellifica|European honey bee|Western honey bee|bee|honey bee	
 7719	Ciona	intestinalis	Transparent sea squirt					7719		CIOIN|Ciona intestinalis (Linnaeus, 1767)|sea vase|vase tunicate|yellow sea squirt	
+7739	Branchiostoma	floridae	Florida lancelet					7739		Amphioxus floridae|BRAFL|Branchiostoma floridae Hubbs, 1922|Branchiostoma floridea|Branchiostomae floridae	
 7740	Branchiostoma	lanceolatum	Common lancelet					7740		BRALA|amphioxus|amphoxius	
 7897	Latimeria	chalumnae	Coelacanth					7897		LATCH|Latimeria chalumnae Smith, 1939	
 7906	Acipenser	ruthenus	Sterlet sturgeon					7906		ACIRT|Acipenser ruthenus Linnaeus, 1758|Acipenser ruthenys|sterlet	
@@ -46,7 +47,7 @@ speciesId	genus	species	speciesCommonName	displayOrder	genomeFilePath	genomeVers
 8030	Salmo	salar	Atlantic salmon					8030		SALSA|Salmo salar Linnaeus, 1758	
 8049	Gadus	morhua	Atlantic cod					8049		GADMO|Gadus morhua Linnaeus, 1758	
 8081	Poecilia	reticulata	Guppy					8081		Acanthophacelus reticulata|POERE|Poecilia (Acanthophacelus) reticulata|Poecilia latipinna reticulata|Poecilia reticulata Peters, 1859	
-8090	Oryzias	latipes	Japanese rice fish					8090		Japanese medaka|ORYLA|Orizias latipes|Oryzias latipes (Temminck &amp; Schlegel, 1846)|Poecilia latipes|Poecilia latipes Temminck &amp; Schlegel, 1846|medaka	
+8090	Oryzias	latipes	Japanese rice fish					8090		Japanese medaka|ORYLA|Orizias latipes|Oryzias latipes (Temminck & Schlegel, 1846)|Poecilia latipes|Poecilia latipes Temminck & Schlegel, 1846|medaka	
 8128	Oreochromis	niloticus	Nile tilapia					8128		ORENI|Oreochromis nilotica|Oreochromis niloticus (Linnaeus, 1758)	
 8154	Astatotilapia	calliptera	Eastern happy					8154		ASTCA|Astatotilapia calliptera (Gunther, 1894)|Ctenochromis callipterus|Haplochromis calliptera|Haplochromis callipterus	
 8355	Xenopus	laevis	African clawed frog					8355		Bufo laevis|XENLA|Xenopus laevis (Daudin, 1802)|Xenopus leavis|clawed frog|common platanna|platanna	
@@ -92,12 +93,12 @@ speciesId	genus	species	speciesCommonName	displayOrder	genomeFilePath	genomeVers
 29029	Drosophila	eugracilis	Fruit fly					29029		DROEU	
 29030	Drosophila	takahashii	Fruit fly					29030		DROTK	
 29078	Eptesicus	fuscus	Big brown bat					29078		EPTFU|Eptisicus fuscus	
-30023	Drosophila	elegans	Fruit fly					30023		DROEL|Drosophila elegans Bock &amp; Wheeler, 1972	
+30023	Drosophila	elegans	Fruit fly					30023		DROEL|Drosophila elegans Bock & Wheeler, 1972	
 30025	Drosophila	ficusphila	Fruit fly					30025		DROFC	
 30033	Drosophila	kikkawai	Fruit fly					30033		DROKI	
 30608	Microcebus	murinus	Gray mouse lemur					30608		MICMU|grey mouse lemur	
 30611	Otolemur	garnettii	Small-eared galago					30611		Galago garnetti|Galago garnettii|OTOGA|Otolemur garnetti|Otolemur garnettii (Ogilby, 1838)	
-31033	Takifugu	rubripes	Japanese pufferfish					31033		Sphaeroides rubripes|TAKRU|Takifugu rubripes (Temminck &amp; Schlegel, 1850)|Tetraodon rubripes|tiger puffer|torafugu	
+31033	Takifugu	rubripes	Japanese pufferfish					31033		Sphaeroides rubripes|TAKRU|Takifugu rubripes (Temminck & Schlegel, 1850)|Tetraodon rubripes|tiger puffer|torafugu	
 31869	Daubentonia	madagascariensis	Aye-aye					31869		DAUMA|Daubentonia madagascarensis	
 32507	Neolamprologus	brichardi	Fairy cichlid					32507		NEOBR|Neolamprologus brichardi (Poll, 1974)|Neolaprologus brichardi|lyretail cichlid	
 33528	Gambusia	affinis	Western mosquitofish					33528		GAMAF	
@@ -117,10 +118,10 @@ speciesId	genus	species	speciesCommonName	displayOrder	genomeFilePath	genomeVers
 52904	Scophthalmus	maximus	Turbot					52904		Pleuronectes maximus|Psetta maxima (Linnaeus, 1758)|Rhombus maximus|SCOMX|Scophthalmus maximus (Linnaeus, 1758)|Scopthalmus maximus	
 56723	Labrus	bergylta	ballan wrasse					56723		Labrus bergylta Ascanius, 1767	
 60711	Chlorocebus	sabaeus	Green monkey					60711		CHLSB|Cercopithecus aethiops sabaeus|Cercopithecus sabeus|Chlorocebus aethiops sabaeus|Chlorocebus aethiops sabeus|Chlorocebus sabaeus (Linnaeus, 1776)|Chlorocebus sabeus	
-61472	Timema	bartmani						61472		Timema bartmani Vickery &amp; Sandoval, 1997	
+61472	Timema	bartmani						61472		Timema bartmani Vickery & Sandoval, 1997	
 61474	Timema	californicum	California timema					61474		TIMCA|Timema californica|Timema californicum Scudder, 1895|Timema californicus	
 61476	Timema	cristinae	Walking stick					61476		TIMCR|Timema cristinae Vickery, 1993	
-61478	Timema	douglasi	Walking stick					61478		TIMDO|Timema douglasi Sandoval &amp; Vickery, 1996	asexual
+61478	Timema	douglasi	Walking stick					61478		TIMDO|Timema douglasi Sandoval & Vickery, 1996	asexual
 61482	Timema	podura	Walking stick					61482		TIMPD|Timema podura Strohecker, 1936	
 61484	Timema	tahoe						61484		Timema tahoe Vickery, 1993	asexual
 64144	Anabas	testudineus	Climbing perch					64144		ANATE|Amphiprion testudineus|Anabas testudines|Anabas testudineus (Bloch, 1792)|Anthias testudineus Bloch, 1792|Antias testudineus	
@@ -129,17 +130,17 @@ speciesId	genus	species	speciesCommonName	displayOrder	genomeFilePath	genomeVers
 87289	Varecia	variegata variegata	Black and white ruffed lemur					87289		VARVV	
 99883	Tetraodon	nigroviridis	Spotted green pufferfish					99883		TETNG|Tetraodon nigroviridis Marion de Proce, 1822	
 105023	Nothobranchius	furzeri	Turquoise killifish					105023		NOTFU|Nothobranchius furzeri Jubb, 1971	
-106881	Latimeria	menadoensis	Indonesian coelacanth					106881		LATME|Latimeria menadoensis Pouyaud, Wirjoatmodjo, Rachmatika, Tjakrawidjaja, Hadiaty &amp; Hadie, 1999|Menado coelacanth|king of the sea	
+106881	Latimeria	menadoensis	Indonesian coelacanth					106881		LATME|Latimeria menadoensis Pouyaud, Wirjoatmodjo, Rachmatika, Tjakrawidjaja, Hadiaty & Hadie, 1999|Menado coelacanth|king of the sea	
 109280	Hippocampus	comes	Tiger tail seahorse					109280		HIPCM|Hippocampus comes Cantor, 1849	
 125945	Drosophila	biarmipes	Fruit fly					125945		DROBM	
 134910	Apodemus	uralensis	Herb field mouse					134910		APOUR|Apodemus uralensis (Pallas, 1811)|Sylvaemus uralensis|Ural field mouse|pygmy field mouse	
-170555	Timema	monikensis						170555		Timema monikensis Vickery &amp; Sandoval, 1998	asexual
-170557	Timema	poppense	Walking stick					170557		TIMPO|Timema poppensis|Timema poppensis Vickery &amp; Sandoval, 1999	
+170555	Timema	monikensis						170555		Timema monikensis Vickery & Sandoval, 1998	asexual
+170557	Timema	poppense	Walking stick					170557		TIMPO|Timema poppensis|Timema poppensis Vickery & Sandoval, 1999	
 187017	Murina	leucogaster	Greater tube-nosed bat					187017		MURLE	
 205130	Mastacembelus	armatus	zig-zag eel					205130		Macrognathus armatus|Macrognathus armatus Lacepede, 1800|Mastacembelus armatus (Lacepede, 1800)	
 244447	Cynoglossus	semilaevis	Tongue sole					244447		CYNSE|Cynoglossus (Arelia) semilaevis|Cynoglossus semilaevis Gunther, 1873|half-smooth tongue sole	
 379532	Propithecus	coquereli	Coquerel's sifaka					379532		PROCO|Propithecus coquereli (A. Grandidier, 1867)	
 629358	Timema	genevievae	Walking stick					629358		TIMGE|Timema genevievae Rentz, 1978|Timema genevieve	asexual
-629360	Timema	shepardi	Walking stick					629360		TIMSH|Timema shepardi Vickery &amp; Sandoval, 1999|Timema shepardii	asexual
+629360	Timema	shepardi	Walking stick					629360		TIMSH|Timema shepardi Vickery & Sandoval, 1999|Timema shepardii	asexual
 681894	Hyphessobrycon	anisitsi	Buenos Aires tetra					681894		Hemigrammus anisitsi|Hemigrammus anisitsi Eigenmann, 1907|Hemigrammus caudovittatus|Hemigrammus caudovittatus Ahl, 1923|Hyphessobrycon anisitsi (Eigenmann, 1907)	
-1041015	Drosophila	rhopaloa	Fruit fly					1041015		DRORH|Drosophila rhopaloa Bock &amp; Wheeler, 1972	
+1041015	Drosophila	rhopaloa	Fruit fly					1041015		DRORH|Drosophila rhopaloa Bock & Wheeler, 1972	
