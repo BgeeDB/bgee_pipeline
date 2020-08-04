@@ -783,7 +783,7 @@ in wildly used strain names.
 * Create a new database from the previous version:
 
   * To update only RNA-Seq data for Bgee 14.1, following tables were dumped from Bgee 14.0:
-(63 tables dumped over 74 tables in total)
+(63 tables dumped over 75 tables in total)
 
 ```
 author dataSource dataSourceToSpecies keyword taxon species speciesToSex speciesToKeyword CIOStatement
@@ -799,7 +799,7 @@ rnaSeqLibraryDiscarded rnaSeqResult rnaSeqTranscriptResult expression downloadFi
 ```
 
   * To update only RNA-Seq data for Bgee 14.1, following tables were **NOT** dumped from Bgee 14.0:
-(4 tables not dumped over 74 tables in total)
+(4 tables not dumped over 75 tables in total)
 
 ```
 globalCond
@@ -809,7 +809,7 @@ globalExpression
 ```
 
   * Following tables were not dumped because unused for now:
-(7 tables not dumped over 74 tables in total)
+(7 tables not dumped over 75 tables in total)
 
 ```
 differentialExpressionAnalysis
@@ -819,6 +819,20 @@ deaSampleGroupToRnaSeqLibrary
 deaAffymetrixProbesetSummary
 deaRNASeqSummary
 differentialExpression
+```
+
+  * Following table not dumped because shouldn't be reused between version:
+(1 table not dumped over 75 tables in total). If you need to remap conditions,
+see [this README](../annotations#condition-remapping).
+
+```
+remapCond
+```
+
+  * The command will then be:
+
+```
+nohup mysqldump -u USERNAME -pPASS --no-create-db --no-create-info --skip-triggers BGEEPREVIOUSDB author dataSource dataSourceToSpecies keyword taxon species speciesToSex speciesToKeyword CIOStatement evidenceOntology stage stageTaxonConstraint stageNameSynonym stageXRef anatEntity anatEntityTaxonConstraint anatEntityXRef anatEntityNameSynonym anatEntityRelation anatEntityRelationTaxonConstraint summarySimilarityAnnotation similarityAnnotationToAnatEntityId rawSimilarityAnnotation OMAHierarchicalGroup geneOntologyTerm geneOntologyTermAltId geneOntologyRelation geneBioType gene geneToOma geneNameSynonym geneXRef geneToTerm geneToGeneOntologyTerm transcript cond estLibrary estLibraryToKeyword expressedSequenceTag estLibraryExpression microarrayExperiment microarrayExperimentToKeyword chipType affymetrixChip affymetrixProbeset microarrayExperimentExpression inSituExperiment inSituExperimentToKeyword inSituEvidence inSituSpot inSituExperimentExpression rnaSeqExperiment rnaSeqExperimentToKeyword rnaSeqPlatform rnaSeqLibrary rnaSeqRun rnaSeqLibraryDiscarded rnaSeqResult rnaSeqTranscriptResult expression downloadFile speciesDataGroup speciesToDataGroup > dumpname.sql 2> errors.txt &
 ```
 
 * Remove some runs/libraries/experiments if needed
