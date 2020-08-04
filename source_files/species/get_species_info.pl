@@ -48,7 +48,7 @@ if ( defined $content ){
                      '',
                      '',
                      '',
-                     '',
+                     $taxid,
                      '',
                      join('|', uniq sort @aliases),
                      $comment,
