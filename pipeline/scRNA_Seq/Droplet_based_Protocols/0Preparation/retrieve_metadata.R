@@ -1,4 +1,5 @@
-## SFC Sep 17 2019
+## SFonsecaCosta, Sep 17 2019
+
 ## This script is used to retrieve the metadata for the target based protocols from sources as SRA and HCA.
 ## And then compare the annotation information for each library with metadata specially with SRA source.
 

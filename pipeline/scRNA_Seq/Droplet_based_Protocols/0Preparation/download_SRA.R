@@ -1,6 +1,7 @@
-## SFC, 17 Sep 2019
+## SFonsecaCosta, 17 Sep 2019
+
 ## This script is used to download the raw data for target-based protocols (for the moment 10X)
-## FOr each library we should have at least 3 files: R1, R2 and I (fastq.gz format)
+## For each library we should have at least 3 files: R1, R2 and I (fastq.gz format)
 
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args metadata_info="metadata_info_10X.txt" librariesDownloadedJura="librariesDownloadedJura.tsv" output="output_folder"' download_SRA.R download_SRA.Rout

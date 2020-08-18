@@ -1,6 +1,7 @@
-## SFC, 17 Sep 2019
+## SFonsecaCosta, 17 Sep 2019
+
 ## This script is used to download the raw data for target-based protocols (for the moment 10X)
-## The files are bam file from EBI and converted to FASTQ.GZ in order to run all the analysis from the scratch
+## The files downloaded are bam file from EBI. Then the files are converted to FASTQ.GZ in order to run all the analysis from the scratch
 
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args metadata_info="metadata_info_10X.txt" librariesDownloadedJura="librariesDownloadedJura.tsv" output="output_folder" bamtofastq="bamtofastq"' download_reformat_EBI.R download_reformat_EBI.Rout
@@ -98,4 +99,3 @@ for (folder in AllFilesDownload) {
   output <- paste0(output,"/FASTQ")
   system(sprintf('%s %s %s', bamtofastq, paste0(folder), paste0(output)))
 }
-

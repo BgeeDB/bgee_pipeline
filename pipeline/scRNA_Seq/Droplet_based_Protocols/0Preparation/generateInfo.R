@@ -1,4 +1,4 @@
-## SFC, May 2020
+## SFonsecaCosta, May 2020
 
 ## This script is used to create a transcript_to_gene file from the gtf_all file that will be used later in bustools.
 ## Also a file gene_to_biotype is created for each species.
@@ -58,8 +58,8 @@ for (i in AllFiles) {
   colnames(gene_to_biotype) <- c("gene", "biotype")
   gene_to_biotype <- gene_to_biotype[!duplicated(gene_to_biotype[,c('gene')]),]
   
-  write.table(transcript_to_gene, file = paste0(folder_gtf, "/transcript_to_gene_", speciesID,".tsv"), quote = FALSE, sep = "\t", col.names = FALSE, row.names = FALSE)
-  write.table(gene_to_biotype, file = paste0(folder_gtf, "/gene_to_biotype_", speciesID,".tsv"), quote = FALSE, sep = "\t", col.names = FALSE, row.names = FALSE)
+  write.table(transcript_to_gene, file = paste0(folder_gtf, "/transcript_to_gene_with_intergenic", speciesID,".tsv"), quote = FALSE, sep = "\t", col.names = FALSE, row.names = FALSE)
+  write.table(gene_to_biotype, file = paste0(folder_gtf, "/gene_to_biotype_with_intergenic", speciesID,".tsv"), quote = FALSE, sep = "\t", col.names = FALSE, row.names = FALSE)
   
   ## remove intermediary files
   file.remove(paste0(folder_gtf, "/gene_id_", speciesID, ".tsv"))

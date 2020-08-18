@@ -1,4 +1,4 @@
-## SFC, 2 Oct 2019
+## SFonsecaCosta, 2 Oct 2019
 
 ## This script is used to process the bus files to an equivalent-class-UMI and to a gene-UMI
 ## As suggested by bustools this step is divide in 3 sub-steps:
@@ -27,7 +27,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
   }
 }
 
-## checking if all necessary arguments were passed....
+## checking if all necessary arguments were passed.
 command_arg <- c("scRNASeq_Info", "folder_data", "folderSupport", "output", "bustoolspath")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
@@ -57,7 +57,7 @@ for (library in unique(scRNAInfo$libraryId)) {
     } else {
       cat("Start correction, sort and counts for the library: ", library, "\n")
       
-      ## Note: the whiteList we use in this pipeline are the files provided by 10X platform
+      ## Note: the whiteList we use in this pipeline are the files provided by 10X platform (add to source files)
       collectWhitelist <- as.character(scRNAInfo$whiteList[scRNAInfo$libraryId == library]) 
       selectedWhitheList <- paste0("10X_",collectWhitelist)
       cat("whitelist:  ", selectedWhitheList, "\n")
@@ -101,4 +101,3 @@ for (library in unique(scRNAInfo$libraryId)) {
     cat("Library ", library ," not present in the folder to process.", "\n")
   }
 }
-

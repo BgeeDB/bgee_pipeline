@@ -1,4 +1,4 @@
-## SFC, 20 Sep 2019
+## SFonsecaCosta, 20 Sep 2019
 ## Modified May 2020
 
 ## This script is used to run Kallisto bus in all libraries from all species and experiments
@@ -24,7 +24,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
   }
 }
 
-## checking if all necessary arguments were passed....
+## checking if all necessary arguments were passed.
 command_arg <- c("metadata_file","annotation_file", "folder_data", "folderSupport", "output")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
