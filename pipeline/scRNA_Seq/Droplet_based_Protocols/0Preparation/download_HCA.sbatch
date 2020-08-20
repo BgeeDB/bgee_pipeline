@@ -1,16 +1,18 @@
 #!/bin/bash
 
+#SBATCH --partition=wally
 #SBATCH --account=mrobinso_bgee
-#SBATCH --partition=axiom
-#SBATCH --time 24:00:00
-#SBATCH --job-name=HCA
-#SBATCH --output=HCA.out
-#SBATCH --error=HCA.err
-#SBATCH --mem=5G
-#SBATCH --cpus-per-task=4
+
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=2G
+#SBATCH --time=10-00:00:00
+
+#SBATCH --output=/users/sfonseca1/bgee_pipeline/pipeline/scRNA_Seq/Droplet_based_Protocols/download_HCA.out
+#SBATCH --error=/users/sfonseca1/bgee_pipeline/pipeline/scRNA_Seq/Droplet_based_Protocols/download_HCA.err
 #SBATCH --export=NONE
+#SBATCH --job-name=HCA
 #SBATCH --mail-user sara.fonsecacosta@unil.ch
 
 ## Note: The download is done to /tmp in axiom, since hard links are not allowed in /scratch
@@ -22,10 +24,9 @@ module load gcc python py-virtualenv
 python -V
 
 ## Paths
-manifest_file=/scratch/axiom/FAC/FBM/DEE/mrobinso/bgee/SFC/HCA_manifest_file.tsv
-tmp_folder_Download_data=/tmp/DOWNLOAD_HCA_DATA.$RANDOM
-final_destination=/scratch/axiom/FAC/FBM/DEE/mrobinso/bgee/SFC/DOWNLOAD_HCA_DATA/
-
+export manifest_file=../../../source_files/scRNA_Seq/Manifest_file.tsv
+export tmp_folder_Download_data=/tmp/DOWNLOAD_HCA_DATA.$RANDOM
+export final_destination=/scratch/wally/FAC/FBM/DEE/mrobinso/bgee/scRNA_Seq_All/scRNASeq_libraries_Droplet_10X/
 
 virtualenv hca
 source hca/bin/activate
