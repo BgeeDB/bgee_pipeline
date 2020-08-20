@@ -9,7 +9,7 @@
 ## annotation_file --> Bgee annotation file with information about all libraries 
 ## folder_data --> Folder where all the libraries are located
 ## folderSupport --> Folder where is placed the informative files as transcriptomes index + gtf_all 
-## output --> Path where should be saved the .Rout file
+## output --> Path where should be saved the scRNA_Seq_info_TargetBased file
 
 ## libraries used
 library(stringr)

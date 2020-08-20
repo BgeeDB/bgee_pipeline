@@ -16,7 +16,6 @@
 ## libraries used
 library(ggplot2)
 library(gridExtra)
-library(gridExtra)
 library(data.table)
 library(dplyr)
 

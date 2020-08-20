@@ -8,12 +8,10 @@
 ## 3) Count records in the BUS with bustools count: generate the UMI count matrix using transcripts_to_genes.txt.
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNA_Seq_info_TargetBased.txt" folder_data="folder_data" folderSupport="folderSupport" output="output_folder" bustoolspath="bustoolspath"' process_busFile.R process_busFile.Rout
+## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNA_Seq_info_TargetBased.txt" folder_data="folder_data" folderSupport="folderSupport"' process_busFile.R process_busFile.Rout
 ## scRNASeq_Info --> File that results from annotation and metadata (libraries downloaded and with extra information as SRR) 
 ## folder_data --> Folder where are all the libraries in fastq format
 ## folderSupport --> Folder where is placed the informative files as: transcriptomes index + gtf_all + transcript_to_gene + barcode whitelist
-## output --> Path where should be saved the output about the information collected
-## bustoolspath --> Full path to the bustools tool
 
 ## libraries used
 library(data.table)
@@ -28,7 +26,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed.
-command_arg <- c("scRNASeq_Info", "folder_data", "folderSupport", "output", "bustoolspath")
+command_arg <- c("scRNASeq_Info", "folder_data", "folderSupport")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -64,11 +62,11 @@ for (library in unique(scRNAInfo$libraryId)) {
       
       ## step 1 --> correct the barcodes
       cat("Correct barcodes......", "\n")
-      system(sprintf('%s -w %s -o %s %s', paste0(bustoolspath, " ", "correct"), paste0(folderSupport, "barcode_whitelist_", selectedWhitheList,".txt"), paste0(pathBusOut, "/output.correct.bus"), paste0(pathBusOut, "/output.bus")))
+      system(sprintf('%s -w %s -o %s %s', paste0(bustools, " ", "correct"), paste0(folderSupport, "barcode_whitelist_", selectedWhitheList,".txt"), paste0(pathBusOut, "/output.correct.bus"), paste0(pathBusOut, "/output.bus")))
       
       ## step 2 --> sort the bus file
       cat("Sort bus file......", "\n")
-      system(sprintf('%s -t 4 -o %s %s', paste0(bustoolspath, " ", "sort"), paste0(pathBusOut, "/output.correct.sort.bus"), paste0(pathBusOut, "/output.correct.bus")))
+      system(sprintf('%s -t 4 -o %s %s', paste0(bustools, " ", "sort"), paste0(pathBusOut, "/output.correct.sort.bus"), paste0(pathBusOut, "/output.correct.bus")))
       
       ## Creat folders to export the information per TCC and gene matrix (counts)
       tcc_counts <- paste0(pathBusOut, "/tcc_counts")
@@ -91,10 +89,10 @@ for (library in unique(scRNAInfo$libraryId)) {
       ## step 3 --> count with bustools count
       ## TCC level
       cat("TCC level......", "\n")
-      system(sprintf('%s -o %s -g %s -e %s -t %s %s', paste0(bustoolspath, " ", "count"), paste0(tcc_counts,"/tcc"), paste0(folderSupport, "/transcript_to_gene_", collectSpecies, ".tsv"),paste0(pathBusOut, "/matrix.ec"), paste0(pathBusOut, "/transcripts.txt"), paste0(pathBusOut, "/output.correct.sort.bus")))
+      system(sprintf('%s -o %s -g %s -e %s -t %s %s', paste0(bustools, " ", "count"), paste0(tcc_counts,"/tcc"), paste0(folderSupport, "/transcript_to_gene_", collectSpecies, ".tsv"),paste0(pathBusOut, "/matrix.ec"), paste0(pathBusOut, "/transcripts.txt"), paste0(pathBusOut, "/output.correct.sort.bus")))
       ## GENE level
       cat("Gene level......", "\n")
-      system(sprintf('%s -o %s -g %s -e %s -t %s %s %s', paste0(bustoolspath, " ", "count"), paste0(gene_counts,"/gene"), paste0(folderSupport, "/transcript_to_gene_", collectSpecies, ".tsv"), paste0(pathBusOut, "/matrix.ec"), paste0(pathBusOut, "/transcripts.txt"), paste0("--genecounts"), paste0(pathBusOut, "/output.correct.sort.bus")))
+      system(sprintf('%s -o %s -g %s -e %s -t %s %s %s', paste0(bustools, " ", "count"), paste0(gene_counts,"/gene"), paste0(folderSupport, "/transcript_to_gene_", collectSpecies, ".tsv"), paste0(pathBusOut, "/matrix.ec"), paste0(pathBusOut, "/transcripts.txt"), paste0("--genecounts"), paste0(pathBusOut, "/output.correct.sort.bus")))
       
     }
   } else {
