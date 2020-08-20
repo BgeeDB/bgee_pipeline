@@ -8,10 +8,11 @@
 ## 3) Count records in the BUS with bustools count: generate the UMI count matrix using transcripts_to_genes.txt.
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNA_Seq_info_TargetBased.txt" folder_data="folder_data" folderSupport="folderSupport"' process_busFile.R process_busFile.Rout
+## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNA_Seq_info_TargetBased.txt" folder_data="folder_data" folderSupport="folderSupport" whiteList_Path="whiteList_Path"' process_busFile.R process_busFile.Rout
 ## scRNASeq_Info --> File that results from annotation and metadata (libraries downloaded and with extra information as SRR) 
 ## folder_data --> Folder where are all the libraries in fastq format
-## folderSupport --> Folder where is placed the informative files as: transcriptomes index + gtf_all + transcript_to_gene + barcode whitelist
+## folderSupport --> Folder where is placed the informative files as: transcriptomes index + gtf_all + transcript_to_gene 
+## whiteList_Path --> Folder where is located the barcode_whitelist files
 
 ## libraries used
 library(data.table)
@@ -26,7 +27,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed.
-command_arg <- c("scRNASeq_Info", "folder_data", "folderSupport")
+command_arg <- c("scRNASeq_Info", "folder_data", "folderSupport", "whiteList_Path")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -62,7 +63,7 @@ for (library in unique(scRNAInfo$libraryId)) {
       
       ## step 1 --> correct the barcodes
       cat("Correct barcodes......", "\n")
-      system(sprintf('%s -w %s -o %s %s', paste0(bustools, " ", "correct"), paste0(folderSupport, "barcode_whitelist_", selectedWhitheList,".txt"), paste0(pathBusOut, "/output.correct.bus"), paste0(pathBusOut, "/output.bus")))
+      system(sprintf('%s -w %s -o %s %s', paste0(bustools, " ", "correct"), paste0(whiteList_Path, "barcode_whitelist_", selectedWhitheList,".txt"), paste0(pathBusOut, "/output.correct.bus"), paste0(pathBusOut, "/output.bus")))
       
       ## step 2 --> sort the bus file
       cat("Sort bus file......", "\n")
@@ -89,10 +90,10 @@ for (library in unique(scRNAInfo$libraryId)) {
       ## step 3 --> count with bustools count
       ## TCC level
       cat("TCC level......", "\n")
-      system(sprintf('%s -o %s -g %s -e %s -t %s %s', paste0(bustools, " ", "count"), paste0(tcc_counts,"/tcc"), paste0(folderSupport, "/transcript_to_gene_", collectSpecies, ".tsv"),paste0(pathBusOut, "/matrix.ec"), paste0(pathBusOut, "/transcripts.txt"), paste0(pathBusOut, "/output.correct.sort.bus")))
+      system(sprintf('%s -o %s -g %s -e %s -t %s %s', paste0(bustools, " ", "count"), paste0(tcc_counts,"/tcc"), paste0(folderSupport, "/transcript_to_gene_with_intergenic_", collectSpecies, ".tsv"),paste0(pathBusOut, "/matrix.ec"), paste0(pathBusOut, "/transcripts.txt"), paste0(pathBusOut, "/output.correct.sort.bus")))
       ## GENE level
       cat("Gene level......", "\n")
-      system(sprintf('%s -o %s -g %s -e %s -t %s %s %s', paste0(bustools, " ", "count"), paste0(gene_counts,"/gene"), paste0(folderSupport, "/transcript_to_gene_", collectSpecies, ".tsv"), paste0(pathBusOut, "/matrix.ec"), paste0(pathBusOut, "/transcripts.txt"), paste0("--genecounts"), paste0(pathBusOut, "/output.correct.sort.bus")))
+      system(sprintf('%s -o %s -g %s -e %s -t %s %s %s', paste0(bustools, " ", "count"), paste0(gene_counts,"/gene"), paste0(folderSupport, "/transcript_to_gene_with_intergenic_", collectSpecies, ".tsv"), paste0(pathBusOut, "/matrix.ec"), paste0(pathBusOut, "/transcripts.txt"), paste0("--genecounts"), paste0(pathBusOut, "/output.correct.sort.bus")))
       
     }
   } else {

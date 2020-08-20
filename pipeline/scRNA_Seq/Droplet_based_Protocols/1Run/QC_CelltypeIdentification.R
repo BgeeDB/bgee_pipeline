@@ -352,14 +352,14 @@ for (libraryID in scRNASeqAnnotation$libraryId) {
     object <- seurtObject(m_filtered = knee)
     
     ## read biotype information
-    biotypeInfo <- fread(paste0(infoFolder, "/gene_to_biotype_", speciesID,".tsv"))
+    biotypeInfo <- fread(paste0(infoFolder, "/gene_to_biotype_with_intergenic_", speciesID,".tsv"))
     colnames(biotypeInfo) <- c("gene_id", "biotype")
     ## get barcode information for the library
     barcodeLibrary <- dplyr::filter(barcodes, library == libraryID)
     ## get gene markers information
     geneMarkerLibrary <- dplyr::filter(markers, experimentId == experimentID)
     ## read info that link gene_id with gene_name
-    geneNameFile <- fread(paste0(infoFolder, "/gene_to_geneName_", speciesID,".tsv"))
+    geneNameFile <- fread(paste0(infoFolder, "/gene_to_geneName_with_intergenic_", speciesID,".tsv"))
     
     ## link barcode to cell ID or link cell ID based on gene marker and export information
     finalInformationCells <- targetCells(objectNormalized = object, barcodeIDs = barcodeLibrary, geneMarkers = geneMarkerLibrary, biotypeInfo = biotypeInfo, geneNameFile = geneNameFile, libraryID = libraryID)

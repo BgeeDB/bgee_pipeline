@@ -183,6 +183,7 @@ process_busFile: kallisto_bus 1Run/process_busFile.R
 	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'  						1Run/process_busFile.sbatch
 	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_FASTQ_DROPLET)@'  												1Run/process_busFile.sbatch
 	@sed -i 's@export folderSupport=.*@export folderSupport=$(RNASEQ_CLUSTER_GTF)@'  													1Run/process_busFile.sbatch
+	@sed -i 's@export whiteList_Path=.*@export whiteList_Path=$(SC_RNASEQ_PATH_SOURCE)@'  										1Run/process_busFile.sbatch
 	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                              1Run/process_busFile.sbatch
 	@sbatch 1Run/process_busFile.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
