@@ -426,7 +426,7 @@ RNASEQTMMPATH                       := $(RNASEQDATAPATH)processed_TMM_$(DBNAME)/
 # =========== SINGLE CELL RNA_Seq FILES  ===============
 # scRNASeq github file paths in the source directory
 SC_RNASEQ_PATH                         := scRNA_Seq/
-SC_RNASEQ_PATH_SOURCE                  := $(SOURCE_FILES_DIR)$(SC_RNASEQ_PATH)/
+SC_RNASEQ_PATH_SOURCE                  := $(SOURCE_FILES_DIR)$(SC_RNASEQ_PATH)
 SC_RNASEQ_EXPERIMENT_FILEPATH          := $(SC_RNASEQ_PATH_SOURCE)scRNASeqExperiment.tsv
 SC_RNASEQ_LIB_FILEPATH                 := $(SC_RNASEQ_PATH_SOURCE)scRNASeqLibrary.tsv
 SC_RNASEQ_JURA_LIB_FILEPATH            := $(SC_RNASEQ_PATH_SOURCE)juraLibrariesDownloaded.tsv
@@ -435,11 +435,12 @@ SC_RNASEQ_MARKERS_FILEPATH             := $(SC_RNASEQ_PATH_SOURCE)scRNASeq_marke
 SC_RNASEQ_MANIFEST_FILE_FILEPATH       := $(SC_RNASEQ_PATH_SOURCE)Manifest_file.tsv
 
 # scRNASeq github file paths in the generated_files directory
-SC_RNASEQ_NEW_LIB_FILEPATH             := $(GENERATED_FILES_DIR)$(SC_RNASEQ_PATH)NEW_scRNASeqLibrary.tsv
-SC_RNASEQ_METADATA_FILEPATH            := $(GENERATED_FILES_DIR)$(SC_RNASEQ_PATH)metadata_info.txt
-SC_RNASEQ_SAMPINFO_FILEPATH            := $(GENERATED_FILES_DIR)$(SC_RNASEQ_PATH)scrna_seq_sample_info.txt
-SC_RNASEQ_METADATA_10X_FILEPATH        := $(GENERATED_FILES_DIR)$(SC_RNASEQ_PATH)metadata_info_10X.txt
-SC_RNASEQ_SAMPINFO_10X_FILEPATH        := $(GENERATED_FILES_DIR)$(SC_RNASEQ_PATH)scRNA_Seq_info_TargetBased.txt
+SC_RNASEQ_PATH_GENERATED               := $(GENERATED_FILES_DIR)$(SC_RNASEQ_PATH)  
+SC_RNASEQ_NEW_LIB_FILEPATH             := $(SC_RNASEQ_PATH_GENERATED)NEW_scRNASeqLibrary.tsv
+SC_RNASEQ_METADATA_FILEPATH            := $(SC_RNASEQ_PATH_GENERATED)metadata_info.txt
+SC_RNASEQ_SAMPINFO_FILEPATH            := $(SC_RNASEQ_PATH_GENERATED)scrna_seq_sample_info.txt
+SC_RNASEQ_METADATA_10X_FILEPATH        := $(SC_RNASEQ_PATH_GENERATED)metadata_info_10X.txt
+SC_RNASEQ_SAMPINFO_10X_FILEPATH        := $(SC_RNASEQ_PATH_GENERATED)scRNA_Seq_info_TargetBased.txt
 
 # scRNAseq cluster paths (AXIOM)
 SC_RNASEQ_DOWNLOAD_PATH                 := /scratch/wally/FAC/FBM/DEE/mrobinso/bgee/
