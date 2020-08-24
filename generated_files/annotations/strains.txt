@@ -1,0 +1,461 @@
+strain	species
+(DSSC) 14011-0121.94	Drosophila pseudoobscura
+(DSSC) 14021-0251.011	Drosophila simulans
+(DSSC) 14021-0251.198	Drosophila simulans
+(DSSC) 14021-0251.199	Drosophila simulans
+(DSSC) 14021-0261.01	Drosophila yakuba
+(DSSC) 14024-0371.13	Drosophila ananassae
+(DSSC) 15010-1051.87	Drosophila virilis
+(DSSC) 15081-1352.22	Drosophila mojavensis
+129	Mus musculus
+129 ES cell backcrossed onto C57BL/6 for 4 generations	Mus musculus
+129/B6	Mus musculus
+129/BL6 mixed background	Mus musculus
+129/Black Swiss	Mus musculus
+129/C57BL/6	Mus musculus
+129/Sv	Mus musculus
+129/SvEv	Mus musculus
+129/SvEv and C57BL/6	Mus musculus
+129S1/SvImJ	Mus musculus
+129S1/SvJae	Mus musculus
+129S2	Mus musculus
+129S2/SvPasCrlf	Mus musculus
+129S5	Mus musculus
+129S6	Mus musculus
+129S6 x CBA/CaJ	Mus musculus
+129S6/SvEvTac	Mus musculus
+129SvJ	Mus musculus
+129SvJae	Mus musculus
+129X1/SvJ	Mus musculus
+A.BY-H2bc H2-T18f/SnJ	Mus musculus
+A/J	Mus musculus
+A/J x C57BL/6	Mus musculus
+AB	Danio rerio
+AB x TUB	Danio rerio
+AB/TL	Danio rerio
+AB/WIK	Danio rerio
+ACS/Beagle	Canis lupus familiaris
+African American	Homo sapiens
+AKR/J	Mus musculus
+AKR/J x FVB/NJ	Mus musculus
+AKR/N	Mus musculus
+american indian or alaska native	Homo sapiens
+Antigua	Drosophila melanogaster
+Arabian	Equus caballus
+Asian	Homo sapiens
+B10.D2	Mus musculus
+B6.CAST	Mus musculus
+B6/129	Mus musculus
+B6/C3H F1 hybrid	Mus musculus
+B6/CBF1J	Mus musculus
+B6By.C.132.54	Mus musculus
+B6C3F1	Mus musculus
+B6C3F1/Crl	Mus musculus
+B6CBACa	Mus musculus
+B6D2	Mus musculus
+B6D2F1	Mus musculus
+back-crossed to C57BL/6 for 6 generations	Mus musculus
+BALB	Mus musculus
+BALB/c	Mus musculus
+BALB/c AJ	Mus musculus
+BALB/cA	Mus musculus
+BALB/cByJ	Mus musculus
+BALB/cByJ Jcl	Mus musculus
+BALB/cJ	Mus musculus
+bambara	Homo sapiens
+BB	Drosophila melanogaster
+beagle	Canis lupus familiaris
+Belgian Shepherd	Canis lupus familiaris
+Bengal	Felis catus
+Berlin	Drosophila melanogaster
+Bernese Mountain Dog	Canis lupus familiaris
+Bl/6	Mus musculus
+BL/6-129	Mus musculus
+BL/6/FVB	Mus musculus
+black	Homo sapiens
+black/hispanic	Homo sapiens
+BN/SsNHsd	Rattus norvegicus
+Border Collie	Canis lupus familiaris
+Bristol N2	Caenorhabditis elegans
+British/Irish European	Homo sapiens
+Brown Norway	Rattus norvegicus
+BTBR	Mus musculus
+BTBRT T(+) tf/J	Mus musculus
+BTBR_T+_tf/J	Mus musculus
+BUB/BnJ	Mus musculus
+Bulldog	Canis lupus familiaris
+BXD1	Mus musculus
+BXD100	Mus musculus
+BXD12	Mus musculus
+BXD14	Mus musculus
+BXD16	Mus musculus
+BXD19	Mus musculus
+BXD2	Mus musculus
+BXD21	Mus musculus
+BXD22	Mus musculus
+BXD25	Mus musculus
+BXD27	Mus musculus
+BXD31	Mus musculus
+BXD32	Mus musculus
+BXD33	Mus musculus
+BXD34	Mus musculus
+BXD39	Mus musculus
+BXD40	Mus musculus
+BXD42	Mus musculus
+BXD43	Mus musculus
+BXD45	Mus musculus
+BXD48	Mus musculus
+BXD50	Mus musculus
+BXD51	Mus musculus
+BXD55	Mus musculus
+BXD56	Mus musculus
+BXD6	Mus musculus
+BXD60	Mus musculus
+BXD62	Mus musculus
+BXD65	Mus musculus
+BXD66	Mus musculus
+BXD68	Mus musculus
+BXD69	Mus musculus
+BXD70	Mus musculus
+BXD71	Mus musculus
+BXD73	Mus musculus
+BXD75	Mus musculus
+BXD83	Mus musculus
+BXD84	Mus musculus
+BXD86	Mus musculus
+BXD87	Mus musculus
+BXD89	Mus musculus
+BXD9	Mus musculus
+BXD90	Mus musculus
+BXD96	Mus musculus
+BXD97	Mus musculus
+BXD98	Mus musculus
+BXD99	Mus musculus
+BXH10	Mus musculus
+BXH14	Mus musculus
+BXH19	Mus musculus
+BXH2	Mus musculus
+BXH4	Mus musculus
+BXH6	Mus musculus
+BXH7	Mus musculus
+BXH8	Mus musculus
+BXH9	Mus musculus
+BXHF1	Mus musculus
+C.129S2(B6)-Il8rbtm1Mwm/J (Il8rb-/-)	Mus musculus
+C3H	Mus musculus
+C3H-HeOuJ	Mus musculus
+C3H/HeJ	Mus musculus
+C3H/HeJBir	Mus musculus
+C3HeB/FeJ	Mus musculus
+C56BL/6	Mus musculus
+C56BL/6J	Mus musculus
+C57	Mus musculus
+C57 DBA FVB mixed	Mus musculus
+C57 on a 129 background	Mus musculus
+C57/129	Mus musculus
+C57/B6	Mus musculus
+C57/SV129 (mixed background)	Mus musculus
+C57B/SV129	Mus musculus
+C57B6/J	Mus musculus
+C57B6/SJL	Mus musculus
+C57B6/SJL x C57B6/129SV	Mus musculus
+C57BJ/6	Mus musculus
+C57BL	Mus musculus
+C57BL x 129S6/SvEv	Mus musculus
+C57BL/10	Mus musculus
+C57BL/10ScSn	Mus musculus
+C57BL/10SnJ	Mus musculus
+C57BL/6	Mus musculus
+C57BL/6 / CBA	Mus musculus
+C57BL/6 and 129/Sv	Mus musculus
+C57BL/6 and 129/Sv mixed	Mus musculus
+C57BL/6 x 129/IB10	Mus musculus
+C57BL/6 x 129/Sv mixed	Mus musculus
+C57BL/6 x 129/Sv x 129/Ola	Mus musculus
+C57BL/6 x C3H	Mus musculus
+C57BL/6 x CBA/J	Mus musculus
+C57BL/6 x DBA2	Mus musculus
+C57BL/6, 129/Sv and C3H	Mus musculus
+C57BL/6-Tyr c-Brd	Mus musculus
+C57BL/6/129/Sv	Mus musculus
+C57BL/6/129/SvEV	Mus musculus
+C57BL/6ByJ	Mus musculus
+C57BL/6J	Mus musculus
+C57BL/6J - 129SvEvTac	Mus musculus
+C57BL/6J and 129/Sv	Mus musculus
+C57BL/6J and C3H/HeJ	Mus musculus
+C57BL/6J and C57BL/6 x 129	Mus musculus
+C57BL/6J NIA	Mus musculus
+C57BL/6J Ola-Hsd	Mus musculus
+C57BL/6J x 129/Sv	Mus musculus
+C57BL/6J x BTBR	Mus musculus
+C57BL/6J x C3H/Paf	Mus musculus
+C57BL/6J x C3HeB/FeJ	Mus musculus
+C57BL/6J x DBA/2J	Mus musculus
+C57BL/6J, 10 generations backcrossed	Mus musculus
+C57BL/6J, 5-8 generations backcrossed	Mus musculus
+C57BL/6J, male	Mus musculus
+C57BL/6J-129SvEvTac	Mus musculus
+C57BL/6JBomTac	Mus musculus
+C57BL/6Jx129SvEv	Mus musculus
+C57BL/6JxSJL	Mus musculus
+C57BL/6L	Mus musculus
+C57BL/6N	Mus musculus
+C57BL/6NHsd	Mus musculus
+C57BL/6NJcl	Mus musculus
+C57BL/DBA2/129OLA-Ev	Mus musculus
+C57BL/J	Mus musculus
+C57BL/J6	Mus musculus
+C57BL6	Mus musculus
+C57BL6 x CBA	Mus musculus
+C57BL6 x CD1	Mus musculus
+C57BL6/129S4	Mus musculus
+C57BL6/SJL	Mus musculus
+C57BLKS/J	Mus musculus
+C57BR/cdJ	Mus musculus
+C58/J	Mus musculus
+Cambridge Oregon R	Drosophila melanogaster
+Canton S	Drosophila melanogaster
+Canton SB	Drosophila melanogaster
+Canton-S	Drosophila melanogaster
+Caucasian	Homo sapiens
+Caucasian of Finnish ancestry	Homo sapiens
+Cavalier King Charles spaniel	Canis lupus familiaris
+CB6F1	Mus musculus
+CBA	Mus musculus
+CBA x C57BL/6	Mus musculus
+CBA/CaJ	Mus musculus
+CBA/J	Mus musculus
+CBAC57/Bl6	Mus musculus
+CD-1	Mus musculus
+CD1	Mus musculus
+CE/J	Mus musculus
+CF-1	Mus musculus
+CF-1 x B6D2F1/J	Mus musculus
+CF-1 x C57BL/6	Mus musculus
+CF-1/FVB	Mus musculus
+CH3	Mus musculus
+Chinchilla Rex Rabbit	Oryctolagus cuniculus
+chinese	Macaca mulatta
+chinese	Homo sapiens
+chinese field dog	Canis lupus familiaris
+cn bw	Drosophila melanogaster
+confidential_restricted_data	Homo sapiens
+crossbreeds of Duroc sires and F1 LR/Yorkshire dams	Sus scrofa
+crossbreeds of German Landrace and Piétrain	Sus scrofa
+crossed to B6/J Jcl	Mus musculus
+D2B6F1	Mus musculus
+Dahomey	Drosophila melanogaster
+Dahomey wild type	Drosophila melanogaster
+DBA-1	Mus musculus
+DBA-C57BL/6	Mus musculus
+DBA/2	Mus musculus
+DBA/2 x Balb/c	Mus musculus
+DBA/2J	Mus musculus
+DBA/2J x FVB/NJ	Mus musculus
+DBAxC57BL/6J	Mus musculus
+DF/B	Mus musculus
+Domestic short-haired	Felis catus
+DUKsi	Mus musculus
+Duroc	Sus scrofa
+DW/J	Mus musculus
+ee	Drosophila melanogaster
+F1 generation, by crossing virgin Canton S wild type females with Oregon R wild type males	Drosophila melanogaster
+F344	Rattus norvegicus
+F344/Cr1	Rattus norvegicus
+Fischer	Rattus norvegicus
+France	Drosophila melanogaster
+French bulldog	Canis lupus familiaris
+fula	Homo sapiens
+FVB	Mus musculus
+FVB x BALB/c	Mus musculus
+FVB x C57BL/6	Mus musculus
+FVB/N	Mus musculus
+FVB/N and Balb/c	Mus musculus
+FVB/NCrIBR	Mus musculus
+FVB/NJ	Mus musculus
+FVB:C57BL/6J	Mus musculus
+Glasgow Oregon R	Drosophila melanogaster
+Great Swiss Mountain Dog	Canis lupus familiaris
+Guizhou mini-pigs	Sus scrofa
+Hanoverian/Trakehner/Mustang	Equus caballus
+Hartley	Cavia porcellus
+Heifer cow	Bos taurus
+Hereford	Bos taurus
+hispanic	Homo sapiens
+hispanic american	Homo sapiens
+Holstein-Friesian	Bos taurus
+hound mix	Canis lupus familiaris
+I/LnJ	Mus musculus
+ICR	Mus musculus
+In(X)/C3H x C57BL/6J	Mus musculus
+inbred C57BL/6J	Mus musculus
+inbred long sleep	Mus musculus
+inbred short sleep	Mus musculus
+inbred SWV genetic background	Mus musculus
+indian	Macaca mulatta
+isolines established from flies collected in Raleigh, NC in 1999	Drosophila melanogaster
+Italian greyhound	Canis lupus familiaris
+Japan Oregon R (Hikone)	Drosophila melanogaster
+japanese	Homo sapiens
+JK574 fog-2(q71)	Caenorhabditis elegans
+KK/HlJ	Mus musculus
+Labrador	Canis lupus familiaris
+Labrador Retriever	Canis lupus familiaris
+Landrace, Tongcheng, and Wuzhishan pigs	Sus scrofa
+Large White	Sus scrofa
+Large White pig	Sus scrofa
+LG/J	Mus musculus
+LHm	Drosophila melanogaster
+light breed horse (primarily Thoroughbred)	Equus caballus
+Line MV2-25 Baylor	Drosophila pseudoobscura
+LL1 mother (A0579) x LL2 father (A0573)	Monodelphis domestica
+LL1 mother (A0580) x LL1 father (A0578)	Monodelphis domestica
+LL2 mother (A0571) x LL1 father (A0578)	Monodelphis domestica
+LL2 mother (A0572) x LL2 father (A0573)	Monodelphis domestica
+LP/J	Mus musculus
+Lusitano	Equus caballus
+MA/MyJ	Mus musculus
+manjago	Homo sapiens
+Meishan	Sus scrofa
+mexican	Homo sapiens
+mexican american	Homo sapiens
+MGA from Georgia	Mus musculus
+mix of breed	Canis lupus familiaris
+mixed	Mus musculus
+mixed 129 x C57BL/6	Mus musculus
+mixed C57BL/6 - 129ola	Mus musculus
+mixed genetic backgroud of C57BL/6 and 129/SvJ	Mus musculus
+Mixed-breed	Felis catus
+mixture of FVB/N and C57BL/6	Mus musculus
+Mongolian horse	Equus caballus
+MRL/MpJ	Mus musculus
+multiple breeds	Sus scrofa
+Mustang	Equus caballus
+N2	Caenorhabditis elegans
+NA	Cavia porcellus
+NA	Xenopus tropicalis
+NA	Homo sapiens
+NA	Anolis carolinensis
+NA	Bos taurus
+NA	Monodelphis domestica
+NA	Sus scrofa
+NA	Pan paniscus
+NA	Gallus gallus
+NA	Caenorhabditis elegans
+NA	Ornithorhynchus anatinus
+NA	Oryctolagus cuniculus
+NA	Felis catus
+NA	Pan troglodytes
+NA	Rattus norvegicus
+NA	Drosophila melanogaster
+NA	Gorilla gorilla
+NA	Canis lupus familiaris
+NA	Danio rerio
+NA	Macaca mulatta
+NA	Equus caballus
+NA	Mus musculus
+Netherland dwarf	Oryctolagus cuniculus
+New Zealand	Oryctolagus cuniculus
+New Zealand breed, China ecotype	Oryctolagus cuniculus
+NMR-1	Mus musculus
+NMRI	Mus musculus
+NOD/LtJ	Mus musculus
+NON/LtJ	Mus musculus
+NOR/LtJ	Mus musculus
+Northern Eureopean White	Homo sapiens
+Nos-Gal4 bgcn [QS2]/SM6 Roi Cy	Drosophila melanogaster
+not annotated	Caenorhabditis elegans
+NZB/BlNJ	Mus musculus
+NZO/HILtJ	Mus musculus
+NZW/LacJ	Mus musculus
+Oregon-R	Drosophila melanogaster
+Outbred	Xenopus tropicalis
+P/J	Mus musculus
+Papillon	Canis lupus familiaris
+Paso Fino	Equus caballus
+Percheron	Equus caballus
+Pima Indian	Homo sapiens
+PL/J	Mus musculus
+pony	Equus caballus
+Pony of the Americas	Equus caballus
+Pug	Canis lupus familiaris
+Quarter	Equus caballus
+Quarter Horse	Equus caballus
+R1 and C57BL/6	Mus musculus
+RAL315	Drosophila melanogaster
+RAL360	Drosophila melanogaster
+Raleigh	Drosophila melanogaster
+Red Junglefowl	Gallus gallus
+Rex	Oryctolagus cuniculus
+RIIIS/J	Mus musculus
+Rj:NMRI	Mus musculus
+Ross	Gallus gallus
+Saluki	Canis lupus familiaris
+Savannah	Felis catus
+Scandinavian origin	Homo sapiens
+Scientific Hatcheries	Danio rerio
+Singapore	Danio rerio
+SJ6/C57BL6	Mus musculus
+SJL	Mus musculus
+SJL/J	Mus musculus
+SJLB6	Mus musculus
+SM/J	Mus musculus
+Sprague-Dawley	Rattus norvegicus
+Staffordshire Bull Terrier	Canis lupus familiaris
+Standardbred	Equus caballus
+Sus scrofa domesticus taxonID 9825 HampshirexYorkshirexSwedish Landrace	Sus scrofa
+SV129	Mus musculus
+Sv129/C57B6 hybrid	Mus musculus
+Swedish	Homo sapiens
+swiss albino	Mus musculus
+Swiss Webster	Mus musculus
+SWR/J	Mus musculus
+T65H translocation mouse without uniparental duplications (normal)	Mus musculus
+Taiwanese	Homo sapiens
+TBP-13Q-12	Mus musculus
+TBP13Q	Mus musculus
+Thoroughbred	Equus caballus
+Tibetan	Sus scrofa
+Tibetan pig	Sus scrofa
+TL	Danio rerio
+TLAB	Danio rerio
+Trakehner x Mustang	Equus caballus
+TuAB	Danio rerio
+Tuebingen	Danio rerio
+w	Drosophila melanogaster
+w1118	Drosophila melanogaster
+W501	Drosophila simulans
+w;iso	Drosophila melanogaster
+Warmblood	Equus caballus
+Whippet	Canis lupus familiaris
+white	Homo sapiens
+WIK	Danio rerio
+wild derived (ID stock)	Mus musculus
+wild-derived inbred lines	Mus musculus
+wild-derived lines	Drosophila melanogaster
+wild-type	Bos taurus
+wild-type	Sus scrofa
+wild-type	Mus musculus
+wild-type	Danio rerio
+wild-type	Rattus norvegicus
+wild-type	Oryctolagus cuniculus
+wild-type	Xenopus tropicalis
+wild-type	Felis catus
+wild-type	Erinaceus europaeus
+wild-type	Equus caballus
+wild-type	Drosophila melanogaster
+wild-type	Cavia porcellus
+wild-type	Canis lupus familiaris
+Winters, CA	Drosophila melanogaster
+Wistar Han	Rattus norvegicus
+wolof	Homo sapiens
+WSB/EiJ	Mus musculus
+Wujin pig	Sus scrofa
+y1 w67c23	Drosophila melanogaster
+yellow white and Oregon	Drosophila melanogaster
+Yorkshire	Sus scrofa
+Yorkshire terrier	Canis lupus familiaris
+yw	Drosophila melanogaster
+y[1] w[67c]	Drosophila melanogaster
+Zimbabwe	Drosophila melanogaster
