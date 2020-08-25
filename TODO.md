@@ -1,5 +1,9 @@
 # TODO for Bgee 15
 
+## Annotations
+
+Use the strain mapping file in the pipeline for inserting conditions
+
 ## Bgee lite
 
 * Add expression rank and expression score info
