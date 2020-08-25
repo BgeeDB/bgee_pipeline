@@ -6,10 +6,11 @@
 ## by a fraction of cells that have the gene classified as present.
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNASeq_Info.txt" InformationAllLibraries="InformationAllLibraries.txt" folder_data="folder_data" desired_r_cutoff="desired_r_cutoff" output="output"' Call_PresentGenes_indivCell_cellPop.R Call_PresentGenes_indivCell_cellPop.Rout
+## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNASeq_Info.txt" InformationAllLibraries="InformationAllLibraries.txt" folder_data="folder_data" folder_refIntergenic="folder_refIntergenic" desired_r_cutoff="desired_r_cutoff" output="output"' Call_PresentGenes_indivCell_cellPop.R Call_PresentGenes_indivCell_cellPop.Rout
 ## scRNASeq_Info --> File that results from annotation and metadata (libraries downloaded and with extra information as readlength or SRR) 
 ## InformationAllLibraries --> File with information about each cell after barcode and gene markers annotation (per library contain total number of cells and cell Name)
 ## folder_data --> Folder where are all the libraries after cell identification
+## folder_refIntergenic --> Folder where is located the reference intergenic files for each species
 ## desired_r_cutoff --> proportion of intergenic allowed (both individual cell and cell population to define the ratio cutoff)
 ## output --> Folder where we should save the results 
 
@@ -18,6 +19,7 @@ library(ggplot2)
 library(gridExtra)
 library(data.table)
 library(dplyr)
+library(Biostrings)
 
 ## reading arguments
 cmd_args = commandArgs(TRUE);
@@ -29,7 +31,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed....
-command_arg <- c("scRNASeq_Info", "InformationAllLibraries", "folder_data", "desired_r_cutoff", "output")
+command_arg <- c("scRNASeq_Info", "InformationAllLibraries", "folder_data", "folder_refIntergenic" ,"desired_r_cutoff", "output")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -117,11 +119,12 @@ exportInfo_CellPop <- function(collectInfoAllCells){
   return(unlist(collectInfoData, use.names=FALSE))
 }
 
-## function to call present genes at cell population level depending on the cuoff applied
-plotCellPop <- function(collectInfoAllCells, desired_r_cutoff, cell_Name, sizeData){
-  
+## function to call present genes at cell population level depending on the cutoff applied (note here the selected_intergenic have in consideration the reference intergenic)
+## The plot is done based on density of protein coding + ref intergenic regions
+plotCellPop <- function(collectInfoAllCells, desired_r_cutoff, cell_Name, sizeData, refIntergenic){
+
   selected_coding <- collectInfoAllCells$biotype %in% "protein_coding"
-  selected_intergenic <- collectInfoAllCells$type %in% "intergenic"
+  selected_intergenic <- (finalTable$type %in% "intergenic" & seqNamesFinal$refIntergenic == "TRUE")  
   
   ## intergenic 
   summed_intergenic <- sapply(unique(sort(collectInfoAllCells$ratio[selected_coding])), function(x){
@@ -139,7 +142,7 @@ plotCellPop <- function(collectInfoAllCells, desired_r_cutoff, cell_Name, sizeDa
   
   percent <- (1-desired_r_cutoff)*100
   
-  ## Select the minimal value of TPM for which the ratio of genes and intergenic regions is equal to 0.05 or lower (first test if at least 1 TPM value has this property):
+  ## Select the minimal value of ratio_cutoff for which the ratio of genes and intergenic regions is equal to 0.05 or lower
   if (sum(r < desired_r_cutoff) == 0){
     ratio_cutoff <- sort(unique(collectInfoAllCells$ratio[selected_coding]))[which(r == min(r))[1]]
     r_cutoff <- min(r)
@@ -150,11 +153,13 @@ plotCellPop <- function(collectInfoAllCells, desired_r_cutoff, cell_Name, sizeDa
     cat(paste0("    The ratio cutoff for which " , percent,"%", " of the expressed genes are be coding found at ratio=", ratio_cutoff,"\n"))
   }
 
+  ## protein coding genes
   ProteinCoding_density <- as.data.frame(collectInfoAllCells$ratio[collectInfoAllCells$biotype == "protein_coding"])
   colnames(ProteinCoding_density) <- 'ratio'
   ProteinCoding_density <- data.frame(region=rep(c('protein_coding'),each=length(ProteinCoding_density)), ProteinCoding_density)
   
-  intergenic_density <- as.data.frame(collectInfoAllCells$ratio[collectInfoAllCells$type == "intergenic"])
+  ## Reference intergenic regions
+  intergenic_density <- as.data.frame(collectInfoAllCells$ratio[collectInfoAllCells$type == "intergenic" & seqNamesFinal$refIntergenic == "TRUE"])
   colnames(intergenic_density) <- 'ratio'
   intergenic_density <- data.frame(region=rep(c('intergenic'),each=length(intergenic_density)), intergenic_density)
   
@@ -178,7 +183,7 @@ plotCellPop <- function(collectInfoAllCells, desired_r_cutoff, cell_Name, sizeDa
 
 
 ### function to call present genes at individual cell and to export final file at cell population level
-callPresentGenes <- function(finalTable, desired_r_cutoff, experiment, cell_Name, species){
+callPresentGenes <- function(finalTable, desired_r_cutoff, experiment, cell_Name, species, uberonId, stageId, sex, strain, refIntergenic){
   
   collectInfoAllCells <- data.frame()
   for (i in 4:ncol(finalTable)) {
@@ -187,7 +192,7 @@ callPresentGenes <- function(finalTable, desired_r_cutoff, experiment, cell_Name
     infoType <- finalTable[,1:3]
     
     selected_coding <- finalTable$biotype %in% "protein_coding"
-    selected_intergenic <- finalTable$type %in% "intergenic"
+    selected_intergenic <- (finalTable$type %in% "intergenic" & seqNamesFinal$refIntergenic == "TRUE")
     
     summed_intergenic <- sapply(unique(sort(finalTable[,i][selected_coding])), function(x){
       return(sum(finalTable[,i][selected_intergenic] >= x) )})
@@ -236,7 +241,7 @@ callPresentGenes <- function(finalTable, desired_r_cutoff, experiment, cell_Name
   collectInfoAllCells$ratio <- collectInfoAllCells$cellPresent / sizeData
   
   ### export plot per cell population with cut-offs
-  cellPop <- plotCellPop(collectInfoAllCells = collectInfoAllCells, desired_r_cutoff = desired_r_cutoff, cell_Name = cell_Name, sizeData = sizeData)
+  cellPop <- plotCellPop(collectInfoAllCells = collectInfoAllCells, desired_r_cutoff = desired_r_cutoff, cell_Name = cell_Name, sizeData = sizeData, refIntergenic = seqNamesFinal)
 
   ## define cutoffs
   collectInfoAllCells$call_cutoff_density <- ifelse(collectInfoAllCells$ratio >= cellPop[[2]], "present", "-")
@@ -246,10 +251,10 @@ callPresentGenes <- function(finalTable, desired_r_cutoff, experiment, cell_Name
   ## write information per cell population
   cellPopulationInfo <-  exportInfo_CellPop(collectInfoAllCells = collectInfoAllCells)
     
-  ## plot distribution with cutoffs
+  ## plot distribution of protein coding + ref intergenic for cell population with cutoffs (density + ratio)
   p1 <- cellPop[[1]]$plot +
     scale_color_manual(values=c("#00BFC4", "#F8766D")) +
-    labs(title = "Density distribution of protein coding vs intergenic present", x="Log(ratio)",y="Density") +
+    labs(title = "Density distribution of protein coding vs reference intergenic present", x="Log(ratio)",y="Density") +
     geom_vline(aes(xintercept=log(cellPop[[2]]), linetype="dotted"), color="black", size=0.5) + 
     geom_vline(aes(xintercept=log(cellPop[[3]]), linetype="solid"), color = "black", size=0.5) +
     scale_linetype_manual(name = "Cut-Off", values = c("dotted", "solid"), labels = c(paste0("Cut-off density (", round(cellPop[[2]]*sizeData, digits = 0), " cell/s )"), paste0("Cut-off ratio (", round(cellPop[[3]]*sizeData, digits = 0) , " cells)")))
@@ -267,7 +272,7 @@ callPresentGenes <- function(finalTable, desired_r_cutoff, experiment, cell_Name
    labs(title = "Proportion of coding genes present", x=" ",y="%") +
    coord_cartesian(ylim = c(0, 100))
  
-  pdf(file.path(output, paste0("Cell_Population_",cell_Name,".pdf")), width = 14, height = 7)
+  pdf(file.path(output, paste0("Cell_Population_",cell_Name,"_", experiment,"_", uberonId,"_", stageId,"_", sex,"_", strain,"_", species,".pdf")), width = 14, height = 7)
   grid.arrange(p1,p2,ncol = 2, nrow = 1)
   dev.off()
   
@@ -296,7 +301,6 @@ for (species in unique(scRNASeqAnnotation$speciesId)) {
          for (strain in unique(scRNASeqAnnotation$strain[scRNASeqAnnotation$speciesId == species & scRNASeqAnnotation$experimentId == experiment & scRNASeqAnnotation$uberonId == uberonId & scRNASeqAnnotation$cellTypeId == cellId & scRNASeqAnnotation$stageId == stageId & scRNASeqAnnotation$sex == sex])){
           cat("Strain info:", strain, "\n")
           strain <- paste0(strain)
-           
           
            if (sex == "NA" & strain == "NA"){
              librariesInfo <- scRNASeqAnnotation$libraryId[scRNASeqAnnotation$speciesId == species & scRNASeqAnnotation$experimentId == experiment & scRNASeqAnnotation$uberonId == uberonId & scRNASeqAnnotation$cellTypeId == cellId & scRNASeqAnnotation$stageId == stageId]
@@ -308,7 +312,21 @@ for (species in unique(scRNASeqAnnotation$speciesId)) {
           
            ## collect cell-type information from info file (and ignore cell-types not identified)
           cell_Name <- unique(cellInfo$Cell_Name[cellInfo$experimentID == experiment & cellInfo$Cell_Name != "No match between annotation and analysis"])
-
+          
+          ## reference intergenic regions extract ID's
+          refInt <- file.path(folder_refIntergenic, paste0(species, "_intergenic.fa"))
+          infoRef <- paste0(file.exists(refInt))
+          if (infoRef == "FALSE"){
+            cat("Missing the reference intergenic regions for this species. Libraries not treated for this species!", "\n")
+          } else {
+          refInt <- readDNAStringSet(refInt)
+          seq_name = names(refInt)
+          seq_name <- gsub( " .*$", "", seq_name )
+          seq_name <- gsub( "_", "-", seq_name)
+          seqNamesFinal <- as.data.frame(seq_name)
+          colnames(seqNamesFinal) <- "gene_id"
+          seqNamesFinal$refIntergenic <- "TRUE"
+          
              for (cell in cell_Name) {
                file <- as.data.frame(paste0(folder_data,  librariesInfo, "/Normalized_Counts_", cell, ".tsv"))
                colnames(file) <- "path"
@@ -344,8 +362,16 @@ for (species in unique(scRNASeqAnnotation$speciesId)) {
                  finalTable <- finalTable[which(rowSums(finalTable[,4:ncol(finalTable)]) > 0), ]
                  sizeData <- ncol(finalTable)-3
                  
+                 ## seqNamesFinal with same size that final Table (here everything different refIntergenic is FALSE)
+                 collectIDs <- as.data.frame(finalTable$gene_id)
+                 colnames(collectIDs) <- "gene_id"
+                 seqNamesFinal <- merge(collectIDs, seqNamesFinal, by = "gene_id", all.x = TRUE)
+                 seqNamesFinal$refIntergenic <- ifelse(is.na(seqNamesFinal$refIntergenic) == TRUE, "FALSE", seqNamesFinal$refIntergenic)
+                 ## remove / in strain name
+                 strain <- gsub("/","-", strain)
+                 
                  ## collect information per cell/ cell population and plots
-                 calls_Inv_cellPop <- callPresentGenes(finalTable = finalTable, desired_r_cutoff = as.numeric(desired_r_cutoff), experiment = experiment, cell_Name = cell, species = species)
+                 calls_Inv_cellPop <- callPresentGenes(finalTable = finalTable, desired_r_cutoff = as.numeric(desired_r_cutoff), experiment = experiment, cell_Name = cell, species = species, uberonId = uberonId,  stageId = stageId, sex = sex, strain = strain, refIntergenic = seqNamesFinal)
                  ## adj output name
                  fileName <- paste0("calls_InvidCell_cellPopulation_", cell , "_", experiment,"_", uberonId,"_", cellId,"_", stageId,"_", sex,"_", strain,"_", species,".tsv")
                  fileName <- gsub(":","-",fileName)
@@ -362,8 +388,16 @@ for (species in unique(scRNASeqAnnotation$speciesId)) {
                  finalTable <- finalTable[which(rowSums(finalTable[,4:ncol(finalTable)]) > 0), ]
                  sizeData <- ncol(finalTable)-3
                  
+                 ## seqNamesFinal with same size that final Table (here everything different refIntergenic is FALSE)
+                 collectIDs <- as.data.frame(finalTable$gene_id)
+                 colnames(collectIDs) <- "gene_id"
+                 seqNamesFinal <- merge(collectIDs, seqNamesFinal, by = "gene_id", all.x = TRUE)
+                 seqNamesFinal$refIntergenic <- ifelse(is.na(seqNamesFinal$refIntergenic) == TRUE, "FALSE", seqNamesFinal$refIntergenic)
+                 ## remove / in strain name
+                 strain <- gsub("/","-", strain)
+                 
                  ## collect information per cell/ cell population and plots
-                 calls_Inv_cellPop <- callPresentGenes(finalTable = finalTable, desired_r_cutoff = as.numeric(desired_r_cutoff), experiment = experiment, cell_Name = cell, species = species)
+                 calls_Inv_cellPop <- callPresentGenes(finalTable = finalTable, desired_r_cutoff = as.numeric(desired_r_cutoff), experiment = experiment, cell_Name = cell, species = species, uberonId = uberonId,  stageId = stageId, sex = sex, strain = strain, refIntergenic = seqNamesFinal)
                  ## adj output name
                  fileName <- paste0("calls_InvidCell_cellPopulation_", cell , "_", experiment,"_", uberonId,"_", cellId,"_", stageId,"_", sex,"_", strain,"_", species,".tsv")
                  fileName <- gsub(":","-",fileName)
@@ -373,7 +407,7 @@ for (species in unique(scRNASeqAnnotation$speciesId)) {
                  
                }
              }
-          
+            }
          }
         }
        }
