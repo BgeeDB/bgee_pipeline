@@ -87,7 +87,7 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
       
       if (detectFastqPath_1 == TRUE & detectFastqPath_2 == TRUE){
         
-        print("This library come from HCA repository.")
+        print("This library come from HCA repository OR from EBI by extracting directly fastq files (exception).")
         ## select all fastq.gz files
         detectFastqPath <- list.dirs(paste0(folder_data, "/", i, "/", "FASTQ"), recursive=TRUE)
         detectFastqFiles <- list.files(path=detectFastqPath, pattern = "\\.fastq.gz$")
