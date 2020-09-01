@@ -173,8 +173,14 @@ kallisto_bus: generate_info 1Run/Kallisto_bus.R
 	@echo --- DONE ---
 	@touch $@
 
+# NOTE: Before run the process_busFile rule (uncompress the barcodes files, because in github we cannot have files with more than 100Mb size)
+uncompress_barcodes: kallisto_bus $SC_RNASEQ_PATH_SOURCE/barcode_whitelist_10X_v2.txt.zip $SC_RNASEQ_PATH_SOURCE/barcode_whitelist_10X_v3.txt.zip
+	cd $(SC_RNASEQ_PATH_SOURCE)
+	unzip barcode_whitelist_10X_v2.txt.zip 
+	unzip barcode_whitelist_10X_v3.txt.zip 
+
 ## Process bus files
-process_busFile: kallisto_bus 1Run/process_busFile.R
+process_busFile: uncompress_barcodes 1Run/process_busFile.R
 	@echo --- Starting the process of bus files ---
 	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                                1Run/process_busFile.R
 	@sed -i 's@--output=.*@--output=${PWD}/process_busFile.out@'                                              1Run/process_busFile.sbatch
