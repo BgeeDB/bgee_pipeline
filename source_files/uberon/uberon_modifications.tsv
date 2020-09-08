@@ -1,0 +1,285 @@
+classToModify	xrefsToAdd	xrefsToRemove	equivalentToAdd	equivalentToRemove	Comments
+UBERON:0005410		EMAPA:17596	NA	NA	
+UBERON:0005411		EMAPA:17596	NA	NA	
+UBERON:0004637	EMAPA:17596		NA	NA	
+UBERON:0003061	EMAPA:16115		NA	NA	
+UBERON:0011919		EMAPA:16115	NA	NA	
+UBERON:0003304		EMAPA:16115	NA	NA	
+UBERON:0001908		EMAPA:16678	NA	NA	
+UBERON:0000171		EMAPA:17607	NA	NA	
+UBERON:0002426		EMAPA:17748	NA	NA	
+UBERON:0008196		EMAPA:17748	NA	NA	
+UBERON:0001954		EMAPA:32772	NA	NA	
+UBERON:0034673		EMAPA:35128 	NA	NA	
+UBERON:2000347		ZFA:0000347	NA	NA	
+UBERON:0003566		EMAPA:16098	NA	NA	
+UBERON:0003310		EMAPA:16291	NA	NA	complex issue,this change is enough? (EMAPA:16291 "rhombomere 1 floor plate" (which is indirectly part of the metencephalon) is mapped to both UBERON:0003310 "floor plate of metencephalon" and UBERON:0005566 "rhombomere 1 floor plate", which is correct, but necessary only because UBERON:0005499 "rhombomere 1" is not part of UBERON:0001895 "metencephalon" in Uberon for this species. It would be better to add GCI part_of relations to rhombomeres and rhombomere floor plates, and to keep only the xref to UBERON:0005566 "rhombomere 1 floor plate".)
+UBERON:0003310		EMAPA:16294	NA	NA	
+UBERON:0003302		EMAPA:16483	NA	NA	
+UBERON:0003302		EMAPA:16487	NA	NA	
+UBERON:0005875		EMAPA:16762	NA	NA	Should I add the GCI relationship? (same for EMAPA:16762 "4th branchial groove ectoderm", keep only xref to UBERON:0005662 "4th arch ectoderm", and add GCI relations to reach UBERON:0006846 surface groove, without needing the xref to UBERON:0005875 "4th arch pharyngeal cleft")
+UBERON:0002425		EMAPA:16589	NA	NA	Should I add the GCI relationship? (EMAPA:16589 "visceral pericardium" part "pericardium", indirectly part of "serous pericardium", synonym "pericardium visceral mesothelium", xref to UBERON:0007186 "pericardial visceral mesothelium" and UBERON:0002425 "visceral serous pericardium". I guess this is because UBERON:0007186 is not part of "serous pericardium". Would be better to add a GCI relation and keep only the xref to UBERON:0007186.)
+UBERON:0003241		EMAPA:17298	NA	NA	
+UBERON:0003241		EMAPA:17301	NA	NA	
+UBERON:0010741		EMAPA:32623	NA	NA	Should I add the GCI relationship? (EMAPA:32623 "forelimb skeleton" mapped to both UBERON:0010741 "bone of pectoral complex" and UBERON:0001440 "forelimb skeleton". Why UBERON:0010741? Need a GCI relation? Keep UBERON:0001440)
+UBERON:0010742		EMAPA:32633	NA	NA	Should I add the GCI relationship? (EMAPA:32633 "hindlimb skeleton": same as EMAPA:32623)
+UBERON:0002895		EMAPA:35313	NA	NA	
+UBERON:0001329		EMAPA:29794	NA	NA	Should I add the GCI relationship? (EMAPA:29794 "anterior prostate gland" has synonym "coagulating gland": xref to both UBERON:0008807 "coagulating gland" and UBERON:0001329 "prostate gland anterior lobe". Since the definition of UBERON:0008807 seem more rodent-specific, I arbitrarily chose to use it. Maybe we could have a GCI is_a relation to UBERON:0001329?)
+UBERON:0007812		EMAPA:16748	NA	NA	
+UBERON:0009676		EMAPA:16914	NA	NA	
+UBERON:0013240		EMAPA:19170	NA	NA	
+UBERON:0005101		EMAPA:28393	NA	NA	
+UBERON:0005102		EMAPA:28393	NA	NA	
+CL:0000025	FBbt:00000034		NA	NA	
+UBERON:0002711	ZFA:0005850		NA	NA	
+UBERON:0005075	XAO:0005027		NA	NA	
+FBbt:00016687	FBbt:00111150		NA	NA	
+FBbt:00016687	FBbt:00111198		NA	NA	
+UBERON:0000939	FBbt:00111521		NA	NA	Has uberon parent now
+UBERON:6001780	FBbt:00111522		NA	NA	Has uberon parent now
+UBERON:6001767	FBbt:00111524		NA	NA	Has uberon parent now
+FBbt:00001768	FBbt:00111527		NA	NA	
+UBERON:0000922	FBbt:00111532		NA	NA	
+UBERON:6001778	FBbt:00111536		NA	NA	Has uberon parent now
+UBERON:6001780	FBbt:00111539		NA	NA	Has uberon parent now
+FBbt:00004052	FBbt:00111082		NA	NA	
+UBERON:0000934	FBbt:00111616		NA	NA	
+UBERON:0001038	FBbt:00005217		NA	NA	
+UBERON:2001137	ZFA:0005852		NA	NA	
+UBERON:2001137	ZFA:0005853		NA	NA	
+UBERON:2001137	ZFA:0005854		NA	NA	
+UBERON:0003075	ZFA:0007082		NA	NA	
+UBERON:0002050	XAO:0005026		NA	NA	
+UBERON:0003059	XAO:0004618		NA	NA	
+UBERON:0003059	XAO:0004619		NA	NA	
+WBls:0000038	WBls:0000684		NA	NA	
+WBls:0000038	WBls:0000685		NA	NA	
+WBls:0000038	WBls:0000686		NA	NA	
+WBls:0000038	WBls:0000687		NA	NA	
+WBls:0000038	WBls:0000688		NA	NA	
+WBls:0000038	WBls:0000689		NA	NA	
+WBls:0000038	WBls:0000690		NA	NA	
+WBls:0000038	WBls:0000691		NA	NA	
+WBls:0000038	WBls:0000692		NA	NA	
+CL:0000000	WBbt:0008611		NA	NA	
+CL:0000362	XAO:0004621		NA	NA	
+CL:0000362	XAO:0004613		NA	NA	
+XAO:0003023	XAO:0005018		NA	NA	
+CL:0000047	XAO:0005034		NA	NA	
+CL:0011012	ZFA:0009165		NA	NA	
+UBERON:0003099 	ZFA:0009003		NA	NA	
+UBERON:0003083	ZFA:0009004		NA	NA	
+CL:0001031	ZFA:0001691		NA	NA	Still accurate in ZFA onthology
+CL:0007018	XAO:0005017		NA	NA	
+CL:0005002	ZFA:0005245		NA	NA	Still accurate in ZFA onthology
+CL:0005006	ZFA:0005323		NA	NA	Still accurate in ZFA onthology
+CL:0005001	ZFA:0005328		NA	NA	Still accurate in ZFA onthology
+CL:0000765	ZFA:0005237		NA	NA	Still accurate in ZFA onthology
+CL:0005019	ZFA:0005598		NA	NA	Still accurate in ZFA onthology
+CL:0005018	ZFA:0005599		NA	NA	Still accurate in ZFA onthology
+CL:0000988	ZFA:0005830		NA	NA	Still accurate in ZFA onthology
+CL:0007004	ZFA:0007084		NA	NA	Still accurate in ZFA onthology
+CL:0000000	ZFA:0009000		NA	NA	Still accurate in ZFA onthology
+CL:0000007	ZFA:0009002		NA	NA	Still accurate in ZFA onthology
+CL:0000017	ZFA:0009005		NA	NA	Still accurate in ZFA onthology
+CL:0000019	ZFA:0009006		NA	NA	Still accurate in ZFA onthology
+CL:0000029	ZFA:0009009		NA	NA	Still accurate in ZFA onthology
+CL:0000030	ZFA:0009010		NA	NA	Still accurate in ZFA onthology
+CL:0000031	ZFA:0009011		NA	NA	Still accurate in ZFA onthology
+CL:0000037	ZFA:0009014		NA	NA	Still accurate in ZFA onthology
+CL:0000038	ZFA:0009015		NA	NA	Still accurate in ZFA onthology
+CL:0000039	ZFA:0009016		NA	NA	Still accurate in ZFA onthology
+CL:0000047	ZFA:0009019		NA	NA	Still accurate in ZFA onthology
+CL:0000049	ZFA:0009021		NA	NA	Still accurate in ZFA onthology
+CL:0000050	ZFA:0009022		NA	NA	Still accurate in ZFA onthology
+CL:0000051	ZFA:0009023		NA	NA	Still accurate in ZFA onthology
+CL:0000056	ZFA:0009025		NA	NA	Still accurate in ZFA onthology
+CL:0000058	ZFA:0009027		NA	NA	Still accurate in ZFA onthology
+CL:0000060	ZFA:0009029		NA	NA	Still accurate in ZFA onthology
+CL:0000062	ZFA:0009031		NA	NA	Still accurate in ZFA onthology
+CL:0000065	ZFA:0009033		NA	NA	Still accurate in ZFA onthology
+CL:0000066	ZFA:0009034		NA	NA	Still accurate in ZFA onthology
+CL:0000071	ZFA:0009036		NA	NA	Still accurate in ZFA onthology
+CL:0000080	ZFA:0009043		NA	NA	Still accurate in ZFA onthology
+CL:0000081	ZFA:0009044		NA	NA	Still accurate in ZFA onthology
+CL:0000083	ZFA:0009045		NA	NA	Still accurate in ZFA onthology
+CL:0000084	ZFA:0009046		NA	NA	Still accurate in ZFA onthology
+CL:0000094	ZFA:0009048		NA	NA	Still accurate in ZFA onthology
+CL:0000096	ZFA:0009049		NA	NA	Still accurate in ZFA onthology
+CL:0000098	ZFA:0009050		NA	NA	Still accurate in ZFA onthology
+CL:0000099	ZFA:0009051		NA	NA	Still accurate in ZFA onthology
+CL:0000100	ZFA:0009052		NA	NA	Still accurate in ZFA onthology
+CL:0000101	ZFA:0009053		NA	NA	Still accurate in ZFA onthology
+CL:0000109	ZFA:0009061		NA	NA	Still accurate in ZFA onthology
+CL:0000115	ZFA:0009065		NA	NA	Still accurate in ZFA onthology
+CL:0000117	ZFA:0009067		NA	NA	Still accurate in ZFA onthology
+CL:0000120	ZFA:0009070		NA	NA	Still accurate in ZFA onthology
+CL:0000121	ZFA:0009071		NA	NA	Still accurate in ZFA onthology
+CL:0000125	ZFA:0009073		NA	NA	Still accurate in ZFA onthology
+CL:0000127	ZFA:0009075		NA	NA	Still accurate in ZFA onthology
+CL:0000128	ZFA:0009076		NA	NA	Still accurate in ZFA onthology
+CL:0000129	ZFA:0009077		NA	NA	Still accurate in ZFA onthology
+CL:0000131	ZFA:0009078		NA	NA	Still accurate in ZFA onthology
+CL:0000132	ZFA:0009079		NA	NA	Still accurate in ZFA onthology
+CL:0000133	ZFA:0009080		NA	NA	Still accurate in ZFA onthology
+CL:0000134	ZFA:0009081		NA	NA	Still accurate in ZFA onthology
+CL:0000138	ZFA:0009084		NA	NA	Still accurate in ZFA onthology
+CL:0000147	ZFA:0009090		NA	NA	Still accurate in ZFA onthology
+CL:0000148	ZFA:0009091		NA	NA	Still accurate in ZFA onthology
+CL:0000152	ZFA:0009092		NA	NA	Still accurate in ZFA onthology
+CL:0000160	ZFA:0009094		NA	NA	Still accurate in ZFA onthology
+CL:0000163	ZFA:0009096		NA	NA	Still accurate in ZFA onthology
+CL:0000164	ZFA:0009097		NA	NA	Still accurate in ZFA onthology
+CL:0000166	ZFA:0009099		NA	NA	Still accurate in ZFA onthology
+CL:0000167	ZFA:0009100		NA	NA	Still accurate in ZFA onthology
+CL:0000168	ZFA:0009101		NA	NA	Still accurate in ZFA onthology
+CL:0000169	ZFA:0009102		NA	NA	Still accurate in ZFA onthology
+CL:0000170	ZFA:0009103		NA	NA	Still accurate in ZFA onthology
+CL:0000171	ZFA:0009104		NA	NA	Still accurate in ZFA onthology
+CL:0000172	ZFA:0009105		NA	NA	Still accurate in ZFA onthology
+CL:0000178	ZFA:0009108		NA	NA	Still accurate in ZFA onthology
+CL:0000182	ZFA:0009111		NA	NA	Still accurate in ZFA onthology
+CL:0000187	ZFA:0009114		NA	NA	Still accurate in ZFA onthology
+CL:0000188	ZFA:0009115		NA	NA	Still accurate in ZFA onthology
+CL:0000189	ZFA:0009116		NA	NA	Still accurate in ZFA onthology
+CL:0000190	ZFA:0009117		NA	NA	Still accurate in ZFA onthology
+CL:0000192	ZFA:0009118		NA	NA	Still accurate in ZFA onthology
+CL:0000202	ZFA:0009121		NA	NA	Still accurate in ZFA onthology
+CL:0000207	ZFA:0009125		NA	NA	Still accurate in ZFA onthology
+CL:0000210	ZFA:0009127		NA	NA	Still accurate in ZFA onthology
+CL:0000216	ZFA:0009133		NA	NA	Still accurate in ZFA onthology
+CL:0000218	ZFA:0009135		NA	NA	Still accurate in ZFA onthology
+CL:0000219	ZFA:0009136		NA	NA	Still accurate in ZFA onthology
+CL:0000221	ZFA:0009137		NA	NA	Still accurate in ZFA onthology
+CL:0000222	ZFA:0009138		NA	NA	Still accurate in ZFA onthology
+CL:0000223	ZFA:0009139		NA	NA	Still accurate in ZFA onthology
+CL:0000235	ZFA:0009141		NA	NA	Still accurate in ZFA onthology
+CL:0000243	ZFA:0009147		NA	NA	Still accurate in ZFA onthology
+CL:0000246	ZFA:0009149		NA	NA	Still accurate in ZFA onthology
+CL:0000247	ZFA:0009150		NA	NA	Still accurate in ZFA onthology
+CL:0000249	ZFA:0009151		NA	NA	Still accurate in ZFA onthology
+CL:0000253	ZFA:0009153		NA	NA	Still accurate in ZFA onthology
+CL:0000287	ZFA:0009154		NA	NA	Still accurate in ZFA onthology
+CL:0000295	ZFA:0009155		NA	NA	Still accurate in ZFA onthology
+CL:0000312	ZFA:0009158		NA	NA	Still accurate in ZFA onthology
+CL:0000319	ZFA:0009159		NA	NA	Still accurate in ZFA onthology
+CL:0000337	ZFA:0009168		NA	NA	Still accurate in ZFA onthology
+CL:0000339	ZFA:0009169		NA	NA	Still accurate in ZFA onthology
+CL:0000342	ZFA:0009170		NA	NA	Still accurate in ZFA onthology
+CL:0000353	ZFA:0009177		NA	NA	Still accurate in ZFA onthology
+CL:0000361	ZFA:0009182		NA	NA	Still accurate in ZFA onthology
+CL:0000362	ZFA:0009183		NA	NA	Still accurate in ZFA onthology
+CL:0000375	ZFA:0009184		NA	NA	Still accurate in ZFA onthology
+CL:0000402	ZFA:0009191		NA	NA	Still accurate in ZFA onthology
+CL:0000411	ZFA:0009196		NA	NA	Still accurate in ZFA onthology
+CL:0000430	ZFA:0009198		NA	NA	Still accurate in ZFA onthology
+CL:0000431	ZFA:0009199		NA	NA	Still accurate in ZFA onthology
+CL:0000438	ZFA:0009203		NA	NA	Still accurate in ZFA onthology
+CL:0000439	ZFA:0009204		NA	NA	Still accurate in ZFA onthology
+CL:0000440	ZFA:0009205		NA	NA	Still accurate in ZFA onthology
+CL:0000446	ZFA:0009207		NA	NA	Mapping not present In ZFA but I still think it is correct
+CL:0000467	ZFA:0009216		NA	NA	Still accurate in ZFA onthology
+CL:0000476	ZFA:0009218		NA	NA	Still accurate in ZFA onthology
+CL:0000494	ZFA:0009221		NA	NA	Still accurate in ZFA onthology
+CL:0000495	ZFA:0009222		NA	NA	Still accurate in ZFA onthology
+CL:0000497	ZFA:0009224		NA	NA	Still accurate in ZFA onthology
+CL:0000502	ZFA:0009228		NA	NA	Still accurate in ZFA onthology
+CL:0000513	ZFA:0009234		NA	NA	Still accurate in ZFA onthology
+CL:0000516	ZFA:0009237		NA	NA	Still accurate in ZFA onthology
+CL:0000530	ZFA:0009242		NA	NA	Still accurate in ZFA onthology
+CL:0000532	ZFA:0009243		NA	NA	Still accurate in ZFA onthology
+CL:0000533	ZFA:0009244		NA	NA	Still accurate in ZFA onthology
+CL:0000534	ZFA:0009245		NA	NA	Still accurate in ZFA onthology
+CL:0000536	ZFA:0009247		NA	NA	Still accurate in ZFA onthology
+CL:0000540	ZFA:0009248		NA	NA	Still accurate in ZFA onthology
+CL:0000541	ZFA:0009249		NA	NA	Still accurate in ZFA onthology
+CL:0000557	ZFA:0009251		NA	NA	Still accurate in ZFA onthology
+CL:0000561	ZFA:0009255		NA	NA	Still accurate in ZFA onthology
+CL:0000562	ZFA:0009256		NA	NA	Still accurate in ZFA onthology
+CL:0000566	ZFA:0009258		NA	NA	Still accurate in ZFA onthology
+CL:0000573	ZFA:0009262		NA	NA	Still accurate in ZFA onthology
+CL:0000575	ZFA:0009264		NA	NA	Still accurate in ZFA onthology
+CL:0000576	ZFA:0009265		NA	NA	Still accurate in ZFA onthology
+CL:0000584	ZFA:0009269		NA	NA	Still accurate in ZFA onthology
+CL:0000604	ZFA:0009275		NA	NA	Still accurate in ZFA onthology
+CL:0000617	ZFA:0009276		NA	NA	Still accurate in ZFA onthology
+CL:0000636	ZFA:0009280		NA	NA	Still accurate in ZFA onthology
+CL:0000652	ZFA:0009284		NA	NA	Still accurate in ZFA onthology
+CL:0000653	ZFA:0009285		NA	NA	Still accurate in ZFA onthology
+CL:0000670	ZFA:0009288		NA	NA	Still accurate in ZFA onthology
+CL:0000677	ZFA:0009289		NA	NA	Still accurate in ZFA onthology
+CL:0000679	ZFA:0009290		NA	NA	Still accurate in ZFA onthology
+CL:0000680	ZFA:0009291		NA	NA	Still accurate in ZFA onthology
+CL:0000681	ZFA:0009292		NA	NA	Still accurate in ZFA onthology
+CL:0000700	ZFA:0009301		NA	NA	Still accurate in ZFA onthology
+CL:0000704	ZFA:0009303		NA	NA	Still accurate in ZFA onthology
+CL:0000710	ZFA:0009306		NA	NA	Still accurate in ZFA onthology
+CL:0000738	ZFA:0009309		NA	NA	Still accurate in ZFA onthology
+CL:0000740	ZFA:0009310		NA	NA	Still accurate in ZFA onthology
+CL:0000743	ZFA:0009313		NA	NA	Still accurate in ZFA onthology
+CL:0000745	ZFA:0009315		NA	NA	Still accurate in ZFA onthology
+CL:0000746	ZFA:0009316		NA	NA	Still accurate in ZFA onthology
+CL:0000748	ZFA:0009318		NA	NA	Still accurate in ZFA onthology
+CL:0000762	ZFA:0009323		NA	NA	Still accurate in ZFA onthology
+CL:0000763	ZFA:0009324		NA	NA	Still accurate in ZFA onthology
+CL:0000764	ZFA:0009325		NA	NA	Still accurate in ZFA onthology
+CL:0000766	ZFA:0009326		NA	NA	Still accurate in ZFA onthology
+CL:0000775	ZFA:0009327		NA	NA	Still accurate in ZFA onthology
+CL:0000789	ZFA:0009335		NA	NA	Still accurate in ZFA onthology
+CL:0000827	ZFA:0009350		NA	NA	Still accurate in ZFA onthology
+CL:0000837	ZFA:0009354		NA	NA	Still accurate in ZFA onthology
+CL:0000838	ZFA:0009355		NA	NA	Still accurate in ZFA onthology
+CL:0000839	ZFA:0009356		NA	NA	Still accurate in ZFA onthology
+CL:0000848	ZFA:0009359		NA	NA	Still accurate in ZFA onthology
+CL:0000850	ZFA:0009361		NA	NA	Still accurate in ZFA onthology
+CL:0000851	ZFA:0009362		NA	NA	Still accurate in ZFA onthology
+CL:0000852	ZFA:0009363		NA	NA	Still accurate in ZFA onthology
+CL:0000854	ZFA:0009365		NA	NA	Still accurate in ZFA onthology
+CL:0000855	ZFA:0009366		NA	NA	Still accurate in ZFA onthology
+CL:0000856	ZFA:0009367		NA	NA	Still accurate in ZFA onthology
+CL:0000857	ZFA:0009368		NA	NA	Still accurate in ZFA onthology
+CL:0000858	ZFA:0009369		NA	NA	Still accurate in ZFA onthology
+CL:0002320	ZFA:0009392		NA	NA	Still accurate in ZFA onthology
+UBERON:0003918	EMAPA:36437		NA	NA	
+CL:0000670	EMAPA:36699		NA	NA	
+CL:0000501	EMAPA:36474		NA	NA	
+UBERON:0008933	EMAPA:36704		NA	NA	
+UBERON:0014940	EMAPA:36716		NA	NA	from old onthology
+UBERON:0005876	EMAPA:36384		NA	NA	
+UBERON:0001334	EMAPA:36433		NA	NA	This mapping is very general (Anne: sounds ok)
+UBERON:0001334	EMAPA:30917		NA	NA	This mapping is very general (Anne: sounds ok)
+UBERON:0000037	EMAPA:30767		NA	NA	
+UBERON:0000037	EMAPA:36671		NA	NA	
+UBERON:0006215	EMAPA:36672		NA	NA	Still accurate in ZFA onthology
+CL:0005000	ZFA:0000778		NA	NA	Still accurate in ZFA onthology
+CL:0000023	ZFA:0001109		NA	NA	Still accurate in ZFA onthology
+CL:0005007	ZFA:0005240		NA	NA	Still accurate in ZFA onthology
+CL:0005014	ZFA:0005244		NA	NA	Still accurate in ZFA onthology
+CL:0000020	ZFA:0009007		NA	NA	Still accurate in ZFA onthology
+UBERON:0005062	XAO:0000293		NA	NA	
+UBERON:0003390		EMAPA:16775	NA	NA	
+UBERON:0002241		EMAPA:17681	NA	NA	
+UBERON:0006652		EMAPA:30997	NA	NA	
+UBERON:0001015		EMAPA:32715	NA	NA	
+UBERON:0001630		EMAPA:32715	NA	NA	
+UBERON:0005090		EMAPA:32715	NA	NA	
+UBERON:0007844		EMAPA:32730	NA	NA	
+UBERON:0002685		EMAPA:35133	NA	NA	
+UBERON:0005805		EMAPA:18606	NA	NA	
+UBERON:0010190		EMAPA:18606	NA	NA	
+UBERON:0007123		EMAPA:16276	NA	NA	
+UBERON:0003382		EMAPA:17339	NA	NA	
+UBERON:0003381		EMAPA:17342	NA	NA	
+CL:0000066	XAO:0003249		NA	NA	
+CL:0007004	XAO:0004522		NA	NA	
+CL:0000540	XAO:0003023		NA	NA	
+CL:0000035	XAO:0005033		NA	NA	I cannot fing a CL… !progenitor cells (Anne: the more close definition compared to XAO:0005033 (progenitor cell) definition is CL:0000035 (single fate stem cell)
+CL:0000034	XAO:0003054		NA	NA	
+WBbt:0004671	WBbt:0006447		NA	NA	
+UBERON:0008307	EMAPA:36727		NA	NA	
+UBERON:0002049	EMAPA:36729		NA	NA	
+UBERON:0005087	EMAPA:36739		NA	NA	
+UBERON:0008856	EMAPA:36770		NA	NA	
+UBERON:0007188		EMAPA:16133	NA	NA	
+UBERON:0003241		EMAPA:17823	NA	NA	
+UBERON:0002004		EMAPA:18577	NA	NA	
