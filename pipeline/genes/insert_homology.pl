@@ -118,7 +118,11 @@ foreach my $species_id (@bgee_species_array) {
             my $lca_taxon_id = $taxonName_to_taxonId{$line[2]};
             #print "$current_species_bgee_id - $homolog_species_bgee_id - $lca_taxon_id\n";
             if ($current_species_bgee_id == '' || $homolog_species_bgee_id == '' || $lca_taxon_id == '') {
-                warn "missing values : $current_species_bgee_id, $homolog_species_bgee_id, $lca_taxon_id";
+                warn do {
+                    no warnings 'uninitialized'; # for the do block only
+                    "Can not map OMA data to Bgee : [$line[0], $line[1], $line[2]] became : [$current_species_bgee_id, 
+                    $homolog_species_bgee_id, $lca_taxon_id]. From file : $first_species_file";
+                }
             } else {
                 $sth->execute($current_species_bgee_id, $homolog_species_bgee_id, $lca_taxon_id);
                 $sth->execute($homolog_species_bgee_id, $current_species_bgee_id, $lca_taxon_id);
@@ -157,12 +161,17 @@ foreach my $species_id (@bgee_species_array) {
             #split each line into array
             my @line = split(/,/, $line);
             #print "$line[0] $line[1] $line[2]\n";
+            #my ($current_species_bgee_id, $homolog_species_bgee_id, $lca_taxon_id) = ('', '', '');
             my $current_species_bgee_id = $ensemblId_to_bgeeId{$line[1]};
             my $homolog_species_bgee_id = $ensemblId_to_bgeeId_homologous_species{$line[0]};
             my $lca_taxon_id = $taxonName_to_taxonId{$line[2]};
             #print "$current_species_bgee_id - $homolog_species_bgee_id - $lca_taxon_id\n";
             if ($current_species_bgee_id == '' || $homolog_species_bgee_id == '' || $lca_taxon_id == '') {
-                warn "missing values : $current_species_bgee_id, $homolog_species_bgee_id, $lca_taxon_id";
+                warn do {
+                    no warnings 'uninitialized'; # for the do block only
+                    "Can not map OMA data to Bgee : [$line[0], $line[1], $line[2]] became : [$homolog_species_bgee_id, $current_species_bgee_id, 
+                    $lca_taxon_id]. From file : $second_species_file";
+                }
             } else {
                 $sth->execute($current_species_bgee_id, $homolog_species_bgee_id, $lca_taxon_id);
                 $sth->execute($homolog_species_bgee_id, $current_species_bgee_id, $lca_taxon_id);
