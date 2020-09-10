@@ -95,6 +95,10 @@ foreach my $species_id (@bgee_species_array) {
     #parse all files where current species in first position in file name
     my @first_species_files = grep /_$species_id-/, @ortho_files;
     foreach my $first_species_file (@first_species_files) {
+
+        $dbh->{AutoCommit} = 0;
+        $sth = $dbh->prepare_cached( $insert_orthology );
+
         next if (exists($already_parsed_files{$first_species_file}));
         $first_species_file =~ /orthologs_bgee_\w*-(\w*)\.csv/;
         my $second_species_id = $1;
@@ -113,28 +117,32 @@ foreach my $species_id (@bgee_species_array) {
             my $homolog_species_bgee_id = $ensemblId_to_bgeeId_homologous_species{$line[1]};
             my $lca_taxon_id = $taxonName_to_taxonId{$line[2]};
             #print "$current_species_bgee_id - $homolog_species_bgee_id - $lca_taxon_id\n";
-            if ($current_species_bgee_id ='' || $homolog_species_bgee_id = '' || $lca_taxon_id='') {
+            if ($current_species_bgee_id == '' || $homolog_species_bgee_id == '' || $lca_taxon_id == '') {
                 warn "missing values : $current_species_bgee_id, $homolog_species_bgee_id, $lca_taxon_id";
             } else {
-                push @values_to_insert, "($current_species_bgee_id, $homolog_species_bgee_id, $lca_taxon_id)";
-                push @values_to_insert, "($homolog_species_bgee_id, $current_species_bgee_id, $lca_taxon_id)";
+                $sth->execute($current_species_bgee_id, $homolog_species_bgee_id, $lca_taxon_id);
+                $sth->execute($homolog_species_bgee_id, $current_species_bgee_id, $lca_taxon_id);
+                #push @values_to_insert, "($current_species_bgee_id, $homolog_species_bgee_id, $lca_taxon_id)";
+                #push @values_to_insert, "($homolog_species_bgee_id, $current_species_bgee_id, $lca_taxon_id)";
             }
             
 
         }
-        $dbh->{AutoCommit} = 0;
-        $sth = $dbh->prepare_cached( $insert_orthology );
-        $sth->execute( @$_ ) for @values_to_insert;
+
         $sth->finish;
         $dbh->{AutoCommit} = 1;
         #print "number of rows in $first_species_file : $#values_to_insert\n";
-        $already_parsed_files{$second_species_file} = 1;
+        $already_parsed_files{$first_species_file} = 1;
         close $homo_file_handler;
     }
 
     #parse all files where current species in second position in file name
     my @second_species_files = grep /-$species_id\./, @ortho_files; 
     foreach my $second_species_file (@second_species_files) {
+
+        $dbh->{AutoCommit} = 0;
+        $sth = $dbh->prepare_cached( $insert_orthology );
+
         next if (exists($already_parsed_files{$second_species_file}));
         $second_species_file =~ /orthologs_bgee_(\w*)-\w*\.csv/;
         my $first_species_id = $1;
@@ -153,18 +161,15 @@ foreach my $species_id (@bgee_species_array) {
             my $homolog_species_bgee_id = $ensemblId_to_bgeeId_homologous_species{$line[0]};
             my $lca_taxon_id = $taxonName_to_taxonId{$line[2]};
             #print "$current_species_bgee_id - $homolog_species_bgee_id - $lca_taxon_id\n";
-            if ($current_species_bgee_id ='' || $homolog_species_bgee_id = '' || $lca_taxon_id='') {
+            if ($current_species_bgee_id == '' || $homolog_species_bgee_id == '' || $lca_taxon_id == '') {
                 warn "missing values : $current_species_bgee_id, $homolog_species_bgee_id, $lca_taxon_id";
             } else {
-                push @values_to_insert, "($current_species_bgee_id, $homolog_species_bgee_id, $lca_taxon_id)";
-                push @values_to_insert, "($homolog_species_bgee_id, $current_species_bgee_id, $lca_taxon_id)";
+                $sth->execute($current_species_bgee_id, $homolog_species_bgee_id, $lca_taxon_id);
+                $sth->execute($homolog_species_bgee_id, $current_species_bgee_id, $lca_taxon_id);
             }
             
 
         }
-        $dbh->{AutoCommit} = 0;
-        $sth = $dbh->prepare_cached( $insert_orthology );
-        $sth->execute( @$_ ) for @values_to_insert;
         $sth->finish;
         $dbh->{AutoCommit} = 1;
         #print "number of rows in $first_species_file : $#values_to_insert\n";
