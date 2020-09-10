@@ -235,6 +235,10 @@ ALLTAXIDSFILEPATH   := $(GENERATED_FILES_DIR)species/allTaxIds.tsv
 TAXONOMYFILEPATH    := $(GENERATED_FILES_DIR)species/bgee_ncbitaxon.owl
 TAX_DAT_DOWNLOAD_URL := ftp://ftp.ebi.ac.uk/pub/databases/taxonomy/taxonomy.dat
 
+# =========== GENE FILES ===============
+
+PARALOGS_DIR := $(OUTPUT_DIR)paralogs/
+ORTHOLOGS_DIR := $(OUTPUT_DIR)orthologs/
 
 # =========== UBERON FILES ===============
 UBERON_SOURCE_PATH := $(SOURCE_FILES_DIR)uberon/
