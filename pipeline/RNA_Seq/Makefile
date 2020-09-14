@@ -184,7 +184,7 @@ clean_cluster_folders: check_tools
 	@echo "xz -9 $(RNASEQ_CLUSTER_GTF)*.gtf_all $(RNASEQ_CLUSTER_GTF)*.transcriptome.* $(RNASEQ_CLUSTER_GTF)*.gene2transcript $(RNASEQ_CLUSTER_GTF)*.gene2biotype"
 	@echo "rm -Rf $(RNASEQ_CLUSTER_SCRATCH)*"
 	@echo
-	@echo "Those scripts have to be run from $(RNASEQ_CLUSTER_SCRIPTS)$(RNASEQPATH) on dev/frt/rserv01 (can write on /data/)!"
+	@echo "Those scripts have to be run from $(RNASEQ_CLUSTER_SCRIPTS)$(RNASEQPATH) on the frontal (can write on /data/)!"
 	@touch $@
 
 
