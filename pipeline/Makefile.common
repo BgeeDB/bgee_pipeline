@@ -373,8 +373,8 @@ RNASEQ_CLUSTER_R_LOG           := $(RNASEQ_CLUSTER_ALL_RES)
 RNASEQ_CLUSTER_REPORTINFO      := $(RNASEQ_CLUSTER_ALL_RES)/reports_info_all_samples.txt
 ENCRYPT_PASSWD_FILE            := /data/unil/dee/dee_robi/.passw
 
-# RNAseq bigbgee paths
-RNASEQ_BIGBGEE_FASTQ       := /opt/gtexfile/FASTQ/
+# RNAseq sensitive fastq paths
+RNASEQ_SENSITIVE_FASTQ     := /data/unil/dee/dee_robi/FASTQ/RNAseq/
 
 # RNAseq data path
 RNASEQDATAPATH             := /var/bgee/extra/pipeline/rna_seq/

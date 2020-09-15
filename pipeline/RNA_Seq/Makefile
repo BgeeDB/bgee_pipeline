@@ -42,15 +42,15 @@ commit_rna_seq_sample_info: create_rna_seq_sample_info $(RNASEQ_SAMPINFO_FILEPAT
 	@echo -e "\t$(RNASEQ_SAMPINFO_FILEPATH) is ready, you can go to bigbgee to download new SRA files with get_SRA.pl as *admin* user\n\tDo a 'git pull' before starting\n"
 	@$(MV) $@.tmp $@
 
-send_files_to_vital-it: create_rna_seq_sample_info $(RNASEQ_LIB_FILEPATH_FULL) $(RNASEQ_EXPERIMENT_FILEPATH_FULL) $(RNASEQ_LIB_CHECKS_FILEPATH)
-	# Send not-versionned annotation files to Vital-IT  with login/password $(VITLOGIN)/$(VITPASSW)
+send_files_to_cluster: create_rna_seq_sample_info $(RNASEQ_LIB_FILEPATH_FULL) $(RNASEQ_EXPERIMENT_FILEPATH_FULL) $(RNASEQ_LIB_CHECKS_FILEPATH)
+	# Send not-versionned annotation files to sensitive cluster with login/password $(VITLOGIN)/$(VITPASSW)
 	@scp get_annot \
 		 check_annot \
 		 create_rna_seq_sample_info \
 		 $(RNASEQ_EXPERIMENT_FILEPATH_FULL) \
 		 $(RNASEQ_LIB_FILEPATH_FULL) \
-     $(VITLOGIN)@$(VITHOST):$(RNASEQ_VITALIT_READONLY)GIT/pipeline/RNA_Seq/
-	@echo -e "\tNext steps have to be done on Vital-IT\n\tGo to '$(RNASEQ_VITALIT_READONLY)GIT/', do a 'git pull' and copy missing files in '$(RNASEQ_VITALIT_READONLY)GIT/pipeline/RNA_Seq/'\n\tThen restart with 'make vitalit1' to start the pipeline run step\n"
+     $(VITLOGIN)@$(VITHOST):$(RNASEQ_CLUSTER_READONLY)GIT/pipeline/RNA_Seq/
+	@echo -e "\tNext steps have to be done on sensitive cluster\n\tGo to '$(RNASEQ_CLUSTER_READONLY)GIT/', do a 'git pull' and copy missing files in '$(RNASEQ_CLUSTER_READONLY)GIT/pipeline/RNA_Seq/'\n\tThen restart with 'make cluster1' to start the pipeline run step\n"
 	@touch $@
 
 ##############################################################################################
@@ -63,23 +63,24 @@ get_sra: create_rna_seq_sample_info
 
 check_sra: get_sra
 	@echo -e "\tRe-run 0Before/get_SRA.pl to be sure all SRA are downloaded and FASTQ prepared\n"
-	@scp  $<  $(VITLOGIN)@$(VITHOST):$(RNASEQ_VITALIT_READONLY)GIT/pipeline/RNA_Seq/
+	@scp  $<  $(VITLOGIN)@$(VITHOST):$(RNASEQ_CLUSTER_READONLY)GIT/pipeline/RNA_Seq/
 	@touch $@
 
 ##############################################################################################
-# Start here on Vital-IT
-vitalit1:
+# Start here on sensitive cluster
+cluster1:
 	@echo -e "\tBe sure everything is up-to-date before running RNASeq pipeline\n"
 	@touch $@
 
 # MUST be on a machine with read/write access to /data/ul/dee/bgee (e.g. rserv01 or dev), as bbgee user
-# Ask for a Vital-IT installation if a tool/library is missing
-check_tools: vitalit1
-	@echo -e "\n\tFirst of all, go to '$(RNASEQ_VITALIT_READONLY)GIT/' and do a 'git pull'"
+# Ask for a DSCR software installation if a tool/library is missing
+check_tools: cluster1
+	@echo -e "\n\tFirst of all, go to '$(RNASEQ_CLUSTER_READONLY)GIT/' and do a 'git pull'"
 	@echo -e "\tThen 'cd pipeline/RNA_Seq/' and be prepared to work\n"
 	@echo -e "\n\tRun this command to prevent errors with Utils.pm\n\tmodule add Development/Ensembl_API/$(ENSRELEASE);\n"
-	# Check if logged on Vital-IT
-	@if [[ `hostname -d` != 'vital-it.ch' ]]; then false; fi
+	# Check if logged on sensitive cluster
+	@if [[ `hostname -d` != 'chuv.vital-it.ch' ]]; then false; fi
+	@module add Bioinformatics/Software/vital-it
 	# Check if all required tools/libs are available
 	@which perl                                        > $@.tmp
 	@perl -Mdiagnostics           -e 1                >> $@.tmp
@@ -106,48 +107,47 @@ check_tools: vitalit1
 	@$(VIT_R_CMD) R -e 'library("limma")'             >> $@.tmp  2>/dev/null
 	@$(VIT_R_CMD) R -e 'library("mclust")'            >> $@.tmp  2>/dev/null
 	@which xz                                         >> $@.tmp
-	@which bsub                                       >> $@.tmp
-	@$(VIT_ASPERA_CMD)     which ascp                 >> $@.tmp
+	@which sbatch                                     >> $@.tmp
 	@$(VIT_TOPHAT_CMD)     which gtf_to_fasta         >> $@.tmp
 	@$(VIT_SRATOOLKIT_CMD) which fastq-dump           >> $@.tmp
 	@$(VIT_KALLISTO_CMD)   which kallisto             >> $@.tmp
 	@$(VIT_FASTQC_CMD)     which fastqc               >> $@.tmp
-	@mkdir -p $(RNASEQ_VITALIT_GTF)
-	@if [[ -d $(RNASEQ_VITALIT_GTF) ]]; then echo -n; else echo "Directory [$(RNASEQ_VITALIT_GTF)] does not exist"  >> $@.tmp; false; fi
-	@if [[ -w $(RNASEQ_VITALIT_GTF) ]]; then echo -n; else echo "Directory [$(RNASEQ_VITALIT_GTF)] is not writable" >> $@.tmp; false; fi
-	@mkdir -p $(RNASEQ_VITALIT_SCRATCH)
-	@if [[ -d $(RNASEQ_VITALIT_SCRATCH) ]]; then echo -n; else echo "Directory [$(RNASEQ_VITALIT_SCRATCH)] does not exist"  >> $@.tmp; false; fi
-	@if [[ -w $(RNASEQ_VITALIT_SCRATCH) ]]; then echo -n; else echo "Directory [$(RNASEQ_VITALIT_SCRATCH)] is not writable" >> $@.tmp; false; fi
+	@mkdir -p $(RNASEQ_CLUSTER_GTF)
+	@if [[ -d $(RNASEQ_CLUSTER_GTF) ]]; then echo -n; else echo "Directory [$(RNASEQ_CLUSTER_GTF)] does not exist"  >> $@.tmp; false; fi
+	@if [[ -w $(RNASEQ_CLUSTER_GTF) ]]; then echo -n; else echo "Directory [$(RNASEQ_CLUSTER_GTF)] is not writable" >> $@.tmp; false; fi
+	@mkdir -p $(RNASEQ_CLUSTER_SCRATCH)
+	@if [[ -d $(RNASEQ_CLUSTER_SCRATCH) ]]; then echo -n; else echo "Directory [$(RNASEQ_CLUSTER_SCRATCH)] does not exist"  >> $@.tmp; false; fi
+	@if [[ -w $(RNASEQ_CLUSTER_SCRATCH) ]]; then echo -n; else echo "Directory [$(RNASEQ_CLUSTER_SCRATCH)] is not writable" >> $@.tmp; false; fi
 	@$(MV) $@.tmp $@
 
-clean_vital-it_folders: check_tools
-	# Clean folders on Vital-IT
-	@echo "rm -Rf $(RNASEQ_VITALIT_GTF)*.genome.* $(RNASEQ_VITALIT_GTF)*.gtf.gz"
-	@echo "xz -9 $(RNASEQ_VITALIT_GTF)*.gtf_all $(RNASEQ_VITALIT_GTF)*.transcriptome.* $(RNASEQ_VITALIT_GTF)*.gene2transcript $(RNASEQ_VITALIT_GTF)*.gene2biotype"
-	@echo "rm -Rf $(RNASEQ_VITALIT_SCRATCH)*"
+clean_cluster_folders: check_tools
+	# Clean folders on cluster
+	@echo "rm -Rf $(RNASEQ_CLUSTER_GTF)*.genome.* $(RNASEQ_CLUSTER_GTF)*.gtf.gz"
+	@echo "xz -9 $(RNASEQ_CLUSTER_GTF)*.gtf_all $(RNASEQ_CLUSTER_GTF)*.transcriptome.* $(RNASEQ_CLUSTER_GTF)*.gene2transcript $(RNASEQ_CLUSTER_GTF)*.gene2biotype"
+	@echo "rm -Rf $(RNASEQ_CLUSTER_SCRATCH)*"
 	@echo
-	@echo "Those scripts have to be run from $(RNASEQ_VITALIT_SCRIPTS)$(RNASEQPATH) on dev/frt/rserv01 (can write on /data/)!"
+	@echo "Those scripts have to be run from $(RNASEQ_CLUSTER_SCRIPTS)$(RNASEQPATH) on dev/frt/rserv01 (can write on /data/)!"
 	@touch $@
 
-get_GTF: clean_vital-it_folders create_rna_seq_sample_info
+get_GTF: clean_cluster_folders create_rna_seq_sample_info
 	# Get GTF files from Ensembl FTP
-	@perl 0Before/get_GTF_files.pl  -RNAseqSample=$(RNASEQ_SAMPINFO_FILEPATH) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_VITALIT_GTF)  >$@.tmp 2>&1
+	@perl 0Before/get_GTF_files.pl  -RNAseqSample=$(RNASEQ_SAMPINFO_FILEPATH) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_CLUSTER_GTF)  >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
 #TODO implement use of new "database" field in rna_seq_sample_info.txt (instead of trying both Ensembl and Ensembl Metazoa URLs)
 
 prepare_GTF: get_GTF
 	# Prepare GTF files
-	@for gtf in $(RNASEQ_VITALIT_GTF)/*.gtf.gz; do \
+	@for gtf in $(RNASEQ_CLUSTER_GTF)/*.gtf.gz; do \
 		echo "$(VIT_R_CMD) R CMD BATCH --vanilla --slave '--args gene_gtf_path=\"$$gtf\" output_gtf_path=\"$${gtf/.gtf.gz/}\"'  0Before/prepare_GTF.R  $@.tmp" >run.sh; \
 		sh run.sh; \
 	done
 	@$(RM) run.sh
-	@echo rm -f $(RNASEQ_VITALIT_GTF)/*.gtf.gz
+	@echo rm -f $(RNASEQ_CLUSTER_GTF)/*.gtf.gz
 	@$(MV) $@.tmp $@
 
 get_genome: prepare_GTF
 	# Download genome from Ensembl databases
-	@perl 0Before/get_genome_files.pl  -GTF_dir=$(RNASEQ_VITALIT_GTF) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_VITALIT_GTF) >$@.tmp 2>&1
+	@perl 0Before/get_genome_files.pl  -GTF_dir=$(RNASEQ_CLUSTER_GTF) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_CLUSTER_GTF) >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
 #TODO implement use of new "database" field in rna_seq_sample_info.txt (instead of trying both Ensembl and Ensembl Metazoa URLs)
 
@@ -156,7 +156,7 @@ prepare_indexed_transcriptome: get_genome prepare_GTF
 # Extract transcriptome.fa from gtf_all and genome.fa files
 # perl one liner to remove arbitrary numbering in fasta header from gtf_to_fasta
 # Prepare indexes for kallisto: one with default k-mer size (31nt), one with short k-mer size (15nt)
-	@for genome in $(RNASEQ_VITALIT_GTF)/*.gtf_all; do \
+	@for genome in $(RNASEQ_CLUSTER_GTF)/*.gtf_all; do \
 		$(VIT_TOPHAT_CMD)    gtf_to_fasta  $$genome $${genome/gtf_all/genome.fa} $${genome/gtf_all/transcriptome.fa}              >>$@.tmp 2>&1; \
 		perl -i -pe 's/^>\d+ +/>/' $${genome/gtf_all/transcriptome.fa}                                                            >>$@.tmp 2>&1; \
 		$(VIT_KALLISTO_CMD)  kallisto index       -i $${genome/gtf_all/transcriptome.idx}     $${genome/gtf_all/transcriptome.fa} >>$@.tmp 2>&1; \
@@ -168,13 +168,14 @@ prepare_indexed_transcriptome: get_genome prepare_GTF
 	@$(MV) $@.tmp $@
 #TODO Use short k-mer size = 21nt instead of 15
 #TODO The gffread utility in cufflinks package seems more flexible and reliable
-#TODO add step to copy .passw file to bbgee's home on vital-it / or maybe just echo a message to tell the user scp it? Path and name of this file on vital-it is stored in ENCRYPT_PASSWD_FILE. We should store this file somewhere (devbioinfo?) because it cannot be added to the gitlab project
+#TODO add step to copy .passw file to user's home on the sensitive cluster / or maybe just echo a message to tell the user scp it? Path and name of this file on the sensitive cluster is stored in ENCRYPT_PASSWD_FILE. We should store this file somewhere (devbioinfo?) because it cannot be added to the gitlab project
 #Or just put it in /home/bbgee/? in read only mode, only for bbgee user
 
 #NOTE Better to run this step in screen or with nohup as submission is done X jobs per X jobs to not overload the system (and not decrease our user priority)!
+#TODO 14.2   RNASEQ_SAMPINFO_FILEPATH only for 14.2!
 run_pipeline: prepare_indexed_transcriptome $(RNASEQ_SAMPINFO_FILEPATH)
 # Running the pipeline
-	@perl 1Run/slurm_scheduler.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=$(RNASEQ_CLUSTER_LOG) -index_folder=$(RNASEQ_CLUSTER_GTF) -fastq_folder=$(RNASEQ_SENSITIVE_FASTQ) -kallisto_out_folder=$(RNASEQ_CLUSTER_ALL_RES) -ens_release=$(ENSRELEASE) -ens_metazoa_release=$(ENSMETAZOARELEASE) -enc_passwd_file=$(ENCRYPT_PASSWD_FILE) -cluster_kallisto_cmd='$(CLUSTER_KALLISTO_CMD)' -cluster_R_cmd='$(CLUSTER_R_CMD)' >$@.tmp 2>&1
+	@perl 1Run/slurm_scheduler.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=$(RNASEQ_CLUSTER_LOG) -index_folder=$(RNASEQ_CLUSTER_GTF) -fastq_folder=$(RNASEQ_SENSITIVE_FASTQ) -kallisto_out_folder=$(RNASEQ_CLUSTER_ALL_RES) -ens_release=$(ENSRELEASE) -ens_metazoa_release=$(ENSMETAZOARELEASE) -enc_passwd_file=$(ENCRYPT_PASSWD_FILE) -cluster_kallisto_cmd='$(VIT_KALLISTO_CMD)' -cluster_R_cmd='$(VIT_R_CMD)' >$@.tmp 2>&1
 	@echo "TODO: At the end it is a good idea to relaunch the run_pipeline step to be sure everything was run!"
 	@$(MV) $@.tmp $@
 
@@ -185,25 +186,25 @@ check_pipeline: run_pipeline
 
 export_length: check_pipeline
 	#Export transcript length to a file to export
-	@perl 3Insertion/export_feature_length.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -all_results=$(RNASEQ_VITALIT_ALL_RES) -length_info=$(RNASEQ_LENGTH_INFO_FILEPATH) > $@.tmp 2>warnings.$@
+	@perl 3Insertion/export_feature_length.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -all_results=$(RNASEQ_CLUSTER_ALL_RES) -length_info=$(RNASEQ_LENGTH_INFO_FILEPATH) > $@.tmp 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@echo -e "\tTranscript length are now exported into $(RNASEQ_LENGTH_INFO_FILEPATH) file\n"
 	@$(MV) $@.tmp $@
 
 finalize_pipeline: check_pipeline
 	# Collect infos from .report files
-	@perl 3Insertion/create_rna_seq_report_info.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -report_info=$(RNASEQ_VITALIT_REPORTINFO) -all_results=$(RNASEQ_VITALIT_ALL_RES) > $@.tmp 2>warnings.$@
+	@perl 3Insertion/create_rna_seq_report_info.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -report_info=$(RNASEQ_CLUSTER_REPORTINFO) -all_results=$(RNASEQ_CLUSTER_ALL_RES) > $@.tmp 2>warnings.$@
 	# Touch all files so that they are not removed from /scratch/temporary
-	@find $(RNASEQ_VITALIT_SCRATCH) -exec touch {} \;
+	@find $(RNASEQ_CLUSTER_SCRATCH) -exec touch {} \;
 # We use tail -n+1 instead of cat because it writes the name of the file in the concatenated file
-	@tail -n+1 $(RNASEQ_VITALIT_LOG)/*/*.err    > $(RNASEQ_VITALIT_LOG)/all_std_err.txt 2>>warnings.$@
-	@tail -n+1 $(RNASEQ_VITALIT_LOG)/*/*.out    > $(RNASEQ_VITALIT_LOG)/all_std_out.txt 2>>warnings.$@
-	@tail -n+1 $(RNASEQ_VITALIT_LOG)/*/*.report > $(RNASEQ_VITALIT_LOG)/all_reports.txt 2>>warnings.$@
+	@tail -n+1 $(RNASEQ_CLUSTER_LOG)/*/*.err    > $(RNASEQ_CLUSTER_LOG)/all_std_err.txt 2>>warnings.$@
+	@tail -n+1 $(RNASEQ_CLUSTER_LOG)/*/*.out    > $(RNASEQ_CLUSTER_LOG)/all_std_out.txt 2>>warnings.$@
+	@tail -n+1 $(RNASEQ_CLUSTER_LOG)/*/*.report > $(RNASEQ_CLUSTER_LOG)/all_reports.txt 2>>warnings.$@
 	# Back-up all data (not final but it's worth doing an intermediate backup here)
-	@tar -cf $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar $(RNASEQ_VITALIT_ALL_RES) 2>>warnings.$@
-	@gzip -9 $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar                           2>>warnings.$@
+	@tar -cf $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar $(RNASEQ_CLUSTER_ALL_RES) 2>>warnings.$@
+	@gzip -9 $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar                           2>>warnings.$@
 	# Move back-up data to /data/
-	@$(MV) $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar.gz $(RNASEQ_VITALIT_ALL_RES_BACKUP) 2>>warnings.$@
+	@$(MV) $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar.gz $(RNASEQ_CLUSTER_ALL_RES_BACKUP) 2>>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
@@ -234,7 +235,7 @@ presence_absence: sum_by_species $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUD
 	@mkdir -p $(RNASEQ_CLUSTER_PRESENCE_RES)
 	$(eval TIME_SUM := $(shell date +'%Y%m%d-%H%M%S'))
 	@echo "#!/bin/sh" > $@_$(TIME_SUM).sh
-	@echo "$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args rna_seq_sample_info=\"$(RNASEQ_SAMPINFO_FILEPATH)\" rna_seq_sample_excluded=\"$(RNASEQ_SAMPEXCLUDED_FILEPATH)\" kallisto_count_folder=\"$(RNASEQ_CLUSTER_ALL_RES)\" sum_by_species_folder=\"$(RNASEQ_CLUSTER_SUM_RES)\" gaussian_choice=\"$(RNASEQ_CLUSTER_GAUSSIAN_CHOICE)\" out_folder=\"$(RNASEQ_CLUSTER_PRESENCE_RES)\" plot_only=FALSE desired_r_cutoff=\"0.05\"' 1Run/rna_seq_presence_absence.R $(RNASEQ_VITALIT_PRESENCE_RES)rna_seq_presence_absence.Rout
+	@echo "$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args rna_seq_sample_info=\"$(RNASEQ_SAMPINFO_FILEPATH)\" rna_seq_sample_excluded=\"$(RNASEQ_SAMPEXCLUDED_FILEPATH)\" kallisto_count_folder=\"$(RNASEQ_CLUSTER_ALL_RES)\" sum_by_species_folder=\"$(RNASEQ_CLUSTER_SUM_RES)\" gaussian_choice=\"$(RNASEQ_CLUSTER_GAUSSIAN_CHOICE)\" out_folder=\"$(RNASEQ_CLUSTER_PRESENCE_RES)\" plot_only=FALSE desired_r_cutoff=\"0.05\"' 1Run/rna_seq_presence_absence.R $(RNASEQ_CLUSTER_PRESENCE_RES)rna_seq_presence_absence.Rout
 	@sbatch --account=mrobinso_bgee_sensitive --time=02-00:00:00 --mem=2G --partition=normal --output=$@_$(TIME_SUM).out --error=$@_$(TIME_SUM).err  --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_SUM) $@_$(TIME_SUM).sh > $@.tmp
 
 	NUMBER_JOBS=$$(squeue --name=$@_$(TIME_SUM) --noheader | wc -l) ; \
@@ -244,32 +245,32 @@ presence_absence: sum_by_species $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUD
             NUMBER_JOBS=$$(squeue --name=$@_$(TIME_SUM) --noheader | wc -l) ; \
     done ; \
     @$(MV) $@.tmp $@
-#NOTE if output directory is not $(RNASEQ_VITALIT_ALL_RES): copy all files with calls to this directory, as well as summary stats and plot files
+#NOTE if output directory is not $(RNASEQ_CLUSTER_ALL_RES): copy all files with calls to this directory, as well as summary stats and plot files
 #for folder in *; do echo $folder; /bin/cp $folder/* ../all_results_bgee_v14/$folder/; done
 # /bin/cp used because cp is an alias to cp -i
 # Also copy presence_absence_all_samples.txt, presence_absence_all_samples.RDa and presence_absence_boxplots.pdf
 
 save_and_send_results_back: finalize_pipeline presence_absence export_length
 	# Touch all files so that they are not removed from /scratch/temporary
-	@find $(RNASEQ_VITALIT_SCRATCH) -exec touch {} \; 2>warnings.$@
+	@find $(RNASEQ_CLUSTER_SCRATCH) -exec touch {} \; 2>warnings.$@
 	# Back-up all data
-	@tar -cf $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar --absolute-names $(RNASEQ_VITALIT_ALL_RES) $(RNASEQ_VITALIT_SUM_RES) $(RNASEQ_VITALIT_PRESENCE_RES) 2>>warnings.$@
-	@gzip -9 $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar 2>>warnings.$@
+	@tar -cf $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar --absolute-names $(RNASEQ_CLUSTER_ALL_RES) $(RNASEQ_CLUSTER_SUM_RES) $(RNASEQ_CLUSTER_PRESENCE_RES) 2>>warnings.$@
+	@gzip -9 $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar 2>>warnings.$@
 	# Move back-up data to /data/
-	@$(MV) $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar.gz $(RNASEQ_VITALIT_ALL_RES_BACKUP) 2>>warnings.$@
+	@$(MV) $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar.gz $(RNASEQ_CLUSTER_ALL_RES_BACKUP) 2>>warnings.$@
 	# Send results back to our server: $(PIPELOGIN)@$(PIPEHOST)  password: $(PIPEPASSWD)
 	@ssh $(PIPELOGIN)@$(PIPEHOST) mkdir -p $(RNASEQALLRES)
-	# @scp $(RNASEQ_VITALIT_SCRATCH)all_results_$(DBNAME).tar.gz  $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES) >$@.tmp 2>&1
+	# @scp $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar.gz  $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES) >$@.tmp 2>&1
 	# Whole archive is probably too big to be copied to our servers (>100Gb). Copy only the final gene-level expression + calls files:
-	@rsync -rav -e ssh --include='*/' --include='*abundance_gene_level+new_tpm+new_fpkm+calls.tsv' --exclude='*' $(RNASEQ_VITALIT_PRESENCE_RES) $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES) >>$@.tmp 2>&1
-	@$(CP) $(RNASEQ_VITALIT_REPORTINFO) $(RNASEQREPORTINFO)
-	@$(CP) $(RNASEQ_VITALIT_PRESENCE_RES)/presence_absence_all_samples.txt $(RNASEQSAMPSTATS)
-	@rsync -av -e ssh $(RNASEQ_VITALIT_REPORTINFO) $(RNASEQ_VITALIT_PRESENCE_RES)/presence_absence_all_samples.txt $(RNASEQ_VITALIT_PRESENCE_RES)/presence_absence_all_samples.RDa $(RNASEQ_VITALIT_PRESENCE_RES)/presence_absence_boxplots.pdf $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES)/ >>$@.tmp 2>&1
+	@rsync -rav -e ssh --include='*/' --include='*abundance_gene_level+new_tpm+new_fpkm+calls.tsv' --exclude='*' $(RNASEQ_CLUSTER_PRESENCE_RES) $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES) >>$@.tmp 2>&1
+	@$(CP) $(RNASEQ_CLUSTER_REPORTINFO) $(RNASEQREPORTINFO)
+	@$(CP) $(RNASEQ_CLUSTER_PRESENCE_RES)/presence_absence_all_samples.txt $(RNASEQSAMPSTATS)
+	@rsync -av -e ssh $(RNASEQ_CLUSTER_REPORTINFO) $(RNASEQ_CLUSTER_PRESENCE_RES)/presence_absence_all_samples.txt $(RNASEQ_CLUSTER_PRESENCE_RES)/presence_absence_all_samples.RDa $(RNASEQ_CLUSTER_PRESENCE_RES)/presence_absence_boxplots.pdf $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES)/ >>$@.tmp 2>&1
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
-vitalit2: save_and_send_results_back
-	@echo -e "\tYou can go out of Vital-IT now\n"
+cluster2: save_and_send_results_back
+	@echo -e "\tYou can go out of the sensitive cluster now\n"
 	@touch $@
 ##############################################################################################
 
@@ -390,7 +391,7 @@ external: wormbase
 #TODO Add 1st steps
 #TODO add a verification that each transcriptId is uniquely used in a given species
 #(see comment for key 'unique(transcriptId, bgeeGeneId)' in bgeeConstraint.sql)
-$(VERIFICATIONFILE): send_files_to_vital-it check_conditions insert_expression
+$(VERIFICATIONFILE): send_files_to_cluster check_conditions insert_expression
 	# Copy run_info_file.txt for next release comparison (check_runs step)
 	@$(CP) $(RNASEQ_RUNINFO_FILEPATH) $(RNASEQ_RUNINFO_FILEPATH)_v$(RELEASE)
 #TODO this needs to be updated
@@ -412,7 +413,7 @@ $(VERIFICATIONFILE): send_files_to_vital-it check_conditions insert_expression
 #TODO Clean added/removed steps
 #TODO Remove unused scripts/files in folders and sub-folders
 clean:
-	-@$(RM) -R $(VERIFICATIONFILE)  check_annot check_tools create_rna_seq_sample_info get_annot get_GTF prepare_GTF get_genome prepare_indexed_transcriptome generate_genome_info prepare_run_info_final create_config_file vitalit1 backup check_curation check_runs insert_RNA_seq insert_expression wormbase external $(RNASEQGTFDATAPATH)/*.gtf $(RNASEQGTFDATAPATH)/*.gtf.gz *.tmp check_conditions insert_expression
+	-@$(RM) -R $(VERIFICATIONFILE)  check_annot check_tools create_rna_seq_sample_info get_annot get_GTF prepare_GTF get_genome prepare_indexed_transcriptome generate_genome_info prepare_run_info_final create_config_file cluster1 backup check_curation check_runs insert_RNA_seq insert_expression wormbase external $(RNASEQGTFDATAPATH)/*.gtf $(RNASEQGTFDATAPATH)/*.gtf.gz *.tmp check_conditions insert_expression
 	-@$(GIT) rm $(VERIFICATIONFILE)
 	-@$(GIT) commit $(VERIFICATIONFILE) -m "Removing verification file for RNA Seq"
 	-@$(GIT) push

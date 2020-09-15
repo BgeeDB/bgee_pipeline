@@ -29,7 +29,7 @@ my %opts = ('library_info=s'        => \$library_info,       # rna_seq_sample_in
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $library_info eq '' || $excluded_libraries eq '' || $all_results eq '' || $length_info eq '' ){
     print "\n\tInvalid or missing argument:
-\te.g., $0 -library_info=\$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -all_results=\$(RNASEQ_VITALIT_ALL_RES) -length_info=\$(RNASEQ_LENGTH_FILEPATH) > $@.tmp 2>warnings.$@
+\te.g., $0 -library_info=\$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -all_results=\$(RNASEQ_CLUSTER_ALL_RES) -length_info=\$(RNASEQ_LENGTH_FILEPATH) > $@.tmp 2>warnings.$@
 \t-library_info        rna_seq_sample_info.txt file
 \t-excluded_libraries  rna_seq_sample_excluded.txt file
 \t-all_results         all_results directory

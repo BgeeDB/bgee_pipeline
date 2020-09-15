@@ -478,9 +478,9 @@ You will obtain also an output file that contain a boxplot for each different fe
   * `screen`
   * `make run_pipeline`
   * `Ctrl-a Ctrl-d` to exit the screen session, `screen -r` to come back
-  * Results are written in `$RNASEQ_VITALIT_ALL_RES`. Beware that one month is passing fast! Please add to your calendar to do a touch of all files in less than a month.
+  * Results are written in `$RNASEQ_CLUSTER_ALL_RES`. Beware that one month is passing fast! Please add to your calendar to do a touch of all files in less than a month.
   ```
-  find $RNASEQ_VITALIT_ALL_RES/ -exec touch {} \;
+  find $RNASEQ_CLUSTER_ALL_RES/ -exec touch {} \;
   ```
   * Checks during run:
   ```
@@ -489,11 +489,11 @@ You will obtain also an output file that contain a boxplot for each different fe
    # number of launched jobs
    grep -c 'is submitted to queue <bgee>' /data/ul/dee/bgee/GIT/pipeline/RNA_Seq/run_pipeline.tmp
    # result folder
-   ll $RNASEQ_VITALIT_ALL_RES
+   ll $RNASEQ_CLUSTER_ALL_RES
    # number of successful jobs
-   ll $RNASEQ_VITALIT_ALL_RES/*/DONE.txt | wc -l
+   ll $RNASEQ_CLUSTER_ALL_RES/*/DONE.txt | wc -l
    # list of unsuccessful jobs (have no DONE.txt and have a .out file)
-   find $RNASEQ_VITALIT_ALL_RES/ -maxdepth 1 -mindepth 1 -type d -exec sh -c 'if ! test -s {}/DONE.txt && test -s {}/*.out; then echo {}; fi' \; | sort
+   find $RNASEQ_CLUSTER_ALL_RES/ -maxdepth 1 -mindepth 1 -type d -exec sh -c 'if ! test -s {}/DONE.txt && test -s {}/*.out; then echo {}; fi' \; | sort
   ```
   * If run is interrupted, do not forget to backup the file run_pipeline.tmp, as well as .report, .err and .out files
   ```
@@ -507,31 +507,31 @@ You will obtain also an output file that contain a boxplot for each different fe
     * Kallisto bug... Streaming too slow, streaming interrupted, sometimes everything is just fine but Kallisto bugs after reporting output... Beware, these libraries can move to further steps and generate a `DONE.txt`. Very important to check if number of reads processed corresponds to number of reads in FASTQ files (see below).
     * How to track these bugs:
     ```
-    grep 'Broken pipe' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'Broken pipe' $RNASEQ_CLUSTER_ALL_RES/*/*.err
     # Usually some samples with streaming issues
-    grep 'gzip: stdin: unexpected end of file' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'gzip: stdin: unexpected end of file' $RNASEQ_CLUSTER_ALL_RES/*/*.err
     # Most of the time linked to streaming issues, but could also be to wrongly compressed FASTQ files.
     # Streaming issues come most of the time from long Kallisto computations and/or lots of runs which increase the probability of
     # network issues, log rotations, ... that could interrupt the streaming.
     # Run those libraries locally, not through streaming, if gzip issue is repeated itself.
-    grep 'packet_write_wait'                                              $RNASEQ_VITALIT_ALL_RES/*/*.err
-    grep 'ssh_exchange_identification: Connection closed by remote host'  $RNASEQ_VITALIT_ALL_RES/*/*.err
-    grep 'ssh_exchange_identification: read: Connection reset by peer'    $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'packet_write_wait'                                              $RNASEQ_CLUSTER_ALL_RES/*/*.err
+    grep 'ssh_exchange_identification: Connection closed by remote host'  $RNASEQ_CLUSTER_ALL_RES/*/*.err
+    grep 'ssh_exchange_identification: read: Connection reset by peer'    $RNASEQ_CLUSTER_ALL_RES/*/*.err
     # Most of the time linked to streaming issues. So check them if repeated
-    grep 'Uncaught exception from user code' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'Uncaught exception from user code' $RNASEQ_CLUSTER_ALL_RES/*/*.err
     # Exception from the code. Check the error message next to it carefully!
-    grep 'bad decrypt' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'bad decrypt' $RNASEQ_CLUSTER_ALL_RES/*/*.err
     #
-    grep 'Your file is probably truncated' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'Your file is probably truncated' $RNASEQ_CLUSTER_ALL_RES/*/*.err
     # FastQC error, seem joint with previous one
-    grep 'error writing output file' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'error writing output file' $RNASEQ_CLUSTER_ALL_RES/*/*.err
     # This one is present in many FastQC outputs, which doesn't seem to be really problematic...
-    grep 'Failed to process file stdin' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'Failed to process file stdin' $RNASEQ_CLUSTER_ALL_RES/*/*.err
     #
     ```
   * Potential types of errors:
   ```
-    grep 'Problem' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'Problem' $RNASEQ_CLUSTER_ALL_RES/*/*.err
     # too broad
     Problem: Read length in FASTQ file [85] is not consistent with SRA record [100]. Please check [SRR1051537]
     Problem: Length of left and right reads in FASTQ files [101+101=202] are not consistent with SRA record [210]. Please check run [SRR391652]
@@ -560,19 +560,19 @@ You will obtain also an output file that contain a boxplot for each different fe
 
   * Warnings:
   ```
-    grep 'Warning' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'Warning' $RNASEQ_CLUSTER_ALL_RES/*/*.err
     # too broad, most of warnings indicate mapping on 15nt index
-    grep 'Warning: Length of left and right reads are different' $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'Warning: Length of left and right reads are different' $RNASEQ_CLUSTER_ALL_RES/*/*.err
     # Usually this is not a problem and SRA agrees
-    grep 'Warning: Length of left and/or right reads [75/1] too short for pseudo-mapping ...'  $RNASEQ_VITALIT_ALL_RES/*/*.err
-    grep 'Warning: Length of reads [25] too short for pseudo-mapping ...'                      $RNASEQ_VITALIT_ALL_RES/*/*.err
+    grep 'Warning: Length of left and/or right reads [75/1] too short for pseudo-mapping ...'  $RNASEQ_CLUSTER_ALL_RES/*/*.err
+    grep 'Warning: Length of reads [25] too short for pseudo-mapping ...'                      $RNASEQ_CLUSTER_ALL_RES/*/*.err
     # Mapping will switch to short index. What to do when length of reads lower than short index k-mer size? => check % mapping
     grep 'fastqc.html: No such file or directory'
     # The FastQC report file is missing. Run FastQC on those missed runs
   ```
   * **TODO** any other messages that could have been missed?
   * Management of bugged samples:
-    * It is good to keep a copy of the whole folder, for example: `mv $RNASEQ_VITALIT_ALL_RES/SRX.../ failed_results_bgee_v14/`
+    * It is good to keep a copy of the whole folder, for example: `mv $RNASEQ_CLUSTER_ALL_RES/SRX.../ failed_results_bgee_v14/`
    Samples can be relaunched by hand one by one: you can find the bsub command for each library in the '.report' file.
     * All samples to rerun can be relaunched by rerunning [bsub_scheduler.pl](1Run/bsub_scheduler.pl) in `make run_pipeline` step
 
@@ -586,7 +586,7 @@ You will obtain also an output file that contain a boxplot for each different fe
     * Run `make finalize_pipeline` to:
       * Backup the file `run_pipeline.tmp`, as well as '.report', '.err' and '.out' files
       * Touch all files so that they can stay in `/scratch/temporary` for one more month
-      * Tar and compress all data and copy them to `/data/` drive (for Bgee_v14 the whole $RNASEQ_VITALIT_ALL_RES has been backuped on nas.unil.ch!)
+      * Tar and compress all data and copy them to `/data/` drive (for Bgee_v14 the whole $RNASEQ_CLUSTER_ALL_RES has been backuped on nas.unil.ch!)
 
 ## Mapping the libraries: TODOs
   * Should we increase the number of parallel jobs (10) to a higher number (20 for example)? Maybe need to change SSH configuration on `bigbgee` to open more than 10 SSH ports. Need also to consider simultaneous accesses to Kallisto index files... Check machine status during run:
@@ -606,8 +606,8 @@ You will obtain also an output file that contain a boxplot for each different fe
 
 ## Presence/absence calls
   * Launch `make sum_by_species`. This steps launches the [1Run/rna_seq_sum_by_species.R](1Run/rna_seq_sum_by_species.R) script to sum TPMs from all samples of each species to deconvolute automatically the coding genes and intergenic regions distributions
-  * Results are written in the `$(RNASEQ_VITALIT_SUM_RES)` folder
-  * A file (`generated_files/RNA_Seq/gaussian_choice_by_species.txt`, see variable `$(RNASEQ_VITALIT_GAUSSIAN_CHOICE)`) has to be manually edited to indicate which of the intergenic regions gaussians are chosen. This file is located in the `$(GENERATED_FILES_DIR)` folder.
+  * Results are written in the `$(RNASEQ_CLUSTER_SUM_RES)` folder
+  * A file (`generated_files/RNA_Seq/gaussian_choice_by_species.txt`, see variable `$(RNASEQ_CLUSTER_GAUSSIAN_CHOICE)`) has to be manually edited to indicate which of the intergenic regions gaussians are chosen. This file is located in the `$(GENERATED_FILES_DIR)` folder.
   * **IMPORTANT TO READ: procedure to fill this file**
     * Remember that we do not choose the number of gaussians that is deconvoluted: we let `mclust` choose based on the BIC criterion.
 
@@ -674,7 +674,7 @@ You will obtain also an output file that contain a boxplot for each different fe
     * In some cases, it is possible that the density plot in PDF is not clear enough and lead to wrong choice of gaussians. After running the [1Run/rna_seq_presence_absence.R](1Run/rna_seq_presence_absence.R) script, you can check the TPM threshold used for each individual library, and the maximum summed TPM expression of the intergenic regions selected for a given species. This can help detect strange things happening.
 
   * After choosing all gaussians and when the `gaussian_choice_by_species.txt` file is ready, launch `make presence_absence` to run the [1Run/rna_seq_presence_absence.R](1Run/rna_seq_presence_absence.R) script to call presence/absence for each library and generate summary boxplots.
-    * Results are written in `$(RNASEQ_VITALIT_PRESENCE_RES)` folder, for example `presence_absence_bgee_v14`.
+    * Results are written in `$(RNASEQ_CLUSTER_PRESENCE_RES)` folder, for example `presence_absence_bgee_v14`.
     * This script takes ~1 day to complete
     * It creates one subfolder per sample, with 4 files: `abundance_gene_level+fpkm+intergenic+calls.tsv`, `cutoff_info_file.tsv`, `abundance_gene_level+new_tpm+new_fpkm+calls.tsv`, and `distribution_TPM_genic_intergenic+cutoff.pdf`
     * NOTE: the script can be run to produce the final boxplots only (the .RDa file needs to be present in the output folder already). Set `plot_only` option to TRUE.
@@ -686,14 +686,14 @@ You will obtain also an output file that contain a boxplot for each different fe
     ll presence_absence_bgee_v14_v4/*/distribution_TPM_genic_intergenic+cutoff.pdf | wc
     ```
 
-  * Copy files of `$(RNASEQ_VITALIT_PRESENCE_RES)` subfolders (1 per sample) to subfolders of `$RNASEQ_VITALIT_ALL_RES`
+  * Copy files of `$(RNASEQ_CLUSTER_PRESENCE_RES)` subfolders (1 per sample) to subfolders of `$RNASEQ_CLUSTER_ALL_RES`
   ```
-  cd $(RNASEQ_VITALIT_PRESENCE_RES)
-  for folder in *; do echo $folder; /bin/cp $folder/* $(RNASEQ_VITALIT_ALL_RES)/$folder/; done
+  cd $(RNASEQ_CLUSTER_PRESENCE_RES)
+  for folder in *; do echo $folder; /bin/cp $folder/* $(RNASEQ_CLUSTER_ALL_RES)/$folder/; done
   ## /bin/cp used because cp is an alias to cp -i
   ```
 
-  NOTE: `$(RNASEQ_VITALIT_PRESENCE_RES)` could possibly be set to `$(RNASEQ_VITALIT_ALL_RES)` and the presence calls files be written directly in the subfolders with the mapping results. I considered it safer to generate in a separate folder and then copy.
+  NOTE: `$(RNASEQ_CLUSTER_PRESENCE_RES)` could possibly be set to `$(RNASEQ_CLUSTER_ALL_RES)` and the presence calls files be written directly in the subfolders with the mapping results. I considered it safer to generate in a separate folder and then copy.
 
   * Back-up results and send useful files to `devbioinfo` server: `make save_and_send_results_back`
 
