@@ -27,8 +27,8 @@ my @anatId  = read_file("$in_anat",  chomp=>1);
 #@$(STGMAPPING) $(STGMAPPINGPORT) &
 #java -Xmx32g -Dbgee.dao.jdbc.username=$(DBUSER) -Dbgee.dao.jdbc.password=$(DBPASS) -Dbgee.dao.jdbc.driver.names=com.mysql.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST):$(DBPORT)/$(DBNAME)?enableQueryTimeouts=false&sessionVariables=net_write_timeout=86400,net_read_timeout=86400,wait_timeout=86400' -jar ../java/bgee-pipeline-15-with-dependencies.jar UberonSocketTool idMapping custom_composite.owl 14555 &
 #
-#nohup java -Xmx32g -jar ../java/bgee-pipeline-15-with-dependencies.jar  UberonSocketTool idMapping  ../source_files/uberon/composite-metazoan.owl  14555 &
-#nohup java -Xmx32g -jar ../java/bgee-pipeline-15-with-dependencies.jar  UberonSocketTool idMapping  ../source_files/uberon/dev_stage_ontology.obo  13222 &
+#nohup java -Xmx32g -jar ../java/bgee-pipeline-15-with-dependencies.jar  UberonSocketTool idMapping  ../generated_files/uberon/composite-metazoan.owl  14555 &
+#nohup java -Xmx32g -jar ../java/bgee-pipeline-15-with-dependencies.jar  UberonSocketTool idMapping  ../generated_files/uberon/dev_stage_ontology.obo  13222 &
 #@sleep 50 # sleep because mappers need time to load Uberon
 
 
