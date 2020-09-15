@@ -387,7 +387,7 @@ RNASEQ_CLUSTER_BGEECALL_OUTPUT  := $(RNASEQ_CLUSTER_READONLY)rna_seq/calls/
 ENCRYPT_PASSWD_FILE            := /data/unil/dee/dee_robi/.passw
 
 # RNAseq sensitive cluster path
-RNASEQ_SENSITIVE_FASTQ         := /data/unil/dee/dee_robi/FASTQ
+RNASEQ_SENSITIVE_FASTQ         := /data/unil/dee/dee_robi/FASTQ/RNAseq/
 
 # Intergenic folders
 CLUSTER_REF_INTERGENIC_FOLDER   := $(RNASEQ_VITALIT_SCRATCH)ref_intergenic_$(DBNAME)/
