@@ -44,6 +44,15 @@ if( file.exists(InformationAllLibraries) ){
   stop( paste("The cell information file was not found [", InformationAllLibraries, "]\n"))
 }
 ##########################################################################################################################################################
+## write info file about cell population
+cellPopInfo <- paste0(output, "/sum_scRNASeq_sample_info.txt")
+if (!file.exists(cellPopInfo)){
+  file.create(cellPopInfo)
+  cat("libraryId\texperimentId\tuberonId\tcellTypeId\tstageId\tsex\tstrain\tspeciesId\n",file = paste0(output, "/sum_scRNASeq_sample_info.txt"), sep = "\t")
+} else {
+  print("File already exist.....")
+}
+
 sumUMI <- function(finalTable, output){
   
   finalTable[is.na(finalTable)] <- 0
@@ -64,7 +73,6 @@ sumUMI <- function(finalTable, output){
   
    return(list(justGenic, allRegions))
 }
-
 
 ## loop through all data
 for (species in unique(scRNASeqAnnotation$speciesId)) {
@@ -93,8 +101,8 @@ for (species in unique(scRNASeqAnnotation$speciesId)) {
                 librariesInfo <- scRNASeqAnnotation$libraryId[scRNASeqAnnotation$speciesId == species & scRNASeqAnnotation$experimentId == experiment & scRNASeqAnnotation$uberonId == uberonId & scRNASeqAnnotation$cellTypeId == cellId & scRNASeqAnnotation$stageId == stageId & scRNASeqAnnotation$sex == sex & scRNASeqAnnotation$strain == strain]
               }
               
-              ## collect cell-type information from info file (and ignore cell-types not identified)
-              cell_Name <- unique(cellInfo$Cell_Name[cellInfo$experimentID == experiment & cellInfo$Cell_Name != "No match between annotation and analysis"])
+              ## collect cell-type information from info file
+              cell_Name <- unique(cellInfo$Cell_Name[cellInfo$experimentID == experiment])
               
               for (cell in cell_Name) {
                 file <- as.data.frame(paste0(folder_data,  librariesInfo, "/Raw_Counts_", cell, ".tsv"))
@@ -118,6 +126,14 @@ for (species in unique(scRNASeqAnnotation$speciesId)) {
                 fileName <- gsub(":","-",fileName)
                 fileName <- gsub("/","-",fileName)
                 
+                ## create a folder with name of the cells summed
+                outFolder <- paste0(output, "/", fileName)
+                if (!dir.exists(outFolder)){
+                  dir.create(outFolder)
+                } else {
+                  print("Folder already exist.....")
+                }
+                
                 ## read all files for the correspondent cell-type
                 if (length(fileTRUE) == 0){
                   
@@ -128,21 +144,28 @@ for (species in unique(scRNASeqAnnotation$speciesId)) {
                   finalTableIdentifiers <- finalTable[ ,c("gene_id", "biotype", "type")]
                   finalTable$gene_id <- finalTable$biotype <- finalTable$type <- NULL
                   finalTable <- data.frame(finalTableIdentifiers, finalTable)
-                  ## collect raw info + normalization
-                  sumUMI_information <- sumUMI(finalTable = finalTable, output = output)
-                  ## write tables
-                  write.table(sumUMI_information[[1]], file = paste0(output, "/SumRaw+Normalization_Genic_" , fileName, ".tsv"), sep="\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
-                  write.table(sumUMI_information[[2]], file = paste0(output, "/SumRaw+Normalization_Genic+Intergenic_" , fileName, ".tsv"), sep="\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
                   
+                  ## collect raw info + normalization
+                  sumUMI_information <- sumUMI(finalTable = finalTable, output = outFolder)
+                  ## write tables
+                  write.table(sumUMI_information[[1]], file = paste0(outFolder, "/SumRaw+Normalization_Genic_" , fileName, ".tsv"), sep="\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
+                  write.table(sumUMI_information[[2]], file = paste0(outFolder, "/SumRaw+Normalization_Genic+Intergenic_" , fileName, ".tsv"), sep="\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
+                  ## write information to the info file about cell population
+                  infoCellPop <- c(fileName, cell, experiment, uberonId, cellId, stageId, sex, strain, species)
+                  write.table(t(infoCellPop), file = cellPopInfo, sep="\t", quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
                 } else {
                   All_libs <- lapply(fileTRUE, read.delim, stringsAsFactors=FALSE)
                   ## merge by geneID from all samples that have the same cell-type
                   finalTable <- Reduce(function(...) merge(..., by = c("gene_id", "biotype","type"), all=TRUE), All_libs)
+                  
                   ## collect raw info + normalization
-                  sumUMI_information <- sumUMI(finalTable = finalTable, output = output)
+                  sumUMI_information <- sumUMI(finalTable = finalTable, output = outFolder)
                   ## write tables
-                  write.table(sumUMI_information[[1]], file = paste0(output, "/SumRaw+Normalization_Genic_" , fileName, ".tsv"), sep="\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
-                  write.table(sumUMI_information[[2]], file = paste0(output, "/SumRaw+Normalization_Genic+Intergenic_" , fileName, ".tsv"), sep="\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
+                  write.table(sumUMI_information[[1]], file = paste0(outFolder, "/SumRaw+Normalization_Genic_" , fileName, ".tsv"), sep="\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
+                  write.table(sumUMI_information[[2]], file = paste0(outFolder, "/SumRaw+Normalization_Genic+Intergenic_" , fileName, ".tsv"), sep="\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
+                  ## write information to the info file about cell population
+                  infoCellPop <- c(fileName, cell, experiment, uberonId, cellId, stageId, sex, strain, species)
+                  write.table(t(infoCellPop), file = cellPopInfo, sep="\t", quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
                 }
                 
               }
