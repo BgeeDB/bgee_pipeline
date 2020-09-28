@@ -2,8 +2,9 @@
 ## Updated June 2020
 
 ## This script is used to do the call of present genes at individual cell and to do the calls at the cell population level.
-## the aggregation of cells is done by cells that belongs to the same experiment, uberonId, cellTypeId, stageId, strain and sex and then the calls is done
+## the aggregation of cells is done by cells that belongs to the same experiment, uberonId, cellTypeId, stageId, strain and sex and then the calls are done
 ## by a fraction of cells that have the gene classified as present.
+## In the end the calls are classified as low and high confidence, based in the density and the ratio cutoff.
 
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNASeq_Info.txt" InformationAllLibraries="InformationAllLibraries.txt" folder_data="folder_data" folder_refIntergenic="folder_refIntergenic" desired_r_cutoff="desired_r_cutoff" output="output"' Call_PresentGenes_indivCell_cellPop.R Call_PresentGenes_indivCell_cellPop.Rout
@@ -55,7 +56,7 @@ if( file.exists(InformationAllLibraries) ){
 presentCell <- paste0(output, "/Present_Info_individual_Cell.tsv")
 if (!file.exists(presentCell)){
   file.create(presentCell)
-  cat("barcode\texperiment\tcellName\tCPM_cutoff\tNumber_genic\tproportionGenic\tNumber_intergenic\tproportionIntergenic\tNumber_proteinCoding\tproportionproteinCoding\tratio\tspecies\n",file = paste0(output, "/Present_Info_individual_Cell.tsv"), sep = "\t")
+  cat("barcode\texperiment\tcellName\tcellId\tuberonId\tstageId\tsex\tstrain\tCPM_cutoff\tNumber_genic\tproportionGenic\tNumber_intergenic\tproportionIntergenic\tNumber_proteinCoding\tproportionproteinCoding\tratio\tspecies\n",file = paste0(output, "/Present_Info_individual_Cell.tsv"), sep = "\t")
 } else {
   print("File already exist.....")
 }
@@ -64,7 +65,7 @@ if (!file.exists(presentCell)){
 presentCellPopulation <- paste0(output, "/Present_Info_CellPopulation.tsv")
 if (!file.exists(presentCellPopulation)){
   file.create(presentCellPopulation)
-  cat("experiment\tcellName\tgenic_all\tproportion_genic_all\tintergenic_all\tproportion_intergenic_all\tproteinCoding_all\tproportion_PC_all\tgenic_density\tproportion_genic_density\tintergenic_density\tproportion_intergenic_density\tproteinCoding_density\tproportion_PC_density\tgenic_ratio\tproportion_genic_ratio\tintergenic_ratio\tproportion_intergenic_ratio\tproteinCoding_ratio\tproportion_PC_ratio\tcutoff_density\tcutoff_ratio\tspeciesId\n", file = paste0(output, "/Present_Info_CellPopulation.tsv"), sep = "\t")
+  cat("experiment\tcellName\tcellId\tuberonId\tstageId\tsex\tstrain\tgenic_all\tproportion_genic_all\tintergenic_all\tproportion_intergenic_all\tproteinCoding_all\tproportion_PC_all\tgenic_density\tproportion_genic_density\tintergenic_density\tproportion_intergenic_density\tproteinCoding_density\tproportion_PC_density\tgenic_ratio\tproportion_genic_ratio\tintergenic_ratio\tproportion_intergenic_ratio\tproteinCoding_ratio\tproportion_PC_ratio\tcutoff_density\tcutoff_ratio\tspeciesId\n", file = paste0(output, "/Present_Info_CellPopulation.tsv"), sep = "\t")
 } else {
   print("File already exist.....")
 }
@@ -121,7 +122,7 @@ exportInfo_CellPop <- function(collectInfoAllCells){
 
 ## function to call present genes at cell population level depending on the cutoff applied (note here the selected_intergenic have in consideration the reference intergenic)
 ## The plot is done based on density of protein coding + ref intergenic regions
-plotCellPop <- function(collectInfoAllCells, desired_r_cutoff, cell_Name, sizeData, refIntergenic){
+plotCellPop <- function(collectInfoAllCells, desired_r_cutoff, sizeData, refIntergenic){
 
   selected_coding <- collectInfoAllCells$biotype %in% "protein_coding"
   selected_intergenic <- (finalTable$type %in% "intergenic" & seqNamesFinal$refIntergenic == "TRUE")  
@@ -183,7 +184,7 @@ plotCellPop <- function(collectInfoAllCells, desired_r_cutoff, cell_Name, sizeDa
 
 
 ### function to call present genes at individual cell and to export final file at cell population level
-callPresentGenes <- function(finalTable, desired_r_cutoff, experiment, cell_Name, species, uberonId, stageId, sex, strain, refIntergenic){
+callPresentGenes <- function(finalTable, desired_r_cutoff, experiment, sizeData, cell_Name, cellId, species, uberonId, stageId, sex, strain, refIntergenic){
   
   collectInfoAllCells <- data.frame()
   for (i in 4:ncol(finalTable)) {
@@ -223,7 +224,7 @@ callPresentGenes <- function(finalTable, desired_r_cutoff, experiment, cell_Name
    
     ### collect information about each individual cell (barcode)
     infoProportion <- exportInfo_Cell(cellCalls = cellCalls)
-    finalInfoProportion <- as.data.frame(t(c(barcode, experiment, cell_Name, CPM_cutoff, infoProportion, desired_r_cutoff, species)))
+    finalInfoProportion <- as.data.frame(t(c(barcode, experiment, cell_Name, cellId, uberonId, stageId, sex, strain, CPM_cutoff, infoProportion, desired_r_cutoff, species)))
     write.table(finalInfoProportion, file = file.path(presentCell), append = TRUE, sep="\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
     
     if(ncol(collectInfoAllCells) == 0){
@@ -241,12 +242,20 @@ callPresentGenes <- function(finalTable, desired_r_cutoff, experiment, cell_Name
   collectInfoAllCells$ratio <- collectInfoAllCells$cellPresent / sizeData
   
   ### export plot per cell population with cut-offs
-  cellPop <- plotCellPop(collectInfoAllCells = collectInfoAllCells, desired_r_cutoff = desired_r_cutoff, cell_Name = cell_Name, sizeData = sizeData, refIntergenic = seqNamesFinal)
-
-  ## define cutoffs
-  collectInfoAllCells$call_cutoff_density <- ifelse(collectInfoAllCells$ratio >= cellPop[[2]], "present", "-")
-  collectInfoAllCells$call_cutoff_ratio <- ifelse(collectInfoAllCells$ratio >= cellPop[[3]], "present", "-")
-  collectInfoAllCells$confidence <- ifelse(collectInfoAllCells$ratio < cellPop[[2]], "-", ifelse(collectInfoAllCells$ratio >= cellPop[[2]] & collectInfoAllCells$ratio < cellPop[[3]], "low", "high"))
+  cellPop <- plotCellPop(collectInfoAllCells = collectInfoAllCells, desired_r_cutoff = desired_r_cutoff, sizeData = sizeData, refIntergenic = seqNamesFinal)
+  
+  ## NOTE: in case of the density cut-off and the ratio cut-off is between 1 and 1.44 cells we use the cut-off based in 1 cell
+  if (cellPop[[2]]*sizeData <= 1.44 & cellPop[[3]]*sizeData <= 1.44){
+    ## cutoffs defined based in 1 cell
+    collectInfoAllCells$call_cutoff_density <- ifelse(collectInfoAllCells$ratio >= 1/sizeData, "present", "-")
+    collectInfoAllCells$call_cutoff_ratio <- ifelse(collectInfoAllCells$ratio >= 1/sizeData, "present", "-")
+    collectInfoAllCells$confidence <- "high"
+    } else {
+    ## define cutoffs
+    collectInfoAllCells$call_cutoff_density <- ifelse(collectInfoAllCells$ratio >= cellPop[[2]], "present", "-")
+    collectInfoAllCells$call_cutoff_ratio <- ifelse(collectInfoAllCells$ratio >= cellPop[[3]], "present", "-")
+    collectInfoAllCells$confidence <- ifelse(collectInfoAllCells$ratio < cellPop[[2]], "-", ifelse(collectInfoAllCells$ratio >= cellPop[[2]] & collectInfoAllCells$ratio < cellPop[[3]], "low", "high"))
+  }
   
   ## write information per cell population
   cellPopulationInfo <-  exportInfo_CellPop(collectInfoAllCells = collectInfoAllCells)
@@ -257,7 +266,7 @@ callPresentGenes <- function(finalTable, desired_r_cutoff, experiment, cell_Name
     labs(title = "Density distribution of protein coding vs reference intergenic present", x="Log(ratio)",y="Density") +
     geom_vline(aes(xintercept=log(cellPop[[2]]), linetype="dotted"), color="black", size=0.5) + 
     geom_vline(aes(xintercept=log(cellPop[[3]]), linetype="solid"), color = "black", size=0.5) +
-    scale_linetype_manual(name = "Cut-Off", values = c("dotted", "solid"), labels = c(paste0("Cut-off density (", round(cellPop[[2]]*sizeData, digits = 0), " cell/s )"), paste0("Cut-off ratio (", round(cellPop[[3]]*sizeData, digits = 0) , " cells)")))
+    scale_linetype_manual(name = "Cut-Off", values = c("dotted", "solid"), labels = c(paste0("Cut-off density (", round(cellPop[[2]]*sizeData, digits = 0), " cell/s)"), paste0("Cut-off ratio (", round(cellPop[[3]]*sizeData, digits = 0) , " cell/s)")))
   ## plot percentage of regions for this celltype
   infocellpop <- as.data.frame(cellPopulationInfo)
   rownames(infocellpop) <- c("genic_all", "proportion_genic_all", "intergenic_all", "proportion_intergenic_all", "proteinCoding_all", "proportion_PC_all", 
@@ -272,12 +281,21 @@ callPresentGenes <- function(finalTable, desired_r_cutoff, experiment, cell_Name
    labs(title = "Proportion of coding genes present", x=" ",y="%") +
    coord_cartesian(ylim = c(0, 100))
  
-  pdf(file.path(output, paste0("Cell_Population_",cell_Name,"_", experiment,"_", uberonId,"_", stageId,"_", sex,"_", strain,"_", species,".pdf")), width = 14, height = 7)
+ ## create folder to save results of cell population level
+ fileName <- paste0(cell_Name , "_", experiment,"_", uberonId,"_", cellId,"_", stageId,"_", sex,"_", strain,"_", species)
+ fileName <- gsub(":","-",fileName)
+ outFolder <- paste0(output, "/", fileName)
+ if (!dir.exists(outFolder)){
+   dir.create(outFolder)
+ } else {
+   print("Folder already exist.....")
+ }
+  pdf(file.path(outFolder, paste0("Cell_Population_",cell_Name,"_", experiment,"_", uberonId,"_", stageId,"_", sex,"_", strain,"_", species,".pdf")), width = 14, height = 7)
   grid.arrange(p1,p2,ncol = 2, nrow = 1)
   dev.off()
   
   ## export info about the cell at population level
-  finalInfoCellPop <- as.data.frame(t(c(experiment, cell_Name, cellPopulationInfo ,cellPop[[2]], cellPop[[3]], species)))
+  finalInfoCellPop <- as.data.frame(t(c(experiment, cell_Name, cellId, uberonId, stageId, sex, strain, cellPopulationInfo ,cellPop[[2]], cellPop[[3]], species)))
   write.table(finalInfoCellPop, file = file.path(presentCellPopulation), append = TRUE, sep="\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
   
   return(collectInfoAllCells)
@@ -309,10 +327,10 @@ for (species in unique(scRNASeqAnnotation$speciesId)) {
            } else {
              librariesInfo <- scRNASeqAnnotation$libraryId[scRNASeqAnnotation$speciesId == species & scRNASeqAnnotation$experimentId == experiment & scRNASeqAnnotation$uberonId == uberonId & scRNASeqAnnotation$cellTypeId == cellId & scRNASeqAnnotation$stageId == stageId & scRNASeqAnnotation$sex == sex & scRNASeqAnnotation$strain == strain]
            }
-          
-           ## collect cell-type information from info file (and ignore cell-types not identified)
-          cell_Name <- unique(cellInfo$Cell_Name[cellInfo$experimentID == experiment & cellInfo$Cell_Name != "No match between annotation and analysis"])
-          
+
+           ## collect cell-type information from info file
+          cell_Name <- unique(cellInfo$Cell_Name[cellInfo$experimentID == experiment])
+
           ## reference intergenic regions extract ID's
           refInt <- file.path(folder_refIntergenic, paste0(species, "_intergenic.fa"))
           infoRef <- paste0(file.exists(refInt))
@@ -371,13 +389,15 @@ for (species in unique(scRNASeqAnnotation$speciesId)) {
                  strain <- gsub("/","-", strain)
                  
                  ## collect information per cell/ cell population and plots
-                 calls_Inv_cellPop <- callPresentGenes(finalTable = finalTable, desired_r_cutoff = as.numeric(desired_r_cutoff), experiment = experiment, cell_Name = cell, species = species, uberonId = uberonId,  stageId = stageId, sex = sex, strain = strain, refIntergenic = seqNamesFinal)
+                 calls_Inv_cellPop <- callPresentGenes(finalTable = finalTable, desired_r_cutoff = as.numeric(desired_r_cutoff), experiment = experiment, sizeData =sizeData, cell_Name = cell, cellId = cellId, species = species, uberonId = uberonId,  stageId = stageId, sex = sex, strain = strain, refIntergenic = seqNamesFinal)
+                 
                  ## adj output name
-                 fileName <- paste0("calls_InvidCell_cellPopulation_", cell , "_", experiment,"_", uberonId,"_", cellId,"_", stageId,"_", sex,"_", strain,"_", species,".tsv")
+                 fileName <- paste0(cell , "_", experiment,"_", uberonId,"_", cellId,"_", stageId,"_", sex,"_", strain,"_", species)
                  fileName <- gsub(":","-",fileName)
                  fileName <- gsub("/","-",fileName)
+                 outFolder <- paste0(output, "/", fileName)
                  ## write information of the calls
-                 write.table(calls_Inv_cellPop, file = paste0(output, "/" ,fileName), sep="\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
+                 write.table(calls_Inv_cellPop, file = paste0(outFolder, "/calls_InvidCell_cellPopulation_", fileName, ".tsv"), sep="\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
                  
                } else {
                  All_libs <- lapply(fileTRUE, read.delim, stringsAsFactors=FALSE)
@@ -397,14 +417,15 @@ for (species in unique(scRNASeqAnnotation$speciesId)) {
                  strain <- gsub("/","-", strain)
                  
                  ## collect information per cell/ cell population and plots
-                 calls_Inv_cellPop <- callPresentGenes(finalTable = finalTable, desired_r_cutoff = as.numeric(desired_r_cutoff), experiment = experiment, cell_Name = cell, species = species, uberonId = uberonId,  stageId = stageId, sex = sex, strain = strain, refIntergenic = seqNamesFinal)
+                 calls_Inv_cellPop <- callPresentGenes(finalTable = finalTable, desired_r_cutoff = as.numeric(desired_r_cutoff), experiment = experiment, sizeData =sizeData, cell_Name = cell, cellId = cellId, species = species, uberonId = uberonId,  stageId = stageId, sex = sex, strain = strain, refIntergenic = seqNamesFinal)
+              
                  ## adj output name
-                 fileName <- paste0("calls_InvidCell_cellPopulation_", cell , "_", experiment,"_", uberonId,"_", cellId,"_", stageId,"_", sex,"_", strain,"_", species,".tsv")
+                 fileName <- paste0(cell , "_", experiment,"_", uberonId,"_", cellId,"_", stageId,"_", sex,"_", strain,"_", species)
                  fileName <- gsub(":","-",fileName)
                  fileName <- gsub("/","-",fileName)
+                 outFolder <- paste0(output, "/", fileName)
                  ## write information of the calls
-                 write.table(calls_Inv_cellPop, file = paste0(output, "/" ,fileName), sep="\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
-                 
+                 write.table(calls_Inv_cellPop, file = paste0(outFolder, "/calls_InvidCell_cellPopulation_", fileName, ".tsv"), sep="\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
                }
              }
             }
