@@ -128,19 +128,26 @@ add foreign key (goAllTargetId) references geneOntologyTerm(goId) on delete casc
 add foreign key (goAllSourceId) references geneOntologyTerm(goId) on delete cascade;
 /*!40000 ALTER TABLE `geneOntologyRelation` ENABLE KEYS */;
 
+/*!40000 ALTER TABLE `geneOrthologs` DISABLE KEYS */;
+alter table geneOrthologs
+add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade,
+add foreign key (targetGeneId) references gene(bgeeGeneId) on delete cascade,
+add foreign key (taxonId) references taxon(taxonId) on delete cascade;
+/*!40000 ALTER TABLE `geneOrthologs` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `geneParalogs` DISABLE KEYS */;
+alter table geneParalogs
+add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade,
+add foreign key (targetGeneId) references gene(bgeeGeneId) on delete cascade,
+add foreign key (taxonId) references taxon(taxonId) on delete cascade;
+/*!40000 ALTER TABLE `geneParalogs` ENABLE KEYS */;
+
 /*!40000 ALTER TABLE `gene` DISABLE KEYS */;
 alter table gene
 add foreign key (speciesId) references species(speciesId) on delete cascade,
 add foreign key (geneBioTypeId) references geneBioType(geneBioTypeId) on delete set null,
 add foreign key (OMAParentNodeId) references OMAHierarchicalGroup(OMANodeId) on delete set null;
 /*!40000 ALTER TABLE `gene` ENABLE KEYS */;
-
-/*!40000 ALTER TABLE `geneToOma` DISABLE KEYS */;
-alter table geneToOma
-add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade,
-add foreign key (OMAGroupId) references OMAHierarchicalGroup(OMAGroupId) on delete cascade,
-add foreign key (taxonId) references taxon(taxonId) on delete cascade;
-/*!40000 ALTER TABLE `geneToOma` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `geneNameSynonym` DISABLE KEYS */;
 alter table geneNameSynonym

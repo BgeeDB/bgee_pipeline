@@ -131,8 +131,9 @@ check_tools: cluster1
 	@echo -e "\n\tRun this command to give access to all modules installed on vital-it\n\tmodule add Bioinformatics/Software/vital-it\n"
 	@echo -e "\n\tRun this command to prevent errors with Utils.pm\n\tmodule add Development/Ensembl_API/$(ENSRELEASE);\n"
 	# Check if logged on cluster
-	@if [[ `hostname -d` != 'axiom.unil.ch' ]]; then false; fi
+	@if [[ `hostname -d` != 'chuv.vital-it.ch' ]]; then false; fi
 	# Check if all required tools/libs are available
+	@module add Bioinformatics/Software/vital-it
 	@which perl                                        > $@.tmp
 	@perl -Mdiagnostics           -e 1                >> $@.tmp
 	@perl -MDBI                   -e 1                >> $@.tmp
@@ -152,7 +153,6 @@ check_tools: cluster1
 	@perl -MTime::localtime       -e 1                >> $@.tmp
 	@perl -Mwarnings              -e 1                >> $@.tmp
 	@perl -MCpanel::JSON::XS      -e 1                >> $@.tmp
-	@module add Bioinformatics/Software/vital-it
 	@$(CLUSTER_R_CMD) which R                         >> $@.tmp
 	@$(CLUSTER_R_CMD) R -e 'library("chipseq")'       >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("edgeR")'         >> $@.tmp  2>/dev/null
@@ -166,7 +166,6 @@ check_tools: cluster1
 	@$(CLUSTER_R_CMD) R -e 'library("jsonlite")'      >> $@.tmp  2>/dev/null
 	@which xz                                         >> $@.tmp
 	@which sbatch                                     >> $@.tmp
-	@$(CLUSTER_ASPERA_CMD)     which ascp             >> $@.tmp
 	@$(CLUSTER_TOPHAT_CMD)     which gtf_to_fasta     >> $@.tmp
 	@$(CLUSTER_SRATOOLKIT_CMD) which fastq-dump       >> $@.tmp
 	@$(CLUSTER_FASTP_CMD)      which fastp            >> $@.tmp
@@ -185,7 +184,7 @@ clean_cluster_folders: check_tools
 	@echo "xz -9 $(RNASEQ_CLUSTER_GTF)*.gtf_all $(RNASEQ_CLUSTER_GTF)*.transcriptome.* $(RNASEQ_CLUSTER_GTF)*.gene2transcript $(RNASEQ_CLUSTER_GTF)*.gene2biotype"
 	@echo "rm -Rf $(RNASEQ_CLUSTER_SCRATCH)*"
 	@echo
-	@echo "Those scripts have to be run from $(RNASEQ_CLUSTER_SCRIPTS)$(RNASEQPATH) on dev/frt/rserv01 (can write on /data/)!"
+	@echo "Those scripts have to be run from $(RNASEQ_CLUSTER_SCRIPTS)$(RNASEQPATH) on the frontal (can write on /data/)!"
 	@touch $@
 
 

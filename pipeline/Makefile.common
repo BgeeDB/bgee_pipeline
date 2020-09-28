@@ -150,7 +150,7 @@ include $(PIPELINEROOT)Makefile.taxon_info
 
 #NOTE Think to add ; at the end to ease insertion in other command lines
 CLUSTER_SOFT_CMD       := module add Bioinformatics/Software/vital-it;
-CLUSTER_ASPERA_CMD     := $(CLUSTER_SOFT_CMD) module add Utility/aspera_connect/3.7.4.147727;
+#CLUSTER_ASPERA_CMD     := $(CLUSTER_SOFT_CMD) module add Utility/aspera_connect/3.7.4.147727;
 #CLUSTER_BEDTOOLS_CMD   := $(CLUSTER_SOFT_CMD) module add UHTS/Analysis/BEDTools/2.26.0;
 #CLUSTER_BOWTIE2_CMD    := $(CLUSTER_SOFT_CMD) module add UHTS/Aligner/bowtie2/2.3.4.1;
 #CLUSTER_HTSEQ_CMD      := $(CLUSTER_SOFT_CMD) module add UHTS/Analysis/HTSeq/0.9.1;
@@ -235,6 +235,10 @@ ALLTAXIDSFILEPATH   := $(GENERATED_FILES_DIR)species/allTaxIds.tsv
 TAXONOMYFILEPATH    := $(GENERATED_FILES_DIR)species/bgee_ncbitaxon.owl
 TAX_DAT_DOWNLOAD_URL := ftp://ftp.ebi.ac.uk/pub/databases/taxonomy/taxonomy.dat
 
+# =========== GENE FILES ===============
+
+PARALOGS_DIR := $(OUTPUT_DIR)paralogs/
+ORTHOLOGS_DIR := $(OUTPUT_DIR)orthologs/
 
 # =========== UBERON FILES ===============
 UBERON_SOURCE_PATH := $(SOURCE_FILES_DIR)uberon/
@@ -383,7 +387,7 @@ RNASEQ_CLUSTER_BGEECALL_OUTPUT  := $(RNASEQ_CLUSTER_READONLY)rna_seq/calls/
 ENCRYPT_PASSWD_FILE            := /data/unil/dee/dee_robi/.passw
 
 # RNAseq sensitive cluster path
-RNASEQ_SENSITIVE_FASTQ         := /data/unil/dee/dee_robi/FASTQ
+RNASEQ_SENSITIVE_FASTQ         := /data/unil/dee/dee_robi/FASTQ/RNAseq/
 
 # Intergenic folders
 CLUSTER_REF_INTERGENIC_FOLDER   := $(RNASEQ_VITALIT_SCRATCH)ref_intergenic_$(DBNAME)/
@@ -429,7 +433,6 @@ SC_RNASEQ_PATH                         := scRNA_Seq/
 SC_RNASEQ_PATH_SOURCE                  := $(SOURCE_FILES_DIR)$(SC_RNASEQ_PATH)
 SC_RNASEQ_EXPERIMENT_FILEPATH          := $(SC_RNASEQ_PATH_SOURCE)scRNASeqExperiment.tsv
 SC_RNASEQ_LIB_FILEPATH                 := $(SC_RNASEQ_PATH_SOURCE)scRNASeqLibrary.tsv
-SC_RNASEQ_JURA_LIB_FILEPATH            := $(SC_RNASEQ_PATH_SOURCE)juraLibrariesDownloaded.tsv
 SC_RNASEQ_BARCODE_FILEPATH             := $(SC_RNASEQ_PATH_SOURCE)scRNASeq_barcode.tsv
 SC_RNASEQ_MARKERS_FILEPATH             := $(SC_RNASEQ_PATH_SOURCE)scRNASeq_markers_10X.tsv
 SC_RNASEQ_MANIFEST_FILE_FILEPATH       := $(SC_RNASEQ_PATH_SOURCE)Manifest_file.tsv
@@ -441,6 +444,7 @@ SC_RNASEQ_METADATA_FILEPATH            := $(SC_RNASEQ_PATH_GENERATED)metadata_in
 SC_RNASEQ_SAMPINFO_FILEPATH            := $(SC_RNASEQ_PATH_GENERATED)scrna_seq_sample_info.txt
 SC_RNASEQ_METADATA_10X_FILEPATH        := $(SC_RNASEQ_PATH_GENERATED)metadata_info_10X.txt
 SC_RNASEQ_SAMPINFO_10X_FILEPATH        := $(SC_RNASEQ_PATH_GENERATED)scRNA_Seq_info_TargetBased.txt
+SC_RNASEQ_JURA_LIB_FILEPATH            := $(SC_RNASEQ_PATH_GENERATED)juraLibrariesDownloaded.tsv
 
 # scRNAseq cluster paths (AXIOM)
 SC_RNASEQ_DOWNLOAD_PATH                 := /scratch/wally/FAC/FBM/DEE/mrobinso/bgee/

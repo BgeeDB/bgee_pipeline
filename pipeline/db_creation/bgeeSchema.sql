@@ -466,6 +466,18 @@ create table geneBioType (
     geneBioTypeName varchar(255) not null default '' COMMENT 'Gene BioType name'
 ) engine = innodb;
 
+create table geneOrthologs (
+    bgeeGeneId mediumint unsigned not null COMMENT 'Numeric internal gene ID used for improving performances',
+    targetGeneId mediumint unsigned not null COMMENT 'Numeric internal gene ID of the orthologous gene',
+    taxonId mediumint unsigned not null COMMENT 'NCBI taxon id at which orthology relation had been identified'
+) engine = innodb;
+
+create table geneParalogs (
+    bgeeGeneId mediumint unsigned not null COMMENT 'Numeric internal gene ID used for improving performances',
+    targetGeneId mediumint unsigned not null COMMENT 'Numeric internal gene ID of the orthologous gene',
+    taxonId mediumint unsigned not null COMMENT 'NCBI taxon id of the closest parent speciation of this duplication'
+) engine = innodb;
+
 create table gene (
 -- warning, maybe this bgeeGeneId will need to be changed to an 'int' when we reach around 200 species
     bgeeGeneId mediumint unsigned not null COMMENT 'Numeric internal gene ID used for improving performances',
@@ -484,12 +496,6 @@ create table gene (
 -- (for instance, bonobo; we use chimp genome)
     ensemblGene boolean not null default 1 COMMENT 'Is the gene in Ensembl (default) (= 1), if not (= 0)',
     geneMappedToGeneIdCount tinyint unsigned not null default 1 COMMENT 'number of genes in the Bgee database with the same Ensembl gene ID. In Bgee, for some species with no genome available, we use the genome of a closely-related species, such as chimpanzee genome for analyzing bonobo data. For this reason, a same Ensembl gene ID can be mapped to several species in Bgee. The value returned here is equal to 1 when the Ensembl gene ID is uniquely used in the Bgee database.'
-) engine = innodb;
-
-create table geneToOma (
-    bgeeGeneId mediumint unsigned not null,
-    OMAGroupId varchar(255) not null COMMENT 'OMA Hierarchical Orthologous Group id. We store the OMAGroupId rather than the OMANodeId, because it allows to retrieve absolutely all homologs of a gene, without needing to target a specific taxonomic level',
-    taxonId mediumint unsigned not null
 ) engine = innodb;
 
 create table geneNameSynonym (
