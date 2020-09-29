@@ -441,7 +441,7 @@ for (species in unique(scRNASeqAnnotation$speciesId)) {
 ## individual cells
 pdf(file.path(output, paste0("Plot_distribution_individual_cells.pdf")), width = 14, height = 7)
 indCell <- fread(file.path(output, "Present_info_individual_Cell.tsv"))
-proportion_all_samples <- indCell[,c(6,10,8,12)]
+proportion_all_samples <- indCell %>% select(proportionGenic, proportionproteinCoding, proportionIntergenic, species)
 proportion_all_samples$species <- as.factor(proportion_all_samples$species)
 proportion_all_samples <- reshape2::melt(proportion_all_samples, id=c("species"))
 
@@ -475,4 +475,3 @@ g2 <- ggplot(proportion_all_samples, aes(x = experiment, y = value, fill = cellN
 
 grid.arrange(g1,g2,ncol = 1, nrow = 2)
 dev.off()
-
