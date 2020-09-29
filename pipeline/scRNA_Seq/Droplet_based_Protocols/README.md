@@ -233,13 +233,22 @@ In this part of the pipeline different steps are executed at individual library.
 1) Filtering cells based on the knee plot.
 This standard single-cell RNA-seq quality control is used to determine a threshold for considering cells valid for analysis, as examplified below for the library SRX3815587:
 
-![Boxplot](img/KNEE_SRX3815587.png){ width=50% }
+<table>
+  <tr>
+    <td><img src="img/KNEE_SRX3815587.png" width=500 height=400></td>
+  </tr>
+ </table>
 
 2) Identification of cell types based on barcodes provided in the annotation files. 
 
 3) UMAP plot with clustering numbers by SEURAT and then UMAP plot using the labels from the annotation (barcodes), as exemplified below for the library SRX3815587. The clustering is also used as quality control. 
 
-![Boxplot](img/UMAP_Seurat_SRX3815587.png){ width=40%} ![Boxplot](img/UMAP_SRX3815587.png){ width=40%}
+<table>
+  <tr>
+    <td><img src="img/UMAP_Seurat_SRX3815587.png" width=400 height=400></td>
+    <td><img src="img/UMAP_SRX3815587.png" width=400 height=400></td>
+  </tr>
+ </table>
 
 Note: During this process a file `variabilityClusters.txt` is exported with variability information per cluster.
 
@@ -277,12 +286,11 @@ In this step of the pipeline to call present genes (note that in single cell RNA
 
 In order to call present genes using the intergenic regions the script [Call_PresentGenes_indivCell_cellPop.R](Call-PresentGenes-indivCell-cellPop-R) should be executed by launch the correspondent batch script [Call_PresentGenes_indivCell_cellPop.sbatch](Call-PresentGenes-indivCell-cellPop-sbatch). This means, by executing in the sensitive server the rule `make call_cell_cellPop`. This script export the file `Present_Info_individual_Cell.tsv` with detailed information about each barcode (this means: correspondent experiment, cellName, cellId, uberonId, stageId, sex, strain, as well as, the CPM_cutoff and the Number_genic, Number_intergenic, Number_proteinCoding and the correspondent proportions, also the ratio used is exported in the file).
 
-![Boxplot](img/individual_cells.png){ width=80% }
-
+![Boxplot](img/individual_cells.png)
 
 * Per cell-type population
 
 In order to provide a call of expressed genes at cell population level, we introduze an approach based on the aggregation of the calls, this means a fraction of the cells where the gene were called present.
 The calls are done based in confidence, this means all genes detected between density cutoff and ratio cutoff are classified as present with low confidence, on the other side all genes detected above ratio cutoff are classified as present with high confidence. 
 
-![Boxplot](img/cellPop.png){ width=80% }
+![Boxplot](img/cellPop.png)
