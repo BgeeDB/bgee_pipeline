@@ -51,7 +51,7 @@ The protocols selected at present for target based are only from `10X platform`.
 
 #### Metadata
 
-After the annotation process, where each library corresponds to multiple number of cells, we retrieve information if possible from the repository metadata in order to verify if the Bgee annotation and the repository are in concordance (also to complete information, as for example SRR Id's), if yes a file is write to processed in next steps of the pipeline `metadata_info_10X.txt`. If they are not, we save this information in `metadata_notMatch_10X.txt` and do not further use these libraries.
+After the annotation process, where each library corresponds to multiple number of cells, we retrieve information if possible from the repository metadata in order to verify if the Bgee annotation and the repository are in concordance (also to complete information, as for example SRR Id's), if yes a file is written to proceed in the next steps of the pipeline `metadata_info_10X.txt`. If they are not, we save this information in `metadata_notMatch_10X.txt` and do not further use these libraries.
 
 #### Data download
 
@@ -62,7 +62,7 @@ These data are downloaded from three main sources:
 
 - EBI ArrayExpress: The data is downloaded using wget function in R. All downloaded files for each library are in BAM format. Then using the tool `bamTofastq` from 10X the files are converted to original FASTQ format files in order to make possible all analysis from the scratch. 
 
-- HCA: The data is downloaded using the HCA Command Line Interface (HCA-CLI) (https://data.humancellatlas.org/guides/consumer-vignettes/intro-to-downloading-and-analyzing#step-two-downloading-files-from-a-file-manifest-with-the-hca-cli). In order to do the download of the target libraries a manisfest file need to be downloaded first from the Human Cell Atlas Data Portal. This file is retrieved by experiment. 
+- HCA: The data is downloaded using the HCA Command Line Interface (HCA-CLI) (https://data.humancellatlas.org/guides/consumer-vignettes/intro-to-downloading-and-analyzing#step-two-downloading-files-from-a-file-manifest-with-the-hca-cli). In order to do the download of the target libraries a manisfest file need to be downloaded first from the Human Cell Atlas data portal. This file is retrieved by experiment. 
 The downloaded of each library is done by retrieving directly the FASTQ file. 
 
 GTF annotation files and genome sequence fasta files are retrieved from Ensembl and Ensembl metazoa for all species included in Bgee (see `RNA-Seq pipeline`).
@@ -89,7 +89,7 @@ The following parameters are used:
   
 #### Processing the files
 
-The output files from Kallisto bus (matrix.ec, output.bus, run_info.json and transcripts.txt), are processed using the `bustools` software to go from the BUS file to a gene-UMI count matrix. The procedue is done in the following way:
+The output files from Kallisto bus (matrix.ec, output.bus, run_info.json and transcripts.txt), are processed using the `bustools` software to go from the BUS file to a gene-UMI count matrix. The procedue is done following the bustools recommendation, this means:
 
 * Correcting the barcodes that are within one hamming distance of the barcodes using the whitelist from 10X platform.
 * Sort the busfile by organizing the file by: barcode, UMI, set, and multiplicity.
@@ -100,7 +100,13 @@ The output files from Kallisto bus (matrix.ec, output.bus, run_info.json and tra
 For each library the gene-UMI count matrix is loaded directly into R for analysis by initialy creating a sparseMatrix. Then the following steps are subsequently performed:
 
 * Using `SEURAT` R package to perform quality control metrics as: filtering cells based on the knee plot.
-* Target cell-types in each library by using information of the barcodes list or gene markers provided by the authors to identify specific cells.
+* Target cell-types in each library by using information of the barcodes list provided by the authors to identify specific cells.
+
+From this step 3 important files are exported in the end:
+
+1) InformationAllLibraries.txt &rarr; contain information for each library regarding number of cells detected as well as the number of genes for each cell-type.
+2) variabilityCluster.txt &rarr; contain information for each library about the number of clusters detected (UMAP) as well as the different cell-types detected per cluster. 
+3) markerGenes_Validated.txt &rarr; validation of marker genes proposed in the annotation file after data analysis.
 
 #### Result processing at individual cell
 
@@ -227,25 +233,26 @@ In this part of the pipeline different steps are executed at individual library.
 1) Filtering cells based on the knee plot.
 This standard single-cell RNA-seq quality control is used to determine a threshold for considering cells valid for analysis, as examplified below for the library SRX3815587:
 
-![Boxplot](img/KNEE_SRX3815587.png)
+![Boxplot](img/KNEE_SRX3815587.png){ width=50% }
 
-
-2) Identification of cell types based on barcodes or based on gene markers provided in the annotation files. Note that for gene markers be used as identifier of a cell type (this means a cluster) they also need to be identified during the single data analyis provided by Bgee not just detected/provided in the annotation file (information retrieved by the papers). If the marker is just detected in the annotation file the marker is not used to validate a cell-type.
+2) Identification of cell types based on barcodes provided in the annotation files. 
 
 3) UMAP plot with clustering numbers by SEURAT and then UMAP plot using the labels from the annotation (barcodes), as exemplified below for the library SRX3815587. The clustering is also used as quality control. 
 
-![Boxplot](img/UMAP_SRX3815587.png)
+![Boxplot](img/UMAP_Seurat_SRX3815587.png){ width=40%} ![Boxplot](img/UMAP_SRX3815587.png){ width=40%}
 
+Note: During this process a file `variabilityClusters.txt` is exported with variability information per cluster.
 
-4) Export for each library information about the cell types detected in the matrix, as well as, the number of cells `InformationAllLibraries.txt`.
+4) Export for each library information about the cell-types detected in the matrix, as well as, the number of cells and genes `InformationAllLibraries.txt`.
 
+5) Export information about genes markers detected per library after data analysis and correspondent verification with genes markers provided by the authors, `markerGenes_Validated.txt`.
 
-5) Export per library a file with UMI counts (raw counts) and a file with normalized counts (CPM) for each cell type detected.
+6) Export per library a file with UMI counts (raw counts) and a file with normalized counts (CPM) for each cell-type detected.
 
 
 ### Export global information per cell population
 
-In order to provide a global information per cell-type population to be used later in the rank computation, a sum of the raw UMI is done per: experiment, Uberon Id, celltype Id, developmental stage, sex and strain for a particular species. From the sum we compute the normalized counts - CPM with `SumRaw+Normalization_Genic+Intergenic_CellType_Experiment_UberonID_celltypeID_DevStage_Sex_Strain_Species.tsv` (used in the ranks) and without `SumRaw+Normalization_Genic_CellType_Experiment_UberonID_celltypeID_DevStage_Sex_Strain_Species.tsv` intergenic regions for each cell-type population. 
+In order to provide a global information per cell-type population to be used later in the rank computation, a sum of the raw UMI is done per: experiment, Uberon Id, celltype Id, developmental stage, sex and strain for a particular species. From the sum we compute the normalized counts - CPM with intergenic regions `SumRaw+Normalization_Genic+Intergenic_CellType_Experiment_UberonID_celltypeID_DevStage_Sex_Strain_Species.tsv` and without intergenic regions `SumRaw+Normalization_Genic_CellType_Experiment_UberonID_celltypeID_DevStage_Sex_Strain_Species.tsv` for each cell-type population (file used in the ranks) . 
 
 Example of the structure of the output table:
 
@@ -268,13 +275,14 @@ In this step of the pipeline to call present genes (note that in single cell RNA
 
 * Per cell
 
-In order to call present genes using the intergenic regions the script [Call_PresentGenes_indivCell_cellPop.R](Call-PresentGenes-indivCell-cellPop-R) should be executed by launch the correspondent batch script [Call_PresentGenes_indivCell_cellPop.sbatch](Call-PresentGenes-indivCell-cellPop-sbatch). This means, by executing in the sensitive server the rule `make call_cell_cellPop`. This script export the file `Present_Info_individual_Cell.tsv` with information about barcode, experiment, cell-type, CPM_cutoff, proportion of genic and intergenic regions as well as the correspondent ratio applied to define the CPM cufoff. The file is used to display the graphic below (general summary about each individual cell).
+In order to call present genes using the intergenic regions the script [Call_PresentGenes_indivCell_cellPop.R](Call-PresentGenes-indivCell-cellPop-R) should be executed by launch the correspondent batch script [Call_PresentGenes_indivCell_cellPop.sbatch](Call-PresentGenes-indivCell-cellPop-sbatch). This means, by executing in the sensitive server the rule `make call_cell_cellPop`. This script export the file `Present_Info_individual_Cell.tsv` with detailed information about each barcode (this means: correspondent experiment, cellName, cellId, uberonId, stageId, sex, strain, as well as, the CPM_cutoff and the Number_genic, Number_intergenic, Number_proteinCoding and the correspondent proportions, also the ratio used is exported in the file).
 
-![Boxplot](img/individual_cells.png)
+![Boxplot](img/individual_cells.png){ width=80% }
 
 
 * Per cell-type population
 
 In order to provide a call of expressed genes at cell population level, we introduze an approach based on the aggregation of the calls, this means a fraction of the cells where the gene were called present.
+The calls are done based in confidence, this means all genes detected between density cutoff and ratio cutoff are classified as present with low confidence, on the other side all genes detected above ratio cutoff are classified as present with high confidence. 
 
-![Boxplot](img/cellPop.png)
+![Boxplot](img/cellPop.png){ width=80% }
