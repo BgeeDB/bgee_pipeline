@@ -41,7 +41,8 @@ if( file.exists(kallisto_count_file) ){
 }
 ## Basic sanity check:
 if ( sum(is.na(kallisto_count$tpm)) == length(kallisto_count$tpm)){
-  stop( paste("Kallisto results include only NAs, please check for a problem (k-mer size too small?) [", kallisto_count_file, "]\n"))
+  warning( paste("Kallisto results include only NAs, please check for a problem (k-mer size too small?) [", kallisto_count_file, "]\n"))
+  quit(save="no")
 } else if ( sum(is.na(kallisto_count$tpm)) > 0.2 * length(kallisto_count$tpm)){
   warning( paste("Kallisto results include >20% NAs, please check for a problem [", kallisto_count_file, "]\n"))
 }
