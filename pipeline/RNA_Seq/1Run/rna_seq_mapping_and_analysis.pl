@@ -295,7 +295,7 @@ else {
         $kallisto_command .= "kallisto quant -i $index -o $kallisto_out_folder -t 1 --single -l 180 -s 30 --bias ";
         for my $run ( @run_ids ){
             if ( $exp_id ne $GTEX_exp_id ){
-                $kallisto_command .= '<(cat '.$fastqSamplePath.'/'.$run.'.fastq.gz) ';
+                $kallisto_command .= $fastqSamplePath.'/'.$run.'.fastq.gz ';
             }
             if ( $exp_id eq $GTEX_exp_id ){
                 $kallisto_command .= '<(cat '.$fastqSamplePath.'/'.$run.'.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.') ';
@@ -306,7 +306,7 @@ else {
         $kallisto_command .= "kallisto quant -i $index -o $kallisto_out_folder -t 1 --bias ";
         for my $run ( @run_ids ){
             if ( $exp_id ne $GTEX_exp_id ){
-                $kallisto_command .= '<(cat '.$fastqSamplePath.'/'.$run.'_1.fastq.gz) <(cat '.$fastqSamplePath.'/'.$run.'_2.fastq.gz) ';
+                $kallisto_command .= $fastqSamplePath.'/'.$run.'_1.fastq.gz '.$fastqSamplePath.'/'.$run.'_2.fastq.gz ';
             }
             if ( $exp_id eq $GTEX_exp_id ){
                 $kallisto_command .= '<(cat '.$fastqSamplePath.'/'.$run.'_1.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.') <(cat '.$fastqSamplePath.'/'.$run.'_2.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.') ';
