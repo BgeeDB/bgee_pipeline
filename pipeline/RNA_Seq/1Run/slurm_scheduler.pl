@@ -64,7 +64,8 @@ my $main_script = $RealBin.'/rna_seq_mapping_and_analysis.pl';
 # kallisto is no multithreaded unless bootstraps are used
 my $nbr_processors = 1;
 # RAM needed: 10GB should be enough
-my $memory_usage   = 30;      # in GB
+my $memory_usage   = 50;      # in GB
+my $time_limit     = '4:00:00';
 my $user_email     = 'bgee@sib.swiss'; # for email notification
 my $account        = 'mrobinso_bgee_sensitive';
 my $queue          = 'normal';
@@ -116,16 +117,15 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
 
     # library-specific arguments
     my $output_file = $output_log_folder.'/'.$library_id.'/'.$library_id.'.out';
-    my $rm_output_command = 'rm -f '.$output_file.";\n";
-
-    my $error_file = $output_log_folder.'/'.$library_id.'/'.$library_id.'.err';
-    my $rm_error_command = 'rm -f '.$error_file.";\n";
+    my $error_file  = $output_log_folder.'/'.$library_id.'/'.$library_id.'.err';
+    # First, remove previous .out and .err files
+    unlink "$output_file", "$error_file";
 
     my $sbatch_file = $output_log_folder.'/'.$library_id.'/'.$library_id.'.sbatch';
 
 
     #NOTE check memory usage with  grep 'Maximum resident set size' *.time
-    my $script_plus_args = "perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -exclude_sample_file=$exclude_sample_file -index_folder=$index_folder -fastq_folder=$fastq_folder -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -ens_release=$ens_release -ens_metazoa_release=$ens_metazoa_release -enc_passwd_file=$enc_passwd_file > $output_log_folder/$library_id/$library_id.txt";
+    my $script_plus_args = "perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -exclude_sample_file=$exclude_sample_file -index_folder=$index_folder -fastq_folder=$fastq_folder -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -ens_release=$ens_release -ens_metazoa_release=$ens_metazoa_release -enc_passwd_file=$enc_passwd_file > $output_log_folder/$library_id/$library_id.txt 2>&1";
 
 
     # Wait for free places in job queue
@@ -139,8 +139,7 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
 
 
     # Script can be launched! Construct SLURM sbatch command:
-    # First, remove previous .out and .err files
-    my $sbatch_command = $rm_output_command.$rm_error_command;
+    my $sbatch_command = '';
     $sbatch_command .= "$cluster_kallisto_cmd\n";
     $sbatch_command .= "$cluster_R_cmd\n\n";
     $sbatch_command .= $script_plus_args;
@@ -181,7 +180,7 @@ sub sbatch_template {
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=$nbr_processors
 #SBATCH --mem=${memory_usage}G
-##SBATCH --time=...
+#SBATCH --time=$time_limit
 
 #SBATCH --output=$output_file
 #SBATCH --error=$error_file
@@ -192,3 +191,4 @@ sub sbatch_template {
 
     return $template;
 }
+
