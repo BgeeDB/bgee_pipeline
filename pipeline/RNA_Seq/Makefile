@@ -217,9 +217,12 @@ abundance_all_intergenic: prepare_indexed_transcriptome $(RNASEQ_SAMPINFO_FILEPA
 	@$(MV) $@.tmp $@
 
 check_abundance_all_intergenic: abundance_all_intergenic
-#TODO - Add a steps to automatically look for problems? See README.md in pipeline/RNA_Seq/ folder
-#     - It is probably easier to relaunch the problematic samples manually.
-#     - Flagged / excluded samples with low % genes mapped / low number of reads mapped / for which mapping failed: added manually to file $(RNASEQ_SAMPEXCLUDED_FILEPATH).
+	# Check SLURM stderr files
+	@cat $(RNASEQ_CLUSTER_ALL_RES)/*/*.err
+	#TODO - Add a steps to automatically look for problems? See README.md in pipeline/RNA_Seq/ folder
+	@echo "It is probably easier to relaunch the problematic samples manually, notably those requiring memory or runtime extreme limits"
+	@echo
+	@echo -e "TODO: Flagged / excluded samples with low % genes mapped / low number of reads mapped / for which mapping failed\nAdd them manually to file: $(RNASEQ_SAMPEXCLUDED_FILEPATH)"
 
 export_length: check_abundance_all_intergenic
 	#Export transcript length to a file to export
@@ -263,7 +266,7 @@ finalize_pipeline: check_abundance_all_intergenic
 	@$(MV) $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar.gz $(RNASEQ_CLUSTER_ALL_RES_BACKUP) 2>>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
-	
+
 # Infer blood libraries: provide info for each library (rule can be run in front)
 infer_blood_samples: check_abundance_all_intergenic
 	@echo --- start infering the blood libraries ---
@@ -328,13 +331,13 @@ indexes_bgeecall: generate_intergenic_sequences
 presence_absence_bgeecall: indexes_bgeecall
 	# generate present/absent expression calls with BgeeCall
 	# TODO IMPORTANT for the moment tx2gene and gene2biotype files are created at the same time than calls. Should be created before to avoid simultaneous writing problems!!!!!!
-	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file=\"$(RNASEQ_BGEECALL_FILE)\" account=\"mrobinso_bgee\" time=\"2:00:00\" partition=\"axiom\" working_path=\"$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)\"' bgeecall_calls.R bgeecall_calls.Rout 
+	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file=\"$(RNASEQ_BGEECALL_FILE)\" account=\"mrobinso_bgee\" time=\"2:00:00\" partition=\"axiom\" working_path=\"$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)\"' bgeecall_calls.R bgeecall_calls.Rout
 	# TODO generate summary plot once all calls have been generated
 	@touch $@
 
 check_presence_absence: presence_absence_bgeecall
 	# check that presence absence calls have been generated for all libraries present in the rna_seq_sample_info file
-	# generate file containing calls info for all libraries and use this file to generate different plots 
+	# generate file containing calls info for all libraries and use this file to generate different plots
 	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args sample_info=\"$(RNASEQ_SAMPINFO_FILEPATH)\" calls_dir=\"$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)\"' rna_seq_calls_plot.R rna_seq_calls_plot.Rout >>$@.tmp 2>$@.warn
 
 #NOTE if output directory is not $(RNASEQ_CLUSTER_ALL_RES): copy all files with calls to this directory, as well as summary stats and plot files
