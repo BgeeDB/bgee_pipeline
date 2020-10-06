@@ -160,13 +160,13 @@ for my $run ( @run_ids ){
                 print "\tFound fastq.gz.enc file for left reads for paired-end library (run $run)\n";
             }
             else {
-                die "\tProblem: fastq.gz.enc file for left reads not found for single-end library (run $run) [$fastqSamplePath/$run\_1.fastq.gz.enc]\n";
+                die "\tProblem: fastq.gz.enc file for left reads not found for paired-end library (run $run) [$fastqSamplePath/$run\_1.fastq.gz.enc]\n";
             }
             if ( system('test -f '.$fastqSamplePath.'/'.$run.'_2.fastq.gz.enc') eq 0 ){
                 print "\tFound fastq.gz.enc file for right reads for paired-end library (run $run)\n";
             }
             else {
-                die "\tProblem: fastq.gz.enc file for right reads not found for single-end library (run $run) [$fastqSamplePath/$run\_2.fastq.gz.enc]\n";
+                die "\tProblem: fastq.gz.enc file for right reads not found for paired-end library (run $run) [$fastqSamplePath/$run\_2.fastq.gz.enc]\n";
             }
         }
         else {
@@ -174,13 +174,13 @@ for my $run ( @run_ids ){
                 print "\tFound fastq.gz file for left reads for paired-end library (run $run)\n";
             }
             else {
-                die "\tProblem: fastq.gz file for left reads not found for single-end library (run $run) [$fastqSamplePath/$run\_1.fastq.gz]\n";
+                die "\tProblem: fastq.gz file for left reads not found for paired-end library (run $run) [$fastqSamplePath/$run\_1.fastq.gz]\n";
             }
             if ( system('test -f '.$fastqSamplePath.'/'.$run.'_2.fastq.gz') eq 0 ){
                 print "\tFound fastq.gz file for right reads for paired-end library (run $run)\n";
             }
             else {
-                die "\tProblem: fastq.gz file for right reads not found for single-end library (run $run) [$fastqSamplePath/$run\_2.fastq.gz]\n";
+                die "\tProblem: fastq.gz file for right reads not found for paired-end library (run $run) [$fastqSamplePath/$run\_2.fastq.gz]\n";
             }
         }
     }
