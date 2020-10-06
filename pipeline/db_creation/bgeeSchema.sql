@@ -467,12 +467,12 @@ create table geneBioType (
 ) engine = innodb;
 
 create table homologGroup (
-    homologyGroupId mediumint unsigned not null COMMENT 'Numeric internal homology group ID used for improving performances',
-    orthologousGroup boolean unsigned not null COMMENT 'boolean used to define if the homology group is an orthologous group (0) or paralogous group (1)'
+    homologGroupId mediumint unsigned not null COMMENT 'Numeric internal homolog group ID used for improving performances',
+    orthologousGroup boolean not null COMMENT 'boolean used to define if the homolog group is an orthologous group (0) or paralogous group (1)'
 ) engine = innodb;
 
 create table homologGroupToGene (
-    homologyGroupId mediumint unsigned not null COMMENT 'Numeric internal gene ID used for improving performances',
+    homologGroupId mediumint unsigned not null COMMENT 'Numeric internal homolog group ID used for improving performances',
     bgeeGeneId mediumint unsigned not null COMMENT 'Numeric internal gene ID of the homologous gene',
     taxonId mediumint unsigned not null COMMENT 'NCBI taxon id at which homology had been identified. For paralogy the taxon Id of the most recent parent speciation event is used.'
 ) engine = innodb;
