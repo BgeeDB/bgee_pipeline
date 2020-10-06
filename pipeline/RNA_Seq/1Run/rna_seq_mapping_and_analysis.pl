@@ -141,7 +141,7 @@ for my $run ( @run_ids ){
                 print "\tFound fastq.gz.enc file for single-end library (run $run)\n";
             }
             else {
-                die "\tProblem: fastq.gz.enc file not found for single-end library (run $run) [$fastqSamplePath/$run.fastq.gz.enc]\n";
+                die "Problem: fastq.gz.enc file not found for single-end library (run $run) [$fastqSamplePath/$run.fastq.gz.enc]\n";
             }
         }
         else {
@@ -149,7 +149,7 @@ for my $run ( @run_ids ){
                 print "\tFound fastq.gz file for single-end library (run $run)\n";
             }
             else {
-                die "\tProblem: fastq.gz file not found for single-end library (run $run) [$fastqSamplePath/$run.fastq.gz]\n";
+                die "Problem: fastq.gz file not found for single-end library (run $run) [$fastqSamplePath/$run.fastq.gz]\n";
             }
         }
     }
@@ -160,13 +160,13 @@ for my $run ( @run_ids ){
                 print "\tFound fastq.gz.enc file for left reads for paired-end library (run $run)\n";
             }
             else {
-                die "\tProblem: fastq.gz.enc file for left reads not found for paired-end library (run $run) [$fastqSamplePath/$run\_1.fastq.gz.enc]\n";
+                die "Problem: fastq.gz.enc file for left reads not found for paired-end library (run $run) [$fastqSamplePath/$run\_1.fastq.gz.enc]\n";
             }
             if ( system('test -f '.$fastqSamplePath.'/'.$run.'_2.fastq.gz.enc') eq 0 ){
                 print "\tFound fastq.gz.enc file for right reads for paired-end library (run $run)\n";
             }
             else {
-                die "\tProblem: fastq.gz.enc file for right reads not found for paired-end library (run $run) [$fastqSamplePath/$run\_2.fastq.gz.enc]\n";
+                die "Problem: fastq.gz.enc file for right reads not found for paired-end library (run $run) [$fastqSamplePath/$run\_2.fastq.gz.enc]\n";
             }
         }
         else {
@@ -174,13 +174,13 @@ for my $run ( @run_ids ){
                 print "\tFound fastq.gz file for left reads for paired-end library (run $run)\n";
             }
             else {
-                die "\tProblem: fastq.gz file for left reads not found for paired-end library (run $run) [$fastqSamplePath/$run\_1.fastq.gz]\n";
+                die "Problem: fastq.gz file for left reads not found for paired-end library (run $run) [$fastqSamplePath/$run\_1.fastq.gz]\n";
             }
             if ( system('test -f '.$fastqSamplePath.'/'.$run.'_2.fastq.gz') eq 0 ){
                 print "\tFound fastq.gz file for right reads for paired-end library (run $run)\n";
             }
             else {
-                die "\tProblem: fastq.gz file for right reads not found for paired-end library (run $run) [$fastqSamplePath/$run\_2.fastq.gz]\n";
+                die "Problem: fastq.gz file for right reads not found for paired-end library (run $run) [$fastqSamplePath/$run\_2.fastq.gz]\n";
             }
         }
     }
@@ -200,7 +200,7 @@ for my $run ( @run_ids ){
     my $read = `grep -v '^#' $fastqSamplePath\/$run\.R.stat | cut -f3`;
     chomp($read);
     if ( (!defined $read) or ($read eq '') ){
-        die "\tProblem: Read length could not be extracted for run [$run]\n";
+        die "Problem: Read length could not be extracted for run [$run]\n";
     }
     print "\tMedian read length = $read for run [$run]\n";
 
@@ -320,7 +320,7 @@ else {
     close $REPORT3;
     # Submit command. Bash syntax is needed to be able to have parentheses and pipes. See http://stackoverflow.com/questions/571368/how-can-i-use-bash-syntax-in-perls-system
     my @args = ( "bash", "-c",  $kallisto_command );
-    system(@args)==0  or die "\tProblem: System call to Kallisto failed\n";
+    system(@args)==0  or die "Problem: System call to Kallisto failed\n";
     print "\tDone\n";
 }
 
@@ -345,7 +345,7 @@ if ( ( -s $kallisto_out_folder.'/abundance.tsv' ) && ( -s $kallisto_out_folder.'
     if ( $nan > 1000 ){
         # rename abundance file
         system('mv ', $kallisto_out_folder, '/abundance.tsv ', $kallisto_out_folder, '/abundance.tsv.problem');
-        die "\tProblem: Kallisto TPM results include numerous \"-nan\", please check for a problem [$library_id]\n";
+        die "Problem: Kallisto TPM results include numerous \"-nan\", please check for a problem [$library_id]\n";
     }
 
     my $total_reads_kallisto;
@@ -381,7 +381,7 @@ if ( ( -s $kallisto_out_folder.'/abundance.tsv' ) && ( -s $kallisto_out_folder.'
     # h5dump -d /aux/fld all_results_bgee_v15/SRX567038/abundance.h5 | less
 }
 else {
-    die "\tProblem: No abundance.tsv or run_info.json file found for this library. Kallisto run was probably not successful [$library_id]\n";
+    die "Problem: No abundance.tsv or run_info.json file found for this library. Kallisto run was probably not successful [$library_id]\n";
 }
 
 ############################################################################################
@@ -422,7 +422,7 @@ else {
     print {$REPORT5} "\nComputing node / R command submitted:\n$analyze_count_command\n";
     close $REPORT5;
     # Submit command
-    system($analyze_count_command)==0  or die "\tProblem: System call to analyze_count_command failed\n";
+    system($analyze_count_command)==0  or die "Problem: System call to analyze_count_command failed\n";
     print "\tDone\n";
 }
 
