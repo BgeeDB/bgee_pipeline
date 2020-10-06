@@ -180,9 +180,19 @@ run_pipeline: prepare_indexed_transcriptome $(RNASEQ_SAMPINFO_FILEPATH)
 	@$(MV) $@.tmp $@
 
 check_pipeline: run_pipeline
-#TODO - Add a steps to automatically look for problems? See README.md in pipeline/RNA_Seq/ folder
-#     - It is probably easier to relaunch the problematic samples manually.
-#     - Flagged / excluded samples with low % genes mapped / low number of reads mapped / for which mapping failed: added manually to file $(RNASEQ_SAMPEXCLUDED_FILEPATH).
+	# Check SLURM stderr files
+	@cat $(RNASEQ_CLUSTER_ALL_RES)/*/*.err > $@.tmp
+	# Check kallisto runs without any mappings
+	@grep '^Kallisto results include only NAs'    $(RNASEQ_CLUSTER_ALL_RES)/*/*.Rout  >>$@.tmp
+	# Check kallisto runs with low mappings, with few reads, ...
+	# Check length of reads, ...
+	@grep 'Problem:'                              $(RNASEQ_CLUSTER_ALL_RES)/*/*.txt   >>$@.tmp
+	@grep 'Warning:'                              $(RNASEQ_CLUSTER_ALL_RES)/*/*.txt   >>$@.tmp
+	@echo
+	@echo "It is probably easier to relaunch the problematic samples manually, notably those requiring memory or runtime extreme limits"
+	@echo
+	@echo -e "TODO: Flagged / excluded samples with low % genes mapped / low number of reads mapped / for which mapping failed\nAdd them manually to file: $(RNASEQ_SAMPEXCLUDED_FILEPATH)"
+	@$(MV) $@.tmp $@
 
 export_length: check_pipeline
 	#Export transcript length to a file to export
