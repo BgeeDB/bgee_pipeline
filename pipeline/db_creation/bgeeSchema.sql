@@ -466,16 +466,15 @@ create table geneBioType (
     geneBioTypeName varchar(255) not null default '' COMMENT 'Gene BioType name'
 ) engine = innodb;
 
-create table geneOrthologs (
-    bgeeGeneId mediumint unsigned not null COMMENT 'Numeric internal gene ID used for improving performances',
-    targetGeneId mediumint unsigned not null COMMENT 'Numeric internal gene ID of the orthologous gene',
-    taxonId mediumint unsigned not null COMMENT 'NCBI taxon id at which orthology relation had been identified'
+create table homologGroup (
+    homologyGroupId mediumint unsigned not null COMMENT 'Numeric internal homology group ID used for improving performances',
+    orthologousGroup boolean unsigned not null COMMENT 'boolean used to define if the homology group is an orthologous group (0) or paralogous group (1)'
 ) engine = innodb;
 
-create table geneParalogs (
-    bgeeGeneId mediumint unsigned not null COMMENT 'Numeric internal gene ID used for improving performances',
-    targetGeneId mediumint unsigned not null COMMENT 'Numeric internal gene ID of the orthologous gene',
-    taxonId mediumint unsigned not null COMMENT 'NCBI taxon id of the closest parent speciation of this duplication'
+create table homologGroupToGene (
+    homologyGroupId mediumint unsigned not null COMMENT 'Numeric internal gene ID used for improving performances',
+    bgeeGeneId mediumint unsigned not null COMMENT 'Numeric internal gene ID of the homologous gene',
+    taxonId mediumint unsigned not null COMMENT 'NCBI taxon id at which homology had been identified. For paralogy the taxon Id of the most recent parent speciation event is used.'
 ) engine = innodb;
 
 create table gene (
