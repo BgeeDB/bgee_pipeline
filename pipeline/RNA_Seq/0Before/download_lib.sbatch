@@ -16,7 +16,7 @@
 
 
 module add Bioinformatics/Software/vital-it; module add UHTS/Analysis/sratoolkit/2.10.7;
-#module add Bioinformatics/Software/vital-it; module add Utility/aspera_connect/3.7.4.147727;
+#
 module add Bioinformatics/Software/vital-it; module add UHTS/Quality_control/fastp/0.19.5;
 module add Bioinformatics/Software/vital-it; module add R/3.6.1;
 

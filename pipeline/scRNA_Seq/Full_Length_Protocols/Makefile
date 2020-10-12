@@ -15,7 +15,7 @@ get_annot:
 ## Control the annotation (run rule in front)
 control_annotation: get_annot 0Preparation/pre_process_control_annotation.R
 	@echo --- Starting the control of the annotation  ---
-	$(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args scRNASeqLibrary="$(SC_RNASEQ_LIB_FILEPATH)" output_folder="${PWD}/$(OUTPUT_DIR)"' 0Preparation/pre_process_control_annotation.R 0Preparation/pre_process_control_annotation.Rout > $@.tmp
+	$(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args scRNASeqLibrary="$(SC_RNASEQ_LIB_FILEPATH)" output_folder="${PWD}/$(OUTPUT_DIR)"' 0Preparation/pre_process_control_annotation.R 0Preparation/pre_process_control_annotation.Rout > $@.tmp 2>&1
 	@echo --- DONE ---
 	@$(MV) $@.tmp $@
 
