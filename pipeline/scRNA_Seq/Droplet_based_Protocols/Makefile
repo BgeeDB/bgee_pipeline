@@ -50,7 +50,7 @@ download_HCA: retrieve_metadata 0Preparation/download_HCA.sbatch
 	@touch $@
 
 ## Download from EBI arrayExpress
-download_EBI: download_HCA 0Preparation/download_reformat_EBI.R
+download_EBI: retrieve_metadata 0Preparation/download_reformat_EBI.R
 	@echo --- Starting downloading the data from EBI ArrayExpress ---
 	@sed -i 's@\(BASE *= \).*@\1"$(SC_RNASEQ_DOWNLOAD_PATH)";@'                                                   0Preparation/download_reformat_EBI.R
 	@sed -i 's@--output=.*@--output=${PWD}/download_reformat_EBI.out@'                                            0Preparation/download_reformat_EBI.sbatch
@@ -67,7 +67,7 @@ download_EBI: download_HCA 0Preparation/download_reformat_EBI.R
 	@touch $@
 
 ## Download from SRA
-download_SRA: download_EBI 0Preparation/download_SRA.R
+download_SRA: retrieve_metadata 0Preparation/download_SRA.R
 	@echo --- Starting downloading the data from SRA ---
 	@sed -i 's@\(BASE *= \).*@\1"$(SC_RNASEQ_DOWNLOAD_PATH)";@'                                                   0Preparation/download_SRA.R
 	@sed -i 's@--output=.*@--output=${PWD}/download_SRA.out@'                                                     0Preparation/download_SRA.sbatch
@@ -83,7 +83,8 @@ download_SRA: download_EBI 0Preparation/download_SRA.R
 	@touch $@
 
 ## Add new libraries download to the jura file list (run rule in front)
-list_new_downloads: download_SRA
+#NOTE *make -j3 list_new_downloads*  should run the 3 downloads in parallel
+list_new_downloads: download_SRA download_EBI download_HCA
 	@find $(SC_RNASEQ_DOWNLOAD_PATH_DROPLET) -type f -name \*.fastq.gz\* | xargs -r dirname | sed -e 's@^.*/@@' | sort -u > /tmp/new_downloads
 	@cat $(SC_RNASEQ_JURA_LIB_FILEPATH) >>/tmp/new_downloads
 	@sort -u /tmp/new_downloads >$(SC_RNASEQ_JURA_LIB_FILEPATH)
