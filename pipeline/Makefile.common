@@ -148,6 +148,9 @@ include $(PIPELINEROOT)Makefile.taxon_info
 #  CLUSTER  COMMANDS
 # ===================================
 
+R_LIBS_PATH_JURA       := /data/unil/dee/dee_robi/R_LIBS
+R_LIBS_PATH_AXIOM      := /scratch/wally/FAC/FBM/DEE/mrobinso/bgee/R_LIBS
+
 #NOTE Think to add ; at the end to ease insertion in other command lines
 CLUSTER_SOFT_CMD       := module add Bioinformatics/Software/vital-it;
 #CLUSTER_ASPERA_CMD     := $(CLUSTER_SOFT_CMD) module add Utility/aspera_connect/3.7.4.147727;
@@ -438,7 +441,7 @@ SC_RNASEQ_MARKERS_FILEPATH             := $(SC_RNASEQ_PATH_SOURCE)scRNASeq_marke
 SC_RNASEQ_MANIFEST_FILE_FILEPATH       := $(SC_RNASEQ_PATH_SOURCE)Manifest_file.tsv
 
 # scRNASeq github file paths in the generated_files directory
-SC_RNASEQ_PATH_GENERATED               := $(GENERATED_FILES_DIR)$(SC_RNASEQ_PATH)  
+SC_RNASEQ_PATH_GENERATED               := $(GENERATED_FILES_DIR)$(SC_RNASEQ_PATH)
 SC_RNASEQ_NEW_LIB_FILEPATH             := $(SC_RNASEQ_PATH_GENERATED)NEW_scRNASeqLibrary.tsv
 SC_RNASEQ_METADATA_FILEPATH            := $(SC_RNASEQ_PATH_GENERATED)metadata_info.txt
 SC_RNASEQ_SAMPINFO_FILEPATH            := $(SC_RNASEQ_PATH_GENERATED)scrna_seq_sample_info.txt
@@ -481,7 +484,7 @@ SC_RNASEQ_STATS_CELL_POP                      := $(SC_RNASEQ_CLUSTER_CALL_PRESEN
 SC_RNASEQ_CLUSTER_ALL_RES_DROPLET             := $(SC_RNASEQ_CLUSTER_ALL_RES)DROPLET_10X/
 SC_RNASEQ_CLUSTER_QC_CELLTYPE                 := $(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)QC_CellType_identification/
 SC_RNASEQ_CLUSTER_SUM_RAW_UMI                 := $(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)Sum_raw_UMI+Normalized/
-SC_RNASEQ_CLUSTER_CALLS_10X                   := $(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)Calls_IndCell_CellPopulation/   
+SC_RNASEQ_CLUSTER_CALLS_10X                   := $(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)Calls_IndCell_CellPopulation/
 # scRNASeq file paths
 SC_RNASEQ_INFO_ALL_LIBRARIES_10X              := $(SC_RNASEQ_CLUSTER_QC_CELLTYPE)InformationAllLibraries.txt
 

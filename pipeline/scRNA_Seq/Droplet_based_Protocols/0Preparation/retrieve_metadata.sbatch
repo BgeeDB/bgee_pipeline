@@ -25,4 +25,5 @@ export output=../../../generated_files/scRNA_Seq/
 export ROUT=/scratch/wally/FAC/FBM/DEE/mrobinso/bgee/scRNA_Seq_All/scRNASeq_libraries_Droplet_10X/
 
 mkdir -p $ROUT
+export R_LIBS_USER=/scratch/wally/FAC/FBM/DEE/mrobinso/bgee/R_LIBS
 R CMD BATCH --no-save --no-restore "--args scRNASeqExperiment=\"$scRNASeqExperiment\" scRNASeqLibrary=\"$scRNASeqLibrary\" output=\"$output\"" $SCRIPT_PATH/0Preparation/retrieve_metadata.R $ROUT/retrieve_metadata.Rout

@@ -25,6 +25,7 @@ retrieve_metadata: get_annot 0Preparation/retrieve_metadata.R
 	@sed -i 's@export scRNASeqLibrary=.*@export scRNASeqLibrary=$(SC_RNASEQ_LIB_FILEPATH)@'                 0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@export output=.*@export output=$(SC_RNASEQ_PATH_GENERATED)@'                                 0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET)@'                              0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export R_LIBS_USER=.*@export R_LIBS_USER=$(R_LIBS_PATH_AXIOM)@'                              0Preparation/retrieve_metadata.sbatch
 	@sbatch 0Preparation/retrieve_metadata.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
