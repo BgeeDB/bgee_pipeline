@@ -220,11 +220,11 @@ check_abundance_all_intergenic: abundance_all_intergenic
 	# Check SLURM stderr files
 	@cat $(RNASEQ_CLUSTER_ALL_RES)/*/*.err > $@.tmp
 	# Check kallisto runs without any mappings
-	@grep '^Kallisto results include only NAs'    $(RNASEQ_CLUSTER_ALL_RES)/*/*.Rout  >>$@.tmp
+	@grep 'Kallisto results include only NAs'    $(RNASEQ_CLUSTER_ALL_RES)/*/*.Rout  >>$@.tmp
 	# Check kallisto runs with low mappings, with few reads, ...
 	# Check length of reads, ...
-	@grep '^Problem:'                             $(RNASEQ_CLUSTER_ALL_RES)/*/*.txt   >>$@.tmp
-	@grep '^Warning:'                             $(RNASEQ_CLUSTER_ALL_RES)/*/*.txt   >>$@.tmp
+	@grep 'Problem:'                             $(RNASEQ_CLUSTER_ALL_RES)/*/*.txt   >>$@.tmp
+	@grep 'Warning:'                             $(RNASEQ_CLUSTER_ALL_RES)/*/*.txt   >>$@.tmp
 	@echo
 	@echo "It is probably easier to relaunch the problematic samples manually, notably those requiring memory or runtime extreme limits"
 	@echo
