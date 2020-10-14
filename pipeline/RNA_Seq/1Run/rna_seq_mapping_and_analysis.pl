@@ -368,7 +368,7 @@ if ( ( -s $kallisto_out_folder.'/abundance.tsv' ) && ( -s $kallisto_out_folder.'
         # Note: this arbitrary threshold of 20% can be changed
 
         if ( $total_reads_kallisto != $total_reads_fastp ){
-            warn "\nProblem: The number of reads processed by FastP and Kallisto differs. Please check for a problem [$library_id]\n";
+            warn "\nProblem: The number of reads processed by FastP and Kallisto differs. Please check for a problem [$library_id] [$total_reads_kallisto vs $total_reads_fastp]\n";
         }
         ## TODO add step to check that the number of reads is also consistent with the original fastq files on storage (see TODO above)
     }
