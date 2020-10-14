@@ -365,9 +365,10 @@ if ( ( -s $kallisto_out_folder.'/abundance.tsv' ) && ( -s $kallisto_out_folder.'
         if ( $aligned / $total_reads_kallisto < 0.2 ){
             warn "\nProblem: It seems that less than 20% of the reads were pseudo-aligned by Kallisto, please check for a problem [$library_id]\n";
         }
-        # Note: this arbitrary threshold of 20% can be changed
+        #NOTE this arbitrary threshold of 20% can be changed
 
-        if ( $total_reads_kallisto != $total_reads_fastp ){
+        #NOTE for paired-end if fastp reads both files at the same time, the read number is two times the real value!
+        if ( $total_reads_kallisto != $total_reads_fastp && $total_reads_kallisto != ($total_reads_fastp / 2) ){
             warn "\nProblem: The number of reads processed by FastP and Kallisto differs. Please check for a problem [$library_id] [$total_reads_kallisto vs $total_reads_fastp]\n";
         }
         ## TODO add step to check that the number of reads is also consistent with the original fastq files on storage (see TODO above)
