@@ -563,7 +563,7 @@ sub getExcludedLibraries {
     my %excludedLibraries;
 
     for my $line ( read_file("$excludedLibraryFile", chomp=>1) ){
-        next  if ( $line =~ /^#/ or $line =~ /^\"#/ );
+        next  if ( $line =~ /^#/ or $line =~ /^\"#/ or $line =~ /^$/ );
         my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
         if ( $tmp[1] eq 'TRUE' ){
             $excludedLibraries{$tmp[0]} = $tmp[2];

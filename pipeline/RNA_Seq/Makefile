@@ -270,8 +270,8 @@ finalize_pipeline: check_abundance_all_intergenic
 	# Back-up all data (not final but it's worth doing an intermediate backup here)
 	@pushd $(RNASEQ_CLUSTER_SCRATCH)
 	@$(RM)     $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar*
-	@tar -cfSp $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar all_results_$(DBNAME)/  2>>warnings.$@
-	@gzip -9   $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar                         2>>warnings.$@
+	@tar -cfSp $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar  all_results_$(DBNAME)/  2>>warnings.$@
+	@gzip -9   $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar                          2>>warnings.$@
 	@popd
 	# Move back-up data to /data/
 	@mkdir -p $(RNASEQ_CLUSTER_ALL_RES_BACKUP)/
