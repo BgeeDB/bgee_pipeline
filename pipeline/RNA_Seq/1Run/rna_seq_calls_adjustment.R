@@ -2,9 +2,11 @@
 ## This script is used to make the calls adjustment for all libraries of RNA-Seq pipeline.
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args rna_seq_sample_info="rna_seq_sample_info.txt" RNASeq_folder_calls="RNASeq_folder_calls" cutoff="cutoff"' rna_seq_calls_adjustment.R rna_seq_calls_adjustment.Rout
+## R CMD BATCH --no-save --no-restore '--args rna_seq_sample_info="rna_seq_sample_info.txt" RNASeq_folder_calls="RNASeq_folder_calls" sum_by_species_folder="sum_by_species_folder" gaussianFile="gaussian.txt" cutoff="cutoff"' rna_seq_calls_adjustment.R rna_seq_calls_adjustment.Rout
 ## rna_seq_sample_info --> file with info on mapped libraries
 ## RNASeq_folder_calls --> path to folder where presence/absence files are stored per library
+## sum_by_species_folder --> Folder were are the files sum_by_species
+## gaussianFile --> file with selected gaussian
 ## cutoff --> qValue cut-off used to call present/absent genes
 
 ## Libraries used
@@ -19,7 +21,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
   }
 }
 ## checking if all necessary arguments were passed....
-command_arg <- c("rna_seq_sample_info", "RNASeq_folder_calls", "cutoff")
+command_arg <- c("rna_seq_sample_info", "RNASeq_folder_calls", "sum_by_species_folder", "gaussianFile" ,"cutoff")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -32,19 +34,45 @@ if( file.exists(rna_seq_sample_info) ){
 } else {
   stop( paste("rna_seq_sample_info file not found [", rna_seq_sample_info, "]\n"))
 }
+## reading the input file
+if( file.exists(rna_seq_sample_info) ){
+  gaussian <- read.table(gaussianFile, h=T, sep="\t", comment.char="")
+} else {
+  stop( paste("rna_seq_sample_info file not found [", rna_seq_sample_info, "]\n"))
+}
+
 ##################################################################################
+## function to retrieve max value of the intergenic 
+max_intergenic <- function(sum_by_species, gaussian, species){
+  ## select max TPM value of intergenic for the species having in consideration the gaussian selection
+  if (gaussian$selectionSideIntergenic[gaussian$speciesId == species] == "Left"){
+    max_intergenic <- max(sum_by_species$tpm[sum_by_species$classification %in%
+                                               paste0("intergenic_", gaussian$selectedGaussianIntergenic[gaussian$speciesId == species])])
+    print(paste0("Left side....", max_intergenic))
+  } else if (gaussian$selectionSideIntergenic[gaussian$speciesId == species] == "Right") {
+    max_intergenic <- min(sum_by_species$tpm[sum_by_species$classification %in%
+                                               paste0("intergenic_", gaussian$selectedGaussianIntergenic[gaussian$speciesId == species])])
+    print(paste0("Right side....", max_intergenic))
+  }
+  return(max_intergenic)
+}
+
 ## function to calculate qValue and than make the adjust call
-libraryAdjCall <- function(libraryFile, cutoff){
+libraryAdjCall <- function(libraryFile, cutoff, sum_by_species, max_intergenic){
+  
+  cutoff <- as.numeric(cutoff)
   
   readCallFile <- fread(libraryFile)
   ## density of genic and intergenic region
   selected_genic <- readCallFile$type %in% "genic"
-  selected_intergenic <- readCallFile$type %in% "intergenic"
-  dens <- density(log2(na.omit(readCallFile$tpm) + 10^-6))
+  ## select just reference intergenic
+  selected_intergenic <- readCallFile$type %in% "intergenic" & sum_by_species$tpm <= max_intergenic
+  
+  #dens <- density(log2(na.omit(readCallFile$tpm) + 10^-6))
   dens_genic <- density(log2(readCallFile$tpm[selected_genic] + 10^-6))
-  dens_genic$y <- dens_genic$y * sum(selected_genic) / length(readCallFile$tpm)
+  #dens_genic$y <- dens_genic$y * sum(selected_genic) / length(readCallFile$tpm)
   dens_intergenic <- density(log2(readCallFile$tpm[selected_intergenic] + 10^-6))
-  dens_intergenic$y <- dens_intergenic$y * sum(selected_intergenic) / length(readCallFile$tpm)
+  #dens_intergenic$y <- dens_intergenic$y * sum(selected_intergenic) / length(readCallFile$tpm)
   
   ## linear interpolation for each type
   genicRegion <- approxfun(dens_genic$x, dens_genic$y)
@@ -52,7 +80,7 @@ libraryAdjCall <- function(libraryFile, cutoff){
   ## numerical integration
   numInt_geniRegion <- integrate(genicRegion, min(dens_genic$x), max(dens_genic$x), subdivisions=1000)$value
   numInt_intergenicRegion <- integrate(intergenicRegion, min(dens_intergenic$x), max(dens_intergenic$x), subdivisions=1000)$value
-
+  
   ## for each TPM value collect the genic and intergenic linear interpolation
   interpolationInfo <- c()
   for (i in 1:nrow(readCallFile)) {
@@ -78,11 +106,11 @@ libraryAdjCall <- function(libraryFile, cutoff){
     
     ## attribute qValue = 1 to inf log2TPM values and to values with Na to genicY_info and intergenicY_info (peak on left side of the plot)
     if ( log2TpmValue == "-Inf" | log2TpmValue != "-Inf" & is.na(genicY_info) == TRUE & is.na(intergenicY_info) == TRUE){
-    qValue <- "1"
-    qValueInfo <- rbind(qValueInfo,qValue)
+      qValue <- "1"
+      qValueInfo <- rbind(qValueInfo,qValue)
       
     } else if (log2TpmValue != "-Inf" & (is.na(intergenicY_info) == TRUE & is.na(genicY_info) == FALSE) | (is.na(intergenicY_info) == FALSE & is.na(genicY_info) == TRUE)){
-    
+      
       ## retrieve log2TPM value where was possible to calculate the linear interpolation for genic and intergenic
       maxNumIntegration <- dplyr::filter(interpolationInfo, genicY != "NaN" & intergenicY != "NaN" )
       
@@ -92,9 +120,9 @@ libraryAdjCall <- function(libraryFile, cutoff){
         
         log2TpmValue <- min(maxNumIntegration$log2TpmValue)
         ## integrate for genic and intergenic region
-        unscaled_genic <- integrate(genicRegion, log2TpmValue, max(dens_genic$x), subdivisions=1000)$value
+        unscaled_genic <- integrate(genicRegion, log2TpmValue, max(dens_genic$x), subdivisions=1000, stop.on.error = FALSE)$value
         scaled_genic <- unscaled_genic / numInt_geniRegion
-        unscaled_intergenic <- integrate(intergenicRegion, log2TpmValue, max(dens_intergenic$x), subdivisions=1000)$value
+        unscaled_intergenic <- integrate(intergenicRegion, log2TpmValue, max(dens_intergenic$x), subdivisions=1000, stop.on.error = FALSE)$value
         scaled_intergenic <- unscaled_intergenic / numInt_intergenicRegion
         ## calculate qValue for target gene
         qValue <- scaled_intergenic / (scaled_intergenic + scaled_genic)
@@ -107,29 +135,29 @@ libraryAdjCall <- function(libraryFile, cutoff){
         ## we attribute qValue for this cases based on the last log2TPM value where was possible to calculate the linear interpolation for both of the types
         log2TpmValue <- max(maxNumIntegration$log2TpmValue)
         ## integrate for genic and intergenic region
-        unscaled_genic <- integrate(genicRegion, log2TpmValue, max(dens_genic$x), subdivisions=1000)$value
+        unscaled_genic <- integrate(genicRegion, log2TpmValue, max(dens_genic$x), subdivisions=1000, stop.on.error = FALSE)$value
         scaled_genic <- unscaled_genic / numInt_geniRegion
-        unscaled_intergenic <- integrate(intergenicRegion, log2TpmValue, max(dens_intergenic$x), subdivisions=1000)$value
+        unscaled_intergenic <- integrate(intergenicRegion, log2TpmValue, max(dens_intergenic$x), stop.on.error = FALSE, subdivisions=1000)$value
         scaled_intergenic <- unscaled_intergenic / numInt_intergenicRegion
         ## calculate qValue for target gene
         qValue <- scaled_intergenic / (scaled_intergenic + scaled_genic)
         qValueInfo <- rbind(qValueInfo,qValue)
-       }
-      } else {
-        
-        ## integrate for genic and intergenic region for a particular log2TPM and than calculate qValue
-        ## note in some really particular cases the argument stop.on.error is used in the function integrate().
-        unscaled_genic <- integrate(genicRegion, log2TpmValue, max(dens_genic$x), subdivisions=1000, stop.on.error = FALSE)$value
-        scaled_genic <- unscaled_genic / numInt_geniRegion
-        unscaled_intergenic <- integrate(intergenicRegion, log2TpmValue, max(dens_intergenic$x), subdivisions=1000, stop.on.error = FALSE)$value
-        scaled_intergenic <- unscaled_intergenic / numInt_intergenicRegion
-        ## calculate q-Value
-        qValue <- scaled_intergenic / (scaled_intergenic + scaled_genic)
-        qValueInfo <- rbind(qValueInfo,qValue)
       }
+    } else {
+      
+      ## integrate for genic and intergenic region for a particular log2TPM and than calculate qValue
+      ## note in some really particular cases the argument stop.on.error is used in the function integrate().
+      unscaled_genic <- integrate(genicRegion, log2TpmValue, max(dens_genic$x), subdivisions=1000, stop.on.error = FALSE)$value
+      scaled_genic <- unscaled_genic / numInt_geniRegion
+      unscaled_intergenic <- integrate(intergenicRegion, log2TpmValue, max(dens_intergenic$x), subdivisions=1000, stop.on.error = FALSE)$value
+      scaled_intergenic <- unscaled_intergenic / numInt_intergenicRegion
+      ## calculate q-Value
+      qValue <- scaled_intergenic / (scaled_intergenic + scaled_genic)
+      qValueInfo <- rbind(qValueInfo,qValue)
+    }
   }
   ## add qValue and adj_call columns to the final table
-  readCallFile$qValue <- qValueInfo[,1]
+  readCallFile$qValue <- as.numeric(qValueInfo[,1])
   readCallFile$adjusted_call <- ifelse(readCallFile$qValue <= cutoff , "present", "absent")
   return(readCallFile)
 }
@@ -177,11 +205,16 @@ for (library in unique(annotation$libraryId)) {
   
   pathLibrary <- file.path(RNASeq_folder_calls, library) 
   libraryCalls <- list.files(pathLibrary,  pattern="abundance_gene_level\\+fpkm\\+intergenic\\+calls.tsv$", full.names=T, recursive = TRUE)
- 
+  
   if(file.exists(pathLibrary) & length(libraryCalls) != 0){
     nameFile <- basename(libraryCalls)
+    ## retrieve just reference intergenic per species
+    species <- annotation$speciesId[annotation$libraryId == library]
+    sum_by_species <- fread(paste0(sum_by_species_folder, "/sum_abundance_gene_level+fpkm+intergenic+classification_",species,".tsv"))
+    max_intergenic_Value <- max_intergenic(sum_by_species = sum_by_species, gaussian = gaussian, species = species)
+    
     ## adj the calls
-    callsAdjustment <- libraryAdjCall(libraryFile = libraryCalls, cutoff = cutoff)
+    callsAdjustment <- libraryAdjCall(libraryFile = libraryCalls, cutoff = cutoff, sum_by_species = sum_by_species, max_intergenic = max_intergenic_Value)
     ## retrieve info
     infoLibrary <- collectInfoAdjCalls(adjCalls = callsAdjustment, annotation = annotation, libraryId = library)
     ## re-write the calls file with extra information: qValue + adj_call
@@ -190,9 +223,8 @@ for (library in unique(annotation$libraryId)) {
     write.table(t(infoLibrary), file = infoFileLibraries, row.names = F, col.names = F, quote = FALSE, append = T, sep = "\t")
     cat("DONE library ", library, "\n")
   } else if (file.exists(pathLibrary) & length(libraryCalls) == 0){
-      cat("File with calls not found for the library ", library , "\n")
-    } else{
+    cat("File with calls not found for the library ", library , "\n")
+  } else{
     cat("Folder not exist for this library", library , "\n")
   }
 }
-
