@@ -268,11 +268,9 @@ finalize_pipeline: check_abundance_all_intergenic
 	@tail -n+1 $(RNASEQ_CLUSTER_LOG)/*/*.out    > $(RNASEQ_CLUSTER_LOG)/all_std_out.txt 2>>warnings.$@
 	@tail -n+1 $(RNASEQ_CLUSTER_LOG)/*/*.report > $(RNASEQ_CLUSTER_LOG)/all_reports.txt 2>>warnings.$@
 	# Back-up all data (not final but it's worth doing an intermediate backup here)
-	@pushd $(RNASEQ_CLUSTER_SCRATCH)
-	@$(RM)     $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar*
-	@tar -cfSp $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar  all_results_$(DBNAME)/  2>>warnings.$@
-	@gzip -9   $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar                          2>>warnings.$@
-	@popd
+	@$(RM)    $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar*
+	@tar -C $(RNASEQ_CLUSTER_SCRATCH)/ -cf $(RNASEQ_CLUSTER_SCRATCH)/all_results_$(DBNAME).tar  all_results_$(DBNAME)/  2>>warnings.$@
+	@gzip -9  $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar                                                        2>>warnings.$@
 	# Move back-up data to /data/
 	@mkdir -p $(RNASEQ_CLUSTER_ALL_RES_BACKUP)/
 	@$(MV) $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar.gz $(RNASEQ_CLUSTER_ALL_RES_BACKUP) 2>>warnings.$@
@@ -378,7 +376,7 @@ save_and_send_results_back: finalize_pipeline adj_calls export_length
 	# Touch all files so that they are not removed from /scratch/temporary
 	@find $(RNASEQ_CLUSTER_SCRATCH) -exec touch {} \; 2>warnings.$@
 	# Back-up all data
-	@tar -cf $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar --absolute-names $(RNASEQ_CLUSTER_ALL_RES) $(RNASEQ_CLUSTER_SUM_RES) $(RNASEQ_CLUSTER_PRESENCE_RES) 2>>warnings.$@
+	@tar cfSp $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar --absolute-names $(RNASEQ_CLUSTER_ALL_RES) $(RNASEQ_CLUSTER_SUM_RES) $(RNASEQ_CLUSTER_PRESENCE_RES) 2>>warnings.$@
 	@gzip -9 $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar 2>>warnings.$@
 	# Move back-up data to /data/
 	@$(MV) $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar.gz $(RNASEQ_CLUSTER_ALL_RES_BACKUP) 2>>warnings.$@
