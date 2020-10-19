@@ -33,8 +33,6 @@ if ( $bgee_connector eq '' || $paralogs_dir_path eq '' || $orthologs_dir_path eq
 }
 
 
-# TODO: insert symetric homology relations only once and modify Java API
-
 # LOGIC OF INSERTION:
 # * load all Bgee species
 # * for each species
@@ -42,7 +40,7 @@ if ( $bgee_connector eq '' || $paralogs_dir_path eq '' || $orthologs_dir_path eq
 #       * detect files containing speciesId in their name
 #       * for each file
 #           * load genes of second species
-#           * insert ortholog/paralog info with taxonId (each homology relation is symmetric, always store twice for the moment)
+#           * insert ortholog/paralog info with taxonId (each homology relation is symmetric)
 #           * tag file as already visited
 
 # For now we do not insert paralogy relations at taxon level not present in Bgee.
@@ -160,8 +158,8 @@ sub insert_from_file_name {
 
     foreach my $species_file (@species_files) {
         # disable auto commit in order to insert all tuples of one species at the same time
-        #$dbh->{AutoCommit} = 0;
-        #$sth = $dbh->prepare_cached($query);
+        $dbh->{AutoCommit} = 0;
+        $sth = $dbh->prepare_cached($query);
         next if (exists($already_parsed_files{$species_file}));
         my $homo_species_id;
         $species_file =~ /[$file_prefix]_bgee_([0-9]*)-([0-9]*)\.csv/;
@@ -198,23 +196,21 @@ sub insert_from_file_name {
             }
             
             my $lca_taxon_id = $taxonName_to_taxonId{$line[2]};
-            #print "$current_species_bgee_id - $homolog_species_bgee_id - $lca_taxon_id\n";
             do {
                 no warnings 'uninitialized'; # for the do block only
                     
                 if ($current_species_bgee_id eq '' || $homolog_species_bgee_id eq '' || $lca_taxon_id eq '') {
                     warn "Can not map OMA data to Bgee : [$line[0], $line[1], $line[2]] became : [$current_species_bgee_id, $homolog_species_bgee_id, $lca_taxon_id]. From file : $species_file";
                 } else {
-                    #$sth->execute($current_species_bgee_id, $homolog_species_bgee_id, $lca_taxon_id);
-                    #$sth->execute($homolog_species_bgee_id, $current_species_bgee_id, $lca_taxon_id);
+                    $sth->execute($current_species_bgee_id, $homolog_species_bgee_id, $lca_taxon_id);
                 }
             }
             
 
         }
 
-        #$sth->finish;
-        #$dbh->{AutoCommit} = 1;
+        $sth->finish;
+        $dbh->{AutoCommit} = 1;
         $already_parsed_files{$species_file} = 1;
         close $homo_file_handler;
     }
