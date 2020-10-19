@@ -33,6 +33,7 @@ if ( $bgee_connector eq '' || $paralogs_dir_path eq '' || $orthologs_dir_path eq
 }
 
 
+# TODO: insert symetric homology relations only once and modify Java API
 
 # LOGIC OF INSERTION:
 # * load all Bgee species
@@ -44,12 +45,13 @@ if ( $bgee_connector eq '' || $paralogs_dir_path eq '' || $orthologs_dir_path eq
 #           * insert ortholog/paralog info with taxonId (each homology relation is symmetric, always store twice for the moment)
 #           * tag file as already visited
 
+# For now we do not insert paralogy relations at taxon level not present in Bgee.
 
 # load species in Bgee database
 my $load_species_query = "select speciesId from species";
 # load all taxon that are descendant of the oldest Bgee LCA taxon (Bilateria) to map OMA taxon name to taxonId
 # only LCA bgee taxon are required to insert orthologs but... paralogy can be at any taxon level.
-my $load_taxon_query = "select taxonId, taxonScientificName, taxonLeftBound FROM taxon where taxonLeftBound >= (select MIN(taxonLeftBound) from taxon where bgeeSpeciesLCA = 1) AND taxonRightBound <= (select MAX(taxonRightBound) from taxon where bgeeSpeciesLCA = 1);";
+my $load_taxon_query = "select taxonId, taxonScientificName FROM taxon where taxonLeftBound >= (select MIN(taxonLeftBound) from taxon where bgeeSpeciesLCA = 1) AND taxonRightBound <= (select MAX(taxonRightBound) from taxon where bgeeSpeciesLCA = 1);";
 
 # Bgee db connection
 my $dbh = Utils::connect_bgee_db($bgee_connector);
@@ -68,22 +70,14 @@ while($sth->fetch()) {
 my %taxonName_to_taxonId;
 $sth = $dbh->prepare($load_taxon_query);
 $sth->execute()  or die $sth->errstr;
-my ($taxonId, $taxonName, $taxonLeftBound);
-$sth->bind_columns(\$taxonId, \$taxonName, \$taxonLeftBound);
+my ($taxonId, $taxonName);
+$sth->bind_columns(\$taxonId, \$taxonName);
 while($sth->fetch()) {
-    # if 2 taxon have the same name, keep the one closest to the root
-    # TODO remove once OMA provide taxonIds
-    if(exists($taxonName_to_taxonId{$taxonName}) && $taxonLeftBound > $taxonName_to_taxonId{$taxonName}{"taxonLeftBound"}) {
-        next;
-    }
-    $taxonName_to_taxonId{$taxonName}{"taxonId"} = $taxonId;
-    $taxonName_to_taxonId{$taxonName}{"taxonLeftBound"} = $taxonLeftBound;
-    
+   $taxonName_to_taxonId{$taxonName} = $taxonId;
 }
-# TODO should check if homologGroup table is empty. If not die and ask to delete table first
-my $total_number_group = 0;
-$total_number_group = insert_homology_type($orthologs_dir_path, \@bgee_species_array,  \%taxonName_to_taxonId, $dbh, $total_number_group, "ortholog");
-$total_number_group = insert_homology_type($paralogs_dir_path, \@bgee_species_array,  \%taxonName_to_taxonId, $dbh, $total_number_group, "paralog");
+
+#insert_homology_type($orthologs_dir_path, \@bgee_species_array,  \%taxonName_to_taxonId, $dbh, "ortholog");
+insert_homology_type($paralogs_dir_path, \@bgee_species_array,  \%taxonName_to_taxonId, $dbh, "paralog");
 
 ############# FUNCTIONS #############
 
@@ -109,18 +103,17 @@ sub insert_homology_type {
     my $homology_dir_path = $_[0];
     my %taxonName_to_taxonId = %{$_[2]};
     my $dbh = $_[3];
-    my $homology_type = $_[5];
-    my $total_group_number = $_[4]
+    my $homology_type = $_[4];
     my @species_array = @{$_[1]};
     
     #init variables mandatory for insertion
     my ($homo_file_prefix, $insert_homo_query);
     if ($homology_type eq "ortholog") {
         $homo_file_prefix = "orthologs";
-        $insert_homo_query = "insert into homologGroup (homologGroupId, orthologGroup) VALUES(?, 0)";
+        $insert_homo_query = "insert into geneOrthologs (bgeeGeneId, targetGeneId, taxonId) VALUES(?, ?, ?)";
     } elsif ($homology_type eq "paralog") {
         $homo_file_prefix = "paralogs";
-        $insert_homo_query = "insert into homologGroup (homologGroupId, orthologGroup) VALUES(?, 1)";
+        $insert_homo_query = "insert into geneParalogs (bgeeGeneId, targetGeneId, taxonId) VALUES(?, ?, ?)";
     } else {
         die "homology type should be \"ortholog\" or \"paralog\" but was $homology_type.";
     }
@@ -131,10 +124,9 @@ sub insert_homology_type {
     my @homo_files = readdir $homo_dir;
 
     print "start insertion of $homology_type\n";
-    # hash used to keep note of already parsed files
+    # array used to keep note of already parsed files
     my %already_parsed_files;
-    # hash used to know in each homolog group is a gene
-    my %gene_to_group;
+
     # for each bgee species
     foreach my $species_id (@species_array) {
         #load genes of this species
@@ -143,42 +135,33 @@ sub insert_homology_type {
 
         #parse all files where current species in first position in file name
         my @first_species_files = grep /_$species_id-/, @homo_files;
-        (%already_parsed_files, %gene_to_group, $total_group_number) = insert_from_file_name(\@first_species_files, $insert_homo_query, $homo_file_prefix, 
-            $homology_dir_path, \%taxonName_to_taxonId, $dbh, \%ensemblId_to_bgeeId, \%already_parsed_files, \%gene_to_group, $total_group_number, 1);
+        %already_parsed_files = insert_from_file_name(\@first_species_files, $insert_homo_query, $homo_file_prefix, 
+            $homology_dir_path, \%taxonName_to_taxonId, $dbh, \%ensemblId_to_bgeeId, \%already_parsed_files, 1);
 
         my @second_species_files = grep /-$species_id\./, @homo_files;
-        (%already_parsed_files, %gene_to_group, $total_group_number) = insert_from_file_name(\@second_species_files, $insert_homo_query, $homo_file_prefix, 
-            $homology_dir_path, \%taxonName_to_taxonId, $dbh, \%ensemblId_to_bgeeId, \%already_parsed_files, \%gene_to_group, $total_group_number, 2);
-
-        # Remove bgee gene Ids of current species from %gene_to_group
-        foreach my $bgee_gene_id (values %ensemblId_to_bgeeId) {
-            delete $gene_to_group{$bgee_gene_id};
-        }
+        %already_parsed_files = insert_from_file_name(\@second_species_files, $insert_homo_query, $homo_file_prefix, 
+            $homology_dir_path, \%taxonName_to_taxonId, $dbh, \%ensemblId_to_bgeeId, \%already_parsed_files, 2);
     }
-    return $total_group_number;
 }
 
 sub insert_from_file_name {
 
     #retrieve arguments
     my @species_files = @{$_[0]};
-    my $group_query = $_[1];
+    my $query = $_[1];
     my $file_prefix = $_[2];
     my $homology_dir_path = $_[3];
     my %taxonName_to_taxonId = %{$_[4]};
     my $dbh = $_[5];
     my %ensemblId_to_bgeeId = %{$_[6]};
     my %already_parsed_files = %{$_[7]};
-    my %gene_to_group = %{$_[8]};
-    my $total_group_number = $_[9];
-    my $species_position = $_[10];
+    my $species_position = $_[8];
 
 
     foreach my $species_file (@species_files) {
         # disable auto commit in order to insert all tuples of one species at the same time
-        $dbh->{AutoCommit} = 0;
-        my $sth_group = $dbh->prepare_cached($group_query);
-        my $sth_genes = $dbh->prepare_cached("insert into homologGroupToGene (homologGroupId, bgeeGeneId, taxonId) VALUES(?, ?, ?)");
+        #$dbh->{AutoCommit} = 0;
+        #$sth = $dbh->prepare_cached($query);
         next if (exists($already_parsed_files{$species_file}));
         my $homo_species_id;
         $species_file =~ /[$file_prefix]_bgee_([0-9]*)-([0-9]*)\.csv/;
@@ -206,86 +189,37 @@ sub insert_from_file_name {
             #split each line into array
             my @line = split(/,/, $line);
             my ($current_species_bgee_id, $homolog_species_bgee_id) = ('', '');
-
-            # move to next line if taxon does not exist in bgee
-            my $lca_taxon_id = '';
-            if(exists($taxonName_to_taxonId{$line[2]})) {
-                $lca_taxon_id = $taxonName_to_taxonId{$line[2]};
-            } else {
-                warn "can not map OMA taxon name $line[2] to a bgee taxon Id. The line is skipped.";
-                next;
-            }
-
-            # retrieve genes that have a corresponding bgee gene ID
-            my @bgee_genes_to_add = ();
             if($species_position == 1) {
-                if(exists($ensemblId_to_bgeeId{$line[0]})) {
-                    push(@bgee_genes_to_add, $ensemblId_to_bgeeId{$line[0]});
-                } else {
-                    warn "can not map OMA gene ID $line[0] to a bgee gene Id. The gene is skipped.";
-                }
-                if (exists($ensemblId_to_bgeeId_homologous_species{$line[0]})) {
-                    push(@bgee_genes_to_add, $ensemblId_to_bgeeId_homologous_species{$line[1]});
-                } else {
-                    warn "can not map OMA gene ID $line[0] to a bgee gene Id. The gene is skipped.";
-                }
+                $current_species_bgee_id = $ensemblId_to_bgeeId{$line[0]};
+                $homolog_species_bgee_id = $ensemblId_to_bgeeId_homologous_species{$line[1]};
             } else { # no need to check values again, we already tested before that values where only 1 or 2
-                if(exists($ensemblId_to_bgeeId{$line[1]})) {
-                    push(@bgee_genes_to_add, $ensemblId_to_bgeeId{$line[1]});
-                } else {
-                    warn "can not map OMA gene ID $line[1] to a bgee gene Id. The gene is skipped.";
-                }
-                if (exists($ensemblId_to_bgeeId_homologous_species{$line[0]})) {
-                    push(@bgee_genes_to_add, $ensemblId_to_bgeeId_homologous_species{$line[0]});
-                } else {
-                    warn "can not map OMA gene ID $line[0] to a bgee gene Id. The gene is skipped.";
-                }
+                $current_species_bgee_id = $ensemblId_to_bgeeId{$line[1]};
+                $homolog_species_bgee_id = $ensemblId_to_bgeeId_homologous_species{$line[0]};
             }
-
-            # move to next line if none of the gene Ids are present in bgee
-            if (scalar @bgee_genes_to_add == 0) {
-                warn "can not map OMA gene ids $line[0] and $line[1] to bgee gene Ids. The line is skipped.";
-                next;
+            
+            my $lca_taxon_id = $taxonName_to_taxonId{$line[2]};
+            #print "$current_species_bgee_id - $homolog_species_bgee_id - $lca_taxon_id\n";
+            do {
+                no warnings 'uninitialized'; # for the do block only
+                    
+                if ($current_species_bgee_id eq '' || $homolog_species_bgee_id eq '' || $lca_taxon_id eq '') {
+                    warn "Can not map OMA data to Bgee : [$line[0], $line[1], $line[2]] became : [$current_species_bgee_id, $homolog_species_bgee_id, $lca_taxon_id]. From file : $species_file";
+                } else {
+                    #$sth->execute($current_species_bgee_id, $homolog_species_bgee_id, $lca_taxon_id);
+                    #$sth->execute($homolog_species_bgee_id, $current_species_bgee_id, $lca_taxon_id);
+                }
             }
             
 
-
-            my $gene_group = -1;
-
-            # retrieve corresponding homolog group if already exist
-            foreach my $bgee_gene_to_add (@bgee_genes_to_add) {
-                if (exists($gene_to_group{$bgee_gene_to_add})) {
-                    my $current_gene_group = $gene_to_group{$bgee_gene_to_add};
-                    if ($gene_group != -1 && $gene_group != $current_gene_group) {
-                        die "gene present in 2 different homolog gene groups!!!";
-                    }
-                    $gene_group = $current_gene_group;
-                }
-            }
-            #create new homolog group if necessary
-            if($gene_group == -1) {
-                $total_group_number = $total_group_number + 1;
-                $gene_group = $total_group_number;
-                #create new group in the RDB
-                $sth_group->execute($gene_group);
-            }
-            
-            # add data to homologGroupToGene table
-            foreach my $bgee_gene_to_add (@bgee_genes_to_add) {
-                if (!exists($gene_to_group{$bgee_gene_to_add})) {
-                    $sth_genes->execute($gene_group, $bgee_gene_to_add, $lca_taxon_id);
-                }
-            }
         }
 
-        $sth_genes->finish;
-        $sth_group->finish;
-        $dbh->{AutoCommit} = 1;
+        #$sth->finish;
+        #$dbh->{AutoCommit} = 1;
         $already_parsed_files{$species_file} = 1;
         close $homo_file_handler;
     }
 
-    return (%already_parsed_files, %gene_to_group, $total_group_number);
+    return %already_parsed_files;
 
 }
 
