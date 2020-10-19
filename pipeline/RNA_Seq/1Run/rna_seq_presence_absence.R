@@ -278,10 +278,58 @@ if ( !plot_only ){
 
           ## Plot distributions and cutoff
           plot_distributions(kallisto_gene_counts, selected_coding, selected_intergenic, TPM_cutoff)
-
-          ## Setting the presence / absence flags
-          gene_counts$call <- ifelse(gene_counts$tpm >= TPM_final_cutoff, "present", "absent")
-          kallisto_gene_counts$call <- ifelse(kallisto_gene_counts$tpm >= TPM_cutoff, "present", "absent")
+          
+          ## protocol of the library
+          protocol <- sampleInfo$RNASeqProtocol[sampleInfo$libraryId == libraryId]
+          
+          ## set of biotypes
+          lncRNA <- c("3prime_overlapping_ncRNA", "lincRNA", "macro_lncRNA", "non_coding")
+          ncRNA <- c("miRNA", "misc_RNA", "rRNA", "snoRNA", "snRNA", "tRNA")
+            
+            ## biotypes where we should not call absent geneIDs if below cutoff (this is dependent of the RNASeqProtocol)
+            if(protocol == "polyA"){
+              biotypesExcluded <- c(lncRNA, ncRNA)
+            }else if(protocol == "lncRNA"){
+              biotypesExcluded <- c(ncRNA, "protein_coding")
+            }else if(protocol == "miRNA"){
+              biotypesExcluded <- c(lncRNA, "protein_coding")
+            }else if(protocol == "circRNA"){
+              biotypesExcluded <- c(lncRNA, ncRNA, "protein_coding")
+            }else if(protocol == "ribo-minus"){
+              biotypesExcluded <- "protein_coding"
+            }else{
+              cat("Protocol not specified.")
+              biotypesExcluded <- c()
+            }
+          
+            ## Setting the presence/absence flags. Note absent flags can be replaced by "NA" depending of the protocol.
+            if((length(biotypesExcluded)!= 0) == TRUE){
+              cat("In this library ", libraryId ," we will not call absent genes in some biotypes.", "\n")
+              ## for gene_counts
+              selectNA_gene_counts <- dplyr::filter(gene_counts, biotype %in% biotypesExcluded & tpm < TPM_final_cutoff)
+              selectNA_gene_counts$call <- "NA"
+              flagBiotypes_gene_counts <- gene_counts[ !gene_counts$gene_id %in% selectNA_gene_counts$gene_id, ]
+              flagBiotypes_gene_counts$call <- ifelse(flagBiotypes_gene_counts$tpm >= TPM_final_cutoff, "present", "absent")
+              ## collect all info for gene_counts
+              gene_counts <- rbind(flagBiotypes_gene_counts, selectNA_gene_counts)
+              gene_counts <- gene_counts[order(gene_counts$gene_id),]
+              
+              ## for kallisto_gene_counts
+              selectNA_kallisto_gene_counts <- dplyr::filter(kallisto_gene_counts, biotype %in% biotypesExcluded & tpm < TPM_cutoff)
+              selectNA_kallisto_gene_counts$call <- "NA"
+              flagBiotypes_kallisto_gene_counts <- kallisto_gene_counts[ !kallisto_gene_counts$gene_id %in% selectNA_kallisto_gene_counts$gene_id, ]
+              flagBiotypes_kallisto_gene_counts$call <- ifelse(flagBiotypes_kallisto_gene_counts$tpm >= TPM_cutoff, "present", "absent")
+              ## collect all info for kallisto_gene_counts and re-order
+              allInfo_Kallisto <- rbind(flagBiotypes_kallisto_gene_counts, selectNA_kallisto_gene_counts)
+              genicType <- filter(allInfo_Kallisto, type == "genic")
+              genicType <- genicType[order(genicType$gene_id),]
+              kallisto_gene_counts <- rbind(genicType, filter(allInfo_Kallisto, type == "intergenic"))
+              } else {
+              cat("This library ", libraryId ," don't have a protocol specified.", "\n", "The calls will be done without any restriction.", "\n")
+              gene_counts$call <- ifelse(gene_counts$tpm >= TPM_final_cutoff, "present", "absent")
+              kallisto_gene_counts$call <- ifelse(kallisto_gene_counts$tpm >= TPM_cutoff, "present", "absent")
+              } 
+            
           ## Export cutoff info file
           cutoff_info_file <- cutoff_info(libraryId, kallisto_gene_counts, "call", max_intergenic, TPM_cutoff, TPM_final_cutoff, FPKM_cutoff, FPKM_final_cutoff, r_cutoff)
 
