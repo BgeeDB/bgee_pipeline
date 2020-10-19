@@ -43,13 +43,11 @@ if ( $bgee_connector eq '' || $paralogs_dir_path eq '' || $orthologs_dir_path eq
 #           * insert ortholog/paralog info with taxonId (each homology relation is symmetric)
 #           * tag file as already visited
 
-# For now we do not insert paralogy relations at taxon level not present in Bgee.
 
 # load species in Bgee database
 my $load_species_query = "select speciesId from species";
-# load all taxon that are descendant of the oldest Bgee LCA taxon (Bilateria) to map OMA taxon name to taxonId
-# only LCA bgee taxon are required to insert orthologs but... paralogy can be at any taxon level.
-my $load_taxon_query = "select taxonId, taxonScientificName FROM taxon where taxonLeftBound >= (select MIN(taxonLeftBound) from taxon where bgeeSpeciesLCA = 1) AND taxonRightBound <= (select MAX(taxonRightBound) from taxon where bgeeSpeciesLCA = 1);";
+# load all  Bgee taxon that
+my $load_taxon_query = "select taxonId, taxonScientificName FROM taxon;";
 
 # Bgee db connection
 my $dbh = Utils::connect_bgee_db($bgee_connector);
