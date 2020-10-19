@@ -148,7 +148,7 @@ include $(PIPELINEROOT)Makefile.taxon_info
 #  CLUSTER  COMMANDS
 # ===================================
 
-R_LIBS_PATH_JURA       := /data/unil/dee/dee_robi/R_LIBS
+R_LIBS_PATH_JURA       := /data/FAC/FBM/DEE/mrobinso/bgee_sensitive/R_LIBS
 R_LIBS_PATH_AXIOM      := /scratch/wally/FAC/FBM/DEE/mrobinso/bgee/R_LIBS
 
 #NOTE Think to add ; at the end to ease insertion in other command lines
@@ -323,7 +323,7 @@ AFFY_NORMTYPE_FILEPATH              := $(AFFYPATH)normalizationType
 AFFY_DETCTYPE_FILEPATH              := $(AFFYPATH)detectionType
 
 # Affymetrix data path
-AFFYDATAPATH      := /data/unil/dee/dee_robi/pipeline/Affymetrix/
+AFFYDATAPATH      := /data/FAC/FBM/DEE/mrobinso/bgee_sensitive/pipeline/Affymetrix/
 AFFYNEWDATAPATH   := $(AFFYDATAPATH)new_files/
 AFFYANNOTATORPATH := /Users/anikneja/Documents/bgee/extra/pipeline/curation/Affymetrix/
 
@@ -374,7 +374,7 @@ RNASEQ_BGEECALL_FILE               := $(GENERATED_FILES_DIR)$(RNASEQPATH)bgeecal
 # RNAseq cluster paths
 # TODO clean-up and remove unused ones
 RNASEQ_DOWNLOAD_LIB_DIR        := /scratch/wally/FAC/FBM/DEE/mrobinso/bgee
-RNASEQ_CLUSTER_READONLY        := /data/unil/dee/dee_robi/
+RNASEQ_CLUSTER_READONLY        := /data/FAC/FBM/DEE/mrobinso/bgee_sensitive/
 RNASEQ_CLUSTER_SCRIPTS         := $(RNASEQ_CLUSTER_READONLY)GIT/pipeline/
 RNASEQ_CLUSTER_GTF             := $(RNASEQ_CLUSTER_READONLY)rna_seq/GTF_$(MAJOR_RELEASE)/
 RNASEQ_CLUSTER_ALL_RES_BACKUP  := $(RNASEQ_CLUSTER_READONLY)rna_seq/all_results_$(DBNAME)/
@@ -387,10 +387,10 @@ RNASEQ_CLUSTER_LOG             := $(RNASEQ_CLUSTER_ALL_RES)
 RNASEQ_CLUSTER_R_LOG           := $(RNASEQ_CLUSTER_ALL_RES)
 RNASEQ_CLUSTER_REPORTINFO      := $(RNASEQ_CLUSTER_ALL_RES)/reports_info_all_samples.txt
 RNASEQ_CLUSTER_BGEECALL_OUTPUT  := $(RNASEQ_CLUSTER_READONLY)rna_seq/calls/
-ENCRYPT_PASSWD_FILE            := /data/unil/dee/dee_robi/.passw
+ENCRYPT_PASSWD_FILE            := /data/FAC/FBM/DEE/mrobinso/bgee_sensitive/.passw
 
 # RNAseq sensitive cluster path
-RNASEQ_SENSITIVE_FASTQ         := /data/unil/dee/dee_robi/FASTQ/RNAseq/
+RNASEQ_SENSITIVE_FASTQ         := /data/FAC/FBM/DEE/mrobinso/bgee_sensitive/FASTQ/RNAseq/
 
 # Intergenic folders
 CLUSTER_REF_INTERGENIC_FOLDER   := $(RNASEQ_VITALIT_SCRATCH)ref_intergenic_$(DBNAME)/
@@ -459,7 +459,7 @@ SC_RNASEQ_DOWNLOAD_PATH_DROPLET         := $(SC_RNASEQ_DOWNLOAD_PATH_LIB_DIR)scR
 SCRNASEQ_SOFTWARE_BAMTOFASTQ                  := /users/sfonseca1/bin/bamtofastq-1.2.0
 
 # scRNAseq cluster paths (JURA)
-SENSITIVE_GENERAL_PATH                        := /data/unil/dee/dee_robi/
+SENSITIVE_GENERAL_PATH                        := /data/FAC/FBM/DEE/mrobinso/bgee_sensitive/
 
 ## PATH to full length and 10X data
 SC_RNASEQ_FASTQ_FULL_LENGTH                   := $(SENSITIVE_GENERAL_PATH)FASTQ/scRNAseq/Full_length/
