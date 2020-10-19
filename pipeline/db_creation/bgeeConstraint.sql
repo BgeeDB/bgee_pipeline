@@ -191,15 +191,15 @@ modify geneBioTypeId smallint unsigned not null auto_increment primary key,
 add unique (geneBioTypeName);
 /*!40000 ALTER TABLE `geneBioType` ENABLE KEYS */;
 
-/*!40000 ALTER TABLE `homologGroup` DISABLE KEYS */;
-alter table homologGroup
-add primary key(homologGroupId);
-/*!40000 ALTER TABLE `homologGroup` ENABLE KEYS */;
+/*!40000 ALTER TABLE `geneOrthologs` DISABLE KEYS */;
+alter table geneOrthologs
+add primary key(bgeeGeneId, targetGeneId);
+/*!40000 ALTER TABLE `geneOrthologs` ENABLE KEYS */;
 
-/*!40000 ALTER TABLE `homologGroupToGene` DISABLE KEYS */;
-alter table homologGroupToGene
-add primary key(homologGroupId, bgeeGeneId);
-/*!40000 ALTER TABLE `homologGroupToGene` ENABLE KEYS */;
+/*!40000 ALTER TABLE `geneParalogs` DISABLE KEYS */;
+alter table geneParalogs
+add primary key(bgeeGeneId, targetGeneId);
+/*!40000 ALTER TABLE `geneParalogs` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `gene` DISABLE KEYS */;
 alter table gene
