@@ -48,13 +48,13 @@ if( file.exists(scRNASeqLibrary) ){
 SRA_metadata <- function(libraryID){
 
   PID <- paste0(libraryID)
-  ena.url <- paste("http://www.ebi.ac.uk/ena/data/warehouse/filereport?accession=",
+  ena.url <- paste("https://www.ebi.ac.uk/ena/data/warehouse/filereport?accession=",
                    PID,
                    "&result=read_run",
                    "&fields=experiment_accession,run_accession,",
                    "read_count,tax_id,scientific_name,",
                    "instrument_model,library_layout,fastq_ftp,submitted_ftp,",
-                   "&download=text",
+                   "&download=TRUE",
                    sep="")
   readInfo <- read.table(url(ena.url), header=TRUE, sep="\t")
   return(readInfo)
