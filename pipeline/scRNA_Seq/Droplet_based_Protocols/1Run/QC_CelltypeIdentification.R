@@ -8,7 +8,7 @@
 ## to provide a list of gene markers per cell-type after data analysis (validated with gene markers from the annotation file)
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNA_Seq_info_target.txt" folder_data="folder_data" infoFolder="infoFolder" output="output"' QC_CellTypeIdentification.R QC_CellTypeIdentification.Rout
+## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNA_Seq_info_target.txt" folder_data="folder_data" infoFolder="infoFolder" output="output"' QC_CelltypeIdentification.R QC_CelltypeIdentification.Rout
 ## scRNASeq_Info --> File that results from annotation and metadata (libraries downloaded and with extra information as readlength or SRR) 
 ## folder_data --> Folder where are all the libraries (after process busfile)
 ## infoFolder --> Folder where we have the files corresponding to barcodes and gene markers annotation

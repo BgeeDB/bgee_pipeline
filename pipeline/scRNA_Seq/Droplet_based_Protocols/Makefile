@@ -129,12 +129,11 @@ check_tools: clusterJURA
 	@$(CLUSTER_R_CMD) R -e 'library("magrittr")'      >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("gridExtra")'     >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("biomaRt")'       >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("UniprotR")'      >> $@.tmp  2>/dev/null
+	@R_LIBS_USER=$(R_LIBS_PATH_JURA) $(CLUSTER_R_CMD) R -e 'library("UniprotR")'      >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("lattice")'       >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("Matrix")'        >> $@.tmp  2>/dev/null
-	### Note this 3 packages maybe are not installed in Vital-it module
-	@$(CLUSTER_R_CMD) R -e 'library("BUSpaRse")'      >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("DropletUtils")'  >> $@.tmp  2>/dev/null
+	@R_LIBS_USER=$(R_LIBS_PATH_JURA) $(CLUSTER_R_CMD) R -e 'library("BUSpaRse")'      >> $@.tmp  2>/dev/null
+	@R_LIBS_USER=$(R_LIBS_PATH_JURA) $(CLUSTER_R_CMD) R -e 'library("DropletUtils")'  >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("Seurat")'        >> $@.tmp  2>/dev/null
 	@which xz                                         >> $@.tmp
 	@which sbatch                                     >> $@.tmp
@@ -199,18 +198,19 @@ process_busFile: uncompress_barcodes 1Run/process_busFile.R
 	@touch $@
 
 ## Quality control + cell type identification
-qc_cellType: process_busFile 1Run/QC_CellTypeIdentification.R
+qc_cellType: process_busFile 1Run/QC_CelltypeIdentification.R
 	@echo --- Starting the quality control and the cell type identification ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                     1Run/QC_CellTypeIdentification.R
-	@sed -i 's@--output=.*@--output=${PWD}/QC_CellTypeIdentification.out@'                         1Run/QC_CellTypeIdentification.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/QC_CellTypeIdentification.err@'                           1Run/QC_CellTypeIdentification.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                   1Run/QC_CellTypeIdentification.sbatch
-	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'   1Run/QC_CellTypeIdentification.sbatch
-	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_FASTQ_DROPLET)@'               1Run/QC_CellTypeIdentification.sbatch
-	@sed -i 's@export infoFolder=.*@export infoFolder=$(SC_RNASEQ_PATH_SOURCE)@'                   1Run/QC_CellTypeIdentification.sbatch
-	@sed -i 's@export output=.*@export output=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)@'                   1Run/QC_CellTypeIdentification.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                   1Run/QC_CellTypeIdentification.sbatch
-	@sbatch 1Run/QC_CellTypeIdentification.sbatch
+	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                     1Run/QC_CelltypeIdentification.R
+	@sed -i 's@--output=.*@--output=${PWD}/QC_CelltypeIdentification.out@'                         1Run/QC_CelltypeIdentification.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/QC_CelltypeIdentification.err@'                           1Run/QC_CelltypeIdentification.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                   1Run/QC_CelltypeIdentification.sbatch
+	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'   1Run/QC_CelltypeIdentification.sbatch
+	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_FASTQ_DROPLET)@'               1Run/QC_CelltypeIdentification.sbatch
+	@sed -i 's@export infoFolder=.*@export infoFolder=$(SC_RNASEQ_PATH_SOURCE)@'                   1Run/QC_CelltypeIdentification.sbatch
+	@sed -i 's@export output=.*@export output=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)@'                   1Run/QC_CelltypeIdentification.sbatch
+	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                   1Run/QC_CelltypeIdentification.sbatch
+	@sed -i 's@export R_LIBS_USER=.*@R_LIBS_USER=$(R_LIBS_PATH_JURA)@'                             1Run/QC_CelltypeIdentification.sbatch
+	@sbatch 1Run/QC_CelltypeIdentification.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
 	@touch $@
