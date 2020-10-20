@@ -72,7 +72,7 @@ while($sth->fetch()) {
    $taxonName_to_taxonId{$taxonName} = $taxonId;
 }
 
-#insert_homology_type($orthologs_dir_path, \@bgee_species_array,  \%taxonName_to_taxonId, $dbh, "ortholog");
+insert_homology_type($orthologs_dir_path, \@bgee_species_array,  \%taxonName_to_taxonId, $dbh, "ortholog");
 insert_homology_type($paralogs_dir_path, \@bgee_species_array,  \%taxonName_to_taxonId, $dbh, "paralog");
 
 ############# FUNCTIONS #############
@@ -127,14 +127,15 @@ sub insert_homology_type {
     foreach my $species_id (@species_array) {
         #load genes of this species
         my %ensemblId_to_bgeeId = load_genes_map($species_id);
-        print "start insertion of species $species_id\n";
+        my $modified_species_id = hack_tax_id_bgee_to_oma($species_id);
+        print "start insertion of species $modified_species_id\n";
 
         #parse all files where current species in first position in file name
-        my @first_species_files = grep /_$species_id-/, @homo_files;
+        my @first_species_files = grep /_$modified_species_id-/, @homo_files;
         %already_parsed_files = insert_from_file_name(\@first_species_files, $insert_homo_query, $homo_file_prefix, 
             $homology_dir_path, \%taxonName_to_taxonId, $dbh, \%ensemblId_to_bgeeId, \%already_parsed_files, 1);
 
-        my @second_species_files = grep /-$species_id\./, @homo_files;
+        my @second_species_files = grep /-$modified_species_id\./, @homo_files;
         %already_parsed_files = insert_from_file_name(\@second_species_files, $insert_homo_query, $homo_file_prefix, 
             $homology_dir_path, \%taxonName_to_taxonId, $dbh, \%ensemblId_to_bgeeId, \%already_parsed_files, 2);
     }
@@ -159,7 +160,6 @@ sub insert_from_file_name {
         $dbh->{AutoCommit} = 0;
         $sth = $dbh->prepare_cached($query);
         next if (exists($already_parsed_files{$species_file}));
-        my $homo_species_id;
         $species_file =~ /[$file_prefix]_bgee_([0-9]*)-([0-9]*)\.csv/;
         my %ensemblId_to_bgeeId_homologous_species;
         # if paralogs of same species do not need to reload genes
@@ -167,14 +167,13 @@ sub insert_from_file_name {
             %ensemblId_to_bgeeId_homologous_species = %ensemblId_to_bgeeId;
         } else {
             if ($species_position == 1) {
-                %ensemblId_to_bgeeId_homologous_species = load_genes_map(hack_gorilla_tax_id($2));
+                %ensemblId_to_bgeeId_homologous_species = load_genes_map(hack_tax_id_oma_to_bgee($2));
             } elsif ($species_position == 2) {
-                %ensemblId_to_bgeeId_homologous_species = load_genes_map(hack_gorilla_tax_id($1));
+                %ensemblId_to_bgeeId_homologous_species = load_genes_map(hack_tax_id_oma_to_bgee($1));
             } else {
                 die "species_position should be 1 or 2 but was $species_position";
             }
         }
-
         my @values_to_insert;
         open my $homo_file_handler, "$homology_dir_path/$species_file" or die "failed to read input file: $!";
         while (my $line = <$homo_file_handler>) {
@@ -198,7 +197,7 @@ sub insert_from_file_name {
                 no warnings 'uninitialized'; # for the do block only
                     
                 if ($current_species_bgee_id eq '' || $homolog_species_bgee_id eq '' || $lca_taxon_id eq '') {
-                    warn "Can not map OMA data to Bgee : [$line[0], $line[1], $line[2]] became : [$current_species_bgee_id, $homolog_species_bgee_id, $lca_taxon_id]. From file : $species_file";
+                    #warn "Can not map OMA data to Bgee : [$line[0], $line[1], $line[2]] became : [$current_species_bgee_id, $homolog_species_bgee_id, $lca_taxon_id]. From file : $species_file";
                 } else {
                     $sth->execute($current_species_bgee_id, $homolog_species_bgee_id, $lca_taxon_id);
                 }
@@ -218,10 +217,18 @@ sub insert_from_file_name {
 }
 
 # in bgee we do not have the proper taxonId for Gorilla
-sub hack_gorilla_tax_id {
+sub hack_tax_id_oma_to_bgee {
     my $tax_id = $_[0];
     if($tax_id == 9595) {
         $tax_id = 9593;
+    }
+    return $tax_id;
+}
+
+sub hack_tax_id_bgee_to_oma {
+    my $tax_id = $_[0];
+    if($tax_id == 9593) {
+        $tax_id = 9595;
     }
     return $tax_id;
 }

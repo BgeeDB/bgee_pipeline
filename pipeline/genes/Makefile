@@ -79,7 +79,7 @@ $(VERIFICATIONFILE): $(OUTPUT_DIR)go go.obsolete genes sameIdGeneCount hogs $(OU
 
 $(OUTPUT_DIR)insert_gene_homology:
 	# Insert orthology/paralogy  into the database
-	@perl insert_homology.pl -bgee=$(BGEECMD) -paralogs_dir_path=$(PARALOGS_DIR) -orthologs_dir_path=$(ORTHOLOGS_DIR)) >>$@.tmp 2>>$@.err
+	@perl insert_homology.pl -bgee=$(BGEECMD) -paralogs_dir_path=$(PARALOGS_DIR) -orthologs_dir_path=$(ORTHOLOGS_DIR) >>$@.tmp 2>>$@.err
 	@if [[ -s $@.err ]]; then echo -n; else $(RM) $@.err; fi
 	@$(MV) $@.tmp $@
 	
