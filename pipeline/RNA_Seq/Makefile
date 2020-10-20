@@ -173,7 +173,8 @@ prepare_indexed_transcriptome: get_genome prepare_GTF
 
 #NOTE Better to run this step in screen or with nohup as submission is done X jobs per X jobs to not overload the system (and not decrease our user priority)!
 #TODO 14.2   RNASEQ_SAMPINFO_FILEPATH only for 14.2!
-run_pipeline: prepare_indexed_transcriptome $(RNASEQ_SAMPINFO_FILEPATH)
+run_pipeline:
+#run_pipeline: prepare_indexed_transcriptome $(RNASEQ_SAMPINFO_FILEPATH)
 # Running the pipeline
 	@perl 1Run/slurm_scheduler.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=$(RNASEQ_CLUSTER_LOG) -index_folder=$(RNASEQ_CLUSTER_GTF) -fastq_folder=$(RNASEQ_SENSITIVE_FASTQ) -kallisto_out_folder=$(RNASEQ_CLUSTER_ALL_RES) -ens_release=$(ENSRELEASE) -ens_metazoa_release=$(ENSMETAZOARELEASE) -enc_passwd_file=$(ENCRYPT_PASSWD_FILE) -cluster_kallisto_cmd='$(VIT_KALLISTO_CMD)' -cluster_R_cmd='$(VIT_R_CMD)' >$@.tmp 2>&1
 	@echo "TODO: At the end it is a good idea to relaunch the run_pipeline step to be sure everything was run!"
@@ -188,7 +189,6 @@ check_pipeline: run_pipeline
 	# Check length of reads, ...
 	@grep 'Problem:'                              $(RNASEQ_CLUSTER_ALL_RES)/*/*.txt   >>$@.tmp
 	@grep 'Warning:'                              $(RNASEQ_CLUSTER_ALL_RES)/*/*.txt   >>$@.tmp
-	@echo
 	@echo "It is probably easier to relaunch the problematic samples manually, notably those requiring memory or runtime extreme limits"
 	@echo
 	@echo -e "TODO: Flagged / excluded samples with low % genes mapped / low number of reads mapped / for which mapping failed\nAdd them manually to file: $(RNASEQ_SAMPEXCLUDED_FILEPATH)"
@@ -211,9 +211,11 @@ finalize_pipeline: check_pipeline
 	@tail -n+1 $(RNASEQ_CLUSTER_LOG)/*/*.out    > $(RNASEQ_CLUSTER_LOG)/all_std_out.txt 2>>warnings.$@
 	@tail -n+1 $(RNASEQ_CLUSTER_LOG)/*/*.report > $(RNASEQ_CLUSTER_LOG)/all_reports.txt 2>>warnings.$@
 	# Back-up all data (not final but it's worth doing an intermediate backup here)
-	@tar -cf $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar $(RNASEQ_CLUSTER_ALL_RES) 2>>warnings.$@
-	@gzip -9 $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar                           2>>warnings.$@
+	@$(RM)    $(RNASEQ_CLUSTER_SCRATCH)/all_results_$(DBNAME).tar*
+	@tar -C $(RNASEQ_CLUSTER_SCRATCH)/ -cf $(RNASEQ_CLUSTER_SCRATCH)/all_results_$(DBNAME).tar all_results_$(DBNAME)/  2>>warnings.$@
+	@gzip -9  $(RNASEQ_CLUSTER_SCRATCH)/all_results_$(DBNAME).tar                          2>>warnings.$@
 	# Move back-up data to /data/
+	@mkdir -p $(RNASEQ_CLUSTER_ALL_RES_BACKUP)/
 	@$(MV) $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar.gz $(RNASEQ_CLUSTER_ALL_RES_BACKUP) 2>>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
@@ -227,7 +229,7 @@ sum_by_species: check_pipeline $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED
 	@mkdir -p $(RNASEQ_CLUSTER_SUM_RES)
 	$(eval TIME_SUM := $(shell date +'%Y%m%d-%H%M%S'))
 	@echo "#!/bin/sh" > $@_$(TIME_SUM).sh
-	@echo "$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args rna_seq_sample_info=\"$(RNASEQ_SAMPINFO_FILEPATH)\" rna_seq_sample_excluded=\"$(RNASEQ_SAMPEXCLUDED_FILEPATH)\" kallisto_count_folder=\"$(RNASEQ_CLUSTER_ALL_RES)\" tx2gene_folder=\"$(RNASEQ_CLUSTER_GTF)\" sum_by_species_folder=\"$(RNASEQ_CLUSTER_SUM_RES)\"' 1Run/rna_seq_sum_by_species.R $(OUTPUT_DIR)rna_seq_sum_by_species.Rout" >> $@_$(TIME_SUM).sh
+	@echo "$(VIT_R_CMD) R CMD BATCH --vanilla --slave '--args rna_seq_sample_info=\"$(RNASEQ_SAMPINFO_FILEPATH)\" rna_seq_sample_excluded=\"$(RNASEQ_SAMPEXCLUDED_FILEPATH)\" kallisto_count_folder=\"$(RNASEQ_CLUSTER_ALL_RES)\" tx2gene_folder=\"$(RNASEQ_CLUSTER_GTF)\" sum_by_species_folder=\"$(RNASEQ_CLUSTER_SUM_RES)\"' 1Run/rna_seq_sum_by_species.R $(OUTPUT_DIR)rna_seq_sum_by_species.Rout" >> $@_$(TIME_SUM).sh
 	@sbatch --account=mrobinso_bgee_sensitive --time=02-00:00:00 --mem=2G --partition=normal --output=$@_$(TIME_SUM).out --error=$@_$(TIME_SUM).err  --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_SUM) $@_$(TIME_SUM).sh > $@.tmp
 
 	NUMBER_JOBS=$$(squeue --name=$@_$(TIME_SUM) --noheader | wc -l) ; \
@@ -245,7 +247,7 @@ presence_absence: sum_by_species $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUD
 	@mkdir -p $(RNASEQ_CLUSTER_PRESENCE_RES)
 	$(eval TIME_SUM := $(shell date +'%Y%m%d-%H%M%S'))
 	@echo "#!/bin/sh" > $@_$(TIME_SUM).sh
-	@echo "$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args rna_seq_sample_info=\"$(RNASEQ_SAMPINFO_FILEPATH)\" rna_seq_sample_excluded=\"$(RNASEQ_SAMPEXCLUDED_FILEPATH)\" kallisto_count_folder=\"$(RNASEQ_CLUSTER_ALL_RES)\" sum_by_species_folder=\"$(RNASEQ_CLUSTER_SUM_RES)\" gaussian_choice=\"$(RNASEQ_CLUSTER_GAUSSIAN_CHOICE)\" out_folder=\"$(RNASEQ_CLUSTER_PRESENCE_RES)\" plot_only=FALSE desired_r_cutoff=\"0.05\"' 1Run/rna_seq_presence_absence.R $(RNASEQ_CLUSTER_PRESENCE_RES)rna_seq_presence_absence.Rout
+	@echo "$(VIT_R_CMD) R CMD BATCH --vanilla --slave '--args rna_seq_sample_info=\"$(RNASEQ_SAMPINFO_FILEPATH)\" rna_seq_sample_excluded=\"$(RNASEQ_SAMPEXCLUDED_FILEPATH)\" kallisto_count_folder=\"$(RNASEQ_CLUSTER_ALL_RES)\" sum_by_species_folder=\"$(RNASEQ_CLUSTER_SUM_RES)\" gaussian_choice=\"$(RNASEQ_CLUSTER_GAUSSIAN_CHOICE)\" out_folder=\"$(RNASEQ_CLUSTER_PRESENCE_RES)\" plot_only=FALSE desired_r_cutoff=\"0.05\"' 1Run/rna_seq_presence_absence.R $(RNASEQ_CLUSTER_PRESENCE_RES)rna_seq_presence_absence.Rout" >> $@_$(TIME_SUM).sh
 	@sbatch --account=mrobinso_bgee_sensitive --time=02-00:00:00 --mem=2G --partition=normal --output=$@_$(TIME_SUM).out --error=$@_$(TIME_SUM).err  --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_SUM) $@_$(TIME_SUM).sh > $@.tmp
 
 	NUMBER_JOBS=$$(squeue --name=$@_$(TIME_SUM) --noheader | wc -l) ; \
@@ -254,7 +256,8 @@ presence_absence: sum_by_species $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUD
             sleep 30 ; \
             NUMBER_JOBS=$$(squeue --name=$@_$(TIME_SUM) --noheader | wc -l) ; \
     done ; \
-    @$(MV) $@.tmp $@
+
+	@$(MV) $@.tmp $@
 #NOTE if output directory is not $(RNASEQ_CLUSTER_ALL_RES): copy all files with calls to this directory, as well as summary stats and plot files
 #for folder in *; do echo $folder; /bin/cp $folder/* ../all_results_bgee_v14/$folder/; done
 # /bin/cp used because cp is an alias to cp -i

@@ -20,3 +20,14 @@ SRR1509503	TRUE	Bad quality single-end run mixed with paired-end runs	SM	2018-11
 SRR1509501	TRUE	Bad quality single-end run mixed with paired-end runs	SM	2018-11-06
 SRR125338	TRUE	Bad quality and very low number of total sequences	SM	2019-01-07
 SRR125339	TRUE	Bad quality and very low number of total sequences	SM	2019-01-07
+SRX276206	TRUE	Kallisto results include only NAs	SM	2020-10-13
+SRX276207	TRUE	Kallisto results include only NAs	SM	2020-10-13
+SRX276208	TRUE	Kallisto results include only NAs	SM	2020-10-13
+SRX276212	TRUE	Kallisto results include only NAs	SM	2020-10-13
+SRX276214	TRUE	Kallisto results include only NAs	SM	2020-10-13
+SRX054597	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020-10-13
+SRX054598	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020-10-13
+SRX054599	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020-10-13
+SRX054601	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020-10-13
+SRX054602	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020-10-13
+SRX054607	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020-10-13
