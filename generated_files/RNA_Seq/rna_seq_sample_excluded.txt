@@ -1,6 +1,6 @@
 #libraryId	excluded	comment	annotatorId	lastModificationDate
-SRX618126	FALSE	Streaming failure during Kallisto step. 10M reads used instead of 51M. Rerun once with same result. Redownload not possible because problems with GTEx. This library can still be used because enough reads were mapped.	JR	2016-04-22
-SRX616976	FALSE	Streaming failure during Kallisto step. 33M reads used instead of 43M. Rerun once with same result. Redownload not possible because problems with GTEx. This library can still be used because enough reads were mapped.	JR	2016-04-22
+SRX618126	FALSE	Streaming failure during Kallisto step. 10M reads used instead of 51M. Rerun once with same result. Redownlaod not possible because problems with GTEx. This library can still be used because enough reads were mapped.	JR	2016-04-22
+SRX616976	FALSE	Streaming failure during Kallisto step. 33M reads used instead of 43M. Rerun once with same result. Redownlaod not possible because problems with GTEx. This library can still be used because enough reads were mapped.	JR	2016-04-22
 SRX099901	FALSE	Nematode sample with very few reads sequenced, and < 300,000 mapped. This is not enough to get good estimation of expression levels.	JR	2016-04-22
 SRX589537	TRUE	Library with very low complexity, and a lot of duplicated reads from adapters. Excluded because very few reads mapped, not enough to get good estimation of expression levels.	JR	2016-04-22
 SRX589538	FALSE	Library with only 132,987 reads sequenced. This is not enough to get good estimation of expression levels.	JR	2016-05-20
@@ -20,3 +20,14 @@ SRR1509503	TRUE	Bad quality single-end run mixed with paired-end runs	SM	2018-11
 SRR1509501	TRUE	Bad quality single-end run mixed with paired-end runs	SM	2018-11-06
 SRR125338	TRUE	Bad quality and very low number of total sequences	SM	2019-01-07
 SRR125339	TRUE	Bad quality and very low number of total sequences	SM	2019-01-07
+SRX276206	TRUE	Kallisto results include only NAs	SM	2020-10-13
+SRX276207	TRUE	Kallisto results include only NAs	SM	2020-10-13
+SRX276208	TRUE	Kallisto results include only NAs	SM	2020-10-13
+SRX276212	TRUE	Kallisto results include only NAs	SM	2020-10-13
+SRX276214	TRUE	Kallisto results include only NAs	SM	2020-10-13
+SRX054597	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020-10-13
+SRX054598	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020-10-13
+SRX054599	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020-10-13
+SRX054601	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020-10-13
+SRX054602	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020-10-13
+SRX054607	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020-10-13
