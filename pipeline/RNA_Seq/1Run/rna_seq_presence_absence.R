@@ -4,14 +4,16 @@
 ## Output is written in kallisto results folder
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args rna_seq_sample_info="rna_seq_sample_info.txt" rna_seq_sample_excluded="rna_seq_sample_excluded.txt" kallisto_count_folder= "all_results_bgee_v15" sum_by_species_folder="$(RNASEQ_CLUSTER_SUM_RES)" gaussian_choice="$(RNASEQ_CLUSTER_GAUSSIAN_CHOICE)" out_folder="all_results_bgee_v15" desired_r_cutoff="r_cutoff_value" plot_only=FALSE' rna_seq_presence_absence.R rna_seq_presence_absence.Rout
+## R CMD BATCH --no-save --no-restore '--args rna_seq_sample_info="rna_seq_sample_info.txt" rna_seq_sample_excluded="rna_seq_sample_excluded.txt" kallisto_count_folder= "all_results_bgee_v15" sum_by_species_folder="$(RNASEQ_CLUSTER_SUM_RES)" gaussian_choice="$(RNASEQ_CLUSTER_GAUSSIAN_CHOICE)" biotypesExcluded="biotypesExcluded" out_folder="all_results_bgee_v15" desired_r_cutoff="r_cutoff_value" desired_pValue_cutoff="pValue_cutoff" plot_only=FALSE' rna_seq_presence_absence.R rna_seq_presence_absence.Rout
 ## rna_seq_sample_info      - file with info on mapped libraries
 ## rna_seq_sample_excluded  - file with excluded libraries
 ## kallisto_count_folder    - path to kallisto result folder
 ## sum_by_species_folder    - path to folder where summed data where exported by rna_seq_sum_by_species.pl script.
 ## gaussian_choice          - path to file with manually chosen deconvoluted gaussians
+## biotypesExcluded         - path to the file where biotypes should be excluded of the absent calls dependent of the protocol
 ## out_folder               - path to folder where to write results
 ## desired_r_cutoff         - desired cutoff value (proportion of intergenic, value between 0 and 1)
+## desired_pValue_cutoff    - desired p-value cutoff to call present genes
 ## plot_only                - specify if only plotting of final boxplots should be made (using .RDa file presence_absence_all_samples.RDa)
 
 ## Session info
@@ -27,7 +29,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed in command line
-command_arg <- c("rna_seq_sample_info", "rna_seq_sample_excluded", "kallisto_count_folder", "sum_by_species_folder", "gaussian_choice", "out_folder", "desired_r_cutoff", "plot_only")
+command_arg <- c("rna_seq_sample_info", "rna_seq_sample_excluded", "kallisto_count_folder", "sum_by_species_folder", "gaussian_choice", "biotypesExcluded", "out_folder", "desired_r_cutoff", "desired_pValue_cutoff", "plot_only")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -58,6 +60,13 @@ if( file.exists(gaussian_choice) ){
   gaussian <- read.table(gaussian_choice, h=T, sep="\t", comment.char="")
 } else {
   warning( paste("File with gaussian choices not found [", gaussian_choice, "]\n"))
+}
+
+## File indicating the biotypes that should be excluded dependent of the protocol
+if( file.exists(biotypesExcluded) ){
+  biotypesFile <- read.table(biotypesExcluded, h=T, sep="\t", comment.char="")
+} else {
+  warning( paste("File with biotypes that should be excluded not found [", biotypesExcluded, "]\n"))
 }
 
 ###############################################################################
@@ -110,7 +119,7 @@ plot_distributions <- function(counts, selected_coding, selected_intergenic, cut
   return();
 }
 
-cutoff_info <- function(library_id, counts, column, max_intergenic, TPM_cutoff, TPM_final_cutoff, FPKM_cutoff, FPKM_final_cutoff, r_cutoff){
+cutoff_info <- function(library_id, counts, column, calls_pValue, max_intergenic, TPM_cutoff, TPM_final_cutoff, FPKM_cutoff, FPKM_final_cutoff, r_cutoff, desired_pValue_cutoff){
   ## Calculate summary statistics to export in cutoff info file
   genic_present <- sum(counts[[column]][counts$type == "genic"] == "present")/sum(counts$type == "genic") * 100
   number_genic_present <- sum(counts[[column]][counts$type == "genic"] == "present")
@@ -120,7 +129,14 @@ cutoff_info <- function(library_id, counts, column, max_intergenic, TPM_cutoff, 
 
   intergenic_present <- sum(counts[[column]][counts$type == "intergenic"] == "present")/sum(counts$type == "intergenic") * 100
   number_intergenic_present <- sum(counts[[column]][counts$type == "intergenic"] == "present")
-
+  
+  ## Calculate summary using the pValue threshold just for genic region (all intergenic is NA)
+  genic_present_pValue <- sum(counts[[calls_pValue]][counts$type == "genic"] == "present")/sum(counts$type == "genic") * 100
+  number_genic_present_pValue <- sum(counts[[calls_pValue]][counts$type == "genic"] == "present")
+  
+  coding_present_pValue <- sum(counts[[calls_pValue]][counts$biotype %in% "protein_coding"] == "present")/sum(counts$biotype %in% "protein_coding") * 100
+  number_coding_present_pValue <- sum(counts[[calls_pValue]][counts$biotype %in% "protein_coding"] == "present")
+  
   ## Export cutoff_info_file
   to_export <- c(library_id,
                  max_intergenic,
@@ -128,15 +144,16 @@ cutoff_info <- function(library_id, counts, column, max_intergenic, TPM_cutoff, 
                  genic_present, number_genic_present, sum(counts$type == "genic"),
                  coding_present,  number_coding_present, sum(counts$biotype %in% "protein_coding"),
                  intergenic_present, number_intergenic_present, sum(counts$type == "intergenic"),
-                 r_cutoff
-                 )
+                 genic_present_pValue, number_genic_present_pValue, coding_present_pValue, number_coding_present_pValue, 
+                 r_cutoff, desired_pValue_cutoff)
   names(to_export) <- c("libraryId",
                         "max_intergenic",
                         "cutoffTPM", "cutoffGenicTPM", "cutoffFPKM", "cutoffGenicFPKM",
                         "proportionGenicPresent", "numberGenicPresent", "numberGenic",
                         "proportionCodingPresent", "numberPresentCoding", "numberCoding",
                         "proportionIntergenicPresent", "numberIntergenicPresent", "numberIntergenic",
-                        "ratioIntergenicCodingPresent")
+                        "proportionGenicPresent_pValue", "numberGenicPresent_pValue", "proportionCodingPresent_pValue","numberCodingPresent_pValue",
+                        "ratioIntergenicCodingPresent","pValue_cutoff")
   return(to_export)
 }
 
@@ -193,6 +210,31 @@ calculate_and_plot_r <- function(counts, selected_coding, selected_intergenic, d
   }
   arrows(log2(TPM_cutoff + 10e-6), par("usr")[3], log2(TPM_cutoff + 10e-6), par("usr")[4]/2, col="gray", lty=1, lwd=2, angle=160, length=0.1)
   return(c(TPM_cutoff, r_cutoff))
+}
+
+## function to calculate pValue from the theoretical data
+theoretical_pValue <- function(counts, sum_by_species, max_intergenic){
+  
+  ## retrieve gene_ids where TPM < max_intergenic
+  sum_by_species_selec <- dplyr::filter(sum_by_species, tpm <= max_intergenic)
+  sum_by_species_selec <- data.frame(sum_by_species_selec$gene_id)
+  colnames(sum_by_species_selec) <- "gene_id"
+  
+  ## select all the intergenic region from the library
+  intergenicRegions <- dplyr::filter(counts, type == "intergenic")
+  
+  ## keep just information about reference intergenic region to the calculation
+  selected_Ref_Intergenic <- merge(sum_by_species_selec, intergenicRegions, by="gene_id")
+  ## select values with TPM > 0 (because we will use log2 scale)
+  selected_Ref_Intergenic <- dplyr::filter(selected_Ref_Intergenic, tpm > 0 & type == "intergenic")
+  
+  ## select genic region from the library
+  genicRegions <- dplyr::filter(counts, tpm > 0 & type == "genic")  
+  ## calculate z-score for each gene_id using the reference intergenic 
+  genicRegions$zScore <- (log2(genicRegions$tpm) - mean(log2(selected_Ref_Intergenic$tpm))) / sd(log2(selected_Ref_Intergenic$tpm))
+  ## calculate p-values for each gene_id
+  genicRegions$pValue <- pnorm(genicRegions$zScore, lower.tail = FALSE)
+  return(genicRegions)
 }
 
 ###############################################################################
@@ -281,28 +323,13 @@ if ( !plot_only ){
           
           ## protocol of the library
           protocol <- sampleInfo$RNASeqProtocol[sampleInfo$libraryId == libraryId]
+          ## select biotypes where we should not call absent geneIDs if below cutoff
+          biotypesExcluded <- biotypesFile$biotypes_excluded_for_absent_calls[biotypesFile$RNASeqProtocol == protocol]
+          biotypesExcluded <- strsplit(biotypesExcluded,",")
+          biotypesExcluded<- as.vector(unlist(biotypesExcluded))
           
-          ## set of biotypes
-          lncRNA <- c("3prime_overlapping_ncRNA", "lincRNA", "macro_lncRNA", "non_coding")
-          ncRNA <- c("miRNA", "misc_RNA", "rRNA", "snoRNA", "snRNA", "tRNA")
-            
-            ## biotypes where we should not call absent geneIDs if below cutoff (this is dependent of the RNASeqProtocol)
-            if(protocol == "polyA"){
-              biotypesExcluded <- c(lncRNA, ncRNA)
-            }else if(protocol == "lncRNA"){
-              biotypesExcluded <- c(ncRNA, "protein_coding")
-            }else if(protocol == "miRNA"){
-              biotypesExcluded <- c(lncRNA, "protein_coding")
-            }else if(protocol == "circRNA"){
-              biotypesExcluded <- c(lncRNA, ncRNA, "protein_coding")
-            }else if(protocol == "ribo-minus"){
-              biotypesExcluded <- "protein_coding"
-            }else{
-              cat("Protocol not specified.")
-              biotypesExcluded <- c()
-            }
           
-            ## Setting the presence/absence flags. Note absent flags can be replaced by "NA" depending of the protocol.
+          ## Setting the presence/absence flags. Note absent flags can be replaced by "NA" depending of the protocol.
             if((length(biotypesExcluded)!= 0) == TRUE){
               cat("In this library ", libraryId ," we will not call absent genes in some biotypes.", "\n")
               ## for gene_counts
@@ -321,17 +348,54 @@ if ( !plot_only ){
               flagBiotypes_kallisto_gene_counts$call <- ifelse(flagBiotypes_kallisto_gene_counts$tpm >= TPM_cutoff, "present", "absent")
               ## collect all info for kallisto_gene_counts and re-order
               allInfo_Kallisto <- rbind(flagBiotypes_kallisto_gene_counts, selectNA_kallisto_gene_counts)
-              genicType <- filter(allInfo_Kallisto, type == "genic")
+              genicType <- dplyr::filter(allInfo_Kallisto, type == "genic")
               genicType <- genicType[order(genicType$gene_id),]
-              kallisto_gene_counts <- rbind(genicType, filter(allInfo_Kallisto, type == "intergenic"))
+              kallisto_gene_counts <- rbind(genicType, dplyr::filter(allInfo_Kallisto, type == "intergenic"))
+              
+              ## Calculation of pValue theoretical for each gene_id from genic region
+              ## Note this is done in the kallisto_gene_counts (because in this file we have information about genic + intergenic region per library)
+              calculate_pValue <- theoretical_pValue(counts = kallisto_gene_counts, sum_by_species = sum_by_species, max_intergenic = max_intergenic)
+
+              ## add flags after pValue calculation
+              selectNA_kallisto_gene_counts <- dplyr::filter(calculate_pValue, biotype %in% biotypesExcluded & pValue > desired_pValue_cutoff)
+              selectNA_kallisto_gene_counts$calls_pValue <- "NA"
+              flagBiotypes_kallisto_gene_counts <- calculate_pValue[ !calculate_pValue$gene_id %in% selectNA_kallisto_gene_counts$gene_id, ]
+              flagBiotypes_kallisto_gene_counts$calls_pValue <- ifelse(flagBiotypes_kallisto_gene_counts$pValue <= desired_pValue_cutoff, "present", "absent")
+              
+              ## add info also about genesID where TPM = 0 and were not used for the pValue calculation (but are important for the final stats)
+              genicZero <- genicType[ !genicType$gene_id %in% flagBiotypes_kallisto_gene_counts$gene_id, ]
+              genicZero$zScore <- genicZero$pValue <- genicZero$calls_pValue <-"NA"
+              flagBiotypes_kallisto_gene_counts <- rbind(flagBiotypes_kallisto_gene_counts, genicZero)
+              flagBiotypes_kallisto_gene_counts <- flagBiotypes_kallisto_gene_counts[order(flagBiotypes_kallisto_gene_counts$gene_id),]
+              ## add the intergenic information to the final file to keep initial structure
+              justIntergenic <- dplyr::filter(allInfo_Kallisto, type == "intergenic")
+              justIntergenic$zScore <- justIntergenic$pValue <- justIntergenic$calls_pValue <-"NA"
+              ## final exported file
+              kallisto_gene_counts <- rbind(flagBiotypes_kallisto_gene_counts, justIntergenic)
               } else {
-              cat("This library ", libraryId ," don't have a protocol specified.", "\n", "The calls will be done without any restriction.", "\n")
+              cat("This library ", libraryId ," don't have a biotype specified to be excluded from the calls.", "\n", "The calls will be done without any restriction.", "\n")
               gene_counts$call <- ifelse(gene_counts$tpm >= TPM_final_cutoff, "present", "absent")
               kallisto_gene_counts$call <- ifelse(kallisto_gene_counts$tpm >= TPM_cutoff, "present", "absent")
+              ## add pValue calculation
+              calculate_pValue <- theoretical_pValue(counts = kallisto_gene_counts, sum_by_species = sum_by_species, max_intergenic = max_intergenic)
+              calculate_pValue$calls_pValue <- ifelse(calculate_pValue$pValue <= desired_pValue_cutoff, "present", "absent")
+              ## add info also about genesID where TPM = 0 and were not used for the pValue calculation
+              genicZero <- kallisto_gene_counts[ !kallisto_gene_counts$gene_id %in% calculate_pValue$gene_id, ]
+              genicZero <- dplyr::filter(genicZero, type == "genic")
+              genicZero$zScore <- genicZero$pValue <- genicZero$calls_pValue <-"NA"
+              allgenicInfo <- rbind(calculate_pValue, genicZero)
+              allgenicInfo <- allgenicInfo[order(allgenicInfo$gene_id),]
+              
+              ## add intergenic info to the file
+              justIntergenic <- dplyr::filter(kallisto_gene_counts, type == "intergenic")
+              justIntergenic$zScore <- justIntergenic$pValue <- justIntergenic$calls_pValue <- "NA"
+              
+              kallisto_gene_counts <- rbind(allgenicInfo, justIntergenic)
+              
               } 
-            
+          
           ## Export cutoff info file
-          cutoff_info_file <- cutoff_info(libraryId, kallisto_gene_counts, "call", max_intergenic, TPM_cutoff, TPM_final_cutoff, FPKM_cutoff, FPKM_final_cutoff, r_cutoff)
+          cutoff_info_file <- cutoff_info(libraryId, kallisto_gene_counts, "call", "calls_pValue", max_intergenic, TPM_cutoff, TPM_final_cutoff, FPKM_cutoff, FPKM_final_cutoff, r_cutoff, desired_pValue_cutoff)
 
           ## close PDF device
           dev.off()
@@ -380,10 +444,10 @@ if (plot_only){
 pdf(file = paste0(out_folder, "/presence_absence_boxplots.pdf"), width = 12, height = 5)
 ## 14 boxplots to plot, 1 per column in all_samples
 ## Manually set the y-scale limits for most of the columns. NA are here for columsn thta need to be printed in log scale
-ylimits <- list(NA, NA, NA, NA, c(0, 100), c(0, 70000), c(0, 70000), c(0, 100), c(0, 30000), c(0, 30000), c(0, 100), c(0, 30000), c(0, 30000), c(0, 0.2))
+ylimits <- list(NA, NA, NA, NA, c(0, 100), c(0, 70000), c(0, 70000), c(0, 100), c(0, 30000), c(0, 30000), c(0, 100), c(0, 30000), c(0, 30000), c(0, 100),c(0, 30000), c(0, 100),c(0, 30000),c(0, 0.2),c(0, 0.2))
 
 i = 1
-for (column in c(3:16)){
+for (column in c(3:21)){
   print(names(all_samples)[column])
 
   ## get the subset of data to use
@@ -417,6 +481,9 @@ for (column in c(3:16)){
   }
   abline(v=1:length(unique(organism)), lty=2, col="lightgray")
   if (names(all_samples)[column] == "proportionCodingPresent"){
+    abline(h=c(70, 80), lty=2, col="red")
+  }
+  if (names(all_samples)[column] == "proportionCodingPresent_pValue"){
     abline(h=c(70, 80), lty=2, col="red")
   }
   i = i+1
