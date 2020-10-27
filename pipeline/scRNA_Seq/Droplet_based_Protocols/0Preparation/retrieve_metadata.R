@@ -74,7 +74,8 @@ HCA_metadata <- function(libraryID, experimentName){
 
   if(metadataExperiment1 == "FALSE" & metadataExperiment2 == "TRUE"){
     metadataExperiment <- page1_HCA[page1_HCA$projects.projectTitle %like% paste0(experimentName),]
-
+    
+    sample_accession <- NA
     experiment_accession <- libraryID
     run_accession <- NA
     read_count <- NA
@@ -86,11 +87,12 @@ HCA_metadata <- function(libraryID, experimentName){
     fastq_ftp <- 	metadataExperiment$fileTypeSummaries.fileType
     submitted_ftp	<- "HCA"
 
-    infoMeatadata <- c(experiment_accession, run_accession, read_count, tax_id,scientific_name, instrument_model, library_layout, fastq_ftp, submitted_ftp)
+    infoMeatadata <- c(sample_accession, experiment_accession, run_accession, read_count, tax_id,scientific_name, instrument_model, library_layout, fastq_ftp, submitted_ftp)
 
   } else if (metadataExperiment1 == "TRUE" & metadataExperiment2 == "FALSE") {
     metadataExperiment <- page2_HCA[page2_HCA$projects.projectTitle %like% paste0(experimentName),]
-
+    
+    sample_accession <- NA
     experiment_accession <- libraryID
     run_accession <- NA
     read_count <- NA
@@ -102,7 +104,7 @@ HCA_metadata <- function(libraryID, experimentName){
     fastq_ftp <- 	metadataExperiment$fileTypeSummaries.fileType
     submitted_ftp	<- "HCA"
 
-    infoMeatadata <- c(experiment_accession, run_accession, read_count, tax_id,scientific_name, instrument_model, library_layout, fastq_ftp, submitted_ftp)
+    infoMeatadata <- c(sample_accession, experiment_accession, run_accession, read_count, tax_id,scientific_name, instrument_model, library_layout, fastq_ftp, submitted_ftp)
 
   } else {
     cat("The experiment title was not found in HCA metadata.", "\n", "Please check the annotation file.")
@@ -113,6 +115,7 @@ HCA_metadata <- function(libraryID, experimentName){
 ## select just target-based protocols to retrieve metadata
 targetBased <- experiments[experiments$protocol %like% "10X Genomics", ]
 targetBased_libraries <- dplyr::filter(annotation, protocolType == "3'end" & protocol == "10X Genomics")
+targetBased_libraries <- targetBased_libraries[!grepl("#", targetBased_libraries$libraryId),]
 experimentsIDs <- unique(targetBased_libraries$experimentId)
 targetBased <- dplyr::filter(targetBased, experimentId %in% experimentsIDs)
 
@@ -120,15 +123,14 @@ metadata <- c()
 for (experiment in unique(targetBased$experimentId)) {
   ## select source  of the experiment
   sourceID <- as.character(unique(targetBased$experimentSource[targetBased$experimentId == experiment]))
+  libraries_from_Exp <- annotation$libraryId[annotation$experimentId == experiment & annotation$protocol == "10X Genomics" & annotation$protocolType == "3'end"]
 
   if(sourceID == "SRA"){
-    libraries_from_Exp <- annotation$libraryId[annotation$experimentId == experiment & annotation$protocol == "10X Genomics" & annotation$protocolType == "3'end"]
     for (i in libraries_from_Exp) {
       extractSRA <- SRA_metadata(libraryID = i)
       metadata <- rbind(metadata,extractSRA)
     }
   } else if (sourceID == "HCA"){
-    libraries_from_Exp <- annotation$libraryId[annotation$experimentId == experiment & annotation$protocol == "10X Genomics" & annotation$protocolType == "3'end"]
     experimentNAME <- as.character(unique(targetBased$experimentName[targetBased$experimentId == experiment]))
     for (i in libraries_from_Exp) {
       extractHCA <- HCA_metadata(libraryID = i, experimentName = experimentNAME)
@@ -137,6 +139,7 @@ for (experiment in unique(targetBased$experimentId)) {
   } else {
     cat("Source is not recognized!")
   }
+  
 }
 
 ## Create the output files to write the comparison between annotation and metada!
