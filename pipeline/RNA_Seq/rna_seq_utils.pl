@@ -517,7 +517,8 @@ sub getAllRnaSeqLibrariesInfo {
                 warn "Warning, wrong format for libraryType [$libraryType]\n";
                 $discarded = 1;
             }
-            if ( $readLength ne '' && ($readLength !~ /$integerRegex/ || $readLength < 0 ) ){
+            #NOTE SRA may return float for read length because of read length variability
+            if ( $readLength ne '' && ($readLength !~ /$floatingPointRegex/ || $readLength < 0 ) ){
                 warn "Warning, wrong format for readLength [$readLength]\n";
                 $discarded = 1;
             }
