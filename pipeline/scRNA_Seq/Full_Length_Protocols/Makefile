@@ -22,13 +22,13 @@ control_annotation: get_annot 0Preparation/pre_process_control_annotation.R
 ## Retrieve metadata (run rule with sbatch)
 retrieve_metadata: control_annotation 0Preparation/retrieve_metadata.R
 	@echo --- Retrieve metadata information ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SC_RNASEQ_DOWNLOAD_PATH)";@'                                          0Preparation/retrieve_metadata.R
-	@sed -i 's@--output=.*@--output=${PWD}/retrieve_metadata.out@'                                       0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/retrieve_metadata.err@'                                         0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                         0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export NEW_scRNASeqLibrary=.*@export NEW_scRNASeqLibrary=$(SC_RNASEQ_NEW_LIB_FILEPATH)@'  0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export output_folder=.*@export output_folder=$(OUTPUT_DIR)@'                              0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH)@'                       0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@\(BASE *= \).*@\1"$(SC_RNASEQ_DOWNLOAD_PATH)";@'                                             0Preparation/retrieve_metadata.R
+	@sed -i 's@--output=.*@--output=${PWD}/retrieve_metadata.out@'                                          0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/retrieve_metadata.err@'                                            0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                            0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export NEW_scRNASeqLibrary=.*@export NEW_scRNASeqLibrary=../$(SC_RNASEQ_NEW_LIB_FILEPATH)@'  0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export output_folder=.*@export output_folder=../$(OUTPUT_DIR)@'                              0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH)@'                          0Preparation/retrieve_metadata.sbatch
 	@sbatch 0Preparation/retrieve_metadata.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
