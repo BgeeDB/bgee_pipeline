@@ -120,7 +120,6 @@ get_genome: get_GTF
 
 # Start here on sensitive cluster
 cluster1:
-
 	@echo -e "\tBe sure everything is up-to-date before running RNASeq pipeline\n"
 	@touch $@
 
@@ -364,7 +363,7 @@ adj_calls: presence_absence 1Run/rna_seq_calls_adjustment.R
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                              1Run/rna_seq_calls_adjustment.sbatch
 	@sed -i 's@export rna_seq_sample_info=.*@export rna_seq_sample_info=${RNASEQ_SAMPINFO_FILEPATH}@'         1Run/rna_seq_calls_adjustment.sbatch
 	@sed -i 's@export RNASeq_folder_calls=.*@export RNASeq_folder_calls=$(RNASEQ_CLUSTER_PRESENCE_RES)@'      1Run/rna_seq_calls_adjustment.sbatch
-	@sed -i 's@export cutoff=.*@export cutoff=$(CUTOFF_QVALUE)@'      																				1Run/rna_seq_calls_adjustment.sbatch
+	@sed -i 's@export cutoff=.*@export cutoff=$(CUTOFF_QVALUE)@'                                              1Run/rna_seq_calls_adjustment.sbatch
 	@sed -i 's@export ROUT=.*@export ROUT=$(RNASEQ_CLUSTER_PRESENCE_RES)@'                                    1Run/rna_seq_calls_adjustment.sbatch
 	@sbatch 1Run/rna_seq_calls_adjustment.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
@@ -376,7 +375,7 @@ save_and_send_results_back: finalize_pipeline adj_calls export_length
 	# Touch all files so that they are not removed from /scratch/temporary
 	@find $(RNASEQ_CLUSTER_SCRATCH) -exec touch {} \; 2>warnings.$@
 	# Back-up all data
-	@tar cfSp $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar --absolute-names $(RNASEQ_CLUSTER_ALL_RES) $(RNASEQ_CLUSTER_SUM_RES) $(RNASEQ_CLUSTER_PRESENCE_RES) 2>>warnings.$@
+	@tar cfSp $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar $(RNASEQ_CLUSTER_ALL_RES) $(RNASEQ_CLUSTER_SUM_RES) $(RNASEQ_CLUSTER_PRESENCE_RES) 2>>warnings.$@
 	@gzip -9 $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar 2>>warnings.$@
 	# Move back-up data to /data/
 	@$(MV) $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar.gz $(RNASEQ_CLUSTER_ALL_RES_BACKUP) 2>>warnings.$@
@@ -389,11 +388,8 @@ save_and_send_results_back: finalize_pipeline adj_calls export_length
 	@$(CP) $(RNASEQ_CLUSTER_PRESENCE_RES)/presence_absence_all_samples.txt $(RNASEQSAMPSTATS)
 	@rsync -av -e ssh $(RNASEQ_CLUSTER_REPORTINFO) $(RNASEQ_CLUSTER_PRESENCE_RES)/presence_absence_all_samples.txt $(RNASEQ_CLUSTER_PRESENCE_RES)/presence_absence_all_samples.RDa $(RNASEQ_CLUSTER_PRESENCE_RES)/presence_absence_boxplots.pdf $(PIPELOGIN)@$(PIPEHOST):$(RNASEQALLRES)/ >>$@.tmp 2>&1
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
-	@$(MV) $@.tmp $@
-
-cluster2: save_and_send_results_back
 	@echo -e "\tYou can go out of cluster now\n"
-	@touch $@
+	@$(MV) $@.tmp $@
 
 
 ################################ INSERT CALLS IN DATABASE ################################
