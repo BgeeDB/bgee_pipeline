@@ -148,6 +148,8 @@ include $(PIPELINEROOT)Makefile.taxon_info
 #  VITAL-IT  COMMANDS
 # ===================================
 
+CLUSTER_ARCHIVE_PATH := /archive/FAC/FBM/DEE/bgee_sensitive
+
 #NOTE Think to add ; at the end to ease insertion in other command lines
 VIT_ASPERA_CMD     := module add Utility/aspera_connect/3.7.4.147727;
 #VIT_BEDTOOLS_CMD   := module add UHTS/Analysis/BEDTools/2.26.0;
