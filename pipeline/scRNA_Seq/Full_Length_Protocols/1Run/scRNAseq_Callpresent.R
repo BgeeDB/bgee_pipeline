@@ -1,14 +1,17 @@
 ## SFonsecaCosta, Nov 2018
 ## Adaptation from Julien Roux script (Bgee RNA-Seq pipeline - rna_seq_presence_absence.r)
-## Apply the cutoff to call present genes for each library that correspond to each individual cell
+## Apply the Bgee ratio cutoff to call present genes for each library that correspond to each individual cell
+## Calculate pValue threoretical and make the calls based on the pValue_cutoff desired
+## Note: in single cell protocols we don't use the biotypesExcluded file because we don't call absent genesIDs in single cell data.
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args NEW_scRNASeq_sample_info="NEW_scRNASeq_sample_info" cells_folder="cells_folder" sum_species="sum_species" gaussian_choice="gaussian_choice" ratioValue="ratioValue" output_folder="output_folder"' scRNAseq_Callpresent.R scRNAseq_Callpresent.Rout
+## R CMD BATCH --no-save --no-restore '--args NEW_scRNASeq_sample_info="NEW_scRNASeq_sample_info" cells_folder="cells_folder" sum_species="sum_species" gaussian_choice="gaussian_choice" ratioValue="ratioValue" desired_pValue_cutoff="desired_pValue_cutoff" output_folder="output_folder"' scRNAseq_Callpresent.R scRNAseq_Callpresent.Rout
 ## NEW_scRNASeq_sample_info --> file with info on mapped libraries
 ## cells_folder --> where we is located all the libraries/cells after Kallisto (treated data)
 ## sum_species --> where is localized sum per species
 ## gaussian_choice --> gaussian choice
-## ratioValue --> ratio used to perform the cutoff (should be between 0 and 1, where 1 menas 100%)
+## ratioValue --> ratio used to perform the cutoff (should be between 0 and 1, where 1 means 100%)
+## desired_pValue_cutoff --> desired p-value cutoff to call present genes
 ## output_folder --> folder where to export the plots, summed data, and classification of coding/intergenic regions
 
 ## libraries used
@@ -26,7 +29,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
   }
 }
 ## checking if all necessary arguments were passed in command line
-command_arg <- c("NEW_scRNASeq_sample_info", "cells_folder", "sum_species", "gaussian_choice", "ratioValue", "output_folder")
+command_arg <- c("NEW_scRNASeq_sample_info", "cells_folder", "sum_species", "gaussian_choice", "ratioValue", "desired_pValue_cutoff" ,"output_folder")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -73,6 +76,31 @@ calculate_r <- function(counts, selected_coding, selected_intergenic, ratioValue
   return(list(TPM_cutoff, r_cutoff))
 }
 
+## function to calculate pValue from the theoretical data
+theoretical_pValue <- function(counts, sum_by_species, max_intergenic){
+  
+  ## retrieve gene_ids where TPM < max_intergenic
+  sum_by_species_selec <- dplyr::filter(sum_by_species, tpm <= max_intergenic)
+  sum_by_species_selec <- data.frame(sum_by_species_selec$gene_id)
+  colnames(sum_by_species_selec) <- "gene_id"
+  
+  ## select all the intergenic region from the library
+  intergenicRegions <- dplyr::filter(counts, type == "intergenic")
+  
+  ## keep just information about reference intergenic region to the calculation
+  selected_Ref_Intergenic <- merge(sum_by_species_selec, intergenicRegions, by="gene_id")
+  ## select values with TPM > 0 (because we will use log2 scale)
+  selected_Ref_Intergenic <- dplyr::filter(selected_Ref_Intergenic, tpm > 0 & type == "intergenic")
+  
+  ## select genic region from the library
+  genicRegions <- dplyr::filter(counts, tpm > 0 & type == "genic")  
+  ## calculate z-score for each gene_id using the reference intergenic 
+  genicRegions$zScore <- (log2(genicRegions$tpm) - mean(log2(selected_Ref_Intergenic$tpm))) / sd(log2(selected_Ref_Intergenic$tpm))
+  ## calculate p-values for each gene_id
+  genicRegions$pValue <- pnorm(genicRegions$zScore, lower.tail = FALSE)
+  return(genicRegions)
+}
+
 ### Collect MaxIntergenic region
 collectmaxIntergenic <- function(gaussian, sum_by_species){
   collect_intergenic <- paste0("intergenic_", gaussian$selectedGaussianIntergenic[gaussian$speciesId == species])
@@ -94,28 +122,40 @@ calculateFinalTPM <- function(counts, gene_counts, TPM_cutoff){
 }
 
 ### Collect information after cut-off
-cutoff_info <- function(library_id, counts, max_intergenic, TPM_cutoff, TPM_final_cutoff, r_cutoff){
+cutoff_info <- function(library_id, counts, max_intergenic, TPM_cutoff, TPM_final_cutoff, r_cutoff, desired_pValue_cutoff){
   proportion_genic_present <- (nrow(dplyr::filter(counts, type == "genic" & call == "present"))/nrow(dplyr::filter(counts, type == "genic")))*100
   genic_region_present <- nrow(dplyr::filter(counts, type == "genic" & call == "present"))
   proportion_coding_present <- (nrow(dplyr::filter(counts, biotype == "protein_coding" & call == "present"))/nrow(dplyr::filter(counts, biotype == "protein_coding")))*100
   coding_region_present  <- nrow(dplyr::filter(counts, biotype == "protein_coding" & call == "present"))
   proportion_intergenic_present <- (nrow(dplyr::filter(counts, type == "intergenic" & call == "present"))/nrow(dplyr::filter(counts, type == "intergenic")))*100
   intergenic_region_present <- nrow(dplyr::filter(counts, type == "intergenic" & call == "present"))
+  
+  ## collect stats using pValue_cutoff for genic region
+  proportion_genic_present_pValue <- (nrow(dplyr::filter(counts, type == "genic" & calls_pValue == "present"))/nrow(dplyr::filter(counts, type == "genic")))*100
+  genic_region_present_pValue <- nrow(dplyr::filter(counts, type == "genic" & calls_pValue == "present"))
+  proportion_coding_present_pValue <- (nrow(dplyr::filter(counts, biotype == "protein_coding" & calls_pValue == "present"))/nrow(dplyr::filter(counts, biotype == "protein_coding")))*100
+  coding_region_present_pValue  <- nrow(dplyr::filter(counts, biotype == "protein_coding" & calls_pValue == "present"))
+ 
   ## Export cutoff_info_file
   collectInfo <- c(library_id,TPM_cutoff,proportion_genic_present, genic_region_present,sum(counts$type == "genic"),
                    proportion_coding_present, coding_region_present, sum(counts$biotype %in% "protein_coding"),
                    proportion_intergenic_present, intergenic_region_present, sum(counts$type == "intergenic"),
-                   r_cutoff)
+                   proportion_genic_present_pValue, genic_region_present_pValue, 
+                   proportion_coding_present_pValue, coding_region_present_pValue,
+                   r_cutoff, desired_pValue_cutoff)
   names(collectInfo) <- c("libraryId","cutoffTPM", "proportionGenicPresent", "numberGenicPresent", "Genic",
                           "proportionCodingPresent",  "numberCodingPresent", "ProteinCoding",
-                          "proportion_intergenic_present", "intergenic_region_present", "Intergenic","ratioIntergenicCodingPresent")
+                          "proportion_intergenic_present", "intergenic_region_present", "Intergenic",
+                          "proportion_genic_present_pValue", "genic_region_present_pValue", 
+                          "proportion_coding_present_pValue", "coding_region_present_pValue",
+                          "ratioIntergenicCodingPresent", "pValue_cutoff")
   return(collectInfo)
 }
 
 ### Plot the data
 plotData <- function(dataFile){
   dataFile <- read.table(dataFile, header=TRUE, sep="\t")
-  proportion_all_samples <- dataFile[c(3,6,9,14)]
+  proportion_all_samples <- dataFile[c(3,6,9,12,14,19)]
   proportion_all_samples <- melt(proportion_all_samples)
   g1 <- ggplot(proportion_all_samples, aes(organism,value, fill = organism)) +
     geom_boxplot() + stat_smooth() +
@@ -123,7 +163,7 @@ plotData <- function(dataFile){
     geom_hline(yintercept=c(70,80), linetype="dashed", color = "black") +
     theme(axis.title.x=element_blank(),axis.text.x=element_blank(),axis.ticks.x=element_blank())
 
-  number_all_samples <- dataFile[c(4,7,10,14)]
+  number_all_samples <- dataFile[c(4,7,10,13, 15, 19)]
   number_all_samples <- melt(number_all_samples)
   g2 <- ggplot(number_all_samples, aes(organism,value, fill = organism)) +
     geom_boxplot() + stat_smooth() +
@@ -147,19 +187,33 @@ for(species in unique(annotation$speciesId)){
         gene_counts <- read.table(file.path(cells_folder, libraryId, "abundance_gene_level+new_tpm+new_fpkm.tsv"), h=T, sep = "\t")
 
         selected_coding <- kallisto_gene_counts$biotype %in% "protein_coding"
-        max_intergenic <- collectmaxIntergenic(gaussian, sum_by_species)
+        max_intergenic <- collectmaxIntergenic(gaussian = gaussian, sum_by_species = sum_by_species)
         selected_intergenic <- (kallisto_gene_counts$type == "intergenic" & sum_by_species$tpm < max_intergenic)
         results <- calculate_r(kallisto_gene_counts, selected_coding, selected_intergenic, ratioValue = as.numeric(ratioValue))
         TPM_cutoff <- results[[1]]
         r_cutoff <- results[[2]]
-        recalculateTPM <- calculateFinalTPM(kallisto_gene_counts, gene_counts, TPM_cutoff=TPM_cutoff)
+        recalculateTPM <- calculateFinalTPM(kallisto_gene_counts, gene_counts, TPM_cutoff)
 
         ## Setting the presence flags
         gene_counts$call <- ifelse(gene_counts$tpm >= recalculateTPM[[3]], "present", "-")
         kallisto_gene_counts$call <- ifelse(kallisto_gene_counts$tpm >= TPM_cutoff, "present", "-")
-
-        ## Export cutoff infoormation file + new files with calls
-        cutoff_info_file <- cutoff_info(libraryId, kallisto_gene_counts, max_intergenic, TPM_cutoff, a[[3]], r_cutoff)
+        
+        ## add pValue calculation and call to kallisto_gene_counts
+        pValueCalculation <- theoretical_pValue(counts = kallisto_gene_counts, sum_by_species = sum_by_species, max_intergenic = max_intergenic)
+        pValueCalculation$calls_pValue <- ifelse(pValueCalculation$pValue <= as.numeric(desired_pValue_cutoff), "present", "-" )
+        ## add info also about genesID where TPM = 0 and were not used for the pValue calculation (but are important for the final stats)
+        genicZero <- kallisto_gene_counts[ !kallisto_gene_counts$gene_id %in% pValueCalculation$gene_id, ]
+        genicZero$zScore <- "NA"; genicZero$pValue <- "NA"; genicZero$calls_pValue <-"NA"
+        allGenic <- rbind(pValueCalculation, dplyr::filter(genicZero, type == "genic"))
+        allGenic <- allGenic[order(allGenic$gene_id),]
+        ## select intergenic
+        justIntergenic <- dplyr::filter(kallisto_gene_counts, type == "intergenic")
+        justIntergenic$zScore <- "NA"; justIntergenic$pValue <- "NA"; justIntergenic$calls_pValue <-"NA"
+        ## kallisto_gene_counts with all information
+        kallisto_gene_counts <- rbind(allGenic, justIntergenic)
+   
+        ## Export cutoff information file + new files with calls
+        cutoff_info_file <- cutoff_info(libraryId, kallisto_gene_counts, max_intergenic, TPM_cutoff, a[[3]], r_cutoff, as.numeric(desired_pValue_cutoff))
         pathExport <- file.path(cells_folder, libraryId)
         write.table(gene_counts,file = file.path(pathExport, "abundance_gene_level+new_tpm+new_fpkm+calls.tsv"),quote=F, sep = "\t", col.names=T, row.names=F)
         write.table(kallisto_gene_counts,file = file.path(pathExport, "abundance_gene_level+fpkm+intergenic+calls.tsv"),quote=F, sep = "\t", col.names=T, row.names=F)
@@ -172,7 +226,12 @@ for(species in unique(annotation$speciesId)){
         collectSamples <- rbind(collectSamples, this_sample)
   }
 }
-cat("libraryId\tcutoffTPM\tproportionGenicPresent\tnumberGenicPresent\tGenic\tproportionCodingPresent\tnumberCodingPresent\tProteinCoding\tproportion_intergenic_present\tintergenic_region_present\tIntergenic\tratioIntergenicCodingPresent\tspeciesID\torganism\n",
-    file = file.path(output_folder, "All_samples.tsv"), sep = "\t")
+All_samples <- paste0(output_folder, "/All_samples.tsv")
+if (!file.exists(All_samples)){
+  file.create(All_samples)
+  cat("libraryId\tcutoffTPM\tproportionGenicPresent\tnumberGenicPresent\tGenic\tproportionCodingPresent\tnumberCodingPresent\tProteinCoding\tproportion_intergenic_present\tintergenic_region_present\tIntergenic\tproportion_genic_present_pValue\tgenic_region_present_pValue\tproportion_coding_present_pValue\tcoding_region_present_pValue\tratioIntergenicCodingPresent\tpValue_cutoff\tspeciesID\torganism\n",file = file.path(output_folder,"All_samples.tsv"), sep = "\t")
+} else {
+  print("File already exist.....")
+}
 write.table(collectSamples, file = file.path(output_folder, "All_samples.tsv"),col.names =F , row.names = F, append = T,quote = FALSE, sep = "\t")
 plotData(file.path(output_folder, "All_samples.tsv"))
