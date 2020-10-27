@@ -58,14 +58,14 @@ for (libraryID in unique(libraryIDs)) {
 metadata_info <- file.path(output_folder, "metadata_info.txt")
 if (!file.exists(metadata_info)){
   file.create(metadata_info)
-  cat("experiment_accession\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = file.path(output_folder, "metadata_info.txt"), sep = "\t")
+  cat("sample_accession\texperiment_accession\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = file.path(output_folder, "metadata_info.txt"), sep = "\t")
 } else {
   print("File already exist.....")
 }
 metadata_notMatch <- file.path(output_folder, "metadata_notMatch.txt")
 if (!file.exists(metadata_notMatch)){
   file.create(metadata_notMatch)
-  cat("experiment_accession\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = file.path(output_folder, "metadata_notMatch.txt"), sep = "\t")
+  cat("sample_accession\texperiment_accession\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = file.path(output_folder, "metadata_notMatch.txt"), sep = "\t")
 } else {
   print("File already exist.....")
 }

@@ -143,14 +143,14 @@ for (experiment in unique(targetBased$experimentId)) {
 metadata_info <- paste0(output, "/","metadata_info_10X.txt")
 if (!file.exists(metadata_info)){
   file.create(metadata_info)
-  cat("experiment_accession\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = file.path(output, "metadata_info_10X.txt"), sep = "\t")
+  cat("sample_accession\texperiment_accession\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = file.path(output, "metadata_info_10X.txt"), sep = "\t")
 } else {
   print("File already exist.....")
 }
 metadata_notMatch <- paste0(output, "/","metadata_notMatch_10X.txt")
 if (!file.exists(metadata_notMatch)){
   file.create(metadata_notMatch)
-  cat("experiment_accession\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = file.path(output,"metadata_notMatch_10X.txt"), sep = "\t")
+  cat("sample_accession\texperiment_accession\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = file.path(output,"metadata_notMatch_10X.txt"), sep = "\t")
 } else {
   print("File already exist.....")
 }
@@ -170,7 +170,7 @@ for(i in 1:nrow(targetBased_libraries)) {
     compare_speciesID <- identical(as.character(annotationInfo[['speciesId']]),as.character(metadataInfo[['tax_id']]))
 
     if (compare_library == "TRUE" && compare_machine == "TRUE" && compare_speciesID == "TRUE"){
-      cat(as.character(annotationInfo$X.libraryId[1]), "complete match between annotation and metadata", "\n")
+      cat(as.character(annotationInfo$libraryId[1]), "complete match between annotation and metadata", "\n")
 
       ## export libraries that pass and will be downloaded
       write.table(metadataInfo, file = metadata_info, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
@@ -188,7 +188,7 @@ for(i in 1:nrow(targetBased_libraries)) {
     ## The HCA metadata we just compare the instrument model (since we not retrieve experiment_accession and tax_id just species_name)
     compare_machine <- identical(as.character(annotationInfo[['platform']]),as.character(metadataInfo[['instrument_model']]))
     if (compare_machine == "TRUE"){
-      cat(as.character(annotationInfo$X.libraryId[1]), "complete match between annotation and metadata", "\n")
+      cat(as.character(annotationInfo$libraryId[1]), "complete match between annotation and metadata", "\n")
       ## export libraries that pass and will be downloaded
       write.table(metadataInfo, file = metadata_info, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
     } else {
