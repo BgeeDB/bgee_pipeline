@@ -31,10 +31,10 @@
 3	1	epi_combo
 3	3	amnioserosa
 3	4	head epidermis ventral P2
+3	5	Malpighian tubule tip cell primordium
 3	5	corpus cardiacum primordium
 3	5	embryonic central brain
 3	5	head epidermis ventral P1
-3	5	Malpighian tubule tip cell primordium
 3	5	maternal
 3	5	mushroom body primordium
 3	5	procephalic glioblasts
@@ -157,8 +157,8 @@
 26	6	embryonic leading edge cell
 27	2	ventral ectoderm anlage
 28	6	embryonic corpus allatum
-28	6	embryonic/larval dorsal branch
 28	6	embryonic proventriculus intermediate layer
+28	6	embryonic/larval dorsal branch
 29	2	clypeolabrum anlage in statu nascendi
 29	2	dorsal ectoderm anlage
 30	6	adult midgut precursor
@@ -187,8 +187,8 @@
 38	6	apoptotic amnioserosa
 38	6	embryonic/larval pericardial cell
 39	6	embryonic central brain
-40	6	embryonic/larval circulatory system
 40	6	embryonic ventral apodeme
+40	6	embryonic/larval circulatory system
 40	6	strong ubiquitous
 41	5	antennal primordium1
 41	5	labral sensory complex primordium
@@ -299,8 +299,8 @@
 195	2	anlage in statu nascendi
 197	6	dorsal/lateral sensory complexes
 202	3	ventral nerve cord anlage
-205	5	dorsal pharyngeal muscle primordium
 205	5	Malpighian tubule primordium
+205	5	dorsal pharyngeal muscle primordium
 207	6	embryonic esophagus
 213	6	embryonic central brain glia
 213	6	lateral cord neuron
