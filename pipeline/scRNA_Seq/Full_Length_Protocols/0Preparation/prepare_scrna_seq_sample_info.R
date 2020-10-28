@@ -4,7 +4,7 @@
 
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args NEW_scRNASeqLibrary="NEW_scRNASeqLibrary.tsv" raw_cells_folder="raw_cells_folder" output_folder="output_folder"' prepare_scrna_seq_sample_info.R prepare_scrna_seq_sample_info.Rout
-## NEW_scRNASeqLibrary --> Use the file NEW_scRNASeqLibrary (this means use just cell-types with more then 100 cells)
+## NEW_scRNASeqLibrary --> Use the file NEW_scRNASeqLibrary (this means use just cell-types with more then 50 cells)
 ## raw_cells_folder --> Folder where is localized all raw libraries (this means all FASTQ.gz files per cell) of all experiments, species and cell-types
 ## output_folder --> Folder where should be saved the scrna_seq_sample_info.txt file
 

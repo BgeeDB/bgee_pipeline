@@ -84,7 +84,7 @@ for(i in 1:nrow(fullLength)) {
   if (compare_library == "TRUE" && compare_machine == "TRUE" && compare_speciesID == "TRUE"){
     cat(as.character(annotationInfo$libraryId[1]), "complete match between annotation and metadata", "\n")
 
-    ## export libraries that pass and will be downloded
+    ## export libraries that pass and will be downloaded
     write.table(metadataInfo, file = metadata_info, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
 
   } else {
