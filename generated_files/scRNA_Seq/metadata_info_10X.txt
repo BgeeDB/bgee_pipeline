@@ -113,6 +113,28 @@ SAMEA6060720	ERX3581510	ERR3585568	381130276	9606	Homo sapiens	Illumina HiSeq 40
 SAMEA6060721	ERX3581511	ERR3585569	314379368	9606	Homo sapiens	Illumina HiSeq 4000	SINGLE	NA	ftp.sra.ebi.ac.uk/vol1/run/ERR358/ERR3585569/FCAImmP7579223.bam;ftp.sra.ebi.ac.uk/vol1/run/ERR358/ERR3585569/FCAImmP7579223.bam.bai
 SAMEA6060722	ERX3581512	ERR3585570	323565797	9606	Homo sapiens	Illumina HiSeq 4000	SINGLE	NA	ftp.sra.ebi.ac.uk/vol1/run/ERR358/ERR3585570/FCAImmP7579226.bam;ftp.sra.ebi.ac.uk/vol1/run/ERR358/ERR3585570/FCAImmP7579226.bam.bai
 SAMEA6060723	ERX3581513	ERR3585571	323218174	9606	Homo sapiens	Illumina HiSeq 4000	SINGLE	NA	ftp.sra.ebi.ac.uk/vol1/run/ERR358/ERR3585571/FCAImmP7579227.bam;ftp.sra.ebi.ac.uk/vol1/run/ERR358/ERR3585571/FCAImmP7579227.bam.bai
+NA	ERX3984854	NA	NA	NA	Homo sapiens	Illumina HiSeq 4000	FALSE, NULL	fastq.gz	HCA
+NA	ERX3984855	NA	NA	NA	Homo sapiens	Illumina HiSeq 4000	FALSE, NULL	fastq.gz	HCA
+NA	ERX3984856	NA	NA	NA	Homo sapiens	Illumina HiSeq 4000	FALSE, NULL	fastq.gz	HCA
+NA	ERX3984857	NA	NA	NA	Homo sapiens	Illumina HiSeq 4000	FALSE, NULL	fastq.gz	HCA
+NA	ERX3984858	NA	NA	NA	Homo sapiens	Illumina HiSeq 4000	FALSE, NULL	fastq.gz	HCA
+NA	ERX3984859	NA	NA	NA	Homo sapiens	Illumina HiSeq 4000	FALSE, NULL	fastq.gz	HCA
+NA	ERX3984860	NA	NA	NA	Homo sapiens	Illumina HiSeq 4000	FALSE, NULL	fastq.gz	HCA
+NA	ERX3984861	NA	NA	NA	Homo sapiens	Illumina HiSeq 4000	FALSE, NULL	fastq.gz	HCA
+NA	ERX3984862	NA	NA	NA	Homo sapiens	Illumina HiSeq 4000	FALSE, NULL	fastq.gz	HCA
+NA	ERX3984863	NA	NA	NA	Homo sapiens	Illumina HiSeq 4000	FALSE, NULL	fastq.gz	HCA
+NA	ERX3984864	NA	NA	NA	Homo sapiens	Illumina HiSeq 4000	FALSE, NULL	fastq.gz	HCA
+NA	ERX3984865	NA	NA	NA	Homo sapiens	Illumina HiSeq 4000	FALSE, NULL	fastq.gz	HCA
+NA	ERX3984866	NA	NA	NA	Homo sapiens	Illumina HiSeq 4000	FALSE, NULL	fastq.gz	HCA
+NA	ERX3984867	NA	NA	NA	Homo sapiens	Illumina HiSeq 4000	FALSE, NULL	fastq.gz	HCA
+NA	ERX3984868	NA	NA	NA	Homo sapiens	Illumina HiSeq 4000	FALSE, NULL	fastq.gz	HCA
+NA	ERX3984869	NA	NA	NA	Homo sapiens	Illumina HiSeq 4000	FALSE, NULL	fastq.gz	HCA
+NA	ERX3984870	NA	NA	NA	Homo sapiens	Illumina HiSeq 4000	FALSE, NULL	fastq.gz	HCA
+NA	ERX3984871	NA	NA	NA	Homo sapiens	Illumina HiSeq 4000	FALSE, NULL	fastq.gz	HCA
+NA	ERX3984872	NA	NA	NA	Homo sapiens	Illumina HiSeq 4000	FALSE, NULL	fastq.gz	HCA
+NA	ERX3984873	NA	NA	NA	Homo sapiens	Illumina HiSeq 4000	FALSE, NULL	fastq.gz	HCA
+NA	ERX3984874	NA	NA	NA	Homo sapiens	Illumina HiSeq 4000	FALSE, NULL	fastq.gz	HCA
+NA	ERX3984875	NA	NA	NA	Homo sapiens	Illumina HiSeq 4000	FALSE, NULL	fastq.gz	HCA
 SAMN12046517	SRX6060792	SRR9291380	129289673	10181	Heterocephalus glaber	Illumina HiSeq 4000	PAIRED	ftp.sra.ebi.ac.uk/vol1/fastq/SRR929/000/SRR9291380/SRR9291380.fastq.gz	NA
 SAMN12046516	SRX6060793	SRR9291381	153657907	10181	Heterocephalus glaber	Illumina HiSeq 4000	PAIRED	ftp.sra.ebi.ac.uk/vol1/fastq/SRR929/001/SRR9291381/SRR9291381.fastq.gz	NA
 SAMN12046515	SRX6060794	SRR9291382	130214927	10181	Heterocephalus glaber	Illumina HiSeq 4000	PAIRED	ftp.sra.ebi.ac.uk/vol1/fastq/SRR929/002/SRR9291382/SRR9291382.fastq.gz	NA
