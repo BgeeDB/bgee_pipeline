@@ -78,23 +78,23 @@ calculate_r <- function(counts, selected_coding, selected_intergenic, ratioValue
 
 ## function to calculate pValue from the theoretical data
 theoretical_pValue <- function(counts, sum_by_species, max_intergenic){
-  
+
   ## retrieve gene_ids where TPM < max_intergenic
   sum_by_species_selec <- dplyr::filter(sum_by_species, tpm <= max_intergenic)
   sum_by_species_selec <- data.frame(sum_by_species_selec$gene_id)
   colnames(sum_by_species_selec) <- "gene_id"
-  
+
   ## select all the intergenic region from the library
   intergenicRegions <- dplyr::filter(counts, type == "intergenic")
-  
+
   ## keep just information about reference intergenic region to the calculation
   selected_Ref_Intergenic <- merge(sum_by_species_selec, intergenicRegions, by="gene_id")
   ## select values with TPM > 0 (because we will use log2 scale)
   selected_Ref_Intergenic <- dplyr::filter(selected_Ref_Intergenic, tpm > 0 & type == "intergenic")
-  
+
   ## select genic region from the library
-  genicRegions <- dplyr::filter(counts, tpm > 0 & type == "genic")  
-  ## calculate z-score for each gene_id using the reference intergenic 
+  genicRegions <- dplyr::filter(counts, tpm > 0 & type == "genic")
+  ## calculate z-score for each gene_id using the reference intergenic
   genicRegions$zScore <- (log2(genicRegions$tpm) - mean(log2(selected_Ref_Intergenic$tpm))) / sd(log2(selected_Ref_Intergenic$tpm))
   ## calculate p-values for each gene_id
   genicRegions$pValue <- pnorm(genicRegions$zScore, lower.tail = FALSE)
@@ -129,24 +129,24 @@ cutoff_info <- function(library_id, counts, max_intergenic, TPM_cutoff, TPM_fina
   coding_region_present  <- nrow(dplyr::filter(counts, biotype == "protein_coding" & call == "present"))
   proportion_intergenic_present <- (nrow(dplyr::filter(counts, type == "intergenic" & call == "present"))/nrow(dplyr::filter(counts, type == "intergenic")))*100
   intergenic_region_present <- nrow(dplyr::filter(counts, type == "intergenic" & call == "present"))
-  
+
   ## collect stats using pValue_cutoff for genic region
   proportion_genic_present_pValue <- (nrow(dplyr::filter(counts, type == "genic" & calls_pValue == "present"))/nrow(dplyr::filter(counts, type == "genic")))*100
   genic_region_present_pValue <- nrow(dplyr::filter(counts, type == "genic" & calls_pValue == "present"))
   proportion_coding_present_pValue <- (nrow(dplyr::filter(counts, biotype == "protein_coding" & calls_pValue == "present"))/nrow(dplyr::filter(counts, biotype == "protein_coding")))*100
   coding_region_present_pValue  <- nrow(dplyr::filter(counts, biotype == "protein_coding" & calls_pValue == "present"))
- 
+
   ## Export cutoff_info_file
   collectInfo <- c(library_id,TPM_cutoff,proportion_genic_present, genic_region_present,sum(counts$type == "genic"),
                    proportion_coding_present, coding_region_present, sum(counts$biotype %in% "protein_coding"),
                    proportion_intergenic_present, intergenic_region_present, sum(counts$type == "intergenic"),
-                   proportion_genic_present_pValue, genic_region_present_pValue, 
+                   proportion_genic_present_pValue, genic_region_present_pValue,
                    proportion_coding_present_pValue, coding_region_present_pValue,
                    r_cutoff, desired_pValue_cutoff)
   names(collectInfo) <- c("libraryId","cutoffTPM", "proportionGenicPresent", "numberGenicPresent", "Genic",
                           "proportionCodingPresent",  "numberCodingPresent", "ProteinCoding",
                           "proportion_intergenic_present", "intergenic_region_present", "Intergenic",
-                          "proportion_genic_present_pValue", "genic_region_present_pValue", 
+                          "proportion_genic_present_pValue", "genic_region_present_pValue",
                           "proportion_coding_present_pValue", "coding_region_present_pValue",
                           "ratioIntergenicCodingPresent", "pValue_cutoff")
   return(collectInfo)
@@ -197,7 +197,7 @@ for(species in unique(annotation$speciesId)){
         ## Setting the presence flags
         gene_counts$call <- ifelse(gene_counts$tpm >= recalculateTPM[[3]], "present", "-")
         kallisto_gene_counts$call <- ifelse(kallisto_gene_counts$tpm >= TPM_cutoff, "present", "-")
-        
+
         ## add pValue calculation and call to kallisto_gene_counts
         pValueCalculation <- theoretical_pValue(counts = kallisto_gene_counts, sum_by_species = sum_by_species, max_intergenic = max_intergenic)
         pValueCalculation$calls_pValue <- ifelse(pValueCalculation$pValue <= as.numeric(desired_pValue_cutoff), "present", "-" )
@@ -211,7 +211,7 @@ for(species in unique(annotation$speciesId)){
         justIntergenic$zScore <- "NA"; justIntergenic$pValue <- "NA"; justIntergenic$calls_pValue <-"NA"
         ## kallisto_gene_counts with all information
         kallisto_gene_counts <- rbind(allGenic, justIntergenic)
-   
+
         ## Export cutoff information file + new files with calls
         cutoff_info_file <- cutoff_info(libraryId, kallisto_gene_counts, max_intergenic, TPM_cutoff, a[[3]], r_cutoff, as.numeric(desired_pValue_cutoff))
         pathExport <- file.path(cells_folder, libraryId)
@@ -235,3 +235,4 @@ if (!file.exists(All_samples)){
 }
 write.table(collectSamples, file = file.path(output_folder, "All_samples.tsv"),col.names =F , row.names = F, append = T,quote = FALSE, sep = "\t")
 plotData(file.path(output_folder, "All_samples.tsv"))
+

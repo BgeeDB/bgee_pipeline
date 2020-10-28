@@ -32,23 +32,23 @@ for( c_arg in command_arg ){
 AllFiles <- list.files(folder_gtf, pattern="*gtf_all", full.names=T, recursive = TRUE)
 
 for (i in AllFiles) {
-  
+
   speciesID <- basename(i)
   speciesID <- data.frame(str_split(speciesID, "\\."))[1,1]
-  
+
   readFile <- fread(i)
-  
+
   ## extract information: gene_id, transcript_id, biotype_id and gene_name
   system(sprintf('grep %s %s | sed -e "s/^.*gene_id //; s/;.*$//" > %s',paste0('gene_id '), paste0(i), paste0(folder_gtf,"/gene_id_", speciesID, ".tsv")))
   system(sprintf('grep %s %s | sed -e "s/^.*transcript_id //; s/;.*$//" > %s',paste0('transcript_id '), paste0(i), paste0(folder_gtf,"/transcript_id_", speciesID, ".tsv")))
   system(sprintf('grep %s %s | sed -e "s/^.*gene_biotype //; s/;.*$//" > %s',paste0('gene_biotype '), paste0(i), paste0(folder_gtf,"/biotype_id_", speciesID, ".tsv")))
   system(sprintf('grep %s %s | sed -e "s/^.*gene_name //; s/;.*$//" > %s',paste0('gene_name '), paste0(i), paste0(folder_gtf,"/gene_name_", speciesID, ".tsv")))
-  
+
   gene_id <- fread(paste0(folder_gtf,"/gene_id_", speciesID, ".tsv"), header = FALSE)
   transcript_id <- fread(paste0(folder_gtf,"/transcript_id_", speciesID, ".tsv"), header = FALSE)
   biotype <- fread(paste0(folder_gtf,"/biotype_id_", speciesID, ".tsv"), header = FALSE)
   geneName <- fread(paste0(folder_gtf,"/gene_name_", speciesID, ".tsv"), header = FALSE)
-  
+
   ## collect gene_to_biotype
   gene_to_biotype <- seq(max(nrow(gene_id), nrow(biotype)))
   gene_to_biotype <- data.frame(gene_id[gene_to_biotype], biotype[gene_to_biotype])
@@ -68,15 +68,15 @@ for (i in AllFiles) {
   colnames(gene_to_geneName) <- c("gene", "gene_name")
   gene_to_geneName <- gene_to_geneName[!duplicated(gene_to_geneName[,c('gene')]),]
   gene_to_geneName <- gene_to_geneName[!is.na(gene_to_geneName$gene_name),]
-  
+
   write.table(gene_to_biotype, file = paste0(folder_gtf, "/", speciesID, "_without_intergenic_gene2biotype.tsv"), quote = FALSE, sep = "\t", col.names = FALSE, row.names = FALSE)
   write.table(gene_to_transcript, file = paste0(folder_gtf, "/", speciesID, "_without_intergenic_gene2transcript.tsv"), quote = FALSE, sep = "\t", col.names = FALSE, row.names = FALSE)
   write.table(gene_to_geneName, file = paste0(folder_gtf, "/", speciesID, "_without_intergenic_gene2geneName.tsv"), quote = FALSE, sep = "\t", col.names = FALSE, row.names = FALSE)
-  
+
   ## remove intermediary files
   file.remove(paste0(folder_gtf, "/gene_id_", speciesID, ".tsv"))
   file.remove(paste0(folder_gtf, "/transcript_id_", speciesID, ".tsv"))
   file.remove(paste0(folder_gtf, "/biotype_id_", speciesID, ".tsv"))
   file.remove(paste0(folder_gtf, "/gene_name_", speciesID, ".tsv"))
-  
 }
+
