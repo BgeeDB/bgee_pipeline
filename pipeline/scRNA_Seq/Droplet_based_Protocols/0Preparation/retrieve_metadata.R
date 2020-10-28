@@ -74,7 +74,7 @@ HCA_metadata <- function(libraryID, experimentName){
 
   if(metadataExperiment1 == "FALSE" & metadataExperiment2 == "TRUE"){
     metadataExperiment <- page1_HCA[page1_HCA$projects.projectTitle %like% paste0(experimentName),]
-    
+
     sample_accession <- NA
     experiment_accession <- libraryID
     run_accession <- NA
@@ -91,7 +91,7 @@ HCA_metadata <- function(libraryID, experimentName){
 
   } else if (metadataExperiment1 == "TRUE" & metadataExperiment2 == "FALSE") {
     metadataExperiment <- page2_HCA[page2_HCA$projects.projectTitle %like% paste0(experimentName),]
-    
+
     sample_accession <- NA
     experiment_accession <- libraryID
     run_accession <- NA
@@ -139,7 +139,6 @@ for (experiment in unique(targetBased$experimentId)) {
   } else {
     cat("Source is not recognized!")
   }
-  
 }
 
 ## Create the output files to write the comparison between annotation and metada!
@@ -202,3 +201,4 @@ for(i in 1:nrow(targetBased_libraries)) {
     }
   }
 }
+
