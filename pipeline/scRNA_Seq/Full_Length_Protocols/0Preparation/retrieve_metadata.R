@@ -97,3 +97,4 @@ for(i in 1:nrow(fullLength)) {
     write.table(metadataInfo, file = metadata_notMatch, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
   }
 }
+
