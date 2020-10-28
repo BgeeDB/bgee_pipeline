@@ -5,7 +5,7 @@
 
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args metadata_info="metadata_info_10X.txt" librariesDownloadedJura="librariesDownloadedJura.tsv" output="output_folder" bamtofastq="bamtofastq"' download_reformat_EBI.R download_reformat_EBI.Rout
-## metadata_info --> File with all libraries that need to be download 
+## metadata_info --> File with all libraries that need to be download
 ## librariesDownloadedJura --> File with information about the libraries that already exist in jura server and don't need to be downloaded
 ## output --> Path where should be saved the output results for each library
 ## bamtofastq --> directory where is bamtofastq software from 10X
@@ -73,7 +73,7 @@ generalInfo <- dplyr::filter(generalInfo, ftp_link != "HCA")
 
 
 for (library in  unique(generalInfo$experiment_accession)) {
-  
+
   ## create output for each library
   cat("treating the library: ", library, "\n")
   InfoFile <- paste0(output, "/", library)
@@ -82,7 +82,7 @@ for (library in  unique(generalInfo$experiment_accession)) {
   } else {
     print("File already exist.....")
   }
-  
+
   ## select URL for the correspondent library
   ftpID <- generalInfo[generalInfo$experiment_accession %like% library,][,2]
   setwd(InfoFile)

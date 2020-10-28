@@ -17,7 +17,7 @@
    5. [Result processing at individual cell](#result-processing-at-individual-cell)
    6. [Result processing at cell population](#result-processing-at-cell-population)
    7. [Post-processing: expression calls and rank computation](#post-processing-expression-calls-and-rank-computation)
-   
+
 
 **Detailed guidelines:**
 
@@ -58,12 +58,12 @@ After the annotation process, where each library corresponds to multiple number 
 The download of the data is done only for the experiments that match the requirements in the previous steps.
 These data are downloaded from three main sources:
 
-- SRA: The data is downloaded using wget function in R. For each library three fastq files are downloaded, R1, R2 and I, respectively. 
+- SRA: The data is downloaded using wget function in R. For each library three fastq files are downloaded, R1, R2 and I, respectively.
 
-- EBI ArrayExpress: The data is downloaded using wget function in R. All downloaded files for each library are in BAM format. Then using the tool `bamTofastq` from 10X the files are converted to original FASTQ format files in order to make possible all analysis from the scratch. 
+- EBI ArrayExpress: The data is downloaded using wget function in R. All downloaded files for each library are in BAM format. Then using the tool `bamTofastq` from 10X the files are converted to original FASTQ format files in order to make possible all analysis from the scratch.
 
-- HCA: The data is downloaded using the HCA Command Line Interface (HCA-CLI) (https://data.humancellatlas.org/guides/consumer-vignettes/intro-to-downloading-and-analyzing#step-two-downloading-files-from-a-file-manifest-with-the-hca-cli). In order to do the download of the target libraries a manisfest file need to be downloaded first from the Human Cell Atlas data portal. This file is retrieved by experiment. 
-The downloaded of each library is done by retrieving directly the FASTQ file. 
+- HCA: The data is downloaded using the HCA Command Line Interface (HCA-CLI) (https://data.humancellatlas.org/guides/consumer-vignettes/intro-to-downloading-and-analyzing#step-two-downloading-files-from-a-file-manifest-with-the-hca-cli). In order to do the download of the target libraries a manisfest file need to be downloaded first from the Human Cell Atlas data portal. This file is retrieved by experiment.
+The downloaded of each library is done by retrieving directly the FASTQ file.
 
 GTF annotation files and genome sequence fasta files are retrieved from Ensembl and Ensembl metazoa for all species included in Bgee (see `RNA-Seq pipeline`).
 This information is used to identify sequences of genic regions, exonic regions, and intergenic regions, as described in the `RNA-Seq pipeline`. It is also used to generate indexed transcriptome files for all species in Bgee, using the `TopHat` and `Kallisto` software.
@@ -86,7 +86,7 @@ The following parameters are used:
 * K-mer length for indexing use the default K-mer size from Kallisto (31 K-mer).
 * Pseudoalign the reads with `kallisto bus`.
 * The technology argument referent to the single-cell technology is provided depending on the annotation information to the target library, this is passed to the argument as: 10xV2 or 10xV3.
-  
+
 #### Processing the files
 
 The output files from Kallisto bus (matrix.ec, output.bus, run_info.json and transcripts.txt), are processed using the `bustools` software to go from the BUS file to a gene-UMI count matrix. The procedue is done following the bustools recommendation, this means:
@@ -105,7 +105,7 @@ For each library the gene-UMI count matrix is loaded directly into R for analysi
 From this step 3 important files are exported in the end:
 
 1) InformationAllLibraries.txt &rarr; contain information for each library regarding number of cells detected as well as the number of genes for each cell-type.
-2) variabilityCluster.txt &rarr; contain information for each library about the number of clusters detected (UMAP) as well as the different cell-types detected per cluster. 
+2) variabilityCluster.txt &rarr; contain information for each library about the number of clusters detected (UMAP) as well as the different cell-types detected per cluster.
 3) markerGenes_Validated.txt &rarr; validation of marker genes proposed in the annotation file after data analysis.
 
 #### Result processing at individual cell
@@ -116,7 +116,7 @@ For calling genes present, we compute genic regions and intergenic regions for e
 
 #### Result processing at cell population
 
-* Sum UMI counts 
+* Sum UMI counts
 
 All gene-UMI count matrix that belongs to the same experiment and species, as well as, cell-typeId, stageId, uberonId, strain and sex are retrieved and the UMI counts are summed across genomic features (gene level) and then the summed UMI count matrix is used to compute the CPM values of the cell population.
 
@@ -126,14 +126,14 @@ All gene-UMI count matrix that belongs to the same experiment and species, as we
 ##### Expression calls
 
 * Per individual cell
-    
+
 To define the call of expression of a gene in a cell as "present", we check whether its level of expression is over the background transcriptional noise in this correspondent cell. To estimate the background transcriptional noise in each individual cell, we use the level of expression of a set of intergenic regions defined in the RNA-Seq pipeline.
 
 * Per cell population
 
 Computation of the ratio calls for each gene that belongs to the same cell population (as well as, all assumptions described above).
 
-To define the call of expression of a gene in a cell population as "present", we compute the density ratio of protein coding and intergenic region and then we check whether its level of expression is over the background transcriptional noise in this correspondent cell population type. 
+To define the call of expression of a gene in a cell population as "present", we compute the density ratio of protein coding and intergenic region and then we check whether its level of expression is over the background transcriptional noise in this correspondent cell population type.
 
 The calls at the cell population level are based in confidence, this means present with low or high confidence.
 
@@ -148,7 +148,7 @@ To calculate the ranks of expression of genes per cell population we use the CPM
 
 The preparation step are divide in 2 main scripts that are available in the folder [0Preparation/](0Preparation/)
 
-The [retrieve_metadata.R](#retrieve-metadata) is the first script to be run in the pipeline since this script will collect metadata information for each library annotated by Bgee. The information collected in the `metadata_info_10X.txt` file exported by the script allow us to know from which resource the files should be downloaded and which procedue should be applied (as for example, convert files format). 
+The [retrieve_metadata.R](#retrieve-metadata) is the first script to be run in the pipeline since this script will collect metadata information for each library annotated by Bgee. The information collected in the `metadata_info_10X.txt` file exported by the script allow us to know from which resource the files should be downloaded and which procedue should be applied (as for example, convert files format).
 
 ➡️ This script should be run in axiom server since we need internet connection to collect the information.
 
@@ -170,15 +170,15 @@ The scripts referents to download part are divided in 3 main scripts, where whic
 
 * [download_HCA.sbatch](#download-HCA-sbatch)
    * This batch script allow to retrieve the fastq.gz files for each library specified in the manifest file (source_files/scRNA_Seq)
-   
-* [download_reformat_EBI.R](#download-reformat-EBI-R) 
+
+* [download_reformat_EBI.R](#download-reformat-EBI-R)
    * This script allow to download the bam files for each library from EBI arrayExpress and then to convert this files to fastq.gz files using `bamtofastq` software from 10X.
-   
+
    NOTE: exceptionally some libraries from EBI can be downloaded already in the fastq.gz format. If this happen is because, the bamtofastq does not recognized initially the bam format as being from 10X.
-   
-* [download_SRA.R](#download-sra-R) 
+
+* [download_SRA.R](#download-sra-R)
    * This script allow to download data directly from SRA repository for each library. The files downloaded are fastq.gz format.
-   
+
 
 In the pipeline the download part is order by following rules:
 
@@ -188,9 +188,9 @@ In the pipeline the download part is order by following rules:
 
 `make download_SRA` (Note: this rule is executed using a sbatch script, specifically: `download_SRA.sbatch`)
 
-NOTE: This can be done in parallel also. 
+NOTE: This can be done in parallel also.
 
-After the downloading part the rest of the pipeline is executed in jura server (sensitive server), by initially checking if all tools necessary are available `make check_tools`. 
+After the downloading part the rest of the pipeline is executed in jura server (sensitive server), by initially checking if all tools necessary are available `make check_tools`.
 
 After that the generation of informative files for each species is done by executing the following rule:
 
@@ -201,7 +201,7 @@ After that the generation of informative files for each species is done by execu
 
 #### Mapping
 
-To run the mapping for each library the R script [Kallisto_bus.R](Kallisto-bus-r) from the folder [1Run/](1Run/) should be launched by using the following command `make kallisto_bus`. 
+To run the mapping for each library the R script [Kallisto_bus.R](Kallisto-bus-r) from the folder [1Run/](1Run/) should be launched by using the following command `make kallisto_bus`.
 
 For each library the kallisto BUS output file (output.bus) allow to store for each read the cell barcode, UMI information and the equivalence class resulting from the pseudoalignment. Also for each library is saved the equivalente class (matrix.ec), the transcript names for posterior analysis (transcript.txt) and a json file where contain the information about the pseudoalignment (run_info.json).
 
@@ -210,11 +210,11 @@ For each library the kallisto BUS output file (output.bus) allow to store for ea
 
 After the mapping in order to process the BUS output file we use the script [process_busFile.R](process-busFile-r) from the folder [1Run/](1Run/).
 
-In this script we use `bustools` software to process each output.bus file from each library. The process of bustools starts, as specified before, by correcting the barcodes, sorting and then getting a generated UMI count matrix. 
+In this script we use `bustools` software to process each output.bus file from each library. The process of bustools starts, as specified before, by correcting the barcodes, sorting and then getting a generated UMI count matrix.
 
 For each library both the count of the UMIs in the busfile is saved by making a transcript compatibility count (TCC) matrix and by making a gene count matrix, that will be used later for downstream analysis.
 
-For each library the gene count matrix folder contain a matrix `.mtx` the genes names in the file `genes.txt` and the barcodes information in the file `barcode.txt`. 
+For each library the gene count matrix folder contain a matrix `.mtx` the genes names in the file `genes.txt` and the barcodes information in the file `barcode.txt`.
 
 When this matrix is imported into R for data analysis we get the following information for each library:
 
@@ -239,9 +239,9 @@ This standard single-cell RNA-seq quality control is used to determine a thresho
   </tr>
  </table>
 
-2) Identification of cell types based on barcodes provided in the annotation files. 
+2) Identification of cell types based on barcodes provided in the annotation files.
 
-3) UMAP plot with clustering numbers by SEURAT and then UMAP plot using the labels from the annotation (barcodes), as exemplified below for the library SRX3815587. The clustering is also used as quality control. 
+3) UMAP plot with clustering numbers by SEURAT and then UMAP plot using the labels from the annotation (barcodes), as exemplified below for the library SRX3815587. The clustering is also used as quality control.
 
 <table>
   <tr>
@@ -261,7 +261,7 @@ Note: During this process a file `variabilityClusters.txt` is exported with vari
 
 ### Export global information per cell population
 
-In order to provide a global information per cell-type population to be used later in the rank computation, a sum of the raw UMI is done per: experiment, Uberon Id, celltype Id, developmental stage, sex and strain for a particular species. From the sum we compute the normalized counts - CPM with intergenic regions `SumRaw+Normalization_Genic+Intergenic_CellType_Experiment_UberonID_celltypeID_DevStage_Sex_Strain_Species.tsv` and without intergenic regions `SumRaw+Normalization_Genic_CellType_Experiment_UberonID_celltypeID_DevStage_Sex_Strain_Species.tsv` for each cell-type population (file used in the ranks) . 
+In order to provide a global information per cell-type population to be used later in the rank computation, a sum of the raw UMI is done per: experiment, Uberon Id, celltype Id, developmental stage, sex and strain for a particular species. From the sum we compute the normalized counts - CPM with intergenic regions `SumRaw+Normalization_Genic+Intergenic_CellType_Experiment_UberonID_celltypeID_DevStage_Sex_Strain_Species.tsv` and without intergenic regions `SumRaw+Normalization_Genic_CellType_Experiment_UberonID_celltypeID_DevStage_Sex_Strain_Species.tsv` for each cell-type population (file used in the ranks).
 
 Example of the structure of the output table:
 
@@ -291,6 +291,6 @@ In order to call present genes using the intergenic regions the script [Call_Pre
 * Per cell-type population
 
 In order to provide a call of expressed genes at cell population level, we introduze an approach based on the aggregation of the calls, this means a fraction of the cells where the gene were called present.
-The calls are done based in confidence, this means all genes detected between density cutoff and ratio cutoff are classified as present with low confidence, on the other side all genes detected above ratio cutoff are classified as present with high confidence. 
+The calls are done based in confidence, this means all genes detected between density cutoff and ratio cutoff are classified as present with low confidence, on the other side all genes detected above ratio cutoff are classified as present with high confidence.
 
 ![Boxplot](img/cellPop.png)

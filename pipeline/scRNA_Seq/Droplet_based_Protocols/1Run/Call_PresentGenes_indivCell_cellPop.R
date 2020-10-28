@@ -8,12 +8,12 @@
 
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNASeq_Info.txt" InformationAllLibraries="InformationAllLibraries.txt" folder_data="folder_data" folder_refIntergenic="folder_refIntergenic" desired_r_cutoff="desired_r_cutoff" output="output"' Call_PresentGenes_indivCell_cellPop.R Call_PresentGenes_indivCell_cellPop.Rout
-## scRNASeq_Info --> File that results from annotation and metadata (libraries downloaded and with extra information as readlength or SRR) 
+## scRNASeq_Info --> File that results from annotation and metadata (libraries downloaded and with extra information as readlength or SRR)
 ## InformationAllLibraries --> File with information about each cell after barcode and gene markers annotation (per library contain total number of cells and cell Name)
 ## folder_data --> Folder where are all the libraries after cell identification
 ## folder_refIntergenic --> Folder where is located the reference intergenic files for each species
 ## desired_r_cutoff --> proportion of intergenic allowed (both individual cell and cell population to define the ratio cutoff)
-## output --> Folder where we should save the results 
+## output --> Folder where we should save the results
 
 ## libraries used
 library(ggplot2)
@@ -72,50 +72,50 @@ if (!file.exists(presentCellPopulation)){
 
 ## export information per individual cell
 exportInfo_Cell <- function(cellCalls){
-  
+
   genic <- nrow(dplyr::filter(cellCalls, type == "genic" & cellCalls[,ncol(cellCalls)] == "present"))
   proportionGenic <- genic / nrow(dplyr::filter(cellCalls, type == "genic"))*100
-  
+
   intergenic <- nrow(dplyr::filter(cellCalls, type == "intergenic" & cellCalls[,ncol(cellCalls)] == "present"))
   proportionIntergenic <- intergenic / nrow(dplyr::filter(cellCalls, type == "intergenic"))*100
-  
+
   proteinCoding <- nrow(dplyr::filter(cellCalls, biotype == "protein_coding" & cellCalls[,ncol(cellCalls)] == "present"))
   proportionproteinCoding <- proteinCoding / nrow(dplyr::filter(cellCalls, biotype == "protein_coding"))*100
-  
+
   collectInfoData <- data.frame(genic, proportionGenic, intergenic, proportionIntergenic, proteinCoding, proportionproteinCoding)
   return(unlist(collectInfoData, use.names=FALSE))
-  
+
 }
 
 ## export information per cell population
 exportInfo_CellPop <- function(collectInfoAllCells){
-  
+
   ## info genes present after density cutoff (include density cutoff + ratio cutoff)
-  genic_all <- nrow(dplyr::filter(collectInfoAllCells, type == "genic" & call_cutoff_density == "present")) 
+  genic_all <- nrow(dplyr::filter(collectInfoAllCells, type == "genic" & call_cutoff_density == "present"))
   proportion_genic_all <- genic_all / nrow(dplyr::filter(collectInfoAllCells, type == "genic"))*100
-  intergenic_all <- nrow(dplyr::filter(collectInfoAllCells, type == "intergenic" & call_cutoff_density == "present")) 
+  intergenic_all <- nrow(dplyr::filter(collectInfoAllCells, type == "intergenic" & call_cutoff_density == "present"))
   proportion_intergenic_all <- intergenic_all / nrow(dplyr::filter(collectInfoAllCells, type == "intergenic"))*100
-  proteinCoding_all <- nrow(dplyr::filter(collectInfoAllCells, biotype == "protein_coding" & call_cutoff_density == "present")) 
+  proteinCoding_all <- nrow(dplyr::filter(collectInfoAllCells, biotype == "protein_coding" & call_cutoff_density == "present"))
   proportion_PC_all <- proteinCoding_all / nrow(dplyr::filter(collectInfoAllCells, biotype == "protein_coding"))*100
-  
+
   ## info genes present between density cutoff and ratio cutoff
-  genic_density <- nrow(dplyr::filter(collectInfoAllCells, type == "genic" & call_cutoff_density == "present" & call_cutoff_ratio == "-")) 
+  genic_density <- nrow(dplyr::filter(collectInfoAllCells, type == "genic" & call_cutoff_density == "present" & call_cutoff_ratio == "-"))
   proportion_genic_density <- genic_density / nrow(dplyr::filter(collectInfoAllCells, type == "genic"))*100
-  intergenic_density <- nrow(dplyr::filter(collectInfoAllCells, type == "intergenic" & call_cutoff_density == "present" & call_cutoff_ratio == "-")) 
+  intergenic_density <- nrow(dplyr::filter(collectInfoAllCells, type == "intergenic" & call_cutoff_density == "present" & call_cutoff_ratio == "-"))
   proportion_intergenic_density <- intergenic_density / nrow(dplyr::filter(collectInfoAllCells, type == "intergenic"))*100
-  proteinCoding_density <- nrow(dplyr::filter(collectInfoAllCells, biotype == "protein_coding" & call_cutoff_density == "present" & call_cutoff_ratio == "-")) 
+  proteinCoding_density <- nrow(dplyr::filter(collectInfoAllCells, biotype == "protein_coding" & call_cutoff_density == "present" & call_cutoff_ratio == "-"))
   proportion_PC_density <- proteinCoding_density/ nrow(dplyr::filter(collectInfoAllCells, biotype == "protein_coding"))*100
-  
+
   ## info genes present just in ratio cutoff
-  genic_ratio <- nrow(dplyr::filter(collectInfoAllCells, type == "genic" & call_cutoff_ratio == "present")) 
+  genic_ratio <- nrow(dplyr::filter(collectInfoAllCells, type == "genic" & call_cutoff_ratio == "present"))
   proportion_genic_ratio <- genic_ratio / nrow(dplyr::filter(collectInfoAllCells, type == "genic"))*100
-  intergenic_ratio <- nrow(dplyr::filter(collectInfoAllCells, type == "intergenic" & call_cutoff_ratio == "present")) 
+  intergenic_ratio <- nrow(dplyr::filter(collectInfoAllCells, type == "intergenic" & call_cutoff_ratio == "present"))
   proportion_intergenic_ratio <- intergenic_ratio / nrow(dplyr::filter(collectInfoAllCells, type == "intergenic"))*100
-  proteinCoding_ratio <- nrow(dplyr::filter(collectInfoAllCells, biotype == "protein_coding" & call_cutoff_ratio == "present")) 
+  proteinCoding_ratio <- nrow(dplyr::filter(collectInfoAllCells, biotype == "protein_coding" & call_cutoff_ratio == "present"))
   proportion_PC_ratio <- proteinCoding_ratio / nrow(dplyr::filter(collectInfoAllCells, biotype == "protein_coding"))*100
 
-  collectInfoData <- data.frame(genic_all, proportion_genic_all, intergenic_all, proportion_intergenic_all, proteinCoding_all, proportion_PC_all, 
-                                genic_density, proportion_genic_density, intergenic_density, proportion_intergenic_density, proteinCoding_density, proportion_PC_density, 
+  collectInfoData <- data.frame(genic_all, proportion_genic_all, intergenic_all, proportion_intergenic_all, proteinCoding_all, proportion_PC_all,
+                                genic_density, proportion_genic_density, intergenic_density, proportion_intergenic_density, proteinCoding_density, proportion_PC_density,
                                 genic_ratio, proportion_genic_ratio, intergenic_ratio, proportion_intergenic_ratio, proteinCoding_ratio, proportion_PC_ratio)
   return(unlist(collectInfoData, use.names=FALSE))
 }
@@ -125,24 +125,24 @@ exportInfo_CellPop <- function(collectInfoAllCells){
 plotCellPop <- function(collectInfoAllCells, desired_r_cutoff, sizeData, refIntergenic){
 
   selected_coding <- collectInfoAllCells$biotype %in% "protein_coding"
-  selected_intergenic <- (finalTable$type %in% "intergenic" & seqNamesFinal$refIntergenic == "TRUE")  
-  
-  ## intergenic 
+  selected_intergenic <- (finalTable$type %in% "intergenic" & seqNamesFinal$refIntergenic == "TRUE")
+
+  ## intergenic
   summed_intergenic <- sapply(unique(sort(collectInfoAllCells$ratio[selected_coding])), function(x){
     return( sum(collectInfoAllCells$ratio[selected_intergenic] >= x) )
   })
-  
+
   ## protein coding
   summed_coding <- c(0, cumsum(rle(sort(collectInfoAllCells$ratio[selected_coding]))$lengths))
   summed_coding <- summed_coding[-(length(summed_coding))]
   summed_coding <- sum(selected_coding) - summed_coding
-  
+
   ## Now we can calculate r
   r <- ( summed_intergenic / sum(selected_intergenic) ) /
     ( summed_coding / sum(selected_coding) )
-  
+
   percent <- (1-desired_r_cutoff)*100
-  
+
   ## Select the minimal value of ratio_cutoff for which the ratio of genes and intergenic regions is equal to 0.05 or lower
   if (sum(r < desired_r_cutoff) == 0){
     ratio_cutoff <- sort(unique(collectInfoAllCells$ratio[selected_coding]))[which(r == min(r))[1]]
@@ -158,54 +158,54 @@ plotCellPop <- function(collectInfoAllCells, desired_r_cutoff, sizeData, refInte
   ProteinCoding_density <- as.data.frame(collectInfoAllCells$ratio[collectInfoAllCells$biotype == "protein_coding"])
   colnames(ProteinCoding_density) <- 'ratio'
   ProteinCoding_density <- data.frame(region=rep(c('protein_coding'),each=length(ProteinCoding_density)), ProteinCoding_density)
-  
+
   ## Reference intergenic regions
   intergenic_density <- as.data.frame(collectInfoAllCells$ratio[collectInfoAllCells$type == "intergenic" & seqNamesFinal$refIntergenic == "TRUE"])
   colnames(intergenic_density) <- 'ratio'
   intergenic_density <- data.frame(region=rep(c('intergenic'),each=length(intergenic_density)), intergenic_density)
-  
+
   finalTableInfo <- rbind(ProteinCoding_density, intergenic_density)
   data_ggplot <- reshape2::melt(finalTableInfo)
 
-  p <- ggplot(data_ggplot) + geom_density(aes(x = log(value+0.000001), colour = region)) 
-  p <- ggplot_build(p) 
-  
+  p <- ggplot(data_ggplot) + geom_density(aes(x = log(value+0.000001), colour = region))
+  p <- ggplot_build(p)
+
   extractValues <- p$data[[1]]
   intergenicGroup <- dplyr::filter(extractValues, group == "1")
   codingGroup <- dplyr::filter(extractValues, group == "2")
-  
+
   generalTab <- data.frame(intergenicGroup$x,intergenicGroup$density, codingGroup$density)
   generalTab$Int_less_Pc <- generalTab$intergenicGroup.density < generalTab$codingGroup.density
-  
+
   first_cutoff <- generalTab$intergenicGroup.x[generalTab$Int_less_Pc == "TRUE" & generalTab$intergenicGroup.x >= log(1/sizeData)][1]
-  
+
   return(list(p, exp(first_cutoff), ratio_cutoff))
 }
 
 
 ### function to call present genes at individual cell and to export final file at cell population level
 callPresentGenes <- function(finalTable, desired_r_cutoff, experiment, sizeData, cell_Name, cellId, species, uberonId, stageId, sex, strain, refIntergenic){
-  
+
   collectInfoAllCells <- data.frame()
   for (i in 4:ncol(finalTable)) {
-    
+
     barcode <- names(finalTable)[i]
     infoType <- finalTable[,1:3]
-    
+
     selected_coding <- finalTable$biotype %in% "protein_coding"
     selected_intergenic <- (finalTable$type %in% "intergenic" & seqNamesFinal$refIntergenic == "TRUE")
-    
+
     summed_intergenic <- sapply(unique(sort(finalTable[,i][selected_coding])), function(x){
       return(sum(finalTable[,i][selected_intergenic] >= x) )})
-    
+
     summed_coding <- c(0, cumsum(rle(sort(finalTable[,i][selected_coding]))$lengths))
     summed_coding <- summed_coding[-(length(summed_coding))]
     summed_coding <- sum(selected_coding) - summed_coding
-    
-    
+
+
     r <- ( summed_intergenic / sum(selected_intergenic) ) /  ( summed_coding / sum(selected_coding) )
     percent <- (1-desired_r_cutoff)*100
-    
+
     if (sum(r < desired_r_cutoff) == 0){
       CPM_cutoff <- sort(unique(finalTable[,i][selected_coding]))[which(r == min(r))[1]]
       r_cutoff <- min(r)
@@ -216,17 +216,17 @@ callPresentGenes <- function(finalTable, desired_r_cutoff, experiment, sizeData,
       r_cutoff <- desired_r_cutoff
       cat(paste0(" CPM cutoff for which " , percent,"%", " of the expressed genes are be coding found at CPM=", CPM_cutoff,"\n"))
     }
-    
+
     ## collect calls per cell
     cellCalls <- as.data.frame(ifelse(finalTable[,i]>=CPM_cutoff, "present", "-"))
     cellCalls <- cbind(infoType, cellCalls)
     colnames(cellCalls)[4] <- barcode
-   
+
     ### collect information about each individual cell (barcode)
     infoProportion <- exportInfo_Cell(cellCalls = cellCalls)
     finalInfoProportion <- as.data.frame(t(c(barcode, experiment, cell_Name, cellId, uberonId, stageId, sex, strain, CPM_cutoff, infoProportion, desired_r_cutoff, species)))
     write.table(finalInfoProportion, file = file.path(presentCell), append = TRUE, sep="\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
-    
+
     if(ncol(collectInfoAllCells) == 0){
       collectInfoAllCells = cellCalls
     } else{
@@ -236,14 +236,14 @@ callPresentGenes <- function(finalTable, desired_r_cutoff, experiment, sizeData,
       collectInfoAllCells <- cbind(collectInfoAllCells, cellCalls)
     }
   }
-  
+
   ## collect information per cell population
   collectInfoAllCells$cellPresent <- rowSums(collectInfoAllCells == "present")
   collectInfoAllCells$ratio <- collectInfoAllCells$cellPresent / sizeData
-  
+
   ### export plot per cell population with cut-offs
   cellPop <- plotCellPop(collectInfoAllCells = collectInfoAllCells, desired_r_cutoff = desired_r_cutoff, sizeData = sizeData, refIntergenic = seqNamesFinal)
-  
+
   ## NOTE: in case of the density cut-off and the ratio cut-off is between 1 and 1.44 cells we use the cut-off based in 1 cell
   if (cellPop[[2]]*sizeData <= 1.44 & cellPop[[3]]*sizeData <= 1.44){
     ## cutoffs defined based in 1 cell
@@ -256,31 +256,31 @@ callPresentGenes <- function(finalTable, desired_r_cutoff, experiment, sizeData,
     collectInfoAllCells$call_cutoff_ratio <- ifelse(collectInfoAllCells$ratio >= cellPop[[3]], "present", "-")
     collectInfoAllCells$confidence <- ifelse(collectInfoAllCells$ratio < cellPop[[2]], "-", ifelse(collectInfoAllCells$ratio >= cellPop[[2]] & collectInfoAllCells$ratio < cellPop[[3]], "low", "high"))
   }
-  
+
   ## write information per cell population
   cellPopulationInfo <-  exportInfo_CellPop(collectInfoAllCells = collectInfoAllCells)
-    
+
   ## plot distribution of protein coding + ref intergenic for cell population with cutoffs (density + ratio)
   p1 <- cellPop[[1]]$plot +
     scale_color_manual(values=c("#00BFC4", "#F8766D")) +
     labs(title = "Density distribution of protein coding vs reference intergenic present", x="Log(ratio)",y="Density") +
-    geom_vline(aes(xintercept=log(cellPop[[2]]), linetype="dotted"), color="black", size=0.5) + 
+    geom_vline(aes(xintercept=log(cellPop[[2]]), linetype="dotted"), color="black", size=0.5) +
     geom_vline(aes(xintercept=log(cellPop[[3]]), linetype="solid"), color = "black", size=0.5) +
     scale_linetype_manual(name = "Cut-Off", values = c("dotted", "solid"), labels = c(paste0("Cut-off density (", round(cellPop[[2]]*sizeData, digits = 0), " cell/s)"), paste0("Cut-off ratio (", round(cellPop[[3]]*sizeData, digits = 0) , " cell/s)")))
   ## plot percentage of regions for this celltype
   infocellpop <- as.data.frame(cellPopulationInfo)
-  rownames(infocellpop) <- c("genic_all", "proportion_genic_all", "intergenic_all", "proportion_intergenic_all", "proteinCoding_all", "proportion_PC_all", 
-                                    "genic_density", "proportion_genic_density", "intergenic_density", "proportion_intergenic_density", "proteinCoding_density", "proportion_PC_density", 
+  rownames(infocellpop) <- c("genic_all", "proportion_genic_all", "intergenic_all", "proportion_intergenic_all", "proteinCoding_all", "proportion_PC_all",
+                                    "genic_density", "proportion_genic_density", "intergenic_density", "proportion_intergenic_density", "proteinCoding_density", "proportion_PC_density",
                                     "genic_ratio", "proportion_genic_ratio", "intergenic_ratio", "proportion_intergenic_ratio", "proteinCoding_ratio", "proportion_PC_ratio")
  infocellpop$region <- rownames(infocellpop)
  subsetInfo <- subset(infocellpop,region %in% c("proportion_PC_all" , "proportion_PC_density", "proportion_PC_ratio"))
-  
+
  p2 <- ggplot(data = subsetInfo, aes(x = region, y = cellPopulationInfo)) +
    geom_point() +
    geom_hline(yintercept=c(70,80), linetype="dashed", color = "red") +
    labs(title = "Proportion of coding genes present", x=" ",y="%") +
    coord_cartesian(ylim = c(0, 100))
- 
+
  ## create folder to save results of cell population level
  fileName <- paste0(cell_Name , "_", experiment,"_", uberonId,"_", cellId,"_", stageId,"_", sex,"_", strain,"_", species)
  fileName <- gsub(":","-",fileName)
@@ -293,11 +293,11 @@ callPresentGenes <- function(finalTable, desired_r_cutoff, experiment, sizeData,
   pdf(file.path(outFolder, paste0("Cell_Population_",cell_Name,"_", experiment,"_", uberonId,"_", stageId,"_", sex,"_", strain,"_", species,".pdf")), width = 14, height = 7)
   grid.arrange(p1,p2,ncol = 2, nrow = 1)
   dev.off()
-  
+
   ## export info about the cell at population level
   finalInfoCellPop <- as.data.frame(t(c(experiment, cell_Name, cellId, uberonId, stageId, sex, strain, cellPopulationInfo ,cellPop[[2]], cellPop[[3]], species)))
   write.table(finalInfoCellPop, file = file.path(presentCellPopulation), append = TRUE, sep="\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
-  
+
   return(collectInfoAllCells)
 }
 
@@ -319,7 +319,7 @@ for (species in unique(scRNASeqAnnotation$speciesId)) {
          for (strain in unique(scRNASeqAnnotation$strain[scRNASeqAnnotation$speciesId == species & scRNASeqAnnotation$experimentId == experiment & scRNASeqAnnotation$uberonId == uberonId & scRNASeqAnnotation$cellTypeId == cellId & scRNASeqAnnotation$stageId == stageId & scRNASeqAnnotation$sex == sex])){
           cat("Strain info:", strain, "\n")
           strain <- paste0(strain)
-          
+
            if (sex == "NA" & strain == "NA"){
              librariesInfo <- scRNASeqAnnotation$libraryId[scRNASeqAnnotation$speciesId == species & scRNASeqAnnotation$experimentId == experiment & scRNASeqAnnotation$uberonId == uberonId & scRNASeqAnnotation$cellTypeId == cellId & scRNASeqAnnotation$stageId == stageId]
             } else if (sex != "NA" & strain == "NA") {
@@ -344,11 +344,11 @@ for (species in unique(scRNASeqAnnotation$speciesId)) {
           seqNamesFinal <- as.data.frame(seq_name)
           colnames(seqNamesFinal) <- "gene_id"
           seqNamesFinal$refIntergenic <- "TRUE"
-          
+
              for (cell in cell_Name) {
                file <- as.data.frame(paste0(folder_data,  librariesInfo, "/Normalized_Counts_", cell, ".tsv"))
                colnames(file) <- "path"
-               
+
                fileTRUE <- c()
                ## select just files that exist in the correspondent library
                for (i in file$path) {
@@ -360,13 +360,13 @@ for (species in unique(scRNASeqAnnotation$speciesId)) {
                        "The pricipal cause is mainly the barcode or gene markers not identify any cell in this library for this cell type.", "\n")
                  }
                }
-               
+
                cat("Number of libraries where the cell ", cell, " is detected :", length(fileTRUE), "\n")
                ## read all files for the correspondent cell type
                if (length(fileTRUE) == 0){
-                 
+
                  cat("Libraries not contain this cell type with this correspondent condictions!", "\n")
-                 
+
                } else if (length(fileTRUE) == 1){
                  All_libs <- read.table(fileTRUE, header = TRUE, sep = "\t")
                  ## finalTableis just in this case one library
@@ -379,7 +379,7 @@ for (species in unique(scRNASeqAnnotation$speciesId)) {
                  ## remove rows with zeros in all cells
                  finalTable <- finalTable[which(rowSums(finalTable[,4:ncol(finalTable)]) > 0), ]
                  sizeData <- ncol(finalTable)-3
-                 
+
                  ## seqNamesFinal with same size that final Table (here everything different refIntergenic is FALSE)
                  collectIDs <- as.data.frame(finalTable$gene_id)
                  colnames(collectIDs) <- "gene_id"
@@ -387,10 +387,10 @@ for (species in unique(scRNASeqAnnotation$speciesId)) {
                  seqNamesFinal$refIntergenic <- ifelse(is.na(seqNamesFinal$refIntergenic) == TRUE, "FALSE", seqNamesFinal$refIntergenic)
                  ## remove / in strain name
                  strain <- gsub("/","-", strain)
-                 
+
                  ## collect information per cell/ cell population and plots
                  calls_Inv_cellPop <- callPresentGenes(finalTable = finalTable, desired_r_cutoff = as.numeric(desired_r_cutoff), experiment = experiment, sizeData =sizeData, cell_Name = cell, cellId = cellId, species = species, uberonId = uberonId,  stageId = stageId, sex = sex, strain = strain, refIntergenic = seqNamesFinal)
-                 
+
                  ## adj output name
                  fileName <- paste0(cell , "_", experiment,"_", uberonId,"_", cellId,"_", stageId,"_", sex,"_", strain,"_", species)
                  fileName <- gsub(":","-",fileName)
@@ -398,7 +398,7 @@ for (species in unique(scRNASeqAnnotation$speciesId)) {
                  outFolder <- paste0(output, "/", fileName)
                  ## write information of the calls
                  write.table(calls_Inv_cellPop, file = paste0(outFolder, "/calls_InvidCell_cellPopulation_", fileName, ".tsv"), sep="\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
-                 
+
                } else {
                  All_libs <- lapply(fileTRUE, read.delim, stringsAsFactors=FALSE)
                  ## merge by geneID from all samples that have the same cell-type
@@ -407,7 +407,7 @@ for (species in unique(scRNASeqAnnotation$speciesId)) {
                  ## remove rows with zeros in all cells
                  finalTable <- finalTable[which(rowSums(finalTable[,4:ncol(finalTable)]) > 0), ]
                  sizeData <- ncol(finalTable)-3
-                 
+
                  ## seqNamesFinal with same size that final Table (here everything different refIntergenic is FALSE)
                  collectIDs <- as.data.frame(finalTable$gene_id)
                  colnames(collectIDs) <- "gene_id"
@@ -415,10 +415,10 @@ for (species in unique(scRNASeqAnnotation$speciesId)) {
                  seqNamesFinal$refIntergenic <- ifelse(is.na(seqNamesFinal$refIntergenic) == TRUE, "FALSE", seqNamesFinal$refIntergenic)
                  ## remove / in strain name
                  strain <- gsub("/","-", strain)
-                 
+
                  ## collect information per cell/ cell population and plots
                  calls_Inv_cellPop <- callPresentGenes(finalTable = finalTable, desired_r_cutoff = as.numeric(desired_r_cutoff), experiment = experiment, sizeData =sizeData, cell_Name = cell, cellId = cellId, species = species, uberonId = uberonId,  stageId = stageId, sex = sex, strain = strain, refIntergenic = seqNamesFinal)
-              
+
                  ## adj output name
                  fileName <- paste0(cell , "_", experiment,"_", uberonId,"_", cellId,"_", stageId,"_", sex,"_", strain,"_", species)
                  fileName <- gsub(":","-",fileName)

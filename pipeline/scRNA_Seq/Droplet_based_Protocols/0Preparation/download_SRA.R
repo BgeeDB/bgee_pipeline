@@ -5,7 +5,7 @@
 
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args metadata_info="metadata_info_10X.txt" librariesDownloadedJura="librariesDownloadedJura.tsv" output="output_folder"' download_SRA.R download_SRA.Rout
-## metadata_info --> File with all libraries that need to be download 
+## metadata_info --> File with all libraries that need to be download
 ## librariesDownloadedJura --> File with information about the libraries that already exist in jura server and don't need to be downloaded
 ## output --> Path where should be saved the output results for each library
 
@@ -54,9 +54,9 @@ finalLibsToDown <- dplyr::filter(readFile, experiment_accession %in% checkId$exp
 
 ##############################################################################################################################################
 ## remove NA and fastq.gz information that belongs to HCA (download with other script) or from EBI (download .bam files)
-finalLibsToDown <- dplyr::filter(readFile, fastq_ftp != "NA" & fastq_ftp != "fastq.gz") 
+finalLibsToDown <- dplyr::filter(readFile, fastq_ftp != "NA" & fastq_ftp != "fastq.gz")
 for (library in  unique(finalLibsToDown$experiment_accession)) {
-  
+
   ## create output for each library
   cat("treating the library: ", library, "\n")
   InfoFile <- paste0(output, "/", library)
@@ -65,10 +65,10 @@ for (library in  unique(finalLibsToDown$experiment_accession)) {
   } else {
     print("File already exist.....")
   }
-  
+
   ## select the SRR referent to the library to downlaod
   SRR_file <- finalLibsToDown$run_accession[finalLibsToDown$experiment_accession == library]
   setwd(InfoFile)
-  
+
   system(sprintf('prefetch --type fastq %s', paste0(SRR_file)))
 }

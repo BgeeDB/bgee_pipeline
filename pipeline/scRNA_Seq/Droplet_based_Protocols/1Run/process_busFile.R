@@ -9,9 +9,9 @@
 
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNA_Seq_info_TargetBased.txt" folder_data="folder_data" folderSupport="folderSupport" whiteList_Path="whiteList_Path"' process_busFile.R process_busFile.Rout
-## scRNASeq_Info --> File that results from annotation and metadata (libraries downloaded and with extra information as SRR) 
+## scRNASeq_Info --> File that results from annotation and metadata (libraries downloaded and with extra information as SRR)
 ## folder_data --> Folder where are all the libraries in fastq format
-## folderSupport --> Folder where is placed the informative files as: transcriptomes index + gtf_all + transcript_to_gene 
+## folderSupport --> Folder where is placed the informative files as: transcriptomes index + gtf_all + transcript_to_gene
 ## whiteList_Path --> Folder where is located the barcode_whitelist files
 
 ## libraries used
@@ -41,34 +41,34 @@ if( file.exists(scRNASeq_Info) ){
   stop( paste("The annotation file not found [", scRNASeq_Info, "]\n"))
 }
 ###############################################################################################
-## for each library 
+## for each library
 for (library in unique(scRNAInfo$libraryId)) {
-  
+
   ## verify if library exist
   libraryInfo <- file.exists(paste0(folder_data, "/", library, "/"))
-  
+
   if (libraryInfo == TRUE){
-    
+
     ## verify if busOutput exist for the library
     pathBusOut <-  paste0(folder_data, library, "/busOutput")
     if (!dir.exists(pathBusOut)){
       cat("The Kallisto bus folder doesn't exist for the library: ", library, "\n")
     } else {
       cat("Start correction, sort and counts for the library: ", library, "\n")
-      
+
       ## Note: the whiteList we use in this pipeline are the files provided by 10X platform (add to source files)
-      collectWhitelist <- as.character(scRNAInfo$whiteList[scRNAInfo$libraryId == library]) 
+      collectWhitelist <- as.character(scRNAInfo$whiteList[scRNAInfo$libraryId == library])
       selectedWhitheList <- paste0("10X_",collectWhitelist)
       cat("whitelist:  ", selectedWhitheList, "\n")
-      
+
       ## step 1 --> correct the barcodes
       cat("Correct barcodes......", "\n")
       system(sprintf('%s -w %s -o %s %s', paste0(bustools, " ", "correct"), paste0(whiteList_Path, "barcode_whitelist_", selectedWhitheList,".txt"), paste0(pathBusOut, "/output.correct.bus"), paste0(pathBusOut, "/output.bus")))
-      
+
       ## step 2 --> sort the bus file
       cat("Sort bus file......", "\n")
       system(sprintf('%s -t 4 -o %s %s', paste0(bustools, " ", "sort"), paste0(pathBusOut, "/output.correct.sort.bus"), paste0(pathBusOut, "/output.correct.bus")))
-      
+
       ## Creat folders to export the information per TCC and gene matrix (counts)
       tcc_counts <- paste0(pathBusOut, "/tcc_counts")
       if (!dir.create(tcc_counts)){
@@ -76,17 +76,17 @@ for (library in unique(scRNAInfo$libraryId)) {
       } else {
         print("File already exist.....")
       }
-      
+
       gene_counts <- paste0(pathBusOut, "/gene_counts")
       if (!dir.create(gene_counts)){
         dir.create(gene_counts)
       } else {
         print("File already exist.....")
       }
-      
-      collectSpecies <- as.character(scRNAInfo$scientific_name[scRNAInfo$libraryId == library]) 
+
+      collectSpecies <- as.character(scRNAInfo$scientific_name[scRNAInfo$libraryId == library])
       collectSpecies <- gsub(" ", "_", collectSpecies)
-      
+
       ## step 3 --> count with bustools count
       ## TCC level
       cat("TCC level......", "\n")
@@ -94,7 +94,7 @@ for (library in unique(scRNAInfo$libraryId)) {
       ## GENE level
       cat("Gene level......", "\n")
       system(sprintf('%s -o %s -g %s -e %s -t %s %s %s', paste0(bustools, " ", "count"), paste0(gene_counts,"/gene"), paste0(folderSupport, "/transcript_to_gene_with_intergenic_", collectSpecies, ".tsv"), paste0(pathBusOut, "/matrix.ec"), paste0(pathBusOut, "/transcripts.txt"), paste0("--genecounts"), paste0(pathBusOut, "/output.correct.sort.bus")))
-      
+
     }
   } else {
     cat("Library ", library ," not present in the folder to process.", "\n")

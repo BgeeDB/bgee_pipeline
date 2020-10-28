@@ -19,7 +19,7 @@
 ## Note: To download HCA data we need to use the manifest file for each experiment (file generated in HCA web-page)
 ## This script was done with some recommendations from Etienne Orliac (IT service - unil)
 
-source  /dcsrsoft/spack/bin/setup_dcsrsoft 
+source  /dcsrsoft/spack/bin/setup_dcsrsoft
 module load gcc python py-virtualenv
 python -V
 
@@ -54,7 +54,7 @@ echo; echo "List of unique directories = ${!dirs_to_move[@]}"; echo
 
 
 for dir_name in "${!dirs_to_move[@]}"; do
-    
+
     echo; echo "@@@ Dealing with unique directory: $dir_name"
 
     ## delete if already present in final destination folder
