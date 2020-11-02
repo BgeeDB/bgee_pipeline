@@ -142,15 +142,15 @@ check_tools: clusterJURA
 	@$(MV) $@.tmp $@
 
 ## generate informative files: transcript_to_gene_with_intergenic + gene_to_biotype_with_intergenic for each species
-generate_info: check_tools 0Run/generateInfo.R
+generate_info: check_tools 0Preparation/generateInfo.R
 	@echo --- Start generating the informative files ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                     1Run/generateInfo.R
-	@sed -i 's@--output=.*@--output=${PWD}/generateInfo.out@'                      1Run/generateInfo.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/generateInfo.err@'                        1Run/generateInfo.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                   1Run/generateInfo.sbatch
-	@sed -i 's@export folder_gtf=.*@export folder_gtf=$(RNASEQ_CLUSTER_GTF)@'      1Run/generateInfo.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'   1Run/generateInfo.sbatch
-	@sbatch 1Run/generateInfo.sbatch
+	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                      0Preparation/generateInfo.R
+	@sed -i 's@--output=.*@--output=${PWD}/generateInfo.out@'                       0Preparation/generateInfo.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/generateInfo.err@'                         0Preparation/generateInfo.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                   0Preparation/generateInfo.sbatch
+	@sed -i 's@export folder_gtf=.*@export folder_gtf=$(RNASEQ_CLUSTER_GTF)@'       0Preparation/generateInfo.sbatch
+	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'    0Preparation/generateInfo.sbatch
+	@sbatch 0Preparation/generateInfo.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
 	@touch $@
@@ -159,16 +159,16 @@ generate_info: check_tools 0Run/generateInfo.R
 ## Run Kallisto bus per library
 kallisto_bus: generate_info 1Run/Kallisto_bus.R
 	@echo --- Start running kallisto bus for all libraries ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                    1Run/Kallisto_bus.R
-	@sed -i 's@--output=.*@--output=${PWD}/Kallisto_bus.out@'                                     1Run/Kallisto_bus.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/Kallisto_bus.err@'                                       1Run/Kallisto_bus.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                  1Run/Kallisto_bus.sbatch
-	@sed -i 's@export metadata_file=.*@export metadata_file=$(SC_RNASEQ_METADATA_10X_FILEPATH)@'  1Run/Kallisto_bus.sbatch
-	@sed -i 's@export annotation_file=.*@export annotation_file=$(SC_RNASEQ_LIB_FILEPATH)@'       1Run/Kallisto_bus.sbatch
-	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_FASTQ_DROPLET)@'              1Run/Kallisto_bus.sbatch
-	@sed -i 's@export folderSupport=.*@export folderSupport=$(RNASEQ_CLUSTER_GTF)@'               1Run/Kallisto_bus.sbatch
-	@sed -i 's@export output=.*@export output=$(SC_RNASEQ_PATH_GENERATED)@'                       1Run/Kallisto_bus.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                  1Run/Kallisto_bus.sbatch
+	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                        1Run/Kallisto_bus.R
+	@sed -i 's@--output=.*@--output=${PWD}/Kallisto_bus.out@'                                         1Run/Kallisto_bus.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/Kallisto_bus.err@'                                           1Run/Kallisto_bus.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                     1Run/Kallisto_bus.sbatch
+	@sed -i 's@export metadata_file=.*@export metadata_file=../$(SC_RNASEQ_METADATA_10X_FILEPATH)@'   1Run/Kallisto_bus.sbatch
+	@sed -i 's@export annotation_file=.*@export annotation_file=../$(SC_RNASEQ_LIB_FILEPATH)@'        1Run/Kallisto_bus.sbatch
+	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_FASTQ_DROPLET)@'                  1Run/Kallisto_bus.sbatch
+	@sed -i 's@export folderSupport=.*@export folderSupport=$(RNASEQ_CLUSTER_GTF)@'                   1Run/Kallisto_bus.sbatch
+	@sed -i 's@export output=.*@export output=../$(SC_RNASEQ_PATH_GENERATED)@'                        1Run/Kallisto_bus.sbatch
+	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                      1Run/Kallisto_bus.sbatch
 	@sbatch 1Run/Kallisto_bus.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
