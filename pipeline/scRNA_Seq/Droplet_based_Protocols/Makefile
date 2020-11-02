@@ -95,13 +95,13 @@ list_new_downloads: download_SRA download_EBI download_HCA
 
 # Commit the library information file that will be used for the rest of the pipeline
 commit_annotation_and_metadata: list_new_downloads
-	@$(GIT) add $(INPUT_DIR)scRNASeqLibrary.tsv
-	@$(GIT) add $(INPUT_DIR)scRNASeqExperiment.tsv
-	@$(GIT) add $(INPUT_DIR)scRNASeq_barcode.tsv
-	@$(GIT) add $(INPUT_DIR)scRNASeq_markers_10X.tsv
-	@$(GIT) add $(OUTPUT_DIR)metadata_info_10X.txt
-	@$(GIT) add $(OUTPUT_DIR)metadata_notMatch_10X.txt
-	@$(GIT) commit -m 'Update metadata for droplet-based protocols for scRNASeq for $(DBNAME)' $(INPUT_DIR)scRNASeqLibrary.tsv $(INPUT_DIR)scRNASeqExperiment.tsv $(INPUT_DIR)scRNASeq_barcode.tsv $(INPUT_DIR)scRNASeq_markers_10X.tsv $(OUTPUT_DIR)metadata_info_10X.txt $(OUTPUT_DIR)metadata_notMatch_10X.txt || true
+	@$(GIT) add ../$(INPUT_DIR)scRNASeqLibrary.tsv
+	@$(GIT) add ../$(INPUT_DIR)scRNASeqExperiment.tsv
+	@$(GIT) add ../$(INPUT_DIR)scRNASeq_barcode.tsv
+	@$(GIT) add ../$(INPUT_DIR)scRNASeq_markers_10X.tsv
+	@$(GIT) add ../$(OUTPUT_DIR)metadata_info_10X.txt
+	@$(GIT) add ../$(OUTPUT_DIR)metadata_notMatch_10X.txt
+	@$(GIT) commit -m 'Update metadata for droplet-based protocols for scRNASeq for $(DBNAME)' ../$(INPUT_DIR)scRNASeqLibrary.tsv ../$(INPUT_DIR)scRNASeqExperiment.tsv ../$(INPUT_DIR)scRNASeq_barcode.tsv ../$(INPUT_DIR)scRNASeq_markers_10X.tsv ../$(OUTPUT_DIR)metadata_info_10X.txt ../$(OUTPUT_DIR)metadata_notMatch_10X.txt || true
 	@$(GIT) push
 	@echo -e "All information is ready, you can go to JURA cluster to continue the pipeline of the droplet protocols\n"
 	@touch $@
