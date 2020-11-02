@@ -129,11 +129,11 @@ check_tools: clusterJURA
 	@$(CLUSTER_R_CMD) R -e 'library("magrittr")'      >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("gridExtra")'     >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("biomaRt")'       >> $@.tmp  2>/dev/null
-	@R_LIBS_USER=$(R_LIBS_PATH_JURA) $(CLUSTER_R_CMD) R -e 'library("UniprotR")'      >> $@.tmp  2>/dev/null
+	@export R_LIBS_USER=$(R_LIBS_PATH_JURA); $(CLUSTER_R_CMD) R -e 'library("UniprotR")'      >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("lattice")'       >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("Matrix")'        >> $@.tmp  2>/dev/null
-	@R_LIBS_USER=$(R_LIBS_PATH_JURA) $(CLUSTER_R_CMD) R -e 'library("BUSpaRse")'      >> $@.tmp  2>/dev/null
-	@R_LIBS_USER=$(R_LIBS_PATH_JURA) $(CLUSTER_R_CMD) R -e 'library("DropletUtils")'  >> $@.tmp  2>/dev/null
+	@export R_LIBS_USER=$(R_LIBS_PATH_JURA); $(CLUSTER_R_CMD) R -e 'library("BUSpaRse")'      >> $@.tmp  2>/dev/null
+	@export R_LIBS_USER=$(R_LIBS_PATH_JURA); $(CLUSTER_R_CMD) R -e 'library("DropletUtils")'  >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("Seurat")'        >> $@.tmp  2>/dev/null
 	@which xz                                         >> $@.tmp
 	@which sbatch                                     >> $@.tmp
