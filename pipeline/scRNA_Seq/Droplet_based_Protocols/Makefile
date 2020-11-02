@@ -204,13 +204,13 @@ qc_cellType: process_busFile 1Run/QC_CelltypeIdentification.R
 	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                     1Run/QC_CelltypeIdentification.R
 	@sed -i 's@--output=.*@--output=${PWD}/QC_CelltypeIdentification.out@'                         1Run/QC_CelltypeIdentification.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/QC_CelltypeIdentification.err@'                           1Run/QC_CelltypeIdentification.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                   1Run/QC_CelltypeIdentification.sbatch
-	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'   1Run/QC_CelltypeIdentification.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                   1Run/QC_CelltypeIdentification.sbatch
+	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=../$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'   1Run/QC_CelltypeIdentification.sbatch
 	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_FASTQ_DROPLET)@'               1Run/QC_CelltypeIdentification.sbatch
-	@sed -i 's@export infoFolder=.*@export infoFolder=$(SC_RNASEQ_PATH_SOURCE)@'                   1Run/QC_CelltypeIdentification.sbatch
+	@sed -i 's@export infoFolder=.*@export infoFolder=../$(SC_RNASEQ_PATH_SOURCE)@'                   1Run/QC_CelltypeIdentification.sbatch
 	@sed -i 's@export output=.*@export output=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)@'                   1Run/QC_CelltypeIdentification.sbatch
 	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                   1Run/QC_CelltypeIdentification.sbatch
-	@sed -i 's@export R_LIBS_USER=.*@R_LIBS_USER=$(R_LIBS_PATH_JURA)@'                             1Run/QC_CelltypeIdentification.sbatch
+	@sed -i 's@export R_LIBS_USER=.*@export R_LIBS_USER=$(R_LIBS_PATH_JURA)@'                             1Run/QC_CelltypeIdentification.sbatch
 	@sbatch 1Run/QC_CelltypeIdentification.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
