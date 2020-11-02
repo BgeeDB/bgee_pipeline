@@ -201,16 +201,16 @@ process_busFile: uncompress_barcodes 1Run/process_busFile.R
 ## Quality control + cell type identification
 qc_cellType: process_busFile 1Run/QC_CelltypeIdentification.R
 	@echo --- Starting the quality control and the cell type identification ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                     1Run/QC_CelltypeIdentification.R
-	@sed -i 's@--output=.*@--output=${PWD}/QC_CelltypeIdentification.out@'                         1Run/QC_CelltypeIdentification.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/QC_CelltypeIdentification.err@'                           1Run/QC_CelltypeIdentification.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                   1Run/QC_CelltypeIdentification.sbatch
+	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                        1Run/QC_CelltypeIdentification.R
+	@sed -i 's@--output=.*@--output=${PWD}/QC_CelltypeIdentification.out@'                            1Run/QC_CelltypeIdentification.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/QC_CelltypeIdentification.err@'                              1Run/QC_CelltypeIdentification.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                     1Run/QC_CelltypeIdentification.sbatch
 	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=../$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'   1Run/QC_CelltypeIdentification.sbatch
-	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_FASTQ_DROPLET)@'               1Run/QC_CelltypeIdentification.sbatch
+	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_FASTQ_DROPLET)@'                  1Run/QC_CelltypeIdentification.sbatch
 	@sed -i 's@export infoFolder=.*@export infoFolder=../$(SC_RNASEQ_PATH_SOURCE)@'                   1Run/QC_CelltypeIdentification.sbatch
-	@sed -i 's@export output=.*@export output=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)@'                   1Run/QC_CelltypeIdentification.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                   1Run/QC_CelltypeIdentification.sbatch
-	@sed -i 's@export R_LIBS_USER=.*@export R_LIBS_USER=$(R_LIBS_PATH_JURA)@'                             1Run/QC_CelltypeIdentification.sbatch
+	@sed -i 's@export output=.*@export output=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)@'                      1Run/QC_CelltypeIdentification.sbatch
+	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                      1Run/QC_CelltypeIdentification.sbatch
+	@sed -i 's@export R_LIBS_USER=.*@export R_LIBS_USER=$(R_LIBS_PATH_JURA)@'                         1Run/QC_CelltypeIdentification.sbatch
 	@sbatch 1Run/QC_CelltypeIdentification.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
@@ -222,8 +222,8 @@ sum_raw_UMI: qc_cellType 1Run/sum_raw_UMI.R
 	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                                         1Run/sum_raw_UMI.R
 	@sed -i 's@--output=.*@--output=${PWD}/sum_raw_UMI.out@'                                                           1Run/sum_raw_UMI.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/sum_raw_UMI.err@'                                                             1Run/sum_raw_UMI.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                       1Run/sum_raw_UMI.sbatch
-	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'                       1Run/sum_raw_UMI.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                      1Run/sum_raw_UMI.sbatch
+	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=../$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'                    1Run/sum_raw_UMI.sbatch
 	@sed -i 's@export InformationAllLibraries=.*@export InformationAllLibraries=$(SC_RNASEQ_INFO_ALL_LIBRARIES_10X)@'  1Run/sum_raw_UMI.sbatch
 	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_FASTQ_DROPLET)@'                                   1Run/sum_raw_UMI.sbatch
 	@sed -i 's@export output=.*@export output=$(SC_RNASEQ_CLUSTER_SUM_RAW_UMI)@'                                       1Run/sum_raw_UMI.sbatch
@@ -240,8 +240,8 @@ call_cell_cellPop: sum_raw_UMI 1Run/Call_PresentGenes_indivCell_cellPop.R
 	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                                         1Run/Call_PresentGenes_indivCell_cellPop.R
 	@sed -i 's@--output=.*@--output=${PWD}/Call_PresentGenes_indivCell_cellPop.out@'                                   1Run/Call_PresentGenes_indivCell_cellPop.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/Call_PresentGenes_indivCell_cellPop.err@'                                     1Run/Call_PresentGenes_indivCell_cellPop.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                       1Run/Call_PresentGenes_indivCell_cellPop.sbatch
-	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'                       1Run/Call_PresentGenes_indivCell_cellPop.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                       1Run/Call_PresentGenes_indivCell_cellPop.sbatch
+	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=../$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'                       1Run/Call_PresentGenes_indivCell_cellPop.sbatch
 	@sed -i 's@export InformationAllLibraries=.*@export InformationAllLibraries=$(SC_RNASEQ_INFO_ALL_LIBRARIES_10X)@'  1Run/Call_PresentGenes_indivCell_cellPop.sbatch
 	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_FASTQ_DROPLET)@'                                   1Run/Call_PresentGenes_indivCell_cellPop.sbatch
 	@sed -i 's@export desired_r_cutoff=.*@export desired_r_cutoff=$(SC_RNASEQ_RATIO_PROPORTION)@'                      1Run/Call_PresentGenes_indivCell_cellPop.sbatch
