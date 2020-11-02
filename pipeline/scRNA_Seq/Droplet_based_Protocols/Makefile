@@ -175,23 +175,24 @@ kallisto_bus: generate_info 1Run/Kallisto_bus.R
 	@touch $@
 
 # NOTE: Before run the process_busFile rule (uncompress the barcodes files, because in github we cannot have files with more than 100Mb size)
-uncompress_barcodes: kallisto_bus $SC_RNASEQ_PATH_SOURCE/barcode_whitelist_10X_v2.txt.zip $SC_RNASEQ_PATH_SOURCE/barcode_whitelist_10X_v3.txt.zip
-	cd $(SC_RNASEQ_PATH_SOURCE)
-	unzip barcode_whitelist_10X_v2.txt.zip
+uncompress_barcodes: kallisto_bus ../$(SC_RNASEQ_PATH_SOURCE)/barcode_whitelist_10X_v2.txt.zip ../$(SC_RNASEQ_PATH_SOURCE)/barcode_whitelist_10X_v3.txt.zip
+	cd ../$(SC_RNASEQ_PATH_SOURCE) && \
+	unzip barcode_whitelist_10X_v2.txt.zip && \
 	unzip barcode_whitelist_10X_v3.txt.zip
+	@touch $@
 
 ## Process bus files
 process_busFile: uncompress_barcodes 1Run/process_busFile.R
 	@echo --- Starting the process of bus files ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                    1Run/process_busFile.R
-	@sed -i 's@--output=.*@--output=${PWD}/process_busFile.out@'                                  1Run/process_busFile.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/process_busFile.err@'                                    1Run/process_busFile.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                  1Run/process_busFile.sbatch
-	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'  1Run/process_busFile.sbatch
-	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_FASTQ_DROPLET)@'              1Run/process_busFile.sbatch
-	@sed -i 's@export folderSupport=.*@export folderSupport=$(RNASEQ_CLUSTER_GTF)@'               1Run/process_busFile.sbatch
-	@sed -i 's@export whiteList_Path=.*@export whiteList_Path=$(SC_RNASEQ_PATH_SOURCE)@'          1Run/process_busFile.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                  1Run/process_busFile.sbatch
+	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                       1Run/process_busFile.R
+	@sed -i 's@--output=.*@--output=${PWD}/process_busFile.out@'                                     1Run/process_busFile.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/process_busFile.err@'                                       1Run/process_busFile.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                    1Run/process_busFile.sbatch
+	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=../$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'  1Run/process_busFile.sbatch
+	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_FASTQ_DROPLET)@'                 1Run/process_busFile.sbatch
+	@sed -i 's@export folderSupport=.*@export folderSupport=$(RNASEQ_CLUSTER_GTF)@'                  1Run/process_busFile.sbatch
+	@sed -i 's@export whiteList_Path=.*@export whiteList_Path=../$(SC_RNASEQ_PATH_SOURCE)@'          1Run/process_busFile.sbatch
+	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                     1Run/process_busFile.sbatch
 	@sbatch 1Run/process_busFile.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
