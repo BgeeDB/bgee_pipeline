@@ -269,6 +269,10 @@ my $inserted = 0;
 for my $expId ( sort keys %libraries ){
     LIBRARY:
     for my $libraryId ( sort keys %{$libraries{$expId}} ){
+        if ( !exists $reportInfo{$libraryId} ){
+            warn "Report file does not contain this library [$libraryId]\n";
+            next LIBRARY;
+        }
         print "\t$expId $libraryId\n";
 
         # Remap to extra mapping if any
