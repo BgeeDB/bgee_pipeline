@@ -9,8 +9,8 @@
 #SBATCH --mem=2G
 #SBATCH --time=10-00:00:00
 
-#SBATCH --output=/users/sfonseca1/bgee_pipeline/pipeline/scRNA_Seq/Droplet_based_Protocols/download_HCA.out
-#SBATCH --error=/users/sfonseca1/bgee_pipeline/pipeline/scRNA_Seq/Droplet_based_Protocols/download_HCA.err
+#SBATCH --output=/users/smoretti/bgee_pipeline.git/pipeline/scRNA_Seq/Droplet_based_Protocols/download_HCA.out
+#SBATCH --error=/users/smoretti/bgee_pipeline.git/pipeline/scRNA_Seq/Droplet_based_Protocols/download_HCA.err
 #SBATCH --export=NONE
 #SBATCH --job-name=HCA
 #SBATCH --mail-user sara.fonsecacosta@unil.ch
