@@ -52,7 +52,7 @@ finalLibsToDown <- dplyr::filter(readFile, experiment_accession %in% checkId$exp
 ##########################################################################################
 if (nrow(finalLibsToDown) == 0){
 
-  cat("All the libraries present in metadata are already downloaded in the server")
+  cat("All the libraries present in metadata are already downloaded in the server", "\n")
 
 } else {
   ftp <- as.character(finalLibsToDown$fastq_ftp)

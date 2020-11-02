@@ -37,14 +37,14 @@ retrieve_metadata: control_annotation 0Preparation/retrieve_metadata.R
 ## Download cleaning data that still is not downloaded/present in Jura server (run rule with sbatch)
 download_cleaning_data: retrieve_metadata 0Preparation/download_cleaning_data.R
 	@echo --- Starting downloading the data ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SC_RNASEQ_DOWNLOAD_PATH)";@'                                                   0Preparation/download_cleaning_data.R
-	@sed -i 's@--output=.*@--output=${PWD}/download_cleaning_data.out@'                                           0Preparation/download_cleaning_data.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/download_cleaning_data.err@'                                             0Preparation/download_cleaning_data.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                  0Preparation/download_cleaning_data.sbatch
-	@sed -i 's@export metadata_info=.*@export metadata_info=$(SC_RNASEQ_METADATA_FILEPATH)@'                      0Preparation/download_cleaning_data.sbatch
-	@sed -i 's@export librariesDownloadedJura=.*@export librariesDownloadedJura=$(SC_RNASEQ_JURA_LIB_FILEPATH)@'  0Preparation/download_cleaning_data.sbatch
-	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_DOWNLOAD_LIB_DIR)@'                       0Preparation/download_cleaning_data.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH)@'                                0Preparation/download_cleaning_data.sbatch
+	@sed -i 's@\(BASE *= \).*@\1"$(SC_RNASEQ_DOWNLOAD_PATH)";@'                                                      0Preparation/download_cleaning_data.R
+	@sed -i 's@--output=.*@--output=${PWD}/download_cleaning_data.out@'                                              0Preparation/download_cleaning_data.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/download_cleaning_data.err@'                                                0Preparation/download_cleaning_data.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                     0Preparation/download_cleaning_data.sbatch
+	@sed -i 's@export metadata_info=.*@export metadata_info=../$(SC_RNASEQ_METADATA_FILEPATH)@'                      0Preparation/download_cleaning_data.sbatch
+	@sed -i 's@export librariesDownloadedJura=.*@export librariesDownloadedJura=../$(SC_RNASEQ_JURA_LIB_FILEPATH)@'  0Preparation/download_cleaning_data.sbatch
+	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH)@'                 0Preparation/download_cleaning_data.sbatch
+	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_LIB_DIR)@'                                       0Preparation/download_cleaning_data.sbatch
 	@sbatch 0Preparation/download_cleaning_data.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
@@ -52,12 +52,12 @@ download_cleaning_data: retrieve_metadata 0Preparation/download_cleaning_data.R
 
 ## Add new libraries download to the jura file list (run rule in front)
 list_new_downloads: download_cleaning_data
-	@find $(SC_RNASEQ_DOWNLOAD_LIB_DIR) -type f -name \*.fastq.gz\* | xargs -r dirname | sed -e 's@^.*/@@' | sort -u > /tmp/new_downloads
-	@cat $(SC_RNASEQ_JURA_LIB_FILEPATH) >>/tmp/new_downloads
-	@sort -u /tmp/new_downloads >$(SC_RNASEQ_JURA_LIB_FILEPATH)
+	@find $(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH) -type f -name \*.fastq.gz\* | xargs -r dirname | sed -e 's@^.*/@@' | sort -u > /tmp/new_downloads
+	@cat ../$(SC_RNASEQ_JURA_LIB_FILEPATH) >>/tmp/new_downloads
+	@sort -u /tmp/new_downloads >../$(SC_RNASEQ_JURA_LIB_FILEPATH)
 	@rm -f /tmp/new_downloads
-	@$(GIT) add $(SC_RNASEQ_JURA_LIB_FILEPATH)
-	@$(GIT) commit -m 'Add new downloaded libraries' $(SC_RNASEQ_JURA_LIB_FILEPATH) || true
+	@$(GIT) add ../$(SC_RNASEQ_JURA_LIB_FILEPATH)
+	@$(GIT) commit -m 'Add new downloaded libraries' ../$(SC_RNASEQ_JURA_LIB_FILEPATH) || true
 	@touch $@
 
 commit_annotation_and_metadata: list_new_downloads
@@ -105,10 +105,10 @@ check_tools: clusterJURA
 
 
 ## Prepare single cell info file (run rule in front)
-prepare_singlecell_info: check_tools $(SC_RNASEQ_NEW_LIB_FILEPATH) 0Preparation/prepare_scrna_seq_sample_info.R
+prepare_singlecell_info: check_tools ../$(SC_RNASEQ_NEW_LIB_FILEPATH) 0Preparation/prepare_scrna_seq_sample_info.R
 	@$(RM) $(SC_RNASEQ_SAMPINFO_FILEPATH)
 	@echo --- prepare single cell information file ---
-	@$(CLUSTER_FASTP_CMD) $(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args NEW_scRNASeqLibrary="$(SC_RNASEQ_NEW_LIB_FILEPATH)" raw_cells_folder="$(SC_RNASEQ_FASTQ_FULL_LENGTH)" output_folder="${PWD}/$(OUTPUT_DIR)"' 0Preparation/prepare_scrna_seq_sample_info.R 0Preparation/prepare_scrna_seq_sample_info.Rout > $@.tmp
+	@$(CLUSTER_FASTP_CMD) $(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args NEW_scRNASeqLibrary="../$(SC_RNASEQ_NEW_LIB_FILEPATH)" raw_cells_folder="$(SC_RNASEQ_FASTQ_FULL_LENGTH)" output_folder="${PWD}/$(OUTPUT_DIR)"' 0Preparation/prepare_scrna_seq_sample_info.R 0Preparation/prepare_scrna_seq_sample_info.Rout > $@.tmp
 	@echo --- DONE ---
 	@$(MV) $@.tmp $@
 
