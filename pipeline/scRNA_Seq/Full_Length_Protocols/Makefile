@@ -124,14 +124,14 @@ kallisto: prepare_singlecell_info ../$(SC_RNASEQ_SAMPINFO_FILEPATH)
 ## Convert TranscriptID to GeneID and recalculations (TPM/FPKM)
 analysis: kallisto 1Run/analysis.R
 	@echo --- Starting the analysis ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                                1Run/analysis.R
-	@sed -i 's@--output=.*@--output=${PWD}/analysis.out@'                                                     1Run/analysis.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/analysis.err@'                                                       1Run/analysis.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                              1Run/analysis.sbatch
-	@sed -i 's@export scrna_seq_sample_info=.*@export scrna_seq_sample_info=$(SC_RNASEQ_SAMPINFO_FILEPATH)@'  1Run/analysis.sbatch
-	@sed -i 's@export cells_folder=.*@export cells_folder=$(SC_RNASEQ_CLUSTER_KALLISTO)@'                     1Run/analysis.sbatch
-	@sed -i 's@export infoFolder=.*@export infoFolder=$(RNASEQ_CLUSTER_GTF)@'                                 1Run/analysis.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES)@'                                      1Run/analysis.sbatch
+	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                                   1Run/analysis.R
+	@sed -i 's@--output=.*@--output=${PWD}/analysis.out@'                                                        1Run/analysis.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/analysis.err@'                                                          1Run/analysis.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                1Run/analysis.sbatch
+	@sed -i 's@export scrna_seq_sample_info=.*@export scrna_seq_sample_info=../$(SC_RNASEQ_SAMPINFO_FILEPATH)@'  1Run/analysis.sbatch
+	@sed -i 's@export cells_folder=.*@export cells_folder=$(SC_RNASEQ_CLUSTER_KALLISTO)@'                        1Run/analysis.sbatch
+	@sed -i 's@export infoFolder=.*@export infoFolder=$(RNASEQ_CLUSTER_GTF)@'                                    1Run/analysis.sbatch
+	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES)@'                                         1Run/analysis.sbatch
 	@sbatch 1Run/analysis.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
@@ -140,15 +140,15 @@ analysis: kallisto 1Run/analysis.R
 ## Quality control by cell population
 QC_cellPopulation: analysis 1Run/QC_cellPopulation.R
 	@echo --- Starting the quality control per cell population ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                                1Run/QC_cellPopulation.R
-	@sed -i 's@--output=.*@--output=${PWD}/QC_cellPopulation.out@'                                            1Run/QC_cellPopulation.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/QC_cellPopulation.err@'                                              1Run/QC_cellPopulation.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                              1Run/QC_cellPopulation.sbatch
-	@sed -i 's@export scrna_seq_sample_info=.*@export scrna_seq_sample_info=$(SC_RNASEQ_SAMPINFO_FILEPATH)@'  1Run/QC_cellPopulation.sbatch
-	@sed -i 's@export cells_folder=.*@export cells_folder=$(SC_RNASEQ_CLUSTER_KALLISTO)@'                     1Run/QC_cellPopulation.sbatch
-	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_CLUSTER_QC_CELLPOP_RES)@'             1Run/QC_cellPopulation.sbatch
-	@sed -i 's@export plot=.*@export plot=yes@'                                                               1Run/QC_cellPopulation.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES)@'                                      1Run/QC_cellPopulation.sbatch
+	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                                   1Run/QC_cellPopulation.R
+	@sed -i 's@--output=.*@--output=${PWD}/QC_cellPopulation.out@'                                               1Run/QC_cellPopulation.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/QC_cellPopulation.err@'                                                 1Run/QC_cellPopulation.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                1Run/QC_cellPopulation.sbatch
+	@sed -i 's@export scrna_seq_sample_info=.*@export scrna_seq_sample_info=../$(SC_RNASEQ_SAMPINFO_FILEPATH)@'  1Run/QC_cellPopulation.sbatch
+	@sed -i 's@export cells_folder=.*@export cells_folder=$(SC_RNASEQ_CLUSTER_KALLISTO)@'                        1Run/QC_cellPopulation.sbatch
+	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_CLUSTER_QC_CELLPOP_RES)@'                1Run/QC_cellPopulation.sbatch
+	@sed -i 's@export plot=.*@export plot=yes@'                                                                  1Run/QC_cellPopulation.sbatch
+	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES)@'                                         1Run/QC_cellPopulation.sbatch
 	@sbatch 1Run/QC_cellPopulation.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
@@ -157,14 +157,14 @@ QC_cellPopulation: analysis 1Run/QC_cellPopulation.R
 ## Summing the raw counts per cell-type, experiment and species
 Sum_RawCounts_cellPopulation: QC_cellPopulation 1Run/Sum_RawCounts_cellPopulation.R
 	@echo --- Start running the sum of raw counts of cell populations that pass QC ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                                          1Run/Sum_RawCounts_cellPopulation.R
-	@sed -i 's@--output=.*@--output=${PWD}/Sum_RawCounts_cellPopulation.out@'                                           1Run/Sum_RawCounts_cellPopulation.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/Sum_RawCounts_cellPopulation.err@'                                             1Run/Sum_RawCounts_cellPopulation.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                        1Run/Sum_RawCounts_cellPopulation.sbatch
-	@sed -i 's@export NEW_scRNASeq_sample_info=.*@export NEW_scRNASeq_sample_info=$(SC_RNASEQ_SAMPINFO_NEW_FILEPATH)@'  1Run/Sum_RawCounts_cellPopulation.sbatch
-	@sed -i 's@export cells_folder=.*@export cells_folder=$(SC_RNASEQ_CLUSTER_KALLISTO)@'                               1Run/Sum_RawCounts_cellPopulation.sbatch
-	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_CLUSTER_SUM_RAW_COUNTS_CELLPOP_RES)@'           1Run/Sum_RawCounts_cellPopulation.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES)@'                                                1Run/Sum_RawCounts_cellPopulation.sbatch
+	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                                             1Run/Sum_RawCounts_cellPopulation.R
+	@sed -i 's@--output=.*@--output=${PWD}/Sum_RawCounts_cellPopulation.out@'                                              1Run/Sum_RawCounts_cellPopulation.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/Sum_RawCounts_cellPopulation.err@'                                                1Run/Sum_RawCounts_cellPopulation.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                          1Run/Sum_RawCounts_cellPopulation.sbatch
+	@sed -i 's@export NEW_scRNASeq_sample_info=.*@export NEW_scRNASeq_sample_info=../$(SC_RNASEQ_SAMPINFO_NEW_FILEPATH)@'  1Run/Sum_RawCounts_cellPopulation.sbatch
+	@sed -i 's@export cells_folder=.*@export cells_folder=$(SC_RNASEQ_CLUSTER_KALLISTO)@'                                  1Run/Sum_RawCounts_cellPopulation.sbatch
+	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_CLUSTER_SUM_RAW_COUNTS_CELLPOP_RES)@'              1Run/Sum_RawCounts_cellPopulation.sbatch
+	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES)@'                                                   1Run/Sum_RawCounts_cellPopulation.sbatch
 	@sbatch 1Run/Sum_RawCounts_cellPopulation.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
@@ -173,17 +173,17 @@ Sum_RawCounts_cellPopulation: QC_cellPopulation 1Run/Sum_RawCounts_cellPopulatio
 ## Call present genes per individual library/cell
 scRNAseq_Callpresent: $(PIPELINEROOT)/RNASeq/sum_by_species Sum_RawCounts_cellPopulation 1Run/scRNAseq_Callpresent.R
 	@echo --- Starting calling present genes per library ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                                          1Run/scRNAseq_Callpresent.R
-	@sed -i 's@--output=.*@--output=${PWD}/scRNAseq_Callpresent.out@'                                                   1Run/scRNAseq_Callpresent.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/scRNAseq_Callpresent.err@'                                                     1Run/scRNAseq_Callpresent.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                        1Run/scRNAseq_Callpresent.sbatch
-	@sed -i 's@export NEW_scRNASeq_sample_info=.*@export NEW_scRNASeq_sample_info=$(SC_RNASEQ_SAMPINFO_NEW_FILEPATH)@'  1Run/scRNAseq_Callpresent.sbatch
-	@sed -i 's@export cells_folder=.*@export cells_folder=$(SC_RNASEQ_CLUSTER_KALLISTO)@'                               1Run/scRNAseq_Callpresent.sbatch
-	@sed -i 's@export sum_species=.*@export sum_species=$(RNASEQ_CLUSTER_SUM_RES)@'                                     1Run/scRNAseq_Callpresent.sbatch
-	@sed -i 's@export gaussian_choice=.*@export gaussian_choice=$(RNASEQ_CLUSTER_GAUSSIAN_CHOICE)@'                     1Run/scRNAseq_Callpresent.sbatch
-	@sed -i 's@export ratioValue=.*@export ratioValue=$(INTERGENIC_N_PROPORTION)@'                                      1Run/scRNAseq_Callpresent.sbatch
-	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_CLUSTER_CALL_PRESENT)@'                         1Run/scRNAseq_Callpresent.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES)@'                                                1Run/scRNAseq_Callpresent.sbatch
+	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                                             1Run/scRNAseq_Callpresent.R
+	@sed -i 's@--output=.*@--output=${PWD}/scRNAseq_Callpresent.out@'                                                      1Run/scRNAseq_Callpresent.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/scRNAseq_Callpresent.err@'                                                        1Run/scRNAseq_Callpresent.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                          1Run/scRNAseq_Callpresent.sbatch
+	@sed -i 's@export NEW_scRNASeq_sample_info=.*@export NEW_scRNASeq_sample_info=../$(SC_RNASEQ_SAMPINFO_NEW_FILEPATH)@'  1Run/scRNAseq_Callpresent.sbatch
+	@sed -i 's@export cells_folder=.*@export cells_folder=$(SC_RNASEQ_CLUSTER_KALLISTO)@'                                  1Run/scRNAseq_Callpresent.sbatch
+	@sed -i 's@export sum_species=.*@export sum_species=$(RNASEQ_CLUSTER_SUM_RES)@'                                        1Run/scRNAseq_Callpresent.sbatch
+	@sed -i 's@export gaussian_choice=.*@export gaussian_choice=$(RNASEQ_CLUSTER_GAUSSIAN_CHOICE)@'                        1Run/scRNAseq_Callpresent.sbatch
+	@sed -i 's@export ratioValue=.*@export ratioValue=$(INTERGENIC_N_PROPORTION)@'                                         1Run/scRNAseq_Callpresent.sbatch
+	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_CLUSTER_CALL_PRESENT)@'                            1Run/scRNAseq_Callpresent.sbatch
+	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES)@'                                                   1Run/scRNAseq_Callpresent.sbatch
 	@sbatch 1Run/scRNAseq_Callpresent.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
@@ -192,15 +192,15 @@ scRNAseq_Callpresent: $(PIPELINEROOT)/RNASeq/sum_by_species Sum_RawCounts_cellPo
 ## Call present genes per cell population
 Sum_Calls_cellPopulation: scRNAseq_Callpresent 1Run/Sum_Calls_cellPopulation.R
 	@echo --- Starting calling present genes per cell population ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                                          1Run/Sum_Calls_cellPopulation.R
-	@sed -i 's@--output=.*@--output=${PWD}/Sum_Calls_cellPopulation.out@'                                               1Run/Sum_Calls_cellPopulation.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/Sum_Calls_cellPopulation.err@'                                                 1Run/Sum_Calls_cellPopulation.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                        1Run/Sum_Calls_cellPopulation.sbatch
-	@sed -i 's@export NEW_scRNASeq_sample_info=.*@export NEW_scRNASeq_sample_info=$(SC_RNASEQ_SAMPINFO_NEW_FILEPATH)@'  1Run/Sum_Calls_cellPopulation.sbatch
-	@sed -i 's@export cells_folder=.*@export cells_folder=$(SC_RNASEQ_CLUSTER_KALLISTO)@'                               1Run/Sum_Calls_cellPopulation.sbatch
-	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_CLUSTER_CALL_PRESENT_CELLPOP_RES)@'             1Run/Sum_Calls_cellPopulation.sbatch
-	@sed -i 's@export ratioValue=.*@export ratioValue=$(SC_RNASEQ_RATIO_PROPORTION)@'                                   1Run/Sum_Calls_cellPopulation.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES)@'                                                1Run/Sum_Calls_cellPopulation.sbatch
+	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                                             1Run/Sum_Calls_cellPopulation.R
+	@sed -i 's@--output=.*@--output=${PWD}/Sum_Calls_cellPopulation.out@'                                                  1Run/Sum_Calls_cellPopulation.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/Sum_Calls_cellPopulation.err@'                                                    1Run/Sum_Calls_cellPopulation.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                          1Run/Sum_Calls_cellPopulation.sbatch
+	@sed -i 's@export NEW_scRNASeq_sample_info=.*@export NEW_scRNASeq_sample_info=../$(SC_RNASEQ_SAMPINFO_NEW_FILEPATH)@'  1Run/Sum_Calls_cellPopulation.sbatch
+	@sed -i 's@export cells_folder=.*@export cells_folder=$(SC_RNASEQ_CLUSTER_KALLISTO)@'                                  1Run/Sum_Calls_cellPopulation.sbatch
+	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_CLUSTER_CALL_PRESENT_CELLPOP_RES)@'                1Run/Sum_Calls_cellPopulation.sbatch
+	@sed -i 's@export ratioValue=.*@export ratioValue=$(SC_RNASEQ_RATIO_PROPORTION)@'                                      1Run/Sum_Calls_cellPopulation.sbatch
+	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES)@'                                                   1Run/Sum_Calls_cellPopulation.sbatch
 	@sbatch 1Run/Sum_Calls_cellPopulation.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
