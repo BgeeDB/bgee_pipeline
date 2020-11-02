@@ -269,6 +269,7 @@ my $inserted = 0;
 for my $expId ( sort keys %libraries ){
     LIBRARY:
     for my $libraryId ( sort keys %{$libraries{$expId}} ){
+        next LIBRARY  if ( !exists $reportInfo{$libraryId} );
         print "\t$expId $libraryId\n";
 
         # Remap to extra mapping if any
