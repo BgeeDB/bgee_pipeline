@@ -9,7 +9,7 @@ all: $(VERIFICATIONFILE)
 ################################ RETRIEVE BGEE ANNOTATIONS ################################
 
 #FIXME git submodule should allow the get_annot step to work while protecting the annotation git from unallowed users!
-#FIXME Fix strain names to be more consistent with Anne's strain file!
+#FIXME Fix strain names to be more consistent with Anne's strain file, with StrainMapping.tsv file!
 get_annot:
 	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations. Store them in the source_files directory
 	@$(WGET) $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqLibrary.tsv                && $(MV) RNASeqLibrary.tsv                $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibrary.tsv                2>/dev/null  || rm -f RNASeqLibrary.tsv
