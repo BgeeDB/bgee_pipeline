@@ -82,6 +82,10 @@ if ( $statusCode != 200 && $statusCode != 304 ){ # OKs & Not Modified
     die "Couldn't get file [GeneExpression_tropicalis.txt]!\n";
 }
 
+#NOTE No more XAO:\d+ in anatomy or stage terms !
+system("perl -i -pe 's/XAO([0-9]{7,})/XAO:\$1/g' $src_dir/GeneExpression_tropicalis.txt");
+
+
 # Get all start-end stages
 my @Stages;
 my @Anat;
@@ -114,7 +118,13 @@ for my $line ( read_file("$src_dir/GeneExpression_tropicalis.txt", chomp=>1) ){
 
     # Anatomy id mapping
     for my $couple ( split(',', $tmp[3]) ){
+        next  if ( $couple =~ /^ / );
         my @tmp3 = split(' ', $couple);
+        #NOTE field syntax changed, XAO string is omitted
+        #XAO:0000097 mandibular arch,0000098 hyoid arch,0000223 otic placode
+        if ( $tmp3[0] !~ /^XAO:/ && $tmp3[0] =~ /^\d{7}$/ ){
+            $tmp3[0] = 'XAO:'.$tmp3[0];
+        }
         # XAO:0000059 is obsolete but may be used in ftp://ftp.xenbase.org/pub/GenePageReports/GeneExpression_tropicalis.txt  should be replaced by XAO:0002000
         $tmp3[0] =~ s{XAO:0000059}{XAO:0002000}  if ( $tmp3[0]     eq 'XAO:0000059' );
         $tmp3[0] = 'XAO:0003003'                 if ( lc($tmp3[0]) eq 'unspecified' );
