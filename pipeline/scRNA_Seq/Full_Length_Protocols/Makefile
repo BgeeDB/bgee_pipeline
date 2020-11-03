@@ -103,6 +103,18 @@ check_tools: clusterJURA
 	@$(CLUSTER_FASTP_CMD)      which fastp            >> $@.tmp
 	@$(MV) $@.tmp $@
 
+## generate gene2biotype, gene2transcript and gene2geneName
+generateInfo: check_tools ($RNASEQ_CLUSTER_GTF) 0Preparation/generateInfo.R
+@echo --- Starting generation of informative file from GTF ---
+	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                            	0Preparation/generateInfo.R
+	@sed -i 's@--output=.*@--output=${PWD}/generateInfo_FL.out@'                            0Preparation/generateInfo.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/generateInfo_FL.err@'                              0Preparation/generateInfo.sbatch
+	@sed -i 's@export folder_gtf=.*@export folder_gtf=${PWD}/@'                             0Preparation/generateInfo.sbatch
+	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES)@'                    0Preparation/generateInfo.sbatch
+	@sbatch 0Preparation/generateInfo.sbatch
+	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
+	@echo --- DONE ---
+	@touch $@
 
 ## Prepare single cell info file (run rule in front)
 prepare_singlecell_info: check_tools $(SC_RNASEQ_NEW_LIB_FILEPATH) 0Preparation/prepare_scrna_seq_sample_info.R
@@ -113,6 +125,7 @@ prepare_singlecell_info: check_tools $(SC_RNASEQ_NEW_LIB_FILEPATH) 0Preparation/
 	@$(MV) $@.tmp $@
 
 ## Run kallisto for all library/cells
+## NOTE: Use the transcriptome index generated for RNA-Seq pipeline
 kallisto: prepare_singlecell_info $(SC_RNASEQ_SAMPINFO_FILEPATH)
 	mkdir -p $(SC_RNASEQ_CLUSTER_KALLISTO)
 	@perl 1Run/slurm_scheduler_Kallisto_scRNASeq.pl -scrna_seq_sample_info=$(SC_RNASEQ_SAMPINFO_FILEPATH) -raw_cells_folder=$(SC_RNASEQ_FASTQ_FULL_LENGTH) -infoFolder=$(RNASEQ_CLUSTER_GTF) -output_folder=$(SC_RNASEQ_CLUSTER_KALLISTO) -cluster_kallisto_cmd='$(CLUSTER_KALLISTO_CMD)' -cluster_R_cmd='$(CLUSTER_R_CMD)'
@@ -169,6 +182,7 @@ Sum_RawCounts_cellPopulation: QC_cellPopulation 1Run/Sum_RawCounts_cellPopulatio
 	@touch $@
 
 ## Call present genes per individual library/cell
+## NOTE: Use the reference intergenic difened by using the RNA-Seq data 
 scRNAseq_Callpresent: $(PIPELINEROOT)/RNASeq/sum_by_species Sum_RawCounts_cellPopulation 1Run/scRNAseq_Callpresent.R
 	@echo --- Starting calling present genes per library ---
 	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                                          1Run/scRNAseq_Callpresent.R
