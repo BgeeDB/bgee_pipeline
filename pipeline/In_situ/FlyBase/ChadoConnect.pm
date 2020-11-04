@@ -24,7 +24,7 @@ Available DB names: FB_public - connects to the open, public chado DB.
 sub make_con {
     my $dbh = '';
     if ( $_[0] eq 'FB_public' ){
-        $dbh = DBI->connect('dbi:Pg:dbname=flybase;host=flybase.org;port=5432', 'flybase', '');
+        $dbh = DBI->connect('dbi:Pg:dbname=flybase;host=chado.flybase.org;port=5432', 'flybase', '');
     }
     else {
         die "Unrecognised DB $_[0]. Recognised DBs: FB_public";

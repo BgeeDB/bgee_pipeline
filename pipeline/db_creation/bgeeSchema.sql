@@ -923,7 +923,6 @@ create table rnaSeqLibrary (
     tpmThreshold decimal(16, 6) not null,
     allGenesPercentPresent decimal(5, 2) unsigned not null default 0,
     proteinCodingGenesPercentPresent decimal(5, 2) unsigned not null default 0,
-    intergenicRegionsPercentPresent decimal(5, 2) unsigned not null default 0,
     thresholdRatioIntergenicCodingPercent decimal(5, 2) unsigned not null default 0
             COMMENT 'Proportion intergenic/coding region used to define the threshold to consider a gene as expressed (should always be 5%, but some libraries do not allow to reach this value)',
 -- total number of reads in library, including those not mapped.
@@ -1034,6 +1033,181 @@ create table rnaSeqExperimentExpression (
         comment 'Inferred quality for this call based on this experiment (from all libraries, "present high" > "present low" > "absent high" > "absent low"). Value "poor quality" instead of "low quality" for historical reasons.'
 ) engine = innodb
 comment = 'This table stores information about expression calls produced from RNA-Seq experiments, that is then used in Bgee to compute global summary expression calls and qualities.';
+
+-- ****************************************************
+-- scRNA-Seq FULL LENGTH DATA
+-- ****************************************************
+create table scRnaSeqFullLengthExperiment (
+-- primary exp ID, from GEO, patterns GSExxx
+    scRnaSeqFullLengthExperimentId varchar(70) not null,
+    scRnaSeqFullLengthExperimentName varchar(255) not null default '',
+    scRnaSeqFullLengthExperimentDescription text,
+    dataSourceId smallInt unsigned not null
+) engine = innodb;
+
+create table scRnaSeqFullLengthPlatform (
+    scRnaSeqFullLengthPlatformId varchar(255) not null,
+    scRnaSeqFullLengthPlatformDescription text
+) engine = innodb;
+
+create table scRnaSeqFullLengthLibrary (
+-- primary ID, from GEO, pattern GSMxxx
+    scRnaSeqFullLengthLibraryId varchar(70) not null,
+    scRnaSeqFullLengthExperimentId varchar(70) not null,
+    scRnaSeqFullLengthPlatformId varchar(255) not null,
+    conditionId mediumint unsigned not null,
+    meanTpmReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'mean TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
+    sdTpmReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'standard deviation in TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
+-- TPM threshold to consider a gene as expressed,
+-- which is the lowest TPM value associated with the p-value cutoff.
+-- p-value is computed for each gene based notably on the mean and sd of the reference intergenics distribution;
+-- the threshold is thus retrieved after computation of p-values
+    tpmThreshold decimal(16, 6) not null,
+    allGenesPercentPresent decimal(5, 2) unsigned not null default 0,
+    proteinCodingGenesPercentPresent decimal(5, 2) unsigned not null default 0,
+-- total number of reads in library, including those not mapped.
+-- In case of paired-end libraries, it's the number of pairs of reads;
+-- In case of single end, it's the total number of reads
+    allReadsCount int unsigned not null default 0,
+-- total number of reads in library that were mapped to anything.
+    mappedReadsCount int unsigned not null default 0,
+-- a library is an assembly of different runs, and the runs can have different read lengths,
+-- so we store the min and max read lengths
+    minReadLength int unsigned not null default 0,
+    maxReadLength int unsigned not null default 0,
+-- Is the library built using paired end?
+-- NA: info not used for pseudo-mapping. Default value in an enum is the first one.
+    libraryType enum('NA', 'single', 'paired') not null,
+    libraryOrientation enum('NA', 'forward', 'reverse', 'unstranded') not null,
+
+-- the following fields are used for rank computations, and are set after all expression data insertion,
+-- this is why null value is permitted.
+    libraryMaxRank decimal(9,2) unsigned COMMENT 'The max fractional rank in this library (see `rank` field in rnaSeqResult table)',
+    libraryDistinctRankCount mediumint unsigned COMMENT 'The count of distinct rank in this library (see `rank` field in rnaSeqResult table, used for weighted mean rank computations)'
+) engine = innodb;
+
+-- Store the information of runs used, pool together to generate the results
+-- for a given library.
+create table scRnaSeqFullLengthRun (
+    scRnaSeqFullLengthRunId varchar(70) not null,
+    scRnaSeqFullLengthLibraryId varchar(70) not null
+) engine = innodb;
+
+create table scRnaSeqFullLengthLibraryDiscarded (
+    scRnaSeqFullLengthLibraryId varchar(70) not null,
+    scRnaSeqFullLengthLibraryDiscardReason varchar(255) not null default ''
+) engine = innodb;
+
+create table scRnaSeqFullLengthResult (
+    scRnaSeqFullLengthLibraryId varchar(70) not null,
+    bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
+    tpm decimal(16, 6) not null COMMENT 'TPM values, NOT log transformed',
+-- rank is not "not null" because we update this information afterwards
+    rank decimal(9, 2) unsigned,
+-- for information, measure not normalized for reads or genes lengths
+    readsCount decimal(16, 6) unsigned not null COMMENT 'As of Bgee 14, read counts are "estimated counts" produced using the Kallisto software. They are not normalized for read or gene lengths.',
+-- zScore can be negative
+    zScore decimal(35, 30) not null,
+    pValue decimal(31, 30) unsigned not null default 1 COMMENT 'present calls are based on the pValue',
+    expressionId int unsigned,
+    detectionFlag enum('undefined', 'present') default 'undefined' COMMENT 'we do not produce absent calls from scRNA-Seq data',
+-- Warning, qualities must be ordered, the index in the enum is used in many queries.
+-- We should only see genes with 'high quality' here
+    scRnaSeqFullLengthData enum('no data', 'poor quality', 'high quality') default 'no data',
+    reasonForExclusion enum('not excluded', 'undefined') not null default 'not excluded'
+) engine = innodb;
+
+-- ****************************************************
+-- scRNA-Seq TARGET-BASED DATA
+-- ****************************************************
+create table scRnaSeqTargetBasedExperiment (
+-- primary exp ID, from GEO, patterns GSExxx
+    scRnaSeqTargetBasedExperimentId varchar(70) not null,
+    scRnaSeqTargetBasedExperimentName varchar(255) not null default '',
+    scRnaSeqTargetBasedExperimentDescription text,
+    dataSourceId smallInt unsigned not null
+) engine = innodb;
+
+create table scRnaSeqTargetBasedPlatform (
+    scRnaSeqTargetBasedPlatformId varchar(255) not null,
+    scRnaSeqTargetBasedPlatformDescription text
+) engine = innodb;
+
+create table scRnaSeqTargetBasedLibrary (
+-- primary ID, from GEO, pattern GSMxxx
+    scRnaSeqTargetBasedLibraryId varchar(70) not null,
+    scRnaSeqTargetBasedExperimentId varchar(70) not null,
+    scRnaSeqTargetBasedPlatformId varchar(255) not null,
+-- total number of reads in library, including those not mapped.
+-- In case of paired-end libraries, it's the number of pairs of reads;
+-- In case of single end, it's the total number of reads,
+    allUmiCount mediumint unsigned not null default 0,
+    mappedUmiCount mediumint unsigned not null default 0,
+-- so we store the min and max read lengths
+    minReadLength int unsigned not null default 0,
+    maxReadLength int unsigned not null default 0,
+-- Is the library built using paired end?
+-- NA: info not used for pseudo-mapping. Default value in an enum is the first one.
+    libraryType enum('NA', 'single', 'paired') not null,
+    libraryOrientation enum('NA', 'forward', 'reverse', 'unstranded') not null,
+
+-- the following fields are used for rank computations, and are set after all expression data insertion,
+-- this is why null value is permitted.
+    libraryMaxRank decimal(9,2) unsigned COMMENT 'The max fractional rank in this library (see `rank` field in rnaSeqResult table)',
+    libraryDistinctRankCount mediumint unsigned COMMENT 'The count of distinct rank in this library (see `rank` field in rnaSeqResult table, used for weighted mean rank computations)'
+) engine = innodb;
+
+-- Store the information of runs used, pool together to generate the results
+-- for a given library.
+create table scRnaSeqTargetBasedRun (
+    scRnaSeqTargetBasedRunId varchar(70) not null,
+    scRnaSeqTargetBasedLibraryId varchar(70) not null
+) engine = innodb;
+
+create table scRnaSeqTargetBasedLibraryDiscarded (
+    scRnaSeqTargetBasedLibraryId varchar(70) not null,
+    scRnaSeqTargetBasedLibraryDiscardReason varchar(255) not null default ''
+) engine = innodb;
+
+create table scRnaSeqTargetBasedLibraryCellPopulation (
+    scRnaSeqTargetBasedLibraryCellPopulationId int unsigned not null,
+    scRnaSeqTargetBasedLibraryId varchar(70) not null,
+    conditionId mediumint unsigned not null,
+    meanCpmReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'mean CPM of the distribution of the reference intergenics regions in this library',
+    sdCpmReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'standard deviation in CPM of the distribution of the reference intergenics regions in this library',
+-- CPM threshold to consider a gene as expressed,
+-- which is the lowest CPM value associated with the p-value cutoff.
+-- p-value is computed for each gene based notably on the mean and sd of the reference intergenics distribution;
+-- the threshold is thus retrieved after computation of p-values
+    cpmThreshold decimal(16, 6) not null,
+    allGenesPercentPresent decimal(5, 2) unsigned not null default 0,
+    proteinCodingGenesPercentPresent decimal(5, 2) unsigned not null default 0
+) engine = innodb;
+
+create table scRnaSeqTargetBasedResult (
+    scRnaSeqTargetBasedLibraryCellPopulationId int unsigned not null,
+    bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
+    umiCount smallint unsigned not null default 0,
+    cpm decimal(20, 13) not null default 0 COMMENT 'CPMs are usually not log transformed',
+-- rank is not "not null" because we update this information afterwards
+    rank decimal(9, 2) unsigned,
+-- zScore can be negative
+    zScore decimal(35, 30) not null,
+    pValue decimal(31, 30) unsigned not null default 1 COMMENT 'present calls are based on the pValue',
+    expressionId int unsigned,
+    detectionFlag enum('undefined', 'present') default 'undefined' COMMENT 'we do not produce absent calls from scRNA-Seq data',
+-- Warning, qualities must be ordered, the index in the enum is used in many queries.
+-- We should only see genes with 'high quality' here
+    scRnaSeqTargetBasedData enum('no data', 'poor quality', 'high quality') default 'no data',
+    reasonForExclusion enum('not excluded', 'undefined') not null default 'not excluded'
+) engine = innodb;
+
+create table scRnaSeqTargetBasedPerCellCount (
+    scRnaSeqTargetBasedBarcodeId varchar(70) not null,
+    scRnaSeqTargetBasedLibraryId varchar(70) not null,
+    umiCount smallint unsigned not null default 0,
+    cpm decimal(20, 13) not null default 0 COMMENT 'CPMs are usually not log transformed'
+) engine = innodb;
 
 -- ****************************************************
 -- RAW DIFFERENTIAL EXPRESSION ANALYSES

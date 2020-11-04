@@ -9,8 +9,8 @@
 #SBATCH --mem=2G
 #SBATCH --time=10-00:00:00
 
-#SBATCH --output=/users/sfonseca1/bgee_pipeline/pipeline/scRNA_Seq/Full_Length_Protocols/download_cleaning_data.out
-#SBATCH --error=/users/sfonseca1/bgee_pipeline/pipeline/scRNA_Seq/Full_Length_Protocols/download_cleaning_data.err
+#SBATCH --output=/users/smoretti/bgee_pipeline.git/pipeline/scRNA_Seq/Full_Length_Protocols/download_cleaning_data.out
+#SBATCH --error=/users/smoretti/bgee_pipeline.git/pipeline/scRNA_Seq/Full_Length_Protocols/download_cleaning_data.err
 #SBATCH --export=NONE
 #SBATCH --job-name=download_cleaning_data
 
@@ -19,7 +19,7 @@ module load Bioinformatics/Software/vital-it
 module add R/3.6.1
 
 
-export SCRIPT_PATH=/users/sfonseca1/bgee_pipeline/pipeline/scRNA_Seq/Full_Length_Protocols
+export SCRIPT_PATH=/users/smoretti/bgee_pipeline.git/pipeline/scRNA_Seq/Full_Length_Protocols
 export metadata_info=../../../generated_files/scRNA_Seq/metadata_info.txt
 export librariesDownloadedJura=../../../generated_files/scRNA_Seq/juraLibrariesDownloaded.tsv
 export output_folder=/scratch/wally/FAC/FBM/DEE/mrobinso/bgee/scRNA_Seq_All/scRNASeq_libraries_FullLength/

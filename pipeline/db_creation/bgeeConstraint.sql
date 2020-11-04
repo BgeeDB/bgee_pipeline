@@ -463,6 +463,15 @@ alter table rnaSeqExperimentExpression
 add primary key (expressionId, rnaSeqExperimentId);
 /*!40000 ALTER TABLE `rnaSeqExperimentExpression` ENABLE KEYS */;
 
+--  ****************************************************
+--  RAW scRNA-SEQ TARGET-BASED DATA
+--  ****************************************************
+
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedPerCellCount` DISABLE KEYS */;
+alter table scRnaSeqTargetBasedPerCellCount
+add primary key (scRnaSeqTargetBasedBarcodeId, scRnaSeqTargetBasedLibraryId);
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedPerCellCount` ENABLE KEYS */;
+
 -- ****** for diff expression ********
 
 /*!40000 ALTER TABLE `deaSampleGroupToRnaSeqLibrary` DISABLE KEYS */;

@@ -284,6 +284,10 @@ DEV_STAGE_ONT_PREFIX       := dev_stage_ontology
 DEV_STAGE_ONT_FILE         := $(DEV_STAGE_ONT_PREFIX).obo
 DEV_STAGE_ONT_FILE_PATH    := $(UBERON_SOURCE_PATH)$(DEV_STAGE_ONT_FILE)
 
+## Strains
+STRAINS                    := Strains/
+STRAIN_MAPPING_FILE        := $(SOURCE_FILES_DIR)$(STRAINS)StrainMapping.tsv
+
 
 # Command to get list of stages between start and end stages
 # Missing arguments are SPECIES_ID   INBETWEENSTAGESPORT
