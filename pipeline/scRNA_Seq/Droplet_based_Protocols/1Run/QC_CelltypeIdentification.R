@@ -79,10 +79,10 @@ singlecellKnee <- function(sparseMatrix, libraryID){
     scale_y_log10() +
     labs(y = "Barcode rank", x = "Total UMI count")
 
-  ## Filtering barcodes based on inflection point!
+  ## Filtering barcodes based on inflection point.
   m_filtered <- sparseMatrix[, tot_counts > metadata(bc_rank)$inflection]
   ## Filtering all genes that are zero in all barcodes!
-  m_filtered <- m_filtered[tot_genes > 0, ]
+  ##m_filtered <- m_filtered[tot_genes > 0, ]
 
   pdf(file = paste0(output, libraryID, "/kneePlot.pdf"), width = 16, height = 10)
   grid.arrange(kneePlot,ncol = 1, nrow = 1)
