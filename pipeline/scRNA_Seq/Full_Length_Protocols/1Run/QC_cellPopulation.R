@@ -1,10 +1,10 @@
 ## SFonsecaCosta, Sept 2018
 
 ### This script is used to do the quality control of the data.
-### In this script we work with abundance_gene_level+fpkm+intergenic.tsv output file from the previous step (kallisto followed by the analysis)
+### In this script we work with abundance+geneLevel+intergenic.tsv output file from the previous step (kallisto followed by the analysis)
 
 ## 1 Step --> Create a matrix with all cells that belong to the same: cellTypeId, stageId, strain, uberonId, sex that belongs to same experiment and same species.
-## 2 Step --> Verify if each of the combinations selected in the 1 Step follow a bimodal distribution
+## 2 Step --> Verify if each of the conditions selected in the 1 Step follow a bimodal distribution
 ## 3 Step --> generate output file with experiments that pass the requirement
 
 ## Usage:
@@ -48,14 +48,12 @@ if( file.exists(scrna_seq_sample_info) ){
 
 ## Create output files
 if (dir.exists(output_folder)){
-
   file.create("Modality_Cell_type_per_experiment.tsv")
   cat("experiment\tcellTypeId\tspeciesId\tstageId\tuberonId\tsex\tstrain\tmodeDistribution\n",file = file.path(output_folder, "Modality_Cell_type_per_experiment.tsv"), sep = "\t")
   file.create("NEW_scRNASeq_sample_info.tsv")
   cat("libraryId\texperimentId\tcellTypeName\tcellTypeId\tspeciesId\tplatform\twhiteList\tprotocol\tprotocolType\tlibraryType\tinfoOrgan\tstageId\tuberonId\tsex\tstrain\treadLength\torganism\n",file = file.path(output_folder,"NEW_scRNASeq_sample_info.tsv"), sep = "\t")
   file.create("Discard_scRNASeq_sample_info.tsv")
   cat("libraryId\texperimentId\tcellTypeName\tcellTypeId\tspeciesId\tplatform\twhiteList\tprotocol\tprotocolType\tlibraryType\tinfoOrgan\tstageId\tuberonId\tsex\tstrain\treadLength\torganism\n",file = file.path(output_folder,"Discard_scRNASeq_sample_info.tsv"), sep = "\t")
-
 } else {
   print("Directoty not exists.....")
 }
@@ -172,7 +170,7 @@ splitInfoFiles <- function(ModalityFIle){
   }
 }
 
-## Run the QC per cell-Type/experiment/species
+## Run the QC per condition
 for (species in unique(annotation$speciesId)) {
   cat("Species:", species, "\n")
   for (experiment in unique(annotation$experimentId[annotation$speciesId == species])){
@@ -190,7 +188,7 @@ for (species in unique(annotation$speciesId)) {
 
               ### 1 STEP --> create matrix
               infoLib <- annotation$libraryId[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]
-              file <- file.path(cells_folder, infoLib, "abundance_gene_level+fpkm+intergenic.tsv")
+              file <- file.path(cells_folder, infoLib, "abundance+geneLevel+intergenic.tsv")
               cat("Number of cells:", length(file), "\n")
 
               if (length(file) != 0){
@@ -216,7 +214,6 @@ for (species in unique(annotation$speciesId)) {
     }
   }
 }
-
 ### 3 Step --> generate output with experiments that pass or not the QC
 readModalityFile <- read.table(file.path(output_folder, "Modality_Cell_type_per_experiment.tsv"), header = TRUE, sep="\t")
 QC <- splitInfoFiles(ModalityFIle = readModalityFile)
