@@ -105,7 +105,7 @@ check_tools: clusterJURA
 	@$(CLUSTER_FASTP_CMD)      which fastp            >> $@.tmp
 	@$(MV) $@.tmp $@
 
-## generate gene2biotype, gene2transcript and gene2geneName
+## generate gene2biotype, gene2transcript and gene2geneName (without intergenic regions)
 generateInfo: check_tools ($RNASEQ_CLUSTER_GTF) 0Preparation/generateInfo.R
 @echo --- Starting generation of informative file from GTF ---
 	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                            	0Preparation/generateInfo.R
@@ -119,7 +119,7 @@ generateInfo: check_tools ($RNASEQ_CLUSTER_GTF) 0Preparation/generateInfo.R
 	@touch $@
 
 ## Prepare single cell info file (run rule in front)
-prepare_singlecell_info: check_tools ../$(SC_RNASEQ_NEW_LIB_FILEPATH) 0Preparation/prepare_scrna_seq_sample_info.R
+prepare_singlecell_info: generateInfo ../$(SC_RNASEQ_NEW_LIB_FILEPATH) 0Preparation/prepare_scrna_seq_sample_info.R
 	@$(RM) ../$(SC_RNASEQ_SAMPINFO_FILEPATH)
 	@echo --- prepare single cell information file ---
 	@$(CLUSTER_FASTP_CMD) $(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args NEW_scRNASeqLibrary="../$(SC_RNASEQ_NEW_LIB_FILEPATH)" raw_cells_folder="$(SC_RNASEQ_FASTQ_FULL_LENGTH)" output_folder="${PWD}/../$(OUTPUT_DIR)"' 0Preparation/prepare_scrna_seq_sample_info.R 0Preparation/prepare_scrna_seq_sample_info.Rout > $@.tmp
@@ -134,7 +134,7 @@ kallisto: prepare_singlecell_info ../$(SC_RNASEQ_SAMPINFO_FILEPATH)
 	@echo "At the end it is a good idea to relaunch the kallisto rule step to be sure everything was run!"
 	@touch $@
 
-## Convert TranscriptID to GeneID and recalculations (TPM/FPKM)
+## Convert TranscriptID to GeneID and perform recalculations of TPM without intergenic regions
 analysis: kallisto 1Run/analysis.R
 	@echo --- Starting the analysis ---
 	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                                   1Run/analysis.R
@@ -150,7 +150,7 @@ analysis: kallisto 1Run/analysis.R
 	@echo --- DONE ---
 	@touch $@
 
-## Quality control by cell population
+## Quality control by cell population to perform the calls (not pass if not bimodal)
 QC_cellPopulation: analysis 1Run/QC_cellPopulation.R
 	@echo --- Starting the quality control per cell population ---
 	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                                   1Run/QC_cellPopulation.R
@@ -167,64 +167,41 @@ QC_cellPopulation: analysis 1Run/QC_cellPopulation.R
 	@echo --- DONE ---
 	@touch $@
 
-## Summing the raw counts per cell-type, experiment and species
-Sum_RawCounts_cellPopulation: QC_cellPopulation 1Run/Sum_RawCounts_cellPopulation.R
-	@echo --- Start running the sum of raw counts of cell populations that pass QC ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                                             1Run/Sum_RawCounts_cellPopulation.R
-	@sed -i 's@--output=.*@--output=${PWD}/Sum_RawCounts_cellPopulation.out@'                                              1Run/Sum_RawCounts_cellPopulation.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/Sum_RawCounts_cellPopulation.err@'                                                1Run/Sum_RawCounts_cellPopulation.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                          1Run/Sum_RawCounts_cellPopulation.sbatch
-	@sed -i 's@export NEW_scRNASeq_sample_info=.*@export NEW_scRNASeq_sample_info=../$(SC_RNASEQ_SAMPINFO_NEW_FILEPATH)@'  1Run/Sum_RawCounts_cellPopulation.sbatch
-	@sed -i 's@export cells_folder=.*@export cells_folder=$(SC_RNASEQ_CLUSTER_KALLISTO)@'                                  1Run/Sum_RawCounts_cellPopulation.sbatch
-	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_CLUSTER_SUM_RAW_COUNTS_CELLPOP_RES)@'              1Run/Sum_RawCounts_cellPopulation.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES)@'                                                   1Run/Sum_RawCounts_cellPopulation.sbatch
-	@sbatch 1Run/Sum_RawCounts_cellPopulation.sbatch
+## Call present and absent genes per individual library/cell
+## NOTE: Use the reference intergenic defined in the RNA-Seq data 
+scRNAseq_Calls: QC_cellPopulation ($REFERENCE_INTERGENIC_PATH) 1Run/scRNAseq_Calls_pValue.R
+	@echo --- Starting calling present/absent genes per library ---
+	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                                             1Run/scRNAseq_Calls_pValue.R
+	@sed -i 's@--output=.*@--output=${PWD}/scRNAseq_Calls_pValue.out@'                                                     1Run/scRNAseq_Calls_pValue.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/scRNAseq_Calls_pValue.err@'                                                       1Run/scRNAseq_Calls_pValue.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                          1Run/scRNAseq_Calls_pValue.sbatch
+	@sed -i 's@export NEW_scRNASeq_sample_info=.*@export NEW_scRNASeq_sample_info=../$(SC_RNASEQ_SAMPINFO_NEW_FILEPATH)@'  1Run/scRNAseq_Calls_pValue.sbatch
+	@sed -i 's@export cells_folder=.*@export cells_folder=$(SC_RNASEQ_CLUSTER_KALLISTO)@'                                  1Run/scRNAseq_Calls_pValue.sbatch
+	@sed -i 's@export refIntergenic_folder=.*@export refIntergenic_folder=$(REFERENCE_INTERGENIC_PATH)@'                   1Run/scRNAseq_Calls_pValue.sbatch
+	@sed -i 's@export desired_pValue_cutoff=.*@export desired_pValue_cutoff=$(PVALUE_CUTOFF)@'                             1Run/scRNAseq_Calls_pValue.sbatch
+	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_CLUSTER_CALL_PRESENT)@'                            1Run/scRNAseq_Calls_pValue.sbatch
+	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES)@'                                                   1Run/scRNAseq_Calls_pValue.sbatch
+	@sbatch 1Run/scRNAseq_Calls_pValue.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
 	@touch $@
 
-## Call present genes per individual library/cell
-## NOTE: Use the reference intergenic difened by using the RNA-Seq data 
-scRNAseq_Callpresent: $(PIPELINEROOT)/RNASeq/sum_by_species Sum_RawCounts_cellPopulation 1Run/scRNAseq_Callpresent.R
-	@echo --- Starting calling present genes per library ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                                             1Run/scRNAseq_Callpresent.R
-	@sed -i 's@--output=.*@--output=${PWD}/scRNAseq_Callpresent.out@'                                                      1Run/scRNAseq_Callpresent.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/scRNAseq_Callpresent.err@'                                                        1Run/scRNAseq_Callpresent.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                          1Run/scRNAseq_Callpresent.sbatch
-	@sed -i 's@export NEW_scRNASeq_sample_info=.*@export NEW_scRNASeq_sample_info=../$(SC_RNASEQ_SAMPINFO_NEW_FILEPATH)@'  1Run/scRNAseq_Callpresent.sbatch
-	@sed -i 's@export cells_folder=.*@export cells_folder=$(SC_RNASEQ_CLUSTER_KALLISTO)@'                                  1Run/scRNAseq_Callpresent.sbatch
-	@sed -i 's@export sum_species=.*@export sum_species=$(RNASEQ_CLUSTER_SUM_RES)@'                                        1Run/scRNAseq_Callpresent.sbatch
-	@sed -i 's@export gaussian_choice=.*@export gaussian_choice=$(RNASEQ_CLUSTER_GAUSSIAN_CHOICE)@'                        1Run/scRNAseq_Callpresent.sbatch
-	@sed -i 's@export ratioValue=.*@export ratioValue=$(INTERGENIC_N_PROPORTION)@'                                         1Run/scRNAseq_Callpresent.sbatch
-	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_CLUSTER_CALL_PRESENT)@'                            1Run/scRNAseq_Callpresent.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES)@'                                                   1Run/scRNAseq_Callpresent.sbatch
-	@sbatch 1Run/scRNAseq_Callpresent.sbatch
-	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
-	@echo --- DONE ---
-	@touch $@
-
-## Call present genes per cell population
-Sum_Calls_cellPopulation: scRNAseq_Callpresent 1Run/Sum_Calls_cellPopulation.R
-	@echo --- Starting calling present genes per cell population ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                                             1Run/Sum_Calls_cellPopulation.R
-	@sed -i 's@--output=.*@--output=${PWD}/Sum_Calls_cellPopulation.out@'                                                  1Run/Sum_Calls_cellPopulation.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/Sum_Calls_cellPopulation.err@'                                                    1Run/Sum_Calls_cellPopulation.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                          1Run/Sum_Calls_cellPopulation.sbatch
-	@sed -i 's@export NEW_scRNASeq_sample_info=.*@export NEW_scRNASeq_sample_info=../$(SC_RNASEQ_SAMPINFO_NEW_FILEPATH)@'  1Run/Sum_Calls_cellPopulation.sbatch
-	@sed -i 's@export cells_folder=.*@export cells_folder=$(SC_RNASEQ_CLUSTER_KALLISTO)@'                                  1Run/Sum_Calls_cellPopulation.sbatch
-	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_CLUSTER_CALL_PRESENT_CELLPOP_RES)@'                1Run/Sum_Calls_cellPopulation.sbatch
-	@sed -i 's@export ratioValue=.*@export ratioValue=$(SC_RNASEQ_RATIO_PROPORTION)@'                                      1Run/Sum_Calls_cellPopulation.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES)@'                                                   1Run/Sum_Calls_cellPopulation.sbatch
-	@sbatch 1Run/Sum_Calls_cellPopulation.sbatch
-	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
-	@echo --- DONE ---
-	@touch $@
-
-final_status: Sum_Calls_cellPopulation
+final_status: scRNAseq_Calls
 	@$(GIT) status
+	
+final_commit: final_status
+	# Commit the scRNASeq info files before and after QC, the bimodal file and information file about all libraries
+	@$(GIT) add ../$(OUTPUT_DIR)scrna_seq_sample_info.txt
+	@$(GIT) add ../$(OUTPUT_DIR)Modality_Cell_type_per_experiment.tsv
+	@$(GIT) add ../$(OUTPUT_DIR)NEW_scRNASeq_sample_info.tsv
+	@$(GIT) add ../$(OUTPUT_DIR)Discard_scRNASeq_sample_info.tsv
+	@$(GIT) add ../$(OUTPUT_DIR)All_samples.tsv
+	@$(GIT) commit -m 'Update info files for scRNASeq full-length for $(DBNAME)' ../$(OUTPUT_DIR)scrna_seq_sample_info.txt ../$(OUTPUT_DIR)Modality_Cell_type_per_experiment.tsv ../$(OUTPUT_DIR)NEW_scRNASeq_sample_info.tsv ../$(OUTPUT_DIR)Discard_scRNASeq_sample_info.tsv ../$(OUTPUT_DIR)All_samples.tsv || true
+	@$(GIT) push
+	@echo -e "All information is ready, you can make a tar of the results. \n"
+	@touch $@
 
-
-tar_all: final_status
+tar_all: final_commit
 	cd $(SC_RNASEQ_CLUSTER_ALL_RES)
 	tar -cvfSp tarball_scRNASeq.tar .
 	gzip -9 tarball_scRNASeq.tar

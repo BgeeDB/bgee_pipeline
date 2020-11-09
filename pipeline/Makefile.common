@@ -469,6 +469,7 @@ SCRNASEQ_SOFTWARE_BAMTOFASTQ                  := /users/sfonseca1/bin/bamtofastq
 
 # scRNAseq cluster paths (JURA)
 SENSITIVE_GENERAL_PATH                        := $(CLUSTER_DATA_PATH)/
+REFERENCE_INTERGENIC_PATH                     := $(CLUSTER_DATA_PATH)/Rerence_intergenic_folder/
 
 ## PATH to full length and 10X data
 SC_RNASEQ_FASTQ_FULL_LENGTH                   := $(SENSITIVE_GENERAL_PATH)FASTQ/scRNAseq/Full_length/
@@ -499,6 +500,8 @@ SC_RNASEQ_INFO_ALL_LIBRARIES_10X              := $(SC_RNASEQ_CLUSTER_QC_CELLTYPE
 
 # proportion of intergenic allowed in the cell population to make the ratio cut-off
 SC_RNASEQ_RATIO_PROPORTION                    := 0.05
+# p-value used as cutoff 
+PVALUE_CUTOFF                                 := 0.05
 
 # =========== DOWNLOAD FILES ===============
 
