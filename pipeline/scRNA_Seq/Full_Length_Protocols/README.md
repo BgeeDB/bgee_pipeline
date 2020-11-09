@@ -15,16 +15,14 @@
    2. [Pseudo-alignment](#pseudo-alignment)
    3. [Result processing at individual cell](#result-processing-at-individual-cell)
    4. [Quality control for cell population](#quality-control-for-cell-population)
-   5. [Result processing at cell population](#result-processing-at-cell-population)
-   6. [Post-processing: expression calls and rank computation](#post-processing-expression-calls-and-rank-computation)
+   5. [Post-processing: expression calls and rank computation](#post-processing-expression-calls-and-rank-computation)
 
 **Detailed guidelines:**
 
 1. [Preparation steps](#preparation-steps)
 2. [Mapping the libraries](#mapping-the-libraries)
 3. [Validate cell-type and experiment](#validate-cell-type-and-experiment)
-4. [Export global information per cell population ](#export-global-information-per-cell-population )
-5. [Presence calls](#presence-calls)
+4. [Presence calls](#presence-calls)
 
 
 ## General information:
@@ -87,7 +85,7 @@ The following parameters are used:
 #### Result processing at individual cell
 
 From the Kallisto output, for each genomic feature, counts of pseudo-aligned reads are retrieved.
-The pseudo-aligned read counts, and the genomic feature effective lengths, are used to compute TPM and FPKM values.
+The pseudo-aligned read counts, and the genomic feature effective lengths, are used to compute TPM values.
 We sum at the gene level the counts of pseudo-aligned reads computed at the transcript level by Kallisto.
 For calling genes present (see `Expression Calls`), we compute not only for genic regions, but also for intergenic regions.
 
@@ -100,34 +98,23 @@ Then we:
 * compute the ratio of how many times a gene is detected across the number of cells with a simple threshold (TPM > 0).
 * verify if the cell population follow a bimodal distribution, i.e. most genes are either present in almost all cells, or absent in almost all cells.
 
-#### Result processing at cell population
-
-* Sum raw counts
-
-From the Kallisto output, for each cell population that belongs to same experiment and species, as well as, cell-typeId, stageId, uberonId, strain and sex the counts of pseudo-aligned reads are retrieved and summed, and the effective length are recalculated based on the weighted mean.
-The pseudo-aligned summed read counts, and the genomic feature weighted mean effective lengths, are used to compute TPM and FPKM values.
-We sum at the gene level the counts of pseudo-aligned reads computed at the transcript level by Kallisto.
-
 #### Post-processing: expression calls and rank computation
 
 ##### Expression calls
 
 * Per individual cell
 
-To define the call of expression of a gene in a library as "present", we check whether its level of expression is over the background transcriptional noise in this library. To estimate the background transcriptional noise in each library, we use the level of expression of a set of intergenic regions (described in the RNA-Seq pipeline).
-How we define this set of intergenic regions is described in the developer documentation section of RNA-Seq pipeline.
+To define the call of expression of a gene in a library, we compute a Z-Score for each gene ID based on a set of reference intergenic regions. To see how the reference intergenic regions are defined look at it in the description section of the developer documentation of [RNA_Seq/](../RNA_Seq/) pipeline.
+
+From the Z-Score values we compute a p-value distribution for for the correspondent library. The p-values are used to call the genes as "present" or "absent" based on the p-value threshold specified. 
 
 * Per cell population
 
-Computation of the ratio calls for each gene that belongs to the same cell population (as well as, all assumptions described above).
-
-![Boxplot](img/CodeCogsEqn.png)
-
-To define the call of expression of a gene in a cell population as "present", we compute the density ratio. We compute 2 cut-offs: "proportion" (proportion intergenic/proportion coding = 0.05) and "density" (density ratio where the density of intergenic region is lower then the density of protein coding). A gene is classified as present with high confidence if its expression is above the "proportion" cut-off, and with low confidence if it is below that but above the "density" cut-off.
+To define the call of expression of a gene in a cell population for a given condition as "present" or "absent", we use the method of Benjamini & Hochberg (1995) to control the false discovery rate, as specified [here](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/p.adjust.html).
 
 ##### Rank computation
 
-To calculate the ranks of expression of genes per cell population we use the TPM values, this means, the output files from the Sum Raw Counts (see below).
+Gene expression ranks allow to identify the most functionally-relevant conditions related to the expression of a gene. It is computed from integrating all data types used in Bgee. See [post_processing/](../post_processing/) for this pipeline step.
 
 ## Detailed guidelines (Developer):
 
@@ -163,7 +150,13 @@ After this, 2 extra rules should be executed: one to list the new files download
 Then the rest of the pipeline will be executed in the sensitive server.
 
 Initially, we should check if all tools are available, by executing the rule `make check_tools`.
-After that the last step of the preparation step, of the full-length protocols, can be done by executing the rule `make prepare_singlecell_info` in the front of the sensitive server.
+
+After that 3 informative files will be generated for each species. The files just contain information about genic types (gene2biotype, gene2transcript and gene2geneName). To execute this part of the pipeline the rule `generateInfo` should be executed.
+
+* [generateInfo.R](#0Preparation/generateInfo.R)
+   * Create three informative file about gene and correspondent biotype, gene and correspondent transcript as well as gene and correspondent gene name.
+
+The last step of the preparation step, of the full-length protocols, is done by executing the rule `make prepare_singlecell_info` in the front-end of the sensitive server.
 
 * [prepare_scrna_seq_sample_info.R](#prepare-scrna-seq-sample-info-R)
    * Create an info file about all libraries by collecting information from manual annotation and FASTP software
@@ -177,61 +170,48 @@ To run the mapping for each library a R script from the folder [1Run/](1Run/) sh
 
 This script is launched by using a perl script `slurm_scheduler_Kallisto_scRNASeq.pl` that allow to launch multiple jobs at the same time in the sensitive server.
 
-The second step is done by performing the analysis of each library, where the transcripts are summed to gene level and the TPM and FPKM recalculated, more details can be founded in the RNA-Seq pipeline for this second step.
+The second step is done by performing the analysis of each library, where the transcripts are summed to gene level and the TPM recalculated for genic regions without intergenic IDs.
 
-Note that the scRNA-Seq pipeline is dependent of a folder that is generated in the RNA-Seq pipeline for each species, with the following files:
+Note that the scRNA-Seq pipeline is dependent of a folder that is generated in the RNA-Seq pipeline for each species:
+
    * transcriptome index (15 k-mer and 31 k-mer)
-   * gene2transcript file
-   * gene2biotype file
 
 In order to execute the [analysis.R](#analysis-R) a sbatch script `analysis.sbatch` is used to launch the work in the sensitive server.
 At this point, the rule `analysis` should be executed from the `Makefile`.
 
 ### Validate cell-type and experiment
 
-In order to validate if an experiment should be integrated in Bgee, a validation createria is applied by using a quality control script [1Run/QC_cellPopulation.R](1Run/QC_cellPopulation.R) launched in the server by using a sbatch script named `QC_cellPopulation.sbatch`.
+In order to validate if an experiment should be integrated in Bgee, a validation criteria is applied by using a quality control script [1Run/QC_cellPopulation.R](1Run/QC_cellPopulation.R) launched in the server by using a sbatch script named `QC_cellPopulation.sbatch`.
 The criteria is to verify if a cell population follow a bimodal distribution (as described before).
-For this we quantify how many times the TPM value is higher then zero for each gene that belongs to biotype protein coding across the number of the cells and then calculate the ratio. After that a R `package LaplacesDemon` is applied to determine if the ratio distribution is indeed bimodal.
+For this we quantify how many times the TPM value is higher then zero for each gene ID that belongs to biotype protein coding across *n* number of cells and then compute the correspondent ratio. After that a function from the R package `LaplacesDemon` is applied to determine if the ratio distribution is indeed bimodal.
 
 ![Boxplot](img/validation_experiment.png)
 
 
-### Export global information per cell population
-
-* Sum of raw counts
-
-In order to provide to the user a global information per cell population (same specie, experiment, cell-typeId, stageId, uberonId, strain and sex) we provide a abundance file with sum of est_counts from kallisto for each transcript, followed by the weight mean of effective length across all cells and then the recalculation of TPM and FPKM. The information in the end is reported at gene level.
-This is done by using the script: [1Run/Sum_RawCounts_cellPopulation.R](1Run/Sum_RawCounts_cellPopulation.R) and launched in the sensitive server by using the `Sum_RawCounts_cellPopulation.sbatch` sbatch script.
-
 ### Presence calls
 
-In this step of the pipeline to call present genes (note that in single cell RNA-Seq data we don't call absent genes) we use the reference intergenic regions from the RNA-Seq pipeline. This comes from the fact that the density of deconvolute intergenic regions are tendencialy less noisy, as is showed in the graphics below, where the summed by species using just single cell data or by pulling all libraries together, this means RNA-Seq and scRNA-Seq, provide a more high overlap between intergenic and coding regions.
+In this step of the pipeline to call present and absent genes we use a set of reference intergenic regions per species from the RNA-Seq pipeline. This comes from the fact that the density of deconvolute intergenic regions are tendency less noisy, as is showed in the graphics below, where the summed by species using just single cell data or by pulling all libraries together, this means RNA-Seq and scRNA-Seq, provide a more high overlap between intergenic and coding regions.
 
 ![Boxplot](img/sum_by_species_2.png)
 
 * Per cell
 
-In order to call present genes using the intergenic regions the script [1Run/scRNAseq_Callpresent.R](1Run/scRNAseq_Callpresent.R) should be executed by launch the correspondent sbatch script `scRNAseq_Callpresent.sbatch`. This means, by executing in the sensitive server the rule `make scRNAseq_Callpresent`.
-After call expressed genes for each individual cell, the output is exported with information about present genes in each library, as well as, is collected a global information about each library in the file `All_samples.tsv`. In order to summarize the information in a visual way a global plot with the distribution of proportion of coding present is exported, as represented below for each species.
-We should have in consideration, that because of high propotion of zeros in single cell RNA-Seq data, exist a proportional effect in the proportion of protein coding genes called present.
+In order to call present and absent genes a set of expression of reference intergenic regions are used to calculate a theoretical p-value per gene ID, the script [1Run/scRNAseq_Calls_pValue.R](1Run/scRNAseq_Calls_pValue.R) should be executed by launch the correspondent sbatch script `scRNAseq_Calls_pValue.sbatch`. This means, by executing in the sensitive server the rule `make scRNAseq_Calls`.
 
-![Boxplot](img/ProportionCodingIndividualCell.png)
+Per individual library the densities distributions are exported as well as the p-value frequency plot. A report file containing the information about the library is also provided, example below.
+
+![Boxplot](img/Distribution_SRX1226603.png)
+
+![Boxplot](img/output_SRX1226603.png)
+
+After the calls of expressed genes for each individual cell, using a defined p-value threshold, we collect the global information about each library in the file `All_samples.tsv`. In order to summarize the information in a visual way a plot with the proportion of different types or biotypes, as protein coding, are exported as represented below (experiment ERP013381 from Mus musculus with 501 cells).
+
+We should have in consideration, that because of high proportion of zeros in single cell RNA-Seq data, exist a proportional effect in the percentage of protein coding genes called present.
+
+![Boxplot](img/info_per_cell_pValue.png)
 
 * Per cell-type population
 
-In order to provide a call of expressed genes at cell population level, we introduze an approach based on the aggregation of the calls, by executing the following code [1Run/Sum_Calls_cellPopulation.R](1Run/Sum_Calls_cellPopulation.R).
-In order to launch this part of the pipeline in the sensitive server the rule `make Sum_Calls_cellPopulation` should be executed.
-The confidente approach at population level allow us to call expressed genes based in two criteria: threshold ratio cut-off based on the proportion of intergenic and coding regions and the second criteria is the density, this means the cut-off is applied when the density of intergenic regions is lower than the coding regions, as demonstrated in the graphic below.
-
-![Boxplot](img/cellpopulation.png)
-
-Based on this approach we are able to call "high confident" expressed genes at population level (all genes at the right of the threshold ratio cut-off) and "low confident" expressed genes (all genes between the density cut-off and threshold ratio cut-off).
-
-At the population level a `Sum_Calls` file is exported for each cell population, as well as, the graphic plot with referent cut-offs.
-In order to summarize all information from all different cell from all experiments and species, as well as, all combinations (cell-typeId, stageId, uberonId, strain and sex) a a `Stats_SumFile.tsv` file is exported collecting all important information, as well as, the graphic plots of all cellIds and species present in the annotation file, as represented below.
-
-
-![Boxplot](img/SumCalls_allinfo.png)
-
+At the population level the calls are performed using BH-FDR correction. This means, for a given condition we collect a vector of p-values (for a particular gene across *n* libraries) and then we classify the gene as present if in one of the libraries the p.adjusted value is lower or equal to the cut-off desired. 
 
 
