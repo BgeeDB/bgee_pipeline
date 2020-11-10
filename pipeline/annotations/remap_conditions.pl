@@ -7,7 +7,7 @@ use diagnostics;
 use Getopt::Long;
 use FindBin;
 use File::Slurp;
-use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
+use lib "$FindBin::Bin/.."; # Get lib path for Utils.pm
 use Utils;
 $| = 1; # no buffering of output
 
