@@ -216,46 +216,41 @@ qc_cellType: process_busFile 1Run/QC_CelltypeIdentification.R
 	@echo --- DONE ---
 	@touch $@
 
-## Sum raw UMI per cell population and the correspondent normalized values
-sum_raw_UMI: qc_cellType 1Run/sum_raw_UMI.R
-	@echo --- Starting the summing of the raw UMI counts ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                                         1Run/sum_raw_UMI.R
-	@sed -i 's@--output=.*@--output=${PWD}/sum_raw_UMI.out@'                                                           1Run/sum_raw_UMI.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/sum_raw_UMI.err@'                                                             1Run/sum_raw_UMI.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                      1Run/sum_raw_UMI.sbatch
-	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=../$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'                    1Run/sum_raw_UMI.sbatch
-	@sed -i 's@export InformationAllLibraries=.*@export InformationAllLibraries=$(SC_RNASEQ_INFO_ALL_LIBRARIES_10X)@'  1Run/sum_raw_UMI.sbatch
-	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_FASTQ_DROPLET)@'                                   1Run/sum_raw_UMI.sbatch
-	@sed -i 's@export output=.*@export output=$(SC_RNASEQ_CLUSTER_SUM_RAW_UMI)@'                                       1Run/sum_raw_UMI.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                                       1Run/sum_raw_UMI.sbatch
-	@sbatch 1Run/sum_raw_UMI.sbatch
+## Call present and absent genes per library/cell population
+calls: qc_cellType 1Run/Calls_cell_pop_per_library.R
+	@echo --- Starting the calls of present and absent genes ---
+	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                        																								1Run/Calls_cell_pop_per_library.R
+	@sed -i 's@--output=.*@--output=${PWD}/Calls_library_cellPop.out@'                      		      																								1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/Calls_library_cellPop.err@'                              																										1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                     																								1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=../$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'   																								1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@export InformationAllLibraries=.*@export InformationAllLibraries=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)/InformationAllLibraries.txt@'  			1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_FASTQ_DROPLET)@'                  																								1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@export folder_refIntergenic=.*@export folder_refIntergenic=../$(REFERENCE_INTERGENIC_PATH)@'   																				1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@export desired_pValue_cutoff=.*@export desired_pValue_cutoff=../$(PVALUE_CUTOFF)@'   																									1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_CLUSTER_CALLS_10X)@'                  																				1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                      																								1Run/Calls_cell_pop_per_library.sbatch
+	@sbatch 1Run/Calls_cell_pop_per_library.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
 	@touch $@
 
-
-## calls per individual cell and cell population
-call_cell_cellPop: sum_raw_UMI 1Run/Call_PresentGenes_indivCell_cellPop.R
-	@echo --- Starting the calls per individual cell and cell population ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                                         1Run/Call_PresentGenes_indivCell_cellPop.R
-	@sed -i 's@--output=.*@--output=${PWD}/Call_PresentGenes_indivCell_cellPop.out@'                                   1Run/Call_PresentGenes_indivCell_cellPop.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/Call_PresentGenes_indivCell_cellPop.err@'                                     1Run/Call_PresentGenes_indivCell_cellPop.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                       1Run/Call_PresentGenes_indivCell_cellPop.sbatch
-	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=../$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'                       1Run/Call_PresentGenes_indivCell_cellPop.sbatch
-	@sed -i 's@export InformationAllLibraries=.*@export InformationAllLibraries=$(SC_RNASEQ_INFO_ALL_LIBRARIES_10X)@'  1Run/Call_PresentGenes_indivCell_cellPop.sbatch
-	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_FASTQ_DROPLET)@'                                   1Run/Call_PresentGenes_indivCell_cellPop.sbatch
-	@sed -i 's@export desired_r_cutoff=.*@export desired_r_cutoff=$(SC_RNASEQ_RATIO_PROPORTION)@'                      1Run/Call_PresentGenes_indivCell_cellPop.sbatch
-	@sed -i 's@export output=.*@export output=$(SC_RNASEQ_CLUSTER_CALLS_10X)@'                                         1Run/Call_PresentGenes_indivCell_cellPop.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                                       1Run/Call_PresentGenes_indivCell_cellPop.sbatch
-	@sbatch 1Run/Call_PresentGenes_indivCell_cellPop.sbatch
-	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
-	@echo --- DONE ---
-	@touch $@
-
-final_status: call_cell_cellPop
+final_status: calls
 	@$(GIT) status
+	
+final_commit: final_status
+	# Commit the scRNASeq info files after QC and information file about the stats of all libraries
+	@$(GIT) add ../$(OUTPUT_DIR)InformationAllLibraries.txt
+	@$(GIT) add ../$(OUTPUT_DIR)markerGenes_Validated.txt
+	@$(GIT) add ../$(OUTPUT_DIR)variabilityClusters.txt
+	@$(GIT) add ../$(OUTPUT_DIR)All_cellPopulation_stats_10X.tsv
+	@$(GIT) add ../$(OUTPUT_DIR)All_cellPopulation_stats_notPass_10X.tsv
+	@$(GIT) commit -m 'Update info files for scRNASeq target-based for $(DBNAME)' ../$(OUTPUT_DIR)InformationAllLibraries.txt ../$(OUTPUT_DIR)markerGenes_Validated.txt ../$(OUTPUT_DIR)variabilityClusters.txt ../$(OUTPUT_DIR)All_cellPopulation_stats_10X.tsv ../$(OUTPUT_DIR)All_cellPopulation_stats_notPass_10X.tsv || true
+	@$(GIT) push
+	@echo -e "All information is ready, you can make a tar of the results. \n"
+	@touch $@
 
-tar_all: final_status
+tar_all: final_commit
 	cd $(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)
 	tar -cvfSp tarball_scRNASeq_droplet_10X.tar .
 	gzip -9 tarball_scRNASeq_droplet_10X.tar

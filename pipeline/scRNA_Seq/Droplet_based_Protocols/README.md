@@ -14,9 +14,8 @@
    2. [Pseudo-alignment](#pseudo-alignment)
    3. [Processing the files](#processing-the-files)
    4. [Loading the libraries for analysis](#loading-the-libraries-for-analysis)
-   5. [Result processing at individual cell](#result-processing-at-individual-cell)
-   6. [Result processing at cell population](#result-processing-at-cell-population)
-   7. [Post-processing: expression calls and rank computation](#post-processing-expression-calls-and-rank-computation)
+   5. [Result processing at individual library](#result-processing-at-individual-library)
+   6. [Post-processing: expression calls and rank computation](#post-processing-expression-calls-and-rank-computation)
 
 
 **Detailed guidelines:**
@@ -25,8 +24,7 @@
 2. [Downloading](#downloading)
 2. [Mapping and process the libraries](#mapping-and-process-the-libraries)
 3. [Quality control and cell type identification](#quality-control-and-cell-type-identification)
-4. [Export global information per cell population](#export-global-information-per-cell-population )
-5. [Presence calls](#presence-calls)
+4. [Presence calls](#presence-calls)
 
 
 ## General information:
@@ -108,39 +106,42 @@ From this step 3 important files are exported in the end:
 2) variabilityCluster.txt &rarr; contain information for each library about the number of clusters detected (UMAP) as well as the different cell-types detected per cluster.
 3) markerGenes_Validated.txt &rarr; validation of marker genes proposed in the annotation file after data analysis.
 
-#### Result processing at individual cell
+#### Result processing at individual library
 
-For unique cell-type in each individual library a table is exported containing all barcodes (cells per column) and the genomic feature (gene Id per row) with correspondent UMI counts per individual barcode/feature.
-The UMI counts are used to compute the normalized values per gene / per cell, this means CPM values.
-For calling genes present, we compute genic regions and intergenic regions for each individual cell.
-
-#### Result processing at cell population
-
-* Sum UMI counts
-
-All gene-UMI count matrix that belongs to the same experiment and species, as well as, cell-typeId, stageId, uberonId, strain and sex are retrieved and the UMI counts are summed across genomic features (gene level) and then the summed UMI count matrix is used to compute the CPM values of the cell population.
+For each cell-type population in each individual library a table is exported containing all barcodes (cells per column) and the genomic features (gene Id per row) with correspondent UMI counts. Normalized values - Counts Per Million (CPM) are also computed from the raw UMI counts and exported per library/cell-type  population.
 
 
 #### Post-processing: expression calls and rank computation
 
 ##### Expression calls
 
-* Per individual cell
-
-To define the call of expression of a gene in a cell as "present", we check whether its level of expression is over the background transcriptional noise in this correspondent cell. To estimate the background transcriptional noise in each individual cell, we use the level of expression of a set of intergenic regions defined in the RNA-Seq pipeline.
-
 * Per cell population
 
-Computation of the ratio calls for each gene that belongs to the same cell population (as well as, all assumptions described above).
+To define the call of expression of a gene, we check whether its level of expression is over the background transcriptional noise. To estimate the background transcriptional noise, we use the level of expression of a set of reference intergenic regions.
 
-To define the call of expression of a gene in a cell population as "present", we compute the density ratio of protein coding and intergenic region and then we check whether its level of expression is over the background transcriptional noise in this correspondent cell population type.
+In general the calls of genes at cell population level are done following the next steps:
 
-The calls at the cell population level are based in confidence, this means present with low or high confidence.
+1) For each library/cell population we sum the UMI counts of all cells,
+2) Recalculate the normalized values (CPM) at cell population level,
+3) Calculate mean and the standard deviation of the reference intergenic regions,
+4) Compute the Z-Score for each gene ID,
+5) Compute the p-value from the Z-Score for each gene ID.
 
+Based on the pValue_threshold defined the genes are then classified as present or absent for the correspondent library/cell-type population.
+
+
+* Per individual cell
+
+To perform the calls for each gene ID at individual cell we do first a BH-FDR correction for a condition, this means:
+
+1) For a condition we collect a vector of p-values (for a particular gene across *n* libraries) 
+2) Then if in one of the libraries the p.adjusted value is lower or equal to the cut-off desired the gene is classified as present, in the referent condition, otherwise is absent. 
+
+Then, at individual level, if the cell_*i* that belongs to the condition_*x* have at least 1 UMI the gene is classified as present, otherwise is absent.
 
 ##### Rank computation
 
-To calculate the ranks of expression of genes per cell population we use the CPM values, this means, the output files from the Sum UMI counts (see below).
+Gene expression ranks allow to identify the most functionally-relevant conditions related to the expression of a gene. It is computed from integrating all data types used in Bgee. See [post_processing/](../post_processing/) for this pipeline step.
 
 ## Detailed guidelines (Developer):
 
@@ -148,7 +149,7 @@ To calculate the ranks of expression of genes per cell population we use the CPM
 
 The preparation step are divide in 2 main scripts that are available in the folder [0Preparation/](0Preparation/)
 
-The [retrieve_metadata.R](#retrieve-metadata) is the first script to be run in the pipeline since this script will collect metadata information for each library annotated by Bgee. The information collected in the `metadata_info_10X.txt` file exported by the script allow us to know from which resource the files should be downloaded and which procedue should be applied (as for example, convert files format).
+The [retrieve_metadata.R](#retrieve-metadata) is the first script to be run in the pipeline since this script will collect metadata information for each library annotated by Bgee. The information collected in the `metadata_info_10X.txt` file exported by the script allow us to know from which resource the files should be downloaded and which procedure should be applied (as for example, convert files format).
 
 ➡️ This script should be run in axiom server since we need internet connection to collect the information.
 
@@ -188,7 +189,7 @@ In the pipeline the download part is order by following rules:
 
 `make download_SRA` (Note: this rule is executed using a sbatch script, specifically: `download_SRA.sbatch`)
 
-NOTE: This can be done in parallel also.
+NOTE: This can be done in parallel by executing `make -j3 list_new_downloads`
 
 After the downloading part the rest of the pipeline is executed in jura server (sensitive server), by initially checking if all tools necessary are available `make check_tools`.
 
@@ -212,15 +213,15 @@ After the mapping in order to process the BUS output file we use the script [pro
 
 In this script we use `bustools` software to process each output.bus file from each library. The process of bustools starts, as specified before, by correcting the barcodes, sorting and then getting a generated UMI count matrix.
 
-For each library both the count of the UMIs in the busfile is saved by making a transcript compatibility count (TCC) matrix and by making a gene count matrix, that will be used later for downstream analysis.
+For each library the count of the UMIs are saved by making a transcript compatibility count (TCC) matrix and by making a gene count matrix, that will be used later for downstream analysis.
 
 For each library the gene count matrix folder contain a matrix `.mtx` the genes names in the file `genes.txt` and the barcodes information in the file `barcode.txt`.
 
-When this matrix is imported into R for data analysis we get the following information for each library:
+When this matrix is imported into R for data analysis we get the following information referent to each library:
 
 * Barcode ID (cell per column) / gene ID (per row) with correspondent unique molecular identifier count.
 
-Note that for each matrix from each library this contains multiple cell-types.
+Note that for each matrix from each library this contains multiple cell-types, that will be later on splitted by cell-type population.
 To run this rule we type `make process_busFile`.
 
 
@@ -231,7 +232,7 @@ The next rule of the pipeline is done by `make qc_cellType` where is used the [Q
 In this part of the pipeline different steps are executed at individual library. For each matrix, the following steps are done:
 
 1) Filtering cells based on the knee plot.
-This standard single-cell RNA-seq quality control is used to determine a threshold for considering cells valid for analysis, as examplified below for the library SRX3815587:
+This standard single-cell RNA-seq quality control is used to determine a threshold for considering cells valid for analysis, as exemplified below for the library SRX3815587:
 
 <table>
   <tr>
@@ -256,41 +257,21 @@ Note: During this process a file `variabilityClusters.txt` is exported with vari
 
 5) Export information about genes markers detected per library after data analysis and correspondent verification with genes markers provided by the authors, `markerGenes_Validated.txt`.
 
-6) Export per library a file with UMI counts (raw counts) and a file with normalized counts (CPM) for each cell-type detected.
-
-
-### Export global information per cell population
-
-In order to provide a global information per cell-type population to be used later in the rank computation, a sum of the raw UMI is done per: experiment, Uberon Id, celltype Id, developmental stage, sex and strain for a particular species. From the sum we compute the normalized counts - CPM with intergenic regions `SumRaw+Normalization_Genic+Intergenic_CellType_Experiment_UberonID_celltypeID_DevStage_Sex_Strain_Species.tsv` and without intergenic regions `SumRaw+Normalization_Genic_CellType_Experiment_UberonID_celltypeID_DevStage_Sex_Strain_Species.tsv` for each cell-type population (file used in the ranks).
-
-Example of the structure of the output table:
-
-gene_id | biotype | type | sum_raw_UMI | CPM
---- | --- | --- | --- |---
-ENSMUSG00000000001 | protein_coding | genic | 446 | 45.131280925932
-ENSMUSG00000000028 | protein_coding | genic | 11 | 1.11310334122254
-ENSMUSG00000000056 | protein_coding | genic | 174 | 17.6072710338838
-ENSMUSG00000000058 | protein_coding | genic | 11 | 1.11310334122254
-ENSMUSG00000000078 | protein_coding | genic | 2213 | 223.936154011407
-ENSMUSG00000000085 | protein_coding | genic | 101 | 10.2203124966797
-ENSMUSG00000000088 | protein_coding | genic | 2292 | 231.930259825641
-
-To launch this part of the pipeline we need to execute the rule `make sum_raw_UMI` that will run the [sum_raw_UMI.R](sum-raw-UMI-R) script launched by [sum_raw_UMI.sbatch](sum-raw-UMI-sbatch).
-
+6) Export per library a file with UMI counts (raw counts) and a file with normalized counts (CPM) for each cell-type population detected.
 
 ### Presence calls
 
-In this step of the pipeline to call present genes (note that in single cell RNA-Seq data we don't call absent genes) we use the reference intergenic regions from the RNA-Seq pipeline. This comes from the fact that the density of deconvolute intergenic regions are tendencialy less noisy in RNA-Seq data compared with single cell, as specified in the full length protocols (README).
+In this step of the pipeline to call present and absent genes we use the reference intergenic regions from the RNA-Seq pipeline. This comes from the fact that the density of deconvolute intergenic regions are tendency less noisy in RNA-Seq data compared with single cell, as specified in the single cell RNA-Seq full length protocols (README).
+
+* Per cell population
+
+In order to call present and absent genes by calculating the p-value of each gene ID we compute the mean and standard deviation of the reference intergenic regions (as described before). The script [Calls_cell_pop_per_library.R](Calls-cell-pop-per-library-R) should be executed by launch the correspondent batch script [Calls_cell_pop_per_library.sbatch](Calls-cell-pop-per-library-sbatch). This means, by executing in the sensitive server the rule `make calls`. This script export a main file regarding the detailed stats of each cell-type population in each library. A plot is also exported per species, as demonstrated below. 
+
+![Boxplot](img/cell_pop_target_based.png)
+
 
 * Per cell
 
-In order to call present genes using the intergenic regions the script [Call_PresentGenes_indivCell_cellPop.R](Call-PresentGenes-indivCell-cellPop-R) should be executed by launch the correspondent batch script [Call_PresentGenes_indivCell_cellPop.sbatch](Call-PresentGenes-indivCell-cellPop-sbatch). This means, by executing in the sensitive server the rule `make call_cell_cellPop`. This script export the file `Present_Info_individual_Cell.tsv` with detailed information about each barcode (this means: correspondent experiment, cellName, cellId, uberonId, stageId, sex, strain, as well as, the CPM_cutoff and the Number_genic, Number_intergenic, Number_proteinCoding and the correspondent proportions, also the ratio used is exported in the file).
+As described before to classify a gene as present, the referent geneID need to be detected in a condition as present and have at least 1 UMI.
 
-![Boxplot](img/individual_cells.png)
-
-* Per cell-type population
-
-In order to provide a call of expressed genes at cell population level, we introduze an approach based on the aggregation of the calls, this means a fraction of the cells where the gene were called present.
-The calls are done based in confidence, this means all genes detected between density cutoff and ratio cutoff are classified as present with low confidence, on the other side all genes detected above ratio cutoff are classified as present with high confidence.
-
-![Boxplot](img/cellPop.png)
+This means the individual calls at cell level are done after we use the method of Benjamini & Hochberg (1995) to control the false discovery rate in a condition.
