@@ -83,7 +83,12 @@ get_sra: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_ALREADY_DOWNLOADED)
 	@echo '!!! Rerun this step several times to complete downloads !!!'
 	@touch $@
 
-list_new_downloads: get_sra
+check_new_downloads: get_sra
+	@echo 'If the following commands return something, check FASTQ files and/or rerun *get_sra* with more memory!'
+	@find $(RNASEQ_DOWNLOAD_LIB_DIR) -type f -name \*.stat.R\* -exec wc -l {} \; | grep -v '^2 '
+	@touch $@
+
+list_new_downloads: check_new_downloads
 	@find $(RNASEQ_DOWNLOAD_LIB_DIR) -type f -name \*.fastq.gz\* | xargs -r dirname | sed -e 's@^.*/@@' | sort -u > /tmp/new_downloads
 	@cat $(RNASEQ_ALREADY_DOWNLOADED) >>/tmp/new_downloads
 	@sort -u /tmp/new_downloads >$(RNASEQ_ALREADY_DOWNLOADED)
@@ -530,7 +535,7 @@ $(VERIFICATIONFILE): send_files_to_cluster check_conditions insert_expression
 #TODO Clean added/removed steps
 #TODO Remove unused scripts/files in folders and sub-folders
 clean:
-	-@$(RM) -R $(VERIFICATIONFILE)  check_annot check_tools create_rna_seq_sample_info get_annot get_GTF prepare_GTF get_genome prepare_indexed_transcriptome generate_genome_info prepare_run_info_final create_config_file cluster check_curation check_runs insert_RNA_seq insert_expression wormbase external $(RNASEQGTFDATAPATH)/*.gtf $(RNASEQGTFDATAPATH)/*.gtf.gz *.tmp check_conditions insert_expression
+	-@$(RM) -R $(VERIFICATIONFILE)  check_annot check_tools create_rna_seq_sample_info get_annot get_GTF prepare_GTF get_genome prepare_indexed_transcriptome generate_genome_info prepare_run_info_final create_config_file cluster get_sra check_new_downloads list_new_downloads check_sra check_curation check_runs insert_RNA_seq insert_expression wormbase external $(RNASEQGTFDATAPATH)/*.gtf $(RNASEQGTFDATAPATH)/*.gtf.gz *.tmp check_conditions insert_expression
 	-@$(GIT) rm $(VERIFICATIONFILE)
 	-@$(GIT) commit $(VERIFICATIONFILE) -m "Removing verification file for RNA Seq" || true
 	-@$(GIT) push
