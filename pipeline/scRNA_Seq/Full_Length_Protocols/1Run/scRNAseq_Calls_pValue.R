@@ -80,26 +80,26 @@ theoretical_pValue <- function(counts, referenceIntergenic){
 }
 
 ### Collect information after cut-off
-cutoff_info <- function(library_id, counts, desired_pValue_cutoff, meanIntergenic, sdIntergenic){
+cutoff_info <- function(library_id, counts, desired_pValue_cutoff, meanRefIntergenic, sdRefIntergenic){
   
   ## collect stats using pValue_cutoff
-  genic_region_present_pValue <- nrow(dplyr::filter(counts, type == "genic" & calls_pValue == "present"))
-  proportion_genic_present_pValue <- (nrow(dplyr::filter(counts, type == "genic" & calls_pValue == "present"))/nrow(dplyr::filter(counts, type == "genic")))*100
-  coding_region_present_pValue  <- nrow(dplyr::filter(counts, biotype == "protein_coding" & calls_pValue == "present"))
-  proportion_coding_present_pValue <- (nrow(dplyr::filter(counts, biotype == "protein_coding" & calls_pValue == "present"))/nrow(dplyr::filter(counts, biotype == "protein_coding")))*100
-  intergenic_region_present_pValue <- nrow(dplyr::filter(counts, type == "intergenic" & calls_pValue == "present"))
-  proportion_intergenic_present_pValue <- (nrow(dplyr::filter(counts, type == "intergenic" & calls_pValue == "present"))/nrow(dplyr::filter(counts, type == "intergenic")))*100
+  genic_region_present <- nrow(dplyr::filter(counts, type == "genic" & calls_pValue == "present"))
+  proportion_genic_present <- (nrow(dplyr::filter(counts, type == "genic" & calls_pValue == "present"))/nrow(dplyr::filter(counts, type == "genic")))*100
+  coding_region_present  <- nrow(dplyr::filter(counts, biotype == "protein_coding" & calls_pValue == "present"))
+  proportion_coding_present <- (nrow(dplyr::filter(counts, biotype == "protein_coding" & calls_pValue == "present"))/nrow(dplyr::filter(counts, biotype == "protein_coding")))*100
+  intergenic_region_present <- nrow(dplyr::filter(counts, type == "intergenic" & calls_pValue == "present"))
+  proportion_intergenic_present <- (nrow(dplyr::filter(counts, type == "intergenic" & calls_pValue == "present"))/nrow(dplyr::filter(counts, type == "intergenic")))*100
   
-  TPM_Threshold_pValue <- min(counts$tpm[counts$type == "genic" & counts$calls_pValue == "present"])
+  TPM_Threshold <- min(counts$tpm[counts$type == "genic" & counts$calls_pValue == "present"])
   ## Export cutoff_info_file
-  collectInfo <- c(library_id,sum(counts$type == "genic"),TPM_Threshold_pValue, genic_region_present_pValue,proportion_genic_present_pValue, 
-                   sum(counts$biotype %in% "protein_coding"),coding_region_present_pValue,proportion_coding_present_pValue, 
-                   sum(counts$type %in% "intergenic"),intergenic_region_present_pValue,proportion_intergenic_present_pValue, 
-                   desired_pValue_cutoff, meanIntergenic, sdIntergenic)
-  names(collectInfo) <- c("libraryId","Genic","TPM_Threshold_pValue","genic_region_present_pValue","proportion_genic_present_pValue", 
-                          "Protein_coding","coding_region_present_pValue","proportion_coding_present_pValue", 
-                          "Intergenic","intergenic_region_present_pValue","proportion_intergenic_present_pValue", 
-                          "pValue_cutoff", "meanIntergenic", "sdIntergenic")
+  collectInfo <- c(library_id,TPM_Threshold, sum(counts$type == "genic"), genic_region_present,proportion_genic_present, 
+                   sum(counts$biotype %in% "protein_coding"),coding_region_present,proportion_coding_present, 
+                   sum(counts$type %in% "intergenic"),intergenic_region_present,proportion_intergenic_present, 
+                   desired_pValue_cutoff, meanRefIntergenic, sdRefIntergenic)
+  names(collectInfo) <- c("libraryId","TPM_Threshold","Genic","Genic_region_present","Proportion_genic_present", 
+                          "Protein_coding","Coding_region_present","Proportion_coding_present", 
+                          "Intergenic","Intergenic_region_present","Proportion_intergenic_present", 
+                          "pValue_cutoff", "meanRefIntergenic", "sdRefIntergenic")
   return(collectInfo)
 }
 
@@ -116,7 +116,7 @@ plotData <- function(libraryId, kallisto_gene_counts, refIntergenic, TMP_thresho
   dens_Refintergenic <- density(log2(refIntergenic$tpm+1e-6), na.rm=T)
   dens_Refintergenic$y <- dens_Refintergenic$y * nrow(refIntergenic) / length(kallisto_gene_counts$tpm)
   
-  pdf(file.path(output_folder, libraryId, paste0("Distribution_", libraryId, ".pdf")), width=10, height=6) 
+  pdf(file.path(output_folder, libraryId, paste0("Distribution_", libraryId, ".pdf")), width=10, height=6)
   par(mfrow=c(1,2))
   plot(dens, lwd=2, main=paste0(libraryId), xlab="Log2(TPM)")
   lines(dens_coding,col="indianred", lwd=2)
@@ -126,17 +126,18 @@ plotData <- function(libraryId, kallisto_gene_counts, refIntergenic, TMP_thresho
   legend("topright", legend = c("All", "PC", "Int", "RefInt", "cutoff"), col=c("black", "indianred", "darkblue", "cyan", "gray"),lty=c(1,1,1,1,2), bty = "n")
   
   ## export frequency of pValue
-  proteinCoding <- as.numeric(kallisto_gene_counts$pValue[kallisto_gene_counts$biotype == "protein_coding"])
-  hist(na.omit(proteinCoding), main=paste0(libraryId), xlab="pValue")
+  typeGenic <- as.numeric(kallisto_gene_counts$pValue[kallisto_gene_counts$type == "genic"])
+  hist(na.omit(typeGenic), main=paste0(libraryId), xlab="pValue", xlim=c(0,1))
+  mtext(paste0("Genic region"))
   abline(v=desired_pValue_cutoff, col="red", lwd=2)
   dev.off()
 }
 
 ## export info of all libraries
-All_samples <- paste0(output_folder, "/All_samples.tsv")
+All_samples <- paste0(output_folder, "/All_samples_stats_FL.tsv")
 if (!file.exists(All_samples)){
   file.create(All_samples)
-  cat("libraryId\tGenic\tTPM_Threshold_pValue\tgenic_region_present_pValue\tproportion_genic_present_pValue\tProtein_coding","coding_region_present_pValue\tproportion_coding_present_pValue\tIntergenic\tintergenic_region_present_pValue\tproportion_intergenic_present_pValue\tpValue_cutoff\tmeanIntergenic\tsdIntergenic\tspecies\torganism\n",file = file.path(output_folder,"All_samples.tsv"), sep = "\t")
+  cat("libraryId\tTPM_Threshold\tGenic\tGenic_region_present\tProportion_genic_present\tProtein_coding\tCoding_region_present\tProportion_coding_present\tIntergenic\tIntergenic_region_present\tProportion_intergenic_present\tpValue_cutoff\tmeanRefIntergenic\tsdRefIntergenic\tspecies\torganism\n",file = file.path(output_folder,"All_samples_stats_FL.tsv"), sep = "\t")
 } else {
   print("File already exist.....")
 }
@@ -167,12 +168,12 @@ for(species in unique(annotation$speciesId)){
     kallisto_gene_counts <- rbind(genicRegion, dplyr::filter(allData, type == "intergenic"))
     
     ## Export cutoff information file + new files with calls
-    cutoff_info_file <- cutoff_info(libraryId, kallisto_gene_counts, desired_pValue_cutoff = as.numeric(desired_pValue_cutoff), meanIntergenic = calculatePvalue[[2]], sdIntergenic = calculatePvalue[[3]])
-    TMP_threshold <- log2(as.numeric(cutoff_info_file[3]))
+    cutoff_info_file <- cutoff_info(libraryId, kallisto_gene_counts, desired_pValue_cutoff = as.numeric(desired_pValue_cutoff), meanRefIntergenic = calculatePvalue[[2]], sdRefIntergenic = calculatePvalue[[3]])
+    TMP_threshold <- log2(as.numeric(cutoff_info_file[2]))
     
     ## export data
     plotData(libraryId=libraryId, kallisto_gene_counts=kallisto_gene_counts, refIntergenic=referenceIntergenic, TMP_threshold=TMP_threshold)
-
+    
     pathExport <- file.path(cells_folder, libraryId)
     write.table(kallisto_gene_counts,file = file.path(pathExport, "abundance+geneLevel+intergenic+calls.tsv"),quote=F, sep = "\t", col.names=T, row.names=F)
     write.table(t(t(cutoff_info_file)),file = file.path(pathExport, "cutoff_info_file.tsv"),quote=F, sep = "\t", col.names=F, row.names=T)
@@ -185,18 +186,18 @@ for(species in unique(annotation$speciesId)){
   }
   }
 
-write.table(collectSamples, file = file.path(output_folder, "All_samples.tsv"),col.names =F , row.names = F, append = T,quote = FALSE, sep = "\t")
+write.table(collectSamples, file = file.path(output_folder, "All_samples_stats_FL.tsv"),col.names =F , row.names = F, append = T,quote = FALSE, sep = "\t")
 ## final plot per species
 pdf(file.path(output_folder, paste0("All_libraries_information.pdf")), width=16, height=6) 
-g1 <- ggplot(collectSamples, aes(x=organism, y=as.numeric(proportion_genic_present_pValue))) + 
+g1 <- ggplot(collectSamples, aes(x=organism, y=as.numeric(Proportion_genic_present))) + 
   geom_boxplot(notch=TRUE)+ylim(0,100)+xlab(" ")+ylab("% Genic Present") 
-g2 <- ggplot(collectSamples, aes(x=organism, y=as.numeric(proportion_coding_present_pValue))) + 
+g2 <- ggplot(collectSamples, aes(x=organism, y=as.numeric(Proportion_coding_present))) + 
   geom_boxplot(notch=TRUE)+ylim(0,100)+xlab(" ")+ylab("% Protein Coding Present")
-g3 <- ggplot(collectSamples, aes(x=organism, y=as.numeric(proportion_intergenic_present_pValue))) + 
+g3 <- ggplot(collectSamples, aes(x=organism, y=as.numeric(Proportion_intergenic_present))) + 
   geom_boxplot(notch=TRUE)+ylim(0,100)+xlab(" ")+ylab("% Intergenic Present")
-g4 <- ggplot(collectSamples, aes(x=organism, y=as.numeric(meanIntergenic))) + 
+g4 <- ggplot(collectSamples, aes(x=organism, y=as.numeric(meanRefIntergenic))) + 
   geom_boxplot(notch=TRUE)+ylim(0,1)+xlab(" ")+ylab("Mean Reference Intergenic")
-g5 <- ggplot(collectSamples, aes(x=organism, y=as.numeric(sdIntergenic))) + 
+g5 <- ggplot(collectSamples, aes(x=organism, y=as.numeric(sdRefIntergenic))) + 
   geom_boxplot(notch=TRUE)+ylim(0,10)+xlab(" ")+ylab("SD Reference Intergenic")
 g6 <- ggplot(collectSamples, aes(x=organism, y=as.numeric(pValue_cutoff))) + 
   geom_boxplot(notch=TRUE)+ylim(0,1)+xlab(" ")+ylab("pValue_cutoff")

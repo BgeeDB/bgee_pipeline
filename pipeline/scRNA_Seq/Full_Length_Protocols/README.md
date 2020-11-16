@@ -104,13 +104,16 @@ Then we:
 
 * Per individual cell
 
-To define the call of expression of a gene in a library, we compute a Z-Score for each gene ID based on a set of reference intergenic regions. To see how the reference intergenic regions are defined look at it in the description section of the developer documentation of [RNA_Seq/](../RNA_Seq/) pipeline.
+To define the call of expression of a gene in a library, we compute a Z-Score for each gene ID based from a set of reference intergenic regions. To see how the reference intergenic regions are defined look at it in the description section of the developer documentation of [RNA_Seq/](../RNA_Seq/) pipeline.
 
-From the Z-Score values we compute a p-value distribution for for the correspondent library. The p-values are used to call the genes as "present" or "absent" based on the p-value threshold specified. 
+From the Z-Score values we compute a p-value for each geneID, this means a p-value distribution for the correspondent library. The p-values are used to call the genes as "present" or "absent" based on the p-value threshold specified. 
 
 * Per cell population
 
 To define the call of expression of a gene in a cell population for a given condition as "present" or "absent", we use the method of Benjamini & Hochberg (1995) to control the false discovery rate, as specified [here](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/p.adjust.html).
+
+This means, for a given condition we collect a vector of p-values (for a particular gene across *n* libraries) and then we classify the gene as present if in one of the libraries the p.adjusted value is lower or equal to the cut-off desired. 
+
 
 ##### Rank computation
 
@@ -204,7 +207,7 @@ Per individual library the densities distributions are exported as well as the p
 
 ![Boxplot](img/output_SRX1226603.png)
 
-After the calls of expressed genes for each individual cell, using a defined p-value threshold, we collect the global information about each library in the file `All_samples.tsv`. In order to summarize the information in a visual way a plot with the proportion of different types or biotypes, as protein coding, are exported as represented below (experiment ERP013381 from Mus musculus with 501 cells).
+After the calls of expressed genes for each individual cell, using a defined p-value threshold, we collect the global information about each library in the file `All_samples_stats_FL.tsv`. In order to summarize the information in a visual way a plot with the proportion of different types or biotypes, as protein coding, are exported as represented below (experiment ERP013381 from Mus musculus with 501 cells).
 
 We should have in consideration, that because of high proportion of zeros in single cell RNA-Seq data, exist a proportional effect in the percentage of protein coding genes called present.
 
@@ -212,6 +215,4 @@ We should have in consideration, that because of high proportion of zeros in sin
 
 * Per cell-type population
 
-At the population level the calls are performed using BH-FDR correction. This means, for a given condition we collect a vector of p-values (for a particular gene across *n* libraries) and then we classify the gene as present if in one of the libraries the p.adjusted value is lower or equal to the cut-off desired. 
-
-
+As described before at the cell-type population level the calls are performed using the BH-FDR correction for a particular condition (done on the fly). 
