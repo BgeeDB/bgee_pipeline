@@ -5,7 +5,7 @@ speciesId	genus	species	speciesCommonName	displayOrder	genomeFilePath	genomeVers
 7227	Drosophila	melanogaster	fruit fly	4	drosophila_melanogaster/Drosophila_melanogaster.BDGP6	BDGP6	2	7227		vinegar fly|fruitfly	
 6239	Caenorhabditis	elegans	nematode	5	caenorhabditis_elegans/Caenorhabditis_elegans.WBcel235	WBcel235	2	6239		C. elegans|worm|roundworm	
 9598	Pan	troglodytes	chimpanzee	6	pan_troglodytes/Pan_troglodytes.CHIMP2.1.4	CHIMP2.1.4	2	9598			
-9597	Pan	paniscus	bonobo	7	pan_troglodytes/Pan_troglodytes.CHIMP2.1.4	CHIMP2.1.4	2	9597	PPAG	pygmy chimpanzee	
+9597	Pan	paniscus	bonobo	7	pan_troglodytes/Pan_troglodytes.CHIMP2.1.4	CHIMP2.1.4	2	9597		pygmy chimpanzee	
 9593	Gorilla	gorilla	gorilla	8	gorilla_gorilla/Gorilla_gorilla.gorGor3.1	gorGor3.1	2	9593		western gorilla	
 9544	Macaca	mulatta	macaque	9	macaca_mulatta/Macaca_mulatta.MMUL_1	MMUL 1.0	2	9544		rhesus monkey	
 10116	Rattus	norvegicus	rat	10	rattus_norvegicus/Rattus_norvegicus.Rnor_6.0	Rnor_6.0	2	10116		brown rat	
@@ -32,18 +32,13 @@ speciesId	genus	species	speciesCommonName	displayOrder	genomeFilePath	genomeVers
 7220	Drosophila	erecta	Fruit fly					7220		DROER	
 7460	Apis	mellifera	Honeybee					7460		APIME|Apis mellifera Linnaeus, 1758|Apis mellifica|European honey bee|Western honey bee|bee|honey bee	
 7719	Ciona	intestinalis	Transparent sea squirt					7719		CIOIN|Ciona intestinalis (Linnaeus, 1767)|sea vase|vase tunicate|yellow sea squirt	
-7739	Branchiostoma	floridae	Florida lancelet					7739		Amphioxus floridae|BRAFL|Branchiostoma floridae Hubbs, 1922|Branchiostoma floridea|Branchiostomae floridae	
 7740	Branchiostoma	lanceolatum	Common lancelet					7740		BRALA|amphioxus|amphoxius	
 7897	Latimeria	chalumnae	Coelacanth					7897		LATCH|Latimeria chalumnae Smith, 1939	
-7906	Acipenser	ruthenus	Sterlet sturgeon					7906		ACIRT|Acipenser ruthenus Linnaeus, 1758|Acipenser ruthenys|sterlet	
 7918	Lepisosteus	oculatus	Spotted gar					7918		LEPOC|Lepisosteus oculatus Winchell, 1864	
 7936	Anguilla	anguilla	European freshwater eel					7936		ANGAN|Angill angill|Anguilla anguilla (Linnaeus, 1758)|Anguilla anguilla anguilla|European eel|Muraena anguilla Linnaeus, 1758	
-7938	Anguilla	rostrata	American eel					7938		ANGRO|Anguilla rostrata (Lesueur, 1817)|Muraena rostrata Lesueur, 1817	
-7957	Carassius	auratus	Goldfish					7957		CARAU|Carassius auratis|Carassius auratus (Linnaeus, 1758)|Carassius carassius auratus|Cyprinus auratus|Cyprinus auratus Linnaeus, 1758	
 7994	Astyanax	mexicanus	Blind cave fish					7994		ASTMX|Astyanax mexicanus (De Filippi, 1853)|Mexican tetra	
 7998	Ictalurus	punctatus	Channel catfish					7998		ICTPU|Ictalurus punctatus (Rafinesque, 1818)|Ictalurus punetaus|Ietalurus punetaus|Letalurus punetaus|Silurus punctatus Rafinesque, 1818	
 8010	Esox	lucius	Northern pike					8010		ESOLU|Esox lucius Linnaeus, 1758	
-8022	Oncorhynchus	mykiss	Rainbow trout					8022		ONCMY|Onchorhynchus mykiss|Oncorhynchus mykiss (Walbaum, 1792)|Oncorhynchus nerka mykiss|Parasalmo mykiss|Salmo mykiss|Salmo mykiss Walbaum, 1792	
 8030	Salmo	salar	Atlantic salmon					8030		SALSA|Salmo salar Linnaeus, 1758	
 8049	Gadus	morhua	Atlantic cod					8049		GADMO|Gadus morhua Linnaeus, 1758	
 8081	Poecilia	reticulata	Guppy					8081		Acanthophacelus reticulata|POERE|Poecilia (Acanthophacelus) reticulata|Poecilia latipinna reticulata|Poecilia reticulata Peters, 1859	
@@ -118,12 +113,6 @@ speciesId	genus	species	speciesCommonName	displayOrder	genomeFilePath	genomeVers
 52904	Scophthalmus	maximus	Turbot					52904		Pleuronectes maximus|Psetta maxima (Linnaeus, 1758)|Rhombus maximus|SCOMX|Scophthalmus maximus (Linnaeus, 1758)|Scopthalmus maximus	
 56723	Labrus	bergylta	ballan wrasse					56723		Labrus bergylta Ascanius, 1767	
 60711	Chlorocebus	sabaeus	Green monkey					60711		CHLSB|Cercopithecus aethiops sabaeus|Cercopithecus sabeus|Chlorocebus aethiops sabaeus|Chlorocebus aethiops sabeus|Chlorocebus sabaeus (Linnaeus, 1776)|Chlorocebus sabeus	
-61472	Timema	bartmani						61472		Timema bartmani Vickery & Sandoval, 1997	
-61474	Timema	californicum	California timema					61474		TIMCA|Timema californica|Timema californicum Scudder, 1895|Timema californicus	
-61476	Timema	cristinae	Walking stick					61476		TIMCR|Timema cristinae Vickery, 1993	
-61478	Timema	douglasi	Walking stick					61478		TIMDO|Timema douglasi Sandoval & Vickery, 1996	asexual
-61482	Timema	podura	Walking stick					61482		TIMPD|Timema podura Strohecker, 1936	
-61484	Timema	tahoe						61484		Timema tahoe Vickery, 1993	asexual
 64144	Anabas	testudineus	Climbing perch					64144		ANATE|Amphiprion testudineus|Anabas testudines|Anabas testudineus (Bloch, 1792)|Anthias testudineus Bloch, 1792|Antias testudineus	
 64680	Tamias	sibiricus	Siberian chipmunk					64680		TAMSI|Tamias asiaticus|Tamias sibricus	
 69293	Gasterosteus	aculeatus	Three-spined stickleback					69293		GASAC|Gasterosteus aculeatus Linnaeus, 1758|three spined stickleback	
@@ -134,13 +123,8 @@ speciesId	genus	species	speciesCommonName	displayOrder	genomeFilePath	genomeVers
 109280	Hippocampus	comes	Tiger tail seahorse					109280		HIPCM|Hippocampus comes Cantor, 1849	
 125945	Drosophila	biarmipes	Fruit fly					125945		DROBM	
 134910	Apodemus	uralensis	Herb field mouse					134910		APOUR|Apodemus uralensis (Pallas, 1811)|Sylvaemus uralensis|Ural field mouse|pygmy field mouse	
-170555	Timema	monikensis						170555		Timema monikensis Vickery & Sandoval, 1998	asexual
-170557	Timema	poppense	Walking stick					170557		TIMPO|Timema poppensis|Timema poppensis Vickery & Sandoval, 1999	
 187017	Murina	leucogaster	Greater tube-nosed bat					187017		MURLE	
 205130	Mastacembelus	armatus	zig-zag eel					205130		Macrognathus armatus|Macrognathus armatus Lacepede, 1800|Mastacembelus armatus (Lacepede, 1800)	
-244447	Cynoglossus	semilaevis	Tongue sole					244447		CYNSE|Cynoglossus (Arelia) semilaevis|Cynoglossus semilaevis Gunther, 1873|half-smooth tongue sole	
 379532	Propithecus	coquereli	Coquerel's sifaka					379532		PROCO|Propithecus coquereli (A. Grandidier, 1867)	
-629358	Timema	genevievae	Walking stick					629358		TIMGE|Timema genevievae Rentz, 1978|Timema genevieve	asexual
-629360	Timema	shepardi	Walking stick					629360		TIMSH|Timema shepardi Vickery & Sandoval, 1999|Timema shepardii	asexual
 681894	Hyphessobrycon	anisitsi	Buenos Aires tetra					681894		Hemigrammus anisitsi|Hemigrammus anisitsi Eigenmann, 1907|Hemigrammus caudovittatus|Hemigrammus caudovittatus Ahl, 1923|Hyphessobrycon anisitsi (Eigenmann, 1907)	
 1041015	Drosophila	rhopaloa	Fruit fly					1041015		DRORH|Drosophila rhopaloa Bock & Wheeler, 1972	
