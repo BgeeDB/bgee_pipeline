@@ -1,6 +1,6 @@
 RNASeqProtocol	biotypes_excluded_for_absent_calls
 polyA	3prime_overlapping_ncrna,lincRNA,macro_lncRNA,non_coding,miRNA,misc_RNA,rRNA,snoRNA,snRNA,tRNA
 lncRNA	miRNA,misc_RNA,rRNA,snoRNA,snRNA,tRNA,protein_coding
-miRNA	3prime_overlapping_ncrna,lincRNA,macro_lncRNA,non_coding,protein_coding
+miRNA	3prime_overlapping_ncrna,lincRNA,macro_lncRNA,non_coding,protein_coding,misc_RNA,rRNA,snoRNA,snRNA,tRNA
 circRNA	3prime_overlapping_ncrna,lincRNA,macro_lncRNA,non_coding,miRNA,misc_RNA,rRNA,snoRNA,snRNA,tRNA,protein_coding
 ribo-minus	rRNA	
