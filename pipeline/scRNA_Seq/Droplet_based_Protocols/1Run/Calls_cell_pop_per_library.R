@@ -2,11 +2,12 @@
 
 ## This script is used make the calls of present and absent genes per library/cell-type population using pValue theoretical.
 ## This means: sum the UMI that belongs to the same cell-type population, normalize CPM and then call present and absent genes based on the pValue_theoretical cut-off.
+## NOTE: Here we just use library/cell population that have more than 50 cells per library/cell-type pop and pass the bimodality test.
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNASeq_Info.txt" InformationAllLibraries="InformationAllLibraries.txt" folder_data="folder_data" folder_refIntergenic="folder_refIntergenic" desired_pValue_cutoff="desired_pValue_cutoff" output_folder="output_folder"' Calls_cell_pop_per_library.R Calls_cell_pop_per_library.Rout
+## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNASeq_Info.txt" bimodalityFile="bimodality_targetBased.txt" folder_data="folder_data" folder_refIntergenic="folder_refIntergenic" desired_pValue_cutoff="desired_pValue_cutoff" output_folder="output_folder"' Calls_cell_pop_per_library.R Calls_cell_pop_per_library.Rout
 ## scRNASeq_Info --> File that results from annotation and metadata (libraries downloaded and with extra information as readlength or SRR) 
-## InformationAllLibraries --> File with information about each cell after barcode annotation (per library contain total number of cells and cell Name)
+## bimodalityFile --> File with information about cell populations that not pass the bimodality test
 ## folder_data --> Folder where are all the libraries after cell identification
 ## folder_refIntergenic --> Folder where is located the reference intergenic files for each species
 ## desired_pValue_cutoff --> desired pValue cutoff to call present genes
@@ -31,7 +32,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed....
-command_arg <- c("scRNASeq_Info", "InformationAllLibraries", "folder_data", "folder_refIntergenic" ,"desired_pValue_cutoff", "output_folder")
+command_arg <- c("scRNASeq_Info", "bimodalityFile", "folder_data", "folder_refIntergenic" ,"desired_pValue_cutoff", "output_folder")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -44,17 +45,17 @@ if( file.exists(scRNASeq_Info) ){
 } else {
   stop( paste("The scRNASeq information file was not found [", scRNASeq_Info, "]\n"))
 }
-## Read InformationAllLibraries file. If file not exists, script stops
-if( file.exists(InformationAllLibraries) ){
-  cellInfo <- read.table(InformationAllLibraries, h=T, sep="\t", comment.char="", quote = "")
+## Read bimodality file. If file not exists, script stops
+if( file.exists(bimodalityFile) ){
+  bimodalityInfo <- read.table(bimodalityFile, h=T, sep="\t", comment.char="", quote = "")
 } else {
-  stop( paste("The cell information file was not found [", InformationAllLibraries, "]\n"))
+  stop( paste("The cell information file was not found [", bimodalityFile, "]\n"))
 }
 ##########################################################################################################################################################
 ## Sum the UMI of all barcodes and then compute the CPM normalization
 sumUMICellPop <- function(folder_data, library, cellPop){
   
-  cellPop <- fread(file.path(folder_data,library, cellPop))
+  cellPop <- fread(file.path(folder_data,library, paste0("Raw_Counts_",cellPop,".tsv")))
   cellPop$sumUMI <- rowSums(cellPop[ ,2:(length(cellPop)-2)])
   cellPop$CPM <- cellPop$sumUMI / sum(cellPop$sumUMI) * 1e6
   
@@ -166,7 +167,7 @@ plotData <- function(libraryId, cellPopName, counts, refIntergenic, CPM_threshol
   dev.off()
 }
 
-## export info of all libraries/cell-population that pass minimum requirement 50 cells.
+## export info stats of all libraries/cell-population
 All_samples <- paste0(output_folder, "/All_cellPopulation_stats_10X.tsv")
 if (!file.exists(All_samples)){
   file.create(All_samples)
@@ -175,17 +176,7 @@ if (!file.exists(All_samples)){
   print("File already exist.....")
 }
 
-## export info of all libraries/cell-population not pass minimum requirement
-All_samples_not_pass <- paste0(output_folder, "/All_cellPopulation_stats_notPass_10X.tsv")
-if (!file.exists(All_samples_not_pass)){
-  file.create(All_samples_not_pass)
-  cat("libraryId\tcellTypeName\tspecies\torganism\n",file = file.path(output_folder,"All_cellPopulation_stats_notPass_10X.tsv"), sep = "\t")
-} else {
-  print("File already exist.....")
-}
-
-collectSamples_pass <- data.frame()
-collectSamples_Notpass <- data.frame()
+collectSamplesStats <- data.frame()
 ## loop thought all libraries
 for (libraryid in unique(scRNASeqAnnotation$libraryId)) {
   
@@ -193,24 +184,22 @@ for (libraryid in unique(scRNASeqAnnotation$libraryId)) {
   
     ## collect all cell populations that belongs to the library
     AllCellPop <- list.files(path = file.path(folder_data, libraryid), pattern = "^Raw_Counts_")
-    speciesID <- scRNASeqAnnotation$speciesId[scRNASeqAnnotation$libraryId == libraryid]
+    collectCellNames <- str_remove(AllCellPop, "Raw_Counts_")
+    collectCellNames <- str_remove(collectCellNames, ".tsv")
+    ## remove from the analysis cell-type populations that not pass the bimodality quality control (means < 50 cells or are not bimodal distribution)
+    cellsInfo <- bimodalityInfo$Cell_Name[bimodalityInfo$library == libraryid]
     
+    ## select just cell pop that pass the quality control 
+    AllCellPop <- setdiff(collectCellNames,cellsInfo)
+    speciesID <- scRNASeqAnnotation$speciesId[scRNASeqAnnotation$libraryId == libraryid]
+   
     cat("AllCellPop: ", AllCellPop, "\n")
     cat("speciesID: ", speciesID, "\n")
  
     for (cellPop in AllCellPop) {
       
-      cellPopName <- str_remove(cellPop, "Raw_Counts_")
-      cellPopName <- str_remove(cellPopName, ".tsv")
-      
-      cat("Doing cell population: ", cellPopName, "\n")
-      
-      ## verify cell pop information
-      numberCells <- cellInfo$cells_afterFiltering[cellInfo$library == libraryid & cellInfo$Cell_Name == cellPopName]
-      
-      ## just use  cell-populations with at least 50 cells in the library
-      if(numberCells >= 50){
-        
+      cat("Doing cell population: ", cellPop, "\n")
+
         ## collect the sumUMI + normalization for the target cellPop
         cellPop_normalized <- sumUMICellPop(folder_data = folder_data, library = libraryid, cellPop = cellPop)
         
@@ -232,48 +221,38 @@ for (libraryid in unique(scRNASeqAnnotation$libraryId)) {
         finalData <- rbind(genicRegion, dplyr::filter(allData, type == "intergenic"))
         
         ## Export cutoff information file + new files with calls
-        cutoff_info_file <- cutoff_info(libraryid, cellTypeName = cellPopName, counts = finalData, desired_pValue_cutoff = as.numeric(desired_pValue_cutoff), meanRefIntergenic = calculatePvalues[[2]], sdRefIntergenic = calculatePvalues[[3]])
+        cutoff_info_file <- cutoff_info(libraryid, cellTypeName = cellPop, counts = finalData, desired_pValue_cutoff = as.numeric(desired_pValue_cutoff), meanRefIntergenic = calculatePvalues[[2]], sdRefIntergenic = calculatePvalues[[3]])
         CPM_threshold <- log2(as.numeric(cutoff_info_file[3]))
         
         ## export data
-        plotData(libraryId=libraryid, cellPopName =cellPopName, counts=finalData, refIntergenic=referenceIntergenic, CPM_threshold=CPM_threshold)
+        plotData(libraryId=libraryid, cellPopName =cellPop, counts=finalData, refIntergenic=referenceIntergenic, CPM_threshold=CPM_threshold)
         
         pathExport <- file.path(folder_data, libraryid)
-        write.table(finalData,file = file.path(pathExport, paste0("Calls_cellPop_",libraryid, "_",cellPopName,".tsv")),quote=F, sep = "\t", col.names=T, row.names=F)
-        write.table(t(t(cutoff_info_file)),file = file.path(pathExport, paste0("cutoff_info_file_",libraryid, "_",cellPopName,".tsv")),quote=F, sep = "\t", col.names=F, row.names=T)
+        write.table(finalData,file = file.path(pathExport, paste0("Calls_cellPop_",libraryid, "_",cellPop,".tsv")),quote=F, sep = "\t", col.names=T, row.names=F)
+        write.table(t(t(cutoff_info_file)),file = file.path(pathExport, paste0("cutoff_info_file_",libraryid, "_",cellPop,".tsv")),quote=F, sep = "\t", col.names=F, row.names=T)
         
-        ## add this to big data frame with all samples
+        ## add this to big data frame with all samples information
         this_sample <- as.data.frame(t(cutoff_info_file), stringsAsFactors=F)
         this_sample[, "species"]  <- speciesID
         this_sample[, "organism"] <- as.character(unique(scRNASeqAnnotation$scientific_name[scRNASeqAnnotation$speciesId == speciesID]))
-        collectSamples_pass <- rbind(collectSamples_pass, this_sample)
-      } else {
-        cat("The cell population ", cellPopName , " from the library ", libraryid," will not be used (<50 cells).", "\n")
-        info <- c(libraryid, cellPopName)
-        infoCellpop_notUsed <- as.data.frame(t(info))
-        infoCellpop_notUsed[, "species"]  <- speciesID
-        infoCellpop_notUsed[, "organism"] <- as.character(unique(scRNASeqAnnotation$scientific_name[scRNASeqAnnotation$speciesId == speciesID]))
-        colnames(infoCellpop_notUsed) <- c("libraryId", "cellTypeName", "species", "organism")
-        collectSamples_Notpass <- rbind(collectSamples_Notpass, infoCellpop_notUsed)
-      }
+        collectSamplesStats <- rbind(collectSamplesStats, this_sample)
     }
 }
-write.table(collectSamples_pass, file = file.path(output_folder, "All_cellPopulation_stats_10X.tsv"),col.names =F , row.names = F, append = T,quote = FALSE, sep = "\t")
-write.table(collectSamples_Notpass, file = file.path(output_folder, "All_cellPopulation_stats_notPass_10X.tsv"),col.names =F , row.names = F, append = T,quote = FALSE, sep = "\t")
+write.table(collectSamplesStats, file = file.path(output_folder, "All_cellPopulation_stats_10X.tsv"),col.names =F , row.names = F, append = T,quote = FALSE, sep = "\t")
 
 ## final plot per species
 pdf(file.path(output_folder, paste0("All_libraries_stats_information_10X.pdf")), width=16, height=6) 
-g1 <- ggplot(collectSamples_pass, aes(x=organism, y=as.numeric(Proportion_genic_present))) + 
+g1 <- ggplot(collectSamplesStats, aes(x=organism, y=as.numeric(Proportion_genic_present))) + 
   geom_boxplot()+ylim(0,100)+xlab(" ")+ylab("% Genic Present")
-g2 <- ggplot(collectSamples_pass, aes(x=organism, y=as.numeric(Proportion_coding_present))) + 
+g2 <- ggplot(collectSamplesStats, aes(x=organism, y=as.numeric(Proportion_coding_present))) + 
   geom_boxplot(notch=TRUE)+ylim(0,100)+xlab(" ")+ylab("% Protein Coding Present")
-g3 <- ggplot(collectSamples_pass, aes(x=organism, y=as.numeric(Proportion_intergenic_present))) + 
+g3 <- ggplot(collectSamplesStats, aes(x=organism, y=as.numeric(Proportion_intergenic_present))) + 
   geom_boxplot(notch=TRUE)+ylim(0,100)+xlab(" ")+ylab("% Intergenic Present")
-g4 <- ggplot(collectSamples_pass, aes(x=organism, y=as.numeric(meanRefIntergenic))) + 
+g4 <- ggplot(collectSamplesStats, aes(x=organism, y=as.numeric(meanRefIntergenic))) + 
   geom_boxplot(notch=TRUE)+ylim(0,1)+xlab(" ")+ylab("Mean Reference Intergenic")
-g5 <- ggplot(collectSamples_pass, aes(x=organism, y=as.numeric(sdRefIntergenic))) + 
+g5 <- ggplot(collectSamplesStats, aes(x=organism, y=as.numeric(sdRefIntergenic))) + 
   geom_boxplot(notch=TRUE)+ylim(0,10)+xlab(" ")+ylab("SD Reference Intergenic")
-g6 <- ggplot(collectSamples_pass, aes(x=organism, y=as.numeric(pValue_cutoff))) + 
+g6 <- ggplot(collectSamplesStats, aes(x=organism, y=as.numeric(pValue_cutoff))) + 
   geom_boxplot(notch=TRUE)+ylim(0,1)+xlab(" ")+ylab("pValue_cutoff")
 grid.arrange(g1,g2,g3,g4,g5,g6, nrow = 2, ncol = 3)
 dev.off()
