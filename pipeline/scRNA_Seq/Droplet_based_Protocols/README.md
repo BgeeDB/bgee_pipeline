@@ -15,7 +15,8 @@
    3. [Processing the files](#processing-the-files)
    4. [Loading the libraries for analysis](#loading-the-libraries-for-analysis)
    5. [Result processing at individual library](#result-processing-at-individual-library)
-   6. [Post-processing: expression calls and rank computation](#post-processing-expression-calls-and-rank-computation)
+   6. [Bimodality of the cell type population](#bimodality-of-the-cell-type-population)
+   7. [Post-processing: expression calls and rank computation](#post-processing-expression-calls-and-rank-computation)
 
 
 **Detailed guidelines:**
@@ -24,7 +25,8 @@
 2. [Downloading](#downloading)
 2. [Mapping and process the libraries](#mapping-and-process-the-libraries)
 3. [Quality control and cell type identification](#quality-control-and-cell-type-identification)
-4. [Presence calls](#presence-calls)
+4. [Bimodality cell population](#bimodality-cell-population)
+5. [Presence and absence calls](#presence-and-absence-calls)
 
 
 ## General information:
@@ -109,6 +111,19 @@ From this step 3 important files are exported in the end:
 #### Result processing at individual library
 
 For each cell-type population in each individual library a table is exported containing all barcodes (cells per column) and the genomic features (gene Id per row) with correspondent UMI counts. Normalized values - Counts Per Million (CPM) are also computed from the raw UMI counts and exported per library/cell-type  population.
+
+
+#### Bimodality of the cell type population
+
+For each library/cell-type population we check if exist at least 50 cells, to continue in the analysis, if this requirement is met we verify if the protein coding genes follow a bimodal distribution. The bimodal distribution, allow to identify a set of genes that are always detected at individual cells and that can be used to characterize the cell-type population. 
+
+To do that we do the following steps:
+
+1) For each gene ID we verify in how many cells is detected a UMI > 0
+2) Calculate the ratio for each gene ID
+3) Deconvolute the protein coding genes using the ratio values. The interest here is to remove noisy genes, this means, genes that were detected few times at the population level.
+4) Select the deconvoluted gaussian (where the genes cut-off is the minimum ratio value of the referent deconvoluted gaussian selected)
+5) Verify if the modes of the bimodality are: mode 1 < 0.5 and mode 2 > 0.80 in order to obtain confidence from the bimodality test.
 
 
 #### Post-processing: expression calls and rank computation
@@ -234,11 +249,7 @@ In this part of the pipeline different steps are executed at individual library.
 1) Filtering cells based on the knee plot.
 This standard single-cell RNA-seq quality control is used to determine a threshold for considering cells valid for analysis, as exemplified below for the library SRX3815587:
 
-<table>
-  <tr>
-    <td><img src="img/KNEE_SRX3815587.png" width=500 height=400></td>
-  </tr>
- </table>
+<img src="img/KNEE_SRX3815587.png" width="60%">
 
 2) Identification of cell types based on barcodes provided in the annotation files.
 
@@ -259,7 +270,13 @@ Note: During this process a file `variabilityClusters.txt` is exported with vari
 
 6) Export per library a file with UMI counts (raw counts) and a file with normalized counts (CPM) for each cell-type population detected.
 
-### Presence calls
+### Bimodality cell population
+
+In order to perform the bimodal test to check which library/cell population should be used for the calls, the script [QC_cellPop_bimodality.R](QC-cellPop-bimodality-R) should be executed by launch the correspondent batch script [QC_cellPop_bimodality.sbatch](QC-cellPop-bimodality-sbatch). This means, by executing in the sensitive server the rule `make bimodality_cellPop`. This script export a pdf file (as represented below for Sperm cells from library SRX3815587) for each cell-type population from each library that met the requirements. A `bimodality_targetBased.txt` file is also exported with libraries and cell population that should be discarded from the calls of present and absent genes, in the next step.
+
+<img src="img/bimodality_spermcells.png" width="60%">
+
+### Presence and absence calls
 
 In this step of the pipeline to call present and absent genes we use the reference intergenic regions from the RNA-Seq pipeline. This comes from the fact that the density of deconvolute intergenic regions are tendency less noisy in RNA-Seq data compared with single cell, as specified in the single cell RNA-Seq full length protocols (README).
 
