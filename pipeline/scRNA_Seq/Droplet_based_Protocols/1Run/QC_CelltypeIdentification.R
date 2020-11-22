@@ -21,12 +21,14 @@ library(DropletUtils)
 library(ggplot2)
 library(magrittr)
 library(data.table)
-library(Seurat)
 library(Matrix)
 library(lattice)
 library(UniprotR)
 library(biomaRt)
 library(gridExtra)
+library(dplyr)
+library(Seurat)
+library(tibble)
 
 ## reading arguments
 cmd_args = commandArgs(TRUE);
@@ -98,7 +100,7 @@ seurtObject <- function(m_filtered){
   return(objectNormalized)
 }
 
-## function to target cells after knee filtering based on the barcode information.
+## function to target cells after knee filtering based on the barcode information (provide clustering information)
 targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
 
   ## verify if barcode annotation exist
@@ -120,7 +122,7 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
     ## change metadata: add info about the cell type for each barcode
     ## select from barcode file: barcode ID (column 1) and cell_type_harmonization (column 10)
     barcode_cellName <- barcodeIDs[,c(1,10)]
-    barcode_cellName <- merge(presentSubset, barcode_cellName, by ="barcode")
+    barcode_cellName <- barcode_cellName[ barcode_cellName$barcode %in% presentSubset$barcode, ]
     barcode_cellName <- barcode_cellName$cell_type_harmonization
     barcode_cellName <- unlist(barcode_cellName, use.names=FALSE)
     myData$cell_type <- barcode_cellName
@@ -196,16 +198,16 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
   }
 }
 
-## Info provided as part of QC after barcode/cell-type identification
-## export information of % cell-types per cluster + gene markers per cell-type (using markers annotation from annotation and validated by Bgee after data analysis)
-qualityControl <- function(finalInformationCells, geneMarkerLibrary, geneNameFile){
+## Function to export information of % cell-types per cluster and to provide 
+## gene markers per cell-type (using markers found by the analysis and validated using the annotation file)
+qualityControl <- function(finalInformationCells, geneMarkerLibrary, geneNameFile, speciesID){
 
-## Variability in clusters
+#### 1) Variability in clusters
+  
   myData <- finalInformationCells[[1]]
-
-  ## collect variability of different cells per cluster as well as the global variability (have in consideration all cells in the library)
+  ## collect variability of different cells per cluster, as well as, the correspondent %proportion of each cell type in the library
   variability_cluster <- c()
-  variability_global <- c()
+  global_proportion <- c()
 
   for (cluster in unique(myData$seurat_clusters)) {
 
@@ -221,34 +223,122 @@ qualityControl <- function(finalInformationCells, geneMarkerLibrary, geneNameFil
       infoVariabilityCluster <- (t(c(cluster, calculateVariabilityCluster, as.character(cellName))))
       variability_cluster <- rbind(variability_cluster, infoVariabilityCluster)
 
-      calculateGlobalVariability <- numberCells/nrow(myData)
-      infoGlobalVariability <- (t(c(cluster, calculateGlobalVariability, as.character(cellName))))
-      variability_global <- rbind(variability_global, infoGlobalVariability)
+      calculateGlobalProportion <- (numberCells/nrow(myData))*100
+      infoGlobalVariability <- (t(c(cluster, calculateGlobalProportion, as.character(cellName))))
+      global_proportion <- rbind(global_proportion, infoGlobalVariability)
     }
   }
-  ## general Info about variability in the cluster (NOTE: this is also influencied by the parameters used in the targetCells function)
+  ## general Info about variability in the cluster (NOTE: this is also influenced by the parameters used in the targetCells function)
   ## so this works as informative file in case we need to go back to the annotation part
-  variabilityFinalInfo <- data.frame(variability_cluster, variability_global[,2])
-  colnames(variabilityFinalInfo) <- c("cluster", "Variability_cluster", "Cell_Name", "Global_variability")
-
-### Gene markers validation
-  ## gene markers found by the analysis
+  variabilityFinalInfo <- data.frame(variability_cluster, global_proportion[,2])
+  colnames(variabilityFinalInfo) <- c("cluster", "Variability_cluster", "Cell_Name", "Global_Proportion_library")
+  variabilityFinalInfo$Classification_Variability_cluster <- " "
+  
+  ## add a warning in the file in case some cluster have one cell-type with less 80% of occupancy in the cluster (this means high variability of cells in the same cluster)
+  for (i in unique(variabilityFinalInfo$cluster)) {
+    ## select rows in data.frame referent to the cluster
+    rowID <- which(variabilityFinalInfo$cluster == i)
+    checkCluster <- variabilityFinalInfo$Variability_cluster[variabilityFinalInfo$cluster == i]
+    check <- any(checkCluster >= 0.80)
+    if (check == "TRUE"){
+      variabilityFinalInfo$Classification_Variability_cluster[rowID]<- " "
+    } else {
+      variabilityFinalInfo$Classification_Variability_cluster[rowID]<- "high"
+    }
+  }
+  
+#### 2) Gene markers validation
+  
+  ## gene markers found by the Bgee analysis
   markersLibrary <- finalInformationCells[[2]]
+  ## add cell-type name detected in the cluster
+  markersLibrary$cell_names_cluster <- " "
+  for (i in unique(markersLibrary$cluster)) {
+    ## select rows in data.frame referent to the cluster
+    rowID <- which(markersLibrary$cluster == i)
+    cellType <- unique(myData$cell_type[myData$seurat_clusters == i])
+    cellType <- paste(cellType,collapse=",")
+    markersLibrary$cell_names_cluster[rowID]<- cellType
+ }
+  ## provide gene name to gene IDs
+  markersLibrary <- merge(markersLibrary, geneNameFile, by = "gene")
+  colnames(markersLibrary)[1] <- "markerGene_ID_UniProt_Ensembl"
 
-  ## provide gene ID
-  getInfo <- merge(markersLibrary, geneNameFile, by = "gene")
-  names(getInfo)[length(names(getInfo))]<-"marker_gene_name_for_cell_type"
-
+  ## compare and validate using the gene markers from the annotation
   if (nrow(geneMarkerLibrary) == 0){
     cat("The experiment not provide info about gene markers in the annotation file", "\n")
   } else {
-    ## verify if this markers genes from the analysis exist in annotation file
-    finalMarker <- merge(geneMarkerLibrary, getInfo, by = "marker_gene_name_for_cell_type")
-
-    ## just keep marker genes if p_val_adj is statistically significant
-    geneMarkersValidatedFromBgee <- finalMarker[finalMarker$p_val_adj <= 0.05, ]
+    ## select from annotation
+    subset_annotation_markers <- geneMarkerLibrary %>% select(experimentId, uberonId, uberonName, cell_type, cell_type_harmonization, cellTypeId, cellTypeName, markerGene_ID_UniProt_Ensembl)
+    ## because we subset, some rows can be duplicated (Explanation: what makes the row unique is the source column in the annotation, where we report from where the info comes, example cluster figure).
+    subset_annotation_markers <- subset_annotation_markers[!duplicated(subset_annotation_markers), ]
+    
+    ## see if we have info from UNIPROT or ensembl. If UNIPROT retrieve ensembl ID to merge information between analysis and annotation
+    isUniprot <- subset_annotation_markers[grepl('ENS', subset_annotation_markers$markerGene_ID_UniProt_Ensembl)]
+    ## for the moment we have 3 species for target-based (Homo_sapiens, Mus_musculus and Heterocephalus glaber (naked mole-rat))
+    if (speciesID == "Homo_sapiens"){
+      speciesInfo <- "hsapiens"
+    } else if (speciesID == "Mus_musculus"){
+      speciesInfo <- "mmusculus"
+    } else if (speciesID == "Heterocephalus_glaber") {
+      speciesInfo <- "hglaber"
+    } else {
+      cat("Species still not introduzed!", "\n")
+    }
+    
+    if (nrow(isUniprot) == 0){
+      
+      mart <- useMart('ENSEMBL_MART_ENSEMBL')
+      mart <- useDataset(paste0(speciesInfo,"_gene_ensembl"), mart)
+      
+      annotLookup <- getBM(mart = mart, attributes = c('ensembl_gene_id','uniprot_gn_id'),uniqueRows=TRUE)
+      colnames(annotLookup)[2] <- c("markerGene_ID_UniProt_Ensembl")
+      
+      subset_annotation_markers <- merge(subset_annotation_markers, annotLookup, by ="markerGene_ID_UniProt_Ensembl")
+      colnames(subset_annotation_markers)[1] <- "UNIPROT_ID"
+      colnames(subset_annotation_markers)[9] <- "markerGene_ID_UniProt_Ensembl"
+      
+      ## verify if this markers genes from the analysis exist in annotation file
+      finalMarker <- merge(subset_annotation_markers, markersLibrary, by = "markerGene_ID_UniProt_Ensembl")
+      ## just keep marker genes if p_val_adj is statistically significant
+      geneMarkersValidatedFromBgee <- finalMarker[finalMarker$p_val_adj <= 0.05, ]
+      
+      ## verify if marker match between the cell-type of the annotation and one of the cell types identified in the analysis-cluster
+      ## compare cell_type_hamonization column (annotation) and cell_names_cluster (analysis)
+      geneMarkersValidatedFromBgee$cell_names_cluster <- strsplit(geneMarkersValidatedFromBgee$cell_names_cluster, ",")
+      for (i in 1:length(geneMarkersValidatedFromBgee$cell_names_cluster)) {
+        harmonization <- geneMarkersValidatedFromBgee$cell_type_harmonization[i]
+        cluster <- geneMarkersValidatedFromBgee$cell_names_cluster[[i]]
+        geneMarkersValidatedFromBgee$match[i] <- (harmonization %in% cluster)
+      }
+      ## keep everything that is in agreement between annotation and analysis
+      geneMarkersValidatedFromBgee <- geneMarkersValidatedFromBgee[geneMarkersValidatedFromBgee$match == TRUE, ]
+      if(nrow(geneMarkersValidatedFromBgee) == 0){
+        namesCol <- names(geneMarkersValidatedFromBgee)
+        ## if none marker is found in annotation this is "-" row
+        geneMarkersValidatedFromBgee <- as.data.frame(t(rep(c("-"),times=ncol(geneMarkersValidatedFromBgee))))
+        colnames(geneMarkersValidatedFromBgee) <- namesCol
+      } else {
+        geneMarkersValidatedFromBgee <- geneMarkersValidatedFromBgee
+      }
+      
+    } else {
+      ## if annotation provide ensembl id we don't need to retrieve from UNIPROT (do directly)
+      finalMarker <- merge(subset_annotation_markers, markersLibrary, by = "markerGene_ID_UniProt_Ensembl")
+      geneMarkersValidatedFromBgee <- finalMarker[finalMarker$p_val_adj <= 0.05, ]
+      ## compare cell_type_hamonization column (annotation) and cell_names_cluster (analysis)
+      geneMarkersValidatedFromBgee$cell_names_cluster <- strsplit(geneMarkersValidatedFromBgee$cell_names_cluster, ",")
+      for (i in 1:length(geneMarkersValidatedFromBgee$cell_names_cluster)) {
+        harmonization <- geneMarkersValidatedFromBgee$cell_type_harmonization[i]
+        cluster <- geneMarkersValidatedFromBgee$cell_names_cluster[[i]]
+        geneMarkersValidatedFromBgee$match[i] <- (harmonization %in% cluster)
+      }
+      ## keep everything that is agreement between annotation and analysis
+      geneMarkersValidatedFromBgee <- geneMarkersValidatedFromBgee[geneMarkersValidatedFromBgee$match == TRUE, ]
+      ## add empty column just to match the output file (since we have ensembl ID we don't have info for UNIPROT)
+      geneMarkersValidatedFromBgee <- add_column(geneMarkersValidatedFromBgee, UNIPROT_ID = "-", .after = "markerGene_ID_UniProt_Ensembl")
+    }
   }
-
   return(list(variabilityFinalInfo, geneMarkersValidatedFromBgee))
 }
 
@@ -265,7 +355,7 @@ if (!file.exists(globalInfoLibraries)){
 variabilityCluster <- paste0(output, "/variabilityClusters.txt")
 if (!file.exists(variabilityCluster)){
   file.create(variabilityCluster)
-  cat("libraryID\texperimentID\tcluster\tVariability_cluster\tCell_Name\tGlobal_variability\n",file = paste0(output, "/variabilityClusters.txt"), sep = "\t")
+  cat("libraryID\texperimentID\tcluster\tVariability_cluster\tCell_Name\tGlobal_Proportion_library\tClassification_Variability_cluster\n",file = paste0(output, "/variabilityClusters.txt"), sep = "\t")
 } else {
   print("File already exist.....")
 }
@@ -273,7 +363,7 @@ if (!file.exists(variabilityCluster)){
 markerGenes <- paste0(output, "/markerGenes_Validated.txt")
 if (!file.exists(markerGenes)){
   file.create(markerGenes)
-  cat("libraryID\tmarker_gene_name_for_cell_type\texperimentId\tuberonId\tuberonName\twhitelist\tcell_type\tcell_type_harmonization\tcellTypeId\tcellTypeName\tmarkerGene_ID.UniProt_Ensembl\tPMID\tsource\tcomment\tannotatorId\tlastModificationDate\ttags\tprotocol\tprotocol_type\tgene\tp_val\tavg_logFC\tpct.1\tpct.2\tp_val_adj\tcluster\n",file = paste0(output, "/markerGenes_Validated.txt"), sep = "\t")
+  cat("libraryID\tmarkerGene_ID_UniProt_Ensembl\tUNIPROT_ID\texperimentId\tuberonId\tuberonName\tcell_type\tcell_type_harmonization\tcellTypeId\tcellTypeName\tp_val\tavg_logFC\tpct.1\tpct.2\tp_val_adj\tcluster\tcell_names_cluster\tgene_name\tmatch\n",file = paste0(output, "/markerGenes_Validated.txt"), sep = "\t")
 } else {
   print("File already exist.....")
 }
@@ -326,7 +416,7 @@ for (libraryID in scRNASeqAnnotation$libraryId) {
     geneNameFile <- read.table(paste0(infoFolder, "/gene_to_geneName_with_intergenic_", speciesID,".tsv"))
     colnames(geneNameFile) <- c("gene", "gene_name")
 
-    ## link barcode to cell ID or link cell ID based on gene marker and export information
+    ## link barcode to cell ID and export information
     finalInformationCells <- targetCells(objectNormalized = object, barcodeIDs = barcodeLibrary, biotypeInfo = biotypeInfo, libraryID = libraryID)
     infoCells <- finalInformationCells[[3]]
 
@@ -343,15 +433,14 @@ for (libraryID in scRNASeqAnnotation$libraryId) {
       write.table(allinfo, file = globalInfoLibraries, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
 
       ## export information about variability of cells per cluster and export information about validated gene markers after data analysis
-      infoQC <- qualityControl(finalInformationCells = finalInformationCells, geneMarkerLibrary = geneMarkerLibrary, geneNameFile = geneNameFile)
+      infoQC <- qualityControl(finalInformationCells = finalInformationCells, geneMarkerLibrary = geneMarkerLibrary, geneNameFile = geneNameFile, speciesID = speciesID)
       variabilityClusterInfo <- data.frame(libraryID, experimentID, infoQC[[1]])
       markersInfoValidated <- data.frame(libraryID, infoQC[[2]])
 
       write.table(variabilityClusterInfo, file = variabilityCluster, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
-      write.table(markersInfoValidated, file = markerGenes, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
+      fwrite(markersInfoValidated, file = markerGenes, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
     }
   } else {
       cat("This library ", libraryID, " not exist in the directory.", "\n")
   }
 }
-
