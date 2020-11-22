@@ -244,37 +244,41 @@ To run this rule we type `make process_busFile`.
 
 The next rule of the pipeline is done by `make qc_cellType` where is used the [QC_CelltypeIdentification.R](QC_CelltypeIdentification-r) script that is launched by the batch script [QC_CelltypeIdentification.sbatch](QC_CelltypeIdentification-sbatch).
 
-In this part of the pipeline different steps are executed at individual library. For each matrix, the following steps are done:
+In this part of the pipeline different steps are executed for each individual library. For each matrix, the following steps are done:
 
 1) Filtering cells based on the knee plot.
-This standard single-cell RNA-seq quality control is used to determine a threshold for considering cells valid for analysis, as exemplified below for the library SRX3815587:
+This standard single-cell RNA-seq quality control is used to determine a threshold for considering cells valid for analysis, as exemplified below for the library SRX6060842:
 
-<img src="img/KNEE_SRX3815587.png" width="60%">
+<img src="img/KNEE_SRX6060842.png" width="60%">
 
-2) Identification of cell types based on barcodes provided in the annotation files.
+2) Identification/target of barcodes using the annotation files. In this step of the pipeline each barcode are linked to a cell-type name.
 
-3) UMAP plot with clustering numbers by SEURAT and then UMAP plot using the labels from the annotation (barcodes), as exemplified below for the library SRX3815587. The clustering is also used as quality control.
+3) Clustering by running PCA and UMAP. 
+
+We provide per library a UMAP plot with clustering numbers by SEURAT and a UMAP plot using the labels from the annotation to target each barcodes, as exemplified below for the library SRX6060842. The clustering is an important step also for the visual quality control.
 
 <table>
   <tr>
-    <td><img src="img/UMAP_Seurat_SRX3815587.png" width=400 height=400></td>
-    <td><img src="img/UMAP_SRX3815587.png" width=400 height=400></td>
+    <td><img src="img/UMAP_Seurat_SRX6060842.png" width=400 height=400></td>
+    <td><img src="img/UMAP_SRX6060842.png" width=400 height=400></td>
   </tr>
  </table>
 
-Note: During this process a file `variabilityClusters.txt` is exported with variability information per cluster.
+Note: During this step a file `variabilityClusters.txt` is exported with information about the variability of cells, if exist, per cluster. This allow us to tag as high variability cluster, if at least one of the cell-types detected are not >= 80% of the population in the cluster. In this file we also provide a global information about the proportion that each cell-type represent in the referent library. 
+
+Note, that we note discard cluster of the cells if high variability is detected in the cluster, because this can happen given the default parameters of RunPCA(), FindNeighbors(), FindClusters(), that in analysis done by Bgee are global for all experiments analyzed and integrated. This way. we provide this information as quality control, but we are confident enough to keep this barcodes to the next steps, since this is also information (barcode - cell type name) provided by the authors of the experiment.
 
 4) Export for each library information about the cell-types detected in the matrix, as well as, the number of cells and genes `InformationAllLibraries.txt`.
 
-5) Export information about genes markers detected per library after data analysis and correspondent verification with genes markers provided by the authors, `markerGenes_Validated.txt`.
+5) Export information about genes markers detected per library after data analysis and correspondent verification/validation with gene markers provided by the authors and annotated by Bgee, `markerGenes_Validated.txt`.
 
 6) Export per library a file with UMI counts (raw counts) and a file with normalized counts (CPM) for each cell-type population detected.
 
 ### Bimodality cell population
 
-In order to perform the bimodal test to check which library/cell population should be used for the calls, the script [QC_cellPop_bimodality.R](QC-cellPop-bimodality-R) should be executed by launch the correspondent batch script [QC_cellPop_bimodality.sbatch](QC-cellPop-bimodality-sbatch). This means, by executing in the sensitive server the rule `make bimodality_cellPop`. This script export a pdf file (as represented below for Sperm cells from library SRX3815587) for each cell-type population from each library that met the requirements. A `bimodality_targetBased.txt` file is also exported with libraries and cell population that should be discarded from the calls of present and absent genes, in the next step.
+In order to perform the bimodal test to check which library/cell population should be used for the calls, the script [QC_cellPop_bimodality.R](QC-cellPop-bimodality-R) should be executed by launch the correspondent batch script [QC_cellPop_bimodality.sbatch](QC-cellPop-bimodality-sbatch). This means, by executing in the sensitive server the rule `make bimodality_cellPop`. This script export a pdf file (as represented below for B-cells from library SRX6060842) for each cell-type population from each library that met the requirements (specified above). A `bimodality_targetBased.txt` file is also exported with libraries and cell population that should be discarded from the calls of present and absent genes, in the next step.
 
-<img src="img/bimodality_spermcells.png" width="60%">
+<img src="img/bimodality_Bcells.png" width="60%">
 
 ### Presence and absence calls
 
@@ -282,10 +286,13 @@ In this step of the pipeline to call present and absent genes we use the referen
 
 * Per cell population
 
-In order to call present and absent genes by calculating the p-value of each gene ID we compute the mean and standard deviation of the reference intergenic regions (as described before). The script [Calls_cell_pop_per_library.R](Calls-cell-pop-per-library-R) should be executed by launch the correspondent batch script [Calls_cell_pop_per_library.sbatch](Calls-cell-pop-per-library-sbatch). This means, by executing in the sensitive server the rule `make calls`. This script export a main file regarding the detailed stats of each cell-type population in each library. A plot is also exported per species, as demonstrated below. 
+In order to call present and absent genes by calculating the p-value of each gene ID we compute the mean and standard deviation of the reference intergenic regions (as described before). The script [Calls_cell_pop_per_library.R](Calls-cell-pop-per-library-R) should be executed by launch the correspondent batch script [Calls_cell_pop_per_library.sbatch](Calls-cell-pop-per-library-sbatch). This means, by executing in the sensitive server the rule `make calls`. This script export the density distribution of different regions, as the reference intergenic regions as well as the p-value distribution of genic region to each cell-type population (as represent below).
+
+<img src="img/pValue_BCell_SRX6060842.png" width="70%">
+
+Also a main file `All_cellPopulation_stats_10X.tsv` is exported with the detailed stats of each cell-type population in each library. A pdf file is also exported, providing a visual summary of different stats per species, as demonstrated below. 
 
 ![Boxplot](img/cell_pop_target_based.png)
-
 
 * Per cell
 
