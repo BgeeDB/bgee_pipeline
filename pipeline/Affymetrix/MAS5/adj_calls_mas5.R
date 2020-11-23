@@ -1,12 +1,12 @@
 ## SFonsecaCosta, Mars 2020
 
-## This script is used to add the aleatory cut-off (used as q-values) and to make the adj_calls in the MAS5 output files.
+## This script is used to add the p-values based on the MAS5 paper (https://academic.oup.com/bioinformatics/article/18/12/1593/239312).
 
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args affy_anno="affy_annotation_file" mas5_path="mas5_path_out" cut_off="cut_off_value"' adj_calls_mas5.R adj_calls_mas5.Rout
 ## affy_anno --> annotation file from bgee
 ## mas5_path --> path to the output files from MAS5 (files that contain: probeId, expression/calls or calls/expression). Note the script deal with different order of the columns.
-## cut_off --> correspond to the q-value cutoff that will be applied to call present or absent probes in the adj_calls column.
+## cut_off --> correspond to the p-value cutoff that will be applied to call present or absent probes in the adj_calls column.
 
 ## libraries used
 library(data.table)
@@ -27,7 +27,6 @@ for( c_arg in command_arg ){
     stop( paste(c_arg,"command line argument not provided\n") )
   }
 }
-
 ## reading annotation file
 if( file.exists(affy_anno) ){
   annotation <- read.table(affy_anno, h=T, sep="\t", comment.char="")
@@ -38,27 +37,27 @@ if( file.exists(affy_anno) ){
 }
 
 #########################################################################
-## function to add qValue and than do adj_call
+## function to add pValue and then do adj_call
 mas5 <- function(chipID, cut_off){
 
   chip <- fread(chipID)
-  ## get character column with P,M,A info to attribute q-value
+  ## get character column with P,M,A info to attribute p-value
   columnCalls <- chip[, sapply(chip[,2:3], class) == 'character']
   columnCalls <- names(columnCalls[columnCalls == TRUE])
 
-  ## target column with call info and based on that add qValue and than adjusted call
+  ## target column with call info and based on that add pValue and then adjusted call
   if (columnCalls == "V2"){
     colnames(chip) <- c("probeId", "call", "expression")
-    ## add aleatory q-value
-    chip$qValue <- ifelse(chip$call == "A" , 0.5, ifelse(chip$call == "P" , 0.01, 0.05 ))
+    ## add pValues from MAS5 paper (< 0.04 Present, >=0.04 and <= 0.06 Marginal, > 0.06 Absent)
+    chip$pValue <- ifelse(chip$call == "A" , 0.06, ifelse(chip$call == "P" , 0.04, 0.05 ))
     ## adj_calls
-    chip$adjusted_call <- ifelse(chip$qValue <= cut_off , "P", "A" )
+    chip$adjusted_call <- ifelse(chip$pValue <= cut_off , "P", "A" )
   } else {
     colnames(chip) <- c("probeId", "expression", "call")
     ## add aleatory q-value
-    chip$qValue <- ifelse(chip$call == "A" , 0.5, ifelse(chip$call == "P" , 0.01, 0.05 ))
+    chip$pValue <- ifelse(chip$call == "A" , 0.06, ifelse(chip$call == "P" , 0.04, 0.05 ))
     ## adj_calls
-    chip$adjusted_call <- ifelse(chip$qValue <= cut_off , "P", "A" )
+    chip$adjusted_call <- ifelse(chip$pValue <= cut_off , "P", "A" )
   }
   return(chip)
 }
@@ -78,7 +77,6 @@ for (experimentId in unique(annotation$experimentId)) {
       write.table(adjCalls, file = file.path(filePath, nameChipFile), sep = "\t", row.names = FALSE)
     }
     cat("Adjusted calls added to all chipId files in", experimentId, "experiment.")
-
   } else {
     cat("Folder not exit for this experiment,", experimentId, "\n")
   }
