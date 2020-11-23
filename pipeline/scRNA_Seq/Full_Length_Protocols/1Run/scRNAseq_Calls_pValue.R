@@ -107,23 +107,26 @@ cutoff_info <- function(library_id, counts, desired_pValue_cutoff, meanRefInterg
 plotData <- function(libraryId, kallisto_gene_counts, refIntergenic, TMP_threshold){
   ## export distribution
   dens <- density(log2(kallisto_gene_counts$tpm+1e-6), na.rm=T)
+  dens_genic <- density(log2(kallisto_gene_counts$tpm[kallisto_gene_counts$type == "genic"]+1e-6), na.rm=T)
+  dens_genic$y <- dens_genic$y * nrow(dplyr::filter(kallisto_gene_counts, type == "genic")) / length(kallisto_gene_counts$tpm)
   dens_coding <- density(log2(kallisto_gene_counts$tpm[kallisto_gene_counts$biotype == "protein_coding"]+1e-6), na.rm=T)
   dens_coding$y <- dens_coding$y * nrow(dplyr::filter(kallisto_gene_counts, biotype == "protein_coding")) / length(kallisto_gene_counts$tpm)
   dens_intergenic <- density(log2(kallisto_gene_counts$tpm[kallisto_gene_counts$type == "intergenic"]+1e-6), na.rm=T)
   dens_intergenic$y <- dens_intergenic$y * nrow(dplyr::filter(kallisto_gene_counts, type == "intergenic")) / length(kallisto_gene_counts$tpm)
   refIntergenic <- merge(dplyr::filter(kallisto_gene_counts, type == "intergenic"), referenceIntergenic, by = "gene_id")
-  refIntergenic <- dplyr::filter(refIntergenic, refIntergenic == "TRUE" & tpm > 0)
+  refIntergenic <- dplyr::filter(refIntergenic, refIntergenic == "TRUE")
   dens_Refintergenic <- density(log2(refIntergenic$tpm+1e-6), na.rm=T)
   dens_Refintergenic$y <- dens_Refintergenic$y * nrow(refIntergenic) / length(kallisto_gene_counts$tpm)
   
   pdf(file.path(output_folder, libraryId, paste0("Distribution_", libraryId, ".pdf")), width=10, height=6)
   par(mfrow=c(1,2))
   plot(dens, lwd=2, main=paste0(libraryId), xlab="Log2(TPM)")
+  lines(dens_genic,col="red", lwd=2)
   lines(dens_coding,col="indianred", lwd=2)
   lines(dens_intergenic,col="darkblue", lwd=2)
   lines(dens_Refintergenic,col="cyan", lwd=2)
   abline(v=TMP_threshold, col="gray", lty=2, lwd=2)
-  legend("topright", legend = c("All", "PC", "Int", "RefInt", "cutoff"), col=c("black", "indianred", "darkblue", "cyan", "gray"),lty=c(1,1,1,1,2), bty = "n")
+  legend("topright", legend = c("All", "Genic", "PC", "Int", "RefInt", "cutoff"), col=c("black", "red" ,"indianred", "darkblue", "cyan", "gray"),lty=c(1,1,1,1,1,2), bty = "n")
   
   ## export frequency of pValue
   typeGenic <- as.numeric(kallisto_gene_counts$pValue[kallisto_gene_counts$type == "genic"])

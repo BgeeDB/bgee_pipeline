@@ -201,11 +201,13 @@ In this step of the pipeline to call present and absent genes we use a set of re
 
 In order to call present and absent genes a set of expression of reference intergenic regions are used to calculate a theoretical p-value per gene ID, the script [1Run/scRNAseq_Calls_pValue.R](1Run/scRNAseq_Calls_pValue.R) should be executed by launch the correspondent sbatch script `scRNAseq_Calls_pValue.sbatch`. This means, by executing in the sensitive server the rule `make scRNAseq_Calls`.
 
-Per individual library the densities distributions are exported as well as the p-value frequency plot. A report file containing the information about the library is also provided, example below.
+Per individual library the densities distributions are exported as well as the p-value frequency plot. 
 
-![Boxplot](img/Distribution_SRX1226603.png)
+<img src="img/Distribution_SRX1226603.png" width="80%">
 
-![Boxplot](img/output_SRX1226603.png)
+A report file containing the summary information about each library is also provided, example below.
+
+<img src="img/output_SRX1226603.png" width="40%">
 
 After the calls of expressed genes for each individual cell, using a defined p-value threshold, we collect the global information about each library in the file `All_samples_stats_FL.tsv`. In order to summarize the information in a visual way a plot with the proportion of different types or biotypes, as protein coding, are exported as represented below (experiment ERP013381 from Mus musculus with 501 cells).
 

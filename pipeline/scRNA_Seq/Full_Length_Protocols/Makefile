@@ -195,8 +195,8 @@ final_commit: final_status
 	@$(GIT) add ../$(OUTPUT_DIR)Modality_Cell_type_per_experiment.tsv
 	@$(GIT) add ../$(OUTPUT_DIR)NEW_scRNASeq_sample_info.tsv
 	@$(GIT) add ../$(OUTPUT_DIR)Discard_scRNASeq_sample_info.tsv
-	@$(GIT) add ../$(OUTPUT_DIR)All_samples.tsv
-	@$(GIT) commit -m 'Update info files for scRNASeq full-length for $(DBNAME)' ../$(OUTPUT_DIR)scrna_seq_sample_info.txt ../$(OUTPUT_DIR)Modality_Cell_type_per_experiment.tsv ../$(OUTPUT_DIR)NEW_scRNASeq_sample_info.tsv ../$(OUTPUT_DIR)Discard_scRNASeq_sample_info.tsv ../$(OUTPUT_DIR)All_samples.tsv || true
+	@$(GIT) add ../$(OUTPUT_DIR)All_samples_stats_FL.tsv
+	@$(GIT) commit -m 'Update info files for scRNASeq full-length for $(DBNAME)' ../$(OUTPUT_DIR)scrna_seq_sample_info.txt ../$(OUTPUT_DIR)Modality_Cell_type_per_experiment.tsv ../$(OUTPUT_DIR)NEW_scRNASeq_sample_info.tsv ../$(OUTPUT_DIR)Discard_scRNASeq_sample_info.tsv ../$(OUTPUT_DIR)All_samples_stats_FL.tsv || true
 	@$(GIT) push
 	@echo -e "All information is ready, you can make a tar of the results. \n"
 	@touch $@
