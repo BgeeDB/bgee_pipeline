@@ -86,6 +86,7 @@ get_sra: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_ALREADY_DOWNLOADED)
 check_new_downloads: get_sra
 	@echo 'If the following commands return something, check FASTQ files and/or rerun *get_sra* with more memory!'
 	@find $(RNASEQ_DOWNLOAD_LIB_DIR) -type f -name \*.stat.R\* -exec wc -l {} \; | grep -v '^2 '
+	@find $(RNASEQ_DOWNLOAD_LIB_DIR) -type f -name \*.stat.R\* -exec awk '\\\$1 == 0 {print FILENAME, " ", \\\$0}' {} \;
 	@touch $@
 
 list_new_downloads: check_new_downloads
