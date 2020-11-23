@@ -447,6 +447,7 @@ TMP_TABLE_CLAUSE   := SELECT t10.expressionId, IF((SELECT COUNT(rnaSeqExperiment
 insert_expression: check_conditions insert_RNA_seq
 	# Insert the expression summaries
 	@perl 3Insertion/insert_rna_seq_expression.pl -bgee=$(BGEECMD) > $@.tmp 2>warnings.$@
+	@echo
 	@echo "Searching for incorrect updates of rnaSeqResult/expression tables (there should be none)" >> $@.tmp
 	@$(MYSQL) -e "SELECT * FROM rnaSeqResult WHERE reasonForExclusion = 'not excluded' AND expressionId IS NULL" >> $@.tmp
 	@$(MYSQL) -e "SELECT * FROM rnaSeqResult WHERE reasonForExclusion != 'not excluded' AND expressionId IS NOT NULL" >> $@.tmp
