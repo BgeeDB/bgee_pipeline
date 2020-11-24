@@ -69,6 +69,23 @@ our $STRAIN_PARAM         = 'strain';
 our @CONDITION_PARAMETERS = ($ANAT_ENTITY_PARAM, $STAGE_PARAM, $SEX_PARAM, $STRAIN_PARAM);
 
 
+# Read STRAIN_MAPPING_FILE (StrainMapping.tsv) annotation file
+# to get strain mapping per species
+# to apply on generated source files before their first use
+sub get_strain_mapping {
+    my ($strain_file) = @_;
+
+    my $strain_mapping;
+    for my $strain_info ( grep { !/^#/ } map { s/"//g; $_ } read_file("$strain_file", chomp => 1) ){
+        #sourceStrain   targetStrain   speciesId   speciesName
+        my ($sourceStrain, $targetStrain, $speciesId, undef) = split(/\t/, $strain_info);
+        $strain_mapping->{$speciesId}->{$sourceStrain} = $targetStrain;
+    }
+
+    return $strain_mapping;
+}
+
+
 # A sub to retrieve condition parameter combinations with no rank yet computed
 # for the requested data type.
 # This sub takes as argument an array where the first element is a connection to the Bgee database
