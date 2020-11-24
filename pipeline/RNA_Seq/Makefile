@@ -9,9 +9,10 @@ all: $(VERIFICATIONFILE)
 ################################ RETRIEVE BGEE ANNOTATIONS ################################
 
 #FIXME git submodule should allow the get_annot step to work while protecting the annotation git from unallowed users!
-#FIXME Fix strain names to be more consistent with Anne's strain file, with StrainMapping.tsv file!
+#FIXME TODO Fix strain names to be more consistent with Anne's strain file, with StrainMapping.tsv file!
 get_annot:
 	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations. Store them in the source_files directory
+	@$(WGET) $(ANNOTATION_GIT_URL)/Strains/StrainMapping.tsv                && $(MV) StrainMapping.tsv                $(STRAIN_MAPPING_FILE)
 	@$(WGET) $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqLibrary.tsv                && $(MV) RNASeqLibrary.tsv                $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibrary.tsv                2>/dev/null  || rm -f RNASeqLibrary.tsv
 	@$(WGET) $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqExperiment.tsv             && $(MV) RNASeqExperiment.tsv             $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqExperiment.tsv             2>/dev/null  || rm -f RNASeqExperiment.tsv
 	@$(WGET) $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqLibraryPlatformChecks.tsv  && $(MV) RNASeqLibraryPlatformChecks.tsv  $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibraryPlatformChecks.tsv  2>/dev/null  || rm -f RNASeqLibraryPlatformChecks.tsv
@@ -38,10 +39,10 @@ create_rna_seq_sample_info: check_annot $(EXTRAMAPPING_FILEPATH)
 	@$(MV) $@.tmp $@
 	@echo "Check file \"create_rna_seq_sample_info\" for the output of the script 0Before/create_rna_seq_sample_info.pl, which indicates potential errors to correct in the annotation files.\n"
 
-commit_rna_seq_sample_info: create_rna_seq_sample_info $(RNASEQ_SAMPINFO_FILEPATH)
+commit_rna_seq_sample_info: create_rna_seq_sample_info $(RNASEQ_SAMPINFO_FILEPATH) $(STRAIN_MAPPING_FILE)
 	# Commit the library information file thta will be used for the rest of the pipeline
-	@$(GIT) add $(RNASEQ_SAMPINFO_FILEPATH)
-	@$(GIT) commit -m 'Update $(RNASEQ_SAMPINFO_FILEPATH) for $(DBNAME)' $(RNASEQ_SAMPINFO_FILEPATH) || true
+	@$(GIT) add $(RNASEQ_SAMPINFO_FILEPATH) $(STRAIN_MAPPING_FILE) $(RNASEQ_EXPERIMENT_FILEPATH_FULL) $(RNASEQ_LIB_FILEPATH_FULL)
+	@$(GIT) commit -m 'Update $(RNASEQ_SAMPINFO_FILEPATH) and $(STRAIN_MAPPING_FILE) for $(DBNAME)' $(RNASEQ_SAMPINFO_FILEPATH) || true
 	@$(GIT) push
 	@echo -e "\t$(RNASEQ_SAMPINFO_FILEPATH) is ready, you can go to regular cluster to download new SRA files with get_SRA.pl as *admin* user\n\tDo a 'git pull' before starting\n"
 	@$(MV) $@.tmp $@
