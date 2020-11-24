@@ -9,7 +9,6 @@ all: $(VERIFICATIONFILE)
 ################################ RETRIEVE BGEE ANNOTATIONS ################################
 
 #FIXME git submodule should allow the get_annot step to work while protecting the annotation git from unallowed users!
-#FIXME TODO Fix strain names to be more consistent with Anne's strain file, with StrainMapping.tsv file!
 get_annot:
 	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations. Store them in the source_files directory
 	@$(WGET) $(ANNOTATION_GIT_URL)/Strains/StrainMapping.tsv                && $(MV) StrainMapping.tsv                $(STRAIN_MAPPING_FILE)
@@ -26,7 +25,9 @@ get_annot:
 check_annot: get_annot $(RNASEQ_EXPERIMENT_FILEPATH) $(RNASEQ_EXPERIMENT_FILEPATH_WORM) $(RNASEQ_LIB_FILEPATH) $(RNASEQ_LIBRARY_FILEPATH_WORM)
 	# Concatenate our annotation file with wormbase annotations (without header, and sorted by experiments and libraries)
 	@tail -n+2 $(RNASEQ_EXPERIMENT_FILEPATH_WORM) | sort -k1,1       | cat $(RNASEQ_EXPERIMENT_FILEPATH) - > $(RNASEQ_EXPERIMENT_FILEPATH_FULL)
-	@tail -n+2 $(RNASEQ_LIB_FILEPATH_WORM)        | sort -k2,2 -k1,1 | cat $(RNASEQ_LIB_FILEPATH)        - > $(RNASEQ_LIB_FILEPATH_FULL)
+	@tail -n+2 $(RNASEQ_LIB_FILEPATH_WORM)        | sort -k2,2 -k1,1 | cat $(RNASEQ_LIB_FILEPATH)        - > $(RNASEQ_LIB_FILEPATH_FULL).ori
+	#TODO test -> Map strain names
+	@perl -e 'use lib ".."; use Utils; Utils::map_strain_names("$(RNASEQ_LIB_FILEPATH_FULL).ori", "$(STRAIN_MAPPING_FILE)")' >$(RNASEQ_LIB_FILEPATH_FULL)
 	# First check of annotations
 	perl 0Before/check_rna_seq_curation.pl -bgee=$(BGEECMD) -RNAseqExperiment=$(RNASEQ_EXPERIMENT_FILEPATH_FULL) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -allRes=$(RNASEQALLRES) before >$@.tmp 2>&1
 	@echo "Check file \"check_annot\" for the output of the script 0Before/check_rna_seq_curation.pl, which indicates potential errors to correct in the annotation files.\n"

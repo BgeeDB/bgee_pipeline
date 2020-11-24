@@ -85,6 +85,30 @@ sub get_strain_mapping {
     return $strain_mapping;
 }
 
+# Map strain names with consensus ones
+sub map_strain_names {
+    my ($expression_annotation_file, $strain_file) = @_;
+
+    # Get mapping
+    my $strain_mapping = get_strain_mapping($strain_file);
+
+    # Map on annotations
+    open(my $ANNOT, '<', "$expression_annotation_file")  or die "Cannot open $expression_annotation_file: $!\n";
+    while ( defined (my $line = <$ANNOT>) ){
+        my @fields = map { s/"//g; $_ } split(/\t/, $line);
+        # Case RNASeqLibrary_full.tsv: "strain"    taxid
+        if ( exists $strain_mapping->{ $fields[21] }->{ $fields[20] } ){
+            my $source = quotemeta($fields[20]);
+            my $target = $strain_mapping->{ $fields[21] }->{ $fields[20] };
+            $line =~ s{"$source"\t$fields[21]\t}{"$target"\t$fields[21]\t};
+        }
+        print $line;
+    }
+    close $ANNOT;
+
+    return;
+}
+
 
 # A sub to retrieve condition parameter combinations with no rank yet computed
 # for the requested data type.
