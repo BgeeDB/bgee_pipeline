@@ -488,7 +488,7 @@ check_TMM_factors: launch_calculate_TMM_factors $(RNASEQTMMPATH)
 	@grep 'Warning' -A 5 $(RNASEQTMMPATH)/*.log                   >>$@.tmp  || true
 	@$(MV) $@.tmp $@
 #TODO check that all libraries in database have a TMM factor calculated:
-# cat /var/bgee/extra/pipeline/rna_seq/processed_TMM_$(DBNAME)/*.tsv | grep -v rnaSeqExperimentId | wc -l
+# cat $(RNASEQTMMPATH)/*.tsv | grep -v rnaSeqExperimentId | wc -l
 # This should correspond to: SELECT count(*) FROM rnaSeqLibrary;
 
 insert_TMM_factors: check_TMM_factors $(RNASEQTMMPATH)
