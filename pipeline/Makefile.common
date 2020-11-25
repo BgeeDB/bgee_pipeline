@@ -220,7 +220,7 @@ BDGP_PATH                     := $(CURATIONPATH)expression_data/in_situ/bdgp/
 BDGP2FBBT_MAPPING_FILE        := BDGP_terms_to_FBbt_terms.tsv
 BDGP2FBBT_MAPPING_NEW         := BDGP_terms_to_FBbt_terms_$(DBNAME).tsv
 STAGECORRESP_FILE             := BDGP_stages_correspondence.txt
-WORMBASE_EXPR_DUMP            := expr_pattern.ace.20190721
+WORMBASE_EXPR_DUMP            := expr_pattern.ace
 
 ## RNA Seq
 RNASEQ_CURATION_PATH          := $(CURATIONPATH)expression_data/rna_seq/

@@ -132,6 +132,16 @@ sub map_strain_names {
             }
             print $line;
         }
+        # Case in situ expr_pattern.ace: Strain    "..."
+        elsif ( $expression_annotation_file =~ /expr_pattern\.ace/ ){
+            #NOTE assume only C. elegans strains
+            if ( $fields[0] eq 'Strain' && exists $strain_mapping->{ 6239 }->{ $fields[1] } ){
+                my $source = quotemeta($fields[1]);
+                my $target = $strain_mapping->{ 6239 }->{ $fields[1] };
+                $line =~ s{^Strain\t"$source"}{Strain\t"$target"};
+            }
+            print $line;
+        }
     }
     close $ANNOT;
 
