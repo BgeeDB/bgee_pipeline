@@ -106,7 +106,7 @@ sub map_strain_names {
             print $line;
         }
         # Case scRNASeqLibrary.tsv (NOT_PASS_scRNASeqLibrary.tsv / NEW_scRNASeqLibrary.tsv): strain    speciesId
-        if ( $expression_annotation_file =~ /_scRNASeqLibrary\.tsv/ ){
+        elsif ( $expression_annotation_file =~ /_scRNASeqLibrary\.tsv/ ){
             if ( exists $strain_mapping->{ $fields[22] }->{ $fields[21] } ){
                 my $source = quotemeta($fields[21]);
                 my $target = $strain_mapping->{ $fields[22] }->{ $fields[21] };
@@ -115,11 +115,20 @@ sub map_strain_names {
             print $line;
         }
         # Case scrna_seq_sample_info.txt: speciesId ... strain
-        if ( $expression_annotation_file =~ /scrna_seq_sample_info\.txt/ ){
+        elsif ( $expression_annotation_file =~ /scrna_seq_sample_info\.txt/ ){
             if ( exists $strain_mapping->{ $fields[4] }->{ $fields[14] } ){
                 my $source = quotemeta($fields[14]);
                 my $target = $strain_mapping->{ $fields[4] }->{ $fields[14] };
                 $line =~ s{\t$source\t}{\t$target\t};
+            }
+            print $line;
+        }
+        # Case affymetrixChip_full.tsv: "strain"    speciesId
+        elsif ( $expression_annotation_file =~ /affymetrixChip_full\.tsv/ ){
+            if ( exists $strain_mapping->{ $fields[23] }->{ $fields[22] } ){
+                my $source = quotemeta($fields[22]);
+                my $target = $strain_mapping->{ $fields[23] }->{ $fields[22] };
+                $line =~ s{"$source"\t$fields[23]\t}{"$target"\t$fields[23]\t};
             }
             print $line;
         }

@@ -35,6 +35,7 @@ maintenance: new_annotation
 
 get_annot: maintenance
 	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations
+	@$(WGET) $(ANNOTATION_GIT_URL)/Strains/StrainMapping.tsv                && $(MV) StrainMapping.tsv             $(STRAIN_MAPPING_FILE)
 	@$(WGET) $(ANNOTATION_GIT_URL)/Affymetrix/affymetrixChip.tsv            && $(MV) affymetrixChip.tsv            $(SOURCE_FILES_DIR)/$(DIR_NAME)/affymetrixChip.tsv            2>/dev/null  || rm -f affymetrixChip.tsv
 	@$(WGET) $(ANNOTATION_GIT_URL)/Affymetrix/chipType.tsv                  && $(MV) chipType.tsv                  $(SOURCE_FILES_DIR)/$(DIR_NAME)/chipType.tsv                  2>/dev/null  || rm -f chipType.tsv
 	@$(WGET) $(ANNOTATION_GIT_URL)/Affymetrix/microarrayExperiment.tsv      && $(MV) microarrayExperiment.tsv      $(SOURCE_FILES_DIR)/$(DIR_NAME)/microarrayExperiment.tsv      2>/dev/null  || rm -f microarrayExperiment.tsv
@@ -96,12 +97,14 @@ gen_info: $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL) $(PIPELINEROOT)$(AFFY_CHIPIN
 # Annotations checking
 check_annot: gen_info $(PIPELINEROOT)$(AFFY_NORMTYPE_FILEPATH) $(PIPELINEROOT)$(AFFY_DETCTYPE_FILEPATH) $(PIPELINEROOT)$(AFFY_CHIPTYPEQUAL_FILEPATH)
 #check_annot: gen_info $(PIPELINEROOT)$(AFFY_NORMTYPE_FILEPATH) $(PIPELINEROOT)$(AFFY_DETCTYPE_FILEPATH) $(PIPELINEROOT)$(AFFY_CHIPTYPE_FILEPATH_FULL) $(PIPELINEROOT)$(MICROARRAY_EXPERIMENT_FILEPATH_FULL) $(PIPELINEROOT)$(AFFY_CHIPINFO_FILEPATH) $(PIPELINEROOT)$(AFFY_CHIPTYPEQUAL_FILEPATH) $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL)
-#TODO temporary solution to concatenate annotationf files below, so we cannot depend on the full annotations files here. When get_annot is fixed, change this
-
+#TODO temporary solution to concatenate annotation files below, so we cannot depend on the full annotations files here. When get_annot is fixed, change this
 	# Concatenate our annotation file with wormbase annotations (without header, and sorted by experiments and libraries)
-	@tail -n+2 $(AFFY_CHIP_FILEPATH_WORM) | sort -k2,2 -k1,1 | cat $(AFFY_CHIP_FILEPATH) - > $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL)
-	@tail -n+2 $(AFFY_CHIPTYPE_FILEPATH_WORM) | sort -k1,1 | cat $(AFFY_CHIPTYPE_FILEPATH) - > $(PIPELINEROOT)$(AFFY_CHIPTYPE_FILEPATH_FULL)
-	@tail -n+2 $(MICROARRAY_EXPERIMENT_FILEPATH_WORM) | sort -k1,1 | cat $(MICROARRAY_EXPERIMENT_FILEPATH) - > $(PIPELINEROOT)$(MICROARRAY_EXPERIMENT_FILEPATH_FULL)
+	@tail -n+2 $(AFFY_CHIP_FILEPATH_WORM)             | sort -k2,2 -k1,1 | cat $(AFFY_CHIP_FILEPATH) - > $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL).ori
+	@tail -n+2 $(AFFY_CHIPTYPE_FILEPATH_WORM)         | sort -k1,1       | cat $(AFFY_CHIPTYPE_FILEPATH) - > $(PIPELINEROOT)$(AFFY_CHIPTYPE_FILEPATH_FULL)
+	@tail -n+2 $(MICROARRAY_EXPERIMENT_FILEPATH_WORM) | sort -k1,1       | cat $(MICROARRAY_EXPERIMENT_FILEPATH) - > $(PIPELINEROOT)$(MICROARRAY_EXPERIMENT_FILEPATH_FULL)
+	# Map strain names
+	@perl -e 'use lib ".."; use Utils; Utils::map_strain_names("$(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL).ori", "$(STRAIN_MAPPING_FILE)")' >$(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL)
+	@$(RM) $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL).ori
 #TODO remove above lines when get_annot fixed
 
 	# Check curation before
