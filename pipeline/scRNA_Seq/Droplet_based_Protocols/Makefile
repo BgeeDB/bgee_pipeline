@@ -8,6 +8,7 @@ include $(PIPELINEROOT)Makefile.common
 ## Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations and store them in the source_files directory
 ## NOTE: this files should be already in the source_files (see whats happen with download)
 get_annot:
+	@$(WGET) $(ANNOTATION_GIT_URL)/Strains/StrainMapping.tsv                   && $(MV) StrainMapping.tsv                  $(STRAIN_MAPPING_FILE)
 	@$(WGET) $(ANNOTATION_GIT_URL)/scRNA_Seq/scRNASeqLibrary.tsv               && $(MV) scRNASeqLibrary.tsv                $(INPUT_DIR)/scRNASeqLibrary.tsv                2>/dev/null  || rm -f scRNASeqLibrary.tsv
 	@$(WGET) $(ANNOTATION_GIT_URL)/scRNA_Seq/scRNASeqExperiment.tsv            && $(MV) scRNASeqExperiment.tsv             $(INPUT_DIR)/scRNASeqExperiment.tsv             2>/dev/null  || rm -f scRNASeqExperiment.tsv
 	@$(WGET) $(ANNOTATION_GIT_URL)/scRNA_Seq/scRNASeq_barcode.tsv              && $(MV) scRNASeq_barcode.tsv               $(INPUT_DIR)/scRNASeq_barcode.tsv               2>/dev/null  || rm -f scRNASeq_barcode.tsv

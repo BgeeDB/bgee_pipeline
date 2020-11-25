@@ -19,6 +19,7 @@ control_annotation: get_annot 0Preparation/pre_process_control_annotation.R
 	$(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args scRNASeqLibrary="$(SC_RNASEQ_LIB_FILEPATH)" output_folder="${PWD}/$(OUTPUT_DIR)"' 0Preparation/pre_process_control_annotation.R 0Preparation/pre_process_control_annotation.Rout > $@.tmp 2>&1
 	@echo --- DONE ---
 	# Map strain names
+	#FIXME has to be done on other scRNAseq generated files? Or others come from that one?
 	@perl -e 'use lib "../.."; use Utils; Utils::map_strain_names("../$(SC_RNASEQ_NEW_LIB_FILEPATH)", "$(STRAIN_MAPPING_FILE)")' >../$(SC_RNASEQ_NEW_LIB_FILEPATH).ori
 	@$(MV) ../$(SC_RNASEQ_NEW_LIB_FILEPATH).ori ../$(SC_RNASEQ_NEW_LIB_FILEPATH)
 	@$(MV) $@.tmp $@
