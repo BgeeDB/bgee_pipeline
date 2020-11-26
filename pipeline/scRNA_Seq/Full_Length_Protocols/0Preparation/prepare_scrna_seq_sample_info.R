@@ -11,6 +11,7 @@
 ## Libraries
 library(rjson)
 library(plyr)
+library(dplyr)
 
 ## reading arguments
 cmd_args = commandArgs(TRUE);
