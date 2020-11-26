@@ -4,8 +4,9 @@
 
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args NEW_scRNASeqLibrary="NEW_scRNASeqLibrary.tsv" output_folder="output_folder"' retrieve_metadata.R retrieve_metadata.Rout
-## NEW_scRNASeqLibrary -> File with all libraries annotated by bgee that pass the minimum requirement (>= 100 cells)
-## output_folder -> Path where should be saved the output results after collect the metadata
+## NEW_scRNASeqLibrary     -> File with all libraries annotated by bgee that pass the minimum requirement (>= 50 cells)
+## metadata_info           -> path to output file that contains libraries with identical metadata between Bgee and EBI. libraries in this file will be downloaded
+## metadata_info_not_match -> path to output file that contains libraries with different metadata between Bgee and EBI. libraries in this file will not be downloaded
 
 ## reading arguments
 cmd_args = commandArgs(TRUE);
@@ -17,7 +18,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments exist....
-command_arg <- c("NEW_scRNASeqLibrary", "output_folder")
+command_arg <- c("NEW_scRNASeqLibrary", "metadata_info", "metadata_info_not_match")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -55,19 +56,17 @@ for (libraryID in unique(libraryIDs)) {
 }
 
 ## Create the output files to write the comparison between annotation and metadata
-metadata_info <- file.path(output_folder, "metadata_info.txt")
 if (!file.exists(metadata_info)){
   file.create(metadata_info)
-  cat("sample_accession\texperiment_accession\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = file.path(output_folder, "metadata_info.txt"), sep = "\t")
+  cat("sample_accession\texperiment_accession\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = metadata_info, sep = "\t")
 } else {
-  print("File already exist.....")
+  message("File already exists.....")
 }
-metadata_notMatch <- file.path(output_folder, "metadata_notMatch.txt")
-if (!file.exists(metadata_notMatch)){
-  file.create(metadata_notMatch)
-  cat("sample_accession\texperiment_accession\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = file.path(output_folder, "metadata_notMatch.txt"), sep = "\t")
+if (!file.exists(metadata_info_not_match)){
+  file.create(metadata_info_not_match)
+  cat("sample_accession\texperiment_accession\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = metadata_info_not_match, sep = "\t")
 } else {
-  print("File already exist.....")
+  message("File already exists.....")
 }
 
 ## compare information between annotation and metadata (like: libraryID, plataform and speciesID)
@@ -82,19 +81,18 @@ for(i in 1:nrow(fullLength)) {
 
 
   if (compare_library == "TRUE" && compare_machine == "TRUE" && compare_speciesID == "TRUE"){
-    cat(as.character(annotationInfo$libraryId[1]), "complete match between annotation and metadata", "\n")
+    message(as.character(annotationInfo$libraryId[1]), "complete match between annotation and metadata")
 
     ## export libraries that pass and will be downloaded
     write.table(metadataInfo, file = metadata_info, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
 
   } else {
-    cat("WARNING : ", "\n")
-    cat("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison library is: ", compare_library, "\n")
-    cat("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison platform is: ", compare_machine, "\n")
-    cat("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison species is: ", compare_speciesID, "\n")
+    warning("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison library is: ", compare_library)
+    warning("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison platform is: ", compare_machine)
+    warning("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison species is: ", compare_speciesID)
 
     ## export libraries that will not be used to download
-    write.table(metadataInfo, file = metadata_notMatch, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
+    write.table(metadataInfo, file = metadata_info_not_match, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
   }
 }
 

@@ -46,6 +46,7 @@ my $main_script = $RealBin.'/kallisto.R';
 # kallisto is no multithreaded unless bootstraps are used
 my $nbr_processors = 1;
 my $memory_usage   = 50;      # in GB
+#TODO: user_email and acccount should be written in the Makefile.Config file in order not to expose publicly in github
 my $user_email     = 'sara.fonsecacosta@unil.ch'; # for email notification
 my $account        = 'mrobinso_bgee_sensitive';
 my $queue          = 'normal';

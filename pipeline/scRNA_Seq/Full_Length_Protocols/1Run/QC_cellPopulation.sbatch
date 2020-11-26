@@ -21,8 +21,10 @@ module add R/3.6.1
 
 export SCRIPT_PATH=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/bgee_pipeline/pipeline/scRNA_Seq/Full_Length_Protocols/
 export scrna_seq_sample_info=../../generated_files/scRNA_Seq/scrna_seq_sample_info.tsv
-export cells_folder=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/scRNA-Seq_all_results/Kallisto_All_Cells/
-export output_folder=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/scRNA-Seq_all_results/Quality_Control_Cell_Population/
+export sample_info_pass=../../generated_files/scRNA_Seq/NEW_scRNASeq_sample_info.tsv
+export sample_info_discarded=../../generated_files/scRNA_Seq/Discard_scRNASeq_sample_info.tsv
+export modality_info=../../generated_files/scRNA_Seq/Modality_Cell_type_per_experiment.tsv
+export calls_file_name=abundance+geneLevel+intergenic.tsv
 export plot=yes
 export ROUT=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/scRNA-Seq_all_results/FULL_LENGTH
 
