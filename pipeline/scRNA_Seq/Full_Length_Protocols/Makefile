@@ -111,7 +111,7 @@ check_tools: clusterJURA
 	@$(MV) $@.tmp $@
 
 ## generate gene2biotype, gene2transcript and gene2geneName (without intergenic regions)
-generateInfo: check_tools ($RNASEQ_CLUSTER_GTF) 0Preparation/generateInfo.R
+generateInfo: check_tools $(RNASEQ_CLUSTER_GTF) 0Preparation/generateInfo.R
 	@echo --- Starting generation of informative file from GTF ---
 	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                            	0Preparation/generateInfo.R
 	@sed -i 's@--output=.*@--output=${PWD}/generateInfo_FL.out@'                            0Preparation/generateInfo.sbatch
