@@ -75,7 +75,7 @@ generalInfo <- dplyr::filter(generalInfo, ftp_link != "HCA")
 for (library in  unique(generalInfo$experiment_accession)) {
 
   ## create output for each library
-  cat("treating the library: ", library, "\n")
+  message("treating the library: ", library)
   InfoFile <- paste0(output, "/", library)
   if (!dir.create(InfoFile)){
     dir.create(InfoFile)

@@ -194,7 +194,8 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
     colnames(infoCollected) <- c("Number_genes", "Number_cells", "Cell_Name")
     return(list(myData[[]],markersLibrary,infoCollected))
   } else {
-      cat("Library", libraryID, "not take in consideration for posterior analysis", "\n", "Barcode not provided!", "\n")
+      message("Library", libraryID, "not take in consideration for posterior analysis.")
+      message("Barcode not provided!")
   }
 }
 
@@ -266,7 +267,7 @@ qualityControl <- function(finalInformationCells, geneMarkerLibrary, geneNameFil
 
   ## compare and validate using the gene markers from the annotation
   if (nrow(geneMarkerLibrary) == 0){
-    cat("The experiment not provide info about gene markers in the annotation file", "\n")
+    message("The experiment not provide info about gene markers in the annotation file.")
   } else {
     ## select from annotation
     subset_annotation_markers <- geneMarkerLibrary %>% select(experimentId, uberonId, uberonName, cell_type, cell_type_harmonization, cellTypeId, cellTypeName, markerGene_ID_UniProt_Ensembl)
@@ -283,7 +284,7 @@ qualityControl <- function(finalInformationCells, geneMarkerLibrary, geneNameFil
     } else if (speciesID == "Heterocephalus_glaber") {
       speciesInfo <- "hglaber"
     } else {
-      cat("Species still not introduzed!", "\n")
+      message("Species still not introduzed!")
     }
     
     if (nrow(isUniprot) == 0){
@@ -376,7 +377,7 @@ for (libraryID in scRNASeqAnnotation$libraryId) {
 
   if (pathLib == TRUE){
 
-    cat("Treating library ", libraryID, "\n")
+    message("Treating library ", libraryID)
 
     ## info about species and experiment
     speciesID <- scRNASeqAnnotation$scientific_name[scRNASeqAnnotation$libraryId == libraryID]
@@ -424,9 +425,9 @@ for (libraryID in scRNASeqAnnotation$libraryId) {
     null <- is.null(finalInformationCells)
 
     if (null == TRUE){
-      cat("The library", libraryID, " not contain barcodes.", "\n",
-          "Any raw or normalized count is exported.", "\n",
-          "NOTE: the library is not present in the informative files, InformationAllLibraries.txt, variabilityClusters.txt and markerGenes_Validated.txt file")
+      message("The library", libraryID, " not contain barcodes.")
+      message("Any raw or normalized count is exported.")
+      message("The library will not be present in the informative files: InformationAllLibraries.txt, variabilityClusters.txt and markerGenes_Validated.txt file")
     } else {
       ## write all information for the library
       allinfo <- data.frame(libraryID, experimentID, length(tot_counts) , length(tot_genes), infoCells$Number_genes, infoCells$Number_cells, infoCells$Cell_Name)
@@ -441,6 +442,6 @@ for (libraryID in scRNASeqAnnotation$libraryId) {
       fwrite(markersInfoValidated, file = markerGenes, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
     }
   } else {
-      cat("This library ", libraryID, " not exist in the directory.", "\n")
+      message("This library ", libraryID, " not exist in the directory.")
   }
 }
