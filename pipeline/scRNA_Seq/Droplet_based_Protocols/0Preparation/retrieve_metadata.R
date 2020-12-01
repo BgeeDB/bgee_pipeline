@@ -107,7 +107,8 @@ HCA_metadata <- function(libraryID, experimentName){
     infoMeatadata <- c(sample_accession, experiment_accession, run_accession, read_count, tax_id,scientific_name, instrument_model, library_layout, fastq_ftp, submitted_ftp)
 
   } else {
-    cat("The experiment title was not found in HCA metadata.", "\n", "Please check the annotation file.")
+    message("The experiment title was not found in HCA metadata.")
+    message("Please check the annotation file.")
   }
   return(infoMeatadata)
 }
@@ -137,7 +138,7 @@ for (experiment in unique(targetBased$experimentId)) {
       metadata <- rbind(metadata,extractHCA)
     }
   } else {
-    cat("Source is not recognized!")
+    message("Source is not recognized!")
   }
 }
 
@@ -178,10 +179,9 @@ for(i in 1:nrow(targetBased_libraries)) {
       write.table(metadataInfo, file = metadata_info, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
 
     } else {
-      cat("WARNING : ", "\n")
-      cat("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison library is: ", compare_library, "\n")
-      cat("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison platform is: ", compare_machine, "\n")
-      cat("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison species is: ", compare_speciesID, "\n")
+      message("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison library is: ", compare_library)
+      message("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison platform is: ", compare_machine)
+      message("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison species is: ", compare_speciesID)
 
       ## export libraries that will not be used to download
       write.table(metadataInfo, file = metadata_notMatch, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
@@ -194,8 +194,7 @@ for(i in 1:nrow(targetBased_libraries)) {
       ## export libraries that pass and will be downloaded
       write.table(metadataInfo, file = metadata_info, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
     } else {
-      cat("WARNING : ", "\n")
-      cat("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison platform is: ", compare_machine, "\n")
+      message("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison platform is: ", compare_machine)
       ## export libraries that will not be used to download
       write.table(metadataInfo, file = metadata_notMatch, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
     }

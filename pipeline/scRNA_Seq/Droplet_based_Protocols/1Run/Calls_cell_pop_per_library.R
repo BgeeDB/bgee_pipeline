@@ -183,7 +183,7 @@ collectSamplesStats <- data.frame()
 ## loop thought all libraries
 for (libraryid in unique(scRNASeqAnnotation$libraryId)) {
   
-    cat("Library: ", libraryid, "\n")
+    message("Library: ", libraryid)
   
     ## collect all cell populations that belongs to the library
     AllCellPop <- list.files(path = file.path(folder_data, libraryid), pattern = "^Raw_Counts_")
@@ -196,12 +196,12 @@ for (libraryid in unique(scRNASeqAnnotation$libraryId)) {
     AllCellPop <- setdiff(collectCellNames,cellsInfo)
     speciesID <- scRNASeqAnnotation$speciesId[scRNASeqAnnotation$libraryId == libraryid]
    
-    cat("AllCellPop: ", AllCellPop, "\n")
-    cat("speciesID: ", speciesID, "\n")
+    message("AllCellPop: ", AllCellPop)
+    message("speciesID: ", speciesID)
  
     for (cellPop in AllCellPop) {
       
-      cat("Doing cell population: ", cellPop, "\n")
+      message("Doing cell population: ", cellPop)
 
         ## collect the sumUMI + normalization for the target cellPop
         cellPop_normalized <- sumUMICellPop(folder_data = folder_data, library = libraryid, cellPop = cellPop)

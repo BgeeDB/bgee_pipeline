@@ -57,7 +57,7 @@ scRNASeqInfo <- merge(targetBased, metadataCollect, by="libraryId", incomparable
 write.table(scRNASeqInfo, file = paste0(output, "/scRNA_Seq_info_TargetBased.txt"), col.names = TRUE, row.names = FALSE , quote = FALSE, sep = "\t")
 
 for (species in unique(scRNASeqInfo$scientific_name)) {
-  cat("Species:", species, "\n")
+  message("Species:", species)
 
   ## collect species info
   specieID <- gsub(" ", "_", species)
@@ -68,7 +68,7 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
   collectLibrary <- scRNASeqInfo$libraryId[scRNASeqInfo$scientific_name == species]
 
   for (i in collectLibrary) {
-    cat("Treating library: ", i, "\n")
+    message("Treating library: ", i)
 
     ## verify if library exist
     libraryInfo <- file.exists(paste0(folder_data, "/", i, "/"))
@@ -77,7 +77,7 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
 
       ## collect info about whitelist
       whiteLInfo <- as.character(scRNASeqInfo$whiteList[scRNASeqInfo$libraryId==i])
-      cat("The whitelist used is:", whiteLInfo, "\n")
+      message("The whitelist used is:", whiteLInfo)
 
       ## verify if exist FASTQ (with or without recursive folder) or SRR folder with fastq.gz files for the library
       detectFastqPath_1 <- file.exists(paste0(folder_data, "/", i, "/", "FASTQ"))
@@ -91,7 +91,7 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
         ## select all fastq.gz files
         detectFastqPath <- list.dirs(paste0(folder_data, "/", i, "/", "FASTQ"), recursive=TRUE)
         detectFastqFiles <- list.files(path=detectFastqPath, pattern = "\\.fastq.gz$")
-        cat("FASTQ Files detected: ", detectFastqFiles, "\n")
+        message("FASTQ Files detected: ", detectFastqFiles)
 
         ## Note: libraries from HCA have just one R1 and one R2
         ReadBarcodes <- list.files(path=detectFastqPath, pattern = "*_R1_001.fastq.gz$")
@@ -101,7 +101,8 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
         filesKallisto <- rbind(paste0(detectFastqPath,"/",ReadBarcodes), paste0(detectFastqPath,"/",ReadSeq))
         filesKallisto <- toString(filesKallisto)
         filesKallisto <- gsub(",", " " ,filesKallisto)
-        cat("Files to pass to Kallisto: ", "\n", filesKallisto, "\n")
+        message("Files to pass to Kallisto: ")
+        message(filesKallisto)
 
         ## create directory for bus_output for each library
         busOutput <- paste0(folder_data, "/", i, "/busOutput")
@@ -120,18 +121,19 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
         ## verify if exist multiplefiles in the folder (multiple fastq.gz represent lanes)
         detectFastqPath <- list.dirs(paste0(folder_data, "/", i, "/", "FASTQ"), recursive=TRUE)[-1]
         detectFastqFiles <- list.files(path=detectFastqPath, pattern = "\\.fastq.gz$")
-        cat("FASTQ Files detected: ", detectFastqFiles, "\n")
+        message("FASTQ Files detected: ", detectFastqFiles)
 
         ReadBarcodes <- str_subset(detectFastqFiles,"bamtofastq_S1_L0\\d+_R1_\\d+")
-        cat("Length of barcode files detected: ", length(ReadBarcodes), "\n")
+        message("Length of barcode files detected: ", length(ReadBarcodes))
         ReadSeq <- str_subset(detectFastqFiles,"bamtofastq_S1_L0\\d+_R2_\\d+")
-        cat("Length sequence files detected: ", length(ReadSeq), "\n")
+        message("Length sequence files detected: ", length(ReadSeq))
 
         ## collect all fastq.gz files
         filesKallisto <- rbind(paste0(detectFastqPath,"/",ReadBarcodes), paste0(detectFastqPath,"/",ReadSeq))
         filesKallisto <- toString(filesKallisto)
         filesKallisto <- gsub(",", " " ,filesKallisto)
-        cat("Files to pass to Kallisto: ", "\n", filesKallisto, "\n")
+        message("Files to pass to Kallisto: ")
+        message(filesKallisto)
 
         ## create directory for bus_output for each library
         busOutput <- paste0(folder_data, "/", i, "/busOutput")
@@ -149,7 +151,7 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
         print("This library come from SRA repository. fastq.gz files are saved directlly in a SRR folder")
         detectFastqPath <- list.dirs(paste0(folder_data, "/", i), recursive=TRUE)[-1]
         detectFastqFiles <- list.files(path=detectFastqPath, pattern = "\\.fastq.gz$")
-        cat("FASTQ Files detected: ", detectFastqFiles, "\n")
+        message("FASTQ Files detected: ", detectFastqFiles)
 
         ReadBarcodes <- list.files(path=detectFastqPath, pattern = "*_R1.fastq.gz$")
         ReadSeq <- list.files(detectFastqPath,"*_R2.fastq.gz")
@@ -158,7 +160,8 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
         filesKallisto <- rbind(paste0(detectFastqPath,"/",ReadBarcodes), paste0(detectFastqPath,"/",ReadSeq))
         filesKallisto <- toString(filesKallisto)
         filesKallisto <- gsub(",", " " ,filesKallisto)
-        cat("Files to pass to Kallisto: ", "\n", filesKallisto, "\n")
+        message("Files to pass to Kallisto: ")
+        message(filesKallisto)
 
         ## create directory for bus_output for each library
         busOutput <- paste0(folder_data, "/", i, "/busOutput")
@@ -173,7 +176,7 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
 
       }
     } else {
-      cat("Library not present in the folder to run Kallisto bus!", "\n")
+      message("Library not present in the folder to run Kallisto bus!")
     }
   }
 }
