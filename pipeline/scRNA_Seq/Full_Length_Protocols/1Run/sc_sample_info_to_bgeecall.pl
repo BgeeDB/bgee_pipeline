@@ -59,7 +59,7 @@ while (my $line = <$sample_info>) {
         die "all lines of full length single cell sample info file should have $number_columns columns";
     }
     #column organism
-    my $species_name = $line[16];
+    my $species_name = $line[15];
     my $transcriptome_path = "$transcriptome_dir$species_name.transcriptome.fa.xz";
     my $annotation_path = "$transcriptome_dir$species_name.gtf_transcriptome";
     my $fastq_path = "$fastq_dir$line[0]";
