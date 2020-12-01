@@ -108,42 +108,19 @@ check_tools: clusterJURA
 
 
 ## Prepare single cell info file (run rule in front)
-#XXX: should be written in perl to retrieve species from bgee DB (speciesName -> speciesID is hardcoded in this script)
+#TODO: should be written in perl to retrieve species from bgee DB (speciesName -> speciesID is hardcoded in this script)
 prepare_singlecell_info: generateInfo $(SC_RNASEQ_LIB_PASS_FILEPATH) 0Preparation/prepare_scrna_seq_sample_info.R
 	@$(RM) $(SC_RNASEQ_SAMPINFO_FILEPATH)
 	@echo --- prepare single cell information file ---
-	@$(CLUSTER_FASTP_CMD) $(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args NEW_scRNASeqLibrary="$(SC_RNASEQ_LIB_PASS_FILEPATH)" raw_cells_folder="$(SC_RNASEQ_FASTQ_FULL_LENGTH)" output_folder="$(OUTPUT_DIR)"' 0Preparation/prepare_scrna_seq_sample_info.R 0Preparation/prepare_scrna_seq_sample_info.Rout > $@.tmp
+	@$(CLUSTER_FASTP_CMD) $(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args NEW_scRNASeqLibrary="$(SC_RNASEQ_LIB_PASS_FILEPATH)" raw_cells_folder="$(SC_RNASEQ_FASTQ_FULL_LENGTH)" output_sample_info_file="$(SC_RNASEQ_SAMPINFO_FILEPATH)"' 0Preparation/prepare_scrna_seq_sample_info.R 0Preparation/prepare_scrna_seq_sample_info.Rout > $@.tmp
 	@echo --- DONE ---
 	@$(MV) $@.tmp $@
 
-## Run kallisto for all library/cells
-## NOTE: Use the transcriptome index generated for RNA-Seq pipeline
-kallisto: prepare_singlecell_info $(SC_RNASEQ_SAMPINFO_FILEPATH)
-	mkdir -p $(SC_RNASEQ_CLUSTER_KALLISTO)
-	@perl 1Run/slurm_scheduler_Kallisto_scRNASeq.pl -scrna_seq_sample_info=$(SC_RNASEQ_SAMPINFO_FILEPATH) -raw_cells_folder=$(SC_RNASEQ_FASTQ_FULL_LENGTH) -infoFolder=$(RNASEQ_CLUSTER_GTF) -output_folder=$(SC_RNASEQ_CLUSTER_KALLISTO) -cluster_kallisto_cmd='$(CLUSTER_KALLISTO_CMD)' -cluster_R_cmd='$(CLUSTER_R_CMD)'
-	@echo "At the end it is a good idea to relaunch the kallisto rule step to be sure everything was run!"
-	@touch $@
-
-## Convert TranscriptID to GeneID and perform recalculations of TPM without intergenic regions
-analysis: kallisto 1Run/analysis.R
-	@echo --- Starting the analysis ---
-	@sed -i 's@--output=.*@--output=${PWD}/analysis.out@'                                                        1Run/analysis.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/analysis.err@'                                                          1Run/analysis.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                1Run/analysis.sbatch
-	@sed -i 's@export scrna_seq_sample_info=.*@export scrna_seq_sample_info=$(SC_RNASEQ_SAMPINFO_FILEPATH)@'     1Run/analysis.sbatch
-	@sed -i 's@export cells_folder=.*@export cells_folder=$(SC_RNASEQ_CLUSTER_KALLISTO)@'                        1Run/analysis.sbatch
-	@sed -i 's@export infoFolder=.*@export infoFolder=$(RNASEQ_CLUSTER_GTF)@'                                    1Run/analysis.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES)@'                                         1Run/analysis.sbatch
-	@sbatch 1Run/analysis.sbatch
-	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
-	@echo --- DONE ---
-	@touch $@
-
-
 # generate kallisto indexes with BgeeCall. Indexes already generated during the bulk RNA-Seq pipeline can be reused.
 indexes_bgeecall: generate_intergenic_sequences
-	# generate BgeeCall input file from the rna_seq_sample_info.txt file
-	@perl $(PIPELINEROOT)$()1Run/sample_info_to_bgeecall.pl -sample_info_file=$(SC_RNASEQ_SAMPINFO_FILEPATH) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(SC_RNASEQ_FASTQ_FULL_LENGTH) -bgeecall_file=$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >>$@.tmp 2>&1
+	# generate BgeeCall input file from the scrna_seq_sample_info.txt file
+	# Run in front because it only parse a small file in order to create a new one.
+	@perl 1Run/sc_sample_info_to_bgeecall.pl -sample_info_file=$(SC_RNASEQ_SAMPINFO_FILEPATH) -transcriptome_dir=$(SC_RNASEQ_FASTQ_FULL_LENGTH) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(SC_RNASEQ_FASTQ_FULL_LENGTH) -bgeecall_file=$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >>$@.tmp 2>&1
 	# generate kallisto indexes with BgeeCall
 	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file=\"$(RNASEQ_BGEECALL_FILE)\" account=\"mrobinso_bgee\" time=\"2:00:00\" partition=\"axiom\" working_path=\"$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)\"' bgeecall_index.R bgeecall_index.Rout
 	@$(MV) $@.tmp $@
