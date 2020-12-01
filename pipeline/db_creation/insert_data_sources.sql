@@ -76,8 +76,9 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
      'https://ddbj.nig.ac.jp/DRASearch/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source'),
 (35, 'GSA', '', 'http://bigd.big.ac.cn/search?dbId=gsa&q=[experiment_id]', 'http://bigd.big.ac.cn/gsa/browse/[experiment_id]/[evidence_id]',
      'http://bigd.big.ac.cn/gsa/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source'),
-(36, 'OncoMX', 'https://oncomx.org/searchview/?gene=[xref_id]', '', '', 'https://www.oncomx.org', 'Integrated cancer mutation and expression resource', 0, '');
-
+(36, 'OncoMX', 'https://oncomx.org/searchview/?gene=[xref_id]', '', '', 'https://www.oncomx.org', 'Integrated cancer mutation and expression resource', 0, ''),
+(37, 'RefSeq', 'https://www.ncbi.nlm.nih.gov/assembly/[assembly_id]/', '', '', 'https://www.ncbi.nlm.nih.gov/refseq/', 'Source for genome assembly and annotations', 1, 'Genomics database'),
+(38, 'GenBank', 'https://www.ncbi.nlm.nih.gov/assembly/[assembly_id]/', '', '', 'https://www.ncbi.nlm.nih.gov/genbank/', 'Source for genome assembly and annotations', 1, 'Genomics database');
 
 -- Add "ghost" sources, because a source can only be part of one category, so rather than
 -- creating a link table, we do this ugly hack

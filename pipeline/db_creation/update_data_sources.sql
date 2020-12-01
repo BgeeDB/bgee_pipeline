@@ -62,6 +62,10 @@ update dataSource set releaseDate = '2016-07-14', releaseVersion = '',          
 update dataSource set releaseDate = '2015-03-10', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 30;
 -- GTEx-dbGAP
 update dataSource set releaseDate = '2015-10-03', releaseVersion = '6.p1',                         displayOrder = 3  where dataSourceId = 31;
+-- RefSeq
+update dataSource set releaseDate = '2020-12-01', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 37;
+-- GenBank
+update dataSource set releaseDate = '2020-12-01', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 38;
 -- GEO (RNASeq)
 update dataSource set releaseDate = '2018-08-07', releaseVersion = '',                             displayOrder = 2  where dataSourceId = 100;
 
