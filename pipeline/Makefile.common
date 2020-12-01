@@ -41,10 +41,10 @@ DATAHOST   := jura0.sib.swiss
 DATAPATH   := /data
 
 # Ensembl
-ENSRELEASE             := 99
-ENSMETAZOARELEASE      := 46
+ENSRELEASE             := 102
+ENSMETAZOARELEASE      := 49
 ENS_API_RELEASE        := $(ENSRELEASE)
-ENSMETAZOA_API_RELEASE := 83
+ENSMETAZOA_API_RELEASE := $(ENSRELEASE)
 #   for our local Ensembl DB on Annotators' computer annotbioinfo
 # ENSDBUSER and ENSDBPASS defined in Makefile.Config
 ENSDBHOST  := $(ANNOTATORHOST)
