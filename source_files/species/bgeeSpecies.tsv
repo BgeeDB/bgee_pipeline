@@ -27,7 +27,7 @@ speciesId	genus	species	speciesCommonName	displayOrder	genomeFilePath	genomeVers
 7897	Latimeria	chalumnae	Coelacanth	29	latimeria_chalumnae/Latimeria_chalumnae.LatCha1	LatCha1	2	7897		LATCH	
 7918	Lepisosteus	oculatus	Spotted gar	30	lepisosteus_oculatus/Lepisosteus_oculatus.LepOcu1	LepOcu1	2	7918		LEPOC	
 7936	Anguilla	anguilla	European freshwater eel		#TODO			7936		ANGAN|Angill angill|Anguilla anguilla anguilla|European eel|Muraena anguilla	
-7994	Astyanax	mexicanus	Blind cave fish	31	astyanax_mexicanus/Astyanax_mexicanus.Astyanax_mexicanus-2.0	Astyanax_mexicanus-2.0	2	7994		ASTMX|Mexican tetra	
+7994	Astyanax	mexicanus	Blind cave fish	31	astyanax_mexicanus/Astyanax_mexicanus.Astyanax_mexicanus-2.0	Astyanax_mexicanus-2.0	2	7994		ASTMX|Mexican tetra	There are two genome assembly version in Ensembl, took the one that looks more recent
 8010	Esox	lucius	Northern pike	32	esox_lucius/Esox_lucius.Eluc_v4	Eluc_v4	2	8010		ESOLU	
 8030	Salmo	salar	Atlantic salmon	33	salmo_salar/Salmo_salar.ICSASG_v2	ICSASG_v2	2	8030		SALSA	
 8049	Gadus	morhua	Atlantic cod	34	gadus_morhua/Gadus_morhua.gadMor1	gadMor1	2	8049		GADMO	
