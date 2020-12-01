@@ -59,7 +59,7 @@ send_files_to_cluster: commit_rna_seq_sample_info $(RNASEQ_LIB_FILEPATH_FULL) $(
 		 create_rna_seq_sample_info \
 		 $(RNASEQ_EXPERIMENT_FILEPATH_FULL) \
 		 $(RNASEQ_LIB_FILEPATH_FULL) \
-     $(CLUSTERLOGIN)@$(CLUSTERHOST):$(RNASEQ_CLUSTER_READONLY)GIT/pipeline/RNA_Seq/
+		 $(CLUSTERLOGIN)@$(CLUSTERHOST):$(RNASEQ_CLUSTER_READONLY)GIT/pipeline/RNA_Seq/
 	@echo -e "\tNext steps have to be done on cluster\n\tGo to '$(RNASEQ_CLUSTER_READONLY)GIT/', do a 'git pull' and copy missing files in '$(RNASEQ_CLUSTER_READONLY)GIT/pipeline/RNA_Seq/'\n\tThen restart with 'make cluster1' to start the pipeline run step\n"
 	@touch $@
 
@@ -113,17 +113,16 @@ check_sra: list_new_downloads
 
 #NOTE to be done on regular cluster, with network access
 get_GTF: clean_cluster_folders create_rna_seq_sample_info
-	# Get GTF files from Ensembl FTP
-	@perl 0Before/get_GTF_files.pl  -RNAseqSample=$(RNASEQ_SAMPINFO_FILEPATH) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_CLUSTER_GTF)  >$@.tmp 2>&1
+	# Get GTF files from Ensembl and NCBI FTP
+	@perl 0Before/get_GTF_files.pl  -RNAseqSample=$(RNASEQ_SAMPINFO_FILEPATH) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_DOWNLOAD_GTF)  >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
-#TODO implement use of new "database" field in rna_seq_sample_info.txt (instead of trying both Ensembl and Ensembl Metazoa URLs)
 
 get_genome: get_GTF
-	# Download genome from Ensembl databases
-	@perl 0Before/get_genome_files.pl  -GTF_dir=$(RNASEQ_CLUSTER_GTF) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_CLUSTER_GTF) >$@.tmp 2>&1
+	# Download genomes from Ensembl and NCBI databases
+	@perl 0Before/get_genome_files.pl  -GTF_dir=$(RNASEQ_DOWNLOAD_GTF) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_DOWNLOAD_GTF) >$@.tmp 2>&1
+	@echo "You can transfer GTF and genome files from UNIL cluster [$(RNASEQ_DOWNLOAD_GTF)] to sensitive cluster [$(RNASEQ_CLUSTER_GTF)]"
 	@$(MV) $@.tmp $@
-#TODO implement use of new "database" field in rna_seq_sample_info.txt (instead of trying both Ensembl and Ensembl Metazoa URLs)
-#TODO Add a step to transfer fasta and GTF files to Jura cluster
+
 
 ################################ PREPARE CLUSTER ENVIRONMENT ################################
 
@@ -337,7 +336,6 @@ generate_intergenic_sequences: sum_by_species
 
 
 ################################ GENERATE PRESENT/ABSENT CALLS WITH BgeeCall ################################
-
 
 indexes_bgeecall: generate_intergenic_sequences
 	# generate BgeeCall input file from the rna_seq_sample_info.txt file

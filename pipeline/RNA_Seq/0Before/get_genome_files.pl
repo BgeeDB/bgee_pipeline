@@ -47,7 +47,7 @@ for my $gtf (glob($GTF_dir."/*.gtf.gz") ){
 
     my $prefix   = basename($gtf);
     $prefix     =~ s{\.gtf.gz$}{};
-    next  if ( -e "$prefix.genome.fa"    && -s "$prefix.genome.fa" );
+    next  if ( -e "$prefix.genome.fa" && -s "$prefix.genome.fa" );
     if ( is_success( getstore("ftp://ftp.ensembl.org/pub/release-$ensRelease/fasta/$species_name/dna/$prefix.dna.toplevel.fa.gz", "$prefix.genome.fa.gz") ) ){
         # exists in Ensembl FTP && genome file downloaded
         # uncompress downloaded fasta file
@@ -55,10 +55,21 @@ for my $gtf (glob($GTF_dir."/*.gtf.gz") ){
 
     }
     elsif ( is_success( getstore("ftp://ftp.ensemblgenomes.org/pub/release-$ensMetazoaRelease/metazoa/fasta/$species_name/dna/$prefix.$ensMetazoaRelease.dna.toplevel.fa.gz", "$prefix.genome.fa.gz") ) ){
-        # exists in Ensembl Metazoa FTP && GTF file downloaded
+        # exists in Ensembl Metazoa FTP && genome file downloaded
         # uncompress downloaded fasta file
         system("gunzip -f $prefix.genome.fa.gz")==0  or die "Failed to unzip genome files: $?\n";
 
+    }
+    elsif ( $prefix =~ /^\w+?_((GC[FA])_(\d\d\d)(\d\d\d)(\d\d\d).*)$/ ){
+        # From NCBI, RefSeq or GenBank assembly annotations
+        #See https://www.ncbi.nlm.nih.gov/genome/doc/ftpfaq/ for help
+        # e.g. macaca_fuscata_GCA_003118495.1_macFus_1.0
+        #      manis_javanica_GCF_014570535.1_YNU_ManJav_2.0
+        if ( is_success( getstore("ftp://ftp.ncbi.nlm.nih.gov/genomes/all/$2/$3/$4/$5/${1}_genomic.fna.gz", basename("$prefix.genome.fa.gz")) ) ){
+            # exists in NCBI FTP && genome file downloaded
+            # uncompress downloaded fasta file
+            system("gunzip -f $prefix.genome.fa.gz")==0  or die "Failed to unzip genome files: $?\n";
+        }
     }
     else {
         warn "No genome GTF file found for [$species_name] in Ensembl $ensRelease or Ensembl Metazoa $ensMetazoaRelease\n";
