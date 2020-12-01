@@ -45,7 +45,7 @@ if ( defined $content ){
                      $species,
                      $common_name,
                      '',
-                     '',
+                     lc($genus).'_'.lc($species).'/TOCOMPLETE',
                      '',
                      '',
                      $taxid,
