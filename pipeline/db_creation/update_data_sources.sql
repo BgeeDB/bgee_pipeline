@@ -3,7 +3,7 @@
 -- NCBI Taxonomy
 update dataSource set releaseDate = '2016-07-20', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 1;
 -- Ensembl
-update dataSource set releaseDate = '2016-03-18', releaseVersion = '84',                           displayOrder = 1  where dataSourceId = 2;
+update dataSource set releaseDate = '2020-12-01', releaseVersion = '102',                          displayOrder = 1  where dataSourceId = 2;
 -- EMBL (taken from Ensembl xrefs)
 update dataSource set releaseDate = null,         releaseVersion = ''                                                where dataSourceId = 3;
 -- Uniprot/trEMBL (taken from Ensembl xrefs)
@@ -47,7 +47,7 @@ update dataSource set releaseDate = null,         releaseVersion = '',          
 -- WormBase
 update dataSource set releaseDate = '2016-08-29', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 23;
 -- EnsemblMetazoa
-update dataSource set releaseDate = '2016-03-18', releaseVersion = '30',                           displayOrder = 1  where dataSourceId = 24;
+update dataSource set releaseDate = '2020-12-01', releaseVersion = '49',                           displayOrder = 1  where dataSourceId = 24;
 -- Bgee
 update dataSource set releaseDate = '2020-03-26', releaseVersion = '14.1',                         displayOrder = 1  where dataSourceId = 25;
 -- Uberon
