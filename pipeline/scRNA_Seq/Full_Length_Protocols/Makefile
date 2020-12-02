@@ -109,7 +109,7 @@ check_tools: clusterJURA
 
 ## Prepare single cell info file (run rule in front)
 #TODO: should be written in perl to retrieve species from bgee DB (speciesName -> speciesID is hardcoded in this script)
-prepare_singlecell_info: generateInfo $(SC_RNASEQ_LIB_PASS_FILEPATH) 0Preparation/prepare_scrna_seq_sample_info.R
+prepare_singlecell_info: $(SC_RNASEQ_LIB_PASS_FILEPATH) 0Preparation/prepare_scrna_seq_sample_info.R
 	@$(RM) $(SC_RNASEQ_SAMPINFO_FILEPATH)
 	@echo --- prepare single cell information file ---
 	@$(CLUSTER_FASTP_CMD) $(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args NEW_scRNASeqLibrary="$(SC_RNASEQ_LIB_PASS_FILEPATH)" raw_cells_folder="$(SC_RNASEQ_FASTQ_FULL_LENGTH)" output_sample_info_file="$(SC_RNASEQ_SAMPINFO_FILEPATH)"' 0Preparation/prepare_scrna_seq_sample_info.R 0Preparation/prepare_scrna_seq_sample_info.Rout > $@.tmp
