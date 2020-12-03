@@ -117,21 +117,21 @@ prepare_singlecell_info: $(SC_RNASEQ_LIB_PASS_FILEPATH) 0Preparation/prepare_scr
 	@$(MV) $@.tmp $@
 
 # generate kallisto indexes with BgeeCall. Indexes already generated during the bulk RNA-Seq pipeline can be reused.
-indexes_bgeecall: generate_intergenic_sequences
+indexes_bgeecall: prepare_singlecell_info
 	# generate BgeeCall input file from the scrna_seq_sample_info.txt file
 	# Run in front because it only parse a small file in order to create a new one.
-	@perl 1Run/sc_sample_info_to_bgeecall.pl -sample_info_file=$(SC_RNASEQ_SAMPINFO_FILEPATH) -transcriptome_dir=$(SC_RNASEQ_FASTQ_FULL_LENGTH) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(SC_RNASEQ_FASTQ_FULL_LENGTH) -bgeecall_file=$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >>$@.tmp 2>&1
+	@perl 1Run/sc_sample_info_to_bgeecall.pl -sc_sample_info_file=$(SC_RNASEQ_SAMPINFO_FILEPATH) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(SC_RNASEQ_FASTQ_FULL_LENGTH) -output_dir=$(SC_RNASEQ_CLUSTER_ALL_RES) -bgeecall_file=$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >>$@.tmp 2>&1
 	# generate kallisto indexes with BgeeCall
-	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file=\"$(RNASEQ_BGEECALL_FILE)\" account=\"mrobinso_bgee\" time=\"2:00:00\" partition=\"axiom\" working_path=\"$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)\"' bgeecall_index.R bgeecall_index.Rout
+	@$(CLUSTER_R_CMD) $(CLUSTER_KALLISTO_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH)" account="mrobinso_bgee_sensitive" time="2:00:00" partition="normal" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' $(PIPELINEROOT)$(RNASEQPATH)1Run/bgeecall_index.R 1Run/bgeecall_index.Rout
 	@$(MV) $@.tmp $@
 
 # Use BgeeCall R package to generate present/absent calls.
 presence_absence_bgeecall: indexes_bgeecall
-	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file=\"$(RNASEQ_BGEECALL_FILE)\" account=\"mrobinso_bgee\" time=\"2:00:00\" partition=\"axiom\" working_path=\"$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)\"' bgeecall_calls.R bgeecall_calls.Rout
+	@$(CLUSTER_R_CMD) $(CLUSTER_KALLISTO_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH)" account="mrobinso_bgee_sensitive" time="2:00:00" partition="normal" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' $(PIPELINEROOT)$(RNASEQPATH)1Run/bgeecall_calls.R 1Run/bgeecall_calls.Rout
 	@touch $@
 
 ## Quality control by cell population to perform the calls (not pass if not bimodal)
-QC_cellPopulation: analysis 1Run/QC_cellPopulation.R
+QC_cellPopulation: presence_absence_bgeecall 1Run/QC_cellPopulation.R
 	@echo --- Starting the quality control per cell population ---
 	@sed -i 's@--output=.*@--output=${PWD}/QC_cellPopulation.out@'                                               		1Run/QC_cellPopulation.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/QC_cellPopulation.err@'                                                 		1Run/QC_cellPopulation.sbatch

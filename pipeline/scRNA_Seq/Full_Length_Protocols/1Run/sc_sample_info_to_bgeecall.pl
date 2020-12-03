@@ -29,6 +29,7 @@ my %opts = ('sc_sample_info_file=s' => \$sc_sample_info_file,           # path t
 
 # test arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
+print "$sc_sample_info_file\t$transcriptome_dir\t$annotation_dir\t$fastq_dir\t$output_dir\t$bgeecall_file\t$ref_intergenic_dir";
 if ( !$test_options || $sc_sample_info_file eq '' || $transcriptome_dir eq '' || $annotation_dir eq '' || $fastq_dir eq '' || $output_dir eq '' || $bgeecall_file eq '' || $ref_intergenic_dir eq ''){
     print "\n\tInvalid or missing argument:
 \te.g. $0  -sc_sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -transcriptome_dir=\$(RNASEQ_CLUSTER_GTF) -annotation_dir=\$(RNASEQ_CLUSTER_GTF) -fastq_dir=\$(RNASEQ_SENSITIVE_FASTQ) -output_dir=\$(OUTPUT_DIR) -bgeecall_file=\$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=\$(CLUSTER_REF_INTERGENIC_FOLDER)
@@ -60,8 +61,8 @@ while (my $line = <$sample_info>) {
     }
     #column organism
     my $species_name = $line[15];
-    my $transcriptome_path = "$transcriptome_dir$species_name.transcriptome.fa.xz";
-    my $annotation_path = "$transcriptome_dir$species_name.gtf_transcriptome";
+    my $transcriptome_path = "$transcriptome_dir$species_name.transcriptome.fa.gz";
+    my $annotation_path = "$transcriptome_dir$species_name.transcriptome.gtf";
     my $fastq_path = "$fastq_dir$line[0]";
     my $library_output_dir = "$output_dir$line[0]";
     my $intergenic_file = "$ref_intergenic_dir$line[4]_intergenic.fa.gz";
