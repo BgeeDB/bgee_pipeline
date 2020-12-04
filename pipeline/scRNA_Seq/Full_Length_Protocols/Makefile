@@ -137,11 +137,11 @@ QC_cellPopulation: presence_absence_bgeecall 1Run/QC_cellPopulation.R
 	@sed -i 's@--error=.*@--error=${PWD}/QC_cellPopulation.err@'                                                 		1Run/QC_cellPopulation.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                               		1Run/QC_cellPopulation.sbatch
 	@sed -i 's@export scrna_seq_sample_info=.*@export scrna_seq_sample_info=$(SC_RNASEQ_SAMPINFO_FILEPATH)@'     		1Run/QC_cellPopulation.sbatch
-	@sed -i 's@export cells_folder=.*@export cells_folder=$(SC_RNASEQ_CLUSTER_KALLISTO)@'                        		1Run/QC_cellPopulation.sbatch
+	@sed -i 's@export cells_folder=.*@export cells_folder=$(SC_RNASEQ_CLUSTER_ALL_RES)@'                        		1Run/QC_cellPopulation.sbatch
 	@sed -i 's@export sample_info_pass=.*@export sample_info_pass=$(SC_RNASEQ_SAMPINFO_PASS_FILEPATH)@'             	1Run/QC_cellPopulation.sbatch
 	@sed -i 's@export sample_info_discarded=.*@export sample_info_discarded=$(SC_RNASEQ_SAMPINFO_NOT_PASS_FILEPATH)@'   1Run/QC_cellPopulation.sbatch
 	@sed -i 's@export modality_info=.*@export modality_info=$(SC_RNASEQ_MODALITY_CELL_POP)@'                			1Run/QC_cellPopulation.sbatch
-	@sed -i 's@export calls_file_name=.*@export calls_file_name=$(SC_RNASEQABUNDANCEFILE)@'               				1Run/QC_cellPopulation.sbatch
+	@sed -i 's@export calls_file_name=.*@export calls_file_name=$(SC_RNASEQ_ABUNDANCEFILE)@'               				1Run/QC_cellPopulation.sbatch
 	@sed -i 's@export plot=.*@export plot=yes@'                                                                  		1Run/QC_cellPopulation.sbatch
 	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES)@'                                         		1Run/QC_cellPopulation.sbatch
 	@sbatch 1Run/QC_cellPopulation.sbatch

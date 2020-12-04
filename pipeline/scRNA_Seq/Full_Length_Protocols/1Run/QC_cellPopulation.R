@@ -165,25 +165,23 @@ if( file.exists(scrna_seq_sample_info) ){
 }
 
 ## Create output files and check directories already exist
-if (dir.exists(dirname(modality_info))){
-  file.create(modality_info)
-  cat("experiment\tcellTypeId\tspeciesId\tstageId\tuberonId\tsex\tstrain\tmodeDistribution\n",file = modality_info, sep = "\t")
-} else {
-  stop("Directory ", dirname(modality_info), " does not exists.....")
-} 
-if (dir.exists(dirname(sample_info_pass))){
-  file.create(sample_info_pass)
-  cat("libraryId\texperimentId\tcellTypeName\tcellTypeId\tspeciesId\tplatform\twhiteList\tprotocol\tprotocolType\tlibraryType\tinfoOrgan\tstageId\tuberonId\tsex\tstrain\treadLength\torganism\n",file = sample_info_pass, sep = "\t")
-} else {
-  stop("Directory ", dirname(sample_info_pass), " does not exists.....")
+if (!dir.exists(dirname(modality_info))){
+  dir.create(dirname(modality_info), recursive=TRUE)
 }
-if (dir.exists(dirname(sample_info_discarded))){
-  file.create(sample_info_discarded)
-  cat("libraryId\texperimentId\tcellTypeName\tcellTypeId\tspeciesId\tplatform\twhiteList\tprotocol\tprotocolType\tlibraryType\tinfoOrgan\tstageId\tuberonId\tsex\tstrain\treadLength\torganism\n",file = sample_info_discarded, sep = "\t")
-} else {
-  stop("Directory ", dirname(sample_info_discarded), " does not exists.....")
-}
+file.create(modality_info)
+cat("experiment\tcellTypeId\tspeciesId\tstageId\tuberonId\tsex\tstrain\tmodeDistribution\n",file = modality_info, sep = "\t")
+ 
+if (!dir.exists(dirname(sample_info_pass))){
+  dir.create(dirname(sample_info_pass))
+}  
+file.create(sample_info_pass)
+cat("libraryId\texperimentId\tcellTypeName\tcellTypeId\tspeciesId\tplatform\twhiteList\tprotocol\tprotocolType\tlibraryType\tinfoOrgan\tstageId\tuberonId\tsex\tstrain\treadLength\torganism\n",file = sample_info_pass, sep = "\t")
 
+if (!dir.exists(dirname(sample_info_discarded))){
+  dir.create(dirname(sample_info_discarded))
+}
+file.create(sample_info_discarded)
+cat("libraryId\texperimentId\tcellTypeName\tcellTypeId\tspeciesId\tplatform\twhiteList\tprotocol\tprotocolType\tlibraryType\tinfoOrgan\tstageId\tuberonId\tsex\tstrain\treadLength\torganism\n",file = sample_info_discarded, sep = "\t")
 
 ## Run the QC per condition
 for (species in unique(annotation$speciesId)) {
@@ -210,10 +208,10 @@ for (species in unique(annotation$speciesId)) {
                 All_libs <- lapply(file, read.delim)
                 DATA <- do.call("cbind", All_libs)
                 ## select colummns with gene_id, type and biotype
-                Info_table <- DATA[,c(1,5,6)]
+                Info_table <- DATA[,c("id","type","biotype")]
                 colnames(Info_table) <- c("gene_id","type", "biotype")
                 # select all columns with tpm info referent to each cell
-                tpm <- DATA[, grepl("tpm", names( DATA))]
+                tpm <- DATA[, grepl("abundance", names( DATA))]
                 mergeCells <- data.frame(Info_table, tpm)
 
                 ### 2 STEP --> Check bimodality and plot cell distribution per experiment/species

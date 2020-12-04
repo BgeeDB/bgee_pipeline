@@ -461,7 +461,7 @@ SC_RNASEQ_MODALITY_FILEPATH            := $(SC_RNASEQ_PATH_GENERATED)Modality_Ce
 SC_RNASEQ_METADATA_10X_FILEPATH        := $(SC_RNASEQ_PATH_GENERATED)metadata_info_10X.txt
 SC_RNASEQ_SAMPINFO_10X_FILEPATH        := $(SC_RNASEQ_PATH_GENERATED)scRNA_Seq_info_TargetBased.txt
 SC_RNASEQ_JURA_LIB_FILEPATH            := $(SC_RNASEQ_PATH_GENERATED)juraLibrariesDownloaded.tsv
-SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH    := $(SC_RNASEQ_PATH_GENERATED)geecall_input.tsv
+SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH    := $(SC_RNASEQ_PATH_GENERATED)bgeecall_input.tsv
 
 # scRNAseq cluster paths (AXIOM)
 SC_RNASEQ_DOWNLOAD_PATH                 := $(CLUSTER_WALLY_PATH)/
@@ -507,7 +507,7 @@ SC_RNASEQ_INFO_ALL_LIBRARIES_10X              := $(SC_RNASEQ_CLUSTER_QC_CELLTYPE
 # minimum number of cells in a full-length library
 MIN_CELLS_PER_LIBRARY_FULL_LENGTH             := 50
 
-SC_RNASEQABUNDANCEFILE                        := abundance+geneLevel+intergenic.tsv
+SC_RNASEQ_ABUNDANCEFILE                        := gene_level_abundance+calls.tsv
 
 # proportion of intergenic allowed in the cell population to make the ratio cut-off
 SC_RNASEQ_RATIO_PROPORTION                    := 0.05
