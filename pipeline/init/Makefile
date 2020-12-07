@@ -45,6 +45,7 @@ global_check:
 	@perl -MSpreadsheet::ParseXLSX  -e 1 >> $@.tmp
 	@perl -MSpreadsheet::WriteExcel -e 1 >> $@.tmp
 	@perl -MWebservice::InterMine   -e 1 >> $@.tmp
+	@perl -MXML::Fast               -e 1 >> $@.tmp
 # R libraries
 	@R -e 'library("affy")'              >> $@.tmp  2>/dev/null
 	@R -e 'library("AnnotationDbi")'     >> $@.tmp  2>/dev/null
