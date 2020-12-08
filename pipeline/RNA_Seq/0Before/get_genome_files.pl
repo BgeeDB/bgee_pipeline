@@ -65,7 +65,7 @@ for my $gtf (glob($GTF_dir."/*.gtf.gz") ){
         #See https://www.ncbi.nlm.nih.gov/genome/doc/ftpfaq/ for help
         # e.g. macaca_fuscata_GCA_003118495.1_macFus_1.0
         #      manis_javanica_GCF_014570535.1_YNU_ManJav_2.0
-        if ( is_success( getstore("ftp://ftp.ncbi.nlm.nih.gov/genomes/all/$2/$3/$4/$5/${1}_genomic.fna.gz", basename("$prefix.genome.fa.gz")) ) ){
+        if ( is_success( getstore("ftp://ftp.ncbi.nlm.nih.gov/genomes/all/$2/$3/$4/$5/$1/${1}_genomic.fna.gz", basename("$prefix.genome.fa.gz")) ) ){
             # exists in NCBI FTP && genome file downloaded
             # uncompress downloaded fasta file
             system("gunzip -f $prefix.genome.fa.gz")==0  or die "Failed to unzip genome files: $?\n";

@@ -60,7 +60,7 @@ for my $genomeFilePath ( uniq sort @{$tsv{'genomeFilePath'}} ){
         #See https://www.ncbi.nlm.nih.gov/genome/doc/ftpfaq/ for help
         # e.g. macaca_fuscata/macaca_fuscata_GCA_003118495.1_macFus_1.0
         #      manis_javanica/manis_javanica_GCF_014570535.1_YNU_ManJav_2.0
-        if ( is_success( getstore("ftp://ftp.ncbi.nlm.nih.gov/genomes/all/$2/$3/$4/$5/${1}_genomic.gtf.gz", basename("$genomeFilePath.gtf.gz")) ) ){
+        if ( is_success( getstore("ftp://ftp.ncbi.nlm.nih.gov/genomes/all/$2/$3/$4/$5/$1/${1}_genomic.gtf.gz", basename("$genomeFilePath.gtf.gz")) ) ){
             # genomeFilePath exists in NCBI FTP && GTF file downloaded
         }
     }
