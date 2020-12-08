@@ -39,13 +39,11 @@ speciesId	genus	species	speciesCommonName	displayOrder	genomeFilePath	genomeVers
 9483	Callithrix	jacchus	White-tufted-ear marmoset	39	callithrix_jacchus/Callithrix_jacchus.ASM275486v1	ASM275486v1	2	9483		CALJA|Callithrix jacchus jacchus|common marmoset|white ear-tufted marmoset	
 9531	Cercocebus	atys	Sooty mangabey	40	cercocebus_atys/Cercocebus_atys.Caty_1.0	Caty_1.0	2	9531		CERAT	
 9541	Macaca	fascicularis	Crab-eating macaque	41	macaca_fascicularis/Macaca_fascicularis.Macaca_fascicularis_5.0	Macaca_fascicularis_5.0	2	9541		MACFA|Macaca cynomolgus|Macaca irus|crab eating macaque|cynomolgus macaque|cynomolgus monkey|long-tailed macaque	
-9542	Macaca	fuscata	Japanese macaque	55	macaca_fuscata/macaca_fuscata_GCA_003118495.1_macFus_1.0	macFus_1.0	38	9542		Japanese monkey	Use GenBank assembly
 9545	Macaca	nemestrina	Pig-tailed macaque	42	macaca_nemestrina/Macaca_nemestrina.Mnem_1.0	Mnem_1.0	2	9545		MACNE|pigtail macaque|pigtail monkey	
 9555	Papio	anubis	Olive baboon	43	papio_anubis/Papio_anubis.Panu_3.0	Panu_3.0	2	9555		Anubis baboon|Doguera baboon|Kenya baboon|PAPAN|Papio cynocephalus anubis|Papio doguera|Papio hamadryas anubis|Papio hamadryas doguera|baboon	
-9600	Pongo	pygmaeus	Bornean orangutan	56	pongo_pygmaeus/pongo_pygmaeus_GCA_900086635.1_NGS12	NGS12	38	9600		Orang-utan|Orangutan|PONPY|orang utan	Use GenBank assembly
 9925	Capra	hircus	Goat	44	capra_hircus/Capra_hircus.ARS1	ARS1	2	9925		African dwarf goat|CAPHI|Capra aegagrus hircus|South African angora goat|domestic goat	
 9940	Ovis	aries	Sheep	45	ovis_aries/Ovis_aries.Oar_v3.1	Oar_v3.1	2	9940		Ovis ammon aries|Ovis orientalis aries|Ovis ovis|SHEEP|domestic sheep|lambs|wild sheep	It looks Ensembl mixed the assembly version with Sheep (texel)
-9974	Manis	javanica	Malayan pangolin	57	manis_javanica/manis_javanica_GCF_014570535.1_YNU_ManJav_2.0	YNU_ManJav_2.0	37	9974		MANJA	Use RefSeq assembly
+9974	Manis	javanica	Malayan pangolin	55	manis_javanica/manis_javanica_GCF_014570535.1_YNU_ManJav_2.0	YNU_ManJav_2.0	37	9974		MANJA	Use RefSeq assembly
 10181	Heterocephalus	glaber	Naked mole rat	46	heterocephalus_glaber_female/Heterocephalus_glaber_female.HetGla_female_1.0	HetGla_female_1.0	2	10181		HETGA|naked mole-rat	Exists a male and a female genome assembly in Ensembl, and a more recent assembly at NCBI. But according to NCBI the female assembly is the reference
 30608	Microcebus	murinus	Gray mouse lemur	47	microcebus_murinus/Microcebus_murinus.Mmur_3.0	Mmur_3.0	2	30608		MICMU|grey mouse lemur	
 32507	Neolamprologus	brichardi	Fairy cichlid	48	neolamprologus_brichardi/Neolamprologus_brichardi.NeoBri1.0	NeoBri1.0	2	32507		NEOBR|Neolaprologus brichardi|lyretail cichlid	
