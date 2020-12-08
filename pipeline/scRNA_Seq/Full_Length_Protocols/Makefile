@@ -27,13 +27,15 @@ control_annotation: get_annot 0Preparation/pre_process_control_annotation.R
 ## Retrieve metadata (run rule with sbatch)
 retrieve_metadata: control_annotation 0Preparation/retrieve_metadata.R
 	@echo --- Retrieve metadata information ---
-	@sed -i 's@--output=.*@--output=${PWD}/retrieve_metadata.out@'                                               	0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/retrieve_metadata.err@'                                                 	0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                 	0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export NEW_scRNASeqLibrary=.*@export NEW_scRNASeqLibrary=$(SC_RNASEQ_LIB_PASS_FILEPATH)@'    		0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export metadata_info=.*@export metadata_info=$(SC_RNASEQ_METADATA_FILEPATH)@'                		0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@--output=.*@--output=${PWD}/retrieve_metadata.out@'                                                  0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/retrieve_metadata.err@'                                                    0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                    0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                          0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                    0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export NEW_scRNASeqLibrary=.*@export NEW_scRNASeqLibrary=$(SC_RNASEQ_LIB_PASS_FILEPATH)@'            0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export metadata_info=.*@export metadata_info=$(SC_RNASEQ_METADATA_FILEPATH)@'                        0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@export metadata_info_not_matchh=.*@export metadata_info=$(SC_RNASEQ_METADATA_NOT_MATCH_FILEPATH)@'   0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH)@'                          		0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH)@'                                  0Preparation/retrieve_metadata.sbatch
 	@sbatch 0Preparation/retrieve_metadata.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
@@ -44,6 +46,8 @@ download_cleaning_data: retrieve_metadata 0Preparation/download_cleaning_data.R
 	@echo --- Starting downloading the data ---
 	@sed -i 's@--output=.*@--output=${PWD}/download_cleaning_data.out@'                                              0Preparation/download_cleaning_data.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/download_cleaning_data.err@'                                                0Preparation/download_cleaning_data.sbatch
+	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                     0Preparation/download_cleaning_data.sbatch
+	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                           0Preparation/download_cleaning_data.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                     0Preparation/download_cleaning_data.sbatch
 	@sed -i 's@export metadata_info=.*@export metadata_info=$(SC_RNASEQ_METADATA_FILEPATH)@'                         0Preparation/download_cleaning_data.sbatch
 	@sed -i 's@export librariesDownloadedJura=.*@export librariesDownloadedJura=$(SC_RNASEQ_JURA_LIB_FILEPATH)@'     0Preparation/download_cleaning_data.sbatch
@@ -126,28 +130,30 @@ indexes_bgeecall: prepare_singlecell_info
 	# Run in front because it only parse a small file in order to create a new one.
 	@perl 1Run/sc_sample_info_to_bgeecall.pl -sc_sample_info_file=$(SC_RNASEQ_SAMPINFO_FILEPATH) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(SC_RNASEQ_FASTQ_FULL_LENGTH) -output_dir=$(SC_RNASEQ_CLUSTER_ALL_RES) -bgeecall_file=$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >>$@.tmp 2>&1
 	# generate kallisto indexes with BgeeCall
-	@$(CLUSTER_R_CMD) $(CLUSTER_KALLISTO_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH)" account="mrobinso_bgee_sensitive" time="2:00:00" partition="normal" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' $(PIPELINEROOT)$(RNASEQPATH)1Run/bgeecall_index.R 1Run/bgeecall_index.Rout
+	@$(CLUSTER_R_CMD) $(CLUSTER_KALLISTO_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH)" account="$(CLUSTER_ACCOUNT_SENSITIVE)" time="2:00:00" partition="$(CLUSTER_PARTITION_SENSITIVE)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' $(PIPELINEROOT)$(RNASEQPATH)1Run/bgeecall_index.R 1Run/bgeecall_index.Rout
 	@$(MV) $@.tmp $@
 
 # Use BgeeCall R package to generate present/absent calls.
 presence_absence_bgeecall: indexes_bgeecall
-	@$(CLUSTER_R_CMD) $(CLUSTER_KALLISTO_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH)" account="mrobinso_bgee_sensitive" time="2:00:00" partition="normal" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' $(PIPELINEROOT)$(RNASEQPATH)1Run/bgeecall_calls.R 1Run/bgeecall_calls.Rout
+	@$(CLUSTER_R_CMD) $(CLUSTER_KALLISTO_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH)" account="$(CLUSTER_ACCOUNT_SENSITIVE)" time="2:00:00" partition="$(CLUSTER_PARTITION_SENSITIVE)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' $(PIPELINEROOT)$(RNASEQPATH)1Run/bgeecall_calls.R 1Run/bgeecall_calls.Rout
 	@touch $@
 
 ## Quality control by cell population to perform the calls (not pass if not bimodal)
 QC_cellPopulation: presence_absence_bgeecall 1Run/QC_cellPopulation.R
 	@echo --- Starting the quality control per cell population ---
-	@sed -i 's@--output=.*@--output=${PWD}/QC_cellPopulation.out@'                                               		1Run/QC_cellPopulation.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/QC_cellPopulation.err@'                                                 		1Run/QC_cellPopulation.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                               		1Run/QC_cellPopulation.sbatch
-	@sed -i 's@export scrna_seq_sample_info=.*@export scrna_seq_sample_info=$(SC_RNASEQ_SAMPINFO_FILEPATH)@'     		1Run/QC_cellPopulation.sbatch
-	@sed -i 's@export cells_folder=.*@export cells_folder=$(SC_RNASEQ_CLUSTER_ALL_RES)@'                        		1Run/QC_cellPopulation.sbatch
-	@sed -i 's@export sample_info_pass=.*@export sample_info_pass=$(SC_RNASEQ_SAMPINFO_PASS_FILEPATH)@'             	1Run/QC_cellPopulation.sbatch
+	@sed -i 's@--output=.*@--output=${PWD}/QC_cellPopulation.out@'                                                      1Run/QC_cellPopulation.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/QC_cellPopulation.err@'                                                        1Run/QC_cellPopulation.sbatch
+	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION_SENSITIVE}@'                                              1Run/QC_cellPopulation.sbatch
+	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                                                    1Run/QC_cellPopulation.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                       1Run/QC_cellPopulation.sbatch
+	@sed -i 's@export scrna_seq_sample_info=.*@export scrna_seq_sample_info=$(SC_RNASEQ_SAMPINFO_FILEPATH)@'            1Run/QC_cellPopulation.sbatch
+	@sed -i 's@export cells_folder=.*@export cells_folder=$(SC_RNASEQ_CLUSTER_ALL_RES)@'                                1Run/QC_cellPopulation.sbatch
+	@sed -i 's@export sample_info_pass=.*@export sample_info_pass=$(SC_RNASEQ_SAMPINFO_PASS_FILEPATH)@'                 1Run/QC_cellPopulation.sbatch
 	@sed -i 's@export sample_info_discarded=.*@export sample_info_discarded=$(SC_RNASEQ_SAMPINFO_NOT_PASS_FILEPATH)@'   1Run/QC_cellPopulation.sbatch
-	@sed -i 's@export modality_info=.*@export modality_info=$(SC_RNASEQ_MODALITY_CELL_POP)@'                			1Run/QC_cellPopulation.sbatch
-	@sed -i 's@export calls_file_name=.*@export calls_file_name=$(SC_RNASEQ_ABUNDANCEFILE)@'               				1Run/QC_cellPopulation.sbatch
-	@sed -i 's@export plot=.*@export plot=yes@'                                                                  		1Run/QC_cellPopulation.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES)@'                                         		1Run/QC_cellPopulation.sbatch
+	@sed -i 's@export modality_info=.*@export modality_info=$(SC_RNASEQ_MODALITY_CELL_POP)@'                            1Run/QC_cellPopulation.sbatch
+	@sed -i 's@export calls_file_name=.*@export calls_file_name=$(RNASEQABUNDANCEFILE)@'                                1Run/QC_cellPopulation.sbatch
+	@sed -i 's@export plot=.*@export plot=yes@'                                                                         1Run/QC_cellPopulation.sbatch
+	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES)@'                                                1Run/QC_cellPopulation.sbatch
 	@sbatch 1Run/QC_cellPopulation.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
