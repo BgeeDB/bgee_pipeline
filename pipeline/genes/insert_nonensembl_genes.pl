@@ -130,6 +130,7 @@ while(<$GTF>){
     }
     #NOTE some gene ids may not be uniq in the Bgee database
     $info{'gene_id'} = 'LOC'.$GeneID;
+    $info{'GeneID'}  = $GeneID;
 
     $annotations->{ $info{'gene_id'} } = \%info;
 }
@@ -220,25 +221,13 @@ my $geneToTermDB = $dbh->prepare('INSERT INTO geneToTerm (bgeeGeneId, term)
                                   VALUES (?, ?)');
 print "Inserting gene info...\n";
 GENE:
-for my $gene (sort {$a->stable_id cmp $b->stable_id} (@genes)) { #Sort to always get the same order
-    
-}
-__END__
-#https://www.uniprot.org/uniprot/?query=ENSDARG00000024771&format=xml&force=true&columns=id,entry name,reviewed,protein names,genes,organism,database(CCDS),database(EMBL),database(RefSeq),database(PDB),database(Ensembl),database(EnsemblMetazoa),database(GeneID),go
-#https://www.uniprot.org/uniprot/?query=ENSDARG00000024771&format=xml&force=true
-#Cases with one ensembl -> several ensembl xrefs: ENSG00000139618
-# Fetch all clones from a slice adaptor (returns a list reference)
-my @genes = @{$gene_adaptor->fetch_all()};
-
-
-
-for my $gene (sort {$a->stable_id cmp $b->stable_id} (@genes)) { #Sort to always get the same order
-    my $display_id    = $gene->display_id();
-    my $stable_id     = $gene->stable_id();
-    my $external_name = $gene->external_name() || '';
-    my $external_db   = $gene->external_db()   || '';
-    my $description   = $gene->description()   || '';
-    my $biotype       = $gene->biotype()       || die "Invalid BioType for $stable_id\n";
+for my $gene (sort keys %$annotations ){ #Sort to always get the same order
+    my $display_id    = $gene;
+    my $stable_id     = $gene;
+    my $external_name = $annotations->{$gene}->{'gene'}          || $gene;
+    my $external_db   = $NonEnsSource;
+    my $description   = $annotations->{$gene}->{'description'}   || '';
+    my $biotype       = $annotations->{$gene}->{'gene_biotype'};
 
     ## Cleaning
     # Remove useless whitespace(s)
@@ -247,14 +236,29 @@ for my $gene (sort {$a->stable_id cmp $b->stable_id} (@genes)) { #Sort to always
     # Remove HTML tags in gene names
     $external_name   =~ s{<[^>]+?>}{}g;
 
-    warn "Different ids [$display_id] [$stable_id]\n"  if ( $display_id ne $stable_id);
 
-    ## external genome mapping
-    my $id2insert = $stable_id;
-    if ( exists $prefix[0] && $prefix[0] ne '' ){
-        #FIXME only for Ensembl ids now, AND non-human Ensembl ids
-        $id2insert =~ s{^ENS[A-Z][A-Z][A-Z]G}{$prefix[0]};
+    # Get extra info from UniProt
+    #NOTE only for protein_coding biotype!
+    my $content = get('https://www.uniprot.org/uniprot/?query=GeneID:'.$annotations->{$gene}->{'GeneID'}.'&format=xml&force=true');
+    #WARNING some cases with one ensembl -> several ensembl xrefs: ENSG00000139618
+    if ( defined $content ){
+        my $hash = xml2hash $content;
+        #NOTE not easy to test if exists an array in hash ref. It works with eval!
+        my $root = eval { exists $hash->{'uniprot'}->{'entry'}->[0] } ? $hash->{'uniprot'}->{'entry'}->[0] : $hash->{'uniprot'}->{'entry'};
+
+        # Check the UniProt entry contains the xref used to query it, and is for the right species
+        if ( grep { $_->{'-type'} eq 'GeneID' && $_->{'-id'} eq "$annotations->{$gene}->{'GeneID'}" } @{ $root->{'dbReference'} } ){
+            if ( $root->{'organism'}->{'dbReference'}->{'-id'} == $speciesBgee ){
+                use Data::Dumper;
+                print Dumper $root;
+            }                
+        }
+        exit;
     }
+}
+
+__END__
+    my $id2insert = $stable_id;
 
     ## Insert gene info
     my $bgeeGeneId;
