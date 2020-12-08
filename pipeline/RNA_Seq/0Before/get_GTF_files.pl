@@ -65,8 +65,7 @@ for my $genomeFilePath ( uniq sort @{$tsv{'genomeFilePath'}} ){
         }
     }
     else {
-        #warn "\tftp://ftp.ensembl.org/pub/release-$ensRelease/gtf/$genomeFilePath.gtf.gz\n";
-        warn "No GTF file found for [$genomeFilePath] in Ensembl $ensRelease or Ensembl Metazoa $ensMetazoaRelease\n";
+        warn "No GTF file found for [$genomeFilePath] in Ensembl $ensRelease, Ensembl Metazoa $ensMetazoaRelease or NCBI\n";
     }
 }
 

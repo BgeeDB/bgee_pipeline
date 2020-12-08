@@ -72,7 +72,7 @@ for my $gtf (glob($GTF_dir."/*.gtf.gz") ){
         }
     }
     else {
-        warn "No genome GTF file found for [$species_name] in Ensembl $ensRelease or Ensembl Metazoa $ensMetazoaRelease\n";
+        warn "No genome file found for [$species_name] in Ensembl $ensRelease, Ensembl Metazoa $ensMetazoaRelease or NCBI\n";
     }
 }
 
