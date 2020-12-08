@@ -45,27 +45,16 @@ ENSRELEASE             := 102
 ENSMETAZOARELEASE      := 49
 ENS_API_RELEASE        := $(ENSRELEASE)
 ENSMETAZOA_API_RELEASE := $(ENSRELEASE)
-#   for our local Ensembl DB on Annotators' computer annotbioinfo
-# ENSDBUSER and ENSDBPASS defined in Makefile.Config
-ENSDBHOST  := $(ANNOTATORHOST)
-ENSDBPORT  := 3306
 #   Default, remote Ensembl db
-#ENSDBUSER  := anonymous
-#ENSDBPASS  := ''
-#ENSDBHOST  := ensembldb.ensembl.org
-#ENSDBPORT  := 5306
+ENSDBUSER  := anonymous
+ENSDBPASS  := ''
+ENSDBHOST  := ensembldb.ensembl.org
+ENSDBPORT  := 5306
 #   Default, remote Ensembl genomes db
 #ENSDBUSER  := anonymous
 #ENSDBPASS  := ''
 #ENSDBHOST  := mysql.ebi.ac.uk
 #ENSDBPORT  := 4157
-
-
-# MGI
-# MGIDBUSER and MGIDBPASS defined in Makefile.Config
-MGIDBNAME := mgd
-MGIDBHOST := adhoc.informatics.jax.org
-MGIDBPORT := 5432
 
 
 # local BDGP
@@ -77,8 +66,6 @@ BGEECMD  := user=$(DBUSER)__pass=$(DBPASS)__host=$(DBHOST)__port=$(DBPORT)__name
 BGEECMDV := user=$(DBUSERV)__pass=$(DBPASSV)__host=$(PIPEHOST)__port=$(DBPORT)__name=$(DBNAME)
 # Ensembl connection command line argument for Perl scripts
 ENSCMD   := user=$(ENSDBUSER)__pass=$(ENSDBPASS)__host=$(ENSDBHOST)__port=$(ENSDBPORT)
-# MGI     connection command line argument for Perl scripts
-MGICMD   := user=$(MGIDBUSER)__pass=$(MGIDBPASS)__host=$(MGIDBHOST)__port=$(MGIDBPORT)__name=$(MGIDBNAME)
 # BDGP    connection command line argument for Perl scripts
 BDGPCMD  := user=$(DBUSER)__pass=$(DBPASS)__host=$(DBHOST)__port=$(DBPORT)__name=$(BDGPDBNAME)
 
@@ -91,9 +78,9 @@ JAVALIBDIR          := ../java/
 BGEEPIPELINEJARNAME := bgee-pipeline-$(RELEASE)-with-dependencies.jar
 BGEEPIPELINEJAR     := $(JAVALIBDIR)$(BGEEPIPELINEJARNAME)
 
-JAVA_NO_JAR := java -Xmx32g -Dbgee.dao.jdbc.username=$(DBUSER) -Dbgee.dao.jdbc.password=$(DBPASS) -Dbgee.dao.jdbc.driver.names=com.mysql.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST):$(DBPORT)/$(DBNAME)?enableQueryTimeouts=false&sessionVariables=net_write_timeout=260000,net_read_timeout=260000,wait_timeout=260000'
+JAVA_NO_JAR := java -Xmx64g -Dbgee.dao.jdbc.username=$(DBUSER) -Dbgee.dao.jdbc.password=$(DBPASS) -Dbgee.dao.jdbc.driver.names=com.mysql.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST):$(DBPORT)/$(DBNAME)?enableQueryTimeouts=false&sessionVariables=net_write_timeout=260000,net_read_timeout=260000,wait_timeout=260000'
 # Java command allowing to connect to easyBgee without Jar. Never used without JAR for the moment but created to follow the same pattern than JAVA_NO_JAR/JAVA variables for Bgee
-JAVA_NO_JAR_EASYBGEE := java -Xmx32g -Dbgee.dao.jdbc.username=$(DBUSER_EASYBGEE) -Dbgee.dao.jdbc.password=$(DBPASS_EASYBGEE) -Dbgee.dao.jdbc.driver.names=com.mysql.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST_EASYBGEE):$(DBPORT)/$(DBNAME_EASYBGEE)?enableQueryTimeouts=false&sessionVariables=net_write_timeout=86400,net_read_timeout=86400,wait_timeout=86400'
+JAVA_NO_JAR_EASYBGEE := java -Xmx64g -Dbgee.dao.jdbc.username=$(DBUSER_EASYBGEE) -Dbgee.dao.jdbc.password=$(DBPASS_EASYBGEE) -Dbgee.dao.jdbc.driver.names=com.mysql.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST_EASYBGEE):$(DBPORT)/$(DBNAME_EASYBGEE)?enableQueryTimeouts=false&sessionVariables=net_write_timeout=86400,net_read_timeout=86400,wait_timeout=86400'
 
 JAVA := $(JAVA_NO_JAR) -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)
 JAVA_EASYBGEE := $(JAVA_NO_JAR_EASYBGEE) -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)
@@ -158,17 +145,10 @@ R_LIBS_PATH_AXIOM      := $(CLUSTER_WALLY_PATH)/R_LIBS
 
 #NOTE Think to add ; at the end to ease insertion in other command lines
 CLUSTER_SOFT_CMD       := module add Bioinformatics/Software/vital-it;
-#CLUSTER_ASPERA_CMD     := $(CLUSTER_SOFT_CMD) module add Utility/aspera_connect/3.7.4.147727;
-#CLUSTER_BEDTOOLS_CMD   := $(CLUSTER_SOFT_CMD) module add UHTS/Analysis/BEDTools/2.26.0;
-#CLUSTER_BOWTIE2_CMD    := $(CLUSTER_SOFT_CMD) module add UHTS/Aligner/bowtie2/2.3.4.1;
-#CLUSTER_HTSEQ_CMD      := $(CLUSTER_SOFT_CMD) module add UHTS/Analysis/HTSeq/0.9.1;
 CLUSTER_KALLISTO_CMD   := $(CLUSTER_SOFT_CMD) module add UHTS/Analysis/kallisto/0.46.0;
-#CLUSTER_PICARD_CMD     := $(CLUSTER_SOFT_CMD) module add UHTS/Analysis/picard-tools/2.21.8; java -jar /software/UHTS/Analysis/picard-tools/2.21.8/picard.jar SortSam
 CLUSTER_R_CMD          := $(CLUSTER_SOFT_CMD) module add R/3.6.1;
-#CLUSTER_SAMTOOLS_CMD   := $(CLUSTER_SOFT_CMD) module add UHTS/Analysis/samtools/1.10;
 CLUSTER_SRATOOLKIT_CMD := $(CLUSTER_SOFT_CMD) module add UHTS/Analysis/sratoolkit/2.10.7;
 CLUSTER_TOPHAT_CMD     := $(CLUSTER_SOFT_CMD) module add UHTS/Aligner/tophat/2.1.1;
-#CLUSTER_FASTQC_CMD     := $(CLUSTER_SOFT_CMD) module add UHTS/Quality_control/fastqc/0.11.7;
 CLUSTER_FASTP_CMD     := $(CLUSTER_SOFT_CMD) module add UHTS/Quality_control/fastp/0.19.5;
 CLUSTER_BUSTOOLS_CMD  := $(CLUSTER_SOFT_CMD) module add UHTS/Analysis/bustools/0.40.0;
 
@@ -178,7 +158,7 @@ CLUSTER_BUSTOOLS_CMD  := $(CLUSTER_SOFT_CMD) module add UHTS/Analysis/bustools/0
 # ===================================
 
 # Tmp path (if not enough disk space)
-TMPDIR := /var/lib/mysql/tmp_bgee/
+TMPDIR := /var/lib/mysql/tmp/
 
 # Path to the directory storing source files
 # PIPELINEROOT and DIR_NAME are specified by each individul Makefile
@@ -196,35 +176,35 @@ VERIFICATIONFILE := $(OUTPUT_DIR)step_verification_$(RELEASE).txt
 ANNOTATION_GIT_URL            := https://gitlab.sib.swiss/Bgee/expression-annotations/tree/develop
 
 # Directory with curator files, from the root directory of the pipeline
-CURATIONPATH                  := ../../curation/
+#CURATIONPATH                  := ../../curation/
 
 ## AFFYMETRIX
-AFFY_CURATION_PATH            := $(CURATIONPATH)expression_data/affymetrix/
-AFFY_CURATION_FILEPATH        := $(AFFY_CURATION_PATH)annotation.xls
+#AFFY_CURATION_PATH            := $(CURATIONPATH)expression_data/affymetrix/
+#AFFY_CURATION_FILEPATH        := $(AFFY_CURATION_PATH)annotation.xls
 
 ## SIMILARITY
-SIMILARITY_CURATION_PATH      := $(CURATIONPATH)similarity/
-SIMILARITY_CURATION_FILEPATH  := $(SIMILARITY_CURATION_PATH)homology.xlsx
+#SIMILARITY_CURATION_PATH      := $(CURATIONPATH)similarity/
+#SIMILARITY_CURATION_FILEPATH  := $(SIMILARITY_CURATION_PATH)homology.xlsx
 
 ## ESTs
-EST_CURATION_PATH             := $(CURATIONPATH)expression_data/est/
-EST_UNIGENE_CURATION_PATH     := $(EST_CURATION_PATH)unigene/
-EST_SMIRNADB_CURATION_PATH    := $(EST_CURATION_PATH)smirnadb/
+#EST_CURATION_PATH             := $(CURATIONPATH)expression_data/est/
+#EST_UNIGENE_CURATION_PATH     := $(EST_CURATION_PATH)unigene/
+#EST_SMIRNADB_CURATION_PATH    := $(EST_CURATION_PATH)smirnadb/
 # the list of species with UniGene/EST annotation
-EST_SPECIES_CURATION_FILEPATH := $(SOURCE_FILES_DIR)ESTs/unigene/species_EST_file.txt
+#EST_SPECIES_CURATION_FILEPATH := $(SOURCE_FILES_DIR)ESTs/unigene/species_EST_file.txt
 # smiRNAdb libs mapping file
-SMIRNADB_CURATION_MAPFILEPATH := $(SOURCE_FILES_DIR)ESTs/smirnadb/mapping_libs_smiRNAdb.csv
+#SMIRNADB_CURATION_MAPFILEPATH := $(SOURCE_FILES_DIR)ESTs/smirnadb/mapping_libs_smiRNAdb.csv
 
 ## In Situ
-BDGP_PATH                     := $(CURATIONPATH)expression_data/in_situ/bdgp/
-BDGP2FBBT_MAPPING_FILE        := BDGP_terms_to_FBbt_terms.tsv
-BDGP2FBBT_MAPPING_NEW         := BDGP_terms_to_FBbt_terms_$(DBNAME).tsv
-STAGECORRESP_FILE             := BDGP_stages_correspondence.txt
-WORMBASE_EXPR_DUMP            := expr_pattern.ace
+#BDGP_PATH                     := $(CURATIONPATH)expression_data/in_situ/bdgp/
+#BDGP2FBBT_MAPPING_FILE        := BDGP_terms_to_FBbt_terms.tsv
+#BDGP2FBBT_MAPPING_NEW         := BDGP_terms_to_FBbt_terms_$(DBNAME).tsv
+#STAGECORRESP_FILE             := BDGP_stages_correspondence.txt
+#WORMBASE_EXPR_DUMP            := expr_pattern.ace
 
 ## RNA Seq
-RNASEQ_CURATION_PATH          := $(CURATIONPATH)expression_data/rna_seq/
-RNASEQ_CURATION_FILEPATH      := $(RNASEQ_CURATION_PATH)annotations.xls
+#RNASEQ_CURATION_PATH          := $(CURATIONPATH)expression_data/rna_seq/
+#RNASEQ_CURATION_FILEPATH      := $(RNASEQ_CURATION_PATH)annotations.xls
 
 
 # =========== SPECIES FILES ===============
@@ -255,7 +235,7 @@ UBERON_OUTPUT_PATH := $(GENERATED_FILES_DIR)uberon/
 UBERON_DOWNLOAD_URL_START := http://purl.obolibrary.org/obo/uberon/
 EXT_DOWNLOAD_URL := $(UBERON_DOWNLOAD_URL_START)ext.owl
 COMPOSITE_DOWNLOAD_URL := $(UBERON_DOWNLOAD_URL_START)composite-metazoan.owl
-DEV_STAGE_DOWNLOAD_URL := https://raw.githubusercontent.com/obophenotype/developmental-stage-ontologies/master/external/bgee/dev_stage_ont.obo
+DEV_STAGE_DOWNLOAD_URL := https://raw.githubusercontent.com/obophenotype/developmental-stage-ontologies/master/external/bgee/dev_stage_ontology.obo
 
 # Sex-related info about anatomical terms
 UBERON_SEX_INFO_FILE := uberon_sex_info.tsv
@@ -413,29 +393,25 @@ RNASEQ_KALLISTO_KMER_SHORT    := 15
 # Max proportion of Ns allowed in intergenic sequences
 INTERGENIC_N_PROPORTION         := 0.05
 
-# qValue cut-off for calls
-CUTOFF_QVALUE         := 0.01
-
 # RNAseq data path
 RNASEQDATAPATH             := /var/bgee/extra/pipeline/rna_seq/
-RNASEQABUNDANCEFILE        := abundance_gene_level+new_tpm+new_fpkm+calls.tsv
+RNASEQABUNDANCEFILE        := gene_level_abundance+calls.tsv
 RNASEQALLRES               := $(RNASEQDATAPATH)all_results_$(DBNAME)/
-RNASEQGTFDATAPATH          := $(RNASEQDATAPATH)GTF/
 RNASEQLOGS                 := $(RNASEQALLRES)
 RNASEQSAMPSTATS            := $(GENERATED_FILES_DIR)$(RNASEQPATH)presence_absence_all_samples.txt
 RNASEQREPORTINFO           := $(GENERATED_FILES_DIR)$(RNASEQPATH)reports_info_all_samples.txt
 
 # Differential file path
-RNASEQDIFFEXPRPATH                  := $(RNASEQDATAPATH)processed_differential_$(DBNAME)/
-RNASEQDIFFEXPRPATH_DEVANDANAT       := $(RNASEQDIFFEXPRPATH)devAndAnat/
-RNASEQDIFFEXPRPATH_SEX              := $(RNASEQDIFFEXPRPATH)sex/
+#RNASEQDIFFEXPRPATH                  := $(RNASEQDATAPATH)processed_differential_$(DBNAME)/
+#RNASEQDIFFEXPRPATH_DEVANDANAT       := $(RNASEQDIFFEXPRPATH)devAndAnat/
+#RNASEQDIFFEXPRPATH_SEX              := $(RNASEQDIFFEXPRPATH)sex/
 # Bioconductor file path
 RNASEQBIOCONDUCTOR                  := $(RNASEQDATAPATH)bioconductor_$(DBNAME)/
 #XXX is it used anymore???
-RNASEQBIOCONDUCTORDIFF              := $(RNASEQBIOCONDUCTOR)differential/
-RNASEQBIOCONDUCTORTARG              := $(RNASEQBIOCONDUCTOR)targets/
-RNASEQBIOCONDUCTORTARG_SEX          := $(RNASEQBIOCONDUCTORTARG)sex/
-RNASEQBIOCONDUCTORTARG_DEVANDANAT   := $(RNASEQBIOCONDUCTORTARG)devAndAnat/
+#RNASEQBIOCONDUCTORDIFF              := $(RNASEQBIOCONDUCTOR)differential/
+#RNASEQBIOCONDUCTORTARG              := $(RNASEQBIOCONDUCTOR)targets/
+#RNASEQBIOCONDUCTORTARG_SEX          := $(RNASEQBIOCONDUCTORTARG)sex/
+#RNASEQBIOCONDUCTORTARG_DEVANDANAT   := $(RNASEQBIOCONDUCTORTARG)devAndAnat/
 # TMM normalization files
 RNASEQTMMTARG                       := $(RNASEQBIOCONDUCTOR)targets_TMM/
 RNASEQTMMPATH                       := $(RNASEQDATAPATH)processed_TMM_$(DBNAME)/
@@ -455,6 +431,9 @@ SC_RNASEQ_PATH_GENERATED               := $(GENERATED_FILES_DIR)$(SC_RNASEQ_PATH
 SC_RNASEQ_NEW_LIB_FILEPATH             := $(SC_RNASEQ_PATH_GENERATED)NEW_scRNASeqLibrary.tsv
 SC_RNASEQ_METADATA_FILEPATH            := $(SC_RNASEQ_PATH_GENERATED)metadata_info.txt
 SC_RNASEQ_SAMPINFO_FILEPATH            := $(SC_RNASEQ_PATH_GENERATED)scrna_seq_sample_info.txt
+SC_RNASEQ_SAMPINFO_PASS_FILEPATH       := $(SC_RNASEQ_PATH_GENERATED)NEW_scRNASeq_sample_info.tsv
+SC_RNASEQ_SAMPINFO_NOT_PASS_FILEPATH   := $(SC_RNASEQ_PATH_GENERATED)Discard_scRNASeq_sample_info.tsv
+SC_RNASEQ_MODALITY_FILEPATH            := $(SC_RNASEQ_PATH_GENERATED)Modality_Cell_type_per_experiment.tsv
 SC_RNASEQ_METADATA_10X_FILEPATH        := $(SC_RNASEQ_PATH_GENERATED)metadata_info_10X.txt
 SC_RNASEQ_SAMPINFO_10X_FILEPATH        := $(SC_RNASEQ_PATH_GENERATED)scRNA_Seq_info_TargetBased.txt
 SC_RNASEQ_JURA_LIB_FILEPATH            := $(SC_RNASEQ_PATH_GENERATED)juraLibrariesDownloaded.tsv
@@ -470,6 +449,7 @@ SCRNASEQ_SOFTWARE_BAMTOFASTQ                  := /users/sfonseca1/bin/bamtofastq
 
 # scRNAseq cluster paths (JURA)
 SENSITIVE_GENERAL_PATH                        := $(CLUSTER_DATA_PATH)/
+#TODO: use dir created during generation of ref intergenic
 REFERENCE_INTERGENIC_PATH                     := $(CLUSTER_DATA_PATH)/Rerence_intergenic_folder/
 
 ## PATH to full length and 10X data
@@ -483,24 +463,19 @@ SC_RNASEQ_CLUSTER_ALL_RES                     := $(SENSITIVE_GENERAL_PATH)scRNA-
 SC_RNASEQ_CLUSTER_ALL_RES_FULL_LENGTH         := $(SC_RNASEQ_CLUSTER_ALL_RES)FULL_LENGTH/
 SC_RNASEQ_CLUSTER_KALLISTO                    := $(SC_RNASEQ_CLUSTER_ALL_RES_FULL_LENGTH)Kallisto_All_Cells/
 SC_RNASEQ_CLUSTER_QC_CELLPOP_RES              := $(SC_RNASEQ_CLUSTER_ALL_RES_FULL_LENGTH)Quality_Control_Cell_Population/
-SC_RNASEQ_CLUSTER_SUM_RAW_COUNTS_CELLPOP_RES  := $(SC_RNASEQ_CLUSTER_ALL_RES_FULL_LENGTH)Sum_Raw_Counts_Cell_Population/
 SC_RNASEQ_CLUSTER_CALL_PRESENT                := $(SC_RNASEQ_CLUSTER_ALL_RES_FULL_LENGTH)scRNAseq_Callpresent/
-SC_RNASEQ_CLUSTER_CALL_PRESENT_CELLPOP_RES    := $(SC_RNASEQ_CLUSTER_ALL_RES_FULL_LENGTH)Calls_present_Cell_Population/
 # scRNASeq file paths
 SC_RNASEQ_MODALITY_CELL_POP                   := $(SC_RNASEQ_CLUSTER_QC_CELLPOP_RES)Modality_Cell_type_per_experiment.tsv
-SC_RNASEQ_SAMPINFO_NEW_FILEPATH               := $(SC_RNASEQ_CLUSTER_QC_CELLPOP_RES)NEW_scRNASeq_sample_info.txt
-SC_RNASEQ_STATS_CELL_POP                      := $(SC_RNASEQ_CLUSTER_CALL_PRESENT_CELLPOP_RES)Stats_SumFile.tsv
 
 ## Specific paths to results of target-based protocols
 SC_RNASEQ_CLUSTER_ALL_RES_DROPLET             := $(SC_RNASEQ_CLUSTER_ALL_RES)DROPLET_10X/
 SC_RNASEQ_CLUSTER_QC_CELLTYPE                 := $(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)QC_CellType_identification/
-SC_RNASEQ_CLUSTER_SUM_RAW_UMI                 := $(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)Sum_raw_UMI+Normalized/
-SC_RNASEQ_CLUSTER_CALLS_10X                   := $(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)Calls_IndCell_CellPopulation/
 # scRNASeq file paths
 SC_RNASEQ_INFO_ALL_LIBRARIES_10X              := $(SC_RNASEQ_CLUSTER_QC_CELLTYPE)InformationAllLibraries.txt
 
-# proportion of intergenic allowed in the cell population to make the ratio cut-off
-SC_RNASEQ_RATIO_PROPORTION                    := 0.05
+# minimum number of cells in a full-length library
+MIN_CELLS_PER_LIBRARY_FULL_LENGTH             := 50
+
 # p-value used as cutoff 
 PVALUE_CUTOFF                                 := 0.05
 
