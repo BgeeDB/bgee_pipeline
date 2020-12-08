@@ -73,12 +73,14 @@ get_sra: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_ALREADY_DOWNLOADED)
 	@$(GIT) pull
 	@sed -i 's@\(BASE *= \).*@\1"$(RNASEQ_DOWNLOAD_LIB_DIR)";@'                      0Before/get_SRA.pl
 	@sed -i 's@--output=.*@--output=${PWD}/get_sra.out@'                             0Before/download_lib.sbatch
+	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                     0Before/download_lib.sbatch
+	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                           0Before/download_lib.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/get_sra.err@'                               0Before/download_lib.sbatch
 	@sed -i 's@SCRIPT_PATH=.*@SCRIPT_PATH=${PWD}@'                                   0Before/download_lib.sbatch
 	@sed -i 's@ANNOTATION_FILE=.*@ANNOTATION_FILE=$(RNASEQ_SAMPINFO_FILEPATH)@'      0Before/download_lib.sbatch
 	@sed -i 's@DONE_FILE=.*@DONE_FILE=$(RNASEQ_ALREADY_DOWNLOADED)@'                 0Before/download_lib.sbatch
 	@sed -i 's@^.*module add UHTS/Analysis/sratoolkit/.*@$(CLUSTER_SRATOOLKIT_CMD)@' 0Before/download_lib.sbatch
-	@sed -i 's@^.*module add Utility/aspera_connect/.*@#$(CLUSTER_ASPERA_CMD)@'       0Before/download_lib.sbatch
+	@sed -i 's@^.*module add Utility/aspera_connect/.*@#$(CLUSTER_ASPERA_CMD)@'      0Before/download_lib.sbatch
 	@sed -i 's@^.*module add UHTS/Quality_control/fastp/.*@$(CLUSTER_FASTP_CMD)@'    0Before/download_lib.sbatch
 	@sed -i 's@^.*module add R/.*@$(CLUSTER_R_CMD)@'                                 0Before/download_lib.sbatch
 	@sbatch 0Before/download_lib.sbatch
@@ -210,7 +212,7 @@ prepare_indexed_transcriptome: prepare_GTF
 	#Extract transcriptome.fa from gtf_all and genome.fa files
 	#perl one liner to remove arbitrary numbering in fasta header from gtf_to_fasta
 	# Prepare indexes for kallisto: one with default k-mer size $(RNASEQ_KALLISTO_KMER_DEFAULT), one with short k-mer size $(RNASEQ_KALLISTO_KMER_SHORT)
-	@perl 1Run/slurm_index_creation.pl -transcriptome_folder=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(OUTPUT_DIR) -short_index_length=$(RNASEQ_KALLISTO_KMER_SHORT)  -cluster_kallisto_cmd="$(CLUSTER_KALLISTO_CMD)" -cluster_tophat_cmd="$(CLUSTER_TOPHAT_CMD)" >$@.tmp 2>&1
+	@perl 1Run/slurm_index_creation.pl -transcriptome_folder=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(OUTPUT_DIR) -account=$(CLUSTER_ACCOUNT_SENSITIVE) -partition=$(CLUSTER_PARTITION_SENSITIVE) -short_index_length=$(RNASEQ_KALLISTO_KMER_SHORT)  -cluster_kallisto_cmd="$(CLUSTER_KALLISTO_CMD)" -cluster_tophat_cmd="$(CLUSTER_TOPHAT_CMD)" >$@.tmp 2>&1
 	#TODO Use short k-mer size = 21nt instead of 15
 	#TODO The gffread utility in cufflinks package seems more flexible and reliable
 	#TODO add step to copy .passw file to bbgee's home on cluster / or maybe just echo a message to tell the user scp it? Path and name of this file on cluster is stored in ENCRYPT_PASSWD_FILE. We should store this file somewhere (devbioinfo?) because it cannot be added to the gitlab project
@@ -220,7 +222,7 @@ prepare_indexed_transcriptome: prepare_GTF
 #NOTE Better to run this step in screen or with nohup as submission is done X jobs per X jobs to not overload the system (and not decrease our user priority)!
 abundance_all_intergenic: prepare_indexed_transcriptome $(RNASEQ_SAMPINFO_FILEPATH)
 	# Running the pipeline
-	@perl 1Run/slurm_scheduler.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=$(RNASEQ_CLUSTER_LOG) -index_folder=$(RNASEQ_CLUSTER_GTF) -fastq_folder=$(RNASEQ_SENSITIVE_FASTQ) -kallisto_out_folder=$(RNASEQ_CLUSTER_ALL_RES) -ens_release=$(ENSRELEASE) -ens_metazoa_release=$(ENSMETAZOARELEASE) -enc_passwd_file=$(ENCRYPT_PASSWD_FILE) -cluster_kallisto_cmd='$(CLUSTER_KALLISTO_CMD)' -cluster_R_cmd='$(CLUSTER_R_CMD)' >$@.tmp 2>&1
+	@perl 1Run/slurm_scheduler.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=$(RNASEQ_CLUSTER_LOG) -account=$(CLUSTER_ACCOUNT_SENSITIVE) -partition=$(CLUSTER_PARTITION_SENSITIVE) -index_folder=$(RNASEQ_CLUSTER_GTF) -fastq_folder=$(RNASEQ_SENSITIVE_FASTQ) -kallisto_out_folder=$(RNASEQ_CLUSTER_ALL_RES) -ens_release=$(ENSRELEASE) -ens_metazoa_release=$(ENSMETAZOARELEASE) -enc_passwd_file=$(ENCRYPT_PASSWD_FILE) -cluster_kallisto_cmd='$(CLUSTER_KALLISTO_CMD)' -cluster_R_cmd='$(CLUSTER_R_CMD)' >$@.tmp 2>&1
 	@echo "TODO: At the end it is a good idea to relaunch the abundance_all_intergenic step to be sure everything was run!"
 	@$(MV) $@.tmp $@
 
@@ -244,7 +246,7 @@ export_length: check_abundance_all_intergenic
 	$(eval TIME_LENGTH := $(shell date +'%Y%m%d-%H%M%S'))
 	@echo "#!/bin/sh" > $@_$(TIME_LENGTH).sh
 	@echo "perl 3Insertion/export_feature_length.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -tx2gene_dir=$(OUTPUT_DIR) -all_results=$(RNASEQ_CLUSTER_ALL_RES) -length_info=$(RNASEQ_LENGTH_INFO_FILEPATH)" >> $@_$(TIME_LENGTH).sh
-	@sbatch --account=mrobinso_bgee --time=2:00:00 --mem=2G --partition=wally --output=$@_$(TIME_LENGTH).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_LENGTH) $@_$(TIME_LENGTH).sh > $@.tmp
+	@sbatch --account=$(CLUSTER_ACCOUNT) --time=2:00:00 --mem=2G --partition=$(CLUSTER_PARTITION) --output=$@_$(TIME_LENGTH).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_LENGTH) $@_$(TIME_LENGTH).sh > $@.tmp
 	NUMBER_JOBS=$$(squeue --name=$@_$(TIME_LENGTH) --noheader | wc -l) ; \
 	while [ $$NUMBER_JOBS -gt 0 ] ; do \
 		sleep 30 ; \
@@ -260,7 +262,7 @@ finalize_pipeline: check_abundance_all_intergenic
 	$(eval TIME_FINALIZE := $(shell date +'%Y%m%d-%H%M%S'))
 	@echo "#!/bin/sh" > $@_$(TIME_FINALIZE).sh
 	@echo "perl 3Insertion/create_rna_seq_report_info.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -report_info=$(RNASEQ_CLUSTER_REPORTINFO) -all_results=$(RNASEQ_CLUSTER_ALL_RES)" >> $@_$(TIME_FINALIZE).sh
-	@sbatch --account=mrobinso_bgee --time=2:00:00 --mem=2G --partition=wally --output=$@_$(TIME_FINALIZE).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_FINALIZE) $@_$(TIME_FINALIZE).sh > $@.tmp
+	@sbatch --account=$(CLUSTER_ACCOUNT) --time=2:00:00 --mem=2G --partition=$(CLUSTER_PARTITION) --output=$@_$(TIME_FINALIZE).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_FINALIZE) $@_$(TIME_FINALIZE).sh > $@.tmp
 	# Wait end of the job
 	NUMBER_JOBS=$$(squeue --name=$@_$(TIME_FINALIZE) --noheader | wc -l) ; \
 	while [ $$NUMBER_JOBS -gt 0 ] ; do \
@@ -302,7 +304,7 @@ sum_by_species: check_abundance_all_intergenic $(RNASEQ_SAMPINFO_FILEPATH) $(RNA
 	$(eval TIME_SUM := $(shell date +'%Y%m%d-%H%M%S'))
 	@echo "#!/bin/sh" > $@_$(TIME_SUM).sh
 	@echo "$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args rna_seq_sample_info=\"$(RNASEQ_SAMPINFO_FILEPATH)\" rna_seq_sample_excluded=\"$(RNASEQ_SAMPEXCLUDED_FILEPATH)\" kallisto_count_folder=\"$(RNASEQ_CLUSTER_ALL_RES)\" tx2gene_folder=\"$(RNASEQ_CLUSTER_GTF)\" sum_by_species_folder=\"$(RNASEQ_CLUSTER_SUM_RES)\"' 1Run/rna_seq_sum_by_species.R $(OUTPUT_DIR)rna_seq_sum_by_species.Rout" >> $@_$(TIME_SUM).sh
-	@sbatch --account=mrobinso_bgee --time=2:00:00 --mem=2G --partition=axiom --output=$@_$(TIME_SUM).out --error=$@_$(TIME_SUM).err  --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_SUM) $@_$(TIME_SUM).sh > $@.tmp
+	@sbatch --account=$(CLUSTER_ACCOUNT) --time=2:00:00 --mem=2G --partition=$(CLUSTER_PARTITION) --output=$@_$(TIME_SUM).out --error=$@_$(TIME_SUM).err  --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_SUM) $@_$(TIME_SUM).sh > $@.tmp
 	NUMBER_JOBS=$$(squeue --name=$@_$(TIME_SUM) --noheader | wc -l) ; \
 	echo $$NUMBER_JOBS ; \
 	while [ $$NUMBER_JOBS -gt 0 ] ; do \
@@ -323,7 +325,7 @@ generate_intergenic_sequences: sum_by_species
 	$(eval TIME_INTERGENIC := $(shell date +'%Y%m%d-%H%M%S'))
 	@echo "#!/bin/sh" > $@_$(TIME_INTERGENIC).sh
 	@echo "perl 1Run/create_intergenic_fasta.pl -sample_info_path=$(RNASEQ_SAMPINFO_FILEPATH) -transcriptomes_folder=$(RNASEQ_CLUSTER_GTF) -transcriptome_compression_ext=$(TRANSCRIPTOME_COMPRESSION_EXT) -sum_abundance_file_path=$(SUM_ABUNDANCE_FILE_PATH) -gaussian_file_path=$(RNASEQ_CLUSTER_GAUSSIAN_CHOICE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) -other_intergenic_dir=$(CLUSTER_OTHER_INTERGENIC_FOLDER) > $@.tmp 2> $@.warn" >> $@_$(TIME_INTERGENIC).sh
-	@sbatch --account=mrobinso_bgee --time=2:00:00 --mem=2G --partition=axiom --output=$@_$(TIME_INTERGENIC).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_INTERGENIC) $@_$(TIME_INTERGENIC).sh > $@.tmp
+	@sbatch --account=$(CLUSTER_ACCOUNT) --time=2:00:00 --mem=2G --partition=$(CLUSTER_PARTITION) --output=$@_$(TIME_INTERGENIC).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_INTERGENIC) $@_$(TIME_INTERGENIC).sh > $@.tmp
 	NUMBER_JOBS=$$(squeue --name=$@_$(TIME_INTERGENIC) --noheader | wc -l) ; \
 	while [ $$NUMBER_JOBS -gt 0 ] ; do \
 		sleep 30 ; \
@@ -341,20 +343,20 @@ indexes_bgeecall: generate_intergenic_sequences
 	# generate BgeeCall input file from the rna_seq_sample_info.txt file
 	@perl 1Run/sample_info_to_bgeecall.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >>$@.tmp 2>&1
 	# generate kallisto indexes with BgeeCall
-	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file=\"$(RNASEQ_BGEECALL_FILE)\" account=\"mrobinso_bgee\" time=\"2:00:00\" partition=\"axiom\" working_path=\"$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)\"' bgeecall_index.R bgeecall_index.Rout
+	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(RNASEQ_BGEECALL_FILE)" account="$(CLUSTER_ACCOUNT_SENSITIVE)" time="2:00:00" partition="$(CLUSTER_PARTITION_SENSITIVE)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' bgeecall_index.R bgeecall_index.Rout
 	@$(MV) $@.tmp $@
 
 presence_absence_bgeecall: indexes_bgeecall
 	# generate present/absent expression calls with BgeeCall
 	# TODO IMPORTANT for the moment tx2gene and gene2biotype files are created at the same time than calls. Should be created before to avoid simultaneous writing problems!!!!!!
-	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file=\"$(RNASEQ_BGEECALL_FILE)\" account=\"mrobinso_bgee\" time=\"2:00:00\" partition=\"axiom\" working_path=\"$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)\"' bgeecall_calls.R bgeecall_calls.Rout
+	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(RNASEQ_BGEECALL_FILE)" account="$(CLUSTER_ACCOUNT_SENSITIVE)" time="2:00:00" partition="$(CLUSTER_PARTITION_SENSITIVE)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' bgeecall_calls.R bgeecall_calls.Rout
 	# TODO generate summary plot once all calls have been generated
 	@touch $@
 
 check_presence_absence: presence_absence_bgeecall
 	# check that presence absence calls have been generated for all libraries present in the rna_seq_sample_info file
 	# generate file containing calls info for all libraries and use this file to generate different plots
-	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args sample_info=\"$(RNASEQ_SAMPINFO_FILEPATH)\" calls_dir=\"$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)\"' rna_seq_calls_plot.R rna_seq_calls_plot.Rout >>$@.tmp 2>$@.warn
+	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args sample_info="$(RNASEQ_SAMPINFO_FILEPATH)" calls_dir="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' rna_seq_calls_plot.R rna_seq_calls_plot.Rout >>$@.tmp 2>$@.warn
 
 #NOTE if output directory is not $(RNASEQ_CLUSTER_ALL_RES): copy all files with calls to this directory, as well as summary stats and plot files
 #for folder in *; do echo $folder; /bin/cp $folder/* ../all_results_bgee_v15/$folder/; done

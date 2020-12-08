@@ -16,10 +16,12 @@ use FindBin qw( $RealBin ); # directory where the script is lying
 use Getopt::Long;
 
 # Define arguments & their default value
-my ($sample_info_file, $exclude_sample_file, $output_log_folder, $index_folder, $fastq_folder, $kallisto_out_folder, $ens_release, $ens_metazoa_release, $enc_passwd_file, $cluster_kallisto_cmd, $cluster_R_cmd) = ('', '', '', '', '', '', '', '', '', '', '', '', '');
+my ($sample_info_file, $exclude_sample_file, $output_log_folder, $index_folder, $fastq_folder, $partition, $account, $kallisto_out_folder, $ens_release, $ens_metazoa_release, $enc_passwd_file, $cluster_kallisto_cmd, $cluster_R_cmd) = ('', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
 my %opts = ('sample_info_file=s'     => \$sample_info_file,
             'exclude_sample_file=s'  => \$exclude_sample_file,
             'output_log_folder=s'    => \$output_log_folder,
+            'account=s'              => \$account,
+            'partition=s'            => \$partition,
             'index_folder=s'         => \$index_folder, # same as GTF folder
             'fastq_folder=s'         => \$fastq_folder,
             'kallisto_out_folder=s'  => \$kallisto_out_folder,
@@ -66,10 +68,6 @@ my $nbr_processors = 1;
 # RAM needed: 10GB should be enough
 my $memory_usage   = 50;      # in GB
 my $time_limit     = '4:00:00';
-my $user_email     = 'bgee@sib.swiss'; # for email notification
-my $account        = 'mrobinso_bgee';
-my $queue          = 'axiom';
-
 
 my $job_limit      = 120; # Number of simultaneous jobs running
 
@@ -147,7 +145,7 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
 
     # Create the SBATCH script
     open (my $OUT, '>', "$sbatch_file")  or die "Cannot write [$sbatch_file]\n";
-    print {$OUT} sbatch_template($queue, $account, $nbr_processors, $memory_usage, $output_file, $error_file, $library_id);
+    print {$OUT} sbatch_template($partition, $account, $nbr_processors, $memory_usage, $output_file, $error_file, $library_id);
     print {$OUT} "$sbatch_command\n";
     close $OUT;
 
@@ -167,14 +165,11 @@ sub check_running_jobs {
 
 # Add main sbatch command and options
 sub sbatch_template {
-    my ($queue, $account, $nbr_processors, $memory_usage, $output_file, $error_file, $library_id) = @_;
-    # Potential other options:
-    # #SBATCH --mail-user=$user_email
-    # #SBATCH --mail-type=ALL
+    my ($partition, $account, $nbr_processors, $memory_usage, $output_file, $error_file, $library_id) = @_;
 
     my $template="#!/bin/bash
 
-#SBATCH --partition=$queue
+#SBATCH --partition=$partition
 #SBATCH --account=$account
 
 #SBATCH --nodes=1

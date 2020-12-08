@@ -484,7 +484,7 @@ You will obtain also an output file that contain a boxplot for each different fe
   ```
   * Checks during run:
   ```
-   squeue --user=$USER --account=mrobinso_bgee
+   squeue --user=$USER --account=$CLUSTER_ACCOUNT
    less /data/ul/dee/bgee/GIT/pipeline/RNA_Seq/run_pipeline.tmp
    # number of launched jobs
    grep -c 'is submitted to queue <bgee>' /data/ul/dee/bgee/GIT/pipeline/RNA_Seq/run_pipeline.tmp
