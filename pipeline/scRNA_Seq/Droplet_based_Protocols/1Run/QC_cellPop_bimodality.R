@@ -99,10 +99,10 @@ for (libraryID in unique(scRNA_annotation_file$libraryId)) {
   bimodalityDone <- file.exists(file.path(folder_data, libraryID, "bimodality_DONE.txt"))
   
   if (bimodalityDone == TRUE){
-    cat("Bimodality done for this library: ", libraryID, "\n")
+    message("Bimodality done for this library: ", libraryID)
   } else {
     
-    cat("Treating library: ", libraryID, "\n")
+    message("Treating library: ", libraryID)
     
     ## select all cell population for the library
     AllCellPop <- list.files(path = file.path(folder_data, libraryID), pattern = "^Raw_Counts_")
@@ -113,7 +113,7 @@ for (libraryID in unique(scRNA_annotation_file$libraryId)) {
       cellPopName <- str_remove(cellPop, "Raw_Counts_")
       cellPopName <- str_remove(cellPopName, ".tsv")
       
-      cat("Doing: ", cellPopName, "\n")
+      message("Doing: ", cellPopName)
       
       cellpop <- fread(file.path(folder_data,libraryID,cellPop))
       ## remove info about gene_name, biotype, type
@@ -164,25 +164,25 @@ for (libraryID in unique(scRNA_annotation_file$libraryId)) {
         mode_2 <- modesInfo$modes[2] < 0.8
         
         if (bimodalityCalculation == TRUE & mode_1 == FALSE & mode_2 == FALSE){
-          cat("The cell population ", cellPopName, " from the library ", libraryID ,"follow a bimodal distribution", "\n")
+          message("The cell population ", cellPopName, " from the library ", libraryID ,"follow a bimodal distribution.")
           ## retrieve modes info
           modesInfo <- modesInfo$modes
           ## plot data 
           plotData(libraryID = libraryID, allInformation = allInformation, deconvolutionInfo = deconvolutionInfo, classification = classification, cutoff = cutoff, cellPopName = cellPopName, modesInfo = modesInfo)
         } else if (bimodalityCalculation == TRUE & mode_1 == TRUE | bimodalityCalculation == TRUE & mode_2 == TRUE){
-          cat("The cell population ", cellPopName, " from the library ", libraryID ,"not present confidence enough to detect a set of genes that should be always detected for the cell-type.", "\n")
+          message("The cell population ", cellPopName, " from the library ", libraryID ,"not present confidence enough to detect a set of genes that should be always detected for the cell-type.")
           ## add to the excluded file libraries/cell pop
           infoCollected <- data.frame(libraryID, experimentID, cellPopName, "mode_1 or mode_2 not fit the minimum requirement")
           write.table(infoCollected, file = bimodality_targetBased, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
         } else {
-          cat("The cell population ", cellPopName, " from the library ", libraryID ,"is not bimodal", "\n")
+          message("The cell population ", cellPopName, " from the library ", libraryID ,"is not bimodal.")
           ## add to the excluded file libraries/cell pop
           infoCollected <- data.frame(libraryID, experimentID, cellPopName, "not bimodal")
           write.table(infoCollected, file = bimodality_targetBased, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
         }
         
       } else {
-        cat("The cell population ", cellPopName, " from the library ", libraryID ,"have < 50 cells.", "\n")
+        message("The cell population ", cellPopName, " from the library ", libraryID ,"have < 50 cells.")
         ## add to the excluded file libraries/cell pop
         infoCollected <- data.frame(libraryID, experimentID, cellPopName, "< 50 cells")
         write.table(infoCollected, file = bimodality_targetBased, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)

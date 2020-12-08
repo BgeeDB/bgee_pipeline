@@ -11,6 +11,7 @@
 ## Libraries
 library(rjson)
 library(plyr)
+library(dplyr)
 
 ## reading arguments
 cmd_args = commandArgs(TRUE);
@@ -138,8 +139,10 @@ fileInfo <- read.table(tmpInfoFile, header=TRUE, sep="\t")
 
 ## Create the scrna_seq_sample_info
 scrna_seq_sample_info <- merge(annotation, fileInfo, by = "libraryId", incomparables = NaN)
-#TODO: Should use column name rather than column index to filter columns 
-scrna_seq_sample_info <- scrna_seq_sample_info[c(1,2,7,6,23,3,33,31,32,34,11,9,4,21,22,35)]
+
+scrna_seq_sample_info <- scrna_seq_sample_info %>% select("libraryId", "experimentId", "cellTypeName", "cellTypeId", "speciesId",
+                                                          "platform", "protocol", "protocolType", "libraryType", "infoOrgan", "stageId",
+                                                          "uberonId", "sex", "strain", "readLength")
 scrna_seq_sample_info$organism <- "NaN"
 #TODO: move "(missing)" values for columns sex and strains to "NA"
 finalTable <- speciesName(scrna_seq_sample_info = scrna_seq_sample_info)

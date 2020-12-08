@@ -8,6 +8,7 @@ all: $(VERIFICATIONFILE)
 
 get_annot:
 	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations
+	@$(WGET) $(ANNOTATION_GIT_URL)/Strains/StrainMapping.tsv                                && $(MV) StrainMapping.tsv                            $(STRAIN_MAPPING_FILE)
 	@$(WGET) $(ANNOTATION_GIT_URL)/$(DIR_NAME)/species_EST_file.txt                         && $(MV) species_EST_file.txt                         $(SOURCE_FILES_DIR)/$(DIR_NAME)/species_EST_file.txt                         2>/dev/null  || rm -f species_EST_file.txt
 	@$(WGET) $(ANNOTATION_GIT_URL)/$(DIR_NAME)/annotation_libs_Drosophila_melanogaster.txt  && $(MV) annotation_libs_Drosophila_melanogaster.txt  $(SOURCE_FILES_DIR)/$(DIR_NAME)/annotation_libs_Drosophila_melanogaster.txt  2>/dev/null  || rm -f annotation_libs_Drosophila_melanogaster.txt
 	@$(WGET) $(ANNOTATION_GIT_URL)/$(DIR_NAME)/annotation_libs_Danio_rerio.txt              && $(MV) annotation_libs_Danio_rerio.txt              $(SOURCE_FILES_DIR)/$(DIR_NAME)/annotation_libs_Danio_rerio.txt              2>/dev/null  || rm -f annotation_libs_Danio_rerio.txt

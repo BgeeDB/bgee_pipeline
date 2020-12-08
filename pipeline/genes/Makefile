@@ -82,7 +82,7 @@ $(OUTPUT_DIR)insert_gene_homology:
 	@perl insert_homology.pl -bgee=$(BGEECMD) -paralogs_dir_path=$(PARALOGS_DIR) -orthologs_dir_path=$(ORTHOLOGS_DIR) >>$@.tmp 2>>$@.err
 	@if [[ -s $@.err ]]; then echo -n; else $(RM) $@.err; fi
 	@$(MV) $@.tmp $@
-	
+
 # Init variables used to insert OncoMX XRefs in the database
 ONCOMX_DATASOURCE_NAME := OncoMX
 

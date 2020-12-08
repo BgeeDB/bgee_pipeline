@@ -80,11 +80,11 @@ HCA_metadata <- function(libraryID, experimentName){
     run_accession <- NA
     read_count <- NA
     tax_id <- NA
-    scientific_name <- metadataExperiment$donorOrganisms.genusSpecies
+    scientific_name <- as.character(metadataExperiment$donorOrganisms.genusSpecies) 
     instrument_model <- metadataExperiment$protocols.instrumentManufacturerModel
     instrument_model <- substr(instrument_model,1,regexpr(",",instrument_model)-1)
-    library_layout <- metadataExperiment$protocols.pairedEnd
-    fastq_ftp <- 	metadataExperiment$fileTypeSummaries.fileType
+    library_layout <- as.character(metadataExperiment$protocols.pairedEnd)
+    fastq_ftp <- 	as.character(metadataExperiment$fileTypeSummaries.fileType)
     submitted_ftp	<- "HCA"
 
     infoMeatadata <- c(sample_accession, experiment_accession, run_accession, read_count, tax_id,scientific_name, instrument_model, library_layout, fastq_ftp, submitted_ftp)
@@ -97,17 +97,18 @@ HCA_metadata <- function(libraryID, experimentName){
     run_accession <- NA
     read_count <- NA
     tax_id <- NA
-    scientific_name <- metadataExperiment$donorOrganisms.genusSpecies
+    scientific_name <- as.character(metadataExperiment$donorOrganisms.genusSpecies)
     instrument_model <- metadataExperiment$protocols.instrumentManufacturerModel
     instrument_model <- substr(instrument_model,1,regexpr(",",instrument_model)-1)
-    library_layout <- metadataExperiment$protocols.pairedEnd
-    fastq_ftp <- 	metadataExperiment$fileTypeSummaries.fileType
+    library_layout <- as.character(metadataExperiment$protocols.pairedEnd)
+    fastq_ftp <- 	as.character(metadataExperiment$fileTypeSummaries.fileType)
     submitted_ftp	<- "HCA"
 
     infoMeatadata <- c(sample_accession, experiment_accession, run_accession, read_count, tax_id,scientific_name, instrument_model, library_layout, fastq_ftp, submitted_ftp)
 
   } else {
-    cat("The experiment title was not found in HCA metadata.", "\n", "Please check the annotation file.")
+    message("The experiment title was not found in HCA metadata.")
+    message("Please check the annotation file.")
   }
   return(infoMeatadata)
 }
@@ -134,10 +135,13 @@ for (experiment in unique(targetBased$experimentId)) {
     experimentNAME <- as.character(unique(targetBased$experimentName[targetBased$experimentId == experiment]))
     for (i in libraries_from_Exp) {
       extractHCA <- HCA_metadata(libraryID = i, experimentName = experimentNAME)
+      extractHCA <- as.data.frame(t(extractHCA))
+      colnames(extractHCA) <- c("sample_accession", "experiment_accession", "run_accession", "read_count", "tax_id",
+                                "scientific_name", "instrument_model", "library_layout", "fastq_ftp", "submitted_ftp")
       metadata <- rbind(metadata,extractHCA)
     }
   } else {
-    cat("Source is not recognized!")
+    message("Source is not recognized!")
   }
 }
 
@@ -172,16 +176,15 @@ for(i in 1:nrow(targetBased_libraries)) {
     compare_speciesID <- identical(as.character(annotationInfo[['speciesId']]),as.character(metadataInfo[['tax_id']]))
 
     if (compare_library == "TRUE" && compare_machine == "TRUE" && compare_speciesID == "TRUE"){
-      cat(as.character(annotationInfo$libraryId[1]), "complete match between annotation and metadata", "\n")
+      message(as.character(annotationInfo$libraryId[1]), " complete match between annotation and metadata")
 
       ## export libraries that pass and will be downloaded
       write.table(metadataInfo, file = metadata_info, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
 
     } else {
-      cat("WARNING : ", "\n")
-      cat("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison library is: ", compare_library, "\n")
-      cat("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison platform is: ", compare_machine, "\n")
-      cat("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison species is: ", compare_speciesID, "\n")
+      message("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison library is: ", compare_library)
+      message("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison platform is: ", compare_machine)
+      message("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison species is: ", compare_speciesID)
 
       ## export libraries that will not be used to download
       write.table(metadataInfo, file = metadata_notMatch, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
@@ -190,12 +193,11 @@ for(i in 1:nrow(targetBased_libraries)) {
     ## The HCA metadata we just compare the instrument model (since we not retrieve experiment_accession and tax_id just species_name)
     compare_machine <- identical(as.character(annotationInfo[['platform']]),as.character(metadataInfo[['instrument_model']]))
     if (compare_machine == "TRUE"){
-      cat(as.character(annotationInfo$libraryId[1]), "complete match between annotation and metadata", "\n")
+      message(as.character(annotationInfo$libraryId[1]), " complete match between annotation and metadata")
       ## export libraries that pass and will be downloaded
       write.table(metadataInfo, file = metadata_info, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
     } else {
-      cat("WARNING : ", "\n")
-      cat("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison platform is: ", compare_machine, "\n")
+      message("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison platform is: ", compare_machine)
       ## export libraries that will not be used to download
       write.table(metadataInfo, file = metadata_notMatch, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
     }

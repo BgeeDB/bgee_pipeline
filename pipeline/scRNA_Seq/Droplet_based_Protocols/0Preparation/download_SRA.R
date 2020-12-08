@@ -58,7 +58,7 @@ finalLibsToDown <- dplyr::filter(readFile, fastq_ftp != "NA" & fastq_ftp != "fas
 for (library in  unique(finalLibsToDown$experiment_accession)) {
 
   ## create output for each library
-  cat("treating the library: ", library, "\n")
+  message("treating the library: ", library)
   InfoFile <- paste0(output, "/", library)
   if (!dir.create(InfoFile)){
     dir.create(InfoFile)
@@ -66,7 +66,7 @@ for (library in  unique(finalLibsToDown$experiment_accession)) {
     print("File already exist.....")
   }
 
-  ## select the SRR referent to the library to downlaod
+  ## select the SRR referent to the library to download
   SRR_file <- finalLibsToDown$run_accession[finalLibsToDown$experiment_accession == library]
   setwd(InfoFile)
 

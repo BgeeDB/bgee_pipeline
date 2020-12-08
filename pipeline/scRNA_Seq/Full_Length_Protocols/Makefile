@@ -8,6 +8,7 @@ include $(PIPELINEROOT)Makefile.common
 ## Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations and store them in the source_files directory
 ## NOTE: this files should be already in the source_files (see whats happen with download)
 get_annot:
+	@$(WGET) $(ANNOTATION_GIT_URL)/Strains/StrainMapping.tsv                   && $(MV) StrainMapping.tsv                  $(STRAIN_MAPPING_FILE)
 	@$(WGET) $(ANNOTATION_GIT_URL)/scRNA_Seq/scRNASeqLibrary.tsv               && $(MV) scRNASeqLibrary.tsv                $(INPUT_DIR)/scRNASeqLibrary.tsv                2>/dev/null  || rm -f scRNASeqLibrary.tsv
 	@$(WGET) $(ANNOTATION_GIT_URL)/scRNA_Seq/scRNASeqExperiment.tsv            && $(MV) scRNASeqExperiment.tsv             $(INPUT_DIR)/scRNASeqExperiment.tsv             2>/dev/null  || rm -f scRNASeqExperiment.tsv
 	@touch $@
@@ -17,6 +18,10 @@ control_annotation: get_annot 0Preparation/pre_process_control_annotation.R
 	@echo --- Starting the control of the annotation  ---
 	$(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args scRNASeqLibrary="$(SC_RNASEQ_LIB_FILEPATH)" passScRNASeqLibrary="$(SC_RNASEQ_LIB_PASS_FILEPATH)" notPassScRNASeqLibrary="$(SC_RNASEQ_LIB_NOT_PASS_FILEPATH)" cellsThreshold="$(MIN_CELLS_PER_LIBRARY_FULL_LENGTH)" ' 0Preparation/pre_process_control_annotation.R 0Preparation/pre_process_control_annotation.Rout > $@.tmp 2>&1
 	@echo --- DONE ---
+	# Map strain names
+	#FIXME has to be done on other scRNAseq generated files? Or others come from that one?
+	@perl -e 'use lib "../.."; use Utils; Utils::map_strain_names("../$(SC_RNASEQ_NEW_LIB_FILEPATH)", "$(STRAIN_MAPPING_FILE)")' >../$(SC_RNASEQ_NEW_LIB_FILEPATH).ori
+	@$(MV) ../$(SC_RNASEQ_NEW_LIB_FILEPATH).ori ../$(SC_RNASEQ_NEW_LIB_FILEPATH)
 	@$(MV) $@.tmp $@
 
 ## Retrieve metadata (run rule with sbatch)
@@ -105,7 +110,6 @@ check_tools: clusterJURA
 	@$(CLUSTER_KALLISTO_CMD)   which kallisto         >> $@.tmp
 	@$(CLUSTER_FASTP_CMD)      which fastp            >> $@.tmp
 	@$(MV) $@.tmp $@
-
 
 ## Prepare single cell info file (run rule in front)
 #TODO: should be written in perl to retrieve species from bgee DB (speciesName -> speciesID is hardcoded in this script)

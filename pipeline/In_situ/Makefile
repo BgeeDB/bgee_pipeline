@@ -4,10 +4,14 @@ include $(PIPELINEROOT)Makefile.common
 
 all: $(VERIFICATIONFILE)
 
-#TODO Download  $(STAGECORRESP_FILE)  from curation git!
+get_annot:
+	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations
+	@$(WGET) $(ANNOTATION_GIT_URL)/Strains/StrainMapping.tsv  && $(MV) StrainMapping.tsv $(STRAIN_MAPPING_FILE)
+	@touch $@
 
 
-map_zfin:
+#TODO it looks there is no strain info
+map_zfin: get_annot
 	# Get data from ZebrafishMine
 	@python3 ZFIN/zebra_query.py  > $(SOURCE_FILES_DIR)$(DIR_NAME)ZebrafishMine.data 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
@@ -25,7 +29,8 @@ tsv_zfin: map_zfin $(SOURCE_FILES_DIR)$(DIR_NAME)ZebrafishMine.data
 	@$(MV) $@.tmp $@
 
 
-map_mgi:
+#TODO it looks there is no strain info
+map_mgi: get_annot
 	# Get MGI main RNA in situ data for wild-type mice with Ensembl gene mapped
 	@perl MGI/get_mousemine_data.pl > $(SOURCE_FILES_DIR)$(DIR_NAME)MouseMine.data 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
@@ -44,8 +49,9 @@ tsv_mgi: map_mgi $(SOURCE_FILES_DIR)$(DIR_NAME)MouseMine.data
 	@$(MV) $@.tmp $@
 
 
+#NOTE it looks there is no strain info
 #TODO Test XenMine (no in situ data 2016/10/03)
-tsv_xenbase:
+tsv_xenbase: get_annot
 	# Start in between stages socket
 	@$(INBETWEENSTAGES) 8364 $(INBETWEENSTAGESPORT) &
 	# Start anatomy id mapping socket
@@ -57,7 +63,8 @@ tsv_xenbase:
 	@$(MV) $@.tmp $@
 
 
-data_BDGP:
+#NOTE it looks there is no strain info, only 'wt' or 'transgenic line'
+data_BDGP: get_annot
 	# Download up-to-date BDGP in situ data
 	@$(WGET) 'http://insitu.fruitfly.org/insitu-mysql-dump/insitu.sql.gz'       -O $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz.tmp       && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz.tmp       $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz.tmp
 	@$(GUNZIP) $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz
@@ -93,7 +100,8 @@ tsv_BDGP: map_BDGP $(SOURCE_FILES_DIR)$(DIR_NAME)$(BDGP2FBBT_MAPPING_FILE) $(SOU
 	@$(MV) $@.out log.$@
 
 
-map_flybase:
+#TODO it looks there is no strain info
+map_flybase: get_annot
 	# Get FlyBase mapping
 	@export PERL5LIB=FlyBase:$$PERL5LIB ; perl FlyBase/gene_expression_dump.pl FB_public  2>warnings.$@  | uniq >$(SOURCE_FILES_DIR)$(DIR_NAME)Flybase.data.tmp
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
@@ -113,12 +121,16 @@ tsv_flybase: map_flybase $(SOURCE_FILES_DIR)$(DIR_NAME)Flybase.data
 	@$(MV) $@.tmp $@
 
 
-map_wormbase:
+map_wormbase: get_annot
 	# Get WormBase data
-	# THINK to update WormBase dump file to last version
-	@$(WGET) 'ftp://caltech.wormbase.org/pub/wormbase/expr_dump/${WORMBASE_EXPR_DUMP}' -O $(SOURCE_FILES_DIR)$(DIR_NAME)${WORMBASE_EXPR_DUMP}.tmp && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)${WORMBASE_EXPR_DUMP}.tmp $(SOURCE_FILES_DIR)$(DIR_NAME)${WORMBASE_EXPR_DUMP} 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)${WORMBASE_EXPR_DUMP}.tmp
+	#NOTE THINK to update WormBase dump file to last version
+	@$(WGET) 'ftp://caltech.wormbase.org/pub/wormbase/expr_dump/${WORMBASE_EXPR_DUMP}.20190721' -O $(SOURCE_FILES_DIR)$(DIR_NAME)${WORMBASE_EXPR_DUMP}.tmp && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)${WORMBASE_EXPR_DUMP}.tmp $(SOURCE_FILES_DIR)$(DIR_NAME)${WORMBASE_EXPR_DUMP}.ori 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)${WORMBASE_EXPR_DUMP}.tmp
+	# Map strain names
+	@perl -e 'use lib ".."; use Utils; Utils::map_strain_names("$(SOURCE_FILES_DIR)$(DIR_NAME)${WORMBASE_EXPR_DUMP}.ori", "$(STRAIN_MAPPING_FILE)")' >$(SOURCE_FILES_DIR)$(DIR_NAME)${WORMBASE_EXPR_DUMP}
+	@$(RM) $(SOURCE_FILES_DIR)$(DIR_NAME)${WORMBASE_EXPR_DUMP}.ori
 	@touch $@
 
+#FIXME it looks there are other worm species there! Should keep only C. elegans!
 tsv_wormbase: map_wormbase $(SOURCE_FILES_DIR)$(DIR_NAME)${WORMBASE_EXPR_DUMP}
 	# Start in between stages socket
 	@$(INBETWEENSTAGES) 6239 $(INBETWEENSTAGESPORT) &
@@ -188,7 +200,7 @@ $(VERIFICATIONFILE): tsv_zfin  tsv_mgi  tsv_xenbase  tsv_BDGP  tsv_flybase  tsv_
 	-@$(GIT) push
 
 clean:
-	-@$(RM) -R $(VERIFICATIONFILE) *_zfin  *_mgi  *_xenbase  *_BDGP  *_flybase  *.tmp  warnings.* *.out log.* check_conditions insert_expression
+	-@$(RM) -R $(VERIFICATIONFILE) get_annot *_zfin  *_mgi  *_xenbase  *_BDGP  *_flybase  *.tmp  warnings.* *.out log.* check_conditions insert_expression
 	-@$(GIT) rm $(VERIFICATIONFILE)
 	-@$(GIT) commit $(VERIFICATIONFILE) -m "Removing verification file for In Situ"
 	-@$(GIT) push

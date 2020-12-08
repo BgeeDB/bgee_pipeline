@@ -9,9 +9,9 @@ all: $(VERIFICATIONFILE)
 ################################ RETRIEVE BGEE ANNOTATIONS ################################
 
 #FIXME git submodule should allow the get_annot step to work while protecting the annotation git from unallowed users!
-#FIXME Fix strain names to be more consistent with Anne's strain file, with StrainMapping.tsv file!
 get_annot:
 	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations. Store them in the source_files directory
+	@$(WGET) $(ANNOTATION_GIT_URL)/Strains/StrainMapping.tsv                && $(MV) StrainMapping.tsv                $(STRAIN_MAPPING_FILE)
 	@$(WGET) $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqLibrary.tsv                && $(MV) RNASeqLibrary.tsv                $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibrary.tsv                2>/dev/null  || rm -f RNASeqLibrary.tsv
 	@$(WGET) $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqExperiment.tsv             && $(MV) RNASeqExperiment.tsv             $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqExperiment.tsv             2>/dev/null  || rm -f RNASeqExperiment.tsv
 	@$(WGET) $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqLibraryPlatformChecks.tsv  && $(MV) RNASeqLibraryPlatformChecks.tsv  $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibraryPlatformChecks.tsv  2>/dev/null  || rm -f RNASeqLibraryPlatformChecks.tsv
@@ -25,7 +25,10 @@ get_annot:
 check_annot: get_annot $(RNASEQ_EXPERIMENT_FILEPATH) $(RNASEQ_EXPERIMENT_FILEPATH_WORM) $(RNASEQ_LIB_FILEPATH) $(RNASEQ_LIBRARY_FILEPATH_WORM)
 	# Concatenate our annotation file with wormbase annotations (without header, and sorted by experiments and libraries)
 	@tail -n+2 $(RNASEQ_EXPERIMENT_FILEPATH_WORM) | sort -k1,1       | cat $(RNASEQ_EXPERIMENT_FILEPATH) - > $(RNASEQ_EXPERIMENT_FILEPATH_FULL)
-	@tail -n+2 $(RNASEQ_LIB_FILEPATH_WORM)        | sort -k2,2 -k1,1 | cat $(RNASEQ_LIB_FILEPATH)        - > $(RNASEQ_LIB_FILEPATH_FULL)
+	@tail -n+2 $(RNASEQ_LIB_FILEPATH_WORM)        | sort -k2,2 -k1,1 | cat $(RNASEQ_LIB_FILEPATH)        - > $(RNASEQ_LIB_FILEPATH_FULL).ori
+	# Map strain names
+	@perl -e 'use lib ".."; use Utils; Utils::map_strain_names("$(RNASEQ_LIB_FILEPATH_FULL).ori", "$(STRAIN_MAPPING_FILE)")' >$(RNASEQ_LIB_FILEPATH_FULL)
+	@$(RM) $(RNASEQ_LIB_FILEPATH_FULL).ori
 	# First check of annotations
 	perl 0Before/check_rna_seq_curation.pl -bgee=$(BGEECMD) -RNAseqExperiment=$(RNASEQ_EXPERIMENT_FILEPATH_FULL) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -allRes=$(RNASEQALLRES) before >$@.tmp 2>&1
 	@echo "Check file \"check_annot\" for the output of the script 0Before/check_rna_seq_curation.pl, which indicates potential errors to correct in the annotation files.\n"
@@ -38,10 +41,10 @@ create_rna_seq_sample_info: check_annot $(EXTRAMAPPING_FILEPATH)
 	@$(MV) $@.tmp $@
 	@echo "Check file \"create_rna_seq_sample_info\" for the output of the script 0Before/create_rna_seq_sample_info.pl, which indicates potential errors to correct in the annotation files.\n"
 
-commit_rna_seq_sample_info: create_rna_seq_sample_info $(RNASEQ_SAMPINFO_FILEPATH)
+commit_rna_seq_sample_info: create_rna_seq_sample_info $(RNASEQ_SAMPINFO_FILEPATH) $(STRAIN_MAPPING_FILE)
 	# Commit the library information file thta will be used for the rest of the pipeline
-	@$(GIT) add $(RNASEQ_SAMPINFO_FILEPATH)
-	@$(GIT) commit -m 'Update $(RNASEQ_SAMPINFO_FILEPATH) for $(DBNAME)' $(RNASEQ_SAMPINFO_FILEPATH) || true
+	@$(GIT) add $(RNASEQ_SAMPINFO_FILEPATH) $(STRAIN_MAPPING_FILE) $(RNASEQ_EXPERIMENT_FILEPATH_FULL) $(RNASEQ_LIB_FILEPATH_FULL)
+	@$(GIT) commit -m 'Update $(RNASEQ_SAMPINFO_FILEPATH) and $(STRAIN_MAPPING_FILE) for $(DBNAME)' $(RNASEQ_SAMPINFO_FILEPATH) || true
 	@$(GIT) push
 	@echo -e "\t$(RNASEQ_SAMPINFO_FILEPATH) is ready, you can go to regular cluster to download new SRA files with get_SRA.pl as *admin* user\n\tDo a 'git pull' before starting\n"
 	@$(MV) $@.tmp $@
@@ -56,7 +59,7 @@ send_files_to_cluster: commit_rna_seq_sample_info $(RNASEQ_LIB_FILEPATH_FULL) $(
 		 create_rna_seq_sample_info \
 		 $(RNASEQ_EXPERIMENT_FILEPATH_FULL) \
 		 $(RNASEQ_LIB_FILEPATH_FULL) \
-     $(CLUSTERLOGIN)@$(CLUSTERHOST):$(RNASEQ_CLUSTER_READONLY)GIT/pipeline/RNA_Seq/
+		 $(CLUSTERLOGIN)@$(CLUSTERHOST):$(RNASEQ_CLUSTER_READONLY)GIT/pipeline/RNA_Seq/
 	@echo -e "\tNext steps have to be done on cluster\n\tGo to '$(RNASEQ_CLUSTER_READONLY)GIT/', do a 'git pull' and copy missing files in '$(RNASEQ_CLUSTER_READONLY)GIT/pipeline/RNA_Seq/'\n\tThen restart with 'make cluster1' to start the pipeline run step\n"
 	@touch $@
 
@@ -110,17 +113,16 @@ check_sra: list_new_downloads
 
 #NOTE to be done on regular cluster, with network access
 get_GTF: clean_cluster_folders create_rna_seq_sample_info
-	# Get GTF files from Ensembl FTP
-	@perl 0Before/get_GTF_files.pl  -RNAseqSample=$(RNASEQ_SAMPINFO_FILEPATH) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_CLUSTER_GTF)  >$@.tmp 2>&1
+	# Get GTF files from Ensembl and NCBI FTP
+	@perl 0Before/get_GTF_files.pl  -RNAseqSample=$(RNASEQ_SAMPINFO_FILEPATH) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_DOWNLOAD_GTF)  >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
-#TODO implement use of new "database" field in rna_seq_sample_info.txt (instead of trying both Ensembl and Ensembl Metazoa URLs)
 
 get_genome: get_GTF
-	# Download genome from Ensembl databases
-	@perl 0Before/get_genome_files.pl  -GTF_dir=$(RNASEQ_CLUSTER_GTF) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_CLUSTER_GTF) >$@.tmp 2>&1
+	# Download genomes from Ensembl and NCBI databases
+	@perl 0Before/get_genome_files.pl  -GTF_dir=$(RNASEQ_DOWNLOAD_GTF) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_DOWNLOAD_GTF) >$@.tmp 2>&1
+	@echo "You can transfer GTF and genome files from UNIL cluster [$(RNASEQ_DOWNLOAD_GTF)] to sensitive cluster [$(RNASEQ_CLUSTER_GTF)]"
 	@$(MV) $@.tmp $@
-#TODO implement use of new "database" field in rna_seq_sample_info.txt (instead of trying both Ensembl and Ensembl Metazoa URLs)
-#TODO Add a step to transfer fasta and GTF files to Jura cluster
+
 
 ################################ PREPARE CLUSTER ENVIRONMENT ################################
 
@@ -335,7 +337,6 @@ generate_intergenic_sequences: sum_by_species
 
 ################################ GENERATE PRESENT/ABSENT CALLS WITH BgeeCall ################################
 
-
 indexes_bgeecall: generate_intergenic_sequences
 	# generate BgeeCall input file from the rna_seq_sample_info.txt file
 	@perl 1Run/sample_info_to_bgeecall.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >>$@.tmp 2>&1
@@ -360,24 +361,7 @@ check_presence_absence: presence_absence_bgeecall
 # /bin/cp used because cp is an alias to cp -i
 # Also copy presence_absence_all_samples.txt, presence_absence_all_samples.RDa and presence_absence_boxplots.pdf
 
-
-adj_calls: presence_absence 1Run/rna_seq_calls_adjustment.R
-	@echo --- Start adjustment of the calls per library ---
-	@sed -i 's@\(BASE *= \).*@\1"$(RNASEQ_CLUSTER_READONLY)";@'                                               1Run/rna_seq_calls_adjustment.R
-	@sed -i 's@--output=.*@--output=${PWD}/calls_adjustment.out@'                                             1Run/rna_seq_calls_adjustment.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/calls_adjustment.err@'                                               1Run/rna_seq_calls_adjustment.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                              1Run/rna_seq_calls_adjustment.sbatch
-	@sed -i 's@export rna_seq_sample_info=.*@export rna_seq_sample_info=${RNASEQ_SAMPINFO_FILEPATH}@'         1Run/rna_seq_calls_adjustment.sbatch
-	@sed -i 's@export RNASeq_folder_calls=.*@export RNASeq_folder_calls=$(RNASEQ_CLUSTER_PRESENCE_RES)@'      1Run/rna_seq_calls_adjustment.sbatch
-	@sed -i 's@export cutoff=.*@export cutoff=$(CUTOFF_QVALUE)@'                                              1Run/rna_seq_calls_adjustment.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(RNASEQ_CLUSTER_PRESENCE_RES)@'                                    1Run/rna_seq_calls_adjustment.sbatch
-	@sbatch 1Run/rna_seq_calls_adjustment.sbatch
-	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
-	@echo --- DONE ---
-	@touch $@
-
-
-save_and_send_results_back: finalize_pipeline adj_calls export_length
+save_and_send_results_back: finalize_pipeline check_presence_absence export_length
 	# Touch all files so that they are not removed from $(RNASEQ_CLUSTER_SCRATCH)
 	@find $(RNASEQ_CLUSTER_SCRATCH) -exec touch {} \; 2>warnings.$@
 	# Back-up all data

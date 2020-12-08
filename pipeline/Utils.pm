@@ -85,6 +85,69 @@ sub get_strain_mapping {
     return $strain_mapping;
 }
 
+# Map strain names with consensus ones
+sub map_strain_names {
+    my ($expression_annotation_file, $strain_file) = @_;
+
+    # Get mapping
+    my $strain_mapping = get_strain_mapping($strain_file);
+
+    # Map on annotations
+    open(my $ANNOT, '<', "$expression_annotation_file")  or die "Cannot open $expression_annotation_file: $!\n";
+    while ( defined (my $line = <$ANNOT>) ){
+        my @fields = map { s/"//g; $_ } split(/\t/, $line);
+        # Case RNASeqLibrary_full.tsv: "strain"    taxid
+        if ( $expression_annotation_file =~ /RNASeqLibrary_full\.tsv/ ){
+            if ( exists $strain_mapping->{ $fields[21] }->{ $fields[20] } ){
+                my $source = quotemeta($fields[20]);
+                my $target = $strain_mapping->{ $fields[21] }->{ $fields[20] };
+                $line =~ s{"$source"\t$fields[21]\t}{"$target"\t$fields[21]\t};
+            }
+            print $line;
+        }
+        # Case scRNASeqLibrary.tsv (NOT_PASS_scRNASeqLibrary.tsv / NEW_scRNASeqLibrary.tsv): strain    speciesId
+        elsif ( $expression_annotation_file =~ /_scRNASeqLibrary\.tsv/ ){
+            if ( exists $strain_mapping->{ $fields[22] }->{ $fields[21] } ){
+                my $source = quotemeta($fields[21]);
+                my $target = $strain_mapping->{ $fields[22] }->{ $fields[21] };
+                $line =~ s{\t$source\t$fields[22]\t}{\t$target\t$fields[22]\t};
+            }
+            print $line;
+        }
+        # Case scrna_seq_sample_info.txt: speciesId ... strain
+        elsif ( $expression_annotation_file =~ /scrna_seq_sample_info\.txt/ ){
+            if ( exists $strain_mapping->{ $fields[4] }->{ $fields[14] } ){
+                my $source = quotemeta($fields[14]);
+                my $target = $strain_mapping->{ $fields[4] }->{ $fields[14] };
+                $line =~ s{\t$source\t}{\t$target\t};
+            }
+            print $line;
+        }
+        # Case affymetrixChip_full.tsv: "strain"    speciesId
+        elsif ( $expression_annotation_file =~ /affymetrixChip_full\.tsv/ ){
+            if ( exists $strain_mapping->{ $fields[23] }->{ $fields[22] } ){
+                my $source = quotemeta($fields[22]);
+                my $target = $strain_mapping->{ $fields[23] }->{ $fields[22] };
+                $line =~ s{"$source"\t$fields[23]\t}{"$target"\t$fields[23]\t};
+            }
+            print $line;
+        }
+        # Case in situ expr_pattern.ace: Strain    "..."
+        elsif ( $expression_annotation_file =~ /expr_pattern\.ace/ ){
+            #NOTE assume only C. elegans strains
+            if ( $fields[0] eq 'Strain' && exists $strain_mapping->{ 6239 }->{ $fields[1] } ){
+                my $source = quotemeta($fields[1]);
+                my $target = $strain_mapping->{ 6239 }->{ $fields[1] };
+                $line =~ s{^Strain\t"$source"}{Strain\t"$target"};
+            }
+            print $line;
+        }
+    }
+    close $ANNOT;
+
+    return;
+}
+
 
 # A sub to retrieve condition parameter combinations with no rank yet computed
 # for the requested data type.

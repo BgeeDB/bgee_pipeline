@@ -44,6 +44,9 @@ if ( !$test_options || $species eq '' || $bgee_connector eq '' || $ensembl_conne
 my $reg = Utils::connect_ensembl_registry($ensembl_connector, 1);
 # Bgee db connection
 my $dbh = Utils::connect_bgee_db($bgee_connector);
+#https://www.uniprot.org/uniprot/?query=ENSDARG00000024771&format=xml&force=true&columns=id,entry name,reviewed,protein names,genes,organism,database(CCDS),database(EMBL),database(RefSeq),database(PDB),database(Ensembl),database(EnsemblMetazoa),database(GeneID),go
+#https://www.uniprot.org/uniprot/?query=ENSDARG00000024771&format=xml&force=true
+# Cases with one ensembl -> two ensembl xrefs: ENSG00000139618
 
 
 # Need to map to another genomeSpeciesId?
