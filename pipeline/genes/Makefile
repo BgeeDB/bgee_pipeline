@@ -19,7 +19,7 @@ go.obsolete: $(OUTPUT_DIR)go
 
 # Deal with different Ensembl API versions for Ensembl and Ensembl Metazoa/Genomes
 # Keep default for Ensembl
-genes: $(SPECIESFILEPATH) $(OUTPUT_DIR)go go.obsolete
+genes: $(SPECIESFILEPATH) go.obsolete
 	@$(MYSQL) -e "SELECT CONCAT(s.speciesId, '__', s.genomeSpeciesId, '__', s.genus, '_', REPLACE(s.species, ' ', '_'), '__', d.dataSourceName) FROM species s, dataSource d WHERE s.dataSourceId=d.dataSourceId ORDER BY s.speciesId" | grep -v 'speciesId' >$@.tmp
 	@if [[ -s $@.tmp ]]; then echo -n; else echo "NO species in file"; exit 2; fi
 	# Insert gene information for Ensembl species (may be long: between 1 and 10 hours per species)
