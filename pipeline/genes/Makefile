@@ -22,25 +22,25 @@ go.obsolete: $(OUTPUT_DIR)go
 genes: $(SPECIESFILEPATH) $(OUTPUT_DIR)go go.obsolete
 	@$(MYSQL) -e "SELECT CONCAT(s.speciesId, '__', s.genomeSpeciesId, '__', s.genus, '_', REPLACE(s.species, ' ', '_'), '__', d.dataSourceName) FROM species s, dataSource d WHERE s.dataSourceId=d.dataSourceId ORDER BY s.speciesId" | grep -v 'speciesId' >$@.tmp
 	@if [[ -s $@.tmp ]]; then echo -n; else echo "NO species in file"; exit 2; fi
-	# Insert gene information for all species (may be long: between 1 and 10 hours per species)
-	@for sp in `cat $@.tmp`; do \
+	# Insert gene information for Ensembl species (may be long: between 1 and 10 hours per species)
+	#FIXME add a way to switch between Ensembl and Ensembl Metazoa
+	@for sp in `cat $@.tmp | grep -i __Ensembl`; do \
 		export PERL5LIBORI=$$PERL5LIB; \
 		echo "species: $$sp"; \
 		if [[ `echo $$sp | grep 'Ensembl$$'` ]]; then \
 			export PERL5LIB=`echo $$PERL5LIB | perl -ne 'print join ":", map { s/\/ensembl\//\/ensembl_$(ENS_API_RELEASE)\//; $$_ } grep { /\w/ } split(/:/, $$_)'`; \
 		elif [[ `echo $$sp | grep 'EnsemblMetazoa$$'` ]]; then \
 			export PERL5LIB=`echo $$PERL5LIB | perl -ne 'print join ":", map { s/\/ensembl\//\/ensembl_$(ENSMETAZOA_API_RELEASE)\//; $$_ } grep { /\w/ } split(/:/, $$_)'`; \
-		else \
-			#TODO, non-Ensembl source: RefSeq/GenBank
 		fi; \
 		perl insert_ensembl_genes.pl -species=$$sp -bgee=$(BGEECMD) -ensembl=$(ENSCMD) -obsGO=go.obsolete >> $@.tmp 2>>$@.err; \
 		export PERL5LIB=$$PERL5LIBORI; \
 	done
+	# Insert gene information for non-Ensembl species
+	@for sp in `cat $@.tmp | grep -vi __Ensembl`; do \
+		perl insert_nonensembl_genes.pl -species=$$sp -bgee=$(BGEECMD) -bgeeSpecies=$(SPECIESFILEPATH) -obsGO=go.obsolete >> $@.tmp 2>>$@.err; \
+	done
 	@if [[ -s $@.err ]]; then echo -n; else $(RM) $@.err; fi
 	@$(MV) $@.tmp $@
-# https://www.uniprot.org/uniprot/?query=ENSDARG00000024771&format=xml&force=true&columns=id,entry name,reviewed,protein names,genes,organism,database(CCDS),database(EMBL),database(RefSeq),database(PDB),database(Ensembl),database(EnsemblMetazoa),database(GeneID),go
-# https://www.uniprot.org/uniprot/?query=ENSDARG00000024771&format=xml&force=true
-# Cases with one ensembl -> several ensembl xrefs: ENSG00000139618
 
 sameIdGeneCount: genes
 	@$(MYSQL) -e "CREATE TEMPORARY TABLE geneCount (PRIMARY KEY(geneId)) SELECT geneId, COUNT(*) AS geneCount FROM gene GROUP BY geneId; UPDATE gene INNER JOIN geneCount ON gene.geneId = geneCount.geneId SET gene.geneMappedToGeneIdCount = geneCount.geneCount;" > $@.tmp 2> $@.warning
