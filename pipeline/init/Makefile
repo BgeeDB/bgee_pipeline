@@ -109,53 +109,54 @@ $(PIPELINEROOT)$(BGEEPIPELINEJAR):
 	@cd $(PIPELINEROOT)$(BGEEAPPDIR); mvn clean install --projects bgee-dao-api,bgee-dao-sql,bgee-pipeline; $(CP) bgee-pipeline/target/$(BGEEPIPELINEJARNAME) ../pipeline/pipeline/$(BGEEPIPELINEJAR)
 
 
-# Install a converter to convert TSV files
-check_converter:
-# Check if perl xls converter is there
-	@perl -MSpreadsheet::Read -e1 >$@.tmp
-	@which $(CONVERTER) >> $@.tmp
-	@$(MV) $@.tmp $@
+## Install a converter to convert TSV files
+#check_converter:
+## Check if perl xls converter is there
+#	@perl -MSpreadsheet::Read -e1 >$@.tmp
+#	@which $(CONVERTER) >> $@.tmp
+#	@$(MV) $@.tmp $@
+#
+#
+## Export Affymetrix annotation files
+#convert_annotAffy: check_converter $(PIPELINEROOT)$(AFFY_CURATION_FILEPATH)
+#	# Get xls sheetnames
+#	@$(CONVERTER) -i $(PIPELINEROOT)$(AFFY_CURATION_FILEPATH) >$@.tmp 2>&1
+#	@echo >>$@.tmp
+#	# Convert affymetrixChip       in TSV
+#	@$(CONVERTER) $(CONVERTEROPT) `grep ' affymetrixChip' $@.tmp       | sed -e 's/^.* - //; s/: \[.*$$//'` $(PIPELINEROOT)$(AFFY_CURATION_FILEPATH) > $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH)
+#	@$(EXTRACLEANING) $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH)
+#	@head -5 $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH)              >  $@.temp
+#	@echo >>$@.temp
+#	# Convert microarrayExperiment in TSV
+#	@$(CONVERTER) $(CONVERTEROPT) `grep ' microarrayExperiment' $@.tmp | sed -e 's/^.* - //; s/: \[.*$$//'` $(PIPELINEROOT)$(AFFY_CURATION_FILEPATH) > $(PIPELINEROOT)$(MICROARRAY_EXPERIMENT_FILEPATH)
+#	@$(EXTRACLEANING) $(PIPELINEROOT)$(MICROARRAY_EXPERIMENT_FILEPATH)
+#	@head -5 $(PIPELINEROOT)$(MICROARRAY_EXPERIMENT_FILEPATH)  >> $@.temp
+#	@echo >>$@.temp
+#	# Convert chipType             in TSV
+#	@$(CONVERTER) $(CONVERTEROPT) `grep ' chipType' $@.tmp             | sed -e 's/^.* - //; s/: \[.*$$//'` $(PIPELINEROOT)$(AFFY_CURATION_FILEPATH) > $(PIPELINEROOT)$(AFFY_CHIPTYPE_FILEPATH)
+#	@$(EXTRACLEANING) $(PIPELINEROOT)$(AFFY_CHIPTYPE_FILEPATH)
+#	@head -5 $(PIPELINEROOT)$(AFFY_CHIPTYPE_FILEPATH)          >> $@.temp
+#	@$(CAT) $@.tmp $@.temp > $@
+#	@$(RM) $@.tmp $@.temp
+#
+## Export RNA_seq annotation files
+#convert_annotRNASeq: check_converter $(PIPELINEROOT)$(RNASEQ_CURATION_FILEPATH)
+#	# Get xls sheetnames
+#	@$(CONVERTER) -i $(PIPELINEROOT)$(RNASEQ_CURATION_FILEPATH) >$@.tmp 2>&1
+#	@echo >>$@.tmp
+#	# Convert RNAseqExperiment in TSV
+#	@$(CONVERTER) $(CONVERTEROPT) `grep ' RNAseqExperiment' $@.tmp | sed -e 's/^.* - //; s/: \[.*$$//'` $(PIPELINEROOT)$(RNASEQ_CURATION_FILEPATH) > $(PIPELINEROOT)$(RNASEQ_EXPERIMENT_FILEPATH)
+#	@$(EXTRACLEANING) $(PIPELINEROOT)$(RNASEQ_EXPERIMENT_FILEPATH)
+#	@head -5 $(PIPELINEROOT)$(RNASEQ_EXPERIMENT_FILEPATH) >  $@.temp
+#	@echo >>$@.temp
+#	# Convert RNAseqLibrary    in TSV
+#	@$(CONVERTER) $(CONVERTEROPT) `grep ' RNAseqLibrary'    $@.tmp | sed -e 's/^.* - //; s/: \[.*$$//'` $(PIPELINEROOT)$(RNASEQ_CURATION_FILEPATH) > $(PIPELINEROOT)$(RNASEQ_LIB_FILEPATH)
+#	@$(EXTRACLEANING) $(PIPELINEROOT)$(RNASEQ_LIB_FILEPATH)
+#	@head -5 $(PIPELINEROOT)$(RNASEQ_LIB_FILEPATH)       >> $@.temp
+#	@$(CAT) $@.tmp $@.temp > $@
+#	@$(RM) $@.tmp $@.temp
 
-
-# Export Affymetrix annotation files
-convert_annotAffy: check_converter $(PIPELINEROOT)$(AFFY_CURATION_FILEPATH)
-	# Get xls sheetnames
-	@$(CONVERTER) -i $(PIPELINEROOT)$(AFFY_CURATION_FILEPATH) >$@.tmp 2>&1
-	@echo >>$@.tmp
-	# Convert affymetrixChip       in TSV
-	@$(CONVERTER) $(CONVERTEROPT) `grep ' affymetrixChip' $@.tmp       | sed -e 's/^.* - //; s/: \[.*$$//'` $(PIPELINEROOT)$(AFFY_CURATION_FILEPATH) > $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH)
-	@$(EXTRACLEANING) $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH)
-	@head -5 $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH)              >  $@.temp
-	@echo >>$@.temp
-	# Convert microarrayExperiment in TSV
-	@$(CONVERTER) $(CONVERTEROPT) `grep ' microarrayExperiment' $@.tmp | sed -e 's/^.* - //; s/: \[.*$$//'` $(PIPELINEROOT)$(AFFY_CURATION_FILEPATH) > $(PIPELINEROOT)$(MICROARRAY_EXPERIMENT_FILEPATH)
-	@$(EXTRACLEANING) $(PIPELINEROOT)$(MICROARRAY_EXPERIMENT_FILEPATH)
-	@head -5 $(PIPELINEROOT)$(MICROARRAY_EXPERIMENT_FILEPATH)  >> $@.temp
-	@echo >>$@.temp
-	# Convert chipType             in TSV
-	@$(CONVERTER) $(CONVERTEROPT) `grep ' chipType' $@.tmp             | sed -e 's/^.* - //; s/: \[.*$$//'` $(PIPELINEROOT)$(AFFY_CURATION_FILEPATH) > $(PIPELINEROOT)$(AFFY_CHIPTYPE_FILEPATH)
-	@$(EXTRACLEANING) $(PIPELINEROOT)$(AFFY_CHIPTYPE_FILEPATH)
-	@head -5 $(PIPELINEROOT)$(AFFY_CHIPTYPE_FILEPATH)          >> $@.temp
-	@$(CAT) $@.tmp $@.temp > $@
-	@$(RM) $@.tmp $@.temp
-
-# Export RNA_seq annotation files
-convert_annotRNASeq: check_converter $(PIPELINEROOT)$(RNASEQ_CURATION_FILEPATH)
-	# Get xls sheetnames
-	@$(CONVERTER) -i $(PIPELINEROOT)$(RNASEQ_CURATION_FILEPATH) >$@.tmp 2>&1
-	@echo >>$@.tmp
-	# Convert RNAseqExperiment in TSV
-	@$(CONVERTER) $(CONVERTEROPT) `grep ' RNAseqExperiment' $@.tmp | sed -e 's/^.* - //; s/: \[.*$$//'` $(PIPELINEROOT)$(RNASEQ_CURATION_FILEPATH) > $(PIPELINEROOT)$(RNASEQ_EXPERIMENT_FILEPATH)
-	@$(EXTRACLEANING) $(PIPELINEROOT)$(RNASEQ_EXPERIMENT_FILEPATH)
-	@head -5 $(PIPELINEROOT)$(RNASEQ_EXPERIMENT_FILEPATH) >  $@.temp
-	@echo >>$@.temp
-	# Convert RNAseqLibrary    in TSV
-	@$(CONVERTER) $(CONVERTEROPT) `grep ' RNAseqLibrary'    $@.tmp | sed -e 's/^.* - //; s/: \[.*$$//'` $(PIPELINEROOT)$(RNASEQ_CURATION_FILEPATH) > $(PIPELINEROOT)$(RNASEQ_LIB_FILEPATH)
-	@$(EXTRACLEANING) $(PIPELINEROOT)$(RNASEQ_LIB_FILEPATH)
-	@head -5 $(PIPELINEROOT)$(RNASEQ_LIB_FILEPATH)       >> $@.temp
-	@$(CAT) $@.tmp $@.temp > $@
-	@$(RM) $@.tmp $@.temp
-
+#FIXME used?
 # Export homology annotation file
 $(PIPELINEROOT)$(SIMILARITYFILEPATH): $(CONVERTER) $(PIPELINEROOT)$(SIMILARITY_CURATION_FILEPATH)
 	@$(CONVERTER) $(CONVERTEROPT) 01 $(PIPELINEROOT)$(SIMILARITY_CURATION_FILEPATH) > $@
