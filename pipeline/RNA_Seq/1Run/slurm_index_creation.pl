@@ -15,9 +15,11 @@ use Getopt::Long;
 use Time::localtime;
 
 # Define arguments & their default value
-my ($transcriptome_folder, $output_log_folder, $short_index_length, $cluster_kallisto_cmd, $cluster_tophat_cmd) = ('', '', '', '', '', '', '');
+my ($transcriptome_folder, $output_log_folder, $account, $partition, $short_index_length, $cluster_kallisto_cmd, $cluster_tophat_cmd) = ('', '', '', '', '', '', '', '', '');
 my %opts = ('transcriptome_folder=s' => \$transcriptome_folder, # same as GTF folder
 			'output_log_folder=s'    => \$output_log_folder,
+			'account=s'              => \$account,
+			'partition=s'            => \$partition,
 			'short_index_length=s'   => \$short_index_length,
             'cluster_kallisto_cmd=s' => \$cluster_kallisto_cmd,
             'cluster_tophat_cmd=s'   => \$cluster_tophat_cmd
@@ -30,9 +32,6 @@ my $test_options = Getopt::Long::GetOptions(%opts);
 my $nbr_processors = 1;
 # RAM needed: 10GB should be enough
 my $memory_usage   = 90;      # in GB
-my $user_email     = 'julien.wollbrett@unil.ch'; # for email notification
-my $account        = 'mrobinso_bgee';
-my $queue          = 'axiom';
 my $time_limit	   = '12:00:00';
 
 # retrieve path to all transcriptome
@@ -132,7 +131,7 @@ while (my $file = readdir(DIR)) {
 
 		# generate sbatch file
 		open (my $OUT, '>', "$sbatch_file_path")  or die "Cannot write [$sbatch_file_path]\n";
-		print {$OUT} sbatch_header($queue, $account, $nbr_processors, $memory_usage, $output_file_path, $error_file_path, $file, $time_limit);
+		print {$OUT} sbatch_header($partition, $account, $nbr_processors, $memory_usage, $output_file_path, $error_file_path, $file, $time_limit);
 		print {$OUT} $sbatch_commands;
 		close $OUT;
 
@@ -148,14 +147,11 @@ while (my $file = readdir(DIR)) {
 
 # Add main sbatch command and options
 sub sbatch_header {
-    my ($queue, $account, $nbr_processors, $memory_usage, $output_file, $error_file, $job_name, $time_limit) = @_;
-    # Potential other options:
-    # #SBATCH --mail-user=$user_email
-    # #SBATCH --mail-type=ALL
+    my ($partition, $account, $nbr_processors, $memory_usage, $output_file, $error_file, $job_name, $time_limit) = @_;
 
     my $template="#!/bin/bash
 
-#SBATCH --partition=$queue
+#SBATCH --partition=$partition
 #SBATCH --account=$account
 
 #SBATCH --nodes=1
