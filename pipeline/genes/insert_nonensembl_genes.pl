@@ -105,14 +105,14 @@ my $annotations;
 while(<$GTF>){
     next  if ( !/gene_biotype "protein_coding"/ );
 
-    #NC_030727.1	Gnomon	gene	141537768	141585606	.	+	.	gene_id "LOC108709019"; db_xref "GeneID:108709019"; gbkey "Gene"; gene "LOC108709019"; gene_biotype "protein_coding"; 
-    #NC_030735.1	BestRefSeq%2CGnomon	gene	66815561	66907873	.	+	.	gene_id "bcl2.S"; db_xref "GeneID:100271914"; db_xref "Xenbase:XB-GENE-6251434"; description "B-cell CLL/lymphoma 2 S homeolog"; gbkey "Gene"; gene "bcl2.S"; gene_biotype "protein_coding"; gene_synonym "bcl-2"; gene_synonym "bcl2"; gene_synonym "xBcl-2"; gene_synonym "xbcl2"; 
+    #NC_030727.1	Gnomon	gene	141537768	141585606	.	+	.	gene_id "LOC108709019"; db_xref "GeneID:108709019"; gbkey "Gene"; gene "LOC108709019"; gene_biotype "protein_coding";
+    #NC_030735.1	BestRefSeq%2CGnomon	gene	66815561	66907873	.	+	.	gene_id "bcl2.S"; db_xref "GeneID:100271914"; db_xref "Xenbase:XB-GENE-6251434"; description "B-cell CLL/lymphoma 2 S homeolog"; gbkey "Gene"; gene "bcl2.S"; gene_biotype "protein_coding"; gene_synonym "bcl-2"; gene_synonym "bcl2"; gene_synonym "xBcl-2"; gene_synonym "xbcl2";
     my @gene_info = split(/\t/, $_);
     my $GeneID;
     my %info;
     # Current list of possible annotations:
     # db_xref, description, gbkey, gene, gene_biotype, gene_id, gene_synonym, partial, transcript_id
-    # You may have several  db_xref  and  gene_synonym 
+    # You may have several  db_xref  and  gene_synonym
     for my $annot ( grep { /\w/ } split(/" *; +/, $gene_info[8]) ){
         if ( $annot =~ /^(\w+)\s+"([^"]+)$/ ){
             my $key   = $1;
@@ -244,31 +244,84 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
     if ( defined $content ){
         my $hash = xml2hash $content;
         #NOTE not easy to test if exists an array in hash ref. It works with eval!
+        #NOTE may return several entries, keep the first one (the best one?)
         my $root = eval { exists $hash->{'uniprot'}->{'entry'}->[0] } ? $hash->{'uniprot'}->{'entry'}->[0] : $hash->{'uniprot'}->{'entry'};
 
+        my @synonyms;
+        @synonyms = @{ $annotations->{$gene}->{'gene_synonym'} }  if ( exists $annotations->{$gene}->{'gene_synonym'} );
+        my @xrefs;
+        @xrefs    = @{ $annotations->{$gene}->{'db_xref'} }       if ( exists $annotations->{$gene}->{'db_xref'} );
+        my @aliases;
+        my @gos;
         # Check the UniProt entry contains the xref used to query it, and is for the right species
         if ( grep { $_->{'-type'} eq 'GeneID' && $_->{'-id'} eq "$annotations->{$gene}->{'GeneID'}" } @{ $root->{'dbReference'} } ){
             if ( $root->{'organism'}->{'dbReference'}->{'-id'} == $speciesBgee ){
-                use Data::Dumper;
-                print Dumper $root;
-            }                
+                my $dataset   = 'Uniprot/'.uc($root->{'-dataset'});
+                my $uniprotID = $root->{'name'};
+                my @uniprotAC = eval { exists $root->{'accession'}->[0] } ? @{ $root->{'accession'} } : ($root->{'accession'});
+
+                #Overwrite description if any
+                my @prot_desc_type = sort keys %{ $root->{'protein'} };
+                if ( scalar @prot_desc_type > 1 ){
+                    $description = $root->{'protein'}->{'recommendedName'}->{'fullName'} || $root->{'protein'}->{ $prot_desc_type[0] }->{'fullName'};
+                }
+                elsif ( scalar @prot_desc_type == 1 ) {
+                    $description = $root->{'protein'}->{ $prot_desc_type[0] }->{'fullName'};
+                }
+
+                # Gene name and synonyms
+                my @gene_names = eval { exists $root->{'gene'}->{'name'}->[0] } ? @{ $root->{'gene'}->{'name'} } : ($root->{'gene'}->{'name'});
+                for my $gene_name ( sort @gene_names ){
+                    if ( $gene_name->{'-type'} eq 'primary' ){
+                        $external_name = $gene_name->{'#text'};
+                    }
+                    else {
+                        push @synonyms, $gene_name->{'#text'};
+                    }
+                }
+
+                # Xrefs
+                my @used_xref_db = ('EMBL', 'CCDS', 'RefSeq', 'PDB', 'PIR', 'Xenbase', 'ZFIN');
+                for my $dbref ( sort @{ $root->{'dbReference'} }){
+                    if ( any { $dbref->{'-type'} eq $_ } @used_xref_db ){
+                        push @xrefs, $dbref->{'-type'}.':'.$dbref->{'-id'};
+                        for my $property ( sort @{ $dbref->{'property'} } ){
+                            if ( $property->{'-type'} =~ /sequence ID$/ ){
+                                push @xrefs, $dbref->{'-type'}.':'.$property->{'-value'};
+                            }
+                        }
+                    }
+                    elsif ( $dbref->{'-type'} eq 'Ensembl' ){
+                        push @xrefs, $dbref->{'-type'}.':'.$dbref->{'-id'};
+                        for my $property ( sort @{ $dbref->{'property'} } ){
+                            push @xrefs, $dbref->{'-type'}.':'.$property->{'-value'};
+                        }
+                    }
+                    elsif ( $dbref->{'-type'} eq 'GO' ){
+                        for my $property ( sort @{ $dbref->{'property'} } ){
+                            if ( $property->{'-type'} eq 'evidence' ){
+                                push @gos, $dbref->{'-id'}.'___'.$property->{'-value'};
+                                last;
+                            }
+                        }
+                    }
+                }
+            }
         }
         exit;
     }
 }
 
 __END__
-    my $id2insert = $stable_id;
-
     ## Insert gene info
     my $bgeeGeneId;
     if ( ! $debug ){
-        $geneDB->execute($id2insert, $external_name, $description, $biotype, $speciesBgee)  or die $geneDB->errstr;
+        $geneDB->execute($stable_id, $external_name, $description, $biotype, $speciesBgee)  or die $geneDB->errstr;
         $bgeeGeneId = $dbh->{mysql_insertid};
         die "Cannot get bgeeGeneId [$bgeeGeneId]\n"  if ( $bgeeGeneId !~ /^\d+$/ );
     }
     else {
-        print "\n[$id2insert] [$external_name] [$description]   [$biotype] [$speciesBgee]\n";
+        print "\n[$stable_id] [$external_name] [$description]   [$biotype] [$speciesBgee]\n";
     }
 
 
@@ -336,7 +389,7 @@ __END__
             $xrefDB->execute($bgeeGeneId, $pid, $xrefs{$xref}, $InsertedDataSources{lc $dbname})  or die $xrefDB->errstr;
         }
         else {
-            print "xref: [$id2insert] [$pid] [$xrefs{$xref}] [$dbname]\n";
+            print "xref: [$stable_id] [$pid] [$xrefs{$xref}] [$dbname]\n";
         }
     }
 
@@ -355,10 +408,10 @@ __END__
     GO:
     for my $go ( sort keys %GO ){
         if ( ! $debug ){
-            $goDB->execute($bgeeGeneId, uc $go, $GO{$go})  or do {warn "[$id2insert] [$go] [$GO{$go}]\n"; die $goDB->errstr};
+            $goDB->execute($bgeeGeneId, uc $go, $GO{$go})  or do {warn "[$stable_id] [$go] [$GO{$go}]\n"; die $goDB->errstr};
         }
         else {
-            print "go:   [$id2insert] [$go] [$GO{$go}]\n";
+            print "go:   [$stable_id] [$go] [$GO{$go}]\n";
         }
     }
 
@@ -367,10 +420,10 @@ __END__
     # gene_id + version
     my @all;
     push @all, $display_id                      if ( $display_id );
-    push @all, $id2insert                       if ( $id2insert );
+    push @all, $stable_id                       if ( $stable_id );
     push @all, $external_name                   if ( $external_name );
     #NOTE version() does not seem to return something for species with non Ensembl gene ids such as C. elegans WBGene00000001
-    push @all, $id2insert.'.'.$gene->version()  if ( $id2insert && $gene->version() );
+    push @all, $stable_id.'.'.$gene->version()  if ( $stable_id && $gene->version() );
     # transcript ids
     push @all, map  { if ( $_->version() ){ ($_->stable_id(), $_->stable_id().'.'.$_->version()) } else { $_->stable_id() } }
                grep { defined $_->stable_id() }
@@ -418,7 +471,7 @@ __END__
             $geneToTermDB->execute($bgeeGeneId, $term)  or die $geneToTermDB->errstr;
         }
         else {
-            print "term: [$id2insert] [$term]\n";
+            print "term: [$gene] [$term]\n";
         }
     }
 }
