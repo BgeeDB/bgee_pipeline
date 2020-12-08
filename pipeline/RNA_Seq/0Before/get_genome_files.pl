@@ -25,7 +25,7 @@ my %opts = ('GTF_dir=s'             => \$GTF_dir,
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $GTF_dir eq '' || $ensRelease == 0 || $ensMetazoaRelease == 0 || $outDir eq '' ){
     print "\n\tInvalid or missing argument:
-\te.g. $0  -GTF_dir=\$(RNASEQGTFDATAPATH) -ensRelease=\$(ENSRELEASE) -ensMetazoaRelease=\$(ENSMETAZOARELEASE) -outDir=\$(RNASEQGTFDATAPATH)
+\te.g. $0  -GTF_dir=\$(RNASEQ_DOWNLOAD_GTF) -ensRelease=\$(ENSRELEASE) -ensMetazoaRelease=\$(ENSMETAZOARELEASE) -outDir=\$(RNASEQ_DOWNLOAD_GTF)
 \t-GTF_dir              GTF folder
 \t-ensRelease           Ensembl Release number
 \t-ensMetazoaRelease    Ensembl Metazoa Release number

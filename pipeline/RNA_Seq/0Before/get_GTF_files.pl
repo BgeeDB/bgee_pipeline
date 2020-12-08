@@ -27,7 +27,7 @@ my %opts = ('RNAseqSample=s'        => \$RNAseqSample,
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $RNAseqSample eq '' || $ensRelease == 0 || $ensMetazoaRelease == 0 || $outDir eq '' ){
     print "\n\tInvalid or missing argument:
-\te.g. $0  -RNAseqSample=\$(RNASEQ_SAMPINFO_FILEPATH) -ensRelease=\$(ENSRELEASE) -ensMetazoaRelease=\$(ENSMETAZOARELEASE) -outDir=\$(RNASEQGTFDATAPATH)
+\te.g. $0  -RNAseqSample=\$(RNASEQ_SAMPINFO_FILEPATH) -ensRelease=\$(ENSRELEASE) -ensMetazoaRelease=\$(ENSMETAZOARELEASE) -outDir=\$(RNASEQ_DOWNLOAD_GTF)
 \t-RNAseqSample         rnaseq_sample_info.txt file
 \t-ensRelease           Ensembl Release number
 \t-ensMetazoaRelease    Ensembl Metazoa Release number
