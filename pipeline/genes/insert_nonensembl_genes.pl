@@ -247,13 +247,14 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
     #NOTE only for protein_coding biotype!
     my $content = get('https://www.uniprot.org/uniprot/?query=GeneID:'.$annotations->{$gene}->{'GeneID'}.'&format=xml&force=true');
     #WARNING some cases with one ensembl -> several ensembl xrefs: ENSG00000139618
-    if ( defined $content ){
+    if ( defined $content && $content ne '' && $content =~ /<\/uniprot>/ ){
         my $hash = xml2hash $content;
         #NOTE not easy to test if exists an array in hash ref. It works with eval!
         #NOTE may return several entries, keep the first one (the best one?)
         my $root = eval { exists $hash->{'uniprot'}->{'entry'}->[0] } ? $hash->{'uniprot'}->{'entry'}->[0] : $hash->{'uniprot'}->{'entry'};
 
         # Check the UniProt entry contains the xref used to query it, and is for the right species
+        print "GeneID:$annotations->{$gene}->{'GeneID'}\n";
         if ( grep { $_->{'-type'} eq 'GeneID' && $_->{'-id'} eq "$annotations->{$gene}->{'GeneID'}" } @{ $root->{'dbReference'} } ){
             if ( $root->{'organism'}->{'dbReference'}->{'-id'} == $speciesBgee ){
                 my $dataset   = 'Uniprot/'.uc($root->{'-dataset'});
@@ -268,17 +269,25 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
                 }
                 if ( $prot_root ){
                     my $prot_name = eval { exists $prot_root->[0] } ? $prot_root->[0] : $prot_root;
-                    $description = $prot_name->{'fullName'}->{'#text'}  if ( $prot_name->{'fullName'}->{'#text'} !~ /LOC\d+/ );
+                    my $prot_desc = eval { exists $prot_name->{'fullName'}->{'#text'} } ? $prot_name->{'fullName'}->{'#text'} : $prot_name->{'fullName'};
+                    $description = $prot_desc  if ( $prot_desc !~ /LOC\d+/ );
                 }
 
                 # Gene name and synonyms
-                my @gene_names = eval { exists $root->{'gene'}->{'name'}->[0] } ? @{ $root->{'gene'}->{'name'} } : ($root->{'gene'}->{'name'});
-                for my $gene_name ( sort @gene_names ){
-                    if ( $gene_name->{'-type'} eq 'primary' ){
-                        $external_name = $gene_name->{'#text'};
-                    }
-                    else {
-                        push @synonyms, $gene_name->{'#text'};
+                if ( ref $root->{'gene'} ne 'ARRAY' ){
+                    #NOTE to avoid some weird syntax such as GeneID:386601
+                    my @gene_names = eval { exists $root->{'gene'}->{'name'}->[0] } ? @{ $root->{'gene'}->{'name'} } : ($root->{'gene'}->{'name'});
+                    use Data::Dumper;
+                    warn Dumper @gene_names;
+                    for my $gene_name ( sort @gene_names ){
+                        warn ref($gene_name), "\n";
+                        next  if ( ref $gene_name eq 'ARRAY' );
+                        if ( $gene_name->{'-type'} eq 'primary' ){
+                            $external_name = $gene_name->{'#text'};
+                        }
+                        else {
+                            push @synonyms, $gene_name->{'#text'};
+                        }
                     }
                 }
 
@@ -320,7 +329,7 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
     print "$display_id\t$external_name\t$external_db\t$description\n";
     print join('|', @xrefs), "\n";
     print join('|', @gos), "\n";
-    print join('|', @synonyms), "\n";
+    print join('|', @synonyms), "\n\n";
 
 
     ## Insert gene info
