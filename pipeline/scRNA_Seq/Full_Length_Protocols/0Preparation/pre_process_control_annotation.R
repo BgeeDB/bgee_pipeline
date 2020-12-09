@@ -38,6 +38,8 @@ for( c_arg in command_arg ){
 if( file.exists(scRNASeqLibrary) ){
   annotation <- read.table(scRNASeqLibrary, h=T, sep="\t", comment.char="")
   names(annotation)[1] <- "libraryId"
+  print(names(annotation))
+  print(nrow(annotation))
   annotation <- dplyr::filter(annotation, annotation$protocolType == "Full-length")
   ## just replace NA in sex and strain per "missing information" to be a level in factor (levels())
   annotation$sex <- forcats::fct_explicit_na(annotation$sex)
@@ -100,7 +102,7 @@ if (info1$size == "0"){
   write.table(newFile, file = passScRNASeqLibrary, col.names =TRUE , row.names = FALSE, quote = FALSE, sep = "\t")
 }
 ## samples that should be excluded
-info2 <- file.info(outfile_NOT_PASS)
+info2 <- file.info(notPassScRNASeqLibrary)
 if (info2$size == "0"){
   message("File is empty")
 } else {

@@ -20,8 +20,8 @@ control_annotation: get_annot 0Preparation/pre_process_control_annotation.R
 	@echo --- DONE ---
 	# Map strain names
 	#FIXME has to be done on other scRNAseq generated files? Or others come from that one?
-	@perl -e 'use lib "../.."; use Utils; Utils::map_strain_names("../$(SC_RNASEQ_NEW_LIB_FILEPATH)", "$(STRAIN_MAPPING_FILE)")' >../$(SC_RNASEQ_NEW_LIB_FILEPATH).ori
-	@$(MV) ../$(SC_RNASEQ_NEW_LIB_FILEPATH).ori ../$(SC_RNASEQ_NEW_LIB_FILEPATH)
+	@perl -e 'use lib "../.."; use Utils; Utils::map_strain_names("$(SC_RNASEQ_LIB_PASS_FILEPATH)", "$(STRAIN_MAPPING_FILE)")' > $(SC_RNASEQ_LIB_PASS_FILEPATH).ori
+	@$(MV) $(SC_RNASEQ_LIB_PASS_FILEPATH).ori $(SC_RNASEQ_LIB_PASS_FILEPATH)
 	@$(MV) $@.tmp $@
 
 ## Retrieve metadata (run rule with sbatch)
