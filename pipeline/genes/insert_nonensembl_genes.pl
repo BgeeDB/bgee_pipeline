@@ -237,6 +237,12 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
     $external_name   =~ s{<[^>]+?>}{}g;
 
 
+    my @synonyms;
+    @synonyms = @{ $annotations->{$gene}->{'gene_synonym'} }  if ( exists $annotations->{$gene}->{'gene_synonym'} );
+    my @xrefs;
+    @xrefs    = @{ $annotations->{$gene}->{'db_xref'} }       if ( exists $annotations->{$gene}->{'db_xref'} );
+    my @aliases;
+    my @gos;
     # Get extra info from UniProt
     #NOTE only for protein_coding biotype!
     my $content = get('https://www.uniprot.org/uniprot/?query=GeneID:'.$annotations->{$gene}->{'GeneID'}.'&format=xml&force=true');
@@ -247,12 +253,6 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
         #NOTE may return several entries, keep the first one (the best one?)
         my $root = eval { exists $hash->{'uniprot'}->{'entry'}->[0] } ? $hash->{'uniprot'}->{'entry'}->[0] : $hash->{'uniprot'}->{'entry'};
 
-        my @synonyms;
-        @synonyms = @{ $annotations->{$gene}->{'gene_synonym'} }  if ( exists $annotations->{$gene}->{'gene_synonym'} );
-        my @xrefs;
-        @xrefs    = @{ $annotations->{$gene}->{'db_xref'} }       if ( exists $annotations->{$gene}->{'db_xref'} );
-        my @aliases;
-        my @gos;
         # Check the UniProt entry contains the xref used to query it, and is for the right species
         if ( grep { $_->{'-type'} eq 'GeneID' && $_->{'-id'} eq "$annotations->{$gene}->{'GeneID'}" } @{ $root->{'dbReference'} } ){
             if ( $root->{'organism'}->{'dbReference'}->{'-id'} == $speciesBgee ){
@@ -262,11 +262,13 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
 
                 #Overwrite description if any
                 my @prot_desc_type = sort keys %{ $root->{'protein'} };
-                if ( scalar @prot_desc_type > 1 ){
-                    $description = $root->{'protein'}->{'recommendedName'}->{'fullName'} || $root->{'protein'}->{ $prot_desc_type[0] }->{'fullName'};
+                my $prot_root;
+                if ( scalar @prot_desc_type >= 1 ){
+                    $prot_root = $root->{'protein'}->{'recommendedName'} || $root->{'protein'}->{ $prot_desc_type[0] };
                 }
-                elsif ( scalar @prot_desc_type == 1 ) {
-                    $description = $root->{'protein'}->{ $prot_desc_type[0] }->{'fullName'};
+                if ( $prot_root ){
+                    my $prot_name = eval { exists $prot_root->[0] } ? $prot_root->[0] : $prot_root;
+                    $description = $prot_name->{'fullName'}->{'#text'}  if ( $prot_name->{'fullName'}->{'#text'} !~ /LOC\d+/ );
                 }
 
                 # Gene name and synonyms
@@ -285,16 +287,13 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
                 for my $dbref ( sort @{ $root->{'dbReference'} }){
                     if ( any { $dbref->{'-type'} eq $_ } @used_xref_db ){
                         push @xrefs, $dbref->{'-type'}.':'.$dbref->{'-id'};
-                        for my $property ( sort @{ $dbref->{'property'} } ){
-                            if ( $property->{'-type'} =~ /sequence ID$/ ){
-                                push @xrefs, $dbref->{'-type'}.':'.$property->{'-value'};
+                        if ( exists $dbref->{'property'} ){
+                            my @properties = eval { exists $dbref->{'property'}->[0] } ? @{ $dbref->{'property'} } : ($dbref->{'property'});
+                            for my $property ( sort @properties ){
+                                if ( $property->{'-type'} =~ /sequence ID$/ ){
+                                    push @xrefs, $dbref->{'-type'}.':'.$property->{'-value'};
+                                }
                             }
-                        }
-                    }
-                    elsif ( $dbref->{'-type'} eq 'Ensembl' ){
-                        push @xrefs, $dbref->{'-type'}.':'.$dbref->{'-id'};
-                        for my $property ( sort @{ $dbref->{'property'} } ){
-                            push @xrefs, $dbref->{'-type'}.':'.$property->{'-value'};
                         }
                     }
                     elsif ( $dbref->{'-type'} eq 'GO' ){
@@ -305,16 +304,31 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
                             }
                         }
                     }
+                    elsif ( $dbref->{'-type'} eq 'Ensembl' ){
+                        push @xrefs, $dbref->{'-type'}.':'.$dbref->{'-id'};
+                        for my $property ( sort @{ $dbref->{'property'} } ){
+                            push @xrefs, $dbref->{'-type'}.':'.$property->{'-value'};
+                        }
+                    }
                 }
             }
         }
-        exit;
     }
+    @xrefs    = uniq @xrefs;
+    @gos      = uniq @gos;
+    @synonyms = grep { $_ ne $display_id && $_ ne $external_name} uniq @synonyms;
+    print "$display_id\t$external_name\t$external_db\t$description\n";
+    print join('|', @xrefs), "\n";
+    print join('|', @gos), "\n";
+    print join('|', @synonyms), "\n";
+
+
+    ## Insert gene info
+    my $bgeeGeneId;
+    
 }
 
 __END__
-    ## Insert gene info
-    my $bgeeGeneId;
     if ( ! $debug ){
         $geneDB->execute($stable_id, $external_name, $description, $biotype, $speciesBgee)  or die $geneDB->errstr;
         $bgeeGeneId = $dbh->{mysql_insertid};
