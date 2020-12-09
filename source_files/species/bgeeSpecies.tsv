@@ -5,7 +5,7 @@ speciesId	genus	species	speciesCommonName	displayOrder	genomeFilePath	genomeVers
 7227	Drosophila	melanogaster	fruit fly	4	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.28	BDGP6.28	2	7227		DROME|vinegar fly|fruitfly	
 6239	Caenorhabditis	elegans	nematode	5	caenorhabditis_elegans/Caenorhabditis_elegans.WBcel235	WBcel235	2	6239		CAEEL|C. elegans|worm|roundworm	
 9598	Pan	troglodytes	chimpanzee	6	pan_troglodytes/Pan_troglodytes.Pan_tro_3.0	Pan_tro_3.0	2	9598		PANTR|chimp	
-9597	Pan	paniscus	bonobo	7	pan_troglodytes/Pan_paniscus.panpan1.1	panpan1.1	2	9597		PANPA|pygmy chimpanzee	
+9597	Pan	paniscus	bonobo	7	pan_paniscus/Pan_paniscus.panpan1.1	panpan1.1	2	9597		PANPA|pygmy chimpanzee	
 9593	Gorilla	gorilla	gorilla	8	gorilla_gorilla/Gorilla_gorilla.gorGor4	gorGor4	2	9593		western gorilla	
 9544	Macaca	mulatta	macaque	9	macaca_mulatta/Macaca_mulatta.Mmul_10	Mmul_10	2	9544		MACMU|rhesus monkey|rhesus macaques	
 10116	Rattus	norvegicus	rat	10	rattus_norvegicus/Rattus_norvegicus.Rnor_6.0	Rnor_6.0	2	10116		brown rat|Norway rat	
@@ -13,7 +13,7 @@ speciesId	genus	species	speciesCommonName	displayOrder	genomeFilePath	genomeVers
 9823	Sus	scrofa	pig	12	sus_scrofa/Sus_scrofa.Sscrofa11.1	Sscrofa11.1	2	9823		domestic pig|swine	
 9796	Equus	caballus	horse	13	equus_caballus/Equus_caballus.EquCab3.0	EquCab3.0	2	9796		domestic horse|equine	
 9986	Oryctolagus	cuniculus	rabbit	14	oryctolagus_cuniculus/Oryctolagus_cuniculus.OryCun2.0	OryCun2.0	2	9986		RABIT	
-9615	Canis	lupus familiaris	dog	15	canis_familiaris/Canis_lupus_familiaris.CanFam3.1	CanFam3.1	2	9615		CANLF|Canis canis|Canis domesticus	
+9615	Canis	lupus familiaris	dog	15	canis_lupus_familiaris/Canis_lupus_familiaris.CanFam3.1	CanFam3.1	2	9615		CANLF|Canis canis|Canis domesticus	
 9685	Felis	catus	cat	16	felis_catus/Felis_catus.Felis_catus_9.0	Felis_catus_9.0	2	9685		FELCA|Felis domesticus|domestic cat	
 10141	Cavia	porcellus	guinea pig	17	cavia_porcellus/Cavia_porcellus.Cavpor3.0	Cavpor3.0	2	10141		CAVPO	
 13616	Monodelphis	domestica	opossum	19	monodelphis_domestica/Monodelphis_domestica.ASM229v1	ASM229v1	2	13616		MONDO|gray short-tailed opossum|gray short tailed opossum	
