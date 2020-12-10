@@ -1,5 +1,9 @@
 # TODO for Bgee 15
 
+## Uberon
+
+Check why a relation such as `SubClassOf(ObjectIntersectionOf(<http://purl.obolibrary.org/obo/UBERON_0002316> ObjectSomeValuesFrom(<http://purl.obolibrary.org/obo/BFO_0000050> <http://purl.obolibrary.org/obo/NCBITaxon_9443>)) <http://purl.obolibrary.org/obo/UBERON_0002437>)` has not been inserted in the database. Does it work when we redo the insertion? Check indirect relations not reached by a chain of direct relations.
+
 ## Annotations
 
 Use the strain mapping file in the pipeline for inserting conditions
@@ -11,6 +15,11 @@ Use the strain mapping file in the pipeline for inserting conditions
   * See email 19.11.19 02:04, Tom Conlin
   * We could add the values from `PropagationState` (see `org.bgee.model.expressiondata.Call.ExpressionCall#getDataPropagation()`)
   
+## ExperimentExpression, experiment counts
+
+* Get rid of all the "xxxExperimentExpression" tables and related code inserting data in them. For Bgee 15, confidence levels will be based on corrected p-values, not on number of experiments.
+* Modify the globalExpression table and related code accordingly.
+
 ## Affymetrix
 
 * Rerun Affymetrix analyses to be able to store p-values (Sara, for new FDR correction)
