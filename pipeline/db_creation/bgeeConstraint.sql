@@ -463,13 +463,80 @@ alter table rnaSeqExperimentExpression
 add primary key (expressionId, rnaSeqExperimentId);
 /*!40000 ALTER TABLE `rnaSeqExperimentExpression` ENABLE KEYS */;
 
+-- ****************************************************
+-- scRNA-Seq FULL LENGTH DATA
+-- ****************************************************
+/*!40000 ALTER TABLE `scRnaSeqFullLengthExperiment` DISABLE KEYS */;
+alter table scRnaSeqFullLengthExperiment
+add primary key (scRnaSeqFullLengthExperimentId);
+/*!40000 ALTER TABLE `scRnaSeqFullLengthExperiment` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqFullLengthPlatform` DISABLE KEYS */;
+alter table scRnaSeqFullLengthPlatform
+add primary key (scRnaSeqFullLengthPlatformId);
+/*!40000 ALTER TABLE `scRnaSeqFullLengthPlatform` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqFullLengthLibrary` DISABLE KEYS */;
+alter table scRnaSeqFullLengthLibrary
+add primary key (scRnaSeqFullLengthLibraryId);
+/*!40000 ALTER TABLE `scRnaSeqFullLengthLibrary` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqFullLengthRun` DISABLE KEYS */;
+alter table scRnaSeqFullLengthRun
+add primary key (scRnaSeqFullLengthRunId);
+/*!40000 ALTER TABLE `scRnaSeqFullLengthRun` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqFullLengthLibraryDiscarded` DISABLE KEYS */;
+alter table scRnaSeqFullLengthLibraryDiscarded
+add primary key (scRnaSeqFullLengthLibraryId);
+/*!40000 ALTER TABLE `scRnaSeqFullLengthLibraryDiscarded` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqFullLengthResult` DISABLE KEYS */;
+alter table scRnaSeqFullLengthResult
+add primary key (bgeeGeneId, scRnaSeqFullLengthLibraryId);
+/*!40000 ALTER TABLE `scRnaSeqFullLengthResult` ENABLE KEYS */;
+
 --  ****************************************************
---  RAW scRNA-SEQ TARGET-BASED DATA
+--  scRNA-SEQ TARGET-BASED DATA
 --  ****************************************************
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedExperiment` DISABLE KEYS */;
+alter table scRnaSeqTargetBasedExperiment
+add primary key (scRnaSeqTargetBasedExperimentId);
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedExperiment` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedPlatform` DISABLE KEYS */;
+alter table scRnaSeqTargetBasedPlatform
+add primary key (scRnaSeqTargetBasedPlatformId);
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedPlatform` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedLibrary` DISABLE KEYS */;
+alter table scRnaSeqTargetBasedLibrary
+add primary key (scRnaSeqTargetBasedLibraryId);
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedLibrary` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedRun` DISABLE KEYS */;
+alter table scRnaSeqTargetBasedRun
+add primary key (scRnaSeqTargetBasedRunId);
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedRun` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedLibraryDiscarded` DISABLE KEYS */;
+alter table scRnaSeqTargetBasedLibraryDiscarded
+add primary key (scRnaSeqTargetBasedLibraryId);
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedLibraryDiscarded` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedLibraryCellPopulation` DISABLE KEYS */;
+alter table scRnaSeqTargetBasedLibraryCellPopulation
+add primary key (scRnaSeqTargetBasedLibraryCellPopulationId);
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedLibraryCellPopulation` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedResult` DISABLE KEYS */;
+alter table scRnaSeqTargetBasedResult
+add primary key (bgeeGeneId, scRnaSeqTargetBasedLibraryCellPopulationId);
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedResult` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `scRnaSeqTargetBasedPerCellCount` DISABLE KEYS */;
 alter table scRnaSeqTargetBasedPerCellCount
-add primary key (scRnaSeqTargetBasedBarcodeId, scRnaSeqTargetBasedLibraryId);
+add primary key (scRnaSeqTargetBasedBarcodeId, scRnaSeqTargetBasedLibraryCellPopulationId);
 /*!40000 ALTER TABLE `scRnaSeqTargetBasedPerCellCount` ENABLE KEYS */;
 
 -- ****** for diff expression ********

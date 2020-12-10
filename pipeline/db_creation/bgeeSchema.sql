@@ -1204,7 +1204,7 @@ create table scRnaSeqTargetBasedResult (
 
 create table scRnaSeqTargetBasedPerCellCount (
     scRnaSeqTargetBasedBarcodeId varchar(70) not null,
-    scRnaSeqTargetBasedLibraryId varchar(70) not null,
+    scRnaSeqTargetBasedLibraryCellPopulationId int unsigned not null,
     umiCount smallint unsigned not null default 0,
     cpm decimal(20, 13) not null default 0 COMMENT 'CPMs are usually not log transformed'
 ) engine = innodb;
