@@ -27,6 +27,6 @@ export sample_info_discarded=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/test_scRN
 export modality_info=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/test_scRNA-Seq_all_results/FULL_LENGTH/Quality_Control_Cell_Population/Modality_Cell_type_per_experiment.tsv
 export calls_file_name=gene_level_abundance+calls.tsv
 export plot=yes
-export ROUT=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/test_scRNA-Seq_all_results/
+export ROUT=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/scRNA-Seq_all_results/FULL_LENGTH/Quality_Control_Cell_Population/
 
 R CMD BATCH --no-save --no-restore "--args scrna_seq_sample_info=\"$scrna_seq_sample_info\" cells_folder=\"$cells_folder\" sample_info_pass=\"$sample_info_pass\" sample_info_discarded=\"$sample_info_discarded\" modality_info=\"$modality_info\" calls_file_name=\"$calls_file_name\" plot=\"$plot\"" $SCRIPT_PATH/1Run/QC_cellPopulation.R $ROUT/QC_cellPopulation.Rout
