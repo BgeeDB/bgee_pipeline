@@ -151,7 +151,7 @@ QC_cellPopulation: presence_absence_bgeecall 1Run/QC_cellPopulation.R
 	@sed -i 's@export sample_info_pass=.*@export sample_info_pass=$(SC_RNASEQ_SAMPINFO_PASS_FILEPATH)@'                 1Run/QC_cellPopulation.sbatch
 	@sed -i 's@export sample_info_discarded=.*@export sample_info_discarded=$(SC_RNASEQ_SAMPINFO_NOT_PASS_FILEPATH)@'   1Run/QC_cellPopulation.sbatch
 	@sed -i 's@export modality_info=.*@export modality_info=$(SC_RNASEQ_MODALITY_CELL_POP)@'                			1Run/QC_cellPopulation.sbatch
-	@sed -i 's@export calls_file_name=.*@export calls_file_name=$(SC_RNASEQ_ABUNDANCEFILE)@'               				1Run/QC_cellPopulation.sbatch
+	@sed -i 's@export calls_file_name=.*@export calls_file_name=$(ABUNDANCEFILE)@'               				1Run/QC_cellPopulation.sbatch
 	@sed -i 's@export plot=.*@export plot=yes@'                                                                  		1Run/QC_cellPopulation.sbatch
 	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_QC_CELLPOP_RES)@'                                         		1Run/QC_cellPopulation.sbatch
 	@sbatch 1Run/QC_cellPopulation.sbatch
