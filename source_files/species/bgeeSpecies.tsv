@@ -1,5 +1,5 @@
 speciesId	genus	species	speciesCommonName	displayOrder	genomeFilePath	genomeVersion	dataSourceId	genomeSpeciesId	fakeGeneIdPrefix	keywords	comment
-9606	Homo	sapiens	human	1	homo_sapiens/Homo_sapiens.GRCh38	GRCh38.p13	2	9606		man		
+9606	Homo	sapiens	human	1	homo_sapiens/Homo_sapiens.GRCh38	GRCh38.p13	2	9606		man	
 10090	Mus	musculus	mouse	2	mus_musculus/Mus_musculus.GRCm38	GRCm38.p6	2	10090		house mouse|mice	
 7955	Danio	rerio	zebrafish	3	danio_rerio/Danio_rerio.GRCz11	GRCz11	2	7955		DANRE|leopard danio|zebra danio	
 7227	Drosophila	melanogaster	fruit fly	4	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.28	BDGP6.28	2	7227		DROME|vinegar fly|fruitfly	
