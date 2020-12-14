@@ -1,7 +1,7 @@
 -- see insert_data_sources.sql to see list of data source IDs
 
 -- NCBI Taxonomy
-update dataSource set releaseDate = '2016-07-20', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 1;
+update dataSource set releaseDate = '2020-12-14', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 1;
 -- Ensembl
 update dataSource set releaseDate = '2020-12-01', releaseVersion = '102',                          displayOrder = 1  where dataSourceId = 2;
 -- EMBL (taken from Ensembl xrefs)
@@ -35,9 +35,9 @@ update dataSource set releaseDate = null,         releaseVersion = ''           
 -- GEO (Affymetrix)
 update dataSource set releaseDate = '2016-08-22', releaseVersion = '',                             displayOrder = 3  where dataSourceId = 17;
 -- GO
-update dataSource set releaseDate = '2016-04-30', releaseVersion = ''                                                where dataSourceId = 18;
+update dataSource set releaseDate = '2018-09-19', releaseVersion = ''                                                where dataSourceId = 18;
 -- SRA
-update dataSource set releaseDate = '2018-08-07', releaseVersion = '',                             displayOrder = 2  where dataSourceId = 19;
+update dataSource set releaseDate = '2020-08-07', releaseVersion = '',                             displayOrder = 2  where dataSourceId = 19;
 -- HGNC (taken from Ensembl xrefs)
 update dataSource set releaseDate = null,         releaseVersion = '',                             displayOrder = 1  where dataSourceId = 20;
 -- CCDS (taken from Ensembl xrefs)
