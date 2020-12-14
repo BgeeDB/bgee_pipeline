@@ -395,7 +395,7 @@ INTERGENIC_N_PROPORTION         := 0.05
 
 # RNAseq data path
 RNASEQDATAPATH             := /var/bgee/extra/pipeline/rna_seq/
-RNASEQABUNDANCEFILE        := gene_level_abundance+calls.tsv
+ABUNDANCEFILE              := gene_level_abundance+calls.tsv
 RNASEQALLRES               := $(RNASEQDATAPATH)all_results_$(DBNAME)/
 RNASEQLOGS                 := $(RNASEQALLRES)
 RNASEQSAMPSTATS            := $(GENERATED_FILES_DIR)$(RNASEQPATH)presence_absence_all_samples.txt
