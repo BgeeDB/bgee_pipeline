@@ -292,12 +292,12 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
                 my @used_xref_db = ('EMBL', 'CCDS', 'RefSeq', 'Xenbase', 'ZFIN');
                 for my $dbref ( sort @{ $root->{'dbReference'} }){
                     if ( any { $dbref->{'-type'} eq $_ } @used_xref_db ){
-                        push @xrefs, $dbref->{'-type'}.'##'.$dbref->{'-id'};
+                        push @xrefs, $dbref->{'-type'}.':'.$dbref->{'-id'};
                         if ( exists $dbref->{'property'} ){
                             my @properties = eval { exists $dbref->{'property'}->[0] } ? @{ $dbref->{'property'} } : ($dbref->{'property'});
                             for my $property ( sort @properties ){
                                 if ( $property->{'-type'} =~ /sequence ID$/ ){
-                                    push @xrefs, $dbref->{'-type'}.'##'.$property->{'-value'};
+                                    push @xrefs, $dbref->{'-type'}.':'.$property->{'-value'};
                                 }
                             }
                         }
@@ -311,9 +311,9 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
                         }
                     }
                     elsif ( $dbref->{'-type'} eq 'Ensembl' ){
-                        push @xrefs, $dbref->{'-type'}.'##'.$dbref->{'-id'};
+                        push @xrefs, $dbref->{'-type'}.':'.$dbref->{'-id'};
                         for my $property ( sort @{ $dbref->{'property'} } ){
-                            push @xrefs, $dbref->{'-type'}.'##'.$property->{'-value'};
+                            push @xrefs, $dbref->{'-type'}.':'.$property->{'-value'};
                         }
                     }
                 }
@@ -357,7 +357,7 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
     XREF:
     for my $xref ( sort @xrefs ){
         next  if ( $xref =~ /;/ );
-        my ($dbname, $pid) = split('##', $xref);
+        my ($dbname, $pid) = split(':', $xref);
         if ( ! $debug ){
             $xrefDB->execute($bgeeGeneId, $pid, '', $InsertedDataSources{lc $dbname})  or die $xrefDB->errstr;
         }
@@ -387,9 +387,10 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
     push @all, $stable_id                       if ( $stable_id );
     push @all, $external_name                   if ( $external_name );
     push @all, @synonyms;
-    push @all, @xrefs;
+    push @all, map { s/^.+?://; $_ } @xrefs;
     #without version digit
-    push @all, map  { s/\.\d+$//; $_ }
+    push @all, map { s/^.+?://; $_ }
+               map  { s/\.\d+$//; $_ }
                grep { /\.\d+$/ }
                @xrefs;
     push @all, map { s/___.*$//; $_ } @gos;
