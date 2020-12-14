@@ -1,0 +1,603 @@
+species count	all taxon count	LCA taxon count
+52	498	44
+----------Looking for species with no sex information: 
+----------All species inserted: 
+speciesId	genus	species	speciesCommonName	speciesDisplayOrder	taxonId	genomeFilePath	genomeVersion	dataSourceId	genomeSpeciesId
+6239	Caenorhabditis	elegans	nematode	5	6237	caenorhabditis_elegans/Caenorhabditis_elegans.WBcel235	WBcel235	2	0
+7227	Drosophila	melanogaster	fruit fly	4	32351	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.28	BDGP6.28	2	0
+7237	Drosophila	pseudoobscura		26	32358	drosophila_pseudoobscura/Drosophila_pseudoobscura.Dpse_3.0	Dpse_3.0	24	0
+7240	Drosophila	simulans		27	32351	drosophila_simulans/Drosophila_simulans.ASM75419v3	ASM75419v3	24	0
+7740	Branchiostoma	lanceolatum	Common lancelet	28	7737	branchiostoma_lanceolatum/Branchiostoma_lanceolatum.BraLan2	BraLan2	24	0
+7897	Latimeria	chalumnae	Coelacanth	29	7896	latimeria_chalumnae/Latimeria_chalumnae.LatCha1	LatCha1	2	0
+7918	Lepisosteus	oculatus	Spotted gar	30	7916	lepisosteus_oculatus/Lepisosteus_oculatus.LepOcu1	LepOcu1	2	0
+7936	Anguilla	anguilla	European freshwater eel	53	7935	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	fAngAng1.pri	37	0
+7955	Danio	rerio	zebrafish	3	7954	danio_rerio/Danio_rerio.GRCz11	GRCz11	2	0
+7994	Astyanax	mexicanus	Blind cave fish	31	7993	astyanax_mexicanus/Astyanax_mexicanus.Astyanax_mexicanus-2.0	Astyanax_mexicanus-2.0	2	0
+8010	Esox	lucius	Northern pike	32	8009	esox_lucius/Esox_lucius.Eluc_v4	Eluc_v4	2	0
+8030	Salmo	salar	Atlantic salmon	33	8028	salmo_salar/Salmo_salar.ICSASG_v2	ICSASG_v2	2	0
+8049	Gadus	morhua	Atlantic cod	34	8048	gadus_morhua/Gadus_morhua.gadMor1	gadMor1	2	0
+8081	Poecilia	reticulata	Guppy	35	8080	poecilia_reticulata/Poecilia_reticulata.Guppy_female_1.0_MT	Guppy_female_1.0_MT	2	0
+8090	Oryzias	latipes	Japanese rice fish	36	8089	oryzias_latipes/Oryzias_latipes.ASM223467v1	ASM223467v1	2	0
+8154	Astatotilapia	calliptera	Eastern happy	37	8152	astatotilapia_calliptera/Astatotilapia_calliptera.fAstCal1.2	fAstCal1.2	2	0
+8355	Xenopus	laevis	African clawed frog	54	262014	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	xenLae2	37	0
+8364	Xenopus	tropicalis	western clawed frog	23	8363	xenopus_tropicalis/Xenopus_tropicalis.Xenopus_tropicalis_v9.1	Xenopus_tropicalis_v9.1	2	0
+9031	Gallus	gallus	chicken	21	9030	gallus_gallus/Gallus_gallus.GRCg6a	GRCg6a	2	0
+9103	Meleagris	gallopavo	Wild turkey	38	9102	meleagris_gallopavo/Meleagris_gallopavo.Turkey_2.01	Turkey_2.01	2	0
+9258	Ornithorhynchus	anatinus	platypus	20	9257	ornithorhynchus_anatinus/Ornithorhynchus_anatinus.mOrnAna1.p.v1	mOrnAna1.p.v1	2	0
+9483	Callithrix	jacchus	White-tufted-ear marmoset	39	1965096	callithrix_jacchus/Callithrix_jacchus.ASM275486v1	ASM275486v1	2	0
+9531	Cercocebus	atys	Sooty mangabey	40	9529	cercocebus_atys/Cercocebus_atys.Caty_1.0	Caty_1.0	2	0
+9541	Macaca	fascicularis	Crab-eating macaque	41	9539	macaca_fascicularis/Macaca_fascicularis.Macaca_fascicularis_5.0	Macaca_fascicularis_5.0	2	0
+9544	Macaca	mulatta	macaque	9	9539	macaca_mulatta/Macaca_mulatta.Mmul_10	Mmul_10	2	0
+9545	Macaca	nemestrina	Pig-tailed macaque	42	9539	macaca_nemestrina/Macaca_nemestrina.Mnem_1.0	Mnem_1.0	2	0
+9555	Papio	anubis	Olive baboon	43	9554	papio_anubis/Papio_anubis.Panu_3.0	Panu_3.0	2	0
+9593	Gorilla	gorilla	gorilla	8	9592	gorilla_gorilla/Gorilla_gorilla.gorGor4	gorGor4	2	0
+9597	Pan	paniscus	bonobo	7	9596	pan_paniscus/Pan_paniscus.panpan1.1	panpan1.1	2	0
+9598	Pan	troglodytes	chimpanzee	6	9596	pan_troglodytes/Pan_troglodytes.Pan_tro_3.0	Pan_tro_3.0	2	0
+9606	Homo	sapiens	human	1	9605	homo_sapiens/Homo_sapiens.GRCh38	GRCh38.p13	2	0
+9615	Canis	lupus familiaris	dog	15	9612	canis_lupus_familiaris/Canis_lupus_familiaris.CanFam3.1	CanFam3.1	2	0
+9685	Felis	catus	cat	16	9682	felis_catus/Felis_catus.Felis_catus_9.0	Felis_catus_9.0	2	0
+9796	Equus	caballus	horse	13	35510	equus_caballus/Equus_caballus.EquCab3.0	EquCab3.0	2	0
+9823	Sus	scrofa	pig	12	9822	sus_scrofa/Sus_scrofa.Sscrofa11.1	Sscrofa11.1	2	0
+9913	Bos	taurus	cattle	11	9903	bos_taurus/Bos_taurus.ARS-UCD1.2	ARS-UCD1.2	2	0
+9925	Capra	hircus	Goat	44	9922	capra_hircus/Capra_hircus.ARS1	ARS1	2	0
+9940	Ovis	aries	Sheep	45	9935	ovis_aries/Ovis_aries.Oar_v3.1	Oar_v3.1	2	0
+9974	Manis	javanica	Malayan pangolin	55	9973	manis_javanica/manis_javanica_GCF_014570535.1_YNU_ManJav_2.0	YNU_ManJav_2.0	37	0
+9986	Oryctolagus	cuniculus	rabbit	14	9984	oryctolagus_cuniculus/Oryctolagus_cuniculus.OryCun2.0	OryCun2.0	2	0
+10090	Mus	musculus	mouse	2	862507	mus_musculus/Mus_musculus.GRCm38	GRCm38.p6	2	0
+10116	Rattus	norvegicus	rat	10	10114	rattus_norvegicus/Rattus_norvegicus.Rnor_6.0	Rnor_6.0	2	0
+10141	Cavia	porcellus	guinea pig	17	10140	cavia_porcellus/Cavia_porcellus.Cavpor3.0	Cavpor3.0	2	0
+10181	Heterocephalus	glaber	Naked mole rat	46	10180	heterocephalus_glaber_female/Heterocephalus_glaber_female.HetGla_female_1.0	HetGla_female_1.0	2	0
+13616	Monodelphis	domestica	opossum	19	13615	monodelphis_domestica/Monodelphis_domestica.ASM229v1	ASM229v1	2	0
+28377	Anolis	carolinensis	green anole	22	28376	anolis_carolinensis/Anolis_carolinensis.AnoCar2.0	AnoCar2.0	2	0
+30608	Microcebus	murinus	Gray mouse lemur	47	13149	microcebus_murinus/Microcebus_murinus.Mmur_3.0	Mmur_3.0	2	0
+32507	Neolamprologus	brichardi	Fairy cichlid	48	32506	neolamprologus_brichardi/Neolamprologus_brichardi.NeoBri1.0	NeoBri1.0	2	0
+52904	Scophthalmus	maximus	Turbot	49	52903	scophthalmus_maximus/Scophthalmus_maximus.ASM318616v1	ASM318616v1	2	0
+60711	Chlorocebus	sabaeus	Green monkey	50	392815	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	ChlSab1.1	2	0
+69293	Gasterosteus	aculeatus	Three-spined stickleback	51	69292	gasterosteus_aculeatus/Gasterosteus_aculeatus.BROADS1	BROAD S1	2	0
+105023	Nothobranchius	furzeri	Turquoise killifish	52	28779	nothobranchius_furzeri/Nothobranchius_furzeri.Nfu_20140520	Nfu_20140520	2	0
+----------Species least common ancestors: 
+taxonId	taxonScientificName	taxonCommonName	taxonLeftBound	taxonRightBound	taxonLevel	bgeeSpeciesLCA
+33213	Bilateria	NULL	7	984	7	1
+7711	Chordata	chordates	9	728	9	1
+117571	Euteleostomi	bony vertebrates	52	719	14	1
+41665	Neopterygii	NULL	69	278	17	1
+32443	Teleostei	teleost fishes	82	277	18	1
+186625	Clupeocephala	NULL	102	269	20	1
+1489388	Euteleosteomorpha	NULL	103	240	21	1
+123368	Acanthomorphata	NULL	107	220	25	1
+1489872	Percomorphaceae	NULL	109	204	27	1
+1489908	Ovalentaria	NULL	154	203	28	1
+1489913	Atherinomorphae	NULL	155	184	29	1
+28738	Cyprinodontiformes	killifishes and others	168	183	30	1
+318546	Pseudocrenilabrinae	NULL	189	198	33	1
+41705	Protacanthopterygii	NULL	224	239	22	1
+186626	Otophysi	NULL	243	266	23	1
+8287	Sarcopterygii	NULL	289	718	15	1
+32523	Tetrapoda	tetrapods	301	716	17	1
+32524	Amniota	amniotes	302	683	18	1
+40674	Mammalia	mammals	303	580	19	1
+32525	Theria	NULL	314	579	20	1
+1437010	Boreoeutheria	NULL	324	553	22	1
+314146	Euarchontoglires	NULL	325	446	23	1
+314147	Glires	Rodents and rabbits	326	373	24	1
+9989	Rodentia	rodent	333	372	25	1
+33550	Hystricomorpha	guinea pigs and others	338	347	26	1
+39107	Murinae	NULL	361	368	29	1
+9443	Primates	NULL	374	445	24	1
+314293	Simiiformes	NULL	376	431	26	1
+9526	Catarrhini	NULL	377	414	27	1
+9528	Cercopithecinae	NULL	380	389	30	1
+9539	Macaca	macaques	385	386	31	1
+207598	Homininae	NULL	394	405	30	1
+9596	Pan	chimpanzees	403	404	31	1
+314145	Laurasiatheria	NULL	447	552	23	1
+91561	Artiodactyla	whales, hippos, ruminants, pigs, camels etc.	448	501	24	1
+9895	Bovidae	NULL	451	462	27	1
+9963	Caprinae	NULL	456	461	28	1
+33554	Carnivora	carnivores	502	523	24	1
+32561	Sauria	diapsids	582	681	20	1
+9005	Phasianidae	turkeys	607	616	31	1
+8353	Xenopus	NULL	690	695	24	1
+1206794	Ecdysozoa	NULL	767	928	9	1
+32341	Sophophora	NULL	864	881	32	1
+32351	melanogaster subgroup	NULL	872	875	34	1
+----------All taxa inserted: 
+taxonId	taxonScientificName	taxonCommonName	taxonLeftBound	taxonRightBound	taxonLevel	bgeeSpeciesLCA
+1	root	NULL	1	996	1	0
+131567	cellular organisms	NULL	2	995	2	0
+2759	Eukaryota	eucaryotes	3	994	3	0
+33154	Opisthokonta	NULL	4	993	4	0
+33208	Metazoa	metazoans	5	992	5	0
+6072	Eumetazoa	NULL	6	989	6	0
+33213	Bilateria	NULL	7	984	7	1
+33511	Deuterostomia	NULL	8	749	8	0
+7711	Chordata	chordates	9	728	9	1
+7735	Cephalochordata	NULL	10	15	10	0
+7736	Branchiostomidae	lancelets	11	14	11	0
+7737	Branchiostoma	NULL	12	13	12	0
+89593	Craniata	NULL	16	723	10	0
+7742	Vertebrata	vertebrates	17	722	11	0
+1476529	Cyclostomata	jawless vertebrates	18	35	12	0
+117569	Hyperoartia	NULL	19	22	13	0
+7745	Petromyzontiformes	NULL	20	21	14	0
+117565	Hyperotreti	NULL	23	34	13	0
+7761	Myxiniformes	NULL	24	33	14	0
+7762	Myxinidae	hagfishes	25	32	15	0
+110551	Myxininae	NULL	26	31	16	0
+110555	Myxine	NULL	27	30	17	0
+7769	Myxine glutinosa	Atlantic hagfish	28	29	18	0
+7776	Gnathostomata	jawed vertebrates	36	721	12	0
+7777	Chondrichthyes	cartilaginous fishes	37	50	13	0
+7778	Elasmobranchii	elasmobranchs	38	45	14	0
+117893	Batoidea	rays	39	40	15	0
+119203	Selachii	sharks	41	44	15	0
+118040	Squalomorphii	NULL	42	43	16	0
+7863	Holocephali	NULL	46	49	14	0
+7864	Chimaeriformes	chimaeras	47	48	15	0
+117570	Teleostomi	NULL	51	720	13	0
+117571	Euteleostomi	bony vertebrates	52	719	14	1
+7898	Actinopterygii	ray-finned fishes	53	288	15	0
+186623	Actinopteri	NULL	54	279	16	0
+32440	Chondrostei	NULL	55	68	17	0
+7899	Acipenseriformes	sturgeons and paddlefish	56	67	18	0
+186622	Acipenseroidei	NULL	57	66	19	0
+7900	Acipenseridae	sturgeons	58	65	20	0
+124129	Acipenserinae	NULL	59	64	21	0
+124130	Acipenserini	NULL	60	63	22	0
+7901	Acipenser	NULL	61	62	23	0
+41665	Neopterygii	NULL	69	278	17	1
+1489100	Holostei	bowfins and gars	70	81	18	0
+7921	Amiiformes	NULL	71	74	19	0
+7922	Amiidae	bowfins	72	73	20	0
+7914	Semionotiformes	NULL	75	80	19	0
+7915	Lepisosteidae	gars	76	79	20	0
+7916	Lepisosteus	NULL	77	78	21	0
+32443	Teleostei	teleost fishes	82	277	18	1
+1489340	Elopocephalai	NULL	83	100	19	0
+186624	Elopocephala	NULL	84	99	20	0
+32521	Elopomorpha	NULL	85	98	21	0
+7933	Anguilliformes	true eels	86	97	22	0
+7934	Anguillidae	freshwater eels	87	90	23	0
+7935	Anguilla	NULL	88	89	24	0
+46660	Muraenidae	moray eels	91	96	23	0
+182222	Muraeninae	NULL	92	95	24	0
+189497	Echidna	NULL	93	94	25	0
+1489341	Osteoglossocephalai	NULL	101	276	19	0
+186625	Clupeocephala	NULL	102	269	20	1
+1489388	Euteleosteomorpha	NULL	103	240	21	1
+123365	Neoteleostei	NULL	104	223	22	0
+123366	Eurypterygia	NULL	105	222	23	0
+123367	Ctenosquamata	NULL	106	221	24	0
+123368	Acanthomorphata	NULL	107	220	25	1
+123369	Euacanthomorphacea	NULL	108	205	26	0
+1489872	Percomorphaceae	NULL	109	204	27	1
+1489904	Carangaria	NULL	110	119	28	0
+8252	Pleuronectiformes	flatfishes	111	118	29	0
+30942	Pleuronectoidei	NULL	112	117	30	0
+52902	Scophthalmidae	NULL	113	116	31	0
+52903	Scophthalmus	NULL	114	115	32	0
+1489922	Eupercaria	NULL	120	147	28	0
+8111	Perciformes	perches and others	121	130	29	0
+8100	Cottioidei	NULL	122	129	30	0
+1490020	Gasterosteales	NULL	123	128	31	0
+69291	Gasterosteidae	sticklebacks & tubesnouts	124	127	32	0
+69292	Gasterosteus	NULL	125	126	33	0
+31022	Tetraodontiformes	pufferfishes and others	131	146	29	0
+31028	Tetraodontoidei	NULL	132	145	30	0
+32517	Tetradontoidea	NULL	133	144	31	0
+31031	Tetraodontidae	puffers	134	143	32	0
+31032	Takifugu	NULL	135	138	33	0
+31033	Takifugu rubripes	torafugu	136	137	34	0
+47144	Tetraodon	NULL	139	142	33	0
+99883	Tetraodon nigroviridis	spotted green pufferfish	140	141	34	0
+1489873	Ophidiaria	NULL	148	153	28	0
+94929	Ophidiiformes	cusk-eels and others	149	152	29	0
+181400	Bythitoidei	NULL	150	151	30	0
+1489908	Ovalentaria	NULL	154	203	28	1
+1489913	Atherinomorphae	NULL	155	184	29	1
+8075	Atheriniformes	NULL	156	157	30	0
+76071	Beloniformes	medakas, needlefish and others	158	167	30	0
+28781	Adrianichthyoidei	NULL	159	166	31	0
+47757	Adrianichthyidae	NULL	160	165	32	0
+8088	Oryziinae	medakas	161	164	33	0
+8089	Oryzias	NULL	162	163	34	0
+28738	Cyprinodontiformes	killifishes and others	168	183	30	1
+45443	Aplocheiloidei	NULL	169	174	31	0
+405002	Nothobranchiidae	NULL	170	173	32	0
+28779	Nothobranchius	NULL	171	172	33	0
+8087	Cyprinodontoidei	NULL	175	182	31	0
+8079	Poeciliidae	livebearers	176	181	32	0
+586240	Poeciliinae	NULL	177	180	33	0
+8080	Poecilia	NULL	178	179	34	0
+1489910	Cichlomorphae	NULL	185	202	29	0
+1489911	Cichliformes	cichlids and convict blennies	186	201	30	0
+8113	Cichlidae	cichlids	187	200	31	0
+319095	African cichlids	NULL	188	199	32	0
+318546	Pseudocrenilabrinae	NULL	189	198	33	1
+319058	Haplochromini	NULL	190	193	34	0
+8152	Astatotilapia	NULL	191	192	35	0
+319069	Lamprologini	NULL	194	197	34	0
+32506	Neolamprologus	NULL	195	196	35	0
+1489838	Paracanthomorphacea	NULL	206	219	26	0
+1489841	Zeiogadaria	NULL	207	218	27	0
+1489843	Gadariae	NULL	208	217	28	0
+8043	Gadiformes	cods and others	209	216	29	0
+1489845	Gadoidei	NULL	210	215	30	0
+8045	Gadidae	cods	211	214	31	0
+8048	Gadus	NULL	212	213	32	0
+41705	Protacanthopterygii	NULL	224	239	22	1
+8007	Esociformes	pikes and mudminnows	225	230	23	0
+8008	Esocidae	pikes	226	229	24	0
+8009	Esox	NULL	227	228	25	0
+8006	Salmoniformes	salmons and trouts	231	238	23	0
+8015	Salmonidae	salmonids	232	237	24	0
+504568	Salmoninae	trouts, salmons & chars	233	236	25	0
+8028	Salmo	NULL	234	235	26	0
+186634	Otomorpha	NULL	241	268	21	0
+32519	Ostariophysi	NULL	242	267	22	0
+186626	Otophysi	NULL	243	266	23	1
+186628	Characiphysae	NULL	244	255	24	0
+7991	Characiformes	NULL	245	254	25	0
+1489739	Characoidei	NULL	246	253	26	0
+7992	Characidae	characins	247	252	27	0
+42595	Stethaprioninae	NULL	248	251	28	0
+7993	Astyanax	NULL	249	250	29	0
+186627	Cypriniphysae	NULL	256	265	24	0
+7952	Cypriniformes	carps and others	257	264	25	0
+30727	Cyprinoidei	NULL	258	263	26	0
+7953	Cyprinidae	NULL	259	262	27	0
+7954	Danio	NULL	260	261	28	0
+1489343	Osteoglossocephala	NULL	270	275	20	0
+31089	Osteoglossomorpha	NULL	271	274	21	0
+41712	Osteoglossiformes	bonytongues	272	273	22	0
+1338366	Cladistia	NULL	280	287	16	0
+8288	Polypteriformes	reedfish	281	286	17	0
+8289	Polypteridae	bichirs	282	285	18	0
+27686	Erpetoichthys	NULL	283	284	19	0
+8287	Sarcopterygii	NULL	289	718	15	1
+118072	Coelacanthimorpha	NULL	290	297	16	0
+7894	Coelacanthiformes	NULL	291	296	17	0
+7895	Coelacanthidae	coelacanths	292	295	18	0
+7896	Latimeria	NULL	293	294	19	0
+1338369	Dipnotetrapodomorpha	NULL	298	717	16	0
+7878	Dipnoi	lungfishes	299	300	17	0
+32523	Tetrapoda	tetrapods	301	716	17	1
+32524	Amniota	amniotes	302	683	18	1
+40674	Mammalia	mammals	303	580	19	1
+9254	Prototheria	NULL	304	313	20	0
+9255	Monotremata	egg-laying mammals	305	312	21	0
+9256	Ornithorhynchidae	NULL	306	309	22	0
+9257	Ornithorhynchus	NULL	307	308	23	0
+9259	Tachyglossidae	echidnas	310	311	22	0
+32525	Theria	NULL	314	579	20	1
+9347	Eutheria	placentals	315	560	21	0
+311790	Afrotheria	NULL	316	323	22	0
+9779	Proboscidea	elephants	317	318	23	0
+9815	Tubulidentata	aardvarks	319	322	23	0
+9816	Orycteropodidae	aardvark	320	321	24	0
+1437010	Boreoeutheria	NULL	324	553	22	1
+314146	Euarchontoglires	NULL	325	446	23	1
+314147	Glires	Rodents and rabbits	326	373	24	1
+9975	Lagomorpha	NULL	327	332	25	0
+9979	Leporidae	rabbits and hares	328	331	26	0
+9984	Oryctolagus	NULL	329	330	27	0
+9989	Rodentia	rodent	333	372	25	1
+1963757	Castorimorpha	beavers and others	334	337	26	0
+29132	Castoridae	beavers	335	336	27	0
+33550	Hystricomorpha	guinea pigs and others	338	347	26	1
+10167	Bathyergidae	African mole-rats	339	342	27	0
+10180	Heterocephalus	NULL	340	341	28	0
+10139	Caviidae	cavies	343	346	27	0
+10140	Cavia	guinea pigs	344	345	28	0
+1963758	Myomorpha	mice and others	348	371	26	0
+1963761	Dipodoidea	NULL	349	358	27	0
+30648	Dipodidae	jerboas	350	357	28	0
+35737	Dipodinae	NULL	351	356	29	0
+48867	Jaculus	NULL	352	355	30	0
+51337	Jaculus jaculus	lesser Egyptian jerboa	353	354	31	0
+337687	Muroidea	NULL	359	370	27	0
+10066	Muridae	NULL	360	369	28	0
+39107	Murinae	NULL	361	368	29	1
+10088	Mus	NULL	362	365	30	0
+862507	Mus	NULL	363	364	31	0
+10114	Rattus	NULL	366	367	30	0
+9443	Primates	NULL	374	445	24	1
+376913	Haplorrhini	NULL	375	436	25	0
+314293	Simiiformes	NULL	376	431	26	1
+9526	Catarrhini	NULL	377	414	27	1
+314294	Cercopithecoidea	NULL	378	391	28	0
+9527	Cercopithecidae	Old World monkeys	379	390	29	0
+9528	Cercopithecinae	NULL	380	389	30	1
+9529	Cercocebus	NULL	381	382	31	0
+392815	Chlorocebus	NULL	383	384	31	0
+9539	Macaca	macaques	385	386	31	1
+9554	Papio	baboons	387	388	31	0
+314295	Hominoidea	apes	392	413	28	0
+9604	Hominidae	great apes	393	412	29	0
+207598	Homininae	NULL	394	405	30	1
+9592	Gorilla	NULL	395	396	31	0
+9605	Homo	NULL	397	402	31	0
+9606	Homo sapiens	human	398	401	32	0
+63221	Homo sapiens neanderthalensis	Neandertal	399	400	33	0
+9596	Pan	chimpanzees	403	404	31	1
+607660	Ponginae	NULL	406	411	30	0
+9599	Pongo	NULL	407	410	31	0
+9600	Pongo pygmaeus	Bornean orangutan	408	409	32	0
+9479	Platyrrhini	New World monkeys	415	430	27	0
+378855	Atelidae	NULL	416	421	28	0
+38066	Alouattinae	NULL	417	420	29	0
+9499	Alouatta	howler monkeys	418	419	30	0
+9498	Cebidae	NULL	422	429	28	0
+9480	Callitrichinae	marmosets and tamarins	423	428	29	0
+9481	Callithrix	NULL	424	427	30	0
+1965096	Callithrix	NULL	425	426	31	0
+376912	Tarsiiformes	NULL	432	435	26	0
+9475	Tarsiidae	tarsiers	433	434	27	0
+376911	Strepsirrhini	prosimians	437	444	25	0
+376915	Lemuriformes	NULL	438	443	26	0
+30615	Cheirogaleidae	dwarf and mouse lemurs	439	442	27	0
+13149	Microcebus	NULL	440	441	28	0
+314145	Laurasiatheria	NULL	447	552	23	1
+91561	Artiodactyla	whales, hippos, ruminants, pigs, camels etc.	448	501	24	1
+9845	Ruminantia	NULL	449	468	25	0
+35500	Pecora	NULL	450	467	26	0
+9895	Bovidae	NULL	451	462	27	1
+27592	Bovinae	NULL	452	455	28	0
+9903	Bos	oxen, cattle	453	454	29	0
+9963	Caprinae	NULL	456	461	28	1
+9922	Capra	NULL	457	458	29	0
+9935	Ovis	NULL	459	460	29	0
+9850	Cervidae	deer	463	464	27	0
+9892	Giraffidae	NULL	465	466	27	0
+35497	Suina	NULL	469	474	25	0
+9821	Suidae	pigs	470	473	26	0
+9822	Sus	NULL	471	472	27	0
+9834	Tylopoda	NULL	475	480	25	0
+9835	Camelidae	NULL	476	479	26	0
+9836	Camelus	NULL	477	478	27	0
+2653789	Whippomorpha	NULL	481	500	25	0
+9721	Cetacea	whales	482	499	26	0
+9761	Mysticeti	baleen whales	483	486	27	0
+9765	Balaenopteridae	rorquals	484	485	28	0
+9722	Odontoceti	tooth whales	487	498	27	0
+9747	Monodontidae	NULL	488	493	28	0
+40150	Monodon	NULL	489	492	29	0
+40151	Monodon monoceros	narwhal	490	491	30	0
+9750	Physeteridae	sperm whales	494	497	28	0
+9753	Physeter	NULL	495	496	29	0
+33554	Carnivora	carnivores	502	523	24	1
+379584	Caniformia	NULL	503	512	25	0
+9608	Canidae	dog, coyote, wolf, fox	504	509	26	0
+9611	Canis	NULL	505	508	27	0
+9612	Canis lupus	gray wolf	506	507	28	0
+9709	Phocidae	true seals	510	511	26	0
+379583	Feliformia	NULL	513	522	25	0
+9681	Felidae	cat family	514	521	26	0
+338152	Felinae	NULL	515	518	27	0
+9682	Felis	NULL	516	517	28	0
+338153	Pantherinae	NULL	519	520	27	0
+9397	Chiroptera	bats	524	525	24	0
+9362	Eulipotyphla	hedgehogs, shrews, moles and others	526	537	24	0
+9363	Erinaceidae	hedgehogs	527	534	25	0
+30577	Erinaceinae	spiny hedgehogs	528	533	26	0
+9364	Erinaceus	NULL	529	532	27	0
+9365	Erinaceus europaeus	western European hedgehog	530	531	28	0
+9373	Talpidae	moles, shrew-moles, and desmans	535	536	25	0
+9787	Perissodactyla	odd-toed ungulates	538	545	24	0
+9788	Equidae	horses	539	544	25	0
+9789	Equus	NULL	540	543	26	0
+35510	Equus	NULL	541	542	27	0
+9971	Pholidota	pangolins	546	551	24	0
+9972	Manidae	pangolins	547	550	25	0
+9973	Manis	NULL	548	549	26	0
+9348	Xenarthra	armadillos and others	554	559	22	0
+948951	Cingulata	NULL	555	558	23	0
+9359	Dasypodidae	armadillos	556	557	24	0
+9263	Metatheria	marsupials	561	578	21	0
+38605	Didelphimorphia	NULL	562	569	22	0
+9265	Didelphidae	opossums	563	568	23	0
+126287	Didelphinae	NULL	564	567	24	0
+13615	Monodelphis	short-tailed opossums	565	566	25	0
+38609	Diprotodontia	NULL	570	577	22	0
+9307	Macropodidae	NULL	571	576	23	0
+2182372	Osphranter	NULL	572	575	24	0
+9321	Osphranter rufus	red kangaroo	573	574	25	0
+8457	Sauropsida	sauropsids	581	682	19	0
+32561	Sauria	diapsids	582	681	20	1
+1329799	Archelosauria	NULL	583	648	21	0
+8492	Archosauria	NULL	584	643	22	0
+1294634	Crocodylia	alligators and others	585	590	23	0
+1298654	Longirostres	NULL	586	589	24	0
+8493	Crocodylidae	crocodilians	587	588	25	0
+436486	Dinosauria	NULL	591	642	23	0
+436489	Saurischia	NULL	592	641	24	0
+436491	Theropoda	NULL	593	640	25	0
+436492	Coelurosauria	NULL	594	639	26	0
+8782	Aves	birds	595	638	27	0
+8825	Neognathae	NULL	596	627	28	0
+8929	Columbiformes	pigeons and others	597	600	29	0
+8930	Columbidae	pigeons	598	599	30	0
+1549675	Galloanserae	NULL	601	618	29	0
+8826	Anseriformes	ducks, geese and swans	602	605	30	0
+8827	Anhimidae	screamers	603	604	31	0
+8976	Galliformes	landfowls	606	617	30	0
+9005	Phasianidae	turkeys	607	616	31	1
+466552	Meleagridinae	NULL	608	611	32	0
+9102	Meleagris	NULL	609	610	33	0
+9072	Phasianinae	NULL	612	615	32	0
+9030	Gallus	NULL	613	614	33	0
+9126	Passeriformes	song birds	619	624	29	0
+81928	Eurylaimidae	NULL	620	621	30	0
+137529	Philepittidae	NULL	622	623	30	0
+30458	Strigiformes	owls	625	626	29	0
+8783	Palaeognathae	NULL	628	637	28	0
+8798	Struthioniformes	ostriches	629	636	29	0
+8799	Struthionidae	NULL	630	635	30	0
+8800	Struthio	NULL	631	634	31	0
+8801	Struthio camelus	African ostrich	632	633	32	0
+8459	Testudines	turtles	644	647	22	0
+8464	Cryptodira	hidden-necked turtles	645	646	23	0
+8504	Lepidosauria	lepidosaurs	649	680	21	0
+8505	Sphenodontia	beaked reptiles	650	657	22	0
+8506	Sphenodontidae	NULL	651	656	23	0
+8507	Sphenodon	NULL	652	655	24	0
+8508	Sphenodon punctatus	tuatara	653	654	25	0
+8509	Squamata	squamates	658	679	22	0
+1329961	Bifurcata	split-tongued squamates	659	678	23	0
+1329950	Unidentata	NULL	660	677	24	0
+1329912	Episquamata	NULL	661	676	25	0
+1329911	Toxicofera	NULL	662	675	26	0
+8511	Iguania	iguanian lizards	663	668	27	0
+2024747	Dactyloidae	NULL	664	667	28	0
+28376	Anolis	NULL	665	666	29	0
+8570	Serpentes	snakes	669	674	27	0
+34989	Colubroidea	NULL	670	673	28	0
+8578	Colubridae	colubrid snakes	671	672	29	0
+8292	Amphibia	amphibians	684	715	18	0
+41666	Batrachia	NULL	685	708	19	0
+8342	Anura	frogs and toads	686	699	20	0
+30319	Pipoidea	NULL	687	698	21	0
+8352	Pipidae	tongueless frogs	688	697	22	0
+8360	Xenopodinae	NULL	689	696	23	0
+8353	Xenopus	NULL	690	695	24	1
+8363	Silurana	NULL	691	692	25	0
+262014	Xenopus	NULL	693	694	25	0
+8293	Caudata	NULL	700	707	20	0
+30367	Salamandroidea	NULL	701	706	21	0
+8294	Ambystomatidae	mole salamanders	702	705	22	0
+8295	Ambystoma	mole salamanders	703	704	23	0
+8445	Gymnophiona	NULL	709	714	19	0
+8446	Caeciliidae	true caecilians	710	713	20	0
+43453	Caecilia	NULL	711	712	21	0
+7712	Tunicata	tunicates	724	727	10	0
+7713	Ascidiacea	sea squirts	725	726	11	0
+7586	Echinodermata	echinoderms	729	744	9	0
+133551	Eleutherozoa	NULL	730	739	10	0
+7587	Asterozoa	NULL	731	734	11	0
+7618	Ophiuroidea	brittle stars	732	733	12	0
+7624	Echinozoa	NULL	735	738	11	0
+7625	Echinoidea	sea urchins	736	737	12	0
+133550	Pelmatozoa	NULL	740	743	10	0
+35069	Crinoidea	crinoids	741	742	11	0
+10219	Hemichordata	hemichordates	745	748	9	0
+10220	Enteropneusta	acorn worms	746	747	10	0
+6157	Platyhelminthes	flatworms	750	765	8	0
+6199	Cestoda	tapeworms	751	762	9	0
+6200	Eucestoda	NULL	752	761	10	0
+6201	Cyclophyllidea	NULL	753	760	11	0
+6208	Taeniidae	NULL	754	759	12	0
+6209	Echinococcus	NULL	755	758	13	0
+6211	Echinococcus multilocularis	NULL	756	757	14	0
+6178	Trematoda	NULL	763	764	9	0
+33317	Protostomia	NULL	766	973	8	0
+1206794	Ecdysozoa	NULL	767	928	9	1
+6231	Nematoda	roundworms	768	785	10	0
+119089	Chromadorea	NULL	769	784	11	0
+6236	Rhabditida	NULL	770	783	12	0
+2301116	Rhabditina	NULL	771	782	13	0
+2301119	Rhabditomorpha	NULL	772	781	14	0
+55879	Rhabditoidea	NULL	773	780	15	0
+6243	Rhabditidae	NULL	774	779	16	0
+55885	Peloderinae	NULL	775	778	17	0
+6237	Caenorhabditis	NULL	776	777	18	0
+88770	Panarthropoda	NULL	786	927	10	0
+6656	Arthropoda	arthropods	787	926	11	0
+6843	Chelicerata	NULL	788	805	12	0
+6854	Arachnida	arachnids	789	802	13	0
+6933	Acari	mites and ticks	790	799	14	0
+6934	Parasitiformes	NULL	791	798	15	0
+6935	Ixodida	ticks	792	797	16	0
+297308	Ixodoidea	NULL	793	796	17	0
+6939	Ixodidae	hardbacked ticks	794	795	18	0
+6893	Araneae	spiders	800	801	14	0
+57294	Pycnogonida	sea spiders	803	804	13	0
+197563	Mandibulata	NULL	806	925	12	0
+197562	Pancrustacea	NULL	807	924	13	0
+6657	Crustacea	crustaceans	808	815	14	0
+2172821	Multicrustacea	NULL	809	814	15	0
+72037	Hexanauplia	NULL	810	813	16	0
+6830	Copepoda	copepods	811	812	17	0
+6960	Hexapoda	insects	816	923	14	0
+50557	Insecta	true insects	817	922	15	0
+85512	Dicondylia	NULL	818	921	16	0
+7496	Pterygota	winged insects	819	920	17	0
+33340	Neoptera	NULL	820	919	18	0
+33392	Holometabola	NULL	821	918	19	0
+85604	Amphiesmenoptera	NULL	822	837	20	0
+7088	Lepidoptera	butterflies and moths	823	836	21	0
+41191	Glossata	NULL	824	835	22	0
+41196	Neolepidoptera	NULL	825	834	23	0
+41197	Heteroneura	NULL	826	833	24	0
+37567	Ditrysia	NULL	827	832	25	0
+104431	Obtectomera	NULL	828	831	26	0
+37572	Papilionoidea	butterflies	829	830	27	0
+7147	Diptera	flies	838	911	20	0
+7203	Brachycera	NULL	839	892	21	0
+43733	Muscomorpha	NULL	840	891	22	0
+480118	Eremoneura	NULL	841	890	23	0
+480117	Cyclorrhapha	NULL	842	889	24	0
+43738	Schizophora	NULL	843	888	25	0
+43741	Acalyptratae	NULL	844	887	26	0
+43746	Ephydroidea	NULL	845	886	27	0
+7214	Drosophilidae	pomace flies	846	885	28	0
+43845	Drosophilinae	NULL	847	884	29	0
+46877	Drosophilini	NULL	848	883	30	0
+7215	Drosophila	fruit flies	849	882	31	0
+32281	Drosophila	NULL	850	863	32	0
+32321	repleta group	NULL	851	858	33	0
+32324	mulleri subgroup	NULL	852	857	34	0
+198037	mojavensis species complex	NULL	853	856	35	0
+7230	Drosophila mojavensis	NULL	854	855	36	0
+32335	virilis group	NULL	859	862	33	0
+7244	Drosophila virilis	NULL	860	861	34	0
+32341	Sophophora	NULL	864	881	32	1
+32346	melanogaster group	NULL	865	876	33	0
+32347	ananassae subgroup	NULL	866	871	34	0
+545632	ananassae species complex	NULL	867	870	35	0
+7217	Drosophila ananassae	NULL	868	869	36	0
+32351	melanogaster subgroup	NULL	872	875	34	1
+7245	Drosophila yakuba	NULL	873	874	35	0
+32355	obscura group	NULL	877	880	33	0
+32358	pseudoobscura subgroup	NULL	878	879	34	0
+7148	Nematocera	NULL	893	910	21	0
+43786	Culicomorpha	NULL	894	909	22	0
+41827	Culicoidea	NULL	895	908	23	0
+7157	Culicidae	mosquitos	896	907	24	0
+43816	Anophelinae	NULL	897	906	25	0
+7164	Anopheles	NULL	898	905	26	0
+44482	Anopheles	NULL	899	904	27	0
+44483	Angusticorn	NULL	900	903	28	0
+44484	Anopheles	NULL	901	902	29	0
+7399	Hymenoptera	NULL	912	917	20	0
+7400	Apocrita	wasps, ants, and bees	913	916	21	0
+7434	Aculeata	NULL	914	915	22	0
+1206795	Lophotrochozoa	NULL	929	972	9	0
+6340	Annelida	annelid worms	930	943	10	0
+6341	Polychaeta	polychaetes	931	942	11	0
+105389	Palpata	NULL	932	941	12	0
+105391	Canalipalpata	NULL	933	940	13	0
+6362	Sabellida	NULL	934	939	14	0
+41324	Siboglinidae	NULL	935	938	15	0
+6425	Riftia	NULL	936	937	16	0
+6447	Mollusca	mollusks	944	969	10	0
+6544	Bivalvia	bivalves	945	946	11	0
+6605	Cephalopoda	cephalopods	947	966	11	0
+6606	Coleoidea	NULL	948	957	12	0
+215449	Neocoleoidea	NULL	949	956	13	0
+215451	Octopodiformes	NULL	950	955	14	0
+6638	Octopoda	NULL	951	954	15	0
+61743	Cirrata	NULL	952	953	16	0
+32577	Nautiloidea	NULL	958	965	12	0
+32578	Nautilida	NULL	959	964	13	0
+34571	Nautilidae	NULL	960	963	14	0
+34572	Nautilus	NULL	961	962	15	0
+6448	Gastropoda	gastropods	967	968	11	0
+6217	Nemertea	ribbon worms	970	971	10	0
+1312402	Xenacoelomorpha	NULL	974	983	8	0
+147099	Acoelomorpha	NULL	975	976	9	0
+110814	Xenoturbellida	NULL	977	982	9	0
+1547233	Xenoturbellidae	NULL	978	981	10	0
+110815	Xenoturbella	NULL	979	980	11	0
+6073	Cnidaria	cnidarians	985	986	7	0
+10197	Ctenophora	ctenophores	987	988	7	0
+6040	Porifera	sponges	990	991	6	0
