@@ -54,9 +54,7 @@ for my $gtf (glob($GTF_dir."/*.gtf.gz") ){
         system("gunzip -f $prefix.genome.fa.gz")==0  or die "Failed to unzip genome files: $?\n";
 
     }
-    #FIXME No more $ensMetazoaRelease in dna file name for Ensembl Metazoa 49, but is in gtf file name!
-    elsif ( is_success( getstore("ftp://ftp.ensemblgenomes.org/pub/release-$ensMetazoaRelease/metazoa/fasta/$species_name/dna/$prefix.$ensMetazoaRelease.dna.toplevel.fa.gz", "$prefix.genome.fa.gz") ) ||
-            is_success( getstore("ftp://ftp.ensemblgenomes.org/pub/release-$ensMetazoaRelease/metazoa/fasta/$species_name/dna/$prefix.dna.toplevel.fa.gz", "$prefix.genome.fa.gz") ) ){
+    elsif ( is_success( getstore("ftp://ftp.ensemblgenomes.org/pub/release-$ensMetazoaRelease/metazoa/fasta/$species_name/dna/$prefix.dna.toplevel.fa.gz", "$prefix.genome.fa.gz") ) ){
         # exists in Ensembl Metazoa FTP && genome file downloaded
         # uncompress downloaded fasta file
         system("gunzip -f $prefix.genome.fa.gz")==0  or die "Failed to unzip genome files: $?\n";
