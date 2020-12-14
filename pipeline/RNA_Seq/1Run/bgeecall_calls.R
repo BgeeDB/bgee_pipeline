@@ -34,11 +34,11 @@ for( c_arg in command_arg ){
 #TODO: Maybe load kallisto from UNIL modules
 modules <- c("module add Bioinformatics/Software/vital-it;", "module add R/3.6.1;")
 #generate BgeeCall objects
-kallistoMetadata <- new("KallistoMetadata", download_kallisto=TRUE)
+kallistoMetadata <- new("KallistoMetadata", download_kallisto=FALSE)
 userMetadata <- new("UserMetadata", working_path = working_path)
 # use local version of intergenic sequences
 bgeeMetadata <- new("BgeeMetadata", intergenic_release="custom")
 # slurm options for index generation
 slurm_options_index <- list(account = account, time = time, partition = partition, mem = "30G")
 # generate calls
-generate_slurm_calls(userFile=bgeecall_input_file, slurm_options = slurm_options_index, modules = modules, kallistoMetadata = kallistoMetadata, userMetadata = userMetadata)
+generate_slurm_calls(userFile=bgeecall_input_file, slurm_options = slurm_options_index, modules = modules, kallistoMetadata = kallistoMetadata, bgeeMetadata = bgeeMetadata, userMetadata = userMetadata)

@@ -52,7 +52,7 @@ finalLibsToDown <- dplyr::filter(readFile, experiment_accession %in% checkId$exp
 ##########################################################################################
 if (nrow(finalLibsToDown) == 0){
 
-  cat("All the libraries present in metadata are already downloaded in the server", "\n")
+  message("All the libraries present in metadata are already downloaded in the server")
 
 } else {
   ftp <- as.character(finalLibsToDown$fastq_ftp)
@@ -86,7 +86,7 @@ if (nrow(finalLibsToDown) == 0){
   for (library in  unique(generalInfo$LibInfo)) {
 
     ## create output for each library
-    cat("treating the library: ", library, "\n")
+    message("treating the library: ", library)
     InfoFile <- file.path(output_folder, library)
     dir.create(InfoFile, showWarnings = FALSE)
     files<-list.files(path = InfoFile, pattern="*.fastq.gz$")
@@ -94,11 +94,11 @@ if (nrow(finalLibsToDown) == 0){
     ## control the downloading process if stops
     if (dir.exists(InfoFile) == TRUE && file_test("-f", paste0(InfoFile,"/",files)) == TRUE){
 
-      cat("The folder for the library ", library, " was already created and the FASTQ.gz files downloaded.", "\n")
+      message("The folder for the library ", library, " was already created and the FASTQ.gz files downloaded.")
 
     } else {
 
-      cat("The folder for the library ", library, " exist but .gz files are missing.", "\n")
+      message("The folder for the library ", library, " exist but .gz files are missing.")
       ## select URL for the correspondent library
       ftpID <- generalInfo[generalInfo$LibInfo %like% library,][,2]
       setwd(InfoFile)

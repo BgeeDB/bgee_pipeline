@@ -6,7 +6,9 @@
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args scRNASeqLibrary="scRNASeqLibrary.tsv" output_folder="output_folder"' pre_process_control_annotation.R pre_process_control_annotation.Rout
 ## scRNASeqLibrary --> File from manual annotation
-## output_folder --> Output folder where should be saved the new output file (after filtering cell types that not pass)
+## passScRNASeqLibrary --> Output file containing libraries that pass the threshold of minimum number of cells
+## notPassScRNASeqLibrary --> Output file containing libraries that did not pass the threshold of minimum number of cells
+## cellsThreshold --> minimum number of cells in a library
 
 ## Libraries
 library(tools)
@@ -25,7 +27,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed....
-command_arg <- c("scRNASeqLibrary", "output_folder")
+command_arg <- c("scRNASeqLibrary", "passScRNASeqLibrary", "notPassScRNASeqLibrary", "cellsThreshold")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -36,59 +38,52 @@ for( c_arg in command_arg ){
 if( file.exists(scRNASeqLibrary) ){
   annotation <- read.table(scRNASeqLibrary, h=T, sep="\t", comment.char="")
   names(annotation)[1] <- "libraryId"
+  print(names(annotation))
+  print(nrow(annotation))
   annotation <- dplyr::filter(annotation, annotation$protocolType == "Full-length")
   ## just replace NA in sex and strain per "missing information" to be a level in factor (levels())
   annotation$sex <- forcats::fct_explicit_na(annotation$sex)
   annotation$strain <- forcats::fct_explicit_na(annotation$strain)
-  pathAnnotation <- dirname(scRNASeqLibrary)
 } else {
   stop( paste("scRNASeqLibrary file not found [", scRNASeqLibrary, "]\n"))
 }
 
 #################################################################################
-## create output files
-setwd(output_folder)
-if (dir.exists(output_folder)){
-  file.create("NEW_scRNASeqLibrary.tsv")
-  file.create("NOT_PASS_scRNASeqLibrary.tsv")
-  } else {
-  print("Directoty not exists.....")
-  }
+## create new output files or truncate existing ones
+file.create(passScRNASeqLibrary)
+file.create(notPassScRNASeqLibrary)
 
-infile <- file.path(pathAnnotation, "scRNASeqLibrary.tsv")
-outfile_PASS <- file.path(output_folder, "NEW_scRNASeqLibrary.tsv")
-outfile_NOT_PASS <- file.path(output_folder, "NOT_PASS_scRNASeqLibrary.tsv")
-
+#TODO: maybe collect all pass/not_pass info in a DF and write the 2 files after (directly with the proper colnames)
 for (species in unique(annotation$speciesId)) {
-  cat("Species:", species, "\n")
+  message("Species:", species)
   for (experiment in unique(annotation$experimentId[annotation$speciesId == species])){
-    cat("Name of experiments that belongs to the species:", experiment, "\n")
+    message("Name of experiments that belongs to the species:", experiment)
     for (cellId in unique(annotation$cellTypeId[annotation$experimentId == experiment])){
-      cat("CellId info:", cellId, "\n")
+      message("CellId info:", cellId)
       for (stageId in unique(annotation$stageId[annotation$cellTypeId == cellId])){
-        cat("StageId info:", stageId, "\n")
+        message("StageId info:", stageId)
         for (strain in unique(annotation$strain[annotation$stageId == stageId])){
-          cat("Strain info:", strain, "\n")
+          message("Strain info:", strain)
           for (uberonId in unique(annotation$uberonId[annotation$strain == strain])){
-            cat("UberonId info:", uberonId, "\n")
+            message("UberonId info:", uberonId)
             for (sex in unique(annotation$sex[annotation$uberonId == uberonId])){
-              cat("sex info:", sex, "\n")
+              message("sex info:", sex)
 
-        infoLib <- annotation$libraryId[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]
-        infoLib2 <- as.data.frame(infoLib); colnames(infoLib2) <- "libraryId"
-        cat("Libraries retrieved : ", length(infoLib), "\n")
+              infoLib <- annotation$libraryId[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]
+              infoLib2 <- as.data.frame(infoLib); colnames(infoLib2) <- "libraryId"
+              message("Libraries retrieved : ", length(infoLib))
 
-        if(length(infoLib) >= 50){
-          extractInfo <- merge(infoLib2, annotation, by="libraryId")
-          information_file <- data.frame(extractInfo)
-          information_file <- information_file %>% filter(!str_detect(information_file$libraryId, "^#"))
-          write.table(information_file, file = outfile_PASS, col.names = FALSE , row.names = FALSE ,append = TRUE, quote = FALSE, sep = "\t")
-        } else {
-          extractInfo <- merge(infoLib2, annotation, by="libraryId")
-          information_file <- data.frame(extractInfo)
-          information_file <- information_file %>% filter(!str_detect(information_file$libraryId, "^#"))
-          write.table(information_file, file = outfile_NOT_PASS, col.names = FALSE, row.names = FALSE , append = TRUE, quote = FALSE, sep = "\t")
-        }
+              if(length(infoLib) >= cellsThreshold){
+                extractInfo <- merge(infoLib2, annotation, by="libraryId")
+                information_file <- data.frame(extractInfo)
+                information_file <- information_file %>% filter(!str_detect(information_file$libraryId, "^#"))
+                write.table(information_file, file = passScRNASeqLibrary, col.names = FALSE , row.names = FALSE ,append = TRUE, quote = FALSE, sep = "\t")
+              } else {
+                extractInfo <- merge(infoLib2, annotation, by="libraryId")
+                information_file <- data.frame(extractInfo)
+                information_file <- information_file %>% filter(!str_detect(information_file$libraryId, "^#"))
+                write.table(information_file, file = notPassScRNASeqLibrary, col.names = FALSE, row.names = FALSE , append = TRUE, quote = FALSE, sep = "\t")
+              }
             }
           }
         }
@@ -98,20 +93,20 @@ for (species in unique(annotation$speciesId)) {
 }
 
 ## samples that passed
-info1 <- file.info(outfile_PASS)
+info1 <- file.info(passScRNASeqLibrary)
 if (info1$size == "0"){
-  cat("File is empty", "\n")
+  message("File is empty")
 } else {
-  newFile <- read.table(outfile_PASS, h=F, sep="\t", quote="\\")
+  newFile <- read.table(passScRNASeqLibrary, h=F, sep="\t", quote="\\")
   colnames(newFile) <- colnames(annotation)
-  write.table(newFile, file = file.path(output_folder, "NEW_scRNASeqLibrary.tsv"), col.names =T , row.names = F, quote = FALSE, sep = "\t")
+  write.table(newFile, file = passScRNASeqLibrary, col.names =TRUE , row.names = FALSE, quote = FALSE, sep = "\t")
 }
 ## samples that should be excluded
-info2 <- file.info(outfile_NOT_PASS)
+info2 <- file.info(notPassScRNASeqLibrary)
 if (info2$size == "0"){
-  cat("File is empty", "\n")
+  message("File is empty")
 } else {
-  excludeSamplesFile <- read.table(outfile_NOT_PASS, h=F, sep="\t", quote="\\")
+  excludeSamplesFile <- read.table(notPassScRNASeqLibrary, h=FALSE, sep="\t", quote="\\")
   colnames(excludeSamplesFile) <- colnames(annotation)
-  write.table(excludeSamplesFile, file = file.path(output_folder, "NOT_PASS_scRNASeqLibrary.tsv"), col.names =T , row.names = F, quote = FALSE, sep = "\t")
+  write.table(excludeSamplesFile, file = notPassScRNASeqLibrary, col.names =TRUE , row.names = FALSE, quote = FALSE, sep = "\t")
 }

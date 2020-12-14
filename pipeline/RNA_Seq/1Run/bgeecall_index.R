@@ -9,10 +9,10 @@
 ## partition                - partition on which jobs have to be run
 ## working_path             - path to directory where species specific files will be created by BgeeCall
 
+library(BgeeCall)
+
 ## Session info
 print(sessionInfo())
-
-library(BgeeCall)
 
 ## reading in arguments provided in command line
 cmd_args = commandArgs(TRUE);
@@ -33,10 +33,10 @@ for( c_arg in command_arg ){
 #specific to UNIL clusters: load R module
 modules <- c("module add Bioinformatics/Software/vital-it;", "module add R/3.6.1;")
 #generate BgeeCall objects to download kallisto and define path where data at species level will be stored
-kallistoMetadata <- new("KallistoMetadata", download_kallisto=TRUE)
+kallistoMetadata <- new("KallistoMetadata")
 userMetadata <- new("UserMetadata", working_path = working_path)
 bgeeMetadata <- new("BgeeMetadata", intergenic_release="custom")
 # slurm options for index generation
 slurm_options_index <- list(account = account, time = time, partition = partition, mem = "30G")
 # generate indexes
-generate_slurm_indexes(userFile=bgeecall_input_file, slurm_options = slurm_options_index, modules = modules, kallistoMetadata = kallistoMetadata, userMetadata = userMetadata)
+generate_slurm_indexes(userFile=bgeecall_input_file, slurm_options = slurm_options_index, modules = modules, kallistoMetadata = kallistoMetadata, bgeeMetadata=bgeeMetadata, userMetadata = userMetadata)
