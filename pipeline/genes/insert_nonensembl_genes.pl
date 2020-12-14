@@ -254,7 +254,7 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
         my $root = eval { exists $hash->{'uniprot'}->{'entry'}->[0] } ? $hash->{'uniprot'}->{'entry'}->[0] : $hash->{'uniprot'}->{'entry'};
 
         # Check the UniProt entry contains the xref used to query it, and is for the right species
-        print "GeneID:$annotations->{$gene}->{'GeneID'}\n"; #TODO clean
+        print "GeneID:$annotations->{$gene}->{'GeneID'}\n"  if ( $debug );
         if ( grep { $_->{'-type'} eq 'GeneID' && $_->{'-id'} eq "$annotations->{$gene}->{'GeneID'}" } @{ $root->{'dbReference'} } ){
             if ( $root->{'organism'}->{'dbReference'}->{'-id'} == $speciesBgee ){
                 my $dataset   = 'Uniprot/'.uc($root->{'-dataset'});
@@ -289,15 +289,15 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
                 }
 
                 # Xrefs
-                my @used_xref_db = ('EMBL', 'CCDS', 'RefSeq', 'PDB', 'PIR', 'Xenbase', 'ZFIN');
+                my @used_xref_db = ('EMBL', 'CCDS', 'RefSeq', 'Xenbase', 'ZFIN');
                 for my $dbref ( sort @{ $root->{'dbReference'} }){
                     if ( any { $dbref->{'-type'} eq $_ } @used_xref_db ){
-                        push @xrefs, $dbref->{'-type'}.':'.$dbref->{'-id'};
+                        push @xrefs, $dbref->{'-type'}.'##'.$dbref->{'-id'};
                         if ( exists $dbref->{'property'} ){
                             my @properties = eval { exists $dbref->{'property'}->[0] } ? @{ $dbref->{'property'} } : ($dbref->{'property'});
                             for my $property ( sort @properties ){
                                 if ( $property->{'-type'} =~ /sequence ID$/ ){
-                                    push @xrefs, $dbref->{'-type'}.':'.$property->{'-value'};
+                                    push @xrefs, $dbref->{'-type'}.'##'.$property->{'-value'};
                                 }
                             }
                         }
@@ -311,34 +311,25 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
                         }
                     }
                     elsif ( $dbref->{'-type'} eq 'Ensembl' ){
-                        push @xrefs, $dbref->{'-type'}.':'.$dbref->{'-id'};
+                        push @xrefs, $dbref->{'-type'}.'##'.$dbref->{'-id'};
                         for my $property ( sort @{ $dbref->{'property'} } ){
-                            push @xrefs, $dbref->{'-type'}.':'.$property->{'-value'};
+                            push @xrefs, $dbref->{'-type'}.'##'.$property->{'-value'};
                         }
                     }
                 }
             }
         }
     }
-    @xrefs    = uniq @xrefs;
+    @xrefs    = map { s/GeneID:/GenBank:/; $_ } uniq @xrefs;
     @gos      = uniq @gos;
     @synonyms = grep { $_ ne $display_id && $_ ne $external_name} uniq @synonyms;
-    #TODO clean
-    print "$display_id\t$external_name\t$external_db\t$description\n";
-    print join('|', @xrefs), "\n";
-    print join('|', @gos), "\n";
-    print join('|', @synonyms), "\n\n";
 
 
     ## Insert gene info
     my $bgeeGeneId;
-    
-}
-
-__END__
     if ( ! $debug ){
         $geneDB->execute($stable_id, $external_name, $description, $biotype, $speciesBgee)  or die $geneDB->errstr;
-        $bgeeGeneId = $dbh->{mysql_insertid};
+        $bgeeGeneId = $dbh->{'mysql_insertid'};
         die "Cannot get bgeeGeneId [$bgeeGeneId]\n"  if ( $bgeeGeneId !~ /^\d+$/ );
     }
     else {
@@ -347,15 +338,6 @@ __END__
 
 
     ## Get gene synonyms, if any
-    #NOTE Synonyms shown on the web site appear to come from THE main gene xref synonyms
-    #     But we need all of them, so no filtering based on main external_db !!!
-#TODO Remove part of synonym within "{...}" and split the rest on "|" !!!
-    my @synonyms = uniq sort                                                              # non-redundant & sorted
-                   map  { s{^\s+}{}; s{\s+$}{}; lc $_ }                                   # Trim & lowercase
-                   grep { $_ ne $stable_id && $_ ne $display_id && $_ ne $external_name } # Avoid putting $display_id as synonym
-                   map  { @{$_->get_all_synonyms} }                                       # Official xref synonyms
-#                   grep { $_->dbname() eq $external_db }                                  # Only external_db that are main gene db source
-                   @{$gene->get_all_xrefs()};
     SYNONYM:
     for my $syn ( @synonyms ){
         if ( ! $debug ){
@@ -370,122 +352,54 @@ __END__
     ## Get Xref (linked in dataSource table BUT not GO)
     # Show all datasources (but GO)
     if ( $debug ){
-        print join(' | ', uniq sort
-                          map  { $_->dbname() }
-                          grep { $_->dbname() ne 'GO' }
-                          @{$gene->get_all_xrefs()}
-                  ), "\n";
+        print join('|', @xrefs), "\n";
     }
-    my %xrefs = map  { my $dbname = $_->dbname();
-                       my $pid    = $_->primary_id();
-                       "$dbname##$pid" => $_->display_id() }           # Remove duplicates
-                grep { exists $InsertedDataSources{lc $_->dbname()} }  # Only external db in dataSource table
-                grep { $_->dbname() ne 'GO' }                          # GO xrefs have there own table, so not in XRefs
-                @{$gene->get_all_xrefs()};
-
-    # Get UniProt ID, missing in Ensembl that contains only UniProt AC
-    UNIPROT_ID:
-    for my $uniprot ( sort grep { /^Uniprot\/SPTREMBL##/ || /^Uniprot\/SWISSPROT##/} keys %xrefs ){
-        my ($dbname, $pid) = split('##', $uniprot);
-        my $content = get("http://www.uniprot.org/uniprot/?query=id:$pid&format=tab&columns=entry%20name");
-        if ( defined $content ){
-            my (undef, $uniprot_id) = split("\n", $content, -1);
-            #TODO CHECK !!!
-            for my $uid ( split(/\s*;\s*/, $uniprot_id) ){
-                $xrefs{"$dbname##$uid"} = $uid;
-            }
-        }
-        else {
-            warn "\tCannot get UniProt ID for [$pid]\n";
-        }
-    }
-
     XREF:
-    for my $xref ( sort keys %xrefs ){
-        #TODO CHECK !!!
+    for my $xref ( sort @xrefs ){
         next  if ( $xref =~ /;/ );
         my ($dbname, $pid) = split('##', $xref);
-        $xrefs{$xref} = ''  if ( $xrefs{$xref} eq $pid );
         if ( ! $debug ){
-            $xrefDB->execute($bgeeGeneId, $pid, $xrefs{$xref}, $InsertedDataSources{lc $dbname})  or die $xrefDB->errstr;
+            $xrefDB->execute($bgeeGeneId, $pid, '', $InsertedDataSources{lc $dbname})  or die $xrefDB->errstr;
         }
         else {
-            print "xref: [$stable_id] [$pid] [$xrefs{$xref}] [$dbname]\n";
+            print "xref: [$stable_id] [$pid] [$dbname]\n";
         }
     }
 
 
     ## Get GO xref
     #TODO alt_id GO test  GO:0007243
-    my %GO = map  { lc $_->display_id => ${$_->{'linkage_types'}->[0]}[0] }
-             grep { $_->dbname() eq 'goslim_goa' } # Extra goslim_goa terms
-             @{$gene->get_all_xrefs()};
-    %GO    = map  { lc $_->display_id => ${$_->{'linkage_types'}->[0]}[0] }
-             grep { $_->dbname() eq 'GO' } # Replace by GO itself and its Evidence Code if any, so keep intersection between GO & goslim_goa in Ensembl
-             @{$gene->get_all_xrefs()};
-    %GO    = map  { exists $altid_go{$_} ? ($altid_go{$_} => $GO{$_}) : ($_ => $GO{$_}) } # Replace alt_id GO by main GO if any
-             grep { !exists $obs_go{$_} }                                                 # Skip obsolete GO, not inserted in Bgee previously
-             keys %GO;
     GO:
-    for my $go ( sort keys %GO ){
+    for my $go_ec ( sort @gos ){
+        my ($go, $ec) = split('___', $go_ec);
         if ( ! $debug ){
-            $goDB->execute($bgeeGeneId, uc $go, $GO{$go})  or do {warn "[$stable_id] [$go] [$GO{$go}]\n"; die $goDB->errstr};
+            $goDB->execute($bgeeGeneId, uc $go, $ec)  or do {warn "[$stable_id] [$go] [$ec]\n"; die $goDB->errstr};
         }
         else {
-            print "go:   [$stable_id] [$go] [$GO{$go}]\n";
+            print "go:   [$stable_id] [$go] [$ec]\n";
         }
     }
 
 
     ## Everything in geneToTerm
-    # gene_id + version
     my @all;
     push @all, $display_id                      if ( $display_id );
     push @all, $stable_id                       if ( $stable_id );
     push @all, $external_name                   if ( $external_name );
-    #NOTE version() does not seem to return something for species with non Ensembl gene ids such as C. elegans WBGene00000001
-    push @all, $stable_id.'.'.$gene->version()  if ( $stable_id && $gene->version() );
-    # transcript ids
-    push @all, map  { if ( $_->version() ){ ($_->stable_id(), $_->stable_id().'.'.$_->version()) } else { $_->stable_id() } }
-               grep { defined $_->stable_id() }
-               @{$gene->get_all_Transcripts};
-    # exon ids
-    push @all, map  { if ( $_->version() ){ ($_->stable_id(), $_->stable_id().'.'.$_->version()) } else { $_->stable_id() } }
-               grep { defined $_->stable_id() }
-               @{$gene->get_all_Exons};
-    # translation ids
-    push @all, map  { if ( $_->version() ){ ($_->stable_id(), $_->stable_id().'.'.$_->version()) } else { $_->stable_id() } }
-               grep { defined $_->stable_id() }
-               map  { $_->translation() }
-               grep { defined $_->translation() }
-               @{$gene->get_all_Transcripts};
-    # Xref display ids
-    push @all, map  { $_->display_id() }
-               @{$gene->get_all_xrefs()};
-    # Xref primary ids
-    push @all, map  { $_->primary_id() }
-               @{$gene->get_all_xrefs()};
-    # Xref synonyms
-    push @all, map  { @{ $_->get_all_synonyms } }
-               @{$gene->get_all_xrefs()};
-    # Extra Xref in gene description
-    if ( $description ne '' ){
-        #EC number
-        while ( $description =~ /E\.?C\.?\s*([1-6]\.[\d\-]+\.[\d\-]+\.[\d\-]+)/g ){
-            push @all, $1;
-        }
-        #Entry source
-        while ( $description =~ /\[Source:\s*.+?\s*;Acc:\s*(.+?)\s*\]/g ){
-            push @all, $1;
-        }
-    }
+    push @all, @synonyms;
+    push @all, @xrefs;
+    #without version digit
+    push @all, map  { s/\.\d+$//; $_ }
+               grep { /\.\d+$/ }
+               @xrefs;
+    push @all, map { s/___.*$//; $_ } @gos;
+
     # Remove duplicates AND empty strings AND trim!!!
-    @all = uniq sort                                          # non-redundant & sorted
+    @all = uniq sort
            grep { $_ ne '' && defined $_ }                    # Non-empty & non-undef
-           grep { !exists $obs_go{$_} }                       # Skip obsolete GO, not inserted in Bgee previously
-           map  { exists $altid_go{$_} ? $altid_go{$_} : $_ } # Replace alt_id GO by main GO if any
            map  { s{^\s+}{}; s{\s+$}{}; lc $_ }               # Trim + lowercase because same entry in different cases
            @all;
+
     ALL:
     for my $term ( @all ){
         if ( ! $debug ){
@@ -501,11 +415,10 @@ $synonymDB->finish;
 $xrefDB->finish;
 $goDB->finish;
 $geneToTermDB->finish;
-print "Gene nbr for $scientific_name: ", scalar @genes, "\n\n";
+print "Gene nbr for $scientific_name: ", scalar %$annotations, "\n\n";
 
 
 # Close db connections
-$reg->clear();
 $dbh->disconnect;
 
 exit 0;
