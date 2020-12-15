@@ -127,27 +127,27 @@ for my $line ( 0..$#{$tsv2{'libraryId'}} ) {
     # line commented, skipped
     next  if ( $tsv2{'libraryId'}[$line] =~ /^#/ );
     # Check wrong chars depending on the column
-    if ( $tsv2{'libraryId'}[$line] !~ /^[\w\-\.]+$/
+    if ( $tsv2{'libraryId'}[$line]    !~ /^[\w\-\.]+$/
       || $tsv2{'experimentId'}[$line] !~ /^[\w\-\.]+$/
-      || $tsv2{'platform'}[$line] !~ /^[ \w\-\.]+$/
-      || $tsv2{'uberonId'}[$line] !~ /^[\w]+:[\w]+$/
-      || $tsv2{'stageId'}[$line] !~ /^[\w]+:[\w]+$/ ) {
+      || $tsv2{'platform'}[$line]     !~ /^[ \w\-\.]+$/
+      || $tsv2{'uberonId'}[$line]     !~ /^[\w]+:[\w]+$/
+      || $tsv2{'stageId'}[$line]      !~ /^[\w]+:[\w]+$/ ) {
         warn "Problem! wrong character inserted in line $line \[$tsv2{'libraryId'}[$line]] [$tsv2{'experimentId'}[$line]] [$tsv2{'platform'}[$line]] [$tsv2{'uberonId'}[$line]] [$tsv2{'stageId'}[$line]]\n";
     }
 
     my $libraryId = $tsv2{'libraryId'}[$line];
-    my $expId    = $tsv2{'experimentId'}[$line];
-    my $organId  = $tsv2{'uberonId'}[$line];
-    my $stageId  = $tsv2{'stageId'}[$line];
+    my $expId     = $tsv2{'experimentId'}[$line];
+    my $organId   = $tsv2{'uberonId'}[$line];
+    my $stageId   = $tsv2{'stageId'}[$line];
     warn "Warning, [$libraryId] used several times\n"    if ( exists $libraryIds{$libraryId} );
     warn "Warning, [$libraryId] char length too long\n"  if ( length($libraryId) > 255 );
 
     if ( !defined $previousExpId || $previousExpId ne $expId ) {
         if ( exists $experimentIds{$expId} ) {
-        warn "Warning, not continuous experiment [$expId] (split in different part of the file)\n";
+            warn "Warning, not continuous experiment [$expId] (split in different part of the file)\n";
         }
         if ( !exists $experiments{$expId} ) {
-        warn "Warning, [$expId] not existing in the experiment annotation file\n";
+            warn "Warning, [$expId] not existing in the experiment annotation file\n";
         }
     }
     $experimentIds{$expId}++;
