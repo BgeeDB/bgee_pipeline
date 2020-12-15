@@ -190,7 +190,7 @@ for my $gene (sort {$a->stable_id cmp $b->stable_id} (@genes)) { #Sort to always
     my $bgeeGeneId;
     if ( ! $debug ){
         $geneDB->execute($id2insert, $external_name, $description, $biotype, $speciesBgee)  or die $geneDB->errstr;
-        $bgeeGeneId = $dbh->{mysql_insertid};
+        $bgeeGeneId = $dbh->{'mysql_insertid'};
         die "Cannot get bgeeGeneId [$bgeeGeneId]\n"  if ( $bgeeGeneId !~ /^\d+$/ );
     }
     else {

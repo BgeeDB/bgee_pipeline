@@ -23,9 +23,10 @@ genes: $(SPECIESFILEPATH) go.obsolete
 	@$(MYSQL) -e "SELECT CONCAT(s.speciesId, '__', s.genomeSpeciesId, '__', s.genus, '_', REPLACE(s.species, ' ', '_'), '__', d.dataSourceName) FROM species s, dataSource d WHERE s.dataSourceId=d.dataSourceId ORDER BY s.speciesId" | grep -v 'speciesId' >$@.tmp
 	@if [[ -s $@.tmp ]]; then echo -n; else echo "NO species in file"; exit 2; fi
 	# Insert gene information for Ensembl species (may be long: between 1 and 10 hours per species)
-	#FIXME add a way to switch between Ensembl and Ensembl Metazoa
+	#FIXME add a way to switch between Ensembl and Ensembl Metazoa, if different API versions
 	@for sp in `cat $@.tmp | grep -i __Ensembl`; do \
 		export PERL5LIBORI=$$PERL5LIB; \
+		date; \
 		echo "species: $$sp"; \
 		if [[ `echo $$sp | grep 'Ensembl$$'` ]]; then \
 			export PERL5LIB=`echo $$PERL5LIB | perl -ne 'print join ":", map { s/\/ensembl\//\/ensembl_$(ENS_API_RELEASE)\//; $$_ } grep { /\w/ } split(/:/, $$_)'`; \
@@ -34,10 +35,14 @@ genes: $(SPECIESFILEPATH) go.obsolete
 		fi; \
 		perl insert_ensembl_genes.pl -species=$$sp -bgee=$(BGEECMD) -ensembl=$(ENSCMD) -obsGO=go.obsolete >> $@.tmp 2>>$@.err; \
 		export PERL5LIB=$$PERL5LIBORI; \
+		sleep 60; \
 	done
 	# Insert gene information for non-Ensembl species
 	@for sp in `cat $@.tmp | grep -vi __Ensembl`; do \
+		date; \
+		echo "species: $$sp"; \
 		perl insert_nonensembl_genes.pl -species=$$sp -bgee=$(BGEECMD) -bgeeSpecies=$(SPECIESFILEPATH) -obsGO=go.obsolete >> $@.tmp 2>>$@.err; \
+		sleep 60; \
 	done
 	@if [[ -s $@.err ]]; then echo -n; else $(RM) $@.err; fi
 	@$(MV) $@.tmp $@
