@@ -46,15 +46,13 @@ ENSMETAZOARELEASE      := 49
 ENS_API_RELEASE        := $(ENSRELEASE)
 ENSMETAZOA_API_RELEASE := $(ENSRELEASE)
 #   Default, remote Ensembl db
-ENSDBUSER  := anonymous
-ENSDBPASS  := ''
-ENSDBHOST  := ensembldb.ensembl.org
-ENSDBPORT  := 5306
+ENSDBUSER   := anonymous
+ENSDBPASS   := ''
+ENSDBHOST   := ensembldb.ensembl.org
+ENSDBPORT   := 5306
 #   Default, remote Ensembl genomes db
-#ENSDBUSER  := anonymous
-#ENSDBPASS  := ''
-#ENSDBHOST  := mysql.ebi.ac.uk
-#ENSDBPORT  := 4157
+ENSGDBHOST  := mysql-eg-publicsql.ebi.ac.uk
+ENSGDBPORT  := 4157
 
 
 # local BDGP
