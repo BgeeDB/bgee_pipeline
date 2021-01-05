@@ -41,7 +41,7 @@ if ( !$test_options || $species eq '' || $bgee_connector eq '' || $ensembl_conne
 }
 
 # Ensembl connection via Ensembl API/Registry
-my $reg = Utils::connect_ensembl_registry($ensembl_connector, 1);
+my $reg = Utils::connect_ensembl_registry($ensembl_connector, $debug);
 # Bgee db connection
 my $dbh = Utils::connect_bgee_db($bgee_connector);
 
@@ -253,7 +253,7 @@ for my $gene (sort {$a->stable_id cmp $b->stable_id} (@genes)) { #Sort to always
     }
 
     XREF:
-    for my $xref ( sort keys %xrefs ){
+    for my $xref ( uniq sort keys %xrefs ){
         #TODO CHECK !!!
         next  if ( $xref =~ /;/ );
         my ($dbname, $pid) = split('##', $xref);
@@ -279,9 +279,9 @@ for my $gene (sort {$a->stable_id cmp $b->stable_id} (@genes)) { #Sort to always
              grep { !exists $obs_go{$_} }                                                 # Skip obsolete GO, not inserted in Bgee previously
              keys %GO;
     GO:
-    for my $go ( sort keys %GO ){
+    for my $go ( uniq sort keys %GO ){
         if ( ! $debug ){
-            $goDB->execute($bgeeGeneId, uc $go, $GO{$go})  or do {warn "[$id2insert] [$go] [$GO{$go}]\n"; die $goDB->errstr};
+            $goDB->execute($bgeeGeneId, uc $go, $GO{$go})  or do {warn "[$id2insert] [$go] [$GO{$go}]\n"};# die $goDB->errstr};
         }
         else {
             print "go:   [$id2insert] [$go] [$GO{$go}]\n";

@@ -373,7 +373,7 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
     for my $go_ec ( sort @gos ){
         my ($go, $ec) = split('___', $go_ec);
         if ( ! $debug ){
-            $goDB->execute($bgeeGeneId, uc $go, $ec)  or do {warn "[$stable_id] [$go] [$ec]\n"; die $goDB->errstr};
+            $goDB->execute($bgeeGeneId, uc $go, $ec)  or do {warn "[$stable_id] [$go] [$ec]\n"};# die $goDB->errstr};
         }
         else {
             print "go:   [$stable_id] [$go] [$ec]\n";
