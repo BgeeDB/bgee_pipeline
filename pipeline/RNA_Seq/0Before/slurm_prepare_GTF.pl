@@ -17,14 +17,15 @@ use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
 use Utils;
 use Getopt::Long;
 use Time::localtime;
-use Data::GUID;
 
 
 # Define arguments & their default value
-my ($gtf_dir, $block_size_N, $proportion_N, $output_gtf_path, $output_log_folder, $cluster_R_cmd) = ( '', '', '', '', '', '');
+my ($gtf_dir, $block_size_N, $proportion_N, $account, $partition, $output_gtf_path, $output_log_folder, $cluster_R_cmd) = ( '', '', '', '', '', '', '', '');
 my %opts = ('gtf_dir=s'             => \$gtf_dir,
             'block_size_N=s'        => \$block_size_N,
             'proportion_N=s'        => \$proportion_N,
+            'account=s'              => \$account,
+            'partition=s'            => \$partition,
             'output_gtf_path=s'     => \$output_gtf_path,
             'output_log_folder=s'   => \$output_log_folder,
             'cluster_R_cmd=s'       => \$cluster_R_cmd
@@ -32,12 +33,14 @@ my %opts = ('gtf_dir=s'             => \$gtf_dir,
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $gtf_dir eq '' || $block_size_N eq '' || $proportion_N eq '' || $output_gtf_path eq '' || $output_log_folder eq '' || $cluster_R_cmd eq ''){
+if ( !$test_options || $gtf_dir eq '' || $block_size_N eq '' || $proportion_N eq '' || $account eq '' || $partition eq '' || $output_gtf_path eq '' || $output_log_folder eq '' || $cluster_R_cmd eq ''){
     print "\n\tInvalid or missing argument:
 \te.g. $0 -gtf_dir=\$(RNASEQ_CLUSTER_GTF) -block_size_N=31 -proportion_N=0.05 -output_gtf_path=\$(RNASEQ_CLUSTER_GTF) -output_log_folder=\$(RNASEQ_CLUSTER_GTF) -cluster_R_cmd=\$(CLUSTER_R_CMD)
 \t-gtf_dir=s            Folder with GTF files downloaded from Ensembl
 \t-block_size_N=s       max number of consecutive Ns present in intergenic sequences
 \t-proportion_N=s       max proportion of Ns in intergenic sequences
+\t-account=s            name of the account used to run the script on the cluster
+\t-partition=s          slurm partition to use to run the script on the cluster
 \t-output_gtf_path=s    Folder where GTF files with intergenic regions are saved
 \t-output_log_folder=s  Folder for .out and .err files (produced by queuing system), and .Rout files produced by R
 \t-cluster_R_cmd=s      Command used to load R on the cluster
@@ -55,15 +58,12 @@ my $main_script = $RealBin.'/prepare_GTF.R';
 my $nbr_processors = 1;
 # RAM needed: 10GB should be enough
 my $memory_usage   = 10;      # in GB
-my $user_email     = 'bgee@sib.swiss'; # for email notification
-my $account        = 'mrobinso_bgee';
-my $queue          = 'axiom';
 
 my $jobs_during_day   = 100; # Number of simultaneous jobs during working days
 my $jobs_during_night = 120; # Number of simultaneous jobs during week-end & night
 
 # create one unique name for all the jobs
-my $job_name = Data::GUID->new->as_string;
+my $job_name = "prepare_GTF";
 
 # reading library infos
 my $count = 0;
@@ -97,7 +97,7 @@ while (my $file = readdir(DIR) ){
 
     # Create the SBATCH script
     open (my $OUT, '>', "$sbatch_file")  or die "Cannot write [$sbatch_file]\n";
-    print {$OUT} Utils::sbatch_template($queue, $account, $nbr_processors, $memory_usage, $output_log_file, $err_log_file, $job_name);
+    print {$OUT} Utils::sbatch_template($partition, $account, $nbr_processors, $memory_usage, $output_log_file, $err_log_file, $job_name);
     print {$OUT} "$sbatch_command\n";
     close $OUT;
 
