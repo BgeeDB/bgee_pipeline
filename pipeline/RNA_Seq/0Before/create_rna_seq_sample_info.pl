@@ -265,11 +265,21 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         }
 
         # species
-        $info =~ /<(SCIENTIFIC|COMMON)_NAME>([^<]+)<\/(SCIENTIFIC|COMMON)_NAME>/;
-        $organism = $2;
+        if ( $info =~ /<(SCIENTIFIC|COMMON)_NAME>([^<]+)<\/(SCIENTIFIC|COMMON)_NAME>/ ){
+            $organism = $2;
+        }
+        elsif ( $info =~ /<SAMPLE_ATTRIBUTE><TAG>component_organism<\/TAG><VALUE>([^<]+)<\/VALUE><\/SAMPLE_ATTRIBUTE>/ ){
+            $organism = $1;
+        }
         if ( $organism ne $species{ $tsv{'speciesId'}[$i] }->{'organism'} ){
             if ( $organism eq 'Sus scrofa domesticus' && $species{ $tsv{'speciesId'}[$i] }->{'organism'} eq 'Sus scrofa' ){
                 #OK
+            }
+            elsif ( $organism =~ /^Mus musculus (domesticus|castaneus|musculus)$/  && $species{ $tsv{'speciesId'}[$i] }->{'organism'} eq 'Mus musculus' ){
+                #OK, subspecies
+            }
+            elsif ( $organism eq 'Bos indicus' && $species{ $tsv{'speciesId'}[$i] }->{'organism'} eq 'Bos taurus' ){
+                #OK, subspecies
             }
             elsif ( $organism eq 'Gorilla' && $species{ $tsv{'speciesId'}[$i] }->{'organism'} eq 'Gorilla gorilla' ){
                 #OK
