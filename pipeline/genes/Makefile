@@ -6,8 +6,8 @@ include $(PIPELINEROOT)Makefile.common
 all: $(VERIFICATIONFILE)
 
 $(OUTPUT_DIR)go:
-	# Download Gene Ontology
-	@$(WGET) 'ftp://ftp.geneontology.org/pub/go/ontology/obo_format_1_2/gene_ontology.1_2.obo' -O $(INPUT_DIR)go.tmp && $(MV) $(INPUT_DIR)go.tmp $(INPUT_DIR)go 2>/dev/null  || rm -f $(INPUT_DIR)go.tmp
+	# Download Gene Ontology (obo format-version: 1.2)
+	@$(WGET) 'http://purl.obolibrary.org/obo/go/go-basic.obo' -O $(INPUT_DIR)go.tmp && $(MV) $(INPUT_DIR)go.tmp $(INPUT_DIR)go 2>/dev/null  || rm -f $(INPUT_DIR)go.tmp
 	# Insert Gene Ontology
 	@$(JAVA) InsertGO $(INPUT_DIR)go >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
@@ -23,17 +23,19 @@ genes: $(SPECIESFILEPATH) go.obsolete
 	@$(MYSQL) -e "SELECT CONCAT(s.speciesId, '__', s.genomeSpeciesId, '__', s.genus, '_', REPLACE(s.species, ' ', '_'), '__', d.dataSourceName) FROM species s, dataSource d WHERE s.dataSourceId=d.dataSourceId ORDER BY s.speciesId" | grep -v 'speciesId' >$@.species
 	@if [[ -s $@.species ]]; then echo -n; else echo "NO species in file"; exit 2; fi
 	# Insert gene information for Ensembl species (may be long: between 1 and 10 hours per species)
-	#FIXME add a way to switch between Ensembl and Ensembl Metazoa, if different API versions
 	@for sp in `cat $@.species | grep -i __Ensembl`; do \
+		export ENSCMD=$(ENSCMD); \
 		export PERL5LIBORI=$$PERL5LIB; \
 		date; \
 		echo "species: $$sp"; \
 		if [[ `echo $$sp | grep 'Ensembl$$'` ]]; then \
 			export PERL5LIB=`echo $$PERL5LIB | perl -ne 'print join ":", map { s/\/ensembl\//\/ensembl_$(ENS_API_RELEASE)\//; $$_ } grep { /\w/ } split(/:/, $$_)'`; \
 		elif [[ `echo $$sp | grep 'EnsemblMetazoa$$'` ]]; then \
+			export ENSCMD=$${ENSCMD/$(ENSDBHOST)/$(ENSGDBHOST)}; \
+			export ENSCMD=$${ENSCMD/$(ENSDBPORT)/$(ENSGDBPORT)}; \
 			export PERL5LIB=`echo $$PERL5LIB | perl -ne 'print join ":", map { s/\/ensembl\//\/ensembl_$(ENSMETAZOA_API_RELEASE)\//; $$_ } grep { /\w/ } split(/:/, $$_)'`; \
 		fi; \
-		perl insert_ensembl_genes.pl -species=$$sp -bgee=$(BGEECMD) -ensembl=$(ENSCMD) -obsGO=go.obsolete >> $@.tmp 2>>$@.err; \
+		perl insert_ensembl_genes.pl -species=$$sp -bgee=$(BGEECMD) -ensembl=$$ENSCMD -obsGO=go.obsolete >> $@.tmp 2>>$@.err; \
 		export PERL5LIB=$$PERL5LIBORI; \
 		sleep 60; \
 	done
