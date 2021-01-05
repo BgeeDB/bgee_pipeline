@@ -47,7 +47,7 @@ commit_rna_seq_sample_info: create_rna_seq_sample_info $(RNASEQ_SAMPINFO_FILEPAT
 	@$(GIT) commit -m 'Update $(RNASEQ_SAMPINFO_FILEPATH) and $(STRAIN_MAPPING_FILE) for $(DBNAME)' $(RNASEQ_SAMPINFO_FILEPATH) || true
 	@$(GIT) push
 	@echo -e "\t$(RNASEQ_SAMPINFO_FILEPATH) is ready, you can go to regular cluster to download new SRA files with get_SRA.pl as *admin* user\n\tDo a 'git pull' before starting.\n"
-	@$(MV) $@.tmp $@
+	@touch $@
 
 
 ################################ SEND FILES TO CLUSTER ################################
