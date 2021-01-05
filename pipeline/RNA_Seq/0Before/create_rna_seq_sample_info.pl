@@ -265,10 +265,18 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         }
 
         # species
-        $info =~ /<SCIENTIFIC_NAME>([^<]+)<\/SCIENTIFIC_NAME>/;
-        $organism = $1;
+        $info =~ /<(SCIENTIFIC|COMMON)_NAME>([^<]+)<\/(SCIENTIFIC|COMMON)_NAME>/;
+        $organism = $2;
         if ( $organism ne $species{ $tsv{'speciesId'}[$i] }->{'organism'} ){
-            warn "\tProblem: the organism (scientific name) is not matching between the annotation file [", $species{ $tsv{'speciesId'}[$i] }->{'organism'}, "] and the SRA record [$organism], please verify for [$libraryId][$experimentId]. The information from the annotation file is printed in output file.\n";
+            if ( $organism eq 'Sus scrofa domesticus' && $species{ $tsv{'speciesId'}[$i] }->{'organism'} eq 'Sus scrofa' ){
+                #OK
+            }
+            elsif ( $organism eq 'Gorilla' && $species{ $tsv{'speciesId'}[$i] }->{'organism'} eq 'Gorilla gorilla' ){
+                #OK
+            }
+            else {
+                warn "\tProblem: the organism (scientific name) is not matching between the annotation file [", $species{ $tsv{'speciesId'}[$i] }->{'organism'}, "] and the SRA record [$organism], please verify for [$libraryId][$experimentId]. The information from the annotation file is printed in output file.\n";
+            }
         }
         # platform
         $info =~ /<PLATFORM><[^<]+><INSTRUMENT_MODEL>([^<]+)<\/INSTRUMENT_MODEL><\/[^<]+><\/PLATFORM>/;
