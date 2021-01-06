@@ -65,18 +65,20 @@ else {
 
 # Get a slice adaptor for the  $species  core database
 my $gene_adaptor;
-if ( $ensSource eq 'Ensembl' ){
-    $gene_adaptor = $reg->get_adaptor( $species, 'Core', 'Gene' );
+if ( $scientific_name eq 'Heterocephalus_glaber' ){
+    #Specific genome versions for female and male
+    $scientific_name = 'Heterocephalus_glaber_female';
 }
-elsif ( $ensSource eq 'EnsemblMetazoa' ){
-    # EnsemblMetazoa does not seem to work with taxid for species selection!
-    $gene_adaptor = $reg->get_adaptor( $scientific_name, 'Core', 'Gene' );
+if ( $ensSource eq 'Ensembl' || $ensSource eq 'EnsemblMetazoa' ){
+    $gene_adaptor = $reg->get_adaptor( lc $scientific_name, 'Core', 'Gene' );
 }
 else {
     die "Unknown Ensembl db source [$ensSource]\n";
 }
 # Fetch all clones from a slice adaptor (returns a list reference)
 my @genes = @{$gene_adaptor->fetch_all()};
+#print scalar @genes, " genes for $scientific_name\n";
+#exit;
 
 
 
