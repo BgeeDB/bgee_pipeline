@@ -121,11 +121,15 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
 
     ## change metadata: add info about the cell type for each barcode
     ## select from barcode file: barcode ID (column 1) and cell_type_harmonization (column 10)
-    barcode_cellName <- barcodeIDs[,c(1,10)]
-    barcode_cellName <- barcode_cellName[ barcode_cellName$barcode %in% presentSubset$barcode, ]
-    barcode_cellName <- barcode_cellName$cell_type_harmonization
+    barcode_cell <- barcodeIDs %>% dplyr::select(barcode, cell_type_harmonization, cellTypeId)
+    barcode_cell <- barcode_cell[ barcode_cell$barcode %in% presentSubset$barcode, ]
+    
+    barcode_cellName <- barcode_cell$cell_type_harmonization
     barcode_cellName <- unlist(barcode_cellName, use.names=FALSE)
+    barcode_cellid <- barcode_cell$cellTypeId
+    barcode_cellid <- unlist(barcode_cellid, use.names=FALSE)
     myData$cell_type <- barcode_cellName
+    myData$cell_id <- barcode_cellid
     #head(myData[[]])
     ## remove unsigned cells (this avoid the exportation of the file of unassigned cells)
     myData <- subset(myData,  cell_type != "Unassigned")
@@ -152,7 +156,12 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
     pdf(paste0(output, "/", libraryID, "/UMAP_cellType_cluster.pdf"))
     print(umapPlot)
     dev.off()
-
+    umapPlot <- DimPlot(myData, reduction = "umap", group.by='cell_id')
+    ## save UMAP information with cell_ontology
+    pdf(paste0(output, "/", libraryID, "/UMAP_cellID_cluster.pdf"))
+    print(umapPlot)
+    dev.off()
+    
     ## find the marker genes between clusters
     markersLibrary <- FindAllMarkers(myData, only.pos = TRUE, min.pct = 0.1, logfc.threshold = 0.1)
 
@@ -163,35 +172,41 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
     ## write in the output the info per cell type that is present in the library
     infoCollected <- c()
     for (cell in unique(myData$cell_type)) {
-      ## split information
-      barcodesID <- colnames(myData)[myData$cell_type == cell]
-      ## export raw counts to each cell type
-      rawCountsCell <- finalRaw[(names(finalRaw) %in% barcodesID)]
-      rawCountsCell <- setDT(rawCountsCell, keep.rownames = TRUE)[]
-      colnames(rawCountsCell)[1] <- "gene_id"
-      ## add biotype info to raw counts
-      collectBiotypeRaw <- merge(rawCountsCell, biotypeInfo, by = "gene_id", all.x = TRUE)
-      ## add type info
-      collectBiotypeRaw$type <- ifelse(is.na(collectBiotypeRaw$biotype), "intergenic", "genic")
-
-      ## export normalized counts to each cell type
-      normalizedCountsCell <- finalCPM[(names(finalCPM) %in% barcodesID)]
-      normalizedCountsCell <- setDT(normalizedCountsCell, keep.rownames = TRUE)[]
-      colnames(normalizedCountsCell)[1] <- "gene_id"
-      ## add biotype info to normalized counts
-      collectBiotypeNorm <- merge(normalizedCountsCell, biotypeInfo, by = "gene_id", all.x = TRUE)
-      ## add type info
-      collectBiotypeNorm$type <- ifelse(is.na(collectBiotypeNorm$biotype), "intergenic", "genic")
-
-      ## write output information to integrate in Bgee
-      write.table(collectBiotypeRaw, file = paste0(output, "/", libraryID, "/Raw_Counts_", cell, ".tsv"), sep="\t", row.names = FALSE, quote = FALSE)
-      write.table(collectBiotypeNorm, file = paste0(output, "/", libraryID, "/Normalized_Counts_", cell, ".tsv"), sep="\t", row.names = FALSE, quote = FALSE)
-      ## info per cell (-3 because of geneId, biotype and type columns)
-      cellInfo <- c(nrow(collectBiotypeNorm), ncol(collectBiotypeNorm)-3, cell)
-      infoCollected <- rbind(infoCollected, cellInfo)
+      for (cellid in unique(myData$cell_id[myData$cell_type == cell])) {
+        ## split information
+        barcodesID <- colnames(myData)[myData$cell_type == cell & myData$cell_id == cellid] 
+        ## export raw counts to each cell type
+        rawCountsCell <- finalRaw[(names(finalRaw) %in% barcodesID)]
+        rawCountsCell <- setDT(rawCountsCell, keep.rownames = TRUE)[]
+        colnames(rawCountsCell)[1] <- "gene_id"
+        ## add biotype info to raw counts
+        collectBiotypeRaw <- merge(rawCountsCell, biotypeInfo, by = "gene_id", all.x = TRUE)
+        ## add type info
+        collectBiotypeRaw$type <- ifelse(is.na(collectBiotypeRaw$biotype), "intergenic", "genic")
+        collectBiotypeRaw$cellTypeName <- cell
+        collectBiotypeRaw$cellTypeId <- cellid
+          
+        ## export normalized counts to each cell type
+        normalizedCountsCell <- finalCPM[(names(finalCPM) %in% barcodesID)]
+        normalizedCountsCell <- setDT(normalizedCountsCell, keep.rownames = TRUE)[]
+        colnames(normalizedCountsCell)[1] <- "gene_id"
+        ## add biotype info to normalized counts
+        collectBiotypeNorm <- merge(normalizedCountsCell, biotypeInfo, by = "gene_id", all.x = TRUE)
+        ## add type info
+        collectBiotypeNorm$type <- ifelse(is.na(collectBiotypeNorm$biotype), "intergenic", "genic")
+        collectBiotypeNorm$cellTypeName <- cell
+        collectBiotypeNorm$cellTypeId <- cellid
+        cellid <- gsub(":","-",cellid)
+        ## write output information to integrate in Bgee
+        write.table(collectBiotypeRaw, file = paste0(output, "/", libraryID, "/Raw_Counts_", cell, "_", cellid, ".tsv"), sep="\t", row.names = FALSE, quote = FALSE)
+        write.table(collectBiotypeNorm, file = paste0(output, "/", libraryID, "/Normalized_Counts_", cell, "_", cellid,  ".tsv"), sep="\t", row.names = FALSE, quote = FALSE)
+        ## info per cell (-5 because of geneId, biotype, type columns and cellName and cellID)
+        cellInfo <- c(nrow(collectBiotypeNorm), ncol(collectBiotypeNorm)-5, cell, cellid)
+        infoCollected <- rbind(infoCollected, cellInfo)
+      }
     }
     infoCollected <- as.data.frame(infoCollected)
-    colnames(infoCollected) <- c("Number_genes", "Number_cells", "Cell_Name")
+    colnames(infoCollected) <- c("Number_genes", "Number_cells", "Cell_Name", "Cell_Ontology")
     return(list(myData[[]],markersLibrary,infoCollected))
   } else {
       message("Library", libraryID, "not take in consideration for posterior analysis.")
@@ -213,26 +228,28 @@ qualityControl <- function(finalInformationCells, geneMarkerLibrary, geneNameFil
   for (cluster in unique(myData$seurat_clusters)) {
 
     barcodesCluster <- myData[which(myData$seurat_clusters == cluster),]
-    infoCells <- as.data.frame(table(barcodesCluster$cell_type))
+    infoCells <- as.data.frame(table(barcodesCluster$cell_type, barcodesCluster$cell_id))
+    infoCells <- dplyr::filter(infoCells, Freq != 0)
 
     for (i in 1:nrow(infoCells)) {
 
       cellName <- infoCells$Var1[i]
+      cellId <- infoCells$Var2[i]
       numberCells <- infoCells$Freq[i]
 
       calculateVariabilityCluster <- numberCells/sum(infoCells$Freq)
-      infoVariabilityCluster <- (t(c(cluster, calculateVariabilityCluster, as.character(cellName))))
+      infoVariabilityCluster <- (t(c(cluster, calculateVariabilityCluster, as.character(cellName), as.character(cellId))))
       variability_cluster <- rbind(variability_cluster, infoVariabilityCluster)
 
       calculateGlobalProportion <- (numberCells/nrow(myData))*100
-      infoGlobalVariability <- (t(c(cluster, calculateGlobalProportion, as.character(cellName))))
+      infoGlobalVariability <- (t(c(cluster, calculateGlobalProportion, as.character(cellName), as.character(cellId))))
       global_proportion <- rbind(global_proportion, infoGlobalVariability)
     }
   }
   ## general Info about variability in the cluster (NOTE: this is also influenced by the parameters used in the targetCells function)
   ## so this works as informative file in case we need to go back to the annotation part
   variabilityFinalInfo <- data.frame(variability_cluster, global_proportion[,2])
-  colnames(variabilityFinalInfo) <- c("cluster", "Variability_cluster", "Cell_Name", "Global_Proportion_library")
+  colnames(variabilityFinalInfo) <- c("cluster", "Variability_cluster", "Cell_Name", "cellTypeId" , "Global_Proportion_library")
   variabilityFinalInfo$Classification_Variability_cluster <- " "
   
   ## add a warning in the file in case some cluster have one cell-type with less 80% of occupancy in the cluster (this means high variability of cells in the same cluster)
@@ -270,7 +287,7 @@ qualityControl <- function(finalInformationCells, geneMarkerLibrary, geneNameFil
     message("The experiment not provide info about gene markers in the annotation file.")
   } else {
     ## select from annotation
-    subset_annotation_markers <- geneMarkerLibrary %>% select(experimentId, uberonId, uberonName, cell_type, cell_type_harmonization, cellTypeId, cellTypeName, markerGene_ID_UniProt_Ensembl)
+    subset_annotation_markers <- geneMarkerLibrary %>% dplyr::select(experimentId, uberonId, uberonName, cell_type, cell_type_harmonization, cellTypeId, cellTypeName, markerGene_ID_UniProt_Ensembl)
     ## because we subset, some rows can be duplicated (Explanation: what makes the row unique is the source column in the annotation, where we report from where the info comes, example cluster figure).
     subset_annotation_markers <- subset_annotation_markers[!duplicated(subset_annotation_markers), ]
     
@@ -348,7 +365,7 @@ qualityControl <- function(finalInformationCells, geneMarkerLibrary, geneNameFil
 globalInfoLibraries <- paste0(output, "/InformationAllLibraries.txt")
 if (!file.exists(globalInfoLibraries)){
   file.create(globalInfoLibraries)
-  cat("library\texperimentID\tInitial_UMI_barcode\tInitial_tot_genes\tgenes_afterFiltering\tcells_afterFiltering\tCell_Name\n",file = paste0(output, "/InformationAllLibraries.txt"), sep = "\t")
+  cat("library\texperimentID\tInitial_UMI_barcode\tInitial_tot_genes\tgenes_afterFiltering\tcells_afterFiltering\tcellTypeName\tcellTypeId\n",file = paste0(output, "/InformationAllLibraries.txt"), sep = "\t")
 } else {
   print("File already exist.....")
 }
@@ -356,7 +373,7 @@ if (!file.exists(globalInfoLibraries)){
 variabilityCluster <- paste0(output, "/variabilityClusters.txt")
 if (!file.exists(variabilityCluster)){
   file.create(variabilityCluster)
-  cat("libraryID\texperimentID\tcluster\tVariability_cluster\tCell_Name\tGlobal_Proportion_library\tClassification_Variability_cluster\n",file = paste0(output, "/variabilityClusters.txt"), sep = "\t")
+  cat("libraryID\texperimentID\tcluster\tVariability_cluster\tcellTypeName\tcellTypeId\tGlobal_Proportion_library\tClassification_Variability_cluster\n",file = paste0(output, "/variabilityClusters.txt"), sep = "\t")
 } else {
   print("File already exist.....")
 }
@@ -430,7 +447,7 @@ for (libraryID in scRNASeqAnnotation$libraryId) {
       message("The library will not be present in the informative files: InformationAllLibraries.txt, variabilityClusters.txt and markerGenes_Validated.txt file")
     } else {
       ## write all information for the library
-      allinfo <- data.frame(libraryID, experimentID, length(tot_counts) , length(tot_genes), infoCells$Number_genes, infoCells$Number_cells, infoCells$Cell_Name)
+      allinfo <- data.frame(libraryID, experimentID, length(tot_counts) , length(tot_genes), infoCells$Number_genes, infoCells$Number_cells, infoCells$Cell_Name, infoCells$Cell_Ontology)
       write.table(allinfo, file = globalInfoLibraries, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
 
       ## export information about variability of cells per cluster and export information about validated gene markers after data analysis
@@ -445,3 +462,4 @@ for (libraryID in scRNASeqAnnotation$libraryId) {
       message("This library ", libraryID, " not exist in the directory.")
   }
 }
+

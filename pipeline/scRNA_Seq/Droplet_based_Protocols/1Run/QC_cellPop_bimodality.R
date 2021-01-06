@@ -60,7 +60,7 @@ plotData <- function(libraryID, allInformation, deconvolutionInfo, classificatio
   mtext(paste0(sizeData, " Cells"))
   hist(allInformation$genes, xlab="genes", main=paste0(cellPopName))
   hist(allInformation$UMIcounts, xlab="UMI counts", main=paste0(cellPopName))
- 
+  
   ## plot deconvolution curves
   plot(density((deconvolutionInfo$ratio)), lwd=3, main="Density protein coding", xlab="ratio")
   for (i in classification) {
@@ -87,7 +87,7 @@ plotData <- function(libraryID, allInformation, deconvolutionInfo, classificatio
 bimodality_targetBased <- paste0(output_folder, "/bimodality_targetBased.txt")
 if (!file.exists(bimodality_targetBased)){
   file.create(bimodality_targetBased)
-  cat("library\texperimentID\tCell_Name\tcomment\n",file = paste0(output_folder, "/bimodality_targetBased.txt"), sep = "\t")
+  cat("library\texperimentID\tCell_Name_ID\tcomment\n",file = paste0(output_folder, "/bimodality_targetBased.txt"), sep = "\t")
 } else {
   print("File already exist.....")
 }
@@ -117,14 +117,14 @@ for (libraryID in unique(scRNA_annotation_file$libraryId)) {
       
       cellpop <- fread(file.path(folder_data,libraryID,cellPop))
       ## remove info about gene_name, biotype, type
-      sizeData <- length(cellpop)-3 
-      colectInfo <- cellpop %>% select("gene_id", "biotype", "type")
+      sizeData <- length(cellpop)-5
+      colectInfo <- cellpop %>% dplyr::select("gene_id", "biotype", "type", "cellTypeName", "cellTypeId")
       
       ## just make QC bimodality if cell population have at least 50 cells
       if (sizeData >= 50){
         
         genicRegion <- dplyr::filter(cellpop, type == "genic")
-        genicRegion <- genicRegion[, -c("biotype", "type")]
+        genicRegion <- genicRegion[, -c("biotype", "type", "cellTypeName", "cellTypeId")]
         
         ## UMI counts and genes detected per cell using all genic region
         UMIcounts <- as.data.frame(colSums((genicRegion[,2:ncol(genicRegion)])))
@@ -164,25 +164,25 @@ for (libraryID in unique(scRNA_annotation_file$libraryId)) {
         mode_2 <- modesInfo$modes[2] < 0.8
         
         if (bimodalityCalculation == TRUE & mode_1 == FALSE & mode_2 == FALSE){
-          message("The cell population ", cellPopName, " from the library ", libraryID ,"follow a bimodal distribution.")
+          message("The cell population ", cellPopName, " from the library ", libraryID ," follow a bimodal distribution.")
           ## retrieve modes info
           modesInfo <- modesInfo$modes
           ## plot data 
           plotData(libraryID = libraryID, allInformation = allInformation, deconvolutionInfo = deconvolutionInfo, classification = classification, cutoff = cutoff, cellPopName = cellPopName, modesInfo = modesInfo)
         } else if (bimodalityCalculation == TRUE & mode_1 == TRUE | bimodalityCalculation == TRUE & mode_2 == TRUE){
-          message("The cell population ", cellPopName, " from the library ", libraryID ,"not present confidence enough to detect a set of genes that should be always detected for the cell-type.")
+          message("The cell population ", cellPopName, " from the library ", libraryID ," not present confidence enough to detect a set of genes that should be always detected for the cell-type.")
           ## add to the excluded file libraries/cell pop
           infoCollected <- data.frame(libraryID, experimentID, cellPopName, "mode_1 or mode_2 not fit the minimum requirement")
           write.table(infoCollected, file = bimodality_targetBased, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
         } else {
-          message("The cell population ", cellPopName, " from the library ", libraryID ,"is not bimodal.")
+          message("The cell population ", cellPopName, " from the library ", libraryID ," is not bimodal.")
           ## add to the excluded file libraries/cell pop
           infoCollected <- data.frame(libraryID, experimentID, cellPopName, "not bimodal")
           write.table(infoCollected, file = bimodality_targetBased, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
         }
         
       } else {
-        message("The cell population ", cellPopName, " from the library ", libraryID ,"have < 50 cells.")
+        message("The cell population ", cellPopName, " from the library ", libraryID ," have < 50 cells.")
         ## add to the excluded file libraries/cell pop
         infoCollected <- data.frame(libraryID, experimentID, cellPopName, "< 50 cells")
         write.table(infoCollected, file = bimodality_targetBased, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
