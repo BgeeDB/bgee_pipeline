@@ -20,6 +20,8 @@ retrieve_metadata: get_annot 0Preparation/retrieve_metadata.R
 	@echo --- Retrieve metadata information ---
 	@sed -i 's@--output=.*@--output=${PWD}/retrieve_metadata.out@'                                                      0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/retrieve_metadata.err@'                                                        0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                    	0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                          	0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                        0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@export scRNASeqExperiment=.*@export scRNASeqExperiment=../$(SC_RNASEQ_EXPERIMENT_FILEPATH)@'             0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@export scRNASeqLibrary=.*@export scRNASeqLibrary=../$(SC_RNASEQ_LIB_FILEPATH)@'                          0Preparation/retrieve_metadata.sbatch
@@ -37,11 +39,13 @@ retrieve_metadata: get_annot 0Preparation/retrieve_metadata.R
 ## NOTE: Here in the Make file we have one rule after the another, but the download from the 3 repositories can be done in parallel
 
 ## Download from HCA
+#XXX: Why this rule is the only one already using the dcsr environment?
 download_HCA: retrieve_metadata 0Preparation/download_HCA.sbatch
 	@echo --- Starting downloading the data from Human Cell Atlas ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SC_RNASEQ_DOWNLOAD_PATH)";@'                                                       0Preparation/download_HCA.sbatch
 	@sed -i 's@--output=.*@--output=${PWD}/download_HCA.out@'                                                         0Preparation/download_HCA.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/download_HCA.err@'                                                           0Preparation/download_HCA.sbatch
+	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                      0Preparation/download_HCA.sbatch
+	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                            0Preparation/download_HCA.sbatch
 	@sed -i 's@export manifest_file=.*@export manifest_file=../${SC_RNASEQ_MANIFEST_FILE_FILEPATH}@'                  0Preparation/download_HCA.sbatch
 	@sed -i 's@export tmp_folder_Download_data=.*@export tmp_folder_Download_data=/tmp/DOWNLOAD_HCA_DATA.$$RANDOM@'   0Preparation/download_HCA.sbatch
 	@sed -i 's@export final_destination=.*@export final_destination=${SC_RNASEQ_DOWNLOAD_PATH_DROPLET}@'              0Preparation/download_HCA.sbatch
@@ -53,9 +57,10 @@ download_HCA: retrieve_metadata 0Preparation/download_HCA.sbatch
 ## Download from EBI arrayExpress
 download_EBI: retrieve_metadata 0Preparation/download_reformat_EBI.R
 	@echo --- Starting downloading the data from EBI ArrayExpress ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SC_RNASEQ_DOWNLOAD_PATH)";@'                                                      0Preparation/download_reformat_EBI.R
 	@sed -i 's@--output=.*@--output=${PWD}/download_reformat_EBI.out@'                                               0Preparation/download_reformat_EBI.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/download_reformat_EBI.err@'                                                 0Preparation/download_reformat_EBI.sbatch
+	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                     0Preparation/download_reformat_EBI.sbatch
+	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                           0Preparation/download_reformat_EBI.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                     0Preparation/download_reformat_EBI.sbatch
 	@sed -i 's@export metadata_info=.*@export metadata_info=../$(SC_RNASEQ_METADATA_10X_FILEPATH)@'                  0Preparation/download_reformat_EBI.sbatch
 	@sed -i 's@export librariesDownloadedJura=.*@export librariesDownloadedJura=../$(SC_RNASEQ_JURA_LIB_FILEPATH)@'  0Preparation/download_reformat_EBI.sbatch
@@ -70,9 +75,10 @@ download_EBI: retrieve_metadata 0Preparation/download_reformat_EBI.R
 ## Download from SRA
 download_SRA: retrieve_metadata 0Preparation/download_SRA.R
 	@echo --- Starting downloading the data from SRA ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SC_RNASEQ_DOWNLOAD_PATH)";@'                                                      0Preparation/download_SRA.R
 	@sed -i 's@--output=.*@--output=${PWD}/download_SRA.out@'                                                        0Preparation/download_SRA.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/download_SRA.err@'                                                          0Preparation/download_SRA.sbatch
+	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                     0Preparation/download_SRA.sbatch
+	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                           0Preparation/download_SRA.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                     0Preparation/download_SRA.sbatch
 	@sed -i 's@export metadata_info=.*@export metadata_info=../$(SC_RNASEQ_METADATA_10X_FILEPATH)@'                  0Preparation/download_SRA.sbatch
 	@sed -i 's@export librariesDownloadedJura=.*@export librariesDownloadedJura=../$(SC_RNASEQ_JURA_LIB_FILEPATH)@'  0Preparation/download_SRA.sbatch
@@ -144,11 +150,13 @@ check_tools: clusterJURA
 
 ## generate informative files: transcript_to_gene_with_intergenic + gene_to_biotype_with_intergenic for each species
 ## not the informative files contain intergenic regions
+##XXX : tx2gene and gene2biotype files are generated by BgeeCall during the RNA-Seq pipeline. It is propably better to reuse them rather than create new on. Are geneid2geneName mandatory?
 generate_info: check_tools 0Preparation/generateInfo.R
 	@echo --- Start generating the informative files ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                      0Preparation/generateInfo.R
 	@sed -i 's@--output=.*@--output=${PWD}/generateInfo.out@'                       0Preparation/generateInfo.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/generateInfo.err@'                         0Preparation/generateInfo.sbatch
+	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION_SENSITIVE}@'          0Preparation/generateInfo.sbatch
+	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                0Preparation/generateInfo.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                   0Preparation/generateInfo.sbatch
 	@sed -i 's@export folder_gtf=.*@export folder_gtf=$(RNASEQ_CLUSTER_GTF)@'       0Preparation/generateInfo.sbatch
 	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'    0Preparation/generateInfo.sbatch
@@ -159,11 +167,13 @@ generate_info: check_tools 0Preparation/generateInfo.R
 
 
 ## Run Kallisto bus per library
+##TODO: since Bgee15 kallisto indexes containing transcripts and ref intergenic sequences are generated using BgeeCall. They will not be anymore in the $(RNASEQ_CLUSTER_GTF) folder. It has to be updated
 kallisto_bus: generate_info 1Run/Kallisto_bus.R
 	@echo --- Start running kallisto bus for all libraries ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                        1Run/Kallisto_bus.R
 	@sed -i 's@--output=.*@--output=${PWD}/Kallisto_bus.out@'                                         1Run/Kallisto_bus.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/Kallisto_bus.err@'                                           1Run/Kallisto_bus.sbatch
+	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION_SENSITIVE}@'                            1Run/Kallisto_bus.sbatch
+	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                                  1Run/Kallisto_bus.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                     1Run/Kallisto_bus.sbatch
 	@sed -i 's@export metadata_file=.*@export metadata_file=../$(SC_RNASEQ_METADATA_10X_FILEPATH)@'   1Run/Kallisto_bus.sbatch
 	@sed -i 's@export annotation_file=.*@export annotation_file=../$(SC_RNASEQ_LIB_FILEPATH)@'        1Run/Kallisto_bus.sbatch

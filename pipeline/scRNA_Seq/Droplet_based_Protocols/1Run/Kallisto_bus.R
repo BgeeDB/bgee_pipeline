@@ -58,10 +58,10 @@ write.table(scRNASeqInfo, file = paste0(output, "/scRNA_Seq_info_TargetBased.txt
 
 for (species in unique(scRNASeqInfo$scientific_name)) {
   message("Species:", species)
-
+  #TODO: transcriptome indexes will be generated using BgeeCall. Path to folder are outdated
   ## collect species info
   specieID <- gsub(" ", "_", species)
-  specieID <- list.files(folderSupport, pattern = paste0("^", specieID, ".*", "transcriptome.idx", "$"))
+  specieID <- list.files(folderSupport, pattern = paste0("^", specieID, ".*transcriptome.idx$"))
   print(specieID)
 
   ## collect all libraries from the species
@@ -71,7 +71,7 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
     message("Treating library: ", i)
 
     ## verify if library exist
-    libraryInfo <- file.exists(paste0(folder_data, "/", i, "/"))
+    libraryInfo <- file.exists(file.path(folder_data, i))
 
     if (libraryInfo == TRUE){
 
@@ -80,101 +80,65 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
       message("The whitelist used is:", whiteLInfo)
 
       ## verify if exist FASTQ (with or without recursive folder) or SRR folder with fastq.gz files for the library
-      detectFastqPath_1 <- file.exists(paste0(folder_data, "/", i, "/", "FASTQ"))
-      detectFastqPath_2 <- list.dirs(paste0(folder_data, "/", i, "/", "FASTQ"), recursive=TRUE)[-1]
+      fastqLibDir <- file.path(folder_data, i, "FASTQ")
+      detectFastqPath_1 <- file.exists(fastqLibDir)
+      detectFastqPath_2 <- list.dirs(fastqLibDir, recursive=TRUE)[-1]
       detectFastqPath_2 <- rlang::is_empty(detectFastqPath_2)
 
+      ## create directory for bus_output for each library
+      busOutput <- file.path(folder_data, i, "busOutput")
+      if (!dir.create(busOutput)){
+          dir.create(busOutput)
+        } else {
+          message(butOutput, " dir already exists.....")
+      }
 
       if (detectFastqPath_1 == TRUE & detectFastqPath_2 == TRUE){
 
         print("This library come from HCA repository OR from EBI by extracting directly fastq files (exception).")
         ## select all fastq.gz files
-        detectFastqPath <- list.dirs(paste0(folder_data, "/", i, "/", "FASTQ"), recursive=TRUE)
+        detectFastqPath <- list.dirs(fastqLibDir, recursive=TRUE)
         detectFastqFiles <- list.files(path=detectFastqPath, pattern = "\\.fastq.gz$")
         message("FASTQ Files detected: ", detectFastqFiles)
 
         ## Note: libraries from HCA have just one R1 and one R2
-        ReadBarcodes <- list.files(path=detectFastqPath, pattern = "*_R1_001.fastq.gz$")
-        ReadSeq <- list.files(detectFastqPath,"*_R2_001.fastq.gz")
-
-        ## collect all fastq.gz files
-        filesKallisto <- rbind(paste0(detectFastqPath,"/",ReadBarcodes), paste0(detectFastqPath,"/",ReadSeq))
-        filesKallisto <- toString(filesKallisto)
-        filesKallisto <- gsub(",", " " ,filesKallisto)
-        message("Files to pass to Kallisto: ")
-        message(filesKallisto)
-
-        ## create directory for bus_output for each library
-        busOutput <- paste0(folder_data, "/", i, "/busOutput")
-        if (!dir.create(busOutput)){
-          dir.create(busOutput)
-        } else {
-          print("File already exist.....")
-        }
-
-        ## RUN Kallisto bus
-        system(sprintf('%s -i %s -o %s -x %s -t 4 %s', paste0("kallisto bus"), paste0(folderSupport, "/", specieID), paste0(busOutput), paste0("10x",whiteLInfo), paste0(filesKallisto)))
+        readBarcodes <- list.files(path=detectFastqPath, pattern = "*_R1_001.fastq.gz$")
+        readSeq <- list.files(detectFastqPath,"*_R2_001.fastq.gz")
 
       } else if (detectFastqPath_1 == TRUE & detectFastqPath_2 == FALSE){
 
         print("This library come from EBI repository. Downloaded bam files that were converted to fastq.gz.")
         ## verify if exist multiplefiles in the folder (multiple fastq.gz represent lanes)
-        detectFastqPath <- list.dirs(paste0(folder_data, "/", i, "/", "FASTQ"), recursive=TRUE)[-1]
+        detectFastqPath <- list.dirs(fastqLibDir, recursive=TRUE)[-1]
         detectFastqFiles <- list.files(path=detectFastqPath, pattern = "\\.fastq.gz$")
         message("FASTQ Files detected: ", detectFastqFiles)
 
-        ReadBarcodes <- str_subset(detectFastqFiles,"bamtofastq_S1_L0\\d+_R1_\\d+")
-        message("Length of barcode files detected: ", length(ReadBarcodes))
-        ReadSeq <- str_subset(detectFastqFiles,"bamtofastq_S1_L0\\d+_R2_\\d+")
-        message("Length sequence files detected: ", length(ReadSeq))
-
-        ## collect all fastq.gz files
-        filesKallisto <- rbind(paste0(detectFastqPath,"/",ReadBarcodes), paste0(detectFastqPath,"/",ReadSeq))
-        filesKallisto <- toString(filesKallisto)
-        filesKallisto <- gsub(",", " " ,filesKallisto)
-        message("Files to pass to Kallisto: ")
-        message(filesKallisto)
-
-        ## create directory for bus_output for each library
-        busOutput <- paste0(folder_data, "/", i, "/busOutput")
-        if (!dir.create(busOutput)){
-          dir.create(busOutput)
-        } else {
-          print("File already exist.....")
-        }
-
-        ## RUN Kallisto bus
-        system(sprintf('%s -i %s -o %s -x %s -t 4 %s', paste0("kallisto bus"), paste0(folderSupport, "/", specieID), paste0(busOutput), paste0("10x",whiteLInfo), paste0(filesKallisto)))
+        readBarcodes <- str_subset(detectFastqFiles,"bamtofastq_S1_L0\\d+_R1_\\d+")
+        message("Number of barcode files detected: ", length(readBarcodes))
+        readSeq <- str_subset(detectFastqFiles,"bamtofastq_S1_L0\\d+_R2_\\d+")
+        message("Number of sequence files detected: ", length(readSeq))
 
       } else {
 
         print("This library come from SRA repository. fastq.gz files are saved directlly in a SRR folder")
-        detectFastqPath <- list.dirs(paste0(folder_data, "/", i), recursive=TRUE)[-1]
+        detectFastqPath <- list.dirs(file.path(folder_data, i), recursive=TRUE)[-1]
         detectFastqFiles <- list.files(path=detectFastqPath, pattern = "\\.fastq.gz$")
         message("FASTQ Files detected: ", detectFastqFiles)
 
-        ReadBarcodes <- list.files(path=detectFastqPath, pattern = "*_R1.fastq.gz$")
-        ReadSeq <- list.files(detectFastqPath,"*_R2.fastq.gz")
-
-        ## collect all fastq.gz files
-        filesKallisto <- rbind(paste0(detectFastqPath,"/",ReadBarcodes), paste0(detectFastqPath,"/",ReadSeq))
-        filesKallisto <- toString(filesKallisto)
-        filesKallisto <- gsub(",", " " ,filesKallisto)
-        message("Files to pass to Kallisto: ")
-        message(filesKallisto)
-
-        ## create directory for bus_output for each library
-        busOutput <- paste0(folder_data, "/", i, "/busOutput")
-        if (!dir.create(busOutput)){
-          dir.create(busOutput)
-        } else {
-          print("File already exist.....")
-        }
-
-        ## RUN Kallisto bus
-        system(sprintf('%s -i %s -o %s -x %s -t 4 %s', paste0("kallisto bus"), paste0(folderSupport, "/", specieID), paste0(busOutput), paste0("10x",whiteLInfo), paste0(filesKallisto)))
-
+        readBarcodes <- list.files(path=detectFastqPath, pattern = "*_R1.fastq.gz$")
+        readSeq <- list.files(detectFastqPath,"*_R2.fastq.gz")
       }
+
+      ## collect all fastq.gz files
+      filesKallisto <- rbind(file.path(detectFastqPath, readBarcodes), file.path(detectFastqPath, readSeq))
+      filesKallisto <- toString(filesKallisto)
+      filesKallisto <- gsub(",", " " ,filesKallisto)
+      message("Files to pass to Kallisto: ")
+      message(filesKallisto)
+
+      ## RUN Kallisto bus
+      system(sprintf('%s -i %s -o %s -x %s -t 4 %s', paste0("kallisto bus"), file.path(folderSupport, specieID), paste0(busOutput), paste0("10x",whiteLInfo), paste0(filesKallisto)))
+      
     } else {
       message("Library not present in the folder to run Kallisto bus!")
     }
