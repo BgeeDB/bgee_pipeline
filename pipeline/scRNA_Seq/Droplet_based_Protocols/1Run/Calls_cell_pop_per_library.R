@@ -56,7 +56,7 @@ if( file.exists(bimodalityFile) ){
 sumUMICellPop <- function(folder_data, library, cellPop){
   
   cellPop <- fread(file.path(folder_data,library, paste0("Raw_Counts_",cellPop,".tsv")))
-  cellPop$sumUMI <- rowSums(cellPop[ ,2:(length(cellPop)-2)])
+  cellPop$sumUMI <- rowSums(cellPop[ ,2:(length(cellPop)-4)])
   cellPop$CPM <- cellPop$sumUMI / sum(cellPop$sumUMI) * 1e6
   
   ## export cell pop info table
@@ -112,7 +112,7 @@ theoretical_pValue <- function(counts, refrenceIntergenic){
   return(list(regions, 2^(mean(log2(selected_Ref_Intergenic$CPM))), 2^(sd(log2(selected_Ref_Intergenic$CPM)))))
 }
 
-cutoff_info <- function(library_id, cellTypeName, counts, desired_pValue_cutoff, meanRefIntergenic, sdRefIntergenic){
+cutoff_info <- function(library_id, cellTypeName, cellTypeId, counts, desired_pValue_cutoff, meanRefIntergenic, sdRefIntergenic){
   
   ## collect stats using pValue_cutoff
   genic_region_present <- nrow(dplyr::filter(counts, type == "genic" & calls_pValue == "present"))
@@ -124,11 +124,11 @@ cutoff_info <- function(library_id, cellTypeName, counts, desired_pValue_cutoff,
   
   CPM_Threshold <- min(counts$CPM[counts$type == "genic" & counts$calls_pValue == "present"])
   ## Export cutoff_info_file
-  collectInfo <- c(library_id, cellTypeName, CPM_Threshold, sum(counts$type == "genic"), genic_region_present,proportion_genic_present, 
+  collectInfo <- c(library_id, cellTypeName, cellTypeId, CPM_Threshold, sum(counts$type == "genic"), genic_region_present,proportion_genic_present, 
                    sum(counts$biotype %in% "protein_coding"),coding_region_present,proportion_coding_present, 
                    sum(counts$type %in% "intergenic"),intergenic_region_present,proportion_intergenic_present, 
                    desired_pValue_cutoff, meanRefIntergenic, sdRefIntergenic)
-  names(collectInfo) <- c("libraryId", "cellTypeName", "CPM_Threshold", "Genic","Genic_region_present","Proportion_genic_present", 
+  names(collectInfo) <- c("libraryId", "cellTypeName", "cellTypeId", "CPM_Threshold", "Genic","Genic_region_present","Proportion_genic_present", 
                           "Protein_coding","Coding_region_present","Proportion_coding_present", 
                           "Intergenic","Intergenic_region_present","Proportion_intergenic_present", 
                           "pValue_cutoff", "meanRefIntergenic", "sdRefIntergenic")
@@ -202,6 +202,10 @@ for (libraryid in unique(scRNASeqAnnotation$libraryId)) {
     for (cellPop in AllCellPop) {
       
       message("Doing cell population: ", cellPop)
+      
+        ## collect cellName and cellId
+        cellName <- sub("\\_.*", "", cellPop)
+        cellID <- sub(".*_", "", cellPop)
 
         ## collect the sumUMI + normalization for the target cellPop
         cellPop_normalized <- sumUMICellPop(folder_data = folder_data, library = libraryid, cellPop = cellPop)
@@ -222,16 +226,23 @@ for (libraryid in unique(scRNASeqAnnotation$libraryId)) {
         genicRegion <- dplyr::filter(allData, type=="genic")
         genicRegion <- genicRegion[order(genicRegion$gene_id),]
         finalData <- rbind(genicRegion, dplyr::filter(allData, type == "intergenic"))
+        finalData$cellTypeName <- cellName
+        finalData$cellTypeId <- gsub("-",":",cellID)
+        
+        ## collect just genic region and re-calculate CPM
+        finalData_genic <- dplyr::filter(finalData, type == "genic")
+        finalData_genic$CPM <- finalData_genic$sumUMI / sum(finalData_genic$sumUMI) * 1e6
         
         ## Export cutoff information file + new files with calls
-        cutoff_info_file <- cutoff_info(libraryid, cellTypeName = cellPop, counts = finalData, desired_pValue_cutoff = as.numeric(desired_pValue_cutoff), meanRefIntergenic = calculatePvalues[[2]], sdRefIntergenic = calculatePvalues[[3]])
+        cutoff_info_file <- cutoff_info(libraryid, cellTypeName = cellName, cellTypeId = gsub("-",":",cellID), counts = finalData, desired_pValue_cutoff = as.numeric(desired_pValue_cutoff), meanRefIntergenic = calculatePvalues[[2]], sdRefIntergenic = calculatePvalues[[3]])
         CPM_threshold <- log2(as.numeric(cutoff_info_file[3]))
         
         ## export data
         plotData(libraryId=libraryid, cellPopName =cellPop, counts=finalData, refIntergenic=referenceIntergenic, CPM_threshold=CPM_threshold)
         
         pathExport <- file.path(folder_data, libraryid)
-        write.table(finalData,file = file.path(pathExport, paste0("Calls_cellPop_",libraryid, "_",cellPop,".tsv")),quote=F, sep = "\t", col.names=T, row.names=F)
+        write.table(finalData,file = file.path(pathExport, paste0("Calls_cellPop_",libraryid, "_",cellPop,"_genic+intergenic.tsv")),quote=F, sep = "\t", col.names=T, row.names=F)
+        write.table(finalData_genic,file = file.path(pathExport, paste0("Calls_cellPop_",libraryid, "_",cellPop,"_genic.tsv")),quote=F, sep = "\t", col.names=T, row.names=F)
         write.table(t(t(cutoff_info_file)),file = file.path(pathExport, paste0("cutoff_info_file_",libraryid, "_",cellPop,".tsv")),quote=F, sep = "\t", col.names=F, row.names=T)
         
         ## add this to big data frame with all samples information
