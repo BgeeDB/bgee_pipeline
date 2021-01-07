@@ -97,7 +97,7 @@ while (my $file = readdir(DIR)) {
 				# load tophat module
 				$sbatch_commands .= "$cluster_tophat_cmd\n";
 				# generate transcriptome
-				$sbatch_commands .= "gtf_to_fasta $transcriptome_folder/$annotation_wo_intergenic_file $genome_file_path $transcriptome_wo_intergenic_file_path\n";
+				$sbatch_commands .= "gtf_to_fasta $annotation_wo_intergenic_file $genome_file_path $transcriptome_wo_intergenic_file_path\n";
 				$sbatch_commands .= "# update transcriptome without intergenic file to correct the header of each sequence\n";
 				$sbatch_commands .= 'perl -i -pe \'s/^>\\d+ +/>/\' '.$transcriptome_wo_intergenic_file_path."\n";
 			}
