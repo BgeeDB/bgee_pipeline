@@ -16,7 +16,7 @@ use FindBin qw( $RealBin ); # directory where the script is lying
 use Getopt::Long;
 
 # Define arguments & their default value
-my ($sample_info_file, $exclude_sample_file, $output_log_folder, $index_folder, $fastq_folder, $partition, $account, $kallisto_out_folder, $ens_release, $ens_metazoa_release, $enc_passwd_file, $cluster_kallisto_cmd, $cluster_R_cmd) = ('', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
+my ($sample_info_file, $exclude_sample_file, $output_log_folder, $index_folder, $fastq_folder, $partition, $account, $kallisto_out_folder, $enc_passwd_file, $cluster_kallisto_cmd, $cluster_R_cmd) = ('', '', '', '', '', '', '', '', '', '', '', '', '');
 my %opts = ('sample_info_file=s'     => \$sample_info_file,
             'exclude_sample_file=s'  => \$exclude_sample_file,
             'output_log_folder=s'    => \$output_log_folder,
@@ -25,8 +25,6 @@ my %opts = ('sample_info_file=s'     => \$sample_info_file,
             'index_folder=s'         => \$index_folder, # same as GTF folder
             'fastq_folder=s'         => \$fastq_folder,
             'kallisto_out_folder=s'  => \$kallisto_out_folder,
-            'ens_release=s'          => \$ens_release,
-            'ens_metazoa_release=s'  => \$ens_metazoa_release,
             'enc_passwd_file=s'      => \$enc_passwd_file,
             'cluster_kallisto_cmd=s' => \$cluster_kallisto_cmd,
             'cluster_R_cmd=s'        => \$cluster_R_cmd,
@@ -34,17 +32,15 @@ my %opts = ('sample_info_file=s'     => \$sample_info_file,
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $sample_info_file eq '' || $output_log_folder eq '' || $index_folder eq '' || $fastq_folder eq '' || $kallisto_out_folder eq '' || $ens_release eq '' || $ens_metazoa_release eq '' || $enc_passwd_file eq '' || $cluster_kallisto_cmd eq '' || $cluster_R_cmd eq ''){
+if ( !$test_options || $sample_info_file eq '' || $output_log_folder eq '' || $index_folder eq '' || $fastq_folder eq '' || $kallisto_out_folder eq '' || $enc_passwd_file eq '' || $cluster_kallisto_cmd eq '' || $cluster_R_cmd eq ''){
     print "\n\tInvalid or missing argument:
-\te.g. $0 -sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=\$(RNASEQ_CLUSTER_LOG) -index_folder=\$(RNASEQ_CLUSTER_GTF)  -fastq_folder=\$(RNASEQ_SENSITIVE_FASTQ) -kallisto_out_folder=\$(RNASEQ_CLUSTER_ALL_RES) -ens_release=\$(ENSRELEASE) -ens_metazoa_release=\$(ENSMETAZOARELEASE) -enc_passwd_file=\$(ENCRYPT_PASSWD_FILE) -cluster_kallisto_cmd=\$(CLUSTER_KALLISTO_CMD) -cluster_R_cmd=\$(CLUSTER_R_CMD)
+\te.g. $0 -sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=\$(RNASEQ_CLUSTER_LOG) -index_folder=\$(RNASEQ_CLUSTER_GTF)  -fastq_folder=\$(RNASEQ_SENSITIVE_FASTQ) -kallisto_out_folder=\$(RNASEQ_CLUSTER_ALL_RES) -enc_passwd_file=\$(ENCRYPT_PASSWD_FILE) -cluster_kallisto_cmd=\$(CLUSTER_KALLISTO_CMD) -cluster_R_cmd=\$(CLUSTER_R_CMD)
 \t-sample_info_file       rna_seq_sample_info.txt
 \t-exclude_sample_file    rna_seq_sample_excluded.txt
 \t-output_log_folder      folder for .out and .err files (produced by queuing system), and .Rout files produced by R
 \t-index_folder=s         Folder with Kallisto indexes (same as GTF folder)
 \t-fastq_folder=s         Folder with Fastq files on big bgee
 \t-kallisto_out_folder=s  Folder with Kallisto output and results
-\t-ens_release=s          Ensembl release
-\t-ens_metazoa_release=s  Ensembl Metazoa release
 \t-enc_passwd_file=s      File with password necessary to decrypt the GTEx data
 \t-cluster_kallisto_cmd=s Command to load kallisto module on cluster
 \t-cluster_R_cmd=s        Command to load R module on cluster
@@ -123,7 +119,7 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
 
 
     #NOTE check memory usage with  grep 'Maximum resident set size' *.time
-    my $script_plus_args = "/software/bin/time -vo $output_log_folder/$library_id/$library_id.time  perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -exclude_sample_file=$exclude_sample_file -index_folder=$index_folder -fastq_folder=$fastq_folder -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -ens_release=$ens_release -ens_metazoa_release=$ens_metazoa_release -enc_passwd_file=$enc_passwd_file > $output_log_folder/$library_id/$library_id.txt 2>&1";
+    my $script_plus_args = "/software/bin/time -vo $output_log_folder/$library_id/$library_id.time  perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -exclude_sample_file=$exclude_sample_file -index_folder=$index_folder -fastq_folder=$fastq_folder -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -enc_passwd_file=$enc_passwd_file > $output_log_folder/$library_id/$library_id.txt 2>&1";
 
 
     # Wait for free places in job queue

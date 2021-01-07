@@ -22,7 +22,7 @@ my $GTEX_exp_id = 'SRP012682';
 ## All output files are written in the results folder, as well as log files (e.g. SRX081872.out, SRX081872.err, and SRX081872.Rout)
 
 # Define arguments & their default value
-my ($library_id, $sample_info_file, $exclude_sample_file, $index_folder, $fastq_folder, $kallisto_out_folder, $output_log_folder, $ens_release, $ens_metazoa_release, $enc_passwd_file) = ('', '', '', '', '', '', '', '', '', '', '', '', '', '');
+my ($library_id, $sample_info_file, $exclude_sample_file, $index_folder, $fastq_folder, $kallisto_out_folder, $output_log_folder, $enc_passwd_file) = ('', '', '', '', '', '', '', '', '', '', '', '');
 my %opts = ('library_id=s'           => \$library_id,
             'sample_info_file=s'     => \$sample_info_file,
             'exclude_sample_file=s'  => \$exclude_sample_file,
@@ -30,15 +30,13 @@ my %opts = ('library_id=s'           => \$library_id,
             'fastq_folder=s'         => \$fastq_folder,
             'kallisto_out_folder=s'  => \$kallisto_out_folder,
             'output_log_folder=s'    => \$output_log_folder,
-            'ens_release=s'          => \$ens_release,
-            'ens_metazoa_release=s'  => \$ens_metazoa_release,
             'enc_passwd_file=s'      => \$enc_passwd_file,
            );
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $library_id eq '' || $sample_info_file eq '' || $index_folder eq '' || $fastq_folder eq '' || $kallisto_out_folder eq '' || $output_log_folder eq '' || $ens_release eq '' || $ens_metazoa_release eq '' || $enc_passwd_file eq '' ){
+if ( !$test_options || $library_id eq '' || $sample_info_file eq '' || $index_folder eq '' || $fastq_folder eq '' || $kallisto_out_folder eq '' || $output_log_folder eq '' || $enc_passwd_file eq '' ){
     print "\n\tInvalid or missing argument:
-\te.g. $0 -library_id=... -sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -index_folder=\$(RNASEQ_CLUSTER_GTF)  -fastq_folder=\$(RNASEQ_SENSITIVE_FASTQ) -kallisto_out_folder=\$(RNASEQ_CLUSTER_ALL_RES) -ens_release=\$(ENSRELEASE) -ens_metazoa_release=\$(ENSMETAZOARELEASE) -enc_passwd_file=\$(ENCRYPT_PASSWD_FILE)
+\te.g. $0 -library_id=... -sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -index_folder=\$(RNASEQ_CLUSTER_GTF)  -fastq_folder=\$(RNASEQ_SENSITIVE_FASTQ) -kallisto_out_folder=\$(RNASEQ_CLUSTER_ALL_RES) -enc_passwd_file=\$(ENCRYPT_PASSWD_FILE)
 \t-library_id=s           Library to process
 \t-sample_info_file=s     TSV with information on species and runs for each library
 \t-exclude_sample_file=s  rna_seq_sample_excluded.txt
@@ -46,8 +44,6 @@ if ( !$test_options || $library_id eq '' || $sample_info_file eq '' || $index_fo
 \t-fastq_folder=s         Folder with Fastq files on big bgee
 \t-kallisto_out_folder=s  Folder with Kallisto output and results
 \t-output_log_folder=s    Folder where R output is written
-\t-ens_release=s          Ensembl release,
-\t-ens_metazoa_release=s  Ensembl Metazoa release,
 \t-enc_passwd_file=s      File with password necessary to decrypt the GTEx data
 \n";
     exit 1;
@@ -119,11 +115,6 @@ $kallisto_out_folder .= '/'.$library_id;
 make_path $kallisto_out_folder, {verbose=>0, mode=>0775};
 # Log file with commands submitted
 my $report_file = $output_log_folder.'/'.$library_id.'/'.$library_id.'.report';
-
-# If the sample comes from a species in Ensembl metazoa, we switch the $ens_release variable
-if ( $database eq 'EnsemblMetazoa' ){
-    $ens_release = $ens_metazoa_release;
-}
 
 #########################################################################################################
 ## Checking the presence of fastq.gz files. Download script get_SRA.pl verifies that all files are zipped
@@ -231,10 +222,10 @@ close $REPORT;
 my $index = $index_folder.'/';
 $genomeFilePath =~ m/.+\/(.+)/;
 if ( $shortReads == 1 ){
-    $index .= $1.'.'.$ens_release.'.transcriptome_k15.idx';
+    $index .= $1.'.transcriptome_k15.idx';
 }
 else {
-    $index .= $1.'.'.$ens_release.'.transcriptome.idx';
+    $index .= $1.'.transcriptome.idx';
 }
 print "\tKallisto index $index will be used for pseudo-mapping\n";
 
@@ -398,11 +389,11 @@ print "\tR log file: $R_log_file\n";
 # defining gene to transcript mapping file
 my $gene2transcript = $index_folder.'/';
 $genomeFilePath =~ m/.+\/(.+)/;
-$gene2transcript .= $1.'.'.$ens_release.'.tx2gene';
+$gene2transcript .= $1.'.tx2gene';
 # defining gene to gene biotype file
 my $gene2biotype = $index_folder.'/';
 $genomeFilePath =~ m/.+\/(.+)/;
-$gene2biotype .= $1.'.'.$ens_release.'.gene2biotype';
+$gene2biotype .= $1.'.gene2biotype';
 
 # First check that this library was not previously successfully analyzed
 if ( -s $count_info_file && -s $R_log_file ){
