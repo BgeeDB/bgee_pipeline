@@ -200,7 +200,12 @@ clean_cluster_folders: check_tools
 
 ################################ GENERATE INTERGENIC SEQUENCES FOR EACH SPECIES ################################
 
-prepare_GTF: get_genome get_GTF
+# this rule is created to remove some elements from NCBI gtf files in order to make them compatible with our pipeline
+update_GTF:
+	perl 0Before/update_GTF.pl -path_to_gtf_folder=$(RNASEQ_CLUSTER_GTF) >$@.tmp 2>&1
+	@$(MV) $@.tmp $@
+
+prepare_GTF: update_GTF
 	# Prepare GTF files : $(CLUSTER_R_CMD)
 	@perl 0Before/slurm_prepare_GTF.pl -gtf_dir=$(RNASEQ_CLUSTER_GTF) -block_size_N=31 -account=$(CLUSTER_ACCOUNT_SENSITIVE) -partition=$(CLUSTER_PARTITION_SENSITIVE) -proportion_N=0.05 -output_gtf_path=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(OUTPUT_DIR) -cluster_R_cmd="$(CLUSTER_R_CMD)" >$@.tmp 2>&1
 	@echo rm -f $(RNASEQ_CLUSTER_GTF)/*.gtf.gz
