@@ -1,0 +1,405 @@
+09:26:45.782 [main] INFO org.bgee.pipeline.uberon.TaxonConstraints 369 prepareUberon - Merging Uberon and taxonomy ontology...
+13:53:10.855 [main] INFO org.bgee.pipeline.uberon.TaxonConstraints 384 prepareUberon - Done merging Uberon and taxonomy ontology.
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( occurrent)' generated in frame: BFO:0000003
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( material entity)' generated in frame: BFO:0000040
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( cell)' generated in frame: CL:0000000
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:0000044)' generated in frame: CL:0000051
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:0000053)' generated in frame: CL:0000059
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:0000191)' generated in frame: CL:0000192
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:0000201)' generated in frame: CL:0000202
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:0000461)' generated in frame: CL:0000648
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:0000184)' generated in frame: CL:0000669
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:0000403)' generated in frame: CL:0000850
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:0000643)' generated in frame: CL:0002085
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:0002230)' generated in frame: CL:0002325
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:0000369)' generated in frame: CL:0002372
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:1000336)' generated in frame: CL:1000346
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:0002331)' generated in frame: CL:1000349
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:0002542)' generated in frame: CL:1000413
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( DHBA:10CaI)' generated in frame: DHBA:12551
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( DHBA:10CeI)' generated in frame: DHBA:12552
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( DHBA:10DI)' generated in frame: DHBA:12553
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( DHBA:10DR)' generated in frame: DHBA:12554
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( DHBA:10F)' generated in frame: DHBA:12555
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( DHBA:10Tr)' generated in frame: DHBA:12825
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( DHBA:10VI)' generated in frame: DHBA:15558
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( DHBA:10VR)' generated in frame: DHBA:15559
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( DMBA:10Cb)' generated in frame: DMBA:16839
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( nucleus)' generated in frame: GO:0005634
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( cell part)' generated in frame: GO:0044464
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( HBA:3)' generated in frame: HBA:9031
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( HBA:7)' generated in frame: HBA:9144
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( HBA:5)' generated in frame: HBA:9204
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( HBA:1n)' generated in frame: HBA:9301
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( HBA:4n)' generated in frame: HBA:9320
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( HBA:5n)' generated in frame: HBA:9324
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( HBA:7n)' generated in frame: HBA:9330
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( HBA:11nf)' generated in frame: HBA:9342
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( HBA:12n)' generated in frame: HBA:9345
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( HBA:7M)' generated in frame: HBA:9500
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( HBA:7I)' generated in frame: HBA:9502
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( HBA:7vl)' generated in frame: HBA:9503
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( HBA:7L)' generated in frame: HBA:9507
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( HBA:7VL)' generated in frame: HBA:9510
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( HBA:8Co)' generated in frame: HBA:9534
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( HBA:10)' generated in frame: HBA:9547
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( HBA:12)' generated in frame: HBA:9559
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( HBA:8Ve)' generated in frame: HBA:9703
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'synonym( biota RELATED synonym)' generated in frame: NCBITaxon:131567
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'synonym( eucaryotes EXACT genbank_common_name)' generated in frame: NCBITaxon:2759
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'synonym( Eucaryotae RELATED synonym)' generated in frame: NCBITaxon:2759
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'synonym( Eucarya RELATED synonym)' generated in frame: NCBITaxon:2759
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'synonym( Eukarya RELATED synonym)' generated in frame: NCBITaxon:2759
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'synonym( Eukaryotae RELATED synonym)' generated in frame: NCBITaxon:2759
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'synonym( eukaryotes EXACT common_name)' generated in frame: NCBITaxon:2759
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'synonym( Tetrabranchiata RELATED synonym)' generated in frame: NCBITaxon:32577
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'synonym( Nautiloida RELATED synonym)' generated in frame: NCBITaxon:32578
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'synonym( opisthokonts RELATED synonym)' generated in frame: NCBITaxon:33154
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'synonym( animals RELATED blast_name)' generated in frame: NCBITaxon:33208
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'synonym( multicellular animals EXACT common_name)' generated in frame: NCBITaxon:33208
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'synonym( Animalia RELATED synonym)' generated in frame: NCBITaxon:33208
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'synonym( metazoans EXACT genbank_common_name)' generated in frame: NCBITaxon:33208
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'synonym( molluscs EXACT common_name)' generated in frame: NCBITaxon:6447
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'synonym( mollusks EXACT genbank_common_name)' generated in frame: NCBITaxon:6447
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'synonym( cephalopods RELATED blast_name)' generated in frame: NCBITaxon:6605
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'synonym( Dibranchiata RELATED synonym)' generated in frame: NCBITaxon:6606
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0000027)' generated in frame: UBERON:0001466
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0002220)' generated in frame: UBERON:0002291
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0000169)' generated in frame: UBERON:0002323
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0000028)' generated in frame: UBERON:0002389
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0001147)' generated in frame: UBERON:0002464
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0002096)' generated in frame: UBERON:0002465
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0003264)' generated in frame: UBERON:0003316
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/1ddd2e2d-2ace-4c87-8ec6-d3b5730b3e7c)' generated in frame: UBERON:0003696
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/8378426c-67ca-4bab-a9cf-531093b9b95e)' generated in frame: UBERON:0003696
+2021-01-12 13:53:12 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0003717)' generated in frame: UBERON:0003719
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0000909)' generated in frame: UBERON:0004080
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0002312)' generated in frame: UBERON:0004082
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004112)' generated in frame: UBERON:0004113
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0002449)' generated in frame: UBERON:0004200
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0000374)' generated in frame: UBERON:0004252
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0000452)' generated in frame: UBERON:0004346
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004342)' generated in frame: UBERON:0004363
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0001462)' generated in frame: UBERON:0004452
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0002388)' generated in frame: UBERON:0004454
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0001696)' generated in frame: UBERON:0004527
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004653)' generated in frame: UBERON:0004655
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004143)' generated in frame: UBERON:0004666
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004144)' generated in frame: UBERON:0004667
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004191)' generated in frame: UBERON:0004739
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004460)' generated in frame: UBERON:0004885
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0005112)' generated in frame: UBERON:0005137
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0005128)' generated in frame: UBERON:0005146
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0005131)' generated in frame: UBERON:0005151
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004181)' generated in frame: UBERON:0005333
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0005247)' generated in frame: UBERON:0005723
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0005246)' generated in frame: UBERON:0005724
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004168)' generated in frame: UBERON:0005821
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004169)' generated in frame: UBERON:0005832
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004028)' generated in frame: UBERON:0005969
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0005999)' generated in frame: UBERON:0006207
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0002725)' generated in frame: UBERON:0006698
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0001124)' generated in frame: UBERON:0006849
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004343)' generated in frame: UBERON:0006871
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0005718)' generated in frame: UBERON:0007122
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0005715)' generated in frame: UBERON:0007123
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0005716)' generated in frame: UBERON:0007124
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004102)' generated in frame: UBERON:0007196
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( EHDAA2:0003079)' generated in frame: UBERON:0007473
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( EHDAA2:0003112)' generated in frame: UBERON:0007497
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004065)' generated in frame: UBERON:0007645
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0003225)' generated in frame: UBERON:0008776
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0000417)' generated in frame: UBERON:0008776
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0003226)' generated in frame: UBERON:0008776
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0005284)' generated in frame: UBERON:0008998
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0003313)' generated in frame: UBERON:0009142
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004093)' generated in frame: UBERON:0009552
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0009034)' generated in frame: UBERON:0009870
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0003293)' generated in frame: UBERON:0010047
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0001973)' generated in frame: UBERON:0010365
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0010182)' generated in frame: UBERON:0012249
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0003349)' generated in frame: UBERON:0012480
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0013530)' generated in frame: UBERON:0013543
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0002994)' generated in frame: UBERON:0014450
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004005)' generated in frame: UBERON:0014644
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0000322)' generated in frame: UBERON:0016526
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERONTEMP:0ea3066e-0c22-417b-8ac4-91c2aacba792)' generated in frame: UBERON:0016929
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERONTEMP:12cd474b-52d2-46e2-9a3d-2322edc3490b)' generated in frame: UBERON:0016931
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( BSPOTEMP:58938a8e-359c-49d8-b3f7-5e1fd7e1a109)' generated in frame: UBERON:0016942
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/58938a8e-359c-49d8-b3f7-5e1fd7e1a109)' generated in frame: UBERON:0016942
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERONTEMP:000a0d60-aa06-477d-936c-ba14ac4f0c2d)' generated in frame: UBERON:0017098
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERONTEMP:0238a879-c73c-4c7a-953b-9f5cda48db02)' generated in frame: UBERON:0017102
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERONTEMP:367dba08-73f2-4ae2-8b00-bd7087482a2d)' generated in frame: UBERON:0017156
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERONTEMP:372c02ad-f2bd-4cf8-b55c-9b686c3d62f4)' generated in frame: UBERON:0017157
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/bdc28b9d-8fe6-4175-ae67-002f61493279)' generated in frame: UBERON:0017163
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/3b77fb04-1e62-43af-a84b-5d5eb7388525)' generated in frame: UBERON:0017163
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/2cb7c05f-bfbf-4393-8c2a-70218b824b41)' generated in frame: UBERON:0017164
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/3bde5870-7193-4f1c-a9c3-930cef534038)' generated in frame: UBERON:0017164
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERONTEMP:65267252-c554-4d25-acbb-e1d1a95d1367)' generated in frame: UBERON:0017196
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/2018775c-cd54-4503-88bc-9b62d35a1fdb)' generated in frame: UBERON:0017249
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/f17c9aff-4a92-418e-989f-b8e9dd62caf6)' generated in frame: UBERON:0017249
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/b0379d68-e54b-4dac-851c-0336cfb85a8f)' generated in frame: UBERON:0017249
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/b247b724-0e9c-44bd-bbd2-b84e6cb5b072)' generated in frame: UBERON:0017249
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/8b514716-1381-474b-93d5-1ac01c28f54c)' generated in frame: UBERON:0017258
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/c4f989c4-2805-49a3-8241-b5e37405e9ca)' generated in frame: UBERON:0017258
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/c97fd8d8-cf3e-4326-938d-bea58477423d)' generated in frame: UBERON:0017261
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/3f8eb04d-3229-487c-9c0e-b65e1a1f035e)' generated in frame: UBERON:0017294
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/faea86d9-5281-441b-be89-0f0be1d49129)' generated in frame: UBERON:0017294
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/53cf86f8-2122-4125-bc72-117201b4f4c4)' generated in frame: UBERON:0017294
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERONTEMP:8c052198-acff-4165-b1a0-fd6bb2de6e10)' generated in frame: UBERON:0017621
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0015006)' generated in frame: UBERON:0018142
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0017158)' generated in frame: UBERON:4100111
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERONTEMP:382249cd-df28-48b2-ba1a-38dc059b3d0c)' generated in frame: UBERON:4100111
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0011914)' generated in frame: UBERON:4200121
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( part of)' generated in frame: part_of
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'def( a core relation that holds between a part and its whole)' generated in frame: part_of
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'def( a core relation that holds between a whole and its part)' generated in frame: has_part
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( has part)' generated in frame: has_part
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( precedes)' generated in frame: precedes
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( contains process)' generated in frame: contains_process
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( bearer of)' generated in frame: bearer_of
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( participates in)' generated in frame: participates_in
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( has quality)' generated in frame: has_quality
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( contains)' generated in frame: contains
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( innervated_by)' generated in frame: innervated_by
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( bounding layer of)' generated in frame: bounding_layer_of
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( overlaps)' generated in frame: overlaps
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( innervates)' generated in frame: innervates
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( connected to)' generated in frame: connected_to
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( connects)' generated in frame: connects
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( supplies)' generated in frame: supplies
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( drains)' generated in frame: drains
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( has component)' generated in frame: has_component
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( develops from)' generated in frame: develops_from
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( regulates)' generated in frame: regulates
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( negatively regulates)' generated in frame: negatively_regulates
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( positively regulates)' generated in frame: positively_regulates
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( capable of)' generated in frame: capable_of
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( capable of part of)' generated in frame: capable_of_part_of
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( surrounds)' generated in frame: surrounds
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( starts)' generated in frame: starts
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( starts with)' generated in frame: starts_with
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( ends)' generated in frame: ends
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( ends with)' generated in frame: ends_with
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( has developmental contribution from)' generated in frame: has_developmental_contribution_from
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( developmentally preceded by)' generated in frame: developmentally_preceded_by
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( functionally related to)' generated in frame: functionally_related_to
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( part of structure that is capable of)' generated in frame: part_of_structure_that_is_capable_of
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( member of)' generated in frame: member_of
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( has member)' generated in frame: has_member
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( input of)' generated in frame: input_of
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( output of)' generated in frame: output_of
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'def( x has_fused_element y iff: there exists some z : x has_part z, z homologous_to y, and y is a distinct element, the boundary between x and z is largely fiat)' generated in frame: has_fused_element
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( has potential to developmentally contribute to)' generated in frame: has_potential_to_developmentally_contribute_to
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'def( x has potential to developmentrally contribute to y iff x developmentally contributes to y or x is capable of developmentally contributing to y)' generated in frame: has_potential_to_developmentally_contribute_to
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( has potential to develop into)' generated in frame: has_potential_to_develop_into
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'def( x has the potential to develop into y iff x develops into y or if x is capable of developing into y)' generated in frame: has_potential_to_develop_into
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'def( x has potential to directly develop into y iff x directly develops into y or x is capable of directly developing into y)' generated in frame: has_potential_to_directly_develop_into
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( has potential to directly develop into)' generated in frame: has_potential_to_directly_develop_into
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( produces)' generated in frame: produces
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( editor note)' generated in frame: editor_note
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( example of usage)' generated in frame: example_of_usage
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'is_metadata_tag( true)' generated in frame: example_of_usage
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'xref( http://purl.org/dc/elements/1.1/contributor)' generated in frame: dc-contributor
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'xref( http://purl.org/dc/elements/1.1/creator)' generated in frame: dc-creator
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'xref( http://purl.org/dc/elements/1.1/description)' generated in frame: dc-description
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'xref( http://purl.org/dc/elements/1.1/publisher)' generated in frame: dc-publisher
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'xref( http://purl.org/dc/elements/1.1/source)' generated in frame: dc-source
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'xref( http://purl.org/dc/elements/1.1/title)' generated in frame: dc-title
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'xref( http://purl.org/dc/terms/isReferencedBy)' generated in frame: dcterms-isReferencedBy
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'xref( seeAlso)' generated in frame: seeAlso
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'is_metadata_tag( true)' generated in frame: depicted_by
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'xref( depicted:by)' generated in frame: depicted_by
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'namespace( uberon)' generated in frame: depicted_by
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( depicted by)' generated in frame: depicted_by
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'xref( http://xmlns.com/foaf/0.1/homepage)' generated in frame: foaf-homepage
+2021-01-12 13:53:13 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'xref( http://xmlns.com/foaf/0.1/page)' generated in frame: foaf-page
+2021-01-12 13:53:16 ERROR OWLAPIOwl2Obo:1202 - duplicate clause: synonymtypedef( PLURAL ) in header
+2021-01-12 13:53:16 ERROR OWLAPIOwl2Obo:1202 - duplicate clause: synonymtypedef( ABBREVIATION abbreviation) in header
+2021-01-12 13:53:16 ERROR OWLAPIOwl2Obo:1202 - duplicate clause: synonymtypedef( PLURAL ) in header
+2021-01-12 13:53:16 ERROR OWLAPIOwl2Obo:1202 - duplicate clause: synonymtypedef( ABBREVIATION abbreviation) in header
+2021-01-12 13:53:16 ERROR OWLAPIOwl2Obo:1202 - duplicate clause: synonymtypedef( ABBREVIATION abbreviation) in header
+2021-01-12 13:53:16 ERROR OWLAPIOwl2Obo:1202 - duplicate clause: synonymtypedef( PLURAL plural term) in header
+2021-01-12 13:53:16 ERROR OWLAPIOwl2Obo:1202 - duplicate clause: synonymtypedef( ABBREVIATION abbreviation) in header
+2021-01-12 13:53:16 ERROR OWLAPIOwl2Obo:1202 - duplicate clause: synonymtypedef( HUMAN_PREFERRED preferred term when talking about an instance of this class in Homo sapiens) in header
+2021-01-12 13:53:16 ERROR OWLAPIOwl2Obo:1202 - duplicate clause: synonymtypedef( LATIN latin term) in header
+2021-01-12 13:53:16 ERROR OWLAPIOwl2Obo:1202 - duplicate clause: synonymtypedef( ABBREVIATION abbreviation) in header
+13:57:33.619 [main] INFO org.bgee.pipeline.uberon.TaxonConstraints 369 prepareUberon - Merging Uberon and taxonomy ontology...
+13:57:34.344 [main] INFO org.bgee.pipeline.uberon.TaxonConstraints 384 prepareUberon - Done merging Uberon and taxonomy ontology.
+2021-01-12 13:57:34 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( material entity)' generated in frame: BFO:0000040
+2021-01-12 13:57:34 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( cell)' generated in frame: CL:0000000
+2021-01-12 13:57:34 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:0000044)' generated in frame: CL:0000051
+2021-01-12 13:57:34 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:0000053)' generated in frame: CL:0000059
+2021-01-12 13:57:34 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:0000191)' generated in frame: CL:0000192
+2021-01-12 13:57:34 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:0000201)' generated in frame: CL:0000202
+2021-01-12 13:57:34 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:0000461)' generated in frame: CL:0000648
+2021-01-12 13:57:34 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:0000184)' generated in frame: CL:0000669
+2021-01-12 13:57:34 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:0000403)' generated in frame: CL:0000850
+2021-01-12 13:57:34 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:0000643)' generated in frame: CL:0002085
+2021-01-12 13:57:34 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:0002230)' generated in frame: CL:0002325
+2021-01-12 13:57:34 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:0000369)' generated in frame: CL:0002372
+2021-01-12 13:57:34 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:1000336)' generated in frame: CL:1000346
+2021-01-12 13:57:34 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:0002331)' generated in frame: CL:1000349
+2021-01-12 13:57:34 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( CL:0002542)' generated in frame: CL:1000413
+2021-01-12 13:57:34 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( nucleus)' generated in frame: GO:0005634
+2021-01-12 13:57:34 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0000027)' generated in frame: UBERON:0001466
+2021-01-12 13:57:34 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0002220)' generated in frame: UBERON:0002291
+2021-01-12 13:57:34 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0000169)' generated in frame: UBERON:0002323
+2021-01-12 13:57:34 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0000028)' generated in frame: UBERON:0002389
+2021-01-12 13:57:34 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0001147)' generated in frame: UBERON:0002464
+2021-01-12 13:57:34 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0002096)' generated in frame: UBERON:0002465
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0003264)' generated in frame: UBERON:0003316
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/1ddd2e2d-2ace-4c87-8ec6-d3b5730b3e7c)' generated in frame: UBERON:0003696
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/8378426c-67ca-4bab-a9cf-531093b9b95e)' generated in frame: UBERON:0003696
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0003717)' generated in frame: UBERON:0003719
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0000909)' generated in frame: UBERON:0004080
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0002312)' generated in frame: UBERON:0004082
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004112)' generated in frame: UBERON:0004113
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0002449)' generated in frame: UBERON:0004200
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0000374)' generated in frame: UBERON:0004252
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0000452)' generated in frame: UBERON:0004346
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004342)' generated in frame: UBERON:0004363
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0001462)' generated in frame: UBERON:0004452
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0002388)' generated in frame: UBERON:0004454
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0001696)' generated in frame: UBERON:0004527
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004653)' generated in frame: UBERON:0004655
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004143)' generated in frame: UBERON:0004666
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004144)' generated in frame: UBERON:0004667
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004191)' generated in frame: UBERON:0004739
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004460)' generated in frame: UBERON:0004885
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0005112)' generated in frame: UBERON:0005137
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0005128)' generated in frame: UBERON:0005146
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0005131)' generated in frame: UBERON:0005151
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004181)' generated in frame: UBERON:0005333
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0005247)' generated in frame: UBERON:0005723
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0005246)' generated in frame: UBERON:0005724
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004168)' generated in frame: UBERON:0005821
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004169)' generated in frame: UBERON:0005832
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004028)' generated in frame: UBERON:0005969
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0005999)' generated in frame: UBERON:0006207
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0002725)' generated in frame: UBERON:0006698
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0001124)' generated in frame: UBERON:0006849
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004343)' generated in frame: UBERON:0006871
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0005718)' generated in frame: UBERON:0007122
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0005715)' generated in frame: UBERON:0007123
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0005716)' generated in frame: UBERON:0007124
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004102)' generated in frame: UBERON:0007196
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( EHDAA2:0003079)' generated in frame: UBERON:0007473
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( EHDAA2:0003081)' generated in frame: UBERON:0007475
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( EHDAA2:0003095)' generated in frame: UBERON:0007486
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( EHDAA2:0003099)' generated in frame: UBERON:0007490
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( EHDAA2:0003100)' generated in frame: UBERON:0007491
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( EHDAA2:0003112)' generated in frame: UBERON:0007497
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( EHDAA2:0003117)' generated in frame: UBERON:0007501
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( EHDAA2:0003118)' generated in frame: UBERON:0007502
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( EHDAA2:0003119)' generated in frame: UBERON:0007503
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( EHDAA2:0003146)' generated in frame: UBERON:0007524
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( EHDAA2:0003151)' generated in frame: UBERON:0007529
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( EHDAA2:0003152)' generated in frame: UBERON:0007530
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( EHDAA2:0003233)' generated in frame: UBERON:0007567
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( EHDAA2:0003251)' generated in frame: UBERON:0007573
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004065)' generated in frame: UBERON:0007645
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0003226)' generated in frame: UBERON:0008776
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0003225)' generated in frame: UBERON:0008776
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0000417)' generated in frame: UBERON:0008776
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0005284)' generated in frame: UBERON:0008998
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0003313)' generated in frame: UBERON:0009142
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004093)' generated in frame: UBERON:0009552
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0009034)' generated in frame: UBERON:0009870
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0003293)' generated in frame: UBERON:0010047
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0001973)' generated in frame: UBERON:0010365
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0010182)' generated in frame: UBERON:0012249
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0003349)' generated in frame: UBERON:0012480
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0013530)' generated in frame: UBERON:0013543
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0002994)' generated in frame: UBERON:0014450
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0004005)' generated in frame: UBERON:0014644
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0000322)' generated in frame: UBERON:0016526
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERONTEMP:0ea3066e-0c22-417b-8ac4-91c2aacba792)' generated in frame: UBERON:0016929
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERONTEMP:12cd474b-52d2-46e2-9a3d-2322edc3490b)' generated in frame: UBERON:0016931
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( BSPOTEMP:58938a8e-359c-49d8-b3f7-5e1fd7e1a109)' generated in frame: UBERON:0016942
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/58938a8e-359c-49d8-b3f7-5e1fd7e1a109)' generated in frame: UBERON:0016942
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERONTEMP:000a0d60-aa06-477d-936c-ba14ac4f0c2d)' generated in frame: UBERON:0017098
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERONTEMP:0238a879-c73c-4c7a-953b-9f5cda48db02)' generated in frame: UBERON:0017102
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERONTEMP:367dba08-73f2-4ae2-8b00-bd7087482a2d)' generated in frame: UBERON:0017156
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERONTEMP:372c02ad-f2bd-4cf8-b55c-9b686c3d62f4)' generated in frame: UBERON:0017157
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/3b77fb04-1e62-43af-a84b-5d5eb7388525)' generated in frame: UBERON:0017163
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/bdc28b9d-8fe6-4175-ae67-002f61493279)' generated in frame: UBERON:0017163
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/3bde5870-7193-4f1c-a9c3-930cef534038)' generated in frame: UBERON:0017164
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/2cb7c05f-bfbf-4393-8c2a-70218b824b41)' generated in frame: UBERON:0017164
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERONTEMP:65267252-c554-4d25-acbb-e1d1a95d1367)' generated in frame: UBERON:0017196
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/f17c9aff-4a92-418e-989f-b8e9dd62caf6)' generated in frame: UBERON:0017249
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/2018775c-cd54-4503-88bc-9b62d35a1fdb)' generated in frame: UBERON:0017249
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/b247b724-0e9c-44bd-bbd2-b84e6cb5b072)' generated in frame: UBERON:0017249
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/b0379d68-e54b-4dac-851c-0336cfb85a8f)' generated in frame: UBERON:0017249
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/c4f989c4-2805-49a3-8241-b5e37405e9ca)' generated in frame: UBERON:0017258
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/8b514716-1381-474b-93d5-1ac01c28f54c)' generated in frame: UBERON:0017258
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/c97fd8d8-cf3e-4326-938d-bea58477423d)' generated in frame: UBERON:0017261
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/faea86d9-5281-441b-be89-0f0be1d49129)' generated in frame: UBERON:0017294
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/53cf86f8-2122-4125-bc72-117201b4f4c4)' generated in frame: UBERON:0017294
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( http://purl.bioontology.org/ontology/provisional/3f8eb04d-3229-487c-9c0e-b65e1a1f035e)' generated in frame: UBERON:0017294
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERONTEMP:8c052198-acff-4165-b1a0-fd6bb2de6e10)' generated in frame: UBERON:0017621
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0015006)' generated in frame: UBERON:0018142
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( EMAPA:16647)' generated in frame: UBERON:0034876
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0017158)' generated in frame: UBERON:4100111
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERONTEMP:382249cd-df28-48b2-ba1a-38dc059b3d0c)' generated in frame: UBERON:4100111
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'alt_id( UBERON:0011914)' generated in frame: UBERON:4200121
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( part of)' generated in frame: part_of
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'def( a core relation that holds between a part and its whole)' generated in frame: part_of
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( has part)' generated in frame: has_part
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'def( a core relation that holds between a whole and its part)' generated in frame: has_part
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( precedes)' generated in frame: precedes
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( contains process)' generated in frame: contains_process
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( bearer of)' generated in frame: bearer_of
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( participates in)' generated in frame: participates_in
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( has quality)' generated in frame: has_quality
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( contains)' generated in frame: contains
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( innervated_by)' generated in frame: innervated_by
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( bounding layer of)' generated in frame: bounding_layer_of
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( overlaps)' generated in frame: overlaps
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( innervates)' generated in frame: innervates
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( connected to)' generated in frame: connected_to
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( connects)' generated in frame: connects
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( supplies)' generated in frame: supplies
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( drains)' generated in frame: drains
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( has component)' generated in frame: has_component
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( develops from)' generated in frame: develops_from
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( regulates)' generated in frame: regulates
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( negatively regulates)' generated in frame: negatively_regulates
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( positively regulates)' generated in frame: positively_regulates
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( capable of)' generated in frame: capable_of
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( capable of part of)' generated in frame: capable_of_part_of
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( surrounds)' generated in frame: surrounds
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( starts)' generated in frame: starts
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( starts with)' generated in frame: starts_with
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( ends)' generated in frame: ends
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( ends with)' generated in frame: ends_with
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( has developmental contribution from)' generated in frame: has_developmental_contribution_from
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( developmentally preceded by)' generated in frame: developmentally_preceded_by
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( functionally related to)' generated in frame: functionally_related_to
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( part of structure that is capable of)' generated in frame: part_of_structure_that_is_capable_of
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( member of)' generated in frame: member_of
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( has member)' generated in frame: has_member
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( input of)' generated in frame: input_of
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( output of)' generated in frame: output_of
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'def( x has_fused_element y iff: there exists some z : x has_part z, z homologous_to y, and y is a distinct element, the boundary between x and z is largely fiat)' generated in frame: has_fused_element
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( has potential to developmentally contribute to)' generated in frame: has_potential_to_developmentally_contribute_to
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'def( x has potential to developmentrally contribute to y iff x developmentally contributes to y or x is capable of developmentally contributing to y)' generated in frame: has_potential_to_developmentally_contribute_to
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( has potential to develop into)' generated in frame: has_potential_to_develop_into
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'def( x has the potential to develop into y iff x develops into y or if x is capable of developing into y)' generated in frame: has_potential_to_develop_into
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( has potential to directly develop into)' generated in frame: has_potential_to_directly_develop_into
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'def( x has potential to directly develop into y iff x directly develops into y or x is capable of directly developing into y)' generated in frame: has_potential_to_directly_develop_into
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( produces)' generated in frame: produces
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( editor note)' generated in frame: editor_note
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'xref( http://purl.org/dc/elements/1.1/contributor)' generated in frame: dc-contributor
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'xref( http://purl.org/dc/elements/1.1/creator)' generated in frame: dc-creator
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'xref( http://purl.org/dc/elements/1.1/description)' generated in frame: dc-description
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'xref( http://purl.org/dc/elements/1.1/source)' generated in frame: dc-source
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'xref( seeAlso)' generated in frame: seeAlso
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'xref( depicted:by)' generated in frame: depicted_by
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'is_metadata_tag( true)' generated in frame: depicted_by
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'namespace( uberon)' generated in frame: depicted_by
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'name( depicted by)' generated in frame: depicted_by
+2021-01-12 13:57:35 ERROR OWLAPIOwl2Obo:1423 - Duplicate clause 'xref( http://xmlns.com/foaf/0.1/page)' generated in frame: foaf-page
+2021-01-12 13:57:36 ERROR OWLAPIOwl2Obo:1202 - duplicate clause: synonymtypedef( HUMAN_PREFERRED preferred term when talking about an instance of this class in Homo sapiens) in header
+2021-01-12 13:57:36 ERROR OWLAPIOwl2Obo:1202 - duplicate clause: synonymtypedef( LATIN latin term) in header
+2021-01-12 13:57:36 ERROR OWLAPIOwl2Obo:1202 - duplicate clause: synonymtypedef( PLURAL plural term) in header
