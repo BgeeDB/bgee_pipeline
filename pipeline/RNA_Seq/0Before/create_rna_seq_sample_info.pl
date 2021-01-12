@@ -312,6 +312,15 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         else {
             warn "\tProblem: no library type specified for $libraryId.\n";
         }
+        #TODO add checks to see if paired-end declared but a single-end fastq is provided!
+        my @libraryTypeCount = $info =~ /<READ_TYPE>\w+<\/READ_TYPE>/g;
+        if ( $libraryType eq 'PAIRED' && scalar @libraryTypeCount != 2 ){
+            warn "\tLibrary [$libraryId] is $libraryType but looks not\n";
+        }
+        elsif ( $libraryType eq 'SINGLE' && scalar @libraryTypeCount > 1 ){
+            warn "\tLibrary [$libraryId] is $libraryType but looks not\n";
+        }
+
         # Additional info on library (stranded or not for example), not compulsory
         # <EXPERIMENT_ATTRIBUTE><TAG>library_type</TAG><VALUE>cDNAShotgunReadTwoSense</VALUE></EXPERIMENT_ATTRIBUTE><EXPERIMENT_ATTRIBUTE>
         if ( $info =~ /<TAG>library_type<\/TAG><VALUE>([^<]+?)<\/VALUE>/ ) { # the ? is here to get non greedy matching (there are several <VALUE>...<\/VALUE> tags in the XML files)
