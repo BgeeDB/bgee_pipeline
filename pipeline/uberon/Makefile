@@ -10,6 +10,12 @@ $(UBERON_COMPOSITE_FILE_PATH):
 $(UBERON_EXT_FILE_PATH):
 	@$(CURL) $(EXT_DOWNLOAD_URL) $(APPEND_CURL_COMMAND)
 
+# Note: this step requires lots of memory (was run with 512 Go)
+$(OUTPUT_DIR)uberon_merged_with_taxonomy: $(UBERON_COMPOSITE_FILE_PATH) $(UBERON_EXT_FILE_PATH)
+	@$(JAVA) TaxonConstraints mergeUberonAndTaxonomy $(UBERON_COMPOSITE_FILE_PATH) $(TAXONOMYFILEPATH) $(OUTPUT_DIR)merged_composite-metazoan_taxonomy > $@.tmp 2> $@.warn
+	@$(JAVA) TaxonConstraints mergeUberonAndTaxonomy $(UBERON_EXT_FILE_PATH) $(TAXONOMYFILEPATH) $(OUTPUT_DIR)merged_ext_taxonomy >> $@.tmp 2>> $@.warn
+	@$(MV) $@.tmp $@
+
 # As of Bgee_v15, the composite-metazoan.owl does not contain "never_in_taxon" relations,
 # see https://github.com/obophenotype/uberon/issues/705#issuecomment-233767158
 # So only ext.owl is usable to generate taxon constraints. We will then miss constraints
