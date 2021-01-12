@@ -345,6 +345,7 @@ qualityControl <- function(finalInformationCells, geneMarkerLibrary, geneNameFil
 
 #############################################################################################################################
 ## collect information for all libraries
+##XXX what happens if file already exist? add new lines to already existing one? Should maybe empty it and create a new one or at least stop the script
 globalInfoLibraries <- paste0(output, "/InformationAllLibraries.txt")
 if (!file.exists(globalInfoLibraries)){
   file.create(globalInfoLibraries)
@@ -373,9 +374,7 @@ if (!file.exists(markerGenes)){
 for (libraryID in scRNASeqAnnotation$libraryId) {
 
   ## verify if library exist
-  pathLib <- file.exists(file.path(folder_data, libraryID))
-
-  if (pathLib == TRUE){
+  if (file.exists(file.path(folder_data, libraryID))){
 
     message("Treating library ", libraryID)
 
@@ -422,9 +421,7 @@ for (libraryID in scRNASeqAnnotation$libraryId) {
     infoCells <- finalInformationCells[[3]]
 
     ## verify if function targetCells is NULL
-    null <- is.null(finalInformationCells)
-
-    if (null == TRUE){
+    if (is.null(finalInformationCells)){
       message("The library", libraryID, " not contain barcodes.")
       message("Any raw or normalized count is exported.")
       message("The library will not be present in the informative files: InformationAllLibraries.txt, variabilityClusters.txt and markerGenes_Validated.txt file")
@@ -442,6 +439,6 @@ for (libraryID in scRNASeqAnnotation$libraryId) {
       fwrite(markersInfoValidated, file = markerGenes, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
     }
   } else {
-      message("This library ", libraryID, " not exist in the directory.")
+      warning("This library ", libraryID, " not exist in the directory.")
   }
 }

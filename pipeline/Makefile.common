@@ -453,8 +453,6 @@ SCRNASEQ_SOFTWARE_BAMTOFASTQ                  := /users/sfonseca1/bin/bamtofastq
 
 # scRNAseq cluster paths (JURA)
 SENSITIVE_GENERAL_PATH                        := $(CLUSTER_DATA_PATH)/
-#TODO: use dir created during generation of ref intergenic
-REFERENCE_INTERGENIC_PATH                     := $(CLUSTER_DATA_PATH)/Rerence_intergenic_folder/
 
 ## PATH to full length and 10X data
 SC_RNASEQ_FASTQ_FULL_LENGTH                   := $(SENSITIVE_GENERAL_PATH)FASTQ/scRNAseq/Full_length/

@@ -196,9 +196,10 @@ uncompress_barcodes: kallisto_bus ../$(SC_RNASEQ_PATH_SOURCE)/barcode_whitelist_
 ## Process bus files
 process_busFile: uncompress_barcodes 1Run/process_busFile.R
 	@echo --- Starting the process of bus files ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                       1Run/process_busFile.R
 	@sed -i 's@--output=.*@--output=${PWD}/process_busFile.out@'                                     1Run/process_busFile.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/process_busFile.err@'                                       1Run/process_busFile.sbatch
+	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION_SENSITIVE}@'                           1Run/process_busFile.sbatch
+	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                                 1Run/process_busFile.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                    1Run/process_busFile.sbatch
 	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=../$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'  1Run/process_busFile.sbatch
 	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_FASTQ_DROPLET)@'                 1Run/process_busFile.sbatch
@@ -213,9 +214,10 @@ process_busFile: uncompress_barcodes 1Run/process_busFile.R
 ## Quality control (Knee + PCA + UMAP for each library) + cell type identification
 qc_cellType: process_busFile 1Run/QC_CelltypeIdentification.R
 	@echo --- Starting the quality control and the cell type identification ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                        1Run/QC_CelltypeIdentification.R
 	@sed -i 's@--output=.*@--output=${PWD}/QC_CelltypeIdentification.out@'                            1Run/QC_CelltypeIdentification.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/QC_CelltypeIdentification.err@'                              1Run/QC_CelltypeIdentification.sbatch
+	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION_SENSITIVE}@'                            1Run/QC_CelltypeIdentification.sbatch
+	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                                  1Run/QC_CelltypeIdentification.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                     1Run/QC_CelltypeIdentification.sbatch
 	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=../$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'   1Run/QC_CelltypeIdentification.sbatch
 	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_FASTQ_DROPLET)@'                  1Run/QC_CelltypeIdentification.sbatch
@@ -228,17 +230,18 @@ qc_cellType: process_busFile 1Run/QC_CelltypeIdentification.R
 	@echo --- DONE ---
 	@touch $@
 	
-## Quality control based on the bimodality of the cell-population	per library/cell-type pop
+## Quality control based on the bimodality of the cell-population per library/cell-type pop
 bimodality_cellPop: qc_cellType 1Run/QC_cellPop_bimodality.R
 	@echo --- Starting the quality control for the cell population based on the bimodality ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                        	1Run/QC_cellPop_bimodality.R
-	@sed -i 's@--output=.*@--output=${PWD}/QC_cellPop_bimodality_TB.out@'                          		  1Run/QC_cellPop_bimodality.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/QC_cellPop_bimodality_TB.err@'                              		1Run/QC_cellPop_bimodality.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                     	1Run/QC_cellPop_bimodality.sbatch
-	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=../$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'   	1Run/QC_cellPop_bimodality.sbatch
-	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)@'            	1Run/QC_cellPop_bimodality.sbatch
-	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)@'        	1Run/QC_cellPop_bimodality.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                      	1Run/QC_cellPop_bimodality.sbatch
+	@sed -i 's@--output=.*@--output=${PWD}/QC_cellPop_bimodality_TB.out@'                                 1Run/QC_cellPop_bimodality.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/QC_cellPop_bimodality_TB.err@'                                   1Run/QC_cellPop_bimodality.sbatch
+	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION_SENSITIVE}@'                                1Run/QC_cellPop_bimodality.sbatch
+	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                                      1Run/QC_cellPop_bimodality.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                         1Run/QC_cellPop_bimodality.sbatch
+	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=../$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'       1Run/QC_cellPop_bimodality.sbatch
+	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)@'                1Run/QC_cellPop_bimodality.sbatch
+	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)@'            1Run/QC_cellPop_bimodality.sbatch
+	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                          1Run/QC_cellPop_bimodality.sbatch
 	@sbatch 1Run/QC_cellPop_bimodality.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
@@ -247,17 +250,18 @@ bimodality_cellPop: qc_cellType 1Run/QC_cellPop_bimodality.R
 ## Call present and absent genes per library/cell population that pass the bimodality test
 calls: bimodality_cellPop 1Run/Calls_cell_pop_per_library.R
 	@echo --- Starting the calls of present and absent genes ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                        												1Run/Calls_cell_pop_per_library.R
-	@sed -i 's@--output=.*@--output=${PWD}/Calls_library_cellPop.out@'                      		      												1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/Calls_library_cellPop.err@'                              														1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                     												1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=../$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'   												1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@export bimodalityFile=.*@export bimodalityFile=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)/bimodality_targetBased.txt@'  	1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)@'                  									1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@export folder_refIntergenic=.*@export folder_refIntergenic=../$(REFERENCE_INTERGENIC_PATH)@'   								1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@export desired_pValue_cutoff=.*@export desired_pValue_cutoff=../$(PVALUE_CUTOFF)@'   													1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_CLUSTER_CALLS_10X)@'                  								1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                      												1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@--output=.*@--output=${PWD}/Calls_library_cellPop.out@'                                                             1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/Calls_library_cellPop.err@'                                                               1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION_SENSITIVE}@'                                                         1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                                                               1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                                  1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=../$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'                                1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@export bimodalityFile=.*@export bimodalityFile=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)/bimodality_targetBased.txt@'        1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)@'                                         1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@export folder_refIntergenic=.*@export folder_refIntergenic=../$(CLUSTER_REF_INTERGENIC_FOLDER)@'                    1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@export desired_pValue_cutoff=.*@export desired_pValue_cutoff=../$(PVALUE_CUTOFF)@'                                  1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_CLUSTER_CALLS_10X)@'                                       1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                                                   1Run/Calls_cell_pop_per_library.sbatch
 	@sbatch 1Run/Calls_cell_pop_per_library.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
