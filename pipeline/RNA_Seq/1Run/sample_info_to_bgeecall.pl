@@ -39,9 +39,9 @@ if ( !$test_options || $sample_info_file eq '' || $transcriptome_dir eq '' || $a
     exit 1;
 }
 
-open(FH, '>', $bgeecall_file) or die $!;
+open(my $FH, '>', $bgeecall_file)  or die $!;
 # write header
-print FH "species_id\trun_ids\treads_size\trnaseq_lib_path\ttranscriptome_path\tannotation_path\toutput_directory\tcustom_intergenic_path\n";
+print {$FH} "species_id\trun_ids\treads_size\trnaseq_lib_path\ttranscriptome_path\tannotation_path\toutput_directory\tcustom_intergenic_path\n";
 
 
 open(my $sample_info, $sample_info_file) || die "failed to read sample info file: $!";
@@ -63,7 +63,8 @@ while (my $line = <$sample_info>) {
     my $intergenic_file = "$ref_intergenic_dir$line[2]_intergenic.fa.gz";
     my $output_line = "$line[2]\t\t$line[8]\t$fastq_path\t$transcriptome_path\t$annotation_path\toutput_dir\t$intergenic_file\n";
 
-    print FH $output_line;
+    print {$FH} $output_line;
 
 }
-close(FH);
+close($FH);
+
