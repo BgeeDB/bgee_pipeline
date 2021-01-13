@@ -1,0 +1,127 @@
+All condition parameter combinations to compute for EST data:
+anatEntityId
+anatEntityId stageId
+***** combination anatEntityId *****
+** Computation of self ranks
+Creating temp table mapping EST libraries to globalConditions: Done in 1.53s
+Computing ranks per global condition, 278 conditions retrieved.
+100 conditions done.
+200 conditions done.
+** Computation of global ranks
+Creating temp table mapping EST libraries to globalConditions: Done in 6.68s
+Computing ranks per global condition, 1322 conditions retrieved.
+100 conditions done.
+200 conditions done.
+300 conditions done.
+400 conditions done.
+500 conditions done.
+600 conditions done.
+700 conditions done.
+800 conditions done.
+900 conditions done.
+1000 conditions done.
+1100 conditions done.
+1200 conditions done.
+1300 conditions done.
+***** combination anatEntityId stageId *****
+** Computation of self ranks
+Creating temp table mapping EST libraries to globalConditions: Done in 4.44s
+Computing ranks per global condition, 591 conditions retrieved.
+100 conditions done.
+200 conditions done.
+300 conditions done.
+400 conditions done.
+500 conditions done.
+** Computation of global ranks
+Creating temp table mapping EST libraries to globalConditions: Done in 28.31s
+Computing ranks per global condition, 8749 conditions retrieved.
+100 conditions done.
+200 conditions done.
+300 conditions done.
+400 conditions done.
+500 conditions done.
+600 conditions done.
+700 conditions done.
+800 conditions done.
+900 conditions done.
+1000 conditions done.
+1100 conditions done.
+1200 conditions done.
+1300 conditions done.
+1400 conditions done.
+1500 conditions done.
+1600 conditions done.
+1700 conditions done.
+1800 conditions done.
+1900 conditions done.
+2000 conditions done.
+2100 conditions done.
+2200 conditions done.
+2300 conditions done.
+2400 conditions done.
+2500 conditions done.
+2600 conditions done.
+2700 conditions done.
+2800 conditions done.
+2900 conditions done.
+3000 conditions done.
+3100 conditions done.
+3200 conditions done.
+3300 conditions done.
+3400 conditions done.
+3500 conditions done.
+3600 conditions done.
+3700 conditions done.
+3800 conditions done.
+3900 conditions done.
+4000 conditions done.
+4100 conditions done.
+4200 conditions done.
+4300 conditions done.
+4400 conditions done.
+4500 conditions done.
+4600 conditions done.
+4700 conditions done.
+4800 conditions done.
+4900 conditions done.
+5000 conditions done.
+5100 conditions done.
+5200 conditions done.
+5300 conditions done.
+5400 conditions done.
+5500 conditions done.
+5600 conditions done.
+5700 conditions done.
+5800 conditions done.
+5900 conditions done.
+6000 conditions done.
+6100 conditions done.
+6200 conditions done.
+6300 conditions done.
+6400 conditions done.
+6500 conditions done.
+6600 conditions done.
+6700 conditions done.
+6800 conditions done.
+6900 conditions done.
+7000 conditions done.
+7100 conditions done.
+7200 conditions done.
+7300 conditions done.
+7400 conditions done.
+7500 conditions done.
+7600 conditions done.
+7700 conditions done.
+7800 conditions done.
+7900 conditions done.
+8000 conditions done.
+8100 conditions done.
+8200 conditions done.
+8300 conditions done.
+8400 conditions done.
+8500 conditions done.
+8600 conditions done.
+8700 conditions done.
+Min, max, average EST mean rank: 
+MIN(estRank)	MAX(estRank)	AVG(estRank)
+1.00	337.00	51.751627
