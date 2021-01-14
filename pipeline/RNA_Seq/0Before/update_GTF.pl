@@ -18,12 +18,14 @@ use warnings;
 use diagnostics;
 use Getopt::Long;
 use IO::Compress::Gzip qw(gzip $GzipError) ;
-
-use Data::Dumper;
+use FindBin;
+use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
+use Utils;
+use File::Basename;
 
 ## Define arguments & their default value
 my ($path_to_gtf_folder, $bgee_connector) = ('','');
-my %opts = ('path_to_gtf_folder=s'    => \$path_to_gtf_folder
+my %opts = ('path_to_gtf_folder=s'    => \$path_to_gtf_folder,
             'bgee=s'        => \$bgee_connector  
            );
 
@@ -39,21 +41,48 @@ if ( !$test_options || $path_to_gtf_folder eq '' || $bgee_connector eq '') {
     exit 1;
 }
 
-# detect species coming from RefSeq/NCBI using information stored in the database
-print 'Connecting to Bgee to retrieve species coming from NCBI (RefSeq)';
+# detect species coming from RefSeq/NCBI using information stored in the bgee database
+print "Connecting to Bgee to retrieve species coming from NCBI (RefSeq)\n";
 # Bgee db connection
 my $dbh = Utils::connect_bgee_db($bgee_connector);
-my $selSpecies = $dbh->prepare('SELECT species.genomeFilePath FROM species INNER JOIN dataSource ON species.dataSourceId = dataSource.dataSourceId where dataSourceName=\"RefSeq\"');
+my $selSpecies = $dbh->prepare("SELECT species.genomeFilePath FROM species INNER JOIN dataSource ON species.dataSourceId = dataSource.dataSourceId where dataSourceName = \"RefSeq\"");
+$selSpecies->execute()  or die $selSpecies->errstr;
 # Now for each species retrieve corresponding gtf.gz file and update it to be compatible with bgee pipeline
 while ( my @data = $selSpecies->fetchrow_array ){
-    my $file_prefix = basename($data[1]);
+    my $file_prefix = basename($data[0]);
     my @files = glob "$path_to_gtf_folder/$file_prefix*.gtf.gz";
-    if(!$files == 1) {
-        die "more than one gtf.gz file map regex $path_to_gtf_folder/$file_prefix*.gtf.gz"
+    if(!defined($files[0])) {
+        die "no gtf.gz file map regex $path_to_gtf_folder/$file_prefix*.gtf.gz";
+    } elsif(scalar @files > 1) {
+        die "more than one gtf.gz file map regex $path_to_gtf_folder/$file_prefix*.gtf.gz";
     }
+    my $file = $files[0];
+    print "parse file $file\n";
     #create temp file where updated GTF will be store
     my $tempFile = "$path_to_gtf_folder/temp.gtf";
     
+    #preliminary read of gtf file to check that gtf file was not already updated
+    open(IN, "gunzip -c $file |") || die "can’t open pipe to $file";
+    my $already_modified = 0;
+    while (my $line = <IN>) {
+        next if ($line =~ /^#/);
+        # check if firest exon line already has a gene_biotype attribute
+        if ($line =~ /\texon\t/) {
+            if ($line =~ /(gene_biotype [^;]+)/) {
+                $already_modified = 1;
+            }
+            last;
+        }
+    }
+    close(IN);
+
+    if ($already_modified) {
+        print "file $file already modified\n";
+        next;
+    } else {
+        print "file $file needs to be modified\n";
+    }
+
     #first read of gtf file to retrieve mapping gene<-biotype
     open(IN, "gunzip -c $file |") || die "can’t open pipe to $file";
     my %geneToBiotype;
@@ -95,6 +124,7 @@ while ( my @data = $selSpecies->fetchrow_array ){
     rename $tempFileGz, $file or die "can not rename file $tempFileGz to $file";
     #delete uncompressed temp file
     unlink $tempFile;
+    print "finished updating file $file\n";
 }
 
 
