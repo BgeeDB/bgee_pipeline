@@ -9288,22 +9288,22 @@ SRX001298	SRP000304	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM2234
 SRX001299	SRP000304	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer	SINGLE		36	SRR005788,SRR005789
 SRX001300	SRP000304	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer	SINGLE		36	SRR005790,SRR005791
 SRX001306	SRP000304	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer	SINGLE		36	SRR005782,SRR005783
-SRX030936	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	PAIRED		36	SRR072367
-SRX030937	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	PAIRED		36	SRR072356
-SRX030942	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	PAIRED		36	SRR072363
-SRX030946	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	PAIRED		36	SRR072359
-SRX030941	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	PAIRED		36	SRR072368
-SRX030947	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	PAIRED		36	SRR072364
-SRX030935	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	PAIRED		36	SRR072362
-SRX030932	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	PAIRED		36	SRR072366
-SRX030934	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	PAIRED		36	SRR072361
-SRX030933	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	PAIRED		36	SRR072357
-SRX030938	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	PAIRED		36	SRR072365
-SRX030943	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	PAIRED		36	SRR072353
-SRX030939	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	PAIRED		36	SRR072360
-SRX030944	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	PAIRED		36	SRR072354
-SRX030945	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	PAIRED		36	SRR072355
-SRX030940	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	PAIRED		36	SRR072358
+SRX030936	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	SINGLE		36	SRR072367
+SRX030937	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	SINGLE		36	SRR072356
+SRX030942	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	SINGLE		36	SRR072363
+SRX030946	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	SINGLE		36	SRR072359
+SRX030941	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	SINGLE		36	SRR072368
+SRX030947	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	SINGLE		36	SRR072364
+SRX030935	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	SINGLE		36	SRR072362
+SRX030932	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	SINGLE		36	SRR072366
+SRX030934	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	SINGLE		36	SRR072361
+SRX030933	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	SINGLE		36	SRR072357
+SRX030938	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	SINGLE		36	SRR072365
+SRX030943	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	SINGLE		36	SRR072353
+SRX030939	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	SINGLE		36	SRR072360
+SRX030944	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	SINGLE		36	SRR072354
+SRX030945	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	SINGLE		36	SRR072355
+SRX030940	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	SINGLE		36	SRR072358
 SRX037790	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	SINGLE		36	SRR090700
 SRX154476	SRP004363	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	SINGLE		36	SRR513094
 SRX1585058	SRP008998	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina Genome Analyzer II	SINGLE		36	SRR3169821
