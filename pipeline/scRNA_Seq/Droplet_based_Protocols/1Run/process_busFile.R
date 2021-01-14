@@ -52,7 +52,7 @@ for (library in unique(scRNAInfo$libraryId)) {
     ## verify if busOutput exist for the library
     pathBusOut <-  paste0(folder_data, library, "/busOutput")
     if (!dir.exists(pathBusOut)){
-      message("The Kallisto bus folder doesn't exist for the library: ", library)
+      warning("The Kallisto bus folder doesn't exist for the library: ", library)
     } else {
       message("Start correction, sort and counts for the library: ", library)
 
