@@ -119,7 +119,13 @@ get_GTF: clean_cluster_folders create_rna_seq_sample_info
 	@perl 0Before/get_GTF_files.pl  -RNAseqSample=$(RNASEQ_SAMPINFO_FILEPATH) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_DOWNLOAD_GTF)  >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
 
-get_genome: get_GTF
+# this rule is created to remove some elements from NCBI gtf files in order to make them compatible with our pipeline
+# has to be run once species and datasources are integrated in the database
+update_GTF: get_GTF
+	perl 0Before/update_GTF.pl -path_to_gtf_folder=$(RNASEQ_CLUSTER_GTF) -bgee=$(BGEECMD)>$@.tmp 2>&1
+	@$(MV) $@.tmp $@
+
+get_genome: update_GTF
 	# Download genomes from Ensembl and NCBI databases
 	@perl 0Before/get_genome_files.pl  -GTF_dir=$(RNASEQ_DOWNLOAD_GTF) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_DOWNLOAD_GTF) >$@.tmp 2>&1
 	@echo "You can transfer GTF and genome files from UNIL cluster [$(RNASEQ_DOWNLOAD_GTF)] to sensitive cluster [$(RNASEQ_CLUSTER_GTF)]"
@@ -199,12 +205,6 @@ clean_cluster_folders: check_tools
 
 
 ################################ GENERATE INTERGENIC SEQUENCES FOR EACH SPECIES ################################
-
-# this rule is created to remove some elements from NCBI gtf files in order to make them compatible with our pipeline
-update_GTF:
-	perl 0Before/update_GTF.pl -path_to_gtf_folder=$(RNASEQ_CLUSTER_GTF) >$@.tmp 2>&1
-	@$(MV) $@.tmp $@
-
 prepare_GTF: update_GTF
 	# Prepare GTF files : $(CLUSTER_R_CMD)
 	@perl 0Before/slurm_prepare_GTF.pl -gtf_dir=$(RNASEQ_CLUSTER_GTF) -block_size_N=31 -account=$(CLUSTER_ACCOUNT_SENSITIVE) -partition=$(CLUSTER_PARTITION_SENSITIVE) -proportion_N=0.05 -output_gtf_path=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(OUTPUT_DIR) -cluster_R_cmd="$(CLUSTER_R_CMD)" >$@.tmp 2>&1

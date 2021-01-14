@@ -10,6 +10,7 @@
 #    1) "tRNA" or "rRNA" 
 #    2) linked to the exception "rearrangement required for product" (ebi.ac.uk/ena/WebFeat/qualifiers/exception.html)
 #    3) created using The Vertebrate Mitochondrial Code (transl_table=2)
+#- add gene_biotype attribute at the end of lines corresponding to exon: in RefSeq gtf gene_biotype attribute is only present in the gene lines. Those lines are not kept in the gtf_all file generated later in the pipeline. It is then mandatory to add this info to exon lines (in order to be able to retrieve the mapping between gene and biotypes)
 
 # Perl core modules
 use strict;
@@ -18,42 +19,76 @@ use diagnostics;
 use Getopt::Long;
 use IO::Compress::Gzip qw(gzip $GzipError) ;
 
+use Data::Dumper;
+
 ## Define arguments & their default value
-my ($path_to_gtf_folder) = ('',);
-my %opts = ('path_to_gtf_folder=s'                => \$path_to_gtf_folder
+my ($path_to_gtf_folder, $bgee_connector) = ('','');
+my %opts = ('path_to_gtf_folder=s'    => \$path_to_gtf_folder
+            'bgee=s'        => \$bgee_connector  
            );
 
 
 ######################## Check arguments ########################
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $path_to_gtf_folder eq '') {
+if ( !$test_options || $path_to_gtf_folder eq '' || $bgee_connector eq '') {
     print "\n\tInvalid or missing argument:
-\te.g. $0 -path_to_gtf_folder=CLUSTER_GTF_DIR >> $@.tmp 2> $@.warn
-\t-path_to_gtf_folder               Path to the directory containing all gtf annotation files
+\te.g. $0 -path_to_gtf_folder=CLUSTER_GTF_DIR -bgee_connector=$(BGEE)>> $@.tmp 2> $@.warn
+\t-path_to_gtf_folder     Path to the directory containing all gtf annotation files
+\t-bgee                   Bgee connector string
 \n";
     exit 1;
 }
 
-#XXX Could filter on source of data to only select species coming from ncbi but it requires to query the database. It is maybe better not to force species info to already be in the database at this point (to confirm)
-#retrieve all gtf files
-my @files = glob "$path_to_gtf_folder/*.gtf.gz";
-my $tempFile = "$path_to_gtf_folder/temp.gtf";
-foreach my $file (@files) {
+# detect species coming from RefSeq/NCBI using information stored in the database
+print 'Connecting to Bgee to retrieve species coming from NCBI (RefSeq)';
+# Bgee db connection
+my $dbh = Utils::connect_bgee_db($bgee_connector);
+my $selSpecies = $dbh->prepare('SELECT species.genomeFilePath FROM species INNER JOIN dataSource ON species.dataSourceId = dataSource.dataSourceId where dataSourceName=\"RefSeq\"');
+# Now for each species retrieve corresponding gtf.gz file and update it to be compatible with bgee pipeline
+while ( my @data = $selSpecies->fetchrow_array ){
+    my $file_prefix = basename($data[1]);
+    my @files = glob "$path_to_gtf_folder/$file_prefix*.gtf.gz";
+    if(!$files == 1) {
+        die "more than one gtf.gz file map regex $path_to_gtf_folder/$file_prefix*.gtf.gz"
+    }
     #create temp file where updated GTF will be store
-    open (my $OUT, '>', "$tempFile")  or die "Cannot write [$tempFile]\n";
-    # start reading orginal GTF
+    my $tempFile = "$path_to_gtf_folder/temp.gtf";
+    
+    #first read of gtf file to retrieve mapping gene<-biotype
     open(IN, "gunzip -c $file |") || die "can’t open pipe to $file";
+    my %geneToBiotype;
+    while(my $line = <IN>) {
+        next if ($line =~ /^#/);
+        # retrieve mapping gene_id <- gene_biotype
+        my @gene_id = $line =~ /\t(gene_id [^;]+)/;
+        if ($line =~ /\tgene\t/) {
+            my @gene_biotype = $line =~ /(gene_biotype [^;]+)/;
+            $geneToBiotype{$gene_id[0]} = $gene_biotype[0];
+        }
+    }
+    close(IN);
+
+    #second read of gtf file to update it
+    open(IN, "gunzip -c $file |") || die "can’t open pipe to $file";
+    open (my $OUT, '>', "$tempFile")  or die "Cannot write [$tempFile]\n";
     while(my $line = <IN>) {
         # remove lines containing "unknown_transcript_1"
         next if (index($line, "unknown_transcript_1") != -1);
+        # remove lines starting with #
+        next if ($line =~ /^#/);
         # remove transcript_id = "" when exist
         $line =~ s/transcript_id ""; //;
+        #add gene_biotype info to lines corresponding to exon
+        if ($line =~ /\texon\t/) {
+            my @gene_id = $line =~ /\t(gene_id [^;]+)/;
+            chomp($line);
+            $line = $line.$geneToBiotype{$gene_id[0]}.";\n";
+        }
         print {$OUT} $line;
-
     }
     close(IN);
     close $OUT;
-    #gzip temp fil
+    #gzip temp file
     my $tempFileGz = "$tempFile.gz";
     gzip $tempFile => $tempFileGz or die "gzip failed: $GzipError\n";
     # move temp file to original file
