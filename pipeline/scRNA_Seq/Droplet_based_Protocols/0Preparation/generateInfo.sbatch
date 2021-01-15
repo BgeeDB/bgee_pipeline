@@ -20,6 +20,7 @@ module add R/3.6.1;
 
 export SCRIPT_PATH=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/bgee_pipeline/pipeline/scRNA_Seq/Droplet_based_Protocols
 export folder_gtf=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/rna_seq/GTF_15/
+export metadata_info_file=/generated/metadata_info_10X.txt
 export ROUT=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/scRNA-Seq_all_results/DROPLET_10X/
 
 R CMD BATCH --no-save --no-restore "--args folder_gtf=\"folder_gtf\"" $SCRIPT_PATH/0Preparation/generateInfo.R $ROUT/generateInfo.Rout

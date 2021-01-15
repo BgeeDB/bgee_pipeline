@@ -23,30 +23,44 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed....
-command_arg <- c("folder_gtf")
+command_arg <- c("folder_gtf", "metadata_info_file")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
   }
 }
 
+#read metadata file
+metadata_info <- fread(metadata_info_file)
+#retrieve scientific name of species for which single cell libraries exist
+species_to_use <- str_replace_all(unique(metadata_info$scientific_name), " ", "_")
+
 AllFiles <- list.files(folder_gtf, pattern="*gtf_all", full.names=T, recursive = TRUE)
 
 for (i in AllFiles) {
-
+  
   speciesID <- basename(i)
+  
+  # check if current gtf_all file corresponds to a species for which single 
+  # cell libraries exist. If not move to next gtf_all file
+  if (is.na(match(1,pmatch(species_to_use, basename(speciesID))))) {
+    next
+  }
+  message("generate info using ", i)
   speciesID <- data.frame(str_split(speciesID, "\\."))[1,1]
 
-  readFile <- fread(i)
+  readFile <- fread(i, sep = "\t")
 
   ## extract information: gene_id, transcript_id, biotype_id
   system(sprintf('grep %s %s | sed -e "s/^.*gene_id //; s/;.*$//" > %s',paste0('gene_id '), paste0(i), paste0(folder_gtf,"/gene_id_", speciesID, ".tsv")))
   system(sprintf('grep %s %s | sed -e "s/^.*transcript_id //; s/;.*$//" > %s',paste0('transcript_id '), paste0(i), paste0(folder_gtf,"/transcript_id_", speciesID, ".tsv")))
   system(sprintf('grep %s %s | sed -e "s/^.*gene_biotype //; s/;.*$//" > %s',paste0('gene_biotype '), paste0(i), paste0(folder_gtf,"/biotype_id_", speciesID, ".tsv")))
+  system(sprintf('grep %s %s | sed -e "s/^.*gene_name //; s/;.*$//" > %s',paste0('gene_name '), paste0(i), paste0(folder_gtf,"/gene_name_", speciesID, ".tsv")))
 
   gene_id <- fread(paste0(folder_gtf,"/gene_id_", speciesID, ".tsv"), header = FALSE)
   transcript_id <- fread(paste0(folder_gtf,"/transcript_id_", speciesID, ".tsv"), header = FALSE)
   biotype <- fread(paste0(folder_gtf,"/biotype_id_", speciesID, ".tsv"), header = FALSE)
+  geneName <- fread(paste0(folder_gtf,"/gene_name_", speciesID, ".tsv"), header = FALSE)
 
   ## collect transcript_to_gene
   transcript_to_gene <- cbind(transcript_id, gene_id)
@@ -57,13 +71,20 @@ for (i in AllFiles) {
   gene_to_biotype <- data.frame(gene_id[gene_to_biotype], biotype[gene_to_biotype])
   colnames(gene_to_biotype) <- c("gene", "biotype")
   gene_to_biotype <- gene_to_biotype[!duplicated(gene_to_biotype[,c('gene')]),]
+  ## collect gene_to_geneName
+  gene_to_geneName <- seq(max(nrow(gene_id), nrow(geneName)))
+  gene_to_geneName <- data.frame(gene_id[gene_to_geneName], geneName[gene_to_geneName])
+  colnames(gene_to_geneName) <- c("gene", "gene_name")
+  gene_to_geneName <- gene_to_geneName[!duplicated(gene_to_geneName[,c('gene')]),]
 
   write.table(transcript_to_gene, file = paste0(folder_gtf, "/transcript_to_gene_with_intergenic_", speciesID,".tsv"), quote = FALSE, sep = "\t", col.names = FALSE, row.names = FALSE)
   write.table(gene_to_biotype, file = paste0(folder_gtf, "/gene_to_biotype_with_intergenic_", speciesID,".tsv"), quote = FALSE, sep = "\t", col.names = FALSE, row.names = FALSE)
+  write.table(gene_to_geneName, file = paste0(folder_gtf, "/gene_to_geneName_with_intergenic_", speciesID,".tsv"), quote = FALSE, sep = "\t", col.names = FALSE, row.names = FALSE)
 
   ## remove intermediary files
   file.remove(paste0(folder_gtf, "/gene_id_", speciesID, ".tsv"))
   file.remove(paste0(folder_gtf, "/transcript_id_", speciesID, ".tsv"))
   file.remove(paste0(folder_gtf, "/biotype_id_", speciesID, ".tsv"))
+  file.remove(paste0(folder_gtf, "/gene_name_", speciesID, ".tsv"))
 
 }
