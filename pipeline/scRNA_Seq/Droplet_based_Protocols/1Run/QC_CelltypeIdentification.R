@@ -8,7 +8,7 @@
 ## to provide a list of gene markers per cell-type after data analysis (validated with gene markers from the annotation file)
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNA_Seq_info_target.txt" folder_data="folder_data" infoFolder="infoFolder" output="output"' QC_CelltypeIdentification.R QC_CelltypeIdentification.Rout
+## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNA_Seq_info_target.txt" folder_data="folder_data" kallisto_bus_results="kallisto_bus_results" infoFolder="infoFolder" output="output"' QC_CelltypeIdentification.R QC_CelltypeIdentification.Rout
 ## scRNASeq_Info --> File that results from annotation and metadata (libraries downloaded and with extra information as readlength or SRR)
 ## folder_data --> Folder where are all the libraries (after process busfile)
 ## infoFolder --> Folder where we have the files corresponding to barcodes and gene markers annotation
@@ -40,7 +40,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed....
-command_arg <- c("scRNASeq_Info","folder_data", "infoFolder", "output")
+command_arg <- c("scRNASeq_Info","folder_data", "kallisto_bus_results", "infoFolder", "output")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -400,7 +400,7 @@ for (libraryID in scRNASeqAnnotation$libraryId) {
     speciesID <- gsub(" ", "_", speciesID)
     experimentID <- scRNASeqAnnotation$experimentId[scRNASeqAnnotation$libraryId == libraryID]
 
-    path2Files <- paste0(folder_data, libraryID, "/busOutput/gene_counts")
+    path2Files <- file.path(kallisto_bus_results, libraryID, "gene_counts")
     path2ListFiles <- list.files(path2Files)
 
     ## create folder per library
