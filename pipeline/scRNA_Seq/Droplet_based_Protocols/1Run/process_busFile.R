@@ -8,9 +8,9 @@
 ## 3) Count records in the BUS with bustools count: generate the UMI count matrix using transcripts_to_genes.txt.
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNA_Seq_info_TargetBased.txt" folder_data="folder_data" folderSupport="folderSupport" whiteList_Path="whiteList_Path"' process_busFile.R process_busFile.Rout
+## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNA_Seq_info_TargetBased.txt" kallisto_bus_results="kallisto_bus_results" folderSupport="folderSupport" whiteList_Path="whiteList_Path"' process_busFile.R process_busFile.Rout
 ## scRNASeq_Info --> File that results from annotation and metadata (libraries downloaded and with extra information as SRR)
-## folder_data --> Folder where are all the libraries in fastq format
+## kallisto_bus_results --> Folder where are all the libraries in fastq format
 ## folderSupport --> Folder where is placed the informative files as: transcriptomes index + gtf_all + transcript_to_gene
 ## whiteList_Path --> Folder where is located the barcode_whitelist files
 
@@ -27,7 +27,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed.
-command_arg <- c("scRNASeq_Info", "folder_data", "folderSupport", "whiteList_Path")
+command_arg <- c("scRNASeq_Info", "kallisto_bus_results", "folderSupport", "whiteList_Path")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -45,12 +45,12 @@ if( file.exists(scRNASeq_Info) ){
 for (library in unique(scRNAInfo$libraryId)) {
 
   ## verify if library exist
-  libraryInfo <- file.exists(paste0(folder_data, "/", library, "/"))
+  libraryInfo <- dir.exists(file.path(kallisto_bus_results, library))
 
   if (libraryInfo == TRUE){
 
     ## verify if busOutput exist for the library
-    pathBusOut <-  paste0(folder_data, library, "/busOutput")
+    pathBusOut <-  paste0(kallisto_bus_results, library)
     if (!dir.exists(pathBusOut)){
       warning("The Kallisto bus folder doesn't exist for the library: ", library)
     } else {
