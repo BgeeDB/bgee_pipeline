@@ -48,7 +48,7 @@ if( file.exists(annotation_file) ){
 }
 ##########################################################################################################################################################
 ## first merge information from the metadata (like: reads information and SRR) and annotation file (from Bgee)
-metadataCollect <- metadata[c(1,2,3,5,7)]
+metadataCollect <- metadata[c("experiment_accession", "run_accession","read_count", "scientific_name", "library_layout")]
 colnames(metadataCollect)[1] <- "libraryId"
 targetBased <- data.frame(dplyr::filter(annotation, protocol == "10X Genomics" & protocolType == "3'end"))
 
@@ -86,9 +86,9 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
       detectFastqPath_2 <- rlang::is_empty(detectFastqPath_2)
 
       ## create directory for bus_output for each library
-      busOutput <- file.path(folder_data, i, "busOutput")
-      if (!dir.create(busOutput)){
-          dir.create(busOutput)
+      busOutput <- file.path(output, i, "busOutput")
+      if (!dir.exists(busOutput)){
+          dir.create(busOutput, recursive=TRUE)
         } else {
           message(butOutput, " dir already exists.....")
       }
@@ -140,7 +140,7 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
       system(sprintf('%s -i %s -o %s -x %s -t 4 %s', paste0("kallisto bus"), file.path(folderSupport, specieID), paste0(busOutput), paste0("10x",whiteLInfo), paste0(filesKallisto)))
       
     } else {
-      message("Library not present in the folder to run Kallisto bus!")
+      message("Library not present in the folder ", file.path(output, i), " to run Kallisto bus!")
     }
   }
 }

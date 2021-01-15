@@ -176,11 +176,11 @@ kallisto_bus: generate_info 1Run/Kallisto_bus.R
 	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION_SENSITIVE}@'                            1Run/Kallisto_bus.sbatch
 	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                                  1Run/Kallisto_bus.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                     1Run/Kallisto_bus.sbatch
-	@sed -i 's@export metadata_file=.*@export metadata_file=../$(SC_RNASEQ_METADATA_10X_FILEPATH)@'   1Run/Kallisto_bus.sbatch
-	@sed -i 's@export annotation_file=.*@export annotation_file=../$(SC_RNASEQ_LIB_FILEPATH)@'        1Run/Kallisto_bus.sbatch
+	@sed -i 's@export metadata_file=.*@export metadata_file=$(SC_RNASEQ_METADATA_10X_FILEPATH)@'      1Run/Kallisto_bus.sbatch
+	@sed -i 's@export annotation_file=.*@export annotation_file=$(SC_RNASEQ_LIB_FILEPATH)@'           1Run/Kallisto_bus.sbatch
 	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_FASTQ_DROPLET)@'                  1Run/Kallisto_bus.sbatch
 	@sed -i 's@export folderSupport=.*@export folderSupport=$(RNASEQ_CLUSTER_GTF)@'                   1Run/Kallisto_bus.sbatch
-	@sed -i 's@export output=.*@export output=../$(SC_RNASEQ_PATH_GENERATED)@'                        1Run/Kallisto_bus.sbatch
+	@sed -i 's@export output=.*@export output=$(SC_RNASEQ_PATH_GENERATED)@'                           1Run/Kallisto_bus.sbatch
 	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                      1Run/Kallisto_bus.sbatch
 	@sbatch 1Run/Kallisto_bus.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'

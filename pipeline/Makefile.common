@@ -454,8 +454,8 @@ SCRNASEQ_SOFTWARE_BAMTOFASTQ                  := /users/sfonseca1/bin/bamtofastq
 # scRNAseq cluster paths (JURA)
 
 ## PATH to full length and 10X data
-SC_RNASEQ_FASTQ_FULL_LENGTH                   := $(CLUSTER_DATA_PATH)FASTQ/scRNAseq/Full_length/
-SC_RNASEQ_FASTQ_DROPLET                       := $(CLUSTER_DATA_PATH)FASTQ/scRNAseq/10X/
+SC_RNASEQ_FASTQ_FULL_LENGTH                   := $(CLUSTER_DATA_PATH)/FASTQ/scRNAseq/Full_length/
+SC_RNASEQ_FASTQ_DROPLET                       := $(CLUSTER_DATA_PATH)/FASTQ/scRNAseq/10X/
 
 ## PATH to all results of both of pipelines
 SC_RNASEQ_CLUSTER_ALL_RES                     := $(RNASEQ_CLUSTER_SCRATCH)scRNA-Seq_all_results_$(DBNAME)/
