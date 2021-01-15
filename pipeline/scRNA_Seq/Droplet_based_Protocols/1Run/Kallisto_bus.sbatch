@@ -25,7 +25,8 @@ export annotation_file=../../../source_files/scRNA_Seq/scRNASeqLibrary.tsv
 export folder_data=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/FASTQ/scRNAseq/10X/
 export folderSupport=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/rna_seq/GTF_15/
 export output=../../../generated_files/scRNA_Seq/
+export kallisto_bus_results=/scratch/FAC/FBM/DEE/mrobinso/bgee_sensitive//scRNAseq/DROPLET/bustools_results
 export ROUT=/scratch/beegfs/FAC/FBM/DEE/bgee_sensitive/bgee_v15_0/scRNA-Seq_all_results_bgee_v15_0/DROPLET_10X/
 
 
-R CMD BATCH --no-save --no-restore "--args metadata_file=\"$metadata_file\" annotation_file=\"$annotation_file\" folder_data=\"$folder_data\" folderSupport=\"$folderSupport\" output=\"$output\"" $SCRIPT_PATH/1Run/Kallisto_bus.R $ROUT/Kallisto_bus.Rout
+R CMD BATCH --no-save --no-restore "--args metadata_file=\"$metadata_file\" annotation_file=\"$annotation_file\" folder_data=\"$folder_data\" folderSupport=\"$folderSupport\" output=\"$output\" kallisto_bus_results=\"kallisto_bus_results\"" $SCRIPT_PATH/1Run/Kallisto_bus.R $ROUT/Kallisto_bus.Rout

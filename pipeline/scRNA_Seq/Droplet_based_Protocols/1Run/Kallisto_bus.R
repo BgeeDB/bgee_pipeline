@@ -10,6 +10,7 @@
 ## folder_data --> Folder where all the libraries are located
 ## folderSupport --> Folder where is placed the informative files as transcriptomes index + gtf_all
 ## output --> Path where should be saved the scRNA_Seq_info_TargetBased file
+## kallisto_bus_results --> path where should be saved all kallisto bus results
 
 ## libraries used
 library(stringr)
@@ -25,7 +26,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed.
-command_arg <- c("metadata_file","annotation_file", "folder_data", "folderSupport", "output")
+command_arg <- c("metadata_file","annotation_file", "folder_data", "folderSupport", "output", "kallisto_bus_results")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -86,11 +87,11 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
       detectFastqPath_2 <- rlang::is_empty(detectFastqPath_2)
 
       ## create directory for bus_output for each library
-      busOutput <- file.path(output, i, "busOutput")
+      busOutput <- file.path(kallisto_bus_results, i)
       if (!dir.exists(busOutput)){
-          dir.create(busOutput, recursive=TRUE)
-        } else {
-          message(butOutput, " dir already exists.....")
+        dir.create(busOutput, recursive=TRUE)
+      } else {
+        message(butOutput, " dir already exists.....")
       }
 
       if (detectFastqPath_1 == TRUE & detectFastqPath_2 == TRUE){
@@ -140,7 +141,7 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
       system(sprintf('%s -i %s -o %s -x %s -t 4 %s', paste0("kallisto bus"), file.path(folderSupport, specieID), paste0(busOutput), paste0("10x",whiteLInfo), paste0(filesKallisto)))
       
     } else {
-      message("Library not present in the folder ", file.path(output, i), " to run Kallisto bus!")
+      message("Library not present in the folder ", file.path(folder_data, i), " to run Kallisto bus!")
     }
   }
 }
