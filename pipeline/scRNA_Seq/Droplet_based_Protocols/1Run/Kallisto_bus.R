@@ -91,7 +91,7 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
       if (!dir.exists(busOutput)){
         dir.create(busOutput, recursive=TRUE)
       } else {
-        message(butOutput, " dir already exists.....")
+        message(busOutput, " dir already exists.....")
       }
 
       if (detectFastqPath_1 == TRUE & detectFastqPath_2 == TRUE){
