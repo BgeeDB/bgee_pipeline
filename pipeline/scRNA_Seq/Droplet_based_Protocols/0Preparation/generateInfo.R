@@ -50,7 +50,7 @@ for (i in AllFiles) {
   speciesID <- data.frame(str_split(speciesID, "\\."))[1,1]
 
   readFile <- fread(i, sep = "\t")
-
+  
   ## extract information: gene_id, transcript_id, biotype_id
   system(sprintf('grep %s %s | sed -e "s/^.*gene_id //; s/;.*$//" > %s',paste0('gene_id '), paste0(i), paste0(folder_gtf,"/gene_id_", speciesID, ".tsv")))
   system(sprintf('grep %s %s | sed -e "s/^.*transcript_id //; s/;.*$//" > %s',paste0('transcript_id '), paste0(i), paste0(folder_gtf,"/transcript_id_", speciesID, ".tsv")))

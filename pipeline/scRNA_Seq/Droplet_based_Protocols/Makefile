@@ -159,7 +159,7 @@ generate_info: check_tools 0Preparation/generateInfo.R
 	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                                        0Preparation/generateInfo.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                           0Preparation/generateInfo.sbatch
 	@sed -i 's@export folder_gtf=.*@export folder_gtf=$(RNASEQ_CLUSTER_GTF)@'                               0Preparation/generateInfo.sbatch
-	@sed -i 's@export metadata_info_file=.*@export metadata_info_file=$(SC_RNASEQ_METADATA_10X_FILEPATH)@'  0Preparation/generateInfo.sbatch
+	@sed -i 's@export metadata_info_file=.*@export metadata_info_file=${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH)@'  0Preparation/generateInfo.sbatch
 	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                            0Preparation/generateInfo.sbatch
 	@sbatch 0Preparation/generateInfo.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
