@@ -24,7 +24,8 @@ export folder_data=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/FASTQ/scRNAseq/10X/
 export infoFolder=../../../source_files/scRNA_Seq/
 export output=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/scRNA-Seq_all_results/DROPLET_10X/QC_CellType_identification/
 export kallisto_bus_results=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/scRNA-Seq_all_results/DROPLET_10X/QC_CellType_identification/
+export folderSupport=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/scRNA-Seq_all_results/DROPLET_10X/QC_CellType_identification/
 export ROUT=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/scRNA-Seq_all_results/DROPLET_10X/
 export R_LIBS_USER=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/R_LIBS
 
-R CMD BATCH --no-save --no-restore "--args scRNASeq_Info=\"$scRNASeq_Info\" folder_data=\"$folder_data\" kallisto_bus_results=\"$kallisto_bus_results\" infoFolder=\"$infoFolder\" output=\"$output\"" $SCRIPT_PATH/1Run/QC_CelltypeIdentification.R $ROUT/QC_CelltypeIdentification.Rout
+R CMD BATCH --no-save --no-restore "--args scRNASeq_Info=\"$scRNASeq_Info\" folder_data=\"$folder_data\" kallisto_bus_results=\"$kallisto_bus_results\" folderSupport=\"folderSupport\" infoFolder=\"$infoFolder\" output=\"$output\"" $SCRIPT_PATH/1Run/QC_CelltypeIdentification.R $ROUT/QC_CelltypeIdentification.Rout

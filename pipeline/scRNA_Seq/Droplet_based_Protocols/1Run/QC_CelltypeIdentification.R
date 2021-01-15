@@ -8,7 +8,7 @@
 ## to provide a list of gene markers per cell-type after data analysis (validated with gene markers from the annotation file)
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNA_Seq_info_target.txt" folder_data="folder_data" kallisto_bus_results="kallisto_bus_results" infoFolder="infoFolder" output="output"' QC_CelltypeIdentification.R QC_CelltypeIdentification.Rout
+## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNA_Seq_info_target.txt" folder_data="folder_data" kallisto_bus_results="kallisto_bus_results" folderSupport="folderSupport" infoFolder="infoFolder" output="output"' QC_CelltypeIdentification.R QC_CelltypeIdentification.Rout
 ## scRNASeq_Info --> File that results from annotation and metadata (libraries downloaded and with extra information as readlength or SRR)
 ## folder_data --> Folder where are all the libraries (after process busfile)
 ## infoFolder --> Folder where we have the files corresponding to barcodes and gene markers annotation
@@ -40,7 +40,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed....
-command_arg <- c("scRNASeq_Info","folder_data", "kallisto_bus_results", "infoFolder", "output")
+command_arg <- c("scRNASeq_Info","folder_data", "kallisto_bus_results", "folderSupport", "infoFolder", "output")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -423,14 +423,14 @@ for (libraryID in scRNASeqAnnotation$libraryId) {
     object <- seurtObject(m_filtered = knee)
 
     ## read biotype information
-    biotypeInfo <- fread(paste0(infoFolder, "/gene_to_biotype_with_intergenic_", speciesID,".tsv"))
+    biotypeInfo <- fread(paste0(folderSupport, "/gene_to_biotype_with_intergenic_", speciesID,".tsv"))
     colnames(biotypeInfo) <- c("gene_id", "biotype")
     ## get barcode information for the library
     barcodeLibrary <- dplyr::filter(barcodes, library == libraryID)
     ## get gene markers information
     geneMarkerLibrary <- dplyr::filter(markers, experimentId == experimentID)
     ## read info that link gene_id with gene_name
-    geneNameFile <- read.table(paste0(infoFolder, "/gene_to_geneName_with_intergenic_", speciesID,".tsv"))
+    geneNameFile <- read.table(paste0(folderSupport, "/gene_to_geneName_with_intergenic_", speciesID,".tsv"))
     colnames(geneNameFile) <- c("gene", "gene_name")
 
     ## link barcode to cell ID and export information
