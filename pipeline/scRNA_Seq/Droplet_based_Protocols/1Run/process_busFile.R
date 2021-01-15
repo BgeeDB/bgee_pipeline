@@ -63,22 +63,22 @@ for (library in unique(scRNAInfo$libraryId)) {
 
       ## step 1 --> correct the barcodes
       message("Correct barcodes")
-      system(sprintf('%s -w %s -o %s %s', paste0(bustools, " ", "correct"), paste0(whiteList_Path, "barcode_whitelist_", selectedWhitheList,".txt"), paste0(pathBusOut, "/output.correct.bus"), paste0(pathBusOut, "/output.bus")))
+      system(sprintf('%s -w %s -o %s %s', "bustools correct", paste0(whiteList_Path, "barcode_whitelist_", selectedWhitheList,".txt"), paste0(pathBusOut, "/output.correct.bus"), paste0(pathBusOut, "/output.bus")))
 
       ## step 2 --> sort the bus file
       message("Sort bus file")
-      system(sprintf('%s -t 4 -o %s %s', paste0(bustools, " ", "sort"), paste0(pathBusOut, "/output.correct.sort.bus"), paste0(pathBusOut, "/output.correct.bus")))
+      system(sprintf('%s -t 4 -o %s %s', "bustools sort", paste0(pathBusOut, "/output.correct.sort.bus"), paste0(pathBusOut, "/output.correct.bus")))
 
       ## Create folders to export the information per TCC and gene matrix (counts)
       tcc_counts <- paste0(pathBusOut, "/tcc_counts")
-      if (!dir.create(tcc_counts)){
+      if (!dir.exists(tcc_counts)){
         dir.create(tcc_counts)
       } else {
         print("File already exist.....")
       }
 
       gene_counts <- paste0(pathBusOut, "/gene_counts")
-      if (!dir.create(gene_counts)){
+      if (!dir.exists(gene_counts)){
         dir.create(gene_counts)
       } else {
         print("File already exist.....")
@@ -90,10 +90,10 @@ for (library in unique(scRNAInfo$libraryId)) {
       ## step 3 --> count with bustools count
       ## TCC level
       message("TCC level")
-      system(sprintf('%s -o %s -g %s -e %s -t %s %s', paste0(bustools, " ", "count"), paste0(tcc_counts,"/tcc"), paste0(folderSupport, "/transcript_to_gene_with_intergenic_", collectSpecies, ".tsv"),paste0(pathBusOut, "/matrix.ec"), paste0(pathBusOut, "/transcripts.txt"), paste0(pathBusOut, "/output.correct.sort.bus")))
+      system(sprintf('%s -o %s -g %s -e %s -t %s %s', "bustools count", paste0(tcc_counts,"/tcc"), paste0(folderSupport, "/transcript_to_gene_with_intergenic_", collectSpecies, ".tsv"),paste0(pathBusOut, "/matrix.ec"), paste0(pathBusOut, "/transcripts.txt"), paste0(pathBusOut, "/output.correct.sort.bus")))
       ## GENE level
       message("Gene level")
-      system(sprintf('%s -o %s -g %s -e %s -t %s %s %s', paste0(bustools, " ", "count"), paste0(gene_counts,"/gene"), paste0(folderSupport, "/transcript_to_gene_with_intergenic_", collectSpecies, ".tsv"), paste0(pathBusOut, "/matrix.ec"), paste0(pathBusOut, "/transcripts.txt"), paste0("--genecounts"), paste0(pathBusOut, "/output.correct.sort.bus")))
+      system(sprintf('%s -o %s -g %s -e %s -t %s %s %s', "bustools count", paste0(gene_counts,"/gene"), paste0(folderSupport, "/transcript_to_gene_with_intergenic_", collectSpecies, ".tsv"), paste0(pathBusOut, "/matrix.ec"), paste0(pathBusOut, "/transcripts.txt"), paste0("--genecounts"), paste0(pathBusOut, "/output.correct.sort.bus")))
 
     }
   } else {
