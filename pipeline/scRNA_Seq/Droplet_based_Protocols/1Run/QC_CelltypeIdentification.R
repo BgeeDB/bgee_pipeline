@@ -256,7 +256,7 @@ qualityControl <- function(finalInformationCells, geneMarkerLibrary, geneNameFil
   for (i in unique(variabilityFinalInfo$cluster)) {
     ## select rows in data.frame referent to the cluster
     rowID <- which(variabilityFinalInfo$cluster == i)
-    checkCluster <- variabilityFinalInfo$Variability_cluster[variabilityFinalInfo$cluster == i]
+    checkCluster <- as.numeric(as.character(variabilityFinalInfo$Variability_cluster[variabilityFinalInfo$cluster == i]))
     check <- any(checkCluster >= 0.80)
     if (check == "TRUE"){
       variabilityFinalInfo$Classification_Variability_cluster[rowID]<- " "
