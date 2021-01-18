@@ -90,12 +90,12 @@ get_sra: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_ALREADY_DOWNLOADED)
 
 check_new_downloads: get_sra
 	@echo 'If the following commands return something, check FASTQ files and/or rerun *get_sra* with more memory!'
-	@find $(RNASEQ_DOWNLOAD_LIB_DIR) -type f -name \*.stat.R\* -exec wc -l {} \; | grep -v '^2 '
-	@find $(RNASEQ_DOWNLOAD_LIB_DIR) -type f -name \*.stat.R\* | xargs grep -Hv '^#' | cut -f1 | grep ':0$$'
+	@find $(RNASEQ_DOWNLOAD_LIB_DIR)/FASTQ/RNAseq/ -type f -name \*.R.stat -exec wc -l {} \; | grep -v '^2 ' | cat
+	@find $(RNASEQ_DOWNLOAD_LIB_DIR)/FASTQ/RNAseq/ -type f -name \*.R.stat | xargs grep -Hv '^#' | cut -f1 | grep ':0$$' | cat
 	@touch $@
 
 list_new_downloads: check_new_downloads
-	@find $(RNASEQ_DOWNLOAD_LIB_DIR) -type f -name \*.fastq.gz\* | xargs -r dirname | sed -e 's@^.*/@@' | sort -u > /tmp/new_downloads
+	@find $(RNASEQ_DOWNLOAD_LIB_DIR)/FASTQ/RNAseq/ -type f -name \*.fastq.gz\* | xargs -r dirname | sed -e 's@^.*/@@' | sort -u > /tmp/new_downloads
 	@cat $(RNASEQ_ALREADY_DOWNLOADED) >>/tmp/new_downloads
 	@sort -u /tmp/new_downloads >$(RNASEQ_ALREADY_DOWNLOADED)
 	@rm -f /tmp/new_downloads
