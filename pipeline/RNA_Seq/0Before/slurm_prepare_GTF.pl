@@ -56,8 +56,8 @@ print "module add : $cluster_R_cmd\n";
 my $main_script = $RealBin.'/prepare_GTF.R';
 
 my $nbr_processors = 1;
-# RAM needed: 10GB should be enough
-my $memory_usage   = 10;      # in GB
+# RAM needed: 30GB should be enough
+my $memory_usage   = 30;      # in GB
 
 my $jobs_during_day   = 100; # Number of simultaneous jobs during working days
 my $jobs_during_night = 120; # Number of simultaneous jobs during week-end & night
