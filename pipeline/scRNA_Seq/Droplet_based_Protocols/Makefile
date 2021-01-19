@@ -227,14 +227,15 @@ process_busFile: uncompress_barcodes 1Run/process_busFile.R
 ## just to generate the files that allow to match ensemblId with UniprotId for each species in scRNA_Seq_info_TargetBased.txt file
 geneId_UniprotId: 0Preparation/ensembl_To_uniprot.R
 	@echo --- Starting the match between geneId and UniprotId for all species ---
-	@sed -i 's@\(BASE *= \).*@\1"$(SENSITIVE_GENERAL_PATH)";@'                                       0Run/ensembl_To_uniprot.R
-	@sed -i 's@--output=.*@--output=${PWD}/ensembl_To_uniprot.out@'                                  0Run/ensembl_To_uniprot.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/ensembl_To_uniprot.error@'                                  0Run/ensembl_To_uniprot.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                    0Run/ensembl_To_uniprot.sbatch
-	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'  0Run/ensembl_To_uniprot.sbatch
-	@sed -i 's@export output=.*@export output=$(SC_RNASEQ_PATH_GENERATED)@'                 				 0Run/ensembl_To_uniprot.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                     0Run/ensembl_To_uniprot.sbatch
-	@sbatch 0Run/ensembl_To_uniprot.sbatch
+	@sed -i 's@--output=.*@--output=${PWD}/ensembl_To_uniprot.out@'                                  0Preparation/ensembl_To_uniprot.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/ensembl_To_uniprot.error@'                                  0Preparation/ensembl_To_uniprot.sbatch
+	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                     0Preparation/ensembl_To_uniprot.sbatch
+	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                           0Preparation/ensembl_To_uniprot.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                    0Preparation/ensembl_To_uniprot.sbatch
+	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'     0Preparation/ensembl_To_uniprot.sbatch
+	@sed -i 's@export output=.*@export output=$(SC_RNASEQ_PATH_GENERATED)@'                          0Preparation/ensembl_To_uniprot.sbatch
+	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_PATH_GENERATED)@'                              0Preparation/ensembl_To_uniprot.sbatch
+	@sbatch 0Preparation/ensembl_To_uniprot.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
 	@touch $@
