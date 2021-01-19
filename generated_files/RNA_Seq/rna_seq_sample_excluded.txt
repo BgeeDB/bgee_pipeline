@@ -27,7 +27,26 @@ SRX276212	TRUE	Kallisto results include only NAs	SM	2020-10-13
 SRX276214	TRUE	Kallisto results include only NAs	SM	2020-10-13
 SRX054597	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020-10-13
 SRX054598	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020-10-13
-SRX054599	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020-10-13
+SRX054599	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020SRX028836-10-13
 SRX054601	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020-10-13
 SRX054602	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020-10-13
 SRX054607	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020-10-13
+SRX147576	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.0	JW	2021-01-18
+SRX147578	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.0	JW	2021-01-18
+SRX147579	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.0	JW	2021-01-18
+SRX147580	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.0	JW	2021-01-18
+SRX147581	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.0	JW	2021-01-18
+SRX147582	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.0	JW	2021-01-18
+SRX147583	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.0	JW	2021-01-18
+SRX147584	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.0	JW	2021-01-18
+SRX147590	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.0	JW	2021-01-18
+SRX147591	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.0	JW	2021-01-18
+SRX147592	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.0	JW	2021-01-18
+SRX147593	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.0	JW	2021-01-18
+SRX084382	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.0	JW	2021-01-18
+SRX084381	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.0	JW	2021-01-18
+SRX1065256	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.0	JW	2021-01-19
+SRX372013	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.0	JW	2021-01-19
+ERX167059	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.0	JW	2021-01-19
+ERX167070	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.0	JW	2021-01-19
+ERX167126	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.0	JW	2021-01-19
