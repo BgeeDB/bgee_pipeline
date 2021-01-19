@@ -229,7 +229,7 @@ qualityControl <- function(finalInformationCells, geneMarkerLibrary, geneNameFil
     infoCells <- as.data.frame(table(barcodesCluster$cell_type, barcodesCluster$cell_id))
     infoCells <- dplyr::filter(infoCells, Freq != 0)
     
-    for (i in 1:nrow(infoCells)) {
+    for (i in seq(nrow(infoCells))) {
       
       cellName <- infoCells$Var1[i]
       cellId <- infoCells$Var2[i]
@@ -285,7 +285,7 @@ qualityControl <- function(finalInformationCells, geneMarkerLibrary, geneNameFil
     message("The experiment not provide info about gene markers in the annotation file.")
   } else {
     ## select from annotation
-    subset_annotation_markers <- geneMarkerLibrary %>% dplyr::select(experimentId, uberonId, uberonName, cell_type, cell_type_harmonization, cellTypeId, cellTypeName, markerGene_ID_UniProt_Ensembl)
+    subset_annotation_markers <- as.data.table(geneMarkerLibrary %>% dplyr::select(experimentId, uberonId, uberonName, cell_type, cell_type_harmonization, cellTypeId, cellTypeName, markerGene_ID_UniProt_Ensembl))
     ## because we subset, some rows can be duplicated (Explanation: what makes the row unique is the source column in the annotation, where we report from where the info comes, example cluster figure).
     subset_annotation_markers <- subset_annotation_markers[!duplicated(subset_annotation_markers), ]
     
@@ -308,7 +308,7 @@ qualityControl <- function(finalInformationCells, geneMarkerLibrary, geneNameFil
       ## verify if marker match between the cell-type of the annotation and one of the cell types identified in the analysis-cluster
       ## compare cell_type_hamonization column (annotation) and cell_names_cluster (analysis)
       geneMarkersValidatedFromBgee$cell_names_cluster <- strsplit(geneMarkersValidatedFromBgee$cell_names_cluster, ",")
-      for (i in 1:length(geneMarkersValidatedFromBgee$cell_names_cluster)) {
+      for (i in seq(length(geneMarkersValidatedFromBgee$cell_names_cluster))) {
         harmonization <- geneMarkersValidatedFromBgee$cell_type_harmonization[i]
         cluster <- geneMarkersValidatedFromBgee$cell_names_cluster[[i]]
         geneMarkersValidatedFromBgee$match[i] <- (harmonization %in% cluster)
@@ -330,7 +330,7 @@ qualityControl <- function(finalInformationCells, geneMarkerLibrary, geneNameFil
       geneMarkersValidatedFromBgee <- finalMarker[finalMarker$p_val_adj <= 0.05, ]
       ## compare cell_type_hamonization column (annotation) and cell_names_cluster (analysis)
       geneMarkersValidatedFromBgee$cell_names_cluster <- strsplit(geneMarkersValidatedFromBgee$cell_names_cluster, ",")
-      for (i in 1:length(geneMarkersValidatedFromBgee$cell_names_cluster)) {
+      for (i in seq(length(geneMarkersValidatedFromBgee$cell_names_cluster))) {
         harmonization <- geneMarkersValidatedFromBgee$cell_type_harmonization[i]
         cluster <- geneMarkersValidatedFromBgee$cell_names_cluster[[i]]
         geneMarkersValidatedFromBgee$match[i] <- (harmonization %in% cluster)
@@ -389,8 +389,9 @@ for (libraryID in scRNASeqAnnotation$libraryId) {
     path2ListFiles <- list.files(path2Files)
     
     ## create folder per library
-    dir.create(file.path(output, libraryID))
-    
+    if(!dir.exists(file.path(output,libraryID))) {
+      dir.create(file.path(output, libraryID))
+    }
     ## Create a sparseMatrix
     sparseMatrix <- read_count_output(path2Files, "gene", tcc = FALSE)
     
