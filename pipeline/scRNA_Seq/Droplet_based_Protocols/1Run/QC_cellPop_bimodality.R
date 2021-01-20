@@ -17,6 +17,8 @@ library(dplyr)
 library(mclust)
 library(LaplacesDemon)
 
+sessionInfo()
+
 ## reading arguments
 cmd_args = commandArgs(TRUE);
 print(cmd_args)
@@ -117,12 +119,12 @@ for (libraryID in unique(scRNA_annotation_file$libraryId)) {
       cellpop <- fread(file.path(folder_data,libraryID,cellPop))
       ## remove info about gene_name, biotype, type
       sizeData <- length(cellpop)-5
-      colectInfo <- cellpop %>% dplyr::select("gene_id", "biotype", "type", "cellTypeName", "cellTypeId")
+      colectInfo <- as.data.table(cellpop %>% dplyr::select("gene_id", "biotype", "type", "cellTypeName", "cellTypeId"))
       
       ## just make QC bimodality if cell population have at least 50 cells
       if (sizeData >= 50){
         
-        genicRegion <- dplyr::filter(cellpop, type == "genic")
+        genicRegion <- as.data.table(dplyr::filter(cellpop, type == "genic"))
         genicRegion <- genicRegion[, -c("biotype", "type", "cellTypeName", "cellTypeId")]
         
         ## UMI counts and genes detected per cell using all genic region

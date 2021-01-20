@@ -280,7 +280,7 @@ bimodality_cellPop: qc_cellType 1Run/QC_cellPop_bimodality.R
 	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION_SENSITIVE}@'                                1Run/QC_cellPop_bimodality.sbatch
 	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                                      1Run/QC_cellPop_bimodality.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                         1Run/QC_cellPop_bimodality.sbatch
-	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=../$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'       1Run/QC_cellPop_bimodality.sbatch
+	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'          1Run/QC_cellPop_bimodality.sbatch
 	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)@'                1Run/QC_cellPop_bimodality.sbatch
 	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)@'            1Run/QC_cellPop_bimodality.sbatch
 	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                          1Run/QC_cellPop_bimodality.sbatch
