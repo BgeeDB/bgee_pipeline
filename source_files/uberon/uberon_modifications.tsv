@@ -287,10 +287,10 @@ UBERON:0000106	EMAPA:16033				"EMAPA:16033 ""1-cell stage embryo"": added xref t
 CL:0000365	EMAPA:16033				"CL:0000365 ""Animal Zygote"" had xref to EMAPA:16033 ""1-cell stage embryo"" in old onthology. Moreover is more animal specific (I guess)"
 MmusDv:0000006	EMAPA:16040				"EMAPA:16040 ""compacted morula (mouse)"": mapped to MmusDv:0000006 ""Theiler stage 03"" which is a stage defined as ""embryonic cleavage stage defined by a dividing 4-16 cells egg, early to fully compacted morula"". Seems more specific than mapping it to UBERON:0019248 ""early embryo"", ehich has xref to the more suited EMAPA:36032 ""early embryo"""
 UBERON:0012466	EMAPA:16064				"EMAPA:16064 ""proamniotic cavity extraembryonic part (mouse)"": mapped to UBERON:0012466 ""extraembryonic cavities"". Also may benefit from adding a relationship (part_of) to UBERON:0009742 ""promaniotic cavity"" which refers both to the intra- and extra-embryonic parts of the proamniotic cavity."
-UBERON:0000926	EMAPA:16071				"EMAPA:16071 ""embryo mesoderm (mouse): mapped to UBERON:0000926 ""mesoderm"" which is defined as """"The middle germ layer of the embryo, between the endoderm and ectoderm."", so it is embryo specific. Not mouse specific though. "
+UBERON:0000926	EMAPA:16071	EMAPA:16083			"ANN: UBERON:0000926 mesoderm has xref:EMAPA:16083 which no more exists and is now EMAPA:16071; EMAPA:16071 ""embryo mesoderm (mouse): mapped to UBERON:0000926 ""mesoderm"" which is defined as """"The middle germ layer of the embryo, between the endoderm and ectoderm."", so it is embryo specific. Not mouse specific though. "
 UBERON:0004366 	EMAPA:16077				"EMAPA:16077 ""amniotic fold ectoderm (mouse)"": mapped to UBERON:0004366 ""extraembryonic ectoderm"" because is a general feature that best suit the EMAPA term. It may benefit to link it with a part_of UBERON:0005971 ""amniotic fold"", or something similar. "
 UBERON:0005728	EMAPA:16078				"EMAPA:16078 ""amniotic fold mesoderm"": mapped to UBERON:0005728 ""extraembryonic mesoderm"" for the same reasons than EMAPA:16077"
-UBERON:0003075	EMAPA:16095				"EMAPA:16095 ""future spinal cord neural plate (mouse)"": mapped to UBERON:0003075 ""neural plate"" beacause is the most general feature that includes EMAPA:16095.  Also, UBERON:0003854 ""spinal cord neural plate"" has relationship to both UBERON:0006241 ""future spinal cord"" and UBERON:0003075 ""neural plate"", which links EMAPA:16095 with all the necessary anatomical features describing it. "
+UBERON:0003854	EMAPA:16095				"ANN: changed to UBERON:0003854 spinal cord neural plate; EMAPA:16095 ""future spinal cord neural plate (mouse)"": mapped to UBERON:0003075 ""neural plate"" beacause is the most general feature that includes EMAPA:16095.  Also, UBERON:0003854 ""spinal cord neural plate"" has relationship to both UBERON:0006241 ""future spinal cord"" and UBERON:0003075 ""neural plate"", which links EMAPA:16095 with all the necessary anatomical features describing it. "
 UBERON:0005728	EMAPA:16108				"EMAPA:16108 ""allantois mesoderm (mouse)"":  mapped to UBERON:0005728 ""extraembryonic mesoderm"" for the same reason than EMAPA:16078. Also, UBERON:0005728 ""extraembryonic mesoderm"" is_a UBERON:0004340 ""allantois""."
 UBERON:0005872	EMAPA:16120				"EMAPA:16120 ""1st branchial groove ectoderm"": 1st branchial groove ectoderm is synonym of ""1st pharyngeal groove ectoderm"" or ""1st branchial cleft"" ecc... All of these terms are synonyms of UBERON:0005872 ""1st arch pharyngeal cleft"". So, I chose to map EMAPA:16120 to UBERON:0005872"
 UBERON:0009213	EMAPA:16123				"EMAPA:16123 ""1st branchial membrane endoderm"":  Mapped to UBERON:0009213 ""pharyngeal membrane of 1st arch"" for similar reasons as the line above. Maybe add relationship to UBERON:0004119 ""endoderm-derived structure"" and UBERON:0009722 ""entire pharyngeal arch endoderm"" which considers all the pharyngeal arches."
@@ -301,7 +301,7 @@ UBERON:0007286	EMAPA:16141				"EMAPA:16141 ""future midbrain floor plate"": mapp
 UBERON:0009616 	EMAPA:16142				"EMAPA:16142 ""future midbrain neural fold"": Unlike in the line above, i mapped this term to UBERON:0009616 ""presumptive midbrain"", beacause the term ""future/presumptive neural fold"" doen't exsist and UBERON:0005062 ""neural fold"" comes later during developement."
 UBERON:0009616 	EMAPA:16143				"EMAPA:16143 ""future midbrain neural crest"": mapped to UBERON:0009616 ""presumptive midbrain"" for similar reasons as the line above"
 UBERON:0006240	EMAPA:16144				"EMAPA:16144 ""future prosencephalon"": mapped to UBERON:0006240 ""future forebrain"", which is a synonym of ""future prosencephalon"""
-UBERON:0007286	EMAPA:16145				"EMAPA:16145 ""future prosencephalon floor plate"": I mapped it to  UBERON:0007286 ""presumptive floor plate"" insted than UBERON:0006240 ""future forebrain"" because it seems more accurate to me. However, it is a bit arbitrary "
+UBERON:0006240	EMAPA:16145				"ANN: changed to UBERON:0006240 future forebrain (note that exist also EMAPA:32919 future forebrain floor plate, but not mapped to UBERON so far);EMAPA:16145 ""future prosencephalon floor plate"": I mapped it to  UBERON:0007286 ""presumptive floor plate"" insted than UBERON:0006240 ""future forebrain"" because it seems more accurate to me. However, it is a bit arbitrary "
 UBERON:0006240	EMAPA:16146				"EMAPA:16146 ""future prosencephalon neural fold"": this time I mapped to UBERON:0006240 ""future forebrain"", because ""future neural fold"" is not present in the onthology"
 UBERON:0006240	EMAPA:16147				"EMAPA:16147 ""future prosencephalon neural crest"":  I mapped to UBERON:0006240 ""future forebrain"", because ""future neural crest"" is not present in the onthology"
 UBERON:0010314	EMAPA:16149				"EMAPA:16149 ""anterior pro-rhombomere"": mapped to UBERON:0010314 ""structure with developmental contribution from neural crest"" because all this rhombomere stuff is quite complicated and I prefer to map the term to a general structure than to a worng term. If the ""pro-"" in ""pro-rhombomere"" refers to a structure that will develop in a rhombomere, maybe mapping the term to UBERON:0007289 ""presumptive rhombomere 1"" is more appropiate. also, There are the exact correspondants in human (EHDAA2:0001544 to EHDAA2:0001550) to wich this and the following terms could be mapped to."
@@ -335,7 +335,7 @@ UBERON:0009854	EMAPA:16248				"EMAPA:16248 ""foregut diverticulum (mouse)"":  ma
 UBERON:0003104	EMAPA:16249				"EMAPA:16249 ""foregut diverticulum mesenchyme (mouse)"":  mapped to the general term UBERON:0003104 ""mesenchyme"". I cannot find any term that is more specific to the digestive tract"
 UBERON:0004185	EMAPA:16250				"EMAPA:16250 ""foregut diverticulum endoderm (mouse)"": mapped to UBERON:0004185 ""endodermal part of digestive tract"""
 UBERON:0009854	EMAPA:16251				"EMAPA:16251 ""hindgut diverticulum (mouse)"": mapped to UBERON:0009854 ""digestive tract diverticulum"""
-UBERON:0003104	EMAPA:16252				"EMAPA:16252 ""hindgut diverticulum mesenchyme (mouse)"": mapped to UBERON:0003104 ""mesenchyme"" similarly to EMAPA:16249 ""foregut diverticulum mesenchyme (mouse)"""
+UBERON:0009503	EMAPA:16252				"ANN: changed to UBERON:0009503 mesenchyme of hindgut; EMAPA:16252 ""hindgut diverticulum mesenchyme (mouse)"": mapped to UBERON:0003104 ""mesenchyme"" similarly to EMAPA:16249 ""foregut diverticulum mesenchyme (mouse)"""
 UBERON:0004185	EMAPA:16253				"EMAPA:16253 ""hindgut diverticulum endoderm (mouse)"": mapped to  UBERON:0004185 ""endodermal part of digestive tract"""
 CL:0000670	EMAPA:16254				"EMAPA:16254 ""primordial germ cell of hindgut (mouse)"": mapped to CL:0000670 ""primordial germ cell"""
 UBERON:0010333	EMAPA:16264				"EMAPA:16264 ""allantois mesenchyme (mouse)"":  mapped to UBERON:0010333 ""extraembryonic membrane mesenchyme"". I cannot find a more specific term."
@@ -361,7 +361,7 @@ UBERON:0004490	EMAPA:16345				"EMAPA:16345 ""common atrial chamber cardiac muscl
 UBERON:0004141	EMAPA:16348				"EMAPA:16348 ""outflow tract endocardial tube (mouse)"": mapped to UBERON:0004141 ""heart tube"" beacause UBERON:0004145 ""outflow tract"" seems more specific to the developed individual and not to the embryonic development. "
 UBERON:0009751	EMAPA:16349				"EMAPA:16349 ""outflow tract mesenchyme (mouse)"": mapped to UBERON:0009751 ""cardiac mesenchyme"". Maybe add GCI relationship with UBERON:0004145 ""outflow tract""?"
 UBERON:0004141	EMAPA:16352				"EMAPA:16352 ""primitive ventricle endocardial tube (mouse)"": mapped to UBERON:0004141 ""heart tube"". However, maybe mapping this term to UBERON:0006283 ""future cardiac ventricle"" is more appropiate."
-UBERON:0018649	EMAPA:16353				"ANN: mapped to UBERON:0018649 cardiac muscle tissue of ventricle. EMAPA:16353 ""primitive ventricle cardiac muscle (mouse)"": mapped to UBERON:0004493 ""cardiac muscle tissue of myocardium"". However, maybe mapping this term to UBERON:0006283 ""future cardiac ventricle"" is more appropiate."
+UBERON:0006283	EMAPA:16353				"ANN: mapped to UBERON:0006283 future cardiac ventricle (note that it also exists CL:0002249 primitive cardiac myocyte); EMAPA:16353 ""primitive ventricle cardiac muscle (mouse)"": mapped to UBERON:0004493 ""cardiac muscle tissue of myocardium"". However, maybe mapping this term to UBERON:0006283 ""future cardiac ventricle"" is more appropiate."
 UBERON:0003104 	EMAPA:16362				"EMAPA:16362 ""thyroid primordium mesenchyme (mouse)"": mapped to the general term UBERON:0003104 ""mesenchyme"" beacause, while ""mesenchyme of hingut exsist"", an equivalent term for the foregut does not exsist"
 UBERON:0014699	EMAPA:16379				"EMAPA:16379 ""vitelline vein extraembryonic part (mouse)"": mapped to UBERON:0014699 ""extraembryonic venous system"", although it could also be mapped to UBERON:0005487 ""vitelline vein"""
 UBERON:0010339	EMAPA:16386				"EMAPA:16386 ""1st branchial arch mandibular component mesenchyme derived from head mesoderm (mouse)"" (wow!): mapped to UBERON:0010339 ""1st arch mandibular mesenchyme from head mesenchyme"""
@@ -381,7 +381,7 @@ UBERON:0005598	EMAPA:16457				"EMAPA:16457 ""somite 18 (mouse)"": mapped to UBER
 UBERON:0005598	EMAPA:16461				"EMAPA:16461 ""somite 19 (mouse)"": mapped to UBERON:0005598 ""trunk somite""."
 UBERON:0009621	EMAPA:16465				"EMAPA:16465 ""somite 20 (mouse)"": mapped to UBERON:0009621 ""tail somite"". From hear on it seems to me that the somites are from the tail and not the trunk anymore, but it is a quite arbitrary choice"
 UBERON:0005495	EMAPA:16474				"EMAPA:16474 ""future midbrain lateral wall (mouse)"": mapped to UBERON:0005495 ""midbrain lateral wall"". Altough maybe is a mapping to UBERON:0009616 ""presumptive midbrain"" is more appropiate. "
-UBERON:0001890	EMAPA:16512				"EMAPA:16512 ""prosencephalon (mouse)"": mapped to UBERON:0001890 ""forebrain"" which is synonym of ""prosencephalon""."
+UBERON:0006238	EMAPA:16512				"ANN: mapped to UBERON:0006238 future brain because EMAPA:16512 prosencephalon (mouse) is part_of future brain, while EMAPA:16895 forebrain (mouse) is part_of brain; EMAPA:16512 ""prosencephalon (mouse)"": mapped to UBERON:0001890 ""forebrain"" which is synonym of ""prosencephalon""."
 UBERON:0003079	EMAPA:16516				"EMAPA:16516 ""future diencephalon floor plate (mouse)"": mapped to UBERON:0003079 ""floor plate"". Maybe mapping it to UBERON:0006222 ""future diencephalon"" is more appropiate"
 UBERON:0003301	EMAPA:16519				"ANN: mapped to UBERON:0003301 roof plate of diencephalon. EMAPA:16519 ""future diencephalon roof plate (mouse)"": mapped to UBERON:0003054 ""roof plate"". Maybe is better to map it to UBERON:0006222 ""future diencephalon"" or UBERON:0003301 ""roof plate of diencephalon"" which doesn't take into account the temporal dimension. "
 UBERON:0005496	EMAPA:16520				"EMAPA:16520 ""prosencephalon lateral wall (mouse)"": mapped to UBERON:0005496 ""neural tube lateral wall"" because UBERON:0005561""telencephalon lateral wall"" and UBERON:0005591 ""diencephalon lateral wall"" have an is_a relationship with the term. The prosenchephalon develops into telencephalon and diencephalon."
@@ -396,7 +396,7 @@ UBERON:0003353	EMAPA:16567				"EMAPA:16567 ""hindgut diverticulum epithelium (mo
 UBERON:0009854	EMAPA:16568				"ANN: mapped to UBERON:0009854 digestive tract diverticulum. EMAPA:16568 ""hindgut diverticulum vascular element (mouse)"": mapped to UBERON:0006876 ""vasculature of organ"". It is a very broad term but I couldn't find anything better. "
 UBERON:0006876	EMAPA:16570				"EMAPA:16570 ""midgut vascular element (mouse)"": mapped to UBERON:0006876 ""vasculature of organ"" for same reason as above."
 UBERON:0014781 	EMAPA:16575				"EMAPA:16575 ""stomatodeum rest of ectoderm (mouse)"": mapped to UBERON:0014781 ""stomodeal ectoderm"""
-UBERON:0015418	EMAPA:16576				"EMAPA:16576 ""genitourinary system mesenchyme (mouse)"":  mapped to UBERON:0015418 ""urethra mesenchymal layer"" wich is not super exact (maybe a GCI relationship would be better). Alternatively we could map it to UBERON:0004122 "" genitourinary system""."
+UBERON:0004122	EMAPA:16576				"ANN: changed to UBERON:0004122; EMAPA:16576 ""genitourinary system mesenchyme (mouse)"":  mapped to UBERON:0015418 ""urethra mesenchymal layer"" wich is not super exact (maybe a GCI relationship would be better). Alternatively we could map it to UBERON:0004122 "" genitourinary system""."
 CL:0000670	EMAPA:16578				"EMAPA:16578 ""primordial germ cell (mouse)"": mapped to CL:0000670 ""primordial germ cell""."
 UBERON:0002103	EMAPA:16593				"EMAPA:16593 ""hindlimb ridge (mouse)"": mapped to UBERON:0002103 ""hindlimb"". I'm a bit unsure of this mapping because I do not understand well what the term refers to"
 UBERON:0003371	EMAPA:16594				"EMAPA:16594 ""hindlimb ridge ectoderm (mouse)"": mapped to UBERON:0003371 ""pelvic appendage bud ectoderm"" which is a synonym of hindlimb ectoderm"
@@ -458,16 +458,16 @@ UBERON:0011007	EMAPA:16825				"EMAPA:16825 ""right auricular region endocardial 
 UBERON:0003104	EMAPA:16834				"EMAPA:16834 ""esophagus mesenchyme (mouse)"": mapped to UBERON:0003104 ""mesenchyme"". Very general but there is nothing more close to the EMAPA term"
 UBERON:0001280	EMAPA:16848				"EMAPA:16848 ""hepatic primordium parenchyma (mouse)"": mapped to UBERON:0001280 ""liver parenchyma"" which doesn't take into account the developmental stage. So, maybe UBERON:0003894 ""liver primordium"" is better."
 UBERON:0003505	EMAPA:16856				"EMAPA:16856 ""trachea vascular element (mouse)"": mapped to UBERON:0003505 ""trachea blood vessel"""
-UBERON:0005564	EMAPA:16857				"EMAPA:16857 ""gonad primordium (mouse)"": mapped to UBERON:0005564 ""gonad primordium"""
+UBERON:0005564	EMAPA:16857	EMAPA:17204			"ANN: to remove EMAPA:17204, no more existing; EMAPA:16857 ""gonad primordium (mouse)"": mapped to UBERON:0005564 ""gonad primordium"""
 UBERON:0003066	EMAPA:16882				"EMAPA:16882 ""2nd branchial arch epithelium (mouse)"": mapped to the more general UBERON:0003066 ""pharyngeal arch 2"" because I dind't found a more specific term"
 UBERON:0005874	EMAPA:16883				"EMAPA:16883 ""3rd branchial groove epithelium (mouse)"": mapped to UBERON:0005874 ""3rd arch pharyngeal cleft"" for same reasons as above. "
 UBERON:0005671	EMAPA:16888				"EMAPA:16888 ""greater sac parietal mesothelium (mouse)"": mapped to UBERON:0005671 ""greater sac mesothelium"". There are not many other term for the greater sac"
 UBERON:0003274	EMAPA:16891				"EMAPA:16891 ""omental bursa parietal mesothelium (mouse)"": mapped to UBERON:0003274 ""mesothelium of omental bursa""."
 UBERON:0005591 	EMAPA:16907				"EMAPA:16907 ""diencephalon lateral wall marginal layer (mouse)"": mapped to UBERON:0005591 ""diencephalon lateral wall"". "
 UBERON:0005591	EMAPA:16908				"EMAPA:16908 ""diencephalon lateral wall ventricular layer (mouse)"": mapped to UBERON:0005591 ""diencephalon lateral wall"""
-UBERON:0004040	EMAPA:16911				"EMAPA:16911 ""telencephalon mantle layer (mouse)"": mapped to UBERON:0004040 ""cortical intermediate zone"" wich is synonym of ""cortical mantle layer"". The telencephalon contains other subcortical structures, so maybe it is better to map this term to the more general UBERON:0001893 ""telencephalon"""
-UBERON:0014935	EMAPA:16912				"EMAPA:16912 ""telencephalon marginal layer (mouse)"": mapped to UBERON:0014935 ""cerebral cortex marginal layer"" but the same discourse as above applies. "
-UBERON:0015829	EMAPA:16913				"EMAPA:16913 ""telencephalon ventricular layer (mouse)"": mapped to UBERON:0015829 ""forebrain ventricular layer"""
+UBERON:0005561	EMAPA:16911				"ANN: changed mapping to UBERON:0005561 (telencephalon lateral wall); EMAPA:16911 ""telencephalon mantle layer (mouse)"": mapped to UBERON:0004040 ""cortical intermediate zone"" wich is synonym of ""cortical mantle layer"". The telencephalon contains other subcortical structures, so maybe it is better to map this term to the more general UBERON:0001893 ""telencephalon"""
+UBERON:0005561	EMAPA:16912				"ANN: changed mapping to UBERON:0005561 (telencephalon lateral wall); EMAPA:16912 ""telencephalon marginal layer (mouse)"": mapped to UBERON:0014935 ""cerebral cortex marginal layer"" but the same discourse as above applies. "
+UBERON:0005561	EMAPA:16913				"ANN: changed mapping to UBERON:0005561 (telencephalon lateral wall) in the same logic EHDAA2:0001996 (telencephalon ventricular layer (human)) is a part_of UBERON:0005561 telencephalon lateral wall;EMAPA:16913 ""telencephalon ventricular layer (mouse)"": mapped to UBERON:0015829 ""forebrain ventricular layer"""
 UBERON:0005567	EMAPA:16921				"EMAPA:16921 ""rhombomere 01 mantle layer (mouse)"": mapped to UBERON:0005567 ""rhombomere 1 lateral wall"" because the mantle layer is part_of lateral wall."
 UBERON:0005571	EMAPA:16928				"EMAPA:16928 ""rhombomere 02 mantle layer (mouse)"": mapped to UBERON:0005571 ""rhombomere 2 lateral wall"" for the same reason as above"
 UBERON:0005586	EMAPA:16963				"EMAPA:16963 ""rhombomere 07 mantle layer (mouse)"": mapped to UBERON:0005586 ""rhombomere 7 lateral wall"" for the same reason as above"
@@ -484,7 +484,7 @@ UBERON:0000945	EMAPA:17022				"EMAPA:17022 ""stomach mesenchyme (mouse)"": mappe
 UBERON:0003497	EMAPA:17027				"EMAPA:17027 ""stomach vascular element (mouse)"": mapped to UBERON:0003497 ""abdomen blood vessel""."
 UBERON:0009478	EMAPA:17037				"EMAPA:17037 ""midgut loop mesenchyme (mouse)"": mapped to UBERON:0009478 ""associated mesenchyme of midgut"""
 UBERON:0003352	EMAPA:17038				"EMAPA:17038 ""midgut loop epithelium (mouse)"": mapped to UBERON:0003352 ""epithelium of midgut"""
-UBERON:0005495	EMAPA:17072				"EMAPA:17072 ""metencephalon lateral wall (mouse)"": mapped to UBERON:0005495 ""midbrain lateral wall"""
+UBERON:0001895	EMAPA:17072				"ANN: mapped to UBERON:0001895 metencephalon; EMAPA:17072 ""metencephalon lateral wall (mouse)"": mapped to UBERON:0005495 ""midbrain lateral wall"""
 UBERON:0009581	EMAPA:17073				"EMAPA:17073 ""metencephalon alar plate (mouse)"": mapped to UBERON:0009581 ""midbrain mantle laye"" because this term has a part_of relationship with EHDAA2:0004374 ""midbrain alar plate (human)"". So, UBERON:0009581 is the closest term to the EMAPA term that I could find."
 UBERON:0005358	EMAPA:17077				"EMAPA:17077 "" metencephalon alar plate ventricular layer (mouse)"": mapped to the general UBERON:0005358 ""ventricle of nervous system"" because I couldn't find a more specific term. "
 UBERON:0005239	EMAPA:17081				"EMAPA:17081 ""metencephalon basal plate ventricular layer (mouse)"": mapped to UBERON:0005239 ""basal plate metencephalon"", which is the most specific term that I could find. Maybe the more general UBERON:0005358 ""ventricle of nervous system"" is more appropiate"
@@ -545,10 +545,10 @@ UBERON:0004703	EMAPA:17541				"EMAPA:17541 ""thalamus mantle layer (mouse)"": ma
 UBERON:0001897	EMAPA:17542				"EMAPA:17542 ""thalamus marginal layer (mouse)"": mapped to UBERON:0001897 ""dorsal plus ventral thalamus"" "
 UBERON:0001897	EMAPA:17543				"EMAPA:17543 ""thalamus ventricular layer (mouse)"": mapped to UBERON:0001897 ""dorsal plus ventral thalamus"" "
 UBERON:0001896	EMAPA:17552				"EMAPA:17552 ""medulla oblongata lateral wall (mouse)"": mapped to UBERON:0001896 ""medulla oblongata"""
-UBERON:0005240	EMAPA:17553				"EMAPA:17553 ""medulla oblongata alar plate (mouse)"": mapped to UBERON:0005240 ""basal plate medulla oblongata"" beacause the alar plate is part of the basal plate."
-UBERON:0005240	EMAPA:17554				"EMAPA:17554 ""medulla oblongata alar plate mantle layer (mouse)"": mapped to UBERON:0005240 ""basal plate medulla oblongata"""
-UBERON:0005240	EMAPA:17555				"EMAPA:17555 ""medulla oblongata alar plate marginal layer (mouse)"": mapped to UBERON:0005240 ""basal plate medulla oblongata"""
-UBERON:0005240	EMAPA:17556				"EMAPA:17556 ""medulla oblongata alar plate ventricular layer (mouse)"": mapped to UBERON:0005240 ""basal plate medulla oblongata"""
+UBERON:0001896	EMAPA:17553				"ANN: alar plate is at the dorsal part of neural tube, and basal plate is at the ventral part of neural tube, so I change the mapping to UBERON:0001896  (medulla oblongata) but maybe it could be correct to map to UBERON:0005882 (neural tube alar plate) instead? in both cases, these are 'missing child term'; EMAPA:17553 ""medulla oblongata alar plate (mouse)"": mapped to UBERON:0005240 ""basal plate medulla oblongata"" beacause the alar plate is part of the basal plate. [ANN: Malik's info comes from EHDAA2:0001090 (medulla oblongata alar plate (human)) relationship: part_of UBERON:0005240 (basal plate medulla oblongata), but actually this relationship sounds to be an error, see https://github.com/obophenotype/uberon/issues/1725]"
+UBERON:0001896	EMAPA:17554				"ANN: alar plate is at the dorsal part of neural tube, and basal plate is at the ventral part of neural tube, so I change the mapping to UBERON:0001896  (medulla oblongata) but maybe it could be correct to map to UBERON:0005882 (neural tube alar plate) instead? in both cases, these are 'missing child term'; EMAPA:17554 ""medulla oblongata alar plate mantle layer (mouse)"": mapped to UBERON:0005240 ""basal plate medulla oblongata"" [ANN: Malik's info comes from EHDAA2:0001090 (medulla oblongata alar plate (human)) relationship: part_of UBERON:0005240 (basal plate medulla oblongata), but actually this relationship sounds to be an error, see https://github.com/obophenotype/uberon/issues/1725]"
+UBERON:0001896	EMAPA:17555				"ANN: alar plate is at the dorsal part of neural tube, and basal plate is at the ventral part of neural tube, so I change the mapping to UBERON:0001896  (medulla oblongata) but maybe it could be correct to map to UBERON:0005882 (neural tube alar plate) instead? in both cases, these are 'missing child term'; EMAPA:17555 ""medulla oblongata alar plate marginal layer (mouse)"": mapped to UBERON:0005240 ""basal plate medulla oblongata"" [ANN: Malik's info comes from EHDAA2:0001090 (medulla oblongata alar plate (human)) relationship: part_of UBERON:0005240 (basal plate medulla oblongata), but actually this relationship sounds to be an error, see https://github.com/obophenotype/uberon/issues/1725]"
+UBERON:0001896	EMAPA:17556				"ANN: alar plate is at the dorsal part of neural tube, and basal plate is at the ventral part of neural tube, so I change the mapping to UBERON:0001896  (medulla oblongata) but maybe it could be correct to map to UBERON:0005882 (neural tube alar plate) instead? in both cases, these are 'missing child term'; EMAPA:17556 ""medulla oblongata alar plate ventricular layer (mouse)"": mapped to UBERON:0005240 ""basal plate medulla oblongata"" [ANN: Malik's info comes from EHDAA2:0001090 (medulla oblongata alar plate (human)) relationship: part_of UBERON:0005240 (basal plate medulla oblongata), but actually this relationship sounds to be an error, see https://github.com/obophenotype/uberon/issues/1725]"
 UBERON:0005240	EMAPA:17558				"EMAPA:17558 ""medulla oblongata basal plate mantle layer (mouse)"": mapped to UBERON:0005240 ""basal plate medulla oblongata"""
 UBERON:0005240	EMAPA:17559				"EMAPA:17559 ""medulla oblongata basal plate marginal layer (mouse)"": mapped to UBERON:0005240 ""basal plate medulla oblongata"""
 UBERON:0005240	EMAPA:17560				"EMAPA:17560 ""medulla oblongata basal plate ventricular layer (mouse)"": mapped to UBERON:0005240 ""basal plate medulla oblongata"""
@@ -594,10 +594,10 @@ UBERON:0001160	EMAPA:17887				"EMAPA:17887 ""stomach fundus mesenchyme (mouse)""
 UBERON:0003353	EMAPA:17894				"EMAPA:17894 ""perineal body epithelium (mouse)"":  mapped to the more general UBERON:0003353 ""epithelium of hindgut"""
 UBERON:0009503 	EMAPA:17897				"EMAPA:17897 ""rectum mesenchyme (mouse)"": mapped to UBERON:0009503 ""mesenchyme of hindgut"", but maybe mapping to UBERON:0001052 ""rectum"" is better"
 UBERON:0001709	EMAPA:17937				"EMAPA:17937 ""upper jaw alveolar sulcus (mouse)"": mapped to the general UBERON:0001709 ""upper jaw region"" becaus I couldn't find any term analogous to alveolar sulcus"
-UBERON:0002120 	EMAPA:17954				"EMAPA:17954 ""early nephron group (mouse)"": mapped to UBERON:0002120 ""pronephros"" but I'm not sure that the EMAPA and UBERON term are equivalents"
+UBERON:0010532	EMAPA:17954				"ANN: changed to UBERON:0010532 primitive nephron; EMAPA:17954 ""early nephron group (mouse)"": mapped to UBERON:0002120 ""pronephros"" but I'm not sure that the EMAPA and UBERON term are equivalents"
 UBERON:0001333	EMAPA:17956				"EMAPA:17956 ""phallic urethra of male (mouse)"": mapped to UBERON:0001333 ""male urethra""."
-UBERON:0013247 	EMAPA:17970				"EMAPA:17970 ""nephric duct of male, mesonephric portion (mouse)"": mapped to UBERON:0013247 ""male paramesonephric duct"", but I'm not sure that the EMAPA and UBERON term are equivalents"
-CL:0000019	EMAPA:17975				"EMAPA:17975 ""germ cell of testis (mouse)"": mapped to CL:0000019 ""sperm"" because i think that ""germ cell of testis"" is just an overcomplicated way to say sperm cell"
+UBERON:0003074	EMAPA:17970				"ANN: changed to UBERON:0003074 mesonephric duct, see 'property_value: editor_note ""TODO - mesonephric portion of the nephric duct"" xsd:string' and 'property_value: editor_note ""Consider adding subclasses for male and female specific variants"" xsd:string';EMAPA:17970 ""nephric duct of male, mesonephric portion (mouse)"": mapped to UBERON:0013247 ""male paramesonephric duct"", but I'm not sure that the EMAPA and UBERON term are equivalents"
+CL:0000015	EMAPA:17975				"ANN: changed to CL:0000015 male germ cell; EMAPA:17975 ""germ cell of testis (mouse)"": mapped to CL:0000019 ""sperm"" because i think that ""germ cell of testis"" is just an overcomplicated way to say sperm cell"
 UBERON:0004901	EMAPA:17988				"EMAPA:17988 ""right lung caudal lobe lobar bronchus mesenchyme (mouse)"": mapped to UBERON:0004901 ""right lung lobar bronchus mesenchyme"""
 UBERON:0015795	EMAPA:17989				"EMAPA:17989 ""right lung caudal lobe lobar bronchus epithelium (mouse)"": mapped to UBERON:0015795  ""right lung lobar bronchus epitheium"", but also a mapping to UBERON:0005640  ""right lung caudal lobe epithelium"" could work"
 UBERON:0003403	EMAPA:18057				"EMAPA:18057  ""forearm dermis (mouse)"": mapped to UBERON:0003403 ""skin of forearm""."
@@ -739,3 +739,44 @@ UBERON:0003061	XAO:0004627		NA	NA
 CL:0000151	XAO:0004612		NA	NA	
 UBERON:0004086	XAO:0004602		NA	NA	
 UBERON:0006568	XAO:0004592		NA	NA	
+CL:0011115	FBbt:00048010		NA	NA	
+UBERON:0002616	FBbt:00047889		NA	NA	
+CL:0000125	FBbt:00047861		NA	NA	
+CL:0002371	FBbt:00047703		NA	NA	
+UBERON:0005423	FBbt:00047552		NA	NA	
+FBbt:00007642	FBbt:00111530		NA	NA	
+FBbt:00007642	FBbt:00111529		NA	NA	
+FBbt:00007642	FBbt:00111528		NA	NA	
+FBbt:00007642	FBbt:00111520		NA	NA	
+UBERON:0007688	FBbt:00048409		NA	NA	UBERON:0007688 anlage, used to mapped any 'presumptive' FBbt anatomical structure having a 'is_a' FBbt:00005426 (anlage) relationship
+UBERON:0007688	FBbt:00007710		NA	NA	UBERON:0007688 anlage, used to mapped any 'presumptive' FBbt anatomical structure having a 'is_a' FBbt:00005426 (anlage) relationship
+UBERON:0007688	FBbt:00046009		NA	NA	UBERON:0007688 anlage, used to mapped any 'presumptive' FBbt anatomical structure having a 'is_a' FBbt:00005426 (anlage) relationship
+UBERON:0007688	FBbt:00046014		NA	NA	UBERON:0007688 anlage, used to mapped any 'presumptive' FBbt anatomical structure having a 'is_a' FBbt:00005426 (anlage) relationship
+UBERON:0007688	FBbt:00046017		NA	NA	UBERON:0007688 anlage, used to mapped any 'presumptive' FBbt anatomical structure having a 'is_a' FBbt:00005426 (anlage) relationship
+UBERON:0007688	FBbt:00046018		NA	NA	UBERON:0007688 anlage, used to mapped any 'presumptive' FBbt anatomical structure having a 'is_a' FBbt:00005426 (anlage) relationship
+UBERON:0007688	FBbt:00046020		NA	NA	UBERON:0007688 anlage, used to mapped any 'presumptive' FBbt anatomical structure having a 'is_a' FBbt:00005426 (anlage) relationship
+UBERON:0007688	FBbt:00046029		NA	NA	UBERON:0007688 anlage, used to mapped any 'presumptive' FBbt anatomical structure having a 'is_a' FBbt:00005426 (anlage) relationship
+UBERON:0007688	FBbt:00046030		NA	NA	UBERON:0007688 anlage, used to mapped any 'presumptive' FBbt anatomical structure having a 'is_a' FBbt:00005426 (anlage) relationship
+UBERON:0007688	FBbt:00046031		NA	NA	UBERON:0007688 anlage, used to mapped any 'presumptive' FBbt anatomical structure having a 'is_a' FBbt:00005426 (anlage) relationship
+UBERON:0007688	FBbt:00046032		NA	NA	UBERON:0007688 anlage, used to mapped any 'presumptive' FBbt anatomical structure having a 'is_a' FBbt:00005426 (anlage) relationship
+UBERON:0007688	FBbt:00046033		NA	NA	UBERON:0007688 anlage, used to mapped any 'presumptive' FBbt anatomical structure having a 'is_a' FBbt:00005426 (anlage) relationship
+UBERON:0007688	FBbt:00046034		NA	NA	UBERON:0007688 anlage, used to mapped any 'presumptive' FBbt anatomical structure having a 'is_a' FBbt:00005426 (anlage) relationship
+UBERON:0007688	FBbt:00046035		NA	NA	UBERON:0007688 anlage, used to mapped any 'presumptive' FBbt anatomical structure having a 'is_a' FBbt:00005426 (anlage) relationship
+FBbt:00005402	FBbt:00046036		NA	NA	
+FBbt:00005402	FBbt:00046037		NA	NA	
+FBbt:00005402	FBbt:00046038		NA	NA	
+CL:0000136	FBbt:00046052		NA	NA	
+CL:0000381	FBbt:00047127		NA	NA	
+CL:0000584	FBbt:00047147		NA	NA	
+CL:0000164	FBbt:00047149		NA	NA	
+CL:0000164	FBbt:00047150		NA	NA	
+FBbt:00110888	FBbt:00047155		NA	NA	
+FBbt:00001886	FBbt:00047181		NA	NA	
+UBERON:0003194	FBbt:00047212		NA	NA	
+CL:0000381	FBbt:00047217		NA	NA	
+CL:0000381	FBbt:00047427		NA	NA	
+FBbt:00007008	FBbt:00111738		NA	NA	
+UBERON:0006800	FBbt:00111739		NA	NA	
+UBERON:0009571	FBbt:00111740		NA	NA	what is the difference between  FBbt:00111740 (embryonic midline of ventral nerve cord), and FBbt:00000093 (ventral midline of embryo) wich is xref of UBERON:0009571 (ventral midline)?
+FBbt:00007110	FBbt:00111537		NA	NA	
+UBERON:0000023	FBbt:00111626		NA	NA	
