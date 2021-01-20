@@ -72,7 +72,13 @@ sumUMICellPop <- function(folder_data, library, cellPop){
 ## Provide the reference intergenic regions = TRUE
 refIntergenic <- function(counts, folder_refIntergenic, speciesID){
   
-  referenceIntergenic <- paste0(folder_refIntergenic, "/", speciesID, "_intergenic.fa")
+  referenceIntergenic <- file.path(folder_refIntergenic, paste0(speciesID, "_intergenic.fa.gz"))
+  if(!file.exists(referenceIntergenic)) {
+    referenceIntergenic <- file.path(folder_refIntergenic, paste0(speciesID, "intergenic.fa"))
+    if(!file.exists(referenceIntergenic)) {
+      stop("reference intergenic file ", referenceIntergenic, "not available (compressed or not compressed")
+    }
+  }
   referenceIntergenic <- readDNAStringSet(referenceIntergenic)
   seq_name <- names(referenceIntergenic)
   seq_name <- gsub( " .*$", "", seq_name )
@@ -147,10 +153,12 @@ plotData <- function(libraryId, cellPopName, counts, refIntergenic, CPM_threshol
   dens_intergenic <- density(log2(counts$CPM[counts$type == "intergenic"]+1e-6), na.rm=T)
   dens_intergenic$y <- dens_intergenic$y * nrow(dplyr::filter(counts, type == "intergenic")) / length(counts$CPM)
   refIntergenic <- merge(dplyr::filter(counts, type == "intergenic"), referenceIntergenic, by = "gene_id")
-  refIntergenic <- dplyr::filter(refIntergenic, refIntergenic == "TRUE")
+  refIntergenic <- as.data.table(dplyr::filter(refIntergenic, refIntergenic == "TRUE"))
   dens_Refintergenic <- density(log2(refIntergenic$CPM+1e-6), na.rm=T)
   dens_Refintergenic$y <- dens_Refintergenic$y * nrow(refIntergenic) / length(counts$CPM)
-  
+  if(!dir.exists(file.path(output_folder, libraryId))) {
+    dir.create(file.path(output_folder,libraryId))
+  }
   pdf(file.path(output_folder, libraryId, paste0("Distribution_", libraryId, "_",cellPopName, ".pdf")), width=10, height=6) 
   par(mfrow=c(1,2))
   plot(dens, lwd=2, main=paste0(libraryId), xlab="Log2(CPM)")
@@ -171,7 +179,10 @@ plotData <- function(libraryId, cellPopName, counts, refIntergenic, CPM_threshol
 }
 
 ## export info stats of all libraries/cell-population
-All_samples <- paste0(output_folder, "/All_cellPopulation_stats_10X.tsv")
+if(!dir.exists(output_folder)) {
+  dir.create(output_folder, recursive = TRUE)
+}
+All_samples <- file.path(output_folder, "All_cellPopulation_stats_10X.tsv")
 if (!file.exists(All_samples)){
   file.create(All_samples)
   cat("libraryId\tcellTypeName\tCPM_Threshold\tGenic\tGenic_region_present\tProportion_genic_present\tProtein_coding","Coding_region_present\tProportion_coding_present\tIntergenic\tIntergenic_region_present\tProportion_intergenic_present\tpValue_cutoff\tmeanRefIntergenic\tsdRefIntergenic\tspecies\torganism\n",file = file.path(output_folder,"All_cellPopulation_stats_10X.tsv"), sep = "\t")
@@ -240,7 +251,7 @@ for (libraryid in unique(scRNASeqAnnotation$libraryId)) {
         ## export data
         plotData(libraryId=libraryid, cellPopName =cellPop, counts=finalData, refIntergenic=referenceIntergenic, CPM_threshold=CPM_threshold)
         
-        pathExport <- file.path(folder_data, libraryid)
+        pathExport <- file.path(output_folder, libraryid)
         write.table(finalData,file = file.path(pathExport, paste0("Calls_cellPop_",libraryid, "_",cellPop,"_genic+intergenic.tsv")),quote=F, sep = "\t", col.names=T, row.names=F)
         write.table(finalData_genic,file = file.path(pathExport, paste0("Calls_cellPop_",libraryid, "_",cellPop,"_genic.tsv")),quote=F, sep = "\t", col.names=T, row.names=F)
         write.table(t(t(cutoff_info_file)),file = file.path(pathExport, paste0("cutoff_info_file_",libraryid, "_",cellPop,".tsv")),quote=F, sep = "\t", col.names=F, row.names=T)

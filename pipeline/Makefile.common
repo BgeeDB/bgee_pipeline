@@ -474,6 +474,7 @@ SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET        := $(SC_RNASEQ_CLUSTER_ALL_RES_DRO
 SC_RNASEQ_CLUSTER_QC_CELLTYPE                 := $(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)QC_CellType_identification/
 # scRNASeq file paths
 SC_RNASEQ_INFO_ALL_LIBRARIES_10X              := $(SC_RNASEQ_CLUSTER_QC_CELLTYPE)InformationAllLibraries.txt
+SC_RNASEQ_CLUSTER_CALLS_10X                   := $(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)calls/
 
 # minimum number of cells in a full-length library
 MIN_CELLS_PER_LIBRARY_FULL_LENGTH             := 50
