@@ -136,6 +136,7 @@ check_tools: clusterJURA
 	@$(CLUSTER_R_CMD) R -e 'library("magrittr")'      >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("gridExtra")'     >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("biomaRt")'       >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("ggExtra")'       >> $@.tmp  2>/dev/null
 	@export R_LIBS_USER=$(R_LIBS_PATH_JURA); $(CLUSTER_R_CMD) R -e 'library("UniprotR")'      >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("lattice")'       >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("Matrix")'        >> $@.tmp  2>/dev/null
@@ -298,11 +299,11 @@ calls: bimodality_cellPop 1Run/Calls_cell_pop_per_library.R
 	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION_SENSITIVE}@'                                                         1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                                                               1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                                  1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=../$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'                                1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'                                1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@export bimodalityFile=.*@export bimodalityFile=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)/bimodality_targetBased.txt@'        1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)@'                                         1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@export folder_refIntergenic=.*@export folder_refIntergenic=../$(CLUSTER_REF_INTERGENIC_FOLDER)@'                    1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@export desired_pValue_cutoff=.*@export desired_pValue_cutoff=../$(PVALUE_CUTOFF)@'                                  1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@export folder_refIntergenic=.*@export folder_refIntergenic=$(CLUSTER_REF_INTERGENIC_FOLDER)@'                    1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@export desired_pValue_cutoff=.*@export desired_pValue_cutoff=$(PVALUE_CUTOFF)@'                                  1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_CLUSTER_CALLS_10X)@'                                       1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                                                   1Run/Calls_cell_pop_per_library.sbatch
 	@sbatch 1Run/Calls_cell_pop_per_library.sbatch
