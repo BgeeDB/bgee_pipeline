@@ -17,6 +17,7 @@ my $bgeecall_file = '';
 my $ref_intergenic_dir = '';
 
 my %opts = ('sample_info_file=s'    => \$sample_info_file,      # path to rna_seq_sample_info file
+            'sample_excluded=s'     => \$sample_excluded,       # path to rna_seq_sqmple_excluded file
             'transcriptome_dir=s'   => \$transcriptome_dir,     # path to directory containing all transcriptomes
             'annotation_dir=s'      => \$annotation_dir,        # path to directory containing all annotations
             'fastq_dir=s'           => \$fastq_dir,             # path to directory containing all fastq files
@@ -26,10 +27,11 @@ my %opts = ('sample_info_file=s'    => \$sample_info_file,      # path to rna_se
 
 # test arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $sample_info_file eq '' || $transcriptome_dir eq '' || $annotation_dir eq '' || $fastq_dir eq '' || $bgeecall_file eq '' || $ref_intergenic_dir eq ''){
+if ( !$test_options || $sample_info_file eq '' || $sample_excluded eq '' || $transcriptome_dir eq '' || $annotation_dir eq '' || $fastq_dir eq '' || $bgeecall_file eq '' || $ref_intergenic_dir eq ''){
     print "\n\tInvalid or missing argument:
-\te.g. $0  -sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -transcriptome_dir=\$(RNASEQ_CLUSTER_GTF) -annotation_dir=\$(RNASEQ_CLUSTER_GTF) -fastq_dir=\$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=\$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER)
+\te.g. $0  -sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -sample_excluded=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -transcriptome_dir=\$(RNASEQ_CLUSTER_GTF) -annotation_dir=\$(RNASEQ_CLUSTER_GTF) -fastq_dir=\$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=\$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER)
 \t-sample_info_file     Path to rna_seq_sample_info file
+\t-sample_excluded     Path to rna_seq_sample_excluded file
 \t-transcriptome_dir    Path to directory containing all transcriptomes
 \t-annotation_dir       Path to directory containing all annotations
 \t-fastq_dir            Path to directory containing all FASTQ
@@ -43,6 +45,16 @@ open(my $FH, '>', $bgeecall_file)  or die $!;
 # write header
 print {$FH} "species_id\trun_ids\treads_size\trnaseq_lib_path\ttranscriptome_path\tannotation_path\toutput_directory\tcustom_intergenic_path\n";
 
+open(my $excluded, $sample_excluded) || die "failed to read sample excluded file: $!";
+my @excluded_libraries;
+while (my $line = <$excluded>) {
+    chomp $line;
+     ## skip comment lines
+    next  if ( ($line =~ m/^#/) or ($line =~ m/^\"#/) );
+    my @line = split(/\t/, $line);
+    if ($line[1] eq TRUE) {
+        push(@excluded_libraries, $line[0])
+    }
 
 open(my $sample_info, $sample_info_file) || die "failed to read sample info file: $!";
 while (my $line = <$sample_info>) {
@@ -50,6 +62,8 @@ while (my $line = <$sample_info>) {
      ## skip comment lines
     next  if ( ($line =~ m/^#/) or ($line =~ m/^\"#/) );
     my @line = split(/\t/, $line);
+    # skip libraries present in the sample excluded file
+    next if if ( grep( /^$line[0]$/, @array ) )
     my $number_columns = 11;
     if (! scalar @line eq $number_columns) {
         die "all lines of sample info file should have $number_columns columns";

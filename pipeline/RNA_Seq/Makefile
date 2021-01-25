@@ -350,7 +350,7 @@ generate_intergenic_sequences: sum_by_species
 
 indexes_bgeecall: generate_intergenic_sequences
 	# generate BgeeCall input file from the rna_seq_sample_info.txt file
-	@perl 1Run/sample_info_to_bgeecall.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >>$@.tmp 2>&1
+	@perl 1Run/sample_info_to_bgeecall.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -sample_excluded=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >>$@.tmp 2>&1
 	# generate kallisto indexes with BgeeCall
 	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(RNASEQ_BGEECALL_FILE)" account="$(CLUSTER_ACCOUNT_SENSITIVE)" time="2:00:00" partition="$(CLUSTER_PARTITION_SENSITIVE)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' bgeecall_index.R bgeecall_index.Rout
 	@$(MV) $@.tmp $@
