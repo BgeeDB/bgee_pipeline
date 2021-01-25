@@ -13,7 +13,6 @@ use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
 use Utils;
 
 
-
 ## Julien Wollbrett 16/09/2019
 ## This script allows creation of intergenic fasta files for all species.
 ## It generates reference and non reference (called other) intergenic fasta files.
@@ -75,13 +74,13 @@ for my $line ( read_file($gaussian_file_path, chomp => 1) ){
 	next  if ( $line =~ m/^speciesId.*/);
 	my @fields = split("\t", $line);
 	# if not all fields are present in the gaussian choice file
-	if(scalar @fields != 10) {
-		die "Each line of the gaussian file should have 10 tabular seprarated columns : $?\n";
+	if(scalar @fields != 9) {
+		die "Each line of the gaussian file should have 9 tabular seprarated columns : $?\n";
 	}
 	my $speciesId = $fields[0];
-	$gaussianChoice{$speciesId}->{'numberGaussiansIntergenic'} = $fields[4];
-	$gaussianChoice{$speciesId}->{'selectedGaussiansIntergenic'} = $fields[6];
-	$gaussianChoice{$speciesId}->{'selectionSideIntergenic'} = $fields[7];
+	$gaussianChoice{$speciesId}->{'numberGaussiansIntergenic'} = $fields[2];
+	$gaussianChoice{$speciesId}->{'selectedGaussiansIntergenic'} = $fields[5];
+	$gaussianChoice{$speciesId}->{'selectionSideIntergenic'} = $fields[6];
 
 }
 
@@ -98,15 +97,17 @@ sub create_coordinate_file {
 	my ($coordinate_file, @intergenic_ids)= @_;
 	print "Start creation of : $coordinate_file\n";
 	open(my $df, '>', $coordinate_file);
-	print $df "chr\tstart\tend";
+	print $df "chr\tstart\tend\n";
 	for my $intergenic_id (0 .. $#intergenic_ids) {
-    	my @splitted = split("_", $intergenic_id);
-    	my $end = $splitted[$#splitted];
+    	my @splitted = split("_", $intergenic_ids[$intergenic_id]);
+	# if the array contains less than 3 values it means it is not an intergenic region
+    	next if(scalar @splitted < 3);
+	my $end = $splitted[$#splitted];
     	my $start = $splitted[$#splitted - 1];
     	#remove 2 last elements of the array
-    	splice @splitted, $#splitted, ($#splitted - 1);
+    	splice @splitted, -2;
     	my $chr_name = join('_', @splitted);
-    	print $df "$chr_name\t$start\t$end";
+    	print $df "$chr_name\t$start\t$end\n";
 	}
 	close $df;
 }
@@ -141,7 +142,7 @@ foreach my $species_name (keys %speNameToSpeId){
 
 	## retrieve ids of reference and other intergenic sequences from gaussian
 	## choice file and sum by species file.
-	$sum_abundance_file_path =~ s/SPECIES_ID/$speciesId/g;
+	(my $sum_abundance_file_species = $sum_abundance_file_path) =~ s/SPECIES_ID/$speciesId/g;
 	my @ref_intergenic_ids;
 	my @other_intergenic_ids;
 	my $selectedRefIntergenic = $gaussianChoice{$speciesId}{'selectedGaussiansIntergenic'};
@@ -152,12 +153,12 @@ foreach my $species_name (keys %speNameToSpeId){
 		$tpmCutoff = -$tpmCutoff;
 	}
 	# parse sum abundance file to calculate tpm cutoff
-	for my $line ( read_file($sum_abundance_file_path, chomp => 1) ) {
+	for my $line ( read_file($sum_abundance_file_species, chomp => 1) ) {
 		next  if ( ($line =~ m/^speciesId/));
 		my @fields = split("\t", $line);
 		# if not all fields are present in the gaussian choice file
 		if(scalar @fields != 7) {
-			die "Each line of file $sum_abundance_file_path should have 7 tabular seprarated columns : $?\n";
+			die "Each line of file $sum_abundance_file_species should have 7 tabular seprarated columns : $?\n";
 		}
 		if ($fields[6] eq "intergenic_$selectedRefIntergenic") {
 			if ($selectionSideIntergenic eq "Left" && $tpmCutoff < $fields[2]) {
@@ -168,7 +169,7 @@ foreach my $species_name (keys %speNameToSpeId){
 		}
 	}
 	# parse sum abundance file to detect ref and other intergenic ids
-	for my $line ( read_file($sum_abundance_file_path, chomp => 1) ) {
+	for my $line ( read_file($sum_abundance_file_species, chomp => 1) ) {
 		next  if ( ($line =~ m/^speciesId/));
 		my @fields = split("\t", $line);
 		if ($fields[4] eq "intergenic") {
@@ -185,20 +186,17 @@ foreach my $species_name (keys %speNameToSpeId){
 					push @other_intergenic_ids, $fields[0];
 				}
 			} else {
-				exit "should select Right or Left side of the gaussian";
+				exit "should select Right or Left side of the gaussian but selected $selectionSideIntergenic";
 			}
 		}
 	}
 	print "number ref intergenic sequences : ".scalar @ref_intergenic_ids."\n";
 	print "number other intergenic sequences : ".scalar @other_intergenic_ids."\n";
-	## Create output directories
-	if(!-e $ref_intergenic_dir) {mkdir $ref_intergenic_dir;}
-	if(!-e $other_intergenic_dir) {mkdir $other_intergenic_dir;}
 
 	## Create coordinate tsv file for ref. intergenic and other intergenic sequences.
 	my $ref_intergenic_coordinate_file = $ref_intergenic_dir.$speciesId."_coordinates.tsv";
 	my $other_intergenic_coordinate_file = $other_intergenic_dir.$speciesId."_coordinates.tsv";
-	create_coordinate_file($ref_intergenic_coordinate_file, $speciesId, @ref_intergenic_ids);
+	create_coordinate_file($ref_intergenic_coordinate_file, @ref_intergenic_ids);
 	create_coordinate_file($other_intergenic_coordinate_file, @other_intergenic_ids);
 
 	## Create intergenic fasta files
