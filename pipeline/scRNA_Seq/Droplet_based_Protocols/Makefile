@@ -262,7 +262,6 @@ qc_cellType: process_busFile 1Run/QC_CelltypeIdentification.R
 	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                                                   1Run/QC_CelltypeIdentification.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                      1Run/QC_CelltypeIdentification.sbatch
 	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'                       1Run/QC_CelltypeIdentification.sbatch
-	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_FASTQ_DROPLET)@'                                   1Run/QC_CelltypeIdentification.sbatch
 	@sed -i 's@export kallisto_bus_results=.*@export kallisto_bus_results=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET)@'  1Run/QC_CelltypeIdentification.sbatch
 	@sed -i 's@export folderSupport=.*@export folderSupport=$(RNASEQ_CLUSTER_GTF)@'                                    1Run/QC_CelltypeIdentification.sbatch
 	@sed -i 's@export infoFolder=.*@export infoFolder=$(SC_RNASEQ_PATH_SOURCE)@'                                       1Run/QC_CelltypeIdentification.sbatch

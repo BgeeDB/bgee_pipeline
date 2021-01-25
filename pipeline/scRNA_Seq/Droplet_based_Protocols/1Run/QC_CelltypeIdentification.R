@@ -8,9 +8,9 @@
 ## to provide a list of gene markers per cell-type after data analysis (validated with gene markers from the annotation file)
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNA_Seq_info_target.txt" folder_data="folder_data" kallisto_bus_results="kallisto_bus_results" folderSupport="folderSupport" infoFolder="infoFolder" output="output"' QC_CelltypeIdentification.R QC_CelltypeIdentification.Rout
+## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNA_Seq_info_target.txt" kallisto_bus_results="kallisto_bus_results" folderSupport="folderSupport" infoFolder="infoFolder" output="output"' QC_CelltypeIdentification.R QC_CelltypeIdentification.Rout
 ## scRNASeq_Info --> File that results from annotation and metadata (libraries downloaded and with extra information as readlength or SRR)
-## folder_data --> Folder where are all the libraries (after process busfile)
+## kallisto_bus_results --> Folder where are all the libraries (after process busfile)
 ## infoFolder --> Folder where we have the files corresponding to barcodes and gene markers annotation
 ## output --> Folder where we should save the results
 
@@ -38,7 +38,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed....
-command_arg <- c("scRNASeq_Info","folder_data", "kallisto_bus_results", "folderSupport", "infoFolder", "output")
+command_arg <- c("scRNASeq_Info","kallisto_bus_results", "folderSupport", "infoFolder", "output")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -375,7 +375,7 @@ if (!file.exists(markerGenes)){
 for (libraryID in scRNASeqAnnotation$libraryId) {
   
   ## verify if library exist
-  if (file.exists(file.path(folder_data, libraryID))){
+  if (file.exists(file.path(kallisto_bus_results, libraryID))){
 
     message("Treating library ", libraryID)
     
