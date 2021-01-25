@@ -4,11 +4,11 @@
 ## And then compare the annotation information for each library with metadata specially with SRA source.
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args scRNASeqExperiment="scRNASeqExperiment.tsv" scRNASeqLibrary="scRNASeqLibrary.tsv" output="output_folder"' retrieve_metadata.R retrieve_metadata.Rout
+## R CMD BATCH --no-save --no-restore '--args scRNASeqExperiment="scRNASeqExperiment.tsv" scRNASeqLibrary="scRNASeqLibrary.tsv" metadata_file_path="path/to/metadata.tsv" metadata_notmatch_file_path="path/to/metadata_nomatch.tsv"' retrieve_metadata.R retrieve_metadata.Rout
 ## scRNASeqExperiment --> File with information about all experiments annotated
 ## scRNASeqLibrary --> File with all libraries annotated by bgee
-## output --> Path where should be saved the output results after collect the metadata
-
+## metadata_file_path --> Path where should be saved the metadata of each library used in Bgee
+## metadata_notmatch_file_path -> Path to the file where library annotation does not match 
 ## librarie used
 library(HCAExplorer)
 library(data.table)
@@ -23,7 +23,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed....
-command_arg <- c("scRNASeqExperiment","scRNASeqLibrary", "output")
+command_arg <- c("scRNASeqExperiment","scRNASeqLibrary", "metadata_file_path", "metadata_notmatch_file_path")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -146,17 +146,15 @@ for (experiment in unique(targetBased$experimentId)) {
 }
 
 ## Create the output files to write the comparison between annotation and metada!
-metadata_info <- paste0(output, "/","metadata_info_10X.txt")
-if (!file.exists(metadata_info)){
-  file.create(metadata_info)
-  cat("sample_accession\texperiment_accession\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = file.path(output, "metadata_info_10X.txt"), sep = "\t")
+if (!file.exists(metadata_file_path)){
+  file.create(metadata_file_path)
+  cat("sample_accession\texperiment_accession\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = metadata_file_path, sep = "\t")
 } else {
   print("File already exist.....")
 }
-metadata_notMatch <- paste0(output, "/","metadata_notMatch_10X.txt")
-if (!file.exists(metadata_notMatch)){
-  file.create(metadata_notMatch)
-  cat("sample_accession\texperiment_accession\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = file.path(output,"metadata_notMatch_10X.txt"), sep = "\t")
+if (!file.exists(metadata_notmatch_file_path)){
+  file.create(metadata_notmatch_file_path)
+  cat("sample_accession\texperiment_accession\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = metadata_notmatch_file_path, sep = "\t")
 } else {
   print("File already exist.....")
 }
@@ -179,7 +177,7 @@ for(i in 1:nrow(targetBased_libraries)) {
       message(as.character(annotationInfo$libraryId[1]), " complete match between annotation and metadata")
 
       ## export libraries that pass and will be downloaded
-      write.table(metadataInfo, file = metadata_info, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
+      write.table(metadataInfo, file = metadata_file_path, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
 
     } else {
       message("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison library is: ", compare_library)
@@ -187,7 +185,7 @@ for(i in 1:nrow(targetBased_libraries)) {
       message("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison species is: ", compare_speciesID)
 
       ## export libraries that will not be used to download
-      write.table(metadataInfo, file = metadata_notMatch, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
+      write.table(metadataInfo, file = metadata_notmatch_file_path, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
     }
   } else {
     ## The HCA metadata we just compare the instrument model (since we not retrieve experiment_accession and tax_id just species_name)
@@ -195,11 +193,11 @@ for(i in 1:nrow(targetBased_libraries)) {
     if (compare_machine == "TRUE"){
       message(as.character(annotationInfo$libraryId[1]), " complete match between annotation and metadata")
       ## export libraries that pass and will be downloaded
-      write.table(metadataInfo, file = metadata_info, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
+      write.table(metadataInfo, file = metadata_file_path, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
     } else {
       message("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison platform is: ", compare_machine)
       ## export libraries that will not be used to download
-      write.table(metadataInfo, file = metadata_notMatch, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
+      write.table(metadataInfo, file = metadata_notmatch_file_path, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
     }
   }
 }

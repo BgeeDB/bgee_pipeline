@@ -437,6 +437,7 @@ SC_RNASEQ_SAMPINFO_PASS_FILEPATH       := $(SC_RNASEQ_PATH_GENERATED)NEW_scRNASe
 SC_RNASEQ_SAMPINFO_NOT_PASS_FILEPATH   := $(SC_RNASEQ_PATH_GENERATED)Discard_scRNASeq_sample_info.tsv
 SC_RNASEQ_MODALITY_FILEPATH            := $(SC_RNASEQ_PATH_GENERATED)Modality_Cell_type_per_experiment.tsv
 SC_RNASEQ_METADATA_10X_FILEPATH        := $(SC_RNASEQ_PATH_GENERATED)metadata_info_10X.txt
+SC_RNASEQ_METADATA_10X_NOT_MATCH_FILEPATH   := $(SC_RNASEQ_PATH_GENERATED)metadata_notMatch_10X.txt
 SC_RNASEQ_SAMPINFO_10X_FILEPATH        := $(SC_RNASEQ_PATH_GENERATED)scRNA_Seq_info_TargetBased.txt
 SC_RNASEQ_JURA_LIB_FILEPATH            := $(SC_RNASEQ_PATH_GENERATED)juraLibrariesDownloaded.tsv
 SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH    := $(SC_RNASEQ_PATH_GENERATED)bgeecall_input.tsv
@@ -451,16 +452,13 @@ SC_RNASEQ_DOWNLOAD_PATH_DROPLET         := $(SC_RNASEQ_DOWNLOAD_PATH_LIB_DIR)scR
 SCRNASEQ_SOFTWARE_BAMTOFASTQ                  := /users/sfonseca1/bin/bamtofastq-1.2.0
 
 # scRNAseq cluster paths (JURA)
-SENSITIVE_GENERAL_PATH                        := $(CLUSTER_DATA_PATH)/
-#TODO: use dir created during generation of ref intergenic
-REFERENCE_INTERGENIC_PATH                     := $(CLUSTER_DATA_PATH)/Rerence_intergenic_folder/
 
 ## PATH to full length and 10X data
-SC_RNASEQ_FASTQ_FULL_LENGTH                   := $(SENSITIVE_GENERAL_PATH)FASTQ/scRNAseq/Full_length/
-SC_RNASEQ_FASTQ_DROPLET                       := $(SENSITIVE_GENERAL_PATH)FASTQ/scRNAseq/10X/
+SC_RNASEQ_FASTQ_FULL_LENGTH                   := $(CLUSTER_DATA_PATH)/FASTQ/scRNAseq/Full_length/
+SC_RNASEQ_FASTQ_DROPLET                       := $(CLUSTER_DATA_PATH)/FASTQ/scRNAseq/10X/
 
 ## PATH to all results of both of pipelines
-SC_RNASEQ_CLUSTER_ALL_RES                     := $(SENSITIVE_GENERAL_PATH)scRNA-Seq_all_results/
+SC_RNASEQ_CLUSTER_ALL_RES                     := $(RNASEQ_CLUSTER_SCRATCH)scRNA-Seq_all_results_$(DBNAME)/
 
 ## Specific paths to results of full-length protocols
 SC_RNASEQ_CLUSTER_ALL_RES_FULL_LENGTH         := $(SC_RNASEQ_CLUSTER_ALL_RES)FULL_LENGTH/
@@ -472,9 +470,11 @@ SC_RNASEQ_MODALITY_CELL_POP                   := $(SC_RNASEQ_CLUSTER_QC_CELLPOP_
 
 ## Specific paths to results of target-based protocols
 SC_RNASEQ_CLUSTER_ALL_RES_DROPLET             := $(SC_RNASEQ_CLUSTER_ALL_RES)DROPLET_10X/
+SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET        := $(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)kallisto_bus_results/
 SC_RNASEQ_CLUSTER_QC_CELLTYPE                 := $(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)QC_CellType_identification/
 # scRNASeq file paths
 SC_RNASEQ_INFO_ALL_LIBRARIES_10X              := $(SC_RNASEQ_CLUSTER_QC_CELLTYPE)InformationAllLibraries.txt
+SC_RNASEQ_CLUSTER_CALLS_10X                   := $(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)calls/
 
 # minimum number of cells in a full-length library
 MIN_CELLS_PER_LIBRARY_FULL_LENGTH             := 50

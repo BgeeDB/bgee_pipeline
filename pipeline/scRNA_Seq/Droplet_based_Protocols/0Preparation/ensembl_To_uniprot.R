@@ -10,6 +10,7 @@
 
 ## Libraries
 library("biomaRt")
+library("data.table")
 
 ## reading arguments
 cmd_args = commandArgs(TRUE);

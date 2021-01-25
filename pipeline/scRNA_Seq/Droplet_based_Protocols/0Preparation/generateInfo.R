@@ -23,22 +23,34 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed....
-command_arg <- c("folder_gtf")
+command_arg <- c("folder_gtf", "metadata_info_file")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
   }
 }
 
+#read metadata file
+metadata_info <- fread(metadata_info_file)
+#retrieve scientific name of species for which single cell libraries exist
+species_to_use <- str_replace_all(unique(metadata_info$scientific_name), " ", "_")
+
 AllFiles <- list.files(folder_gtf, pattern="*gtf_all", full.names=T, recursive = TRUE)
 
 for (i in AllFiles) {
-
+  
   speciesID <- basename(i)
+  
+  # check if current gtf_all file corresponds to a species for which single 
+  # cell libraries exist. If not move to next gtf_all file
+  if (is.na(match(1,pmatch(species_to_use, basename(speciesID))))) {
+    next
+  }
+  message("generate info using ", i)
   speciesID <- data.frame(str_split(speciesID, "\\."))[1,1]
 
-  readFile <- fread(i)
-
+  readFile <- fread(i, sep = "\t")
+  
   ## extract information: gene_id, transcript_id, biotype_id
   system(sprintf('grep %s %s | sed -e "s/^.*gene_id //; s/;.*$//" > %s',paste0('gene_id '), paste0(i), paste0(folder_gtf,"/gene_id_", speciesID, ".tsv")))
   system(sprintf('grep %s %s | sed -e "s/^.*transcript_id //; s/;.*$//" > %s',paste0('transcript_id '), paste0(i), paste0(folder_gtf,"/transcript_id_", speciesID, ".tsv")))

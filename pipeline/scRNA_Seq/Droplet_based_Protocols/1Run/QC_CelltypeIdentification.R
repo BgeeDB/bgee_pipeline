@@ -8,9 +8,9 @@
 ## to provide a list of gene markers per cell-type after data analysis (validated with gene markers from the annotation file)
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNA_Seq_info_target.txt" folder_data="folder_data" infoFolder="infoFolder" output="output"' QC_CelltypeIdentification.R QC_CelltypeIdentification.Rout
+## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNA_Seq_info_target.txt" kallisto_bus_results="kallisto_bus_results" folderSupport="folderSupport" infoFolder="infoFolder" output="output"' QC_CelltypeIdentification.R QC_CelltypeIdentification.Rout
 ## scRNASeq_Info --> File that results from annotation and metadata (libraries downloaded and with extra information as readlength or SRR)
-## folder_data --> Folder where are all the libraries (after process busfile)
+## kallisto_bus_results --> Folder where are all the libraries (after process busfile)
 ## infoFolder --> Folder where we have the files corresponding to barcodes and gene markers annotation
 ## output --> Folder where we should save the results
 
@@ -38,7 +38,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed....
-command_arg <- c("scRNASeq_Info","folder_data", "infoFolder", "output")
+command_arg <- c("scRNASeq_Info","kallisto_bus_results", "folderSupport", "infoFolder", "output")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -228,8 +228,8 @@ qualityControl <- function(finalInformationCells, geneMarkerLibrary, geneNameFil
     barcodesCluster <- myData[which(myData$seurat_clusters == cluster),]
     infoCells <- as.data.frame(table(barcodesCluster$cell_type, barcodesCluster$cell_id))
     infoCells <- dplyr::filter(infoCells, Freq != 0)
-    
-    for (i in 1:nrow(infoCells)) {
+
+    for (i in seq(nrow(infoCells))) {
       
       cellName <- infoCells$Var1[i]
       cellId <- infoCells$Var2[i]
@@ -254,7 +254,7 @@ qualityControl <- function(finalInformationCells, geneMarkerLibrary, geneNameFil
   for (i in unique(variabilityFinalInfo$cluster)) {
     ## select rows in data.frame referent to the cluster
     rowID <- which(variabilityFinalInfo$cluster == i)
-    checkCluster <- variabilityFinalInfo$Variability_cluster[variabilityFinalInfo$cluster == i]
+    checkCluster <- as.numeric(as.character(variabilityFinalInfo$Variability_cluster[variabilityFinalInfo$cluster == i]))
     check <- any(checkCluster >= 0.80)
     if (check == "TRUE"){
       variabilityFinalInfo$Classification_Variability_cluster[rowID]<- " "
@@ -285,7 +285,7 @@ qualityControl <- function(finalInformationCells, geneMarkerLibrary, geneNameFil
     message("The experiment not provide info about gene markers in the annotation file.")
   } else {
     ## select from annotation
-    subset_annotation_markers <- geneMarkerLibrary %>% dplyr::select(experimentId, uberonId, uberonName, cell_type, cell_type_harmonization, cellTypeId, cellTypeName, markerGene_ID_UniProt_Ensembl)
+    subset_annotation_markers <- as.data.table(geneMarkerLibrary %>% dplyr::select(experimentId, uberonId, uberonName, cell_type, cell_type_harmonization, cellTypeId, cellTypeName, markerGene_ID_UniProt_Ensembl))
     ## because we subset, some rows can be duplicated (Explanation: what makes the row unique is the source column in the annotation, where we report from where the info comes, example cluster figure).
     subset_annotation_markers <- subset_annotation_markers[!duplicated(subset_annotation_markers), ]
     
@@ -308,7 +308,7 @@ qualityControl <- function(finalInformationCells, geneMarkerLibrary, geneNameFil
       ## verify if marker match between the cell-type of the annotation and one of the cell types identified in the analysis-cluster
       ## compare cell_type_hamonization column (annotation) and cell_names_cluster (analysis)
       geneMarkersValidatedFromBgee$cell_names_cluster <- strsplit(geneMarkersValidatedFromBgee$cell_names_cluster, ",")
-      for (i in 1:length(geneMarkersValidatedFromBgee$cell_names_cluster)) {
+      for (i in seq(length(geneMarkersValidatedFromBgee$cell_names_cluster))) {
         harmonization <- geneMarkersValidatedFromBgee$cell_type_harmonization[i]
         cluster <- geneMarkersValidatedFromBgee$cell_names_cluster[[i]]
         geneMarkersValidatedFromBgee$match[i] <- (harmonization %in% cluster)
@@ -330,7 +330,7 @@ qualityControl <- function(finalInformationCells, geneMarkerLibrary, geneNameFil
       geneMarkersValidatedFromBgee <- finalMarker[finalMarker$p_val_adj <= 0.05, ]
       ## compare cell_type_hamonization column (annotation) and cell_names_cluster (analysis)
       geneMarkersValidatedFromBgee$cell_names_cluster <- strsplit(geneMarkersValidatedFromBgee$cell_names_cluster, ",")
-      for (i in 1:length(geneMarkersValidatedFromBgee$cell_names_cluster)) {
+      for (i in seq(length(geneMarkersValidatedFromBgee$cell_names_cluster))) {
         harmonization <- geneMarkersValidatedFromBgee$cell_type_harmonization[i]
         cluster <- geneMarkersValidatedFromBgee$cell_names_cluster[[i]]
         geneMarkersValidatedFromBgee$match[i] <- (harmonization %in% cluster)
@@ -346,6 +346,7 @@ qualityControl <- function(finalInformationCells, geneMarkerLibrary, geneNameFil
 
 #############################################################################################################################
 ## collect information for all libraries
+##XXX what happens if file already exist? add new lines to already existing one? Should maybe empty it and create a new one or at least stop the script
 globalInfoLibraries <- paste0(output, "/InformationAllLibraries.txt")
 if (!file.exists(globalInfoLibraries)){
   file.create(globalInfoLibraries)
@@ -374,23 +375,23 @@ if (!file.exists(markerGenes)){
 for (libraryID in scRNASeqAnnotation$libraryId) {
   
   ## verify if library exist
-  pathLib <- file.exists(file.path(folder_data, libraryID))
-  
-  if (pathLib == TRUE){
-    
+  if (file.exists(file.path(kallisto_bus_results, libraryID))){
+
     message("Treating library ", libraryID)
     
     ## info about species and experiment
     speciesID <- scRNASeqAnnotation$scientific_name[scRNASeqAnnotation$libraryId == libraryID]
     speciesID <- gsub(" ", "_", speciesID)
     experimentID <- scRNASeqAnnotation$experimentId[scRNASeqAnnotation$libraryId == libraryID]
-    
-    path2Files <- paste0(folder_data, libraryID, "/busOutput/gene_counts")
+
+    path2Files <- file.path(kallisto_bus_results, libraryID, "gene_counts")
+
     path2ListFiles <- list.files(path2Files)
     
     ## create folder per library
-    dir.create(file.path(output, libraryID))
-    
+    if(!dir.exists(file.path(output,libraryID))) {
+      dir.create(file.path(output, libraryID))
+    }
     ## Create a sparseMatrix
     sparseMatrix <- read_count_output(path2Files, "gene", tcc = FALSE)
     
@@ -408,14 +409,14 @@ for (libraryID in scRNASeqAnnotation$libraryId) {
     object <- seurtObject(m_filtered = knee)
     
     ## read biotype information
-    biotypeInfo <- fread(paste0(infoFolder, "/gene_to_biotype_with_intergenic_", speciesID,".tsv"))
+    biotypeInfo <- fread(paste0(folderSupport, "/gene_to_biotype_with_intergenic_", speciesID,".tsv"))
     colnames(biotypeInfo) <- c("gene_id", "biotype")
     ## get barcode information for the library
     barcodeLibrary <- dplyr::filter(barcodes, library == libraryID)
     ## get gene markers information
     geneMarkerLibrary <- dplyr::filter(markers, experimentId == experimentID)
     ## read info that link gene_id with gene_name
-    geneNameFile <- read.table(paste0(infoFolder, "/gene_to_geneName_with_intergenic_", speciesID,".tsv"))
+    geneNameFile <- read.table(paste0(folderSupport, "/gene_to_geneName_with_intergenic_", speciesID,".tsv"))
     colnames(geneNameFile) <- c("gene", "gene_name")
     
     ## link barcode to cell ID and export information
@@ -423,9 +424,7 @@ for (libraryID in scRNASeqAnnotation$libraryId) {
     infoCells <- finalInformationCells[[3]]
     
     ## verify if function targetCells is NULL
-    null <- is.null(finalInformationCells)
-    
-    if (null == TRUE){
+    if (is.null(finalInformationCells)){
       message("The library", libraryID, " not contain barcodes.")
       message("Any raw or normalized count is exported.")
       message("The library will not be present in the informative files: InformationAllLibraries.txt, variabilityClusters.txt and markerGenes_Validated.txt file")
@@ -445,7 +444,7 @@ for (libraryID in scRNASeqAnnotation$libraryId) {
       fwrite(markersInfoValidated, file = markerGenes, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
     }
   } else {
-    message("This library ", libraryID, " not exist in the directory.")
+      warning("This library ", libraryID, " not exist in the directory.")
   }
 }
 

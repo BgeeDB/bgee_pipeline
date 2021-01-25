@@ -80,7 +80,7 @@ for (library in  unique(generalInfo$experiment_accession)) {
   if (!dir.create(InfoFile)){
     dir.create(InfoFile)
   } else {
-    print("File already exist.....")
+    message("File already exist.....")
   }
 
   ## select URL for the correspondent library

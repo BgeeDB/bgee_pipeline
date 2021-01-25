@@ -17,6 +17,8 @@ library(dplyr)
 library(mclust)
 library(LaplacesDemon)
 
+sessionInfo()
+
 ## reading arguments
 cmd_args = commandArgs(TRUE);
 print(cmd_args)
@@ -83,16 +85,15 @@ plotData <- function(libraryID, allInformation, deconvolutionInfo, classificatio
   dev.off()
 }
 
-## collect information for libraries/cell pop not pass the minimum requirement 100 cells or are not bimodal population
-bimodality_targetBased <- paste0(output_folder, "/bimodality_targetBased.txt")
+bimodality_targetBased <- file.path(output_folder, "bimodality_targetBased.txt")
 if (!file.exists(bimodality_targetBased)){
   file.create(bimodality_targetBased)
-  cat("library\texperimentID\tCell_Name_ID\tcomment\n",file = paste0(output_folder, "/bimodality_targetBased.txt"), sep = "\t")
+  cat("library\texperimentID\tCell_Name_ID\tcomment\n",file = bimodality_targetBased, sep = "\t")
 } else {
   print("File already exist.....")
 }
 
-## apply for each library/cellpop  
+## apply for each library/cellpop
 for (libraryID in unique(scRNA_annotation_file$libraryId)) {
   
   ## verify if the code already run for this library (check if the bimodality_DONE file already exist)
@@ -118,12 +119,12 @@ for (libraryID in unique(scRNA_annotation_file$libraryId)) {
       cellpop <- fread(file.path(folder_data,libraryID,cellPop))
       ## remove info about gene_name, biotype, type
       sizeData <- length(cellpop)-5
-      colectInfo <- cellpop %>% dplyr::select("gene_id", "biotype", "type", "cellTypeName", "cellTypeId")
+      colectInfo <- as.data.table(cellpop %>% dplyr::select("gene_id", "biotype", "type", "cellTypeName", "cellTypeId"))
       
       ## just make QC bimodality if cell population have at least 50 cells
       if (sizeData >= 50){
         
-        genicRegion <- dplyr::filter(cellpop, type == "genic")
+        genicRegion <- as.data.table(dplyr::filter(cellpop, type == "genic"))
         genicRegion <- genicRegion[, -c("biotype", "type", "cellTypeName", "cellTypeId")]
         
         ## UMI counts and genes detected per cell using all genic region
@@ -180,7 +181,7 @@ for (libraryID in unique(scRNA_annotation_file$libraryId)) {
           infoCollected <- data.frame(libraryID, experimentID, cellPopName, "not bimodal")
           write.table(infoCollected, file = bimodality_targetBased, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
         }
-        
+      ## collect information for libraries/cell pop not pass the minimum requirement 50 cells or are not bimodal population
       } else {
         message("The cell population ", cellPopName, " from the library ", libraryID ," have < 50 cells.")
         ## add to the excluded file libraries/cell pop

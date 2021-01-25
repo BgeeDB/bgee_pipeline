@@ -46,7 +46,14 @@ from 2020-04-07
 
 ## scRNA-Seq
 
-Integrate pipeline code from Sara.
+### target based pipeline
+  * check all files created and put their names in the Makefile.common (with variable parts like SPECIES, 
+  LIBRARY_ID that will be update on the fly)
+  * parallelize kallisto_bus (oher rules could be parallelize too but they take less than 2 days to run as for bgee 15.0)
+  * check again all created files to be sure it is not possible to duplicate data inside of them
+  * add file checking library already processed. Will allow not to reprocess it when rule is run again. Very important to do it for kallisto_bus
+  * clean directory_names and and homogenize variable/path/script names to keep one naming approach (camel or snake)
+  * generate target based calls using BgeeCall
 
 ## Post-processing
 

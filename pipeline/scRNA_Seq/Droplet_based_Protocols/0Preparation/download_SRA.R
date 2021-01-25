@@ -63,7 +63,7 @@ for (library in  unique(finalLibsToDown$experiment_accession)) {
   if (!dir.create(InfoFile)){
     dir.create(InfoFile)
   } else {
-    print("File already exist.....")
+    message("File already exist.....")
   }
 
   ## select the SRR referent to the library to download
