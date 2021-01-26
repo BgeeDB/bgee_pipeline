@@ -76,7 +76,7 @@ for (experimentId in unique(annotation$experimentId)) {
       ## re-write the file with adj_call info
       write.table(adjCalls, file = file.path(filePath, nameChipFile), sep = "\t", row.names = FALSE)
     }
-    cat("Adjusted calls added to all chipId files in", experimentId, "experiment.")
+    cat("Adjusted calls added to all chipId files in", experimentId, "experiment\n")
   } else {
     cat("Folder not exit for this experiment,", experimentId, "\n")
   }
