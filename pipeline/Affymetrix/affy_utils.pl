@@ -374,8 +374,8 @@ sub displayDuplicatedChips {
 
     my $duplicatesFound = 0;
     # Iterate the source chips
-    for my $sourceExpId ( keys %$sourceAffyChipsInfoRef ){
-        for my $sourceChipId ( keys %{$sourceAffyChipsInfoRef->{$sourceExpId}} ){
+    for my $sourceExpId ( sort keys %$sourceAffyChipsInfoRef ){
+        for my $sourceChipId ( sort keys %{$sourceAffyChipsInfoRef->{$sourceExpId}} ){
             # Is the source chip commented? we never want them to be source chips
             next  if ( !defined $affyChipsRef->{$sourceExpId}->{$sourceChipId}->{'commented'} || $affyChipsRef->{$sourceExpId}->{$sourceChipId}->{'commented'} );
 
@@ -386,8 +386,8 @@ sub displayDuplicatedChips {
             my %duplicatesToCurrentSourceChip = ();
 
             # Now, let's iterate the target chips to search for duplicates
-            for my $targetExpId ( keys %$targetAffyChipsInfoRef ){
-                for my $targetChipId ( keys %{$targetAffyChipsInfoRef->{$targetExpId}} ){
+            for my $targetExpId ( sort keys %$targetAffyChipsInfoRef ){
+                for my $targetChipId ( sort keys %{$targetAffyChipsInfoRef->{$targetExpId}} ){
                     # The target and source chips can actually be the same,
                     # when we want to compare new chips to new chips, or old chips to old chips
                     next  if ( $sourceExpId eq $targetExpId && $sourceChipId eq $targetChipId );
@@ -468,8 +468,8 @@ sub displayDuplicatedChips {
                     # to all other target chips previously identified
                     # as duplicates of the current source chip
                     for ( my $i = 0; $i < $duplicateRank; $i++ ){
-                        for my $iterateExpId ( keys %{$duplicatesToCurrentSourceChip{$i}} ){
-                            for my $iterateChipId ( keys %{$duplicatesToCurrentSourceChip{$i}{$iterateExpId}} ){
+                        for my $iterateExpId ( sort keys %{$duplicatesToCurrentSourceChip{$i}} ){
+                            for my $iterateChipId ( sort keys %{$duplicatesToCurrentSourceChip{$i}{$iterateExpId}} ){
                                 if ( defined $identifiedDuplicatedChips{$iterateExpId}{$iterateChipId}{$targetExpId}{$targetChipId} ||
                                      defined $identifiedDuplicatedChips{$targetExpId}{$targetChipId}{$iterateExpId}{$iterateChipId} ){
                                     next;

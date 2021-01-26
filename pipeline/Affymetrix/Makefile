@@ -36,27 +36,31 @@ maintenance: new_annotation
 get_annot: maintenance
 	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations
 	@$(WGET) $(ANNOTATION_GIT_URL)/Strains/StrainMapping.tsv                && $(MV) StrainMapping.tsv             $(STRAIN_MAPPING_FILE)
-	@$(WGET) $(ANNOTATION_GIT_URL)/Affymetrix/affymetrixChip.tsv            && $(MV) affymetrixChip.tsv            $(SOURCE_FILES_DIR)/$(DIR_NAME)/affymetrixChip.tsv            2>/dev/null  || rm -f affymetrixChip.tsv
-	@$(WGET) $(ANNOTATION_GIT_URL)/Affymetrix/chipType.tsv                  && $(MV) chipType.tsv                  $(SOURCE_FILES_DIR)/$(DIR_NAME)/chipType.tsv                  2>/dev/null  || rm -f chipType.tsv
-	@$(WGET) $(ANNOTATION_GIT_URL)/Affymetrix/microarrayExperiment.tsv      && $(MV) microarrayExperiment.tsv      $(SOURCE_FILES_DIR)/$(DIR_NAME)/microarrayExperiment.tsv      2>/dev/null  || rm -f microarrayExperiment.tsv
+	@$(WGET) $(ANNOTATION_GIT_URL)/Affymetrix/affymetrixChip.tsv            && $(MV) affymetrixChip.tsv            $(AFFY_CHIP_FILEPATH)                  2>/dev/null  || rm -f affymetrixChip.tsv
+	@$(WGET) $(ANNOTATION_GIT_URL)/Affymetrix/chipType.tsv                  && $(MV) chipType.tsv                  $(AFFY_CHIPTYPE_FILEPATH)              2>/dev/null  || rm -f chipType.tsv
+	@$(WGET) $(ANNOTATION_GIT_URL)/Affymetrix/microarrayExperiment.tsv      && $(MV) microarrayExperiment.tsv      $(MICROARRAY_EXPERIMENT_FILEPATH)      2>/dev/null  || rm -f microarrayExperiment.tsv
 # Download wormbase annotation as well. Will be merged with our annotation
-	@$(WGET) $(ANNOTATION_GIT_URL)/Affymetrix/affymetrixChip_worm.tsv       && $(MV) affymetrixChip_worm.tsv       $(SOURCE_FILES_DIR)/$(DIR_NAME)/affymetrixChip_worm.tsv       2>/dev/null  || rm -f affymetrixChip_worm.tsv
-	@$(WGET) $(ANNOTATION_GIT_URL)/Affymetrix/chipType_worm.tsv             && $(MV) chipType_worm.tsv             $(SOURCE_FILES_DIR)/$(DIR_NAME)/chipType_worm.tsv             2>/dev/null  || rm -f chipType_worm.tsv
-	@$(WGET) $(ANNOTATION_GIT_URL)/Affymetrix/microarrayExperiment_worm.tsv && $(MV) microarrayExperiment_worm.tsv $(SOURCE_FILES_DIR)/$(DIR_NAME)/microarrayExperiment_worm.tsv 2>/dev/null  || rm -f microarrayExperiment_worm.tsv
+	@$(WGET) $(ANNOTATION_GIT_URL)/Affymetrix/affymetrixChip_worm.tsv       && $(MV) affymetrixChip_worm.tsv       $(AFFY_CHIP_FILEPATH_WORM)             2>/dev/null  || rm -f affymetrixChip_worm.tsv
+	@$(WGET) $(ANNOTATION_GIT_URL)/Affymetrix/chipType_worm.tsv             && $(MV) chipType_worm.tsv             $(AFFY_CHIPTYPE_FILEPATH_WORM)         2>/dev/null  || rm -f chipType_worm.tsv
+	@$(WGET) $(ANNOTATION_GIT_URL)/Affymetrix/microarrayExperiment_worm.tsv && $(MV) microarrayExperiment_worm.tsv $(MICROARRAY_EXPERIMENT_FILEPATH_WORM) 2>/dev/null  || rm -f microarrayExperiment_worm.tsv
 	@touch $@
 
-#	# Concatenate our annotation file with wormbase annotations (without header, and sorted by experiments and libraries)
-#	@tail -n+2 $(AFFY_CHIP_FILEPATH_WORM)             | sort -k2,2 -k1,1       | cat $(AFFY_CHIP_FILEPATH)             - > $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL)
-#	@tail -n+2 $(AFFY_CHIPTYPE_FILEPATH_WORM)         | sort -k1,1 | cat $(AFFY_CHIPTYPE_FILEPATH)         - > $(PIPELINEROOT)$(AFFY_CHIPTYPE_FILEPATH_FULL)
-#	@tail -n+2 $(MICROARRAY_EXPERIMENT_FILEPATH_WORM) | sort -k1,1 | cat $(MICROARRAY_EXPERIMENT_FILEPATH) - > $(PIPELINEROOT)$(MICROARRAY_EXPERIMENT_FILEPATH_FULL)
-#TODO for now this step is moved down to the check_annot step. This is because this step doesn't work since the annotation GitHub is down
+prepare_annot: get_annot
+	# Concatenate our annotation file with wormbase annotations (without header, and sorted by experiments and libraries)
+	@tail -n+2 $(AFFY_CHIP_FILEPATH_WORM)             | sort -k2,2 -k1,1 | cat $(AFFY_CHIP_FILEPATH)             - > $(AFFY_CHIP_FILEPATH_FULL).ori
+	@tail -n+2 $(AFFY_CHIPTYPE_FILEPATH_WORM)         | sort -k1,1       | cat $(AFFY_CHIPTYPE_FILEPATH)         - > $(AFFY_CHIPTYPE_FILEPATH_FULL)
+	@tail -n+2 $(MICROARRAY_EXPERIMENT_FILEPATH_WORM) | sort -k1,1       | cat $(MICROARRAY_EXPERIMENT_FILEPATH) - > $(MICROARRAY_EXPERIMENT_FILEPATH_FULL)
+	# Map strain names
+	@perl -e 'use lib ".."; use Utils; Utils::map_strain_names("$(AFFY_CHIP_FILEPATH_FULL).ori", "$(STRAIN_MAPPING_FILE)")' >$(AFFY_CHIP_FILEPATH_FULL)
+	@$(RM) $(AFFY_CHIP_FILEPATH_FULL).ori
+	@touch $@
 
 #FIXME Need to properly set directory rights: Some are owned by bgee users, others by yourself, others by root (e.g. R library folder)
 
 
 #######################
 # MAS5
-clean_mas5: new_annotation maintenance get_annot
+clean_mas5: prepare_annot
 	# Clean up MAS5 files
 	@perl MAS5/clean_mas5_files.pl $(MAS5ORIPATH) $(MAS5PATH) > $@.out 2> $@.err
 # remove $@.err if empty
@@ -64,63 +68,53 @@ clean_mas5: new_annotation maintenance get_annot
 	@find . -type f        -name $@.err -exec cat   {} \;
 	@$(MV) $@.out $@
 
-check_mas5: clean_mas5 $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL)
+check_mas5: clean_mas5 $(AFFY_CHIP_FILEPATH_FULL)
 	# Global diff
-	-@diff -rq $(MAS5ORIPATH)/ $(MAS5PATH)/ | grep -v ' diff' | grep -v '\.svn' | grep -v '\.git' | grep -v 'not_separated' > $@.tmp
+	-@diff -rq $(MAS5ORIPATH)/ $(MAS5PATH)/ | grep -v ' diff' | grep -v '\.svn' | grep -v '\.git' | grep -v 'not_separated' | cat > $@.tmp
 	# Check if invalid files are present
-	@perl MAS5/check_mas5_filtered.pl  -affyChipFilesDir=$(AFFYDATAPATH)  -affymetrixChip=$(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL) >> $@.tmp
+	@perl MAS5/check_mas5_filtered.pl  -affyChipFilesDir=$(AFFYDATAPATH)  -affymetrixChip=$(AFFY_CHIP_FILEPATH_FULL) >> $@.tmp
 	@$(MV) $@.tmp $@
 
 adj_call: check_mas5 $(AFFY_CHIP_FILEPATH) $(MAS5PATH)
 	# Correction of the calls
 	@echo --- starting the calls correction for all MAS5 files ---
 	@$(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args affy_anno="$(AFFY_CHIP_FILEPATH)" mas5_path="$(MAS5PATH)" cut_off="0.01"' MAS5/adj_calls_mas5.R MAS5/adj_calls_mas5.Rout > $@.tmp
+	@$(MV) MAS5/adj_calls_mas5.Rout $@.log
 	@echo --- DONE ---
 	@$(MV) $@.tmp $@
 
 #######################
 # Generate information
-gen_info: $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL) $(PIPELINEROOT)$(AFFY_CHIPINFO_FILEPATH) $(PIPELINEROOT)$(AFFY_CHIPTYPEQUAL_FILEPATH) adj_call
+gen_info: prepare_annot $(AFFY_CHIP_FILEPATH_FULL) $(AFFY_CHIPINFO_FILEPATH) $(AFFY_CHIPTYPEQUAL_FILEPATH) adj_call
 	@which R >/dev/null
 	# Generate information
-	@perl Generate_information/generate_affy_chips_information.pl  -affyChipFilesDir=$(AFFYDATAPATH)  -affymetrixChip=$(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL) -affymetrixChipInformation=$(PIPELINEROOT)$(AFFY_CHIPINFO_FILEPATH) -chipTypeQual=$(PIPELINEROOT)$(AFFY_CHIPTYPEQUAL_FILEPATH) > $@.tmp
+	@perl Generate_information/generate_affy_chips_information.pl  -affyChipFilesDir=$(AFFYDATAPATH)  -affymetrixChip=$(AFFY_CHIP_FILEPATH_FULL) -affymetrixChipInformation=$(AFFY_CHIPINFO_FILEPATH) -chipTypeQual=$(AFFY_CHIPTYPEQUAL_FILEPATH) > $@.tmp
 	# Checks
-	-@ls -l $(AFFYDATAPATH)chip_information/logs/*.out.PROB                                         >> $@.tmp
-	-@grep -H -c 'proc.time' $(AFFYDATAPATH)chip_information/logs/*.out | grep ':0'                 >> $@.tmp
-	-@grep -i "warning" -A 5 $(AFFYDATAPATH)chip_information/logs/*.out                             >> $@.tmp
-	@$(GIT) diff $(PIPELINEROOT)$(AFFY_CHIPINFO_FILEPATH)                                           >> $@.tmp
-	@$(GIT) diff $(PIPELINEROOT)$(AFFY_CHIPTYPEQUAL_FILEPATH)                                       >> $@.tmp
+	-@ls -l $(AFFYDATAPATH)chip_information/logs/*.out.PROB                          >> $@.tmp
+	-@grep -H -c 'proc.time' $(AFFYDATAPATH)chip_information/logs/*.out | grep ':0'  >> $@.tmp
+	-@grep -i "warning" -A 5 $(AFFYDATAPATH)chip_information/logs/*.out              >> $@.tmp
+	@$(GIT) diff $(AFFY_CHIPINFO_FILEPATH)                                           >> $@.tmp
+	@$(GIT) diff $(AFFY_CHIPTYPEQUAL_FILEPATH)                                       >> $@.tmp
 	@$(MV) $@.tmp $@
 
 
 #######################
 # Annotations checking
-check_annot: gen_info $(PIPELINEROOT)$(AFFY_NORMTYPE_FILEPATH) $(PIPELINEROOT)$(AFFY_DETCTYPE_FILEPATH) $(PIPELINEROOT)$(AFFY_CHIPTYPEQUAL_FILEPATH)
-#check_annot: gen_info $(PIPELINEROOT)$(AFFY_NORMTYPE_FILEPATH) $(PIPELINEROOT)$(AFFY_DETCTYPE_FILEPATH) $(PIPELINEROOT)$(AFFY_CHIPTYPE_FILEPATH_FULL) $(PIPELINEROOT)$(MICROARRAY_EXPERIMENT_FILEPATH_FULL) $(PIPELINEROOT)$(AFFY_CHIPINFO_FILEPATH) $(PIPELINEROOT)$(AFFY_CHIPTYPEQUAL_FILEPATH) $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL)
-#TODO temporary solution to concatenate annotation files below, so we cannot depend on the full annotations files here. When get_annot is fixed, change this
-	# Concatenate our annotation file with wormbase annotations (without header, and sorted by experiments and libraries)
-	@tail -n+2 $(AFFY_CHIP_FILEPATH_WORM)             | sort -k2,2 -k1,1 | cat $(AFFY_CHIP_FILEPATH) - > $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL).ori
-	@tail -n+2 $(AFFY_CHIPTYPE_FILEPATH_WORM)         | sort -k1,1       | cat $(AFFY_CHIPTYPE_FILEPATH) - > $(PIPELINEROOT)$(AFFY_CHIPTYPE_FILEPATH_FULL)
-	@tail -n+2 $(MICROARRAY_EXPERIMENT_FILEPATH_WORM) | sort -k1,1       | cat $(MICROARRAY_EXPERIMENT_FILEPATH) - > $(PIPELINEROOT)$(MICROARRAY_EXPERIMENT_FILEPATH_FULL)
-	# Map strain names
-	@perl -e 'use lib ".."; use Utils; Utils::map_strain_names("$(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL).ori", "$(STRAIN_MAPPING_FILE)")' >$(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL)
-	@$(RM) $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL).ori
-#TODO remove above lines when get_annot fixed
-
+check_annot: gen_info $(AFFY_NORMTYPE_FILEPATH) $(AFFY_DETCTYPE_FILEPATH) $(AFFY_CHIPTYPE_FILEPATH_FULL) $(MICROARRAY_EXPERIMENT_FILEPATH_FULL) $(AFFY_CHIPINFO_FILEPATH) $(AFFY_CHIPTYPEQUAL_FILEPATH) $(AFFY_CHIP_FILEPATH_FULL)
 	# Check curation before
-	@perl Annotation_checking/check_affy_curation.pl  -bgee=$(BGEECMD) -normalizationType=$(PIPELINEROOT)$(AFFY_NORMTYPE_FILEPATH) -detectionType=$(PIPELINEROOT)$(AFFY_DETCTYPE_FILEPATH) -chipType=$(PIPELINEROOT)$(AFFY_CHIPTYPE_FILEPATH_FULL) -microarrayExperiment=$(PIPELINEROOT)$(MICROARRAY_EXPERIMENT_FILEPATH_FULL) -cel_data=$(CELPATH) -processed_mas5=$(MAS5PATH) -affyChipInformation=$(PIPELINEROOT)$(AFFY_CHIPINFO_FILEPATH) -chipTypeQual=$(PIPELINEROOT)$(AFFY_CHIPTYPEQUAL_FILEPATH) -affymetrixChip=$(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL) -processed_schuster=$(SCHUSTERPATH)   before                > $@.tmp
+	@perl Annotation_checking/check_affy_curation.pl  -bgee=$(BGEECMD) -normalizationType=$(AFFY_NORMTYPE_FILEPATH) -detectionType=$(AFFY_DETCTYPE_FILEPATH) -chipType=$(AFFY_CHIPTYPE_FILEPATH_FULL) -microarrayExperiment=$(MICROARRAY_EXPERIMENT_FILEPATH_FULL) -cel_data=$(CELPATH) -processed_mas5=$(MAS5PATH) -affyChipInformation=$(AFFY_CHIPINFO_FILEPATH) -chipTypeQual=$(AFFY_CHIPTYPEQUAL_FILEPATH) -affymetrixChip=$(AFFY_CHIP_FILEPATH_FULL) -processed_schuster=$(SCHUSTERPATH)   before                > $@.tmp
 	@echo >> $@.tmp
 	# Check info
-	@perl Annotation_checking/check_affy_info.pl  -affyChipInformation=$(PIPELINEROOT)$(AFFY_CHIPINFO_FILEPATH) -chipTypeQual=$(PIPELINEROOT)$(AFFY_CHIPTYPEQUAL_FILEPATH) -affymetrixChip=$(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL) >> $@.tmp
+	@perl Annotation_checking/check_affy_info.pl  -affyChipInformation=$(AFFY_CHIPINFO_FILEPATH) -chipTypeQual=$(AFFY_CHIPTYPEQUAL_FILEPATH) -affymetrixChip=$(AFFY_CHIP_FILEPATH_FULL) >> $@.tmp
 	@$(MV) $@.tmp $@
 
 
 #######################
 # Normalization
-normalization: check_annot $(PIPELINEROOT)$(AFFY_CHIPINFO_FILEPATH) $(PIPELINEROOT)$(AFFY_CHIPTYPEQUAL_FILEPATH) $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL)
+normalization: check_annot $(AFFY_CHIPINFO_FILEPATH) $(AFFY_CHIPTYPEQUAL_FILEPATH) $(AFFY_CHIP_FILEPATH_FULL)
 	@which R >/dev/null
 	# Normalization
-	@perl Normalization/launch_affy_analysis.pl  -affyChipInformation=$(PIPELINEROOT)$(AFFY_CHIPINFO_FILEPATH) -chipTypeQual=$(PIPELINEROOT)$(AFFY_CHIPTYPEQUAL_FILEPATH) -affymetrixChip=$(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL) -cel_data=$(CELPATH) -processed_schuster=$(SCHUSTERPATH) -bioconductorout=$(BIOCONDUCTOROUT) -bioconductoraffin=$(BIOCONDUCTORAFFIN) >$@.tmp
+	@perl Normalization/launch_affy_analysis.pl  -affyChipInformation=$(AFFY_CHIPINFO_FILEPATH) -chipTypeQual=$(AFFY_CHIPTYPEQUAL_FILEPATH) -affymetrixChip=$(AFFY_CHIP_FILEPATH_FULL) -cel_data=$(CELPATH) -processed_schuster=$(SCHUSTERPATH) -bioconductorout=$(BIOCONDUCTOROUT) -bioconductoraffin=$(BIOCONDUCTORAFFIN) >$@.tmp
 	# Checks
 	-@find $(BIOCONDUCTOROUT) -empty -name \*.out.PROB | xargs $(RM)
 	-@ls -l $(BIOCONDUCTOROUT)*.out.PROB                          >> $@.tmp
@@ -130,9 +124,9 @@ normalization: check_annot $(PIPELINEROOT)$(AFFY_CHIPINFO_FILEPATH) $(PIPELINERO
 
 
 #######################
-check_after: normalization $(PIPELINEROOT)$(AFFY_NORMTYPE_FILEPATH) $(PIPELINEROOT)$(AFFY_DETCTYPE_FILEPATH) $(PIPELINEROOT)$(AFFY_CHIPTYPE_FILEPATH_FULL) $(PIPELINEROOT)$(MICROARRAY_EXPERIMENT_FILEPATH_FULL) $(PIPELINEROOT)$(AFFY_CHIPINFO_FILEPATH) $(PIPELINEROOT)$(AFFY_CHIPTYPEQUAL_FILEPATH) $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL)
+check_after: normalization $(AFFY_NORMTYPE_FILEPATH) $(AFFY_DETCTYPE_FILEPATH) $(AFFY_CHIPTYPE_FILEPATH_FULL) $(MICROARRAY_EXPERIMENT_FILEPATH_FULL) $(AFFY_CHIPINFO_FILEPATH) $(AFFY_CHIPTYPEQUAL_FILEPATH) $(AFFY_CHIP_FILEPATH_FULL)
 	# Check curation after
-	@perl Annotation_checking/check_affy_curation.pl  -bgee=$(BGEECMD) -normalizationType=$(PIPELINEROOT)$(AFFY_NORMTYPE_FILEPATH) -detectionType=$(PIPELINEROOT)$(AFFY_DETCTYPE_FILEPATH) -chipType=$(PIPELINEROOT)$(AFFY_CHIPTYPE_FILEPATH_FULL) -microarrayExperiment=$(PIPELINEROOT)$(MICROARRAY_EXPERIMENT_FILEPATH_FULL) -cel_data=$(CELPATH) -processed_mas5=$(MAS5PATH) -affyChipInformation=$(PIPELINEROOT)$(AFFY_CHIPINFO_FILEPATH) -chipTypeQual=$(PIPELINEROOT)$(AFFY_CHIPTYPEQUAL_FILEPATH) -affymetrixChip=$(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL) -processed_schuster=$(SCHUSTERPATH)   after       > $@.tmp 2> warnings.$@
+	@perl Annotation_checking/check_affy_curation.pl  -bgee=$(BGEECMD) -normalizationType=$(AFFY_NORMTYPE_FILEPATH) -detectionType=$(AFFY_DETCTYPE_FILEPATH) -chipType=$(AFFY_CHIPTYPE_FILEPATH_FULL) -microarrayExperiment=$(MICROARRAY_EXPERIMENT_FILEPATH_FULL) -cel_data=$(CELPATH) -processed_mas5=$(MAS5PATH) -affyChipInformation=$(AFFY_CHIPINFO_FILEPATH) -chipTypeQual=$(AFFY_CHIPTYPEQUAL_FILEPATH) -affymetrixChip=$(AFFY_CHIP_FILEPATH_FULL) -processed_schuster=$(SCHUSTERPATH)   after       > $@.tmp 2> warnings.$@
 	@echo >> $@.tmp
 # Gzip new cel files normalized, if any
 	@find $(CELPATH) ! -name \*.gz -type f -exec gzip -9 {} \; >> $@.tmp
@@ -144,13 +138,13 @@ check_after: normalization $(PIPELINEROOT)$(AFFY_NORMTYPE_FILEPATH) $(PIPELINERO
 
 
 #######################
-insert_affy: check_after $(PIPELINEROOT)$(AFFY_CHIPTYPE_FILEPATH_FULL) $(PIPELINEROOT)$(AFFY_CHIPTYPEQUAL_FILEPATH) $(PIPELINEROOT)$(MICROARRAY_EXPERIMENT_FILEPATH_FULL) $(PIPELINEROOT)$(AFFY_CHIPINFO_FILEPATH) $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL) $(UBERON_SEX_INFO_FILE_PATH)
+insert_affy: check_after $(AFFY_CHIPTYPE_FILEPATH_FULL) $(AFFY_CHIPTYPEQUAL_FILEPATH) $(MICROARRAY_EXPERIMENT_FILEPATH_FULL) $(AFFY_CHIPINFO_FILEPATH) $(AFFY_CHIP_FILEPATH_FULL) $(UBERON_SEX_INFO_FILE_PATH)
 	# Start anatomy id mapping socket
 	@$(IDMAPPING)  $(IDMAPPINGPORT)  &
 	@$(STGMAPPING) $(STGMAPPINGPORT) &
 	@sleep 50
 	# Inserting affymetrix data. Debug mode is more verbose
-	@perl Data_insertion/insert_affy.pl -bgee=$(BGEECMD) -ensembl=$(ENSCMD)  -chipType=$(PIPELINEROOT)$(AFFY_CHIPTYPE_FILEPATH_FULL) -chipTypeQual=$(PIPELINEROOT)$(AFFY_CHIPTYPEQUAL_FILEPATH) -microarrayExperiment=$(PIPELINEROOT)$(MICROARRAY_EXPERIMENT_FILEPATH_FULL) -affymetrixChipInfo=$(PIPELINEROOT)$(AFFY_CHIPINFO_FILEPATH) -affymetrixChip=$(PIPELINEROOT)$(AFFY_CHIP_FILEPATH_FULL) -annotations=$(ANNOTATIONPATH) -processed_mas5=$(MAS5PATH) -processed_schuster=$(SCHUSTERPATH) -sex_info=$(UBERON_SEX_INFO_FILE_PATH) -Aport=$(IDMAPPINGPORT) -Sport=$(STGMAPPINGPORT) -exp=both -debug > $@.tmp 2>warnings.$@
+	@perl Data_insertion/insert_affy.pl -bgee=$(BGEECMD) -ensembl=$(ENSCMD)  -chipType=$(AFFY_CHIPTYPE_FILEPATH_FULL) -chipTypeQual=$(AFFY_CHIPTYPEQUAL_FILEPATH) -microarrayExperiment=$(MICROARRAY_EXPERIMENT_FILEPATH_FULL) -affymetrixChipInfo=$(AFFY_CHIPINFO_FILEPATH) -affymetrixChip=$(AFFY_CHIP_FILEPATH_FULL) -annotations=$(ANNOTATIONPATH) -processed_mas5=$(MAS5PATH) -processed_schuster=$(SCHUSTERPATH) -sex_info=$(UBERON_SEX_INFO_FILE_PATH) -Aport=$(IDMAPPINGPORT) -Sport=$(STGMAPPINGPORT) -exp=both -debug > $@.tmp 2>warnings.$@
 	# Delete microarrayExperiment with no affymetrixChip
 	@$(MYSQL) -e "DELETE t1 FROM microarrayExperiment AS t1 LEFT OUTER JOIN affymetrixChip AS t2 ON t1.microarrayExperimentId = t2.microarrayExperimentId WHERE t2.microarrayExperimentId IS NULL" >> $@.tmp 2>> warnings.$@
 	@echo "Check inconsistencies between condition species and gene species (there should be none): " >> $@.tmp
@@ -201,7 +195,7 @@ insert_expression: check_conditions insert_affy
 # They have to do done in Other_species/ where scripts are able to create fake annotation.xls sheets.
 
 
-$(VERIFICATIONFILE): get_annot maintenance check_mas5 gen_info check_annot normalization check_after check_conditions insert_expression
+$(VERIFICATIONFILE): get_annot maintenance prepare_annot check_mas5 gen_info check_annot normalization check_after check_conditions insert_expression
 	# Get MySQL Affymetrix statistics
 	#TODO
 	@$(MYSQL) -e "SELECT COUNT(*) FROM affymetrixProbeset WHERE 1=1" > $@.tmp
@@ -213,7 +207,7 @@ $(VERIFICATIONFILE): get_annot maintenance check_mas5 gen_info check_annot norma
 	@$(GIT) push
 
 clean:
-	-@$(RM) $(VERIFICATIONFILE) new_annotation maintenance get_annot clean_mas5 check_mas5 gen_info check_annot normalization check_after insertion *.tmp *.err *.out check_conditions insert_expression
+	-@$(RM) $(VERIFICATIONFILE) new_annotation maintenance get_annot prepare_annot clean_mas5 check_mas5 gen_info check_annot normalization check_after insertion *.tmp *.err *.out check_conditions insert_expression
 	-@$(GIT) rm $(VERIFICATIONFILE)
 	-@$(GIT) commit $(VERIFICATIONFILE) -m "Removing verification file for Affymetrix"
 	@$(GIT) push

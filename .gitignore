@@ -18,6 +18,9 @@ hs_err_pid*
 # From https://gist.github.com/octocat/9257657
 ###############################################
 
+*.Rout
+*.Rout.gz
+*.Rout.xz
 nohup.out*
 warnings.*
 *.warn
@@ -65,6 +68,5 @@ pipeline/web/sitemap*.xml
 pipeline/SPARQL-RDF/bgee_connection.properties
 
 .Rproj.user
-
 *.Rproj
 
