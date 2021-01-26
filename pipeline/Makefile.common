@@ -299,17 +299,17 @@ RAW_SIM_ANNOT_DOWNLOAD_URL := $(SIM_ANNOT_DOWNLOAD_URL_START)raw_similarity_anno
 AFFYPATH                            := Affymetrix/
 AFFY_CHIP_FILEPATH                  := $(SOURCE_FILES_DIR)$(AFFYPATH)affymetrixChip.tsv
 AFFY_CHIP_FILEPATH_WORM             := $(SOURCE_FILES_DIR)$(AFFYPATH)affymetrixChip_worm.tsv
-AFFY_CHIP_FILEPATH_FULL             := $(AFFYPATH)affymetrixChip_full.tsv
-AFFY_CHIPINFO_FILEPATH              := $(AFFYPATH)affymetrixChipInformation
+AFFY_CHIP_FILEPATH_FULL             := $(GENERATED_FILES_DIR)$(AFFYPATH)affymetrixChip_full.tsv
+AFFY_CHIPINFO_FILEPATH              := $(GENERATED_FILES_DIR)$(AFFYPATH)affymetrixChipInformation
 MICROARRAY_EXPERIMENT_FILEPATH      := $(SOURCE_FILES_DIR)$(AFFYPATH)microarrayExperiment.tsv
 MICROARRAY_EXPERIMENT_FILEPATH_WORM := $(SOURCE_FILES_DIR)$(AFFYPATH)microarrayExperiment_worm.tsv
-MICROARRAY_EXPERIMENT_FILEPATH_FULL := $(AFFYPATH)microarrayExperiment_full.tsv
+MICROARRAY_EXPERIMENT_FILEPATH_FULL := $(GENERATED_FILES_DIR)$(AFFYPATH)microarrayExperiment_full.tsv
 AFFY_CHIPTYPE_FILEPATH              := $(SOURCE_FILES_DIR)$(AFFYPATH)chipType.tsv
 AFFY_CHIPTYPE_FILEPATH_WORM         := $(SOURCE_FILES_DIR)$(AFFYPATH)chipType_worm.tsv
-AFFY_CHIPTYPE_FILEPATH_FULL         := $(AFFYPATH)chipType_full.tsv
-AFFY_CHIPTYPEQUAL_FILEPATH          := $(AFFYPATH)chipTypeCorrespondencesAndQualityThresholds
-AFFY_NORMTYPE_FILEPATH              := $(AFFYPATH)normalizationType
-AFFY_DETCTYPE_FILEPATH              := $(AFFYPATH)detectionType
+AFFY_CHIPTYPE_FILEPATH_FULL         := $(GENERATED_FILES_DIR)$(AFFYPATH)chipType_full.tsv
+AFFY_CHIPTYPEQUAL_FILEPATH          := $(GENERATED_FILES_DIR)$(AFFYPATH)chipTypeCorrespondencesAndQualityThresholds
+AFFY_NORMTYPE_FILEPATH              := $(GENERATED_FILES_DIR)$(AFFYPATH)normalizationType
+AFFY_DETCTYPE_FILEPATH              := $(GENERATED_FILES_DIR)$(AFFYPATH)detectionType
 
 # Affymetrix data path
 AFFYDATAPATH      := $(CLUSTER_DATA_PATH)/Affymetrix/
