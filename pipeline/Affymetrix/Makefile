@@ -70,7 +70,7 @@ clean_mas5: prepare_annot
 
 check_mas5: clean_mas5 $(AFFY_CHIP_FILEPATH_FULL)
 	# Global diff
-	-@diff -rq $(MAS5ORIPATH)/ $(MAS5PATH)/ | grep -v ' diff' | grep -v '\.svn' | grep -v '\.git' | grep -v 'not_separated' > $@.tmp
+	-@diff -rq $(MAS5ORIPATH)/ $(MAS5PATH)/ | grep -v ' diff' | grep -v '\.svn' | grep -v '\.git' | grep -v 'not_separated' | cat > $@.tmp
 	# Check if invalid files are present
 	@perl MAS5/check_mas5_filtered.pl  -affyChipFilesDir=$(AFFYDATAPATH)  -affymetrixChip=$(AFFY_CHIP_FILEPATH_FULL) >> $@.tmp
 	@$(MV) $@.tmp $@
