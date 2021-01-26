@@ -32,13 +32,13 @@ for( c_arg in command_arg ){
 }
 #specific to UNIL clusters: load R module
 #TODO: Maybe load kallisto from UNIL modules
-modules <- c("module add Bioinformatics/Software/vital-it;", "module add R/3.6.1;")
+modules <- c("module add Bioinformatics/Software/vital-it;", "module add R/3.6.1;", "module add UHTS/Analysis/kallisto/0.46.0;")
 #generate BgeeCall objects
 kallistoMetadata <- new("KallistoMetadata", download_kallisto=FALSE)
 userMetadata <- new("UserMetadata", working_path = working_path)
 # use local version of intergenic sequences
 bgeeMetadata <- new("BgeeMetadata", intergenic_release="custom")
 # slurm options for index generation
-slurm_options_index <- list(account = account, time = time, partition = partition, mem = "30G")
+slurm_options_index <- list(account = account, time = time, partition = partition, mem = "60G")
 # generate calls
-generate_slurm_calls(userFile=bgeecall_input_file, slurm_options = slurm_options_index, modules = modules, kallistoMetadata = kallistoMetadata, bgeeMetadata = bgeeMetadata, userMetadata = userMetadata)
+generate_slurm_calls(userFile=bgeecall_input_file, slurm_options = slurm_options_index, modules = modules, kallistoMetadata = kallistoMetadata, bgeeMetadata = bgeeMetadata, userMetadata = userMetadata, nodes=50)

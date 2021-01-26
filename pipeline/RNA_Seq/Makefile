@@ -344,21 +344,20 @@ generate_intergenic_sequences: sum_by_species
 	# compress intergenic fasta files
 	@find $(CLUSTER_REF_INTERGENIC_FOLDER) -type f -name '*_intergenic.fa' -exec gzip --verbose --best {} \; >> $@.tmp 2> $@.warn
 	@find $(CLUSTER_OTHER_INTERGENIC_FOLDER) -type f -name '*_intergenic.fa' -exec gzip --verbose --best {} \; >> $@.tmp 2> $@.warn
-
+	@$(MV) $@.tmp $@
 
 ################################ GENERATE PRESENT/ABSENT CALLS WITH BgeeCall ################################
 
-indexes_bgeecall: generate_intergenic_sequences
+indexes_bgeecall: 
 	# generate BgeeCall input file from the rna_seq_sample_info.txt file
-	@perl 1Run/sample_info_to_bgeecall.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -sample_excluded=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >>$@.tmp 2>&1
+	@perl 1Run/sample_info_to_bgeecall.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -sample_excluded=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >>$@.tmp 2>&1
 	# generate kallisto indexes with BgeeCall
-	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(RNASEQ_BGEECALL_FILE)" account="$(CLUSTER_ACCOUNT_SENSITIVE)" time="2:00:00" partition="$(CLUSTER_PARTITION_SENSITIVE)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' bgeecall_index.R bgeecall_index.Rout
+	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(RNASEQ_BGEECALL_FILE)" account="$(CLUSTER_ACCOUNT_SENSITIVE)" time="12:00:00" partition="$(CLUSTER_PARTITION_SENSITIVE)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' 1Run/bgeecall_index.R $(OUPUT_DIR)bgeecall_index.Rout
 	@$(MV) $@.tmp $@
 
 presence_absence_bgeecall: indexes_bgeecall
 	# generate present/absent expression calls with BgeeCall
-	# TODO IMPORTANT for the moment tx2gene and gene2biotype files are created at the same time than calls. Should be created before to avoid simultaneous writing problems!!!!!!
-	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(RNASEQ_BGEECALL_FILE)" account="$(CLUSTER_ACCOUNT_SENSITIVE)" time="2:00:00" partition="$(CLUSTER_PARTITION_SENSITIVE)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' bgeecall_calls.R bgeecall_calls.Rout
+	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(RNASEQ_BGEECALL_FILE)" account="$(CLUSTER_ACCOUNT_SENSITIVE)" time="2-00:00:00" partition="$(CLUSTER_PARTITION_SENSITIVE)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' 1Run/bgeecall_calls.R $(OUTPUT_DIR)bgeecall_calls.Rout
 	# TODO generate summary plot once all calls have been generated
 	@touch $@
 
