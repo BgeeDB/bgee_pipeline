@@ -79,6 +79,7 @@ adj_call: check_mas5 $(AFFY_CHIP_FILEPATH) $(MAS5PATH)
 	# Correction of the calls
 	@echo --- starting the calls correction for all MAS5 files ---
 	@$(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args affy_anno="$(AFFY_CHIP_FILEPATH)" mas5_path="$(MAS5PATH)" cut_off="0.01"' MAS5/adj_calls_mas5.R MAS5/adj_calls_mas5.Rout > $@.tmp
+	@$(MV) MAS5/adj_calls_mas5.Rout $@.log
 	@echo --- DONE ---
 	@$(MV) $@.tmp $@
 
