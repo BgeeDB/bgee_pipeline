@@ -11,6 +11,9 @@
 #    2) linked to the exception "rearrangement required for product" (ebi.ac.uk/ena/WebFeat/qualifiers/exception.html)
 #    3) created using The Vertebrate Mitochondrial Code (transl_table=2)
 #- add gene_biotype attribute at the end of lines corresponding to exon: in RefSeq gtf gene_biotype attribute is only present in the gene lines. Those lines are not kept in the gtf_all file generated later in the pipeline. It is then mandatory to add this info to exon lines (in order to be able to retrieve the mapping between gene and biotypes)
+#- reate gene_name and change value of gene_id : in ncbi gtf files gene_id are actually names that are probably not unique and contain shity characters (e.g. '). 
+#    1) create an attribute gene_name with the value of gene_id 
+#    2) remove gene_id attribute and create a new one with dbxref value
 
 # Perl core modules
 use strict;

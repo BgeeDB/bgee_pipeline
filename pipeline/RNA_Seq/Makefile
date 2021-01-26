@@ -119,8 +119,7 @@ get_GTF: clean_cluster_folders create_rna_seq_sample_info
 	@perl 0Before/get_GTF_files.pl  -RNAseqSample=$(RNASEQ_SAMPINFO_FILEPATH) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_DOWNLOAD_GTF)  >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
 
-# this rule is created to remove some elements from NCBI gtf files in order to make them compatible with our pipeline
-# has to be run once species and datasources are integrated in the database
+# this rule is created to remove some elements from NCBI/RefSeq gtf files in order to make them compatible with our pipeline
 update_GTF: get_GTF
 	perl 0Before/update_GTF.pl -path_to_gtf_folder=$(RNASEQ_CLUSTER_GTF) -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH)>$@.tmp 2>&1
 	@$(MV) $@.tmp $@
