@@ -88,11 +88,13 @@ adj_call: check_mas5 $(AFFY_CHIP_FILEPATH) $(MAS5PATH)
 gen_info: prepare_annot $(AFFY_CHIP_FILEPATH_FULL) $(AFFY_CHIPINFO_FILEPATH) $(AFFY_CHIPTYPEQUAL_FILEPATH) adj_call
 	@which R >/dev/null
 	# Generate information
+	@mkdir -p $(AFFYDATAPATH)chip_information/logs/
+	@mkdir -p $(AFFYDATAPATH)chip_information/results/
 	@perl Generate_information/generate_affy_chips_information.pl  -affyChipFilesDir=$(AFFYDATAPATH)  -affymetrixChip=$(AFFY_CHIP_FILEPATH_FULL) -affymetrixChipInformation=$(AFFY_CHIPINFO_FILEPATH) -chipTypeQual=$(AFFY_CHIPTYPEQUAL_FILEPATH) > $@.tmp
 	# Checks
-	-@ls -l $(AFFYDATAPATH)chip_information/logs/*.out.PROB                          >> $@.tmp
-	-@grep -H -c 'proc.time' $(AFFYDATAPATH)chip_information/logs/*.out | grep ':0'  >> $@.tmp
-	-@grep -i "warning" -A 5 $(AFFYDATAPATH)chip_information/logs/*.out              >> $@.tmp
+	-@find $(AFFYDATAPATH)chip_information/logs/ -name \*.out.PROB                                                 >> $@.tmp
+	-@find $(AFFYDATAPATH)chip_information/logs/ -name \*.out -exec grep -H -c 'proc.time' {} \; | grep ':0' | cat >> $@.tmp
+	-@find $(AFFYDATAPATH)chip_information/logs/ -name \*.out -exec grep -i "warning" -A 5 {} \;                   >> $@.tmp
 	@$(GIT) diff $(AFFY_CHIPINFO_FILEPATH)                                           >> $@.tmp
 	@$(GIT) diff $(AFFY_CHIPTYPEQUAL_FILEPATH)                                       >> $@.tmp
 	@$(MV) $@.tmp $@

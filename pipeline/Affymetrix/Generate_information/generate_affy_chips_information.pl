@@ -54,7 +54,7 @@ if ( !$test_options || $affyChipFilesDir eq '' || $affymetrixChip eq '' || $affy
 }
 
 if ( !-e $affyChipFilesDir ){
-	die "Could not find [$affyChipFilesDir] (should be '\$(AFFYDATAPATH)')\n";
+    die "Could not find [$affyChipFilesDir] (should be '\$(AFFYDATAPATH)')\n";
 }
 
 
@@ -71,9 +71,9 @@ my %affyChips = getAllChips( $affymetrixChip );
 my %affyChipsInfo = getAllChipsInfo( $affymetrixChipInformation );
 my $countExistingInfo = 0;
 for my $expId ( keys %affyChipsInfo ){
-	for my $chipId ( keys %{$affyChipsInfo{$expId}} ){
-		$countExistingInfo++;
-	}
+    for my $chipId ( keys %{$affyChipsInfo{$expId}} ){
+        $countExistingInfo++;
+    }
 }
 
 # Now we generate information for chips for which it hasn't been computed yet
@@ -108,7 +108,7 @@ if ( scalar keys %newAffyChipsInfo != 0 ){
     displayDuplicatedChips(\%newAffyChipsInfo, \%affyChips, \%affyChipsInfo, 0);
 
     # Display new chips with quality score below thresholds or incompatible chipType
-	print "-------------------\n";
+    print "-------------------\n";
     print "Try to find new chips with quality score below thresholds, or incompatible chip type:\n";
     displayLowQualityAndIncompatibleChips(\%newAffyChipsInfo, \%affyChips, \%chipTypeInfo, 0, 1);
 }
