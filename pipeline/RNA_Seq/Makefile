@@ -122,7 +122,7 @@ get_GTF: clean_cluster_folders create_rna_seq_sample_info
 # this rule is created to remove some elements from NCBI gtf files in order to make them compatible with our pipeline
 # has to be run once species and datasources are integrated in the database
 update_GTF: get_GTF
-	perl 0Before/update_GTF.pl -path_to_gtf_folder=$(RNASEQ_CLUSTER_GTF) -bgee=$(BGEECMD)>$@.tmp 2>&1
+	perl 0Before/update_GTF.pl -path_to_gtf_folder=$(RNASEQ_CLUSTER_GTF) -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH)>$@.tmp 2>&1
 	@$(MV) $@.tmp $@
 
 get_genome: update_GTF

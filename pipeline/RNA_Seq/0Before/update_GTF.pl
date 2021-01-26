@@ -22,37 +22,53 @@ use FindBin;
 use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
 use Utils;
 use File::Basename;
+use Data::Dumper;
 
 ## Define arguments & their default value
-my ($path_to_gtf_folder, $bgee_connector) = ('','');
+my ($path_to_gtf_folder, $sample_info_file) = ('','');
 my %opts = ('path_to_gtf_folder=s'    => \$path_to_gtf_folder,
-            'bgee=s'        => \$bgee_connector  
+            'sample_info_file=s'      => \$sample_info_file  
            );
 
 
 ######################## Check arguments ########################
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $path_to_gtf_folder eq '' || $bgee_connector eq '') {
+if ( !$test_options || $path_to_gtf_folder eq '' || $sample_info_file eq '') {
     print "\n\tInvalid or missing argument:
-\te.g. $0 -path_to_gtf_folder=CLUSTER_GTF_DIR -bgee_connector=$(BGEE)>> $@.tmp 2> $@.warn
+\te.g. $0 -path_to_gtf_folder=CLUSTER_GTF_DIR -sample_info_file=$(SAMPLE_INFO_PATH)>> $@.tmp 2> $@.warn
 \t-path_to_gtf_folder     Path to the directory containing all gtf annotation files
-\t-bgee                   Bgee connector string
+\t-sample_info_file       Path to the sample_info file
 \n";
     exit 1;
 }
 
-# detect species coming from RefSeq/NCBI using information stored in the bgee database
-print "Connecting to Bgee to retrieve species coming from NCBI (RefSeq)\n";
-# Bgee db connection
-my $dbh = Utils::connect_bgee_db($bgee_connector);
-my $selSpecies = $dbh->prepare("SELECT species.genomeFilePath FROM species INNER JOIN dataSource ON species.dataSourceId = dataSource.dataSourceId where dataSourceName = \"RefSeq\"");
-$selSpecies->execute()  or die $selSpecies->errstr;
-# Now for each species retrieve corresponding gtf.gz file and update it to be compatible with bgee pipeline
-while ( my @data = $selSpecies->fetchrow_array ){
-    my $file_prefix = basename($data[0]);
+# detect species coming from RefSeq/NCBI using information in the sample_info file
+my %ref_seq_path;
+open(my $sample_info, $sample_info_file) || die "failed to read sample_info file: $!";
+while (my $line = <$sample_info>) {
+    chomp $line;
+    next if( ($line =~ m/^#/) or ($line =~ m/^\"#/) );
+    my @fields = split "\t" , $line;
+    my $number_columns = 11;
+    if (! scalar @fields eq $number_columns) {
+        die "all lines of sample info file should have $number_columns columns";
+    }
+    if($fields[5] eq 'RefSeq') {
+        $ref_seq_path{$fields[4]}= "";
+    }
+}
+
+print keys %ref_seq_path;
+print "\n";
+
+
+foreach my $key (keys %ref_seq_path) {
+    my $file_prefix = basename($key);
     my @files = glob "$path_to_gtf_folder/$file_prefix*.gtf.gz";
+
     if(!defined($files[0])) {
-        die "no gtf.gz file map regex $path_to_gtf_folder/$file_prefix*.gtf.gz";
+        warn "no gtf.gz file map regex $path_to_gtf_folder/$file_prefix*.gtf.gz";
+        next;
     } elsif(scalar @files > 1) {
         die "more than one gtf.gz file map regex $path_to_gtf_folder/$file_prefix*.gtf.gz";
     }
@@ -92,10 +108,14 @@ while ( my @data = $selSpecies->fetchrow_array ){
         my @gene_id = $line =~ /\t(gene_id [^;]+)/;
         if ($line =~ /\tgene\t/) {
             my @gene_biotype = $line =~ /(gene_biotype [^;]+)/;
-            $geneToBiotype{$gene_id[0]} = $gene_biotype[0];
+            $geneToBiotype{$gene_id[0]}{'biotype'} = $gene_biotype[0];
+            my @gene_xref = $line =~ /"GeneID:([^"]+)/;
+            $geneToBiotype{$gene_id[0]}{'xref'} = $gene_xref[0];
         }
     }
     close(IN);
+
+    print Dumper (\%geneToBiotype);
 
     #second read of gtf file to update it
     open(IN, "gunzip -c $file |") || die "can’t open pipe to $file";
@@ -108,11 +128,19 @@ while ( my @data = $selSpecies->fetchrow_array ){
         # remove transcript_id = "" when exist
         $line =~ s/transcript_id ""; //;
         #add gene_biotype info to lines corresponding to exon
+        my @gene_id = $line =~ /\t(gene_id [^;]+)/;
+        chomp($line);
+        # remove gene name as gene_id and put the real gene_id
+        my $gene_xref_tag = "gene_id $geneToBiotype{$gene_id[0]}{'xref'}";
+        $line =~ s/$gene_id[0]/$gene_xref_tag/g;
+        my @gene_name = split "\"", $gene_id[0];
+        #split at each " character in order to only keep the gene name itself
+        my $gene_name_tag = "gene_name \"".$gene_name[1]."\";";
+        $line .= $gene_name_tag;
         if ($line =~ /\texon\t/) {
-            my @gene_id = $line =~ /\t(gene_id [^;]+)/;
-            chomp($line);
-            $line = $line.$geneToBiotype{$gene_id[0]}.";\n";
+            $line .= " $geneToBiotype{$gene_id[0]}{'biotype'};";
         }
+        $line .= "\n";
         print {$OUT} $line;
     }
     close(IN);
