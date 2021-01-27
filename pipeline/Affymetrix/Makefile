@@ -92,11 +92,12 @@ gen_info: prepare_annot $(AFFY_CHIP_FILEPATH_FULL) $(AFFY_CHIPINFO_FILEPATH) $(A
 	@mkdir -p $(AFFYDATAPATH)chip_information/results/
 	@perl Generate_information/generate_affy_chips_information.pl  -affyChipFilesDir=$(AFFYDATAPATH)  -affymetrixChip=$(AFFY_CHIP_FILEPATH_FULL) -affymetrixChipInformation=$(AFFY_CHIPINFO_FILEPATH) -chipTypeQual=$(AFFY_CHIPTYPEQUAL_FILEPATH) > $@.tmp
 	# Checks
+	-@find $(AFFYDATAPATH)chip_information/logs/ -empty -name \*.out.PROB | xargs $(RM)
 	-@find $(AFFYDATAPATH)chip_information/logs/ -name \*.out.PROB                                                 >> $@.tmp
 	-@find $(AFFYDATAPATH)chip_information/logs/ -name \*.out -exec grep -H -c 'proc.time' {} \; | grep ':0' | cat >> $@.tmp
 	-@find $(AFFYDATAPATH)chip_information/logs/ -name \*.out -exec grep -i "warning" -A 5 {} \;                   >> $@.tmp
-	@$(GIT) diff $(AFFY_CHIPINFO_FILEPATH)                                           >> $@.tmp
-	@$(GIT) diff $(AFFY_CHIPTYPEQUAL_FILEPATH)                                       >> $@.tmp
+	@$(GIT) diff $(AFFY_CHIPINFO_FILEPATH)                                                                         >> $@.tmp
+	@$(GIT) diff $(AFFY_CHIPTYPEQUAL_FILEPATH)                                                                     >> $@.tmp
 	@$(MV) $@.tmp $@
 
 
@@ -119,9 +120,9 @@ normalization: check_annot $(AFFY_CHIPINFO_FILEPATH) $(AFFY_CHIPTYPEQUAL_FILEPAT
 	@perl Normalization/launch_affy_analysis.pl  -affyChipInformation=$(AFFY_CHIPINFO_FILEPATH) -chipTypeQual=$(AFFY_CHIPTYPEQUAL_FILEPATH) -affymetrixChip=$(AFFY_CHIP_FILEPATH_FULL) -cel_data=$(CELPATH) -processed_schuster=$(SCHUSTERPATH) -bioconductorout=$(BIOCONDUCTOROUT) -bioconductoraffin=$(BIOCONDUCTORAFFIN) >$@.tmp
 	# Checks
 	-@find $(BIOCONDUCTOROUT) -empty -name \*.out.PROB | xargs $(RM)
-	-@ls -l $(BIOCONDUCTOROUT)*.out.PROB                          >> $@.tmp
-	-@grep -H -c 'proc.time' $(BIOCONDUCTOROUT)*.out | grep ':0'  >> $@.tmp
-	-@grep -i "warning" -A 5 $(BIOCONDUCTOROUT)*.out              >> $@.tmp
+	-@find $(BIOCONDUCTOROUT)        -name \*.out.PROB                                                 >> $@.tmp
+	-@find $(BIOCONDUCTOROUT)        -name \*.out -exec grep -H -c 'proc.time' {} \; | grep ':0' | cat >> $@.tmp
+	-@find $(BIOCONDUCTOROUT)        -name \*.out -exec grep -i "warning" -A 5 {} \;                   >> $@.tmp
 	@$(MV) $@.tmp $@
 
 
