@@ -582,19 +582,19 @@ sub getAllRnaSeqLibrariesStats {
 
     for my $line ( read_file("$rnaSeqLibraryFile", chomp=>1) ){
         next  if ( $line =~ /^#/ or $line =~ /^\"#/ );
-        #libraryId      max_intergenic  cutoffTPM       cutoffGenicTPM  cutoffFPKM      cutoffGenicFPKM proportionGenicPresent  numberGenicPresent      numberGenic     proportionCodingPresent numberPresentCoding     numberCoding    proportionIntergenicPresent     numberIntergenicPresent numberIntergenic        ratioIntergenicCodingPresent    species organism
+        #libraryId    cutoffTPM    proportionGenicPresent  numberGenicPresent      numberGenic     proportionCodingPresent numberPresentCoding     numberCoding    proportionIntergenicPresent     numberIntergenicPresent numberIntergenic    pValueCutoff    meanIntergenic  sdIntergenic    speciesId
 
         my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
 
         my $libraryId                       = $tmp[0];
-        my $cutoffTPM                       = $tmp[3];
-        my $cutoffFPKM                      = $tmp[5];
-        my $allGenesPercentPresent          = $tmp[6];
-        my $proteinCodingPercentPresent     = $tmp[9];
-        my $intergenicRegionsPercentPresent = $tmp[12];
-        my $ratioIntergenicCodingPresent    = $tmp[15];
-        my $speciesId                       = $tmp[16];
-        my $organism                        = $tmp[17];
+        my $cutoffTPM                       = $tmp[1];
+        my $allGenesPercentPresent          = $tmp[2];
+        my $proteinCodingPercentPresent     = $tmp[5];
+        my $intergenicRegionsPercentPresent = $tmp[8];
+        my $pValueThreshold                 = $tmp[11];
+        my $meanIntergenic                  = $tmp[12];
+        my $sdIntergenic                    = $tmp[13];
+        my $speciesId                       = $tmp[14];
 
         die "tsv field number problem [$line]\n"  if ( scalar @tmp != 18 );
 
@@ -609,10 +609,6 @@ sub getAllRnaSeqLibrariesStats {
                 warn "Warning, wrong format for cutoffTPM [$cutoffTPM]\n";
                 $discarded = 1;
             }
-            if ( $cutoffFPKM !~ /$floatingPointRegex/ ){
-                warn "Warning, wrong format for cutoffFPKM [$cutoffFPKM]\n";
-                $discarded = 1;
-            }
             if ( $allGenesPercentPresent !~ /$floatingPointRegex/ || $allGenesPercentPresent < 0 || $allGenesPercentPresent > 100 ){
                 warn "Warning, wrong format for allGenesPercentPresent [$allGenesPercentPresent]\n";
                 $discarded = 1;
@@ -625,32 +621,36 @@ sub getAllRnaSeqLibrariesStats {
                 warn "Warning, wrong format for intergenicRegionsPercentPresent [$intergenicRegionsPercentPresent]\n";
                 $discarded = 1;
             }
-            if ( $ratioIntergenicCodingPresent !~ /$floatingPointRegex/ || $ratioIntergenicCodingPresent < 0 || $ratioIntergenicCodingPresent > 1 ){
-                warn "Warning, wrong format for ratioIntergenicCodingPresent [$ratioIntergenicCodingPresent]\n";
+            if ( $pValueThreshold !~ /$floatingPointRegex/ || $pValueThreshold < 0 || $pValueThreshold > 1 ){
+                warn "Warning, wrong format for pValueThreshold [$pValueThreshold]\n";
+                $discarded = 1;
+            }
+            if ( $meanIntergenic !~ /$floatingPointRegex/ || $meanIntergenic < 0){
+                warn "Warning, wrong format for meanIntergenic [$meanIntergenic]\n";
+                $discarded = 1;
+            }
+            if ( $sdIntergenic !~ /$floatingPointRegex/ || $sdIntergenic < 0){
+                warn "Warning, wrong format for sdIntergenic [$sdIntergenic]\n";
                 $discarded = 1;
             }
             if ( $speciesId eq '' ){
                 warn "Warning, wrong format for speciesId [$speciesId]\n";
                 $discarded = 1;
             }
-            if ( $organism eq '' ){
-                warn "Warning, wrong format for organism [$organism]\n";
-                $discarded = 1;
-            }
-
+            
             if ( $discarded ){
                 warn 'Sample ', $libraryId, " discarded!\n";
             }
             else {
                 $rnaSeqLibraries{$libraryId}->{'cutoffTPM'}                       = $cutoffTPM;
-                $rnaSeqLibraries{$libraryId}->{'cutoffFPKM'}                      = $cutoffFPKM;
                 $rnaSeqLibraries{$libraryId}->{'allGenesPercentPresent'}          = $allGenesPercentPresent;
                 $rnaSeqLibraries{$libraryId}->{'proteinCodingPercentPresent'}     = $proteinCodingPercentPresent;
                 $rnaSeqLibraries{$libraryId}->{'intergenicRegionsPercentPresent'} = $intergenicRegionsPercentPresent;
-                # needs to be between 0 and 100, rounded to 2 decimals
-                $rnaSeqLibraries{$libraryId}->{'ratioIntergenicCodingPresent'}    = int($ratioIntergenicCodingPresent * 10000 + 0.5) / 100;
+                $rnaSeqLibraries{$libraryId}->{'pValueThreshold'}                 = $pValueThreshold;
+                $rnaSeqLibraries{$libraryId}->{'meanIntergenic'}                  = $meanIntergenic;
+                $rnaSeqLibraries{$libraryId}->{'sdIntergenic'}                    = $sdIntergenic;
                 $rnaSeqLibraries{$libraryId}->{'speciesId'}                       = $speciesId;
-                $rnaSeqLibraries{$libraryId}->{'organism'}                        = $organism;
+
             }
         }
         else {
@@ -749,11 +749,12 @@ sub getGenesResults {
         # file format: geneId, estimatedCount, FPKM, TPM, biotype, expression call
         my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
         my $geneId         = $tmp[0];
-        my $estimatedCount = $tmp[1];
-        my $TPM            = $tmp[2];
-        my $FPKM           = $tmp[3];
+        my $TPM            = $tmp[1];
+        my $estimatedCount = $tmp[2];
         my $biotype        = $tmp[4];
-        my $expressionCall = $tmp[5];
+        my $zscore         = $tmp[6];
+        my $pValue         = $tmp[7];
+        my $expressionCall = $tmp[8];
 
         if ( !defined $expressionCalls{$geneId} ){
             # Perform format checks
@@ -762,20 +763,24 @@ sub getGenesResults {
                 warn "Warning, wrong format for geneId [$geneId]\n";
                 $discarded = 1;
             }
-            if ( $estimatedCount !~ /$floatingPointRegex/ || $estimatedCount < 0 ){
-                warn "Warning, wrong format for estimatedCount [$estimatedCount]\n";
-                $discarded = 1;
-            }
-            if ( $FPKM !~ /$floatingPointRegex/ ){
-                warn "Warning, wrong format for FPKM [$FPKM]\n";
-                $discarded = 1;
-            }
             if ( $TPM !~ /$floatingPointRegex/ ){
                 warn "Warning, wrong format for TPM [$TPM]\n";
                 $discarded = 1;
             }
+            if ( $estimatedCount !~ /$floatingPointRegex/ || $estimatedCount < 0 ){
+                warn "Warning, wrong format for estimatedCount [$estimatedCount]\n";
+                $discarded = 1;
+            }
             if ( $biotype eq '' ){
                 warn "Warning, wrong format for biotype [$biotype]\n";
+                $discarded = 1;
+            }
+            if ( $zscore !~ /$floatingPointRegex/ ){
+                warn "Warning, wrong format for zscore [$zscore]\n";
+                $discarded = 1;
+            }
+            if ( $pValue !~ /$floatingPointRegex/ || $pValue < 0 || $pValue > 1000000){
+                warn "Warning, wrong format for pValue [$pValue]\n";
                 $discarded = 1;
             }
             if ( $expressionCall ne 'absent' && $expressionCall ne 'present' ){
@@ -787,11 +792,12 @@ sub getGenesResults {
                 warn ' for gene: ', $geneId, "\n";
             }
             else {
-                $expressionCalls{$geneId}->{'estimatedCount'} = $estimatedCount;
-                $expressionCalls{$geneId}->{'FPKM'}           = $FPKM;
                 $expressionCalls{$geneId}->{'TPM'}            = $TPM;
-                $expressionCalls{$geneId}->{'expressionCall'} = $expressionCall;
+                $expressionCalls{$geneId}->{'estimatedCount'} = $estimatedCount;
                 $expressionCalls{$geneId}->{'biotype'}        = $biotype;
+                $expressionCalls{$geneId}->{'zscore'}         = $zscore;
+                $expressionCalls{$geneId}->{'pValue'}         = $pValue;
+                $expressionCalls{$geneId}->{'expressionCall'} = $expressionCall;
             }
         }
         else {

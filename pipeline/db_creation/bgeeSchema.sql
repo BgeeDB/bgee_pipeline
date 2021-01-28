@@ -917,14 +917,15 @@ create table rnaSeqLibrary (
     conditionId mediumint unsigned not null,
 -- TMM normalization factor
     tmmFactor decimal(8, 6) not null default 1.0,
--- FPKM threshold to consider a gene as expressed
-    fpkmThreshold decimal(16, 6) not null,
 -- TPM threshold to consider a gene as expressed
     tpmThreshold decimal(16, 6) not null,
     allGenesPercentPresent decimal(5, 2) unsigned not null default 0,
     proteinCodingGenesPercentPresent decimal(5, 2) unsigned not null default 0,
-    thresholdRatioIntergenicCodingPercent decimal(5, 2) unsigned not null default 0
-            COMMENT 'Proportion intergenic/coding region used to define the threshold to consider a gene as expressed (should always be 5%, but some libraries do not allow to reach this value)',
+    intergenicRegionsPercentPresent decimal(5, 2) unsigned not null default 0,
+    meanIntergenic decimal(16, 6) not null,
+    sdIntergenic decimal(12, 8) not null,
+    pValueThreshold decimal(5, 2) unsigned not null default 0
+            COMMENT 'pValue threshold used to consider genes present/absent. (for Bgee15 this threshold should always be 0.05)',
 -- total number of reads in library, including those not mapped.
 -- In case of paired-end libraries, it's the number of pairs of reads;
 -- In case of single read, it's the total number of reads
@@ -969,11 +970,12 @@ create table rnaSeqLibraryDiscarded (
 create table rnaSeqResult (
     rnaSeqLibraryId varchar(70) not null,
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
--- FPRKM and TPM values inserted here are NOT TMM normalized,
+-- TPM values inserted here are NOT TMM normalized,
 -- these are the raw data before any normalization
-    fpkm decimal(16, 6) not null COMMENT 'FPKM values, NOT log transformed',
     tpm decimal(16, 6) not null COMMENT 'TPM values, NOT log transformed',
 -- rank is not "not null" because we update this information afterwards
+    pValue double unsigned not null default 1.0 COMMENT 'pValue used to choose detectionFlag',
+    zScore decimal(18,14) not null COMMENT 'zScore used to generate the pValue',
     rank decimal(9, 2) unsigned,
 -- for information, measure not normalized for reads or genes lengths
     readsCount decimal(16, 6) unsigned not null COMMENT 'As of Bgee 14, read counts are "estimated counts" produced using the Kallisto software. They are not normalized for read or gene lengths.',

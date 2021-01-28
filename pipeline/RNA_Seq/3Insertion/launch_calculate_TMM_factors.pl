@@ -17,8 +17,8 @@ use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
 use Utils;
 $| = 1;
 
-
-my $abundance_file = 'abundance_gene_level+new_tpm+new_fpkm+calls.tsv';
+#calls files from BgeeCall
+my $abundance_file = 'gene_level_abundance+calls.tsv';
 
 # Define arguments & their default value
 my ($bgee_connector) = ('');

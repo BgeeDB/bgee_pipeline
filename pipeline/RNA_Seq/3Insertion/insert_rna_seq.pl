@@ -16,7 +16,7 @@ $| = 1; # no buffering of output
 #####################################################################
 
 
-my $abundance_file = 'abundance_gene_level+new_tpm+new_fpkm+calls.tsv';
+my $abundance_file = 'gene_level_abundance+calls.tsv';
 
 # Define arguments & their default value
 my ($bgee_connector) = ('');
@@ -239,12 +239,13 @@ my $stage_equivalences = Utils::get_stage_equivalences($bgee);
 print "Inserting libraries and all results...\n";
 # query for samples insertion
 my $insLib = $bgee->prepare('INSERT INTO rnaSeqLibrary (rnaSeqLibraryId, rnaSeqExperimentId,
-                             rnaSeqPlatformId, conditionId, fpkmThreshold, tpmThreshold,
+                             rnaSeqPlatformId, conditionId, tpmThreshold,
                              allGenesPercentPresent, proteinCodingGenesPercentPresent,
-                             intergenicRegionsPercentPresent, thresholdRatioIntergenicCodingPercent,
-                             allReadsCount, mappedReadsCount, minReadLength, maxReadLength,
-                             libraryType, libraryOrientation)
-                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+                             intergenicRegionsPercentPresent, meanIntergenic, sdIntergenic,
+                             pValueThreshold, allReadsCount, mappedReadsCount, minReadLength, 
+                             maxReadLength, libraryType, libraryOrientation)
+                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+
 
 # Excluded libraries
 my $insExcludedLib = $bgee->prepare('INSERT INTO rnaSeqLibraryDiscarded (rnaSeqLibraryId, rnaSeqLibraryDiscardReason) VALUES (?, ?)');
@@ -261,9 +262,9 @@ for my $libraryId ( sort keys %excludedLibraries ){
 my $insRun = $bgee->prepare('INSERT INTO rnaSeqRun (rnaSeqRunId, rnaSeqLibraryId) VALUES (?, ?)');
 
 # query for genes results insertion
-my $insResult = $bgee->prepare('INSERT INTO rnaSeqResult (rnaSeqLibraryId, bgeeGeneId, fpkm, tpm,
-                                readsCount, detectionFlag, rnaSeqData, reasonForExclusion)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+my $insResult = $bgee->prepare('INSERT INTO rnaSeqResult (rnaSeqLibraryId, bgeeGeneId, tpm,
+                                readsCount, pValue, zScore, detectionFlag, rnaSeqData, reasonForExclusion)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
 my $inserted = 0;
 for my $expId ( sort keys %libraries ){
@@ -309,12 +310,13 @@ for my $expId ( sort keys %libraries ){
             print 'INSERT INTO rnaSeqLibrary: ', $libraryId,                        ' - ',
                   $expId, ' - ', $libraries{$expId}->{$libraryId}->{'platform'},    ' - ',
                   $condKeyMap->{'conditionId'},                                     ' - ',
-                  $librariesStats{$libraryId}->{'cutoffFPKM'},                      ' - ',
                   $librariesStats{$libraryId}->{'cutoffTPM'},                       ' - ',
                   $librariesStats{$libraryId}->{'allGenesPercentPresent'},          ' - ',
                   $librariesStats{$libraryId}->{'proteinCodingPercentPresent'},     ' - ',
                   $librariesStats{$libraryId}->{'intergenicRegionsPercentPresent'}, ' - ',
-                  $librariesStats{$libraryId}->{'ratioIntergenicCodingPresent'},    ' - ',
+                  $librariesStats{$libraryId}->{'meanIntergenic'},                  ' - ',
+                  $librariesStats{$libraryId}->{'sdIntergenic'},                    ' - ',
+                  $librariesStats{$libraryId}->{'pValueThreshold'},                 ' - ',
                   $reportInfo{$libraryId}->{'allReadsCount'},                       ' - ',
                   $reportInfo{$libraryId}->{'mappedReadsCount'},                    ' - ',
                   $reportInfo{$libraryId}->{'minReadLength'},                       ' - ',
@@ -327,12 +329,13 @@ for my $expId ( sort keys %libraries ){
                              $expId,
                              $libraries{$expId}->{$libraryId}->{'platform'},
                              $condKeyMap->{'conditionId'},
-                             $librariesStats{$libraryId}->{'cutoffFPKM'},
                              $librariesStats{$libraryId}->{'cutoffTPM'},
                              $librariesStats{$libraryId}->{'allGenesPercentPresent'},
                              $librariesStats{$libraryId}->{'proteinCodingPercentPresent'},
                              $librariesStats{$libraryId}->{'intergenicRegionsPercentPresent'},
-                             $librariesStats{$libraryId}->{'ratioIntergenicCodingPresent'},
+                             $librariesStats{$libraryId}->{'meanIntergenic'},
+                             $librariesStats{$libraryId}->{'sdIntergenic'},
+                             $librariesStats{$libraryId}->{'pValueThreshold'},
                              $reportInfo{$libraryId}->{'allReadsCount'},
                              $reportInfo{$libraryId}->{'mappedReadsCount'},
                              $reportInfo{$libraryId}->{'minReadLength'},
@@ -361,9 +364,10 @@ for my $expId ( sort keys %libraries ){
             my $exclusion = $Utils::CALL_NOT_EXCLUDED;
             if ( $debug ){
                 print 'INSERT INTO rnaSeqResult: ', $libraryId,   ' - ', $genes{ $libraries{$expId}->{$libraryId}->{'speciesId'}}->{ $geneId }, ' - ',
-                      $genesResults{$geneId}->{'FPKM'},           ' - ',
                       $genesResults{$geneId}->{'TPM'},            ' - ',
                       $genesResults{$geneId}->{'estimatedCount'}, ' - ',
+                      $genesResults{$geneId}->{'pValue'},         ' - ',
+                      $genesResults{$geneId}->{'zscore'},         ' - ',
                       $genesResults{$geneId}->{'expressionCall'}, ' - ',
                       'high quality',                             ' - ',
                       $exclusion, "\n";
@@ -372,15 +376,17 @@ for my $expId ( sort keys %libraries ){
                 $insResult->execute($libraryId,
                                     # geneId is an ensembl ID, we need to get the bgeeGeneId
                                     $genes{ $libraries{$expId}->{$libraryId}->{'speciesId'}}->{ $geneId },
-                                    $genesResults{$geneId}->{'FPKM'},
                                     $genesResults{$geneId}->{'TPM'},
                                     $genesResults{$geneId}->{'estimatedCount'},
+                                    $genesResults{$geneId}->{'pValue'},
+                                    $genesResults{$geneId}->{'zscore'},
                                     $genesResults{$geneId}->{'expressionCall'},
                                     # rnaSeqData field always 'high quality' for now
                                     $Utils::HIGH_QUAL,
                                     $exclusion,
                                    )  or die $insResult->errstr;
             }
+
         }
     }
 }
