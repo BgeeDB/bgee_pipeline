@@ -11,7 +11,7 @@ $(UBERON_EXT_FILE_PATH):
 	@$(CURL) $(EXT_DOWNLOAD_URL) $(APPEND_CURL_COMMAND)
 
 # Note: this step requires lots of memory (was run with 512 Go)
-$(OUTPUT_DIR)uberon_merged_with_taxonomy: $(UBERON_COMPOSITE_FILE_PATH) $(UBERON_EXT_FILE_PATH)
+$(OUTPUT_DIR)uberon_merged_with_taxonomy: $(UBERON_COMPOSITE_FILE_PATH) $(UBERON_EXT_FILE_PATH) $(TAXONOMYFILEPATH)
 	@$(JAVA) TaxonConstraints mergeUberonAndTaxonomy $(UBERON_COMPOSITE_FILE_PATH) $(TAXONOMYFILEPATH) $(OUTPUT_DIR)merged_composite-metazoan_taxonomy > $@.tmp 2> $@.warn
 	@$(JAVA) TaxonConstraints mergeUberonAndTaxonomy $(UBERON_EXT_FILE_PATH) $(TAXONOMYFILEPATH) $(OUTPUT_DIR)merged_ext_taxonomy >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
@@ -21,9 +21,9 @@ $(OUTPUT_DIR)uberon_merged_with_taxonomy: $(UBERON_COMPOSITE_FILE_PATH) $(UBERON
 # So only ext.owl is usable to generate taxon constraints. We will then miss constraints
 # for all species-specific terms, and will need to enforce later them
 # (we don't do it at this point, although it is possible, to generate the "original" constraints).
-$(TAXONCONSTRAINTSFILEPATH): $(UBERON_EXT_FILE_PATH) $(TAXONOMYFILEPATH) $(SPECIESFILEPATH)
+$(TAXONCONSTRAINTSFILEPATH): $(OUTPUT_DIR)uberon_merged_with_taxonomy $(SPECIESFILEPATH)
 	@$(RM) $(OUTPUT_DIR)/intermediate_ontologies/*
-	@$(JAVA) TaxonConstraints generateTaxonConstraints $^ $(SIMPLIFICATION_STEPS) - - $@.tmp $(OUTPUT_DIR)/intermediate_ontologies/
+	@$(JAVA) TaxonConstraints generateTaxonConstraintsFromMergedOntology $(OUTPUT_DIR)merged_ext_taxonomy.owl - $(SPECIESFILEPATH) - $(UBERON_COMPOSITE_FILE_PATH) $@.tmp $(OUTPUT_DIR)/intermediate_ontologies/
 	@$(MV) $@.tmp $@
 
 # # Uberon simplification
