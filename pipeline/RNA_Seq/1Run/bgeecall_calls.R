@@ -30,6 +30,12 @@ for( c_arg in command_arg ){
     stop( paste(c_arg,"command line argument not provided\n") )
   }
 }
+#detect number of rows in input file in order to select nodes number
+libraries <- nrow(read.table(bgeecall_input_file, sep="\t", quote = "", header = TRUE))
+#maximum size for an Array in slurm Jura cluster is 1000.
+if(libraries>1000) {
+  libraries <- 1000
+}
 #specific to UNIL clusters: load R module
 #TODO: Maybe load kallisto from UNIL modules
 modules <- c("module add Bioinformatics/Software/vital-it;", "module add R/3.6.1;", "module add UHTS/Analysis/kallisto/0.46.0;")
@@ -41,4 +47,4 @@ bgeeMetadata <- new("BgeeMetadata", intergenic_release="custom")
 # slurm options for index generation
 slurm_options_index <- list(account = account, time = time, partition = partition, mem = "60G")
 # generate calls
-generate_slurm_calls(userFile=bgeecall_input_file, slurm_options = slurm_options_index, modules = modules, kallistoMetadata = kallistoMetadata, bgeeMetadata = bgeeMetadata, userMetadata = userMetadata, nodes=50)
+generate_slurm_calls(userFile=bgeecall_input_file, slurm_options = slurm_options_index, modules = modules, kallistoMetadata = kallistoMetadata, bgeeMetadata = bgeeMetadata, userMetadata = userMetadata, nodes=libraries)
