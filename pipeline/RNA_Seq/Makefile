@@ -249,8 +249,8 @@ export_length: check_abundance_all_intergenic
 	#Export transcript length to a file to export
 	$(eval TIME_LENGTH := $(shell date +'%Y%m%d-%H%M%S'))
 	@echo "#!/bin/sh" > $@_$(TIME_LENGTH).sh
-	@echo "perl 3Insertion/export_feature_length.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -tx2gene_dir=$(OUTPUT_DIR) -all_results=$(RNASEQ_CLUSTER_ALL_RES) -length_info=$(RNASEQ_LENGTH_INFO_FILEPATH)" >> $@_$(TIME_LENGTH).sh
-	@sbatch --account=$(CLUSTER_ACCOUNT) --time=2:00:00 --mem=2G --partition=$(CLUSTER_PARTITION) --output=$@_$(TIME_LENGTH).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_LENGTH) $@_$(TIME_LENGTH).sh > $@.tmp
+	@echo "perl 3Insertion/export_feature_length.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -tx2gene_dir=$(RNASEQ_CLUSTER_GTF) -all_results=$(RNASEQ_CLUSTER_ALL_RES) -length_info=$(RNASEQ_LENGTH_INFO_FILEPATH)" >> $@_$(TIME_LENGTH).sh
+	@sbatch --account=$(CLUSTER_ACCOUNT_SENSITIVE) --time=2:00:00 --mem=2G --partition=$(CLUSTER_PARTITION_SENSITIVE) --error=$@_$(TIME_LENGTH).err --output=$@_$(TIME_LENGTH).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_LENGTH) $@_$(TIME_LENGTH).sh > $@.tmp
 	NUMBER_JOBS=$$(squeue --name=$@_$(TIME_LENGTH) --noheader | wc -l) ; \
 	while [ $$NUMBER_JOBS -gt 0 ] ; do \
 		sleep 30 ; \
@@ -266,7 +266,7 @@ finalize_pipeline: check_abundance_all_intergenic
 	$(eval TIME_FINALIZE := $(shell date +'%Y%m%d-%H%M%S'))
 	@echo "#!/bin/sh" > $@_$(TIME_FINALIZE).sh
 	@echo "perl 3Insertion/create_rna_seq_report_info.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -report_info=$(RNASEQ_CLUSTER_REPORTINFO) -all_results=$(RNASEQ_CLUSTER_ALL_RES)" >> $@_$(TIME_FINALIZE).sh
-	@sbatch --account=$(CLUSTER_ACCOUNT) --time=2:00:00 --mem=2G --partition=$(CLUSTER_PARTITION) --output=$@_$(TIME_FINALIZE).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_FINALIZE) $@_$(TIME_FINALIZE).sh > $@.tmp
+	@sbatch --account=$(CLUSTER_ACCOUNT_SENSITIVE) --time=2:00:00 --mem=2G --partition=$(CLUSTER_PARTITION_SENSITIVE) --error=$@_$(TIME_FINALIZE) --output=$@_$(TIME_FINALIZE).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_FINALIZE) $@_$(TIME_FINALIZE).sh > $@.tmp
 	# Wait end of the job
 	NUMBER_JOBS=$$(squeue --name=$@_$(TIME_FINALIZE) --noheader | wc -l) ; \
 	while [ $$NUMBER_JOBS -gt 0 ] ; do \
@@ -360,10 +360,11 @@ presence_absence_bgeecall: indexes_bgeecall
 	# TODO generate summary plot once all calls have been generated
 	@touch $@
 
-check_presence_absence: presence_absence_bgeecall
+check_presence_absence: presence_absence_bgeecall 
 	# check that presence absence calls have been generated for all libraries present in the rna_seq_sample_info file
 	# generate file containing calls info for all libraries and use this file to generate different plots
-	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args sample_info="$(RNASEQ_SAMPINFO_FILEPATH)" calls_dir="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' rna_seq_calls_plot.R rna_seq_calls_plot.Rout >>$@.tmp 2>$@.warn
+	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_sample_info="$(RNASEQ_BGEECALL_FILE)" calls_dir="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)all_results"' 1Run/rna_seq_calls_plot.R $(OUTPUT_DIR)rna_seq_calls_plot.Rout
+	@touch $@
 
 #NOTE if output directory is not $(RNASEQ_CLUSTER_ALL_RES): copy all files with calls to this directory, as well as summary stats and plot files
 #for folder in *; do echo $folder; /bin/cp $folder/* ../all_results_bgee_v15/$folder/; done
