@@ -4,8 +4,8 @@
 
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args sample_info="/path/to/rna_seq_sample_info.tsv" calls_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) rna_seq_calls_plot.R rna_seq_calls_plot.Rout
-## sample_info       - path to file with info on mapped libraries
-## calls_dir         - path to folder where BgeeCall wrote the calls.
+## bgeecall_sample_info       - path to file with info about libraries processed with BgeeCall
+## calls_dir                  - path to folder where BgeeCall wrote the calls.
 
 
 ## Session info
@@ -21,7 +21,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed in command line
-command_arg <- c("sample_info", "calls_dir")
+command_arg <- c("bgeecall_sample_info", "calls_dir")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -29,29 +29,30 @@ for( c_arg in command_arg ){
 }
 
 ##load data
-sample_info_data <- read.table(sample_info, sep = "\t", header = TRUE, comment.char = "")
-names(sample_info_data)[1] <- "libraryId"
+sample_info_data <- read.table(bgeecall_sample_info, sep = "\t", header = TRUE, comment.char = "")
 
 ## init variables
 info_file <- "gene_cutoff_info_file.tsv"
-all_samples <- data.frame(matrix(nrow = 0, ncol = 9))
-samples_columns <- c("libraryId", "cutoffTPM", "proportionGenicPresent", "numberGenicPresent", "proportionCodingPresent", "numberPresentCoding", "proportionIntergenicPresent", "numberIntergenicPresent", "speciesId")
+all_samples <- data.frame(matrix(nrow = 0, ncol = 15))
+samples_columns <- c("libraryId", "cutoffTPM", "proportionGenicPresent", "numberGenicPresent", "numberGenic", "proportionCodingPresent", "numberPresentCoding", "numberCoding", "proportionIntergenicPresent", "numberIntergenicPresent", "numberIntergenic", "pValueCutoff", "meanIntergenic", "sdIntergenic", "speciesId")
 names(all_samples) <- samples_columns
 
 
 ## check that calls have been generated for all libraries
-libaries_wo_calls <- 0
+libraries_wo_calls <- 0
 lib_dirs <- list.dirs(path = calls_dir, full.names = FALSE, recursive = FALSE)
-for(line in seq(sample_info_data)) {
-  library_id <- sample_info_data[line,]$libraryId
+message(nrow(sample_info_data), " libraries in the bgeecall info file")
+for(line in seq(nrow(sample_info_data))) {
+  library_id <- basename(as.character(sample_info_data$rnaseq_lib_path[line]))
   if(library_id %in% lib_dirs) {
     info_file_path <- file.path(calls_dir, library_id, info_file)
     if(file.exists(info_file_path)) {
       info <- read.table(info_file_path, row.names = 1)
       library_info <- data.frame(library_id, info["cutoffTPM",], info["proportionGenicPresent",],
-                                      info["numberGenicPresent",], info["proportionCodingPresent",], 
-                                      info["numberPresentCoding",], info["proportionIntergenicPresent",], 
-                                      info["numberIntergenicPresent",], sample_info_data[line,]$species)
+        info["numberGenicPresent",], info["numberGenic",], info["proportionCodingPresent",], 
+        info["numberPresentCoding",], info["numberCoding",], info["proportionIntergenicPresent",], 
+        info["numberIntergenicPresent",], info["numberIntergenic",], info["pValueCutoff",], 
+        info["meanIntergenic",], info["sdIntergenic",], sample_info_data[line,]$species)
       names(library_info) <- samples_columns
       all_samples <- rbind(all_samples, library_info)
     } else {
@@ -67,8 +68,8 @@ for(line in seq(sample_info_data)) {
 if (libraries_wo_calls > 0 ) {
   stop("Calls were not generated for ", libraries_wo_calls, " libraries.")
 }
-
-save(all_samples, file.path(calls_dir, "presence_absence_all_samples.RDa")
+message(nrow(all_samples), "libraries found in the calls directory")
+save(all_samples, file=file.path(calls_dir, "presence_absence_all_samples.RDa"))
 write.table(all_samples, file = file.path(calls_dir, "presence_absence_all_samples.txt"), quote = FALSE, sep = "\t", row.names = FALSE)
 
 ## PDF for all boxplot
