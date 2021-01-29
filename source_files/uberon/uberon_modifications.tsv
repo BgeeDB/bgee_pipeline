@@ -177,7 +177,7 @@ CL:0000431	ZFA:0009199		NA	NA		Still accurate in ZFA onthology
 CL:0000438	ZFA:0009203		NA	NA		Still accurate in ZFA onthology
 CL:0000439	ZFA:0009204		NA	NA		Still accurate in ZFA onthology
 CL:0000440	ZFA:0009205		NA	NA		Still accurate in ZFA onthology
-CL:0000446	ZFA:0009207		NA	NA		Mapping not present In ZFA but I still think it is correct
+CL:0000446	ZFA:0009207		NA	NA	perfect match	"ANN: ZFA:0009207 parathyroid hormone secreting cell, mapped to CL:0000446 chief cell of parathyroid gland, synonym: ""parathyroid hormone secreting cell"" EXACT []; Mapping not present In ZFA but I still think it is correct"
 CL:0000467	ZFA:0009216		NA	NA		Still accurate in ZFA onthology
 CL:0000476	ZFA:0009218		NA	NA		Still accurate in ZFA onthology
 CL:0000494	ZFA:0009221		NA	NA		Still accurate in ZFA onthology
@@ -300,7 +300,7 @@ UBERON:0007185	EMAPA:16136					"EMAPA:16136 ""pericardio-peritoneal component me
 UBERON:0007286	EMAPA:16141					"EMAPA:16141 ""future midbrain floor plate"": mapped to UBERON:0007286 ""presumptive floor plate"", which I think is a synonym of ""future floor plate"" (maybe this should be added). This mapping don't take into account the midbrain (too general?), so we could link it to UBERON:0009616 ""presumptive midbrain"""
 UBERON:0009616 	EMAPA:16142					"EMAPA:16142 ""future midbrain neural fold"": Unlike in the line above, i mapped this term to UBERON:0009616 ""presumptive midbrain"", beacause the term ""future/presumptive neural fold"" doen't exsist and UBERON:0005062 ""neural fold"" comes later during developement."
 UBERON:0009616 	EMAPA:16143					"EMAPA:16143 ""future midbrain neural crest"": mapped to UBERON:0009616 ""presumptive midbrain"" for similar reasons as the line above"
-UBERON:0006240	EMAPA:16144				perfect match	"EMAPA:16144 ""future prosencephalon"": mapped to UBERON:0006240 ""future forebrain"", which is a synonym of ""future prosencephalon"""
+UBERON:0006240	EMAPA:16144				other	"ANN: UBERON:0006240 future forebrain has alread xref: EMAPA:16640 (future forebrain), note that both EMAPA:16144 (future prosencephalon) and  EMAPA:16144 (future prosencephalon) have part_of some future brain EMAPA:16089; EMAPA:16144 ""future prosencephalon"": mapped to UBERON:0006240 ""future forebrain"", which is a synonym of ""future prosencephalon"""
 UBERON:0006240	EMAPA:16145				missing child term	"ANN: changed to UBERON:0006240 future forebrain (note that exist also EMAPA:32919 future forebrain floor plate, but not mapped to UBERON so far);EMAPA:16145 ""future prosencephalon floor plate"": I mapped it to  UBERON:0007286 ""presumptive floor plate"" insted than UBERON:0006240 ""future forebrain"" because it seems more accurate to me. However, it is a bit arbitrary "
 UBERON:0006240	EMAPA:16146				missing child term	"EMAPA:16146 ""future prosencephalon neural fold"": this time I mapped to UBERON:0006240 ""future forebrain"", because ""future neural fold"" is not present in the onthology"
 UBERON:0006240	EMAPA:16147					"EMAPA:16147 ""future prosencephalon neural crest"":  I mapped to UBERON:0006240 ""future forebrain"", because ""future neural crest"" is not present in the onthology"
@@ -328,7 +328,7 @@ UBERON:0005598	EMAPA:16187					"EMAPA:16187 ""somite 07 (mouse)"": mapped to UBE
 UBERON:0005598	EMAPA:16188					"EMAPA:16188 ""somite 08 (mouse)"": mapped to UBERON:0005598 ""trunk somite"" for the same reason as above."
 CL:0000670	EMAPA:16190					"EMAPA:16190 ""primordial germ cell of trunk mesenchyme (mouse)"":  mapped to CL:0000670 ""primordial germ cell"", maybe I should have chosen a mapping that enphasize more the ""trunk mesenchyme part?"
 UBERON:0002346	EMAPA:16200					"EMAPA:16200 ""optic sulcus neural ectoderm (mouse)"":  mapped to UBERON:0002346 ""neurectoderm"" which is a synonym of ""neural ectoderm""."
-UBERON:0005805	EMAPA:16204				perfect match	"EMAPA:16204 ""dorsal aorta (mouse)"":  mapped to UBERON:0005805 ""dorsal aorta"""
+UBERON:0005805	EMAPA:16204	EMAPA:18606			perfect match	"ANN: UBERON:0005805 has alreday xref: EMAPA:18606 (descending aorta) which is also alredy mapped to UBERON:0001514 descending aorta, so to remove from UBERON:0005805; EMAPA:16204 ""dorsal aorta (mouse)"":  mapped to UBERON:0005805 ""dorsal aorta"""
 UBERON:0005498	EMAPA:16210					"EMAPA:16210 ""primitive heart tube endocardial tube (mouse)"":  mapped to UBERON:0004141 ""heart tube"" because it is a synonym of ""endocardial tube, which is part of  UBERON:0005498 ""primitive heart tube""."
 UBERON:0004493	EMAPA:16211					"EMAPA:16211 ""primitive heart tube cardiac muscle (mouse)"": mapped to UBERON:0004493 ""cardiac muscle tissue of myocardium"" although maybe woud be better to map it to UBERON:0005498 ""primitive heart tube""."
 UBERON:0009854	EMAPA:16248				missing child term	"EMAPA:16248 ""foregut diverticulum (mouse)"":  mapped to UBERON:0009854 ""digestive tract diverticulum"""
@@ -780,3 +780,271 @@ UBERON:0006800	FBbt:00111739		NA	NA	missing child term
 UBERON:0009571	FBbt:00111740		NA	NA	other	what is the difference between  FBbt:00111740 (embryonic midline of ventral nerve cord), and FBbt:00000093 (ventral midline of embryo) wich is xref of UBERON:0009571 (ventral midline)?
 FBbt:00007110	FBbt:00111537		NA	NA	missing child term	
 UBERON:0000023	FBbt:00111626		NA	NA	missing child term	
+UBERON:0003104	EMAPA:35961	EMAPA:16097			perfect match	"EMAPA:35961 embryo mesenchyme, mapped to UBERON:0009142 entire embryonic mesenchyme; EMAPA:16097 mesenchyme to remove"
+UBERON:0006853	EMAPA:28527				missing child term	EMAPA:28527 late tubule, mapped to UBERON:0006853 renal cortex tubule (EMAPA:28527 late tubule is part_of EMAPA:17952 renal cortex, while UBERON:2005292 distal late tubule (the only available Uberon 'late tubule') is part_of UBERON:0001231 nephron tubule)
+UBERON:0006853	EMAPA:28500				missing child term	EMAPA:28500 early tubule, mapped to UBERON:0006853 renal cortex tubule (EMAPA:28500 early tubule is part_of EMAPA:17952 renal cortex, while UBERON:0006337 distal early tubule (the only available Uberon 'early tubule') has relation is_a: UBERON:0007685 ! region of nephron tubule)
+UBERON:0000079	EMAPA:28533				other	EMAPA:28533 male associated reproductive structure, mapped to UBERON:0000079 male reproductive system
+UBERON:0006544	EMAPA:28142				missing child term	EMAPA:28142 renal cortical vasculature, mapped to UBERON:0006544 kidney vasculature
+ UBERON:0002290	EMAPA:19074				missing child term	EMAPA:19074 medulla oblongata part of 4th ventricle choroid plexus, mapped to UBERON:0002290 choroid plexus of fourth ventricle
+UBERON:0005749	EMAPA:27770				missing child term	EMAPA:27770 capillary loop renal corpuscle, mapped to UBERON:0001229 renal corpuscle
+UBERON:0001229	EMAPA:27943				other	EMAPA:27943 maturing renal corpuscle, mapped to UBERON:0001229 renal corpuscle
+UBERON:0018676	EMAPA:31319				missing child term	EMAPA:31319 renal cortical nerves, mapped to UBERON:0018676 renal nerve plexus
+UBERON:0003425	EMAPA:31312				missing child term	EMAPA:31312 renal cortical lymphatics, mapped to UBERON:0003425 renal lymph node
+UBERON:0000080	EMAPA:29138				other	EMAPA:29138 mesonephros of male, mapped to UBERON:0000080 mesonephros
+UBERON:0005591	EMAPA:32710				missing child term	EMAPA:32710 diencephalon ventricular layer, mapped to UBERON:0005591 diencephalon lateral wall
+UBERON:0005591	EMAPA:32718				missing child term	EMAPA:32718 diencephalon mantle layer, mapped to UBERON:0005591 diencephalon lateral wall
+UBERON:0005749	EMAPA:27949				other	EMAPA:27949 maturing glomerular tuft, mapped to UBERON:0005749 glomerular tuft
+UBERON:0001917	EMAPA:29995				other	EMAPA:29995 endothelium of renal artery, mapped to UBERON:0001917 endothelium of artery
+UBERON:0002111	EMAPA:30003				other	EMAPA:30003 smooth muscle layer of renal artery, mapped to UBERON:0002111 artery smooth muscle tissue
+UBERON:0001140	EMAPA:30019				missing child term	EMAPA:30019 smooth muscle layer of renal vein, mapped to UBERON:0001140 renal vein (there is no 'vein' equivalent UBERON:0002111 artery smooth muscle tissue)
+UBERON:0001919	EMAPA:30011				other	EMAPA:30011 endothelium of renal vein, mapped to UBERON:0001919 endothelium of vein
+UBERON:0000080	EMAPA:28909				other	EMAPA:28909 mesonephros of female, mapped to UBERON:0000080 mesonephros
+UBERON:0000164	EMAPA:30870				other	EMAPA:30870 primitive bladder, mapped to UBERON:0000164 primitive urogenital sinus
+UBERON:0002342	EMAPA:36422				other	EMAPA:36422 migrating neural crest, mapped to UBERON:0002342 neural crest
+UBERON:0000056	EMAPA:27711				missing child term	EMAPA:27711 ureteral mesenchyme, has part_of some ureter, then mapped to UBERON:0000056 ureter
+UBERON:0016510	EMAPA:28697				other	EMAPA:28697 epithelium of pelvic urethra of male, mapped to UBERON:0016510 epithelium of male urethra
+UBERON:0005323	EMAPA:29143				other	EMAPA:29143 mesonephric mesenchyme of male, mapped to UBERON:0005323 mesonephric mesenchyme
+UBERON:0000084	EMAPA:31045				other	"EMAPA:31045 ureteric tree terminal branch excluding tip itself; has part_of some collecting duct in EMAPA, but it exists UBERON:0006364 'ureteric bud tip' which definition 'def: ""The terminal end of the ureteric tree;' and synonym: ""ureteric tip"" EXACT [MA:0002601] and relationship: part_of UBERON:0000084 ! ureteric bud, so here mapped to UBERON:0000084 ureteric bud, but maybe to map safer on UBERON:0004737 metanephric collecting duct"
+UBERON:0006544	EMAPA:28157				missing child term	EMAPA:28157 renal medullary vasculature, mapped to UBERON:0006544 kidney vasculature
+UBERON:0015418	EMAPA:28703				other	EMAPA:28703 mesenchymal layer of pelvic urethra of male, mapped to UBERON:0015418 urethra mesenchymal layer
+UBERON:0001333	EMAPA:18995				missing child term	EMAPA:18995 pelvic urethra of male, mapped to UBERON:0001333 male urethra
+CL:0002488	EMAPA:31877				perfect match	EMAPA:31877 trophoblast giant cell, mapped to CL:0002488 trophoblast giant cell
+UBERON:0005598	EMAPA:29695				missing child term	EMAPA:29695 trunk dermomyotome, has part_of some trunk, then mapped to UBERON:0005598 trunk somite
+UBERON:0013247	EMAPA:29158				missing child term	EMAPA:29158 paramesonephric duct of male, mesonephric portion, mapped to UBERON:0013247 male paramesonephric duct
+UBERON:0016520	EMAPA:28759				other	EMAPA:28759 epithelium of pelvic urethra of female, mapped to UBERON:0016520 epithelium of female urethra
+UBERON:0009871	EMAPA:27673				missing child term	EMAPA:27673 pretubular aggregate, mapped to UBERON:0009871 nephrogenic zone
+UBERON:0009773	EMAPA:31281				missing child term	EMAPA:31281 anlage of loop of Henle of cortical renal tubule, mapped to UBERON:0009773 renal tubule
+UBERON:0001334	EMAPA:28753				missing child term	EMAPA:28753 pelvic urethra of female, mapped to UBERON:0001334 female urethra
+UBERON:0000083	EMAPA:29148				other	EMAPA:29148 mesonephric tubule of male, mapped to UBERON:0000083 mesonephric tubule
+UBERON:0004219	EMAPA:28709				missing child term	"EMAPA:28709 muscle layer of pelvic urethra of male, mapped to UBERON:0004219 urethra smooth muscle layer (synonym: ""muscular layer of urethra"" EXACT [FMA:76909])"
+UBERON:3011120	EMAPA:28003				perfect match	EMAPA:28003 early proximal tubule, mapped to UBERON:3011120 early proximal tubule
+UBERON:0002367	EMAPA:32281				other	EMAPA:32281 peri-prostatic mesenchyme of prostate gland, mapped to UBERON:0002367 prostate gland
+UBERON:0005323	EMAPA:28914				other	EMAPA:28914 mesonephric mesenchyme of female, mapped to UBERON:0005323 mesonephric mesenchyme
+UBERON:0015418	EMAPA:28765				other	EMAPA:28765 mesenchymal layer of pelvic urethra of female, mapped to UBERON:0015418 urethra mesenchymal layer
+UBERON:0009201	EMAPA:29173				other	EMAPA:29173 nephric duct of male, rest of, mapped to UBERON:0009201 nephric duct
+UBERON:0003890	EMAPA:28937				other	"EMAPA:28937 paramesonephric duct of female, mesonephric portion, mapped to UBERON:0003890 Mullerian duct (synonym: ""paramesonephric duct"" EXACT [EMAPA:27665], note that EMAPA:27665 is parent term for 'paramesonephric duct of male' and 'paramesonephric duct of female', but there is no 'female' equivalent to UBERON:0013247 male paramesonephric duct, there is UBERON:0003889 fallopian tube with synonym: ""paramesonephric duct of female"" RELATED [EMAPA:35660])"
+UBERON:0003077	EMAPA:37054				missing child term	"EMAPA:37054 unsegmented mesenchyme, mapped to UBERON:0003077 paraxial mesoderm (synonym: ""paraxial mesenchyme"" EXACT) because EMAPA:37054 part_of some paraxial mesenchyme"
+UBERON:0003077	EMAPA:32757				perfect match	"EMAPA:32757 paraxial mesenchyme, mapped to UBERON:0003077 paraxial mesoderm (synonym: ""paraxial mesenchyme"" EXACT)"
+ UBERON:0003890	EMAPA:28940				other	"EMAPA:28940 paramesonephric duct of female, rest of, mapped to UBERON:0003890 Mullerian duct (synonym: ""paramesonephric duct"" EXACT [EMAPA:27665], note that EMAPA:27665 is parent term for 'paramesonephric duct of male' and 'paramesonephric duct of female', but there is no 'female' equivalent to UBERON:0013247 male paramesonephric duct, there is UBERON:0003889 fallopian tube with synonym: ""paramesonephric duct of female"" RELATED [EMAPA:35660])"
+UBERON:0001333	EMAPA:32262				missing child term	EMAPA:32262 vasculature of pelvic urethra of male, mapped to UBERON:0001333 male urethra
+UBERON:0000998	EMAPA:30797				missing child term	EMAPA:30797 vasculature of seminal vesicle, mapped to UBERON:0000998 seminal vesicle
+UBERON:0009201	EMAPA:28945				other	EMAPA:28945 nephric duct of female, rest of, mapped to UBERON:0009201 nephric duct
+UBERON:0000999	EMAPA:30799				missing child term	EMAPA:30799 vasculature of ejaculatory duct, mapped to UBERON:0000999 ejaculatory duct
+UBERON:0001288	EMAPA:28049				other	EMAPA:28049 immature loop of Henle, mapped to UBERON:0001288 loop of Henle
+UBERON:0009201	EMAPA:27599				missing child term	EMAPA:27599 nephric duct, metanephric portion, mapped to UBERON:0009201 nephric duct
+CL:0000216	EMAPA:29106				perfect match	EMAPA:29106 Sertoli cell, mapped to CL:0000216 Sertoli cell
+UBERON:0013247	EMAPA:29185				other	EMAPA:29185 paramesonephric duct of male, rest of, mapped to UBERON:0013247 male paramesonephric duct
+UBERON:0001555	EMAPA:32909				other	EMAPA:32909 gut mesenchyme, mapped to UBERON:0001555 digestive tract
+UBERON:0009201	EMAPA:28924				other	EMAPA:28924 nephric duct of female, mesonephric portion, mapped to UBERON:0009201 nephric duct
+ UBERON:0000083	EMAPA:28919				other	EMAPA:28919 mesonephric tubule of female, mapped to UBERON:0000083 mesonephric tubule
+UBERON:0016510	EMAPA:32260				missing child term	EMAPA:32260 basal cell layer of dorsal pelvic urethra of male, mapped to UBERON:0016510 epithelium of male urethra
+UBERON:0016510	EMAPA:32261				missing child term	EMAPA:32261 basal cell layer of ventral pelvic urethra of male, mapped to UBERON:0016510 epithelium of male urethra
+UBERON:0016510	EMAPA:32263				missing child term	EMAPA:32263 superficial cell layer of dorsal pelvic urethra of male, mapped to UBERON:0016510 epithelium of male urethra
+UBERON:0016510	EMAPA:32284				missing child term	EMAPA:32284 superficial cell layer of ventral pelvic urethra of male, mapped to UBERON:0016510 epithelium of male urethra
+UBERON:0016510	EMAPA:32307				missing child term	EMAPA:32307 intermediate cell layer of dorsal pelvic urethra of male, mapped to UBERON:0016510 epithelium of male urethra
+UBERON:0016510	EMAPA:32314				missing child term	EMAPA:32314 intermediate cell layer of ventral pelvic urethra of male, mapped to UBERON:0016510 epithelium of male urethra
+UBERON:0001333	EMAPA:32286				other	EMAPA:32286 presumptive neural crest derivative of pelvic urethra of male, has part_of some pelvic urethra of male, mapped to UBERON:0001333 male urethra
+UBERON:0001333	EMAPA:32280				missing child term	EMAPA:32280 mesenchymal pad of pelvic urethra of male, mapped to UBERON:0001333 male urethra
+UBERON:0009201	EMAPA:27591				missing child term	EMAPA:27591 nephric duct, mesonephric portion, mapped to UBERON:0009201 nephric duct
+UBERON:0001334	EMAPA:32283				missing child term	EMAPA:32283 vasculature of pelvic urethra of female, mapped to UBERON:0001334 female urethra
+UBERON:0002326	EMAPA:32311				other	EMAPA:32311 lamina propria of dorsal pelvic urethra of male, mapped to UBERON:0002326 lamina propria of urethra
+UBERON:0002326	EMAPA:32294				other	EMAPA:32294 lamina propria of ventral pelvic urethra of male, mapped to UBERON:0002326 lamina propria of urethra
+UBERON:0015418	EMAPA:32297				other	"EMAPA:32297 muscularis mucosa of ventral pelvic urethra of male, mapped to UBERON:0015418 urethra mesenchymal layer, because EMAPA:32297 muscularis mucosa of ventral pelvic urethra of male has part_of some mesenchymal layer of ventral pelvic urethra of male. It exists UBERON:0005013 mucosa of male urethra but not sounds the accurate term here (it also exists UBERON:0006676 muscularis mucosa, synonym: ""gut muscularis"" EXACT [EMAPA:35385])"
+UBERON:0009201	EMAPA:35591				other	EMAPA:35591 nephric duct of male, mapped to UBERON:0009201 nephric duct
+UBERON:0001334	EMAPA:32288				other	EMAPA:32288 presumptive neural crest derivative of pelvic urethra of female, has part_of some pelvic urethra of female, mapped to UBERON:0001334 female urethra
+UBERON:0015418	EMAPA:32298				other	EMAPA:32298 submucosa of ventral pelvic urethra of male, has part_of some mesenchymal layer of ventral pelvic urethra of male, mapped to UBERON:0015418 urethra mesenchymal layer, as done for EMAPA:28703 mesenchymal layer of pelvic urethra of male
+ UBERON:0015418	EMAPA:32312				other	"EMAPA:32312 muscularis mucosa of dorsal pelvic urethra of male, mapped to UBERON:0015418 urethra mesenchymal layer, because EMAPA:32312 muscularis mucosa of dorsal pelvic urethra of male has part_of some mesenchymal layer of ventral pelvic urethra of male. It exists UBERON:0005013 mucosa of male urethra but not sounds the accurate term here (it also exists UBERON:0006676 muscularis mucosa, synonym: ""gut muscularis"" EXACT [EMAPA:35385])"
+UBERON:0015418	EMAPA:32293				other	EMAPA:32293 submucosa of dorsal pelvic urethra of male, has part_of some mesenchymal layer of dorsal pelvic urethra of male, mapped to UBERON:0015418 urethra mesenchymal layer, as done for EMAPA:28703 mesenchymal layer of pelvic urethra of male
+UBERON:0001334	EMAPA:32287				other	EMAPA:32287 mesenchymal pad of pelvic urethra of female, mapped to UBERON:0001334 female urethra
+UBERON:0001344	EMAPA:29052				other	EMAPA:29052 epithelium of upper vagina, mapped to UBERON:0001344 epithelium of vagina. It exists UBERON:0003974 upper part of vagina, without child
+UBERON:0004219	EMAPA:28771				missing child term	"EMAPA:28771 muscle layer of pelvic urethra of female, mapped to UBERON:0004219 urethra smooth muscle layer (synonym: ""muscular layer of urethra"" EXACT [FMA:76909])('missing child' for 'pelvic urethra' not present in Uberon)"
+UBERON:0004223	EMAPA:29055				other	EMAPA:29055 muscle of upper vagina, mapped to UBERON:0004223 vagina smooth muscle
+UBERON:0003974	EMAPA:31219				other	"EMAPA:31219 vasculature of upper vagina, mapped to UBERON:0003974 upper part of vagina. Note that exists UBERON:0001472 vaginal venous plexus with xref: EMAPA:37801 {source=""MA:th""} (vaginal venous plexus)"
+UBERON:0013245	EMAPA:29058				missing child term	EMAPA:29058 epithelium of sinovaginal bulb, mapped to UBERON:0013245 sinovaginal bulb
+UBERON:0013245	EMAPA:29061				missing child term	EMAPA:29061 muscle of sinovaginal bulb, mapped to UBERON:0013245 sinovaginal bulb
+UBERON:0013245	EMAPA:31224				other	EMAPA:31224 vasculature of sinovaginal bulb, mapped to UBERON:0013245 sinovaginal bulb
+UBERON:0001255	EMAPA:28826				missing child term	EMAPA:28826 adventitia of bladder, mapped to UBERON:0001255 urinary bladder
+UBERON:0000999	EMAPA:32270				missing child term	EMAPA:32270 lamina propria of ejaculatory duct, mapped to UBERON:0000999 ejaculatory duct
+UBERON:0016520	EMAPA:32292				missing child term	EMAPA:32292 basal cell layer of ventral pelvic urethra of female, mapped to UBERON:0016520 epithelium of female urethra
+UBERON:0016520	EMAPA:32267				missing child term	EMAPA:32267 basal cell layer of dorsal pelvic urethra of female, mapped to UBERON:0016520 epithelium of female urethra
+UBERON:0004219	EMAPA:31555				missing child term	"EMAPA:31555 muscle layer of ventral pelvic urethra of male, mapped to UBERON:0004219 urethra smooth muscle layer (synonym: ""muscular layer of urethra"" EXACT [FMA:76909])"
+UBERON:0016520	EMAPA:32266				missing child term	EMAPA:32266 superficial cell layer of dorsal pelvic urethra of female, mapped to UBERON:0016520 epithelium of female urethra
+UBERON:0016520	EMAPA:32291				missing child term	EMAPA:32291 superficial cell layer of ventral pelvic urethra of female, mapped to UBERON:0016520 epithelium of female urethra
+UBERON:0016520	EMAPA:32305				missing child term	EMAPA:32305 intermediate cell layer of ventral pelvic urethra of female, mapped to UBERON:0016520 epithelium of female urethra
+UBERON:0016520	EMAPA:32306				missing child term	EMAPA:32306 intermediate cell layer of dorsal pelvic urethra of female, mapped to UBERON:0016520 epithelium of female urethra
+UBERON:0004219	EMAPA:31556				missing child term	"EMAPA:31556 muscle layer of dorsal pelvic urethra of male, mapped to UBERON:0004219 urethra smooth muscle layer (synonym: ""muscular layer of urethra"" EXACT [FMA:76909])"
+UBERON:0003089	EMAPA:31144				missing child term	EMAPA:31144 trunk sclerotome, mapped to UBERON:0003089 sclerotome
+ UBERON:0004645	EMAPA:28607				missing child term	EMAPA:28607 urothelium of bladder fundus, mapped to UBERON:0004645 urinary bladder urothelium
+UBERON:0013245	EMAPA:32259				missing child term	EMAPA:32259 lamina propria of sinovaginal bulb, mapped to UBERON:0013245 sinovaginal bulb
+UBERON:0005205	EMAPA:32272				other	EMAPA:32272 lamina propria of upper vagina, mapped to UBERON:0005205 lamina propria of vagina
+UBERON:0002326	EMAPA:32296				other	EMAPA:32296 lamina propria of dorsal pelvic urethra of female, mapped to UBERON:0002326 lamina propria of urethra
+UBERON:0004645	EMAPA:30081				missing child term	EMAPA:30081 urothelium of ventral bladder neck, mapped to UBERON:0004645 urinary bladder urothelium
+UBERON:0002326	EMAPA:32310				other	EMAPA:32310 lamina propria of ventral pelvic urethra of female, mapped to UBERON:0002326 lamina propria of urethra
+UBERON:0001229	EMAPA:27967				missing child term	EMAPA:27967 visceral epithelium of maturing renal corpuscle, mapped to UBERON:0001229 renal corpuscle
+UBERON:0015418	EMAPA:32295				other	"EMAPA:32295 muscularis mucosa of dorsal pelvic urethra of female, mapped to UBERON:0015418 urethra mesenchymal layer, because EMAPA:32295 muscularis mucosa of dorsal pelvic urethra of female has part_of some mesenchymal layer of dorsal pelvic urethra of female. It exists also UBERON:0005014 mucosa of female urethra, but not sounds the accurate term here (it exists also UBERON:0006676 muscularis mucosa, synonym: ""gut muscularis"" EXACT [EMAPA:35385])"
+ UBERON:0015418	EMAPA:32308				other	EMAPA:32308 submucosa of ventral pelvic urethra of female, has part_of some mesenchymal layer of ventral pelvic urethra of female, mapped to UBERON:0015418 urethra mesenchymal layer, as done for EMAPA:28765 mesenchymal layer of pelvic urethra of female
+UBERON:0015418	EMAPA:32309				other	"EMAPA:32309 muscularis mucosa of ventral pelvic urethra of female, mapped to UBERON:0015418 urethra mesenchymal layer, because EMAPA:32309 muscularis mucosa of ventral pelvic urethra of female has part_of some mesenchymal layer of ventral pelvic urethra of female. It exists also UBERON:0005014 mucosa of female urethra, but not sounds the relevant term here (it exists also UBERON:0006676 muscularis mucosa, synonym: ""gut muscularis"" EXACT [EMAPA:35385])"
+UBERON:0015418	EMAPA:32313				other	EMAPA:32313 submucosa of dorsal pelvic urethra of female, has part_of some mesenchymal layer of dorsal pelvic urethra of female, mapped to UBERON:0015418 urethra mesenchymal layer, as done for EMAPA:28765 mesenchymal layer of pelvic urethra of female
+UBERON:0005062	EMAPA:32732				perfect match	EMAPA:32732 neural fold, mapped to UBERON:0005062 neural fold
+UBERON:0001229	EMAPA:27772				missing child term	EMAPA:27772 visceral epithelium of capillary loop renal corpuscle, mapped to UBERON:0001229 renal corpuscle
+UBERON:0015418	EMAPA:31550				missing child term	EMAPA:31550 mesenchymal layer of ventral pelvic urethra of male, mapped to UBERON:0015418 urethra mesenchymal layer
+UBERON:0015418	EMAPA:31552				missing child term	EMAPA:31552 mesenchymal layer of dorsal pelvic urethra of male, mapped to UBERON:0015418 urethra mesenchymal layer
+UBERON:0004345	EMAPA:31878				other	EMAPA:31878 labyrinthine zone, mapped to UBERON:0004345 trophectoderm, because EMAPA:31878 labyrinthine zone has part_of some trophectoderm. It exists UBERON:0003946 placenta labyrinth but sounds not the relevant term here
+UBERON:0004645	EMAPA:28613				other	EMAPA:28613 urothelium of bladder trigone, has part_of some urothelium of bladder, mapped to UBERON:0004645 urinary bladder urothelium
+UBERON:0004219	EMAPA:31559				missing child term	"EMAPA:31559 muscle layer of ventral pelvic urethra of female, mapped to UBERON:0004219 urethra smooth muscle layer (synonym: ""muscular layer of urethra"" EXACT [FMA:76909])"
+UBERON:0004219	EMAPA:31560				missing child term	"EMAPA:31560 muscle layer of dorsal pelvic urethra of female, mapped to UBERON:0004219 urethra smooth muscle layer (synonym: ""muscular layer of urethra"" EXACT [FMA:76909])"
+UBERON:0016510	EMAPA:32258				missing child term	EMAPA:32258 epithelium of ventral pelvic urethra of male, mapped to UBERON:0016510 epithelium of male urethra ('missing child term' for 'pelvic urethra')
+UBERON:0016510	EMAPA:32300				missing child term	EMAPA:32300 epithelium of dorsal pelvic urethra of male, mapped to UBERON:0016510 epithelium of male urethra
+CL:0000023	EMAPA:31025				perfect match	EMAPA:31025 oocyte, mapped to CL:0000023 oocyte
+UBERON:0001892	EMAPA:32820	EMAPA:16148			perfect match	EMAPA:32820 rhombomere, mapped to UBERON:0001892 rhombomere. Currently UBERON:0001892 has xref: EMAPA:16148 future hindbrain
+UBERON:0009773	EMAPA:31571				other	EMAPA:31571 cortical renal tubule of capillary loop nephron group, has part_of some cortical renal tubule, mapped to UBERON:0009773 renal tubule
+UBERON:0004199	EMAPA:27762				missing child term	EMAPA:27762 medial segment of s-shaped body, mapped to UBERON:0004199 S-shaped body
+UBERON:0000056	EMAPA:28570				missing child term	EMAPA:28570 ureteral mesenchyme outer layer, has part_of some ureteral mesenchyme, mapped to UBERON:0000056 ureter
+UBERON:0034996	EMAPA:28862				missing child term	"EMAPA:28862 proximal straight tubule, outer medullary portion, has part_of some loop of Henle, outer medullary portion, mapped to UBERON:0034996 outer renal medulla loop of Henle, synonym: ""loop of Henle, outer medullary portion"" EXACT [EMAPA:28322]"
+UBERON:0006951	EMAPA:38085				perfect match	"EMAPA:38085 inner enamel epithelium, mapped to UBERON:0006951 inner dental epithelium, synonym: ""inner enamel epithelium"" EXACT"
+UBERON:0005891	EMAPA:30460				other	EMAPA:30460 coelomic epithelium of male mesonephros, mapped to UBERON:0005891 coelomic epithelium
+UBERON:0004199	EMAPA:27764				missing child term	EMAPA:27764 proximal segment of s-shaped body, mapped to UBERON:0004199 S-shaped body
+UBERON:0006950	EMAPA:38081				perfect match	EMAPA:38081 stellate reticulum, mapped to UBERON:0006950 stellate reticulum
+UBERON:0009773	EMAPA:31570				other	EMAPA:31570 cortical renal tubule of maturing nephron group, has part_of some cortical renal tubule, mapped to UBERON:0009773 renal tubule
+UBERON:0004199	EMAPA:27760				missing child term	EMAPA:27760 distal segment of s-shaped body, mapped to UBERON:0004199 S-shaped body
+UBERON:0012368	EMAPA:38067				missing child term	EMAPA:38067 intestine smooth muscle circular layer, mapped to UBERON:0012368 circular muscle layer of muscular coat. It exists UBERON:0012401 small intestine smooth muscle circular layer, and UBERON:0012398 large intestine smooth muscle circular layer, both are is_a UBERON:0012368 circular muscle layer of muscular coat (but does not exist ' intestine smooth muscle circular layer')
+UBERON:0005891	EMAPA:28934				other	EMAPA:28934 coelomic epithelium of female mesonephros, mapped to UBERON:0005891 coelomic epithelium
+UBERON:0003425	EMAPA:31347				missing child term	EMAPA:31347 renal medullary lymphatics, mapped to UBERON:0003425 renal lymph node
+UBERON:0018676	EMAPA:31354				missing child term	EMAPA:31354 renal medullary nerves, mapped to UBERON:0018676 renal nerve plexus
+UBERON:0015418	EMAPA:31553				missing child term	EMAPA:31553 mesenchymal layer of ventral pelvic urethra of female, mapped to UBERON:0015418 urethra mesenchymal layer
+UBERON:0002028	EMAPA:32898				missing child term	EMAPA:32898 hindbrain ventricular layer, mapped to UBERON:0002028 hindbrain
+UBERON:0008866	EMAPA:38091				perfect match	EMAPA:38091 enamel knot, mapped to UBERON:0008866 enamel knot
+UBERON:0015418	EMAPA:31554				missing child term	EMAPA:31554 mesenchymal layer of dorsal pelvic urethra of female, mapped to UBERON:0015418 urethra mesenchymal layer
+UBERON:0016520	EMAPA:32264				missing child term	EMAPA:32264 epithelium of dorsal pelvic urethra of female, mapped to UBERON:0016520 epithelium of female urethra
+UBERON:0016520	EMAPA:32282				missing child term	EMAPA:32282 epithelium of ventral pelvic urethra of female, mapped to UBERON:0016520 epithelium of female urethra
+UBERON:0006949	EMAPA:38080				perfect match	EMAPA:38080 cervical loop, mapped to UBERON:0006949 cervical loop
+UBERON:0001846	EMAPA:32885				missing child term	EMAPA:32885 inner ear mesenchyme, has part_of some inner ear, mapped to UBERON:0001846 internal ear
+UBERON:0000924	EMAPA:32753				missing child term	EMAPA:32753 branchial arch ectoderm, mapped to UBERON:0000924 ectoderm
+UBERON:0001844	EMAPA:35247				missing child term	EMAPA:35247 cochlea epithelium, mapped on UBERON:0001844 cochlea. UBERON:0003243 epithelium of cochlear duct, is part_of 'cochlea epithelium' in EMAPA, too precise to be mapped here
+UBERON:0001229	EMAPA:27774				missing child term	EMAPA:27774 parietal epithelium of capillary loop renal corpuscle, mapped to UBERON:0001229 renal corpuscle
+UBERON:0003104	EMAPA:32872				missing child term	EMAPA:32872 intestine mesenchyme, mapped to UBERON:0003104 mesenchyme
+ UBERON:0009889	EMAPA:36730				perfect match	EMAPA:36730 secondary heart field, mapped to UBERON:0009889 secondary heart field
+UBERON:0004212	EMAPA:27955				other	EMAPA:27955 glomerular capillary system of maturing glomerular tuft, mapped to UBERON:0004212 glomerular capillary
+UBERON:0000056	EMAPA:28561				missing child term	EMAPA:28561 ureteral mesenchyme subepithelial layer, mapped to UBERON:0000056 ureter
+UBERON:0004061	EMAPA:32681				other	EMAPA:32681 brain mantle layer, mapped to UBERON:0004061 neural tube mantle layer (UBERON:0009580 diencephalon mantle layer is_a: UBERON:0004061 ! neural tube mantle layer)
+UBERON:0005215	EMAPA:27778				missing child term	EMAPA:27778 presumptive mesangium of capillary loop renal corpuscle, has  part_of some renal interstitium, mapped to UBERON:0005215 kidney interstitium
+UBERON:0003527	EMAPA:30037				missing child term	EMAPA:30037 renal cortical capillary, mapped to UBERON:0003527 kidney capillary
+UBERON:0006952	EMAPA:38086				perfect match	EMAPA:38086 outer enamel epithelium, mapped to UBERON:0006952 outer dental epithelium
+UBERON:3011120	EMAPA:31542				other	EMAPA:31542 early proximal tubule of maturing nephron, has part_of some early proximal tubule, mapped to UBERON:3011120 early proximal tubule
+UBERON:0001229	EMAPA:27780				other	EMAPA:27780 presumptive endothelium of capillary loop renal corpuscle, has part_of some capillary loop renal corpuscle, mapped to UBERON:0001229 renal corpuscle
+UBERON:3011120	EMAPA:31544				other	EMAPA:31544 early proximal tubule of capillary loop nephron, has part_of some early proximal tubule, mapped to UBERON:3011120 early proximal tubule
+UBERON:0000057	EMAPA:28555				missing child term	EMAPA:28555 urethral plate, has part_of some urethra, mapped to UBERON:0000057 urethra
+UBERON:0003082	EMAPA:32843				missing child term	EMAPA:32843 trunk myotome, mapped to UBERON:0003082 myotome
+UBERON:0004198	EMAPA:27684				missing child term	EMAPA:27684 upper limb of comma-shaped body, has part_of some comma-shaped body, mapped to UBERON:0004198 comma-shaped body
+UBERON:0006337	EMAPA:31513				other	EMAPA:31513 early distal tubule of maturing nephron, has part_of some early distal tubule, mapped to UBERON:0006337 distal early tubule
+UBERON:0009497	EMAPA:35649				other	EMAPA:35649 pancreas tip epithelium, has part_of some pancreas epithelium, which is foregut-midgut junction epithelium, then mapped to UBERON:0009497 epithelium of foregut-midgut junction
+UBERON:0004198	EMAPA:27847				missing child term	EMAPA:27847 lower limb of comma-shaped body, has part_of some comma-shaped body, mapped to UBERON:0004198 comma-shaped body
+UBERON:0000473	EMAPA:29114				other	EMAPA:29114 developing vasculature of testis, has part_of some testis, mapped to UBERON:0000473 testis
+UBERON:0000004	EMAPA:35584				missing child term	EMAPA:35584 nasal mesenchyme, mapped to UBERON:0000004 nose
+UBERON:0000079	EMAPA:29177				other	EMAPA:29177 mesenchyme of nephric duct of male, has part_of some nephric duct of male, mapped to UBERON:0000079 male reproductive system (EHDAA2:0001050 male nephric duct (human) relationship: part_of UBERON:0000079 ! male reproductive system)
+UBERON:0013245	EMAPA:29939				missing child term	EMAPA:29939 adventitia of sinovaginal bulb, mapped to UBERON:0013245 sinovaginal bulb
+UBERON:0003974	EMAPA:29945				other	"EMAPA:29945 adventitia of upper vagina, has part_of some upper vagina, mapped to UBERON:0003974 upper part of vagina synonym: ""upper vagina"" RELATED [MP:0009077]"
+UBERON:0006337	EMAPA:31511				other	EMAPA:31511 early distal tubule of capillary loop nephron, has part_of some early distal tubule, mapped to UBERON:0006337 distal early tubule
+UBERON:0000056	EMAPA:30850				other	EMAPA:30850 ureteral vasculature, mapped to UBERON:0000056 ureter
+UBERON:0000057	EMAPA:30903				missing child term	EMAPA:30903 pelvic urethra, mapped to UBERON:0000057 urethra
+UBERON:0001333	EMAPA:31565				other	EMAPA:31565 nerve of pelvic urethra of male, has part_of some pelvic urethra of male, mapped toUBERON:0001333 male urethra
+UBERON:0000076	EMAPA:32708				missing child term	"EMAPA:32708 limb ectoderm, has part_of some surface ectoderm, mapped to UBERON:0000076 external ectoderm synonym: ""surface ectoderm"" EXACT [MP:0012532]"
+ UBERON:0000365	EMAPA:30873				missing child term	EMAPA:30873 urothelium of primitive bladder, mapped to UBERON:0000365 urothelium
+UBERON:0009497	EMAPA:35650				other	EMAPA:35650 pancreas trunk epithelium, has part_of some pancreas epithelium, which is foregut-midgut junction epithelium, then mapped to UBERON:0009497 epithelium of foregut-midgut junction
+UBERON:0005215	EMAPA:27776				missing child term	"EMAPA:27776 associated interstitium of capillary loop renal corpuscle, has part_of some renal interstitium, mapped to UBERON:0005215 kidney interstitium synonym: ""renal interstitium"" EXACT [FMA:70983]"
+UBERON:0006544	EMAPA:28162				missing child term	EMAPA:28162 renal medullary arterial system, mapped to UBERON:0006544 kidney vasculature
+UBERON:0000076	EMAPA:36705				missing child term	"EMAPA:36705 head surface ectoderm, has part_of some surface ectoderm, mapped to UBERON:0000076 external ectoderm synonym: ""surface ectoderm"" EXACT [MP:0012532]"
+UBERON:0004819	EMAPA:29181				other	EMAPA:29181 epithelium of nephric duct of male, mapped to UBERON:0009201 nephric duct which is_a: UBERON:0004819 ! kidney epithelium
+UBERON:0001255	EMAPA:31526				missing child term	EMAPA:31526 nerve of bladder, has part_of some bladder, mapped to UBERON:0001255 urinary bladder
+UBERON:0004199	EMAPA:27766				missing child term	EMAPA:27766 visceral epithelium of s-shaped body, mapped to UBERON:0004199 S-shaped body
+UBERON:0000996	EMAPA:31229				other	EMAPA:31229 developing vasculature of vagina, mapped to UBERON:0000996 vagina
+UBERON:0006544	EMAPA:28167				missing child term	EMAPA:28167 renal medullary venous system, mapped to UBERON:0006544 kidney vasculature
+UBERON:0005097	EMAPA:31516				other	EMAPA:31516 renal connecting tubule of maturing nephron, mapped to UBERON:0005097 ! renal connecting tubule
+UBERON:0004199	EMAPA:27768				missing child term	EMAPA:27768 parietal epithelium of s-shaped body, mapped to UBERON:0004199 S-shaped body
+UBERON:0007440	EMAPA:38082				perfect match	EMAPA:38082 stratum intermedium, mapped to UBERON:0007440 stratum intermedium of tooth
+UBERON:0004290	EMAPA:29703				missing child term	EMAPA:29703 tail dermomyotome, has  is_a dermomyotome and part_of some tail somite, mapped to UBERON:0004290 dermomyotome
+UBERON:0006261	EMAPA:31510				other	EMAPA:31510 developing vasculature of male genital tubercle, has part_of some genital tubercle of male, mapped to UBERON:0006261 male genital tubercle
+UBERON:0002326	EMAPA:36125				other	EMAPA:36125 lamina propria of pelvic urethra of male, mapped to UBERON:0002326 lamina propria of urethra
+UBERON:0005500	EMAPA:32913				other	"EMAPA:32913 hindbrain floor plate, has part_of some hindbrain, but instead of mapping to UBERON:0002028 hindbrain, I prefer mapping to UBERON:0005500 rhombomere floor plate synonym: ""rhombencephalon floor plate"" EXACT [EHDAA2:0004324] which has anyway already xref: EMAPA:32818 (rhombomere floor plate) (The hindbrain or rhombencephalon, cf WP)"
+UBERON:0005620	EMAPA:35637				missing child term	"EMAPA:35637 primary palate palatal rugae, has part_of some primary palate, mapped to UBERON:0005620 primary palate. It exists UBERON:0008799 transverse palatine fold synonym: ""palatal rugae"" EXACT [MP:0009652], xref: EMAPA:35638 (hard palate palatal rugae)"
+UBERON:0000992	EMAPA:28888				other	EMAPA:28888 developing vasculature of ovary, has part_of some ovary, mapped to UBERON:0000992 ovary
+UBERON:0003890	EMAPA:28961				other	"EMAPA:28961 mesenchyme of rest of paramesonephric duct of female, has part_of some paramesonephric duct of female, rest of, mapped to UBERON:0003890 Mullerian duct (synonym: ""paramesonephric duct"" EXACT [EMAPA:27665], as done for EMAPA:28940 paramesonephric duct of female, rest of"
+UBERON:0002320	EMAPA:30031				other	EMAPA:30031 glomerular mesangium of maturing renal corpuscle, mapped on UBERON:0002320 glomerular mesangium
+UBERON:0016510	EMAPA:31507				other	EMAPA:31507 urethral plate epithelium of male, has part_of some epithelium of phallic urethra of male, mapped on UBERON:0016510 epithelium of male urethra
+UBERON:0003890	EMAPA:28957				other	"EMAPA:28957 epithelium of rest of paramesonephric duct of female, has part_of some paramesonephric duct of female, rest of, mapped to UBERON:0003890 Mullerian duct (synonym: ""paramesonephric duct"" EXACT [EMAPA:27665], as done for EMAPA:28940 paramesonephric duct of female, rest of"
+UBERON:0009845	EMAPA:30876				missing child term	EMAPA:30876 mesenchymal layer of primitive bladder, is_a mesenchyme of urogenital sinus, mapped to UBERON:0009845 urogenital sinus mesenchyme xref: EMAPA:31500 (mesenchyme of urogenital sinus)
+UBERON:0006853	EMAPA:31566				other	EMAPA:31566 cortical renal tubule of mature nephron group, has part_of some cortical renal tubule, mapped to UBERON:0006853 renal cortex tubule
+UBERON:0003372	EMAPA:32776				missing child term	EMAPA:32776 forelimb bud presumptive apical ectodermal ridge, has part_of some forelimb bud ectoderm, mapped to UBERON:0003372 pectoral appendage bud ectoderm xref: EMAPA:16407 (forelimb bud ectoderm)
+UBERON:0006233	EMAPA:31503				other	EMAPA:31503 developing vasculature of female genital tubercle, has part_of some genital tubercle of female, mapped to UBERON:0006233 female genital tubercle
+UBERON:0008281	EMAPA:36740				perfect match	EMAPA:36740 tooth bud, mapped to UBERON:0008281 tooth bud
+UBERON:0002325	EMAPA:30905				missing child term	EMAPA:30905 epithelium of pelvic urethra, mapped to UBERON:0002325 epithelium of urethra
+UBERON:0003089	EMAPA:31151				missing child term	EMAPA:31151 tail sclerotome, mapped to UBERON:0003089 sclerotome
+UBERON:0004209	EMAPA:31582				missing child term	EMAPA:31582 distal renal vesicle, mapped to UBERON:0004209 renal vesicle
+UBERON:0001008	EMAPA:35898				missing child term	"EMAPA:35898 urinary system mesenchyme, has part_of some urinary system, mapped to UBERON:0001008 renal system synonym: ""urinary system"" EXACT []"
+UBERON:0002326	EMAPA:36110				other	EMAPA:36110 lamina propria of pelvic urethra of female, mapped to UBERON:0002326 lamina propria of urethra
+UBERON:0009201	EMAPA:28953				other	EMAPA:28953 mesenchyme of nephric duct of female, mapped to UBERON:0009201 nephric duct
+UBERON:0006233	EMAPA:30484				missing child term	EMAPA:30484 distal genital tubercle of female, has part_of some genital tubercle of female, mapped to UBERON:0006233 female genital tubercle
+UBERON:0006233	EMAPA:31506				missing child term	EMAPA:31506 proximal genital tubercle of female, has part_of some genital tubercle of female, mapped to UBERON:0006233 female genital tubercle
+UBERON:0004209	EMAPA:31541				missing child term	EMAPA:31541 renal connecting segment of renal vesicle, has part_of some renal vesicle, mapped to UBERON:0004209 renal vesicle
+UBERON:0004209	EMAPA:31549				missing child term	EMAPA:31549 proximal renal vesicle, has part_of some renal vesicle, mapped to UBERON:0004209 renal vesicle
+UBERON:0001334	EMAPA:31567				missing child term	EMAPA:31567 nerve of pelvic urethra of female, has part_of some pelvic urethra of female, mapped to UBERON:0001334 female urethra
+UBERON:0016510	EMAPA:36122				other	EMAPA:36122 basal cell layer of pelvic urethra of male, has part_of some epithelium of pelvic urethra of male, mapped to UBERON:0016510 epithelium of male urethra
+UBERON:0015418	EMAPA:30907				missing child term	EMAPA:30907 mesenchymal layer of pelvic urethra, mapped to UBERON:0015418 urethra mesenchymal layer
+UBERON:0016510	EMAPA:36121				other	EMAPA:36121 intermediate cell layer of pelvic urethra of male, has part_of some epithelium of pelvic urethra of male, mapped to UBERON:0016510 epithelium of male urethra
+UBERON:0009919	EMAPA:30150				missing child term	EMAPA:30150 ureteral smooth muscle layer interstitium, has part_of some ureteral smooth muscle layer, mapped to UBERON:0009919 ureter smooth muscle
+UBERON:0001288	EMAPA:31414				other	EMAPA:31414 medullary renal tubule, has part_of some immature loop of Henle, mapped to UBERON:0001288 loop of Henle
+UBERON:0010359	EMAPA:32756				perfect match	"EMAPA:32756 branchial arch mesenchyme derived from neural crest, mapped to UBERON:0010359 pharyngeal arch mesenchyme from neural crest (synonym: ""branchial arch mesenchyme from neural crest"" EXACT [])"
+UBERON:0003339	EMAPA:36064				missing child term	EMAPA:36064 cranial preganglion, is a central nervous system ganglion, mapped to UBERON:0003339 ganglion of central nervous system
+UBERON:0016510	EMAPA:36120				other	EMAPA:36120 superficial cell layer of pelvic urethra of male, has part_of some epithelium of pelvic urethra of male, mapped to UBERON:0016510 epithelium of male urethra
+UBERON:0034996	EMAPA:28325				missing child term	"EMAPA:28325 thin descending limb of outer medulla, has part_of some loop of Henle, outer medullary portion, mapped to UBERON:0034996 outer renal medulla loop of Henle, synonym: ""loop of Henle, outer medullary portion"" EXACT [EMAPA:28322]. It exists UBERON:0005096 descending thin limb, synonym: ""descending thin limb of loop of Henle"" EXACT [], which has xref: EMAPA:35514 (loop of Henle thin descending limb)"
+UBERON:0009919	EMAPA:28814				missing child term	EMAPA:28814 ureteral smooth muscle layer smooth muscle component, has part_of some ureteral smooth muscle layer, mapped to UBERON:0009919 ureter smooth muscle
+UBERON:0006261	EMAPA:29205				missing child term	EMAPA:29205 distal genital tubercle of male, mapped to UBERON:0006261 male genital tubercle
+UBERON:0010884	EMAPA:32629				other	EMAPA:32629 hand pre-cartilage condensation, is a forelimb pre-cartilage condensation, mapped to UBERON:0010884 forelimb bone pre-cartilage condensation ('other' because Uberon will not provide a class for 'hand' as it)
+UBERON:0015418	EMAPA:36127				other	EMAPA:36127 submucosa of pelvic urethra of male, has part_of some mesenchymal layer of pelvic urethra of male, mapped to UBERON:0015418 urethra mesenchymal layer, as done for EMAPA:28703 mesenchymal layer of pelvic urethra of male
+UBERON:0001893	EMAPA:38142				missing child term	EMAPA:38142 cortical hem, has relationship: part_of EMAPA:16910 ! Telencephalon (https://raw.githubusercontent.com/obophenotype/mouse-anatomy-ontology/master/src/ontology/emapa-edit.obo), mapped to UBERON:0001893 telencephalon
+UBERON:0013247	EMAPA:29189				other	EMAPA:29189 mesenchyme of rest of paramesonephric duct of male, mapped to UBERON:0013247 male paramesonephric duct
+UBERON:0006261	EMAPA:31504				missing child term	EMAPA:31504 proximal genital tubercle of male, mapped to UBERON:0006261 male genital tubercle
+UBERON:0016520	EMAPA:36106				other	EMAPA:36106 intermediate cell layer of pelvic urethra of female, has part_of some epithelium of pelvic urethra of female, mapped to UBERON:0016520 epithelium of female urethra
+UBERON:0035005	EMAPA:29226				missing child term	EMAPA:29226 mesenchyme of male preputial swelling, mapped to UBERON:0035005 preputial swelling of male
+UBERON:0016520	EMAPA:36107				other	EMAPA:36107 basal cell layer of pelvic urethra of female, has part_of some epithelium of pelvic urethra of female, mapped to UBERON:0016520 epithelium of female urethra
+UBERON:0001335	EMAPA:30952				missing child term	EMAPA:30952 epithelium of prostatic urethra, has part_of some prostatic urethra, mapped to UBERON:0001335 prostatic urethra. Note that it exists UBERON:0015777 transitional epithelium of prostatic urethra
+UBERON:0015418	EMAPA:30954				missing child term	EMAPA:30954 mesenchymal layer of prostatic urethra, mapped to UBERON:0015418 urethra mesenchymal layer
+UBERON:0001335	EMAPA:32265				missing child term	EMAPA:32265 vasculature of prostatic urethra, has part_of some prostatic urethra, mapped to UBERON:0001335 prostatic urethra
+UBERON:0009749	EMAPA:32701				missing child term	EMAPA:32701 limb cartilage condensation, has part_of some limb mesenchyme, mapped to UBERON:0009749 limb mesenchyme
+UBERON:0015418	EMAPA:36112				other	EMAPA:36112 submucosa of pelvic urethra of female, has part_of some mesenchymal layer of pelvic urethra of female, mapped to UBERON:0015418 urethra mesenchymal layer, as done for EMAPA:28765 mesenchymal layer of pelvic urethra of female
+UBERON:0013505	EMAPA:19335				missing child term	EMAPA:19335 C1 vertebral cartilage condensation, has part_of some cervical vertebral cartilage condensation, mapped to UBERON:0013505 cervical vertebra cartilage element (in Uberon, EHDAA2:0000151 atlas cartilage condensation (human), relationship: part_of UBERON:0013505 ! cervical vertebra cartilage element)
+UBERON:0006544	EMAPA:27794				other	EMAPA:27794 developing vasculature of metanephros, has part_of some renal vasculature, mapped to UBERON:0006544 kidney vasculature
+CL:0000477	EMAPA:29067				missing child term	EMAPA:29067 follicle cell of primary follicle, is a ovary follicle cell, has part_of some ovary primary follicle, mapped to CL:0000477 ovarian follicle cell
+UBERON:0006376	EMAPA:29683				other	"EMAPA:29683 premacula segment of distal straight tubule of inner stripe of inner medulla, has part_of some loop of Henle of inner stripe of outer medulla. Sounds strange... 'of inner medulla' part_of  'of outer medulla. Mapped to UBERON:0006376 premacula segment of distal straight tubule, synonym: ""kidney medulla loop of Henle ascending limb thick segment"" EXACT [MA:th], relationship: part_of UBERON:0006541 {source=""MA""} ! outer medulla inner stripe loop of Henle AND relationship: part_of UBERON:0006542 {source=""MA""} ! outer medulla outer stripe loop of Henle. It exists UBERON:0006541 outer medulla inner stripe loop of Henle."
+UBERON:0016520	EMAPA:36105				other	EMAPA:36105 superficial cell layer of pelvic urethra of female, has part_of some epithelium of pelvic urethra of female, mapped to UBERON:0016520 epithelium of female urethra
+UBERON:0013507	EMAPA:19374				missing child term	EMAPA:19374 T6 vertebral cartilage condensation, has part_of some thoracic vertebral cartilage condensation, mapped to UBERON:0013507 thoracic vertebra cartilage element
+UBERON:0035005	EMAPA:29223				missing child term	EMAPA:29223 skin of male preputial swelling, mapped to UBERON:0035005 preputial swelling of male
+UBERON:0016520	EMAPA:31536				other	EMAPA:31536 urethral plate epithelium of female, has part_of some epithelium of phallic urethra of female,mapped to UBERON:0016520 epithelium of female urethra
+UBERON:0001091	EMAPA:36741				missing child term	EMAPA:36741 cap stage tooth, is a tooth, mapped to UBERON:0001091 calcareous tooth, which has xref: EMAPA:32906 (tooth)
+UBERON:0001091	EMAPA:36742				missing child term	EMAPA:36742 bell stage tooth, is a tooth, mapped to UBERON:0001091 calcareous tooth, which has xref: EMAPA:32906 (tooth)
+UBERON:0006376	EMAPA:28331				other	"EMAPA:28331 premacula segment of distal straight tubule of outer medulla, mapped to UBERON:0006376 premacula segment of distal straight tubule, synonym: ""kidney medulla loop of Henle ascending limb thick segment"" EXACT [MA:th], relationship: part_of UBERON:0006541 {source=""MA""} ! outer medulla inner stripe loop of Henle AND relationship: part_of UBERON:0006542 {source=""MA""} ! outer medulla outer stripe loop of Henle"
+UBERON:0013247	EMAPA:29187				other	EMAPA:29187 epithelium of rest of paramesonephric duct of male, mapped to UBERON:0013247 male paramesonephric duct
+UBERON:0035006	EMAPA:30493				missing child term	EMAPA:30493 mesenchyme of female preputial swelling, mapped to UBERON:0035006 preputial swelling of female
+UBERON:0000473	EMAPA:19175				other	EMAPA:19175 fetal Leydig cell, has part_of some interstitium of the testis, mapped to UBERON:0000473 testis
+UBERON:0013505	EMAPA:19337				missing child term	EMAPA:19337 C3 vertebral cartilage condensation, mapped to UBERON:0013505 cervical vertebra cartilage element
+UBERON:0013505	EMAPA:19350				missing child term	EMAPA:19350 C7 vertebral cartilage condensation, mapped to UBERON:0013505 cervical vertebra cartilage element
+UBERON:0013507	EMAPA:19358				missing child term	EMAPA:19358 T1 vertebral cartilage condensation, mapped to UBERON:0013507 thoracic vertebra cartilage element
+UBERON:0013507	EMAPA:19360				missing child term	EMAPA:19360 T3 vertebral cartilage condensation, mapped to UBERON:0013507 thoracic vertebra cartilage element
+UBERON:0000381	EMAPA:28643				other	EMAPA:28643 detrusor muscle of bladder fundus, mapped to UBERON:0000381 urinary bladder detrusor smooth muscle, which has xref: EMAPA:28637 (detrusor muscle of bladder)
+UBERON:0009201	EMAPA:28949				other	EMAPA:28949 epithelium of nephric duct of female, mapped to UBERON:0009201 nephric duct, which is_a: UBERON:0004819 ! kidney epithelium
+UBERON:0000428	EMAPA:29838				missing child term	EMAPA:29838 ventral prostatic epithelium, mapped to UBERON:0000428 prostate epithelium
+UBERON:0016510	EMAPA:31508				other	EMAPA:31508 urethral tube epithelium of male, has part_of some epithelium of phallic urethra of male, mapped to UBERON:0016510 epithelium of male urethra
+UBERON:0000483	EMAPA:32611				other	EMAPA:32611 forelimb epithelium, mapped to UBERON:0000483 Epithelium
+UBERON:0001898	EMAPA:36778				other	"EMAPA:36778 mammillary area, has part_of some hypothalamus, mapped to UBERON:0001898 hypothalamus. It exists UBERON:0002206 mammillary body, synonym: ""mammillary area"" RELATED [DMBA:Mam], xref: EMAPA:35542 (mammillary body). EMAPA:35542 (mammillary body) is part_of EMAPA:36778 mammillary area"
+UBERON:0013505	EMAPA:19338				missing child term	EMAPA:19338 C4 vertebral cartilage condensation, mapped to UBERON:0013505 cervical vertebra cartilage element
+UBERON:0013505	EMAPA:19349				missing child term	EMAPA:19349 C6 vertebral cartilage condensation, mapped to UBERON:0013505 cervical vertebra cartilage element
+UBERON:0013507	EMAPA:19361				missing child term	EMAPA:19361 T4 vertebral cartilage condensation, mapped to UBERON:0013507 thoracic vertebra cartilage element
+UBERON:0001254	EMAPA:28588				missing child term	EMAPA:28588 superficial cell layer of ureter, has part_of some urothelium of ureter, mapped to UBERON:0001254 urothelium of ureter
+UBERON:0006541	EMAPA:29681				missing child term	"EMAPA:29681 thin descending limb of inner stripe of outer medulla, has part_of some loop of Henle of inner stripe of outer medulla, mapped to UBERON:0006541 outer medulla inner stripe loop of Henle. It exists UBERON:0005096 descending thin limb, synonym: ""loop of Henle thin descending limb"" EXACT [MA:0002625], xref: EMAPA:35514 (loop of Henle thin descending limb)"
+UBERON:0002066	EMAPA:36018	EMAPA:16243			perfect match	EMAPA:36018 umbilical vein, mapped to UBERON:0002066 umbilical vein
+UBERON:0002066		EMAPA:16375				
+UBERON:0014789	EMAPA:16243				perfect match	EMAPA:16243 umbilical vein embryonic part, mapped to UBERON:0014789 embryo portion of umbilical vein
+UBERON:0014786	EMAPA:16375				perfect match	EMAPA:16375 umbilical vein extraembryonic part, mapped to UBERON:0014786 extraembryonic umbilical vein
+UBERON:0015418	EMAPA:36111				other	"EMAPA:36111 muscularis mucosa of pelvic urethra of female, has part_of some mesenchymal layer of pelvic urethra of female, mapped to UBERON:0015418 urethra mesenchymal layer. It exists UBERON:0004219 urethra smooth muscle layer, synonym: ""muscular coat of urethra"" EXACT [FMA:76909], xref: EMAPA:36630 (smooth muscle of urethra). 'muscularis mucosa' is usually describing gastrointestinal tract."
+UBERON:0015418	EMAPA:36126				other	"EMAPA:36126 muscularis mucosa of pelvic urethra of male, has part_of some mesenchymal layer of pelvic urethra of male, mapped to UBERON:0015418 urethra mesenchymal layer. It exists UBERON:0004219 urethra smooth muscle layer, synonym: ""muscular coat of urethra"" EXACT [FMA:76909], xref: EMAPA:36630 (smooth muscle of urethra). 'muscularis mucosa' is usually describing gastrointestinal tract."
+UBERON:0014775	EMAPA:36649				missing child term	EMAPA:36649 prosomere 3, is a prosomere, mapped to UBERON:0014775 prosomere
