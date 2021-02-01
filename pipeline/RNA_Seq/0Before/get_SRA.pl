@@ -50,11 +50,6 @@ while (<$ANNOTATION>){
     next LIB  if ( $library_id =~ /^#/ || $sra_list =~ /^#/ ); # Header or commented line
     next LIB  if ( exists $already_downloaded{$library_id} );
 
-    if ( $info_only ){
-        $count++;
-        next LIB;
-    }
-
     print "Starting [$library_id]\t";
     SRA:
     for my $sra_id ( sort split(/,/, $sra_list) ){
@@ -68,6 +63,10 @@ while (<$ANNOTATION>){
                                              && (-s "$FASTQ_PATH/$library_id/${sra_id}_2.fastq.gz" || -s "$FASTQ_PATH/$library_id/${sra_id}_2.fastq.gz.enc")){
                 warn "\t[$library_id/$sra_id] paired-end already stored\n";
                 next SRA;
+            }
+            if ( $info_only ){
+                $count++;
+                next LIB;
             }
 
             # Run prefetch to get SRA file
@@ -142,10 +141,10 @@ while (<$ANNOTATION>){
 close $ANNOTATION;
 
 if ( $info_only ){
-    print "$count libraries missing\n";
+    print "\n$count libraries missing\n";
 }
 else {
-    print "$count libraries downloaded\n";
+    print "\n$count libraries downloaded\n";
 }
 exit 0;
 
