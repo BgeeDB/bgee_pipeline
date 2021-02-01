@@ -6,8 +6,9 @@ use diagnostics;
 
 use File::Slurp;
 
-my $annotation_file = $ARGV[0]  // die "\n\t$0 <RNASeq library annotation file (rna_seq_sample_info.txt)> <RNASeq library already downloaded (rna_seq_sample_downloaded.txt)>\n\n";
-my $downloaded_lib  = $ARGV[1]  // die "\n\t$0 <RNASeq library annotation file (rna_seq_sample_info.txt)> <RNASeq library already downloaded (rna_seq_sample_downloaded.txt)>\n\n";
+my $annotation_file = $ARGV[0]  // die "\n\t$0 <RNASeq library annotation file (rna_seq_sample_info.txt)> <RNASeq library already downloaded (rna_seq_sample_downloaded.txt)> [info_only]\n\n";
+my $downloaded_lib  = $ARGV[1]  // die "\n\t$0 <RNASeq library annotation file (rna_seq_sample_info.txt)> <RNASeq library already downloaded (rna_seq_sample_downloaded.txt)> [info_only]\n\n";
+my $info_only       = $ARGV[2]  // 0;
 
 
 my $SRATK_PATH         = $ENV{'SRATK_PATH'};
@@ -48,6 +49,11 @@ while (<$ANNOTATION>){
     my $exp_id     = $tmp[1];
     next LIB  if ( $library_id =~ /^#/ || $sra_list =~ /^#/ ); # Header or commented line
     next LIB  if ( exists $already_downloaded{$library_id} );
+
+    if ( $info_only ){
+        $count++;
+        next LIB;
+    }
 
     print "Starting [$library_id]\t";
     SRA:
@@ -135,6 +141,11 @@ while (<$ANNOTATION>){
 }
 close $ANNOTATION;
 
-print "$count libraries downloaded\n";
+if ( $info_only ){
+    print "$count libraries missing\n";
+}
+else {
+    print "$count libraries downloaded\n";
+}
 exit 0;
 
