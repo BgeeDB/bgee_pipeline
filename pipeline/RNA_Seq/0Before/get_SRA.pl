@@ -38,7 +38,8 @@ my %already_downloaded = map { $_ => 1 } read_file("$downloaded_lib", chomp=>1);
 open(my $ANNOTATION, '<', "$annotation_file")  or die "\n\tCannot read/open [$annotation_file]\n\n";
 #libraryId   experimentId   speciesId   organism        genomeFilePath                        database   platform                       libraryType   libraryInfo   readLength   runIds
 #SRX081869   GSE30352       9031        Gallus gallus   gallus_gallus/Gallus_gallus.Galgal4   Ensembl    Illumina Genome Analyzer IIx   SINGLE                      76           SRR306710
-my $count = 0;
+my $count   = 0;
+my $missing = 0;
 LIB:
 while (<$ANNOTATION>){
     chomp $_;
@@ -65,7 +66,7 @@ while (<$ANNOTATION>){
                 next SRA;
             }
             if ( $info_only ){
-                $count++;
+                $missing++;
                 next LIB;
             }
 
@@ -141,7 +142,7 @@ while (<$ANNOTATION>){
 close $ANNOTATION;
 
 if ( $info_only ){
-    print "\n$count libraries missing\n";
+    print "\n$missing libraries missing\n";
 }
 else {
     print "\n$count libraries downloaded\n";
