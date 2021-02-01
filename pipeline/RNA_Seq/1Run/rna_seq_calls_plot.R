@@ -76,10 +76,10 @@ write.table(all_samples, file = file.path(calls_dir, "presence_absence_all_sampl
 pdf(file = paste0(calls_dir, "/presence_absence_boxplots.pdf"), width = 12, height = 5)
 ## 7 boxplots to plot, 1 per column in all_samples
 ## Manually set the y-scale limits for most of the columns. NA are here for columsn thta need to be printed in log scale
-ylimits <- list(NA, c(0, 100), c(0, 70000), c(0, 100), c(0, 30000),  c(0, 100), c(0, 30000))
+ylimits <- list(NA, c(0, 100), c(0, 70000), c(0, 70000), c(0, 100), c(0, 30000), c(0,30000),  c(0, 100), c(0, 30000), c(0,30000), c(0,0.3))
 
 i = 1
-for (column in c(2:8)){
+for (column in c(2:12)){
   print(names(all_samples)[column])
   
   ## get the subset of data to use
