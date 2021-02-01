@@ -51,18 +51,18 @@ while (<$ANNOTATION>){
     next LIB  if ( $library_id =~ /^#/ || $sra_list =~ /^#/ ); # Header or commented line
     next LIB  if ( exists $already_downloaded{$library_id} );
 
-    print "Starting [$library_id]\t";
+    print "Starting [$library_id]\t"  if ( !$info_only );
     SRA:
     for my $sra_id ( sort split(/,/, $sra_list) ){
         if ( $sra_id =~ /^[SEDC]RR\d+/ ){ #S: SRA/NCBI; E: EBI; D: DDBJ; C: GSA_China
             # Check if FASTQ are there AND if SRA have been removed  -> already stored
             if ( !-e "$SRA_PATH/$sra_id.sra" && (-s "$FASTQ_PATH/$library_id/$sra_id.fastq.gz" || -s "$FASTQ_PATH/$library_id/$sra_id.fastq.gz.enc") ){
-                warn "\t[$library_id/$sra_id] single-end already stored\n";
+                warn "\t[$library_id/$sra_id] single-end already stored\n"  if ( !$info_only );
                 next SRA;
             }
             if ( !-e "$SRA_PATH/$sra_id.sra" && (-s "$FASTQ_PATH/$library_id/${sra_id}_1.fastq.gz" || -s "$FASTQ_PATH/$library_id/${sra_id}_1.fastq.gz.enc")
                                              && (-s "$FASTQ_PATH/$library_id/${sra_id}_2.fastq.gz" || -s "$FASTQ_PATH/$library_id/${sra_id}_2.fastq.gz.enc")){
-                warn "\t[$library_id/$sra_id] paired-end already stored\n";
+                warn "\t[$library_id/$sra_id] paired-end already stored\n"  if ( !$info_only );
                 next SRA;
             }
             if ( $info_only ){
@@ -136,14 +136,15 @@ while (<$ANNOTATION>){
             system("rm -f $SRA_PATH/$sra_id.sra*");
         }
     }
-    print "Ending [$library_id]\n\n";
+    print "Ending [$library_id]\n\n"  if ( !$info_only );
     $count++;
 }
 close $ANNOTATION;
 
 if ( $info_only ){
     my $missing = scalar @missing;
-    print "\n$missing libraries missing\n";
+    print join("\n", @missing), "\n";
+    print "#$missing libraries missing\n";
 }
 else {
     print "\n$count libraries downloaded\n";
