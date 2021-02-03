@@ -937,7 +937,7 @@ SRX199154	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	I
 SRX203868	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR615177
 SRX199181	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR601581
 SRX198165	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR598220
-SRX199187	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR602217
+SRX199187	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR602217
 SRX203588	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR612827
 SRX222804	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR660579
 SRX203653	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR614972
@@ -1185,7 +1185,7 @@ SRX198976	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	I
 SRX199220	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR602516
 SRX199385	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR602314
 SRX203841	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR613627
-SRX198348	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR599510
+SRX198348	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR599510
 SRX262035	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR821602
 SRX570210	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED	cDNAShotgunStrandAgnostic	152	SRR1335446
 SRX199254	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR601500
@@ -1245,7 +1245,7 @@ SRX203468	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	I
 SRX223239	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR661723
 SRX221204	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR655146
 SRX261411	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR817880
-SRX434910	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	SINGLE	cDNAShotgunStrandAgnostic	76	SRR1120755
+SRX434910	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED	cDNAShotgunStrandAgnostic	76	SRR1120755
 SRX575366	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED	cDNAShotgunStrandAgnostic	152	SRR1346813
 SRX629387	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED	cDNAShotgunStrandAgnostic	152	SRR1468403
 SRX558334	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED	cDNAShotgunStrandAgnostic	152	SRR1310113
@@ -1448,7 +1448,7 @@ SRX198172	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	I
 SRX199071	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR601287
 SRX198971	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR600533
 SRX199532	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR607538
-SRX198284	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR598894
+SRX198284	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR598894
 SRX199708	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR608368
 SRX199131	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR602540
 SRX222676	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR665563
@@ -3462,7 +3462,7 @@ SRX199104	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	I
 SRX204025	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR615599
 SRX199484	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		202	SRR604146
 SRX198198	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR598533
-SRX199454	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR602753
+SRX199454	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR602753
 SRX198231	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR599225
 SRX198189	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR598396
 SRX223248	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR662871
@@ -4345,7 +4345,7 @@ SRX412099	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	I
 SRX420281	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED	cDNAShotgunStrandAgnostic	152	SRR1098831
 SRX404776	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED	cDNAShotgunStrandAgnostic	152	SRR1068929
 SRX419889	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED	cDNAShotgunStrandAgnostic	152	SRR1098050
-SRX405532	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	SINGLE	cDNAShotgunStrandAgnostic	76	SRR1070429
+SRX405532	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED	cDNAShotgunStrandAgnostic	76	SRR1070429
 SRX422401	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED	cDNAShotgunStrandAgnostic	152	SRR1102656
 SRX410471	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED	cDNAShotgunStrandAgnostic	152	SRR1080048
 SRX590915	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED	cDNAShotgunStrandAgnostic	152	SRR1380122
@@ -4647,8 +4647,8 @@ SRX614818	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	I
 SRX203902	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR615359
 SRX222970	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR661120
 SRX198252	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR599249
-SRX198277	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR599380
-SRX198134	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR599025
+SRX198277	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR599380
+SRX198134	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR599025
 SRX203558	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR612719
 SRX221712	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR656433
 SRX203485	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR612335
@@ -5490,7 +5490,7 @@ SRX584041	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	I
 SRX203429	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR612215
 SRX566748	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED	cDNAShotgunStrandAgnostic	152	SRR1328101
 SRX203550	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR612695
-SRX199831	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR605101
+SRX199831	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR605101
 SRX261554	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR818773
 SRX204072	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR614839
 SRX637768	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED	cDNAShotgunStrandAgnostic	152	SRR1489610
@@ -5501,7 +5501,7 @@ SRX203501	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	I
 SRX223453	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR662918
 SRX203659	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR613126
 SRX204003	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR613999
-SRX199016	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR600656
+SRX199016	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR600656
 SRX222974	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR662126
 SRX203515	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR615311
 SRX203678	SRP012682	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		152	SRR613222
@@ -8228,7 +8228,7 @@ SRX306497	SRP026067	10141	Cavia porcellus	cavia_porcellus/Cavia_porcellus.Cavpor
 ERX442542	ERP005568	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina HiSeq 2000	SINGLE		100	ERR476710
 ERX442543	ERP005568	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina HiSeq 2000	SINGLE		100	ERR476711
 ERX442544	ERP005568	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina HiSeq 2000	SINGLE		100	ERR476712
-ERX913361	ERP005568	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina Genome Analyzer IIx	PAIRED		0.0	ERR833271
+ERX913361	ERP005568	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina Genome Analyzer IIx	PAIRED		0	ERR833271
 ERX551536	ERP006861	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina HiSeq 2000	PAIRED		75	ERR593553
 ERX551526	ERP006861	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina HiSeq 2000	PAIRED		75	ERR593554
 ERX551531	ERP006861	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina HiSeq 2000	PAIRED		75	ERR593546
@@ -13588,12 +13588,12 @@ ERX202568	ERP002220	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Ill
 ERX202570	ERP002220	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR227907
 ERX552418	ERP006867	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina Genome Analyzer IIx	SINGLE		40	ERR594463,ERR594464,ERR594470
 ERX552411	ERP006867	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina Genome Analyzer IIx	SINGLE		40	ERR594459,ERR594460,ERR594469
-ERX552415	ERP006867	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina Genome Analyzer IIx	SINGLE		39.30	ERR594468
+ERX552415	ERP006867	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina Genome Analyzer IIx	SINGLE		39.3	ERR594468
 ERX552412	ERP006867	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina Genome Analyzer IIx	SINGLE		40	ERR594458,ERR594462,ERR594473
 ERX552414	ERP006867	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina Genome Analyzer IIx	SINGLE		40	ERR594465,ERR594466,ERR594472
 ERX552413	ERP006867	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina Genome Analyzer IIx	SINGLE		39.28	ERR594471
-ERX552416	ERP006867	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina Genome Analyzer IIx	SINGLE		39.30	ERR594461
-ERX552417	ERP006867	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina Genome Analyzer IIx	SINGLE		39.30	ERR594467
+ERX552416	ERP006867	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina Genome Analyzer IIx	SINGLE		39.3	ERR594461
+ERX552417	ERP006867	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina Genome Analyzer IIx	SINGLE		39.3	ERR594467
 ERX675425	ERP006696	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		100	ERR731479
 ERX675426	ERP006696	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		100	ERR731480
 ERX675427	ERP006696	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		100	ERR731481
@@ -16752,28 +16752,28 @@ ERX525401	ERP006380	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Il
 ERX525402	ERP006380	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR566413
 ERX525403	ERP006380	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR566414
 ERX525404	ERP006380	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR566415
-ERX779592	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		0.0	ERR789429
+ERX779592	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		0	ERR789429
 ERX779600	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		98.215	ERR789437
 ERX779608	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		100	ERR789445
-ERX779590	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		0.0	ERR789427
+ERX779590	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		0	ERR789427
 ERX779598	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		98.205	ERR789435
 ERX779606	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		100	ERR789443
-ERX779591	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		0.0	ERR789428
+ERX779591	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		0	ERR789428
 ERX779599	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		98.355	ERR789436
 ERX779607	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		100	ERR789444
-ERX779593	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		0.0	ERR789430
+ERX779593	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		0	ERR789430
 ERX779601	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		98.37	ERR789438
 ERX779609	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		100	ERR789446
-ERX779594	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		0.0	ERR789431
+ERX779594	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		0	ERR789431
 ERX779602	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		98.15	ERR789439
 ERX779610	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		100	ERR789447
-ERX779595	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		0.0	ERR789432
+ERX779595	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		0	ERR789432
 ERX779603	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		98.155	ERR789440
 ERX779611	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		100	ERR789448
-ERX779596	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		0.0	ERR789433
+ERX779596	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		0	ERR789433
 ERX779604	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		98.415	ERR789441
 ERX779612	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		100	ERR789449
-ERX779597	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		0.0	ERR789434
+ERX779597	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		0	ERR789434
 ERX779605	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		98.02	ERR789442
 ERX779613	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		100	ERR789450
 ERX1049366	ERP009821	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		100	ERR972389
@@ -17489,22 +17489,22 @@ SRX399499	SRP034732	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	I
 SRX399500	SRP034732	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		75	SRR1060797
 SRX399501	SRP034732	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		75	SRR1060798
 SRX399502	SRP034732	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina HiSeq 2000	PAIRED		75	SRR1060799
-SRX3503722	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.36	SRR6410618
-SRX3503723	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.33	SRR6410617
-SRX3503724	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.39	SRR6410616
-SRX3503725	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.34	SRR6410615
-SRX3503726	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.29	SRR6410614
-SRX3503727	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.19	SRR6410613
-SRX3503728	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.31	SRR6410612
-SRX3503729	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.24	SRR6410611
-SRX3503730	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.38	SRR6410610
-SRX3503731	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.36	SRR6410609
-SRX3503732	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.34	SRR6410608
-SRX3503733	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.34	SRR6410607
-SRX3503734	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.15	SRR6410606
-SRX3503735	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.34	SRR6410605
-SRX3503736	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.35	SRR6410604
-SRX3503737	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.41	SRR6410603
+SRX3503722	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	SINGLE		75.36	SRR6410618
+SRX3503723	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	SINGLE		75.33	SRR6410617
+SRX3503724	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	SINGLE		75.39	SRR6410616
+SRX3503725	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	SINGLE		75.34	SRR6410615
+SRX3503726	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	SINGLE		75.29	SRR6410614
+SRX3503727	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	SINGLE		75.19	SRR6410613
+SRX3503728	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	SINGLE		75.31	SRR6410612
+SRX3503729	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	SINGLE		75.24	SRR6410611
+SRX3503730	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	SINGLE		75.38	SRR6410610
+SRX3503731	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	SINGLE		75.36	SRR6410609
+SRX3503732	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	SINGLE		75.34	SRR6410608
+SRX3503733	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	SINGLE		75.34	SRR6410607
+SRX3503734	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	SINGLE		75.15	SRR6410606
+SRX3503735	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	SINGLE		75.34	SRR6410605
+SRX3503736	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	SINGLE		75.35	SRR6410604
+SRX3503737	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	SINGLE		75.41	SRR6410603
 SRX3529264	SRP127986	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 550	PAIRED		100	SRR6437953
 SRX3529265	SRP127986	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 550	PAIRED		100	SRR6437952
 SRX3529266	SRP127986	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 550	PAIRED		100	SRR6437951
