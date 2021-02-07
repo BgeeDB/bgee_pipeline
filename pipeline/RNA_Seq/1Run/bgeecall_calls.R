@@ -8,6 +8,7 @@
 ## time                     - maximum time to run each job
 ## partition                - partition on which jobs have to be run
 ## working_path             - path to directory where species specific files will be created by BgeeCall
+## decrypt_file_path        - path to the file allowing to decrypt encrypted libraries
 
 ## Session info
 print(sessionInfo())
@@ -24,7 +25,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed in command line
-command_arg <- c("bgeecall_input_file", "account", "time", "partition")
+command_arg <- c("bgeecall_input_file", "account", "time", "partition", "working_path", "decrypt_file_path")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -40,6 +41,7 @@ if(libraries>1000) {
 #TODO: Maybe load kallisto from UNIL modules
 modules <- c("module add Bioinformatics/Software/vital-it;", "module add R/3.6.1;", "module add UHTS/Analysis/kallisto/0.46.0;")
 #generate BgeeCall objects
+encrypted_pattern <- paste0("<(cat FASTQ_PATTERN | openssl enc -ae s-128-cbc -d -pass file:", decrypt_file_path, ")")
 kallistoMetadata <- new("KallistoMetadata", download_kallisto=FALSE)
 userMetadata <- new("UserMetadata", working_path = working_path)
 # use local version of intergenic sequences
