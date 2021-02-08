@@ -127,7 +127,7 @@ while(<$GTF>){
         }
     }
     #NOTE some gene ids may not be uniq in the Bgee database
-    $info{'gene_id'} = 'LOC'.$GeneID;
+    $info{'gene_id'} = $GeneID;
     $info{'GeneID'}  = $GeneID;
 
     $annotations->{ $info{'gene_id'} } = \%info;
