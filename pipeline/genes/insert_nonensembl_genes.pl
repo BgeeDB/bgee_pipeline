@@ -86,7 +86,7 @@ if ( $genomeFilePath =~ /^\w+\/\w+?_((GC[FA])_(\d\d\d)(\d\d\d)(\d\d\d).*)$/ ){
     #      manis_javanica/manis_javanica_GCF_014570535.1_YNU_ManJav_2.0
     #if ( is_success( getstore("ftp://ftp.ncbi.nlm.nih.gov/genomes/all/$2/$3/$4/$5/$1/${1}_genomic.gtf.gz", basename("$genomeFilePath.gtf.gz")) ) ){
     #FIXME don't knwo why LWP::Simple fails on that URL! Passive FTP ???
-    if ( system("wget -O '$gtf_file' 'ftp://ftp.ncbi.nlm.nih.gov/genomes/all/$2/$3/$4/$5/$1/${1}_genomic.gtf.gz'")==0 ){
+    if ( system("wget --quiet -O '$gtf_file' 'ftp://ftp.ncbi.nlm.nih.gov/genomes/all/$2/$3/$4/$5/$1/${1}_genomic.gtf.gz'")==0 ){
         # done
     }
     else {
@@ -96,6 +96,7 @@ if ( $genomeFilePath =~ /^\w+\/\w+?_((GC[FA])_(\d\d\d)(\d\d\d)(\d\d\d).*)$/ ){
 else {
     die "genomeFilePath [$genomeFilePath] not valid\n";
 }
+exit;
 
 
 # Read gene annotations
