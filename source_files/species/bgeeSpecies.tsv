@@ -34,7 +34,7 @@ speciesId	genus	species	speciesCommonName	displayOrder	genomeFilePath	genomeVers
 8081	Poecilia	reticulata	Guppy	35	poecilia_reticulata/Poecilia_reticulata.Guppy_female_1.0_MT	Guppy_female_1.0_MT	2	8081		Acanthophacelus reticulata|POERE|Poecilia (Acanthophacelus) reticulata|Poecilia latipinna reticulata	
 8090	Oryzias	latipes	Japanese rice fish	36	oryzias_latipes/Oryzias_latipes.ASM223467v1	ASM223467v1	2	8090		Japanese medaka|ORYLA|Orizias latipes|Poecilia latipes|medaka	
 8154	Astatotilapia	calliptera	Eastern happy	37	astatotilapia_calliptera/Astatotilapia_calliptera.fAstCal1.2	fAstCal1.2	2	8154		ASTCA|Ctenochromis callipterus|Haplochromis calliptera|Haplochromis callipterus	
-8355	Xenopus	laevis	African clawed frog	54	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	xenLae2	37	8355		Bufo laevis|XENLA|Xenopus leavis|clawed frog|common platanna|platanna	Use RefSeq assembly
+8355	Xenopus	laevis	African clawed frog	54	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	xenLae2	37	8355		Bufo laevis|XENLA|Xenopus leavis|clawed frog|common platanna|platanna	Use RefSeq assembly BUT several GeneID are duplicated
 9103	Meleagris	gallopavo	Wild turkey	38	meleagris_gallopavo/Meleagris_gallopavo.Turkey_2.01	Turkey_2.01	2	9103		MELGA|common turkey|turkey	
 9483	Callithrix	jacchus	White-tufted-ear marmoset	39	callithrix_jacchus/Callithrix_jacchus.ASM275486v1	ASM275486v1	2	9483		CALJA|Callithrix jacchus jacchus|common marmoset|white ear-tufted marmoset	
 9531	Cercocebus	atys	Sooty mangabey	40	cercocebus_atys/Cercocebus_atys.Caty_1.0	Caty_1.0	2	9531		CERAT	
