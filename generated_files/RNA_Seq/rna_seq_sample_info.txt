@@ -11433,16 +11433,16 @@ SRX1456102	SRP066797	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	I
 SRX1456103	SRP066797	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiScanSQ	SINGLE		24.44	SRR2966627
 SRX1456104	SRP066797	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiScanSQ	SINGLE		24.445	SRR2966628
 SRX1456105	SRP066797	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiScanSQ	SINGLE		24.44	SRR2966629
-SRX1438205	SRP066398	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	SINGLE		90	SRR2924898
-SRX1438212	SRP066398	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	SINGLE		90	SRR2924906
-SRX1438223	SRP066398	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	SINGLE		90	SRR2924924
-SRX1438229	SRP066398	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	SINGLE		90	SRR2924926
-SRX1438231	SRP066398	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	SINGLE		90	SRR2924928
-SRX1443838	SRP066398	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	SINGLE		90	SRR2952735
-SRX1443933	SRP066398	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	SINGLE		90	SRR2952736
-SRX1443934	SRP066398	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	SINGLE		90	SRR2952751
-SRX1443935	SRP066398	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	SINGLE		90	SRR2952753
-SRX1443936	SRP066398	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	SINGLE		90	SRR2952765
+SRX1438205	SRP066398	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		90	SRR2924898
+SRX1438212	SRP066398	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		90	SRR2924906
+SRX1438223	SRP066398	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		90	SRR2924924
+SRX1438229	SRP066398	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		90	SRR2924926
+SRX1438231	SRP066398	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		90	SRR2924928
+SRX1443838	SRP066398	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		90	SRR2952735
+SRX1443933	SRP066398	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		90	SRR2952736
+SRX1443934	SRP066398	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		90	SRR2952751
+SRX1443935	SRP066398	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		90	SRR2952753
+SRX1443936	SRP066398	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		90	SRR2952765
 ERX167051	ERP001954	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina Genome Analyzer II	SINGLE		36	ERR192366
 ERX167052	ERP001954	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina Genome Analyzer II	SINGLE		36	ERR192450
 ERX167053	ERP001954	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina Genome Analyzer II	SINGLE		36	ERR192365
@@ -13173,7 +13173,7 @@ SRX379177	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sa
 SRX379178	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	Ensembl	Illumina HiSeq 2000	PAIRED		200	SRR1032422
 SRX748818	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	Ensembl	Illumina HiSeq 2500	PAIRED		214	SRR1636464
 SRX379179	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	Ensembl	Illumina HiSeq 2000	PAIRED		200	SRR1032423
-SRX379180	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	Ensembl	Illumina HiSeq 2000	PAIRED		200	SRR1032424
+SRX379180	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	Ensembl	Illumina HiSeq 2000	SNGLE		200	SRR1032424
 SRX3164762	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	Ensembl	Illumina HiSeq 4000	PAIRED		120	SRR6010925
 SRX379181	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	Ensembl	Illumina HiSeq 2000	PAIRED		200	SRR1032425
 SRX379182	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	Ensembl	Illumina HiSeq 2000	PAIRED		200	SRR1032426
@@ -13580,12 +13580,12 @@ SRX1799618	SRP075700	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0
 SRX1799621	SRP075700	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina HiSeq 2500	PAIRED		125	SRR3586328
 SRX1799612	SRP075700	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina HiSeq 2500	PAIRED		125	SRR3586319
 SRX1799611	SRP075700	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina HiSeq 2500	PAIRED		125	SRR3586318
-ERX202566	ERP002220	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR227910
-ERX202571	ERP002220	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR227908
-ERX202569	ERP002220	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR227912
-ERX202567	ERP002220	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR227911
-ERX202568	ERP002220	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR227909
-ERX202570	ERP002220	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR227907
+ERX202566	ERP002220	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2000	SINGLE		101	ERR227910
+ERX202571	ERP002220	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2000	SINGLE		101	ERR227908
+ERX202569	ERP002220	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2000	SINGLE		101	ERR227912
+ERX202567	ERP002220	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2000	SINGLE		101	ERR227911
+ERX202568	ERP002220	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2000	SINGLE		101	ERR227909
+ERX202570	ERP002220	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2000	SINGLE		101	ERR227907
 ERX552418	ERP006867	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina Genome Analyzer IIx	SINGLE		40	ERR594463,ERR594464,ERR594470
 ERX552411	ERP006867	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina Genome Analyzer IIx	SINGLE		40	ERR594459,ERR594460,ERR594469
 ERX552415	ERP006867	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina Genome Analyzer IIx	SINGLE		39.3	ERR594468
@@ -14516,8 +14516,8 @@ SRX2235332	SRP067373	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Il
 SRX2235333	SRP067373	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 3000	PAIRED		151	SRR4408970
 SRX2235334	SRP067373	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 3000	PAIRED		151	SRR4408971
 SRX2235335	SRP067373	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 3000	PAIRED		151	SRR4408972
-SRX2235336	SRP067373	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 3000	PAIRED		151	SRR4408973
-SRX2235337	SRP067373	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 3000	PAIRED		151	SRR4408974
+SRX2235336	SRP067373	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 3000	SINGLE		151	SRR4408973
+SRX2235337	SRP067373	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 3000	SINGLE		151	SRR4408974
 SRX2235338	SRP067373	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 3000	PAIRED		151	SRR4408975
 SRX2235339	SRP067373	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 3000	PAIRED		151	SRR4408976
 SRX2235340	SRP067373	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 3000	PAIRED		151	SRR4408977
@@ -14577,22 +14577,22 @@ SRX2235393	SRP067373	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Il
 SRX2235395	SRP067373	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 3000	PAIRED		151	SRR4409032
 SRX2235394	SRP067373	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 3000	PAIRED		151	SRR4409031
 SRX2235396	SRP067373	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 3000	PAIRED		151	SRR4409033
-SRX2883349	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645254
-SRX2883351	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645256
-SRX2883352	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645257
-SRX2883354	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645259
-SRX2883355	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645260
-SRX2883357	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645262
-SRX2883358	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645263
-SRX2883360	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645265
-SRX2883361	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645266
-SRX2883363	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645268
-SRX2883364	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645269
+SRX2883349	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645254
+SRX2883351	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645256
+SRX2883352	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645257
+SRX2883354	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645259
+SRX2883355	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645260
+SRX2883357	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645262
+SRX2883358	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645263
+SRX2883360	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645265
+SRX2883361	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645266
+SRX2883363	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645268
+SRX2883364	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645269
 SRX2883366	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR5645271
-SRX2883367	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645272
-SRX2883369	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645274
-SRX2883370	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645275
-SRX2883372	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645277
+SRX2883367	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645272
+SRX2883369	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645274
+SRX2883370	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645275
+SRX2883372	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645277
 SRX2883373	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR5645278
 SRX2883375	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR5645280
 SRX2883376	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR5645281
@@ -14605,26 +14605,26 @@ SRX2883385	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Il
 SRX2883387	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR5645292
 SRX2883388	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR5645293
 SRX2883390	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR5645295
-SRX2883391	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645296
+SRX2883391	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645296
 SRX2883393	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR5645298
 SRX2883394	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR5645299
 SRX2883396	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR5645301
-SRX2883350	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645255
-SRX2883353	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645258
-SRX2883356	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645261
-SRX2883359	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645264
-SRX2883362	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645267
-SRX2883365	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645270
-SRX2883368	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645273
-SRX2883371	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645276
+SRX2883350	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645255
+SRX2883353	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645258
+SRX2883356	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645261
+SRX2883359	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645264
+SRX2883362	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645267
+SRX2883365	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645270
+SRX2883368	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645273
+SRX2883371	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645276
 SRX2883374	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR5645279
 SRX2883377	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR5645282
-SRX2883380	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645285
+SRX2883380	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645285
 SRX2883383	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR5645288
 SRX2883386	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR5645291
-SRX2883389	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645294
+SRX2883389	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645294
 SRX2883392	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR5645297
-SRX2883395	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	PAIRED		50	SRR5645300
+SRX2883395	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR5645300
 SRX242927	SRP018740	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.2	Ensembl	Illumina HiScanSQ	SINGLE		51	SRR747917
 SRX242931	SRP018740	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiScanSQ	SINGLE		51	SRR747924
 SRX242929	SRP018740	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiScanSQ	SINGLE		51	SRR747925
