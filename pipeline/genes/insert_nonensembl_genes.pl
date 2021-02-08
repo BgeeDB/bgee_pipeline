@@ -68,7 +68,6 @@ else {
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #NOTE currently this script is tested only with RefSeq GTF as source!
-#NOTE and works only for  "protein_coding"  genes!!!!!!!!!!!!!!!!!!!!
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
@@ -96,15 +95,13 @@ if ( $genomeFilePath =~ /^\w+\/\w+?_((GC[FA])_(\d\d\d)(\d\d\d)(\d\d\d).*)$/ ){
 else {
     die "genomeFilePath [$genomeFilePath] not valid\n";
 }
-exit;
 
 
 # Read gene annotations
 open(my $GTF, "zcat $gtf_file|")  or die "Cannot read the GTF file [$gtf_file]\n";
 my $annotations;
-#NOTE only "protein_coding" gene_biotype is used here because information are got from UniProt
 while(<$GTF>){
-    next  if ( !/gene_biotype "protein_coding"/ );
+    next  if ( !/gene_biotype "/ );#NOTE keep only gene_biotype, so "whole" gene not exon for example
 
     #NC_030727.1	Gnomon	gene	141537768	141585606	.	+	.	gene_id "LOC108709019"; db_xref "GeneID:108709019"; gbkey "Gene"; gene "LOC108709019"; gene_biotype "protein_coding";
     #NC_030735.1	BestRefSeq%2CGnomon	gene	66815561	66907873	.	+	.	gene_id "bcl2.S"; db_xref "GeneID:100271914"; db_xref "Xenbase:XB-GENE-6251434"; description "B-cell CLL/lymphoma 2 S homeolog"; gbkey "Gene"; gene "bcl2.S"; gene_biotype "protein_coding"; gene_synonym "bcl-2"; gene_synonym "bcl2"; gene_synonym "xBcl-2"; gene_synonym "xbcl2";
@@ -244,83 +241,85 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
     @xrefs    = @{ $annotations->{$gene}->{'db_xref'} }       if ( exists $annotations->{$gene}->{'db_xref'} );
     my @aliases;
     my @gos;
-    # Get extra info from UniProt
-    #NOTE only for protein_coding biotype!
-    my $content = get('https://www.uniprot.org/uniprot/?query=GeneID:'.$annotations->{$gene}->{'GeneID'}.'&format=xml&force=true');
-    #WARNING some cases with one ensembl -> several ensembl xrefs: ENSG00000139618
-    if ( defined $content && $content ne '' && $content =~ /<\/uniprot>/ ){
-        my $hash = xml2hash $content;
-        #NOTE not easy to test if exists an array in hash ref. It works with eval!
-        #NOTE may return several entries, keep the first one (the best one?)
-        my $root = eval { exists $hash->{'uniprot'}->{'entry'}->[0] } ? $hash->{'uniprot'}->{'entry'}->[0] : $hash->{'uniprot'}->{'entry'};
+    # Get extra info from UniProt   (for protein_coding genes only!)
+    if ( $annotations->{$gene}->{'gene_biotype'} eq 'protein_coding' ){
+        my $content = get('https://www.uniprot.org/uniprot/?query=GeneID:'.$annotations->{$gene}->{'GeneID'}.'&format=xml&force=true');
+        #WARNING some cases with one ensembl -> several ensembl xrefs: ENSG00000139618
+        if ( defined $content && $content ne '' && $content =~ /<\/uniprot>/ ){
+            my $hash = xml2hash $content;
+            #NOTE not easy to test if exists an array in hash ref. It works with eval!
+            #NOTE may return several entries, keep the first one (the best one?)
+            my $root = eval { exists $hash->{'uniprot'}->{'entry'}->[0] } ? $hash->{'uniprot'}->{'entry'}->[0] : $hash->{'uniprot'}->{'entry'};
 
-        # Check the UniProt entry contains the xref used to query it, and is for the right species
-        print "GeneID:$annotations->{$gene}->{'GeneID'}\n"  if ( $debug );
-        if ( grep { $_->{'-type'} eq 'GeneID' && $_->{'-id'} eq "$annotations->{$gene}->{'GeneID'}" } @{ $root->{'dbReference'} } ){
-            if ( $root->{'organism'}->{'dbReference'}->{'-id'} == $speciesBgee ){
-                my $dataset   = 'Uniprot/'.uc($root->{'-dataset'});
-                my $uniprotID = $root->{'name'};
-                my @uniprotAC = eval { exists $root->{'accession'}->[0] } ? @{ $root->{'accession'} } : ($root->{'accession'});
+            # Check the UniProt entry contains the xref used to query it, and is for the right species
+            print "GeneID:$annotations->{$gene}->{'GeneID'}\n"  if ( $debug );
+            if ( grep { $_->{'-type'} eq 'GeneID' && $_->{'-id'} eq "$annotations->{$gene}->{'GeneID'}" } @{ $root->{'dbReference'} } ){
+                if ( $root->{'organism'}->{'dbReference'}->{'-id'} == $speciesBgee ){
+                    my $dataset   = 'Uniprot/'.uc($root->{'-dataset'});
+                    my $uniprotID = $root->{'name'};
+                    my @uniprotAC = eval { exists $root->{'accession'}->[0] } ? @{ $root->{'accession'} } : ($root->{'accession'});
 
-                #Overwrite description if any
-                my @prot_desc_type = sort keys %{ $root->{'protein'} };
-                my $prot_root;
-                if ( scalar @prot_desc_type >= 1 ){
-                    $prot_root = $root->{'protein'}->{'recommendedName'} || $root->{'protein'}->{ $prot_desc_type[0] };
-                }
-                if ( $prot_root ){
-                    my $prot_name = eval { exists $prot_root->[0] } ? $prot_root->[0] : $prot_root;
-                    my $prot_desc = eval { exists $prot_name->{'fullName'}->{'#text'} } ? $prot_name->{'fullName'}->{'#text'} : $prot_name->{'fullName'};
-                    $description = $prot_desc  if ( $prot_desc !~ /LOC\d+/ );
-                }
+                    #Overwrite description if any
+                    my @prot_desc_type = sort keys %{ $root->{'protein'} };
+                    my $prot_root;
+                    if ( scalar @prot_desc_type >= 1 ){
+                        $prot_root = $root->{'protein'}->{'recommendedName'} || $root->{'protein'}->{ $prot_desc_type[0] };
+                    }
+                    if ( $prot_root ){
+                        my $prot_name = eval { exists $prot_root->[0] } ? $prot_root->[0] : $prot_root;
+                        my $prot_desc = eval { exists $prot_name->{'fullName'}->{'#text'} } ? $prot_name->{'fullName'}->{'#text'} : $prot_name->{'fullName'};
+                        $description = $prot_desc  if ( $prot_desc !~ /LOC\d+/ );
+                    }
 
-                # Gene name and synonyms
-                if ( ref $root->{'gene'} ne 'ARRAY' ){
-                    #NOTE to avoid some weird syntax such as GeneID:386601
-                    my @gene_names = eval { exists $root->{'gene'}->{'name'}->[0] } ? @{ $root->{'gene'}->{'name'} } : ($root->{'gene'}->{'name'});
-                    for my $gene_name ( sort @gene_names ){
-                        next  if ( ref $gene_name eq 'ARRAY' );
-                        if ( $gene_name->{'-type'} eq 'primary' ){
-                            $external_name = $gene_name->{'#text'};
-                        }
-                        else {
-                            push @synonyms, $gene_name->{'#text'};
+                    # Gene name and synonyms
+                    if ( ref $root->{'gene'} ne 'ARRAY' ){
+                        #NOTE to avoid some weird syntax such as GeneID:386601
+                        my @gene_names = eval { exists $root->{'gene'}->{'name'}->[0] } ? @{ $root->{'gene'}->{'name'} } : ($root->{'gene'}->{'name'});
+                        for my $gene_name ( sort @gene_names ){
+                            next  if ( ref $gene_name eq 'ARRAY' );
+                            if ( $gene_name->{'-type'} eq 'primary' ){
+                                $external_name = $gene_name->{'#text'};
+                            }
+                            else {
+                                push @synonyms, $gene_name->{'#text'};
+                            }
                         }
                     }
-                }
 
-                # Xrefs
-                my @used_xref_db = ('EMBL', 'CCDS', 'RefSeq', 'Xenbase', 'ZFIN');
-                for my $dbref ( sort @{ $root->{'dbReference'} }){
-                    if ( any { $dbref->{'-type'} eq $_ } @used_xref_db ){
-                        push @xrefs, $dbref->{'-type'}.':'.$dbref->{'-id'};
-                        if ( exists $dbref->{'property'} ){
-                            my @properties = eval { exists $dbref->{'property'}->[0] } ? @{ $dbref->{'property'} } : ($dbref->{'property'});
-                            for my $property ( sort @properties ){
-                                if ( $property->{'-type'} =~ /sequence ID$/ ){
-                                    push @xrefs, $dbref->{'-type'}.':'.$property->{'-value'};
+                    # Xrefs
+                    my @used_xref_db = ('EMBL', 'CCDS', 'RefSeq', 'Xenbase', 'ZFIN');
+                    for my $dbref ( sort @{ $root->{'dbReference'} }){
+                        if ( any { $dbref->{'-type'} eq $_ } @used_xref_db ){
+                            push @xrefs, $dbref->{'-type'}.':'.$dbref->{'-id'};
+                            if ( exists $dbref->{'property'} ){
+                                my @properties = eval { exists $dbref->{'property'}->[0] } ? @{ $dbref->{'property'} } : ($dbref->{'property'});
+                                for my $property ( sort @properties ){
+                                    if ( $property->{'-type'} =~ /sequence ID$/ ){
+                                        push @xrefs, $dbref->{'-type'}.':'.$property->{'-value'};
+                                    }
                                 }
                             }
                         }
-                    }
-                    elsif ( $dbref->{'-type'} eq 'GO' ){
-                        for my $property ( sort @{ $dbref->{'property'} } ){
-                            if ( $property->{'-type'} eq 'evidence' ){
-                                push @gos, $dbref->{'-id'}.'___'.$property->{'-value'};
-                                last;
+                        elsif ( $dbref->{'-type'} eq 'GO' ){
+                            for my $property ( sort @{ $dbref->{'property'} } ){
+                                if ( $property->{'-type'} eq 'evidence' ){
+                                    push @gos, $dbref->{'-id'}.'___'.$property->{'-value'};
+                                    last;
+                                }
                             }
                         }
-                    }
-                    elsif ( $dbref->{'-type'} eq 'Ensembl' ){
-                        push @xrefs, $dbref->{'-type'}.':'.$dbref->{'-id'};
-                        for my $property ( sort @{ $dbref->{'property'} } ){
-                            push @xrefs, $dbref->{'-type'}.':'.$property->{'-value'};
+                        elsif ( $dbref->{'-type'} eq 'Ensembl' ){
+                            push @xrefs, $dbref->{'-type'}.':'.$dbref->{'-id'};
+                            for my $property ( sort @{ $dbref->{'property'} } ){
+                                push @xrefs, $dbref->{'-type'}.':'.$property->{'-value'};
+                            }
                         }
                     }
                 }
             }
         }
     }
+    #FIXME should we keep all gene_biotypes ????
     @xrefs    = map { s/GeneID:/GenBank:/; $_ } uniq @xrefs;
     @gos      = uniq @gos;
     @synonyms = grep { $_ ne $display_id && $_ ne $external_name} uniq @synonyms;
