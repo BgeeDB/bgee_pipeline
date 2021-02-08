@@ -115,6 +115,7 @@ while (<$ANNOTATION>){
                 system("xz -9 $prefix.fastp.html $prefix.fastp.json");
             }
             if ( !-e "$prefix.R.stat" ){
+                #FIXME echo -e does not look to be valid anymore in recent Linux and Mac OS
                 system("echo -e \"#min\tmax\tmedian\tmean\" > $prefix.R.stat");
                 system("zcat $fastq_R | sed -n '2~4p' | awk '{print length(\$0)}' | Rscript -e 'd<-scan(\"stdin\", quiet=TRUE);cat(min(d), max(d), median(d), mean(d), sep=\"\\t\");cat(\"\\n\")' >> $prefix.R.stat");
             }
