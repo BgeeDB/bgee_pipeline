@@ -225,7 +225,7 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
     my $external_name = $annotations->{$gene}->{'gene'}          || $gene;
     my $external_db   = $NonEnsSource;
     my $description   = $annotations->{$gene}->{'description'}   || '';
-    my $biotype       = $annotations->{$gene}->{'gene_biotype'};
+    my $biotype       = map_refseq_biotype_to_ensembl_biotype( $annotations->{$gene}->{'gene_biotype'} );
 
     ## Cleaning
     # Remove useless whitespace(s)
@@ -242,7 +242,7 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
     my @aliases;
     my @gos;
     # Get extra info from UniProt   (for protein_coding genes only!)
-    if ( $annotations->{$gene}->{'gene_biotype'} eq 'protein_coding' ){
+    if ( $biotype eq 'protein_coding' ){
         my $content = get('https://www.uniprot.org/uniprot/?query=GeneID:'.$annotations->{$gene}->{'GeneID'}.'&format=xml&force=true');
         #WARNING some cases with one ensembl -> several ensembl xrefs: ENSG00000139618
         if ( defined $content && $content ne '' && $content =~ /<\/uniprot>/ ){
@@ -319,7 +319,6 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
             }
         }
     }
-    #FIXME should we keep all gene_biotypes ????
     @xrefs    = map { s/GeneID:/GenBank:/; $_ } uniq @xrefs;
     @gos      = uniq @gos;
     @synonyms = grep { $_ ne $display_id && $_ ne $external_name} uniq @synonyms;
@@ -427,4 +426,34 @@ print "Gene nbr for $scientific_name: ", scalar %$annotations, "\n\n";
 $dbh->disconnect;
 
 exit 0;
+
+
+sub map_refseq_biotype_to_ensembl_biotype {
+    my ($refseq_biotype) = @_;
+
+                   # RefSeq biotypes           # Ensembl biotypes
+    my %mapping = ('C_region'               => 'IG_C_gene',
+                   'V_segment'              => 'IG_V_gene',
+                   'guide_RNA'              => 'misc_RNA', # don't exist in animals as far as we know, so map to misc_RNA
+                   'lncRNA'                 => 'lncRNA',
+                   'misc_RNA'               => 'misc_RNA',
+                   'other'                  => 'misc_RNA', # ????
+                   'protein_coding'         => 'protein_coding',
+                   'pseudogene'             => 'pseudogene',
+                   'rRNA'                   => 'rRNA',
+                   'scRNA'                  => 'scRNA',
+                   'snRNA'                  => 'snRNA',
+                   'snoRNA'                 => 'snoRNA',
+                   'telomerase_RNA'         => 'lncRNA', # looks annotated as lncRNA in Ensembl
+                   'tRNA'                   => 'tRNA',
+                   'transcribed_pseudogene' => 'transcribed_processed_pseudogene', # could also be mapped to "transcribed_unprocessed_pseudogene"
+                  );
+
+    if ( exists $mapping{$refseq_biotype} ){
+        return $mapping{$refseq_biotype};
+    }
+    else {
+        die "[$refseq_biotype] RefSeq biotype was never observed before. You need to find a mapping with Ensembl biotypes\n";
+    }
+}
 
