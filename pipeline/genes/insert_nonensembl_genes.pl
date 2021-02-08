@@ -329,7 +329,7 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
     ## Insert gene info
     my $bgeeGeneId;
     if ( ! $debug ){
-        $geneDB->execute($stable_id, $external_name, $description, $biotype, $speciesBgee)  or die $geneDB->errstr;
+        $geneDB->execute($stable_id, $external_name, $description, $biotype, $speciesBgee)  or die "[$stable_id]", $geneDB->errstr;
         $bgeeGeneId = $dbh->{'mysql_insertid'};
         die "Cannot get bgeeGeneId [$bgeeGeneId]\n"  if ( $bgeeGeneId !~ /^\d+$/ );
     }
@@ -340,9 +340,13 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
 
     ## Get gene synonyms, if any
     SYNONYM:
+    my %seen;
     for my $syn ( @synonyms ){
         if ( ! $debug ){
-            $synonymDB->execute($bgeeGeneId, $syn)  or die $synonymDB->errstr;
+            my $SYN = uc($syn);
+            next  if ( exists $seen{"$bgeeGeneId--$SYN"} ); #Because possible issues with cases in synonyms
+            $synonymDB->execute($bgeeGeneId, $syn)  or die "[$stable_id]", $synonymDB->errstr;
+            $seen{"$bgeeGeneId--$SYN"} = 1;
         }
         else {
             print "synonym: [$syn]\n";
@@ -360,7 +364,7 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
         next  if ( $xref =~ /;/ );
         my ($dbname, $pid) = split(':', $xref);
         if ( ! $debug ){
-            $xrefDB->execute($bgeeGeneId, $pid, '', $InsertedDataSources{lc $dbname})  or die $xrefDB->errstr;
+            $xrefDB->execute($bgeeGeneId, $pid, '', $InsertedDataSources{lc $dbname})  or die "[$stable_id]", $xrefDB->errstr;
         }
         else {
             print "xref: [$stable_id] [$pid] [$dbname]\n";
@@ -405,7 +409,7 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
     ALL:
     for my $term ( @all ){
         if ( ! $debug ){
-            $geneToTermDB->execute($bgeeGeneId, $term)  or die $geneToTermDB->errstr;
+            $geneToTermDB->execute($bgeeGeneId, $term)  or die "[$stable_id]", $geneToTermDB->errstr;
         }
         else {
             print "term: [$gene] [$term]\n";
