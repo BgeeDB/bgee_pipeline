@@ -234,7 +234,7 @@ check_abundance_all_intergenic: abundance_all_intergenic
 	# Check SLURM stderr files
 	@cat $(RNASEQ_CLUSTER_ALL_RES)/*/*.err > $@.tmp
 	# Check kallisto runs without any mappings
-	@grep 'Kallisto results include only NAs'    $(RNASEQ_CLUSTER_ALL_RES)/*/*.Rout  >>$@.tmp
+	#@grep 'Kallisto results include only NAs'    $(RNASEQ_CLUSTER_ALL_RES)/*/*.Rout  >>$@.tmp
 	# Check kallisto runs with low mappings, with few reads, ...
 	# Check length of reads, ...
 	@grep 'Problem:'                             $(RNASEQ_CLUSTER_ALL_RES)/*/*.txt   >>$@.tmp
@@ -245,6 +245,7 @@ check_abundance_all_intergenic: abundance_all_intergenic
 	@echo -e "TODO: Flagged / excluded samples with low % genes mapped / low number of reads mapped / for which mapping failed\nAdd them manually to file: $(RNASEQ_SAMPEXCLUDED_FILEPATH)"
 	@$(MV) $@.tmp $@
 
+#This rule was not run for Bgee 15.0
 export_length: check_abundance_all_intergenic
 	#Export transcript length to a file to export
 	$(eval TIME_LENGTH := $(shell date +'%Y%m%d-%H%M%S'))
@@ -308,7 +309,7 @@ sum_by_species: check_abundance_all_intergenic $(RNASEQ_SAMPINFO_FILEPATH) $(RNA
 	$(eval TIME_SUM := $(shell date +'%Y%m%d-%H%M%S'))
 	@echo "#!/bin/sh" > $@_$(TIME_SUM).sh
 	@echo "$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args rna_seq_sample_info=\"$(RNASEQ_SAMPINFO_FILEPATH)\" rna_seq_sample_excluded=\"$(RNASEQ_SAMPEXCLUDED_FILEPATH)\" kallisto_count_folder=\"$(RNASEQ_CLUSTER_ALL_RES)\" tx2gene_folder=\"$(RNASEQ_CLUSTER_GTF)\" sum_by_species_folder=\"$(RNASEQ_CLUSTER_SUM_RES)\"' 1Run/rna_seq_sum_by_species.R $(OUTPUT_DIR)rna_seq_sum_by_species.Rout" >> $@_$(TIME_SUM).sh
-	@sbatch --account=$(CLUSTER_ACCOUNT_SENSITIVE) --time=2-00:00:00 --mem=5G --partition=$(CLUSTER_PARTITION_SENSITIVE) --output=$@_$(TIME_SUM).out --error=$@_$(TIME_SUM).err  --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_SUM) $@_$(TIME_SUM).sh > $@.tmp
+	@sbatch --account=$(CLUSTER_ACCOUNT_SENSITIVE) --time=2-00:00:00 --mem=30G --partition=$(CLUSTER_PARTITION_SENSITIVE) --output=$@_$(TIME_SUM).out --error=$@_$(TIME_SUM).err  --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_SUM) $@_$(TIME_SUM).sh > $@.tmp
 	NUMBER_JOBS=$$(squeue --name=$@_$(TIME_SUM) --noheader | wc -l) ; \
 	echo $$NUMBER_JOBS ; \
 	while [ $$NUMBER_JOBS -gt 0 ] ; do \
@@ -333,7 +334,7 @@ generate_intergenic_sequences: sum_by_species
 	$(eval TIME_INTERGENIC := $(shell date +'%Y%m%d-%H%M%S'))
 	@echo "#!/bin/sh" > $@_$(TIME_INTERGENIC).sh
 	@echo "perl 1Run/create_intergenic_fasta.pl -sample_info_path=$(RNASEQ_SAMPINFO_FILEPATH) -transcriptomes_folder=$(RNASEQ_CLUSTER_GTF) -transcriptome_compression_ext=$(TRANSCRIPTOME_COMPRESSION_EXT) -sum_abundance_file_path=$(SUM_ABUNDANCE_FILE_PATH) -gaussian_file_path=$(RNASEQ_CLUSTER_GAUSSIAN_CHOICE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) -other_intergenic_dir=$(CLUSTER_OTHER_INTERGENIC_FOLDER) > $@.tmp 2> $@.warn" >> $@_$(TIME_INTERGENIC).sh
-	@sbatch --account=$(CLUSTER_ACCOUNT_SENSITIVE) --time=2-00:00:00 --mem=2G --partition=$(CLUSTER_PARTITION_SENSITIVE) --error=$@_$(TIME_INTERGENIC).err --output=$@_$(TIME_INTERGENIC).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_INTERGENIC) $@_$(TIME_INTERGENIC).sh > $@.tmp
+	@sbatch --account=$(CLUSTER_ACCOUNT_SENSITIVE) --time=2-00:00:00 --mem=5G --partition=$(CLUSTER_PARTITION_SENSITIVE) --error=$@_$(TIME_INTERGENIC).err --output=$@_$(TIME_INTERGENIC).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_INTERGENIC) $@_$(TIME_INTERGENIC).sh > $@.tmp
 	NUMBER_JOBS=$$(squeue --name=$@_$(TIME_INTERGENIC) --noheader | wc -l) ; \
 	while [ $$NUMBER_JOBS -gt 0 ] ; do \
 		sleep 30 ; \
@@ -351,7 +352,7 @@ indexes_bgeecall:
 	# generate BgeeCall input file from the rna_seq_sample_info.txt file
 	@perl 1Run/sample_info_to_bgeecall.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -sample_excluded=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >>$@.tmp 2>&1
 	# generate kallisto indexes with BgeeCall
-	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(RNASEQ_BGEECALL_FILE)" account="$(CLUSTER_ACCOUNT_SENSITIVE)" time="12:00:00" partition="$(CLUSTER_PARTITION_SENSITIVE)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' 1Run/bgeecall_index.R $(OUPUT_DIR)bgeecall_index.Rout
+	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(RNASEQ_BGEECALL_FILE)" account="$(CLUSTER_ACCOUNT_SENSITIVE)" time="24:00:00" partition="$(CLUSTER_PARTITION_SENSITIVE)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' 1Run/bgeecall_index.R $(OUPUT_DIR)bgeecall_index.Rout
 	@$(MV) $@.tmp $@
 
 presence_absence_bgeecall: indexes_bgeecall

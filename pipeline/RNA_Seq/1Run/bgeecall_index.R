@@ -37,6 +37,6 @@ kallistoMetadata <- new("KallistoMetadata")
 userMetadata <- new("UserMetadata", working_path = working_path)
 bgeeMetadata <- new("BgeeMetadata", intergenic_release="custom")
 # slurm options for index generation. 30G is enough for the majority of species. However as for Bgee15 it had to be increased to 90G for few species
-slurm_options_index <- list(account = account, time = time, partition = partition, mem = "30G")
+slurm_options_index <- list(account = account, time = time, partition = partition, mem = "60G")
 # generate indexes
 generate_slurm_indexes(userFile=bgeecall_input_file, slurm_options = slurm_options_index, modules = modules, kallistoMetadata = kallistoMetadata, bgeeMetadata=bgeeMetadata, userMetadata = userMetadata, nodes=50)
