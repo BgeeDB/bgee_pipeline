@@ -129,6 +129,8 @@ while(<$GTF>){
     #NOTE some gene ids may not be uniq in the Bgee database
     $info{'gene_id'} = $GeneID;
     $info{'GeneID'}  = $GeneID;
+    # Map to Ensembl biotypes
+    $info{'gene_biotype'} = map_refseq_biotype_to_ensembl_biotype( $info{'gene_biotype'} );
 
     $annotations->{ $info{'gene_id'} } = \%info;
 }
@@ -225,7 +227,7 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
     my $external_name = $annotations->{$gene}->{'gene'}          || $gene;
     my $external_db   = $NonEnsSource;
     my $description   = $annotations->{$gene}->{'description'}   || '';
-    my $biotype       = map_refseq_biotype_to_ensembl_biotype( $annotations->{$gene}->{'gene_biotype'} );
+    my $biotype       = $annotations->{$gene}->{'gene_biotype'};
 
     ## Cleaning
     # Remove useless whitespace(s)
@@ -437,7 +439,7 @@ sub map_refseq_biotype_to_ensembl_biotype {
                    'guide_RNA'              => 'misc_RNA', # don't exist in animals as far as we know, so map to misc_RNA
                    'lncRNA'                 => 'lncRNA',
                    'misc_RNA'               => 'misc_RNA',
-                   'other'                  => 'misc_RNA', # ????
+                   'other'                  => 'other', # not an Ensembl biotype, but is rare case where gene does not meet any of the above (other) criteria
                    'protein_coding'         => 'protein_coding',
                    'pseudogene'             => 'pseudogene',
                    'rRNA'                   => 'rRNA',
