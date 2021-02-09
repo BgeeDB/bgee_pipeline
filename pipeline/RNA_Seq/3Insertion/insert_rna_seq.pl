@@ -241,9 +241,9 @@ print "Inserting libraries and all results...\n";
 my $insLib = $bgee->prepare('INSERT INTO rnaSeqLibrary (rnaSeqLibraryId, rnaSeqExperimentId,
                              rnaSeqPlatformId, conditionId, tpmThreshold,
                              allGenesPercentPresent, proteinCodingGenesPercentPresent,
-                             intergenicRegionsPercentPresent, meanIntergenic, sdIntergenic,
-                             pValueThreshold, allReadsCount, mappedReadsCount, minReadLength, 
-                             maxReadLength, libraryType, libraryOrientation)
+                             intergenicRegionsPercentPresent, meanTpmReferenceIntergenicDistribution, 
+                             sdTpmReferenceIntergenicDistribution, pValueThreshold, allReadsCount, 
+                             mappedReadsCount, minReadLength, maxReadLength, libraryType, libraryOrientation)
                              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
 
@@ -364,6 +364,7 @@ for my $expId ( sort keys %libraries ){
             my $exclusion = $Utils::CALL_NOT_EXCLUDED;
             if ( $debug ){
                 print 'INSERT INTO rnaSeqResult: ', $libraryId,   ' - ', $genes{ $libraries{$expId}->{$libraryId}->{'speciesId'}}->{ $geneId }, ' - ',
+                      $genesResults{$geneId}->{'FPKM'},           ' - ',
                       $genesResults{$geneId}->{'TPM'},            ' - ',
                       $genesResults{$geneId}->{'estimatedCount'}, ' - ',
                       $genesResults{$geneId}->{'pValue'},         ' - ',

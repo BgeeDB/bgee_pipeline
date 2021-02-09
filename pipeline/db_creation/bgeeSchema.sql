@@ -915,6 +915,8 @@ create table rnaSeqLibrary (
     rnaSeqExperimentId varchar(70) not null,
     rnaSeqPlatformId varchar(255) not null,
     conditionId mediumint unsigned not null,
+    meanTpmReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'mean TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
+    sdTpmReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'standard deviation in TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
 -- TMM normalization factor
     tmmFactor decimal(8, 6) not null default 1.0,
 -- TPM threshold to consider a gene as expressed
@@ -922,10 +924,7 @@ create table rnaSeqLibrary (
     allGenesPercentPresent decimal(5, 2) unsigned not null default 0,
     proteinCodingGenesPercentPresent decimal(5, 2) unsigned not null default 0,
     intergenicRegionsPercentPresent decimal(5, 2) unsigned not null default 0,
-    meanIntergenic decimal(16, 6) not null,
-    sdIntergenic decimal(12, 8) not null,
-    pValueThreshold decimal(5, 2) unsigned not null default 0
-            COMMENT 'pValue threshold used to consider genes present/absent. (for Bgee15 this threshold should always be 0.05)',
+    pValueThreshold decimal(5, 4) unsigned not null default 0 COMMENT 'pValue threshold used to consider genes present/absent. (for Bgee15 this threshold should always be 0.05)',
 -- total number of reads in library, including those not mapped.
 -- In case of paired-end libraries, it's the number of pairs of reads;
 -- In case of single read, it's the total number of reads
@@ -975,11 +974,12 @@ create table rnaSeqResult (
     fpkm decimal(16, 6) not null COMMENT 'FPKM values, NOT log transformed',
     tpm decimal(16, 6) not null COMMENT 'TPM values, NOT log transformed',
 -- rank is not "not null" because we update this information afterwards
-    pValue double unsigned not null default 1.0 COMMENT 'pValue used to choose detectionFlag',
-    zScore decimal(18,14) not null COMMENT 'zScore used to generate the pValue',
     rank decimal(9, 2) unsigned,
 -- for information, measure not normalized for reads or genes lengths
     readsCount decimal(16, 6) unsigned not null COMMENT 'As of Bgee 14, read counts are "estimated counts" produced using the Kallisto software. They are not normalized for read or gene lengths.',
+-- zScore can be negative
+    zScore decimal(35, 30) not null,
+    pValue decimal(31, 30) unsigned not null default 1 COMMENT 'present calls are based on the pValue',   
     expressionId int unsigned,
     detectionFlag enum('undefined', 'absent', 'present') default 'undefined',
 -- Warning, qualities must be ordered, the index in the enum is used in many queries.
@@ -1068,6 +1068,8 @@ create table scRnaSeqFullLengthLibrary (
     tpmThreshold decimal(16, 6) not null,
     allGenesPercentPresent decimal(5, 2) unsigned not null default 0,
     proteinCodingGenesPercentPresent decimal(5, 2) unsigned not null default 0,
+    intergenicRegionsPercentPresent decimal(5, 2) unsigned not null default 0,
+    pValueThreshold decimal(5, 4) unsigned not null default 0 COMMENT 'pValue threshold used to consider genes present/absent. (for Bgee15 this threshold should always be 0.05)',
 -- total number of reads in library, including those not mapped.
 -- In case of paired-end libraries, it's the number of pairs of reads;
 -- In case of single end, it's the total number of reads
@@ -1104,6 +1106,9 @@ create table scRnaSeqFullLengthLibraryDiscarded (
 create table scRnaSeqFullLengthResult (
     scRnaSeqFullLengthLibraryId varchar(70) not null,
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
+-- FPKM and TPM values inserted here are NOT TMM normalized,
+-- these are the raw data before any normalization
+    fpkm decimal(16, 6) not null COMMENT 'FPKM values, NOT log transformed',
     tpm decimal(16, 6) not null COMMENT 'TPM values, NOT log transformed',
 -- rank is not "not null" because we update this information afterwards
     rank decimal(9, 2) unsigned,
