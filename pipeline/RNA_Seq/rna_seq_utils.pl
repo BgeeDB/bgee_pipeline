@@ -738,15 +738,17 @@ sub getGenesResults {
     # $expressionCalls{geneId}->{'estimatedCount'} = ...
     # $expressionCalls{geneId}->{'FPKM'} = ...
     # $expressionCalls{geneId}->{'TPM'} = ...
+    # $expressionCalls{$geneId}->{'zscore'} = ...
+    # $expressionCalls{$geneId}->{'pValue'} = ...
     # $expressionCalls{geneId}->{'biotype'} = ...
     # $expressionCalls{geneId}->{'expressionCall'} = ...
-    my %expressionCalls;
 
     open(my $IN, '<', $sampleExpCallsFile)  or die "Could not read file [$sampleExpCallsFile]\n";
     my $line = <$IN>;    #header
     while ( defined ($line = <$IN>) ){
         chomp $line;
-        # file format: geneId, estimatedCount, FPKM, TPM, biotype, expression call
+        # file format: geneId, tpm, counts, length, biotype, type, zscore, pvalue, expression call, fpkm
+
         my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
         my $geneId         = $tmp[0];
         my $TPM            = $tmp[1];
@@ -755,6 +757,7 @@ sub getGenesResults {
         my $zscore         = $tmp[6];
         my $pValue         = $tmp[7];
         my $expressionCall = $tmp[8];
+        my $FPKM           = $tmp[9]
 
         if ( !defined $expressionCalls{$geneId} ){
             # Perform format checks
@@ -787,7 +790,10 @@ sub getGenesResults {
                 warn "Warning, wrong format for expressionCall [$expressionCall]\n";
                 $discarded = 1;
             }
-
+            if ( $FPKM !~ /$floatingPointRegex/ ){
+                warn "Warning, wrong format for FPKM [$FPKM]\n";
+                $discarded = 1;
+            }
             if ( $discarded ){
                 warn ' for gene: ', $geneId, "\n";
             }
@@ -798,6 +804,7 @@ sub getGenesResults {
                 $expressionCalls{$geneId}->{'zscore'}         = $zscore;
                 $expressionCalls{$geneId}->{'pValue'}         = $pValue;
                 $expressionCalls{$geneId}->{'expressionCall'} = $expressionCall;
+                $expressionCalls{$geneId}->{'FPKM'}           = $FPKM;
             }
         }
         else {

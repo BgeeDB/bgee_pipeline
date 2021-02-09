@@ -970,8 +970,9 @@ create table rnaSeqLibraryDiscarded (
 create table rnaSeqResult (
     rnaSeqLibraryId varchar(70) not null,
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
--- TPM values inserted here are NOT TMM normalized,
+-- FPKM and TPM values inserted here are NOT TMM normalized,
 -- these are the raw data before any normalization
+    fpkm decimal(16, 6) not null COMMENT 'FPKM values, NOT log transformed',
     tpm decimal(16, 6) not null COMMENT 'TPM values, NOT log transformed',
 -- rank is not "not null" because we update this information afterwards
     pValue double unsigned not null default 1.0 COMMENT 'pValue used to choose detectionFlag',

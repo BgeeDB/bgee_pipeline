@@ -262,9 +262,9 @@ for my $libraryId ( sort keys %excludedLibraries ){
 my $insRun = $bgee->prepare('INSERT INTO rnaSeqRun (rnaSeqRunId, rnaSeqLibraryId) VALUES (?, ?)');
 
 # query for genes results insertion
-my $insResult = $bgee->prepare('INSERT INTO rnaSeqResult (rnaSeqLibraryId, bgeeGeneId, tpm,
+my $insResult = $bgee->prepare('INSERT INTO rnaSeqResult (rnaSeqLibraryId, bgeeGeneId, fpkm, tpm,
                                 readsCount, pValue, zScore, detectionFlag, rnaSeqData, reasonForExclusion)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
 my $inserted = 0;
 for my $expId ( sort keys %libraries ){
@@ -376,6 +376,7 @@ for my $expId ( sort keys %libraries ){
                 $insResult->execute($libraryId,
                                     # geneId is an ensembl ID, we need to get the bgeeGeneId
                                     $genes{ $libraries{$expId}->{$libraryId}->{'speciesId'}}->{ $geneId },
+                                    $genesResults{$geneId}->{'FPKM'},
                                     $genesResults{$geneId}->{'TPM'},
                                     $genesResults{$geneId}->{'estimatedCount'},
                                     $genesResults{$geneId}->{'pValue'},
