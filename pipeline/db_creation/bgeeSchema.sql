@@ -978,8 +978,8 @@ create table rnaSeqResult (
 -- for information, measure not normalized for reads or genes lengths
     readsCount decimal(16, 6) unsigned not null COMMENT 'As of Bgee 14, read counts are "estimated counts" produced using the Kallisto software. They are not normalized for read or gene lengths.',
 -- zScore can be negative
-    zScore decimal(35, 30) not null,
-    pValue decimal(31, 30) unsigned not null default 1 COMMENT 'present calls are based on the pValue',   
+    zScore decimal(35, 30),
+    pValue decimal(31, 30) unsigned default 1 COMMENT 'present calls are based on the pValue',   
     expressionId int unsigned,
     detectionFlag enum('undefined', 'absent', 'present') default 'undefined',
 -- Warning, qualities must be ordered, the index in the enum is used in many queries.
@@ -1115,8 +1115,8 @@ create table scRnaSeqFullLengthResult (
 -- for information, measure not normalized for reads or genes lengths
     readsCount decimal(16, 6) unsigned not null COMMENT 'As of Bgee 14, read counts are "estimated counts" produced using the Kallisto software. They are not normalized for read or gene lengths.',
 -- zScore can be negative
-    zScore decimal(35, 30) not null,
-    pValue decimal(31, 30) unsigned not null default 1 COMMENT 'present calls are based on the pValue',
+    zScore decimal(35, 30),
+    pValue decimal(31, 30) unsigned default 1 COMMENT 'present calls are based on the pValue',
     expressionId int unsigned,
     detectionFlag enum('undefined', 'present') default 'undefined' COMMENT 'we do not produce absent calls from scRNA-Seq data',
 -- Warning, qualities must be ordered, the index in the enum is used in many queries.
@@ -1200,8 +1200,8 @@ create table scRnaSeqTargetBasedResult (
 -- rank is not "not null" because we update this information afterwards
     rank decimal(9, 2) unsigned,
 -- zScore can be negative
-    zScore decimal(35, 30) not null,
-    pValue decimal(31, 30) unsigned not null default 1 COMMENT 'present calls are based on the pValue',
+    zScore decimal(35, 30),
+    pValue decimal(31, 30) unsigned default 1 COMMENT 'present calls are based on the pValue',
     expressionId int unsigned,
     detectionFlag enum('undefined', 'present') default 'undefined' COMMENT 'we do not produce absent calls from scRNA-Seq data',
 -- Warning, qualities must be ordered, the index in the enum is used in many queries.
