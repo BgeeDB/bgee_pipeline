@@ -364,8 +364,14 @@ presence_absence_bgeecall: indexes_bgeecall
 check_presence_absence: presence_absence_bgeecall 
 	# check that presence absence calls have been generated for all libraries present in the rna_seq_sample_info file
 	# generate file containing calls info for all libraries and use this file to generate different plots
-	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_sample_info="$(RNASEQ_BGEECALL_FILE)" calls_dir="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)all_results"' 1Run/rna_seq_calls_plot.R $(OUTPUT_DIR)rna_seq_calls_plot.Rout
+	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_sample_info="$(RNASEQ_BGEECALL_FILE)" calls_dir="$(RNASEQ_CLUSTER_BGEECALL_CALLS)"' 1Run/rna_seq_calls_plot.R $(OUTPUT_DIR)rna_seq_calls_plot.Rout
 	@touch $@
+
+# Do not use slurm to run this light processing
+calculate_fpkm: presence_absence_bgeecall
+	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args all_results_dir="$(RNASEQ_CLUSTER_BGEECALL_CALLS)" calls_file_name="$(ABUNDANCEFILE)"' 1Run/calculate_fpkm.R $(OUTPUT_DIR)calculate_fpkm.Rout
+	@touch $@
+
 
 #NOTE if output directory is not $(RNASEQ_CLUSTER_ALL_RES): copy all files with calls to this directory, as well as summary stats and plot files
 #for folder in *; do echo $folder; /bin/cp $folder/* ../all_results_bgee_v15/$folder/; done
