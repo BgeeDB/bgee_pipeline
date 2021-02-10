@@ -100,8 +100,9 @@ else {
 # Read gene annotations
 open(my $GTF, "zcat $gtf_file|")  or die "Cannot read the GTF file [$gtf_file]\n";
 my $annotations;
+GTF:
 while(<$GTF>){
-    next  if ( !/gene_biotype "/ );#NOTE keep only gene_biotype, so "whole" gene not exon for example
+    next GTF  if ( !/gene_biotype "/ );#NOTE keep only gene_biotype, so "whole" gene not exon for example
 
     #NC_030727.1	Gnomon	gene	141537768	141585606	.	+	.	gene_id "LOC108709019"; db_xref "GeneID:108709019"; gbkey "Gene"; gene "LOC108709019"; gene_biotype "protein_coding";
     #NC_030735.1	BestRefSeq%2CGnomon	gene	66815561	66907873	.	+	.	gene_id "bcl2.S"; db_xref "GeneID:100271914"; db_xref "Xenbase:XB-GENE-6251434"; description "B-cell CLL/lymphoma 2 S homeolog"; gbkey "Gene"; gene "bcl2.S"; gene_biotype "protein_coding"; gene_synonym "bcl-2"; gene_synonym "bcl2"; gene_synonym "xBcl-2"; gene_synonym "xbcl2";
@@ -126,7 +127,19 @@ while(<$GTF>){
             }
         }
     }
-    #NOTE some gene ids may not be uniq in the Bgee database
+    #NOTE from https://ftp.ncbi.nlm.nih.gov/genomes/README_GFF3.txt
+    #"There may be multiple gene features on a single assembly annotated
+    # with the same GeneID dbxref because they are considered to be different
+    # parts or alleles of the same gene. In these cases, it's possible for the
+    # gene features to be annotated with different gene_biotype values, such as
+    # protein_coding and transcribed_pseudogene or protein_coding and other."
+    if ( exists $annotations->{ $GeneID } && $info{'gene_id'} =~ /_\d+$/ ){
+        next GTF;
+    }
+    #TODO duplicated GeneIDs look to always start with the "right" one without _\d+ at the end of the gene_id
+    #     so no need to check if _\d+ come first
+
+    #NOTE some gene ids may not be uniq in the Bgee db, so replace "gene_id" by "GeneID"
     $info{'gene_id'} = $GeneID;
     $info{'GeneID'}  = $GeneID;
     # Map to Ensembl biotypes
@@ -322,7 +335,7 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
         }
     }
     @xrefs    = map { s/GeneID:/GenBank:/; $_ } uniq @xrefs;
-    @gos      = uniq @gos;
+    @gos      = uniq map { uc($_) } @gos;
     @synonyms = grep { $_ ne $display_id && $_ ne $external_name} uniq @synonyms;
 
 
