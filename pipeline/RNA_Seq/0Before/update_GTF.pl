@@ -11,9 +11,15 @@
 #    2) linked to the exception "rearrangement required for product" (ebi.ac.uk/ena/WebFeat/qualifiers/exception.html)
 #    3) created using The Vertebrate Mitochondrial Code (transl_table=2)
 #- add gene_biotype attribute at the end of lines corresponding to exon: in RefSeq gtf gene_biotype attribute is only present in the gene lines. Those lines are not kept in the gtf_all file generated later in the pipeline. It is then mandatory to add this info to exon lines (in order to be able to retrieve the mapping between gene and biotypes)
-#- reate gene_name and change value of gene_id : in ncbi gtf files gene_id are actually names that are probably not unique and contain shity characters (e.g. '). 
+#- create gene_name and change value of gene_id : in ncbi gtf files gene_id are actually names that are probably not unique and contain shity characters (e.g. '). 
 #    1) create an attribute gene_name with the value of gene_id 
 #    2) remove gene_id attribute and create a new one with dbxref value
+#- delete genes with a duplicated "dbxref GeneID:..." attribute. Some genes are duplicated. They have a different gene_id but the same "dbxref GeneID:...".
+#    The name of all duplicated genes follow the pattern geneName, geneName_1, geneName_2, .....
+#    NCBI only integrates genes without the pattern "_number". We decided to do the same in order to be able to integrate these species in Bgee.
+#    NOTE from https://ftp.ncbi.nlm.nih.gov/genomes/README_GFF3.txt : 
+# There may be multiple gene features on a single assembly annotated with the same GeneID dbxref because they are considered to be different parts or alleles of the same gene. In these cases, it's possible for the gene features to be annotated with different gene_biotype values, such as protein_coding and transcribed_pseudogene or protein_coding and other."
+
 
 # Perl core modules
 use strict;
@@ -36,7 +42,7 @@ my %opts = ('path_to_gtf_folder=s'    => \$path_to_gtf_folder,
 
 ######################## Check arguments ########################
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $path_to_gtf_folder eq '' || $sample_info_file eq '') {
+if ( $path_to_gtf_folder eq '' || $sample_info_file eq '') {
     print "\n\tInvalid or missing argument:
 \te.g. $0 -path_to_gtf_folder=CLUSTER_GTF_DIR -sample_info_file=$(SAMPLE_INFO_PATH)>> $@.tmp 2> $@.warn
 \t-path_to_gtf_folder     Path to the directory containing all gtf annotation files
@@ -60,10 +66,6 @@ while (my $line = <$sample_info>) {
         $ref_seq_path{$fields[4]}= "";
     }
 }
-
-print keys %ref_seq_path;
-print "\n";
-
 
 foreach my $key (keys %ref_seq_path) {
     my $file_prefix = basename($key);
@@ -103,27 +105,42 @@ foreach my $key (keys %ref_seq_path) {
     }
 
     #first read of gtf file to retrieve mapping gene<-biotype
-    open(IN, "gunzip -c $file |") || die "can’t open pipe to $file";
+    open(IN, "gunzip -c $file |") || die "can’t open $file";
     my %geneToBiotype;
+    my %xrefTogeneid;
     while(my $line = <IN>) {
         next if ($line =~ /^#/);
         # retrieve mapping gene_id <- gene_biotype
-        my @gene_id = $line =~ /\t(gene_id [^;]+)/;
+        my @gene_id = $line =~ /\tgene_id "([^"]+)"/;
         if ($line =~ /\tgene\t/) {
+            my @gene_xref = $line =~ /"GeneID:([^"]+)/;
+            # if the GeneID already exists it corresponds to a gene duplicated in the gtf file
+            if(exists $xrefTogeneid{$gene_xref[0]}) {
+                print "already exists $gene_xref[0]\n";
+                # if the gene_id ends with _number then we do not consider it
+                if ($gene_id[0] =~ /_\d+$/) {
+                    print "do not add $gene_id[0]\n";
+                    next;
+                # if the gene_id do not ends with _number then we remove already existing one
+                } else {
+                    my $xrefToRemove = $xrefTogeneid{$gene_xref[0]};
+                    print "gene_id to remove : $xrefToRemove \n";
+                    delete($geneToBiotype{$xrefToRemove})
+                }
+            }
             my @gene_biotype = $line =~ /(gene_biotype [^;]+)/;
             $geneToBiotype{$gene_id[0]}{'biotype'} = $gene_biotype[0];
-            my @gene_xref = $line =~ /"GeneID:([^"]+)/;
             $geneToBiotype{$gene_id[0]}{'xref'} = $gene_xref[0];
+            $xrefTogeneid{$gene_xref[0]} = $gene_id[0];
         }
     }
     close(IN);
 
-    print Dumper (\%geneToBiotype);
-
     #second read of gtf file to update it
-    open(IN, "gunzip -c $file |") || die "can’t open pipe to $file";
+    open(IN, "gunzip -c $file |") || die "can’t open $file";
     open (my $OUT, '>', "$tempFile")  or die "Cannot write [$tempFile]\n";
     while(my $line = <IN>) {
+        chomp($line);
         # remove lines containing "unknown_transcript_1"
         next if (index($line, "unknown_transcript_1") != -1);
         # remove lines starting with #
@@ -131,20 +148,20 @@ foreach my $key (keys %ref_seq_path) {
         # remove transcript_id = "" when exist
         $line =~ s/transcript_id ""; //;
         #add gene_biotype info to lines corresponding to exon
-        my @gene_id = $line =~ /\t(gene_id [^;]+)/;
-        chomp($line);
-        # remove gene name as gene_id and put the real gene_id
-        my $gene_xref_tag = "gene_id $geneToBiotype{$gene_id[0]}{'xref'}";
-        $line =~ s/$gene_id[0]/$gene_xref_tag/g;
-        my @gene_name = split "\"", $gene_id[0];
-        #split at each " character in order to only keep the gene name itself
-        my $gene_name_tag = "gene_name \"".$gene_name[1]."\";";
-        $line .= $gene_name_tag;
-        if ($line =~ /\texon\t/) {
-            $line .= " $geneToBiotype{$gene_id[0]}{'biotype'};";
+        my @gene_id = $line =~ /\tgene_id "([^"]+)"/;
+        if(exists $geneToBiotype{$gene_id[0]}) {
+            # remove gene name as gene_id and put the real gene_id
+            my $gene_xref_tag = "$geneToBiotype{$gene_id[0]}{'xref'}";
+            $line =~ s/$gene_id[0]/$gene_xref_tag/g;
+            #split at each " character in order to only keep the gene name itself
+            my $gene_name_tag = "gene_name \"".$gene_id[0]."\";";
+            $line .= $gene_name_tag;
+            if ($line =~ /\texon\t/) {
+                $line .= " $geneToBiotype{$gene_id[0]}{'biotype'};";
+            }
+            $line .= "\n";
+            print {$OUT} $line;
         }
-        $line .= "\n";
-        print {$OUT} $line;
     }
     close(IN);
     close $OUT;
