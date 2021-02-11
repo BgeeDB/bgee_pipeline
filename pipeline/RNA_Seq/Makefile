@@ -238,7 +238,7 @@ abundance_all_intergenic: prepare_indexed_transcriptome $(RNASEQ_SAMPINFO_FILEPA
 
 check_abundance_all_intergenic: abundance_all_intergenic
 	# Check SLURM stderr files
-	@cat $(RNASEQ_CLUSTER_ABUNDANCE_ALL)/*/*.err > $@.tmp
+	@grep -v 'Unable to locate a modulefile'     $(RNASEQ_CLUSTER_ABUNDANCE_ALL)/*/*.err   > $@.tmp
 	# Check kallisto runs without any mappings
 	#@grep 'Kallisto results include only NAs'    $(RNASEQ_CLUSTER_ABUNDANCE_ALL)/*/*.Rout  >>$@.tmp
 	# Check kallisto runs with low mappings, with few reads, ...
@@ -268,7 +268,7 @@ export_length: check_abundance_all_intergenic
 	@echo -e "\tTranscript length are now exported into $(RNASEQ_LENGTH_INFO_FILEPATH) file\n"
 	@$(MV) $@.tmp $@
 
-finalize_pipeline: check_abundance_all_intergenic
+create_reports_all_intergenic: check_abundance_all_intergenic
 	# Collect infos from .report files
 	$(eval TIME_FINALIZE := $(shell date +'%Y%m%d-%H%M%S'))
 	@echo "#!/bin/sh" > $@_$(TIME_FINALIZE).sh
@@ -283,16 +283,16 @@ finalize_pipeline: check_abundance_all_intergenic
 	# Touch all files so that they are not removed from /scratch/temporary
 	@find $(RNASEQ_CLUSTER_SCRATCH) -exec touch {} \;
 	# We use tail -n+1 instead of cat because it writes the name of the file in the concatenated file
-	@tail -n+1 $(RNASEQ_CLUSTER_LOG)/*/*.err    > $(RNASEQ_CLUSTER_LOG)/all_std_err.txt 2>>warnings.$@
-	@tail -n+1 $(RNASEQ_CLUSTER_LOG)/*/*.out    > $(RNASEQ_CLUSTER_LOG)/all_std_out.txt 2>>warnings.$@
-	@tail -n+1 $(RNASEQ_CLUSTER_LOG)/*/*.report > $(RNASEQ_CLUSTER_LOG)/all_reports.txt 2>>warnings.$@
+	@tail -n+1 $(RNASEQ_CLUSTER_LOG)/*/*.err    > $(RNASEQ_CLUSTER_LOG)/abundance_all_intergenic_std_err.txt 2>>warnings.$@
+	@tail -n+1 $(RNASEQ_CLUSTER_LOG)/*/*.out    > $(RNASEQ_CLUSTER_LOG)/abundance_all_intergenic_std_out.txt 2>>warnings.$@
+	@tail -n+1 $(RNASEQ_CLUSTER_LOG)/*/*.report > $(RNASEQ_CLUSTER_LOG)/abundance_all_intergenic_reports.txt 2>>warnings.$@
 	# Back-up all data (not final but it's worth doing an intermediate backup here)
-	@$(RM)    $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar*
-	@tar -C $(RNASEQ_CLUSTER_SCRATCH)/ -cf $(RNASEQ_CLUSTER_SCRATCH)/all_results_$(DBNAME).tar  all_results_$(DBNAME)/  2>>warnings.$@
-	@gzip -9  $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar                                                        2>>warnings.$@
+	@$(RM)    $(RNASEQ_CLUSTER_SCRATCH)abundance_all_intergenic_$(DBNAME).tar*
+	@tar -C $(RNASEQ_CLUSTER_SCRATCH)/ -cf $(RNASEQ_CLUSTER_SCRATCH)/abundance_all_intergenic_$(DBNAME).tar  abundance_all_intergenic_$(DBNAME)/  2>>warnings.$@
+	@gzip -9  $(RNASEQ_CLUSTER_SCRATCH)abundance_all_intergenic_$(DBNAME).tar                                                        2>>warnings.$@
 	# Move back-up data to /data/
 	@mkdir -p $(RNASEQ_CLUSTER_ALL_RES_BACKUP)/
-	@$(MV) $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar.gz $(RNASEQ_CLUSTER_ALL_RES_BACKUP) 2>>warnings.$@
+	@$(MV) $(RNASEQ_CLUSTER_SCRATCH)abundance_all_intergenic_$(DBNAME).tar.gz $(RNASEQ_CLUSTER_ALL_RES_BACKUP) 2>>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
