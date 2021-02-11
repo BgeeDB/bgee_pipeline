@@ -66,6 +66,7 @@ while (my $line = <$sample_info>) {
         $ref_seq_path{$fields[4]}= "";
     }
 }
+close($sample_info);
 
 foreach my $key (keys %ref_seq_path) {
     my $file_prefix = basename($key);
@@ -83,9 +84,9 @@ foreach my $key (keys %ref_seq_path) {
     my $tempFile = "$path_to_gtf_folder/temp.gtf";
     
     #preliminary read of gtf file to check that gtf file was not already updated
-    open(IN, "gunzip -c $file |") || die "can’t open pipe to $file";
+    open(my $IN, "gunzip -c $file |") || die "can’t open pipe to $file";
     my $already_modified = 0;
-    while (my $line = <IN>) {
+    while (my $line = <$IN>) {
         next if ($line =~ /^#/);
         # check if firest exon line already has a gene_biotype attribute
         if ($line =~ /\texon\t/) {
@@ -95,7 +96,7 @@ foreach my $key (keys %ref_seq_path) {
             last;
         }
     }
-    close(IN);
+    close($IN);
 
     if ($already_modified) {
         print "file $file already modified\n";
@@ -105,41 +106,51 @@ foreach my $key (keys %ref_seq_path) {
     }
 
     #first read of gtf file to retrieve mapping gene<-biotype
-    open(IN, "gunzip -c $file |") || die "can’t open $file";
+    open($IN, "gunzip -c $file |") || die "can’t open $file";
     my %geneToBiotype;
     my %xrefTogeneid;
-    while(my $line = <IN>) {
+    while(my $line = <$IN>) {
         next if ($line =~ /^#/);
         # retrieve mapping gene_id <- gene_biotype
         my @gene_id = $line =~ /\tgene_id "([^"]+)"/;
-        if ($line =~ /\tgene\t/) {
-            my @gene_xref = $line =~ /"GeneID:([^"]+)/;
-            # if the GeneID already exists it corresponds to a gene duplicated in the gtf file
-            if(exists $xrefTogeneid{$gene_xref[0]}) {
-                print "already exists $gene_xref[0]\n";
-                # if the gene_id ends with _number then we do not consider it
-                if ($gene_id[0] =~ /_\d+$/) {
-                    print "do not add $gene_id[0]\n";
-                    next;
-                # if the gene_id do not ends with _number then we remove already existing one
-                } else {
-                    my $xrefToRemove = $xrefTogeneid{$gene_xref[0]};
-                    print "gene_id to remove : $xrefToRemove \n";
-                    delete($geneToBiotype{$xrefToRemove})
+        # only parse lines with a value associated to gene_id attribute
+        if (defined $gene_id[0] && length $gene_id[0]) {
+            if ($line =~ /\tgene\t/) {
+                my @gene_xref = $line =~ /"GeneID:([^"]+)/;
+                # if the GeneID already exists it corresponds to a gene duplicated in the gtf file
+                if(exists $xrefTogeneid{$gene_xref[0]}) {
+                   print "already exists $gene_xref[0]\n";
+                   # if the gene_id ends with _number then we do not consider it
+                    if ($gene_id[0] =~ /_\d+$/) {
+                        print "do not add $gene_id[0]\n";
+                        next;
+                    # if the gene_id do not ends with _number then we remove already existing one
+                    } else {
+                        my $xrefToRemove = $xrefTogeneid{$gene_xref[0]};
+                       print "gene_id to remove : $xrefToRemove \n";
+                       delete($geneToBiotype{$xrefToRemove})
+                    }
+               }
+                my @gene_biotype = $line =~ /(gene_biotype [^;]+)/;
+                $geneToBiotype{$gene_id[0]}{'biotype'} = $gene_biotype[0];
+                $geneToBiotype{$gene_id[0]}{'xref'} = $gene_xref[0];
+                $geneToBiotype{$gene_id[0]}{'numberExons'} = 0;
+                $xrefTogeneid{$gene_xref[0]} = $gene_id[0];
+            } elsif ($line =~ /\texon\t/ ) {
+                # sanity check that the gene is already inserted in %geneToBiotype
+                if(exists $geneToBiotype{$gene_id[0]}) {
+                    $geneToBiotype{$gene_id[0]}{'numberExons'}++;
+
                 }
             }
-            my @gene_biotype = $line =~ /(gene_biotype [^;]+)/;
-            $geneToBiotype{$gene_id[0]}{'biotype'} = $gene_biotype[0];
-            $geneToBiotype{$gene_id[0]}{'xref'} = $gene_xref[0];
-            $xrefTogeneid{$gene_xref[0]} = $gene_id[0];
         }
     }
-    close(IN);
+    close($IN);
 
     #second read of gtf file to update it
-    open(IN, "gunzip -c $file |") || die "can’t open $file";
+    open($IN, "gunzip -c $file |") || die "can’t open $file";
     open (my $OUT, '>', "$tempFile")  or die "Cannot write [$tempFile]\n";
-    while(my $line = <IN>) {
+    while(my $line = <$IN>) {
         chomp($line);
         # remove lines containing "unknown_transcript_1"
         next if (index($line, "unknown_transcript_1") != -1);
@@ -161,9 +172,25 @@ foreach my $key (keys %ref_seq_path) {
             }
             $line .= "\n";
             print {$OUT} $line;
+            #some genes does not have exon described
+            # If a gene does not have exon, a fake exon is created in order to be able to capture expression.
+            # This fake exon is created with a transcript_id equal to the id of the gene
+            if ($line =~ /\tgene\t/ && $geneToBiotype{$gene_id[0]}{'numberExons'} == 0) {
+                print "will add a fake exon for gene $gene_xref_tag\n";
+                my @columns = split(/\t/, $line);
+                my $fake_exon = "$columns[0]\t$columns[1]\texon\t$columns[3]\t$columns[4]\t$columns[5]\t$columns[6]\t$columns[7]\t";
+                my $fake_gene_id = "gene_id \"$gene_xref_tag\";";
+                my $fake_transcript_id = "transcript_id \"$gene_xref_tag\";";
+                my $fake_db_xref = "db_xref \"GeneID:$gene_xref_tag\";";
+                my $fake_exon_number = "exon_number\"1\";";
+                my $fake_gene_name = "gene_name \"$gene_id[0]\";";
+                my $fake_biotype = "$geneToBiotype{$gene_id[0]}{'biotype'};";
+                $fake_exon .= "$fake_gene_id $fake_transcript_id $fake_db_xref $fake_exon_number $fake_gene_name $fake_biotype\n";
+                print {$OUT} $fake_exon;
+            }
         }
     }
-    close(IN);
+    close($IN);
     close $OUT;
     #gzip temp file
     my $tempFileGz = "$tempFile.gz";
