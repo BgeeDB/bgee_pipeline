@@ -1,1 +1,131 @@
 Uberon ID	Uberon name	Only in Taxon IDs	Only in Taxon Names	Never in Taxon IDs	Never in Taxon Names	Comments
+CEPH:		6605	Cephalopoda			CEPH ontology for cephalopod
+CL:0000871	splenic macrophage			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	
+CL:0000872	splenic marginal zone macrophage			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	
+CL:0000873	splenic metallophillic macrophage			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	
+CL:0000874	splenic red pulp macrophage			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	
+CL:0000876	splenic white pulp macrophage			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	
+CL:0000877	splenic tingible body macrophage			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	
+CL:1000397	endothelial cell of venous sinus of red pulp of spleen			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	
+CL:1000489	reticular cell of splenic cord			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	
+CL:2000051	splenic fibroblast			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	
+CL:2000053	splenic endothelial cell			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	
+CL:2000074	splenocyte			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	
+CS:0	Carnegie stage	9606	Homo sapiens			
+CTENO:		10197	Ctenophora 			CTENO ontology for ctenophore
+DanaDv:0000006	days 1-4 of fully formed stage (Drosophila ananassae)	7217	Drosophila ananassae			
+DanaDv:0000007	days 5-8 of fully formed stage (Drosophila ananassae)	7217	Drosophila ananassae			
+DanaDv:0000008	day 9 and more of fully formed stage (Drosophila ananassae)	7217	Drosophila ananassae			
+DHBA:		9606	Homo sapiens			DHBA ontology for developing human
+DMBA:		10090	Mus musculus			DMBA ontology for developing mouse
+DmojDv:0000006	days 1-4 of fully formed stage (Drosophila mojavensis)	7230	Drosophila mojavensis			
+DmojDv:0000007	days 5-8 of fully formed stage (Drosophila mojavensis)	7230	Drosophila mojavensis			
+DmojDv:0000008	day 9 and more of fully formed stage (Drosophila mojavensis)	7230	Drosophila mojavensis			
+DpseDv:0000006	days 1-4 of fully formed stage (Drosophila pseudobscura)	7237	Drosophila pseudoobscura			
+DpseDv:0000007	days 5-8 of fully formed stage (Drosophila pseudobscura)	7237	Drosophila pseudoobscura			
+DpseDv:0000008	day 9 and more of fully formed stage (Drosophila pseudobscura)	7237	Drosophila pseudoobscura			
+DsimDv:0000006	days 1-4 of fully formed stage (Drosophila simulans)	7240	Drosophila simulans			
+DsimDv:0000007	days 5-8 of fully formed stage (Drosophila simulans)	7240	Drosophila simulans			
+DsimDv:0000008	day 9 and more of fully formed stage (Drosophila simulans)	7240	Drosophila simulans			
+DvirDv:0000006	days 1-4 of fully formed stage (Drosophila virilis)	7244	Drosophila virilis			
+DvirDv:0000007	days 5-8 of fully formed stage (Drosophila virilis)	7244	Drosophila virilis			
+DvirDv:0000008	day 9 and more of fully formed stage (Drosophila virilis)	7244	Drosophila virilis			
+DyakDv:0000006	days 1-4 of fully formed stage (Drosophila yakuba)	7245	Drosophila yakuba			
+DyakDv:0000007	days 5-8 of fully formed stage (Drosophila yakuba)	7245	Drosophila yakuba			
+DyakDv:0000008	day 9 and more of fully formed stage (Drosophila yakuba)	7245	Drosophila yakuba			
+EHDAA2:		9606	Homo sapiens			EHDAA2 (Human developmental anatomy, abstract) for human
+EMAPA:		10090	Mus musculus			EMAPA (Mouse Developmental Anatomy Ontology) for mouse
+FBbt:		7227	Drosophila melanogaster			FBbt FlyBase ontology for Drosophila melanogaster anatomy (DAO Drosophila Anatomy Ontology)
+FBdv:		7227	Drosophila melanogaster			FBdv FlyBase ontology for Drosophila melanogaster developmental stages
+FlyBase:FBgn0004652	fruitless	7227	Drosophila melanogaster			
+FlyBase:FBgn0010433	atonal	7227	Drosophila melanogaster			
+FlyBase:FBgn0023178	Pigment-dispersing factor	7227	Drosophila melanogaster			
+FlyBase:FBgn0028374	Hugin	7227	Drosophila melanogaster			
+FlyBase:FBgn0028418	Leucokinin	7227	Drosophila melanogaster			
+FlyBase:FBgn0037976	Tachykinin	7227	Drosophila melanogaster			
+GgalDv:		9031	Gallus gallus			Ggaldv ontology for chicken developmental stages
+GgorDv:		9593	Gorilla gorilla			Ggordv ontology for gorilla developmental stages
+HBA:		9606	Homo sapiens			HBA Allen Brain Atlas ontology for human
+HsapDv:		9606	Homo sapiens			Hsapdv ontology for human developmental stages
+MA:		10090	Mus musculus			MA ontology for the adult anatomy of the mouse 
+MBA:		10090	Mus musculus			MBA Allen Brain Atlas ontology for mouse
+MdomDv:		13616	Monodelphis domestica			Mdomdv ontology for opossum developmental stages
+MmulDv:		9544	Macaca mulatta			Mmuldv ontology for rhesus developmental stages
+MmusDv:		10090	Mus musculus			Mmusdv ontology for mouse developmental stages
+PBA:		9443	Primates	9606	Homo sapiens	PBA Allen Brain Atlas ontology for (non-human) Primates
+PORO:		6040	Porifera			PORO ontology for porifera (sponges)
+PpanDv:		9597	Pan paniscus			Ppandv ontology for bonobo developmental stages
+PpygDv:		9600	Pongo pygmaeus			Ppygdv ontology for  orang utan developmental stages
+PtroDv:		9598	Pan troglodytes			Ptrodv ontology for chimpanzee developmental stages
+RnorDv:		10116	Rattus norvegicus			Rnordv ontology for rat developmental stages
+SscrDv:0000005		9823	Sus scrofa			Sscrdv ontology for pig developmental stages
+UBERON:0000371	syncytiotrophoblast	32525	Theria <Mammalia>			
+UBERON:0001248	hilum of spleen			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
+UBERON:0001250	red pulp of spleen			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
+UBERON:0001251	marginal zone of spleen			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
+UBERON:0001265	trabecula of spleen			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
+UBERON:0001266	splenic cord			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
+UBERON:0001959	white pulp of spleen			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
+UBERON:0002106	spleen			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
+UBERON:0004041	spleen primary B follicle			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
+UBERON:0004042	spleen secondary B follicle			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
+UBERON:0004238	spleen smooth muscle			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
+UBERON:0004641	spleen capsule			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
+UBERON:0005196	spleen germinal center			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
+UBERON:0006293	spleen primordium			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
+UBERON:0009967	spleen venous sinus			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
+UBERON:0010400	spleen trabecular vein			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
+UBERON:0010421	spleen B cell corona			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
+UBERON:0010756	spleen follicular dendritic cell network			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
+UBERON:0022292	splenic arteriole			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
+UBERON:0036301	vasculature of spleen			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
+UBERON:1000023	spleen pulp			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
+UBERON:1000024	parenchyma of spleen			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
+UBERON:0010174	Schweigger-Seidel sheath			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
+UBERON:0001249	spleen lymphoid follicle			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
+WBbt:		6239	Caenorhabditis elegans			WBbt ontology for gross anatomy of the C. elegans
+WBls:		6239	Caenorhabditis elegans			WBls ontology for the development and life stages of the C. elegans
+XAO:		8355, 8364	Xenopus laevis, Xenopus tropicalis			XAO ontology for anatomy and development of the African frogs Xenopus laevis and tropicalis
+ZFA:		7955	Danio rerio			ZFA ontology for zebrafish
+ZFS:		7955	Danio rerio			ZFS ontology for zebrafish developmental stages
+UBERON:0008827	murine forestomach	9989	Rodentia			"property_value: taxon_notes ""This class is based on the murine structure. Other groups, such as cetaceans, also have a forestomach (which is essentially an enlargement of the esophagus)"" xsd:string"
+UBERON:0000945	stomach			7740, 7955, 1206794, 99883, 8083, 7962	Branchiostoma lanceolatum, Danio rerio, Ecdysozoa, Tetraodon nigroviridis, Xiphophorus maculatus, Cyprinus carpio	Within the teleosts we can find fish that do and those that do not have a stomach. For example, Nile Tilapia and Atlantic Cod have a stomach, while Pufferfish, Platyfish, Common Carp and zebrafish lack a stomach.  (https://www.sciencedirect.com/science/article/pii/S0145305X1630057X)
+UBERON:0008994	equine glandular stomach	35510	Equus <subgenus>			
+UBERON:0007365	rumen	9845	Ruminantia			
+UBERON:0008285	rumen epithelium	9845	Ruminantia			
+UBERON:0010153	rumen papilla	9845	Ruminantia			
+UBERON:0010228	ruminal fluid	9845	Ruminantia			
+UBERON:0010229	ruminant esophageal groove	9845	Ruminantia			
+UBERON:0007359	ruminant forestomach	9845	Ruminantia			
+UBERON:0007361	ruminant reticulum	9845	Ruminantia			
+UBERON:0007366	ruminant stomach	9845	Ruminantia			
+UBERON:0007358	abomasum	9845	Ruminantia			
+UBERON:0012114	cud	9845	Ruminantia			
+UBERON:0010154	inner lining mucosa of the abomasum	9845	Ruminantia			
+UBERON:0014510	lamina of omasum	9845	Ruminantia			
+UBERON:0007362	omasum	9845	Ruminantia			
+UBERON:0007364	reticulorumen	9845	Ruminantia			
+UBERON:0017259	placental caruncle	9845	Ruminantia			
+UBERON:0017258	placentome of cotyledonary placenta	9845	Ruminantia			
+UBERON:0011795	remex feather	436491	Theropoda			
+UBERON:0011797	secondary remex feather	436491	Theropoda			
+UBERON:0011798	tertial remex feather	436491	Theropoda			
+UBERON:0018536	wing feather	436491	Theropoda			
+UBERON:0018276	egg tooth			9347	Eutheria	as in Uberon
+UBERON:0009621	tail somite			9605	Homo	"removed 1206794 (Ecdysozoa) from the list of Never in Taxon, because tail is at least present in C.elegans, see UBERON:0002415 tail, is_a: WBbt:0005738 {gci_relation=""part_of"", gci_filler=""NCBITaxon:6237""} ! body region (C elegans)"
+UBERON:0035832	caval sphincter	379584	Caniformia			"relaxing constraint by changing from only in Canis to only in Caniformia, because UBERON:0035832 caval sphincter has relationship: only_in_taxon NCBITaxon:379584 {notes=""Pinnipedia"", notes=""may also be in whales""} ! Caniformia."
+UBERON:0014864	caterpillar stage	7088	Lepidoptera			as in Uberon
+UBERON:0014860	copepodite stage	6830	Copepoda			as in Uberon
+UBERON:0018378	crustacean larval stage	6657	Crustacea			as in Uberon
+UBERON:0009964	crustacean maxillary gland	6657	Crustacea			as in Uberon
+UBERON:0014858	crustacean post-larval stage	6657	Crustacea			as in Uberon
+UBERON:0014856	cysticercus stage	6157	Platyhelminthes			as in Uberon
+UBERON:0008264	echinopluteus larval stage	7586	Echinodermata			as in Uberon
+UBERON:0014861	glaucothoe stage	6657	Crustacea			as in Uberon
+UBERON:0014859	megalopa stage	6657	Crustacea			as in Uberon
+UBERON:0014406	nauplius stage	6657	Crustacea			as in Uberon
+UBERON:0014863	veliger stage	6447	Mollusca			as in Uberon
+UBERON:0014857	zoea stage	6657	Crustacea			as in Uberon
+UBERON:0007221	neonate stage	117571	Euteleostomi			"in Uberon, this stage has synonym: ""puggle stage"" NARROW SENSU [NCBITaxon:189497]"
+UBERON:0012101	perinatal stage	117571	Euteleostomi			following UBERON:0007221 taxon constraints
+UBERON:0035946	start of neonate stage	117571	Euteleostomi			following UBERON:0007221 taxon constraints
