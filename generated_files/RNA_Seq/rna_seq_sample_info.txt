@@ -13173,7 +13173,7 @@ SRX379177	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sa
 SRX379178	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	Ensembl	Illumina HiSeq 2000	PAIRED		200	SRR1032422
 SRX748818	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	Ensembl	Illumina HiSeq 2500	PAIRED		214	SRR1636464
 SRX379179	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	Ensembl	Illumina HiSeq 2000	PAIRED		200	SRR1032423
-SRX379180	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	Ensembl	Illumina HiSeq 2000	SNGLE		200	SRR1032424
+SRX379180	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	Ensembl	Illumina HiSeq 2000	SINGLE		200	SRR1032424
 SRX3164762	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	Ensembl	Illumina HiSeq 4000	PAIRED		120	SRR6010925
 SRX379181	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	Ensembl	Illumina HiSeq 2000	PAIRED		200	SRR1032425
 SRX379182	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	Ensembl	Illumina HiSeq 2000	PAIRED		200	SRR1032426
