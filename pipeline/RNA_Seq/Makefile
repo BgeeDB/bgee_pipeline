@@ -210,7 +210,7 @@ clean_cluster_folders: check_tools
 
 
 ################################ GENERATE INTERGENIC SEQUENCES FOR EACH SPECIES ################################
-prepare_GTF: update_GTF
+prepare_GTF: 
 	# Prepare GTF files : $(CLUSTER_R_CMD)
 	@perl 0Before/slurm_prepare_GTF.pl -gtf_dir=$(RNASEQ_CLUSTER_GTF) -block_size_N=31 -account=$(CLUSTER_ACCOUNT_SENSITIVE) -partition=$(CLUSTER_PARTITION_SENSITIVE) -proportion_N=0.05 -output_gtf_path=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(OUTPUT_DIR) -cluster_R_cmd="$(CLUSTER_R_CMD)" >$@.tmp 2>&1
 	@echo rm -f $(RNASEQ_CLUSTER_GTF)/*.gtf.gz
@@ -238,13 +238,12 @@ abundance_all_intergenic: prepare_indexed_transcriptome $(RNASEQ_SAMPINFO_FILEPA
 
 check_abundance_all_intergenic: abundance_all_intergenic
 	# Check SLURM stderr files
-	@grep -v 'Unable to locate a modulefile'     $(RNASEQ_CLUSTER_ABUNDANCE_ALL)/*/*.err   > $@.tmp
+	@find $(RNASEQ_CLUSTER_ABUNDANCE_ALL) -name '*.err' -exec grep -v 'Unable to locate' {} \; >$@.tmp
 	# Check kallisto runs without any mappings
-	#@grep 'Kallisto results include only NAs'    $(RNASEQ_CLUSTER_ABUNDANCE_ALL)/*/*.Rout  >>$@.tmp
 	# Check kallisto runs with low mappings, with few reads, ...
 	# Check length of reads, ...
-	@grep 'Problem:'                             $(RNASEQ_CLUSTER_ABUNDANCE_ALL)/*/*.txt   >>$@.tmp
-	@grep 'Warning:'                             $(RNASEQ_CLUSTER_ABUNDANCE_ALL)/*/*.txt   >>$@.tmp
+	@find $(RNASEQ_CLUSTER_ABUNDANCE_ALL) -name '*.txt' -exec grep 'Problem:' {} \; >>$@.tmp
+	@find $(RNASEQ_CLUSTER_ABUNDANCE_ALL) -name '*.txt' -exec grep 'Warning:' {} \; >>$@.tmp
 	@echo
 	@echo "It is probably easier to relaunch the problematic samples manually, notably those requiring memory or runtime extreme limits"
 	@echo
@@ -263,7 +262,6 @@ export_length: check_abundance_all_intergenic
 		sleep 30 ; \
 		NUMBER_JOBS=$$(squeue --name=$@_$(TIME_LENGTH) --noheader | wc -l) ; \
 	done ; \
-
 	#@rm -r $@_$(TIME_LENGTH).*
 	@echo -e "\tTranscript length are now exported into $(RNASEQ_LENGTH_INFO_FILEPATH) file\n"
 	@$(MV) $@.tmp $@
@@ -307,7 +305,7 @@ infer_blood_samples: check_abundance_all_intergenic
 #NOTE For iterative updates the  sum_by_species  step has to be skipped if you want to reuse the previous gaussian curves as they are!
 #     So use the previous release $(RNASEQ_CLUSTER_GAUSSIAN_CHOICE) file and $(RNASEQ_CLUSTER_SUM_RES) result folder (Just update the database version if required)
 #     for the  presence_absence  step!
-sum_by_species: check_abundance_all_intergenic $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH)
+sum_by_species: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH)
 	# Script using all data from each species to deconvolute the coding genes and intergenic regions underlying distributions
 	@mkdir -p $(RNASEQ_CLUSTER_SUM_RES)
 
