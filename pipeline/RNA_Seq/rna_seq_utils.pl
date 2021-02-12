@@ -505,7 +505,7 @@ sub getAllRnaSeqLibrariesInfo {
                 warn "Warning, wrong format for genomeFilePath [$genomeFilePath]\n";
                 $discarded = 1;
             }
-            if ( $database ne 'Ensembl' && $database ne 'EnsemblMetazoa' ){
+            if ( $database ne 'Ensembl' && $database ne 'EnsemblMetazoa' && $database ne 'RefSeq'){
                 warn "Warning, wrong format for database [$database]\n";
                 $discarded = 1;
             }
@@ -742,6 +742,7 @@ sub getGenesResults {
     # $expressionCalls{$geneId}->{'pValue'} = ...
     # $expressionCalls{geneId}->{'biotype'} = ...
     # $expressionCalls{geneId}->{'expressionCall'} = ...
+    my %expressionCalls;
 
     open(my $IN, '<', $sampleExpCallsFile)  or die "Could not read file [$sampleExpCallsFile]\n";
     my $line = <$IN>;    #header
@@ -757,7 +758,7 @@ sub getGenesResults {
         my $zscore         = $tmp[6];
         my $pValue         = $tmp[7];
         my $expressionCall = $tmp[8];
-        my $FPKM           = $tmp[9]
+        my $FPKM           = $tmp[9];
 
         if ( !defined $expressionCalls{$geneId} ){
             # Perform format checks
