@@ -135,6 +135,20 @@ add foreign key (geneBioTypeId) references geneBioType(geneBioTypeId) on delete 
 add foreign key (OMAParentNodeId) references OMAHierarchicalGroup(OMANodeId) on delete set null;
 /*!40000 ALTER TABLE `gene` ENABLE KEYS */;
 
+/*!40000 ALTER TABLE `geneOrthologs` DISABLE KEYS */;
+alter table geneOrthologs
+add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade,
+add foreign key (targetGeneId) references gene(bgeeGeneId) on delete cascade,
+add foreign key (taxonId) references taxon(taxonId) on delete cascade;
+/*!40000 ALTER TABLE `geneOrthologs` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `geneParalogs` DISABLE KEYS */;
+alter table geneParalogs
+add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade,
+add foreign key (targetGeneId) references gene(bgeeGeneId) on delete cascade,
+add foreign key (taxonId) references taxon(taxonId) on delete cascade;
+/*!40000 ALTER TABLE `geneParalogs` ENABLE KEYS */;
+
 /*!40000 ALTER TABLE `geneToOma` DISABLE KEYS */;
 alter table geneToOma
 add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade,
