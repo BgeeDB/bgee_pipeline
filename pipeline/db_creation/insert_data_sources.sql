@@ -43,7 +43,7 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
     'http://geneontology.org/page/download-ontology', 'Filtered Gene Ontology', 1, 'Ontology'),
 (19, 'SRA', '', 'https://www.ncbi.nlm.nih.gov/sra/[experiment_id]', 'https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?cmd=viewer&m=data&s=viewer&run=[evidence_id]',
     'https://www.ncbi.nlm.nih.gov/sra/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source'),
-(20, 'HGNC', 'http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=[xref_id]', '', '',
+(20, 'HGNC', 'https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/[xref_id]', '', '',
     'http://www.genenames.org/', 'HUGO (Human Genome Organisation - and Primates) Gene Nomenclature Committee', 0, 'Genomics database'),
 (21, 'CCDS', 'https://www.ncbi.nlm.nih.gov/CCDS/CcdsBrowse.cgi?REQUEST=ALLFIELDS&DATA=[xref_id]&ORGANISM=0&BUILDS=CURRENTBUILDS', '', '',
     'https://www.ncbi.nlm.nih.gov/CCDS/CcdsBrowse.cgi', 'Consensus CDS (CCDS) project', 0, 'Genomics database'),
