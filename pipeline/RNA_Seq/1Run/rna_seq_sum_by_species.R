@@ -67,7 +67,7 @@ file.create(gaussian_choice_file)
 ## write header of file number_libraries.txt
 cat("speciesId\tspeciesName\tnumberLibrariesUsed\tnumberLibraries\n", file = number_libraries_file, sep = "\t")
 ## write header of file gaussian_choice_by_species.txt
-cat("speciesId\torganism\tnumberGaussiansCoding\tnumberGaussiansIntergenic\tselectedGaussianCoding\tselectionSideCoding\tselectedGaussianIntergenic\tselectionSideIntergenic\tcomment\tannotatorId\n", 
+cat("speciesId\tnumberGaussiansCoding\tnumberGaussiansIntergenic\tselectedGaussianCoding\tselectionSideCoding\tselectedGaussianIntergenic\tselectionSideIntergenic\tcomment\tannotatorId\n", 
     file = gaussian_choice_file, sep = "\t")
 
 for(species in unique(sampleInfo$speciesId)){
@@ -81,7 +81,6 @@ for(species in unique(sampleInfo$speciesId)){
   gene2biotype_file <- paste0(basename(as.character(sampleInfo$genomeFilePath[sampleInfo$speciesId == species][1])),".gene2biotype")
   gene2biotype <- read.table(file = file.path(tx2gene_folder, gene2biotype_file), header = TRUE, sep = "\t")
   tx2gene <- merge(tx2gene, gene2biotype, by.x = "gene_id", by.y = "id")
-  
   # create template of data.frame that will contain summed counts and ponderated mean of eff_length
   firstLibId <- sampleInfo[sampleInfo$speciesId == species,][1,1]
   summed <- read.table(file = file.path(kallisto_count_folder, firstLibId, "/abundance.tsv"), header = TRUE, sep = "\t")
@@ -141,7 +140,7 @@ for(species in unique(sampleInfo$speciesId)){
       return(myWeightedMean)
     }
     ## each row is the weighted.mean of eff_length for each transcriptID
-    summed$eff_length <- as.data.frame(calculate_effect_length(raw_counts_info, effec_length_info))
+    summed$eff_length <- as.numeric(as.character(calculate_effect_length(raw_counts_info, effec_length_info)))
 
     # calculate effect_length for each transcript by using weighted.mean...
     ## re-calculate TPM and FPKM after collect the weighted.mean of eff_length for each transcriptID and after sum the est_count for each transcriptID
@@ -150,13 +149,13 @@ for(species in unique(sampleInfo$speciesId)){
       denom <- log(sum(exp(rate)))
       exp(rate - denom + log(1e6))
     }
-    summed$tpm <- estCount_to_tpm(summed$est_counts, summed$eff_length)
+    summed$tpm <- as.numeric(as.character(estCount_to_tpm(summed$est_counts, summed$eff_length)))
     
     estCount_to_fpkm <- function(est_count, effec_length){
       N <- sum(est_count)
       exp( log(est_count) + log(1e9) - log(effec_length) - log(N) )
     }
-    summed$fpkm <- estCount_to_fpkm(summed$est_counts, summed$eff_length)
+    summed$fpkm <- as.numeric(as.character(estCount_to_fpkm(summed$est_counts, summed$eff_length)))
    
     ## select intergenic regions
     intergenic_regions <- summed[summed$type == "intergenic", c("target_id", "est_counts", "tpm", "fpkm", "type", "biotype")]
@@ -172,7 +171,6 @@ for(species in unique(sampleInfo$speciesId)){
     ## Final Table with genic and intergenic information
     summed <- rbind(sumGenic, intergenic_regions)
   }
-  
   ## Export number of libraries (and total number of libraries for this species) used in this species
   cat(c(species, as.character(unique(sampleInfo$organism[sampleInfo$speciesId == species])), numLibs, paste0(length(sampleInfo$libraryId[sampleInfo$speciesId == species]), "\n")), 
       file = number_libraries_file, sep = "\t", append = TRUE)
