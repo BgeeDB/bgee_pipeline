@@ -28,21 +28,21 @@ my $ua       = LWP::UserAgent->new;
 my $all_data = '';
 my $response = $ua->request($request,
                sub{
-	               my($data, $res) = @_;
+                   my($data, $res) = @_;
                    if ( $res->is_success ){
-	                   $all_data .= $data;
+                       $all_data .= $data;
                    }
                    else {
-	                   #print ('Problems with the web server: '.$res->status_line);
+                       #print ('Problems with the web server: '.$res->status_line);
                    }
-				}, 1000);
+                }, 1000);
 
 if ( !$response->is_success || $all_data =~ /^query error/i ){
-	my $message = $response->status_line;
-	if ( $response->is_success ){
-		$message = $all_data;
-	}
-	die('ERROR with the web server: ', $message, "\n", 'query=', $xml, "\n");
+    my $message = $response->status_line;
+    if ( $response->is_success ){
+        $message = $all_data;
+    }
+    die('ERROR with the web server: ', $message, "\n", 'query=', $xml, "\n");
 }
 
 print $all_data;
