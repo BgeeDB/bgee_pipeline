@@ -237,13 +237,8 @@ abundance_all_intergenic: prepare_indexed_transcriptome $(RNASEQ_SAMPINFO_FILEPA
 	@$(MV) $@.tmp $@
 
 check_abundance_all_intergenic: abundance_all_intergenic
-	# Check SLURM stderr files
-	@find $(RNASEQ_CLUSTER_ABUNDANCE_ALL) -name '*.err' -exec grep -v 'Unable to locate' {} \; >$@.tmp
-	# Check kallisto runs without any mappings
-	# Check kallisto runs with low mappings, with few reads, ...
-	# Check length of reads, ...
-	@find $(RNASEQ_CLUSTER_ABUNDANCE_ALL) -name '*.txt' -exec grep 'Problem:' {} \; >>$@.tmp
-	@find $(RNASEQ_CLUSTER_ABUNDANCE_ALL) -name '*.txt' -exec grep 'Warning:' {} \; >>$@.tmp
+	#check problems in results of Kallisto step (number reads mapped, proportion read mapped, read length, missing results, ...)
+	@perl 1Run/check_abundance_all_intergenic.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -sample_excluded=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -result_dir=$(RNASEQ_CLUSTER_ABUNDANCE_ALL) -output_file=$@.tmp 2>$@.err
 	@echo
 	@echo "It is probably easier to relaunch the problematic samples manually, notably those requiring memory or runtime extreme limits"
 	@echo
@@ -254,7 +249,7 @@ check_abundance_all_intergenic: abundance_all_intergenic
 export_length: check_abundance_all_intergenic
 	#Export transcript length to a file to export
 	$(eval TIME_LENGTH := $(shell date +'%Y%m%d-%H%M%S'))
-	@echo "#!/usr/bin/env perl" > $(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_LENGTH).sh
+	@echo "#!/usr/bin/env bash" > $(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_LENGTH).sh
 	@echo "perl 3Insertion/export_feature_length.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -tx2gene_dir=$(RNASEQ_CLUSTER_GTF) -all_results=$(RNASEQ_CLUSTER_ABUNDANCE_ALL) -length_info=$(RNASEQ_LENGTH_INFO_FILEPATH)" >> $(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_LENGTH).sh
 	@sbatch --account=$(CLUSTER_ACCOUNT_SENSITIVE) --time=2:00:00 --mem=2G --partition=$(CLUSTER_PARTITION_SENSITIVE) --error=$(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_LENGTH).err --output=$(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_LENGTH).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_LENGTH) $(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_LENGTH).sh > $@.tmp
 	NUMBER_JOBS=$$(squeue --name=$@_$(TIME_LENGTH) --noheader | wc -l) ; \
@@ -269,7 +264,7 @@ export_length: check_abundance_all_intergenic
 create_reports_all_intergenic: check_abundance_all_intergenic
 	# Collect infos from .report files
 	$(eval TIME_FINALIZE := $(shell date +'%Y%m%d-%H%M%S'))
-	@echo "#!/usr/bin/env perl" > $(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_FINALIZE).sh
+	@echo "#!/usr/bin/env bash" > $(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_FINALIZE).sh
 	@echo "perl 3Insertion/create_rna_seq_report_info.pl -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -report_info=$(RNASEQ_CLUSTER_REPORTINFO) -all_results=$(RNASEQ_CLUSTER_ABUNDANCE_ALL)" >> $(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_FINALIZE).sh
 	@sbatch --account=$(CLUSTER_ACCOUNT_SENSITIVE) --time=2:00:00 --mem=2G --partition=$(CLUSTER_PARTITION_SENSITIVE) --error=$(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_FINALIZE).err --output=$(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_FINALIZE).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_FINALIZE) $(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_FINALIZE).sh > $@.tmp
 	# Wait end of the job
@@ -310,7 +305,7 @@ sum_by_species: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH)
 	@mkdir -p $(RNASEQ_CLUSTER_SUM_RES)
 
 	$(eval TIME_SUM := $(shell date +'%Y%m%d-%H%M%S'))
-	@echo "#!/usr/bin/env perl" > $(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_SUM).sh
+	@echo "#!/usr/bin/env bash" > $(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_SUM).sh
 	@echo "$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args rna_seq_sample_info=\"$(RNASEQ_SAMPINFO_FILEPATH)\" rna_seq_sample_excluded=\"$(RNASEQ_SAMPEXCLUDED_FILEPATH)\" kallisto_count_folder=\"$(RNASEQ_CLUSTER_ABUNDANCE_ALL)\" tx2gene_folder=\"$(RNASEQ_CLUSTER_GTF)\" sum_by_species_folder=\"$(RNASEQ_CLUSTER_SUM_RES)\"' 1Run/rna_seq_sum_by_species.R $(RNASEQ_CLUSTER_R_LOG)rna_seq_sum_by_species.Rout" >> $(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_SUM).sh
 	@sbatch --account=$(CLUSTER_ACCOUNT_SENSITIVE) --time=2-00:00:00 --mem=30G --partition=$(CLUSTER_PARTITION_SENSITIVE) --output=$(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_SUM).out --error=$(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_SUM).err  --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_SUM) $(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_SUM).sh > $@.tmp 2>$@.err
 	NUMBER_JOBS=$$(squeue --name=$@_$(TIME_SUM) --noheader | wc -l) ; \
@@ -319,6 +314,7 @@ sum_by_species: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH)
 		sleep 30 ; \
 		NUMBER_JOBS=$$(squeue --name=$@_$(TIME_SUM) --noheader | wc -l) ; \
 	done ; \
+	# before running next step you need update gaussian choice file
 	@echo -e "You HAVE TO create/update MANUALLY a file [$(RNASEQ_CLUSTER_GAUSSIAN_CHOICE)] with selected gaussians for coding and intergenic regions!\n"
 	@$(MV) $@.tmp $@
 
@@ -334,7 +330,7 @@ generate_intergenic_sequences: sum_by_species
 	@mkdir -p -m 0770 $(CLUSTER_OTHER_INTERGENIC_FOLDER)
 
 	$(eval TIME_INTERGENIC := $(shell date +'%Y%m%d-%H%M%S'))
-	@echo "#!/usr/bin/env perl" > $(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_INTERGENIC).sh
+	@echo "#!/usr/bin/env bash" > $(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_INTERGENIC).sh
 	@echo "perl 1Run/create_intergenic_fasta.pl -sample_info_path=$(RNASEQ_SAMPINFO_FILEPATH) -transcriptomes_folder=$(RNASEQ_CLUSTER_GTF) -transcriptome_compression_ext=$(TRANSCRIPTOME_COMPRESSION_EXT) -sum_abundance_file_path=$(SUM_ABUNDANCE_FILE_PATH) -gaussian_file_path=$(RNASEQ_CLUSTER_GAUSSIAN_CHOICE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) -other_intergenic_dir=$(CLUSTER_OTHER_INTERGENIC_FOLDER)" >> $(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_INTERGENIC).sh
 	@sbatch --account=$(CLUSTER_ACCOUNT_SENSITIVE) --time=2-00:00:00 --mem=5G --partition=$(CLUSTER_PARTITION_SENSITIVE) --error=$(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_INTERGENIC).err --output=$(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_INTERGENIC).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_INTERGENIC) $(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_INTERGENIC).sh > $@.tmp 2>$@.err
 	NUMBER_JOBS=$$(squeue --name=$@_$(TIME_INTERGENIC) --noheader | wc -l) ; \
@@ -356,7 +352,7 @@ indexes_bgeecall:
 	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(RNASEQ_BGEECALL_FILE)" account="$(CLUSTER_ACCOUNT_SENSITIVE)" time="24:00:00" partition="$(CLUSTER_PARTITION_SENSITIVE)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' 1Run/bgeecall_index.R $(RNASEQ_CLUSTER_R_LOG)bgeecall_index.Rout
 	@$(MV) $@.tmp $@
 
-presence_absence_bgeecall: indexes_bgeecall
+presence_absence_bgeecall: indexes_bgeecall 
 	# generate present/absent expression calls with BgeeCall
 	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(RNASEQ_BGEECALL_FILE)" account="$(CLUSTER_ACCOUNT_SENSITIVE)" time="2-00:00:00" partition="$(CLUSTER_PARTITION_SENSITIVE)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)" decrypt_file_path="$(ENCRYPT_PASSWD_FILE)"' 1Run/bgeecall_calls.R $(RNASEQ_CLUSTER_R_LOG)bgeecall_calls.Rout
 	# TODO generate summary plot once all calls have been generated
