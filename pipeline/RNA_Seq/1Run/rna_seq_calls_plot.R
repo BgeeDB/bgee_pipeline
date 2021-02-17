@@ -1,12 +1,17 @@
 ## Julien Wollbrett July 15, 2020
-## This script plot presence/absence information for all RNA-Seq libraries grouped by species
+## This script plot presence/absence information for all RNA-Seq libraries grouped by species. 
+## It also creates 2 reports for each library.
+## - reports of calls with for instance TPM cutoff, proportion coding present, pvalue, etc.
+## - reports of kallisto with number reads, number aligned, proportion aligned, aligned unique, and number target sequences
 ## It loops through all libraries
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args sample_info="/path/to/rna_seq_sample_info.tsv" calls_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) rna_seq_calls_plot.R rna_seq_calls_plot.Rout
+## R CMD BATCH --no-save --no-restore '--args sample_info="/path/to/bgeecall_input.tsv" calls_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) rna_seq_calls_plot.R rna_seq_calls_plot.Rout
 ## bgeecall_sample_info       - path to file with info about libraries processed with BgeeCall
 ## calls_dir                  - path to folder where BgeeCall wrote the calls.
 
+## load required packages
+library("rjson")
 
 ## Session info
 print(sessionInfo())
@@ -31,12 +36,22 @@ for( c_arg in command_arg ){
 ##load data
 sample_info_data <- read.table(bgeecall_sample_info, sep = "\t", header = TRUE, comment.char = "")
 
-## init variables
+## init variables for calls report
 info_file <- "gene_cutoff_info_file.tsv"
 all_samples <- data.frame(matrix(nrow = 0, ncol = 15))
-samples_columns <- c("libraryId", "cutoffTPM", "proportionGenicPresent", "numberGenicPresent", "numberGenic", "proportionCodingPresent", "numberPresentCoding", "numberCoding", "proportionIntergenicPresent", "numberIntergenicPresent", "numberIntergenic", "pValueCutoff", "meanIntergenic", "sdIntergenic", "speciesId")
+samples_columns <- c("libraryId", "cutoffTPM", "proportionGenicPresent", "numberGenicPresent", "numberGenic", 
+  "proportionCodingPresent", "numberPresentCoding", "numberCoding", "proportionIntergenicPresent", 
+  "numberIntergenicPresent", "numberIntergenic", "pValueCutoff", "meanIntergenic", "sdIntergenic", "speciesId")
 names(all_samples) <- samples_columns
+all_calls_report_file <- "presence_absence_all_samples.txt"
 
+## init variables for calls report
+kallisto_info_file <- "run_info.json"
+kallisto_info_all_samples <- data.frame(matrix(nrow = 0, ncol = 9))
+kallisto_info_report_columns <- c("libraryId", "reads", "number_aligned", "number_unique_aligned", 
+  "prop_aligned", "prop_unique_aligned", "number_targets", "start_time", "kallisto_version")
+names(kallisto_info_all_samples) <- kallisto_info_report_columns
+all_kallisto_report_file <- "kallisto_report_all_samples.txt"
 
 ## check that calls have been generated for all libraries
 libraries_wo_calls <- 0
@@ -45,6 +60,8 @@ message(nrow(sample_info_data), " libraries in the bgeecall info file")
 for(line in seq(nrow(sample_info_data))) {
   library_id <- basename(as.character(sample_info_data$rnaseq_lib_path[line]))
   if(library_id %in% lib_dirs) {
+
+    # retrieve info for calls report
     info_file_path <- file.path(calls_dir, library_id, info_file)
     if(file.exists(info_file_path)) {
       info <- read.table(info_file_path, row.names = 1)
@@ -56,9 +73,27 @@ for(line in seq(nrow(sample_info_data))) {
       names(library_info) <- samples_columns
       all_samples <- rbind(all_samples, library_info)
     } else {
-      warning(library_id, " : info file was not generated")
+      warning(library_id, " : calls info file was not generated")
       libraries_wo_calls <- libraries_wo_calls + 1
+      # if no cutoff file do not add kallisto info neither. The code will stop and provide info for missing libraries
+      next
     }
+
+    # retrieve info for kallisto report
+    kallisto_info_file_path <- file.path(calls_dir, library_id, kallisto_info_file)
+    if(file.exists(kallisto_info_file_path)) {
+      json_info <- fromJSON(file = kallisto_info_file_path)
+      kallisto_info <- data.frame(library_id, json_info$n_processed, json_info$number_aligned, 
+        json_info$number_unique_aligned, json_info$p_pseudoaligned, json_info$p_unique, 
+        json_info$n_targets, json_info$start_time, json_info$kallisto_version)
+      names(kallisto_info) <- kallisto_info_report_columns
+      kallisto_info_all_samples <- rbind(kallisto_info_all_samples, kallisto_info)
+      } else {
+        warning(library_id, " : kallisto info file was not generated")
+        libraries_wo_calls <- libraries_wo_calls + 1
+      }
+    }
+
   } else {
     warning(library_id, " : library directory not created")
     libraries_wo_calls <- libraries_wo_calls + 1
@@ -66,11 +101,15 @@ for(line in seq(nrow(sample_info_data))) {
 }
 
 if (libraries_wo_calls > 0 ) {
-  stop("Calls were not generated for ", libraries_wo_calls, " libraries.")
+  stop("Calls were not generated for ", libraries_wo_calls, " libraries. If expected add those libraries to the rna_seq_sample_info.txt file and regenerate the bgeecall_input.tsv file")
 }
+
+# save calls report
 message(nrow(all_samples), "libraries found in the calls directory")
-save(all_samples, file=file.path(calls_dir, "presence_absence_all_samples.RDa"))
-write.table(all_samples, file = file.path(calls_dir, "presence_absence_all_samples.txt"), quote = FALSE, sep = "\t", row.names = FALSE)
+write.table(all_samples, file = file.path(calls_dir, all_calls_report_file), quote = FALSE, sep = "\t", row.names = FALSE)
+
+# save kallisto report
+write.table(all_samples, file = file.path(calls_dir, all_kallisto_report_file), quote = FALSE, sep = "\t", row.names = FALSE)
 
 ## PDF for all boxplot
 pdf(file = paste0(calls_dir, "/presence_absence_boxplots.pdf"), width = 12, height = 5)
