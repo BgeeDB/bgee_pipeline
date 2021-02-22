@@ -636,6 +636,8 @@ create table expressedSequenceTag (
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
     UniGeneClusterId varchar(70) not null default '',
     expressionId int unsigned,
+-- p-value
+    pValue decimal(31, 30) unsigned default 1,
 -- Warning, qualities must be ordered, the index in the enum is used in many queries
     estData enum('no data', 'poor quality', 'high quality') default 'no data'
 ) engine = innodb;
@@ -747,11 +749,9 @@ create table affymetrixProbeset (
 -- detectionFlag before FDR correction
     rawDetectionFlag enum('undefined', 'absent', 'marginal', 'present') not null default 'undefined',
 -- p-value
--- "number of digits to the right of the decimal point (the scale). It has a range of 0 to 30"
-    pValue double unsigned not null default 1.0,
+    pValue decimal(31, 30) unsigned default 1,
 -- p-value adjusted by Benjamini-Hochberg procedure
--- "number of digits to the right of the decimal point (the scale). It has a range of 0 to 30"
-    qValue double unsigned not null default 1.0,
+    qValue decimal(31, 30) unsigned default 1,
 -- detectionFlag after FDR correction
     detectionFlag enum('undefined', 'absent', 'marginal', 'present') not null default 'undefined',
     expressionId int unsigned,
@@ -979,7 +979,7 @@ create table rnaSeqResult (
     readsCount decimal(16, 6) unsigned not null COMMENT 'As of Bgee 14, read counts are "estimated counts" produced using the Kallisto software. They are not normalized for read or gene lengths.',
 -- zScore can be negative
     zScore decimal(35, 30),
-    pValue decimal(31, 30) unsigned default 1 COMMENT 'present calls are based on the pValue',   
+    pValue decimal(31, 30) unsigned default 1 COMMENT 'present calls are based on the pValue',
     expressionId int unsigned,
     detectionFlag enum('undefined', 'absent', 'present') default 'undefined',
 -- Warning, qualities must be ordered, the index in the enum is used in many queries.
