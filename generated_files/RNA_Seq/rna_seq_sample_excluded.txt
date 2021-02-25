@@ -1296,3 +1296,6 @@ SRX3194379	TRUE	Not downloaded for Bgee 15.0	JW	2021-02-07
 SRX3194380	TRUE	Not downloaded for Bgee 15.0	JW	2021-02-07
 SRX3194381	TRUE	Not downloaded for Bgee 15.0	JW	2021-02-07
 SRX3194388	TRUE	Not downloaded for Bgee 15.0	JW	2021-02-07
+SRX3153270	TRUE	No information about RNA Seq protocol. Can not define for which biotypes absent calls could be generated	JW	2021-02-25
+SRX3153300  TRUE    No information about RNA Seq protocol. Can not define for which biotypes absent calls could be generated    JW  2021-02-25
+SRX3153343  TRUE    No information about RNA Seq protocol. Can not define for which biotypes absent calls could be generated    JW  2021-02-25
