@@ -345,6 +345,7 @@ generate_intergenic_sequences: sum_by_species
 
 ################################ GENERATE PRESENT/ABSENT CALLS WITH BgeeCall ################################
 
+# As for Bgee 15 it was mandatory to increase memory to 120G to generate Human index with kmer size = 15bp
 indexes_bgeecall: 
 	# generate BgeeCall input file from the rna_seq_sample_info.txt file
 	@perl 1Run/sample_info_to_bgeecall.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -sample_excluded=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >>$@.tmp 2>&1
