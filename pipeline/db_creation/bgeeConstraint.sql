@@ -246,7 +246,7 @@ add unique(transcriptId, bgeeGeneId);
 -- for this design of PK and UNIQUE indexes
 alter table cond
 modify conditionId mediumint unsigned not null auto_increment,
-add primary key(anatEntityId, stageId, speciesId, sex, sexInferred, strain),
+add primary key(anatEntityId, anatEntityId2, stageId, speciesId, sex, sexInferred, strain),
 add unique(conditionId);
 /*!40000 ALTER TABLE `cond` ENABLE KEYS */;
 
