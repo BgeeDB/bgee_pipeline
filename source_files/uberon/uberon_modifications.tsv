@@ -1048,3 +1048,71 @@ UBERON:0014786	EMAPA:16375				perfect match	EMAPA:16375 umbilical vein extraembr
 UBERON:0015418	EMAPA:36111				other	"EMAPA:36111 muscularis mucosa of pelvic urethra of female, has part_of some mesenchymal layer of pelvic urethra of female, mapped to UBERON:0015418 urethra mesenchymal layer. It exists UBERON:0004219 urethra smooth muscle layer, synonym: ""muscular coat of urethra"" EXACT [FMA:76909], xref: EMAPA:36630 (smooth muscle of urethra). 'muscularis mucosa' is usually describing gastrointestinal tract."
 UBERON:0015418	EMAPA:36126				other	"EMAPA:36126 muscularis mucosa of pelvic urethra of male, has part_of some mesenchymal layer of pelvic urethra of male, mapped to UBERON:0015418 urethra mesenchymal layer. It exists UBERON:0004219 urethra smooth muscle layer, synonym: ""muscular coat of urethra"" EXACT [FMA:76909], xref: EMAPA:36630 (smooth muscle of urethra). 'muscularis mucosa' is usually describing gastrointestinal tract."
 UBERON:0014775	EMAPA:36649				missing child term	EMAPA:36649 prosomere 3, is a prosomere, mapped to UBERON:0014775 prosomere
+UBERON:0013505	EMAPA:19336				missing child term	EMAPA:19336 C2 vertebral cartilage condensation, has part_of some cervical vertebral cartilage condensation, mapped to UBERON:0013505 cervical vertebra cartilage element
+UBERON:0013507	EMAPA:19359				missing child term	EMAPA:19359 T2 vertebral cartilage condensation, has part_of some thoracic vertebral cartilage condensation, mapped to UBERON:0013507 thoracic vertebra cartilage element
+UBERON:0013507	EMAPA:19362				missing child term	EMAPA:19362 T5 vertebral cartilage condensation, has part_of some thoracic vertebral cartilage condensation, mapped to UBERON:0013507 thoracic vertebra cartilage element
+UBERON:0013507	EMAPA:19375				missing child term	EMAPA:19375 T7 vertebral cartilage condensation, has part_of some thoracic vertebral cartilage condensation, mapped to UBERON:0013507 thoracic vertebra cartilage element
+UBERON:0013507	EMAPA:19378				missing child term	EMAPA:19378 T10 vertebral cartilage condensation, has part_of some thoracic vertebral cartilage condensation, mapped to UBERON:0013507 thoracic vertebra cartilage element
+UBERON:0000035	EMAPA:29065				missing child term	EMAPA:29065 oocyte of primary follicle, is a primary oocyte, and has part_of some ovary primary follicle, mapped to UBERON:0000035 primary ovarian follicle, to follow the logic of the mapping done for EMAPA:29864 oocyte of secondary follicle. Note that 'is a primary oocyte' can result to mapping to CL:0000654 primary oocyte
+UBERON:0007615	EMAPA:29844				missing child term	EMAPA:29844 ventral prostatic interstitium, has part_of some ventral prostate gland, mapped to UBERON:0007615 prostate gland ventral lobe
+UBERON:0000036	EMAPA:29864				missing child term	EMAPA:29864 oocyte of secondary follicle, is a oocyte, and has part_of some ovary secondary follicle, mapped to UBERON:0000036 secondary ovarian follicle
+UBERON:0000036	EMAPA:29866				missing child term	EMAPA:29866 follicle cell of secondary follicle, mapped to UBERON:0000036 secondary ovarian follicle. Could also be mapped to CL:0000477 ovarian follicle cell
+UBERON:0035006	EMAPA:30496				missing child term	EMAPA:30496 skin of female preputial swelling, mapped to UBERON:0035006 preputial swelling of female
+UBERON:0002367	EMAPA:30805				missing child term	EMAPA:30805 vasculature of prostate gland, mapped to UBERON:0002367 prostate gland
+UBERON:0000080	EMAPA:31537				other	EMAPA:31537 developing vasculature of male mesonephros, has part_of some mesonephros of male, mapped to UBERON:0000080 mesonephros
+UBERON:0001335	EMAPA:32268				missing child term	EMAPA:32268 superficial cell layer of prostatic urethra, has part_of some epithelium of prostatic urethra, mapped to UBERON:0001335 prostatic urethra
+UBERON:0001335	EMAPA:32271				missing child term	EMAPA:32271 basal cell layer of prostatic urethra, has part_of some epithelium of prostatic urethra, mapped to UBERON:0001335 prostatic urethra
+UBERON:0001335	EMAPA:32299				missing child term	EMAPA:32299 intermediate cell layer of prostatic urethra, has part_of some epithelium of prostatic urethra, mapped to UBERON:0001335 prostatic urethra
+UBERON:0001333	EMAPA:36102				other	EMAPA:36102 developing vasculature of pelvic urethra, has part_of some pelvic urethra, mapped to UBERON:0001333 male urethra
+UBERON:0013505	EMAPA:19339				missing child term	EMAPA:19339 C5 vertebral cartilage condensation, mapped to UBERON:0013505 cervical vertebra cartilage element
+UBERON:0013507	EMAPA:19376				missing child term	EMAPA:19376 T8 vertebral cartilage condensation, mapped to UBERON:0013507 thoracic vertebra cartilage element
+UBERON:0001329	EMAPA:29796				missing child term	EMAPA:29796 anterior prostatic epithelium, mapped to UBERON:0001329 prostate gland anterior lobe
+UBERON:0015792	EMAPA:29810				missing child term	EMAPA:29810 dorsal prostatic epithelium, mapped to UBERON:0015792 prostate gland dorsal lobe
+UBERON:0015418	EMAPA:32301				missing child term	EMAPA:32301 submucosa of prostatic urethra, has part_of some mesenchymal layer of prostatic urethra, mapped to UBERON:0015418 urethra mesenchymal layer
+UBERON:0015418	EMAPA:32302				missing child term	EMAPA:32302 muscularis mucosa of prostatic urethra, has part_of some mesenchymal layer of prostatic urethra, mapped to UBERON:0015418 urethra mesenchymal layer
+UBERON:0002028	EMAPA:32912				missing child term	EMAPA:32912 hindbrain lateral wall, has part_of some hindbrain, mapped to UBERON:0002028 hindbrain
+CL:0000656	EMAPA:35707				perfect match	EMAPA:35707 primary spermatocyte, mapped to CL:0000656 primary spermatocyte
+UBERON:0005562	EMAPA:35865				other	EMAPA:35865 thymus/parathyroid primordium, mapped to UBERON:0005562 thymus primordium, which already has xref: EMAPA:17523 thymus primordium
+UBERON:0001310	EMAPA:36017	EMAPA:16331			perfect match	EMAPA:36017 umbilical artery, mapped to UBERON:0001310 umbilical artery
+UBERON:0001310		EMAPA:16372				
+UBERON:0011694	EMAPA:16331				perfect match	EMAPA:16331 umbilical artery embryonic part, mapped to UBERON:0011694 embryo portion of umbilical artery
+UBERON:0011693	EMAPA:16372				perfect match	EMAPA:16372 umbilical artery extraembryonic part, mapped to UBERON:0011693 extraembryonic portion of umbilical artery
+UBERON:0003661	EMAPA:36047	EMAPA:32700			perfect match	EMAPA:36047 limb muscle, mapped to UBERON:0003661 limb muscle, which already has xref: EMAPA:32700 limb musculature (to remove, because already mapped also to UBERON:0004480 musculature of limb)
+UBERON:0014775	EMAPA:36648				other	EMAPA:36648 prosomere 2, mapped to UBERON:0014775 prosomere
+UBERON:0013507	EMAPA:19379				missing child term	EMAPA:19379 T11 vertebral cartilage condensation, mapped to UBERON:0013507 thoracic vertebra cartilage element
+UBERON:0016520	EMAPA:29848				other	EMAPA:29848 rest of interstitium of ventral prostate, mapped to UBERON:0007615 prostate gland ventral lobe
+UBERON:0016520	EMAPA:31530				other	EMAPA:31530 urethral tube epithelium of female, has part_of some epithelium of phallic urethra of female, mapped to UBERON:0016520 epithelium of female urethra
+UBERON:0013507	EMAPA:19377				missing child term	EMAPA:19377 T9 vertebral cartilage condensation, mapped to UBERON:0013507 thoracic vertebra cartilage element
+UBERON:0001254	EMAPA:28801				missing child term	EMAPA:28801 intermediate cell layer of ureter, has part_of some urothelium of ureter, mapped to UBERON:0001254 urothelium of ureter
+UBERON:0000428	EMAPA:29842				other	EMAPA:29842 basal epithelium of ventral prostate, has part_of some ventral prostatic epithelium, mapped to UBERON:0000428 prostate epithelium
+UBERON:0000478	EMAPA:31873				other	EMAPA:31873 chorioallantoic placenta, has part_of some extraembryonic component, mapped to UBERON:0000478 extraembryonic structure
+UBERON:0000165	EMAPA:35618				missing child term	EMAPA:35618 oral region mesenchyme, has part_of some oral region, mapped to UBERON:0000165 mouth
+UBERON:0000473	EMAPA:29122				missing child term	EMAPA:29122 coelomic vessel, has part_of some vasculature of testis, mapped to UBERON:0000473 testis
+UBERON:0004198	EMAPA:31546				missing child term	EMAPA:31546 renal connecting segment of comma-shaped body, has part_of some comma-shaped body, mapped to UBERON:0004198 comma-shaped body
+UBERON:0016515	EMAPA:32278				missing child term	EMAPA:32278 smooth muscle layer of prostatic urethra, has part_of some muscle layer of prostatic urethra, mapped to UBERON:0016515 muscular layer of prostatic urethra
+UBERON:0003054	EMAPA:32899				other	EMAPA:32899 hindbrain roof plate, has part_of some hindbrain, mapped to UBERON:0003054 roof plate, but could also be mapped to UBERON:0002028 hindbrain
+UBERON:0001329	EMAPA:29802				missing child term	EMAPA:29802 anterior prostatic interstitium, has part_of some anterior prostate gland, mapped to UBERON:0001329 prostate gland anterior lobe
+UBERON:0015792	EMAPA:29814				missing child term	EMAPA:29814 basal epithelium of dorsal prostate, mapped to UBERON:0015792 prostate gland dorsal lobe
+UBERON:0015792	EMAPA:29816				missing child term	EMAPA:29816 dorsal prostatic interstitium, mapped to UBERON:0015792 prostate gland dorsal lobe
+UBERON:0000483	EMAPA:32724				other	EMAPA:32724 limb epithelium, mapped to UBERON:0000483 Epithelium
+UBERON:0003104	EMAPA:36385				other	EMAPA:36385 small intestine mesenchyme, mapped to UBERON:0003104 mesenchyme
+ UBERON:0001329	EMAPA:29800				missing child term	EMAPA:29800 basal epithelium of anterior prostate, mapped to UBERON:0001329 prostate gland anterior lobe
+UBERON:0015792	EMAPA:29820				other	EMAPA:29820 rest of interstitium of dorsal prostate, mapped to UBERON:0015792 prostate gland dorsal lobe
+UBERON:0001000	EMAPA:30793				missing child term	"EMAPA:30793 vasculature of ductus deferens, has part_of some ductus deferens, mapped to UBERON:0001000 vas deferens (synonym: ""ductus deferens"" EXACT [http://en.wikipedia.org/wiki/Vas_deferens])"
+UBERON:0000080	EMAPA:31538				other	EMAPA:31538 developing vasculature of female mesonephros, has part_of some mesonephros of female, mapped to UBERON:0000080 mesonephros
+CL:0000654	EMAPA:35705				perfect match	EMAPA:35705 primary oocyte, mapped to CL:0000654 primary oocyte
+UBERON:0003455	EMAPA:28355				other	"EMAPA:28355 thin descending limb of inner medulla, has part_of some loop of Henle, inner medullary portion, mapped to UBERON:0003455 inner renal medulla loop of Henle. It exists UBERON:0005096 descending thin limb, synonym: ""descending thin limb of loop of Henle"" EXACT [], which has xref: EMAPA:35514 (loop of Henle thin descending limb)"
+UBERON:0013239	EMAPA:29254				missing child term	"EMAPA:29254 mesenchyme of glans of male genital tubercle, has part_of some glans of male genital tubercle, mapped to UBERON:0013239 future glans penis (synonym: ""glans of male genital tubercle"" EXACT []) which has xref: EMAPA:29252 glans of male genital tubercle"
+UBERON:0013239	EMAPA:29256				missing child term	"EMAPA:29256 skin of glans of male genital tubercle, has part_of some glans of male genital tubercle, mapped to UBERON:0013239 future glans penis (synonym: ""glans of male genital tubercle"" EXACT []) which has xref: EMAPA:29252 glans of male genital tubercle"
+UBERON:0004243	EMAPA:29846				other	EMAPA:29846 smooth muscle of ventral prostate, mapped to UBERON:0004243 prostate gland smooth muscle
+UBERON:0002241	EMAPA:32802				other	EMAPA:32802 chondrocranium cartilage condensation, has part_of some chondrocranium, mapped to UBERON:0002241 chondrocranium. It exists UBERON:0003932 cartilage element of chondrocranium but caution: Uberon 'condensation' has_potential_to_develop_into UBERON 'element'9
+UBERON:0004786	EMAPA:38019				perfect match	"EMAPA:38019 gut mucosa, mapped to UBERON:0004786 gastrointestinal system mucosa, synonym: ""gut mucosa"" EXACT [BTO:0000546]. UBERON:0004786 has already xref: EMAPA:36591 alimentary system mucosa, that we conserve"
+UBERON:0001329	EMAPA:29806				other	EMAPA:29806 rest of interstitium of anterior prostate, mapped to UBERON:0001329 prostate gland anterior lobe
+UBERON:0004243	EMAPA:29818				other	EMAPA:29818 smooth muscle of dorsal prostate, mapped to UBERON:0004243 prostate gland smooth muscle
+UBERON:0011756	EMAPA:30512				other	EMAPA:30512 mesenchyme of scrotal swelling, is a male reproductive system mesenchyme, mapped to UBERON:0011756 male genital swelling
+UBERON:0011756	EMAPA:30515				other	EMAPA:30515 scrotal swelling skin,m apped to UBERON:0011756 male genital swelling
+UBERON:0005104	EMAPA:30528				other	"EMAPA:30528 cranial mesonephric tubule of male, has part_of some mesonephric tubule of male, mapped to UBERON:0005104 anterior mesonephric tubule (synonym: ""cranial mesonephric tubule"" EXACT [EMAPA:30562]"
+UBERON:0000037	EMAPA:30765				other	EMAPA:30765 oocyte of tertiary follicle, mapped to UBERON:0000037 tertiary ovarian follicle
+UBERON:0000473	EMAPA:35856				other	EMAPA:35856 testis cortical region, mapped to UBERON:0000473 testis
+UBERON:0002264	EMAPA:36586				missing child term	EMAPA:36586 main olfactory bulb ventricular layer, mapped to UBERON:0002264 olfactory bulb (see EHDAA2:0004704)
+UBERON:0008866	EMAPA:38092				other	EMAPA:38092 primary enamel knot, mapped to UBERON:0008866 enamel knot
