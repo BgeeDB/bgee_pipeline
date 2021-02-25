@@ -545,6 +545,7 @@ create table cond (
     conditionId           mediumint unsigned not null COMMENT 'Internal condition ID. Each condition is species-specific',
     exprMappedConditionId mediumint unsigned not null COMMENT 'the condition ID that should be used for insertion into the expression table: too-granular conditions (e.g., 43 yo human stage, or sexInferred=1) are mapped to less granular conditions for summary. Equal to conditionId if condition is not too granular.',
     anatEntityId          varchar(20)  not null       COMMENT 'Uberon anatomical entity ID',
+    anatEntityId2         varchar(20)  not null       COMMENT 'A second uberon anatomical entity ID used to manage composition of anatomical entities',
     stageId               varchar(20)  not null       COMMENT 'Uberon stage ID',
     speciesId             mediumint unsigned not null COMMENT 'NCBI species taxon ID',
 -- NA: not available from source information
