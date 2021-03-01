@@ -31,7 +31,7 @@ use diagnostics;
 
 use Getopt::Long;
 use FindBin;
-
+use lib '.';
 require 'affy_utils.pl';
 require 'bgee_utils.pl';
 
