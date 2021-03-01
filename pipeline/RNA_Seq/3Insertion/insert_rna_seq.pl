@@ -263,8 +263,8 @@ my $insRun = $bgee->prepare('INSERT INTO rnaSeqRun (rnaSeqRunId, rnaSeqLibraryId
 
 # query for genes results insertion
 my $insResult = $bgee->prepare('INSERT INTO rnaSeqResult (rnaSeqLibraryId, bgeeGeneId, fpkm, tpm,
-                                readsCount, pValue, zScore, detectionFlag, rnaSeqData, reasonForExclusion)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+                                readsCount, pValue, zScore, detectionFlag, reasonForExclusion)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
 my $inserted = 0;
 for my $expId ( sort keys %libraries ){
@@ -370,7 +370,6 @@ for my $expId ( sort keys %libraries ){
                       $genesResults{$geneId}->{'pValue'},         ' - ',
                       $genesResults{$geneId}->{'zscore'},         ' - ',
                       $genesResults{$geneId}->{'expressionCall'}, ' - ',
-                      'high quality',                             ' - ',
                       $exclusion, "\n";
             }
             else {
@@ -383,8 +382,6 @@ for my $expId ( sort keys %libraries ){
                                     $genesResults{$geneId}->{'pValue'},
                                     $genesResults{$geneId}->{'zscore'},
                                     $genesResults{$geneId}->{'expressionCall'},
-                                    # rnaSeqData field always 'high quality' for now
-                                    $Utils::HIGH_QUAL,
                                     $exclusion,
                                    )  or die $insResult->errstr;
             }

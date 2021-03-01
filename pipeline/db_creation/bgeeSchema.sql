@@ -983,9 +983,6 @@ create table rnaSeqResult (
     pValue decimal(31, 30) unsigned default 1 COMMENT 'present calls are based on the pValue',
     expressionId int unsigned,
     detectionFlag enum('undefined', 'absent', 'present') default 'undefined',
--- Warning, qualities must be ordered, the index in the enum is used in many queries.
--- We should only see genes with 'high quality' here
-    rnaSeqData enum('no data', 'poor quality', 'high quality') default 'no data',
 -- When expressionId is null, the result is not used for the summary of expression.
 -- Reasons are:
 -- * pre filtering: Probesets always seen as "absent" or "marginal" over the whole dataset are removed
