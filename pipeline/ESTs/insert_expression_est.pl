@@ -32,8 +32,6 @@ if ( !$test_options || $bgee_connector eq '' ){
 }
 
 
-my $threshold = 7; # Quality threshold: count >= 7 means high quality, see Audic and Claverie 1997
-
 # Bgee db connection
 my $bgee = Utils::connect_bgee_db($bgee_connector);
 
@@ -71,8 +69,8 @@ my $updResult = $bgee->prepare('UPDATE expressedSequenceTag AS t1
 
 # Insertion into estLibraryExpression
 my $insExpSummary = $bgee->prepare('INSERT INTO estLibraryExpression
-                                    (expressionId, estLibraryId, estCount, estLibraryCallQuality)
-                                    VALUES (?, ?, ?, ?)');
+                                    (expressionId, estLibraryId, estCount)
+                                    VALUES (?, ?, ?)');
 
 # Add p-value in expressedSequenceTag
 my $updPVal = $bgee->prepare('UPDATE expressedSequenceTag SET pValue=? WHERE expressionId=? AND estLibraryId=?');
@@ -141,13 +139,10 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
                    SET expressionId = $printExprId
                    WHERE bgeeGeneId = $geneId and t3.exprMappedConditionId = $exprMappedConditionId\n";
             for my $libId ( keys %{ $results{$geneId} } ){
-                my $qual = $results{$geneId}->{$libId} >= $threshold? $Utils::HIGH_QUAL: $Utils::LOW_QUAL;
-
                 print "INSERT INTO estLibraryExpression
-                           (expressionId, estLibraryId, estCount, estLibraryCallQuality)
+                           (expressionId, estLibraryId, estCount)
                        VALUES ($printExprId, $libId,
-                    $results{$geneId}->{$libId},
-                    $qual)\n";
+                    $results{$geneId}->{$libId})\n";
 
                 my $pval = 2**(-($results{$geneId}->{$libId}+1));
                 print "UPDATE expressedSequenceTag SET pValue='$pval' WHERE expressionId=$$expressionId AND estLibraryId=$libId\n";
@@ -155,8 +150,7 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
         } else {
             $updResult->execute($expressionId, $geneId, $exprMappedConditionId)  or die $updResult->errstr;
             for my $libId ( keys %{ $results{$geneId} } ){
-                my $qual = $results{$geneId}->{$libId} >= $threshold? $Utils::HIGH_QUAL: $Utils::LOW_QUAL;
-                $insExpSummary->execute($expressionId, $libId, $results{$geneId}->{$libId}, $qual)
+                $insExpSummary->execute($expressionId, $libId, $results{$geneId}->{$libId})
                     or die $insExpSummary->errstr;
 
                 #p = 2^-(Count+1)

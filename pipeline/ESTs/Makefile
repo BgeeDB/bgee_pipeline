@@ -117,6 +117,7 @@ miRNA_est: miRNA.dat $(SMIRNADB_CURATION_MAPFILEPATH) $(UBERON_SEX_INFO_FILE_PAT
 	@$(MV) $@.temp $@
 
 
+#TODO redo this query without estLibraryCallQuality but with pValues!!!
 TMP_TABLE_CLAUSE   := SELECT t10.expressionId, IF((SELECT COUNT(estLibraryId) FROM estLibraryExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.estLibraryCallQuality = 'high quality') >= 2, 'pstGold', IF((SELECT COUNT(estLibraryId) FROM estLibraryExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.estLibraryCallQuality = 'high quality') = 1, 'pstSilverFromHigh', IF((SELECT COUNT(estLibraryId) FROM estLibraryExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.estLibraryCallQuality = 'poor quality') >= 2, 'pstSilverFromLow', IF((SELECT COUNT(estLibraryId) FROM estLibraryExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.estLibraryCallQuality = 'poor quality') = 1, 'pstBronze', 'IMPOSSIBLE')))) AS expressionCall FROM estLibraryExpression AS t10
 
 check_conditions: EST miRNA_est
