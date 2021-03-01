@@ -843,5 +843,25 @@ sub getFeatureLength {
     return %featureLength;
 }
 
+# Julien Wollbrett, Feb. 2021
+# Read file containing mapping between RNA-Seq protocols and gene biotypes
+# for which absent calls does not have to be created
+# return a hash with a protocol name as key and an array of biotypes as value
+sub retrieveProtocolsToBiotypeExcludeAbsentCalls {
+    my %protocolToBiotypes = ();
+    my ($mappingProtocolToBiotypesFile) = @_;
+    for my $line ( read_file("$mappingProtocolToBiotypesFile", chomp=>1) ){
+        #skip the header
+        next  if ( $line =~ /^RNASeqProtocol/ or $line =~ /^\"RNASeqProtocol/ );
+        # RNASeqProtocol    biotypes_excluded_for_absent_calls
+        my @columns = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
+        my @biotypes = split(/,/, $columns[1]);
+
+        $protocolToBiotypes{columns[0]} = \@biotypes;
+    }
+    return %protocolToBiotypes;
+}
+
+
 1;
 
