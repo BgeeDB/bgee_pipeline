@@ -463,6 +463,16 @@ alter table rnaSeqExperimentExpression
 add primary key (expressionId, rnaSeqExperimentId);
 /*!40000 ALTER TABLE `rnaSeqExperimentExpression` ENABLE KEYS */;
 
+/*!40000 ALTER TABLE `rnaSeqProtocol` DISABLE KEYS */;
+alter table rnaSeqProtocol
+modify rnaSeqProtocolId smallint unsigned not null auto_increment primary key,
+/*!40000 ALTER TABLE `rnaSeqProtocol` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `rnaSeqProtocolToBiotypeExcludedAbsentCalls` DISABLE KEYS */;
+alter table rnaSeqProtocolToBiotypeExcludedAbsentCalls
+add primary key (rnaSeqProtocolId, geneBioTypeId);
+/*!40000 ALTER TABLE `rnaSeqProtocolToBiotypeExcludedAbsentCalls` ENABLE KEYS */;
+
 -- ****************************************************
 -- scRNA-Seq FULL LENGTH DATA
 -- ****************************************************
