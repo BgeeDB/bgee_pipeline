@@ -140,6 +140,18 @@ while ( my @data = $selSrc->fetchrow_array ){
 }
 $selSrc->finish;
 
+############
+# BIOTYPES #
+############
+
+my %biotypeNameToBiotypId = ();
+my $selBiotypes = $bgee->prepare("SELECT geneBioTypeId, geneBioTypeName FROM geneBioType");
+$selSrc->execute()  or die $selSrc->errstr;
+while ( my @data = $selSrc->fetchrow_array ){
+    $biotypeNameToBiotypId{$data[1]} = $data[0];
+}
+$selBiotypes->finish;
+
 ######################
 # INSERT EXPERIMENTS #
 ######################
