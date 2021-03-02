@@ -1117,9 +1117,6 @@ create table scRnaSeqFullLengthResult (
     pValue decimal(31, 30) unsigned default 1 COMMENT 'present calls are based on the pValue',
     expressionId int unsigned,
     detectionFlag enum('undefined', 'present') default 'undefined' COMMENT 'we do not produce absent calls from scRNA-Seq data',
--- Warning, qualities must be ordered, the index in the enum is used in many queries.
--- We should only see genes with 'high quality' here
-    scRnaSeqFullLengthData enum('no data', 'poor quality', 'high quality') default 'no data',
     reasonForExclusion enum('not excluded', 'undefined') not null default 'not excluded'
 ) engine = innodb;
 
@@ -1202,9 +1199,6 @@ create table scRnaSeqTargetBasedResult (
     pValue decimal(31, 30) unsigned default 1 COMMENT 'present calls are based on the pValue',
     expressionId int unsigned,
     detectionFlag enum('undefined', 'present') default 'undefined' COMMENT 'we do not produce absent calls from scRNA-Seq data',
--- Warning, qualities must be ordered, the index in the enum is used in many queries.
--- We should only see genes with 'high quality' here
-    scRnaSeqTargetBasedData enum('no data', 'poor quality', 'high quality') default 'no data',
     reasonForExclusion enum('not excluded', 'undefined') not null default 'not excluded'
 ) engine = innodb;
 
