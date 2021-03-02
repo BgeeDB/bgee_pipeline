@@ -66,6 +66,9 @@ if ( !$test_options || $affymetrixChip eq '' || $affyChipInformation eq '' || $c
 }
 
 
+system("mkdir -p $bioconductorout")==0     or die "Cannot mkdir [$bioconductorout]\n";
+system("mkdir -p $bioconductoraffin")==0   or die "Cannot mkdir [$bioconductoraffin]\n";
+system("mkdir -p $processed_schuster")==0  or die "Cannot mkdir [$processed_schuster]\n";
 $| = 1; # stdout not in memory buffer
 
 

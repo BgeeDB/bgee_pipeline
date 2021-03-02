@@ -73,9 +73,21 @@ global_check:
 	@R -e 'library("celeganscdf")'       >> $@.tmp  2>/dev/null
 	@R -e 'library("hgu95acdf")'         >> $@.tmp  2>/dev/null
 	@R -e 'library("hgu95bcdf")'         >> $@.tmp  2>/dev/null
+	@R -e 'library("hgu95bprobe")'       >> $@.tmp  2>/dev/null
 	@R -e 'library("hgu95ccdf")'         >> $@.tmp  2>/dev/null
+	@R -e 'library("hgu95cprobe")'       >> $@.tmp  2>/dev/null
+	@R -e 'library("hgu95dcdf")'         >> $@.tmp  2>/dev/null
+	@R -e 'library("hgu95dprobe")'       >> $@.tmp  2>/dev/null
+	@R -e 'library("hgu95ecdf")'         >> $@.tmp  2>/dev/null
+	@R -e 'library("hgu95eprobe")'       >> $@.tmp  2>/dev/null
 	@R -e 'library("hgu95av2cdf")'       >> $@.tmp  2>/dev/null
+	@R -e 'library("hgu95av2probe")'     >> $@.tmp  2>/dev/null
+	@R -e 'library("hgu133acdf")'        >> $@.tmp  2>/dev/null
+	@R -e 'library("hgu133aprobe")'      >> $@.tmp  2>/dev/null
 	@R -e 'library("hgu133plus2cdf")'    >> $@.tmp  2>/dev/null
+	@R -e 'library("hgu133plus2probe")'  >> $@.tmp  2>/dev/null
+	@R -e 'library("mgu74av2cdf")'       >> $@.tmp  2>/dev/null
+	@R -e 'library("mgu74av2probe")'     >> $@.tmp  2>/dev/null
 	@R -e 'library("mouse4302cdf")'      >> $@.tmp  2>/dev/null
 	@R -e 'library("rae230acdf")'        >> $@.tmp  2>/dev/null
 	@R -e 'library("rae230aprobe")'      >> $@.tmp  2>/dev/null
