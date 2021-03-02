@@ -71,6 +71,12 @@ global_check:
 	@R -e 'library("topGO")'             >> $@.tmp  2>/dev/null
 # Extra R libraries required during cel/MAS5 processing
 	@R -e 'library("celeganscdf")'       >> $@.tmp  2>/dev/null
+	@R -e 'library("drosgenome1cdf")'    >> $@.tmp  2>/dev/null
+	@R -e 'library("drosgenome1probe")'  >> $@.tmp  2>/dev/null
+	@R -e 'library("drosophila2cdf")'    >> $@.tmp  2>/dev/null
+	@R -e 'library("drosophila2probe")'  >> $@.tmp  2>/dev/null
+	@R -e 'library("hgfocuscdf")'        >> $@.tmp  2>/dev/null
+	@R -e 'library("hgfocusprobe")'      >> $@.tmp  2>/dev/null
 	@R -e 'library("hgu95acdf")'         >> $@.tmp  2>/dev/null
 	@R -e 'library("hgu95bcdf")'         >> $@.tmp  2>/dev/null
 	@R -e 'library("hgu95bprobe")'       >> $@.tmp  2>/dev/null
@@ -84,17 +90,42 @@ global_check:
 	@R -e 'library("hgu95av2probe")'     >> $@.tmp  2>/dev/null
 	@R -e 'library("hgu133acdf")'        >> $@.tmp  2>/dev/null
 	@R -e 'library("hgu133aprobe")'      >> $@.tmp  2>/dev/null
+	@R -e 'library("hgu133a2cdf")'       >> $@.tmp  2>/dev/null
+	@R -e 'library("hgu133a2probe")'     >> $@.tmp  2>/dev/null
+	@R -e 'library("hgu133bcdf")'        >> $@.tmp  2>/dev/null
+	@R -e 'library("hgu133bprobe")'      >> $@.tmp  2>/dev/null
 	@R -e 'library("hgu133plus2cdf")'    >> $@.tmp  2>/dev/null
 	@R -e 'library("hgu133plus2probe")'  >> $@.tmp  2>/dev/null
+	@R -e 'library("hu6800cdf")'         >> $@.tmp  2>/dev/null
+	@R -e 'library("hu6800probe")'       >> $@.tmp  2>/dev/null
+	@R -e 'library("mgu74acdf")'         >> $@.tmp  2>/dev/null
+	@R -e 'library("mgu74aprobe")'       >> $@.tmp  2>/dev/null
 	@R -e 'library("mgu74av2cdf")'       >> $@.tmp  2>/dev/null
 	@R -e 'library("mgu74av2probe")'     >> $@.tmp  2>/dev/null
+	@R -e 'library("mgu74bv2cdf")'       >> $@.tmp  2>/dev/null
+	@R -e 'library("mgu74bv2probe")'     >> $@.tmp  2>/dev/null
+	@R -e 'library("mgu74cv2cdf")'       >> $@.tmp  2>/dev/null
+	@R -e 'library("mgu74cv2probe")'     >> $@.tmp  2>/dev/null
+	@R -e 'library("moe430acdf")'        >> $@.tmp  2>/dev/null
+	@R -e 'library("moe430aprobe")'      >> $@.tmp  2>/dev/null
+	@R -e 'library("moe430bcdf")'        >> $@.tmp  2>/dev/null
+	@R -e 'library("moe430bprobe")'      >> $@.tmp  2>/dev/null
 	@R -e 'library("mouse4302cdf")'      >> $@.tmp  2>/dev/null
+	@R -e 'library("mouse4302probe")'    >> $@.tmp  2>/dev/null
+	@R -e 'library("mouse430a2cdf")'     >> $@.tmp  2>/dev/null
+	@R -e 'library("mouse430a2probe")'   >> $@.tmp  2>/dev/null
+	@R -e 'library("mu11ksubacdf")'      >> $@.tmp  2>/dev/null
+	@R -e 'library("mu11ksubaprobe")'    >> $@.tmp  2>/dev/null
+	@R -e 'library("mu11ksubbcdf")'      >> $@.tmp  2>/dev/null
+	@R -e 'library("mu11ksubbprobe")'    >> $@.tmp  2>/dev/null
 	@R -e 'library("rae230acdf")'        >> $@.tmp  2>/dev/null
 	@R -e 'library("rae230aprobe")'      >> $@.tmp  2>/dev/null
 	@R -e 'library("rgu34acdf")'         >> $@.tmp  2>/dev/null
 	@R -e 'library("rgu34aprobe")'       >> $@.tmp  2>/dev/null
 	@R -e 'library("rhesuscdf")'         >> $@.tmp  2>/dev/null
 	@R -e 'library("rhesusprobe")'       >> $@.tmp  2>/dev/null
+	@R -e 'library("zebrafishcdf")'      >> $@.tmp  2>/dev/null
+	@R -e 'library("zebrafishprobe")'    >> $@.tmp  2>/dev/null
 # Python libraries for Zebrafish intermine
 	@python3 -c "import intermine"       >> $@.tmp  2>/dev/null
 	@python3 -c "import simplejson"      >> $@.tmp  2>/dev/null
