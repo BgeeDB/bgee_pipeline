@@ -51,7 +51,9 @@ global_check:
 	@R -e 'library("AnnotationDbi")'     >> $@.tmp  2>/dev/null
 	@R -e 'library("Biobase")'           >> $@.tmp  2>/dev/null
 	@R -e 'library("chipseq")'           >> $@.tmp  2>/dev/null
+	@R -e 'library("data.table")'        >> $@.tmp  2>/dev/null
 	@R -e 'library("edgeR")'             >> $@.tmp  2>/dev/null
+	@R -e 'library("fdrtool")'           >> $@.tmp  2>/dev/null
 	@R -e 'library("genefilter")'        >> $@.tmp  2>/dev/null
 	@R -e 'library("GenomicFeatures")'   >> $@.tmp  2>/dev/null
 	@R -e 'library("gcrma")'             >> $@.tmp  2>/dev/null
