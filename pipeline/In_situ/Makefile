@@ -44,7 +44,7 @@ tsv_mgi: map_mgi $(SOURCE_FILES_DIR)$(DIR_NAME)MouseMine.data
 	@sleep 50
 	# Prepare MGI tsv for insertion
 	@perl MGI/prepare_data.pl  -bgee=$(BGEECMD) -data=$(SOURCE_FILES_DIR)$(DIR_NAME)MouseMine.data -Sport=$(INBETWEENSTAGESPORT) -Aport=$(IDMAPPINGPORT) >$@.tmp 2>warnings.$@
-	@gzip -9 $(SOURCE_FILES_DIR)$(DIR_NAME)MouseMine.data
+	@gzip -f -9 $(SOURCE_FILES_DIR)$(DIR_NAME)MouseMine.data
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
