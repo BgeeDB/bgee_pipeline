@@ -174,7 +174,8 @@ my ($empty, $certain, $partial, $uncertain, $others) = (0, 0, 0, 0, 0);
 print join("\t", '#data_source', qw(inSituExperimentId  inSituEvidenceId  organId  stageId  geneId  detectionFlag  inSituData  linked  speciesId  strain  sex  [ExprDesc])), "\n";
 for my $id ( sort keys %$expression ){
     # Only wild type (N2 is C. elegans wild type)
-    next  if ( $expression->{$id}->{'strain'} ne 'N2' && $expression->{$id}->{'strain'} ne '' );
+    #NOTE WBStrain00000001 is N2 now!
+    next  if ( $expression->{$id}->{'strain'} ne 'WBStrain00000001' && $expression->{$id}->{'strain'} ne '' );
     # Get out if no info for gene!
     next  if ( $expression->{$id}->{'gene'} eq '' );
 

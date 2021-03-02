@@ -50,7 +50,7 @@ tsv_mgi: map_mgi $(SOURCE_FILES_DIR)$(DIR_NAME)MouseMine.data
 
 
 #NOTE it looks there is no strain info
-#TODO Test XenMine (no in situ data 2016/10/03)
+#TODO It looks to have in situ data in XenMine now but it is extremely slow
 tsv_xenbase: get_annot
 	# Start in between stages socket
 	@$(INBETWEENSTAGES) 8364 $(INBETWEENSTAGESPORT) &
