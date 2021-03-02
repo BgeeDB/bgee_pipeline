@@ -18,7 +18,7 @@ use Getopt::Long;
 use FindBin;
 use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
 use Utils;
-
+use lib '.';
 require 'affy_utils.pl';
 require 'bgee_utils.pl';
 
