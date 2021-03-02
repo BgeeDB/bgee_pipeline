@@ -7,6 +7,7 @@ use diagnostics;
 
 use Getopt::Long;
 use File::Slurp;
+use Cpanel::JSON::XS;
 use FindBin;
 use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
 use Utils;
@@ -20,20 +21,23 @@ my $id_root_organ = 'UBERON:0000465'; # "material anatomical entity"
 # Define arguments & their default value
 my ($bgee_connector) = ('');
 my ($wormb_data)     = ('');
+my ($strain_map)     = ('');
 my ($Aport, $Sport)  = (0, 0);
 my %opts = ('bgee=s'        => \$bgee_connector,     # Bgee connector string
             'wormb_data=s'  => \$wormb_data,         # from ftp://caltech.wormbase.org/pub/wormbase/expr_dump/
+            'strain_map=s'  => \$strain_map,         # from https://wormbase.org/species/all/strain/ Natural Isolates
             'Aport=i'       => \$Aport,              # Anatomy mapper socket port
             'Sport=i'       => \$Sport,              # Stage mapper socket port
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $bgee_connector eq '' || $wormb_data eq '' || $Aport == 0 ){
+if ( !$test_options || $bgee_connector eq '' || $wormb_data eq '' || $strain_map eq '' || $Aport == 0 ){
     print "\n\tInvalid or missing argument:
-\te.g. $0  -bgee=\$(BGEECMD)  -wormb_data=expr_pattern.ace.20160829 -Aport=\$(IDMAPPINGPORT) -Sport=\$(INBETWEENSTAGESPORT)
+\te.g. $0  -bgee=\$(BGEECMD)  -wormb_data=expr_pattern.ace.20160829 -strain_map=wormbase_natural_strains.json -Aport=\$(IDMAPPINGPORT) -Sport=\$(INBETWEENSTAGESPORT)
 \t-bgee            Bgee connector string
 \t-wormb_data      WormBase/WormMine tsv data file
+\t-strain_map      wormbase_natural_strains.json
 \t-Aport           Anatomy mapper socket port
 \t-Sport           Stage   mapper socket port
 \n";
@@ -56,7 +60,7 @@ die "Data source WormBase not found\n"  if ( !defined $data_source_id );
 
 # Read data
 my $expression;
-my ($Expr_pattern, $gene, $ref, $strain, $In_Situ) = ('', '', '', '', 0);
+my ($Expr_pattern, $gene, $ref, $strain, $species, $In_Situ) = ('', '', '', '', 6239, 0);
 my (@Anatomy_term, @Life_stage);
 my @Anat;
 my @Stages;
@@ -69,6 +73,7 @@ for my $line ( read_file("$wormb_data", chomp => 1) ){
             $expression->{$Expr_pattern}->{'gene'}         = $gene;
             $expression->{$Expr_pattern}->{'ref'}          = $ref;
             $expression->{$Expr_pattern}->{'strain'}       = $strain;
+            $expression->{$Expr_pattern}->{'species'}      = $species;
             @{ $expression->{$Expr_pattern}->{'anatomy'} } = @Anatomy_term;
             @{ $expression->{$Expr_pattern}->{'stage'} }   = @Life_stage;
             push @Anat,   @Anatomy_term;
@@ -79,6 +84,7 @@ for my $line ( read_file("$wormb_data", chomp => 1) ){
         $gene         = '';
         $ref          = '';
         $strain       = '';
+        $species      = 6239;
         @Anatomy_term = ();
         @Life_stage   = ();
         $In_Situ      = 0;
@@ -147,6 +153,10 @@ for my $line ( read_file("$wormb_data", chomp => 1) ){
     elsif ( $line =~ /^Strain\s*"([^"]+)"/ ){
         $strain = $1;
     }
+    elsif ( $line =~ /^Species\s*"([^"]+)"/ ){
+        $species = $1 eq 'Caenorhabditis elegans' ? 6239
+                 : 0;
+    }
     else {
         # ...
     }
@@ -169,13 +179,38 @@ my $doneAnat   = Utils::get_anatomy_mapping(\@Anat, $Aport);
 my $doneStages = Utils::get_in_between_stages(\@Stages, $Sport);
 
 
+#TODO other possible strain mapping? But they look truncated
+# https://wormbase.org/search/strain/*?download=1&species=c_elegans&content-type=application%2Fjson
+# https://wormbase.org/search/strain/all?download=1&species=c_elegans&content-type=application%2Fjson
+# Map WormBase strain codes to strain names
+my $json_content = read_file("$strain_map");
+my $json = decode_json($json_content);
+
+my $strain_mapping;
+ISOL:
+for my $nat_isolate ( @{ $json->{'fields'}->{'natural_isolates'}->{'data'} } ){
+    next ISOL  if ( $nat_isolate->{'strain'}->{'taxonomy'} ne 'c_elegans' ); #C. elegans only in Bgee
+
+    # N2 (ancestral)  and  N2 Male  are N2
+    $nat_isolate->{'strain'}->{'label'} = 'N2'  if ( $nat_isolate->{'strain'}->{'label'} =~ /^N2 / );
+    $strain_mapping->{ $nat_isolate->{'strain'}->{'id'} } = $nat_isolate->{'strain'}->{'label'};
+}
+# Only wild type (N2 is default C. elegans wild type, but there are other wild "type" isolates)
+# WBStrain00000001 is N2 now!
+
+
+
 my ($empty, $certain, $partial, $uncertain, $others) = (0, 0, 0, 0, 0);
 # Output TSV
 print join("\t", '#data_source', qw(inSituExperimentId  inSituEvidenceId  organId  stageId  geneId  detectionFlag  inSituData  linked  speciesId  strain  sex  [ExprDesc])), "\n";
 for my $id ( sort keys %$expression ){
-    # Only wild type (N2 is C. elegans wild type)
-    #NOTE WBStrain00000001 is N2 now!
-    next  if ( $expression->{$id}->{'strain'} ne 'WBStrain00000001' && $expression->{$id}->{'strain'} ne '' );
+    # Only C. elegans
+    next  if ( $expression->{$id}->{'species'} != 6239 );
+    # Only wild type
+    next  if ( !exists $strain_mapping->{ $expression->{$id}->{'strain'} } && $expression->{$id}->{'strain'} ne '' );
+    $expression->{$id}->{'strain'} = exists $strain_mapping->{ $expression->{$id}->{'strain'} } ? $strain_mapping->{ $expression->{$id}->{'strain'} }
+                                   : $expression->{$id}->{'strain'} ne ''                       ? ''
+                                   : $expression->{$id}->{'strain'};
     # Get out if no info for gene!
     next  if ( $expression->{$id}->{'gene'} eq '' );
 
@@ -313,7 +348,7 @@ sub print_TSV {
                      $presence,
                      $quality,
                      '',
-                     6239,                            #FIXME C. elegans only ????
+                     $expression->{$id}->{'species'}, #Note currently only C. elegans in Bgee
                      $expression->{$id}->{'strain'} eq '' ? $Utils::NOT_ANNOTATED_STRAIN : $expression->{$id}->{'strain'},
                      'not annotated',
               ), "\n";

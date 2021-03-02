@@ -125,13 +125,15 @@ map_wormbase: get_annot
 	# Get WormBase data
 	#NOTE THINK to update WormBase dump file to last version
 	@$(WGET) 'ftp://caltech.wormbase.org/pub/wormbase/expr_dump/$(WORMBASE_EXPR_DUMP).20201213' -O $(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP).tmp && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP).tmp $(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP).ori 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP).tmp
+	# Get strain mapping from https://wormbase.org/species/all/strain/ natural isolates
+	@$(WGET) 'https://wormbase.org/rest/widget/strain/all/natural_isolates?download=1&content-type=application%2Fjson' -O $(SOURCE_FILES_DIR)$(DIR_NAME)wormbase_natural_strains.json.tmp && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)wormbase_natural_strains.json.tmp $(SOURCE_FILES_DIR)$(DIR_NAME)wormbase_natural_strains.json 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)wormbase_natural_strains.json.tmp
 	# Map strain names
 	@perl -e 'use lib ".."; use Utils; Utils::map_strain_names("$(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP).ori", "$(STRAIN_MAPPING_FILE)")' >$(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP)
 	@$(RM) $(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP).ori
 	@touch $@
 
-#FIXME it looks there are other worm species there! Should keep only C. elegans!
-tsv_wormbase: map_wormbase $(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP)
+#NOTE there are other worm species there! Keep only C. elegans!
+tsv_wormbase: map_wormbase $(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP) $(SOURCE_FILES_DIR)$(DIR_NAME)wormbase_natural_strains.json
 	# Start in between stages socket
 	@$(INBETWEENSTAGES) 6239 $(INBETWEENSTAGESPORT) &
 	# Start anatomy id mapping socket
@@ -139,7 +141,7 @@ tsv_wormbase: map_wormbase $(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP)
 	@sleep 50
 	# Prepare WormBase tsv for insertion
 # See dump at ftp://caltech.wormbase.org/pub/wormbase/expr_dump/
-	@perl WormBase/extract_insitu_data.pl  -bgee=$(BGEECMD) -Aport=$(IDMAPPINGPORT) -Sport=$(INBETWEENSTAGESPORT) -wormb_data=$(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP) >$@.tmp 2>warnings.$@
+	@perl WormBase/extract_insitu_data.pl  -bgee=$(BGEECMD) -Aport=$(IDMAPPINGPORT) -Sport=$(INBETWEENSTAGESPORT) -wormb_data=$(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP) -strain_map=$(SOURCE_FILES_DIR)$(DIR_NAME)wormbase_natural_strains.json >$@.tmp 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 #TODO Data should be extracted from WormMine in the future!
 	@$(MV) $@.tmp $@
