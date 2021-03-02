@@ -83,17 +83,15 @@ for(line in seq(nrow(sample_info_data))) {
     kallisto_info_file_path <- file.path(calls_dir, library_id, kallisto_info_file)
     if(file.exists(kallisto_info_file_path)) {
       json_info <- fromJSON(file = kallisto_info_file_path)
-      kallisto_info <- data.frame(library_id, json_info$n_processed, json_info$number_aligned, 
-        json_info$number_unique_aligned, json_info$p_pseudoaligned, json_info$p_unique, 
+      kallisto_info <- data.frame(library_id, json_info$n_processed, json_info$n_pseudoaligned, 
+        json_info$n_unique, json_info$p_pseudoaligned, json_info$p_unique, 
         json_info$n_targets, json_info$start_time, json_info$kallisto_version)
       names(kallisto_info) <- kallisto_info_report_columns
       kallisto_info_all_samples <- rbind(kallisto_info_all_samples, kallisto_info)
-      } else {
-        warning(library_id, " : kallisto info file was not generated")
-        libraries_wo_calls <- libraries_wo_calls + 1
-      }
+    } else {
+      warning(library_id, " : kallisto info file was not generated")
+      libraries_wo_calls <- libraries_wo_calls + 1
     }
-
   } else {
     warning(library_id, " : library directory not created")
     libraries_wo_calls <- libraries_wo_calls + 1
@@ -109,7 +107,7 @@ message(nrow(all_samples), "libraries found in the calls directory")
 write.table(all_samples, file = file.path(calls_dir, all_calls_report_file), quote = FALSE, sep = "\t", row.names = FALSE)
 
 # save kallisto report
-write.table(all_samples, file = file.path(calls_dir, all_kallisto_report_file), quote = FALSE, sep = "\t", row.names = FALSE)
+write.table(kallisto_info_all_samples, file = file.path(calls_dir, all_kallisto_report_file), quote = FALSE, sep = "\t", row.names = FALSE)
 
 ## PDF for all boxplot
 pdf(file = paste0(calls_dir, "/presence_absence_boxplots.pdf"), width = 12, height = 5)
