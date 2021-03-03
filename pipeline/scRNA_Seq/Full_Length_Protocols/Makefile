@@ -128,6 +128,7 @@ prepare_singlecell_info: $(SC_RNASEQ_LIB_PASS_FILEPATH) 0Preparation/prepare_scr
 	@$(MV) $@.tmp $@
 
 # generate kallisto indexes with BgeeCall. Indexes already generated during the bulk RNA-Seq pipeline can be reused.
+# run script from bulk RNASeq pipeline
 indexes_bgeecall: prepare_singlecell_info
 	# generate BgeeCall input file from the scrna_seq_sample_info.txt file
 	# Run in front because it only parse a small file in order to create a new one.
@@ -137,6 +138,7 @@ indexes_bgeecall: prepare_singlecell_info
 	@$(MV) $@.tmp $@
 
 # Use BgeeCall R package to generate present/absent calls.
+# run script from bulk RNASeq pipeline
 presence_absence_bgeecall: indexes_bgeecall
 	#use same working_directory than bulk RNASeq as indexes are the same
 	@$(CLUSTER_R_CMD) $(CLUSTER_KALLISTO_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH)" account="$(CLUSTER_ACCOUNT_SENSITIVE)" time="2-00:00:00" partition="$(CLUSTER_PARTITION_SENSITIVE)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)" decrypt_file_path=""' $(PIPELINEROOT)$(RNASEQPATH)1Run/bgeecall_calls.R 1Run/bgeecall_calls.Rout
@@ -161,6 +163,19 @@ QC_cellPopulation: presence_absence_bgeecall 1Run/QC_cellPopulation.R
 	@sbatch 1Run/QC_cellPopulation.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
+	@touch $@
+
+# run script from bulk RNASeq pipeline
+check_presence_absence: presence_absence_bgeecall 
+	# check that presence absence calls have been generated for all libraries present in the rna_seq_sample_info file
+	# generate file containing calls info for all libraries and use this file to generate different plots
+	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_sample_info="$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH)" calls_dir="$(SC_RNASEQ_CLUSTER_BGEECALL)" presence_absence_report="$(SC_RNASEQ_CLUSTER_CALLS_STATS)" kallisto_report="$(SC_RNASEQ_CLUSTER_KALLISTO_STATS)"' $(PIPELINEROOT)$(RNASEQPATH)1Run/rna_seq_calls_plot.R $(SC_RNASEQ_FL_CLUSTER_R_LOG)rna_seq_calls_plot.Rout
+	@touch $@
+
+# Do not use slurm to run this light processing
+# run script from bulk RNASeq pipeline
+calculate_fpkm: presence_absence_bgeecall
+	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args all_results_dir="$(SC_RNASEQ_CLUSTER_BGEECALL)" calls_file_name="$(ABUNDANCEFILE)"' $(PIPELINEROOT)$(RNASEQPATH)1Run/calculate_fpkm.R $(SC_RNASEQ_FL_CLUSTER_R_LOG)calculate_fpkm.Rout
 	@touch $@
 
 final_status: scRNAseq_Calls

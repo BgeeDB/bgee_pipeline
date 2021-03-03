@@ -471,11 +471,15 @@ SC_RNASEQ_CLUSTER_ALL_RES                     := $(RNASEQ_CLUSTER_SCRATCH)scRNA-
 ## Specific paths to results of full-length protocols
 SC_RNASEQ_CLUSTER_ALL_RES_FULL_LENGTH         := $(SC_RNASEQ_CLUSTER_ALL_RES)FULL_LENGTH/
 SC_RNASEQ_CLUSTER_BGEECALL                    := $(SC_RNASEQ_CLUSTER_ALL_RES_FULL_LENGTH)BgeeCall/
+SC_RNASEQ_FL_CLUSTER_R_LOG                    := $(SC_RNASEQ_CLUSTER_ALL_RES_FULL_LENGTH)Rout/
 SC_RNASEQ_CLUSTER_KALLISTO                    := $(SC_RNASEQ_CLUSTER_ALL_RES_FULL_LENGTH)Kallisto_All_Cells/
 SC_RNASEQ_CLUSTER_QC_CELLPOP_RES              := $(SC_RNASEQ_CLUSTER_ALL_RES_FULL_LENGTH)Quality_Control_Cell_Population/
 SC_RNASEQ_CLUSTER_CALL_PRESENT                := $(SC_RNASEQ_CLUSTER_ALL_RES_FULL_LENGTH)scRNAseq_Callpresent/
 # scRNASeq file paths
 SC_RNASEQ_MODALITY_CELL_POP                   := $(SC_RNASEQ_CLUSTER_QC_CELLPOP_RES)Modality_Cell_type_per_experiment.tsv
+SC_RNASEQ_CLUSTER_CALLS_STATS                 := $(SC_RNASEQ_CLUSTER_BGEECALL)presence_absence_all_samples.txt
+SC_RNASEQ_CLUSTER_KALLISTO_STATS              := $(SC_RNASEQ_CLUSTER_BGEECALL)reports_info_all_samples.txt
+
 
 ## Specific paths to results of target-based protocols
 SC_RNASEQ_CLUSTER_ALL_RES_DROPLET             := $(SC_RNASEQ_CLUSTER_ALL_RES)DROPLET_10X/
