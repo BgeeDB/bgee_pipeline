@@ -373,6 +373,14 @@ for my $expId ( sort keys %libraries ){
                       $exclusion, "\n";
             }
             else {
+                # pvalue and zscore can be null (if no read mapped). In this case BgeeCall retrieve "NA".
+                # DBI use undef value to insert null in the database. That's why we modify "NA" to undef.
+                if ($genesResults{$geneId}->{'pValue'} eq "NA") {
+                  $genesResults{$geneId}->{'pValue'} = undef;
+                }
+                if ($genesResults{$geneId}->{'zscore'} eq "NA") {
+                  $genesResults{$geneId}->{'zscore'} = undef;
+                }
                 $insResult->execute($libraryId,
                                     # geneId is an ensembl ID, we need to get the bgeeGeneId
                                     $genes{ $libraries{$expId}->{$libraryId}->{'speciesId'}}->{ $geneId },

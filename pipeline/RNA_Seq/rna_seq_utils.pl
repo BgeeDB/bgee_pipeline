@@ -596,7 +596,7 @@ sub getAllRnaSeqLibrariesStats {
         my $sdIntergenic                    = $tmp[13];
         my $speciesId                       = $tmp[14];
 
-        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 18 );
+        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 15 );
 
         if ( !defined $rnaSeqLibraries{$libraryId} ){
             # Perform format checks
@@ -767,7 +767,7 @@ sub getGenesResults {
                 warn "Warning, wrong format for geneId [$geneId]\n";
                 $discarded = 1;
             }
-            if ( $TPM !~ /$floatingPointRegex/ ){
+            if ( $TPM !~ /$floatingPointRegex/ || $TPM < 0 || $TPM > 1000000){
                 warn "Warning, wrong format for TPM [$TPM]\n";
                 $discarded = 1;
             }
@@ -779,11 +779,11 @@ sub getGenesResults {
                 warn "Warning, wrong format for biotype [$biotype]\n";
                 $discarded = 1;
             }
-            if ( $zscore !~ /$floatingPointRegex/ ){
+             if ( !($zscore =~ /$floatingPointRegex/ || $zscore eq 'NA') ){
                 warn "Warning, wrong format for zscore [$zscore]\n";
                 $discarded = 1;
             }
-            if ( $pValue !~ /$floatingPointRegex/ || $pValue < 0 || $pValue > 1000000){
+            if ( !( $pValue eq 'NA' || ($pValue =~ /$floatingPointRegex/ && $pValue >= 0 && $pValue <= 1) ) ){
                 warn "Warning, wrong format for pValue [$pValue]\n";
                 $discarded = 1;
             }
