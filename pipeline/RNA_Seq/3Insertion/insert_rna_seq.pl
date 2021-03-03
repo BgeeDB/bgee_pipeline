@@ -266,6 +266,9 @@ my $insResult = $bgee->prepare('INSERT INTO rnaSeqResult (rnaSeqLibraryId, bgeeG
                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
 my $inserted = 0;
+
+print "disable autocommit. Manually commit for each library\n";
+$bgee->{AutoCommit} = 0;
 for my $expId ( sort keys %libraries ){
     LIBRARY:
     for my $libraryId ( sort keys %{$libraries{$expId}} ){
@@ -274,6 +277,7 @@ for my $expId ( sort keys %libraries ){
             next LIBRARY;
         }
         print "\t$expId $libraryId\n";
+
 
         # Remap to extra mapping if any
 #        $annotations{$expId}->{$libraryId}->{'uberonId'} = $extra{ $annotations{$expId}->{$libraryId}->{'uberonId'} } || $annotations{$expId}->{$libraryId}->{'uberonId'};
@@ -394,8 +398,11 @@ for my $expId ( sort keys %libraries ){
             }
 
         }
+        $bgee->commit;
     }
 }
+print "reactivate autocommit\n";
+$bgee->{AutoCommit} = 1;
 $insLib->finish();
 $insRun->finish();
 $insResult->finish();
