@@ -289,12 +289,12 @@ my $stage_equivalences = Utils::get_stage_equivalences($bgee);
 print "Inserting libraries and all results...\n";
 # query for samples insertion
 my $insLib = $bgee->prepare('INSERT INTO rnaSeqLibrary (rnaSeqLibraryId, rnaSeqExperimentId,
-                             rnaSeqPlatformId, conditionId, tpmThreshold,
+                             rnaSeqPlatformId, rnaSeqProtocolId, conditionId, tpmThreshold,
                              allGenesPercentPresent, proteinCodingGenesPercentPresent,
                              intergenicRegionsPercentPresent, meanTpmReferenceIntergenicDistribution, 
                              sdTpmReferenceIntergenicDistribution, pValueThreshold, allReadsCount, 
                              mappedReadsCount, minReadLength, maxReadLength, libraryType, libraryOrientation)
-                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
 
 # Excluded libraries
@@ -339,6 +339,12 @@ for my $expId ( sort keys %libraries ){
             next LIBRARY;
         }
 
+        # Check that protocol of current RNA-Seq library is already present in the database
+        if ( undef $protocolNameToProtocolId{$libraries{$expId}->{$libraryId}->{'protocol'}}){
+            warn "Protocol [$libraries{$expId}->{$libraryId}->{'protocol'}] not present in the database for [$libraryId]\n";
+            next LIBRARY;
+        }
+
         # Get conditionId/exprMappedConditionId for this library
         # Updates also the hash of existing conditions
         my $condKeyMap;
@@ -357,27 +363,29 @@ for my $expId ( sort keys %libraries ){
 
         # insert sample
         if ( $debug ){
-            print 'INSERT INTO rnaSeqLibrary: ', $libraryId,                        ' - ',
-                  $expId, ' - ', $libraries{$expId}->{$libraryId}->{'platform'},    ' - ',
-                  $condKeyMap->{'conditionId'},                                     ' - ',
-                  $librariesStats{$libraryId}->{'cutoffTPM'},                       ' - ',
-                  $librariesStats{$libraryId}->{'allGenesPercentPresent'},          ' - ',
-                  $librariesStats{$libraryId}->{'proteinCodingPercentPresent'},     ' - ',
-                  $librariesStats{$libraryId}->{'intergenicRegionsPercentPresent'}, ' - ',
-                  $librariesStats{$libraryId}->{'meanIntergenic'},                  ' - ',
-                  $librariesStats{$libraryId}->{'sdIntergenic'},                    ' - ',
-                  $librariesStats{$libraryId}->{'pValueThreshold'},                 ' - ',
-                  $reportInfo{$libraryId}->{'allReadsCount'},                       ' - ',
-                  $reportInfo{$libraryId}->{'mappedReadsCount'},                    ' - ',
-                  $reportInfo{$libraryId}->{'minReadLength'},                       ' - ',
-                  $reportInfo{$libraryId}->{'maxReadLength'},                       ' - ',
-                  $libraries{$expId}->{$libraryId}->{'libraryType'},                ' - ',
+            print 'INSERT INTO rnaSeqLibrary: ', $libraryId,                                       ' - ',
+                  $expId, ' - ', $libraries{$expId}->{$libraryId}->{'platform'},                   ' - ',
+                  $libraries{$expId}->{$libraryId}->{'platform'},                                  ' - ',
+                  $protocolNameToProtocolId{$libraries{$expId}->{$libraryId}->{'protocol'}},       ' - ',
+                  $librariesStats{$libraryId}->{'cutoffTPM'},                                      ' - ',
+                  $librariesStats{$libraryId}->{'allGenesPercentPresent'},                         ' - ',
+                  $librariesStats{$libraryId}->{'proteinCodingPercentPresent'},                    ' - ',
+                  $librariesStats{$libraryId}->{'intergenicRegionsPercentPresent'},                ' - ',
+                  $librariesStats{$libraryId}->{'meanIntergenic'},                                 ' - ',
+                  $librariesStats{$libraryId}->{'sdIntergenic'},                                   ' - ',
+                  $librariesStats{$libraryId}->{'pValueThreshold'},                                ' - ',
+                  $reportInfo{$libraryId}->{'allReadsCount'},                                      ' - ',
+                  $reportInfo{$libraryId}->{'mappedReadsCount'},                                   ' - ',
+                  $reportInfo{$libraryId}->{'minReadLength'},                                      ' - ',
+                  $reportInfo{$libraryId}->{'maxReadLength'},                                      ' - ',
+                  $libraries{$expId}->{$libraryId}->{'libraryType'},                               ' - ',
                   "NA\n";
         }
         else {
             $insLib->execute($libraryId,
                              $expId,
                              $libraries{$expId}->{$libraryId}->{'platform'},
+                             protocolNameToProtocolId{ $libraries{$expId}->{$libraryId}->{'platform'} },
                              $condKeyMap->{'conditionId'},
                              $librariesStats{$libraryId}->{'cutoffTPM'},
                              $librariesStats{$libraryId}->{'allGenesPercentPresent'},
