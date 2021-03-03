@@ -191,8 +191,8 @@ ISOL:
 for my $nat_isolate ( @{ $json->{'fields'}->{'natural_isolates'}->{'data'} } ){
     next ISOL  if ( $nat_isolate->{'strain'}->{'taxonomy'} ne 'c_elegans' ); #C. elegans only in Bgee
 
-    # N2 (ancestral)  and  N2 Male  are N2
-    $nat_isolate->{'strain'}->{'label'} = 'N2'  if ( $nat_isolate->{'strain'}->{'label'} =~ /^N2 / );
+#    # N2 (ancestral)  and  N2 Male  are N2 ???
+#    $nat_isolate->{'strain'}->{'label'} = 'N2'  if ( $nat_isolate->{'strain'}->{'label'} =~ /^N2 / );
     $strain_mapping->{ $nat_isolate->{'strain'}->{'id'} } = $nat_isolate->{'strain'}->{'label'};
 }
 # Only wild type (N2 is default C. elegans wild type, but there are other wild "type" isolates)

@@ -71,6 +71,7 @@ global_check:
 	@R -e 'library("topGO")'             >> $@.tmp  2>/dev/null
 # Extra R libraries required during cel/MAS5 processing
 	@R -e 'library("celeganscdf")'       >> $@.tmp  2>/dev/null
+	@R -e 'library("celegansprobe")'     >> $@.tmp  2>/dev/null
 	@R -e 'library("drosgenome1cdf")'    >> $@.tmp  2>/dev/null
 	@R -e 'library("drosgenome1probe")'  >> $@.tmp  2>/dev/null
 	@R -e 'library("drosophila2cdf")'    >> $@.tmp  2>/dev/null
@@ -78,6 +79,7 @@ global_check:
 	@R -e 'library("hgfocuscdf")'        >> $@.tmp  2>/dev/null
 	@R -e 'library("hgfocusprobe")'      >> $@.tmp  2>/dev/null
 	@R -e 'library("hgu95acdf")'         >> $@.tmp  2>/dev/null
+	@R -e 'library("hgu95aprobe")'       >> $@.tmp  2>/dev/null
 	@R -e 'library("hgu95bcdf")'         >> $@.tmp  2>/dev/null
 	@R -e 'library("hgu95bprobe")'       >> $@.tmp  2>/dev/null
 	@R -e 'library("hgu95ccdf")'         >> $@.tmp  2>/dev/null
@@ -96,6 +98,8 @@ global_check:
 	@R -e 'library("hgu133bprobe")'      >> $@.tmp  2>/dev/null
 	@R -e 'library("hgu133plus2cdf")'    >> $@.tmp  2>/dev/null
 	@R -e 'library("hgu133plus2probe")'  >> $@.tmp  2>/dev/null
+	@R -e 'library("htmg430acdf")'       >> $@.tmp  2>/dev/null
+	@R -e 'library("htmg430aprobe")'     >> $@.tmp  2>/dev/null
 	@R -e 'library("hu6800cdf")'         >> $@.tmp  2>/dev/null
 	@R -e 'library("hu6800probe")'       >> $@.tmp  2>/dev/null
 	@R -e 'library("mgu74acdf")'         >> $@.tmp  2>/dev/null
