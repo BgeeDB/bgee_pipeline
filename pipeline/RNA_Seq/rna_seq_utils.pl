@@ -363,8 +363,8 @@ sub getAllRnaSeqAnnotations {
             $commented = 1;
         }
 
-        # file format: libraryId experimentId platform ... organId stageId
-# #libraryId        experimentId   platform      organId organName       uberonId        uberonName      stageId stageName       infoOrgan       infoStage       libraryTitle     librarySource    libraryDescription       libraryCharacteristics    organAnnotationStatus   organBiologicalStatus   stageAnnotationStatus   stageBiologicalStatus   sex     strain  speciesId   comment annotatorId     lastModificationDate
+        # file format: 
+        # #libraryId    experimentId  platform  organId   organName uberonId  uberonName    stageId   stageName infoOrgan infoStage sampleTitle   sampleSource  sampleDescription sampleCharacteristics organAnnotationStatus organBiologicalStatus stageAnnotationStatus stageBiologicalStatus sex   strain    speciesId comment   annotatorId   lastModificationDate  replicate infoReplicate SRSId tags  RNASeqProtocol    physiological status  globin_reduction  PATOid    PATOname
         my @tmp = map { bgeeTrim($_) }
                   map { s/^\"//; s/\"$//; $_ } # remove quotes
                   split(/\t/, $line);
@@ -377,6 +377,7 @@ sub getAllRnaSeqAnnotations {
         my $sex          = $tmp[19];
         my $strain       = $tmp[20];
         my $speciesId    = $tmp[21];
+        my $protocol     = $tmp[29];
 
         if ( !defined $rnaSeqAnnotations{$experimentId}->{$libraryId} ){
             $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'commented'} = $commented;
@@ -435,6 +436,14 @@ sub getAllRnaSeqAnnotations {
             else {
                 warn "Warning: no species specified for [$experimentId--$libraryId]. Commented: $commented\n";
                 $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'speciesId'} = 'NA';
+            }
+            # protocol
+            if ( $protocol ne '' ){
+                $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'protocol'} = $protocol;
+            }
+            else {
+                $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'protocol'} = '';
+                warn "Warning: no protocol specified for [$experimentId--$libraryId]. Commented: $commented\n";
             }
         }
         else {
