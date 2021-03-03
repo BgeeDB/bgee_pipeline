@@ -84,7 +84,7 @@ $insExpr->finish;
 my $inSituSpotId = 0;
 my %evid_seen;
 my $insEvid = $dbh->prepare('INSERT INTO inSituEvidence (inSituEvidenceId, inSituExperimentId, evidenceDistinguishable, inSituEvidenceUrlPart) VALUES (?, ?, ?, ?)');
-my $insSpot = $dbh->prepare('INSERT INTO inSituSpot (inSituSpotId, inSituEvidenceId, conditionId, bgeeGeneId, detectionFlag, inSituData) VALUES (?, ?, ?, ?, ?, ?)');
+my $insSpot = $dbh->prepare('INSERT INTO inSituSpot (inSituSpotId, inSituEvidenceId, conditionId, bgeeGeneId, detectionFlag) VALUES (?, ?, ?, ?, ?)');
 for my $line ( 0..$#{$tsv{'data_source'}} ){
     if ( !exists $gene_mapping->{ $tsv{'geneId'}[$line] } ){
         warn "Unknown gene id (too old or too up-to-date) [$tsv{'geneId'}[$line]]\n";
@@ -113,9 +113,9 @@ for my $line ( 0..$#{$tsv{'data_source'}} ){
     $inSituSpotId++;
     my (undef, $spot) = split(/_/, $tsv);
     $spot .= "-$inSituSpotId";
-    $insSpot->execute($spot, $tsv{'inSituEvidenceId'}[$line], $condKeyMap->{'conditionId'}, $gene_mapping->{ $tsv{'geneId'}[$line] }, $tsv{'detectionFlag'}[$line], $tsv{'inSituData'}[$line])
+    $insSpot->execute($spot, $tsv{'inSituEvidenceId'}[$line], $condKeyMap->{'conditionId'}, $gene_mapping->{ $tsv{'geneId'}[$line] }, $tsv{'detectionFlag'}[$line])
         or die "[$spot][$tsv{'inSituEvidenceId'}[$line]] ".$insSpot->errstr;
-    print "[$spot]\t[$tsv{'inSituEvidenceId'}[$line]]\t[$condKeyMap->{'conditionId'}]\t[$gene_mapping->{ $tsv{'geneId'}[$line] }]\t[$tsv{'detectionFlag'}[$line]]\t[$tsv{'inSituData'}[$line]]\n"  if ( $debug );
+    print "[$spot]\t[$tsv{'inSituEvidenceId'}[$line]]\t[$condKeyMap->{'conditionId'}]\t[$gene_mapping->{ $tsv{'geneId'}[$line] }]\t[$tsv{'detectionFlag'}[$line]]\n"  if ( $debug );
 }
 $insEvid->finish;
 $insSpot->finish;
