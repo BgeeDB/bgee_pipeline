@@ -782,9 +782,9 @@ out_folder=\&quot;$out_folder/output_present_absent\&quot; desired_r_cutoff=\&qu
 <li><code>screen</code></li>
 <li><code>make run_pipeline</code></li>
 <li><code>Ctrl-a Ctrl-d</code> to exit the screen session, <code>screen -r</code> to come back</li>
-<li>Results are written in <code>$RNASEQ_VITALIT_ALL_RES</code>. Beware that one month is passing fast! Please add to your calendar to do a touch of all files in less than a month.</li>
+<li>Results are written in <code>$RNASEQ_CLUSTER_ALL_RES</code>. Beware that one month is passing fast! Please add to your calendar to do a touch of all files in less than a month.</li>
 </ul>
-<pre><code>find $RNASEQ_VITALIT_ALL_RES/ -exec touch {} \;</code></pre>
+<pre><code>find $RNASEQ_CLUSTER_ALL_RES/ -exec touch {} \;</code></pre>
 <ul>
 <li>Checks during run:</li>
 </ul>
@@ -793,11 +793,11 @@ out_folder=\&quot;$out_folder/output_present_absent\&quot; desired_r_cutoff=\&qu
  # number of launched jobs
  grep -c 'is submitted to queue &lt;bgee&gt;' /data/ul/dee/bgee/GIT/pipeline/RNA_Seq/run_pipeline.tmp
  # result folder
- ll $RNASEQ_VITALIT_ALL_RES
+ ll $RNASEQ_CLUSTER_ALL_RES
  # number of successful jobs
- ll $RNASEQ_VITALIT_ALL_RES/*/DONE.txt | wc -l
+ ll $RNASEQ_CLUSTER_ALL_RES/*/DONE.txt | wc -l
  # list of unsuccessful jobs (have no DONE.txt and have a .out file)
- find $RNASEQ_VITALIT_ALL_RES/ -maxdepth 1 -mindepth 1 -type d -exec sh -c 'if ! test -s {}/DONE.txt &amp;&amp; test -s {}/*.out; then echo {}; fi' \; | sort</code></pre>
+ find $RNASEQ_CLUSTER_ALL_RES/ -maxdepth 1 -mindepth 1 -type d -exec sh -c 'if ! test -s {}/DONE.txt &amp;&amp; test -s {}/*.out; then echo {}; fi' \; | sort</code></pre>
 <ul>
 <li>If run is interrupted, do not forget to backup the file run_pipeline.tmp, as well as .report, .err and .out files</li>
 </ul>
@@ -812,30 +812,30 @@ out_folder=\&quot;$out_folder/output_present_absent\&quot; desired_r_cutoff=\&qu
 <li>Kallisto bug… Streaming too slow, streaming interrupted, sometimes everything is just fine but Kallisto bugs after reporting output… Beware, these libraries can move to further steps and generate a <code>DONE.txt</code>. Very important to check if number of reads processed corresponds to number of reads in FASTQ files (see below).</li>
 <li>How to track these bugs:</li>
 </ul>
-<pre><code>grep 'Broken pipe' $RNASEQ_VITALIT_ALL_RES/*/*.err
+<pre><code>grep 'Broken pipe' $RNASEQ_CLUSTER_ALL_RES/*/*.err
 # Usually some samples with streaming issues
-grep 'gzip: stdin: unexpected end of file' $RNASEQ_VITALIT_ALL_RES/*/*.err
+grep 'gzip: stdin: unexpected end of file' $RNASEQ_CLUSTER_ALL_RES/*/*.err
 # Most of the time linked to streaming issues, but could also be to wrongly compressed FASTQ files.
 # Streaming issues come most of the time from long Kallisto computations and/or lots of runs which increase the probability of
 # network issues, log rotations, ... that could interrupt the streaming.
 # Run those libraries locally, not through streaming, if gzip issue is repeated itself.
-grep 'packet_write_wait'                                              $RNASEQ_VITALIT_ALL_RES/*/*.err
-grep 'ssh_exchange_identification: Connection closed by remote host'  $RNASEQ_VITALIT_ALL_RES/*/*.err
-grep 'ssh_exchange_identification: read: Connection reset by peer'    $RNASEQ_VITALIT_ALL_RES/*/*.err
+grep 'packet_write_wait'                                              $RNASEQ_CLUSTER_ALL_RES/*/*.err
+grep 'ssh_exchange_identification: Connection closed by remote host'  $RNASEQ_CLUSTER_ALL_RES/*/*.err
+grep 'ssh_exchange_identification: read: Connection reset by peer'    $RNASEQ_CLUSTER_ALL_RES/*/*.err
 # Most of the time linked to streaming issues. So check them if repeated
-grep 'Uncaught exception from user code' $RNASEQ_VITALIT_ALL_RES/*/*.err
+grep 'Uncaught exception from user code' $RNASEQ_CLUSTER_ALL_RES/*/*.err
 # Exception from the code. Check the error message next to it carefully!
-grep 'bad decrypt' $RNASEQ_VITALIT_ALL_RES/*/*.err
+grep 'bad decrypt' $RNASEQ_CLUSTER_ALL_RES/*/*.err
 #
-grep 'Your file is probably truncated' $RNASEQ_VITALIT_ALL_RES/*/*.err
+grep 'Your file is probably truncated' $RNASEQ_CLUSTER_ALL_RES/*/*.err
 # FastQC error, seem joint with previous one
-grep 'error writing output file' $RNASEQ_VITALIT_ALL_RES/*/*.err
+grep 'error writing output file' $RNASEQ_CLUSTER_ALL_RES/*/*.err
 # This one is present in many FastQC outputs, which doesn't seem to be really problematic...
-grep 'Failed to process file stdin' $RNASEQ_VITALIT_ALL_RES/*/*.err
+grep 'Failed to process file stdin' $RNASEQ_CLUSTER_ALL_RES/*/*.err
 #</code></pre></li>
 <li>Potential types of errors:</li>
 </ul>
-<pre><code>  grep 'Problem' $RNASEQ_VITALIT_ALL_RES/*/*.err
+<pre><code>  grep 'Problem' $RNASEQ_CLUSTER_ALL_RES/*/*.err
   # too broad
   Problem: Read length in FASTQ file [85] is not consistent with SRA record [100]. Please check [SRR1051537]
   Problem: Length of left and right reads in FASTQ files [101+101=202] are not consistent with SRA record [210]. Please check run [SRR391652]
@@ -863,12 +863,12 @@ grep 'Failed to process file stdin' $RNASEQ_VITALIT_ALL_RES/*/*.err
 <ul>
 <li>Warnings:</li>
 </ul>
-<pre><code>  grep 'Warning' $RNASEQ_VITALIT_ALL_RES/*/*.err
+<pre><code>  grep 'Warning' $RNASEQ_CLUSTER_ALL_RES/*/*.err
   # too broad, most of warnings indicate mapping on 15nt index
-  grep 'Warning: Length of left and right reads are different' $RNASEQ_VITALIT_ALL_RES/*/*.err
+  grep 'Warning: Length of left and right reads are different' $RNASEQ_CLUSTER_ALL_RES/*/*.err
   # Usually this is not a problem and SRA agrees
-  grep 'Warning: Length of left and/or right reads [75/1] too short for pseudo-mapping ...'  $RNASEQ_VITALIT_ALL_RES/*/*.err
-  grep 'Warning: Length of reads [25] too short for pseudo-mapping ...'                      $RNASEQ_VITALIT_ALL_RES/*/*.err
+  grep 'Warning: Length of left and/or right reads [75/1] too short for pseudo-mapping ...'  $RNASEQ_CLUSTER_ALL_RES/*/*.err
+  grep 'Warning: Length of reads [25] too short for pseudo-mapping ...'                      $RNASEQ_CLUSTER_ALL_RES/*/*.err
   # Mapping will switch to short index. What to do when length of reads lower than short index k-mer size? =&gt; check % mapping
   grep 'fastqc.html: No such file or directory'
   # The FastQC report file is missing. Run FastQC on those missed runs</code></pre>
@@ -876,7 +876,7 @@ grep 'Failed to process file stdin' $RNASEQ_VITALIT_ALL_RES/*/*.err
 <li><strong>TODO</strong> any other messages that could have been missed?</li>
 <li>Management of bugged samples:
 <ul>
-<li>It is good to keep a copy of the whole folder, for example: <code>mv $RNASEQ_VITALIT_ALL_RES/SRX.../ failed_results_bgee_v14/</code> Samples can be relaunched by hand one by one: you can find the bsub command for each library in the ‘.report’ file.</li>
+<li>It is good to keep a copy of the whole folder, for example: <code>mv $RNASEQ_CLUSTER_ALL_RES/SRX.../ failed_results_bgee_v14/</code> Samples can be relaunched by hand one by one: you can find the bsub command for each library in the ‘.report’ file.</li>
 <li>All samples to rerun can be relaunched by rerunning <a href="1Run/bsub_scheduler.pl">bsub_scheduler.pl</a> in <code>make run_pipeline</code> step</li>
 </ul></li>
 <li>File with excluded samples:
@@ -892,7 +892,7 @@ grep 'Failed to process file stdin' $RNASEQ_VITALIT_ALL_RES/*/*.err
 <ul>
 <li>Backup the file <code>run_pipeline.tmp</code>, as well as ‘.report’, ‘.err’ and ‘.out’ files</li>
 <li>Touch all files so that they can stay in <code>/scratch/temporary</code> for one more month</li>
-<li>Tar and compress all data and copy them to <code>/data/</code> drive (for Bgee_v14 the whole $RNASEQ_VITALIT_ALL_RES has been backuped on nas.unil.ch!)</li>
+<li>Tar and compress all data and copy them to <code>/data/</code> drive (for Bgee_v14 the whole $RNASEQ_CLUSTER_ALL_RES has been backuped on nas.unil.ch!)</li>
 </ul></li>
 </ul></li>
 </ul>
@@ -920,8 +920,8 @@ grep 'Failed to process file stdin' $RNASEQ_VITALIT_ALL_RES/*/*.err
 <h2>Presence/absence calls</h2>
 <ul>
 <li>Launch <code>make sum_by_species</code>. This steps launches the <a href="1Run/rna_seq_sum_by_species.R">1Run/rna_seq_sum_by_species.R</a> script to sum TPMs from all samples of each species to deconvolute automatically the coding genes and intergenic regions distributions</li>
-<li>Results are written in the <code>$(RNASEQ_VITALIT_SUM_RES)</code> folder</li>
-<li>A file (<code>generated_files/RNA_Seq/gaussian_choice_by_species.txt</code>, see variable <code>$(RNASEQ_VITALIT_GAUSSIAN_CHOICE)</code>) has to be manually edited to indicate which of the intergenic regions gaussians are chosen. This file is located in the <code>$(GENERATED_FILES_DIR)</code> folder.</li>
+<li>Results are written in the <code>$(RNASEQ_CLUSTER_SUM_RES)</code> folder</li>
+<li>A file (<code>generated_files/RNA_Seq/gaussian_choice_by_species.txt</code>, see variable <code>$(RNASEQ_CLUSTER_GAUSSIAN_CHOICE)</code>) has to be manually edited to indicate which of the intergenic regions gaussians are chosen. This file is located in the <code>$(GENERATED_FILES_DIR)</code> folder.</li>
 <li><strong>IMPORTANT TO READ: procedure to fill this file</strong>
 <ul>
 <li><p>Remember that we do not choose the number of gaussians that is deconvoluted: we let <code>mclust</code> choose based on the BIC criterion.</p></li>
@@ -1006,7 +1006,7 @@ grep 'Failed to process file stdin' $RNASEQ_VITALIT_ALL_RES/*/*.err
 </ul></li>
 <li>After choosing all gaussians and when the <code>gaussian_choice_by_species.txt</code> file is ready, launch <code>make presence_absence</code> to run the <a href="1Run/rna_seq_presence_absence.R">1Run/rna_seq_presence_absence.R</a> script to call presence/absence for each library and generate summary boxplots.
 <ul>
-<li>Results are written in <code>$(RNASEQ_VITALIT_PRESENCE_RES)</code> folder, for example <code>presence_absence_bgee_v14</code>.</li>
+<li>Results are written in <code>$(RNASEQ_CLUSTER_PRESENCE_RES)</code> folder, for example <code>presence_absence_bgee_v14</code>.</li>
 <li>This script takes ~1 day to complete</li>
 <li>It creates one subfolder per sample, with 4 files: <code>abundance_gene_level+fpkm+intergenic+calls.tsv</code>, <code>cutoff_info_file.tsv</code>, <code>abundance_gene_level+new_tpm+new_fpkm+calls.tsv</code>, and <code>distribution_TPM_genic_intergenic+cutoff.pdf</code></li>
 <li>NOTE: the script can be run to produce the final boxplots only (the .RDa file needs to be present in the output folder already). Set <code>plot_only</code> option to TRUE.</li>
@@ -1016,12 +1016,12 @@ grep 'Failed to process file stdin' $RNASEQ_VITALIT_ALL_RES/*/*.err
 ll presence_absence_bgee_v14_v4/*/abundance_gene_level+new_tpm+new_fpkm+calls.tsv | wc
 ll presence_absence_bgee_v14_v4/*/cutoff_info_file.tsv | wc
 ll presence_absence_bgee_v14_v4/*/distribution_TPM_genic_intergenic+cutoff.pdf | wc</code></pre></li>
-<li>Copy files of <code>$(RNASEQ_VITALIT_PRESENCE_RES)</code> subfolders (1 per sample) to subfolders of <code>$RNASEQ_VITALIT_ALL_RES</code></li>
+<li>Copy files of <code>$(RNASEQ_CLUSTER_PRESENCE_RES)</code> subfolders (1 per sample) to subfolders of <code>$RNASEQ_CLUSTER_ALL_RES</code></li>
 </ul>
-<pre><code>cd $(RNASEQ_VITALIT_PRESENCE_RES)
-for folder in *; do echo $folder; /bin/cp $folder/* $(RNASEQ_VITALIT_ALL_RES)/$folder/; done
+<pre><code>cd $(RNASEQ_CLUSTER_PRESENCE_RES)
+for folder in *; do echo $folder; /bin/cp $folder/* $(RNASEQ_CLUSTER_ALL_RES)/$folder/; done
 ## /bin/cp used because cp is an alias to cp -i</code></pre>
-<p>NOTE: <code>$(RNASEQ_VITALIT_PRESENCE_RES)</code> could possibly be set to <code>$(RNASEQ_VITALIT_ALL_RES)</code> and the presence calls files be written directly in the subfolders with the mapping results. I considered it safer to generate in a separate folder and then copy.</p>
+<p>NOTE: <code>$(RNASEQ_CLUSTER_PRESENCE_RES)</code> could possibly be set to <code>$(RNASEQ_CLUSTER_ALL_RES)</code> and the presence calls files be written directly in the subfolders with the mapping results. I considered it safer to generate in a separate folder and then copy.</p>
 <ul>
 <li>Back-up results and send useful files to <code>devbioinfo</code> server: <code>make save_and_send_results_back</code></li>
 </ul>

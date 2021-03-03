@@ -164,8 +164,8 @@ $(OUTPUT_DIR)gzip_call_files:
 #TODO add $(OUTPUT_DIR)gzip_call_files
 #TODO instead of using insert_download_file_info.sql to insert data into downloadFile table, fix InsertSpeciesDataGroups
 $(OUTPUT_DIR)insert_download_files_info: $(OUTPUT_DIR)generate_processed_files $(OUTPUT_DIR)generate_anatomy_call_files $(OUTPUT_DIR)generate_anatomy_development_call_files
-	@$(MYSQL)  insert_download_file_info.sql > $@.tmp 2>$@.warnings
-	#@$(JAVA) InsertSpeciesDataGroups "$(GROUP_NAME_TO_SPECIES)" "$(GROUP_NAME_TO_CAT)" "$(GROUP_NAME_TO_REPLACEMENT)" "$(SINGLE_SPE_CAT_TO_FILE_NAME_PATTERN)" "$(MULTI_SPE_CAT_TO_FILE_NAME_PATTERN)" $(DOWNLOAD_FILE_ROOT_PATH) >> $@.tmp 2>>$@.warnings
+	@$(MYSQL) < insert_download_file_info.sql > $@.tmp 2>$@.warnings
+#	@$(JAVA) InsertSpeciesDataGroups "$(GROUP_NAME_TO_SPECIES)" "$(GROUP_NAME_TO_CAT)" "$(GROUP_NAME_TO_REPLACEMENT)" "$(SINGLE_SPE_CAT_TO_FILE_NAME_PATTERN)" "$(MULTI_SPE_CAT_TO_FILE_NAME_PATTERN)" $(DOWNLOAD_FILE_ROOT_PATH) >> $@.tmp 2>>$@.warnings
 	@$(MYSQL) -e "SELECT (SELECT COUNT(*) FROM speciesDataGroup) as \`data group count\`, (SELECT COUNT(distinct speciesId) FROM speciesToDataGroup) as \`species in data group count\`, (SELECT COUNT(*) FROM downloadFile) as \`download file count\`" >> $@.tmp 2>>$@.warnings
 	@$(MV) $@.tmp $@
 

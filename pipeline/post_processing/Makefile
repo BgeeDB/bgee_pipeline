@@ -161,24 +161,28 @@ $(OUTPUT_DIR)ranksAffy: $(OUTPUT_DIR)globalExpression
 	@perl ranks_affymetrix.pl -bgee=$(BGEECMD) > $@.tmp 2> $@.warn
 	@printf "Min, max, average Affymetrix mean rank: \n" >> $@.tmp
 	@$(MYSQL) -e "SELECT MIN(affymetrixMeanRank), MAX(affymetrixMeanRank), AVG(affymetrixMeanRank) FROM globalExpression AS t1 WHERE affymetrixMeanRank IS NOT NULL" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "SELECT MIN(affymetrixGlobalMeanRank), MAX(affymetrixGlobalMeanRank), AVG(affymetrixGlobalMeanRank) FROM globalExpression AS t1 WHERE affymetrixGlobalMeanRank IS NOT NULL" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
 $(OUTPUT_DIR)ranksRnaSeq: $(OUTPUT_DIR)globalExpression
 	@perl ranks_rnaseq.pl -bgee=$(BGEECMD) -db_name=$(DBNAME) > $@.tmp 2> $@.warn
 	@printf "Min, max, average RNA-Seq mean rank: \n" >> $@.tmp
 	@$(MYSQL) -e "SELECT MIN(rnaSeqMeanRank), MAX(rnaSeqMeanRank), AVG(rnaSeqMeanRank) FROM globalExpression AS t1 WHERE rnaSeqMeanRank IS NOT NULL" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "SELECT MIN(rnaSeqGlobalMeanRank), MAX(rnaSeqGlobalMeanRank), AVG(rnaSeqGlobalMeanRank) FROM globalExpression AS t1 WHERE rnaSeqGlobalMeanRank IS NOT NULL" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
 $(OUTPUT_DIR)ranksEST: $(OUTPUT_DIR)globalExpression
 	@perl ranks_est.pl -bgee=$(BGEECMD) > $@.tmp 2> $@.warn
 	@printf "Min, max, average EST mean rank: \n" >> $@.tmp
 	@$(MYSQL) -e "SELECT MIN(estRank), MAX(estRank), AVG(estRank) FROM globalExpression AS t1 WHERE estRank IS NOT NULL" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "SELECT MIN(estGlobalRank), MAX(estGlobalRank), AVG(estGlobalRank) FROM globalExpression AS t1 WHERE estGlobalRank IS NOT NULL" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
 $(OUTPUT_DIR)ranksInSitu: $(OUTPUT_DIR)globalExpression
 	@perl ranks_in_situ.pl -bgee=$(BGEECMD) > $@.tmp 2> $@.warn
 	@printf "Min, max, average in situ mean rank: \n" >> $@.tmp
 	@$(MYSQL) -e "SELECT MIN(inSituRank), MAX(inSituRank), AVG(inSituRank) FROM globalExpression AS t1 WHERE inSituRank IS NOT NULL" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "SELECT MIN(inSituGlobalRank), MAX(inSituGlobalRank), AVG(inSituGlobalRank) FROM globalExpression AS t1 WHERE inSituGlobalRank IS NOT NULL" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
 $(OUTPUT_DIR)norm_ranks: $(OUTPUT_DIR)ranksAffy $(OUTPUT_DIR)ranksRnaSeq $(OUTPUT_DIR)ranksEST $(OUTPUT_DIR)ranksInSitu
