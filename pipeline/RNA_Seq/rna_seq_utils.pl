@@ -667,19 +667,20 @@ sub getAllRnaSeqReportInfo {
     my %rnaSeqLibraries;
 
     for my $line ( read_file("$rnaSeqReportFile", chomp=>1) ){
-        next  if ( $line =~ /^#/ or $line =~ /^\"#/ ); # this includes the header
+        next  if ( $line =~ /^#/ or $line =~ /^\"#/ or $line =~ /^libraryId/); # this includes the header
 
         my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
 
-        # columns: libraryId, allReadsCount, mappedReadsCount, minReadLength, maxReadLength
+        # columns: libraryId    reads   min_read_size   max_read_size   number_aligned  number_unique_aligned   prop_aligned    prop_unique_aligned number_targets  start_time  kallisto_version
 
         my $libraryId                       = $tmp[0];
         my $allReadsCount                   = $tmp[1];
-        my $mappedReadsCount                = $tmp[2];
-        my $minReadLength                   = $tmp[3];
-        my $maxReadLength                   = $tmp[4];
+        my $minReadLength                   = $tmp[2];
+        my $maxReadLength                   = $tmp[3];
+        my $mappedReadsCount                = $tmp[4];
+        
 
-        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 5 );
+        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 11 );
 
         if ( !defined $rnaSeqLibraries{$libraryId} ){
             # Perform format checks
