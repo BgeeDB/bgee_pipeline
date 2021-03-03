@@ -461,7 +461,7 @@ print("Inserting probesets...\n")  if ( $debug );
 #TODO Add p-value in the db
 my $insAffyPset = $dbh->prepare('INSERT INTO affymetrixProbeset
                                 (affymetrixProbesetId, bgeeAffymetrixChipId, bgeeGeneId,
-                                normalizedSignalIntensity, rawDetectionFlag, affymetrixData, reasonForExclusion,
+                                normalizedSignalIntensity, rawDetectionFlag, reasonForExclusion,
                                 pValue, qValue, detectionFlag)
                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
@@ -489,7 +489,6 @@ CHIP: for my $bgeeAffymetrixChipId (sort { $a <=> $b } keys %all_chips) {
                             $annotation{$chipTypeId}->{$pbsetId},  #bgeeGeneId
                             $chip_pbsets->{$pbsetId}->{'signal'},
                             $chip_pbsets->{$pbsetId}->{'call'},
-                            $chip_pbsets->{$pbsetId}->{'quality'},
                             $reasonForExclusion,
                             $chip_pbsets->{$pbsetId}->{'p_value'},
                             $chip_pbsets->{$pbsetId}->{'q_value'},
