@@ -9,6 +9,8 @@
 ## R CMD BATCH --no-save --no-restore '--args sample_info="/path/to/bgeecall_input.tsv" calls_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) rna_seq_calls_plot.R rna_seq_calls_plot.Rout
 ## bgeecall_sample_info       - path to file with info about libraries processed with BgeeCall
 ## calls_dir                  - path to folder where BgeeCall wrote the calls.
+## presence_absence_report    - path to output file containing report of present/absent calls for all samples
+## kallisto_report            - path to output file containing report of kallisto for all samples
 
 ## load required packages
 library("rjson")
@@ -26,7 +28,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed in command line
-command_arg <- c("bgeecall_sample_info", "calls_dir")
+command_arg <- c("bgeecall_sample_info", "calls_dir", "presence_absence_report", "kallisto_report")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -43,15 +45,14 @@ samples_columns <- c("libraryId", "cutoffTPM", "proportionGenicPresent", "number
   "proportionCodingPresent", "numberPresentCoding", "numberCoding", "proportionIntergenicPresent", 
   "numberIntergenicPresent", "numberIntergenic", "pValueCutoff", "meanIntergenic", "sdIntergenic", "speciesId")
 names(all_samples) <- samples_columns
-all_calls_report_file <- "presence_absence_all_samples.txt"
 
 ## init variables for calls report
-kallisto_info_file <- "run_info.json"
-kallisto_info_all_samples <- data.frame(matrix(nrow = 0, ncol = 9))
-kallisto_info_report_columns <- c("libraryId", "reads", "number_aligned", "number_unique_aligned", 
+kallisto_info_file   <- "run_info.json"
+reads_R_stat_suffix  <- ".R.stat"
+kallisto_info_all_samples <- data.frame(matrix(nrow = 0, ncol = 11))
+kallisto_info_report_columns <- c("libraryId", "reads", "min_read_size", "max_read_size", "number_aligned", "number_unique_aligned", 
   "prop_aligned", "prop_unique_aligned", "number_targets", "start_time", "kallisto_version")
 names(kallisto_info_all_samples) <- kallisto_info_report_columns
-all_kallisto_report_file <- "kallisto_report_all_samples.txt"
 
 ## check that calls have been generated for all libraries
 libraries_wo_calls <- 0
@@ -81,10 +82,13 @@ for(line in seq(nrow(sample_info_data))) {
 
     # retrieve info for kallisto report
     kallisto_info_file_path <- file.path(calls_dir, library_id, kallisto_info_file)
-    if(file.exists(kallisto_info_file_path)) {
+    library_r_stat_file <- file.path(as.character(sample_info_data$rnaseq_lib_path[line]), 
+      paste0(library_id, reads_R_stat_suffix))
+    if(file.exists(kallisto_info_file_path) || file.exists(library_r_stat_file)) {
       json_info <- fromJSON(file = kallisto_info_file_path)
-      kallisto_info <- data.frame(library_id, json_info$n_processed, json_info$n_pseudoaligned, 
-        json_info$n_unique, json_info$p_pseudoaligned, json_info$p_unique, 
+      r_stats <- read.table(file = library_r_stat_file, header = TRUE, sep = "\t", comment.char = "")
+      kallisto_info <- data.frame(library_id, json_info$n_processed, r_stats[1,1], r_stats[1,2], 
+        json_info$n_pseudoaligned, json_info$n_unique, json_info$p_pseudoaligned, json_info$p_unique, 
         json_info$n_targets, json_info$start_time, json_info$kallisto_version)
       names(kallisto_info) <- kallisto_info_report_columns
       kallisto_info_all_samples <- rbind(kallisto_info_all_samples, kallisto_info)
@@ -104,10 +108,10 @@ if (libraries_wo_calls > 0 ) {
 
 # save calls report
 message(nrow(all_samples), "libraries found in the calls directory")
-write.table(all_samples, file = file.path(calls_dir, all_calls_report_file), quote = FALSE, sep = "\t", row.names = FALSE)
+write.table(all_samples, file = presence_absence_report, quote = FALSE, sep = "\t", row.names = FALSE)
 
 # save kallisto report
-write.table(kallisto_info_all_samples, file = file.path(calls_dir, all_kallisto_report_file), quote = FALSE, sep = "\t", row.names = FALSE)
+write.table(kallisto_info_all_samples, file = kallisto_report, quote = FALSE, sep = "\t", row.names = FALSE)
 
 ## PDF for all boxplot
 pdf(file = paste0(calls_dir, "/presence_absence_boxplots.pdf"), width = 12, height = 5)
