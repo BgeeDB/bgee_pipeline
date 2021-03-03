@@ -362,7 +362,7 @@ presence_absence_bgeecall: indexes_bgeecall
 check_presence_absence: presence_absence_bgeecall 
 	# check that presence absence calls have been generated for all libraries present in the rna_seq_sample_info file
 	# generate file containing calls info for all libraries and use this file to generate different plots
-	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_sample_info="$(RNASEQ_BGEECALL_FILE)" calls_dir="$(RNASEQ_CLUSTER_BGEECALL_CALLS)"' 1Run/rna_seq_calls_plot.R $(RNASEQ_CLUSTER_R_LOG)rna_seq_calls_plot.Rout
+	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_sample_info="$(RNASEQ_BGEECALL_FILE)" calls_dir="$(RNASEQ_CLUSTER_BGEECALL_CALLS)" presence_absence_report="$(RNASEQ_CLUSTER_CALLS_STATS)" kallisto_report=$(RNASEQ_CLUSTER_KALLISTO_STATS)' 1Run/rna_seq_calls_plot.R $(RNASEQ_CLUSTER_R_LOG)rna_seq_calls_plot.Rout
 	@touch $@
 
 # Do not use slurm to run this light processing
@@ -392,13 +392,13 @@ save_and_send_results_back: finalize_pipeline check_presence_absence export_leng
 	# Move back-up data to $(RNASEQ_CLUSTER_ALL_RES_BACKUP)
 	@$(MV) $(RNASEQ_CLUSTER_SCRATCH)abundance_all_intergenic_$(DBNAME).tar.gz $(RNASEQ_CLUSTER_SCRATCH)presence_absence_$(DBNAME).tar.gz $(RNASEQ_CLUSTER_SCRATCH)sum_by_species_$(MAJOR_RELEASE).tar.gz $(RNASEQ_CLUSTER_SCRATCH)intergenic_$(MAJOR_RELEASE).tar.gz $(RNASEQ_CLUSTER_ALL_RES_BACKUP) 2>>warnings.$@
 	# Whole archive is probably too big to be copied to our servers (>100Gb). Commit only the final gene-level expression + calls files:
-	@$(CP) $(RNASEQ_CLUSTER_REPORTINFO)                                    $(RNASEQREPORTINFO) 2>>warnings.$@
-	@$(CP) $(RNASEQ_CLUSTER_PRESENCE_RES)/presence_absence_all_samples.txt $(RNASEQSAMPSTATS)  2>>warnings.$@
+	@$(CP) $(RNASEQ_CLUSTER_KALLISTO_STATS)            $(RNASEQREPORTINFO) 2>>warnings.$@
+	@$(CP) $(RNASEQ_CLUSTER_CALLS_STATS)               $(RNASEQSAMPSTATS)  2>>warnings.$@
 	#To do to complete
 	@echo -e "\tTODO: Commit/Push $(RNASEQREPORTINFO) and $(RNASEQSAMPSTATS) files\n"
 	@echo -e "\tTODO: Save tarballs to $(CLUSTER_ARCHIVE_PATH)/rna_seq/all_results_$(DBNAME)/\n"
 	@echo -e "\tTODO: Copy tarballs to development server ($(PIPEHOST)) for db insertion in [$(RNASEQALLRES)]"
-	@echo -e "\t      For insertion only  '*abundance_gene_level+new_tpm+new_fpkm+calls.tsv' $(RNASEQ_CLUSTER_REPORTINFO) $(RNASEQ_CLUSTER_PRESENCE_RES)/presence_absence_all_samples.txt $(RNASEQ_CLUSTER_PRESENCE_RES)/presence_absence_all_samples.RDa $(RNASEQ_CLUSTER_PRESENCE_RES)/presence_absence_boxplots.pdf  look to be required\n"
+	@echo -e "\t      For insertion only  '*$(ABUNDANCEFILE)' $(RNASEQREPORTINFO) $(RNASEQSAMPSTATS)$(RNASEQ_CLUSTER_BGEECALL_CALLS)/presence_absence_boxplots.pdf  look to be required\n"
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@echo -e "\tYou can go out of the sensitive cluster now\n"
 	@touch $@
