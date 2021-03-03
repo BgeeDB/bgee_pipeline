@@ -51,7 +51,7 @@ sub retrieveLibraryId {
     my $lineCount = 0;
     for my $line ( read_file($fileName, chomp => 1) ){
         if ( $line =~ /<strong>Relations<\/strong>/ ){
-            $relationsLine = $lineCount;
+            $relationsLine = $lineCount; 
         }
         elsif ( $line =~ /<td>SRA<\/td>/ ){
             $sraLine = $lineCount;
@@ -842,6 +842,147 @@ sub getFeatureLength {
         close $IN;
     }
     return %featureLength;
+}
+
+
+
+
+
+
+######################################################################################################
+######################################################################################################
+################################### FULL LENGTH scRNASEQ FUNCTIONS ###################################
+######################################################################################################
+######################################################################################################
+
+# TODO: homogenize columns of sample_info file from bulk and single cell in order to get libraries info from the same function
+# Retrieve information on libraries of full length RNASeq
+sub getAllFullLengthScRnaSeqLibrariesInfo {
+    my ($fullLengthScRnaSeqLibraryFile) = @_;
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'speciesId'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'organism'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'platform'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'libraryType'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'libraryInfo'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'readLength'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'uberonId'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'stageId'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'cellTypeId'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'sex'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'strain'} = ...
+
+    my @valid_platforms = ('Illumina HiSeq 2500', 'Illumina HiSeq 2000', 'Illumina MiSeq', 'NextSeq 500');
+
+    my @valid_protocols = ('Adapted_SMART_seq2', 'Fluidigm C1 instrument and Nextera XT protocol', 
+        'NEBNext® Ultra™ DNA Library Prep Kit for Illumina®', 'SMARTer Ultra Low', 'SMART_seq', 'SMART_seq2');
+
+
+    my %fullLengthScRnaSeqLibrary;
+    for my $line ( read_file("$fullLengthScRnaSeqLibraryFile", chomp=>1) ){
+        next  if ( $line =~ /^#/ or $line =~ /^\"#/ );
+        #libraryId  experimentId    cellTypeName    cellTypeId  speciesId   platform    protocol    protocolType    libraryType infoOrgan   stageId uberonId    sex strain  readLength  organism
+        my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
+     
+        my $libraryId                       = $tmp[0];
+        my $experimentId                    = $tmp[1];
+        my $cellTypeId                      = $tmp[3];
+        my $speciesId                       = $tmp[4];
+        my $platform                        = $tmp[5];
+        my $protocol                        = $tmp[7];
+        my $libraryType                     = $tmp[8];
+        my $stageId                         = $tmp[10];
+        my $uberonId                        = $tmp[11];
+        my $sex                             = $tmp[12];
+        my $strain                          = $tmp[13];
+        my $readLength                      = $tmp[14];
+        my $organism                        = $tmp[15];
+
+        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 11 );
+
+        if ( !defined $rnaSeqLibrary{$experimentId}->{$libraryId} ){
+            # Perform format checks
+            my $discarded = 0;
+            if ( $libraryId eq '' ){
+                warn "Warning, wrong format for libraryId [$libraryId]\n";
+                $discarded = 1;
+            }
+            if ( $experimentId eq '' ){
+                warn "Warning, wrong format for experimentId [$experimentId]\n";
+                $discarded = 1;
+            }
+            if ( $speciesId eq '' ){
+                warn "Warning, wrong format for speciesId [$speciesId]\n";
+                $discarded = 1;
+            }
+            if ( $platform eq '' || all { $platform !~ /^$_/ } @valid_platforms ){
+                warn "Warning, wrong format for platform [$platform]\n";
+                $discarded = 1;
+            }
+            if ( $protocol eq '' || all { $protocol !~ /^$_/ } @valid_protocols ){
+                warn "Warning, wrong format for protocol [$protocol]\n";
+                $discarded = 1;
+            }
+            if ( $libraryType ne 'SINGLE' && $libraryType ne 'PAIRED' ){
+                warn "Warning, wrong format for libraryType [$libraryType]\n";
+                $discarded = 1;
+            }
+            #NOTE SRA may return float for read length because of read length variability
+            if ( $readLength ne '' && ($readLength !~ /$floatingPointRegex/ || $readLength < 0 ) ){
+                warn "Warning, wrong format for readLength [$readLength]\n";
+                $discarded = 1;
+            }
+            if ( $organism eq '' ){
+                warn "Warning, wrong format for organism [$organism]\n";
+                $discarded = 1;
+            }
+            if ( $cellTypeId eq '' ){
+                warn "Warning, wrong format for cellTypeId [$cellTypeId]\n";
+                $discarded = 1;
+            }
+            if ( $cellTypeId eq '' ){
+                warn "Warning, wrong format for cellTypeId [$cellTypeId]\n";
+                $discarded = 1;
+            }
+            if ( $stageId eq '' ){
+                warn "Warning, wrong format for stageId [$stageId]\n";
+                $discarded = 1;
+            }
+            if ( $uberonId eq '' ){
+                warn "Warning, wrong format for uberonId [$uberonId]\n";
+                $discarded = 1;
+            }
+            if ( $sex eq '' ){
+                warn "Warning, wrong format for sex [$sex]\n";
+                $discarded = 1;
+            }
+            if ( $strain eq '' ){
+                warn "Warning, wrong format for strain [$strain]\n";
+                $discarded = 1;
+            }
+
+            if ( $discarded ){
+                warn ' for experiment: ', $experimentId, ' - sample: ', $libraryId, ", sample discarded!\n";
+            }
+            else {
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'speciesId'}      = $speciesId;
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'organism'}       = $organism;
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'platform'}       = $platform;
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'protocol'}       = $protocol
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'libraryType'}    = lc($libraryType);
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'readLength'}     = $readLength;
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'cellTypeId'}     = $cellTypeId;
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'stageId'}        = $stageId;
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'uberonId'}       = $uberonId;
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'sex'}            = $sex;
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'strain'}         = $strain;
+            }
+        }
+        else {
+            warn 'Warning: sample present several times in the library file: experiment: ', $experimentId, ' - sample: ', $libraryId, "\n";
+        }
+    }
+
+    return %fullLengthScRnaSeqLibrary;
 }
 
 1;
