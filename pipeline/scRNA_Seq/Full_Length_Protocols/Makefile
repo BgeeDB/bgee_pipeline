@@ -183,12 +183,12 @@ final_status: scRNAseq_Calls
 	
 final_commit: final_status
 	# Commit the scRNASeq info files before and after QC, the bimodal file and information file about all libraries
-	@$(GIT) add $(OUTPUT_DIR)scrna_seq_sample_info.txt
-	@$(GIT) add $(OUTPUT_DIR)Modality_Cell_type_per_experiment.tsv
-	@$(GIT) add $(OUTPUT_DIR)NEW_scRNASeq_sample_info.tsv
-	@$(GIT) add $(OUTPUT_DIR)Discard_scRNASeq_sample_info.tsv
+	@$(GIT) add $(SC_RNASEQ_SAMPINFO_FILEPATH)
+	@$(GIT) add $(SC_RNASEQ_MODALITY_FILEPATH)
+	@$(GIT) add $(SC_RNASEQ_SAMPINFO_PASS_FILEPATH)
+	@$(GIT) add $(SC_RNASEQ_SAMPINFO_NOT_PASS_FILEPATH)
 	@$(GIT) add $(OUTPUT_DIR)All_samples_stats_FL.tsv
-	@$(GIT) commit -m 'Update info files for scRNASeq full-length for $(DBNAME)' $(OUTPUT_DIR)scrna_seq_sample_info.txt $(OUTPUT_DIR)Modality_Cell_type_per_experiment.tsv $(OUTPUT_DIR)NEW_scRNASeq_sample_info.tsv $(OUTPUT_DIR)Discard_scRNASeq_sample_info.tsv $(OUTPUT_DIR)All_samples_stats_FL.tsv || true
+	@$(GIT) commit -m 'Update info files for scRNASeq full-length for $(DBNAME)' $(SC_RNASEQ_SAMPINFO_FILEPATH) $(SC_RNASEQ_MODALITY_FILEPATH) $(SC_RNASEQ_SAMPINFO_PASS_FILEPATH) $(SC_RNASEQ_SAMPINFO_NOT_PASS_FILEPATH) $(OUTPUT_DIR)All_samples_stats_FL.tsv || true
 	@$(GIT) push
 	@echo -e "All information is ready, you can make a tar of the results. \n"
 	@touch $@
