@@ -279,11 +279,17 @@ for my $expId ( sort keys %libraries ){
         print "\t$expId $libraryId\n";
 
         # Remap to extra mapping if any
-        $annotations{$expId}->{$libraryId}->{'uberonId'} = $extra{ $annotations{$expId}->{$libraryId}->{'uberonId'} } || $annotations{$expId}->{$libraryId}->{'uberonId'};
-        $annotations{$expId}->{$libraryId}->{'stageId'}  = $extra{ $annotations{$expId}->{$libraryId}->{'stageId'} }  || $annotations{$expId}->{$libraryId}->{'stageId'};
+        # XXX: Do we really need to remap cell type ID (anatEntity2) too???
+        $annotations{$expId}->{$libraryId}->{'uberonId'}   = $extra{ $annotations{$expId}->{$libraryId}->{'uberonId'} }   || $annotations{$expId}->{$libraryId}->{'uberonId'};
+        $annotations{$expId}->{$libraryId}->{'cellTypeId'} = $extra{ $annotations{$expId}->{$libraryId}->{'cellTypeId'} } || $annotations{$expId}->{$libraryId}->{'cellTypeId'};
+        $annotations{$expId}->{$libraryId}->{'stageId'}    = $extra{ $annotations{$expId}->{$libraryId}->{'stageId'} }    || $annotations{$expId}->{$libraryId}->{'stageId'};
 
         if ( !exists $doneAnat->{$annotations{$expId}->{$libraryId}->{'uberonId'}} || $doneAnat->{$annotations{$expId}->{$libraryId}->{'uberonId'}} eq '' ){
             warn "[$annotations{$expId}->{$libraryId}->{'uberonId'}] unmapped organ id for [$libraryId]\n";
+            next LIBRARY;
+        }
+        if ( !exists $doneAnat->{$annotations{$expId}->{$libraryId}->{'cellTypeId'}} || $doneAnat->{$annotations{$expId}->{$libraryId}->{'cellTypeId'}} eq '' ){
+            warn "[$annotations{$expId}->{$libraryId}->{'cellTypeId'}] unmapped cell type id for [$libraryId]\n";
             next LIBRARY;
         }
         if ( !exists $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}}   || $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}}   eq '' ){
@@ -298,6 +304,8 @@ for my $expId ( sort keys %libraries ){
                                                                  $conditions,
                                                                  $stage_equivalences,
                                                                  $doneAnat->{$annotations{$expId}->{$libraryId}->{'uberonId'}},
+        #XXX: Do we really need to remap cell type ID (anatEntity2) too???
+                                                                 $doneAnat->{$annotations{$expId}->{$libraryId}->{'cellTypeId'}},
                                                                  $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}},
                                                                  $annotations{$expId}->{$libraryId}->{'speciesId'},
                                                                  $annotations{$expId}->{$libraryId}->{'sex'},
