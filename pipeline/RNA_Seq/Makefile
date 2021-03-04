@@ -365,33 +365,33 @@ check_presence_absence: presence_absence_bgeecall
 	# generate file containing calls info for all libraries and use this file to generate different plots
 	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_sample_info="$(RNASEQ_BGEECALL_FILE)" calls_dir="$(RNASEQ_CLUSTER_BGEECALL_CALLS)" presence_absence_report="$(RNASEQ_CLUSTER_CALLS_STATS)" kallisto_report="$(RNASEQ_CLUSTER_KALLISTO_STATS)"' 1Run/rna_seq_calls_plot.R $(RNASEQ_CLUSTER_R_LOG)rna_seq_calls_plot.Rout
 	@touch $@
-	
+
 # Do not use slurm to run this light processing
 calculate_fpkm: presence_absence_bgeecall
 	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args all_results_dir="$(RNASEQ_CLUSTER_BGEECALL_CALLS)" calls_file_name="$(ABUNDANCEFILE)"' 1Run/calculate_fpkm.R $(RNASEQ_CLUSTER_R_LOG)calculate_fpkm.Rout
 	@touch $@
 
 
-#NOTE if output directory is not $(RNASEQ_CLUSTER_ABUNDANCE_ALL): copy all files with calls to this directory, as well as summary stats and plot files
+#NOTE if output directory is not $(RNASEQ_CLUSTER_BGEECALL_CALLS): copy all files with calls to this directory, as well as summary stats and plot files
 #for folder in *; do echo $folder; /bin/cp $folder/* ../all_results_bgee_v15/$folder/; done
 # /bin/cp used because cp is an alias to cp -i
 # Also copy presence_absence_all_samples.txt, presence_absence_all_samples.RDa and presence_absence_boxplots.pdf
 
-save_and_send_results_back: finalize_pipeline check_presence_absence export_length
+save_and_send_results_back: calculate_fpkm check_presence_absence
 	# Touch all files so that they are not removed from $(RNASEQ_CLUSTER_SCRATCH)
 	@find $(RNASEQ_CLUSTER_SCRATCH) -exec touch {} \; 2>warnings.$@
 	# Back-up all data
 	@$(RM) $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar* $(RNASEQ_CLUSTER_SCRATCH)presence_absence_$(DBNAME).tar* $(RNASEQ_CLUSTER_SCRATCH)sum_by_species_$(MAJOR_RELEASE).tar*
-	@tar -C $(RNASEQ_CLUSTER_SCRATCH) -cf $(RNASEQ_CLUSTER_SCRATCH)abundance_all_intergenic_$(DBNAME).tar      abundance_all_intergenic_$(DBNAME)/                                   2>>warnings.$@
-	@tar -C $(RNASEQ_CLUSTER_BGEECALL_OUTPUT) -cf $(RNASEQ_CLUSTER_SCRATCH)presence_absence_$(DBNAME).tar      all_results_$(DBNAME)/                                                2>>warnings.$@
-	@tar -C $(RNASEQ_CLUSTER_SCRATCH) -cf $(RNASEQ_CLUSTER_SCRATCH)sum_by_species_$(MAJOR_RELEASE).tar         sum_by_species_$(MAJOR_RELEASE)/                                      2>>warnings.$@
-	@tar -C $(RNASEQ_CLUSTER_SCRATCH) -cf $(RNASEQ_CLUSTER_SCRATCH)intergenic_$(MAJOR_RELEASE).tar             ref_intergenic_$(MAJOR_RELEASE)/ other_intergenic_$(MAJOR_RELEASE)/   2>>warnings.$@
-	@gzip -9 $(RNASEQ_CLUSTER_SCRATCH)abundance_all_intergenic_$(DBNAME).tar   2>>warnings.$@
-	@gzip -9 $(RNASEQ_CLUSTER_SCRATCH)presence_absence_$(DBNAME).tar           2>>warnings.$@
-	@gzip -9 $(RNASEQ_CLUSTER_SCRATCH)sum_by_species_$(MAJOR_RELEASE).tar      2>>warnings.$@
-	@gzip -9 $(RNASEQ_CLUSTER_SCRATCH)intergenic_$(MAJOR_RELEASE).tar          2>>warnings.$@
+	@tar -C $(RNASEQ_CLUSTER_SCRATCH) -cf $(RNASEQ_CLUSTER_SCRATCH)rna_seq_abundance_all_intergenic_$(DBNAME).tar      abundance_all_intergenic_$(DBNAME)/                                   2>>warnings.$@
+	@tar -C $(RNASEQ_CLUSTER_BGEECALL_OUTPUT) -cf $(RNASEQ_CLUSTER_SCRATCH)rna_seq_presence_absence_$(DBNAME).tar      all_results_$(DBNAME)/                                                2>>warnings.$@
+	@tar -C $(RNASEQ_CLUSTER_SCRATCH) -cf $(RNASEQ_CLUSTER_SCRATCH)rna_seq_sum_by_species_$(MAJOR_RELEASE).tar         sum_by_species_$(MAJOR_RELEASE)/                                      2>>warnings.$@
+	@tar -C $(RNASEQ_CLUSTER_SCRATCH) -cf $(RNASEQ_CLUSTER_SCRATCH)intergenic_$(MAJOR_RELEASE).tar                     ref_intergenic_$(MAJOR_RELEASE)/ other_intergenic_$(MAJOR_RELEASE)/   2>>warnings.$@
+	@gzip -9 $(RNASEQ_CLUSTER_SCRATCH)rna_seq_abundance_all_intergenic_$(DBNAME).tar   2>>warnings.$@
+	@gzip -9 $(RNASEQ_CLUSTER_SCRATCH)rna_seq_presence_absence_$(DBNAME).tar           2>>warnings.$@
+	@gzip -9 $(RNASEQ_CLUSTER_SCRATCH)rna_seq_sum_by_species_$(MAJOR_RELEASE).tar      2>>warnings.$@
+	@gzip -9 $(RNASEQ_CLUSTER_SCRATCH)intergenic_$(MAJOR_RELEASE).tar                  2>>warnings.$@
 	# Move back-up data to $(RNASEQ_CLUSTER_ALL_RES_BACKUP)
-	@$(MV) $(RNASEQ_CLUSTER_SCRATCH)abundance_all_intergenic_$(DBNAME).tar.gz $(RNASEQ_CLUSTER_SCRATCH)presence_absence_$(DBNAME).tar.gz $(RNASEQ_CLUSTER_SCRATCH)sum_by_species_$(MAJOR_RELEASE).tar.gz $(RNASEQ_CLUSTER_SCRATCH)intergenic_$(MAJOR_RELEASE).tar.gz $(RNASEQ_CLUSTER_ALL_RES_BACKUP) 2>>warnings.$@
+	@$(MV) $(RNASEQ_CLUSTER_SCRATCH)rna_seq_abundance_all_intergenic_$(DBNAME).tar.gz $(RNASEQ_CLUSTER_SCRATCH)rna_seq_presence_absence_$(DBNAME).tar.gz $(RNASEQ_CLUSTER_SCRATCH)rna_seq_sum_by_species_$(MAJOR_RELEASE).tar.gz $(RNASEQ_CLUSTER_SCRATCH)intergenic_$(MAJOR_RELEASE).tar.gz $(RNASEQ_CLUSTER_ALL_RES_BACKUP) 2>>warnings.$@
 	# Whole archive is probably too big to be copied to our servers (>100Gb). Commit only the final gene-level expression + calls files:
 	@$(CP) $(RNASEQ_CLUSTER_KALLISTO_STATS)            $(RNASEQREPORTINFO) 2>>warnings.$@
 	@$(CP) $(RNASEQ_CLUSTER_CALLS_STATS)               $(RNASEQSAMPSTATS)  2>>warnings.$@
