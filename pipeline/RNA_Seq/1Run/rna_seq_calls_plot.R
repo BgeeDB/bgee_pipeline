@@ -82,11 +82,21 @@ for(line in seq(nrow(sample_info_data))) {
 
     # retrieve info for kallisto report
     kallisto_info_file_path <- file.path(calls_dir, library_id, kallisto_info_file)
-    library_r_stat_file <- file.path(as.character(sample_info_data$rnaseq_lib_path[line]), 
-      paste0(library_id, reads_R_stat_suffix))
-    if(file.exists(kallisto_info_file_path) || file.exists(library_r_stat_file)) {
+    library_r_stat_files <- list.files(path = as.character(sample_info_data$rnaseq_lib_path[line]), 
+      pattern = reads_R_stat_suffix, full.names = TRUE)
+    if(file.exists(kallisto_info_file_path) && (length(library_r_stat_files) > 0) ) {
       json_info <- fromJSON(file = kallisto_info_file_path)
-      r_stats <- read.table(file = library_r_stat_file, header = TRUE, sep = "\t", comment.char = "")
+      min_reads <- Inf
+      max_reads <- 0
+      for (r_stat_file in library_r_stat_files) {
+        r_stats <- read.table(file = r_stat_file, header = TRUE, sep = "\t", comment.char = "")
+        if (r_stats[1,1] < min_reads) {
+          min_reads <- r_stats[1,1]
+        }
+        if (r_stats[1,2] > max_reads) {
+          max_reads <- r_stats[1,2]
+        }
+      }
       kallisto_info <- data.frame(library_id, json_info$n_processed, r_stats[1,1], r_stats[1,2], 
         json_info$n_pseudoaligned, json_info$n_unique, json_info$p_pseudoaligned, json_info$p_unique, 
         json_info$n_targets, json_info$start_time, json_info$kallisto_version)
