@@ -38,7 +38,6 @@ my ($scRnaSeqExperiment, $library_info, $excluded_libraries, $library_stats, $re
 my ($debug)                      = (0);
 my ($Aport, $Sport)              = (0, 0);
 my %opts = ('bgee=s'                => \$bgee_connector,           # Bgee connector string
-            'scRnaSeqLibrary=s'     => \$scRnaSeqLibrary,          # scRNAseqLibrary
             'scRnaSeqExperiment=s'  => \$scRnaSeqExperiment,       # scRNAseqExperiment
             'library_info=s'        => \$library_info,             # NEW_scRNASeq_sample_info.txt file
             'excluded_libraries=s'  => \$excluded_libraries,       # Discard_scRNASeq_sample_info.txt file
@@ -54,9 +53,9 @@ my %opts = ('bgee=s'                => \$bgee_connector,           # Bgee connec
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $bgee_connector eq '' || $scRnaSeqExperiment eq '' || $scRnaSeqExperiment eq '' || $library_info eq ''  || $excluded_libraries eq '' || $library_stats eq '' || $report_info eq '' || $all_results eq '' || $sex_info eq '' || $Aport == 0 || $Sport == 0 ){
+if ( !$test_options || $bgee_connector eq '' $scRnaSeqExperiment eq '' || $library_info eq ''  || $excluded_libraries eq '' || $library_stats eq '' || $report_info eq '' || $all_results eq '' || $sex_info eq '' || $Aport == 0 || $Sport == 0 ){
     print "\n\tInvalid or missing argument:
-\te.g., $0  -bgee=\$(BGEECMD) -scRnaSeqExperiment=NEW_scRNASeqLibrary.tsv -scRnaSeqExperiment=RNASeqExperiment_full.tsv -library_info=\$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -library_stats=\$(RNASEQSAMPSTATS) -report_info=\$(RNASEQREPORTINFO) -all_results=\$(RNASEQALLRES) -sex_info=\$(UBERON_SEX_INFO_FILE_PATH) -extraMapping=\$(EXTRAMAPPING_FILEPATH) -Aport=\$(IDMAPPINGPORT) -Sport=\$(STGMAPPINGPORT)    > $@.tmp 2>warnings.$@
+\te.g., $0  -bgee=\$(BGEECMD) -scRnaSeqExperiment=scRNAseqExperiment.tsv -library_info=\$(SC_RNASEQ_SAMPINFO_PASS_FILEPATH) -excluded_libraries=\$(SC_RNASEQ_SAMPINFO_NOT_PASS_FILEPATH) -library_stats=\$(SCRNASEQSAMPSTATS) -report_info=\$(SCRNASEQREPORTINFO) -all_results=\$(SCRNASEQALLRES) -sex_info=\$(UBERON_SEX_INFO_FILE_PATH) -extraMapping=\$(EXTRAMAPPING_FILEPATH) -Aport=\$(IDMAPPINGPORT) -Sport=\$(STGMAPPINGPORT)    > $@.tmp 2>warnings.$@
 \t-bgee                Bgee connector string
 \t-scRnaSeqExperiment  single cell RNAseq experiment file
 \t-library_info        NEW_scRNASeq_sample_info.txt file
@@ -79,10 +78,10 @@ require("$FindBin::Bin/../../../rna_seq_utils.pl");
 my $bgee = Utils::connect_bgee_db($bgee_connector);
 
 # Library info used to launch the pipeline
-my %libraries          = getAllFullLengthScRnaSeqLibrariesInfo($library_info);
+my %libraries         = getAllFullLengthScRnaSeqLibrariesInfo($library_info);
 print "\t", scalar keys %libraries, " experiments with libraries mapped.\n";
 my %excludedLibraries = getAllFullLengthScRnaSeqLibrariesInfo($excluded_libraries);
-print "\t", scalar keys %excludedLibraries, " experiments with libraries excluded.\n";
+print "\t", scalar keys %excludedLibraries, " experiments with libraries discarded after quality control.\n";
 
 my $count_libs = 0;
 my %all_species; # record all species

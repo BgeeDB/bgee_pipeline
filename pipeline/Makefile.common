@@ -404,7 +404,8 @@ INTERGENIC_N_PROPORTION         := 0.05
 # RNAseq data path
 RNASEQDATAPATH             := /var/bgee/extra/pipeline/rna_seq/
 ABUNDANCEFILE              := gene_level_abundance+calls.tsv
-RNASEQALLRES               := $(RNASEQDATAPATH)all_results_$(DBNAME)/
+RNASEQALLRES               := $(RNASEQDATAPATH)rna_seq_all_results_$(DBNAME)/
+FLRNASEQALLRES             := $(RNASEQDATAPATH)full_length_all_results_$(DBNAME)/
 RNASEQLOGS                 := $(RNASEQALLRES)
 RNASEQSAMPSTATS            := $(GENERATED_FILES_DIR)$(RNASEQPATH)presence_absence_all_samples.txt
 RNASEQREPORTINFO           := $(GENERATED_FILES_DIR)$(RNASEQPATH)reports_info_all_samples.txt
@@ -449,6 +450,8 @@ SC_RNASEQ_METADATA_10X_NOT_MATCH_FILEPATH   := $(SC_RNASEQ_PATH_GENERATED)metada
 SC_RNASEQ_SAMPINFO_10X_FILEPATH        := $(SC_RNASEQ_PATH_GENERATED)scRNA_Seq_info_TargetBased.txt
 SC_RNASEQ_JURA_LIB_FILEPATH            := $(SC_RNASEQ_PATH_GENERATED)juraLibrariesDownloaded.tsv
 SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH    := $(SC_RNASEQ_PATH_GENERATED)bgeecall_input.tsv
+SCRNASEQSAMPSTATS                      := $(SC_RNASEQ_PATH_GENERATED)presence_absence_all_samples.txt
+SCRNASEQREPORTINFO                     := $(SC_RNASEQ_PATH_GENERATED)reports_info_all_samples.txt
 
 # scRNAseq cluster paths (AXIOM)
 SC_RNASEQ_DOWNLOAD_PATH                 := $(CLUSTER_WALLY_PATH)/
