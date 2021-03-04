@@ -63,7 +63,7 @@ my $main_script = $RealBin.'/rna_seq_mapping_and_analysis.pl';
 my $nbr_processors = 1;
 # RAM needed: 10GB should be enough
 my $memory_usage   = 50;      # in GB
-my $time_limit     = '4:00:00';
+my $time_limit     = '12:00:00';
 
 my $job_limit      = 120; # Number of simultaneous jobs running
 
