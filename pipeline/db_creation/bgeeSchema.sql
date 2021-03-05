@@ -1014,7 +1014,7 @@ create table rnaSeqResult (
 -- taking also into account 'absent low quality' evidence.
 -- 'absent low quality' used to be: probesets always "absent" for this gene/condition,
 -- but only seen by MAS5 (that we do not trust = "low quality" - "noExpression" should always be "high quality").
-    reasonForExclusion enum('not excluded', 'pre-filtering',
+    reasonForExclusion enum('not excluded', 'pre-filtering', 'absent call not reliable', 
         'noExpression conflict', 'undefined') not null default 'not excluded'
 ) engine = innodb;
 
@@ -1128,8 +1128,8 @@ create table scRnaSeqFullLengthResult (
     zScore decimal(35, 30),
     pValue decimal(31, 30) unsigned default 1 COMMENT 'present calls are based on the pValue',
     expressionId int unsigned,
-    detectionFlag enum('undefined', 'present') default 'undefined' COMMENT 'we do not produce absent calls from scRNA-Seq data',
-    reasonForExclusion enum('not excluded', 'undefined') not null default 'not excluded'
+    detectionFlag enum('undefined', 'absent', 'present') default 'undefined' COMMENT 'absent calls are inserted but excluded for scRNA-Seq data',
+    reasonForExclusion enum('not excluded', 'absent call not reliable', 'undefined') not null default 'not excluded'
 ) engine = innodb;
 
 -- ****************************************************
