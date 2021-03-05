@@ -362,11 +362,14 @@ for my $expId ( sort keys %libraries ){
         my %genesResults = getGenesResults("$all_results/$libraryId/$abundance_file");
         for my $geneId ( keys %genesResults ){
 
-            # for full-length single cell RNA-Seq only present calls are inserted
-            next if($genesResults{$geneId}->{'expressionCall'} eq "absent");
-
-            $inserted++;
             my $exclusion = $Utils::CALL_NOT_EXCLUDED;
+            # for full-length single cell RNA-Seq absent calls are inserted but excluded
+            if($genesResults{$geneId}->{'expressionCall'} eq "absent") {
+                my $exclusion = $Utils::EXCLUDED_FOR_ABSENT_CALLS;
+            }
+            
+            $inserted++;
+            
             if ( $debug ){
                 print 'INSERT INTO scRnaSeqFullLengthResult: ', $libraryId,   ' - ', $genes{ $libraries{$expId}->{$libraryId}->{'speciesId'}}->{ $geneId }, ' - ',
                       $genesResults{$geneId}->{'FPKM'},           ' - ',
