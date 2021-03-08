@@ -1,0 +1,16 @@
+2021-03-07 00:32:28 INFO  ParserWrapper:69 - Start loading ontology: file:/home/bgee/fred/bgee_pipeline_15/bgee_pipeline/pipeline/uberon/../../source_files/uberon/dev_stage_ontology.obo from: file:/home/bgee/fred/bgee_pipeline_15/bgee_pipeline/pipeline/uberon/../../source_files/uberon/dev_stage_ontology.obo
+2021-03-07 00:32:28 WARN  SAXParsers:72 - http://www.oracle.com/xml/jaxp/properties/entityExpansionLimit not supported by parser type org.apache.xerces.jaxp.SAXParserImpl
+2021-03-07 00:32:28 WARN  SAXParsers:77 - entityExpansionLimit not supported by parser type org.apache.xerces.jaxp.SAXParserImpl
+2021-03-07 00:32:28 WARN  SAXParsers:72 - http://www.oracle.com/xml/jaxp/properties/entityExpansionLimit not supported by parser type org.apache.xerces.jaxp.SAXParserImpl
+2021-03-07 00:32:28 WARN  SAXParsers:77 - entityExpansionLimit not supported by parser type org.apache.xerces.jaxp.SAXParserImpl
+2021-03-07 00:32:29 INFO  ParserWrapper:76 - Finished loading ontology: http://purl.obolibrary.org/obo/uberon/ssso-merged-uberon.owl from: file:/home/bgee/fred/bgee_pipeline_15/bgee_pipeline/pipeline/uberon/../../source_files/uberon/dev_stage_ontology.obo
+2021-03-07 00:32:29 INFO  ParserWrapper:69 - Start loading ontology: file:/home/bgee/fred/bgee_pipeline_15/bgee_pipeline/pipeline/uberon/../../generated_files/species/bgee_ncbitaxon.owl from: file:/home/bgee/fred/bgee_pipeline_15/bgee_pipeline/pipeline/uberon/../../generated_files/species/bgee_ncbitaxon.owl
+2021-03-07 00:32:29 WARN  SAXParsers:72 - http://www.oracle.com/xml/jaxp/properties/entityExpansionLimit not supported by parser type org.apache.xerces.jaxp.SAXParserImpl
+2021-03-07 00:32:29 WARN  SAXParsers:77 - entityExpansionLimit not supported by parser type org.apache.xerces.jaxp.SAXParserImpl
+2021-03-07 00:32:29 INFO  ParserWrapper:76 - Finished loading ontology: http://purl.obolibrary.org/obo/ncbitaxon.owl from: file:/home/bgee/fred/bgee_pipeline_15/bgee_pipeline/pipeline/uberon/../../generated_files/species/bgee_ncbitaxon.owl
+00:32:29.759 [main] INFO org.bgee.pipeline.uberon.TaxonConstraints 563 prepareUberon - Preparing Uberon...
+00:32:29.763 [main] DEBUG org.bgee.pipeline.uberon.TaxonConstraints 610 filterUberonOntology - Removing all axioms betwen taxa from Uberon
+00:32:29.790 [main] DEBUG org.bgee.pipeline.uberon.TaxonConstraints 689 filterUberonOntology - Axioms between taxa removed from Uberon: NO_OPERATION
+00:32:29.821 [main] INFO org.bgee.pipeline.uberon.TaxonConstraints 580 prepareUberon - Done preparing Uberon.
+2021-03-07 00:32:30 ERROR OWLAPIOwl2Obo:1015 - Duplicate clause 'alt_id( FBdv:00005375)' generated in frame: FBdv:00006012
+2021-03-07 00:32:30 WARN  OWLAPIOwl2Obo:2325 - MASKING ERROR «Conflicting id definitions: 1) overlaps  2)RO:0002131»
