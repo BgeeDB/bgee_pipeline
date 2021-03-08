@@ -556,9 +556,9 @@ create table transcript (
 create table cond (
     conditionId           mediumint unsigned not null      COMMENT 'Internal condition ID. Each condition is species-specific',
     exprMappedConditionId mediumint unsigned not null      COMMENT 'the condition ID that should be used for insertion into the expression table: too-granular conditions (e.g., 43 yo human stage, or sexInferred=1) are mapped to less granular conditions for summary. Equal to conditionId if condition is not too granular.',
-    anatEntityId          varchar(20)  not null            COMMENT 'Uberon anatomical entity ID',
-    anatEntityId2         varchar(20)  not null default '' COMMENT 'A second uberon anatomical entity ID used to manage composition of anatomical entities. Used only for single cell data for postcomposition of anatomical entity ID and cell type ID',
-    stageId               varchar(20)  not null            COMMENT 'Uberon stage ID',
+    anatEntityId          varchar(20)        not null      COMMENT 'Uberon anatomical entity ID',
+    cellTypeId            varchar(20)        default null  COMMENT 'A second uberon anatomical entity ID used to manage composition of anatomical entities. Used only for single cell data for postcomposition of anatomical entity ID and cell type ID',
+    stageId               varchar(20)        not null      COMMENT 'Uberon stage ID',
     speciesId             mediumint unsigned not null      COMMENT 'NCBI species taxon ID',
 -- NA: not available from source information
 -- not annotated: information not captured by Bgee
@@ -582,6 +582,7 @@ create table remapCond (
 create table globalCond (
     globalConditionId mediumint unsigned not null,
     anatEntityId          varchar(20)  COMMENT 'Uberon anatomical entity ID. Can be null in this table if this condition aggregates data according to other condition parameters (e.g., grouping all data in a same stage whatever the organ is).',
+    cellTypeId            varchar(20)  default null COMMENT 'A second uberon anatomical entity ID used to manage composition of anatomical entities. Used only for single cell data for postcomposition of anatomical entity ID and cell type ID',
     stageId               varchar(20)  COMMENT 'Uberon stage ID. Can be null in this table if this condition aggregates data according to other condition parameters (e.g., grouping all data in a same organ whatever the dev. stage is).',
     speciesId             mediumint unsigned not null COMMENT 'NCBI species taxon ID',
 -- NA: not available from source information

@@ -256,8 +256,8 @@ add unique(transcriptId, bgeeGeneId);
 -- for this design of PK and UNIQUE indexes
 alter table cond
 modify conditionId mediumint unsigned not null auto_increment,
-add primary key(anatEntityId, anatEntityId2, stageId, speciesId, sex, sexInferred, strain),
-add unique(conditionId);
+add primary key(conditionId),
+add unique(anatEntityId, cellTypeId, stageId, speciesId, sex, sexInferred, strain);
 /*!40000 ALTER TABLE `cond` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `remapCond` DISABLE KEYS */;
@@ -269,7 +269,7 @@ add primary key(incorrectConditionId, remappedConditionId);
 alter table globalCond
 modify globalConditionId mediumint unsigned not null auto_increment primary key,
 -- not a primary key as for table cond, because some field can be null
-add unique(anatEntityId, stageId, speciesId, sex, strain);
+add unique(anatEntityId, cellTypeId, stageId, speciesId, sex, strain);
 /*!40000 ALTER TABLE `globalCond` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `globalCondToCond` DISABLE KEYS */;

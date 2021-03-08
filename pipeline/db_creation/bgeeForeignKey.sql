@@ -197,7 +197,7 @@ add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade;
 alter table cond 
 add foreign key (exprMappedConditionId) references cond(conditionId) on delete cascade, 
 add foreign key (anatEntityId) references anatEntity(anatEntityId) on delete cascade,
-add foreign key (anatEntityId2) references anatEntity(anatEntityId) on delete cascade,
+add foreign key (cellTypeId) references anatEntity(anatEntityId) on delete cascade,
 add foreign key (stageId) references stage(stageId) on delete cascade, 
 add foreign key (speciesId) references species(speciesId) on delete cascade;
 /*!40000 ALTER TABLE `cond` ENABLE KEYS */;
@@ -210,6 +210,7 @@ add foreign key (remappedConditionId) references cond(conditionId) on delete cas
 /*!40000 ALTER TABLE `globalCond` DISABLE KEYS */;
 alter table globalCond
 add foreign key (anatEntityId) references anatEntity(anatEntityId) on delete cascade,
+add foreign key (cellTypeId) references anatEntity(anatEntityId) on delete cascade,
 add foreign key (stageId) references stage(stageId) on delete cascade, 
 add foreign key (speciesId) references species(speciesId) on delete cascade;
 /*!40000 ALTER TABLE `globalCond` ENABLE KEYS */;
