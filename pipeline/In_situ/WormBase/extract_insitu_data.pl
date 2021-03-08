@@ -19,25 +19,27 @@ my $id_root_stage = 'UBERON:0000104'; # "life cycle"
 my $id_root_organ = 'UBERON:0000465'; # "material anatomical entity"
 
 # Define arguments & their default value
-my ($bgee_connector) = ('');
-my ($wormb_data)     = ('');
-my ($strain_map)     = ('');
-my ($Aport, $Sport)  = (0, 0);
+my ($bgee_connector)           = ('');
+my ($wormb_data)               = ('');
+my ($strain_map, $strain_map2) = ('', '');
+my ($Aport, $Sport)            = (0, 0);
 my %opts = ('bgee=s'        => \$bgee_connector,     # Bgee connector string
             'wormb_data=s'  => \$wormb_data,         # from ftp://caltech.wormbase.org/pub/wormbase/expr_dump/
             'strain_map=s'  => \$strain_map,         # from https://wormbase.org/species/all/strain/ Natural Isolates
+            'strain_map2=s' => \$strain_map2,        # from WormMine
             'Aport=i'       => \$Aport,              # Anatomy mapper socket port
             'Sport=i'       => \$Sport,              # Stage mapper socket port
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $bgee_connector eq '' || $wormb_data eq '' || $strain_map eq '' || $Aport == 0 ){
+if ( !$test_options || $bgee_connector eq '' || $wormb_data eq '' || $strain_map eq '' || $strain_map2 eq '' || $Aport == 0 ){
     print "\n\tInvalid or missing argument:
-\te.g. $0  -bgee=\$(BGEECMD)  -wormb_data=expr_pattern.ace.20160829 -strain_map=wormbase_natural_strains.json -Aport=\$(IDMAPPINGPORT) -Sport=\$(INBETWEENSTAGESPORT)
+\te.g. $0  -bgee=\$(BGEECMD)  -wormb_data=expr_pattern.ace.20160829 -strain_map=wormbase_natural_strains.json -strain_map2=wormbase_wild_isolate.tsv -Aport=\$(IDMAPPINGPORT) -Sport=\$(INBETWEENSTAGESPORT)
 \t-bgee            Bgee connector string
 \t-wormb_data      WormBase/WormMine tsv data file
 \t-strain_map      wormbase_natural_strains.json
+\t-strain_map2     wormbase_wild_isolate.tsv
 \t-Aport           Anatomy mapper socket port
 \t-Sport           Stage   mapper socket port
 \n";
@@ -187,9 +189,9 @@ my $json_content = read_file("$strain_map");
 my $json = decode_json($json_content);
 
 my $strain_mapping;
-ISOL:
+NAT_ISOL:
 for my $nat_isolate ( @{ $json->{'fields'}->{'natural_isolates'}->{'data'} } ){
-    next ISOL  if ( $nat_isolate->{'strain'}->{'taxonomy'} ne 'c_elegans' ); #C. elegans only in Bgee
+    next NAT_ISOL  if ( $nat_isolate->{'strain'}->{'taxonomy'} ne 'c_elegans' ); #C. elegans only in Bgee
 
 #    # N2 (ancestral)  and  N2 Male  are N2 ???
 #    $nat_isolate->{'strain'}->{'label'} = 'N2'  if ( $nat_isolate->{'strain'}->{'label'} =~ /^N2 / );
@@ -197,6 +199,13 @@ for my $nat_isolate ( @{ $json->{'fields'}->{'natural_isolates'}->{'data'} } ){
 }
 # Only wild type (N2 is default C. elegans wild type, but there are other wild "type" isolates)
 # WBStrain00000001 is N2 now!
+WILD_ISOL:
+for my $wild_isolate ( read_file("$strain_map2", chomp=>1) ){
+    #strain_code    name/label    species    remark    genotype    otherName
+    #NOTE the script "get_worm_wild_strains.pl" returns only C. elegans (or no defined) species; and genotype contains "wild"
+    my ($id, $label) = split(/\t/, $wild_isolate);
+    $strain_mapping->{ $id } = $label;
+}
 
 
 
@@ -211,6 +220,7 @@ for my $id ( sort keys %$expression ){
     $expression->{$id}->{'strain'} = exists $strain_mapping->{ $expression->{$id}->{'strain'} } ? $strain_mapping->{ $expression->{$id}->{'strain'} }
                                    : $expression->{$id}->{'strain'} ne ''                       ? ''
                                    : $expression->{$id}->{'strain'};
+    next  if ( $expression->{$id}->{'strain'} =~ /^WBStrain\d+$/ ); # strain code without mapping
     # Get out if no info for gene!
     next  if ( $expression->{$id}->{'gene'} eq '' );
 
