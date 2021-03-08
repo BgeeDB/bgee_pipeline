@@ -55,11 +55,12 @@ our @STANDARDIZED_STRAIN_INFO = ($WILD_TYPE_STRAIN, $NA_STRAIN, $NOT_ANNOTATED_S
 our @NO_ANNOT_STRAIN_INFO     = ($WILD_TYPE_STRAIN, $NOT_ANNOTATED_STRAIN, $NA_STRAIN, $CRD_STRAIN);
 
 
-our $EST_DATA_TYPE     = 'est';
-our $AFFY_DATA_TYPE    = 'affymetrix';
-our $IN_SITU_DATA_TYPE = 'inSitu';
-our $RNA_SEQ_DATA_TYPE = 'rnaSeq';
-our @DATA_TYPES        = ($EST_DATA_TYPE, $AFFY_DATA_TYPE, $IN_SITU_DATA_TYPE, $RNA_SEQ_DATA_TYPE);
+our $EST_DATA_TYPE                 = 'est';
+our $AFFY_DATA_TYPE                = 'affymetrix';
+our $IN_SITU_DATA_TYPE             = 'inSitu';
+our $RNA_SEQ_DATA_TYPE             = 'rnaSeq';
+our $FULL_LENGTH_RNA_SEQ_DATA_TYPE = 'fullLengthRnaSeq';
+our @DATA_TYPES                    = ($EST_DATA_TYPE, $AFFY_DATA_TYPE, $IN_SITU_DATA_TYPE, $RNA_SEQ_DATA_TYPE, $FULL_LENGTH_RNA_SEQ_DATA_TYPE);
 
 
 # Variables used for computing ranks
@@ -67,7 +68,8 @@ our $ANAT_ENTITY_PARAM    = 'anatEntityId';
 our $STAGE_PARAM          = 'stageId';
 our $SEX_PARAM            = 'sex';
 our $STRAIN_PARAM         = 'strain';
-our @CONDITION_PARAMETERS = ($ANAT_ENTITY_PARAM, $STAGE_PARAM, $SEX_PARAM, $STRAIN_PARAM);
+our $CELL_TYPE_PARAM      = 'cellTypeId';
+our @CONDITION_PARAMETERS = ($ANAT_ENTITY_PARAM, $STAGE_PARAM, $SEX_PARAM, $STRAIN_PARAM, $CELL_TYPE_PARAM);
 
 
 # Read STRAIN_MAPPING_FILE (StrainMapping.tsv) annotation file
@@ -722,11 +724,14 @@ sub get_anatomy_mapping {
 
 
 # Returns all conditions already inserted into the database.
-# Returned as a hash where keys are created from anatEntityId/anatEntityId2/stageId/speciesId/sex/strain information,
-# (see sub generate_condition_key), the associated value being a hash with two keys:
-# conditionId and exprMappedConditionId.
-# $conditions->{anatEntityId/anatEntityId2/stageId/speciesId/sex/strain}->{'conditionId'}           = conditionId and
-# $conditions->{anatEntityId/anatEntityId2/stageId/speciesId/sex/strain}->{'exprMappedConditionId'} = exprMappedConditionId)
+# Returned as a hash where keys are created from anatEntityId/stageId/speciesId/sex/strain/cellTypeId information,
+# (see sub generate_condition_key), the associated value being a hash with five keys:
+# conditionId, exprMappedConditionId, strain, speciesId, sexInference.
+# $conditions->{anatEntityId/stageId/speciesId/sex/strain/cellTypeId}->{'conditionId'}           = conditionId,
+# $conditions->{anatEntityId/stageId/speciesId/sex/strain/cellTypeId}->{'exprMappedConditionId'} = exprMappedConditionId,
+# $conditions->{anatEntityId/stageId/speciesId/sex/strain/cellTypeId}->{'strain'}                = strain,
+# $conditions->{anatEntityId/stageId/speciesId/sex/strain/cellTypeId}->{'speciesId'}             = speciesId,
+# $conditions->{anatEntityId/stageId/speciesId/sex/strain/cellTypeId}->{'sexInference'}          = sexInference)
 # conditionId: real ID of the condition
 # exprMappedConditionId: ID of the corresponding not-too-granular condition,
 # to use for insertion into the expression table, if the condition is too granular.
@@ -737,13 +742,14 @@ sub query_conditions {
     my ($dbh) = @_;
 
     my $cond = $dbh->prepare('SELECT conditionId, exprMappedConditionId,
-            anatEntityId, anatEntityId2, stageId, speciesId, sex, sexInferred, strain FROM cond');
+            anatEntityId, cellTypeId, stageId, speciesId, sex, sexInferred, strain FROM cond');
     $cond->execute()  or die $cond->errstr;
     my $cond_ref = $cond->fetchall_arrayref;
 
     my $conditions;
     map {
-        my $condKey = generate_condition_key($_->[2], $_->[3], $_->[4], $_->[5], $_->[6], $_->[7], $_->[8]);
+        # anatEntityId, stageId, speciesId, sex, sexInferred, strain, cellTypeId
+        my $condKey = generate_condition_key($_->[2], $_->[4], $_->[5], $_->[6], $_->[7], $_->[8], $_->[3]);
         $conditions->{ $condKey }->{'conditionId'}           = $_->[0];
         $conditions->{ $condKey }->{'exprMappedConditionId'} = $_->[1];
         $conditions->{ $condKey }->{'strain'}                = $_->[7];
@@ -870,26 +876,25 @@ sub infer_sex {
     return;
 }
 
+
 # Insert the requested condition into database and $conditions hash if not already existing,
 # and return the condition in any case. If the condition is too granular for the expression table,
 # the corresponding not-too-granular condition will also be created and inserted if not existing.
 # This methods needs to be provided with the hashes returned by the subs 'get_stage_equivalences',
 # 'get_anat_sex_info', and 'get_species_sex_info'.
 sub insert_get_condition {
-    my ($dbh, $conditions, $stage_equivalences, $anatEntityId, $anatEntityId2, $stageId, $speciesId, $sex, $strain,
-        $anatSexInfo, $speciesSexInfo, $expId, $geneId) = @_;
+    my ($dbh, $conditions, $stage_equivalences, $anatEntityId, $stageId, $speciesId, $sex, $strain,
+        $anatSexInfo, $speciesSexInfo, $expId, $geneId, $cellTypeId) = @_;
 
     $expId  = $expId  || ''; # In case $expId is not provided
     $geneId = $geneId || ''; # In case $expId is not provided
+    $cellTypeId = $cellTypeId || ''; # In case $cellTypeId is not provided
 
     # ====================================
     # SANITY CHECKS
     # ====================================
     if (!$anatEntityId) {
         die "Missing anatEntityId\n";
-    }
-    if (!$anatEntityId2) {
-        die "Missing anatEntityId2\n";
     }
     if (!$stageId) {
         die "Missing stageId\n";
@@ -946,7 +951,7 @@ sub insert_get_condition {
     # RETRIEVE CONDITION IF EXISTING
     # ====================================
     # Generate a unique condition key for the provided parameters
-    my $condKey = generate_condition_key($anatEntityId, $anatEntityId2, $stageId, $speciesId, $sexToUse, $sexInference, $strain);
+    my $condKey = generate_condition_key($anatEntityId, $stageId, $speciesId, $sexToUse, $sexInference, $strain, $cellTypeId);
 
     # If this condition is already available, nothing to do
     if ( defined $conditions->{$condKey} ){
@@ -997,9 +1002,8 @@ sub insert_get_condition {
         $mappedStrainToUse = $WILD_TYPE_STRAIN;
     }
 
-    my $exprMappedCondKey = generate_condition_key($anatEntityId, $anatEntityId2,
-            $stage_equivalences->{ $stageId }, $speciesId, $mappedSexToUse, $sexNotInferred,
-            $mappedStrainToUse);
+    my $exprMappedCondKey = generate_condition_key($anatEntityId, $stage_equivalences->{ $stageId }, 
+        $speciesId, $mappedSexToUse, $sexNotInferred, $mappedStrainToUse, $cellTypeId);
     my $exprMappedCondId = $condId;
 
     # condition too granular or with sex inferred or NA
@@ -1013,8 +1017,8 @@ sub insert_get_condition {
             $condId = $exprMappedCondId + 1;
             # Not-too-granular conditions are mapped to themselves
             insert_condition($dbh, $exprMappedCondId, $exprMappedCondId, $anatEntityId,
-                    $anatEntityId2, $stage_equivalences->{ $stageId }, $speciesId,
-                    $mappedSexToUse, $sexNotInferred, $mappedStrainToUse);
+                    $stage_equivalences->{ $stageId }, $speciesId, $mappedSexToUse, $sexNotInferred, 
+                    $mappedStrainToUse, $cellTypeId);
 
             # And update the $condition hash
             $conditions->{ $exprMappedCondKey }->{ 'conditionId' }           = $exprMappedCondId;
@@ -1035,8 +1039,8 @@ sub insert_get_condition {
     }
 
     # Now, we can insert the condition itself
-    insert_condition($dbh, $condId, $exprMappedCondId, $anatEntityId, $anatEntityId2, $stageId,
-            $speciesId, $sexToUse, $sexInference, $strain);
+    insert_condition($dbh, $condId, $exprMappedCondId, $anatEntityId, $stageId,
+            $speciesId, $sexToUse, $sexInference, $strain, $cellTypeId);
     # And update the $condition hash
     $conditions->{ $condKey }->{ 'conditionId' }           = $condId;
     $conditions->{ $condKey }->{ 'exprMappedConditionId' } = $exprMappedCondId;
@@ -1057,8 +1061,13 @@ sub insert_get_condition {
 # (no use of AUTO_INCREMENT)
 # If $sex or $sexInferred do not correspond to allowed values, die.
 sub insert_condition {
-    my ($dbh, $conditionId, $exprMappedConditionId, $anatEntityId, $anatEntityId2, $stageId,
-            $speciesId, $sex, $sexInferred, $strain) = @_;
+    my ($dbh, $conditionId, $exprMappedConditionId, $anatEntityId, $stageId, $speciesId, $sex, 
+        $sexInferred, $strain, $cellTypeId) = @_;
+
+    if(!defined($cellTypeId) || $cellTypeId eq ''){
+        # undef variable will be inserted as null in the database
+        $cellTypeId = undef;
+    }
     if ( !grep( /^$sex$/, @ACCEPTABLE_SEX_INFO ) ) {
         die "Incorrect sex value: $sex\n";
     }
@@ -1067,17 +1076,19 @@ sub insert_condition {
     }
 
     my $ins = $dbh->prepare('INSERT INTO cond (conditionId, exprMappedConditionId,
-            anatEntityId, anatEntityId2, stageId, speciesId, sex, sexInferred, strain)
+            anatEntityId, cellTypeId, stageId, speciesId, sex, sexInferred, strain)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
-    $ins->execute($conditionId, $exprMappedConditionId, $anatEntityId, $anatEntityId2,
+    $ins->execute($conditionId, $exprMappedConditionId, $anatEntityId, $cellTypeId,
             $stageId, $speciesId, $sex, $sexInferred, $strain)
             or die $ins->errstr;
 }
 
-# Generate a key from anatEntityId/anatEntityId2/stageId/speciesId/sex/sexInferenceType/strain information.
+# Generate a key from anatEntityId/stageId/speciesId/sex/sexInferenceType/strain/cellTypeId) information.
 # If $sex or $sexInferred do not correspond to allowed values, die.
 sub generate_condition_key {
-    my ($anatEntityId, $anatEntityId2, $stageId, $speciesId, $sex, $sexInferred, $strain) = @_;
+    my ($anatEntityId, $stageId, $speciesId, $sex, $sexInferred, $strain, $cellTypeId) = @_;
+    $cellTypeId = $cellTypeId || ''; # In case $cellTypeId is not provided
+
     if ( !grep( /^$sex$/, @ACCEPTABLE_SEX_INFO ) ) {
         die "Incorrect sex value: $sex\n";
     }
@@ -1085,7 +1096,7 @@ sub generate_condition_key {
         die "Incorrect sexInferred value: $sexInferred\n";
     }
 
-    return $anatEntityId.'--'.$anatEntityId2.'--'.$stageId.'--'.$speciesId.'--'.$sex.'--'.$sexInferred.'--'.$strain;
+    return $anatEntityId.'--'.$stageId.'--'.$speciesId.'--'.$sex.'--'.$sexInferred.'--'.$strain'--'.$cellTypeId.;
 }
 
 # Retrieve the max condition ID used from the hash of conditions.
