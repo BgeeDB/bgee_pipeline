@@ -105,10 +105,11 @@ gen_info: prepare_annot $(AFFY_CHIP_FILEPATH_FULL) $(AFFY_CHIPINFO_FILEPATH) $(A
 # Annotations checking
 check_annot: gen_info $(AFFY_NORMTYPE_FILEPATH) $(AFFY_DETCTYPE_FILEPATH) $(AFFY_CHIPTYPE_FILEPATH_FULL) $(MICROARRAY_EXPERIMENT_FILEPATH_FULL) $(AFFY_CHIPINFO_FILEPATH) $(AFFY_CHIPTYPEQUAL_FILEPATH) $(AFFY_CHIP_FILEPATH_FULL)
 	# Check curation before
-	@perl Annotation_checking/check_affy_curation.pl  -bgee=$(BGEECMD) -normalizationType=$(AFFY_NORMTYPE_FILEPATH) -detectionType=$(AFFY_DETCTYPE_FILEPATH) -chipType=$(AFFY_CHIPTYPE_FILEPATH_FULL) -microarrayExperiment=$(MICROARRAY_EXPERIMENT_FILEPATH_FULL) -cel_data=$(CELPATH) -processed_mas5=$(MAS5PATH) -affyChipInformation=$(AFFY_CHIPINFO_FILEPATH) -chipTypeQual=$(AFFY_CHIPTYPEQUAL_FILEPATH) -affymetrixChip=$(AFFY_CHIP_FILEPATH_FULL) -processed_schuster=$(SCHUSTERPATH)   before                > $@.tmp
+	@perl Annotation_checking/check_affy_curation.pl  -bgee=$(BGEECMD) -normalizationType=$(AFFY_NORMTYPE_FILEPATH) -detectionType=$(AFFY_DETCTYPE_FILEPATH) -chipType=$(AFFY_CHIPTYPE_FILEPATH_FULL) -microarrayExperiment=$(MICROARRAY_EXPERIMENT_FILEPATH_FULL) -cel_data=$(CELPATH) -processed_mas5=$(MAS5PATH) -affyChipInformation=$(AFFY_CHIPINFO_FILEPATH) -chipTypeQual=$(AFFY_CHIPTYPEQUAL_FILEPATH) -affymetrixChip=$(AFFY_CHIP_FILEPATH_FULL) -processed_schuster=$(SCHUSTERPATH)   before                > $@.tmp 2> $@.warnings
 	@echo >> $@.tmp
 	# Check info
-	@perl Annotation_checking/check_affy_info.pl  -affyChipInformation=$(AFFY_CHIPINFO_FILEPATH) -chipTypeQual=$(AFFY_CHIPTYPEQUAL_FILEPATH) -affymetrixChip=$(AFFY_CHIP_FILEPATH_FULL) >> $@.tmp
+	@perl Annotation_checking/check_affy_info.pl  -affyChipInformation=$(AFFY_CHIPINFO_FILEPATH) -chipTypeQual=$(AFFY_CHIPTYPEQUAL_FILEPATH) -affymetrixChip=$(AFFY_CHIP_FILEPATH_FULL) >> $@.tmp 2>> $@.warnings
+	@if [[ ! -s $@.warnings ]]; then $(RM) $@.warnings; fi
 	@$(MV) $@.tmp $@
 
 
