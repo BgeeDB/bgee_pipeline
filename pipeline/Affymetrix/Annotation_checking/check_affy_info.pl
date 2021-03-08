@@ -13,7 +13,7 @@ use diagnostics;
 ##############################################
 
 use Getopt::Long;
-
+use lib '.';
 require 'affy_utils.pl';
 
 # Define arguments & their default value
