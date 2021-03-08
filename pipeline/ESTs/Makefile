@@ -17,6 +17,7 @@ get_annot:
 	@$(WGET) $(ANNOTATION_GIT_URL)/$(DIR_NAME)/annotation_libs_Xenopus_tropicalis.txt       && $(MV) annotation_libs_Xenopus_tropicalis.txt       $(SOURCE_FILES_DIR)/$(DIR_NAME)/annotation_libs_Xenopus_tropicalis.txt       2>/dev/null  || rm -f annotation_libs_Xenopus_tropicalis.txt
 	@$(WGET) $(ANNOTATION_GIT_URL)/ESTs/smirnadb/mapping_libs_smiRNAdb.csv                  && $(MV) mapping_libs_smiRNAdb.csv                    $(SOURCE_FILES_DIR)/ESTs/smirnadb/mapping_libs_smiRNAdb.csv                  2>/dev/null  || rm -f mapping_libs_smiRNAdb.csv
 	@$(WGET) $(ANNOTATION_GIT_URL)/ESTs/smirnadb/S.csv                                      && $(MV) S.csv                                        $(SOURCE_FILES_DIR)/ESTs/smirnadb/S.csv                                      2>/dev/null  || rm -f S.csv
+	@touch $@
 
 
 #FIXME When and how those files are used???
