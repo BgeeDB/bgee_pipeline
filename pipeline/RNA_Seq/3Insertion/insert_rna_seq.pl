@@ -268,10 +268,6 @@ my $insResult = $bgee->prepare('INSERT INTO rnaSeqResult (rnaSeqLibraryId, bgeeG
 
 my $inserted = 0;
 
-# second anat. entity string used for post composition in single cell rnaseq (e.g uberonId + cellTypeId)
-# not used in bulk rnaseq.
-my $emptyAnatEntity2 = '';
-
 print "disable autocommit. Manually commit for each library\n";
 $bgee->{AutoCommit} = 0;
 
@@ -304,7 +300,6 @@ for my $expId ( sort keys %libraries ){
                                                                  $conditions,
                                                                  $stage_equivalences,
                                                                  $doneAnat->{$annotations{$expId}->{$libraryId}->{'uberonId'}},
-                                                                 $emptyAnatEntity2,
                                                                  $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}},
                                                                  $annotations{$expId}->{$libraryId}->{'speciesId'},
                                                                  $annotations{$expId}->{$libraryId}->{'sex'},
