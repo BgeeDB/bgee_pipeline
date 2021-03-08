@@ -997,8 +997,8 @@ sub insert_get_condition {
         $mappedStrainToUse = $WILD_TYPE_STRAIN;
     }
 
-    my $exprMappedCondKey = generate_condition_key($anatEntityId, $anatEntityId2, 
-            $stage_equivalences->{ $stageId }, $speciesId, $mappedSexToUse, $sexNotInferred, 
+    my $exprMappedCondKey = generate_condition_key($anatEntityId, $anatEntityId2,
+            $stage_equivalences->{ $stageId }, $speciesId, $mappedSexToUse, $sexNotInferred,
             $mappedStrainToUse);
     my $exprMappedCondId = $condId;
 
@@ -1012,7 +1012,7 @@ sub insert_get_condition {
             $exprMappedCondId = $condId;
             $condId = $exprMappedCondId + 1;
             # Not-too-granular conditions are mapped to themselves
-            insert_condition($dbh, $exprMappedCondId, $exprMappedCondId, $anatEntityId, 
+            insert_condition($dbh, $exprMappedCondId, $exprMappedCondId, $anatEntityId,
                     $anatEntityId2, $stage_equivalences->{ $stageId }, $speciesId,
                     $mappedSexToUse, $sexNotInferred, $mappedStrainToUse);
 
@@ -1035,7 +1035,7 @@ sub insert_get_condition {
     }
 
     # Now, we can insert the condition itself
-    insert_condition($dbh, $condId, $exprMappedCondId, $anatEntityId, $anatEntityId2, $stageId, 
+    insert_condition($dbh, $condId, $exprMappedCondId, $anatEntityId, $anatEntityId2, $stageId,
             $speciesId, $sexToUse, $sexInference, $strain);
     # And update the $condition hash
     $conditions->{ $condKey }->{ 'conditionId' }           = $condId;
@@ -1057,7 +1057,7 @@ sub insert_get_condition {
 # (no use of AUTO_INCREMENT)
 # If $sex or $sexInferred do not correspond to allowed values, die.
 sub insert_condition {
-    my ($dbh, $conditionId, $exprMappedConditionId, $anatEntityId, $anatEntityId, $stageId, 
+    my ($dbh, $conditionId, $exprMappedConditionId, $anatEntityId, $anatEntityId2, $stageId,
             $speciesId, $sex, $sexInferred, $strain) = @_;
     if ( !grep( /^$sex$/, @ACCEPTABLE_SEX_INFO ) ) {
         die "Incorrect sex value: $sex\n";
@@ -1067,9 +1067,9 @@ sub insert_condition {
     }
 
     my $ins = $dbh->prepare('INSERT INTO cond (conditionId, exprMappedConditionId,
-            anatEntityId, anatEntityId2, stageId, speciesId, sex, sexInferred, strain) 
+            anatEntityId, anatEntityId2, stageId, speciesId, sex, sexInferred, strain)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
-    $ins->execute($conditionId, $exprMappedConditionId, $anatEntityId, $anatEntityId2, 
+    $ins->execute($conditionId, $exprMappedConditionId, $anatEntityId, $anatEntityId2,
             $stageId, $speciesId, $sex, $sexInferred, $strain)
             or die $ins->errstr;
 }
