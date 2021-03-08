@@ -135,8 +135,7 @@ check_after: normalization $(AFFY_NORMTYPE_FILEPATH) $(AFFY_DETCTYPE_FILEPATH) $
 # Gzip new cel files normalized, if any
 	@find $(CELPATH) ! -name \*.gz -type f -exec gzip -9 {} \; >> $@.tmp
 	# Rsync files for backup on sensitive cluster (see wiki for password)
-	@echo -e "\t\e[1m\e[37m\e[41mRsync files in '$(AFFYDATAPATH)' to sensitive machine!\e[m\n"
-	@rsync -av --del -f "- /lost+found" --exclude=.svn --exclude=.git $(AFFYDATAPATH)  $(DATALOGIN)@$(DATAHOST):$(DATAPATH)/Affymetrix/  >>  $@.tmp
+	@echo -e "\t\e[1m\e[37m\e[41mThink to archive files in '$(AFFYDATAPATH)' !\e[m\n"
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
@@ -175,6 +174,7 @@ check_conditions: insert_affy
 	@$(MYSQL) -e "select DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.sex, t1.strain from cond as t1 left outer join stageTaxonConstraint as t2 on t1.stageId = t2.stageId and (t2.speciesId is null or t1.speciesId = t2.speciesId) left outer join anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId left outer join affymetrixChip as t10 on t1.conditionId = t10.conditionId where t2.stageId is null AND t10.conditionId IS NOT NULL order by t1.speciesId;" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
+#TODO replace affymetrixData by p-values
 insert_expression: check_conditions insert_affy
 	# Insert the expression summary
 	@perl Data_insertion/insert_affy_expression.pl -bgee=$(BGEECMD) > $@.tmp 2>warnings.$@
