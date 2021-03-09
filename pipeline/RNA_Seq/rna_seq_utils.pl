@@ -899,7 +899,7 @@ sub getAllFullLengthScRnaSeqLibrariesInfo {
 
         die "tsv field number problem [$line]\n"  if ( scalar @tmp != 11 );
 
-        if ( !defined $rnaSeqLibrary{$experimentId}->{$libraryId} ){
+#        if ( !defined $rnaSeqLibrary{$experimentId}->{$libraryId} ){
             # Perform format checks
             my $discarded = 0;
             if ( $libraryId eq '' ){
@@ -976,10 +976,10 @@ sub getAllFullLengthScRnaSeqLibrariesInfo {
                 $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'sex'}            = $sex;
                 $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'strain'}         = $strain;
             }
-        }
-        else {
-            warn 'Warning: sample present several times in the library file: experiment: ', $experimentId, ' - sample: ', $libraryId, "\n";
-        }
+#        }
+#        else {
+#            warn 'Warning: sample present several times in the library file: experiment: ', $experimentId, ' - sample: ', $libraryId, "\n";
+#        }
     }
 
     return %fullLengthScRnaSeqLibrary;
