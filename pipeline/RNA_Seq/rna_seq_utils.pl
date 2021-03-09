@@ -51,7 +51,7 @@ sub retrieveLibraryId {
     my $lineCount = 0;
     for my $line ( read_file($fileName, chomp => 1) ){
         if ( $line =~ /<strong>Relations<\/strong>/ ){
-            $relationsLine = $lineCount; 
+            $relationsLine = $lineCount;
         }
         elsif ( $line =~ /<td>SRA<\/td>/ ){
             $sraLine = $lineCount;
@@ -637,7 +637,7 @@ sub getAllRnaSeqLibrariesStats {
                 warn "Warning, wrong format for speciesId [$speciesId]\n";
                 $discarded = 1;
             }
-            
+
             if ( $discarded ){
                 warn 'Sample ', $libraryId, " discarded!\n";
             }
@@ -678,7 +678,7 @@ sub getAllRnaSeqReportInfo {
         my $minReadLength                   = $tmp[2];
         my $maxReadLength                   = $tmp[3];
         my $mappedReadsCount                = $tmp[4];
-        
+
 
         die "tsv field number problem [$line]\n"  if ( scalar @tmp != 11 );
 
@@ -873,7 +873,7 @@ sub getAllFullLengthScRnaSeqLibrariesInfo {
 
     my @valid_platforms = ('Illumina HiSeq 2500', 'Illumina HiSeq 2000', 'Illumina MiSeq', 'NextSeq 500');
 
-    my @valid_protocols = ('Adapted_SMART_seq2', 'Fluidigm C1 instrument and Nextera XT protocol', 
+    my @valid_protocols = ('Adapted_SMART_seq2', 'Fluidigm C1 instrument and Nextera XT protocol',
         'NEBNext® Ultra™ DNA Library Prep Kit for Illumina®', 'SMARTer Ultra Low', 'SMART_seq', 'SMART_seq2');
 
 
@@ -882,7 +882,7 @@ sub getAllFullLengthScRnaSeqLibrariesInfo {
         next  if ( $line =~ /^#/ or $line =~ /^\"#/ );
         #libraryId  experimentId    cellTypeName    cellTypeId  speciesId   platform    protocol    protocolType    libraryType infoOrgan   stageId uberonId    sex strain  readLength  organism
         my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
-     
+
         my $libraryId                       = $tmp[0];
         my $experimentId                    = $tmp[1];
         my $cellTypeId                      = $tmp[3];
@@ -967,7 +967,7 @@ sub getAllFullLengthScRnaSeqLibrariesInfo {
                 $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'speciesId'}      = $speciesId;
                 $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'organism'}       = $organism;
                 $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'platform'}       = $platform;
-                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'protocol'}       = $protocol
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'protocol'}       = $protocol;
                 $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'libraryType'}    = lc($libraryType);
                 $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'readLength'}     = $readLength;
                 $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'cellTypeId'}     = $cellTypeId;
