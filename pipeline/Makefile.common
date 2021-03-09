@@ -273,7 +273,7 @@ STRAIN_MAPPING_FILE        := $(SOURCE_FILES_DIR)$(STRAINS)StrainMapping.tsv
 # Command to get list of stages between start and end stages
 # Missing arguments are SPECIES_ID   INBETWEENSTAGESPORT
 INBETWEENSTAGESPORT := 15444
-INBETWEENSTAGES := $(JAVA) UberonSocketTool stageRange $(DEV_STAGE_ONT_FILE_PATH) $(TAXONOMYFILEPATH) $(TAXONCONSTRAINTSFILEPATH) $(OVERRIDE_TAXON_CONSTRAINTS)
+INBETWEENSTAGES := $(JAVA) UberonSocketTool stageRange $(DEV_STAGE_ONT_FILE_PATH) $(TAXONOMYFILEPATH) $(TAXONCONSTRAINTSFILEPATH)
 
 # Command to get mapping of IDs to Uberon
 # Missing arguments is: IDMAPPINGPORT
