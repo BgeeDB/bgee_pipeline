@@ -1096,7 +1096,7 @@ sub generate_condition_key {
         die "Incorrect sexInferred value: $sexInferred\n";
     }
 
-    return $anatEntityId.'--'.$stageId.'--'.$speciesId.'--'.$sex.'--'.$sexInferred.'--'.$strain'--'.$cellTypeId.;
+    return $anatEntityId.'--'.$stageId.'--'.$speciesId.'--'.$sex.'--'.$sexInferred.'--'.$strain.'--'.$cellTypeId;
 }
 
 # Retrieve the max condition ID used from the hash of conditions.
