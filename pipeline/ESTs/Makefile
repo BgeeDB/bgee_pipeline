@@ -90,7 +90,7 @@ EST: library.report unigene dmel_mapping $(EST_SPECIES_CURATION_FILEPATH) $(UBER
 	@for sp in `cat $@.temp`; do \
 		$(IDMAPPING)  $(IDMAPPINGPORT) & \
 		$(STGMAPPING) $(STGMAPPINGPORT) & \
-		sleep 10; \
+		sleep 50; \
 		perl insert_est.pl -species=$$sp -bgee=$(BGEECMD) -ensembl=$(ENSCMD) -Aport=$(IDMAPPINGPORT) -Sport=$(STGMAPPINGPORT) -ESTspecies=$(EST_SPECIES_CURATION_FILEPATH) -libReport=$(SOURCE_FILES_DIR)/ESTs/library.report -sex_info=$(UBERON_SEX_INFO_FILE_PATH) >> $@.temp 2>> warnings.$@; \
 	done
 	# Insert ESTs info in Bgee for Drosophila melanogaster (external mapping file)
@@ -111,7 +111,7 @@ miRNA_est: miRNA.dat $(SMIRNADB_CURATION_MAPFILEPATH) $(UBERON_SEX_INFO_FILE_PAT
 	@for sp in `cat $@.temp`; do \
 		$(IDMAPPING)  $(IDMAPPINGPORT) & \
 		$(STGMAPPING) $(STGMAPPINGPORT) & \
-		sleep 10; \
+		sleep 50; \
 		perl insert_miRNA_est.pl -species=$$sp -bgee=$(BGEECMD) -Aport=$(IDMAPPINGPORT) -Sport=$(STGMAPPINGPORT) -smiRNAdb=$(SMIRNADB_CURATION_MAPFILEPATH) -miRNA=miRNA.dat -sex_info=$(UBERON_SEX_INFO_FILE_PATH) >> $@.temp 2>> warnings.$@; \
 	done
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
