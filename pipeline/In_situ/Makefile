@@ -136,6 +136,7 @@ map_wormbase: get_annot
 	@$(RM) $(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP).ori
 	@touch $@
 
+#TODO check stage if male/hermaphrodite are stored
 #NOTE there are other worm species there! Keep only C. elegans!
 tsv_wormbase: map_wormbase $(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP) $(SOURCE_FILES_DIR)$(DIR_NAME)wormbase_natural_strains.json $(SOURCE_FILES_DIR)$(DIR_NAME)wormbase_wild_isolate.tsv
 	# Start in between stages socket
