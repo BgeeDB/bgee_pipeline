@@ -96,7 +96,7 @@ EST: library.report unigene dmel_mapping $(EST_SPECIES_CURATION_FILEPATH) $(UBER
 	# Insert ESTs info in Bgee for Drosophila melanogaster (external mapping file)
 	@$(IDMAPPING)  $(IDMAPPINGPORT) &
 	@$(STGMAPPING) $(STGMAPPINGPORT) &
-	@sleep 10
+	@sleep 50
 	@perl insert_est.pl -species=$(DMEL_TAXID) -bgee=$(BGEECMD) -ensembl=$(ENSCMD) -Aport=$(IDMAPPINGPORT) -Sport=$(STGMAPPINGPORT) -ESTspecies=$(EST_SPECIES_CURATION_FILEPATH) -libReport=$(SOURCE_FILES_DIR)/ESTs/library.report -mapping=dmel_mapping -sex_info=$(UBERON_SEX_INFO_FILE_PATH) >> $@.temp 2>> warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.temp $@

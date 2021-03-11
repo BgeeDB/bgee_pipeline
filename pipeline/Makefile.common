@@ -192,9 +192,9 @@ ANNOTATION_GIT_URL            := https://gitlab.sib.swiss/Bgee/expression-annota
 #EST_UNIGENE_CURATION_PATH     := $(EST_CURATION_PATH)unigene/
 #EST_SMIRNADB_CURATION_PATH    := $(EST_CURATION_PATH)smirnadb/
 # the list of species with UniGene/EST annotation
-#EST_SPECIES_CURATION_FILEPATH := $(SOURCE_FILES_DIR)ESTs/unigene/species_EST_file.txt
+EST_SPECIES_CURATION_FILEPATH := $(SOURCE_FILES_DIR)ESTs/unigene/species_EST_file.txt
 # smiRNAdb libs mapping file
-#SMIRNADB_CURATION_MAPFILEPATH := $(SOURCE_FILES_DIR)ESTs/smirnadb/mapping_libs_smiRNAdb.csv
+SMIRNADB_CURATION_MAPFILEPATH := $(SOURCE_FILES_DIR)ESTs/smirnadb/mapping_libs_smiRNAdb.csv
 
 ## In Situ
 #BDGP_PATH                     := $(CURATIONPATH)expression_data/in_situ/bdgp/
