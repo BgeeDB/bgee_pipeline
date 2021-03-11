@@ -198,9 +198,9 @@ ANNOTATION_GIT_URL            := https://gitlab.sib.swiss/Bgee/expression-annota
 
 ## In Situ
 #BDGP_PATH                     := $(CURATIONPATH)expression_data/in_situ/bdgp/
-#BDGP2FBBT_MAPPING_FILE        := BDGP_terms_to_FBbt_terms.tsv
-#BDGP2FBBT_MAPPING_NEW         := BDGP_terms_to_FBbt_terms_$(DBNAME).tsv
-#STAGECORRESP_FILE             := BDGP_stages_correspondence.txt
+BDGP2FBBT_MAPPING_FILE        := BDGP_terms_to_FBbt_terms.tsv
+BDGP2FBBT_MAPPING_NEW         := BDGP_terms_to_FBbt_terms_$(DBNAME).tsv
+STAGECORRESP_FILE             := BDGP_stages_correspondence.txt
 WORMBASE_EXPR_DUMP            := expr_pattern.ace
 
 ## RNA Seq

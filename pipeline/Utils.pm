@@ -354,7 +354,7 @@ sub connect_mgi_db {
 
 ## spreadsheet reader (xls, xlsx, ods, xsc, tsv, csv)
 # and put columns in hash: header == key, rows == list
-## TO DO: this function is really messy. Needs to be cleaned up for clarity. It is also probably avoidable to write a temporary file
+## TODO this function is really messy. Needs to be cleaned up for clarity. It is also probably avoidable to write a temporary file
 sub read_spreadsheet {
     my ($file, $separator, $parser, $quote, $sheet) = @_;
 
