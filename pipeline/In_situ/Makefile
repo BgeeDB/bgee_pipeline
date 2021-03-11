@@ -171,6 +171,7 @@ check_conditions: insert_insitu
 	@$(MYSQL) -e "select DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.sex, t1.strain from cond as t1 left outer join stageTaxonConstraint as t2 on t1.stageId = t2.stageId and (t2.speciesId is null or t1.speciesId = t2.speciesId) left outer join anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId left outer join inSituSpot as t10 on t1.conditionId = t10.conditionId where t2.stageId is null AND t10.conditionId IS NOT NULL order by t1.speciesId;" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
+#TODO replace inSituData by p-values
 insert_expression: check_conditions insert_insitu
 	# Insert the expression summary
 	@perl insert_expression_in_situ.pl -bgee=$(BGEECMD) > $@.tmp 2>warnings.$@
