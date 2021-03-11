@@ -1116,3 +1116,34 @@ UBERON:0000037	EMAPA:30765				other	EMAPA:30765 oocyte of tertiary follicle, map
 UBERON:0000473	EMAPA:35856				other	EMAPA:35856 testis cortical region, mapped to UBERON:0000473 testis
 UBERON:0002264	EMAPA:36586				missing child term	EMAPA:36586 main olfactory bulb ventricular layer, mapped to UBERON:0002264 olfactory bulb (see EHDAA2:0004704)
 UBERON:0008866	EMAPA:38092				other	EMAPA:38092 primary enamel knot, mapped to UBERON:0008866 enamel knot
+CL:0002450	ZFA:0005565					Mapping taken from ZFA by Fred without verification
+CL:0000059	ZFA:0009028					Mapping taken from ZFA by Fred without verification
+CL:0000076	ZFA:0009039					Mapping taken from ZFA by Fred without verification
+CL:0000078	ZFA:0009041					Mapping taken from ZFA by Fred without verification
+CL:0000092	ZFA:0009047					Mapping taken from ZFA by Fred without verification
+CL:0000103	ZFA:0009055					Mapping taken from ZFA by Fred without verification
+CL:0000136	ZFA:0009082					Mapping taken from ZFA by Fred
+CL:0000137	ZFA:0009083					Mapping taken from ZFA by Fred without verification
+CL:0000174	ZFA:0009106					Mapping taken from ZFA by Fred without verification
+CL:0000669	ZFA:0009112					Mapping taken from ZFA by Fred without verification
+CL:0000300	ZFA:0009156					Mapping taken from ZFA by Fred without verification
+CL:0000336	ZFA:0009167					Mapping taken from ZFA by Fred without verification
+CL:0000337	ZFA:0009168					Mapping taken from ZFA by Fred without verification
+CL:0000359	ZFA:0009181					Mapping taken from ZFA by Fred without verification
+CL:0000437	ZFA:0009202					Mapping taken from ZFA by Fred without verification
+CL:0000496	ZFA:0009223					Mapping taken from ZFA by Fred without verification
+CL:0000498	ZFA:0009225					Mapping taken from ZFA by Fred without verification
+CL:0000501	ZFA:0009227					Mapping taken from ZFA by Fred without verification
+CL:0000503	ZFA:0009229					Mapping taken from ZFA by Fred without verification
+CL:0000542	ZFA:0009250					Mapping taken from ZFA by Fred without verification
+CL:0000622	ZFA:0009277					Mapping taken from ZFA by Fred without verification
+CL:0000644	ZFA:0009282					Mapping taken from ZFA by Fred without verification
+CL:0000706	ZFA:0009304					Mapping taken from ZFA by Fred without verification
+CL:0000752	ZFA:0009322					Mapping taken from ZFA by Fred without verification
+CL:0000834	ZFA:0009352					Mapping taken from ZFA by Fred without verification
+CL:0000847	ZFA:0009358					Mapping taken from ZFA by Fred without verification
+CL:0000849	ZFA:0009360					Mapping taken from ZFA by Fred without verification
+CL:1001509	ZFA:0009396					Mapping taken from ZFA by Fred without verification
+UBERON:0011150		XAO:0000120				We keep only the mapping to UBERON:0008891 "external gill", as in XAO
+FBbt:01000119	FBbt:00000094				missing child term	mapped by Fred to one of the parent of FBbt:00000094
+CL:0000373		FBbt:00001789				UBERON:6001789 "histoblast" and CL:0000373 "histoblast" seem equivalent, keep only the mapping to the UBERON term that have more relationships to parent terms
