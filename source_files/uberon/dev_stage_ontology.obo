@@ -13565,7 +13565,6 @@ synonym: "zoea" NARROW SENSU [http://en.wikipedia.org/wiki/Larva]
 synonym: "zoea stage" NARROW SENSU [http://en.wikipedia.org/wiki/Larva]
 xref: DpseDv:0000003
 xref: DsimDv:0000003
-xref: FBdv:00005336
 xref: ZFS:0000048
 relationship: part_of UBERON:0000092 ! post-embryonic stage
 relationship: preceded_by UBERON:0000068 ! embryo stage
@@ -13708,6 +13707,7 @@ xref: WBls:0000823
 xref: WBls:0000824
 xref: ZFS:0000000
 xref: ZFS:0100000
+xref: FBdv:00007000
 property_value: seeAlso https://github.com/obophenotype/uberon/issues/532 xsd:anyURI
 
 [Term]
