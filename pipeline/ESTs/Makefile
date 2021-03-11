@@ -88,6 +88,7 @@ EST: library.report unigene dmel_mapping $(EST_SPECIES_CURATION_FILEPATH) $(UBER
 	@$(MYSQL) -e "SELECT speciesId FROM species WHERE speciesId != $(DMEL_TAXID) ORDER BY speciesId" | grep -v 'speciesId' >$@.temp
 	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 3; fi
 	@for sp in `cat $@.temp`; do \
+		echo $$sp \
 		$(IDMAPPING)  $(IDMAPPINGPORT) & \
 		$(STGMAPPING) $(STGMAPPINGPORT) & \
 		sleep 50; \
@@ -109,6 +110,7 @@ miRNA_est: miRNA.dat $(SMIRNADB_CURATION_MAPFILEPATH) $(UBERON_SEX_INFO_FILE_PAT
 	@$(MYSQL) -e "SELECT speciesId FROM species ORDER BY speciesId" | grep -v 'speciesId' >$@.temp
 	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 4; fi
 	@for sp in `cat $@.temp`; do \
+		echo $$sp \
 		$(IDMAPPING)  $(IDMAPPINGPORT) & \
 		$(STGMAPPING) $(STGMAPPINGPORT) & \
 		sleep 50; \
