@@ -293,7 +293,10 @@ sub get_quality {
                     'uncertain' => 'poor quality',
                   );
 
-    return $quality{$term} || die "Invalid quality term [$term]\n";
+    if ( ! $quality{$term} ){
+        warn "Invalid quality term [$term]\n";
+    }
+    return $quality{$term} || 'poor quality';
 }
 
 sub print_TSV {
