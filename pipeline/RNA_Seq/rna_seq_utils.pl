@@ -866,7 +866,7 @@ sub retrieveProtocolsToBiotypeExcludeAbsentCalls {
         my @columns = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
         my @biotypes = split(/,/, $columns[1]);
 
-        $protocolToBiotypes{columns[0]} = \@biotypes;
+        $protocolToBiotypes{$columns[0]} = \@biotypes;
     }
     return %protocolToBiotypes;
 }

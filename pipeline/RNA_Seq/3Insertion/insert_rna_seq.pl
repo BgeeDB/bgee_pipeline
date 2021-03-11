@@ -205,7 +205,7 @@ for my $protocolName ( keys %protocolToBiotypes ){
   # convert each biotype name to the corresponding biotype ID
   foreach my $biotypeName (@{$protocolToBiotypes{$protocolName}}) {
     my $biotypeId = $biotypeNameToBiotypId{$biotypeName};
-    $insProtocolToBiotype->execute($protocolId, biotypeId); or die $insProtocolToBiotype->errstr;
+    $insProtocolToBiotype->execute($protocolId, $biotypeId) or die $insProtocolToBiotype->errstr;
   }
 }
 $insProtocolToBiotype->finish();
