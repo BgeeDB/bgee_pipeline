@@ -83,7 +83,7 @@ if ( $statusCode != 200 && $statusCode != 304 ){ # OKs & Not Modified
 }
 
 #NOTE No more XAO:\d+ in anatomy or stage terms !
-system("perl -i -pe 's/XAO([0-9]{7,})/XAO:\$1/g' $src_dir/GeneExpression_tropicalis.txt");
+system("perl -i -pe 's/XAO([0-9]{7,})/XAO:\$1/g; s/,([0-9]{7,})/,XAO:\$1/g' $src_dir/GeneExpression_tropicalis.txt");
 
 
 # Get all start-end stages
