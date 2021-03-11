@@ -8633,6 +8633,7 @@ synonym: "TS02" EXACT []
 synonym: "TS02 (E1-2.5)" RELATED [EMAPA:TS02]
 xref: EMAPA:TS02
 xref: XUO:0000046
+xref: TS02
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000107 ! cleavage stage
 relationship: preceded_by UBERON:0000106 ! zygote stage
@@ -8651,6 +8652,7 @@ synonym: "TS03" EXACT []
 synonym: "TS03 (E1-3.5)" RELATED [EMAPA:TS03]
 xref: EMAPA:TS03
 xref: XUO:0000047
+xref: TS03
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000107 ! cleavage stage
 relationship: preceded_by MmusDv:0000005 ! Theiler stage 02 (mouse)
@@ -8669,6 +8671,7 @@ synonym: "TS04" EXACT []
 synonym: "TS04 (E2-4)" RELATED [EMAPA:TS04]
 xref: EMAPA:TS04
 xref: XUO:0000048
+xref: TS04
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000108 ! blastula stage
 relationship: preceded_by MmusDv:0000006 ! Theiler stage 03 (mouse)
@@ -8687,6 +8690,7 @@ synonym: "TS05" EXACT []
 synonym: "TS05 (E3-5.5)" RELATED [EMAPA:TS05]
 xref: EMAPA:TS05
 xref: XUO:0000049
+xref: TS05
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000108 ! blastula stage
 relationship: preceded_by MmusDv:0000008 ! Theiler stage 04 (mouse)
@@ -8706,6 +8710,7 @@ synonym: "TS06" EXACT []
 synonym: "TS06 (E4-5.5)" RELATED [EMAPA:TS06]
 xref: EMAPA:TS06
 xref: XUO:0000050
+xref: TS06
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000108 ! blastula stage
 relationship: preceded_by MmusDv:0000009 ! Theiler stage 05 (mouse)
@@ -8724,6 +8729,7 @@ synonym: "TS07" EXACT []
 synonym: "TS07 (E4.5-6)" RELATED [EMAPA:TS07]
 xref: EMAPA:TS07
 xref: XUO:0000051
+xref: TS07
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000108 ! blastula stage
 relationship: preceded_by MmusDv:0000010 ! Theiler stage 06 (mouse)
@@ -8743,6 +8749,7 @@ synonym: "TS08" EXACT []
 synonym: "TS08 (E5-6.5)" RELATED [EMAPA:TS08]
 xref: EMAPA:TS08
 xref: XUO:0000052
+xref: TS08
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000108 ! blastula stage
 relationship: preceded_by MmusDv:0000011 ! Theiler stage 07 (mouse)
@@ -8761,6 +8768,7 @@ synonym: "TS09" EXACT []
 synonym: "TS09 (E6.25-7.25)" RELATED [EMAPA:TS09]
 xref: EMAPA:TS09
 xref: XUO:0000053
+xref: TS09
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000109 ! gastrula stage
 relationship: preceded_by MmusDv:0000012 ! Theiler stage 08 (mouse)
@@ -8779,6 +8787,7 @@ synonym: "TS10" EXACT []
 synonym: "TS10 (E6.5-7.75)" RELATED [EMAPA:TS10]
 xref: EMAPA:TS10
 xref: XUO:0000054
+xref: TS10
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000109 ! gastrula stage
 relationship: preceded_by MmusDv:0000014 ! Theiler stage 09 (mouse)
@@ -8811,6 +8820,7 @@ synonym: "TS12" EXACT []
 synonym: "TS12 (E7.5-8.75)" RELATED [EMAPA:TS12]
 xref: EMAPA:TS12
 xref: XUO:0000056
+xref: TS12
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000111 ! organogenesis stage
 relationship: preceded_by UBERON:0000110 ! neurula stage
@@ -8829,6 +8839,7 @@ synonym: "TS13" EXACT []
 synonym: "TS13 (E8-9.25)" RELATED [EMAPA:TS13]
 xref: EMAPA:TS13
 xref: XUO:0000057
+xref: TS13
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000111 ! organogenesis stage
 relationship: preceded_by MmusDv:0000019 ! Theiler stage 12 (mouse)
@@ -8849,6 +8860,7 @@ synonym: "TS14" EXACT []
 synonym: "TS14 (E8.5-9.75)" RELATED [EMAPA:TS14]
 xref: EMAPA:TS14
 xref: XUO:0000058
+xref: TS14
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000111 ! organogenesis stage
 relationship: preceded_by MmusDv:0000020 ! Theiler stage 13 (mouse)
@@ -8870,6 +8882,7 @@ synonym: "TS15" EXACT []
 synonym: "TS15 (E9-10.25)" RELATED [EMAPA:TS15]
 xref: EMAPA:TS15
 xref: XUO:0000059
+xref: TS15
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000111 ! organogenesis stage
 relationship: preceded_by MmusDv:0000021 ! Theiler stage 14 (mouse)
@@ -8888,6 +8901,7 @@ synonym: "TS16" EXACT []
 synonym: "TS16 (E9.5-10.75)" RELATED [EMAPA:TS16]
 xref: EMAPA:TS16
 xref: XUO:0000060
+xref: TS16
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000111 ! organogenesis stage
 relationship: preceded_by MmusDv:0000022 ! Theiler stage 15 (mouse)
@@ -8906,6 +8920,7 @@ synonym: "TS17" EXACT []
 synonym: "TS17 (E10-11.25)" RELATED [EMAPA:TS17]
 xref: EMAPA:TS17
 xref: XUO:0000061
+xref: TS17
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000111 ! organogenesis stage
 relationship: preceded_by MmusDv:0000023 ! Theiler stage 16 (mouse)
@@ -8925,6 +8940,7 @@ synonym: "TS18" EXACT []
 synonym: "TS18 (E10.5-11.25)" RELATED [EMAPA:TS18]
 xref: EMAPA:TS18
 xref: XUO:0000062
+xref: TS18
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000111 ! organogenesis stage
 relationship: preceded_by MmusDv:0000024 ! Theiler stage 17 (mouse)
@@ -8943,6 +8959,7 @@ synonym: "TS19" EXACT []
 synonym: "TS19 (E11-12.25)" RELATED [EMAPA:TS19]
 xref: EMAPA:TS19
 xref: XUO:0000063
+xref: TS19
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000111 ! organogenesis stage
 relationship: preceded_by MmusDv:0000025 ! Theiler stage 18 (mouse)
@@ -8960,6 +8977,7 @@ synonym: "TS20" EXACT []
 synonym: "TS20 (E11.5-13)" RELATED [EMAPA:TS20]
 xref: EMAPA:TS20
 xref: XUO:0000064
+xref: TS20
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000111 ! organogenesis stage
 relationship: preceded_by MmusDv:0000026 ! Theiler stage 19 (mouse)
@@ -8977,6 +8995,7 @@ synonym: "TS21" EXACT []
 synonym: "TS21 (E12.5-14)" RELATED [EMAPA:TS21]
 xref: EMAPA:TS21
 xref: XUO:0000065
+xref: TS21
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000111 ! organogenesis stage
 relationship: preceded_by MmusDv:0000027 ! Theiler stage 20 (mouse)
@@ -8994,6 +9013,7 @@ synonym: "TS22" EXACT []
 synonym: "TS22 (E13.5-15)" RELATED [EMAPA:TS22]
 xref: EMAPA:TS22
 xref: XUO:0000066
+xref: TS22
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000111 ! organogenesis stage
 relationship: preceded_by MmusDv:0000028 ! Theiler stage 21 (mouse)
@@ -9022,6 +9042,7 @@ synonym: "TS23" EXACT []
 synonym: "TS23 (E15)" RELATED [EMAPA:TS23]
 xref: EMAPA:TS23
 xref: XUO:0000067
+xref: TS23
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0007220 ! late embryonic stage
 relationship: preceded_by MmusDv:0000029 ! Theiler stage 22 (mouse)
@@ -9039,6 +9060,7 @@ synonym: "TS24" EXACT []
 synonym: "TS24 (E16)" RELATED [EMAPA:TS24]
 xref: EMAPA:TS24
 xref: XUO:0000068
+xref: TS24
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0007220 ! late embryonic stage
 relationship: preceded_by MmusDv:0000032 ! Theiler stage 23 (mouse)
@@ -9056,6 +9078,7 @@ synonym: "TS25" EXACT []
 synonym: "TS25 (E17)" RELATED [EMAPA:TS25]
 xref: EMAPA:TS25
 xref: XUO:0000069
+xref: TS25
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0007220 ! late embryonic stage
 relationship: preceded_by MmusDv:0000033 ! Theiler stage 24 (mouse)
@@ -9073,6 +9096,7 @@ synonym: "TS26" EXACT []
 synonym: "TS26 (E18)" RELATED [EMAPA:TS26]
 xref: EMAPA:TS26
 xref: XUO:0000070
+xref: TS26
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0007220 ! late embryonic stage
 relationship: preceded_by MmusDv:0000034 ! Theiler stage 25 (mouse)
@@ -13737,6 +13761,7 @@ xref: RnorDv:0000048
 xref: SscrDv:0000087
 xref: WBls:0000006
 xref: ZFS:0000001
+xref: TS01
 relationship: part_of UBERON:0000068 ! embryo stage
 relationship: immediately_preceded_by XAO:1000082 {gci_filler="NCBITaxon:8353", gci_relation="part_of"}
 property_value: homology_notes "As in all metazoans, eumetazoan development begins with a fertilized egg, or zygote.[well established][VHOG]" xsd:string {date_retrieved="2012-09-17", external_class="VHOG:0000745", ontology="VHOG", source="ISBN:978-0030259821 Ruppert EE, Fox RS, Barnes RD, Invertebrate zoology: a functional evolutionary approach (2003) p.107", source="http://bgee.unil.ch/"}
@@ -14123,6 +14148,7 @@ xref: MmusDv:0000017
 xref: OariDv:0000027
 xref: RnorDv:0000007
 xref: SscrDv:0000091
+xref: TS11
 relationship: only_in_taxon NCBITaxon:6072
 relationship: part_of UBERON:0000068 ! embryo stage
 relationship: preceded_by UBERON:0000109 ! gastrula stage
@@ -14190,6 +14216,7 @@ xref: PtroDv:0000003
 xref: RnorDv:0000012
 xref: SscrDv:0000003
 xref: ZFS:0000051
+xref: TS28
 relationship: part_of UBERON:0000066 ! fully formed stage
 relationship: preceded_by UBERON:0000068 ! embryo stage
 relationship: preceded_by UBERON:0000069 {gci_relation="part_of", gci_filler="NCBITaxon:7955", source="ZFS"} ! larval stage
@@ -14338,6 +14365,7 @@ xref: MmulDv:0000046
 xref: MmusDv:0000036
 xref: RnorDv:0000013
 xref: SscrDv:0000009
+xref: TS27
 relationship: part_of UBERON:0018685 ! nursing stage
 relationship: preceded_by UBERON:0000068 ! embryo stage
 relationship: preceded_by MmusDv:0000035 {gci_relation="part_of", gci_filler="NCBITaxon:10090"} ! Theiler stage 26 (mouse)
