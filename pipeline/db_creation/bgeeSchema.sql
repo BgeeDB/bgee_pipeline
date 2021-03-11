@@ -610,11 +610,15 @@ create table globalCond (
 -- Note: these values are the same for all genes in a condition-species, this is why they are stored in this table.
     affymetrixMaxRank decimal(9,2) unsigned,
     rnaSeqMaxRank decimal(9,2) unsigned,
+    scRnaSeqFullLengthMaxRank decimal(9,2) unsigned,
+    scRnaSeqTargetBasedMaxRank decimal(9,2) unsigned,
     estMaxRank decimal(9,2) unsigned,
     inSituMaxRank decimal(9,2) unsigned,
 
     affymetrixGlobalMaxRank decimal(9,2) unsigned COMMENT 'This max rank is computed by taking into account all data in this condition, but also in all child conditions.',
     rnaSeqGlobalMaxRank decimal(9,2) unsigned COMMENT 'This max rank is computed by taking into account all data in this condition, but also in all child conditions.',
+    scRnaSeqFullLengthGlobalMaxRank decimal(9,2) unsigned COMMENT 'This max rank is computed by taking into account all data in this condition, but also in all child conditions.',
+    scRnaSeqTargetBasedGlobalMaxRank decimal(9,2) unsigned COMMENT 'This max rank is computed by taking into account all data in this condition, but also in all child conditions.',
     estGlobalMaxRank decimal(9,2) unsigned COMMENT 'This max rank is computed by taking into account all data in this condition, but also in all child conditions.',
     inSituGlobalMaxRank decimal(9,2) unsigned COMMENT 'This max rank is computed by taking into account all data in this condition, but also in all child conditions.'
 ) engine = innodb COMMENT 'This table contains all condition used in the globalExpression table. It thus includes "real" conditions used in the raw expression table, but mostly conditions resulting from the propagation of expression calls in the globalExpression table. It results from the computation of propagated calls according to different condition parameters combination (e.g., grouping all data in a same anat. entity, or all data in a same anat. entity - stage, or data in anat. entity - sex). This is why the fields anatEntityId, stageId, sex, strain, can be null in this table (but not all of them at the same time).';
