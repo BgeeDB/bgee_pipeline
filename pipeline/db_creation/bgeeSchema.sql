@@ -932,6 +932,7 @@ create table rnaSeqLibrary (
     rnaSeqLibraryId varchar(70) not null,
     rnaSeqExperimentId varchar(70) not null,
     rnaSeqPlatformId varchar(255) not null,
+    rnaSeqProtocolId smallint unsigned not null,
     conditionId mediumint unsigned not null,
     meanTpmReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'mean TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
     sdTpmReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'standard deviation in TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
@@ -1051,6 +1052,16 @@ create table rnaSeqExperimentExpression (
         comment 'Inferred quality for this call based on this experiment (from all libraries, "present high" > "present low" > "absent high" > "absent low"). Value "poor quality" instead of "low quality" for historical reasons.'
 ) engine = innodb
 comment = 'This table stores information about expression calls produced from RNA-Seq experiments, that is then used in Bgee to compute global summary expression calls and qualities.';
+
+create table rnaSeqProtocol (
+    rnaSeqProtocolId smallint unsigned not null,
+    rnaSeqProtocolName varchar(255) not null default ''
+) engine = innodb;
+
+create table rnaSeqProtocolToBiotypeExcludedAbsentCalls (
+    rnaSeqProtocolId smallint unsigned not null COMMENT 'protocol ID for which a biotype will not be used to generate absent calls',
+    geneBioTypeId smallint unsigned not null COMMENT 'biotype ID for which absent calls will not be generated.'
+) engine = innodb;
 
 -- ****************************************************
 -- scRNA-Seq FULL LENGTH DATA

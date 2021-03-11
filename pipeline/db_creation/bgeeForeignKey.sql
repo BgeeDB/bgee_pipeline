@@ -385,6 +385,7 @@ add foreign key (keywordId) references keyword(keywordId) on delete cascade;
 alter table rnaSeqLibrary
 add foreign key (rnaSeqExperimentId) references rnaSeqExperiment(rnaSeqExperimentId) on delete cascade,
 add foreign key (rnaSeqPlatformId) references rnaSeqPlatform(rnaSeqPlatformId) on delete cascade,
+add foreign key (rnaSeqProtocolId) references rnaSeqProtocol(rnaSeqProtocolId) on delete cascade,
 add foreign key (conditionId) references cond(conditionId) on delete cascade;
 /*!40000 ALTER TABLE `rnaSeqLibrary` ENABLE KEYS */;
 
@@ -411,6 +412,13 @@ alter table rnaSeqExperimentExpression
 add foreign key (expressionId) references expression(expressionId) on delete cascade,
 add foreign key (rnaSeqExperimentId) references rnaSeqExperiment(rnaSeqExperimentId) on delete cascade;
 /*!40000 ALTER TABLE `rnaSeqExperimentExpression` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `rnaSeqProtocolToBiotypeExcludedAbsentCalls` DISABLE KEYS */;
+alter table rnaSeqProtocolToBiotypeExcludedAbsentCalls
+add foreign key (rnaSeqProtocolId) references rnaSeqProtocol(rnaSeqProtocolId) on delete cascade,
+add foreign key (geneBioTypeId) references geneBioType(geneBioTypeId) on delete cascade;
+/*!40000 ALTER TABLE `rnaSeqProtocolToBiotypeExcludedAbsentCalls` ENABLE KEYS */;
+
 
 -- ****************************************************
 -- scRNA-Seq FULL LENGTH DATA
