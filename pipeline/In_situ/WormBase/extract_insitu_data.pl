@@ -8,6 +8,7 @@ use diagnostics;
 use Getopt::Long;
 use File::Slurp;
 use Cpanel::JSON::XS;
+use List::Util qw(any);
 use FindBin;
 use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
 use Utils;
@@ -69,15 +70,16 @@ my @Stages;
 EXP:
 for my $line ( read_file("$wormb_data", chomp => 1) ){
     # Reset values
-	if ( $line =~ /^$/ ){
+    if ( $line =~ /^$/ ){
         if ( $In_Situ == 1 ){
-            $expression->{$Expr_pattern}->{'id'}           = $Expr_pattern;
-            $expression->{$Expr_pattern}->{'gene'}         = $gene;
-            $expression->{$Expr_pattern}->{'ref'}          = $ref;
-            $expression->{$Expr_pattern}->{'strain'}       = $strain;
-            $expression->{$Expr_pattern}->{'species'}      = $species;
-            @{ $expression->{$Expr_pattern}->{'anatomy'} } = @Anatomy_term;
-            @{ $expression->{$Expr_pattern}->{'stage'} }   = @Life_stage;
+            $expression->{$Expr_pattern}->{'id'}             = $Expr_pattern;
+            $expression->{$Expr_pattern}->{'gene'}           = $gene;
+            $expression->{$Expr_pattern}->{'ref'}            = $ref;
+            $expression->{$Expr_pattern}->{'strain'}         = $strain;
+            $expression->{$Expr_pattern}->{'species'}        = $species;
+            @{ $expression->{$Expr_pattern}->{'anatomy'} }   = @Anatomy_term;
+            @{ $expression->{$Expr_pattern}->{'stage'} }     = @Life_stage;
+            @{ $expression->{$Expr_pattern}->{'ori_stage'} } = @Life_stage;
             push @Anat,   @Anatomy_term;
             push @Stages, @Life_stage;
         }
@@ -363,11 +365,62 @@ sub print_TSV {
                      '',
                      $expression->{$id}->{'species'}, #Note currently only C. elegans in Bgee
                      $expression->{$id}->{'strain'} eq '' ? $Utils::NOT_ANNOTATED_STRAIN : $expression->{$id}->{'strain'},
-                     'not annotated',
+                     guess_sex_from_stage($expression, $id),
               ), "\n";
     return;
 }
 
+
+sub guess_sex_from_stage {
+    my ($expression, $id) = @_;
+
+#    my %female_stages        = ('WBls:0000681' => 1,
+#                                'WBls:0000729' => 1,
+#                                'WBls:0000740' => 1,
+#                               ); #other nematodes, not C. elegans
+    my %male_stages          = ('WBls:0000056' => 1,
+                                'WBls:0000073' => 1,
+                                'WBls:0000739' => 1,
+                                'WBls:0000742' => 1,
+                               );
+    my %hermaphrodite_stages = ('WBls:0000057' => 1,
+                                'WBls:0000058' => 1,
+                                'WBls:0000060' => 1,
+                                'WBls:0000061' => 1,
+                                'WBls:0000062' => 1,
+                                'WBls:0000063' => 1,
+                                'WBls:0000064' => 1,
+                                'WBls:0000065' => 1,
+                                'WBls:0000066' => 1,
+                                'WBls:0000067' => 1,
+                                'WBls:0000068' => 1,
+                                'WBls:0000069' => 1,
+                                'WBls:0000070' => 1,
+                                'WBls:0000074' => 1,
+                                'WBls:0000111' => 1,
+                                'WBls:0000670' => 1,
+                                'WBls:0000671' => 1,
+                                'WBls:0000672' => 1,
+                                'WBls:0000673' => 1,
+                                'WBls:0000674' => 1,
+                                'WBls:0000675' => 1,
+                                'WBls:0000676' => 1,
+                                'WBls:0000797' => 1,
+                                'WBls:0000798' => 1,
+                                'WBls:0000799' => 1,
+                                'WBls:0000800' => 1,
+                               );
+
+    if (    any { exists $male_stages{$_} }          @{ $expression->{$id}->{'ori_stage'} } ){
+        return 'male';
+    }
+    elsif ( any { exists $hermaphrodite_stages{$_} } @{ $expression->{$id}->{'ori_stage'} } ){
+        return 'hermaphrodite';
+    }
+    else {
+        return 'not annotated';
+    }
+}
 
 =pod
    Data example from expr_pattern.ace.20140526 file extracted by WormBase helper Daniela Raciti <draciti@caltech.edu>
