@@ -39,7 +39,7 @@ for( c_arg in command_arg ){
   }
 }
 
-############################################### FUNCTION ############################################################
+############################################### FUNCTIONS ############################################################
 ## Check bimodality + plot distribution of the protein coding for each cell-type
 checkDataPlot <- function(matrixData, modalityInfoFile, plot){
   
@@ -108,49 +108,41 @@ checkDataPlot <- function(matrixData, modalityInfoFile, plot){
 }
 
 ## Function to split scrna_seq_sample_info into 2 files: NEW_scRNASeq_info_file_final.tsv and Discard_scRNASeq_sample_info.tsv
-splitInfoFiles <- function(modality_info, sample_info_pass, sample_info_discarded){
+splitInfoFiles <- function(modality_info, sample_info, sample_info_pass, sample_info_discarded){
+  uniq_cond <- unique(modality_info[,c("speciesId", "experimentId", "cellTypeId", "stageId", "strain", "uberonId", "sex")])
+
+  for (i in seq_len(nrow(all_uniq_cond))){
+
+    message("Species:", uniq_cond$speciesId[i], " - experiment: ", uniq_cond$experimentId[i], " - cellType: ", uniq_cond$cellTypeId[i], 
+      " - stage: ", uniq_cond$stageId[i], " - strain:", uniq_cond$strain[i], " - uberonId: ", uniq_cond$uberonId[i], 
+      " - sex: ", uniq_cond$sex[i])
+                 
+    modality <- as.character(modality_info$modeDistribution[modality_info$speciesId == uniq_cond$speciesId[i] & 
+      modality_info$experiment == uniq_cond$experimentId[i] & modality_info$cellTypeId == uniq_cond$cellTypeId[i] & 
+      modality_info$stageId == uniq_cond$stageId[i] & modality_info$strain == uniq_cond$strain[i] & 
+      modality_info$uberonId == uniq_cond$uberonId[i] & modality_info$sex == uniq_cond$sex[i]])
   
-  for (species in unique(modality_info$speciesId)) {
-    message("Species:", species)
-    for (experiment in unique(modality_info$experiment[modality_info$speciesId == species])){
-      message("Name of experiments that belongs to the species:", experiment)
-      for (cellId in unique(modality_info$cellTypeId[modality_info$experiment == experiment])){
-        message("CellId info:", cellId)
-        for (stageId in unique(modality_info$stageId[modality_info$cellTypeId == cellId])){
-          message("StageId info:", stageId)
-          for (strain in unique(modality_info$strain[modality_info$stageId == stageId])){
-            message("Strain info:", strain)
-            for (uberonId in unique(modality_info$uberonId[modality_info$strain == strain])){
-              message("UberonId info:", uberonId)
-              for (sex in unique(modality_info$sex[modality_info$uberonId == uberonId])){
-                message("sex info:", sex)
+    message("Modality:", modality)
                 
-                modality <- as.character(modality_info$modeDistribution[modality_info$speciesId == species & modality_info$experiment == experiment & modality_info$cellTypeId == cellId & modality_info$stageId == stageId & modality_info$strain == strain & modality_info$uberonId == uberonId & modality_info$sex == sex])
-                message("Modality:", modality)
-                
-                if (length(modality != 0) && modality == "bimodal"){
-                  message("Cell-type is bimodal!")
-                  infoLib <- data.frame(annotation$libraryId[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex])
-                  colnames(infoLib) <- "libraries"
-                  passQC <- annotation[annotation$libraryId %in% infoLib$libraries,]
-                  write.table(passQC, file = sample_info_pass, col.names = FALSE, row.names = FALSE , append = TRUE, quote = FALSE, sep = "\t")
-                } else if (length(modality != 0) && modality != "bimodal") {
-                  message("Discard cell-type/experiment from the scRNASeq_info_file")
-                  infoLib <- data.frame(annotation$libraryId[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex])
-                  colnames(infoLib) <- "libraries"
-                  addDiscardToDiscardFile <- annotation[annotation$libraryId %in% infoLib$libraries,]
-                  write.table(addDiscardToDiscardFile, file = sample_info_discarded, col.names = FALSE, row.names = FALSE , append = TRUE, quote = FALSE, sep = "\t")
-                } else {
-                  message("Not take in consideration this combination to split scRNA-Seq info file.")
-                }
-              }
-            }
-          }
-        }
-      }
+    if (length(modality != 0) && modality == "bimodal"){
+      message("Cell-type is bimodal!")
+      infoLib <- data.frame(annotation$libraryId[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex])
+      colnames(infoLib) <- "libraries"
+      passQC <- annotation[annotation$libraryId %in% infoLib$libraries,]
+      write.table(passQC, file = sample_info_pass, col.names = FALSE, row.names = FALSE , append = TRUE, quote = FALSE, sep = "\t")
+    } else if (length(modality != 0) && modality != "bimodal") {
+      message("Discard cell-type/experiment from the scRNASeq_info_file")
+      infoLib <- data.frame(annotation$libraryId[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex])
+      colnames(infoLib) <- "libraries"
+      addDiscardToDiscardFile <- annotation[annotation$libraryId %in% infoLib$libraries,]
+      write.table(addDiscardToDiscardFile, file = sample_info_discarded, col.names = FALSE, row.names = FALSE , append = TRUE, quote = FALSE, sep = "\t")
+    } else {
+      message("Not take in consideration this combination to split scRNA-Seq info file.")
     }
+
   }
 }
+
 
 
 ## Read scrna_seq_sample_info file. If file not exists, script stops
@@ -184,50 +176,37 @@ file.create(sample_info_discarded)
 cat("libraryId\texperimentId\tcellTypeName\tcellTypeId\tspeciesId\tplatform\twhiteList\tprotocol\tprotocolType\tlibraryType\tinfoOrgan\tstageId\tuberonId\tsex\tstrain\treadLength\torganism\n",file = sample_info_discarded, sep = "\t")
 
 ## Run the QC per condition
-for (species in unique(annotation$speciesId)) {
-  message("Species:", species)
-  for (experiment in unique(annotation$experimentId[annotation$speciesId == species])){
-    message("Name of experiments that belongs to the species:", experiment)
-    for (cellId in unique(annotation$cellTypeId[annotation$experimentId == experiment])){
-      message("CellId info:", cellId)
-      for (stageId in unique(annotation$stageId[annotation$cellTypeId == cellId])){
-        message("StageId info:", stageId)
-        for (strain in unique(annotation$strain[annotation$stageId == stageId])){
-          message("Strain info:", strain)
-          for (uberonId in unique(annotation$uberonId[annotation$strain == strain])){
-            message("UberonId info:", uberonId)
-            for (sex in unique(annotation$sex[annotation$uberonId == uberonId])){
-              message("sex info:", sex)
+uniq_cond <- unique(annotation[,c("speciesId", "experimentId", "cellTypeId", "stageId", "strain", "uberonId", "sex")])
 
-              ### 1 STEP --> create matrix
-              infoLib <- annotation$libraryId[annotation$speciesId == species & annotation$experimentId == experiment & annotation$cellTypeId == cellId & annotation$stageId == stageId & annotation$strain == strain & annotation$uberonId == uberonId & annotation$sex == sex]
-              file <- file.path(cells_folder, infoLib, calls_file_name)
-              message("Number of cells:", length(file))
+for (i in seq_len(nrow(all_uniq_cond))){
 
-              if (length(file) != 0){
-                All_libs <- lapply(file, read.delim)
-                DATA <- do.call("cbind", All_libs)
-                ## select colummns with gene_id, type and biotype
-                Info_table <- DATA[,c("id","type","biotype")]
-                colnames(Info_table) <- c("gene_id","type", "biotype")
-                # select all columns with tpm info referent to each cell
-                tpm <- DATA[, grepl("abundance", names( DATA))]
-                mergeCells <- data.frame(Info_table, tpm)
+  message("Species:", uniq_cond$speciesId[i], " - experiment: ", uniq_cond$experimentId[i], " - cellType: ", uniq_cond$cellTypeId[i], 
+    " - stage: ", uniq_cond$stageId[i], " - strain:", uniq_cond$strain[i], " - uberonId: ", uniq_cond$uberonId[i], " - sex: ", uniq_cond$sex[i])
 
-                ### 2 STEP --> Check bimodality and plot cell distribution per experiment/species
-                ## save plot in same directory than file describing modality 
-                bimodality <- checkDataPlot(matrixData = mergeCells, modalityInfoFile = modality_info, plot = plot)
+  infoLib <- annotation$libraryId[annotation$speciesId == uniq_cond$speciesId[i] & annotation$experimentId == uniq_cond$experimentId[i] & 
+    annotation$cellTypeId == uniq_cond$cellTypeId[i] & annotation$stageId == uniq_cond$stageId[i] & annotation$strain == uniq_cond$strain[i] & 
+    annotation$uberonId == uniq_cond$uberonId[i] & annotation$sex == uniq_cond$sex[i]]
 
-              } else {
-                message("Not take in consideration this combination to analyse the QC (0 cells).")
-              }
-            }
-          }
-        }
-      }
-    }
+  file <- file.path(cells_folder, infoLib, calls_file_name)
+  message("Number of cells:", length(infoLib))
+
+  if (length(file) != 0){
+    All_libs <- lapply(file, read.delim)
+    DATA <- do.call("cbind", All_libs)
+    ## select colummns with gene_id, type and biotype
+    Info_table <- DATA[,c("id","type","biotype")]
+    colnames(Info_table) <- c("gene_id","type", "biotype")
+    # select all columns with tpm info referent to each cell
+    tpm <- DATA[, grepl("abundance", names( DATA))]
+    mergeCells <- data.frame(Info_table, tpm)
+    ### 2 STEP --> Check bimodality and plot cell distribution per experiment/species
+    ## save plot in same directory than file describing modality 
+    bimodality <- checkDataPlot(matrixData = mergeCells, modalityInfoFile = modality_info, plot = plot)
+  } else {
+    message("Do not take in consideration the combination [", as.character(uniq_cond[i]), "]to analyse the QC (0 cells).")
   }
 }
+
 ### 3 Step --> generate output with experiments that pass or not the QC
 readModalityFile <- read.table(modality_info, header = TRUE, sep="\t")
-QC <- splitInfoFiles(modality_info = readModalityFile, sample_info_pass = sample_info_pass, sample_info_discarded = sample_info_discarded)
+QC <- splitInfoFiles(modality_info = readModalityFile, sample_info = annotation, sample_info_pass = sample_info_pass, sample_info_discarded = sample_info_discarded)
