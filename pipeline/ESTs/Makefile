@@ -82,7 +82,6 @@ miRNA.dat:
 	@$(GUNZIP) --to-stdout $(SOURCE_FILES_DIR)/ESTs/$@.gz > $@
 
 
-#TODO problems with for loop and ID MAPPINGs. Fixed with mappers killed ???
 EST: library.report unigene dmel_mapping $(EST_SPECIES_CURATION_FILEPATH) $(UBERON_SEX_INFO_FILE_PATH)
 	# Insert ESTs info in Bgee
 	@$(MYSQL) -e "SELECT speciesId FROM species WHERE speciesId != $(DMEL_TAXID) ORDER BY speciesId" | grep -v 'speciesId' >$@.temp
