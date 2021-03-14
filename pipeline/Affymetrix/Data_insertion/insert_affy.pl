@@ -13,6 +13,7 @@ use Getopt::Long;
 use FindBin;
 use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
 use Utils;
+use lib '.';
 
 $| = 1; # no buffering of output
 require 'mas5_utils.pl';
