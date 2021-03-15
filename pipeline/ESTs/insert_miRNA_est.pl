@@ -61,7 +61,7 @@ my $spDB = $dbh->prepare('SELECT speciesId, CONCAT(SUBSTR(genus, 1, 1), SUBSTR(s
 $spDB->execute($species)  or die $spDB->errstr;
 my ($speciesCommonName, $speciesAlias) = $spDB->fetchrow_array;
 # Adapt $speciesCommonName to the file nomenclature
-# (to this point of the scrtip, $speciesCommonName actually stored the speciesId...)
+# (to this point of the script, $speciesCommonName actually stored the speciesId...)
 $speciesCommonName = $speciesCommonName ==  7955  ? 'Fish'
                    : $speciesCommonName ==  7227  ? 'Fly'
                    : $speciesCommonName == 10090  ? 'Mouse'

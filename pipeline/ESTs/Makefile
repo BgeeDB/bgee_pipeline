@@ -76,15 +76,16 @@ dmel_mapping: dmel_cdna
 	@perl extract_results.pl dmel_cdna.results > $@
 
 
-miRNA.dat:
+miRNA.dat: smiRNAdb
 	# Get miRNA.dat file
 	@$(WGET) 'ftp://mirbase.org/pub/mirbase/CURRENT/miRNA.dat.gz' -O $(SOURCE_FILES_DIR)/ESTs/$@.gz.tmp && $(MV) $(SOURCE_FILES_DIR)/ESTs/$@.gz.tmp $(SOURCE_FILES_DIR)/ESTs/$@.gz 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)/ESTs/$@.gz.tmp
 	@$(GUNZIP) --to-stdout $(SOURCE_FILES_DIR)/ESTs/$@.gz > $@
 
 
+#NOTE only speciesId from species with EST annotation files are listed here, but D. melanogaster with a external mapping file
 EST: library.report unigene dmel_mapping $(EST_SPECIES_CURATION_FILEPATH) $(UBERON_SEX_INFO_FILE_PATH)
 	# Insert ESTs info in Bgee
-	@$(MYSQL) -e "SELECT speciesId FROM species WHERE speciesId != $(DMEL_TAXID) ORDER BY speciesId" | grep -v 'speciesId' >$@.temp
+	@$(MYSQL) -e "SELECT speciesId FROM species WHERE speciesId IN (7955, 8364, 9606, 10090)" | grep -v 'speciesId' >$@.temp
 	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 3; fi
 	@for sp in `cat $@.temp`; do \
 		echo $$sp \
@@ -103,10 +104,10 @@ EST: library.report unigene dmel_mapping $(EST_SPECIES_CURATION_FILEPATH) $(UBER
 
 
 #TODO problems with for loop and ID MAPPINGs. Fixed with mappers killed ???
-#miRNA_est: miRNA.dat $(SMIRNADB_CURATION_MAPFILEPATH) smiRNAdb
+#NOTE only speciesId from species with miRNA annotation files are listed here
 miRNA_est: miRNA.dat $(SMIRNADB_CURATION_MAPFILEPATH) $(UBERON_SEX_INFO_FILE_PATH)
 	# Insert miRNA ESTs
-	@$(MYSQL) -e "SELECT speciesId FROM species ORDER BY speciesId" | grep -v 'speciesId' >$@.temp
+	@$(MYSQL) -e "SELECT speciesId FROM species WHERE speciesId IN (7227, 7955, 9606, 10090)" | grep -v 'speciesId' >$@.temp
 	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 4; fi
 	@for sp in `cat $@.temp`; do \
 		echo $$sp \
