@@ -1,7 +1,7 @@
 # mirzId: name of the library in smiRNAdb (second column of S.csv); be careful this name can be not unique between species	anatEntityId	stageId	speciesId	sex
 Adipo-diff	MA:0000009	MmusDv:0000110	10090	
 Adipo-undiff	MA:0000009	MmusDv:0000110	10090	
-Brain-WT	MA:0000168	MmusDv:0000112	10090	
+Brain-WT	MA:0000168	MmusDv:0000043	10090	
 Cerebellum	MA:0000198	MmusDv:0000110	10090	
 Colon	MA:0000335	MmusDv:0000110	10090	
 Cortex	MA:0000185	MmusDv:0000110	10090	
@@ -37,7 +37,7 @@ Cerebellum-adult	EV:0100293	HsapDv:0000114	9606	M
 Epididymis	EV:0100103	HsapDv:0000167	9606	M
 Frontal-cortex-adult	EV:0100167	HsapDv:0000114	9606	M
 Heart	EV:0100018	UBERON:0000104	9606	
-Hippocamp-adult	EV:0100180	HsapDv:0000087	9606	
+Hippocamp-adult	EV:0100180	HsapDv:0000258	9606	
 Liver	EV:0100089	HsapDv:0000137	9606	F
 Midbrain-adult	EV:0100242	HsapDv:0000172	9606	M
 Ovary	EV:0100111	HsapDv:0000136	9606	F
