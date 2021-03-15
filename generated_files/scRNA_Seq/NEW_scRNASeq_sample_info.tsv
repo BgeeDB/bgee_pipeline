@@ -1,4 +1,4 @@
-libraryId	experimentId	cellTypeName	cellTypeId	speciesId	platform	whiteList	protocol	protocolType	libraryType	infoOrgan	stageId	uberonId	sex	strain	readLength	organism
+libraryId	experimentId	cellTypeName	cellTypeId	speciesId	platform	protocol	protocolType	libraryType	infoOrgan	stageId	uberonId	sex	strain	readLength	organism
 ERX1226326	ERP013381	mesodermal cell	CL:0000222	10090	Illumina HiSeq 2500	Adapted_SMART_seq2	Full-length	SINGLE	whole organism	MmusDv:0000094	UBERON:0000922	(Missing)	CD-1	125	Mus_musculus
 ERX1226327	ERP013381	mesodermal cell	CL:0000222	10090	Illumina HiSeq 2500	Adapted_SMART_seq2	Full-length	SINGLE	whole organism	MmusDv:0000094	UBERON:0000922	(Missing)	CD-1	125	Mus_musculus
 ERX1226328	ERP013381	mesodermal cell	CL:0000222	10090	Illumina HiSeq 2500	Adapted_SMART_seq2	Full-length	SINGLE	whole organism	MmusDv:0000094	UBERON:0000922	(Missing)	CD-1	125	Mus_musculus

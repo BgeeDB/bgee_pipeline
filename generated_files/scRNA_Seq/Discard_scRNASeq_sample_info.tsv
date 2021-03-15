@@ -1,4 +1,4 @@
-libraryId	experimentId	cellTypeName	cellTypeId	speciesId	platform	whiteList	protocol	protocolType	libraryType	infoOrgan	stageId	uberonId	sex	strain	readLength	organism
+libraryId	experimentId	cellTypeName	cellTypeId	speciesId	platform	protocol	protocolType	libraryType	infoOrgan	stageId	uberonId	sex	strain	readLength	organism
 SRX1457054	SRP066834	neural cell	CL:0002319	9606	Illumina HiSeq 2500	SMARTer Ultra Low	Full-length	PAIRED	Fetal neocortex	HsapDv:0000050	UBERON:0001950	(Missing)	(Missing)	100	Homo_sapiens
 SRX1457055	SRP066834	neural cell	CL:0002319	9606	Illumina HiSeq 2500	SMARTer Ultra Low	Full-length	PAIRED	Fetal neocortex	HsapDv:0000050	UBERON:0001950	(Missing)	(Missing)	100	Homo_sapiens
 SRX1457056	SRP066834	neural cell	CL:0002319	9606	Illumina HiSeq 2500	SMARTer Ultra Low	Full-length	PAIRED	Fetal neocortex	HsapDv:0000050	UBERON:0001950	(Missing)	(Missing)	100	Homo_sapiens
