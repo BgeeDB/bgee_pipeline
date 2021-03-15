@@ -289,7 +289,7 @@ for my $line ( read_file("$est_file", chomp => 1 ) ){
             # We consider only genes with a one to one relation btwn UniGene and Ensembl
             if ( $#{$mapping{$unigene_ID}} == 0 ){
                 for (my $i=0; $i<=$#EST_ACC; $i++){
-                    $estDB->execute($EST_ACC[$i], $EST_GI[$i], $LID[$i], $gene_mapping->{ ${$mapping{$unigene_ID}}[0] }, $unigene_ID)  or warn $estDB->errstr;
+                    $estDB->execute($EST_ACC[$i], $EST_GI[$i], $LID[$i], $gene_mapping->{ ${$mapping{$unigene_ID}}[0] }, $unigene_ID)  or warn $estDB->errstr." for [${$mapping{$unigene_ID}}[0]]";
                 }
             }
         }
