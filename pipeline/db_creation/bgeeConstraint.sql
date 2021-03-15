@@ -476,6 +476,7 @@ add primary key (expressionId, rnaSeqExperimentId);
 /*!40000 ALTER TABLE `rnaSeqProtocol` DISABLE KEYS */;
 alter table rnaSeqProtocol
 modify rnaSeqProtocolId smallint unsigned not null auto_increment primary key,
+add unique(rnaSeqProtocolName);
 /*!40000 ALTER TABLE `rnaSeqProtocol` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `rnaSeqProtocolToBiotypeExcludedAbsentCalls` DISABLE KEYS */;
