@@ -438,7 +438,7 @@ sub getAllRnaSeqAnnotations {
                 $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'speciesId'} = 'NA';
             }
             # protocol
-            if ( $protocol ne '' ){
+            if ( !defined($protocol) || $protocol ne '' ){
                 $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'protocol'} = $protocol;
             }
             else {
@@ -590,7 +590,7 @@ sub getAllRnaSeqLibrariesStats {
     my %rnaSeqLibraries;
 
     for my $line ( read_file("$rnaSeqLibraryFile", chomp=>1) ){
-        next  if ( $line =~ /^#/ or $line =~ /^\"#/ );
+        next  if ( $line =~ /^#/ or $line =~ /^\"#/ or $line =~ /^libraryId/);
         #libraryId    cutoffTPM    proportionGenicPresent  numberGenicPresent      numberGenic     proportionCodingPresent numberPresentCoding     numberCoding    proportionIntergenicPresent     numberIntergenicPresent numberIntergenic    pValueCutoff    meanIntergenic  sdIntergenic    speciesId
 
         my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
@@ -684,9 +684,17 @@ sub getAllRnaSeqReportInfo {
 
         my $libraryId                       = $tmp[0];
         my $allReadsCount                   = $tmp[1];
+        #transform from potential scientific notation to integer
+        if ( $allReadsCount =~ /e[+|-][0-9]+$/ ) {
+            $allReadsCount = sprintf("%.0f", $tmp[1]);
+        }
         my $minReadLength                   = $tmp[2];
         my $maxReadLength                   = $tmp[3];
         my $mappedReadsCount                = $tmp[4];
+        #transform from potential scientific notation to integer
+        if ( $allReadsCount =~ /^[0-9]+e[+|-][0-9]+$/ ) {
+            $allReadsCount = sprintf("%.0f", $tmp[4]);
+        }
 
 
         die "tsv field number problem [$line]\n"  if ( scalar @tmp != 11 );
@@ -902,7 +910,7 @@ sub getAllFullLengthScRnaSeqLibrariesInfo {
 
     my %fullLengthScRnaSeqLibrary;
     for my $line ( read_file("$fullLengthScRnaSeqLibraryFile", chomp=>1) ){
-        next  if ( $line =~ /^#/ or $line =~ /^\"#/ );
+        next  if ( $line =~ /^#/ or $line =~ /^libraryId/ );
         #libraryId  experimentId    cellTypeName    cellTypeId  speciesId   platform    protocol    protocolType    libraryType infoOrgan   stageId uberonId    sex strain  readLength  organism
         my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
 
@@ -911,7 +919,7 @@ sub getAllFullLengthScRnaSeqLibrariesInfo {
         my $cellTypeId                      = $tmp[3];
         my $speciesId                       = $tmp[4];
         my $platform                        = $tmp[5];
-        my $protocol                        = $tmp[7];
+        my $protocol                        = $tmp[6];
         my $libraryType                     = $tmp[8];
         my $stageId                         = $tmp[10];
         my $uberonId                        = $tmp[11];
@@ -920,7 +928,16 @@ sub getAllFullLengthScRnaSeqLibrariesInfo {
         my $readLength                      = $tmp[14];
         my $organism                        = $tmp[15];
 
-        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 11 );
+        #TODO: change the annotation to fit authorized sex values in the DB ('not annotated','hermaphrodite','female','male','mixed','NA')
+        # it is ugly to have to manually modify the values in this script
+        if($sex eq "(Missing)") {
+            $sex = $Utils::NA_SEX;
+        }
+        if($sex eq "M") {
+            $sex = $Utils::MALE_SEX;
+        }
+
+        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 16 );
 
         if ( !defined $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId} ){
             # Perform format checks
