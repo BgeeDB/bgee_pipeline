@@ -54,6 +54,11 @@ ERX167089	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.0	JW
 ERX167126	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.0	JW	2021-01-19
 SRX764719	TRUE	more than 8M reads but 0 reads pseudoaligned by kallisto.	JW	2021-02-17
 SRX764716	TRUE	more than 8M reads but 0 reads pseudoaligned by kallisto.	JW	2021-02-22
+SRX764705	TRUE	more than 8M reads but 0 reads pseudoaligned by kallisto.	JW	2021-02-22
+SRX764706	TRUE	more than 8M reads but 0 reads pseudoaligned by kallisto.	JW	2021-02-22
+SRX764717	TRUE	more than 8M reads but 0 reads pseudoaligned by kallisto.	JW	2021-02-22
+SRX1464494	TRUE	0 reads pseudoaligned by kallisto.	JW	2021-02-22
+SRX1464701	TRUE	0 reads pseudoaligned by kallisto.	JW	2021-02-22
 ERX1403295	TRUE	Not downloaded for Bgee 15.0	JW	2021-02-07
 ERX1403297	TRUE	Not downloaded for Bgee 15.0	JW	2021-02-07
 ERX1403342	TRUE	Not downloaded for Bgee 15.0	JW	2021-02-07
