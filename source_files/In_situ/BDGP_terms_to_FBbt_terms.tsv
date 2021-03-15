@@ -1,122 +1,124 @@
 #stage_name	BGDP_term	BDGP_id	FBbt_id	FBbt_name	matches_count	match_source	stage_id	occurence
 stage13-16	embryonic central nervous system	1	FBbt:00001919		1	mapping	6	611
-stage13-16	embryonic brain	2	FBbt:00001060		1	mapping	6	1344
+stage13-16	embryonic brain	2	FBbt:00001060		1	mapping	6	1432
 stage13-16	embryonic central brain	3	FBbt:00005662		1	mapping	6	39
-stage13-16	embryonic central brain neuron	5	FBbt:00005665		1	mapping	6	227
-stage13-16	embryonic central brain glia	6	FBbt:00005663		1	mapping	6	212
-stage13-16	embryonic central brain glia	7	FBbt:00005663		1	mapping	6	212
+stage13-16	embryonic central brain neuron	5	FBbt:00005665		1	mapping	6	228
+stage13-16	embryonic central brain glia	6	FBbt:00005663		1	mapping	6	213
+stage13-16	embryonic central brain glia	7	FBbt:00005663		1	mapping	6	213
 stage13-16	embryonic central brain surface glia	8	FBbt:00005664		1	mapping	6	69
-stage13-16	embryonic central brain neuron	9	FBbt:00005665		1	mapping	6	227
+stage13-16	embryonic central brain neuron	9	FBbt:00005665		1	mapping	6	228
 stage13-16	embryonic central brain	10	FBbt:00005662		1	mapping	6	39
 stage13-16	embryonic central brain mushroom body	11	FBbt:00005508		1	mapping	6	20
 stage13-16	embryonic central brain pars intercerebralis	12	FBbt:00005667		1	mapping	6	33
-stage13-16	embryonic optic lobe	13	FBbt:00005659		1	mapping	6	65
+stage13-16	embryonic optic lobe	13	FBbt:00005659		1	mapping	6	66
 stage13-16	embryonic inner optic lobe	14	FBbt:00005660		1	mapping	6	3
 stage13-16	embryonic outer optic lobe	15	FBbt:00005661		1	mapping	6	1
-stage13-16	embryonic head epidermis	16	FBbt:00005741		1	mapping	6	492
-stage13-16	sensory system head	17	FBbt:00005828		1	mapping	6	301
-stage13-16	embryonic Bolwig's organ	18	FBbt:00005805		1	mapping	6	65
+stage13-16	embryonic head epidermis	16	FBbt:00005741		1	mapping	6	499
+stage13-16	sensory system head	17	FBbt:00005828		1	mapping	6	311
+stage13-16	embryonic Bolwig's organ	18	FBbt:00005805		1	mapping	6	66
 stage13-16	adult eye primordium	19	FBbt:10005249		1	mapping	6	17
 stage13-16	embryonic antennal sense organ	20	FBbt:00005568		1	mapping	6	83
-stage13-16	embryonic stomatogastric nervous system	22	FBbt:00001069		1	mapping	6	59
-stage13-16	embryonic frontal ganglion	23	FBbt:00005668		1	mapping	6	6
+stage13-16	embryonic stomatogastric nervous system	22	FBbt:00001069		1	mapping	6	64
+stage13-16	embryonic frontal ganglion	23	FBbt:00005668		1	mapping	6	7
 stage13-16	embryonic hypocerebral ganglion	24	FBbt:00005669		1	mapping	6	4
 stage13-16	embryonic esophageal ganglion	25	FBbt:00005670		1	mapping	6	7
 stage13-16	embryonic proventricular ganglion	26	FBbt:00005671		1	mapping	6	1
-stage13-16	embryonic foregut	27	FBbt:00005606		1	mapping	6	434
-stage13-16	embryonic epipharynx	28	FBbt:00005614		1	mapping	6	335
+stage13-16	embryonic foregut	27	FBbt:00005606		1	mapping	6	444
+stage13-16	embryonic epipharynx	28	FBbt:00005614		1	mapping	6	347
 stage13-16	adult clypeo-labral primordium	29	FBbt:00005514		1	mapping	6	3
-stage13-16	labral sensory complex	30	FBbt:00005617		1	mapping	6	89
-stage13-16	embryonic hypopharynx	31	FBbt:00001869		1	mapping	6	351
-stage13-16	embryonic esophagus	32	FBbt:00005612		1	mapping	6	199
-stage13-16	embryonic proventriculus	33	FBbt:00005607		1	mapping	6	367
+stage13-16	labral sensory complex	30	FBbt:00005617		1	mapping	6	95
+stage13-16	embryonic hypopharynx	31	FBbt:00001869		1	mapping	6	364
+stage13-16	embryonic esophagus	32	FBbt:00005612		1	mapping	6	207
+stage13-16	embryonic proventriculus	33	FBbt:00005607		1	mapping	6	376
 stage13-16	embryonic proventriculus inner layer	34	FBbt:00005608		1	mapping	6	60
 stage13-16	embryonic proventriculus intermediate layer	35	FBbt:00005609		1	mapping	6	28
-stage13-16	embryonic proventriculus outer layer	36	FBbt:00005610		1	mapping	6	45
+stage13-16	embryonic proventriculus outer layer	36	FBbt:00005610		1	mapping	6	46
 stage13-16	adult foregut precursor	37	FBbt:00005611		1	mapping	6	13
-stage13-16	atrium	38	FBbt:00005615		1	mapping	6	225
+stage13-16	atrium	38	FBbt:00005615		1	mapping	6	226
 stage13-16	embryonic foregut sensory structure	39	FBbt:00005616		1	mapping	6	45
-stage13-16	embryonic maxillary sensory complex	40	FBbt:00005618		1	mapping	6	71
-stage13-16	embryonic labial sensory complex	41	FBbt:00005619		1	mapping	6	60
-stage13-16	embryonic salivary gland	42	FBbt:00005512		1	mapping	6	261
+stage13-16	embryonic maxillary sensory complex	40	FBbt:00005618		1	mapping	6	75
+stage13-16	embryonic labial sensory complex	41	FBbt:00005619		1	mapping	6	66
+stage13-16	embryonic salivary gland	42	FBbt:00005512		1	mapping	6	277
 stage13-16	embryonic salivary gland body	43	FBbt:00007594		1	mapping	6	128
 stage13-16	embryonic salivary gland duct	44	FBbt:00005622		1	mapping	6	57
 stage13-16	embryonic salivary gland common duct	45	FBbt:00016005		1	mapping	6	35
 stage13-16	adult salivary primordium	46	FBbt:00000443		1	mapping	6	3
-stage13-16	embryonic ventral epidermis	47	FBbt:00005747		1	mapping	6	667
-stage13-16	embryonic anal pad	48	FBbt:00005748		1	mapping	6	348
+stage13-16	embryonic ventral epidermis	47	FBbt:00005747		1	mapping	6	694
+stage13-16	embryonic anal pad	48	FBbt:00005748		1	mapping	6	368
 stage13-16	embryonic ventral apodeme	49	FBbt:00005749		1	mapping	6	40
-stage13-16	ventral imaginal precursor	50	FBbt:00005834		1	mapping	6	31
+stage13-16	ventral imaginal precursor	50	FBbt:00005834		1	mapping	6	32
 stage13-16	dorsal mesothoracic disc	52	FBbt:00001778		1	mapping	6	5
 stage13-16	dorsal metathoracic disc	53	FBbt:00001779		1	mapping	6	5
 stage13-16	ventral sensory complex primordium	56	FBbt:00005552		1	mapping	6	188
-stage13-16	ventral nerve cord	57	FBbt:00001102		1	mapping	6	1346
+stage13-16	ventral nerve cord	57	FBbt:00001102		1	mapping	6	1431
 stage13-16	lateral cord	58	FBbt:00005672		1	mapping	6	32
 stage13-16	lateral cord	59	FBbt:00005672		1	mapping	6	32
 stage13-16	lateral cord neuron	60	FBbt:00005675		1	mapping	6	213
-stage13-16	lateral cord glia	61	FBbt:00005673		1	mapping	6	220
-stage13-16	lateral cord glia	62	FBbt:00005673		1	mapping	6	220
+stage13-16	lateral cord glia	61	FBbt:00005673		1	mapping	6	221
+stage13-16	lateral cord glia	62	FBbt:00005673		1	mapping	6	221
 stage13-16	lateral cord surface glia	63	FBbt:00005824		1	mapping	6	49
 stage13-16	lateral cord neuron	64	FBbt:00005675		1	mapping	6	213
 stage13-16	lateral cord	65	FBbt:00005672		1	mapping	6	32
-stage13-16	ventral midline	66	FBbt:00000093		1	mapping	6	219
+stage13-16	ventral midline	66	FBbt:00000093		1	mapping	6	223
 stage13-16	ventral midline glia	67	FBbt:00001315		1	mapping	6	46
 stage13-16	ventral midline neuron	68	FBbt:00005566		1	mapping	6	16
-stage13-16	embryonic dorsal epidermis	69	FBbt:00005744		1	mapping	6	742
-stage13-16	embryonic dorsal apodeme	70	FBbt:00005745		1	mapping	6	45
-stage13-16	embryonic/larval oenocyte	71	FBbt:00001694		1	mapping	6	72
-stage13-16	dorsal imaginal precursor	72	FBbt:00005831		1	mapping	6	15
-stage13-16	dorsal histoblast nest abdominal	73	FBbt:00001791		1	mapping	6	5
-stage13-16	sensory nervous system primordium	74	FBbt:00005551		1	mapping	6	193
+stage13-16	embryonic dorsal epidermis	69	FBbt:00005744		1	mapping	6	769
+stage13-16	embryonic dorsal apodeme	70	FBbt:00005745		1	mapping	6	46
+stage13-16	embryonic/larval oenocyte	71	FBbt:00001694		1	mapping	6	77
+stage13-16	dorsal imaginal precursor	72	FBbt:00005831		1	mapping	6	17
+stage13-16	dorsal histoblast nest abdominal	73	FBbt:00001791		1	mapping	6	6
+stage13-16	sensory nervous system primordium	74	FBbt:00005551		1	mapping	6	194
 stage13-16	embryonic leading edge cell	75	FBbt:00005746		1	mapping	6	26
-stage13-16	embryonic/larval tracheal system	76	FBbt:00000185		1	mapping	6	307
-stage13-16	embryonic/larval anterior spiracle	77	FBbt:00000407		1	mapping	6	32
-stage13-16	embryonic/larval posterior spiracle	78	FBbt:00000424		1	mapping	6	238
-stage13-16	embryonic/larval dorsal trunk	79	FBbt:00000212		1	mapping	6	86
+stage13-16	embryonic/larval tracheal system	76	FBbt:00000185		1	mapping	6	317
+stage13-16	embryonic/larval anterior spiracle	77	FBbt:00000407		1	mapping	6	36
+stage13-16	embryonic/larval posterior spiracle	78	FBbt:00000424		1	mapping	6	257
+stage13-16	embryonic/larval dorsal trunk	79	FBbt:00000212		1	mapping	6	87
 stage13-16	embryonic/larval dorsal branch	80	FBbt:00000265		1	mapping	6	28
 stage13-16	embryonic/larval visceral branch	81	FBbt:00000296		1	mapping	6	50
 stage13-16	embryonic tracheole	82	FBbt:00005571		1	mapping	6	7
 stage13-16	imaginal tracheal precursor	83	FBbt:00005605		1	mapping	6	2
-stage11-12	amnioserosa	84	FBbt:00000095		1	mapping	5	231
-stage13-16	amnioserosa	84	FBbt:00000095		1	mapping	6	158
+stage11-12	amnioserosa	84	FBbt:00000095		1	mapping	5	246
+stage13-16	amnioserosa	84	FBbt:00000095		1	mapping	6	172
 stage7-8	amnioserosa	84	FBbt:00017017		1	mapping	3	3
 stage9-10	amnioserosa	84	FBbt:00017000		1	mapping	4	169
-stage13-16	embryonic midgut	85	FBbt:00005624		1	mapping	6	1686
-stage13-16	embryonic gastric caecum	86	FBbt:00017027		1	mapping	6	113
-stage13-16	embryonic midgut chamber	87	FBbt:00005628		1	mapping	6	226
-stage13-16	embryonic midgut interstitial cell	89	FBbt:00001888		1	mapping	6	59
-stage13-16	adult midgut precursor	90	FBbt:00000449		1	mapping	6	29
-stage13-16	embryonic hindgut	91	FBbt:00005630		1	mapping	6	876
-stage13-16	embryonic Malpighian tubule	92	FBbt:00005634		1	mapping	6	344
-stage13-16	embryonic main segment of Malpighian tubule	93	FBbt:00005640		1	mapping	6	34
+stage13-16	embryonic midgut	85	FBbt:00005624		1	mapping	6	1782
+stage13-16	embryonic gastric caecum	86	FBbt:00017027		1	mapping	6	115
+stage13-16	embryonic midgut chamber	87	FBbt:00005628		1	mapping	6	237
+stage13-16	embryonic midgut interstitial cell	89	FBbt:00001888		1	mapping	6	60
+stage13-16	adult midgut precursor	90	FBbt:00000449		1	mapping	6	30
+stage13-16	embryonic hindgut	91	FBbt:00005630		1	mapping	6	912
+stage13-16	embryonic Malpighian tubule	92	FBbt:00005634		1	mapping	6	358
+stage13-16	embryonic main segment of Malpighian tubule	93	FBbt:00005640		1	mapping	6	35
 stage13-16	embryonic Malpighian tubule tip cell	94	FBbt:00005643		1	mapping	6	17
-stage13-16	embryonic small intestine	95	FBbt:00005631		1	mapping	6	41
-stage13-16	embryonic large intestine	96	FBbt:00005632		1	mapping	6	166
-stage13-16	embryonic rectum	97	FBbt:00005633		1	mapping	6	53
+stage13-16	embryonic small intestine	95	FBbt:00005631		1	mapping	6	42
+stage13-16	embryonic large intestine	96	FBbt:00005632		1	mapping	6	168
+stage13-16	embryonic rectum	97	FBbt:00005633		1	mapping	6	58
 stage13-16	adult hindgut precursor	98	FBbt:00005646		1	mapping	6	45
-stage13-16	plasmatocytes	99	FBbt:00001685		1	mapping	6	98
+stage13-16	plasmatocytes	99	FBbt:00001685		1	mapping	6	101
 stage13-16	macrophage	100	FBbt:00001686		1	mapping	6	2
 stage13-16	crystal cell	101	FBbt:00001690		1	mapping	6	110
-stage13-16	embryonic/larval garland cell	102	FBbt:00001693		1	mapping	6	175
-stage13-16	embryonic/larval garland cell	103	FBbt:00001693		1	mapping	6	175
+stage13-16	embryonic/larval garland cell	102	FBbt:00001693		1	mapping	6	180
+stage13-16	embryonic/larval garland cell	103	FBbt:00001693		1	mapping	6	180
 stage13-16	embryonic/larval pericardial cell	104	FBbt:00001667		1	mapping	6	38
-stage13-16	embryonic/larval circulatory system	105	FBbt:00001664		1	mapping	6	38
-stage13-16	embryonic/larval dorsal vessel	106	FBbt:00001673		1	mapping	6	116
-stage13-16	embryonic/larval muscle system	108	FBbt:00000462		1	mapping	6	708
-stage13-16	dorsal prothoracic pharyngeal muscle	109	FBbt:00000489		1	mapping	6	489
-stage13-16	embryonic/larval somatic muscle	110	FBbt:00000464		1	mapping	6	397
+stage13-16	embryonic/larval circulatory system	105	FBbt:00001664		1	mapping	6	40
+stage13-16	embryonic/larval dorsal vessel	106	FBbt:00001673		1	mapping	6	117
+stage13-16	lymph gland	107	none	none	0	nomatch	6	120
+stage13-16	embryonic/larval muscle system	108	FBbt:00000462		1	mapping	6	720
+stage13-16	dorsal prothoracic pharyngeal muscle	109	FBbt:00000489		1	mapping	6	519
+stage13-16	embryonic/larval somatic muscle	110	FBbt:00000464		1	mapping	6	416
 stage13-16	adult muscle precursor primordium	111	FBbt:00005516		1	mapping	6	7
-stage13-16	embryonic/larval visceral muscle	112	FBbt:00001035		1	mapping	6	424
+stage13-16	embryonic/larval visceral muscle	112	FBbt:00001035		1	mapping	6	450
 stage13-16	longitudinal visceral muscle fibers	113	FBbt:00005071		1	mapping	6	44
-stage13-16	circular visceral muscle fibers	114	FBbt:00005072		1	mapping	6	31
-stage13-16	embryonic/larval fat body	115	FBbt:00001704		1	mapping	6	298
-stage13-16	gonad	116	FBbt:00004858		1	mapping	6	300
-stage13-16	germ cell	118	FBbt:00000092		1	mapping	6	149
-stage13-16	ring gland	120	FBbt:00001722		1	mapping	6	129
+stage13-16	circular visceral muscle fibers	114	FBbt:00005072		1	mapping	6	32
+stage13-16	embryonic/larval fat body	115	FBbt:00001704		1	mapping	6	311
+stage13-16	gonad	116	FBbt:00004858		1	mapping	6	316
+stage13-16	gonadal sheath	117	none	none	0	nomatch	6	31
+stage13-16	germ cell	118	FBbt:00000092		1	mapping	6	151
+stage13-16	ring gland	120	FBbt:00001722		1	mapping	6	131
 stage13-16	embryonic corpus allatum	121	FBbt:00001717		1	mapping	6	28
 stage13-16	prothoracic gland	123	FBbt:00001724		1	mapping	6	15
 stage11-12	embryonic central brain	125	FBbt:00005542		1	mapping	5	3
-stage11-12	embryonic central brain neuron	126	FBbt:00005665		1	mapping	5	111
+stage11-12	embryonic central brain neuron	126	FBbt:00005665		1	mapping	5	112
 stage11-12	embryonic central brain glia	127	FBbt:00005663		1	mapping	5	112
 stage11-12	embryonic central brain glia	128	FBbt:00005663		1	mapping	5	112
 stage11-12	embryonic central brain surface glia	129	FBbt:00005664		1	mapping	5	8
@@ -124,24 +126,25 @@ stage11-12	mushroom body primordium	132	FBbt:00005508		1	mapping	5	3
 stage11-12	pars intercerebralis primordium	133	FBbt:00005511		1	mapping	5	37
 stage11-12	procephalic neuroblasts	134	FBbt:00001333		1	mapping	5	111
 stage11-12	embryonic ganglion mother cell	135	FBbt:00001433		1	mapping	5	32
-stage11-12	embryonic optic lobe primordium	136	FBbt:00000186		1	mapping	5	66
+stage11-12	embryonic optic lobe primordium	136	FBbt:00000186		1	mapping	5	68
 stage11-12	embryonic inner optic lobe primordium	137	FBbt:00000461		1	mapping	5	6
 stage11-12	embryonic outer optic lobe primordium	138	FBbt:00005822		1	mapping	5	1
 stage11-12	need new term(larval eye primordium)	139	FBbt:00005830		1	mapping	5	17
 stage11-12	antennal primordium1	141	FBbt:00005510		1	mapping	5	41
 stage11-12	embryonic dorsal pouch primordium	142	FBbt:00005509		1	mapping	5	1
 stage11-12	stomatogastric nervous system primordium	143	FBbt:00005536		1	mapping	5	53
-stage11-12	clypeo-labral primordium	144	FBbt:00005538		1	mapping	5	151
-stage11-12	labral sensory complex primordium	145	FBbt:00005546		1	mapping	5	40
-stage11-12	foregut primordium	146	FBbt:00005535		1	mapping	5	334
-stage11-12	proventriculus primordium	147	FBbt:00005550		1	mapping	5	82
-stage11-12	anterior midgut primordium	148	FBbt:00000444		1	mapping	5	1216
+stage11-12	clypeo-labral primordium	144	FBbt:00005538		1	mapping	5	155
+stage11-12	labral sensory complex primordium	145	FBbt:00005546		1	mapping	5	41
+stage11-12	foregut primordium	146	FBbt:00005535		1	mapping	5	341
+stage11-12	proventriculus primordium	147	FBbt:00005550		1	mapping	5	86
+stage11-12	anterior midgut primordium	148	FBbt:00000444		1	mapping	5	1289
 stage11-12	gnathal primordium	150	FBbt:00005534		1	mapping	5	44
-stage11-12	maxillary sensory complex primordium	151	FBbt:00005544		1	mapping	5	50
-stage11-12	labial sensory complex primordium	152	FBbt:00005545		1	mapping	5	45
+stage11-12	maxillary sensory complex primordium	151	FBbt:00005544		1	mapping	5	51
+stage11-12	labial sensory complex primordium	152	FBbt:00005545		1	mapping	5	46
+stage11-12	salivary gland body primordium	153	none	none	0	nomatch	5	275
 stage11-12	salivary duct primordium	154	FBbt:00005531		1	mapping	5	17
-stage11-12	ventral epidermis primordium	155	FBbt:00016007		1	mapping	5	317
-stage11-12	anal pad specific anlage	156	FBbt:00016008		1	mapping	5	58
+stage11-12	ventral epidermis primordium	155	FBbt:00016007		1	mapping	5	329
+stage11-12	anal pad specific anlage	156	FBbt:00016008		1	mapping	5	62
 stage11-12	ventral apodeme specific anlage	157	FBbt:00016009		1	mapping	5	4
 stage11-12	ventral imaginal precursor specific anlage	158	FBbt:00005834		1	mapping	5	9
 stage11-12	ventral sensory complex specific anlage	164	FBbt:00007047		1	mapping	5	53
@@ -152,141 +155,144 @@ stage11-12	lateral cord glia	168	FBbt:00005673		1	mapping	5	106
 stage11-12	lateral cord surface glia	169	FBbt:00005824		1	mapping	5	8
 stage11-12	lateral cord neuron	170	FBbt:00005675		1	mapping	5	151
 stage11-12	lateral cord	171	FBbt:00005672		1	mapping	5	14
-stage11-12	neuroblasts of ventral nervous system	172	FBbt:00001369		1	mapping	5	127
+stage11-12	neuroblasts of ventral nervous system	172	FBbt:00001369		1	mapping	5	128
 stage11-12	embryonic ganglion mother cell	173	FBbt:00001433		1	mapping	5	32
 stage11-12	ventral midline glia	174	FBbt:00001315		1	mapping	5	33
 stage11-12	ventral midline neuroblast	175	FBbt:00005565		1	mapping	5	13
-stage9-10	dorsal ectoderm primordium	176	FBbt:00000112		1	mapping	4	220
+stage9-10	dorsal ectoderm primordium	176	FBbt:00000112		1	mapping	4	223
 stage11-12	dorsal apodeme specific anlage	177	FBbt:00016020		1	mapping	5	7
 stage11-12	oenocyte specific anlage	178	FBbt:00017020		1	mapping	5	6
 stage11-12	dorsal imaginal precursor specific anlage	179	FBbt:00005831		1	mapping	5	5
+stage11-12	sensory nervous system specific anlage	181	none	none	0	nomatch	5	56
 stage11-12	embryonic leading edge cell specific anlage	182	FBbt:00005475		1	mapping	5	14
-stage11-12	tracheal primordium	183	FBbt:00005037		1	mapping	5	191
-stage11-12	anterior spiracle specific anlage	184	FBbt:00017001		1	mapping	5	5
-stage11-12	posterior spiracle specific anlage	185	FBbt:00000197		1	mapping	5	84
+stage11-12	tracheal primordium	183	FBbt:00005037		1	mapping	5	194
+stage11-12	anterior spiracle specific anlage	184	FBbt:00017001		1	mapping	5	6
+stage11-12	posterior spiracle specific anlage	185	FBbt:00000197		1	mapping	5	87
 stage11-12	dorsal trunk specific anlage	186	FBbt:00017010		1	mapping	5	19
 stage11-12	primary segmental branch specific anlage	187	FBbt:00017011		1	mapping	5	9
 stage11-12	visceral branch specific anlage	188	FBbt:00017003		1	mapping	5	11
 stage11-12	tracheole specific anlage	189	FBbt:00017025		1	mapping	5	2
-stage11-12	anterior midgut primordium	192	FBbt:00000444		1	mapping	5	1216
-stage11-12	posterior midgut primordium	193	FBbt:10005329		1	mapping	5	1272
-stage11-12	Malpighian tubule primordium	194	FBbt:00000442		1	mapping	5	200
+stage11-12	anterior midgut primordium	192	FBbt:00000444		1	mapping	5	1289
+stage11-12	posterior midgut primordium	193	FBbt:10005329		1	mapping	5	1341
+stage11-12	Malpighian tubule primordium	194	FBbt:00000442		1	mapping	5	205
 stage11-12	Malpighian tubule main body primordium	195	FBbt:00005501		1	mapping	5	16
 stage11-12	Malpighian tubule tip cell primordium	196	FBbt:00005502		1	mapping	5	3
-stage11-12	hindgut proper primordium	197	FBbt:00005513		1	mapping	5	581
+stage11-12	hindgut proper primordium	197	FBbt:00005513		1	mapping	5	591
 stage11-12	small intestine specific anlage	198	FBbt:00005504		1	mapping	5	12
 stage11-12	large intestine specific anlage	199	FBbt:00005505		1	mapping	5	31
-stage11-12	rectum specific anlage	200	FBbt:00005506		1	mapping	5	9
+stage11-12	rectum specific anlage	200	FBbt:00005506		1	mapping	5	10
 stage11-12	adult hindgut specific anlage	201	FBbt:00005513		1	mapping	5	1
-stage11-12	plasmatocytes anlage	202	FBbt:00017006		1	mapping	5	132
+stage11-12	plasmatocytes anlage	202	FBbt:00017006		1	mapping	5	137
 stage11-12	procrystal cell	203	FBbt:00001689		1	mapping	5	90
-stage11-12	garland cell primordium	204	FBbt:00005462		1	mapping	5	103
-stage11-12	cardiac mesoderm primordium	205	FBbt:00005541		1	mapping	5	49
+stage11-12	garland cell primordium	204	FBbt:00005462		1	mapping	5	108
+stage11-12	cardiac mesoderm primordium	205	FBbt:00005541		1	mapping	5	50
 stage11-12	pericardial cell specific anlage	206	FBbt:00005541		1	mapping	5	12
-stage11-12	dorsal vessel specific anlage	208	FBbt:00001665		1	mapping	5	20
+stage11-12	dorsal vessel specific anlage	208	FBbt:00001665		1	mapping	5	21
 stage11-12	lymph gland specific anlage	209	FBbt:00005541		1	mapping	5	6
-stage11-12	dorsal pharyngeal muscle primordium	210	FBbt:00005498		1	mapping	5	197
-stage11-12	somatic muscle primordium	211	FBbt:00005518		1	mapping	5	315
+stage11-12	dorsal pharyngeal muscle primordium	210	FBbt:00005498		1	mapping	5	205
+stage11-12	somatic muscle primordium	211	FBbt:00005518		1	mapping	5	328
 stage11-12	longitudinal visceral mesoderm primordium	212	FBbt:00017008		1	mapping	5	112
-stage11-12	visceral muscle primordium	213	FBbt:00005519		1	mapping	5	303
-stage11-12	fat body/gonad primordium	214	FBbt:00005520		1	mapping	5	143
+stage11-12	visceral muscle primordium	213	FBbt:00005519		1	mapping	5	318
+stage11-12	fat body/gonad primordium	214	FBbt:00005520		1	mapping	5	152
 stage11-12	fat body specific anlage	215	FBbt:00005067		1	mapping	5	38
-stage11-12	germ cell	216	FBbt:00000092		1	mapping	5	145
-stage9-10	germ cell	216	FBbt:00000092		1	mapping	4	170
+stage11-12	germ cell	216	FBbt:00000092		1	mapping	5	149
+stage9-10	germ cell	216	FBbt:00000092		1	mapping	4	180
 stage11-12	corpus allatum primordium	217	FBbt:00005541		1	mapping	5	4
 stage11-12	corpus cardiacum primordium	218	FBbt:00001717		1	mapping	5	3
 stage11-12	dorsomedial neurosecretory cell	220	FBbt:00004011		1	mapping	5	4
-stage9-10	procephalic ectoderm primordium	221	FBbt:00005542		1	mapping	4	435
-stage9-10	visual primordium	222	FBbt:00001059		1	mapping	4	96
+stage9-10	procephalic ectoderm primordium	221	FBbt:00005542		1	mapping	4	438
+stage9-10	visual primordium	222	FBbt:00001059		1	mapping	4	97
 stage9-10	antennal primordium2	223	FBbt:00005510		1	mapping	4	18
 stage9-10	head epidermis lateral primordium P2	224	FBbt:00014203		1	mapping	4	17
-stage9-10	foregut primordium	225	FBbt:00005535		1	mapping	4	161
+stage9-10	foregut primordium	225	FBbt:00005535		1	mapping	4	165
 stage9-10	proventriculus primordium	226	FBbt:00005550		1	mapping	4	5
-stage9-10	ventral ectoderm primordium	227	FBbt:00005558		1	mapping	4	301
+stage9-10	ventral ectoderm primordium	227	FBbt:00005558		1	mapping	4	304
 stage9-10	maxillary organ specific anlage	228	FBbt:00005544		1	mapping	4	4
 stage9-10	labial complex specific anlage	229	FBbt:00005545		1	mapping	4	4
 stage9-10	salivary gland duct specific anlage	231	FBbt:00017018		1	mapping	4	2
-stage9-10	ventral nerve cord primordium P3	234	FBbt:00005554		1	mapping	4	475
-stage9-10	mesectoderm primordium	235	FBbt:00000136		1	mapping	4	64
-stage9-10	anterior endoderm primordium	236	FBbt:00000444		1	mapping	4	690
-stage9-10	posterior endoderm primordium	237	FBbt:00005560		1	mapping	4	728
-stage7-8	hindgut anlage	238	FBbt:00005523		1	mapping	3	234
+stage9-10	ventral nerve cord primordium P3	234	FBbt:00005554		1	mapping	4	505
+stage9-10	mesectoderm primordium	235	FBbt:00000136		1	mapping	4	66
+stage9-10	anterior endoderm primordium	236	FBbt:00000444		1	mapping	4	719
+stage9-10	posterior endoderm primordium	237	FBbt:00005560		1	mapping	4	754
+stage7-8	hindgut anlage	238	FBbt:00005523		1	mapping	3	239
 stage9-10	main segment of Malpighian tubule specific anlage	239	FBbt:00000442		1	mapping	4	4
-stage9-10	head mesoderm primordium P2	242	FBbt:00000127		1	mapping	4	632
-stage7-8	trunk mesoderm primordium P2	243	FBbt:00000128		1	mapping	3	597
-stage7-8	procephalic ectoderm anlage	244	FBbt:00015256		1	mapping	3	347
-stage7-8	ventral ectoderm primordium P2	245	FBbt:00005558		1	mapping	3	397
-stage7-8	mesectoderm primordium	246	FBbt:00000136		1	mapping	3	45
-stage7-8	dorsal ectoderm primordium	247	FBbt:00000112		1	mapping	3	222
-stage7-8	anterior endoderm anlage	248	FBbt:00000210		1	mapping	3	496
-stage7-8	posterior endoderm primordium P2	249	FBbt:00005560		1	mapping	3	537
-stage7-8	head mesoderm primordium P4	250	FBbt:00005548		1	mapping	3	529
-stage7-8	pole cell	251	FBbt:00000092		1	mapping	3	209
-stage4-6	cellular blastoderm	254	FBbt:00005311		1	mapping	2	893
-stage1-3	maternal	255	FBbt:00000001		1	mapping	1	4465
+stage9-10	head mesoderm primordium P2	242	FBbt:00000127		1	mapping	4	656
+stage7-8	trunk mesoderm primordium P2	243	FBbt:00000128		1	mapping	3	622
+stage7-8	procephalic ectoderm anlage	244	FBbt:00015256		1	mapping	3	349
+stage7-8	ventral ectoderm primordium P2	245	FBbt:00005558		1	mapping	3	399
+stage7-8	mesectoderm primordium	246	FBbt:00000136		1	mapping	3	46
+stage7-8	dorsal ectoderm primordium	247	FBbt:00000112		1	mapping	3	229
+stage7-8	anterior endoderm anlage	248	FBbt:00000210		1	mapping	3	511
+stage7-8	posterior endoderm primordium P2	249	FBbt:00005560		1	mapping	3	554
+stage7-8	head mesoderm primordium P4	250	FBbt:00005548		1	mapping	3	548
+stage7-8	pole cell	251	FBbt:00000092		1	mapping	3	222
+stage4-6	cellular blastoderm	254	FBbt:00005311		1	mapping	2	898
+stage1-3	maternal	255	FBbt:00000001		1	mapping	1	4749
 stage1-3	need new term(localised)	256	none	none	0	nomatch	1	21
 stage9-10	crystal cell specific anlage	258	FBbt:00007007		1	mapping	4	23
 stage4-6	embryonic cortex	259	FBbt:00000053		1	mapping	2	1
-stage4-6	subset	260	FBbt:00000210		1	mapping	2	402
-stage4-6	segmentally repeated	261	FBbt:00004204		1	mapping	2	29
+stage4-6	subset	260	FBbt:00000210		1	mapping	2	403
+stage4-6	segmentally repeated	261	FBbt:00004204		1	mapping	2	33
 stage4-6	pair rule	262	none	none	0	nomatch	2	31
-stage4-6	gap	263	none	none	0	nomatch	2	93
+stage4-6	gap	263	none	none	0	nomatch	2	96
 stage4-6	segment polarity	264	none	none	0	nomatch	2	1
 stage4-6	anlage in statu nascendi	265	FBbt:00005413		1	mapping	2	195
-stage4-6	yolk	266	FBbt:00000035		1	mapping	2	25
-stage4-6	yolk nuclei	267	FBbt:00000057		1	mapping	2	108
-stage11-12	brain primordium	268	FBbt:00005542		1	mapping	5	885
-stage4-6	ectoderm anlage in statu nascendi	269	FBbt:00005427		1	mapping	2	60
-stage4-6	procephalic ectoderm anlage in statu nascendi	270	FBbt:00005415		1	mapping	2	246
+stage4-6	yolk	266	FBbt:00000035		1	mapping	2	26
+stage4-6	yolk nuclei	267	FBbt:00000057		1	mapping	2	109
+stage11-12	brain primordium	268	FBbt:00005542		1	mapping	5	937
+stage4-6	ectoderm anlage in statu nascendi	269	FBbt:00005427		1	mapping	2	61
+stage4-6	procephalic ectoderm anlage in statu nascendi	270	FBbt:00005415		1	mapping	2	251
 stage4-6	visual anlage in statu nascendi	271	FBbt:00005425		1	mapping	2	56
-stage4-6	foregut anlage in statu nascendi	272	FBbt:00005423		1	mapping	2	81
-stage7-8	visual anlage	273	FBbt:00005434		1	mapping	3	61
+stage4-6	foregut anlage in statu nascendi	272	FBbt:00005423		1	mapping	2	82
+stage7-8	visual anlage	273	FBbt:00005434		1	mapping	3	62
 stage7-8	foregut anlage	274	FBbt:00005431		1	mapping	3	96
-stage4-6	ventral ectoderm anlage in statu nascendi	275	FBbt:00004204		1	mapping	2	243
-stage7-8	ventral nerve cord anlage	276	FBbt:00001061		1	mapping	3	180
+stage4-6	ventral ectoderm anlage in statu nascendi	275	FBbt:00004204		1	mapping	2	246
+stage7-8	ventral nerve cord anlage	276	FBbt:00001061		1	mapping	3	202
 stage4-6	mesectoderm anlage in statu nascendi	277	FBbt:00000109		1	mapping	2	33
-stage11-12	midline primordium	278	FBbt:00005528		1	mapping	5	111
-stage4-6	dorsal ectoderm anlage in statu nascendi	279	FBbt:00005428		1	mapping	2	271
-stage11-12	dorsal epidermis primordium	280	FBbt:00005526		1	mapping	5	376
+stage11-12	midline primordium	278	FBbt:00005528		1	mapping	5	113
+stage4-6	dorsal ectoderm anlage in statu nascendi	279	FBbt:00005428		1	mapping	2	278
+stage11-12	dorsal epidermis primordium	280	FBbt:00005526		1	mapping	5	393
 stage4-6	amnioserosa anlage in statu nascendi	281	FBbt:00005422		1	mapping	2	60
 stage13-16	apoptotic amnioserosa	282	FBbt:00005556		1	mapping	6	38
-stage4-6	endoderm anlage in statu nascendi	283	none	none	0	nomatch	2	49
-stage4-6	posterior endoderm anlage in statu nascendi	285	none	none	0	nomatch	2	123
-stage4-6	hindgut anlage in statu nascendi	286	FBbt:00004202		1	mapping	2	79
-stage9-10	inclusive hindgut primordium	287	FBbt:00000441		1	mapping	4	303
-stage4-6	mesoderm anlage in statu nascendi	288	FBbt:00000104		1	mapping	2	103
-stage4-6	trunk mesoderm anlage in statu nascendi	289	FBbt:00005436		1	mapping	2	68
-stage9-10	trunk mesoderm primordium	291	FBbt:00000128		1	mapping	4	716
-stage1-3	pole plasm	292	FBbt:00004891		1	mapping	1	88
+stage4-6	endoderm anlage in statu nascendi	283	none	none	0	nomatch	2	50
+stage4-6	anterior endoderm anlage in statu nascendi	284	none	none	0	nomatch	2	109
+stage4-6	posterior endoderm anlage in statu nascendi	285	none	none	0	nomatch	2	125
+stage4-6	hindgut anlage in statu nascendi	286	FBbt:00004202		1	mapping	2	81
+stage9-10	inclusive hindgut primordium	287	FBbt:00000441		1	mapping	4	306
+stage4-6	mesoderm anlage in statu nascendi	288	FBbt:00000104		1	mapping	2	106
+stage4-6	trunk mesoderm anlage in statu nascendi	289	FBbt:00005436		1	mapping	2	69
+stage4-6	head mesoderm anlage in statu nascendi	290	none	none	0	nomatch	2	56
+stage9-10	trunk mesoderm primordium	291	FBbt:00000128		1	mapping	4	746
+stage1-3	pole plasm	292	FBbt:00004891		1	mapping	1	91
 stage1-3	fertilized egg	335	FBbt:00005288		1	mapping	1	5
 stage11-12	procephalic glioblasts	336	FBbt:00007051		1	mapping	5	3
-stage11-12	ventral nerve cord primordium	340	FBbt:00005554		1	mapping	5	836
+stage11-12	ventral nerve cord primordium	340	FBbt:00005554		1	mapping	5	895
 stage11-12	glioblasts of ventral nervous system	342	FBbt:00007052		1	mapping	5	4
 stage11-12	visual primordium2	343	FBbt:00001059		1	mapping	5	9
-stage7-8	amnioserosa anlage	344	FBbt:00017017		1	mapping	3	61
-stage9-10	amnioserosa primordium	345	FBbt:00017000		1	mapping	4	78
-stage11-12	muscle system primordium	346	FBbt:00005647		1	mapping	5	234
-stage11-12	ring gland primordium	348	FBbt:00017009		1	mapping	5	6
-stage11-12	circular visceral mesoderm primordium	350	FBbt:00017015		1	mapping	5	14
+stage7-8	amnioserosa anlage	344	FBbt:00017017		1	mapping	3	62
+stage9-10	amnioserosa primordium	345	FBbt:00017000		1	mapping	4	84
+stage11-12	muscle system primordium	346	FBbt:00005647		1	mapping	5	240
+stage11-12	ring gland primordium	348	FBbt:00017009		1	mapping	5	7
+stage11-12	circular visceral mesoderm primordium	350	FBbt:00017015		1	mapping	5	15
 stage4-6	central brain anlage in statu nascendi	351	FBbt:00005415		1	mapping	2	8
-stage7-8	central brain anlage	352	FBbt:00015256		1	mapping	3	26
-stage9-10	central brain primordium P3	353	FBbt:00005542		1	mapping	4	153
+stage7-8	central brain anlage	352	FBbt:00015256		1	mapping	3	35
+stage9-10	central brain primordium P3	353	FBbt:00005542		1	mapping	4	170
 stage11-12	head epidermis lateral primordium P1	356	FBbt:00014203		1	mapping	5	5
 stage4-6	head epidermis dorsal anlage in statu nascendi	357	FBbt:00015249		1	mapping	2	21
 stage7-8	head epidermis dorsal anlage	358	FBbt:00015248		1	mapping	3	14
-stage9-10	head epidermis dorsal primordium P4	359	FBbt:00015247		1	mapping	4	17
-stage11-12	head epidermis dorsal primordium P1	360	FBbt:00015247		1	mapping	5	16
+stage9-10	head epidermis dorsal primordium P4	359	FBbt:00015247		1	mapping	4	18
+stage11-12	head epidermis dorsal primordium P1	360	FBbt:00015247		1	mapping	5	18
 stage13-16	head epidermis lateral	361	FBbt:00105220		1	mapping	6	6
-stage13-16	head epidermis dorsal	362	FBbt:00015246		1	mapping	6	93
-stage11-12	procephalon primordium	363	FBbt:00000158		1	mapping	5	33
+stage13-16	head epidermis dorsal	362	FBbt:00015246		1	mapping	6	95
+stage11-12	procephalon primordium	363	FBbt:00000158		1	mapping	5	34
 stage13-16	procephalon	364	FBbt:00000007		1	mapping	6	2
 stage4-6	antennal primordium anlage in statu nascendi	365	FBbt:00015252		1	mapping	2	4
 stage7-8	antennal primordium anlage	366	FBbt:00015253		1	mapping	3	7
 stage13-16	visual system	367	FBbt:00005805		1	mapping	6	3
-stage11-12	head epidermis primordium P1	368	FBbt:00005547		1	mapping	5	79
+stage11-12	head epidermis primordium P1	368	FBbt:00005547		1	mapping	5	80
 stage9-10	head epidermis ventral P2	369	FBbt:00015255		1	mapping	4	3
 stage11-12	head epidermis ventral P1	370	FBbt:00015255		1	mapping	5	3
-stage13-16	head epidermis ventral	371	FBbt:00015254		1	mapping	6	6
+stage13-16	head epidermis ventral	371	FBbt:00015254		1	mapping	6	8
 stage4-6	head epidermis anlage in statu nascendi	373	FBbt:00005547		1	mapping	2	6
 stage7-8	head epidermis lateral A	374	FBbt:00015256		1	mapping	3	6
 stage7-8	esophagus anlage	375	FBbt:00018001		1	mapping	3	2
@@ -294,83 +300,85 @@ stage7-8	proventriculus anlage	377	FBbt:00018006		1	mapping	3	4
 stage9-10	stomatogastric nervous system primordium P2	378	FBbt:00005536		1	mapping	4	6
 stage9-10	proventriculus primordium P2	379	FBbt:00005550		1	mapping	4	7
 stage9-10	esophagus primordium P2	380	FBbt:00005507		1	mapping	4	6
-stage11-12	esophagus primordium P1	381	FBbt:00005507		1	mapping	5	13
+stage11-12	esophagus primordium P1	381	FBbt:00005507		1	mapping	5	14
 stage11-12	esophageal ganglion primordium	382	FBbt:00018004		1	mapping	5	1
-stage4-6	clypeolabrum anlage in statu nascendi	386	FBbt:00000094		1	mapping	2	28
-stage7-8	clypeolabrum anlage	387	FBbt:00005439		1	mapping	3	33
-stage9-10	clypeolabrum primordium P2	388	FBbt:00005538		1	mapping	4	47
-stage13-16	clypeolabrum	389	FBbt:00005514		1	mapping	6	45
-stage11-12	epipharynx primordium P1	390	FBbt:00004201		1	mapping	5	14
+stage4-6	clypeolabrum anlage in statu nascendi	386	FBbt:00000094		1	mapping	2	29
+stage7-8	clypeolabrum anlage	387	FBbt:00005439		1	mapping	3	34
+stage9-10	clypeolabrum primordium P2	388	FBbt:00005538		1	mapping	4	48
+stage13-16	clypeolabrum	389	FBbt:00005514		1	mapping	6	53
+stage11-12	epipharynx primordium P1	390	FBbt:00004201		1	mapping	5	15
 stage11-12	adult clypeolabrum anlage	391	FBbt:00004203		1	mapping	5	1
-stage4-6	hypopharynx anlage in statu nascendi	392	FBbt:00016000		1	mapping	2	9
-stage7-8	hypopharynx anlage	393	FBbt:00005442		1	mapping	3	14
-stage9-10	hypopharynx primordium P2	394	FBbt:00005503		1	mapping	4	17
-stage11-12	hypopharynx primordium P1	395	FBbt:00016002		1	mapping	5	34
+stage4-6	hypopharynx anlage in statu nascendi	392	FBbt:00016000		1	mapping	2	10
+stage7-8	hypopharynx anlage	393	FBbt:00005442		1	mapping	3	15
+stage9-10	hypopharynx primordium P2	394	FBbt:00005503		1	mapping	4	18
+stage11-12	hypopharynx primordium P1	395	FBbt:00016002		1	mapping	5	35
 stage11-12	hypopharyngeal sense organ primordium	396	FBbt:00016001		1	mapping	5	8
 stage13-16	hypopharyngeal sense organ	397	FBbt:00002665		1	mapping	6	8
 stage9-10	gnathal lobes anlage	401	FBbt:00005534		1	mapping	4	17
 stage9-10	dorsal ridge anlage	402	FBbt:00016018		1	mapping	4	1
-stage9-10	dorsal epidermis anlage	403	FBbt:00005526		1	mapping	4	29
-stage9-10	tracheal system anlage	404	FBbt:00005037		1	mapping	4	13
+stage9-10	dorsal epidermis anlage	403	FBbt:00005526		1	mapping	4	34
+stage9-10	tracheal system anlage	404	FBbt:00005037		1	mapping	4	15
 stage11-12	dorsal ridge primordium P1	405	FBbt:00016018		1	mapping	5	6
-stage13-16	dorsal ridge	406	FBbt:00000090		1	mapping	6	7
-stage11-12	atrium primordium	411	FBbt:00017019		1	mapping	5	60
-stage13-16	dorsal/lateral sensory complexes	412	FBbt:00016023		1	mapping	6	178
-stage11-12	dorsal/lateral sensory complexes primordium	413	FBbt:00005553		1	mapping	5	57
-stage9-10	ventral epidermis primordium P2	416	FBbt:00005533		1	mapping	4	24
+stage13-16	dorsal ridge	406	FBbt:00000090		1	mapping	6	8
+stage11-12	atrium primordium	411	FBbt:00017019		1	mapping	5	61
+stage13-16	dorsal/lateral sensory complexes	412	FBbt:00016023		1	mapping	6	197
+stage11-12	dorsal/lateral sensory complexes primordium	413	FBbt:00005553		1	mapping	5	63
+stage9-10	ventral epidermis primordium P2	416	FBbt:00005533		1	mapping	4	26
 stage11-12	salivary common duct primordium	417	FBbt:00016005		1	mapping	5	1
 stage9-10	salivary gland anlage	419	FBbt:00016006		1	mapping	4	5
-stage11-12	salivary gland primordium	420	FBbt:00016006		1	mapping	5	115
+stage11-12	salivary gland primordium	420	FBbt:00016006		1	mapping	5	127
 stage9-10	Malpighian tubule anlage	421	FBbt:00000442		1	mapping	4	8
-stage9-10	hindgut proper anlage	422	FBbt:00000441		1	mapping	4	15
-stage4-6	dorsal ectoderm anlage	423	FBbt:00005428		1	mapping	2	28
+stage9-10	hindgut proper anlage	422	FBbt:00000441		1	mapping	4	17
+stage4-6	dorsal ectoderm anlage	423	FBbt:00005428		1	mapping	2	29
 stage4-6	ventral ectoderm anlage	424	FBbt:00004204		1	mapping	2	27
 stage4-6	posterior endoderm anlage	425	FBbt:00000447		1	mapping	2	4
 stage7-8	anterior endoderm anterior anlage	426	FBbt:00005559		1	mapping	3	1
 stage9-10	anterior endoderm anterior anlage	428	FBbt:00025996		1	mapping	4	6
-stage13-16	posterior adult midgut precursors	430	FBbt:00000451		1	mapping	6	1
+stage11-12	anterior endoderm anterior primordium	429	none	none	0	nomatch	5	1
+stage13-16	posterior adult midgut precursors	430	FBbt:00000451		1	mapping	6	2
+stage13-16	anterior adult midgut precursors	431	none	none	0	nomatch	6	1
 stage11-12	cuprophilic cells primordium	432	FBbt:00005451		1	mapping	5	2
 stage11-12	interstitial cells primordium	433	FBbt:00005452		1	mapping	5	5
-stage11-12	posterior adult midgut precursors primordium	434	FBbt:00005246		1	mapping	5	3
-stage11-12	anterior adult midgut precursors primordium	435	FBbt:00017028		1	mapping	5	4
+stage11-12	posterior adult midgut precursors primordium	434	FBbt:00005246		1	mapping	5	5
+stage11-12	anterior adult midgut precursors primordium	435	FBbt:00017028		1	mapping	5	5
 stage11-12	gastric caecum primordium	436	FBbt:00017027		1	mapping	5	1
 stage4-6	mesectoderm anlage	437	FBbt:00000109		1	mapping	2	2
-stage4-6	head mesoderm anlage	438	FBbt:00005548		1	mapping	2	15
-stage4-6	trunk mesoderm anlage	439	FBbt:00005436		1	mapping	2	18
+stage4-6	head mesoderm anlage	438	FBbt:00005548		1	mapping	2	16
+stage4-6	trunk mesoderm anlage	439	FBbt:00005436		1	mapping	2	21
 stage9-10	garland cell primordium	440	FBbt:00005462		1	mapping	4	5
 stage9-10	dorsal pharyngeal muscle primordium	441	FBbt:00007048		1	mapping	4	6
 stage13-16	procephalic vascular rudiment	444	FBbt:10005349		1	mapping	6	2
 stage9-10	head visceral muscle primordium	445	FBbt:00007049		1	mapping	4	2
 stage11-12	head visceral muscle primordium	446	FBbt:00007049		1	mapping	5	20
-stage13-16	visceral muscle of esophagus	447	FBbt:10005369		1	mapping	6	35
-stage9-10	plasmatocytes primordium	448	FBbt:00007007		1	mapping	4	12
-stage4-6	pole cell	449	FBbt:00000092		1	mapping	2	170
-stage11-12	germ cell	450	FBbt:00000092		1	mapping	5	145
-stage11-12	trunk mesoderm primordium	466	FBbt:00026000		1	mapping	5	663
-stage11-12	head mesoderm primordium	467	FBbt:00000127		1	mapping	5	342
-stage13-16	neuroblasts of ventral nervous system	468	FBbt:00001369		1	mapping	6	10
+stage13-16	visceral muscle of esophagus	447	FBbt:10005369		1	mapping	6	36
+stage9-10	plasmatocytes primordium	448	FBbt:00007007		1	mapping	4	13
+stage4-6	pole cell	449	FBbt:00000092		1	mapping	2	186
+stage11-12	germ cell	450	FBbt:00000092		1	mapping	5	149
+stage11-12	trunk mesoderm primordium	466	FBbt:00026000		1	mapping	5	678
+stage11-12	head mesoderm primordium	467	FBbt:00000127		1	mapping	5	356
+stage13-16	neuroblasts of ventral nervous system	468	FBbt:00001369		1	mapping	6	11
 stage7-8	ventral epidermis primordium P2	469	FBbt:00001061		1	mapping	3	5
-stage7-8	yolk nuclei	472	FBbt:00000057		1	mapping	3	97
-stage9-10	yolk nuclei	473	FBbt:00000057		1	mapping	4	123
-stage11-12	yolk nuclei	474	FBbt:00000057		1	mapping	5	238
-stage13-16	yolk nuclei	475	FBbt:00000057		1	mapping	6	234
-stage13-16	neuroblasts of central brain	476	FBbt:00001333		1	mapping	6	13
-stage11-12	neuroblasts of central brain	477	FBbt:00001333		1	mapping	5	3
-stage4-6	maternal	478	FBbt:00000001		1	mapping	2	1448
+stage7-8	yolk nuclei	472	FBbt:00000057		1	mapping	3	98
+stage9-10	yolk nuclei	473	FBbt:00000057		1	mapping	4	126
+stage11-12	yolk nuclei	474	FBbt:00000057		1	mapping	5	246
+stage13-16	yolk nuclei	475	FBbt:00000057		1	mapping	6	239
+stage13-16	neuroblasts of central brain	476	FBbt:00001333		1	mapping	6	14
+stage11-12	neuroblasts of central brain	477	FBbt:00001333		1	mapping	5	4
+stage4-6	maternal	478	FBbt:00000001		1	mapping	2	1494
 stage7-8	maternal	479	FBbt:00000001		1	mapping	3	1
-stage11-12	maternal	481	FBbt:00000001		1	mapping	5	2
-stage1-3	ubiquitous	483	FBbt:00000001		1	mapping	1	395
-stage4-6	ubiquitous	484	FBbt:00000001		1	mapping	2	1858
-stage7-8	ubiquitous	485	FBbt:00000001		1	mapping	3	1933
-stage9-10	ubiquitous	486	FBbt:00000001		1	mapping	4	1845
-stage11-12	ubiquitous	487	FBbt:00000001		1	mapping	5	1591
-stage13-16	ubiquitous	488	FBbt:00000001		1	mapping	6	1200
-stage1-3	no staining	489	FBbt:00000001		1	mapping	1	2696
-stage4-6	no staining	490	FBbt:00000001		1	mapping	2	4145
-stage7-8	no staining	491	FBbt:00000001		1	mapping	3	4744
-stage9-10	no staining	492	FBbt:00000001		1	mapping	4	4647
-stage11-12	no staining	493	FBbt:00000001		1	mapping	5	4003
-stage13-16	no staining	494	FBbt:00000001		1	mapping	6	3028
+stage11-12	maternal	481	FBbt:00000001		1	mapping	5	3
+stage1-3	ubiquitous	483	FBbt:00000001		1	mapping	1	406
+stage4-6	ubiquitous	484	FBbt:00000001		1	mapping	2	2058
+stage7-8	ubiquitous	485	FBbt:00000001		1	mapping	3	2077
+stage9-10	ubiquitous	486	FBbt:00000001		1	mapping	4	1986
+stage11-12	ubiquitous	487	FBbt:00000001		1	mapping	5	1722
+stage13-16	ubiquitous	488	FBbt:00000001		1	mapping	6	1315
+stage1-3	no staining	489	FBbt:00000001		1	mapping	1	2886
+stage4-6	no staining	490	FBbt:00000001		1	mapping	2	4343
+stage7-8	no staining	491	FBbt:00000001		1	mapping	3	4995
+stage9-10	no staining	492	FBbt:00000001		1	mapping	4	4895
+stage11-12	no staining	493	FBbt:00000001		1	mapping	5	4207
+stage13-16	no staining	494	FBbt:00000001		1	mapping	6	3184
 stage1-3	list_1-3	495	none	none	0	nomatch	1	
 stage4-6	list_4-6	496	none	none	0	nomatch	2	
 stage7-8	list_7-8	497	none	none	0	nomatch	3	
@@ -386,14 +394,14 @@ stage9-10	list_9-10:no staining	506	none	none	0	nomatch	4
 stage4-6	list_4-6:ubiquitous	507	none	none	0	nomatch	2	
 stage7-8	list_7-8:ubiquitous	508	none	none	0	nomatch	3	
 stage9-10	list_9-10:ubiquitous	509	none	none	0	nomatch	4	
-stage13-16	cat_term:endo_meso	515	none	none	0	nomatch	6	
 stage13-16	cat_term:true_ubiquitous	521	none	none	0	nomatch	6	
 stage13-16	cat_term:any_neural	528	FBbt:00001056		1	mapping	6	
 stage13-16	cat_term:common_C	529	none	none	0	nomatch	6	
 stage13-16	cat_term:pan_CNS	530	FBbt:00001056		1	mapping	6	
 stage13-16	cat_term:subset_CNS	531	none	none	0	nomatch	6	
-stage7-8	segmentally repeated	533	none	none	0	nomatch	3	19
-stage9-10	segmentally repeated	534	none	none	0	nomatch	4	22
+stage13-16	cat_term:PNS	532	none	none	0	nomatch	6	
+stage7-8	segmentally repeated	533	none	none	0	nomatch	3	21
+stage9-10	segmentally repeated	534	none	none	0	nomatch	4	23
 stage11-12	segmentally repeated	535	none	none	0	nomatch	5	18
 stage13-16	segmentally repeated	536	none	none	0	nomatch	6	10
 stage1-3	cat_term:finito1-3	551	none	none	0	nomatch	1	
@@ -406,33 +414,29 @@ stage7-8	pair_rule	557	none	none	0	nomatch	3	19
 stage9-10	pair_rule	558	none	none	0	nomatch	4	9
 stage7-8	gap	561	none	none	0	nomatch	3	23
 stage9-10	gap	562	none	none	0	nomatch	4	7
-stage4-6	anterior	563	none	none	0	nomatch	2	10
-stage4-6	middle	566	none	none	0	nomatch	2	3
-stage4-6	posterior	569	none	none	0	nomatch	2	7
+stage4-6	anterior	563	none	none	0	nomatch	2	12
+stage4-6	middle	566	none	none	0	nomatch	2	4
+stage4-6	posterior	569	none	none	0	nomatch	2	12
 stage7-8	posterior	570	none	none	0	nomatch	3	2
 stage9-10	posterior	571	none	none	0	nomatch	4	2
-stage1-3	cat_term:global_finito	572	none	none	0	nomatch	1	
 stage4-6	cat_term:global_finito	573	none	none	0	nomatch	2	
 stage7-8	cat_term:global_finito	574	none	none	0	nomatch	3	
 stage9-10	cat_term:global_finito	575	none	none	0	nomatch	4	
 stage11-12	cat_term:global_finito	576	none	none	0	nomatch	5	
 stage13-16	cat_term:global_finito	577	none	none	0	nomatch	6	
-stage4-6	pole plasm	578	FBbt:00004891		1	mapping	2	38
-stage4-6	rapidly degraded	579	none	none	0	nomatch	2	217
-stage4-6	apically cleared	580	none	none	0	nomatch	2	87
-stage13-16	amnioserosa	581	FBbt:00000095		1	mapping	6	158
-stage1-3	faint ubiquitous	582	FBbt:00000001		1	mapping	1	36
-stage4-6	faint ubiquitous	583	FBbt:00000001		1	mapping	2	499
-stage7-8	faint ubiquitous	584	FBbt:00000001		1	mapping	3	839
-stage9-10	faint ubiquitous	585	FBbt:00000001		1	mapping	4	861
-stage11-12	faint ubiquitous	586	FBbt:00000001		1	mapping	5	826
-stage13-16	faint ubiquitous	587	FBbt:00000001		1	mapping	6	695
-stage1-3	strong ubiquitous	588	FBbt:00000001		1	mapping	1	89
-stage4-6	strong ubiquitous	589	FBbt:00000001		1	mapping	2	123
-stage7-8	strong ubiquitous	590	FBbt:00000001		1	mapping	3	87
-stage9-10	strong ubiquitous	591	FBbt:00000001		1	mapping	4	74
-stage11-12	strong ubiquitous	592	FBbt:00000001		1	mapping	5	51
-stage13-16	strong ubiquitous	593	FBbt:00000001		1	mapping	6	31
-stage1-3	flag_for_volker	594	none	none	0	nomatch	1	326
+stage4-6	pole plasm	578	FBbt:00004891		1	mapping	2	45
+stage4-6	apically cleared	580	none	none	0	nomatch	2	97
+stage13-16	amnioserosa	581	FBbt:00000095		1	mapping	6	172
+stage7-8	faint ubiquitous	584	FBbt:00000001		1	mapping	3	889
+stage9-10	faint ubiquitous	585	FBbt:00000001		1	mapping	4	907
+stage11-12	faint ubiquitous	586	FBbt:00000001		1	mapping	5	874
+stage13-16	faint ubiquitous	587	FBbt:00000001		1	mapping	6	750
+stage1-3	strong ubiquitous	588	FBbt:00000001		1	mapping	1	90
+stage4-6	strong ubiquitous	589	FBbt:00000001		1	mapping	2	162
+stage7-8	strong ubiquitous	590	FBbt:00000001		1	mapping	3	106
+stage9-10	strong ubiquitous	591	FBbt:00000001		1	mapping	4	93
+stage11-12	strong ubiquitous	592	FBbt:00000001		1	mapping	5	65
+stage13-16	strong ubiquitous	593	FBbt:00000001		1	mapping	6	40
+stage1-3	flag_for_volker	594	none	none	0	nomatch	1	380
 stage1-3	flag_as_nonspecific	598	none	none	0	nomatch	1	17
 stage1-3	epi_combo	599	none	none	0	nomatch	1	3

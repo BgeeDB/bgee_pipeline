@@ -85,6 +85,7 @@ map_BDGP: data_BDGP $(SOURCE_FILES_DIR)$(DIR_NAME)$(BDGP2FBBT_MAPPING_FILE) BDGP
 	@perl BDGP/complete_mapping_from_bdgp_to_bgee.pl -bgee=$(BGEECMD) -bdgp=$(BDGPCMD) -annot_info=BDGP/annot_info -old=$(SOURCE_FILES_DIR)$(DIR_NAME)$(BDGP2FBBT_MAPPING_FILE) -new=BDGP/$(BDGP2FBBT_MAPPING_NEW)  >$@.tmp 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@echo -e "After checking with annotators, replace $(SOURCE_FILES_DIR)$(DIR_NAME)$(BDGP2FBBT_MAPPING_FILE) by BDGP/$(BDGP2FBBT_MAPPING_NEW)"
+	@cp -f BDGP/$(BDGP2FBBT_MAPPING_NEW) $(SOURCE_FILES_DIR)$(DIR_NAME)$(BDGP2FBBT_MAPPING_FILE)
 	@$(MV) $@.tmp $@
 
 tsv_BDGP: map_BDGP $(SOURCE_FILES_DIR)$(DIR_NAME)$(BDGP2FBBT_MAPPING_FILE) $(SOURCE_FILES_DIR)$(DIR_NAME)$(STAGECORRESP_FILE) $(SOURCE_FILES_DIR)$(DIR_NAME)insitu_annot.csv
