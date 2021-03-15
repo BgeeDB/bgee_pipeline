@@ -232,7 +232,8 @@ if ( $mappingFile ne '' ){
 }
 else {
     # Get a slice adaptor for the  $species  core database
-    my $gene_adaptor = $reg->get_adaptor( $species, 'Core', 'Gene' );
+    my $scientific_name = $species_ref->[0]->[0].'_'.$species_ref->[0]->[1];
+    my $gene_adaptor = $reg->get_adaptor( lc $scientific_name, 'Core', 'Gene' );
 
     # Fetch all clones from a slice adaptor (returns a list reference)
     my @genes = @{$gene_adaptor->fetch_all()};
