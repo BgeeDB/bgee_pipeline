@@ -11,7 +11,7 @@ use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
 use Utils;
 
 
-my $taxid = $ARGV[0]  or die "\n\t$0 <NCBI taxid>\n\n";
+my $species = $ARGV[0]  or die "\n\t$0 <genus_species>    -> e.g. $0 homo_sapiens\n\n";
 
 
 # Ensembl connection via Ensembl API/Registry
@@ -22,7 +22,7 @@ my $ensembl_connector = 'user=anonymous__pass=__host=ensembldb.ensembl.org__port
 my $reg = Utils::connect_ensembl_registry($ensembl_connector, 0);
 
 
-my $array_adaptor = $reg->get_adaptor($taxid, 'funcgen', 'Array');
+my $array_adaptor = $reg->get_adaptor($species, 'Funcgen', 'Array');
 my @ac_ids = @{ $array_adaptor->fetch_all() };
 
 

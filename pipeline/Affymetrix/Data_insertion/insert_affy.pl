@@ -96,6 +96,16 @@ while ( my @data = $selSource->fetchrow_array ){
 }
 $selSource->finish;
 
+# Get species scientific name for Ensembl adaptor
+my %species;
+my $speciesSrc = $dbh->prepare('SELECT speciesId, CONCAT(genus, "_", species) FROM species');
+$speciesSrc->execute()  or die $speciesSrc->->errstr;
+while ( my @data = $speciesSrc->fetchrow_array ){
+    $species{$data[0]} = lc $data[1];
+}
+$speciesSrc->finish;
+
+
 ######################################
 # Read and insert chipType new lines #
 ######################################
@@ -108,9 +118,9 @@ while ( defined ($line = <$IN3>) ){
     my @tmp = map { bgeeTrim($_) }
               split(/\t/, $line);
     # chipTypeId  chipTypeName  speciesId  Ensembl_Xref_table  Comments
-    $chipTypes{$tmp[0]}->{'name'} = $tmp[1];
-    $chipTypes{$tmp[0]}->{'speciesId'}  = $tmp[2];
-    $chipTypes{$tmp[0]}->{'xref'} = $tmp[3];
+    $chipTypes{$tmp[0]}->{'name'}      = $tmp[1];
+    $chipTypes{$tmp[0]}->{'speciesId'} = $tmp[2];
+    $chipTypes{$tmp[0]}->{'xref'}      = $tmp[3];
 }
 close $IN3;
 
@@ -394,8 +404,8 @@ for my $chip ( sort keys %all_chipTypes ){
     # if the annotation is in an Ensembl table
     else {
         # Get adaptors for this organism (Array & Transcript)
-        my $array_adaptor = $reg->get_adaptor($chipTypes{$chip}->{'speciesId'}, 'funcgen', 'Array');
-        my $tx_adaptor    = $reg->get_adaptor($chipTypes{$chip}->{'speciesId'}, 'core',    'Transcript');
+        my $array_adaptor = $reg->get_adaptor($species{ $chipTypes{$chip}->{'speciesId'} }, 'Funcgen', 'Array');
+        my $tx_adaptor    = $reg->get_adaptor($species{ $chipTypes{$chip}->{'speciesId'} }, 'Core',    'Transcript');
 
         # Get array object according to its name in chipType sheet (Xref field)
         my $array = $array_adaptor->fetch_by_name_vendor( $chipTypes{$chip}->{'xref'} );
