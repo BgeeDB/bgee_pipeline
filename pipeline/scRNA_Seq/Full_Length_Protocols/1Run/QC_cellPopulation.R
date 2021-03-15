@@ -167,13 +167,13 @@ if (!dir.exists(dirname(sample_info_pass))){
   dir.create(dirname(sample_info_pass))
 }  
 file.create(sample_info_pass)
-cat("libraryId\texperimentId\tcellTypeName\tcellTypeId\tspeciesId\tplatform\twhiteList\tprotocol\tprotocolType\tlibraryType\tinfoOrgan\tstageId\tuberonId\tsex\tstrain\treadLength\torganism\n",file = sample_info_pass, sep = "\t")
+cat("libraryId\texperimentId\tcellTypeName\tcellTypeId\tspeciesId\tplatform\tprotocol\tprotocolType\tlibraryType\tinfoOrgan\tstageId\tuberonId\tsex\tstrain\treadLength\torganism\n",file = sample_info_pass, sep = "\t")
 
 if (!dir.exists(dirname(sample_info_discarded))){
   dir.create(dirname(sample_info_discarded))
 }
 file.create(sample_info_discarded)
-cat("libraryId\texperimentId\tcellTypeName\tcellTypeId\tspeciesId\tplatform\twhiteList\tprotocol\tprotocolType\tlibraryType\tinfoOrgan\tstageId\tuberonId\tsex\tstrain\treadLength\torganism\n",file = sample_info_discarded, sep = "\t")
+cat("libraryId\texperimentId\tcellTypeName\tcellTypeId\tspeciesId\tplatform\tprotocol\tprotocolType\tlibraryType\tinfoOrgan\tstageId\tuberonId\tsex\tstrain\treadLength\torganism\n",file = sample_info_discarded, sep = "\t")
 
 ## Run the QC per condition
 uniq_cond <- unique(annotation[,c("speciesId", "experimentId", "cellTypeId", "stageId", "strain", "uberonId", "sex")])
