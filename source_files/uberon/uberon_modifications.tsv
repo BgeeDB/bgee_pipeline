@@ -163,7 +163,6 @@ CL:0000287	ZFA:0009154		NA	NA		Still accurate in ZFA onthology
 CL:0000295	ZFA:0009155		NA	NA		Still accurate in ZFA onthology
 CL:0000312	ZFA:0009158		NA	NA		Still accurate in ZFA onthology
 CL:0000319	ZFA:0009159		NA	NA		Still accurate in ZFA onthology
-CL:0000337	ZFA:0009168		NA	NA		Still accurate in ZFA onthology
 CL:0000339	ZFA:0009169		NA	NA		Still accurate in ZFA onthology
 CL:0000342	ZFA:0009170		NA	NA		Still accurate in ZFA onthology
 CL:0000353	ZFA:0009177		NA	NA		Still accurate in ZFA onthology
@@ -731,7 +730,7 @@ UBERON:0004790	XAO:0005072		NA	NA
 UBERON:0002419	XAO:0005071		NA	NA		
 UBERON:0002550	XAO:0005056		NA	NA		
 UBERON:0001997	XAO:0005024		NA	NA		
-UBERON:0000470	XAO:0005008		NA	NA		
+GO:0005929	XAO:0005008		NA	NA		
 UBERON:0000475	XAO:0005005		NA	NA		
 UBERON:0001277	XAO:0005003		NA	NA		
 UBERON:0003061	XAO:0004628		NA	NA		
@@ -1128,7 +1127,7 @@ CL:0000174	ZFA:0009106					Mapping taken from ZFA by Fred without verification
 CL:0000669	ZFA:0009112					Mapping taken from ZFA by Fred without verification
 CL:0000300	ZFA:0009156					Mapping taken from ZFA by Fred without verification
 CL:0000336	ZFA:0009167					Mapping taken from ZFA by Fred without verification
-CL:0000337	ZFA:0009168					Mapping taken from ZFA by Fred without verification
+CL:0000031	ZFA:0009168					Mapping taken from ZFA by Fred without verification, just alt_id remapped to actual class ID
 CL:0000359	ZFA:0009181					Mapping taken from ZFA by Fred without verification
 CL:0000437	ZFA:0009202					Mapping taken from ZFA by Fred without verification
 CL:0000496	ZFA:0009223					Mapping taken from ZFA by Fred without verification
