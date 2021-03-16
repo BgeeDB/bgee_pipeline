@@ -99,7 +99,7 @@ $selSource->finish;
 # Get species scientific name for Ensembl adaptor
 my %species;
 my $speciesSrc = $dbh->prepare('SELECT speciesId, CONCAT(genus, "_", species) FROM species');
-$speciesSrc->execute()  or die $speciesSrc->->errstr;
+$speciesSrc->execute()  or die $speciesSrc->errstr;
 while ( my @data = $speciesSrc->fetchrow_array ){
     $species{$data[0]} = lc $data[1];
 }
