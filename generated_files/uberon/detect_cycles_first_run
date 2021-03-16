@@ -624,45 +624,45 @@ VALID for cycle
 
 
 Now display most represented subgraphs in cycles
-	16: UBERON:0002437 "cerebral hemisphere white matter" - UBERON:0011299 "white matter of telencephalon" - UBERON:0019261 "white matter of forebrain" - 
-	16: UBERON:0011299 "white matter of telencephalon" - UBERON:0019261 "white matter of forebrain" - UBERON:0003544 "brain white matter" - 
-	16: UBERON:0019261 "white matter of forebrain" - UBERON:0003544 "brain white matter" - UBERON:0002316 "white matter" - 
-	16: UBERON:0003544 "brain white matter" - UBERON:0002316 "white matter" - UBERON:0002437 "cerebral hemisphere white matter" - 
 	16: UBERON:0002316 "white matter" - UBERON:0002437 "cerebral hemisphere white matter" - UBERON:0011299 "white matter of telencephalon" - 
-	1: UBERON:0002302 "myocardium of atrium" - UBERON:0004490 "cardiac muscle tissue of atrium" - UBERON:0002302 "myocardium of atrium" - 
-	1: UBERON:2005072 "endocardial ring" - UBERON:2005073 "atrioventricular ring" - UBERON:2005072 "endocardial ring" - 
-	1: UBERON:0006183 "mesonephric glomerular capillary" - UBERON:0004212 "glomerular capillary" - UBERON:0006183 "mesonephric glomerular capillary" - 
-	1: UBERON:0005598 "trunk somite" - UBERON:0002329 "somite" - UBERON:0005598 "trunk somite" - 
-	1: CL:0010009 "camera-type eye photoreceptor cell" - CL:0000287 "eye photoreceptor cell" - CL:0010009 "camera-type eye photoreceptor cell" - 
+	16: UBERON:0003544 "brain white matter" - UBERON:0002316 "white matter" - UBERON:0002437 "cerebral hemisphere white matter" - 
+	16: UBERON:0002437 "cerebral hemisphere white matter" - UBERON:0011299 "white matter of telencephalon" - UBERON:0019261 "white matter of forebrain" - 
+	16: UBERON:0019261 "white matter of forebrain" - UBERON:0003544 "brain white matter" - UBERON:0002316 "white matter" - 
+	16: UBERON:0011299 "white matter of telencephalon" - UBERON:0019261 "white matter of forebrain" - UBERON:0003544 "brain white matter" - 
 	1: CL:0000287 "eye photoreceptor cell" - CL:0010009 "camera-type eye photoreceptor cell" - CL:0000287 "eye photoreceptor cell" - 
 	1: CL:0000653 "glomerular visceral epithelial cell" - CL:0002523 "mesonephric glomerular visceral epithelial cell" - CL:0000653 "glomerular visceral epithelial cell" - 
-	1: CL:0000748 "retinal bipolar neuron" - CL:0000103 "bipolar neuron" - CL:0000748 "retinal bipolar neuron" - 
-	1: UBERON:0000074 "renal glomerulus" - UBERON:0005325 "mesonephric glomerulus" - UBERON:0000074 "renal glomerulus" - 
-	1: UBERON:0005328 "mesonephric comma-shaped body" - UBERON:0004198 "comma-shaped body" - UBERON:0005328 "mesonephric comma-shaped body" - 
-	1: UBERON:0008823 "neural tube derived brain" - UBERON:0000955 "brain" - UBERON:0008823 "neural tube derived brain" - 
-	1: UBERON:0003496 "head blood vessel" - UBERON:0011362 "cranial blood vasculature" - UBERON:0003496 "head blood vessel" - 
-	1: UBERON:0001285 "nephron" - UBERON:0005322 "mesonephric nephron" - UBERON:0001285 "nephron" - 
 	1: UBERON:0005332 "mesonephric S-shaped body" - UBERON:0004199 "S-shaped body" - UBERON:0005332 "mesonephric S-shaped body" - 
-	1: CL:0002523 "mesonephric glomerular visceral epithelial cell" - CL:0000653 "glomerular visceral epithelial cell" - CL:0002523 "mesonephric glomerular visceral epithelial cell" - 
-	1: UBERON:0000955 "brain" - UBERON:0008823 "neural tube derived brain" - UBERON:0000955 "brain" - 
-	1: UBERON:0002378 "muscle of abdomen" - UBERON:0002343 "abdomen musculature" - UBERON:0002378 "muscle of abdomen" - 
-	1: UBERON:0005325 "mesonephric glomerulus" - UBERON:0000074 "renal glomerulus" - UBERON:0005325 "mesonephric glomerulus" - 
-	1: UBERON:0004198 "comma-shaped body" - UBERON:0005328 "mesonephric comma-shaped body" - UBERON:0004198 "comma-shaped body" - 
 	1: UBERON:0002343 "abdomen musculature" - UBERON:0002378 "muscle of abdomen" - UBERON:0002343 "abdomen musculature" - 
-	1: UBERON:0018649 "cardiac muscle tissue of ventricle" - UBERON:0001083 "myocardium of ventricle" - UBERON:0018649 "cardiac muscle tissue of ventricle" - 
-	1: UBERON:0004199 "S-shaped body" - UBERON:0005332 "mesonephric S-shaped body" - UBERON:0004199 "S-shaped body" - 
-	1: UBERON:0004490 "cardiac muscle tissue of atrium" - UBERON:0002302 "myocardium of atrium" - UBERON:0004490 "cardiac muscle tissue of atrium" - 
-	1: UBERON:0002329 "somite" - UBERON:0005598 "trunk somite" - UBERON:0002329 "somite" - 
-	1: UBERON:0011362 "cranial blood vasculature" - UBERON:0003496 "head blood vessel" - UBERON:0011362 "cranial blood vasculature" - 
-	1: UBERON:0005319 "mesonephric collecting duct" - UBERON:0001232 "collecting duct of renal tubule" - UBERON:0005319 "mesonephric collecting duct" - 
-	1: UBERON:0005322 "mesonephric nephron" - UBERON:0001285 "nephron" - UBERON:0005322 "mesonephric nephron" - 
+	1: UBERON:0002378 "muscle of abdomen" - UBERON:0002343 "abdomen musculature" - UBERON:0002378 "muscle of abdomen" - 
+	1: UBERON:0000074 "renal glomerulus" - UBERON:0005325 "mesonephric glomerulus" - UBERON:0000074 "renal glomerulus" - 
+	1: UBERON:0004198 "comma-shaped body" - UBERON:0005328 "mesonephric comma-shaped body" - UBERON:0004198 "comma-shaped body" - 
 	1: UBERON:2005073 "atrioventricular ring" - UBERON:2005072 "endocardial ring" - UBERON:2005073 "atrioventricular ring" - 
+	1: UBERON:0004490 "cardiac muscle tissue of atrium" - UBERON:0002302 "myocardium of atrium" - UBERON:0004490 "cardiac muscle tissue of atrium" - 
+	1: UBERON:0004199 "S-shaped body" - UBERON:0005332 "mesonephric S-shaped body" - UBERON:0004199 "S-shaped body" - 
+	1: UBERON:0011362 "cranial blood vasculature" - UBERON:0003496 "head blood vessel" - UBERON:0011362 "cranial blood vasculature" - 
+	1: UBERON:0001285 "nephron" - UBERON:0005322 "mesonephric nephron" - UBERON:0001285 "nephron" - 
+	1: CL:0000748 "retinal bipolar neuron" - CL:0000103 "bipolar neuron" - CL:0000748 "retinal bipolar neuron" - 
+	1: UBERON:0002302 "myocardium of atrium" - UBERON:0004490 "cardiac muscle tissue of atrium" - UBERON:0002302 "myocardium of atrium" - 
+	1: UBERON:0006183 "mesonephric glomerular capillary" - UBERON:0004212 "glomerular capillary" - UBERON:0006183 "mesonephric glomerular capillary" - 
 	1: UBERON:0000045 "ganglion" - UBERON:0003338 "ganglion of peripheral nervous system" - UBERON:0000045 "ganglion" - 
-	1: UBERON:0001232 "collecting duct of renal tubule" - UBERON:0005319 "mesonephric collecting duct" - UBERON:0001232 "collecting duct of renal tubule" - 
-	1: UBERON:0001083 "myocardium of ventricle" - UBERON:0018649 "cardiac muscle tissue of ventricle" - UBERON:0001083 "myocardium of ventricle" - 
+	1: UBERON:0003496 "head blood vessel" - UBERON:0011362 "cranial blood vasculature" - UBERON:0003496 "head blood vessel" - 
+	1: UBERON:0005325 "mesonephric glomerulus" - UBERON:0000074 "renal glomerulus" - UBERON:0005325 "mesonephric glomerulus" - 
+	1: UBERON:0005598 "trunk somite" - UBERON:0002329 "somite" - UBERON:0005598 "trunk somite" - 
 	1: UBERON:0003338 "ganglion of peripheral nervous system" - UBERON:0000045 "ganglion" - UBERON:0003338 "ganglion of peripheral nervous system" - 
+	1: UBERON:0001083 "myocardium of ventricle" - UBERON:0018649 "cardiac muscle tissue of ventricle" - UBERON:0001083 "myocardium of ventricle" - 
+	1: UBERON:0005319 "mesonephric collecting duct" - UBERON:0001232 "collecting duct of renal tubule" - UBERON:0005319 "mesonephric collecting duct" - 
+	1: CL:0010009 "camera-type eye photoreceptor cell" - CL:0000287 "eye photoreceptor cell" - CL:0010009 "camera-type eye photoreceptor cell" - 
+	1: UBERON:0002329 "somite" - UBERON:0005598 "trunk somite" - UBERON:0002329 "somite" - 
 	1: UBERON:0004212 "glomerular capillary" - UBERON:0006183 "mesonephric glomerular capillary" - UBERON:0004212 "glomerular capillary" - 
+	1: UBERON:0000955 "brain" - UBERON:0008823 "neural tube derived brain" - UBERON:0000955 "brain" - 
+	1: CL:0002523 "mesonephric glomerular visceral epithelial cell" - CL:0000653 "glomerular visceral epithelial cell" - CL:0002523 "mesonephric glomerular visceral epithelial cell" - 
+	1: UBERON:0018649 "cardiac muscle tissue of ventricle" - UBERON:0001083 "myocardium of ventricle" - UBERON:0018649 "cardiac muscle tissue of ventricle" - 
 	1: CL:0000103 "bipolar neuron" - CL:0000748 "retinal bipolar neuron" - CL:0000103 "bipolar neuron" - 
+	1: UBERON:0005328 "mesonephric comma-shaped body" - UBERON:0004198 "comma-shaped body" - UBERON:0005328 "mesonephric comma-shaped body" - 
+	1: UBERON:0005322 "mesonephric nephron" - UBERON:0001285 "nephron" - UBERON:0005322 "mesonephric nephron" - 
+	1: UBERON:0008823 "neural tube derived brain" - UBERON:0000955 "brain" - UBERON:0008823 "neural tube derived brain" - 
+	1: UBERON:2005072 "endocardial ring" - UBERON:2005073 "atrioventricular ring" - UBERON:2005072 "endocardial ring" - 
+	1: UBERON:0001232 "collecting duct of renal tubule" - UBERON:0005319 "mesonephric collecting duct" - UBERON:0001232 "collecting duct of renal tubule" - 
 
 Now display paths ordered by number of times they were involved in a cycle
 	4: UBERON:0002316 "white matter" - UBERON:0002437 "cerebral hemisphere white matter" - UBERON:0011299 "white matter of telencephalon" - UBERON:0019261 "white matter of forebrain" - UBERON:0003544 "brain white matter" - UBERON:0002316 "white matter" - 
@@ -670,9 +670,6 @@ Now display paths ordered by number of times they were involved in a cycle
 	4: UBERON:0003544 "brain white matter" - UBERON:0002316 "white matter" - UBERON:0002437 "cerebral hemisphere white matter" - UBERON:0011299 "white matter of telencephalon" - UBERON:0019261 "white matter of forebrain" - UBERON:0003544 "brain white matter" - 
 	4: UBERON:0002437 "cerebral hemisphere white matter" - UBERON:0011299 "white matter of telencephalon" - UBERON:0019261 "white matter of forebrain" - UBERON:0003544 "brain white matter" - UBERON:0002316 "white matter" - UBERON:0002437 "cerebral hemisphere white matter" - 
 	4: UBERON:0011299 "white matter of telencephalon" - UBERON:0019261 "white matter of forebrain" - UBERON:0003544 "brain white matter" - UBERON:0002316 "white matter" - UBERON:0002437 "cerebral hemisphere white matter" - UBERON:0011299 "white matter of telencephalon" - 
-	1: UBERON:0001083 "myocardium of ventricle" - UBERON:0018649 "cardiac muscle tissue of ventricle" - UBERON:0001083 "myocardium of ventricle" - 
-	1: UBERON:0001232 "collecting duct of renal tubule" - UBERON:0005319 "mesonephric collecting duct" - UBERON:0001232 "collecting duct of renal tubule" - 
-	1: UBERON:0001285 "nephron" - UBERON:0005322 "mesonephric nephron" - UBERON:0001285 "nephron" - 
 	1: UBERON:0002302 "myocardium of atrium" - UBERON:0004490 "cardiac muscle tissue of atrium" - UBERON:0002302 "myocardium of atrium" - 
 	1: UBERON:0002329 "somite" - UBERON:0005598 "trunk somite" - UBERON:0002329 "somite" - 
 	1: UBERON:0002343 "abdomen musculature" - UBERON:0002378 "muscle of abdomen" - UBERON:0002343 "abdomen musculature" - 
@@ -685,6 +682,15 @@ Now display paths ordered by number of times they were involved in a cycle
 	1: UBERON:0004490 "cardiac muscle tissue of atrium" - UBERON:0002302 "myocardium of atrium" - UBERON:0004490 "cardiac muscle tissue of atrium" - 
 	1: UBERON:0005319 "mesonephric collecting duct" - UBERON:0001232 "collecting duct of renal tubule" - UBERON:0005319 "mesonephric collecting duct" - 
 	1: UBERON:0005322 "mesonephric nephron" - UBERON:0001285 "nephron" - UBERON:0005322 "mesonephric nephron" - 
+	1: CL:0000748 "retinal bipolar neuron" - CL:0000103 "bipolar neuron" - CL:0000748 "retinal bipolar neuron" - 
+	1: CL:0002523 "mesonephric glomerular visceral epithelial cell" - CL:0000653 "glomerular visceral epithelial cell" - CL:0002523 "mesonephric glomerular visceral epithelial cell" - 
+	1: CL:0010009 "camera-type eye photoreceptor cell" - CL:0000287 "eye photoreceptor cell" - CL:0010009 "camera-type eye photoreceptor cell" - 
+	1: UBERON:0000045 "ganglion" - UBERON:0003338 "ganglion of peripheral nervous system" - UBERON:0000045 "ganglion" - 
+	1: UBERON:0000074 "renal glomerulus" - UBERON:0005325 "mesonephric glomerulus" - UBERON:0000074 "renal glomerulus" - 
+	1: UBERON:0000955 "brain" - UBERON:0008823 "neural tube derived brain" - UBERON:0000955 "brain" - 
+	1: UBERON:0001083 "myocardium of ventricle" - UBERON:0018649 "cardiac muscle tissue of ventricle" - UBERON:0001083 "myocardium of ventricle" - 
+	1: UBERON:0001232 "collecting duct of renal tubule" - UBERON:0005319 "mesonephric collecting duct" - UBERON:0001232 "collecting duct of renal tubule" - 
+	1: UBERON:0001285 "nephron" - UBERON:0005322 "mesonephric nephron" - UBERON:0001285 "nephron" - 
 	1: UBERON:0005325 "mesonephric glomerulus" - UBERON:0000074 "renal glomerulus" - UBERON:0005325 "mesonephric glomerulus" - 
 	1: UBERON:0005328 "mesonephric comma-shaped body" - UBERON:0004198 "comma-shaped body" - UBERON:0005328 "mesonephric comma-shaped body" - 
 	1: UBERON:0005332 "mesonephric S-shaped body" - UBERON:0004199 "S-shaped body" - UBERON:0005332 "mesonephric S-shaped body" - 
@@ -698,9 +704,3 @@ Now display paths ordered by number of times they were involved in a cycle
 	1: CL:0000103 "bipolar neuron" - CL:0000748 "retinal bipolar neuron" - CL:0000103 "bipolar neuron" - 
 	1: CL:0000287 "eye photoreceptor cell" - CL:0010009 "camera-type eye photoreceptor cell" - CL:0000287 "eye photoreceptor cell" - 
 	1: CL:0000653 "glomerular visceral epithelial cell" - CL:0002523 "mesonephric glomerular visceral epithelial cell" - CL:0000653 "glomerular visceral epithelial cell" - 
-	1: CL:0000748 "retinal bipolar neuron" - CL:0000103 "bipolar neuron" - CL:0000748 "retinal bipolar neuron" - 
-	1: CL:0002523 "mesonephric glomerular visceral epithelial cell" - CL:0000653 "glomerular visceral epithelial cell" - CL:0002523 "mesonephric glomerular visceral epithelial cell" - 
-	1: CL:0010009 "camera-type eye photoreceptor cell" - CL:0000287 "eye photoreceptor cell" - CL:0010009 "camera-type eye photoreceptor cell" - 
-	1: UBERON:0000045 "ganglion" - UBERON:0003338 "ganglion of peripheral nervous system" - UBERON:0000045 "ganglion" - 
-	1: UBERON:0000074 "renal glomerulus" - UBERON:0005325 "mesonephric glomerulus" - UBERON:0000074 "renal glomerulus" - 
-	1: UBERON:0000955 "brain" - UBERON:0008823 "neural tube derived brain" - UBERON:0000955 "brain" - 
