@@ -2,6 +2,8 @@
 
 **Goal**: insert Uberon into the database. Requires to generate our own taxonomy ontology (already done for the `species` step), to generate taxon constraints for each terms in Uberon and each species in Bgee, to produce our own dev. stage ontology, and to extract a custom anatomical ontology for Bgee from Uberon.
 
+**Important**: acually, follow the Makefile, it's your best guide. Comments are directly in the Makefile to indicate what things need to be check before or after any pipeline step. This doc is outdated.
+
 ## Details
 
 ### Species
