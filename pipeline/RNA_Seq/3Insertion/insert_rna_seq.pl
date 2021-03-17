@@ -30,6 +30,7 @@ my %opts = ('bgee=s'                => \$bgee_connector,     # Bgee connector st
             'rnaSeqExperiment=s'    => \$rnaSeqExperiment,   # RNAseqExperiment
             'library_info=s'        => \$library_info,       # rna_seq_sample_info.txt file
             'excluded_libraries=s'  => \$excluded_libraries, # rna_seq_sample_excluded.txt file
+            'excluded_biotypes=s'   => \$excluded_biotypes,  # biotypes_excluded_absent_calls.tsv file
             'library_stats=s'       => \$library_stats,      # presence_absence_all_samples.txt
             'report_info=s'         => \$report_info,        # reports_info_all_samples.txt
             'all_results=s'         => \$all_results,        # /var/bgee/extra/pipeline/rna_seq/all_results_bgee_v15/
@@ -185,7 +186,11 @@ my %protocolToBiotypes = retrieveProtocolsToBiotypeExcludeAbsentCalls($excluded_
 # insert the protocols
 my $insProtocol = $bgee->prepare('INSERT INTO rnaSeqProtocol (rnaSeqProtocolName) VALUES (?)');
 for my $protocolName ( keys %protocolToBiotypes ){
-  $insProtocol->execute($protocolName);
+    if($debug) {
+        print 'INSERT INTO rnaSeqLibrary: ', $protocolName, "\n";  
+    } else {
+        $insProtocol->execute($protocolName);
+    }
 }
 $insProtocol->finish();
 
@@ -196,17 +201,22 @@ $selProtocols->execute()  or die $selProtocols->errstr;
 while ( my @data = $selProtocols->fetchrow_array ){
     $protocolNameToProtocolId{$data[1]} = $data[0];
 }
-$selProtocols->finish;
+$selProtocols->finish();
 
 # insert the mapping between protocol and biotypes not used to generate absent calls
 my $insProtocolToBiotype = $bgee->prepare('INSERT INTO rnaSeqProtocolToBiotypeExcludedAbsentCalls (rnaSeqProtocolId, geneBioTypeId) VALUES (?, ?)');
 for my $protocolName ( keys %protocolToBiotypes ){
-  my $protocolId = $protocolNameToProtocolId{$protocolName};
-  # convert each biotype name to the corresponding biotype ID
-  foreach my $biotypeName (@{$protocolToBiotypes{$protocolName}}) {
-    my $biotypeId = $biotypeNameToBiotypId{$biotypeName};
-    $insProtocolToBiotype->execute($protocolId, $biotypeId) or die $insProtocolToBiotype->errstr;
-  }
+    my $protocolId = $protocolNameToProtocolId{$protocolName};
+    # convert each biotype name to the corresponding biotype ID
+    for my $biotypeName (@{$protocolToBiotypes{$protocolName}}) {
+        my $biotypeId = $biotypeNameToBiotypId{$biotypeName};
+        if($debug) {
+            print 'INSERT INTO rnaSeqProtocolToBiotypeExcludedAbsentCalls: ', $protocolId,  ' - ', 
+                                                                              $biotypeId,   "\n";
+        } else {
+            $insProtocolToBiotype->execute($protocolId, $biotypeId) or die $insProtocolToBiotype->errstr;
+        }
+    }
 }
 $insProtocolToBiotype->finish();
 
@@ -318,8 +328,9 @@ my $insResult = $bgee->prepare('INSERT INTO rnaSeqResult (rnaSeqLibraryId, bgeeG
 
 my $inserted = 0;
 
-print "disable autocommit. Manually commit for each library\n";
-$bgee->{AutoCommit} = 0;
+# used to commit after each library when condition and libraries were not inserted
+#print "disable autocommit. Manually commit for each library\n";
+#$bgee->{AutoCommit} = 0;
 
 for my $expId ( sort keys %libraries ){
     LIBRARY:
@@ -344,8 +355,8 @@ for my $expId ( sort keys %libraries ){
         }
 
         # Check that protocol of current RNA-Seq library is already present in the database
-        if ( undef $protocolNameToProtocolId{$libraries{$expId}->{$libraryId}->{'protocol'}}){
-            warn "Protocol [$libraries{$expId}->{$libraryId}->{'protocol'}] not present in the database for [$libraryId]\n";
+        if ( !defined $protocolNameToProtocolId{$annotations{$expId}->{$libraryId}->{'protocol'}}){
+            warn "Protocol [$annotations{$expId}->{$libraryId}->{'protocol'}] not present in the database for [$libraryId]\n";
             next LIBRARY;
         }
 
@@ -368,9 +379,9 @@ for my $expId ( sort keys %libraries ){
         # insert sample
         if ( $debug ){
             print 'INSERT INTO rnaSeqLibrary: ', $libraryId,                                       ' - ',
-                  $expId, ' - ', $libraries{$expId}->{$libraryId}->{'platform'},                   ' - ',
-                  $libraries{$expId}->{$libraryId}->{'platform'},                                  ' - ',
-                  $protocolNameToProtocolId{$libraries{$expId}->{$libraryId}->{'protocol'}},       ' - ',
+                  $expId, ' - ', $annotations{$expId}->{$libraryId}->{'platform'},                 ' - ',
+                  $protocolNameToProtocolId{$annotations{$expId}->{$libraryId}->{'protocol'}},     ' - ',
+                  $condKeyMap->{'conditionId'},                                                    ' - ',
                   $librariesStats{$libraryId}->{'cutoffTPM'},                                      ' - ',
                   $librariesStats{$libraryId}->{'allGenesPercentPresent'},                         ' - ',
                   $librariesStats{$libraryId}->{'proteinCodingPercentPresent'},                    ' - ',
@@ -388,8 +399,8 @@ for my $expId ( sort keys %libraries ){
         else {
             $insLib->execute($libraryId,
                              $expId,
-                             $libraries{$expId}->{$libraryId}->{'platform'},
-                             protocolNameToProtocolId{ $libraries{$expId}->{$libraryId}->{'platform'} },
+                             $annotations{$expId}->{$libraryId}->{'platform'},
+                             $protocolNameToProtocolId{ $annotations{$expId}->{$libraryId}->{'protocol'} },
                              $condKeyMap->{'conditionId'},
                              $librariesStats{$libraryId}->{'cutoffTPM'},
                              $librariesStats{$libraryId}->{'allGenesPercentPresent'},
@@ -417,7 +428,7 @@ for my $expId ( sort keys %libraries ){
             }
         }
 
-        # insert genes results
+         insert genes results
         my %genesResults = getGenesResults("$all_results/$libraryId/$abundance_file");
         for my $geneId ( keys %genesResults ){
             $inserted++;
@@ -457,11 +468,14 @@ for my $expId ( sort keys %libraries ){
             }
 
         }
+        # used to commit after each library when condition and libraries were not inserted
         $bgee->commit;
     }
 }
-print "reactivate autocommit\n";
-$bgee->{AutoCommit} = 1;
+# used to commit after each library when condition and libraries were not inserted
+#print "reactivate autocommit\n";
+#$bgee->{AutoCommit} = 1;
+
 $insLib->finish();
 $insRun->finish();
 $insResult->finish();
