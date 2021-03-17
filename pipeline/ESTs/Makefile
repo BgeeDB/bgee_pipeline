@@ -21,6 +21,7 @@ get_annot:
 
 
 #FIXME When and how those files are used???
+#TODO use external mapping for all? Without Ensembl or through UniProt ???
 unigene: get_annot $(EST_SPECIES_CURATION_FILEPATH) $(SPECIESFILEPATH)
 	# Get species list from Bgee
 	@grep -P '^\d+' $(SPECIESFILEPATH) | cut -f2,3 --output-delimiter='_' | sed -e 's/ /_/g' >$@.temp

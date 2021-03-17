@@ -375,6 +375,7 @@ $dbh->disconnect;
 ########################
 my %annotation;
 
+CHIP:
 for my $chip ( sort keys %all_chipTypes ){
     print "Retrieving mapping of [$chip]...\n" if ( $debug );
     # No mapping
@@ -408,14 +409,24 @@ for my $chip ( sort keys %all_chipTypes ){
         my $tx_adaptor    = $reg->get_adaptor($species{ $chipTypes{$chip}->{'speciesId'} }, 'Core',    'Transcript');
 
         # Get array object according to its name in chipType sheet (Xref field)
-        my $array = $array_adaptor->fetch_by_name_vendor( $chipTypes{$chip}->{'xref'} );
+        my $alt_xref = $chipTypes{$chip}->{'xref'};
+        $alt_xref =~ s{\-}{_}g; #NOTE HG-U95Av2 can be named HG_U95Av2
+        my @arrays = grep { ($_->name eq $chipTypes{$chip}->{'xref'}) || ($_->name eq $alt_xref) } @{ $array_adaptor->fetch_all };
+        if ( scalar @arrays > 1 ){
+            warn "Too many chips with this name: [$chipTypes{$chip}->{'xref'}]\n";
+            next CHIP;
+        }
+        elsif ( scalar @arrays == 0 ){
+            warn "No chip found with this name: [$chipTypes{$chip}->{'xref'}]\n";
+            next CHIP;
+        }
+        my $array = $arrays[0];
         for my $pset ( @{ $array->get_all_ProbeSets() } ){
             my %distinct;
-            #NOTE try with fetch_all_by_linked_transcript_Gene() when it will be repaired in the API
-            for my $trans ( @{ $pset->get_all_Transcript_DBEntries } ){
-                my $transcript = $tx_adaptor->fetch_by_stable_id( $trans->primary_id );
+            for my $trans ( @{ $pset->get_all_ProbeSetTranscriptMappings() } ){
+                my $transcript = $tx_adaptor->fetch_by_stable_id( $trans->stable_id );
                 if (defined $transcript){
-                  $distinct{ $transcript->get_Gene->stable_id } = $pset->name;
+                    $distinct{ $transcript->get_Gene->stable_id } = $pset->name;
                 }
             }
             # probeset -> bgeeGeneId
