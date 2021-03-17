@@ -49,7 +49,7 @@ MdomDv:		13616	Monodelphis domestica			Mdomdv ontology for opossum developmental
 MmulDv:		9544	Macaca mulatta			Mmuldv ontology for rhesus developmental stages
 MmusDv:		10090	Mus musculus			Mmusdv ontology for mouse developmental stages
 OanaDv:		9258				
-PBA:		9443	Primates	9606	Homo sapiens	PBA Allen Brain Atlas ontology for (non-human) Primates
+PBA:		9443	Primates			PBA Allen Brain Atlas ontology for Primates
 //PORO:		6040	Porifera			PORO ontology for porifera (sponges)
 PORO:				1		PORO ontology for porifera (sponges)
 PpanDv:		9597	Pan paniscus			Ppandv ontology for bonobo developmental stages
@@ -143,3 +143,9 @@ UBERON:0014857	zoea stage			1		as in Uberon
 UBERON:0007221	neonate stage	117571	Euteleostomi			"in Uberon, this stage has synonym: ""puggle stage"" NARROW SENSU [NCBITaxon:189497]"
 UBERON:0012101	perinatal stage	117571	Euteleostomi			following UBERON:0007221 taxon constraints
 UBERON:0035946	start of neonate stage	117571	Euteleostomi			following UBERON:0007221 taxon constraints
+UBERON:0002107	liver	7742	Vertebrata			In Uberon: relationship: only_in_taxon NCBITaxon:7742 ! Vertebrata <Metazoa>
+UBERON:0001003	skin epidermis	6072	Eumetazoa			
+UBERON:0001264	pancreas	7742	Vertebrata			In Uberon: relationship: only_in_taxon NCBITaxon:7742 ! Vertebrata <Metazoa>
+UBERON:0002113	kidney	7742	Vertebrata			In Uberon: relationship: only_in_taxon NCBITaxon:7742 ! Vertebrata <Metazoa>
+UBERON:0001295	endometrium	40674	Mammalia			In Uberon: relationship: only_in_taxon NCBITaxon:40674 ! Mammalia
+UBERON:6001060	embryonic brain	33213	Bilateria			In Uberon, UBERON:0001017 central nervous system has relationship: only_in_taxon NCBITaxon:33213 ! Bilateria
