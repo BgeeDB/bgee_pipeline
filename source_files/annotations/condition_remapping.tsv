@@ -1,7 +1,4 @@
 "Condition ID to remap"	"New anat. entity ID"	"New dev. stage ID"	"New sex"	"New strain"
-41086	"UBERON:0001383"	"UBERON:0018685"	"NA"	"NA"
-41084	"UBERON:0000995"	"UBERON:0018685"	"female"	"NA"
-40978	"UBERON:0001013"	"UBERON:0018685"	"female"	"Jinhua"
 28431	"UBERON:0004023"	"HsapDv:0000051"	"NA"	"NA"
 28438	"UBERON:0004023"	"HsapDv:0000052"	"NA"	"NA"
 28434	"UBERON:0004023"	"HsapDv:0000053"	"NA"	"NA"
