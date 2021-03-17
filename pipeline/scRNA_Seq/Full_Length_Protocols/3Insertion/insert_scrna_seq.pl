@@ -53,7 +53,7 @@ my %opts = ('bgee=s'                => \$bgee_connector,           # Bgee connec
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $bgee_connector eq '' $scRnaSeqExperiment eq '' || $library_info eq ''  || $excluded_libraries eq '' || $library_stats eq '' || $report_info eq '' || $all_results eq '' || $sex_info eq '' || $Aport == 0 || $Sport == 0 ){
+if ( !$test_options || $bgee_connector eq '' || $scRnaSeqExperiment eq '' || $library_info eq ''  || $excluded_libraries eq '' || $library_stats eq '' || $report_info eq '' || $all_results eq '' || $sex_info eq '' || $extraMapping eq '' || $Aport == 0 || $Sport == 0 ){
     print "\n\tInvalid or missing argument:
 \te.g., $0  -bgee=\$(BGEECMD) -scRnaSeqExperiment=scRNAseqExperiment.tsv -library_info=\$(SC_RNASEQ_SAMPINFO_PASS_FILEPATH) -excluded_libraries=\$(SC_RNASEQ_SAMPINFO_NOT_PASS_FILEPATH) -library_stats=\$(SCRNASEQSAMPSTATS) -report_info=\$(SCRNASEQREPORTINFO) -all_results=\$(SCRNASEQALLRES) -sex_info=\$(UBERON_SEX_INFO_FILE_PATH) -extraMapping=\$(EXTRAMAPPING_FILEPATH) -Aport=\$(IDMAPPINGPORT) -Sport=\$(STGMAPPINGPORT)    > $@.tmp 2>warnings.$@
 \t-bgee                Bgee connector string
@@ -72,7 +72,7 @@ if ( !$test_options || $bgee_connector eq '' $scRnaSeqExperiment eq '' || $libra
     exit 1;
 }
 
-require("$FindBin::Bin/../../../rna_seq_utils.pl");
+require("$FindBin::Bin/../../rna_seq_utils.pl");
 
 # Bgee db connection
 my $bgee = Utils::connect_bgee_db($bgee_connector);
@@ -90,7 +90,8 @@ for my $expId ( sort keys %libraries ){
         $all_species{$libraries{$expId}->{$libraryId}->{'speciesId'}}++;
         $count_libs++;
         unless ( -s "$all_results/$libraryId/$abundance_file" ){
-        die "Missing or empty processed data file for library $libraryId! Please check that the transfer from cluster was successful. Otherwise this library should maybe be added to the file of excluded libraries?\n";
+            die "Missing or empty processed data file for library $libraryId! Please check that the transfer from cluster was successful. Otherwise this library should maybe be added to the file of excluded libraries?\n";
+        }
     }
 }
 print "\t", $count_libs, " libraries mapped and to be inserted.\n";
@@ -140,7 +141,7 @@ for my $expId ( sort keys %excludedLibraries ){
 for my $expId ( sort keys %experimentIds ){
     print "\t$expId\n";
     # sanity check that the experiment is present in experiment annotations
-    if(!exists $experiments{$expId}->{'name'} && exists) {
+    if(!exists $experiments{$expId}->{'name'}) {
       die "libraries of experiment [$expId] has to be inserted but the experiment is not described in the annotation file";
     }
     if ( $debug ){
@@ -172,7 +173,7 @@ for my $expId ( keys %libraries ){
     }
 }
 
-my $insPlatform = $bgee->prepare('INSERT INTO scRnaSeqFullLengthPlatform (scRnaSeqFullLengthPlatformId, scRnaSeqFullLengthPlatformDescripton) VALUES (?, ?)');
+my $insPlatform = $bgee->prepare('INSERT INTO scRnaSeqFullLengthPlatform (scRnaSeqFullLengthPlatformId, scRnaSeqFullLengthPlatformDescription) VALUES (?, ?)');
 # now insert the platform(s)
 for my $platformId ( sort keys %platforms ){
     print "\t$platformId\n";
@@ -193,10 +194,23 @@ print "Done\n\n";
 ################################################
 
 my %genes;
-# go over all libraries to check all species with data
+my @Stg;
+my @Anat;
+
+# go over all libraries to check all species with data and retrieve all
+# used stages and anat. entities
 for my $expId ( keys %libraries ){
     foreach my $libraryId ( keys %{$libraries{$expId}} ){
         $genes{$libraries{$expId}->{$libraryId}->{'speciesId'}} = ();
+        if(defined($libraries{$expId}->{$libraryId}->{'stageId'})) {
+            push(@Stg, $libraries{$expId}->{$libraryId}->{'stageId'});
+        }
+        if(defined($libraries{$expId}->{$libraryId}->{'uberonId'})) {
+            push(@Anat, $libraries{$expId}->{$libraryId}->{'uberonId'});
+        }
+        if(defined($libraries{$expId}->{$libraryId}->{'cellTypeId'})) {
+            push(@Anat, $libraries{$expId}->{$libraryId}->{'cellTypeId'});
+        }
     }
 }
 # Get hash of geneId to bgeeGeneId mapping per species
@@ -204,19 +218,11 @@ for my $speciesId ( keys %genes ){
     $genes{$speciesId} = Utils::query_bgeeGene($bgee, $speciesId);
 }
 
-
-## TODO : DOES THIS STEP IS STILL USEFUL FOR Full Length single cell???
-
 # Parse extra mapping info for currently too up-to-date annotations
 ##UnmappedId    UnmappedName    UberonID    UberonName    Comment
 my %extra = map  { my @tmp = split(/\t/, $_, -1); if ( $tmp[2] ne '' && $tmp[0] ne '' ){ $tmp[0] => $tmp[2] } else { 'nonono' => 'nonono' } }
             grep { !/^#/ }
             read_file("$extraMapping", chomp => 1);
-
-# Get used stages & anatEntityId from annotation sheet
-%tsv = %{ Utils::read_spreadsheet("$rnaSeqLibrary", "\t", 'csv', '"', 1) };
-my @Stg  = @{ $tsv{'stageId'} };
-my @Anat = @{ $tsv{'uberonId'} };
 
 # Fix mapping with extra mapping file
 @Stg  = map { $extra{$_} || $_ } @Stg;
@@ -243,18 +249,20 @@ my $insLib = $bgee->prepare('INSERT INTO scRnaSeqFullLengthLibrary (scRnaSeqFull
                              intergenicRegionsPercentPresent, meanTpmReferenceIntergenicDistribution, 
                              sdTpmReferenceIntergenicDistribution, pValueThreshold, allReadsCount, 
                              mappedReadsCount, minReadLength, maxReadLength, libraryType, libraryOrientation)
-                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
 
 # Excluded libraries
+
+my $discarded_reason = "discarded after quality control";
 my $insExcludedLib = $bgee->prepare('INSERT INTO scRnaSeqFullLengthLibraryDiscarded (scRnaSeqFullLengthLibraryId, scRnaSeqFullLengthLibraryDiscardReason) VALUES (?, ?)');
 for my $exp ( sort keys %excludedLibraries ){
-    for my $library ( sort keys %excludedLibraries{$exp} ){
+    for my $libraryId ( sort keys %{$excludedLibraries{$exp}}){
         if ( $debug ){
-            print 'INSERT INTO scRnaSeqFullLengthLibraryDiscarded: ', $libraryId, "\n";
+            print 'INSERT INTO scRnaSeqFullLengthLibraryDiscarded: ', $libraryId, ' - ', "$discarded_reason\n";
         }
         else {
-            $insExcludedLib->execute($libraryId, $excludedLibraries{$libraryId})  or die $insExcludedLib->errstr;
+            $insExcludedLib->execute($libraryId, $discarded_reason)  or die $insExcludedLib->errstr;
         }
     }
 }
@@ -266,8 +274,9 @@ my $insResult = $bgee->prepare('INSERT INTO scRnaSeqFullLengthResult (scRnaSeqFu
 
 my $inserted = 0;
 
-print "disable autocommit. Manually commit for each library\n";
-$bgee->{AutoCommit} = 0;
+# used to commit after each library when condition and libraries were not inserted
+#print "disable autocommit. Manually commit for each library\n";
+#$bgee->{AutoCommit} = 0;
 
 for my $expId ( sort keys %libraries ){
     LIBRARY:
@@ -279,21 +288,20 @@ for my $expId ( sort keys %libraries ){
         print "\t$expId $libraryId\n";
 
         # Remap to extra mapping if any
-        # XXX: Do we really need to remap cellTypeId too???
-        $annotations{$expId}->{$libraryId}->{'uberonId'}   = $extra{ $annotations{$expId}->{$libraryId}->{'uberonId'} }   || $annotations{$expId}->{$libraryId}->{'uberonId'};
-        $annotations{$expId}->{$libraryId}->{'cellTypeId'} = $extra{ $annotations{$expId}->{$libraryId}->{'cellTypeId'} } || $annotations{$expId}->{$libraryId}->{'cellTypeId'};
-        $annotations{$expId}->{$libraryId}->{'stageId'}    = $extra{ $annotations{$expId}->{$libraryId}->{'stageId'} }    || $annotations{$expId}->{$libraryId}->{'stageId'};
+        $libraries{$expId}->{$libraryId}->{'uberonId'}   = $extra{ $libraries{$expId}->{$libraryId}->{'uberonId'} }   || $libraries{$expId}->{$libraryId}->{'uberonId'};
+        $libraries{$expId}->{$libraryId}->{'cellTypeId'} = $extra{ $libraries{$expId}->{$libraryId}->{'cellTypeId'} } || $libraries{$expId}->{$libraryId}->{'cellTypeId'};
+        $libraries{$expId}->{$libraryId}->{'stageId'}    = $extra{ $libraries{$expId}->{$libraryId}->{'stageId'} }    || $libraries{$expId}->{$libraryId}->{'stageId'};
 
-        if ( !exists $doneAnat->{$annotations{$expId}->{$libraryId}->{'uberonId'}} || $doneAnat->{$annotations{$expId}->{$libraryId}->{'uberonId'}} eq '' ){
-            warn "[$annotations{$expId}->{$libraryId}->{'uberonId'}] unmapped organ id for [$libraryId]\n";
+        if ( !exists $doneAnat->{$libraries{$expId}->{$libraryId}->{'uberonId'}} || $doneAnat->{$libraries{$expId}->{$libraryId}->{'uberonId'}} eq '' ){
+            warn "[$libraries{$expId}->{$libraryId}->{'uberonId'}] unmapped organ id for [$libraryId]\n";
             next LIBRARY;
         }
-        if ( !exists $doneAnat->{$annotations{$expId}->{$libraryId}->{'cellTypeId'}} || $doneAnat->{$annotations{$expId}->{$libraryId}->{'cellTypeId'}} eq '' ){
-            warn "[$annotations{$expId}->{$libraryId}->{'cellTypeId'}] unmapped cell type id for [$libraryId]\n";
+        if ( !exists $doneAnat->{$libraries{$expId}->{$libraryId}->{'cellTypeId'}} || $doneAnat->{$libraries{$expId}->{$libraryId}->{'cellTypeId'}} eq '' ){
+            warn "[$libraries{$expId}->{$libraryId}->{'cellTypeId'}] unmapped cell type id for [$libraryId]\n";
             next LIBRARY;
         }
-        if ( !exists $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}}   || $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}}   eq '' ){
-            warn "[$annotations{$expId}->{$libraryId}->{'stageId'}] unmapped stage id for [$libraryId]\n";
+        if ( !exists $doneStg->{$libraries{$expId}->{$libraryId}->{'stageId'}}   || $doneStg->{$libraries{$expId}->{$libraryId}->{'stageId'}}   eq '' ){
+            warn "[$libraries{$expId}->{$libraryId}->{'stageId'}] unmapped stage id for [$libraryId]\n";
             next LIBRARY;
         }
 
@@ -303,21 +311,20 @@ for my $expId ( sort keys %libraries ){
         ($condKeyMap, $conditions) = Utils::insert_get_condition($bgee,
                                                                  $conditions,
                                                                  $stage_equivalences,
-                                                                 $doneAnat->{$annotations{$expId}->{$libraryId}->{'uberonId'}},
-                                                                 $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}},
-                                                                 $annotations{$expId}->{$libraryId}->{'speciesId'},
-                                                                 $annotations{$expId}->{$libraryId}->{'sex'},
-                                                                 $annotations{$expId}->{$libraryId}->{'strain'},
+                                                                 $doneAnat->{$libraries{$expId}->{$libraryId}->{'uberonId'}},
+                                                                 $doneStg->{$libraries{$expId}->{$libraryId}->{'stageId'}},
+                                                                 $libraries{$expId}->{$libraryId}->{'speciesId'},
+                                                                 $libraries{$expId}->{$libraryId}->{'sex'},
+                                                                 $libraries{$expId}->{$libraryId}->{'strain'},
                                                                  $anatSexInfo, $speciesSexInfo,
                                                                  $libraryId, '',
-                                                                 #XXX: Do we really need to remap cellTypeId too???
-                                                                 $doneAnat->{$annotations{$expId}->{$libraryId}->{'cellTypeId'}},
+                                                                 $doneAnat->{$libraries{$expId}->{$libraryId}->{'cellTypeId'}},
                                                                 );
         # We consider the fine-grained (low-level) conditionId for insertion: $condKeyMap->{'conditionId'}
 
         # insert sample
         if ( $debug ){
-            print 'INSERT INTO rnaSeqLibrary: ', $libraryId,                        ' - ',
+            print 'INSERT INTO scRnaSeqFullLengthLibrary: ', $libraryId,                        ' - ',
                   $expId, ' - ', $libraries{$expId}->{$libraryId}->{'platform'},    ' - ',
                   $condKeyMap->{'conditionId'},                                     ' - ',
                   $librariesStats{$libraryId}->{'cutoffTPM'},                       ' - ',
@@ -355,7 +362,7 @@ for my $expId ( sort keys %libraries ){
                            )  or die $insLib->errstr;
         }
 
-        # TODO: implement insertion of runs
+        # TODO: implement insertion of runs?
         
 
         # insert genes results
@@ -365,7 +372,7 @@ for my $expId ( sort keys %libraries ){
             my $exclusion = $Utils::CALL_NOT_EXCLUDED;
             # for full-length single cell RNA-Seq absent calls are inserted but excluded
             if($genesResults{$geneId}->{'expressionCall'} eq "absent") {
-                my $exclusion = $Utils::EXCLUDED_FOR_ABSENT_CALLS;
+                $exclusion = $Utils::EXCLUDED_FOR_ABSENT_CALLS;
             }
             
             $inserted++;
@@ -395,15 +402,15 @@ for my $expId ( sort keys %libraries ){
             }
 
         }
-        $bgee->commit;
+        #used to commit after each library when condition and libraries were not inserted
+        #$bgee->commit;
     }
 }
-
-print "reactivate autocommit\n";
-$bgee->{AutoCommit} = 1;
+#used to commit after each library when condition and libraries were not inserted
+#print "reactivate autocommit\n";
+#$bgee->{AutoCommit} = 1;
 
 $insLib->finish();
-$insRun->finish();
 $insResult->finish();
 print "Done. You should have $inserted rows in the scRnaSeqFullLengthResult table.\nExiting\n";
 
