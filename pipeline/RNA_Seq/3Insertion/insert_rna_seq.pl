@@ -428,7 +428,7 @@ for my $expId ( sort keys %libraries ){
             }
         }
 
-         insert genes results
+        # insert genes results
         my %genesResults = getGenesResults("$all_results/$libraryId/$abundance_file");
         for my $geneId ( keys %genesResults ){
             $inserted++;
