@@ -108,6 +108,9 @@ $(OUTPUT_DIR)insert_stages: $(DEV_STAGE_ONT_FILE_PATH) $(TAXONOMYFILEPATH) $(STA
 # both in OBO and OWL formats the terms BFO:0000002 and BFO:0000004 and related relations
 $(OUTPUT_DIR)insert_anatomy: $(CUSTOM_UBERON_FILE_PATH) $(TAXONCONSTRAINTSFILEPATH) $(SPECIESFILEPATH)
 	@$(JAVA) InsertUberon insertAnatomy $(CUSTOM_UBERON_FILE_PATH) $(TAXONCONSTRAINTSFILEPATH) UBERON:0001062$(LIST_SEP)GO:0005575 $(ROOTS_OF_SUBGRAPHS_TO_IGNORE) $(SPECIESFILEPATH)
+# Quick modification of a term with no label
+	@$(MYSQL) -e "update anatEntity set anatEntityName = 'native cell' where anatEntityId = 'CARO:0000013'"
+# Now, verification queries	
 	@echo "Inconsistent taxon constraints between anatomical entities and anatomical entity relations (there should be none)" > $@.temp
 #	@$(MYSQL) -e "SELECT t1.*, GROUP_CONCAT(DISTINCT t2.speciesId ORDER BY t2.speciesId) AS relationTaxonConstraints, GROUP_CONCAT(DISTINCT t3.speciesId ORDER BY t3.speciesId) AS sourceTaxonContraints, GROUP_CONCAT(DISTINCT t4.speciesId ORDER BY t4.speciesId) AS targetTaxonConstraints FROM anatEntityRelation AS t1 INNER JOIN anatEntityRelationTaxonConstraint AS t2 ON t1.anatEntityRelationId = t2.anatEntityRelationId INNER JOIN anatEntityTaxonConstraint AS t3 ON t1.anatEntitySourceId = t3.anatEntityId INNER JOIN anatEntityTaxonConstraint AS t4 ON t1.anatEntityTargetId = t4.anatEntityId WHERE NOT EXISTS (SELECT 1 FROM anatEntityTaxonConstraint AS t5 WHERE t5.anatEntityId = t1.anatEntitySourceId AND (t5.speciesId IS NULL OR t2.speciesId IS NULL OR t5.speciesId = t2.speciesId)) OR NOT EXISTS (SELECT 1 FROM anatEntityTaxonConstraint AS t5 WHERE t5.anatEntityId = t1.anatEntityTargetId AND (t5.speciesId IS NULL OR t2.speciesId IS NULL OR t5.speciesId = t2.speciesId)) GROUP BY t1.anatEntityRelationId;" >> $@.temp 2>> $@.warn
 	@echo "----------UBERON terms maybe incorrectly part of the cellular component graph: " >> $@.temp
