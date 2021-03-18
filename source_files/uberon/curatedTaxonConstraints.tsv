@@ -49,7 +49,7 @@ MdomDv:		13616	Monodelphis domestica			Mdomdv ontology for opossum developmental
 MmulDv:		9544	Macaca mulatta			Mmuldv ontology for rhesus developmental stages
 MmusDv:		10090	Mus musculus			Mmusdv ontology for mouse developmental stages
 OanaDv:		9258				
-PBA:		9443	Primates			PBA Allen Brain Atlas ontology for Primates
+PBA:		9443	Primates	9606	Homo sapiens	PBA Allen Brain Atlas ontology for non-human Primates
 //PORO:		6040	Porifera			PORO ontology for porifera (sponges)
 PORO:				1		PORO ontology for porifera (sponges)
 PpanDv:		9597	Pan paniscus			Ppandv ontology for bonobo developmental stages
@@ -144,8 +144,33 @@ UBERON:0007221	neonate stage	117571	Euteleostomi			"in Uberon, this stage has sy
 UBERON:0012101	perinatal stage	117571	Euteleostomi			following UBERON:0007221 taxon constraints
 UBERON:0035946	start of neonate stage	117571	Euteleostomi			following UBERON:0007221 taxon constraints
 UBERON:0002107	liver	7742	Vertebrata			In Uberon: relationship: only_in_taxon NCBITaxon:7742 ! Vertebrata <Metazoa>
+CL:0000182	hepatocyte	7742	Vertebrata			Same as UBERON:0002107 liver
+UBERON:0003894	liver primordium	7742	Vertebrata			Same as UBERON:0002107 liver
+UBERON:2005170	extrahepatic duct	7742	Vertebrata			Same as UBERON:0002107 liver
 UBERON:0001003	skin epidermis	6072	Eumetazoa			
 UBERON:0001264	pancreas	7742	Vertebrata			In Uberon: relationship: only_in_taxon NCBITaxon:7742 ! Vertebrata <Metazoa>
+UBERON:0007329	pancreatic duct	7742	Vertebrata			Same as UBERON:0001264 pancreas
+UBERON:0007324	pancreatic lobule	7742	Vertebrata			Same as UBERON:0001264 pancreas
+UBERON:0003921	pancreas primordium	7742	Vertebrata			Same as UBERON:0001264 pancreas
+UBERON:0003923	dorsal pancreatic bud	7742	Vertebrata			Same as UBERON:0001264 pancreas
+UBERON:0003922	pancreatic epithelial bud	7742	Vertebrata			Same as UBERON:0001264 pancreas
+CL:0000171	pancreatic A cell	7742	Vertebrata			Same as UBERON:0001264 pancreas
+UBERON:0003924	ventral pancreatic bud	7742	Vertebrata			Same as UBERON:0001264 pancreas
+UBERON:0000016	endocrine pancreas	7742	Vertebrata			Same as UBERON:0001264 pancreas
+CL:0000083	epithelial cell of pancreas	7742	Vertebrata			Same as UBERON:0001264 pancreas
+UBERON:0000017	exocrine pancreas	7742	Vertebrata			Same as UBERON:0001264 pancreas
+UBERON:2005346	extrapancreatic duct	7742	Vertebrata			Same as UBERON:0001264 pancreas
+CL:0000169	type B pancreatic cell	7742	Vertebrata			Same as UBERON:0001264 pancreas
 UBERON:0002113	kidney	7742	Vertebrata			In Uberon: relationship: only_in_taxon NCBITaxon:7742 ! Vertebrata <Metazoa>
 UBERON:0001295	endometrium	40674	Mammalia			In Uberon: relationship: only_in_taxon NCBITaxon:40674 ! Mammalia
 UBERON:6001060	embryonic brain	33213	Bilateria			In Uberon, UBERON:0001017 central nervous system has relationship: only_in_taxon NCBITaxon:33213 ! Bilateria
+UBERON:0002423	hepatobiliary system	7742	Vertebrata			In Uberon: relationship: only_in_taxon NCBITaxon:7742 ! Vertebrata <Metazoa>
+UBERON:0002394	bile duct	7742	Vertebrata			Term is part of UBERON:0002423 hepatobiliary system, which has relationship: only_in_taxon NCBITaxon:7742 ! Vertebrata <Metazoa>
+UBERON:0001174	common bile duct	7742	Vertebrata			Same as UBERON:0002394 bile duct
+UBERON:0002110	gall bladder	7742	Vertebrata			same as UBERON:0002394 bile duct
+UBERON:0003704	intrahepatic bile duct	7742	Vertebrata			same as UBERON:0002394 bile duct
+UBERON:0001639	hepatic portal vein	7742	Vertebrata			same as UBERON:0002394 bile duct
+UBERON:0012316	primitive palate	7776	Gnathostomata			Term part of UBERON:0003113 dermatocranium, which has relationship: only_in_taxon NCBITaxon:7776 ! Gnathostomata <vertebrate>
+UBERON:0011634	ectopterygoid bone	7776	Gnathostomata			same as UBERON:0012316 primitive palate
+UBERON:0016631	actinopterygian frontal-parietal joint	7898	Actinopterygii			Considering the name of the class
+CL:0000446	chief cell of parathyroid gland	32523	Tetrapoda			Term part of UBERON:0001132 parathyroid gland, which has relationship: only_in_taxon NCBITaxon:32523 {source="http://www.ncbi.nlm.nih.gov/pubmed/16313389"} ! Tetrapoda
