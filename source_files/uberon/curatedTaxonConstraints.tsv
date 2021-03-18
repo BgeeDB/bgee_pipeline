@@ -1,6 +1,4 @@
 Uberon ID	Uberon name	Only in Taxon IDs	Only in Taxon Names	Never in Taxon IDs	Never in Taxon Names	Comments
-AcarDv:		28377				
-BtauDv:		9913				
 //CEPH:		6605	Cephalopoda			CEPH ontology for cephalopod
 CEPH:				1		CEPH ontology for cephalopod
 CL:0000871	splenic macrophage			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	
@@ -15,20 +13,10 @@ CL:2000051	splenic fibroblast			7740, 1206794	Branchiostoma lanceolatum, Ecdysoz
 CL:2000053	splenic endothelial cell			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	
 CL:2000074	splenocyte			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	
 CS:0	Carnegie stage	9606	Homo sapiens			
-//DanaDv:	Drosophila ananassae life stages	7217	Drosophila ananassae			
-DanaDv:	Drosophila ananassae life stages			1		
 //CTENO:		10197	Ctenophora 			CTENO ontology for ctenophore
 CTENO:				1		CTENO ontology for ctenophore
 DHBA:		9606	Homo sapiens			DHBA ontology for developing human
 DMBA:		10090	Mus musculus			DMBA ontology for developing mouse
-//DmojDv:	Drosophila mojavensis life stages	7230	Drosophila mojavensis			
-DmojDv:	Drosophila mojavensis life stages			1		
-DpseDv:	Drosophila pseudobscura life stages	7237	Drosophila pseudoobscura			
-DsimDv:	Drosophila simulans life stages	7240	Drosophila simulans			
-//DvirDv:	Drosophila virilis life stages	7244	Drosophila virilis			
-DvirDv:	Drosophila virilis life stages			1		
-//DyakDv:	Drosophila yakuba life stages	7245	Drosophila yakuba			
-DyakDv:	Drosophila yakuba life stages			1		
 EHDAA2:		9606	Homo sapiens			EHDAA2 (Human developmental anatomy, abstract) for human
 EMAPA:		10090	Mus musculus			EMAPA (Mouse Developmental Anatomy Ontology) for mouse
 FBbt:		7227	Drosophila melanogaster			FBbt FlyBase ontology for Drosophila melanogaster anatomy (DAO Drosophila Anatomy Ontology)
@@ -39,27 +27,12 @@ FlyBase:FBgn0023178	Pigment-dispersing factor	7227	Drosophila melanogaster
 FlyBase:FBgn0028374	Hugin	7227	Drosophila melanogaster			
 FlyBase:FBgn0028418	Leucokinin	7227	Drosophila melanogaster			
 FlyBase:FBgn0037976	Tachykinin	7227	Drosophila melanogaster			
-GgalDv:		9031	Gallus gallus			Ggaldv ontology for chicken developmental stages
-GgorDv:		9593	Gorilla gorilla			Ggordv ontology for gorilla developmental stages
 HBA:		9606	Homo sapiens			HBA Allen Brain Atlas ontology for human
-HsapDv:		9606	Homo sapiens			Hsapdv ontology for human developmental stages
 MA:		10090	Mus musculus			MA ontology for the adult anatomy of the mouse 
 MBA:		10090	Mus musculus			MBA Allen Brain Atlas ontology for mouse
-MdomDv:		13616	Monodelphis domestica			Mdomdv ontology for opossum developmental stages
-MmulDv:		9544	Macaca mulatta			Mmuldv ontology for rhesus developmental stages
-MmusDv:		10090	Mus musculus			Mmusdv ontology for mouse developmental stages
-OanaDv:		9258				
 PBA:		9443	Primates	9606	Homo sapiens	PBA Allen Brain Atlas ontology for non-human Primates
 //PORO:		6040	Porifera			PORO ontology for porifera (sponges)
 PORO:				1		PORO ontology for porifera (sponges)
-PpanDv:		9597	Pan paniscus			Ppandv ontology for bonobo developmental stages
-//PpygDv:		9600	Pongo pygmaeus			Ppygdv ontology for  orang utan developmental stages
-PpygDv:				1		Ppygdv ontology for  orang utan developmental stages
-PtroDv:		9598	Pan troglodytes			Ptrodv ontology for chimpanzee developmental stages
-RnorDv:		10116	Rattus norvegicus			Rnordv ontology for rat developmental stages
-SscrDv:		9823	Sus scrofa			Sscrdv ontology for pig developmental stages
-//TnigDv:		99883				
-TnigDv:				1		
 UBERON:0000371	syncytiotrophoblast	32525	Theria <Mammalia>			
 UBERON:0001248	hilum of spleen			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
 UBERON:0001250	red pulp of spleen			7740, 1206794	Branchiostoma lanceolatum, Ecdysozoa	https://pubmed.ncbi.nlm.nih.gov/21636695/
