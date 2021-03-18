@@ -863,6 +863,7 @@ create table inSituSpot (
     expressionId int unsigned,
 -- Warning, qualities must be ordered, the index in the enum is used in many queries
     inSituData enum('no data', 'poor quality', 'high quality') default 'no data',
+    pValue decimal(31, 30) unsigned default 1,
 -- When expressionId is null, the result is not used for the summary of expression.
 -- Reasons are:
 -- * pre filtering: Probesets always seen as "absent" or "marginal" over the whole dataset are removed
