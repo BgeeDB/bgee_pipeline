@@ -9,7 +9,7 @@ use diagnostics;
 
 # USAGE: perl insert_rna_seq_expression.pl -bgee=connection_string <OPTIONAL: -debug>
 # After the insertion of RNA-Seq data, this script inserts the data
-# into the expression table and update the rnaSeqResult table.
+# into the expression table and update the scRnaSeqFullLengthResult table.
 # -debug: if provided, run in verbose mode (print the update/insert SQL queries, not executing them)
 
 #############################################################
@@ -49,7 +49,7 @@ $| = 1;
 ##########################################
 print "Retrieving conditions...\n";
 
-my $queryConditions = $bgee->prepare('SELECT DISTINCT t2.exprMappedConditionId FROM rnaSeqLibrary AS t1
+my $queryConditions = $bgee->prepare('SELECT DISTINCT t2.exprMappedConditionId FROM scRnaSeqFullLengthLibrary AS t1
                                       INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId');
 $queryConditions->execute()  or die $queryConditions->errstr;
 my @exprMappedConditions = ();
@@ -72,29 +72,29 @@ my $findPresentGenes = $bgee->prepare('CREATE TEMPORARY TABLE tempPresentscRnaSe
                                         )');
 if ( $debug ){
     print 'CREATE TEMPORARY TABLE tempPresentscRnaSeqFullLength (PRIMARY KEY (bgeeGeneId)) ENGINE=InnoDB
-           AS (SELECT DISTINCT bgeeGeneId FROM scRnaSeqFullLengthResult WHERE detectionFlag = "'.$Utils::PRESENT_CALL.'")';
+           AS (SELECT DISTINCT bgeeGeneId FROM scRnaSeqFullLengthResult WHERE detectionFlag = "'.$Utils::PRESENT_CALL.'")'."\n";
 } else {
     $findPresentGenes->execute()  or die $findPresentGenes->errstr;
 }
 
 # At this point reasonForExclusion is always $Utils::CALL_NOT_EXCLUDED for $Utils::PRESENT_CALL and can be $Utils::CALL_NOT_EXCLUDED
 # or $Utils::EXCLUDED_FOR_ABSENT_CALLS for $Utils::ABSENT_CALL.
-my $preFilteringUp = $bgee->prepare('UPDATE rnaSeqResult AS t1
+my $preFilteringUp = $bgee->prepare('UPDATE scRnaSeqFullLengthResult AS t1
                                      LEFT OUTER JOIN tempPresentscRnaSeqFullLength AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId
                                      SET reasonForExclusion = "'.$Utils::EXCLUDED_FOR_PRE_FILTERED.'"
                                      WHERE t2.bgeeGeneId IS NULL AND reasonForExclusion != "'.$Utils::EXCLUDED_FOR_ABSENT_CALLS.'"');
 if ( $debug ){
-    print 'UPDATE rnaSeqResult AS t1
+    print 'UPDATE scRnaSeqFullLengthResult AS t1
           LEFT OUTER JOIN tempPresentscRnaSeqFullLength AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId
           SET reasonForExclusion = "'.$Utils::EXCLUDED_FOR_PRE_FILTERED.'"
-          WHERE t2.bgeeGeneId IS NULL AND reasonForExclusion != "'.$Utils::EXCLUDED_FOR_ABSENT_CALLS.'"';
+          WHERE t2.bgeeGeneId IS NULL AND reasonForExclusion != "'.$Utils::EXCLUDED_FOR_ABSENT_CALLS.'"'."\n";
 } else {
     $preFilteringUp->execute()  or die $preFilteringUp->errstr;
 }
 
 my $dropTempPresent = $bgee->prepare('DROP TABLE tempPresentscRnaSeqFullLength');
 if ( $debug ){
-    print 'DROP TABLE tempPresentscRnaSeqFullLength'
+    print "DROP TABLE tempPresentscRnaSeqFullLength\n";
 } else {
     $dropTempPresent->execute()  or die $dropTempPresent->errstr;
 }
@@ -110,7 +110,7 @@ my $insUpExpr   = $bgee->prepare('INSERT INTO expression (bgeeGeneId, conditionI
                                   ON DUPLICATE KEY UPDATE expressionId=LAST_INSERT_ID(expressionId)');
 
 
-# Query to update rnaSeqResult with the expressionId and reasonForExclusion
+# Query to update scRnaSeqFullLengthResult with the expressionId and reasonForExclusion
 my $updResult = $bgee->prepare('UPDATE scRnaSeqFullLengthResult AS t1
                                 INNER JOIN scRnaSeqFullLengthLibrary AS t2 ON t1.scRnaSeqFullLengthLibraryId = t2.scRnaSeqFullLengthLibraryId
                                 INNER JOIN cond AS t3 ON t2.conditionId = t3.conditionId
@@ -154,7 +154,7 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
     $queryResults->execute($exprMappedConditionId)  or die $queryResults->errstr;
     my %results = ();
     while ( my @data = $queryResults->fetchrow_array ){
-        #data[0] = bgeeGeneId, data[1] = rnaSeqExperimentId, data[2] = rnaSeqLibraryId, data[3] = detectionFlag, data[4] = pvalue
+        #data[0] = bgeeGeneId, data[1] = scRnaSeqFullLengthExperimentId, data[2] = scRnaSeqFullLengthLibraryId, data[3] = detectionFlag, data[4] = pvalue
         #XXX here it could be enough to create a hash like that : $results{$data[0]} = 1. However we kept 
         # information about experiments/libraries in case we have to insert them as a JSON field in the 
         # future. To update if pvalue is useless once full pipeline has been run for Bgee 15
@@ -183,7 +183,7 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
             warn "No calls available for geneId $geneId in exprMappedConditionId $exprMappedConditionId\n";
         }
 
-        # Now update the related rnaSeqResults
+        # Now update the related scRnaSeqFullLengthResults
         if ( $debug ){
             my $printExprId = 'notRetrievedForLog';
             print "UPDATE scRnaSeqFullLengthResult AS t1 ",
