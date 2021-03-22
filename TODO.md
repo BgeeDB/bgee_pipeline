@@ -24,6 +24,10 @@ Use the strain mapping file in the pipeline for inserting conditions
 
 * Rerun Affymetrix analyses to be able to store p-values (Sara, for new FDR correction)
 
+## EST
+
+* Use a tool more sensitive than blast to map ESTs (such as CD-HIT)
+
 ## RNA-Seq
 
 * Do not produce absent calls for some gene biotypes, depending on the library type
