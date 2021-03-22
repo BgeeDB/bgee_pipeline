@@ -157,6 +157,7 @@ insert_insitu: tsv_zfin  tsv_mgi  tsv_xenbase  tsv_BDGP  tsv_flybase  tsv_wormba
 	@$(RM) $@.tmp warnings.$@
 	@for tsv in `ls -1 tsv_*`; do \
 		echo $$tsv; \
+		>&2 echo $$tsv; \
 		perl insert_in_situ.pl -bgee=$(BGEECMD) -tsv=$$tsv -sex_info=$(UBERON_SEX_INFO_FILE_PATH) >> $@.tmp 2>> warnings.$@; \
 	done
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
