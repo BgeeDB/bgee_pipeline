@@ -344,6 +344,8 @@ BIOCONDUCTORDIFF  := $(BIOCONDUCTOR)differential/
 BIOCONDUCTORTARG  := $(BIOCONDUCTOR)targets/
 # Annotation file path
 ANNOTATIONPATH    := $(AFFYDATAPATH)annotations/
+# Probsets to genes mapping file
+PROBSETMAPPINGDIR := $(GENERATED_FILES_DIR)$(AFFYPATH)biomart
 
 
 # =========== RNA_Seq FILES ===============
