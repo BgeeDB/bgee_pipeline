@@ -22,7 +22,7 @@ require 'bgee_utils.pl';
 
 
 # Define arguments & their default value
-my ($bgee_connector, $ensembl_connector)                = ('', '');
+my ($bgee_connector, $mapping_dir)                      = ('', '');
 my ($chipTypeQual, $affymetrixChipInformation)          = ('', '');
 my ($chipType, $microarrayExperiment, $affymetrixChip)  = ('', '', '');
 my ($annotations, $processed_mas5, $processed_schuster) = ('', '', '');
@@ -31,7 +31,7 @@ my ($sex_info)                                          = ('');
 my ($Aport, $Sport)                                     = (0, 0);
 my ($debug, $test, $resume)                             = (0, 0, 0);
 my %opts = ('bgee=s'                    => \$bgee_connector,     # Bgee connector string
-            'ensembl=s'                 => \$ensembl_connector,  # Ensembl connector string
+            'mappingDir=s'              => \$mapping_dir,        # Mapping directory for probsets to genes (from Ensembl/Biomart)
             'chipType=s'                => \$chipType,
             'chipTypeQual=s'            => \$chipTypeQual,
             'microarrayExperiment=s'    => \$microarrayExperiment,
@@ -51,11 +51,11 @@ my %opts = ('bgee=s'                    => \$bgee_connector,     # Bgee connecto
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $bgee_connector eq '' || $ensembl_connector eq '' || $sex_info eq '' || $Aport == 0 || $Sport == 0 ){
+if ( !$test_options || $bgee_connector eq '' || $mapping_dir eq '' || $sex_info eq '' || $Aport == 0 || $Sport == 0 ){
     print "\n\tInvalid or missing argument:
-\te.g. $0  -bgee=\$(BGEECMD) -ensembl=\$(ENSCMD)  -chipType=\$(AFFY_CHIPTYPE_FILEPATH) -chipTypeQual=\$(AFFY_CHIPTYPEQUAL_FILEPATH) -microarrayExperiment=\$(MICROARRAY_EXPERIMENT_FILEPATH) -affymetrixChipInfo=\$(AFFY_CHIPINFO_FILEPATH) -affymetrixChip=\$(AFFY_CHIP_FILEPATH) -annotations=\$(ANNOTATIONPATH) -processed_mas5=\$(MAS5PATH) -processed_schuster=\$(SCHUSTERPATH) -sex_info=\$(UBERON_SEX_INFO_FILE_PATH) -Aport=\$(IDMAPPINGPORT) -Sport=\$(STGMAPPINGPORT  -exp=<expr/no_expr/both>
-\t-bgee                 Bgee    connector string
-\t-ensembl              Ensembl connector string
+\te.g. $0  -bgee=\$(BGEECMD) -mappingDir=\$(PROBSETMAPPINGDIR) -chipType=\$(AFFY_CHIPTYPE_FILEPATH) -chipTypeQual=\$(AFFY_CHIPTYPEQUAL_FILEPATH) -microarrayExperiment=\$(MICROARRAY_EXPERIMENT_FILEPATH) -affymetrixChipInfo=\$(AFFY_CHIPINFO_FILEPATH) -affymetrixChip=\$(AFFY_CHIP_FILEPATH) -annotations=\$(ANNOTATIONPATH) -processed_mas5=\$(MAS5PATH) -processed_schuster=\$(SCHUSTERPATH) -sex_info=\$(UBERON_SEX_INFO_FILE_PATH) -Aport=\$(IDMAPPINGPORT) -Sport=\$(STGMAPPINGPORT  -exp=<expr/no_expr/both>
+\t-bgee                 Bgee connector string
+\t-mappingDir           Mapping directory for probsets to genes (from Ensembl/Biomart)
 \t-chipTypeQual         chipTypeCorrespondencesAndQualityThresholds   pipeline   file
 \t-affymetrixChipInfo   affymetrixChipInformation                     pipeline   file
 \t-chipType             chipType                                      annotation file
@@ -75,8 +75,6 @@ if ( !$test_options || $bgee_connector eq '' || $ensembl_connector eq '' || $sex
 }
 die "Invalid exp option: [$expType]\n"  if ( $expType ne 'both' && $expType ne 'expr' && $expType ne 'no_expr' );
 
-# Ensembl connection via Ensembl API/Registry
-my $reg = Utils::connect_ensembl_registry($ensembl_connector, 0);
 # Bgee db connection
 my $dbh = Utils::connect_bgee_db($bgee_connector);
 
@@ -95,15 +93,6 @@ while ( my @data = $selSource->fetchrow_array ){
     $bgeeDataSources{$data[0]} = $data[1];
 }
 $selSource->finish;
-
-# Get species scientific name for Ensembl adaptor
-my %species;
-my $speciesSrc = $dbh->prepare('SELECT speciesId, CONCAT(genus, "_", species) FROM species');
-$speciesSrc->execute()  or die $speciesSrc->errstr;
-while ( my @data = $speciesSrc->fetchrow_array ){
-    $species{$data[0]} = lc $data[1];
-}
-$speciesSrc->finish;
 
 
 ######################################
@@ -154,7 +143,7 @@ for my $chip ( keys %chipTypes ){
         if ( $chipTypeInfo{$chip}->{'percentPresent'} ne '' ){
             $percentPresent = $chipTypeInfo{$chip}->{'percentPresent'} + 0;
         }
-        if ( !$test and !$resume){
+        if ( !$test and !$resume ){
             $insChipType->execute($chip, $chipTypes{$chip}->{'name'}, $chipTypeInfo{$chip}->{'correspondence'}, $status, $qualityScore, $percentPresent)
                 or warn $insChipType->errstr, " for [$chip] [$chipTypes{$chip}->{'name'}]\n";
         }
@@ -208,8 +197,8 @@ my @all_species = do { my %seen; grep { !$seen{$_}++ } @{ $tsv2{'speciesId'} } }
 
 my %genes;
 # Get hash of geneId to bgeeGeneId mapping per species
-foreach my $speciesId (@all_species) {
-  $genes{$speciesId} = Utils::query_bgeeGene($dbh, $speciesId);
+for my $speciesId (@all_species) {
+    $genes{$speciesId} = Utils::query_bgeeGene($dbh, $speciesId);
 }
 
 ############################################################
@@ -223,8 +212,8 @@ my $insAffyChip = $dbh->prepare('INSERT INTO affymetrixChip (affymetrixChipId, m
                                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
 for my $experiment ( sort keys %exp_to_insert ){
-    print "Inserting microarrayExperiment [$experiment]...\n" if ( $debug );
-    if ( !$test and !$resume){
+    print "Inserting microarrayExperiment [$experiment]...\n"  if ( $debug );
+    if ( !$test and !$resume ){
         $insExp->execute($experiment, $exp_to_insert{$experiment}->{'name'}, $exp_to_insert{$experiment}->{'desc'}, $bgeeDataSources{$exp_to_insert{$experiment}->{'source'}})  or warn $insExp->errstr;
     }
 
@@ -259,7 +248,7 @@ for my $experiment ( sort keys %exp_to_insert ){
                 warn "[$tsv2{'uberonId'}[$line]] unmapped organ id\n";
                 next;
             }
-            if ( !exists $doneStg->{ $tsv2{'stageId'}[$line] }  || $doneStg->{ $tsv2{'stageId'}[$line] }  eq '' ){
+            if ( !exists $doneStg->{ $tsv2{'stageId'}[$line] } || $doneStg->{ $tsv2{'stageId'}[$line] }  eq '' ){
                 warn "[$tsv2{'stageId'}[$line]] unmapped stage id\n";
                 next;
             }
@@ -267,9 +256,9 @@ for my $experiment ( sort keys %exp_to_insert ){
             # chip Id used as hash key
             my $affy_id;
             if ( $tsv2{'chipId'}[$line] =~ /(.+)\.cel$/i ){ # case insensitive
-              $affy_id = $1;
+                $affy_id = $1;
             } else {
-              $affy_id = $tsv2{'chipId'}[$line];
+                $affy_id = $tsv2{'chipId'}[$line];
             }
 
             $affymetrixChip{ $affy_id }->{'chipTypeId'}     = $tsv2{'chipTypeId'}[$line];
@@ -306,27 +295,27 @@ for my $experiment ( sort keys %exp_to_insert ){
                                                                      $experiment, '');
 
             # record the conditions in hash
-            $affymetrixChip{ $affy_id }->{'conditionId'}           = $condKeyMap->{'conditionId'};
+            $affymetrixChip{ $affy_id }->{'conditionId'} = $condKeyMap->{'conditionId'};
 
             # add last info to the hash
             if((defined $affyChipsInfo{$experiment}->{ $tsv2{'chipId'}[$line] }->{'qualityScore'}) and ($affyChipsInfo{$experiment}->{ $tsv2{'chipId'}[$line] }->{'qualityScore'} ne '')){
-              $affymetrixChip{ $affy_id }->{'qualityScore'} = $affyChipsInfo{$experiment}->{ $tsv2{'chipId'}[$line] }->{'qualityScore'};
+                $affymetrixChip{ $affy_id }->{'qualityScore'} = $affyChipsInfo{$experiment}->{ $tsv2{'chipId'}[$line] }->{'qualityScore'};
             } else {
-              $affymetrixChip{ $affy_id }->{'qualityScore'} = 0;
+                $affymetrixChip{ $affy_id }->{'qualityScore'} = 0;
             }
             $affymetrixChip{ $affy_id }->{'percentPresent'} = $affyChipsInfo{$experiment}->{ $tsv2{'chipId'}[$line] }->{'percentPresent'};
             if (defined $affyChipsInfo{$experiment}->{ $tsv2{'chipId'}[$line] }->{'scanDate'}){
-              $affymetrixChip{ $affy_id }->{'scanDate'}     = $affyChipsInfo{$experiment}->{ $tsv2{'chipId'}[$line] }->{'scanDate'};
+                $affymetrixChip{ $affy_id }->{'scanDate'}     = $affyChipsInfo{$experiment}->{ $tsv2{'chipId'}[$line] }->{'scanDate'};
             } else {
-              $affymetrixChip{ $affy_id }->{'scanDate'}     = ''
+                $affymetrixChip{ $affy_id }->{'scanDate'}     = '';
             }
         }
     }
 
     ## All chips to be inserted from this experiment
     for my $affy_id ( sort keys %affymetrixChip ){
-        if ( !$test and !$resume){
-            # bgeeAffymetrixChipId will be auto incrementd
+        if ( !$test and !$resume ){
+            # bgeeAffymetrixChipId will be auto incremented
             $insAffyChip->execute($affy_id, $experiment,
                                   $affymetrixChip{$affy_id}->{'chipTypeId'},
                                   $affymetrixChip{$affy_id}->{'norm'},
@@ -334,8 +323,8 @@ for my $experiment ( sort keys %exp_to_insert ){
                                   $affymetrixChip{$affy_id}->{'conditionId'}, # we insert the low-level condition Id here
                                   $affymetrixChip{$affy_id}->{'qualityScore'},
                                   $affymetrixChip{$affy_id}->{'percentPresent'},
-                                  $affymetrixChip{$affy_id}->{'scanDate'})
-                or warn $insAffyChip->errstr;
+                                  $affymetrixChip{$affy_id}->{'scanDate'},
+                                 )  or warn $insAffyChip->errstr;
         }
     }
 }
@@ -375,13 +364,13 @@ $dbh->disconnect;
 ########################
 my %annotation;
 
-CHIP:
+CHIPTYPE:
 for my $chip ( sort keys %all_chipTypes ){
-    print "Retrieving mapping of [$chip]...\n" if ( $debug );
+    print "Retrieving mapping of [$chip]...\n"  if ( $debug );
     # No mapping
     if ( !exists $chipTypes{$chip}->{'xref'} || $chipTypes{$chip}->{'xref'} =~ /^\.out$/ ){
-        warn "No mapping for [$chip] [$chipTypes{$chip}->{'xref'}]\;";
-        next;
+        warn "No mapping xref for [$chip] [$chipTypes{$chip}->{'xref'}]\;";
+        next CHIPTYPE;
     }
 
     my %annot_pbsets;
@@ -392,9 +381,9 @@ for my $chip ( sort keys %all_chipTypes ){
         for my $line ( read_file("$annotations/".$chipTypes{$chip}->{'xref'}, chomp => 1) ){
             my @tmp = split(/\t/, $line);
             # check that the gene is in Bgee
-            if ( exists $genes{$chipTypes{$chip}->{'speciesId'}}->{$tmp[1]} ){
+            if ( exists $genes{ $chipTypes{$chip}->{'speciesId'} }->{ $tmp[1] } ){
                 # probeset -> bgeeGeneId
-                $annot_pbsets{$tmp[0]}->{$genes{$chipTypes{$chip}->{'speciesId'}}->{$tmp[1]}}++;
+                $annot_pbsets{ $tmp[0] }->{ $genes{ $chipTypes{$chip}->{'speciesId'} }->{ $tmp[1] } }++;
             }
             else {
                 $problems++;
@@ -403,36 +392,27 @@ for my $chip ( sort keys %all_chipTypes ){
         print "\tWarning! The mapping in the .out file is outdated ($problems probesets are no longer mapped) [$chip] [$chipTypes{$chip}->{'xref'}]\n"  if ( $problems > 0 );
     }
     # if the annotation is in an Ensembl table
-    else {
-        # Get adaptors for this organism (Array & Transcript)
-        my $array_adaptor = $reg->get_adaptor($species{ $chipTypes{$chip}->{'speciesId'} }, 'Funcgen', 'Array');
-        my $tx_adaptor    = $reg->get_adaptor($species{ $chipTypes{$chip}->{'speciesId'} }, 'Core',    'Transcript');
-
-        # Get array object according to its name in chipType sheet (Xref field)
-        my $alt_xref = $chipTypes{$chip}->{'xref'};
-        $alt_xref =~ s{\-}{_}g; #NOTE HG-U95Av2 can be named HG_U95Av2
-        my @arrays = grep { ($_->name eq $chipTypes{$chip}->{'xref'}) || ($_->name eq $alt_xref) } @{ $array_adaptor->fetch_all };
-        if ( scalar @arrays > 1 ){
-            warn "Too many chips with this name: [$chipTypes{$chip}->{'xref'}]\n";
-            next CHIP;
-        }
-        elsif ( scalar @arrays == 0 ){
-            warn "No chip found with this name: [$chipTypes{$chip}->{'xref'}]\n";
-            next CHIP;
-        }
-        my $array = $arrays[0];
-        for my $pset ( @{ $array->get_all_ProbeSets() } ){
-            my %distinct;
-            for my $trans ( @{ $pset->get_all_ProbeSetTranscriptMappings() } ){
-                my $transcript = $tx_adaptor->fetch_by_stable_id( $trans->stable_id );
-                if (defined $transcript){
-                    $distinct{ $transcript->get_Gene->stable_id } = $pset->name;
-                }
+    elsif ( -e "$mapping_dir/$chipTypes{$chip}->{'xref'}.txt" && -s "$mapping_dir/$chipTypes{$chip}->{'xref'}.txt" ){
+        # Read mapping file
+        my $problems = 0;
+        #Gene stable ID    Transcript stable ID    chip probe
+        for my $line ( grep { !/Gene stable ID/ } read_file("$mapping_dir/$chipTypes{$chip}->{'xref'}.txt", chomp => 1) ){
+            my @tmp = split(/\t/, $line);
+            # check that the gene is in Bgee
+            if ( exists $genes{ $chipTypes{$chip}->{'speciesId'} }->{ $tmp[0] } ){
+                # probeset -> bgeeGeneId
+                $annot_pbsets{ $tmp[2] }->{ $genes{ $chipTypes{$chip}->{'speciesId'} }->{ $tmp[0] } }++;
             }
-            # probeset -> bgeeGeneId
-            map { $annot_pbsets{ $distinct{$_} }->{ $genes{$chipTypes{$chip}->{'speciesId'}}->{$_} }++ } keys %distinct;
+            else {
+                $problems++;
+            }
         }
-        print "\tWarning! There seems to be a bad mapping for this chip [$chip] [$chipTypes{$chip}->{'xref'}]: ". keys(%annot_pbsets) ." probesets\n"  if ( keys(%annot_pbsets) < 100 );
+        print "\tWarning! The mapping from Biomart/Ensembl is outdated ($problems probesets are no longer mapped) [$chip] [$chipTypes{$chip}->{'xref'}]\n"  if ( $problems > 0 );
+    }
+    # No biomart/ensembl or local mapping file
+    else {
+        warn "No mapping file for [$chip] [$chipTypes{$chip}->{'xref'}]\;";
+        next CHIPTYPE;
     }
 
     # keep only probesets mapping to a unique gene id
@@ -450,7 +430,7 @@ for my $chip ( sort keys %all_chipTypes ){
     # Keep the mapping to use it later
     $annotation{$chip} = \%annot_pbsets;
 }
-print "\n\n" if ( $debug );
+print "\n\n"  if ( $debug );
 
 
 ###########################
@@ -470,7 +450,7 @@ my %insertedChips;
 my $selInsertedChip = $dbh->prepare('SELECT DISTINCT bgeeAffymetrixChipId FROM affymetrixProbeset');
 $selInsertedChip->execute()  or die $selInsertedChip->errstr;
 while ( my @data = $selInsertedChip->fetchrow_array ){
-  $insertedChips{$data[0]} = ();
+    $insertedChips{$data[0]} = ();
 }
 $selInsertedChip->finish;
 
@@ -485,39 +465,41 @@ my $insAffyPset = $dbh->prepare('INSERT INTO affymetrixProbeset
                                 (affymetrixProbesetId, bgeeAffymetrixChipId, bgeeGeneId,
                                 normalizedSignalIntensity, rawDetectionFlag, reasonForExclusion,
                                 pValue, qValue, detectionFlag)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
-CHIP: for my $bgeeAffymetrixChipId (sort { $a <=> $b } keys %all_chips) {
-  print("\tChip $bgeeAffymetrixChipId\n") if ( $debug );
-  # see comments above for the use of this option
-  next CHIP if ( $resume and exists($insertedChips{$bgeeAffymetrixChipId}) );
+CHIP:
+for my $bgeeAffymetrixChipId ( sort { $a <=> $b } keys %all_chips ){
+    print("\tChip $bgeeAffymetrixChipId\n")  if ( $debug );
+    # see comments above for the use of this option
+    next CHIP  if ( $resume and exists($insertedChips{$bgeeAffymetrixChipId}) );
 
-  my $chipTypeId = $all_chips{$bgeeAffymetrixChipId}->{'chipTypeId'};
-  # return a hash probesetId -> call/signal/quality
-  my $chip_pbsets = extractProbesetsFromFile($all_chips{$bgeeAffymetrixChipId}->{'experimentId'},
-                                             $all_chips{$bgeeAffymetrixChipId}->{'chipId'},
-                                             $all_chips{$bgeeAffymetrixChipId}->{'norm'},
-                                             $processed_mas5, $processed_schuster, 0);
+    my $chipTypeId = $all_chips{$bgeeAffymetrixChipId}->{'chipTypeId'};
+    # return a hash probesetId -> call/signal/quality
+    my $chip_pbsets = extractProbesetsFromFile($all_chips{$bgeeAffymetrixChipId}->{'experimentId'},
+                                               $all_chips{$bgeeAffymetrixChipId}->{'chipId'},
+                                               $all_chips{$bgeeAffymetrixChipId}->{'norm'},
+                                               $processed_mas5, $processed_schuster, 0);
 
-  PROBESET: for my $pbsetId ( keys %{$chip_pbsets} ) {
-    if ( !exists $annotation{$chipTypeId}->{$pbsetId} || !defined $annotation{$chipTypeId}->{$pbsetId} ) {
-      next PROBESET;
+    PROBESET:
+    for my $pbsetId ( keys %{$chip_pbsets} ){
+        if ( !exists $annotation{$chipTypeId}->{$pbsetId} || !defined $annotation{$chipTypeId}->{$pbsetId} ) {
+            next PROBESET;
+        }
+        # Note: pre-filtering exclusion is now managed in the script insert_affy_expression.pl,
+        # it used to be managed here.
+        my $reasonForExclusion = $Utils::CALL_NOT_EXCLUDED;
+        if ( !$test ){
+            $insAffyPset->execute($pbsetId, $bgeeAffymetrixChipId,
+                                  $annotation{$chipTypeId}->{$pbsetId},  #bgeeGeneId
+                                  $chip_pbsets->{$pbsetId}->{'signal'},
+                                  $chip_pbsets->{$pbsetId}->{'call'},
+                                  $reasonForExclusion,
+                                  $chip_pbsets->{$pbsetId}->{'p_value'},
+                                  $chip_pbsets->{$pbsetId}->{'q_value'},
+                                  $chip_pbsets->{$pbsetId}->{'adjusted_call'},
+                                 )  or warn $insAffyPset->errstr, " for [$bgeeAffymetrixChipId][$pbsetId]\n";
+        }
     }
-    # Note: pre-filtering exclusion is now managed in the script insert_affy_expression.pl,
-    # it used to be managed here.
-    my $reasonForExclusion = $Utils::CALL_NOT_EXCLUDED;
-    if ( !$test ) {
-      $insAffyPset->execute($pbsetId, $bgeeAffymetrixChipId,
-                            $annotation{$chipTypeId}->{$pbsetId},  #bgeeGeneId
-                            $chip_pbsets->{$pbsetId}->{'signal'},
-                            $chip_pbsets->{$pbsetId}->{'call'},
-                            $reasonForExclusion,
-                            $chip_pbsets->{$pbsetId}->{'p_value'},
-                            $chip_pbsets->{$pbsetId}->{'q_value'},
-                            $chip_pbsets->{$pbsetId}->{'adjusted_call'})
-      or warn $insAffyPset->errstr, " for [$bgeeAffymetrixChipId][$pbsetId]\n";
-    }
-  }
 }
 $insAffyPset->finish;
 
@@ -528,3 +510,4 @@ exit 0;
 # for some reasons, this is not always the case (bad submission in AE)
 
 # TODO: add real debug mode where queries are printed, not executed
+
