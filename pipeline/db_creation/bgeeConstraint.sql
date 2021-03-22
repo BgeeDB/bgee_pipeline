@@ -371,7 +371,7 @@ add primary key (chipTypeId);
 
 /*!40000 ALTER TABLE `affymetrixChip` DISABLE KEYS */;
 alter table affymetrixChip
-modify bgeeAffymetrixChipId smallint unsigned not null auto_increment primary key,
+modify bgeeAffymetrixChipId mediumint unsigned not null auto_increment primary key,
 add unique (affymetrixChipId, microarrayExperimentId);
 /*!40000 ALTER TABLE `affymetrixChip` ENABLE KEYS */;
 

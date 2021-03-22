@@ -718,7 +718,7 @@ create table affymetrixChip (
 -- affymetrixChipId are not unique (couple affymetrixChipId - microarrayExperimentId is)
 -- then we need an internal ID to link to affymetrixProbeset
 -- warning, SMALLINT UNSIGNED only allows for 65535 chips to be inserted (we have 12,996 as of Bgee 14)
-    bgeeAffymetrixChipId smallint unsigned not null,
+    bgeeAffymetrixChipId mediumint unsigned not null,
     affymetrixChipId varchar(255) not null,
     microarrayExperimentId varchar(70) not null,
 -- define only if CEL file available, normalization gcRMA, detection schuster
@@ -760,7 +760,7 @@ create table affymetrixChip (
 
 create table affymetrixProbeset (
     affymetrixProbesetId varchar(70) not null,
-    bgeeAffymetrixChipId smallint unsigned not null,
+    bgeeAffymetrixChipId mediumint unsigned not null,
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
     normalizedSignalIntensity decimal(13,5) unsigned not null default 0,
 -- Warning, flags must be ordered, the index in the enum is used in many queries
@@ -1293,7 +1293,7 @@ create table deaSampleGroup (
 -- are unique
 create table deaSampleGroupToAffymetrixChip (
     deaSampleGroupId mediumint unsigned not null,
-    bgeeAffymetrixChipId smallint unsigned not null
+    bgeeAffymetrixChipId mediumint unsigned not null
 ) engine = innodb;
 
 -- An association table to link a rnaSeqLibrary to the deaSampleGroup it belongs to.
