@@ -26,6 +26,7 @@ Use the strain mapping file in the pipeline for inserting conditions
 
 ## EST
 
+* Use cdna.all.fa files from Ensembl FTP instead of Biomart cdna extraction that looks to have limits and be truncated
 * Use a tool more sensitive than blast to map ESTs (such as CD-HIT)
 
 ## RNA-Seq
