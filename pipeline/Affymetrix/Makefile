@@ -147,7 +147,9 @@ insert_affy: check_after $(AFFY_CHIPTYPE_FILEPATH_FULL) $(AFFY_CHIPTYPEQUAL_FILE
 	@$(STGMAPPING) $(STGMAPPINGPORT) &
 	@sleep 50
 	# Inserting affymetrix data. Debug mode is more verbose
-	@perl Data_insertion/insert_affy.pl -bgee=$(BGEECMD) -ensembl=$(ENSCMD)  -chipType=$(AFFY_CHIPTYPE_FILEPATH_FULL) -chipTypeQual=$(AFFY_CHIPTYPEQUAL_FILEPATH) -microarrayExperiment=$(MICROARRAY_EXPERIMENT_FILEPATH_FULL) -affymetrixChipInfo=$(AFFY_CHIPINFO_FILEPATH) -affymetrixChip=$(AFFY_CHIP_FILEPATH_FULL) -annotations=$(ANNOTATIONPATH) -processed_mas5=$(MAS5PATH) -processed_schuster=$(SCHUSTERPATH) -sex_info=$(UBERON_SEX_INFO_FILE_PATH) -Aport=$(IDMAPPINGPORT) -Sport=$(STGMAPPINGPORT) -exp=both -debug > $@.tmp 2>warnings.$@
+	@perl Data_insertion/insert_affy.pl -bgee=$(BGEECMD) -mappingDir=$(PROBSETMAPPINGDIR) -chipType=$(AFFY_CHIPTYPE_FILEPATH_FULL) -chipTypeQual=$(AFFY_CHIPTYPEQUAL_FILEPATH) -microarrayExperiment=$(MICROARRAY_EXPERIMENT_FILEPATH_FULL) -affymetrixChipInfo=$(AFFY_CHIPINFO_FILEPATH) -affymetrixChip=$(AFFY_CHIP_FILEPATH_FULL) -annotations=$(ANNOTATIONPATH) -processed_mas5=$(MAS5PATH) -processed_schuster=$(SCHUSTERPATH) -sex_info=$(UBERON_SEX_INFO_FILE_PATH) -Aport=$(IDMAPPINGPORT) -Sport=$(STGMAPPINGPORT) -exp=both -debug > $@.tmp 2>warnings.$@
+	@echo >> $@.tmp
+	@echo >> $@.tmp
 	# Delete microarrayExperiment with no affymetrixChip
 	@$(MYSQL) -e "DELETE t1 FROM microarrayExperiment AS t1 LEFT OUTER JOIN affymetrixChip AS t2 ON t1.microarrayExperimentId = t2.microarrayExperimentId WHERE t2.microarrayExperimentId IS NULL" >> $@.tmp 2>> warnings.$@
 	@echo "Check inconsistencies between condition species and gene species (there should be none): " >> $@.tmp
