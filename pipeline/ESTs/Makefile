@@ -65,20 +65,30 @@ ensembl_cdna:
 	done
 	@$(MV) $@.temp $@
 
-dmel_mapping: ensembl_cdna
+#${cdna,} and ${sp:0:2} are valid bash variable manipulations!
+ensembl_mapping: ensembl_cdna
 	# Test for BLAST+
 	@which makeblastdb
 	@which blastn
-	# Gunzip Unigene sequences
-	@$(GUNZIP) --to-stdout $(SOURCE_FILES_DIR)/ESTs/Dm.seq.uniq.gz >Dm.seq.uniq
-	# Change headers
-	@perl change_fasta_headers.pl Dm.seq.uniq > Dm.seq.uniq_new_headers
-	# Format blast db
-	@makeblastdb -dbtype nucl -input_type fasta -in $(SOURCE_FILES_DIR)/ESTs/$^ -out my_db -title my_db
-	# Blast
-	@blastn -dust no -outfmt 6 -db my_db -query Dm.seq.uniq_new_headers -num_threads 4 -evalue 1e-10 -out dmel_cdna.results
-	# Extract results
-	@perl extract_results.pl dmel_cdna.results > $@
+	# Get species list from Bgee
+	@$(MYSQL) -e "SELECT CONCAT(SUBSTR(genus, 1, 1), species) FROM species WHERE speciesId IN ($(EST_SP_TAXID))" | grep -v 'speciesId' >$@.temp
+	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 2; fi
+	# Prepare for mapping
+	-@for sp in `cat $@.temp`; do \
+		# Gunzip Unigene sequences
+		$(GUNZIP) --to-stdout $${sp:0:2}.seq.uniq.gz >$${sp:0:2}.seq.uniq; \
+		# Change headers
+		perl change_fasta_headers.pl $${sp:0:2}.seq.uniq > $${sp:0:2}.seq.uniq_new_headers; \
+		$(RM) $${sp:0:2}.seq.uniq; \
+		# Format blast db
+		export cdna=$${sp:0:4}; \
+		makeblastdb -dbtype nucl -input_type fasta -in $(SOURCE_FILES_DIR)/ESTs/$${cdna,}_cdna -out $${cdna,}_db -title -out $${cdna,}_db; \
+		# Blast
+		blastn -dust no -outfmt 6 -db $${cdna,}_db -query $${sp:0:2}.seq.uniq_new_headers -num_threads 4 -evalue 1e-10 -out $${cdna,}_cdna.results; \
+		# Extract results
+		perl extract_results_for_all.pl $${cdna,}_cdna.results > $${cdna,}_mapping; \
+	done
+	@$(MV) $@.temp $@
 
 
 miRNA.dat: smiRNAdb
@@ -88,7 +98,7 @@ miRNA.dat: smiRNAdb
 
 
 #NOTE only speciesId from species with EST annotation files are listed here
-EST: library.report unigene dmel_mapping $(EST_SPECIES_CURATION_FILEPATH) $(UBERON_SEX_INFO_FILE_PATH)
+EST: library.report unigene ensembl_mapping $(EST_SPECIES_CURATION_FILEPATH) $(UBERON_SEX_INFO_FILE_PATH)
 	# Insert ESTs info in Bgee
 	@$(MYSQL) -e "SELECT speciesId FROM species WHERE speciesId IN ($(EST_SP_TAXID))" | grep -v 'speciesId' >$@.temp
 	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 3; fi
@@ -163,7 +173,7 @@ $(VERIFICATIONFILE): EST miRNA_est check_conditions expression_est
 
 clean:
 	-@$(RM) -R $(VERIFICATIONFILE) *.data S.xls Report_*.csv.bz2 Dm.seq.uniq* Dm.seq.uniq_new_headers* my_db* *_cdna.results* \
-		*_cdna dmel_mapping $(TMPDIR)* EST miRNA.dat check_conditions expression_est miRNA_est species *.temp smiRNAdb *.tmp unigene warnings.*
+		*_cdna ensembl_mapping $(TMPDIR)* EST miRNA.dat check_conditions expression_est miRNA_est species *.temp smiRNAdb *.tmp unigene warnings.*
 	-@$(GIT) rm $(VERIFICATIONFILE)
 	-@$(GIT) commit $(VERIFICATIONFILE) -m "Removing verification file for ESTs/miRNA"
 	@$(GIT) push
