@@ -460,7 +460,6 @@ $selInsertedChip->finish;
 print("Inserting probesets...\n")  if ( $debug );
 
 # affymetrixProbeset
-#TODO Add p-value in the db
 my $insAffyPset = $dbh->prepare('INSERT INTO affymetrixProbeset
                                 (affymetrixProbesetId, bgeeAffymetrixChipId, bgeeGeneId,
                                 normalizedSignalIntensity, rawDetectionFlag, reasonForExclusion,
@@ -509,5 +508,5 @@ exit 0;
 # Remark: we don't check that all processed files have the same length
 # for some reasons, this is not always the case (bad submission in AE)
 
-# TODO: add real debug mode where queries are printed, not executed
+# TODO add real debug mode where queries are printed, not executed
 
