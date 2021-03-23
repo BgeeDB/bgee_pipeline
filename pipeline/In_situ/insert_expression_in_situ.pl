@@ -61,8 +61,8 @@ print "Done, ", scalar(@exprMappedConditions), " conditions retrieved.\n";
 # ADD PVALUES              #
 ############################
 
-my $PVALUE_ABSENT_LOW = 0.5;
-my $PVALUE_ABSENT_HIGH = 0.1;
+my $PVALUE_ABSENT_HIGH = 0.5;
+my $PVALUE_ABSENT_LOW = 0.1;
 my $PVALUE_PRESENT_LOW = 0.01;
 my $PVALUE_PRESENT_HIGH = 0.0004;
 
