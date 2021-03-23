@@ -124,9 +124,19 @@ sub extractProbesetsFromFile {
                 if ( exists $correspCall{$call} && defined $signal && $signal ne 'null' ) {
                     #pbset -> quality, call and signal
                     $pbsets{$probesetId}->{'call'}          = $correspCall{$call};
-                    $pbsets{$probesetId}->{'p_value'}       = 0.05; #Always the same value for MAS5
-                    $pbsets{$probesetId}->{'q_value'}       = 0.05; #No q-value for MAS5, so same as p-value
-                    $pbsets{$probesetId}->{'adjusted_call'} = 'A';  #Always the same value for MAS5
+                    #According to the call: A => 0.1, M => 0.05, P => 0.01
+                    my $p_value  = $pbsets{$probesetId}->{'call'} eq 'absent'   ? 0.1
+                                 : $pbsets{$probesetId}->{'call'} eq 'present'  ? 0.01
+                                 : $pbsets{$probesetId}->{'call'} eq 'marginal' ? 0.05
+                                 : '';
+                    #In MAS5 files adjusted_call and p-value have always the same values, A and 0.05
+                    my $adj_call = $pbsets{$probesetId}->{'call'} eq 'absent'   ? 'A'
+                                 : $pbsets{$probesetId}->{'call'} eq 'present'  ? 'P'
+                                 : $pbsets{$probesetId}->{'call'} eq 'marginal' ? 'M'
+                                 : '';
+                    $pbsets{$probesetId}->{'p_value'}       = $p_value;
+                    $pbsets{$probesetId}->{'q_value'}       = $p_value; #No q-value for MAS5, so same as p-value
+                    $pbsets{$probesetId}->{'adjusted_call'} = $adj_call;
                     # a way to convert signal to numeric
                     if ( $signal + 0 >= 0 ) {
                         $pbsets{$probesetId}->{'signal'} = $signal;
