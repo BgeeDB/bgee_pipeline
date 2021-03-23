@@ -45,6 +45,9 @@ sub get_corresp_call {
 sub get_mas5_columns_from_header {
     my ($header) = @_;
     $header = bgeeTrim($header);
+    #"probeId"       "expression"    "call"    "pValue"    "adjusted_call"
+    #"1415670_at"    "present"       870.6     0.05        "A"
+    $header =~ s{"}{}g;
 
     my %proper_columns;
     $proper_columns{'call'}        = -1;
@@ -57,19 +60,19 @@ sub get_mas5_columns_from_header {
     # first, let's try to identify proper columns with real proper names
     for ( my $y = 0; $y <= $#tmp; $y++ ){
         $tmp[$y] = bgeeTrim($tmp[$y]);
-        if ( $tmp[$y] =~ /GEO:AFFYMETRIX(_|\s)VALUE$/ || $tmp[$y] =~ /Affymetrix:CHPSignal$/){
+        if ( $tmp[$y] eq 'call' || $tmp[$y] =~ /GEO:AFFYMETRIX(_|\s)VALUE$/ || $tmp[$y] =~ /Affymetrix:CHPSignal$/){
             if ( $proper_columns{'signal'} != -1 && $proper_columns{'signal'} != $y ){
                 $error = 1;
             }
             $proper_columns{'signal'} = $y;
         }
-        elsif ( $tmp[$y] =~ /GEO:AFFYMETRIX(_ABS)?(_|\s)CALL$/ || $tmp[$y] =~ /Affymetrix:CHPDetection$/ || $tmp[$y] =~ /GEO:AFFYMETRIX_Detection$/){
+        elsif ( $tmp[$y] eq 'expression' || $tmp[$y] =~ /GEO:AFFYMETRIX(_ABS)?(_|\s)CALL$/ || $tmp[$y] =~ /Affymetrix:CHPDetection$/ || $tmp[$y] =~ /GEO:AFFYMETRIX_Detection$/){
             if ( $proper_columns{'call'} != -1 && $proper_columns{'call'} != $y ){
                 $error = 1;
             }
             $proper_columns{'call'} = $y;
         }
-        elsif ( $tmp[$y] eq 'CompositeSequence name' || $tmp[$y] eq 'CompositeSequence_name' || $tmp[$y] eq 'Affymetrix:CHPProbeSetName'){
+        elsif ( $tmp[$y] eq 'probeId' || $tmp[$y] eq 'CompositeSequence name' || $tmp[$y] eq 'CompositeSequence_name' || $tmp[$y] eq 'Affymetrix:CHPProbeSetName'){
             if ( $proper_columns{'probeset_id'} != -1 && $proper_columns{'probeset_id'} != $y ){
                 $error = 1;
             }
@@ -101,8 +104,6 @@ sub get_mas5_columns_from_header {
             $proper_columns{'call'}        = 1;
             $proper_columns{'signal'}      = 2;
         }
-        $proper_columns{'q_value'}       = 3;
-        $proper_columns{'adjusted_call'} = 4;
     }
 
     return %proper_columns;

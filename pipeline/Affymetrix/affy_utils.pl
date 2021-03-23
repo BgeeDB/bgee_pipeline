@@ -113,22 +113,20 @@ sub extractProbesetsFromFile {
                   next;
                 }
                 chomp $line;
+                $line =~ s{"}{}g;
                 $nbr_line++;
                 my @tmp = split(/\t/, $line);
                 my $call          = bgeeTrim($tmp[$column_indexes{'call'}]);
                 my $signal        = bgeeTrim($tmp[$column_indexes{'signal'}]);
                 my $probesetId    = bgeeTrim($tmp[$column_indexes{'probeset_id'}]);
-                my $adjusted_call = bgeeTrim($tmp[$column_indexes{'adjusted_call'}]);
-                my $q_value       = bgeeTrim($tmp[$column_indexes{'q_value'}]);
-                my $p_value       = bgeeTrim($tmp[$column_indexes{'p_value'}]);#FIXME to check with normalized MAS5 files (could also be "pValue")
 
                 # check that the call  and the signal intensity are defined
                 if ( exists $correspCall{$call} && defined $signal && $signal ne 'null' ) {
                     #pbset -> quality, call and signal
                     $pbsets{$probesetId}->{'call'}          = $correspCall{$call};
-                    $pbsets{$probesetId}->{'p_value'}       = 1.0; #FIXME Because no p-value for MAS5
-                    $pbsets{$probesetId}->{'q_value'}       = $q_value;
-                    $pbsets{$probesetId}->{'adjusted_call'} = $adjusted_call;
+                    $pbsets{$probesetId}->{'p_value'}       = 0.05; #Always the same value for MAS5
+                    $pbsets{$probesetId}->{'q_value'}       = 0.05; #No q-value for MAS5, so same as p-value
+                    $pbsets{$probesetId}->{'adjusted_call'} = 'A';  #Always the same value for MAS5
                     # a way to convert signal to numeric
                     if ( $signal + 0 >= 0 ) {
                         $pbsets{$probesetId}->{'signal'} = $signal;
