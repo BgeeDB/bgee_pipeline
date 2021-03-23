@@ -454,10 +454,15 @@ while ( my @data = $selInsertedChip->fetchrow_array ){
 }
 $selInsertedChip->finish;
 
+# Close connection to reopen it with autocommit disable
+$dbh->disconnect;
 ###############################
 # Insert probesets            #
 ###############################
 print("Inserting probesets...\n")  if ( $debug );
+$dbh = Utils::connect_bgee_db($bgee_connector);
+# Disable autocommit otherwise insertion is too slow.
+$dbh->{AutoCommit} = 0;
 
 # affymetrixProbeset
 my $insAffyPset = $dbh->prepare('INSERT INTO affymetrixProbeset
@@ -499,6 +504,8 @@ for my $bgeeAffymetrixChipId ( sort { $a <=> $b } keys %all_chips ){
                                  )  or warn $insAffyPset->errstr, " for [$bgeeAffymetrixChipId][$pbsetId]\n";
         }
     }
+    # We commit after each chip
+    $dbh->commit;
 }
 $insAffyPset->finish;
 
