@@ -20,18 +20,19 @@ get_annot:
 	@touch $@
 
 
-#FIXME When and how those files are used???
 #TODO use external mapping for all? Without Ensembl or through UniProt ???
-unigene: get_annot $(EST_SPECIES_CURATION_FILEPATH) $(SPECIESFILEPATH)
+unigene: get_annot $(EST_SPECIES_CURATION_FILEPATH)
 	# Get species list from Bgee
-	@grep -P '^\d+' $(SPECIESFILEPATH) | cut -f2,3 --output-delimiter='_' | sed -e 's/ /_/g' >$@.temp
+	@$(MYSQL) -e "SELECT CONCAT(genus, '_', species) FROM species WHERE speciesId IN ($(EST_SP_TAXID))" | grep -v 'speciesId' >$@.temp
 	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 2; fi
 	# Download UniGene species data set
 	-@for sp in `cat $@.temp`; do \
 		$(WGET) -nH -r --cut-dirs=2 -P $(TMPDIR)  ftp://ftp.ncbi.nih.gov/repository/UniGene/$$sp/*.data.gz; \
+		$(WGET) -nH -r --cut-dirs=2 -P $(TMPDIR)  ftp://ftp.ncbi.nih.gov/repository/UniGene/$$sp/*.seq.uniq.gz; \
 	done
 	# !!! NEED disk space to gunzip all those files !!! So gunzip only required ones later
 	@ln -fs $(TMPDIR)/*/*.data.gz .
+	@ln -fs $(TMPDIR)/*/*.seq.uniq.gz .
 	@$(MV) $@.temp $@
 
 library.report:
@@ -63,9 +64,7 @@ dmel_mapping: dmel_cdna
 	# Test for BLAST+
 	@which makeblastdb
 	@which blastn
-	# Download Unigene D. melanogaster sequences
-	@$(WGET) 'ftp://ftp.ncbi.nih.gov/repository/UniGene/Drosophila_melanogaster/Dm.seq.uniq.gz' -O $(SOURCE_FILES_DIR)/ESTs/Dm.seq.uniq.gz.tmp && $(MV) $(SOURCE_FILES_DIR)/ESTs/Dm.seq.uniq.gz.tmp $(SOURCE_FILES_DIR)/ESTs/Dm.seq.uniq.gz 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)/ESTs/Dm.seq.uniq.gz.tmp
-	# Gunzip it
+	# Gunzip Unigene sequences
 	@$(GUNZIP) --to-stdout $(SOURCE_FILES_DIR)/ESTs/Dm.seq.uniq.gz >Dm.seq.uniq
 	# Change headers
 	@perl change_fasta_headers.pl Dm.seq.uniq > Dm.seq.uniq_new_headers
