@@ -61,29 +61,29 @@ print "Done, ", scalar(@exprMappedConditions), " conditions retrieved.\n";
 # ADD PVALUES              #
 ############################
 
-my $PVALUE_ABSENT_LOW = 0.05;
+my $PVALUE_ABSENT_LOW = 0.5;
 my $PVALUE_ABSENT_HIGH = 0.1;
 my $PVALUE_PRESENT_LOW = 0.01;
 my $PVALUE_PRESENT_HIGH = 0.0004;
 
 if ($debug) {
     print 'UPDATE inSituSpot SET pValue = CASE '.
-                          ' WHEN inSituSpot = '.$Utils::LOW_QUAL.' AND detectionFlag = '.$Utils::ABSENT_CALL.' THEN '.$PVALUE_ABSENT_LOW.
-                          ' WHEN inSituSpot = '.$Utils::HIGH_QUAL.' AND detectionFlag = '.$Utils::ABSENT_CALL.' THEN '.$PVALUE_ABSENT_HIGH.
-                          ' WHEN inSituSpot = '.$Utils::LOW_QUAL.' AND detectionFlag = '.$Utils::PRESENT_CALL.' THEN '.$PVALUE_PRESENT_LOW.
-                          ' WHEN inSituSpot = '.$Utils::HIGH_QUAL.' AND detectionFlag = '.$Utils::PRESENT_CALL.' THEN '.$PVALUE_PRESENT_HIGH.
+                          ' WHEN inSituData = "'.$Utils::LOW_QUAL.'" AND detectionFlag = "'.$Utils::ABSENT_CALL.'" THEN '.$PVALUE_ABSENT_LOW.
+                          ' WHEN inSituData = "'.$Utils::HIGH_QUAL.'" AND detectionFlag = "'.$Utils::ABSENT_CALL.'" THEN '.$PVALUE_ABSENT_HIGH.
+                          ' WHEN inSituData = "'.$Utils::LOW_QUAL.'" AND detectionFlag = "'.$Utils::PRESENT_CALL.'" THEN '.$PVALUE_PRESENT_LOW.
+                          ' WHEN inSituData = "'.$Utils::HIGH_QUAL.'" AND detectionFlag = "'.$Utils::PRESENT_CALL.'" THEN '.$PVALUE_PRESENT_HIGH.
                           ' ELSE NULL '.
-                        ' END ';
+                        ' END '."\n";
 } else {
     my $updPValues   = $bgee->prepare('UPDATE inSituSpot SET pValue = CASE '.
-                          ' WHEN inSituSpot = '.$Utils::LOW_QUAL.' AND detectionFlag = '.$Utils::ABSENT_CALL.' THEN '.$PVALUE_ABSENT_LOW.
-                          ' WHEN inSituSpot = '.$Utils::HIGH_QUAL.' AND detectionFlag = '.$Utils::ABSENT_CALL.' THEN '.$PVALUE_ABSENT_HIGH.
-                          ' WHEN inSituSpot = '.$Utils::LOW_QUAL.' AND detectionFlag = '.$Utils::PRESENT_CALL.' THEN '.$PVALUE_PRESENT_LOW.
-                          ' WHEN inSituSpot = '.$Utils::HIGH_QUAL.' AND detectionFlag = '.$Utils::PRESENT_CALL.' THEN '.$PVALUE_PRESENT_HIGH.
+                          ' WHEN inSituData = "'.$Utils::LOW_QUAL.'" AND detectionFlag = "'.$Utils::ABSENT_CALL.'" THEN '.$PVALUE_ABSENT_LOW.
+                          ' WHEN inSituData = "'.$Utils::HIGH_QUAL.'" AND detectionFlag = "'.$Utils::ABSENT_CALL.'" THEN '.$PVALUE_ABSENT_HIGH.
+                          ' WHEN inSituData = "'.$Utils::LOW_QUAL.'" AND detectionFlag = "'.$Utils::PRESENT_CALL.'" THEN '.$PVALUE_PRESENT_LOW.
+                          ' WHEN inSituData = "'.$Utils::HIGH_QUAL.'" AND detectionFlag = "'.$Utils::PRESENT_CALL.'" THEN '.$PVALUE_PRESENT_HIGH.
                           ' ELSE NULL '.
                         ' END ');
     $updPValues->execute()  or die $updPValues->errstr;
-    $updPValues-finish();
+    $updPValues->finish();
 }
 
 
@@ -128,6 +128,8 @@ sub add_expression {
 # ITERATING CONDITIONS TO INSERT DATA    #
 ##########################################
 
+my $reasonForExclusion = $Utils::CALL_NOT_EXCLUDED;
+
 print "Processing conditions...\n";
 for my $exprMappedConditionId ( @exprMappedConditions ){
     print "\tconditionId: $exprMappedConditionId\n";
@@ -147,7 +149,7 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
 
     # now iterating the genes to insert expression data
     # (one row for a gene-condition)
-    for my $geneId ( keys %results ){
+    for my $geneId ( keys %results ){ 
         
         my $expressionId   = undef;
 
@@ -171,7 +173,9 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
         }
     }
 }
-
+$insUpExpr->finish();
+$updResult->finish();
+$queryResults->finish();
 $bgee->disconnect;
 print "Done\n"  if ( $debug );
 
