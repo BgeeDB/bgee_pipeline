@@ -142,10 +142,10 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
                 print "INSERT INTO estLibraryExpression
                            (expressionId, estLibraryId, estCount)
                        VALUES ($printExprId, $libId,
-                    $results{$geneId}->{$libId})\n";
+                       $results{$geneId}->{$libId})\n";
 
                 my $pval = 2**(-($results{$geneId}->{$libId}+1));
-                print "UPDATE expressedSequenceTag SET pValue='$pval' WHERE expressionId=$$expressionId AND estLibraryId=$libId\n";
+                print "UPDATE expressedSequenceTag SET pValue=$pval WHERE expressionId=$printExprId AND estLibraryId=$libId\n";
             }
         } else {
             $updResult->execute($expressionId, $geneId, $exprMappedConditionId)  or die $updResult->errstr;
