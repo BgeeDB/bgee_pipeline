@@ -247,3 +247,18 @@ check_conditions: insert_scRNA_seq
 	@echo "Conditions with cell type not existing in related species:" >> $@.tmp
 	@$(MYSQL) -e "SELECT DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.cellTypeId, t5.anatEntityName, t1.sex, t1.strain FROM cond AS t1 LEFT OUTER JOIN stageTaxonConstraint AS t2 ON t1.stageId = t2.stageId AND (t2.speciesId IS NULL OR t1.speciesId = t2.speciesId) LEFT OUTER JOIN anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId LEFT OUTER JOIN anatEntity as t5 ON t5.anatEntityId = t1.cellTypeId WHERE t5.anatEntityId IS NULL and t5.anatEntityId IS NOT NULL ORDER BY t1.speciesId" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
+
+insert_expression: 
+	# Insert the expression summaries
+	@perl 3Insertion/insert_scrna_seq_expression.pl -bgee=$(BGEECMD) > $@.tmp 2>warnings.$@
+	@echo
+	@echo "Searching for incorrect updates of scRnaSeqFullLengthResult/expression tables (there should be none)" >> $@.tmp
+	@$(MYSQL) -e "SELECT * FROM scRnaSeqFullLengthResult WHERE reasonForExclusion = 'not excluded' AND expressionId IS NULL" >> $@.tmp
+	@$(MYSQL) -e "SELECT * FROM scRnaSeqFullLengthResult WHERE reasonForExclusion != 'not excluded' AND expressionId IS NOT NULL" >> $@.tmp
+	@echo >> $@.tmp
+	@echo "Statistics for rscRnaSeqFullLengthResult" >> $@.tmp
+	@$(MYSQL) -e "SELECT speciesId, detectionFlag, COUNT(*) AS scRnaSeqFullLengthResultCount FROM scRnaSeqFullLengthResult AS t1 INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId INNER JOIN ($(TMP_TABLE_CLAUSE)) AS tmpTable ON t1.expressionId = tmpTable.expressionId GROUP BY speciesId detectionFlag ORDER BY speciesId, detectionFlag" >> $@.tmp
+	@echo "Statistics for expression table" >> $@.tmp
+	@$(MYSQL) -e "SELECT speciesId, COUNT(*), COUNT(DISTINCT t1.bgeeGeneId), COUNT(DISTINCT t1.conditionId), COUNT(DISTINCT t3.anatEntityId, t3.stageId), COUNT(DISTINCT t3.anatEntityId, t3.stageId, t3.sex) FROM expression AS t1 INNER JOIN cond AS t3 ON t1.conditionId = t3.conditionId GROUP BY speciesId ORDER BY speciesId" >> $@.tmp
+	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
+	@$(MV) $@.tmp $@
