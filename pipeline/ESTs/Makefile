@@ -55,12 +55,17 @@ smiRNAdb: get_annot $(SMIRNADB_CURATION_MAPFILEPATH) $(SOURCE_FILES_DIR)/ESTs/sm
 	@touch $@
 
 
-dmel_cdna:
-	# Download all D. melanogaster cdna in fasta
-	@perl get_Dmel_cdna_fas.pl > $(SOURCE_FILES_DIR)/ESTs/$@
-	@touch $@
+ensembl_cdna:
+	# Get species list from Bgee
+	@$(MYSQL) -e "SELECT LOWER(CONCAT(SUBSTR(genus, 1, 1), species)) FROM species WHERE speciesId IN ($(EST_SP_TAXID))" | grep -v 'speciesId' >$@.temp
+	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 2; fi
+	# Download all Ensembl cdna in fasta
+	-@for sp in `cat $@.temp`; do \
+		perl get_Ensembl_cdna_fas.pl $$sp > $(SOURCE_FILES_DIR)/ESTs/$${sp:0:4}_cdna; \
+	done
+	@$(MV) $@.temp $@
 
-dmel_mapping: dmel_cdna
+dmel_mapping: ensembl_cdna
 	# Test for BLAST+
 	@which makeblastdb
 	@which blastn
@@ -157,8 +162,8 @@ $(VERIFICATIONFILE): EST miRNA_est check_conditions expression_est
 	@$(GIT) push
 
 clean:
-	-@$(RM) -R $(VERIFICATIONFILE) *.data S.xls Report_*.csv.bz2 Dm.seq.uniq* Dm.seq.uniq_new_headers* my_db* dmel_cdna.results* \
-		dmel_cdna dmel_mapping $(TMPDIR)* EST miRNA.dat check_conditions expression_est miRNA_est species *.temp smiRNAdb *.tmp unigene warnings.*
+	-@$(RM) -R $(VERIFICATIONFILE) *.data S.xls Report_*.csv.bz2 Dm.seq.uniq* Dm.seq.uniq_new_headers* my_db* *_cdna.results* \
+		*_cdna dmel_mapping $(TMPDIR)* EST miRNA.dat check_conditions expression_est miRNA_est species *.temp smiRNAdb *.tmp unigene warnings.*
 	-@$(GIT) rm $(VERIFICATIONFILE)
 	-@$(GIT) commit $(VERIFICATIONFILE) -m "Removing verification file for ESTs/miRNA"
 	@$(GIT) push

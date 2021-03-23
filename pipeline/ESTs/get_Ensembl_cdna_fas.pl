@@ -8,10 +8,13 @@ use diagnostics;
 use HTTP::Request;
 use LWP::UserAgent;
 
+my $species = $ARGV[0]  or die "\n\t$0 dmelanogaster\n\n";
+
+#FIXME get these fasta files from e.g. ftp://ftp.ensembl.org/pub/current_fasta/mus_musculus/cdna/
 my $xml = '<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Query>
 <Query virtualSchemaName = "default" formatter = "FASTA" header = "0" uniqueRows = "0" count = "" datasetConfigVersion = "0.7" >
-	<Dataset name = "dmelanogaster_gene_ensembl" interface = "default" >
+	<Dataset name = "'.$species.'_gene_ensembl" interface = "default" >
 		<Filter name = "biotype" value = "protein_coding"/>
 		<Attribute name = "ensembl_gene_id" />
 		<Attribute name = "ensembl_transcript_id" />
