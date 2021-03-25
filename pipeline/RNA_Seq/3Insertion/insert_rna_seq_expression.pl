@@ -151,11 +151,7 @@ my $updResult = $bgee->prepare('UPDATE rnaSeqResult AS t1
                                 INNER JOIN cond AS t3 ON t2.conditionId = t3.conditionId
                                 SET expressionId = ?, reasonForExclusion = ?
                                 WHERE bgeeGeneId = ? and t3.exprMappedConditionId = ?
-                                  AND ((t1.detectionFlag = "'.$Utils::PRESENT_CALL.'" 
-                                      AND t1.reasonForExclusion != "'.$Utils::EXCLUDED_FOR_PRE_FILTERED.'")
-                                    OR (t1.detectionFlag = "'.$Utils::ABSENT_CALL.'" 
-                                      AND t1.reasonForExclusion NOT IN ("'.$Utils::EXCLUDED_FOR_PRE_FILTERED.'", 
-                                      "'.$Utils::EXCLUDED_FOR_ABSENT_CALLS.'"))');
+                                AND t1.reasonForExclusion != "'.$Utils::EXCLUDED_FOR_PRE_FILTERED.'"');
 
 # query to get all the RNA-Seq results for a condition
 my $queryResults = $bgee->prepare("SELECT t1.bgeeGeneId, t2.rnaSeqExperimentId, t1.rnaSeqLibraryId,
