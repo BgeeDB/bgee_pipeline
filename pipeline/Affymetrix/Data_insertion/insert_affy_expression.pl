@@ -66,14 +66,14 @@ if($debug) {
           "SELECT DISTINCT t1.affymetrixProbesetId, t2.chipTypeId ",
           "FROM affymetrixProbeset AS t1 ",
           "INNER JOIN affymetrixChip AS t2 ON t1.bgeeAffymetrixChipId = t2.bgeeAffymetrixChipId ",
-          'WHERE t1.detectionFlag = "'.$Utils::PRESENT_CALL.'")'."\n";
+          'WHERE t1.rawDetectionFlag IN ("'.$Utils::PRESENT_CALL.'", "'.$Utils::MARGINAL_CALL.'"))'."\n";
 } else {
     my $findPresentGenes = $bgee->prepare('CREATE TEMPORARY TABLE tempPresentAffy (PRIMARY KEY (affymetrixProbesetId, chipTypeId)) ENGINE=InnoDB
                     AS (
                         SELECT DISTINCT t1.affymetrixProbesetId, t2.chipTypeId
                         FROM affymetrixProbeset AS t1
                         INNER JOIN affymetrixChip AS t2 ON t1.bgeeAffymetrixChipId = t2.bgeeAffymetrixChipId
-                        WHERE t1.detectionFlag = "'.$Utils::PRESENT_CALL.'"
+                        WHERE t1.rawDetectionFlag IN ("'.$Utils::PRESENT_CALL.'", "'.$Utils::MARGINAL_CALL.'")
                     )');
     $findPresentGenes->execute()  or die $findPresentGenes->errstr;
 }
@@ -136,7 +136,7 @@ my $updResult = $bgee->prepare('UPDATE affymetrixProbeset AS t1
 
 # query to get all the Affymetrix probesets for a condition
 my $queryResults = $bgee->prepare("SELECT t1.bgeeGeneId, t2.microarrayExperimentId, t1.bgeeAffymetrixChipId,
-                                          t1.affymetrixProbesetId, t1.detectionFlag, t1.pValue
+                                          t1.affymetrixProbesetId, t1.rawDetectionFlag, t1.pValue
                                    FROM affymetrixProbeset AS t1
                                    INNER JOIN affymetrixChip AS t2 ON t1.bgeeAffymetrixChipId = t2.bgeeAffymetrixChipId
                                    INNER JOIN cond AS t3 ON t2.conditionId = t3.conditionId
@@ -167,7 +167,7 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
     $queryResults->execute($exprMappedConditionId)  or die $queryResults->errstr;
     my %results = ();
     while ( my @data = $queryResults->fetchrow_array ){
-        #data[0] = bgeeGeneId, data[1] = experimentId, data[2] = chipId, data[3] = probesetId, data[4] = detectionFlag, data[5] = pValue
+        #data[0] = bgeeGeneId, data[1] = experimentId, data[2] = chipId, data[3] = probesetId, data[4] = rawDetectionFlag, data[5] = pValue
         #important to retrieve the probeset IDs for first per-chip reconciliation
         $results{$data[0]}->{$data[1]}->{$data[2]}->{$data[3]}->{'call'}    = $data[4];
         $results{$data[0]}->{$data[1]}->{$data[2]}->{$data[3]}->{'pvalue'} = $data[5];
@@ -200,7 +200,7 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
             print "UPDATE affymetrixProbeset AS t1 ",
                   "INNER JOIN affymetrixChip AS t2 ON t1.bgeeAffymetrixChipId = t2.bgeeAffymetrixChipId ",
                   "INNER JOIN cond AS t3 ON t2.conditionId = t3.conditionId ",
-                  "SET expressionId = $printExprId, reasonForExclusion = $reasonForExclusion ",
+                  "SET expressionId = $printExprId, reasonForExclusion = '$reasonForExclusion' ",
                   "WHERE t1.bgeeGeneId = $geneId AND t3.exprMappedConditionId = $exprMappedConditionId ",
                   "and t1.reasonForExclusion != '".$Utils::EXCLUDED_FOR_PRE_FILTERED."'\n";
         } else {
