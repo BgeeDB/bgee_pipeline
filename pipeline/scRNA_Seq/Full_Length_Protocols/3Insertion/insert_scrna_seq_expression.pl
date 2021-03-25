@@ -5,10 +5,10 @@ use strict;
 use warnings;
 use diagnostics;
 
-# Frederic Bastian, created November 2012, last update Dec. 2016
+# Julien Wollbrett, created March 2021
 
-# USAGE: perl insert_rna_seq_expression.pl -bgee=connection_string <OPTIONAL: -debug>
-# After the insertion of RNA-Seq data, this script inserts the data
+# USAGE: perl insert_scrna_seq_expression.pl -bgee=connection_string <OPTIONAL: -debug>
+# After the insertion of full length single cell RNA-Seq data, this script inserts the data
 # into the expression table and update the scRnaSeqFullLengthResult table.
 # -debug: if provided, run in verbose mode (print the update/insert SQL queries, not executing them)
 
@@ -116,16 +116,17 @@ my $updResult = $bgee->prepare('UPDATE scRnaSeqFullLengthResult AS t1
                                 INNER JOIN cond AS t3 ON t2.conditionId = t3.conditionId
                                 SET expressionId = ?, reasonForExclusion = ?
                                 WHERE bgeeGeneId = ? and t3.exprMappedConditionId = ?
-                                  AND t1.reasonForExclusion NOT IN ("'.$Utils::EXCLUDED_FOR_PRE_FILTERED.'", 
-                                  "'.$Utils::EXCLUDED_FOR_ABSENT_CALLS.'")');
+                                AND t1.reasonForExclusion != "'.$Utils::EXCLUDED_FOR_PRE_FILTERED.'"
+                                AND t1.pValue IS NOT NULL');
 
 # query to get all the RNA-Seq results for a condition
 my $queryResults = $bgee->prepare("SELECT t1.bgeeGeneId, t2.scRnaSeqFullLengthExperimentId, t1.scRnaSeqFullLengthLibraryId,
-                                          t1.detectionFlag, t1.pValue
+                                          t1.detectionFlag, t1.pValue, t1.reasonForExclusion
                                    FROM scRnaSeqFullLengthResult AS t1
                                    INNER JOIN scRnaSeqFullLengthLibrary AS t2 ON t1.scRnaSeqFullLengthLibraryId = t2.scRnaSeqFullLengthLibraryId
                                    INNER JOIN cond AS t3 ON t2.conditionId = t3.conditionId
-                                   WHERE t3.exprMappedConditionId = ? AND t1.reasonForExclusion = '".$Utils::CALL_NOT_EXCLUDED."'");
+                                   WHERE t3.exprMappedConditionId = ? AND t1.reasonForExclusion != '".$Utils::EXCLUDED_FOR_PRE_FILTERED."'
+                                   AND t1.pValue IS NOT NULL");
 
 
 ##########################################
@@ -158,8 +159,9 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
         #XXX here it could be enough to create a hash like that : $results{$data[0]} = 1. However we kept 
         # information about experiments/libraries in case we have to insert them as a JSON field in the 
         # future. To update if pvalue is useless once full pipeline has been run for Bgee 15
-        $results{$data[0]}->{$data[1]}->{$data[2]}->{'call'}    = $data[3];
-        $results{$data[0]}->{$data[1]}->{$data[2]}->{'pvalue'}  = $data[4];
+        $results{$data[0]}->{$data[1]}->{$data[2]}->{'call'}                = $data[3];
+        $results{$data[0]}->{$data[1]}->{$data[2]}->{'pvalue'}              = $data[4];
+        $results{$data[0]}->{$data[1]}->{$data[2]}->{'reasonForExclusion'}  = $data[5];
     }
     print "\t\tDone, ", scalar(keys %results), ' genes retrieved. ',
           "Generating expression summary...\n";
@@ -168,19 +170,17 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
     # (one row for a gene-condition)
     for my $geneId ( keys %results ){
 
+        #check that at least 
+
         my $reasonForExclusion =  $Utils::CALL_NOT_EXCLUDED;
         my $expressionId = undef;
 
         # insert or update the expression table if not only undefined calls
         #TODO remove this condition if default exlusion type is still $Utils::CALL_NOT_EXCLUDED once bgee 15.0 is created
-        if ( $reasonForExclusion eq $Utils::CALL_NOT_EXCLUDED ){
-            if ( $debug ){
-                print "INSERT INTO expression (bgeeGeneId, conditionId) VALUES ($geneId, $exprMappedConditionId)...\n";
-            } else {
-                $expressionId = add_expression($geneId, $exprMappedConditionId);
-            }
+        if ( $debug ){
+            print "INSERT INTO expression (bgeeGeneId, conditionId) VALUES ($geneId, $exprMappedConditionId)...\n";
         } else {
-            warn "No calls available for geneId $geneId in exprMappedConditionId $exprMappedConditionId\n";
+            $expressionId = add_expression($geneId, $exprMappedConditionId);
         }
 
         # Now update the related scRnaSeqFullLengthResults
