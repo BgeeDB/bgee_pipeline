@@ -69,3 +69,12 @@ and with no present calls from other data types. => Do we really need a post-pro
 ## Issues
 
 Check https://github.com/BgeeDB/bgee_pipeline/issues
+
+# TODO after Bgee 15
+
+* discuss about filtering of calls based on expressionFlag (present/absent). Calls from a gene never present for a given datatype are not used to generate an expression (not associated to an expressionId) in Bgee 15.0
+* delete columns not used anymore from the RDB schema (e.g rnaSeqResult.)
+* update single cell pipelines (e.g parallelize steps, never use hardcoded names in scripts, etc.)
+* disable autocommit each time it is possible during insertion steps (not possible for insertion of condition, maybe not possible for expression)
+* update README files
+* create insertion scripts for target base
