@@ -447,9 +447,10 @@ for my $expId ( sort keys %libraries ){
             }
             else {
                 # pvalue and zscore can be null (if no read mapped). In this case BgeeCall retrieve "NA".
-                # DBI use undef value to insert null in the database. That's why we modify "NA" to undef.
+                # DBI use undef value to insert null in the database. That's why we modify "NA" to undef for zScore.
+                # For the pvalue we decided replace NA with 1 in order to use this value as a datapoint to generate propagated calls 
                 if ($genesResults{$geneId}->{'pValue'} eq "NA") {
-                  $genesResults{$geneId}->{'pValue'} = undef;
+                  $genesResults{$geneId}->{'pValue'} = 1;
                 }
                 if ($genesResults{$geneId}->{'zscore'} eq "NA") {
                   $genesResults{$geneId}->{'zscore'} = undef;
