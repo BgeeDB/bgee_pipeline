@@ -257,7 +257,7 @@ insert_expression:
 	@$(MYSQL) -e "SELECT * FROM scRnaSeqFullLengthResult WHERE reasonForExclusion != 'not excluded' AND expressionId IS NOT NULL" >> $@.tmp
 	@echo >> $@.tmp
 	@echo "Statistics for rscRnaSeqFullLengthResult" >> $@.tmp
-	@$(MYSQL) -e "SELECT speciesId, detectionFlag, COUNT(*) AS scRnaSeqFullLengthResultCount FROM scRnaSeqFullLengthResult AS t1 INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId INNER JOIN ($(TMP_TABLE_CLAUSE)) AS tmpTable ON t1.expressionId = tmpTable.expressionId GROUP BY speciesId detectionFlag ORDER BY speciesId, detectionFlag" >> $@.tmp
+	@$(MYSQL) -e "SELECT speciesId, detectionFlag, COUNT(*) AS scRnaSeqFullLengthResultCount FROM scRnaSeqFullLengthResult AS t1 INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId GROUP BY speciesId detectionFlag ORDER BY speciesId, detectionFlag" >> $@.tmp
 	@echo "Statistics for expression table" >> $@.tmp
 	@$(MYSQL) -e "SELECT speciesId, COUNT(*), COUNT(DISTINCT t1.bgeeGeneId), COUNT(DISTINCT t1.conditionId), COUNT(DISTINCT t3.anatEntityId, t3.stageId), COUNT(DISTINCT t3.anatEntityId, t3.stageId, t3.sex) FROM expression AS t1 INNER JOIN cond AS t3 ON t1.conditionId = t3.conditionId GROUP BY speciesId ORDER BY speciesId" >> $@.tmp
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
