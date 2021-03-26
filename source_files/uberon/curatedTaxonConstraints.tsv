@@ -146,4 +146,6 @@ UBERON:0001639	hepatic portal vein	7742	Vertebrata			same as UBERON:0002394 bile
 UBERON:0012316	primitive palate	7776	Gnathostomata			Term part of UBERON:0003113 dermatocranium, which has relationship: only_in_taxon NCBITaxon:7776 ! Gnathostomata <vertebrate>
 UBERON:0011634	ectopterygoid bone	7776	Gnathostomata			same as UBERON:0012316 primitive palate
 UBERON:0016631	actinopterygian frontal-parietal joint	7898	Actinopterygii			Considering the name of the class
+UBERON:0001132	parathyroid gland	32523	Tetrapoda			In Uberon: relationship: only_in_taxon NCBITaxon:32523 ! Tetrapoda
 CL:0000446	chief cell of parathyroid gland	32523	Tetrapoda			Term part of UBERON:0001132 parathyroid gland, which has relationship: only_in_taxon NCBITaxon:32523 ! Tetrapoda
+CL:0000584	enterocyte	33213	Bilateria			We mapped FBbt:00047147 adult enterocyte to CL:0000584, but generated taxon constraints defined it as existing in Vertebrata only
