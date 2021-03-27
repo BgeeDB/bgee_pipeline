@@ -588,10 +588,9 @@ create table globalCond (
 -- NA: not available from source information
 -- not annotated: information not captured by Bgee
 -- If an ENUM column is declared NOT NULL, its default value is the first element of the list
--- In this table, only 'not annotated' is used to replace 'NA', as for conditions
--- used in expression table
-    sex enum('not annotated', 'hermaphrodite', 'female', 'male', 'mixed')
-    COMMENT 'Sex information. NA: not available from source information; not annotated: not used in this table, since all conditions used in the expression tables have "NA" replaced with "not annotated". Can be null in this table if this condition aggregates data according to other condition parameters (e.g., grouping all data in a same organ whatever the sex is).',
+-- In this table, only 'any' is used to replace 'not annotated', 'NA', 'mixed'
+-- and also represents the propagation of calls along the sex 'ontology'.
+    sex enum('any', 'hermaphrodite', 'female', 'male'),
 -- For now, strains are captured as free-text format, only 4 term are "standardized":
 -- 'NA', 'not annotated', 'wild-type', 'confidential_restricted_data'.
 -- In this table, only 'wild-type' is used to replace 'NA', 'not annotated', and
