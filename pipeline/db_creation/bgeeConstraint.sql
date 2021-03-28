@@ -265,6 +265,11 @@ alter table remapCond
 add primary key(incorrectConditionId, remappedConditionId);
 /*!40000 ALTER TABLE `remapCond` ENABLE KEYS */;
 
+/*!40000 ALTER TABLE `remapExpression` DISABLE KEYS */;
+alter table remapExpression
+add primary key(incorrectExpressionId, remappedExpressionId);
+/*!40000 ALTER TABLE `remapExpression` ENABLE KEYS */;
+
 /*!40000 ALTER TABLE `globalCond` DISABLE KEYS */;
 alter table globalCond
 modify globalConditionId mediumint unsigned not null auto_increment primary key,

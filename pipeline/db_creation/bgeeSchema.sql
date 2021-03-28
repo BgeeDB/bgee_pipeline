@@ -579,6 +579,11 @@ create table remapCond (
     remappedConditionId mediumint unsigned not null
 ) engine = innodb COMMENT 'This table is used as an intermediary step for condition remapping, see remap_conditions.pl';
 
+create table remapExpression (
+    incorrectExpressionId int unsigned not null,
+    remappedExpressionId int unsigned not null
+) engine = innodb COMMENT 'This table is used as an intermediary step for condition remapping, see remap_conditions.sql';
+
 create table globalCond (
     globalConditionId mediumint unsigned not null,
     anatEntityId          varchar(20)  COMMENT 'Uberon anatomical entity ID. Can be null in this table if this condition aggregates data according to other condition parameters (e.g., grouping all data in a same stage whatever the organ is).',

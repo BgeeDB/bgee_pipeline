@@ -207,6 +207,11 @@ alter table remapCond
 add foreign key (remappedConditionId) references cond(conditionId) on delete cascade;
 /*!40000 ALTER TABLE `remapCond` ENABLE KEYS */;
 
+/*!40000 ALTER TABLE `remapExpression` DISABLE KEYS */;
+alter table remapExpression
+add foreign key (remappedExpressionId) references expression(expressionId) on delete cascade;
+/*!40000 ALTER TABLE `remapExpression` ENABLE KEYS */;
+
 /*!40000 ALTER TABLE `globalCond` DISABLE KEYS */;
 alter table globalCond
 add foreign key (anatEntityId) references anatEntity(anatEntityId) on delete cascade,

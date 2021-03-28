@@ -3,6 +3,8 @@
 1. [Deletion of unused conditions](#deletion-of-unused-conditions)
 2. [Condition remapping](#condition-remapping)
 
+** WARNING: OUTDATED DOC, CHECK THE MAKEFILE DIRECTLY **
+
 ## Deletion of unused conditions
 
 Use the SQL script `delete_unused_conditions.sql` present in this folder.
@@ -51,6 +53,7 @@ For instance:
 
 ```
 SELECT t1.*, t2.anatEntityId AS oldAnatEntityId, t3.anatEntityId AS remappedAnatEntityId,
+       t2.stageId AS oldStageId, t3.stageId AS remappedStageId,
        t2.sex AS oldSex, t3.sex AS remappedSex,
        t2.strain AS oldStrain, t3.strain AS remappedStrain,
        t2.sexInferred AS oldSexInferred, t3.sexInferred AS remappedSexInferred
@@ -58,9 +61,11 @@ FROM remapCond AS t1
 INNER JOIN cond AS t2 ON t1.incorrectConditionId = t2.conditionId
 INNER JOIN cond AS t3 ON t1.remappedConditionId = t3.conditionId
 WHERE t2.anatEntityId != t3.anatEntityId OR
+      t2.stageId != t3.stageId OR
       t2.sex != t3.sex OR
       t2.strain != t3.strain OR
-      t2.sexInferred != t3.sexInferred;
+      t2.sexInferred != t3.sexInferred
+ORDER BY incorrectConditionId;
 ```
 
 * One for checking that you didn't miss updating a field of a condition to remap, so that
