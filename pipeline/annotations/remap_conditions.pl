@@ -63,12 +63,13 @@ my $stage_equivalences = Utils::get_stage_equivalences($bgee);
 
 my $insertMapping = $bgee->prepare("INSERT INTO remapCond (incorrectConditionId, remappedConditionId) VALUES (?, ?)");
 # TODO use column names rather than column order
-REMAP: for my $line ( grep { !/^#/ && !/^Condition ID/} read_file("$remapping_file", chomp => 1) ){
+REMAP: for my $line ( grep { !/^#/ && !/^"#/ && !/^Condition ID/ && !/^"Condition ID/} read_file("$remapping_file", chomp => 1) ){
     #Condition ID to remap  New anat. entity ID New dev. stage ID   New sex New strain
     #40558  CL:0000094  UBERON:0000066  male    NA
     my @tmp = split(/\t/, $line);
 
     my $condIdToRemap = $tmp[0];
+    $condIdToRemap =~ s/^"*([^"]+)"*$/$1/g;
     my $speciesId = 0;
     my $sexInferred = 0;
     # Get the species ID and sex inferrence of the existing condition to remap
@@ -86,21 +87,27 @@ REMAP: for my $line ( grep { !/^#/ && !/^Condition ID/} read_file("$remapping_fi
     # If the sex was inferred, we'll let the function infer it again,
     # so that the correct value of sexInferred will be inserted
     my $sex = $tmp[3];
+    $sex =~ s/^"*([^"]+)"*$/$1/g;
     if ($sexInferred) {
         $sex = $Utils::NOT_ANNOTATED_SEX;
     }
 
-
+    my $newAnatEntityId = $tmp[1];
+    my $newStageId = $tmp[2];
+    my $newStrain = $tmp[4];
+    $newAnatEntityId =~ s/^"*([^"]+)"*$/$1/g;
+    $newStageId =~ s/^"*([^"]+)"*$/$1/g;
+    $newStrain =~ s/^"*([^"]+)"*$/$1/g;
     # Try to get or insert the new mapped condition
     my $condKeyMap;
     ($condKeyMap, $conditions) = Utils::insert_get_condition($bgee,
                                                              $conditions,
                                                              $stage_equivalences,
-                                                             $tmp[1],
-                                                             $tmp[2],
+                                                             $newAnatEntityId,
+                                                             $newStageId,
                                                              $speciesId,
                                                              $sex,
-                                                             $tmp[4],
+                                                             $newStrain,
                                                              $anatSexInfo, $speciesSexInfo,
                                                              '', '',
                                                             );
