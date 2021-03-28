@@ -752,9 +752,9 @@ sub query_conditions {
         my $condKey = generate_condition_key($_->[2], $_->[4], $_->[5], $_->[6], $_->[7], $_->[8], $_->[3]);
         $conditions->{ $condKey }->{'conditionId'}           = $_->[0];
         $conditions->{ $condKey }->{'exprMappedConditionId'} = $_->[1];
-        $conditions->{ $condKey }->{'strain'}                = $_->[7];
-        $conditions->{ $condKey }->{'speciesId'}             = $_->[4];
-        $conditions->{ $condKey }->{'sexInference'}          = $_->[6];
+        $conditions->{ $condKey }->{'strain'}                = $_->[8];
+        $conditions->{ $condKey }->{'speciesId'}             = $_->[5];
+        $conditions->{ $condKey }->{'sexInference'}          = $_->[7];
     }  @{ $cond_ref };
 
     return $conditions;
