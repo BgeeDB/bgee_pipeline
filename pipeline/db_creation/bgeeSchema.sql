@@ -1410,6 +1410,87 @@ create table globalExpression (
     'self and descendant', 'ancestor and descendant') COMMENT 'The origin of the propagated RNA-Seq data related to the developmental stage of the related condition. If null, it means that developmental stages were not considered in this propagated call, or that the call is not supported by any RNA-Seq data.',
     rnaSeqConditionObservedData BOOLEAN COMMENT 'Whether some RNA-Seq data were observed in this condition itself. If null, it means that the call is not supported by any RNA-Seq data. This field is redundant as compared to the "self" experiment counts below, but is more practical to use.',
 
+-- ** PVALUES PER DATATYPE **
+
+    -- 5C1 = 5
+    pValueAffymetrix decimal(31, 30) unsigned not null default 1,
+    pValueEst decimal(31, 30) unsigned not null default 1,
+    pValueInSitu decimal(31, 30) unsigned not null default 1,
+    pValueRnaSeq decimal(31, 30) unsigned not null default 1,
+    pValueScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    -- 5C2 = 10
+    pValueAffymetrixEst decimal(31, 30) unsigned not null default 1,
+    pValueAffymetrixInSitu decimal(31, 30) unsigned not null default 1,
+    pValueAffymetrixRnaSeq decimal(31, 30) unsigned not null default 1,
+    pValueAffymetrixScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    pValueEstInSitu decimal(31, 30) unsigned not null default 1,
+    pValueEstRnaSeq decimal(31, 30) unsigned not null default 1,
+    pValueEstScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    pValueInSituRnaSeq decimal(31, 30) unsigned not null default 1,
+    pValueInSituScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    pValueRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    -- 5C3 = 10
+    pValueAffymetrixEstInSitu decimal(31, 30) unsigned not null default 1,
+    pValueAffymetrixEstRnaSeq decimal(31, 30) unsigned not null default 1,
+    pValueAffymetrixEstScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    pValueAffymetrixInSituRnaSeq decimal(31, 30) unsigned not null default 1,
+    pValueAffymetrixInSituScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    pValueAffymetrixRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    pValueEstInSituRnaSeq decimal(31, 30) unsigned not null default 1,
+    pValueEstInSituScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    pValueEstRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    pValueInSituRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    -- 5C4 = 5
+    pValueAffymetrixEstInSituRnaSeq decimal(31, 30) unsigned not null default 1,
+    pValueAffymetrixEstInSituScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    pValueAffymetrixEstRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    pValueAffymetrixInSituRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    pValueEstInSituRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    -- 5C5 = 1
+    pValueAffymetrixEstInSituRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+
+-- ** PVALUES PER DATATYPE BEST DESCENDANT **
+
+    -- 5C1 = 5
+    pValueBestDescendantAffymetrix decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantEst decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantInSitu decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantRnaSeq decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    -- 5C2 = 10
+    pValueBestDescendantAffymetrixEst decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantAffymetrixInSitu decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantAffymetrixRnaSeq decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantAffymetrixScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantEstInSitu decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantEstRnaSeq decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantEstScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantInSituRnaSeq decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantInSituScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    -- 5C3 = 10
+    pValueBestDescendantAffymetrixEstInSitu decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantAffymetrixEstRnaSeq decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantAffymetrixEstScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantAffymetrixInSituRnaSeq decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantAffymetrixInSituScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantAffymetrixRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantEstInSituRnaSeq decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantEstInSituScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantEstRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantInSituRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    -- 5C4 = 5
+    pValueBestDescendantAffymetrixEstInSituRnaSeq decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantAffymetrixEstInSituScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantAffymetrixEstRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantAffymetrixInSituRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    pValueBestDescendantEstInSituRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
+    -- 5C5 = 1
+    pValueBestDescendantAffymetrixEstInSituRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,    
+
+
+
+
 -- ** EXPRESSION SUMMARIES **
 -- Note: EST data are not used to produce no-expression calls
     estLibPresentHighSelfCount SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of EST libraries showing expression of this gene in this condition (not taking into account sub-conditions) with a high quality.',
