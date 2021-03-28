@@ -15,7 +15,6 @@ OR t5.expressionId IS NOT NULL OR t6.expressionId IS NOT NULL OR t7.expressionId
 -- But because of how the query is built, we can't directly delete the conditions
 -- (we get an error 'Can't specify target table for update in FROM clause'),
 -- so we first store the conditions to delete in another table.
--- Select a condition for deletion if:
 CREATE TEMPORARY TABLE expressionToDelete (PRIMARY KEY(expressionId))
 SELECT DISTINCT t1.expressionId FROM expression AS t1
 WHERE t1.expressionId NOT IN (SELECT expressionId from tempSafeToDropExpressionUsed);

@@ -14,6 +14,8 @@ $(OUTPUT_DIR)remap_cond: $(INPUT_DIR)condition_remapping.tsv $(UBERON_SEX_INFO_F
 	@$(MYSQL) -e "DELETE FROM remapCond" > $@.tmp 2>$@.warnings
 	@perl remap_conditions.pl -bgee=$(BGEECMD) -remapping_file=$(INPUT_DIR)condition_remapping.tsv -sex_info=$(UBERON_SEX_INFO_FILE_PATH) > $@.tmp 2>$@.warnings
 # Now, we update the tables using the SQL script remap_condition.sql
+# WARNING: check the script remap_conditions.sql before using it,
+# in case new tables using an expressionId or a conditinId have been added
 	@$(MYSQL) < remap_conditions.sql > $@.tmp 2>$@.warnings
 # Then it is your responsibility to delete rows in the table remapCond,
 # no big deal if you don't. We don't do it here in case you wanna check things.
