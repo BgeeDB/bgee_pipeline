@@ -1424,16 +1424,6 @@ create table globalExpression (
     'self and descendant', 'ancestor and descendant') COMMENT 'The origin of the propagated RNA-Seq data related to the strain of the related condition. If null, it means that strains were not considered in this propagated call, or that the call is not supported by any RNA-Seq data.',
     rnaSeqConditionObservedData BOOLEAN COMMENT 'Whether some RNA-Seq data were observed in this condition itself. If null, it means that the call is not supported by any RNA-Seq data. This field is redundant as compared to the "self" experiment counts below, but is more practical to use.',
 
-    rnaSeqAnatEntityPropagationState ENUM('all', 'self', 'ancestor', 'descendant', 'self and ancestor',
-    'self and descendant', 'ancestor and descendant') COMMENT 'The origin of the propagated RNA-Seq data related to the anatomical entity of the related condition. If null, it means that anatomical entities were not considered in this propagated call, or that the call is not supported by any RNA-Seq data.',
-    rnaSeqStagePropagationState ENUM('all', 'self', 'ancestor', 'descendant', 'self and ancestor',
-    'self and descendant', 'ancestor and descendant') COMMENT 'The origin of the propagated RNA-Seq data related to the developmental stage of the related condition. If null, it means that developmental stages were not considered in this propagated call, or that the call is not supported by any RNA-Seq data.',
-    rnaSeqSexPropagationState ENUM('all', 'self', 'ancestor', 'descendant', 'self and ancestor',
-    'self and descendant', 'ancestor and descendant') COMMENT 'The origin of the propagated RNA-Seq data related to the sex of the related condition. If null, it means that sexes were not considered in this propagated call, or that the call is not supported by any RNA-Seq data.',
-    rnaSeqStrainPropagationState ENUM('all', 'self', 'ancestor', 'descendant', 'self and ancestor',
-    'self and descendant', 'ancestor and descendant') COMMENT 'The origin of the propagated RNA-Seq data related to the strain of the related condition. If null, it means that strains were not considered in this propagated call, or that the call is not supported by any RNA-Seq data.',
-    rnaSeqConditionObservedData BOOLEAN COMMENT 'Whether some RNA-Seq data were observed in this condition itself. If null, it means that the call is not supported by any RNA-Seq data. This field is redundant as compared to the "self" experiment counts below, but is more practical to use.',
-
     scRnaSeqFullLengthAnatEntityPropagationState ENUM('all', 'self', 'ancestor', 'descendant', 'self and ancestor',
     'self and descendant', 'ancestor and descendant') COMMENT 'The origin of the propagated single cell full length RNA-Seq data related to the anatomical entity of the related condition. If null, it means that anatomical entities were not considered in this propagated call, or that the call is not supported by any single cell full length RNA-Seq data.',
     scRnaSeqFullLengthStagePropagationState ENUM('all', 'self', 'ancestor', 'descendant', 'self and ancestor',
