@@ -17,6 +17,8 @@ sitemap.xml:
 	@echo
 
 
+#TODO update sphinx.conf file and regenerate sphinx indexes
+
 $(VERIFICATIONFILE): sitemap.xml
 	@touch $@
 
