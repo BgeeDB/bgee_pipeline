@@ -197,7 +197,7 @@ my @all_species = do { my %seen; grep { !$seen{$_}++ } @{ $tsv2{'speciesId'} } }
 
 my %genes;
 # Get hash of geneId to bgeeGeneId mapping per species
-for my $speciesId (@all_species) {
+for my $speciesId ( @all_species ){
     $genes{$speciesId} = Utils::query_bgeeGene($dbh, $speciesId);
 }
 
@@ -487,7 +487,7 @@ for my $bgeeAffymetrixChipId ( sort { $a <=> $b } keys %all_chips ){
 
     PROBESET:
     for my $pbsetId ( keys %{$chip_pbsets} ){
-        if ( !exists $annotation{$chipTypeId}->{$pbsetId} || !defined $annotation{$chipTypeId}->{$pbsetId} ) {
+        if ( !exists $annotation{$chipTypeId}->{$pbsetId} || !defined $annotation{$chipTypeId}->{$pbsetId} ){
             next PROBESET;
         }
         # Note: pre-filtering exclusion is now managed in the script insert_affy_expression.pl,

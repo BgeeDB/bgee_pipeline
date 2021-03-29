@@ -101,16 +101,16 @@ sub extractProbesetsFromFile {
     my $nbr_null = 0;
 
     # mas5 normalization & detection
-    if ( $normType eq 'MAS5' ) {
+    if ( $normType eq 'MAS5' ){
         my $file_name = $processedMas5Dir.'/'.$experimentId.'/'.$chipId;
         my %column_indexes = get_mas5_columns($file_name);
-        if ( $column_indexes{'call'} != -1 && $column_indexes{'signal'} != -1 && $column_indexes{'probeset_id'} != -1 ) {
+        if ( $column_indexes{'call'} != -1 && $column_indexes{'signal'} != -1 && $column_indexes{'probeset_id'} != -1 ){
             open(my $INMAS52, '<', "$file_name")  or warn "\tWarning! Can't read file [$file_name] for [$chipId][$experimentId]\n";
             my $line = <$INMAS52>;   #header
-            while ( defined ($line = <$INMAS52>) ) {
-                if ( !is_valid_processed_mas5_line($line, \%column_indexes) ) {
-                  print "\tWarning, unrecognized line: $line for [$chipId][$experimentId]\n" if ( $logWarn );
-                  next;
+            while ( defined ($line = <$INMAS52>) ){
+                if ( !is_valid_processed_mas5_line($line, \%column_indexes) ){
+                    print "\tWarning, unrecognized line: $line for [$chipId][$experimentId]\n"  if ( $logWarn );
+                    next;
                 }
                 chomp $line;
                 $line =~ s{"}{}g;
@@ -121,7 +121,7 @@ sub extractProbesetsFromFile {
                 my $probesetId    = bgeeTrim($tmp[$column_indexes{'probeset_id'}]);
 
                 # check that the call  and the signal intensity are defined
-                if ( exists $correspCall{$call} && defined $signal && $signal ne 'null' ) {
+                if ( exists $correspCall{$call} && defined $signal && $signal ne 'null' ){
                     #pbset -> quality, call and signal
                     $pbsets{$probesetId}->{'call'}          = $correspCall{$call};
                     #According to the call: A => 0.1, M => 0.05, P => 0.01
@@ -138,7 +138,7 @@ sub extractProbesetsFromFile {
                     $pbsets{$probesetId}->{'q_value'}       = $p_value; #No q-value for MAS5, so same as p-value
                     $pbsets{$probesetId}->{'adjusted_call'} = $adj_call;
                     # a way to convert signal to numeric
-                    if ( $signal + 0 >= 0 ) {
+                    if ( $signal + 0 >= 0 ){
                         $pbsets{$probesetId}->{'signal'} = $signal;
                     }
                     else {
@@ -147,7 +147,7 @@ sub extractProbesetsFromFile {
                     # mas5 quality is always set to low
                     $pbsets{$probesetId}->{'quality'} = $Utils::LOW_QUAL;
                 }
-                elsif ( exists $correspCall{$call} && defined $signal && $signal eq 'null' ) {
+                elsif ( exists $correspCall{$call} && defined $signal && $signal eq 'null' ){
                     $nbr_null++;
                 }
                 else {
@@ -163,12 +163,12 @@ sub extractProbesetsFromFile {
 
     # gcRMA normalization / Schuster et al. detection
     # /!\ the order of the columns is inverted !
-    elsif ( $normType eq 'gcRMA' ) {
+    elsif ( $normType eq 'gcRMA' ){
         (open(INGCRMA2, '<', $processedSchusterDir.'/'.$experimentId.'/'.$chipId.'.cel.out') or
          open(INGCRMA2, '<', $processedSchusterDir.'/'.$experimentId.'/'.$chipId.'.CEL.out') or
          open(INGCRMA2, '<', $processedSchusterDir.'/'.$experimentId.'/'.$chipId.'.out')) or
          warn "\tWarning! Can't read data file for [$chipId][$experimentId]!\n";
-        while ( defined (my $line = <INGCRMA2>) ) {
+        while ( defined (my $line = <INGCRMA2>) ){
             chomp $line;
             $nbr_line++;
             my @tmp = split(/\t/, $line);
@@ -179,20 +179,20 @@ sub extractProbesetsFromFile {
             my $q_value       = bgeeTrim($tmp[4]);
             my $adjusted_call = bgeeTrim($tmp[5]);
 
-            if ( exists $correspCall{$call} && defined $signal && $signal ne 'null' ) {
+            if ( exists $correspCall{$call} && defined $signal && $signal ne 'null' ){
                 #pbset -> quality, call and signal
                 $pbsets{$probesetId}->{'call'} = $correspCall{$call};
-                if ( $signal + 0 >= 0 ) {
+                if ( $signal + 0 >= 0 ){
                     $pbsets{$probesetId}->{'signal'} = $signal;
                 }
                 else {
                     $pbsets{$probesetId}->{'signal'} = 0;
                 }
 
-                if ( $correspCall{$call} eq $Utils::PRESENT_CALL || $correspCall{$call} eq $Utils::ABSENT_CALL ) {
+                if ( $correspCall{$call} eq $Utils::PRESENT_CALL || $correspCall{$call} eq $Utils::ABSENT_CALL ){
                     $pbsets{$probesetId}->{'quality'} = $Utils::HIGH_QUAL;
                 }
-                elsif ( $correspCall{$call} eq $Utils::MARGINAL_CALL ) {
+                elsif ( $correspCall{$call} eq $Utils::MARGINAL_CALL ){
                     $pbsets{$probesetId}->{'quality'} = $Utils::LOW_QUAL;
                 }
 
@@ -200,7 +200,7 @@ sub extractProbesetsFromFile {
                 $pbsets{$probesetId}->{'q_value'}       = $q_value;
                 $pbsets{$probesetId}->{'adjusted_call'} = $adjusted_call;
             }
-            elsif ( exists $correspCall{$call} && defined $signal && $signal eq 'null' ) {
+            elsif ( exists $correspCall{$call} && defined $signal && $signal eq 'null' ){
                 $nbr_null++;
             }
             else {
@@ -214,7 +214,7 @@ sub extractProbesetsFromFile {
     }
 
     # Data are cleaner now, so should rarely meet this warning!
-    if ( $logWarn ) {
+    if ( $logWarn ){
         print "\tWarning! Some expression calls are not standard ($problems) for [$chipId][$experimentId]\n" if ( $problems > 0 );
         print "\tWarning! No line was apparently read for [$chipId][$experimentId]\n" if ( $nbr_line eq 0 );
         # Threshold at 2% for warning on proportion of null calls
