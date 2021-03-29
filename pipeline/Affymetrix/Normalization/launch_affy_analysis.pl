@@ -194,8 +194,6 @@ for my $exp ( sort keys %chip ){
             $cel_files = $cel_files.')';
 
             # Launch R script
-            ## R CMD BATCH --no-save --no-restore '--args celpath=$path_cel.$exp filenames=$cel_files array=$array processed=$path_processed.$exp' affy_analysis.R $exp_$array.out
-
             my @args = ("R CMD BATCH --no-save --no-restore '--args celpath=\"".$path_cel.$exp."\" filenames=".$cel_files." array=\"".$array."\" processed=\"".$path_processed.$exp."/\" affin=\"".$bioconductoraffin."\"' $FindBin::Bin/affy_analysis.R ".$path_out.$file_name);
             system(@args)==0  or do{warn "\tsystem @args failed: $? "; system("mv $path_out$file_name $path_out$file_name.PROB");};
         }
