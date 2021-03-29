@@ -462,7 +462,7 @@ $dbh->disconnect;
 print("Inserting probesets...\n")  if ( $debug );
 $dbh = Utils::connect_bgee_db($bgee_connector);
 # Disable autocommit otherwise insertion is too slow.
-$dbh->{AutoCommit} = 0;
+$dbh->{'AutoCommit'} = 0;
 
 # affymetrixProbeset
 my $insAffyPset = $dbh->prepare('INSERT INTO affymetrixProbeset
@@ -471,6 +471,7 @@ my $insAffyPset = $dbh->prepare('INSERT INTO affymetrixProbeset
                                 pValue, qValue, detectionFlag)
                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
+#FIXME detectionFlag is always an empty string! (rawDetectionFlag looks fine)
 CHIP:
 for my $bgeeAffymetrixChipId ( sort { $a <=> $b } keys %all_chips ){
     print("\tChip $bgeeAffymetrixChipId\n")  if ( $debug );
@@ -512,7 +513,7 @@ $insAffyPset->finish;
 $dbh->disconnect;
 exit 0;
 
-# Remark: we don't check that all processed files have the same length
+# NOTE we don't check that all processed files have the same length
 # for some reasons, this is not always the case (bad submission in AE)
 
 # TODO add real debug mode where queries are printed, not executed

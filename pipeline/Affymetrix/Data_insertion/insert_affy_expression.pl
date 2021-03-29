@@ -52,7 +52,7 @@ while ( my @data = $queryConditions->fetchrow_array ){
     push(@exprMappedConditions, $data[0]);
 }
 
-print "Done, ", scalar(@exprMappedConditions), " conditions retrieved.\n";
+print 'Done, ', scalar(@exprMappedConditions), " conditions retrieved.\n";
 
 #####################################################
 # EXAMINE EXPRESSION CALLS ACROSS ALL SAMPLES       #
@@ -60,7 +60,7 @@ print "Done, ", scalar(@exprMappedConditions), " conditions retrieved.\n";
 #####################################################
 print "Examining all results to update probesets never seen as 'present'...\n";
 
-if($debug) { 
+if ( $debug ){
     print "CREATE TEMPORARY TABLE tempPresentAffy (PRIMARY KEY (affymetrixProbesetId, chipTypeId)) ENGINE=InnoDB ",
           "AS (",
           "SELECT DISTINCT t1.affymetrixProbesetId, t2.chipTypeId ",
@@ -79,7 +79,7 @@ if($debug) {
 }
 
 # The "not excluded" status has to be set first, for the next query to properly take into account "undefined" status
-if($debug) { 
+if ( $debug ){
     print 'UPDATE affymetrixProbeset AS t1',
           'INNER JOIN affymetrixChip AS t2 ON t1.bgeeAffymetrixChipId = t2.bgeeAffymetrixChipId ',
           'INNER JOIN tempPresentAffy AS t3 ',
