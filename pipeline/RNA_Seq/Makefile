@@ -149,47 +149,48 @@ check_tools: cluster1
 	@if [[ `hostname -d` != 'chuv.vital-it.ch' ]]; then false; fi
 	# Check if all required tools/libs are available
 	@module add Bioinformatics/Software/vital-it
-	@which perl                                        > $@.tmp
-	@perl -MBio::SeqIO            -e 1                >> $@.tmp
-	@perl -MCpanel::JSON::XS      -e 1                >> $@.tmp
-	@perl -MData::Dumper          -e 1                >> $@.tmp
-	@perl -Mdiagnostics           -e 1                >> $@.tmp
-	@perl -MDBI                   -e 1                >> $@.tmp
-	@perl -MDigest::SHA           -e 1                >> $@.tmp
-	@perl -MFile::Basename        -e 1                >> $@.tmp
-	@perl -MFile::Find            -e 1                >> $@.tmp
-	@perl -MFile::Path            -e 1                >> $@.tmp
-	@perl -MFile::Slurp           -e 1                >> $@.tmp
-	@perl -MFile::Spec            -e 1                >> $@.tmp
-	@perl -MFindBin               -e 1                >> $@.tmp
-	@perl -MGetopt::Long          -e 1                >> $@.tmp
-	@perl -MIO::Compress::Gzip    -e 1                >> $@.tmp
-	@perl -Mlib                   -e 1                >> $@.tmp
-	@perl -MList::MoreUtils       -e 1                >> $@.tmp
-	@perl -MList::Util            -e 1                >> $@.tmp
-	@perl -MLWP::Simple           -e 1                >> $@.tmp
-	@perl -MSort::Naturally       -e 1                >> $@.tmp
-	@perl -MSpreadsheet::Read     -e 1                >> $@.tmp
-	@perl -Mstrict                -e 1                >> $@.tmp
-	@perl -MTime::localtime       -e 1                >> $@.tmp
-	@perl -Mwarnings              -e 1                >> $@.tmp
-	@$(CLUSTER_R_CMD) which R                         >> $@.tmp
-	@$(CLUSTER_R_CMD) R -e 'library("chipseq")'       >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("edgeR")'         >> $@.tmp  2>/dev/null
+	@which perl                                          > $@.tmp
+	@perl -MBio::SeqIO            -e 1                  >> $@.tmp
+	@perl -MCpanel::JSON::XS      -e 1                  >> $@.tmp
+	@perl -MData::Dumper          -e 1                  >> $@.tmp
+	@perl -Mdiagnostics           -e 1                  >> $@.tmp
+	@perl -MDBI                   -e 1                  >> $@.tmp
+	@perl -MDigest::SHA           -e 1                  >> $@.tmp
+	@perl -MFile::Basename        -e 1                  >> $@.tmp
+	@perl -MFile::Find            -e 1                  >> $@.tmp
+	@perl -MFile::Path            -e 1                  >> $@.tmp
+	@perl -MFile::Slurp           -e 1                  >> $@.tmp
+	@perl -MFile::Spec            -e 1                  >> $@.tmp
+	@perl -MFindBin               -e 1                  >> $@.tmp
+	@perl -MGetopt::Long          -e 1                  >> $@.tmp
+	@perl -MIO::Compress::Gzip    -e 1                  >> $@.tmp
+	@perl -Mlib                   -e 1                  >> $@.tmp
+	@perl -MList::MoreUtils       -e 1                  >> $@.tmp
+	@perl -MList::Util            -e 1                  >> $@.tmp
+	@perl -MLWP::Simple           -e 1                  >> $@.tmp
+	@perl -MSort::Naturally       -e 1                  >> $@.tmp
+	@perl -MSpreadsheet::Read     -e 1                  >> $@.tmp
+	@perl -MTime::localtime       -e 1                  >> $@.tmp
+	@$(CLUSTER_R_CMD) which R                           >> $@.tmp
+	@$(CLUSTER_R_CMD) R -e 'library("BgeeCall")'        >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("Biostrings")'      >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("data.table")'      >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("dplyr")'           >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("edgeR")'           >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("GenomicFeatures")' >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("limma")'         >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("mclust")'        >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("rhdf5")'         >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("tximport")'      >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("rtracklayer")'   >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("biomaRt")'       >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("jsonlite")'      >> $@.tmp  2>/dev/null
-	@which xz                                         >> $@.tmp
-	@which sbatch                                     >> $@.tmp
-	@$(CLUSTER_TOPHAT_CMD)     which gtf_to_fasta     >> $@.tmp
-	@$(CLUSTER_SRATOOLKIT_CMD) which fastq-dump       >> $@.tmp
-	@$(CLUSTER_FASTP_CMD)      which fastp            >> $@.tmp
-	@$(CLUSTER_KALLISTO_CMD)   which kallisto         >> $@.tmp
+	@$(CLUSTER_R_CMD) R -e 'library("mclust")'          >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("R.utils")'         >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("RCurl")'           >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("reshape2")'        >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("rjson")'           >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("tools")'           >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("tximport")'        >> $@.tmp  2>/dev/null
+	@which xz                                           >> $@.tmp
+	@which sbatch                                       >> $@.tmp
+	@$(CLUSTER_TOPHAT_CMD)     which gtf_to_fasta       >> $@.tmp
+	@$(CLUSTER_SRATOOLKIT_CMD) which fastq-dump         >> $@.tmp
+	@$(CLUSTER_FASTP_CMD)      which fastp              >> $@.tmp
+	@$(CLUSTER_KALLISTO_CMD)   which kallisto           >> $@.tmp
 	@mkdir -p $(RNASEQ_CLUSTER_GTF)
 	@if [[ -d $(RNASEQ_CLUSTER_GTF) ]]; then echo -n; else echo "Directory [$(RNASEQ_CLUSTER_GTF)] does not exist"  >> $@.tmp; false; fi
 	@if [[ -w $(RNASEQ_CLUSTER_GTF) ]]; then echo -n; else echo "Directory [$(RNASEQ_CLUSTER_GTF)] is not writable" >> $@.tmp; false; fi

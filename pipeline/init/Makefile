@@ -59,18 +59,45 @@ global_check:
 # R libraries
 	@R -e 'library("affy")'              >> $@.tmp  2>/dev/null
 	@R -e 'library("AnnotationDbi")'     >> $@.tmp  2>/dev/null
+	@R -e 'library("BgeeCall")'          >> $@.tmp  2>/dev/null
 	@R -e 'library("Biobase")'           >> $@.tmp  2>/dev/null
-	@R -e 'library("chipseq")'           >> $@.tmp  2>/dev/null
+	@R -e 'library("biomaRt")'           >> $@.tmp  2>/dev/null
+	@R -e 'library("Biostrings")'        >> $@.tmp  2>/dev/null
+	@R -e 'library("BUSpaRse")'          >> $@.tmp  2>/dev/null
 	@R -e 'library("data.table")'        >> $@.tmp  2>/dev/null
+	@R -e 'library("devtools")'          >> $@.tmp  2>/dev/null
+	@R -e 'library("dplyr")'             >> $@.tmp  2>/dev/null
+	@R -e 'library("DropletUtils")'      >> $@.tmp  2>/dev/null
 	@R -e 'library("edgeR")'             >> $@.tmp  2>/dev/null
 	@R -e 'library("fdrtool")'           >> $@.tmp  2>/dev/null
+	@R -e 'library("forcats")'           >> $@.tmp  2>/dev/null
+	@R -e 'library("gcrma")'             >> $@.tmp  2>/dev/null
 	@R -e 'library("genefilter")'        >> $@.tmp  2>/dev/null
 	@R -e 'library("GenomicFeatures")'   >> $@.tmp  2>/dev/null
-	@R -e 'library("gcrma")'             >> $@.tmp  2>/dev/null
+	@R -e 'library("ggExtra")'           >> $@.tmp  2>/dev/null
+	@R -e 'library("gghighlight")'       >> $@.tmp  2>/dev/null
+	@R -e 'library("ggplot2")'           >> $@.tmp  2>/dev/null
+	@R -e 'library("gridExtra")'         >> $@.tmp  2>/dev/null
+	@R -e 'library("HCAExplorer")'       >> $@.tmp  2>/dev/null
+	@R -e 'library("HelpersMG")'         >> $@.tmp  2>/dev/null
+	@R -e 'library("LaplacesDemon")'     >> $@.tmp  2>/dev/null
+	@R -e 'library("lattice")'           >> $@.tmp  2>/dev/null
 	@R -e 'library("limma")'             >> $@.tmp  2>/dev/null
+	@R -e 'library("magrittr")'          >> $@.tmp  2>/dev/null
+	@R -e 'library("Matrix")'            >> $@.tmp  2>/dev/null
+	@R -e 'library("mclust")'            >> $@.tmp  2>/dev/null
 	@R -e 'library("methods")'           >> $@.tmp  2>/dev/null
+	@R -e 'library("plyr")'              >> $@.tmp  2>/dev/null
+	@R -e 'library("R.utils")'           >> $@.tmp  2>/dev/null
 	@R -e 'library("RCurl")'             >> $@.tmp  2>/dev/null
-	@R -e 'library("XML")'               >> $@.tmp  2>/dev/null
+	@R -e 'library("readr")'             >> $@.tmp  2>/dev/null
+	@R -e 'library("reshape2")'          >> $@.tmp  2>/dev/null
+	@R -e 'library("rjson")'             >> $@.tmp  2>/dev/null
+	@R -e 'library("Seurat")'            >> $@.tmp  2>/dev/null
+	@R -e 'library("stringr")'           >> $@.tmp  2>/dev/null
+	@R -e 'library("tibble")'            >> $@.tmp  2>/dev/null
+	@R -e 'library("tools")'             >> $@.tmp  2>/dev/null
+	@R -e 'library("tximport")'          >> $@.tmp  2>/dev/null
 # R annotator script
 	@R -e 'library("SRAdb")'             >> $@.tmp  2>/dev/null
 	@R -e 'library("gsubfn")'            >> $@.tmp  2>/dev/null
@@ -143,6 +170,13 @@ global_check:
 # Python libraries for Zebrafish intermine
 	@python3 -c "import intermine"       >> $@.tmp  2>/dev/null
 	@python3 -c "import simplejson"      >> $@.tmp  2>/dev/null
+# Python libraries for download_files/analyze_all_files.ipynb
+	@python3 -c "import IPython"         >> $@.tmp  2>/dev/null
+	@python3 -c "import matplotlib"      >> $@.tmp  2>/dev/null
+	@python3 -c "import numpy"           >> $@.tmp  2>/dev/null
+	@python3 -c "import os"              >> $@.tmp  2>/dev/null
+	@python3 -c "import pandas"          >> $@.tmp  2>/dev/null
+	@python3 -c "import seaborn"         >> $@.tmp  2>/dev/null
 ## Binaries
 # network
 	@which wget          >> $@.tmp

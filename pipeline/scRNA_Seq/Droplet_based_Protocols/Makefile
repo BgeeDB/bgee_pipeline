@@ -128,21 +128,28 @@ check_tools: clusterJURA
 	# Check if all required tools/libs are available
 	@module add Bioinformatics/Software/vital-it || true
 	@$(CLUSTER_R_CMD) which R                          > $@.tmp
-	@$(CLUSTER_R_CMD) R -e 'library("data.table")'    >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("stringr")'       >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("dplyr")'         >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("devtools")'      >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("ggplot2")'       >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("magrittr")'      >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("gridExtra")'     >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("biomaRt")'       >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("Biostrings")'    >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("data.table")'    >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("devtools")'      >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("dplyr")'         >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("HCAExplorer")'   >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("HelpersMG")'     >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("ggExtra")'       >> $@.tmp  2>/dev/null
-	@export R_LIBS_USER=$(R_LIBS_PATH_JURA); $(CLUSTER_R_CMD) R -e 'library("UniprotR")'      >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("ggplot2")'       >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("gridExtra")'     >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("LaplacesDemon")' >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("lattice")'       >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("magrittr")'      >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("Matrix")'        >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("mclust")'        >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("Seurat")'        >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("stringr")'       >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("tibble")'        >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("tools")'         >> $@.tmp  2>/dev/null
 	@export R_LIBS_USER=$(R_LIBS_PATH_JURA); $(CLUSTER_R_CMD) R -e 'library("BUSpaRse")'      >> $@.tmp  2>/dev/null
 	@export R_LIBS_USER=$(R_LIBS_PATH_JURA); $(CLUSTER_R_CMD) R -e 'library("DropletUtils")'  >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("Seurat")'        >> $@.tmp  2>/dev/null
+	@export R_LIBS_USER=$(R_LIBS_PATH_JURA); $(CLUSTER_R_CMD) R -e 'library("UniprotR")'      >> $@.tmp  2>/dev/null
 	@which xz                                         >> $@.tmp
 	@which sbatch                                     >> $@.tmp
 	@$(CLUSTER_KALLISTO_CMD)   which kallisto         >> $@.tmp
@@ -188,7 +195,7 @@ kallisto_bus: generate_info 1Run/Kallisto_bus.R
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
 	@touch $@
-	
+
 ## Commit the informative file generated during the Kallisto_bus (that is used in all pipeline after)
 commit_informativeFile: kallisto_bus
 	@$(GIT) add $(SC_RNASEQ_SAMPINFO_10X_FILEPATH)
@@ -222,9 +229,9 @@ process_busFile: uncompress_barcodes 1Run/process_busFile.R
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
 	@touch $@
-	
 
-## Because of lack of internet connection in sensitive server go back to axiom 
+
+## Because of lack of internet connection in sensitive server go back to axiom
 ## just to generate the files that allow to match ensemblId with UniprotId for each species in scRNA_Seq_info_TargetBased.txt file
 geneId_UniprotId: 0Preparation/ensembl_To_uniprot.R
 	@echo --- Starting the match between geneId and UniprotId for all species ---
@@ -241,7 +248,7 @@ geneId_UniprotId: 0Preparation/ensembl_To_uniprot.R
 	@echo --- DONE ---
 	@touch $@
 
-## Commit the the match files 
+## Commit the the match files
 commit_matchFiles: geneId_UniprotId
 	@$(GIT) add $(OUTPUT_DIR)ensembl_Uniprot_*
 	@$(GIT) commit -m 'add files that match geneID with uniprotID for each species.' $(OUTPUT_DIR)ensembl_Uniprot_* || true
@@ -272,7 +279,7 @@ qc_cellType: process_busFile 1Run/QC_CelltypeIdentification.R
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
 	@touch $@
-	
+
 ## Quality control based on the bimodality of the cell-population per library/cell-type pop
 bimodality_cellPop: qc_cellType 1Run/QC_cellPop_bimodality.R
 	@echo --- Starting the quality control for the cell population based on the bimodality ---
@@ -289,7 +296,7 @@ bimodality_cellPop: qc_cellType 1Run/QC_cellPop_bimodality.R
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
 	@touch $@
-	
+
 ## Call present and absent genes per library/cell population that pass the bimodality test
 calls: bimodality_cellPop 1Run/Calls_cell_pop_per_library.R
 	@echo --- Starting the calls of present and absent genes ---
@@ -312,7 +319,7 @@ calls: bimodality_cellPop 1Run/Calls_cell_pop_per_library.R
 
 final_status: calls
 	@$(GIT) status
-	
+
 final_commit: final_status
 	# Commit the scRNASeq info files after QC and information file about the stats of all libraries
 	@$(GIT) add ../$(OUTPUT_DIR)InformationAllLibraries.txt
