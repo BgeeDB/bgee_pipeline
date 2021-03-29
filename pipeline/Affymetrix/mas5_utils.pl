@@ -202,7 +202,7 @@ sub get_mas5_columns {
 # i.e. not a header, not a comment
 sub is_valid_processed_mas5_line {
     my ($line, $column_index_ref) = @_;
-    my %corresp_call     = get_corresp_call();
+    my %corresp_call = get_corresp_call();
     $line =~ s/(\r\n|\r)$/\n/;
     chomp $line;
 

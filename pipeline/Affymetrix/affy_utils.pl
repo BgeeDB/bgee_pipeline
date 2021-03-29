@@ -107,6 +107,7 @@ sub extractProbesetsFromFile {
         if ( $column_indexes{'call'} != -1 && $column_indexes{'signal'} != -1 && $column_indexes{'probeset_id'} != -1 ){
             open(my $INMAS52, '<', "$file_name")  or warn "\tWarning! Can't read file [$file_name] for [$chipId][$experimentId]\n";
             my $line = <$INMAS52>;   #header
+            #"probeId"    "expression"    "call"    "pValue"    "adjusted_call"
             while ( defined ($line = <$INMAS52>) ){
                 if ( !is_valid_processed_mas5_line($line, \%column_indexes) ){
                     print "\tWarning, unrecognized line: $line for [$chipId][$experimentId]\n"  if ( $logWarn );
@@ -169,6 +170,8 @@ sub extractProbesetsFromFile {
          open(INGCRMA2, '<', $processedSchusterDir.'/'.$experimentId.'/'.$chipId.'.out')) or
          warn "\tWarning! Can't read data file for [$chipId][$experimentId]!\n";
         while ( defined (my $line = <INGCRMA2>) ){
+            #probeId    expression    pValue    call    qValue    adjusted_call
+            next  if ( $line =~ /^probeId/ );
             chomp $line;
             $nbr_line++;
             my @tmp = split(/\t/, $line);

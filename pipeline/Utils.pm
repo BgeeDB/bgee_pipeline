@@ -12,7 +12,6 @@ use DBI;
 use File::Basename;
 use File::Slurp;
 use IO::Socket;
-use List::MoreUtils qw(uniq);
 use Spreadsheet::Read qw{ReadData row};
 
 # flush after every write
