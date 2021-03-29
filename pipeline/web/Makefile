@@ -5,9 +5,9 @@ include $(PIPELINEROOT)Makefile.common
 all: $(VERIFICATIONFILE)
 
 sitemap.xml:
-	@perl generate_site_map.pl -bgee=$(BGEECMD) >out 2>err
-	@if [[ ! -s out ]]; then $(RM) out; fi
-	@if [[ ! -s err ]]; then $(RM) err; fi
+	@perl generate_site_map.pl -bgee=$(BGEECMD) >sitemap.out 2>sitemap.err
+	@if [[ ! -s sitemap.out ]]; then $(RM) sitemap.out; fi
+	@if [[ ! -s sitemap.err ]]; then $(RM) sitemap.err; fi
 	@echo
 	@echo 'Copy "sitemap*.xml" files to the htdocs/ folder, i.e. in "/var/www/html/bgee.unil.ch"'
 	@echo 'The file htdocs/robots.txt must contain a line linking to the index sitemap file "sitemap.xml":'
@@ -21,4 +21,4 @@ $(VERIFICATIONFILE): sitemap.xml
 	@touch $@
 
 clean:
-	-@$(RM) -R $(VERIFICATIONFILE) sitemap* out err
+	-@$(RM) -R $(VERIFICATIONFILE) sitemap*

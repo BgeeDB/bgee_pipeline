@@ -7,8 +7,6 @@ use diagnostics;
 
 use Getopt::Long;
 use File::Slurp;
-use List::MoreUtils qw(uniq);
-use Sort::Naturally;
 
 use FindBin;
 use lib "$FindBin::Bin/.."; # Get lib path for Utils.pm
