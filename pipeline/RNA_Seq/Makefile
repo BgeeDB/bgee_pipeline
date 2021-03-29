@@ -150,24 +150,29 @@ check_tools: cluster1
 	# Check if all required tools/libs are available
 	@module add Bioinformatics/Software/vital-it
 	@which perl                                        > $@.tmp
+	@perl -MBio::SeqIO            -e 1                >> $@.tmp
+	@perl -MCpanel::JSON::XS      -e 1                >> $@.tmp
+	@perl -MData::Dumper          -e 1                >> $@.tmp
 	@perl -Mdiagnostics           -e 1                >> $@.tmp
 	@perl -MDBI                   -e 1                >> $@.tmp
 	@perl -MDigest::SHA           -e 1                >> $@.tmp
 	@perl -MFile::Basename        -e 1                >> $@.tmp
+	@perl -MFile::Find            -e 1                >> $@.tmp
 	@perl -MFile::Path            -e 1                >> $@.tmp
 	@perl -MFile::Slurp           -e 1                >> $@.tmp
 	@perl -MFile::Spec            -e 1                >> $@.tmp
 	@perl -MFindBin               -e 1                >> $@.tmp
 	@perl -MGetopt::Long          -e 1                >> $@.tmp
-	@perl -MIO::Socket            -e 1                >> $@.tmp
+	@perl -MIO::Compress::Gzip    -e 1                >> $@.tmp
 	@perl -Mlib                   -e 1                >> $@.tmp
 	@perl -MList::MoreUtils       -e 1                >> $@.tmp
+	@perl -MList::Util            -e 1                >> $@.tmp
 	@perl -MLWP::Simple           -e 1                >> $@.tmp
+	@perl -MSort::Naturally       -e 1                >> $@.tmp
 	@perl -MSpreadsheet::Read     -e 1                >> $@.tmp
 	@perl -Mstrict                -e 1                >> $@.tmp
 	@perl -MTime::localtime       -e 1                >> $@.tmp
 	@perl -Mwarnings              -e 1                >> $@.tmp
-	@perl -MCpanel::JSON::XS      -e 1                >> $@.tmp
 	@$(CLUSTER_R_CMD) which R                         >> $@.tmp
 	@$(CLUSTER_R_CMD) R -e 'library("chipseq")'       >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("edgeR")'         >> $@.tmp  2>/dev/null
@@ -210,7 +215,7 @@ clean_cluster_folders: check_tools
 
 
 ################################ GENERATE INTERGENIC SEQUENCES FOR EACH SPECIES ################################
-prepare_GTF: 
+prepare_GTF:
 	# Prepare GTF files : $(CLUSTER_R_CMD)
 	@perl 0Before/slurm_prepare_GTF.pl -gtf_dir=$(RNASEQ_CLUSTER_GTF) -block_size_N=31 -account=$(CLUSTER_ACCOUNT_SENSITIVE) -partition=$(CLUSTER_PARTITION_SENSITIVE) -proportion_N=0.05 -output_gtf_path=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(OUTPUT_DIR) -cluster_R_cmd="$(CLUSTER_R_CMD)" >$@.tmp 2>&1
 	@echo rm -f $(RNASEQ_CLUSTER_GTF)/*.gtf.gz
@@ -346,7 +351,7 @@ generate_intergenic_sequences: sum_by_species
 ################################ GENERATE PRESENT/ABSENT CALLS WITH BgeeCall ################################
 
 # As for Bgee 15 it was mandatory to increase memory to 120G to generate Human index with kmer size = 15bp
-indexes_bgeecall: 
+indexes_bgeecall:
 	# generate BgeeCall input file from the rna_seq_sample_info.txt file
 	# TODO: run this script in a different rule
 	@perl 1Run/sample_info_to_bgeecall.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -sample_excluded=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >>$@.tmp 2>&1
@@ -354,13 +359,13 @@ indexes_bgeecall:
 	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(RNASEQ_BGEECALL_FILE)" account="$(CLUSTER_ACCOUNT_SENSITIVE)" time="24:00:00" partition="$(CLUSTER_PARTITION_SENSITIVE)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' 1Run/bgeecall_index.R $(RNASEQ_CLUSTER_R_LOG)bgeecall_index.Rout
 	@$(MV) $@.tmp $@
 
-presence_absence_bgeecall: indexes_bgeecall 
+presence_absence_bgeecall: indexes_bgeecall
 	# generate present/absent expression calls with BgeeCall
 	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(RNASEQ_BGEECALL_FILE)" account="$(CLUSTER_ACCOUNT_SENSITIVE)" time="2-00:00:00" partition="$(CLUSTER_PARTITION_SENSITIVE)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)" decrypt_file_path="$(ENCRYPT_PASSWD_FILE)"' 1Run/bgeecall_calls.R $(RNASEQ_CLUSTER_R_LOG)bgeecall_calls.Rout
 	# TODO generate summary plot once all calls have been generated
 	@touch $@
 
-check_presence_absence: presence_absence_bgeecall 
+check_presence_absence: presence_absence_bgeecall
 	# check that presence absence calls have been generated for all libraries present in the rna_seq_sample_info file
 	# generate file containing calls info for all libraries and use this file to generate different plots
 	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_sample_info="$(RNASEQ_BGEECALL_FILE)" calls_dir="$(RNASEQ_CLUSTER_BGEECALL_CALLS)" presence_absence_report="$(RNASEQ_CLUSTER_CALLS_STATS)" kallisto_report="$(RNASEQ_CLUSTER_KALLISTO_STATS)"' 1Run/rna_seq_calls_plot.R $(RNASEQ_CLUSTER_R_LOG)rna_seq_calls_plot.Rout

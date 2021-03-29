@@ -18,25 +18,32 @@ global_check:
 # Ensembl API
 	@perl -MBio::EnsEMBL::Registry  -e 1 >> $@.tmp
 # other Perl modules
+	@perl -MArchive::Tar            -e 1 >> $@.tmp
+	@perl -MArchive::Zip            -e 1 >> $@.tmp
 	@perl -MArray::Utils            -e 1 >> $@.tmp
+	@perl -MBio::SeqIO              -e 1 >> $@.tmp
 	@perl -MCpanel::JSON::XS        -e 1 >> $@.tmp
+	@perl -MData::Dumper            -e 1 >> $@.tmp
 	@perl -MDBI                     -e 1 >> $@.tmp
 	@perl -MDigest::SHA             -e 1 >> $@.tmp
+	@perl -MExporter                -e 1 >> $@.tmp
 	@perl -MFile::Basename          -e 1 >> $@.tmp
 	@perl -MFile::Copy              -e 1 >> $@.tmp
+	@perl -MFile::Find              -e 1 >> $@.tmp
 	@perl -MFile::Path              -e 1 >> $@.tmp
 	@perl -MFile::Slurp             -e 1 >> $@.tmp
 	@perl -MFile::Spec              -e 1 >> $@.tmp
 	@perl -MFindBin                 -e 1 >> $@.tmp
 	@perl -MGetopt::Long            -e 1 >> $@.tmp
 	@perl -MHTTP::Request           -e 1 >> $@.tmp
+	@perl -MIO::Compress::Gzip      -e 1 >> $@.tmp
+	@perl -MIO::Socket              -e 1 >> $@.tmp
 	@perl -MIO::Uncompress::Gunzip  -e 1 >> $@.tmp
 	@perl -MLWP::UserAgent          -e 1 >> $@.tmp
 	@perl -MLWP::Simple             -e 1 >> $@.tmp
 	@perl -MList::Compare           -e 1 >> $@.tmp
 	@perl -MList::MoreUtils         -e 1 >> $@.tmp
 	@perl -MList::Util              -e 1 >> $@.tmp
-	@perl -MNet::FTP                -e 1 >> $@.tmp
 	@perl -MParallel::ForkManager   -e 1 >> $@.tmp
 	@perl -MSort::Naturally         -e 1 >> $@.tmp
 	@perl -MSpreadsheet::Read       -e 1 >> $@.tmp
@@ -44,6 +51,9 @@ global_check:
 	@perl -MText::CSV               -e 1 >> $@.tmp
 	@perl -MSpreadsheet::ParseXLSX  -e 1 >> $@.tmp
 	@perl -MSpreadsheet::WriteExcel -e 1 >> $@.tmp
+	@perl -MTest::More              -e 1 >> $@.tmp
+	@perl -MTime::HiRes             -e 1 >> $@.tmp
+	@perl -MTime::localtime         -e 1 >> $@.tmp
 	@perl -MWebservice::InterMine   -e 1 >> $@.tmp
 	@perl -MXML::Fast               -e 1 >> $@.tmp
 # R libraries
