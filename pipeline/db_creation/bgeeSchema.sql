@@ -659,7 +659,7 @@ create table expressedSequenceTag (
     UniGeneClusterId varchar(70) not null default '',
     expressionId int unsigned,
 -- p-value
-    pValue decimal(31, 30) unsigned default 1,
+    pValue decimal(31, 30) unsigned not null,
 -- Warning, qualities must be ordered, the index in the enum is used in many queries
     estData enum('no data', 'poor quality', 'high quality') default 'no data'
 ) engine = innodb;
@@ -771,7 +771,7 @@ create table affymetrixProbeset (
 -- detectionFlag before FDR correction
     rawDetectionFlag enum('undefined', 'absent', 'marginal', 'present') not null default 'undefined',
 -- p-value
-    pValue decimal(31, 30) unsigned default 1,
+    pValue decimal(31, 30) unsigned default null,
 -- p-value adjusted by Benjamini-Hochberg procedure
     qValue decimal(31, 30) unsigned default 1,
 -- detectionFlag after FDR correction
@@ -867,7 +867,7 @@ create table inSituSpot (
     expressionId int unsigned,
 -- Warning, qualities must be ordered, the index in the enum is used in many queries
     inSituData enum('no data', 'poor quality', 'high quality') default 'no data',
-    pValue decimal(31, 30) unsigned default 1,
+    pValue decimal(31, 30) unsigned default null,
 -- When expressionId is null, the result is not used for the summary of expression.
 -- Reasons are:
 -- * pre filtering: Probesets always seen as "absent" or "marginal" over the whole dataset are removed
@@ -1003,7 +1003,7 @@ create table rnaSeqResult (
     readsCount decimal(16, 6) unsigned not null COMMENT 'As of Bgee 14, read counts are "estimated counts" produced using the Kallisto software. They are not normalized for read or gene lengths.',
 -- zScore can be negative
     zScore decimal(35, 30),
-    pValue decimal(31, 30) unsigned default 1 COMMENT 'present calls are based on the pValue',
+    pValue decimal(31, 30) unsigned default null COMMENT 'present calls are based on the pValue',
     expressionId int unsigned,
     detectionFlag enum('undefined', 'absent', 'present') default 'undefined',
 -- When expressionId is null, the result is not used for the summary of expression.
@@ -1147,7 +1147,7 @@ create table scRnaSeqFullLengthResult (
     readsCount decimal(16, 6) unsigned not null COMMENT 'As of Bgee 14, read counts are "estimated counts" produced using the Kallisto software. They are not normalized for read or gene lengths.',
 -- zScore can be negative
     zScore decimal(35, 30),
-    pValue decimal(31, 30) unsigned default 1 COMMENT 'present calls are based on the pValue',
+    pValue decimal(31, 30) unsigned default null COMMENT 'present calls are based on the pValue',
     expressionId int unsigned,
     detectionFlag enum('undefined', 'absent', 'present') default 'undefined' COMMENT 'absent calls are inserted but excluded for scRNA-Seq data',
     reasonForExclusion enum('not excluded', 'absent call not reliable', 'undefined') not null default 'not excluded'
@@ -1229,7 +1229,7 @@ create table scRnaSeqTargetBasedResult (
     rank decimal(9, 2) unsigned,
 -- zScore can be negative
     zScore decimal(35, 30),
-    pValue decimal(31, 30) unsigned default 1 COMMENT 'present calls are based on the pValue',
+    pValue decimal(31, 30) unsigned default null COMMENT 'present calls are based on the pValue',
     expressionId int unsigned,
     detectionFlag enum('undefined', 'present') default 'undefined' COMMENT 'we do not produce absent calls from scRNA-Seq data',
     reasonForExclusion enum('not excluded', 'undefined') not null default 'not excluded'
@@ -1432,17 +1432,17 @@ create table globalExpression (
     'self and descendant', 'ancestor and descendant') COMMENT 'The origin of the propagated single cell full length RNA-Seq data related to the sex of the related condition. If null, it means that sexes were not considered in this propagated call, or that the call is not supported by any single cell full length RNA-Seq data.',
     scRnaSeqFullLengthStrainPropagationState ENUM('all', 'self', 'ancestor', 'descendant', 'self and ancestor',
     'self and descendant', 'ancestor and descendant') COMMENT 'The origin of the propagated single cell full length RNA-Seq data related to the strain of the related condition. If null, it means that strains were not considered in this propagated call, or that the call is not supported by any single cell full length RNA-Seq data.',
+    scRnaSeqFullLengthCellTypePropagationState ENUM('all', 'self', 'ancestor', 'descendant', 'self and ancestor',
+    'self and descendant', 'ancestor and descendant') COMMENT 'The origin of the propagated single cell full length RNA-Seq data related to the cell type of the related condition. If null, it means that cell type were not considered in this propagated call, or that the call is not supported by any single cell full length RNA-Seq data.',
     scRnaSeqFullLengthConditionObservedData BOOLEAN COMMENT 'Whether some single cell full length RNA-Seq data were observed in this condition itself. If null, it means that the call is not supported by any single cell full length RNA-Seq data. This field is redundant as compared to the "self" experiment counts below, but is more practical to use.',
 
 -- ** PVALUES PER DATATYPE **
 
-    -- 5C1 = 5
     pValueAffymetrix decimal(31, 30) unsigned not null default 1,
     pValueEst decimal(31, 30) unsigned not null default 1,
     pValueInSitu decimal(31, 30) unsigned not null default 1,
     pValueRnaSeq decimal(31, 30) unsigned not null default 1,
     pValueScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
-    -- 5C2 = 10
     pValueAffymetrixEst decimal(31, 30) unsigned not null default 1,
     pValueAffymetrixInSitu decimal(31, 30) unsigned not null default 1,
     pValueAffymetrixRnaSeq decimal(31, 30) unsigned not null default 1,
@@ -1453,7 +1453,6 @@ create table globalExpression (
     pValueInSituRnaSeq decimal(31, 30) unsigned not null default 1,
     pValueInSituScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
     pValueRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
-    -- 5C3 = 10
     pValueAffymetrixEstInSitu decimal(31, 30) unsigned not null default 1,
     pValueAffymetrixEstRnaSeq decimal(31, 30) unsigned not null default 1,
     pValueAffymetrixEstScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
@@ -1464,24 +1463,20 @@ create table globalExpression (
     pValueEstInSituScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
     pValueEstRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
     pValueInSituRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
-    -- 5C4 = 5
     pValueAffymetrixEstInSituRnaSeq decimal(31, 30) unsigned not null default 1,
     pValueAffymetrixEstInSituScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
     pValueAffymetrixEstRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
     pValueAffymetrixInSituRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
     pValueEstInSituRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
-    -- 5C5 = 1
     pValueAffymetrixEstInSituRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
 
 -- ** PVALUES PER DATATYPE BEST DESCENDANT **
 
-    -- 5C1 = 5
     pValueBestDescendantAffymetrix decimal(31, 30) unsigned not null default 1,
     pValueBestDescendantEst decimal(31, 30) unsigned not null default 1,
     pValueBestDescendantInSitu decimal(31, 30) unsigned not null default 1,
     pValueBestDescendantRnaSeq decimal(31, 30) unsigned not null default 1,
     pValueBestDescendantScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
-    -- 5C2 = 10
     pValueBestDescendantAffymetrixEst decimal(31, 30) unsigned not null default 1,
     pValueBestDescendantAffymetrixInSitu decimal(31, 30) unsigned not null default 1,
     pValueBestDescendantAffymetrixRnaSeq decimal(31, 30) unsigned not null default 1,
@@ -1492,7 +1487,6 @@ create table globalExpression (
     pValueBestDescendantInSituRnaSeq decimal(31, 30) unsigned not null default 1,
     pValueBestDescendantInSituScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
     pValueBestDescendantRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
-    -- 5C3 = 10
     pValueBestDescendantAffymetrixEstInSitu decimal(31, 30) unsigned not null default 1,
     pValueBestDescendantAffymetrixEstRnaSeq decimal(31, 30) unsigned not null default 1,
     pValueBestDescendantAffymetrixEstScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
@@ -1503,13 +1497,11 @@ create table globalExpression (
     pValueBestDescendantEstInSituScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
     pValueBestDescendantEstRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
     pValueBestDescendantInSituRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
-    -- 5C4 = 5
     pValueBestDescendantAffymetrixEstInSituRnaSeq decimal(31, 30) unsigned not null default 1,
     pValueBestDescendantAffymetrixEstInSituScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
     pValueBestDescendantAffymetrixEstRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
     pValueBestDescendantAffymetrixInSituRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
     pValueBestDescendantEstInSituRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,
-    -- 5C5 = 1
     pValueBestDescendantAffymetrixEstInSituRnaSeqScRnaSeqFullLength decimal(31, 30) unsigned not null default 1,    
 
 
