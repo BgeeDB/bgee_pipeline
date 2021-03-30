@@ -498,18 +498,6 @@ create table gene (
     geneMappedToGeneIdCount tinyint unsigned not null default 1 COMMENT 'number of genes in the Bgee database with the same Ensembl gene ID. In Bgee, for some species with no genome available, we use the genome of a closely-related species, such as chimpanzee genome for analyzing bonobo data. For this reason, a same Ensembl gene ID can be mapped to several species in Bgee. The value returned here is equal to 1 when the Ensembl gene ID is uniquely used in the Bgee database.'
 ) engine = innodb;
 
-create table geneOrthologs (
-    bgeeGeneId mediumint unsigned not null COMMENT 'Numeric internal gene ID used for improving performances',
-    targetGeneId mediumint unsigned not null COMMENT 'Numeric internal gene ID of the orthologous gene',
-    taxonId mediumint unsigned not null COMMENT 'NCBI taxon id at which orthology relation had been identified'
-) engine = innodb;
-
-create table geneParalogs (
-    bgeeGeneId mediumint unsigned not null COMMENT 'Numeric internal gene ID used for improving performances',
-    targetGeneId mediumint unsigned not null COMMENT 'Numeric internal gene ID of the orthologous gene',
-    taxonId mediumint unsigned not null COMMENT 'NCBI taxon id of the closest parent speciation of this duplication'
-) engine = innodb;
-
 create table geneNameSynonym (
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
     geneNameSynonym varchar(255) not null COMMENT 'Gene name synonym'
@@ -1025,6 +1013,7 @@ create table rnaSeqResult (
 -- taking also into account 'absent low quality' evidence.
 -- 'absent low quality' used to be: probesets always "absent" for this gene/condition,
 -- but only seen by MAS5 (that we do not trust = "low quality" - "noExpression" should always be "high quality").
+    rnaSeqData enum('no data','poor quality','high quality') default 'no data',
     reasonForExclusion enum('not excluded', 'pre-filtering', 'absent call not reliable', 
         'noExpression conflict', 'undefined') not null default 'not excluded'
 ) engine = innodb;
