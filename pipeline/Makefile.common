@@ -315,8 +315,8 @@ AFFY_NORMTYPE_FILEPATH              := $(GENERATED_FILES_DIR)$(AFFYPATH)normaliz
 AFFY_DETCTYPE_FILEPATH              := $(GENERATED_FILES_DIR)$(AFFYPATH)detectionType
 
 # Affymetrix data path
-#AFFYDATAPATH      := $(CLUSTER_DATA_PATH)/Affymetrix/
-AFFYDATAPATH      := /var/bgee/extra/pipeline/Affymetrix/
+#AFFYDATAPATH      := $(CLUSTER_DATA_PATH)/Affymetrix_v$(MAJOR_RELEASE)/
+AFFYDATAPATH      := /var/bgee/extra/pipeline/Affymetrix_v$(MAJOR_RELEASE)/
 AFFYNEWDATAPATH   := $(AFFYDATAPATH)new_files/
 AFFYANNOTATORPATH := /Users/anikneja/Documents/bgee/extra/pipeline/curation/Affymetrix/
 

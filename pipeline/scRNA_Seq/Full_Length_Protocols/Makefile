@@ -122,7 +122,7 @@ check_tools: clusterJURA
 
 ## Prepare single cell info file (run rule in front)
 #TODO: remove hardcoded mapping between speciesName and speciesID in the script
-prepare_singlecell_info: $(SC_RNASEQ_LIB_PASS_FILEPATH) 0Preparation/prepare_scrna_seq_sample_info.R 
+prepare_singlecell_info: $(SC_RNASEQ_LIB_PASS_FILEPATH) 0Preparation/prepare_scrna_seq_sample_info.R
 	@$(RM) $(SC_RNASEQ_SAMPINFO_FILEPATH)
 	@echo --- prepare single cell information file ---
 	@$(CLUSTER_FASTP_CMD) $(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args NEW_scRNASeqLibrary="$(SC_RNASEQ_LIB_PASS_FILEPATH)" raw_cells_folder="$(SC_RNASEQ_FASTQ_FULL_LENGTH)" output_sample_info_file="$(SC_RNASEQ_SAMPINFO_FILEPATH)"' 0Preparation/prepare_scrna_seq_sample_info.R 0Preparation/prepare_scrna_seq_sample_info.Rout > $@.tmp
@@ -168,7 +168,7 @@ QC_cellPopulation: presence_absence_bgeecall 1Run/QC_cellPopulation.R
 	@touch $@
 
 # run script from bulk RNASeq pipeline
-check_presence_absence: presence_absence_bgeecall 
+check_presence_absence: presence_absence_bgeecall
 	# check that presence absence calls have been generated for all libraries present in the rna_seq_sample_info file
 	# generate file containing calls info for all libraries and use this file to generate different plots
 	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_sample_info="$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH)" calls_dir="$(SC_RNASEQ_CLUSTER_BGEECALL)" presence_absence_report="$(SC_RNASEQ_CLUSTER_CALLS_STATS)" kallisto_report="$(SC_RNASEQ_CLUSTER_KALLISTO_STATS)"' $(PIPELINEROOT)$(RNASEQPATH)1Run/rna_seq_calls_plot.R $(SC_RNASEQ_FL_CLUSTER_R_LOG)rna_seq_calls_plot.Rout
@@ -182,7 +182,7 @@ calculate_fpkm: presence_absence_bgeecall
 
 final_status: scRNAseq_Calls
 	@$(GIT) status
-	
+
 final_commit: final_status
 	# Touch all files so that they are not removed from $(RNASEQ_CLUSTER_SCRATCH)
 	@find $(SC_RNASEQ_CLUSTER_ALL_RES_FULL_LENGTH) -exec touch {} \; 2>warnings.$@
@@ -198,7 +198,7 @@ final_commit: final_status
 	@$(MV) $(SC_RNASEQ_CLUSTER_ALL_RES_FULL_LENGTH)full_length_presence_absence_$(DBNAME).tar.gz $(SC_RNASEQ_CLUSTER_ALL_RES_FULL_LENGTH)full_length_qc_cell_population_$(DBNAME).tar.gz $(SC_RNASEQ_CLUSTER_ALL_RES_FULL_LENGTH)full_length_logs_R_$(DBNAME).tar.gz $(RNASEQ_CLUSTER_ALL_RES_BACKUP) 2>>warnings.$@
 	# Whole archive is probably too big to be copied to our servers (>100Gb). Commit only the final gene-level expression + calls files:
 	@$(CP) $(SC_RNASEQ_CLUSTER_CALLS_STATS)            $(SCRNASEQSAMPSTATS)   2>>warnings.$@
-	@$(CP) $(SC_RNASEQ_CLUSTER_KALLISTO_STATS)         $(SCRNASEQREPORTINFO)  2>>warnings.$@	
+	@$(CP) $(SC_RNASEQ_CLUSTER_KALLISTO_STATS)         $(SCRNASEQREPORTINFO)  2>>warnings.$@
 	#To do to complete
 	@echo -e "\tTODO: Commit/Push $(SCRNASEQREPORTINFO) $(SCRNASEQSAMPSTATS) $(SC_RNASEQ_SAMPINFO_FILEPATH) $(SC_RNASEQ_MODALITY_FILEPATH) $(SC_RNASEQ_SAMPINFO_PASS_FILEPATH) $(SC_RNASEQ_SAMPINFO_NOT_PASS_FILEPATH) files\n"
 	@echo -e "\tTODO: Save tarballs in directory [$(SC_RNASEQ_CLUSTER_ALL_RES_FULL_LENGTH)] to $(CLUSTER_ARCHIVE_PATH)/full_length_rna_seq/all_results_$(DBNAME)/\n"
@@ -250,7 +250,7 @@ check_conditions: insert_scRNA_seq
 	@$(MYSQL) -e "SELECT DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.cellTypeId, t5.anatEntityName, t1.sex, t1.strain FROM cond AS t1 LEFT OUTER JOIN stageTaxonConstraint AS t2 ON t1.stageId = t2.stageId AND (t2.speciesId IS NULL OR t1.speciesId = t2.speciesId) LEFT OUTER JOIN anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId LEFT OUTER JOIN anatEntity as t5 ON t5.anatEntityId = t1.cellTypeId WHERE t5.anatEntityId IS NULL and t5.anatEntityId IS NOT NULL ORDER BY t1.speciesId" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
-insert_expression: 
+insert_expression:
 	# Insert the expression summaries
 	@perl 3Insertion/insert_scrna_seq_expression.pl -bgee=$(BGEECMD) > $@.tmp 2>warnings.$@
 	@echo
