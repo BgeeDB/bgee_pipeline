@@ -238,7 +238,38 @@ add foreign key (conditionId) references cond(conditionId) on delete cascade;
 /*!40000 ALTER TABLE `globalExpression` DISABLE KEYS */;
 alter table globalExpression
 add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade,
-add foreign key (globalConditionId) references globalCond(globalConditionId) on delete cascade;
+add foreign key (globalConditionId) references globalCond(globalConditionId) on delete cascade
+add foreign key(gCIdPValBDAffy) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDEst) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDInSitu) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDRnaSeq) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDAffyEst) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDAffyInSitu) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDAffyRnaSeq) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDAffyScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDEstInSitu) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDEstRnaSeq) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDEstScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDInSituRnaSeq) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDInSituScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDRnaSeqScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDAffyEstInSitu) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDAffyEstRnaSeq) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDAffyEstScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDAffyInSituRnaSeq) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDAffyInSituScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDAffyRnaSeqScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDEstInSituRnaSeq) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDEstInSituScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDEstRnaSeqScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDInSituRnaSeqScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDAffyEstInSituRnaSeq) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDAffyEstInSituScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDAffyEstRnaSeqScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDAffyInSituRnaSeqScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDEstInSituRnaSeqScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+add foreign key(gCIdPValBDAffyEstInSituRnaSeqScRnaSeqFL) references globalCond(globalConditionId) on delete set null;
 /*!40000 ALTER TABLE `globalExpression` ENABLE KEYS */;
 
 -- ****************************************************
