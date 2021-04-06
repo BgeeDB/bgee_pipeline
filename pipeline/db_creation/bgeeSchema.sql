@@ -1363,7 +1363,6 @@ comment = 'This table is a summary of expression calls for a given gene-conditio
 -- DESIGN note: this table uses an ugly design with enumerated columns. For a discussion about this decision,
 -- see http://stackoverflow.com/q/42781299/1768736
 create table globalExpression (
-    globalExpressionId int unsigned not null COMMENT 'Internal expression ID, not stable between releases.',
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID, not stable between releases.',
     globalConditionId mediumint unsigned not null COMMENT 'ID of condition in the related condition table ("cond"), not stable between releases.',
 

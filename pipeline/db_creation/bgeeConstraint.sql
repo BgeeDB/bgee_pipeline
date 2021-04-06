@@ -301,9 +301,7 @@ add unique(expressionId);
 -- See https://stackoverflow.com/a/42822691/1768736 for motivation
 -- for this design of PK and UNIQUE indexes
 alter table globalExpression
-modify globalExpressionId int unsigned not null auto_increment,
 add primary key(bgeeGeneId, globalConditionId),
-add unique(globalExpressionId);
 /*!40000 ALTER TABLE `globalExpression` ENABLE KEYS */;
 
 -- ****************************************************
