@@ -11,33 +11,33 @@ update dataSource set releaseDate = null,         releaseVersion = ''           
 -- Uniprot/SwissProt (taken from Ensembl xrefs)
 update dataSource set releaseDate = null,         releaseVersion = ''                                                where dataSourceId = 5;
 -- mirbase
-update dataSource set releaseDate = '2014-06-23', releaseVersion = '21',                           displayOrder = 9  where dataSourceId = 6;
+update dataSource set releaseDate = '2018-11-03', releaseVersion = '22.1',                         displayOrder = 9  where dataSourceId = 6;
 -- 4DXpress
 update dataSource set releaseDate = null,         releaseVersion = ''                                                where dataSourceId = 7;
 -- ZFIN
-update dataSource set releaseDate = '2017-03-27', releaseVersion = '',                             displayOrder = 5  where dataSourceId = 8;
+update dataSource set releaseDate = '2021-03-02', releaseVersion = '',                             displayOrder = 5  where dataSourceId = 8;
 -- MGI
-update dataSource set releaseDate = '2016-12-05', releaseVersion = '',                             displayOrder = 6  where dataSourceId = 9;
+update dataSource set releaseDate = '2021-03-02', releaseVersion = '',                             displayOrder = 6  where dataSourceId = 9;
 -- FlyBase
-update dataSource set releaseDate = '2016-12-06', releaseVersion = ''                                                where dataSourceId = 10;
+update dataSource set releaseDate = '2021-03-02', releaseVersion = ''                                                where dataSourceId = 10;
 -- ArrayExpress
-update dataSource set releaseDate = '2016-08-22', releaseVersion = '',                             displayOrder = 4  where dataSourceId = 11;
+update dataSource set releaseDate = '2021-02-08', releaseVersion = '',                             displayOrder = 4  where dataSourceId = 11;
 -- Unigene
 update dataSource set releaseDate = '2016-12-05', releaseVersion = '',                             displayOrder = 9  where dataSourceId = 12;
 -- smiRNAdb
 update dataSource set releaseDate = '2009-04-23', releaseVersion = '2',                            displayOrder = 11 where dataSourceId = 13;
 -- BDGP
-update dataSource set releaseDate = '2016-12-04', releaseVersion = '',                             displayOrder = 8  where dataSourceId = 14;
+update dataSource set releaseDate = '2020-11-22', releaseVersion = '',                             displayOrder = 8  where dataSourceId = 14;
 -- Xenbase
-update dataSource set releaseDate = '2016-11-15', releaseVersion = '',                             displayOrder = 7  where dataSourceId = 15;
+update dataSource set releaseDate = '2021-03-11', releaseVersion = '',                             displayOrder = 7  where dataSourceId = 15;
 -- neXtProt
 update dataSource set releaseDate = null,         releaseVersion = ''                                                where dataSourceId = 16;
 -- GEO (Affymetrix)
 update dataSource set releaseDate = '2016-08-22', releaseVersion = '',                             displayOrder = 3  where dataSourceId = 17;
 -- GO
-update dataSource set releaseDate = '2018-09-19', releaseVersion = ''                                                where dataSourceId = 18;
+update dataSource set releaseDate = '2021-02-08', releaseVersion = ''                                                where dataSourceId = 18;
 -- SRA
-update dataSource set releaseDate = '2020-08-07', releaseVersion = '',                             displayOrder = 2  where dataSourceId = 19;
+update dataSource set releaseDate = '2021-02-08', releaseVersion = '',                             displayOrder = 2  where dataSourceId = 19;
 -- HGNC (taken from Ensembl xrefs)
 update dataSource set releaseDate = null,         releaseVersion = '',                             displayOrder = 1  where dataSourceId = 20;
 -- CCDS (taken from Ensembl xrefs)
@@ -45,13 +45,13 @@ update dataSource set releaseDate = null,         releaseVersion = '',          
 -- RGD (taken from Ensembl xrefs)
 update dataSource set releaseDate = null,         releaseVersion = '',                             displayOrder = 1  where dataSourceId = 22;
 -- WormBase
-update dataSource set releaseDate = '2016-08-29', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 23;
+update dataSource set releaseDate = '2020-12-13', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 23;
 -- EnsemblMetazoa
 update dataSource set releaseDate = '2020-12-01', releaseVersion = '49',                           displayOrder = 1  where dataSourceId = 24;
 -- Bgee
-update dataSource set releaseDate = '2020-03-26', releaseVersion = '15.0',                         displayOrder = 1  where dataSourceId = 25;
+update dataSource set releaseDate = '2021-04-26', releaseVersion = '15.0',                         displayOrder = 1  where dataSourceId = 25;
 -- Uberon
-update dataSource set releaseDate = '2016-07-14', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 26;
+update dataSource set releaseDate = '2020-09-16', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 26;
 -- Developmental stage ontologies
 update dataSource set releaseDate = '2016-12-08', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 27;
 -- OMA
@@ -67,5 +67,5 @@ update dataSource set releaseDate = '2020-12-01', releaseVersion = '',          
 -- GenBank
 update dataSource set releaseDate = '2020-12-01', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 38;
 -- GEO (RNASeq)
-update dataSource set releaseDate = '2018-08-07', releaseVersion = '',                             displayOrder = 2  where dataSourceId = 100;
+update dataSource set releaseDate = '2021-02-08', releaseVersion = '',                             displayOrder = 2  where dataSourceId = 100;
 
