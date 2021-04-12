@@ -116,19 +116,26 @@ sub compute_update_rank_lib_batch {
     my $dbh_thread = Utils::connect_bgee_db($bgee_connector);
     Utils::start_transaction($dbh_thread);
 
+    my $rnaSeqResultsStmt = $dbh_thread->prepare(
+        'SELECT DISTINCT t1.bgeeGeneId, t1.tpm
+         FROM rnaSeqResult AS t1 '.
+         # join to table rnaSeqValidGenes to force
+         # the selection of valid genes
+         'INNER JOIN rnaSeqValidGenes AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId
+         WHERE t1.rnaSeqLibraryId = ?
+         AND t1.reasonForExclusion = "'.$Utils::CALL_NOT_EXCLUDED.'"
+         ORDER BY t1.tpm DESC');
+
+    # if several genes at a same rank, we'll update them at once
+    # with a 'bgeeGeneId IN (?,?, ...)' clause.
+    # If only one gene at a given rank, updated with the prepared statement below.
+    my $rankUpdateStart = 'UPDATE rnaSeqResult SET rank = ? WHERE rnaSeqLibraryId = ? and bgeeGeneId ';
+    my $rnaSeqResultUpdateStmt = $dbh_thread->prepare($rankUpdateStart.'= ?');
+
     for my $k ( 0..$batchLength-1 ) {
 
         # ======= Compute ranks ========
         my $rnaSeqLibraryId = ${$libBatchRef}[$k];
-        my $rnaSeqResultsStmt = $dbh_thread->prepare(
-            'SELECT DISTINCT t1.bgeeGeneId, t1.tpm
-             FROM rnaSeqResult AS t1 '.
-             # join to table rnaSeqValidGenes to force
-             # the selection of valid genes
-             'INNER JOIN rnaSeqValidGenes AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId
-             WHERE t1.rnaSeqLibraryId = ?
-             AND t1.reasonForExclusion = "'.$Utils::CALL_NOT_EXCLUDED.'"
-             ORDER BY t1.tpm DESC');
 
         $rnaSeqResultsStmt->execute($rnaSeqLibraryId) or die $rnaSeqResultsStmt->errstr;
 
@@ -139,11 +146,6 @@ sub compute_update_rank_lib_batch {
 
 
         # ======= Update ranks ========
-        # if several genes at a same rank, we'll update them at once
-        # with a 'bgeeGeneId IN (?,?, ...)' clause.
-        # If only one gene at a given rank, updated with the prepared statement below.
-        my $rankUpdateStart = 'UPDATE rnaSeqResult SET rank = ? WHERE rnaSeqLibraryId = ? and bgeeGeneId ';
-        my $rnaSeqResultUpdateStmt = $dbh_thread->prepare($rankUpdateStart.'= ?');
 
         for my $rank ( keys %reverseHash ){
             my $geneIds_arrRef = $reverseHash{$rank};
@@ -249,7 +251,7 @@ print("Rank computation per library done\n");
 # ##############
 # Store max rank and number of distinct ranks per library.
 # NOTE: as of Bgee 15, since we can run this script on the cluster for parallelization,
-# this table should be produced afterwards (for intance, by the makefile)
+# this update should be done afterwards (for intance, in the makefile)
 # after launching all the jobs
 #$dbh = Utils::connect_bgee_db($bgee_connector);
 #$dbh->{'AutoCommit'} = 1;
