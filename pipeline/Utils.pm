@@ -150,6 +150,29 @@ sub map_strain_names {
     return;
 }
 
+sub start_transaction {
+	my ($dbh)= @_;
+
+    # We set autocommit to 1 so that we can define transaction isolation level
+    # *before* starting the next transaction, see https://www.perlmonks.org/?node_id=1074673
+    $dbh->{'AutoCommit'} = 1;
+    my $maxAttempt = 10;
+    my $i = 0;
+    TRANSACTION: while (1) {
+        my $success = 0;
+        $dbh->do("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED") and $success = 1;
+        if ($success) {
+            $dbh->{'AutoCommit'} = 0;
+            last TRANSACTION;
+        } elsif ($i < $maxAttempt) {
+            sleep(2); # wait 2s before retrying
+        } else {
+            die('Starting transaction failed, '.($i + 1)." attempts over $maxAttempt\n");
+        }
+        $i++;
+    }
+}
+
 
 # A sub to retrieve condition parameter combinations with no rank yet computed
 # for the requested data type.
