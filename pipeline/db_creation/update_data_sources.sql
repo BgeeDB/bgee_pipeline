@@ -53,7 +53,7 @@ update dataSource set releaseDate = '2021-04-26', releaseVersion = '15.0',      
 -- Uberon
 update dataSource set releaseDate = '2020-09-16', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 26;
 -- Developmental stage ontologies
-update dataSource set releaseDate = '2016-12-08', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 27;
+update dataSource set releaseDate = '2021-03-01', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 27;
 -- OMA
 update dataSource set releaseDate = '2017-08-21', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 28;
 -- Anatomical similarity annotations
