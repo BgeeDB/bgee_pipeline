@@ -55,7 +55,7 @@ update dataSource set releaseDate = '2020-09-16', releaseVersion = '',          
 -- Developmental stage ontologies
 update dataSource set releaseDate = '2021-03-01', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 27;
 -- OMA
-update dataSource set releaseDate = '2017-08-21', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 28;
+update dataSource set releaseDate = '2020-08-21', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 28;
 -- Anatomical similarity annotations
 update dataSource set releaseDate = '2016-07-14', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 29;
 -- CIO
