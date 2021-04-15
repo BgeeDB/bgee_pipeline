@@ -45,35 +45,40 @@ if ( $bgee_connector eq '' || $paralogs_dir_path eq '' || $orthologs_dir_path eq
 
 
 # load species in Bgee database
-my $load_species_query = "select speciesId from species";
-# load all  Bgee taxon that
+my $load_species_query = "select speciesId, taxonId from species";
+# load all Bgee taxon that
 my $load_taxon_query = "select taxonId, taxonScientificName FROM taxon;";
 
 # Bgee db connection
 my $dbh = Utils::connect_bgee_db($bgee_connector);
 
 # load bgee species
-my @bgee_species_array;
+my %bgee_species_hash;
 my $sth = $dbh->prepare($load_species_query);
 $sth->execute()  or die $sth->errstr;
-my $speciesId;
-$sth->bind_columns(\$speciesId);
+my ($speciesId, $speciesTaxonId) = ('','');
+$sth->bind_columns(\$speciesId, \$speciesTaxonId);
 while($sth->fetch()) {
-   push @bgee_species_array, $speciesId;
+    $bgee_species_hash{$speciesId} = $speciesTaxonId;
 }
 
 # load bgee taxon
 my %taxonName_to_taxonId;
+my %taxonId_to_taxonName;
 $sth = $dbh->prepare($load_taxon_query);
 $sth->execute()  or die $sth->errstr;
-my ($taxonId, $taxonName);
+my ($taxonId, $taxonName) = ('','');
 $sth->bind_columns(\$taxonId, \$taxonName);
 while($sth->fetch()) {
+   $taxonId_to_taxonName{$taxonId} = $taxonName;
    $taxonName_to_taxonId{$taxonName} = $taxonId;
 }
 
-insert_homology_type($orthologs_dir_path, \@bgee_species_array,  \%taxonName_to_taxonId, $dbh, "ortholog");
-insert_homology_type($paralogs_dir_path, \@bgee_species_array,  \%taxonName_to_taxonId, $dbh, "paralog");
+insert_homology_type($orthologs_dir_path, \%bgee_species_hash, $dbh, "ortholog", \%taxonName_to_taxonId);
+insert_homology_type($paralogs_dir_path, \%bgee_species_hash, $dbh, "paralog", \%taxonName_to_taxonId);
+
+$dbh->disconnect or warn "Disconnection failed: $DBI::errstr\n";
+exit;
 
 ############# FUNCTIONS #############
 
@@ -97,10 +102,10 @@ sub load_genes_map {
 sub insert_homology_type {
 
     my $homology_dir_path = $_[0];
-    my %taxonName_to_taxonId = %{$_[2]};
-    my $dbh = $_[3];
-    my $homology_type = $_[4];
-    my @species_array = @{$_[1]};
+    my $dbh = $_[2];
+    my $homology_type = $_[3];
+    my %bgee_species_hash = %{$_[1]};
+    my %taxonName_to_taxonId = %{$_[4]};
     
     #init variables mandatory for insertion
     my ($homo_file_prefix, $insert_homo_query);
@@ -124,20 +129,23 @@ sub insert_homology_type {
     my %already_parsed_files;
 
     # for each bgee species
-    foreach my $species_id (@species_array) {
+    foreach my $species_id (keys %bgee_species_hash) {
         #load genes of this species
         my %ensemblId_to_bgeeId = load_genes_map($species_id);
         my $modified_species_id = hack_tax_id_bgee_to_oma($species_id);
         print "start insertion of species $modified_species_id\n";
 
         #parse all files where current species in first position in file name
-        my @first_species_files = grep /_$modified_species_id-/, @homo_files;
+        my @first_species_files = grep /_${modified_species_id}-/, @homo_files;
         %already_parsed_files = insert_from_file_name(\@first_species_files, $insert_homo_query, $homo_file_prefix, 
-            $homology_dir_path, \%taxonName_to_taxonId, $dbh, \%ensemblId_to_bgeeId, \%already_parsed_files, 1);
+            $homology_dir_path, $dbh, \%ensemblId_to_bgeeId, \%already_parsed_files, \%bgee_species_hash, 1, \%taxonName_to_taxonId);
 
-        my @second_species_files = grep /-$modified_species_id\./, @homo_files;
+        my @second_species_files = grep /-${modified_species_id}\.csv/, @homo_files;
         %already_parsed_files = insert_from_file_name(\@second_species_files, $insert_homo_query, $homo_file_prefix, 
-            $homology_dir_path, \%taxonName_to_taxonId, $dbh, \%ensemblId_to_bgeeId, \%already_parsed_files, 2);
+            $homology_dir_path, $dbh, \%ensemblId_to_bgeeId, \%already_parsed_files, \%bgee_species_hash, 2, \%taxonName_to_taxonId);
+        if (!@first_species_files && !@second_species_files) {
+            warn "No homology files for species $species_id.";
+        }
     }
 }
 
@@ -148,39 +156,66 @@ sub insert_from_file_name {
     my $query = $_[1];
     my $file_prefix = $_[2];
     my $homology_dir_path = $_[3];
-    my %taxonName_to_taxonId = %{$_[4]};
-    my $dbh = $_[5];
-    my %ensemblId_to_bgeeId = %{$_[6]};
-    my %already_parsed_files = %{$_[7]};
+    my $dbh = $_[4];
+    my %ensemblId_to_bgeeId = %{$_[5]};
+    my %already_parsed_files = %{$_[6]};
+    my %bgee_species_hash = %{$_[7]};
     my $species_position = $_[8];
+    my %taxonName_to_taxonId = %{$_[9]};
+
+    # some orthologs are present twice in OMA files. We do not want to insert them twice
+    # in order to save disk space. the symmetry is managed in the Java API. In order not
+    # to insert symmetric homology relations gene names and taxonId are stored in a hash
+    # allowing to check if geneA_geneB or geneB_geneA has already been inserted
+    my %already_inserted;
 
 
     foreach my $species_file (@species_files) {
+
+
+        # init variables used to log homology inserted or not inserted
+        my $inserted_homology = 0;
+        my $not_mapped_homology = 0;
+        my $duplicated_homology = 0;
+
         # disable auto commit in order to insert all tuples of one species at the same time
         $dbh->{AutoCommit} = 0;
         $sth = $dbh->prepare_cached($query);
         next if (exists($already_parsed_files{$species_file}));
-        $species_file =~ /[$file_prefix]_bgee_([0-9]*)-([0-9]*)\.csv/;
-        my %ensemblId_to_bgeeId_homologous_species;
+
+        $species_file =~ /[$file_prefix]_([0-9]*)-([0-9]*)\.csv/;
+        my $species1 = $1;
+        my $species2 = $2;
+        # verify the species for which homology has to be insert is present in the Bgee database
+        if($species_position == 1 && !exists($bgee_species_hash{hack_tax_id_oma_to_bgee($species2)})) {
+            warn "species 2 does not exist. Do not consider file [$species_file]";
+            next;
+        }
+        if($species_position == 2 && !exists($bgee_species_hash{hack_tax_id_oma_to_bgee($species1)})) {
+            warn "species 1 does not exist. Do not consider file [$species_file]";
+            next;
+        }
         # if paralogs of same species do not need to reload genes
-        if ($1 == $2) {
+        my %ensemblId_to_bgeeId_homologous_species;
+        if ($species1 == $species2) {
             %ensemblId_to_bgeeId_homologous_species = %ensemblId_to_bgeeId;
         } else {
             if ($species_position == 1) {
-                %ensemblId_to_bgeeId_homologous_species = load_genes_map(hack_tax_id_oma_to_bgee($2));
+                %ensemblId_to_bgeeId_homologous_species = load_genes_map(hack_tax_id_oma_to_bgee($species2));
             } elsif ($species_position == 2) {
-                %ensemblId_to_bgeeId_homologous_species = load_genes_map(hack_tax_id_oma_to_bgee($1));
+                %ensemblId_to_bgeeId_homologous_species = load_genes_map(hack_tax_id_oma_to_bgee($species1));
             } else {
                 die "species_position should be 1 or 2 but was $species_position";
             }
         }
-        my @values_to_insert;
-        open my $homo_file_handler, "$homology_dir_path/$species_file" or die "failed to read input file: $!";
+        open my $homo_file_handler, "$homology_dir_path/$species_file" or die "failed to read input file ".
+            "$homology_dir_path/$species_file: $!";
         while (my $line = <$homo_file_handler>) {
             
             chomp $line;
             #skip header
-            next if $line =~ /^gene1,gene2,tax_level$/;
+            next if $line =~ /^gene1,gene2,tax_level/;
+            next if $line =~ /^gene2,gene1,tax_level/;
             #split each line into array
             my @line = split(/,/, $line);
             my ($current_species_bgee_id, $homolog_species_bgee_id) = ('', '');
@@ -191,44 +226,82 @@ sub insert_from_file_name {
                 $current_species_bgee_id = $ensemblId_to_bgeeId{$line[1]};
                 $homolog_species_bgee_id = $ensemblId_to_bgeeId_homologous_species{$line[0]};
             }
+            my $lca_taxon_name = $line[2];
+            my $lca_taxon_id = $line[3];
             
-            my $lca_taxon_id = $taxonName_to_taxonId{$line[2]};
-            do {
-                no warnings 'uninitialized'; # for the do block only
-                    
-                if ($current_species_bgee_id eq '' || $homolog_species_bgee_id eq '' || $lca_taxon_id eq '') {
-                    #warn "Can not map OMA data to Bgee : [$line[0], $line[1], $line[2]] became : [$current_species_bgee_id, $homolog_species_bgee_id, $lca_taxon_id]. From file : $species_file";
+            if (!$current_species_bgee_id || !$homolog_species_bgee_id || !$lca_taxon_id) {
+                $not_mapped_homology++;
+                #warn "Can not map OMA data to Bgee : [$line[0], $line[1], $line[2]] became : ".
+                #"[$current_species_bgee_id, $homolog_species_bgee_id, $lca_taxon_id]. From file : $species_file";
+            } else {
+                # for Cetartiodactyla taxon name is correct but the taxonId is equal to -3
+                # in OMA database. This taxon is not present in the Bgee database. We map it 
+                # to Artiodactyla (https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=91561).
+                if($lca_taxon_id == -3 && $lca_taxon_name eq "Cetartiodactyla") {
+                    $lca_taxon_name = "Artiodactyla";
+                    $lca_taxon_id = 91561;
+                }
+                #before query execution we check that this couple of genes has not already been inserted
+                if (!exists($already_inserted{"${current_species_bgee_id}_${homolog_species_bgee_id}"})
+                    && !exists($already_inserted{"${homolog_species_bgee_id}_${current_species_bgee_id}"})) {
+
+                    # In OMA the taxonId of a duplication is defined as the closest descendant taxon. Then it happens 
+                    # that the taxonId of an in-species duplication is the species itself. In Bgee species and taxon 
+                    # are 2 different concepts stored in 2 different tables .The RDB table that stores paralogy
+                    # has a foreign key between its column taxonId and the column taxon.taxonId.
+                    # In order to link such paralogy relations to a taxonId we map it to the direct parent of the
+                    # speciesId (e.g Chlorocebus sabaeus => Chlorocebus). This parent information comes from the 
+                    # column species.taxonId of the RDB.
+                    if($species1 == $species2 && $lca_taxon_id == $species1) {
+                        $lca_taxon_id = $bgee_species_hash{hack_tax_id_oma_to_bgee($lca_taxon_id)};
+                    }
+                    $sth->execute($current_species_bgee_id, $homolog_species_bgee_id, $lca_taxon_id) 
+                        or warn "can not insert $file_prefix [$line[0], $line[1], ${lca_taxon_id}] ".
+                        "from file [$species_file]";
+                    $already_inserted{"${current_species_bgee_id}_${homolog_species_bgee_id}"} = ();
+                    $inserted_homology++;
                 } else {
-                    $sth->execute($current_species_bgee_id, $homolog_species_bgee_id, $lca_taxon_id);
+                    $duplicated_homology++;
                 }
             }
-            
-
         }
 
         $sth->finish;
         $dbh->{AutoCommit} = 1;
         $already_parsed_files{$species_file} = 1;
         close $homo_file_handler;
+        print "finished to parse ${species_file}. $inserted_homology homologies inserted. $duplicated_homology ".
+        "homologies not inserted because duplicated in the file. $not_mapped_homology homologies not inserted because ".
+        "no mapping between OMA gene ID and Bgee gene ID\n";
     }
 
     return %already_parsed_files;
 
 }
 
-# in bgee we do not have the proper taxonId for Gorilla
+# difference of taxonId used for some species between OMA and Bgee
 sub hack_tax_id_oma_to_bgee {
     my $tax_id = $_[0];
+    # Gorilla gorilla gorilla => Gorilla gorilla
     if($tax_id == 9595) {
         $tax_id = 9593;
+    }
+    # Drosophila pseudoobscura pseudoobscura => Drosophila pseudoobscura
+    if($tax_id == 46245) {
+        $tax_id = 7237;
     }
     return $tax_id;
 }
 
 sub hack_tax_id_bgee_to_oma {
     my $tax_id = $_[0];
+    # Gorilla gorilla => Gorilla gorilla gorilla
     if($tax_id == 9593) {
         $tax_id = 9595;
+    }
+    # Drosophila pseudoobscura => Drosophila pseudoobscura pseudoobscura
+    if($tax_id == 7237) {
+        $tax_id = 46245;
     }
     return $tax_id;
 }
