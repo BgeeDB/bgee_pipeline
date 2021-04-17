@@ -238,7 +238,7 @@ add foreign key (conditionId) references cond(conditionId) on delete cascade;
 /*!40000 ALTER TABLE `globalExpression` DISABLE KEYS */;
 alter table globalExpression
 add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade,
-add foreign key (globalConditionId) references globalCond(globalConditionId) on delete cascade
+add foreign key (globalConditionId) references globalCond(globalConditionId) on delete cascade,
 add foreign key(gCIdPValBDAffy) references globalCond(globalConditionId) on delete set null,
 add foreign key(gCIdPValBDEst) references globalCond(globalConditionId) on delete set null,
 add foreign key(gCIdPValBDInSitu) references globalCond(globalConditionId) on delete set null,
@@ -455,6 +455,12 @@ add foreign key (rnaSeqProtocolId) references rnaSeqProtocol(rnaSeqProtocolId) o
 add foreign key (geneBioTypeId) references geneBioType(geneBioTypeId) on delete cascade;
 /*!40000 ALTER TABLE `rnaSeqProtocolToBiotypeExcludedAbsentCalls` ENABLE KEYS */;
 
+/*!40000 ALTER TABLE `rnaSeqProtocolSpeciesMaxRank` DISABLE KEYS */;
+alter table rnaSeqProtocolSpeciesMaxRank
+add foreign key (rnaSeqProtocolId) references rnaSeqProtocol(rnaSeqProtocolId) on delete cascade,
+add foreign key (speciesId) references species(speciesId) on delete cascade;
+/*!40000 ALTER TABLE `rnaSeqProtocolSpeciesMaxRank` ENABLE KEYS */;
+
 
 -- ****************************************************
 -- scRNA-Seq FULL LENGTH DATA
@@ -482,6 +488,11 @@ add foreign key (scRnaSeqFullLengthLibraryId) references scRnaSeqFullLengthLibra
 add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade,
 add foreign key (expressionId) references expression(expressionId) on delete set null;
 /*!40000 ALTER TABLE `scRnaSeqFullLengthResult` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqFullLengthSpeciesMaxRank` DISABLE KEYS */;
+alter table scRnaSeqFullLengthSpeciesMaxRank
+add foreign key (speciesId) references species(speciesId) on delete cascade;
+/*!40000 ALTER TABLE `scRnaSeqFullLengthSpeciesMaxRank` ENABLE KEYS */;
 
 -- ****************************************************
 -- scRNA-Seq TARGET-BASED DATA

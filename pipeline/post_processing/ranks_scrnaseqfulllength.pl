@@ -4,13 +4,8 @@ use warnings;
 use Time::HiRes qw( time );
 use diagnostics;
 
-# Updates the ranks in rnaSeqResult table.
-# Philippe Moret, created Oct 2015.
-# Frederic Bastian, updated June 2016.
-# Frederic Bastian, updated Feb. 2017: adapt to new conditions and new schema in Bgee 14
-# Frederic Bastian, updated Jan. 2020: parallelize rank computations
-# Frederic Bastian, updated Apr. 2021: this script is now responsible only for computing
-# ranks for RNA-Seq library; improve parallelization possibilities.
+# Updates the ranks in scRnaSeqFullLengthResult table.
+# Frederic Bastian, created Apr. 2021.
 
 use Parallel::ForkManager;
 
@@ -29,7 +24,7 @@ my ($libs_per_job)  = (100); # default 100 libraries per thread
 my (@lib_ids) = ();
 my ($sample_offset) = (0);
 my ($sample_count) = (0);
-my %opts = ('bgee=s'          => \$bgee_connector, # Bgee connector string
+my %opts = ('bgee=s'        => \$bgee_connector, # Bgee connector string
             'parallel_jobs=i' => \$parallel_jobs,
             'libs_per_job=i'  => \$libs_per_job,
             'lib_ids=s'       => \@lib_ids,
@@ -51,15 +46,14 @@ if ( !$test_options || $bgee_connector eq ''){
 \n";
     exit 1;
 }
-
 if ($sample_offset < 0 || $sample_count < 0) {
-    die("sample_offset and sample_count cannot be negative\n");
+    die('sample_offset and sample_count cannot be negative');
 }
 if ($sample_offset > 0 && $sample_count == 0) {
-    die("sample_count must be provided if sample_offset is provided\n");
+    die('sample_count must be provided if sample_offset is provided');
 }
 if ($parallel_jobs <= 0 || $libs_per_job <= 0) {
-	die("Invalid argument parallel_jobs/libs_per_job\n");
+    die("Invalid argument parallel_jobs/libs_per_job\n");
 }
 
 @lib_ids = split(/,/, join(',', @lib_ids));
@@ -67,36 +61,12 @@ if ($sample_offset > 0 && @lib_ids) {
     die("Not possible to provide library IDs and offset parameters at the same time\n");
 }
 
-# Reasonning of the computations:
-# 1) identify the valid set of genes that should be considered for ranking in all libraries:
-# the set of all genes that received at least one read over all libraries in Bgee.
-# 2) compute gene fractional ranks in table rnaSeqResult, for each RNA-Seq library, based on TPM values
-# Store also number of distinct ranks per library
+# Reasonning of the computations (as of Bgee 15.0 it's exactly the same reasoning as for
+# bulk RNA-Seq data):
+# * compute gene fractional ranks in table scRnaSeqFullLengthResult, for each scRNA-Seq library,
+#   based on TPM values.
+# * Store also number of distinct ranks per library
 
-
-
-##############################################
-# IDENTIFY VALID GENES                       #
-##############################################
-# We rank all genes that have received at least one read in any condition.
-# So we always rank the same set of gene in a given species over all libraries.
-# We don't use a temp table to be able to close/open the connection for each condition parameter combination.
-# So we have to drop the table at the end.
-#
-# ** NOTE **: as of Bgee 15, since we can run this script on the cluster for parallelization,
-# this table should be produced beforehand (for intance, by the makefile)
-# before launching all the jobs
-#my $dropValidGenesStmt = $dbh->prepare('DROP TABLE IF EXISTS rnaSeqValidGenes');
-#my $validGenesStmt     = $dbh->prepare('CREATE TABLE rnaSeqValidGenes
-#                                            (PRIMARY KEY(bgeeGeneId))
-#                                            SELECT DISTINCT t1.bgeeGeneId
-#                                            FROM rnaSeqResult AS t1
-#                                            WHERE t1.reasonForExclusion = "'.$Utils::CALL_NOT_EXCLUDED.'"');
-#
-#printf('Identifying set of valid genes for ranking: ');
-#$dropValidGenesStmt->execute()  or die $dropValidGenesStmt->errstr;
-#$validGenesStmt->execute()  or die $validGenesStmt->errstr;
-#printf("Done\n");
 
 
 ##############################################
@@ -116,15 +86,16 @@ sub compute_update_rank_lib_batch {
 
         my $rnaSeqResultsStmt = $dbh_thread->prepare(
             'SELECT DISTINCT t1.bgeeGeneId, t1.tpm
-             FROM rnaSeqResult AS t1 
-             WHERE t1.rnaSeqLibraryId = ?
+             FROM scRnaSeqFullLengthResult AS t1 
+             WHERE t1.scRnaSeqFullLengthLibraryId = ?
              AND t1.expressionId IS NOT NULL
              ORDER BY t1.tpm DESC');
 
         # if several genes at a same rank, we'll update them at once
         # with a 'bgeeGeneId IN (?,?, ...)' clause.
         # If only one gene at a given rank, updated with the prepared statement below.
-        my $rankUpdateStart = 'UPDATE rnaSeqResult SET rank = ? WHERE rnaSeqLibraryId = ? and bgeeGeneId ';
+        my $rankUpdateStart = 'UPDATE scRnaSeqFullLengthResult SET rank = ?
+        WHERE scRnaSeqFullLengthLibraryId = ? and bgeeGeneId ';
         my $rnaSeqResultUpdateStmt = $dbh_thread->prepare($rankUpdateStart.'= ?');
 
 
@@ -145,30 +116,30 @@ sub compute_update_rank_lib_batch {
             my $geneIds_arrRef = $reverseHash{$rank};
             my @geneIds_arr = @$geneIds_arrRef;
             my $geneCount = scalar @geneIds_arr;
-            # with the multi-update query, sometimes there are thousands of genes
-            # with equal ranks and the query is extremely slow. Apparently it's better
-            # to alway use the single-gene update query
-            for ( my $i = 0; $i < $geneCount; $i++ ){
-                $rnaSeqResultUpdateStmt->execute($rank, $rnaSeqLibraryId, $geneIds_arr[$i])
-                    or die $rnaSeqResultUpdateStmt->errstr;
-            }
-#            if ( $geneCount == 1 ){
-#                my $geneId = $geneIds_arr[0];
-#                $rnaSeqResultUpdateStmt->execute($rank, $rnaSeqLibraryId, $geneId)
+#            # with the multi-update query, sometimes there are thousands of genes
+#            # with equal ranks and the query is extremely slow. Apparently it's better
+#            # to alway use the single-gene update query
+#            for ( my $i = 0; $i < $geneCount; $i++ ){
+#                $rnaSeqResultUpdateStmt->execute($rank, $rnaSeqLibraryId, $geneIds_arr[$i])
 #                    or die $rnaSeqResultUpdateStmt->errstr;
-#            } else {
-#                my $query = $rankUpdateStart.'IN (';
-#                for ( my $i = 0; $i < $geneCount; $i++ ){
-#                    if ( $i > 0 ){
-#                        $query .= ', ';
-#                    }
-#                    $query .= '?';
-#                }
-#                $query .= ')';
-#                my $rnaSeqRankMultiUpdateStmt = $dbh_thread->prepare($query);
-#                $rnaSeqRankMultiUpdateStmt->execute($rank, $rnaSeqLibraryId, @geneIds_arr)
-#                    or die $rnaSeqRankMultiUpdateStmt->errstr;
 #            }
+            if ( $geneCount == 1 ){
+                my $geneId = $geneIds_arr[0];
+                $rnaSeqResultUpdateStmt->execute($rank, $rnaSeqLibraryId, $geneId)
+                    or die $rnaSeqResultUpdateStmt->errstr;
+            } else {
+                my $query = $rankUpdateStart.'IN (';
+                for ( my $i = 0; $i < $geneCount; $i++ ){
+                    if ( $i > 0 ){
+                        $query .= ', ';
+                    }
+                    $query .= '?';
+                }
+                $query .= ')';
+                my $rnaSeqRankMultiUpdateStmt = $dbh_thread->prepare($query);
+                $rnaSeqRankMultiUpdateStmt->execute($rank, $rnaSeqLibraryId, @geneIds_arr)
+                    or die $rnaSeqRankMultiUpdateStmt->errstr;
+            }
         }
 
         $dbh_thread->commit() or die('Failed commit');
@@ -182,8 +153,8 @@ sub compute_update_rank_lib_batch {
 
 
 # Clean potentially already computed ranks
-#my $cleanRNASeq = $dbh->prepare("UPDATE rnaSeqResult SET rank = NULL");
-#my $cleanLib    = $dbh->prepare("UPDATE rnaSeqLibrary SET libraryMaxRank = NULL,
+#my $cleanRNASeq = $dbh->prepare("UPDATE scRnaSeqFullLengthResult SET rank = NULL");
+#my $cleanLib    = $dbh->prepare("UPDATE scRnaSeqFullLengthLibrary SET libraryMaxRank = NULL,
 #                                                              libraryDistinctRankCount = NULL");
 #printf("Cleaning existing data: ");
 #$cleanRNASeq->execute() or die $cleanRNASeq->errstr;
@@ -192,20 +163,23 @@ sub compute_update_rank_lib_batch {
 
 
 
-# Queries to compute gene ranks per library.
 my @libs = @lib_ids;
 if (!@lib_ids) {
     my $dbh = Utils::connect_bgee_db($bgee_connector);
 
-    my $libSql = 'SELECT t1.rnaSeqLibraryId FROM rnaSeqLibrary AS t1
-                  WHERE EXISTS (SELECT 1 FROM rnaSeqResult AS t2
-                      WHERE t1.rnaSeqLibraryId = t2.rnaSeqLibraryId
+    # Queries to compute gene ranks per library.
+    # We rank all genes that have received at least one read in any condition.
+    # So we always rank the same set of gene in a given species over all libraries.
+    # We assume that each library maps to only one species through its contained genes.
+    my $libSql = 'SELECT t1.scRnaSeqFullLengthLibraryId FROM scRnaSeqFullLengthLibrary AS t1
+                   WHERE EXISTS (SELECT 1 FROM scRnaSeqFullLengthResult AS t2
+                      WHERE t1.scRnaSeqFullLengthLibraryId = t2.scRnaSeqFullLengthLibraryId
                       AND t2.expressionId IS NOT NULL
-                  ) AND NOT EXISTS (SELECT 1 FROM rnaSeqResult AS t2
-                      WHERE t1.rnaSeqLibraryId = t2.rnaSeqLibraryId
+                  ) AND NOT EXISTS (SELECT 1 FROM scRnaSeqFullLengthResult AS t2
+                      WHERE t1.scRnaSeqFullLengthLibraryId = t2.scRnaSeqFullLengthLibraryId
                       AND t2.rank IS NOT NULL)';
     if ($sample_count > 0) {
-        $libSql .= ' ORDER BY t1.rnaSeqLibraryId
+        $libSql .= ' ORDER BY t1.scRnaSeqFullLengthLibraryId
                      LIMIT '.$sample_offset.', '.$sample_count;
     }
     my $rnaSeqLibStmt = $dbh->prepare($libSql);
@@ -215,7 +189,6 @@ if (!@lib_ids) {
     $rnaSeqLibStmt->execute()  or die $rnaSeqLibStmt->errstr;
 
     @libs = map { $_->[0] } @{$rnaSeqLibStmt->fetchall_arrayref};
-
     # Disconnect the DBI connection open in parent process, otherwise it will generate errors
     # (ForkManager and DBI don't go well together, see https://www.perlmonks.org/?node_id=752289)
     $dbh->disconnect();
@@ -223,7 +196,7 @@ if (!@lib_ids) {
 
 my $l = @libs;
 if ($l < $libs_per_job) {
-	$libs_per_job = $l;
+    $libs_per_job = $l;
 }
 printf("Found %d libraries\n", $l);
 # We are going to compute/store ranks using parallelization,
@@ -247,8 +220,8 @@ if ($parallel == 1) {
     my $pm = new Parallel::ForkManager($parallel);
     while ( my @next_libs = splice(@libs, 0, $libs_per_job) ) {
         # Forks and returns the pid for the child
-        # See https://stackoverflow.com/a/1673011/1768736 about PID
         my $pid = $pm->start and next;
+        # See https://stackoverflow.com/a/1673011/1768736 about PID
         print("\nStart batch of $libs_per_job libraries, process ID $$...\n");
         compute_update_rank_lib_batch(\@next_libs);
         print("\nDone batch of $libs_per_job libraries, process ID $$.\n");
@@ -257,38 +230,6 @@ if ($parallel == 1) {
     $pm->wait_all_children;
 }
 
-print("Rank computations per library done\n");
-
-
-# ##############
-# Store max rank and number of distinct ranks per library.
-#
-# ** NOTE **: as of Bgee 15, since we can run this script on the cluster for parallelization,
-# this update should be done afterwards (for intance, in the makefile)
-# after launching all the jobs
-#$dbh = Utils::connect_bgee_db($bgee_connector);
-#$dbh->{'AutoCommit'} = 1;
-#
-#my $sql =
-#"UPDATE rnaSeqLibrary AS t0
-# INNER JOIN (
-#     SELECT t1.rnaSeqLibraryId, MAX(t1.rank) AS maxRank, COUNT(DISTINCT t1.rank) AS distinctRankCount
-#     FROM rnaSeqResult AS t1
-#     WHERE t1.reasonForExclusion NOT IN ('$Utils::EXCLUDED_FOR_PRE_FILTERED',
-#         '$Utils::EXCLUDED_FOR_UNDEFINED', '$Utils::EXCLUDED_FOR_ABSENT_CALLS')
-#     GROUP BY t1.rnaSeqLibraryId
-# ) AS ranks ON t0.rnaSeqLibraryId = ranks.rnaSeqLibraryId
-# SET t0.libraryMaxRank = ranks.maxRank, t0.libraryDistinctRankCount = ranks.distinctRankCount
-# WHERE EXISTS (
-#     SELECT 1 FROM rnaSeqResult AS t2
-#     WHERE t2.expressionId IS NOT NULL AND t2.rnaSeqLibraryId = t0.rnaSeqLibraryId
-# )";
-#
-#$t0 = time();
-#printf('Inserting max ranks and distinct rank counts in rnaSeqLibrary table...');
-#my $maxRankLibStmt = $dbh->prepare($sql);
-#$maxRankLibStmt->execute()  or die $maxRankLibStmt->errstr;
-#printf("Done in %.2fs\n", (time() - $t0));
-#$dbh->disconnect();
+print("Rank computation per library done\n");
 
 exit 0;

@@ -157,18 +157,32 @@ $(OUTPUT_DIR)globalExpression: $(OUTPUT_DIR)conditions_not_existing
 
 
 
-$(OUTPUT_DIR)ranksAffy: $(OUTPUT_DIR)globalExpression
-	@perl ranks_affymetrix.pl -bgee=$(BGEECMD) > $@.tmp 2> $@.warn
-	@printf "Min, max, average Affymetrix mean rank: \n" >> $@.tmp
-	@$(MYSQL) -e "SELECT MIN(affymetrixMeanRank), MAX(affymetrixMeanRank), AVG(affymetrixMeanRank) FROM globalExpression AS t1 WHERE affymetrixMeanRank IS NOT NULL" >> $@.tmp 2>> $@.warn
-	@$(MYSQL) -e "SELECT MIN(affymetrixGlobalMeanRank), MAX(affymetrixGlobalMeanRank), AVG(affymetrixGlobalMeanRank) FROM globalExpression AS t1 WHERE affymetrixGlobalMeanRank IS NOT NULL" >> $@.tmp 2>> $@.warn
+# This step is responsible for computing ranks for each Affymetrix chip
+# and then store information abut max ranks/distinct rank counts
+$(OUTPUT_DIR)ranksAffy:
+	@perl ranks_affymetrix.pl -bgee=$(BGEECMD) -parallel_jobs=20 > $@.tmp 2> $@.warn
+	@$(MYSQL) -e "UPDATE affymetrixChip AS t0 INNER JOIN ( SELECT t1.bgeeAffymetrixChipId, MAX(t1.rank) AS maxRank, COUNT(DISTINCT t1.rank) AS distinctRankCount FROM affymetrixProbeset AS t1 WHERE t1.expressionId IS NOT NULL GROUP BY t1.bgeeAffymetrixChipId ) AS ranks ON t0.bgeeAffymetrixChipId = ranks.bgeeAffymetrixChipId SET t0.chipMaxRank = ranks.maxRank, t0.chipDistinctRankCount = ranks.distinctRankCount WHERE EXISTS ( SELECT 1 FROM affymetrixProbeset AS t2 WHERE t2.expressionId IS NOT NULL AND t2.bgeeAffymetrixChipId = t0.bgeeAffymetrixChipId )" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "UPDATE chipType AS t1 INNER JOIN ( SELECT chipTypeId, MAX(chipMaxRank) AS maxRank FROM affymetrixChip GROUP BY chipTypeId ) AS chipMaxRanks ON t1.chipTypeId = chipMaxRanks.chipTypeId SET t1.chipTypeMaxRank = chipMaxRanks.maxRank" >> $@.tmp 2>> $@.warn
+	@printf "Min, max, average Affymetrix rank and distinct rank count per chip type: \n" >> $@.tmp
+	@$(MYSQL) -e "SELECT t1.chipTypeId, t1.chipTypeMaxRank, MIN(t3.rank), MAX(t3.rank), AVG(t3.rank), MIN(t2.chipDistinctRankCount), MAX(t2.chipDistinctRankCount), AVG(t2.chipDistinctRankCount) FROM chipType AS t1 INNER JOIN affymetrixChip AS t2 ON t1.chipTypeId = t2.chipTypeId INNER JOIN affymetrixProbeset AS t3 ON t2.bgeeAffymetrixChipId = t3.bgeeAffymetrixChipId WHERE t3.rank IS NOT NULL GROUP BY t1.chipTypeId" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
-$(OUTPUT_DIR)ranksRnaSeq: $(OUTPUT_DIR)globalExpression
-	@perl ranks_rnaseq.pl -bgee=$(BGEECMD) -db_name=$(DBNAME) > $@.tmp 2> $@.warn
-	@printf "Min, max, average RNA-Seq mean rank: \n" >> $@.tmp
-	@$(MYSQL) -e "SELECT MIN(rnaSeqMeanRank), MAX(rnaSeqMeanRank), AVG(rnaSeqMeanRank) FROM globalExpression AS t1 WHERE rnaSeqMeanRank IS NOT NULL" >> $@.tmp 2>> $@.warn
-	@$(MYSQL) -e "SELECT MIN(rnaSeqGlobalMeanRank), MAX(rnaSeqGlobalMeanRank), AVG(rnaSeqGlobalMeanRank) FROM globalExpression AS t1 WHERE rnaSeqGlobalMeanRank IS NOT NULL" >> $@.tmp 2>> $@.warn
+# This step is responsible for computing ranks for each RNA-Seq library
+# and then store information abut max ranks/distinct rank counts
+$(OUTPUT_DIR)ranksRnaSeq:
+	@perl ranks_rnaseq.pl -bgee=$(BGEECMD) -parallel_jobs=20 > $@.tmp 2> $@.warn
+	@$(MYSQL) -e "UPDATE rnaSeqLibrary AS t0 INNER JOIN ( SELECT t1.rnaSeqLibraryId, MAX(t1.rank) AS maxRank, COUNT(DISTINCT t1.rank) AS distinctRankCount FROM rnaSeqResult AS t1 WHERE t1.rank IS NOT NULL GROUP BY t1.rnaSeqLibraryId ) AS ranks ON t0.rnaSeqLibraryId = ranks.rnaSeqLibraryId SET t0.libraryMaxRank = ranks.maxRank, t0.libraryDistinctRankCount = ranks.distinctRankCount WHERE EXISTS ( SELECT 1 FROM rnaSeqResult AS t2 WHERE t2.rank IS NOT NULL AND t2.rnaSeqLibraryId = t0.rnaSeqLibraryId )" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "INSERT INTO rnaSeqProtocolSpeciesMaxRank (rnaSeqProtocolId, speciesId, maxRank) SELECT t1.rnaSeqProtocolId, t2.speciesId, MAX(t1.libraryMaxRank) AS maxRank FROM rnaSeqLibrary AS t1 INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId GROUP BY t1.rnaSeqProtocolId, t2.speciesId" >> $@.tmp 2>> $@.warn
+	@printf "Min, max, average RNA-Seq rank and distinct rank count per species: \n" >> $@.tmp
+	@$(MYSQL) -e "SELECT t1.speciesId, MIN(t3.rank), MAX(t3.rank), AVG(t3.rank), MIN(t2.libraryDistinctRankCount), MAX(t2.libraryDistinctRankCount), AVG(t2.libraryDistinctRankCount) FROM cond AS t1 INNER JOIN rnaSeqLibrary AS t2 ON t1.conditionId = t2.conditionId INNER JOIN rnaSeqResult AS t3 on t2.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE t3.rank IS NOT NULL GROUP BY t1.speciesId" >> $@.tmp 2>> $@.warn
+	@$(MV) $@.tmp $@
+
+$(OUTPUT_DIR)ranksScRnaSeqFullLength:
+	@perl ranks_scrnaseqfulllength.pl -bgee=$(BGEECMD) -parallel_jobs=15 > $@.tmp 2> $@.warn
+	@$(MYSQL) -e "UPDATE scRnaSeqFullLengthLibrary AS t0 INNER JOIN ( SELECT t1.scRnaSeqFullLengthLibraryId, MAX(t1.rank) AS maxRank, COUNT(DISTINCT t1.rank) AS distinctRankCount FROM scRnaSeqFullLengthResult AS t1 WHERE t1.rank IS NOT NULL GROUP BY t1.scRnaSeqFullLengthLibraryId ) AS ranks ON t0.scRnaSeqFullLengthLibraryId = ranks.scRnaSeqFullLengthLibraryId SET t0.libraryMaxRank = ranks.maxRank, t0.libraryDistinctRankCount = ranks.distinctRankCount WHERE EXISTS ( SELECT 1 FROM scRnaSeqFullLengthResult AS t2 WHERE t2.rank IS NOT NULL AND t2.scRnaSeqFullLengthLibraryId = t0.scRnaSeqFullLengthLibraryId )" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "INSERT INTO scRnaSeqFullLengthSpeciesMaxRank (speciesId, maxRank) SELECT t2.speciesId, MAX(t1.libraryMaxRank) FROM scRnaSeqFullLengthLibrary AS t1 INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId GROUP BY t2.speciesId" >> $@.tmp 2>> $@.warn
+	@printf "Min, max, average scRNA-Seq full-length rank and distinct rank count per species: \n" >> $@.tmp
+	@$(MYSQL) -e "SELECT t1.speciesId, MIN(t3.rank), MAX(t3.rank), AVG(t3.rank), MIN(t2.libraryDistinctRankCount), MAX(t2.libraryDistinctRankCount), AVG(t2.libraryDistinctRankCount) FROM cond AS t1 INNER JOIN scRnaSeqFullLengthLibrary AS t2 ON t1.conditionId = t2.conditionId INNER JOIN scRnaSeqFullLengthResult AS t3 on t2.scRnaSeqFullLengthLibraryId = t3.scRnaSeqFullLengthLibraryId WHERE t3.rank IS NOT NULL GROUP BY t1.speciesId" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
 $(OUTPUT_DIR)ranksEST: $(OUTPUT_DIR)globalExpression

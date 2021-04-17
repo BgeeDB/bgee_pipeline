@@ -790,8 +790,7 @@ create table affymetrixProbeset (
 -- taking also into account 'absent low quality' evidence.
 -- 'absent low quality' used to be: probesets always "absent" for this gene/condition,
 -- but only seen by MAS5 (that we do not trust = "low quality" - "noExpression" should always be "high quality").
-    reasonForExclusion enum('not excluded', 'pre-filtering',
-        'noExpression conflict', 'undefined') not null default 'not excluded'
+    reasonForExclusion enum('not excluded', 'pre-filtering', 'undefined') not null default 'not excluded'
 ) engine = innodb;
 
 create table microarrayExperimentExpression (
@@ -875,8 +874,7 @@ create table inSituSpot (
 -- taking also into account 'absent low quality' evidence.
 -- 'absent low quality' used to be: probesets always "absent" for this gene/condition,
 -- but only seen by MAS5 (that we do not trust = "low quality" - "noExpression" should always be "high quality").
-    reasonForExclusion enum('not excluded', 'pre-filtering',
-        'noExpression conflict', 'undefined') not null default 'not excluded'
+    reasonForExclusion enum('not excluded', 'pre-filtering', 'undefined') not null default 'not excluded'
 ) engine = innodb;
 
 create table inSituExperimentExpression (
@@ -1014,8 +1012,8 @@ create table rnaSeqResult (
 -- 'absent low quality' used to be: probesets always "absent" for this gene/condition,
 -- but only seen by MAS5 (that we do not trust = "low quality" - "noExpression" should always be "high quality").
     rnaSeqData enum('no data','poor quality','high quality') default 'no data',
-    reasonForExclusion enum('not excluded', 'pre-filtering', 'absent call not reliable', 
-        'noExpression conflict', 'undefined') not null default 'not excluded'
+    reasonForExclusion enum('not excluded', 'pre-filtering', 'absent call not reliable',
+    'undefined') not null default 'not excluded'
 ) engine = innodb;
 
 -- This table contains TPM/RPKM/read count values for each transcript for each library
@@ -1055,6 +1053,12 @@ create table rnaSeqProtocol (
 create table rnaSeqProtocolToBiotypeExcludedAbsentCalls (
     rnaSeqProtocolId smallint unsigned not null COMMENT 'protocol ID for which a biotype will not be used to generate absent calls',
     geneBioTypeId smallint unsigned not null COMMENT 'biotype ID for which absent calls will not be generated.'
+) engine = innodb;
+
+create table rnaSeqProtocolSpeciesMaxRank (
+    rnaSeqProtocolId smallint unsigned not null,
+    speciesId mediumint unsigned not null,
+    maxRank decimal(9,2) unsigned not null COMMENT 'The max fractional rank in this protocol and species (see `rank` field in rnaSeqResult table)'
 ) engine = innodb;
 
 -- ****************************************************
@@ -1140,6 +1144,12 @@ create table scRnaSeqFullLengthResult (
     expressionId int unsigned,
     detectionFlag enum('undefined', 'absent', 'present') default 'undefined' COMMENT 'absent calls are inserted but excluded for scRNA-Seq data',
     reasonForExclusion enum('not excluded', 'absent call not reliable', 'undefined') not null default 'not excluded'
+) engine = innodb;
+
+
+create table scRnaSeqFullLengthSpeciesMaxRank (
+    speciesId mediumint unsigned not null,
+    maxRank decimal(9,2) unsigned not null COMMENT 'The max fractional rank in this protocol and species (see `rank` field in rnaSeqResult table)'
 ) engine = innodb;
 
 -- ****************************************************
@@ -1363,6 +1373,7 @@ comment = 'This table is a summary of expression calls for a given gene-conditio
 -- DESIGN note: this table uses an ugly design with enumerated columns. For a discussion about this decision,
 -- see http://stackoverflow.com/q/42781299/1768736
 create table globalExpression (
+--    globalExpressionId int unsigned not null COMMENT 'Internal expression ID, not stable between releases.',
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID, not stable between releases.',
     globalConditionId mediumint unsigned not null COMMENT 'ID of condition in the related condition table ("cond"), not stable between releases.',
 

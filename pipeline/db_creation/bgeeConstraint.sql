@@ -301,7 +301,9 @@ add unique(expressionId);
 -- See https://stackoverflow.com/a/42822691/1768736 for motivation
 -- for this design of PK and UNIQUE indexes
 alter table globalExpression
-add primary key(bgeeGeneId, globalConditionId),
+-- modify globalExpressionId int unsigned not null auto_increment,
+add primary key(bgeeGeneId, globalConditionId);
+-- add unique(globalExpressionId);
 /*!40000 ALTER TABLE `globalExpression` ENABLE KEYS */;
 
 -- ****************************************************
@@ -380,7 +382,7 @@ add unique (affymetrixChipId, microarrayExperimentId);
 
 /*!40000 ALTER TABLE `affymetrixProbeset` DISABLE KEYS */;
 alter table affymetrixProbeset
-add primary key (affymetrixProbesetId, bgeeAffymetrixChipId);
+add primary key (bgeeAffymetrixChipId, affymetrixProbesetId);
 /*!40000 ALTER TABLE `affymetrixProbeset` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `microarrayExperimentExpression` DISABLE KEYS */;
@@ -487,6 +489,11 @@ alter table rnaSeqProtocolToBiotypeExcludedAbsentCalls
 add primary key (rnaSeqProtocolId, geneBioTypeId);
 /*!40000 ALTER TABLE `rnaSeqProtocolToBiotypeExcludedAbsentCalls` ENABLE KEYS */;
 
+/*!40000 ALTER TABLE `rnaSeqProtocolSpeciesMaxRank` DISABLE KEYS */;
+alter table rnaSeqProtocolSpeciesMaxRank
+add primary key (speciesId, rnaSeqProtocolId);
+/*!40000 ALTER TABLE `rnaSeqProtocolSpeciesMaxRank` ENABLE KEYS */;
+
 -- ****************************************************
 -- scRNA-Seq FULL LENGTH DATA
 -- ****************************************************
@@ -519,6 +526,11 @@ add primary key (scRnaSeqFullLengthLibraryId);
 alter table scRnaSeqFullLengthResult
 add primary key (bgeeGeneId, scRnaSeqFullLengthLibraryId);
 /*!40000 ALTER TABLE `scRnaSeqFullLengthResult` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqFullLengthSpeciesMaxRank` DISABLE KEYS */;
+alter table scRnaSeqFullLengthSpeciesMaxRank
+add primary key (speciesId);
+/*!40000 ALTER TABLE `scRnaSeqFullLengthSpeciesMaxRank` ENABLE KEYS */;
 
 --  ****************************************************
 --  scRNA-SEQ TARGET-BASED DATA
