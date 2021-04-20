@@ -77,6 +77,8 @@ sub compute_update_rank_lib_batch {
     my $batchLength = scalar @{ $libBatchRef };
 
     for my $k ( 0..$batchLength-1 ) {
+        my $rnaSeqLibraryId = ${$libBatchRef}[$k];
+
         # Connection to database in the parent process must have been closed
         # before calling this sub, otherwise it will generate errors
         # (ForkManager and DBI don't go well together, see https://www.perlmonks.org/?node_id=752289).
@@ -84,24 +86,13 @@ sub compute_update_rank_lib_batch {
         my $dbh_thread = Utils::connect_bgee_db($bgee_connector);
         Utils::start_transaction($dbh_thread);
 
+        # ======= Compute ranks ========
         my $rnaSeqResultsStmt = $dbh_thread->prepare(
             'SELECT DISTINCT t1.bgeeGeneId, t1.tpm
              FROM scRnaSeqFullLengthResult AS t1 
              WHERE t1.scRnaSeqFullLengthLibraryId = ?
              AND t1.expressionId IS NOT NULL
              ORDER BY t1.tpm DESC');
-
-        # if several genes at a same rank, we'll update them at once
-        # with a 'bgeeGeneId IN (?,?, ...)' clause.
-        # If only one gene at a given rank, updated with the prepared statement below.
-        my $rankUpdateStart = 'UPDATE scRnaSeqFullLengthResult SET rank = ?
-        WHERE scRnaSeqFullLengthLibraryId = ? and bgeeGeneId ';
-        my $rnaSeqResultUpdateStmt = $dbh_thread->prepare($rankUpdateStart.'= ?');
-
-
-        # ======= Compute ranks ========
-        my $rnaSeqLibraryId = ${$libBatchRef}[$k];
-
         $rnaSeqResultsStmt->execute($rnaSeqLibraryId) or die $rnaSeqResultsStmt->errstr;
 
         my @results = map { {'id' => $_->[0], 'val' => $_->[1]} } @{$rnaSeqResultsStmt->fetchall_arrayref};
@@ -109,39 +100,46 @@ sub compute_update_rank_lib_batch {
         # we get ranks as keys, with reference to an array of gene IDs with that rank as value
         my %reverseHash = Utils::revhash(%sorted);
 
-
         # ======= Update ranks ========
-
+        my $rnaSeqTmpTableStmt = $dbh_thread->prepare(
+                'CREATE TEMPORARY TABLE scRnaSeqFLLibRanking
+                 SELECT bgeeGeneId, scRnaSeqFullLengthLibraryId, rank
+                 FROM scRnaSeqFullLengthResult
+                 LIMIT 0');
+        $rnaSeqTmpTableStmt->execute() or die $rnaSeqTmpTableStmt->errstr;
+        my $sqlInsertTmpRanks = 'INSERT INTO scRnaSeqFLLibRanking (bgeeGeneId, scRnaSeqFullLengthLibraryId, rank)
+                VALUES ';
+        my @insertTmpRanksValues = ();
+        my $valueCount = 0;
+        # We use this reverseHash because we used to use UPDATE statements with IN(...) clause
         for my $rank ( keys %reverseHash ){
             my $geneIds_arrRef = $reverseHash{$rank};
             my @geneIds_arr = @$geneIds_arrRef;
             my $geneCount = scalar @geneIds_arr;
-#            # with the multi-update query, sometimes there are thousands of genes
-#            # with equal ranks and the query is extremely slow. Apparently it's better
-#            # to alway use the single-gene update query
-#            for ( my $i = 0; $i < $geneCount; $i++ ){
-#                $rnaSeqResultUpdateStmt->execute($rank, $rnaSeqLibraryId, $geneIds_arr[$i])
-#                    or die $rnaSeqResultUpdateStmt->errstr;
-#            }
-            if ( $geneCount == 1 ){
-                my $geneId = $geneIds_arr[0];
-                $rnaSeqResultUpdateStmt->execute($rank, $rnaSeqLibraryId, $geneId)
-                    or die $rnaSeqResultUpdateStmt->errstr;
-            } else {
-                my $query = $rankUpdateStart.'IN (';
-                for ( my $i = 0; $i < $geneCount; $i++ ){
-                    if ( $i > 0 ){
-                        $query .= ', ';
-                    }
-                    $query .= '?';
+            for ( my $i = 0; $i < $geneCount; $i++ ){
+                if ($valueCount > 0) {
+                    $sqlInsertTmpRanks .= ', ';
                 }
-                $query .= ')';
-                my $rnaSeqRankMultiUpdateStmt = $dbh_thread->prepare($query);
-                $rnaSeqRankMultiUpdateStmt->execute($rank, $rnaSeqLibraryId, @geneIds_arr)
-                    or die $rnaSeqRankMultiUpdateStmt->errstr;
+                $sqlInsertTmpRanks .= '(?, ?, ?)';
+                push (@insertTmpRanksValues, ($geneIds_arr[$i], $rnaSeqLibraryId, $rank));
+                $valueCount++;
             }
         }
+        my $insertTmpRanksStmt = $dbh_thread->prepare($sqlInsertTmpRanks);
+        $insertTmpRanksStmt->execute(@insertTmpRanksValues) or die $insertTmpRanksStmt->errstr;
 
+        my $updateRnaSeqLibsStmt = $dbh_thread->prepare('UPDATE scRnaSeqFullLengthResult AS t1
+                INNER JOIN scRnaSeqFLLibRanking AS t2
+                    ON t1.bgeeGeneId = t2.bgeeGeneId AND t1.scRnaSeqFullLengthLibraryId = t2.scRnaSeqFullLengthLibraryId '.
+                    # To be able to use the index on scRnaSeqFullLengthResult, plus this constraint is correct
+                   'AND t1.expressionId IS NOT NULL
+                SET t1.rank = t2.rank');
+        $updateRnaSeqLibsStmt->execute() or die $updateRnaSeqLibsStmt->errstr;
+
+        my $dropRnaSeqTmpTableStmt = $dbh_thread->prepare('DROP TABLE scRnaSeqFLLibRanking');
+        $dropRnaSeqTmpTableStmt->execute() or die $dropRnaSeqTmpTableStmt->errstr;
+
+        # ======= Commit ========
         $dbh_thread->commit() or die('Failed commit');
         $dbh_thread->disconnect();
 

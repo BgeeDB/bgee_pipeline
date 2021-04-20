@@ -80,6 +80,8 @@ sub compute_update_rank_batch {
     my $batchLength = scalar @{ $batchRef };
 
     for my $k ( 0..$batchLength-1 ) {
+        my $sampleId = ${$batchRef}[$k];
+
         # Connection to database in the parent process must have been closed
         # before calling this sub, otherwise it will generate errors
         # (ForkManager and DBI don't go well together, see https://www.perlmonks.org/?node_id=752289).
@@ -87,6 +89,7 @@ sub compute_update_rank_batch {
         my $dbh_thread = Utils::connect_bgee_db($bgee_connector);
         Utils::start_transaction($dbh_thread);
 
+        # ======= Compute ranks ========
         my $affymProbesetStmt = $dbh_thread->prepare(
                 "SELECT bgeeGeneId, MAX(normalizedSignalIntensity) AS maxIntensity
                  FROM affymetrixProbeset
@@ -94,16 +97,6 @@ sub compute_update_rank_batch {
                  AND expressionId IS NOT NULL
                  GROUP BY bgeeGeneId
                  ORDER BY maxIntensity DESC");
-
-        # if several genes at a same rank, we'll update them at once with a 'bgeeGeneId IN (?,?, ...)' clause.
-        # If only one gene at a given rank, updated with the prepared statement below.
-        my $rankUpdateStart   = 'UPDATE affymetrixProbeset SET rank = ?
-                                 WHERE bgeeAffymetrixChipId = ? AND bgeeGeneId ';
-        my $affymeProbesetUpdateStmt = $dbh_thread->prepare($rankUpdateStart.'= ?');
-
-
-        # ======= Compute ranks ========
-        my $sampleId = ${$batchRef}[$k];
         $affymProbesetStmt->execute($sampleId) or die $affymProbesetStmt->errstr;
 
         my @results = map { {'id' => $_->[0], 'val' => $_->[1]} } @{$affymProbesetStmt->fetchall_arrayref};
@@ -112,36 +105,45 @@ sub compute_update_rank_batch {
         my %reverseHash = Utils::revhash(%sorted);
 
         # ======= Update ranks ========
+        my $affyTmpTableStmt = $dbh_thread->prepare(
+                'CREATE TEMPORARY TABLE affyChipRanking
+                 SELECT bgeeGeneId, bgeeAffymetrixChipId, rank
+                 FROM affymetrixProbeset
+                 LIMIT 0');
+        $affyTmpTableStmt->execute() or die $affyTmpTableStmt->errstr;
+        my $sqlInsertTmpRanks = 'INSERT INTO affyChipRanking (bgeeGeneId, bgeeAffymetrixChipId, rank)
+                VALUES ';
+        my @insertTmpRanksValues = ();
+        my $valueCount = 0;
+        # We use this reverseHash because we used to use UPDATE statements with IN(...) clause
         for my $rank ( keys %reverseHash ){
             my $geneIds_arrRef = $reverseHash{$rank};
             my @geneIds_arr = @$geneIds_arrRef;
             my $geneCount = scalar @geneIds_arr;
-            # with the multi-update query, sometimes there are thousands of genes
-            # with equal ranks and the query is extremely slow. Apparently it's better
-            # to alway use the single-gene update query
-#            for ( my $i = 0; $i < $geneCount; $i++ ){
-#                $affymeProbesetUpdateStmt->execute($rank, $sampleId, $geneIds_arr[$i])
-#                    or die $affymeProbesetUpdateStmt->errstr;
-#            }
-            if ( $geneCount == 1 ){
-                my $geneId = $geneIds_arr[0];
-                $affymeProbesetUpdateStmt->execute($rank, $sampleId, $geneId)
-                    or die $affymeProbesetUpdateStmt->errstr;
-            } else {
-                my $query = $rankUpdateStart.'IN (';
-                for ( my $i = 0; $i < $geneCount; $i++ ){
-                    if ( $i > 0 ){
-                        $query .= ', ';
-                    }
-                    $query .= '?';
+            for ( my $i = 0; $i < $geneCount; $i++ ){
+                if ($valueCount > 0) {
+                    $sqlInsertTmpRanks .= ', ';
                 }
-                $query .= ')';
-                my $affyRankMultiUpdateStmt = $dbh_thread->prepare($query);
-                $affyRankMultiUpdateStmt->execute($rank, $sampleId, @geneIds_arr)
-                    or die $affyRankMultiUpdateStmt->errstr;
+                $sqlInsertTmpRanks .= '(?, ?, ?)';
+                push (@insertTmpRanksValues, ($geneIds_arr[$i], $sampleId, $rank));
+                $valueCount++;
             }
         }
+        my $insertTmpRanksStmt = $dbh_thread->prepare($sqlInsertTmpRanks);
+        $insertTmpRanksStmt->execute(@insertTmpRanksValues) or die $insertTmpRanksStmt->errstr;
 
+        my $updateAffyChipsStmt = $dbh_thread->prepare('UPDATE affymetrixProbeset AS t1
+                INNER JOIN affyChipRanking AS t2
+                    ON t1.bgeeGeneId = t2.bgeeGeneId AND t1.bgeeAffymetrixChipId = t2.bgeeAffymetrixChipId '.
+                    # To be able to use the index on affymetrixProbeset, plus this constraint is correct
+                   'AND t1.expressionId IS NOT NULL
+                SET t1.rank = t2.rank');
+        $updateAffyChipsStmt->execute() or die $updateAffyChipsStmt->errstr;
+
+        my $dropAffyTmpTableStmt = $dbh_thread->prepare('DROP TABLE affyChipRanking');
+        $dropAffyTmpTableStmt->execute() or die $dropAffyTmpTableStmt->errstr;
+
+        # ======= Commit ========
         $dbh_thread->commit() or die('Failed commit');
         $dbh_thread->disconnect();
 
