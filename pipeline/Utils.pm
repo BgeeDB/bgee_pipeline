@@ -159,19 +159,23 @@ sub start_transaction {
     my $maxAttempt = 30;
     my $i = 0;
     TRANSACTION: while (1) {
+        my $succes = 0;
         eval {
             $dbh->do("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED");
             $dbh->{'AutoCommit'} = 0;
-            last TRANSACTION;
+            $succes = 1;
             1; #no exception
         } or do {
             if ($i < $maxAttempt - 1) {
                 print("Retrying start transaction\n");
                 sleep(2); # wait 2s before retrying
             } else {
-                die('Starting transaction failed, '.($i + 1)." attempts over $maxAttempt\n");
+                die('Starting transaction failed after '.($i + 1)." attempts\n");
             }
         };
+        if ($succes) {
+            last TRANSACTION;
+        }
         $i++;
     }
 }
