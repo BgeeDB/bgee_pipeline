@@ -280,7 +280,7 @@ add unique(anatEntityId, cellTypeId, stageId, speciesId, sex, strain);
 /*!40000 ALTER TABLE `globalCondToCond` DISABLE KEYS */;
 alter table globalCondToCond
 -- we set up this primary key using conditionRelationOrigin to benefit from the clustered index
-add primary key (globalConditionId, conditionId, conditionRelationOrigin),
+add primary key (globalConditionId, conditionRelationOrigin, conditionId),
 -- but actually the unique constraint is on globalConditionId and conditionId
 add unique(globalConditionId, conditionId);
 /*!40000 ALTER TABLE `globalCondToCond` ENABLE KEYS */;
