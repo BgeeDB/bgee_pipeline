@@ -190,47 +190,17 @@ sub start_transaction {
 # containing the desired condition parameters for this combination (see variable @CONDITION_PARAMETERS
 # for an array of valid condition parameters).
 sub get_cond_param_combinations {
-    my ($dbh, $dataType)= @_;
-
-    if ( !grep( /^$dataType$/, @DATA_TYPES ) ) {
-        die "Unrecognized data type: $dataType\n";
-    }
+    my ($dbh)= @_;
 
     my @condParamCombinations = ();
     my $sql = "
     SELECT DISTINCT
         IF(t1.anatEntityId IS NULL, 0, 1) AS anatEntityParam,
         IF(t1.stageId IS NULL, 0, 1) AS stageParam,
+        IF(t1.cellTypeId IS NULL, 0, 1) AS cellTypeParam,
         IF(t1.sex IS NULL, 0, 1) AS sexParam,
         IF(t1.strain IS NULL, 0, 1) AS strainParam
-    FROM globalCond AS t1 "
-#    .
-#    # identify condition parameter combinations with no rank already computed
-#    #for the requested data type
-#    "WHERE NOT EXISTS (
-#        SELECT 1 FROM globalCond AS t2
-#        WHERE ";
-#    if ($dataType eq $EST_DATA_TYPE) {
-#        $sql .= "estMaxRank IS NOT NULL";
-#    } elsif ($dataType eq $AFFY_DATA_TYPE) {
-#        $sql .= "affymetrixMaxRank IS NOT NULL";
-#    } elsif ($dataType eq $IN_SITU_DATA_TYPE) {
-#        $sql .= "inSituMaxRank IS NOT NULL";
-#    } elsif ($dataType eq $RNA_SEQ_DATA_TYPE) {
-#        $sql .= "rnaSeqMaxRank IS NOT NULL";
-#    } else {
-#        die "Unsupported data type: $dataType\n";
-#    }
-#    $sql .= " AND (t1.anatEntityId IS NULL AND t2.anatEntityId IS NULL OR
-#                 t1.anatEntityId IS NOT NULL AND t2.anatEntityId IS NOT NULL) AND
-#             (t1.stageId IS NULL AND t2.stageId IS NULL OR
-#                 t1.stageId IS NOT NULL AND t2.stageId IS NOT NULL) AND
-#             (t1.sex IS NULL AND t2.sex IS NULL OR
-#                 t1.sex IS NOT NULL AND t2.sex IS NOT NULL) AND
-#             (t1.strain IS NULL AND t2.strain IS NULL OR
-#                 t1.strain IS NOT NULL AND t2.strain IS NOT NULL)
-#    )"
-    ;
+    FROM globalCond AS t1 ";
 
     my $query = $dbh->prepare($sql);
     $query->execute()  or die $query->errstr;
@@ -244,6 +214,10 @@ sub get_cond_param_combinations {
             } elsif ( $column eq 'stageParam' ){
                 if ( $dataRef->{$column} == 1 ) {
                     push @localCondParamComb, $STAGE_PARAM;
+                }
+            } elsif ( $column eq 'cellTypeParam' ){
+                if ( $dataRef->{$column} == 1 ) {
+                    push @localCondParamComb, $CELL_TYPE_PARAM;
                 }
             } elsif ( $column eq 'sexParam' ){
                 if ( $dataRef->{$column} == 1 ) {
