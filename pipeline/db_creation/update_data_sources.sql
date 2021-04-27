@@ -20,8 +20,10 @@ update dataSource set releaseDate = '2021-03-02', releaseVersion = '',          
 update dataSource set releaseDate = '2021-03-02', releaseVersion = '',                             displayOrder = 6  where dataSourceId = 9;
 -- FlyBase
 update dataSource set releaseDate = '2021-03-02', releaseVersion = ''                                                where dataSourceId = 10;
--- ArrayExpress
-update dataSource set releaseDate = '2021-02-08', releaseVersion = '',                             displayOrder = 4  where dataSourceId = 11;
+-- ArrayExpress Affymetrix
+update dataSource set releaseDate = '2016-08-21', releaseVersion = '',                             displayOrder = 4  where dataSourceId = 11;
+-- ArrayExpress RNA-Seq
+update dataSource set releaseDate = '2021-02-08', releaseVersion = '',                             displayOrder = 255  where dataSourceId = 101;
 -- Unigene
 update dataSource set releaseDate = '2016-12-05', releaseVersion = '',                             displayOrder = 9  where dataSourceId = 12;
 -- smiRNAdb
