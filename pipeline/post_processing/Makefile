@@ -15,7 +15,26 @@ $(OUTPUT_DIR)conditions_not_existing:
 
 SQL_CALL_TYPE := IF((estLibPresentHighTotalCount + affymetrixExpPresentHighTotalCount + inSituExpPresentHighTotalCount + rnaSeqExpPresentHighTotalCount) >= 2, 'PRESENT GOLD', IF((estLibPresentHighTotalCount + affymetrixExpPresentHighTotalCount + inSituExpPresentHighTotalCount + rnaSeqExpPresentHighTotalCount) >= 1 OR (estLibPresentLowTotalCount + affymetrixExpPresentLowTotalCount + inSituExpPresentLowTotalCount + rnaSeqExpPresentLowTotalCount) >= 2, 'PRESENT SILVER', IF((estLibPresentLowTotalCount + affymetrixExpPresentLowTotalCount + inSituExpPresentLowTotalCount + rnaSeqExpPresentLowTotalCount) >= 1, 'PRESENT BRONZE', IF((affymetrixExpAbsentHighTotalCount + inSituExpAbsentHighTotalCount + rnaSeqExpAbsentHighTotalCount) >= 2, 'ABSENT GOLD', IF((affymetrixExpAbsentHighTotalCount + inSituExpAbsentHighTotalCount + rnaSeqExpAbsentHighTotalCount) >= 1 OR (affymetrixExpAbsentLowTotalCount + inSituExpAbsentLowTotalCount + rnaSeqExpAbsentLowTotalCount) >= 2, 'ABSENT SILVER', IF((affymetrixExpAbsentLowTotalCount + inSituExpAbsentLowTotalCount + rnaSeqExpAbsentLowTotalCount) >= 1, 'ABSENT BRONZE', 'IMPOSSIBLE'))))))
 
-$(OUTPUT_DIR)globalExpression: $(OUTPUT_DIR)conditions_not_existing
+# Since Bgee 15.0, to allow computations of global expression calls from different nodes, we first insert the global conditions,
+# then we insert the global calls (previously it was all done in a same step)
+# If you want to tune the number of parallel threads, add:
+# -Djava.util.concurrent.ForkJoinPool.common.parallelism=xx
+# between $(JAVA_NO_JAR) and -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)
+$(OUTPUT_DIR)globalConditions: $(OUTPUT_DIR)conditions_not_existing
+	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=20 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR) InsertPropagatedCalls insertGlobalConditions - - > $@.tmp 2> $@.warn
+	@echo "Incorrect insertions (there should be none):" >> $@.tmp
+	@$(MYSQL) -e "SELECT t1.globalConditionId AS 'global conditions with no related raw conditions' FROM globalCond AS t1 WHERE NOT EXISTS (SELECT 1 FROM globalCondToCond AS t2 WHERE t2.globalConditionId = t1.globalConditionId) LIMIT 1000" >> $@.tmp
+	@$(MYSQL) -e "SELECT DISTINCT t1.conditionId AS 'Raw condition with incorrect corresponding global condition' FROM expression AS t1 WHERE NOT EXISTS (SELECT 1 FROM globalCondToCond AS t2 WHERE t1.conditionId = t2.conditionId AND t2.conditionRelationOrigin = 'self') LIMIT 1000" >> $@.tmp
+	@echo "Number of globalConds per species:" >> $@.tmp
+	@$(MYSQL) -e "SELECT speciesId, COUNT(*) FROM globalCond GROUP BY speciesId ORDER BY speciesId" >> $@.tmp
+	@echo "Distinct IDs used in cellTypeId column" >> $@.tmp
+	@$(MYSQL) -e "SELECT DISTINCT cellTypeId FROM globalCond ORDER BY cellTypeId" >> $@.tmp
+	@echo "Number of globalCondToCond rows, globalConditionIds, conditionIds, per conditionRelationOrigin:" >> $@.tmp
+	@$(MYSQL) -e "SELECT conditionRelationOrigin, COUNT(*), COUNT(DISTINCT globalConditionId), COUNT(DISTINCT conditionId) FROM globalCondToCond GROUP BY conditionRelationOrigin ORDER BY conditionRelationOrigin" >> $@.tmp
+	@$(MV) $@.tmp $@
+
+# Since Bgee 15.0 it is possible to run this step in a parallel fashion from different nodes. See comments below.
+$(OUTPUT_DIR)globalExpression: $(OUTPUT_DIR)globalConditions
 # ############################################
 # DATA INSERTION
 # ############################################
@@ -23,7 +42,23 @@ $(OUTPUT_DIR)globalExpression: $(OUTPUT_DIR)conditions_not_existing
 # -Djava.util.concurrent.ForkJoinPool.common.parallelism=xx
 # between $(JAVA_NO_JAR) and -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)
 #
-	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=55 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR) InsertPropagatedCalls - - > $@.tmp 2> $@.warn
+# If you want to launch this step in parallel from different nodes, after "InsertPropagatedCalls insertCalls" the following parameters are used;
+# * speciesIds (can be '-' for all species)
+# * condition parameter combination (kind of obsolete, should be '-')
+# * geneOffset: an int defining the offset of the first gene to retrieve, for each of the requested species independently.
+#               For instance, if two species and an offset of 1000 were requested, the first gene retrieved for the first species
+#               would have offset 1000 among the genes of that species, the first gene retrieved for the second species
+#               would have offset 1000 among the genes of that other species. Can be '-' (equivalent to 0).
+# * geneRowCount: an int defining the count of genes to retrieve, for each of the requested species independently.
+#                 For instance, if two species and an gene count of 1000 were requested, 1000 genes wwould be retrieved
+#                 for the first species, and 1000 genes wwould be retrieved for the second species. Can be '-' (equivalent to 0),
+#                 meaning that it has no effect, all genes for each species are retrieved.
+# * compute globalConditions: a boolean defining whether global conditions should be computed and inserted
+#                             along with the propagation of calls (if 'true' or '1'), or if there were already computed
+#                             and inserted, and should be retrieved from the database to propagate the calls (if 'false' or '0').
+#                             To be able to run the computations from different nodes, they should hav already been inserted.
+#
+	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=55 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR) InsertPropagatedCalls insertCalls - - 0 0 0 > $@.tmp 2> $@.warn
 #
 # ############################################
 # DATA VERIFICATION
