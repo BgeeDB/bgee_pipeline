@@ -465,7 +465,7 @@ add primary key (rnaSeqLibraryId);
 
 /*!40000 ALTER TABLE `rnaSeqResult` DISABLE KEYS */;
 alter table rnaSeqResult
-add primary key (bgeeGeneId, rnaSeqLibraryId);
+add primary key (rnaSeqLibraryId, bgeeGeneId);
 /*!40000 ALTER TABLE `rnaSeqResult` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `rnaSeqTranscriptResult` DISABLE KEYS */;
@@ -524,7 +524,7 @@ add primary key (scRnaSeqFullLengthLibraryId);
 
 /*!40000 ALTER TABLE `scRnaSeqFullLengthResult` DISABLE KEYS */;
 alter table scRnaSeqFullLengthResult
-add primary key (bgeeGeneId, scRnaSeqFullLengthLibraryId);
+add primary key (scRnaSeqFullLengthLibraryId, bgeeGeneId);
 /*!40000 ALTER TABLE `scRnaSeqFullLengthResult` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `scRnaSeqFullLengthSpeciesMaxRank` DISABLE KEYS */;
