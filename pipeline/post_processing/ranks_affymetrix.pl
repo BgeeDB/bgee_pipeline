@@ -185,13 +185,17 @@ if (!@chip_ids) {
     my $affymChipStmt = $dbh->prepare($sqlChip);
     $affymChipStmt->execute()  or die $affymChipStmt->errstr;
 
-    my @chips = map { $_->[0] } @{$affymChipStmt->fetchall_arrayref};
+    @chips = map { $_->[0] } @{$affymChipStmt->fetchall_arrayref};
 
     # Disconnect the DBI connection open in parent process, otherwise it will generate errors
     # (ForkManager and DBI don't go well together, see https://www.perlmonks.org/?node_id=752289)
     $dbh->disconnect();
 }
 my $l = @chips;
+if (!$l) {
+	print "Nothing to be done, exiting.\n";
+	exit 0;
+}
 if ($l < $chips_per_job) {
     $chips_per_job = $l;
 }
@@ -214,7 +218,7 @@ if ($parallel == 1) {
         print("\nDone batch of $chips_per_job chips, process ID $$.\n");
     }
 } else {
-    print("Rank computation per chip with $parallel threads and $chips_per_job per thread......\n");
+    print("Rank computation per chip with $parallel threads and $chips_per_job chips per thread......\n");
     my $pm = new Parallel::ForkManager($parallel);
     while ( my @next_chips = splice(@chips, 0, $chips_per_job) ) {
         # Forks and returns the pid for the child

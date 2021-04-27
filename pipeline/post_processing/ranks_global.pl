@@ -225,7 +225,7 @@ sub compute_update_global_ranks {
                     t1.'.$affyDistinctRankSum.', t1.'.$rnaSeqDistinctRankSum.',
                     t1.'.$scRnaSeqFLDistinctRankSum.'
              FROM globalExpression AS t1 LIMIT 0;');
-    my $dropExprResultsTempTableStmt = $dbh_thread->prepare('DROP TABLE IF EXISTS '.$exprResultsTempTable);
+    my $dropExprResultsTempTableStmt = $dbh_thread->prepare('DROP TABLE '.$exprResultsTempTable);
     my $condResultsTempTable = 'tempCondResults';
     # Note: for now we do the computation one globalConditionId at a time,
     # but we let open the possibility to compute several at once.
@@ -238,7 +238,7 @@ sub compute_update_global_ranks {
             'SELECT t2.globalConditionId, t2.'.$estMaxRankField.', t2.'.$inSituMaxRankField.',
                     t2.'.$affyMaxRankField.', t2.'.$rnaSeqMaxRankField.', t2.'.$scRnaSeqFLMaxRankField.'
              FROM globalCond AS t2 LIMIT 0;');
-    my $dropCondResultsTempTableStmt = $dbh_thread->prepare('DROP TABLE IF EXISTS '.$condResultsTempTable);
+    my $dropCondResultsTempTableStmt = $dbh_thread->prepare('DROP TABLE '.$condResultsTempTable);
 
     # Queries to finally update the globalExpression and globalCond tables.
     # Note: if we were to do the computations for several globalConditionIds at a time,
@@ -675,7 +675,7 @@ sub compute_update_global_ranks {
         # *** Update globalExpression and globalCond tables and drop temp result tables
         # ***
         if ($hasEstData || $hasInSituData || $hasAffyData || $hasRnaSeqData || $hasScRnaSeqFLData) {
-            $finalExprUpdateStmt->execute() or die $finalExprUpdateStmt->errstr;
+            $finalExprUpdateStmt->execute($globalCondId) or die $finalExprUpdateStmt->errstr;
             $finalCondUpdateStmt->execute() or die $finalCondUpdateStmt->errstr;
         }
         $dropExprResultsTempTableStmt->execute() or die $dropExprResultsTempTableStmt->errstr;
@@ -754,6 +754,9 @@ sub cond_to_data_query_string {
     return $sql;
 }
 
+# As of Bgee 15.0, we only compute global ranks. If we wanted to change that,
+# we would need a loop
+my $selfRanks = 0;
 
 my @conditions = @cond_ids;
 if (!@cond_ids) {
@@ -765,7 +768,15 @@ if (!@cond_ids) {
 #    print "@$_\n"  for @{$condParamCombinationsArrRef};
 
 
-    my $condSql = 'SELECT DISTINCT globalConditionId FROM globalCond';
+    my $condSql = 'SELECT DISTINCT globalConditionId FROM globalCond ';
+    if ($selfRanks) {
+        $condSql .= 'WHERE estMaxRank IS NULL AND inSituMaxRank IS NULL AND affymetrixMaxRank IS NULL
+                     AND rnaSeqMaxRank IS NULL AND scRnaSeqFullLengthMaxRank IS NULL';
+    } else {
+        $condSql .= 'WHERE estGlobalMaxRank IS NULL AND inSituGlobalMaxRank IS NULL
+                     AND affymetrixGlobalMaxRank IS NULL AND rnaSeqGlobalMaxRank IS NULL
+                     AND scRnaSeqFullLengthGlobalMaxRank IS NULL';
+    }
     if ($cond_count > 0) {
         $condSql .= ' ORDER BY globalConditionId
                       LIMIT '.$cond_offset.', '.$cond_count;
@@ -797,7 +808,7 @@ if ($iterationCount < $parallel_jobs) {
 if ($parallel == 1) {
     while ( my @next_conds = splice(@conditions, 0, $conds_per_job) ) {
         print("\nStart batch of $conds_per_job conditions, process ID $$...\n");
-        compute_update_global_ranks(\@next_conds, 0);
+        compute_update_global_ranks(\@next_conds, $selfRanks);
         print("\nDone batch of $conds_per_job conditions, process ID $$.\n");
     }
 } else {
@@ -807,7 +818,7 @@ if ($parallel == 1) {
         # Forks and returns the pid for the child
         my $pid = $pm->start and next;
         print("\nStart batch of $conds_per_job conditions, process ID $$...\n");
-        compute_update_global_ranks(\@next_conds, 0);
+        compute_update_global_ranks(\@next_conds, $selfRanks);
         print("\nDone batch of $conds_per_job conditions, process ID $$.\n");
         $pm->finish;
     }

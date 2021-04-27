@@ -193,6 +193,10 @@ if (!@lib_ids) {
 }
 
 my $l = @libs;
+if (!$l) {
+    print "Nothing to be done, exiting.\n";
+    exit 0;
+}
 if ($l < $libs_per_job) {
     $libs_per_job = $l;
 }
@@ -214,7 +218,7 @@ if ($parallel == 1) {
         print("\nDone batch of $libs_per_job libraries, process ID $$.\n");
     }
 } else {
-    print("Rank computations per library with $parallel threads and $libs_per_job per thread...\n");
+    print("Rank computations per library with $parallel threads and $libs_per_job libraries per thread...\n");
     my $pm = new Parallel::ForkManager($parallel);
     while ( my @next_libs = splice(@libs, 0, $libs_per_job) ) {
         # Forks and returns the pid for the child

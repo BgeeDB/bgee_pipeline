@@ -221,6 +221,10 @@ if (!@lib_ids) {
 }
 
 my $l = @libs;
+if (!$l) {
+    print "Nothing to be done, exiting.\n";
+    exit 0;
+}
 if ($l < $libs_per_job) {
 	$libs_per_job = $l;
 }
