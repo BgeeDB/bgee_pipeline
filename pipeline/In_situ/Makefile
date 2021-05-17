@@ -11,6 +11,7 @@ get_annot:
 
 
 #TODO it looks there is no strain info
+#TODO get Ensembl mapping directly from ZebrafishMine???
 map_zfin: get_annot
 	# Get data from ZebrafishMine
 	@python3 ZFIN/zebra_query.py  > $(SOURCE_FILES_DIR)$(DIR_NAME)ZebrafishMine.data 2>warnings.$@
