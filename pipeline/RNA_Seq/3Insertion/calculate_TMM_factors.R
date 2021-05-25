@@ -63,7 +63,7 @@ exprMatrix=matrix(ncol=length(target$rnaSeqLibraryId), nrow=gene_nr)
 ## filling in expression matrix
 for (i in 1:length(target$rnaSeqLibraryId)){
   expr <- read.table(target$file[i], sep="\t", header=T, as.is=TRUE)
-  exprMatrix[,i] = as.numeric(expr$est_counts)
+  exprMatrix[,i] = as.numeric(expr$counts)
 }
 rownames(exprMatrix) <- gene_ids
 colnames(exprMatrix) <- target$rnaSeqLibraryId
