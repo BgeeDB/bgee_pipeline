@@ -53,7 +53,7 @@ my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $bgee_connector eq '' || $speciesArg eq '' ||
      $affyDir eq '' || $estDir eq '' || $inSituDir eq '' || $rnaSeqDir eq '' || $flScRnaSeqDir eq '' || $bgeeVersion eq ''){
     print "\n\tInvalid or missing argument:
-\te.g. $0  -bgee=\$(BGEE_CMD) -speciesArg=\$(SPECIES_ARG) -affyDir=\$(AFFY_DIR) -estDir=\$(EST_DIR) -inSituDir=\$(IN_SITU_DIR) -rnaSeqDir=\$(RNA_SEQ_DIR)
+\te.g. $0  -bgee=\$(BGEE_CMD) -speciesArg=\$(SPECIES_ARG) -affyDir=\$(AFFY_DIR) -estDir=\$(EST_DIR) -inSituDir=\$(IN_SITU_DIR) -rnaSeqDir=\$(RNA_SEQ_DIR) -flScRnaSeqDir=\$(SC_RNA_SEQ_FL_DIR)
 \t-bgee                 Bgee    connector string
 \t-speciesArg           A comma-separated list of species IDs to generate files for, or '-' to generate files for all species
 \t-affyDir              The path to generate Affymetrix related files, or '-' for not generating data for Affymetrix
@@ -864,7 +864,7 @@ sub generateRnaSeqFiles {
 
     $sql = 'SELECT t1.rnaSeqExperimentId, t1.rnaSeqLibraryId, t1.rnaSeqPlatformId, '
               .'(select rnaSeqProtocolName from rnaSeqProtocol where rnaSeqProtocolId = t1.rnaSeqProtocolId) as protocolName, '
-              .'t1.tmmFactor, t1.tpmThreshold, t1.fpkmThreshold, t1.allGenesPercentPresent, t1.proteinCodingGenesPercentPresent, '
+              .'t1.tmmFactor, t1.tpmThreshold, t1.allGenesPercentPresent, t1.proteinCodingGenesPercentPresent, '
               .'t1.intergenicRegionsPercentPresent, t1.allReadsCount, t1.mappedReadsCount, '
               .'t1.minReadLength, t1.maxReadLength, '
               .'t1.libraryType, t1.libraryOrientation, '
@@ -913,32 +913,31 @@ sub generateRnaSeqFiles {
         $lib{'protocolName'}                     = $data[3];
         $lib{'tmmNormalisation'}                 = $data[4];
         $lib{'tpmThreshold'}                     = $data[5];
-        $lib{'fpkmThreshold'}                    = $data[6];
-        $lib{'allGenesPercentPresent'}           = $data[7];
-        $lib{'proteinCodingGenesPercentPresent'} = $data[8];
-        $lib{'intergenicRegionsPercentPresent'}  = $data[9];
-        $lib{'allReadsCount'}                    = $data[10];
-        $lib{'mappedReadsCount'}                 = $data[11];
-        $lib{'minReadLength'}                    = $data[12];
-        $lib{'maxReadLength'}                    = $data[13];
-        $lib{'libraryType'}                      = $data[14];
-        $lib{'libraryOrientation'}               = $data[15];
-        $lib{'anatEntityId'}                     = $data[16];
-        $lib{'anatEntityName'}                   = $data[17];
-        $lib{'stageId'}                          = $data[18];
-        $lib{'stageName'}                        = $data[19];
-        $lib{'sex'}                              = $data[20];
-        $lib{'strain'}                           = $data[21];
-        $lib{'exprMappedAnatEntityId'}           = $data[22];
-        $lib{'exprMappedAnatEntityName'}         = $data[23];
-        $lib{'exprMappedStageId'}                = $data[24];
-        $lib{'exprMappedStageName'}              = $data[25];
-        $lib{'exprMappedSex'}                    = $data[26];
-        $lib{'exprMappedStrain'}                 = $data[27];
-        $lib{'libraryDistinctRankCount'}         = $data[28];
-        $lib{'maxRank'}                          = $data[29];
-        $lib{'sourceId'}                         = $data[30];
-        $lib{'runIds'}                           = $data[31];
+        $lib{'allGenesPercentPresent'}           = $data[6];
+        $lib{'proteinCodingGenesPercentPresent'} = $data[7];
+        $lib{'intergenicRegionsPercentPresent'}  = $data[8];
+        $lib{'allReadsCount'}                    = $data[9];
+        $lib{'mappedReadsCount'}                 = $data[10];
+        $lib{'minReadLength'}                    = $data[11];
+        $lib{'maxReadLength'}                    = $data[12];
+        $lib{'libraryType'}                      = $data[13];
+        $lib{'libraryOrientation'}               = $data[14];
+        $lib{'anatEntityId'}                     = $data[15];
+        $lib{'anatEntityName'}                   = $data[16];
+        $lib{'stageId'}                          = $data[17];
+        $lib{'stageName'}                        = $data[18];
+        $lib{'sex'}                              = $data[19];
+        $lib{'strain'}                           = $data[20];
+        $lib{'exprMappedAnatEntityId'}           = $data[21];
+        $lib{'exprMappedAnatEntityName'}         = $data[22];
+        $lib{'exprMappedStageId'}                = $data[23];
+        $lib{'exprMappedStageName'}              = $data[24];
+        $lib{'exprMappedSex'}                    = $data[25];
+        $lib{'exprMappedStrain'}                 = $data[26];
+        $lib{'libraryDistinctRankCount'}         = $data[27];
+        $lib{'maxRank'}                          = $data[28];
+        $lib{'sourceId'}                         = $data[29];
+        $lib{'runIds'}                           = $data[30];
         push @libs, \%lib;
     }
 
@@ -998,7 +997,7 @@ sub generateRnaSeqFiles {
         print $fh '"'.$toPrint.'"'."\t";
 
         print $fh $lib->{'platformId'}."\t".$lib->{'protocolName'}."\t".$lib->{'libraryType'}."\t".$lib->{'libraryOrientation'}."\t"
-            .$lib->{'tmmNormalisation'}."\t".$lib->{'tpmThreshold'}."\t".$lib->{'fpkmThreshold'}."\t"
+            .$lib->{'tmmNormalisation'}."\t".$lib->{'tpmThreshold'}."\t"
             .$lib->{'allReadsCount'}."\t".$lib->{'mappedReadsCount'}."\t";
 
         print $fh $lib->{'minReadLength'}."\t".$lib->{'maxReadLength'}."\t"
