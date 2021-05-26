@@ -375,7 +375,7 @@ sub generateAffyFiles {
               .'anatEntityCount DESC, stageCount DESC, sexCount DESC, strainCount DESC, '
               .'t1.microarrayExperimentId, t1.chipTypeId, t6.anatEntityId, t6.stageId, t6.sex, t6.strain, '
               .'t1.affymetrixChipId';
-    print $sql;
+    print $sql."\n";
     $stmt = $dbh->prepare($sql);
     $stmt->execute($speciesId, $speciesId)  or die $stmt->errstr;
 
@@ -892,10 +892,10 @@ sub generateRnaSeqFiles {
               .'INNER JOIN ('.$sqlExpPart.') AS t5 ON t1.rnaSeqExperimentId = t5.rnaSeqExperimentId '
               .'LEFT OUTER JOIN rnaSeqRun AS t6 ON t1.rnaSeqLibraryId = t6.rnaSeqLibraryId '
               .'WHERE t2.speciesId = ? '
+              # As of Bgee 15.0 anatEntityId, stageId, sex and strain should never be null
+              # TODO: remove these verifications from the query. They come from old bgee 14 logic
               .'AND t60.anatEntityId IS NOT NULL AND t60.stageId IS NOT NULL '
-              # As of Bgee 14.1, sex and strain are not considered for globalCalls
-              # TODO: update this query when they will be considered
-              .'AND t60.sex IS NULL AND t60.strain IS NULL '
+              .'AND t60.sex IS NOT NULL AND t60.strain IS NOT NULL '
               .'GROUP BY t1.rnaSeqLibraryId '
               .'ORDER BY libCount DESC, conditionCount DESC, anatEntityStageCount DESC, '
               .'anatEntityCount DESC, stageCount DESC, sexCount DESC, strainCount DESC, '
@@ -1060,7 +1060,7 @@ sub generateRnaSeqFiles {
         # XXX: left outer join to expression to retrieve the global call quality?
         $sql = 'SELECT t3.rnaSeqExperimentId, t1.rnaSeqLibraryId, t3.libraryType, t2.geneId, '
               .'t4.anatEntityId, t5.anatEntityName, t4.stageId, t6.stageName, t4.sex, t4.strain, '
-              .'t1.readsCount, t1.tpm, t1.fpkm, t1.rank, t1.detectionFlag, t1.pValue, t1.rnaSeqData, '
+              .'t1.readsCount, t1.tpm, t1.fpkm, t1.rank, t1.detectionFlag, t1.pValue, '
               .'t1.expressionId, t1.reasonForExclusion, '
               # FIXME retrieve call type
               .'IF(t1.expressionId IS NOT NULL, "data", "no data") AS globalRnaSeqData '
@@ -1099,7 +1099,7 @@ sub generateRnaSeqFiles {
                 print $fh "Experiment ID\tLibrary ID\tLibrary type\tGene ID\t"
                           ."Anatomical entity ID\tAnatomical entity name\t"
                           ."Stage ID\tStage name\tSex\tStrain\tRead count\tTPM\tFPKM\t"
-                          ."Rank\tDetection flag\tpValue\tDetection quality\tState in Bgee\n";
+                          ."Rank\tDetection flag\tpValue\tState in Bgee\n";
                 
                 $getExpLibs->execute($expId, $speciesId) or die $getExpLibs->errstr;
 
@@ -1134,9 +1134,9 @@ sub generateRnaSeqFiles {
                             $rank = $data[13];
                         }
                         print $fh $data[10]."\t".$data[11]."\t".$data[12]."\t".$rank
-                                 ."\t".$data[14]."\t".$data[15]."\t".$data[16]."\t";
+                                 ."\t".$data[14]."\t".$data[15]."\t";
 
-                        if ($data[18] eq $Utils::CALL_NOT_EXCLUDED) {
+                        if ($data[17] eq $Utils::CALL_NOT_EXCLUDED) {
                         	print $fh 'Part of a call';
                             # TODO manage according to retrieved call type
                             #if (defined $data[15] && $data[15]) {
@@ -1146,7 +1146,7 @@ sub generateRnaSeqFiles {
                             #}
                             #print $fh $data[18];
                         } else {
-                            print $fh 'Result excluded, reason: '.$data[18];
+                            print $fh 'Result excluded, reason: '.$data[17];
                         }
                         print $fh "\n";
                     }
@@ -1241,7 +1241,7 @@ sub generateRnaSeqFiles {
 
 
 # generate single cell full length RNA-Seq files
-sub generateScFlRnaSeqFiles {
+sub generateFullLenghthScRnaSeqFiles {
     my @args = @_;
     my $speciesId      = $args[0];
     my $speciesName    = $args[1];
@@ -1300,7 +1300,7 @@ sub generateScFlRnaSeqFiles {
     my $sql = $sqlExpPart
               .'ORDER BY libCount DESC, conditionCount DESC, anatEntityStageCount DESC, '
               .'anatEntityCount DESC, stageCount DESC, sexCount DESC, strainCount DESC, '
-              .'t1.rnaSeqExperimentId';
+              .'t1.scRnaSeqFullLengthExperimentId';
 
     my $stmt = $dbh->prepare($sql);
     $stmt->execute($speciesId)  or die $stmt->errstr;
@@ -1451,10 +1451,10 @@ sub generateScFlRnaSeqFiles {
               .'INNER JOIN ('.$sqlExpPart.') AS t5 ON t1.scRnaSeqFullLengthExperimentId = t5.scRnaSeqFullLengthExperimentId '
               .'LEFT OUTER JOIN scRnaSeqFullLengthRun AS t6 ON t1.scRnaSeqFullLengthLibraryId = t6.scRnaSeqFullLengthLibraryId '
               .'WHERE t2.speciesId = ? '
+              # As of Bgee 15.0 anatEntityId, stageId, sex and strain should never be null
+              # TODO: remove these verifications from the query. They come from old bgee 14 logic
               .'AND t60.anatEntityId IS NOT NULL AND t60.stageId IS NOT NULL '
-              # As of Bgee 14.1, sex and strain are not considered for globalCalls
-              # TODO: update this query when they will be considered
-              .'AND t60.sex IS NULL AND t60.strain IS NULL '
+              .'AND t60.sex IS NOT NULL AND t60.strain IS NOT NULL '
               .'GROUP BY t1.scRnaSeqFullLengthLibraryId '
               .'ORDER BY libCount DESC, conditionCount DESC, anatEntityStageCount DESC, '
               .'anatEntityCount DESC, stageCount DESC, sexCount DESC, strainCount DESC, '
@@ -1631,7 +1631,7 @@ sub generateScFlRnaSeqFiles {
         # XXX: left outer join to expression to retrieve the global call quality?
         $sql = 'SELECT t3.scRnaSeqFullLengtExperimentId, t1.scRnaSeqFullLengtLibraryId, t3.libraryType, t2.geneId, '
               .'t4.anatEntityId, t5.anatEntityName, t4.stageId, t6.stageName, t4.cellTypeId, t8.cellTypeName, t4.sex, t4.strain, '
-              .'t1.readsCount, t1.tpm, t1.fpkm, t1.rank, t1.detectionFlag, t1.pValue, t1.rnaSeqData, '
+              .'t1.readsCount, t1.tpm, t1.fpkm, t1.rank, t1.detectionFlag, t1.pValue, '
               .'t1.expressionId, t1.reasonForExclusion, '
               # FIXME retrieve call type
               .'IF(t1.expressionId IS NOT NULL, "data", "no data") AS globalRnaSeqData '
@@ -1671,7 +1671,7 @@ sub generateScFlRnaSeqFiles {
                 print $fh "Experiment ID\tLibrary ID\tLibrary type\tGene ID\t"
                           ."Anatomical entity ID\tAnatomical entity name\t"
                           ."Stage ID\tStage name\tCell type ID\tCell type name\tSex\tStrain\tRead count\tTPM\tFPKM\t"
-                          ."Rank\tDetection flag\tDetection quality\tState in Bgee\n";
+                          ."Rank\tDetection flag\tState in Bgee\n";
                 
                 $getExpLibs->execute($expId, $speciesId) or die $getExpLibs->errstr;
 
@@ -1711,9 +1711,9 @@ sub generateScFlRnaSeqFiles {
                             $rank = $data[15];
                         }
                         print $fh $data[12]."\t".$data[13]."\t".$data[14]."\t".$rank
-                                 ."\t".$data[16]."\t".$data[17]."\t".$data[18]."\t";
+                                 ."\t".$data[16]."\t".$data[17]."\t";
 
-                        if ($data[20] eq $Utils::CALL_NOT_EXCLUDED) {
+                        if ($data[19] eq $Utils::CALL_NOT_EXCLUDED) {
                           print $fh 'Part of a call';
                             # TODO manage according to retrieved call type
                             #if (defined $data[15] && $data[15]) {
@@ -1723,7 +1723,7 @@ sub generateScFlRnaSeqFiles {
                             #}
                             #print $fh $data[18];
                         } else {
-                            print $fh 'Result excluded, reason: '.$data[20];
+                            print $fh 'Result excluded, reason: '.$data[19];
                         }
                         print $fh "\n";
                     }
