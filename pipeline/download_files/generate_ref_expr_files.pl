@@ -1162,9 +1162,10 @@ sub generateRnaSeqFiles {
         # to compress. This is not possible because GTeX experiment is too big.
         # https://metacpan.org/pod/distribution/Archive-Tar/lib/Archive/Tar.pm#FAQ
         # https://www.perlmonks.org/?node_id=201013
-        system("gzip -cvf $resultsFileName > $fileName");
+        system("gzip -cvf ".File::Spec->catfile($filesDir, $tmpDirName, $resultsFileName)
+            ." > ".File::Spec->catfile($filesDir, $speciesDirName, $fileName));
         #it is now safe to remove uncompressed file to save disk space
-        unlink File::Spec->catfile($filesDir, $speciesDirName, $resultsFileName);
+        unlink File::Spec->catfile($filesDir, $tmpDirName, $resultsFileName); 
         # Store the name of this experiment gz file, to make one giant tar.gz of all experiments
         # at the end.
         push @tarFileNames, $fileName;
@@ -1709,9 +1710,10 @@ sub generateFullLenghthScRnaSeqFiles {
         # to compress. This is not possible because GTeX experiment is too big.
         # https://metacpan.org/pod/distribution/Archive-Tar/lib/Archive/Tar.pm#FAQ
         # https://www.perlmonks.org/?node_id=201013
-        system("gzip -cvf $resultsFileName > $fileName");
+        system("gzip -cvf ".File::Spec->catfile($filesDir, $tmpDirName, $resultsFileName)
+            ." > ".File::Spec->catfile($filesDir, $speciesDirName,, $fileName));
         #it is now safe to remove uncompressed file to save disk space
-        unlink File::Spec->catfile($filesDir, $speciesDirName, $resultsFileName);
+        unlink File::Spec->catfile($filesDir, $tmpDirName, $resultsFileName);
         # Store the name of this experiment gz file, to make one giant tar.gz of all experiments
         # at the end.
         push @tarFileNames, $fileName;
