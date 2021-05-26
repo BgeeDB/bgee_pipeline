@@ -811,7 +811,7 @@ sub generateRnaSeqFiles {
         }
         print $fh $sourceName."\t".$sourceUrl."\t";
 
-        my $resultsFileName = $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM_'.$exp->{'expId'}.'.tsv.tar.gz';
+        my $resultsFileName = $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM_'.$exp->{'expId'}.'.tsv.gz';
         $resultsFileName =~ s/ /_/g;
         print $fh $ftpFilePath.$exprFilePath.$resultsFileName."\t";
 
@@ -1025,7 +1025,7 @@ sub generateRnaSeqFiles {
         }
         print $fh $sourceName."\t".$sourceUrl."\t";
 
-        my $resultsFileName = $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM_'.$lib->{'expId'}.'.tsv.tar.gz';
+        my $resultsFileName = $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM_'.$lib->{'expId'}.'.tsv.gz';
         $resultsFileName =~ s/ /_/g;
         print $fh $ftpFilePath.$exprFilePath.$resultsFileName."\t";
 
@@ -1049,7 +1049,7 @@ sub generateRnaSeqFiles {
     	push @{$fileParams{$lib->{'expId'}}}, $lib->{'libId'};
     }
 
-    # Now, generate the files. We'll store the path to all tar.gz files generated,
+    # Now, generate the files. We'll store the path to all gz files generated,
     # to make one giant tar.gz at the end.
     my @tarFileNames = ();
     for my $expId ( keys %fileParams ){
@@ -1087,97 +1087,85 @@ sub generateRnaSeqFiles {
                                        .'t1.rnaSeqLibraryId');
         
 
-        #for my $libTypeId ( keys %{$fileParams{$expId}} ){
-                # Create file
-                my $resultsFileName = $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM_'
-                    .$expId.'.tsv';
-                $resultsFileName =~ s/ /_/g;
-                push @resultsFileNames, $resultsFileName;
-                my $resultsFile = File::Spec->catfile($filesDir, $tmpDirName,
-                    $resultsFileName);
-                open(my $fh, '>', $resultsFile) or die "Could not open file '$resultsFile' $!";
-                print $fh "Experiment ID\tLibrary ID\tLibrary type\tGene ID\t"
-                          ."Anatomical entity ID\tAnatomical entity name\t"
-                          ."Stage ID\tStage name\tSex\tStrain\tRead count\tTPM\tFPKM\t"
-                          ."Rank\tDetection flag\tpValue\tState in Bgee\n";
-                
-                $getExpLibs->execute($expId, $speciesId) or die $getExpLibs->errstr;
+        my $resultsFileName = $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM_'
+            .$expId.'.tsv';
+        $resultsFileName =~ s/ /_/g;
+        push @resultsFileNames, $resultsFileName;
+        my $resultsFile = File::Spec->catfile($filesDir, $tmpDirName,
+            $resultsFileName);
+        open(my $fh, '>', $resultsFile) or die "Could not open file '$resultsFile' $!";
+        print $fh "Experiment ID\tLibrary ID\tLibrary type\tGene ID\t"
+                  ."Anatomical entity ID\tAnatomical entity name\t"
+                  ."Stage ID\tStage name\tSex\tStrain\tRead count\tTPM\tFPKM\t"
+                  ."Rank\tDetection flag\tpValue\tState in Bgee\n";
+        
+        $getExpLibs->execute($expId, $speciesId) or die $getExpLibs->errstr;
 
-                while ( my @libs = $getExpLibs->fetchrow_array ){
-                    my $libId = $libs[0];
-                    # Retrieve data from database.
-                    $stmt->execute($libId, $speciesId) or die $stmt->errstr;
+        while ( my @libs = $getExpLibs->fetchrow_array ){
+            my $libId = $libs[0];
+            # Retrieve data from database.
+            $stmt->execute($libId, $speciesId) or die $stmt->errstr;
 
-                    while ( my @data = $stmt->fetchrow_array ){
-                        # we write the data directly to not store them in memory
-                        print $fh $data[0]."\t".$data[1]."\t".$data[2]."\t".$data[3]."\t"
-                            .$data[4]."\t";
-                        # we replace double quotes with simple quotes, and we surround with double quotes
-                        # the values to escape potential special characters
-                        my $toPrint = $data[5];
-                        $toPrint =~ s/"/'/g;
-                        print $fh '"'.$toPrint.'"'."\t";
+            while ( my @data = $stmt->fetchrow_array ){
+                # we write the data directly to not store them in memory
+                print $fh $data[0]."\t".$data[1]."\t".$data[2]."\t".$data[3]."\t"
+                    .$data[4]."\t";
+                # we replace double quotes with simple quotes, and we surround with double quotes
+                # the values to escape potential special characters
+                my $toPrint = $data[5];
+                $toPrint =~ s/"/'/g;
+                print $fh '"'.$toPrint.'"'."\t";
 
-                        print $fh $data[6]."\t";
-                        $toPrint = $data[7];
-                        $toPrint =~ s/"/'/g;
-                        print $fh '"'.$toPrint.'"'."\t";
+                print $fh $data[6]."\t";
+                $toPrint = $data[7];
+                $toPrint =~ s/"/'/g;
+                print $fh '"'.$toPrint.'"'."\t";
 
-                        print $fh $data[8]."\t";
-                        $toPrint = $data[9];
-                        $toPrint =~ s/"/'/g;
-                        print $fh '"'.$toPrint.'"'."\t";
+                print $fh $data[8]."\t";
+                $toPrint = $data[9];
+                $toPrint =~ s/"/'/g;
+                print $fh '"'.$toPrint.'"'."\t";
 
-                        # Read count, TPM, FPKM, rank, detection
-                        my $rank = "NA";
-                        if (defined $data[13]) {
-                            $rank = $data[13];
-                        }
-                        print $fh $data[10]."\t".$data[11]."\t".$data[12]."\t".$rank
-                                 ."\t".$data[14]."\t".$data[15]."\t";
-
-                        if ($data[17] eq $Utils::CALL_NOT_EXCLUDED) {
-                        	print $fh 'Part of a call';
-                            # TODO manage according to retrieved call type
-                            #if (defined $data[15] && $data[15]) {
-                            #    print $fh 'present ';
-                            #} else {
-                            #    print $fh 'absent ';
-                            #}
-                            #print $fh $data[18];
-                        } else {
-                            print $fh 'Result excluded, reason: '.$data[17];
-                        }
-                        print $fh "\n";
-                    }
+                # Read count, TPM, FPKM, rank, detection
+                my $rank = "NA";
+                if (defined $data[13]) {
+                    $rank = $data[13];
                 }
-                close $fh;
+                print $fh $data[10]."\t".$data[11]."\t".$data[12]."\t".$rank
+                         ."\t".$data[14]."\t".$data[15]."\t";
 
-        #}
+                if ($data[17] eq $Utils::CALL_NOT_EXCLUDED) {
+                	print $fh 'Part of a call';
+                    # TODO manage according to retrieved call type
+                    #if (defined $data[15] && $data[15]) {
+                    #    print $fh 'present ';
+                    #} else {
+                    #    print $fh 'absent ';
+                    #}
+                    #print $fh $data[18];
+                } else {
+                    print $fh 'Result excluded, reason: '.$data[17];
+                }
+                print $fh "\n";
+            }
+        }
+        close $fh;
         
         # We close the connection before compressing the files, it can take quite some time
         $dbh->disconnect;
-
         # we compress all files for an experiment together, and delete the uncompressed files
         # to save disk space
-        my $fileName = $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM_'.$expId.'.tsv.tar.gz';
+        my $fileName = $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM_'.$expId.'.tsv.gz';
         $fileName =~ s/ /_/g;
         unlink File::Spec->catfile($filesDir, $speciesDirName, $fileName);
-        my $experimentTar = Archive::Tar->new();
-        my @resultsFilePaths = ();
-        for my $resultsFileName ( @resultsFileNames ) {
-        	push @resultsFilePaths, File::Spec->catfile($filesDir, $tmpDirName, $resultsFileName);
-        }
-        $experimentTar->add_files(@resultsFilePaths);
-        for my $file_objs ($experimentTar->get_files){
-        	$experimentTar->rename( $file_objs, basename($file_objs->full_path)) 
-        }
-        $experimentTar->write(File::Spec->catfile($filesDir, $speciesDirName, $fileName), COMPRESS_GZIP);
-        # Remove uncompressed files to store disk space
-        for my $resultsFileName ( @resultsFileNames ) {
-            unlink File::Spec->catfile($filesDir, $tmpDirName, $resultsFileName);
-        }
-        # Store the name of this experiment tar.gz file, to make one giant tar.gz of all experiments
+        # use shell command to compress files because perl compression modules load data in memory
+        # to compress. This is not possible because GTeX experiment is too big.
+        # https://metacpan.org/pod/distribution/Archive-Tar/lib/Archive/Tar.pm#FAQ
+        # https://www.perlmonks.org/?node_id=201013
+        system("gzip -cvf $resultsFileName > $fileName");
+        #it is now safe to remove uncompressed file to save disk space
+        unlink File::Spec->catfile($filesDir, $speciesDirName, $resultsFileName);
+        # Store the name of this experiment gz file, to make one giant tar.gz of all experiments
         # at the end.
         push @tarFileNames, $fileName;
 
@@ -1187,7 +1175,7 @@ sub generateRnaSeqFiles {
 
 
     # -------------------------------------------------
-    #everything went fine, we move and zip the tmp files
+    #everything went fine, we move and tar.gz the tmp files
     
     # We close the connection before compressing the files, it can take quite some time
     $dbh->disconnect;
@@ -1228,16 +1216,6 @@ sub generateRnaSeqFiles {
     # reopen the connection for further use 
     $dbh = Utils::connect_bgee_db($bgee_connector);
 }
-
-
-
-
-
-
-
-
-
-
 
 
 # generate single cell full length RNA-Seq files
@@ -1659,102 +1637,82 @@ sub generateFullLenghthScRnaSeqFiles {
                                        .'t1.rnaSeqLibraryId');
         
 
-        #for my $libTypeId ( keys %{$fileParams{$expId}} ){
-                # Create file
-                my $resultsFileName = $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM_'
-                    .$expId.'.tsv';
-                $resultsFileName =~ s/ /_/g;
-                push @resultsFileNames, $resultsFileName;
-                my $resultsFile = File::Spec->catfile($filesDir, $tmpDirName,
-                    $resultsFileName);
-                open(my $fh, '>', $resultsFile) or die "Could not open file '$resultsFile' $!";
-                print $fh "Experiment ID\tLibrary ID\tLibrary type\tGene ID\t"
-                          ."Anatomical entity ID\tAnatomical entity name\t"
-                          ."Stage ID\tStage name\tCell type ID\tCell type name\tSex\tStrain\tRead count\tTPM\tFPKM\t"
-                          ."Rank\tDetection flag\tState in Bgee\n";
-                
-                $getExpLibs->execute($expId, $speciesId) or die $getExpLibs->errstr;
+        my $resultsFileName = $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM_'
+            .$expId.'.tsv';
+        $resultsFileName =~ s/ /_/g;
+        push @resultsFileNames, $resultsFileName;
+        my $resultsFile = File::Spec->catfile($filesDir, $tmpDirName,
+            $resultsFileName);
+        open(my $fh, '>', $resultsFile) or die "Could not open file '$resultsFile' $!";
+        print $fh "Experiment ID\tLibrary ID\tLibrary type\tGene ID\t"
+                  ."Anatomical entity ID\tAnatomical entity name\t"
+                  ."Stage ID\tStage name\tCell type ID\tCell type name\tSex\tStrain\tRead count\tTPM\tFPKM\t"
+                  ."Rank\tDetection flag\tState in Bgee\n";
+             
+        $getExpLibs->execute($expId, $speciesId) or die $getExpLibs->errstr;
+        while ( my @libs = $getExpLibs->fetchrow_array ){
+            my $libId = $libs[0];
+            # Retrieve data from database.
+            $stmt->execute($libId, $speciesId) or die $stmt->errstr;
+            while ( my @data = $stmt->fetchrow_array ){
+                # we write the data directly to not store them in memory
+                print $fh $data[0]."\t".$data[1]."\t".$data[2]."\t".$data[3]."\t"
+                    .$data[4]."\t";
+                # we replace double quotes with simple quotes, and we surround with double quotes
+                # the values to escape potential special characters
+                my $toPrint = $data[5];
+                $toPrint =~ s/"/'/g;
+                print $fh '"'.$toPrint.'"'."\t";
 
-                while ( my @libs = $getExpLibs->fetchrow_array ){
-                    my $libId = $libs[0];
-                    # Retrieve data from database.
-                    $stmt->execute($libId, $speciesId) or die $stmt->errstr;
+                print $fh $data[6]."\t";
+                $toPrint = $data[7];
+                $toPrint =~ s/"/'/g;
+                print $fh '"'.$toPrint.'"'."\t";
 
-                    while ( my @data = $stmt->fetchrow_array ){
-                        # we write the data directly to not store them in memory
-                        print $fh $data[0]."\t".$data[1]."\t".$data[2]."\t".$data[3]."\t"
-                            .$data[4]."\t";
-                        # we replace double quotes with simple quotes, and we surround with double quotes
-                        # the values to escape potential special characters
-                        my $toPrint = $data[5];
-                        $toPrint =~ s/"/'/g;
-                        print $fh '"'.$toPrint.'"'."\t";
+                print $fh $data[8]."\t";
+                $toPrint = $data[9];
+                $toPrint =~ s/"/'/g;
+                print $fh '"'.$toPrint.'"'."\t";
 
-                        print $fh $data[6]."\t";
-                        $toPrint = $data[7];
-                        $toPrint =~ s/"/'/g;
-                        print $fh '"'.$toPrint.'"'."\t";
+                print $fh $data[10]."\t";
+                $toPrint = $data[11];
+                $toPrint =~ s/"/'/g;
+                print $fh '"'.$toPrint.'"'."\t";
 
-                        print $fh $data[8]."\t";
-                        $toPrint = $data[9];
-                        $toPrint =~ s/"/'/g;
-                        print $fh '"'.$toPrint.'"'."\t";
-
-                        print $fh $data[10]."\t";
-                        $toPrint = $data[11];
-                        $toPrint =~ s/"/'/g;
-                        print $fh '"'.$toPrint.'"'."\t";
-
-                        # Read count, TPM, FPKM, rank, detection
-                        my $rank = "NA";
-                        if (defined $data[15]) {
-                            $rank = $data[15];
-                        }
-                        print $fh $data[12]."\t".$data[13]."\t".$data[14]."\t".$rank
-                                 ."\t".$data[16]."\t".$data[17]."\t";
-
-                        if ($data[19] eq $Utils::CALL_NOT_EXCLUDED) {
-                          print $fh 'Part of a call';
-                            # TODO manage according to retrieved call type
-                            #if (defined $data[15] && $data[15]) {
-                            #    print $fh 'present ';
-                            #} else {
-                            #    print $fh 'absent ';
-                            #}
-                            #print $fh $data[18];
-                        } else {
-                            print $fh 'Result excluded, reason: '.$data[19];
-                        }
-                        print $fh "\n";
-                    }
+                # Read count, TPM, FPKM, rank, detection
+                my $rank = "NA";
+                if (defined $data[15]) {
+                    $rank = $data[15];
                 }
-                close $fh;
+                print $fh $data[12]."\t".$data[13]."\t".$data[14]."\t".$rank
+                         ."\t".$data[16]."\t".$data[17]."\t";
 
-        #}
+                if ($data[19] eq $Utils::CALL_NOT_EXCLUDED) {
+                  print $fh 'Part of a call';
+                } else {
+                    print $fh 'Result excluded, reason: '.$data[19];
+                }
+                print $fh "\n";
+            }
+        }
+        close $fh;
         
         # We close the connection before compressing the files, it can take quite some time
         $dbh->disconnect;
 
         # we compress all files for an experiment together, and delete the uncompressed files
         # to save disk space
-        my $fileName = $speciesNameForFile.'_Full-Length_SC_RNA-Seq_read_counts_TPM_FPKM_'.$expId.'.tsv.tar.gz';
+        my $fileName = $speciesNameForFile.'_Full-Length_SC_RNA-Seq_read_counts_TPM_FPKM_'.$expId.'.tsv.gz';
         $fileName =~ s/ /_/g;
         unlink File::Spec->catfile($filesDir, $speciesDirName, $fileName);
-        my $experimentTar = Archive::Tar->new();
-        my @resultsFilePaths = ();
-        for my $resultsFileName ( @resultsFileNames ) {
-          push @resultsFilePaths, File::Spec->catfile($filesDir, $tmpDirName, $resultsFileName);
-        }
-        $experimentTar->add_files(@resultsFilePaths);
-        for my $file_objs ($experimentTar->get_files){
-          $experimentTar->rename( $file_objs, basename($file_objs->full_path)) 
-        }
-        $experimentTar->write(File::Spec->catfile($filesDir, $speciesDirName, $fileName), COMPRESS_GZIP);
-        # Remove uncompressed files to store disk space
-        for my $resultsFileName ( @resultsFileNames ) {
-            unlink File::Spec->catfile($filesDir, $tmpDirName, $resultsFileName);
-        }
-        # Store the name of this experiment tar.gz file, to make one giant tar.gz of all experiments
+        # use shell command to compress files because perl compression modules load data in memory
+        # to compress. This is not possible because GTeX experiment is too big.
+        # https://metacpan.org/pod/distribution/Archive-Tar/lib/Archive/Tar.pm#FAQ
+        # https://www.perlmonks.org/?node_id=201013
+        system("gzip -cvf $resultsFileName > $fileName");
+        #it is now safe to remove uncompressed file to save disk space
+        unlink File::Spec->catfile($filesDir, $speciesDirName, $resultsFileName);
+        # Store the name of this experiment gz file, to make one giant tar.gz of all experiments
         # at the end.
         push @tarFileNames, $fileName;
 
@@ -1770,20 +1728,20 @@ sub generateFullLenghthScRnaSeqFiles {
     $dbh->disconnect;
 
   if (scalar(keys %fileParams) > 0){
-      unlink File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_RNA-Seq_experiments_libraries.tar.gz');
+      unlink File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_Full-Length_SC_RNA-Seq_experiments_libraries.tar.gz');
       my $tar = Archive::Tar->new();
       $tar->add_files(File::Spec->catfile($filesDir, $tmpDirName, $expFileName),
         File::Spec->catfile($filesDir, $tmpDirName, $libFileName));
       for my $file_objs ($tar->get_files){
-        $tar->rename( $file_objs, File::Spec->catfile($speciesNameForFile.'_RNA-Seq_experiments_libraries', 
+        $tar->rename( $file_objs, File::Spec->catfile($speciesNameForFile.'_Full-Length_SC_RNA-Seq_experiments_libraries', 
           basename($file_objs->full_path))); 
       }
       $tar->write(
-          File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_RNA-Seq_experiments_libraries.tar.gz'), 
+          File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_Full-Length_SC_RNA-Seq_experiments_libraries.tar.gz'), 
             COMPRESS_GZIP);
 
       # Compress each file with RNA-Seq results independently, and add them to a global tar.gz file
-      unlink File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM.tar.gz');
+      unlink File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_Full-Length_SC_RNA-Seq_read_counts_TPM_FPKM.tar.gz');
       $tar = Archive::Tar->new();
     
       my @tarFilePaths = ();
@@ -1792,11 +1750,11 @@ sub generateFullLenghthScRnaSeqFiles {
       }
       $tar->add_files(@tarFilePaths);
       for my $file_objs ($tar->get_files){
-          $tar->rename( $file_objs, File::Spec->catfile($speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM', 
+          $tar->rename( $file_objs, File::Spec->catfile($speciesNameForFile.'_Full-Length_SC_RNA-Seq_read_counts_TPM_FPKM', 
             basename($file_objs->full_path))); 
       }
       $tar->write(
-          File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM.tar.gz'),
+          File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_Full-Length_SC_RNA-Seq_read_counts_TPM_FPKM.tar.gz'),
           COMPRESS_GZIP);
   }
 
