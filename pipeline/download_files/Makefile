@@ -142,7 +142,7 @@ ALL_COND_PARAM := $(ORGAN_PARAM)$(ENTRY_SEP)$(DEV_STAGE_ID)$(ENTRY_SEP)$(SEX_ID)
 # Processed data download files
 # =========================
 $(OUTPUT_DIR)generate_processed_files:
-	@perl generate_ref_expr_files.pl -bgee=$(BGEECMD) -speciesArg=- -affyDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)affymetrix/ -estDir=- -inSituDir=- -rnaSeqDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)rna_seq_processed/ -bgeeVersion=$(DBNAME) > $@.tmp 2>$@.warnings
+	@perl generate_ref_expr_files.pl -bgee=$(BGEECMD) -speciesArg=- -affyDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)affymetrix/ -estDir=- -inSituDir=- -rnaSeqDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)rna_seq_processed/ -flScRnaSeqDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)sc_rna_seq_fl_processed/ -bgeeVersion=$(DBNAME) > $@.tmp 2>$@.warnings
 	@$(MV) $@.tmp $@
 
 # =========================

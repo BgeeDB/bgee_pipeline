@@ -950,7 +950,7 @@ sub generateRnaSeqFiles {
               ."Expression mapped stage ID\tExpression mapped stage name\t"
               ."Expression mapped sex\tExpression mapped strain\t"
               ."Platform ID\tProtocol\tLibrary type\tLibrary orientation\t"
-              ."TMM normalization factor\tTPM expression threshold\tFPKM expression threshold\t"
+              ."TMM normalization factor\tTPM expression threshold\t"
               ."Read count\tMapped read count\t"
               ."Min. read length\tMax. read length\tAll genes percent present\t"
               ."Protein coding genes percent present\tIntergenic regions percent present\t"
@@ -1004,7 +1004,11 @@ sub generateRnaSeqFiles {
             .$lib->{'allGenesPercentPresent'}."\t".$lib->{'proteinCodingGenesPercentPresent'}."\t"
             .$lib->{'intergenicRegionsPercentPresent'}."\t";
 
-        print $fh $lib->{'libraryDistinctRankCount'}."\t".$lib->{'maxRank'}."\t";
+        my $maxRank = "NA";
+        if(defined $lib->{'maxRank'}) {
+            $maxRank = $lib->{'maxRank'};
+        }
+        print $fh $lib->{'libraryDistinctRankCount'}."\t".$maxRank."\t";
 
         if (defined $lib->{'runIds'} && $lib->{'runIds'}) {
             print $fh $lib->{'runIds'};
@@ -1131,8 +1135,12 @@ sub generateRnaSeqFiles {
                 if (defined $data[13]) {
                     $rank = $data[13];
                 }
+                my $pValue = "NA";
+                if(defined $data[15]) {
+                    $pValue = $data[15];
+                }
                 print $fh $data[10]."\t".$data[11]."\t".$data[12]."\t".$rank
-                         ."\t".$data[14]."\t".$data[15]."\t";
+                         ."\t".$data[14]."\t".$pValue."\t";
 
                 if ($data[17] eq $Utils::CALL_NOT_EXCLUDED) {
                 	print $fh 'Part of a call';
@@ -1521,6 +1529,11 @@ sub generateFullLenghthScRnaSeqFiles {
         print $fh $lib->{'sex'}."\t";
         
         $toPrint = $lib->{'strain'};
+        # in Bgee 15.0 missing strains are stored as "(Missing)" in the RDB
+        # in order to standardize the strain we replace this value by NA in download files
+        if ($toPrint eq "(Missing)") {
+            $toPrint = "NA";
+        }
         $toPrint =~ s/"/'/g;
         print $fh '"'.$toPrint.'"'."\t";
 
@@ -1554,8 +1567,12 @@ sub generateFullLenghthScRnaSeqFiles {
         print $fh $lib->{'minReadLength'}."\t".$lib->{'maxReadLength'}."\t"
             .$lib->{'allGenesPercentPresent'}."\t".$lib->{'proteinCodingGenesPercentPresent'}."\t"
             .$lib->{'intergenicRegionsPercentPresent'}."\t";
-
-        print $fh $lib->{'libraryDistinctRankCount'}."\t".$lib->{'maxRank'}."\t";
+        
+        my $maxRank = "NA";
+        if(defined $lib->{'maxRank'}) {
+            $maxRank = $lib->{'maxRank'};
+        }
+        print $fh $lib->{'libraryDistinctRankCount'}."\t".$maxRank."\t";
 
         if (defined $lib->{'runIds'} && $lib->{'runIds'}) {
             print $fh $lib->{'runIds'};
@@ -1608,21 +1625,21 @@ sub generateFullLenghthScRnaSeqFiles {
     
         # Because we reopen the connection in the expId loop we cannot prepare the query outside the loop.
         # XXX: left outer join to expression to retrieve the global call quality?
-        $sql = 'SELECT t3.scRnaSeqFullLengtExperimentId, t1.scRnaSeqFullLengtLibraryId, t3.libraryType, t2.geneId, '
-              .'t4.anatEntityId, t5.anatEntityName, t4.stageId, t6.stageName, t4.cellTypeId, t8.cellTypeName, t4.sex, t4.strain, '
+        $sql = 'SELECT t3.scRnaSeqFullLengthExperimentId, t1.scRnaSeqFullLengthLibraryId, t3.libraryType, t2.geneId, '
+              .'t4.anatEntityId, t5.anatEntityName, t4.stageId, t6.stageName, t4.cellTypeId, t8.anatEntityName, t4.sex, t4.strain, '
               .'t1.readsCount, t1.tpm, t1.fpkm, t1.rank, t1.detectionFlag, t1.pValue, '
               .'t1.expressionId, t1.reasonForExclusion, '
               # FIXME retrieve call type
               .'IF(t1.expressionId IS NOT NULL, "data", "no data") AS globalRnaSeqData '
-              .'FROM rnaSeqResult AS t1 '
+              .'FROM scRnaSeqFullLengthResult AS t1 '
               .'INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId '
-              .'INNER JOIN rnaSeqLibrary AS t3 ON t1.rnaSeqLibraryId = t3.rnaSeqLibraryId '
+              .'INNER JOIN scRnaSeqFullLengthLibrary AS t3 ON t1.scRnaSeqFullLengthLibraryId = t3.scRnaSeqFullLengthLibraryId '
               .'INNER JOIN cond AS t4 ON t4.conditionId = t3.conditionId '
               .'INNER JOIN anatEntity AS t5 ON t5.anatEntityId = t4.anatEntityId '
-              .'INNER JOIN anatEntity AS t8 ON t5.cellTypeId = t8.anatEntityId '
+              .'INNER JOIN anatEntity AS t8 ON t4.cellTypeId = t8.anatEntityId '
               .'INNER JOIN stage AS t6 ON t6.stageId = t4.stageId '
               .'LEFT OUTER JOIN expression AS t7 ON t1.expressionId = t7.expressionId '
-              .'WHERE t1.rnaSeqLibraryId = ? '
+              .'WHERE t1.scRnaSeqFullLengthLibraryId = ? '
               .'AND t4.speciesId = ? '
               .'ORDER BY t2.geneId';
         $stmt = $dbh->prepare($sql);
@@ -1630,15 +1647,15 @@ sub generateFullLenghthScRnaSeqFiles {
         # Note: actually, it is not enough to simply sort the libraries based on their ID, 
         # we need to apply the same sorting as when generating the library info file. 
         # A simple solution is to redo a SQL query with the same ORDER BY clause. 
-        my $getExpLibs = $dbh->prepare('SELECT t1.rnaSeqLibraryId FROM rnaSeqLibrary AS t1 '
+        my $getExpLibs = $dbh->prepare('SELECT t1.scRnaSeqFullLengthLibraryId FROM scRnaSeqFullLengthLibrary AS t1 '
                                        .'INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId '
-                                       .'WHERE t1.rnaSeqExperimentId = ? '
+                                       .'WHERE t1.scRnaSeqFullLengthExperimentId = ? '
                                        .'AND t2.speciesId = ? '
-                                       .'ORDER BY t2.anatEntityId, t2.stageId, t2.sex, t2.strain, '
-                                       .'t1.rnaSeqLibraryId');
+                                       .'ORDER BY t2.anatEntityId, t2.stageId, t2.cellTypeId, t2.sex, t2.strain, '
+                                       .'t1.scRnaSeqFullLengthLibraryId');
         
 
-        my $resultsFileName = $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM_'
+        my $resultsFileName = $speciesNameForFile.'_Full-Length_SC_RNA-Seq_read_counts_TPM_FPKM_'
             .$expId.'.tsv';
         $resultsFileName =~ s/ /_/g;
         push @resultsFileNames, $resultsFileName;
@@ -1648,7 +1665,7 @@ sub generateFullLenghthScRnaSeqFiles {
         print $fh "Experiment ID\tLibrary ID\tLibrary type\tGene ID\t"
                   ."Anatomical entity ID\tAnatomical entity name\t"
                   ."Stage ID\tStage name\tCell type ID\tCell type name\tSex\tStrain\tRead count\tTPM\tFPKM\t"
-                  ."Rank\tDetection flag\tState in Bgee\n";
+                  ."Rank\tDetection flag\tpValue\tState in Bgee\n";
              
         $getExpLibs->execute($expId, $speciesId) or die $getExpLibs->errstr;
         while ( my @libs = $getExpLibs->fetchrow_array ){
@@ -1677,6 +1694,11 @@ sub generateFullLenghthScRnaSeqFiles {
 
                 print $fh $data[10]."\t";
                 $toPrint = $data[11];
+                # in Bgee 15.0 missing strains are stored as "(Missing)" in the RDB
+                # in order to standardize the strain we replace this value by NA in download files
+                if ($toPrint eq "(Missing)") {
+                    $toPrint = "NA";
+                }
                 $toPrint =~ s/"/'/g;
                 print $fh '"'.$toPrint.'"'."\t";
 
@@ -1685,8 +1707,13 @@ sub generateFullLenghthScRnaSeqFiles {
                 if (defined $data[15]) {
                     $rank = $data[15];
                 }
+
+                my $pValue = "NA";
+                if (defined $data[17]) {
+                    $pValue = $data[17];
+                }
                 print $fh $data[12]."\t".$data[13]."\t".$data[14]."\t".$rank
-                         ."\t".$data[16]."\t".$data[17]."\t";
+                         ."\t".$data[16]."\t".$pValue."\t";
 
                 if ($data[19] eq $Utils::CALL_NOT_EXCLUDED) {
                   print $fh 'Part of a call';
