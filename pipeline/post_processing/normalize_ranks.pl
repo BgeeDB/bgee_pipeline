@@ -46,10 +46,12 @@ my $auto = 1;
                  IFNULL(max(estMaxRank),0.0),
                  IFNULL(max(inSituMaxRank),0.0),
                  IFNULL(max(affymetrixMaxRank),0.0),
+                 IFNULL(max(scRnaSeqFullLengthMaxRank),0.0),
                  IFNULL(max(rnaSeqGlobalMaxRank), 0.0),
                  IFNULL(max(estGlobalMaxRank),0.0),
                  IFNULL(max(inSituGlobalMaxRank),0.0),
-                 IFNULL(max(affymetrixGlobalMaxRank),0.0)) AS max
+                 IFNULL(max(affymetrixGlobalMaxRank),0.0),
+                 IFNULL(max(scRnaSeqFullLengthGlobalMaxRank),0.0)) AS max
     FROM globalCond
     WHERE anatEntityId NOT IN $blacklisted
     GROUP BY speciesId" );
@@ -70,10 +72,12 @@ my $auto = 1;
         estRankNorm            = (estRank + (estRank * ? / estMaxRank))/2,
         inSituRankNorm         = (inSituRank + (inSituRank * ? / inSituMaxRank))/2,
         affymetrixMeanRankNorm = (affymetrixMeanRank + (affymetrixMeanRank * ? / affymetrixMaxRank))/2,
+        scRnaSeqFullLengthMeanRankNorm = (scRnaSeqFullLengthMeanRank + (scRnaSeqFullLengthMeanRank * ? / scRnaSeqFullLengthMaxRank))/2,
         rnaSeqGlobalMeanRankNorm     = (rnaSeqGlobalMeanRank + (rnaSeqGlobalMeanRank * ? / rnaSeqGlobalMaxRank))/2,
         estGlobalRankNorm            = (estGlobalRank + (estGlobalRank * ? / estGlobalMaxRank))/2,
         inSituGlobalRankNorm         = (inSituGlobalRank + (inSituGlobalRank * ? / inSituGlobalMaxRank))/2,
-        affymetrixGlobalMeanRankNorm = (affymetrixGlobalMeanRank + (affymetrixGlobalMeanRank * ? / affymetrixGlobalMaxRank))/2
+        affymetrixGlobalMeanRankNorm = (affymetrixGlobalMeanRank + (affymetrixGlobalMeanRank * ? / affymetrixGlobalMaxRank))/2,
+        scRnaSeqFullLengthGlobalMeanRankNorm = (scRnaSeqFullLengthGlobalMeanRank + (scRnaSeqFullLengthGlobalMeanRank * ? / scRnaSeqFullLengthGlobalMaxRank))/2
     WHERE gene.speciesId = ?" );
 
     # Quick and dirty blacklisting of unspecified anatEntities: set the mean rank to the max value
@@ -143,7 +147,7 @@ for my $speciesId ( keys %maxRanks ){
 
     my $t0 = time();
     printf('Update expression table with normalized mean ranks per type:   ');
-    $updateExpression->execute( $absMax, $absMax, $absMax, $absMax, $absMax, $absMax, $absMax, $absMax,
+    $updateExpression->execute( $absMax, $absMax, $absMax, $absMax, $absMax, $absMax, $absMax, $absMax, $absMax, $absMax,
                                 $speciesId)
       or die $updateExpression->errstr;
     printf( "OK in %.2fs\n", ( time() - $t0 ) );
