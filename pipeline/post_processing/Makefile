@@ -220,21 +220,18 @@ $(OUTPUT_DIR)ranksScRnaSeqFullLength:
 	@$(MYSQL) -e "SELECT t1.speciesId, MIN(t3.rank), MAX(t3.rank), AVG(t3.rank), MIN(t2.libraryDistinctRankCount), MAX(t2.libraryDistinctRankCount), AVG(t2.libraryDistinctRankCount) FROM cond AS t1 INNER JOIN scRnaSeqFullLengthLibrary AS t2 ON t1.conditionId = t2.conditionId INNER JOIN scRnaSeqFullLengthResult AS t3 on t2.scRnaSeqFullLengthLibraryId = t3.scRnaSeqFullLengthLibraryId WHERE t3.rank IS NOT NULL GROUP BY t1.speciesId" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
-$(OUTPUT_DIR)ranksEST: $(OUTPUT_DIR)globalExpression
-	@perl ranks_est.pl -bgee=$(BGEECMD) > $@.tmp 2> $@.warn
-	@printf "Min, max, average EST mean rank: \n" >> $@.tmp
-	@$(MYSQL) -e "SELECT MIN(estRank), MAX(estRank), AVG(estRank) FROM globalExpression AS t1 WHERE estRank IS NOT NULL" >> $@.tmp 2>> $@.warn
+# EST and in situ rank computations are now done as part of this step
+$(OUTPUT_DIR)ranksGlobal: $(OUTPUT_DIR)ranksAffy $(OUTPUT_DIR)ranksRnaSeq $(OUTPUT_DIR)ranksScRnaSeqFullLength
+	@perl ranks_global.pl -bgee=$(BGEECMD) -parallel_jobs=20 -conds_per_job=10 > $@.tmp 2> $@.warn
+	@echo "Min, max, average EST mean rank: \n" >> $@.tmp
+#	@$(MYSQL) -e "SELECT MIN(estRank), MAX(estRank), AVG(estRank) FROM globalExpression AS t1 WHERE estRank IS NOT NULL" >> $@.tmp 2>> $@.warn
 	@$(MYSQL) -e "SELECT MIN(estGlobalRank), MAX(estGlobalRank), AVG(estGlobalRank) FROM globalExpression AS t1 WHERE estGlobalRank IS NOT NULL" >> $@.tmp 2>> $@.warn
-	@$(MV) $@.tmp $@
-
-$(OUTPUT_DIR)ranksInSitu: $(OUTPUT_DIR)globalExpression
-	@perl ranks_in_situ.pl -bgee=$(BGEECMD) > $@.tmp 2> $@.warn
-	@printf "Min, max, average in situ mean rank: \n" >> $@.tmp
-	@$(MYSQL) -e "SELECT MIN(inSituRank), MAX(inSituRank), AVG(inSituRank) FROM globalExpression AS t1 WHERE inSituRank IS NOT NULL" >> $@.tmp 2>> $@.warn
+	@echo "Min, max, average in situ mean rank: \n" >> $@.tmp
+#	@$(MYSQL) -e "SELECT MIN(inSituRank), MAX(inSituRank), AVG(inSituRank) FROM globalExpression AS t1 WHERE inSituRank IS NOT NULL" >> $@.tmp 2>> $@.warn
 	@$(MYSQL) -e "SELECT MIN(inSituGlobalRank), MAX(inSituGlobalRank), AVG(inSituGlobalRank) FROM globalExpression AS t1 WHERE inSituGlobalRank IS NOT NULL" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
-$(OUTPUT_DIR)norm_ranks: $(OUTPUT_DIR)ranksAffy $(OUTPUT_DIR)ranksRnaSeq $(OUTPUT_DIR)ranksEST $(OUTPUT_DIR)ranksInSitu
+$(OUTPUT_DIR)norm_ranks: $(OUTPUT_DIR)ranksGlobal
 	@perl normalize_ranks.pl -bgee=$(BGEECMD) > $@.tmp 2> $@.warn
 #	@printf "Expression IDs with ranks incorrectly generated: \n" >> $@.tmp
 #	@$(MYSQL) -e "SELECT expressionId FROM expression WHERE inSituData != 'no data' AND inSituRank IS NULL OR estData != 'no data' AND estRank IS NULL OR affymetrixData != 'no data' AND affymetrixMeanRank IS NULL OR rnaSeqData != 'no data' AND rnaSeqMeanRank IS NULL" >> $@.tmp
