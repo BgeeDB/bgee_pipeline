@@ -182,29 +182,29 @@ sub compute_update_global_ranks {
     my $estMaxRankField = 'estMaxRank';
     my $inSituRankField = 'inSituRank';
     my $inSituMaxRankField = 'inSituMaxRank';
-    my $affyRankField = 'affymetrixMeanRankNorm';
+    my $affyRankField = 'affymetrixMeanRank';
     my $affyDistinctRankSum = 'affymetrixDistinctRankSum';
     my $affyMaxRankField = 'affymetrixMaxRank';
-    my $rnaSeqRankField = 'rnaSeqMeanRankNorm';
+    my $rnaSeqRankField = 'rnaSeqMeanRank';
     my $rnaSeqDistinctRankSum = 'rnaSeqDistinctRankSum';
     my $rnaSeqMaxRankField = 'rnaSeqMaxRank';
-    my $scRnaSeqFLRankField = 'scRnaSeqFLMeanRankNorm';
-    my $scRnaSeqFLDistinctRankSum = 'scRnaSeqFLDistinctRankSum';
-    my $scRnaSeqFLMaxRankField = 'scRnaSeqFLMaxRank';
+    my $scRnaSeqFLRankField = 'scRnaSeqFullLengthMeanRank';
+    my $scRnaSeqFLDistinctRankSum = 'scRnaSeqFullLengthDistinctRankSum';
+    my $scRnaSeqFLMaxRankField = 'scRnaSeqFullLengthMaxRank';
     if (!$selfRanks) {
         $estRankField = 'estGlobalRank';
         $estMaxRankField = 'estGlobalMaxRank';
         $inSituRankField = 'inSituGlobalRank';
         $inSituMaxRankField = 'inSituGlobalMaxRank';
-        $affyRankField = 'affymetrixGlobalMeanRankNorm';
+        $affyRankField = 'affymetrixGlobalMeanRank';
         $affyDistinctRankSum = 'affymetrixGlobalDistinctRankSum';
         $affyMaxRankField = 'affymetrixGlobalMaxRank';
-        $rnaSeqRankField = 'rnaSeqGlobalMeanRankNorm';
+        $rnaSeqRankField = 'rnaSeqGlobalMeanRank';
         $rnaSeqDistinctRankSum = 'rnaSeqGlobalDistinctRankSum';
         $rnaSeqMaxRankField = 'rnaSeqGlobalMaxRank';
-        $scRnaSeqFLRankField = 'scRnaSeqFLGlobalMeanRankNorm';
-        $scRnaSeqFLDistinctRankSum = 'scRnaSeqFLGlobalDistinctRankSum';
-        $scRnaSeqFLMaxRankField = 'scRnaSeqFLGlobalMaxRank';
+        $scRnaSeqFLRankField = 'scRnaSeqFullLengthGlobalMeanRank';
+        $scRnaSeqFLDistinctRankSum = 'scRnaSeqFullLengthGlobalDistinctRankSum';
+        $scRnaSeqFLMaxRankField = 'scRnaSeqFullLengthGlobalMaxRank';
     }
 
     # ***
@@ -290,7 +290,7 @@ sub compute_update_global_ranks {
     # If only one gene at a given rank, updated with the prepared statement below.
     my $estRankUpdateStart   = 'UPDATE estRanking SET rank = ?
                              WHERE bgeeGeneId ';
-    my $estUpdateRankingStmt = $dbh_thread->prepare($rankUpdateStart.'= ?');
+    my $estUpdateRankingStmt = $dbh_thread->prepare($estRankUpdateStart.'= ?');
 
     # Queries to insert into temp tables
     my $insertESTExprResults = $dbh_thread->prepare(
@@ -347,7 +347,7 @@ sub compute_update_global_ranks {
     # If only one gene at a given rank, updated with the prepared statement below.
     my $inSituRankUpdateStart   = 'UPDATE inSituRanking SET rank = ?
                              WHERE bgeeGeneId ';
-    my $inSituUpdateRankingStmt = $dbh_thread->prepare($rankUpdateStart.'= ?');
+    my $inSituUpdateRankingStmt = $dbh_thread->prepare($inSituRankUpdateStart.'= ?');
 
     # Queries to insert into temp tables
     my $insertInSituExprResults = $dbh_thread->prepare(
@@ -687,6 +687,52 @@ sub compute_update_global_ranks {
         $dbh_thread->commit() or die('Failed commit');
         printf("globalConditionId: %s - PID: %s - %d/%d\n", $globalCondId, $$, $k+1, $batchLength);
     }
+
+    $createExprResultsTempTableStmt->finish or die('Failed finish');
+    $dropExprResultsTempTableStmt->finish or die('Failed finish');
+    $createCondResultsTempTableStmt->finish or die('Failed finish');
+    $dropCondResultsTempTableStmt->finish or die('Failed finish');
+    $finalExprUpdateStmt->finish or die('Failed finish');
+    $finalCondUpdateStmt->finish or die('Failed finish');
+
+    $estToGlobalCondStmt->finish or die('Failed finish');
+    $isEstDataInGlobalCondStmt->finish or die('Failed finish');
+    $estRankingStmt->finish or die('Failed finish');
+    $estDropLibRankStmt->finish or die('Failed finish');
+    $estRanksForCondStmt->finish or die('Failed finish');
+    $estUpdateRankingStmt->finish or die('Failed finish');
+    $insertESTExprResults->finish or die('Failed finish');
+    $insertESTCondResults->finish or die('Failed finish');
+
+    $inSituToGlobalCondStmt->finish or die('Failed finish');
+    $isInSituDataInGlobalCondStmt->finish or die('Failed finish');
+    $inSituRankingStmt->finish or die('Failed finish');
+    $inSituDropSpotRankStmt->finish or die('Failed finish');
+    $inSituRanksForCondStmt->finish or die('Failed finish');
+    $inSituUpdateRankingStmt->finish or die('Failed finish');
+    $insertInSituExprResults->finish or die('Failed finish');
+    $insertInSituCondResults->finish or die('Failed finish');
+
+    $affyToGlobalCondStmt->finish or die('Failed finish');
+    $isAffyDataInGlobalCondStmt->finish or die('Failed finish');
+    $affyCondMaxStmt->finish or die('Failed finish');
+    $affyChipNormRankStmt->finish or die('Failed finish');
+    $dropAffyChipNormRank->finish or die('Failed finish');
+    $insertAffyExprResults->finish or die('Failed finish');
+    $insertAffyCondResults->finish or die('Failed finish');
+
+    $rnaSeqToGlobalCondStmt->finish or die('Failed finish');
+    $isRnaSeqDataInGlobalCondStmt->finish or die('Failed finish');
+    $rnaSeqCondMaxStmt->finish or die('Failed finish');
+    $rnaSeqLibNormRankStmt->finish or die('Failed finish');
+    $dropRNASeqLibNormRank->finish or die('Failed finish');
+    $insertRnaSeqExprResults->finish or die('Failed finish');
+    $insertRnaSeqCondResults->finish or die('Failed finish');
+
+    $scRnaSeqFLToGlobalCondStmt->finish or die('Failed finish');
+    $isScRnaSeqFLDataInGlobalCondStmt->finish or die('Failed finish');
+    $insertScRnaSeqFLExprResults->finish or die('Failed finish');
+    $insertScRnaSeqFLCondResults->finish or die('Failed finish');
 
     $dbh_thread->disconnect();
 }
