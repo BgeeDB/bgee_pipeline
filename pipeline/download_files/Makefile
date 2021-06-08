@@ -132,7 +132,7 @@ ORGAN_PARAM := ANAT_ENTITY_ID
 STAGE_PARAM := DEV_STAGE_ID
 SEX_PARAM := SEX_ID
 STRAIN_PARAM := STRAIN_ID
-ALL_COND_PARAM := $(ORGAN_PARAM)$(ENTRY_SEP)$(DEV_STAGE_ID)$(ENTRY_SEP)$(SEX_ID)$(ENTRY_SEP)$(STRAIN_ID)
+ALL_COND_PARAM := $(ORGAN_PARAM)$(ENTRY_SEP)$(STAGE_PARAM)$(ENTRY_SEP)$(SEX_PARAM)$(ENTRY_SEP)$(STRAIN_PARAM)
 
 ######################################################
 # VARIABLES CREATED, INSERT
@@ -167,8 +167,10 @@ $(OUTPUT_DIR)gzip_call_files:
 #TODO add $(OUTPUT_DIR)gzip_call_files
 #TODO instead of using insert_download_file_info.sql to insert data into downloadFile table, fix InsertSpeciesDataGroups
 $(OUTPUT_DIR)insert_download_files_info: $(OUTPUT_DIR)generate_processed_files $(OUTPUT_DIR)generate_anatomy_call_files $(OUTPUT_DIR)generate_anatomy_development_call_files
+	#insert information about species data groups
 	@$(MYSQL) < insert_download_file_info.sql > $@.tmp 2>$@.warnings
-#	@$(JAVA) InsertSpeciesDataGroups "$(GROUP_NAME_TO_SPECIES)" "$(GROUP_NAME_TO_CAT)" "$(GROUP_NAME_TO_REPLACEMENT)" "$(SINGLE_SPE_CAT_TO_FILE_NAME_PATTERN)" "$(MULTI_SPE_CAT_TO_FILE_NAME_PATTERN)" $(DOWNLOAD_FILE_ROOT_PATH) >> $@.tmp 2>>$@.warnings
+	#insert information about download files
+	@perl insert_download_file_info.pl -bgee=$(BGEE_CMD) -processed_dir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH) -calls_dir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH) > $@.tmp 2>$@.warnings
 	@$(MYSQL) -e "SELECT (SELECT COUNT(*) FROM speciesDataGroup) as \`data group count\`, (SELECT COUNT(distinct speciesId) FROM speciesToDataGroup) as \`species in data group count\`, (SELECT COUNT(*) FROM downloadFile) as \`download file count\`" >> $@.tmp 2>>$@.warnings
 	@$(MV) $@.tmp $@
 
