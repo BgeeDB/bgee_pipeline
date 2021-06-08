@@ -1759,10 +1759,10 @@ create table downloadFile (
   downloadFileDescription text,
   downloadFileCategory enum("expr_simple", "expr_complete", "diff_expr_anatomy_complete", "diff_expr_anatomy_simple"
    , "diff_expr_dev_complete", "diff_expr_dev_simple", "ortholog",
-   "affy_annot","rnaseq_annot","affy_data","rnaseq_data"),
+   "affy_annot","rnaseq_annot","affy_data","rnaseq_data", "full_length_annot", "full_length_data"),
   speciesDataGroupId mediumint unsigned not null,
   downloadFileSize int unsigned not null,
-  downloadFileConditionParameters set('anatomicalEntity', 'developmentalStage')
+  downloadFileConditionParameters set('anatomicalEntity', 'developmentalStage', 'sex', 'strain')
 ) engine = innodb;
 
 -- *****************************************
