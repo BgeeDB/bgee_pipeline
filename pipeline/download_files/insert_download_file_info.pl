@@ -220,7 +220,7 @@ sub detect_expression_files {
                     next unless (-f $full_data_file);
                     if ($data_file =~ m/$rnaseq_metadata_suffix$/) {
                         $all_calls_files_info{$data_file}{'conditions'} = undef;
-                        $all_calls_files_info{$data_file}{'rel_path'} = "$prefix$datatypes_dir/$species_dir/$data_file";
+                        $all_calls_files_info{$data_file}{'rel_path'} = $prefix."sc_full_length/$species_dir/$data_file";
                         $all_calls_files_info{$data_file}{'size'} = -s $full_data_file;
                         $all_calls_files_info{$data_file}{'data_group'} = $species{$species_dir}{'dataGroupId'};
                         $all_calls_files_info{$data_file}{'file_type'} = 'full_length_annot';
