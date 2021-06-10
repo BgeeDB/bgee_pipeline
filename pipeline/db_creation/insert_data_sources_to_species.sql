@@ -14,15 +14,15 @@ DELETE FROM dataSourceToSpecies;
 
 --  IN SITU ----------------------------------
 
---ZFIN in situ in zebrafish, data and annot
+-- ZFIN in situ in zebrafish, data and annot
 INSERT INTO dataSourceToSpecies (dataSourceId, speciesId, dataType, infoType) VALUES
 (8, 7955, 'in situ', 'data'),
 (8, 7955, 'in situ', 'annotation');
---MGI in situ mouse, data and annot
+-- MGI in situ mouse, data and annot
 INSERT INTO dataSourceToSpecies (dataSourceId, speciesId, dataType, infoType) VALUES
 (9, 10090, 'in situ', 'data'),
 (9, 10090, 'in situ', 'annotation');
---Flybase in situ droso, data and annot
+-- Flybase in situ droso, data and annot
 INSERT INTO dataSourceToSpecies (dataSourceId, speciesId, dataType, infoType) VALUES
 (10, 7227, 'in situ', 'data'),
 (10, 7227, 'in situ', 'annotation');
@@ -74,63 +74,61 @@ INSERT INTO dataSourceToSpecies (dataSourceId, speciesId, dataType, infoType) VA
 
 -- RNA-SEQ -----------------------------------
 
--- and source of RNA-Seq data in lots of species :p
+-- SRA source of RNA-Seq data in lots of species :p
 INSERT INTO dataSourceToSpecies (dataSourceId, speciesId, dataType, infoType) VALUES
-(100, 6239,   'rna-seq', 'data'),
-(100, 7227,   'rna-seq', 'data'),
-(100, 7237,   'rna-seq', 'data'),
-(100, 7240,   'rna-seq', 'data'),
-(100, 7740,   'rna-seq', 'data'),
-(100, 7897,   'rna-seq', 'data'),
-(100, 7918,   'rna-seq', 'data'),
-(100, 7936,   'rna-seq', 'data'),
-(100, 7955,   'rna-seq', 'data'),
-(100, 7994,   'rna-seq', 'data'),
-(100, 8010,   'rna-seq', 'data'),
-(100, 8030,   'rna-seq', 'data'),
-(100, 8049,   'rna-seq', 'data'),
-(100, 8081,   'rna-seq', 'data'),
-(100, 8090,   'rna-seq', 'data'),
-(100, 8154,   'rna-seq', 'data'),
-(100, 8355,   'rna-seq', 'data'),
-(100, 8364,   'rna-seq', 'data'),
-(100, 9031,   'rna-seq', 'data'),
-(100, 9103,   'rna-seq', 'data'),
-(100, 9258,   'rna-seq', 'data'),
-(100, 9483,   'rna-seq', 'data'),
-(100, 9531,   'rna-seq', 'data'),
-(100, 9541,   'rna-seq', 'data'),
-(100, 9544,   'rna-seq', 'data'),
-(100, 9545,   'rna-seq', 'data'),
-(100, 9555,   'rna-seq', 'data'),
-(100, 9593,   'rna-seq', 'data'),
-(100, 9597,   'rna-seq', 'data'),
-(100, 9598,   'rna-seq', 'data'),
-(100, 9606,   'rna-seq', 'data'),
-(100, 9615,   'rna-seq', 'data'),
-(100, 9685,   'rna-seq', 'data'),
-(100, 9796,   'rna-seq', 'data'),
-(100, 9823,   'rna-seq', 'data'),
-(100, 9913,   'rna-seq', 'data'),
-(100, 9925,   'rna-seq', 'data'),
-(100, 9940,   'rna-seq', 'data'),
-(100, 9974,   'rna-seq', 'data'),
-(100, 9986,   'rna-seq', 'data'),
-(100, 10090,  'rna-seq', 'data'),
-(100, 10116,  'rna-seq', 'data'),
-(100, 10141,  'rna-seq', 'data'),
-(100, 10181,  'rna-seq', 'data'),
-(100, 13616,  'rna-seq', 'data'),
-(100, 28377,  'rna-seq', 'data'),
-(100, 30608,  'rna-seq', 'data'),
-(100, 32507,  'rna-seq', 'data'),
-(100, 52904,  'rna-seq', 'data'),
-(100, 60711,  'rna-seq', 'data'),
-(100, 69293,  'rna-seq', 'data'),
-(100, 105023, 'rna-seq', 'data');
--- SRA source for RNA-Seq data in c. elegans
-INSERT INTO dataSourceToSpecies (dataSourceId, speciesId, dataType, infoType) VALUES
-(19, 6239, 'rna-seq', 'data');
+(19, 6239,   'rna-seq', 'data'),
+(19, 7227,   'rna-seq', 'data'),
+(19, 7237,   'rna-seq', 'data'),
+(19, 7240,   'rna-seq', 'data'),
+(19, 7740,   'rna-seq', 'data'),
+(19, 7897,   'rna-seq', 'data'),
+(19, 7918,   'rna-seq', 'data'),
+(19, 7936,   'rna-seq', 'data'),
+(19, 7955,   'rna-seq', 'data'),
+(19, 7994,   'rna-seq', 'data'),
+(19, 8010,   'rna-seq', 'data'),
+(19, 8030,   'rna-seq', 'data'),
+(19, 8049,   'rna-seq', 'data'),
+(19, 8081,   'rna-seq', 'data'),
+(19, 8090,   'rna-seq', 'data'),
+(19, 8154,   'rna-seq', 'data'),
+(19, 8355,   'rna-seq', 'data'),
+(19, 8364,   'rna-seq', 'data'),
+(19, 9031,   'rna-seq', 'data'),
+(19, 9103,   'rna-seq', 'data'),
+(19, 9258,   'rna-seq', 'data'),
+(19, 9483,   'rna-seq', 'data'),
+(19, 9531,   'rna-seq', 'data'),
+(19, 9541,   'rna-seq', 'data'),
+(19, 9544,   'rna-seq', 'data'),
+(19, 9545,   'rna-seq', 'data'),
+(19, 9555,   'rna-seq', 'data'),
+(19, 9593,   'rna-seq', 'data'),
+(19, 9597,   'rna-seq', 'data'),
+(19, 9598,   'rna-seq', 'data'),
+(19, 9606,   'rna-seq', 'data'),
+(19, 9615,   'rna-seq', 'data'),
+(19, 9685,   'rna-seq', 'data'),
+(19, 9796,   'rna-seq', 'data'),
+(19, 9823,   'rna-seq', 'data'),
+(19, 9913,   'rna-seq', 'data'),
+(19, 9925,   'rna-seq', 'data'),
+(19, 9940,   'rna-seq', 'data'),
+(19, 9974,   'rna-seq', 'data'),
+(19, 9986,   'rna-seq', 'data'),
+(19, 10090,  'rna-seq', 'data'),
+(19, 10116,  'rna-seq', 'data'),
+(19, 10141,  'rna-seq', 'data'),
+(19, 10181,  'rna-seq', 'data'),
+(19, 13616,  'rna-seq', 'data'),
+(19, 28377,  'rna-seq', 'data'),
+(19, 30608,  'rna-seq', 'data'),
+(19, 32507,  'rna-seq', 'data'),
+(19, 52904,  'rna-seq', 'data'),
+(19, 60711,  'rna-seq', 'data'),
+(19, 69293,  'rna-seq', 'data'),
+(19, 105023, 'rna-seq', 'data');
+
 -- wormbase source for in situ data and annot in c. elegans
 -- also source of annotations for affymetrix and RNA-Seq
 INSERT INTO dataSourceToSpecies (dataSourceId, speciesId, dataType, infoType) VALUES
@@ -229,6 +227,15 @@ INSERT INTO dataSourceToSpecies (dataSourceId, speciesId, dataType, infoType) VA
 (25, 69293,  'rna-seq',    'annotation'),
 (25, 105023, 'rna-seq',    'annotation');
 
+-- Bgee source of annotation for single cell full length data
+INSERT INTO dataSourceToSpecies (dataSourceId, speciesId, dataType, infoType) VALUES
+(25, 9606,   'full length single cell RNA-Seq', 'annotation'),
+(25, 10090,  'full length single cell RNA-Seq', 'annotation');
+
+-- source of data for single cell full length data
+INSERT INTO dataSourceToSpecies (dataSourceId, speciesId, dataType, infoType) VALUES
+(19, 9606,   'full length single cell RNA-Seq', 'data'),
+(19, 10090,  'full length single cell RNA-Seq', 'data');
 
 -- GTEx data source
 INSERT INTO dataSourceToSpecies (dataSourceId, speciesId, dataType, infoType) VALUES
