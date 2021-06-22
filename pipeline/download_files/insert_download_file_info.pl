@@ -40,7 +40,7 @@ if ( !$test_options || $bgee_connector eq '' || $processed_dir eq '' ||
     exit 1;
 }
 
-my $calls_relative_path = "calls/processed_calls/";
+my $calls_relative_path = "calls/expr_calls/";
 my $processed_relative_path = "processed_expr_values/";
 
 # Bgee db connection
@@ -226,7 +226,7 @@ sub detect_expression_files {
                         $all_calls_files_info{$data_file}{'file_type'} = 'full_length_annot';
                     } elsif ($data_file =~ m/$rnaseq_data_suffix$/) {
                         $all_calls_files_info{$data_file}{'conditions'} = undef;
-                        $all_calls_files_info{$data_file}{'rel_path'} = "$prefix$datatypes_dir/$species_dir/$data_file";
+                        $all_calls_files_info{$data_file}{'rel_path'} = $prefix."sc_full_length/$species_dir/$data_file";
                         $all_calls_files_info{$data_file}{'size'} = -s $full_data_file;
                         $all_calls_files_info{$data_file}{'data_group'} = $species{$species_dir}{'dataGroupId'};
                         $all_calls_files_info{$data_file}{'file_type'} = 'full_length_data';
