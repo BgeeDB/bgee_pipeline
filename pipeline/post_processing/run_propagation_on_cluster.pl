@@ -29,28 +29,27 @@ if ( !$test_options || $jar_path eq '' || $output_dir eq ''|| $output_cluster_di
     print "\n\tInvalid or missing argument:
 \te.g. $0 -jar_path=\$(PATH_TO_JAR) -output_dir=\$(PATH_TO_OUTPUT) -output_cluster_dir=\$(OUTPUT_CLUSTER_DIR)
 \t-jar_path           path to jar with all dependancies (somewhere in your home directory of the cluster)
-\t-output_dir         path to the directory (somewhere in our home directory of the cluster) where all 
+\t-output_dir         path to the directory (somewhere in our home directory of the cluster) where all
 \t                    sbatch files and the bash file allowing to run all jobs will be created
-\t-output_cluster_dir path to the directory where log files should be written on the cluster 
+\t-output_cluster_dir path to the directory where log files should be written on the cluster
 \t                    (!! Be sure this path exists !!)
 \t-run_jobs           boolean allowing to directly run all jobs if present. If not present
-\t                    a bash file with all 
+\t                    a bash file with all
 \n";
     exit 1;
 }
 
 # Setting up SLURM parameters #################################
-my $partition1      = "axiom";
-my $partition2      = "wally";
-my $account        = "mrobinso_bgee";
-my $bgee_pwd        = "BdD.pw";
+my $partition      = 'cpu';
+my $account        = 'mrobinso_bgee';
+my $bgee_pwd       = 'BdD.pw';
 my $nbr_processors = 6;
 # RAM needed: 10GB should be enough
 my $memory_usage   = 29;      # in GB
-my $time_limit     = '4-00:00:00';
-my $log_prefix     = "generatePropagatedCalls_";
+my $time_limit     = '3-00:00:00';
+my $log_prefix     = 'generatePropagatedCalls_';
 
-# In the future these info should be retrieved from the database (with a query retrieving number 
+# In the future these info should be retrieved from the database (with a query retrieving number
 # of genes per species IDs provided as input) the query will also retrieve the number of globalCond
 # per species and adapt the number of genes per job accordindly
 
@@ -104,7 +103,7 @@ tie my %species_to_gene_number, 'Tie::IxHash';
 69293 => 21148,
 105023 => 22021);
 
-# if we retrieve data from the database, $gene_row_count should be calculated 
+# if we retrieve data from the database, $gene_row_count should be calculated
 # depending on the number of global conditions
 my $gene_row_count = 1000;
 #my $species_order = 1;
@@ -114,12 +113,6 @@ my $bash_file = "${output_dir}/run_all_jobs.sh";
 open(my $bash_file_handler, '>', $bash_file) or die $!;
 print $bash_file_handler "#!/usr/bin/env bash\n";
 foreach my $species_id (keys %species_to_gene_number){
-    # jobs corresponding to a species with an odd $species_order are run on wally
-    my $partition = $partition1;
-    #if ($species_order%2==0) {
-    #    $partition = $partition2;
-    #}
-
     my $gene_number = $species_to_gene_number{$species_id};
     my $gene_offset = 0;
 
@@ -132,15 +125,15 @@ foreach my $species_id (keys %species_to_gene_number){
         # create template of the sbatch file
         my $output_file = "${output_cluster_dir}${log_prefix}${species_id}_${gene_offset}.out";
         my $error_file = "${output_cluster_dir}${log_prefix}${species_id}_${gene_offset}.err";
-        my $template = sbatch_template($partition, $account, $time_limit, $nbr_processors, 
+        my $template = sbatch_template($partition, $account, $time_limit, $nbr_processors,
             $memory_usage, $output_file, $error_file, $jar_path, $job_name);
         if($gene_offset + $gene_row_count <= $gene_number) {
-            $template .= create_java_command($jar_path, $output_dir, $species_id, $gene_offset, 
+            $template .= create_java_command($jar_path, $output_dir, $species_id, $gene_offset,
                 $gene_row_count, $memory_usage, $bgee_pwd, $serveur_url);
             $gene_offset = $gene_offset + $gene_row_count;
         }elsif ($gene_offset + $gene_row_count > $gene_number) {
             my $genes_remaining = $gene_number - $gene_offset;
-            $template .= create_java_command($jar_path, $output_dir, $species_id, $gene_offset, 
+            $template .= create_java_command($jar_path, $output_dir, $species_id, $gene_offset,
                 $genes_remaining, $memory_usage, $bgee_pwd, $serveur_url);
             $gene_offset = $gene_number;
         }
@@ -148,9 +141,9 @@ foreach my $species_id (keys %species_to_gene_number){
         close($file_handler);
         if($run_jobs) {
             # Then, run the job
-            system("sbatch $file_name")==0  or print "Failed to submit job for species". 
+            system("sbatch $file_name")==0  or print "Failed to submit job for species".
             "[$species_id] and gene offset [$gene_offset]\n";
-        } 
+        }
         print $bash_file_handler "sbatch $cluster_file_name\n";
     }
     #$species_order = $species_order + 1;

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --partition=wally
+#SBATCH --partition=cpu
 #SBATCH --account=mrobinso_bgee
 
 #SBATCH --nodes=1

@@ -29,7 +29,7 @@ ANNOTATORHOST  := annotbioinfo.unil.ch
 
 # Cluster account
 # CLUSTERLOGIN and CLUSTERPASSW defined in Makefile.Config
-CLUSTERHOST  := axiom-front1.unil.ch
+CLUSTERHOST  := curnagl.dcsr.unil.ch
 
 # Machine used for the pipeline
 # PIPELOGIN and PIPEPASSWD defined in Makefile.Config
@@ -139,10 +139,10 @@ CLUSTER_DATA_PATH       := /data/FAC/FBM/DEE/mrobinso/bgee_sensitive
 CLUSTER_SCRATCH_PATH    := /scratch/beegfs/FAC/FBM/DEE/bgee_sensitive
 CLUSTER_SCRATCH_RESULTS := $(CLUSTER_SCRATCH_PATH)/$(DBNAME)/
 CLUSTER_ARCHIVE_PATH    := /archive/FAC/FBM/DEE/bgee_sensitive
-CLUSTER_WALLY_PATH      := /scratch/wally/FAC/FBM/DEE/mrobinso/bgee
+CLUSTER_CURNAGL_PATH    := /work/FAC/FBM/DEE/mrobinso/bgee
 
 R_LIBS_PATH_JURA        := $(CLUSTER_DATA_PATH)/R_LIBS
-R_LIBS_PATH_AXIOM       := $(CLUSTER_WALLY_PATH)/R_LIBS
+R_LIBS_PATH_CURNAGL     := $(CLUSTER_CURNAGL_PATH)/R_LIBS
 
 #NOTE Think to add ; at the end to ease insertion in other command lines
 CLUSTER_SOFT_CMD        := module add Bioinformatics/Software/vital-it;
@@ -369,10 +369,10 @@ RNASEQ_BGEECALL_FILE               := $(GENERATED_FILES_DIR)$(RNASEQPATH)bgeecal
 
 # RNAseq cluster paths
 # TODO clean-up and remove unused ones
-RNASEQ_DOWNLOAD_LIB_DIR        := $(CLUSTER_WALLY_PATH)
+RNASEQ_DOWNLOAD_LIB_DIR        := $(CLUSTER_CURNAGL_PATH)/downloads
 RNASEQ_CLUSTER_READONLY        := $(CLUSTER_DATA_PATH)/
 RNASEQ_CLUSTER_SCRIPTS         := $(RNASEQ_CLUSTER_READONLY)GIT/pipeline/
-RNASEQ_DOWNLOAD_GTF            := $(CLUSTER_WALLY_PATH)/GTF_$(MAJOR_RELEASE)/
+RNASEQ_DOWNLOAD_GTF            := $(CLUSTER_CURNAGL_PATH)/downloads/GTF_$(MAJOR_RELEASE)/
 RNASEQ_CLUSTER_GTF             := $(RNASEQ_CLUSTER_READONLY)rna_seq/GTF_$(MAJOR_RELEASE)/
 RNASEQ_CLUSTER_ALL_RES_BACKUP  := $(RNASEQ_CLUSTER_READONLY)rna_seq/all_results_$(DBNAME)/
 
@@ -458,8 +458,8 @@ SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH    := $(SC_RNASEQ_PATH_GENERATED)bgeecall_in
 SCRNASEQSAMPSTATS                      := $(SC_RNASEQ_PATH_GENERATED)presence_absence_all_samples.txt
 SCRNASEQREPORTINFO                     := $(SC_RNASEQ_PATH_GENERATED)reports_info_all_samples.txt
 
-# scRNAseq cluster paths (AXIOM)
-SC_RNASEQ_DOWNLOAD_PATH                 := $(CLUSTER_WALLY_PATH)/
+# scRNAseq cluster paths (CURNAGL)
+SC_RNASEQ_DOWNLOAD_PATH                 := $(CLUSTER_CURNAGL_PATH)/downloads/
 SC_RNASEQ_DOWNLOAD_PATH_LIB_DIR         := $(SC_RNASEQ_DOWNLOAD_PATH)scRNA_Seq_All/
 SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH     := $(SC_RNASEQ_DOWNLOAD_PATH_LIB_DIR)scRNASeq_libraries_FullLength/
 SC_RNASEQ_DOWNLOAD_PATH_DROPLET         := $(SC_RNASEQ_DOWNLOAD_PATH_LIB_DIR)scRNASeq_libraries_Droplet_10X/

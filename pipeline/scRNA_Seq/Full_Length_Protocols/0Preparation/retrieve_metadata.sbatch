@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --partition=wally
+#SBATCH --partition=cpu
 #SBATCH --account=mrobinso_bgee
 
 #SBATCH --nodes=1
@@ -23,7 +23,7 @@ export SCRIPT_PATH=/users/jwollbre/GIT/pipeline/pipeline/scRNA_Seq/Full_Length_P
 export NEW_scRNASeqLibrary=../../../generated_files/scRNA_Seq/NEW_scRNASeqLibrary.tsv
 export metadata_info=../../../generated_files/scRNA_Seq/metadata_info.txt
 export metadata_info_not_match=../../../generated_files/scRNA_Seq/
-export ROUT=/scratch/wally/FAC/FBM/DEE/mrobinso/bgee/scRNA_Seq_All/scRNASeq_libraries_FullLength/
+export ROUT=/work/FAC/FBM/DEE/mrobinso/bgee/downloads/scRNA_Seq_All/scRNASeq_libraries_FullLength/
 
 mkdir -p $ROUT
 R CMD BATCH --no-save --no-restore "--args NEW_scRNASeqLibrary=\"$NEW_scRNASeqLibrary\" metadata_info=\"$metadata_info\" metadata_info_not_match=\"metadata_info_not_match\"" $SCRIPT_PATH/0Preparation/retrieve_metadata.R $ROUT/retrieve_metadata.Rout

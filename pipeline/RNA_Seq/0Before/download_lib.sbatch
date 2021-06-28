@@ -1,13 +1,13 @@
 #!/bin/bash
 
-#SBATCH --partition=wally
+#SBATCH --partition=cpu
 #SBATCH --account=mrobinso_bgee
 
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=20G
-#SBATCH --time=10-00:00:00
+#SBATCH --time=3-00:00:00
 
 #SBATCH --output=/users/smoretti/bgee_pipeline.git/pipeline/RNA_Seq/get_sra.out
 #SBATCH --error=/users/smoretti/bgee_pipeline.git/pipeline/RNA_Seq/get_sra.err

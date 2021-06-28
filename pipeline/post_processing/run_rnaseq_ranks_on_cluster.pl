@@ -32,28 +32,27 @@ if ( !$test_options || $pipeline_cluster_dir eq '' || $script_relative_path eq '
 \te.g. $0 -jar_path=\$(PATH_TO_JAR) -output_dir=\$(PATH_TO_OUTPUT) -output_cluster_dir=\$(OUTPUT_CLUSTER_DIR)
 \t-pipeline_cluster_dir path to Bgee pipeline directory
 \t-script_relative_path relative path of the script ranks_rnaseq.pl from the root of bgee pipeline
-\t-output_dir           path to the directory (somewhere in our home directory of the cluster) where all 
+\t-output_dir           path to the directory (somewhere in our home directory of the cluster) where all
 \t                      sbatch files and the bash file allowing to run all jobs will be created
-\t-output_cluster_dir   path to the directory where log files should be written on the cluster 
+\t-output_cluster_dir   path to the directory where log files should be written on the cluster
 \t                      (!! Be sure this path exists !!)
 \n";
     exit 1;
 }
 
 # Setting up SLURM parameters #################################
-my $partition_axiom = "axiom";
-my $partition_wally = "wally";
-my $account         = "mrobinso_bgee";
-my $bgee_db_version = "bgee_v15_0";
-my $bgee_user       = "root";
-my $bgee_pwd        = "BdD.pw";
+my $partition       = 'cpu';
+my $account         = 'mrobinso_bgee';
+my $bgee_db_version = 'bgee_v15_0';
+my $bgee_user       = 'root';
+my $bgee_pwd        = 'BdD.pw';
 my $bgee_port       = 3306;
 my $nbr_processors  = 1;
 my $libs_per_thread = 10;
 my $memory_usage    = 5;      # in GB
 my $time_limit      = '12:00:00';
-my $log_prefix      = "generateRnaSeqRanks_";
-my $serveur_url = "rbioinfo.unil.ch";
+my $log_prefix      = 'generateRnaSeqRanks_';
+my $serveur_url     = 'rbioinfo.unil.ch';
 
 my $bgee_connector= get_bgee_connector($bgee_user, $serveur_url, $bgee_pwd, $bgee_port, $bgee_db_version);
 
@@ -91,10 +90,6 @@ my $libraries_offset = 0;
 my $job_number = 0;
 #create a new sbatch file
 while (@remainingLibraries != 0) {
-    my $partition = $partition_axiom;
-    if($job_number%2 != 0) {
-        $partition = $partition_wally;
-    }
     my $file_name = "${output_dir}/${log_prefix}${libraries_offset}.sbatch";
     my $cluster_file_name = "${output_cluster_dir}/${log_prefix}${libraries_offset}.sbatch";
     open(my $file_handler, '>', $file_name) or die $!;
@@ -102,7 +97,7 @@ while (@remainingLibraries != 0) {
     # create template of the sbatch file
     my $output_file = "${output_cluster_dir}${log_prefix}${libraries_offset}.out";
     my $error_file = "${output_cluster_dir}${log_prefix}${libraries_offset}.err";
-    my $template = sbatch_template($partition, $account, $time_limit, $nbr_processors, 
+    my $template = sbatch_template($partition, $account, $time_limit, $nbr_processors,
         $memory_usage, $output_file, $error_file, $pipeline_cluster_dir, $job_name);
 
     my $libraries_parameter = '';
@@ -118,9 +113,9 @@ while (@remainingLibraries != 0) {
             $i = $number_libraries_per_job;
         }
     }
-    $template .= create_perl_command($nbr_processors, $pipeline_cluster_dir, $script_relative_path, 
+    $template .= create_perl_command($nbr_processors, $pipeline_cluster_dir, $script_relative_path,
         $bgee_connector, $libs_per_thread, $libraries_parameter);
-        
+
     print $file_handler $template;
     close($file_handler);
     print $bash_file_handler "sbatch $cluster_file_name\n";
@@ -130,7 +125,7 @@ close($bash_file_handler);
 exit 0;
 
 sub create_perl_command {
-    my ($nbr_processors, $pipeline_cluster_dir, $script_relative_path, $bgee_connector, 
+    my ($nbr_processors, $pipeline_cluster_dir, $script_relative_path, $bgee_connector,
         $libs_per_thread, $lib_ids) = @_;
 
     # the ranks_rnaseq script has one master thread to process data except if

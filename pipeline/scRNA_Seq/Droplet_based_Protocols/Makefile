@@ -3,7 +3,7 @@ DIR_NAME := scRNA_Seq/
 
 include $(PIPELINEROOT)Makefile.common
 
-################## STEPS TO RUN ON AXIOM SERVER ##################
+################## STEPS TO RUN ON THE CURNAGL SERVER ##################
 
 ## Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations and store them in the source_files directory
 ## NOTE: this files should be already in the source_files (see whats happen with download)
@@ -28,7 +28,7 @@ retrieve_metadata: get_annot 0Preparation/retrieve_metadata.R
 	@sed -i 's@export metadata_file_path=.*@export output=../$(SC_RNASEQ_METADATA_10X_FILEPATH)@'                       0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@export metadata_notmatch_file_path=.*@export output=../$(SC_RNASEQ_METADATA_10X_NOT_MATCH_FILEPATH)@'    0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET)@'                                          0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export R_LIBS_USER=.*@export R_LIBS_USER=$(R_LIBS_PATH_AXIOM)@'                                          0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export R_LIBS_USER=.*@export R_LIBS_USER=$(R_LIBS_PATH_CURNAGL)@'                                        0Preparation/retrieve_metadata.sbatch
 	@sbatch 0Preparation/retrieve_metadata.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
@@ -231,7 +231,7 @@ process_busFile: uncompress_barcodes 1Run/process_busFile.R
 	@touch $@
 
 
-## Because of lack of internet connection in sensitive server go back to axiom
+## Because of lack of internet connection in sensitive server go back to curnagl
 ## just to generate the files that allow to match ensemblId with UniprotId for each species in scRNA_Seq_info_TargetBased.txt file
 geneId_UniprotId: 0Preparation/ensembl_To_uniprot.R
 	@echo --- Starting the match between geneId and UniprotId for all species ---

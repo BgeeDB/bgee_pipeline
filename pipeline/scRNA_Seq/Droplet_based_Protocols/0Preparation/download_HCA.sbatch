@@ -1,13 +1,13 @@
 #!/bin/bash
 
-#SBATCH --partition=wally
+#SBATCH --partition=cpu
 #SBATCH --account=mrobinso_bgee
 
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=2G
-#SBATCH --time=10-00:00:00
+#SBATCH --time=3-00:00:00
 
 #SBATCH --output=/users/smoretti/bgee_pipeline.git/pipeline/scRNA_Seq/Droplet_based_Protocols/download_HCA.out
 #SBATCH --error=/users/smoretti/bgee_pipeline.git/pipeline/scRNA_Seq/Droplet_based_Protocols/download_HCA.err
@@ -26,7 +26,7 @@ python -V
 ## Paths
 export manifest_file=../../../source_files/scRNA_Seq/Manifest_file.tsv
 export tmp_folder_Download_data=/tmp/DOWNLOAD_HCA_DATA.$RANDOM
-export final_destination=/scratch/wally/FAC/FBM/DEE/mrobinso/bgee/scRNA_Seq_All/scRNASeq_libraries_Droplet_10X/
+export final_destination=/work/FAC/FBM/DEE/mrobinso/bgee/downloads/scRNA_Seq_All/scRNASeq_libraries_Droplet_10X/
 
 virtualenv hca
 source hca/bin/activate
