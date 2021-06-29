@@ -11,7 +11,7 @@ my $downloaded_lib  = $ARGV[1]  // die "\n\t$0 <RNASeq library annotation file (
 my $info_only       = $ARGV[2]  // 0;
 
 
-my $SRATK_PATH         = $ENV{'SRATK_PATH'};
+my $SRATK_PATH         = $ENV{'SRATOOLKIT_ROOT'};
 #my $ASPERA_CONNECT_DIR = $ENV{'ASPERA_CONNECT_DIR'};
 
 my $BASE               = "/work/FAC/FBM/DEE/mrobinso/bgee/downloads";
