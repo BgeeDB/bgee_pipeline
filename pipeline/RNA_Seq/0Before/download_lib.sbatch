@@ -13,14 +13,14 @@
 #SBATCH --error=/users/smoretti/bgee_pipeline.git/pipeline/RNA_Seq/get_sra.err
 #SBATCH --export=NONE
 #SBATCH --job-name=Download_new_RNASeq_lib
+#SBATCH --mail-user smoretti@unil.ch
 
+module load gcc/9.3.0;    module load sratoolkit/2.10.9;
+module load gcc/9.3.0;    module load fastp/0.20.1;
+module load gcc/9.3.0;    module load r/4.0.4;
+module load gcc/9.3.0;    module load perl/5.32.1;
 
-module add Bioinformatics/Software/vital-it; module add UHTS/Analysis/sratoolkit/2.10.7;
-#
-module add Bioinformatics/Software/vital-it; module add UHTS/Quality_control/fastp/0.19.5;
-module add Bioinformatics/Software/vital-it; module add R/3.6.1;
-
-
+export PERL5LIB=/work/FAC/FBM/DEE/mrobinso/bgee/PERL_LIBS/lib/perl5:$PERL5LIB
 export SCRIPT_PATH=/users/smoretti/bgee_pipeline.git/pipeline/RNA_Seq
 export ANNOTATION_FILE=../../generated_files/RNA_Seq/rna_seq_sample_info.txt
 export DONE_FILE=../../generated_files/RNA_Seq/rna_seq_sample_downloaded.txt

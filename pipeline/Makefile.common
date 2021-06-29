@@ -143,15 +143,19 @@ CLUSTER_CURNAGL_PATH    := /work/FAC/FBM/DEE/mrobinso/bgee
 
 R_LIBS_PATH_JURA        := $(CLUSTER_DATA_PATH)/R_LIBS
 R_LIBS_PATH_CURNAGL     := $(CLUSTER_CURNAGL_PATH)/R_LIBS
+PERL_LIBS_PATH_CURNAGL  := $(CLUSTER_CURNAGL_PATH)/PERL_LIBS/lib/perl5
 
 #NOTE Think to add ; at the end to ease insertion in other command lines
-CLUSTER_SOFT_CMD        := module add Bioinformatics/Software/vital-it;
-CLUSTER_KALLISTO_CMD    := $(CLUSTER_SOFT_CMD) module add UHTS/Analysis/kallisto/0.46.0;
-CLUSTER_R_CMD           := $(CLUSTER_SOFT_CMD) module add R/3.6.1;
-CLUSTER_SRATOOLKIT_CMD  := $(CLUSTER_SOFT_CMD) module add UHTS/Analysis/sratoolkit/2.10.7;
-CLUSTER_TOPHAT_CMD      := $(CLUSTER_SOFT_CMD) module add UHTS/Aligner/tophat/2.1.1;
-CLUSTER_FASTP_CMD       := $(CLUSTER_SOFT_CMD) module add UHTS/Quality_control/fastp/0.19.5;
-CLUSTER_BUSTOOLS_CMD    := $(CLUSTER_SOFT_CMD) module add UHTS/Analysis/bustools/0.40.0;
+CLUSTER_SOFT_VITALIT    := module use /software/module/; module add Bioinformatics/Software/vital-it;
+CLUSTER_SOFT_UNIL       := module load gcc/9.3.0;
+CLUSTER_KALLISTO_CMD    := $(CLUSTER_SOFT_VITALIT) module add UHTS/Analysis/kallisto/0.46.0;
+CLUSTER_R_CMD           := $(CLUSTER_SOFT_VITALIT) module add R/3.6.1;
+CLUSTER_R_CMD2          := $(CLUSTER_SOFT_UNIL)    module load r/4.0.4;
+CLUSTER_PERL_CMD        := $(CLUSTER_SOFT_UNIL)    module load perl/5.32.1;
+CLUSTER_SRATOOLKIT_CMD  := $(CLUSTER_SOFT_UNIL)    module load sratoolkit/2.10.9;
+CLUSTER_TOPHAT_CMD      := $(CLUSTER_SOFT_VITALIT) module add UHTS/Aligner/tophat/2.1.1;
+CLUSTER_FASTP_CMD       := $(CLUSTER_SOFT_UNIL)    module load fastp/0.20.1;
+CLUSTER_BUSTOOLS_CMD    := $(CLUSTER_SOFT_VITALIT) module add UHTS/Analysis/bustools/0.40.0;
 
 
 # ===================================

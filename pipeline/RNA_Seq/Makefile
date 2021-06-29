@@ -77,13 +77,14 @@ get_sra: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_ALREADY_DOWNLOADED)
 	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                     0Before/download_lib.sbatch
 	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                           0Before/download_lib.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/get_sra.err@'                               0Before/download_lib.sbatch
+	@sed -i 's@PERL5LIB=.*@PERL5LIB=${PERL_LIBS_PATH_CURNAGL}:$$PERL5LIB@'           0Before/download_lib.sbatch
 	@sed -i 's@SCRIPT_PATH=.*@SCRIPT_PATH=${PWD}@'                                   0Before/download_lib.sbatch
 	@sed -i 's@ANNOTATION_FILE=.*@ANNOTATION_FILE=$(RNASEQ_SAMPINFO_FILEPATH)@'      0Before/download_lib.sbatch
 	@sed -i 's@DONE_FILE=.*@DONE_FILE=$(RNASEQ_ALREADY_DOWNLOADED)@'                 0Before/download_lib.sbatch
-	@sed -i 's@^.*module add UHTS/Analysis/sratoolkit/.*@$(CLUSTER_SRATOOLKIT_CMD)@' 0Before/download_lib.sbatch
-	@sed -i 's@^.*module add Utility/aspera_connect/.*@#$(CLUSTER_ASPERA_CMD)@'      0Before/download_lib.sbatch
-	@sed -i 's@^.*module add UHTS/Quality_control/fastp/.*@$(CLUSTER_FASTP_CMD)@'    0Before/download_lib.sbatch
-	@sed -i 's@^.*module add R/.*@$(CLUSTER_R_CMD)@'                                 0Before/download_lib.sbatch
+	@sed -i 's@^.*module .* sratoolkit/.*@$(CLUSTER_SRATOOLKIT_CMD)@'                0Before/download_lib.sbatch
+	@sed -i 's@^.*module .* fastp/.*@$(CLUSTER_FASTP_CMD)@'                          0Before/download_lib.sbatch
+	@sed -i 's@^.*module .* r/.*@$(CLUSTER_R_CMD2)@'                                 0Before/download_lib.sbatch
+	@sed -i 's@^.*module .* perl/.*@$(CLUSTER_PERL_CMD)@'                            0Before/download_lib.sbatch
 	@sbatch 0Before/download_lib.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo '!!! Rerun this step several times to complete downloads !!!'

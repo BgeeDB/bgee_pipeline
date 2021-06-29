@@ -14,7 +14,7 @@ my $info_only       = $ARGV[2]  // 0;
 my $SRATK_PATH         = $ENV{'SRATK_PATH'};
 #my $ASPERA_CONNECT_DIR = $ENV{'ASPERA_CONNECT_DIR'};
 
-my $BASE               = '/work/FAC/FBM/DEE/mrobinso/bgee/downloads';
+my $BASE               = "/work/FAC/FBM/DEE/mrobinso/bgee/downloads";
 my $SRA_PATH           = $BASE.'/sra';
 my $FASTQ_PATH         = $BASE.'/FASTQ/RNAseq';
 
