@@ -351,13 +351,15 @@ add foreign key (deaSampleGroupId) references deaSampleGroup(deaSampleGroupId) o
 add foreign key (bgeeAffymetrixChipId) references affymetrixChip(bgeeAffymetrixChipId) on delete cascade;
 /*!40000 ALTER TABLE `deaSampleGroupToAffymetrixChip` ENABLE KEYS */;
 
-/*!40000 ALTER TABLE `deaAffymetrixProbesetSummary` DISABLE KEYS */;
-alter table deaAffymetrixProbesetSummary
-add foreign key (deaAffymetrixProbesetSummaryId) references affymetrixProbeset(affymetrixProbesetId) on delete cascade,
-add foreign key (deaSampleGroupId) references deaSampleGroup(deaSampleGroupId) on delete cascade,
-add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade,
-add foreign key (differentialExpressionId) references differentialExpression(differentialExpressionId) on delete set null;
-/*!40000 ALTER TABLE `deaAffymetrixProbesetSummary` ENABLE KEYS */;
+-- commented temporarily because this table is not used anymore and the foreign key to deaAffymetrixProbesetSummaryId 
+-- creates error. Should update affymetrixProbeset indexes in order to reactivate these foreign keys.
+-- /*!40000 ALTER TABLE `deaAffymetrixProbesetSummary` DISABLE KEYS */;
+-- alter table deaAffymetrixProbesetSummary
+-- add foreign key (deaAffymetrixProbesetSummaryId) references affymetrixProbeset(affymetrixProbesetId) on delete cascade,
+-- add foreign key (deaSampleGroupId) references deaSampleGroup(deaSampleGroupId) on delete cascade,
+-- add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade,
+-- add foreign key (differentialExpressionId) references differentialExpression(differentialExpressionId) on delete set null;
+-- /*!40000 ALTER TABLE `deaAffymetrixProbesetSummary` ENABLE KEYS */;
 
 --  ****************************************************
 --  RAW IN SITU DATA
