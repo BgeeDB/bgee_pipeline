@@ -76,3 +76,8 @@ DOID:200 / giant cell tumor,N/A,,subclass
 DOID:2994 / germ cell cancer,N/A,,subclass; equivalent class
 DOID:4706 / brain cancer,N/A,,subclass; infratentorial cancer
 DOID:175 / vascular cancer,N/A,,subclass
+DOID:9256 / Colorectal Cancer,UBERON:0001155,colon,
+DOID:9256 / Colorectal Cancer,UBERON:0001052,rectum,
+DOID:11934 / Head and Neck Cancer,UBERON:0000167,oral cavity,
+DOID:11934 / Head and Neck Cancer,UBERON:0002424,oral epithelium,
+DOID:11934 / Head and Neck Cancer,UBERON:0006562,pharynx,
