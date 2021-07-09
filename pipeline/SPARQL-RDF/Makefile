@@ -43,7 +43,7 @@ generate_triples: create_property_file download_and_install_ontop download_ontol
 	$(MV) $@.tmp $@
 
 
-insert_to_triplestore: generate_triples
+create_isql_load_script: generate_triples
 	@echo "Generating iSQL script to load RDF data into a virtuoso data store..."
 	#delete $(BGEE_VIRTUOSO_FILE) if already exists
 	-f $(BGEE_VIRTUOSO_FILE) && $(RM) $(BGEE_VIRTUOSO_FILE)
@@ -56,15 +56,13 @@ insert_to_triplestore: generate_triples
 	done < $(TTL_FILE_LIST)
 
 	@echo "SPARQL LOAD <http://purl.org/genex#> INTO <https://bgee.org/rdf_v$(FTP_RELEASE)>;" >>  $(BGEE_VIRTUOSO_FILE)
-	@$(RM) $(TTL_FILE_LIST)
+	@$(RM) $(TTL_FILE_LIST) 
+	@touch $@
 
-	@echo "Executing iSQL script to load RDF data into a virtuoso data store..."
-	@$(ISQL_PATH) $(VIRTUOSO_HOST) $(VIRTUSER) $(VIRTPASS) "EXEC=LOAD $(BGEE_VIRTUOSO_FILE)" > $@.tmp 2> $@.err
+	#@echo "Please execute manually iSQL script to load RDF data into a virtuoso data store..."
+	#@$(ISQL_PATH) $(VIRTUOSO_HOST) $(VIRTUSER) $(VIRTPASS) "EXEC=LOAD $(BGEE_VIRTUOSO_FILE)" > $@.tmp 2> $@.err
 
-	@echo "Finished. All files were loaded into a virtuoso data store."
-	$(MV) $@.tmp $@
-
-zip_and_store: insert_to_triplestore
+zip_and_store: create_isql_load_script
 	#zip TTL directory and copy resulting archive to Bgee FTP
 	@zip -r  $(ZIP_TTL_FILE) $(TTL_DIRECTORY_FULL_PATH) > $@.tmp $@.err && $(RM) $(TTL_DIRECTORY_FULL_PATH)*.ttl $(BGEE_VIRTUOSO_FILE)
 	@scp $(ZIP_TTL_FILE) $(FTPUSER)@$(FTPHOST):$(FTP_SAVE_DUMP_PATH)
