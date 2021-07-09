@@ -256,6 +256,7 @@ STAGETAXONCONSTRAINTSFILE     := stageTaxonConstraints.tsv
 STAGETAXONCONSTRAINTSFILEPATH := $(UBERON_OUTPUT_PATH)$(STAGETAXONCONSTRAINTSFILE)
 
 ROOTS_OF_SUBGRAPHS_TO_IGNORE := NCBITaxon:1
+CELL_TYPE_ROOT_ID := GO:0005575
 
 ## Uberon
 UBERON_EXT_FILE_PATH       := $(UBERON_SOURCE_PATH)ext.owl
@@ -292,10 +293,9 @@ STGMAPPING      := $(JAVA) UberonSocketTool idMapping $(DEV_STAGE_ONT_FILE_PATH)
 
 
 # =========== SIMILARITY ANNOTATION FILES ===============
-SIM_ANNOT_DOWNLOAD_URL_START := https://raw.githubusercontent.com/BgeeDB/anatomical-similarity-annotations/master/release/
-RAW_SIM_ANNOT_DOWNLOAD_URL := $(SIM_ANNOT_DOWNLOAD_URL_START)raw_similarity_annotations.tsv
 
-# the similarity annotation file
+RAW_SIMILARITY_FILE := $(SOURCE_FILES_DIR)annotations/raw_similarity_annotations.tsv
+SUMMARY_SIMILARITY_FILE := $(SOURCE_FILES_DIR)annotations/summary_similarity_annotations.tsv
 
 
 # =========== EST FILES ===============
