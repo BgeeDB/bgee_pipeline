@@ -17,7 +17,7 @@
 
 module load gcc/9.3.0;    module load sratoolkit/2.10.9;
 module load gcc/9.3.0;    module load fastp/0.20.1;
-module load gcc/9.3.0;    module load r/4.0.4;
+module load gcc/9.3.0;    module load r/4.0.5;
 module load gcc/9.3.0;    module load perl/5.32.1;
 
 export PERL5LIB=/work/FAC/FBM/DEE/mrobinso/bgee/PERL_LIBS/lib/perl5:$PERL5LIB
