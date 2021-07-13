@@ -18,22 +18,25 @@ use Utils;
 use Getopt::Long;
 
 # Define arguments & their default value
-my ($pipeline_cluster_dir, $script_relative_path, $output_dir, $output_cluster_dir) = ('', '', '', '');
+my ($pipeline_cluster_dir, $script_relative_path, $output_dir, $output_cluster_dir, $bgee_pwd) = ('', '', '', '', '');
 my %opts = ('output_dir=s'           => \$output_dir,
             'output_cluster_dir=s'   => \$output_cluster_dir,,
             'pipeline_cluster_dir=s' => \$pipeline_cluster_dir,
+            'bgee_pwd=s'             => \$bgee_pwd,
             'script_relative_path=s' => \$script_relative_path
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $pipeline_cluster_dir eq '' || $script_relative_path eq '' || $output_dir eq ''|| $output_cluster_dir eq ''){
+if ( !$test_options || $pipeline_cluster_dir eq '' || $script_relative_path eq '' || $output_dir eq ''|| $output_cluster_dir eq ''
+    || $bgee_pwd eq ''){
     print "\n\tInvalid or missing argument:
 \te.g. $0 -jar_path=\$(PATH_TO_JAR) -output_dir=\$(PATH_TO_OUTPUT) -output_cluster_dir=\$(OUTPUT_CLUSTER_DIR)
 \t-pipeline_cluster_dir path to Bgee pipeline directory
 \t-script_relative_path relative path of the script ranks_global.pl from the root of bgee pipeline
 \t-output_dir           path to the directory (somewhere in our home directory of the cluster) where all
 \t                      sbatch files and the bash file allowing to run all jobs will be created
+\t-bgee_pwd             password to connect to bgee database
 \t-output_cluster_dir   path to the directory where log files should be written on the cluster
 \t                      (!! Be sure this path exists !!)
 \n";
@@ -45,7 +48,6 @@ my $partition       = 'cpu';
 my $account         = 'mrobinso_bgee';
 my $bgee_db_version = 'bgee_v15_0';
 my $bgee_user       = 'root';
-my $bgee_pwd        = 'BdD.pw';
 my $bgee_port       = 3306;
 my $nbr_processors  = 1;
 my $conds_per_thread = 300;

@@ -15,17 +15,18 @@ use Tie::IxHash;
 use Getopt::Long;
 
 # Define arguments & their default value
-my ($jar_path, $output_dir, $output_cluster_dir) = ('', '', '');
+my ($jar_path, $output_dir, $output_cluster_dir, $bgee_pwd) = ('', '', '', '');
 my $run_jobs;
-my %opts = ('jar_path=s'     => \$jar_path,
-            'output_dir=s'  => \$output_dir,
+my %opts = ('jar_path=s'            => \$jar_path,
+            'output_dir=s'          => \$output_dir,
             'output_cluster_dir=s'  => \$output_cluster_dir,
-            'run_jobs'  => \$run_jobs
+            'bgee_pwd=s'            => \$bgee_pwd,        
+            'run_jobs'              => \$run_jobs
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $jar_path eq '' || $output_dir eq ''|| $output_cluster_dir eq ''){
+if ( !$test_options || $jar_path eq '' || $output_dir eq ''|| $output_cluster_dir eq '' || $bgee_pwd eq ''){
     print "\n\tInvalid or missing argument:
 \te.g. $0 -jar_path=\$(PATH_TO_JAR) -output_dir=\$(PATH_TO_OUTPUT) -output_cluster_dir=\$(OUTPUT_CLUSTER_DIR)
 \t-jar_path           path to jar with all dependancies (somewhere in your home directory of the cluster)
@@ -33,8 +34,9 @@ if ( !$test_options || $jar_path eq '' || $output_dir eq ''|| $output_cluster_di
 \t                    sbatch files and the bash file allowing to run all jobs will be created
 \t-output_cluster_dir path to the directory where log files should be written on the cluster
 \t                    (!! Be sure this path exists !!)
+\t-bgee_pwd           password to connect to bgee database
 \t-run_jobs           boolean allowing to directly run all jobs if present. If not present
-\t                    a bash file with all
+\t                    a bash file allowing to run all jobs at the same time is created
 \n";
     exit 1;
 }
@@ -42,7 +44,6 @@ if ( !$test_options || $jar_path eq '' || $output_dir eq ''|| $output_cluster_di
 # Setting up SLURM parameters #################################
 my $partition      = 'cpu';
 my $account        = 'mrobinso_bgee';
-my $bgee_pwd       = 'BdD.pw';
 my $nbr_processors = 6;
 # RAM needed: 10GB should be enough
 my $memory_usage   = 29;      # in GB
