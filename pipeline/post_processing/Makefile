@@ -22,15 +22,22 @@ SQL_CALL_TYPE := IF((estLibPresentHighTotalCount + affymetrixExpPresentHighTotal
 # between $(JAVA_NO_JAR) and -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)
 $(OUTPUT_DIR)globalConditions: $(OUTPUT_DIR)conditions_not_existing
 	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=20 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR) InsertPropagatedCalls insertGlobalConditions - - > $@.tmp 2> $@.warn
+# Now we update the fields condObservedXXX
+	@$(MYSQL) -e "UPDATE globalCond INNER JOIN cond ON (globalCond.anatEntityId = cond.anatEntityId) SET condObservedAnatEntity = 1;" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "UPDATE globalCond INNER JOIN cond ON (globalCond.cellTypeId = cond.cellTypeId OR globalCond.cellTypeId = 'GO:0005575' AND cond.cellTypeId IS NULL) SET condObservedCellType = 1;" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "UPDATE globalCond INNER JOIN cond ON (globalCond.stageId = cond.stageId) SET condObservedStage = 1;" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "UPDATE globalCond INNER JOIN cond ON (globalCond.sex = cond.sex OR globalCond.sex = 'any' AND cond.sex IN ('not annotated', 'mixed', 'NA')) SET condObservedSex = 1;" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "UPDATE globalCond INNER JOIN cond ON (globalCond.strain = cond.strain OR globalCond.strain = 'wild-type' AND cond.strain IN ('mix of breed', 'not annotated', 'NA', 'multiple breeds', '(Missing)', 'confidential_restricted_data', 'wild-type', 'mixed-breed')) SET condObservedStrain = 1;" >> $@.tmp 2>> $@.warn
+# Now, statistics on globalConds
 	@echo "Incorrect insertions (there should be none):" >> $@.tmp
-	@$(MYSQL) -e "SELECT t1.globalConditionId AS 'global conditions with no related raw conditions' FROM globalCond AS t1 WHERE NOT EXISTS (SELECT 1 FROM globalCondToCond AS t2 WHERE t2.globalConditionId = t1.globalConditionId) LIMIT 1000" >> $@.tmp
-	@$(MYSQL) -e "SELECT DISTINCT t1.conditionId AS 'Raw condition with incorrect corresponding global condition' FROM expression AS t1 WHERE NOT EXISTS (SELECT 1 FROM globalCondToCond AS t2 WHERE t1.conditionId = t2.conditionId AND t2.conditionRelationOrigin = 'self') LIMIT 1000" >> $@.tmp
+	@$(MYSQL) -e "SELECT t1.globalConditionId AS 'global conditions with no related raw conditions' FROM globalCond AS t1 WHERE NOT EXISTS (SELECT 1 FROM globalCondToCond AS t2 WHERE t2.globalConditionId = t1.globalConditionId) LIMIT 1000" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "SELECT DISTINCT t1.conditionId AS 'Raw condition with incorrect corresponding global condition' FROM expression AS t1 WHERE NOT EXISTS (SELECT 1 FROM globalCondToCond AS t2 WHERE t1.conditionId = t2.conditionId AND t2.conditionRelationOrigin = 'self') LIMIT 1000" >> $@.tmp 2>> $@.warn
 	@echo "Number of globalConds per species:" >> $@.tmp
-	@$(MYSQL) -e "SELECT speciesId, COUNT(*) FROM globalCond GROUP BY speciesId ORDER BY speciesId" >> $@.tmp
+	@$(MYSQL) -e "SELECT speciesId, COUNT(*) FROM globalCond GROUP BY speciesId ORDER BY speciesId" >> $@.tmp 2>> $@.warn
 	@echo "Distinct IDs used in cellTypeId column" >> $@.tmp
-	@$(MYSQL) -e "SELECT DISTINCT cellTypeId FROM globalCond ORDER BY cellTypeId" >> $@.tmp
+	@$(MYSQL) -e "SELECT DISTINCT cellTypeId FROM globalCond ORDER BY cellTypeId" >> $@.tmp 2>> $@.warn
 	@echo "Number of globalCondToCond rows, globalConditionIds, conditionIds, per conditionRelationOrigin:" >> $@.tmp
-	@$(MYSQL) -e "SELECT conditionRelationOrigin, COUNT(*), COUNT(DISTINCT globalConditionId), COUNT(DISTINCT conditionId) FROM globalCondToCond GROUP BY conditionRelationOrigin ORDER BY conditionRelationOrigin" >> $@.tmp
+	@$(MYSQL) -e "SELECT conditionRelationOrigin, COUNT(*), COUNT(DISTINCT globalConditionId), COUNT(DISTINCT conditionId) FROM globalCondToCond GROUP BY conditionRelationOrigin ORDER BY conditionRelationOrigin" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
 # Since Bgee 15.0 it is possible to run this step in a parallel fashion from different nodes. See comments below.

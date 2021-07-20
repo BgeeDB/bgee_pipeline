@@ -612,7 +612,13 @@ create table globalCond (
     scRnaSeqFullLengthGlobalMaxRank decimal(9,2) unsigned COMMENT 'This max rank is computed by taking into account all data in this condition, but also in all child conditions.',
     scRnaSeqTargetBasedGlobalMaxRank decimal(9,2) unsigned COMMENT 'This max rank is computed by taking into account all data in this condition, but also in all child conditions.',
     estGlobalMaxRank decimal(9,2) unsigned COMMENT 'This max rank is computed by taking into account all data in this condition, but also in all child conditions.',
-    inSituGlobalMaxRank decimal(9,2) unsigned COMMENT 'This max rank is computed by taking into account all data in this condition, but also in all child conditions.'
+    inSituGlobalMaxRank decimal(9,2) unsigned COMMENT 'This max rank is computed by taking into account all data in this condition, but also in all child conditions.',
+
+    condObservedAnatEntity tinyint(1) not null default 0 COMMENT 'A boolean defining whether this condition has been observed in annotations, in any species (maybe a different one from the species of this global condition), considering only the anat. entity parameter.',
+    condObservedCellType tinyint(1) not null default 0 COMMENT 'A boolean defining whether this condition has been observed in annotations, in any species (maybe a different one from the species of this global condition), considering only the cell type parameter.',
+    condObservedStage tinyint(1) not null default 0 COMMENT 'A boolean defining whether this condition has been observed in annotations, in any species (maybe a different one from the species of this global condition), considering only the dev. stage parameter.',
+    condObservedSex tinyint(1) not null default 0 COMMENT 'A boolean defining whether this condition has been observed in annotations, in any species (maybe a different one from the species of this global condition), considering only the sex parameter.',
+    condObservedStrain tinyint(1) not null default 0 COMMENT 'A boolean defining whether this condition has been observed in annotations, in any species (maybe a different one from the species of this global condition), considering only the strain parameter.'
 ) engine = innodb COMMENT 'This table contains all condition used in the globalExpression table. It thus includes "real" conditions used in the raw expression table, but mostly conditions resulting from the propagation of expression calls in the globalExpression table. It results from the computation of propagated calls according to different condition parameters combination (e.g., grouping all data in a same anat. entity, or all data in a same anat. entity - stage, or data in anat. entity - sex). This is why the fields anatEntityId, stageId, sex, strain, can be null in this table (but not all of them at the same time).';
 
 create table globalCondToCond (
