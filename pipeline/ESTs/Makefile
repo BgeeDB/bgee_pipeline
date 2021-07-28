@@ -20,10 +20,10 @@ get_annot:
 	@touch $@
 
 
-#TODO use external mapping for all? Without Ensembl or through UniProt ???
+#TODO  use external mapping for all? Without Ensembl or through UniProt ???
 unigene: get_annot $(EST_SPECIES_CURATION_FILEPATH)
 	# Get species list from Bgee
-	@$(MYSQL) -e "SELECT CONCAT(genus, '_', species) FROM species WHERE speciesId IN ($(EST_SP_TAXID))" | grep -v 'speciesId' >$@.temp
+	@$(MYSQL) -e "SELECT CONCAT(genus, '_', species) FROM species WHERE speciesId IN ($(EST_SP_TAXID))" | grep -v 'CONCAT' >$@.temp
 	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 2; fi
 	# Download UniGene species data set
 	-@for sp in `cat $@.temp`; do \
@@ -40,24 +40,9 @@ library.report:
 	@$(WGET) 'ftp://ftp.ncbi.nih.gov/repository/UniLib/library.report' -O $(SOURCE_FILES_DIR)/ESTs/$@.tmp && $(MV) $(SOURCE_FILES_DIR)/ESTs/$@.tmp $(SOURCE_FILES_DIR)/ESTs/$@ 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)/ESTs/$@.tmp
 	@touch $@
 
-
-#NOTE This step is frozen because not updated this 2009
-smiRNAdb: get_annot $(SMIRNADB_CURATION_MAPFILEPATH) $(SOURCE_FILES_DIR)/ESTs/smirnadb/S.csv
-	# Check mapping file
-	@if [[ -s $(SMIRNADB_CURATION_MAPFILEPATH) ]]; then echo -n; else echo "NO smiRNAdb mapping file"; exit 3; fi
-	# Download smiRNAdb available report files
-	@$(WGET) 'http://www.mirz.unibas.ch/Annotation/Report_Human.csv.bz2' -O $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Human.csv.bz2.tmp && $(MV) $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Human.csv.bz2.tmp $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Human.csv.bz2 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Human.csv.bz2.tmp
-	@$(WGET) 'http://www.mirz.unibas.ch/Annotation/Report_Mouse.csv.bz2' -O $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Mouse.csv.bz2.tmp && $(MV) $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Mouse.csv.bz2.tmp $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Mouse.csv.bz2 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Mouse.csv.bz2.tmp
-	@$(WGET) 'http://www.mirz.unibas.ch/Annotation/Report_Fish.csv.bz2'  -O $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Fish.csv.bz2.tmp  && $(MV) $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Fish.csv.bz2.tmp  $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Fish.csv.bz2  2>/dev/null  || rm -f $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Fish.csv.bz2.tmp
-	@$(WGET) 'http://www.mirz.unibas.ch/Annotation/Report_Fly.csv.bz2'   -O $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Fly.csv.bz2.tmp   && $(MV) $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Fly.csv.bz2.tmp   $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Fly.csv.bz2   2>/dev/null  || rm -f $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Fly.csv.bz2.tmp
-	# bunzip smiRNAdb report files
-	@cd $(SOURCE_FILES_DIR)/ESTs/smirnadb/; bunzip2 -f Report_*.csv.bz2
-	@touch $@
-
-
 ensembl_cdna:
 	# Get species list from Bgee
-	@$(MYSQL) -e "SELECT LOWER(CONCAT(SUBSTR(genus, 1, 1), species)) FROM species WHERE speciesId IN ($(EST_SP_TAXID))" | grep -v 'speciesId' >$@.temp
+	@$(MYSQL) -e "SELECT LOWER(CONCAT(SUBSTR(genus, 1, 1), species)) FROM species WHERE speciesId IN ($(EST_SP_TAXID))" | grep -v 'CONCAT' >$@.temp
 	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 2; fi
 	# Download all Ensembl cdna in fasta
 	-@for sp in `cat $@.temp`; do \
@@ -66,12 +51,12 @@ ensembl_cdna:
 	@$(MV) $@.temp $@
 
 #${cdna,} and ${sp:0:2} are valid bash variable manipulations!
-ensembl_mapping: ensembl_cdna
+ensembl_mapping: ensembl_cdna unigene
 	# Test for BLAST+
 	@which makeblastdb
 	@which blastn
 	# Get species list from Bgee
-	@$(MYSQL) -e "SELECT CONCAT(SUBSTR(genus, 1, 1), species) FROM species WHERE speciesId IN ($(EST_SP_TAXID))" | grep -v 'speciesId' >$@.temp
+	@$(MYSQL) -e "SELECT CONCAT(SUBSTR(genus, 1, 1), species) FROM species WHERE speciesId IN ($(EST_SP_TAXID))" | grep -v 'CONCAT' >$@.temp
 	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 2; fi
 	# Prepare for mapping
 	-@for sp in `cat $@.temp`; do \
@@ -90,6 +75,19 @@ ensembl_mapping: ensembl_cdna
 	done
 	@$(MV) $@.temp $@
 
+
+#NOTE This step is frozen because not updated this 2009
+smiRNAdb: get_annot $(SMIRNADB_CURATION_MAPFILEPATH) $(SOURCE_FILES_DIR)/ESTs/smirnadb/S.csv
+	# Check mapping file
+	@if [[ -s $(SMIRNADB_CURATION_MAPFILEPATH) ]]; then echo -n; else echo "NO smiRNAdb mapping file"; exit 3; fi
+	# Download smiRNAdb available report files
+	@$(WGET) 'http://www.mirz.unibas.ch/Annotation/Report_Human.csv.bz2' -O $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Human.csv.bz2.tmp && $(MV) $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Human.csv.bz2.tmp $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Human.csv.bz2 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Human.csv.bz2.tmp
+	@$(WGET) 'http://www.mirz.unibas.ch/Annotation/Report_Mouse.csv.bz2' -O $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Mouse.csv.bz2.tmp && $(MV) $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Mouse.csv.bz2.tmp $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Mouse.csv.bz2 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Mouse.csv.bz2.tmp
+	@$(WGET) 'http://www.mirz.unibas.ch/Annotation/Report_Fish.csv.bz2'  -O $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Fish.csv.bz2.tmp  && $(MV) $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Fish.csv.bz2.tmp  $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Fish.csv.bz2  2>/dev/null  || rm -f $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Fish.csv.bz2.tmp
+	@$(WGET) 'http://www.mirz.unibas.ch/Annotation/Report_Fly.csv.bz2'   -O $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Fly.csv.bz2.tmp   && $(MV) $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Fly.csv.bz2.tmp   $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Fly.csv.bz2   2>/dev/null  || rm -f $(SOURCE_FILES_DIR)/ESTs/smirnadb/Report_Fly.csv.bz2.tmp
+	# bunzip smiRNAdb report files
+	@cd $(SOURCE_FILES_DIR)/ESTs/smirnadb/; bunzip2 -f Report_*.csv.bz2
+	@touch $@
 
 miRNA.dat: smiRNAdb
 	# Get miRNA.dat file
