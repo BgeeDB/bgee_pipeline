@@ -20,7 +20,7 @@ get_annot:
 	@touch $@
 
 
-#TODO  use external mapping for all? Without Ensembl or through UniProt ???
+#TODO use external mapping for all? Without Ensembl or through UniProt ???
 unigene: get_annot $(EST_SPECIES_CURATION_FILEPATH)
 	# Get species list from Bgee
 	@$(MYSQL) -e "SELECT CONCAT(genus, '_', species) FROM species WHERE speciesId IN ($(EST_SP_TAXID))" | grep -v 'CONCAT' >$@.temp
@@ -42,12 +42,14 @@ library.report:
 
 ensembl_cdna:
 	# Get species list from Bgee
-	@$(MYSQL) -e "SELECT LOWER(CONCAT(SUBSTR(genus, 1, 1), species)) FROM species WHERE speciesId IN ($(EST_SP_TAXID))" | grep -v 'CONCAT' >$@.temp
+	@$(MYSQL) -e "SELECT LOWER(CONCAT(genus, '_', species)) FROM species WHERE speciesId IN ($(EST_SP_TAXID))" | grep -v 'CONCAT' >$@.temp
 	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 2; fi
 	# Download all Ensembl cdna in fasta
 	-@for sp in `cat $@.temp`; do \
-		perl get_Ensembl_cdna_fas.pl $$sp > $(SOURCE_FILES_DIR)/ESTs/$${sp:0:4}_cdna; \
+		$(WGET) -nH -r --cut-dirs=2 -P $(TMPDIR)  ftp://ftp.ensembl.org/pub/release-$(ENSRELEASE)/fasta/$$sp/cdna/*.cdna.all.fa.gz \
 	done
+	# !!! NEED disk space to gunzip all those files !!! So gunzip only required ones later
+	@ln -fs $(TMPDIR)/*/*.cdna.all.fa.gz .
 	@$(MV) $@.temp $@
 
 #${cdna,} and ${sp:0:2} are valid bash variable manipulations!
