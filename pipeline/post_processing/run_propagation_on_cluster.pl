@@ -15,11 +15,12 @@ use Tie::IxHash;
 use Getopt::Long;
 
 # Define arguments & their default value
-my ($jar_path, $output_dir, $output_cluster_dir, $bgee_pwd) = ('', '', '', '','');
+my ($jar_path, $output_dir, $output_cluster_dir, $database_name, $bgee_pwd) = ('', '', '', '','', '');
 my $run_jobs;
 my %opts = ('jar_path=s'            => \$jar_path,
             'output_dir=s'          => \$output_dir,
             'output_cluster_dir=s'  => \$output_cluster_dir,
+            'database_name=s'       => \$database_name, 
             'bgee_pwd=s'            => \$bgee_pwd,        
             'run_jobs'              => \$run_jobs
            );
@@ -27,7 +28,7 @@ my %opts = ('jar_path=s'            => \$jar_path,
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
 
-if ( !$test_options || $jar_path eq '' || $output_dir eq ''|| $output_cluster_dir eq '' || $bgee_pwd eq ''){
+if ( !$test_options || $jar_path eq '' || $output_dir eq ''|| $output_cluster_dir eq '' || $database_name eq '' || $bgee_pwd eq ''){
     print "\n\tInvalid or missing argument:
 \te.g. $0 -jar_path=\$(PATH_TO_JAR) -output_dir=\$(PATH_TO_OUTPUT) -output_cluster_dir=\$(OUTPUT_CLUSTER_DIR)
 \t-jar_path           path to jar with all dependancies (somewhere in your home directory of the cluster)
@@ -35,6 +36,7 @@ if ( !$test_options || $jar_path eq '' || $output_dir eq ''|| $output_cluster_di
 \t                    sbatch files and the bash file allowing to run all jobs will be created
 \t-output_cluster_dir path to the directory where log files should be written on the cluster
 \t                    (!! Be sure this path exists !!)
+\t-database_name      name of the database (e.g bgee_v15_0)
 \t-bgee_pwd           password to connect to bgee database
 \t-run_jobs           boolean allowing to directly run all jobs if present. If not present
 \t                    a bash file allowing to run all jobs at the same time is created
@@ -155,7 +157,7 @@ exit 0;
 
 sub create_java_command {
     my ($jar_path, $output_dir, $species_id, $gene_offset, $gene_row_count, $memory_usage, $bgee_pwd, $serveur_url) = @_;
-    my $template = "java -Xmx${memory_usage}g -Dbgee.dao.jdbc.username=root -Dbgee.dao.jdbc.password=${bgee_pwd} -Dbgee.dao.jdbc.driver.names=com.mysql.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://${serveur_url}:3306/bgee_v15_0?useSSL=false&enableQueryTimeouts=false&sessionVariables=net_write_timeout=260000,net_read_timeout=260000,wait_timeout=260000' -jar \${JAR_PATH}bgee-pipeline-15.0-with-dependencies.jar InsertPropagatedCalls insertCalls $species_id - $gene_offset $gene_row_count 0";
+    my $template = "java -Xmx${memory_usage}g -Dbgee.dao.jdbc.username=root -Dbgee.dao.jdbc.password=${bgee_pwd} -Dbgee.dao.jdbc.driver.names=com.mysql.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://${serveur_url}:3306/${database_name}?useSSL=false&enableQueryTimeouts=false&sessionVariables=net_write_timeout=260000,net_read_timeout=260000,wait_timeout=260000' -jar \${JAR_PATH}bgee-pipeline-15.0-with-dependencies.jar InsertPropagatedCalls insertCalls $species_id - $gene_offset $gene_row_count 0";
 }
 
 # Add main sbatch command and options
