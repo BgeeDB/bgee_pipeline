@@ -15,7 +15,7 @@ use Tie::IxHash;
 use Getopt::Long;
 
 # Define arguments & their default value
-my ($jar_path, $output_dir, $output_cluster_dir, $bgee_pwd) = ('', '', '', '');
+my ($jar_path, $output_dir, $output_cluster_dir, $bgee_pwd) = ('', '', '', '','');
 my $run_jobs;
 my %opts = ('jar_path=s'            => \$jar_path,
             'output_dir=s'          => \$output_dir,
@@ -26,6 +26,7 @@ my %opts = ('jar_path=s'            => \$jar_path,
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
+
 if ( !$test_options || $jar_path eq '' || $output_dir eq ''|| $output_cluster_dir eq '' || $bgee_pwd eq ''){
     print "\n\tInvalid or missing argument:
 \te.g. $0 -jar_path=\$(PATH_TO_JAR) -output_dir=\$(PATH_TO_OUTPUT) -output_cluster_dir=\$(OUTPUT_CLUSTER_DIR)
@@ -173,7 +174,7 @@ sub sbatch_template {
 #SBATCH --error=$error_file
 #SBATCH --export=NONE
 #SBATCH --job-name=$job_name
-module add Bioinformatics/Software/vital-it;
+module use /software/module/
 module add Development/java/1.8.0_242;
 
 export JAR_PATH=$jar_path
