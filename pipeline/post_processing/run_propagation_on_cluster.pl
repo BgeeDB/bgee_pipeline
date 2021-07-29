@@ -48,9 +48,8 @@ if ( !$test_options || $jar_path eq '' || $output_dir eq ''|| $output_cluster_di
 my $partition      = 'cpu';
 my $account        = 'mrobinso_bgee';
 my $nbr_processors = 6;
-# RAM needed: 10GB should be enough
 my $memory_usage   = 29;      # in GB
-my $time_limit     = '3-00:00:00';
+my $time_limit     = '3-00:00:00'; #in days
 my $log_prefix     = 'generatePropagatedCalls_';
 
 # In the future these info should be retrieved from the database (with a query retrieving number
@@ -157,7 +156,7 @@ exit 0;
 
 sub create_java_command {
     my ($jar_path, $output_dir, $species_id, $gene_offset, $gene_row_count, $memory_usage, $bgee_pwd, $serveur_url) = @_;
-    my $template = "java -Xmx${memory_usage}g -Dbgee.dao.jdbc.username=root -Dbgee.dao.jdbc.password=${bgee_pwd} -Dbgee.dao.jdbc.driver.names=com.mysql.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://${serveur_url}:3306/${database_name}?useSSL=false&enableQueryTimeouts=false&sessionVariables=net_write_timeout=260000,net_read_timeout=260000,wait_timeout=260000' -jar \${JAR_PATH}bgee-pipeline-15.0-with-dependencies.jar InsertPropagatedCalls insertCalls $species_id - $gene_offset $gene_row_count 0";
+    my $template = "java -Xmx${memory_usage}g -Dbgee.dao.jdbc.username=root -Dbgee.dao.jdbc.password=${bgee_pwd} -Dbgee.dao.jdbc.driver.names=com.mysql.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://${serveur_url}:3306/${database_name}?useSSL=false&enableQueryTimeouts=false&sessionVariables=net_write_timeout=260000,net_read_timeout=260000,wait_timeout=260000' -jar \${JAR_PATH} InsertPropagatedCalls insertCalls $species_id - $gene_offset $gene_row_count 0";
 }
 
 # Add main sbatch command and options
