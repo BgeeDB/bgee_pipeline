@@ -27,7 +27,9 @@ unigene: get_annot $(EST_SPECIES_CURATION_FILEPATH)
 	# Download UniGene species data set
 	-@for sp in `cat $@.temp`; do \
 		$(WGET) -nH -r --cut-dirs=3 -P $(SOURCE_FILES_DIR)/ESTs/  ftp://ftp.ncbi.nih.gov/repository/UniGene/$$sp/*.seq.uniq.gz; \
+		$(WGET) -nH -r --cut-dirs=3 -P $(SOURCE_FILES_DIR)/ESTs/  ftp://ftp.ncbi.nih.gov/repository/UniGene/$$sp/*.data.gz; \
 	done
+	@ln -fs $(SOURCE_FILES_DIR)/ESTs/*.data.gz .
 	@$(MV) $@.temp $@
 
 library.report:
@@ -178,7 +180,7 @@ $(VERIFICATIONFILE): EST miRNA_est check_conditions expression_est
 	@$(GIT) push
 
 clean:
-	-@$(RM) -R $(VERIFICATIONFILE) S.xls Report_*.csv.bz2 Dm.seq.uniq* Dm.seq.uniq_new_headers* my_db* *_cdna.results* \
+	-@$(RM) -R $(VERIFICATIONFILE) *.data *.data.gz S.xls Report_*.csv.bz2 Dm.seq.uniq* Dm.seq.uniq_new_headers* my_db* *_cdna.results* \
 		*_cdna ensembl_mapping EST miRNA.dat check_conditions expression_est miRNA_est species *.temp smiRNAdb *.tmp unigene warnings.*
 	-@$(GIT) rm $(VERIFICATIONFILE)
 	-@$(GIT) commit $(VERIFICATIONFILE) -m "Removing verification file for ESTs/miRNA"
