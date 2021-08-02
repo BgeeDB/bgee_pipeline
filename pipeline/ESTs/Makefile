@@ -66,7 +66,7 @@ ensembl_mapping: ensembl_cdna unigene
 		# Gunzip Unigene sequences
 		$(GUNZIP) --to-stdout $${sp:0:2}.seq.uniq.gz >$${sp:0:2}.seq.uniq; \
 		# Change headers
-		perl change_fasta_headers.pl $${sp:0:2}.seq.uniq > $${sp:0:2}.seq.uniq_new_headers; \
+		perl change_UniGene_headers.pl $${sp:0:2}.seq.uniq > $${sp:0:2}.seq.uniq_new_headers; \
 		$(RM) $${sp:0:2}.seq.uniq; \
 		# Format blast db
 		export cdna=$${sp:0:4}; \
