@@ -26,11 +26,9 @@ unigene: get_annot $(EST_SPECIES_CURATION_FILEPATH)
 	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 2; fi
 	# Download UniGene species data set
 	-@for sp in `cat $@.temp`; do \
-		$(WGET) -nH -r --cut-dirs=2 -P $(TMPDIR)  ftp://ftp.ncbi.nih.gov/repository/UniGene/$$sp/*.data.gz; \
 		$(WGET) -nH -r --cut-dirs=2 -P $(TMPDIR)  ftp://ftp.ncbi.nih.gov/repository/UniGene/$$sp/*.seq.uniq.gz; \
 	done
 	# !!! NEED disk space to gunzip all those files !!! So gunzip only required ones later
-	@ln -fs $(TMPDIR)/*/*.data.gz .
 	@ln -fs $(TMPDIR)/*/*.seq.uniq.gz .
 	@$(MV) $@.temp $@
 
@@ -173,7 +171,7 @@ $(VERIFICATIONFILE): EST miRNA_est check_conditions expression_est
 	@$(GIT) push
 
 clean:
-	-@$(RM) -R $(VERIFICATIONFILE) *.data S.xls Report_*.csv.bz2 Dm.seq.uniq* Dm.seq.uniq_new_headers* my_db* *_cdna.results* \
+	-@$(RM) -R $(VERIFICATIONFILE) S.xls Report_*.csv.bz2 Dm.seq.uniq* Dm.seq.uniq_new_headers* my_db* *_cdna.results* \
 		*_cdna ensembl_mapping $(TMPDIR)* EST miRNA.dat check_conditions expression_est miRNA_est species *.temp smiRNAdb *.tmp unigene warnings.*
 	-@$(GIT) rm $(VERIFICATIONFILE)
 	-@$(GIT) commit $(VERIFICATIONFILE) -m "Removing verification file for ESTs/miRNA"
