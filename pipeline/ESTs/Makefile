@@ -68,7 +68,7 @@ ensembl_mapping: ensembl_cdna unigene
 		$(RM) $${sp:0:2}.seq.uniq; \
 		# Format blast db
 		export cdna=$${sp:0:4}; \
-		makeblastdb -dbtype nucl -input_type fasta -in $(SOURCE_FILES_DIR)/ESTs/$${cdna,}_cdna -out $${cdna,}_db -title -out $${cdna,}_db; \
+		makeblastdb -dbtype nucl -input_type fasta -in $(SOURCE_FILES_DIR)/ESTs/$${cdna,}_cdna -out $${cdna,}_db -title $${cdna,}_db; \
 		# Blast
 		blastn -dust no -outfmt 6 -db $${cdna,}_db -query $${sp:0:2}.seq.uniq_new_headers -num_threads 4 -evalue 1e-10 -out $${cdna,}_cdna.results; \
 		# Extract results
