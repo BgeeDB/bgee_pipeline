@@ -13,8 +13,8 @@ if ( $#ARGV ne 0 ){
 
 # Read file in list context and directly chomp lines
 for my $line ( read_file($ARGV[0], chomp => 1) ){
-    if ( $line =~ m/^>.+? gene:([^ ]+?)(\.\d+)? / ){
-        print ">$1\n";
+    if ( $line =~ m/^>([^ \.]+).+? gene:([^ \.]+)/ ){
+        print ">$2|$1\n";
     }
     else {
         print "$line\n";

@@ -26,10 +26,8 @@ unigene: get_annot $(EST_SPECIES_CURATION_FILEPATH)
 	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 2; fi
 	# Download UniGene species data set
 	-@for sp in `cat $@.temp`; do \
-		$(WGET) -nH -r --cut-dirs=2 -P $(TMPDIR)  ftp://ftp.ncbi.nih.gov/repository/UniGene/$$sp/*.seq.uniq.gz; \
+		$(WGET) -nH -r --cut-dirs=3 -P $(SOURCE_FILES_DIR)/ESTs/  ftp://ftp.ncbi.nih.gov/repository/UniGene/$$sp/*.seq.uniq.gz; \
 	done
-	# !!! NEED disk space to gunzip all those files !!! So gunzip only required ones later
-	@ln -fs $(TMPDIR)/*/*.seq.uniq.gz .
 	@$(MV) $@.temp $@
 
 library.report:
@@ -43,10 +41,14 @@ ensembl_cdna:
 	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 2; fi
 	# Download all Ensembl cdna in fasta
 	-@for sp in `cat $@.temp`; do \
-		$(WGET) -nH -r --cut-dirs=5 -P $(TMPDIR)  ftp://ftp.ensembl.org/pub/release-$(ENSRELEASE)/fasta/$$sp/cdna/*.cdna.all.fa.gz; \
+		$(WGET) -nH -r --cut-dirs=5 -P $(SOURCE_FILES_DIR)/ESTs/  ftp://ftp.ensembl.org/pub/release-$(ENSRELEASE)/fasta/$$sp/cdna/*.cdna.all.fa.gz; \
 	done
 	# !!! NEED disk space to gunzip all those files !!! So gunzip only required ones later
-	@ln -fs $(TMPDIR)/*.cdna.all.fa.gz .
+	-@for cdna in $(SOURCE_FILES_DIR)/ESTs/*.cdna.all.fa.gz; do \
+		base=$${cdna/**\//}; \
+		tr=`echo $$base | sed -e 's@\..*@@; s@^\(.\).*_@\L\1@'`; \
+		ln -fs $$cdna $${tr:0:4}.cdna.all.fa.gz; \
+	done
 	@$(MV) $@.temp $@
 
 #TODO use external mapping for all? Without Ensembl or through UniProt ???
@@ -62,17 +64,22 @@ ensembl_mapping: ensembl_cdna unigene
 	# Prepare for mapping
 	-@for sp in `cat $@.temp`; do \
 		# Gunzip Unigene sequences
-		$(GUNZIP) --to-stdout $${sp:0:2}.seq.uniq.gz >$${sp:0:2}.seq.uniq; \
+		$(GUNZIP) --to-stdout $(SOURCE_FILES_DIR)/ESTs/$${sp:0:2}.seq.uniq.gz >$${sp:0:2}.seq.uniq; \
 		# Change headers
 		perl change_UniGene_headers.pl $${sp:0:2}.seq.uniq > $${sp:0:2}.seq.uniq_new_headers; \
-		$(RM) $${sp:0:2}.seq.uniq; \
-		# Format blast db
 		export cdna=$${sp:0:4}; \
-		makeblastdb -dbtype nucl -input_type fasta -in $(SOURCE_FILES_DIR)/ESTs/$${cdna,}_cdna -out $${cdna,}_db -title $${cdna,}_db; \
+		# Gunzip Ensembl sequences
+		$(GUNZIP) --to-stdout $${cdna,}.cdna.all.fa.gz > $${cdna,}_raw; \
+		# Change headers
+		perl change_Ensembl_headers.pl $${cdna,}_raw > $${cdna,}_cdna; \
+		# Format blast db
+		makeblastdb -dbtype nucl -input_type fasta -in $${cdna,}_cdna -out $${cdna,}_db -title $${cdna,}_db; \
 		# Blast
 		blastn -dust no -outfmt 6 -db $${cdna,}_db -query $${sp:0:2}.seq.uniq_new_headers -num_threads 4 -evalue 1e-10 -out $${cdna,}_cdna.results; \
 		# Extract results
 		perl extract_results_for_all.pl $${cdna,}_cdna.results > $${cdna,}_mapping; \
+		# Cleaning
+		$(RM) $${sp:0:2}.seq.uniq $${sp:0:2}.seq.uniq_new_headers $${cdna,}.cdna.all.fa.gz $${cdna,}_raw $${cdna,}_cdna $${cdna,}_db* $${cdna,}_cdna.results; \
 	done
 	@$(MV) $@.temp $@
 
@@ -172,7 +179,7 @@ $(VERIFICATIONFILE): EST miRNA_est check_conditions expression_est
 
 clean:
 	-@$(RM) -R $(VERIFICATIONFILE) S.xls Report_*.csv.bz2 Dm.seq.uniq* Dm.seq.uniq_new_headers* my_db* *_cdna.results* \
-		*_cdna ensembl_mapping $(TMPDIR)* EST miRNA.dat check_conditions expression_est miRNA_est species *.temp smiRNAdb *.tmp unigene warnings.*
+		*_cdna ensembl_mapping EST miRNA.dat check_conditions expression_est miRNA_est species *.temp smiRNAdb *.tmp unigene warnings.*
 	-@$(GIT) rm $(VERIFICATIONFILE)
 	-@$(GIT) commit $(VERIFICATIONFILE) -m "Removing verification file for ESTs/miRNA"
 	@$(GIT) push
