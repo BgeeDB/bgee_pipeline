@@ -20,9 +20,9 @@ my $run_jobs;
 my %opts = ('jar_path=s'            => \$jar_path,
             'output_dir=s'          => \$output_dir,
             'output_cluster_dir=s'  => \$output_cluster_dir,
-            'database_name=s'       => \$database_name, 
-            'bgee_pwd=s'            => \$bgee_pwd,        
-            'run_jobs'              => \$run_jobs
+            'database_name=s'       => \$database_name,
+            'bgee_pwd=s'            => \$bgee_pwd,
+            'run_jobs'              => \$run_jobs,
            );
 
 # Check arguments
@@ -56,7 +56,7 @@ my $log_prefix     = 'generatePropagatedCalls_';
 # of genes per species IDs provided as input) the query will also retrieve the number of globalCond
 # per species and adapt the number of genes per job accordindly
 
-my $serveur_url = "rbioinfo.unil.ch";
+my $serveur_url = 'rbioinfo.unil.ch';
 tie my %species_to_gene_number, 'Tie::IxHash';
 %species_to_gene_number = (
 6239 => 26529,
