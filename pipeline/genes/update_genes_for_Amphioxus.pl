@@ -8,36 +8,38 @@ use Getopt::Long;
 use List::MoreUtils qw{uniq};
 use Data::Dumper;
 
-use DBI;
-
+use FindBin;
+use lib "$FindBin::Bin/.."; # Get lib path for Utils.pm
+use Utils;
 
 # Define arguments & their default value
-my ($geneid, $dbname) = ('', '');
-my ($annotations)     = ('');
-my ($verbose)         = (0);
-my %opts = ('annot=s'  => \$annotations, # Amphioxus annotation file
-            'gene=s'   => \$geneid,      # gene id to update in the db
-            'db=s'     => \$dbname,      # Bgee database name
-            'verbose'  => \$verbose,     # verbose mode
+my ($geneid, $bgee_connector) = ('', '');
+my ($annotations)             = ('');
+my ($verbose)                 = (0);
+my %opts = ('annot=s'  => \$annotations,    # Amphioxus annotation file
+            'gene=s'   => \$geneid,         # gene id to update in the db
+            'verbose'  => \$verbose,        # verbose mode
+            'bgee=s'   => \$bgee_connector, # Bgee connector string
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $dbname eq '' || $annotations eq '' || !-r $annotations ){
+if ( !$test_options || $bgee_connector eq '' || $annotations eq '' || !-r $annotations ){
     print "\n\tInvalid or missing argument:
-\te.g. $0  -annot=Bla_annot_final.gtf.gz  -db=bgee_v15_dev
+\te.g. $0  -annot=Bla_annot_final.gtf.gz  -bgee=\$(BGEECMD)
 \t     OR
-\t     $0  -annot=Bla_annot_final.gtf.gz  -db=bgee_v15_dev  -gene=BL00000
+\t     $0  -annot=Bla_annot_final.gtf.gz  -bgee=\$(BGEECMD)  -gene=BL00000
 \t-annot    Amphioxus annotation file
 \t-gene     gene id to update in the db
-\t-db       Bgee database name
+\t-bgee     Bgee connector string
 \t-verbose  verbose mode
 \n";
     exit 1;
 }
 
 
-my $dbh = DBI->connect("dbi:mysql:database=$dbname;host=localhost;port=3306", 'root', 'BdD.pw')  or die $DBI::errstr;
+# Bgee db connection
+my $dbh = Utils::connect_bgee_db($bgee_connector);
 my $sel_id   = $dbh->prepare('SELECT bgeeGeneId FROM gene WHERE geneId=?');
 my $up_xref  = $dbh->prepare('INSERT INTO geneXRef               (bgeeGeneId, XRefId, XRefName, dataSourceId) VALUES (?, ?, ?, ?)');
 #my $up_syn   = $dbh->prepare('INSERT INTO geneNameSynonym        (bgeeGeneId, geneNameSynonym)                VALUES (?, ?)');

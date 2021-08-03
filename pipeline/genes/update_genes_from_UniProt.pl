@@ -10,33 +10,35 @@ use LWP::Simple;
 use XML::Fast;
 use Data::Dumper;
 
-use DBI;
-
+use FindBin;
+use lib "$FindBin::Bin/.."; # Get lib path for Utils.pm
+use Utils;
 
 # Define arguments & their default value
-my ($gene_id, $dbname) = ('', '');
+my ($gene_id, $bgee_connector) = ('', '');
 my ($verbose) = (0);
-my %opts = ('gene=s'   => \$gene_id,   # gene id to search in UniProt to insert/update in the db
-            'db=s'     => \$dbname,    # Bgee database name
-            'verbose'  => \$verbose,   # verbose mode
+my %opts = ('gene=s'   => \$gene_id,         # gene id to search in UniProt to insert/update in the db
+            'bgee=s'   => \$bgee_connector,  # Bgee connector string
+            'verbose'  => \$verbose,         # verbose mode
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $dbname eq '' ){
+if ( !$test_options || $bgee_connector eq '' ){
     print "\n\tInvalid or missing argument:
-\te.g. $0  -db=bgee_v15_dev
+\te.g. $0  -bgee=\$(BGEECMD)
 \t     OR
-\t     $0  -db=bgee_v15_dev  -gene=wbgene00001127
+\t     $0  -bgee=\$(BGEECMD)  -gene=wbgene00001127
 \t-gene     gene id to search in UniProt to insert/update in the db
-\t-db       Bgee database name to search in UniProt all missing info
+\t-bgee     Bgee connector string
 \t-verbose  verbose mode
 \n";
     exit 1;
 }
 
 
-my $dbh = DBI->connect("dbi:mysql:database=$dbname;host=localhost;port=3306", 'root', 'BdD.pw')  or die $DBI::errstr;
+# Bgee db connection
+my $dbh = Utils::connect_bgee_db($bgee_connector);
 my $up_xref  = $dbh->prepare('INSERT INTO geneXRef               (bgeeGeneId, XRefId, XRefName, dataSourceId) VALUES (?, ?, ?, ?)');
 my $up_syn   = $dbh->prepare('INSERT INTO geneNameSynonym        (bgeeGeneId, geneNameSynonym)                VALUES (?, ?)');
 my $up_term  = $dbh->prepare('INSERT INTO geneToTerm             (bgeeGeneId, term)                           VALUES (?, ?)');
