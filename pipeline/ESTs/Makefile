@@ -29,6 +29,8 @@ unigene: get_annot $(EST_SPECIES_CURATION_FILEPATH)
 		$(WGET) -nH -r --cut-dirs=3 -P $(SOURCE_FILES_DIR)/ESTs/  ftp://ftp.ncbi.nih.gov/repository/UniGene/$$sp/*.seq.uniq.gz; \
 		$(WGET) -nH -r --cut-dirs=3 -P $(SOURCE_FILES_DIR)/ESTs/  ftp://ftp.ncbi.nih.gov/repository/UniGene/$$sp/*.data.gz; \
 	done
+	# Xenopus tropicalis UniGene file follow the former species name, so rename it for patterns used later
+	@$(MV) $(SOURCE_FILES_DIR)/ESTs/Str.seq.uniq.gz $(SOURCE_FILES_DIR)/ESTs/Xt.seq.uniq.gz
 	@ln -fs $(SOURCE_FILES_DIR)/ESTs/*.data.gz .
 	@$(MV) $@.temp $@
 
@@ -65,22 +67,14 @@ ensembl_mapping: ensembl_cdna unigene
 	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 2; fi
 	# Prepare for mapping
 	-@for sp in `cat $@.temp`; do \
-		# Gunzip Unigene sequences
 		$(GUNZIP) --to-stdout $(SOURCE_FILES_DIR)/ESTs/$${sp:0:2}.seq.uniq.gz >$${sp:0:2}.seq.uniq; \
-		# Change headers
 		perl change_UniGene_headers.pl $${sp:0:2}.seq.uniq > $${sp:0:2}.seq.uniq_new_headers; \
 		export cdna=$${sp:0:4}; \
-		# Gunzip Ensembl sequences
 		$(GUNZIP) --to-stdout $${cdna,}.cdna.all.fa.gz > $${cdna,}_raw; \
-		# Change headers
 		perl change_Ensembl_headers.pl $${cdna,}_raw > $${cdna,}_cdna; \
-		# Format blast db
 		makeblastdb -dbtype nucl -input_type fasta -in $${cdna,}_cdna -out $${cdna,}_db -title $${cdna,}_db; \
-		# Blast
 		blastn -dust no -outfmt 6 -db $${cdna,}_db -query $${sp:0:2}.seq.uniq_new_headers -num_threads 4 -evalue 1e-10 -out $${cdna,}_cdna.results; \
-		# Extract results
 		perl extract_results_for_all.pl $${cdna,}_cdna.results > $${cdna,}_mapping; \
-		# Cleaning
 		$(RM) $${sp:0:2}.seq.uniq $${sp:0:2}.seq.uniq_new_headers $${cdna,}.cdna.all.fa.gz $${cdna,}_raw $${cdna,}_cdna $${cdna,}_db* $${cdna,}_cdna.results; \
 	done
 	@$(MV) $@.temp $@
@@ -111,9 +105,9 @@ EST: library.report unigene ensembl_mapping $(EST_SPECIES_CURATION_FILEPATH) $(U
 	@$(MYSQL) -e "SELECT speciesId FROM species WHERE speciesId IN ($(EST_SP_TAXID))" | grep -v 'speciesId' >$@.temp
 	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 3; fi
 	@for sp in `cat $@.temp`; do \
-		echo $$sp \
-		$(IDMAPPING)  $(IDMAPPINGPORT) & \
-		$(STGMAPPING) $(STGMAPPINGPORT) & \
+		echo $$sp; \
+		$(IDMAPPING)  $(IDMAPPINGPORT) &; \
+		$(STGMAPPING) $(STGMAPPINGPORT) &; \
 		sleep 50; \
 		perl insert_est.pl -species=$$sp -bgee=$(BGEECMD) -Aport=$(IDMAPPINGPORT) -Sport=$(STGMAPPINGPORT) -ESTspecies=$(EST_SPECIES_CURATION_FILEPATH) -libReport=$(SOURCE_FILES_DIR)/ESTs/library.report -sex_info=$(UBERON_SEX_INFO_FILE_PATH) >> $@.temp 2>> warnings.$@; \
 	done
@@ -128,9 +122,9 @@ miRNA_est: miRNA.dat $(SMIRNADB_CURATION_MAPFILEPATH) $(UBERON_SEX_INFO_FILE_PAT
 	@$(MYSQL) -e "SELECT speciesId FROM species WHERE speciesId IN (7227, 7955, 9606, 10090)" | grep -v 'speciesId' >$@.temp
 	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 4; fi
 	@for sp in `cat $@.temp`; do \
-		echo $$sp \
-		$(IDMAPPING)  $(IDMAPPINGPORT) & \
-		$(STGMAPPING) $(STGMAPPINGPORT) & \
+		echo $$sp; \
+		$(IDMAPPING)  $(IDMAPPINGPORT) &; \
+		$(STGMAPPING) $(STGMAPPINGPORT) &; \
 		sleep 50; \
 		perl insert_miRNA_est.pl -species=$$sp -bgee=$(BGEECMD) -Aport=$(IDMAPPINGPORT) -Sport=$(STGMAPPINGPORT) -smiRNAdb=$(SMIRNADB_CURATION_MAPFILEPATH) -miRNA=miRNA.dat -sex_info=$(UBERON_SEX_INFO_FILE_PATH) >> $@.temp 2>> warnings.$@; \
 	done
