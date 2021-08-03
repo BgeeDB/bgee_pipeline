@@ -113,7 +113,7 @@ my $gene_row_count = 1000;
 
 # bash file containing all sbatch to run
 my $bash_file = "${output_dir}/run_all_jobs.sh";
-open(my $bash_file_handler, '>', $bash_file) or die $!;
+open(my $bash_file_handler, '>', $bash_file)  or die $!;
 print $bash_file_handler "#!/usr/bin/env bash\n";
 foreach my $species_id (keys %species_to_gene_number){
     my $gene_number = $species_to_gene_number{$species_id};
@@ -122,8 +122,7 @@ foreach my $species_id (keys %species_to_gene_number){
     #create a new sbatch file
     while ($gene_offset < $gene_number) {
         my $file_name = "${output_dir}/${log_prefix}${species_id}_${gene_offset}.sbatch";
-        my $cluster_file_name = "${output_cluster_dir}/${log_prefix}${species_id}_${gene_offset}.sbatch";
-        open(my $file_handler, '>', $file_name) or die $!;
+        open(my $file_handler, '>', $file_name)  or die $!;
         my $job_name = "propCalls_${species_id}_${gene_offset}";
         # create template of the sbatch file
         my $output_file = "${output_cluster_dir}${log_prefix}${species_id}_${gene_offset}.out";
@@ -144,10 +143,10 @@ foreach my $species_id (keys %species_to_gene_number){
         close($file_handler);
         if($run_jobs) {
             # Then, run the job
-            system("sbatch $file_name")==0  or print "Failed to submit job for species".
+            system("sbatch $file_name")==0  or print 'Failed to submit job for species'.
             "[$species_id] and gene offset [$gene_offset]\n";
         }
-        print $bash_file_handler "sbatch $cluster_file_name\n";
+        print $bash_file_handler "sbatch $file_name\n";
     }
     #$species_order = $species_order + 1;
 }
