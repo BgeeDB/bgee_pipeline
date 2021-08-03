@@ -5,8 +5,6 @@ use warnings;
 use diagnostics;
 
 use Getopt::Long;
-#use File::Basename;
-#use File::Slurp;
 use List::MoreUtils qw{uniq any};
 use LWP::Simple;
 use XML::Fast;
@@ -77,8 +75,7 @@ while ( my ($st_own_id, $st_gene_id, $st_gene_name, $st_description) = ($sth_gen
     sleep 1;
     # Get info from UniProt
     my $annotations;
-    my $content = get('https://www.uniprot.org/uniprot/?query='.$st_gene_id.'&format=xml&force=true'); #General
-    #my $content = get('https://www.uniprot.org/uniprot/?query=database%3A(type%3Aensembl*+'.$st_gene_id.')&sort=score&format=xml&force=true'); #with Ensembl/EnsemblMetazoa xref
+    my $content = get('https://www.uniprot.org/uniprot/?query=database%3A(type%3Aensembl+'.$st_gene_id.')+OR+database%3A(type%3Aensemblmetazoa+'.$st_gene_id.')&sort=score&format=xml&force=true'); #with Ensembl or EnsemblMetazoa xref
     #WARNING some cases with one ensembl -> several ensembl xrefs: ENSG00000139618
     if ( defined $content && $content ne '' && $content =~ /<\/uniprot>/ ){
         my $hash = xml2hash $content;
@@ -169,7 +166,7 @@ while ( my ($st_own_id, $st_gene_id, $st_gene_name, $st_description) = ($sth_gen
         next GENE;
     }
 
-    warn Dumper $annotations  if ( $verbose );
+    #warn Dumper $annotations  if ( $verbose );
     # Update gene table
     if ( $st_gene_name     eq '' && exists $annotations->{'prot_name'}     && $annotations->{'prot_name'}     ne '' ){
         $up_gene1->execute($annotations->{'prot_name'},     $st_own_id)  or die $up_gene1->errstr;
@@ -188,7 +185,7 @@ while ( my ($st_own_id, $st_gene_id, $st_gene_name, $st_description) = ($sth_gen
     if ( scalar @{ $annotations->{'go'} } > 0 ){
         for my $go_full ( @{ $annotations->{'go'} } ){
             my ($go, $evidence) = split(/___/, $go_full);
-            $up_go->execute($st_own_id, $go, $evidence);#  or die $up_go->errstr;
+            $up_go->execute($st_own_id, $go, $evidence || '');#  or die $up_go->errstr;
         }
     }
     # Update xref table
