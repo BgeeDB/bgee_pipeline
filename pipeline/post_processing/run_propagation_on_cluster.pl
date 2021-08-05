@@ -48,7 +48,7 @@ if ( !$test_options || $jar_path eq '' || $output_dir eq ''|| $output_cluster_di
 my $partition      = 'cpu';
 my $account        = 'mrobinso_bgee';
 my $nbr_processors = 6;
-my $memory_usage   = 29;      # in GB
+my $memory_usage   = 39;      # in GB
 my $time_limit     = '3-00:00:00'; #in days
 my $log_prefix     = 'generatePropagatedCalls_';
 
