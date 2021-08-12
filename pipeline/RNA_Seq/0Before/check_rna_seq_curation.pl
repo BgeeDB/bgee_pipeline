@@ -20,7 +20,7 @@ use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
 use Utils;
 
 $| = 1;
-require("$FindBin::Bin/rna_seq_utils.pl");
+require("$FindBin::Bin/../rna_seq_utils.pl");
 
 # Define arguments & their default value
 my ($bgee_connector)                = ('');

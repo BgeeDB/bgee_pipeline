@@ -9,7 +9,7 @@ use Getopt::Long;
 use Sort::Naturally;
 use FindBin;
 
-require("$FindBin::Bin/rna_seq_utils.pl");
+require("$FindBin::Bin/../rna_seq_utils.pl");
 $| = 1; # no buffering of output
 
 # Julien Roux, created Nov 2016

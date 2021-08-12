@@ -9,7 +9,7 @@ use FindBin;
 use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
 use Utils;
 
-require("$FindBin::Bin/rna_seq_utils.pl");
+require("$FindBin::Bin/../rna_seq_utils.pl");
 $| = 1;
 
 # Julien Roux, created November 2016

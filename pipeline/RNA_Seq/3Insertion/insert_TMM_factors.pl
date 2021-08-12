@@ -11,7 +11,7 @@ use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
 use Utils;
 
 $| = 1;
-require("$FindBin::Bin/rna_seq_utils.pl");
+require("$FindBin::Bin/../rna_seq_utils.pl");
 
 
 # Julien Roux, created October 2015; updated Nov 2016

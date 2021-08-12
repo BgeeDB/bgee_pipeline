@@ -8,7 +8,7 @@ use diagnostics;
 use Getopt::Long;
 use FindBin;
 
-require("$FindBin::Bin/rna_seq_utils.pl");
+require("$FindBin::Bin/../rna_seq_utils.pl");
 $| = 1; # no buffering of output
 
 # Julien Roux, Nov 2016
