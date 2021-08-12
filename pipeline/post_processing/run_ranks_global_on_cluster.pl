@@ -18,24 +18,26 @@ use Utils;
 use Getopt::Long;
 
 # Define arguments & their default value
-my ($pipeline_cluster_dir, $script_relative_path, $output_dir, $output_cluster_dir, $bgee_pwd) = ('', '', '', '', '');
+my ($pipeline_cluster_dir, $script_relative_path, $output_dir, $output_cluster_dir, $bgee_pwd, $database_name) = ('', '', '', '', '', '');
 my %opts = ('output_dir=s'           => \$output_dir,
             'output_cluster_dir=s'   => \$output_cluster_dir,,
             'pipeline_cluster_dir=s' => \$pipeline_cluster_dir,
             'bgee_pwd=s'             => \$bgee_pwd,
-            'script_relative_path=s' => \$script_relative_path
+            'script_relative_path=s' => \$script_relative_path,
+            'database_name=s'        => \$database_name
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $pipeline_cluster_dir eq '' || $script_relative_path eq '' || $output_dir eq ''|| $output_cluster_dir eq ''
-    || $bgee_pwd eq ''){
+    || $bgee_pwd eq '' || $database_name eq ''){
     print "\n\tInvalid or missing argument:
 \te.g. $0 -jar_path=\$(PATH_TO_JAR) -output_dir=\$(PATH_TO_OUTPUT) -output_cluster_dir=\$(OUTPUT_CLUSTER_DIR)
 \t-pipeline_cluster_dir path to Bgee pipeline directory
 \t-script_relative_path relative path of the script ranks_global.pl from the root of bgee pipeline
 \t-output_dir           path to the directory (somewhere in our home directory of the cluster) where all
 \t                      sbatch files and the bash file allowing to run all jobs will be created
+\t-database_name        name of the database (e.g bgee_v15_0)
 \t-bgee_pwd             password to connect to bgee database
 \t-output_cluster_dir   path to the directory where log files should be written on the cluster
 \t                      (!! Be sure this path exists !!)
@@ -46,17 +48,16 @@ if ( !$test_options || $pipeline_cluster_dir eq '' || $script_relative_path eq '
 # Setting up SLURM parameters #################################
 my $partition       = 'cpu';
 my $account         = 'mrobinso_bgee';
-my $bgee_db_version = 'bgee_v15_0';
 my $bgee_user       = 'root';
 my $bgee_port       = 3306;
 my $nbr_processors  = 1;
 my $conds_per_thread = 300;
 my $memory_usage    = 5;      # in GB
-my $time_limit      = '12:00:00';
-my $log_prefix      = 'generateGlobalqRanks_';
+my $time_limit      = '3:00:00:00';
+my $log_prefix      = 'generateGlobalRanks_';
 my $serveur_url     = 'rbioinfo.unil.ch';
 
-my $bgee_connector= get_bgee_connector($bgee_user, $serveur_url, $bgee_pwd, $bgee_port, $bgee_db_version);
+my $bgee_connector= get_bgee_connector($bgee_user, $serveur_url, $bgee_pwd, $bgee_port, $database_name);
 
 # Connect to Bgee DB to retrieve all libraries for which no ranks have
 # been processed for now.
@@ -99,7 +100,6 @@ my $job_number = 0;
 #create a new sbatch file
 while (@remaining_global_cond != 0) {
     my $file_name = "${output_dir}/${log_prefix}${global_cond_offset}.sbatch";
-    my $cluster_file_name = "${output_cluster_dir}/${log_prefix}${global_cond_offset}.sbatch";
     open(my $file_handler, '>', $file_name) or die $!;
     my $job_name = "gr_${job_number}";
     # create template of the sbatch file
@@ -122,11 +122,11 @@ while (@remaining_global_cond != 0) {
         }
     }
     $template .= create_perl_command($nbr_processors, $pipeline_cluster_dir, $script_relative_path,
-        $bgee_connector, $conds_per_thread, $libraries_parameter);
+        $bgee_connector, $conds_per_thread, $global_cond_parameter);
 
     print $file_handler $template;
     close($file_handler);
-    print $bash_file_handler "sbatch $cluster_file_name\n";
+    print $bash_file_handler "sbatch $file_name\n";
     $job_number++;
 }
 close($bash_file_handler);
@@ -162,7 +162,7 @@ sub sbatch_template {
 #SBATCH --error=$error_file
 #SBATCH --export=NONE
 #SBATCH --job-name=$job_name
-module add Bioinformatics/Software/vital-it;
+module use /software/module/;
 module add Development/Ensembl_API/97;
 
 export PIPELINE_PATH=$pipeline_path
@@ -173,10 +173,7 @@ export PIPELINE_PATH=$pipeline_path
 }
 
 sub get_bgee_connector {
-    my ($bgee_user, $serveur_url, $bgee_pwd, $bgee_port, $bgee_db_version) = @_;
-    my $bgee_cmd = "user=${bgee_user}__pass=${bgee_pwd}__host=${serveur_url}__port=${bgee_port}__name=${bgee_db_version}";
+    my ($bgee_user, $serveur_url, $bgee_pwd, $bgee_port, $database_name) = @_;
+    my $bgee_cmd = "user=${bgee_user}__pass=${bgee_pwd}__host=${serveur_url}__port=${bgee_port}__name=${database_name}";
     return $bgee_cmd;
 }
-
-sub retrieve_all_librari
-
