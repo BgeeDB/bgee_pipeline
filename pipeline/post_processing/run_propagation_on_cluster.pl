@@ -55,17 +55,21 @@ my $log_prefix     = 'generatePropagatedCalls_';
 # In the future these info should be retrieved from the database (with a query retrieving number
 # of genes per species IDs provided as input) the query will also retrieve the number of globalCond
 # per species and adapt the number of genes per job accordindly
+# TODO : REALLY NEED TO RETRIEVE THESE INFO FROM THE DATABASE WITH THE QUERY :
+# select speciesId, count(distinct bgeeGeneId) as geneNumber from cond as t1 inner join expression as t2 on t1.conditionId = t2.conditionId group by speciesId order by speciesId;
 
 my $serveur_url = 'rbioinfo.unil.ch';
 tie my %species_to_gene_number, 'Tie::IxHash';
 %species_to_gene_number = (
 6239 => 26529,
+7227 => 17731,
 7237 => 15820,
 7240 => 15047,
 7740 => 31630,
 7897 => 14614,
 7918 => 21861,
 7936 => 29144,
+7955 => 33544,
 7994 => 26360,
 8010 => 26351,
 8030 => 47473,
@@ -74,6 +78,7 @@ tie my %species_to_gene_number, 'Tie::IxHash';
 8090 => 24044,
 8154 => 25404,
 8355 => 34459,
+8364 => 20710,
 9031 => 21655,
 9103 => 14715,
 9258 => 18699,
@@ -86,14 +91,17 @@ tie my %species_to_gene_number, 'Tie::IxHash';
 9593 => 24883,
 9597 => 22923,
 9598 => 32286,
+9606 => 60644,
 9615 => 29676,
 9685 => 27238,
 9796 => 29504,
 9823 => 31055,
+9913 => 27529,
 9925 => 23583,
 9940 => 25959,
 9974 => 21412,
 9986 => 26392,
+10090 => 54104,
 10116 => 29580,
 10141 => 24342,
 10181 => 28022,
