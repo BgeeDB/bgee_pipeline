@@ -13,24 +13,29 @@ use diagnostics;
 
 use Tie::IxHash;
 use Getopt::Long;
+use FindBin;
+use lib "$FindBin::Bin/.."; # Get lib path for Utils.pm
+use Utils;
 
 # Define arguments & their default value
-my ($jar_path, $output_dir, $output_cluster_dir, $database_name, $bgee_pwd) = ('', '', '', '','', '');
+my ($jar_path, $output_dir, $output_cluster_dir, $database_name, $bgee_pwd, $bgee_species) = ('', '', '', '','', '', '');
 my $run_jobs;
 my %opts = ('jar_path=s'            => \$jar_path,
             'output_dir=s'          => \$output_dir,
             'output_cluster_dir=s'  => \$output_cluster_dir,
             'database_name=s'       => \$database_name,
             'bgee_pwd=s'            => \$bgee_pwd,
+            'bgee_species=s'        => \$bgee_species,
             'run_jobs'              => \$run_jobs,
            );
 
 # Check arguments
-my $test_options = Getopt::Long::GetOptions(%opts);
+my $emptyArg = '-';
 
-if ( !$test_options || $jar_path eq '' || $output_dir eq ''|| $output_cluster_dir eq '' || $database_name eq '' || $bgee_pwd eq ''){
+my $test_options = Getopt::Long::GetOptions(%opts);
+if ( !$test_options || $jar_path eq '' || $bgee_species eq '' || $output_dir eq ''|| $output_cluster_dir eq '' || $database_name eq '' || $bgee_pwd eq ''){
     print "\n\tInvalid or missing argument:
-\te.g. $0 -jar_path=\$(PATH_TO_JAR) -output_dir=\$(PATH_TO_OUTPUT) -output_cluster_dir=\$(OUTPUT_CLUSTER_DIR)
+\te.g. $0 -jar_path=\$(PATH_TO_JAR) -bgee_species='-' -output_dir=\$(PATH_TO_OUTPUT) -output_cluster_dir=\$(OUTPUT_CLUSTER_DIR)
 \t-jar_path           path to jar with all dependancies (somewhere in your home directory of the cluster)
 \t-output_dir         path to the directory (somewhere in our home directory of the cluster) where all
 \t                    sbatch files and the bash file allowing to run all jobs will be created
@@ -38,6 +43,7 @@ if ( !$test_options || $jar_path eq '' || $output_dir eq ''|| $output_cluster_di
 \t                    (!! Be sure this path exists !!)
 \t-database_name      name of the database (e.g bgee_v15_0)
 \t-bgee_pwd           password to connect to bgee database
+\t-bgee_species       list of species propagation has to be run on or '-' if all species
 \t-run_jobs           boolean allowing to directly run all jobs if present. If not present
 \t                    a bash file allowing to run all jobs at the same time is created
 \n";
@@ -56,68 +62,49 @@ my $log_prefix     = 'generatePropagatedCalls_';
 # of genes per species IDs provided as input) the query will also retrieve the number of globalCond
 # per species and adapt the number of genes per job accordindly
 # TODO : REALLY NEED TO RETRIEVE THESE INFO FROM THE DATABASE WITH THE QUERY :
-# select speciesId, count(distinct bgeeGeneId) as geneNumber from cond as t1 inner join expression as t2 on t1.conditionId = t2.conditionId group by speciesId order by speciesId;
+# select speciesId, count(distinct bgeeGeneId) as geneNumber from cond as t1 inner join expression as t2 on t1.conditionId = t2.conditionIdg roup by speciesId order by speciesId;
 
 my $serveur_url = 'rbioinfo.unil.ch';
-tie my %species_to_gene_number, 'Tie::IxHash';
-%species_to_gene_number = (
-6239 => 26529,
-7227 => 17731,
-7237 => 15820,
-7240 => 15047,
-7740 => 31630,
-7897 => 14614,
-7918 => 21861,
-7936 => 29144,
-7955 => 33544,
-7994 => 26360,
-8010 => 26351,
-8030 => 47473,
-8049 => 20691,
-8081 => 21371,
-8090 => 24044,
-8154 => 25404,
-8355 => 34459,
-8364 => 20710,
-9031 => 21655,
-9103 => 14715,
-9258 => 18699,
-9483 => 25428,
-9531 => 24567,
-9541 => 26482,
-9544 => 34471,
-9545 => 25864,
-9555 => 28226,
-9593 => 24883,
-9597 => 22923,
-9598 => 32286,
-9606 => 60644,
-9615 => 29676,
-9685 => 27238,
-9796 => 29504,
-9823 => 31055,
-9913 => 27529,
-9925 => 23583,
-9940 => 25959,
-9974 => 21412,
-9986 => 26392,
-10090 => 54104,
-10116 => 29580,
-10141 => 24342,
-10181 => 28022,
-13616 => 33507,
-28377 => 24793,
-30608 => 24190,
-32507 => 22221,
-52904 => 20656,
-60711 => 27427,
-69293 => 21148,
-105023 => 22021);
+my $bgee_user   = 'root';
+my $bgee_port   = 3306;
 
-# if we retrieve data from the database, $gene_row_count should be calculated
-# depending on the number of global conditions
+
+my $bgee_connector= get_bgee_connector($bgee_user, $serveur_url, $bgee_pwd, $bgee_port, $database_name);
+my $dbh = Utils::connect_bgee_db($bgee_connector);
+
+# if no species provided then retrieve all species from the database_name
+# species list
+my @speciesList = ();
+if ($bgee_species ne $emptyArg) {
+    @speciesList = split(',', $bgee_species);
+}
+
+tie my %species_to_gene_number, 'Tie::IxHash';
+
+my $genesSql = 'select speciesId, count(distinct bgeeGeneId) as geneNumber
+              from cond as t1 inner join expression as t2 on t1.conditionId = t2.conditionId';
+if (@speciesList) {
+    $genesSql .= ' WHERE speciesId IN (';
+    for my $i (0 .. $#speciesList) {
+        if ($i > 0) {
+            $genesSql .= ', ';
+        }
+        $genesSql .= $speciesList[$i];
+    }
+    $genesSql .= ')';
+}
+
+$genesSql .= ' group by speciesId order by speciesId';
+
+my $genesStmt = $dbh->prepare($genesSql);
+$genesStmt->execute()  or die $genesStmt->errstr;
+while ( my @data = $genesStmt->fetchrow_array ){
+    $species_to_gene_number{$data[0]} = $data[1];
+}
+$genesStmt->finish;
+
+# $gene_row_count could be calculated depending on the number of global conditions
 my $gene_row_count = 1000;
-#my $species_order = 1;
 
 # bash file containing all sbatch to run
 my $bash_file = "${output_dir}/run_all_jobs.sh";
@@ -139,12 +126,12 @@ foreach my $species_id (keys %species_to_gene_number){
             $memory_usage, $output_file, $error_file, $jar_path, $job_name);
         if($gene_offset + $gene_row_count <= $gene_number) {
             $template .= create_java_command($jar_path, $output_dir, $species_id, $gene_offset,
-                $gene_row_count, $memory_usage, $bgee_pwd, $serveur_url);
+                $gene_row_count, $memory_usage, $bgee_pwd, $serveur_url, $bgee_user, $bgee_port);
             $gene_offset = $gene_offset + $gene_row_count;
         }elsif ($gene_offset + $gene_row_count > $gene_number) {
             my $genes_remaining = $gene_number - $gene_offset;
             $template .= create_java_command($jar_path, $output_dir, $species_id, $gene_offset,
-                $genes_remaining, $memory_usage, $bgee_pwd, $serveur_url);
+                $genes_remaining, $memory_usage, $bgee_pwd, $serveur_url, $bgee_user, $bgee_port);
             $gene_offset = $gene_number;
         }
         print $file_handler $template;
@@ -162,8 +149,9 @@ close($bash_file_handler);
 exit 0;
 
 sub create_java_command {
-    my ($jar_path, $output_dir, $species_id, $gene_offset, $gene_row_count, $memory_usage, $bgee_pwd, $serveur_url) = @_;
-    my $template = "java -Xmx${memory_usage}g -Dbgee.dao.jdbc.username=root -Dbgee.dao.jdbc.password=${bgee_pwd} -Dbgee.dao.jdbc.driver.names=com.mysql.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://${serveur_url}:3306/${database_name}?useSSL=false&enableQueryTimeouts=false&sessionVariables=net_write_timeout=260000,net_read_timeout=260000,wait_timeout=260000' -jar \${JAR_PATH} InsertPropagatedCalls insertCalls $species_id - $gene_offset $gene_row_count 0";
+    my ($jar_path, $output_dir, $species_id, $gene_offset, $gene_row_count, $memory_usage, 
+        $bgee_pwd, $serveur_url, $bgee_user, $bgee_port) = @_;
+    my $template = "java -Xmx${memory_usage}g -Dbgee.dao.jdbc.username=${bgee_user} -Dbgee.dao.jdbc.password=${bgee_pwd} -Dbgee.dao.jdbc.driver.names=com.mysql.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://${serveur_url}:${bgee_port}/${database_name}?useSSL=false&enableQueryTimeouts=false&sessionVariables=net_write_timeout=260000,net_read_timeout=260000,wait_timeout=260000' -jar \${JAR_PATH} InsertPropagatedCalls insertCalls $species_id - $gene_offset $gene_row_count 0";
 }
 
 # Add main sbatch command and options
@@ -192,3 +180,8 @@ export JAR_PATH=$jar_path
     return $template;
 }
 
+sub get_bgee_connector {
+    my ($bgee_user, $serveur_url, $bgee_pwd, $bgee_port, $database_name) = @_;
+    my $bgee_cmd = "user=${bgee_user}__pass=${bgee_pwd}__host=${serveur_url}__port=${bgee_port}__name=${database_name}";
+    return $bgee_cmd;
+}
