@@ -232,7 +232,7 @@ $(OUTPUT_DIR)ranksGlobal: $(OUTPUT_DIR)ranksAffy $(OUTPUT_DIR)ranksRnaSeq $(OUTP
 	@$(MV) $@.tmp $@
 
 $(OUTPUT_DIR)norm_ranks: $(OUTPUT_DIR)ranksGlobal
-	@perl normalize_ranks.pl -bgee=$(BGEECMD) > $@.tmp 2> $@.warn
+	@perl normalize_ranks.pl -bgee=$(BGEECMD) -species=$(EMPTY_LIST) > $@.tmp 2> $@.warn
 #	@printf "Expression IDs with ranks incorrectly generated: \n" >> $@.tmp
 #	@$(MYSQL) -e "SELECT expressionId FROM expression WHERE inSituData != 'no data' AND inSituRank IS NULL OR estData != 'no data' AND estRank IS NULL OR affymetrixData != 'no data' AND affymetrixMeanRank IS NULL OR rnaSeqData != 'no data' AND rnaSeqMeanRank IS NULL" >> $@.tmp
 #	@printf "End expression IDs with ranks incorrectly generated \n" >> $@.tmp

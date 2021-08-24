@@ -4,6 +4,7 @@
 # Frederic Bastian, last updated June 2016.
 # Normalize the mean rank in the expression table across the different data types.
 # Frederic Bastian, last updated Feb. 2017: adapt to new conditions and new schema in Bgee 14
+# Julien Wollbrett, August 2021, allows to normalize ranks for a subset of species. Allows to parallelize ranks generation per species
 
 use strict;
 use warnings;
@@ -18,15 +19,19 @@ use Getopt::Long;
 $| = 1;
 
 # Define arguments and their default value
-my ($bgee_connector) = ('');
-my %opts = ( 'bgee=s' => \$bgee_connector );    # Bgee connector string
+my ($bgee_connector, $bgee_species) = ('', '');
+my %opts = ( 'bgee=s'    => \$bgee_connector, # Bgee connector string
+             'species=s' => \$bgee_species ); # list of species separated by a comma 
 
 # Check arguments
+my $emptyArg = '-';
+
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $bgee_connector eq '' ){
+if ( !$test_options || $bgee_connector eq '' || $bgee_species eq '' ){
     print "\n\tInvalid or missing argument:
-\te.g. $0 -bgee=\$(BGEECMD)
-\t-bgee      Bgee    connector string
+\te.g. $0 -bgee=\$(BGEECMD) -bgee_species='-'
+\t-bgee            Bgee connector string
+\t-species    Bgee species for which ranks have to be normalized or '-' for all species
 \n";
     exit 1;
 }
@@ -36,14 +41,18 @@ if ( !$test_options || $bgee_connector eq '' ){
 #my $blacklisted = "('XAO:0003003', 'ZFA:0001093')";
 my $auto = 1;
 
+my @speciesList = ();
+if ($bgee_species ne $emptyArg) {
+    @speciesList = split(',', $bgee_species);
+}
+
     my $dbh = Utils::connect_bgee_db($bgee_connector);
     if ( $auto == 0 ) {
         $dbh->{'AutoCommit'} = 0;
     }
 
     #we get the absolute max rank across all conditions for each species
-    my $getAbsoluteMax = $dbh->prepare(
-    "SELECT speciesId, GREATEST(
+    my $absoluteMaxSql = "SELECT speciesId, GREATEST(
                  IFNULL(max(rnaSeqMaxRank), 0.0),
                  IFNULL(max(estMaxRank),0.0),
                  IFNULL(max(inSituMaxRank),0.0),
@@ -54,10 +63,21 @@ my $auto = 1;
                  IFNULL(max(inSituGlobalMaxRank),0.0),
                  IFNULL(max(affymetrixGlobalMaxRank),0.0),
                  IFNULL(max(scRnaSeqFullLengthGlobalMaxRank),0.0)) AS max
-    FROM globalCond "
+                 FROM globalCond ";
+    if (@speciesList) {
+        $absoluteMaxSql .= ' WHERE speciesId IN (';
+        for my $i (0 .. $#speciesList) {
+            if ($i > 0) {
+                $absoluteMaxSql .= ', ';
+            }
+            $absoluteMaxSql .= $speciesList[$i];
+        }
+        $absoluteMaxSql .= ')';
+    }
 #    WHERE anatEntityId NOT IN $blacklisted
-    ."GROUP BY speciesId" );
+    $absoluteMaxSql .=" GROUP BY speciesId";
 
+    my $getAbsoluteMax = $dbh->prepare($absoluteMaxSql);
     $getAbsoluteMax->execute()  or die $getAbsoluteMax->errstr;
     my %maxRanks = ();
     while ( my @data = $getAbsoluteMax->fetchrow_array ){
