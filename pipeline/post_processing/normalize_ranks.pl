@@ -39,68 +39,64 @@ if ( !$test_options || $bgee_connector eq '' || $bgee_species eq '' ){
 # As of Bgee 15.1, these blacklisted terms are directly remapped to the root of the anatEntities,
 # so there's no need to update their ranks to the max rank anymore
 #my $blacklisted = "('XAO:0003003', 'ZFA:0001093')";
-my $auto = 1;
 
 my @speciesList = ();
 if ($bgee_species ne $emptyArg) {
     @speciesList = split(',', $bgee_species);
 }
 
-    my $dbh = Utils::connect_bgee_db($bgee_connector);
-    if ( $auto == 0 ) {
-        $dbh->{'AutoCommit'} = 0;
-    }
+my $dbh = Utils::connect_bgee_db($bgee_connector);
 
-    #we get the absolute max rank across all conditions for each species
-    my $absoluteMaxSql = "SELECT speciesId, GREATEST(
-                 IFNULL(max(rnaSeqMaxRank), 0.0),
-                 IFNULL(max(estMaxRank),0.0),
-                 IFNULL(max(inSituMaxRank),0.0),
-                 IFNULL(max(affymetrixMaxRank),0.0),
-                 IFNULL(max(scRnaSeqFullLengthMaxRank),0.0),
-                 IFNULL(max(rnaSeqGlobalMaxRank), 0.0),
-                 IFNULL(max(estGlobalMaxRank),0.0),
-                 IFNULL(max(inSituGlobalMaxRank),0.0),
-                 IFNULL(max(affymetrixGlobalMaxRank),0.0),
-                 IFNULL(max(scRnaSeqFullLengthGlobalMaxRank),0.0)) AS max
-                 FROM globalCond ";
-    if (@speciesList) {
-        $absoluteMaxSql .= ' WHERE speciesId IN (';
-        for my $i (0 .. $#speciesList) {
-            if ($i > 0) {
-                $absoluteMaxSql .= ', ';
-            }
-            $absoluteMaxSql .= $speciesList[$i];
+#we get the absolute max rank across all conditions for each species
+my $absoluteMaxSql = "SELECT speciesId, GREATEST(
+             IFNULL(max(rnaSeqMaxRank), 0.0),
+             IFNULL(max(estMaxRank),0.0),
+             IFNULL(max(inSituMaxRank),0.0),
+             IFNULL(max(affymetrixMaxRank),0.0),
+             IFNULL(max(scRnaSeqFullLengthMaxRank),0.0),
+             IFNULL(max(rnaSeqGlobalMaxRank), 0.0),
+             IFNULL(max(estGlobalMaxRank),0.0),
+             IFNULL(max(inSituGlobalMaxRank),0.0),
+             IFNULL(max(affymetrixGlobalMaxRank),0.0),
+             IFNULL(max(scRnaSeqFullLengthGlobalMaxRank),0.0)) AS max
+             FROM globalCond ";
+if (@speciesList) {
+    $absoluteMaxSql .= ' WHERE speciesId IN (';
+    for my $i (0 .. $#speciesList) {
+        if ($i > 0) {
+            $absoluteMaxSql .= ', ';
         }
-        $absoluteMaxSql .= ')';
+        $absoluteMaxSql .= $speciesList[$i];
     }
+    $absoluteMaxSql .= ')';
+}
 #    WHERE anatEntityId NOT IN $blacklisted
-    $absoluteMaxSql .=" GROUP BY speciesId";
+$absoluteMaxSql .=" GROUP BY speciesId";
 
-    my $getAbsoluteMax = $dbh->prepare($absoluteMaxSql);
-    $getAbsoluteMax->execute()  or die $getAbsoluteMax->errstr;
-    my %maxRanks = ();
-    while ( my @data = $getAbsoluteMax->fetchrow_array ){
-        $maxRanks{$data[0]} = $data[1];
-        print("Max rank for species $data[0]: $data[1]\n");
-    }
+my $getAbsoluteMax = $dbh->prepare($absoluteMaxSql);
+$getAbsoluteMax->execute()  or die $getAbsoluteMax->errstr;
+my %maxRanks = ();
+while ( my @data = $getAbsoluteMax->fetchrow_array ){
+    $maxRanks{$data[0]} = $data[1];
+    print("Max rank for species $data[0]: $data[1]\n");
+}
 
-    # update the expression table with normalized mean ranks
-    my $updateExpression = $dbh->prepare( "
-    UPDATE gene
-    STRAIGHT_JOIN globalExpression ON gene.bgeeGeneId = globalExpression.bgeeGeneId
-    STRAIGHT_JOIN globalCond ON globalCond.globalConditionId = globalExpression.globalConditionId
-    SET rnaSeqMeanRankNorm     = (rnaSeqMeanRank + (rnaSeqMeanRank * ? / rnaSeqMaxRank))/2,
-        estRankNorm            = (estRank + (estRank * ? / estMaxRank))/2,
-        inSituRankNorm         = (inSituRank + (inSituRank * ? / inSituMaxRank))/2,
-        affymetrixMeanRankNorm = (affymetrixMeanRank + (affymetrixMeanRank * ? / affymetrixMaxRank))/2,
-        scRnaSeqFullLengthMeanRankNorm = (scRnaSeqFullLengthMeanRank + (scRnaSeqFullLengthMeanRank * ? / scRnaSeqFullLengthMaxRank))/2,
-        rnaSeqGlobalMeanRankNorm     = (rnaSeqGlobalMeanRank + (rnaSeqGlobalMeanRank * ? / rnaSeqGlobalMaxRank))/2,
-        estGlobalRankNorm            = (estGlobalRank + (estGlobalRank * ? / estGlobalMaxRank))/2,
-        inSituGlobalRankNorm         = (inSituGlobalRank + (inSituGlobalRank * ? / inSituGlobalMaxRank))/2,
-        affymetrixGlobalMeanRankNorm = (affymetrixGlobalMeanRank + (affymetrixGlobalMeanRank * ? / affymetrixGlobalMaxRank))/2,
-        scRnaSeqFullLengthGlobalMeanRankNorm = (scRnaSeqFullLengthGlobalMeanRank + (scRnaSeqFullLengthGlobalMeanRank * ? / scRnaSeqFullLengthGlobalMaxRank))/2
-    WHERE gene.speciesId = ?" );
+# update the expression table with normalized mean ranks
+my $updateExpression = $dbh->prepare( "
+UPDATE gene
+STRAIGHT_JOIN globalExpression ON gene.bgeeGeneId = globalExpression.bgeeGeneId
+STRAIGHT_JOIN globalCond ON globalCond.globalConditionId = globalExpression.globalConditionId
+SET rnaSeqMeanRankNorm     = (rnaSeqMeanRank + (rnaSeqMeanRank * ? / rnaSeqMaxRank))/2,
+    estRankNorm            = (estRank + (estRank * ? / estMaxRank))/2,
+    inSituRankNorm         = (inSituRank + (inSituRank * ? / inSituMaxRank))/2,
+    affymetrixMeanRankNorm = (affymetrixMeanRank + (affymetrixMeanRank * ? / affymetrixMaxRank))/2,
+    scRnaSeqFullLengthMeanRankNorm = (scRnaSeqFullLengthMeanRank + (scRnaSeqFullLengthMeanRank * ? / scRnaSeqFullLengthMaxRank))/2,
+    rnaSeqGlobalMeanRankNorm     = (rnaSeqGlobalMeanRank + (rnaSeqGlobalMeanRank * ? / rnaSeqGlobalMaxRank))/2,
+    estGlobalRankNorm            = (estGlobalRank + (estGlobalRank * ? / estGlobalMaxRank))/2,
+    inSituGlobalRankNorm         = (inSituGlobalRank + (inSituGlobalRank * ? / inSituGlobalMaxRank))/2,
+    affymetrixGlobalMeanRankNorm = (affymetrixGlobalMeanRank + (affymetrixGlobalMeanRank * ? / affymetrixGlobalMaxRank))/2,
+    scRnaSeqFullLengthGlobalMeanRankNorm = (scRnaSeqFullLengthGlobalMeanRank + (scRnaSeqFullLengthGlobalMeanRank * ? / scRnaSeqFullLengthGlobalMaxRank))/2
+WHERE gene.speciesId = ?" );
 
     # As of Bgee 15.1, these blacklisted terms are directly remapped to the root of the anatEntities,
     # so there's no need to update their ranks to the max rank anymore
@@ -180,6 +176,7 @@ if ($bgee_species ne $emptyArg) {
 #    WHERE gene.speciesId = ? AND globalCond.anatEntityId IN $blacklisted AND scRnaSeqFullLengthGlobalMeanRank IS NOT NULL" );
 
 for my $speciesId ( keys %maxRanks ){
+    Utils::start_transaction($dbh);
     my $absMax = $maxRanks{$speciesId};
     print "Updating ranks for species $speciesId with max rank $absMax\n";
 
@@ -217,10 +214,10 @@ for my $speciesId ( keys %maxRanks ){
 #      or die $blacklistGlobalUnspecifiedScRnaSeqFL->errstr;
 #    printf( "OK in %.2fs\n", ( time() - $t0 ) );
 
-    if ($auto == 0) {
-        $dbh->commit()  or die('Failed commit');
-    }
+    $dbh->commit() or die('Failed commit');
 }
+$getAbsoluteMax->finish or die('Failed finish');
+$updateExpression->finish or die('Failed finish');
 $dbh->disconnect();
 
 exit 0;
