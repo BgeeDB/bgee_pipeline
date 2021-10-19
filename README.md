@@ -1,5 +1,9 @@
 # Pipeline of Bgee release 15.0
 
+<p align="center">
+    <a href="https://twitter.com/intent/follow?screen_name=Bgeedb"><img src="https://img.shields.io/twitter/follow/Bgeedb?style=social&logo=twitter" alt="follow on Twitter"></a>
+</p>
+
 # Bgee pipeline documentation: content
 
 **General information**
