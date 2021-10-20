@@ -60,7 +60,7 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
     'http://uberon.org/', 'Integrated cross-species ontology covering anatomical structures in animals. Use of the subset "composite-metazoan".', 1, 'Ontology'),
 (27, 'Developmental stage ontologies', '', '', '',
     'https://github.com/obophenotype/developmental-stage-ontologies/', 'Collection of developmental and life stage ontologies in animals. Integrated into Uberon.', 1, 'Ontology'),
-(28, 'OMA', '', '', '',
+(28, 'OMA', 'https://omabrowser.org/oma/[homology_type]/[gene_id]', '', '',
     'http://omabrowser.org/', 'Source of gene orthology information', 1, 'Genomics database'),
 (29, 'Anatomical similarity annotations', '', '', '',
     'https://github.com/BgeeDB/anatomical-similarity-annotations/', 'Define evolutionary relations between anatomical entities described in the Uberon ontology', 1, ''),
