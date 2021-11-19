@@ -272,6 +272,7 @@ for(species in unique(sampleInfo$speciesId)){
   ## open PDF device
   pdf(file = paste0(sum_by_species_folder, "/distribution_TPM_genic_intergenic_sum_deconvolution_", species, ".pdf"), width = 6, height = 5)
   
+  set.seed(123)
   ## Coding regions
   mod1 = densityMclust(log2(summed_filtered$tpm[summed_filtered$biotype %in% "protein_coding"]))
   plot(mod1, what = "BIC")
@@ -297,18 +298,20 @@ for(species in unique(sampleInfo$speciesId)){
   ## Normalize density for number of observations
   dens_coding$y <- dens_coding$y * sum(summed_filtered$biotype %in% "protein_coding") / length(summed_filtered$tpm)
   lines(dens_coding, col="firebrick3", lwd=2, lty=2)
+  
   ## Sub-distributions
-  for (i in 1:mod1$G){
-    ## if any point classified
-    if (sum(mod1$classification == i) >= 2){
-      dens_coding_sub <- density(log2(summed_filtered$tpm[summed_filtered$biotype %in% "protein_coding"][mod1$classification == i]))
-      ## y-axis scaling
-      dens_coding_sub$y <- dens_coding_sub$y * length(summed_filtered$tpm[summed_filtered$biotype %in% "protein_coding"][mod1$classification == i]) / length(summed_filtered$tpm)
-      lines(dens_coding_sub, col=paste0("grey", trunc(100/(mod1$G+1))*i), lwd=2, lty=2)
-      ## Print gaussian number on plot: at location of max value of gaussian (italics)
-      text(dens_coding_sub$x[dens_coding_sub$y == max(dens_coding_sub$y)], 0.005, labels = i, col=paste0("grey", trunc(100/(mod1$G+1))*i), font=3)
-    }
-  }
+  # for (i in 1:mod1$G){
+  #   ## if any point classified
+  #   if (sum(mod1$classification == i) >= 2){
+  #     dens_coding_sub <- density(log2(summed_filtered$tpm[summed_filtered$biotype %in% "protein_coding"][mod1$classification == i]))
+  #     ## y-axis scaling
+  #     dens_coding_sub$y <- dens_coding_sub$y * length(summed_filtered$tpm[summed_filtered$biotype %in% "protein_coding"][mod1$classification == i]) / length(summed_filtered$tpm)
+  #     lines(dens_coding_sub, col=paste0("grey", trunc(100/(mod1$G+1))*i), lwd=2, lty=2)
+  #     ## Print gaussian number on plot: at location of max value of gaussian (italics)
+  #     text(dens_coding_sub$x[dens_coding_sub$y == max(dens_coding_sub$y)], 0.005, labels = i, col=paste0("grey", trunc(100/(mod1$G+1))*i), font=3)
+  #   }
+  # }
+  
   ## intergenic
   dens_intergenic <- density(log2(summed_filtered$tpm[summed_filtered$type == "intergenic"]))
   dens_intergenic$y <- dens_intergenic$y * sum(summed_filtered$type == "intergenic") / length(summed_filtered$tpm)
