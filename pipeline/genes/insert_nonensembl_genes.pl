@@ -16,6 +16,8 @@ use FindBin;
 use lib "$FindBin::Bin/.."; # Get lib path for Utils.pm
 use Utils;
 
+#NOTE RefSeq/GenBank assembly information can be found here: https://www.ncbi.nlm.nih.gov/datasets/genomes/?taxon=7936
+# (before here https://www.ncbi.nlm.nih.gov/assembly/organism/7936/all/)
 
 # Define arguments & their default value
 my ($species, $bgee_connector, $bgee_species) = ('', '', '');
