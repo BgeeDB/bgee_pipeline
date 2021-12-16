@@ -232,6 +232,7 @@ TAX_DAT_DOWNLOAD_URL := ftp://ftp.ebi.ac.uk/pub/databases/taxonomy/taxonomy.dat
 
 PARALOGS_DIR := $(OUTPUT_DIR)paralogs/
 ORTHOLOGS_DIR := $(OUTPUT_DIR)orthologs/
+XREFS_FROM_UNIPROT_FILE := $(OUTPUT_DIR)xrefs_from_uniprot.tsv
 
 # =========== UBERON FILES ===============
 UBERON_SOURCE_PATH := $(SOURCE_FILES_DIR)uberon/

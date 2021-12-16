@@ -49,6 +49,20 @@ genes: $(SPECIESFILEPATH) go.obsolete
 	@if [[ -s $@.err ]]; then echo -n; else $(RM) $@.err; fi
 	@$(MV) $@.tmp $@
 
+
+updateUniprotXrefs : genes
+# first remove already existing xrefs_from_uniprot file
+	@rm -f $(XREFS_FROM_UNIPROT_FILE)
+# generate tsv file containing all information to update uniprot xrefs in the database. Also retrieve gene name.
+#XXX for now it uses the parallel R package and can be run on any server. Attribute "number_cores"
+#    has to be updated depending on the server the script is run on. It corresponds to the number of species queried
+#    in parallel
+#XXX Could be updated to directly run on UNIL cluster
+#XXX Could be updated to retrieve other information from Uniprot (e.g StringDB XRefs,...)
+	@R CMD BATCH --no-save --no-restore '--args species_file="$(SPECIESFILEPATH)" number_cores=28 bgee="$(BGEECMD)" output_file="$(XREFS_FROM_UNIPROT_FILE)"' update_genes_from_UniProt.R > $@.tmp
+# TODO insert xrefs from uniprot in the Bgee database
+	@$(MV) $@.tmp $@
+
 sameIdGeneCount: genes
 	@$(MYSQL) -e "CREATE TEMPORARY TABLE geneCount (PRIMARY KEY(geneId)) SELECT geneId, COUNT(*) AS geneCount FROM gene GROUP BY geneId; UPDATE gene INNER JOIN geneCount ON gene.geneId = geneCount.geneId SET gene.geneMappedToGeneIdCount = geneCount.geneCount;" > $@.tmp 2> $@.warning
 	@$(MV) $@.tmp $@
