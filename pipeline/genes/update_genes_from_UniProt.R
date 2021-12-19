@@ -2,6 +2,7 @@ library(UniProt.ws)
 library(RMySQL)
 library(foreach)
 library(doParallel)
+options(stringsAsFactors = FALSE)
 
 ## Session info
 print(sessionInfo())
@@ -55,9 +56,10 @@ connect_to_db <- function(bgee) {
 }
 
 select_bgee_genes <- function(speciesId, mydb) {
-  query <- paste0("SELECT DISTINCT t1.geneId FROM gene AS t1 WHERE NOT EXISTS (SELECT 1 FROM 
-  geneXRef AS t2 WHERE t1.bgeegeneId = t2.bgeegeneId AND t2.dataSourceId IN (4,5)) 
-  AND t1.speciesId = ",speciesId)
+  #query <- paste0("SELECT DISTINCT t1.geneId FROM gene AS t1 WHERE NOT EXISTS (SELECT 1 FROM 
+  #geneXRef AS t2 WHERE t1.bgeegeneId = t2.bgeegeneId AND t2.dataSourceId IN (4,5)) 
+  #AND t1.speciesId = ",speciesId)
+  query <- paste0("SELECT DISTINCT geneId FROM gene WHERE speciesId = ",speciesId)
   return(dbGetQuery(mydb, query))
 }
 
@@ -116,7 +118,7 @@ retrieve_uniprot_mapping <- function(speciesId, dataSourceId, geneIDs) {
   }
   if(!is.null(species_mapping)) {
     colnames(species_mapping)[1] <- "GeneID"
-    return(na.omit(species_mapping))
+    return(species_mapping[!is.na(species_mapping$UNIPROTKB),])
   } else {
     species_mapping <- data.frame(matrix(vector(), 0, 5,
       dimnames=list(c(), c("GeneID", query_columns))),
@@ -150,7 +152,7 @@ cluster_object <- parallel::makeCluster(number_cores)
 doParallel::registerDoParallel(cluster_object)
 
 # retrieve data from UniProt for each species
-all_species <- foreach(x = iter(bgee_species, by="row"), .combine = "rbind") %do% {
+all_species <- foreach(x = iter(bgee_species, by="row"), .combine = "rbind") %dopar% {
   library(RMySQL)
   library(UniProt.ws)
   mydb <- connect_to_db(bgee)
