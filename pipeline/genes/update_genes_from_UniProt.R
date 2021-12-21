@@ -35,10 +35,18 @@ hack_taxon_id <- function(bgeeSpecies) {
   bgeeSpecies$uniprotTaxId <- bgeeSpecies$speciesId
   for (i in seq_len(nrow(bgeeSpecies))) {
     if(as.numeric(bgeeSpecies$speciesId[i]) == 9593){
-      bgeeSpecies$uniprotTaxId <- 9595
+      bgeeSpecies$uniprotTaxId[i] <- 9595
     } else if (as.numeric(bgeeSpecies$speciesId[i]) == 7237){
-      bgeeSpecies$uniprotTaxId <- 46245
+      bgeeSpecies$uniprotTaxId[i] <- 46245
     } 
+    # for some species ensembl genes are in the ensembl_genome field (from ensembl metazoa).
+    # Had to update the dataSourceId in order to retrieve the Uniprot XRefs
+    if(as.numeric(bgeeSpecies$speciesId[i]) == 6239) {
+      bgeeSpecies$dataSourceId[i] <- 24
+    }
+    if(as.numeric(bgeeSpecies$speciesId[i]) == 7227) {
+      bgeeSpecies$dataSourceId[i] <- 24
+    }
   }
   return(bgeeSpecies)
 }
