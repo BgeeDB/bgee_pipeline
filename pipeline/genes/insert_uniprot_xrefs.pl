@@ -8,7 +8,6 @@ use Getopt::Long;
 use FindBin;
 use lib "$FindBin::Bin/.."; # Get lib path for Utils.pm
 use Utils;
-use Data::Dumper;
 $| = 1;
 
 # Julien Wollbrett, created December 2021
@@ -23,7 +22,7 @@ $| = 1;
 # inserted. If this verification is not done first, it is then not possible to know if the table 
 # geneToTerm has to be updated or not.
 #
-# -debug=1: if provided, run in verbose mode (print the update/insert SQL queries, not executing them)
+# -debug: if provided, run in verbose mode (print the update/insert SQL queries, not executing them)
 #############################################################
 
 
@@ -51,7 +50,7 @@ if ( !$test_options || $bgee_connector eq '' || $uniprot_xrefs eq '' ){
 # Bgee db connection
 my $bgee = Utils::connect_bgee_db($bgee_connector);
 
-# it is safer to map the datasource on the name rather than on the ID
+# it is safer to map the datasources to the names rather than to the IDs
 my $SWISSPROT_DATASOURCE_NAME = 'UniProtKB/Swiss-Prot';
 my $TREMBL_DATASOURCE_NAME    = 'UniProtKB/TrEMBL';
 
@@ -85,7 +84,7 @@ while(my @values = $retrieveQuery -> fetchrow_array()){
     my $uniprotId    = $values[2];
     my $uniprotName  = $values[3];
     my $dataSourceId = $values[4];
-    #in this hash uniprotIds are always lower case in order to easily map to new uniprot XRefs
+    #in this hash uniprotIds used as keys are lower cased (could be case sensitive) 
     $existing_xrefs{$speciesId}->{$geneId}->{lc $uniprotId} -> {'uniprotName'} = $uniprotName;
     $existing_xrefs{$speciesId}->{$geneId}->{lc $uniprotId} -> {'dataSourceId'} = $dataSourceId;
     $existing_xrefs{$speciesId}->{$geneId}->{lc $uniprotId} -> {'uniprotId'} = $uniprotId;
@@ -131,8 +130,8 @@ for my $speciesId ( keys %new_xrefs ){
         for my $uniprotId ( keys %{$new_xrefs{$speciesId}{$geneId}} ){
             my $existing_uniprot_id = $existing_xrefs{$speciesId}{$geneId}{lc $uniprotId}{'uniprotId'};
             my $to_insert_datasource = $type_of_datasource{$new_xrefs{$speciesId}{$geneId}{$uniprotId}{'reviewed'}};
+            # xref already exists. Check if should update geneXRef.dataSourceId. No insertion in geneToTerm
             if (defined( $existing_xrefs{$speciesId}{$geneId}{lc $uniprotId}{'dataSourceId'} ) ) {
-                # xref already exists. Check if should update geneXRef.dataSourceId. No insertion in geneToTerm
                 my $inserted_datasource = $existing_xrefs{$speciesId}{$geneId}{lc $uniprotId}{'dataSourceId'};
                 if (defined($to_insert_datasource) && $inserted_datasource != $to_insert_datasource) {
                     if ( $debug ){
@@ -140,7 +139,8 @@ for my $speciesId ( keys %new_xrefs ){
                             "$bgeegeneId AND XRefId = $existing_uniprot_id\n";
                     }
                     else {
-                        $update_datasourceId->execute($to_insert_datasource, $bgeegeneId, $uniprotId)  or die $insLength->errstr;
+                        $update_datasourceId->execute($to_insert_datasource, $bgeegeneId, $uniprotId)  
+                        or die $update_datasourceId->errstr;
                     }
                 }
                 else {
@@ -153,14 +153,17 @@ for my $speciesId ( keys %new_xrefs ){
             else {
                 my $to_insert_datasource = $type_of_datasource{$new_xrefs{$speciesId}{$geneId}{$uniprotId}{'reviewed'}};
                 if (!defined($to_insert_datasource)) {
+                    # In rare cases UniProt.ws does not retrieve information about datasource(reviewed/unreviewed)
+                    # If reviewing information is absent we consider the uniprot entry as unreviewed
                     $to_insert_datasource = $type_of_datasource{"unreviewed"};
                 }
                 if ($debug) {
                     print "INSERT INTO geneXRef (bgeegeneId, XRefId, XRefName, dataSourceId) VALUES ($bgeegeneId, $uniprotId, \"\", $to_insert_datasource)\n";
                     print "INSERT INTO geneToTerm (bgeegeneId, term) VALUES ($bgeegeneId, $uniprotId)\n";
                 } else {
-                    $insert_geneXref <- execute($bgeegeneId, $uniprotId, "", $to_insert_datasource);
-                    $insert_geneToTerm <- execute($bgeegeneId, $uniprotId);
+                    $insert_geneXref <- execute($bgeegeneId, $uniprotId, "", $to_insert_datasource) 
+                    or die $insert_geneXref->errstr;
+                    $insert_geneToTerm <- execute($bgeegeneId, $uniprotId) or die $insert_geneToTerm->errstr;
                 }
             }
         }
