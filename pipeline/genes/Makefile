@@ -51,16 +51,17 @@ genes: $(SPECIESFILEPATH) go.obsolete
 
 
 updateUniprotXrefs : genes
-# first remove already existing xrefs_from_uniprot file
+	# first remove already existing xrefs_from_uniprot file
 	@rm -f $(XREFS_FROM_UNIPROT_FILE)
-# generate tsv file containing all information to update uniprot xrefs in the database. Also retrieve gene name.
-#XXX for now it uses the parallel R package and can be run on any server. Attribute "number_cores"
-#    has to be updated depending on the server the script is run on. It corresponds to the number of species queried
-#    in parallel
-#XXX Could be updated to directly run on UNIL cluster
-#XXX Could be updated to retrieve other information from Uniprot (e.g StringDB XRefs,...)
+	# generate tsv file containing all information to update uniprot xrefs in the database. Also retrieve gene name.
+	#XXX for now it uses the parallel R package and can be run on any server. Attribute "number_cores"
+	#    has to be updated depending on the server the script is run on. It corresponds to the number of species queried
+	#    in parallel
+	#XXX Could be updated to directly run on UNIL cluster
+	#XXX Could be updated to retrieve other information from Uniprot (e.g GeneCards XRefs,...)
 	@R CMD BATCH --no-save --no-restore '--args species_file="$(SPECIESFILEPATH)" number_cores=28 bgee="$(BGEECMD)" output_file="$(XREFS_FROM_UNIPROT_FILE)"' update_genes_from_UniProt.R > $@.tmp
-# TODO insert xrefs from uniprot in the Bgee database
+	# Now update/insert XRefs in the database
+	@perl insert_uniprot_xrefs.pl -bgee=$(BGEECMD) -uniprot_xrefs=$(XREFS_FROM_UNIPROT_FILE) > $@.tmp 2>>$@.err
 	@$(MV) $@.tmp $@
 
 sameIdGeneCount: genes
