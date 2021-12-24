@@ -36,10 +36,14 @@ update dataSource set releaseDate = '2021-03-11', releaseVersion = '',          
 update dataSource set releaseDate = null,         releaseVersion = ''                                                where dataSourceId = 16;
 -- GEO (Affymetrix)
 update dataSource set releaseDate = '2016-08-22', releaseVersion = '',                             displayOrder = 3  where dataSourceId = 17;
+-- GEO (RNASeq)
+update dataSource set releaseDate = '2021-02-08', releaseVersion = '',                             displayOrder = 2  where dataSourceId = 100;
 -- GO
 update dataSource set releaseDate = '2021-02-08', releaseVersion = ''                                                where dataSourceId = 18;
--- SRA
+-- SRA (RNA-Seq)
 update dataSource set releaseDate = '2021-02-08', releaseVersion = '',                             displayOrder = 2  where dataSourceId = 19;
+-- SRA (scRNA-Seq)
+update dataSource set releaseDate = '2021-02-08', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 102;
 -- HGNC (taken from Ensembl xrefs)
 update dataSource set releaseDate = null,         releaseVersion = '',                             displayOrder = 1  where dataSourceId = 20;
 -- CCDS (taken from Ensembl xrefs)
@@ -68,6 +72,4 @@ update dataSource set releaseDate = '2015-10-03', releaseVersion = '6.p1',      
 update dataSource set releaseDate = '2020-12-01', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 37;
 -- GenBank
 update dataSource set releaseDate = '2020-12-01', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 38;
--- GEO (RNASeq)
-update dataSource set releaseDate = '2021-02-08', releaseVersion = '',                             displayOrder = 2  where dataSourceId = 100;
 

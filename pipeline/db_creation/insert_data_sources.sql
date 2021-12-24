@@ -89,4 +89,6 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
 (100, 'GEO', '', 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=[experiment_id]', 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=[evidence_id]',
     'https://www.ncbi.nlm.nih.gov/geo/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source'),
 (101, 'ArrayExpress', '', 'https://www.ebi.ac.uk/arrayexpress/experiments/[experiment_id]', '',
-	'https://www.ebi.ac.uk/arrayexpress/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source');
+	'https://www.ebi.ac.uk/arrayexpress/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source'),
+(102, 'SRA', '', 'https://www.ncbi.nlm.nih.gov/sra/[experiment_id]', 'https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?cmd=viewer&m=data&s=viewer&run=[evidence_id]',
+    'https://www.ncbi.nlm.nih.gov/sra/', 'Single-cell RNA-Seq data source for various species', 1, 'Single-cell RNA-Seq data source');

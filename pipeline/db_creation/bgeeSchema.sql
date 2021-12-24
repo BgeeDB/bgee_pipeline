@@ -52,7 +52,7 @@ create table dataSource (
 -- a cat to organize the display
     category              enum('', 'Genomics database', 'Proteomics database',
                                'In situ data source', 'Affymetrix data source', 'EST data source', 'RNA-Seq data source',
-                               'Ontology')                       COMMENT 'Data source category to organize the display',
+                               'Single-cell RNA-Seq data source', 'Ontology') COMMENT 'Data source category to organize the display',
 -- to organize the display. Default value is the highest value, so that this field is the last to be displayed
     displayOrder          tinyint unsigned  not null default 255 COMMENT 'Data source display ordering'
 ) engine = innodb;
@@ -60,7 +60,7 @@ create table dataSource (
 create table dataSourceToSpecies (
     dataSourceId smallInt  unsigned  not null COMMENT 'Data source id',
     speciesId    mediumint unsigned  not null COMMENT 'NCBI species taxon id',
-    dataType     enum('affymetrix', 'est', 'in situ', 'rna-seq', 'full length single cell RNA-Seq') not null COMMENT 'Data type',
+    dataType     enum('affymetrix', 'est', 'in situ', 'rna-seq', 'full-length single-cell RNA-Seq') not null COMMENT 'Data type',
     infoType     enum('data', 'annotation') not null COMMENT 'Information type'
 ) engine = innodb;
 
