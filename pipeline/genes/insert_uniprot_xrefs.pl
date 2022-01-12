@@ -120,9 +120,11 @@ while(my @values = $retrieveDataSourceIds -> fetchrow_array()){
 
 print "Inserting data into the database...\n";
 
-my $insert_geneXref     = $bgee->prepare("INSERT INTO geneXRef (bgeegeneId, XRefId, XRefName, dataSourceId) VALUES (?, ?, ?, ?)");
-my $insert_geneToTerm   = $bgee->prepare("INSERT INTO geneToTerm (bgeegeneId, term) VALUES (?, ?)");
-my $update_datasourceId = $bgee->prepare("UPDATE FROM geneXRef SET dataSourceId = ? where bgeegeneId = ? and XRefId = ?");
+$bgee->{AutoCommit} = 0;
+
+my $insert_geneXref     = $bgee->prepare("INSERT INTO geneXRef (bgeeGeneId, XRefId, XRefName, dataSourceId) VALUES (?, ?, ?, ?)");
+my $insert_geneToTerm   = $bgee->prepare("INSERT IGNORE INTO geneToTerm (bgeeGeneId, term) VALUES (?, ?)");
+my $update_datasourceId = $bgee->prepare("UPDATE geneXRef SET dataSourceId = ? where bgeeGeneId = ? and XRefId = ?");
 
 for my $speciesId ( keys %new_xrefs ){
     for my $geneId ( keys %{$new_xrefs{$speciesId}} ){
@@ -135,7 +137,7 @@ for my $speciesId ( keys %new_xrefs ){
                 my $inserted_datasource = $existing_xrefs{$speciesId}{$geneId}{lc $uniprotId}{'dataSourceId'};
                 if (defined($to_insert_datasource) && $inserted_datasource != $to_insert_datasource) {
                     if ( $debug ){
-                        print "UPDATE FROM geneXRef SET dataSourceId = $to_insert_datasource WHERE bgeegeneId = ", 
+                        print "UPDATE geneXRef SET dataSourceId = $to_insert_datasource WHERE bgeeGeneId = ", 
                             "$bgeegeneId AND XRefId = $existing_uniprot_id\n";
                     }
                     else {
@@ -161,18 +163,21 @@ for my $speciesId ( keys %new_xrefs ){
                     print "INSERT INTO geneXRef (bgeegeneId, XRefId, XRefName, dataSourceId) VALUES ($bgeegeneId, $uniprotId, \"\", $to_insert_datasource)\n";
                     print "INSERT INTO geneToTerm (bgeegeneId, term) VALUES ($bgeegeneId, $uniprotId)\n";
                 } else {
-                    $insert_geneXref <- execute($bgeegeneId, $uniprotId, "", $to_insert_datasource) 
+                    $insert_geneXref -> execute($bgeegeneId, $uniprotId, "", $to_insert_datasource) 
                     or die $insert_geneXref->errstr;
-                    $insert_geneToTerm <- execute($bgeegeneId, $uniprotId) or die $insert_geneToTerm->errstr;
+                    $insert_geneToTerm -> execute($bgeegeneId, $uniprotId) or die $insert_geneToTerm->errstr;
                 }
             }
         }
     }
 }
+$bgee->commit();
 
+#finish transactions and disconnect from the database
 $insert_geneXref -> finish();
 $insert_geneToTerm -> finish();
 $update_datasourceId -> finish();
+$bgee->disconnect();
 
 for my $speciesId ( keys %existing_xrefs ){
     for my $geneId ( keys %{$existing_xrefs{$speciesId}} ){
