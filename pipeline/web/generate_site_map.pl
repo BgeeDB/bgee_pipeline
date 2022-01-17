@@ -52,21 +52,30 @@ my $sitemap_footer = "\n</urlset>";
 print "Write main/static pages\n"  if ( $debug );
 my @static_pages;
 push @static_pages, "<loc>$homepage/</loc><priority>0.8</priority>";
-my @basic_cgi      = ('about', 'anat_similarities', 'collaborations', 'doc', 'expression_comparison', 'gene', 'privacy_policy', 'source', 'sparql', 'top_anat');
-for my $baseUrlName ( sort @basic_cgi ){
-    push @static_pages, "<loc>$homepage/?page=$baseUrlName</loc><priority>0.7</priority>";
+push @static_pages, "<loc>$homepage/sparql/</loc><priority>0.7</priority>";
+my @basic_about     = ('', 'news', 'collaborations', 'publications', 'source', 'privacy-policy');
+for my $baseUrlName ( sort @basic_about ){
+    push @static_pages, "<loc>$homepage/about/$baseUrlName</loc><priority>0.7</priority>";
 }
-my @basic_doc      = ('call_files', 'data_sets', 'faq', 'top_anat');
-for my $baseUrlName ( sort @basic_doc ){
-    push @static_pages, "<loc>$homepage/?page=doc&amp;action=$baseUrlName</loc><priority>0.7</priority>";
+my @basic_support   = ('data-sets', 'top-anat', 'gene-expression-calls', 'faq');
+for my $baseUrlName ( sort @basic_support ){
+    push @static_pages, "<loc>$homepage/support/$baseUrlName</loc><priority>0.7</priority>";
 }
-my @basic_download = ('expr_calls', 'mysql_dumps', 'proc_values');
+my @basic_download  = ('gene-expression-calls', 'processed-expression-values', 'data-dumps');
 for my $baseUrlName ( sort @basic_download ){
-    push @static_pages, "<loc>$homepage/?page=download&amp;action=$baseUrlName</loc><priority>0.7</priority>";
+    push @static_pages, "<loc>$homepage/download/$baseUrlName</loc><priority>0.7</priority>";
 }
-my @basic_resources = ('annotations', 'ontologies', 'r_packages', 'source_code');
+my @basic_resources = ('r-packages', 'sparql', 'annotations', 'ontologies', 'source-code');
 for my $baseUrlName ( sort @basic_resources ){
-    push @static_pages, "<loc>$homepage/?page=resources&amp;action=$baseUrlName</loc><priority>0.7</priority>";
+    push @static_pages, "<loc>$homepage/resources/$baseUrlName</loc><priority>0.7</priority>";
+}
+my @basic_analysis  = ('top-anat', 'expr-comparison');
+for my $baseUrlName ( sort @basic_analysis ){
+    push @static_pages, "<loc>$homepage/analysis/$baseUrlName</loc><priority>0.7</priority>";
+}
+my @basic_search    = ('genes', 'anatomical-homology', 'species');
+for my $baseUrlName ( sort @basic_search ){
+    push @static_pages, "<loc>$homepage/search/$baseUrlName</loc><priority>0.7</priority>";
 }
 
 #NOTE FTP links are invalid because different namespace (not bgee.org)
@@ -81,6 +90,19 @@ my $bgee = Utils::connect_bgee_db($bgee_connector);
 $| = 1;
 
 
+# species pages
+print "Write species pages\n"  if ( $debug );
+my $speciesId = $bgee->prepare('SELECT DISTINCT speciesId FROM species ORDER BY speciesId');
+$speciesId->execute()  or die $speciesId->errstr;
+my $sp_sitemap = 'sitemap_species.xml';
+my @species;
+while ( my @data = $speciesId->fetchrow_array ){
+    push @species, "<loc>$homepage/species/$data[0]</loc>";
+}
+write_file("$sp_sitemap", $sitemap_header, join("\n", map { "<url>$_</url>" } @species), $sitemap_footer);
+push @index, $sp_sitemap;
+
+
 # gene pages
 print "Write gene pages\n"  if ( $debug );
 my $geneId = $bgee->prepare('SELECT DISTINCT geneId FROM gene ORDER BY geneId');
@@ -90,7 +112,7 @@ my $split = 0;
 my @pages;
 while ( my @data = $geneId->fetchrow_array ){
     $count++;
-    push @pages, "<loc>$homepage/?page=gene&amp;gene_id=$data[0]</loc>";
+    push @pages, "<loc>$homepage/gene/$data[0]</loc>";
     if ( $count > ($url_limit - 1000) ){
         $split++;
         my $sitemap = "sitemap_gene$split.xml";
