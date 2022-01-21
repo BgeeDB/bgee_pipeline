@@ -52,7 +52,7 @@ my $partition       = 'cpu';
 my $account         = 'mrobinso_bgee';
 my $nbr_processors  = 1;
 my $memory_usage    = 5;      # in GB
-my $time_limit      = '3:00:00:00';
+my $time_limit      = '3-00:00:00';
 my $log_prefix      = 'nr_';
 
 my @speciesList = ();
@@ -101,7 +101,7 @@ sub create_perl_command {
     if ($nbr_processors > 1) {
          $nbr_threads--;
     }
-    my $template = "perl ${pipeline_cluster_dir}${script_relative_path}normalize_ranks.pl -bgee=${bgee_connector} -bgee_species=${species_id}";
+    my $template = "perl ${pipeline_cluster_dir}${script_relative_path}normalize_ranks.pl -bgee=${bgee_connector} -species=${species_id}";
     return $template;
 }
 
@@ -124,6 +124,7 @@ sub sbatch_template {
 module use /software/module/;
 module add Development/Ensembl_API/97;
 
+export PATH=/software/bin:\$PATH
 ";
 
     return $template;

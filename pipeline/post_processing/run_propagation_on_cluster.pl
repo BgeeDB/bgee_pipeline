@@ -54,8 +54,8 @@ if ( !$test_options || $jar_path eq '' || $bgee_species eq '' || $output_dir eq 
 my $partition      = 'cpu';
 my $account        = 'mrobinso_bgee';
 my $nbr_processors = 6;
-my $memory_usage   = 39;      # in GB
-my $time_limit     = '3-00:00:00'; #in days
+my $memory_usage   = 80;      # in GB
+my $time_limit     = '1-00:00:00'; #in days
 my $log_prefix     = 'generatePropagatedCalls_';
 
 # In the future these info should be retrieved from the database (with a query retrieving number
@@ -104,7 +104,7 @@ while ( my @data = $genesStmt->fetchrow_array ){
 $genesStmt->finish;
 
 # $gene_row_count could be calculated depending on the number of global conditions
-my $gene_row_count = 1000;
+my $gene_row_count = 50;
 
 # bash file containing all sbatch to run
 my $bash_file = "${output_dir}/run_all_jobs.sh";
@@ -151,7 +151,7 @@ exit 0;
 sub create_java_command {
     my ($jar_path, $output_dir, $species_id, $gene_offset, $gene_row_count, $memory_usage, 
         $bgee_pwd, $serveur_url, $bgee_user, $bgee_port) = @_;
-    my $template = "java -Xmx${memory_usage}g -Dbgee.dao.jdbc.username=${bgee_user} -Dbgee.dao.jdbc.password=${bgee_pwd} -Dbgee.dao.jdbc.driver.names=com.mysql.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://${serveur_url}:${bgee_port}/${database_name}?useSSL=false&enableQueryTimeouts=false&sessionVariables=net_write_timeout=260000,net_read_timeout=260000,wait_timeout=260000' -jar \${JAR_PATH} InsertPropagatedCalls insertCalls $species_id - $gene_offset $gene_row_count 0";
+    my $template = "java -Xmx${memory_usage}g -Dbgee.dao.jdbc.username=${bgee_user} -Dbgee.dao.jdbc.password=${bgee_pwd} -Dbgee.dao.jdbc.driver.names=com.mysql.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://${serveur_url}:${bgee_port}/${database_name}?useSSL=false&enableQueryTimeouts=false&sessionVariables=net_write_timeout=520000,net_read_timeout=520000,wait_timeout=520000' -jar \${JAR_PATH} InsertPropagatedCalls insertCalls $species_id - $gene_offset $gene_row_count 0";
 }
 
 # Add main sbatch command and options

@@ -41,6 +41,7 @@ $(OUTPUT_DIR)globalConditions: $(OUTPUT_DIR)conditions_not_existing
 	@$(MV) $@.tmp $@
 
 # Since Bgee 15.0 it is possible to run this step in a parallel fashion from different nodes. See comments below.
+# It is also possible to compute global expressions using a slurm cluster with the script run_propagation_on_cluster.pl. This script only generate propagated calls. Do not forget to run all the mysql queries of this rule once computation is over on the cluster.
 $(OUTPUT_DIR)globalExpression: $(OUTPUT_DIR)globalConditions
 # ############################################
 # DATA INSERTION
@@ -211,6 +212,7 @@ $(OUTPUT_DIR)ranksAffy:
 
 # This step is responsible for computing ranks for each RNA-Seq library
 # and then store information abut max ranks/distinct rank counts
+# It is also possible to compute RNA-Seq ranks using a slurm cluster with the script run_rnaseq_ranks_on_cluster.pl. This script only run ranks_rnaseq.pl. Do not forget to run mysql queries of this rule once computation is over on the cluster.
 $(OUTPUT_DIR)ranksRnaSeq:
 	@perl ranks_rnaseq.pl -bgee=$(BGEECMD) -parallel_jobs=20 > $@.tmp 2> $@.warn
 	@$(MYSQL) -e "UPDATE rnaSeqLibrary AS t0 INNER JOIN ( SELECT t1.rnaSeqLibraryId, MAX(t1.rank) AS maxRank, COUNT(DISTINCT t1.rank) AS distinctRankCount FROM rnaSeqResult AS t1 WHERE t1.rank IS NOT NULL GROUP BY t1.rnaSeqLibraryId ) AS ranks ON t0.rnaSeqLibraryId = ranks.rnaSeqLibraryId SET t0.libraryMaxRank = ranks.maxRank, t0.libraryDistinctRankCount = ranks.distinctRankCount" >> $@.tmp 2>> $@.warn
@@ -228,6 +230,7 @@ $(OUTPUT_DIR)ranksScRnaSeqFullLength:
 	@$(MV) $@.tmp $@
 
 # EST and in situ rank computations are now done as part of this step
+# It is also possible to generate global ranks using a slurm cluster with the script run_ranks_global_on_cluster.pl. This script only run ranks_global.pl. Do not forget to run mysql queries of this rule once processing finished on the cluster.
 $(OUTPUT_DIR)ranksGlobal: $(OUTPUT_DIR)ranksAffy $(OUTPUT_DIR)ranksRnaSeq $(OUTPUT_DIR)ranksScRnaSeqFullLength
 	@perl ranks_global.pl -bgee=$(BGEECMD) -parallel_jobs=20 -conds_per_job=10 > $@.tmp 2> $@.warn
 	@echo "Min, max, average EST mean rank: \n" >> $@.tmp
@@ -238,6 +241,7 @@ $(OUTPUT_DIR)ranksGlobal: $(OUTPUT_DIR)ranksAffy $(OUTPUT_DIR)ranksRnaSeq $(OUTP
 	@$(MYSQL) -e "SELECT MIN(inSituGlobalRank), MAX(inSituGlobalRank), AVG(inSituGlobalRank) FROM globalExpression AS t1 WHERE inSituGlobalRank IS NOT NULL" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
+# It is also possible to normalize the ranks using a slurm cluster with the script run_ranks_global_on_cluster.pl. WARNING!!!! : As for bgee 15.0 the UNIL cluster queues allowed max 3 days of processing. Normalization for human and mouse took 10 days. DO NOT normalize ranks for these 2 species using the cluster. Normalization for all other species took less than one day
 $(OUTPUT_DIR)norm_ranks: $(OUTPUT_DIR)ranksGlobal
 	@perl normalize_ranks.pl -bgee=$(BGEECMD) -species=$(EMPTY_LIST) > $@.tmp 2> $@.warn
 #	@printf "Expression IDs with ranks incorrectly generated: \n" >> $@.tmp

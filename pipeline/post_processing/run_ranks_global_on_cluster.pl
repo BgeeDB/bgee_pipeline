@@ -51,9 +51,9 @@ my $account         = 'mrobinso_bgee';
 my $bgee_user       = 'root';
 my $bgee_port       = 3306;
 my $nbr_processors  = 1;
-my $conds_per_thread = 300;
+my $conds_per_thread = 100;
 my $memory_usage    = 5;      # in GB
-my $time_limit      = '3:00:00:00';
+my $time_limit      = '3-00:00:00';
 my $log_prefix      = 'generateGlobalRanks_';
 my $serveur_url     = 'rbioinfo.unil.ch';
 
@@ -70,7 +70,7 @@ my $global_cond_sql = 'SELECT globalConditionId FROM globalCond
                         AND estGlobalMaxRank IS NULL AND inSituGlobalMaxRank IS NULL
                         AND affymetrixGlobalMaxRank IS NULL AND rnaSeqGlobalMaxRank IS NULL
                         AND scRnaSeqFullLengthGlobalMaxRank IS NULL
-                        AND speciesId != 9606 ORDER BY globalConditionId';
+			ORDER BY globalConditionId';
 my $global_cond_stmt = $dbh->prepare($global_cond_sql);
 $global_cond_stmt->execute()  or die $global_cond_stmt->errstr;
 while ( my @data = $global_cond_stmt->fetchrow_array ){
@@ -164,10 +164,12 @@ sub sbatch_template {
 #SBATCH --job-name=$job_name
 module use /software/module/;
 module add Development/Ensembl_API/97;
-
 export PIPELINE_PATH=$pipeline_path
-
 ";
+
+$template .= 'export PATH=/software/bin:$PATH
+
+';
 
     return $template;
 }
