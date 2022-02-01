@@ -1320,5 +1320,54 @@ sub sbatch_template {
     return $template;
 }
 
+# create a perl script that will allow to run a maximum number of jobs on the cluster
+# parameters:
+#   - maximum number of jobs to run
+#   - path to a .sh file listing all sbatch commands to run
+#   - common prefix to all jobs to run
+#   - account to use to check number of jobs
+sub limit_number_jobs_cluster {
+
+    my ($max_jobs, $sh_file, $job_prefix, $cluster_account) = @_;
+    my $script_content = '#!/usr/bin/env perl'."\n\n";
+
+    $script_content .= 'use strict'."\n";
+    $script_content .= 'use warnings'."\n";
+    $script_content .= 'use diagnostics'."\n\n";
+
+    $script_content .= 'my $job_limit       = '.$max_jobs.'; # Number of simultaneous jobs running'."\n";
+    $script_content .= 'my $cluster_account = "'.$cluster_account."\";\n";
+    $script_content .= 'my $run_all_sh_file = "'.$sh_file."\";\n";
+    $script_content .= 'my $job_name_prefix = "'.$job_prefix."\";\n\n";
+
+    $script_content .= 'my $count = 0;'."\n";
+    $script_content .= 'open(my $fh, $run_all_sh_file)
+  or die "Could not open file $run_all_sh_file $!'."\";\n";
+    $script_content .= 'JOB:
+while ( my $line = <$fh> ){
+    chomp $line;
+    next JOB  if ( $line =~ /^#/); # header
+
+    my $running_jobs = check_running_jobs($job_name_prefix, $account);
+    while ( $running_jobs >= $job_limit ){
+        print "No more possible slot for the job, waiting and resubmitting\\n";
+        sleep 30;
+        $running_jobs = check_running_jobs($job_name_prefix, $account);
+    }
+    $count++;
+    print "$line\\n";
+    system($line)==0  or print "Failed to submit job [$line]\\n";
+}
+
+print "\\n$count jobs submitted\\n";
+
+sub check_running_jobs {
+    my ($job_name_prefix, $account) = @_;
+    my $running_jobs = `squeue --format="%.18i %.9P %.15j %.8u %.2t %.10M %.6D %R" --user=\\$USER --account=$account | grep -v \'JOBID\' |grep \'$job_name_prefix\' |wc -l` || 0;
+    chomp($running_jobs);
+    return $running_jobs;
+}';
+}
+
 1;
 
