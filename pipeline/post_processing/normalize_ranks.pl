@@ -5,7 +5,7 @@
 # Normalize the mean rank in the expression table across the different data types.
 # Frederic Bastian, last updated Feb. 2017: adapt to new conditions and new schema in Bgee 14
 # Julien Wollbrett, August 2021, allows to normalize ranks for a subset of species. Allows to parallelize ranks generation per species
-
+# Julien Wollbrett, January 2022, allows to select a subset of Bgee condition IDs when exactly one speciesId is provided. Avoid running long transactions updating huge number of rows (e.g 2 billion of rows for mouse as for Bgee 15.0)
 use strict;
 use warnings;
 use Time::HiRes qw( time );
@@ -19,10 +19,10 @@ use Getopt::Long;
 $| = 1;
 
 # Define arguments and their default value
-my ($bgee_connector, $bgee_species) = ('', '');
-my %opts = ( 'bgee=s'    => \$bgee_connector, # Bgee connector string
-             'species=s' => \$bgee_species ); # list of species separated by a comma 
-
+my ($bgee_connector, $bgee_species, $condition_ids) = ('', '', '');
+my %opts = ( 'bgee=s'       => \$bgee_connector, # Bgee connector string
+             'species=s'    => \$bgee_species, # list of species separated by a comma
+             'conditions=s' => \$condition_ids); #list of Bgee condition Ids separated by a comma
 # Check arguments
 my $emptyArg = '-';
 
@@ -31,7 +31,9 @@ if ( !$test_options || $bgee_connector eq '' || $bgee_species eq '' ){
     print "\n\tInvalid or missing argument:
 \te.g. $0 -bgee=\$(BGEECMD) -bgee_species='-'
 \t-bgee            Bgee connector string
-\t-species    Bgee species for which ranks have to be normalized or '-' for all species
+\t-species         Bgee species for which ranks have to be normalized or '-' for all species
+\t-conditions      Subset of Bgee condition IDs for which ranks have to be normalized or '-'
+                   for all conditions. Subset of condition IDs can only be provided when exactly one species is selected
 \n";
     exit 1;
 }
@@ -44,10 +46,15 @@ my @speciesList = ();
 if ($bgee_species ne $emptyArg) {
     @speciesList = split(',', $bgee_species);
 }
+if(scalar @speciesList != 1 && $condition_ids ne $emptyArg) {
+    print "Condition IDs can be provided only when exactly one species is selected";
+    exit 1;
+}
 
 my $dbh = Utils::connect_bgee_db($bgee_connector);
 
 #we get the absolute max rank across all conditions for each species
+# If condition IDs are provided they are not used in this query. We really want the max rank across all conditions
 my $absoluteMaxSql = "SELECT speciesId, GREATEST(
              IFNULL(max(rnaSeqMaxRank), 0.0),
              IFNULL(max(estMaxRank),0.0),
@@ -82,8 +89,7 @@ while ( my @data = $getAbsoluteMax->fetchrow_array ){
 }
 
 # update the expression table with normalized mean ranks
-my $updateExpression = $dbh->prepare( "
-UPDATE gene
+my $updateExpressionQuery = "UPDATE gene
 STRAIGHT_JOIN globalExpression ON gene.bgeeGeneId = globalExpression.bgeeGeneId
 STRAIGHT_JOIN globalCond ON globalCond.globalConditionId = globalExpression.globalConditionId
 SET rnaSeqMeanRankNorm     = (rnaSeqMeanRank + (rnaSeqMeanRank * ? / rnaSeqMaxRank))/2,
@@ -96,7 +102,12 @@ SET rnaSeqMeanRankNorm     = (rnaSeqMeanRank + (rnaSeqMeanRank * ? / rnaSeqMaxRa
     inSituGlobalRankNorm         = (inSituGlobalRank + (inSituGlobalRank * ? / inSituGlobalMaxRank))/2,
     affymetrixGlobalMeanRankNorm = (affymetrixGlobalMeanRank + (affymetrixGlobalMeanRank * ? / affymetrixGlobalMaxRank))/2,
     scRnaSeqFullLengthGlobalMeanRankNorm = (scRnaSeqFullLengthGlobalMeanRank + (scRnaSeqFullLengthGlobalMeanRank * ? / scRnaSeqFullLengthGlobalMaxRank))/2
-WHERE gene.speciesId = ?" );
+WHERE gene.speciesId = ?";
+if ($condition_ids ne $emptyArg) {
+    $updateExpressionQuery .= " AND globalConditionId IN (?)";
+}
+my $updateExpression = $dbh->prepare($updateExpressionQuery);
+
 
     # As of Bgee 15.1, these blacklisted terms are directly remapped to the root of the anatEntities,
     # so there's no need to update their ranks to the max rank anymore
@@ -182,9 +193,15 @@ for my $speciesId ( keys %maxRanks ){
 
     my $t0 = time();
     printf('Update expression table with normalized mean ranks per type:   ');
-    $updateExpression->execute( $absMax, $absMax, $absMax, $absMax, $absMax, $absMax, $absMax, $absMax, $absMax, $absMax,
-                                $speciesId)
-      or die $updateExpression->errstr;
+    if ($condition_ids ne $emptyArg) {
+         $updateExpression->execute( $absMax, $absMax, $absMax, $absMax, $absMax, $absMax, $absMax, $absMax,
+                    $absMax, $absMax, $speciesId, $condition_ids) or die $updateExpression->errstr;
+    } else {
+            $updateExpression->execute( $absMax, $absMax, $absMax, $absMax, $absMax, $absMax, $absMax, $absMax,
+                    $absMax, $absMax, $speciesId) or die $updateExpression->errstr;
+
+    }
+
     printf( "OK in %.2fs\n", ( time() - $t0 ) );
 
     # As of Bgee 15.1, these blacklisted terms are directly remapped to the root of the anatEntities,
