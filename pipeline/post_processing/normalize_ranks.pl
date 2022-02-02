@@ -27,7 +27,7 @@ my %opts = ( 'bgee=s'       => \$bgee_connector, # Bgee connector string
 my $emptyArg = '-';
 
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $bgee_connector eq '' || $bgee_species eq '' ){
+if ( !$test_options || $bgee_connector eq '' || $bgee_species eq '' || $condition_ids eq ''){
     print "\n\tInvalid or missing argument:
 \te.g. $0 -bgee=\$(BGEECMD) -bgee_species='-'
 \t-bgee            Bgee connector string
@@ -46,6 +46,11 @@ my @speciesList = ();
 if ($bgee_species ne $emptyArg) {
     @speciesList = split(',', $bgee_species);
 }
+my @conditionList = ();
+if ($condition_ids ne $emptyArg) {
+    @conditionList = split(',', $condition_ids);
+}
+
 if(scalar @speciesList != 1 && $condition_ids ne $emptyArg) {
     print "Condition IDs can be provided only when exactly one species is selected";
     exit 1;
@@ -103,8 +108,14 @@ SET rnaSeqMeanRankNorm     = (rnaSeqMeanRank + (rnaSeqMeanRank * ? / rnaSeqMaxRa
     affymetrixGlobalMeanRankNorm = (affymetrixGlobalMeanRank + (affymetrixGlobalMeanRank * ? / affymetrixGlobalMaxRank))/2,
     scRnaSeqFullLengthGlobalMeanRankNorm = (scRnaSeqFullLengthGlobalMeanRank + (scRnaSeqFullLengthGlobalMeanRank * ? / scRnaSeqFullLengthGlobalMaxRank))/2
 WHERE gene.speciesId = ?";
-if ($condition_ids ne $emptyArg) {
-    $updateExpressionQuery .= " AND globalConditionId IN (?)";
+
+#add as many question marks as number of globalCondition IDs
+if (@conditionList) {
+    $updateExpressionQuery .= " AND globalCond.globalConditionId IN (";
+    foreach (@conditionList[1 .. ($#conditionList)]) {
+        $updateExpressionQuery .= "?,";
+    }
+    $updateExpressionQuery .= "?)";
 }
 my $updateExpression = $dbh->prepare($updateExpressionQuery);
 
@@ -195,7 +206,7 @@ for my $speciesId ( keys %maxRanks ){
     printf('Update expression table with normalized mean ranks per type:   ');
     if ($condition_ids ne $emptyArg) {
          $updateExpression->execute( $absMax, $absMax, $absMax, $absMax, $absMax, $absMax, $absMax, $absMax,
-                    $absMax, $absMax, $speciesId, $condition_ids) or die $updateExpression->errstr;
+                    $absMax, $absMax, $speciesId, @conditionList) or die $updateExpression->errstr;
     } else {
             $updateExpression->execute( $absMax, $absMax, $absMax, $absMax, $absMax, $absMax, $absMax, $absMax,
                     $absMax, $absMax, $speciesId) or die $updateExpression->errstr;
