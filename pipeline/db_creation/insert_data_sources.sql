@@ -79,7 +79,7 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
 (36, 'OncoMX', 'https://oncomx.org/searchview/?gene=[xref_id]', '', '', 'https://www.oncomx.org', 'Integrated cancer mutation and expression resource', 0, ''),
 (37, 'RefSeq', 'https://www.ncbi.nlm.nih.gov/assembly/[assembly_id]/', '', '', 'https://www.ncbi.nlm.nih.gov/refseq/', 'Source for genome assembly and annotations', 1, 'Genomics database'),
 (38, 'GenBank', 'https://www.ncbi.nlm.nih.gov/assembly/[assembly_id]/', '', '', 'https://www.ncbi.nlm.nih.gov/genbank/', 'Source for genome assembly and annotations', 1, 'Genomics database'),
-(39, 'Amphiencode', '', '', '', 'https://amphiencode.github.io/Data/', 'Source for the European amphioxus annotations', 1, ''),
+(39, 'Amphiencode', '', '', '', 'https://amphiencode.github.io/Data/', 'Source for the European amphioxus annotations', 1, 'Genomics database'),
 (40, 'GeneCards', 'https://www.genecards.org/cgi-bin/carddisp.pl?gene=[xref_id]', '', '', 'https://www.genecards.org/', 'GeneCards is a searchable, integrative database that provides comprehensive, user-friendly information on all annotated and predicted human genes.', 0, '');
 
 -- Add "ghost" sources, because a source can only be part of one category, so rather than
