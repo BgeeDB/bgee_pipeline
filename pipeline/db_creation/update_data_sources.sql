@@ -72,4 +72,6 @@ update dataSource set releaseDate = '2015-10-03', releaseVersion = '6.p1',      
 update dataSource set releaseDate = '2020-12-01', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 37;
 -- GenBank
 update dataSource set releaseDate = '2020-12-01', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 38;
+-- Amphiencode
+update dataSource set releaseDate = '2021-07-15', releaseVersion = '',                             displayOrder = 7  where dataSourceId = 39;
 
