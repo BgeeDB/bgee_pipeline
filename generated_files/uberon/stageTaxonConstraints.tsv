@@ -986,7 +986,7 @@ UBERON:0007236	8 cell stage	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	T	T	T	T	
 UBERON:0009849	tadpole stage	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	T	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
 UBERON:0018241	prime adult stage	F	F	F	F	T	T	T	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T
 UBERON:0018685	nursing stage	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	T	T	T	T	T	T	F	T	F	F	T	F	F
-UBERON:0034919	juvenile stage	F	F	F	F	T	T	T	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T
+UBERON:0034919	juvenile stage	F	F	F	F	F	F	T	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T
 UBERON:0034920	infant stage	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	T	T	T	T	T	T	F	T	F	F	T	F	F
 UBERON:0035946	start of neonate stage	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	F	F	T	T	T	T	T	T	T	T	T	F	T	F	F	T	F	F
 WBls:0000009	28-cell embryo Ce (C. elegans)	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F

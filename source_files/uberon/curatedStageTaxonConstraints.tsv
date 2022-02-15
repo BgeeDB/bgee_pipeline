@@ -53,6 +53,6 @@ UBERON:0007236	8 cell stage	33213	Bilateria	9606,10090,7227,10116,9913,9031,9940
 UBERON:0009849	tadpole stage	8292	Amphibia			
 UBERON:0018241	prime adult stage	33213	Bilateria	6239,7955,7227,7237,7240		
 UBERON:0018685	nursing stage	40674	Mammalia	9913		
-UBERON:0034919	juvenile stage	33213	Bilateria	6239,7955,9913,7227,7237,7240		
+UBERON:0034919	juvenile stage	33213	Bilateria	6239,7955,9913,7227,7237,7240,7740,7897		
 UBERON:0034920	infant stage	40674	Mammalia	9913		
 UBERON:0035946	start of neonate stage	40674	Mammalia	9823,9913		
