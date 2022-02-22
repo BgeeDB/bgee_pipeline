@@ -27,20 +27,23 @@ LOGIN=`grep '^DBUSER '  $DIR/../Makefile.Config | awk '{print $3}'`
 PASSWD=`grep '^DBPASS ' $DIR/../Makefile.Config | awk '{print $3}'`
 
 
+MYSQL_OPTIONS='--skip-triggers --no-create-info --compact --skip-add-drop-table --single-transaction'
+
 
 # Dump all Bgee DB tables  BUT  the huge globalExpression table
-time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME --ignore-table=$DB_NAME.globalExpression > $DB_NAME-allBut-globalExpression.sql
+time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME --ignore-table=$DB_NAME.globalExpression $MYSQL_OPTIONS > $DB_NAME-allBut-globalExpression.sql
 
 # Dump the globalExpression table by chunk
 ## Human
-time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalExpression gene --where='(bgeeGeneId IN (SELECT bgeeGeneId FROM gene WHERE speciesId=9606))'  --skip-add-drop-table > $DB_NAME-globalExpression-Human.sql
+time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalExpression gene --where='(bgeeGeneId IN (SELECT bgeeGeneId FROM gene WHERE speciesId=9606))'  $MYSQL_OPTIONS > $DB_NAME-globalExpression-Human.sql
 ## Mouse
-time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalExpression gene --where='(bgeeGeneId IN (SELECT bgeeGeneId FROM gene WHERE speciesId=10090))' --skip-add-drop-table > $DB_NAME-globalExpression-Mouse.sql
+time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalExpression gene --where='(bgeeGeneId IN (SELECT bgeeGeneId FROM gene WHERE speciesId=10090))' $MYSQL_OPTIONS > $DB_NAME-globalExpression-Mouse.sql
 ## Other species
-time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalExpression gene --where='((bgeeGeneId NOT IN (SELECT bgeeGeneId FROM gene WHERE speciesId=9606)) AND (bgeeGeneId NOT IN (SELECT bgeeGeneId FROM gene WHERE speciesId=10090)))' --skip-add-drop-table > $DB_NAME-globalExpression-otherSpecies.sql
+time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalExpression gene --where='((bgeeGeneId NOT IN (SELECT bgeeGeneId FROM gene WHERE speciesId=9606)) AND (bgeeGeneId NOT IN (SELECT bgeeGeneId FROM gene WHERE speciesId=10090)))' $MYSQL_OPTIONS > $DB_NAME-globalExpression-otherSpecies.sql
 
 #NOTE because of --skip-add-drop-table think to DROP globalExpression and gene tables if not for a fresh db!
 #NOTE $DB_NAME-allBut-globalExpression.sql should be loaded last to deal with gene table duplication (and issue with gene table lock with chunks)
+#FIXME still with single-transaction and data only?
 
 exit 0
 
