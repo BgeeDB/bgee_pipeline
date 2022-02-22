@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Run it from a mounted DCSR NAS folder to have enough space, and be already available everywhere (cluster, ...)
+#NOTE Run it from a mounted DCSR NAS folder to have enough space, and be already available everywhere (cluster, ...)
 
 while getopts "d:h:" Option
 do
@@ -29,10 +29,17 @@ PASSWD=`grep '^DBPASS ' $DIR/../Makefile.Config | awk '{print $3}'`
 
 
 # Dump all Bgee DB tables  BUT  the huge globalExpression table
-mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME --ignore-table=$DB_NAME.globalExpression > $DB_NAME-allBut-globalExpression.sql
+time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME --ignore-table=$DB_NAME.globalExpression --ignore-table=$DB_NAME.gene > $DB_NAME-allBut-globalExpression.sql
 
 # Dump the globalExpression table by chunk
+## Human
+time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalExpression gene --where='(bgeeGeneId IN (SELECT bgeeGeneId FROM gene WHERE speciesId=9606))'  --skip-add-drop-table > $DB_NAME-globalExpression-Human.sql
+## Mouse
+time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalExpression gene --where='(bgeeGeneId IN (SELECT bgeeGeneId FROM gene WHERE speciesId=10090))' --skip-add-drop-table > $DB_NAME-globalExpression-Mouse.sql
+## Other species
+time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalExpression gene --where='((bgeeGeneId NOT IN (SELECT bgeeGeneId FROM gene WHERE speciesId=9606)) AND (bgeeGeneId NOT IN (SELECT bgeeGeneId FROM gene WHERE speciesId=10090)))' --skip-add-drop-table > $DB_NAME-globalExpression-otherSpecies.sql
 
+#NOTE because of --skip-add-drop-table think to DROP globalExpression and gene tables if not for a fresh db!
 
 exit 0
 
