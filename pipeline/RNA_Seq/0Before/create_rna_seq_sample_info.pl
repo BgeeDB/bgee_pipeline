@@ -254,7 +254,8 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
             warn "\tProblem: [$libraryId][$experimentId] seems to be RACE-seq, which is not supported by our pipeline for now. Please check. This library was not printed in output file.\n";
             next SAMPLE;
         }
-        elsif ( $selection =~ /size fractionation/ ){
+        #MSLL: methylation-spanning linker library, which involves size-fractionation (size selection)
+        elsif ( $selection =~ /size fractionation/i || $selection =~ /size-fractionation/i || $selection =~ /MSLL/ ){
             if ( $strategy !~ /^miRNA-Seq$/i ){#NOTE check with experimentalists if *size fractionation* is ok for miRNA-Seq
                 warn "\tProblem: [$libraryId][$experimentId] seems to be size-fractionated, which biases the expression estimates. Please comment out. This library was not printed in output file.\n";
                 next SAMPLE;
