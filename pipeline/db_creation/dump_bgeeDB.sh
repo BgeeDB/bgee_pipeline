@@ -39,7 +39,7 @@ time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalExpression gene --
 ## Mouse
 time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalExpression gene --where='(bgeeGeneId IN (SELECT bgeeGeneId FROM gene WHERE speciesId=10090))' $MYSQL_OPTIONS > $DB_NAME-globalExpression-Mouse.sql
 ## Other species
-time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalExpression gene --where='((bgeeGeneId NOT IN (SELECT bgeeGeneId FROM gene WHERE speciesId=9606)) AND (bgeeGeneId NOT IN (SELECT bgeeGeneId FROM gene WHERE speciesId=10090)))' $MYSQL_OPTIONS > $DB_NAME-globalExpression-otherSpecies.sql
+time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalExpression gene --where='(bgeeGeneId IN (SELECT bgeeGeneId FROM gene WHERE speciesId!=9606 AND speciesId!=10090))' $MYSQL_OPTIONS > $DB_NAME-globalExpression-otherSpecies.sql
 
 #NOTE because of --skip-add-drop-table think to DROP tables if not for a fresh db!
 #NOTE $DB_NAME-allBut-globalExpression.sql should be loaded last to deal with gene table duplication (and issue with gene table lock with chunks)
