@@ -361,7 +361,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         ## Issue warning is the XML entry includes keywords suggesting that the library is not classical RNA-seq
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
         #FIXME SRP070951 is kept till we know what to do with "globin reduction" see https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
-        my @not_traditional = ('DeepSAGE', 'DeepCAGE', 'LongSAGE', 'SuperSAGE', 'CAGE', 'RACE', 'SAGE', 'DpnII', 'DpnIII', 'NlaIII', 'capture', 'CEL-seq', 'DGE-Seq', 'TagSeq', 'globin reduction', 'globin depletion', 'UMI', 'UMIs', 'ATAC-seq', 'MAINE-Seq', 'Mnase-Seq', 'FAIRE-Seq', 'DNase-seq', 'MACE-Seq', 'QuantSeq', 'Quant-seq');
+        my @not_traditional = ('DeepSAGE', 'DeepCAGE', 'LongSAGE', 'SuperSAGE', 'CAGE', 'RACE', 'SAGE', 'DpnII', 'DpnIII', 'NlaIII', 'capture', 'CEL-seq', 'DGE-Seq', 'TagSeq', 'globin reduction', 'globin depletion', 'UMI', 'UMIs', 'ATAC-seq', 'MAINE-Seq', 'Mnase-Seq', 'FAIRE-Seq', 'DNase-seq', 'MACE-Seq', 'QuantSeq', 'Quant-seq', 'Agilent 2200 TapeStation');
         my @verified        = ('ERP000787', 'ERP001694', 'ERP013973', 'ERP104395',
                                'GSE22410', 'GSE64283',
                                'SRP000401', 'SRP013825', 'SRP021940', 'SRP022567', 'SRP030211', 'SRP041131', 'SRP076617', 'SRP082284', 'SRP090001',
