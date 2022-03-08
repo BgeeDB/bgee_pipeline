@@ -29,6 +29,8 @@ PASSWD=`grep '^DBPASS ' $DIR/../Makefile.Config | awk '{print $3}'`
 
 MYSQL_OPTIONS='--skip-triggers --no-create-info --compact --skip-add-drop-table'
 
+#TODO try mysqlpump instead of mysqldump?
+#     https://dev.mysql.com/doc/refman/8.0/en/mysqlpump.html
 
 # Dump all Bgee DB tables  BUT  the huge globalExpression table
 time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME --ignore-table=$DB_NAME.globalExpression $MYSQL_OPTIONS > $DB_NAME-allBut-globalExpression.sql
