@@ -16,7 +16,7 @@ $(OUTPUT_DIR)create_schema: easyBgeeSchema.sql
 
 $(OUTPUT_DIR)extract_data_from_bgee:
 	# extract data from the $(DBNAME) database in $(DBHOST)
-	@$(JAVA) GenerateEasyBgee extractFromBgee $(OUTPUT_DIR) - > $@.tmp 2> $@.warnings
+	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=7 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR) GenerateEasyBgee extractFromBgee $(OUTPUT_DIR)  - > $@.tmp 2> $@.warnings
 	@$(MV) $@.tmp $@
 
 $(OUTPUT_DIR)import_to_easybgee: $(OUTPUT_DIR)create_schema
