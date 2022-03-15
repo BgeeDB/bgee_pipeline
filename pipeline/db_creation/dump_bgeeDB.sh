@@ -31,6 +31,7 @@ MYSQL_OPTIONS='--skip-triggers --no-create-info --no-tablespaces --compact --ski
 
 #TODO try mysqlpump instead of mysqldump? The --where option is the key point!
 #     https://dev.mysql.com/doc/refman/8.0/en/mysqlpump.html
+#     --no-tablespaces        ->  mysqlpump does not dump InnoDB CREATE TABLESPACE statements
 #     --ignore-table=         ->  --exclude-tables=
 #     --skip-triggers=        ->  --exclude-triggers=
 #     --no-create-info=       ->  --no-create-info=
