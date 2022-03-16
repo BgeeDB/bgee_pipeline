@@ -1,3 +1,7 @@
+########
+# Run this makefile for each mapping file, see commented and uncommented $(GENEX_MAPPING_FILE) variables at $(PIPELINEROOT)Makefile.common
+# The mappings are split to avoid query processing overload with the MySQL server during tiple materialization.
+########
 PIPELINEROOT := ../
 DIR_NAME := SPARQL-RDF/
 include $(PIPELINEROOT)Makefile.common
