@@ -134,19 +134,19 @@ This file is necessary to the BgeeDB R package, and needs to be updated at each 
   `make`
 
 * After the `Data verification` step (see below):
-1. Upload the XRefs for UniProtKB to our [FTP server](ftp://ftp.bgee.org/), to the location `current/XRefBgee.txt` (so that it is accessible at the URL [ftp://ftp.bgee.org/current/XRefBgee.txt](ftp://ftp.bgee.org/current/XRefBgee.txt)). As of Bgee 13, this is done on the machine `ftpbgee`, from the path `/u01/ftp`.
+1. Upload the XRefs for UniProtKB to our [FTP server](https://bgee.org/ftp/), to the location `current/XRefBgee.txt` (so that it is accessible at the URL [https://bgee.org/ftp/current/XRefBgee.txt](https://bgee.org/ftp/current/XRefBgee.txt)). As of Bgee 13, this is done on the machine `ftpbgee`, from the path `/u01/ftp`.
 2. Similarly, upload the files containing rank information to FTP.
     1. Copy all zip files in `generated_files/download_files/ranks/anat_entity/` and  `generated_files/download_files/ranks/condition/` to the FTP, so that it is accessible at the URL [ftp://ftp.bgee.org/current/download/ranks/anat_entity/](ftp://ftp.bgee.org/current/download/ranks/anat_entity/) and [ftp://ftp.bgee.org/current/download/ranks/condition/](ftp://ftp.bgee.org/current/download/ranks/condition/). As of Bgee 13, this is done on the machine `ftpbgee`, from the path `/u01/ftp`.
     2. Update the file [generated_files/download_files/ranks/README.md](../../generated_files/download_files/ranks/README.md), notably to provide max rank information for current release, and copy it to FTP to be accessible at [ftp://ftp.bgee.org/current/download/ranks/README.md](ftp://ftp.bgee.org/current/download/ranks/README.md).
 3. Upload to FTP the expression call and processed data download files (TO BE WRITTEN)
-4. Don't forget to update the file `release.tsv` at the root of the [Bgee FTP](ftp://ftp.bgee.org/).
+4. Don't forget to update the file `release.tsv` at the root of the [Bgee FTP](https://bgee.org/ftp/).
 
 ## Data verification
 
 ### For XRefs from UniProtKB:
 * Check the file `generated_files/download_files/xref_uniprot_info`
 * Check the file `generated_files/download_files/XRefBgee.txt`
-* After uploading the new file `XRefBgee.txt` to our FTP at the location `current/XRefBgee.txt`, check that it is correctly accessible from [ftp://ftp.bgee.org/current/XRefBgee.txt](ftp://ftp.bgee.org/current/XRefBgee.txt)
+* After uploading the new file `XRefBgee.txt` to our FTP at the location `current/XRefBgee.txt`, check that it is correctly accessible from [https://bgee.org/ftp/current/XRefBgee.txt](https://bgee.org/ftp/current/XRefBgee.txt)
 
 ### For download files with rank info:
 * Check the file `generated_files/download_files/rank_files_info`. Be notably careful about file sizes.
