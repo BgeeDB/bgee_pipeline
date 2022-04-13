@@ -1064,7 +1064,7 @@ sub generateRnaSeqFiles {
         # XXX: left outer join to expression to retrieve the global call quality?
         $sql = 'SELECT t3.rnaSeqExperimentId, t1.rnaSeqLibraryId, t3.libraryType, t2.geneId, '
               .'t4.anatEntityId, t5.anatEntityName, t4.stageId, t6.stageName, t4.sex, t4.strain, '
-              .'t1.readsCount, t1.tpm, t1.fpkm, t1.rank, t1.detectionFlag, t1.pValue, '
+              .'t1.readsCount, t1.tpm, t1.fpkm, t1.rawRank, t1.detectionFlag, t1.pValue, '
               .'t1.expressionId, t1.reasonForExclusion, '
               # FIXME retrieve call type
               .'IF(t1.expressionId IS NOT NULL, "data", "no data") AS globalRnaSeqData '
@@ -1627,7 +1627,7 @@ sub generateFullLenghthScRnaSeqFiles {
         # XXX: left outer join to expression to retrieve the global call quality?
         $sql = 'SELECT t3.scRnaSeqFullLengthExperimentId, t1.scRnaSeqFullLengthLibraryId, t3.libraryType, t2.geneId, '
               .'t4.anatEntityId, t5.anatEntityName, t4.stageId, t6.stageName, t4.cellTypeId, t8.anatEntityName, t4.sex, t4.strain, '
-              .'t1.readsCount, t1.tpm, t1.fpkm, t1.rank, t1.detectionFlag, t1.pValue, '
+              .'t1.readsCount, t1.tpm, t1.fpkm, t1.rawRank, t1.detectionFlag, t1.pValue, '
               .'t1.expressionId, t1.reasonForExclusion, '
               # FIXME retrieve call type
               .'IF(t1.expressionId IS NOT NULL, "data", "no data") AS globalRnaSeqData '

@@ -774,7 +774,7 @@ create table affymetrixProbeset (
 -- rank is not "not null" because we update this information afterwards.
 -- note that this corresponds to the rank of the gene, not of the probeset
 -- (so, all probesets mapped to a same gene have the same rank, based on its highest signal intensity)
-    rank decimal(9, 2) unsigned,
+    rawRank decimal(9, 2) unsigned,
 -- Warning, qualities must be ordered, the index in the enum is used in many queries
     affymetrixData enum('no data', 'poor quality', 'high quality') not null default 'no data',
 -- When expressionId is null, the result is not used for the summary of expression.
@@ -990,7 +990,7 @@ create table rnaSeqResult (
     fpkm decimal(16, 6) not null COMMENT 'FPKM values, NOT log transformed',
     tpm decimal(16, 6) not null COMMENT 'TPM values, NOT log transformed',
 -- rank is not "not null" because we update this information afterwards
-    rank decimal(9, 2) unsigned,
+    rawRank decimal(9, 2) unsigned,
 -- for information, measure not normalized for reads or genes lengths
     readsCount decimal(16, 6) unsigned not null COMMENT 'As of Bgee 14, read counts are "estimated counts" produced using the Kallisto software. They are not normalized for read or gene lengths.',
 -- zScore can be negative
@@ -1141,7 +1141,7 @@ create table scRnaSeqFullLengthResult (
     fpkm decimal(16, 6) not null COMMENT 'FPKM values, NOT log transformed',
     tpm decimal(16, 6) not null COMMENT 'TPM values, NOT log transformed',
 -- rank is not "not null" because we update this information afterwards
-    rank decimal(9, 2) unsigned,
+    rawRank decimal(9, 2) unsigned,
 -- for information, measure not normalized for reads or genes lengths
     readsCount decimal(16, 6) unsigned not null COMMENT 'As of Bgee 14, read counts are "estimated counts" produced using the Kallisto software. They are not normalized for read or gene lengths.',
 -- zScore can be negative
@@ -1231,7 +1231,7 @@ create table scRnaSeqTargetBasedResult (
     umiCount smallint unsigned not null default 0,
     cpm decimal(20, 13) not null default 0 COMMENT 'CPMs are usually not log transformed',
 -- rank is not "not null" because we update this information afterwards
-    rank decimal(9, 2) unsigned,
+    rawRank decimal(9, 2) unsigned,
 -- zScore can be negative
     zScore decimal(35, 30),
     pValue decimal(31, 30) unsigned default null COMMENT 'present calls are based on the pValue',
