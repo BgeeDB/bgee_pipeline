@@ -150,11 +150,11 @@ $(OUTPUT_DIR)generate_processed_files:
 # =========================
 #TODO remove usage of each ID and use variable.
 $(OUTPUT_DIR)generate_anatomy_call_files:
-	@$(JAVA) GenerateBasicExprFile $(EMPTY_LIST) $(EXPR_SIMPLE_CAT)$(ENTRY_SEP)$(EXPR_COMPLETE_CAT) $(DOWNLOAD_FILE_ROOT_PATH)$(EXPR_CALLS_PATH) $(ORGAN_PARAM) > $@.tmp 2>$@.warnings
+	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)  GenerateBasicExprFile $(EMPTY_LIST) $(EXPR_SIMPLE_CAT)$(ENTRY_SEP)$(EXPR_COMPLETE_CAT) $(DOWNLOAD_FILE_ROOT_PATH)$(EXPR_CALLS_PATH) $(ORGAN_PARAM) 100 > $@.tmp 2>$@.warnings
 	@$(MV) $@.tmp $@
 
 $(OUTPUT_DIR)generate_all_cond_params_call_files:
-	@$(JAVA) GenerateBasicExprFile $(EMPTY_LIST) $(EXPR_SIMPLE_CAT)$(ENTRY_SEP)$(EXPR_COMPLETE_CAT) $(DOWNLOAD_FILE_ROOT_PATH)$(EXPR_CALLS_PATH) $(ALL_COND_PARAM) > $@.tmp 2>$@.warnings
+	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=9 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)  GenerateBasicExprFile $(ENPTY_LIST) $(EXPR_SIMPLE_CAT)$(ENTRY_SEP)$(EXPR_COMPLETE_CAT) $(DOWNLOAD_FILE_ROOT_PATH)$(EXPR_CALLS_PATH) $(ALL_COND_PARAM) 30 > $@.tmp 2>$@.warnings
 	@$(MV) $@.tmp $@
 
 #TODO check it, not used because of usage of different servers
@@ -178,7 +178,7 @@ $(OUTPUT_DIR)insert_download_files_info: $(OUTPUT_DIR)generate_processed_files $
 ######################################################
 
 # =========================
-# XRefs from UniProt
+# XRefs with expression information
 # =========================
 # IDs of data source Uniprot/SPTREMBL and Uniprot/SWISSPROT in our database 
 # (see pipeline/db_creation/insert_data_sources.sql) 
@@ -211,25 +211,29 @@ XREF_FILE := $(OUTPUT_DIR)XRefBgee.txt
 # AND uniqueMapping.uniqueGeneId IS NOT NULL 
 # ORDER BY uniqueMapping.uniqueGeneId, t1.XRefId;
 
-XREF_SQL_QUERY := SELECT DISTINCT t1.XRefId as uniprotId, uniqueMapping.uniqueGeneId as ensemblId, uniqueMapping.speciesId as speciesId FROM geneXRef AS t1 INNER JOIN (SELECT t1.XRefId, (SELECT t4.geneId FROM geneXRef AS t2 INNER JOIN gene AS t4 ON t2.bgeeGeneId = t4.bgeeGeneId WHERE t2.XRefId = t1.XRefId AND EXISTS (SELECT 1 FROM expression as t3 WHERE t3.bgeeGeneId = t2.bgeeGeneId) ORDER BY t4.geneId LIMIT 1) AS uniqueGeneId, (SELECT t4.speciesId FROM geneXRef AS t2 INNER JOIN gene AS t4 ON t2.bgeeGeneId = t4.bgeeGeneId WHERE t2.XRefId = t1.XRefId AND EXISTS (SELECT 1 FROM expression as t3 WHERE t3.bgeeGeneId = t2.bgeeGeneId) ORDER BY t4.geneId LIMIT 1) AS speciesId  FROM geneXRef AS t1) AS uniqueMapping ON t1.XRefId = uniqueMapping.XRefId WHERE t1.dataSourceId IN ($(TREMBL_ID), $(SWISSPROT_ID)) AND t1.XRefId IS NOT NULL AND t1.XRefId != '' AND t1.XRefId NOT LIKE '%\_%' AND uniqueMapping.uniqueGeneId IS NOT NULL ORDER BY uniqueMapping.uniqueGeneId, t1.XRefId;
+XREF_SQL_QUERY := SELECT DISTINCT t1.XRefId as uniprotId, uniqueMapping.uniqueGeneId as geneId, uniqueMapping.speciesId as speciesId FROM geneXRef AS t1 INNER JOIN (SELECT t1.XRefId, (SELECT t4.geneId FROM geneXRef AS t2 INNER JOIN gene AS t4 ON t2.bgeeGeneId = t4.bgeeGeneId WHERE t2.XRefId = t1.XRefId AND EXISTS (SELECT 1 FROM expression as t3 WHERE t3.bgeeGeneId = t2.bgeeGeneId) ORDER BY t4.geneId LIMIT 1) AS uniqueGeneId, (SELECT t4.speciesId FROM geneXRef AS t2 INNER JOIN gene AS t4 ON t2.bgeeGeneId = t4.bgeeGeneId WHERE t2.XRefId = t1.XRefId AND EXISTS (SELECT 1 FROM expression as t3 WHERE t3.bgeeGeneId = t2.bgeeGeneId) ORDER BY t4.geneId LIMIT 1) AS speciesId  FROM geneXRef AS t1) AS uniqueMapping ON t1.XRefId = uniqueMapping.XRefId WHERE t1.dataSourceId IN ($(TREMBL_ID), $(SWISSPROT_ID)) AND t1.XRefId IS NOT NULL AND t1.XRefId != '' AND t1.XRefId NOT LIKE '%\_%' AND uniqueMapping.uniqueGeneId IS NOT NULL ORDER BY uniqueMapping.uniqueGeneId, t1.XRefId;
+
+WIKIDATA_UBERON_IDS := "https://bgee.org/sparql/?default-graph-uri=&query=%23%23%23%23%23%23%0D%0A%23%23+Wikidata+SPARQL+query+to+get+UBERON+ids.%0D%0A%23%23%23%23%23%23%0D%0APREFIX+wd%3A+%3Chttp%3A%2F%2Fwww.wikidata.org%2Fentity%2F%3E%0D%0APREFIX+wdt%3A+%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Fdirect%2F%3E%0D%0APREFIX+p%3A+%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2F%3E%0D%0APREFIX+pr%3A+%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Freference%2F%3E%0D%0APREFIX+prov%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fprov%23%3E%0D%0A%0D%0ASELECT+DISTINCT+%3Fuberon_id_prefixed%0D%0AWHERE+%0D%0A%7Bservice%3Chttps%3A%2F%2Fquery.wikidata.org%2Fbigdata%2Fnamespace%2Fwdq%2Fsparql%3E%7B%0D%0A++%7B%3Fitem+wdt%3AP1554+%3Fuberon_id.%0D%0A+++BIND%28CONCAT%28STR%28%22UBERON%3A%22%29%2CSTR%28%3Fuberon_id%29%29+as+%3Fuberon_id_prefixed%29+%7D%0D%0A++UNION%0D%0A+++%7B%0D%0A++++%3Fitem+wdt%3AP7963+%3Fonto_cl_id%0D%0A++++BIND%28REPLACE%28STR%28%3Fonto_cl_id%29%2C%22_%22%2C%22%3A%22%29+as+%3Fuberon_id_prefixed%29+%0D%0A+%7D+%7D%7D%0D%0A&should-sponge=&format=text%2Fcsv&timeout=0&debug=on&run=+Run+Query+"
+
+UBERON_WIKIDATA_FILE_PATH := $(OUTPUT_DIR)uberon_wikidata.txt
+
+XREFS_TO_GENERATE := WIKIDATA,UNIPROT,GENE_CARDS
 
 ##TODO Remove the XREF_SQL_QUERY query and implement all steps of uniprot XRef generation in Java
-$(OUTPUT_DIR)xref_uniprot_info: 
-	@$(MYSQL) -e "$(XREF_SQL_QUERY)" > $(XREF_FILE).tmp 2>$@.warnings
-	@$(JAVA) GenerateUniprotXRef $(XREF_FILE).tmp $(XREF_FILE).tmp.withexpr
-	$(MV) $(XREF_FILE).tmp.withexpr $(XREF_FILE)
-	@$(RM) $(XREF_FILE).tmp $(XREF_FILE).tmp.withexpr
- 
-	
-# create a verification file
-# First, we display the targeted data sources, so that we can detect 
-# incorrect data source IDs used (TREMBL_ID and SWISSPROT_ID)
-	@echo "Data sources used for mapping \nIt is very important that it corresponds to TREMBL and SWISSPROT: " > $@.temp
+#Generate XRefs for different datasources. As for Bgee 15.0 these datasources are uniprot, genecards and wikidata
+$(OUTPUT_DIR)generate_xrefs: 
+	#@$(MYSQL) -e "$(XREF_SQL_QUERY)" > $(XREF_FILE).tmp 2>$@.warnings
+	@$(WGET) -O $(UBERON_WIKIDATA_FILE_PATH) $(WIKIDATA_UBERON_IDS) > $@.temp 2> $@.warnings
+	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR) GenerateXRefs $(XREF_FILE).tmp /var/lib/mysql/tmp/xrefs/ $(UBERON_WIKIDATA_FILE_PATH) $(XREFS_TO_GENERATE) > $@.temp 2> $@.warnings
+	# create a verification file
+	# First, we display the targeted data sources, so that we can detect 
+	# incorrect data source IDs used (TREMBL_ID and SWISSPROT_ID)
+	@echo "Data sources used for mapping \nIt is very important that it corresponds to TREMBL and SWISSPROT: " >> $@.temp
 	@$(MYSQL) -e "SELECT * FROM dataSource WHERE dataSourceId IN ($(TREMBL_ID), $(SWISSPROT_ID))" >> $@.temp  2>>$@.warnings
 	@echo "\n\nNumber of expected mappings in XRef file: " >> $@.temp
 	@$(MYSQL) -e "SELECT COUNT(DISTINCT t1.XRefId) FROM geneXRef AS t1 WHERE dataSourceId IN ($(TREMBL_ID), $(SWISSPROT_ID)) AND EXISTS (SELECT 1 FROM expression AS t2 WHERE t2.bgeeGeneId = t1.bgeeGeneId)" >> $@.temp 2>>$@.warnings
-	@echo "\nNumber of lines in actual XRef file: " >> $@.temp
-	@wc -l $(XREF_FILE) >> $@.temp
+	@echo "\nNumber of lines in UniProt XRef file: " >> $@.temp
+	@wc -l $(XREF_FILE).tmp >> $@.temp
 	@echo "\nNumber of mappings per species: " >> $@.temp
 	@$(MYSQL) -e "SELECT t3.speciesId, t4.speciesCommonName, CONCAT(t4.genus, ' ', t4.species) AS species, COUNT(DISTINCT t1.XRefId) FROM geneXRef AS t1 INNER JOIN gene AS t3 ON t1.bgeeGeneId = t3.bgeeGeneId INNER JOIN species AS t4 ON t3.speciesId = t4.speciesId WHERE t1.dataSourceId IN ($(TREMBL_ID), $(SWISSPROT_ID)) AND EXISTS (SELECT 1 FROM expression AS t2 WHERE t2.bgeeGeneId = t1.bgeeGeneId) GROUP BY t3.speciesId" >> $@.temp 2>>$@.warnings
 	@echo "\n\nNumber of ambiguous mappings per species (we forced the choice of one mapping in these cases): " >> $@.temp
@@ -237,7 +241,6 @@ $(OUTPUT_DIR)xref_uniprot_info:
 	@echo "\nTotal number of ambiguous mappings: " >> $@.temp
 	@$(MYSQL) -e "SELECT COUNT(*) FROM (SELECT t1.XRefId FROM geneXRef AS t1 WHERE t1.dataSourceId IN ($(TREMBL_ID), $(SWISSPROT_ID)) AND EXISTS (SELECT 1 FROM expression as t3 WHERE t3.bgeeGeneId = t1.bgeeGeneId) GROUP BY t1.XRefId HAVING COUNT(DISTINCT t1.bgeeGeneId) > 1) AS multipleGeneCount" >> $@.temp 2>>$@.warnings
 	@$(MV) $@.temp $@
-
 # =========================
 # Download files with rank info
 # =========================
