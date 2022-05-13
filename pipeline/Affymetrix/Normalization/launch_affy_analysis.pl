@@ -9,7 +9,7 @@ use diagnostics;
 # USAGE: perl launch_affy_analysis.pl
 #        perl launch_affy_analysis.pl <EXP_ID>
 
-# Run this script on vital-IT:
+# Run this script on cluster:
 # To do:
 #
 # rsync -Wav -essh ~/work/bgee/extra/pipeline/pipeline/*.pl jroux@Rserv.vital-it.ch:/scratch/temporary/jroux/pipeline/pipeline/
@@ -31,7 +31,7 @@ use diagnostics;
 
 use Getopt::Long;
 use FindBin;
-
+use lib '.';
 require 'affy_utils.pl';
 require 'bgee_utils.pl';
 
@@ -66,6 +66,9 @@ if ( !$test_options || $affymetrixChip eq '' || $affyChipInformation eq '' || $c
 }
 
 
+system("mkdir -p $bioconductorout")==0     or die "Cannot mkdir [$bioconductorout]\n";
+system("mkdir -p $bioconductoraffin")==0   or die "Cannot mkdir [$bioconductoraffin]\n";
+system("mkdir -p $processed_schuster")==0  or die "Cannot mkdir [$processed_schuster]\n";
 $| = 1; # stdout not in memory buffer
 
 
@@ -191,8 +194,6 @@ for my $exp ( sort keys %chip ){
             $cel_files = $cel_files.')';
 
             # Launch R script
-            ## R CMD BATCH --no-save --no-restore '--args celpath=$path_cel.$exp filenames=$cel_files array=$array processed=$path_processed.$exp' affy_analysis.R $exp_$array.out
-
             my @args = ("R CMD BATCH --no-save --no-restore '--args celpath=\"".$path_cel.$exp."\" filenames=".$cel_files." array=\"".$array."\" processed=\"".$path_processed.$exp."/\" affin=\"".$bioconductoraffin."\"' $FindBin::Bin/affy_analysis.R ".$path_out.$file_name);
             system(@args)==0  or do{warn "\tsystem @args failed: $? "; system("mv $path_out$file_name $path_out$file_name.PROB");};
         }

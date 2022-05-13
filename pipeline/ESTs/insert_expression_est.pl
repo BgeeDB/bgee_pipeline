@@ -15,24 +15,22 @@ $| = 1; # stdout not out in memory buffer
 
 # Define arguments & their default value
 my ($bgee_connector) = ('');
-my ($debug)          = (0); 
+my ($debug)          = (0);
 my %opts = ('bgee=s' => \$bgee_connector,     # Bgee connector string
-            'debug'      => \$debug
+            'debug'  => \$debug,
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $bgee_connector eq '' ){
     print "\n\tInvalid or missing argument:
-\te.g. $0  -bgee=user=username__pass=mypass__host=127.0.0.1__port=3306__name=bgee_v14
+\te.g. $0  -bgee=user=username__pass=mypass__host=127.0.0.1__port=3306__name=bgee_v15
 \t-bgee      Bgee connector string
 \t-debug     printing the update/insert SQL queries, not executing them
 \n";
     exit 1;
 }
 
-
-my $threshold = 7; # Quality threshold: count >= 7 means high quality, see Audic and Claverie 1997
 
 # Bgee db connection
 my $bgee = Utils::connect_bgee_db($bgee_connector);
@@ -51,7 +49,7 @@ while ( my @data = $queryConditions->fetchrow_array ){
     push(@exprMappedConditions, $data[0]);
 }
 
-print "Done, ", scalar(@exprMappedConditions), " conditions retrieved.\n";
+print 'Done, ', scalar(@exprMappedConditions), " conditions retrieved.\n";
 
 ##########################################
 # PREPARE QUERIES                        #
@@ -66,13 +64,16 @@ my $insUpExpr   = $bgee->prepare('INSERT INTO expression (bgeeGeneId, conditionI
 my $updResult = $bgee->prepare('UPDATE expressedSequenceTag AS t1
                                 INNER JOIN estLibrary AS t2 ON t1.estLibraryId = t2.estLibraryId
                                 INNER JOIN cond AS t3 ON t2.conditionId = t3.conditionId
-                                SET expressionId = ? 
+                                SET expressionId = ?
                                 WHERE bgeeGeneId = ? and t3.exprMappedConditionId = ?');
 
 # Insertion into estLibraryExpression
 my $insExpSummary = $bgee->prepare('INSERT INTO estLibraryExpression
-                                    (expressionId, estLibraryId, estCount, estLibraryCallQuality) 
-                                    VALUES (?, ?, ?, ?)');
+                                    (expressionId, estLibraryId, estCount)
+                                    VALUES (?, ?, ?)');
+
+# Add p-value in expressedSequenceTag
+my $updPVal = $bgee->prepare('UPDATE expressedSequenceTag SET pValue=? WHERE expressionId=? AND estLibraryId=?');
 
 # query to get all EST results for a condition
 my $queryResults = $bgee->prepare("SELECT t1.bgeeGeneId, t1.estLibraryId, count(distinct estId)
@@ -116,12 +117,12 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
     # now iterating the genes to insert expression data
     # (one row for a gene-condition)
     for my $geneId ( keys %results ){
-    	# Because there is no EST "experiments" (EST libraries are considered independent), 
-    	# and because EST data can only produced "present" expression calls, 
-    	# we don't use the method Utils::summarizeExperimentCallAndQuality(\%{$results{$geneId}}
+        # Because there is no EST "experiments" (EST libraries are considered independent),
+        # and because EST data can only produced "present" expression calls,
+        # we don't use the method Utils::summarizeExperimentCallAndQuality(\%{$results{$geneId}}
 
-        my $expressionId   = undef;
-        
+        my $expressionId = undef;
+
         # insert or update the expression table
         if ( $debug ){
             print "INSERT INTO expression (bgeeGeneId, conditionId) VALUES ($geneId, $exprMappedConditionId)...\n";
@@ -135,27 +136,26 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
             print "UPDATE expressedSequenceTag AS t1
                    INNER JOIN estLibrary AS t2 ON t1.estLibraryId = t2.estLibraryId
                    INNER JOIN cond AS t3 ON t2.conditionId = t3.conditionId
-                   SET expressionId = $printExprId 
+                   SET expressionId = $printExprId
                    WHERE bgeeGeneId = $geneId and t3.exprMappedConditionId = $exprMappedConditionId\n";
-            for my $libId ( keys %{ $results{$geneId} } ) {
-                my $qual = $results{$geneId}->{$libId} >= $threshold? $Utils::HIGH_QUAL: $Utils::LOW_QUAL;
-                
+            for my $libId ( keys %{ $results{$geneId} } ){
                 print "INSERT INTO estLibraryExpression
-                           (expressionId, estLibraryId, estCount, estLibraryCallQuality) 
-                       VALUES ($printExprId, $libId, 
-                    $results{$geneId}->{$libId},
-                    $qual)\n";
+                           (expressionId, estLibraryId, estCount)
+                       VALUES ($printExprId, $libId,
+                       $results{$geneId}->{$libId})\n";
+
+                my $pval = 2**(-($results{$geneId}->{$libId}+1));
+                print "UPDATE expressedSequenceTag SET pValue=$pval WHERE expressionId=$printExprId AND estLibraryId=$libId\n";
             }
         } else {
-            $updResult->execute($expressionId, $geneId, $exprMappedConditionId)
-                or die $updResult->errstr;
-            for my $libId ( keys %{ $results{$geneId} } ) {
-            	my $qual = $results{$geneId}->{$libId} >= $threshold? $Utils::HIGH_QUAL: $Utils::LOW_QUAL;
-            	
-                $insExpSummary->execute($expressionId, $libId, 
-                    $results{$geneId}->{$libId},
-                    $qual)
-                or die $insExpSummary->errstr;
+            $updResult->execute($expressionId, $geneId, $exprMappedConditionId)  or die $updResult->errstr;
+            for my $libId ( keys %{ $results{$geneId} } ){
+                $insExpSummary->execute($expressionId, $libId, $results{$geneId}->{$libId})
+                    or die $insExpSummary->errstr;
+
+                #p = 2^-(Count+1)
+                my $pval = 2**(-($results{$geneId}->{$libId}+1));
+                $updPVal->execute($pval, $expressionId, $libId)  or die $updPVal->errstr;
             }
         }
     }
@@ -165,3 +165,4 @@ $bgee->disconnect;
 print "Done\n"  if ( $debug );
 
 exit 0;
+

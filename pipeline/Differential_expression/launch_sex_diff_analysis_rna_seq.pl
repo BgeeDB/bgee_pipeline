@@ -31,12 +31,12 @@ my ($path_library_worm, $path_library) = ('', '');
 my ($path_target, $path_processed) = ('', '');
 my %opts = ('debug'                 => \$debug,            # more verbose
             'bgee=s'                => \$bgee_connector,   # Bgee connector string
-            'path_generes=s'        => \$path_generes,     # rna_seq/all_results_bgee_v14/
+            'path_generes=s'        => \$path_generes,     # rna_seq/all_results_bgee_v15/
             'path_library=s'        => \$path_library,     # bgee_pipeline/source_files/RNA_Seq/RNASeqLibrary.tsv
             'path_library_worm=s'   => \$path_library_worm,# bgee_pipeline/source_files/RNA_Seq/RNASeqLibrary_worm.tsv
             'abundance_file=s'      => \$abundance_file,   # abundance_gene_level+new_tpm+new_fpkm+calls.tsv
-            'path_target=s'         => \$path_target,      # name files for replicates rna_seq/bioconductor_bgee_v14/targets/sex/
-            'path_processed=s'      => \$path_processed,   # final result dir rna_seq/processed_differential_bgee_v14/sex/
+            'path_target=s'         => \$path_target,      # name files for replicates rna_seq/bioconductor_bgee_v15/targets/sex/
+            'path_processed=s'      => \$path_processed,   # final result dir rna_seq/processed_differential_bgee_v15/sex/
            );
 
 # Check arguments
@@ -46,12 +46,12 @@ if ( !$test_options || $bgee_connector eq '' || $path_generes eq '' || $abundanc
     print "\n\tInvalid or missing argument:
 \te.g. $0 -bgee=\$(BGEECMD) -path_generes=\$(RNASEQALLRES) -abundance_file=\$(RNASEQABUNDANCEFILE) -path_library=\$(RNASEQ_LIB_FILEPATH) -path_library_worm=\$(RNASEQ_LIB_FILEPATH_WORM) -path_target=\$(RNASEQBIOCONDUCTORTARG_SEX) -path_processed=\$(RNASEQDIFFEXPRPATH_SEX)  <expId>
 \t-bgee                 Bgee    connector string
-\t-path_generes         rna_seq/all_results_bgee_v14/                    directory path
+\t-path_generes         rna_seq/all_results_bgee_v15/                    directory path
 \t-path_library         bgee_pipeline/source_files/RNA_Seq/RNASeqLibrary.tsv
 \t-path_library_worm    bgee_pipeline/source_files/RNA_Seq/RNASeqLibrary_worm.tsv
 \t-abundance_file       abundance_gene_level+new_tpm+new_fpkm+calls.tsv  file name
-\t-path_target          rna_seq/bioconductor_bgee_v14/targets/sex        directory path
-\t-path_processed       rna_seq/processed_differential_bgee_v14/sex      directory path
+\t-path_target          rna_seq/bioconductor_bgee_v15/targets/sex        directory path
+\t-path_processed       rna_seq/processed_differential_bgee_v15/sex      directory path
 \t-debug                More verbose
 \n";
     exit 1;

@@ -8,7 +8,7 @@
 # that the username is bbgee, and that the files must be put in /db/ftp/pub/databases/Bgee/affymetrix_data/
 #
 #FIXME to redo completely: too many hard coded paths and mysql connection info
-#FIXME FTP is now on ftpbgee and files are on bigbgee !!!
+#FIXME FTP is now on ftpbgee and files are on sensitive cluster !!!
 #
 #############################################################
 
@@ -36,7 +36,7 @@ print "Done\n";
 
 print "Retrieving data from Bgee database...\n";
 # Get the chips that passed our QC procedures
-my $bgee_connector = 'user=root__pass=XXX__host=127.0.0.1__port=3306__name=bgee_v14';
+my $bgee_connector = 'user=root__pass=XXX__host=127.0.0.1__port=3306__name=bgee_v15';
 my $bgee  = Utils::connect_bgee_db($bgee_connector);
 my @chips = ();
 

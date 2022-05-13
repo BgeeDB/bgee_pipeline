@@ -3,8 +3,8 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
 -- [species_ensembl_link]: e.g., Drosophila_melanogaster
 (1, 'NCBI Taxonomy', '', '', '',
     'https://www.ncbi.nlm.nih.gov/taxonomy', 'Source taxonomy used in Bgee', 1, ''),
-(2, 'Ensembl', 'http://mar2016.archive.ensembl.org/[species_ensembl_link]/Gene/Summary?g=[gene_id]', '', '',
-    'http://mar2016.archive.ensembl.org/',
+(2, 'Ensembl', 'https://nov2020.archive.ensembl.org/[species_ensembl_link]/Gene/Summary?g=[gene_id]', '', '',
+    'https://nov2020.archive.ensembl.org/',
     'Source for gene annotations, mappings to the Gene Ontology, mappings to Affymetrix probeset IDs, and cross-references to other databases',
     1, 'Genomics database'),
 (3, 'EMBL', 'https://www.ebi.ac.uk/ena/data/view/[xref_id]', '', '',
@@ -27,8 +27,8 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
     'http://flybase.org/', 'Drosophila in situ data source', 1, 'In situ data source'),
 (11, 'ArrayExpress', '', 'https://www.ebi.ac.uk/arrayexpress/experiments/[experiment_id]', '',
     'https://www.ebi.ac.uk/arrayexpress/', 'Affymetrix data source for various species', 1, 'Affymetrix data source'),
-(12, 'UniGene', '', 'https://www.ncbi.nlm.nih.gov/UniGene/library.cgi?LID=[experiment_id]', 'https://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?db=nucest&id=[evidence_id]',
-    'https://www.ncbi.nlm.nih.gov/unigene/', 'EST data source for various species', 1, 'EST data source'),
+(12, 'UniGene', '', '', 'https://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?db=nucest&id=[evidence_id]',
+    'https://ncbiinsights.ncbi.nlm.nih.gov/2019/07/30/the-unigene-web-pages-are-now-retired/', 'EST data source for various species', 1, 'EST data source'),
 (13, 'smiRNAdb', '', '', '',
     'http://www.mirz.unibas.ch/cloningprofiles/', 'EST data for miRNAs', 1, 'EST data source'),
 (14, 'BDGP', '', 'http://insitu.fruitfly.org/cgi-bin/ex/report.pl?ftype=3&ftext=[experiment_id]', '',
@@ -43,7 +43,7 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
     'http://geneontology.org/page/download-ontology', 'Filtered Gene Ontology', 1, 'Ontology'),
 (19, 'SRA', '', 'https://www.ncbi.nlm.nih.gov/sra/[experiment_id]', 'https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?cmd=viewer&m=data&s=viewer&run=[evidence_id]',
     'https://www.ncbi.nlm.nih.gov/sra/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source'),
-(20, 'HGNC', 'http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=[xref_id]', '', '',
+(20, 'HGNC', 'https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/[xref_id]', '', '',
     'http://www.genenames.org/', 'HUGO (Human Genome Organisation - and Primates) Gene Nomenclature Committee', 0, 'Genomics database'),
 (21, 'CCDS', 'https://www.ncbi.nlm.nih.gov/CCDS/CcdsBrowse.cgi?REQUEST=ALLFIELDS&DATA=[xref_id]&ORGANISM=0&BUILDS=CURRENTBUILDS', '', '',
     'https://www.ncbi.nlm.nih.gov/CCDS/CcdsBrowse.cgi', 'Consensus CDS (CCDS) project', 0, 'Genomics database'),
@@ -51,8 +51,8 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
     'https://rgd.mcw.edu/', 'RGD - Rat Genome Database', 0, 'Genomics database'),
 (23, 'WormBase', 'https://www.wormbase.org/species/c_elegans/gene/[xref_id]', '', '',
     'https://www.wormbase.org', 'WormBase - Nematode Information Resource', 1, 'In situ data source'),
-(24, 'EnsemblMetazoa', 'http://metazoa.ensembl.org/[species_ensembl_link]/Gene/Summary?g=[gene_id]', '', '',
-    'http://metazoa.ensembl.org/',
+(24, 'EnsemblMetazoa', 'https://eg49-metazoa.ensembl.org/[species_ensembl_link]/Gene/Summary?g=[gene_id]', '', '',
+    'https://eg49-metazoa.ensembl.org/',
     'Source for gene annotations, mappings to the Gene Ontology, mappings to Affymetrix probeset IDs, and cross-references to other databases',
     1, 'Genomics database'),
 (25, 'Bgee', '', '', '', 'https://bgee.org/', 'Gene expression data in animals', 0, ''),
@@ -60,7 +60,7 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
     'http://uberon.org/', 'Integrated cross-species ontology covering anatomical structures in animals. Use of the subset "composite-metazoan".', 1, 'Ontology'),
 (27, 'Developmental stage ontologies', '', '', '',
     'https://github.com/obophenotype/developmental-stage-ontologies/', 'Collection of developmental and life stage ontologies in animals. Integrated into Uberon.', 1, 'Ontology'),
-(28, 'OMA', '', '', '',
+(28, 'OMA', 'https://omabrowser.org/oma/[homology_type]/[gene_id]', '', '',
     'http://omabrowser.org/', 'Source of gene orthology information', 1, 'Genomics database'),
 (29, 'Anatomical similarity annotations', '', '', '',
     'https://github.com/BgeeDB/anatomical-similarity-annotations/', 'Define evolutionary relations between anatomical entities described in the Uberon ontology', 1, ''),
@@ -76,8 +76,11 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
      'https://ddbj.nig.ac.jp/DRASearch/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source'),
 (35, 'GSA', '', 'http://bigd.big.ac.cn/search?dbId=gsa&q=[experiment_id]', 'http://bigd.big.ac.cn/gsa/browse/[experiment_id]/[evidence_id]',
      'http://bigd.big.ac.cn/gsa/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source'),
-(36, 'OncoMX', 'https://oncomx.org/searchview/?gene=[xref_id]', '', '', 'https://www.oncomx.org', 'Integrated cancer mutation and expression resource', 0, '');
-
+(36, 'OncoMX', 'https://oncomx.org/searchview/?gene=[xref_id]', '', '', 'https://www.oncomx.org', 'Integrated cancer mutation and expression resource', 0, ''),
+(37, 'RefSeq', 'https://www.ncbi.nlm.nih.gov/nuccore/[xref_id]/', '', '', 'https://www.ncbi.nlm.nih.gov/refseq/', 'Source for genome assembly and annotations', 1, 'Genomics database'),
+(38, 'GenBank', 'https://www.ncbi.nlm.nih.gov/nuccore/[xref_id]/', '', '', 'https://www.ncbi.nlm.nih.gov/genbank/', 'Source for genome assembly and annotations', 0, 'Genomics database'),
+(39, 'Amphiencode', '', '', '', 'https://amphiencode.github.io/Data/', 'Source for the European amphioxus annotations', 1, 'Genomics database'),
+(40, 'GeneCards', 'https://www.genecards.org/cgi-bin/carddisp.pl?gene=[xref_id]', '', '', 'https://www.genecards.org/', 'GeneCards is a searchable, integrative database that provides comprehensive, user-friendly information on all annotated and predicted human genes.', 0, '');
 
 -- Add "ghost" sources, because a source can only be part of one category, so rather than
 -- creating a link table, we do this ugly hack
@@ -87,4 +90,6 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
 (100, 'GEO', '', 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=[experiment_id]', 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=[evidence_id]',
     'https://www.ncbi.nlm.nih.gov/geo/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source'),
 (101, 'ArrayExpress', '', 'https://www.ebi.ac.uk/arrayexpress/experiments/[experiment_id]', '',
-	'https://www.ebi.ac.uk/arrayexpress/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source');
+	'https://www.ebi.ac.uk/arrayexpress/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source'),
+(102, 'SRA', '', 'https://www.ncbi.nlm.nih.gov/sra/[experiment_id]', 'https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?cmd=viewer&m=data&s=viewer&run=[evidence_id]',
+    'https://www.ncbi.nlm.nih.gov/sra/', 'Single-cell RNA-Seq data source for various species', 1, 'Single-cell RNA-Seq data source');

@@ -12,7 +12,6 @@ use DBI;
 use File::Basename;
 use File::Slurp;
 use IO::Socket;
-use List::MoreUtils qw(uniq);
 use Spreadsheet::Read qw{ReadData row};
 
 # flush after every write
@@ -33,6 +32,7 @@ our $CALL_NOT_EXCLUDED             = 'not excluded';
 our $EXCLUDED_FOR_UNDEFINED        = 'undefined';
 our $EXCLUDED_FOR_PRE_FILTERED     = 'pre-filtering';
 our $EXCLUDED_FOR_NO_EXPR_CONFLICT = 'noExpression conflict';
+our $EXCLUDED_FOR_ABSENT_CALLS     = 'absent call not reliable';
 
 
 # Define some variables to be used through the whole pipeline to consistently capture sex info,
@@ -54,11 +54,12 @@ our @STANDARDIZED_STRAIN_INFO = ($WILD_TYPE_STRAIN, $NA_STRAIN, $NOT_ANNOTATED_S
 our @NO_ANNOT_STRAIN_INFO     = ($WILD_TYPE_STRAIN, $NOT_ANNOTATED_STRAIN, $NA_STRAIN, $CRD_STRAIN);
 
 
-our $EST_DATA_TYPE     = 'est';
-our $AFFY_DATA_TYPE    = 'affymetrix';
-our $IN_SITU_DATA_TYPE = 'inSitu';
-our $RNA_SEQ_DATA_TYPE = 'rnaSeq';
-our @DATA_TYPES        = ($EST_DATA_TYPE, $AFFY_DATA_TYPE, $IN_SITU_DATA_TYPE, $RNA_SEQ_DATA_TYPE);
+our $EST_DATA_TYPE                 = 'est';
+our $AFFY_DATA_TYPE                = 'affymetrix';
+our $IN_SITU_DATA_TYPE             = 'inSitu';
+our $RNA_SEQ_DATA_TYPE             = 'rnaSeq';
+our $FULL_LENGTH_RNA_SEQ_DATA_TYPE = 'fullLengthRnaSeq';
+our @DATA_TYPES                    = ($EST_DATA_TYPE, $AFFY_DATA_TYPE, $IN_SITU_DATA_TYPE, $RNA_SEQ_DATA_TYPE, $FULL_LENGTH_RNA_SEQ_DATA_TYPE);
 
 
 # Variables used for computing ranks
@@ -66,7 +67,118 @@ our $ANAT_ENTITY_PARAM    = 'anatEntityId';
 our $STAGE_PARAM          = 'stageId';
 our $SEX_PARAM            = 'sex';
 our $STRAIN_PARAM         = 'strain';
-our @CONDITION_PARAMETERS = ($ANAT_ENTITY_PARAM, $STAGE_PARAM, $SEX_PARAM, $STRAIN_PARAM);
+our $CELL_TYPE_PARAM      = 'cellTypeId';
+our @CONDITION_PARAMETERS = ($ANAT_ENTITY_PARAM, $STAGE_PARAM, $SEX_PARAM, $STRAIN_PARAM, $CELL_TYPE_PARAM);
+
+
+# Read STRAIN_MAPPING_FILE (StrainMapping.tsv) annotation file
+# to get strain mapping per species
+# to apply on generated source files before their first use
+sub get_strain_mapping {
+    my ($strain_file) = @_;
+
+    my $strain_mapping;
+    for my $strain_info ( grep { !/^#/ } map { s/"//g; $_ } read_file("$strain_file", chomp => 1) ){
+        #sourceStrain   targetStrain   speciesId   speciesName
+        my ($sourceStrain, $targetStrain, $speciesId, undef) = split(/\t/, $strain_info);
+        $strain_mapping->{$speciesId}->{$sourceStrain} = $targetStrain;
+    }
+
+    return $strain_mapping;
+}
+
+# Map strain names with consensus ones
+sub map_strain_names {
+    my ($expression_annotation_file, $strain_file) = @_;
+
+    # Get mapping
+    my $strain_mapping = get_strain_mapping($strain_file);
+
+    # Map on annotations
+    open(my $ANNOT, '<', "$expression_annotation_file")  or die "Cannot open $expression_annotation_file: $!\n";
+    while ( defined (my $line = <$ANNOT>) ){
+        my @fields = map { s/"//g; $_ } split(/\t/, $line);
+        # Case RNASeqLibrary_full.tsv: "strain"    taxid
+        if ( $expression_annotation_file =~ /RNASeqLibrary_full\.tsv/ ){
+            if ( exists $strain_mapping->{ $fields[21] }->{ $fields[20] } ){
+                my $source = quotemeta($fields[20]);
+                my $target = $strain_mapping->{ $fields[21] }->{ $fields[20] };
+                $line =~ s{"$source"\t$fields[21]\t}{"$target"\t$fields[21]\t};
+            }
+            print $line;
+        }
+        # Case scRNASeqLibrary.tsv (NOT_PASS_scRNASeqLibrary.tsv / NEW_scRNASeqLibrary.tsv): strain    speciesId
+        elsif ( $expression_annotation_file =~ /_scRNASeqLibrary\.tsv/ ){
+            if ( exists $strain_mapping->{ $fields[22] }->{ $fields[21] } ){
+                my $source = quotemeta($fields[21]);
+                my $target = $strain_mapping->{ $fields[22] }->{ $fields[21] };
+                $line =~ s{\t$source\t$fields[22]\t}{\t$target\t$fields[22]\t};
+            }
+            print $line;
+        }
+        # Case scrna_seq_sample_info.txt: speciesId ... strain
+        elsif ( $expression_annotation_file =~ /scrna_seq_sample_info\.txt/ ){
+            if ( exists $strain_mapping->{ $fields[4] }->{ $fields[14] } ){
+                my $source = quotemeta($fields[14]);
+                my $target = $strain_mapping->{ $fields[4] }->{ $fields[14] };
+                $line =~ s{\t$source\t}{\t$target\t};
+            }
+            print $line;
+        }
+        # Case affymetrixChip_full.tsv: "strain"    speciesId
+        elsif ( $expression_annotation_file =~ /affymetrixChip_full\.tsv/ ){
+            if ( exists $strain_mapping->{ $fields[23] }->{ $fields[22] } ){
+                my $source = quotemeta($fields[22]);
+                my $target = $strain_mapping->{ $fields[23] }->{ $fields[22] };
+                $line =~ s{"$source"\t$fields[23]\t}{"$target"\t$fields[23]\t};
+            }
+            print $line;
+        }
+        # Case in situ expr_pattern.ace: Strain    "..."
+        elsif ( $expression_annotation_file =~ /expr_pattern\.ace/ ){
+            #NOTE assume only C. elegans strains
+            if ( $fields[0] eq 'Strain' && exists $strain_mapping->{ 6239 }->{ $fields[1] } ){
+                my $source = quotemeta($fields[1]);
+                my $target = $strain_mapping->{ 6239 }->{ $fields[1] };
+                $line =~ s{^Strain\t"$source"}{Strain\t"$target"};
+            }
+            print $line;
+        }
+    }
+    close $ANNOT;
+
+    return;
+}
+
+sub start_transaction {
+	my ($dbh)= @_;
+
+    # We set autocommit to 1 so that we can define transaction isolation level
+    # *before* starting the next transaction, see https://www.perlmonks.org/?node_id=1074673
+    $dbh->{'AutoCommit'} = 1;
+    my $maxAttempt = 30;
+    my $i = 0;
+    TRANSACTION: while (1) {
+        my $succes = 0;
+        eval {
+            $dbh->do("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED");
+            $dbh->{'AutoCommit'} = 0;
+            $succes = 1;
+            1; #no exception
+        } or do {
+            if ($i < $maxAttempt - 1) {
+                print("Retrying start transaction\n");
+                sleep(2); # wait 2s before retrying
+            } else {
+                die('Starting transaction failed after '.($i + 1)." attempts\n");
+            }
+        };
+        if ($succes) {
+            last TRANSACTION;
+        }
+        $i++;
+    }
+}
 
 
 # A sub to retrieve condition parameter combinations with no rank yet computed
@@ -78,47 +190,17 @@ our @CONDITION_PARAMETERS = ($ANAT_ENTITY_PARAM, $STAGE_PARAM, $SEX_PARAM, $STRA
 # containing the desired condition parameters for this combination (see variable @CONDITION_PARAMETERS
 # for an array of valid condition parameters).
 sub get_cond_param_combinations {
-    my ($dbh, $dataType)= @_;
-
-    if ( !grep( /^$dataType$/, @DATA_TYPES ) ) {
-        die "Unrecognized data type: $dataType\n";
-    }
+    my ($dbh)= @_;
 
     my @condParamCombinations = ();
     my $sql = "
     SELECT DISTINCT
         IF(t1.anatEntityId IS NULL, 0, 1) AS anatEntityParam,
         IF(t1.stageId IS NULL, 0, 1) AS stageParam,
+        IF(t1.cellTypeId IS NULL, 0, 1) AS cellTypeParam,
         IF(t1.sex IS NULL, 0, 1) AS sexParam,
         IF(t1.strain IS NULL, 0, 1) AS strainParam
-    FROM globalCond AS t1 "
-#    .
-#    # identify condition parameter combinations with no rank already computed
-#    #for the requested data type
-#    "WHERE NOT EXISTS (
-#        SELECT 1 FROM globalCond AS t2
-#        WHERE ";
-#    if ($dataType eq $EST_DATA_TYPE) {
-#        $sql .= "estMaxRank IS NOT NULL";
-#    } elsif ($dataType eq $AFFY_DATA_TYPE) {
-#        $sql .= "affymetrixMaxRank IS NOT NULL";
-#    } elsif ($dataType eq $IN_SITU_DATA_TYPE) {
-#        $sql .= "inSituMaxRank IS NOT NULL";
-#    } elsif ($dataType eq $RNA_SEQ_DATA_TYPE) {
-#        $sql .= "rnaSeqMaxRank IS NOT NULL";
-#    } else {
-#        die "Unsupported data type: $dataType\n";
-#    }
-#    $sql .= " AND (t1.anatEntityId IS NULL AND t2.anatEntityId IS NULL OR
-#                 t1.anatEntityId IS NOT NULL AND t2.anatEntityId IS NOT NULL) AND
-#             (t1.stageId IS NULL AND t2.stageId IS NULL OR
-#                 t1.stageId IS NOT NULL AND t2.stageId IS NOT NULL) AND
-#             (t1.sex IS NULL AND t2.sex IS NULL OR
-#                 t1.sex IS NOT NULL AND t2.sex IS NOT NULL) AND
-#             (t1.strain IS NULL AND t2.strain IS NULL OR
-#                 t1.strain IS NOT NULL AND t2.strain IS NOT NULL)
-#    )"
-    ;
+    FROM globalCond AS t1 ";
 
     my $query = $dbh->prepare($sql);
     $query->execute()  or die $query->errstr;
@@ -132,6 +214,10 @@ sub get_cond_param_combinations {
             } elsif ( $column eq 'stageParam' ){
                 if ( $dataRef->{$column} == 1 ) {
                     push @localCondParamComb, $STAGE_PARAM;
+                }
+            } elsif ( $column eq 'cellTypeParam' ){
+                if ( $dataRef->{$column} == 1 ) {
+                    push @localCondParamComb, $CELL_TYPE_PARAM;
                 }
             } elsif ( $column eq 'sexParam' ){
                 if ( $dataRef->{$column} == 1 ) {
@@ -271,7 +357,7 @@ sub connect_mgi_db {
 
 ## spreadsheet reader (xls, xlsx, ods, xsc, tsv, csv)
 # and put columns in hash: header == key, rows == list
-## TO DO: this function is really messy. Needs to be cleaned up for clarity. It is also probably avoidable to write a temporary file
+## TODO this function is really messy. Needs to be cleaned up for clarity. It is also probably avoidable to write a temporary file
 sub read_spreadsheet {
     my ($file, $separator, $parser, $quote, $sheet) = @_;
 
@@ -641,11 +727,14 @@ sub get_anatomy_mapping {
 
 
 # Returns all conditions already inserted into the database.
-# Returned as a hash where keys are created from anatEntityId/stageId/speciesId/sex/strain information,
-# (see sub generate_condition_key), the associated value being a hash with two keys:
-# conditionId and exprMappedConditionId.
-# $conditions->{anatEntityId/stageId/speciesId/sex/strain}->{'conditionId'}           = conditionId and
-# $conditions->{anatEntityId/stageId/speciesId/sex/strain}->{'exprMappedConditionId'} = exprMappedConditionId)
+# Returned as a hash where keys are created from anatEntityId/stageId/speciesId/sex/strain/cellTypeId information,
+# (see sub generate_condition_key), the associated value being a hash with five keys:
+# conditionId, exprMappedConditionId, strain, speciesId, sexInference.
+# $conditions->{anatEntityId/stageId/speciesId/sex/strain/cellTypeId}->{'conditionId'}           = conditionId,
+# $conditions->{anatEntityId/stageId/speciesId/sex/strain/cellTypeId}->{'exprMappedConditionId'} = exprMappedConditionId,
+# $conditions->{anatEntityId/stageId/speciesId/sex/strain/cellTypeId}->{'strain'}                = strain,
+# $conditions->{anatEntityId/stageId/speciesId/sex/strain/cellTypeId}->{'speciesId'}             = speciesId,
+# $conditions->{anatEntityId/stageId/speciesId/sex/strain/cellTypeId}->{'sexInference'}          = sexInference)
 # conditionId: real ID of the condition
 # exprMappedConditionId: ID of the corresponding not-too-granular condition,
 # to use for insertion into the expression table, if the condition is too granular.
@@ -656,18 +745,19 @@ sub query_conditions {
     my ($dbh) = @_;
 
     my $cond = $dbh->prepare('SELECT conditionId, exprMappedConditionId,
-            anatEntityId, stageId, speciesId, sex, sexInferred, strain FROM cond');
+            anatEntityId, cellTypeId, stageId, speciesId, sex, sexInferred, strain FROM cond');
     $cond->execute()  or die $cond->errstr;
     my $cond_ref = $cond->fetchall_arrayref;
 
     my $conditions;
     map {
-        my $condKey = generate_condition_key($_->[2], $_->[3], $_->[4], $_->[5], $_->[6], $_->[7]);
+        # anatEntityId, stageId, speciesId, sex, sexInferred, strain, cellTypeId
+        my $condKey = generate_condition_key($_->[2], $_->[4], $_->[5], $_->[6], $_->[7], $_->[8], $_->[3]);
         $conditions->{ $condKey }->{'conditionId'}           = $_->[0];
         $conditions->{ $condKey }->{'exprMappedConditionId'} = $_->[1];
-        $conditions->{ $condKey }->{'strain'}                = $_->[7];
-        $conditions->{ $condKey }->{'speciesId'}             = $_->[4];
-        $conditions->{ $condKey }->{ 'sexInference' }        = $_->[6];
+        $conditions->{ $condKey }->{'strain'}                = $_->[8];
+        $conditions->{ $condKey }->{'speciesId'}             = $_->[5];
+        $conditions->{ $condKey }->{'sexInference'}          = $_->[7];
     }  @{ $cond_ref };
 
     return $conditions;
@@ -789,6 +879,7 @@ sub infer_sex {
     return;
 }
 
+
 # Insert the requested condition into database and $conditions hash if not already existing,
 # and return the condition in any case. If the condition is too granular for the expression table,
 # the corresponding not-too-granular condition will also be created and inserted if not existing.
@@ -796,10 +887,11 @@ sub infer_sex {
 # 'get_anat_sex_info', and 'get_species_sex_info'.
 sub insert_get_condition {
     my ($dbh, $conditions, $stage_equivalences, $anatEntityId, $stageId, $speciesId, $sex, $strain,
-        $anatSexInfo, $speciesSexInfo, $expId, $geneId) = @_;
+        $anatSexInfo, $speciesSexInfo, $expId, $geneId, $cellTypeId) = @_;
 
     $expId  = $expId  || ''; # In case $expId is not provided
     $geneId = $geneId || ''; # In case $expId is not provided
+    $cellTypeId = $cellTypeId || ''; # In case $cellTypeId is not provided
 
     # ====================================
     # SANITY CHECKS
@@ -838,6 +930,7 @@ sub insert_get_condition {
     # Some terms can be potentially assigned different sexes, e.g.,
     # CL:0000023 "oocyte" can belong to both female and hermaphroditic organisms, so we also need
     # some information about the species considered.
+    # XXX: should we also try to infer sex from cell type (anatEntity2) ?
     my $sexNotInferred = 0;
     my $sexToUse       = $sex;
     my $sexInference   = $sexNotInferred; # use 0/1 for key generation and database insertion
@@ -861,7 +954,7 @@ sub insert_get_condition {
     # RETRIEVE CONDITION IF EXISTING
     # ====================================
     # Generate a unique condition key for the provided parameters
-    my $condKey = generate_condition_key($anatEntityId, $stageId, $speciesId, $sexToUse, $sexInference, $strain);
+    my $condKey = generate_condition_key($anatEntityId, $stageId, $speciesId, $sexToUse, $sexInference, $strain, $cellTypeId);
 
     # If this condition is already available, nothing to do
     if ( defined $conditions->{$condKey} ){
@@ -912,8 +1005,8 @@ sub insert_get_condition {
         $mappedStrainToUse = $WILD_TYPE_STRAIN;
     }
 
-    my $exprMappedCondKey = generate_condition_key($anatEntityId, $stage_equivalences->{ $stageId },
-            $speciesId, $mappedSexToUse, $sexNotInferred, $mappedStrainToUse);
+    my $exprMappedCondKey = generate_condition_key($anatEntityId, $stage_equivalences->{ $stageId }, 
+        $speciesId, $mappedSexToUse, $sexNotInferred, $mappedStrainToUse, $cellTypeId);
     my $exprMappedCondId = $condId;
 
     # condition too granular or with sex inferred or NA
@@ -926,9 +1019,9 @@ sub insert_get_condition {
             $exprMappedCondId = $condId;
             $condId = $exprMappedCondId + 1;
             # Not-too-granular conditions are mapped to themselves
-            insert_condition($dbh, $exprMappedCondId, $exprMappedCondId,
-                    $anatEntityId, $stage_equivalences->{ $stageId }, $speciesId,
-                    $mappedSexToUse, $sexNotInferred, $mappedStrainToUse);
+            insert_condition($dbh, $exprMappedCondId, $exprMappedCondId, $anatEntityId,
+                    $stage_equivalences->{ $stageId }, $speciesId, $mappedSexToUse, $sexNotInferred, 
+                    $mappedStrainToUse, $cellTypeId);
 
             # And update the $condition hash
             $conditions->{ $exprMappedCondKey }->{ 'conditionId' }           = $exprMappedCondId;
@@ -949,7 +1042,8 @@ sub insert_get_condition {
     }
 
     # Now, we can insert the condition itself
-    insert_condition($dbh, $condId, $exprMappedCondId, $anatEntityId, $stageId, $speciesId, $sexToUse, $sexInference, $strain);
+    insert_condition($dbh, $condId, $exprMappedCondId, $anatEntityId, $stageId,
+            $speciesId, $sexToUse, $sexInference, $strain, $cellTypeId);
     # And update the $condition hash
     $conditions->{ $condKey }->{ 'conditionId' }           = $condId;
     $conditions->{ $condKey }->{ 'exprMappedConditionId' } = $exprMappedCondId;
@@ -970,7 +1064,13 @@ sub insert_get_condition {
 # (no use of AUTO_INCREMENT)
 # If $sex or $sexInferred do not correspond to allowed values, die.
 sub insert_condition {
-    my ($dbh, $conditionId, $exprMappedConditionId, $anatEntityId, $stageId, $speciesId, $sex, $sexInferred, $strain) = @_;
+    my ($dbh, $conditionId, $exprMappedConditionId, $anatEntityId, $stageId, $speciesId, $sex, 
+        $sexInferred, $strain, $cellTypeId) = @_;
+
+    if(!defined($cellTypeId) || $cellTypeId eq ''){
+        # undef variable will be inserted as null in the database
+        $cellTypeId = undef;
+    }
     if ( !grep( /^$sex$/, @ACCEPTABLE_SEX_INFO ) ) {
         die "Incorrect sex value: $sex\n";
     }
@@ -979,15 +1079,19 @@ sub insert_condition {
     }
 
     my $ins = $dbh->prepare('INSERT INTO cond (conditionId, exprMappedConditionId,
-            anatEntityId, stageId, speciesId, sex, sexInferred, strain) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
-    $ins->execute($conditionId, $exprMappedConditionId, $anatEntityId, $stageId, $speciesId, $sex, $sexInferred, $strain)
+            anatEntityId, cellTypeId, stageId, speciesId, sex, sexInferred, strain)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
+    $ins->execute($conditionId, $exprMappedConditionId, $anatEntityId, $cellTypeId,
+            $stageId, $speciesId, $sex, $sexInferred, $strain)
             or die $ins->errstr;
 }
 
-# Generate a key from anatEntityId/stageId/speciesId/sex/sexInferenceType/strain information.
+# Generate a key from anatEntityId/stageId/speciesId/sex/sexInferenceType/strain/cellTypeId) information.
 # If $sex or $sexInferred do not correspond to allowed values, die.
 sub generate_condition_key {
-    my ($anatEntityId, $stageId, $speciesId, $sex, $sexInferred, $strain) = @_;
+    my ($anatEntityId, $stageId, $speciesId, $sex, $sexInferred, $strain, $cellTypeId) = @_;
+    $cellTypeId = $cellTypeId || ''; # In case $cellTypeId is not provided
+
     if ( !grep( /^$sex$/, @ACCEPTABLE_SEX_INFO ) ) {
         die "Incorrect sex value: $sex\n";
     }
@@ -995,7 +1099,7 @@ sub generate_condition_key {
         die "Incorrect sexInferred value: $sexInferred\n";
     }
 
-    return $anatEntityId.'--'.$stageId.'--'.$speciesId.'--'.$sex.'--'.$sexInferred.'--'.$strain;
+    return $anatEntityId.'--'.$stageId.'--'.$speciesId.'--'.$sex.'--'.$sexInferred.'--'.$strain.'--'.$cellTypeId;
 }
 
 # Retrieve the max condition ID used from the hash of conditions.
@@ -1178,6 +1282,91 @@ sub getBgeedbOrgans {
     $selAnat->finish;
 
     return \%organs;
+}
+
+
+# Return the number of active jobs that map one job name
+sub check_active_jobs_number {
+    my ($job_name) = @_;
+    my $running_jobs = `squeue --name=$job_name --noheader | wc -l` || 0;
+    chomp($running_jobs);
+    return $running_jobs;
+}
+
+# Add main sbatch command and options
+sub sbatch_template {
+    my ($queue, $account, $nbr_processors, $memory_usage, $output_file, $error_file, $job_name) = @_;
+    # Potential other options:
+    # #SBATCH --mail-user=$user_email
+    # #SBATCH --mail-type=ALL
+    my $template="#!/bin/bash
+
+#SBATCH --partition=$queue
+#SBATCH --account=$account
+
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=$nbr_processors
+#SBATCH --mem=${memory_usage}G
+#SBATCH --time=4:00:00
+
+#SBATCH --output=$output_file
+#SBATCH --error=$error_file
+#SBATCH --export=NONE
+#SBATCH --job-name=$job_name
+
+";
+
+    return $template;
+}
+
+# create a perl script that will allow to run a maximum number of jobs on the cluster
+# parameters:
+#   - maximum number of jobs to run
+#   - path to a .sh file listing all sbatch commands to run
+#   - common prefix to all jobs to run
+#   - account to use to check number of jobs
+sub limit_number_jobs_cluster {
+
+    my ($max_jobs, $sh_file, $job_prefix, $cluster_account) = @_;
+    my $script_content = '#!/usr/bin/env perl'."\n\n";
+
+    $script_content .= 'use strict'."\n";
+    $script_content .= 'use warnings'."\n";
+    $script_content .= 'use diagnostics'."\n\n";
+
+    $script_content .= 'my $job_limit       = '.$max_jobs.'; # Number of simultaneous jobs running'."\n";
+    $script_content .= 'my $cluster_account = "'.$cluster_account."\";\n";
+    $script_content .= 'my $run_all_sh_file = "'.$sh_file."\";\n";
+    $script_content .= 'my $job_name_prefix = "'.$job_prefix."\";\n\n";
+
+    $script_content .= 'my $count = 0;'."\n";
+    $script_content .= 'open(my $fh, $run_all_sh_file)
+  or die "Could not open file $run_all_sh_file $!'."\";\n";
+    $script_content .= 'JOB:
+while ( my $line = <$fh> ){
+    chomp $line;
+    next JOB  if ( $line =~ /^#/); # header
+
+    my $running_jobs = check_running_jobs($job_name_prefix, $account);
+    while ( $running_jobs >= $job_limit ){
+        print "No more possible slot for the job, waiting and resubmitting\\n";
+        sleep 30;
+        $running_jobs = check_running_jobs($job_name_prefix, $account);
+    }
+    $count++;
+    print "$line\\n";
+    system($line)==0  or print "Failed to submit job [$line]\\n";
+}
+
+print "\\n$count jobs submitted\\n";
+
+sub check_running_jobs {
+    my ($job_name_prefix, $account) = @_;
+    my $running_jobs = `squeue --format="%.18i %.9P %.15j %.8u %.2t %.10M %.6D %R" --user=\\$USER --account=$account | grep -v \'JOBID\' |grep \'$job_name_prefix\' |wc -l` || 0;
+    chomp($running_jobs);
+    return $running_jobs;
+}';
 }
 
 1;

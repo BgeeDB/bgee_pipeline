@@ -76,55 +76,70 @@ sub getAllChips {
     return %affyChips;
 }
 
-# Sub to extract probesets from a MAS5 of Schuster Affymetrix file. 
+# Sub to extract probesets from a MAS5 of Schuster Affymetrix file.
 # This sub also logs some warnings if incorrectly formatted files are seen.
 #
-# Arguments: 
+# Arguments:
 #   * $experimentId: ID of the experiment
 #   * $chipId: ID of the chip
 #   * $normType: normalization type
 #   * $processedMas5Dir: directory where processed MAS5 files are stored
 #   * $processedSchusterDir: directory where processed Schuster files are stored
-#   * $logWarn: whether warnings should be logged. 
+#   * $logWarn: whether warnings should be logged.
 #
-# Returns a reference to a hash defined as: 
+# Returns a reference to a hash defined as:
 # $hashRef->{$probesetId}->{'call'}
 # $hashRef->{$probesetId}->{'signal'}
 # $hashRef->{$probesetId}->{'quality'}
 sub extractProbesetsFromFile {
     my ($experimentId, $chipId, $normType, $processedMas5Dir, $processedSchusterDir, $logWarn) = @_;
-    
+
     my %pbsets;
     my %correspCall = get_corresp_call(); ## mas5_utils.pl
     my $problems = 0; #count the number of problems for harmonizing the calls
     my $nbr_line = 0;
     my $nbr_null = 0;
-    
+
     # mas5 normalization & detection
-    if ( $normType eq 'MAS5' ) {
+    if ( $normType eq 'MAS5' ){
         my $file_name = $processedMas5Dir.'/'.$experimentId.'/'.$chipId;
         my %column_indexes = get_mas5_columns($file_name);
-        if ( $column_indexes{'call'} != -1 && $column_indexes{'signal'} != -1 && $column_indexes{'probeset_id'} != -1 ) {
+        if ( $column_indexes{'call'} != -1 && $column_indexes{'signal'} != -1 && $column_indexes{'probeset_id'} != -1 ){
             open(my $INMAS52, '<', "$file_name")  or warn "\tWarning! Can't read file [$file_name] for [$chipId][$experimentId]\n";
             my $line = <$INMAS52>;   #header
-            while ( defined ($line = <$INMAS52>) ) {
-                if ( !is_valid_processed_mas5_line($line, \%column_indexes) ) {
-                  print "\tWarning, unrecognized line: $line for [$chipId][$experimentId]\n" if ( $logWarn );
-                  next;
+            #"probeId"    "expression"    "call"    "pValue"    "adjusted_call"
+            while ( defined ($line = <$INMAS52>) ){
+                if ( !is_valid_processed_mas5_line($line, \%column_indexes) ){
+                    print "\tWarning, unrecognized line: $line for [$chipId][$experimentId]\n"  if ( $logWarn );
+                    next;
                 }
                 chomp $line;
+                $line =~ s{"}{}g;
                 $nbr_line++;
                 my @tmp = split(/\t/, $line);
-                my $call       = bgeeTrim($tmp[$column_indexes{'call'}]);
-                my $signal     = bgeeTrim($tmp[$column_indexes{'signal'}]);
-                my $probesetId = bgeeTrim($tmp[$column_indexes{'probeset_id'}]);
+                my $call          = bgeeTrim($tmp[$column_indexes{'call'}]);
+                my $signal        = bgeeTrim($tmp[$column_indexes{'signal'}]);
+                my $probesetId    = bgeeTrim($tmp[$column_indexes{'probeset_id'}]);
 
                 # check that the call  and the signal intensity are defined
-                if ( exists $correspCall{$call} && defined $signal && $signal ne 'null' ) {
+                if ( exists $correspCall{$call} && defined $signal && $signal ne 'null' ){
                     #pbset -> quality, call and signal
-                    $pbsets{$probesetId}->{'call'} = $correspCall{$call};
+                    $pbsets{$probesetId}->{'call'}          = $correspCall{$call};
+                    #According to the call: A => 0.1, M => 0.05, P => 0.01
+                    my $p_value  = $pbsets{$probesetId}->{'call'} eq 'absent'   ? 0.1
+                                 : $pbsets{$probesetId}->{'call'} eq 'present'  ? 0.01
+                                 : $pbsets{$probesetId}->{'call'} eq 'marginal' ? 0.05
+                                 : '';
+                    #In MAS5 files adjusted_call and p-value have always the same values, A and 0.05
+                    my $adj_call = $pbsets{$probesetId}->{'call'} eq 'absent'   ? 'A'
+                                 : $pbsets{$probesetId}->{'call'} eq 'present'  ? 'P'
+                                 : $pbsets{$probesetId}->{'call'} eq 'marginal' ? 'M'
+                                 : '';
+                    $pbsets{$probesetId}->{'p_value'}       = $p_value;
+                    $pbsets{$probesetId}->{'q_value'}       = $p_value; #No q-value for MAS5, so same as p-value
+                    $pbsets{$probesetId}->{'adjusted_call'} = $adj_call;
                     # a way to convert signal to numeric
-                    if ( $signal + 0 >= 0 ) {
+                    if ( $signal + 0 >= 0 ){
                         $pbsets{$probesetId}->{'signal'} = $signal;
                     }
                     else {
@@ -133,7 +148,7 @@ sub extractProbesetsFromFile {
                     # mas5 quality is always set to low
                     $pbsets{$probesetId}->{'quality'} = $Utils::LOW_QUAL;
                 }
-                elsif ( exists $correspCall{$call} && defined $signal && $signal eq 'null' ) {
+                elsif ( exists $correspCall{$call} && defined $signal && $signal eq 'null' ){
                     $nbr_null++;
                 }
                 else {
@@ -149,37 +164,46 @@ sub extractProbesetsFromFile {
 
     # gcRMA normalization / Schuster et al. detection
     # /!\ the order of the columns is inverted !
-    elsif ( $normType eq 'gcRMA' ) {
+    elsif ( $normType eq 'gcRMA' ){
         (open(INGCRMA2, '<', $processedSchusterDir.'/'.$experimentId.'/'.$chipId.'.cel.out') or
          open(INGCRMA2, '<', $processedSchusterDir.'/'.$experimentId.'/'.$chipId.'.CEL.out') or
          open(INGCRMA2, '<', $processedSchusterDir.'/'.$experimentId.'/'.$chipId.'.out')) or
          warn "\tWarning! Can't read data file for [$chipId][$experimentId]!\n";
-        while ( defined (my $line = <INGCRMA2>) ) {
+        while ( defined (my $line = <INGCRMA2>) ){
+            #probeId    expression    pValue    call    qValue    adjusted_call
+            next  if ( $line =~ /^probeId/ );
             chomp $line;
             $nbr_line++;
             my @tmp = split(/\t/, $line);
-            my $probesetId = bgeeTrim($tmp[0]);
-            my $signal     = bgeeTrim($tmp[1]);
-            my $call       = bgeeTrim($tmp[2]);
+            my $probesetId    = bgeeTrim($tmp[0]);
+            my $signal        = bgeeTrim($tmp[1]);
+            my $p_value       = bgeeTrim($tmp[2]);
+            my $call          = bgeeTrim($tmp[3]);
+            my $q_value       = bgeeTrim($tmp[4]);
+            my $adjusted_call = bgeeTrim($tmp[5]);
 
-            if ( exists $correspCall{$call} && defined $signal && $signal ne 'null' ) {
+            if ( exists $correspCall{$call} && defined $signal && $signal ne 'null' ){
                 #pbset -> quality, call and signal
                 $pbsets{$probesetId}->{'call'} = $correspCall{$call};
-                if ( $signal + 0 >= 0 ) {
+                if ( $signal + 0 >= 0 ){
                     $pbsets{$probesetId}->{'signal'} = $signal;
                 }
                 else {
                     $pbsets{$probesetId}->{'signal'} = 0;
                 }
 
-                if ( $correspCall{$call} eq $Utils::PRESENT_CALL || $correspCall{$call} eq $Utils::ABSENT_CALL ) {
+                if ( $correspCall{$call} eq $Utils::PRESENT_CALL || $correspCall{$call} eq $Utils::ABSENT_CALL ){
                     $pbsets{$probesetId}->{'quality'} = $Utils::HIGH_QUAL;
                 }
-                elsif ( $correspCall{$call} eq $Utils::MARGINAL_CALL ) {
+                elsif ( $correspCall{$call} eq $Utils::MARGINAL_CALL ){
                     $pbsets{$probesetId}->{'quality'} = $Utils::LOW_QUAL;
                 }
+
+                $pbsets{$probesetId}->{'p_value'}       = $p_value;
+                $pbsets{$probesetId}->{'q_value'}       = $q_value;
+                $pbsets{$probesetId}->{'adjusted_call'} = $adjusted_call;
             }
-            elsif ( exists $correspCall{$call} && defined $signal && $signal eq 'null' ) {
+            elsif ( exists $correspCall{$call} && defined $signal && $signal eq 'null' ){
                 $nbr_null++;
             }
             else {
@@ -189,11 +213,11 @@ sub extractProbesetsFromFile {
         close INGCRMA2;
     }
     else {
-    	die "Unrecognized normalization type: $normType\n";
+        die "Unrecognized normalization type: $normType\n";
     }
 
     # Data are cleaner now, so should rarely meet this warning!
-    if ( $logWarn ) {
+    if ( $logWarn ){
         print "\tWarning! Some expression calls are not standard ($problems) for [$chipId][$experimentId]\n" if ( $problems > 0 );
         print "\tWarning! No line was apparently read for [$chipId][$experimentId]\n" if ( $nbr_line eq 0 );
         # Threshold at 2% for warning on proportion of null calls
@@ -362,8 +386,8 @@ sub displayDuplicatedChips {
 
     my $duplicatesFound = 0;
     # Iterate the source chips
-    for my $sourceExpId ( keys %$sourceAffyChipsInfoRef ){
-        for my $sourceChipId ( keys %{$sourceAffyChipsInfoRef->{$sourceExpId}} ){
+    for my $sourceExpId ( sort keys %$sourceAffyChipsInfoRef ){
+        for my $sourceChipId ( sort keys %{$sourceAffyChipsInfoRef->{$sourceExpId}} ){
             # Is the source chip commented? we never want them to be source chips
             next  if ( !defined $affyChipsRef->{$sourceExpId}->{$sourceChipId}->{'commented'} || $affyChipsRef->{$sourceExpId}->{$sourceChipId}->{'commented'} );
 
@@ -374,8 +398,8 @@ sub displayDuplicatedChips {
             my %duplicatesToCurrentSourceChip = ();
 
             # Now, let's iterate the target chips to search for duplicates
-            for my $targetExpId ( keys %$targetAffyChipsInfoRef ){
-                for my $targetChipId ( keys %{$targetAffyChipsInfoRef->{$targetExpId}} ){
+            for my $targetExpId ( sort keys %$targetAffyChipsInfoRef ){
+                for my $targetChipId ( sort keys %{$targetAffyChipsInfoRef->{$targetExpId}} ){
                     # The target and source chips can actually be the same,
                     # when we want to compare new chips to new chips, or old chips to old chips
                     next  if ( $sourceExpId eq $targetExpId && $sourceChipId eq $targetChipId );
@@ -456,8 +480,8 @@ sub displayDuplicatedChips {
                     # to all other target chips previously identified
                     # as duplicates of the current source chip
                     for ( my $i = 0; $i < $duplicateRank; $i++ ){
-                        for my $iterateExpId ( keys %{$duplicatesToCurrentSourceChip{$i}} ){
-                            for my $iterateChipId ( keys %{$duplicatesToCurrentSourceChip{$i}{$iterateExpId}} ){
+                        for my $iterateExpId ( sort keys %{$duplicatesToCurrentSourceChip{$i}} ){
+                            for my $iterateChipId ( sort keys %{$duplicatesToCurrentSourceChip{$i}{$iterateExpId}} ){
                                 if ( defined $identifiedDuplicatedChips{$iterateExpId}{$iterateChipId}{$targetExpId}{$targetChipId} ||
                                      defined $identifiedDuplicatedChips{$targetExpId}{$targetChipId}{$iterateExpId}{$iterateChipId} ){
                                     next;

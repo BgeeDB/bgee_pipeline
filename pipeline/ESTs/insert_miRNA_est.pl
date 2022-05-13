@@ -43,7 +43,7 @@ if ( !$test_options || $species eq '' || $bgee_connector eq '' || $sex_info eq '
 \t-miRNA     miRNA.dat file
 \t-sex_info  file containing sex-related info about anatomical terms
 \t-Aport     ID MAPPING socket port
-\t-Sport      ID MAPPING stage socket port
+\t-Sport     ID MAPPING stage socket port
 \n";
     exit 1;
 }
@@ -60,6 +60,21 @@ my $gene_mapping = Utils::query_bgeeGene($dbh, $species);
 my $spDB = $dbh->prepare('SELECT speciesId, CONCAT(SUBSTR(genus, 1, 1), SUBSTR(species, 1, 2)) FROM species WHERE speciesId = ?');
 $spDB->execute($species)  or die $spDB->errstr;
 my ($speciesCommonName, $speciesAlias) = $spDB->fetchrow_array;
+# Adapt $speciesCommonName to the file nomenclature
+# (to this point of the script, $speciesCommonName actually stored the speciesId...)
+$speciesCommonName = $speciesCommonName ==  7955  ? 'Fish'
+                   : $speciesCommonName ==  7227  ? 'Fly'
+                   : $speciesCommonName == 10090  ? 'Mouse'
+                   : $speciesCommonName ==  9606  ? 'Human'
+                   :                                '';
+if ( $speciesCommonName eq '' ){
+    print "\tThis species is not annotated for miRNA EST [$species-$speciesAlias]\n";
+    #NOTE Kill the mappers before the next species insertion
+    Utils::get_anatomy_mapping([], $Aport, 0);
+    Utils::get_anatomy_mapping([], $Sport, 0);
+    exit 0;
+}
+
 
 # Check if data source exists
 my $dsDB = $dbh->prepare('SELECT dataSourceId FROM dataSource WHERE dataSourceName = ? AND category = ?');
@@ -237,15 +252,6 @@ for my $Acc ( keys %EnsemblToMiRBaseAcc ){
 
 
 ## Parse the smiRNAdb file
-# Adapt $speciesCommonName to the file nomenclature
-# (to this point of the scrtip, $speciesCommonName actually stored the speciesId...)
-$speciesCommonName = $speciesCommonName ==  7955  ? 'Fish'
-                   : $speciesCommonName ==  7227  ? 'Fly'
-                   : $speciesCommonName == 10090  ? 'Mouse'
-                   : $speciesCommonName ==  9606  ? 'Human'
-                   :                                '';
-die "\tInvalid species\n"  if ( $speciesCommonName eq '' );
-
 my $file = 'Report_'.$speciesCommonName.'.csv';
 my %libIdToColumn;      # libId => column number in the file
 my %geneIdToExpression; # geneName => expressionLib1, expressionLib2 .. expressionLibn

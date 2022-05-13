@@ -12,7 +12,6 @@
 # Mar 14, 2016
 # - Now should work on out annotation file merged with the Wormbase annotation
 # - An external file is checked for libraries which were manually checked (with decision to include them or not).
-# - warnings issues for miRNA-seq and ncRNA-seq
 # - try to detect CAGE-seq ("Library selection" == CAGE flag in XML), SAGE-seq, DeepSage and issues warning
 # - issue warning if read length too short (<36nt): miRNA or special library?
 
@@ -51,6 +50,7 @@ my ($RNAseqLibWormExclusion) = ('');
 my ($extraMapping)           = ('');
 my ($outFile)                = ('');
 my ($debug)                  = (0);
+my ($sample)                 = '';
 my %opts = ('bgee=s'                   => \$bgee_connector,     # Bgee connector string
             'RNAseqLib=s'              => \$RNAseqLib,
             'RNAseqLibChecks=s'        => \$RNAseqLibChecks,
@@ -58,6 +58,7 @@ my %opts = ('bgee=s'                   => \$bgee_connector,     # Bgee connector
             'extraMapping=s'           => \$extraMapping,
             'outFile=s'                => \$outFile,
             'debug'                    => \$debug,
+            'sample=s'                 => \$sample,
            );
 
 # Check arguments
@@ -72,6 +73,7 @@ if ( !$test_options || $bgee_connector eq '' || $RNAseqLib eq '' || $RNAseqLibCh
 \t-outFile                Output file: TSV with all species and SRA information from NCBI
 \t-extraMapping           Extra mapping file
 \t-debug                  more verbose output
+\t-sample                 Analyse this specific sample ONLY
 \n";
     exit 1;
 }
@@ -153,6 +155,11 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
     my $anatID       = $tsv{'uberonId'}[$i];
     my $stageID      = $tsv{'stageId'}[$i];
 
+    #NOTE Restrict analysis to this specific sample id (library or experiment)
+    if ( $sample ne '' ){
+        next SAMPLE  if ( $libraryId ne $sample && $experimentId ne $sample );
+    }
+
     # line commented: skipped
     next SAMPLE  if ( $libraryId =~ /^#/ );
     next SAMPLE  if ( $tag =~ /^ScRNA-seq$/i ); #NOTE Discard Single-cell sequencing, not this pipeline part
@@ -212,28 +219,31 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         }
         # Perform a series of sanity checks
         # Check it is a RNA-seq library
-        my @valid_lib_strategy = ('GSE30617', 'SRP000401', 'E-MTAB-2449', 'SRP003905', 'GSE16552');
+        my @valid_lib_strategy = ('ERP001524', 'ERP001525', 'ERP001954', 'ERP002055', 'GSE30606', 'GSE30617', 'SRP000401', 'E-MTAB-2449', 'SRP003905', 'SRP006208', 'SRP006209', 'GSE16552', 'DRP000571', 'SRP000304', 'SRP004363', 'SRP005402', 'SRP033585', 'SRP043163', 'SRP058340', 'SRP068231');
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/31
-        # GSE30617      OK for Anne
-        # SRP000401     OK for Anne
+        #     See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/82
+        #     See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/84
         # E-MTAB-2449   'validated with lower confidence'
         # SRP003905     '"EST" but that it is Illumina paired-end, so I think it is RNA-seq'
         # GSE16552      'Contradictory info but for now kept'. Also in https://gitlab.sib.swiss/Bgee/expression-annotations/issues/33
-        my @invalid_lib_strategies = ('miRNA-Seq', 'ncRNA-Seq', 'ATAC-seq', 'MAINE-Seq', 'MNase-Seq', 'FAIRE-seq', 'DNase-Hypersensitivity', 'DNase-seq');
+        # SRP000304     OK, FL-cDNA is RNA-Seq
+        my @invalid_lib_strategies = ('ATAC-seq', 'DNase-Hypersensitivity', 'DNase-seq', 'FAIRE-seq', 'QuantSeq', 'Quant-seq', 'MAINE-Seq', 'MNase-Seq');
         $info =~ /<LIBRARY_STRATEGY>([^<]+)<\/LIBRARY_STRATEGY>/; # [^<] prevents matching to '<' character
         $strategy = $1;
         if ( any { lc($strategy) eq lc($_) } @invalid_lib_strategies ){
             warn "\tProblem: [$libraryId] [$experimentId] is [$strategy], which is not supported by our pipeline for now. Please comment out. This library was not printed in output file.\n";
             next SAMPLE;
         }
-        elsif ( $strategy !~ /^RNA-Seq$/i and (all { $experimentId ne $_ } @valid_lib_strategy) ){
+        elsif ( $strategy !~ /^(mi)?RNA-Seq$/i and (all { $experimentId ne $_ } @valid_lib_strategy) ){
             warn "\tProblem: [$libraryId][$experimentId] does not seem to be RNA-seq but [$strategy]. Please check. This library was printed in output file.\n";
         }
 
         # Particular types of RNA-seq. See https://www.ncbi.nlm.nih.gov/books/NBK49283/ or https://www.ebi.ac.uk/ena/submit/preparing-xmls
-        my @valid_selection_methods = ('cDNA', 'oligo-dT', 'Oligo-dT', 'PCR', 'PolyA', 'RANDOM', 'RANDOM PCR', 'RT-PCR');
+        my @valid_selection_methods = ('cDNA', 'Inverse rRNA', 'oligo-dT', 'Oligo-dT', 'PCR', 'PolyA', 'RANDOM', 'RANDOM PCR', 'RT-PCR');
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
-        my @valid_lib_selection     = ('E-MTAB-5895', 'SRP012049', 'SRP021223', 'SRP051959', 'SRP058036', 'SRP082291', 'SRP082342', 'SRP082454', 'SRP106023');
+        #     See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/82
+        #     See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/84
+        my @valid_lib_selection     = ('DRP003809', 'E-MTAB-5895', 'ERP001524', 'ERP001525', 'ERP006380', 'SRP012049', 'SRP018725', 'SRP018740', 'SRP021223', 'SRP024250', 'SRP027560', 'SRP030211', 'SRP033402', 'SRP036185', 'SRP043521', 'SRP045680', 'SRP051725', 'SRP051959', 'SRP053164', 'SRP055497', 'SRP056073', 'SRP058036', 'SRP058798', 'SRP066400', 'SRP066548', 'SRP072263', 'SRP081080', 'SRP082291', 'SRP082342', 'SRP082454', 'SRP092904', 'SRP106023', 'SRP116580', 'SRP116672');
         $info =~ /<LIBRARY_SELECTION>([^<]+)<\/LIBRARY_SELECTION>/; # [^<] prevents matching to '<' character
         my $selection = $1;
         if ( $selection =~ /CAGE/ ){
@@ -244,19 +254,40 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
             warn "\tProblem: [$libraryId][$experimentId] seems to be RACE-seq, which is not supported by our pipeline for now. Please check. This library was not printed in output file.\n";
             next SAMPLE;
         }
-        elsif ( $selection =~ /size fractionation/ ){
-            warn "\tProblem: [$libraryId][$experimentId] seems to be size-fractionated, which biases the expression estimates. Please comment out. This library was not printed in output file.\n";
-            next SAMPLE;
+        #MSLL: methylation-spanning linker library, which involves size-fractionation (size selection)
+        elsif ( $selection =~ /size fractionation/i || $selection =~ /size-fractionation/i || $selection =~ /MSLL/ ){
+            if ( $strategy !~ /^miRNA-Seq$/i ){#NOTE check with experimentalists if *size fractionation* is ok for miRNA-Seq
+                warn "\tProblem: [$libraryId][$experimentId] seems to be size-fractionated, which biases the expression estimates. Please comment out. This library was not printed in output file.\n";
+                next SAMPLE;
+            }
         }
         elsif ( (all { $selection !~ /^$_$/ } @valid_selection_methods) && (all { $experimentId ne $_ } @valid_lib_selection) ){
             warn "\tWarning: for [$libraryId][$experimentId], the library selection is indicated as [$selection], which could be incompatible with our pipeline. Please check (this library was printed in output file).\n";
         }
 
         # species
-        $info =~ /<SCIENTIFIC_NAME>([^<]+)<\/SCIENTIFIC_NAME>/;
-        $organism = $1;
+        if ( $info =~ /<(SCIENTIFIC|COMMON)_NAME>([^<]+)<\/(SCIENTIFIC|COMMON)_NAME>/ ){
+            $organism = $2;
+        }
+        elsif ( $info =~ /<SAMPLE_ATTRIBUTE><TAG>component_organism<\/TAG><VALUE>([^<]+)<\/VALUE><\/SAMPLE_ATTRIBUTE>/ ){
+            $organism = $1;
+        }
         if ( $organism ne $species{ $tsv{'speciesId'}[$i] }->{'organism'} ){
-            warn "\tProblem: the organism (scientific name) is not matching between the annotation file [", $species{ $tsv{'speciesId'}[$i] }->{'organism'}, "] and the SRA record [$organism], please verify for [$libraryId][$experimentId]. The information from the annotation file is printed in output file.\n";
+            if ( $organism eq 'Sus scrofa domesticus' && $species{ $tsv{'speciesId'}[$i] }->{'organism'} eq 'Sus scrofa' ){
+                #OK
+            }
+            elsif ( $organism =~ /^Mus musculus (domesticus|castaneus|musculus)$/  && $species{ $tsv{'speciesId'}[$i] }->{'organism'} eq 'Mus musculus' ){
+                #OK, subspecies
+            }
+            elsif ( $organism eq 'Bos indicus' && $species{ $tsv{'speciesId'}[$i] }->{'organism'} eq 'Bos taurus' ){
+                #OK, subspecies (strain for us, at least for now)
+            }
+            elsif ( $organism eq 'Gorilla' && $species{ $tsv{'speciesId'}[$i] }->{'organism'} eq 'Gorilla gorilla' ){
+                #OK
+            }
+            else {
+                warn "\tProblem: the organism (scientific name) is not matching between the annotation file [", $species{ $tsv{'speciesId'}[$i] }->{'organism'}, "] and the SRA record [$organism], please verify for [$libraryId][$experimentId]. The information from the annotation file is printed in output file.\n";
+            }
         }
         # platform
         $info =~ /<PLATFORM><[^<]+><INSTRUMENT_MODEL>([^<]+)<\/INSTRUMENT_MODEL><\/[^<]+><\/PLATFORM>/;
@@ -282,6 +313,15 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         else {
             warn "\tProblem: no library type specified for $libraryId.\n";
         }
+        #TODO add checks to see if paired-end declared but a single-end fastq is provided!
+        my @libraryTypeCount = $info =~ /<READ_TYPE>\w+<\/READ_TYPE>/g;
+        if ( $libraryType eq 'PAIRED' && scalar @libraryTypeCount != 2 ){
+            warn "\tLibrary [$libraryId] is $libraryType but looks not\n";
+        }
+        elsif ( $libraryType eq 'SINGLE' && scalar @libraryTypeCount > 1 ){
+            warn "\tLibrary [$libraryId] is $libraryType but looks not\n";
+        }
+
         # Additional info on library (stranded or not for example), not compulsory
         # <EXPERIMENT_ATTRIBUTE><TAG>library_type</TAG><VALUE>cDNAShotgunReadTwoSense</VALUE></EXPERIMENT_ATTRIBUTE><EXPERIMENT_ATTRIBUTE>
         if ( $info =~ /<TAG>library_type<\/TAG><VALUE>([^<]+?)<\/VALUE>/ ) { # the ? is here to get non greedy matching (there are several <VALUE>...<\/VALUE> tags in the XML files)
@@ -289,8 +329,18 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         }
         # Read length, not compulsory
         # Beware, this is the sum of both pairs for paired-end! E.g., SRX1152842, lenght=500, corresponding to 2*250bp
-        if ( $info =~ /<SPOT_LENGTH>(\d+)<\/SPOT_LENGTH>/ ) {
+        if ( $info =~ /<SPOT_LENGTH>(\d+(\.\d+)?)<\/SPOT_LENGTH>/ ) {
             $readLength = $1;
+        }
+        #NOTE it looks the SRA XML format changed at some point!
+        elsif ( $info =~ /<Statistics nreads="2" nspots="\d+"><Read index="0" count="\d+" average="(\d+(\.\d+)?)" stdev="[^"]+"\/><Read index="1" count="\d+" average="(\d+(\.\d+)?)" stdev="[^"]+"\/><\/Statistics>/ ){
+            $readLength = ($1 + $3)/2;
+        }
+        elsif ( $info =~ /<Statistics nreads="1" nspots="\d+"><Read index="0" count="\d+" average="(\d+(\.\d+)?)" stdev="[^"]+"\/><\/Statistics>/ ){
+            $readLength = $1;
+        }
+        elsif ( $info =~ /<Statistics nreads="variable"\/>/ ){
+            $readLength = '0.0'; #NCBI nor EBI gives read length info because "This run has variable number of reads per spot"
         }
 
         # If read length defined and it seems very short, issue a warning
@@ -304,17 +354,21 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
                 warn "\tInfo: Read length is [$readLength / 2] for PE library [$libraryId][$experimentId], which seems low and could indicate that the library is not a classical RNA-seq library. Please check.\n";
             }
         }
+        else {
+            warn "\tWarning: read length is empty for [$libraryId][$experimentId]\n";
+        }
 
         ## Issue warning is the XML entry includes keywords suggesting that the library is not classical RNA-seq
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
         #FIXME SRP070951 is kept till we know what to do with "globin reduction" see https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
-        my @not_traditional = ('DeepSAGE', 'DeepCAGE', 'LongSAGE', 'SuperSAGE', 'CAGE', 'RACE', 'SAGE', 'DpnII', 'DpnIII', 'NlaIII', 'capture', 'CEL-seq', 'DGE-Seq', 'TagSeq', 'globin reduction', 'globin depletion', 'UMI', 'UMIs', 'ATAC-seq', 'MAINE-Seq', 'Mnase-Seq', 'FAIRE-Seq', 'DNase-seq', 'MACE-Seq', 'QuantSeq', 'piRNA', 'piRNAs');
-        my @verified        = ('ERP000787', 'ERP001694', 'ERP104395',
+        my @not_traditional = ('DeepSAGE', 'DeepCAGE', 'LongSAGE', 'SuperSAGE', 'CAGE', 'RACE', 'SAGE', 'DpnII', 'DpnIII', 'NlaIII', 'capture', 'CEL-seq', 'DGE-Seq', 'TagSeq', 'globin reduction', 'globin depletion', 'UMI', 'UMIs', 'ATAC-seq', 'MAINE-Seq', 'Mnase-Seq', 'FAIRE-Seq', 'DNase-seq', 'MACE-Seq', 'QuantSeq', 'Quant-seq');
+        my @verified        = ('ERP000787', 'ERP001694', 'ERP013973', 'ERP104395',
                                'GSE22410', 'GSE64283',
-                               'SRP000401', 'SRP013825', 'SRP021940', 'SRP022567', 'SRP041131', 'SRP076617', 'SRP082284',
-                               'SRP091779', 'SRP092799', 'SRP098705', 'SRP112616', 'SRP125959');
+                               'SRP000401', 'SRP013825', 'SRP021940', 'SRP022567', 'SRP030211', 'SRP041131', 'SRP076617', 'SRP082284', 'SRP090001',
+                               'SRP091779', 'SRP092799', 'SRP098705', 'SRP099849', 'SRP112616', 'SRP123447', 'SRP125768', 'SRP125959');
         if ( all { $experimentId ne $_ } @verified and any { $info =~ /\W$_\W/i } @not_traditional ){
-            warn "\tWarning: [$libraryId][$experimentId] may not be traditional RNA-seq, found word(s) subject to caution. Please check.\n";
+            my @words = grep { $info =~ /\W$_\W/i } @not_traditional;
+            warn "\tWarning: [$libraryId][$experimentId] may not be traditional RNA-seq, found word(s) [".join('/', @words)."] subject to caution. Please check.\n";
         }
 
         # TODO Any other info to get?

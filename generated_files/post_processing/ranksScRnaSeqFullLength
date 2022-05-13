@@ -1,0 +1,4 @@
+Min, max, average scRNA-Seq full-length rank and distinct rank count per species: 
+speciesId	MIN(t3.rank)	MAX(t3.rank)	AVG(t3.rank)	MIN(t2.libraryDistinctRankCount)	MAX(t2.libraryDistinctRankCount)	AVG(t2.libraryDistinctRankCount)
+9606	1.00	29609.00	5237.156992	1708	28178	10411.7179
+10090	1.00	20335.50	5326.058382	2098	20100	10612.6944

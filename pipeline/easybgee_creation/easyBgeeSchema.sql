@@ -14,7 +14,7 @@ create table species (
 -- example: sapiens
     species varchar(70) not null COMMENT 'Species name',
 -- exemple: human
--- warning, this column in the bgee schema is defined as not null but contains empty values. 
+-- warning, this column in the bgee schema is defined as not null but contains empty values.
 -- In bgeelite we added a default value corresponding to an empty string ''
     speciesCommonName varchar(70) default '' COMMENT 'NCBI species common name',
     genomeVersion varchar(50) not null,
@@ -25,7 +25,7 @@ create table species (
 -- was used does not have any data in Bgee, and thus is not in the taxon table.
 -- If the correct genome of the species was used, the value of this field is 0.
     genomeSpeciesId mediumint unsigned not null default 0 COMMENT 'NCBI species taxon id used for mapping (0 if the same species)',
-    PRIMARY KEY(speciesId), 
+    PRIMARY KEY(speciesId),
 	UNIQUE(species, genus)
 ) engine = innodb;
 
@@ -53,12 +53,16 @@ create table globalCond (
     globalConditionId mediumint unsigned not null auto_increment,
     anatEntityId varchar(20)  COMMENT 'Uberon anatomical entity ID. Can be null in this table if this condition aggregates data according to other condition parameters (e.g., grouping all data in a same stage whatever the organ is).',
     stageId varchar(20)  COMMENT 'Uberon stage ID. Can be null in this table if this condition aggregates data according to other condition parameters (e.g., grouping all data in a same organ whatever the dev. stage is).',
-    speciesId mediumint unsigned not null COMMENT 'NCBI species taxon ID',
+    cellTypeId            varchar(20)  default null COMMENT 'A second uberon anatomical entity ID used to manage composition of anatomical entities. Used only for single cell data for postcomposition of anatomical entity ID and cell type ID',
+    sex enum('any', 'hermaphrodite', 'female', 'male'),
+	strain varchar(100),
+	speciesId mediumint unsigned not null COMMENT 'NCBI species taxon ID',
     PRIMARY KEY(globalConditionId),
 -- not a primary key as for table cond, because some field can be null
-	UNIQUE(anatEntityId, stageId, speciesId),
+	UNIQUE(anatEntityId, cellTypeId, stageId, speciesId, sex, strain),
 	FOREIGN KEY(anatEntityId) REFERENCES anatEntity(anatEntityId) ON DELETE CASCADE,
-	FOREIGN KEY(stageId) REFERENCES stage(stageId) ON DELETE CASCADE, 
+	FOREIGN KEY (cellTypeId) REFERENCES anatEntity(anatEntityId) ON DELETE CASCADE,
+	FOREIGN KEY(stageId) REFERENCES stage(stageId) ON DELETE CASCADE,
 	FOREIGN KEY(speciesId) REFERENCES species(speciesId) ON DELETE CASCADE
 ) engine = innodb;
 -- COMMENT 'This table contains all condition used in the globalExpression table. It thus includes "real" conditions, but mostly conditions resulting from the propagation of expression calls in the globalExpression table. It results from the computation of propagated calls according to different condition parameters combination (e.g., grouping all data in a same anat. entity, or all data in a same anat. entity - stage). This is why the fields anatEntityId or stageId can be null in this table (but not all of them at the same time).';
@@ -69,9 +73,10 @@ create table globalExpression (
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID, not stable between releases.',
     globalConditionId mediumint unsigned not null COMMENT 'ID of condition in the related condition table ("globalCond"), not stable between releases.',
     summaryQuality varchar(10) not null,
-    rank decimal(9, 2) unsigned not null COMMENT 'Normalized rank for this gene-condition after normalization over all data types, conditions and species',
+    rawRank decimal(9, 2) unsigned not null COMMENT 'Normalized rank for this gene-condition after normalization over all data types, conditions and species',
     score decimal(9, 5) unsigned not null COMMENT 'Use the minimum and maximum rank of the species to normalize the expression to a value between 0 and 100',
-    propagationOrigin varchar(20) not null COMMENT 'The origin of the propagated expression calls : self, self and descendant, self and ancestor, or all',
+    pValue decimal(31, 30) unsigned default null,
+	propagationOrigin varchar(20) not null COMMENT 'The origin of the propagated expression calls : self, self and descendant, self and ancestor, or all',
     callType varchar(20) not null COMMENT 'Type of the call. Can be EXPRESSED or NOT_EXPRESSED',
 	PRIMARY KEY(bgeeGeneId, globalConditionId),
     UNIQUE(globalExpressionId),

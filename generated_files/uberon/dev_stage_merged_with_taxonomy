@@ -1,0 +1,7 @@
+2021-03-08 18:16:30 INFO  ParserWrapper:69 - Start loading ontology: file:/home/bgee/fred/bgee_pipeline_15/bgee_pipeline/pipeline/uberon/../../source_files/uberon/dev_stage_ontology.obo from: file:/home/bgee/fred/bgee_pipeline_15/bgee_pipeline/pipeline/uberon/../../source_files/uberon/dev_stage_ontology.obo
+2021-03-08 18:16:31 INFO  ParserWrapper:76 - Finished loading ontology: http://purl.obolibrary.org/obo/uberon/ssso-merged-uberon.owl from: file:/home/bgee/fred/bgee_pipeline_15/bgee_pipeline/pipeline/uberon/../../source_files/uberon/dev_stage_ontology.obo
+2021-03-08 18:16:31 INFO  ParserWrapper:69 - Start loading ontology: file:/home/bgee/fred/bgee_pipeline_15/bgee_pipeline/pipeline/uberon/../../generated_files/species/bgee_ncbitaxon.owl from: file:/home/bgee/fred/bgee_pipeline_15/bgee_pipeline/pipeline/uberon/../../generated_files/species/bgee_ncbitaxon.owl
+2021-03-08 18:16:31 INFO  ParserWrapper:76 - Finished loading ontology: http://purl.obolibrary.org/obo/ncbitaxon.owl from: file:/home/bgee/fred/bgee_pipeline_15/bgee_pipeline/pipeline/uberon/../../generated_files/species/bgee_ncbitaxon.owl
+18:16:31.683 [main] INFO org.bgee.pipeline.uberon.TaxonConstraints 563 prepareUberon - Preparing Uberon...
+18:16:31.754 [main] INFO org.bgee.pipeline.uberon.TaxonConstraints 580 prepareUberon - Done preparing Uberon.
+2021-03-08 18:16:32 ERROR OWLAPIOwl2Obo:1015 - Duplicate clause 'alt_id( FBdv:00005375)' generated in frame: FBdv:00006012

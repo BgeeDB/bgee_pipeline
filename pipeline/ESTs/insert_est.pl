@@ -16,15 +16,13 @@ $| = 1; # stdout not put in memory buffer
 
 
 # Define arguments & their default value
-my ($species, $bgee_connector, $ensembl_connector) = ('', '', '');
-my ($ESTspeciesFile, $mappingFile, $libReport)     = ('', '', '');
-my ($sex_info)                                     = ('');
-my ($Aport, $Sport)                                = (0, 0);
+my ($species, $bgee_connector)   = ('', '');
+my ($ESTspeciesFile, $libReport) = ('', '');
+my ($sex_info)                   = ('');
+my ($Aport, $Sport)              = (0, 0);
 my %opts = ('species=i'    => \$species,            # speciesId from TSV for or Bgee db
             'bgee=s'       => \$bgee_connector,     # Bgee connector string
-            'ensembl=s'    => \$ensembl_connector,  # Ensembl connector string
             'ESTspecies=s' => \$ESTspeciesFile,     # file with Species EST annotations
-            'mapping=s'    => \$mappingFile,        # mapping file between unigene & sequences, if no mapping in Ensembl
             'libReport=s'  => \$libReport,          # library.report file
             'sex_info=s'   => \$sex_info,           # generated_files/uberon/uberon_sex_info.tsv
             'Aport=i'      => \$Aport,              # ID MAPPING socket port
@@ -33,14 +31,12 @@ my %opts = ('species=i'    => \$species,            # speciesId from TSV for or 
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $species eq '' || $bgee_connector eq '' || $ensembl_connector eq '' || $sex_info eq '' || $Aport == 0 || $Sport == 0 ){
+if ( !$test_options || $species eq '' || $bgee_connector eq '' || $sex_info eq '' || $Aport == 0 || $Sport == 0 ){
     print "\n\tInvalid or missing argument:
-\te.g. $0 -species=9606 -bgee=\$(BGEECMD) -ensembl=\$(ENSCMD) -ESTspecies=... -libReport=library.report [-mapping=...] -sex_info=\$(UBERON_SEX_INFO_FILE_PATH) -Aport=\$(IDMAPPINGPORT) -Sport=\$(STGMAPPINGPORT)
+\te.g. $0 -species=9606 -bgee=\$(BGEECMD) -ESTspecies=... -libReport=library.report [-mapping=...] -sex_info=\$(UBERON_SEX_INFO_FILE_PATH) -Aport=\$(IDMAPPINGPORT) -Sport=\$(STGMAPPINGPORT)
 \t-species    speciesId from Bgee db
 \t-bgee       Bgee connector string
-\t-ensembl    Ensembl connector string
 \t-ESTspecies file with Species EST annotations
-\t-mapping    mapping file between unigene & sequences, if no mapping in Ensembl
 \t-libReport  library.report file
 \t-sex_info   file containing sex-related info about anatomical terms
 \t-Aport      ID MAPPING socket port
@@ -49,8 +45,6 @@ if ( !$test_options || $species eq '' || $bgee_connector eq '' || $ensembl_conne
     exit 1;
 }
 
-# Ensembl connection via Ensembl API/Registry
-my $reg = Utils::connect_ensembl_registry($ensembl_connector);
 # Bgee db connection
 my $dbh = Utils::connect_bgee_db($bgee_connector);
 
@@ -221,35 +215,18 @@ for my $line ( read_file("$ESTspeciesFile", chomp => 1 ) ){
     }
 }
 
-## Retrieve mapping from Biomart
+## Read mapping file
+my $mappingFile = lc (substr($species_ref->[0]->[0], 0, 1).substr($species_ref->[0]->[1], 0, 3));
+$mappingFile .= '_mapping';
 my %mapping;
-# if a mapping file is given
-if ( $mappingFile ne '' ){
+if ( -e "$mappingFile" && -s "$mappingFile" ){
     for my $line ( read_file("$mappingFile", chomp => 1 ) ){
         my @tmp = split(/\t/, $line);
         push(@{$mapping{$tmp[0]}}, $tmp[1]);
     }
 }
 else {
-    # Get a slice adaptor for the  $species  core database
-    my $gene_adaptor = $reg->get_adaptor( $species, 'Core', 'Gene' );
-
-    # Fetch all clones from a slice adaptor (returns a list reference)
-    my @genes = @{$gene_adaptor->fetch_all()};
-    GENE:
-    for my $gene ( sort {$a->stable_id cmp $b->stable_id} (@genes) ){ #Sort to always get the same order
-        my @unigene = map  { $_->display_id }
-                      grep { lc $_->dbname() eq 'unigene' } # only UniGene terms
-                      @{$gene->get_all_xrefs()};
-
-        if ( !exists $unigene[0] ){
-#            warn "\t\t", 'UniGene mapping was not retrieved for [', $gene->stable_id, "]\n";
-            next GENE;
-        }
-        for my $unig ( sort @unigene ){
-            push(@{$mapping{ $unig }}, $gene->stable_id);
-        }
-    }
+    die "Cannot find mapping file [$mappingFile]\n";
 }
 
 
@@ -288,7 +265,7 @@ for my $line ( read_file("$est_file", chomp => 1 ) ){
             # We consider only genes with a one to one relation btwn UniGene and Ensembl
             if ( $#{$mapping{$unigene_ID}} == 0 ){
                 for (my $i=0; $i<=$#EST_ACC; $i++){
-                    $estDB->execute($EST_ACC[$i], $EST_GI[$i], $LID[$i], $gene_mapping->{ ${$mapping{$unigene_ID}}[0] }, $unigene_ID)  or warn $estDB->errstr;
+                    $estDB->execute($EST_ACC[$i], $EST_GI[$i], $LID[$i], $gene_mapping->{ ${$mapping{$unigene_ID}}[0] }, $unigene_ID)  or warn $estDB->errstr." for [${$mapping{$unigene_ID}}[0]]";
                 }
             }
         }
@@ -303,8 +280,6 @@ for my $line ( read_file("$est_file", chomp => 1 ) ){
 unlink "$est_file";
 
 
-# Close db connections
-$reg->clear();
 #$dbh->disconnect;
 
 exit 0;

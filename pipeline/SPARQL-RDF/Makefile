@@ -1,3 +1,7 @@
+########
+# Run this makefile for each mapping file, see commented and uncommented $(GENEX_MAPPING_FILE) variables at $(PIPELINEROOT)Makefile.common
+# The mappings are split to avoid query processing overload with the MySQL server during tiple materialization.
+########
 PIPELINEROOT := ../
 DIR_NAME := SPARQL-RDF/
 include $(PIPELINEROOT)Makefile.common
@@ -7,24 +11,25 @@ FTP_RELEASE   := $(subst .,_,$(RELEASE))
 all: $(VERIFICATIONFILE)
 
 
-download_mapping_file:
+download_mapping_file: 
 	# Download mapping file
 	@$(WGET) $(GENEX_MAPPING_URL) -O $(GENEX_MAPPING_FILE) && $(MV) $(GENEX_MAPPING_FILE) $(INPUT_DIR) > $@.tmp
 	@$(RM) $(GENEX_MAPPING_FILE)
 	@touch $@
 	$(MV) $@.tmp $@
 
-download_ontology_file: 
+download_ontology_file: download_mapping_file
 	# Download OWL ontology file
 	@$(WGET) $(GENEX_ONTOLOGY_URL) -O $(GENEX_ONTOLOGY_FILE) && $(MV) $(GENEX_ONTOLOGY_FILE) $(INPUT_DIR) > $@.tmp
 	@$(RM) $(GENEX_ONTOLOGY_FILE)
 	$(MV) $@.tmp $@
 
-download_and_install_ontop: 
+download_and_install_ontop: download_ontology_file
 	# Download ontop
 	@wget $(ONTOP_DOWNLOAD_URL) -O $(ONTOP_DOWNLOAD_FILE) && $(MV) $(ONTOP_DOWNLOAD_FILE) $(INPUT_DIR) 1>$@.tmp 2>$@.err
 	#check ontop dir already exists
-	! -d $(ONTOP_INSTALL_DIR) && mkdir -p $(ONTOP_INSTALL_DIR)
+	[ -d "$(ONTOP_INSTALL_DIR)" ] && rm -rf $(ONTOP_INSTALL_DIR)
+	@mkdir $(ONTOP_INSTALL_DIR)
 	# Uncompress ontop
 	@unzip $(INPUT_DIR)$(ONTOP_DOWNLOAD_FILE) -d $(ONTOP_INSTALL_DIR) 1>> $@.tmp 2>> $@.err
 	#add MySQL connector lib for Ontop
@@ -74,3 +79,4 @@ $(VERIFICATIONFILE): zip_and_store
 
 clean:
 	-@$(RM) -R $(VERIFICATIONFILE) insert_to_triplestore generate_triples create_property_file download_mapping_file download_ontology_file download_and_install_ontop
+

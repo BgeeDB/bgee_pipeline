@@ -32,7 +32,7 @@ SELECT x.geneId FROM gene g, geneXRef x WHERE g.geneId = x.geneId AND x.dataSour
 ```
 
 ## Error handling
-* Ensembl does NOT provide gene information the same way for each species, especially for non-Vertebrate species (_Drosophila melanogaster_ and _C. elegans_) and/or model organisms that have a non-Ensembl reference database (e.g. _Zebrafish_ or _Xenope_). Consequently Xrefs used in Bgee (linked in `dataSource` table) are not available the same way in Ensembl. You may need to add some extra aliases in the [insert_genes.pl](insert_genes.pl) script in order to catch all Xrefs you need. **You may have to do that for each new species as well as for each new Ensembl release.** E.g. not all Xrefs are available in the _zfin_ source, some others are available in `zfin_id`:
+* Ensembl does NOT provide gene information the same way for each species, especially for non-Vertebrate species (_Drosophila melanogaster_ and _C. elegans_) and/or model organisms that have a non-Ensembl reference database (e.g. _Zebrafish_ or _Xenope_). Consequently Xrefs used in Bgee (linked in `dataSource` table) are not available the same way in Ensembl. You may need to add some extra aliases in the [insert_ensembl_genes.pl](insert_ensembl_genes.pl) script in order to catch all Xrefs you need. **You may have to do that for each new species as well as for each new Ensembl release.** E.g. not all Xrefs are available in the _zfin_ source, some others are available in `zfin_id`:
 ```perl
 $InsertedDataSources{'zfin_id'}          = $InsertedDataSources{'zfin'};
 $InsertedDataSources{'flybasename_gene'} = $InsertedDataSources{'flybase'};

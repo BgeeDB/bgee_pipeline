@@ -6,8 +6,8 @@ include $(PIPELINEROOT)Makefile.common
 all: $(VERIFICATIONFILE)
 
 $(OUTPUT_DIR)go:
-	# Download Gene Ontology
-	@$(WGET) 'ftp://ftp.geneontology.org/pub/go/ontology/obo_format_1_2/gene_ontology.1_2.obo' -O $(INPUT_DIR)go.tmp && $(MV) $(INPUT_DIR)go.tmp $(INPUT_DIR)go 2>/dev/null  || rm -f $(INPUT_DIR)go.tmp
+	# Download Gene Ontology (obo format-version: 1.2)
+	@$(WGET) 'http://purl.obolibrary.org/obo/go/go-basic.obo' -O $(INPUT_DIR)go.tmp && $(MV) $(INPUT_DIR)go.tmp $(INPUT_DIR)go 2>/dev/null  || rm -f $(INPUT_DIR)go.tmp
 	# Insert Gene Ontology
 	@$(JAVA) InsertGO $(INPUT_DIR)go >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
@@ -19,22 +19,49 @@ go.obsolete: $(OUTPUT_DIR)go
 
 # Deal with different Ensembl API versions for Ensembl and Ensembl Metazoa/Genomes
 # Keep default for Ensembl
-genes: $(SPECIESFILEPATH) $(OUTPUT_DIR)go go.obsolete
-	@$(MYSQL) -e "SELECT CONCAT(s.speciesId, '__', s.genomeSpeciesId, '__', s.genus, '_', REPLACE(s.species, ' ', '_'), '__', d.dataSourceName) FROM species s, dataSource d WHERE s.dataSourceId=d.dataSourceId ORDER BY s.speciesId" | grep -v 'speciesId' >$@.tmp
-	@if [[ -s $@.tmp ]]; then echo -n; else echo "NO species in file"; exit 2; fi
-	# Insert gene information for all species (may be long: between 1 and 10 hours per species)
-	@for sp in `cat $@.tmp`; do \
+genes: $(SPECIESFILEPATH) go.obsolete
+	@$(MYSQL) -e "SELECT CONCAT(s.speciesId, '__', s.genomeSpeciesId, '__', s.genus, '_', REPLACE(s.species, ' ', '_'), '__', d.dataSourceName) FROM species s, dataSource d WHERE s.dataSourceId=d.dataSourceId ORDER BY s.speciesId" | grep -v 'speciesId' >$@.species
+	@if [[ -s $@.species ]]; then echo -n; else echo "NO species in file"; exit 2; fi
+	# Insert gene information for Ensembl species (may be long: between 1 and 10 hours per species)
+	@for sp in `cat $@.species | grep -i __Ensembl`; do \
+		export ENSCMD=$(ENSCMD); \
 		export PERL5LIBORI=$$PERL5LIB; \
+		date; \
 		echo "species: $$sp"; \
 		if [[ `echo $$sp | grep 'Ensembl$$'` ]]; then \
 			export PERL5LIB=`echo $$PERL5LIB | perl -ne 'print join ":", map { s/\/ensembl\//\/ensembl_$(ENS_API_RELEASE)\//; $$_ } grep { /\w/ } split(/:/, $$_)'`; \
 		elif [[ `echo $$sp | grep 'EnsemblMetazoa$$'` ]]; then \
+			export ENSCMD=$${ENSCMD/$(ENSDBHOST)/$(ENSGDBHOST)}; \
+			export ENSCMD=$${ENSCMD/$(ENSDBPORT)/$(ENSGDBPORT)}; \
 			export PERL5LIB=`echo $$PERL5LIB | perl -ne 'print join ":", map { s/\/ensembl\//\/ensembl_$(ENSMETAZOA_API_RELEASE)\//; $$_ } grep { /\w/ } split(/:/, $$_)'`; \
 		fi; \
-		perl insert_genes.pl -species=$$sp -bgee=$(BGEECMD) -ensembl=$(ENSCMD) -obsGO=go.obsolete >> $@.tmp 2>>$@.err; \
+		perl insert_ensembl_genes.pl -species=$$sp -bgee=$(BGEECMD) -ensembl=$$ENSCMD -obsGO=go.obsolete >> $@.tmp 2>>$@.err; \
 		export PERL5LIB=$$PERL5LIBORI; \
+		sleep 60; \
+	done
+	# Insert gene information for non-Ensembl species
+	@for sp in `cat $@.species | grep -vi __Ensembl`; do \
+		date; \
+		echo "species: $$sp"; \
+		perl insert_nonensembl_genes.pl -species=$$sp -bgee=$(BGEECMD) -bgeeSpecies=$(SPECIESFILEPATH) -obsGO=go.obsolete >> $@.tmp 2>>$@.err; \
+		sleep 60; \
 	done
 	@if [[ -s $@.err ]]; then echo -n; else $(RM) $@.err; fi
+	@$(MV) $@.tmp $@
+
+
+updateUniprotXrefs : genes
+	# first remove already existing xrefs_from_uniprot file
+	@rm -f $(XREFS_FROM_UNIPROT_FILE)
+	# generate tsv file containing all information to update uniprot xrefs in the database. Also retrieve gene name.
+	#XXX for now it uses the parallel R package and can be run on any server. Attribute "number_cores"
+	#    has to be updated depending on the server the script is run on. It corresponds to the number of species queried
+	#    in parallel
+	#XXX Could be updated to directly run on UNIL cluster
+	#XXX Could be updated to retrieve other information from Uniprot (e.g GeneCards XRefs,...)
+	@R CMD BATCH --no-save --no-restore '--args species_file="$(SPECIESFILEPATH)" number_cores=28 bgee="$(BGEECMD)" output_file="$(XREFS_FROM_UNIPROT_FILE)"' update_genes_from_UniProt.R > $@.tmp
+	# Now update/insert XRefs in the database
+	@perl insert_uniprot_xrefs.pl -bgee=$(BGEECMD) -uniprot_xrefs=$(XREFS_FROM_UNIPROT_FILE) > $@.tmp 2>>$@.err
 	@$(MV) $@.tmp $@
 
 sameIdGeneCount: genes
@@ -76,7 +103,13 @@ $(VERIFICATIONFILE): $(OUTPUT_DIR)go go.obsolete genes sameIdGeneCount hogs $(OU
 	-@$(GIT) add $@
 	-@$(GIT) commit $@ -m "Commit verification file for gene and hierarchical group insertion"
 	@$(GIT) push
-	
+
+$(OUTPUT_DIR)insert_gene_homology:
+	# Insert orthology/paralogy  into the database
+	@perl insert_homology.pl -bgee=$(BGEECMD) -paralogs_dir_path=$(PARALOGS_DIR) -orthologs_dir_path=$(ORTHOLOGS_DIR) >>$@.tmp 2>>$@.err
+	@if [[ -s $@.err ]]; then echo -n; else $(RM) $@.err; fi
+	@$(MV) $@.tmp $@
+
 # Init variables used to insert OncoMX XRefs in the database
 ONCOMX_DATASOURCE_NAME := OncoMX
 

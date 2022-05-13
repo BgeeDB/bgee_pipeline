@@ -9,7 +9,8 @@ use diagnostics;
 # USAGE: perl insert_expression_in_situ.pl expr/no_expr/both
 # insert in situ data in expression table (ZFIN, Xenbase and MGD)
 # 
-# last modified Jan. 2017, FBB: use of new quality computation and new inSituExperimentExpression table
+# modified Jan. 2017, FBB: use of new quality computation and new inSituExperimentExpression table
+# modified Mar. 2021, JW:  do not anymore count present/absent low/high calls. As for Bgee 15 pvalues are used to summarize quality
 #################################################################
 
 use Getopt::Long;
@@ -56,6 +57,36 @@ while ( my @data = $queryConditions->fetchrow_array ){
 
 print "Done, ", scalar(@exprMappedConditions), " conditions retrieved.\n";
 
+############################
+# ADD PVALUES              #
+############################
+
+my $PVALUE_ABSENT_HIGH = 0.5;
+my $PVALUE_ABSENT_LOW = 0.1;
+my $PVALUE_PRESENT_LOW = 0.01;
+my $PVALUE_PRESENT_HIGH = 0.0004;
+
+if ($debug) {
+    print 'UPDATE inSituSpot SET pValue = CASE '.
+                          ' WHEN inSituData = "'.$Utils::LOW_QUAL.'" AND detectionFlag = "'.$Utils::ABSENT_CALL.'" THEN '.$PVALUE_ABSENT_LOW.
+                          ' WHEN inSituData = "'.$Utils::HIGH_QUAL.'" AND detectionFlag = "'.$Utils::ABSENT_CALL.'" THEN '.$PVALUE_ABSENT_HIGH.
+                          ' WHEN inSituData = "'.$Utils::LOW_QUAL.'" AND detectionFlag = "'.$Utils::PRESENT_CALL.'" THEN '.$PVALUE_PRESENT_LOW.
+                          ' WHEN inSituData = "'.$Utils::HIGH_QUAL.'" AND detectionFlag = "'.$Utils::PRESENT_CALL.'" THEN '.$PVALUE_PRESENT_HIGH.
+                          ' ELSE NULL '.
+                        ' END '."\n";
+} else {
+    my $updPValues   = $bgee->prepare('UPDATE inSituSpot SET pValue = CASE '.
+                          ' WHEN inSituData = "'.$Utils::LOW_QUAL.'" AND detectionFlag = "'.$Utils::ABSENT_CALL.'" THEN '.$PVALUE_ABSENT_LOW.
+                          ' WHEN inSituData = "'.$Utils::HIGH_QUAL.'" AND detectionFlag = "'.$Utils::ABSENT_CALL.'" THEN '.$PVALUE_ABSENT_HIGH.
+                          ' WHEN inSituData = "'.$Utils::LOW_QUAL.'" AND detectionFlag = "'.$Utils::PRESENT_CALL.'" THEN '.$PVALUE_PRESENT_LOW.
+                          ' WHEN inSituData = "'.$Utils::HIGH_QUAL.'" AND detectionFlag = "'.$Utils::PRESENT_CALL.'" THEN '.$PVALUE_PRESENT_HIGH.
+                          ' ELSE NULL '.
+                        ' END ');
+    $updPValues->execute()  or die $updPValues->errstr;
+    $updPValues->finish();
+}
+
+
 
 ##########################################
 # PREPARE QUERIES                        #
@@ -71,14 +102,6 @@ my $updResult = $bgee->prepare('UPDATE inSituSpot AS t1
                                 SET expressionId = ?, reasonForExclusion = ?
                                 WHERE t1.bgeeGeneId = ? AND t2.exprMappedConditionId = ?
                                     AND t1.reasonForExclusion != "'.$Utils::EXCLUDED_FOR_PRE_FILTERED.'"');
-
-# Insertion into inSituExperimentExpression
-my $insExpSummary = $bgee->prepare('INSERT INTO inSituExperimentExpression
-                                    (expressionId, inSituExperimentId,
-                                        presentHighInSituSpotCount, presentLowInSituSpotCount,
-                                        absentHighInSituSpotCount, absentLowInSituSpotCount,
-                                        inSituExperimentCallDirection, inSituExperimentCallQuality) 
-                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
 
 # query to get all the in situ spots for a condition
 # (inSituSpotIds are unique over all experiments so we don't need to also retrieve the evidence IDs)
@@ -105,6 +128,8 @@ sub add_expression {
 # ITERATING CONDITIONS TO INSERT DATA    #
 ##########################################
 
+my $reasonForExclusion = $Utils::CALL_NOT_EXCLUDED;
+
 print "Processing conditions...\n";
 for my $exprMappedConditionId ( @exprMappedConditions ){
     print "\tconditionId: $exprMappedConditionId\n";
@@ -124,22 +149,14 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
 
     # now iterating the genes to insert expression data
     # (one row for a gene-condition)
-    for my $geneId ( keys %results ){
-        # get the summary of expression and quality from the list of inSituSpotIds
-        # where this gene is analyzed (for this condition)
-        my ($reasonForExclusion, $summary) = Utils::summarizeExperimentCallAndQuality(\%{$results{$geneId}});
-
+    for my $geneId ( keys %results ){ 
+        
         my $expressionId   = undef;
 
-        # insert or update the expression table if not only undefined calls
-        if ( $reasonForExclusion eq $Utils::CALL_NOT_EXCLUDED ){
-            if ( $debug ){
-                print "INSERT INTO expression (bgeeGeneId, conditionId) VALUES ($geneId, $exprMappedConditionId)...\n";
-            } else {
-                $expressionId = add_expression($geneId, $exprMappedConditionId);
-            }
+        if ( $debug ){
+            print "INSERT INTO expression (bgeeGeneId, conditionId) VALUES ($geneId, $exprMappedConditionId)...\n";
         } else {
-            warn "No calls available for geneId $geneId in exprMappedConditionId $exprMappedConditionId\n";
+            $expressionId = add_expression($geneId, $exprMappedConditionId);
         }
 
         # Now update the related inSituSpots
@@ -150,39 +167,15 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
                    SET expressionId = $printExprId, reasonForExclusion = $reasonForExclusion
                    WHERE t1.bgeeGeneId = $geneId AND t2.exprMappedConditionId = $exprMappedConditionId
                    AND t1.reasonForExclusion != '".$Utils::EXCLUDED_FOR_PRE_FILTERED."'\n";
-            if ( $reasonForExclusion eq $Utils::CALL_NOT_EXCLUDED ) {
-                for my $expId ( keys %{ $summary } ) {
-                	print "INSERT INTO inSituExperimentExpression
-                               (expressionId, inSituExperimentId,
-                                presentHighInSituSpotCount, presentLowInSituSpotCount,
-                                absentHighInSituSpotCount, absentLowInSituSpotCount,
-                                inSituExperimentCallDirection, inSituExperimentCallQuality) 
-                           VALUES ($printExprId, $expId, 
-                               $summary->{$expId}->{'pstHighEvidenceCount'},
-                               $summary->{$expId}->{'pstLowEvidenceCount'},
-                               $summary->{$expId}->{'absHighEvidenceCount'},
-                               $summary->{$expId}->{'absLowEvidenceCount'},
-                               $summary->{$expId}->{'expCall'}, $summary->{$expId}->{'expCallQuality'})\n";
-                }
-            }
         } else {
             $updResult->execute($expressionId, $reasonForExclusion, $geneId, $exprMappedConditionId)
                 or die $updResult->errstr;
-            if ( $reasonForExclusion eq $Utils::CALL_NOT_EXCLUDED ) {
-                for my $expId ( keys %{ $summary } ) {
-                    $insExpSummary->execute($expressionId, $expId, 
-                        $summary->{$expId}->{'pstHighEvidenceCount'},
-                        $summary->{$expId}->{'pstLowEvidenceCount'},
-                        $summary->{$expId}->{'absHighEvidenceCount'},
-                        $summary->{$expId}->{'absLowEvidenceCount'},
-                        $summary->{$expId}->{'expCall'}, $summary->{$expId}->{'expCallQuality'})
-                    or die $insExpSummary->errstr;
-                }
-            }
         }
     }
 }
-
+$insUpExpr->finish();
+$updResult->finish();
+$queryResults->finish();
 $bgee->disconnect;
 print "Done\n"  if ( $debug );
 

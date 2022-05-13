@@ -1,0 +1,17 @@
+To insert genes from an Ensembl source (Ensembl or Ensembl Metazoa)
+you need the Ensembl API.
+
+WARNING if Ensembl and Ensembl Metazoa are not sync, you will have to
+        switch between Ensembl API versions!
+
+
+Instructions about how to install the Ensembl API are available here
+- http://www.ensembl.org/info/docs/api/api_git.html
+
+
+Set the *PERL5LIB* environment variable following these instructions:
+- http://www.ensembl.org/info/docs/api/api_installation.html
+
+
+ACHTUNG! **ensembl-metadata** not by default with ensembl-git-tools;
+and the same for **ensembl-taxonomy** but we need them!

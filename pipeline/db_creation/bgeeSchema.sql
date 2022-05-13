@@ -52,16 +52,16 @@ create table dataSource (
 -- a cat to organize the display
     category              enum('', 'Genomics database', 'Proteomics database',
                                'In situ data source', 'Affymetrix data source', 'EST data source', 'RNA-Seq data source',
-                               'Ontology')                       COMMENT 'Data source category to organize the display',
+                               'Single-cell RNA-Seq data source', 'Ontology') COMMENT 'Data source category to organize the display',
 -- to organize the display. Default value is the highest value, so that this field is the last to be displayed
     displayOrder          tinyint unsigned  not null default 255 COMMENT 'Data source display ordering'
 ) engine = innodb;
 
 create table dataSourceToSpecies (
-    dataSourceId smallInt  unsigned                              not null COMMENT 'Data source id',
-    speciesId    mediumint unsigned                              not null COMMENT 'NCBI species taxon id',
-    dataType     enum('affymetrix', 'est', 'in situ', 'rna-seq') not null COMMENT 'Data type',
-    infoType     enum('data', 'annotation')                      not null COMMENT 'Information type'
+    dataSourceId smallInt  unsigned  not null COMMENT 'Data source id',
+    speciesId    mediumint unsigned  not null COMMENT 'NCBI species taxon id',
+    dataType     enum('affymetrix', 'est', 'in situ', 'rna-seq', 'full-length single-cell RNA-Seq') not null COMMENT 'Data type',
+    infoType     enum('data', 'annotation') not null COMMENT 'Information type'
 ) engine = innodb;
 
 create table keyword (
@@ -466,6 +466,18 @@ create table geneBioType (
     geneBioTypeName varchar(255) not null default '' COMMENT 'Gene BioType name'
 ) engine = innodb;
 
+create table geneOrthologs (
+    bgeeGeneId mediumint unsigned not null COMMENT 'Numeric internal gene ID used for improving performances',
+    targetGeneId mediumint unsigned not null COMMENT 'Numeric internal gene ID of the orthologous gene',
+    taxonId mediumint unsigned not null COMMENT 'NCBI taxon id at which orthology relation had been identified'
+) engine = innodb;
+
+create table geneParalogs (
+    bgeeGeneId mediumint unsigned not null COMMENT 'Numeric internal gene ID used for improving performances',
+    targetGeneId mediumint unsigned not null COMMENT 'Numeric internal gene ID of the orthologous gene',
+    taxonId mediumint unsigned not null COMMENT 'NCBI taxon id of the closest parent speciation of this duplication'
+) engine = innodb;
+
 create table gene (
 -- warning, maybe this bgeeGeneId will need to be changed to an 'int' when we reach around 200 species
     bgeeGeneId mediumint unsigned not null COMMENT 'Numeric internal gene ID used for improving performances',
@@ -484,12 +496,6 @@ create table gene (
 -- (for instance, bonobo; we use chimp genome)
     ensemblGene boolean not null default 1 COMMENT 'Is the gene in Ensembl (default) (= 1), if not (= 0)',
     geneMappedToGeneIdCount tinyint unsigned not null default 1 COMMENT 'number of genes in the Bgee database with the same Ensembl gene ID. In Bgee, for some species with no genome available, we use the genome of a closely-related species, such as chimpanzee genome for analyzing bonobo data. For this reason, a same Ensembl gene ID can be mapped to several species in Bgee. The value returned here is equal to 1 when the Ensembl gene ID is uniquely used in the Bgee database.'
-) engine = innodb;
-
-create table geneToOma (
-    bgeeGeneId mediumint unsigned not null,
-    OMAGroupId varchar(255) not null COMMENT 'OMA Hierarchical Orthologous Group id. We store the OMAGroupId rather than the OMANodeId, because it allows to retrieve absolutely all homologs of a gene, without needing to target a specific taxonomic level',
-    taxonId mediumint unsigned not null
 ) engine = innodb;
 
 create table geneNameSynonym (
@@ -536,11 +542,12 @@ create table transcript (
 -- ****************************************************
 -- 'condition' is a reserved keyword in MySQL, we can't use it as table name
 create table cond (
-    conditionId           mediumint unsigned not null COMMENT 'Internal condition ID. Each condition is species-specific',
-    exprMappedConditionId mediumint unsigned not null COMMENT 'the condition ID that should be used for insertion into the expression table: too-granular conditions (e.g., 43 yo human stage, or sexInferred=1) are mapped to less granular conditions for summary. Equal to conditionId if condition is not too granular.',
-    anatEntityId          varchar(20)  not null       COMMENT 'Uberon anatomical entity ID',
-    stageId               varchar(20)  not null       COMMENT 'Uberon stage ID',
-    speciesId             mediumint unsigned not null COMMENT 'NCBI species taxon ID',
+    conditionId           mediumint unsigned not null      COMMENT 'Internal condition ID. Each condition is species-specific',
+    exprMappedConditionId mediumint unsigned not null      COMMENT 'the condition ID that should be used for insertion into the expression table: too-granular conditions (e.g., 43 yo human stage, or sexInferred=1) are mapped to less granular conditions for summary. Equal to conditionId if condition is not too granular.',
+    anatEntityId          varchar(20)        not null      COMMENT 'Uberon anatomical entity ID',
+    cellTypeId            varchar(20)        default null  COMMENT 'A second uberon anatomical entity ID used to manage composition of anatomical entities. Used only for single cell data for postcomposition of anatomical entity ID and cell type ID',
+    stageId               varchar(20)        not null      COMMENT 'Uberon stage ID',
+    speciesId             mediumint unsigned not null      COMMENT 'NCBI species taxon ID',
 -- NA: not available from source information
 -- not annotated: information not captured by Bgee
 -- If an ENUM column is declared NOT NULL, its default value is the first element of the list
@@ -560,18 +567,23 @@ create table remapCond (
     remappedConditionId mediumint unsigned not null
 ) engine = innodb COMMENT 'This table is used as an intermediary step for condition remapping, see remap_conditions.pl';
 
+create table remapExpression (
+    incorrectExpressionId int unsigned not null,
+    remappedExpressionId int unsigned not null
+) engine = innodb COMMENT 'This table is used as an intermediary step for condition remapping, see remap_conditions.sql';
+
 create table globalCond (
     globalConditionId mediumint unsigned not null,
     anatEntityId          varchar(20)  COMMENT 'Uberon anatomical entity ID. Can be null in this table if this condition aggregates data according to other condition parameters (e.g., grouping all data in a same stage whatever the organ is).',
+    cellTypeId            varchar(20)  default null COMMENT 'A second uberon anatomical entity ID used to manage composition of anatomical entities. Used only for single cell data for postcomposition of anatomical entity ID and cell type ID',
     stageId               varchar(20)  COMMENT 'Uberon stage ID. Can be null in this table if this condition aggregates data according to other condition parameters (e.g., grouping all data in a same organ whatever the dev. stage is).',
     speciesId             mediumint unsigned not null COMMENT 'NCBI species taxon ID',
 -- NA: not available from source information
 -- not annotated: information not captured by Bgee
 -- If an ENUM column is declared NOT NULL, its default value is the first element of the list
--- In this table, only 'not annotated' is used to replace 'NA', as for conditions
--- used in expression table
-    sex enum('not annotated', 'hermaphrodite', 'female', 'male', 'mixed')
-    COMMENT 'Sex information. NA: not available from source information; not annotated: not used in this table, since all conditions used in the expression tables have "NA" replaced with "not annotated". Can be null in this table if this condition aggregates data according to other condition parameters (e.g., grouping all data in a same organ whatever the sex is).',
+-- In this table, only 'any' is used to replace 'not annotated', 'NA', 'mixed'
+-- and also represents the propagation of calls along the sex 'ontology'.
+    sex enum('any', 'hermaphrodite', 'female', 'male'),
 -- For now, strains are captured as free-text format, only 4 term are "standardized":
 -- 'NA', 'not annotated', 'wild-type', 'confidential_restricted_data'.
 -- In this table, only 'wild-type' is used to replace 'NA', 'not annotated', and
@@ -590,13 +602,23 @@ create table globalCond (
 -- Note: these values are the same for all genes in a condition-species, this is why they are stored in this table.
     affymetrixMaxRank decimal(9,2) unsigned,
     rnaSeqMaxRank decimal(9,2) unsigned,
+    scRnaSeqFullLengthMaxRank decimal(9,2) unsigned,
+    scRnaSeqTargetBasedMaxRank decimal(9,2) unsigned,
     estMaxRank decimal(9,2) unsigned,
     inSituMaxRank decimal(9,2) unsigned,
 
     affymetrixGlobalMaxRank decimal(9,2) unsigned COMMENT 'This max rank is computed by taking into account all data in this condition, but also in all child conditions.',
     rnaSeqGlobalMaxRank decimal(9,2) unsigned COMMENT 'This max rank is computed by taking into account all data in this condition, but also in all child conditions.',
+    scRnaSeqFullLengthGlobalMaxRank decimal(9,2) unsigned COMMENT 'This max rank is computed by taking into account all data in this condition, but also in all child conditions.',
+    scRnaSeqTargetBasedGlobalMaxRank decimal(9,2) unsigned COMMENT 'This max rank is computed by taking into account all data in this condition, but also in all child conditions.',
     estGlobalMaxRank decimal(9,2) unsigned COMMENT 'This max rank is computed by taking into account all data in this condition, but also in all child conditions.',
-    inSituGlobalMaxRank decimal(9,2) unsigned COMMENT 'This max rank is computed by taking into account all data in this condition, but also in all child conditions.'
+    inSituGlobalMaxRank decimal(9,2) unsigned COMMENT 'This max rank is computed by taking into account all data in this condition, but also in all child conditions.',
+
+    condObservedAnatEntity tinyint(1) not null default 0 COMMENT 'A boolean defining whether this condition has been observed in annotations, in any species (maybe a different one from the species of this global condition), considering only the anat. entity parameter.',
+    condObservedCellType tinyint(1) not null default 0 COMMENT 'A boolean defining whether this condition has been observed in annotations, in any species (maybe a different one from the species of this global condition), considering only the cell type parameter.',
+    condObservedStage tinyint(1) not null default 0 COMMENT 'A boolean defining whether this condition has been observed in annotations, in any species (maybe a different one from the species of this global condition), considering only the dev. stage parameter.',
+    condObservedSex tinyint(1) not null default 0 COMMENT 'A boolean defining whether this condition has been observed in annotations, in any species (maybe a different one from the species of this global condition), considering only the sex parameter.',
+    condObservedStrain tinyint(1) not null default 0 COMMENT 'A boolean defining whether this condition has been observed in annotations, in any species (maybe a different one from the species of this global condition), considering only the strain parameter.'
 ) engine = innodb COMMENT 'This table contains all condition used in the globalExpression table. It thus includes "real" conditions used in the raw expression table, but mostly conditions resulting from the propagation of expression calls in the globalExpression table. It results from the computation of propagated calls according to different condition parameters combination (e.g., grouping all data in a same anat. entity, or all data in a same anat. entity - stage, or data in anat. entity - sex). This is why the fields anatEntityId, stageId, sex, strain, can be null in this table (but not all of them at the same time).';
 
 create table globalCondToCond (
@@ -630,6 +652,8 @@ create table expressedSequenceTag (
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
     UniGeneClusterId varchar(70) not null default '',
     expressionId int unsigned,
+-- p-value
+    pValue decimal(31, 30) unsigned not null,
 -- Warning, qualities must be ordered, the index in the enum is used in many queries
     estData enum('no data', 'poor quality', 'high quality') default 'no data'
 ) engine = innodb;
@@ -692,7 +716,7 @@ create table affymetrixChip (
 -- affymetrixChipId are not unique (couple affymetrixChipId - microarrayExperimentId is)
 -- then we need an internal ID to link to affymetrixProbeset
 -- warning, SMALLINT UNSIGNED only allows for 65535 chips to be inserted (we have 12,996 as of Bgee 14)
-    bgeeAffymetrixChipId smallint unsigned not null,
+    bgeeAffymetrixChipId mediumint unsigned not null,
     affymetrixChipId varchar(255) not null,
     microarrayExperimentId varchar(70) not null,
 -- define only if CEL file available, normalization gcRMA, detection schuster
@@ -734,16 +758,23 @@ create table affymetrixChip (
 
 create table affymetrixProbeset (
     affymetrixProbesetId varchar(70) not null,
-    bgeeAffymetrixChipId smallint unsigned not null,
+    bgeeAffymetrixChipId mediumint unsigned not null,
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
     normalizedSignalIntensity decimal(13,5) unsigned not null default 0,
 -- Warning, flags must be ordered, the index in the enum is used in many queries
+-- detectionFlag before FDR correction
+    rawDetectionFlag enum('undefined', 'absent', 'marginal', 'present') not null default 'undefined',
+-- p-value
+    pValue decimal(31, 30) unsigned default null,
+-- p-value adjusted by Benjamini-Hochberg procedure
+    qValue decimal(31, 30) unsigned default 1,
+-- detectionFlag after FDR correction
     detectionFlag enum('undefined', 'absent', 'marginal', 'present') not null default 'undefined',
     expressionId int unsigned,
 -- rank is not "not null" because we update this information afterwards.
 -- note that this corresponds to the rank of the gene, not of the probeset
 -- (so, all probesets mapped to a same gene have the same rank, based on its highest signal intensity)
-    rank decimal(9, 2) unsigned,
+    rawRank decimal(9, 2) unsigned,
 -- Warning, qualities must be ordered, the index in the enum is used in many queries
     affymetrixData enum('no data', 'poor quality', 'high quality') not null default 'no data',
 -- When expressionId is null, the result is not used for the summary of expression.
@@ -765,8 +796,7 @@ create table affymetrixProbeset (
 -- taking also into account 'absent low quality' evidence.
 -- 'absent low quality' used to be: probesets always "absent" for this gene/condition,
 -- but only seen by MAS5 (that we do not trust = "low quality" - "noExpression" should always be "high quality").
-    reasonForExclusion enum('not excluded', 'pre-filtering',
-        'noExpression conflict', 'undefined') not null default 'not excluded'
+    reasonForExclusion enum('not excluded', 'pre-filtering', 'undefined') not null default 'not excluded'
 ) engine = innodb;
 
 create table microarrayExperimentExpression (
@@ -830,6 +860,7 @@ create table inSituSpot (
     expressionId int unsigned,
 -- Warning, qualities must be ordered, the index in the enum is used in many queries
     inSituData enum('no data', 'poor quality', 'high quality') default 'no data',
+    pValue decimal(31, 30) unsigned default null,
 -- When expressionId is null, the result is not used for the summary of expression.
 -- Reasons are:
 -- * pre filtering: Probesets always seen as "absent" or "marginal" over the whole dataset are removed
@@ -849,8 +880,7 @@ create table inSituSpot (
 -- taking also into account 'absent low quality' evidence.
 -- 'absent low quality' used to be: probesets always "absent" for this gene/condition,
 -- but only seen by MAS5 (that we do not trust = "low quality" - "noExpression" should always be "high quality").
-    reasonForExclusion enum('not excluded', 'pre-filtering',
-        'noExpression conflict', 'undefined') not null default 'not excluded'
+    reasonForExclusion enum('not excluded', 'pre-filtering', 'undefined') not null default 'not excluded'
 ) engine = innodb;
 
 create table inSituExperimentExpression (
@@ -899,18 +929,18 @@ create table rnaSeqLibrary (
     rnaSeqLibraryId varchar(70) not null,
     rnaSeqExperimentId varchar(70) not null,
     rnaSeqPlatformId varchar(255) not null,
+    rnaSeqProtocolId smallint unsigned not null,
     conditionId mediumint unsigned not null,
+    meanTpmReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'mean TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
+    sdTpmReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'standard deviation in TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
 -- TMM normalization factor
     tmmFactor decimal(8, 6) not null default 1.0,
--- FPKM threshold to consider a gene as expressed
-    fpkmThreshold decimal(16, 6) not null,
 -- TPM threshold to consider a gene as expressed
     tpmThreshold decimal(16, 6) not null,
     allGenesPercentPresent decimal(5, 2) unsigned not null default 0,
     proteinCodingGenesPercentPresent decimal(5, 2) unsigned not null default 0,
     intergenicRegionsPercentPresent decimal(5, 2) unsigned not null default 0,
-    thresholdRatioIntergenicCodingPercent decimal(5, 2) unsigned not null default 0
-            COMMENT 'Proportion intergenic/coding region used to define the threshold to consider a gene as expressed (should always be 5%, but some libraries do not allow to reach this value)',
+    pValueThreshold decimal(5, 4) unsigned not null default 0 COMMENT 'pValue threshold used to consider genes present/absent. (for Bgee15 this threshold should always be 0.05)',
 -- total number of reads in library, including those not mapped.
 -- In case of paired-end libraries, it's the number of pairs of reads;
 -- In case of single read, it's the total number of reads
@@ -946,7 +976,8 @@ create table rnaSeqRun (
 -- UPDATE Bgee 14: for pseudo-mapping using Kallisto, runs are pooled, so we can only exclude libraries,
 -- not specific runs.
 create table rnaSeqLibraryDiscarded (
-    rnaSeqLibraryId varchar(70) not null
+    rnaSeqLibraryId varchar(70) not null,
+    rnaSeqLibraryDiscardReason varchar(255) not null default ''
 ) engine = innodb;
 
 -- This table contains TPM/RPKM/read count values for each gene for each library
@@ -954,19 +985,19 @@ create table rnaSeqLibraryDiscarded (
 create table rnaSeqResult (
     rnaSeqLibraryId varchar(70) not null,
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
--- FPRKM and TPM values inserted here are NOT TMM normalized,
+-- FPKM and TPM values inserted here are NOT TMM normalized,
 -- these are the raw data before any normalization
     fpkm decimal(16, 6) not null COMMENT 'FPKM values, NOT log transformed',
     tpm decimal(16, 6) not null COMMENT 'TPM values, NOT log transformed',
 -- rank is not "not null" because we update this information afterwards
-    rank decimal(9, 2) unsigned,
+    rawRank decimal(9, 2) unsigned,
 -- for information, measure not normalized for reads or genes lengths
     readsCount decimal(16, 6) unsigned not null COMMENT 'As of Bgee 14, read counts are "estimated counts" produced using the Kallisto software. They are not normalized for read or gene lengths.',
+-- zScore can be negative
+    zScore decimal(35, 30),
+    pValue decimal(31, 30) unsigned default null COMMENT 'present calls are based on the pValue',
     expressionId int unsigned,
     detectionFlag enum('undefined', 'absent', 'present') default 'undefined',
--- Warning, qualities must be ordered, the index in the enum is used in many queries.
--- We should only see genes with 'high quality' here
-    rnaSeqData enum('no data', 'poor quality', 'high quality') default 'no data',
 -- When expressionId is null, the result is not used for the summary of expression.
 -- Reasons are:
 -- * pre filtering: Probesets always seen as "absent" or "marginal" over the whole dataset are removed
@@ -986,8 +1017,9 @@ create table rnaSeqResult (
 -- taking also into account 'absent low quality' evidence.
 -- 'absent low quality' used to be: probesets always "absent" for this gene/condition,
 -- but only seen by MAS5 (that we do not trust = "low quality" - "noExpression" should always be "high quality").
-    reasonForExclusion enum('not excluded', 'pre-filtering',
-        'noExpression conflict', 'undefined') not null default 'not excluded'
+    rnaSeqData enum('no data','poor quality','high quality') default 'no data',
+    reasonForExclusion enum('not excluded', 'pre-filtering', 'absent call not reliable',
+    'undefined') not null default 'not excluded'
 ) engine = innodb;
 
 -- This table contains TPM/RPKM/read count values for each transcript for each library
@@ -1018,6 +1050,202 @@ create table rnaSeqExperimentExpression (
         comment 'Inferred quality for this call based on this experiment (from all libraries, "present high" > "present low" > "absent high" > "absent low"). Value "poor quality" instead of "low quality" for historical reasons.'
 ) engine = innodb
 comment = 'This table stores information about expression calls produced from RNA-Seq experiments, that is then used in Bgee to compute global summary expression calls and qualities.';
+
+create table rnaSeqProtocol (
+    rnaSeqProtocolId smallint unsigned not null,
+    rnaSeqProtocolName varchar(255) not null default ''
+) engine = innodb;
+
+create table rnaSeqProtocolToBiotypeExcludedAbsentCalls (
+    rnaSeqProtocolId smallint unsigned not null COMMENT 'protocol ID for which a biotype will not be used to generate absent calls',
+    geneBioTypeId smallint unsigned not null COMMENT 'biotype ID for which absent calls will not be generated.'
+) engine = innodb;
+
+create table rnaSeqProtocolSpeciesMaxRank (
+    rnaSeqProtocolId smallint unsigned not null,
+    speciesId mediumint unsigned not null,
+    maxRank decimal(9,2) unsigned not null COMMENT 'The max fractional rank in this protocol and species (see `rank` field in rnaSeqResult table)'
+) engine = innodb;
+
+-- ****************************************************
+-- scRNA-Seq FULL LENGTH DATA
+-- ****************************************************
+create table scRnaSeqFullLengthExperiment (
+-- primary exp ID, from GEO, patterns GSExxx
+    scRnaSeqFullLengthExperimentId varchar(70) not null,
+    scRnaSeqFullLengthExperimentName varchar(255) not null default '',
+    scRnaSeqFullLengthExperimentDescription text,
+    dataSourceId smallInt unsigned not null
+) engine = innodb;
+
+create table scRnaSeqFullLengthPlatform (
+    scRnaSeqFullLengthPlatformId varchar(255) not null,
+    scRnaSeqFullLengthPlatformDescription text
+) engine = innodb;
+
+create table scRnaSeqFullLengthLibrary (
+-- primary ID, from GEO, pattern GSMxxx
+    scRnaSeqFullLengthLibraryId varchar(70) not null,
+    scRnaSeqFullLengthExperimentId varchar(70) not null,
+    scRnaSeqFullLengthPlatformId varchar(255) not null,
+    conditionId mediumint unsigned not null,
+    meanTpmReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'mean TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
+    sdTpmReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'standard deviation in TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
+-- TPM threshold to consider a gene as expressed,
+-- which is the lowest TPM value associated with the p-value cutoff.
+-- p-value is computed for each gene based notably on the mean and sd of the reference intergenics distribution;
+-- the threshold is thus retrieved after computation of p-values
+    tpmThreshold decimal(16, 6) not null,
+    allGenesPercentPresent decimal(5, 2) unsigned not null default 0,
+    proteinCodingGenesPercentPresent decimal(5, 2) unsigned not null default 0,
+    intergenicRegionsPercentPresent decimal(5, 2) unsigned not null default 0,
+    pValueThreshold decimal(5, 4) unsigned not null default 0 COMMENT 'pValue threshold used to consider genes present/absent. (for Bgee15 this threshold should always be 0.05)',
+-- total number of reads in library, including those not mapped.
+-- In case of paired-end libraries, it's the number of pairs of reads;
+-- In case of single end, it's the total number of reads
+    allReadsCount int unsigned not null default 0,
+-- total number of reads in library that were mapped to anything.
+    mappedReadsCount int unsigned not null default 0,
+-- a library is an assembly of different runs, and the runs can have different read lengths,
+-- so we store the min and max read lengths
+    minReadLength int unsigned not null default 0,
+    maxReadLength int unsigned not null default 0,
+-- Is the library built using paired end?
+-- NA: info not used for pseudo-mapping. Default value in an enum is the first one.
+    libraryType enum('NA', 'single', 'paired') not null,
+    libraryOrientation enum('NA', 'forward', 'reverse', 'unstranded') not null,
+
+-- the following fields are used for rank computations, and are set after all expression data insertion,
+-- this is why null value is permitted.
+    libraryMaxRank decimal(9,2) unsigned COMMENT 'The max fractional rank in this library (see `rank` field in rnaSeqResult table)',
+    libraryDistinctRankCount mediumint unsigned COMMENT 'The count of distinct rank in this library (see `rank` field in rnaSeqResult table, used for weighted mean rank computations)'
+) engine = innodb;
+
+-- Store the information of runs used, pool together to generate the results
+-- for a given library.
+create table scRnaSeqFullLengthRun (
+    scRnaSeqFullLengthRunId varchar(70) not null,
+    scRnaSeqFullLengthLibraryId varchar(70) not null
+) engine = innodb;
+
+create table scRnaSeqFullLengthLibraryDiscarded (
+    scRnaSeqFullLengthLibraryId varchar(70) not null,
+    scRnaSeqFullLengthLibraryDiscardReason varchar(255) not null default ''
+) engine = innodb;
+
+create table scRnaSeqFullLengthResult (
+    scRnaSeqFullLengthLibraryId varchar(70) not null,
+    bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
+-- FPKM and TPM values inserted here are NOT TMM normalized,
+-- these are the raw data before any normalization
+    fpkm decimal(16, 6) not null COMMENT 'FPKM values, NOT log transformed',
+    tpm decimal(16, 6) not null COMMENT 'TPM values, NOT log transformed',
+-- rank is not "not null" because we update this information afterwards
+    rawRank decimal(9, 2) unsigned,
+-- for information, measure not normalized for reads or genes lengths
+    readsCount decimal(16, 6) unsigned not null COMMENT 'As of Bgee 14, read counts are "estimated counts" produced using the Kallisto software. They are not normalized for read or gene lengths.',
+-- zScore can be negative
+    zScore decimal(35, 30),
+    pValue decimal(31, 30) unsigned default null COMMENT 'present calls are based on the pValue',
+    expressionId int unsigned,
+    detectionFlag enum('undefined', 'absent', 'present') default 'undefined' COMMENT 'absent calls are inserted but excluded for scRNA-Seq data',
+    reasonForExclusion enum('not excluded', 'absent call not reliable', 'undefined') not null default 'not excluded'
+) engine = innodb;
+
+
+create table scRnaSeqFullLengthSpeciesMaxRank (
+    speciesId mediumint unsigned not null,
+    maxRank decimal(9,2) unsigned not null COMMENT 'The max fractional rank in this protocol and species (see `rank` field in rnaSeqResult table)'
+) engine = innodb;
+
+-- ****************************************************
+-- scRNA-Seq TARGET-BASED DATA
+-- ****************************************************
+create table scRnaSeqTargetBasedExperiment (
+-- primary exp ID, from GEO, patterns GSExxx
+    scRnaSeqTargetBasedExperimentId varchar(70) not null,
+    scRnaSeqTargetBasedExperimentName varchar(255) not null default '',
+    scRnaSeqTargetBasedExperimentDescription text,
+    dataSourceId smallInt unsigned not null
+) engine = innodb;
+
+create table scRnaSeqTargetBasedPlatform (
+    scRnaSeqTargetBasedPlatformId varchar(255) not null,
+    scRnaSeqTargetBasedPlatformDescription text
+) engine = innodb;
+
+create table scRnaSeqTargetBasedLibrary (
+-- primary ID, from GEO, pattern GSMxxx
+    scRnaSeqTargetBasedLibraryId varchar(70) not null,
+    scRnaSeqTargetBasedExperimentId varchar(70) not null,
+    scRnaSeqTargetBasedPlatformId varchar(255) not null,
+-- total number of reads in library, including those not mapped.
+-- In case of paired-end libraries, it's the number of pairs of reads;
+-- In case of single end, it's the total number of reads,
+    allUmiCount mediumint unsigned not null default 0,
+    mappedUmiCount mediumint unsigned not null default 0,
+-- so we store the min and max read lengths
+    minReadLength int unsigned not null default 0,
+    maxReadLength int unsigned not null default 0,
+-- Is the library built using paired end?
+-- NA: info not used for pseudo-mapping. Default value in an enum is the first one.
+    libraryType enum('NA', 'single', 'paired') not null,
+    libraryOrientation enum('NA', 'forward', 'reverse', 'unstranded') not null,
+
+-- the following fields are used for rank computations, and are set after all expression data insertion,
+-- this is why null value is permitted.
+    libraryMaxRank decimal(9,2) unsigned COMMENT 'The max fractional rank in this library (see `rank` field in rnaSeqResult table)',
+    libraryDistinctRankCount mediumint unsigned COMMENT 'The count of distinct rank in this library (see `rank` field in rnaSeqResult table, used for weighted mean rank computations)'
+) engine = innodb;
+
+-- Store the information of runs used, pool together to generate the results
+-- for a given library.
+create table scRnaSeqTargetBasedRun (
+    scRnaSeqTargetBasedRunId varchar(70) not null,
+    scRnaSeqTargetBasedLibraryId varchar(70) not null
+) engine = innodb;
+
+create table scRnaSeqTargetBasedLibraryDiscarded (
+    scRnaSeqTargetBasedLibraryId varchar(70) not null,
+    scRnaSeqTargetBasedLibraryDiscardReason varchar(255) not null default ''
+) engine = innodb;
+
+create table scRnaSeqTargetBasedLibraryCellPopulation (
+    scRnaSeqTargetBasedLibraryCellPopulationId int unsigned not null,
+    scRnaSeqTargetBasedLibraryId varchar(70) not null,
+    conditionId mediumint unsigned not null,
+    meanCpmReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'mean CPM of the distribution of the reference intergenics regions in this library',
+    sdCpmReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'standard deviation in CPM of the distribution of the reference intergenics regions in this library',
+-- CPM threshold to consider a gene as expressed,
+-- which is the lowest CPM value associated with the p-value cutoff.
+-- p-value is computed for each gene based notably on the mean and sd of the reference intergenics distribution;
+-- the threshold is thus retrieved after computation of p-values
+    cpmThreshold decimal(16, 6) not null,
+    allGenesPercentPresent decimal(5, 2) unsigned not null default 0,
+    proteinCodingGenesPercentPresent decimal(5, 2) unsigned not null default 0
+) engine = innodb;
+
+create table scRnaSeqTargetBasedResult (
+    scRnaSeqTargetBasedLibraryCellPopulationId int unsigned not null,
+    bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
+    umiCount smallint unsigned not null default 0,
+    cpm decimal(20, 13) not null default 0 COMMENT 'CPMs are usually not log transformed',
+-- rank is not "not null" because we update this information afterwards
+    rawRank decimal(9, 2) unsigned,
+-- zScore can be negative
+    zScore decimal(35, 30),
+    pValue decimal(31, 30) unsigned default null COMMENT 'present calls are based on the pValue',
+    expressionId int unsigned,
+    detectionFlag enum('undefined', 'present') default 'undefined' COMMENT 'we do not produce absent calls from scRNA-Seq data',
+    reasonForExclusion enum('not excluded', 'undefined') not null default 'not excluded'
+) engine = innodb;
+
+create table scRnaSeqTargetBasedPerCellCount (
+    scRnaSeqTargetBasedBarcodeId varchar(70) not null,
+    scRnaSeqTargetBasedLibraryCellPopulationId int unsigned not null,
+    umiCount smallint unsigned not null default 0,
+    cpm decimal(20, 13) not null default 0 COMMENT 'CPMs are usually not log transformed'
+) engine = innodb;
 
 -- ****************************************************
 -- RAW DIFFERENTIAL EXPRESSION ANALYSES
@@ -1074,7 +1302,7 @@ create table deaSampleGroup (
 -- are unique
 create table deaSampleGroupToAffymetrixChip (
     deaSampleGroupId mediumint unsigned not null,
-    bgeeAffymetrixChipId smallint unsigned not null
+    bgeeAffymetrixChipId mediumint unsigned not null
 ) engine = innodb;
 
 -- An association table to link a rnaSeqLibrary to the deaSampleGroup it belongs to.
@@ -1151,95 +1379,316 @@ comment = 'This table is a summary of expression calls for a given gene-conditio
 -- DESIGN note: this table uses an ugly design with enumerated columns. For a discussion about this decision,
 -- see http://stackoverflow.com/q/42781299/1768736
 create table globalExpression (
-    globalExpressionId int unsigned not null COMMENT 'Internal expression ID, not stable between releases.',
+--    globalExpressionId int unsigned not null COMMENT 'Internal expression ID, not stable between releases.',
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID, not stable between releases.',
     globalConditionId mediumint unsigned not null COMMENT 'ID of condition in the related condition table ("cond"), not stable between releases.',
 
--- ** OBSERVED DATA STATES ** --
--- It is not enough to only know that there are some data in the condition itself
--- (see 'SELF' expression summaries below), because we need to distinguish between
--- data propagated along a condition parameter (e.g., a developmental stage),
--- but observed in another (e.g., an anat. entity).
--- Note that these enum values must stay in sync with org.bgee.model.dao.api.expressiondata.DAOPropagationState.
--- And these enum are null when the expression calls were propagated without taking into account
--- the related condition parameter.
--- Note that for EST data, there is no propagation of ABSENT calls from parent conditions,
--- so this simplifies its enum.
-    estAnatEntityPropagationState ENUM('self', 'descendant', 'self and descendant') COMMENT 'The origin of the propagated EST data related to the anatomical entity of the related condition. If null, it means that anatomical entities were not considered in this propagated call, or that the call is not supported by any EST data.',
-    estStagePropagationState ENUM('self', 'descendant', 'self and descendant') COMMENT 'The origin of the propagated EST data related to the developmental stage of the related condition. If null, it means that developmental stages were not considered in this propagated call, or that the call is not supported by any EST data.',
-    estConditionObservedData BOOLEAN COMMENT 'Whether some EST data were observed in this condition itself. If null, it means that the call is not supported by any EST data. This field is redundant as compared to the "self" experiment counts below, but is more practical to use.',
+-- ** Observation counts per data type for all combinations of condition parameters **
 
-    affymetrixAnatEntityPropagationState ENUM('all', 'self', 'ancestor', 'descendant', 'self and ancestor',
-    'self and descendant', 'ancestor and descendant') COMMENT 'The origin of the propagated Affymetrix data related to the anatomical entity of the related condition. If null, it means that anatomical entities were not considered in this propagated call, or that the call is not supported by any Affymetrix data.',
-    affymetrixStagePropagationState ENUM('all', 'self', 'ancestor', 'descendant', 'self and ancestor',
-    'self and descendant', 'ancestor and descendant') COMMENT 'The origin of the propagated Affymetrix data related to the developmental stage of the related condition. If null, it means that developmental stages were not considered in this propagated call, or that the call is not supported by any Affymetrix data.',
-    affymetrixConditionObservedData BOOLEAN COMMENT 'Whether some Affymetrix data were observed in this condition itself. If null, it means that the call is not supported by any Affymetrix data. This field is redundant as compared to the "self" experiment counts below, but is more practical to use.',
+-- It is not enough to only know that there are some data in one of the condition parameter,
+-- because we need to distinguish between data propagated along a condition parameter
+-- (e.g., a developmental stage), but observed in another (e.g., an anat. entity).
+-- For instance, if we have two calls for a gene, one in AnatEntity=brain and DevStage=gastrula,
+-- and another in AnatEntity=hypothalamus and DevStage=embryo
+-- => we will have observations in both AnatEntity=brain and DevStage=embryo independently,
+-- but nevertheless we won't have any observation in the condition AnatEntity=brain and DevStage=embryo.
+-- This is why we need to store the "self" and "descendant" observation counts for all combinations
+-- of condition parameters.
+-- Note: we're mostly interested in detecting when a call has been observed. It would make
+-- too many columns to store the descendant observation counts for all the combinations
+-- (we don't reach the hard limit on the number of columns but a row would be greater than
+-- the limit of 60KB). We store the "self" counts (in the condition itself) for all combinations,
+-- and store the "descendant" counts (in the descendant conditions of the considered condition)
+-- for the combination with all the condition parameters.
+-- IMPORTANT: Moreover, we can still retrieve the "descendant" observation counts for any combination,
+-- e.g.: selfObsCountEstAnatEntityCellTypeStageSexStrain + descObsCountEstAnatEntityCellTypeStageSexStrain
+-- - selfObsCountEstAnatEntityCellType = descObsCountEstAnatEntityCellType
 
-    inSituAnatEntityPropagationState ENUM('all', 'self', 'ancestor', 'descendant', 'self and ancestor',
-    'self and descendant', 'ancestor and descendant') COMMENT 'The origin of the propagated in situ hybridization data related to the anatomical entity of the related condition. If null, it means that anatomical entities were not considered in this propagated call, or that the call is not supported by any in situ hybridization data.',
-    inSituStagePropagationState ENUM('all', 'self', 'ancestor', 'descendant', 'self and ancestor',
-    'self and descendant', 'ancestor and descendant') COMMENT 'The origin of the propagated in situ hybridization data related to the developmental stage of the related condition. If null, it means that developmental stages were not considered in this propagated call, or that the call is not supported by any in situ hybridization data.',
-    inSituConditionObservedData BOOLEAN COMMENT 'Whether some in situ hybridization data were observed in this condition itself. If null, it means that the call is not supported by any in situ hybridization data. This field is redundant as compared to the "self" experiment counts below, but is more practical to use.',
+    selfObsCountEstAnatEntityCellTypeStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering all condition parameters',
+    selfObsCountEstAnatEntityCellTypeStageSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: anat. entity, cell type, dev. stage, and sex.',
+    selfObsCountEstAnatEntityCellTypeStageStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: anat. entity, cell type, dev. stage, and strain.',
+    selfObsCountEstAnatEntityCellTypeSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: anat. entity, cell type, sex, and strain.',
+    selfObsCountEstAnatEntityStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: anat. entity, dev. stage, sex, and strain.',
+    selfObsCountEstCellTypeStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: cell type, dev. stage, sex, and strain.',
+    selfObsCountEstAnatEntityCellTypeStage SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: anat. entity, cell type, and dev. stage.',
+    selfObsCountEstAnatEntityCellTypeSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: anat. entity, cell type, and sex.',
+    selfObsCountEstAnatEntityCellTypeStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: anat. entity, cell type, and strain.',
+    selfObsCountEstAnatEntityStageSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: anat. entity, dev. stage, sex.',
+    selfObsCountEstAnatEntityStageStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: anat. entity, dev. stage, and strain.',
+    selfObsCountEstAnatEntitySexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: anat. entity, sex, and strain.',
+    selfObsCountEstCellTypeStageSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: cell type, dev. stage, sex.',
+    selfObsCountEstCellTypeStageStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: cell type, dev. stage, and strain.',
+    selfObsCountEstCellTypeSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: cell type sex, and strain.',
+    selfObsCountEstStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: dev. stage, sex, and strain.',
+    selfObsCountEstAnatEntityCellType SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: anat. entity and cell type.',
+    selfObsCountEstAnatEntityStage SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: anat. entity and dev. stage.',
+    selfObsCountEstAnatEntitySex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: anat. entity and sex.',
+    selfObsCountEstAnatEntityStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: anat. entity and strain.',
+    selfObsCountEstCellTypeStage SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: cell type and dev. stage.',
+    selfObsCountEstCellTypeSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: cell type and sex.',
+    selfObsCountEstCellTypeStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: cell type and strain.',
+    selfObsCountEstStageSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: dev. stage and sex.',
+    selfObsCountEstStageStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: dev. stage and strain.',
+    selfObsCountEstSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: sex and strain.',
+    selfObsCountEstAnatEntity SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: only anat. entity parameter.',
+    selfObsCountEstCellType SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: only cell type parameter.',
+    selfObsCountEstStage SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: only dev. stage parameter.',
+    selfObsCountEstSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: only sex parameter.',
+    selfObsCountEstStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by EST data, considering only the observations among the following condition parameters: only strain parameter.',
 
-    rnaSeqAnatEntityPropagationState ENUM('all', 'self', 'ancestor', 'descendant', 'self and ancestor',
-    'self and descendant', 'ancestor and descendant') COMMENT 'The origin of the propagated RNA-Seq data related to the anatomical entity of the related condition. If null, it means that anatomical entities were not considered in this propagated call, or that the call is not supported by any RNA-Seq data.',
-    rnaSeqStagePropagationState ENUM('all', 'self', 'ancestor', 'descendant', 'self and ancestor',
-    'self and descendant', 'ancestor and descendant') COMMENT 'The origin of the propagated RNA-Seq data related to the developmental stage of the related condition. If null, it means that developmental stages were not considered in this propagated call, or that the call is not supported by any RNA-Seq data.',
-    rnaSeqConditionObservedData BOOLEAN COMMENT 'Whether some RNA-Seq data were observed in this condition itself. If null, it means that the call is not supported by any RNA-Seq data. This field is redundant as compared to the "self" experiment counts below, but is more practical to use.',
+    descObsCountEstAnatEntityCellTypeStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in descendant conditions of this call condition by EST data, considering all condition parameters',
 
--- ** EXPRESSION SUMMARIES **
--- Note: EST data are not used to produce no-expression calls
-    estLibPresentHighSelfCount SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of EST libraries showing expression of this gene in this condition (not taking into account sub-conditions) with a high quality.',
-    estLibPresentLowSelfCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of EST libraries showing expression of this gene in this condition (not taking into account sub-conditions) with a low quality.',
-    estLibPresentHighDescendantCount SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of EST libraries showing expression of this gene, solely in the sub-conditions of this condition, with a high quality.',
-    estLibPresentLowDescendantCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of EST libraries showing expression of this gene, solely in the sub-conditions of this condition, with a low quality.',
-    estLibPresentHighTotalCount SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of EST libraries showing expression of this gene in this condition or in sub-conditions with a high quality.',
-    estLibPresentLowTotalCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of EST libraries showing expression of this gene in this condition or in sub-conditions with a low quality.',
-    estLibPropagatedCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of EST libraries used to show presence of expression (low or high) in sub-conditions of this condition.',
+    selfObsCountAffyAnatEntityCellTypeStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering all condition parameters',
+    selfObsCountAffyAnatEntityCellTypeStageSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: anat. entity, cell type, dev. stage, and sex.',
+    selfObsCountAffyAnatEntityCellTypeStageStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: anat. entity, cell type, dev. stage, and strain.',
+    selfObsCountAffyAnatEntityCellTypeSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: anat. entity, cell type, sex, and strain.',
+    selfObsCountAffyAnatEntityStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: anat. entity, dev. stage, sex, and strain.',
+    selfObsCountAffyCellTypeStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: cell type, dev. stage, sex, and strain.',
+    selfObsCountAffyAnatEntityCellTypeStage SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: anat. entity, cell type, and dev. stage.',
+    selfObsCountAffyAnatEntityCellTypeSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: anat. entity, cell type, and sex.',
+    selfObsCountAffyAnatEntityCellTypeStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: anat. entity, cell type, and strain.',
+    selfObsCountAffyAnatEntityStageSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: anat. entity, dev. stage, sex.',
+    selfObsCountAffyAnatEntityStageStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: anat. entity, dev. stage, and strain.',
+    selfObsCountAffyAnatEntitySexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: anat. entity, sex, and strain.',
+    selfObsCountAffyCellTypeStageSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: cell type, dev. stage, sex.',
+    selfObsCountAffyCellTypeStageStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: cell type, dev. stage, and strain.',
+    selfObsCountAffyCellTypeSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: cell type sex, and strain.',
+    selfObsCountAffyStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: dev. stage, sex, and strain.',
+    selfObsCountAffyAnatEntityCellType SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: anat. entity and cell type.',
+    selfObsCountAffyAnatEntityStage SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: anat. entity and dev. stage.',
+    selfObsCountAffyAnatEntitySex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: anat. entity and sex.',
+    selfObsCountAffyAnatEntityStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: anat. entity and strain.',
+    selfObsCountAffyCellTypeStage SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: cell type and dev. stage.',
+    selfObsCountAffyCellTypeSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: cell type and sex.',
+    selfObsCountAffyCellTypeStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: cell type and strain.',
+    selfObsCountAffyStageSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: dev. stage and sex.',
+    selfObsCountAffyStageStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: dev. stage and strain.',
+    selfObsCountAffySexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: sex and strain.',
+    selfObsCountAffyAnatEntity SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: only anat. entity parameter.',
+    selfObsCountAffyCellType SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: only cell type parameter.',
+    selfObsCountAffyStage SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: only dev. stage parameter.',
+    selfObsCountAffySex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: only sex parameter.',
+    selfObsCountAffyStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by Affymetrix data, considering only the observations among the following condition parameters: only strain parameter.',
 
-    affymetrixExpPresentHighSelfCount SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of Affymetrix experiments showing expression of this gene in this condition (not taking into account sub-conditions) with a high quality.',
-    affymetrixExpPresentLowSelfCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of Affymetrix experiments showing expression of this gene in this condition (not taking into account sub-conditions) with a low quality.',
-    affymetrixExpAbsentHighSelfCount SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of Affymetrix experiments showing absence of expression of this gene in this condition (not taking into account parent conditions) with a high quality.',
-    affymetrixExpAbsentLowSelfCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of Affymetrix experiments showing absence of expression of this gene in this condition (not taking into account parent conditions) with a low quality.',
-    affymetrixExpPresentHighDescendantCount SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of Affymetrix experiments showing expression of this gene, solely in the sub-conditions of this condition, with a high quality.',
-    affymetrixExpPresentLowDescendantCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of Affymetrix experiments showing expression of this gene, solely in the sub-conditions of this condition, with a low quality.',
-    affymetrixExpAbsentHighParentCount SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of Affymetrix experiments showing absence of expression of this gene, solely in the valid parent conditions of this condition, with a high quality.',
-    affymetrixExpAbsentLowParentCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of Affymetrix experiments showing absence of expression of this gene, solely in the valid parent conditions of this condition, with a low quality.',
-    affymetrixExpPresentHighTotalCount SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of Affymetrix experiments showing expression of this gene in this condition or in sub-conditions with a high quality.',
-    affymetrixExpPresentLowTotalCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of Affymetrix experiments showing expression of this gene in this condition or in sub-conditions with a low quality.',
-    affymetrixExpAbsentHighTotalCount SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of Affymetrix experiments showing absence of expression of this gene in this condition or valid parent conditions with a high quality.',
-    affymetrixExpAbsentLowTotalCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of Affymetrix experiments showing absence of expression of this gene in this condition or valid parent conditions with a low quality.',
-    affymetrixExpPropagatedCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of Affymetrix experiments used either to show presence of expression (low or high) in sub-conditions of this condition, or absence of expression (low or high) in parent conditions of this condition.',
+    descObsCountAffyAnatEntityCellTypeStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in descendant conditions of this call condition by Affymetrix data, considering all condition parameters',
 
-    inSituExpPresentHighSelfCount SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of in situ hybridization experiments showing expression of this gene in this condition (not taking into account sub-conditions) with a high quality.',
-    inSituExpPresentLowSelfCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of in situ hybridization experiments showing expression of this gene in this condition (not taking into account sub-conditions) with a low quality.',
-    inSituExpAbsentHighSelfCount SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of in situ hybridization experiments showing absence of expression of this gene in this condition (not taking into account parent conditions) with a high quality.',
-    inSituExpAbsentLowSelfCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of in situ hybridization experiments showing absence of expression of this gene in this condition (not taking into account parent conditions) with a low quality.',
-    inSituExpPresentHighDescendantCount SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of in situ hybridization experiments showing expression of this gene, solely in the sub-conditions of this condition, with a high quality.',
-    inSituExpPresentLowDescendantCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of in situ hybridization experiments showing expression of this gene, solely in the sub-conditions of this condition, with a low quality.',
-    inSituExpAbsentHighParentCount SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of in situ hybridization experiments showing absence of expression of this gene, solely in the valid parent conditions of this condition, with a high quality.',
-    inSituExpAbsentLowParentCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of in situ hybridization experiments showing absence of expression of this gene, solely in the valid parent conditions of this condition, with a low quality.',
-    inSituExpPresentHighTotalCount SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of in situ hybridization experiments showing expression of this gene in this condition or in sub-conditions with a high quality.',
-    inSituExpPresentLowTotalCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of in situ hybridization experiments showing expression of this gene in this condition or in sub-conditions with a low quality.',
-    inSituExpAbsentHighTotalCount SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of in situ hybridization experiments showing absence of expression of this gene in this condition or valid parent conditions with a high quality.',
-    inSituExpAbsentLowTotalCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of in situ hybridization experiments showing absence of expression of this gene in this condition or valid parent conditions with a low quality.',
-    inSituExpPropagatedCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of in situ hybridization experiments used either to show presence of expression (low or high) in sub-conditions of this condition, or absence of expression (low or high) in parent conditions of this condition.',
+    selfObsCountInSituAnatEntityCellTypeStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering all condition parameters',
+    selfObsCountInSituAnatEntityCellTypeStageSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: anat. entity, cell type, dev. stage, and sex.',
+    selfObsCountInSituAnatEntityCellTypeStageStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: anat. entity, cell type, dev. stage, and strain.',
+    selfObsCountInSituAnatEntityCellTypeSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: anat. entity, cell type, sex, and strain.',
+    selfObsCountInSituAnatEntityStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: anat. entity, dev. stage, sex, and strain.',
+    selfObsCountInSituCellTypeStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: cell type, dev. stage, sex, and strain.',
+    selfObsCountInSituAnatEntityCellTypeStage SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: anat. entity, cell type, and dev. stage.',
+    selfObsCountInSituAnatEntityCellTypeSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: anat. entity, cell type, and sex.',
+    selfObsCountInSituAnatEntityCellTypeStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: anat. entity, cell type, and strain.',
+    selfObsCountInSituAnatEntityStageSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: anat. entity, dev. stage, sex.',
+    selfObsCountInSituAnatEntityStageStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: anat. entity, dev. stage, and strain.',
+    selfObsCountInSituAnatEntitySexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: anat. entity, sex, and strain.',
+    selfObsCountInSituCellTypeStageSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: cell type, dev. stage, sex.',
+    selfObsCountInSituCellTypeStageStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: cell type, dev. stage, and strain.',
+    selfObsCountInSituCellTypeSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: cell type sex, and strain.',
+    selfObsCountInSituStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: dev. stage, sex, and strain.',
+    selfObsCountInSituAnatEntityCellType SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: anat. entity and cell type.',
+    selfObsCountInSituAnatEntityStage SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: anat. entity and dev. stage.',
+    selfObsCountInSituAnatEntitySex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: anat. entity and sex.',
+    selfObsCountInSituAnatEntityStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: anat. entity and strain.',
+    selfObsCountInSituCellTypeStage SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: cell type and dev. stage.',
+    selfObsCountInSituCellTypeSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: cell type and sex.',
+    selfObsCountInSituCellTypeStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: cell type and strain.',
+    selfObsCountInSituStageSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: dev. stage and sex.',
+    selfObsCountInSituStageStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: dev. stage and strain.',
+    selfObsCountInSituSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: sex and strain.',
+    selfObsCountInSituAnatEntity SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: only anat. entity parameter.',
+    selfObsCountInSituCellType SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: only cell type parameter.',
+    selfObsCountInSituStage SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: only dev. stage parameter.',
+    selfObsCountInSituSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: only sex parameter.',
+    selfObsCountInSituStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by in situ hybridization data, considering only the observations among the following condition parameters: only strain parameter.',
 
-    rnaSeqExpPresentHighSelfCount SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of RNA-Seq experiments showing expression of this gene in this condition (not taking into account sub-conditions) with a high quality.',
-    rnaSeqExpPresentLowSelfCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of RNA-Seq experiments showing expression of this gene in this condition (not taking into account sub-conditions) with a low quality.',
-    rnaSeqExpAbsentHighSelfCount SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of RNA-Seq experiments showing absence of expression of this gene in this condition (not taking into account parent conditions) with a high quality.',
-    rnaSeqExpAbsentLowSelfCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of RNA-Seq experiments showing absence of expression of this gene in this condition (not taking into account parent conditions) with a low quality.',
-    rnaSeqExpPresentHighDescendantCount SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of RNA-Seq experiments showing expression of this gene, solely in the sub-conditions of this condition, with a high quality.',
-    rnaSeqExpPresentLowDescendantCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of RNA-Seq experiments showing expression of this gene, solely in the sub-conditions of this condition, with a low quality.',
-    rnaSeqExpAbsentHighParentCount SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of RNA-Seq experiments showing absence of expression of this gene, solely in the valid parent conditions of this condition, with a high quality.',
-    rnaSeqExpAbsentLowParentCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of RNA-Seq experiments showing absence of expression of this gene, solely in the valid parent conditions of this condition, with a low quality.',
-    rnaSeqExpPresentHighTotalCount SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of RNA-Seq experiments showing expression of this gene in this condition or in sub-conditions with a high quality.',
-    rnaSeqExpPresentLowTotalCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of RNA-Seq experiments showing expression of this gene in this condition or in sub-conditions with a low quality.',
-    rnaSeqExpAbsentHighTotalCount SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of RNA-Seq experiments showing absence of expression of this gene in this condition or valid parent conditions with a high quality.',
-    rnaSeqExpAbsentLowTotalCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of RNA-Seq experiments showing absence of expression of this gene in this condition or valid parent conditions with a low quality.',
-    rnaSeqExpPropagatedCount  SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Count of RNA-Seq experiments used either to show presence of expression (low or high) in sub-conditions of this condition, or absence of expression (low or high) in parent conditions of this condition.',
+    descObsCountInSituAnatEntityCellTypeStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in descendant conditions of this call condition by in situ hybridization data, considering all condition parameters',
+
+    selfObsCountRnaSeqAnatEntityCellTypeStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering all condition parameters',
+    selfObsCountRnaSeqAnatEntityCellTypeStageSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: anat. entity, cell type, dev. stage, and sex.',
+    selfObsCountRnaSeqAnatEntityCellTypeStageStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: anat. entity, cell type, dev. stage, and strain.',
+    selfObsCountRnaSeqAnatEntityCellTypeSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: anat. entity, cell type, sex, and strain.',
+    selfObsCountRnaSeqAnatEntityStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: anat. entity, dev. stage, sex, and strain.',
+    selfObsCountRnaSeqCellTypeStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: cell type, dev. stage, sex, and strain.',
+    selfObsCountRnaSeqAnatEntityCellTypeStage SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: anat. entity, cell type, and dev. stage.',
+    selfObsCountRnaSeqAnatEntityCellTypeSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: anat. entity, cell type, and sex.',
+    selfObsCountRnaSeqAnatEntityCellTypeStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: anat. entity, cell type, and strain.',
+    selfObsCountRnaSeqAnatEntityStageSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: anat. entity, dev. stage, sex.',
+    selfObsCountRnaSeqAnatEntityStageStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: anat. entity, dev. stage, and strain.',
+    selfObsCountRnaSeqAnatEntitySexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: anat. entity, sex, and strain.',
+    selfObsCountRnaSeqCellTypeStageSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: cell type, dev. stage, sex.',
+    selfObsCountRnaSeqCellTypeStageStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: cell type, dev. stage, and strain.',
+    selfObsCountRnaSeqCellTypeSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: cell type sex, and strain.',
+    selfObsCountRnaSeqStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: dev. stage, sex, and strain.',
+    selfObsCountRnaSeqAnatEntityCellType SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: anat. entity and cell type.',
+    selfObsCountRnaSeqAnatEntityStage SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: anat. entity and dev. stage.',
+    selfObsCountRnaSeqAnatEntitySex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: anat. entity and sex.',
+    selfObsCountRnaSeqAnatEntityStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: anat. entity and strain.',
+    selfObsCountRnaSeqCellTypeStage SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: cell type and dev. stage.',
+    selfObsCountRnaSeqCellTypeSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: cell type and sex.',
+    selfObsCountRnaSeqCellTypeStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: cell type and strain.',
+    selfObsCountRnaSeqStageSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: dev. stage and sex.',
+    selfObsCountRnaSeqStageStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: dev. stage and strain.',
+    selfObsCountRnaSeqSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: sex and strain.',
+    selfObsCountRnaSeqAnatEntity SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: only anat. entity parameter.',
+    selfObsCountRnaSeqCellType SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: only cell type parameter.',
+    selfObsCountRnaSeqStage SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: only dev. stage parameter.',
+    selfObsCountRnaSeqSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: only sex parameter.',
+    selfObsCountRnaSeqStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by bulk RNA-Seq data, considering only the observations among the following condition parameters: only strain parameter.',
+
+    descObsCountRnaSeqAnatEntityCellTypeStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in descendant conditions of this call condition by bulk RNA-Seq data, considering all condition parameters',
+
+    selfObsCountScRnaSeqFLAnatEntityCellTypeStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering all condition parameters',
+    selfObsCountScRnaSeqFLAnatEntityCellTypeStageSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: anat. entity, cell type, dev. stage, and sex.',
+    selfObsCountScRnaSeqFLAnatEntityCellTypeStageStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: anat. entity, cell type, dev. stage, and strain.',
+    selfObsCountScRnaSeqFLAnatEntityCellTypeSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: anat. entity, cell type, sex, and strain.',
+    selfObsCountScRnaSeqFLAnatEntityStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: anat. entity, dev. stage, sex, and strain.',
+    selfObsCountScRnaSeqFLCellTypeStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: cell type, dev. stage, sex, and strain.',
+    selfObsCountScRnaSeqFLAnatEntityCellTypeStage SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: anat. entity, cell type, and dev. stage.',
+    selfObsCountScRnaSeqFLAnatEntityCellTypeSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: anat. entity, cell type, and sex.',
+    selfObsCountScRnaSeqFLAnatEntityCellTypeStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: anat. entity, cell type, and strain.',
+    selfObsCountScRnaSeqFLAnatEntityStageSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: anat. entity, dev. stage, sex.',
+    selfObsCountScRnaSeqFLAnatEntityStageStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: anat. entity, dev. stage, and strain.',
+    selfObsCountScRnaSeqFLAnatEntitySexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: anat. entity, sex, and strain.',
+    selfObsCountScRnaSeqFLCellTypeStageSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: cell type, dev. stage, sex.',
+    selfObsCountScRnaSeqFLCellTypeStageStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: cell type, dev. stage, and strain.',
+    selfObsCountScRnaSeqFLCellTypeSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: cell type sex, and strain.',
+    selfObsCountScRnaSeqFLStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: dev. stage, sex, and strain.',
+    selfObsCountScRnaSeqFLAnatEntityCellType SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: anat. entity and cell type.',
+    selfObsCountScRnaSeqFLAnatEntityStage SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: anat. entity and dev. stage.',
+    selfObsCountScRnaSeqFLAnatEntitySex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: anat. entity and sex.',
+    selfObsCountScRnaSeqFLAnatEntityStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: anat. entity and strain.',
+    selfObsCountScRnaSeqFLCellTypeStage SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: cell type and dev. stage.',
+    selfObsCountScRnaSeqFLCellTypeSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: cell type and sex.',
+    selfObsCountScRnaSeqFLCellTypeStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: cell type and strain.',
+    selfObsCountScRnaSeqFLStageSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: dev. stage and sex.',
+    selfObsCountScRnaSeqFLStageStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: dev. stage and strain.',
+    selfObsCountScRnaSeqFLSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: sex and strain.',
+    selfObsCountScRnaSeqFLAnatEntity SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: only anat. entity parameter.',
+    selfObsCountScRnaSeqFLCellType SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: only cell type parameter.',
+    selfObsCountScRnaSeqFLStage SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: only dev. stage parameter.',
+    selfObsCountScRnaSeqFLSex SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: only sex parameter.',
+    selfObsCountScRnaSeqFLStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in this condition itself by single-cell RNA-Seq full-length data, considering only the observations among the following condition parameters: only strain parameter.',
+
+    descObsCountScRnaSeqFLAnatEntityCellTypeStageSexStrain SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'The count of observations in descendant conditions of this call condition by single-cell RNA-Seq full-length data, considering all condition parameters',
+
+-- ** PVALUES PER DATATYPE COMBINATION **
+-- they are all FDR-corrected p-values by Benjamini-Hochberg method, see
+-- http://www.biostathandbook.com/multiplecomparisons.html
+-- and https://github.com/cBioPortal/cbioportal/blob/master/core/src/main/java/org/mskcc/cbio/portal/stats/BenjaminiHochbergFDR.java
+-- We precompute all possible combinations of data types to not do the FDR correction of the fly
+-- depending on the data types requested
+
+    pValAffy double unsigned default null,
+    pValEst double unsigned default null,
+    pValInSitu double unsigned default null,
+    pValRnaSeq double unsigned default null,
+    pValScRnaSeqFL double unsigned default null,
+    pValAffyEst double unsigned default null,
+    pValAffyInSitu double unsigned default null,
+    pValAffyRnaSeq double unsigned default null,
+    pValAffyScRnaSeqFL double unsigned default null,
+    pValEstInSitu double unsigned default null,
+    pValEstRnaSeq double unsigned default null,
+    pValEstScRnaSeqFL double unsigned default null,
+    pValInSituRnaSeq double unsigned default null,
+    pValInSituScRnaSeqFL double unsigned default null,
+    pValRnaSeqScRnaSeqFL double unsigned default null,
+    pValAffyEstInSitu double unsigned default null,
+    pValAffyEstRnaSeq double unsigned default null,
+    pValAffyEstScRnaSeqFL double unsigned default null,
+    pValAffyInSituRnaSeq double unsigned default null,
+    pValAffyInSituScRnaSeqFL double unsigned default null,
+    pValAffyRnaSeqScRnaSeqFL double unsigned default null,
+    pValEstInSituRnaSeq double unsigned default null,
+    pValEstInSituScRnaSeqFL double unsigned default null,
+    pValEstRnaSeqScRnaSeqFL double unsigned default null,
+    pValInSituRnaSeqScRnaSeqFL double unsigned default null,
+    pValAffyEstInSituRnaSeq double unsigned default null,
+    pValAffyEstInSituScRnaSeqFL double unsigned default null,
+    pValAffyEstRnaSeqScRnaSeqFL double unsigned default null,
+    pValAffyInSituRnaSeqScRnaSeqFL double unsigned default null,
+    pValEstInSituRnaSeqScRnaSeqFL double unsigned default null,
+    pValAffyEstInSituRnaSeqScRnaSeqFL double unsigned default null,
+
+-- ** PVALUES PER DATATYPE BEST DESCENDANT **
+
+    pValBestDescendantAffy double unsigned default null,
+    pValBestDescendantEst double unsigned default null,
+    pValBestDescendantInSitu double unsigned default null,
+    pValBestDescendantRnaSeq double unsigned default null,
+    pValBestDescendantScRnaSeqFL double unsigned default null,
+    pValBestDescendantAffyEst double unsigned default null,
+    pValBestDescendantAffyInSitu double unsigned default null,
+    pValBestDescendantAffyRnaSeq double unsigned default null,
+    pValBestDescendantAffyScRnaSeqFL double unsigned default null,
+    pValBestDescendantEstInSitu double unsigned default null,
+    pValBestDescendantEstRnaSeq double unsigned default null,
+    pValBestDescendantEstScRnaSeqFL double unsigned default null,
+    pValBestDescendantInSituRnaSeq double unsigned default null,
+    pValBestDescendantInSituScRnaSeqFL double unsigned default null,
+    pValBestDescendantRnaSeqScRnaSeqFL double unsigned default null,
+    pValBestDescendantAffyEstInSitu double unsigned default null,
+    pValBestDescendantAffyEstRnaSeq double unsigned default null,
+    pValBestDescendantAffyEstScRnaSeqFL double unsigned default null,
+    pValBestDescendantAffyInSituRnaSeq double unsigned default null,
+    pValBestDescendantAffyInSituScRnaSeqFL double unsigned default null,
+    pValBestDescendantAffyRnaSeqScRnaSeqFL double unsigned default null,
+    pValBestDescendantEstInSituRnaSeq double unsigned default null,
+    pValBestDescendantEstInSituScRnaSeqFL double unsigned default null,
+    pValBestDescendantEstRnaSeqScRnaSeqFL double unsigned default null,
+    pValBestDescendantInSituRnaSeqScRnaSeqFL double unsigned default null,
+    pValBestDescendantAffyEstInSituRnaSeq double unsigned default null,
+    pValBestDescendantAffyEstInSituScRnaSeqFL double unsigned default null,
+    pValBestDescendantAffyEstRnaSeqScRnaSeqFL double unsigned default null,
+    pValBestDescendantAffyInSituRnaSeqScRnaSeqFL double unsigned default null,
+    pValBestDescendantEstInSituRnaSeqScRnaSeqFL double unsigned default null,
+    pValBestDescendantAffyEstInSituRnaSeqScRnaSeqFL double unsigned default null,
+
+-- ** PVALUE PER DATATYPE BEST DESCENDANT CONDITIONS **
+-- Store the globalConditionId of the condition where the pValBestDescendant comes from
+-- for the corresponding data type combination.
+-- We could have stored the globalExpressionId, but it's easier in our pipeline to store
+-- the globalConditionId, and the bgeeGeneId + the globalConditionId allows to retrieve the exact call
+-- NOTE: commenting these fields to save space taken by each row, this info is not really necessary,
+-- it was rather used as a check.
+
+--    gCIdPValBDAffy mediumint unsigned default null,
+--    gCIdPValBDEst mediumint unsigned default null,
+--    gCIdPValBDInSitu mediumint unsigned default null,
+--    gCIdPValBDRnaSeq mediumint unsigned default null,
+--    gCIdPValBDScRnaSeqFL mediumint unsigned default null,
+--    gCIdPValBDAffyEst mediumint unsigned default null,
+--    gCIdPValBDAffyInSitu mediumint unsigned default null,
+--    gCIdPValBDAffyRnaSeq mediumint unsigned default null,
+--    gCIdPValBDAffyScRnaSeqFL mediumint unsigned default null,
+--    gCIdPValBDEstInSitu mediumint unsigned default null,
+--    gCIdPValBDEstRnaSeq mediumint unsigned default null,
+--    gCIdPValBDEstScRnaSeqFL mediumint unsigned default null,
+--    gCIdPValBDInSituRnaSeq mediumint unsigned default null,
+--    gCIdPValBDInSituScRnaSeqFL mediumint unsigned default null,
+--    gCIdPValBDRnaSeqScRnaSeqFL mediumint unsigned default null,
+--    gCIdPValBDAffyEstInSitu mediumint unsigned default null,
+--    gCIdPValBDAffyEstRnaSeq mediumint unsigned default null,
+--    gCIdPValBDAffyEstScRnaSeqFL mediumint unsigned default null,
+--    gCIdPValBDAffyInSituRnaSeq mediumint unsigned default null,
+--    gCIdPValBDAffyInSituScRnaSeqFL mediumint unsigned default null,
+--    gCIdPValBDAffyRnaSeqScRnaSeqFL mediumint unsigned default null,
+--    gCIdPValBDEstInSituRnaSeq mediumint unsigned default null,
+--    gCIdPValBDEstInSituScRnaSeqFL mediumint unsigned default null,
+--    gCIdPValBDEstRnaSeqScRnaSeqFL mediumint unsigned default null,
+--    gCIdPValBDInSituRnaSeqScRnaSeqFL mediumint unsigned default null,
+--    gCIdPValBDAffyEstInSituRnaSeq mediumint unsigned default null,
+--    gCIdPValBDAffyEstInSituScRnaSeqFL mediumint unsigned default null,
+--    gCIdPValBDAffyEstRnaSeqScRnaSeqFL mediumint unsigned default null,
+--    gCIdPValBDAffyInSituRnaSeqScRnaSeqFL mediumint unsigned default null,
+--    gCIdPValBDEstInSituRnaSeqScRnaSeqFL mediumint unsigned default null,
+--    gCIdPValBDAffyEstInSituRnaSeqScRnaSeqFL mediumint unsigned default null,
 
 -- ** RANKS **
+    scRnaSeqFullLengthMeanRank decimal(9, 2) unsigned COMMENT 'scRNA-Seq full-length mean rank for this gene-condition before normalization over all data types, conditions and species.',
 -- For RNA-Seq data: mean ranks before normalization between data types and conditions.
 -- Used for convenience during rank computations. It corresponds to the following:
 -- gene ranks are computed for each sample, then a mean is computed for each gene and condition
@@ -1267,6 +1716,7 @@ create table globalExpression (
 -- the global mean rank of a gene in a condition. Basically, the max rank over all data types
 -- and all conditions is retrieved, and used to normalize all ranks.
 -- normalized rank = rank * (max of max rank over all conditions and data types) / (max rank for this condition and data type)
+    scRnaSeqFullLengthMeanRankNorm decimal(9, 2) unsigned COMMENT 'scRNA-Seq full-length normalized mean rank for this gene-condition after normalization over all data types, conditions and species, computed from the field scRnaSeqFullLengthMeanRank, and scRnaSeqFullLengthMaxRank in the related condition table.',
     rnaSeqMeanRankNorm decimal(9, 2) unsigned COMMENT 'RNA-Seq normalized mean rank for this gene-condition after normalization over all data types, conditions and species, computed from the field rnaSeqMeanRank, and rnaSeqMaxRank in the related condition table.',
     affymetrixMeanRankNorm decimal(9, 2) unsigned COMMENT 'Affymetrix normalized mean rank for this gene-condition after normalization over all data types, conditions and species, computed from the field affymetrixMeanRank, and affymetrixMaxRank in the related condition table.',
 -- For EST and in situ, the rank is not a mean
@@ -1286,21 +1736,25 @@ create table globalExpression (
 -- For EST and in situ data, this is irrelevant as we pool all data for a same condition together,
 -- and use dense ranking instead of fractional ranking. As a result, the max rank in each condition
 -- is used for weighted mean computation between data types.
+    scRnaSeqFullLengthDistinctRankSum int unsigned COMMENT 'Factor used to weight the scRNA-Seq full-length normalized mean rank (scRnaSeqFullLengthMeanRankNorm), to compute a global weighted mean rank between all data types. Corresponds to the sum of distinct ranks in each library mapped to this condition. Note that for EST and in situ data, the max rank found in the related condition table is instead used to compute the weighted mean between data types.',
     rnaSeqDistinctRankSum int unsigned COMMENT 'Factor used to weight the RNA-Seq normalized mean rank (rnaSeqMeanRankNorm), to compute a global weighted mean rank between all data types. Corresponds to the sum of distinct ranks in each library mapped to this condition. Note that for EST and in situ data, the max rank found in the related condition table is instead used to compute the weighted mean between data types.',
     affymetrixDistinctRankSum int unsigned COMMENT 'Factor used to weight the Affymetrix normalized mean rank (affymetrixMeanRankNorm), to compute a global weighted mean rank between all data types. Corresponds to the sum of distinct ranks in each chip mapped to this condition. Note that for EST and in situ data, the max rank found in the related condition table is instead used to compute the weighted mean between data types.',
 
 -- Same fields, but dedicated to "global" ranks, computed by taking into account
 -- all data in a condition, but also all data in its descendant conditions.
+    scRnaSeqFullLengthGlobalMeanRank decimal(9, 2) unsigned COMMENT 'scRNA-Seq full-length global mean rank for this gene in this condition and all its descendant conditions, before normalization over all data types, conditions and species.',
     rnaSeqGlobalMeanRank decimal(9, 2) unsigned COMMENT 'RNA-Seq global mean rank for this gene in this condition and all its descendant conditions, before normalization over all data types, conditions and species.',
     affymetrixGlobalMeanRank decimal(9, 2) unsigned COMMENT 'Affymetrix global mean rank for this gene in this condition and all its descendant conditions, after normalization between different chip types, but before normalization over all data types, conditions and species.',
     estGlobalRank decimal(9, 2) unsigned COMMENT 'EST global rank for this gene in this condition and all its descendant conditions, before normalization over all data types, conditions and species. All EST libraries in a same condition in this condition and its descendant conditions are pulled together, so there is no concept of "mean", only a single rank is computed from EST data for each gene-condition.',
     inSituGlobalRank decimal(9, 2) unsigned COMMENT 'In situ hybridization global rank for this gene in this condition and all its descendant conditions, before normalization over all data types, conditions and species. All in situ evidence in a same condition and its descendant conditions are pulled together, so there is no concept of "mean", only a single rank is computed from in situ data for each gene-condition.',
 
-    rnaSeqGlobalMeanRankNorm decimal(9, 2) unsigned COMMENT 'RNA-Seq normalized mean rank for this gene in this condition and all its descendant conditions, after normalization over all data types, conditions and species, computed from the field rnaSeqMeanRank, and rnaSeqMaxRank in the related condition table.',
-    affymetrixGlobalMeanRankNorm decimal(9, 2) unsigned COMMENT 'Affymetrix normalized mean rank for this gene in this condition and all its descendant conditions, after normalization over all data types, conditions and species, computed from the field affymetrixMeanRank, and affymetrixMaxRank in the related condition table.',
-    estGlobalRankNorm decimal(9, 2) unsigned COMMENT 'EST normalized rank for this gene in this condition and all its descendant conditions, after normalization over all data types, conditions and species, computed from the field estRank, and estMaxRank in the related condition table.',
-    inSituGlobalRankNorm decimal(9, 2) unsigned COMMENT 'In situ hybridization normalized rank for this gene in this condition and all its descendant conditions, after normalization over all data types, conditions and species, computed from the field inSituRank, and inSituMaxRank in the related condition table.',
+    scRnaSeqFullLengthGlobalMeanRankNorm decimal(9, 2) unsigned COMMENT 'scRNA-Seq full-length normalized mean rank for this gene in this condition and all its descendant conditions, after normalization over all data types, conditions and species, computed from the field scRnaSeqFullLengthGlobalMeanRank, and scRnaSeqFullLengthGlobalMaxRank in the related condition table.',
+    rnaSeqGlobalMeanRankNorm decimal(9, 2) unsigned COMMENT 'RNA-Seq normalized mean rank for this gene in this condition and all its descendant conditions, after normalization over all data types, conditions and species, computed from the field rnaSeqGlobalMeanRank, and rnaSeqGlobalMaxRank in the related condition table.',
+    affymetrixGlobalMeanRankNorm decimal(9, 2) unsigned COMMENT 'Affymetrix normalized mean rank for this gene in this condition and all its descendant conditions, after normalization over all data types, conditions and species, computed from the field affymetrixGlobalMeanRank, and affymetrixGlobalMaxRank in the related condition table.',
+    estGlobalRankNorm decimal(9, 2) unsigned COMMENT 'EST normalized rank for this gene in this condition and all its descendant conditions, after normalization over all data types, conditions and species, computed from the field estRank, and estGlobalMaxRank in the related condition table.',
+    inSituGlobalRankNorm decimal(9, 2) unsigned COMMENT 'In situ hybridization normalized rank for this gene in this condition and all its descendant conditions, after normalization over all data types, conditions and species, computed from the field inSituRank, and inSituGlobalMaxRank in the related condition table.',
 
+    scRnaSeqFullLengthGlobalDistinctRankSum int unsigned COMMENT 'Factor used to weight the scRNA-Seq full-length normalized global mean rank (scRnaSeqFullLengthGlobalMeanRankNorm), to compute a global weighted mean rank between all data types. Corresponds to the sum of distinct ranks in each library mapped to this condition and all its descendant conditions. Note that for EST and in situ data, the global max rank found in the related condition table is instead used to compute the weighted mean between data types.',
     rnaSeqGlobalDistinctRankSum int unsigned COMMENT 'Factor used to weight the RNA-Seq normalized global mean rank (rnaSeqGlobalMeanRankNorm), to compute a global weighted mean rank between all data types. Corresponds to the sum of distinct ranks in each library mapped to this condition and all its descendant conditions. Note that for EST and in situ data, the global max rank found in the related condition table is instead used to compute the weighted mean between data types.',
     affymetrixGlobalDistinctRankSum int unsigned COMMENT 'Factor used to weight the Affymetrix normalized global mean rank (affymetrixGlobalMeanRankNorm), to compute a global weighted mean rank between all data types. Corresponds to the sum of distinct ranks in each chip mapped to this condition and all its descendant conditions. Note that for EST and in situ data, the global max rank found in the related condition table is instead used to compute the weighted mean between data types.'
 ) engine = innodb
@@ -1430,10 +1884,10 @@ create table downloadFile (
   downloadFileDescription text,
   downloadFileCategory enum("expr_simple", "expr_complete", "diff_expr_anatomy_complete", "diff_expr_anatomy_simple"
    , "diff_expr_dev_complete", "diff_expr_dev_simple", "ortholog",
-   "affy_annot","rnaseq_annot","affy_data","rnaseq_data"),
+   "affy_annot","rnaseq_annot","affy_data","rnaseq_data", "full_length_annot", "full_length_data"),
   speciesDataGroupId mediumint unsigned not null,
   downloadFileSize int unsigned not null,
-  downloadFileConditionParameters set('anatomicalEntity', 'developmentalStage')
+  downloadFileConditionParameters set('anatomicalEntity', 'developmentalStage', 'sex', 'strain')
 ) engine = innodb;
 
 -- *****************************************

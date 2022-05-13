@@ -7,6 +7,8 @@ use diagnostics;
 
 use Getopt::Long;
 use File::Slurp;
+use Cpanel::JSON::XS;
+use List::Util qw(any);
 use FindBin;
 use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
 use Utils;
@@ -18,22 +20,27 @@ my $id_root_stage = 'UBERON:0000104'; # "life cycle"
 my $id_root_organ = 'UBERON:0000465'; # "material anatomical entity"
 
 # Define arguments & their default value
-my ($bgee_connector) = ('');
-my ($wormb_data)     = ('');
-my ($Aport, $Sport)  = (0, 0);
+my ($bgee_connector)           = ('');
+my ($wormb_data)               = ('');
+my ($strain_map, $strain_map2) = ('', '');
+my ($Aport, $Sport)            = (0, 0);
 my %opts = ('bgee=s'        => \$bgee_connector,     # Bgee connector string
             'wormb_data=s'  => \$wormb_data,         # from ftp://caltech.wormbase.org/pub/wormbase/expr_dump/
+            'strain_map=s'  => \$strain_map,         # from https://wormbase.org/species/all/strain/ Natural Isolates
+            'strain_map2=s' => \$strain_map2,        # from WormMine
             'Aport=i'       => \$Aport,              # Anatomy mapper socket port
             'Sport=i'       => \$Sport,              # Stage mapper socket port
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $bgee_connector eq '' || $wormb_data eq '' || $Aport == 0 ){
+if ( !$test_options || $bgee_connector eq '' || $wormb_data eq '' || $strain_map eq '' || $strain_map2 eq '' || $Aport == 0 ){
     print "\n\tInvalid or missing argument:
-\te.g. $0  -bgee=\$(BGEECMD)  -wormb_data=expr_pattern.ace.20160829 -Aport=\$(IDMAPPINGPORT) -Sport=\$(INBETWEENSTAGESPORT)
+\te.g. $0  -bgee=\$(BGEECMD)  -wormb_data=expr_pattern.ace.20160829 -strain_map=wormbase_natural_strains.json -strain_map2=wormbase_wild_isolate.tsv -Aport=\$(IDMAPPINGPORT) -Sport=\$(INBETWEENSTAGESPORT)
 \t-bgee            Bgee connector string
 \t-wormb_data      WormBase/WormMine tsv data file
+\t-strain_map      wormbase_natural_strains.json
+\t-strain_map2     wormbase_wild_isolate.tsv
 \t-Aport           Anatomy mapper socket port
 \t-Sport           Stage   mapper socket port
 \n";
@@ -56,21 +63,23 @@ die "Data source WormBase not found\n"  if ( !defined $data_source_id );
 
 # Read data
 my $expression;
-my ($Expr_pattern, $gene, $ref, $strain, $In_Situ) = ('', '', '', '', 0);
+my ($Expr_pattern, $gene, $ref, $strain, $species, $In_Situ) = ('', '', '', '', 6239, 0);
 my (@Anatomy_term, @Life_stage);
 my @Anat;
 my @Stages;
 EXP:
 for my $line ( read_file("$wormb_data", chomp => 1) ){
     # Reset values
-	if ( $line =~ /^$/ ){
+    if ( $line =~ /^$/ ){
         if ( $In_Situ == 1 ){
-            $expression->{$Expr_pattern}->{'id'}           = $Expr_pattern;
-            $expression->{$Expr_pattern}->{'gene'}         = $gene;
-            $expression->{$Expr_pattern}->{'ref'}          = $ref;
-            $expression->{$Expr_pattern}->{'strain'}       = $strain;
-            @{ $expression->{$Expr_pattern}->{'anatomy'} } = @Anatomy_term;
-            @{ $expression->{$Expr_pattern}->{'stage'} }   = @Life_stage;
+            $expression->{$Expr_pattern}->{'id'}             = $Expr_pattern;
+            $expression->{$Expr_pattern}->{'gene'}           = $gene;
+            $expression->{$Expr_pattern}->{'ref'}            = $ref;
+            $expression->{$Expr_pattern}->{'strain'}         = $strain;
+            $expression->{$Expr_pattern}->{'species'}        = $species;
+            @{ $expression->{$Expr_pattern}->{'anatomy'} }   = @Anatomy_term;
+            @{ $expression->{$Expr_pattern}->{'stage'} }     = @Life_stage;
+            @{ $expression->{$Expr_pattern}->{'ori_stage'} } = @Life_stage;
             push @Anat,   @Anatomy_term;
             push @Stages, @Life_stage;
         }
@@ -79,6 +88,7 @@ for my $line ( read_file("$wormb_data", chomp => 1) ){
         $gene         = '';
         $ref          = '';
         $strain       = '';
+        $species      = 6239;
         @Anatomy_term = ();
         @Life_stage   = ();
         $In_Situ      = 0;
@@ -147,6 +157,10 @@ for my $line ( read_file("$wormb_data", chomp => 1) ){
     elsif ( $line =~ /^Strain\s*"([^"]+)"/ ){
         $strain = $1;
     }
+    elsif ( $line =~ /^Species\s*"([^"]+)"/ ){
+        $species = $1 eq 'Caenorhabditis elegans' ? 6239
+                 : 0;
+    }
     else {
         # ...
     }
@@ -169,12 +183,46 @@ my $doneAnat   = Utils::get_anatomy_mapping(\@Anat, $Aport);
 my $doneStages = Utils::get_in_between_stages(\@Stages, $Sport);
 
 
+#TODO other possible strain mapping? But they look truncated
+# https://wormbase.org/search/strain/*?download=1&species=c_elegans&content-type=application%2Fjson
+# https://wormbase.org/search/strain/all?download=1&species=c_elegans&content-type=application%2Fjson
+# Map WormBase strain codes to strain names
+my $json_content = read_file("$strain_map");
+my $json = decode_json($json_content);
+
+my $strain_mapping;
+NAT_ISOL:
+for my $nat_isolate ( @{ $json->{'fields'}->{'natural_isolates'}->{'data'} } ){
+    next NAT_ISOL  if ( $nat_isolate->{'strain'}->{'taxonomy'} ne 'c_elegans' ); #C. elegans only in Bgee
+
+#    # N2 (ancestral)  and  N2 Male  are N2 ???
+#    $nat_isolate->{'strain'}->{'label'} = 'N2'  if ( $nat_isolate->{'strain'}->{'label'} =~ /^N2 / );
+    $strain_mapping->{ $nat_isolate->{'strain'}->{'id'} } = $nat_isolate->{'strain'}->{'label'};
+}
+# Only wild type (N2 is default C. elegans wild type, but there are other wild "type" isolates)
+# WBStrain00000001 is N2 now!
+WILD_ISOL:
+for my $wild_isolate ( read_file("$strain_map2", chomp=>1) ){
+    #strain_code    name/label    species    remark    genotype    otherName
+    #NOTE the script "get_worm_wild_strains.pl" returns only C. elegans (or no defined) species; and genotype contains "wild"
+    my ($id, $label) = split(/\t/, $wild_isolate);
+    $strain_mapping->{ $id } = $label;
+}
+
+
+
 my ($empty, $certain, $partial, $uncertain, $others) = (0, 0, 0, 0, 0);
 # Output TSV
 print join("\t", '#data_source', qw(inSituExperimentId  inSituEvidenceId  organId  stageId  geneId  detectionFlag  inSituData  linked  speciesId  strain  sex  [ExprDesc])), "\n";
 for my $id ( sort keys %$expression ){
-    # Only wild type (N2 is C. elegans wild type)
-    next  if ( $expression->{$id}->{'strain'} ne 'N2' && $expression->{$id}->{'strain'} ne '' );
+    # Only C. elegans
+    next  if ( $expression->{$id}->{'species'} != 6239 );
+    # Only wild type
+    next  if ( !exists $strain_mapping->{ $expression->{$id}->{'strain'} } && $expression->{$id}->{'strain'} ne '' );
+    $expression->{$id}->{'strain'} = exists $strain_mapping->{ $expression->{$id}->{'strain'} } ? $strain_mapping->{ $expression->{$id}->{'strain'} }
+                                   : $expression->{$id}->{'strain'} ne ''                       ? ''
+                                   : $expression->{$id}->{'strain'};
+    next  if ( $expression->{$id}->{'strain'} =~ /^WBStrain\d+$/ ); # strain code without mapping
     # Get out if no info for gene!
     next  if ( $expression->{$id}->{'gene'} eq '' );
 
@@ -247,7 +295,10 @@ sub get_quality {
                     'uncertain' => 'poor quality',
                   );
 
-    return $quality{$term} || die "Invalid quality term [$term]\n";
+    if ( ! $quality{$term} ){
+        warn "Invalid quality term [$term]\n";
+    }
+    return $quality{$term} || 'poor quality';
 }
 
 sub print_TSV {
@@ -312,13 +363,64 @@ sub print_TSV {
                      $presence,
                      $quality,
                      '',
-                     6239,                            #FIXME C. elegans only ????
+                     $expression->{$id}->{'species'}, #Note currently only C. elegans in Bgee
                      $expression->{$id}->{'strain'} eq '' ? $Utils::NOT_ANNOTATED_STRAIN : $expression->{$id}->{'strain'},
-                     'not annotated',
+                     guess_sex_from_stage($expression, $id),
               ), "\n";
     return;
 }
 
+
+sub guess_sex_from_stage {
+    my ($expression, $id) = @_;
+
+#    my %female_stages        = ('WBls:0000681' => 1,
+#                                'WBls:0000729' => 1,
+#                                'WBls:0000740' => 1,
+#                               ); #other nematodes, not C. elegans
+    my %male_stages          = ('WBls:0000056' => 1,
+                                'WBls:0000073' => 1,
+                                'WBls:0000739' => 1,
+                                'WBls:0000742' => 1,
+                               );
+    my %hermaphrodite_stages = ('WBls:0000057' => 1,
+                                'WBls:0000058' => 1,
+                                'WBls:0000060' => 1,
+                                'WBls:0000061' => 1,
+                                'WBls:0000062' => 1,
+                                'WBls:0000063' => 1,
+                                'WBls:0000064' => 1,
+                                'WBls:0000065' => 1,
+                                'WBls:0000066' => 1,
+                                'WBls:0000067' => 1,
+                                'WBls:0000068' => 1,
+                                'WBls:0000069' => 1,
+                                'WBls:0000070' => 1,
+                                'WBls:0000074' => 1,
+                                'WBls:0000111' => 1,
+                                'WBls:0000670' => 1,
+                                'WBls:0000671' => 1,
+                                'WBls:0000672' => 1,
+                                'WBls:0000673' => 1,
+                                'WBls:0000674' => 1,
+                                'WBls:0000675' => 1,
+                                'WBls:0000676' => 1,
+                                'WBls:0000797' => 1,
+                                'WBls:0000798' => 1,
+                                'WBls:0000799' => 1,
+                                'WBls:0000800' => 1,
+                               );
+
+    if (    any { exists $male_stages{$_} }          @{ $expression->{$id}->{'ori_stage'} } ){
+        return 'male';
+    }
+    elsif ( any { exists $hermaphrodite_stages{$_} } @{ $expression->{$id}->{'ori_stage'} } ){
+        return 'hermaphrodite';
+    }
+    else {
+        return 'not annotated';
+    }
+}
 
 =pod
    Data example from expr_pattern.ace.20140526 file extracted by WormBase helper Daniela Raciti <draciti@caltech.edu>

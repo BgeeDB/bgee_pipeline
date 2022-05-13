@@ -4,10 +4,15 @@ include $(PIPELINEROOT)Makefile.common
 
 all: $(VERIFICATIONFILE)
 
-#TODO Download  $(STAGECORRESP_FILE)  from curation git!
+get_annot:
+	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations
+	@$(WGET) $(ANNOTATION_GIT_URL)/Strains/StrainMapping.tsv  && $(MV) StrainMapping.tsv $(STRAIN_MAPPING_FILE)
+	@touch $@
 
 
-map_zfin:
+#TODO it looks there is no strain info
+#TODO get Ensembl mapping directly from ZebrafishMine???
+map_zfin: get_annot
 	# Get data from ZebrafishMine
 	@python3 ZFIN/zebra_query.py  > $(SOURCE_FILES_DIR)$(DIR_NAME)ZebrafishMine.data 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
@@ -25,7 +30,8 @@ tsv_zfin: map_zfin $(SOURCE_FILES_DIR)$(DIR_NAME)ZebrafishMine.data
 	@$(MV) $@.tmp $@
 
 
-map_mgi:
+#TODO it looks there is no strain info
+map_mgi: get_annot
 	# Get MGI main RNA in situ data for wild-type mice with Ensembl gene mapped
 	@perl MGI/get_mousemine_data.pl > $(SOURCE_FILES_DIR)$(DIR_NAME)MouseMine.data 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
@@ -39,12 +45,15 @@ tsv_mgi: map_mgi $(SOURCE_FILES_DIR)$(DIR_NAME)MouseMine.data
 	@sleep 50
 	# Prepare MGI tsv for insertion
 	@perl MGI/prepare_data.pl  -bgee=$(BGEECMD) -data=$(SOURCE_FILES_DIR)$(DIR_NAME)MouseMine.data -Sport=$(INBETWEENSTAGESPORT) -Aport=$(IDMAPPINGPORT) >$@.tmp 2>warnings.$@
+	@gzip -f -9 $(SOURCE_FILES_DIR)$(DIR_NAME)MouseMine.data
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
 
-#TODO Test XenMine (no in situ data 2016/10/03)
-tsv_xenbase:
+#NOTE it looks there is no strain info
+#TODO It looks to have in situ data in XenMine now but it is extremely slow
+#FIXME issue with FTP passive mode to get GeneExpression_tropicalis.txt
+tsv_xenbase: get_annot
 	# Start in between stages socket
 	@$(INBETWEENSTAGES) 8364 $(INBETWEENSTAGESPORT) &
 	# Start anatomy id mapping socket
@@ -56,7 +65,8 @@ tsv_xenbase:
 	@$(MV) $@.tmp $@
 
 
-data_BDGP:
+#NOTE it looks there is no strain info, only 'wt' or 'transgenic line'
+data_BDGP: get_annot
 	# Download up-to-date BDGP in situ data
 	@$(WGET) 'http://insitu.fruitfly.org/insitu-mysql-dump/insitu.sql.gz'       -O $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz.tmp       && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz.tmp       $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz.tmp
 	@$(GUNZIP) $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz
@@ -76,6 +86,7 @@ map_BDGP: data_BDGP $(SOURCE_FILES_DIR)$(DIR_NAME)$(BDGP2FBBT_MAPPING_FILE) BDGP
 	@perl BDGP/complete_mapping_from_bdgp_to_bgee.pl -bgee=$(BGEECMD) -bdgp=$(BDGPCMD) -annot_info=BDGP/annot_info -old=$(SOURCE_FILES_DIR)$(DIR_NAME)$(BDGP2FBBT_MAPPING_FILE) -new=BDGP/$(BDGP2FBBT_MAPPING_NEW)  >$@.tmp 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@echo -e "After checking with annotators, replace $(SOURCE_FILES_DIR)$(DIR_NAME)$(BDGP2FBBT_MAPPING_FILE) by BDGP/$(BDGP2FBBT_MAPPING_NEW)"
+	@$(CP) BDGP/$(BDGP2FBBT_MAPPING_NEW) $(SOURCE_FILES_DIR)$(DIR_NAME)$(BDGP2FBBT_MAPPING_FILE)
 	@$(MV) $@.tmp $@
 
 tsv_BDGP: map_BDGP $(SOURCE_FILES_DIR)$(DIR_NAME)$(BDGP2FBBT_MAPPING_FILE) $(SOURCE_FILES_DIR)$(DIR_NAME)$(STAGECORRESP_FILE) $(SOURCE_FILES_DIR)$(DIR_NAME)insitu_annot.csv
@@ -92,7 +103,8 @@ tsv_BDGP: map_BDGP $(SOURCE_FILES_DIR)$(DIR_NAME)$(BDGP2FBBT_MAPPING_FILE) $(SOU
 	@$(MV) $@.out log.$@
 
 
-map_flybase:
+#TODO it looks there is no strain info
+map_flybase: get_annot
 	# Get FlyBase mapping
 	@export PERL5LIB=FlyBase:$$PERL5LIB ; perl FlyBase/gene_expression_dump.pl FB_public  2>warnings.$@  | uniq >$(SOURCE_FILES_DIR)$(DIR_NAME)Flybase.data.tmp
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
@@ -112,13 +124,22 @@ tsv_flybase: map_flybase $(SOURCE_FILES_DIR)$(DIR_NAME)Flybase.data
 	@$(MV) $@.tmp $@
 
 
-map_wormbase:
+#TODO fix strain mapping - with Anne's file - on strain json and tsv files. Currently no C. elegans strain mapping in Anne's file
+map_wormbase: get_annot
 	# Get WormBase data
-	# THINK to update WormBase dump file to last version
-	@$(WGET) 'ftp://caltech.wormbase.org/pub/wormbase/expr_dump/${WORMBASE_EXPR_DUMP}' -O $(SOURCE_FILES_DIR)$(DIR_NAME)${WORMBASE_EXPR_DUMP}.tmp && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)${WORMBASE_EXPR_DUMP}.tmp $(SOURCE_FILES_DIR)$(DIR_NAME)${WORMBASE_EXPR_DUMP} 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)${WORMBASE_EXPR_DUMP}.tmp
+	#NOTE THINK to update WormBase dump file to last version
+	@$(WGET) 'ftp://caltech.wormbase.org/pub/wormbase/expr_dump/$(WORMBASE_EXPR_DUMP).20201213' -O $(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP).tmp && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP).tmp $(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP).ori 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP).tmp
+	# Get strain mapping from https://wormbase.org/species/all/strain/ natural isolates
+	@$(WGET) 'https://wormbase.org/rest/widget/strain/all/natural_isolates?download=1&content-type=application%2Fjson' -O $(SOURCE_FILES_DIR)$(DIR_NAME)wormbase_natural_strains.json.tmp && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)wormbase_natural_strains.json.tmp $(SOURCE_FILES_DIR)$(DIR_NAME)wormbase_natural_strains.json 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)wormbase_natural_strains.json.tmp
+	# Get complementary strain mapping from WormMine
+	@perl WormBase/get_worm_wild_strains.pl >$(SOURCE_FILES_DIR)$(DIR_NAME)wormbase_wild_isolate.tsv
+	# Map strain names
+	@perl -e 'use lib ".."; use Utils; Utils::map_strain_names("$(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP).ori", "$(STRAIN_MAPPING_FILE)")' >$(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP)
+	@$(RM) $(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP).ori
 	@touch $@
 
-tsv_wormbase: map_wormbase $(SOURCE_FILES_DIR)$(DIR_NAME)${WORMBASE_EXPR_DUMP}
+#NOTE there are other worm species there! Keep only C. elegans!
+tsv_wormbase: map_wormbase $(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP) $(SOURCE_FILES_DIR)$(DIR_NAME)wormbase_natural_strains.json $(SOURCE_FILES_DIR)$(DIR_NAME)wormbase_wild_isolate.tsv
 	# Start in between stages socket
 	@$(INBETWEENSTAGES) 6239 $(INBETWEENSTAGESPORT) &
 	# Start anatomy id mapping socket
@@ -126,7 +147,7 @@ tsv_wormbase: map_wormbase $(SOURCE_FILES_DIR)$(DIR_NAME)${WORMBASE_EXPR_DUMP}
 	@sleep 50
 	# Prepare WormBase tsv for insertion
 # See dump at ftp://caltech.wormbase.org/pub/wormbase/expr_dump/
-	@perl WormBase/extract_insitu_data.pl  -bgee=$(BGEECMD) -Aport=$(IDMAPPINGPORT) -Sport=$(INBETWEENSTAGESPORT) -wormb_data=$(SOURCE_FILES_DIR)$(DIR_NAME)${WORMBASE_EXPR_DUMP} >$@.tmp 2>warnings.$@
+	@perl WormBase/extract_insitu_data.pl  -bgee=$(BGEECMD) -Aport=$(IDMAPPINGPORT) -Sport=$(INBETWEENSTAGESPORT) -wormb_data=$(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP) -strain_map=$(SOURCE_FILES_DIR)$(DIR_NAME)wormbase_natural_strains.json -strain_map2=$(SOURCE_FILES_DIR)$(DIR_NAME)wormbase_wild_isolate.tsv >$@.tmp 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 #TODO Data should be extracted from WormMine in the future!
 	@$(MV) $@.tmp $@
@@ -137,13 +158,12 @@ insert_insitu: tsv_zfin  tsv_mgi  tsv_xenbase  tsv_BDGP  tsv_flybase  tsv_wormba
 	@$(RM) $@.tmp warnings.$@
 	@for tsv in `ls -1 tsv_*`; do \
 		echo $$tsv; \
+		>&2 echo $$tsv; \
 		perl insert_in_situ.pl -bgee=$(BGEECMD) -tsv=$$tsv -sex_info=$(UBERON_SEX_INFO_FILE_PATH) >> $@.tmp 2>> warnings.$@; \
 	done
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
-
-TMP_TABLE_CLAUSE   := SELECT t10.expressionId, IF((SELECT COUNT(inSituExperimentId) FROM inSituExperimentExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.inSituExperimentCallDirection = 'present' AND t11.inSituExperimentCallQuality = 'high quality') >= 2, 'pstGold', IF((SELECT COUNT(inSituExperimentId) FROM inSituExperimentExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.inSituExperimentCallDirection = 'present' AND t11.inSituExperimentCallQuality = 'high quality') = 1, 'pstSilverFromHigh', IF((SELECT COUNT(inSituExperimentId) FROM inSituExperimentExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.inSituExperimentCallDirection = 'present' AND t11.inSituExperimentCallQuality = 'poor quality') >= 2, 'pstSilverFromLow', IF((SELECT COUNT(inSituExperimentId) FROM inSituExperimentExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.inSituExperimentCallDirection = 'present' AND t11.inSituExperimentCallQuality = 'poor quality') = 1, 'pstBronze', IF((SELECT COUNT(inSituExperimentId) FROM inSituExperimentExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.inSituExperimentCallDirection = 'absent' AND t11.inSituExperimentCallQuality = 'high quality') >= 2, 'absGold', IF((SELECT COUNT(inSituExperimentId) FROM inSituExperimentExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.inSituExperimentCallDirection = 'absent' AND t11.inSituExperimentCallQuality = 'high quality') = 1, 'absSilverFromHigh', IF((SELECT COUNT(inSituExperimentId) FROM inSituExperimentExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.inSituExperimentCallDirection = 'absent' AND t11.inSituExperimentCallQuality = 'poor quality') >= 2, 'absSilverFromLow', IF((SELECT COUNT(inSituExperimentId) FROM inSituExperimentExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.inSituExperimentCallDirection = 'absent' AND t11.inSituExperimentCallQuality = 'poor quality') = 1, 'absBronze', 'IMPOSSIBLE')))))))) AS expressionCall FROM inSituExperimentExpression AS t10
 
 check_conditions: insert_insitu
 	@echo "Conditions with anat. entity not existing in related species: " > $@.tmp
@@ -152,22 +172,18 @@ check_conditions: insert_insitu
 	@$(MYSQL) -e "select DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.sex, t1.strain from cond as t1 left outer join stageTaxonConstraint as t2 on t1.stageId = t2.stageId and (t2.speciesId is null or t1.speciesId = t2.speciesId) left outer join anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId left outer join inSituSpot as t10 on t1.conditionId = t10.conditionId where t2.stageId is null AND t10.conditionId IS NOT NULL order by t1.speciesId;" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
+#TODO replace inSituData by p-values
 insert_expression: check_conditions insert_insitu
 	# Insert the expression summary
 	@perl insert_expression_in_situ.pl -bgee=$(BGEECMD) > $@.tmp 2>warnings.$@
 	@echo "Searching for incorrect updates of inSituSpot/expression tables (there should be none)" >> $@.tmp
 	@$(MYSQL) -e "SELECT * FROM inSituSpot WHERE reasonForExclusion = 'not excluded' AND expressionId IS NULL" >> $@.tmp
 	@$(MYSQL) -e "SELECT * FROM inSituSpot WHERE reasonForExclusion != 'not excluded' AND expressionId IS NOT NULL" >> $@.tmp
-	@$(MYSQL) -e "SELECT * FROM inSituSpot AS t1 WHERE expressionId IS NOT NULL AND NOT EXISTS(SELECT 1 FROM inSituExperimentExpression AS t2 WHERE t2.expressionId = t1.expressionId)" >> $@.tmp
-	@$(MYSQL) -e "SELECT * FROM inSituExperimentExpression AS t1 WHERE NOT EXISTS (SELECT 1 FROM inSituSpot AS t2 WHERE t2.expressionId = t1.expressionId)" >> $@.tmp
-	@$(MYSQL) -e "SELECT * FROM inSituExperimentExpression WHERE (presentHighInSituSpotCount + presentLowInSituSpotCount + absentHighInSituSpotCount + absentLowInSituSpotCount) = 0" >> $@.tmp
-	@$(MYSQL) -e "SELECT * FROM inSituExperimentExpression WHERE (presentHighInSituSpotCount > 0 AND (inSituExperimentCallDirection != 'present' OR inSituExperimentCallQuality != 'high quality')) OR (presentHighInSituSpotCount = 0 AND presentLowInSituSpotCount > 0 AND (inSituExperimentCallDirection != 'present' OR inSituExperimentCallQuality != 'poor quality')) OR (presentHighInSituSpotCount = 0 AND presentLowInSituSpotCount = 0 AND absentHighInSituSpotCount > 0 AND (inSituExperimentCallDirection != 'absent' OR inSituExperimentCallQuality != 'high quality')) OR (presentHighInSituSpotCount = 0 AND presentLowInSituSpotCount = 0 AND absentHighInSituSpotCount = 0 AND (inSituExperimentCallDirection != 'absent' OR inSituExperimentCallQuality != 'poor quality'))" >> $@.tmp
-	@$(MYSQL) -e "SELECT t1.* FROM inSituExperiment AS t1 WHERE NOT EXISTS (SELECT 1 FROM inSituExperimentExpression AS t2 WHERE t2.inSituExperimentId = t1.inSituExperimentId)" >> $@.tmp
 	@echo >> $@.tmp
 	@echo "Statistics for inSituSpot" >> $@.tmp
-	@$(MYSQL) -e "SELECT speciesId, expressionCall, detectionFlag, inSituData, COUNT(*) AS inSituSpotCount FROM inSituSpot AS t1 INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId INNER JOIN ($(TMP_TABLE_CLAUSE)) AS tmpTable ON t1.expressionId = tmpTable.expressionId GROUP BY speciesId, expressionCall, detectionFlag, inSituData ORDER BY speciesId, expressionCall, detectionFlag, inSituData" >> $@.tmp
+	@$(MYSQL) -e "SELECT speciesId, detectionFlag, inSituData, COUNT(*) AS inSituSpotCount FROM inSituSpot AS t1 INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId GROUP BY speciesId, detectionFlag, inSituData ORDER BY speciesId, detectionFlag, inSituData" >> $@.tmp
 	@echo "Statistics for expression table" >> $@.tmp
-	@$(MYSQL) -e "SELECT speciesId, expressionCall, COUNT(*), COUNT(DISTINCT t1.bgeeGeneId), COUNT(DISTINCT t1.conditionId), COUNT(DISTINCT t3.anatEntityId, t3.stageId), COUNT(DISTINCT t3.anatEntityId, t3.stageId, t3.sex) FROM expression AS t1 INNER JOIN cond AS t3 ON t1.conditionId = t3.conditionId INNER JOIN ($(TMP_TABLE_CLAUSE)) AS tmpTable ON t1.expressionId = tmpTable.expressionId GROUP BY speciesId, expressionCall ORDER BY speciesId, expressionCall" >> $@.tmp
+	@$(MYSQL) -e "SELECT speciesId, COUNT(*), COUNT(DISTINCT t1.bgeeGeneId), COUNT(DISTINCT t1.conditionId), COUNT(DISTINCT t3.anatEntityId, t3.stageId), COUNT(DISTINCT t3.anatEntityId, t3.stageId, t3.sex) FROM expression AS t1 INNER JOIN cond AS t3 ON t1.conditionId = t3.conditionId GROUP BY speciesId ORDER BY speciesId" >> $@.tmp
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
@@ -187,7 +203,7 @@ $(VERIFICATIONFILE): tsv_zfin  tsv_mgi  tsv_xenbase  tsv_BDGP  tsv_flybase  tsv_
 	-@$(GIT) push
 
 clean:
-	-@$(RM) -R $(VERIFICATIONFILE) *_zfin  *_mgi  *_xenbase  *_BDGP  *_flybase  *.tmp  warnings.* *.out log.* check_conditions insert_expression
+	-@$(RM) -R $(VERIFICATIONFILE) get_annot *_zfin  *_mgi  *_xenbase  *_BDGP  *_flybase  *.tmp  warnings.* *.out log.* check_conditions insert_expression
 	-@$(GIT) rm $(VERIFICATIONFILE)
 	-@$(GIT) commit $(VERIFICATIONFILE) -m "Removing verification file for In Situ"
 	-@$(GIT) push

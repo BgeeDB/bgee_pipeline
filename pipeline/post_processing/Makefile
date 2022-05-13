@@ -15,7 +15,34 @@ $(OUTPUT_DIR)conditions_not_existing:
 
 SQL_CALL_TYPE := IF((estLibPresentHighTotalCount + affymetrixExpPresentHighTotalCount + inSituExpPresentHighTotalCount + rnaSeqExpPresentHighTotalCount) >= 2, 'PRESENT GOLD', IF((estLibPresentHighTotalCount + affymetrixExpPresentHighTotalCount + inSituExpPresentHighTotalCount + rnaSeqExpPresentHighTotalCount) >= 1 OR (estLibPresentLowTotalCount + affymetrixExpPresentLowTotalCount + inSituExpPresentLowTotalCount + rnaSeqExpPresentLowTotalCount) >= 2, 'PRESENT SILVER', IF((estLibPresentLowTotalCount + affymetrixExpPresentLowTotalCount + inSituExpPresentLowTotalCount + rnaSeqExpPresentLowTotalCount) >= 1, 'PRESENT BRONZE', IF((affymetrixExpAbsentHighTotalCount + inSituExpAbsentHighTotalCount + rnaSeqExpAbsentHighTotalCount) >= 2, 'ABSENT GOLD', IF((affymetrixExpAbsentHighTotalCount + inSituExpAbsentHighTotalCount + rnaSeqExpAbsentHighTotalCount) >= 1 OR (affymetrixExpAbsentLowTotalCount + inSituExpAbsentLowTotalCount + rnaSeqExpAbsentLowTotalCount) >= 2, 'ABSENT SILVER', IF((affymetrixExpAbsentLowTotalCount + inSituExpAbsentLowTotalCount + rnaSeqExpAbsentLowTotalCount) >= 1, 'ABSENT BRONZE', 'IMPOSSIBLE'))))))
 
-$(OUTPUT_DIR)globalExpression: $(OUTPUT_DIR)conditions_not_existing
+# Since Bgee 15.0, to allow computations of global expression calls from different nodes, we first insert the global conditions,
+# then we insert the global calls (previously it was all done in a same step)
+# If you want to tune the number of parallel threads, add:
+# -Djava.util.concurrent.ForkJoinPool.common.parallelism=xx
+# between $(JAVA_NO_JAR) and -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)
+$(OUTPUT_DIR)globalConditions: $(OUTPUT_DIR)conditions_not_existing
+	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=20 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR) InsertPropagatedCalls insertGlobalConditions - - > $@.tmp 2> $@.warn
+# Now we update the fields condObservedXXX
+	@$(MYSQL) -e "UPDATE globalCond INNER JOIN cond ON (globalCond.anatEntityId = cond.anatEntityId) SET condObservedAnatEntity = 1;" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "UPDATE globalCond INNER JOIN cond ON (globalCond.cellTypeId = cond.cellTypeId OR globalCond.cellTypeId = 'GO:0005575' AND cond.cellTypeId IS NULL) SET condObservedCellType = 1;" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "UPDATE globalCond INNER JOIN cond ON (globalCond.stageId = cond.stageId) SET condObservedStage = 1;" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "UPDATE globalCond INNER JOIN cond ON (globalCond.sex = cond.sex OR globalCond.sex = 'any' AND cond.sex IN ('not annotated', 'mixed', 'NA')) SET condObservedSex = 1;" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "UPDATE globalCond INNER JOIN cond ON (globalCond.strain = cond.strain OR globalCond.strain = 'wild-type' AND cond.strain IN ('mix of breed', 'not annotated', 'NA', 'multiple breeds', '(Missing)', 'confidential_restricted_data', 'wild-type', 'mixed-breed')) SET condObservedStrain = 1;" >> $@.tmp 2>> $@.warn
+# Now, statistics on globalConds
+	@echo "Incorrect insertions (there should be none):" >> $@.tmp
+	@$(MYSQL) -e "SELECT t1.globalConditionId AS 'global conditions with no related raw conditions' FROM globalCond AS t1 WHERE NOT EXISTS (SELECT 1 FROM globalCondToCond AS t2 WHERE t2.globalConditionId = t1.globalConditionId) LIMIT 1000" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "SELECT DISTINCT t1.conditionId AS 'Raw condition with incorrect corresponding global condition' FROM expression AS t1 WHERE NOT EXISTS (SELECT 1 FROM globalCondToCond AS t2 WHERE t1.conditionId = t2.conditionId AND t2.conditionRelationOrigin = 'self') LIMIT 1000" >> $@.tmp 2>> $@.warn
+	@echo "Number of globalConds per species:" >> $@.tmp
+	@$(MYSQL) -e "SELECT speciesId, COUNT(*) FROM globalCond GROUP BY speciesId ORDER BY speciesId" >> $@.tmp 2>> $@.warn
+	@echo "Distinct IDs used in cellTypeId column" >> $@.tmp
+	@$(MYSQL) -e "SELECT DISTINCT cellTypeId FROM globalCond ORDER BY cellTypeId" >> $@.tmp 2>> $@.warn
+	@echo "Number of globalCondToCond rows, globalConditionIds, conditionIds, per conditionRelationOrigin:" >> $@.tmp
+	@$(MYSQL) -e "SELECT conditionRelationOrigin, COUNT(*), COUNT(DISTINCT globalConditionId), COUNT(DISTINCT conditionId) FROM globalCondToCond GROUP BY conditionRelationOrigin ORDER BY conditionRelationOrigin" >> $@.tmp 2>> $@.warn
+	@$(MV) $@.tmp $@
+
+# Since Bgee 15.0 it is possible to run this step in a parallel fashion from different nodes. See comments below.
+# It is also possible to compute global expressions using a slurm cluster with the script run_propagation_on_cluster.pl. This script only generate propagated calls. Do not forget to run all the mysql queries of this rule once computation is over on the cluster.
+$(OUTPUT_DIR)globalExpression: $(OUTPUT_DIR)globalConditions
 # ############################################
 # DATA INSERTION
 # ############################################
@@ -23,7 +50,23 @@ $(OUTPUT_DIR)globalExpression: $(OUTPUT_DIR)conditions_not_existing
 # -Djava.util.concurrent.ForkJoinPool.common.parallelism=xx
 # between $(JAVA_NO_JAR) and -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)
 #
-	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=55 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR) InsertPropagatedCalls - - > $@.tmp 2> $@.warn
+# If you want to launch this step in parallel from different nodes, after "InsertPropagatedCalls insertCalls" the following parameters are used;
+# * speciesIds (can be '-' for all species)
+# * condition parameter combination (kind of obsolete, should be '-')
+# * geneOffset: an int defining the offset of the first gene to retrieve, for each of the requested species independently.
+#               For instance, if two species and an offset of 1000 were requested, the first gene retrieved for the first species
+#               would have offset 1000 among the genes of that species, the first gene retrieved for the second species
+#               would have offset 1000 among the genes of that other species. Can be '-' (equivalent to 0).
+# * geneRowCount: an int defining the count of genes to retrieve, for each of the requested species independently.
+#                 For instance, if two species and an gene count of 1000 were requested, 1000 genes wwould be retrieved
+#                 for the first species, and 1000 genes wwould be retrieved for the second species. Can be '-' (equivalent to 0),
+#                 meaning that it has no effect, all genes for each species are retrieved.
+# * compute globalConditions: a boolean defining whether global conditions should be computed and inserted
+#                             along with the propagation of calls (if 'true' or '1'), or if there were already computed
+#                             and inserted, and should be retrieved from the database to propagate the calls (if 'false' or '0').
+#                             To be able to run the computations from different nodes, they should hav already been inserted.
+#
+	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=55 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR) InsertPropagatedCalls insertCalls - - 0 0 0 > $@.tmp 2> $@.warn
 #
 # ############################################
 # DATA VERIFICATION
@@ -157,32 +200,50 @@ $(OUTPUT_DIR)globalExpression: $(OUTPUT_DIR)conditions_not_existing
 
 
 
-$(OUTPUT_DIR)ranksAffy: $(OUTPUT_DIR)globalExpression
-	@perl ranks_affymetrix.pl -bgee=$(BGEECMD) > $@.tmp 2> $@.warn
-	@printf "Min, max, average Affymetrix mean rank: \n" >> $@.tmp
-	@$(MYSQL) -e "SELECT MIN(affymetrixMeanRank), MAX(affymetrixMeanRank), AVG(affymetrixMeanRank) FROM globalExpression AS t1 WHERE affymetrixMeanRank IS NOT NULL" >> $@.tmp 2>> $@.warn
+# This step is responsible for computing ranks for each Affymetrix chip
+# and then store information abut max ranks/distinct rank counts
+$(OUTPUT_DIR)ranksAffy:
+	@perl ranks_affymetrix.pl -bgee=$(BGEECMD) -parallel_jobs=20 > $@.tmp 2> $@.warn
+	@$(MYSQL) -e "UPDATE affymetrixChip AS t0 INNER JOIN ( SELECT t1.bgeeAffymetrixChipId, MAX(t1.rawRank) AS maxRank, COUNT(DISTINCT t1.rawRank) AS distinctRankCount FROM affymetrixProbeset AS t1 WHERE t1.expressionId IS NOT NULL GROUP BY t1.bgeeAffymetrixChipId ) AS ranks ON t0.bgeeAffymetrixChipId = ranks.bgeeAffymetrixChipId SET t0.chipMaxRank = ranks.maxRank, t0.chipDistinctRankCount = ranks.distinctRankCount WHERE EXISTS ( SELECT 1 FROM affymetrixProbeset AS t2 WHERE t2.expressionId IS NOT NULL AND t2.bgeeAffymetrixChipId = t0.bgeeAffymetrixChipId )" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "UPDATE chipType AS t1 INNER JOIN ( SELECT chipTypeId, MAX(chipMaxRank) AS maxRank FROM affymetrixChip GROUP BY chipTypeId ) AS chipMaxRanks ON t1.chipTypeId = chipMaxRanks.chipTypeId SET t1.chipTypeMaxRank = chipMaxRanks.maxRank" >> $@.tmp 2>> $@.warn
+	@printf "Min, max, average Affymetrix rank and distinct rank count per chip type: \n" >> $@.tmp
+	@$(MYSQL) -e "SELECT t1.chipTypeId, t1.chipTypeMaxRank, MIN(t3.rawRank), MAX(t3.rawRank), AVG(t3.rawRank), MIN(t2.chipDistinctRankCount), MAX(t2.chipDistinctRankCount), AVG(t2.chipDistinctRankCount) FROM chipType AS t1 INNER JOIN affymetrixChip AS t2 ON t1.chipTypeId = t2.chipTypeId INNER JOIN affymetrixProbeset AS t3 ON t2.bgeeAffymetrixChipId = t3.bgeeAffymetrixChipId WHERE t3.rawRank IS NOT NULL GROUP BY t1.chipTypeId" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
-$(OUTPUT_DIR)ranksRnaSeq: $(OUTPUT_DIR)globalExpression
-	@perl ranks_rnaseq.pl -bgee=$(BGEECMD) -db_name=$(DBNAME) > $@.tmp 2> $@.warn
-	@printf "Min, max, average RNA-Seq mean rank: \n" >> $@.tmp
-	@$(MYSQL) -e "SELECT MIN(rnaSeqMeanRank), MAX(rnaSeqMeanRank), AVG(rnaSeqMeanRank) FROM globalExpression AS t1 WHERE rnaSeqMeanRank IS NOT NULL" >> $@.tmp 2>> $@.warn
+# This step is responsible for computing ranks for each RNA-Seq library
+# and then store information abut max ranks/distinct rank counts
+# It is also possible to compute RNA-Seq ranks using a slurm cluster with the script run_rnaseq_ranks_on_cluster.pl. This script only run ranks_rnaseq.pl. Do not forget to run mysql queries of this rule once computation is over on the cluster.
+$(OUTPUT_DIR)ranksRnaSeq:
+	@perl ranks_rnaseq.pl -bgee=$(BGEECMD) -parallel_jobs=20 > $@.tmp 2> $@.warn
+	@$(MYSQL) -e "UPDATE rnaSeqLibrary AS t0 INNER JOIN ( SELECT t1.rnaSeqLibraryId, MAX(t1.rawRank) AS maxRank, COUNT(DISTINCT t1.rawRank) AS distinctRankCount FROM rnaSeqResult AS t1 WHERE t1.rawRank IS NOT NULL GROUP BY t1.rnaSeqLibraryId ) AS ranks ON t0.rnaSeqLibraryId = ranks.rnaSeqLibraryId SET t0.libraryMaxRank = ranks.maxRank, t0.libraryDistinctRankCount = ranks.distinctRankCount" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "INSERT INTO rnaSeqProtocolSpeciesMaxRank (rnaSeqProtocolId, speciesId, maxRank) SELECT t1.rnaSeqProtocolId, t2.speciesId, MAX(t1.libraryMaxRank) AS maxRank FROM rnaSeqLibrary AS t1 INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId GROUP BY t1.rnaSeqProtocolId, t2.speciesId" >> $@.tmp 2>> $@.warn
+	@printf "Min, max, average RNA-Seq rank and distinct rank count per species: \n" >> $@.tmp
+	@$(MYSQL) -e "SELECT t1.speciesId, MIN(t3.rawRank), MAX(t3.rawRank), AVG(t3.rawRank), MIN(t2.libraryDistinctRankCount), MAX(t2.libraryDistinctRankCount), AVG(t2.libraryDistinctRankCount) FROM cond AS t1 INNER JOIN rnaSeqLibrary AS t2 ON t1.conditionId = t2.conditionId INNER JOIN rnaSeqResult AS t3 on t2.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE t3.rawRank IS NOT NULL GROUP BY t1.speciesId" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
-$(OUTPUT_DIR)ranksEST: $(OUTPUT_DIR)globalExpression
-	@perl ranks_est.pl -bgee=$(BGEECMD) > $@.tmp 2> $@.warn
-	@printf "Min, max, average EST mean rank: \n" >> $@.tmp
-	@$(MYSQL) -e "SELECT MIN(estRank), MAX(estRank), AVG(estRank) FROM globalExpression AS t1 WHERE estRank IS NOT NULL" >> $@.tmp 2>> $@.warn
+$(OUTPUT_DIR)ranksScRnaSeqFullLength:
+	@perl ranks_scrnaseqfulllength.pl -bgee=$(BGEECMD) -parallel_jobs=15 > $@.tmp 2> $@.warn
+	@$(MYSQL) -e "UPDATE scRnaSeqFullLengthLibrary AS t0 INNER JOIN ( SELECT t1.scRnaSeqFullLengthLibraryId, MAX(t1.rawRank) AS maxRank, COUNT(DISTINCT t1.rawRank) AS distinctRankCount FROM scRnaSeqFullLengthResult AS t1 WHERE t1.rawRank IS NOT NULL GROUP BY t1.scRnaSeqFullLengthLibraryId ) AS ranks ON t0.scRnaSeqFullLengthLibraryId = ranks.scRnaSeqFullLengthLibraryId SET t0.libraryMaxRank = ranks.maxRank, t0.libraryDistinctRankCount = ranks.distinctRankCount WHERE EXISTS ( SELECT 1 FROM scRnaSeqFullLengthResult AS t2 WHERE t2.rawRank IS NOT NULL AND t2.scRnaSeqFullLengthLibraryId = t0.scRnaSeqFullLengthLibraryId )" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "INSERT INTO scRnaSeqFullLengthSpeciesMaxRank (speciesId, maxRank) SELECT t2.speciesId, MAX(t1.libraryMaxRank) FROM scRnaSeqFullLengthLibrary AS t1 INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId GROUP BY t2.speciesId" >> $@.tmp 2>> $@.warn
+	@printf "Min, max, average scRNA-Seq full-length rank and distinct rank count per species: \n" >> $@.tmp
+	@$(MYSQL) -e "SELECT t1.speciesId, MIN(t3.rawRank), MAX(t3.rawRank), AVG(t3.rawRank), MIN(t2.libraryDistinctRankCount), MAX(t2.libraryDistinctRankCount), AVG(t2.libraryDistinctRankCount) FROM cond AS t1 INNER JOIN scRnaSeqFullLengthLibrary AS t2 ON t1.conditionId = t2.conditionId INNER JOIN scRnaSeqFullLengthResult AS t3 on t2.scRnaSeqFullLengthLibraryId = t3.scRnaSeqFullLengthLibraryId WHERE t3.rawRank IS NOT NULL GROUP BY t1.speciesId" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
-$(OUTPUT_DIR)ranksInSitu: $(OUTPUT_DIR)globalExpression
-	@perl ranks_in_situ.pl -bgee=$(BGEECMD) > $@.tmp 2> $@.warn
-	@printf "Min, max, average in situ mean rank: \n" >> $@.tmp
-	@$(MYSQL) -e "SELECT MIN(inSituRank), MAX(inSituRank), AVG(inSituRank) FROM globalExpression AS t1 WHERE inSituRank IS NOT NULL" >> $@.tmp 2>> $@.warn
+# EST and in situ rank computations are now done as part of this step
+# It is also possible to generate global ranks using a slurm cluster with the script run_ranks_global_on_cluster.pl. This script only run ranks_global.pl. Do not forget to run mysql queries of this rule once processing finished on the cluster.
+$(OUTPUT_DIR)ranksGlobal: $(OUTPUT_DIR)ranksAffy $(OUTPUT_DIR)ranksRnaSeq $(OUTPUT_DIR)ranksScRnaSeqFullLength
+	@perl ranks_global.pl -bgee=$(BGEECMD) -parallel_jobs=20 -conds_per_job=10 > $@.tmp 2> $@.warn
+	@echo "Min, max, average EST mean rank: \n" >> $@.tmp
+#	@$(MYSQL) -e "SELECT MIN(estRank), MAX(estRank), AVG(estRank) FROM globalExpression AS t1 WHERE estRank IS NOT NULL" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "SELECT MIN(estGlobalRank), MAX(estGlobalRank), AVG(estGlobalRank) FROM globalExpression AS t1 WHERE estGlobalRank IS NOT NULL" >> $@.tmp 2>> $@.warn
+	@echo "Min, max, average in situ mean rank: \n" >> $@.tmp
+#	@$(MYSQL) -e "SELECT MIN(inSituRank), MAX(inSituRank), AVG(inSituRank) FROM globalExpression AS t1 WHERE inSituRank IS NOT NULL" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "SELECT MIN(inSituGlobalRank), MAX(inSituGlobalRank), AVG(inSituGlobalRank) FROM globalExpression AS t1 WHERE inSituGlobalRank IS NOT NULL" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
-$(OUTPUT_DIR)norm_ranks: $(OUTPUT_DIR)ranksAffy $(OUTPUT_DIR)ranksRnaSeq $(OUTPUT_DIR)ranksEST $(OUTPUT_DIR)ranksInSitu
-	@perl normalize_ranks.pl -bgee=$(BGEECMD) > $@.tmp 2> $@.warn
+# It is also possible to normalize the ranks using a slurm cluster with the script run_ranks_global_on_cluster.pl. WARNING!!!! : As for bgee 15.0 the UNIL cluster queues allowed max 3 days of processing. Normalization for human and mouse took 10 days. DO NOT normalize ranks for these 2 species using the cluster. Normalization for all other species took less than one day
+$(OUTPUT_DIR)norm_ranks: $(OUTPUT_DIR)ranksGlobal
+	@perl normalize_ranks.pl -bgee=$(BGEECMD) -species=$(EMPTY_LIST) > $@.tmp 2> $@.warn
 #	@printf "Expression IDs with ranks incorrectly generated: \n" >> $@.tmp
 #	@$(MYSQL) -e "SELECT expressionId FROM expression WHERE inSituData != 'no data' AND inSituRank IS NULL OR estData != 'no data' AND estRank IS NULL OR affymetrixData != 'no data' AND affymetrixMeanRank IS NULL OR rnaSeqData != 'no data' AND rnaSeqMeanRank IS NULL" >> $@.tmp
 #	@printf "End expression IDs with ranks incorrectly generated \n" >> $@.tmp

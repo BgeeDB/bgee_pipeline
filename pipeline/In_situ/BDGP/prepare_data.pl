@@ -240,9 +240,9 @@ while ( $toDo ){
                 if ( defined $csvAnnot{$cgname}{$stage}{$go_term} ){
                     $spots{$previousAnnotId}{$annotTermId}{'term_id'} = $tempSpots{$annotTermId}{'term_id'};
                 }
-                else {
-                    warn "Unmapped stage: [$stage]\n";
-                }
+#                else {
+#                    warn "Unmapped stage: [$stage]\n";
+#                }
             }
         }
 

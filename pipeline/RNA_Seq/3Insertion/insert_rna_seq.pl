@@ -16,13 +16,13 @@ $| = 1; # no buffering of output
 #####################################################################
 
 
-my $abundance_file = 'abundance_gene_level+new_tpm+new_fpkm+calls.tsv';
+my $abundance_file = 'gene_level_abundance+calls.tsv';
 
 # Define arguments & their default value
 my ($bgee_connector) = ('');
 my ($extraMapping)   = ('');
 my ($rnaSeqLibrary, $all_results, $sex_info)  = ('', '', '');
-my ($rnaSeqExperiment, $library_info, $excluded_libraries, $library_stats, $report_info) = ('', '', '', '', '');
+my ($rnaSeqExperiment, $library_info, $excluded_libraries, $excluded_biotypes, $library_stats, $report_info) = ('', '', '', '', '', '');
 my ($debug)                      = (0);
 my ($Aport, $Sport)              = (0, 0);
 my %opts = ('bgee=s'                => \$bgee_connector,     # Bgee connector string
@@ -30,9 +30,10 @@ my %opts = ('bgee=s'                => \$bgee_connector,     # Bgee connector st
             'rnaSeqExperiment=s'    => \$rnaSeqExperiment,   # RNAseqExperiment
             'library_info=s'        => \$library_info,       # rna_seq_sample_info.txt file
             'excluded_libraries=s'  => \$excluded_libraries, # rna_seq_sample_excluded.txt file
+            'excluded_biotypes=s'   => \$excluded_biotypes,  # biotypes_excluded_absent_calls.tsv file
             'library_stats=s'       => \$library_stats,      # presence_absence_all_samples.txt
             'report_info=s'         => \$report_info,        # reports_info_all_samples.txt
-            'all_results=s'         => \$all_results,        # /var/bgee/extra/pipeline/rna_seq/all_results_bgee_v14/
+            'all_results=s'         => \$all_results,        # /var/bgee/extra/pipeline/rna_seq/all_results_bgee_v15/
             'sex_info=s'            => \$sex_info,           # generated_files/uberon/uberon_sex_info.tsv
             'extraMapping=s'        => \$extraMapping,       # Extra mapping for too up-to-date ontology terms
             'debug'                 => \$debug,
@@ -42,14 +43,15 @@ my %opts = ('bgee=s'                => \$bgee_connector,     # Bgee connector st
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $bgee_connector eq '' || $rnaSeqLibrary eq '' || $rnaSeqExperiment eq '' || $library_info eq ''  || $excluded_libraries eq '' || $library_stats eq '' || $report_info eq '' || $all_results eq '' || $sex_info eq '' || $Aport == 0 || $Sport == 0 ){
+if ( !$test_options || $bgee_connector eq '' || $rnaSeqLibrary eq '' || $rnaSeqExperiment eq '' || $library_info eq ''  || $excluded_libraries eq '' || $excluded_biotypes eq '' || $library_stats eq '' || $report_info eq '' || $all_results eq '' || $sex_info eq '' || $Aport == 0 || $Sport == 0 ){
     print "\n\tInvalid or missing argument:
-\te.g., $0  -bgee=\$(BGEECMD) -rnaSeqLibrary=RNASeqLibrary_full.tsv -rnaSeqExperiment=RNASeqExperiment_full.tsv -library_info=\$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -library_stats=\$(RNASEQSAMPSTATS) -report_info=\$(RNASEQREPORTINFO) -all_results=\$(RNASEQALLRES) -sex_info=\$(UBERON_SEX_INFO_FILE_PATH) -extraMapping=\$(EXTRAMAPPING_FILEPATH) -Aport=\$(IDMAPPINGPORT) -Sport=\$(STGMAPPINGPORT)    > $@.tmp 2>warnings.$@
+\te.g., $0  -bgee=\$(BGEECMD) -rnaSeqLibrary=RNASeqLibrary_full.tsv -rnaSeqExperiment=RNASeqExperiment_full.tsv -library_info=\$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -excluded_biotypes=\$(RNASEQ_BIOTYPEEXCLUDED_FILEPATH) -library_stats=\$(RNASEQSAMPSTATS) -report_info=\$(RNASEQREPORTINFO) -all_results=\$(RNASEQALLRES) -sex_info=\$(UBERON_SEX_INFO_FILE_PATH) -extraMapping=\$(EXTRAMAPPING_FILEPATH) -Aport=\$(IDMAPPINGPORT) -Sport=\$(STGMAPPINGPORT)    > $@.tmp 2>warnings.$@
 \t-bgee                Bgee connector string
 \t-rnaSeqLibrary       RNAseqLibrary annotation file
 \t-rnaSeqExperiment    RNAseqExperiment file
 \t-library_info        rna_seq_sample_info.txt file
 \t-excluded_libraries  rna_seq_sample_excluded.txt file
+\t-excluded_biotypes   file containing the mapping between protocol and biotypes not used to generate absent calls
 \t-library_stats       presence_absence__all_samples.txt
 \t-report_info         reports_info_all_samples.txt
 \t-all_results         all_results directory
@@ -62,7 +64,7 @@ if ( !$test_options || $bgee_connector eq '' || $rnaSeqLibrary eq '' || $rnaSeqE
     exit 1;
 }
 
-require("$FindBin::Bin/rna_seq_utils.pl");
+require("$FindBin::Bin/../rna_seq_utils.pl");
 
 # Bgee db connection
 my $bgee = Utils::connect_bgee_db($bgee_connector);
@@ -85,7 +87,7 @@ for my $expId ( sort keys %libraries ){
             $all_species{$libraries{$expId}->{$libraryId}->{'speciesId'}}++;
             $count_libs++;
             unless ( -s "$all_results/$libraryId/$abundance_file" ){
-                die "Missing or empty processed data file for library $libraryId! Please check that the transfer from Vital-IT was successful. Otherwise this library should maybe be added to the file of excluded libraries?\n";
+                die "Missing or empty processed data file for library $libraryId! Please check that the transfer from cluster was successful. Otherwise this library should maybe be added to the file of excluded libraries?\n";
             }
         }
     }
@@ -116,7 +118,7 @@ for my $expId ( sort keys %annotations ){
         } elsif ( !exists($all_species{ $annotations{$expId}->{$libraryId}->{'speciesId'} }) ){
             $species_not_included++;
         } elsif ( (!exists $libraries{$expId}->{$libraryId}) and (!exists $excludedLibraries{$libraryId}) ){
-            print "\t", $libraryId, " library annotated but not mapped. This may be for different reasons: is it in the RNASeqLibrary_worm_exclusion.tsv file? Is it a miRNA-Seq/ncRNA-seq/CAGE/RACE/weird experiment? Is it in SRA format (SRX/ERX)?\n";
+            print "\t", $libraryId, " library annotated but not mapped. This may be for different reasons: is it in the RNASeqLibrary_worm_exclusion.tsv file? Is it a CAGE/RACE/weird experiment? Is it in SRA format (SRX/ERX)?\n";
         }
     }
 }
@@ -140,6 +142,18 @@ while ( my @data = $selSrc->fetchrow_array ){
 }
 $selSrc->finish;
 
+############
+# BIOTYPES #
+############
+
+my %biotypeNameToBiotypId = ();
+my $selBiotypes = $bgee->prepare("SELECT geneBioTypeId, geneBioTypeName FROM geneBioType");
+$selBiotypes->execute()  or die $selBiotypes->errstr;
+while ( my @data = $selBiotypes->fetchrow_array ){
+    $biotypeNameToBiotypId{$data[1]} = $data[0];
+}
+$selBiotypes->finish;
+
 ######################
 # INSERT EXPERIMENTS #
 ######################
@@ -161,6 +175,52 @@ for my $expId ( sort keys %experiments ){
 $insExp->finish();
 print "Done\n\n";
 
+################################
+# INSERT PROTOCOLS AND MAPPING #
+# PROTOCOL TO BIOTYPE NOT USED #
+#   TO GENERATE ABSENT CALLS   #
+################################
+
+my %protocolToBiotypes = retrieveProtocolsToBiotypeExcludeAbsentCalls($excluded_biotypes);
+
+# insert the protocols
+my $insProtocol = $bgee->prepare('INSERT INTO rnaSeqProtocol (rnaSeqProtocolName) VALUES (?)');
+for my $protocolName ( keys %protocolToBiotypes ){
+    if($debug) {
+        print 'INSERT INTO rnaSeqLibrary: ', $protocolName, "\n";  
+    } else {
+        $insProtocol->execute($protocolName);
+    }
+}
+$insProtocol->finish();
+
+# retrieve the protocols (from database to be compatible with incremental updates)
+my %protocolNameToProtocolId = ();
+my $selProtocols = $bgee->prepare("SELECT rnaSeqProtocolId, rnaSeqProtocolName FROM rnaSeqProtocol");
+$selProtocols->execute()  or die $selProtocols->errstr;
+while ( my @data = $selProtocols->fetchrow_array ){
+    $protocolNameToProtocolId{$data[1]} = $data[0];
+}
+$selProtocols->finish();
+
+# insert the mapping between protocol and biotypes not used to generate absent calls
+my $insProtocolToBiotype = $bgee->prepare('INSERT INTO rnaSeqProtocolToBiotypeExcludedAbsentCalls (rnaSeqProtocolId, geneBioTypeId) VALUES (?, ?)');
+for my $protocolName ( keys %protocolToBiotypes ){
+    my $protocolId = $protocolNameToProtocolId{$protocolName};
+    # convert each biotype name to the corresponding biotype ID
+    for my $biotypeName (@{$protocolToBiotypes{$protocolName}}) {
+        my $biotypeId = $biotypeNameToBiotypId{$biotypeName};
+        if($debug) {
+            print 'INSERT INTO rnaSeqProtocolToBiotypeExcludedAbsentCalls: ', $protocolId,  ' - ', 
+                                                                              $biotypeId,   "\n";
+        } else {
+            $insProtocolToBiotype->execute($protocolId, $biotypeId) or die $insProtocolToBiotype->errstr;
+        }
+    }
+}
+$insProtocolToBiotype->finish();
+
+# use geneBiotype
 
 ######################
 # INSERT PLATFORMS   #
@@ -239,21 +299,22 @@ my $stage_equivalences = Utils::get_stage_equivalences($bgee);
 print "Inserting libraries and all results...\n";
 # query for samples insertion
 my $insLib = $bgee->prepare('INSERT INTO rnaSeqLibrary (rnaSeqLibraryId, rnaSeqExperimentId,
-                             rnaSeqPlatformId, conditionId, fpkmThreshold, tpmThreshold,
+                             rnaSeqPlatformId, rnaSeqProtocolId, conditionId, tpmThreshold,
                              allGenesPercentPresent, proteinCodingGenesPercentPresent,
-                             intergenicRegionsPercentPresent, thresholdRatioIntergenicCodingPercent,
-                             allReadsCount, mappedReadsCount, minReadLength, maxReadLength,
-                             libraryType, libraryOrientation)
-                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+                             intergenicRegionsPercentPresent, meanTpmReferenceIntergenicDistribution, 
+                             sdTpmReferenceIntergenicDistribution, pValueThreshold, allReadsCount, 
+                             mappedReadsCount, minReadLength, maxReadLength, libraryType, libraryOrientation)
+                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+
 
 # Excluded libraries
-my $insExcludedLib = $bgee->prepare('INSERT INTO rnaSeqLibraryDiscarded (rnaSeqLibraryId) VALUES (?)');
+my $insExcludedLib = $bgee->prepare('INSERT INTO rnaSeqLibraryDiscarded (rnaSeqLibraryId, rnaSeqLibraryDiscardReason) VALUES (?, ?)');
 for my $libraryId ( sort keys %excludedLibraries ){
     if ( $debug ){
         print 'INSERT INTO rnaSeqLibraryDiscarded: ', $libraryId, "\n";
     }
     else {
-        $insExcludedLib->execute($libraryId)  or die $insExcludedLib->errstr;
+        $insExcludedLib->execute($libraryId, $excludedLibraries{$libraryId})  or die $insExcludedLib->errstr;
     }
 }
 
@@ -262,13 +323,22 @@ my $insRun = $bgee->prepare('INSERT INTO rnaSeqRun (rnaSeqRunId, rnaSeqLibraryId
 
 # query for genes results insertion
 my $insResult = $bgee->prepare('INSERT INTO rnaSeqResult (rnaSeqLibraryId, bgeeGeneId, fpkm, tpm,
-                                readsCount, detectionFlag, rnaSeqData, reasonForExclusion)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+                                readsCount, pValue, zScore, detectionFlag, reasonForExclusion)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
 my $inserted = 0;
+
+# used to commit after each library when condition and libraries were not inserted
+#print "disable autocommit. Manually commit for each library\n";
+#$bgee->{AutoCommit} = 0;
+
 for my $expId ( sort keys %libraries ){
     LIBRARY:
     for my $libraryId ( sort keys %{$libraries{$expId}} ){
+        if ( !exists $reportInfo{$libraryId} ){
+            warn "Report file does not contain this library [$libraryId]\n";
+            next LIBRARY;
+        }
         print "\t$expId $libraryId\n";
 
         # Remap to extra mapping if any
@@ -281,6 +351,12 @@ for my $expId ( sort keys %libraries ){
         }
         if ( !exists $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}}   || $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}}   eq '' ){
             warn "[$annotations{$expId}->{$libraryId}->{'stageId'}] unmapped stage id for [$libraryId]\n";
+            next LIBRARY;
+        }
+
+        # Check that protocol of current RNA-Seq library is already present in the database
+        if ( !defined $protocolNameToProtocolId{$annotations{$expId}->{$libraryId}->{'protocol'}}){
+            warn "Protocol [$annotations{$expId}->{$libraryId}->{'protocol'}] not present in the database for [$libraryId]\n";
             next LIBRARY;
         }
 
@@ -302,33 +378,37 @@ for my $expId ( sort keys %libraries ){
 
         # insert sample
         if ( $debug ){
-            print 'INSERT INTO rnaSeqLibrary: ', $libraryId,                        ' - ',
-                  $expId, ' - ', $libraries{$expId}->{$libraryId}->{'platform'},    ' - ',
-                  $condKeyMap->{'conditionId'},                                     ' - ',
-                  $librariesStats{$libraryId}->{'cutoffFPKM'},                      ' - ',
-                  $librariesStats{$libraryId}->{'cutoffTPM'},                       ' - ',
-                  $librariesStats{$libraryId}->{'allGenesPercentPresent'},          ' - ',
-                  $librariesStats{$libraryId}->{'proteinCodingPercentPresent'},     ' - ',
-                  $librariesStats{$libraryId}->{'intergenicRegionsPercentPresent'}, ' - ',
-                  $librariesStats{$libraryId}->{'ratioIntergenicCodingPresent'},    ' - ',
-                  $reportInfo{$libraryId}->{'allReadsCount'},                       ' - ',
-                  $reportInfo{$libraryId}->{'mappedReadsCount'},                    ' - ',
-                  $reportInfo{$libraryId}->{'minReadLength'},                       ' - ',
-                  $reportInfo{$libraryId}->{'maxReadLength'},                       ' - ',
-                  $libraries{$expId}->{$libraryId}->{'libraryType'},                ' - ',
+            print 'INSERT INTO rnaSeqLibrary: ', $libraryId,                                       ' - ',
+                  $expId, ' - ', $annotations{$expId}->{$libraryId}->{'platform'},                 ' - ',
+                  $protocolNameToProtocolId{$annotations{$expId}->{$libraryId}->{'protocol'}},     ' - ',
+                  $condKeyMap->{'conditionId'},                                                    ' - ',
+                  $librariesStats{$libraryId}->{'cutoffTPM'},                                      ' - ',
+                  $librariesStats{$libraryId}->{'allGenesPercentPresent'},                         ' - ',
+                  $librariesStats{$libraryId}->{'proteinCodingPercentPresent'},                    ' - ',
+                  $librariesStats{$libraryId}->{'intergenicRegionsPercentPresent'},                ' - ',
+                  $librariesStats{$libraryId}->{'meanIntergenic'},                                 ' - ',
+                  $librariesStats{$libraryId}->{'sdIntergenic'},                                   ' - ',
+                  $librariesStats{$libraryId}->{'pValueThreshold'},                                ' - ',
+                  $reportInfo{$libraryId}->{'allReadsCount'},                                      ' - ',
+                  $reportInfo{$libraryId}->{'mappedReadsCount'},                                   ' - ',
+                  $reportInfo{$libraryId}->{'minReadLength'},                                      ' - ',
+                  $reportInfo{$libraryId}->{'maxReadLength'},                                      ' - ',
+                  $libraries{$expId}->{$libraryId}->{'libraryType'},                               ' - ',
                   "NA\n";
         }
         else {
             $insLib->execute($libraryId,
                              $expId,
-                             $libraries{$expId}->{$libraryId}->{'platform'},
+                             $annotations{$expId}->{$libraryId}->{'platform'},
+                             $protocolNameToProtocolId{ $annotations{$expId}->{$libraryId}->{'protocol'} },
                              $condKeyMap->{'conditionId'},
-                             $librariesStats{$libraryId}->{'cutoffFPKM'},
                              $librariesStats{$libraryId}->{'cutoffTPM'},
                              $librariesStats{$libraryId}->{'allGenesPercentPresent'},
                              $librariesStats{$libraryId}->{'proteinCodingPercentPresent'},
                              $librariesStats{$libraryId}->{'intergenicRegionsPercentPresent'},
-                             $librariesStats{$libraryId}->{'ratioIntergenicCodingPresent'},
+                             $librariesStats{$libraryId}->{'meanIntergenic'},
+                             $librariesStats{$libraryId}->{'sdIntergenic'},
+                             $librariesStats{$libraryId}->{'pValueThreshold'},
                              $reportInfo{$libraryId}->{'allReadsCount'},
                              $reportInfo{$libraryId}->{'mappedReadsCount'},
                              $reportInfo{$libraryId}->{'minReadLength'},
@@ -360,26 +440,43 @@ for my $expId ( sort keys %libraries ){
                       $genesResults{$geneId}->{'FPKM'},           ' - ',
                       $genesResults{$geneId}->{'TPM'},            ' - ',
                       $genesResults{$geneId}->{'estimatedCount'}, ' - ',
+                      $genesResults{$geneId}->{'pValue'},         ' - ',
+                      $genesResults{$geneId}->{'zscore'},         ' - ',
                       $genesResults{$geneId}->{'expressionCall'}, ' - ',
-                      'high quality',                             ' - ',
                       $exclusion, "\n";
             }
             else {
+                # pvalue and zscore can be null (if no read mapped). In this case BgeeCall retrieve "NA".
+                # DBI use undef value to insert null in the database. That's why we modify "NA" to undef for zScore.
+                # For the pvalue we decided replace NA with 1 in order to use this value as a datapoint to generate propagated calls 
+                if ($genesResults{$geneId}->{'pValue'} eq "NA") {
+                  $genesResults{$geneId}->{'pValue'} = 1;
+                }
+                if ($genesResults{$geneId}->{'zscore'} eq "NA") {
+                  $genesResults{$geneId}->{'zscore'} = undef;
+                }
                 $insResult->execute($libraryId,
                                     # geneId is an ensembl ID, we need to get the bgeeGeneId
                                     $genes{ $libraries{$expId}->{$libraryId}->{'speciesId'}}->{ $geneId },
                                     $genesResults{$geneId}->{'FPKM'},
                                     $genesResults{$geneId}->{'TPM'},
                                     $genesResults{$geneId}->{'estimatedCount'},
+                                    $genesResults{$geneId}->{'pValue'},
+                                    $genesResults{$geneId}->{'zscore'},
                                     $genesResults{$geneId}->{'expressionCall'},
-                                    # rnaSeqData field always 'high quality' for now
-                                    $Utils::HIGH_QUAL,
                                     $exclusion,
                                    )  or die $insResult->errstr;
             }
+
         }
+        # used to commit after each library when condition and libraries were not inserted
+        $bgee->commit;
     }
 }
+# used to commit after each library when condition and libraries were not inserted
+#print "reactivate autocommit\n";
+#$bgee->{AutoCommit} = 1;
+
 $insLib->finish();
 $insRun->finish();
 $insResult->finish();

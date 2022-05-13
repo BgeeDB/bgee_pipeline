@@ -7,21 +7,22 @@
 DIR=$(dirname $([ -L $0 ] && readlink -f $0 || echo $0))
 PASSWD=`grep '^DBPASS ' $DIR/../Makefile.Config | awk '{print $3}'`
 LOGIN=`grep '^DBUSER '  $DIR/../Makefile.Config | awk '{print $3}'`
-DBNAME=bgee_v14
+DBNAME=bgee_v15
 
 MYSQL="mysql -u $LOGIN -p$PASSWD $DBNAME"
 
-for chipTypeId in `$MYSQL -e 'select distinct chipTypeId from affymetrixChip' | grep -v 'chipTypeId'`; do
+for chipTypeId in `$MYSQL -e 'SELECT DISTINCT chipTypeId FROM affymetrixChip' | grep -v 'chipTypeId'`; do
     fileName=${chipTypeId}.tsv
     echo "Probeset ID" > $fileName
-    $MYSQL -e "select affymetrixProbesetId from affymetrixProbeset where bgeeAffymetrixChipId = (select bgeeAffymetrixChipId from affymetrixChip where chipTypeId = '${chipTypeId}' limit 1) order by affymetrixProbesetId" | grep -v "affymetrixProbesetId" >> $fileName
+    $MYSQL -e "SELECT affymetrixProbesetId FROM affymetrixProbeset WHERE bgeeAffymetrixChipId = (SELECT bgeeAffymetrixChipId FROM affymetrixChip WHERE chipTypeId = '${chipTypeId}' LIMIT 1) ORDER BY affymetrixProbesetId" | grep -v "affymetrixProbesetId" >> $fileName
 
-    for bgeeAffymetrixChipId in `$MYSQL -e "select bgeeAffymetrixChipId from affymetrixChip where chipTypeId = '$chipTypeId'" | grep -v 'bgeeAffymetrixChipId'`; do
+    for bgeeAffymetrixChipId in `$MYSQL -e "SELECT bgeeAffymetrixChipId FROM affymetrixChip WHERE chipTypeId = '$chipTypeId'" | grep -v 'bgeeAffymetrixChipId'`; do
         tempFileName=whatever
-        $MYSQL -e "select concat(affymetrixChipId, ' (', bgeeAffymetrixChipId, ')') as customId from affymetrixChip where bgeeAffymetrixChipId = $bgeeAffymetrixChipId" | grep -v "customId" > $tempFileName
-        $MYSQL -e "select detectionFlag from affymetrixProbeset where bgeeAffymetrixChipId = $bgeeAffymetrixChipId order by affymetrixProbesetId" | grep -v "detectionFlag" >> $tempFileName
+        $MYSQL -e "SELECT CONCAT(affymetrixChipId, ' (', bgeeAffymetrixChipId, ')') AS customId FROM affymetrixChip WHERE bgeeAffymetrixChipId = $bgeeAffymetrixChipId" | grep -v "customId" > $tempFileName
+        $MYSQL -e "SELECT detectionFlag FROM affymetrixProbeset WHERE bgeeAffymetrixChipId = $bgeeAffymetrixChipId ORDER BY affymetrixProbesetId" | grep -v "detectionFlag" >> $tempFileName
         tempFileName2=whatever2
         paste $fileName $tempFileName > $tempFileName2; mv -f $tempFileName2 $fileName
         rm -f $tempFileName; rm -f $tempFileName2
     done
 done
+

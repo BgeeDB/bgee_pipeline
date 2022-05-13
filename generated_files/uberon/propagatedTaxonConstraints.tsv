@@ -1,0 +1,98 @@
+Uberon ID	Uberon name	Only in Taxon IDs	Only in Taxon Names	Never in Taxon IDs	Never in Taxon Names	Comments
+CL:0000173	pancreatic D cell			7740, 10116, 33317, 262014	Branchiostoma lanceolatum, Rattus norvegicus, Protostomia, Xenopus	
+CL:0000202	auditory hair cell	30727, 1338369	Cyprinoidei, Dipnotetrapodomorpha			
+CL:0000209	taste receptor cell	7227, 89593	Drosophila melanogaster, Craniata <chordata>			
+CL:0000446	chief cell of parathyroid gland	30727, 1338369	Cyprinoidei, Dipnotetrapodomorpha			
+CL:0002260	epithelial cell of parathyroid gland	30727, 1338369	Cyprinoidei, Dipnotetrapodomorpha			
+CL:0002563	intestinal epithelial cell	1	root			
+CL:0008024	pancreatic endocrine cell	89593	Craniata <chordata>			
+CL:1001433	epithelial cell of exocrine pancreas			7740, 10116, 33317, 262014	Branchiostoma lanceolatum, Rattus norvegicus, Protostomia, Xenopus	
+CL:1001593	parathyroid glandular cell	30727, 1338369	Cyprinoidei, Dipnotetrapodomorpha			
+CL:1001599	pancreas exocrine glandular cell			7740, 10116, 33317, 262014	Branchiostoma lanceolatum, Rattus norvegicus, Protostomia, Xenopus	
+UBERON:0000006	islet of Langerhans	89593	Craniata <chordata>			
+UBERON:0000023	wing	7740, 7936, 8976, 9973, 33554, 50557, 1489100, 1489388	Branchiostoma lanceolatum, Anguilla anguilla, Galliformes, Manis, Carnivora, Insecta, Holostei, Euteleosteomorpha			
+UBERON:0000024	forelimb wing	8976, 9973, 33554	Galliformes, Manis, Carnivora			
+UBERON:0000320	duodenal mucosa			7740, 33317, 262014	Branchiostoma lanceolatum, Protostomia, Xenopus	
+UBERON:0000344	mucosa	1	root			
+UBERON:0000459	uterine wall	40674	Mammalia			
+UBERON:0000945	stomach	89593	Craniata <chordata>			
+UBERON:0000995	uterus	40674	Mammalia			
+UBERON:0001113	lobe of liver			7740, 10116, 33317, 262014	Branchiostoma lanceolatum, Rattus norvegicus, Protostomia, Xenopus	
+UBERON:0001114	right lobe of liver			7740, 10116, 33317, 262014	Branchiostoma lanceolatum, Rattus norvegicus, Protostomia, Xenopus	
+UBERON:0001115	left lobe of liver			7740, 10116, 33317, 262014	Branchiostoma lanceolatum, Rattus norvegicus, Protostomia, Xenopus	
+UBERON:0001132	parathyroid gland	30727, 1338369	Cyprinoidei, Dipnotetrapodomorpha			
+UBERON:0001143	hepatic vein			7740, 10116, 33317	Branchiostoma lanceolatum, Rattus norvegicus, Protostomia	
+UBERON:0001152	cystic duct			7740, 10116, 33317, 262014	Branchiostoma lanceolatum, Rattus norvegicus, Protostomia, Xenopus	
+UBERON:0001166	pylorus			7740, 30727, 33317	Branchiostoma lanceolatum, Cyprinoidei, Protostomia	
+UBERON:0001167	wall of stomach	89593	Craniata <chordata>			
+UBERON:0001172	hepatic acinus			7740, 10116, 33317, 262014	Branchiostoma lanceolatum, Rattus norvegicus, Protostomia, Xenopus	
+UBERON:0001173	biliary tree	89593	Craniata <chordata>			
+UBERON:0001193	hepatic artery			7740, 10116, 33317, 262014	Branchiostoma lanceolatum, Rattus norvegicus, Protostomia, Xenopus	
+UBERON:0001199	mucosa of stomach	89593	Craniata <chordata>			
+UBERON:0001201	serosa of stomach	89593	Craniata <chordata>			
+UBERON:0001202	pyloric sphincter			7740, 30727, 33317	Branchiostoma lanceolatum, Cyprinoidei, Protostomia	
+UBERON:0001242	intestinal mucosa	1	root			
+UBERON:0001276	epithelium of stomach	89593	Craniata <chordata>			
+UBERON:0001277	intestinal epithelium	1	root			
+UBERON:0001280	liver parenchyma			7740, 10116, 33317	Branchiostoma lanceolatum, Rattus norvegicus, Protostomia	
+UBERON:0001281	hepatic sinusoid			7740, 10116, 33317, 262014	Branchiostoma lanceolatum, Rattus norvegicus, Protostomia, Xenopus	
+UBERON:0001283	bile canaliculus			7740, 10116, 33317, 262014	Branchiostoma lanceolatum, Rattus norvegicus, Protostomia, Xenopus	
+UBERON:0001350	coccyx			7740, 9592, 9596, 33317	Branchiostoma lanceolatum, Gorilla, Pan, Protostomia	
+UBERON:0001970	bile			7740, 10116, 33317, 262014	Branchiostoma lanceolatum, Rattus norvegicus, Protostomia, Xenopus	
+UBERON:0002025	stratum basale of epidermis	7227, 89593	Drosophila melanogaster, Craniata <chordata>			
+UBERON:0002097	skin of body	1	root			
+UBERON:0002114	duodenum	89593	Craniata <chordata>			
+UBERON:0002199	integument	1	root			
+UBERON:0002221	fontanelle	8287, 30727, 1489100	Sarcopterygii, Cyprinoidei, Holostei			
+UBERON:0002227	spiral organ of cochlea	30727, 1338369	Cyprinoidei, Dipnotetrapodomorpha			
+UBERON:0002294	biliary system	89593	Craniata <chordata>			
+UBERON:0002329	somite	1	root			
+UBERON:0002533	post-anal tail bud			7740, 9592, 9596, 33317	Branchiostoma lanceolatum, Gorilla, Pan, Protostomia	
+UBERON:0002540	lateral line system	7898, 9605, 30319, 118072	Actinopterygii, Homo, Pipoidea, Coelacanthimorpha			
+UBERON:0003108	suspensorium	7898, 8457, 10090, 30319, 118072	Actinopterygii, Sauropsida, Mus musculus, Pipoidea, Coelacanthimorpha			
+UBERON:0003224	chorion syncytiotrophoblast	32525	Theria <Mammalia>			
+UBERON:0003234	extensor pollicis longus muscle	9605, 10090	Homo, Mus musculus			
+UBERON:0003281	mesentery of stomach	89593	Craniata <chordata>			
+UBERON:0003350	epithelium of mucosa	1	root			
+UBERON:0003685	cranial suture	89593	Craniata <chordata>			
+UBERON:0003703	extrahepatic bile duct	89593	Craniata <chordata>			
+UBERON:0003712	cavernous sinus	8287, 30727, 1489100	Sarcopterygii, Cyprinoidei, Holostei			
+UBERON:0004029	canal of Schlemm	8287, 30727, 1489100	Sarcopterygii, Cyprinoidei, Holostei			
+UBERON:0004058	biliary ductule			7740, 10116, 33317, 262014	Branchiostoma lanceolatum, Rattus norvegicus, Protostomia, Xenopus	
+UBERON:0004647	liver lobule			7740, 10116, 33317, 262014	Branchiostoma lanceolatum, Rattus norvegicus, Protostomia, Xenopus	
+UBERON:0004786	gastrointestinal system mucosa	1	root			
+UBERON:0004912	biliary bud			7740, 10116, 30727, 33317	Branchiostoma lanceolatum, Rattus norvegicus, Cyprinoidei, Protostomia	
+UBERON:0004913	hepatopancreatic ampulla			7740, 10116, 33317, 262014	Branchiostoma lanceolatum, Rattus norvegicus, Protostomia, Xenopus	
+UBERON:0004914	duodenal papilla			7740, 33317, 262014	Branchiostoma lanceolatum, Protostomia, Xenopus	
+UBERON:0005171	hepatic duct	89593	Craniata <chordata>			
+UBERON:0005452	hepatic cord			7740, 10116, 33317, 262014	Branchiostoma lanceolatum, Rattus norvegicus, Protostomia, Xenopus	
+UBERON:0005486	venous dural sinus	8287, 30727, 1489100	Sarcopterygii, Cyprinoidei, Holostei			
+UBERON:0005602	dorsal mesogastrium	89593	Craniata <chordata>			
+UBERON:0005626	ventral mesogastrium	89593	Craniata <chordata>			
+UBERON:0006242	gall bladder primordium			7740, 10116, 30727, 33317	Branchiostoma lanceolatum, Rattus norvegicus, Cyprinoidei, Protostomia	
+UBERON:0006334	posterior lateral line	7898, 9605, 30319, 118072	Actinopterygii, Homo, Pipoidea, Coelacanthimorpha			
+UBERON:0006841	central vein of liver			7740, 10116, 33317, 262014	Branchiostoma lanceolatum, Rattus norvegicus, Protostomia, Xenopus	
+UBERON:0006877	vasculature of liver			7740, 10116, 33317	Branchiostoma lanceolatum, Rattus norvegicus, Protostomia	
+UBERON:0006921	stomach squamous epithelium	89593	Craniata <chordata>			
+UBERON:0008835	hepatic diverticulum			7740, 10116, 30727, 33317	Branchiostoma lanceolatum, Rattus norvegicus, Cyprinoidei, Protostomia	
+UBERON:0009620	tail bud paraxial mesoderm			7740, 9592, 9596, 33317	Branchiostoma lanceolatum, Gorilla, Pan, Protostomia	
+UBERON:0010194	hepatic portal system	89593	Craniata <chordata>			
+UBERON:0010202	lateral line	7898, 9605, 30319, 118072	Actinopterygii, Homo, Pipoidea, Coelacanthimorpha			
+UBERON:0010314	structure with developmental contribution from neural crest	7227, 89593	Drosophila melanogaster, Craniata <chordata>			
+UBERON:0010375	pancreas dorsal primordium	89593	Craniata <chordata>			
+UBERON:0010376	pancreas ventral primordium	89593	Craniata <chordata>			
+UBERON:0010389	pterygoid bone	7898, 8457, 10090, 30319, 118072	Actinopterygii, Sauropsida, Mus musculus, Pipoidea, Coelacanthimorpha			
+UBERON:0011143	upper urinary tract	89593	Craniata <chordata>			
+UBERON:0011144	adductor muscle of hip	30727, 1338369	Cyprinoidei, Dipnotetrapodomorpha			
+UBERON:0011197	parathyroid epithelium	30727, 1338369	Cyprinoidei, Dipnotetrapodomorpha			
+UBERON:0013697	exocrine pancreas epithelium			7740, 10116, 33317, 262014	Branchiostoma lanceolatum, Rattus norvegicus, Protostomia, Xenopus	
+UBERON:0015796	liver blood vessel			7740, 10116, 33317	Branchiostoma lanceolatum, Rattus norvegicus, Protostomia	
+UBERON:2000497	pelvic adductor profundus	30727, 1338369	Cyprinoidei, Dipnotetrapodomorpha			
+UBERON:2000592	superficial pelvic adductor	30727, 1338369	Cyprinoidei, Dipnotetrapodomorpha			
+UBERON:2002011	lateral fontanel of frontal	8287, 30727, 1489100	Sarcopterygii, Cyprinoidei, Holostei			
+UBERON:2005174	ventral liver lobe			7740, 10116, 33317, 262014	Branchiostoma lanceolatum, Rattus norvegicus, Protostomia, Xenopus	
+UBERON:3000961	external integument structure	1	root			
+UBERON:6001055	presumptive embryonic/larval nervous system	1	root			
+UBERON:6001056	presumptive embryonic/larval central nervous system	1	root			
+UBERON:6007116	presumptive embryonic/larval system	1	root			
+UBERON:6040003	non-connected developing system	1	root			

@@ -128,19 +128,26 @@ add foreign key (goAllTargetId) references geneOntologyTerm(goId) on delete casc
 add foreign key (goAllSourceId) references geneOntologyTerm(goId) on delete cascade;
 /*!40000 ALTER TABLE `geneOntologyRelation` ENABLE KEYS */;
 
+/*!40000 ALTER TABLE `geneOrthologs` DISABLE KEYS */;
+alter table geneOrthologs
+add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade,
+add foreign key (targetGeneId) references gene(bgeeGeneId) on delete cascade,
+add foreign key (taxonId) references taxon(taxonId) on delete cascade;
+/*!40000 ALTER TABLE `geneOrthologs` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `geneParalogs` DISABLE KEYS */;
+alter table geneParalogs
+add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade,
+add foreign key (targetGeneId) references gene(bgeeGeneId) on delete cascade,
+add foreign key (taxonId) references taxon(taxonId) on delete cascade;
+/*!40000 ALTER TABLE `geneParalogs` ENABLE KEYS */;
+
 /*!40000 ALTER TABLE `gene` DISABLE KEYS */;
 alter table gene
 add foreign key (speciesId) references species(speciesId) on delete cascade,
 add foreign key (geneBioTypeId) references geneBioType(geneBioTypeId) on delete set null,
 add foreign key (OMAParentNodeId) references OMAHierarchicalGroup(OMANodeId) on delete set null;
 /*!40000 ALTER TABLE `gene` ENABLE KEYS */;
-
-/*!40000 ALTER TABLE `geneToOma` DISABLE KEYS */;
-alter table geneToOma
-add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade,
-add foreign key (OMAGroupId) references OMAHierarchicalGroup(OMAGroupId) on delete cascade,
-add foreign key (taxonId) references taxon(taxonId) on delete cascade;
-/*!40000 ALTER TABLE `geneToOma` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `geneNameSynonym` DISABLE KEYS */;
 alter table geneNameSynonym
@@ -176,6 +183,7 @@ add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade;
 alter table cond 
 add foreign key (exprMappedConditionId) references cond(conditionId) on delete cascade, 
 add foreign key (anatEntityId) references anatEntity(anatEntityId) on delete cascade,
+add foreign key (cellTypeId) references anatEntity(anatEntityId) on delete cascade,
 add foreign key (stageId) references stage(stageId) on delete cascade, 
 add foreign key (speciesId) references species(speciesId) on delete cascade;
 /*!40000 ALTER TABLE `cond` ENABLE KEYS */;
@@ -185,9 +193,15 @@ alter table remapCond
 add foreign key (remappedConditionId) references cond(conditionId) on delete cascade;
 /*!40000 ALTER TABLE `remapCond` ENABLE KEYS */;
 
+/*!40000 ALTER TABLE `remapExpression` DISABLE KEYS */;
+alter table remapExpression
+add foreign key (remappedExpressionId) references expression(expressionId) on delete cascade;
+/*!40000 ALTER TABLE `remapExpression` ENABLE KEYS */;
+
 /*!40000 ALTER TABLE `globalCond` DISABLE KEYS */;
 alter table globalCond
 add foreign key (anatEntityId) references anatEntity(anatEntityId) on delete cascade,
+add foreign key (cellTypeId) references anatEntity(anatEntityId) on delete cascade,
 add foreign key (stageId) references stage(stageId) on delete cascade, 
 add foreign key (speciesId) references species(speciesId) on delete cascade;
 /*!40000 ALTER TABLE `globalCond` ENABLE KEYS */;
@@ -210,7 +224,41 @@ add foreign key (conditionId) references cond(conditionId) on delete cascade;
 /*!40000 ALTER TABLE `globalExpression` DISABLE KEYS */;
 alter table globalExpression
 add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade,
-add foreign key (globalConditionId) references globalCond(globalConditionId) on delete cascade;
+add foreign key (globalConditionId) references globalCond(globalConditionId) on delete cascade
+-- disable this foreign key constraint, this creates way too many indexes that are not really needed
+-- ,
+-- add foreign key(gCIdPValBDAffy) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDEst) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDInSitu) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDRnaSeq) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDAffyEst) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDAffyInSitu) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDAffyRnaSeq) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDAffyScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDEstInSitu) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDEstRnaSeq) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDEstScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDInSituRnaSeq) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDInSituScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDRnaSeqScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDAffyEstInSitu) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDAffyEstRnaSeq) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDAffyEstScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDAffyInSituRnaSeq) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDAffyInSituScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDAffyRnaSeqScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDEstInSituRnaSeq) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDEstInSituScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDEstRnaSeqScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDInSituRnaSeqScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDAffyEstInSituRnaSeq) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDAffyEstInSituScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDAffyEstRnaSeqScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDAffyInSituRnaSeqScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDEstInSituRnaSeqScRnaSeqFL) references globalCond(globalConditionId) on delete set null,
+-- add foreign key(gCIdPValBDAffyEstInSituRnaSeqScRnaSeqFL) references globalCond(globalConditionId) on delete set null
+;
 /*!40000 ALTER TABLE `globalExpression` ENABLE KEYS */;
 
 -- ****************************************************
@@ -303,13 +351,15 @@ add foreign key (deaSampleGroupId) references deaSampleGroup(deaSampleGroupId) o
 add foreign key (bgeeAffymetrixChipId) references affymetrixChip(bgeeAffymetrixChipId) on delete cascade;
 /*!40000 ALTER TABLE `deaSampleGroupToAffymetrixChip` ENABLE KEYS */;
 
-/*!40000 ALTER TABLE `deaAffymetrixProbesetSummary` DISABLE KEYS */;
-alter table deaAffymetrixProbesetSummary
-add foreign key (deaAffymetrixProbesetSummaryId) references affymetrixProbeset(affymetrixProbesetId) on delete cascade,
-add foreign key (deaSampleGroupId) references deaSampleGroup(deaSampleGroupId) on delete cascade,
-add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade,
-add foreign key (differentialExpressionId) references differentialExpression(differentialExpressionId) on delete set null;
-/*!40000 ALTER TABLE `deaAffymetrixProbesetSummary` ENABLE KEYS */;
+-- commented temporarily because this table is not used anymore and the foreign key to deaAffymetrixProbesetSummaryId 
+-- creates error. Should update affymetrixProbeset indexes in order to reactivate these foreign keys.
+-- /*!40000 ALTER TABLE `deaAffymetrixProbesetSummary` DISABLE KEYS */;
+-- alter table deaAffymetrixProbesetSummary
+-- add foreign key (deaAffymetrixProbesetSummaryId) references affymetrixProbeset(affymetrixProbesetId) on delete cascade,
+-- add foreign key (deaSampleGroupId) references deaSampleGroup(deaSampleGroupId) on delete cascade,
+-- add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade,
+-- add foreign key (differentialExpressionId) references differentialExpression(differentialExpressionId) on delete set null;
+-- /*!40000 ALTER TABLE `deaAffymetrixProbesetSummary` ENABLE KEYS */;
 
 --  ****************************************************
 --  RAW IN SITU DATA
@@ -362,6 +412,7 @@ add foreign key (keywordId) references keyword(keywordId) on delete cascade;
 alter table rnaSeqLibrary
 add foreign key (rnaSeqExperimentId) references rnaSeqExperiment(rnaSeqExperimentId) on delete cascade,
 add foreign key (rnaSeqPlatformId) references rnaSeqPlatform(rnaSeqPlatformId) on delete cascade,
+add foreign key (rnaSeqProtocolId) references rnaSeqProtocol(rnaSeqProtocolId) on delete cascade,
 add foreign key (conditionId) references cond(conditionId) on delete cascade;
 /*!40000 ALTER TABLE `rnaSeqLibrary` ENABLE KEYS */;
 
@@ -388,6 +439,88 @@ alter table rnaSeqExperimentExpression
 add foreign key (expressionId) references expression(expressionId) on delete cascade,
 add foreign key (rnaSeqExperimentId) references rnaSeqExperiment(rnaSeqExperimentId) on delete cascade;
 /*!40000 ALTER TABLE `rnaSeqExperimentExpression` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `rnaSeqProtocolToBiotypeExcludedAbsentCalls` DISABLE KEYS */;
+alter table rnaSeqProtocolToBiotypeExcludedAbsentCalls
+add foreign key (rnaSeqProtocolId) references rnaSeqProtocol(rnaSeqProtocolId) on delete cascade,
+add foreign key (geneBioTypeId) references geneBioType(geneBioTypeId) on delete cascade;
+/*!40000 ALTER TABLE `rnaSeqProtocolToBiotypeExcludedAbsentCalls` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `rnaSeqProtocolSpeciesMaxRank` DISABLE KEYS */;
+alter table rnaSeqProtocolSpeciesMaxRank
+add foreign key (rnaSeqProtocolId) references rnaSeqProtocol(rnaSeqProtocolId) on delete cascade,
+add foreign key (speciesId) references species(speciesId) on delete cascade;
+/*!40000 ALTER TABLE `rnaSeqProtocolSpeciesMaxRank` ENABLE KEYS */;
+
+
+-- ****************************************************
+-- scRNA-Seq FULL LENGTH DATA
+-- ****************************************************
+/*!40000 ALTER TABLE `scRnaSeqFullLengthExperiment` DISABLE KEYS */;
+alter table scRnaSeqFullLengthExperiment
+add foreign key (dataSourceId) references dataSource(dataSourceId);
+/*!40000 ALTER TABLE `scRnaSeqFullLengthExperiment` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqFullLengthLibrary` DISABLE KEYS */;
+alter table scRnaSeqFullLengthLibrary
+add foreign key (scRnaSeqFullLengthExperimentId) references scRnaSeqFullLengthExperiment(scRnaSeqFullLengthExperimentId) on delete cascade,
+add foreign key (scRnaSeqFullLengthPlatformId) references scRnaSeqFullLengthPlatform(scRnaSeqFullLengthPlatformId) on delete cascade,
+add foreign key (conditionId) references cond(conditionId) on delete cascade;
+/*!40000 ALTER TABLE `scRnaSeqFullLengthLibrary` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqFullLengthRun` DISABLE KEYS */;
+alter table scRnaSeqFullLengthRun
+add foreign key (scRnaSeqFullLengthLibraryId) references scRnaSeqFullLengthLibrary(scRnaSeqFullLengthLibraryId) on delete cascade;
+/*!40000 ALTER TABLE `scRnaSeqFullLengthRun` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqFullLengthResult` DISABLE KEYS */;
+alter table scRnaSeqFullLengthResult
+add foreign key (scRnaSeqFullLengthLibraryId) references scRnaSeqFullLengthLibrary(scRnaSeqFullLengthLibraryId) on delete cascade,
+add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade,
+add foreign key (expressionId) references expression(expressionId) on delete set null;
+/*!40000 ALTER TABLE `scRnaSeqFullLengthResult` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqFullLengthSpeciesMaxRank` DISABLE KEYS */;
+alter table scRnaSeqFullLengthSpeciesMaxRank
+add foreign key (speciesId) references species(speciesId) on delete cascade;
+/*!40000 ALTER TABLE `scRnaSeqFullLengthSpeciesMaxRank` ENABLE KEYS */;
+
+-- ****************************************************
+-- scRNA-Seq TARGET-BASED DATA
+-- ****************************************************
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedExperiment` DISABLE KEYS */;
+alter table scRnaSeqTargetBasedExperiment
+add foreign key (dataSourceId) references dataSource(dataSourceId);
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedExperiment` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedLibrary` DISABLE KEYS */;
+alter table scRnaSeqTargetBasedLibrary
+add foreign key (scRnaSeqTargetBasedExperimentId) references scRnaSeqTargetBasedExperiment(scRnaSeqTargetBasedExperimentId) on delete cascade,
+add foreign key (scRnaSeqTargetBasedPlatformId) references scRnaSeqTargetBasedPlatform(scRnaSeqTargetBasedPlatformId) on delete cascade;
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedLibrary` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedRun` DISABLE KEYS */;
+alter table scRnaSeqTargetBasedRun
+add foreign key (scRnaSeqTargetBasedLibraryId) references scRnaSeqTargetBasedLibrary(scRnaSeqTargetBasedLibraryId) on delete cascade;
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedRun` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedLibraryCellPopulation` DISABLE KEYS */;
+alter table scRnaSeqTargetBasedLibraryCellPopulation
+add foreign key (scRnaSeqTargetBasedLibraryId) references scRnaSeqTargetBasedLibrary(scRnaSeqTargetBasedLibraryId) on delete cascade,
+add foreign key (conditionId) references cond(conditionId) on delete cascade;
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedLibraryCellPopulation` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedResult` DISABLE KEYS */;
+alter table scRnaSeqTargetBasedResult
+add foreign key (scRnaSeqTargetBasedLibraryCellPopulationId) references scRnaSeqTargetBasedLibraryCellPopulation(scRnaSeqTargetBasedLibraryCellPopulationId) on delete cascade,
+add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade,
+add foreign key (expressionId) references expression(expressionId) on delete set null;
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedResult` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedPerCellCount` DISABLE KEYS */;
+alter table scRnaSeqTargetBasedPerCellCount
+add foreign key (scRnaSeqTargetBasedLibraryCellPopulationId) references scRnaSeqTargetBasedLibraryCellPopulation(scRnaSeqTargetBasedLibraryCellPopulationId) on delete cascade;
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedPerCellCount` ENABLE KEYS */;
 
 -- ****** for diff expression ********
 

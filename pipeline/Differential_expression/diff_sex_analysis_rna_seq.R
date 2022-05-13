@@ -19,7 +19,7 @@
 # R CMD BATCH --no-save --no-restore '--args target_file_path="target_file_path" output_folder_path="output_folder_path" input_folder_path="input_folder_path" abundance_file_name="abundance_file_name" speciesID="speciesID" ' diff_analysis_RNA-seq.R R_log_file
 
 #### example:
-# R CMD BATCH --no-save --no-restore '--args target_file_path="../targets/sex/GSE30352___10090.target" output_folder_path="../processed_differential_bgee_v14/sex/GSE30352" input_folder_path="../all_results_bgee_v14" abundance_file_name="abundance_gene_level+new_tpm+new_fpkm+calls.tsv" speciesID="10090" ' diff_analysis_RNA-seq.R R_log_file
+# R CMD BATCH --no-save --no-restore '--args target_file_path="../targets/sex/GSE30352___10090.target" output_folder_path="../processed_differential_bgee_v15/sex/GSE30352" input_folder_path="../all_results_bgee_v15" abundance_file_name="abundance_gene_level+new_tpm+new_fpkm+calls.tsv" speciesID="10090" ' diff_analysis_RNA-seq.R R_log_file
 
 #### output files
 # 4 columns with header, first field starting with '#' ("#gene_names","p_value","logFC","present_calls")

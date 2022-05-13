@@ -363,8 +363,8 @@ sub getAllRnaSeqAnnotations {
             $commented = 1;
         }
 
-        # file format: libraryId experimentId platform ... organId stageId
-# #libraryId        experimentId   platform      organId organName       uberonId        uberonName      stageId stageName       infoOrgan       infoStage       libraryTitle     librarySource    libraryDescription       libraryCharacteristics    organAnnotationStatus   organBiologicalStatus   stageAnnotationStatus   stageBiologicalStatus   sex     strain  speciesId   comment annotatorId     lastModificationDate
+        # file format: 
+        # #libraryId    experimentId  platform  organId   organName uberonId  uberonName    stageId   stageName infoOrgan infoStage sampleTitle   sampleSource  sampleDescription sampleCharacteristics organAnnotationStatus organBiologicalStatus stageAnnotationStatus stageBiologicalStatus sex   strain    speciesId comment   annotatorId   lastModificationDate  replicate infoReplicate SRSId tags  RNASeqProtocol    physiological status  globin_reduction  PATOid    PATOname
         my @tmp = map { bgeeTrim($_) }
                   map { s/^\"//; s/\"$//; $_ } # remove quotes
                   split(/\t/, $line);
@@ -377,6 +377,7 @@ sub getAllRnaSeqAnnotations {
         my $sex          = $tmp[19];
         my $strain       = $tmp[20];
         my $speciesId    = $tmp[21];
+        my $protocol     = $tmp[29];
 
         if ( !defined $rnaSeqAnnotations{$experimentId}->{$libraryId} ){
             $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'commented'} = $commented;
@@ -436,6 +437,14 @@ sub getAllRnaSeqAnnotations {
                 warn "Warning: no species specified for [$experimentId--$libraryId]. Commented: $commented\n";
                 $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'speciesId'} = 'NA';
             }
+            # protocol
+            if ( !defined($protocol) || $protocol ne '' ){
+                $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'protocol'} = $protocol;
+            }
+            else {
+                $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'protocol'} = '';
+                warn "Warning: no protocol specified for [$experimentId--$libraryId]. Commented: $commented\n";
+            }
         }
         else {
             warn 'Warning: library present several times in the annotation file: experiment: ',
@@ -449,7 +458,7 @@ sub getAllRnaSeqAnnotations {
 
 # Retrieve information on libraries
 sub getAllRnaSeqLibrariesInfo {
-    # Updated to be compatible with new Bgee v14 RNA-seq pipeline. This is reading rna_seq_sample_info.txt file
+    # Updated to be compatible with new Bgee v15 RNA-seq pipeline. This is reading rna_seq_sample_info.txt file
     my ($rnaSeqLibraryFile) = @_;
     # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'speciesId'} = ...
     # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'organism'} = ...
@@ -505,7 +514,7 @@ sub getAllRnaSeqLibrariesInfo {
                 warn "Warning, wrong format for genomeFilePath [$genomeFilePath]\n";
                 $discarded = 1;
             }
-            if ( $database ne 'Ensembl' && $database ne 'EnsemblMetazoa' ){
+            if ( $database ne 'Ensembl' && $database ne 'EnsemblMetazoa' && $database ne 'RefSeq'){
                 warn "Warning, wrong format for database [$database]\n";
                 $discarded = 1;
             }
@@ -517,7 +526,8 @@ sub getAllRnaSeqLibrariesInfo {
                 warn "Warning, wrong format for libraryType [$libraryType]\n";
                 $discarded = 1;
             }
-            if ( $readLength ne '' && ($readLength !~ /$integerRegex/ || $readLength < 0 ) ){
+            #NOTE SRA may return float for read length because of read length variability
+            if ( $readLength ne '' && ($readLength !~ /$floatingPointRegex/ || $readLength < 0 ) ){
                 warn "Warning, wrong format for readLength [$readLength]\n";
                 $discarded = 1;
             }
@@ -563,10 +573,10 @@ sub getExcludedLibraries {
     my %excludedLibraries;
 
     for my $line ( read_file("$excludedLibraryFile", chomp=>1) ){
-        next  if ( $line =~ /^#/ or $line =~ /^\"#/ );
+        next  if ( $line =~ /^#/ or $line =~ /^\"#/ or $line =~ /^$/ );
         my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
         if ( $tmp[1] eq 'TRUE' ){
-            $excludedLibraries{$tmp[0]} = ();
+            $excludedLibraries{$tmp[0]} = $tmp[2];
         }
     }
 
@@ -575,27 +585,27 @@ sub getExcludedLibraries {
 
 ## function to read cutoff and percent present infos
 sub getAllRnaSeqLibrariesStats {
-    # Updated to be compatible with new Bgee v14 RNA-seq pipeline. This is reading presence_absence_all_samples.txt file
+    # Updated to be compatible with new Bgee v15 RNA-seq pipeline. This is reading presence_absence_all_samples.txt file
     my ($rnaSeqLibraryFile) = @_;
     my %rnaSeqLibraries;
 
     for my $line ( read_file("$rnaSeqLibraryFile", chomp=>1) ){
-        next  if ( $line =~ /^#/ or $line =~ /^\"#/ );
-        #libraryId      max_intergenic  cutoffTPM       cutoffGenicTPM  cutoffFPKM      cutoffGenicFPKM proportionGenicPresent  numberGenicPresent      numberGenic     proportionCodingPresent numberPresentCoding     numberCoding    proportionIntergenicPresent     numberIntergenicPresent numberIntergenic        ratioIntergenicCodingPresent    species organism
+        next  if ( $line =~ /^#/ or $line =~ /^\"#/ or $line =~ /^libraryId/);
+        #libraryId    cutoffTPM    proportionGenicPresent  numberGenicPresent      numberGenic     proportionCodingPresent numberPresentCoding     numberCoding    proportionIntergenicPresent     numberIntergenicPresent numberIntergenic    pValueCutoff    meanIntergenic  sdIntergenic    speciesId
 
         my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
 
         my $libraryId                       = $tmp[0];
-        my $cutoffTPM                       = $tmp[3];
-        my $cutoffFPKM                      = $tmp[5];
-        my $allGenesPercentPresent          = $tmp[6];
-        my $proteinCodingPercentPresent     = $tmp[9];
-        my $intergenicRegionsPercentPresent = $tmp[12];
-        my $ratioIntergenicCodingPresent    = $tmp[15];
-        my $speciesId                       = $tmp[16];
-        my $organism                        = $tmp[17];
+        my $cutoffTPM                       = $tmp[1];
+        my $allGenesPercentPresent          = $tmp[2];
+        my $proteinCodingPercentPresent     = $tmp[5];
+        my $intergenicRegionsPercentPresent = $tmp[8];
+        my $pValueThreshold                 = $tmp[11];
+        my $meanIntergenic                  = $tmp[12];
+        my $sdIntergenic                    = $tmp[13];
+        my $speciesId                       = $tmp[14];
 
-        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 18 );
+        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 15 );
 
         if ( !defined $rnaSeqLibraries{$libraryId} ){
             # Perform format checks
@@ -606,10 +616,6 @@ sub getAllRnaSeqLibrariesStats {
             }
             if ( $cutoffTPM !~ /$floatingPointRegex/ ){
                 warn "Warning, wrong format for cutoffTPM [$cutoffTPM]\n";
-                $discarded = 1;
-            }
-            if ( $cutoffFPKM !~ /$floatingPointRegex/ ){
-                warn "Warning, wrong format for cutoffFPKM [$cutoffFPKM]\n";
                 $discarded = 1;
             }
             if ( $allGenesPercentPresent !~ /$floatingPointRegex/ || $allGenesPercentPresent < 0 || $allGenesPercentPresent > 100 ){
@@ -624,16 +630,20 @@ sub getAllRnaSeqLibrariesStats {
                 warn "Warning, wrong format for intergenicRegionsPercentPresent [$intergenicRegionsPercentPresent]\n";
                 $discarded = 1;
             }
-            if ( $ratioIntergenicCodingPresent !~ /$floatingPointRegex/ || $ratioIntergenicCodingPresent < 0 || $ratioIntergenicCodingPresent > 1 ){
-                warn "Warning, wrong format for ratioIntergenicCodingPresent [$ratioIntergenicCodingPresent]\n";
+            if ( $pValueThreshold !~ /$floatingPointRegex/ || $pValueThreshold < 0 || $pValueThreshold > 1 ){
+                warn "Warning, wrong format for pValueThreshold [$pValueThreshold]\n";
+                $discarded = 1;
+            }
+            if ( $meanIntergenic !~ /$floatingPointRegex/ || $meanIntergenic < 0){
+                warn "Warning, wrong format for meanIntergenic [$meanIntergenic]\n";
+                $discarded = 1;
+            }
+            if ( $sdIntergenic !~ /$floatingPointRegex/ || $sdIntergenic < 0){
+                warn "Warning, wrong format for sdIntergenic [$sdIntergenic]\n";
                 $discarded = 1;
             }
             if ( $speciesId eq '' ){
                 warn "Warning, wrong format for speciesId [$speciesId]\n";
-                $discarded = 1;
-            }
-            if ( $organism eq '' ){
-                warn "Warning, wrong format for organism [$organism]\n";
                 $discarded = 1;
             }
 
@@ -642,14 +652,14 @@ sub getAllRnaSeqLibrariesStats {
             }
             else {
                 $rnaSeqLibraries{$libraryId}->{'cutoffTPM'}                       = $cutoffTPM;
-                $rnaSeqLibraries{$libraryId}->{'cutoffFPKM'}                      = $cutoffFPKM;
                 $rnaSeqLibraries{$libraryId}->{'allGenesPercentPresent'}          = $allGenesPercentPresent;
                 $rnaSeqLibraries{$libraryId}->{'proteinCodingPercentPresent'}     = $proteinCodingPercentPresent;
                 $rnaSeqLibraries{$libraryId}->{'intergenicRegionsPercentPresent'} = $intergenicRegionsPercentPresent;
-                # needs to be between 0 and 100, rounded to 2 decimals
-                $rnaSeqLibraries{$libraryId}->{'ratioIntergenicCodingPresent'}    = int($ratioIntergenicCodingPresent * 10000 + 0.5) / 100;
+                $rnaSeqLibraries{$libraryId}->{'pValueThreshold'}                 = $pValueThreshold;
+                $rnaSeqLibraries{$libraryId}->{'meanIntergenic'}                  = $meanIntergenic;
+                $rnaSeqLibraries{$libraryId}->{'sdIntergenic'}                    = $sdIntergenic;
                 $rnaSeqLibraries{$libraryId}->{'speciesId'}                       = $speciesId;
-                $rnaSeqLibraries{$libraryId}->{'organism'}                        = $organism;
+
             }
         }
         else {
@@ -666,19 +676,28 @@ sub getAllRnaSeqReportInfo {
     my %rnaSeqLibraries;
 
     for my $line ( read_file("$rnaSeqReportFile", chomp=>1) ){
-        next  if ( $line =~ /^#/ or $line =~ /^\"#/ ); # this includes the header
+        next  if ( $line =~ /^#/ or $line =~ /^\"#/ or $line =~ /^libraryId/); # this includes the header
 
         my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
 
-        # columns: libraryId, allReadsCount, mappedReadsCount, minReadLength, maxReadLength
+        # columns: libraryId    reads   min_read_size   max_read_size   number_aligned  number_unique_aligned   prop_aligned    prop_unique_aligned number_targets  start_time  kallisto_version
 
         my $libraryId                       = $tmp[0];
         my $allReadsCount                   = $tmp[1];
-        my $mappedReadsCount                = $tmp[2];
-        my $minReadLength                   = $tmp[3];
-        my $maxReadLength                   = $tmp[4];
+        #transform from potential scientific notation to integer
+        if ( $allReadsCount =~ /e[+|-][0-9]+$/ ) {
+            $allReadsCount = sprintf("%.0f", $tmp[1]);
+        }
+        my $minReadLength                   = $tmp[2];
+        my $maxReadLength                   = $tmp[3];
+        my $mappedReadsCount                = $tmp[4];
+        #transform from potential scientific notation to integer
+        if ( $allReadsCount =~ /^[0-9]+e[+|-][0-9]+$/ ) {
+            $allReadsCount = sprintf("%.0f", $tmp[4]);
+        }
 
-        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 5 );
+
+        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 11 );
 
         if ( !defined $rnaSeqLibraries{$libraryId} ){
             # Perform format checks
@@ -737,6 +756,8 @@ sub getGenesResults {
     # $expressionCalls{geneId}->{'estimatedCount'} = ...
     # $expressionCalls{geneId}->{'FPKM'} = ...
     # $expressionCalls{geneId}->{'TPM'} = ...
+    # $expressionCalls{$geneId}->{'zscore'} = ...
+    # $expressionCalls{$geneId}->{'pValue'} = ...
     # $expressionCalls{geneId}->{'biotype'} = ...
     # $expressionCalls{geneId}->{'expressionCall'} = ...
     my %expressionCalls;
@@ -745,14 +766,17 @@ sub getGenesResults {
     my $line = <$IN>;    #header
     while ( defined ($line = <$IN>) ){
         chomp $line;
-        # file format: geneId, estimatedCount, FPKM, TPM, biotype, expression call
+        # file format: geneId, tpm, counts, length, biotype, type, zscore, pvalue, expression call, fpkm
+
         my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
         my $geneId         = $tmp[0];
-        my $estimatedCount = $tmp[1];
-        my $TPM            = $tmp[2];
-        my $FPKM           = $tmp[3];
+        my $TPM            = $tmp[1];
+        my $estimatedCount = $tmp[2];
         my $biotype        = $tmp[4];
-        my $expressionCall = $tmp[5];
+        my $zscore         = $tmp[6];
+        my $pValue         = $tmp[7];
+        my $expressionCall = $tmp[8];
+        my $FPKM           = $tmp[9];
 
         if ( !defined $expressionCalls{$geneId} ){
             # Perform format checks
@@ -761,36 +785,45 @@ sub getGenesResults {
                 warn "Warning, wrong format for geneId [$geneId]\n";
                 $discarded = 1;
             }
+            if ( $TPM !~ /$floatingPointRegex/ || $TPM < 0 || $TPM > 1000000){
+                warn "Warning, wrong format for TPM [$TPM]\n";
+                $discarded = 1;
+            }
             if ( $estimatedCount !~ /$floatingPointRegex/ || $estimatedCount < 0 ){
                 warn "Warning, wrong format for estimatedCount [$estimatedCount]\n";
-                $discarded = 1;
-            }
-            if ( $FPKM !~ /$floatingPointRegex/ ){
-                warn "Warning, wrong format for FPKM [$FPKM]\n";
-                $discarded = 1;
-            }
-            if ( $TPM !~ /$floatingPointRegex/ ){
-                warn "Warning, wrong format for TPM [$TPM]\n";
                 $discarded = 1;
             }
             if ( $biotype eq '' ){
                 warn "Warning, wrong format for biotype [$biotype]\n";
                 $discarded = 1;
             }
+             if ( !($zscore =~ /$floatingPointRegex/ || $zscore eq 'NA') ){
+                warn "Warning, wrong format for zscore [$zscore]\n";
+                $discarded = 1;
+            }
+            if ( !( $pValue eq 'NA' || ($pValue =~ /$floatingPointRegex/ && $pValue >= 0 && $pValue <= 1) ) ){
+                warn "Warning, wrong format for pValue [$pValue]\n";
+                $discarded = 1;
+            }
             if ( $expressionCall ne 'absent' && $expressionCall ne 'present' ){
                 warn "Warning, wrong format for expressionCall [$expressionCall]\n";
                 $discarded = 1;
             }
-
+            if ( $FPKM !~ /$floatingPointRegex/ ){
+                warn "Warning, wrong format for FPKM [$FPKM]\n";
+                $discarded = 1;
+            }
             if ( $discarded ){
                 warn ' for gene: ', $geneId, "\n";
             }
             else {
-                $expressionCalls{$geneId}->{'estimatedCount'} = $estimatedCount;
-                $expressionCalls{$geneId}->{'FPKM'}           = $FPKM;
                 $expressionCalls{$geneId}->{'TPM'}            = $TPM;
-                $expressionCalls{$geneId}->{'expressionCall'} = $expressionCall;
+                $expressionCalls{$geneId}->{'estimatedCount'} = $estimatedCount;
                 $expressionCalls{$geneId}->{'biotype'}        = $biotype;
+                $expressionCalls{$geneId}->{'zscore'}         = $zscore;
+                $expressionCalls{$geneId}->{'pValue'}         = $pValue;
+                $expressionCalls{$geneId}->{'expressionCall'} = $expressionCall;
+                $expressionCalls{$geneId}->{'FPKM'}           = $FPKM;
             }
         }
         else {
@@ -826,6 +859,170 @@ sub getFeatureLength {
         close $IN;
     }
     return %featureLength;
+}
+
+# Julien Wollbrett, Feb. 2021
+# Read file containing mapping between RNA-Seq protocols and gene biotypes
+# for which absent calls does not have to be created
+# return a hash with a protocol name as key and an array of biotypes as value
+sub retrieveProtocolsToBiotypeExcludeAbsentCalls {
+    my %protocolToBiotypes = ();
+    my ($mappingProtocolToBiotypesFile) = @_;
+    for my $line ( read_file("$mappingProtocolToBiotypesFile", chomp=>1) ){
+        #skip the header
+        next  if ( $line =~ /^RNASeqProtocol/ or $line =~ /^\"RNASeqProtocol/ );
+        # RNASeqProtocol    biotypes_excluded_for_absent_calls
+        my @columns = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
+        my @biotypes = split(/,/, $columns[1]);
+
+        $protocolToBiotypes{$columns[0]} = \@biotypes;
+    }
+    return %protocolToBiotypes;
+}
+
+######################################################################################################
+######################################################################################################
+################################### FULL LENGTH scRNASEQ FUNCTIONS ###################################
+######################################################################################################
+######################################################################################################
+
+# TODO: homogenize columns of sample_info file from bulk and single cell in order to get libraries info from the same function
+# Retrieve information on libraries of full length RNASeq
+sub getAllFullLengthScRnaSeqLibrariesInfo {
+    my ($fullLengthScRnaSeqLibraryFile) = @_;
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'speciesId'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'organism'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'platform'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'libraryType'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'libraryInfo'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'readLength'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'uberonId'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'stageId'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'cellTypeId'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'sex'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'strain'} = ...
+
+    my @valid_platforms = ('Illumina HiSeq 2500', 'Illumina HiSeq 2000', 'Illumina MiSeq', 'NextSeq 500');
+
+    my @valid_protocols = ('Adapted_SMART_seq2', 'Fluidigm C1 instrument and Nextera XT protocol',
+        'NEBNext® Ultra™ DNA Library Prep Kit for Illumina®', 'SMARTer Ultra Low', 'SMART_seq', 'SMART_seq2');
+
+
+    my %fullLengthScRnaSeqLibrary;
+    for my $line ( read_file("$fullLengthScRnaSeqLibraryFile", chomp=>1) ){
+        next  if ( $line =~ /^#/ or $line =~ /^libraryId/ );
+        #libraryId  experimentId    cellTypeName    cellTypeId  speciesId   platform    protocol    protocolType    libraryType infoOrgan   stageId uberonId    sex strain  readLength  organism
+        my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
+
+        my $libraryId                       = $tmp[0];
+        my $experimentId                    = $tmp[1];
+        my $cellTypeId                      = $tmp[3];
+        my $speciesId                       = $tmp[4];
+        my $platform                        = $tmp[5];
+        my $protocol                        = $tmp[6];
+        my $libraryType                     = $tmp[8];
+        my $stageId                         = $tmp[10];
+        my $uberonId                        = $tmp[11];
+        my $sex                             = $tmp[12];
+        my $strain                          = $tmp[13];
+        my $readLength                      = $tmp[14];
+        my $organism                        = $tmp[15];
+
+        #TODO: change the annotation to fit authorized sex values in the DB ('not annotated','hermaphrodite','female','male','mixed','NA')
+        # it is ugly to have to manually modify the values in this script
+        if($sex eq "(Missing)") {
+            $sex = $Utils::NA_SEX;
+        }
+        if($sex eq "M") {
+            $sex = $Utils::MALE_SEX;
+        }
+
+        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 16 );
+
+        if ( !defined $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId} ){
+            # Perform format checks
+            my $discarded = 0;
+            if ( $libraryId eq '' ){
+                warn "Warning, wrong format for libraryId [$libraryId]\n";
+                $discarded = 1;
+            }
+            if ( $experimentId eq '' ){
+                warn "Warning, wrong format for experimentId [$experimentId]\n";
+                $discarded = 1;
+            }
+            if ( $speciesId eq '' ){
+                warn "Warning, wrong format for speciesId [$speciesId]\n";
+                $discarded = 1;
+            }
+            if ( $platform eq '' || all { $platform !~ /^$_/ } @valid_platforms ){
+                warn "Warning, wrong format for platform [$platform]\n";
+                $discarded = 1;
+            }
+            if ( $protocol eq '' || all { $protocol !~ /^$_/ } @valid_protocols ){
+                warn "Warning, wrong format for protocol [$protocol]\n";
+                $discarded = 1;
+            }
+            if ( $libraryType ne 'SINGLE' && $libraryType ne 'PAIRED' ){
+                warn "Warning, wrong format for libraryType [$libraryType]\n";
+                $discarded = 1;
+            }
+            #NOTE SRA may return float for read length because of read length variability
+            if ( $readLength ne '' && ($readLength !~ /$floatingPointRegex/ || $readLength < 0 ) ){
+                warn "Warning, wrong format for readLength [$readLength]\n";
+                $discarded = 1;
+            }
+            if ( $organism eq '' ){
+                warn "Warning, wrong format for organism [$organism]\n";
+                $discarded = 1;
+            }
+            if ( $cellTypeId eq '' ){
+                warn "Warning, wrong format for cellTypeId [$cellTypeId]\n";
+                $discarded = 1;
+            }
+            if ( $cellTypeId eq '' ){
+                warn "Warning, wrong format for cellTypeId [$cellTypeId]\n";
+                $discarded = 1;
+            }
+            if ( $stageId eq '' ){
+                warn "Warning, wrong format for stageId [$stageId]\n";
+                $discarded = 1;
+            }
+            if ( $uberonId eq '' ){
+                warn "Warning, wrong format for uberonId [$uberonId]\n";
+                $discarded = 1;
+            }
+            if ( $sex eq '' ){
+                warn "Warning, wrong format for sex [$sex]\n";
+                $discarded = 1;
+            }
+            if ( $strain eq '' ){
+                warn "Warning, wrong format for strain [$strain]\n";
+                $discarded = 1;
+            }
+
+            if ( $discarded ){
+                warn ' for experiment: ', $experimentId, ' - sample: ', $libraryId, ", sample discarded!\n";
+            }
+            else {
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'speciesId'}      = $speciesId;
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'organism'}       = $organism;
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'platform'}       = $platform;
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'protocol'}       = $protocol;
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'libraryType'}    = lc($libraryType);
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'readLength'}     = $readLength;
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'cellTypeId'}     = $cellTypeId;
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'stageId'}        = $stageId;
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'uberonId'}       = $uberonId;
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'sex'}            = $sex;
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'strain'}         = $strain;
+            }
+        }
+        else {
+            warn 'Warning: sample present several times in the library file: experiment: ', $experimentId, ' - sample: ', $libraryId, "\n";
+        }
+    }
+
+    return %fullLengthScRnaSeqLibrary;
 }
 
 1;

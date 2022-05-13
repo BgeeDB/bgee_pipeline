@@ -1,13 +1,14 @@
 PIPELINEROOT := ../
 DIR_NAME := ESTs/unigene/
 include $(PIPELINEROOT)Makefile.common
-DMEL_TAXID = 7227
+EST_SP_TAXID := 7227, 7955, 8364, 9606, 10090
 
 all: $(VERIFICATIONFILE)
 
 
 get_annot:
 	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations
+	@$(WGET) $(ANNOTATION_GIT_URL)/Strains/StrainMapping.tsv                                && $(MV) StrainMapping.tsv                            $(STRAIN_MAPPING_FILE)
 	@$(WGET) $(ANNOTATION_GIT_URL)/$(DIR_NAME)/species_EST_file.txt                         && $(MV) species_EST_file.txt                         $(SOURCE_FILES_DIR)/$(DIR_NAME)/species_EST_file.txt                         2>/dev/null  || rm -f species_EST_file.txt
 	@$(WGET) $(ANNOTATION_GIT_URL)/$(DIR_NAME)/annotation_libs_Drosophila_melanogaster.txt  && $(MV) annotation_libs_Drosophila_melanogaster.txt  $(SOURCE_FILES_DIR)/$(DIR_NAME)/annotation_libs_Drosophila_melanogaster.txt  2>/dev/null  || rm -f annotation_libs_Drosophila_melanogaster.txt
 	@$(WGET) $(ANNOTATION_GIT_URL)/$(DIR_NAME)/annotation_libs_Danio_rerio.txt              && $(MV) annotation_libs_Danio_rerio.txt              $(SOURCE_FILES_DIR)/$(DIR_NAME)/annotation_libs_Danio_rerio.txt              2>/dev/null  || rm -f annotation_libs_Danio_rerio.txt
@@ -16,25 +17,67 @@ get_annot:
 	@$(WGET) $(ANNOTATION_GIT_URL)/$(DIR_NAME)/annotation_libs_Xenopus_tropicalis.txt       && $(MV) annotation_libs_Xenopus_tropicalis.txt       $(SOURCE_FILES_DIR)/$(DIR_NAME)/annotation_libs_Xenopus_tropicalis.txt       2>/dev/null  || rm -f annotation_libs_Xenopus_tropicalis.txt
 	@$(WGET) $(ANNOTATION_GIT_URL)/ESTs/smirnadb/mapping_libs_smiRNAdb.csv                  && $(MV) mapping_libs_smiRNAdb.csv                    $(SOURCE_FILES_DIR)/ESTs/smirnadb/mapping_libs_smiRNAdb.csv                  2>/dev/null  || rm -f mapping_libs_smiRNAdb.csv
 	@$(WGET) $(ANNOTATION_GIT_URL)/ESTs/smirnadb/S.csv                                      && $(MV) S.csv                                        $(SOURCE_FILES_DIR)/ESTs/smirnadb/S.csv                                      2>/dev/null  || rm -f S.csv
+	@touch $@
 
 
-#FIXME When and how those files are used???
-unigene: get_annot $(EST_SPECIES_CURATION_FILEPATH) $(SPECIESFILEPATH)
+unigene: get_annot $(EST_SPECIES_CURATION_FILEPATH)
 	# Get species list from Bgee
-	@grep -P '^\d+' $(SPECIESFILEPATH) | cut -f2,3 --output-delimiter='_' | sed -e 's/ /_/g' >$@.temp
+	@$(MYSQL) -e "SELECT CONCAT(genus, '_', species) FROM species WHERE speciesId IN ($(EST_SP_TAXID))" | grep -v 'CONCAT' >$@.temp
 	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 2; fi
 	# Download UniGene species data set
 	-@for sp in `cat $@.temp`; do \
-		$(WGET) -nH -r --cut-dirs=2 -P $(TMPDIR)  ftp://ftp.ncbi.nih.gov/repository/UniGene/$$sp/*.data.gz; \
+		$(WGET) -nH -r --cut-dirs=3 -P $(SOURCE_FILES_DIR)/ESTs/  ftp://ftp.ncbi.nih.gov/repository/UniGene/$$sp/*.seq.uniq.gz; \
+		$(WGET) -nH -r --cut-dirs=3 -P $(SOURCE_FILES_DIR)/ESTs/  ftp://ftp.ncbi.nih.gov/repository/UniGene/$$sp/*.data.gz; \
 	done
-	# !!! NEED disk space to gunzip all those files !!! So gunzip only required ones later
-	@ln -fs $(TMPDIR)/*/*.data.gz .
+	# Xenopus tropicalis UniGene file follow the former species name, so rename it for patterns used later
+	@$(MV) $(SOURCE_FILES_DIR)/ESTs/Str.seq.uniq.gz $(SOURCE_FILES_DIR)/ESTs/Xt.seq.uniq.gz
+	@ln -fs $(SOURCE_FILES_DIR)/ESTs/*.data.gz .
 	@$(MV) $@.temp $@
 
 library.report:
 	# Download the latest version of library.report
 	@$(WGET) 'ftp://ftp.ncbi.nih.gov/repository/UniLib/library.report' -O $(SOURCE_FILES_DIR)/ESTs/$@.tmp && $(MV) $(SOURCE_FILES_DIR)/ESTs/$@.tmp $(SOURCE_FILES_DIR)/ESTs/$@ 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)/ESTs/$@.tmp
 	@touch $@
+
+ensembl_cdna:
+	# Get species list from Bgee
+	@$(MYSQL) -e "SELECT LOWER(CONCAT(genus, '_', species)) FROM species WHERE speciesId IN ($(EST_SP_TAXID))" | grep -v 'CONCAT' >$@.temp
+	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 2; fi
+	# Download all Ensembl cdna in fasta
+	-@for sp in `cat $@.temp`; do \
+		$(WGET) -nH -r --cut-dirs=5 -P $(SOURCE_FILES_DIR)/ESTs/  ftp://ftp.ensembl.org/pub/release-$(ENSRELEASE)/fasta/$$sp/cdna/*.cdna.all.fa.gz; \
+	done
+	# !!! NEED disk space to gunzip all those files !!! So gunzip only required ones later
+	-@for cdna in $(SOURCE_FILES_DIR)/ESTs/*.cdna.all.fa.gz; do \
+		base=$${cdna/**\//}; \
+		tr=`echo $$base | sed -e 's@\..*@@; s@^\(.\).*_@\L\1@'`; \
+		ln -fs $$cdna $${tr:0:4}.cdna.all.fa.gz; \
+	done
+	@$(MV) $@.temp $@
+
+#TODO use external mapping for all? Without Ensembl or through UniProt ???
+#TODO use better mapper than blastn! (blat, diamond, ???)
+#${cdna,} and ${sp:0:2} are valid bash variable manipulations!
+ensembl_mapping: ensembl_cdna unigene
+	# Test for BLAST+
+	@which makeblastdb
+	@which blastn
+	# Get species list from Bgee
+	@$(MYSQL) -e "SELECT CONCAT(SUBSTR(genus, 1, 1), species) FROM species WHERE speciesId IN ($(EST_SP_TAXID))" | grep -v 'CONCAT' >$@.temp
+	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 2; fi
+	# Prepare for mapping
+	-@for sp in `cat $@.temp`; do \
+		$(GUNZIP) --to-stdout $(SOURCE_FILES_DIR)/ESTs/$${sp:0:2}.seq.uniq.gz >$${sp:0:2}.seq.uniq; \
+		perl change_UniGene_headers.pl $${sp:0:2}.seq.uniq > $${sp:0:2}.seq.uniq_new_headers; \
+		export cdna=$${sp:0:4}; \
+		$(GUNZIP) --to-stdout $${cdna,}.cdna.all.fa.gz > $${cdna,}_raw; \
+		perl change_Ensembl_headers.pl $${cdna,}_raw > $${cdna,}_cdna; \
+		makeblastdb -dbtype nucl -input_type fasta -in $${cdna,}_cdna -out $${cdna,}_db -title $${cdna,}_db; \
+		blastn -dust no -outfmt 6 -db $${cdna,}_db -query $${sp:0:2}.seq.uniq_new_headers -num_threads 4 -evalue 1e-10 -out $${cdna,}_cdna.results; \
+		perl extract_results_for_all.pl $${cdna,}_cdna.results > $${cdna,}_mapping; \
+		$(RM) $${sp:0:2}.seq.uniq $${sp:0:2}.seq.uniq_new_headers $${cdna,}.cdna.all.fa.gz $${cdna,}_raw $${cdna,}_cdna $${cdna,}_db* $${cdna,}_cdna.results; \
+	done
+	@$(MV) $@.temp $@
 
 
 #NOTE This step is frozen because not updated this 2009
@@ -50,72 +93,46 @@ smiRNAdb: get_annot $(SMIRNADB_CURATION_MAPFILEPATH) $(SOURCE_FILES_DIR)/ESTs/sm
 	@cd $(SOURCE_FILES_DIR)/ESTs/smirnadb/; bunzip2 -f Report_*.csv.bz2
 	@touch $@
 
-
-dmel_cdna:
-	# Download all D. melanogaster cdna in fasta
-	@perl get_Dmel_cdna_fas.pl > $(SOURCE_FILES_DIR)/ESTs/$@
-	@touch $@
-
-dmel_mapping: dmel_cdna
-	# Test for BLAST+
-	@which makeblastdb
-	@which blastn
-	# Download Unigene D. melanogaster sequences
-	@$(WGET) 'ftp://ftp.ncbi.nih.gov/repository/UniGene/Drosophila_melanogaster/Dm.seq.uniq.gz' -O $(SOURCE_FILES_DIR)/ESTs/Dm.seq.uniq.gz.tmp && $(MV) $(SOURCE_FILES_DIR)/ESTs/Dm.seq.uniq.gz.tmp $(SOURCE_FILES_DIR)/ESTs/Dm.seq.uniq.gz 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)/ESTs/Dm.seq.uniq.gz.tmp
-	# Gunzip it
-	@$(GUNZIP) --to-stdout $(SOURCE_FILES_DIR)/ESTs/Dm.seq.uniq.gz >Dm.seq.uniq
-	# Change headers
-	@perl change_fasta_headers.pl Dm.seq.uniq > Dm.seq.uniq_new_headers
-	# Format blast db
-	@makeblastdb -dbtype nucl -input_type fasta -in $(SOURCE_FILES_DIR)/ESTs/$^ -out my_db -title my_db
-	# Blast
-	@blastn -dust no -outfmt 6 -db my_db -query Dm.seq.uniq_new_headers -num_threads 4 -evalue 1e-10 -out dmel_cdna.results
-	# Extract results
-	@perl extract_results.pl dmel_cdna.results > $@
-
-
-miRNA.dat:
+miRNA.dat: smiRNAdb
 	# Get miRNA.dat file
 	@$(WGET) 'ftp://mirbase.org/pub/mirbase/CURRENT/miRNA.dat.gz' -O $(SOURCE_FILES_DIR)/ESTs/$@.gz.tmp && $(MV) $(SOURCE_FILES_DIR)/ESTs/$@.gz.tmp $(SOURCE_FILES_DIR)/ESTs/$@.gz 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)/ESTs/$@.gz.tmp
 	@$(GUNZIP) --to-stdout $(SOURCE_FILES_DIR)/ESTs/$@.gz > $@
 
 
-#TODO problems with for loop and ID MAPPINGs. Fixed with mappers killed ???
-EST: library.report unigene dmel_mapping $(EST_SPECIES_CURATION_FILEPATH) $(UBERON_SEX_INFO_FILE_PATH)
+#NOTE only speciesId from species with EST annotation files are listed here
+EST: library.report unigene ensembl_mapping $(EST_SPECIES_CURATION_FILEPATH) $(UBERON_SEX_INFO_FILE_PATH)
 	# Insert ESTs info in Bgee
-	@$(MYSQL) -e "SELECT speciesId FROM species WHERE speciesId != $(DMEL_TAXID) ORDER BY speciesId" | grep -v 'speciesId' >$@.temp
+	@$(MYSQL) -e "SELECT speciesId FROM species WHERE speciesId IN ($(EST_SP_TAXID))" | grep -v 'speciesId' >$@.temp
 	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 3; fi
 	@for sp in `cat $@.temp`; do \
-		$(IDMAPPING)  $(IDMAPPINGPORT) & \
-		$(STGMAPPING) $(STGMAPPINGPORT) & \
-		sleep 10; \
-		perl insert_est.pl -species=$$sp -bgee=$(BGEECMD) -ensembl=$(ENSCMD) -Aport=$(IDMAPPINGPORT) -Sport=$(STGMAPPINGPORT) -ESTspecies=$(EST_SPECIES_CURATION_FILEPATH) -libReport=$(SOURCE_FILES_DIR)/ESTs/library.report -sex_info=$(UBERON_SEX_INFO_FILE_PATH) >> $@.temp 2>> warnings.$@; \
+		echo $$sp; \
+		$(IDMAPPING)  $(IDMAPPINGPORT) &; \
+		$(STGMAPPING) $(STGMAPPINGPORT) &; \
+		sleep 50; \
+		perl insert_est.pl -species=$$sp -bgee=$(BGEECMD) -Aport=$(IDMAPPINGPORT) -Sport=$(STGMAPPINGPORT) -ESTspecies=$(EST_SPECIES_CURATION_FILEPATH) -libReport=$(SOURCE_FILES_DIR)/ESTs/library.report -sex_info=$(UBERON_SEX_INFO_FILE_PATH) >> $@.temp 2>> warnings.$@; \
 	done
-	# Insert ESTs info in Bgee for Drosophila melanogaster (external mapping file)
-	@$(IDMAPPING)  $(IDMAPPINGPORT) &
-	@$(STGMAPPING) $(STGMAPPINGPORT) &
-	@sleep 10
-	@perl insert_est.pl -species=$(DMEL_TAXID) -bgee=$(BGEECMD) -ensembl=$(ENSCMD) -Aport=$(IDMAPPINGPORT) -Sport=$(STGMAPPINGPORT) -ESTspecies=$(EST_SPECIES_CURATION_FILEPATH) -libReport=$(SOURCE_FILES_DIR)/ESTs/library.report -mapping=dmel_mapping -sex_info=$(UBERON_SEX_INFO_FILE_PATH) >> $@.temp 2>> warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.temp $@
 
 
 #TODO problems with for loop and ID MAPPINGs. Fixed with mappers killed ???
-#miRNA_est: miRNA.dat $(SMIRNADB_CURATION_MAPFILEPATH) smiRNAdb
+#NOTE only speciesId from species with miRNA annotation files are listed here
 miRNA_est: miRNA.dat $(SMIRNADB_CURATION_MAPFILEPATH) $(UBERON_SEX_INFO_FILE_PATH)
 	# Insert miRNA ESTs
-	@$(MYSQL) -e "SELECT speciesId FROM species ORDER BY speciesId" | grep -v 'speciesId' >$@.temp
+	@$(MYSQL) -e "SELECT speciesId FROM species WHERE speciesId IN (7227, 7955, 9606, 10090)" | grep -v 'speciesId' >$@.temp
 	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 4; fi
 	@for sp in `cat $@.temp`; do \
-		$(IDMAPPING)  $(IDMAPPINGPORT) & \
-		$(STGMAPPING) $(STGMAPPINGPORT) & \
-		sleep 10; \
+		echo $$sp; \
+		$(IDMAPPING)  $(IDMAPPINGPORT) &; \
+		$(STGMAPPING) $(STGMAPPINGPORT) &; \
+		sleep 50; \
 		perl insert_miRNA_est.pl -species=$$sp -bgee=$(BGEECMD) -Aport=$(IDMAPPINGPORT) -Sport=$(STGMAPPINGPORT) -smiRNAdb=$(SMIRNADB_CURATION_MAPFILEPATH) -miRNA=miRNA.dat -sex_info=$(UBERON_SEX_INFO_FILE_PATH) >> $@.temp 2>> warnings.$@; \
 	done
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.temp $@
 
 
+#TODO redo this query without estLibraryCallQuality but with pValues!!!
 TMP_TABLE_CLAUSE   := SELECT t10.expressionId, IF((SELECT COUNT(estLibraryId) FROM estLibraryExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.estLibraryCallQuality = 'high quality') >= 2, 'pstGold', IF((SELECT COUNT(estLibraryId) FROM estLibraryExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.estLibraryCallQuality = 'high quality') = 1, 'pstSilverFromHigh', IF((SELECT COUNT(estLibraryId) FROM estLibraryExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.estLibraryCallQuality = 'poor quality') >= 2, 'pstSilverFromLow', IF((SELECT COUNT(estLibraryId) FROM estLibraryExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.estLibraryCallQuality = 'poor quality') = 1, 'pstBronze', 'IMPOSSIBLE')))) AS expressionCall FROM estLibraryExpression AS t10
 
 check_conditions: EST miRNA_est
@@ -157,8 +174,8 @@ $(VERIFICATIONFILE): EST miRNA_est check_conditions expression_est
 	@$(GIT) push
 
 clean:
-	-@$(RM) -R $(VERIFICATIONFILE) *.data S.xls Report_*.csv.bz2 Dm.seq.uniq* Dm.seq.uniq_new_headers* my_db* dmel_cdna.results* \
-		dmel_cdna dmel_mapping $(TMPDIR)* EST miRNA.dat check_conditions expression_est miRNA_est species *.temp smiRNAdb *.tmp unigene warnings.*
+	-@$(RM) -R $(VERIFICATIONFILE) *.data *.data.gz S.xls Report_*.csv.bz2 Dm.seq.uniq* Dm.seq.uniq_new_headers* my_db* *_cdna.results* \
+		*_cdna ensembl_mapping EST miRNA.dat check_conditions expression_est miRNA_est species *.temp smiRNAdb *.tmp unigene warnings.*
 	-@$(GIT) rm $(VERIFICATIONFILE)
 	-@$(GIT) commit $(VERIFICATIONFILE) -m "Removing verification file for ESTs/miRNA"
 	@$(GIT) push

@@ -1,0 +1,49 @@
+speciesDisplayOrder	IF(speciesCommonName IS NOT NULL AND speciesCommonName != '',
+           speciesCommonName, CONCAT(genus, ' ', species))	speciesDisplayOrder
+1	human	1
+2	mouse	2
+3	zebrafish	3
+4	fruit fly	4
+5	nematode	5
+6	chimpanzee	6
+7	bonobo	7
+8	gorilla	8
+9	macaque	9
+10	rat	10
+11	cattle	11
+12	pig	12
+13	horse	13
+14	rabbit	14
+15	dog	15
+16	cat	16
+17	guinea pig	17
+18	hedgehog	18
+19	opossum	19
+20	platypus	20
+21	chicken	21
+22	green anole	22
+23	western clawed frog	23
+24	Drosophila ananassae	24
+25	Drosophila mojavensis	25
+26	Drosophila pseudoobscura	26
+27	Drosophila simulans	27
+28	Drosophila virilis	28
+29	Drosophila yakuba	29
+speciesId	genus	species	speciesCommonName	speciesDisplayOrder	taxonId	genomeFilePath	genomeVersion	dataSourceId	genomeSpeciesId
+9365	Erinaceus	europaeus	hedgehog	18	9364	erinaceus_europaeus/Erinaceus_europaeus.HEDGEHOG	eriEur1	2	0
+9544	Macaca	mulatta	macaque	9	9539	macaca_mulatta/Macaca_mulatta.MMUL_1	MMUL 1.0	2	0
+9593	Gorilla	gorilla	gorilla	8	9592	gorilla_gorilla/Gorilla_gorilla.gorGor3.1	gorGor3.1	2	0
+9597	Pan	paniscus	bonobo	7	9596	pan_troglodytes/Pan_troglodytes.CHIMP2.1.4	CHIMP2.1.4	2	9598
+9598	Pan	troglodytes	chimpanzee	6	9596	pan_troglodytes/Pan_troglodytes.CHIMP2.1.4	CHIMP2.1.4	2	0
+9606	Homo	sapiens	human	1	9605	homo_sapiens/Homo_sapiens.GRCh38	GRCh38.p5	2	0
+9615	Canis	lupus familiaris	dog	15	9612	canis_familiaris/Canis_familiaris.CanFam3.1	CanFam3.1	2	0
+9685	Felis	catus	cat	16	9682	felis_catus/Felis_catus.Felis_catus_6.2	Felis_catus_6.2	2	0
+9796	Equus	caballus	horse	13	35510	equus_caballus/Equus_caballus.EquCab2	Equ Cab 2	2	0
+9823	Sus	scrofa	pig	12	9822	sus_scrofa/Sus_scrofa.Sscrofa10.2	Sscrofa10.2	2	0
+9913	Bos	taurus	cattle	11	9903	bos_taurus/Bos_taurus.UMD3.1	UMD3.1	2	0
+9986	Oryctolagus	cuniculus	rabbit	14	9984	oryctolagus_cuniculus/Oryctolagus_cuniculus.OryCun2.0	OryCun2.0	2	0
+10090	Mus	musculus	mouse	2	862507	mus_musculus/Mus_musculus.GRCm38	GRCm38.p4	2	0
+10116	Rattus	norvegicus	rat	10	10114	rattus_norvegicus/Rattus_norvegicus.Rnor_6.0	Rnor_6.0	2	0
+10141	Cavia	porcellus	guinea pig	17	10140	cavia_porcellus/Cavia_porcellus.cavPor3	cavPor3	2	0
+data group count	species in data group count	download file count
+29	29	188

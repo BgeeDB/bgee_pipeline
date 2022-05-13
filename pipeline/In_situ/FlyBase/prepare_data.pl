@@ -77,7 +77,9 @@ print join("\t", '#data_source', qw(inSituExperimentId  inSituEvidenceId  organI
 SPOT:
 for my $line ( 0..$#{$tsv{'feid'}} ){
     next  if ( $tsv{'assay'}[$line]            ne 'in situ' );
-    next  if ( $tsv{'molecule_assayed'}[$line] ne 'mRNA' ); # Remove molecule_assayed = protein for now because protein can be extracted, translocated in the whole organism
+    #NOTE don't know why everything was mRNA, and now new stuff looks to be RNA!
+    #Remove molecule_assayed = protein/polypeptide for now because protein can be extracted, translocated in the whole organism
+    next  if ( $tsv{'molecule_assayed'}[$line] ne 'mRNA' && $tsv{'molecule_assayed'}[$line] ne 'RNA' );
 
     $seen{ $tsv{'pub_ref'}[$line] }++;
 

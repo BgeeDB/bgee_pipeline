@@ -13,8 +13,8 @@ backup_previous_data:
 	#XXX Is this directory used anymore?
 	@cd $(RNASEQBIOCONDUCTORDIFF);              let PREV=$(RELEASE)-1; if [[ ! -e bgee_v$$PREV.tar.gz ]]; then tar cf bgee_v$$PREV.tar --exclude=bgee_v$$PREV.tar --exclude=*.gz *; gzip -9 bgee_v$$PREV.tar; rm -Rf *[^gz]; fi
 	@cd $(RNASEQBIOCONDUCTORTARG_DEVANDANAT);   let PREV=$(RELEASE)-1; if [[ ! -e bgee_v$$PREV.tar.gz ]]; then tar cf bgee_v$$PREV.tar --exclude=bgee_v$$PREV.tar --exclude=*.gz *; gzip -9 bgee_v$$PREV.tar; rm -Rf *[^gz]; fi
-	# Rsync files for backup on 'bigbgee' (see wiki for password)
-	@echo -e "\t\e[1m\e[37m\e[41mRsync files in '$(AFFYDATAPATH) | $(RNASEQDATAPATH) '\n bigbgee machine!\e[m\n"
+	# Rsync files for backup on sensitive cluster (see wiki for password)
+	@echo -e "\t\e[1m\e[37m\e[41mRsync files in '$(AFFYDATAPATH) | $(RNASEQDATAPATH) '\n sensitive machine!\e[m\n"
 	@rsync -av --del -f "- /lost+found" --exclude=.svn --exclude=.git $(AFFYDATAPATH)    $(DATALOGIN)@$(DATAHOST):$(DATAPATH)/Affymetrix/   >  $@.tmp
 	@rsync -av --del -f "- /lost+found" --exclude=.svn --exclude=.git $(RNASEQDATAPATH)  $(DATALOGIN)@$(DATAHOST):$(DATAPATH)/rna_seq/     >>  $@.tmp
 	@$(MV) $@.tmp $@

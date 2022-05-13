@@ -4,15 +4,16 @@
 ## SFonsecaCosta Sep 17, 2019
 ## Re-calculate TPM and FPKM in sum_by_species!
 ## Instead of sum all est_counts, TPM and FPKM across all libraries from the same specie at gene level, here we sum the est_counts of all libraries at transcript level
-## Followed be the recalculation of eff_length by weighted.mean, and then the TPM and FPKM are recalculated at transcript level 
+## Followed be the recalculation of eff_length by weighted.mean, and then the TPM and FPKM are recalculated at transcript level
 ## In the end the information is provided again at gene level (after sum the est_counts, TPM and FPKM from transcriptID that belong to the same geneID).
 
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args rna_seq_sample_info="rna_seq_sample_info.txt" rna_seq_sample_excluded="rna_seq_sample_excluded.txt" kallisto_count_folder="all_results_bgee_v14" sum_by_species_folder="$(RNASEQ_VITALIT_SUM_RES)"' rna_seq_sum_by_species.R rna_seq_sum_by_species.Rout
+## R CMD BATCH --no-save --no-restore '--args rna_seq_sample_info="rna_seq_sample_info.txt" rna_seq_sample_excluded="rna_seq_sample_excluded.txt" kallisto_count_folder="all_results_bgee_v15" tx2gene_folder="path/to/folder/" sum_by_species_folder="$(RNASEQ_CLUSTER_SUM_RES)"' rna_seq_sum_by_species.R rna_seq_sum_by_species.Rout
 ## rna_seq_sample_info     - file with info on mapped libraries
 ## rna_seq_sample_excluded - file with excluded libraries
 ## kallisto_count_folder   - path to kallisto result folder
+## tx2gene_folder          - path to tx2gene folder
 ## sum_by_species_folder   - folder where to export the plots, summed data, and classification of coding / intergenic regions
 
 ## Session info
@@ -31,7 +32,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed in command line
-command_arg <- c("rna_seq_sample_info", "rna_seq_sample_excluded", "kallisto_count_folder", "sum_by_species_folder")
+command_arg <- c("rna_seq_sample_info", "rna_seq_sample_excluded", "kallisto_count_folder", "tx2gene_folder", "sum_by_species_folder")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -45,7 +46,6 @@ if( file.exists(rna_seq_sample_info) ){
 } else {
   stop( paste("rna_seq_sample_info.txt file not found [", rna_seq_sample_info, "]\n"))
 }
-print(dim(sampleInfo))
 
 ## Remove excluded libraries from sample info file (mapping failed, or bad quality)
 if( file.exists(rna_seq_sample_excluded) ){
@@ -55,48 +55,70 @@ if( file.exists(rna_seq_sample_excluded) ){
 } else {
   warning( paste("rna_seq_sample_excluded.txt file not found [", rna_seq_sample_excluded, "]\n"))
 }
-print(dim(sampleInfo))
 
 ###############################################################################
 ## Loop across species and sum the expression across libraries
 
+## create files number_libraries.txt and gaussian_choice_by_species_TO_FILL.txt
+number_libraries_file <- file.path(sum_by_species_folder, "number_libraries.txt")
+gaussian_choice_file <- file.path(sum_by_species_folder, "gaussian_choice_by_species_TO_FILL.txt")
+file.create(number_libraries_file)
+file.create(gaussian_choice_file)
 ## write header of file number_libraries.txt
-cat("speciesId\tspeciesName\tnumberLibrariesUsed\tnumberLibraries\n", file = paste0(sum_by_species_folder, "/number_libraries.txt"), sep = "\t")
+cat("speciesId\tspeciesName\tnumberLibrariesUsed\tnumberLibraries\n", file = number_libraries_file, sep = "\t")
 ## write header of file gaussian_choice_by_species.txt
-cat("speciesId\torganism\tnumberGaussiansCoding\tnumberGaussiansIntergenic\tselectedGaussianCoding\tselectionSideCoding\tselectedGaussianIntergenic\tselectionSideIntergenic\tcomment\tannotatorId\n", file = paste0(sum_by_species_folder, "/gaussian_choice_by_species_TO_FILL.txt"), sep = "\t")
+cat("speciesId\tnumberGaussiansCoding\tnumberGaussiansIntergenic\tselectedGaussianCoding\tselectionSideCoding\tselectedGaussianIntergenic\tselectionSideIntergenic\tcomment\tannotatorId\n", 
+    file = gaussian_choice_file, sep = "\t")
 
 for(species in unique(sampleInfo$speciesId)){
   cat(paste0("\nSumming data for ", as.character(unique(sampleInfo$organism[sampleInfo$speciesId == species])), " (species ID: ", species,")\n"))
   numLibs = 0
-  
-  raw_counts_info <- c()
-  effec_length_info <- c()
-  
+
+  ## read tx2gene folder
+  tx2gene_file <- paste0(basename(as.character(sampleInfo$genomeFilePath[sampleInfo$speciesId == species][1])),".tx2gene")
+  tx2gene <- read.table(file = file.path(tx2gene_folder, tx2gene_file), header = TRUE, sep = "\t")
+  colnames(tx2gene) <- c("target_id", "gene_id")
+  gene2biotype_file <- paste0(basename(as.character(sampleInfo$genomeFilePath[sampleInfo$speciesId == species][1])),".gene2biotype")
+  gene2biotype <- read.table(file = file.path(tx2gene_folder, gene2biotype_file), header = TRUE, sep = "\t")
+  tx2gene <- merge(tx2gene, gene2biotype, by.x = "gene_id", by.y = "id")
+  # create template of data.frame that will contain summed counts and ponderated mean of eff_length
+  firstLibId <- sampleInfo[sampleInfo$speciesId == species,][1,1]
+  summed <- read.table(file = file.path(kallisto_count_folder, firstLibId, "/abundance.tsv"), header = TRUE, sep = "\t")
+  summed <- merge(x = summed , y = tx2gene, by = "target_id")
+  #sanity check that transcript are always in the same order in abundance files
+  summed <- summed[order(summed$target_id),]
+  ## detect number of transcripts and number of libraries to create matrix with proper size
+  number_transcripts <- nrow(summed)
+  numberLib <- nrow(sampleInfo[sampleInfo$speciesId == species,])
+  # create data frame at proper size in order not to add new columns for each library
+  effec_length_info <- as.data.frame(matrix(nrow=number_transcripts, ncol=numberLib))
+  raw_counts_info <- as.data.frame(matrix(nrow=number_transcripts, ncol=numberLib))
   for(libraryId in sampleInfo$libraryId[sampleInfo$speciesId == species]){
     ## For each library use the file at transcriptID level
-    file <- paste0(kallisto_count_folder, "/", libraryId, "/abundance+gene_id+fpkm+intergenic.tsv")
-    
+    file <- file.path(kallisto_count_folder, libraryId, "abundance.tsv")
     if (file.exists(file)){
       cat("  Reading the ", libraryId, "\n")
       numLibs = numLibs + 1
       ## read transcript level data for each library
-      kallisto_transcrip_counts <- read.table(file, h=T, sep="\t")
-      raw_counts_info <- cbind(raw_counts_info, kallisto_transcrip_counts$est_counts)
-      effec_length_info <- cbind(effec_length_info, kallisto_transcrip_counts$eff_length)
+      kallisto_transcript_current <- read.table(file, h=T, sep="\t")
+      #sanity check that transcript are always in the same order in abundance files
+      kallisto_transcript_current <- kallisto_transcript_current[order(kallisto_transcript_current$target_id),]
+      raw_counts_info[,numLibs] <- kallisto_transcript_current$est_counts
+      effec_length_info[,numLibs] <- kallisto_transcript_current$eff_length
     } else {
-      cat("  No data found from", libraryId, "\n")
+      stop("  No data found from", libraryId, "\n")
     }
   }
   
   if (numLibs == 1){
     ## provide output directly from gene level
     file2 <- paste0(kallisto_count_folder,"/", libraryId, "/abundance_gene_level+fpkm+intergenic.tsv")
-    kallisto_transcrip_counts <- read.table(file2, h=T, sep="\t")
-    summed <- kallisto_transcrip_counts
+    summed <- read.table(file2, h=T, sep="\t")
+    # add mapping of gene and 
   } else {
-    summed <- c()
     ## sum the raw counts for all libraries
-    summed$counts <- apply(raw_counts_info, 1, sum)
+    summed$est_counts <- apply(raw_counts_info, 1, sum)
+
     ## calculate effect_length for each transcript by using weighted.mean...
     calculate_effect_length <- function(counts, effec_length){
       myWeightedMean <- c()
@@ -113,35 +135,33 @@ for(species in unique(sampleInfo$speciesId)){
         } else {
           weightedMean <-  weighted.mean(x=raw_effeclength[,i], w=rawcounts[,i])
           myWeightedMean[i] <- weightedMean
-        }       
+        }
       }
       return(myWeightedMean)
     }
     ## each row is the weighted.mean of eff_length for each transcriptID
-    summed$eff_length <- as.data.frame(calculate_effect_length(raw_counts_info, effec_length_info))
-    
+    summed$eff_length <- as.numeric(as.character(calculate_effect_length(raw_counts_info, effec_length_info)))
+
+    # calculate effect_length for each transcript by using weighted.mean...
     ## re-calculate TPM and FPKM after collect the weighted.mean of eff_length for each transcriptID and after sum the est_count for each transcriptID
     estCount_to_tpm <- function(est_count, effec_length){
       rate <- log(est_count) - log(effec_length)
       denom <- log(sum(exp(rate)))
       exp(rate - denom + log(1e6))
     }
-    summed$tpm <- estCount_to_tpm(summed$counts, summed$eff_length) 
+    summed$tpm <- as.numeric(as.character(estCount_to_tpm(summed$est_counts, summed$eff_length)))
     
     estCount_to_fpkm <- function(est_count, effec_length){
       N <- sum(est_count)
       exp( log(est_count) + log(1e9) - log(effec_length) - log(N) )
     }
-    summed$fpkm <- estCount_to_fpkm(summed$counts, summed$eff_length) 
-    
-    summed <- data.frame(kallisto_transcrip_counts$target_id, kallisto_transcrip_counts$gene_id, kallisto_transcrip_counts$length, summed$eff_length, summed$counts, summed$tpm, summed$fpkm, kallisto_transcrip_counts$type, kallisto_transcrip_counts$biotype)
-    colnames(summed) <- c("target_id", "gene_id", "length", "eff_length", "est_counts","tpm", "fpkm", "type", "biotype")
-    
+    summed$fpkm <- as.numeric(as.character(estCount_to_fpkm(summed$est_counts, summed$eff_length)))
+   
     ## select intergenic regions
-    intergenic_regions <- summed[summed$type == "intergenic", c(1, 5, 6, 7, 8, 9)]
+    intergenic_regions <- summed[summed$type == "intergenic", c("target_id", "est_counts", "tpm", "fpkm", "type", "biotype")]
     names(intergenic_regions)[1] <- "gene_id"
     ## Sum est_counts, TPM and FPKM for genic regions
-    sumGenic <- summed[summed$type == "genic", c(2, 5, 6, 7, 8, 9)]
+    sumGenic <- summed[summed$type == "genic", c("gene_id", "est_counts", "tpm", "fpkm", "type", "biotype")]
     sumGenic <- aggregate(sumGenic[,2:4], list(sumGenic$gene_id), sum)
     names(sumGenic)[1] <- "gene_id"
     sumGenic$type <-  rep("genic", times=length(sumGenic$gene_id))
@@ -150,11 +170,11 @@ for(species in unique(sampleInfo$speciesId)){
     sumGenic$biotype <- select_biotype_genic$biotype
     ## Final Table with genic and intergenic information
     summed <- rbind(sumGenic, intergenic_regions)
- }
- 
+  }
   ## Export number of libraries (and total number of libraries for this species) used in this species
-  cat(c(species, as.character(unique(sampleInfo$organism[sampleInfo$speciesId == species])), numLibs, paste0(length(sampleInfo$libraryId[sampleInfo$speciesId == species]), "\n")), file = paste0(sum_by_species_folder, "/number_libraries.txt"), sep = "\t", append = TRUE)
-  
+  cat(c(species, as.character(unique(sampleInfo$organism[sampleInfo$speciesId == species])), numLibs, paste0(length(sampleInfo$libraryId[sampleInfo$speciesId == species]), "\n")), 
+      file = number_libraries_file, sep = "\t", append = TRUE)
+ 
   ## if no library ws found for this species
   if (numLibs == 0){
     cat("  No library found for this species, skipping it.")
@@ -252,6 +272,7 @@ for(species in unique(sampleInfo$speciesId)){
   ## open PDF device
   pdf(file = paste0(sum_by_species_folder, "/distribution_TPM_genic_intergenic_sum_deconvolution_", species, ".pdf"), width = 6, height = 5)
   
+  set.seed(123)
   ## Coding regions
   mod1 = densityMclust(log2(summed_filtered$tpm[summed_filtered$biotype %in% "protein_coding"]))
   plot(mod1, what = "BIC")
@@ -277,18 +298,20 @@ for(species in unique(sampleInfo$speciesId)){
   ## Normalize density for number of observations
   dens_coding$y <- dens_coding$y * sum(summed_filtered$biotype %in% "protein_coding") / length(summed_filtered$tpm)
   lines(dens_coding, col="firebrick3", lwd=2, lty=2)
+  
   ## Sub-distributions
-  for (i in 1:mod1$G){
-    ## if any point classified
-    if (sum(mod1$classification == i) >= 2){
-      dens_coding_sub <- density(log2(summed_filtered$tpm[summed_filtered$biotype %in% "protein_coding"][mod1$classification == i]))
-      ## y-axis scaling
-      dens_coding_sub$y <- dens_coding_sub$y * length(summed_filtered$tpm[summed_filtered$biotype %in% "protein_coding"][mod1$classification == i]) / length(summed_filtered$tpm)
-      lines(dens_coding_sub, col=paste0("grey", trunc(100/(mod1$G+1))*i), lwd=2, lty=2)
-      ## Print gaussian number on plot: at location of max value of gaussian (italics)
-      text(dens_coding_sub$x[dens_coding_sub$y == max(dens_coding_sub$y)], 0.005, labels = i, col=paste0("grey", trunc(100/(mod1$G+1))*i), font=3)
-    }
-  }
+  # for (i in 1:mod1$G){
+  #   ## if any point classified
+  #   if (sum(mod1$classification == i) >= 2){
+  #     dens_coding_sub <- density(log2(summed_filtered$tpm[summed_filtered$biotype %in% "protein_coding"][mod1$classification == i]))
+  #     ## y-axis scaling
+  #     dens_coding_sub$y <- dens_coding_sub$y * length(summed_filtered$tpm[summed_filtered$biotype %in% "protein_coding"][mod1$classification == i]) / length(summed_filtered$tpm)
+  #     lines(dens_coding_sub, col=paste0("grey", trunc(100/(mod1$G+1))*i), lwd=2, lty=2)
+  #     ## Print gaussian number on plot: at location of max value of gaussian (italics)
+  #     text(dens_coding_sub$x[dens_coding_sub$y == max(dens_coding_sub$y)], 0.005, labels = i, col=paste0("grey", trunc(100/(mod1$G+1))*i), font=3)
+  #   }
+  # }
+  
   ## intergenic
   dens_intergenic <- density(log2(summed_filtered$tpm[summed_filtered$type == "intergenic"]))
   dens_intergenic$y <- dens_intergenic$y * sum(summed_filtered$type == "intergenic") / length(summed_filtered$tpm)
@@ -317,7 +340,7 @@ for(species in unique(sampleInfo$speciesId)){
   write.table(summed, file = paste0(sum_by_species_folder, "/sum_abundance_gene_level+fpkm+intergenic+classification_", species, ".tsv"), quote = FALSE, sep = "\t", col.names = TRUE, row.names = FALSE)
   
   ## Export file with speciesId and number of coding and intergenic gaussians (to be filled manually with selected gaussians)
-  cat(paste0(species, "\t", mod1$G, "\t", mod2$G, "\n"), file = paste0(sum_by_species_folder, "/gaussian_choice_by_species_TO_FILL.txt"), sep = "\t", append=T)
+  cat(paste0(species, "\t", mod1$G, "\t", mod2$G, "\n"), file = gaussian_choice_file, sep = "\t", append=T)
   
   rm(summed)
   rm(summed_filtered)

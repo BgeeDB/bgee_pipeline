@@ -10,7 +10,7 @@
 460	MmusDv:0000022	EMAPA:16191	Mouse notochord 9.5 d.p.c.
 431	MmusDv:0000036	MA:0002405	Soares mouse p3NMF19.5
 483	MmusDv:0000110	MA:0000411	Stratagene mouse testis (#937308)
-482	MmusDv:0000048	MA:0000368	Stratagene mouse kidney (#937315)
+482	MmusDv:0000149	MA:0000368	Stratagene mouse kidney (#937315)
 496	MmusDv:0000110	MA:0001904	Stratagene mouse diaphragm (#937303)
 498	MmusDv:0000110	MA:0000151	Stratagene mouse skin (#937313)
 509	MmusDv:0000028	EMAPA:16105	Stratagene mouse heart (#937316)
@@ -23,22 +23,22 @@
 547	MmusDv:0000017	EMAPA:16039	Beddington mouse embryonic region
 551	MmusDv:0000041	MA:0000411	Mouse ICR testis (J.Tsuchida)
 593	MmusDv:0000027	EMAPA:16039	Soares mouse 3NME12 5
-605	MmusDv:0000050	MA:0000415	Barstead mouse lung MPLRB2
+605	MmusDv:0000151	MA:0000415	Barstead mouse lung MPLRB2
 563	MmusDv:0000041	MA:0000198	Mouse cerebellum library
 609	MmusDv:0000041	MA:0002405	Barstead mouse pooled organs MPLRB4
-553	MmusDv:0000048	MA:0000141	Soares mouse 3NbMS
+553	MmusDv:0000149	MA:0000141	Soares mouse 3NbMS
 598	MmusDv:0000041	MA:0000358	Soares mouse NML
-539	MmusDv:0000050	MA:0000368	Barstead MPLRB1
-613	MmusDv:0000050	MA:0000072	Barstead mouse heart MPLRB3
+539	MmusDv:0000151	MA:0000368	Barstead MPLRB1
+613	MmusDv:0000151	MA:0000072	Barstead mouse heart MPLRB3
 572	MmusDv:0000041	MA:0000185	Mouse cortex library
 627	MmusDv:0000041	MA:0000170	Mouse forebrain library
 592	MmusDv:0000036	MA:0000368	GuayWoodford Beier mouse kidney day 0
 596	MmusDv:0000036	MA:0000368	GuayWoodford Beier mouse kidney day 7
 638	MmusDv:0000110	MA:0000176	cDNA selection products from df region of MMU11
-567	MmusDv:0000048	MA:0000139	Soares mouse lymph node NbMLN
+567	MmusDv:0000149	MA:0000139	Soares mouse lymph node NbMLN
 844	MmusDv:0000017	EMAPA:16072	Knowles Solter mouse 7 5dpc primitive streak
 845	MmusDv:0000026	EMAPA:16039	Ko mouse embryo 11 5dpc
-855	MmusDv:0000048	MA:0000072	Soares mouse NbMH
+855	MmusDv:0000149	MA:0000072	Soares mouse NbMH
 856	MmusDv:0000017	EMAPA:16059	Mouse 7.5 dpc embryo ectoplacental cone cDNA library
 862	MmusDv:0000005	EMAPA:16036	Knowles Solter mouse 2 cell
 871	MmusDv:0000006	EMAPA:16037	Knowles Solter mouse 8 cell
@@ -112,35 +112,35 @@
 1911	MmusDv:0000029	EMAPA:16846	Mus musculus liver C57BL/6J 14-day embryo
 1912	MmusDv:0000110	MA:0000411	Mus musculus testis C57BL/6J adult
 1913	MmusDv:0000019	EMAPA:16039	Mus musculus C57BL/6J 8-day embryo
-1929	MmusDv:0000112	MA:0000198	NIH_BMAP_MCE
-1930	MmusDv:0000112	MA:0000198	NIH_BMAP_MCE_N
-1931	MmusDv:0000112	MA:0000169	NIH_BMAP_MBS
-1932	MmusDv:0000112	MA:0000169	NIH_BMAP_MBS_N
-1933	MmusDv:0000112	MA:0000194	NIH_BMAP_MOB
-1934	MmusDv:0000112	MA:0000194	NIH_BMAP_MOB_N
-1935	MmusDv:0000112	MA:0000173	NIH_BMAP_MHY
-1936	MmusDv:0000112	MA:0000173	NIH_BMAP_MHY_N
-1937	MmusDv:0000112	MA:0000905	NIH_BMAP_MCO
-1938	MmusDv:0000112	MA:0000905	NIH_BMAP_MCO_N
-1939	MmusDv:0000112	MA:0000887	NIH_BMAP_MAM
-1940	MmusDv:0000112	MA:0000887	NIH_BMAP_MAM_N
-1943	MmusDv:0000112	MA:0000175	NIH_BMAP_MPG
-1944	MmusDv:0000112	MA:0000175	NIH_BMAP_MPG_N
-1945	MmusDv:0000112	MA:0000891	NIH_BMAP_MST
-1947	MmusDv:0000112	MA:0000191	NIH_BMAP_MHI
-1948	MmusDv:0000112	MA:0000191	NIH_BMAP_MHI_N
-1949	MmusDv:0000112	MA:0000216	NIH_BMAP_MSC
-1950	MmusDv:0000112	MA:0000216	NIH_BMAP_MSC_N
-1951	MmusDv:0000112	MA:0000168	NIH_BMAP_M_S1
-1952	MmusDv:0000112	MA:0000168	NIH_BMAP_M_S2
-1946	MmusDv:0000112	MA:0000891	NIH_BMAP_MST_N
+1929	MmusDv:0000178	MA:0000198	NIH_BMAP_MCE
+1930	MmusDv:0000178	MA:0000198	NIH_BMAP_MCE_N
+1931	MmusDv:0000178	MA:0000169	NIH_BMAP_MBS
+1932	MmusDv:0000178	MA:0000169	NIH_BMAP_MBS_N
+1933	MmusDv:0000178	MA:0000194	NIH_BMAP_MOB
+1934	MmusDv:0000178	MA:0000194	NIH_BMAP_MOB_N
+1935	MmusDv:0000178	MA:0000173	NIH_BMAP_MHY
+1936	MmusDv:0000178	MA:0000173	NIH_BMAP_MHY_N
+1937	MmusDv:0000178	MA:0000905	NIH_BMAP_MCO
+1938	MmusDv:0000178	MA:0000905	NIH_BMAP_MCO_N
+1939	MmusDv:0000178	MA:0000887	NIH_BMAP_MAM
+1940	MmusDv:0000178	MA:0000887	NIH_BMAP_MAM_N
+1943	MmusDv:0000178	MA:0000175	NIH_BMAP_MPG
+1944	MmusDv:0000178	MA:0000175	NIH_BMAP_MPG_N
+1945	MmusDv:0000178	MA:0000891	NIH_BMAP_MST
+1947	MmusDv:0000178	MA:0000191	NIH_BMAP_MHI
+1948	MmusDv:0000178	MA:0000191	NIH_BMAP_MHI_N
+1949	MmusDv:0000178	MA:0000216	NIH_BMAP_MSC
+1950	MmusDv:0000178	MA:0000216	NIH_BMAP_MSC_N
+1951	MmusDv:0000178	MA:0000168	NIH_BMAP_M_S1
+1952	MmusDv:0000178	MA:0000168	NIH_BMAP_M_S2
+1946	MmusDv:0000178	MA:0000891	NIH_BMAP_MST_N
 1964	MmusDv:0000027	EMAPA:16039	Mus musculus musculus CKH E12.5
 1978	MmusDv:0000110	MA:0000168	Gibco-BRL Cat# 10655-017
 2218	MmusDv:0000035	EMAPA:16039	Cot = 5. Library
 2288	MmusDv:0000041	MA:0000358	Mus musculus liver BALB/cByJ
-2489	MmusDv:0000112	MA:0000168	NIH_BMAP_M_S3.2
-2490	MmusDv:0000112	MA:0000168	NIH_BMAP_M_S3.3
-2491	MmusDv:0000112	MA:0000168	NIH_BMAP_M_S3.1
+2489	MmusDv:0000178	MA:0000168	NIH_BMAP_M_S3.2
+2490	MmusDv:0000178	MA:0000168	NIH_BMAP_M_S3.3
+2491	MmusDv:0000178	MA:0000168	NIH_BMAP_M_S3.1
 2497	MmusDv:0000026	EMAPA:16039	Mus musculus 11.5 d.p.c.
 2509	MmusDv:0000110	MA:0000198	RIKEN full-length enriched, adult male cerebellum
 2511	MmusDv:0000110	MA:0000411	RIKEN full-length enriched, adult male testis
@@ -153,7 +153,7 @@
 2524	MmusDv:0000110	MA:0000145	RIKEN full-length enriched, 1 day pregnant, mammary gland
 2525	MmusDv:0000029	EMAPA:16846	RIKEN full-length enriched, 14 days embryo liver
 2526	MmusDv:0000036	MA:0000151	RIKEN full-length enriched, 0 day neonate skin
-2527	MmusDv:0000045	MA:0000151	RIKEN full-length enriched, 10 day neonate skin
+2527	MmusDv:0000120	MA:0000151	RIKEN full-length enriched, 10 day neonate skin
 2546	MmusDv:0000036	MA:0000023	RIKEN full-length enriched, 0 day neonate head
 2547	MmusDv:0000110	MA:0000411	RIKEN full-length enriched, adult male testis (DH10B)
 2548	MmusDv:0000110	MA:0000411	RIKEN full-length enriched, adult male testis (BNN132)
@@ -163,16 +163,16 @@
 2555	MmusDv:0000028	EMAPA:17972	RIKEN full-length enriched, 13 days embryo male testis
 2556	MmusDv:0000029	EMAPA:17523	RIKEN full-length enriched, 14 days embryo thymus
 2558	MmusDv:0000110	MA:0000381	RIKEN full-length enriched, 11 days pregnant adult female ovary and uterus
-2560	MmusDv:0000045	MA:0000328	RIKEN full-length enriched, 10 days neonate intestine
+2560	MmusDv:0000120	MA:0000328	RIKEN full-length enriched, 10 days neonate intestine
 2561	MmusDv:0000110	MA:0001884	RIKEN full-length enriched, adult male xiphoid cartilage
 2562	MmusDv:0000110	MA:0000176	RIKEN full-length enriched, adult male pituitary gland
 2563	MmusDv:0000036	MA:0000023	RIKEN full-length enriched, 6 days neonate head
-2564	MmusDv:0000045	MA:0000023	RIKEN full-length enriched, 10 days neonate head
+2564	MmusDv:0000120	MA:0000023	RIKEN full-length enriched, 10 days neonate head
 2565	MmusDv:0000012	EMAPA:16039	RIKEN full-length enriched, 6 days embryo
 2566	MmusDv:0000019	EMAPA:16039	RIKEN full-length enriched, 8 days embryo
 2570	MmusDv:0000110	MA:0000206	RIKEN full-length enriched, adult male medulla oblongata
 2571	MmusDv:0000110	MA:0000194	RIKEN full-length enriched, adult male olfactory bulb
-2574	MmusDv:0000045	MA:0000198	RIKEN full-length enriched, 10 days neonate cerebellum
+2574	MmusDv:0000120	MA:0000198	RIKEN full-length enriched, 10 days neonate cerebellum
 2575	MmusDv:0000027	UBERON:0000992	RIKEN full-length enriched, 12 days embryo female ovary
 2576	MmusDv:0000027	EMAPA:16577	RIKEN full-length enriched, 12 days embryo male wolffian duct
 2577	MmusDv:0000027	EMAPA:17366	RIKEN full-length enriched, 12 days embryo female mullerian duct
@@ -199,13 +199,13 @@
 2791	MmusDv:0000002	EMAPA:16039	Mus musculus embryonic region
 2792	MmusDv:0000002	EMAPA:16062	Mus musculus embryo endoderm
 1097	MmusDv:0000110	MA:0000389	Soares_NMPu
-868	MmusDv:0000048	MA:0000145	Soares_mammary_gland_NbMMG
+868	MmusDv:0000149	MA:0000145	Soares_mammary_gland_NbMMG
 1043	MmusDv:0000110	MA:0000145	Soares_mammary_gland_NMLMG
-544	MmusDv:0000048	MA:0000142	Soares_thymus_2NbMT
+544	MmusDv:0000149	MA:0000142	Soares_thymus_2NbMT
 2855	MmusDv:0000041	MA:0000142	Mouse thymus
 3721	MmusDv:0000028	EMAPA:16895	Mione mouse WTB
 5417	MmusDv:0000024	EMAPA:16117	Soares_NMEBA_branchial_arch
-3742	MmusDv:0000112	MA:0000168	NIH_BMAP_M_S4
+3742	MmusDv:0000178	MA:0000168	NIH_BMAP_M_S4
 3777	MmusDv:0000017	EMAPA:16039	NIA Mouse E7.5 Embryonic Portion cDNA Library
 3778	MmusDv:0000027	EMAPA:16744	NIA Mouse E12.5 Female Mesonephros and Gonads cDNA Library
 3779	MmusDv:0000036	MA:0000384	NIA Mouse Newborn Ovary cDNA Library
@@ -213,7 +213,7 @@
 3886	MmusDv:0000110	MA:0000411	Mouse Testis
 4008	MmusDv:0000041	MA:0000415	NFSL
 4042	MmusDv:0000020	EMAPA:16039	E8.5 mouse craniofacial subtraction cDNA library
-4086	MmusDv:0000047	MA:0000142	Ren Stubbs mouse thymus
+4086	MmusDv:0000142	MA:0000142	Ren Stubbs mouse thymus
 4087	MmusDv:0000041	MA:0001459	Soares_mouse_NMBP
 4088	MmusDv:0000036	MA:0000237	Soares_mouse_NMIE
 4126	MmusDv:0000110	MA:0000411	Mus musculus testis adult
@@ -224,10 +224,10 @@
 5319	MmusDv:0000027	EMAPA:16039	RIKEN full-length enriched, 12 days embryo, embryonic body between diaphragm region and neck
 5342	MmusDv:0000002	EMAPA:16898	Mouse developing pituitary gland
 5352	MmusDv:0000110	MA:0000380	RIKEN full-length enriched, adult male urinary bladder
-5353	MmusDv:0000046	MA:0000198	RIKEN full-length enriched, 16 days neonate cerebellum
+5353	MmusDv:0000141	MA:0000198	RIKEN full-length enriched, 16 days neonate cerebellum
 5354	MmusDv:0000110	MA:0001459	RIKEN full-length enriched, adult male bone
 5357	MmusDv:0000110	MA:0000394	RIKEN full-length enriched, adult female vagina
-5359	MmusDv:0000046	MA:0000142	RIKEN full-length enriched, 16 days neonate thymus
+5359	MmusDv:0000141	MA:0000142	RIKEN full-length enriched, 16 days neonate thymus
 5360	MmusDv:0000110	MA:0000173	RIKEN full-length enriched, adult male hypothalamus
 5361	MmusDv:0000110	MA:0000216	RIKEN full-length enriched, adult male spinal cord
 5362	MmusDv:0000036	MA:0000168	Stratagene lambda ZAP II libraries, Cat number 936309
@@ -236,13 +236,13 @@
 5372	MmusDv:0000036	MA:0000142	RIKEN full-length enriched, 3 days neonate thymus
 5373	MmusDv:0000036	MA:0000198	RIKEN full-length enriched, 7 days neonate cerebellum
 5385	MmusDv:0000002	EMAPA:17065	Mouse E10 5 12 5 Pancreas cDNA Library
-5389	MmusDv:0000045	MA:0000185	RIKEN full-length enriched, 10 days neonate cortex
+5389	MmusDv:0000120	MA:0000185	RIKEN full-length enriched, 10 days neonate cortex
 5390	MmusDv:0000110	MA:0000276	RIKEN full-length enriched, adult retina
 5391	MmusDv:0000005	EMAPA:16036	RIKEN full-length enriched, 2 cells egg
 5393	MmusDv:0000110	MA:0002567	RIKEN full-length enriched, adult male corpora quadrigemina
 5401	MmusDv:0000036	MA:0000142	RIKEN full-length enriched, 4 days neonate thymus
 5402	MmusDv:0000036	MA:0000206	RIKEN full-length enriched, 6 days neonate medulla oblongata
-5403	MmusDv:0000045	MA:0000206	RIKEN full-length enriched, 10 days neonate medulla oblongata
+5403	MmusDv:0000120	MA:0000206	RIKEN full-length enriched, 10 days neonate medulla oblongata
 5408	MmusDv:0000036	MA:0000198	RIKEN full-length enriched, 0 day neonate cerebellum
 5422	MmusDv:0000015	EMAPA:16039	RIKEN full-length enriched, 7 days embryo
 5429	MmusDv:0000110	MA:0000127	RIKEN full-length enriched, adult pancreas Islet cells
@@ -257,12 +257,12 @@
 5470	MmusDv:0000028	EMAPA:17021	RIKEN full-length enriched, 13 days embryo stomach
 5492	MmusDv:0000036	MA:0000368	RIKEN full-length enriched, 0 day neonate kidney
 5493	MmusDv:0000110	MA:0000145	RIKEN full-length enriched, 10 days lactation, adult female mammary gland
-5494	MmusDv:0000046	MA:0000072	RIKEN full-length enriched, 16 days neonate heart
+5494	MmusDv:0000141	MA:0000072	RIKEN full-length enriched, 16 days neonate heart
 5497	MmusDv:0000036	MA:0000415	RIKEN full-length enriched, 0 day neonate lung
 5498	MmusDv:0000036	MA:0000261	RIKEN full-length enriched, 0 day neonate eyeball
 5499	MmusDv:0000110	MA:0000385	RIKEN full-length enriched, 2 days pregnant adult female oviduct
 5500	MmusDv:0000110	MA:0000384	RIKEN full-length enriched, 2 days pregnant adult female ovary
-5501	MmusDv:0000045	MA:0000194	RIKEN full-length enriched, 10 days neonate olfactory brain
+5501	MmusDv:0000120	MA:0000194	RIKEN full-length enriched, 10 days neonate olfactory brain
 5526	MmusDv:0000002	EMAPA:16039	ICRFp 522 and 523
 7009	MmusDv:0000110	MA:0000411	NCI_CGAP_Te1
 7228	MmusDv:0000110	MA:0000346	NCI_CGAP_SG1
@@ -277,16 +277,16 @@
 7123	MmusDv:0000110	MA:0000346	NCI_CGAP_SG2
 6779	MmusDv:0000041	MA:0000276	NIH_BMAP_Ret4_S1
 6780	MmusDv:0000041	MA:0000276	NIH_BMAP_Ret4_S2
-6767	MmusDv:0000112	MA:0000191	NIH_BMAP_MHI2
-6768	MmusDv:0000112	MA:0000168	NIH_BMAP_M_S5
+6767	MmusDv:0000178	MA:0000191	NIH_BMAP_MHI2
+6768	MmusDv:0000178	MA:0000168	NIH_BMAP_M_S5
 6769	MmusDv:0000028	EMAPA:17168	NIH_BMAP_Ret1
 6770	MmusDv:0000028	EMAPA:17168	NIH_BMAP_Ret1_N
 6771	MmusDv:0000036	MA:0000276	NIH_BMAP_Ret2
 6772	MmusDv:0000036	MA:0000276	NIH_BMAP_Ret2_N
-6773	MmusDv:0000050	MA:0000276	NIH_BMAP_Ret3
-6774	MmusDv:0000050	MA:0000276	NIH_BMAP_Ret3_N
-6775	MmusDv:0000112	MA:0000216	NIH_BMAP_MSC_S1
-6781	MmusDv:0000112	MA:0000191	NIH_BMAP_MHI2_S1
+6773	MmusDv:0000151	MA:0000276	NIH_BMAP_Ret3
+6774	MmusDv:0000151	MA:0000276	NIH_BMAP_Ret3_N
+6775	MmusDv:0000178	MA:0000216	NIH_BMAP_MSC_S1
+6781	MmusDv:0000178	MA:0000191	NIH_BMAP_MHI2_S1
 9835	MmusDv:0000110	MA:0000415	NCI_CGAP_Lu35
 9836	MmusDv:0000110	MA:0000337	NCI_CGAP_SI1
 9834	MmusDv:0000110	MA:0000368	NCI_CGAP_Ki15
@@ -324,25 +324,25 @@
 8916	MmusDv:0000110	UBERON:0001134	HB subtracted library
 9741	MmusDv:0000110	MA:0000127	Amplified Melton Mouse Islets 1 MIS1-A
 9742	MmusDv:0000110	MA:0000358	RIKEN full-length enriched, adult male liver
-9743	MmusDv:0000045	MA:0000120	RIKEN full-length enriched, 10 day old male pancreas
-9826	MmusDv:0000112	MA:0000411	Mouse prepuberal testis cDNA library
+9743	MmusDv:0000120	MA:0000120	RIKEN full-length enriched, 10 day old male pancreas
+9826	MmusDv:0000178	MA:0000411	Mouse prepuberal testis cDNA library
 9844	MmusDv:0000029	EMAPA:16198	RIKEN full-length enriched, 14 days embryo eyeball
 9845	MmusDv:0000006	EMAPA:16037	RIKEN full-length enriched, 8 cells embryo
 9846	MmusDv:0000027	EMAPA:16039	RIKEN full-length enriched, 12 days embryo whole body
 9847	MmusDv:0000036	MA:0000141	RIKEN full-length enriched, 6 days neonate spleen
-9943	MmusDv:0000046	MA:0000198	RIKEN full-length enriched, 21 days neonate cerebellum
+9943	MmusDv:0000141	MA:0000198	RIKEN full-length enriched, 21 days neonate cerebellum
 9945	MmusDv:0000028	EMAPA:16894	RIKEN full-length enriched, 13 days embryo brain
 9946	MmusDv:0000110	MA:0000356	RIKEN full-length enriched, adult male gall bladder
-9948	MmusDv:0000048	MA:0000198	RIKEN full-length enriched, 1 month neonate cerebellum
+9948	MmusDv:0000149	MA:0000198	RIKEN full-length enriched, 1 month neonate cerebellum
 9949	MmusDv:0000110	MA:0000384	RIKEN full-length enriched, 10 days pregnant adult female ovary and uterus
-9950	MmusDv:0000046	MA:0000171	RIKEN full-length enriched, 16 days neonate male diencephalon
-9951	MmusDv:0000046	MA:0000206	RIKEN full-length enriched, 16 days neonate male medulla oblongata
+9950	MmusDv:0000141	MA:0000171	RIKEN full-length enriched, 16 days neonate male diencephalon
+9951	MmusDv:0000141	MA:0000206	RIKEN full-length enriched, 16 days neonate male medulla oblongata
 9953	MmusDv:0000029	EMAPA:16728	RIKEN full-length enriched, 14 days embryo lung
 9955	MmusDv:0000110	MA:0000735	RIKEN full-length enriched, adult male accessory axillary lymph node
 9957	MmusDv:0000036	MA:0000185	RIKEN full-length enriched, 0 day neonate cortex
 9958	MmusDv:0000110	MA:0000139	RIKEN full-length enriched, adult male jejunal and colic lymph node
 9959	MmusDv:0000110	MA:0001537	RIKEN full-length enriched, adult male intestinal mucosa
-9960	MmusDv:0000045	MA:0000411	RIKEN full-length enriched, 8 days neonate male testis
+9960	MmusDv:0000118	MA:0000411	RIKEN full-length enriched, 8 days neonate male testis
 9974	MmusDv:0000110	MA:0000237	RIKEN full-length enriched, adult inner ear
 9978	MmusDv:0000036	MA:0000168	NIA Mouse Newborn Brain cDNA Library
 9979	MmusDv:0000036	MA:0000368	NIA Mouse Newborn Kidney cDNA Library (Long)
@@ -380,7 +380,7 @@
 11266	MmusDv:0000041	MA:0000168	NIH_MGC_143
 11268	MmusDv:0000041	MA:0000168	NIH_MGC_144
 10916	MmusDv:0000041	MA:0002405	NIA Mouse 7.4K cDNA Clone Set
-10920	MmusDv:0000112	MA:0001193	Mouse Organ of Corti cDNA pBluescript
+10920	MmusDv:0000178	MA:0001193	Mouse Organ of Corti cDNA pBluescript
 11150	MmusDv:0000027	EMAPA:16894	NIH_BMAP_FO0
 11029	MmusDv:0000006	EMAPA:25765	subtracted mouse compacted embryo cDNA library
 11088	MmusDv:0000110	MA:0000173	Mus musculus hypothalamus Swiss adult
@@ -399,9 +399,9 @@
 12249	MmusDv:0000033	EMAPA:17373	RIKEN full-length enriched, 16 days embryo kidney
 12250	MmusDv:0000034	EMAPA:17373	RIKEN full-length enriched, 17 days embryo kidney
 12251	MmusDv:0000034	EMAPA:18889	RIKEN full-length enriched, 17 days embryo stomach
-12255	MmusDv:0000045	MA:0000168	RIKEN full-length enriched, 10 days neonate brain
-12256	MmusDv:0000045	MA:0000072	RIKEN full-length enriched, 10 days neonate heart
-12257	MmusDv:0000045	MA:0000142	RIKEN full-length enriched, 10 days neonate thymus
+12255	MmusDv:0000120	MA:0000168	RIKEN full-length enriched, 10 days neonate brain
+12256	MmusDv:0000120	MA:0000072	RIKEN full-length enriched, 10 days neonate heart
+12257	MmusDv:0000120	MA:0000142	RIKEN full-length enriched, 10 days neonate thymus
 12258	MmusDv:0000028	EMAPA:16039	RIKEN full-length enriched, 13 days embryo whole body
 12259	MmusDv:0000029	EMAPA:16039	RIKEN full-length enriched, 14 days embryo whole body
 12260	MmusDv:0000033	EMAPA:16039	RIKEN full-length enriched, 16 days embryo whole body
@@ -414,7 +414,7 @@
 12311	MmusDv:0000002	EMAPA:16039	RIKEN full-length enriched, 10, 11 days embryo whole body
 12312	MmusDv:0000025	EMAPA:16039	RIKEN full-length enriched, 11 days embryo whole body
 12313	MmusDv:0000035	EMAPA:16039	RIKEN full-length enriched, 18-day embryo whole body
-12314	MmusDv:0000045	MA:0000151	RIKEN full-length enriched, 10 days neonate skin
+12314	MmusDv:0000120	MA:0000151	RIKEN full-length enriched, 10 days neonate skin
 12315	MmusDv:0000012	EMAPA:16039	RIKEN full-length enriched, 6 days embryo whole body
 12316	MmusDv:0000015	EMAPA:16039	RIKEN full-length enriched, 7 days embryo whole body
 12317	MmusDv:0000019	EMAPA:16039	RIKEN full-length enriched, 8 days embryo whole body
@@ -423,7 +423,7 @@
 12883	MmusDv:0000041	MA:0000358	NIH_MGC_177
 12885	MmusDv:0000041	MA:0000003	NIH_MGC_178
 12447	MmusDv:0000027	UBERON:0000473	12.0-12.5 dpc subtracted mouse testis
-12474	MmusDv:0000112	MA:0000176	Soares NMBP13-15
+12474	MmusDv:0000178	MA:0000176	Soares NMBP13-15
 12475	MmusDv:0000002	EMAPA:16039	Soares NMBP1
 12476	MmusDv:0000110	MA:0000176	Soares NMBPA
 12609	MmusDv:0000110	MA:0001324	Adult mouse olfactory epithelium library
@@ -449,7 +449,7 @@
 14477	MmusDv:0000002	EMAPA:16198	NIH_BMAP_HE0
 14479	MmusDv:0000002	EMAPA:16039	NIH_BMAP_HK0
 14478	MmusDv:0000002	EMAPA:16039	NIH_BMAP_HJ0
-14509	MmusDv:0000045	MA:0001067	Mouse P10/P6 Inferior Colliculus Subtracted Libraries
+14509	MmusDv:0000140	MA:0001067	Mouse P10/P6 Inferior Colliculus Subtracted Libraries
 15320	MmusDv:0000002	EMAPA:16039	NIH_BMAP_HN0
 15321	MmusDv:0000002	EMAPA:16039	NIH_BMAP_HO0
 14636	MmusDv:0000041	MA:0000168	Mouse B6 whole brain
@@ -457,9 +457,9 @@
 15075	MmusDv:0000041	MA:0002405	NIA Mouse Unique Gene Set Version 2
 15087	MmusDv:0000027	EMAPA:16245	NIA Mouse E12.5 Male Mesonephros/Gonad cDNA Library
 15197	MmusDv:0000041	MA:0000411	Mus musculus testis C3H/He
-15413	MmusDv:0000112	MA:0000129	NIH_MGC_189
-15414	MmusDv:0000112	MA:0000129	NIH_MGC_230
-15384	MmusDv:0000045	MA:0000237	Cochlear and vestibular tissues cDNA subtractive hybridization
+15413	MmusDv:0000178	MA:0000129	NIH_MGC_189
+15414	MmusDv:0000178	MA:0000129	NIH_MGC_230
+15384	MmusDv:0000120	MA:0000237	Cochlear and vestibular tissues cDNA subtractive hybridization
 15633	MmusDv:0000002	EMAPA:16039	NIH_BMAP_HQ0
 15634	MmusDv:0000002	EMAPA:16039	NIH_BMAP_HS0
 15702	MmusDv:0000028	EMAPA:25765	NIA Mouse E13.5 whole embryo cDNA library (Long)
@@ -489,19 +489,19 @@
 17915	MmusDv:0000110	MA:0000168	RIKEN full-length enriched mouse cDNA library, C57BL/6J brain male adult
 17916	MmusDv:0000110	MA:0000334	RIKEN full-length enriched mouse cDNA library, C57BL/6J cecum male adult
 17917	MmusDv:0000036	MA:0000198	RIKEN full-length enriched mouse cDNA library, C57BL/6J cerebellum 0 day neonate
-17918	MmusDv:0000048	MA:0000198	RIKEN full-length enriched mouse cDNA library, C57BL/6J cerebellum 1 month neonate
-17919	MmusDv:0000045	MA:0000198	RIKEN full-length enriched mouse cDNA library, C57BL/6J cerebellum 10 days neonate
-17920	MmusDv:0000046	MA:0000198	RIKEN full-length enriched mouse cDNA library, C57BL/6J cerebellum 16 days neonate
-17921	MmusDv:0000046	MA:0000198	RIKEN full-length enriched mouse cDNA library, C57BL/6J cerebellum 21 days neonate
+17918	MmusDv:0000149	MA:0000198	RIKEN full-length enriched mouse cDNA library, C57BL/6J cerebellum 1 month neonate
+17919	MmusDv:0000120	MA:0000198	RIKEN full-length enriched mouse cDNA library, C57BL/6J cerebellum 10 days neonate
+17920	MmusDv:0000141	MA:0000198	RIKEN full-length enriched mouse cDNA library, C57BL/6J cerebellum 16 days neonate
+17921	MmusDv:0000142	MA:0000198	RIKEN full-length enriched mouse cDNA library, C57BL/6J cerebellum 21 days neonate
 17922	MmusDv:0000036	MA:0000198	RIKEN full-length enriched mouse cDNA library, C57BL/6J cerebellum 7 days neonate
 17923	MmusDv:0000110	MA:0000198	RIKEN full-length enriched mouse cDNA library, C57BL/6J cerebellum male adult
 17924	MmusDv:0000110	MA:0000335	RIKEN full-length enriched mouse cDNA library, C57BL/6J colon male adult
 17925	MmusDv:0000110	MA:0002567	RIKEN full-length enriched mouse cDNA library, C57BL/6J corpora quadrigemina male adult
 17926	MmusDv:0000110	MA:0000891	RIKEN full-length enriched mouse cDNA library, C57BL/6J corpus striatum male adult
 17927	MmusDv:0000036	MA:0000185	RIKEN full-length enriched mouse cDNA library, C57BL/6J cortex 0 day neonate
-17928	MmusDv:0000045	MA:0000185	RIKEN full-length enriched mouse cDNA library, C57BL/6J cortex 10 days neonate
+17928	MmusDv:0000120	MA:0000185	RIKEN full-length enriched mouse cDNA library, C57BL/6J cortex 10 days neonate
 17929	MmusDv:0000110	MA:0000185	RIKEN full-length enriched mouse cDNA library, C57BL/6J cortex male adult
-17930	MmusDv:0000046	MA:0000171	RIKEN full-length enriched mouse cDNA library, C57BL/6J diencephalon male 16 days neonate
+17930	MmusDv:0000141	MA:0000171	RIKEN full-length enriched mouse cDNA library, C57BL/6J diencephalon male 16 days neonate
 17931	MmusDv:0000110	MA:0000171	RIKEN full-length enriched mouse cDNA library, C57BL/6J diencephalon male adult
 17932	MmusDv:0000005	EMAPA:16036	RIKEN full-length enriched mouse cDNA library, C57BL/6J egg 2 cells
 17933	MmusDv:0000032	EMAPA:16039	RIKEN full-length enriched mouse cDNA library, C57BL/6J embryonic body below diaphragm 15 days embryo
@@ -514,12 +514,12 @@
 17944	MmusDv:0000110	MA:0000356	RIKEN full-length enriched mouse cDNA library, C57BL/6J gall bladder male adult
 17945	MmusDv:0000025	EMAPA:17204	RIKEN full-length enriched mouse cDNA library, C57BL/6J gonad 11 days embryo
 17946	MmusDv:0000036	MA:0000023	RIKEN full-length enriched mouse cDNA library, C57BL/6J head 0 day neonate
-17947	MmusDv:0000045	MA:0000023	RIKEN full-length enriched mouse cDNA library, C57BL/6J head 10 days neonate
+17947	MmusDv:0000120	MA:0000023	RIKEN full-length enriched mouse cDNA library, C57BL/6J head 10 days neonate
 17949	MmusDv:0000027	EMAPA:16039	RIKEN full-length enriched mouse cDNA library, C57BL/6J head 12 days embryo
 17950	MmusDv:0000028	EMAPA:16039	RIKEN full-length enriched mouse cDNA library, C57BL/6J head 13 days embryo
 17954	MmusDv:0000036	MA:0000023	RIKEN full-length enriched mouse cDNA library, C57BL/6J head 6 days neonate
 17956	MmusDv:0000028	EMAPA:16105	RIKEN full-length enriched mouse cDNA library, C57BL/6J heart 13 days embryo
-17957	MmusDv:0000046	MA:0000072	RIKEN full-length enriched mouse cDNA library, C57BL/6J heart 16 days neonate
+17957	MmusDv:0000141	MA:0000072	RIKEN full-length enriched mouse cDNA library, C57BL/6J heart 16 days neonate
 17958	MmusDv:0000110	MA:0000191	RIKEN full-length enriched mouse cDNA library, C57BL/6J hippocampus male adult
 17959	MmusDv:0000110	MA:0000173	RIKEN full-length enriched mouse cDNA library, C57BL/6J hypothalamus male adult
 17961	MmusDv:0000110	MA:0001537	RIKEN full-length enriched mouse cDNA library, C57BL/6J intestinal mucosa male adult
@@ -536,11 +536,11 @@
 17972	MmusDv:0000110	MA:0000145	RIKEN full-length enriched mouse cDNA library, C57BL/6J mammary gland female 1 day pregnant adult
 17973	MmusDv:0000110	MA:0000145	RIKEN full-length enriched mouse cDNA library, C57BL/6J mammary gland female 10 days lactation, adult
 17974	MmusDv:0000029	EMAPA:17759	RIKEN full-length enriched mouse cDNA library, C57BL/6J mammary gland female 14 days embryo
-17975	MmusDv:0000045	MA:0000206	RIKEN full-length enriched mouse cDNA library, C57BL/6J medulla oblongata 10 days neonate
+17975	MmusDv:0000120	MA:0000206	RIKEN full-length enriched mouse cDNA library, C57BL/6J medulla oblongata 10 days neonate
 17976	MmusDv:0000036	MA:0000206	RIKEN full-length enriched mouse cDNA library, C57BL/6J medulla oblongata 6 days neonate
-17977	MmusDv:0000046	MA:0000206	RIKEN full-length enriched mouse cDNA library, C57BL/6J medulla oblongata male 16 days neonate
+17977	MmusDv:0000141	MA:0000206	RIKEN full-length enriched mouse cDNA library, C57BL/6J medulla oblongata male 16 days neonate
 17978	MmusDv:0000110	MA:0000206	RIKEN full-length enriched mouse cDNA library, C57BL/6J medulla oblongata male adult
-17980	MmusDv:0000045	MA:0002413	RIKEN full-length enriched mouse cDNA library, C57BL/6J olfactory brain 10 days neonate
+17980	MmusDv:0000120	MA:0002413	RIKEN full-length enriched mouse cDNA library, C57BL/6J olfactory brain 10 days neonate
 17981	MmusDv:0000110	MA:0000194	RIKEN full-length enriched mouse cDNA library, C57BL/6J olfactory brain male adult
 17982	MmusDv:0000110	MA:0000381	RIKEN full-length enriched mouse cDNA library, C57BL/6J ovary and uterus female 10 days pregnant adult
 17983	MmusDv:0000110	MA:0000381	RIKEN full-length enriched mouse cDNA library, C57BL/6J ovary and uterus female 11 days pregnant adult
@@ -548,10 +548,10 @@
 17985	MmusDv:0000027	UBERON:0000992	RIKEN full-length enriched mouse cDNA library, C57BL/6J ovary female 12 days embryo
 17986	MmusDv:0000110	MA:0000384	RIKEN full-length enriched mouse cDNA library, C57BL/6J ovary female 2 days pregnant adult
 17987	MmusDv:0000110	MA:0000385	RIKEN full-length enriched mouse cDNA library, C57BL/6J oviduct female 2 days pregnant adult
-17988	MmusDv:0000045	MA:0000120	RIKEN full-length enriched mouse cDNA library, C57BL/6J pancreas male 10 days old
+17988	MmusDv:0000120	MA:0000120	RIKEN full-length enriched mouse cDNA library, C57BL/6J pancreas male 10 days old
 17989	MmusDv:0000110	MA:0000176	RIKEN full-length enriched mouse cDNA library, C57BL/6J pituitary gland male adult
 17992	MmusDv:0000036	MA:0000151	RIKEN full-length enriched mouse cDNA library, C57BL/6J skin 0 day neonate
-17993	MmusDv:0000045	MA:0000151	RIKEN full-length enriched mouse cDNA library, C57BL/6J skin 10 days neonate
+17993	MmusDv:0000120	MA:0000151	RIKEN full-length enriched mouse cDNA library, C57BL/6J skin 10 days neonate
 17994	MmusDv:0000036	MA:0000151	RIKEN full-length enriched mouse cDNA library, C57BL/6J skin 6 days neonate
 17995	MmusDv:0000110	MA:0000337	RIKEN full-length enriched mouse cDNA library, C57BL/6J small intestine male adult
 17999	MmusDv:0000110	MA:0000216	RIKEN full-length enriched mouse cDNA library, C57BL/6J spinal cord male adult
@@ -561,11 +561,11 @@
 18003	MmusDv:0000110	MA:0000353	RIKEN full-length enriched mouse cDNA library, C57BL/6J stomach male adult
 18004	MmusDv:0000028	EMAPA:17972	RIKEN full-length enriched mouse cDNA library, C57BL/6J testis male 13 days embryo
 18005	MmusDv:0000032	EMAPA:17972	RIKEN full-length enriched mouse cDNA library, C57BL/6J testis male 15 days embryo
-18006	MmusDv:0000045	MA:0000411	RIKEN full-length enriched mouse cDNA library, C57BL/6J testis male 8 days neonate
+18006	MmusDv:0000118	MA:0000411	RIKEN full-length enriched mouse cDNA library, C57BL/6J testis male 8 days neonate
 18007	MmusDv:0000110	MA:0000411	RIKEN full-length enriched mouse cDNA library, C57BL/6J testis male adult
 18008	MmusDv:0000036	MA:0000142	RIKEN full-length enriched mouse cDNA library, C57BL/6J thymus 0 day neonate
 18009	MmusDv:0000029	EMAPA:17523	RIKEN full-length enriched mouse cDNA library, C57BL/6J thymus 14 days embryo
-18010	MmusDv:0000046	MA:0000142	RIKEN full-length enriched mouse cDNA library, C57BL/6J thymus 16 days neonate
+18010	MmusDv:0000141	MA:0000142	RIKEN full-length enriched mouse cDNA library, C57BL/6J thymus 16 days neonate
 18011	MmusDv:0000036	MA:0000142	RIKEN full-length enriched mouse cDNA library, C57BL/6J thymus 4 days neonate
 18012	MmusDv:0000110	MA:0000142	RIKEN full-length enriched mouse cDNA library, C57BL/6J thymus male adult
 18013	MmusDv:0000110	MA:0000347	RIKEN full-length enriched mouse cDNA library, C57BL/6J tongue male adult
@@ -587,10 +587,10 @@
 18032	MmusDv:0000110	MA:0001884	RIKEN full-length enriched mouse cDNA library, C57BL/6J xiphoid cartilage male adult
 18059	MmusDv:0000110	MA:0000168	RIKEN full-length enriched mouse cDNA library, C57BL/6 brain male adult
 18063	MmusDv:0000007	EMAPA:16039	RIKEN full-length enriched mouse cDNA library, C57BL/6J blastocyst
-18064	MmusDv:0000045	MA:0000168	RIKEN full-length enriched mouse cDNA library, C57BL/6J brain 10 days neonate
+18064	MmusDv:0000120	MA:0000168	RIKEN full-length enriched mouse cDNA library, C57BL/6J brain 10 days neonate
 18065	MmusDv:0000029	EMAPA:16894	RIKEN full-length enriched mouse cDNA library, C57BL/6J brain 14 days embryo
-18066	MmusDv:0000045	MA:0000072	RIKEN full-length enriched mouse cDNA library, C57BL/6J heart 10 days neonate
-18067	MmusDv:0000046	MA:0000072	RIKEN full-length enriched mouse cDNA library, C57BL/6J heart 16 days embryo
+18066	MmusDv:0000120	MA:0000072	RIKEN full-length enriched mouse cDNA library, C57BL/6J heart 10 days neonate
+18067	MmusDv:0000141	MA:0000072	RIKEN full-length enriched mouse cDNA library, C57BL/6J heart 16 days embryo
 18068	MmusDv:0000034	EMAPA:16105	RIKEN full-length enriched mouse cDNA library, C57BL/6J heart 17 days embryo
 18069	MmusDv:0000110	MA:0000072	RIKEN full-length enriched mouse cDNA library, C57BL/6J heart male adult
 18070	MmusDv:0000033	EMAPA:17366	RIKEN full-length enriched mouse cDNA library, C57BL/6J kidney 16 days embryo
@@ -600,7 +600,7 @@
 18074	MmusDv:0000110	MA:0000415	RIKEN full-length enriched mouse cDNA library, C57BL/6J lung male adult
 18080	MmusDv:0000110	MA:0000141	RIKEN full-length enriched mouse cDNA library, C57BL/6J spleen male adult
 18081	MmusDv:0000024	EMAPA:17021	RIKEN full-length enriched mouse cDNA library, C57BL/6J stomach 17 days embryo
-18082	MmusDv:0000045	MA:0000142	RIKEN full-length enriched mouse cDNA library, C57BL/6J thymus 10 days neonate
+18082	MmusDv:0000120	MA:0000142	RIKEN full-length enriched mouse cDNA library, C57BL/6J thymus 10 days neonate
 18083	MmusDv:0000029	EMAPA:16039	RIKEN full-length enriched mouse cDNA library, C57BL/6J whole body 14 days embryo
 18084	MmusDv:0000032	EMAPA:16039	RIKEN full-length enriched mouse cDNA library, C57BL/6J whole body 15 days embryo
 18085	MmusDv:0000033	EMAPA:16039	RIKEN full-length enriched mouse cDNA library, C57BL/6J whole body 16 days embryo
@@ -617,10 +617,10 @@
 18138	MmusDv:0000110	MA:0000404	FH BalbClig05
 18139	MmusDv:0000110	MA:0000404	FH BalbClig15
 18140	MmusDv:0000110	MA:0000404	FH CG02
-18141	MmusDv:0000045	MA:0000404	FH DAY10
-18142	MmusDv:0000046	MA:0000404	FH DAY20
-18143	MmusDv:0000048	MA:0000404	FH DAY35
-18144	MmusDv:0000048	MA:0000404	FH DAY35S
+18141	MmusDv:0000120	MA:0000404	FH DAY10
+18142	MmusDv:0000141	MA:0000404	FH DAY20
+18143	MmusDv:0000150	MA:0000404	FH DAY35
+18144	MmusDv:0000150	MA:0000404	FH DAY35S
 18145	MmusDv:0000110	MA:0000404	FH DLP01
 18146	MmusDv:0000110	MA:0000404	FH MONTH14
 18147	MmusDv:0000036	MA:0000404	FH NEONATAL
@@ -637,16 +637,16 @@
 18283	MmusDv:0000035	EMAPA:16039	RIKEN full-length enriched mouse cDNA library, C57BL/6J 18 days embryo
 18284	MmusDv:0000012	EMAPA:16039	RIKEN full-length enriched mouse cDNA library, C57BL/6J 6 days embryo
 18285	MmusDv:0000019	EMAPA:16039	RIKEN full-length enriched mouse cDNA library, C57BL/6J 8 days embryo
-18292	MmusDv:0000050	MA:0000266	Mouse total cornea. Unnormalized
-18293	MmusDv:0000050	MA:0000266	Mouse cornea enriched for endothelium and stroma. Unnormalized.
+18292	MmusDv:0000151	MA:0000266	Mouse total cornea. Unnormalized
+18293	MmusDv:0000151	MA:0000266	Mouse cornea enriched for endothelium and stroma. Unnormalized.
 18113	MmusDv:0000029	EMAPA:17518	RIKEN full-length enriched mouse cDNA library, Rathke's pouches 14.5 days embryo
 2523	MmusDv:0000033	EMAPA:16039	RIKEN full-length enriched, 16 days embryo head
 2522	MmusDv:0000032	EMAPA:16039	RIKEN full-length enriched, 15 days embryo head
 5464	MmusDv:0000027	EMAPA:16668	RIKEN full-length enriched, 12 days embryo spinal ganglion
 18124	MmusDv:0000110	MA:0002405	RIKEN full-length enriched mouse cDNA library, C57BL/6J pooled tissue 11
-2579	MmusDv:0000037	MA:0000226	RIKEN full-length enriched, 2 days neonate sympathetic ganglion
+2579	MmusDv:0000036	MA:0000226	RIKEN full-length enriched, 2 days neonate sympathetic ganglion
 18109	MmusDv:0000027	EMAPA:17518	RIKEN full-length enriched mouse cDNA library, CD-1 Rathke's pouches 12.5 days embryo
-14219	MmusDv:0000041	MA:0002405	pBluescript Lion
+14219	MmusDv:0000001	MA:0002405	pBluescript Lion
 5423	MmusDv:0000027	EMAPA:17577	RIKEN full-length enriched, 12 days embryo spinal cord
 11139	MmusDv:0000021	EMAPA:16194	NIH_MGC_130
 15974	MmusDv:0000041	MA:0002405	Mouse pBluescript Lion
@@ -670,7 +670,7 @@
 2516	MmusDv:0000034	EMAPA:16039	RIKEN full-length enriched, 17 days embryo head
 12233	MmusDv:0000002	EMAPA:25765	RIKEN full-length enriched, pooled tissues, 1 cell embryo, etc.
 10389	MmusDv:0000032	EMAPA:16894	NIH_BMAP_EQ0
-18287	MmusDv:0000045	MA:0000120	RIKEN full-length enriched mouse cDNA library, C57BL/6J pancreas male 10 day old
+18287	MmusDv:0000120	MA:0000120	RIKEN full-length enriched mouse cDNA library, C57BL/6J pancreas male 10 day old
 17914	MmusDv:0000032	EMAPA:16894	RIKEN full-length enriched mouse cDNA library, C57BL/6J brain 15 days embryo
 17996	MmusDv:0000025	EMAPA:16525	RIKEN full-length enriched mouse cDNA library, C57BL/6J spinal cord 11 days embryo
 10375	MmusDv:0000035	EMAPA:16894	NIH_BMAP_EF0

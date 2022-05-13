@@ -191,16 +191,21 @@ modify geneBioTypeId smallint unsigned not null auto_increment primary key,
 add unique (geneBioTypeName);
 /*!40000 ALTER TABLE `geneBioType` ENABLE KEYS */;
 
+/*!40000 ALTER TABLE `geneOrthologs` DISABLE KEYS */;
+alter table geneOrthologs
+add primary key(bgeeGeneId, targetGeneId);
+/*!40000 ALTER TABLE `geneOrthologs` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `geneParalogs` DISABLE KEYS */;
+alter table geneParalogs
+add primary key(bgeeGeneId, targetGeneId);
+/*!40000 ALTER TABLE `geneParalogs` ENABLE KEYS */;
+
 /*!40000 ALTER TABLE `gene` DISABLE KEYS */;
 alter table gene
 modify bgeeGeneId mediumint unsigned not null auto_increment primary key,
 add unique(geneId, speciesId);
 /*!40000 ALTER TABLE `gene` ENABLE KEYS */;
-
-/*!40000 ALTER TABLE `geneToOma` DISABLE KEYS */;
-alter table geneToOma
-add primary key (bgeeGeneId, OMAGroupId, taxonId);
-/*!40000 ALTER TABLE `geneToOma` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `geneNameSynonym` DISABLE KEYS */;
 alter table geneNameSynonym
@@ -241,8 +246,8 @@ add unique(transcriptId, bgeeGeneId);
 -- for this design of PK and UNIQUE indexes
 alter table cond
 modify conditionId mediumint unsigned not null auto_increment,
-add primary key(anatEntityId, stageId, speciesId, sex, sexInferred, strain),
-add unique(conditionId);
+add primary key(conditionId),
+add unique(anatEntityId, cellTypeId, stageId, speciesId, sex, sexInferred, strain);
 /*!40000 ALTER TABLE `cond` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `remapCond` DISABLE KEYS */;
@@ -250,17 +255,22 @@ alter table remapCond
 add primary key(incorrectConditionId, remappedConditionId);
 /*!40000 ALTER TABLE `remapCond` ENABLE KEYS */;
 
+/*!40000 ALTER TABLE `remapExpression` DISABLE KEYS */;
+alter table remapExpression
+add primary key(incorrectExpressionId, remappedExpressionId);
+/*!40000 ALTER TABLE `remapExpression` ENABLE KEYS */;
+
 /*!40000 ALTER TABLE `globalCond` DISABLE KEYS */;
 alter table globalCond
 modify globalConditionId mediumint unsigned not null auto_increment primary key,
 -- not a primary key as for table cond, because some field can be null
-add unique(anatEntityId, stageId, speciesId, sex, strain);
+add unique(anatEntityId, cellTypeId, stageId, speciesId, sex, strain);
 /*!40000 ALTER TABLE `globalCond` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `globalCondToCond` DISABLE KEYS */;
 alter table globalCondToCond
 -- we set up this primary key using conditionRelationOrigin to benefit from the clustered index
-add primary key (globalConditionId, conditionId, conditionRelationOrigin),
+add primary key (globalConditionId, conditionRelationOrigin, conditionId),
 -- but actually the unique constraint is on globalConditionId and conditionId
 add unique(globalConditionId, conditionId);
 /*!40000 ALTER TABLE `globalCondToCond` ENABLE KEYS */;
@@ -281,9 +291,9 @@ add unique(expressionId);
 -- See https://stackoverflow.com/a/42822691/1768736 for motivation
 -- for this design of PK and UNIQUE indexes
 alter table globalExpression
-modify globalExpressionId int unsigned not null auto_increment,
-add primary key(bgeeGeneId, globalConditionId),
-add unique(globalExpressionId);
+-- modify globalExpressionId int unsigned not null auto_increment,
+add primary key(bgeeGeneId, globalConditionId);
+-- add unique(globalExpressionId);
 /*!40000 ALTER TABLE `globalExpression` ENABLE KEYS */;
 
 -- ****************************************************
@@ -356,13 +366,13 @@ add primary key (chipTypeId);
 
 /*!40000 ALTER TABLE `affymetrixChip` DISABLE KEYS */;
 alter table affymetrixChip
-modify bgeeAffymetrixChipId smallint unsigned not null auto_increment primary key,
+modify bgeeAffymetrixChipId mediumint unsigned not null auto_increment primary key,
 add unique (affymetrixChipId, microarrayExperimentId);
 /*!40000 ALTER TABLE `affymetrixChip` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `affymetrixProbeset` DISABLE KEYS */;
 alter table affymetrixProbeset
-add primary key (affymetrixProbesetId, bgeeAffymetrixChipId);
+add primary key (bgeeAffymetrixChipId, affymetrixProbesetId);
 /*!40000 ALTER TABLE `affymetrixProbeset` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `microarrayExperimentExpression` DISABLE KEYS */;
@@ -445,7 +455,7 @@ add primary key (rnaSeqLibraryId);
 
 /*!40000 ALTER TABLE `rnaSeqResult` DISABLE KEYS */;
 alter table rnaSeqResult
-add primary key (bgeeGeneId, rnaSeqLibraryId);
+add primary key (rnaSeqLibraryId, bgeeGeneId);
 /*!40000 ALTER TABLE `rnaSeqResult` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `rnaSeqTranscriptResult` DISABLE KEYS */;
@@ -457,6 +467,103 @@ add primary key (bgeeTranscriptId, rnaSeqLibraryId);
 alter table rnaSeqExperimentExpression
 add primary key (expressionId, rnaSeqExperimentId);
 /*!40000 ALTER TABLE `rnaSeqExperimentExpression` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `rnaSeqProtocol` DISABLE KEYS */;
+alter table rnaSeqProtocol
+modify rnaSeqProtocolId smallint unsigned not null auto_increment primary key,
+add unique(rnaSeqProtocolName);
+/*!40000 ALTER TABLE `rnaSeqProtocol` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `rnaSeqProtocolToBiotypeExcludedAbsentCalls` DISABLE KEYS */;
+alter table rnaSeqProtocolToBiotypeExcludedAbsentCalls
+add primary key (rnaSeqProtocolId, geneBioTypeId);
+/*!40000 ALTER TABLE `rnaSeqProtocolToBiotypeExcludedAbsentCalls` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `rnaSeqProtocolSpeciesMaxRank` DISABLE KEYS */;
+alter table rnaSeqProtocolSpeciesMaxRank
+add primary key (speciesId, rnaSeqProtocolId);
+/*!40000 ALTER TABLE `rnaSeqProtocolSpeciesMaxRank` ENABLE KEYS */;
+
+-- ****************************************************
+-- scRNA-Seq FULL LENGTH DATA
+-- ****************************************************
+/*!40000 ALTER TABLE `scRnaSeqFullLengthExperiment` DISABLE KEYS */;
+alter table scRnaSeqFullLengthExperiment
+add primary key (scRnaSeqFullLengthExperimentId);
+/*!40000 ALTER TABLE `scRnaSeqFullLengthExperiment` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqFullLengthPlatform` DISABLE KEYS */;
+alter table scRnaSeqFullLengthPlatform
+add primary key (scRnaSeqFullLengthPlatformId);
+/*!40000 ALTER TABLE `scRnaSeqFullLengthPlatform` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqFullLengthLibrary` DISABLE KEYS */;
+alter table scRnaSeqFullLengthLibrary
+add primary key (scRnaSeqFullLengthLibraryId);
+/*!40000 ALTER TABLE `scRnaSeqFullLengthLibrary` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqFullLengthRun` DISABLE KEYS */;
+alter table scRnaSeqFullLengthRun
+add primary key (scRnaSeqFullLengthRunId);
+/*!40000 ALTER TABLE `scRnaSeqFullLengthRun` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqFullLengthLibraryDiscarded` DISABLE KEYS */;
+alter table scRnaSeqFullLengthLibraryDiscarded
+add primary key (scRnaSeqFullLengthLibraryId);
+/*!40000 ALTER TABLE `scRnaSeqFullLengthLibraryDiscarded` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqFullLengthResult` DISABLE KEYS */;
+alter table scRnaSeqFullLengthResult
+add primary key (scRnaSeqFullLengthLibraryId, bgeeGeneId);
+/*!40000 ALTER TABLE `scRnaSeqFullLengthResult` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqFullLengthSpeciesMaxRank` DISABLE KEYS */;
+alter table scRnaSeqFullLengthSpeciesMaxRank
+add primary key (speciesId);
+/*!40000 ALTER TABLE `scRnaSeqFullLengthSpeciesMaxRank` ENABLE KEYS */;
+
+--  ****************************************************
+--  scRNA-SEQ TARGET-BASED DATA
+--  ****************************************************
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedExperiment` DISABLE KEYS */;
+alter table scRnaSeqTargetBasedExperiment
+add primary key (scRnaSeqTargetBasedExperimentId);
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedExperiment` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedPlatform` DISABLE KEYS */;
+alter table scRnaSeqTargetBasedPlatform
+add primary key (scRnaSeqTargetBasedPlatformId);
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedPlatform` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedLibrary` DISABLE KEYS */;
+alter table scRnaSeqTargetBasedLibrary
+add primary key (scRnaSeqTargetBasedLibraryId);
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedLibrary` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedRun` DISABLE KEYS */;
+alter table scRnaSeqTargetBasedRun
+add primary key (scRnaSeqTargetBasedRunId);
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedRun` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedLibraryDiscarded` DISABLE KEYS */;
+alter table scRnaSeqTargetBasedLibraryDiscarded
+add primary key (scRnaSeqTargetBasedLibraryId);
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedLibraryDiscarded` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedLibraryCellPopulation` DISABLE KEYS */;
+alter table scRnaSeqTargetBasedLibraryCellPopulation
+add primary key (scRnaSeqTargetBasedLibraryCellPopulationId);
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedLibraryCellPopulation` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedResult` DISABLE KEYS */;
+alter table scRnaSeqTargetBasedResult
+add primary key (bgeeGeneId, scRnaSeqTargetBasedLibraryCellPopulationId);
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedResult` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedPerCellCount` DISABLE KEYS */;
+alter table scRnaSeqTargetBasedPerCellCount
+add primary key (scRnaSeqTargetBasedBarcodeId, scRnaSeqTargetBasedLibraryCellPopulationId);
+/*!40000 ALTER TABLE `scRnaSeqTargetBasedPerCellCount` ENABLE KEYS */;
 
 -- ****** for diff expression ********
 
