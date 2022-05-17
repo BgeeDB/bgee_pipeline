@@ -19,7 +19,7 @@ The relations of historical homology between anatomical entities can be retrieve
 
 ## Description of the output files
 
-Files can be found on our FTP: ftp://ftp.bgee.org/current/collaboration/branch_length_expression_divergence/.
+Files can be found on our FTP: https://bgee.org/ftp/current/collaboration/branch_length_expression_divergence/.
 
 ### Present/absent expression calls
 
