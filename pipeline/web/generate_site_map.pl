@@ -105,14 +105,14 @@ push @index, $sp_sitemap;
 
 # gene pages
 print "Write gene pages\n"  if ( $debug );
-my $geneId = $bgee->prepare('SELECT DISTINCT geneId FROM gene ORDER BY geneId');
+my $geneId = $bgee->prepare('SELECT DISTINCT geneId, speciesId FROM gene ORDER BY geneId');
 $geneId->execute()  or die $geneId->errstr;
 my $count = 0;
 my $split = 0;
 my @pages;
 while ( my @data = $geneId->fetchrow_array ){
     $count++;
-    push @pages, "<loc>$homepage/gene/$data[0]</loc>";
+    push @pages, "<loc>$homepage/gene/$data[0]/$data[1]</loc>";
     if ( $count > ($url_limit - 1000) ){
         $split++;
         my $sitemap = "sitemap_gene$split.xml";
