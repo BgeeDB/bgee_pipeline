@@ -57,7 +57,7 @@ my @basic_about     = ('', 'news', 'collaborations', 'publications', 'source', '
 for my $baseUrlName ( sort @basic_about ){
     push @static_pages, "<loc>$homepage/about/$baseUrlName</loc><priority>0.7</priority>";
 }
-my @basic_support   = ('data-sets', 'top-anat', 'gene-expression-calls', 'faq');
+my @basic_support   = ('data-sets', 'top-anat', 'gene-expression-calls', 'processed-expression-values', 'rnaseq-processed-expression-values', 'singlecell-rnaseq-fulllength-processed-expression-values', 'affymetrix-processed-expression-values', 'faq');
 for my $baseUrlName ( sort @basic_support ){
     push @static_pages, "<loc>$homepage/support/$baseUrlName</loc><priority>0.7</priority>";
 }
