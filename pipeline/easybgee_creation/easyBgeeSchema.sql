@@ -49,6 +49,16 @@ create table stage (
     PRIMARY KEY(stageId)
 ) engine = innodb;
 
+create table dataSource (
+    dataSourceId          smallInt unsigned not null,
+    dataSourceName        varchar(255)      not null            COMMENT 'Data source name',
+    XRefUrl               varchar(255)      not null default '' COMMENT 'URL for cross-references to data sources',
+    baseUrl               varchar(255)      not null default '' COMMENT 'URL to the home page of data sources',
+    releaseVersion        varchar(255)      not null default '' COMMENT 'Version of data source used',
+    dataSourceDescription TEXT                                  COMMENT 'Description of data source',
+    PRIMARY KEY(dataSourceId)
+) engine = innodb;
+
 create table globalCond (
     globalConditionId mediumint unsigned not null auto_increment,
     anatEntityId varchar(20)  COMMENT 'Uberon anatomical entity ID. Can be null in this table if this condition aggregates data according to other condition parameters (e.g., grouping all data in a same stage whatever the organ is).',
