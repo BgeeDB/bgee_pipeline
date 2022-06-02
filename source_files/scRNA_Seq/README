@@ -1,1 +1,9 @@
 Input directory for the source files used during the single cell RNA-Seq (scRNA-Seq) pipeline analysis
+
+The folder is organized the following way:
+
+- scRNASeqExperiment.tsv file that contain all the experiments annotated for full length and target-based protocols. 
+
+- Full_Length folder, that contain the scRNASeqFLLibrary.tsv file
+
+- Target_based folder that contain the scRNASeqTBLibrary.tsv + barcode per experiment_ID + whitelist for different 10X version + Manifest file from HCA
