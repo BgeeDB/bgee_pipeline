@@ -6,28 +6,24 @@ include $(PIPELINEROOT)Makefile.common
 ################## STEPS TO RUN ON AXIOM SERVER ##################
 
 ## Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations and store them in the source_files directory
-## NOTE: this files should be already in the source_files (see whats happen with download)
-## TODO : Should also upload worm annotations
 get_annot:
 	@$(WGET) $(ANNOTATION_GIT_URL)/Strains/StrainMapping.tsv                   && $(MV) StrainMapping.tsv                  $(STRAIN_MAPPING_FILE)
-	@$(WGET) $(ANNOTATION_GIT_URL)/scRNA_Seq/scRNASeqLibrary.tsv               && $(MV) scRNASeqLibrary.tsv                $(INPUT_DIR)/scRNASeqLibrary.tsv                2>/dev/null  || rm -f scRNASeqLibrary.tsv
+	@$(WGET) $(ANNOTATION_GIT_URL)/scRNA_Seq/scRNASeqFLLibrary.tsv             && $(MV) scRNASeqFLLibrary.tsv              $(INPUT_DIR)/Full_length/scRNASeqFLLibrary.tsv                2>/dev/null  || rm -f scRNASeqFLLibrary.tsv
 	@$(WGET) $(ANNOTATION_GIT_URL)/scRNA_Seq/scRNASeqExperiment.tsv            && $(MV) scRNASeqExperiment.tsv             $(INPUT_DIR)/scRNASeqExperiment.tsv             2>/dev/null  || rm -f scRNASeqExperiment.tsv
 	@touch $@
 
 ## Control the annotation (run rule in front)
-## XXX: Why no controls on the worm annotation file? Worm annotation are not used in the pipeline!!!!
 control_annotation: get_annot 0Preparation/pre_process_control_annotation.R
 	@echo --- Starting the control of the annotation  ---
-	$(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args scRNASeqLibrary="$(SC_RNASEQ_LIB_FILEPATH)" passScRNASeqLibrary="$(SC_RNASEQ_LIB_PASS_FILEPATH)" notPassScRNASeqLibrary="$(SC_RNASEQ_LIB_NOT_PASS_FILEPATH)" cellsThreshold="$(MIN_CELLS_PER_LIBRARY_FULL_LENGTH)" ' 0Preparation/pre_process_control_annotation.R 0Preparation/pre_process_control_annotation.Rout > $@.tmp 2>&1
+	$(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args scRNASeqLibrary="$(SC_RNASEQ_LIB_FL_FILEPATH)" cellsThreshold="$(MIN_CELLS_PER_LIBRARY_FULL_LENGTH)" output_folder="$(SC_RNASEQ_FL_FOLDER_GENERATED)" ' 0Preparation/pre_process_control_annotation.R 0Preparation/pre_process_control_annotation.Rout > $@.tmp 2>&1
 	@echo --- DONE ---
 	# Map strain names
-	#FIXME has to be done on other scRNAseq generated files? Or others come from that one?
 	@perl -e 'use lib "../.."; use Utils; Utils::map_strain_names("$(SC_RNASEQ_LIB_PASS_FILEPATH)", "$(STRAIN_MAPPING_FILE)")' > $(SC_RNASEQ_LIB_PASS_FILEPATH).ori
 	@$(MV) $(SC_RNASEQ_LIB_PASS_FILEPATH).ori $(SC_RNASEQ_LIB_PASS_FILEPATH)
 	@$(MV) $@.tmp $@
 
 ## Retrieve metadata (run rule with sbatch)
-## NOTE: metadata here are information allowing to download fastq libraries. Should modify name of this file to be something like download_metadata.txt
+## NOTE: metadata here are information allowing to download fastq libraries a posteriori
 retrieve_metadata: control_annotation 0Preparation/retrieve_metadata.R
 	@echo --- Retrieve metadata information ---
 	@sed -i 's@--output=.*@--output=${PWD}/retrieve_metadata.out@'                                                           0Preparation/retrieve_metadata.sbatch
@@ -35,9 +31,8 @@ retrieve_metadata: control_annotation 0Preparation/retrieve_metadata.R
 	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                             0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                                   0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                             0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export NEW_scRNASeqLibrary=.*@export NEW_scRNASeqLibrary=$(SC_RNASEQ_LIB_PASS_FILEPATH)@'                     0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export metadata_info=.*@export metadata_info=$(SC_RNASEQ_METADATA_FILEPATH)@'                                 0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export metadata_info_not_match=.*@export metadata_info_not_match=$(SC_RNASEQ_METADATA_NOT_MATCH_FILEPATH)@'   0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export pass_annotationControl=.*@export pass_annotationControl=$(SC_RNASEQ_LIB_PASS_FILEPATH)@'               0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_FL_FOLDER_GENERATED)@'              								 0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH)@'                                           0Preparation/retrieve_metadata.sbatch
 	@sbatch 0Preparation/retrieve_metadata.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
@@ -62,8 +57,6 @@ download_cleaning_data: retrieve_metadata 0Preparation/download_cleaning_data.R
 	@touch $@
 
 ## Add new libraries download to the jura file list (run rule in front)
-#XXX: are we sure all file names are *.fastq.gz ? Maybe add fq.gz/fastq.gzip/fq.gzip too ?
-#XXX: why creating file in the /tmp directory?
 list_new_downloads: download_cleaning_data
 	@find $(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH) -type f -name \*.fastq.gz\* | xargs -r dirname | sed -e 's@^.*/@@' | sort -u > /tmp/new_downloads
 	@cat $(SC_RNASEQ_JURA_LIB_FILEPATH) >>/tmp/new_downloads
@@ -75,12 +68,12 @@ list_new_downloads: download_cleaning_data
 
 commit_annotation_and_metadata: list_new_downloads
 	# Commit the library information file that will be used for the rest of the pipeline
-	@$(GIT) add $(SC_RNASEQ_LIB_FILEPATH)
+	@$(GIT) add $(SC_RNASEQ_LIB_FL_FILEPATH)
 	@$(GIT) add $(SC_RNASEQ_LIB_PASS_FILEPATH)
 	@$(GIT) add $(SC_RNASEQ_LIB_NOT_PASS_FILEPATH)
 	@$(GIT) add $(SC_RNASEQ_METADATA_FILEPATH)
 	@$(GIT) add $(SC_RNASEQ_METADATA_NOT_MATCH_FILEPATH)
-	@$(GIT) commit -m 'Update metadata for scRNASeq for $(DBNAME)' $(SC_RNASEQ_LIB_FILEPATH) $(SC_RNASEQ_LIB_PASS_FILEPATH) $(SC_RNASEQ_LIB_NOT_PASS_FILEPATH) $(SC_RNASEQ_METADATA_FILEPATH) $(SC_RNASEQ_METADATA_NOT_MATCH_FILEPATH) || true
+	@$(GIT) commit -m 'Update metadata for scRNASeq for $(DBNAME)' $(SC_RNASEQ_LIB_FL_FILEPATH) $(SC_RNASEQ_LIB_PASS_FILEPATH) $(SC_RNASEQ_LIB_NOT_PASS_FILEPATH) $(SC_RNASEQ_METADATA_FILEPATH) $(SC_RNASEQ_METADATA_NOT_MATCH_FILEPATH) || true
 	@$(GIT) push
 	@echo -e "All information is ready, you can go to JURA cluster to prepare the scRNA-Seq information file and continue the pipeline \n"
 	@touch $@
@@ -121,11 +114,10 @@ check_tools: clusterJURA
 	@$(MV) $@.tmp $@
 
 ## Prepare single cell info file (run rule in front)
-#TODO: remove hardcoded mapping between speciesName and speciesID in the script
 prepare_singlecell_info: $(SC_RNASEQ_LIB_PASS_FILEPATH) 0Preparation/prepare_scrna_seq_sample_info.R
 	@$(RM) $(SC_RNASEQ_SAMPINFO_FILEPATH)
 	@echo --- prepare single cell information file ---
-	@$(CLUSTER_FASTP_CMD) $(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args NEW_scRNASeqLibrary="$(SC_RNASEQ_LIB_PASS_FILEPATH)" raw_cells_folder="$(SC_RNASEQ_FASTQ_FULL_LENGTH)" output_sample_info_file="$(SC_RNASEQ_SAMPINFO_FILEPATH)"' 0Preparation/prepare_scrna_seq_sample_info.R 0Preparation/prepare_scrna_seq_sample_info.Rout > $@.tmp
+	@$(CLUSTER_FASTP_CMD) $(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args pass_annotationControl="$(SC_RNASEQ_LIB_PASS_FILEPATH)" raw_cells_folder="$(SC_RNASEQ_FASTQ_FULL_LENGTH)" output_folder="$(SC_RNASEQ_FL_FOLDER_GENERATED)"' 0Preparation/prepare_scrna_seq_sample_info.R 0Preparation/prepare_scrna_seq_sample_info.Rout > $@.tmp
 	@echo --- DONE ---
 	@$(MV) $@.tmp $@
 
