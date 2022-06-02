@@ -1,12 +1,11 @@
 ## SFonsecaCosta, September 2019
 ## This script is used to retrieve the metadata from EBI
-## Then compare the annotation information from BGEE for each library with metadata from EBI.
+## Then to compare the annotation information from BGEE for each library with metadata from EBI.
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args NEW_scRNASeqLibrary="NEW_scRNASeqLibrary.tsv" output_folder="output_folder"' retrieve_metadata.R retrieve_metadata.Rout
-## NEW_scRNASeqLibrary     -> File with all libraries annotated by bgee that pass the minimum requirement (>= 50 cells)
-## metadata_info           -> path to output file that contains libraries with identical metadata between Bgee and EBI. libraries in this file will be downloaded
-## metadata_info_not_match -> path to output file that contains libraries with different metadata between Bgee and EBI. libraries in this file will not be downloaded
+## R CMD BATCH --no-save --no-restore '--args pass_annotationControl="passScRNASeqLibrary.tsv" output_folder="output_folder"' retrieve_metadata.R retrieve_metadata.Rout
+## pass_annotationControl -> File with all libraries annotated by bgee that pass the minimum requirement (>= 50 cells)
+## output_folder --> folder where the output files should be saved
 
 ## reading arguments
 cmd_args = commandArgs(TRUE);
@@ -18,7 +17,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments exist....
-command_arg <- c("NEW_scRNASeqLibrary", "metadata_info", "metadata_info_not_match")
+command_arg <- c("pass_annotationControl", "output_folder")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -26,24 +25,21 @@ for( c_arg in command_arg ){
 }
 
 ## Read annotation file. If file not exists, script stops
-if( file.exists(NEW_scRNASeqLibrary) ){
-  annotation <- read.table(NEW_scRNASeqLibrary, h=T, sep="\t", comment.char="")
+if( file.exists(pass_annotationControl) ){
+  annotation <- read.table(pass_annotationControl, h=T, sep="\t", comment.char="")
   names(annotation)[1] <- "libraryId"
 } else {
-  stop( paste("The annotation file not found [", NEW_scRNASeqLibrary, "]\n"))
+  stop( paste("The annotation file not found [", pass_annotationControl, "]\n"))
 }
 ##########################################################################################################################
-## select just annotated protocols that are full length
-fullLength <- data.frame(dplyr::filter(annotation, protocolType == "Full-length"))
-
 # retrieve information from EBI metadata for each library annotated
-libraryIDs <-fullLength[,1]
+libraryIDs <-annotation[,1]
 metadata <- c()
 for (libraryID in unique(libraryIDs)) {
 
   PID <- paste0(libraryID)
 
-  ena.url <- paste("https://www.ebi.ac.uk/ena/data/warehouse/filereport?accession=",
+  ena.url <- paste("https://www.ebi.ac.uk/ena/portal/api/filereport?accession=",
                    PID,
                    "&result=read_run",
                    "&fields=experiment_accession,run_accession,",
@@ -56,23 +52,31 @@ for (libraryID in unique(libraryIDs)) {
 }
 
 ## Create the output files to write the comparison between annotation and metadata
-if (!file.exists(metadata_info)){
+metadata_info <- file.path(output_folder,"metadata_info.tsv")
+if (file.exists(metadata_info)){
+  message("File already exists and will be removed to create a new one to avoid overwritting!")
+  file.remove(metadata_info)
   file.create(metadata_info)
   cat("sample_accession\texperiment_accession\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = metadata_info, sep = "\t")
 } else {
-  message("File already exists.....")
+  file.create(metadata_info)
+  cat("sample_accession\texperiment_accession\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = metadata_info, sep = "\t")
 }
-if (!file.exists(metadata_info_not_match)){
+metadata_info_not_match <- file.path(output_folder,"metadata_info_not_match.tsv")
+if (file.exists(metadata_info_not_match)){
+  message("File already exists and will be removed to create a new one to avoid overwritting!")
+  file.remove(metadata_info_not_match)
   file.create(metadata_info_not_match)
   cat("sample_accession\texperiment_accession\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = metadata_info_not_match, sep = "\t")
 } else {
-  message("File already exists.....")
+  file.create(metadata_info_not_match)
+  cat("sample_accession\texperiment_accession\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = metadata_info_not_match, sep = "\t")
 }
 
 ## compare information between annotation and metadata (like: libraryID, plataform and speciesID)
-for(i in 1:nrow(fullLength)) {
+for(i in 1:nrow(annotation)) {
 
-  annotationInfo <- fullLength[i,]
+  annotationInfo <- annotation[i,]
   metadataInfo <- metadata[i,]
 
   compare_library <- identical(as.character(annotationInfo[['libraryId']]),as.character(metadataInfo[['experiment_accession']]))
