@@ -1,6 +1,7 @@
 ## SFonsecaCosta, September 2019
 
-## This script is used to download the data that pass the minimum requirement of 100 cells and are present in the metadata_info (this means files that are in agreement with Bgee annotation and metadata from EBI)
+## This script is used to download the data that pass the minimum requirement of 50 cells and are present in the metadata_info.tsv file
+## Note the download are organized by species TX_ID
 
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args metadata_info="metadata_info.txt" librariesDownloadedJura="librariesDownloadedJura.tsv" output_folder="output_folder"' download_cleaning_data.R download_cleaning_data.Rout
@@ -66,6 +67,7 @@ if (nrow(finalLibsToDown) == 0){
 
     rowinfo <- finalLibsToDown[i,]
     infoL <- rowinfo$experiment_accession
+    tax_id <- finalLibsToDown$tax_id[i]
 
     if(rowinfo$library_layout == "PAIRED"){
 
@@ -82,15 +84,29 @@ if (nrow(finalLibsToDown) == 0){
 
   ## create final information of the library and FASZQ.gz file path
   generalInfo <- data.frame(LibInfo, ftp)
-
+  for (i in generalInfo$LibInfo) {
+    
+    generalInfo$tax_id <- finalLibsToDown$tax_id[finalLibsToDown$experiment_accession == i]
+  }
+  
+  
   for (library in  unique(generalInfo$LibInfo)) {
 
+    ## create output for each species
+    species <- generalInfo$tax_id[generalInfo$LibInfo == library]
+    folder_species <- file.path(output_folder, species)
+    if (file.exists(folder_species)) {
+      cat("The folder already exists")
+    } else {
+      dir.create(folder_species)
+    }
+    
     ## create output for each library
     message("treating the library: ", library)
-    InfoFile <- file.path(output_folder, library)
+    InfoFile <- file.path(folder_species, library)
     dir.create(InfoFile, showWarnings = FALSE)
     files<-list.files(path = InfoFile, pattern="*.fastq.gz$")
-
+    
     ## control the downloading process if stops
     if (dir.exists(InfoFile) == TRUE && file_test("-f", paste0(InfoFile,"/",files)) == TRUE){
 
