@@ -9,10 +9,15 @@ include $(PIPELINEROOT)Makefile.common
 ## NOTE: this files should be already in the source_files (see whats happen with download)
 get_annot:
 	@$(WGET) $(ANNOTATION_GIT_URL)/Strains/StrainMapping.tsv                   && $(MV) StrainMapping.tsv                  $(STRAIN_MAPPING_FILE)
-	@$(WGET) $(ANNOTATION_GIT_URL)/scRNA_Seq/scRNASeqLibrary.tsv               && $(MV) scRNASeqLibrary.tsv                $(INPUT_DIR)/scRNASeqLibrary.tsv                2>/dev/null  || rm -f scRNASeqLibrary.tsv
-	@$(WGET) $(ANNOTATION_GIT_URL)/scRNA_Seq/scRNASeqExperiment.tsv            && $(MV) scRNASeqExperiment.tsv             $(INPUT_DIR)/scRNASeqExperiment.tsv             2>/dev/null  || rm -f scRNASeqExperiment.tsv
-	@$(WGET) $(ANNOTATION_GIT_URL)/scRNA_Seq/scRNASeq_barcode.tsv              && $(MV) scRNASeq_barcode.tsv               $(INPUT_DIR)/scRNASeq_barcode.tsv               2>/dev/null  || rm -f scRNASeq_barcode.tsv
-	@$(WGET) $(ANNOTATION_GIT_URL)/scRNA_Seq/scRNASeq_markers_10X.tsv          && $(MV) scRNASeq_markers_10X.tsv           $(INPUT_DIR)/scRNASeq_markers_10X.tsv           2>/dev/null  || rm -f scRNASeq_markers_10X.tsv
+	@$(WGET) $(ANNOTATION_GIT_URL)/scRNA_Seq/scRNASeqTBLibrary.tsv             && $(MV) scRNASeqTBLibrary.tsv              $(INPUT_DIR)/Target_based/scRNASeqTBLibrary.tsv               2>/dev/null  || rm -f scRNASeqTBLibrary.tsv
+	@$(WGET) $(ANNOTATION_GIT_URL)/scRNA_Seq/scRNASeqExperiment.tsv            && $(MV) scRNASeqExperiment.tsv             $(INPUT_DIR)/scRNASeqExperiment.tsv            							 2>/dev/null  || rm -f scRNASeqExperiment.tsv
+	@$(WGET) $(ANNOTATION_GIT_URL)/scRNA_Seq/scRNASeq_barcode_ERP117745.tsv    && $(MV) scRNASeq_barcode_ERP117745.tsv     $(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP117745.tsv      2>/dev/null  || rm -f scRNASeq_barcode_ERP117745.tsv
+	@$(WGET) $(ANNOTATION_GIT_URL)/scRNA_Seq/scRNASeq_barcode_ERP119519.tsv    && $(MV) scRNASeq_barcode_ERP119519.tsv     $(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP119519.tsv      2>/dev/null  || rm -f scRNASeq_barcode_ERP119519.tsv
+	@$(WGET) $(ANNOTATION_GIT_URL)/scRNA_Seq/scRNASeq_barcode_ERP120466.tsv    && $(MV) scRNASeq_barcode_ERP120466.tsv     $(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP120466.tsv      2>/dev/null  || rm -f scRNASeq_barcode_ERP120466.tsv
+	@$(WGET) $(ANNOTATION_GIT_URL)/scRNA_Seq/scRNASeq_barcode_SRP125768.tsv    && $(MV) scRNASeq_barcode_SRP125768.tsv     $(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP125768.tsv      2>/dev/null  || rm -f scRNASeq_barcode_SRP125768.tsv
+	@$(WGET) $(ANNOTATION_GIT_URL)/scRNA_Seq/scRNASeq_barcode_SRP131661.tsv    && $(MV) scRNASeq_barcode_SRP131661.tsv     $(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP131661.tsv      2>/dev/null  || rm -f scRNASeq_barcode_SRP131661.tsv
+	@$(WGET) $(ANNOTATION_GIT_URL)/scRNA_Seq/scRNASeq_barcode_SRP135999.tsv    && $(MV) scRNASeq_barcode_SRP135999.tsv     $(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP135999.tsv      2>/dev/null  || rm -f scRNASeq_barcode_SRP135999.tsv
+	@$(WGET) $(ANNOTATION_GIT_URL)/scRNA_Seq/scRNASeq_barcode_SRP201320.tsv    && $(MV) scRNASeq_barcode_SRP201320.tsv     $(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP201320.tsv      2>/dev/null  || rm -f scRNASeq_barcode_SRP201320.tsv
 	@touch $@
 
 ## Retrieve metadata (run rule with sbatch)
@@ -20,13 +25,12 @@ retrieve_metadata: get_annot 0Preparation/retrieve_metadata.R
 	@echo --- Retrieve metadata information ---
 	@sed -i 's@--output=.*@--output=${PWD}/retrieve_metadata.out@'                                                      0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/retrieve_metadata.err@'                                                        0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                    	0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                          	0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                    	  0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                          	  0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                        0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@export scRNASeqExperiment=.*@export scRNASeqExperiment=../$(SC_RNASEQ_EXPERIMENT_FILEPATH)@'             0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export scRNASeqLibrary=.*@export scRNASeqLibrary=../$(SC_RNASEQ_LIB_FILEPATH)@'                          0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export metadata_file_path=.*@export output=../$(SC_RNASEQ_METADATA_10X_FILEPATH)@'                       0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export metadata_notmatch_file_path=.*@export output=../$(SC_RNASEQ_METADATA_10X_NOT_MATCH_FILEPATH)@'    0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export scRNASeqTBLibrary=.*@export scRNASeqTBLibrary=../$(SC_RNASEQ_LIB_TB_FILEPATH)@'                   0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export output_folder=.*@export output_folder=../$(SC_RNASEQ_TB_FOLDER_GENERATED)@'   										0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET)@'                                          0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@export R_LIBS_USER=.*@export R_LIBS_USER=$(R_LIBS_PATH_CURNAGL)@'                                        0Preparation/retrieve_metadata.sbatch
 	@sbatch 0Preparation/retrieve_metadata.sbatch
@@ -102,17 +106,21 @@ list_new_downloads: download_SRA download_EBI download_HCA
 
 # Commit the library information file that will be used for the rest of the pipeline
 commit_annotation_and_metadata: list_new_downloads
-	@$(GIT) add ../$(INPUT_DIR)scRNASeqLibrary.tsv
+	@$(GIT) add ../$(INPUT_DIR)/Target_based/scRNASeqTBLibrary.tsv
 	@$(GIT) add ../$(INPUT_DIR)scRNASeqExperiment.tsv
-	@$(GIT) add ../$(INPUT_DIR)scRNASeq_barcode.tsv
-	@$(GIT) add ../$(INPUT_DIR)scRNASeq_markers_10X.tsv
-	@$(GIT) add ../$(OUTPUT_DIR)metadata_info_10X.txt
-	@$(GIT) add ../$(OUTPUT_DIR)metadata_notMatch_10X.txt
-	@$(GIT) commit -m 'Update metadata for droplet-based protocols for scRNASeq for $(DBNAME)' ../$(INPUT_DIR)scRNASeqLibrary.tsv ../$(INPUT_DIR)scRNASeqExperiment.tsv ../$(INPUT_DIR)scRNASeq_barcode.tsv ../$(INPUT_DIR)scRNASeq_markers_10X.tsv ../$(OUTPUT_DIR)metadata_info_10X.txt ../$(OUTPUT_DIR)metadata_notMatch_10X.txt || true
+	@$(GIT) add ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP117745.tsv
+	@$(GIT) add ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP119519.tsv
+	@$(GIT) add ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP120466.tsv
+	@$(GIT) add ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP125768.tsv
+	@$(GIT) add ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP131661.tsv
+	@$(GIT) add ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP135999.tsv
+	@$(GIT) add ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP201320.tsv
+	@$(GIT) add ../$(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_info_10X.txt
+	@$(GIT) add ../$(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_notMatch_10X.txt
+	@$(GIT) commit -m 'Update metadata for droplet-based protocols for scRNASeq for $(DBNAME)' ../$(INPUT_DIR)/Target_based/scRNASeqTBLibrary.tsv ../$(INPUT_DIR)scRNASeqExperiment.tsv ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP117745.tsv ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP119519.tsv ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP120466.tsv ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP125768.tsv ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP131661.tsv ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP135999.tsv ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP201320.tsv ../$(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_info_10X.txt ../$(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_notMatch_10X.txt || true
 	@$(GIT) push
 	@echo -e "All information is ready, you can go to JURA cluster to continue the pipeline of the droplet protocols\n"
 	@touch $@
-
 
 ## NOTE: Copy all git repository to JURA!
 ################## STEPS TO RUN ON JURA SERVER ##################
