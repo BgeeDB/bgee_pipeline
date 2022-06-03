@@ -20,11 +20,10 @@ module add R/3.6.1;
 
 export SCRIPT_PATH=/users/smoretti/bgee_pipeline.git/pipeline/scRNA_Seq/Droplet_based_Protocols
 export scRNASeqExperiment=../../../source_files/scRNA_Seq/scRNASeqExperiment.tsv
-export scRNASeqLibrary=../../../source_files/scRNA_Seq/scRNASeqLibrary.tsv
-export metadata_file_path=../../../generated_files/scRNA_Seq/metadata_info_10X.tsv
-export metadata_notmatch_file_path=../../../generated_files/scRNA_Seq/metadata_notMatch_10X.tsv
+export scRNASeqTBLibrary=../../../source_files/scRNA_Seq/Target_based/scRNASeqTBLibrary.tsv
+export output_folder=../../../generated_files/scRNA_Seq/Target_based/
 export ROUT=/work/FAC/FBM/DEE/mrobinso/bgee/downloads/scRNA_Seq_All/scRNASeq_libraries_Droplet_10X/
 
 mkdir -p $ROUT
 export R_LIBS_USER=/work/FAC/FBM/DEE/mrobinso/bgee/R_LIBS
-R CMD BATCH --no-save --no-restore "--args scRNASeqExperiment=\"$scRNASeqExperiment\" scRNASeqLibrary=\"$scRNASeqLibrary\" output=\"$output\"" $SCRIPT_PATH/0Preparation/retrieve_metadata.R $ROUT/retrieve_metadata.Rout
+R CMD BATCH --no-save --no-restore "--args scRNASeqExperiment=\"$scRNASeqExperiment\" scRNASeqTBLibrary=\"$scRNASeqTBLibrary\" output_folder=\"$output_folder\"" $SCRIPT_PATH/0Preparation/retrieve_metadata.R $ROUT/retrieve_metadata.Rout
