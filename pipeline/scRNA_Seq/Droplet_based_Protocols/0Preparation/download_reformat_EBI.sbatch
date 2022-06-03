@@ -19,7 +19,7 @@ module load Bioinformatics/Software/vital-it
 module add R/3.6.1;
 
 export SCRIPT_PATH=/users/smoretti/bgee_pipeline.git/pipeline/scRNA_Seq/Droplet_based_Protocols
-export metadata_info=../../../generated_files/scRNA_Seq/metadata_info_10X.txt
+export metadata_info=../../../generated_files/scRNA_Seq/Target_based/metadata_info_10X.txt
 export librariesDownloadedJura=../../../generated_files/scRNA_Seq/juraLibrariesDownloaded.tsv
 export output=/work/FAC/FBM/DEE/mrobinso/bgee/downloads/scRNA_Seq_All/scRNASeq_libraries_Droplet_10X/
 export bamtofastq=/users/sfonseca1/bin/bamtofastq-1.2.0

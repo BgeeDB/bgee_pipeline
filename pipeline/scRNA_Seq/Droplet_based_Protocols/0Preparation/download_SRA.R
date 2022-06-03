@@ -59,16 +59,22 @@ for (library in  unique(finalLibsToDown$experiment_accession)) {
 
   ## create output for each library
   message("treating the library: ", library)
-  InfoFile <- paste0(output, "/", library)
-  if (!dir.create(InfoFile)){
-    dir.create(InfoFile)
+  species <- finalLibsToDown$tax_id[finalLibsToDown$experiment_accession == library]
+  folder_species <- file.path(output, species)
+  if (file.exists(folder_species)) {
+    cat("The folder already exists")
   } else {
-    message("File already exist.....")
+    dir.create(folder_species)
   }
-
+  folder_library <- file.path(folder_species,library)
+  if (file.exists(folder_library)) {
+    cat("The folder already exists")
+  } else {
+    dir.create(folder_library)
+  }
   ## select the SRR referent to the library to download
   SRR_file <- finalLibsToDown$run_accession[finalLibsToDown$experiment_accession == library]
-  setwd(InfoFile)
+  setwd(folder_library)
 
   system(sprintf('prefetch --type fastq %s', paste0(SRR_file)))
 }

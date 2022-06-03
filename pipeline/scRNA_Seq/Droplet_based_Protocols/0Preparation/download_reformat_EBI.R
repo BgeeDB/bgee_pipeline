@@ -54,8 +54,8 @@ colnames(checkId) <- "experiment_accession"
 finalLibsToDown <- dplyr::filter(readFile, experiment_accession %in% checkId$experiment_accession)
 
 ##############################################################################################################################################
-
-libraryName <- select(finalLibsToDown, experiment_accession)
+libraryName <- finalLibsToDown$experiment_accession
+speciesID <- finalLibsToDown$tax_id
 ftp <- as.character(finalLibsToDown$submitted_ftp)
 ftp <- data.frame(unlist(strsplit(ftp, ";")))
 colnames(ftp)<- "ftp_link"
@@ -64,7 +64,7 @@ ftp[is.na(ftp)] <- 0
 ftp <- ftp %>% filter(!str_detect(ftp_link, ".bam.bai"))
 
 ## create final information of library and bam file path
-generalInfo <- data.frame(libraryName, ftp)
+generalInfo <- data.frame(libraryName, speciesID, ftp)
 ## remove all libraries that don't have information to make the download from the bam files
 generalInfo <- dplyr::filter(generalInfo, ftp_link != 0)
 generalInfo <- dplyr::filter(generalInfo, ftp_link != "NA")
@@ -76,7 +76,14 @@ for (library in  unique(generalInfo$experiment_accession)) {
 
   ## create output for each library
   message("treating the library: ", library)
-  InfoFile <- paste0(output, "/", library)
+  species <- generalInfo$speciesID[generalInfo$libraryName == library]
+  folder_species <- file.path(output, species)
+  if (file.exists(folder_species)) {
+    cat("The folder already exists")
+  } else {
+    dir.create(folder_species)
+  }
+  InfoFile <- file.path(folder_species,library)
   if (!dir.create(InfoFile)){
     dir.create(InfoFile)
   } else {
@@ -84,7 +91,7 @@ for (library in  unique(generalInfo$experiment_accession)) {
   }
 
   ## select URL for the correspondent library
-  ftpID <- generalInfo[generalInfo$experiment_accession %like% library,][,2]
+  ftpID <- generalInfo$ftp_link[generalInfo$libraryName == library]
   setwd(InfoFile)
   ## download file
   wget(c(paste0(ftpID)))
