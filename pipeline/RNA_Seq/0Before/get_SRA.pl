@@ -48,20 +48,25 @@ while (<$ANNOTATION>){
     my $sra_list   = $tmp[10];
     my $library_id = $tmp[0];
     my $exp_id     = $tmp[1];
+    my $taxa_id    = $tmp[2];
     next LIB  if ( $library_id =~ /^#/ || $sra_list =~ /^#/ ); # Header or commented line
     next LIB  if ( exists $already_downloaded{$library_id} );
 
+    my $lib_dir = "$FASTQ_PATH/$taxa_id/$library_id";
+    #NOTE EXPERIMENTS/ folder for symlinks (retrieval by experiment_id)
+    my $exp_dir = "$FASTQ_PATH/EXPERIMENTS";
+    mkdir $exp_dir;
     print "Starting [$library_id]\t"  if ( !$info_only );
     SRA:
     for my $sra_id ( sort split(/,/, $sra_list) ){
         if ( $sra_id =~ /^[SEDC]RR\d+/ ){ #S: SRA/NCBI; E: EBI; D: DDBJ; C: GSA_China
             # Check if FASTQ are there AND if SRA have been removed  -> already stored
-            if ( !-e "$SRA_PATH/$sra_id.sra" && (-s "$FASTQ_PATH/$library_id/$sra_id.fastq.gz" || -s "$FASTQ_PATH/$library_id/$sra_id.fastq.gz.enc") ){
+            if ( !-e "$SRA_PATH/$sra_id.sra" && (-s "$lib_dir/$sra_id.fastq.gz" || -s "$lib_dir/$sra_id.fastq.gz.enc") ){
                 warn "\t[$library_id/$sra_id] single-end already stored\n"  if ( !$info_only );
                 next SRA;
             }
-            if ( !-e "$SRA_PATH/$sra_id.sra" && (-s "$FASTQ_PATH/$library_id/${sra_id}_1.fastq.gz" || -s "$FASTQ_PATH/$library_id/${sra_id}_1.fastq.gz.enc")
-                                             && (-s "$FASTQ_PATH/$library_id/${sra_id}_2.fastq.gz" || -s "$FASTQ_PATH/$library_id/${sra_id}_2.fastq.gz.enc")){
+            if ( !-e "$SRA_PATH/$sra_id.sra" && (-s "$lib_dir/${sra_id}_1.fastq.gz" || -s "$lib_dir/${sra_id}_1.fastq.gz.enc")
+                                             && (-s "$lib_dir/${sra_id}_2.fastq.gz" || -s "$lib_dir/${sra_id}_2.fastq.gz.enc")){
                 warn "\t[$library_id/$sra_id] paired-end already stored\n"  if ( !$info_only );
                 next SRA;
             }
@@ -82,18 +87,18 @@ while (<$ANNOTATION>){
             #   output files go to sample subfolder in fastq folder
             #NOTE fastq-dump has problems with paths containing //
             #NOTE cd to the "project's workspace directory" the ONLY place where the SRA download works for private SRR
-            mkdir "$FASTQ_PATH/$library_id";
-            system("cd $BASE; $SRATK_PATH/bin/fastq-dump --split-e --gzip --outdir $FASTQ_PATH/$library_id/  $SRA_PATH/$sra_id.sra")==0
+            mkdir $lib_dir;
+            system("cd $BASE; $SRATK_PATH/bin/fastq-dump --split-e --gzip --outdir $lib_dir/  $SRA_PATH/$sra_id.sra")==0
                 or do { warn "\tFailed to convert [$library_id/$sra_id]\n"; next SRA };
 
             # Check FastQ file size
-            for my $fastq ( glob("$FASTQ_PATH/$library_id/*.gz") ){
+            for my $fastq ( glob("$lib_dir/*.gz") ){
                 if ( -s $fastq < 1_000_000 ){
                     warn "$fastq file size looks very small!";
                 }
             }
 
-            my $prefix      = "$FASTQ_PATH/$library_id/$sra_id";
+            my $prefix      = "$lib_dir/$sra_id";
             my $fastq_fastp = '';
             my $fastq_R     = '';
             ## Single-end
@@ -122,7 +127,7 @@ while (<$ANNOTATION>){
 
             # If private (need encryption):
             if ( (scalar grep { /^$exp_id$/ } @private_exp_id) >= 1 ){
-                for my $fastq ( glob("$FASTQ_PATH/$library_id/*.gz") ){
+                for my $fastq ( glob("$lib_dir/*.gz") ){
                     #NOTE Replace -salt by -d for decrypting and gz.enc as input and gz as output
                     system("openssl enc -aes-128-cbc -salt -in $fastq -out $fastq.enc -pass file:$BASE/.passw  &&  rm -f $fastq")==0
                         or do { warn "\tFailed to encrypt [$library_id/$sra_id]\n"; next SRA };
@@ -131,6 +136,8 @@ while (<$ANNOTATION>){
 
             # If fine, SRA cleaning
             system("rm -f $SRA_PATH/$sra_id.sra*");
+            mkdir "$exp_dir/$exp_id";
+            system("ln -s ../../$taxa_id/$library_id $exp_dir/$exp_id/$library_id ")==0  or do { warn "Cannot symlink in [$exp_dir/$exp_id]\n" };
         }
         else {
             warn "\t[$sra_id] is not an SRA id\n";
