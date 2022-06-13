@@ -85,11 +85,10 @@ if (nrow(finalLibsToDown) == 0){
   ## create final information of the library and FASZQ.gz file path
   generalInfo <- data.frame(LibInfo, ftp)
   for (i in generalInfo$LibInfo) {
-    
     generalInfo$tax_id <- finalLibsToDown$tax_id[finalLibsToDown$experiment_accession == i]
   }
-  
-  
+
+
   for (library in  unique(generalInfo$LibInfo)) {
 
     ## create output for each species
@@ -100,13 +99,13 @@ if (nrow(finalLibsToDown) == 0){
     } else {
       dir.create(folder_species)
     }
-    
+
     ## create output for each library
     message("treating the library: ", library)
     InfoFile <- file.path(folder_species, library)
     dir.create(InfoFile, showWarnings = FALSE)
     files<-list.files(path = InfoFile, pattern="*.fastq.gz$")
-    
+
     ## control the downloading process if stops
     if (dir.exists(InfoFile) == TRUE && file_test("-f", paste0(InfoFile,"/",files)) == TRUE){
 
