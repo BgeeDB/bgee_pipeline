@@ -199,7 +199,7 @@ cleaning_barcodes: generate_info 0Preparation/cleaning_barcodes.R
 	@touch $@
 
 
-## Run Kallisto bus per library
+## Run Kallisto bus per taxon_iD/library
 ##TODO: since Bgee15 kallisto indexes containing transcripts and ref intergenic sequences are generated using BgeeCall. They will not be anymore in the $(RNASEQ_CLUSTER_GTF) folder. It has to be updated
 kallisto_bus: cleaning_barcodes 1Run/Kallisto_bus.R
 	@echo --- Start running kallisto bus for all libraries ---
@@ -219,18 +219,10 @@ kallisto_bus: cleaning_barcodes 1Run/Kallisto_bus.R
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
 	@touch $@
-
-## Commit the informative file generated during the Kallisto_bus (that is used in all pipeline after)
-commit_informativeFile: kallisto_bus
-	@$(GIT) add $(SC_RNASEQ_SAMPINFO_10X_FILEPATH)
-	@$(GIT) commit -m 'Update scRNA_Seq_info_TargetBased file for scRNASeq target-based for $(DBNAME)' $(SC_RNASEQ_SAMPINFO_10X_FILEPATH) || true
-	@$(GIT) push
-	@echo -e "The informative file for target-based is ready. \n"
-	@touch $@
-
+	
 
 # NOTE: Before run the process_busFile rule (uncompress the barcodes files, because in github we cannot have files with more than 100Mb size)
-uncompress_barcodes: commit_informativeFile $(SC_RNASEQ_PATH_SOURCE)/barcode_whitelist_10X_v2.txt.zip $(SC_RNASEQ_PATH_SOURCE)/barcode_whitelist_10X_v3.txt.zip
+uncompress_barcodes: kallisto_bus $(SC_RNASEQ_PATH_SOURCE)/barcode_whitelist_10X_v2.txt.zip $(SC_RNASEQ_PATH_SOURCE)/barcode_whitelist_10X_v3.txt.zip
 	cd $(SC_RNASEQ_PATH_SOURCE) && \
 	unzip barcode_whitelist_10X_v2.txt.zip && \
 	unzip barcode_whitelist_10X_v3.txt.zip
@@ -253,36 +245,6 @@ process_busFile: uncompress_barcodes 1Run/process_busFile.R
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
 	@touch $@
-
-
-## Because of lack of internet connection in sensitive server go back to curnagl
-## just to generate the files that allow to match ensemblId with UniprotId for each species in scRNA_Seq_info_TargetBased.txt file
-geneId_UniprotId: 0Preparation/ensembl_To_uniprot.R
-	@echo --- Starting the match between geneId and UniprotId for all species ---
-	@sed -i 's@--output=.*@--output=${PWD}/ensembl_To_uniprot.out@'                                  0Preparation/ensembl_To_uniprot.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/ensembl_To_uniprot.error@'                                  0Preparation/ensembl_To_uniprot.sbatch
-	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                     0Preparation/ensembl_To_uniprot.sbatch
-	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                           0Preparation/ensembl_To_uniprot.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                    0Preparation/ensembl_To_uniprot.sbatch
-	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'     0Preparation/ensembl_To_uniprot.sbatch
-	@sed -i 's@export output=.*@export output=$(SC_RNASEQ_PATH_GENERATED)@'                          0Preparation/ensembl_To_uniprot.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_PATH_GENERATED)@'                              0Preparation/ensembl_To_uniprot.sbatch
-	@sbatch 0Preparation/ensembl_To_uniprot.sbatch
-	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
-	@echo --- DONE ---
-	@touch $@
-
-## Commit the the match files
-commit_matchFiles: geneId_UniprotId
-	@$(GIT) add $(OUTPUT_DIR)ensembl_Uniprot_*
-	@$(GIT) commit -m 'add files that match geneID with uniprotID for each species.' $(OUTPUT_DIR)ensembl_Uniprot_* || true
-	@$(GIT) push
-	@echo -e "The match files are ready to continue the pipeline in the sensitive server. \n"
-	@touch $@
-
-
-#### Retur back to sensitive server to run the last rules of the pipeline.
-## JURA server
 
 ## Quality control (Knee + PCA + UMAP for each library) + cell type identification
 qc_cellType: process_busFile 1Run/QC_CelltypeIdentification.R
@@ -346,12 +308,11 @@ final_status: calls
 
 final_commit: final_status
 	# Commit the scRNASeq info files after QC and information file about the stats of all libraries
+	@$(GIT) add ../$(OUTPUT_DIR)$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)
 	@$(GIT) add ../$(OUTPUT_DIR)InformationAllLibraries.txt
-	@$(GIT) add ../$(OUTPUT_DIR)markerGenes_Validated.txt
-	@$(GIT) add ../$(OUTPUT_DIR)variabilityClusters.txt
 	@$(GIT) add ../$(OUTPUT_DIR)bimodality_targetBased.txt
 	@$(GIT) add ../$(OUTPUT_DIR)All_cellPopulation_stats_10X.tsv
-	@$(GIT) commit -m 'Update info files for scRNASeq target-based for $(DBNAME)' ../$(OUTPUT_DIR)InformationAllLibraries.txt ../$(OUTPUT_DIR)markerGenes_Validated.txt ../$(OUTPUT_DIR)variabilityClusters.txt ../$(OUTPUT_DIR)bimodality_targetBased.txt ../$(OUTPUT_DIR)All_cellPopulation_stats_10X.tsv || true
+	@$(GIT) commit -m 'Update info files for scRNASeq target-based for $(DBNAME)' ../$(OUTPUT_DIR)$(SC_RNASEQ_SAMPINFO_10X_FILEPATH) ../$(OUTPUT_DIR)InformationAllLibraries.txt ../$(OUTPUT_DIR)bimodality_targetBased.txt ../$(OUTPUT_DIR)All_cellPopulation_stats_10X.tsv || true
 	@$(GIT) push
 	@echo -e "All information is ready, you can make a tar of the results. \n"
 	@touch $@
