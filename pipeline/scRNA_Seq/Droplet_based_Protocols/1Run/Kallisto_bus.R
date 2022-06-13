@@ -4,13 +4,13 @@
 ## This script is used to run Kallisto bus in all libraries from all species and experiments
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args metadata_file="metadata_info_10X.txt" annotation_file="scRNASeqLibrary.tsv" folder_data="folder_data" folderSupport="folderSupport" output="output"' Kallisto_bus.R Kallisto_bus.Rout
+## R CMD BATCH --no-save --no-restore '--args metadata_file="metadata_info_10X.txt" annotation_file="scRNASeqTBLibrary.tsv" folder_data="folder_data" folderSupport="folderSupport" output="output" kallisto_bus_results="folder_save_Results_from_kallisto_bus"' Kallisto_bus.R Kallisto_bus.Rout
 ## metadata_file --> Metadata file exported after run the script retrieve_metadata.R
 ## annotation_file --> Bgee annotation file with information about all libraries
-## folder_data --> Folder where all the libraries are located
+## folder_data --> Folder where all the libraries are located after download (the libaries are organized by: taxon_ID/library_ID)
 ## folderSupport --> Folder where is placed the informative files as transcriptomes index + gtf_all
 ## output --> Path where should be saved the scRNA_Seq_info_TargetBased file
-## kallisto_bus_results --> path where should be saved all kallisto bus results
+## kallisto_bus_results --> path where should be saved all kallisto bus results per library_ID
 
 ## libraries used
 library(stringr)
@@ -49,7 +49,7 @@ if( file.exists(annotation_file) ){
 }
 ##########################################################################################################################################################
 ## first merge information from the metadata (like: reads information and SRR) and annotation file (from Bgee)
-metadataCollect <- metadata[c("experiment_accession", "run_accession","read_count", "scientific_name", "library_layout")]
+metadataCollect <- metadata[c("experiment_accession", "run_accession","read_count", "tax_id", "scientific_name", "library_layout")]
 colnames(metadataCollect)[1] <- "libraryId"
 targetBased <- data.frame(dplyr::filter(annotation, protocol == "10X Genomics" & protocolType == "3'end"))
 
@@ -67,12 +67,13 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
 
   ## collect all libraries from the species
   collectLibrary <- scRNASeqInfo$libraryId[scRNASeqInfo$scientific_name == species]
+  taxID <- unique(scRNASeqInfo$tax_id[scRNASeqInfo$scientific_name == species])
 
   for (i in collectLibrary) {
     message("Treating library: ", i)
 
     ## verify if library exist
-    libraryInfo <- file.exists(file.path(folder_data, i))
+    libraryInfo <- file.exists(file.path(folder_data, taxID, i))
 
     if (libraryInfo == TRUE){
       
@@ -85,7 +86,7 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
         message("The whitelist used is:", whiteLInfo)
         
         ## verify if exist FASTQ (with or without recursive folder) or SRR folder with fastq.gz files for the library
-        fastqLibDir <- file.path(folder_data, i, "FASTQ")
+        fastqLibDir <- file.path(folder_data, taxID, i, "FASTQ")
         detectFastqPath_1 <- file.exists(fastqLibDir)
         detectFastqPath_2 <- list.dirs(fastqLibDir, recursive=TRUE)[-1]
         detectFastqPath_2 <- rlang::is_empty(detectFastqPath_2)
@@ -95,7 +96,7 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
         if (!dir.exists(busOutput)){
           dir.create(busOutput, recursive=TRUE)
         } else {
-          message(busOutput, " dir already exists.....")
+          message(busOutput, " directory already exists.....")
         }
         
         if (detectFastqPath_1 == TRUE & detectFastqPath_2 == TRUE){
@@ -126,7 +127,7 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
         } else {
           
           print("This library come from SRA repository. fastq.gz files are saved directlly in a SRR folder")
-          detectFastqPath <- list.dirs(file.path(folder_data, i), recursive=TRUE)[-1]
+          detectFastqPath <- list.dirs(file.path(folder_data, taxID, i), recursive=TRUE)[-1]
           detectFastqFiles <- list.files(path=detectFastqPath, pattern = "\\.fastq.gz$")
           message("FASTQ Files detected: ", detectFastqFiles)
           

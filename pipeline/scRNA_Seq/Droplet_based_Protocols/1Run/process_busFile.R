@@ -10,7 +10,7 @@
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNA_Seq_info_TargetBased.txt" kallisto_bus_results="kallisto_bus_results" folderSupport="folderSupport" whiteList_Path="whiteList_Path"' process_busFile.R process_busFile.Rout
 ## scRNASeq_Info --> File that results from annotation and metadata (libraries downloaded and with extra information as SRR)
-## kallisto_bus_results --> Folder where are all the libraries in fastq format
+## kallisto_bus_results --> Folder where are all the libraries after run kallisto bus 
 ## folderSupport --> Folder where is placed the informative files as: transcriptomes index + gtf_all + transcript_to_gene
 ## whiteList_Path --> Folder where is located the barcode_whitelist files
 
