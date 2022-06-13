@@ -24,8 +24,8 @@ my %opts = ('sample_info_file=s'    => \$sample_info_file,      # path to rna_se
             'fastq_dir=s'           => \$fastq_dir,             # path to directory containing all fastq files
             'bgeecall_file=s'       => \$bgeecall_file,         # path to the output file compatible with BgeeCall
             'ref_intergenic_dir=s'  => \$ref_intergenic_dir,    # path to directory containing all reference intergenic sequences
-            'output_dir=s'          => \$output_dir             # path to the directory where all library results will be saved   
-	);
+            'output_dir=s'          => \$output_dir             # path to the directory where all library results will be saved
+);
 
 # test arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
@@ -77,7 +77,7 @@ while (my $line = <$sample_info>) {
     my $prefixFilePath = $1;
     my $transcriptome_path = "$transcriptome_dir$prefixFilePath.transcriptome_wo_intergenic.fa";
     my $annotation_path = "$transcriptome_dir$prefixFilePath.transcriptome.gtf";
-    my $fastq_path = "$fastq_dir$line[0]";
+    my $fastq_path = "$fastq_dir$line[2]/$line[0]";
     my $intergenic_file = "$ref_intergenic_dir$line[2]_intergenic.fa.gz";
     my $lib_output_dir ="$output_dir/all_results/$line[0]";
     my $output_line = "$line[2]\t\t$line[9]\t$fastq_path\t$transcriptome_path\t$annotation_path\t$lib_output_dir\t$intergenic_file\n";

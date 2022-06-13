@@ -88,6 +88,7 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
 
     my @fields     = split ("\t", $line);
     my $library_id = $fields[0];
+    my $taxa_id    = $fields[2];
     # Excluded library
     next JOB  if ( exists $manually_excluded{$library_id} );
 
@@ -119,7 +120,7 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
 
 
     #NOTE check memory usage with  grep 'Maximum resident set size' *.time
-    my $script_plus_args = "/software/bin/time -vo $output_log_folder/$library_id/$library_id.time  perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -exclude_sample_file=$exclude_sample_file -index_folder=$index_folder -fastq_folder=$fastq_folder -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -enc_passwd_file=$enc_passwd_file > $output_log_folder/$library_id/$library_id.txt 2>&1";
+    my $script_plus_args = "/software/bin/time -vo $output_log_folder/$library_id/$library_id.time  perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -exclude_sample_file=$exclude_sample_file -index_folder=$index_folder -fastq_folder='$fastq_folder/$taxa_id' -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -enc_passwd_file=$enc_passwd_file > $output_log_folder/$library_id/$library_id.txt 2>&1";
 
 
     # Wait for free places in job queue
