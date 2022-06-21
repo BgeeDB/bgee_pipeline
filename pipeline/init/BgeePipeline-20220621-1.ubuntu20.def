@@ -89,7 +89,7 @@ From: ubuntu:20.04
 	apt-get upgrade -y
 	export DEBIAN_FRONTEND=noninteractive
 	apt install -y --no-install-recommends gnupg wget git apt-utils ca-certificates libterm-readline-gnu-perl readline-common software-properties-common dirmngr build-essential libssl-dev libncurses5-dev libcurl4-openssl-dev liblzma-dev libbz2-dev libboost-all-dev sqlite3 libsqlite3-0 libsqlite3-dev libgsl0-dev zlib1g-dev libxml2-dev libgmp-dev libgmp10 libmpfr-dev
-	apt install -y --no-install-recommends openjdk-11-jdk perl python3 mysql-client maven ncbi-blast+
+	apt install -y --no-install-recommends openjdk-11-jdk perl python3 python3-pip mysql-client maven ncbi-blast+
 
 	#Install R
 	wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | sudo tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
@@ -259,8 +259,19 @@ From: ubuntu:20.04
 	#TODO Do we need Ensembl web API Perl lib???
 
 	# Install Python3 lib
+	pip3 install IPython
+	pip3 install intermine
+	pip3 install matplotlib
+	pip3 install numpy
+	pip3 install os
+	pip3 install pandas
+	pip3 install seaborn
+	pip3 install simplejson
+
+	# Install Kallisto
 	
 
+	# Install bustools, fastp, fastq-dump, gtf_to_fasta
 
 	# CLEANING
 	## So try to remove manually useless stuff
@@ -268,8 +279,6 @@ From: ubuntu:20.04
 	apt-get clean
 	rm -rf /var/lib/apt/lists/*
 
-#NOTE maybe an issue with
-# /bin/bash: warning: setlocale: LC_ALL: cannot change locale (en_US.UTF-8)
 
 %test
 	# no test
