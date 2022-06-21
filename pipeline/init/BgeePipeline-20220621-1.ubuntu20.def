@@ -1,0 +1,110 @@
+Bootstrap: docker
+From: ubuntu:20.04
+
+
+%environment
+	# Section to define environment variables that will be available to the container at runtime.
+	# We use it to define the name, version and release of the container.
+	export CONTAINER_NAME="BgeePipeline"
+	export CONTAINER_VERSION="20220621"
+	export CONTAINER_RELEASE="1.ubuntu20"
+	export LC_ALL="C"
+
+
+%help
+####################################################################################################
+### Container metadata:
+### ******************
+### Name:       BgeePipeline
+### Version:    20220621
+### Release:    1.ubuntu20
+### Summary:    Bgee Pipeline external tools and libraries
+### Group:      Container
+### Maintainer: Sebastien Moretti
+### License:    GPL-3.0
+### URL:        https://bgee.org
+###
+###
+### Description:
+### ***********
+### External tools and libraries required by the Bgee Pipeline.
+###
+###
+### Running the container:
+### *********************
+### Available commands: java, perl, R, python3, mysql, mvn, kallisto, bustools, fastp, fastq-dump, blastn, makeblastdb, gtf_to_fasta
+###
+### To run any command in the container, replace <command to run> in command below.:
+###   singularity exec BgeePipeline-20220621-1.ubuntu20.sif <command> [<options>]
+###
+### To make a specific repository, such as "/scratch/<yourDirectory>", available
+### inside the container add the option "--bind <directory>". Here is an example:
+###   singularity exec --bind <directory> BgeePipeline-20220621-1.ubuntu20.sif <command> [<options>]
+###
+### To run the default command for the container the command is the following. The default command
+### generally displays the "help" section of the software installed in the container:
+###   singularity run-help BgeePipeline-20220621-1.ubuntu20.sif
+###
+####################################################################################################
+
+
+%runscript
+	echo "### This is the container for $CONTAINER_NAME-$CONTAINER_VERSION-$CONTAINER_RELEASE"
+
+
+%labels
+	# Section to set custom metadata to be added to the container
+	# Use Open Containers Initiative (OCI)
+	# See https://rehansaeed.com/docker-labels-depth/
+	# See https://github.com/opencontainers/image-spec/blob/master/annotations.md
+	# Exist also another structured label initiative: http://label-schema.org/ superceded by OCI now
+	#NOTE Singularity uses label-schema labels internally!
+	org.opencontainers.image.title         Bgee Pipeline external tools and libraries
+	org.opencontainers.image.version       20220621
+	org.opencontainers.image.vendor        Bgee.org
+	org.opencontainers.image.authors       sebastien.moretti@sib.swiss
+	org.opencontainers.image.url           https://bgee.org/
+	org.opencontainers.image.documentation https://github.com/BgeeDB/bgee_pipeline
+	org.opencontainers.image.licenses      GPL-3.0
+	org.opencontainers.image.description   External tools and libraries required by the Bgee Pipeline.
+	soft.java.version        1.8.0
+	soft.perl.version        1.8.0
+	soft.R.version           4.1.1
+	soft.python3.version     0.46.2
+	soft.mysql.version       1.8.0
+	soft.maven.version       2.18.1
+	soft.kallisto.version    1.8.0
+	soft.bustools.version    4.1.1
+	soft.fastp.version       4.1.1
+	soft.sratoolkit.version  4.1.1
+	soft.blastplus.version   4.1.1
+	soft.tophat.version      4.1.1
+
+
+%post
+	#OS update
+	apt-get update  -y
+	apt-get upgrade -y
+	export DEBIAN_FRONTEND=noninteractive
+	apt install -y --no-install-recommends wget unzip rsync libc-bin
+
+	#Install SMRT-Link
+	cd /usr/local/
+	wget --no-check-certificate 'https://downloads.pacbcloud.com/public/software/installers/smrtlink_11.0.0.146107.zip'
+	unzip smrtlink_11.0.0.146107.zip
+	rm -f *.zip *.md5
+	./smrtlink_11.0.0.146107.run --rootdir /opt/pacbio/smrtlink --smrttools-only
+	rm -f *.run
+
+	# CLEANING
+	## So try to remove manually useless stuff
+	apt remove -y  *-dev wget cmake make swig autoconf check gcc g++ gfortran git rpm2cpio cpio doxygen rsync
+	apt-get clean
+	rm -rf /var/lib/apt/lists/*
+
+#NOTE maybe an issue with
+# /bin/bash: warning: setlocale: LC_ALL: cannot change locale (en_US.UTF-8)
+
+%test
+	# no test
+
