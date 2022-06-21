@@ -69,18 +69,18 @@ From: ubuntu:20.04
 	org.opencontainers.image.documentation https://github.com/BgeeDB/bgee_pipeline
 	org.opencontainers.image.licenses      GPL-3.0
 	org.opencontainers.image.description   External tools and libraries required by the Bgee Pipeline.
-	soft.java.version        1.8.0X
-	soft.perl.version        1.8.0Y
-	soft.R.version           4.1.1Y
-	soft.python3.version     0.46.2Y
-	soft.mysql.version       1.8.0X
-	soft.maven.version       2.18.1X
-	soft.kallisto.version    1.8.0
-	soft.bustools.version    4.1.1
-	soft.fastp.version       4.1.1
-	soft.sratoolkit.version  4.1.1
-	soft.blastplus.version   4.1.1X
-	soft.tophat.version      4.1.1
+	soft.java.version        11.0.15+10
+	soft.perl.version        5.30.0
+	soft.R.version           ...
+	soft.python3.version     3.8.2
+	soft.mysql.version       8.0.29
+	soft.maven.version       3.6.3
+	soft.kallisto.version    0.48.0
+	soft.bustools.version    
+	soft.fastp.version       
+	soft.sratoolkit.version  
+	soft.blastplus.version   2.9.0
+	soft.tophat.version      
 
 
 %post
@@ -88,7 +88,7 @@ From: ubuntu:20.04
 	apt-get update  -y
 	apt-get upgrade -y
 	export DEBIAN_FRONTEND=noninteractive
-	apt install -y --no-install-recommends gnupg wget git apt-utils ca-certificates libterm-readline-gnu-perl readline-common software-properties-common dirmngr build-essential libssl-dev libncurses5-dev libcurl4-openssl-dev liblzma-dev libbz2-dev libboost-all-dev sqlite3 libsqlite3-0 libsqlite3-dev libgsl0-dev zlib1g-dev libxml2-dev libgmp-dev libgmp10 libmpfr-dev
+	apt install -y --no-install-recommends gnupg wget git cmake autoconf apt-utils ca-certificates libterm-readline-gnu-perl readline-common software-properties-common dirmngr build-essential libssl-dev libncurses5-dev libcurl4-openssl-dev liblzma-dev libbz2-dev libboost-all-dev sqlite3 libsqlite3-0 libsqlite3-dev libgsl0-dev zlib1g-dev libxml2-dev libgmp-dev libgmp10 libmpfr-dev
 	apt install -y --no-install-recommends openjdk-11-jdk perl python3 python3-pip mysql-client maven ncbi-blast+
 
 	#Install R
@@ -269,9 +269,18 @@ From: ubuntu:20.04
 	pip3 install simplejson
 
 	# Install Kallisto
-	
+	cd /usr/local
+	wget 'https://github.com/pachterlab/kallisto/archive/refs/tags/v0.48.0.tar.gz'
+	tar xvfz v*.tar.gz && rm -f v*.tar.gz
+	cd kallisto-*/ext/htslib/ && autoheader && autoconf && ./configure --prefix=$PWD --disable-bz2 --disable-lzma --disable-libcurl && make lib-static
+	cd ../.. && mkdir build && cd build/ && cmake .. && make -j8 && make install
+	cd ../.. && rm -Rf kallisto-*/
 
-	# Install bustools, fastp, fastq-dump, gtf_to_fasta
+	# Install Bustools
+	cd /usr/local
+
+
+	# Install fastp, fastq-dump, gtf_to_fasta
 
 	# CLEANING
 	## So try to remove manually useless stuff
