@@ -14,7 +14,7 @@ global_check:
 	@which perl          >> $@.tmp
 	@which mysql         >> $@.tmp
 	@which R             >> $@.tmp
-	@which python        >> $@.tmp
+	@which python3       >> $@.tmp
 # Ensembl API
 	@perl -MBio::EnsEMBL::Registry  -e 1 >> $@.tmp
 # other Perl modules
