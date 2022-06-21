@@ -8,17 +8,16 @@ all: $(VERIFICATIONFILE)
 
 ################################ RETRIEVE BGEE ANNOTATIONS ################################
 
-#FIXME git submodule should allow the get_annot step to work while protecting the annotation git from unallowed users!
 get_annot:
-	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations. Store them in the source_files directory
-	@$(WGET) $(ANNOTATION_GIT_URL)/Strains/StrainMapping.tsv                && $(MV) StrainMapping.tsv                $(STRAIN_MAPPING_FILE)
-	@$(WGET) $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqLibrary.tsv                && $(MV) RNASeqLibrary.tsv                $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibrary.tsv                2>/dev/null  || rm -f RNASeqLibrary.tsv
-	@$(WGET) $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqExperiment.tsv             && $(MV) RNASeqExperiment.tsv             $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqExperiment.tsv             2>/dev/null  || rm -f RNASeqExperiment.tsv
-	@$(WGET) $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqLibraryPlatformChecks.tsv  && $(MV) RNASeqLibraryPlatformChecks.tsv  $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibraryPlatformChecks.tsv  2>/dev/null  || rm -f RNASeqLibraryPlatformChecks.tsv
+	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations submodule. Store them in the source_files directory
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/Strains/StrainMapping.tsv                 $(STRAIN_MAPPING_FILE)
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/RNA_Seq/RNASeqLibrary.tsv                 $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibrary.tsv
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/RNA_Seq/RNASeqExperiment.tsv              $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqExperiment.tsv
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/RNA_Seq/RNASeqLibraryPlatformChecks.tsv   $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibraryPlatformChecks.tsv
 # Download wormbase annotation as well. Will be merged with our annotation in create_rna_seq_sample_info step
-	@$(WGET) $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqLibrary_worm.tsv           && $(MV) RNASeqLibrary_worm.tsv           $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibrary_worm.tsv           2>/dev/null  || rm -f RNASeqLibrary_worm.tsv
-	@$(WGET) $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqLibrary_worm_exclusion.tsv && $(MV) RNASeqLibrary_worm_exclusion.tsv $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibrary_worm_exclusion.tsv 2>/dev/null  || rm -f RNASeqLibrary_worm_exclusion.tsv
-	@$(WGET) $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqExperiment_worm.tsv        && $(MV) RNASeqExperiment_worm.tsv        $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqExperiment_worm.tsv        2>/dev/null  || rm -f RNASeqExperiment_worm.tsv
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/RNA_Seq/RNASeqLibrary_worm.tsv            $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibrary_worm.tsv
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/RNA_Seq/RNASeqLibrary_worm_exclusion.tsv  $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibrary_worm_exclusion.tsv
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/RNA_Seq/RNASeqExperiment_worm.tsv         $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqExperiment_worm.tsv
 #TODO clarify the steps from WormBase raw files to formatted file: $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqLibrary_worm.tsv
 	@touch $@
 

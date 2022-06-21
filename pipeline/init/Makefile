@@ -193,6 +193,7 @@ global_check:
 	@mkdir -p $(TMPDIR)
 	@if [[ -d $(TMPDIR) ]]; then echo -n; else echo "Directory [$(TMPDIR)] does not exist"  >> $@.tmp; exit 6; fi
 	@if [[ -w $(TMPDIR) ]]; then echo -n; else echo "Directory [$(TMPDIR)] is not writable" >> $@.tmp; exit 7; fi
+	@echo "Think to sync the submodule(s) to get last (develop branch) annotations!"
 	@$(MV) $@.tmp $@
 
 

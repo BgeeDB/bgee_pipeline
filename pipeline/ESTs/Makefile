@@ -7,16 +7,16 @@ all: $(VERIFICATIONFILE)
 
 
 get_annot:
-	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations
-	@$(WGET) $(ANNOTATION_GIT_URL)/Strains/StrainMapping.tsv                                && $(MV) StrainMapping.tsv                            $(STRAIN_MAPPING_FILE)
-	@$(WGET) $(ANNOTATION_GIT_URL)/$(DIR_NAME)/species_EST_file.txt                         && $(MV) species_EST_file.txt                         $(SOURCE_FILES_DIR)/$(DIR_NAME)/species_EST_file.txt                         2>/dev/null  || rm -f species_EST_file.txt
-	@$(WGET) $(ANNOTATION_GIT_URL)/$(DIR_NAME)/annotation_libs_Drosophila_melanogaster.txt  && $(MV) annotation_libs_Drosophila_melanogaster.txt  $(SOURCE_FILES_DIR)/$(DIR_NAME)/annotation_libs_Drosophila_melanogaster.txt  2>/dev/null  || rm -f annotation_libs_Drosophila_melanogaster.txt
-	@$(WGET) $(ANNOTATION_GIT_URL)/$(DIR_NAME)/annotation_libs_Danio_rerio.txt              && $(MV) annotation_libs_Danio_rerio.txt              $(SOURCE_FILES_DIR)/$(DIR_NAME)/annotation_libs_Danio_rerio.txt              2>/dev/null  || rm -f annotation_libs_Danio_rerio.txt
-	@$(WGET) $(ANNOTATION_GIT_URL)/$(DIR_NAME)/annotation_libs_Homo_sapiens.txt             && $(MV) annotation_libs_Homo_sapiens.txt             $(SOURCE_FILES_DIR)/$(DIR_NAME)/annotation_libs_Homo_sapiens.txt             2>/dev/null  || rm -f annotation_libs_Homo_sapiens.txt
-	@$(WGET) $(ANNOTATION_GIT_URL)/$(DIR_NAME)/annotation_libs_Mus_musculus.txt             && $(MV) annotation_libs_Mus_musculus.txt             $(SOURCE_FILES_DIR)/$(DIR_NAME)/annotation_libs_Mus_musculus.txt             2>/dev/null  || rm -f annotation_libs_Mus_musculus.txt
-	@$(WGET) $(ANNOTATION_GIT_URL)/$(DIR_NAME)/annotation_libs_Xenopus_tropicalis.txt       && $(MV) annotation_libs_Xenopus_tropicalis.txt       $(SOURCE_FILES_DIR)/$(DIR_NAME)/annotation_libs_Xenopus_tropicalis.txt       2>/dev/null  || rm -f annotation_libs_Xenopus_tropicalis.txt
-	@$(WGET) $(ANNOTATION_GIT_URL)/ESTs/smirnadb/mapping_libs_smiRNAdb.csv                  && $(MV) mapping_libs_smiRNAdb.csv                    $(SOURCE_FILES_DIR)/ESTs/smirnadb/mapping_libs_smiRNAdb.csv                  2>/dev/null  || rm -f mapping_libs_smiRNAdb.csv
-	@$(WGET) $(ANNOTATION_GIT_URL)/ESTs/smirnadb/S.csv                                      && $(MV) S.csv                                        $(SOURCE_FILES_DIR)/ESTs/smirnadb/S.csv                                      2>/dev/null  || rm -f S.csv
+	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations submodule
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/Strains/StrainMapping.tsv                                $(STRAIN_MAPPING_FILE)
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/$(DIR_NAME)/species_EST_file.txt                         $(SOURCE_FILES_DIR)/$(DIR_NAME)/species_EST_file.txt
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/$(DIR_NAME)/annotation_libs_Drosophila_melanogaster.txt  $(SOURCE_FILES_DIR)/$(DIR_NAME)/annotation_libs_Drosophila_melanogaster.txt
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/$(DIR_NAME)/annotation_libs_Danio_rerio.txt              $(SOURCE_FILES_DIR)/$(DIR_NAME)/annotation_libs_Danio_rerio.txt
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/$(DIR_NAME)/annotation_libs_Homo_sapiens.txt             $(SOURCE_FILES_DIR)/$(DIR_NAME)/annotation_libs_Homo_sapiens.txt
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/$(DIR_NAME)/annotation_libs_Mus_musculus.txt             $(SOURCE_FILES_DIR)/$(DIR_NAME)/annotation_libs_Mus_musculus.txt
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/$(DIR_NAME)/annotation_libs_Xenopus_tropicalis.txt       $(SOURCE_FILES_DIR)/$(DIR_NAME)/annotation_libs_Xenopus_tropicalis.txt
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/ESTs/smirnadb/mapping_libs_smiRNAdb.csv                  $(SOURCE_FILES_DIR)/ESTs/smirnadb/mapping_libs_smiRNAdb.csv
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/ESTs/smirnadb/S.csv                                      $(SOURCE_FILES_DIR)/ESTs/smirnadb/S.csv
 	@touch $@
 
 
