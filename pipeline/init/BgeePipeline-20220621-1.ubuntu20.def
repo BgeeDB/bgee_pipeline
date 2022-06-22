@@ -212,10 +212,11 @@ From: ubuntu:20.04
 	R CMD javareconf
 
 	# Install Perl lib
+	apt-get install -y --no-install-recommends  libipc-run-perl libio-compress-perl
+	cpan Bundle::CPAN
 	cpan Archive::Tar
 	cpan Archive::Zip
 	cpan Array::Utils
-	cpan IPC::Run
 	cpan Bio::SeqIO
 	cpan Cpanel::JSON::XS
 	cpan DBI
