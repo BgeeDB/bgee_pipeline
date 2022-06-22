@@ -84,6 +84,7 @@ From: ubuntu:20.04
 
 
 %post
+	export THREADS=8
 	#OS update
 	apt-get update  -y
 	apt-get upgrade -y
@@ -232,9 +233,9 @@ From: ubuntu:20.04
 	cpan FindBin
 	cpan Getopt::Long
 	cpan HTTP::Request
-	cpan IO::Compress::Gzip
+	#cpan IO::Compress::Gzip
 	cpan IO::Socket
-	cpan IO::Uncompress::Gunzip
+	#cpan IO::Uncompress::Gunzip
 	cpan LWP::Simple
 	cpan LWP::UserAgent
 	cpan List::Compare
@@ -265,7 +266,7 @@ From: ubuntu:20.04
 	pip3 install intermine
 	pip3 install matplotlib
 	pip3 install numpy
-	pip3 install os
+	#pip3 install os
 	pip3 install pandas
 	pip3 install seaborn
 	pip3 install simplejson
@@ -275,7 +276,7 @@ From: ubuntu:20.04
 	wget 'https://github.com/pachterlab/kallisto/archive/refs/tags/v0.48.0.tar.gz'
 	tar xvfz v*.tar.gz && rm -f v*.tar.gz
 	cd kallisto-*/ext/htslib/ && autoheader && autoconf && ./configure --prefix=$PWD --disable-bz2 --disable-lzma --disable-libcurl && make lib-static
-	cd ../.. && mkdir build && cd build/ && cmake .. && make -j8 && make install
+	cd ../.. && mkdir build && cd build/ && cmake .. && make -j$THREADS && make install
 	cd ../.. && rm -Rf kallisto-*/
 
 	# Install Bustools
@@ -283,7 +284,7 @@ From: ubuntu:20.04
 	wget 'https://github.com/BUStools/bustools/archive/refs/tags/v0.41.0.tar.gz'
 	tar xvfz v*.tar.gz && rm -f v*.tar.gz
 	cd bustools-*/
-	cmake . && make -j8 && make install
+	cmake . && make -j$THREADS && make install
 	cd .. && rm -rf bustools-*/
 
 	# Install FastP
@@ -313,7 +314,7 @@ From: ubuntu:20.04
 
 	# CLEANING
 	## So try to remove manually useless stuff
-	apt remove -y  *-dev wget cmake make swig autoconf check gcc g++ gfortran git rpm2cpio cpio doxygen rsync
+	apt remove -y  *-dev wget cmake make swig autoconf check gcc g++ gfortran git python3-pip rpm2cpio cpio doxygen rsync
 	apt-get clean
 	rm -rf /var/lib/apt/lists/*
 
