@@ -307,6 +307,7 @@ From: ubuntu:20.04
 	wget 'https://github.com/infphilo/tophat/archive/refs/tags/v2.1.2.tar.gz'
 	tar xvfz v*.tar.gz && rm -f v*.tar.gz
 	cd tophat-*/
+	./autogen.sh
 	./configure --with-boost --with-boost-thread=-lboost_thread
 	make && make check && make install
 	cd .. && rm -Rf tophat-*/
