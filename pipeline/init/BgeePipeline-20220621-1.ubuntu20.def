@@ -80,17 +80,17 @@ From: ubuntu:20.04
 	soft.fastp.version       0.23.2
 	soft.sratoolkit.version  3.0.0
 	soft.blastplus.version   2.9.0+
-	soft.tophat.version      2.1.2?
+	soft.tophat.version      2.1.2
 
 
-#TODO test if lib and tools are there !
+#TODO  test if lib and tools are there !
 %post
 	export THREADS=8
 	#OS update
 	apt-get update  -y
 	apt-get upgrade -y
 	export DEBIAN_FRONTEND=noninteractive
-	apt install -y --no-install-recommends gnupg wget git cmake autoconf apt-utils ca-certificates libterm-readline-gnu-perl readline-common software-properties-common dirmngr build-essential libssl-dev libncurses5-dev libcurl4-openssl-dev liblzma-dev libbz2-dev libboost-all-dev sqlite3 libsqlite3-0 libsqlite3-dev libgsl0-dev zlib1g-dev libxml2-dev libgmp-dev libgmp10 libmpfr-dev libhdf5-dev libisal-dev libdeflate-dev
+	apt install -y --no-install-recommends gnupg wget git cmake autoconf apt-utils ca-certificates libterm-readline-gnu-perl readline-common software-properties-common dirmngr build-essential libssl-dev libncurses5-dev libcurl4-openssl-dev liblzma-dev libbz2-dev libboost-all-dev sqlite3 libsqlite3-0 libsqlite3-dev libgsl0-dev zlib1g-dev libxml2-dev libgmp-dev libgmp10 libmpfr-dev libhdf5-dev libisal-dev libdeflate-dev libbam-dev libgeos-dev
 	apt install -y --no-install-recommends openjdk-11-jdk perl python3 python3-pip mysql-client maven ncbi-blast+
 
 	#Install R
@@ -101,6 +101,8 @@ From: ubuntu:20.04
 	R -e 'install.packages("BiocManager")'
 	#Use the argument ask=FALSE to update old packages without being prompted
 	R -e 'BiocManager::install(ask=FALSE)'
+	#Configure Java in R
+	R CMD javareconf
 	# Install other R lib
 	R -e 'BiocManager::install("AnnotationDbi")'
 	R -e 'BiocManager::install("BUSpaRse")'
@@ -210,8 +212,6 @@ From: ubuntu:20.04
 	R -e 'BiocManager::install("tximport")'
 	R -e 'BiocManager::install("zebrafishcdf")'
 	R -e 'BiocManager::install("zebrafishprobe")'
-	#Configure Java in R
-	R CMD javareconf
 
 	# Install Perl lib
 	apt-get install -y --no-install-recommends  libipc-run-perl libio-compress-perl
@@ -219,6 +219,7 @@ From: ubuntu:20.04
 	cpan Archive::Tar
 	cpan Archive::Zip
 	cpan Array::Utils
+	#cpan Bio::EnsEMBL::Registry
 	cpan Bio::SeqIO
 	cpan Cpanel::JSON::XS
 	cpan DBI
@@ -310,7 +311,10 @@ From: ubuntu:20.04
 	cd tophat-*/
 	./autogen.sh
 	./configure --with-boost --with-boost-thread=-lboost_thread
-	make && make check && make install
+	#FIXME looks to have issues at compile time with recent boost versions
+	# see https://github.com/DaehwanKimLab/tophat/issues/62
+	#make && make check && make install
+	cd src/ && make gtf_to_fasta && install gtf_to_fasta /usr/local/bin/ && cd ..
 	cd .. && rm -Rf tophat-*/
 
 
