@@ -256,6 +256,14 @@ $(PIPELINEROOT)$(SIMILARITYFILEPATH): $(CONVERTER) $(PIPELINEROOT)$(SIMILARITY_C
 	@$(CONVERTER) $(CONVERTEROPT) 01 $(PIPELINEROOT)$(SIMILARITY_CURATION_FILEPATH) > $@
 	@$(EXTRACLEANING) $@
 
+build_container:
+	@which singularity
+	sudo singularity build ${PIPELINE_CONTAINER_FILE} ${PIPELINE_CONTAINER_NAME}.def
+	@touch $@
+
+test_container: build_container
+	@echo ...
+	@touch $@
 
 $(VERIFICATIONFILE): global_check $(PIPELINEROOT)$(SIMILARITYFILEPATH) $(PIPELINEROOT)$(BGEEPIPELINEJAR) convert_annotAffy convert_annotRNASeq
 # create empty file or clean existing file

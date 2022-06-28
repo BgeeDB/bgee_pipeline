@@ -22,6 +22,10 @@ DBNAME_EASYBGEE := easybgee_v$(subst .,_,$(RELEASE))
 DBHOST_EASYBGEE := rbioinfo.unil.ch
 
 
+# Pipeline container
+PIPELINE_CONTAINER_NAME    := BgeePipeline
+PIPELINE_CONTAINER_RELEASE := 1
+PIPELINE_CONTAINER_FILE    := $(PIPELINE_CONTAINER_NAME)-$(RELEASE)-$(PIPELINE_CONTAINER_RELEASE).sif
 
 # Annotator machine
 # ANNOTATORLOGIN defined in Makefile.Config
