@@ -7,7 +7,7 @@ From: ubuntu:20.04
 	# We use it to define the name, version and release of the container.
 	export CONTAINER_NAME="BgeePipeline"
 	export CONTAINER_VERSION="15.0"
-	export CONTAINER_RELEASE="1.ubuntu20"
+	export CONTAINER_RELEASE="1"
 	export LC_ALL="C"
 	export ENSEMBLAPI=/usr/local/ensembl
 	export PERL5LIB=$PERL5LIB:$ENSEMBLAPI/ensembl/modules:$ENSEMBLAPI/ensembl-compara/modules:$ENSEMBLAPI/ensembl-variation/modules:$ENSEMBLAPI/ensembl-funcgen/modules:$ENSEMBLAPI/ensembl-io/modules:$ENSEMBLAPI/ensembl-metadata/modules:$ENSEMBLAPI/ensembl-taxonomy/modules
@@ -19,7 +19,7 @@ From: ubuntu:20.04
 ### ******************
 ### Name:       BgeePipeline
 ### Version:    15.0
-### Release:    1.ubuntu20
+### Release:    1
 ### Summary:    Bgee Pipeline external tools and libraries
 ### Group:      Container
 ### Maintainer: Sebastien Moretti
@@ -37,15 +37,15 @@ From: ubuntu:20.04
 ### Available commands: java, perl, R, python3, mysql, mvn, kallisto, bustools, fastp, fastq-dump, blastn, makeblastdb, gtf_to_fasta
 ###
 ### To run any command in the container, replace <command to run> in command below.:
-###   singularity exec BgeePipeline-15.0-1.ubuntu20.sif <command> [<options>]
+###   singularity exec BgeePipeline-15.0-1.sif <command> [<options>]
 ###
 ### To make a specific repository, such as "/scratch/<yourDirectory>", available
 ### inside the container add the option "--bind <directory>". Here is an example:
-###   singularity exec --bind <directory> BgeePipeline-15.0-1.ubuntu20.sif <command> [<options>]
+###   singularity exec --bind <directory> BgeePipeline-15.0-1.sif <command> [<options>]
 ###
 ### To run the default command for the container the command is the following. The default command
 ### generally displays the "help" section of the software installed in the container:
-###   singularity run-help BgeePipeline-15.0-1.ubuntu20.sif
+###   singularity run-help BgeePipeline-15.0-1.sif
 ###
 ####################################################################################################
 
@@ -83,7 +83,6 @@ From: ubuntu:20.04
 	soft.tophat.version      2.1.2
 
 
-#TODO test if lib and tools are there !
 %post
 	export THREADS=8
 	#OS update
