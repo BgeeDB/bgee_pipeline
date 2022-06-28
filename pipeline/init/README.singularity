@@ -3,26 +3,26 @@
 
 # Build Singularity image
 #NOTE build-date is builtin
-export VERSION=20220621
-sudo singularity build BgeePipeline-${VERSION}-1.ubuntu20.sif BgeePipeline-${VERSION}-1.ubuntu20.def 2>&1 >BgeePipeline.singularity.log
+export RELEASE=15.0
+sudo singularity build BgeePipeline-${RELEASE}-1.ubuntu20.sif BgeePipeline-${RELEASE}-1.ubuntu20.def 2>&1 >BgeePipeline.singularity.log
 
 
 # Inspect image (labels, ...)
-singularity inspect   BgeePipeline-${VERSION}-1.ubuntu20.sif
+singularity inspect   BgeePipeline-${RELEASE}-1.ubuntu20.sif
 
 # Run image help message
-singularity run-help  BgeePipeline-${VERSION}-1.ubuntu20.sif
+singularity run-help  BgeePipeline-${RELEASE}-1.ubuntu20.sif
 
 # Run image test run (if any)
-singularity run       BgeePipeline-${VERSION}-1.ubuntu20.sif
+singularity run       BgeePipeline-${RELEASE}-1.ubuntu20.sif
 
 # Run bash in the Singularity image
-singularity shell     BgeePipeline-${VERSION}-1.ubuntu20.sif
+singularity shell     BgeePipeline-${RELEASE}-1.ubuntu20.sif
 
 
 # Execute image
-singularity exec      BgeePipeline-${VERSION}-1.ubuntu20.sif <commands>
-e.g. singularity exec BgeePipeline-${VERSION}-1.ubuntu20.sif R
+singularity exec      BgeePipeline-${RELEASE}-1.ubuntu20.sif <commands>
+e.g. singularity exec BgeePipeline-${RELEASE}-1.ubuntu20.sif R
 
 
 # Import docker image/container
