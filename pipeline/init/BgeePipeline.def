@@ -60,7 +60,7 @@ From: ubuntu:20.04
 	# Exist also another structured label initiative: http://label-schema.org/ superceded by OCI now
 	#NOTE Singularity uses label-schema labels internally!
 	org.opencontainers.image.title         Bgee Pipeline external tools and libraries
-	org.opencontainers.image.version       15.0
+	org.opencontainers.image.version       15.0-1
 	org.opencontainers.image.vendor        Bgee.org
 	org.opencontainers.image.authors       sebastien.moretti@sib.swiss
 	org.opencontainers.image.url           https://bgee.org/
