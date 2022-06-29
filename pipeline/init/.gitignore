@@ -1,2 +1,3 @@
 *.sif
 build_container
+test_container
