@@ -663,8 +663,7 @@ sub generateAffyFiles {
     		File::Spec->catfile($filesDir, $tmpDirName, $chipFileName));
 
     	for my $file_objs ($tar->get_files){
-      		$tar->rename( $file_objs, File::Spec->catfile($speciesNameForFile.'_Affymetrix_experiments_chips', 
-      			basename($file_objs->full_path)));
+            $tar->rename( $file_objs, basename($file_objs->full_path));
     	}
    		$tar->write(File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_Affymetrix_experiments_chips.tar.gz'), 
     		COMPRESS_GZIP);
@@ -678,8 +677,7 @@ sub generateAffyFiles {
     	}
     	$tar->add_files(@tarFilePaths);
     	for my $file_objs ($tar->get_files){
-       		$tar->rename( $file_objs, File::Spec->catfile($speciesNameForFile.'_Affymetrix_probesets', 
-       			basename($file_objs->full_path)));
+            $tar->rename( $file_objs, basename($file_objs->full_path));
     	}
     	$tar->write(File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_Affymetrix_probesets.tar.gz'), 
     		COMPRESS_GZIP);
@@ -1195,8 +1193,7 @@ sub generateRnaSeqFiles {
 	    $tar->add_files(File::Spec->catfile($filesDir, $tmpDirName, $expFileName),
 	    	File::Spec->catfile($filesDir, $tmpDirName, $libFileName));
 	    for my $file_objs ($tar->get_files){
-		   	$tar->rename( $file_objs, File::Spec->catfile($speciesNameForFile.'_RNA-Seq_experiments_libraries', 
-		   		basename($file_objs->full_path))); 
+            $tar->rename( $file_objs, basename($file_objs->full_path));
 	    }
 	    $tar->write(
 	        File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_RNA-Seq_experiments_libraries.tar.gz'), 
@@ -1212,8 +1209,7 @@ sub generateRnaSeqFiles {
 	    }
 	    $tar->add_files(@tarFilePaths);
 	    for my $file_objs ($tar->get_files){
-	       	$tar->rename( $file_objs, File::Spec->catfile($speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM', 
-	       		basename($file_objs->full_path))); 
+            $tar->rename( $file_objs, basename($file_objs->full_path));
 	    }
 	    $tar->write(
 	        File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM.tar.gz'),
@@ -1762,8 +1758,7 @@ sub generateFullLenghthScRnaSeqFiles {
       $tar->add_files(File::Spec->catfile($filesDir, $tmpDirName, $expFileName),
         File::Spec->catfile($filesDir, $tmpDirName, $libFileName));
       for my $file_objs ($tar->get_files){
-        $tar->rename( $file_objs, File::Spec->catfile($speciesNameForFile.'_Full-Length_SC_RNA-Seq_experiments_libraries', 
-          basename($file_objs->full_path))); 
+        $tar->rename( $file_objs, basename($file_objs->full_path));
       }
       $tar->write(
           File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_Full-Length_SC_RNA-Seq_experiments_libraries.tar.gz'), 
@@ -1779,8 +1774,7 @@ sub generateFullLenghthScRnaSeqFiles {
       }
       $tar->add_files(@tarFilePaths);
       for my $file_objs ($tar->get_files){
-          $tar->rename( $file_objs, File::Spec->catfile($speciesNameForFile.'_Full-Length_SC_RNA-Seq_read_counts_TPM_FPKM', 
-            basename($file_objs->full_path))); 
+          $tar->rename( $file_objs, basename($file_objs->full_path)));
       }
       $tar->write(
           File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_Full-Length_SC_RNA-Seq_read_counts_TPM_FPKM.tar.gz'),
