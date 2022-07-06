@@ -224,7 +224,7 @@ XREFS_TO_GENERATE := WIKIDATA,UNIPROT,GENE_CARDS
 $(OUTPUT_DIR)generate_xrefs: 
 	#@$(MYSQL) -e "$(XREF_SQL_QUERY)" > $(XREF_FILE).tmp 2>$@.warnings
 	@$(WGET) -O $(UBERON_WIKIDATA_FILE_PATH) $(WIKIDATA_UBERON_IDS) > $@.temp 2> $@.warnings
-	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR) GenerateXRefs $(XREF_FILE).tmp /var/lib/mysql/tmp/xrefs/ $(UBERON_WIKIDATA_FILE_PATH) $(XREFS_TO_GENERATE) > $@.temp 2> $@.warnings
+	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.bgee.core.version.minor=$(MINOR_RELEASE) -Dorg.bgee.core.version.major=$(MAJOR_RELEASE) -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR) GenerateXRefs $(XREF_FILE).tmp /var/lib/mysql/tmp/xrefs/ $(UBERON_WIKIDATA_FILE_PATH) $(XREFS_TO_GENERATE) > $@.temp 2> $@.warnings
 	# create a verification file
 	# First, we display the targeted data sources, so that we can detect 
 	# incorrect data source IDs used (TREMBL_ID and SWISSPROT_ID)

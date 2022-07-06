@@ -10,7 +10,8 @@ SHELL = /bin/bash
 #  GENERAL PARAMETERS
 # ===================================
 MAJOR_RELEASE    := 15
-RELEASE          := $(MAJOR_RELEASE).0
+MINOR_RELEASE    := 0
+RELEASE          := $(MAJOR_RELEASE).$(MINOR_RELEASE)
 
 # MySQL database connection parameters
 # DBUSER and DBPASS defined in Makefile.Config
