@@ -49,8 +49,11 @@ genes: $(SPECIESFILEPATH) go.obsolete
 	@if [[ -s $@.err ]]; then echo -n; else $(RM) $@.err; fi
 	@$(MV) $@.tmp $@
 
+# Please check that GeneCards datasource ID did not change in the database before running updateXrefs
+GENECARDS_ID := 40
 
-updateUniprotXrefs : genes
+updateXrefs : genes
+	# UPDATE UNIPROT XREFS
 	# first remove already existing xrefs_from_uniprot file
 	@rm -f $(XREFS_FROM_UNIPROT_FILE)
 	# generate tsv file containing all information to update uniprot xrefs in the database. Also retrieve gene name.
@@ -62,6 +65,8 @@ updateUniprotXrefs : genes
 	@R CMD BATCH --no-save --no-restore '--args species_file="$(SPECIESFILEPATH)" number_cores=28 bgee="$(BGEECMD)" output_file="$(XREFS_FROM_UNIPROT_FILE)"' update_genes_from_UniProt.R > $@.tmp
 	# Now update/insert XRefs in the database
 	@perl insert_uniprot_xrefs.pl -bgee=$(BGEECMD) -uniprot_xrefs=$(XREFS_FROM_UNIPROT_FILE) > $@.tmp 2>>$@.err
+	# ADD GENECARDS XREFS
+	@$(MYSQL) -e "INSERT INTO geneXRef (bgeeGeneId, XRefId, dataSourceId) SELECT bgeeGeneId, geneId, $(GENECARDS_ID) from gene where speciesId = 9606;" > $@.tmp 2> $@.warning
 	@$(MV) $@.tmp $@
 
 sameIdGeneCount: genes
