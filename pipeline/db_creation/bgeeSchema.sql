@@ -1088,6 +1088,8 @@ create table scRnaSeqFullLengthLibrary (
     scRnaSeqFullLengthLibraryId varchar(70) not null,
     scRnaSeqFullLengthExperimentId varchar(70) not null,
     scRnaSeqFullLengthPlatformId varchar(255) not null,
+-- can be null if no genotype is provided in the annotation file
+    genotypeId mediumint unsigned,
     conditionId mediumint unsigned not null,
     meanTpmReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'mean TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
     sdTpmReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'standard deviation in TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
@@ -1158,6 +1160,11 @@ create table scRnaSeqFullLengthSpeciesMaxRank (
     maxRank decimal(9,2) unsigned not null COMMENT 'The max fractional rank in this protocol and species (see `rank` field in rnaSeqResult table)'
 ) engine = innodb;
 
+create table genotype (
+    genotypeId mediumint unsigned not null,
+    genotypeName varchar(255) not null
+) engine = innodb;
+
 -- ****************************************************
 -- scRNA-Seq TARGET-BASED DATA
 -- ****************************************************
@@ -1179,6 +1186,8 @@ create table scRnaSeqTargetBasedLibrary (
     scRnaSeqTargetBasedLibraryId varchar(70) not null,
     scRnaSeqTargetBasedExperimentId varchar(70) not null,
     scRnaSeqTargetBasedPlatformId varchar(255) not null,
+-- can be null if no genotype is provided in the annotation file
+    genotypeId mediumint unsigned,
 -- total number of reads in library, including those not mapped.
 -- In case of paired-end libraries, it's the number of pairs of reads;
 -- In case of single end, it's the total number of reads,

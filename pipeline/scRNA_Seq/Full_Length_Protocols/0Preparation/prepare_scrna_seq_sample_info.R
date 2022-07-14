@@ -120,7 +120,7 @@ fileInfo <- read.table(tmpInfoFile, header=TRUE, sep="\t")
 scrna_seq_sample_info <- merge(annotation, fileInfo, by = "libraryId", incomparables = NaN)
 scrna_seq_sample_info <- scrna_seq_sample_info %>% dplyr::select("libraryId", "experimentId", "cellTypeName_abInitio", "cellTypeId_abInitio", "speciesId",
                                                           "platform", "protocol", "protocolType", "libraryType", "infoOrgan", "stageId",
-                                                          "anatId", "sex", "strain", "readLength", "speciesId")
+                                                          "anatId", "sex", "strain", "readLength", "speciesId", "genotype")
 scrna_seq_sample_info$organism <- "NaN"
 finalTable <- speciesName(scrna_seq_sample_info = scrna_seq_sample_info)
 write.table(finalTable,file = file.path( output_folder, "scrna_seq_sample_info.tsv"), quote = FALSE, sep = "\t", col.names = TRUE, row.names = FALSE)

@@ -927,6 +927,7 @@ sub getAllFullLengthScRnaSeqLibrariesInfo {
         my $strain                          = $tmp[13];
         my $readLength                      = $tmp[14];
         my $organism                        = $tmp[15];
+        my $genotype                        = $tmp[16];
 
         #TODO: change the annotation to fit authorized sex values in the DB ('not annotated','hermaphrodite','female','male','mixed','NA')
         # it is ugly to have to manually modify the values in this script
@@ -999,6 +1000,10 @@ sub getAllFullLengthScRnaSeqLibrariesInfo {
                 warn "Warning, wrong format for strain [$strain]\n";
                 $discarded = 1;
             }
+            # genotype can be null if no information provided
+            if ( $genotype eq '' ){
+                $genotype = undef;
+            }
 
             if ( $discarded ){
                 warn ' for experiment: ', $experimentId, ' - sample: ', $libraryId, ", sample discarded!\n";
@@ -1015,6 +1020,7 @@ sub getAllFullLengthScRnaSeqLibrariesInfo {
                 $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'uberonId'}       = $uberonId;
                 $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'sex'}            = $sex;
                 $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'strain'}         = $strain;
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'genotype'}       = $genotype;
             }
         }
         else {

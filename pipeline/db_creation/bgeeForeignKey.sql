@@ -465,6 +465,7 @@ add foreign key (dataSourceId) references dataSource(dataSourceId);
 alter table scRnaSeqFullLengthLibrary
 add foreign key (scRnaSeqFullLengthExperimentId) references scRnaSeqFullLengthExperiment(scRnaSeqFullLengthExperimentId) on delete cascade,
 add foreign key (scRnaSeqFullLengthPlatformId) references scRnaSeqFullLengthPlatform(scRnaSeqFullLengthPlatformId) on delete cascade,
+add foreign key (genotypeId) references genotype(genotypeId) on delete cascade,
 add foreign key (conditionId) references cond(conditionId) on delete cascade;
 /*!40000 ALTER TABLE `scRnaSeqFullLengthLibrary` ENABLE KEYS */;
 
@@ -497,6 +498,7 @@ add foreign key (dataSourceId) references dataSource(dataSourceId);
 alter table scRnaSeqTargetBasedLibrary
 add foreign key (scRnaSeqTargetBasedExperimentId) references scRnaSeqTargetBasedExperiment(scRnaSeqTargetBasedExperimentId) on delete cascade,
 add foreign key (scRnaSeqTargetBasedPlatformId) references scRnaSeqTargetBasedPlatform(scRnaSeqTargetBasedPlatformId) on delete cascade;
+add foreign key (genotypeId) references genotype(genotypeId) on delete cascade,
 /*!40000 ALTER TABLE `scRnaSeqTargetBasedLibrary` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `scRnaSeqTargetBasedRun` DISABLE KEYS */;

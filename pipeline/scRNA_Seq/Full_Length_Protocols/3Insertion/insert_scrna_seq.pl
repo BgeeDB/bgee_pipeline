@@ -187,6 +187,46 @@ for my $platformId ( sort keys %platforms ){
 $insPlatform->finish();
 print "Done\n\n";
 
+######################
+# INSERT ĜENOTYPES   #
+######################
+print "Inserting genotypes...\n";
+#Retrieve already inserted genotypes (useful for incremental updates)
+my %insertedGenotypes = ();
+my $retrieveGenotype = $bgee->prepare('SELECT genotypeId, genotypeName from genotype');
+$retrieveGenotype->execute()  or die $retrieveGenotype->errstr;
+while ( my @data = $retrieveGenotype->fetchrow_array ){
+    $insertedGenotypes{$data[1]} = $data[0];
+}
+# Retrieve all genotypes used for the analyzed libraries and not already inserted
+my %genotypes = ();
+for my $expId ( keys %libraries ){
+    foreach my $libraryId ( keys %{$libraries{$expId}} ){
+        if ( $libraries{$expId}->{$libraryId}->{'genotype'} ne '' &&
+            !exists $insertedGenotypes{$libraries{$expId}->{$libraryId}->{'genotype'}}){
+            $genotypes{$libraries{$expId}->{$libraryId}->{'genotype'}}++;
+        }
+    }
+}
+my $insGenotype = $bgee->prepare('INSERT INTO genotype (genotypeName) VALUES (?)');
+# now insert the genotype(s)
+for my $genotypeName ( sort keys %genotypes ){
+    if ( $debug ){
+        print 'INSERT INTO genotype: ', $genotypeName, "\n";
+    }
+    else {
+        $insGenotype->execute($genotypeName) or die $insGenotype->errstr;
+    }
+}
+$insGenotype->finish();
+#retrieve again genotypes present in the database now that all of them are inserted
+$retrieveGenotype->execute()  or die $retrieveGenotype->errstr;
+while ( my @data = $retrieveGenotype->fetchrow_array ){
+    $insertedGenotypes{$data[1]} = $data[0];
+}
+$retrieveGenotype->finish();
+print "Done\n\n";
+
 
 ################################################
 # GET GENE INTERNAL IDS                        #
@@ -244,12 +284,12 @@ my $stage_equivalences = Utils::get_stage_equivalences($bgee);
 print "Inserting libraries and all results...\n";
 # query for samples insertion
 my $insLib = $bgee->prepare('INSERT INTO scRnaSeqFullLengthLibrary (scRnaSeqFullLengthLibraryId, scRnaSeqFullLengthExperimentId,
-                             scRnaSeqFullLengthPlatformId, conditionId, tpmThreshold,
+                             scRnaSeqFullLengthPlatformId, genotypeId, conditionId, tpmThreshold,
                              allGenesPercentPresent, proteinCodingGenesPercentPresent,
                              intergenicRegionsPercentPresent, meanTpmReferenceIntergenicDistribution, 
                              sdTpmReferenceIntergenicDistribution, pValueThreshold, allReadsCount, 
                              mappedReadsCount, minReadLength, maxReadLength, libraryType, libraryOrientation)
-                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
 
 # Excluded libraries
@@ -326,6 +366,7 @@ for my $expId ( sort keys %libraries ){
         if ( $debug ){
             print 'INSERT INTO scRnaSeqFullLengthLibrary: ', $libraryId,                        ' - ',
                   $expId, ' - ', $libraries{$expId}->{$libraryId}->{'platform'},    ' - ',
+                  $insertedGenotypes{$libraries{$expId}->{$libraryId}->{'genotype'}}, ' - ',
                   $condKeyMap->{'conditionId'},                                     ' - ',
                   $librariesStats{$libraryId}->{'cutoffTPM'},                       ' - ',
                   $librariesStats{$libraryId}->{'allGenesPercentPresent'},          ' - ',
@@ -345,6 +386,7 @@ for my $expId ( sort keys %libraries ){
             $insLib->execute($libraryId,
                              $expId,
                              $libraries{$expId}->{$libraryId}->{'platform'},
+                             $insertedGenotypes{$libraries{$expId}->{$libraryId}->{'genotype'}},
                              $condKeyMap->{'conditionId'},
                              $librariesStats{$libraryId}->{'cutoffTPM'},
                              $librariesStats{$libraryId}->{'allGenesPercentPresent'},

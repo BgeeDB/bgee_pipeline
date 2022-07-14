@@ -522,6 +522,12 @@ alter table scRnaSeqFullLengthSpeciesMaxRank
 add primary key (speciesId);
 /*!40000 ALTER TABLE `scRnaSeqFullLengthSpeciesMaxRank` ENABLE KEYS */;
 
+/*!40000 ALTER TABLE `genotype` DISABLE KEYS */;
+alter table genotype
+modify genotypeId mediumint unsigned not null auto_increment primary key,
+add unique (genotypeName);
+/*!40000 ALTER TABLE `genotype` ENABLE KEYS */;
+
 --  ****************************************************
 --  scRNA-SEQ TARGET-BASED DATA
 --  ****************************************************
