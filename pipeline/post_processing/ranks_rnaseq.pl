@@ -133,11 +133,11 @@ sub compute_update_rank_lib_batch {
         # ======= Update ranks ========
         my $rnaSeqTmpTableStmt = $dbh_thread->prepare(
                 'CREATE TEMPORARY TABLE rnaSeqLibRanking
-                 SELECT bgeeGeneId, rnaSeqLibraryId, rank
+                 SELECT bgeeGeneId, rnaSeqLibraryId, rawRank
                  FROM rnaSeqResult
                  LIMIT 0');
         $rnaSeqTmpTableStmt->execute() or die $rnaSeqTmpTableStmt->errstr;
-        my $sqlInsertTmpRanks = 'INSERT INTO rnaSeqLibRanking (bgeeGeneId, rnaSeqLibraryId, rank)
+        my $sqlInsertTmpRanks = 'INSERT INTO rnaSeqLibRanking (bgeeGeneId, rnaSeqLibraryId, rawRank)
                 VALUES ';
         my @insertTmpRanksValues = ();
         my $valueCount = 0;
@@ -163,7 +163,7 @@ sub compute_update_rank_lib_batch {
                     ON t1.bgeeGeneId = t2.bgeeGeneId AND t1.rnaSeqLibraryId = t2.rnaSeqLibraryId '.
                     # To be able to use the index on rnaSeqResult, plus this constraint is correct
                    'AND t1.expressionId IS NOT NULL
-                SET t1.rank = t2.rank');
+                SET t1.rawRank = t2.rawRank');
         $updateRnaSeqLibsStmt->execute() or die $updateRnaSeqLibsStmt->errstr;
 
         my $dropRnaSeqTmpTableStmt = $dbh_thread->prepare('DROP TABLE rnaSeqLibRanking');
@@ -181,7 +181,7 @@ sub compute_update_rank_lib_batch {
 
 
 # Clean potentially already computed ranks
-#my $cleanRNASeq = $dbh->prepare("UPDATE rnaSeqResult SET rank = NULL");
+#my $cleanRNASeq = $dbh->prepare("UPDATE rnaSeqResult SET rawRank = NULL");
 #my $cleanLib    = $dbh->prepare("UPDATE rnaSeqLibrary SET libraryMaxRank = NULL,
 #                                                              libraryDistinctRankCount = NULL");
 #printf("Cleaning existing data: ");
@@ -202,7 +202,7 @@ if (!@lib_ids) {
                       AND t2.expressionId IS NOT NULL
                   ) AND NOT EXISTS (SELECT 1 FROM rnaSeqResult AS t2
                       WHERE t1.rnaSeqLibraryId = t2.rnaSeqLibraryId
-                      AND t2.rank IS NOT NULL)';
+                      AND t2.rawRank IS NOT NULL)';
     if ($sample_count > 0) {
         $libSql .= ' ORDER BY t1.rnaSeqLibraryId
                      LIMIT '.$sample_offset.', '.$sample_count;
@@ -275,7 +275,7 @@ print("Rank computations per library done\n");
 #my $sql =
 #"UPDATE rnaSeqLibrary AS t0
 # INNER JOIN (
-#     SELECT t1.rnaSeqLibraryId, MAX(t1.rank) AS maxRank, COUNT(DISTINCT t1.rank) AS distinctRankCount
+#     SELECT t1.rnaSeqLibraryId, MAX(t1.rawRank) AS maxRank, COUNT(DISTINCT t1.rawRank) AS distinctRankCount
 #     FROM rnaSeqResult AS t1
 #     WHERE t1.reasonForExclusion NOT IN ('$Utils::EXCLUDED_FOR_PRE_FILTERED',
 #         '$Utils::EXCLUDED_FOR_UNDEFINED', '$Utils::EXCLUDED_FOR_ABSENT_CALLS')

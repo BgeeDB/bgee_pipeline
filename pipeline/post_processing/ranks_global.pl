@@ -276,7 +276,7 @@ sub compute_update_global_ranks {
     # buid this table by using the fact that there is always an expressionId associated to each EST
     my $estRankingStmt = $dbh_thread->prepare('CREATE TEMPORARY TABLE estRanking (
             PRIMARY KEY(bgeeGeneId))
-            SELECT STRAIGHT_JOIN expressedSequenceTag.bgeeGeneId, COUNT(1) AS estCount, 0000000.00 AS rank
+            SELECT STRAIGHT_JOIN expressedSequenceTag.bgeeGeneId, COUNT(1) AS estCount, 0000000.00 AS rawRank
             FROM '.$estToGlobalCondTableName.'
             INNER JOIN expressedSequenceTag ON '.$estToGlobalCondTableName.'.estLibraryId = expressedSequenceTag.estLibraryId
             WHERE '.$estToGlobalCondTableName.'.globalConditionId = ?
@@ -288,7 +288,7 @@ sub compute_update_global_ranks {
             ORDER BY estCount DESC');
     # if several genes at a same rank, we'll update them at once with a 'bgeeGeneId IN (?,?, ...)' clause.
     # If only one gene at a given rank, updated with the prepared statement below.
-    my $estRankUpdateStart   = 'UPDATE estRanking SET rank = ?
+    my $estRankUpdateStart   = 'UPDATE estRanking SET rawRank = ?
                              WHERE bgeeGeneId ';
     my $estUpdateRankingStmt = $dbh_thread->prepare($estRankUpdateStart.'= ?');
 
@@ -296,12 +296,12 @@ sub compute_update_global_ranks {
     my $insertESTExprResults = $dbh_thread->prepare(
             'INSERT INTO '.$exprResultsTempTable.'
                  (bgeeGeneId, '.$estRankField.')
-             SELECT bgeeGeneId, rank FROM estRanking
+             SELECT bgeeGeneId, rawRank FROM estRanking
              ON DUPLICATE KEY UPDATE '.$estRankField.' = VALUES('.$estRankField.')');
     my $insertESTCondResults = $dbh_thread->prepare(
             'INSERT INTO '.$condResultsTempTable.'
                  (globalConditionId, '.$estMaxRankField.')
-             VALUES(?, (SELECT MAX(rank) FROM estRanking))
+             VALUES(?, (SELECT MAX(rawRank) FROM estRanking))
              ON DUPLICATE KEY UPDATE '.$estMaxRankField.' = VALUES('.$estMaxRankField.')');
 
 
@@ -331,7 +331,7 @@ sub compute_update_global_ranks {
                         IF(inSituSpot.detectionFlag = '$Utils::ABSENT_CALL' AND inSituData = '$Utils::HIGH_QUAL', -1,
                             IF(inSituSpot.detectionFlag = '$Utils::ABSENT_CALL', -0.5, 0))))
             ) AS scoreSum,
-            0000000.00 AS rank
+            0000000.00 AS rawRank
 
             FROM $inSituToGlobalCondTableName
             INNER JOIN inSituSpot ON $inSituToGlobalCondTableName.inSituSpotId = inSituSpot.inSituSpotId
@@ -345,7 +345,7 @@ sub compute_update_global_ranks {
             ORDER BY scoreSum DESC');
     # if several genes at a same rank, we'll update them at once with a 'geneId IN (?,?, ...)' clause.
     # If only one gene at a given rank, updated with the prepared statement below.
-    my $inSituRankUpdateStart   = 'UPDATE inSituRanking SET rank = ?
+    my $inSituRankUpdateStart   = 'UPDATE inSituRanking SET rawRank = ?
                              WHERE bgeeGeneId ';
     my $inSituUpdateRankingStmt = $dbh_thread->prepare($inSituRankUpdateStart.'= ?');
 
@@ -353,12 +353,12 @@ sub compute_update_global_ranks {
     my $insertInSituExprResults = $dbh_thread->prepare(
             'INSERT INTO '.$exprResultsTempTable.'
                  (bgeeGeneId, '.$inSituRankField.')
-             SELECT bgeeGeneId, rank FROM inSituRanking
+             SELECT bgeeGeneId, rawRank FROM inSituRanking
              ON DUPLICATE KEY UPDATE '.$inSituRankField.' = VALUES('.$inSituRankField.')');
     my $insertInSituCondResults = $dbh_thread->prepare(
             'INSERT INTO '.$condResultsTempTable.'
                  (globalConditionId, '.$inSituMaxRankField.')
-             VALUES(?, (SELECT MAX(rank) FROM inSituRanking))
+             VALUES(?, (SELECT MAX(rawRank) FROM inSituRanking))
              ON DUPLICATE KEY UPDATE '.$inSituMaxRankField.' = VALUES('.$inSituMaxRankField.')');
 
 
@@ -396,9 +396,9 @@ sub compute_update_global_ranks {
              # between-chip-types normalization:
              # (we use the best normalized rank of genes from each Affymetrix chip,
              # to not count genes multiple times because of multiple probesets)
-          '      (MIN(affymetrixProbeset.rank) +
-                       (MIN(affymetrixProbeset.rank) * (? / chipType.chipTypeMaxRank)) )
-                  /2 AS rank
+          '      (MIN(affymetrixProbeset.rawRank) +
+                       (MIN(affymetrixProbeset.rawRank) * (? / chipType.chipTypeMaxRank)) )
+                  /2 AS rawRank
              FROM '.$affyToGlobalCondTableName.' '.
              # get the max rank of the chip type corresponding to each chip
              'INNER JOIN affymetrixChip ON '.$affyToGlobalCondTableName.'.bgeeAffymetrixChipId = affymetrixChip.bgeeAffymetrixChipId
@@ -416,7 +416,7 @@ sub compute_update_global_ranks {
                  (bgeeGeneId, '.$affyRankField.', '.$affyDistinctRankSum.')
              SELECT STRAIGHT_JOIN
                    chipNormalizedRank.bgeeGeneId,
-                   SUM(chipNormalizedRank.rank * affymetrixChip.chipDistinctRankCount)
+                   SUM(chipNormalizedRank.rawRank * affymetrixChip.chipDistinctRankCount)
                        /SUM(affymetrixChip.chipDistinctRankCount) AS meanRank,
                    SUM(affymetrixChip.chipDistinctRankCount) AS distinctRankCountSum
              FROM chipNormalizedRank
@@ -470,9 +470,9 @@ sub compute_update_global_ranks {
              SELECT STRAIGHT_JOIN
                  rnaSeqResult.bgeeGeneId, rnaSeqResult.rnaSeqLibraryId, '.
              # between-protocols normalization:
-          '      (rnaSeqResult.rank +
-                       (rnaSeqResult.rank * (? / rnaSeqProtocolSpeciesMaxRank.maxRank)) )
-                  /2 AS rank
+          '      (rnaSeqResult.rawRank +
+                       (rnaSeqResult.rawRank * (? / rnaSeqProtocolSpeciesMaxRank.maxRank)) )
+                  /2 AS rawRank
              FROM '.$rnaSeqToGlobalCondTableName.' '.
              # get the max rank of the protocol corresponding to each library
              'INNER JOIN rnaSeqLibrary ON '.$rnaSeqToGlobalCondTableName.'.rnaSeqLibraryId = rnaSeqLibrary.rnaSeqLibraryId
@@ -490,7 +490,7 @@ sub compute_update_global_ranks {
                  (bgeeGeneId, '.$rnaSeqRankField.', '.$rnaSeqDistinctRankSum.')
              SELECT STRAIGHT_JOIN
                    rnaSeqLibNormalizedRank.bgeeGeneId,
-                   SUM(rnaSeqLibNormalizedRank.rank * rnaSeqLibrary.libraryDistinctRankCount)
+                   SUM(rnaSeqLibNormalizedRank.rawRank * rnaSeqLibrary.libraryDistinctRankCount)
                        /SUM(rnaSeqLibrary.libraryDistinctRankCount) AS meanRank,
                    SUM(rnaSeqLibrary.libraryDistinctRankCount) AS distinctRankCountSum
              FROM rnaSeqLibNormalizedRank
@@ -522,7 +522,7 @@ sub compute_update_global_ranks {
                  (bgeeGeneId, '.$scRnaSeqFLRankField.', '.$scRnaSeqFLDistinctRankSum.')
              SELECT STRAIGHT_JOIN
                   scRnaSeqFullLengthResult.bgeeGeneId,
-                  SUM(scRnaSeqFullLengthResult.rank * scRnaSeqFullLengthLibrary.libraryDistinctRankCount)
+                  SUM(scRnaSeqFullLengthResult.rawRank * scRnaSeqFullLengthLibrary.libraryDistinctRankCount)
                       /SUM(scRnaSeqFullLengthLibrary.libraryDistinctRankCount) AS meanRank,
                   SUM(scRnaSeqFullLengthLibrary.libraryDistinctRankCount) AS distinctRankCountSum
              FROM '.$scRnaSeqFLToGlobalCondTableName.'

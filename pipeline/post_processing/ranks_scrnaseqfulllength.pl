@@ -103,11 +103,11 @@ sub compute_update_rank_lib_batch {
         # ======= Update ranks ========
         my $rnaSeqTmpTableStmt = $dbh_thread->prepare(
                 'CREATE TEMPORARY TABLE scRnaSeqFLLibRanking
-                 SELECT bgeeGeneId, scRnaSeqFullLengthLibraryId, rank
+                 SELECT bgeeGeneId, scRnaSeqFullLengthLibraryId, rawRank
                  FROM scRnaSeqFullLengthResult
                  LIMIT 0');
         $rnaSeqTmpTableStmt->execute() or die $rnaSeqTmpTableStmt->errstr;
-        my $sqlInsertTmpRanks = 'INSERT INTO scRnaSeqFLLibRanking (bgeeGeneId, scRnaSeqFullLengthLibraryId, rank)
+        my $sqlInsertTmpRanks = 'INSERT INTO scRnaSeqFLLibRanking (bgeeGeneId, scRnaSeqFullLengthLibraryId, rawRank)
                 VALUES ';
         my @insertTmpRanksValues = ();
         my $valueCount = 0;
@@ -133,7 +133,7 @@ sub compute_update_rank_lib_batch {
                     ON t1.bgeeGeneId = t2.bgeeGeneId AND t1.scRnaSeqFullLengthLibraryId = t2.scRnaSeqFullLengthLibraryId '.
                     # To be able to use the index on scRnaSeqFullLengthResult, plus this constraint is correct
                    'AND t1.expressionId IS NOT NULL
-                SET t1.rank = t2.rank');
+                SET t1.rawRank = t2.rawRank');
         $updateRnaSeqLibsStmt->execute() or die $updateRnaSeqLibsStmt->errstr;
 
         my $dropRnaSeqTmpTableStmt = $dbh_thread->prepare('DROP TABLE scRnaSeqFLLibRanking');
@@ -151,7 +151,7 @@ sub compute_update_rank_lib_batch {
 
 
 # Clean potentially already computed ranks
-#my $cleanRNASeq = $dbh->prepare("UPDATE scRnaSeqFullLengthResult SET rank = NULL");
+#my $cleanRNASeq = $dbh->prepare("UPDATE scRnaSeqFullLengthResult SET rawRank = NULL");
 #my $cleanLib    = $dbh->prepare("UPDATE scRnaSeqFullLengthLibrary SET libraryMaxRank = NULL,
 #                                                              libraryDistinctRankCount = NULL");
 #printf("Cleaning existing data: ");
@@ -175,7 +175,7 @@ if (!@lib_ids) {
                       AND t2.expressionId IS NOT NULL
                   ) AND NOT EXISTS (SELECT 1 FROM scRnaSeqFullLengthResult AS t2
                       WHERE t1.scRnaSeqFullLengthLibraryId = t2.scRnaSeqFullLengthLibraryId
-                      AND t2.rank IS NOT NULL)';
+                      AND t2.rawRank IS NOT NULL)';
     if ($sample_count > 0) {
         $libSql .= ' ORDER BY t1.scRnaSeqFullLengthLibraryId
                      LIMIT '.$sample_offset.', '.$sample_count;

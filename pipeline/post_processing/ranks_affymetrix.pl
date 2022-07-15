@@ -107,11 +107,11 @@ sub compute_update_rank_batch {
         # ======= Update ranks ========
         my $affyTmpTableStmt = $dbh_thread->prepare(
                 'CREATE TEMPORARY TABLE affyChipRanking
-                 SELECT bgeeGeneId, bgeeAffymetrixChipId, rank
+                 SELECT bgeeGeneId, bgeeAffymetrixChipId, rawRank
                  FROM affymetrixProbeset
                  LIMIT 0');
         $affyTmpTableStmt->execute() or die $affyTmpTableStmt->errstr;
-        my $sqlInsertTmpRanks = 'INSERT INTO affyChipRanking (bgeeGeneId, bgeeAffymetrixChipId, rank)
+        my $sqlInsertTmpRanks = 'INSERT INTO affyChipRanking (bgeeGeneId, bgeeAffymetrixChipId, rawRank)
                 VALUES ';
         my @insertTmpRanksValues = ();
         my $valueCount = 0;
@@ -137,7 +137,7 @@ sub compute_update_rank_batch {
                     ON t1.bgeeGeneId = t2.bgeeGeneId AND t1.bgeeAffymetrixChipId = t2.bgeeAffymetrixChipId '.
                     # To be able to use the index on affymetrixProbeset, plus this constraint is correct
                    'AND t1.expressionId IS NOT NULL
-                SET t1.rank = t2.rank');
+                SET t1.rawRank = t2.rawRank');
         $updateAffyChipsStmt->execute() or die $updateAffyChipsStmt->errstr;
 
         my $dropAffyTmpTableStmt = $dbh_thread->prepare('DROP TABLE affyChipRanking');
@@ -177,7 +177,7 @@ if (!@chip_ids) {
                        AND t2.bgeeAffymetrixChipId = t1.bgeeAffymetrixChipId
                    ) AND NOT EXISTS (SELECT 1 FROM affymetrixProbeset AS t2
                       WHERE t1.bgeeAffymetrixChipId = t2.bgeeAffymetrixChipId
-                      AND t2.rank IS NOT NULL)";
+                      AND t2.rawRank IS NOT NULL)";
     if ($sample_count > 0) {
         $sqlChip .= ' ORDER BY t1.bgeeAffymetrixChipId
                       LIMIT '.$sample_offset.', '.$sample_count;
@@ -244,7 +244,7 @@ print("Rank computation per chip done\n");
 #my $sql =
 #"UPDATE affymetrixChip AS t0
 # INNER JOIN (
-#     SELECT t1.bgeeAffymetrixChipId, MAX(t1.rank) AS maxRank, COUNT(DISTINCT t1.rank) AS distinctRankCount
+#     SELECT t1.bgeeAffymetrixChipId, MAX(t1.rawRank) AS maxRank, COUNT(DISTINCT t1.rawRank) AS distinctRankCount
 #     FROM affymetrixProbeset AS t1
 #     WHERE t1.reasonForExclusion NOT IN ('$Utils::EXCLUDED_FOR_PRE_FILTERED', '$Utils::EXCLUDED_FOR_UNDEFINED')
 #     GROUP BY t1.bgeeAffymetrixChipId
