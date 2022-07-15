@@ -83,7 +83,7 @@ create table globalExpression (
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID, not stable between releases.',
     globalConditionId mediumint unsigned not null COMMENT 'ID of condition in the related condition table ("globalCond"), not stable between releases.',
     summaryQuality varchar(10) not null,
-    rawRank decimal(9, 2) unsigned not null COMMENT 'Normalized rank for this gene-condition after normalization over all data types, conditions and species',
+    globalRank decimal(9, 2) unsigned not null COMMENT 'Normalized rank for this gene-condition after normalization over all data types, conditions and species',
     score decimal(9, 5) unsigned not null COMMENT 'Use the minimum and maximum rank of the species to normalize the expression to a value between 0 and 100',
     pValue decimal(31, 30) unsigned default null,
 	propagationOrigin varchar(20) not null COMMENT 'The origin of the propagated expression calls : self, self and descendant, self and ancestor, or all',
