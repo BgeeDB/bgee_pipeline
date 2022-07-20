@@ -68,10 +68,15 @@ update dataSource set releaseDate = '2016-07-14', releaseVersion = '',          
 update dataSource set releaseDate = '2015-03-10', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 30;
 -- GTEx-dbGAP
 update dataSource set releaseDate = '2015-10-03', releaseVersion = '6.p1',                         displayOrder = 3  where dataSourceId = 31;
--- RefSeq
+-- RefSeq genomic
 update dataSource set releaseDate = '2020-12-01', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 37;
 -- GenBank
 update dataSource set releaseDate = '2020-12-01', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 38;
 -- Amphiencode
 update dataSource set releaseDate = '2021-07-15', releaseVersion = '',                             displayOrder = 7  where dataSourceId = 39;
-
+-- RefSeq nucleotide
+update dataSource set releaseDate = '2020-12-01', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 41;
+-- RefSeq protein
+update dataSource set releaseDate = '2020-12-01', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 42;
+-- NCBI Gene ID
+update dataSource set releaseDate = '2020-12-01', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 43;

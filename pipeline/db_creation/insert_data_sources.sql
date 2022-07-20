@@ -23,8 +23,8 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
 (9, 'MGI', 'http://www.informatics.jax.org/accession/[xref_id]', 'http://www.informatics.jax.org/assay/[experiment_id]',
     'http://www.informatics.jax.org/assay/[experiment_id]#[inSituEvidenceUrlPart]',
     'http://www.informatics.jax.org/expression.shtml', 'Mouse in situ data source', 1, 'In situ data source'),
-(10, 'FlyBase', 'http://flybase.org/reports/[gene_id].html', '', '',
-    'http://flybase.org/', 'Drosophila in situ data source', 1, 'In situ data source'),
+(10, 'FlyBase', 'https://flybase.org/reports/[gene_id].html', '', '',
+    'https://flybase.org/', 'Drosophila in situ data source', 1, 'In situ data source'),
 (11, 'ArrayExpress', '', 'https://www.ebi.ac.uk/arrayexpress/experiments/[experiment_id]', '',
     'https://www.ebi.ac.uk/arrayexpress/', 'Affymetrix data source for various species', 1, 'Affymetrix data source'),
 (12, 'UniGene', '', '', 'https://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?db=nucest&id=[evidence_id]',
@@ -77,10 +77,13 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
 (35, 'GSA', '', 'http://bigd.big.ac.cn/search?dbId=gsa&q=[experiment_id]', 'http://bigd.big.ac.cn/gsa/browse/[experiment_id]/[evidence_id]',
      'http://bigd.big.ac.cn/gsa/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source'),
 (36, 'OncoMX', 'https://oncomx.org/searchview/?gene=[xref_id]', '', '', 'https://www.oncomx.org', 'Integrated cancer mutation and expression resource', 0, ''),
-(37, 'RefSeq', 'https://www.ncbi.nlm.nih.gov/nuccore/[xref_id]/', '', '', 'https://www.ncbi.nlm.nih.gov/refseq/', 'Source for genome assembly and annotations', 1, 'Genomics database'),
+(37, 'RefSeq genomic', 'https://www.ncbi.nlm.nih.gov/nuccore/[xref_id]/', '', '', 'https://www.ncbi.nlm.nih.gov/refseq/', 'Source for genome assembly and annotations', 1, 'Genomics database'),
 (38, 'GenBank', 'https://www.ncbi.nlm.nih.gov/nuccore/[xref_id]/', '', '', 'https://www.ncbi.nlm.nih.gov/genbank/', 'Source for genome assembly and annotations', 0, 'Genomics database'),
 (39, 'Amphiencode', '', '', '', 'https://amphiencode.github.io/Data/', 'Source for the European amphioxus annotations', 1, 'Genomics database'),
-(40, 'GeneCards', 'https://www.genecards.org/cgi-bin/carddisp.pl?gene=[xref_id]', '', '', 'https://www.genecards.org/', 'GeneCards is a searchable, integrative database that provides comprehensive, user-friendly information on all annotated and predicted human genes.', 0, '');
+(40, 'GeneCards', 'https://www.genecards.org/cgi-bin/carddisp.pl?gene=[xref_id]', '', '', 'https://www.genecards.org/', 'GeneCards is a searchable, integrative database that provides comprehensive, user-friendly information on all annotated and predicted human genes.', 0, ''),
+(41, 'RefSeq nucleotide', 'https://www.ncbi.nlm.nih.gov/nuccore/[xref_id]/', '', '', 'https://www.ncbi.nlm.nih.gov/refseq/', 'Source for RefSeq RNA sequences', 0, ''),
+(42, 'RefSeq protein', 'https://www.ncbi.nlm.nih.gov/protein/[xref_id]/', '', '', 'https://www.ncbi.nlm.nih.gov/refseq/', 'Source for RefSeq protein sequences', 0, ''),
+(43, 'NCBI Gene', 'https://www.ncbi.nlm.nih.gov/gene/[xref_id]/', '', '', 'https://www.ncbi.nlm.nih.gov/gene/', 'Source for NCBI Gene ID', 0, '');
 
 -- Add "ghost" sources, because a source can only be part of one category, so rather than
 -- creating a link table, we do this ugly hack

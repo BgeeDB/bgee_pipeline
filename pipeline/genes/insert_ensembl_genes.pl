@@ -137,6 +137,9 @@ my $sourceDB = $dbh->prepare('SELECT dataSourceId, dataSourceName FROM dataSourc
 $sourceDB->execute()  or die $sourceDB->errstr;
 my %InsertedDataSources = map { $_->[1] = lc $_->[1]; $_->[1] => $_->[0] } @{$sourceDB->fetchall_arrayref}; # List already inserted dataSources and return it in a hash dataSourceName (lowercase) => dataSourceId
 $sourceDB->finish;
+my $datasourceId = $ensSource eq 'Ensembl'        ? $InsertedDataSources{'ensembl'}
+                 : $ensSource eq 'EnsemblMetazoa' ? $InsertedDataSources{'ensemblmetazoa'}
+                 : '';
 
 # Add extra dataSource aliases
 # MUST be in lowercase to ease comparison
@@ -152,8 +155,8 @@ $InsertedDataSources{'zfin_id'}          = $InsertedDataSources{'zfin'};
 
 ## Gene info (id, description)
 # Get individual gene info
-my $geneDB       = $dbh->prepare('INSERT INTO gene (geneId, geneName, geneDescription, geneBioTypeId, speciesId)
-                                  VALUES (?, ?, ?, (SELECT geneBioTypeId FROM geneBioType WHERE geneBioTypeName=?), ?)');
+my $geneDB       = $dbh->prepare('INSERT INTO gene (geneId, geneName, geneDescription, geneBioTypeId, speciesId, dataSourceId)
+                                  VALUES (?, ?, ?, (SELECT geneBioTypeId FROM geneBioType WHERE geneBioTypeName=?), ?, ?)');
 my $synonymDB    = $dbh->prepare('INSERT INTO geneNameSynonym (bgeeGeneId, geneNameSynonym)
                                   VALUES (?, ?)');
 my $xrefDB       = $dbh->prepare('INSERT INTO geneXRef (bgeeGeneId, XRefId, XRefName, dataSourceId)
@@ -191,7 +194,7 @@ for my $gene (sort {$a->stable_id cmp $b->stable_id} (@genes)) { #Sort to always
     ## Insert gene info
     my $bgeeGeneId;
     if ( ! $debug ){
-        $geneDB->execute($id2insert, $external_name, $description, $biotype, $speciesBgee)  or die $geneDB->errstr;
+        $geneDB->execute($id2insert, $external_name, $description, $biotype, $speciesBgee, $datasourceId)  or die $geneDB->errstr;
         $bgeeGeneId = $dbh->{'mysql_insertid'};
         die "Cannot get bgeeGeneId [$bgeeGeneId]\n"  if ( $bgeeGeneId !~ /^\d+$/ );
     }
