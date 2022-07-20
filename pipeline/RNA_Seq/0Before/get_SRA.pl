@@ -88,7 +88,9 @@ while (<$ANNOTATION>){
             #NOTE fastq-dump has problems with paths containing //
             #NOTE cd to the "project's workspace directory" the ONLY place where the SRA download works for private SRR
             mkdir $lib_dir;
-            system("cd $BASE; $SRATK_PATH/bin/fastq-dump --split-e --gzip --outdir $lib_dir/  $SRA_PATH/$sra_id.sra")==0
+#TODO fasterq-dump number of threads      -e|--threads <count>             how many threads to use (dflt=6)
+#TODO no more --gzip with fasterq-dump AND deprecated with fastq-dump
+            system("cd $BASE; $SRATK_PATH/bin/fastq-dump --split-3 --gzip --outdir $lib_dir/  $SRA_PATH/$sra_id.sra")==0
                 or do { warn "\tFailed to convert [$library_id/$sra_id]\n"; next SRA };
 
             # Check FastQ file size
