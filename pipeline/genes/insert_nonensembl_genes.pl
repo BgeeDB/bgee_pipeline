@@ -385,6 +385,21 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
         next  if ( $xref =~ /;/ );
         my ($dbname, $pid) = split(':', $xref);
         if ( ! $debug ){
+            #NOTE Catch particular RefSeq sections:
+            ## RefSeq ids: see https://ftp.ncbi.nih.gov/refseq/release/release-notes/
+            ##             protein      NP_  XP_  ZP_  AP_  YP_       WP_
+            ##              RNA/mRNA    NM_  NR_  XM_  XR_
+            ##             genomic/DNA  NC_  NG_  NT_  NW_  NS_  AC_  NZ_
+            ## ZP_ and NS_ look deprecated and unused now
+            if ( $pid =~ /^[NX][MR]_/ ){
+                $dbname = 'RefSeq nucleotide';
+            }
+            elsif ( $pid =~ /^[NXAYWZ]P_/ ){
+                $dbname = 'RefSeq protein';
+            }
+            elsif ( $pid =~ /^N[CGTWZS]_/ || $pid =~ /^AC_/ ){
+                $dbname = 'RefSeq genomic';
+            }
             $xrefDB->execute($bgeeGeneId, $pid, '', $InsertedDataSources{lc $dbname})  or die "[$stable_id]", $xrefDB->errstr;
         }
         else {
