@@ -49,12 +49,12 @@ if( file.exists(librariesDownloadedJura) ){
 }
 
 ###### Check libraries ######################################################################################################################
-checkId <- data.frame(readFile$experiment_accession[!(readFile$experiment_accession %in% libDownloadJura$experiment_accession)])
-colnames(checkId) <- "experiment_accession"
-finalLibsToDown <- dplyr::filter(readFile, experiment_accession %in% checkId$experiment_accession)
+checkId <- data.frame(readFile$library_id[!(readFile$library_id %in% libDownloadJura$library_id)])
+colnames(checkId) <- "library_id"
+finalLibsToDown <- dplyr::filter(readFile, library_id %in% checkId$library_id)
 
 ##############################################################################################################################################
-libraryName <- finalLibsToDown$experiment_accession
+libraryName <- finalLibsToDown$library_id
 speciesID <- finalLibsToDown$tax_id
 ftp <- as.character(finalLibsToDown$submitted_ftp)
 ftp <- data.frame(unlist(strsplit(ftp, ";")))
@@ -71,12 +71,17 @@ generalInfo <- dplyr::filter(generalInfo, ftp_link != "NA")
 ## remove libraries that have HCA in the information
 generalInfo <- dplyr::filter(generalInfo, ftp_link != "HCA")
 
+folder_experiments <- file.path(output, "EXPERIMENTS")
+if (!file.exists(folder_experiments)) {
+  dir.create(folder_species)
+}
 
-for (library in  unique(generalInfo$experiment_accession)) {
+for (library in  unique(generalInfo$library_id)) {
 
   ## create output for each library
   message("treating the library: ", library)
-  species <- generalInfo$speciesID[generalInfo$libraryName == library]
+  species <- generalInfo$speciesID[generalInfo$library_id == library]
+  experiment <- generalInfo$experiment_id[generalInfo$library_id == library]
   folder_species <- file.path(output, species)
   if (file.exists(folder_species)) {
     cat("The folder already exists")
@@ -91,10 +96,13 @@ for (library in  unique(generalInfo$experiment_accession)) {
   }
 
   ## select URL for the correspondent library
-  ftpID <- generalInfo$ftp_link[generalInfo$libraryName == library]
+  ftpID <- generalInfo$ftp_link[generalInfo$library_id == library]
   setwd(InfoFile)
   ## download file
   wget(c(paste0(ftpID)))
+  ## create a symlink following pattern */EXPERIMENTS/experiment_ID/library_id/
+  file.symlink(from = InfoFile, to = file.path(folder_experiments, experiment, library),
+    overwrite = FALSE, recursive = TRUE)
 }
 
 AllFilesDownload <- list.files(output,  pattern=".*bam$", full.names=T, recursive = TRUE)

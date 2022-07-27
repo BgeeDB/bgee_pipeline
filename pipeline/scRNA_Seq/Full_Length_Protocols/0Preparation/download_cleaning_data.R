@@ -39,16 +39,16 @@ if( file.exists(metadata_info) ){
 ## Read libraries_Downloaded_Jura_file. If file not exists, script stops
 if( file.exists(librariesDownloadedJura) ){
   alreadyDownloadedLibraries <- read.table(librariesDownloadedJura, h=F, sep="\t")
-  colnames(alreadyDownloadedLibraries) <- "experiment_accession"
+  colnames(alreadyDownloadedLibraries) <- "library_id"
 } else {
   stop( paste("File with libraries already downloaded not found [", librariesDownloadedJura, "]\n"))
 }
 
 ###### Check libraries #################################################################
 
-checkId <- data.frame(readFile$experiment_accession[!(readFile$experiment_accession %in% alreadyDownloadedLibraries$experiment_accession)])
-colnames(checkId) <- "experiment_accession"
-finalLibsToDown <- dplyr::filter(readFile, experiment_accession %in% checkId$experiment_accession)
+checkId <- data.frame(readFile$librry_id[!(readFile$library_id %in% alreadyDownloadedLibraries$library_id)])
+colnames(checkId) <- "library_id"
+finalLibsToDown <- dplyr::filter(readFile, library_id %in% checkId$library_id)
 
 ##########################################################################################
 if (nrow(finalLibsToDown) == 0){
@@ -66,18 +66,18 @@ if (nrow(finalLibsToDown) == 0){
   for (i in 1:nrow(finalLibsToDown)) {
 
     rowinfo <- finalLibsToDown[i,]
-    infoL <- rowinfo$experiment_accession
+    infoL <- rowinfo$library_id
     tax_id <- finalLibsToDown$tax_id[i]
 
     if(rowinfo$library_layout == "PAIRED"){
 
-      infoL <- as.character(rowinfo$experiment_accession)
-      infoL1 <- as.character(rowinfo$experiment_accession)
+      infoL <- as.character(rowinfo$library_id)
+      infoL1 <- as.character(rowinfo$library_id)
       infoL2 <- rbind(infoL,infoL1)
       LibInfo <- rbind(LibInfo,infoL2)
 
     } else {
-      libdup <- as.character(rowinfo$experiment_accession)
+      libdup <- as.character(rowinfo$library_id)
       LibInfo <- rbind(LibInfo, libdup)
     }
   }
@@ -85,20 +85,26 @@ if (nrow(finalLibsToDown) == 0){
   ## create final information of the library and FASZQ.gz file path
   generalInfo <- data.frame(LibInfo, ftp)
   for (i in generalInfo$LibInfo) {
-    generalInfo$tax_id <- finalLibsToDown$tax_id[finalLibsToDown$experiment_accession == i]
+    generalInfo$tax_id <- finalLibsToDown$tax_id[finalLibsToDown$library_id == i]
   }
 
+  folder_experiments <- file.path(output_folder,"EXPERIMENTS")
+  if (!file.exists(folder_experiments)) {
+    dir.create(folder_experiments)
+  }
 
   for (library in  unique(generalInfo$LibInfo)) {
 
     ## create output for each species
     species <- generalInfo$tax_id[generalInfo$LibInfo == library]
+    experiment <- generalInfo$experiment_id[generalInfo$LibInfo == library]
     folder_species <- file.path(output_folder, species)
     if (file.exists(folder_species)) {
       cat("The folder already exists")
     } else {
       dir.create(folder_species)
     }
+
 
     ## create output for each library
     message("treating the library: ", library)
@@ -107,9 +113,9 @@ if (nrow(finalLibsToDown) == 0){
     files<-list.files(path = InfoFile, pattern="*.fastq.gz$")
 
     ## control the downloading process if stops
-    if (dir.exists(InfoFile) == TRUE && file_test("-f", paste0(InfoFile,"/",files)) == TRUE){
-
-      message("The folder for the library ", library, " was already created and the FASTQ.gz files downloaded.")
+    if (dir.exists(InfoFile) == TRUE && file_test("-f", file.path(InfoFile,files)) == TRUE){
+      message("The folder for the library ", library, " was already created and ",
+        "the FASTQ.gz files downloaded.")
 
     } else {
 
@@ -119,6 +125,9 @@ if (nrow(finalLibsToDown) == 0){
       setwd(InfoFile)
       ## download data
       wget(c(paste0(ftpID)))
+      ## create a symlink following pattern */EXPERIMENTS/experiment_ID/library_id/
+      file.symlink(from = InfoFile, to = file.path(folder_experiments, experiment, library),
+        overwrite = FALSE, recursive = TRUE)
 
     }
   }

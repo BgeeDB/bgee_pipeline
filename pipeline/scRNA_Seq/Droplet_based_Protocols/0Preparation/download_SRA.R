@@ -48,18 +48,21 @@ if( file.exists(librariesDownloadedJura) ){
 }
 
 ###### Check libraries ######################################################################################################################
-checkId <- data.frame(readFile$experiment_accession[!(readFile$experiment_accession %in% libDownloadJura$experiment_accession)])
-colnames(checkId) <- "experiment_accession"
-finalLibsToDown <- dplyr::filter(readFile, experiment_accession %in% checkId$experiment_accession)
+checkId <- data.frame(readFile$library_id[!(readFile$library_id %in% libDownloadJura$library_id)])
+colnames(checkId) <- "library_id"
+finalLibsToDown <- dplyr::filter(readFile, library_id %in% checkId$library_id)
 
 ##############################################################################################################################################
 ## remove NA and fastq.gz information that belongs to HCA (download with other script) or from EBI (download .bam files)
 finalLibsToDown <- dplyr::filter(readFile, fastq_ftp != "NA" & fastq_ftp != "fastq.gz")
-for (library in  unique(finalLibsToDown$experiment_accession)) {
+
+folder_experiments <- file.path(output, "EXPERIMENTS")
+for (library in  unique(finalLibsToDown$library_id)) {
 
   ## create output for each library
   message("treating the library: ", library)
-  species <- finalLibsToDown$tax_id[finalLibsToDown$experiment_accession == library]
+  species <- finalLibsToDown$tax_id[finalLibsToDown$library_id == library]
+  experiment <- finalLibsToDown$experiment_id[finalLibsToDown$library_id == library]
   folder_species <- file.path(output, species)
   if (file.exists(folder_species)) {
     cat("The folder already exists")
@@ -73,8 +76,13 @@ for (library in  unique(finalLibsToDown$experiment_accession)) {
     dir.create(folder_library)
   }
   ## select the SRR referent to the library to download
-  SRR_file <- finalLibsToDown$run_accession[finalLibsToDown$experiment_accession == library]
+  SRR_file <- finalLibsToDown$run_accession[finalLibsToDown$library_id == library]
   setwd(folder_library)
 
+  ## download files using SRA Toolkit
   system(sprintf('prefetch --type fastq %s', paste0(SRR_file)))
+
+    ## create a symlink following pattern */EXPERIMENTS/experiment_ID/library_id/
+  file.symlink(from = folder_library, to = file.path(folder_experiments, experiment, library),
+    overwrite = FALSE, recursive = TRUE)
 }
