@@ -35,10 +35,12 @@ create table gene (
     geneId varchar(20) not null COMMENT 'Real gene id',
     geneName varchar(255) not null default '' COMMENT 'Gene name',
     geneDescription TEXT COMMENT 'Gene description',
+    dataSourceId smallInt unsigned not null,
     speciesId mediumint unsigned not null COMMENT 'NCBI species taxon id this gene belongs to',
     PRIMARY KEY (bgeeGeneId),
     UNIQUE(geneId, speciesId),
-    FOREIGN KEY(speciesId) REFERENCES species(speciesId) ON DELETE CASCADE
+    FOREIGN KEY(speciesId) REFERENCES species(speciesId) ON DELETE CASCADE,
+    FOREIGN KEY(dataSourceId) REFERENCES dataSource(dataSourceId) ON DELETE CASCADE
 ) engine = innodb;
 
 
