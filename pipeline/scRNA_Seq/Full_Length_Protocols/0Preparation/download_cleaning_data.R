@@ -46,7 +46,7 @@ if( file.exists(librariesDownloadedJura) ){
 
 ###### Check libraries #################################################################
 
-checkId <- data.frame(readFile$librry_id[!(readFile$library_id %in% alreadyDownloadedLibraries$library_id)])
+checkId <- data.frame(readFile$library_id[!(readFile$library_id %in% alreadyDownloadedLibraries$library_id)])
 colnames(checkId) <- "library_id"
 finalLibsToDown <- dplyr::filter(readFile, library_id %in% checkId$library_id)
 

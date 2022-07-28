@@ -68,21 +68,22 @@ if (file.exists(metadata_file)){
   message("File already exists and will be removed to create a new one to avoid overwritting!")
   file.remove(metadata_file)
   file.create(metadata_file)
-  cat("sample_accession\texperiment_accession\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = metadata_file, sep = "\t")
 } else {
   file.create(metadata_file)
-  cat("sample_accession\texperiment_accession\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = metadata_file, sep = "\t")
 }
+# write header
+cat("sample_accession\texperiment_id\tlibrary_id\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = metadata_file, sep = "\t")
+
 metadata_notmatch_file <- file.path(output_folder,"metadata_notMatch_10X.tsv")
 if (file.exists(metadata_notmatch_file)){
   message("File already exists and will be removed to create a new one to avoid overwritting!")
   file.remove(metadata_notmatch_file)
   file.create(metadata_notmatch_file)
-  cat("sample_accession\texperiment_accession\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = metadata_notmatch_file, sep = "\t")
 } else {
   file.create(metadata_notmatch_file)
-  cat("sample_accession\texperiment_accession\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = metadata_notmatch_file, sep = "\t")
 }
+# write header
+cat("sample_accession\texperiment_id\tlibrary_id\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = metadata_notmatch_file, sep = "\t")
 
 ## select just 10X target-based protocols to retrieve metadata
 targetBased <- experiments[experiments$protocol %like% "10X Genomics", ]
@@ -109,6 +110,10 @@ for (experiment in unique(targetBased$experimentId)) {
     message("Source ERROR!")
   }
 }
+
+## What is called experiment_accession in ENA API is called library_id in our pipeline
+names(metadata)[names(metadata) == 'experiment_accession'] <- 'library_id'
+
 ## add HCA by default to metadata file directly from annotation, and not making comparison between the annotation and metadata. This is because HCAExplore R package was deprecated
 hca_experiment <- experiments$experimentId[experiments$experimentSource == "HCA" ]
 getLib <- annotation[annotation$experimentId == hca_experiment]
@@ -117,28 +122,32 @@ colnames(getLib) <- colnames(metadata)
 metadata <- rbind(metadata, getLib)
   
 ## compare information from annotation and metadata
-## SRA: libraryID, plataform and speciesID
+## SRA: libraryID, platform and speciesID
 for(i in unique(targetBased_libraries$libraryId)) {
 
   annotationInfo <- targetBased_libraries[targetBased_libraries$libraryId == i,]
-  metadataInfo <- metadata[metadata$experiment_accession == i,]
+  metadataInfo <- metadata[metadata$library_id == i,]
 
-  compare_library <- identical(as.character(annotationInfo[['libraryId']]),as.character(metadataInfo[['experiment_accession']]))
+  compare_library <- identical(as.character(annotationInfo[['libraryId']]),as.character(metadataInfo[['library_id']]))
   compare_machine <- identical(as.character(annotationInfo[['platform']]),as.character(metadataInfo[['instrument_model']]))
   compare_speciesID <- identical(as.character(annotationInfo[['speciesId']]),as.character(metadataInfo[['tax_id']]))
   
+  ## nomenclature used in the pipeline
+  merge(metadataInfo, annotationInfo[, c("libraryId","experimentId")], by.x="library_id", by.y="libraryId")
+  ## update column order
+  metadataInfo <- metadataInfo[, c("sample_accession","experimentId","library_id","run_accession","read_count","tax_id","scientific_name","instrument_model","library_layout","fastq_ftp","submitted_ftp")]
+  ## homogeneise use of snake case for column names
+  names(metadata)[names(metadata) == 'experimentId'] <- 'experiment_id'
+
   if (compare_library == "TRUE" && compare_machine == "TRUE" && compare_speciesID == "TRUE"){
-      message(as.character(annotationInfo$libraryId[1]), " complete match between annotation and metadata")
-
-      ## export libraries that pass and will be downloaded
-      write.table(metadataInfo, file = metadata_file, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
-
-    } else {
-      message("For the library: ", as.character(annotationInfo$libraryId[1]), " the comparison library is: ", compare_library)
-      message("For the library: ", as.character(annotationInfo$libraryId[1]), " the comparison platform is: ", compare_machine)
-      message("For the library: ", as.character(annotationInfo$libraryId[1]), " the comparison species is: ", compare_speciesID)
-
-      ## export libraries that will not be used to download
-      write.table(metadataInfo, file = metadata_notmatch_file, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
-    }
+    message(as.character(annotationInfo$libraryId[1]), " complete match between annotation and metadata")
+    ## export libraries that pass and will be downloaded
+    write.table(metadataInfo, file = metadata_file, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
+  } else {
+    message("For the library: ", as.character(annotationInfo$libraryId[1]), " the comparison library is: ", compare_library)
+    message("For the library: ", as.character(annotationInfo$libraryId[1]), " the comparison platform is: ", compare_machine)
+    message("For the library: ", as.character(annotationInfo$libraryId[1]), " the comparison species is: ", compare_speciesID)
+    ## export libraries that will not be used to download
+    write.table(metadataInfo, file = metadata_notmatch_file, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
+  }
 }
