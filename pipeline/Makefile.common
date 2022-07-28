@@ -113,6 +113,9 @@ MV     := mv -f
 CP     := cp -f
 GUNZIP := gunzip -f
 
+PYTHON_v3_7 = python3.7
+PIPENV = pipenv
+
 # cURL command, to download files only if more recently changed
 # (it was not working correctly with wget in our case)
 # -s: silent, no progress bar displayed;
@@ -237,9 +240,32 @@ TAX_DAT_DOWNLOAD_URL := ftp://ftp.ebi.ac.uk/pub/databases/taxonomy/taxonomy.dat
 
 # =========== GENE FILES ===============
 
+HOMOLOGS_DIR := $(OUTPUT_DIR)homologs
 PARALOGS_DIR := $(OUTPUT_DIR)paralogs/
 ORTHOLOGS_DIR := $(OUTPUT_DIR)orthologs/
 XREFS_FROM_UNIPROT_FILE := $(OUTPUT_DIR)xrefs_from_uniprot.tsv
+
+#Where config files will be saved, these files are also used by the orthologs/paralogs app 
+#to restart from where it stopped in a previous execution or to execute it incrementally. 
+TEMPORARY_CONFIG_FILES_DIR = $(OUTPUT_DIR)temp 
+
+#The homology pairwise application directory and main file
+GENERATE_HOMOLOGS_APP_DIR = $(PIPELINEROOT)genes/orthologs_paralogs_app
+GENERATE_HOMOLOGS_APP_FILE = $(GENERATE_HOMOLOGS_APP_DIR)/GenerateHomologsParallelApp.py
+
+#For the below CSV files, each species is in a new line and represented with its NCBI identifier
+#The 1st line is ignored (i.e. heading).
+#A csv file containing all wanted species to get orthologs and paralogs
+ALL_SPECIES_FILE = $(GENERATE_HOMOLOGS_APP_DIR)/species_lists/all_speciesId.csv
+
+#A csv file containing exclusively the NCBI species to get orthologs and paralogs
+ONLY_NCBI_SPECIES_FILE = $(GENERATE_HOMOLOGS_APP_DIR)/species_lists/ncbi_speciesId.csv
+
+#A csv file containing exclusively the FlyBASE species to get orthologs and paralogs
+ONLY_FLYBASE_SPECIES_FILE = $(GENERATE_HOMOLOGS_APP_DIR)/species_lists/flybase_speciesId.csv
+
+#the URL or file path that contains ncbi gene ids mappings to ensembl gene ids
+NCBI_GENE2ENSEMBL_URL := https://ftp.ncbi.nih.gov/gene/DATA/gene2ensembl.gz
 
 # =========== UBERON FILES ===============
 UBERON_SOURCE_PATH := $(SOURCE_FILES_DIR)uberon/
