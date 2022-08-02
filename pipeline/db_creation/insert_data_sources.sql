@@ -83,7 +83,8 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
 (40, 'GeneCards', 'https://www.genecards.org/cgi-bin/carddisp.pl?gene=[xref_id]', '', '', 'https://www.genecards.org/', 'GeneCards is a searchable, integrative database that provides comprehensive, user-friendly information on all annotated and predicted human genes.', 0, ''),
 (41, 'RefSeq nucleotide', 'https://www.ncbi.nlm.nih.gov/nuccore/[xref_id]/', '', '', 'https://www.ncbi.nlm.nih.gov/refseq/', 'Source for RefSeq RNA sequences', 0, ''),
 (42, 'RefSeq protein', 'https://www.ncbi.nlm.nih.gov/protein/[xref_id]/', '', '', 'https://www.ncbi.nlm.nih.gov/refseq/', 'Source for RefSeq protein sequences', 0, ''),
-(43, 'NCBI Gene', 'https://www.ncbi.nlm.nih.gov/gene/[xref_id]/', '', '', 'https://www.ncbi.nlm.nih.gov/gene/', 'Source for NCBI Gene ID', 0, '');
+(43, 'NCBI Gene', 'https://www.ncbi.nlm.nih.gov/gene/[xref_id]/', '', '', 'https://www.ncbi.nlm.nih.gov/gene/', 'Source for NCBI Gene ID', 0, ''),
+(44, 'Alliance of Genome Resources', 'https://www.alliancegenome.org/gene/[xref_id]/', '', '', 'https://www.alliancegenome.org/', 'Consortium of model organism db', 0, '');
 
 -- Add "ghost" sources, because a source can only be part of one category, so rather than
 -- creating a link table, we do this ugly hack

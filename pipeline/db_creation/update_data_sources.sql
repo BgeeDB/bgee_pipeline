@@ -80,3 +80,6 @@ update dataSource set releaseDate = '2020-12-01', releaseVersion = '',          
 update dataSource set releaseDate = '2020-12-01', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 42;
 -- NCBI Gene ID
 update dataSource set releaseDate = '2020-12-01', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 43;
+-- Alliance of Genome Resources
+update dataSource set releaseDate = '2020-12-01', releaseVersion = '3.2',                          displayOrder = 1  where dataSourceId = 44;
+

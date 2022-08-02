@@ -32,21 +32,21 @@ create table author (
 
 create table dataSource (
     dataSourceId          smallInt unsigned not null,
-    dataSourceName        varchar(255)       not null             COMMENT 'Data source name',
+    dataSourceName        varchar(55)       not null             COMMENT 'Data source name',
     XRefUrl               varchar(255)      not null default ''  COMMENT 'URL for cross-references to data sources',
 -- path to experiment for expression data sources (ArrayExpress, GEO, NCBI, in situ databases, ...)
 -- parameters such as experimentId are defined by the syntax [experimentId] for instance
-    experimentUrl         varchar(255)      not null default ''  COMMENT 'URL to experiment for expression data sources',
+    experimentUrl         varchar(100)      not null default ''  COMMENT 'URL to experiment for expression data sources',
 -- path to in situ evidence for in situ databases,
 -- to Affymetrix chips for affymetrix data
 -- parameters such as experimentId are defined by the syntax [experimentId] for instance
-    evidenceUrl           varchar(255)      not null default ''  COMMENT 'URL to evidence for expression data sources',
+    evidenceUrl           varchar(100)      not null default ''  COMMENT 'URL to evidence for expression data sources',
 -- url to the home page of the ressource
-    baseUrl               varchar(255)      not null default ''  COMMENT 'URL to the home page of data sources',
+    baseUrl               varchar(100)      not null default ''  COMMENT 'URL to the home page of data sources',
     releaseDate           date                  null             COMMENT 'Date of data source used',
 -- e.g.: Ensembl 87, git version xxx
-    releaseVersion        varchar(255)       not null default ''  COMMENT 'Version of data source used',
-    dataSourceDescription TEXT                                   COMMENT 'Description of data source',
+    releaseVersion        varchar(35)       not null default ''  COMMENT 'Version of data source used',
+    dataSourceDescription varchar(200)                           COMMENT 'Description of data source',
 -- to define if this dataSource should be displayed on the page listing data sources
     toDisplay             boolean           not null default 0   COMMENT 'Display this data source in listing data source page?',
 -- a cat to organize the display
