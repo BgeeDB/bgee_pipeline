@@ -155,15 +155,10 @@ $(OUTPUT_DIR)config_file:
 	@echo "$$CONFIG_TEMPLATE" > $(GENERATE_HOMOLOGS_APP_DIR)/template.properties
 	@touch $@
 
-#If pipenv is not installed, run this rule.
-#install_pipenv:
-#	@curl https://raw.githubusercontent.com/pypa/pipenv/master/get-pipenv.py | $(PYTHON_v3_7) 1> $@.tmp 2> $@.err
-#	@$(MV) $@.tmp $@
-
 $(OUTPUT_DIR)generate_homologs_app: config_file
 	@cd $(GENERATE_HOMOLOGS_APP_DIR)
 	@$(PIPENV) install 1>$@.tmp 2>$@.err
-	@$(PIPENV) run $(PYTHON_v3_7) $(GENERATE_HOMOLOGS_APP_FILE) -c $(TEMPORARY_CONFIG_FILES_DIR) -n $(N_PROCESSES) >> $@.tmp 2>> $@.err
+	@$(PIPENV) run $(PYTHON3) $(GENERATE_HOMOLOGS_APP_FILE) -c $(TEMPORARY_CONFIG_FILES_DIR) -n $(N_PROCESSES) >> $@.tmp 2>> $@.err
 	@$(MV) $(HOMOLOGS_DIR)/orthologs* $(ORTHOLOGS_DIR) 
 	@$(MV) $(HOMOLOGS_DIR)/paralogs* $(PARALOGS_DIR)
 	@$(RM) -r $(HOMOLOGS_DIR)
