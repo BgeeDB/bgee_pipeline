@@ -34,6 +34,8 @@ maintenance: new_annotation
 	@$(MV) $@.tmp $@
 
 get_annot: maintenance
+	@$(GIT) submodule init
+	@$(GIT) submodule update
 	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations submodule
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/Strains/StrainMapping.tsv                 $(STRAIN_MAPPING_FILE)
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/Affymetrix/affymetrixChip.tsv             $(AFFY_CHIP_FILEPATH)

@@ -5,6 +5,8 @@ include $(PIPELINEROOT)Makefile.common
 all: $(VERIFICATIONFILE)
 
 get_annot:
+	@$(GIT) submodule init
+	@$(GIT) submodule update
 	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations submodule
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/Strains/StrainMapping.tsv  $(STRAIN_MAPPING_FILE)
 	@touch $@

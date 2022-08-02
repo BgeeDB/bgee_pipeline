@@ -7,6 +7,8 @@ all: $(VERIFICATIONFILE)
 
 
 get_annot:
+	@$(GIT) submodule init
+	@$(GIT) submodule update
 	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations submodule
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/Strains/StrainMapping.tsv                                $(STRAIN_MAPPING_FILE)
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/$(DIR_NAME)/species_EST_file.txt                         $(SOURCE_FILES_DIR)/$(DIR_NAME)/species_EST_file.txt

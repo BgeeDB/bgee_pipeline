@@ -9,6 +9,8 @@ all: $(VERIFICATIONFILE)
 ################################ RETRIEVE BGEE ANNOTATIONS ################################
 
 get_annot:
+	@$(GIT) submodule init
+	@$(GIT) submodule update
 	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations submodule. Store them in the source_files directory
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/Strains/StrainMapping.tsv                 $(STRAIN_MAPPING_FILE)
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/RNA_Seq/RNASeqLibrary.tsv                 $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibrary.tsv

@@ -7,6 +7,8 @@ include $(PIPELINEROOT)Makefile.common
 
 ## Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations submodule and store them in the source_files directory
 get_annot:
+	@$(GIT) submodule init
+	@$(GIT) submodule update
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/Strains/StrainMapping.tsv         $(STRAIN_MAPPING_FILE)
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqFLLibrary.tsv   $(INPUT_DIR)/Full_length/scRNASeqFLLibrary.tsv
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqExperiment.tsv  $(INPUT_DIR)/scRNASeqExperiment.tsv
