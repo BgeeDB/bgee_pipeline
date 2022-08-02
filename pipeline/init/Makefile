@@ -177,12 +177,37 @@ global_check:
 	@python3 -c "import os"              >> $@.tmp  2>/dev/null
 	@python3 -c "import pandas"          >> $@.tmp  2>/dev/null
 	@python3 -c "import seaborn"         >> $@.tmp  2>/dev/null
+# Python libraries for orthologs_paralogs_app
+	@python3 -c "import SPARQLWrapper"   >> $@.tmp  2>/dev/null
+	@python3 -c "import rdflib"          >> $@.tmp  2>/dev/null
+	@python3 -c "import isodate"         >> $@.tmp  2>/dev/null
+	@python3 -c "import pyparsing"       >> $@.tmp  2>/dev/null
+	@python3 -c "import six"             >> $@.tmp  2>/dev/null
+	@python3 -c "import configparser"    >> $@.tmp  2>/dev/null
+	@python3 -c "import datetime"        >> $@.tmp  2>/dev/null
+	@python3 -c "import distutils"       >> $@.tmp  2>/dev/null
+	@python3 -c "import multiprocessing" >> $@.tmp  2>/dev/null
+	@python3 -c "import pathlib"         >> $@.tmp  2>/dev/null
+	@python3 -c "import typing"          >> $@.tmp  2>/dev/null
+	@python3 -c "import ast"             >> $@.tmp  2>/dev/null
+	@python3 -c "import errno"           >> $@.tmp  2>/dev/null
+	@python3 -c "import fcntl"           >> $@.tmp  2>/dev/null
+	@python3 -c "import fileinput"       >> $@.tmp  2>/dev/null
+	@python3 -c "import io"              >> $@.tmp  2>/dev/null
+	@python3 -c "import json"            >> $@.tmp  2>/dev/null
+	@python3 -c "import logging"         >> $@.tmp  2>/dev/null
+	@python3 -c "import os"              >> $@.tmp  2>/dev/null
+	@python3 -c "import shutil"          >> $@.tmp  2>/dev/null
+	@python3 -c "import sys"             >> $@.tmp  2>/dev/null
+	@python3 -c "import getopt"          >> $@.tmp  2>/dev/null
+	@python3 -c "import time"            >> $@.tmp  2>/dev/null
 ## Binaries
 # network
 	@which wget          >> $@.tmp
 	@which rsync         >> $@.tmp
 	@which git           >> $@.tmp
 # others
+	@which pipenv        >> $@.tmp
 	@which mvn           >> $@.tmp
 	@which gunzip        >> $@.tmp
 	@which bunzip2       >> $@.tmp
@@ -431,7 +456,32 @@ test_container: build_container
 	@$(PIPELINE_CONTAINER_CMD) python3 -c "import os"              >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) python3 -c "import pandas"          >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) python3 -c "import seaborn"         >> $@.tmp  2>/dev/null
+# Python libraries for orthologs_paralogs_app
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import SPARQLWrapper"   >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import rdflib"          >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import isodate"         >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import pyparsing"       >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import six"             >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import configparser"    >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import datetime"        >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import distutils"       >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import multiprocessing" >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import pathlib"         >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import typing"          >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import ast"             >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import errno"           >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import fcntl"           >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import fileinput"       >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import io"              >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import json"            >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import logging"         >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import os"              >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import shutil"          >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import sys"             >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import getopt"          >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import time"            >> $@.tmp  2>/dev/null
 # others
+	@$(PIPELINE_CONTAINER_CMD) which pipenv        >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) which mvn           >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) which gunzip        >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) which bunzip2       >> $@.tmp

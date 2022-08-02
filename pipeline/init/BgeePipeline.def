@@ -283,6 +283,30 @@ From: ubuntu:20.04
 	pip3 install pandas
 	pip3 install seaborn
 	pip3 install simplejson
+	#for orthologs_paralogs_app
+	pip3 install pipenv
+	pip3 install SPARQLWrapper
+	pip3 install rdflib
+	pip3 install isodate
+	pip3 install pyparsing
+	pip3 install six
+	#pip3 install configparser
+	#pip3 install datetime
+	#pip3 install distutils
+	#pip3 install multiprocessing
+	#pip3 install pathlib
+	#pip3 install typing
+	#pip3 install ast
+	#pip3 install errno
+	#pip3 install fcntl
+	#pip3 install fileinput
+	#pip3 install io
+	#pip3 install json
+	#pip3 install logging
+	#pip3 install shutil
+	#pip3 install sys
+	#pip3 install getopt
+	#pip3 install time
 
 	# Install Kallisto
 	cd /usr/local
