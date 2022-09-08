@@ -420,7 +420,7 @@ add primary key (rnaSeqRunId);
 
 /*!40000 ALTER TABLE `rnaSeqLibraryAnnotatedSample` DISABLE KEYS */;
 alter table rnaSeqLibraryAnnotatedSample
-add primary key (rnaSeqLibraryAnnotatedSampleId);
+modify rnaSeqLibraryAnnotatedSampleId mediumint unsigned not null auto_increment primary key;
 /*!40000 ALTER TABLE `rnaSeqLibraryAnnotatedSample` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `rnaSeqLibraryAnnotatedSampleGeneResult` DISABLE KEYS */;
@@ -453,12 +453,6 @@ add primary key (rnaSeqPopulationCaptureId, geneBioTypeId);
 alter table rnaSeqPopulationCaptureSpeciesMaxRank
 add primary key (speciesId, rnaSeqPopulationCaptureId);
 /*!40000 ALTER TABLE `rnaSeqPopulationCaptureSpeciesMaxRank` ENABLE KEYS */;
-
-/*!40000 ALTER TABLE `genotype` DISABLE KEYS */;
-alter table genotype
-modify genotypeId mediumint unsigned not null auto_increment primary key,
-add unique(genotypeName);
-/*!40000 ALTER TABLE `genotype` ENABLE KEYS */;
 
 -- *****************************************
 -- DOWNLOAD FILES

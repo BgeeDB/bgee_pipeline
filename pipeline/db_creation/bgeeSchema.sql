@@ -904,12 +904,6 @@ create table rnaSeqExperimentToKeyword (
     keywordId int unsigned not null
 ) engine = innodb;
 
--- information about the sequencing platform
-create table rnaSeqPlatform (
-    rnaSeqPlatformId varchar(255) not null,
-    rnaSeqPlatformDescription text
-) engine = innodb;
-
 -- Corresponds to one library in the sense of one sequencing library. It can contains several
 -- sample libraries each one of them potentially having different condition in case of library (e.g BRB-Seq)
 -- or sample (e.g 10x) multiplexing
@@ -918,10 +912,21 @@ create table rnaSeqLibrary (
 -- primary ID, from GEO, pattern GSMxxx
     rnaSeqLibraryId varchar(70) not null,
     rnaSeqExperimentId varchar(70) not null,
-    rnaSeqPlatformId varchar(255) not null,
+    rnaSeqPlatformName varchar(255) not null,
     sampleMultiplexing boolean not null default 0, 
     libraryMultiplexing boolean not null default 0,
-    multipleLibraryAnnotatedSample boolean not null default 0 COMMENT 'boolean true if multiple annotated samples are available for this library (e.g BRB-Seq, 10x)'
+    mulitpleLibraryAnnotatedSample boolean not null default 0,
+--  **** Columns related to the sampling protocol ***
+--  TODO: check validity of enum
+    strandSelection enum ('NA', 'forward', 'revert', 'unstranded'),
+    cellCompartment enum('NA', 'nucleus', 'cell'),
+    sequencedTranscriptPart enum ('NA', '3prime', '5prime', 'full length'),
+    fragmentation smallint unsigned not null default 0, 
+    rnaSeqPopulationCaptureId smallint unsigned not null,
+    -- Is the library built using paired end?
+-- NA: info not used for pseudo-mapping. Default value in an enum is the first one.
+    libraryType enum('NA', 'single', 'paired') not null,
+--  can be null as it is applicable only to pooled bulk samples like BRB-Seq
 ) engine = innodb;
 
 -- XXX should we keep discarded info at rnaSeqLibrary level, at rnaSeqLibraryAnnotatedSample level,
@@ -959,19 +964,11 @@ create table rnaSeqLibraryAnnotatedSample (
     rnaSeqLibraryAnnotatedSampleId mediumint unsigned not null,
     rnaSeqLibraryId varchar(70) not null,
     conditionId mediumint unsigned not null,
---  **** Columns related to the sampling protocol ***
---  TODO: check validity of enum
-    strandSelection enum ('NA', 'forward', 'revert', 'unstranded'),
-    cellCompartment enum('NA', 'nucleus', 'cell'),
-    sequencedTranscriptPart enum ('NA', '3prime', '5prime', 'full length'),
-    fragmentation smallint unsigned not null default 0, 
-    rnaSeqPopulationCaptureId smallint unsigned not null,
-    genotypeId mediumint unsigned,
---  can be null as it is applicable only to pooled bulk samples like BRB-Seq
     barcode varchar(70) COMMENT 'barcode used to pool several samples in the same library',
+    genotype varchar(70),
     abundanceUnit enum('tpm', 'cpm'),
-    meanReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'mean TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
-    sdReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'standard deviation in TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
+    meanAbundanceReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'mean TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
+    sdAbundanceReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'standard deviation in TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
 -- TMM normalization factor
     tmmFactor decimal(8, 6) not null default 1.0,
 --  abundance threshold to consider a gene as expressed
@@ -995,10 +992,6 @@ create table rnaSeqLibraryAnnotatedSample (
 -- so we store the min and max read lengths
     minReadLength int unsigned not null default 0,
     maxReadLength int unsigned not null default 0,
--- Is the library built using paired end?
--- NA: info not used for pseudo-mapping. Default value in an enum is the first one.
-    libraryType enum('NA', 'single', 'paired') not null,
-    libraryOrientation enum('NA', 'forward', 'reverse', 'unstranded') not null,
 -- the following fields are used for rank computations, and are set after all expression data insertion,
 -- this is why null value is permitted.
     libraryMaxRank decimal(9,2) unsigned COMMENT 'The max fractional rank in this library (see `rank` field in rnaSeqResult table)',
@@ -1022,7 +1015,7 @@ create table rnaSeqLibraryAnnotatedSampleGeneResult (
 --  these are the raw data before any normalization
     abundanceUnit enum ('tpm','cpm'),
     abundance decimal(16, 6) not null COMMENT 'abundance values, NOT log transformed',
---  rank is not "not null" because we update this information afterwards
+--  rawRank is not "not null" because we update this information afterwards
     rawRank decimal(9, 2) unsigned,
 --  for information, measure not normalized for reads or genes lengths
     readsCount decimal(16, 6) unsigned not null COMMENT 'As of Bgee 14, read counts are "estimated counts" produced using the Kallisto software. They are not normalized for read or gene lengths.',
@@ -1031,6 +1024,7 @@ create table rnaSeqLibraryAnnotatedSampleGeneResult (
     zScore decimal(35, 30),
     pValue decimal(31, 30) unsigned default null COMMENT 'present calls are based on the pValue',
     expressionId int unsigned,
+-- TODO: to remove as not used anymore since Bgee 15. pValues are now used to consider a call as present/absent.
     detectionFlag enum('undefined', 'absent', 'present') default 'undefined',
 -- When expressionId is null, the result is not used for the summary of expression.
 -- Reasons are:
@@ -1088,11 +1082,6 @@ create table rnaSeqPopulationCaptureSpeciesMaxRank (
     rnaSeqPopulationCaptureId smallint unsigned not null,
     speciesId mediumint unsigned not null,
     maxRank decimal(9,2) unsigned not null COMMENT 'The max fractional rank in this protocol and species (see `rank` field in rnaSeqResult table)'
-) engine = innodb;
-
-create table genotype (
-    genotypeId mediumint unsigned not null,
-    genotypeName varchar(255) not null
 ) engine = innodb;
 
 -- ****************************************************

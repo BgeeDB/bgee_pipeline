@@ -372,7 +372,7 @@ add foreign key (keywordId) references keyword(keywordId) on delete cascade;
 /*!40000 ALTER TABLE `rnaSeqLibrary` DISABLE KEYS */;
 alter table rnaSeqLibrary
 add foreign key (rnaSeqExperimentId) references rnaSeqExperiment(rnaSeqExperimentId) on delete cascade,
-add foreign key (rnaSeqPlatformId) references rnaSeqPlatform(rnaSeqPlatformId) on delete cascade;
+add foreign key (rnaSeqPopulationCaptureId) references rnaSeqPopulationCapture(rnaSeqPopulationCaptureId) on delete cascade;
 /*!40000 ALTER TABLE `rnaSeqLibrary` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `rnaSeqRun` DISABLE KEYS */;
@@ -383,9 +383,7 @@ add foreign key (rnaSeqLibraryId) references rnaSeqLibrary(rnaSeqLibraryId) on d
 /*!40000 ALTER TABLE `rnaSeqLibraryAnnotatedSample` DISABLE KEYS */;
 alter table rnaSeqLibraryAnnotatedSample
 add foreign key (rnaSeqLibraryId) references rnaSeqLibrary(rnaSeqLibraryId) on delete cascade,
-add foreign key (rnaSeqPopulationCaptureId) references rnaSeqPopulationCapture(rnaSeqPopulationCaptureId) on delete cascade,
-add foreign key (conditionId) references cond(conditionId) on delete cascade,
-add foreign key (genotypeId) references genotype(genotypeId) on delete cascade;
+add foreign key (conditionId) references cond(conditionId) on delete cascade;
 /*!40000 ALTER TABLE `rnaSeqLibraryAnnotatedSample` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `rnaSeqLibraryAnnotatedSampleGeneResult` DISABLE KEYS */;
