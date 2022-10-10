@@ -90,7 +90,7 @@ while (<$ANNOTATION>){
             mkdir $lib_dir;
 #TODO fasterq-dump number of threads      -e|--threads <count>             how many threads to use (dflt=6)
 #TODO no more --gzip with fasterq-dump AND deprecated with fastq-dump
-#TODO .sralite now?
+#TODO .sralite now? Could be .sra or .sralite, depending of the data availability
             system("cd $BASE; $SRATK_PATH/bin/fastq-dump --split-3 --gzip --outdir $lib_dir/  $SRA_PATH/$sra_id.sra")==0
                 or do { warn "\tFailed to convert [$library_id/$sra_id]\n"; next SRA };
 
