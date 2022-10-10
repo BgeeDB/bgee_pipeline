@@ -91,6 +91,7 @@ while (<$ANNOTATION>){
 #TODO fasterq-dump number of threads      -e|--threads <count>             how many threads to use (dflt=6)
 #TODO no more --gzip with fasterq-dump AND deprecated with fastq-dump
 #TODO .sralite now? Could be .sra or .sralite, depending of the data availability
+#TODO deal with weird paired/single ends (paired but the 2 paired-end files AND a single file !!!) e.g. SRX1372530/SRR2777552
             system("cd $BASE; $SRATK_PATH/bin/fastq-dump --split-3 --gzip --outdir $lib_dir/  $SRA_PATH/$sra_id.sra")==0
                 or do { warn "\tFailed to convert [$library_id/$sra_id]\n"; next SRA };
 
