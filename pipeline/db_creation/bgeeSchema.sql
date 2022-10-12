@@ -283,6 +283,27 @@ create table anatEntityNameSynonym (
     anatEntityNameSynonym varchar(255) not null COMMENT 'Anatomical entity name synonym'
 ) engine = innodb;
 
+-- Note:
+-- * query to obtain list of tissues:
+-- we select the list of terms that are descendants of 'UBERON:0001062 anatomical entity',
+-- and that are not part of the cell type graph. Indeed, a term such as
+-- 'CL:0002252 epithelial cell of esophagus' is both a cell type,
+-- and part of esophagus. We don't want to retrieve those. The query is:
+-- ```
+-- select distinct t1.anatEntityId from anatEntity as t1
+-- inner join anatEntityRelation as t2 on t1.anatEntityId = t2.anatEntitySourceId
+--     and t2.anatEntityTargetId = 'UBERON:0001062' and t2.relationType = 'is_a part_of'
+-- left outer join anatEntityRelation as t3 on t1.anatEntityId = t3.anatEntitySourceId
+--     and t3.anatEntityTargetId = 'GO:0005575' and t3.relationType = 'is_a part_of'
+-- where t3.anatEntitySourceId is null;
+-- ```
+-- * query to obtain list of cell types:
+-- simply retrieve the descendants of 'GO:0005575 cellular component'. The query is:
+-- ```
+-- select distinct t1.anatEntityId from anatEntity as t1
+-- inner join anatEntityRelation as t2 on t1.anatEntityId = t2.anatEntitySourceId
+-- where t2.anatEntityTargetId = 'GO:0005575' and relationType = 'is_a part_of';
+-- ```
 create table anatEntityRelation (
     anatEntityRelationId int unsigned not null,
     anatEntitySourceId varchar(20) not null COMMENT 'Anatomical entity source id',
