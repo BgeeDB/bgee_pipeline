@@ -398,15 +398,15 @@ alter table rnaSeqExperimentToKeyword
 add primary key (rnaSeqExperimentId, keywordId);
 /*!40000 ALTER TABLE `rnaSeqExperimentToKeyword` ENABLE KEYS */;
 
-/*!40000 ALTER TABLE `rnaSeqPlatform` DISABLE KEYS */;
-alter table rnaSeqPlatform
-add primary key (rnaSeqPlatformId);
-/*!40000 ALTER TABLE `rnaSeqPlatform` ENABLE KEYS */;
-
 /*!40000 ALTER TABLE `rnaSeqLibrary` DISABLE KEYS */;
 alter table rnaSeqLibrary
 add primary key (rnaSeqLibraryId);
 /*!40000 ALTER TABLE `rnaSeqLibrary` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `rnaSeqTechnology` DISABLE KEYS */;
+alter table rnaSeqTechnology
+modify rnaSeqTechnologyId tinyint unsigned not null auto_increment primary key;
+/*!40000 ALTER TABLE `rnaSeqTechnology` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `rnaSeqLibraryDiscarded` DISABLE KEYS */;
 alter table rnaSeqLibraryDiscarded

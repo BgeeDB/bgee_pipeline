@@ -372,6 +372,7 @@ add foreign key (keywordId) references keyword(keywordId) on delete cascade;
 /*!40000 ALTER TABLE `rnaSeqLibrary` DISABLE KEYS */;
 alter table rnaSeqLibrary
 add foreign key (rnaSeqExperimentId) references rnaSeqExperiment(rnaSeqExperimentId) on delete cascade,
+add foreign key (rnaSeqTechnologyId) references rnaSeqTechnology(rnaSeqTechnologyId) on delete cascade,
 add foreign key (rnaSeqPopulationCaptureId) references rnaSeqPopulationCapture(rnaSeqPopulationCaptureId) on delete cascade;
 /*!40000 ALTER TABLE `rnaSeqLibrary` ENABLE KEYS */;
 

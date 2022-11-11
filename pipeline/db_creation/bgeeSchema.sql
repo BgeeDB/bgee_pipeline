@@ -912,10 +912,10 @@ create table rnaSeqLibrary (
 -- primary ID, from GEO, pattern GSMxxx
     rnaSeqLibraryId varchar(70) not null,
     rnaSeqExperimentId varchar(70) not null,
-    rnaSeqPlatformName varchar(255) not null,
+    rnaSeqSequencerName varchar(255) not null,
+    rnaSeqTechnologyId tinyint unsigned not null,
     sampleMultiplexing boolean not null default 0, 
     libraryMultiplexing boolean not null default 0,
-    mulitpleLibraryAnnotatedSample boolean not null default 0,
 --  **** Columns related to the sampling protocol ***
 --  TODO: check validity of enum
     strandSelection enum ('NA', 'forward', 'revert', 'unstranded'),
@@ -925,8 +925,15 @@ create table rnaSeqLibrary (
     rnaSeqPopulationCaptureId smallint unsigned not null,
     -- Is the library built using paired end?
 -- NA: info not used for pseudo-mapping. Default value in an enum is the first one.
-    libraryType enum('NA', 'single', 'paired') not null,
+    libraryType enum('NA', 'single', 'paired') not null
 --  can be null as it is applicable only to pooled bulk samples like BRB-Seq
+) engine = innodb;
+
+-- corresonds to the technology used (e.g 10x, SMART-seq, ...)
+create table rnaSeqTechnology (
+    rnaSeqTechnologyId tinyint unsigned not null,
+    rnaSeqTechnologyName varchar(255) not null,
+    rnaSeqTechnologyIsSingleCell tinyint(1) not null
 ) engine = innodb;
 
 -- XXX should we keep discarded info at rnaSeqLibrary level, at rnaSeqLibraryAnnotatedSample level,
