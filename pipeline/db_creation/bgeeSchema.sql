@@ -913,7 +913,8 @@ create table rnaSeqLibrary (
     rnaSeqLibraryId varchar(70) not null,
     rnaSeqExperimentId varchar(70) not null,
     rnaSeqSequencerName varchar(255) not null,
-    rnaSeqTechnologyId tinyint unsigned not null,
+    rnaSeqTechnologyName varchar(255) not null,
+    rnaSeqTechnologyIsSingleCell tinyint(1) not null,
     sampleMultiplexing boolean not null default 0, 
     libraryMultiplexing boolean not null default 0,
 --  **** Columns related to the sampling protocol ***
@@ -921,19 +922,11 @@ create table rnaSeqLibrary (
     strandSelection enum ('NA', 'forward', 'revert', 'unstranded'),
     cellCompartment enum('NA', 'nucleus', 'cell'),
     sequencedTranscriptPart enum ('NA', '3prime', '5prime', 'full length'),
-    fragmentation smallint unsigned not null default 0, 
-    rnaSeqPopulationCaptureId smallint unsigned not null,
+    fragmentation smallint unsigned not null default 0 COMMENT 'corresponds to fragmentation of cDNA. 0 for long reads', 
+    rnaSeqPopulationCaptureId varchar(255) not null,
     -- Is the library built using paired end?
 -- NA: info not used for pseudo-mapping. Default value in an enum is the first one.
     libraryType enum('NA', 'single', 'paired') not null
---  can be null as it is applicable only to pooled bulk samples like BRB-Seq
-) engine = innodb;
-
--- corresonds to the technology used (e.g 10x, SMART-seq, ...)
-create table rnaSeqTechnology (
-    rnaSeqTechnologyId tinyint unsigned not null,
-    rnaSeqTechnologyName varchar(255) not null,
-    rnaSeqTechnologyIsSingleCell tinyint(1) not null
 ) engine = innodb;
 
 -- XXX should we keep discarded info at rnaSeqLibrary level, at rnaSeqLibraryAnnotatedSample level,
@@ -971,6 +964,7 @@ create table rnaSeqLibraryAnnotatedSample (
     rnaSeqLibraryAnnotatedSampleId mediumint unsigned not null,
     rnaSeqLibraryId varchar(70) not null,
     conditionId mediumint unsigned not null,
+--  can be null as it is applicable only to pooled bulk samples like BRB-Seq
     barcode varchar(70) COMMENT 'barcode used to pool several samples in the same library',
     genotype varchar(70),
     abundanceUnit enum('tpm', 'cpm'),
@@ -1056,8 +1050,8 @@ create table rnaSeqLibraryAnnotatedSampleGeneResult (
 create table rnaSeqLibraryIndividualSample (
     rnaSeqLibraryIndividualSampleId mediumint unsigned not null, 
     rnaSeqLibraryAnnotatedSampleId mediumint unsigned not null,
-    barcode mediumint, 
-    sampleName varchar(70) 
+    barcode varchar(70) COMMENT 'barcode used to pool several samples in the same library',
+    sampleName varchar(70)
 ) engine = innodb;
 
 -- gene result at individual sample level (e.g for each cell for 10x)
@@ -1076,17 +1070,16 @@ create table rnaSeqLibraryIndividualSampleGeneResult (
 -- called protocol until Bgee 15 but updated the name as protocol now regroup
 -- a lot of different parameters (e.g population captured, strand, fragmentation size, ...)
 create table rnaSeqPopulationCapture (
-    rnaSeqPopulationCaptureId smallint unsigned not null,
-    rnaSeqPopulationCaptureName varchar(255) not null default ''
+    rnaSeqPopulationCaptureId varchar(255) not null
 ) engine = innodb;
 
 create table rnaSeqPopulationCaptureToBiotypeExcludedAbsentCalls (
-    rnaSeqPopulationCaptureId smallint unsigned not null COMMENT 'protocol ID for which a biotype will not be used to generate absent calls',
+    rnaSeqPopulationCaptureId varchar(255) not null COMMENT 'protocol ID for which a biotype will not be used to generate absent calls',
     geneBioTypeId smallint unsigned not null COMMENT 'biotype ID for which absent calls will not be generated.'
 ) engine = innodb;
 
 create table rnaSeqPopulationCaptureSpeciesMaxRank (
-    rnaSeqPopulationCaptureId smallint unsigned not null,
+    rnaSeqPopulationCaptureId varchar(255) not null,
     speciesId mediumint unsigned not null,
     maxRank decimal(9,2) unsigned not null COMMENT 'The max fractional rank in this protocol and species (see `rank` field in rnaSeqResult table)'
 ) engine = innodb;

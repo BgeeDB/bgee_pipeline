@@ -403,11 +403,6 @@ alter table rnaSeqLibrary
 add primary key (rnaSeqLibraryId);
 /*!40000 ALTER TABLE `rnaSeqLibrary` ENABLE KEYS */;
 
-/*!40000 ALTER TABLE `rnaSeqTechnology` DISABLE KEYS */;
-alter table rnaSeqTechnology
-modify rnaSeqTechnologyId tinyint unsigned not null auto_increment primary key;
-/*!40000 ALTER TABLE `rnaSeqTechnology` ENABLE KEYS */;
-
 /*!40000 ALTER TABLE `rnaSeqLibraryDiscarded` DISABLE KEYS */;
 alter table rnaSeqLibraryDiscarded
 add primary key (rnaSeqLibraryId);
@@ -440,8 +435,7 @@ add primary key (rnaSeqLibraryIndividualSampleId, bgeeGeneId);
 
 /*!40000 ALTER TABLE `rnaSeqPopulationCapture` DISABLE KEYS */;
 alter table rnaSeqPopulationCapture
-modify rnaSeqPopulationCaptureId smallint unsigned not null auto_increment primary key,
-add unique(rnaSeqPopulationCaptureName);
+add primary key (rnaSeqPopulationCaptureId);
 /*!40000 ALTER TABLE `rnaSeqPopulationCapture` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `rnaSeqPopulationCaptureToBiotypeExcludedAbsentCalls` DISABLE KEYS */;
