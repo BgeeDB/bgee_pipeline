@@ -55,7 +55,7 @@ my %opts = ('bgee=s'                => \$bgee_connector,           # Bgee connec
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $bgee_connector eq '' || $scRnaSeqExperiment eq '' || $library_info eq ''  || $excluded_libraries eq '' || $library_stats eq '' || $report_info eq '' || $all_results eq '' || $sex_info eq '' || $extraMapping eq '' || $Aport == 0 || $Sport == 0 ){
     print "\n\tInvalid or missing argument:
-\te.g., $0  -bgee=\$(BGEECMD) -scRnaSeqExperiment=scRNAseqExperiment.tsv -library_info=\$(SC_RNASEQ_SAMPINFO_PASS_FILEPATH) -excluded_libraries=\$(SC_RNASEQ_SAMPINFO_NOT_PASS_FILEPATH) -library_stats=\$(SCRNASEQSAMPSTATS) -report_info=\$(SCRNASEQREPORTINFO) -all_results=\$(SCRNASEQALLRES) -sex_info=\$(UBERON_SEX_INFO_FILE_PATH) -extraMapping=\$(EXTRAMAPPING_FILEPATH) -Aport=\$(IDMAPPINGPORT) -Sport=\$(STGMAPPINGPORT)    > $@.tmp 2>warnings.$@
+\te.g., $0  -bgee=\$(BGEECMD) -scRnaSeqExperiment=scRNAseqExperiment.tsv -library_info=\$(SC_RNASEQ_SAMPINFO_PASS_FILEPATH) -excluded_libraries=\$(SC_RNASEQ_SAMPINFO_NOT_PASS_FILEPATH) -library_stats=\$(SC_RNASEQ_SAMP_STATS_FL) -report_info=\$(SC_RNASEQ_REPORT_INFO_FL) -all_results=\$(SC_RNASEQ_ALL_RES_FL) -sex_info=\$(UBERON_SEX_INFO_FILE_PATH) -extraMapping=\$(EXTRAMAPPING_FILEPATH) -Aport=\$(IDMAPPINGPORT) -Sport=\$(STGMAPPINGPORT)    > $@.tmp 2>warnings.$@
 \t-bgee                Bgee connector string
 \t-scRnaSeqExperiment  single cell RNAseq experiment file
 \t-library_info        NEW_scRNASeq_sample_info.txt file
@@ -77,7 +77,7 @@ require("$FindBin::Bin/../../rna_seq_utils.pl");
 # Bgee db connection
 my $bgee = Utils::connect_bgee_db($bgee_connector);
 
-# Library info used to launch the pipeline
+# Library info generated after QC. Contains only library that passed the QCs
 my %libraries         = getAllFullLengthScRnaSeqLibrariesInfo($library_info);
 print "\t", scalar keys %libraries, " experiments with libraries mapped.\n";
 my %excludedLibraries = getAllFullLengthScRnaSeqLibrariesInfo($excluded_libraries);

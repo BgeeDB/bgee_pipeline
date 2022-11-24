@@ -448,7 +448,7 @@ INTERGENIC_N_PROPORTION         := 0.05
 RNASEQDATAPATH             := /var/bgee/extra/pipeline/rna_seq/
 ABUNDANCEFILE              := gene_level_abundance+calls.tsv
 RNASEQALLRES               := $(RNASEQDATAPATH)rna_seq_all_results_$(DBNAME)/
-SCRNASEQALLRES             := $(RNASEQDATAPATH)full_length_all_results_$(DBNAME)/
+SC_RNASEQ_ALL_RES_FL       := $(RNASEQDATAPATH)full_length_all_results_$(DBNAME)/
 RNASEQLOGS                 := $(RNASEQALLRES)
 RNASEQSAMPSTATS            := $(GENERATED_FILES_DIR)$(RNASEQPATH)presence_absence_all_samples.txt
 RNASEQREPORTINFO           := $(GENERATED_FILES_DIR)$(RNASEQPATH)reports_info_all_samples.txt
@@ -474,7 +474,7 @@ SC_RNASEQ_PATH                         := scRNA_Seq/
 SC_RNASEQ_PATH_SOURCE                  := $(SOURCE_FILES_DIR)$(SC_RNASEQ_PATH)
 SC_RNASEQ_EXPERIMENT_FILEPATH          := $(SC_RNASEQ_PATH_SOURCE)scRNASeqExperiment.tsv
 ### Full_length
-SC_RNASEQ_FL_FOLDER_SOURCE             := $(SC_RNASEQ_PATH_SOURCE)/Full_Length/
+SC_RNASEQ_FL_FOLDER_SOURCE             := $(SC_RNASEQ_PATH_SOURCE)/Full_length/
 SC_RNASEQ_LIB_FL_FILEPATH              := $(SC_RNASEQ_FL_FOLDER_SOURCE)scRNASeqFLLibrary.tsv
 ### Target_based
 SC_RNASEQ_TB_FOLDER_SOURCE             := $(SC_RNASEQ_PATH_SOURCE)/Target_based/
@@ -487,7 +487,7 @@ SC_RNASEQ_WHITELIST_10X_v3             := $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_w
 SC_RNASEQ_PATH_GENERATED               := $(GENERATED_FILES_DIR)$(SC_RNASEQ_PATH)
 SC_RNASEQ_JURA_LIB_FILEPATH            := $(SC_RNASEQ_PATH_GENERATED)juraLibrariesDownloaded.tsv
 ### Full_length
-SC_RNASEQ_FL_FOLDER_GENERATED          := $(SC_RNASEQ_PATH_GENERATED)/Full_Length/
+SC_RNASEQ_FL_FOLDER_GENERATED          := $(SC_RNASEQ_PATH_GENERATED)/Full_length/
 SC_RNASEQ_LIB_PASS_FILEPATH            := $(SC_RNASEQ_FL_FOLDER_GENERATED)passScRNASeqLibrary.tsv
 SC_RNASEQ_LIB_NOT_PASS_FILEPATH        := $(SC_RNASEQ_FL_FOLDER_GENERATED)notPassScRNASeqLibrary.tsv
 SC_RNASEQ_METADATA_FILEPATH            := $(SC_RNASEQ_FL_FOLDER_GENERATED)metadata_info.tsv
@@ -497,8 +497,8 @@ SC_RNASEQ_SAMPINFO_PASS_FILEPATH       := $(SC_RNASEQ_FL_FOLDER_GENERATED)NEW_sc
 SC_RNASEQ_SAMPINFO_NOT_PASS_FILEPATH   := $(SC_RNASEQ_FL_FOLDER_GENERATED)Discard_scRNASeq_sample_info.tsv
 SC_RNASEQ_MODALITY_FILEPATH            := $(SC_RNASEQ_FL_FOLDER_GENERATED)Modality_Cell_type_per_experiment.tsv
 SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH    := $(SC_RNASEQ_FL_FOLDER_GENERATED)bgeecall_input.tsv
-SCRNASEQSAMPSTATS_FL                   := $(SC_RNASEQ_FL_FOLDER_GENERATED)presence_absence_all_samples.txt
-SCRNASEQREPORTINFO_FL                  := $(SC_RNASEQ_FL_FOLDER_GENERATED)reports_info_all_samples.txt
+SC_RNASEQ_SAMP_STATS_FL                := $(SC_RNASEQ_FL_FOLDER_GENERATED)presence_absence_all_samples.txt
+SC_RNASEQ_REPORT_INFO_FL               := $(SC_RNASEQ_FL_FOLDER_GENERATED)reports_info_all_samples.txt
 ### Target_based
 SC_RNASEQ_TB_FOLDER_GENERATED               := $(SC_RNASEQ_PATH_GENERATED)/Target_based/
 sc_RNASEQ_CLEANING_BARCODES                 := $(SC_RNASEQ_TB_FOLDER_GENERATED)/cleaning_barcodes/
