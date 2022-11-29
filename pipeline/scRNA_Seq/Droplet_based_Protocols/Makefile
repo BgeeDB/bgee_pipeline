@@ -102,24 +102,18 @@ list_new_downloads: download_SRA download_EBI download_HCA
 	@cat $(SC_RNASEQ_JURA_LIB_FILEPATH) >>/tmp/new_downloads
 	@sort -u /tmp/new_downloads >$(SC_RNASEQ_JURA_LIB_FILEPATH)
 	@rm -f /tmp/new_downloads
-	#@$(GIT) add $(SC_RNASEQ_JURA_LIB_FILEPATH)
-	#@$(GIT) commit -m 'Add new downloaded libraries' $(SC_RNASEQ_JURA_LIB_FILEPATH) || true
+	@$(GIT) add $(SC_RNASEQ_JURA_LIB_FILEPATH)
+	@$(GIT) commit -m 'Add new downloaded libraries' $(SC_RNASEQ_JURA_LIB_FILEPATH) || true
 	@touch $@
 
 # Commit the library information file that will be used for the rest of the pipeline
 commit_annotation_and_metadata: list_new_downloads
-	@$(GIT) add ../$(INPUT_DIR)/Target_based/scRNASeqTBLibrary.tsv
-	@$(GIT) add ../$(INPUT_DIR)scRNASeqExperiment.tsv
-	@$(GIT) add ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP117745.tsv
-	@$(GIT) add ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP119519.tsv
-	@$(GIT) add ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP120466.tsv
-	@$(GIT) add ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP125768.tsv
-	@$(GIT) add ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP131661.tsv
-	@$(GIT) add ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP135999.tsv
-	@$(GIT) add ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP201320.tsv
-	@$(GIT) add ../$(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_info_10X.txt
-	@$(GIT) add ../$(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_notMatch_10X.txt
-	@$(GIT) commit -m 'Update metadata for droplet-based protocols for scRNASeq for $(DBNAME)' ../$(INPUT_DIR)/Target_based/scRNASeqTBLibrary.tsv ../$(INPUT_DIR)scRNASeqExperiment.tsv ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP117745.tsv ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP119519.tsv ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP120466.tsv ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP125768.tsv ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP131661.tsv ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP135999.tsv ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP201320.tsv ../$(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_info_10X.txt ../$(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_notMatch_10X.txt || true
+	@$(GIT) add $(INPUT_DIR)/Target_based/scRNASeqTBLibrary.tsv
+	@$(GIT) add $(INPUT_DIR)scRNASeqExperiment.tsv
+	@$(GIT) add $(INPUT_DIR)/Target_based/scRNASeq_barcode*
+	@$(GIT) add $(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_info_10X.txt
+	@$(GIT) add $(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_notMatch_10X.txt
+	@$(GIT) commit -m 'Update metadata for droplet-based protocols for scRNASeq for $(DBNAME)' || true
 	@$(GIT) push
 	@echo -e "All information is ready, you can go to JURA cluster to continue the pipeline of the droplet protocols\n"
 	@touch $@
