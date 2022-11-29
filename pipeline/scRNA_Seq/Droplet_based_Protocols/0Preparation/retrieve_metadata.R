@@ -1,7 +1,8 @@
 ## SFonsecaCosta, Sep 17 2019
 
-## This script is used to retrieve the metadata for the target based protocols from SRA source.
-## And then to compare the annotation information for each library with metadata.
+## This script is used to retrieve the metadata with the url to the fastq files for the target based
+## protocols from SRA source. And then to compare the annotation information (speciesId and protocol)
+## for each library with metadata.
 
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args scRNASeqExperiment="scRNASeqExperiment.tsv" scRNASeqTBLibrary="scRNASeqTBLibrary.tsv" output_folder="output_folder"' retrieve_metadata.R retrieve_metadata.Rout
@@ -10,7 +11,6 @@
 ## output_folder --> Folder where the output files should be saved
 
 ## libraries used
-library(data.table)
 library(stringr)
 library(dplyr)
 
@@ -24,32 +24,34 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed....
-command_arg <- c("scRNASeqExperiment","scRNASeqTBLibrary", "output_folder")
+command_arg <- c("scRNASeqExperiment","scRNASeqTBLibrary", "output_file")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
   }
 }
 
-## Read experiments and library annotation files. If file not exists, script stops
+## Read experiments and library annotation files. Do not consider If file not exists, script stops
 if( file.exists(scRNASeqExperiment) ){
-  experiments <- fread(scRNASeqExperiment, h=T, sep="\t")
+  experiments <- read.table(scRNASeqExperiment, h=T, sep="\t")
   colnames(experiments)[1]<-"experimentId"
+  experiments <- experiments %>% filter(!str_detect(experiments$experimentId, "^#"))
+  
 } else {
   stop( paste("The experiment file not found [", scRNASeqExperiment, "]\n"))
 }
 if( file.exists(scRNASeqTBLibrary) ){
-  annotation <- fread(scRNASeqTBLibrary, h=T, sep="\t")
+  annotation <- read.table(scRNASeqTBLibrary, h=T, sep="\t")
   colnames(annotation)[1]<-"libraryId"
   annotation <- annotation %>% filter(!str_detect(annotation$libraryId, "^#"))
 } else {
   stop( paste("The library file not found [", scRNASeqTBLibrary, "]\n"))
 }
-##########################################################################################################################
+###################################################################################################
 ## function to download metadata from SRA
 SRA_metadata <- function(libraryID){
-
-  PID <- paste0(libraryID)
+  
+  PID <- as.character(libraryID)
   ena.url <- paste("https://www.ebi.ac.uk/ena/portal/api/filereport?accession=",
                    PID,
                    "&result=read_run",
@@ -62,92 +64,77 @@ SRA_metadata <- function(libraryID){
   return(readInfo)
 }
 
-## generate output files 
-metadata_file <- file.path(output_folder,"metadata_info_10X.tsv")
-if (file.exists(metadata_file)){
-  message("File already exists and will be removed to create a new one to avoid overwritting!")
-  file.remove(metadata_file)
-  file.create(metadata_file)
-} else {
-  file.create(metadata_file)
-}
-# write header
-cat("sample_accession\texperiment_id\tlibrary_id\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = metadata_file, sep = "\t")
+# define header of SRA metadata files. Used to reorder columns before writing
+metadata_file_header <- c("sample_accession","experiment_id", "library_id", "run_accession",
+                          "read_count", "tax_id", "scientific_name", "instrument_model",
+                          "library_layout", "fastq_ftp", "submitted_ftp")
 
-metadata_notmatch_file <- file.path(output_folder,"metadata_notMatch_10X.tsv")
-if (file.exists(metadata_notmatch_file)){
-  message("File already exists and will be removed to create a new one to avoid overwritting!")
-  file.remove(metadata_notmatch_file)
-  file.create(metadata_notmatch_file)
-} else {
-  file.create(metadata_notmatch_file)
-}
-# write header
-cat("sample_accession\texperiment_id\tlibrary_id\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = metadata_notmatch_file, sep = "\t")
-
-## select just 10X target-based protocols to retrieve metadata
-targetBased <- experiments[experiments$protocol %like% "10X Genomics", ]
-targetBased_libraries <- dplyr::filter(annotation, protocolType == "3'end" & protocol == "10X Genomics")
-targetBased_libraries <- targetBased_libraries[!grepl("#", targetBased_libraries$libraryId),]
-experimentsIDs <- unique(targetBased_libraries$experimentId)
-targetBased <- dplyr::filter(targetBased, experimentId %in% experimentsIDs)
+## select 10X Genomics and 3' end target-based protocols to retrieve metadata
+selected_libraries <- as.data.frame(dplyr::filter(annotation, protocolType == "3'end" &
+                                                    protocol == "10X Genomics"))
+selected_experiments <- as.data.frame(dplyr::filter(experiments, experimentId %in%
+                                                      unique(selected_libraries$experimentId)))
 
 ## extract metadata from SRA
 metadata <- c()
-for (experiment in unique(targetBased$experimentId)) {
+metadata_with_mismatch <- c()
+
+for (expId in unique(selected_experiments$experimentId)) {
   ## select source  of the experiment
-  sourceID <- as.character(unique(targetBased$experimentSource[targetBased$experimentId == experiment]))
-  libraries_from_Exp <- annotation$libraryId[annotation$experimentId == experiment & annotation$protocol == "10X Genomics" & annotation$protocolType == "3'end"]
-  
-  if(sourceID == "SRA"){
-    for (i in libraries_from_Exp) {
-      extractSRA <- SRA_metadata(libraryID = i)
-      metadata <- rbind(metadata,extractSRA)
+  sourceId <- as.character(unique(selected_experiments$experimentSource[selected_experiments$experimentId == expId]))
+  if(sourceId == "SRA"){
+    for (libraryId in selected_libraries$libraryId[selected_libraries$experimentId == expId]) {
+      library <- as.data.frame(selected_libraries[selected_libraries$libraryId == libraryId,])
+      ## retrieve SRA metadata
+      extractSRA <- SRA_metadata(libraryID = libraryId)
+      ## compare with Bgee annotation
+      if (!identical(as.character(library$platform),as.character(unique(extractSRA$instrument_model)))) {
+        warning("Mismatch platform for library ", library$libraryId, " expected", library$platform,
+                " but was ", extractSRA$instrument_model)
+        metadata_with_mismatch <- rbind(metadata_with_mismatch, extractSRA)
+      } else if (!identical(as.character(library$speciesId),as.character(unique(extractSRA$tax_id)))) {
+        warning("Mismatch species for library ", library$libraryId, " expected", library$speciesId,
+                " but was ", extractSRA$tax_id)
+        metadata_with_mismatch <- rbind(metadata_with_mismatch, extractSRA)
+      } else {
+        metadata <- rbind(metadata,extractSRA)
+      }
     }
-  } else if (sourceID == "HCA") {
-    message("HCA data! Not retrieve metadata!")
-  } else {
-    message("Source ERROR!")
+  } else if (sourceId == "HCA") {
+    ## add all HCA annotation because it is not possible to check the
+    ## annotation since HCAExplore R package was deprecated
+    message("HCA data! for experiment ", expId,
+            ". Do not retrieve metadata!")
+    hca_libraries <- annotation[annotation$experimentId == expId,]
+    hca_metadata <- data.frame(NA, hca_libraries$libraryId, NA, NA, hca_libraries$speciesId,
+                               "Homo sapiens", hca_libraries$platform, NA, NA, NA)
+    # merge lines of the two df. Do not use rbind as column names are different 
+    metadata <- as.data.frame(mapply(c, metadata, hca_metadata))
+  }  else {
+    stop("Unknown Source ", sourceId)
   }
 }
 
-## What is called experiment_accession in ENA API is called library_id in our pipeline
+## update name and order of columns
 names(metadata)[names(metadata) == 'experiment_accession'] <- 'library_id'
+merged_metadata <- merge(metadata, selected_libraries[, c("libraryId","experimentId")],
+  by.x="library_id", by.y="libraryId")
+names(merged_metadata)[names(merged_metadata) == 'experimentId'] <- 'experiment_id'
+merged_metadata <- merged_metadata[, c(metadata_file_header)]
+# write file with metadata from SRA
+write.table(merged_metadata, file = output_file, quote = FALSE, sep = "\t", col.names = TRUE,
+  row.names = FALSE)
 
-## add HCA by default to metadata file directly from annotation, and not making comparison between the annotation and metadata. This is because HCAExplore R package was deprecated
-hca_experiment <- experiments$experimentId[experiments$experimentSource == "HCA" ]
-getLib <- annotation[annotation$experimentId == hca_experiment]
-getLib <- data.frame(NA, getLib$libraryId, NA, NA, getLib$speciesId, "Homo sapiens", getLib$platform, NA, NA, NA)
-colnames(getLib) <- colnames(metadata)
-metadata <- rbind(metadata, getLib)
-  
-## compare information from annotation and metadata
-## SRA: libraryID, platform and speciesID
-for(i in unique(targetBased_libraries$libraryId)) {
-
-  annotationInfo <- targetBased_libraries[targetBased_libraries$libraryId == i,]
-  metadataInfo <- metadata[metadata$library_id == i,]
-
-  compare_library <- identical(as.character(annotationInfo[['libraryId']]),as.character(metadataInfo[['library_id']]))
-  compare_machine <- identical(as.character(annotationInfo[['platform']]),as.character(metadataInfo[['instrument_model']]))
-  compare_speciesID <- identical(as.character(annotationInfo[['speciesId']]),as.character(metadataInfo[['tax_id']]))
-  
-  ## nomenclature used in the pipeline
-  merge(metadataInfo, annotationInfo[, c("libraryId","experimentId")], by.x="library_id", by.y="libraryId")
-  ## update column order
-  metadataInfo <- metadataInfo[, c("sample_accession","experimentId","library_id","run_accession","read_count","tax_id","scientific_name","instrument_model","library_layout","fastq_ftp","submitted_ftp")]
-  ## homogeneise use of snake case for column names
-  names(metadata)[names(metadata) == 'experimentId'] <- 'experiment_id'
-
-  if (compare_library == "TRUE" && compare_machine == "TRUE" && compare_speciesID == "TRUE"){
-    message(as.character(annotationInfo$libraryId[1]), " complete match between annotation and metadata")
-    ## export libraries that pass and will be downloaded
-    write.table(metadataInfo, file = metadata_file, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
-  } else {
-    message("For the library: ", as.character(annotationInfo$libraryId[1]), " the comparison library is: ", compare_library)
-    message("For the library: ", as.character(annotationInfo$libraryId[1]), " the comparison platform is: ", compare_machine)
-    message("For the library: ", as.character(annotationInfo$libraryId[1]), " the comparison species is: ", compare_speciesID)
-    ## export libraries that will not be used to download
-    write.table(metadataInfo, file = metadata_notmatch_file, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
-  }
+# update name and order columns of mismatch metadata in case there was some
+if (!is.null(metadata_with_mismatch)) {
+  names(metadata_with_mismatch)[names(metadata_with_mismatch) == 'experiment_accession'] <-
+    'library_id'
+  metadata_with_mismatch <- merge(metadata_with_mismatch, selected_libraries[,
+    c("libraryId","experimentId")], by.x="library_id", by.y="libraryId")
+  names(metadata_with_mismatch)[names(metadata_with_mismatch) == 'experimentId'] <- 'experiment_id'
+  metadata_with_mismatch <- metadata_with_mismatch[, c(metadata_file_header)]
 }
+# the name of this file is not exported to Makefile.common as it just a control file
+metadata_notmatch_file <- file.path(dirname(output_file),"metadata_notMatch_10X.tsv")
+write.table(metadata_with_mismatch, file = metadata_notmatch_file, quote = FALSE, sep = "\t", 
+  col.names = TRUE, row.names = FALSE)

@@ -11,8 +11,6 @@
 
 ## libraries used
 library(dplyr)
-library(stringr)
-library(data.table)
 library(HelpersMG)
 library(tools)
 
@@ -37,7 +35,7 @@ for( c_arg in command_arg ){
 if( file.exists(metadata_info) ){
   readFile <- read.table(metadata_info, h=T, sep="\t")
 } else {
-  stop( paste("EBI file not found [", metadata_info, "]\n"))
+  stop( paste("metadata file not found [", metadata_info, "]\n"))
 }
 
 ## Read EBI file. If file not exists, script stops
@@ -61,28 +59,24 @@ for (library in  unique(finalLibsToDown$library_id)) {
 
   ## create output for each library
   message("treating the library: ", library)
-  species <- finalLibsToDown$tax_id[finalLibsToDown$library_id == library]
-  experiment <- finalLibsToDown$experiment_id[finalLibsToDown$library_id == library]
+  species <- unique(finalLibsToDown$tax_id[finalLibsToDown$library_id == library])
+  experiment <- unique(finalLibsToDown$experiment_id[finalLibsToDown$library_id == library])
   folder_species <- file.path(output, species)
-  if (file.exists(folder_species)) {
-    cat("The folder already exists")
-  } else {
+  if (!file.exists(folder_species)) {
     dir.create(folder_species)
   }
-  folder_library <- file.path(folder_species,library)
-  if (file.exists(folder_library)) {
-    cat("The folder already exists")
-  } else {
+  folder_library <- file.path(folder_species, library)
+  if (!file.exists(folder_library)) {
     dir.create(folder_library)
   }
   ## select the SRR referent to the library to download
-  SRR_file <- finalLibsToDown$run_accession[finalLibsToDown$library_id == library]
+  SRR_file <- as.character(finalLibsToDown$run_accession[finalLibsToDown$library_id == library])
   setwd(folder_library)
 
-  ## download files using SRA Toolkit
-  system(sprintf('prefetch --type fastq %s', paste0(SRR_file)))
-
+  ## download run files using SRA Toolkit
+  for(run in SRR_file) {
+    system(sprintf('prefetch --type fastq %s ', run))
+  }
     ## create a symlink following pattern */EXPERIMENTS/experiment_ID/library_id/
-  file.symlink(from = folder_library, to = file.path(folder_experiments, experiment, library),
-    overwrite = FALSE, recursive = TRUE)
+  file.symlink(from = folder_library, to = file.path(folder_experiments, experiment, library), overwrite = FALSE, recursive = TRUE)
 }

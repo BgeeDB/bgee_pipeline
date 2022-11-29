@@ -9,16 +9,18 @@
 #SBATCH --mem=2G
 #SBATCH --time=3-00:00:00
 
-#SBATCH --output=/users/smoretti/bgee_pipeline.git/pipeline/scRNA_Seq/Droplet_based_Protocols/download_SRA.out
-#SBATCH --error=/users/smoretti/bgee_pipeline.git/pipeline/scRNA_Seq/Droplet_based_Protocols/download_SRA.err
+#SBATCH --output=/scratch/jwollbre/git/bgee_pipeline/pipeline/scRNA_Seq/Droplet_based_Protocols/download_SRA.out
+#SBATCH --error=/scratch/jwollbre/git/bgee_pipeline/pipeline/scRNA_Seq/Droplet_based_Protocols/download_SRA.err
 #SBATCH --export=NONE
 #SBATCH --job-name=download_SRA
 #SBATCH --mail-user sara.fonsecacosta@unil.ch
 
-module load Bioinformatics/Software/vital-it
+module use /software/module/
 module add R/3.6.1;
+module add gcc/10.4.0;
+module add sratoolkit/3.0.0;
 
-export SCRIPT_PATH=/users/smoretti/bgee_pipeline.git/pipeline/scRNA_Seq/Droplet_based_Protocols
+export SCRIPT_PATH=/scratch/jwollbre/git/bgee_pipeline/pipeline/scRNA_Seq/Droplet_based_Protocols
 export metadata_info=../../../generated_files/scRNA_Seq/Target_based/metadata_info_10X.txt
 export librariesDownloadedJura=../../../generated_files/scRNA_Seq/juraLibrariesDownloaded.tsv
 export output=/work/FAC/FBM/DEE/mrobinso/bgee/downloads/scRNA_Seq_All/scRNASeq_libraries_Droplet_10X/

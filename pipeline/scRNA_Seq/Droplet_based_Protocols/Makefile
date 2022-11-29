@@ -19,21 +19,22 @@ get_annot:
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_SRP131661.tsv  $(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP131661.tsv
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_SRP135999.tsv  $(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP135999.tsv
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_SRP201320.tsv  $(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP201320.tsv
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_SRP251970.tsv  $(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP251970.tsv
 	@touch $@
 
 ## Retrieve metadata (run rule with sbatch)
 retrieve_metadata: get_annot 0Preparation/retrieve_metadata.R
 	@echo --- Retrieve metadata information ---
-	@sed -i 's@--output=.*@--output=${PWD}/retrieve_metadata.out@'                                                    0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/retrieve_metadata.err@'                                                      0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                      0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                            0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                      0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export scRNASeqExperiment=.*@export scRNASeqExperiment=../$(SC_RNASEQ_EXPERIMENT_FILEPATH)@'           0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export scRNASeqTBLibrary=.*@export scRNASeqTBLibrary=../$(SC_RNASEQ_LIB_TB_FILEPATH)@'                 0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export output_folder=.*@export output_folder=../$(SC_RNASEQ_TB_FOLDER_GENERATED)@'                     0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET)@'                                        0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export R_LIBS_USER=.*@export R_LIBS_USER=$(R_LIBS_PATH_CURNAGL)@'                                      0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@--output=.*@--output=${PWD}/retrieve_metadata.out@'                                           0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/retrieve_metadata.err@'                                             0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                             0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                   0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                             0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export scRNASeqExperiment=.*@export scRNASeqExperiment=$(SC_RNASEQ_EXPERIMENT_FILEPATH)@'     0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export scRNASeqTBLibrary=.*@export scRNASeqTBLibrary=$(SC_RNASEQ_LIB_TB_FILEPATH)@'           0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export output_file=.*@export output_file=$(SC_RNASEQ_METADATA_10X_FILEPATH)@'                 0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET)@'                               0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export R_LIBS_USER=.*@export R_LIBS_USER=$(R_LIBS_PATH_CURNAGL)@'                             0Preparation/retrieve_metadata.sbatch
 	@sbatch 0Preparation/retrieve_metadata.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
@@ -85,8 +86,8 @@ download_SRA: retrieve_metadata 0Preparation/download_SRA.R
 	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                     0Preparation/download_SRA.sbatch
 	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                           0Preparation/download_SRA.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                     0Preparation/download_SRA.sbatch
-	@sed -i 's@export metadata_info=.*@export metadata_info=../$(SC_RNASEQ_METADATA_10X_FILEPATH)@'                  0Preparation/download_SRA.sbatch
-	@sed -i 's@export librariesDownloadedJura=.*@export librariesDownloadedJura=../$(SC_RNASEQ_JURA_LIB_FILEPATH)@'  0Preparation/download_SRA.sbatch
+	@sed -i 's@export metadata_info=.*@export metadata_info=$(SC_RNASEQ_METADATA_10X_FILEPATH)@'                     0Preparation/download_SRA.sbatch
+	@sed -i 's@export librariesDownloadedJura=.*@export librariesDownloadedJura=$(SC_RNASEQ_JURA_LIB_FILEPATH)@'     0Preparation/download_SRA.sbatch
 	@sed -i 's@export output=.*@export output=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET)@'                                   0Preparation/download_SRA.sbatch
 	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET)@'                                       0Preparation/download_SRA.sbatch
 	@sbatch 0Preparation/download_SRA.sbatch
@@ -98,11 +99,11 @@ download_SRA: retrieve_metadata 0Preparation/download_SRA.R
 #NOTE *make -j3 list_new_downloads*  should run the 3 downloads in parallel
 list_new_downloads: download_SRA download_EBI download_HCA
 	@find $(SC_RNASEQ_DOWNLOAD_PATH_DROPLET) -type f -name \*.fastq.gz\* | xargs -r dirname | sed -e 's@^.*/@@' | sort -u > /tmp/new_downloads
-	@cat ../$(SC_RNASEQ_JURA_LIB_FILEPATH) >>/tmp/new_downloads
-	@sort -u /tmp/new_downloads >../$(SC_RNASEQ_JURA_LIB_FILEPATH)
+	@cat $(SC_RNASEQ_JURA_LIB_FILEPATH) >>/tmp/new_downloads
+	@sort -u /tmp/new_downloads >$(SC_RNASEQ_JURA_LIB_FILEPATH)
 	@rm -f /tmp/new_downloads
-	@$(GIT) add ../$(SC_RNASEQ_JURA_LIB_FILEPATH)
-	@$(GIT) commit -m 'Add new downloaded libraries' ../$(SC_RNASEQ_JURA_LIB_FILEPATH) || true
+	#@$(GIT) add $(SC_RNASEQ_JURA_LIB_FILEPATH)
+	#@$(GIT) commit -m 'Add new downloaded libraries' $(SC_RNASEQ_JURA_LIB_FILEPATH) || true
 	@touch $@
 
 # Commit the library information file that will be used for the rest of the pipeline
