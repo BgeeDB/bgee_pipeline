@@ -75,7 +75,9 @@ for (library in  unique(finalLibsToDown$library_id)) {
 
   ## download run files using SRA Toolkit
   for(run in SRR_file) {
-    system(sprintf('prefetch --type fastq %s ', run))
+    system(sprintf('prefetch %s ', run))
+    system(sprintf('fastq-dump --outdir %s --split-files %s', file.path(run, "FASTQ"),
+      file.path(run, paste0(run, ".sra"))))
   }
     ## create a symlink following pattern */EXPERIMENTS/experiment_ID/library_id/
   file.symlink(from = folder_library, to = file.path(folder_experiments, experiment, library), overwrite = FALSE, recursive = TRUE)
