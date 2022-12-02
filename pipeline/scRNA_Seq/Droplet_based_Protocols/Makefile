@@ -20,6 +20,7 @@ get_annot:
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_SRP135999.tsv  $(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP135999.tsv
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_SRP201320.tsv  $(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP201320.tsv
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_SRP251970.tsv  $(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP251970.tsv
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_SRP200614.tsv  $(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP200614.tsv
 	@touch $@
 
 ## Retrieve metadata (run rule with sbatch)
@@ -110,7 +111,7 @@ list_new_downloads: download_SRA download_EBI download_HCA
 commit_annotation_and_metadata: list_new_downloads
 	@$(GIT) add $(INPUT_DIR)/Target_based/scRNASeqTBLibrary.tsv
 	@$(GIT) add $(INPUT_DIR)scRNASeqExperiment.tsv
-	@$(GIT) add $(INPUT_DIR)/Target_based/scRNASeq_barcode*
+	@$(GIT) add $(INPUT_DIR)/Target_based/scRNASeq_barcode_*
 	@$(GIT) add $(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_info_10X.txt
 	@$(GIT) add $(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_notMatch_10X.txt
 	@$(GIT) commit -m 'Update metadata for droplet-based protocols for scRNASeq for $(DBNAME)' || true
