@@ -1,8 +1,10 @@
 ## SFonsecaCosta, Sep 17 2019
 
-## This script is used to retrieve the metadata with the url to the fastq files for the target based
+## This script is used to retrieve the metadata for the target based
 ## protocols from SRA source. And then to compare the annotation information (speciesId and protocol)
 ## for each library with metadata.
+
+##XXX Is this script really useful??? Is it possible that libraries were not annotated to proper species? What does it mean? Bgee curation should be trusted
 
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args scRNASeqExperiment="scRNASeqExperiment.tsv" scRNASeqTBLibrary="scRNASeqTBLibrary.tsv" output_folder="output_folder"' retrieve_metadata.R retrieve_metadata.Rout
@@ -88,13 +90,14 @@ for (expId in unique(selected_experiments$experimentId)) {
       ## retrieve SRA metadata
       extractSRA <- SRA_metadata(libraryID = libraryId)
       ## compare with Bgee annotation
+      ## probably too stringent as it does not use a controlled vocabulary
       if (!identical(as.character(library$platform),as.character(unique(extractSRA$instrument_model)))) {
         warning("Mismatch platform for library ", library$libraryId, " expected", library$platform,
-                " but was ", extractSRA$instrument_model)
+                " but was ", unique(extractSRA$instrument_model))
         metadata_with_mismatch <- rbind(metadata_with_mismatch, extractSRA)
       } else if (!identical(as.character(library$speciesId),as.character(unique(extractSRA$tax_id)))) {
         warning("Mismatch species for library ", library$libraryId, " expected", library$speciesId,
-                " but was ", extractSRA$tax_id)
+                " but was ", unique(extractSRA$tax_id))
         metadata_with_mismatch <- rbind(metadata_with_mismatch, extractSRA)
       } else {
         metadata <- rbind(metadata,extractSRA)
@@ -106,7 +109,7 @@ for (expId in unique(selected_experiments$experimentId)) {
     message("HCA data! for experiment ", expId,
             ". Do not retrieve metadata!")
     hca_libraries <- annotation[annotation$experimentId == expId,]
-    hca_metadata <- data.frame(NA, hca_libraries$libraryId, NA, NA, hca_libraries$speciesId,
+    hca_metadata <- data.frame(NA, NA, hca_libraries$libraryId, NA, NA, hca_libraries$speciesId,
                                "Homo sapiens", hca_libraries$platform, NA, NA, NA)
     # merge lines of the two df. Do not use rbind as column names are different 
     metadata <- as.data.frame(mapply(c, metadata, hca_metadata))
@@ -116,15 +119,16 @@ for (expId in unique(selected_experiments$experimentId)) {
 }
 
 ## update name and order of columns
-names(metadata)[names(metadata) == 'experiment_accession'] <- 'library_id'
-merged_metadata <- merge(metadata, selected_libraries[, c("libraryId","experimentId")],
-  by.x="library_id", by.y="libraryId")
-names(merged_metadata)[names(merged_metadata) == 'experimentId'] <- 'experiment_id'
-merged_metadata <- merged_metadata[, c(metadata_file_header)]
+if (!is.null(metadata)) {
+  names(metadata)[names(metadata) == 'experiment_accession'] <- 'library_id'
+  metadata <- merge(metadata, selected_libraries[, c("libraryId","experimentId")],
+    by.x="library_id", by.y="libraryId")
+  names(metadata)[names(metadata) == 'experimentId'] <- 'experiment_id'
+  metadata <- metadata[, c(metadata_file_header)]
+}
 # write file with metadata from SRA
-write.table(merged_metadata, file = output_file, quote = FALSE, sep = "\t", col.names = TRUE,
+write.table(metadata, file = output_file, quote = FALSE, sep = "\t", col.names = TRUE,
   row.names = FALSE)
-
 # update name and order columns of mismatch metadata in case there was some
 if (!is.null(metadata_with_mismatch)) {
   names(metadata_with_mismatch)[names(metadata_with_mismatch) == 'experiment_accession'] <-
