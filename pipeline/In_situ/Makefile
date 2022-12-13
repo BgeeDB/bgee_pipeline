@@ -55,13 +55,22 @@ tsv_mgi: map_mgi $(SOURCE_FILES_DIR)$(DIR_NAME)MouseMine.data
 #NOTE it looks there is no strain info
 #TODO It looks to have in situ data in XenMine now but it is extremely slow
 tsv_xenbase: get_annot
-	# Start in between stages socket
+	# Start in between stages socket for X. tropicalis
 	@$(INBETWEENSTAGES) 8364 $(INBETWEENSTAGESPORT) &
 	# Start anatomy id mapping socket
 	@$(IDMAPPING) $(IDMAPPINGPORT) &
 	@sleep 50
 	# Prepare XenBase tsv for insertion
-	@perl Xenbase/get_in_situ_xenbase.pl -bgee=$(BGEECMD) -Sport=$(INBETWEENSTAGESPORT) -Aport=$(IDMAPPINGPORT) -src_dir=$(SOURCE_FILES_DIR)$(DIR_NAME)  >$@.tmp  2>warnings.$@
+	@perl Xenbase/get_in_situ_xenbase.pl -taxid=8364 -bgee=$(BGEECMD) -Sport=$(INBETWEENSTAGESPORT) -Aport=$(IDMAPPINGPORT) -src_dir=$(SOURCE_FILES_DIR)$(DIR_NAME)  >$@.tmp  2>warnings.$@
+	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
+	#
+	# Start in between stages socket for X. laevis
+	@$(INBETWEENSTAGES) 8355 $(INBETWEENSTAGESPORT) &
+	# Start anatomy id mapping socket
+	@$(IDMAPPING) $(IDMAPPINGPORT) &
+	@sleep 50
+	# Prepare XenBase tsv for insertion
+	@perl Xenbase/get_in_situ_xenbase.pl -taxid=8355 -bgee=$(BGEECMD) -Sport=$(INBETWEENSTAGESPORT) -Aport=$(IDMAPPINGPORT) -src_dir=$(SOURCE_FILES_DIR)$(DIR_NAME) >>$@.tmp 2>>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
