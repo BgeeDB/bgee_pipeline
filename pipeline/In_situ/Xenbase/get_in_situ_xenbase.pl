@@ -78,7 +78,7 @@ my %experiments;
 my %patterns;
 
 # all expression data for xenopus tropicalis
-my $statusCode = mirror('ftp://ftp.xenbase.org/pub/GenePageReports/GeneExpression_tropicalis.txt', "$src_dir/GeneExpression_tropicalis.txt");
+my $statusCode = mirror('https://ftp.xenbase.org/pub/GenePageReports/GeneExpression_tropicalis.txt', "$src_dir/GeneExpression_tropicalis.txt");
 if ( $statusCode != 200 && $statusCode != 304 ){ # OKs & Not Modified
     die "Couldn't get file [GeneExpression_tropicalis.txt]!\n";
 }
@@ -126,7 +126,7 @@ for my $line ( read_file("$src_dir/GeneExpression_tropicalis.txt", chomp=>1) ){
         if ( $tmp3[0] !~ /^XAO:/ && $tmp3[0] =~ /^\d{7}$/ ){
             $tmp3[0] = 'XAO:'.$tmp3[0];
         }
-        # XAO:0000059 is obsolete but may be used in ftp://ftp.xenbase.org/pub/GenePageReports/GeneExpression_tropicalis.txt  should be replaced by XAO:0002000
+        # XAO:0000059 is obsolete but may be used in  GeneExpression_tropicalis.txt  should be replaced by XAO:0002000
         $tmp3[0] =~ s{XAO:0000059}{XAO:0002000}  if ( $tmp3[0]     eq 'XAO:0000059' );
         $tmp3[0] = 'XAO:0003003'                 if ( lc($tmp3[0]) eq 'unspecified' );
         push @Anat, $tmp3[0];
@@ -155,7 +155,7 @@ for my $line ( read_file("$src_dir/GeneExpression_tropicalis.txt", chomp=>1) ){
     my %organs;
     for my $couple ( split(',', $tmp[3]) ){
         my @tmp3 = split(' ', $couple);
-        # XAO:0000059 is obsolete but may be used in ftp://ftp.xenbase.org/pub/GenePageReports/GeneExpression_tropicalis.txt  should be replaced by XAO:0002000
+        # XAO:0000059 is obsolete but may be used in  GeneExpression_tropicalis.txt  should be replaced by XAO:0002000
         $tmp3[0] =~ s{XAO:0000059}{XAO:0002000}  if ( $tmp3[0]     eq 'XAO:0000059' );
         $tmp3[0] = 'XAO:0003003'                 if ( lc($tmp3[0]) eq 'unspecified' );
         my $mapped_organ = $doneAnat->{$tmp3[0]} || '';
