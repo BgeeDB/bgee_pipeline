@@ -70,6 +70,7 @@ while ( my @data = $retrieveEnsembl->fetchrow_array ){
 }
 $retrieveEnsembl->finish;
 
+#TODO also for X. laevis!!!!
 print "Reading remote files...\n"  if ( $debug );
 print "\tGeneExpression_tropicalis.txt (can be long)\n"  if ( $debug );
 my $pattern_id = 1;
@@ -206,6 +207,10 @@ for my $line ( read_file("$src_dir/GeneExpression_tropicalis.txt", chomp=>1) ){
 
     my $experiment = $tmp[8];
     my $evidence   = $tmp[7];
+    if ( $evidence eq '' ){
+        warn "No evidence ID (image ID) for [$tmp[0]]\n";
+        next SPOT;
+    }
     if ( defined $tmp[10] ){
         $experiments{$experiment} = $tmp[10] eq 'XB-ART-' ? '' : $tmp[10];
     }
