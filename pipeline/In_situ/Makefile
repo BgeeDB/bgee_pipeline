@@ -78,9 +78,9 @@ tsv_xenbase: get_annot
 #NOTE it looks there is no strain info, only 'wt' or 'transgenic line'
 data_BDGP: get_annot
 	# Download up-to-date BDGP in situ data
-	@$(WGET) 'http://insitu.fruitfly.org/insitu-mysql-dump/insitu.sql.gz'       -O $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz.tmp       && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz.tmp       $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz.tmp
+	@$(WGET) 'https://insitu.fruitfly.org/insitu-mysql-dump/insitu.sql.gz'       -O $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz.tmp       && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz.tmp       $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz.tmp
 	@$(GUNZIP) $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz
-	@$(WGET) 'http://insitu.fruitfly.org/insitu-mysql-dump/insitu_annot.csv.gz' -O $(SOURCE_FILES_DIR)$(DIR_NAME)insitu_annot.csv.gz.tmp && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)insitu_annot.csv.gz.tmp $(SOURCE_FILES_DIR)$(DIR_NAME)insitu_annot.csv.gz 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)insitu_annot.csv.gz.tmp
+	@$(WGET) 'https://insitu.fruitfly.org/insitu-mysql-dump/insitu_annot.csv.gz' -O $(SOURCE_FILES_DIR)$(DIR_NAME)insitu_annot.csv.gz.tmp && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)insitu_annot.csv.gz.tmp $(SOURCE_FILES_DIR)$(DIR_NAME)insitu_annot.csv.gz 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)insitu_annot.csv.gz.tmp
 	@$(GUNZIP) $(SOURCE_FILES_DIR)$(DIR_NAME)insitu_annot.csv.gz
 	# Create BDGP local db
 	@$(MYSQL) -e "DROP DATABASE IF EXISTS bdgp; CREATE DATABASE bdgp CHARACTER SET utf8; SHOW WARNINGS;" > $@.tmp
