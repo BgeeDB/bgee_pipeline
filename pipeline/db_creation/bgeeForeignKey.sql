@@ -1,11 +1,11 @@
--- this file contains the foreign key constraints. 
+-- this file contains the foreign key constraints.
 
 -- ****************************************************
 -- GENERAL
 -- ****************************************************
 /*!40000 ALTER TABLE `dataSourceToSpecies` DISABLE KEYS */;
-alter table dataSourceToSpecies 
-add foreign key (dataSourceId) references dataSource(dataSourceId) on delete cascade, 
+alter table dataSourceToSpecies
+add foreign key (dataSourceId) references dataSource(dataSourceId) on delete cascade,
 add foreign key (speciesId) references species(speciesId) on delete cascade;
 /*!40000 ALTER TABLE `dataSourceToSpecies` ENABLE KEYS */;
 
@@ -180,11 +180,11 @@ add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade;
 -- CONDITIONS
 -- ****************************************************
 /*!40000 ALTER TABLE `cond` DISABLE KEYS */;
-alter table cond 
-add foreign key (exprMappedConditionId) references cond(conditionId) on delete cascade, 
+alter table cond
+add foreign key (exprMappedConditionId) references cond(conditionId) on delete cascade,
 add foreign key (anatEntityId) references anatEntity(anatEntityId) on delete cascade,
 add foreign key (cellTypeId) references anatEntity(anatEntityId) on delete cascade,
-add foreign key (stageId) references stage(stageId) on delete cascade, 
+add foreign key (stageId) references stage(stageId) on delete cascade,
 add foreign key (speciesId) references species(speciesId) on delete cascade;
 /*!40000 ALTER TABLE `cond` ENABLE KEYS */;
 
@@ -202,7 +202,7 @@ add foreign key (remappedExpressionId) references expression(expressionId) on de
 alter table globalCond
 add foreign key (anatEntityId) references anatEntity(anatEntityId) on delete cascade,
 add foreign key (cellTypeId) references anatEntity(anatEntityId) on delete cascade,
-add foreign key (stageId) references stage(stageId) on delete cascade, 
+add foreign key (stageId) references stage(stageId) on delete cascade,
 add foreign key (speciesId) references species(speciesId) on delete cascade;
 /*!40000 ALTER TABLE `globalCond` ENABLE KEYS */;
 
@@ -351,7 +351,7 @@ add foreign key (deaSampleGroupId) references deaSampleGroup(deaSampleGroupId) o
 add foreign key (bgeeAffymetrixChipId) references affymetrixChip(bgeeAffymetrixChipId) on delete cascade;
 /*!40000 ALTER TABLE `deaSampleGroupToAffymetrixChip` ENABLE KEYS */;
 
--- commented temporarily because this table is not used anymore and the foreign key to deaAffymetrixProbesetSummaryId 
+-- commented temporarily because this table is not used anymore and the foreign key to deaAffymetrixProbesetSummaryId
 -- creates error. Should update affymetrixProbeset indexes in order to reactivate these foreign keys.
 -- /*!40000 ALTER TABLE `deaAffymetrixProbesetSummary` DISABLE KEYS */;
 -- alter table deaAffymetrixProbesetSummary
@@ -497,8 +497,8 @@ add foreign key (dataSourceId) references dataSource(dataSourceId);
 /*!40000 ALTER TABLE `scRnaSeqTargetBasedLibrary` DISABLE KEYS */;
 alter table scRnaSeqTargetBasedLibrary
 add foreign key (scRnaSeqTargetBasedExperimentId) references scRnaSeqTargetBasedExperiment(scRnaSeqTargetBasedExperimentId) on delete cascade,
-add foreign key (scRnaSeqTargetBasedPlatformId) references scRnaSeqTargetBasedPlatform(scRnaSeqTargetBasedPlatformId) on delete cascade;
-add foreign key (genotypeId) references genotype(genotypeId) on delete cascade,
+add foreign key (scRnaSeqTargetBasedPlatformId) references scRnaSeqTargetBasedPlatform(scRnaSeqTargetBasedPlatformId) on delete cascade,
+add foreign key (genotypeId) references genotype(genotypeId) on delete cascade;
 /*!40000 ALTER TABLE `scRnaSeqTargetBasedLibrary` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `scRnaSeqTargetBasedRun` DISABLE KEYS */;
