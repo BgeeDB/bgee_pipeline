@@ -789,8 +789,6 @@ create table affymetrixProbeset (
     pValue decimal(31, 30) unsigned default null,
 -- p-value adjusted by Benjamini-Hochberg procedure
     qValue decimal(31, 30) unsigned default 1,
--- detectionFlag after FDR correction
-    detectionFlag enum('undefined', 'absent', 'marginal', 'present') not null default 'undefined',
     expressionId int unsigned,
 -- rank is not "not null" because we update this information afterwards.
 -- note that this corresponds to the rank of the gene, not of the probeset
