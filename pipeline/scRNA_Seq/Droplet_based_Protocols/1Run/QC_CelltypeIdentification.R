@@ -221,9 +221,9 @@ for (libraryID in scRNASeqAnnotation$libraryId) {
     message("Treating library ", libraryID)
     
     ## info about species and experiment
-    speciesID <- scRNASeqAnnotation$scientific_name[scRNASeqAnnotation$libraryId == libraryID]
+    speciesID <- unique(scRNASeqAnnotation$scientific_name[scRNASeqAnnotation$libraryId == libraryID])
     speciesID <- gsub(" ", "_", speciesID)
-    experimentID <- scRNASeqAnnotation$experimentId[scRNASeqAnnotation$libraryId == libraryID]
+    experimentID <- unique(scRNASeqAnnotation$experimentId[scRNASeqAnnotation$libraryId == libraryID])
 
     path2Files <- file.path(kallisto_bus_results, libraryID, "gene_counts/")
     
@@ -248,10 +248,10 @@ for (libraryID in scRNASeqAnnotation$libraryId) {
     object <- seurtObject(m_filtered = knee)
     
     ## read biotype information
-    biotypeInfo <- fread(paste0(folderSupport, "/gene_to_biotype_with_intergenic_", speciesID,".tsv"))
+    biotypeInfo <- fread(file.path(folderSupport, paste0(speciesID, "_gene_to_biotype_with_intergenic.tsv")))
     colnames(biotypeInfo) <- c("gene_id", "biotype")
     ## get barcode information per experiment
-    barcodeExperiment <- fread(file.path(infoFolder, paste0("scRNASeq_barcode_",experimentID,".tsv")))
+    barcodeExperiment <- fread(file.path(infoFolder, paste0("scRNASeq_barcode_", experimentID,".tsv")))
     barcodeLibrary <- dplyr::filter(barcodeExperiment, library == libraryID)
     
     ## link barcode to cell ID and export information
