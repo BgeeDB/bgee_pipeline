@@ -29,35 +29,39 @@ for( c_arg in command_arg ){
   }
 }
 ########################################################################################################################################################
-getBarcodes_files <-  list.files(barcodesFolder, pattern = "scRNASeq_barcode_", full.names = TRUE)
+if(!dir.exists(output)) {
+  dir.create(output)
+}
 
-for (barcodeFile in getBarcodes_files) {
+barcodes_files_path <-  list.files(barcodesFolder, pattern = "scRNASeq_barcode_", full.names = TRUE)
+
+for (barcode_file_path in barcodes_files_path) {
   
-  readBarcodeFile <- fread(barcodeFile, header = TRUE, sep="\t")
-  fileName <- basename(barcodeFile)
+  barcodes <- fread(barcode_file_path, header = TRUE, sep="\t")
+  barcode_file_name <- basename(barcode_file_path)
   
-  saveUniqueBarcodes <- c()
-  saveDuplicatedBarcodes <- c()
-  for (libraryID in unique(readBarcodeFile$library)) {
+  all_unique_barcodes <- c()
+  all_duplicated_barcodes <- c()
+  for (library_id in unique(barcodes$library)) {
     
-    selectBarcodes <- dplyr::filter(readBarcodeFile, readBarcodeFile$library == libraryID)
+    select_barcodes <- dplyr::filter(barcodes, barcodes$library == library_id)
     
-    getUniqueBarcodes <- selectBarcodes %>% 
+    unique_barcodes <- select_barcodes %>% 
       group_by(barcode) %>% 
       filter(n()==1)
     
-    getBarcodesDuplicates <- selectBarcodes %>% 
+    barcodes_duplicates <- select_barcodes %>% 
       group_by(barcode) %>% 
       filter(n() != 1)
   
-    saveUniqueBarcodes <- rbind(saveUniqueBarcodes, getUniqueBarcodes)
-    saveDuplicatedBarcodes <- rbind(saveDuplicatedBarcodes, getBarcodesDuplicates)
+    all_unique_barcodes <- rbind(all_unique_barcodes, unique_barcodes)
+    saveDuplicatedBarcodes <- rbind(all_duplicated_barcodes, barcodes_duplicates)
   }
-  write.table(saveUniqueBarcodes, file = file.path(output, fileName), sep = "\t", row.names = FALSE, quote = FALSE)
-  if (nrow(saveDuplicatedBarcodes) != 0){
-    message("Exist barcode duplicates in 1 or more libraryID of the correspondent experimentID: ", fileName)
-    write.table(saveDuplicatedBarcodes, file = file.path(output, paste0("DuplicateBarcodes_", fileName)), sep = "\t", row.names = FALSE, quote = FALSE)
+  write.table(all_unique_barcodes, file = file.path(output, barcode_file_name), sep = "\t", row.names = FALSE, quote = FALSE)
+  if (isTRUE(all_duplicated_barcodes) && nrow(all_duplicated_barcodes) != 0){
+    message("Exist barcode duplicates in 1 or more libraryID of the correspondent experimentID: ", barcode_file_name)
+    write.table(all_duplicated_barcodes, file = file.path(output, paste0("DuplicateBarcodes_", barcode_file_name)), sep = "\t", row.names = FALSE, quote = FALSE)
   } else {
-    message("Not exist barcode duplicates in any libraryID of the correspondent experimentID: ", fileName)
+    message("Not exist barcode duplicates in any libraryID of the correspondent experimentID: ", barcode_file_name)
   }
 }
