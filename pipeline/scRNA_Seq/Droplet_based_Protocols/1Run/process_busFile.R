@@ -90,10 +90,10 @@ for (library in unique(scRNAInfo$libraryId)) {
       ## step 3 --> count with bustools count
       ## TCC level
       message("TCC level")
-      system(sprintf('%s -o %s -g %s -e %s -t %s %s', "bustools count", paste0(tcc_counts,"/tcc"), paste0(folderSupport, "/transcript_to_gene_with_intergenic_", collectSpecies, ".tsv"),paste0(pathBusOut, "/matrix.ec"), paste0(pathBusOut, "/transcripts.txt"), paste0(pathBusOut, "/output.correct.sort.bus")))
+      system(sprintf('bustools count -o %s -g %s -e %s -t %s %s', file.path(tcc_counts, "tcc"), file.path(folderSupport, paste0(collectSpecies, "_transcript_to_gene_with_intergenic.tsv")), file.path(pathBusOut, "matrix.ec"), file.path(pathBusOut, "transcripts.txt"), file.path(pathBusOut, "output.correct.sort.bus")))
       ## GENE level
       message("Gene level")
-      system(sprintf('%s -o %s -g %s -e %s -t %s %s %s', "bustools count", paste0(gene_counts,"/gene"), paste0(folderSupport, "/transcript_to_gene_with_intergenic_", collectSpecies, ".tsv"), paste0(pathBusOut, "/matrix.ec"), paste0(pathBusOut, "/transcripts.txt"), paste0("--genecounts"), paste0(pathBusOut, "/output.correct.sort.bus")))
+      system(sprintf('bustools count -o %s -g %s -e %s -t %s --genecounts %s', file.path(gene_counts, "gene"), file.path(folderSupport, paste0(collectSpecies, "_transcript_to_gene_with_intergenic.tsv")), file.path(pathBusOut, "/matrix.ec"), file.path(pathBusOut, "transcripts.txt"), file.path(pathBusOut, "output.correct.sort.bus")))
 
     }
   } else {
