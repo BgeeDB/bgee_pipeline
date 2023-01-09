@@ -456,6 +456,10 @@ test_container: build_container
 	@$(PIPELINE_CONTAINER_CMD) python3 -c "import os"              >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) python3 -c "import pandas"          >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) python3 -c "import seaborn"         >> $@.tmp  2>/dev/null
+# Python libraries for Sagane's annotation scripts
+# TODO ...
+# Python libraries for Sagane's H5AD scripts
+# TODO ...
 # Python libraries for orthologs_paralogs_app
 	@$(PIPELINE_CONTAINER_CMD) python3 -c "import SPARQLWrapper"   >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) python3 -c "import rdflib"          >> $@.tmp  2>/dev/null
