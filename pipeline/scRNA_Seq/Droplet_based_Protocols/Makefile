@@ -129,16 +129,17 @@ clusterJURA:
 
 check_tools: clusterJURA
 	@echo -e "\tGo to 'cd pipeline/scRNA_Seq/Droplet_based_Protocols/' and be prepared to work\n"
-	@echo -e "\n\tRun this command to give access to all modules installed on vital-it\n\tmodule add Bioinformatics/Software/vital-it\n"
+	@echo -e "\n\tRun this command to give access to all modules installed on vital-it\n\tmodule use /software/module/\n"
 	# Check if all required tools/libs are available
-	@module add Bioinformatics/Software/vital-it || true
+	@module use /software/module/ || true
 	@$(CLUSTER_R_CMD) which R                          > $@.tmp
 	@$(CLUSTER_R_CMD) R -e 'library("biomaRt")'       >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("Biostrings")'    >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("data.table")'    >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("devtools")'      >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("dplyr")'         >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("HCAExplorer")'   >> $@.tmp  2>/dev/null
+	# this package does not exist. Is it still used?
+	#@$(CLUSTER_R_CMD) R -e 'library("HCAExplorer")'   >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("HelpersMG")'     >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("ggExtra")'       >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("ggplot2")'       >> $@.tmp  2>/dev/null
@@ -188,7 +189,7 @@ cleaning_barcodes: generate_info 0Preparation/cleaning_barcodes.R
 	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                                             0Preparation/cleaning_barcodes.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                0Preparation/cleaning_barcodes.sbatch
 	@sed -i 's@export barcodesFolder=.*@export barcodesFolder=$(SC_RNASEQ_TB_FOLDER_SOURCE)@'                    0Preparation/cleaning_barcodes.sbatch
-	@sed -i 's@export output=.*@export output=${PWD}/$(sc_RNASEQ_CLEANING_BARCODES)@'                            0Preparation/cleaning_barcodes.sbatch
+	@sed -i 's@export output=.*@export output=${PWD}/$(SC_RNASEQ_CLEANED_BARCODES)@'                             0Preparation/cleaning_barcodes.sbatch
 	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                                 0Preparation/cleaning_barcodes.sbatch
 	@sbatch 0Preparation/cleaning_barcodes.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
@@ -206,7 +207,7 @@ kallisto_bus: cleaning_barcodes 1Run/Kallisto_bus.R
 	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                                                   1Run/Kallisto_bus.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                      1Run/Kallisto_bus.sbatch
 	@sed -i 's@export metadata_file=.*@export metadata_file=$(SC_RNASEQ_METADATA_10X_FILEPATH)@'                       1Run/Kallisto_bus.sbatch
-	@sed -i 's@export annotation_file=.*@export annotation_file=$(SC_RNASEQ_LIB_FILEPATH)@'                            1Run/Kallisto_bus.sbatch
+	@sed -i 's@export annotation_file=.*@export annotation_file=$(SC_RNASEQ_LIB_TB_FILEPATH)@'                         1Run/Kallisto_bus.sbatch
 	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_FASTQ_DROPLET)@'                                   1Run/Kallisto_bus.sbatch
 	@sed -i 's@export folderSupport=.*@export folderSupport=$(RNASEQ_CLUSTER_GTF)@'                                    1Run/Kallisto_bus.sbatch
 	@sed -i 's@export output=.*@export output=$(SC_RNASEQ_PATH_GENERATED)@'                                            1Run/Kallisto_bus.sbatch
@@ -219,8 +220,8 @@ kallisto_bus: cleaning_barcodes 1Run/Kallisto_bus.R
 
 
 # NOTE: Before run the process_busFile rule (uncompress the barcodes files, because in github we cannot have files with more than 100Mb size)
-uncompress_barcodes: kallisto_bus $(SC_RNASEQ_PATH_SOURCE)/barcode_whitelist_10X_v2.txt.zip $(SC_RNASEQ_PATH_SOURCE)/barcode_whitelist_10X_v3.txt.zip
-	cd $(SC_RNASEQ_PATH_SOURCE) && \
+uncompress_barcodes: kallisto_bus $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whitelist_10X_v2.txt.zip $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whitelist_10X_v3.txt.zip
+	cd $(SC_RNASEQ_TB_FOLDER_SOURCE) && \
 	unzip barcode_whitelist_10X_v2.txt.zip && \
 	unzip barcode_whitelist_10X_v3.txt.zip
 	@touch $@
@@ -236,7 +237,7 @@ process_busFile: uncompress_barcodes 1Run/process_busFile.R
 	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'                       1Run/process_busFile.sbatch
 	@sed -i 's@export kallisto_bus_results=.*@export kallisto_bus_results=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET)@'  1Run/process_busFile.sbatch
 	@sed -i 's@export folderSupport=.*@export folderSupport=$(RNASEQ_CLUSTER_GTF)@'                                    1Run/process_busFile.sbatch
-	@sed -i 's@export whiteList_Path=.*@export whiteList_Path=$(SC_RNASEQ_PATH_SOURCE)@'                               1Run/process_busFile.sbatch
+	@sed -i 's@export whiteList_Path=.*@export whiteList_Path=$(SC_RNASEQ_TB_FOLDER_SOURCE)@'                          1Run/process_busFile.sbatch
 	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                                       1Run/process_busFile.sbatch
 	@sbatch 1Run/process_busFile.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
@@ -281,7 +282,7 @@ bimodality_cellPop: qc_cellType 1Run/QC_cellPop_bimodality.R
 	@touch $@
 
 ## Call present and absent genes per library/cell population that pass the bimodality test
-calls: bimodality_cellPop 1Run/Calls_cell_pop_per_library.R
+calls: #bimodality_cellPop 1Run/Calls_cell_pop_per_library.R
 	@echo --- Starting the calls of present and absent genes ---
 	@sed -i 's@--output=.*@--output=${PWD}/Calls_library_cellPop.out@'                                                       1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/Calls_library_cellPop.err@'                                                         1Run/Calls_cell_pop_per_library.sbatch

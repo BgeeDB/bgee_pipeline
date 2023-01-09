@@ -155,7 +155,7 @@ R_LIBS_PATH_CURNAGL     := $(CLUSTER_CURNAGL_PATH)/R_LIBS
 PERL_LIBS_PATH_CURNAGL  := $(CLUSTER_CURNAGL_PATH)/PERL_LIBS/lib/perl5
 
 #NOTE Think to add ; at the end to ease insertion in other command lines
-CLUSTER_SOFT_VITALIT    := module use /software/module/; module add Bioinformatics/Software/vital-it;
+CLUSTER_SOFT_VITALIT    := module use /software/module/;
 CLUSTER_SOFT_UNIL       := module load gcc/9.3.0;
 CLUSTER_KALLISTO_CMD    := $(CLUSTER_SOFT_VITALIT) module add UHTS/Analysis/kallisto/0.46.0;
 CLUSTER_R_CMD           := $(CLUSTER_SOFT_VITALIT) module add R/3.6.1;
@@ -501,10 +501,10 @@ SC_RNASEQ_SAMP_STATS_FL                := $(SC_RNASEQ_FL_FOLDER_GENERATED)presen
 SC_RNASEQ_REPORT_INFO_FL               := $(SC_RNASEQ_FL_FOLDER_GENERATED)reports_info_all_samples.txt
 ### Target_based
 SC_RNASEQ_TB_FOLDER_GENERATED               := $(SC_RNASEQ_PATH_GENERATED)Target_based/
-sc_RNASEQ_CLEANING_BARCODES                 := $(SC_RNASEQ_TB_FOLDER_GENERATED)/cleaning_barcodes/
+SC_RNASEQ_CLEANED_BARCODES                  := $(SC_RNASEQ_TB_FOLDER_GENERATED)/cleaned_barcodes/
 SC_RNASEQ_METADATA_10X_FILEPATH             := $(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_info_10X.txt
 SC_RNASEQ_METADATA_10X_NOT_MATCH_FILEPATH   := $(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_notMatch_10X.txt
-SC_RNASEQ_SAMPINFO_10X_FILEPATH             := $(SC_RNASEQ_TB_FOLDER_GENERATED)scRNA_Seq_info_TargetBased.txt
+SC_RNASEQ_SAMPINFO_10X_FILEPATH             := $(SC_RNASEQ_PATH_GENERATED)scRNA_Seq_info_TargetBased.txt
 
 # scRNAseq cluster paths (CURNAGL)
 SC_RNASEQ_DOWNLOAD_PATH                 := $(CLUSTER_CURNAGL_PATH)/downloads/
@@ -519,7 +519,7 @@ SCRNASEQ_SOFTWARE_BAMTOFASTQ                  := /users/sfonseca1/bin/bamtofastq
 
 ## PATH to full length and 10X data
 SC_RNASEQ_FASTQ_FULL_LENGTH                   := $(CLUSTER_DATA_PATH)/FASTQ/scRNAseq/Full_length/
-SC_RNASEQ_FASTQ_DROPLET                       := $(CLUSTER_DATA_PATH)/FASTQ/scRNAseq/10X/
+SC_RNASEQ_FASTQ_DROPLET                       := $(CLUSTER_DATA_PATH)/FASTQ/target_base/
 
 ## PATH to all results of both of pipelines
 SC_RNASEQ_CLUSTER_ALL_RES                     := $(CLUSTER_SCRATCH_RESULTS)scRNA-Seq_all_results_$(DBNAME)/
