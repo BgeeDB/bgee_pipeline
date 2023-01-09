@@ -205,7 +205,7 @@ for (libraryid in unique(scRNASeqAnnotation$libraryId)) {
     
     ## select just cell pop that pass the quality control 
     AllCellPop <- setdiff(collectCellNames,cellsInfo)
-    speciesID <- scRNASeqAnnotation$speciesId[scRNASeqAnnotation$libraryId == libraryid]
+    speciesID <- unique(scRNASeqAnnotation$speciesId[scRNASeqAnnotation$libraryId == libraryid])
    
     message("AllCellPop: ", AllCellPop)
     message("speciesID: ", speciesID)

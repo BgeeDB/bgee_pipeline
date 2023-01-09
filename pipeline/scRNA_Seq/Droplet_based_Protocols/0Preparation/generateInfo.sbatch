@@ -15,7 +15,7 @@
 #SBATCH --job-name=generateInfo_TB
 #SBATCH --mail-user sara.fonsecacosta@unil.ch
 
-module load Bioinformatics/Software/vital-it
+module load /software/module/§
 module add R/3.6.1;
 
 export SCRIPT_PATH=/home/jwollbre/Documents/git/bgee_pipeline_droplet_test/bgee_pipeline/pipeline/scRNA_Seq/Droplet_based_Protocols/

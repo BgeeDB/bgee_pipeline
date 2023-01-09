@@ -49,7 +49,7 @@ if( file.exists(annotation_file) ){
 }
 ##########################################################################################################################################################
 ## first merge information from the metadata (like: reads information and SRR) and annotation file (from Bgee)
-metadataCollect <- metadata[c("experiment_accession", "run_accession","read_count", "tax_id", "scientific_name", "library_layout")]
+metadataCollect <- metadata[c("library_id", "run_accession","read_count", "tax_id", "scientific_name", "library_layout")]
 colnames(metadataCollect)[1] <- "libraryId"
 targetBased <- data.frame(dplyr::filter(annotation, protocol == "10X Genomics" & protocolType == "3'end"))
 
@@ -102,41 +102,38 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
         if (detectFastqPath_1 == TRUE & detectFastqPath_2 == TRUE){
           
           print("This library come from HCA repository OR from EBI by extracting directly fastq files (exception).")
-          ## select all fastq.gz files
-          detectFastqPath <- list.dirs(fastqLibDir, recursive=TRUE)
-          detectFastqFiles <- list.files(path=detectFastqPath, pattern = "\\.fastq.gz$")
-          message("FASTQ Files detected: ", detectFastqFiles)
-          
           ## Note: libraries from HCA have just one R1 and one R2
-          readBarcodes <- list.files(path=detectFastqPath, pattern = "*_R1_001.fastq.gz$")
-          readSeq <- list.files(detectFastqPath,"*_R2_001.fastq.gz")
-          
+          readBarcodes <- list.files(path = fastqLibDir, pattern = "*_R1_001.fastq.gz$", recursive = TRUE,
+            full.names = TRUE, include.dirs = FALSE)
+          readSeq <- list.files(path = fastqLibDir, pattern = "*_R2_001.fastq.gz$", recursive = TRUE,
+            full.names = TRUE, include.dirs = FALSE)
         } else if (detectFastqPath_1 == TRUE & detectFastqPath_2 == FALSE){
           
           print("This library come from EBI repository. Downloaded bam files that were converted to fastq.gz.")
           ## verify if exist multiplefiles in the folder (multiple fastq.gz represent lanes)
-          detectFastqPath <- list.dirs(fastqLibDir, recursive=TRUE)[-1]
-          detectFastqFiles <- list.files(path=detectFastqPath, pattern = "\\.fastq.gz$")
-          message("FASTQ Files detected: ", detectFastqFiles)
+          fastqFiles <- list.files(path = fastqLibDir, pattern = "\\.fastq.gz$", recursive = TRUE,
+            full.names = TRUE, include.dirs = FALSE)
           
-          readBarcodes <- str_subset(detectFastqFiles,"bamtofastq_S1_L0\\d+_R1_\\d+")
+          readBarcodes <- str_subset(fastqFiles,"bamtofastq_S1_L0\\d+_R1_\\d+")
           message("Number of barcode files detected: ", length(readBarcodes))
-          readSeq <- str_subset(detectFastqFiles,"bamtofastq_S1_L0\\d+_R2_\\d+")
+          readSeq <- str_subset(fastqFiles,"bamtofastq_S1_L0\\d+_R2_\\d+")
           message("Number of sequence files detected: ", length(readSeq))
           
         } else {
           
           print("This library come from SRA repository. fastq.gz files are saved directlly in a SRR folder")
-          detectFastqPath <- list.dirs(file.path(folder_data, taxID, i), recursive=TRUE)[-1]
-          detectFastqFiles <- list.files(path=detectFastqPath, pattern = "\\.fastq.gz$")
-          message("FASTQ Files detected: ", detectFastqFiles)
+           detectFastqPath <- file.path(folder_data, taxID, i)
           
-          readBarcodes <- list.files(path=detectFastqPath, pattern = "*_R1.fastq.gz$")
-          readSeq <- list.files(detectFastqPath,"*_R2.fastq.gz")
-        }
+          readBarcodes <- list.files(path=detectFastqPath, pattern = "*_R1.fastq.gz$", recursive = TRUE,
+            full.names = TRUE, include.dirs = FALSE)
+          readSeq <- list.files(path = detectFastqPath, pattern = "*_R2.fastq.gz", recursive = TRUE,
+            full.names = TRUE, include.dirs = FALSE)
+          print(readBarcodes)
+          print(readSeq)
+       }
         
         ## collect all fastq.gz files
-        filesKallisto <- rbind(file.path(detectFastqPath, readBarcodes), file.path(detectFastqPath, readSeq))
+        filesKallisto <- rbind(readBarcodes, readSeq)
         filesKallisto <- toString(filesKallisto)
         filesKallisto <- gsub(",", " " ,filesKallisto)
         message("Files to pass to Kallisto: ")
