@@ -45,6 +45,7 @@ global_check:
 	@perl -MList::MoreUtils         -e 1 >> $@.tmp
 	@perl -MList::Util              -e 1 >> $@.tmp
 	@perl -MParallel::ForkManager   -e 1 >> $@.tmp
+	@perl -MParallel::Loops         -e 1 >> $@.tmp
 	@perl -MSort::Naturally         -e 1 >> $@.tmp
 	@perl -MSpreadsheet::Read       -e 1 >> $@.tmp
 	@perl -MSpreadsheet::ParseExcel -e 1 >> $@.tmp
@@ -323,6 +324,7 @@ test_container: build_container
 	@$(PIPELINE_CONTAINER_CMD) perl -MList::MoreUtils         -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MList::Util              -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MParallel::ForkManager   -e 1 >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) perl -MParallel::Loops         -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MSort::Naturally         -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MSpreadsheet::Read       -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MSpreadsheet::ParseExcel -e 1 >> $@.tmp

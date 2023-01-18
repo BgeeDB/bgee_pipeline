@@ -255,6 +255,7 @@ From: ubuntu:20.04
 	cpan List::MoreUtils
 	cpan List::Util
 	cpan Parallel::ForkManager
+	cpan Parallel::Loops
 	cpan Sort::Naturally
 	cpan Spreadsheet::ParseExcel
 	cpan Spreadsheet::ParseXLSX
