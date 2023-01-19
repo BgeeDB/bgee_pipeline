@@ -71,7 +71,7 @@ require("$FindBin::Bin/../target_base_utils.pl");
 my $barcodeToCelltypeFilePattern = "$sourceDir/scRNASeq_barcode_EXP_ID.tsv";
 
 #TODO create a script argument for this variable
-my $maxProcs = 5;
+my $maxProcs = 15;
 my $pl = Parallel::Loops->new($maxProcs);
 
 ####################### FUNCTIONS ###############################
@@ -153,11 +153,6 @@ my $insert_individualSampleGeneResult =  'INSERT INTO rnaSeqLibraryIndividualSam
 # rnaSeqLibraryIndividualSampleId
 my $bgee_metadata = Utils::connect_bgee_db($bgee_connector);
 $bgee_metadata->{AutoCommit} = 1;
-# connection used to insert data in rnaSeqAnnotatedSampleGeneResult and
-# rnaSeqIndividualSampleGeneResult tables
-my $bgee_data = Utils::connect_bgee_db($bgee_connector);
-# disable autocommit for $bgee_data. Allows to manually commit after each library.
-$bgee_data->{AutoCommit} = 0;
 
 ## Load 
 # Library info from manual curation used to launch the pipeline
@@ -189,7 +184,7 @@ $selSrc->finish;
 # POPULATION CAPTURE #
 ######################
 my @populationCapture = ();
-my $selPopCapture = $bgee_data->prepare($select_populationCapture);
+my $selPopCapture = $bgee_metadata->prepare($select_populationCapture);
 $selPopCapture->execute()  or die $selSrc->errstr;
 while ( my @data = $selPopCapture->fetchrow_array ){
     push(@populationCapture, $data[0])
@@ -201,7 +196,7 @@ $selPopCapture->finish;
 ############
 
 my %biotypeNameToBiotypeId = ();
-my $selBiotypes = $bgee_data->prepare($select_biotype);
+my $selBiotypes = $bgee_metadata->prepare($select_biotype);
 $selBiotypes->execute()  or die $selBiotypes->errstr;
 while ( my @data = $selBiotypes->fetchrow_array ){
     $biotypeNameToBiotypeId{$data[1]} = $data[0];
@@ -265,8 +260,6 @@ my $insAnnotatedSample = $bgee_metadata->prepare($insert_annotatedSamples);
 my $selectAnnotatedSampleId = $bgee_metadata->prepare($select_annotatedSampleId);
 my $insIndividualSample = $bgee_metadata->prepare($insert_individualSamples);
 my $selectIndividualSampleId = $bgee_metadata->prepare($select_individualSampleId);
-my $insIndividualSampleGeneResult = $bgee_data->prepare($insert_individualSampleGeneResult);
-
 my $inserted = 0;
 
 for my $expId ( sort keys %processedLibraries ){
@@ -385,14 +378,25 @@ for my $expId ( sort keys %processedLibraries ){
         # for now we only insert barcodes mapped to a cell type. It coult be possible
         # to insert other cell types in a different table
         # (e.g rnaSeqLibraryIndevidualSampleNotAnnotated(rnaSeqLibraryId, barcode, ...))
+        my %barcodeToIndividualSampleId;
+        my @barcodesArray;
         for my $barcode (sort keys %{$barcodesToCellType{$libraryId}{'barcodes'}}) {
             my $annotatedSampleId = $celltypeToAnnotatedSampleId{$barcodesToCellType{$libraryId}{'barcodes'}{$barcode}{'cellTypeId'}};
             my $individualSampleId = insert_get_individual_sample($insIndividualSample, $selectIndividualSampleId,
                 $annotatedSampleId, $barcode, "", $debug);
+            $barcodeToIndividualSampleId{$barcode} = $individualSampleId;
+            push (@barcodesArray, $barcode);
         }
 
-        $pl->foreach( \%{$barcodesToCellType{$libraryId}{'barcodes'}}, sub {
-            $barcode = $_;
+        $pl->foreach( \@barcodesArray, sub {
+            my $bgee_data = Utils::connect_bgee_db($bgee_connector);
+            # disable autocommit for $bgee_data. Allows to manually commit after each library.
+            $bgee_data->{AutoCommit} = 0;
+            my $insIndividualSampleGeneResult = $bgee_data->prepare($insert_individualSampleGeneResult);
+            
+            my $barcode = $_;
+            my $individualSampleId = $barcodeToIndividualSampleId{$barcode};
+
             # before insertion in rnaSeqLibraryIndividualSampleGeneResult we need to
             # process bustools output that contain geneId, barcode and counts to:
             # - remove intergenic regions
@@ -423,14 +427,14 @@ for my $expId ( sort keys %processedLibraries ){
             }
             #commit after each barcode
             $bgee_data->commit;
-#            insert_individual_sample_gene_result($insIndividualSampleGeneResult, \%sparseMatrixCount,
+            $insIndividualSampleGeneResult->finish;
+            #            insert_individual_sample_gene_result($insIndividualSampleGeneResult, \%sparseMatrixCount,
 #                \%sparseMatrixCpm, \%{$genes{$libraries{$expId}->{$libraryId}->{'speciesId'}}},
 #                $individualSampleId, $barcode, $debug);
-        }
+        });
         
 
     }
-    # used to commit after each library when condition and libraries were not inserted
 }
 
 ## close prepared statements.
@@ -439,7 +443,6 @@ $insAnnotatedSample->finish;
 $selectAnnotatedSampleId->finish;
 $insIndividualSample->finish;
 $selectIndividualSampleId->finish;
-$insIndividualSampleGeneResult->finish;
 
 exit 0;
 
