@@ -1069,7 +1069,7 @@ create table rnaSeqLibraryAnnotatedSampleGeneResult (
 --    are already described in the table `rnaSeqLibraryAnnotatedSample` So for me for BRB-Seq 
 --    rnaSeqLibraryAnnotatedSample.multipleLibraryIndividualSample == 0.
 create table rnaSeqLibraryIndividualSample (
-    rnaSeqLibraryIndividualSampleId mediumint unsigned not null, 
+    rnaSeqLibraryIndividualSampleId int unsigned not null, 
     rnaSeqLibraryAnnotatedSampleId mediumint unsigned not null,
     barcode varchar(70) COMMENT 'barcode used to pool several samples in the same library',
     sampleName varchar(70)
@@ -1077,7 +1077,7 @@ create table rnaSeqLibraryIndividualSample (
 
 -- gene result at individual sample level (e.g for each cell for 10x)
 create table rnaSeqLibraryIndividualSampleGeneResult (
-    rnaSeqLibraryIndividualSampleId mediumint unsigned not null COMMENT 'Internal ID used to define one individual sample',
+    rnaSeqLibraryIndividualSampleId int unsigned not null COMMENT 'Internal ID used to define one individual sample',
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
     abundanceUnit enum ('tpm','cpm'),
     abundance decimal(16, 6) not null COMMENT 'abundance values, NOT log transformed',

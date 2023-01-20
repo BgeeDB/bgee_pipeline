@@ -425,7 +425,7 @@ add primary key (rnaSeqLibraryAnnotatedSampleId, bgeeGeneId);
 
 /*!40000 ALTER TABLE `rnaSeqLibraryIndividualSample` DISABLE KEYS */;
 alter table rnaSeqLibraryIndividualSample
-add primary key (rnaSeqLibraryIndividualSampleId);
+modify rnaSeqLibraryIndividualSampleId int unsigned not null auto_increment primary key;
 /*!40000 ALTER TABLE `rnaSeqLibraryIndividualSample` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `rnaSeqLibraryIndividualSampleGeneResult` DISABLE KEYS */;
