@@ -16,6 +16,9 @@
 
 ## libraries used
 library(data.table)
+library(BUSpaRse)
+library(Matrix)
+library(Seurat)
 
 ## reading arguments
 cmd_args = commandArgs(TRUE);
@@ -39,6 +42,43 @@ if( file.exists(scRNASeq_Info) ){
   scRNAInfo <- fread(scRNASeq_Info)
 } else {
   stop( paste("The annotation file not found [", scRNASeq_Info, "]\n"))
+}
+
+generateGenesCpm <- function(tx2geneFile, pathBusOut, gene_counts, bustoolsGeneMatrixName) {
+  # create cpm directory
+  cpm_dir = file.path(pathBusOut, "cpm_counts")
+  if (!dir.exists(cpm_dir)) {
+    dir.create(cpm_dir)
+  }
+  #load transcript to gene mapping file
+  tx2gene <- read.table(tx2geneFile, sep = "\t", header = FALSE);
+  # load counts from bustools using a function from BUSpaRse
+  counts <- read_count_output(gene_counts, bustoolsGeneMatrixName, FALSE)
+  # intergenic have same name in  both transcript and gene columns.
+  # we use this caracteristic to keep only counts from genic region
+  genesWithoutIntergenic <- tx2gene[!tx2gene[1,] %in% tx2gene[2,],]
+  subset_counts <- counts[counts@Dimnames[[1]][counts@Dimnames[[1]] %in% genesWithoutIntergenic],]
+
+  # now calculate cpm using a function from Seurat
+  subset_cpm <- NormalizeData(subset_counts, normalization.method="RC", scale.factor=1e06)
+
+  # Write output files
+  cpmMatrixFile <- file.path(cpm_dir, "cpm_counts.mtx")
+  Matrix::writeMM(obj = transformed, file =cpmMatrixFile)
+  write.table(x = subset_cpm@Dimnames[[1]], file = file.path(cpm_dir, "cpm_counts.genes.txt"),
+    sep = "\t", col.names = FALSE, quote = FALSE, row.names = FALSE)
+  write.table(x = subset_cpm@Dimnames[[2]], file = file.path(cpm_dir, "cpm_counts.barcodes.txt"),
+    sep = "\t", col.names = FALSE, quote = FALSE, row.names = FALSE)
+  # the writeMM function does not save the same .mtx than bustools. Columns 1 and 2
+  # are switched. It means that when reading the file created by writeMM with the BUSpaRse
+  # read function, rows and columns are exchanged. In order to keep the same structure of
+  # matrix, we manually exchange column 1 and 2 from the .mtx file
+  #XXX Did not find more elegant solution...
+  # transform the matrix to be as the one from bustools
+  matrixTsv <- read.table(cpmMatrixFile, sep =" ", header = FALSE, comment.char = "%")
+  transformedMatrixTsv <- matrixTsv[,c(2,1,3)]
+  write.table(x = transformedMatrixTsv, file = cpmMatrixFile, sep = " ", col.names = FALSE,
+    quote = FALSE, row.names = FALSE)
 }
 ###############################################################################################
 ## for each library
@@ -70,14 +110,14 @@ for (library in unique(scRNAInfo$libraryId)) {
       system(sprintf('%s -t 4 -o %s %s', "bustools sort", paste0(pathBusOut, "/output.correct.sort.bus"), paste0(pathBusOut, "/output.correct.bus")))
 
       ## Create folders to export the information per TCC and gene matrix (counts)
-      tcc_counts <- paste0(pathBusOut, "/tcc_counts")
+      tcc_counts <- file.path(pathBusOut, "tcc_counts")
       if (!dir.exists(tcc_counts)){
         dir.create(tcc_counts)
       } else {
         print("File already exist.....")
       }
 
-      gene_counts <- paste0(pathBusOut, "/gene_counts")
+      gene_counts <- file.path(pathBusOut, "gene_counts")
       if (!dir.exists(gene_counts)){
         dir.create(gene_counts)
       } else {
@@ -87,14 +127,22 @@ for (library in unique(scRNAInfo$libraryId)) {
       collectSpecies <- as.character(scRNAInfo$scientific_name[scRNAInfo$libraryId == library])
       collectSpecies <- gsub(" ", "_", collectSpecies)
 
+      tx2gene_file = file.path(folderSupport, paste0(collectSpecies, "_transcript_to_gene_with_intergenic.tsv"))
       ## step 3 --> count with bustools count
       ## TCC level
       message("TCC level")
-      system(sprintf('bustools count -o %s -g %s -e %s -t %s %s', file.path(tcc_counts, "tcc"), file.path(folderSupport, paste0(collectSpecies, "_transcript_to_gene_with_intergenic.tsv")), file.path(pathBusOut, "matrix.ec"), file.path(pathBusOut, "transcripts.txt"), file.path(pathBusOut, "output.correct.sort.bus")))
+      system(sprintf('bustools count -o %s -g %s -e %s -t %s %s', file.path(tcc_counts, "tcc"),
+        tx2gene_file, file.path(pathBusOut, "matrix.ec"), file.path(pathBusOut, "transcripts.txt"),
+        file.path(pathBusOut, "output.correct.sort.bus")))
       ## GENE level
       message("Gene level")
-      system(sprintf('bustools count -o %s -g %s -e %s -t %s --genecounts %s', file.path(gene_counts, "gene"), file.path(folderSupport, paste0(collectSpecies, "_transcript_to_gene_with_intergenic.tsv")), file.path(pathBusOut, "/matrix.ec"), file.path(pathBusOut, "transcripts.txt"), file.path(pathBusOut, "output.correct.sort.bus")))
-
+      bustoolsGeneMatrix = "gene"
+      system(sprintf('bustools count -o %s -g %s -e %s -t %s --genecounts %s',
+        file.path(gene_counts, bustoolsGeneMatrix), tx2gene_file, file.path(pathBusOut, "/matrix.ec"),
+        file.path(pathBusOut, "transcripts.txt"), file.path(pathBusOut, "output.correct.sort.bus")))
+      ## CPM level
+      message("CPM for genes without intergenic")
+      generateGenesCpm(tx2geneFile, pathBusOut, gene_counts, bustoolsGeneMatrix)
     }
   } else {
     message("Library ", library ," not present in the folder to process.")
