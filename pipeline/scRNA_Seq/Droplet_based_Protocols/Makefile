@@ -315,6 +315,17 @@ final_commit: final_status
 	@echo -e "All information is ready, you can make a tar of the results. \n"
 	@touch $@
 
+## Insert expression at cell level. Run from bgee servers.
+## Currently parallelize job using different thread to write in the database
+## (argument coreNumber). Could optimize by also creating one Job per experiment
+## (on unil cluster using slurm) if this rule takes too much time.
+## Then, a perl script should take care of managing parallelization. It could also
+## be possible to use the rslurm R package to manage parallelization
+insert_cell_abundance:
+	@perl 3Insertion/insert_scrna_seq.pl -bgee=$(BGEECMD) -targetBaseLibrary=$(SC_RNASEQ_LIB_TB_FILEPATH) -singleCellExperiment=$(SC_RNASEQ_EXPERIMENT_FILEPATH) -bgeelibraryInfo=$(SC_RNASEQ_METADATA_10X_FILEPATH) -allResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -sourceDir=$(SC_RNASEQ_TB_FOLDER_SOURCE) -sex_info=$(UBERON_SEX_INFO_FILE_PATH) -numberCore=8 > $@.tmp 2> $@.err
+	@if [[ ! -s $@.err ]]; then $(RM) $@.err; fi
+	@$(MV) $@.tmp $@
+
 tar_all: final_commit
 	cd $(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)
 	tar -cvfSp tarball_scRNASeq_droplet_10X.tar .
