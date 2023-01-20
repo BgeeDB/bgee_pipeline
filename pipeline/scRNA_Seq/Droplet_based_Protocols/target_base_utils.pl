@@ -442,37 +442,4 @@ sub read_bustools_coordinates_matrix {
     return %sparseMatrix;
 }
 
-sub insert_individual_sample_gene_result {
-    my ($insIndividualSampleGeneResult, $sparseMatrixCountRef, $sparseMatrixCpmRef,
-        $genesResultsRef, $individualSampleId, $barcode, $debug) = @_;
-    my %sparseMatrixCount = %$sparseMatrixCountRef;
-    my %sparseMatrixCpm = %$sparseMatrixCpmRef;
-    my %genesResults = %$genesResultsRef;
-
-    for my $geneId (sort keys %{$sparseMatrixCount{$barcode}} ) {
-        # check that the gene is present in the database. It is both a
-        # security check and a way to remove intergenic regions
-        next if (! exists $genesResults{$geneId} ||
-            ! exists $sparseMatrixCount{$barcode}{$geneId});
-        my $bgeeGeneId = $genesResults{$geneId};
-        if (! exists $sparseMatrixCpm{$barcode}{$geneId}) {
-            warn "Warning, gene $geneId has count for barcode $barcode but",
-                " no abundance was generated";
-            next;
-        }
-        if ($debug) {
-            print 'INSERT INTO rnaSeqLibraryIndividualSampleGeneResult: ',
-            $individualSampleId, ' - ', $bgeeGeneId, ' - ', "cpm", ' - ',
-            $sparseMatrixCpm{$barcode}{$geneId}, ' - ', 0, ' - ',
-            $sparseMatrixCount{$barcode}{$geneId}, ' - ',
-            "high quality", ' - ', 'not excluded', "\n";
-        } else {
-            $insIndividualSampleGeneResult->execute($individualSampleId, $bgeeGeneId,
-                'cpm', $sparseMatrixCpm{$barcode}{$geneId}, 0,
-                $sparseMatrixCount{$barcode}{$geneId}, 'high quality', 'not excluded')
-                    or die $insIndividualSampleGeneResult->errstr;
-        }
-    }
-}
-
 1;
