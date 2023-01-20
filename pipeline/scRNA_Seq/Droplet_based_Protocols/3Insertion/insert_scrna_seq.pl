@@ -33,6 +33,7 @@ $| = 1; # no buffering of output
 my ($bgee_connector) = ('');
 my ($targetBaseLibrary, $allResults, $sexInfo)  = ('', '', '');
 my ($singleCellExperiment, $libraryInfo, $sourceDir) = ('', '', '');
+my $numberCore = 1;
 #my ($library_stats, $report_info = ('', '');
 my ($debug)                      = (0);
 my %opts = ('bgee=s'                => \$bgee_connector,       # Bgee connector string
@@ -42,13 +43,14 @@ my %opts = ('bgee=s'                => \$bgee_connector,       # Bgee connector 
             'allResults=s'          => \$allResults,           # path to dir containing results for all libraries
             'sourceDir=s'           => \$sourceDir,            # path to the directory containing source files of the target base pipeline
             'sexInfo=s'             => \$sexInfo,              # generated_files/uberon/uberon_sex_info.tsv
+            'numberCore'            => \$numberCore,           # number of cores corresponding to number of threads used to insert data in the database
             'debug'                 => \$debug,
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $bgee_connector eq '' || $targetBaseLibrary eq '' || $singleCellExperiment eq '' ||
-    $libraryInfo eq '' || $allResults eq '' || $sourceDir eq '' ||$sexInfo eq ''){
+    $libraryInfo eq '' || $allResults eq '' || $sourceDir eq '' ||$sexInfo eq '' || $numberCore eq ''){
     print "\n\tInvalid or missing argument:
 \te.g., $0  -bgee=\$(BGEECMD) -targetBaseLibrary=RNASeqLibrary_full.tsv -singleCellExperiment=RNASeqExperiment_full.tsv -libraryInfo=metadata_info_10X.txt -sexInfo=\$(UBERON_SEX_INFO_FILE_PATH) > $@.tmp 2>warnings.$@
 \t-bgee                    Bgee connector string
@@ -58,7 +60,8 @@ if ( !$test_options || $bgee_connector eq '' || $targetBaseLibrary eq '' || $sin
 \t-allResults              allResults directory
 \t-sourceDir               path to the directory containing sources files of the target bas pipeline
 \t-sexInfo                 file containing sex-related info about anatomical terms
-\t-debug                   insertions are not made, just printed
+\t-numberCore              (optional) number of threads used to insert data in the database. Default value is 1.
+\t-debug                   (optional) insertions are not made, just printed
 \n";
     exit 1;
 }
@@ -71,8 +74,7 @@ require("$FindBin::Bin/../target_base_utils.pl");
 my $barcodeToCelltypeFilePattern = "$sourceDir/scRNASeq_barcode_EXP_ID.tsv";
 
 #TODO create a script argument for this variable
-my $maxProcs = 15;
-my $pl = Parallel::Loops->new($maxProcs);
+my $pl = Parallel::Loops->new($numberCore);
 
 ####################### FUNCTIONS ###############################
 # for now all the functions are in this script but some of them could have to move
@@ -289,28 +291,28 @@ for my $expId ( sort keys %processedLibraries ){
 
         # insert libraries
         if ( $debug ){
-            print 'INSERT INTO rnaSeqLibrary: ', $libraryId,                                       ' - ',
+            print 'INSERT INTO rnaSeqLibrary: ', $libraryId,                                     ' - ',
                   $expId, ' - ', $libraries{$expId}->{$libraryId}->{'platform'},                 ' - ',
                   #technologyName
                   $libraries{$expId}->{$libraryId}->{'protocol'},                                ' - ',
                   # isSingleCell (always true for target base RNASeq)
-                  '1',                                                                             ' - ',
+                  '1',                                                                           ' - ',
                   # sampleMultiplexing (always true for target base)
-                  '1',                                                                             ' - ',
+                  '1',                                                                           ' - ',
                   # libraryMultiplexing (for now always false for target base)
-                  '0',                                                                             ' - ',
+                  '0',                                                                           ' - ',
                   # strandSelection. No information in annotation file.
                   # Could maybe be detected from the platform or the technology
-                  'NA',                                                                            ' - ',
+                  'NA',                                                                          ' - ',
                   # cellCompartment. No information in the annotation file.
                   # Could maybe be detected from the technology name
-                  $libraries{$expId}->{$libraryId}->{'cellCompartment'},                          ' - ',
-                  $libraries{$expId}->{$libraryId}->{'sequencedTranscriptPart'},                  ' - ',
+                  $libraries{$expId}->{$libraryId}->{'cellCompartment'},                         ' - ',
+                  $libraries{$expId}->{$libraryId}->{'sequencedTranscriptPart'},                 ' - ',
                   # fragmentation.
                   # TODO. Left empty for now but should be updated to take read length info
-                  '0',                                                                            ' - ',
+                  '0',                                                                           ' - ',
                   # rnaSeqPopulationCaptureId. For now all target base are polyA
-                  'polyA',                                                                        ' - ',
+                  'polyA',                                                                       ' - ',
                   $processedLibraries{$expId}->{$libraryId}->{'libraryType'},"\n";
         } else {
             $insLib->execute($libraryId,
@@ -388,6 +390,7 @@ for my $expId ( sort keys %processedLibraries ){
             push (@barcodesArray, $barcode);
         }
 
+        # now start to insert abundance per cell. parallelized per celltype
         $pl->foreach( \@barcodesArray, sub {
             my $bgee_data = Utils::connect_bgee_db($bgee_connector);
             # disable autocommit for $bgee_data. Allows to manually commit after each library.
@@ -397,10 +400,6 @@ for my $expId ( sort keys %processedLibraries ){
             my $barcode = $_;
             my $individualSampleId = $barcodeToIndividualSampleId{$barcode};
 
-            # before insertion in rnaSeqLibraryIndividualSampleGeneResult we need to
-            # process bustools output that contain geneId, barcode and counts to:
-            # - remove intergenic regions
-            # - calculate cpm for each gene (should probably be done before in R using sparse matrix)
             for my $geneId (sort keys %{$sparseMatrixCount{$barcode}} ) {
                 # check that the gene is present in the database. It is both a
                 # security check and a way to remove intergenic regions
@@ -428,9 +427,6 @@ for my $expId ( sort keys %processedLibraries ){
             #commit after each barcode
             $bgee_data->commit;
             $insIndividualSampleGeneResult->finish;
-            #            insert_individual_sample_gene_result($insIndividualSampleGeneResult, \%sparseMatrixCount,
-#                \%sparseMatrixCpm, \%{$genes{$libraries{$expId}->{$libraryId}->{'speciesId'}}},
-#                $individualSampleId, $barcode, $debug);
         });
         
 
