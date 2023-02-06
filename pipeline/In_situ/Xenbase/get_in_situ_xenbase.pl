@@ -172,6 +172,7 @@ for my $line ( read_file("$src_dir/$taxon{$taxid}", chomp=>1) ){
     # split field 4 using comma
     my %organs;
     for my $couple ( split(',', $tmp[3]) ){
+        next  if ( $couple =~ /^ / ); #NOTE avoid "fake" organs after split e.g. XAO:0000224 vegetal part**, early** involuting
         my @tmp3 = split(' ', $couple);
         # XAO:0000059 is obsolete but may be used in  GeneExpression_*.txt  should be replaced by XAO:0002000
         $tmp3[0] =~ s{XAO:0000059}{XAO:0002000}  if ( $tmp3[0]     eq 'XAO:0000059' );
