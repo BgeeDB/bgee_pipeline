@@ -25,8 +25,8 @@ my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $bgee_connector eq '' ){
     print "\n\tInvalid or missing argument:
 \te.g. $0  -bgee=\$(BGEECMD)
-\t-bgee             Bgee connector string
-\t-debug            printing the update/insert SQL queries, not executing them
+\t-bgee     Bgee connector string
+\t-debug    show current status
 \n";
     exit 1;
 }
