@@ -139,6 +139,161 @@ sub get_schema_species {
     my ($db) = @_;
 
     #TODO Loop over data types with *Processed expression value files*, separated by *,*
+    my $affy_template   = '                {
+                    "@type": "Dataset",
+                    "http://purl.org/dc/terms/conformsTo": {
+                        "@id": "https://bioschemas.org/profiles/Dataset/1.0-RELEASE",
+                        "@type": "CreativeWork"
+                    },
+                    "dateModified": "'.$dateModified.'",
+                    "creator": {
+                        "@type": "Organization",
+                        "url": "https://bgee.org/",
+                        "name": "The Bgee Team"
+                    },
+                    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+                    "distribution": [
+                        {
+                            "@type": "DataDownload",
+                            "encodingFormat": "TSV",
+                            "contentUrl": "https://bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/affymetrix/__SPECIES_NAME__/__SPECIES_NAME___Affymetrix_experiments_chips.tar.gz"
+                        }
+                    ],
+                    "name": "__SPECIES NAME__ Affymetrix experiments chips",
+                    "keywords": [
+                        "Affymetrix"
+                    ],
+                    "description": "Affymetrix experiments/chips annotations and metadata.",
+                    "url": "https://bgee.org/species/__TAXID__#proc-values-affymetrix"
+                },
+                {
+                    "@type": "Dataset",
+                    "http://purl.org/dc/terms/conformsTo": {
+                        "@id": "https://bioschemas.org/profiles/Dataset/1.0-RELEASE",
+                        "@type": "CreativeWork"
+                    },
+                    "dateModified": "'.$dateModified.'",
+                    "creator": {
+                        "@type": "Organization",
+                        "url": "https://bgee.org/",
+                        "name": "The Bgee Team"
+                    },
+                    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+                    "distribution": [
+                        {
+                            "@type": "DataDownload",
+                            "encodingFormat": "TSV",
+                            "contentUrl": "https://bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/affymetrix/__SPECIES_NAME__/__SPECIES_NAME___Affymetrix_probesets.tar.gz"
+                        }
+                    ],
+                    "name": "__SPECIES NAME__ Affymetrix probesets",
+                    "description": "__SPECIES NAME__ Affymetrix probesets, data (signal intensities).",
+                    "url": "https://bgee.org/species/__TAXID__#proc-values-affymetrix"
+                }';
+    my $rnaseq_template = '                {
+                    "@type": "Dataset",
+                    "http://purl.org/dc/terms/conformsTo": {
+                        "@id": "https://bioschemas.org/profiles/Dataset/1.0-RELEASE",
+                        "@type": "CreativeWork"
+                    },
+                    "dateModified": "'.$dateModified.'",
+                    "creator": {
+                        "@type": "Organization",
+                        "url": "https://bgee.org/",
+                        "name": "The Bgee Team"
+                    },
+                    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+                    "distribution": [
+                        {
+                            "@type": "DataDownload",
+                            "encodingFormat": "TSV",
+                            "contentUrl": "https://bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/rna_seq/__SPECIES_NAME__/__SPECIES_NAME___RNA-Seq_experiments_libraries.tar.gz"
+                        }
+                    ],
+                    "name": "__SPECIES NAME__ RNA-Seq experiment libraries",
+                    "keywords": [
+                        "RNA-Seq"
+                    ],
+                    "description": "__SPECIES NAME__ RNA-Seq experiments/libraries annotations and metadata.",
+                    "url": "https://bgee.org/species/__TAXID__#proc-values-rna-seq"
+                },
+                {
+                    "@type": "Dataset",
+                    "http://purl.org/dc/terms/conformsTo": {
+                        "@id": "https://bioschemas.org/profiles/Dataset/1.0-RELEASE",
+                        "@type": "CreativeWork"
+                    },
+                    "dateModified": "'.$dateModified.'",
+                    "creator": {
+                        "@type": "Organization",
+                        "url": "https://bgee.org/",
+                        "name": "The Bgee Team"
+                    },
+                    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+                    "distribution": [
+                        {
+                            "@type": "DataDownload",
+                            "encodingFormat": "TSV",
+                            "contentUrl": "https://bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/rna_seq/__SPECIES_NAME__/__SPECIES_NAME___RNA-Seq_read_counts_TPM_FPKM.tar.gz"
+                        }
+                    ],
+                    "name": "__SPECIES NAME__ RNA-Seq read counts, TPM and FPKM",
+                    "description": "__SPECIES NAME__ RNA-Seq read counts, TPM (Transcript Per Million) and FPKM (Fragments Per Kilobase of transcript per Million mapped reads).",
+                    "keywords": [
+                        "RNA-Seq"
+                    ],
+                    "url": "https://bgee.org/species/__TAXID__#proc-values-rna-seq"
+                }';
+    my $fulll_template  = '                {
+                    "@type": "Dataset",
+                    "dateModified": "'.$dateModified.'",
+                    "creator": {
+                        "@type": "Organization",
+                        "url": "https://bgee.org/",
+                        "name": "The Bgee Team"
+                    },
+                    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+                    "distribution": [
+                        {
+                            "@type": "DataDownload",
+                            "encodingFormat": "TSV",
+                            "contentUrl": "https://bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/sc_full_length/__SPECIES_NAME__/__SPECIES_NAME___Full-Length_SC_RNA-Seq_experiments_libraries.tar.gz"
+                        }
+                    ],
+                    "name": "__SPECIES NAME__ full-length Single cell RNA-Seq experiment libraries",
+                    "description": "__SPECIES NAME__ full-length Single cell RNA-Seq experiments/ libraries annotations and metadata.",
+                    "keywords": [
+                        "Single cell full length RNA-Seq",
+                        "Single cell RNA-Seq"
+                    ],
+                    "url": "https://bgee.org/species/__TAXID__#proc-values-fl-scrna-seq"
+                },
+                {
+                    "@type": "Dataset",
+                    "dateModified": "'.$dateModified.'",
+                    "creator": {
+                        "@type": "Organization",
+                        "url": "https://bgee.org/",
+                        "name": "The Bgee Team"
+                    },
+                    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+                    "distribution": [
+                        {
+                            "@type": "DataDownload",
+                            "encodingFormat": "TSV",
+                            "contentUrl": "https://bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/sc_full_length/__SPECIES_NAME__/__SPECIES_NAME___Full-Length_SC_RNA-Seq_read_counts_TPM_FPKM.tar.gz"
+                        }
+                    ],
+                    "name": "__SPECIES NAME__ Full-Length Single Cell RNA-Seq read counts, TPM and FPKM",
+                    "description": "__SPECIES NAME__ Full-Length Single Cell RNA-Seq read counts, TPM (Transcript Per Million) and FPKM (Fragments Per Kilobase of transcript per Million mapped reads).",
+                    "keywords": [
+                        "Single cell full length RNA-Seq",
+                        "Single cell RNA-Seq"
+                    ],
+                    "url": "https://bgee.org/species/__TAXID__#proc-values-fl-scrna-seq"
+                }';
+#TODO    my $target_template = '';
+
     my $template = '{
     "@context": "https://schema.org/",
     "@id": "https://bgee.org/species/__TAXID__",
@@ -294,111 +449,7 @@ sub get_schema_species {
             "url": "https://bgee.org/species/__TAXID__#proc-values",
             "version": "'.$bgee_version.'",
             "hasPart": [
-                {
-                    "@type": "Dataset",
-                    "http://purl.org/dc/terms/conformsTo": {
-                        "@id": "https://bioschemas.org/profiles/Dataset/1.0-RELEASE",
-                        "@type": "CreativeWork"
-                    },
-                    "dateModified": "'.$dateModified.'",
-                    "creator": {
-                        "@type": "Organization",
-                        "url": "https://bgee.org/",
-                        "name": "The Bgee Team"
-                    },
-                    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
-                    "distribution": [
-                        {
-                            "@type": "DataDownload",
-                            "encodingFormat": "TSV",
-                            "contentUrl": "https://bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/affymetrix/__SPECIES_NAME__/__SPECIES_NAME___Affymetrix_experiments_chips.tar.gz"
-                        }
-                    ],
-                    "name": "__SPECIES NAME__ Affymetrix experiments chips",
-                    "keywords": [
-                        "Affymetrix"
-                    ],
-                    "description": "Affymetrix experiments/chips annotations and metadata.",
-                    "url": "https://bgee.org/species/__TAXID__#proc-values-affymetrix"
-                },
-                {
-                    "@type": "Dataset",
-                    "http://purl.org/dc/terms/conformsTo": {
-                        "@id": "https://bioschemas.org/profiles/Dataset/1.0-RELEASE",
-                        "@type": "CreativeWork"
-                    },
-                    "dateModified": "'.$dateModified.'",
-                    "creator": {
-                        "@type": "Organization",
-                        "url": "https://bgee.org/",
-                        "name": "The Bgee Team"
-                    },
-                    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
-                    "distribution": [
-                        {
-                            "@type": "DataDownload",
-                            "encodingFormat": "TSV",
-                            "contentUrl": "https://bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/affymetrix/__SPECIES_NAME__/__SPECIES_NAME___Affymetrix_probesets.tar.gz"
-                        }
-                    ],
-                    "name": "__SPECIES NAME__ Affymetrix probesets",
-                    "description": "__SPECIES NAME__ Affymetrix probesets, data (signal intensities).",
-                    "url": "https://bgee.org/species/__TAXID__#proc-values-affymetrix"
-                },
-                {
-                    "@type": "Dataset",
-                    "http://purl.org/dc/terms/conformsTo": {
-                        "@id": "https://bioschemas.org/profiles/Dataset/1.0-RELEASE",
-                        "@type": "CreativeWork"
-                    },
-                    "dateModified": "'.$dateModified.'",
-                    "creator": {
-                        "@type": "Organization",
-                        "url": "https://bgee.org/",
-                        "name": "The Bgee Team"
-                    },
-                    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
-                    "distribution": [
-                        {
-                            "@type": "DataDownload",
-                            "encodingFormat": "TSV",
-                            "contentUrl": "https://bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/rna_seq/__SPECIES_NAME__/__SPECIES_NAME___RNA-Seq_experiments_libraries.tar.gz"
-                        }
-                    ],
-                    "name": "__SPECIES NAME__ RNA-Seq experiment libraries",
-                    "keywords": [
-                        "RNA-Seq"
-                    ],
-                    "description": "__SPECIES NAME__ RNA-Seq experiments/libraries annotations and metadata.",
-                    "url": "https://bgee.org/species/__TAXID__#proc-values-rna-seq"
-                },
-                {
-                    "@type": "Dataset",
-                    "http://purl.org/dc/terms/conformsTo": {
-                        "@id": "https://bioschemas.org/profiles/Dataset/1.0-RELEASE",
-                        "@type": "CreativeWork"
-                    },
-                    "dateModified": "'.$dateModified.'",
-                    "creator": {
-                        "@type": "Organization",
-                        "url": "https://bgee.org/",
-                        "name": "The Bgee Team"
-                    },
-                    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
-                    "distribution": [
-                        {
-                            "@type": "DataDownload",
-                            "encodingFormat": "TSV",
-                            "contentUrl": "https://bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/rna_seq/__SPECIES_NAME__/__SPECIES_NAME___RNA-Seq_read_counts_TPM_FPKM.tar.gz"
-                        }
-                    ],
-                    "name": "__SPECIES NAME__ RNA-Seq read counts, TPM and FPKM",
-                    "description": "__SPECIES NAME__ RNA-Seq read counts, TPM (Transcript Per Million) and FPKM (Fragments Per Kilobase of transcript per Million mapped reads).",
-                    "keywords": [
-                        "RNA-Seq"
-                    ],
-                    "url": "https://bgee.org/species/__TAXID__#proc-values-rna-seq"
-                }
+__DATATYPES__
             ]
         },
         {
