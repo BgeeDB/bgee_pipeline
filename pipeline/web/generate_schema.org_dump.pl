@@ -47,7 +47,7 @@ $| = 1;
 my $schema_default = get_schema_default();
 
 # species pages
-my @schema_species;
+my @schema_species = '{['.join(',', @{ get_schema_species($bgee) }).']}';
 
 # gene pages
 my @schema_gene;
@@ -138,9 +138,7 @@ sub get_schema_default {
 sub get_schema_species {
     my ($db) = @_;
 
-    #TODO ALL data types, db fields: taxid, species name, ensembl/refseq links, ...
-    #TODO Loop over sameAs links, separated by *,*
-    #TODO Loop over data types, separated by *,*
+    #TODO Loop over data types with *Processed expression value files*, separated by *,*
     my $template = '{
     "@context": "https://schema.org/",
     "@id": "https://bgee.org/species/__TAXID__",
@@ -153,8 +151,7 @@ sub get_schema_species {
     "identifier": __TAXID__,
     "sameAs": [
         "http://purl.obolibrary.org/obo/NCBITaxon___TAXID__",
-        "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?lvl=0&id=__TAXID__",
-        "https://nov2020.archive.ensembl.org/__SPECIES_NAME__"
+        "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?lvl=0&id=__TAXID__"__DBSRC_SPECIES_LINK__
     ],
     "taxonRank": [
         "http://rs.tdwg.org/ontology/voc/TaxonRank#Species",
@@ -177,8 +174,7 @@ sub get_schema_species {
             "keywords": [
                 "gene expression",
                 "call",
-                "__SPECIES NAME__",
-                "__COMMON NAME__"
+                "__SPECIES NAME__"__COMMON NAME1__
             ],
             "creator": {
                 "@type": "Organization",
@@ -291,8 +287,7 @@ sub get_schema_species {
                 "annotations",
                 "experiment information",
                 "processed expression values",
-                "__SPECIES NAME__",
-                "__COMMON NAME__"
+                "__SPECIES NAME__"__COMMON NAME1__
             ],
             "license": "https://creativecommons.org/publicdomain/zero/1.0/",
             "name": "__SPECIES NAME__ processed expression values",
@@ -409,17 +404,38 @@ sub get_schema_species {
         {
             "@type": "WebPage",
             "url": "https://bgee.org/species/__TAXID__",
-            "name": "Species: __SPECIES NAME__ (__COMMON NAME__)"
+            "name": "Species: __SPECIES NAME____COMMON NAME2__"
         }
     ]
 }';
 
-    #TODO 7955        <-> __TAXID__
-    #TODO Danio rerio <-> __SPECIES NAME__
-    #TODO Danio_rerio <-> __SPECIES_NAME__
-    #TODO zebrafish   <-> __COMMON NAME__   if no common name, do not display *"",* and * ()*
+    my $speciesdbh = $bgee->prepare('SELECT DISTINCT s.speciesId, s.genus, s.species, s.speciesCommonName, s.dataSourceId, d.baseUrl FROM species s, dataSource d WHERE s.dataSourceId=d.dataSourceId ORDER BY s.speciesId');
+    $speciesdbh->execute()  or die $speciesdbh->errstr;
+    my @species_json;
+    while ( my ($speciesId, $genus, $species, $speciesCommonName, $dataSourceId, $baseUrl) = $speciesdbh->fetchrow_array() ){
+        my $temp = $template;
+        $temp =~ s{__TAXID__}{$speciesId}g;
+        $temp =~ s{__SPECIES NAME__}{$genus $species}g;
+        $temp =~ s{__SPECIES_NAME__}{${genus}_$species}g;
+        if ( $speciesCommonName ne '' ){
+            $temp =~ s{__COMMON NAME1__}{,\n                "$speciesCommonName"}g;
+            $temp =~ s{__COMMON NAME2__}{ ($speciesCommonName)}g;
+        }
+        else {
+            $temp =~ s{__COMMON NAME1__}{}g;
+            $temp =~ s{__COMMON NAME2__}{}g;
+        }
+        if ( $baseUrl =~ /ensembl\.org/ ){
+            $temp =~ s{__DBSRC_SPECIES_LINK__}{,\n        "$baseUrl${genus}_$species/"}g;
+        }
+        else {
+            $temp =~ s{__DBSRC_SPECIES_LINK__}{}g;
+        }
+        push @species_json, $temp;
+    }
+    $speciesdbh->finish;
 
-    return;
+    return \@species_json;
 }
 
 sub get_schema_genes {
@@ -457,7 +473,7 @@ sub get_schema_genes {
         "sameAs": "http://purl.obolibrary.org/obo/NCBITaxon___TAXID__"
     },
     "sameAs": [
-        "https://nov2020.archive.ensembl.org/__SPECIES_NAME__/Gene/Summary?g=__GENEID__",
+        "__DBSRC_SPECIES_LINK__/Gene/Summary?g=__GENEID__",
         "https://zfin.org/ZDB-GENE-030131-1074",
         "https://www.ebi.ac.uk/ena/data/view/BX004983"
     ]
@@ -470,6 +486,7 @@ sub get_schema_genes {
     #TODO ENSDARG00000092170                                        <-> __GENEID__
     #TODO apolipoprotein C-I [Source:ZFIN;Acc:ZDB-GENE-030131-1074] <-> __GENEDESC__
     #TODO apoc1                                                     <-> __GENENAME__
+    #TODO      <-> __DBSRC_SPECIES_LINK__
 
     return;
 }
