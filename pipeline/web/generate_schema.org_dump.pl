@@ -14,8 +14,12 @@ use Utils;
 
 
 #### constants ####
-my $dateModified = '2021-07-01';
-
+my $dateModified  = '2021-07-01';
+my $bgeeCitation  = 'https://doi.org/10.1093/nar/gkaa793';
+my $bgeeLicense   = 'https://creativecommons.org/publicdomain/zero/1.0/';
+my $bioschGene    = 'https://bioschemas.org/profiles/Gene/1.0-RELEASE';
+my $bioschDataset = 'https://bioschemas.org/profiles/Dataset/1.0-RELEASE';
+my $bioschTaxon   = 'https://bioschemas.org/profiles/Taxon/0.6-RELEASE';
 
 
 # Define arguments & their default value
@@ -107,7 +111,7 @@ sub get_schema_default {
             "@type": "Dataset",
             "@id": "https://bgee.org/",
             "http://purl.org/dc/terms/conformsTo": {
-                "@id": "https://bioschemas.org/profiles/Dataset/1.0-RELEASE",
+                "@id": "'.$bioschDataset.'",
                 "@type": "CreativeWork"
             },
             "url": "https://bgee.org/",
@@ -128,7 +132,7 @@ sub get_schema_default {
             "creator": {
                 "@id": "https://bgee.org/"
             },
-            "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "license": "'.$bgeeLicense.'",
             "version": "'.$bgee_version.'"
         }
     ]
@@ -141,7 +145,7 @@ sub get_schema_species {
     my $affy_template   = '                {
                     "@type": "Dataset",
                     "http://purl.org/dc/terms/conformsTo": {
-                        "@id": "https://bioschemas.org/profiles/Dataset/1.0-RELEASE",
+                        "@id": "'.$bioschDataset.'",
                         "@type": "CreativeWork"
                     },
                     "dateModified": "'.$dateModified.'",
@@ -150,7 +154,7 @@ sub get_schema_species {
                         "url": "https://bgee.org/",
                         "name": "The Bgee Team"
                     },
-                    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+                    "license": "'.$bgeeLicense.'",
                     "distribution": [
                         {
                             "@type": "DataDownload",
@@ -168,7 +172,7 @@ sub get_schema_species {
                 {
                     "@type": "Dataset",
                     "http://purl.org/dc/terms/conformsTo": {
-                        "@id": "https://bioschemas.org/profiles/Dataset/1.0-RELEASE",
+                        "@id": "'.$bioschDataset.'",
                         "@type": "CreativeWork"
                     },
                     "dateModified": "'.$dateModified.'",
@@ -177,7 +181,7 @@ sub get_schema_species {
                         "url": "https://bgee.org/",
                         "name": "The Bgee Team"
                     },
-                    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+                    "license": "'.$bgeeLicense.'",
                     "distribution": [
                         {
                             "@type": "DataDownload",
@@ -192,7 +196,7 @@ sub get_schema_species {
     my $rnaseq_template = '                {
                     "@type": "Dataset",
                     "http://purl.org/dc/terms/conformsTo": {
-                        "@id": "https://bioschemas.org/profiles/Dataset/1.0-RELEASE",
+                        "@id": "'.$bioschDataset.'",
                         "@type": "CreativeWork"
                     },
                     "dateModified": "'.$dateModified.'",
@@ -201,7 +205,7 @@ sub get_schema_species {
                         "url": "https://bgee.org/",
                         "name": "The Bgee Team"
                     },
-                    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+                    "license": "'.$bgeeLicense.'",
                     "distribution": [
                         {
                             "@type": "DataDownload",
@@ -219,7 +223,7 @@ sub get_schema_species {
                 {
                     "@type": "Dataset",
                     "http://purl.org/dc/terms/conformsTo": {
-                        "@id": "https://bioschemas.org/profiles/Dataset/1.0-RELEASE",
+                        "@id": "'.$bioschDataset.'",
                         "@type": "CreativeWork"
                     },
                     "dateModified": "'.$dateModified.'",
@@ -228,7 +232,7 @@ sub get_schema_species {
                         "url": "https://bgee.org/",
                         "name": "The Bgee Team"
                     },
-                    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+                    "license": "'.$bgeeLicense.'",
                     "distribution": [
                         {
                             "@type": "DataDownload",
@@ -251,7 +255,7 @@ sub get_schema_species {
                         "url": "https://bgee.org/",
                         "name": "The Bgee Team"
                     },
-                    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+                    "license": "'.$bgeeLicense.'",
                     "distribution": [
                         {
                             "@type": "DataDownload",
@@ -275,7 +279,7 @@ sub get_schema_species {
                         "url": "https://bgee.org/",
                         "name": "The Bgee Team"
                     },
-                    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+                    "license": "'.$bgeeLicense.'",
                     "distribution": [
                         {
                             "@type": "DataDownload",
@@ -298,7 +302,7 @@ sub get_schema_species {
     "@id": "https://bgee.org/species/__TAXID__",
     "@type": "Taxon",
     "http://purl.org/dc/terms/conformsTo": {
-        "@id": "https://bioschemas.org/profiles/Taxon/0.6-RELEASE",
+        "@id": "'.$bioschTaxon.'",
         "@type": "CreativeWork"
     },
     "name": "__SPECIES NAME__",
@@ -318,7 +322,7 @@ sub get_schema_species {
         {
             "@type": "Dataset",
             "dateModified": "'.$dateModified.'",
-            "citation": "https://doi.org/10.1093/nar/gkaa793",
+            "citation": "'.$bgeeCitation.'",
             "description": "__SPECIES NAME__ calls of presence/absence of expression. Each call corresponds to a unique combination of a gene, an anatomical entity, a life stage, a sex, and a strain, with reported presence or absence of expression.",
             "includedInDataCatalog": {
                 "@id": "https://bgee.org",
@@ -335,7 +339,7 @@ sub get_schema_species {
                 "url": "https://bgee.org/",
                 "name": "The Bgee Team"
             },
-            "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "license": "'.$bgeeLicense.'",
             "name": "__SPECIES NAME__ gene expression calls",
             "url": "https://bgee.org/species/__TAXID__#expr-calls",
             "version": "'.$bgee_version.'",
@@ -348,7 +352,7 @@ sub get_schema_species {
                         "url": "https://bgee.org/",
                         "name": "The Bgee Team"
                     },
-                    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+                    "license": "'.$bgeeLicense.'",
                     "name": "__SPECIES NAME__ gene expression simple",
                     "description": "Anatomical entities only, file without advanced columns.",
                     "url": "https://bgee.org/species/__TAXID__#expr-calls-anat-simple",
@@ -368,7 +372,7 @@ sub get_schema_species {
                         "url": "https://bgee.org/",
                         "name": "The Bgee Team"
                     },
-                    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+                    "license": "'.$bgeeLicense.'",
                     "name": "__SPECIES NAME__ gene expression advanced",
                     "description": "Anatomical entities only, file with advanced columns.",
                     "url": "https://bgee.org/species/__TAXID__#expr-calls-anat-advanced",
@@ -388,7 +392,7 @@ sub get_schema_species {
                         "url": "https://bgee.org/",
                         "name": "The Bgee Team"
                     },
-                    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+                    "license": "'.$bgeeLicense.'",
                     "name": "__SPECIES NAME__ gene expression simple with all conditions",
                     "description": "Anatomical entities, developmental stages, sexes and strains. File without advanced columns.",
                     "url": "https://bgee.org/species/__TAXID__#expr-calls-cond-simple",
@@ -408,7 +412,7 @@ sub get_schema_species {
                         "url": "https://bgee.org/",
                         "name": "The Bgee Team"
                     },
-                    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+                    "license": "'.$bgeeLicense.'",
                     "name": "__SPECIES NAME__ gene expression advanced with all conditions",
                     "description": "Anatomical entities, developmental stages, sexes and strains. File with advanced columns.",
                     "url": "https://bgee.org/species/__TAXID__#expr-calls-cond-advanced",
@@ -430,7 +434,7 @@ sub get_schema_species {
                 "url": "https://bgee.org/",
                 "name": "The Bgee Team"
             },
-            "citation": "https://doi.org/10.1093/nar/gkaa793",
+            "citation": "'.$bgeeCitation.'",
             "description": "Annotations and experiment information (e.g., annotations to anatomy and development, quality scores used in QCs, library information), and processed expression values (e.g., read counts, TPM and FPKM values) for __SPECIES NAME__",
             "includedInDataCatalog": {
                 "@id": "https://bgee.org/bgee'.$bgee_db_version.'",
@@ -443,7 +447,7 @@ sub get_schema_species {
                 "processed expression values",
                 "__SPECIES NAME__"__COMMON NAME1__
             ],
-            "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "license": "'.$bgeeLicense.'",
             "name": "__SPECIES NAME__ processed expression values",
             "url": "https://bgee.org/species/__TAXID__#proc-values",
             "version": "'.$bgee_version.'",
@@ -488,6 +492,7 @@ __DATATYPES__
         # Taxon info
         $temp =~ s{__TAXID__}{$speciesId}g;
         $temp =~ s{__SPECIES NAME__}{$genus $species}g;
+        $species =~ s{ }{_}g; # for Canis lupus familiaris
         $temp =~ s{__SPECIES_NAME__}{${genus}_$species}g;
         if ( $speciesCommonName ne '' ){
             $temp =~ s{__COMMON NAME1__}{,\n                "$speciesCommonName"}g;
@@ -523,7 +528,7 @@ sub get_schema_genes {
     "@type": "Gene",
     "@id": "https://bgee.org/gene/__GENEID__",
     "http://purl.org/dc/terms/conformsTo": {
-        "@id": "https://bioschemas.org/profiles/Gene/1.0-RELEASE",
+        "@id": "'.$bioschGene.'",
         "@type": "CreativeWork"
     },
     "description": "__GENEDESC__",
@@ -575,7 +580,7 @@ sub get_schema_gene_homologs {
         "@type": "https://schema.org/Taxon",
         "@id": "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=__TAXIDANCESTOR__",
         "http://purl.org/dc/terms/conformsTo": {
-            "@id": "https://bioschemas.org/profiles/Taxon/0.6-RELEASE",
+            "@id": "'.$bioschTaxon.'",
             "@type": "CreativeWork"
         },
         "identifier": __TAXIDANCESTOR__,
