@@ -47,7 +47,7 @@ $| = 1;
 my $schema_default = get_schema_default();
 
 # species pages
-my @schema_species = '{['.join(',', @{ get_schema_species($bgee) }).']}';
+my @schema_species = '['.join(',', @{ get_schema_species($bgee) }).']';
 
 # gene pages
 my @schema_gene;
@@ -136,9 +136,8 @@ sub get_schema_default {
 }
 
 sub get_schema_species {
-    my ($db) = @_;
+    my ($bgee) = @_;
 
-    #TODO Loop over data types with *Processed expression value files*, separated by *,*
     my $affy_template   = '                {
                     "@type": "Dataset",
                     "http://purl.org/dc/terms/conformsTo": {
@@ -460,11 +459,33 @@ __DATATYPES__
     ]
 }';
 
-    my $speciesdbh = $bgee->prepare('SELECT DISTINCT s.speciesId, s.genus, s.species, s.speciesCommonName, s.dataSourceId, d.baseUrl FROM species s, dataSource d WHERE s.dataSourceId=d.dataSourceId ORDER BY s.speciesId');
+    my $speciesdbh = $bgee->prepare('SELECT DISTINCT s.speciesId, s.genus, s.species, s.speciesCommonName, s.dataSourceId, d.baseUrl, (SELECT GROUP_CONCAT(DISTINCT dataType) FROM dataSourceToSpecies WHERE speciesId=s.speciesId AND infoType="data" AND dataType !="est" AND dataType !="in situ") AS datatypes FROM species s, dataSource d, dataSourceToSpecies t WHERE s.dataSourceId=d.dataSourceId AND s.speciesId=t.speciesId ORDER BY s.speciesId');
     $speciesdbh->execute()  or die $speciesdbh->errstr;
     my @species_json;
-    while ( my ($speciesId, $genus, $species, $speciesCommonName, $dataSourceId, $baseUrl) = $speciesdbh->fetchrow_array() ){
+    while ( my ($speciesId, $genus, $species, $speciesCommonName, $dataSourceId, $baseUrl, $datatypes) = $speciesdbh->fetchrow_array() ){
         my $temp = $template;
+
+        # Datatypes
+        #Loop over data types with *Processed expression value files*, separated by *,*
+        my @datatypes = split(',', $datatypes);
+        my @dt_temp;
+        # can be: affymetrix,rna-seq,full-length single-cell RNA-Seq
+        for my $dt ( sort @datatypes ){
+            if ( $dt eq 'rna-seq' ){
+                push @dt_temp, $rnaseq_template;
+            }
+            elsif ( $dt eq 'affymetrix' ){
+                push @dt_temp, $affy_template;
+            }
+            elsif ( $dt eq 'full-length single-cell RNA-Seq' ){
+                push @dt_temp, $fulll_template;
+            }
+            #TODO target based single-cell RNA-Seq!
+        }
+        my $dt_temp = join(",\n", @dt_temp);
+        $temp =~ s{__DATATYPES__}{$dt_temp};
+
+        # Taxon info
         $temp =~ s{__TAXID__}{$speciesId}g;
         $temp =~ s{__SPECIES NAME__}{$genus $species}g;
         $temp =~ s{__SPECIES_NAME__}{${genus}_$species}g;
@@ -482,6 +503,7 @@ __DATATYPES__
         else {
             $temp =~ s{__DBSRC_SPECIES_LINK__}{}g;
         }
+
         push @species_json, $temp;
     }
     $speciesdbh->finish;
@@ -490,7 +512,7 @@ __DATATYPES__
 }
 
 sub get_schema_genes {
-    my ($db) = @_;
+    my ($bgee) = @_;
 
     #TODO ALL data types, db fields: taxid, species name, ensembl/refseq links, ...
     #TODO Loop over alternateName, separated by *,*
@@ -543,7 +565,7 @@ sub get_schema_genes {
 }
 
 sub get_schema_gene_homologs {
-    my ($db) = @_;
+    my ($bgee) = @_;
 
     #TODO ALL data types, db fields: taxid, species name, ensembl/refseq links, ...
     #TODO Loop over taxon names with orthologs, separated by *,*
@@ -567,7 +589,7 @@ sub get_schema_gene_homologs {
 }
 
 sub get_schema_gene_expression {
-    my ($db) = @_;
+    my ($bgee) = @_;
 
     #TODO ALL data types, db fields: taxid, species name, ensembl/refseq links, ...
     #TODO Loop over expressedIn, separated by *,*
