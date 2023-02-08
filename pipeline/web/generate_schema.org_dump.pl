@@ -486,6 +486,7 @@ __DATATYPES__
             }
             #TODO target based single-cell RNA-Seq!
         }
+        warn "No datatypes for $genus $species\n"  if ( scalar @dt_temp == 0 );
         my $dt_temp = join(",\n", @dt_temp);
         $temp =~ s{__DATATYPES__}{$dt_temp};
 
@@ -542,12 +543,12 @@ sub get_schema_genes {
     "subjectOf": {
         "@type": "WebPage",
         "url": "https://bgee.org/bgee'.$bgee_db_version.'/gene/__GENEID__",
-        "name": "Gene: __GENENAME__ - __GENEID__ - __SPECIES NAME__ (__COMMON NAME__)"
+        "name": "Gene: __GENENAME__ - __GENEID__ - __SPECIES NAME____COMMON NAME2__"
     },
     "taxonomicRange": {
         "@type": "Taxon",
         "@id": "https://bgee.org/bgee'.$bgee_db_version.'/species/__TAXID__",
-        "name": "__SPECIES NAME__ (__COMMON NAME__)",
+        "name": "__SPECIES NAME____COMMON NAME2__",
         "identifier": __TAXID__,
         "sameAs": "http://purl.obolibrary.org/obo/NCBITaxon___TAXID__"
     },
@@ -561,11 +562,15 @@ sub get_schema_genes {
     #TODO 7955                                                      <-> __TAXID__
     #TODO Danio rerio                                               <-> __SPECIES NAME__
     #TODO Danio_rerio                                               <-> __SPECIES_NAME__
-    #TODO zebrafish                                                 <-> __COMMON NAME__   if no common name, do not display *"",* and * ()*
+    #TODO zebrafish                                                 <-> __COMMON NAME2__   if no common name, do not display *"",* and * ()*
     #TODO ENSDARG00000092170                                        <-> __GENEID__
     #TODO apolipoprotein C-I [Source:ZFIN;Acc:ZDB-GENE-030131-1074] <-> __GENEDESC__
     #TODO apoc1                                                     <-> __GENENAME__
     #TODO      <-> __DBSRC_SPECIES_LINK__
+
+    #SELECT DISTINCT g.geneId, g.geneName, g.geneDescription, (SELECT GROUP_CONCAT(DISTINCT geneNameSynonym) FROM geneNameSynonym WHERE bgeeGeneId=g.bgeeGeneId) AS syn FROM gene g, geneNameSynonym s WHERE g.bgeeGeneId=s.bgeeGeneId AND g.geneId='ENSDARG00000092170';
+    #NOTE check xref sameAs for ensembl and ensembl metazoa!
+    #SELECT REPLACE(REPLACE(REPLACE(d.XRefUrl, "[xref_id]" ,x.XRefId), "[gene_id]", x.XRefId), "[species_ensembl_link]", "__SPECIES_NAME__") FROM geneXRef x, dataSource d WHERE x.bgeeGeneId =129767 AND d.dataSourceId=x.dataSourceId AND x.dataSourceId!=101;
 
     return;
 }
@@ -590,6 +595,8 @@ sub get_schema_gene_homologs {
 
     #TODO 186625        <-> __TAXIDANCESTOR__
     #TODO Clupeocephala <-> __SPECIESNAMEANCESTOR__
+
+    #Is it in  SELECT * FROM geneOrthologs WHERE bgeeGeneId=257884;   ??? Does not look to match the web site
 
     return;
 }
@@ -617,6 +624,9 @@ sub get_schema_gene_expression {
     #TODO http://purl.obolibrary.org/obo/UBERON_0002107 <-> __EXTIDURL__
     #TODO UBERON:0002107                                <-> __EXTID__
     #TODO liver                                         <-> __EXTNAME__
+
+    #TODO warning if non uberon link to know we have to deal with them!
+    #SELECT e.expressionId, c.anatEntityId, a.anatEntityName FROM expression e, cond c, anatEntity a WHERE e.conditionId=c.conditionId AND a.anatEntityId=c.anatEntityId AND e.bgeeGeneId=257884 AND a.anatEntityId='UBERON:0003982';
 
     return;
 }
