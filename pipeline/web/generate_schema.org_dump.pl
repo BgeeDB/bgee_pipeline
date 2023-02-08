@@ -497,6 +497,7 @@ __DATATYPES__
             $temp =~ s{__COMMON NAME1__}{}g;
             $temp =~ s{__COMMON NAME2__}{}g;
         }
+        #FIXME this is wrong for non www.ensembl.org: do not use ensembl metazoa link, and provide a link for refseq based genomes
         if ( $baseUrl =~ /ensembl\.org/ ){
             $temp =~ s{__DBSRC_SPECIES_LINK__}{,\n        "$baseUrl${genus}_$species/"}g;
         }
