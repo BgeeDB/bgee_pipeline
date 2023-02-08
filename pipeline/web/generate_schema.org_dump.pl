@@ -570,7 +570,7 @@ sub get_schema_genes {
 
     #SELECT DISTINCT g.geneId, g.geneName, g.geneDescription, (SELECT GROUP_CONCAT(DISTINCT geneNameSynonym) FROM geneNameSynonym WHERE bgeeGeneId=g.bgeeGeneId) AS syn FROM gene g, geneNameSynonym s WHERE g.bgeeGeneId=s.bgeeGeneId AND g.geneId='ENSDARG00000092170';
     #NOTE check xref sameAs for ensembl and ensembl metazoa!
-    #SELECT REPLACE(REPLACE(REPLACE(d.XRefUrl, "[xref_id]" ,x.XRefId), "[gene_id]", x.XRefId), "[species_ensembl_link]", "__SPECIES_NAME__") FROM geneXRef x, dataSource d WHERE x.bgeeGeneId =129767 AND d.dataSourceId=x.dataSourceId AND x.dataSourceId!=101;
+    #SELECT DISTINCT REPLACE(REPLACE(REPLACE(d.XRefUrl, "[xref_id]" ,x.XRefId), "[gene_id]", x.XRefId), "[species_ensembl_link]", "__SPECIES_NAME__") AS geneXrefLink FROM geneXRef x, dataSource d WHERE x.bgeeGeneId =129767 AND d.dataSourceId=x.dataSourceId AND x.dataSourceId!=101;
 
     return;
 }
@@ -596,7 +596,8 @@ sub get_schema_gene_homologs {
     #TODO 186625        <-> __TAXIDANCESTOR__
     #TODO Clupeocephala <-> __SPECIESNAMEANCESTOR__
 
-    #Is it in  SELECT * FROM geneOrthologs WHERE bgeeGeneId=257884;   ??? Does not look to match the web site
+    #TODO CHECK (SELECT DISTINCT o.taxonId, t.taxonScientificName FROM geneOrthologs o, taxon t WHERE o.taxonId=t.taxonId AND o.bgeeGeneId=62875) UNION DISTINCT (SELECT DISTINCT o.taxonId, t.taxonScientificName FROM geneParalogs o, taxon t WHERE o.taxonId=t.taxonId AND o.bgeeGeneId=62875);
+    #(SELECT DISTINCT o.taxonId, t.taxonScientificName FROM geneOrthologs o, taxon t WHERE o.taxonId=t.taxonId AND o.bgeeGeneId=257884) UNION DISTINCT (SELECT DISTINCT o.taxonId, t.taxonScientificName FROM geneParalogs o, taxon t WHERE o.taxonId=t.taxonId AND o.bgeeGeneId=257884);    FIXME do not look to work for all, some taxa are missing for this one!
 
     return;
 }
@@ -613,20 +614,19 @@ sub get_schema_gene_expression {
         "@id": "https://bgee.org/gene/__GENEID__",
         "expressedIn": {
             "@type": "AnatomicalStructure",
-            "@id": "__EXTIDURL__",
+            "@id": "http://purl.obolibrary.org/obo/__EXTIDURL__",
             "identifier": "__EXTID__",
             "name": "__EXTNAME__"
         }
     }
 ]';
 
-    #TODO ENSDARG00000092170                            <-> __GENEID__
-    #TODO http://purl.obolibrary.org/obo/UBERON_0002107 <-> __EXTIDURL__
-    #TODO UBERON:0002107                                <-> __EXTID__
-    #TODO liver                                         <-> __EXTNAME__
+    #TODO ENSDARG00000092170    <-> __GENEID__
+    #TODO UBERON_0002107        <-> __EXTIDURL__
+    #TODO UBERON:0002107        <-> __EXTID__
+    #TODO liver                 <-> __EXTNAME__
 
-    #TODO warning if non uberon link to know we have to deal with them!
-    #SELECT e.expressionId, c.anatEntityId, a.anatEntityName FROM expression e, cond c, anatEntity a WHERE e.conditionId=c.conditionId AND a.anatEntityId=c.anatEntityId AND e.bgeeGeneId=257884 AND a.anatEntityId='UBERON:0003982';
+    #SELECT DISTINCT c.anatEntityId, a.anatEntityName FROM expression e, cond c, anatEntity a WHERE e.conditionId=c.conditionId AND a.anatEntityId=c.anatEntityId AND e.bgeeGeneId=257884 AND a.anatEntityId='UBERON:0003982';
 
     return;
 }
