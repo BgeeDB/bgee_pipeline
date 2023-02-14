@@ -547,7 +547,8 @@ __SAMEAS__
     ]
 }';
 
-    my $genesdbh = $bgee->prepare('SELECT DISTINCT g.bgeeGeneId, g.geneId, g.geneName, g.geneDescription, t.speciesId, t.genus, t.species, t.speciesCommonName,d.baseUrl FROM gene g, species t, dataSource d WHERE t.dataSourceId=d.dataSourceId AND g.speciesId=t.speciesId AND g.bgeeGeneId= 1611228 ORDER BY g.geneId');
+    #TODO check with 1611228, 129767, 257884, 62875, 873906
+    my $genesdbh = $bgee->prepare('SELECT DISTINCT g.bgeeGeneId, g.geneId, g.geneName, g.geneDescription, t.speciesId, t.genus, t.species, t.speciesCommonName,d.baseUrl FROM gene g, species t, dataSource d WHERE t.dataSourceId=d.dataSourceId AND g.speciesId=t.speciesId AND g.bgeeGeneId= 129767 ORDER BY g.geneId');
     $genesdbh->execute()  or die $genesdbh->errstr;
     my $genesSyndbh  = $bgee->prepare('SELECT GROUP_CONCAT(DISTINCT geneNameSynonym) AS syn FROM geneNameSynonym WHERE bgeeGeneId=?');
     my $genesXrefdbh = $bgee->prepare('SELECT GROUP_CONCAT(DISTINCT REPLACE(REPLACE(REPLACE(d.XRefUrl, "[xref_id]" ,x.XRefId), "[gene_id]", x.XRefId), "[species_ensembl_link]", "__SPECIES_NAME__")) AS geneXrefLink FROM geneXRef x, dataSource d WHERE x.bgeeGeneId = ? AND d.dataSourceId=x.dataSourceId AND x.dataSourceId!=101');
@@ -589,9 +590,17 @@ __SAMEAS__
         # Same as
         $genesXrefdbh->execute($bgeeGeneId)  or die $genesXrefdbh->errstr;
         my $sameAs = '';
-        #FIXME links to Ensembl protein/transcript (no gene) could be direct links!
         if ( $baseUrl =~ /ensembl\.org/ ){
-            $sameAs .= "        \"$baseUrl${genus}_$species/Gene/Summary?g=$geneId\",\n";
+            #NOTE direct links to Ensembl protein/transcript
+            if ( $geneId =~ /^FBtr/ ){
+                $sameAs .= "        \"$baseUrl${genus}_$species/Transcript/Summary?g=$geneId\",\n";
+            }
+            elsif ( $geneId =~ /^FBpp/ ){
+                $sameAs .= "        \"$baseUrl${genus}_$species/Transcript/ProteinSummary?g=$geneId\",\n";
+            }
+            else {
+                $sameAs .= "        \"$baseUrl${genus}_$species/Gene/Summary?g=$geneId\",\n";
+            }
         }
         $sameAs .= join(",\n", map { "        \"$_\"" } split(/,/, $genesXrefdbh->fetchrow_array()));
         $species =~ s{ }{_}g; # for Canis lupus familiaris
@@ -640,7 +649,7 @@ sub get_schema_gene_homologs {
             $temp =~ s{__COMMON NAME1__}{}g;
         }
 
-		push @homologs_json, $temp;
+        push @homologs_json, $temp;
     }
     $genesHomologdbh->finish;
 
@@ -662,6 +671,7 @@ sub get_schema_gene_expression {
         }
     }';
 
+    #FIXME have to catch only expressed in, NOT absence of expression because not defined in schema.org!
     my $genesExpresseddbh = $bgee->prepare('SELECT DISTINCT c.anatEntityId, a.anatEntityName FROM expression e, cond c, anatEntity a WHERE e.conditionId=c.conditionId AND a.anatEntityId=c.anatEntityId AND e.bgeeGeneId=? ORDER BY c.anatEntityId');
     $genesExpresseddbh->execute($bgeeGeneId)  or die $genesExpresseddbh->errstr;
     my @expressed_json;
