@@ -54,9 +54,9 @@ my $schema_default = get_schema_default();
 my @schema_species = '['.join(',', @{ get_schema_species($bgee) }).']';
 
 # gene pages
-my @schema_gene;
-my @schema_gene_homolog;
-my @schema_gene_expression;
+my @schema_gene = '['.join(',', @{ get_schema_genes($bgee) }).']';
+#my @schema_gene_homolog;
+#my @schema_gene_expression;
 
 $bgee->disconnect;
 
@@ -549,11 +549,12 @@ __SAMEAS__
     ]
 }';
 
-    my $genesdbh = $bgee->prepare('SELECT DISTINCT g.bgeeGeneId, g.geneId, g.geneName, g.geneDescription, (SELECT GROUP_CONCAT(DISTINCT geneNameSynonym) FROM geneNameSynonym WHERE bgeeGeneId=g.bgeeGeneId) AS syn, t.speciesId, t.genus, t.species, t.speciesCommonName, d.baseUrl FROM gene g, geneNameSynonym s, species t, dataSource d WHERE g.bgeeGeneId=s.bgeeGeneId AND g.speciesId=t.speciesId AND t.dataSourceId=d.dataSourceId ORDER BY g.geneId');
+    my $genesdbh = $bgee->prepare('SELECT DISTINCT g.bgeeGeneId, g.geneId, g.geneName, g.geneDescription, t.speciesId, t.genus, t.species, t.speciesCommonName FROM gene g, species t WHERE g.speciesId=t.speciesId AND g.bgeeGeneId= 62875 ORDER BY g.geneId');
     $genesdbh->execute()  or die $genesdbh->errstr;
-    my $genesXrefdbh = $bgee->prepare('SELECT DISTINCT REPLACE(REPLACE(REPLACE(d.XRefUrl, "[xref_id]" ,x.XRefId), "[gene_id]", x.XRefId), "[species_ensembl_link]", "__SPECIES_NAME__") AS geneXrefLink FROM geneXRef x, dataSource d WHERE x.bgeeGeneId = ? AND d.dataSourceId=x.dataSourceId AND x.dataSourceId!=101');
+    my $genesSyndbh  = $bgee->prepare('SELECT GROUP_CONCAT(DISTINCT geneNameSynonym) AS syn FROM geneNameSynonym WHERE bgeeGeneId=?');
+    my $genesXrefdbh = $bgee->prepare('SELECT GROUP_CONCAT(DISTINCT REPLACE(REPLACE(REPLACE(d.XRefUrl, "[xref_id]" ,x.XRefId), "[gene_id]", x.XRefId), "[species_ensembl_link]", "__SPECIES_NAME__")) AS geneXrefLink FROM geneXRef x, dataSource d WHERE x.bgeeGeneId = ? AND d.dataSourceId=x.dataSourceId AND x.dataSourceId!=101');
     my @genes_json;
-    while ( my ($bgeeGeneId, $geneId, $geneName, $geneDesc, $geneSyn, $taxId, $genus, $species, $speciesCommonName, $baseUrl) = $genesdbh->fetchrow_array() ){
+    while ( my ($bgeeGeneId, $geneId, $geneName, $geneDesc, $taxId, $genus, $species, $speciesCommonName) = $genesdbh->fetchrow_array() ){
         my $temp = $template;
 
         # Gene info
@@ -562,10 +563,12 @@ __SAMEAS__
         $temp =~ s{__GENENAME__}{$geneName}g;
 
         # Alt gene syn
+        $genesSyndbh->execute($bgeeGeneId)  or die $genesSyndbh->errstr;
+        my ($geneSyn) = $genesSyndbh->fetchrow_array();
         if ( $geneSyn ne '' ){
-            my $syns = "\n    \"alternateName\": [";
+            my $syns = "\n    \"alternateName\": [\n";
             $syns .= join(",\n", map { "        \"$_\"" } split(/,/, $geneSyn));
-            $syns .= "\n    ],\n";
+            $syns .= "\n    ],";
             $temp =~ s{__ALTNAME__}{$syns}g;
         }
         else {
@@ -585,8 +588,7 @@ __SAMEAS__
         # Same as
         $genesXrefdbh->execute($bgeeGeneId)  or die $genesXrefdbh->errstr;
         my $sameAs = '';
-        $sameAs .= join(",\n", map { "        \"$_\"" } $genesXrefdbh->fetchrow_array());
-        $sameAs .= "\n";
+        $sameAs .= join(",\n", map { "        \"$_\"" } split(/,/, $genesXrefdbh->fetchrow_array()));
         $species =~ s{ }{_}g; # for Canis lupus familiaris
         $sameAs =~ s{__SPECIES_NAME__}{${genus}_$species}g;
         #NOTE check xref sameAs for ensembl and ensembl metazoa!
@@ -594,11 +596,9 @@ __SAMEAS__
 
         push @genes_json, $temp;
     }
+    $genesSyndbh->finish;
     $genesXrefdbh->finish;
     $genesdbh->finish;
-
-
-    #SELECT DISTINCT REPLACE(REPLACE(REPLACE(d.XRefUrl, "[xref_id]" ,x.XRefId), "[gene_id]", x.XRefId), "[species_ensembl_link]", "__SPECIES_NAME__") AS geneXrefLink FROM geneXRef x, dataSource d WHERE x.bgeeGeneId =129767 AND d.dataSourceId=x.dataSourceId AND x.dataSourceId!=101;
 
     return \@genes_json;
 }
