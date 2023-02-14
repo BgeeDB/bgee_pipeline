@@ -549,12 +549,12 @@ __SAMEAS__
     ]
 }';
 
-    my $genesdbh = $bgee->prepare('SELECT DISTINCT g.bgeeGeneId, g.geneId, g.geneName, g.geneDescription, t.speciesId, t.genus, t.species, t.speciesCommonName FROM gene g, species t WHERE g.speciesId=t.speciesId AND g.bgeeGeneId= 62875 ORDER BY g.geneId');
+    my $genesdbh = $bgee->prepare('SELECT DISTINCT g.bgeeGeneId, g.geneId, g.geneName, g.geneDescription, t.speciesId, t.genus, t.species, t.speciesCommonName,d.baseUrl FROM gene g, species t, dataSource d WHERE t.dataSourceId=d.dataSourceId AND g.speciesId=t.speciesId AND g.bgeeGeneId= 62875 ORDER BY g.geneId');
     $genesdbh->execute()  or die $genesdbh->errstr;
     my $genesSyndbh  = $bgee->prepare('SELECT GROUP_CONCAT(DISTINCT geneNameSynonym) AS syn FROM geneNameSynonym WHERE bgeeGeneId=?');
     my $genesXrefdbh = $bgee->prepare('SELECT GROUP_CONCAT(DISTINCT REPLACE(REPLACE(REPLACE(d.XRefUrl, "[xref_id]" ,x.XRefId), "[gene_id]", x.XRefId), "[species_ensembl_link]", "__SPECIES_NAME__")) AS geneXrefLink FROM geneXRef x, dataSource d WHERE x.bgeeGeneId = ? AND d.dataSourceId=x.dataSourceId AND x.dataSourceId!=101');
     my @genes_json;
-    while ( my ($bgeeGeneId, $geneId, $geneName, $geneDesc, $taxId, $genus, $species, $speciesCommonName) = $genesdbh->fetchrow_array() ){
+    while ( my ($bgeeGeneId, $geneId, $geneName, $geneDesc, $taxId, $genus, $species, $speciesCommonName, $baseUrl) = $genesdbh->fetchrow_array() ){
         my $temp = $template;
 
         # Gene info
@@ -588,10 +588,12 @@ __SAMEAS__
         # Same as
         $genesXrefdbh->execute($bgeeGeneId)  or die $genesXrefdbh->errstr;
         my $sameAs = '';
+        if ( $baseUrl =~ /ensembl\.org/ ){
+            $sameAs .= "        \"$baseUrl${genus}_$species/Gene/Summary?g=$geneId\",\n";
+        }
         $sameAs .= join(",\n", map { "        \"$_\"" } split(/,/, $genesXrefdbh->fetchrow_array()));
         $species =~ s{ }{_}g; # for Canis lupus familiaris
         $sameAs =~ s{__SPECIES_NAME__}{${genus}_$species}g;
-        #NOTE check xref sameAs for ensembl and ensembl metazoa!
         $temp =~ s{__SAMEAS__}{$sameAs}g;
 
         push @genes_json, $temp;
