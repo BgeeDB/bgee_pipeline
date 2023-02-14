@@ -549,7 +549,7 @@ __SAMEAS__
     ]
 }';
 
-    my $genesdbh = $bgee->prepare('SELECT DISTINCT g.bgeeGeneId, g.geneId, g.geneName, g.geneDescription, t.speciesId, t.genus, t.species, t.speciesCommonName,d.baseUrl FROM gene g, species t, dataSource d WHERE t.dataSourceId=d.dataSourceId AND g.speciesId=t.speciesId AND g.bgeeGeneId= 62875 ORDER BY g.geneId');
+    my $genesdbh = $bgee->prepare('SELECT DISTINCT g.bgeeGeneId, g.geneId, g.geneName, g.geneDescription, t.speciesId, t.genus, t.species, t.speciesCommonName,d.baseUrl FROM gene g, species t, dataSource d WHERE t.dataSourceId=d.dataSourceId AND g.speciesId=t.speciesId AND g.bgeeGeneId= 1611228 ORDER BY g.geneId');
     $genesdbh->execute()  or die $genesdbh->errstr;
     my $genesSyndbh  = $bgee->prepare('SELECT GROUP_CONCAT(DISTINCT geneNameSynonym) AS syn FROM geneNameSynonym WHERE bgeeGeneId=?');
     my $genesXrefdbh = $bgee->prepare('SELECT GROUP_CONCAT(DISTINCT REPLACE(REPLACE(REPLACE(d.XRefUrl, "[xref_id]" ,x.XRefId), "[gene_id]", x.XRefId), "[species_ensembl_link]", "__SPECIES_NAME__")) AS geneXrefLink FROM geneXRef x, dataSource d WHERE x.bgeeGeneId = ? AND d.dataSourceId=x.dataSourceId AND x.dataSourceId!=101');
@@ -560,6 +560,9 @@ __SAMEAS__
         # Gene info
         $temp =~ s{__GENEID__}{$geneId}g;
         $temp =~ s{__GENEDESC__}{$geneDesc}g;
+        if ( $geneName =~ /\\/ ){
+            $geneName =~ s{\\}{\\\\}g;
+        }
         $temp =~ s{__GENENAME__}{$geneName}g;
 
         # Alt gene syn
@@ -588,6 +591,7 @@ __SAMEAS__
         # Same as
         $genesXrefdbh->execute($bgeeGeneId)  or die $genesXrefdbh->errstr;
         my $sameAs = '';
+        #FIXME links to Ensembl protein/transcript (no gene) could be direct links!
         if ( $baseUrl =~ /ensembl\.org/ ){
             $sameAs .= "        \"$baseUrl${genus}_$species/Gene/Summary?g=$geneId\",\n";
         }
@@ -596,7 +600,7 @@ __SAMEAS__
         $sameAs =~ s{__SPECIES_NAME__}{${genus}_$species}g;
         $temp =~ s{__SAMEAS__}{$sameAs}g;
 
-        push @genes_json, $temp;
+        push @genes_json, join(',', $temp, '['.join(',', @{get_schema_gene_homologs($bgee, $bgeeGeneId)}).']');
     }
     $genesSyndbh->finish;
     $genesXrefdbh->finish;
@@ -606,11 +610,9 @@ __SAMEAS__
 }
 
 sub get_schema_gene_homologs {
-    my ($bgee) = @_;
+    my ($bgee, $bgeeGeneId) = @_;
 
-    #TODO ALL data types, db fields: taxid, species name, ensembl/refseq links, ...
-    #TODO Loop over taxon names with orthologs, separated by *,*
-    my $template = '[{
+    my $template = '{
         "@context": "https://schema.org/",
         "@type": "https://schema.org/Taxon",
         "@id": "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=__TAXIDANCESTOR__",
@@ -619,25 +621,33 @@ sub get_schema_gene_homologs {
             "@type": "CreativeWork"
         },
         "identifier": __TAXIDANCESTOR__,
-        "name": "__SPECIESNAMEANCESTOR__"__ALTNAME__
+        "name": "__SPECIESNAMEANCESTOR__"__COMMON NAME1__
+    }';
+
+    my $genesHomologdbh = $bgee->prepare('(SELECT DISTINCT geneOrthologs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel FROM geneOrthologs  INNER JOIN taxon ON geneOrthologs.taxonId = taxon.taxonId WHERE geneOrthologs.bgeeGeneId IN (?))  UNION  (SELECT DISTINCT geneOrthologs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel FROM geneOrthologs INNER JOIN taxon ON geneOrthologs.taxonId = taxon.taxonId WHERE geneOrthologs.targetGeneId IN (?)) UNION (SELECT DISTINCT geneParalogs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel FROM geneParalogs  INNER JOIN taxon ON geneParalogs.taxonId = taxon.taxonId WHERE geneParalogs.bgeeGeneId IN (?)) UNION (SELECT DISTINCT geneParalogs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel FROM geneParalogs INNER JOIN taxon ON geneParalogs.taxonId = taxon.taxonId WHERE geneParalogs.targetGeneId IN (?)) ORDER BY taxonLevel DESC');
+    $genesHomologdbh->execute($bgeeGeneId, $bgeeGeneId, $bgeeGeneId, $bgeeGeneId)  or die $genesHomologdbh->errstr;
+    my @homologs_json;
+    while ( my ($taxonId, $taxonScientificName, $taxonCommonName, $taxonLevel) = $genesHomologdbh->fetchrow_array() ){
+        my $temp = $template;
+
+        $temp =~ s{__TAXIDANCESTOR__}{$taxonId}g;
+        $temp =~ s{__SPECIESNAMEANCESTOR__}{$taxonScientificName}g;
+        if ( $taxonCommonName ne '' ){
+            $temp =~ s{__COMMON NAME1__}{,\n        "alternateName": "$taxonCommonName"}g;
+        }
+        else {
+            $temp =~ s{__COMMON NAME1__}{}g;
+        }
+
+		push @homologs_json, $temp;
     }
-]';
+    $genesHomologdbh->finish;
 
-    #TODO 186625        <-> __TAXIDANCESTOR__
-    #TODO Clupeocephala <-> __SPECIESNAMEANCESTOR__
-    #TODO "alternateName": "teleost fishes"    IF ANY   __ALTNAME__
-
-    #TODO CHECK (SELECT DISTINCT o.taxonId, t.taxonScientificName, t.taxonCommonName FROM geneOrthologs o, taxon t WHERE o.taxonId=t.taxonId AND o.bgeeGeneId=62875) UNION DISTINCT (SELECT DISTINCT o.taxonId, t.taxonScientificName, t.taxonCommonName FROM geneParalogs o, taxon t WHERE o.taxonId=t.taxonId AND o.bgeeGeneId=62875);
-    #(SELECT DISTINCT o.taxonId, t.taxonScientificName, t.taxonCommonName FROM geneOrthologs o, taxon t WHERE o.taxonId=t.taxonId AND o.bgeeGeneId=257884) UNION DISTINCT (SELECT DISTINCT o.taxonId, t.taxonScientificName, t.taxonCommonName FROM geneParalogs o, taxon t WHERE o.taxonId=t.taxonId AND o.bgeeGeneId=257884);    FIXME do not look to work for all, some taxa are missing for this one!
-    #NOTE Right one???
-    #(SELECT DISTINCT geneOrthologs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel from geneOrthologs  INNER JOIN taxon ON geneOrthologs.taxonId = taxon.taxonId WHERE geneOrthologs.bgeeGeneId IN (257884))  UNION  (SELECT DISTINCT geneOrthologs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel from geneOrthologs INNER JOIN taxon ON geneOrthologs.taxonId = taxon.taxonId WHERE geneOrthologs.targetGeneId IN (257884)) UNION (SELECT DISTINCT geneParalogs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel from geneParalogs  INNER JOIN taxon ON geneParalogs.taxonId = taxon.taxonId WHERE geneParalogs.bgeeGeneId IN (257884)) UNION (SELECT DISTINCT geneParalogs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel from geneParalogs INNER JOIN taxon ON geneParalogs.taxonId = taxon.taxonId WHERE geneParalogs.targetGeneId IN (257884)) order by taxonLevel desc;
-    #(SELECT DISTINCT geneOrthologs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel from geneOrthologs  INNER JOIN taxon ON geneOrthologs.taxonId = taxon.taxonId WHERE geneOrthologs.bgeeGeneId IN (62875))  UNION  (SELECT DISTINCT geneOrthologs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel from geneOrthologs INNER JOIN taxon ON geneOrthologs.taxonId = taxon.taxonId WHERE geneOrthologs.targetGeneId IN (62875)) UNION (SELECT DISTINCT geneParalogs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel from geneParalogs  INNER JOIN taxon ON geneParalogs.taxonId = taxon.taxonId WHERE geneParalogs.bgeeGeneId IN (62875)) UNION (SELECT DISTINCT geneParalogs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel from geneParalogs INNER JOIN taxon ON geneParalogs.taxonId = taxon.taxonId WHERE geneParalogs.targetGeneId IN (62875)) order by taxonLevel desc;
-
-    return;
+    return \@homologs_json;
 }
 
 sub get_schema_gene_expression {
-    my ($bgee) = @_;
+    my ($bgee, $bgeeGeneId) = @_;
 
     #TODO ALL data types, db fields: taxid, species name, ensembl/refseq links, ...
     #TODO Loop over expressedIn, separated by *,*
