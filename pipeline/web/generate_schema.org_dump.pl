@@ -55,8 +55,6 @@ my @schema_species = '['.join(',', @{ get_schema_species($bgee) }).']';
 
 # gene pages
 my @schema_gene = '['.join(',', @{ get_schema_genes($bgee) }).']';
-#my @schema_gene_homolog;
-#my @schema_gene_expression;
 
 $bgee->disconnect;
 
@@ -600,7 +598,10 @@ __SAMEAS__
         $sameAs =~ s{__SPECIES_NAME__}{${genus}_$species}g;
         $temp =~ s{__SAMEAS__}{$sameAs}g;
 
-        push @genes_json, join(',', $temp, '['.join(',', @{get_schema_gene_homologs($bgee, $bgeeGeneId)}).']');
+        push @genes_json, join(',', $temp,
+                                    '['.join(',', @{get_schema_gene_homologs($bgee, $bgeeGeneId)}).']',
+                                    '['.join(',', @{get_schema_gene_expression($bgee, $geneId, $bgeeGeneId)}).']',
+                              );
     }
     $genesSyndbh->finish;
     $genesXrefdbh->finish;
@@ -647,12 +648,9 @@ sub get_schema_gene_homologs {
 }
 
 sub get_schema_gene_expression {
-    my ($bgee, $bgeeGeneId) = @_;
+    my ($bgee, $geneId, $bgeeGeneId) = @_;
 
-    #TODO ALL data types, db fields: taxid, species name, ensembl/refseq links, ...
-    #TODO Loop over expressedIn, separated by *,*
-    my $template = '[
-    {
+    my $template = '{
         "@context": "https://schema.org/",
         "@type": "Gene",
         "@id": "https://bgee.org/gene/__GENEID__",
@@ -662,16 +660,24 @@ sub get_schema_gene_expression {
             "identifier": "__EXTID__",
             "name": "__EXTNAME__"
         }
+    }';
+
+    my $genesExpresseddbh = $bgee->prepare('SELECT DISTINCT c.anatEntityId, a.anatEntityName FROM expression e, cond c, anatEntity a WHERE e.conditionId=c.conditionId AND a.anatEntityId=c.anatEntityId AND e.bgeeGeneId=? ORDER BY c.anatEntityId');
+    $genesExpresseddbh->execute($bgeeGeneId)  or die $genesExpresseddbh->errstr;
+    my @expressed_json;
+    while ( my ($anatEntityId, $anatEntityName) = $genesExpresseddbh->fetchrow_array() ){
+        my $temp = $template;
+
+        $temp =~ s{__GENEID__}{$geneId}g;
+        $temp =~ s{__EXTNAME__}{$anatEntityName}g;
+        $temp =~ s{__EXTID__}{$anatEntityId}g;
+        $anatEntityId =~ s{:}{_};
+        $temp =~ s{__EXTIDURL__}{$anatEntityId}g;
+
+        push @expressed_json, $temp;
     }
-]';
+    $genesExpresseddbh->finish;
 
-    #TODO ENSDARG00000092170    <-> __GENEID__
-    #TODO UBERON_0002107        <-> __EXTIDURL__
-    #TODO UBERON:0002107        <-> __EXTID__
-    #TODO liver                 <-> __EXTNAME__
-
-    #SELECT DISTINCT c.anatEntityId, a.anatEntityName FROM expression e, cond c, anatEntity a WHERE e.conditionId=c.conditionId AND a.anatEntityId=c.anatEntityId AND e.bgeeGeneId=257884 AND a.anatEntityId='UBERON:0003982';
-
-    return;
+    return \@expressed_json;
 }
 
