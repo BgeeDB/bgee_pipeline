@@ -521,9 +521,6 @@ __DATATYPES__
 sub get_schema_genes {
     my ($bgee) = @_;
 
-    #TODO ALL data types, db fields: taxid, species name, ensembl/refseq links, ...
-    #TODO Loop over alternateName, separated by *,*
-    #TODO Loop over sameAs links, separated by *,*
     my $template = '{
     "@context": "https://schema.org/",
     "@type": "Gene",
@@ -532,12 +529,7 @@ sub get_schema_genes {
         "@id": "'.$bioschGene.'",
         "@type": "CreativeWork"
     },
-    "description": "__GENEDESC__",
-    "alternateName": [
-        "wu:fb58g10",
-        "apoc1l",
-        "fb58g10"
-    ],
+    "description": "__GENEDESC__",__ALTNAME__
     "identifier": "__GENEID__",
     "name": "__GENENAME__",
     "subjectOf": {
@@ -553,26 +545,62 @@ sub get_schema_genes {
         "sameAs": "http://purl.obolibrary.org/obo/NCBITaxon___TAXID__"
     },
     "sameAs": [
-        "__DBSRC_SPECIES_LINK__/Gene/Summary?g=__GENEID__",
-        "https://zfin.org/ZDB-GENE-030131-1074",
-        "https://www.ebi.ac.uk/ena/data/view/BX004983"
+__SAMEAS__
     ]
 }';
 
-    #TODO 7955                                                      <-> __TAXID__
-    #TODO Danio rerio                                               <-> __SPECIES NAME__
-    #TODO Danio_rerio                                               <-> __SPECIES_NAME__
-    #TODO zebrafish                                                 <-> __COMMON NAME2__   if no common name, do not display *"",* and * ()*
-    #TODO ENSDARG00000092170                                        <-> __GENEID__
-    #TODO apolipoprotein C-I [Source:ZFIN;Acc:ZDB-GENE-030131-1074] <-> __GENEDESC__
-    #TODO apoc1                                                     <-> __GENENAME__
-    #TODO      <-> __DBSRC_SPECIES_LINK__
+    my $genesdbh = $bgee->prepare('SELECT DISTINCT g.bgeeGeneId, g.geneId, g.geneName, g.geneDescription, (SELECT GROUP_CONCAT(DISTINCT geneNameSynonym) FROM geneNameSynonym WHERE bgeeGeneId=g.bgeeGeneId) AS syn, t.speciesId, t.genus, t.species, t.speciesCommonName, d.baseUrl FROM gene g, geneNameSynonym s, species t, dataSource d WHERE g.bgeeGeneId=s.bgeeGeneId AND g.speciesId=t.speciesId AND t.dataSourceId=d.dataSourceId ORDER BY g.geneId');
+    $genesdbh->execute()  or die $genesdbh->errstr;
+    my $genesXrefdbh = $bgee->prepare('SELECT DISTINCT REPLACE(REPLACE(REPLACE(d.XRefUrl, "[xref_id]" ,x.XRefId), "[gene_id]", x.XRefId), "[species_ensembl_link]", "__SPECIES_NAME__") AS geneXrefLink FROM geneXRef x, dataSource d WHERE x.bgeeGeneId = ? AND d.dataSourceId=x.dataSourceId AND x.dataSourceId!=101');
+    my @genes_json;
+    while ( my ($bgeeGeneId, $geneId, $geneName, $geneDesc, $geneSyn, $taxId, $genus, $species, $speciesCommonName, $baseUrl) = $genesdbh->fetchrow_array() ){
+        my $temp = $template;
 
-    #SELECT DISTINCT g.geneId, g.geneName, g.geneDescription, (SELECT GROUP_CONCAT(DISTINCT geneNameSynonym) FROM geneNameSynonym WHERE bgeeGeneId=g.bgeeGeneId) AS syn FROM gene g, geneNameSynonym s WHERE g.bgeeGeneId=s.bgeeGeneId AND g.geneId='ENSDARG00000092170';
-    #NOTE check xref sameAs for ensembl and ensembl metazoa!
+        # Gene info
+        $temp =~ s{__GENEID__}{$geneId}g;
+        $temp =~ s{__GENEDESC__}{$geneDesc}g;
+        $temp =~ s{__GENENAME__}{$geneName}g;
+
+        # Alt gene syn
+        if ( $geneSyn ne '' ){
+            my $syns = "\n    \"alternateName\": [";
+            $syns .= join(",\n", map { "        \"$_\"" } split(/,/, $geneSyn));
+            $syns .= "\n    ],\n";
+            $temp =~ s{__ALTNAME__}{$syns}g;
+        }
+        else {
+            $temp =~ s{__ALTNAME__}{}g;
+        }
+
+        # Taxon info
+        $temp =~ s{__TAXID__}{$taxId}g;
+        $temp =~ s{__SPECIES NAME__}{$genus $species}g;
+        if ( $speciesCommonName ne '' ){
+            $temp =~ s{__COMMON NAME2__}{ ($speciesCommonName)}g;
+        }
+        else {
+            $temp =~ s{__COMMON NAME2__}{}g;
+        }
+
+        # Same as
+        $genesXrefdbh->execute($bgeeGeneId)  or die $genesXrefdbh->errstr;
+        my $sameAs = '';
+        $sameAs .= join(",\n", map { "        \"$_\"" } $genesXrefdbh->fetchrow_array());
+        $sameAs .= "\n";
+        $species =~ s{ }{_}g; # for Canis lupus familiaris
+        $sameAs =~ s{__SPECIES_NAME__}{${genus}_$species}g;
+        #NOTE check xref sameAs for ensembl and ensembl metazoa!
+        $temp =~ s{__SAMEAS__}{$sameAs}g;
+
+        push @genes_json, $temp;
+    }
+    $genesXrefdbh->finish;
+    $genesdbh->finish;
+
+
     #SELECT DISTINCT REPLACE(REPLACE(REPLACE(d.XRefUrl, "[xref_id]" ,x.XRefId), "[gene_id]", x.XRefId), "[species_ensembl_link]", "__SPECIES_NAME__") AS geneXrefLink FROM geneXRef x, dataSource d WHERE x.bgeeGeneId =129767 AND d.dataSourceId=x.dataSourceId AND x.dataSourceId!=101;
 
-    return;
+    return \@genes_json;
 }
 
 sub get_schema_gene_homologs {
@@ -589,15 +617,19 @@ sub get_schema_gene_homologs {
             "@type": "CreativeWork"
         },
         "identifier": __TAXIDANCESTOR__,
-        "name": "__SPECIESNAMEANCESTOR__"
+        "name": "__SPECIESNAMEANCESTOR__"__ALTNAME__
     }
 ]';
 
     #TODO 186625        <-> __TAXIDANCESTOR__
     #TODO Clupeocephala <-> __SPECIESNAMEANCESTOR__
+    #TODO "alternateName": "teleost fishes"    IF ANY   __ALTNAME__
 
-    #TODO CHECK (SELECT DISTINCT o.taxonId, t.taxonScientificName FROM geneOrthologs o, taxon t WHERE o.taxonId=t.taxonId AND o.bgeeGeneId=62875) UNION DISTINCT (SELECT DISTINCT o.taxonId, t.taxonScientificName FROM geneParalogs o, taxon t WHERE o.taxonId=t.taxonId AND o.bgeeGeneId=62875);
-    #(SELECT DISTINCT o.taxonId, t.taxonScientificName FROM geneOrthologs o, taxon t WHERE o.taxonId=t.taxonId AND o.bgeeGeneId=257884) UNION DISTINCT (SELECT DISTINCT o.taxonId, t.taxonScientificName FROM geneParalogs o, taxon t WHERE o.taxonId=t.taxonId AND o.bgeeGeneId=257884);    FIXME do not look to work for all, some taxa are missing for this one!
+    #TODO CHECK (SELECT DISTINCT o.taxonId, t.taxonScientificName, t.taxonCommonName FROM geneOrthologs o, taxon t WHERE o.taxonId=t.taxonId AND o.bgeeGeneId=62875) UNION DISTINCT (SELECT DISTINCT o.taxonId, t.taxonScientificName, t.taxonCommonName FROM geneParalogs o, taxon t WHERE o.taxonId=t.taxonId AND o.bgeeGeneId=62875);
+    #(SELECT DISTINCT o.taxonId, t.taxonScientificName, t.taxonCommonName FROM geneOrthologs o, taxon t WHERE o.taxonId=t.taxonId AND o.bgeeGeneId=257884) UNION DISTINCT (SELECT DISTINCT o.taxonId, t.taxonScientificName, t.taxonCommonName FROM geneParalogs o, taxon t WHERE o.taxonId=t.taxonId AND o.bgeeGeneId=257884);    FIXME do not look to work for all, some taxa are missing for this one!
+    #NOTE Right one???
+    #(SELECT DISTINCT geneOrthologs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel from geneOrthologs  INNER JOIN taxon ON geneOrthologs.taxonId = taxon.taxonId WHERE geneOrthologs.bgeeGeneId IN (257884))  UNION  (SELECT DISTINCT geneOrthologs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel from geneOrthologs INNER JOIN taxon ON geneOrthologs.taxonId = taxon.taxonId WHERE geneOrthologs.targetGeneId IN (257884)) UNION (SELECT DISTINCT geneParalogs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel from geneParalogs  INNER JOIN taxon ON geneParalogs.taxonId = taxon.taxonId WHERE geneParalogs.bgeeGeneId IN (257884)) UNION (SELECT DISTINCT geneParalogs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel from geneParalogs INNER JOIN taxon ON geneParalogs.taxonId = taxon.taxonId WHERE geneParalogs.targetGeneId IN (257884)) order by taxonLevel desc;
+    #(SELECT DISTINCT geneOrthologs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel from geneOrthologs  INNER JOIN taxon ON geneOrthologs.taxonId = taxon.taxonId WHERE geneOrthologs.bgeeGeneId IN (62875))  UNION  (SELECT DISTINCT geneOrthologs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel from geneOrthologs INNER JOIN taxon ON geneOrthologs.taxonId = taxon.taxonId WHERE geneOrthologs.targetGeneId IN (62875)) UNION (SELECT DISTINCT geneParalogs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel from geneParalogs  INNER JOIN taxon ON geneParalogs.taxonId = taxon.taxonId WHERE geneParalogs.bgeeGeneId IN (62875)) UNION (SELECT DISTINCT geneParalogs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel from geneParalogs INNER JOIN taxon ON geneParalogs.taxonId = taxon.taxonId WHERE geneParalogs.targetGeneId IN (62875)) order by taxonLevel desc;
 
     return;
 }
