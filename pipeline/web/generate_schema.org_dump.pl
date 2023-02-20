@@ -8,6 +8,9 @@ use diagnostics;
 use Getopt::Long;
 use File::Slurp;
 
+use Cpanel::JSON::XS;
+use LWP::Simple;
+
 use FindBin;
 use lib "$FindBin::Bin/.."; # Get lib path for Utils.pm
 use Utils;
@@ -547,7 +550,7 @@ __SAMEAS__
     ]
 }';
 
-    #TODO check with 1611228, 129767, 257884, 62875, 873906
+    #TODO  check with 1611228, 129767, 257884, 62875, 873906
     my $genesdbh = $bgee->prepare('SELECT DISTINCT g.bgeeGeneId, g.geneId, g.geneName, g.geneDescription, t.speciesId, t.genus, t.species, t.speciesCommonName,d.baseUrl FROM gene g, species t, dataSource d WHERE t.dataSourceId=d.dataSourceId AND g.speciesId=t.speciesId AND g.bgeeGeneId= 129767 ORDER BY g.geneId');
     $genesdbh->execute()  or die $genesdbh->errstr;
     my $genesSyndbh  = $bgee->prepare('SELECT GROUP_CONCAT(DISTINCT geneNameSynonym) AS syn FROM geneNameSynonym WHERE bgeeGeneId=?');
@@ -615,8 +618,8 @@ __SAMEAS__
         $temp =~ s{__SAMEAS__}{$sameAs}g;
 
         push @genes_json, join(',', $temp,
-                                    '['.join(',', @{get_schema_gene_homologs($bgee, $bgeeGeneId)}).']',
-                                    '['.join(',', @{get_schema_gene_expression($bgee, $geneId, $bgeeGeneId)}).']',
+                                    '['.join(',', @{get_schema_gene_homologs($bgee, $bgeeGeneId)})."\n".']',
+                                    '['.join(',', @{get_schema_gene_expression($bgee, $geneId, $bgeeGeneId, $taxId)})."\n".']',
                               );
     }
     $genesSyndbh->finish;
@@ -639,7 +642,7 @@ sub get_schema_gene_homologs {
         },
         "identifier": __TAXIDANCESTOR__,
         "name": "__SPECIESNAMEANCESTOR__"__COMMON NAME1__
-}';
+    }';
 
     my $genesHomologdbh = $bgee->prepare('(SELECT DISTINCT geneOrthologs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel FROM geneOrthologs  INNER JOIN taxon ON geneOrthologs.taxonId = taxon.taxonId WHERE geneOrthologs.bgeeGeneId IN (?))  UNION  (SELECT DISTINCT geneOrthologs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel FROM geneOrthologs INNER JOIN taxon ON geneOrthologs.taxonId = taxon.taxonId WHERE geneOrthologs.targetGeneId IN (?)) UNION (SELECT DISTINCT geneParalogs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel FROM geneParalogs  INNER JOIN taxon ON geneParalogs.taxonId = taxon.taxonId WHERE geneParalogs.bgeeGeneId IN (?)) UNION (SELECT DISTINCT geneParalogs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel FROM geneParalogs INNER JOIN taxon ON geneParalogs.taxonId = taxon.taxonId WHERE geneParalogs.targetGeneId IN (?)) ORDER BY taxonLevel DESC');
     $genesHomologdbh->execute($bgeeGeneId, $bgeeGeneId, $bgeeGeneId, $bgeeGeneId)  or die $genesHomologdbh->errstr;
@@ -664,7 +667,7 @@ sub get_schema_gene_homologs {
 }
 
 sub get_schema_gene_expression {
-    my ($bgee, $geneId, $bgeeGeneId) = @_;
+    my ($bgee, $geneId, $bgeeGeneId, $taxId) = @_;
 
     my $template = '{
         "@context": "https://schema.org/",
@@ -676,11 +679,12 @@ sub get_schema_gene_expression {
             "identifier": "__EXTID__",
             "name": "__EXTNAME__"
         }
-}';
+    }';
 
-    #FIXME have to catch only expressed in, NOT absence of expression because not defined in schema.org!
+    #FIXME  have to catch only expressed in, NOT absence of expression because not defined in schema.org!
     #https://bgee.org/api/?display_type=json&page=gene&action=expression&gene_id=FBgn0077474&species_id=7237&cond_param=anat_entity&cond_param=cell_type&data_type=all
     my $genesExpresseddbh = $bgee->prepare('SELECT DISTINCT c.anatEntityId, a.anatEntityName FROM expression e, cond c, anatEntity a WHERE e.conditionId=c.conditionId AND a.anatEntityId=c.anatEntityId AND e.bgeeGeneId=? ORDER BY c.anatEntityId');
+    #SELECT DISTINCT STRAIGHT_JOIN gene.geneId, globalCond.anatEntityId FROM gene AS gene INNER JOIN globalExpression AS globalExpression ON gene.bgeeGeneId = globalExpression.bgeeGeneId INNER JOIN globalCond ON globalCond.globalConditionId = globalExpression.globalConditionId WHERE (     (gene.geneId = "FBgn0077474"      AND (globalCond.stageId IN ('UBERON:0000104')      AND globalCond.sex IN ('any')      AND globalCond.strain IN ('wild-type')     AND globalCond.condObservedAnatEntity = 1     AND globalCond.condObservedCellType = 1) ) AND (     globalExpression.pValAffyEstInSituRnaSeqScRnaSeqFL <= 0.05));
     $genesExpresseddbh->execute($bgeeGeneId)  or die $genesExpresseddbh->errstr;
     my @expressed_json;
     while ( my ($anatEntityId, $anatEntityName) = $genesExpresseddbh->fetchrow_array() ){
