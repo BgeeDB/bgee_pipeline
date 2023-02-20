@@ -54,7 +54,7 @@ my $schema_default = get_schema_default();
 my @schema_species = '['.join(',', @{ get_schema_species($bgee) }).']';
 
 # gene pages
-my @schema_gene = '['.join(',', @{ get_schema_genes($bgee) }).']';
+my @schema_gene    = '['.join(',', @{ get_schema_genes($bgee) }).']';
 
 $bgee->disconnect;
 
@@ -493,7 +493,7 @@ __DATATYPES__
         $temp =~ s{__SPECIES NAME__}{$genus $species}g;
         $species =~ s{ }{_}g; # for Canis lupus familiaris
         $temp =~ s{__SPECIES_NAME__}{${genus}_$species}g;
-        if ( $speciesCommonName ne '' ){
+        if ( $speciesCommonName && $speciesCommonName ne '' ){
             $temp =~ s{__COMMON NAME1__}{,\n                "$speciesCommonName"}g;
             $temp =~ s{__COMMON NAME2__}{ ($speciesCommonName)}g;
         }
@@ -547,7 +547,7 @@ __SAMEAS__
     ]
 }';
 
-    #TODO  check with 1611228, 129767, 257884, 62875, 873906
+    #TODO check with 1611228, 129767, 257884, 62875, 873906
     my $genesdbh = $bgee->prepare('SELECT DISTINCT g.bgeeGeneId, g.geneId, g.geneName, g.geneDescription, t.speciesId, t.genus, t.species, t.speciesCommonName,d.baseUrl FROM gene g, species t, dataSource d WHERE t.dataSourceId=d.dataSourceId AND g.speciesId=t.speciesId AND g.bgeeGeneId= 129767 ORDER BY g.geneId');
     $genesdbh->execute()  or die $genesdbh->errstr;
     my $genesSyndbh  = $bgee->prepare('SELECT GROUP_CONCAT(DISTINCT geneNameSynonym) AS syn FROM geneNameSynonym WHERE bgeeGeneId=?');
@@ -567,7 +567,7 @@ __SAMEAS__
         # Alt gene syn
         $genesSyndbh->execute($bgeeGeneId)  or die $genesSyndbh->errstr;
         my ($geneSyn) = $genesSyndbh->fetchrow_array();
-        if ( $geneSyn ne '' ){
+        if ( $geneSyn && $geneSyn ne '' ){
             my $syns = "\n    \"alternateName\": [\n";
             $syns .= join(",\n", map { "        \"$_\"" } split(/,/, $geneSyn));
             $syns .= "\n    ],";
@@ -580,7 +580,7 @@ __SAMEAS__
         # Taxon info
         $temp =~ s{__TAXID__}{$taxId}g;
         $temp =~ s{__SPECIES NAME__}{$genus $species}g;
-        if ( $speciesCommonName ne '' ){
+        if ( $speciesCommonName && $speciesCommonName ne '' ){
             $temp =~ s{__COMMON NAME2__}{ ($speciesCommonName)}g;
         }
         else {
@@ -639,7 +639,7 @@ sub get_schema_gene_homologs {
         },
         "identifier": __TAXIDANCESTOR__,
         "name": "__SPECIESNAMEANCESTOR__"__COMMON NAME1__
-    }';
+}';
 
     my $genesHomologdbh = $bgee->prepare('(SELECT DISTINCT geneOrthologs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel FROM geneOrthologs  INNER JOIN taxon ON geneOrthologs.taxonId = taxon.taxonId WHERE geneOrthologs.bgeeGeneId IN (?))  UNION  (SELECT DISTINCT geneOrthologs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel FROM geneOrthologs INNER JOIN taxon ON geneOrthologs.taxonId = taxon.taxonId WHERE geneOrthologs.targetGeneId IN (?)) UNION (SELECT DISTINCT geneParalogs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel FROM geneParalogs  INNER JOIN taxon ON geneParalogs.taxonId = taxon.taxonId WHERE geneParalogs.bgeeGeneId IN (?)) UNION (SELECT DISTINCT geneParalogs.taxonId, taxon.taxonScientificName, taxon.taxonCommonName, taxon.taxonLevel FROM geneParalogs INNER JOIN taxon ON geneParalogs.taxonId = taxon.taxonId WHERE geneParalogs.targetGeneId IN (?)) ORDER BY taxonLevel DESC');
     $genesHomologdbh->execute($bgeeGeneId, $bgeeGeneId, $bgeeGeneId, $bgeeGeneId)  or die $genesHomologdbh->errstr;
@@ -649,7 +649,7 @@ sub get_schema_gene_homologs {
 
         $temp =~ s{__TAXIDANCESTOR__}{$taxonId}g;
         $temp =~ s{__SPECIESNAMEANCESTOR__}{$taxonScientificName}g;
-        if ( $taxonCommonName ne '' ){
+        if ( $taxonCommonName && $taxonCommonName ne '' ){
             $temp =~ s{__COMMON NAME1__}{,\n        "alternateName": "$taxonCommonName"}g;
         }
         else {
@@ -676,9 +676,10 @@ sub get_schema_gene_expression {
             "identifier": "__EXTID__",
             "name": "__EXTNAME__"
         }
-    }';
+}';
 
-    #FIXME  have to catch only expressed in, NOT absence of expression because not defined in schema.org!
+    #FIXME have to catch only expressed in, NOT absence of expression because not defined in schema.org!
+    #https://bgee.org/api/?display_type=json&page=gene&action=expression&gene_id=FBgn0077474&species_id=7237&cond_param=anat_entity&cond_param=cell_type&data_type=all
     my $genesExpresseddbh = $bgee->prepare('SELECT DISTINCT c.anatEntityId, a.anatEntityName FROM expression e, cond c, anatEntity a WHERE e.conditionId=c.conditionId AND a.anatEntityId=c.anatEntityId AND e.bgeeGeneId=? ORDER BY c.anatEntityId');
     $genesExpresseddbh->execute($bgeeGeneId)  or die $genesExpresseddbh->errstr;
     my @expressed_json;
