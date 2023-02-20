@@ -550,7 +550,6 @@ __SAMEAS__
     ]
 }';
 
-    #TODO check with 1611228, 129767, 257884, 62875, 873906
     my $genesdbh = $bgee->prepare('SELECT DISTINCT g.bgeeGeneId, g.geneId, g.geneName, g.geneDescription, t.speciesId, t.genus, t.species, t.speciesCommonName,d.baseUrl FROM gene g, species t, dataSource d WHERE t.dataSourceId=d.dataSourceId AND g.speciesId=t.speciesId AND g.bgeeGeneId IN (1611228, 129767, 257884, 62875, 873906) ORDER BY g.geneId');
     $genesdbh->execute()  or die $genesdbh->errstr;
     my $genesSyndbh  = $bgee->prepare('SELECT GROUP_CONCAT(DISTINCT geneNameSynonym) AS syn FROM geneNameSynonym WHERE bgeeGeneId=?');
@@ -617,9 +616,9 @@ __SAMEAS__
         }
         $temp =~ s{__SAMEAS__}{$sameAs}g;
 
-        push @genes_json, join(',', $temp,
+        push @genes_json, join(',', '['.$temp,
                                     '['.join(',', @{get_schema_gene_homologs($bgee, $bgeeGeneId)})."\n".']',
-                                    '['.join(',', @{get_schema_gene_expression($bgee, $geneId, $bgeeGeneId, $taxId)})."\n".']',
+                                    '['.join(',', @{get_schema_gene_expression($bgee, $geneId, $bgeeGeneId, $taxId)})."\n".']]',
                               );
     }
     $genesSyndbh->finish;
