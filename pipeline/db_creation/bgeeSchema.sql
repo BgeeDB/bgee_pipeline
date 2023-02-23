@@ -989,12 +989,12 @@ create table rnaSeqLibraryAnnotatedSample (
     barcode varchar(70) COMMENT 'barcode used to pool several samples in the same library',
     genotype varchar(70),
     abundanceUnit enum('tpm', 'cpm'),
-    meanAbundanceReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'mean TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
-    sdAbundanceReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'standard deviation in TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
+    meanAbundanceReferenceIntergenicDistribution decimal(16, 6) not null default -1 COMMENT 'mean TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
+    sdAbundanceReferenceIntergenicDistribution decimal(16, 6) not null default -1 COMMENT 'standard deviation in TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
 -- TMM normalization factor
     tmmFactor decimal(8, 6) not null default 1.0,
 --  abundance threshold to consider a gene as expressed
-    abundanceThreshold decimal(16, 6) not null,
+    abundanceThreshold decimal(16, 6) not null default -1,
     allGenesPercentPresent decimal(5, 2) unsigned not null default 0,
     proteinCodingGenesPercentPresent decimal(5, 2) unsigned not null default 0,
     intergenicRegionsPercentPresent decimal(5, 2) unsigned not null default 0,
