@@ -136,7 +136,7 @@ for (library in unique(scRNAInfo$libraryId)) {
         file.path(pathBusOut, "output.correct.sort.bus")))
       ## GENE level
       message("Gene level")
-      bustoolsGeneMatrix = "gene"
+      bustoolsGeneMatrix <- "gene"
       system(sprintf('bustools count -o %s -g %s -e %s -t %s --genecounts %s',
         file.path(gene_counts, bustoolsGeneMatrix), tx2gene_file, file.path(pathBusOut, "/matrix.ec"),
         file.path(pathBusOut, "transcripts.txt"), file.path(pathBusOut, "output.correct.sort.bus")))
