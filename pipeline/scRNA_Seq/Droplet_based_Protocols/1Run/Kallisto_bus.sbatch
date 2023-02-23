@@ -15,7 +15,7 @@
 #SBATCH --job-name=Kallisto_bus
 #SBATCH --mail-user sara.fonsecacosta@unil.ch
 
-module load Bioinformatics/Software/vital-it
+module use /software/module/
 module add R/3.6.1;
 module add UHTS/Analysis/kallisto/0.46.0;
 

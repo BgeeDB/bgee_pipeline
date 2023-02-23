@@ -155,7 +155,7 @@ R_LIBS_PATH_CURNAGL     := $(CLUSTER_CURNAGL_PATH)/R_LIBS
 PERL_LIBS_PATH_CURNAGL  := $(CLUSTER_CURNAGL_PATH)/PERL_LIBS/lib/perl5
 
 #NOTE Think to add ; at the end to ease insertion in other command lines
-CLUSTER_SOFT_VITALIT    := module use /software/module/; module add Bioinformatics/Software/vital-it;
+CLUSTER_SOFT_VITALIT    := module use /software/module/;
 CLUSTER_SOFT_UNIL       := module load gcc/9.3.0;
 CLUSTER_KALLISTO_CMD    := $(CLUSTER_SOFT_VITALIT) module add UHTS/Analysis/kallisto/0.46.0;
 CLUSTER_R_CMD           := $(CLUSTER_SOFT_VITALIT) module add R/3.6.1;
@@ -448,7 +448,7 @@ INTERGENIC_N_PROPORTION         := 0.05
 RNASEQDATAPATH             := /var/bgee/extra/pipeline/rna_seq/
 ABUNDANCEFILE              := gene_level_abundance+calls.tsv
 RNASEQALLRES               := $(RNASEQDATAPATH)rna_seq_all_results_$(DBNAME)/
-SCRNASEQALLRES             := $(RNASEQDATAPATH)full_length_all_results_$(DBNAME)/
+SC_RNASEQ_ALL_RES_FL       := $(RNASEQDATAPATH)full_length_all_results_$(DBNAME)/
 RNASEQLOGS                 := $(RNASEQALLRES)
 RNASEQSAMPSTATS            := $(GENERATED_FILES_DIR)$(RNASEQPATH)presence_absence_all_samples.txt
 RNASEQREPORTINFO           := $(GENERATED_FILES_DIR)$(RNASEQPATH)reports_info_all_samples.txt
@@ -474,10 +474,10 @@ SC_RNASEQ_PATH                         := scRNA_Seq/
 SC_RNASEQ_PATH_SOURCE                  := $(SOURCE_FILES_DIR)$(SC_RNASEQ_PATH)
 SC_RNASEQ_EXPERIMENT_FILEPATH          := $(SC_RNASEQ_PATH_SOURCE)scRNASeqExperiment.tsv
 ### Full_length
-SC_RNASEQ_FL_FOLDER_SOURCE             := $(SC_RNASEQ_PATH_SOURCE)/Full_Length/
+SC_RNASEQ_FL_FOLDER_SOURCE             := $(SC_RNASEQ_PATH_SOURCE)Full_length/
 SC_RNASEQ_LIB_FL_FILEPATH              := $(SC_RNASEQ_FL_FOLDER_SOURCE)scRNASeqFLLibrary.tsv
 ### Target_based
-SC_RNASEQ_TB_FOLDER_SOURCE             := $(SC_RNASEQ_PATH_SOURCE)/Target_based/
+SC_RNASEQ_TB_FOLDER_SOURCE             := $(SC_RNASEQ_PATH_SOURCE)Target_based/
 SC_RNASEQ_LIB_TB_FILEPATH              := $(SC_RNASEQ_TB_FOLDER_SOURCE)scRNASeqTBLibrary.tsv
 SC_RNASEQ_MANIFEST_FILE_FILEPATH       := $(SC_RNASEQ_TB_FOLDER_SOURCE)Manifest_file.tsv
 SC_RNASEQ_WHITELIST_10X_v2             := $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whitelist_10X_v2.txt.zip
@@ -487,7 +487,7 @@ SC_RNASEQ_WHITELIST_10X_v3             := $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_w
 SC_RNASEQ_PATH_GENERATED               := $(GENERATED_FILES_DIR)$(SC_RNASEQ_PATH)
 SC_RNASEQ_JURA_LIB_FILEPATH            := $(SC_RNASEQ_PATH_GENERATED)juraLibrariesDownloaded.tsv
 ### Full_length
-SC_RNASEQ_FL_FOLDER_GENERATED          := $(SC_RNASEQ_PATH_GENERATED)/Full_Length/
+SC_RNASEQ_FL_FOLDER_GENERATED          := $(SC_RNASEQ_PATH_GENERATED)Full_length/
 SC_RNASEQ_LIB_PASS_FILEPATH            := $(SC_RNASEQ_FL_FOLDER_GENERATED)passScRNASeqLibrary.tsv
 SC_RNASEQ_LIB_NOT_PASS_FILEPATH        := $(SC_RNASEQ_FL_FOLDER_GENERATED)notPassScRNASeqLibrary.tsv
 SC_RNASEQ_METADATA_FILEPATH            := $(SC_RNASEQ_FL_FOLDER_GENERATED)metadata_info.tsv
@@ -497,14 +497,14 @@ SC_RNASEQ_SAMPINFO_PASS_FILEPATH       := $(SC_RNASEQ_FL_FOLDER_GENERATED)NEW_sc
 SC_RNASEQ_SAMPINFO_NOT_PASS_FILEPATH   := $(SC_RNASEQ_FL_FOLDER_GENERATED)Discard_scRNASeq_sample_info.tsv
 SC_RNASEQ_MODALITY_FILEPATH            := $(SC_RNASEQ_FL_FOLDER_GENERATED)Modality_Cell_type_per_experiment.tsv
 SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH    := $(SC_RNASEQ_FL_FOLDER_GENERATED)bgeecall_input.tsv
-SCRNASEQSAMPSTATS_FL                   := $(SC_RNASEQ_FL_FOLDER_GENERATED)presence_absence_all_samples.txt
-SCRNASEQREPORTINFO_FL                  := $(SC_RNASEQ_FL_FOLDER_GENERATED)reports_info_all_samples.txt
+SC_RNASEQ_SAMP_STATS_FL                := $(SC_RNASEQ_FL_FOLDER_GENERATED)presence_absence_all_samples.txt
+SC_RNASEQ_REPORT_INFO_FL               := $(SC_RNASEQ_FL_FOLDER_GENERATED)reports_info_all_samples.txt
 ### Target_based
-SC_RNASEQ_TB_FOLDER_GENERATED               := $(SC_RNASEQ_PATH_GENERATED)/Target_based/
-sc_RNASEQ_CLEANING_BARCODES                 := $(SC_RNASEQ_TB_FOLDER_GENERATED)/cleaning_barcodes/
+SC_RNASEQ_TB_FOLDER_GENERATED               := $(SC_RNASEQ_PATH_GENERATED)Target_based/
+SC_RNASEQ_CLEANED_BARCODES                  := $(SC_RNASEQ_TB_FOLDER_GENERATED)/cleaned_barcodes/
 SC_RNASEQ_METADATA_10X_FILEPATH             := $(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_info_10X.txt
 SC_RNASEQ_METADATA_10X_NOT_MATCH_FILEPATH   := $(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_notMatch_10X.txt
-SC_RNASEQ_SAMPINFO_10X_FILEPATH             := $(SC_RNASEQ_TB_FOLDER_GENERATED)scRNA_Seq_info_TargetBased.txt
+SC_RNASEQ_SAMPINFO_10X_FILEPATH             := $(SC_RNASEQ_PATH_GENERATED)scRNA_Seq_info_TargetBased.txt
 
 # scRNAseq cluster paths (CURNAGL)
 SC_RNASEQ_DOWNLOAD_PATH                 := $(CLUSTER_CURNAGL_PATH)/downloads/
@@ -519,7 +519,7 @@ SCRNASEQ_SOFTWARE_BAMTOFASTQ                  := /users/sfonseca1/bin/bamtofastq
 
 ## PATH to full length and 10X data
 SC_RNASEQ_FASTQ_FULL_LENGTH                   := $(CLUSTER_DATA_PATH)/FASTQ/scRNAseq/Full_length/
-SC_RNASEQ_FASTQ_DROPLET                       := $(CLUSTER_DATA_PATH)/FASTQ/scRNAseq/10X/
+SC_RNASEQ_FASTQ_DROPLET                       := $(CLUSTER_DATA_PATH)/FASTQ/target_base/
 
 ## PATH to all results of both of pipelines
 SC_RNASEQ_CLUSTER_ALL_RES                     := $(CLUSTER_SCRATCH_RESULTS)scRNA-Seq_all_results_$(DBNAME)/

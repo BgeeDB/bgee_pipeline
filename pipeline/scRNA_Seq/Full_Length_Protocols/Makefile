@@ -211,7 +211,7 @@ final_commit: final_status
 #     It could be nice to update the script to choose to insert everything, everything except libraries and conditions, or only libraries and conditions (e.g add script argument to manage that)
 #     It is not possible to disable autocommit when inserting conditions. It creates an sql error of duplicated entries
 insert_scRNA_seq: $(SCRNASEQALLRES) $(SCRNASEQSAMPSTATS) $(SCRNASEQREPORTINFO) $(SC_RNASEQ_EXPERIMENT_FILEPATH) $(UBERON_SEX_INFO_FILE_PATH) $(CUSTOM_UBERON_FILE_PATH) $(DEV_STAGE_ONT_FILE_PATH) $(SC_RNASEQ_SAMPINFO_PASS_FILEPATH) $(SC_RNASEQ_SAMPINFO_NOT_PASS_FILEPATH) $(EXTRAMAPPING_FILEPATH)
-	# Launch the organ stage mapping tool (using $(CUSTOM_UBERON_FILE_PATH) and $(DEV_STAGE_ONT_FILE_PATH))
+	@perl 3Insertion/insert_scrna_seq.pl -bgee=$(BGEECMD) -scRnaSeqExperiment=$(SC_RNASEQ_EXPERIMENT_FILEPATH) -library_info=$(SC_RNASEQ_SAMPINFO_PASS_FILEPATH) -excluded_libraries=$(SC_RNASEQ_SAMPINFO_NOT_PASS_FILEPATH) -library_stats=$(SC_RNASEQ_SAMP_STATS_FL) -report_info=$(SC_RNASEQ_REPORT_INFO_FL) -all_results=$(SC_RNASEQ_ALL_RES_FL) -sex_info=$(UBERON_SEX_INFO_FILE_PATH) -extraMapping=$(EXTRAMAPPING_FILEPATH) -Aport=$(IDMAPPINGPORT) -Sport=$(STGMAPPINGPORT) > $@.tmp 2>warnings.$@
 	@$(IDMAPPING)  $(IDMAPPINGPORT) &
 	@$(STGMAPPING) $(STGMAPPINGPORT) &
 	@sleep 50 # sleep because mappers need time to load Uberon

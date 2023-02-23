@@ -12,28 +12,22 @@ get_annot:
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/Strains/StrainMapping.tsv                 $(STRAIN_MAPPING_FILE)
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqTBLibrary.tsv           $(INPUT_DIR)/Target_based/scRNASeqTBLibrary.tsv
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqExperiment.tsv          $(INPUT_DIR)/scRNASeqExperiment.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_ERP117745.tsv  $(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP117745.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_ERP119519.tsv  $(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP119519.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_ERP120466.tsv  $(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP120466.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_SRP125768.tsv  $(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP125768.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_SRP131661.tsv  $(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP131661.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_SRP135999.tsv  $(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP135999.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_SRP201320.tsv  $(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP201320.tsv
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_*              $(INPUT_DIR)/Target_based/
 	@touch $@
 
 ## Retrieve metadata (run rule with sbatch)
 retrieve_metadata: get_annot 0Preparation/retrieve_metadata.R
 	@echo --- Retrieve metadata information ---
-	@sed -i 's@--output=.*@--output=${PWD}/retrieve_metadata.out@'                                                    0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/retrieve_metadata.err@'                                                      0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                      0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                            0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                      0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export scRNASeqExperiment=.*@export scRNASeqExperiment=../$(SC_RNASEQ_EXPERIMENT_FILEPATH)@'           0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export scRNASeqTBLibrary=.*@export scRNASeqTBLibrary=../$(SC_RNASEQ_LIB_TB_FILEPATH)@'                 0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export output_folder=.*@export output_folder=../$(SC_RNASEQ_TB_FOLDER_GENERATED)@'                     0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET)@'                                        0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export R_LIBS_USER=.*@export R_LIBS_USER=$(R_LIBS_PATH_CURNAGL)@'                                      0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@--output=.*@--output=${PWD}/retrieve_metadata.out@'                                           0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/retrieve_metadata.err@'                                             0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                             0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                   0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                             0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export scRNASeqExperiment=.*@export scRNASeqExperiment=$(SC_RNASEQ_EXPERIMENT_FILEPATH)@'     0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export scRNASeqTBLibrary=.*@export scRNASeqTBLibrary=$(SC_RNASEQ_LIB_TB_FILEPATH)@'           0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export output_file=.*@export output_file=$(SC_RNASEQ_METADATA_10X_FILEPATH)@'                 0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET)@'                               0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export R_LIBS_USER=.*@export R_LIBS_USER=$(R_LIBS_PATH_CURNAGL)@'                             0Preparation/retrieve_metadata.sbatch
 	@sbatch 0Preparation/retrieve_metadata.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
@@ -85,8 +79,8 @@ download_SRA: retrieve_metadata 0Preparation/download_SRA.R
 	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                     0Preparation/download_SRA.sbatch
 	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                           0Preparation/download_SRA.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                     0Preparation/download_SRA.sbatch
-	@sed -i 's@export metadata_info=.*@export metadata_info=../$(SC_RNASEQ_METADATA_10X_FILEPATH)@'                  0Preparation/download_SRA.sbatch
-	@sed -i 's@export librariesDownloadedJura=.*@export librariesDownloadedJura=../$(SC_RNASEQ_JURA_LIB_FILEPATH)@'  0Preparation/download_SRA.sbatch
+	@sed -i 's@export metadata_info=.*@export metadata_info=$(SC_RNASEQ_METADATA_10X_FILEPATH)@'                     0Preparation/download_SRA.sbatch
+	@sed -i 's@export librariesDownloadedJura=.*@export librariesDownloadedJura=$(SC_RNASEQ_JURA_LIB_FILEPATH)@'     0Preparation/download_SRA.sbatch
 	@sed -i 's@export output=.*@export output=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET)@'                                   0Preparation/download_SRA.sbatch
 	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET)@'                                       0Preparation/download_SRA.sbatch
 	@sbatch 0Preparation/download_SRA.sbatch
@@ -98,27 +92,21 @@ download_SRA: retrieve_metadata 0Preparation/download_SRA.R
 #NOTE *make -j3 list_new_downloads*  should run the 3 downloads in parallel
 list_new_downloads: download_SRA download_EBI download_HCA
 	@find $(SC_RNASEQ_DOWNLOAD_PATH_DROPLET) -type f -name \*.fastq.gz\* | xargs -r dirname | sed -e 's@^.*/@@' | sort -u > /tmp/new_downloads
-	@cat ../$(SC_RNASEQ_JURA_LIB_FILEPATH) >>/tmp/new_downloads
-	@sort -u /tmp/new_downloads >../$(SC_RNASEQ_JURA_LIB_FILEPATH)
+	@cat $(SC_RNASEQ_JURA_LIB_FILEPATH) >>/tmp/new_downloads
+	@sort -u /tmp/new_downloads >$(SC_RNASEQ_JURA_LIB_FILEPATH)
 	@rm -f /tmp/new_downloads
-	@$(GIT) add ../$(SC_RNASEQ_JURA_LIB_FILEPATH)
-	@$(GIT) commit -m 'Add new downloaded libraries' ../$(SC_RNASEQ_JURA_LIB_FILEPATH) || true
+	@$(GIT) add $(SC_RNASEQ_JURA_LIB_FILEPATH)
+	@$(GIT) commit -m 'Add new downloaded libraries' $(SC_RNASEQ_JURA_LIB_FILEPATH) || true
 	@touch $@
 
 # Commit the library information file that will be used for the rest of the pipeline
 commit_annotation_and_metadata: list_new_downloads
-	@$(GIT) add ../$(INPUT_DIR)/Target_based/scRNASeqTBLibrary.tsv
-	@$(GIT) add ../$(INPUT_DIR)scRNASeqExperiment.tsv
-	@$(GIT) add ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP117745.tsv
-	@$(GIT) add ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP119519.tsv
-	@$(GIT) add ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP120466.tsv
-	@$(GIT) add ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP125768.tsv
-	@$(GIT) add ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP131661.tsv
-	@$(GIT) add ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP135999.tsv
-	@$(GIT) add ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP201320.tsv
-	@$(GIT) add ../$(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_info_10X.txt
-	@$(GIT) add ../$(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_notMatch_10X.txt
-	@$(GIT) commit -m 'Update metadata for droplet-based protocols for scRNASeq for $(DBNAME)' ../$(INPUT_DIR)/Target_based/scRNASeqTBLibrary.tsv ../$(INPUT_DIR)scRNASeqExperiment.tsv ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP117745.tsv ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP119519.tsv ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP120466.tsv ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP125768.tsv ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP131661.tsv ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP135999.tsv ../$(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP201320.tsv ../$(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_info_10X.txt ../$(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_notMatch_10X.txt || true
+	@$(GIT) add $(INPUT_DIR)/Target_based/scRNASeqTBLibrary.tsv
+	@$(GIT) add $(INPUT_DIR)scRNASeqExperiment.tsv
+	@$(GIT) add $(INPUT_DIR)/Target_based/scRNASeq_barcode_*
+	@$(GIT) add $(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_info_10X.txt
+	@$(GIT) add $(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_notMatch_10X.txt
+	@$(GIT) commit -m 'Update metadata for droplet-based protocols for scRNASeq for $(DBNAME)' || true
 	@$(GIT) push
 	@echo -e "All information is ready, you can go to JURA cluster to continue the pipeline of the droplet protocols\n"
 	@touch $@
@@ -133,16 +121,17 @@ clusterJURA:
 
 check_tools: clusterJURA
 	@echo -e "\tGo to 'cd pipeline/scRNA_Seq/Droplet_based_Protocols/' and be prepared to work\n"
-	@echo -e "\n\tRun this command to give access to all modules installed on vital-it\n\tmodule add Bioinformatics/Software/vital-it\n"
+	@echo -e "\n\tRun this command to give access to all modules installed on vital-it\n\tmodule use /software/module/\n"
 	# Check if all required tools/libs are available
-	@module add Bioinformatics/Software/vital-it || true
+	@module use /software/module/ || true
 	@$(CLUSTER_R_CMD) which R                          > $@.tmp
 	@$(CLUSTER_R_CMD) R -e 'library("biomaRt")'       >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("Biostrings")'    >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("data.table")'    >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("devtools")'      >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("dplyr")'         >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("HCAExplorer")'   >> $@.tmp  2>/dev/null
+	# this package does not exist. Is it still used?
+	#@$(CLUSTER_R_CMD) R -e 'library("HCAExplorer")'   >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("HelpersMG")'     >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("ggExtra")'       >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("ggplot2")'       >> $@.tmp  2>/dev/null
@@ -192,7 +181,7 @@ cleaning_barcodes: generate_info 0Preparation/cleaning_barcodes.R
 	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                                             0Preparation/cleaning_barcodes.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                0Preparation/cleaning_barcodes.sbatch
 	@sed -i 's@export barcodesFolder=.*@export barcodesFolder=$(SC_RNASEQ_TB_FOLDER_SOURCE)@'                    0Preparation/cleaning_barcodes.sbatch
-	@sed -i 's@export output=.*@export output=${PWD}/$(sc_RNASEQ_CLEANING_BARCODES)@'                            0Preparation/cleaning_barcodes.sbatch
+	@sed -i 's@export output=.*@export output=${PWD}/$(SC_RNASEQ_CLEANED_BARCODES)@'                             0Preparation/cleaning_barcodes.sbatch
 	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                                 0Preparation/cleaning_barcodes.sbatch
 	@sbatch 0Preparation/cleaning_barcodes.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
@@ -210,7 +199,7 @@ kallisto_bus: cleaning_barcodes 1Run/Kallisto_bus.R
 	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                                                   1Run/Kallisto_bus.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                      1Run/Kallisto_bus.sbatch
 	@sed -i 's@export metadata_file=.*@export metadata_file=$(SC_RNASEQ_METADATA_10X_FILEPATH)@'                       1Run/Kallisto_bus.sbatch
-	@sed -i 's@export annotation_file=.*@export annotation_file=$(SC_RNASEQ_LIB_FILEPATH)@'                            1Run/Kallisto_bus.sbatch
+	@sed -i 's@export annotation_file=.*@export annotation_file=$(SC_RNASEQ_LIB_TB_FILEPATH)@'                         1Run/Kallisto_bus.sbatch
 	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_FASTQ_DROPLET)@'                                   1Run/Kallisto_bus.sbatch
 	@sed -i 's@export folderSupport=.*@export folderSupport=$(RNASEQ_CLUSTER_GTF)@'                                    1Run/Kallisto_bus.sbatch
 	@sed -i 's@export output=.*@export output=$(SC_RNASEQ_PATH_GENERATED)@'                                            1Run/Kallisto_bus.sbatch
@@ -223,8 +212,8 @@ kallisto_bus: cleaning_barcodes 1Run/Kallisto_bus.R
 
 
 # NOTE: Before run the process_busFile rule (uncompress the barcodes files, because in github we cannot have files with more than 100Mb size)
-uncompress_barcodes: kallisto_bus $(SC_RNASEQ_PATH_SOURCE)/barcode_whitelist_10X_v2.txt.zip $(SC_RNASEQ_PATH_SOURCE)/barcode_whitelist_10X_v3.txt.zip
-	cd $(SC_RNASEQ_PATH_SOURCE) && \
+uncompress_barcodes: kallisto_bus $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whitelist_10X_v2.txt.zip $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whitelist_10X_v3.txt.zip
+	cd $(SC_RNASEQ_TB_FOLDER_SOURCE) && \
 	unzip barcode_whitelist_10X_v2.txt.zip && \
 	unzip barcode_whitelist_10X_v3.txt.zip
 	@touch $@
@@ -240,7 +229,7 @@ process_busFile: uncompress_barcodes 1Run/process_busFile.R
 	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'                       1Run/process_busFile.sbatch
 	@sed -i 's@export kallisto_bus_results=.*@export kallisto_bus_results=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET)@'  1Run/process_busFile.sbatch
 	@sed -i 's@export folderSupport=.*@export folderSupport=$(RNASEQ_CLUSTER_GTF)@'                                    1Run/process_busFile.sbatch
-	@sed -i 's@export whiteList_Path=.*@export whiteList_Path=$(SC_RNASEQ_PATH_SOURCE)@'                               1Run/process_busFile.sbatch
+	@sed -i 's@export whiteList_Path=.*@export whiteList_Path=$(SC_RNASEQ_TB_FOLDER_SOURCE)@'                          1Run/process_busFile.sbatch
 	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                                       1Run/process_busFile.sbatch
 	@sbatch 1Run/process_busFile.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
@@ -285,7 +274,7 @@ bimodality_cellPop: qc_cellType 1Run/QC_cellPop_bimodality.R
 	@touch $@
 
 ## Call present and absent genes per library/cell population that pass the bimodality test
-calls: bimodality_cellPop 1Run/Calls_cell_pop_per_library.R
+calls: #bimodality_cellPop 1Run/Calls_cell_pop_per_library.R
 	@echo --- Starting the calls of present and absent genes ---
 	@sed -i 's@--output=.*@--output=${PWD}/Calls_library_cellPop.out@'                                                       1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/Calls_library_cellPop.err@'                                                         1Run/Calls_cell_pop_per_library.sbatch
@@ -317,6 +306,17 @@ final_commit: final_status
 	@$(GIT) push
 	@echo -e "All information is ready, you can make a tar of the results. \n"
 	@touch $@
+
+## Insert expression at cell level. Run from bgee servers.
+## Currently parallelize job using different thread to write in the database
+## (argument coreNumber). Could optimize by also creating one Job per experiment
+## (on unil cluster using slurm) if this rule takes too much time.
+## Then, a perl script should take care of managing parallelization. It could also
+## be possible to use the rslurm R package to manage parallelization
+insert_cell_abundance:
+	@perl 3Insertion/insert_scrna_seq.pl -bgee=$(BGEECMD) -targetBaseLibrary=$(SC_RNASEQ_LIB_TB_FILEPATH) -singleCellExperiment=$(SC_RNASEQ_EXPERIMENT_FILEPATH) -bgeeLibraryInfo=$(SC_RNASEQ_METADATA_10X_FILEPATH) -allResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -sourceDir=$(SC_RNASEQ_TB_FOLDER_SOURCE) -sexInfo=$(UBERON_SEX_INFO_FILE_PATH) -numberCore=15 > $@.tmp 2> $@.err
+	@if [[ ! -s $@.err ]]; then $(RM) $@.err; fi
+	@$(MV) $@.tmp $@
 
 tar_all: final_commit
 	cd $(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)
