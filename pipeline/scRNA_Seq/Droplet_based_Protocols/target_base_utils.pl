@@ -38,7 +38,7 @@ sub getTargetBaseCuratedLibrariesAnnotation {
     for my $line ( read_file("$targetBaseLibraryFile", chomp=>1) ){
         next  if ( $line =~ /^#/ or $line =~ /^\"#/ );
         # there is currently 32 columns in the target base library annotation file
-        my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
+        my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line, -1);
 
         my $libraryId                       = $tmp[0];
         my $experimentId                    = $tmp[1];
@@ -95,7 +95,7 @@ sub getTargetBaseCuratedLibrariesAnnotation {
                     $sex = "female";
                 } elsif ($sex eq "M") {
                     $sex = "male";
-                } else {
+                } elsif ( !grep(/^$sex$/, ("NA", "not annotated", "hermaphrodite", "mixed" ))) {
                     warn "Warning, wrong format for sex [$sex]\n";
                     $discarded = 1;
                 }
@@ -127,10 +127,6 @@ sub getTargetBaseCuratedLibrariesAnnotation {
                 $discarded = 1;
             } else {
                 $sequencedTranscriptPart = '3prime';
-            }
-            if ($sampleName eq '' ){
-                warn "Warning, wrong format for sampleName [$sampleName]\n";
-                $discarded = 1;
             }
 
             if ( $discarded ){
@@ -244,15 +240,15 @@ sub get_processed_libraries_info {
 
     my %libInfos = ();
     for my $line ( read_file("$targetBaseLibraryFile", chomp=>1) ){
-        next  if ( $line =~ /^#/ or $line =~ /^\"#/ );
+        next  if ( $line =~ /^sample_accession/ or $line =~ /^\"sample_accession/ );
         # there is currently 10 columns in the metadata_info_10X.txt file
-        my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
+        my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line, -1);
 
         my $experimentId                    = $tmp[1];
         my $libraryId                       = $tmp[2];
         my $libraryType                     = $tmp[8];
 
-        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 11 );
+        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 12 );
 
         if (!defined $libInfos{$experimentId}->{$libraryId}) {
             # Perform format checks
@@ -316,9 +312,24 @@ sub getBarcodeToCellType {
             if ($cellTypeId eq '' ){
                 warn "Warning, wrong format for cellTypeId [$cellTypeId]\n";
                 $discarded = 1;
+            } else {
+                #it is possible to have more than one id in this column.
+                #For now, as a temporary solution, if there are more than one term
+                #and exactly 2 terms, then we take the second term (this is because,
+                #after discussing with Anne, it looks like the first term is a more specific
+                #anat. entity term
+                #TODO: modify this part of the pipeline for Bgee 16 and use the ontology to find
+                #the closest common ancestor
+                my @cellTypeIds = split( /,\s+/, $cellTypeId);
+                if(scalar @cellTypeIds > 2) {
+                    die "a maximum of 2 cellTypeIds can be present in the column cellTypeId";
+                } elsif (scalar @cellTypeIds == 2) {
+                    $cellTypeId = $cellTypeIds[1];
+                }
+               
             }
             if ($cellTypeAnnotationStatus eq '' ){
-                warn "Warning, wrong format for cellTypeId [$cellTypeAnnotationStatus]\n";
+                warn "Warning, wrong format for cellTypeAnnotationStatus [$cellTypeAnnotationStatus]\n";
                 $discarded = 1;
             }
             else {
