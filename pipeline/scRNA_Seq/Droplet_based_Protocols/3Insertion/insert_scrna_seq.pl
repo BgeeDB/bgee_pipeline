@@ -9,7 +9,7 @@ use FindBin;
 use File::Slurp;
 use lib "$FindBin::Bin/../../../"; # Get lib path for Utils.pm
 use Utils;
-use Parallel::Loops;
+use Parallel::ForkManager;
 
 $| = 1; # no buffering of output
 
@@ -32,35 +32,35 @@ $| = 1; # no buffering of output
 # Define arguments & their default value
 my ($bgee_connector) = ('');
 my ($targetBaseLibrary, $allResults, $sexInfo)  = ('', '', '');
-my ($singleCellExperiment, $libraryInfo, $sourceDir) = ('', '', '');
+my ($singleCellExperiment, $bgeeLibraryInfo, $sourceDir) = ('', '', '');
 my $numberCore = 1;
 #my ($library_stats, $report_info = ('', '');
 my ($debug)                      = (0);
 my %opts = ('bgee=s'                => \$bgee_connector,       # Bgee connector string
             'targetBaseLibrary=s'   => \$targetBaseLibrary,    # target base RNAseq library annotations
             'singleCellExperiment=s'=> \$singleCellExperiment, # single cell RNASeq experiment annotations
-            'libraryInfo=s'         => \$libraryInfo,          # metadata_info_info_10X.txt file
+            'bgeeLibraryInfo=s'     => \$bgeeLibraryInfo,      # metadata_info_info_10X.txt file
             'allResults=s'          => \$allResults,           # path to dir containing results for all libraries
             'sourceDir=s'           => \$sourceDir,            # path to the directory containing source files of the target base pipeline
             'sexInfo=s'             => \$sexInfo,              # generated_files/uberon/uberon_sex_info.tsv
-            'numberCore'            => \$numberCore,           # number of cores corresponding to number of threads used to insert data in the database
+            'numberCore=s'          => \$numberCore,           # number of cores corresponding to number of threads used to insert data in the database
             'debug'                 => \$debug,
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $bgee_connector eq '' || $targetBaseLibrary eq '' || $singleCellExperiment eq '' ||
-    $libraryInfo eq '' || $allResults eq '' || $sourceDir eq '' ||$sexInfo eq '' || $numberCore eq ''){
+    $bgeeLibraryInfo eq '' || $allResults eq '' || $sourceDir eq '' ||$sexInfo eq '' || $numberCore eq ''){
     print "\n\tInvalid or missing argument:
-\te.g., $0  -bgee=\$(BGEECMD) -targetBaseLibrary=RNASeqLibrary_full.tsv -singleCellExperiment=RNASeqExperiment_full.tsv -libraryInfo=metadata_info_10X.txt -sexInfo=\$(UBERON_SEX_INFO_FILE_PATH) > $@.tmp 2>warnings.$@
+\te.g., $0  -bgee=\$(BGEECMD) -targetBaseLibrary=RNASeqLibrary_full.tsv -singleCellExperiment=RNASeqExperiment_full.tsv -bgeeLibraryInfo=metadata_info_10X.txt -sexInfo=\$(UBERON_SEX_INFO_FILE_PATH) > $@.tmp 2>warnings.$@
 \t-bgee                    Bgee connector string
 \t-targetBaseLibrary       targetBaseLibrary annotation file
 \t-singleCellExperiment    singleCellExperiment file
-\t-bgeelibraryInfo             metadata_info_10X.txt file
+\t-bgeeLibraryInfo         metadata_info_10X.txt file
 \t-allResults              allResults directory
 \t-sourceDir               path to the directory containing sources files of the target bas pipeline
 \t-sexInfo                 file containing sex-related info about anatomical terms
-\t-numberCore              (optional) number of threads used to insert data in the database. Default value is 1.
+\t-numberCore              number of threads used to insert data in the database.
 \t-debug                   (optional) insertions are not made, just printed
 \n";
     exit 1;
@@ -72,9 +72,6 @@ require("$FindBin::Bin/../target_base_utils.pl");
 # initialize variables
 
 my $barcodeToCelltypeFilePattern = "$sourceDir/scRNASeq_barcode_EXP_ID.tsv";
-
-#TODO create a script argument for this variable
-my $pl = Parallel::Loops->new($numberCore);
 
 ####################### FUNCTIONS ###############################
 # for now all the functions are in this script but some of them could have to move
@@ -155,13 +152,15 @@ my $insert_individualSampleGeneResult =  'INSERT INTO rnaSeqLibraryIndividualSam
 # rnaSeqLibraryIndividualSampleId
 my $bgee_metadata = Utils::connect_bgee_db($bgee_connector);
 $bgee_metadata->{AutoCommit} = 1;
-
+# AutoInactiveDestroy = 1 avoid the connection to be automatically destroyed at the end of a connection
+# in a ForkManager. Then have to manually close the connection at the end of the script.
+$bgee_metadata->{AutoInactiveDestroy} = 1;
 ## Load 
 # Library info from manual curation used to launch the pipeline
 my %libraries         = getTargetBaseCuratedLibrariesAnnotation($targetBaseLibrary);
 print "\t", scalar keys %libraries, " experiments with libraries mapped.\n";
 # Info of processed libraries coming from the pipeline
-my %processedLibraries = get_processed_libraries_info($libraryInfo);
+my %processedLibraries = get_processed_libraries_info($bgeeLibraryInfo);
 # Experiment annotation coming from flat files
 my @experimentType = ('3\'end', 'Full-length and 3\'end');
 my %experiments       = getSingleCellExperiments($singleCellExperiment,
@@ -210,7 +209,7 @@ $selBiotypes->finish;
 ######################
 print "Inserting experiments...\n";
 my $insExp = $bgee_metadata->prepare($insert_experiment);
-for my $expId ( sort keys %experiments ){
+for my $expId ( sort keys %processedLibraries ){
     print "\t$expId\n";
     if ( $debug ){
         binmode(STDOUT, ':utf8');
@@ -377,7 +376,7 @@ for my $expId ( sort keys %processedLibraries ){
         }
 
         ## Now start to insert individual samples
-        # for now we only insert barcodes mapped to a cell type. It coult be possible
+        # for now we only insert barcodes mapped to a cell type. It could be possible
         # to insert other cell types in a different table
         # (e.g rnaSeqLibraryIndevidualSampleNotAnnotated(rnaSeqLibraryId, barcode, ...))
         my %barcodeToIndividualSampleId;
@@ -391,7 +390,9 @@ for my $expId ( sort keys %processedLibraries ){
         }
 
         # now start to insert abundance per cell. parallelized per celltype
-        $pl->foreach( \@barcodesArray, sub {
+        my $pm = new Parallel::ForkManager($numberCore);
+        foreach (@barcodesArray) {
+            my $pid = $pm->start and next;
             my $bgee_data = Utils::connect_bgee_db($bgee_connector);
             # disable autocommit for $bgee_data. Allows to manually commit after each library.
             $bgee_data->{AutoCommit} = 0;
@@ -427,9 +428,10 @@ for my $expId ( sort keys %processedLibraries ){
             #commit after each barcode
             $bgee_data->commit;
             $insIndividualSampleGeneResult->finish;
-        });
-        
-
+            $bgee_data->disconnect;
+            $pm->finish;
+        }
+        $pm->wait_all_children
     }
 }
 
@@ -439,6 +441,6 @@ $insAnnotatedSample->finish;
 $selectAnnotatedSampleId->finish;
 $insIndividualSample->finish;
 $selectIndividualSampleId->finish;
-
+$bgee_metadata->disconnect;
 exit 0;
 
