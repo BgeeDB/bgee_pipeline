@@ -12,15 +12,7 @@ get_annot:
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/Strains/StrainMapping.tsv                 $(STRAIN_MAPPING_FILE)
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqTBLibrary.tsv           $(INPUT_DIR)/Target_based/scRNASeqTBLibrary.tsv
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqExperiment.tsv          $(INPUT_DIR)/scRNASeqExperiment.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_ERP117745.tsv  $(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP117745.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_ERP119519.tsv  $(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP119519.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_ERP120466.tsv  $(INPUT_DIR)/Target_based/scRNASeq_barcode_ERP120466.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_SRP125768.tsv  $(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP125768.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_SRP131661.tsv  $(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP131661.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_SRP135999.tsv  $(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP135999.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_SRP201320.tsv  $(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP201320.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_SRP251970.tsv  $(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP251970.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_SRP200614.tsv  $(INPUT_DIR)/Target_based/scRNASeq_barcode_SRP200614.tsv
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_*              $(INPUT_DIR)/Target_based/
 	@touch $@
 
 ## Retrieve metadata (run rule with sbatch)
@@ -322,7 +314,7 @@ final_commit: final_status
 ## Then, a perl script should take care of managing parallelization. It could also
 ## be possible to use the rslurm R package to manage parallelization
 insert_cell_abundance:
-	@perl 3Insertion/insert_scrna_seq.pl -bgee=$(BGEECMD) -targetBaseLibrary=$(SC_RNASEQ_LIB_TB_FILEPATH) -singleCellExperiment=$(SC_RNASEQ_EXPERIMENT_FILEPATH) -bgeelibraryInfo=$(SC_RNASEQ_METADATA_10X_FILEPATH) -allResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -sourceDir=$(SC_RNASEQ_TB_FOLDER_SOURCE) -sex_info=$(UBERON_SEX_INFO_FILE_PATH) -numberCore=8 > $@.tmp 2> $@.err
+	@perl 3Insertion/insert_scrna_seq.pl -bgee=$(BGEECMD) -targetBaseLibrary=$(SC_RNASEQ_LIB_TB_FILEPATH) -singleCellExperiment=$(SC_RNASEQ_EXPERIMENT_FILEPATH) -bgeeLibraryInfo=$(SC_RNASEQ_METADATA_10X_FILEPATH) -allResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -sourceDir=$(SC_RNASEQ_TB_FOLDER_SOURCE) -sexInfo=$(UBERON_SEX_INFO_FILE_PATH) -numberCore=15 > $@.tmp 2> $@.err
 	@if [[ ! -s $@.err ]]; then $(RM) $@.err; fi
 	@$(MV) $@.tmp $@
 
