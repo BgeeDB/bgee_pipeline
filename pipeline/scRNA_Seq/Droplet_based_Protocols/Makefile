@@ -214,8 +214,8 @@ kallisto_bus: cleaning_barcodes 1Run/Kallisto_bus.R
 # NOTE: Before run the process_busFile rule (uncompress the barcodes files, because in github we cannot have files with more than 100Mb size)
 uncompress_barcodes: kallisto_bus $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whitelist_10X_v2.txt.zip $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whitelist_10X_v3.txt.zip
 	cd $(SC_RNASEQ_TB_FOLDER_SOURCE) && \
-	unzip barcode_whitelist_10X_v2.txt.zip && \
-	unzip barcode_whitelist_10X_v3.txt.zip
+	unzip -o barcode_whitelist_10X_v2.txt.zip && \
+	unzip -o barcode_whitelist_10X_v3.txt.zip
 	@touch $@
 
 ## Process bus files
