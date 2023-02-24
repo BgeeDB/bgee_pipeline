@@ -82,7 +82,7 @@ singlecellKnee <- function(sparseMatrix, libraryID){
 }
 
 ## function to create the seurat object and normalize the data (each cell CPM)
-seurtObject <- function(m_filtered){
+seuratObject <- function(m_filtered){
   object <- CreateSeuratObject(counts = m_filtered, project = "scRNA", min.cells = 0, min.features = 0)
   objectNormalized <- NormalizeData(object, normalization.method = "RC", scale.factor = 1e6)
   return(objectNormalized)
@@ -203,17 +203,15 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
 ## collect information for all libraries
 globalInfoLibraries <- paste0(output, "/InformationAllLibraries.txt")
 if (file.exists(globalInfoLibraries)){
-  message("File already exists and will be removed to create a new one to avoid overwritting!")
+  message("Overwrite existing ", globalInfoLibraries, " file.")
   file.remove(globalInfoLibraries)
-  file.create(globalInfoLibraries)
-  cat("library\texperimentID\tInitial_UMI_barcode\tInitial_tot_genes\tgenes_afterFiltering\tcells_afterFiltering\tcellTypeName\tcellTypeId\n",file = globalInfoLibraries, sep = "\t")
-} else {
-  file.create(globalInfoLibraries)
-  cat("library\texperimentID\tInitial_UMI_barcode\tInitial_tot_genes\tgenes_afterFiltering\tcells_afterFiltering\tcellTypeName\tcellTypeId\n",file = globalInfoLibraries, sep = "\t")
 }
+file.create(globalInfoLibraries)
+cat("library\texperimentID\tInitial_UMI_barcode\tInitial_tot_genes\tgenes_afterFiltering\tcells_afterFiltering\tcellTypeName\tcellTypeId\n",file = globalInfoLibraries, sep = "\t")
+
 
 ## For each library that belongs to each experiment do:
-for (libraryID in scRNASeqAnnotation$libraryId) {
+for (libraryID in unique(scRNASeqAnnotation$libraryId)) {
   
   ## verify if library exist
   if (file.exists(file.path(kallisto_bus_results, libraryID))){
@@ -233,21 +231,31 @@ for (libraryID in scRNASeqAnnotation$libraryId) {
     }
     ## Create a sparseMatrix
     sparseMatrix <- read_count_output(path2Files, "gene", tcc = FALSE)
-    
+    message("created sparse matrix")    
     ## export global information
     ## barcodes detected (cell per column) and genes detected (rows)
     ## How many UMIs per barcode (cell)
     tot_counts <- Matrix::colSums(sparseMatrix)
+    message("created total counts variable")
     ## How many genes detected
     tot_genes <- rowSums(sparseMatrix)
-    
+    message("created total genes variable")
     ## filtering cells based on the knee plot
     knee <- singlecellKnee(sparseMatrix = sparseMatrix, libraryID = libraryID)
-    
+    message("created kneeplot")
     ## perform the seurat object and get raw and normalized counts
-    object <- seurtObject(m_filtered = knee)
-    
+    object <- seuratObject(m_filtered = knee)
+  
     ## read biotype information
+    biotypeInfoFile <- file.path(folderSupport, paste0(speciesID, "_gene_to_biotype_with_intergenic.tsv"))
+    # the file is potentially compressed. Have to uncompress it first
+    if (!file.exists(biotypeInfoFile)) {
+      if (file.exists(paste0(biotypeInfoFile, ".xz"))) {
+        system(sprintf("unxz %s", paste0(biotypeInfoFile,".xz")))
+      } else {
+        stop("gene to biotype file [", biotypeInfoFile, "] does not exist.")
+      }
+    }
     biotypeInfo <- fread(file.path(folderSupport, paste0(speciesID, "_gene_to_biotype_with_intergenic.tsv")))
     colnames(biotypeInfo) <- c("gene_id", "biotype")
     ## get barcode information per experiment
