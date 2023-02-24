@@ -61,10 +61,21 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
   message("Species:", species)
   #TODO: transcriptome indexes will be generated using BgeeCall. Path to folder are outdated
   ## collect species info
-  specieID <- gsub(" ", "_", species)
-  specieID <- list.files(folderSupport, pattern = paste0("^", specieID, ".*transcriptome.idx$"))
-  print(specieID)
-
+  speciesName <- gsub(" ", "_", species)
+  transcriptomeIndexFile <- list.files(folderSupport, pattern = paste0("^", speciesName, ".*transcriptome.idx$"))
+  print(transcriptomeIndexFile)
+  # transcriptome index can potentially be compressed with xz. If transcriptome index file does not exist
+  # we try to find the xz file and uncompress it.
+  if (identical(transcriptomeIndexFile, character(0))) {
+    message("uncompress transcriptome index file")
+    compressedTranscriptomeIndexFile <- list.files(folderSupport, 
+      pattern = paste0("^", speciesName, ".*transcriptome.idx.xz$"))
+    if(identical(compressedTranscriptomeIndexFile, character(0))) {
+      stop("transcriptome index file does not exist for species ", speciesName)
+    }
+    system(sprintf("unxz %s", file.path(folderSupport, compressedTranscriptomeIndexFile)))
+    transcriptomeIndexFile <- list.files(folderSupport, pattern = paste0("^", speciesName, ".*transcriptome.idx$")) 
+  }
   ## collect all libraries from the species
   collectLibrary <- scRNASeqInfo$libraryId[scRNASeqInfo$scientific_name == species]
   taxID <- unique(scRNASeqInfo$tax_id[scRNASeqInfo$scientific_name == species])
@@ -82,7 +93,7 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
         message("Kallisto was already executed for this library ",i,"\n")
       } else {
         ## collect info about whitelist
-        whiteLInfo <- as.character(scRNASeqInfo$whiteList[scRNASeqInfo$libraryId==i])
+        whiteLInfo <- unique(as.character(scRNASeqInfo$whiteList[scRNASeqInfo$libraryId==i]))
         message("The whitelist used is:", whiteLInfo)
         
         ## verify if exist FASTQ (with or without recursive folder) or SRR folder with fastq.gz files for the library
@@ -126,7 +137,7 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
           
           readBarcodes <- list.files(path=detectFastqPath, pattern = "*_R1.fastq.gz$", recursive = TRUE,
             full.names = TRUE, include.dirs = FALSE)
-          readSeq <- list.files(path = detectFastqPath, pattern = "*_R2.fastq.gz", recursive = TRUE,
+          readSeq <- list.files(path = detectFastqPath, pattern = "*_R2.fastq.gz$", recursive = TRUE,
             full.names = TRUE, include.dirs = FALSE)
           print(readBarcodes)
           print(readSeq)
@@ -140,7 +151,7 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
         message(filesKallisto)
         
         ## RUN Kallisto bus
-        system(sprintf('%s -i %s -o %s -x %s -t 4 %s', paste0("kallisto bus"), file.path(folderSupport, specieID), paste0(busOutput), paste0("10x",whiteLInfo), paste0(filesKallisto)))
+        system(sprintf('kallisto bus -i %s -o %s --paired -t 4 --unstranded %s', file.path(folderSupport, transcriptomeIndexFile), paste0(busOutput), paste0(filesKallisto)))
         ## control file
         file.create(file.path(kallisto_bus_results, i, "Done_kallisto_bus.txt"))
       }
@@ -148,4 +159,7 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
       message("Library not present in the folder ", file.path(folder_data, i), " to run Kallisto bus!")
     }
   }
+  # now that all libraries of the species have been processed, the transcriptome index file
+  # is compressed
+  system(sprintf("xz %s", file.path(folderSupport, transcriptomeIndexFile)))
 }

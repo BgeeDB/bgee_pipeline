@@ -56,7 +56,8 @@ generateGenesCpm <- function(tx2geneFile, pathBusOut, gene_counts, bustoolsGeneM
   counts <- read_count_output(gene_counts, bustoolsGeneMatrixName, FALSE)
   # intergenic have same name in  both transcript and gene columns.
   # we use this caracteristic to keep only counts from genic region
-  genesWithoutIntergenic <- tx2gene[!tx2gene[1,] %in% tx2gene[2,],]
+  tx2geneWithoutIntergenic <- tx2gene[!tx2gene[,1] %in% tx2gene[,2],]
+  genesWithoutIntergenic <- unique(tx2geneWithoutIntergenic[,2])
   subset_counts <- counts[counts@Dimnames[[1]][counts@Dimnames[[1]] %in% genesWithoutIntergenic],]
 
   # now calculate cpm using a function from Seurat
@@ -64,7 +65,7 @@ generateGenesCpm <- function(tx2geneFile, pathBusOut, gene_counts, bustoolsGeneM
 
   # Write output files
   cpmMatrixFile <- file.path(cpm_dir, "cpm_counts.mtx")
-  Matrix::writeMM(obj = transformed, file =cpmMatrixFile)
+  Matrix::writeMM(obj = subset_cpm, file =cpmMatrixFile)
   write.table(x = subset_cpm@Dimnames[[1]], file = file.path(cpm_dir, "cpm_counts.genes.txt"),
     sep = "\t", col.names = FALSE, quote = FALSE, row.names = FALSE)
   write.table(x = subset_cpm@Dimnames[[2]], file = file.path(cpm_dir, "cpm_counts.barcodes.txt"),
@@ -97,7 +98,7 @@ for (library in unique(scRNAInfo$libraryId)) {
       message("Start correction, sort and counts for the library: ", library)
 
       ## Note: the whiteList we use in this pipeline are the files provided by 10X platform (add to source files)
-      collectWhitelist <- as.character(scRNAInfo$whiteList[scRNAInfo$libraryId == library])
+      collectWhitelist <- unique(as.character(scRNAInfo$whiteList[scRNAInfo$libraryId == library]))
       selectedWhitheList <- paste0("10X_",collectWhitelist)
       message("whitelist:  ", selectedWhitheList)
 
@@ -124,10 +125,18 @@ for (library in unique(scRNAInfo$libraryId)) {
         print("File already exist.....")
       }
 
-      collectSpecies <- as.character(scRNAInfo$scientific_name[scRNAInfo$libraryId == library])
+      collectSpecies <- unique(as.character(scRNAInfo$scientific_name[scRNAInfo$libraryId == library]))
       collectSpecies <- gsub(" ", "_", collectSpecies)
 
       tx2gene_file = file.path(folderSupport, paste0(collectSpecies, "_transcript_to_gene_with_intergenic.tsv"))
+      print(tx2gene_file)
+      if (!file.exists(tx2gene_file)) {
+        if(file.exists(paste0(tx2gene_file, ".xz"))) {
+	  system(sprintf("unxz %s", paste0(tx2gene_file, ".xz")))
+        } else {
+          stop("transcript to gene file [", tx2gene_file, "] not found.")
+        }
+      }
       ## step 3 --> count with bustools count
       ## TCC level
       message("TCC level")
@@ -142,7 +151,7 @@ for (library in unique(scRNAInfo$libraryId)) {
         file.path(pathBusOut, "transcripts.txt"), file.path(pathBusOut, "output.correct.sort.bus")))
       ## CPM level
       message("CPM for genes without intergenic")
-      generateGenesCpm(tx2geneFile, pathBusOut, gene_counts, bustoolsGeneMatrix)
+      generateGenesCpm(tx2gene_file, pathBusOut, gene_counts, bustoolsGeneMatrix)
     }
   } else {
     message("Library ", library ," not present in the folder to process.")
