@@ -12,7 +12,7 @@ get_annot:
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/Strains/StrainMapping.tsv                 $(STRAIN_MAPPING_FILE)
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqTBLibrary.tsv           $(INPUT_DIR)/Target_based/scRNASeqTBLibrary.tsv
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqExperiment.tsv          $(INPUT_DIR)/scRNASeqExperiment.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_*              $(INPUT_DIR)/Target_based/
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_*.tsv          $(INPUT_DIR)/Target_based/
 	@touch $@
 
 ## Retrieve metadata (run rule with sbatch)
@@ -91,7 +91,7 @@ download_SRA: retrieve_metadata 0Preparation/download_SRA.R
 ## Add new libraries download to the jura file list (run rule in front)
 #NOTE *make -j3 list_new_downloads*  should run the 3 downloads in parallel
 list_new_downloads: download_SRA download_EBI download_HCA
-	@find $(SC_RNASEQ_DOWNLOAD_PATH_DROPLET) -type f -name \*.fastq.gz\* | xargs -r dirname | sed -e 's@^.*/@@' | sort -u > /tmp/new_downloads
+	@find $(SC_RNASEQ_DOWNLOAD_PATH_DROPLET) -type f -name \*.fastq.gz\* | xargs -r dirname | sed -e 's@/FASTQ@@' -e 's@^.*/@@' | sort -u > /tmp/new_downloads
 	@cat $(SC_RNASEQ_JURA_LIB_FILEPATH) >>/tmp/new_downloads
 	@sort -u /tmp/new_downloads >$(SC_RNASEQ_JURA_LIB_FILEPATH)
 	@rm -f /tmp/new_downloads
