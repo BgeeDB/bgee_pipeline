@@ -69,7 +69,7 @@ SRA_metadata <- function(libraryID){
 # define header of SRA metadata files. Used to reorder columns before writing
 metadata_file_header <- c("sample_accession","experiment_id", "library_id", "run_accession",
                           "read_count", "tax_id", "scientific_name", "instrument_model",
-                          "library_layout", "fastq_ftp", "submitted_ftp")
+                          "library_layout", "fastq_ftp", "submitted_ftp", "source")
 
 ## select 10X Genomics and 3' end target-based protocols to retrieve metadata
 selected_libraries <- as.data.frame(dplyr::filter(annotation, protocolType == "3'end" &
@@ -89,6 +89,7 @@ for (expId in unique(selected_experiments$experimentId)) {
       library <- as.data.frame(selected_libraries[selected_libraries$libraryId == libraryId,])
       ## retrieve SRA metadata
       extractSRA <- SRA_metadata(libraryID = libraryId)
+      extractSRA$source <- "SRA"
       ## compare with Bgee annotation
       ## probably too stringent as it does not use a controlled vocabulary
       if (!identical(as.character(library$platform),as.character(unique(extractSRA$instrument_model)))) {
@@ -110,7 +111,7 @@ for (expId in unique(selected_experiments$experimentId)) {
             ". Do not retrieve metadata!")
     hca_libraries <- annotation[annotation$experimentId == expId,]
     hca_metadata <- data.frame(NA, NA, hca_libraries$libraryId, NA, NA, hca_libraries$speciesId,
-                               "Homo sapiens", hca_libraries$platform, NA, NA, NA)
+                               "Homo sapiens", hca_libraries$platform, NA, NA, NA, "HCA")
     # merge lines of the two df. Do not use rbind as column names are different 
     metadata <- as.data.frame(mapply(c, metadata, hca_metadata))
   }  else {
