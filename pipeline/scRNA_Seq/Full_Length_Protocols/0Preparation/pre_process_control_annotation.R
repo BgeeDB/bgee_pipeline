@@ -35,9 +35,10 @@ if (!file.exists(scRNASeqLibrary)) {
 }
 annotation <- read.table(scRNASeqLibrary, h=T, sep="\t", comment.char="")
 names(annotation)[1] <- "libraryId"
-## replace all empty values per NA to avoid having both NA and empty string in a condition parameter
-annotation[annotation == ''] <- NA
-
+## replace all empty values per NA for sex and strain to avoid having NA and empty string
+## considered as different condition
+annotation$sex <- forcats::fct_explicit_na(annotation$sex)
+annotation$strain <- forcats::fct_explicit_na(annotation$strain)
 #################################################################################
 ## create new output files
 pass_Libraries <- file.path(output_folder, "passScRNASeqLibrary.tsv")
@@ -67,5 +68,5 @@ for(rowNumber in seq(nrow(group_by_libs_above_threshold))) {
 write.table(x = passed, file = pass_Libraries, sep = "\t", col.names = TRUE, row.names = FALSE,
   quote = FALSE)
 not_passed <- annotation[! annotation$libraryId %in% passed$libraryId,]
-write.table(x = passed, file = notpass_Libraries, sep = "\t", col.names = TRUE, row.names = FALSE,
+write.table(x = not_passed, file = notpass_Libraries, sep = "\t", col.names = TRUE, row.names = FALSE,
             quote = FALSE)
