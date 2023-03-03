@@ -108,7 +108,7 @@ sub map_strain_names {
             print $line;
         }
         # Case scRNASeqLibrary.tsv (NOT_PASS_scRNASeqLibrary.tsv / NEW_scRNASeqLibrary.tsv): strain    speciesId
-        elsif ( $expression_annotation_file =~ /_scRNASeqLibrary\.tsv/ ){
+        elsif ( $expression_annotation_file =~ /ScRNASeqLibrary\.tsv/ ){
             if ( exists $strain_mapping->{ $fields[22] }->{ $fields[21] } ){
                 my $source = quotemeta($fields[21]);
                 my $target = $strain_mapping->{ $fields[22] }->{ $fields[21] };
