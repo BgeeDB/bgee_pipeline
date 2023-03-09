@@ -35,20 +35,23 @@ for( c_arg in command_arg ){
 
 ## Read experiments and library annotation files. Do not consider If file not exists, script stops
 if( file.exists(scRNASeqExperiment) ){
-  experiments <- read.table(scRNASeqExperiment, h=T, sep="\t")
+  experiments <- read.table(scRNASeqExperiment, header=TRUE, sep="\t")
   colnames(experiments)[1]<-"experimentId"
   experiments <- experiments %>% filter(!str_detect(experiments$experimentId, "^#"))
   
 } else {
   stop( paste("The experiment file not found [", scRNASeqExperiment, "]\n"))
 }
+
 if( file.exists(scRNASeqTBLibrary) ){
-  annotation <- read.table(scRNASeqTBLibrary, h=T, sep="\t")
+  ##XXX could be necessary to add `quote = ""` depending on the final format of the file
+  annotation <- read.table(scRNASeqTBLibrary, header=TRUE, sep="\t", comment.char = "")
   colnames(annotation)[1]<-"libraryId"
   annotation <- annotation %>% filter(!str_detect(annotation$libraryId, "^#"))
 } else {
   stop( paste("The library file not found [", scRNASeqTBLibrary, "]\n"))
 }
+
 ###################################################################################################
 ## function to download metadata from SRA
 SRA_metadata <- function(libraryID){
@@ -72,10 +75,11 @@ metadata_file_header <- c("sample_accession","experiment_id", "library_id", "run
                           "library_layout", "fastq_ftp", "submitted_ftp", "source")
 
 ## select 10X Genomics and 3' end target-based protocols to retrieve metadata
+## We use a grep to detect 10X Genomics as the protocol name can contain the version (e.g 10X Genomics V3)
 selected_libraries <- as.data.frame(dplyr::filter(annotation, protocolType == "3'end" &
-                                                    protocol == "10X Genomics"))
+  grepl("10X Genomics", protocol, perl=T)))
 selected_experiments <- as.data.frame(dplyr::filter(experiments, experimentId %in%
-                                                      unique(selected_libraries$experimentId)))
+  unique(selected_libraries$experimentId)))
 
 ## extract metadata from SRA
 metadata <- c()
