@@ -9,6 +9,6 @@ ALTER TABLE rnaSeqPopulationCaptureSpeciesMaxRank ADD INDEX (rnaSeqLibraryAnnota
 -- index generated to fasten the retrieval of raw data as proposed in the
 -- DBA StackExchange issue : https://dba.stackexchange.com/questions/320207/optimization-with-subquery-not-working-as-expected
 -- the improvement provided by these index has not been tested
-ALTER TABLE affymetrixProbeset ADD INDEX(bgeeAffymetrixChipId, affymetrixProbesetId, bgeeGeneId)
-ALTER TABLE affymetrixChip ADD INDEX(conditionId,  bgeeAffymetrixChipId)
-ALTER TABLE cond ADD INDEX(speciesId, conditionId)
+ALTER TABLE affymetrixProbeset ADD INDEX(bgeeAffymetrixChipId, affymetrixProbesetId, bgeeGeneId);
+ALTER TABLE affymetrixChip ADD INDEX(conditionId,  bgeeAffymetrixChipId);
+ALTER TABLE cond ADD INDEX(speciesId, conditionId);
