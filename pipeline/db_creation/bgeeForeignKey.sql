@@ -112,10 +112,6 @@ add foreign key (CIOId) references CIOStatement(CIOId) on delete cascade;
 -- ****************************************************
 -- GENE AND TRANSCRIPT INFO
 -- ****************************************************
-/*!40000 ALTER TABLE `OMAHierarchicalGroup` DISABLE KEYS */;
-alter table OMAHierarchicalGroup
-add foreign key (taxonId) references taxon(taxonId) on delete set null;
-/*!40000 ALTER TABLE `OMAHierarchicalGroup` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `geneOntologyTermAltId` DISABLE KEYS */;
 alter table geneOntologyTermAltId
