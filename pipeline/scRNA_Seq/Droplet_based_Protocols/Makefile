@@ -257,6 +257,10 @@ qc_cellType: process_busFile 1Run/QC_CelltypeIdentification.R
 	@touch $@
 
 ## Quality control based on the bimodality of the cell-population per library/cell-type pop
+## This QC is NOT USED ANYMORE to filter libraries because cell type annotation are not always
+## very granular. It means a celltype can correspond to different cells. Then gene expression
+## does not always follow a bimodal distribution.
+## Kept this rule for sake of visualisation of the plots
 bimodality_cellPop: qc_cellType 1Run/QC_cellPop_bimodality.R
 	@echo --- Starting the quality control for the cell population based on the bimodality ---
 	@sed -i 's@--output=.*@--output=${PWD}/QC_cellPop_bimodality_TB.out@'                                 1Run/QC_cellPop_bimodality.sbatch
@@ -274,7 +278,7 @@ bimodality_cellPop: qc_cellType 1Run/QC_cellPop_bimodality.R
 	@touch $@
 
 ## Call present and absent genes per library/cell population that pass the bimodality test
-calls: #bimodality_cellPop 1Run/Calls_cell_pop_per_library.R
+calls: qc_cellType 1Run/Calls_cell_pop_per_library.R
 	@echo --- Starting the calls of present and absent genes ---
 	@sed -i 's@--output=.*@--output=${PWD}/Calls_library_cellPop.out@'                                                       1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/Calls_library_cellPop.err@'                                                         1Run/Calls_cell_pop_per_library.sbatch
