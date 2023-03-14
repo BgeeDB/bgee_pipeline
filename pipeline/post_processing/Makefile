@@ -243,12 +243,16 @@ $(OUTPUT_DIR)ranksGlobal: $(OUTPUT_DIR)ranksAffy $(OUTPUT_DIR)ranksRnaSeq $(OUTP
 	@echo "Min, max, average in situ mean rank: \n" >> $@.tmp
 #	@$(MYSQL) -e "SELECT MIN(inSituRank), MAX(inSituRank), AVG(inSituRank) FROM globalExpression AS t1 WHERE inSituRank IS NOT NULL" >> $@.tmp 2>> $@.warn
 	@$(MYSQL) -e "SELECT MIN(inSituGlobalRank), MAX(inSituGlobalRank), AVG(inSituGlobalRank) FROM globalExpression AS t1 WHERE inSituGlobalRank IS NOT NULL" >> $@.tmp 2>> $@.warn
+	@$(MV) $@.tmp $@
+
+# This query takes time so we moved it to a separated rule
+$(OUTPUT_DIR)verificationRanksGlobal: $(OUTPUT_DIR)ranksAffy $(OUTPUT_DIR)ranksRnaSeq $(OUTPUT_DIR)ranksScRnaSeqFullLength
 	@echo "Check that each call have a rank information associated. Query should retrieve no data (stop when one call without any rank is found)\n" >> $@.tmp
 	@$(MYSQL) -e "SELECT * FROM globalExpression WHERE rnaSeqGlobalMeanRank IS NULL AND affymetrixGlobalMeanRank IS NULL AND estGlobalRank IS NULL AND scRnaSeqFullLengthGlobalMeanRank IS NULL AND inSituGlobalRank IS NULL limit 1" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
 # It is also possible to normalize the ranks using a slurm cluster with the script run_ranks_global_on_cluster.pl. WARNING!!!! : As for bgee 15.0 the UNIL cluster queues allowed max 3 days of processing. Normalization for human and mouse took 10 days. DO NOT normalize ranks for these 2 species using the cluster. Normalization for all other species took less than one day
-$(OUTPUT_DIR)norm_ranks: $(OUTPUT_DIR)ranksGlobal
+$(OUTPUT_DIR)norm_ranks: $(OUTPUT_DIR)verificationRanksGlobal
 	@perl normalize_ranks.pl -bgee=$(BGEECMD) -species=$(EMPTY_LIST) > $@.tmp 2> $@.warn
 #	@printf "Expression IDs with ranks incorrectly generated: \n" >> $@.tmp
 #	@$(MYSQL) -e "SELECT expressionId FROM expression WHERE inSituData != 'no data' AND inSituRank IS NULL OR estData != 'no data' AND estRank IS NULL OR affymetrixData != 'no data' AND affymetrixMeanRank IS NULL OR rnaSeqData != 'no data' AND rnaSeqMeanRank IS NULL" >> $@.tmp
