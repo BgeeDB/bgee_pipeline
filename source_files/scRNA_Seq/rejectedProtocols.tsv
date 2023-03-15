@@ -1,0 +1,19 @@
+Protocols	Library_construction	target_whiteList	single_cell_isolation	Notes	Comments
+Smart-seq3	Full-length	NA	Plate-based	Full length + UMI	Need to be added soon to Bgee in my opinion 
+MATQ-seq	Full-length	NA	Plate-based		
+10X Chromium V1	3’end	NA	Droplet-based		
+MARS-seq	3'end	NA	Plate-based		
+CEL-seq	3'end	NA	Plate-based		
+CEL-seq2	3'end	NA	Plate-based		
+Drop-seq	3'end	NA	Droplet-based		Need to bee added to Bgee and doesn't require lot of pipeline adapation
+InDrop	3'end	NA	Droplet-based		
+SEQ-well	3'end	NA	Nanowell array		
+SPLIT-seq	3'end	NA	Plate-based		Need to be added soon to Bgee in my opinion 
+Quartz-seq2	3'end	NA			
+ScISOr-Seq		NA			
+RAGE-Seq		NA			
+ScNaUmi-seq		NA			
+C1HT		NA			
+ddSEQ		NA			
+ICELL8		NA			
+gmcSCRB-seq		NA			
