@@ -1,7 +1,7 @@
 Protocols	Library_construction	target_whiteList	single_cell_isolation	Notes	Comments
 Smart-seq3	Full-length	NA	Plate-based	Full length + UMI	Need to be added soon to Bgee in my opinion 
 MATQ-seq	Full-length	NA	Plate-based		
-10X Chromium V1	3’end	NA	Droplet-based		
+10X Chromium V1	3'end	NA	Droplet-based		
 MARS-seq	3'end	NA	Plate-based		
 CEL-seq	3'end	NA	Plate-based		
 CEL-seq2	3'end	NA	Plate-based		
