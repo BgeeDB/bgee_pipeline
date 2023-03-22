@@ -16,10 +16,10 @@
 library(dplyr)
 library(HelpersMG)
 library(tools)
-if (!requireNamespace("Rfastp", quietly = TRUE)) {
-  BiocManager::install("Rfastp")
-}
-library(Rfastp)
+#if (!requireNamespace("Rfastp", quietly = TRUE)) {
+#  BiocManager::install("Rfastp")
+#}
+#library(Rfastp)
 
 ## reading arguments
 cmd_args = commandArgs(TRUE);
@@ -56,7 +56,7 @@ checkId <- data.frame(library_metadata$library_id[!(library_metadata$library_id 
 colnames(checkId) <- "library_id"
 finalLibsToDown <- dplyr::filter(library_metadata, library_id %in% checkId$library_id)
 ## remove NA and fastq.gz information that belongs to HCA (download with other script) or from EBI (download .bam files)
-finalLibsToDown <- dplyr::filter(library_metadata, source = "SRA")
+finalLibsToDown <- dplyr::filter(library_metadata, source == "SRA")
 
 ####################### FUNCTIONS ###############################
 check_seq_length <- function(fileName) {
@@ -188,9 +188,9 @@ for (library in  unique(finalLibsToDown$library_id)) {
     file.remove(sra_file)
   }
   # run fastp QC on the downloaded library
-  umi_json_report <- rfastp(read1 = r1_files, read2 = r2_files, 
-    outputFastq = file.path(folder_library, 'fastp_qc'), umi = TRUE, umiLoc = "read1",
-    umiLength = 16)
+  #umi_json_report <- rfastp(read1 = r1_files, read2 = r2_files, 
+  #  outputFastq = file.path(folder_library, 'fastp_qc'), umi = TRUE, umiLoc = "read1",
+  #  umiLength = 16)
   ## create a symlink following pattern */EXPERIMENTS/experiment_ID/library_id/
   #file.symlink(from = folder_library, to = file.path(folder_experiments, experiment, library))
 }
