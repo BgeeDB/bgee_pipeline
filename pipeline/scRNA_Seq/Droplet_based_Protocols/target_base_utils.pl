@@ -337,9 +337,11 @@ sub get_processed_libraries_info {
         # there is currently 12 columns in the metadata_info_10X.txt file
         my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line, -1);
 
+        my $runId                           = $tmp[0]
         my $experimentId                    = $tmp[1];
         my $libraryId                       = $tmp[2];
         my $libraryType                     = $tmp[8];
+        my $submittedFTP                    = $tmp[10];
         my $downloadSource                  = $tmp[11];
 
         die "tsv field number problem [$line]\n"  if ( scalar @tmp != 12 );
@@ -348,6 +350,10 @@ sub get_processed_libraries_info {
             # Perform format checks
             # do not check format for genotype and whiteList as they can be empty
             my $discarded = 0;
+            if ($runId eq '' ){
+                warn "Warning, wrong format for runId [$runId]\n";
+                $discarded = 1;
+            }
             if ($libraryId eq '' ){
                 warn "Warning, wrong format for libraryId [$libraryId]\n";
                 $discarded = 1;
@@ -367,10 +373,12 @@ sub get_processed_libraries_info {
             if ( $discarded ){
                 warn ' experimentId: ', $experimentId, ", libraryId: ", $libraryId, " discarded!\n";
             } else {
-                $libInfos{$experimentId}->{$libraryId}->{'libraryType'} =
+                $libInfos{$experimentId}->{$libraryId}->{$runId}->{'libraryType'} =
                     $libraryType;
-                $libInfos{$experimentId}->{$libraryId}->{'downloadSource'} =
+                $libInfos{$experimentId}->{$libraryId}->{$runId}->{'downloadSource'} =
                     $downloadSource;
+                $libInfos{$experimentId}->{$libraryId}->{$runId}->{'submittedFTP'} =
+                    $submittedFTP;
             }
         } else {
             warn 'Warning: library present several times in the library file: experiment: ',
