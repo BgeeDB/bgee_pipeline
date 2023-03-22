@@ -132,8 +132,7 @@ sub getTargetBaseCuratedLibrariesAnnotation {
             if ( $discarded ){
                 warn ' for experiment: ', $experimentId, ' - library: ', $libraryId,
                     ", library discarded!\n";
-            }
-            else {
+            } else {
                 $targetBaseLibrary{$experimentId}->{$libraryId}->{'platform'} = $platform;
                 $targetBaseLibrary{$experimentId}->{$libraryId}->{'anatEntityId'} = $anatEntityId;
                 $targetBaseLibrary{$experimentId}->{$libraryId}->{'cellTypeId'} = $cellTypeId;
@@ -211,8 +210,7 @@ sub getSingleCellExperiments {
             }
             if ( $discarded ){
                 warn ' experiment: ', $experimentId, " discarded!\n";
-            }
-            else {
+            } else {
                 if (grep(/^$experimentType$/, @experimentTypes)) {
                     $experiments{$experimentId}->{'name'} = $name;
                     $experiments{$experimentId}->{'description'} = $description;
@@ -231,6 +229,101 @@ sub getSingleCellExperiments {
     return %experiments;
 }
 
+##TODO: the mappedUMI info is not yet implemented in the pipeline but once it is
+## we just need to uncomment corresponding lines in the function
+sub getCallsSummaryAtLibraryAnnotatedLevel {
+    my ($pipelineCallsSummary) = @_;
+    # $callsSummary{libraryId}{cellTypeId}->{'abundanceThreshold'}
+    # $callsSummary{libraryId}{cellTypeId}->{'allGenesPercentPresent'}
+    # $callsSummary{libraryId}{cellTypeId}->{'proteinCodingGenesPercentPresent'}
+    # $callsSummary{libraryId}{cellTypeId}->{'intergenicRegionsPercentPresent'}
+    # $callsSummary{libraryId}{cellTypeId}->{'pValueThreshold'}
+    # $callsSummary{libraryId}{cellTypeId}->{'meanRefIntergenic'}
+    # $callsSummary{libraryId}{cellTypeId}->{'sdRefIntergenic'}
+    # $callsSummary{libraryId}{cellTypeId}->{'mappedUMIs'}
+
+    my %callsSummary;
+    for my $line ( read_file("$pipelineCallsSummary", chomp=>1) ){
+        next  if ( $line =~ /^libraryId/ );
+        # there is currently 18 columns in the target base library annotation file
+        my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
+
+        my $libraryId                        = $tmp[0];
+        my $cellTypeId                       = $tmp[2];
+        my $abundanceThreshold               = $tmp[3];
+        my $allGenesPercentPresent           = $tmp[6];
+        my $proteinCodingGenesPercentPresent = $tmp[9];
+        my $intergenicRegionsPercentPresent  = $tmp[12];
+        my $pValueThreshold                  = $tmp[13];
+        my $meanRefIntergenic                = $tmp[14];
+        my $sdRefIntergenic                  = $tmp[15];
+        #my $mappedUMIs                      = $tmp[?];
+
+
+        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 18 );
+
+        if ( !defined $callsSummary{$libraryId}{$cellTypeId} ){
+            # Perform format checks
+            my $discarded = 0;
+            if ($libraryId eq '' ){
+                warn "Warning, wrong format for libraryId [$libraryId]\n";
+                $discarded = 1;
+            }
+            if ($cellTypeId eq '' ){
+                warn "Warning, wrong format for cellTypeId [$cellTypeId]\n";
+                $discarded = 1;
+            }
+            if ($abundanceThreshold eq '' ){
+                warn "Warning, wrong format for abundanceThreshold [$abundanceThreshold]\n";
+                $discarded = 1;
+            }
+            if ($allGenesPercentPresent eq ''){
+                warn "Warning, wrong format for allGenesPercentPresent type [$allGenesPercentPresent]\n";
+                $discarded = 1;
+            }
+            if ($proteinCodingGenesPercentPresent eq ''){
+                warn "Warning, wrong format for proteinCodingGenesPercentPresent type [$proteinCodingGenesPercentPresent]\n";
+                $discarded = 1;
+            }
+            if ($intergenicRegionsPercentPresent eq ''){
+                warn "Warning, wrong format for intergenicRegionsPercentPresent type [$intergenicRegionsPercentPresent]\n";
+                $discarded = 1;
+            }
+            if ($pValueThreshold eq ''){
+                warn "Warning, wrong format for pValueThreshold type [$pValueThreshold]\n";
+                $discarded = 1;
+            }
+            if ($meanRefIntergenic eq ''){
+                warn "Warning, wrong format for meanRefIntergenic type [$meanRefIntergenic]\n";
+                $discarded = 1;
+            }
+            if ($sdRefIntergenic eq ''){
+                warn "Warning, wrong format for sdRefIntergenic type [$sdRefIntergenic]\n";
+                $discarded = 1;
+            }
+            # if ($mappedUMIs eq ''){
+            #     warn "Warning, wrong format for mappedUMIs type [$mappedUMIs]\n";
+            #     $discarded = 1;
+            # }
+            if ( $discarded ){
+                warn ' libraryId: ', $libraryId, ", cellTypeId: ", $cellTypeId, " discarded!\n";
+            } else {
+                $callsSummary{$libraryId}{$cellTypeId}->{'abundanceThreshold'} = $abundanceThreshold;
+                $callsSummary{$libraryId}{$cellTypeId}->{'allGenesPercentPresent'} = $allGenesPercentPresent;
+                $callsSummary{$libraryId}{$cellTypeId}->{'proteinCodingGenesPercentPresent'} = $proteinCodingGenesPercentPresent;
+                $callsSummary{$libraryId}{$cellTypeId}->{'intergenicRegionsPercentPresent'} = $intergenicRegionsPercentPresent;
+                $callsSummary{$libraryId}{$cellTypeId}->{'pValueThreshold'} = $pValueThreshold;
+                $callsSummary{$libraryId}{$cellTypeId}->{'meanRefIntergenic'} = $meanRefIntergenic;
+                $callsSummary{$libraryId}{$cellTypeId}->{'sdRefIntergenic'} = $sdRefIntergenic;
+                # $callsSummary{libraryId}{cellTypeId}->{'mappedUMIs'} = $mappedUMIs;
+            }
+        } else {
+            warn 'Warning: couple libraryId/cellTypeId present several times in the file: libraryId: ',
+            $libraryId, ", cellTypeId : ", $cellTypeId, "\n";
+        }
+    }
+    return %callsSummary;
+}
 
 # Extract library information from the annotation generated by the bgee pipeline (metadata_info_10X.txt)
 sub get_processed_libraries_info {
@@ -241,12 +334,13 @@ sub get_processed_libraries_info {
     my %libInfos = ();
     for my $line ( read_file("$targetBaseLibraryFile", chomp=>1) ){
         next  if ( $line =~ /^sample_accession/ or $line =~ /^\"sample_accession/ );
-        # there is currently 10 columns in the metadata_info_10X.txt file
+        # there is currently 12 columns in the metadata_info_10X.txt file
         my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line, -1);
 
         my $experimentId                    = $tmp[1];
         my $libraryId                       = $tmp[2];
         my $libraryType                     = $tmp[8];
+        my $downloadSource                  = $tmp[11];
 
         die "tsv field number problem [$line]\n"  if ( scalar @tmp != 12 );
 
@@ -262,9 +356,21 @@ sub get_processed_libraries_info {
                 warn "Warning, wrong format for experimentId [$experimentId]\n";
                 $discarded = 1;
             }
-            else {
+            if ($libraryType eq '' ){
+                warn "Warning, wrong format for libraryType [$libraryType]\n";
+                $discarded = 1;
+            }
+            if ($downloadSource eq '' ){
+                warn "Warning, wrong format for downloadSource [$downloadSource]\n";
+                $discarded = 1;
+            }
+            if ( $discarded ){
+                warn ' experimentId: ', $experimentId, ", libraryId: ", $libraryId, " discarded!\n";
+            } else {
                 $libInfos{$experimentId}->{$libraryId}->{'libraryType'} =
                     $libraryType;
+                $libInfos{$experimentId}->{$libraryId}->{'downloadSource'} =
+                    $downloadSource;
             }
         } else {
             warn 'Warning: library present several times in the library file: experiment: ',
@@ -275,16 +381,81 @@ sub get_processed_libraries_info {
     return %libInfos;
 }
 
+sub getCallsInfoPerLibrary {
+    my ($callsInfoFile) = @_;
+    # $callsInfo{$cellTypeId}->{$geneId}->{'cpm'}
+    # $callsInfo{$cellTypeId}->{$geneId}->{'sumUMI'}
+    # $callsInfo{$cellTypeId}->{$geneId}->{'zScore'}
+    # $callsInfo{$cellTypeId}->{$geneId}->{'pValue'}
+
+    my %callsInfo = ();
+    for my $line ( read_file("$callsInfoFile", chomp=>1) ){
+        next  if ( $line =~ /^gene_id/);
+        # there is currently 10 columns in the Calls_LIBRARY_ID.tsv file
+        my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line, -1);
+
+        my $geneId                    = $tmp[0];
+        my $sumUMI                    = $tmp[1];
+        my $cpm                       = $tmp[2];
+        my $zScore                    = $tmp[5];
+        my $pValue                    = $tmp[6];
+        my $cellTypeId                = $tmp[9];
+
+        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 10 );
+
+        if (!defined $callsInfo{$cellTypeId}->{$geneId}) {
+            # Perform format checks
+            my $discarded = 0;
+            if ($geneId eq '' ){
+                warn "Warning, wrong format for geneId [$geneId]\n";
+                $discarded = 1;
+            }
+            if ($sumUMI eq '' ){
+                warn "Warning, wrong format for sumUMI [$sumUMI]\n";
+                $discarded = 1;
+            }
+            if ($cpm eq '' ){
+                warn "Warning, wrong format for cpm [$cpm]\n";
+                $discarded = 1;
+            }
+            if ($zScore eq '' ){
+                warn "Warning, wrong format for zScore [$zScore]\n";
+                $discarded = 1;
+            }
+            if ($pValue eq '' ){
+                warn "Warning, wrong format for pValue [$pValue]\n";
+                $discarded = 1;
+            }
+            if ($cellTypeId eq '' ){
+                warn "Warning, wrong format for cellTypeId [$cellTypeId]\n";
+                $discarded = 1;
+            }
+
+            if ($discarded) {
+                warn 'gene: ', $geneId, ', cellTypeId', $cellTypeId, " discarded!\n";
+            } else {
+                $callsInfo{$cellTypeId}->{$geneId}->{'cpm'} = $cpm;
+                $callsInfo{$cellTypeId}->{$geneId}->{'sumUMI'} = $sumUMI;
+                $callsInfo{$cellTypeId}->{$geneId}->{'zScore'} = $zScore;
+                $callsInfo{$cellTypeId}->{$geneId}->{'pValue'} = $pValue;
+            }
+        } else {
+            warn 'Warning: couple cellTypeId/geneId present several times in the file: cellTypeId: ',
+            $cellTypeId, ' - geneId: ', $geneId, "\n";
+        }
+    }
+
+    return %callsInfo;
+}
 
 # Extract the mapping from barcodes to cell types. Also extract cell type Ids
 sub getBarcodeToCellType {
     my ($barcodeToCellTypeFile) = @_;
     # $barcodes{libraryId}->{'barcodes'}->{barcode}->{'cellTypeId'} = ...
     # $barcodes{libraryId}->{'barcodes'}->{barcode}->{'annotationStatus'} = ...
-    # $barcodes{libraryId}->{cellType} = ()
+    # $barcodes{libraryId}->{'celltypes'}->{cellType} = ()
 
     my %barcodes = ();
-    my %celltypes = ();
     for my $line ( read_file("$barcodeToCellTypeFile", chomp=>1) ){
         next  if ( $line =~ /^barcode/ or $line =~ /^\"barcode/ );
         # there is currently 10 columns in the metadata_info_10X.txt file
@@ -332,7 +503,10 @@ sub getBarcodeToCellType {
                 warn "Warning, wrong format for cellTypeAnnotationStatus [$cellTypeAnnotationStatus]\n";
                 $discarded = 1;
             }
-            else {
+            if ($discarded) {
+                warn 'libraryId: ', $libraryId, ', barcode', $barcode, ', cellTypeId', $cellTypeId,
+                    " discarded!\n";
+            } else {
                 $barcodes{$libraryId}->{'barcodes'}->{$barcode}->{'cellTypeId'} =
                     $cellTypeId;
                 $barcodes{$libraryId}->{'barcodes'}->{$barcode}->{'annotationStatus'} =
@@ -344,25 +518,45 @@ sub getBarcodeToCellType {
             $libraryId, ' - barcode: ', $barcode, "\n";
         }
     }
-
     return %barcodes;
 }
 # insert one rnaseq library annotated sample and retrieve the value
 # of internal autoincrement rnaSeqLibraryAnnotatedSampleId
 sub insert_get_annotated_sample {
-    my ($insAnnotatedSample, $selectAnnotatedSampleId, $conditionId,
-        $libraryId, $debug) = @_;
-    my $annotatedSampleId;
+    my ($insAnnotatedSample, $selectAnnotatedSampleId, $abundanceThreshold,
+        $allGenesPercentPresent, $proteinCodingGenesPercentPresent,
+        $intergenicRegionsPercentPresent, $pValueThreshold, $meanRefIntergenic,
+        $sdRefIntergenic, $mappedUMIs, $isTargetBase, $conditionId, $libraryId,
+        $debug) = @_;
+
     #insert annotated sample
     if ($debug) {
-        print 'INSERT INTO rnaSeqLibraryAnnotatedSample: ', $conditionId, ' - ',
-                    $libraryId, "\n";
+        print 'INSERT INTO rnaSeqLibraryAnnotatedSample: ',
+                    $libraryId,                        ' - ',
+                    $conditionId,                      ' - ',
+                    "cpm",                             ' - ',
+                    $meanRefIntergenic,                ' - ',
+                    $sdRefIntergenic,                  ' - ',
+                    1,                                 ' - ',
+                    $abundanceThreshold,               ' - ',
+                    $allGenesPercentPresent,           ' - ',
+                    $proteinCodingGenesPercentPresent, ' - ',
+                    $intergenicRegionsPercentPresent,  ' - ',
+                    $pValueThreshold,                  ' - ',
+                    "NULL",                            ' - ',
+                    $isTargetBase,                     ' - ',
+                    "\n";
     } else {
-        $insAnnotatedSample->execute($libraryId, $conditionId)
+        $insAnnotatedSample->execute($libraryId, $conditionId, "cpm", $meanRefIntergenic,
+        $sdRefIntergenic, 1, $abundanceThreshold, $allGenesPercentPresent,
+        $proteinCodingGenesPercentPresent, $intergenicRegionsPercentPresent,
+        $pValueThreshold, "", $isTargetBase)
             or die $insAnnotatedSample->errstr;
     }
+    
     #retrieve annotated sample ID
-    $selectAnnotatedSampleId->execute($conditionId, $libraryId)
+    my $annotatedSampleId = ();
+    $selectAnnotatedSampleId->execute($libraryId, $conditionId)
         or die $selectAnnotatedSampleId->errstr;
     while ( my @data = $selectAnnotatedSampleId->fetchrow_array ){
         $annotatedSampleId = $data[0];
