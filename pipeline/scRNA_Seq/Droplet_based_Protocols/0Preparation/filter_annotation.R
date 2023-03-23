@@ -25,9 +25,11 @@ for( c_arg in command_arg ){
 
 ############################ Functions #################################
 
-readTsvFile<- function(fileToRead, header = TRUE, sep = "\t", quote = "") {
+readTsvFile<- function(fileToRead, header = TRUE, sep = "\t", quote = "",
+    commentChar = "") {
   if (file.exists(fileToRead)) {
-    data <- read.table(fileToRead, sep = sep, header = header, quote = quote)
+    data <- read.table(fileToRead, sep = sep, header = header, quote = quote,
+      comment.char = commentChar)
   } else  {
     stop(fileToRead, " file does not exist.")
   }
@@ -37,11 +39,10 @@ readTsvFile<- function(fileToRead, header = TRUE, sep = "\t", quote = "") {
 #########################################################################
 
 ### First check that all files exist and read them
-raw_lib_annot <- readTsvFile(scRNASeqTBLibrary, quote = "\"")
-raw_exp_annot <- readTsvFile(scRNASeqExperiment, quote = "\"")
+raw_lib_annot <- readTsvFile(scRNASeqTBLibrary, quote = "\"", commentChar="")
+raw_exp_annot <- readTsvFile(scRNASeqExperiment, quote = "\"", , commentChar="")
 protocols <- readTsvFile(acceptedProtocols)
 target_based_protocols <- protocols[protocols$Library_construction == "3'end",]
-filtered_exp_annot <- raw_exp_annot[any(unlist(strsplit(raw_exp_annot$protocol, ", ")) == protocols$Protocols),]
 
 ### Then filter on protocol accepted in Bgee pipeline
 filtered_exp_annot <- c()
@@ -52,7 +53,7 @@ for (rowNumber in seq(nrow(raw_exp_annot))) {
   }
 }
 filtered_lib_annot <- raw_lib_annot[raw_lib_annot$protocol %in% target_based_protocols$Protocols
-  & raw_lib_annot$whiteList %in% target_based_protocols$target_whiteList,]
+  & raw_lib_annot$whiteList %in% target_based_protocols$target_whiteList & raw_lib_annot$speciesId == 7227,]
 
 ### Finally write filtered files in the output dir
 colnames(filtered_exp_annot)[1] <- "experimentId"
