@@ -35,7 +35,7 @@ for( c_arg in command_arg ){
 
 ## Read experiments and library annotation files. Do not consider If file not exists, script stops
 if( file.exists(scRNASeqExperiment) ){
-  experiments <- read.table(scRNASeqExperiment, header=TRUE, sep="\t")
+  experiments <- read.table(scRNASeqExperiment, header=TRUE, sep="\t", quote = "\"")
   colnames(experiments)[1]<-"experimentId"
   experiments <- experiments %>% filter(!str_detect(experiments$experimentId, "^#"))
   
@@ -45,7 +45,7 @@ if( file.exists(scRNASeqExperiment) ){
 
 if( file.exists(scRNASeqTBLibrary) ){
   ##XXX could be necessary to add `quote = ""` depending on the final format of the file
-  annotation <- read.table(scRNASeqTBLibrary, header=TRUE, sep="\t", comment.char = "")
+  annotation <- read.table(scRNASeqTBLibrary, header=TRUE, sep="\t", comment.char = "", quote = "\"")
   colnames(annotation)[1]<-"libraryId"
   annotation <- annotation %>% filter(!str_detect(annotation$libraryId, "^#"))
 } else {
@@ -88,12 +88,12 @@ metadata_with_mismatch <- c()
 for (expId in unique(selected_experiments$experimentId)) {
   ## select source  of the experiment
   sourceId <- as.character(unique(selected_experiments$experimentSource[selected_experiments$experimentId == expId]))
-  if(sourceId == "SRA"){
+  if(sourceId == "SRA" || sourceId == "EBI"){
     for (libraryId in selected_libraries$libraryId[selected_libraries$experimentId == expId]) {
       library <- as.data.frame(selected_libraries[selected_libraries$libraryId == libraryId,])
       ## retrieve SRA metadata
       extractSRA <- SRA_metadata(libraryID = libraryId)
-      extractSRA$source <- "SRA"
+      extractSRA$source <- sourceId
       ## compare with Bgee annotation
       ## probably too stringent as it does not use a controlled vocabulary
       if (!identical(as.character(library$platform),as.character(unique(extractSRA$instrument_model)))) {

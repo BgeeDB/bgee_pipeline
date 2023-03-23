@@ -1293,6 +1293,14 @@ sub check_active_jobs_number {
     return $running_jobs;
 }
 
+# Return the number of active jobs for one account and with name containing provided string
+sub check_active_jobs_number_per_account_and_name {
+    my ($account, $name) = @_;
+    my $running_jobs = `squeue --account=$account --noheader -o "%.18i %.20j %.8u %.2t" | grep $name | wc -l` || 0;
+    chomp($running_jobs);
+    return $running_jobs;
+}
+
 # Add main sbatch command and options
 sub sbatch_template {
     my ($queue, $account, $nbr_processors, $memory_usage, $output_file, $error_file, $job_name) = @_;
