@@ -47,13 +47,13 @@ target_based_protocols <- protocols[protocols$Library_construction == "3'end",]
 ### Then filter on protocol accepted in Bgee pipeline
 filtered_exp_annot <- c()
 for (rowNumber in seq(nrow(raw_exp_annot))) {
-  protocols_used_in_exp <- unlist(strsplit(raw_exp_annot$protocol[rowNumber], ", "))
+  protocols_used_in_exp <- unlist(strsplit(as.character(raw_exp_annot$protocol[rowNumber]), ", "))
   if(any(protocols_used_in_exp %in% target_based_protocols$Protocols)) {
     filtered_exp_annot <- rbind(filtered_exp_annot, raw_exp_annot[rowNumber,])
   }
 }
 filtered_lib_annot <- raw_lib_annot[raw_lib_annot$protocol %in% target_based_protocols$Protocols
-  & raw_lib_annot$whiteList %in% target_based_protocols$target_whiteList & raw_lib_annot$speciesId == 7227,]
+  & raw_lib_annot$whiteList %in% target_based_protocols$target_whiteList,]
 
 ### Finally write filtered files in the output dir
 colnames(filtered_exp_annot)[1] <- "experimentId"
