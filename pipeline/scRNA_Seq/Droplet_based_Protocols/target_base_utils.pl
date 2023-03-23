@@ -337,7 +337,7 @@ sub get_processed_libraries_info {
         # there is currently 12 columns in the metadata_info_10X.txt file
         my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line, -1);
 
-        my $runId                           = $tmp[0]
+        my $runId                           = $tmp[3];
         my $experimentId                    = $tmp[1];
         my $libraryId                       = $tmp[2];
         my $libraryType                     = $tmp[8];
@@ -346,7 +346,7 @@ sub get_processed_libraries_info {
 
         die "tsv field number problem [$line]\n"  if ( scalar @tmp != 12 );
 
-        if (!defined $libInfos{$experimentId}->{$libraryId}) {
+        if (!defined $libInfos{$experimentId}->{$libraryId}->{$runId}) {
             # Perform format checks
             # do not check format for genotype and whiteList as they can be empty
             my $discarded = 0;
@@ -381,8 +381,8 @@ sub get_processed_libraries_info {
                     $submittedFTP;
             }
         } else {
-            warn 'Warning: library present several times in the library file: experiment: ',
-            $experimentId, ' - library: ', $libraryId, "\n";
+            warn 'Warning: run present several times in the metadata file: experiment: ',
+            $experimentId, ' - library: ', $libraryId, 'run: ', $runId, "\n";
         }
     }
 
