@@ -15,25 +15,36 @@ use strict;
 use warnings;
 use diagnostics;
 use Getopt::Long;
-use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
+use Try::Tiny;
+use FindBin;
+use lib "$FindBin::Bin/../../.."; # Get lib path for Utils.pm
 use Utils;
+use File::Path qw(make_path);
+use File::Basename;
 
 ## Define arguments & their default value
-my ($metatadataFile, $parallelJobs, $outputDir) = ('', '',  '');
-my %opts = ('metatadataFile=s'      => \$metatadataFile,
+my ($metadataFile, $parallelJobs, $outputDir, $bamtofastq, $queue, $account) = ('', '', '', '', '',  '');
+my %opts = ('metadataFile=s'        => \$metadataFile,
             'parallelJobs=s'        => \$parallelJobs,
-            'outputDir=s'           => \$outputDir
+            'outputDir=s'           => \$outputDir,
+	    'bamtofastq=s'          => \$bamtofastq,
+	    'queue=s'               => \$queue,
+	    'account=s'             => \$account
            );
 
 
 ######################## Check arguments ########################
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$metatadataFile || $parallelJobs eq '' || $outputDir eq '') {
+if ( !$metadataFile || $parallelJobs eq '' || $outputDir eq '' || $bamtofastq eq '' ||
+    $queue eq '' || $account eq '') {
     print "\n\tInvalid or missing argument:
 \te.g. $0 -metatadataFile=... -parallelJobs=50 -outputDir=...  >> $@.tmp 2> $@.warn
 \t-metadataFile            file containing metadata necessary to download each run
 \t-parallelJobs            maximum number of jobs to run in parallel
 \t-outputDir               directory where FASTQ files are downloaded/generated
+\t-bamtofastq              directory where the bamtofastq tool from 10X is installed
+\t-queue                   queue to use to run jobs on the cluster
+\t-account                 account to use to run jobs on the cluster
 \n";
     exit 1;
 }
@@ -41,76 +52,93 @@ if ( !$metatadataFile || $parallelJobs eq '' || $outputDir eq '') {
 require("$FindBin::Bin/../../rna_seq_utils.pl");
 require("$FindBin::Bin/../target_base_utils.pl");
 
-$queue = ;
-$account = ;
-
 # Info of processed libraries coming from the pipeline
 my %processedLibraries = get_processed_libraries_info($metadataFile);
 
-my @sbatchToRun = ();
+my %sbatchToRun = ();
 
+## create directory necessary to store sbatch files
+make_path("$outputDir/sbatch");
 my $jobPrefix = "downloadSRA_";
+my $jobs_created = 0;
 ## first create sbatch files and add them to an array of sbatch to run
 foreach my $experimentId (keys %processedLibraries){
-    foreach my $libraryId (keys %processedLibraries{$experimentId}){
-        foreach my $runId (keys %processedLibraries{$experimentId}{$libraryId}){
+    foreach my $libraryId (keys %{$processedLibraries{$experimentId}}){
+        foreach my $runId (keys %{$processedLibraries{$experimentId}{$libraryId}}){
+            $jobs_created++;
             #create sbatch file and
-            my $jobName = "$jobPrefix$runId";
-            my $sbtachTemplate = sbatch_template($queue, $account, 1,
-                1, "$outputDir/$jobName.out", "$outputDir/$jobName.err",
+            my $source = $processedLibraries{$experimentId}{$libraryId}{$runId}{'downloadSource'};
+	    my $jobName = "$jobPrefix$runId";
+	    ## Only use 2Gb of memory. Should maybe be increase depending on the run to download
+	    my $sbatchTemplate = Utils::sbatch_template($queue, $account, 1,
+                2, "$outputDir/$jobName.out", "$outputDir/$jobName.err",
                 $jobName);
-            ## load SRA sra-toolkit
-            $sbatchTemplate .= "module load gcc/10.4.0;\n
-                                 module load sratoolkit/3.0.0;\n\n";
-            my $submittedFtp = $processedLibraries{$experimentId}{$libraryId}{$runId}{$submittedFTP};
-            ## download fastq from SRA
-            if ($submittedFtp eq 'NA') {
-                $sbatchTemplate .= "fastq-dump --outdir $outputDir --split-files $runId\n";
+	    $sbatchTemplate .= "export bamtofastq=$bamtofastq\n";
+	    my $runDirectory = "$outputDir/$experimentId/$libraryId/$runId";
+	    my $submittedFtp = $processedLibraries{$experimentId}{$libraryId}{$runId}{'submittedFTP'};
+            my @bamInfos = split(";", $submittedFtp);
+	    if ($source eq "SRA") {
+            	## load SRA sra-toolkit
+            	$sbatchTemplate .= "module load gcc/10.4.0;\nmodule load sratoolkit/3.0.0;\n\n";
+		## download fastq from SRA
+            	if ($submittedFtp eq 'NA') {
+                    $sbatchTemplate .= "fastq-dump --outdir $runDirectory/FASTQ --split-files $runId &&\n";
+            	## download BAM from SRA
+		my @bamInfos = split(';', $submittedFtp);
+            	} else {
+                    $sbatchTemplate .= "{\nprefetch --type bam --max-size 9999999999 -O $runDirectory $runId ||\n";
+		    $sbatchTemplate .= "wget --no-verbose --directory-prefix=$runDirectory $bamInfos[0]\n} &&\n";
+		    $sbatchTemplate .= "$bamtofastq $runDirectory/".basename($bamInfos[0])." $runDirectory/FASTQ &&\n";
+		    $sbatchTemplate .= "rm $runDirectory/".basename($bamInfos[0])." &&\n";
+		}
+	    } elsif ($source eq "EBI") {
+	        $sbatchTemplate .= "wget --no-verbose --directory-prefix=$runDirectory $bamInfos[0] &&\n";
+		$sbatchTemplate .= "$bamtofastq $runDirectory/".basename($bamInfos[0])." $runDirectory/FASTQ &&\n";
+		$sbatchTemplate .= "rm $runDirectory/".basename($bamInfos[0])." &&\n";
+	    } elsif ($source eq "FCA") {
+                $sbatchTemplate .= "wget --no-verbose --directory-prefix=$runDirectory $bamInfos[0] &&\n";
+		$sbatchTemplate .= "mv $runDirectory/".basename($bamInfos[0])." $runDirectory/FASTQ/${runId}_R1.fastq.gz &&\n";
+		$sbatchTemplate .= "wget --no-verbose --directory-prefix=$runDirectory $bamInfos[1] &&\n";
+		$sbatchTemplate .= "mv $runDirectory/".basename($bamInfos[1])." $runDirectory/FASTQ/${runId}_R2.fastq.gz &&\n";
             }
-            ## download BAM from SRA
-            } else {
-                $sbatchTemplate .= "prefetch --type bam --max-size 9999999999 -O $outputDir $runId\n";
-            }
+	    $sbatchTemplate .= "find $runDirectory \\( -name '*.fastq' \\) -exec gzip {} \\; &&\n";
+	    $sbatchTemplate .= "touch $runDirectory/done";
             ## create sbatch file and add its path to the hash of sbatch files
-            my $sbatchFilePath = "$outputDir/sbatch/$jobName.sbatch"
-            push (@sbatchToRun, $sbatchFilePath);
-            open(FH, '>', $sbatchFile) or die $!;
+            my $sbatchFilePath = "$outputDir/sbatch/$jobName.sbatch";
+            $sbatchToRun{$experimentId}{$libraryId}{$runId} = $sbatchFilePath;
+            open(FH, '>', $sbatchFilePath) or die $!;
             print FH $sbatchTemplate;
             close(FH);
-            push (@sbatchToRun, $sbatchFile);
         }
     }
 }
 
-my jobsRunning = check_active_jobs_number($jobPrefix);
-for (my $sbatchFile in @sbatchToRun) {
-    jobsRunning = check_active_jobs_number($jobPrefix);
-    while ($jobsRunning >= $parallelJobs) {
-        sleep(15);
-        jobsRunning = check_active_jobs_number($jobPrefix);
+print "created $jobs_created sbatch files.\n";
+
+my $numberJobRun = 0;
+my $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
+foreach my $experimentId (keys %sbatchToRun){
+    foreach my $libraryId (keys %{$sbatchToRun{$experimentId}}){
+	foreach my $runId (keys %{$sbatchToRun{$experimentId}{$libraryId}}){
+	    my $runDirectory = "$outputDir/$experimentId/$libraryId/$runId";
+    	    next if (-f "$runDirectory/done");
+	    $numberJobRun++;
+	    $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
+	    while ($jobsRunning >= $parallelJobs) {
+                sleep(15);
+                $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
+    	    }
+	    make_path("$runDirectory/FASTQ");
+	    chdir "$outputDir/$experimentId/$libraryId";
+	    system("sbatch $sbatchToRun{$experimentId}{$libraryId}{$runId}");
+	}
     }
-    system("sbatch $sbatchFile");
 }
 
 while ($jobsRunning > 0) {
     sleep(15);
-   jobsRunning = check_active_jobs_number($jobPrefix);
+    $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
 }
 
-print "all download finished properly";
-
-
-
-# attributes:
-# - metatadata_file
-# - number of parallel jobs
-# - output dir where raw reads are downloaded
-
-# steps
-# - read metadata file
-# - check if FASTQ or BAM files have to be downloaded
-#    - run corresponding download
-# - check number of job running
-#    - if more than max of parallel download then wait
-#    - wait until en of last job to end the script
+print "all download finished properly. Run $numberJobRun jobs\n";
 
