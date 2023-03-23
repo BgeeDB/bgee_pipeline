@@ -148,7 +148,7 @@ CLUSTER_DATA_PATH       := /data/FAC/FBM/DEE/mrobinso/bgee_sensitive
 CLUSTER_SCRATCH_PATH    := /scratch/beegfs/FAC/FBM/DEE/mrobinso/bgee_sensitive
 CLUSTER_SCRATCH_RESULTS := $(CLUSTER_SCRATCH_PATH)/$(DBNAME)/
 CLUSTER_ARCHIVE_PATH    := /archive/FAC/FBM/DEE/mrobinso/bgee_sensitive
-CLUSTER_CURNAGL_PATH    := /work/FAC/FBM/DEE/mrobinso/bgee
+CLUSTER_CURNAGL_PATH    := /work/FAC/FBM/DEE/mrobinso/bgee_sensitive
 
 R_LIBS_PATH_JURA        := $(CLUSTER_DATA_PATH)/R_LIBS
 R_LIBS_PATH_CURNAGL     := $(CLUSTER_CURNAGL_PATH)/R_LIBS
@@ -486,7 +486,6 @@ SC_RNASEQ_WHITELIST_10X_v3             := $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_w
 
 # scRNASeq github file paths in the generated_files directory
 SC_RNASEQ_PATH_GENERATED               := $(GENERATED_FILES_DIR)$(SC_RNASEQ_PATH)
-SC_RNASEQ_EXPERIMENT_FILEPATH_FILTERED := $(SC_RNASEQ_PATH_GENERATED)scRNASeqExperiment.tsv
 SC_RNASEQ_JURA_LIB_FILEPATH            := $(SC_RNASEQ_PATH_GENERATED)juraLibrariesDownloaded.tsv
 ### Full_length
 SC_RNASEQ_FL_FOLDER_GENERATED          := $(SC_RNASEQ_PATH_GENERATED)Full_length/
@@ -503,6 +502,7 @@ SC_RNASEQ_SAMP_STATS_FL                := $(SC_RNASEQ_FL_FOLDER_GENERATED)presen
 SC_RNASEQ_REPORT_INFO_FL               := $(SC_RNASEQ_FL_FOLDER_GENERATED)reports_info_all_samples.txt
 ### Target_based
 SC_RNASEQ_TB_FOLDER_GENERATED               := $(SC_RNASEQ_PATH_GENERATED)Target_based/
+SC_RNASEQ_EXPERIMENT_FILEPATH_FILTERED      := $(SC_RNASEQ_TB_FOLDER_GENERATED)scRNASeqExperiment.tsv
 SC_RNASEQ_LIB_TB_FILEPATH_FILTERED          := $(SC_RNASEQ_TB_FOLDER_GENERATED)scRNASeqTBLibrary.tsv
 SC_RNASEQ_CLEANED_BARCODES                  := $(SC_RNASEQ_TB_FOLDER_GENERATED)cleaned_barcodes/
 SC_RNASEQ_METADATA_10X_FILEPATH             := $(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_info_10X.txt
