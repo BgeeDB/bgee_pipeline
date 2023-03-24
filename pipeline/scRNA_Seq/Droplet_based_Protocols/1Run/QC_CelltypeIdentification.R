@@ -18,18 +18,21 @@
 ## output --> Folder where we should save the results
 
 ## libraries used
-library(devtools)
+
+##TODO: remove these packages as they are not used
+#library(magrittr)
+#library(lattice)
+#library(tibble)
+#library(devtools)
+
+library(Matrix)
 library(BUSpaRse)
 library(DropletUtils)
 library(ggplot2)
-library(magrittr)
-library(data.table)
-library(Matrix)
-library(lattice)
 library(gridExtra)
-library(dplyr)
 library(Seurat)
-library(tibble)
+library(dplyr)
+
 
 ## reading arguments
 cmd_args = commandArgs(TRUE);
@@ -50,7 +53,7 @@ for( c_arg in command_arg ){
 
 ## Read scRNASeq_Info file. If file not exists, script stops
 if( file.exists(scRNASeq_Info) ){
-  scRNASeqAnnotation <- fread(scRNASeq_Info, h=T, sep="\t")
+  scRNASeqAnnotation <- read.table(scRNASeq_Info, header = T, sep = "\t")
 } else {
   stop( paste("The scRNASeq_Info file not found [", scRNASeq_Info, "]\n"))
 }
@@ -108,11 +111,11 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
     #dim(presentSubset)
     
     ## change metadata: add info about the cell type for each barcode
-    ## select from barcode file: barcode ID (column 1) and cell_type_harmonization (column 10)
-    barcode_cell <- barcodeIDs %>% dplyr::select(barcode, cell_type_harmonization, cellTypeId)
+    ## select from barcode file: barcode ID (column 1) and cellTypeName (column 9)
+    barcode_cell <- barcodeIDs %>% dplyr::select(barcode, cellTypeName, cellTypeId)
     barcode_cell <- barcode_cell[ barcode_cell$barcode %in% presentSubset$barcode, ]
     
-    barcode_cellName <- barcode_cell$cell_type_harmonization
+    barcode_cellName <- barcode_cell$cellTypeName
     barcode_cellName <- unlist(barcode_cellName, use.names=FALSE)
     barcode_cellid <- barcode_cell$cellTypeId
     barcode_cellid <- unlist(barcode_cellid, use.names=FALSE)
@@ -136,17 +139,17 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
     ## Run UMAP
     myData <- RunUMAP(myData, dims = 1:20)
     umapPlot <- DimPlot(myData, reduction = "umap", group.by='seurat_clusters')
-    pdf(paste0(output, "/", libraryID, "/UMAP_seurat_cluster.pdf"))
+    pdf(file.path(output, libraryID, "UMAP_seurat_cluster.pdf"))
     print(umapPlot)
     dev.off()
     umapPlot <- DimPlot(myData, reduction = "umap", group.by='cell_type')
     ## save UMAP information with cell_type
-    pdf(paste0(output, "/", libraryID, "/UMAP_cellType_cluster.pdf"))
+    pdf(file.path(output, libraryID, "UMAP_cellType_cluster.pdf"))
     print(umapPlot)
     dev.off()
     umapPlot <- DimPlot(myData, reduction = "umap", group.by='cell_id')
     ## save UMAP information with cell_ontology
-    pdf(paste0(output, "/", libraryID, "/UMAP_cellID_cluster.pdf"))
+    pdf(file.path(output, libraryID, "UMAP_cellID_cluster.pdf"))
     print(umapPlot)
     dev.off()
     
@@ -158,11 +161,12 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
     infoCollected <- c()
     for (cell in unique(myData$cell_type)) {
       for (cellid in unique(myData$cell_id[myData$cell_type == cell])) {
+        message("cell : ", cellid)
         ## split information
         barcodesID <- colnames(myData)[myData$cell_type == cell & myData$cell_id == cellid] 
         ## export raw counts to each cell type
         rawCountsCell <- finalRaw[(names(finalRaw) %in% barcodesID)]
-        rawCountsCell <- setDT(rawCountsCell, keep.rownames = TRUE)[]
+        rawCountsCell <- cbind(names = rownames(rawCountsCell), rawCountsCell)
         colnames(rawCountsCell)[1] <- "gene_id"
         ## add biotype info to raw counts
         collectBiotypeRaw <- merge(rawCountsCell, biotypeInfo, by = "gene_id", all.x = TRUE)
@@ -173,7 +177,7 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
         
         ## export normalized counts to each cell type
         normalizedCountsCell <- finalCPM[(names(finalCPM) %in% barcodesID)]
-        normalizedCountsCell <- setDT(normalizedCountsCell, keep.rownames = TRUE)[]
+        normalizedCountsCell <- cbind(names = rownames(normalizedCountsCell), normalizedCountsCell)
         colnames(normalizedCountsCell)[1] <- "gene_id"
         ## add biotype info to normalized counts
         collectBiotypeNorm <- merge(normalizedCountsCell, biotypeInfo, by = "gene_id", all.x = TRUE)
@@ -181,10 +185,10 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
         collectBiotypeNorm$type <- ifelse(is.na(collectBiotypeNorm$biotype), "intergenic", "genic")
         collectBiotypeNorm$cellTypeName <- cell
         collectBiotypeNorm$cellTypeId <- cellid
-        cellid <- gsub(":","-",cellid)
+        cellIdModified <- gsub(":","-",cellid)
         ## write output information to integrate in Bgee
-        write.table(collectBiotypeRaw, file = paste0(output, "/", libraryID, "/Raw_Counts_", cell, "_", cellid, ".tsv"), sep="\t", row.names = FALSE, quote = FALSE)
-        write.table(collectBiotypeNorm, file = paste0(output, "/", libraryID, "/Normalized_Counts_", cell, "_", cellid,  ".tsv"), sep="\t", row.names = FALSE, quote = FALSE)
+        write.table(collectBiotypeRaw, file = paste0(output, "/", libraryID, "/Raw_Counts_",cellIdModified, ".tsv"), sep="\t", row.names = FALSE, quote = FALSE)
+        write.table(collectBiotypeNorm, file = paste0(output, "/", libraryID, "/Normalized_Counts_", cellIdModified, ".tsv"), sep="\t", row.names = FALSE, quote = FALSE)
         ## info per cell (-5 because of geneId, biotype, type columns and cellName and cellID)
         cellInfo <- c(nrow(collectBiotypeNorm), ncol(collectBiotypeNorm)-5, cell, cellid)
         infoCollected <- rbind(infoCollected, cellInfo)
@@ -202,10 +206,7 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
 #############################################################################################################################
 ## collect information for all libraries
 globalInfoLibraries <- paste0(output, "/InformationAllLibraries.txt")
-if (file.exists(globalInfoLibraries)){
-  message("Overwrite existing ", globalInfoLibraries, " file.")
-  file.remove(globalInfoLibraries)
-}
+
 file.create(globalInfoLibraries)
 cat("library\texperimentID\tInitial_UMI_barcode\tInitial_tot_genes\tgenes_afterFiltering\tcells_afterFiltering\tcellTypeName\tcellTypeId\n",file = globalInfoLibraries, sep = "\t")
 
@@ -256,10 +257,14 @@ for (libraryID in unique(scRNASeqAnnotation$libraryId)) {
         stop("gene to biotype file [", biotypeInfoFile, "] does not exist.")
       }
     }
-    biotypeInfo <- fread(file.path(folderSupport, paste0(speciesID, "_gene_to_biotype_with_intergenic.tsv")))
+    biotypeInfo <- read.table(biotypeInfoFile)
+    ## hack needed for Bgee 15.1 as the gene to biotype file contain redundant genes
+    ##TODO: update script generating gene to biotype
+    biotypeInfo <- unique(biotypeInfo)
     colnames(biotypeInfo) <- c("gene_id", "biotype")
     ## get barcode information per experiment
-    barcodeExperiment <- fread(file.path(infoFolder, paste0("scRNASeq_barcode_", experimentID,".tsv")))
+    barcodeExperiment <- read.table(file.path(infoFolder, paste0("scRNASeq_barcode_", experimentID,".tsv")), header = TRUE,
+      sep = "\t")
     barcodeLibrary <- dplyr::filter(barcodeExperiment, library == libraryID)
     
     ## link barcode to cell ID and export information
