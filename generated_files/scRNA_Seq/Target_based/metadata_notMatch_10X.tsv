@@ -1,0 +1,5 @@
+sample_accession	experiment_id	library_id	run_accession	read_count	tax_id	scientific_name	instrument_model	library_layout	fastq_ftp	submitted_ftp	source
+SAMN11964706	SRP200614	SRX5979983	SRR9208959	44047061	7227	Drosophila melanogaster	HiSeq X Ten	PAIRED	ftp.sra.ebi.ac.uk/vol1/fastq/SRR920/009/SRR9208959/SRR9208959_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR920/009/SRR9208959/SRR9208959_2.fastq.gz	NA	SRA
+SAMN11964706	SRP200614	SRX5979983	SRR9208960	54143595	7227	Drosophila melanogaster	HiSeq X Ten	PAIRED	ftp.sra.ebi.ac.uk/vol1/fastq/SRR920/000/SRR9208960/SRR9208960_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR920/000/SRR9208960/SRR9208960_2.fastq.gz	NA	SRA
+SAMN11964706	SRP200614	SRX5979983	SRR9208961	46938723	7227	Drosophila melanogaster	HiSeq X Ten	PAIRED	ftp.sra.ebi.ac.uk/vol1/fastq/SRR920/001/SRR9208961/SRR9208961_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR920/001/SRR9208961/SRR9208961_2.fastq.gz	NA	SRA
+SAMN11964706	SRP200614	SRX5979983	SRR9208962	25928292	7227	Drosophila melanogaster	HiSeq X Ten	PAIRED	ftp.sra.ebi.ac.uk/vol1/fastq/SRR920/002/SRR9208962/SRR9208962_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR920/002/SRR9208962/SRR9208962_2.fastq.gz	NA	SRA
