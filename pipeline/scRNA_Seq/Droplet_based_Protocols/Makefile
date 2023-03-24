@@ -12,22 +12,31 @@ get_annot:
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/Strains/StrainMapping.tsv                 $(STRAIN_MAPPING_FILE)
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqTBLibrary.tsv           $(INPUT_DIR)/Target_based/scRNASeqTBLibrary.tsv
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqExperiment.tsv          $(INPUT_DIR)/scRNASeqExperiment.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_*              $(INPUT_DIR)/Target_based/
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_*.tsv          $(INPUT_DIR)/Target_based/
+	@touch $@
+
+## Run in the front as it does not require lots of CPU and GPU
+## Filter experiment/libraries to consider for the target-based pipeline
+## This filtering :
+##   - removes full-length experiment/libraries
+##   - removes protocols not accepted in Bgee
+filter_annot: get_annot
+	@$(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args scRNASeqExperiment="$(SC_RNASEQ_EXPERIMENT_FILEPATH)" scRNASeqTBLibrary="$(SC_RNASEQ_LIB_TB_FILEPATH)" acceptedProtocols="$(SC_RNASEQ_ACCEPTED_PROTOCOLS)" outputDir="$(SC_RNASEQ_TB_FOLDER_GENERATED)"' 0Preparation/filter_annotation.R $(SC_RNASEQ_TB_FOLDER_GENERATED)filter_annotation.Rout
 	@touch $@
 
 ## Retrieve metadata (run rule with sbatch)
 retrieve_metadata: get_annot 0Preparation/retrieve_metadata.R
 	@echo --- Retrieve metadata information ---
-	@sed -i 's@--output=.*@--output=${PWD}/retrieve_metadata.out@'                                           0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/retrieve_metadata.err@'                                             0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                             0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                   0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                             0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export scRNASeqExperiment=.*@export scRNASeqExperiment=$(SC_RNASEQ_EXPERIMENT_FILEPATH)@'     0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export scRNASeqTBLibrary=.*@export scRNASeqTBLibrary=$(SC_RNASEQ_LIB_TB_FILEPATH)@'           0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export output_file=.*@export output_file=$(SC_RNASEQ_METADATA_10X_FILEPATH)@'                 0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET)@'                               0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export R_LIBS_USER=.*@export R_LIBS_USER=$(R_LIBS_PATH_CURNAGL)@'                             0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@--output=.*@--output=${PWD}/retrieve_metadata.out@'                                                 0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/retrieve_metadata.err@'                                                   0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                   0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                         0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                   0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export scRNASeqExperiment=.*@export scRNASeqExperiment=$(SC_RNASEQ_EXPERIMENT_FILEPATH_FILTERED)@'  0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export scRNASeqTBLibrary=.*@export scRNASeqTBLibrary=$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED)@'        0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export output_file=.*@export output_file=$(SC_RNASEQ_METADATA_10X_FILEPATH)@'                       0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET)@'                                     0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export R_LIBS_USER=.*@export R_LIBS_USER=$(R_LIBS_PATH_CURNAGL)@'                                   0Preparation/retrieve_metadata.sbatch
 	@sbatch 0Preparation/retrieve_metadata.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
@@ -91,7 +100,7 @@ download_SRA: retrieve_metadata 0Preparation/download_SRA.R
 ## Add new libraries download to the jura file list (run rule in front)
 #NOTE *make -j3 list_new_downloads*  should run the 3 downloads in parallel
 list_new_downloads: download_SRA download_EBI download_HCA
-	@find $(SC_RNASEQ_DOWNLOAD_PATH_DROPLET) -type f -name \*.fastq.gz\* | xargs -r dirname | sed -e 's@^.*/@@' | sort -u > /tmp/new_downloads
+	@find $(SC_RNASEQ_DOWNLOAD_PATH_DROPLET) -type f -name \*.fastq.gz\* | xargs -r dirname | sed -e 's@/FASTQ@@' -e 's@^.*/@@' | sort -u > /tmp/new_downloads
 	@cat $(SC_RNASEQ_JURA_LIB_FILEPATH) >>/tmp/new_downloads
 	@sort -u /tmp/new_downloads >$(SC_RNASEQ_JURA_LIB_FILEPATH)
 	@rm -f /tmp/new_downloads
@@ -199,7 +208,7 @@ kallisto_bus: cleaning_barcodes 1Run/Kallisto_bus.R
 	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                                                   1Run/Kallisto_bus.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                      1Run/Kallisto_bus.sbatch
 	@sed -i 's@export metadata_file=.*@export metadata_file=$(SC_RNASEQ_METADATA_10X_FILEPATH)@'                       1Run/Kallisto_bus.sbatch
-	@sed -i 's@export annotation_file=.*@export annotation_file=$(SC_RNASEQ_LIB_TB_FILEPATH)@'                         1Run/Kallisto_bus.sbatch
+	@sed -i 's@export annotation_file=.*@export annotation_file=$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED)@'                1Run/Kallisto_bus.sbatch
 	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_FASTQ_DROPLET)@'                                   1Run/Kallisto_bus.sbatch
 	@sed -i 's@export folderSupport=.*@export folderSupport=$(RNASEQ_CLUSTER_GTF)@'                                    1Run/Kallisto_bus.sbatch
 	@sed -i 's@export output=.*@export output=$(SC_RNASEQ_PATH_GENERATED)@'                                            1Run/Kallisto_bus.sbatch
@@ -236,6 +245,7 @@ process_busFile: uncompress_barcodes 1Run/process_busFile.R
 	@echo --- DONE ---
 	@touch $@
 
+
 ## Quality control (Knee + PCA + UMAP for each library) + cell type identification
 qc_cellType: process_busFile 1Run/QC_CelltypeIdentification.R
 	@echo --- Starting the quality control and the cell type identification ---
@@ -257,6 +267,10 @@ qc_cellType: process_busFile 1Run/QC_CelltypeIdentification.R
 	@touch $@
 
 ## Quality control based on the bimodality of the cell-population per library/cell-type pop
+## This QC is NOT USED ANYMORE to filter libraries because cell type annotation are not always
+## very granular. It means a celltype can correspond to different cells. Then gene expression
+## does not always follow a bimodal distribution.
+## Kept this rule for sake of visualisation of the plots
 bimodality_cellPop: qc_cellType 1Run/QC_cellPop_bimodality.R
 	@echo --- Starting the quality control for the cell population based on the bimodality ---
 	@sed -i 's@--output=.*@--output=${PWD}/QC_cellPop_bimodality_TB.out@'                                 1Run/QC_cellPop_bimodality.sbatch
@@ -274,7 +288,7 @@ bimodality_cellPop: qc_cellType 1Run/QC_cellPop_bimodality.R
 	@touch $@
 
 ## Call present and absent genes per library/cell population that pass the bimodality test
-calls: #bimodality_cellPop 1Run/Calls_cell_pop_per_library.R
+calls: qc_cellType 1Run/Calls_cell_pop_per_library.R
 	@echo --- Starting the calls of present and absent genes ---
 	@sed -i 's@--output=.*@--output=${PWD}/Calls_library_cellPop.out@'                                                       1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/Calls_library_cellPop.err@'                                                         1Run/Calls_cell_pop_per_library.sbatch
@@ -314,7 +328,7 @@ final_commit: final_status
 ## Then, a perl script should take care of managing parallelization. It could also
 ## be possible to use the rslurm R package to manage parallelization
 insert_cell_abundance:
-	@perl 3Insertion/insert_scrna_seq.pl -bgee=$(BGEECMD) -targetBaseLibrary=$(SC_RNASEQ_LIB_TB_FILEPATH) -singleCellExperiment=$(SC_RNASEQ_EXPERIMENT_FILEPATH) -bgeeLibraryInfo=$(SC_RNASEQ_METADATA_10X_FILEPATH) -allResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -sourceDir=$(SC_RNASEQ_TB_FOLDER_SOURCE) -sexInfo=$(UBERON_SEX_INFO_FILE_PATH) -numberCore=15 > $@.tmp 2> $@.err
+	@perl 3Insertion/insert_scrna_seq.pl -bgee=$(BGEECMD) -targetBaseLibrary=$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED) -singleCellExperiment=$(SC_RNASEQ_EXPERIMENT_FILEPATH_FILTERED) -bgeeLibraryInfo=$(SC_RNASEQ_METADATA_10X_FILEPATH) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -sourceDir=$(SC_RNASEQ_TB_FOLDER_SOURCE) -sexInfo=$(UBERON_SEX_INFO_FILE_PATH) -numberCore=15 > $@.tmp 2> $@.err
 	@if [[ ! -s $@.err ]]; then $(RM) $@.err; fi
 	@$(MV) $@.tmp $@
 

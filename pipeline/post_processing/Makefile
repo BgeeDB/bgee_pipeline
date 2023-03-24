@@ -219,6 +219,8 @@ $(OUTPUT_DIR)ranksRnaSeq:
 	@$(MYSQL) -e "INSERT INTO rnaSeqProtocolSpeciesMaxRank (rnaSeqProtocolId, speciesId, maxRank) SELECT t1.rnaSeqProtocolId, t2.speciesId, MAX(t1.libraryMaxRank) AS maxRank FROM rnaSeqLibrary AS t1 INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId GROUP BY t1.rnaSeqProtocolId, t2.speciesId" >> $@.tmp 2>> $@.warn
 	@printf "Min, max, average RNA-Seq rank and distinct rank count per species: \n" >> $@.tmp
 	@$(MYSQL) -e "SELECT t1.speciesId, MIN(t3.rawRank), MAX(t3.rawRank), AVG(t3.rawRank), MIN(t2.libraryDistinctRankCount), MAX(t2.libraryDistinctRankCount), AVG(t2.libraryDistinctRankCount) FROM cond AS t1 INNER JOIN rnaSeqLibrary AS t2 ON t1.conditionId = t2.conditionId INNER JOIN rnaSeqResult AS t3 on t2.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE t3.rawRank IS NOT NULL GROUP BY t1.speciesId" >> $@.tmp 2>> $@.warn
+	@printf "Check that no genes that are not excluded have a rank null. Should not have any result\n" >> $@.tmp
+	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult as t1 INNER JOIN rnaSeqLibraryAnnotatedSample as t2 ON t1.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId INNER JOIN rnaSeqLibrary as t3 ON t2.rnaSeqLibraryId = t3.rnaSeqLibraryId where t1.rawRank IS NULL and t1.reasonForExclusion = \"not excluded\" and t3.rnaSeqTechnologyIsSingleCell = 0 limit 1" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
 $(OUTPUT_DIR)ranksScRnaSeqFullLength:
@@ -227,6 +229,8 @@ $(OUTPUT_DIR)ranksScRnaSeqFullLength:
 	@$(MYSQL) -e "INSERT INTO scRnaSeqFullLengthSpeciesMaxRank (speciesId, maxRank) SELECT t2.speciesId, MAX(t1.libraryMaxRank) FROM scRnaSeqFullLengthLibrary AS t1 INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId GROUP BY t2.speciesId" >> $@.tmp 2>> $@.warn
 	@printf "Min, max, average scRNA-Seq full-length rank and distinct rank count per species: \n" >> $@.tmp
 	@$(MYSQL) -e "SELECT t1.speciesId, MIN(t3.rawRank), MAX(t3.rawRank), AVG(t3.rawRank), MIN(t2.libraryDistinctRankCount), MAX(t2.libraryDistinctRankCount), AVG(t2.libraryDistinctRankCount) FROM cond AS t1 INNER JOIN scRnaSeqFullLengthLibrary AS t2 ON t1.conditionId = t2.conditionId INNER JOIN scRnaSeqFullLengthResult AS t3 on t2.scRnaSeqFullLengthLibraryId = t3.scRnaSeqFullLengthLibraryId WHERE t3.rawRank IS NOT NULL GROUP BY t1.speciesId" >> $@.tmp 2>> $@.warn
+	@printf "Check that no genes that are not excluded have a rank null. Should not have any result\n" >> $@.tmp
+	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult as t1 INNER JOIN rnaSeqLibraryAnnotatedSample as t2 ON t1.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId INNER JOIN rnaSeqLibrary as t3 ON t2.rnaSeqLibraryId = t3.rnaSeqLibraryId where t1.rawRank IS NULL and t1.reasonForExclusion = \"not excluded\" and t3.rnaSeqTechnologyIsSingleCell = 1 limit 1" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
 # EST and in situ rank computations are now done as part of this step
@@ -241,8 +245,14 @@ $(OUTPUT_DIR)ranksGlobal: $(OUTPUT_DIR)ranksAffy $(OUTPUT_DIR)ranksRnaSeq $(OUTP
 	@$(MYSQL) -e "SELECT MIN(inSituGlobalRank), MAX(inSituGlobalRank), AVG(inSituGlobalRank) FROM globalExpression AS t1 WHERE inSituGlobalRank IS NOT NULL" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
+# This query takes time so we moved it to a separated rule
+$(OUTPUT_DIR)verificationRanksGlobal: $(OUTPUT_DIR)ranksAffy $(OUTPUT_DIR)ranksRnaSeq $(OUTPUT_DIR)ranksScRnaSeqFullLength
+	@echo "Check that each call have a rank information associated. Query should retrieve no data (stop when one call without any rank is found)\n" >> $@.tmp
+	@$(MYSQL) -e "SELECT * FROM globalExpression WHERE rnaSeqGlobalMeanRank IS NULL AND affymetrixGlobalMeanRank IS NULL AND estGlobalRank IS NULL AND scRnaSeqFullLengthGlobalMeanRank IS NULL AND inSituGlobalRank IS NULL limit 1" >> $@.tmp 2>> $@.warn
+	@$(MV) $@.tmp $@
+
 # It is also possible to normalize the ranks using a slurm cluster with the script run_ranks_global_on_cluster.pl. WARNING!!!! : As for bgee 15.0 the UNIL cluster queues allowed max 3 days of processing. Normalization for human and mouse took 10 days. DO NOT normalize ranks for these 2 species using the cluster. Normalization for all other species took less than one day
-$(OUTPUT_DIR)norm_ranks: $(OUTPUT_DIR)ranksGlobal
+$(OUTPUT_DIR)norm_ranks: $(OUTPUT_DIR)verificationRanksGlobal
 	@perl normalize_ranks.pl -bgee=$(BGEECMD) -species=$(EMPTY_LIST) > $@.tmp 2> $@.warn
 #	@printf "Expression IDs with ranks incorrectly generated: \n" >> $@.tmp
 #	@$(MYSQL) -e "SELECT expressionId FROM expression WHERE inSituData != 'no data' AND inSituRank IS NULL OR estData != 'no data' AND estRank IS NULL OR affymetrixData != 'no data' AND affymetrixMeanRank IS NULL OR rnaSeqData != 'no data' AND rnaSeqMeanRank IS NULL" >> $@.tmp

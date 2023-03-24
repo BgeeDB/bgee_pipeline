@@ -108,7 +108,7 @@ sub map_strain_names {
             print $line;
         }
         # Case scRNASeqLibrary.tsv (NOT_PASS_scRNASeqLibrary.tsv / NEW_scRNASeqLibrary.tsv): strain    speciesId
-        elsif ( $expression_annotation_file =~ /_scRNASeqLibrary\.tsv/ ){
+        elsif ( $expression_annotation_file =~ /ScRNASeqLibrary\.tsv/ ){
             if ( exists $strain_mapping->{ $fields[22] }->{ $fields[21] } ){
                 my $source = quotemeta($fields[21]);
                 my $target = $strain_mapping->{ $fields[22] }->{ $fields[21] };
@@ -1293,6 +1293,14 @@ sub check_active_jobs_number {
     return $running_jobs;
 }
 
+# Return the number of active jobs for one account and with name containing provided string
+sub check_active_jobs_number_per_account_and_name {
+    my ($account, $name) = @_;
+    my $running_jobs = `squeue --account=$account --noheader -o "%.18i %.20j %.8u %.2t" | grep $name | wc -l` || 0;
+    chomp($running_jobs);
+    return $running_jobs;
+}
+
 # Add main sbatch command and options
 sub sbatch_template {
     my ($queue, $account, $nbr_processors, $memory_usage, $output_file, $error_file, $job_name) = @_;
@@ -1308,7 +1316,7 @@ sub sbatch_template {
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=$nbr_processors
 #SBATCH --mem=${memory_usage}G
-#SBATCH --time=4:00:00
+#SBATCH --time=12:00:00
 
 #SBATCH --output=$output_file
 #SBATCH --error=$error_file

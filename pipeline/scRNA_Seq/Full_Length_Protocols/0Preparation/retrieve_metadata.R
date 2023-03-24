@@ -31,80 +31,89 @@ if( file.exists(pass_annotationControl) ){
 } else {
   stop( paste("The annotation file not found [", pass_annotationControl, "]\n"))
 }
-##########################################################################################################################
-# retrieve information from EBI metadata for each library annotated
-libraryIDs <-annotation[,1]
-metadata <- c()
-for (libraryID in unique(libraryIDs)) {
 
-  PID <- paste0(libraryID)
+#create output dir if not already done
+if (!dir.exists(output_folder)) {
+  dir.create(output_folder, recursive = TRUE)
+}
 
-  ena.url <- paste("https://www.ebi.ac.uk/ena/portal/api/filereport?accession=",
-                   PID,
+## Create the output files to write the comparison between annotation and metadata
+metadata_info <- file.path(output_folder,"metadata_info.tsv")
+file.create(metadata_info)
+metadata_info_not_match <- file.path(output_folder,"metadata_info_not_match.tsv")
+file.create(metadata_info_not_match)
+
+#create two data.frame for libraries passing/not passing the verification
+metadata_colnames <- c("sample_accession","experimentId","library_id","run_accession","read_count",
+  "tax_id","scientific_name","instrument_model","library_layout","fastq_ftp","submitted_ftp");
+passed <- data.frame(matrix(nrow = 0, ncol = length(metadata_colnames)))
+colnames(passed) <- metadata_colnames
+# add a column reason for exclusion to this file
+not_passed <- data.frame(matrix(nrow = 0, ncol = length(metadata_colnames) + 1))
+colnames(not_passed) <- c(metadata_colnames, "exclusion_reason")
+
+for (row in seq(nrow(annotation))) {
+  library <- annotation[row,]
+  libraryID <- library$libraryId
+  metadata_info <- tryCatch(
+    {
+      # retrieve information from EBI metadata for each library annotated
+      ena.url <- paste("https://www.ebi.ac.uk/ena/portal/api/filereport?accession=",
+                   libraryID,
                    "&result=read_run",
                    "&fields=experiment_accession,run_accession,",
                    "read_count,tax_id,scientific_name,",
                    "instrument_model,library_layout,fastq_ftp,submitted_ftp,",
                    "&download=TRUE",
                    sep="")
-  readInfo <- read.table(url(ena.url), header=TRUE, sep="\t")
-  metadata <- rbind(metadata,readInfo)
-}
-## What is called experiment_accession in ENA API is called library_id in our pipeline
-names(metadata)[names(metadata) == 'experiment_accession'] <- 'library_id' 
-
-## Create the output files to write the comparison between annotation and metadata
-metadata_info <- file.path(output_folder,"metadata_info.tsv")
-if (file.exists(metadata_info)){
-  message("File already exists and will be removed to create a new one to avoid overwritting!")
-  file.remove(metadata_info)
-  file.create(metadata_info)
-} else {
-  file.create(metadata_info)
-}
-cat("sample_accession\texperiment_id\tlibrary_id\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = metadata_info, sep = "\t")
-
-metadata_info_not_match <- file.path(output_folder,"metadata_info_not_match.tsv")
-if (file.exists(metadata_info_not_match)){
-  message("File already exists and will be removed to create a new one to avoid overwritting!")
-  file.remove(metadata_info_not_match)
-  file.create(metadata_info_not_match)
-} else {
-  file.create(metadata_info_not_match)
-}
-cat("sample_accession\texperiment_id\tlibrary_id\trun_accession\tread_count\ttax_id\tscientific_name\tinstrument_model\tlibrary_layout\tfastq_ftp\tsubmitted_ftp\n",file = metadata_info_not_match, sep = "\t")
-
-## compare information between annotation and metadata (like: libraryID, plataform and speciesID)
-for(i in 1:nrow(annotation)) {
-
-  annotationInfo <- annotation[i,]
-  metadataInfo <- metadata[i,]
-
-  # what we call library is called experiment accession at EBI
-  compare_library <- identical(as.character(annotationInfo[['libraryId']]),as.character(metadataInfo[['library_id']]))
-  compare_machine <- identical(as.character(annotationInfo[['platform']]),as.character(metadataInfo[['instrument_model']]))
-  compare_speciesID <- identical(as.character(annotationInfo[['speciesId']]),as.character(metadataInfo[['tax_id']]))
-
-
-  if (compare_library == "TRUE" && compare_machine == "TRUE" && compare_speciesID == "TRUE"){
-    message(as.character(annotationInfo$libraryId[1]), "complete match between annotation and metadata")
-    ## before writing the line to the file we first update the line to fit the experiment_id/library_id
-    ## nomenclature used in the pipeline
-    merge(metadataInfo, annotationInfo[, c("libraryId","experimentId")], by.x="library_id", by.y="libraryId")
-    ## update column order
-    metadataInfo <- metadataInfo[, c("sample_accession","experimentId","library_id","run_accession","read_count","tax_id","scientific_name","instrument_model","library_layout","fastq_ftp","submitted_ftp")]
-    ## homogeneise use of snake case for column names
-    names(metadata)[names(metadata) == 'experimentId'] <- 'experiment_id'
-    ## export libraries that pass and will be downloaded
-    write.table(metadataInfo, file = metadata_info, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
-
+      read.table(url(ena.url), header=TRUE, sep="\t")
+    },
+    error=function(cond) {
+      error <- TRUE
+      # Choose a return value in case of error
+      return(NA)
+    }
+  )
+  # check if there was an error during EBI metadata retrieval
+  if (!is.data.frame(metadata_info) && is.na(metadata_info)) {
+    metadata_info <- data.frame(matrix(nrow = 1, ncol = length(metadata_colnames) + 1))
+    colnames(metadata_info) <- c(metadata_colnames, "exclusion_reason")
+    metadata_info$library_id <- libraryID
+    metadata_info$exclusion_reason <- "EBI URL error"
+    not_passed <- rbind(not_passed, metadata_info)
   } else {
-    warning("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison library is: ", compare_library)
-    warning("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison platform is: ", compare_machine)
-    warning("For the library: ", as.character(annotationInfo$libraryId[1]), "the comparison species is: ", compare_speciesID)
-
-    ## export libraries that will not be used to download
-    write.table(metadataInfo, file = metadata_info_not_match, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
+    ## What is called experiment_accession in ENA API is called library_id in our pipeline
+    names(metadata_info)[names(metadata_info) == 'experiment_accession'] <- 'library_id' 
+    compare_machine <- identical(as.character(library$platform),
+      as.character(metadata_info$instrument_model))
+    compare_speciesID <- identical(as.character(library[['speciesId']]),
+      as.character(metadata_info[['tax_id']]))
+    
+    ## before writing the line to the file we first update the line to fit the
+    ## experiment_id/library_id nomenclature used in the pipeline
+    metadata_info <- merge(metadata_info, library[, c("libraryId","experimentId")],
+      by.x="library_id", by.y="libraryId")
+    ## update column order
+    metadata_info <- metadata_info[, metadata_colnames]
+    ## homogeneise use of snake case for column names
+    names(metadata_info)[names(metadata_info) == 'experimentId'] <- 'experiment_id'      
+    if (isTRUE(compare_machine) && isTRUE(compare_speciesID)) {
+      ## export libraries that pass and will be downloaded
+      passed <- rbind(passed, metadata_info)
+    } else {
+      if(isFALSE(compare_machine)) {
+        metadata_info$exclusion_reason <- "protocol_mismatch"
+      }
+      if(isFALSE(compare_speciesID)) {
+        metadata_info$exclusion_reason <- "species_mismatch"
+      }
+      not_passed <- rbind(not_passed, metadata_info)
+    }
   }
 }
+
+# write metadata files
+write.table(passed, metadata_info, sep = "\t", col.names = TRUE, row.names = FALSE, quote = FALSE)
+write.table(not_passed, metadata_info_not_match, sep = "\t", col.names = TRUE, row.names = FALSE,
+  quote = FALSE)
 

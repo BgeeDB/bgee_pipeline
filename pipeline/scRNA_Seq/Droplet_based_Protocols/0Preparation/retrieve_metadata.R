@@ -35,20 +35,23 @@ for( c_arg in command_arg ){
 
 ## Read experiments and library annotation files. Do not consider If file not exists, script stops
 if( file.exists(scRNASeqExperiment) ){
-  experiments <- read.table(scRNASeqExperiment, h=T, sep="\t")
+  experiments <- read.table(scRNASeqExperiment, header=TRUE, sep="\t", quote = "\"")
   colnames(experiments)[1]<-"experimentId"
   experiments <- experiments %>% filter(!str_detect(experiments$experimentId, "^#"))
   
 } else {
   stop( paste("The experiment file not found [", scRNASeqExperiment, "]\n"))
 }
+
 if( file.exists(scRNASeqTBLibrary) ){
-  annotation <- read.table(scRNASeqTBLibrary, h=T, sep="\t")
+  ##XXX could be necessary to add `quote = ""` depending on the final format of the file
+  annotation <- read.table(scRNASeqTBLibrary, header=TRUE, sep="\t", comment.char = "", quote = "\"")
   colnames(annotation)[1]<-"libraryId"
   annotation <- annotation %>% filter(!str_detect(annotation$libraryId, "^#"))
 } else {
   stop( paste("The library file not found [", scRNASeqTBLibrary, "]\n"))
 }
+
 ###################################################################################################
 ## function to download metadata from SRA
 SRA_metadata <- function(libraryID){
@@ -69,13 +72,14 @@ SRA_metadata <- function(libraryID){
 # define header of SRA metadata files. Used to reorder columns before writing
 metadata_file_header <- c("sample_accession","experiment_id", "library_id", "run_accession",
                           "read_count", "tax_id", "scientific_name", "instrument_model",
-                          "library_layout", "fastq_ftp", "submitted_ftp")
+                          "library_layout", "fastq_ftp", "submitted_ftp", "source")
 
 ## select 10X Genomics and 3' end target-based protocols to retrieve metadata
+## We use a grep to detect 10X Genomics as the protocol name can contain the version (e.g 10X Genomics V3)
 selected_libraries <- as.data.frame(dplyr::filter(annotation, protocolType == "3'end" &
-                                                    protocol == "10X Genomics"))
+  grepl("10X Genomics", protocol, perl=T)))
 selected_experiments <- as.data.frame(dplyr::filter(experiments, experimentId %in%
-                                                      unique(selected_libraries$experimentId)))
+  unique(selected_libraries$experimentId)))
 
 ## extract metadata from SRA
 metadata <- c()
@@ -84,11 +88,12 @@ metadata_with_mismatch <- c()
 for (expId in unique(selected_experiments$experimentId)) {
   ## select source  of the experiment
   sourceId <- as.character(unique(selected_experiments$experimentSource[selected_experiments$experimentId == expId]))
-  if(sourceId == "SRA"){
+  if(sourceId == "SRA" || sourceId == "EBI"){
     for (libraryId in selected_libraries$libraryId[selected_libraries$experimentId == expId]) {
       library <- as.data.frame(selected_libraries[selected_libraries$libraryId == libraryId,])
       ## retrieve SRA metadata
       extractSRA <- SRA_metadata(libraryID = libraryId)
+      extractSRA$source <- sourceId
       ## compare with Bgee annotation
       ## probably too stringent as it does not use a controlled vocabulary
       if (!identical(as.character(library$platform),as.character(unique(extractSRA$instrument_model)))) {
@@ -110,7 +115,7 @@ for (expId in unique(selected_experiments$experimentId)) {
             ". Do not retrieve metadata!")
     hca_libraries <- annotation[annotation$experimentId == expId,]
     hca_metadata <- data.frame(NA, NA, hca_libraries$libraryId, NA, NA, hca_libraries$speciesId,
-                               "Homo sapiens", hca_libraries$platform, NA, NA, NA)
+                               "Homo sapiens", hca_libraries$platform, NA, NA, NA, "HCA")
     # merge lines of the two df. Do not use rbind as column names are different 
     metadata <- as.data.frame(mapply(c, metadata, hca_metadata))
   }  else {

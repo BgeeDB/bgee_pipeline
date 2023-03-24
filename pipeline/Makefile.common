@@ -148,7 +148,7 @@ CLUSTER_DATA_PATH       := /data/FAC/FBM/DEE/mrobinso/bgee_sensitive
 CLUSTER_SCRATCH_PATH    := /scratch/beegfs/FAC/FBM/DEE/mrobinso/bgee_sensitive
 CLUSTER_SCRATCH_RESULTS := $(CLUSTER_SCRATCH_PATH)/$(DBNAME)/
 CLUSTER_ARCHIVE_PATH    := /archive/FAC/FBM/DEE/mrobinso/bgee_sensitive
-CLUSTER_CURNAGL_PATH    := /work/FAC/FBM/DEE/mrobinso/bgee
+CLUSTER_CURNAGL_PATH    := /work/FAC/FBM/DEE/mrobinso/bgee_sensitive
 
 R_LIBS_PATH_JURA        := $(CLUSTER_DATA_PATH)/R_LIBS
 R_LIBS_PATH_CURNAGL     := $(CLUSTER_CURNAGL_PATH)/R_LIBS
@@ -473,6 +473,7 @@ RNASEQTMMPATH                       := $(RNASEQDATAPATH)processed_TMM_$(DBNAME)/
 SC_RNASEQ_PATH                         := scRNA_Seq/
 SC_RNASEQ_PATH_SOURCE                  := $(SOURCE_FILES_DIR)$(SC_RNASEQ_PATH)
 SC_RNASEQ_EXPERIMENT_FILEPATH          := $(SC_RNASEQ_PATH_SOURCE)scRNASeqExperiment.tsv
+SC_RNASEQ_ACCEPTED_PROTOCOLS           := $(SC_RNASEQ_PATH_SOURCE)acceptedProtocols.tsv
 ### Full_length
 SC_RNASEQ_FL_FOLDER_SOURCE             := $(SC_RNASEQ_PATH_SOURCE)Full_length/
 SC_RNASEQ_LIB_FL_FILEPATH              := $(SC_RNASEQ_FL_FOLDER_SOURCE)scRNASeqFLLibrary.tsv
@@ -501,7 +502,9 @@ SC_RNASEQ_SAMP_STATS_FL                := $(SC_RNASEQ_FL_FOLDER_GENERATED)presen
 SC_RNASEQ_REPORT_INFO_FL               := $(SC_RNASEQ_FL_FOLDER_GENERATED)reports_info_all_samples.txt
 ### Target_based
 SC_RNASEQ_TB_FOLDER_GENERATED               := $(SC_RNASEQ_PATH_GENERATED)Target_based/
-SC_RNASEQ_CLEANED_BARCODES                  := $(SC_RNASEQ_TB_FOLDER_GENERATED)/cleaned_barcodes/
+SC_RNASEQ_EXPERIMENT_FILEPATH_FILTERED      := $(SC_RNASEQ_TB_FOLDER_GENERATED)scRNASeqExperiment.tsv
+SC_RNASEQ_LIB_TB_FILEPATH_FILTERED          := $(SC_RNASEQ_TB_FOLDER_GENERATED)scRNASeqTBLibrary.tsv
+SC_RNASEQ_CLEANED_BARCODES                  := $(SC_RNASEQ_TB_FOLDER_GENERATED)cleaned_barcodes/
 SC_RNASEQ_METADATA_10X_FILEPATH             := $(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_info_10X.txt
 SC_RNASEQ_METADATA_10X_NOT_MATCH_FILEPATH   := $(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_notMatch_10X.txt
 SC_RNASEQ_SAMPINFO_10X_FILEPATH             := $(SC_RNASEQ_PATH_GENERATED)scRNA_Seq_info_TargetBased.txt
