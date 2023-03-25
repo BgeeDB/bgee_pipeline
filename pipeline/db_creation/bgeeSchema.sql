@@ -917,6 +917,16 @@ create table rnaSeqLibrary (
     sequencedTranscriptPart enum ('NA', '3prime', '5prime', 'full length'),
     fragmentation smallint unsigned not null default 0 COMMENT 'corresponds to fragmentation of cDNA. 0 for long reads', 
     rnaSeqPopulationCaptureId varchar(255) not null,
+    genotype varchar(70),
+    -- In case of single read, it's the total number of reads
+    allReadsCount int unsigned not null default 0,
+-- total number of reads in library that were mapped to anything.
+-- if it is not a paired-end library, this number is equal to leftMappedReadsCount
+    mappedReadsCount int unsigned not null default 0,
+-- a library is an assembly of different runs, and the runs can have different read lengths,
+-- so we store the min and max read lengths
+    minReadLength int unsigned not null default 0,
+    maxReadLength int unsigned not null default 0,
     -- Is the library built using paired end?
 -- NA: info not used for pseudo-mapping. Default value in an enum is the first one.
     libraryType enum('NA', 'single', 'paired') not null
@@ -959,7 +969,6 @@ create table rnaSeqLibraryAnnotatedSample (
     conditionId mediumint unsigned not null,
 --  can be null as it is applicable only to pooled bulk samples like BRB-Seq
     barcode varchar(70) COMMENT 'barcode used to pool several samples in the same library',
-    genotype varchar(70),
     abundanceUnit enum('tpm', 'cpm'),
     meanAbundanceReferenceIntergenicDistribution decimal(16, 6) not null default -1 COMMENT 'mean TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
     sdAbundanceReferenceIntergenicDistribution decimal(16, 6) not null default -1 COMMENT 'standard deviation in TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
@@ -973,19 +982,10 @@ create table rnaSeqLibraryAnnotatedSample (
     pValueThreshold decimal(5, 4) unsigned not null default 0 COMMENT 'pValue threshold used to consider genes present/absent. (for Bgee15 this threshold should always be 0.05)',
 -- total number of reads in library, including those not mapped.
 -- In case of paired-end libraries, it's the number of pairs of reads;
--- In case of single read, it's the total number of reads
-    allReadsCount int unsigned not null default 0,
 -- total number of UMIs in library, including those not mapped.
     allUMIsCount int unsigned not null default 0,
--- total number of reads in library that were mapped to anything.
--- if it is not a paired-end library, this number is equal to leftMappedReadsCount
-    mappedReadsCount int unsigned not null default 0,
 -- total number of UMIs in library that were mapped to anything.
     mappedUMIsCount int unsigned not null default 0,
--- a library is an assembly of different runs, and the runs can have different read lengths,
--- so we store the min and max read lengths
-    minReadLength int unsigned not null default 0,
-    maxReadLength int unsigned not null default 0,
 -- the following fields are used for rank computations, and are set after all expression data insertion,
 -- this is why null value is permitted.
     libraryMaxRank decimal(9,2) unsigned COMMENT 'The max fractional rank in this library (see `rank` field in rnaSeqResult table)',
