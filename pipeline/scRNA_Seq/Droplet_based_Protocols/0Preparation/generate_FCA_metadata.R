@@ -27,7 +27,7 @@ data_FCA$tax_id <- "7227"
 data_FCA$scientific_name <- "Drosophila melanogaster"
 data_FCA$fastq <- paste(data_FCA[,56], data_FCA[,58], sep = ";")
 data_FCA$source <- "FCA"
-reorder_FCA <-data_FCA[,c(3, 63, 2, 53, 1, 64, 65, 1, 22, 66, 66, 67)]
+reorder_FCA <-data_FCA[,c(3, 63, 50, 53, 1, 64, 65, 1, 22, 66, 66, 67)]
 colnames(reorder_FCA) <- header
 reorder_FCA$read_count <- ""
 reorder_FCA$instrument_model <- ""
