@@ -4,27 +4,42 @@ use strict;
 use warnings;
 use diagnostics;
 use File::Slurp;
+use FindBin;
+use lib "$FindBin::Bin/../../.."; # Get lib path for Utils.pm
+use Utils;
 
 # Julien Wollbrett, created March 2023
 # Script used to run fastp and generate R.stat file for all downloaded target-based run
 
+# Commands to run on the front node of the cluster
+# 
+# module use /software/module/
+# module load Development/Ensembl_API/97;
+# module load UHTS/Quality_control/fastp/0.19.5;
+# export PATH=/software/bin:$PATH
+#
 #####################################################################
 
 # Define arguments & their default value
-my ($metadata_file, $fastq_dir)  = ('', '');
+my ($metadata_file, $fastq_dir, $fastp_path)  = ('', '', '');
 my %opts = ('metadata_file=s'    => \$metadata_file,   # File containing metadata of all run to process
             'fastq_dir=s'        => \$fastq_dir,       # Directory where all target-based FASTQ files are donwloaded
+            'fastp_path=s'       => \$fastp_path       # Path to the fastp tool
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$metadata_file || $fastq_dir eq ''){
+if ( !$metadata_file || $fastq_dir eq ''|| $fastp_path eq ''){
     print "\n\tInvalid or missing argument:
 \te.g., $0  -metadata_file=\$(METADATA_FILE) -fastq_dir=R\$(FASTQ_DIR) > $@.tmp 2>warnings.$@
 \t-metadata_file          File containing metadata of all run to process
-\t-fastq_dir              Directory where all target-based FASTQ files are donwloaded";
+\t-fastq_dir              Directory where all target-based FASTQ files are donwloaded
+\t-fastp_path             Path to the fastp tool\n";
     exit 1;
 }
+
+require("$FindBin::Bin/../../rna_seq_utils.pl");
+require("$FindBin::Bin/../target_base_utils.pl");
 
 my %metadata = get_processed_libraries_info($metadata_file);
 
@@ -48,7 +63,7 @@ for my $experiment_id (sort keys %metadata) {
             # as well as basic read length statistics with R
             #NOTE Would be nice to have all basic stats from FastP (currently some are done in R)
             if ( !-e "${run_path}${run_id}.fastp.html.xz" || !-e "${run_path}${run_id}.fastp.json.xz" ){
-                system("fastp -i $fastq_fastp --json ${run_path}${run_id}.fastp.json --html ${run_path}${run_id}.fastp.html --thread 2  > ${run_path}${run_id}.fastp.log 2>&1")==0
+                system("$fastp_path -i $fastq_fastp --json ${run_path}${run_id}.fastp.json --html ${run_path}${run_id}.fastp.html --thread 2  > ${run_path}${run_id}.fastp.log 2>&1")==0
                     or do { warn "\tfastp failed for [${run_path}${run_id}]\n" };
                 system("xz -9 ${run_path}${run_id}.fastp.html ${run_path}${run_id}.fastp.json");
             }
