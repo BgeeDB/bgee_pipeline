@@ -340,6 +340,7 @@ sub get_processed_libraries_info {
         my $runId                           = $tmp[3];
         my $experimentId                    = $tmp[1];
         my $libraryId                       = $tmp[2];
+        my $speciesId                       = $tmp[5];
         my $libraryType                     = $tmp[8];
         my $submittedFTP                    = $tmp[10];
         my $downloadSource                  = $tmp[11];
@@ -366,6 +367,10 @@ sub get_processed_libraries_info {
                 warn "Warning, wrong format for libraryType [$libraryType]\n";
                 $discarded = 1;
             }
+            if ($speciesId eq '' ){
+                warn "Warning, wrong format for speciesId [$speciesId]\n";
+                $discarded = 1;
+            }
             if ($downloadSource eq '' ){
                 warn "Warning, wrong format for downloadSource [$downloadSource]\n";
                 $discarded = 1;
@@ -379,6 +384,7 @@ sub get_processed_libraries_info {
                     $downloadSource;
                 $libInfos{$experimentId}->{$libraryId}->{$runId}->{'submittedFTP'} =
                     $submittedFTP;
+                $libInfos{$experimentId}->{$libraryId}->{'$speciesId'} = $speciesId;
             }
         } else {
             warn 'Warning: run present several times in the metadata file: experiment: ',
