@@ -40,7 +40,7 @@ readTsvFile<- function(fileToRead, header = TRUE, sep = "\t", quote = "",
 
 ### First check that all files exist and read them
 raw_lib_annot <- readTsvFile(scRNASeqTBLibrary, quote = "\"", commentChar="")
-raw_exp_annot <- readTsvFile(scRNASeqExperiment, quote = "\"", , commentChar="")
+raw_exp_annot <- readTsvFile(scRNASeqExperiment, quote = "\"", commentChar="")
 protocols <- readTsvFile(acceptedProtocols)
 target_based_protocols <- protocols[protocols$Library_construction == "3'end",]
 
@@ -53,7 +53,7 @@ for (rowNumber in seq(nrow(raw_exp_annot))) {
   }
 }
 filtered_lib_annot <- raw_lib_annot[raw_lib_annot$protocol %in% target_based_protocols$Protocols
-  & raw_lib_annot$whiteList %in% target_based_protocols$target_whiteList,]
+  & raw_lib_annot$whiteList %in% target_based_protocols$target_whiteList & raw_lib_annot$speciesId == 7227,]
 
 ### Finally write filtered files in the output dir
 colnames(filtered_exp_annot)[1] <- "experimentId"
