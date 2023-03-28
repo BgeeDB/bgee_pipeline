@@ -17,10 +17,6 @@
 library(stringr)
 library(dplyr)
 
-my $commandToRun = "R CMD BATCH --no-save --no-restore \"--args libraryId=\'$libraryId\' speciesId=\'$speciesId\'",
-          " fastqDir=\'$fastqDir\' gtfDir=\'$gtfDir\' scRNASeqInfoFile=\'$scRNASeqInfoFile\'",
-          " kallisto_bus_results=\'$kallistoResults\'\" $pathToScript";
-
 ## reading arguments
 cmd_args = commandArgs(TRUE);
 print(cmd_args)
@@ -40,7 +36,7 @@ for( c_arg in command_arg ){
 
 ##########################################################################################################################################################
 ## first merge information from the metadata (like: reads information and SRR) and annotation file (from Bgee)
-scRNASeqInfo <- read.table(scRNASeqInfoFile, quote = FALSE, sep = "\t", header = TRUE)
+scRNASeqInfo <- read.table(scRNASeqInfoFile, sep = "\t", header = TRUE, quote = "\"")
 
 species <- unique(as.character(scRNASeqInfo$scientific_name[scRNASeqInfo$libraryId == libraryId]))
 message("Species:", species)
@@ -50,8 +46,8 @@ transcriptomeIndexFile <- list.files(gtfDir, pattern = paste0("^", speciesName, 
 print(transcriptomeIndexFile)
 #TODO: transcriptome index can potentially be compressed with xz.
 
-if (! file.exists(file.path(kallisto_bus_results, libraryId)) {
-  create.dir(file.path(kallisto_bus_results, libraryId))
+if (! file.exists(file.path(kallisto_bus_results, libraryId))) {
+  dir.create(file.path(kallisto_bus_results, libraryId))
 }
 
 ## verify if library exist
@@ -72,7 +68,7 @@ if (file.exists(file.path(fastqDir, speciesId, libraryId))) {
     if (!dir.exists(busOutput)){
       dir.create(busOutput, recursive=TRUE)
     }
-    detectFastqPath <- file.path(fastqDir, taxID, i)
+    detectFastqPath <- file.path(fastqDir, speciesId, libraryId)
     readBarcodes <- list.files(path=detectFastqPath, pattern = "*_R1.fastq.gz$", recursive = TRUE,
       full.names = TRUE, include.dirs = FALSE)
     readSeq <- list.files(path = detectFastqPath, pattern = "*_R2.fastq.gz$", recursive = TRUE,
@@ -87,11 +83,11 @@ if (file.exists(file.path(fastqDir, speciesId, libraryId))) {
     message("Files to pass to Kallisto: ")
     message(filesKallisto)
         
-    ## RUN Kallisto bus
-    system(sprintf('kallisto bus -i %s -o %s --paired -t 4 --unstranded %s', file.path(gtfDir, transcriptomeIndexFile), paste0(busOutput), paste0(filesKallisto)))
+    #RUN Kallisto bus
+    system(sprintf('kallisto bus -i %s -o %s -x %s -t 4 %s', file.path(gtfDir, transcriptomeIndexFile), paste0(busOutput), paste0("10x", whiteLInfo), paste0(filesKallisto)))
     ## control file
-    file.create(file.path(kallisto_bus_results, i, "Done_kallisto_bus.txt"))
+    file.create(file.path(kallisto_bus_results, libraryId, "Done_kallisto_bus.txt"))
   }
 } else {
-  message("Library not present in the folder ", file.path(fastqDir, i), " to run Kallisto bus!")
+  message("Library not present in the folder ", file.path(fastqDir, libraryId), " to run Kallisto bus!")
 }
