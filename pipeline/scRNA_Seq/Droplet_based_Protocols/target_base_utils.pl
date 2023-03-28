@@ -384,7 +384,7 @@ sub get_processed_libraries_info {
                     $downloadSource;
                 $libInfos{$experimentId}->{$libraryId}->{$runId}->{'submittedFTP'} =
                     $submittedFTP;
-                $libInfos{$experimentId}->{$libraryId}->{'$speciesId'} = $speciesId;
+                $libInfos{$experimentId}->{$libraryId}->{'speciesId'} = $speciesId;
             }
         } else {
             warn 'Warning: run present several times in the metadata file: experiment: ',
