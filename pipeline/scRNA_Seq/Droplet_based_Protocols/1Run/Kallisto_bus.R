@@ -39,10 +39,9 @@ if( file.exists(metadata_file) ){
 } else {
   stop( paste("The metadata file not found [", metadata_file, "]\n"))
 }
-
 ## Read annotation file. If file not exists, script stops
 if( file.exists(annotation_file) ){
-  annotation <- read.table(annotation_file, h=T, sep="\t", comment.char="")
+  annotation <- read.table(annotation_file, h=T, sep="\t", comment.char="", quote ="\"")
   colnames(annotation)[1] <- "libraryId"
 } else {
   stop( paste("The annotation file not found [", annotation_file, "]\n"))
@@ -52,7 +51,6 @@ if( file.exists(annotation_file) ){
 metadataCollect <- metadata[c("library_id", "run_accession","read_count", "tax_id", "scientific_name", "library_layout")]
 colnames(metadataCollect)[1] <- "libraryId"
 targetBased <- data.frame(dplyr::filter(annotation, protocol == "10X Genomics" & protocolType == "3'end"))
-
 ## generate the informative file of the target based protocols with all the information!
 scRNASeqInfo <- merge(targetBased, metadataCollect, by="libraryId", incomparables = NaN)
 write.table(scRNASeqInfo, file = paste0(output, "/scRNA_Seq_info_TargetBased.txt"), col.names = TRUE, row.names = FALSE , quote = FALSE, sep = "\t")
@@ -79,7 +77,6 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
   ## collect all libraries from the species
   collectLibrary <- scRNASeqInfo$libraryId[scRNASeqInfo$scientific_name == species]
   taxID <- unique(scRNASeqInfo$tax_id[scRNASeqInfo$scientific_name == species])
-
   for (i in collectLibrary) {
     message("Treating library: ", i)
 
@@ -151,12 +148,12 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
         message(filesKallisto)
         
         ## RUN Kallisto bus
-        system(sprintf('kallisto bus -i %s -o %s --paired -t 4 --unstranded %s', file.path(folderSupport, transcriptomeIndexFile), paste0(busOutput), paste0(filesKallisto)))
+        system(sprintf('kallisto bus -i %s -o %s -x %s -t 4 %s', file.path(folderSupport, transcriptomeIndexFile), paste0(busOutput), paste0("10x",whiteLInfo), paste0(filesKallisto)))
         ## control file
         file.create(file.path(kallisto_bus_results, i, "Done_kallisto_bus.txt"))
       }
     } else {
-      message("Library not present in the folder ", file.path(folder_data, i), " to run Kallisto bus!")
+      message("Library not present in the folder ", file.path(folder_data, taxID, i), " to run Kallisto bus!")
     }
   }
   # now that all libraries of the species have been processed, the transcriptome index file
