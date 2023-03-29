@@ -421,7 +421,56 @@ add primary key (expressionId, inSituExperimentId);
 /*!40000 ALTER TABLE `inSituExperimentExpression` ENABLE KEYS */;
 
 --  ****************************************************
---  RAW RNA-SEQ DATA
+--  NEW RAW RNA-SEQ DATA
+--  ****************************************************
+
+/*!40000 ALTER TABLE `rnaSeqExperimentDev` DISABLE KEYS */;
+alter table rnaSeqExperimentDev
+add primary key (rnaSeqExperimentId);
+/*!40000 ALTER TABLE `rnaSeqExperimentDev` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `rnaSeqLibraryDev` DISABLE KEYS */;
+alter table rnaSeqLibraryDev
+add primary key (rnaSeqLibraryId);
+/*!40000 ALTER TABLE `rnaSeqLibraryDev` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `rnaSeqLibraryAnnotatedSampleDev` DISABLE KEYS */;
+alter table rnaSeqLibraryAnnotatedSampleDev
+modify rnaSeqLibraryAnnotatedSampleId mediumint unsigned not null auto_increment primary key;
+/*!40000 ALTER TABLE `rnaSeqLibraryAnnotatedSampleDev` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `rnaSeqLibraryAnnotatedSampleGeneResultDev` DISABLE KEYS */;
+alter table rnaSeqLibraryAnnotatedSampleGeneResultDev
+add primary key (rnaSeqLibraryAnnotatedSampleId, bgeeGeneId);
+/*!40000 ALTER TABLE `rnaSeqLibraryAnnotatedSampleGeneResultDev` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `rnaSeqLibraryIndividualSampleDev` DISABLE KEYS */;
+alter table rnaSeqLibraryIndividualSampleDev
+modify rnaSeqLibraryIndividualSampleId int unsigned not null auto_increment primary key;
+/*!40000 ALTER TABLE `rnaSeqLibraryIndividualSampleDev` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `rnaSeqLibraryIndividualSampleGeneResultDev` DISABLE KEYS */;
+alter table rnaSeqLibraryIndividualSampleGeneResultDev
+add primary key (rnaSeqLibraryIndividualSampleId, bgeeGeneId);
+/*!40000 ALTER TABLE `rnaSeqLibraryIndividualSampleGeneResultDev` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `rnaSeqPopulationCapture` DISABLE KEYS */;
+alter table rnaSeqPopulationCapture
+add primary key (rnaSeqPopulationCaptureId);
+/*!40000 ALTER TABLE `rnaSeqPopulationCapture` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `rnaSeqPopulationCaptureToBiotypeExcludedAbsentCalls` DISABLE KEYS */;
+alter table rnaSeqPopulationCaptureToBiotypeExcludedAbsentCalls
+add primary key (rnaSeqPopulationCaptureId, geneBioTypeId);
+/*!40000 ALTER TABLE `rnaSeqPopulationCaptureToBiotypeExcludedAbsentCalls` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `rnaSeqPopulationCaptureSpeciesMaxRank` DISABLE KEYS */;
+alter table rnaSeqPopulationCaptureSpeciesMaxRank
+add primary key (speciesId, rnaSeqPopulationCaptureId);
+/*!40000 ALTER TABLE `rnaSeqPopulationCaptureSpeciesMaxRank` ENABLE KEYS */;
+
+--  ****************************************************
+--  OLD RAW RNA-SEQ DATA
 --  ****************************************************
 /*!40000 ALTER TABLE `rnaSeqExperiment` DISABLE KEYS */;
 alter table rnaSeqExperiment

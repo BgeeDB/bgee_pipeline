@@ -10,3 +10,11 @@ ALTER TABLE OMAHierarchicalGroup ADD INDEX (OMAGroupId);
 ALTER TABLE affymetrixProbeset ADD INDEX (bgeeAffymetrixChipId, expressionId, bgeeGeneId, normalizedSignalIntensity);
 ALTER TABLE rnaSeqResult ADD INDEX (rnaSeqLibraryId, expressionId, bgeeGeneId, tpm);
 ALTER TABLE scRnaSeqFullLengthResult ADD INDEX (scRnaSeqFullLengthLibraryId, expressionId, bgeeGeneId, tpm);
+
+-- index generated to fasten the retrieval of raw data as proposed in the
+-- DBA StackExchange issue : https://dba.stackexchange.com/questions/320207/optimization-with-subquery-not-working-as-expected
+-- the improvement provided by these index has not been tested
+ALTER TABLE rnaSeqLibraryAnnotatedSampleGeneResultDev ADD INDEX (rnaSeqLibraryAnnotatedSampleId, expressionId, bgeeGeneId, abundance);
+ALTER TABLE affymetrixProbeset ADD INDEX(bgeeAffymetrixChipId, affymetrixProbesetId, bgeeGeneId);
+ALTER TABLE affymetrixChip ADD INDEX(conditionId, bgeeAffymetrixChipId);
+ALTER TABLE cond ADD INDEX(speciesId, conditionId);

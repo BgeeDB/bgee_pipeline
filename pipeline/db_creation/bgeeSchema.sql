@@ -902,7 +902,164 @@ create table inSituExperimentExpression (
 comment = 'This table stores information about expression calls produced from in situ hybridization experiments, that is then used in Bgee to compute global summary expression calls and qualities.';
 
 -- ****************************************************
--- RNA-Seq DATA
+-- NEW RNA-Seq DATA
+-- ****************************************************
+create table rnaSeqExperimentDev (
+-- primary exp ID, from GEO, patterns GSExxx
+    rnaSeqExperimentId varchar(70) not null,
+    rnaSeqExperimentName varchar(255) not null default '',
+    rnaSeqExperimentDescription text,
+    dataSourceId smallInt unsigned not null
+) engine = innodb;
+
+-- Corresponds to one library in the sense of one sequencing library. It can contains several
+-- sample libraries each one of them potentially having different condition in case of library (e.g BRB-Seq)
+-- or sample (e.g 10x) multiplexing
+-- uses to produce several runs
+create table rnaSeqLibraryDev (
+-- primary ID, from GEO, pattern GSMxxx
+    rnaSeqLibraryId varchar(70) not null,
+    rnaSeqExperimentId varchar(70) not null,
+    rnaSeqSequencerName varchar(255) not null,
+    rnaSeqTechnologyName varchar(255) not null,
+    rnaSeqTechnologyIsSingleCell tinyint(1) not null,
+    sampleMultiplexing boolean not null default 0, 
+    libraryMultiplexing boolean not null default 0,
+--  **** Columns related to the sampling protocol ***
+--  TODO: check validity of enum
+    strandSelection enum ('NA', 'forward', 'revert', 'unstranded'),
+    cellCompartment enum('NA', 'nucleus', 'cell'),
+    sequencedTranscriptPart enum ('NA', '3prime', '5prime', 'full length'),
+    fragmentation smallint unsigned not null default 0 COMMENT 'corresponds to fragmentation of cDNA. 0 for long reads', 
+    rnaSeqPopulationCaptureId varchar(255) not null,
+    -- Is the library built using paired end?
+-- NA: info not used for pseudo-mapping. Default value in an enum is the first one.
+    libraryType enum('NA', 'single', 'paired') not null
+) engine = innodb;
+
+create table rnaSeqLibraryAnnotatedSampleDev (
+    rnaSeqLibraryAnnotatedSampleId mediumint unsigned not null,
+    rnaSeqLibraryId varchar(70) not null,
+    conditionId mediumint unsigned not null,
+--  can be null as it is applicable only to pooled bulk samples like BRB-Seq
+    barcode varchar(70) COMMENT 'barcode used to pool several samples in the same library',
+    genotype varchar(70),
+    abundanceUnit enum('tpm', 'cpm'),
+    meanAbundanceReferenceIntergenicDistribution decimal(16, 6) not null default -1 COMMENT 'mean TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
+    sdAbundanceReferenceIntergenicDistribution decimal(16, 6) not null default -1 COMMENT 'standard deviation in TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
+-- TMM normalization factor
+    tmmFactor decimal(8, 6) not null default 1.0,
+--  abundance threshold to consider a gene as expressed
+    abundanceThreshold decimal(16, 6) not null default -1,
+    allGenesPercentPresent decimal(5, 2) unsigned not null default 0,
+    proteinCodingGenesPercentPresent decimal(5, 2) unsigned not null default 0,
+    intergenicRegionsPercentPresent decimal(5, 2) unsigned not null default 0,
+    pValueThreshold decimal(5, 4) unsigned not null default 0 COMMENT 'pValue threshold used to consider genes present/absent. (for Bgee15 this threshold should always be 0.05)',
+-- total number of reads in library, including those not mapped.
+-- In case of paired-end libraries, it's the number of pairs of reads;
+-- In case of single read, it's the total number of reads
+    allReadsCount int unsigned not null default 0,
+-- total number of UMIs in library, including those not mapped.
+    allUMIsCount int unsigned not null default 0,
+-- total number of reads in library that were mapped to anything.
+-- if it is not a paired-end library, this number is equal to leftMappedReadsCount
+    mappedReadsCount int unsigned not null default 0,
+-- total number of UMIs in library that were mapped to anything.
+    mappedUMIsCount int unsigned not null default 0,
+-- a library is an assembly of different runs, and the runs can have different read lengths,
+-- so we store the min and max read lengths
+    minReadLength int unsigned not null default 0,
+    maxReadLength int unsigned not null default 0,
+-- the following fields are used for rank computations, and are set after all expression data insertion,
+-- this is why null value is permitted.
+    libraryMaxRank decimal(9,2) unsigned COMMENT 'The max fractional rank in this library (see `rank` field in rnaSeqResult table)',
+    libraryDistinctRankCount mediumint unsigned COMMENT 'The count of distinct rank in this library (see `rank` field in rnaSeqResult table, used for weighted mean rank computations)',
+    multipleLibraryIndividualSample boolean not null default 0 COMMENT 'boolean true if the annotated sample contains several individual samples. e.g true for 10x as one annotated sample corresponds to one cell population and individual sample will correspond to each cell of this cell population'
+) engine = innodb;
+
+-- this table contains counts and abundance level for each gene at the level of an annotated
+-- sample. Each pair of bgeeGeneId and rnaSeqLibraryAnnotatedSampleId is unique.
+-- * for bulk RNA-Seq one result corresponds to one gene at one organ level.
+-- * for BRB-Seq one result corresponds to one gene at one organ level (after demultiplexing of pooled libraries)
+-- * for full length single cell RNA-Seq one result corresponds to one gene at one cell level
+-- * for droplet base single cell RNA-Seq one result corresponds to one gene at one cell-type population level (combine all counts of same cell-type per library)
+create table rnaSeqLibraryAnnotatedSampleGeneResultDev (
+    rnaSeqLibraryAnnotatedSampleId mediumint unsigned not null COMMENT 'Internal ID used to define one library at one annotated condition',
+    bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
+--  abundance values inserted here are NOT TMM normalized,
+--  these are the raw data before any normalization
+    abundanceUnit enum ('tpm','cpm'),
+    abundance decimal(16, 6) not null COMMENT 'abundance values, NOT log transformed',
+--  rawRank is not "not null" because we update this information afterwards
+    rawRank decimal(9, 2) unsigned,
+--  for information, measure not normalized for reads or genes lengths
+    readsCount decimal(16, 6) unsigned not null COMMENT 'As of Bgee 14, read counts are "estimated counts" produced using the Kallisto software. They are not normalized for read or gene lengths.',
+    UMIsCount decimal(16, 6) unsigned not null COMMENT 'As of Bgee 15, UMI counts are "estimated counts" produced using the Kallisto software. They are not normalized for read or gene lengths.',
+-- zScore can be negative
+    zScore decimal(35, 30),
+    pValue decimal(31, 30) unsigned default null COMMENT 'present calls are based on the pValue',
+    expressionId int unsigned,
+-- TODO: to remove as not used anymore since Bgee 15. pValues are now used to consider a call as present/absent.
+    detectionFlag enum('undefined', 'absent', 'present') default 'undefined',
+-- When expressionId is null, the result is not used for the summary of expression.
+-- Reasons are:
+-- * pre filtering: Probesets always seen as "absent" or "marginal" over the whole dataset are removed
+-- * noExpression conflict: a "noExpression" result has been removed because of expression in a sub-condition.
+-- Note: as of Bgee 14, we haven't remove this reason for exclusion, but we don't use it for now,
+-- as we might want to take into account noExpression in parent conditions for generating
+-- a global expression calls, where there is expression in a sub-condition.
+-- Maybe we'll discard them again, but I don't think so, it'll allow to present absolutely
+-- all data available about a call to users.
+-- * undefined: only 'undefined' calls have been seen
+    rnaSeqData enum('no data','poor quality','high quality') default 'no data',
+    reasonForExclusion enum('not excluded', 'pre-filtering', 'absent call not reliable',
+    'undefined') not null default 'not excluded'
+) engine = innodb;
+
+--  TO CLARIFY: 
+--  * comment from Fred :comes from sample and library demultiplexing. In scRNA-Seq, 1 sample = 1 cell. In bulk, 1 sample = 1 organ for instance)
+--  * my feeling : comes only from sample demultiplexing with barcodes describing each cell. For library demultiplexing like BRB-Seq all librariesq 
+--    are already described in the table `rnaSeqLibraryAnnotatedSample` So for me for BRB-Seq 
+--    rnaSeqLibraryAnnotatedSample.multipleLibraryIndividualSample == 0.
+create table rnaSeqLibraryIndividualSampleDev (
+    rnaSeqLibraryIndividualSampleId int unsigned not null, 
+    rnaSeqLibraryAnnotatedSampleId mediumint unsigned not null,
+    barcode varchar(70) COMMENT 'barcode used to pool several samples in the same library',
+    sampleName varchar(70)
+) engine = innodb;
+
+-- gene result at individual sample level (e.g for each cell for 10x)
+create table rnaSeqLibraryIndividualSampleGeneResultDev (
+    rnaSeqLibraryIndividualSampleId int unsigned not null COMMENT 'Internal ID used to define one individual sample',
+    bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
+    abundanceUnit enum ('tpm','cpm'),
+    abundance decimal(16, 6) not null COMMENT 'abundance values, NOT log transformed',
+    readsCount decimal(16, 6) unsigned not null COMMENT 'As of Bgee 14, read counts are "estimated counts" produced using the Kallisto software. They are not normalized for read or gene lengths.',
+    UMIsCount decimal(16, 6) unsigned not null ,
+    rnaSeqData enum('no data','poor quality','high quality') default 'no data',
+    reasonForExclusion enum('not excluded', 'pre-filtering', 'absent call not reliable',
+    'undefined') not null default 'not excluded'
+) engine = innodb;
+
+-- called protocol until Bgee 15, the name was updated because the concept "protocol" now regroups
+-- a lot of different parameters (e.g population captured, strand, fragmentation size, ...)
+create table rnaSeqPopulationCapture (
+    rnaSeqPopulationCaptureId varchar(255) not null
+) engine = innodb;
+
+create table rnaSeqPopulationCaptureToBiotypeExcludedAbsentCalls (
+    rnaSeqPopulationCaptureId varchar(255) not null COMMENT 'protocol ID for which a biotype will not be used to generate absent calls',
+    geneBioTypeId smallint unsigned not null COMMENT 'biotype ID for which absent calls will not be generated.'
+) engine = innodb;
+
+create table rnaSeqPopulationCaptureSpeciesMaxRank (
+    rnaSeqPopulationCaptureId varchar(255) not null,
+    speciesId mediumint unsigned not null,
+    maxRank decimal(9,2) unsigned not null COMMENT 'The max fractional rank in this protocol and species (see `rank` field in rnaSeqResult table)'
+) engine = innodb;
+
+-- ****************************************************
+-- OLD RNA-Seq DATA
 -- ****************************************************
 create table rnaSeqExperiment (
 -- primary exp ID, from GEO, patterns GSExxx

@@ -395,7 +395,57 @@ add foreign key (inSituExperimentId) references inSituExperiment(inSituExperimen
 /*!40000 ALTER TABLE `inSituExperimentExpression` ENABLE KEYS */;
 
 --  ****************************************************
---  RAW RNA-SEQ DATA
+--  NEW RAW RNA-SEQ DATA
+--  ****************************************************
+/*!40000 ALTER TABLE `rnaSeqExperimentDev` DISABLE KEYS */;
+alter table rnaSeqExperimentDev
+add foreign key (dataSourceId) references dataSource(dataSourceId);
+/*!40000 ALTER TABLE `rnaSeqExperimentDev` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `rnaSeqLibraryDev` DISABLE KEYS */;
+alter table rnaSeqLibraryDev
+add foreign key (rnaSeqExperimentId) references rnaSeqExperimentDev(rnaSeqExperimentId) on delete cascade,
+add foreign key (rnaSeqPopulationCaptureId) references rnaSeqPopulationCapture(rnaSeqPopulationCaptureId) on delete cascade;
+/*!40000 ALTER TABLE `rnaSeqLibraryDev` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `rnaSeqLibraryAnnotatedSampleDev` DISABLE KEYS */;
+alter table rnaSeqLibraryAnnotatedSampleDev
+add foreign key (rnaSeqLibraryId) references rnaSeqLibraryDev(rnaSeqLibraryId) on delete cascade,
+add foreign key (conditionId) references cond(conditionId) on delete cascade;
+/*!40000 ALTER TABLE `rnaSeqLibraryAnnotatedSample` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `rnaSeqLibraryAnnotatedSampleGeneResultDev` DISABLE KEYS */;
+alter table rnaSeqLibraryAnnotatedSampleGeneResultDev
+add foreign key (rnaSeqLibraryAnnotatedSampleId) references rnaSeqLibraryAnnotatedSampleDev(rnaSeqLibraryAnnotatedSampleId) on delete cascade,
+add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade,
+add foreign key (expressionId) references expression(expressionId) on delete set null;
+/*!40000 ALTER TABLE `rnaSeqLibraryAnnotatedSampleGeneResultDev` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `rnaSeqLibraryIndividualSampleDev` DISABLE KEYS */;
+alter table rnaSeqLibraryIndividualSampleDev
+add foreign key (rnaSeqLibraryAnnotatedSampleId) references rnaSeqLibraryAnnotatedSampleDev(rnaSeqLibraryAnnotatedSampleId) on delete cascade;
+/*!40000 ALTER TABLE `rnaSeqLibraryIndividualSampleDev` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `rnaSeqLibraryIndividualSampleGeneResultDev` DISABLE KEYS */;
+alter table rnaSeqLibraryIndividualSampleGeneResultDev
+add foreign key (rnaSeqLibraryIndividualSampleId) references rnaSeqLibraryIndividualSampleDev(rnaSeqLibraryIndividualSampleId) on delete cascade,
+add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade;
+/*!40000 ALTER TABLE `rnaSeqLibraryIndividualSampleGeneResultDev` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `rnaSeqPopulationCaptureToBiotypeExcludedAbsentCalls` DISABLE KEYS */;
+alter table rnaSeqPopulationCaptureToBiotypeExcludedAbsentCalls
+add foreign key (rnaSeqPopulationCaptureId) references rnaSeqPopulationCapture(rnaSeqPopulationCaptureId) on delete cascade,
+add foreign key (geneBioTypeId) references geneBioType(geneBioTypeId) on delete cascade;
+/*!40000 ALTER TABLE `rnaSeqPopulationCaptureToBiotypeExcludedAbsentCalls` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `rnaSeqPopulationCaptureSpeciesMaxRank` DISABLE KEYS */;
+alter table rnaSeqPopulationCaptureSpeciesMaxRank
+add foreign key (rnaSeqPopulationCaptureId) references rnaSeqPopulationCapture(rnaSeqPopulationCaptureId) on delete cascade,
+add foreign key (speciesId) references species(speciesId) on delete cascade;
+/*!40000 ALTER TABLE `rnaSeqPopulationCaptureSpeciesMaxRank` ENABLE KEYS */;
+
+--  ****************************************************
+--  OLD RAW RNA-SEQ DATA
 --  ****************************************************
 /*!40000 ALTER TABLE `rnaSeqExperiment` DISABLE KEYS */;
 alter table rnaSeqExperiment
