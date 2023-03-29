@@ -6,7 +6,7 @@
 ##TODO: the scRNASeqInfoFile has to be generated in this script (or check if that file is really mandatory)
 ##TODO: integrate this script in the pipeline.
 ## example of command :
-##           perl 1Run/parallelized_kallisto_bus.pl -metadataFile=/users/jwollbre/Documents/git/bgee_pipeline/generated_files/scRNA_Seq/Target_based/all_downloaded_metadata_info_10X.txt -parallelJobs=100 -fastqDir=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/FASTQ/target_base/ -gtfDir=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/rna_seq/GTF_15/ -scRNASeqInfoFile=/users/jwollbre/Documents/git/bgee_pipeline/generated_files/scRNA_Seq/scRNA_Seq_info_TargetBased.txt -kallistoResults=/scratch/beegfs/FAC/FBM/DEE/mrobinso/bgee_sensitive/bgee_v15_0/scRNA-Seq_all_results_bgee_v15_0/DROPLET_10X/kallisto_bus_results_bgee_v15_0 -queue=normal -account=mrobinso_bgee_sensitive -pathToScript=$PWD/1Run/parallelized_kallisto_bus.pl > kallisto.out 2>> kallisto.err
+##           perl 1Run/parallelized_kallisto_bus.pl -metadataFile=/users/jwollbre/Documents/git/bgee_pipeline/generated_files/scRNA_Seq/Target_based/all_downloaded_metadata_info_10X.txt -parallelJobs=100 -fastqDir=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/FASTQ/target_base/ -gtfDir=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/rna_seq/GTF_15/ -scRNASeqInfoFile=/users/jwollbre/Documents/git/bgee_pipeline/generated_files/scRNA_Seq/scRNA_Seq_info_TargetBased.txt -kallistoResults=/scratch/beegfs/FAC/FBM/DEE/mrobinso/bgee_sensitive/bgee_v15_0/scRNA-Seq_all_results_bgee_v15_0/DROPLET_10X/kallisto_bus_results_bgee_v15_0 -queue=normal -account=mrobinso_bgee_sensitive -pathToScript=$PWD/1Run/kallisto_bus_one_lib.R > kallisto.out 2>> kallisto.err
 
 use strict;
 use warnings;
