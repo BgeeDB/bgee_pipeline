@@ -4,7 +4,7 @@
 
 -- index needed to improve performances when inserting ranks in result tables
 ALTER TABLE affymetrixProbeset ADD INDEX (bgeeAffymetrixChipId, expressionId, bgeeGeneId, normalizedSignalIntensity);
-ALTER TABLE rnaSeqPopulationCaptureSpeciesMaxRank ADD INDEX (rnaSeqLibraryAnnotatedSampleId, expressionId, bgeeGeneId, abundance);
+ALTER TABLE rnaSeqLibraryAnnotatedSampleGeneResult ADD INDEX (rnaSeqLibraryAnnotatedSampleId, expressionId, bgeeGeneId, abundance);
 
 -- index generated to fasten the retrieval of raw data as proposed in the
 -- DBA StackExchange issue : https://dba.stackexchange.com/questions/320207/optimization-with-subquery-not-working-as-expected
