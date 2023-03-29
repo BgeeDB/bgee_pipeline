@@ -44,9 +44,8 @@ if( file.exists(scRNASeq_Info) ){
   stop( paste("The annotation file not found [", scRNASeq_Info, "]\n"))
 }
 
-generateGenesCpm <- function(tx2geneFile, pathBusOut, gene_counts, bustoolsGeneMatrixName) {
+generateGenesCpm <- function(tx2geneFile, cpm_dir, gene_counts, bustoolsGeneMatrixName) {
   # create cpm directory
-  cpm_dir = file.path(pathBusOut, "cpm_counts")
   if (!dir.exists(cpm_dir)) {
     dir.create(cpm_dir)
   }
@@ -95,63 +94,71 @@ for (library in unique(scRNAInfo$libraryId)) {
     if (!dir.exists(pathBusOut)){
       warning("The Kallisto bus folder doesn't exist for the library: ", library)
     } else {
-      message("Start correction, sort and counts for the library: ", library)
-
-      ## Note: the whiteList we use in this pipeline are the files provided by 10X platform (add to source files)
-      collectWhitelist <- unique(as.character(scRNAInfo$whiteList[scRNAInfo$libraryId == library]))
-      selectedWhitheList <- paste0("10X_",collectWhitelist)
-      message("whitelist:  ", selectedWhitheList)
-
-      ## step 1 --> correct the barcodes
-      message("Correct barcodes")
-      system(sprintf('%s -w %s -o %s %s', "bustools correct", paste0(whiteList_Path, "barcode_whitelist_", selectedWhitheList,".txt"), paste0(pathBusOut, "/output.correct.bus"), paste0(pathBusOut, "/output.bus")))
-
-      ## step 2 --> sort the bus file
-      message("Sort bus file")
-      system(sprintf('%s -t 4 -o %s %s', "bustools sort", paste0(pathBusOut, "/output.correct.sort.bus"), paste0(pathBusOut, "/output.correct.bus")))
-
-      ## Create folders to export the information per TCC and gene matrix (counts)
-      tcc_counts <- file.path(pathBusOut, "tcc_counts")
-      if (!dir.exists(tcc_counts)){
-        dir.create(tcc_counts)
-      } else {
-        print("File already exist.....")
-      }
-
-      gene_counts <- file.path(pathBusOut, "gene_counts")
-      if (!dir.exists(gene_counts)){
-        dir.create(gene_counts)
-      } else {
-        print("File already exist.....")
-      }
-
-      collectSpecies <- unique(as.character(scRNAInfo$scientific_name[scRNAInfo$libraryId == library]))
-      collectSpecies <- gsub(" ", "_", collectSpecies)
-
-      tx2gene_file = file.path(folderSupport, paste0(collectSpecies, "_transcript_to_gene_with_intergenic.tsv"))
-      print(tx2gene_file)
-      if (!file.exists(tx2gene_file)) {
-        if(file.exists(paste0(tx2gene_file, ".xz"))) {
-	  system(sprintf("unxz %s", paste0(tx2gene_file, ".xz")))
+      ## the last step of this script for each library is to generate the gene cpm count matrix.
+      ## The presence of the directory containing this count matrix is used as a marker to check
+      ## if the library has already been processed
+      cpm_dir <- file.path(pathBusOut, "cpm_counts")
+      if (dir.exists(cpm_dir)) {
+        message("library ", library, " already processed. bustools is not run again")
+      } else {  
+        message("Start correction, sort and counts for the library: ", library)
+  
+        ## Note: the whiteList we use in this pipeline are the files provided by 10X platform (add to source files)
+        collectWhitelist <- unique(as.character(scRNAInfo$whiteList[scRNAInfo$libraryId == library]))
+        selectedWhitheList <- paste0("10X_",collectWhitelist)
+        message("whitelist:  ", selectedWhitheList)
+  
+        ## step 1 --> correct the barcodes
+        message("Correct barcodes")
+        system(sprintf('%s -w %s -o %s %s', "bustools correct", paste0(whiteList_Path, "barcode_whitelist_", selectedWhitheList,".txt"), paste0(pathBusOut, "/output.correct.bus"), paste0(pathBusOut, "/output.bus")))
+  
+        ## step 2 --> sort the bus file
+        message("Sort bus file")
+        system(sprintf('%s -t 4 -o %s %s', "bustools sort", paste0(pathBusOut, "/output.correct.sort.bus"), paste0(pathBusOut, "/output.correct.bus")))
+  
+        ## Create folders to export the information per TCC and gene matrix (counts)
+        tcc_counts <- file.path(pathBusOut, "tcc_counts")
+        if (!dir.exists(tcc_counts)){
+          dir.create(tcc_counts)
         } else {
-          stop("transcript to gene file [", tx2gene_file, "] not found.")
+          print("File already exist.....")
         }
+  
+        gene_counts <- file.path(pathBusOut, "gene_counts")
+        if (!dir.exists(gene_counts)){
+          dir.create(gene_counts)
+        } else {
+          print("File already exist.....")
+        }
+  
+        collectSpecies <- unique(as.character(scRNAInfo$scientific_name[scRNAInfo$libraryId == library]))
+        collectSpecies <- gsub(" ", "_", collectSpecies)
+  
+        tx2gene_file = file.path(folderSupport, paste0(collectSpecies, "_transcript_to_gene_with_intergenic.tsv"))
+        print(tx2gene_file)
+        if (!file.exists(tx2gene_file)) {
+          if(file.exists(paste0(tx2gene_file, ".xz"))) {
+	  sy stem(sprintf("unxz %s", paste0(tx2gene_file, ".xz")))
+          } else {
+            stop("transcript to gene file [", tx2gene_file, "] not found.")
+          }
+        }
+        ## step 3 --> count with bustools count
+        ## TCC level
+        message("TCC level")
+        system(sprintf('bustools count -o %s -g %s -e %s -t %s %s', file.path(tcc_counts, "tcc"),
+          tx2gene_file, file.path(pathBusOut, "matrix.ec"), file.path(pathBusOut, "transcripts.txt"),
+          file.path(pathBusOut, "output.correct.sort.bus")))
+        ## GENE level
+        message("Gene level")
+        bustoolsGeneMatrix <- "gene"
+        system(sprintf('bustools count -o %s -g %s -e %s -t %s --genecounts %s',
+          file.path(gene_counts, bustoolsGeneMatrix), tx2gene_file, file.path(pathBusOut, "/matrix.ec"),
+          file.path(pathBusOut, "transcripts.txt"), file.path(pathBusOut, "output.correct.sort.bus")))
+        ## CPM level
+        message("CPM for genes without intergenic")
+        generateGenesCpm(tx2gene_file, cpm_dir, gene_counts, bustoolsGeneMatrix)
       }
-      ## step 3 --> count with bustools count
-      ## TCC level
-      message("TCC level")
-      system(sprintf('bustools count -o %s -g %s -e %s -t %s %s', file.path(tcc_counts, "tcc"),
-        tx2gene_file, file.path(pathBusOut, "matrix.ec"), file.path(pathBusOut, "transcripts.txt"),
-        file.path(pathBusOut, "output.correct.sort.bus")))
-      ## GENE level
-      message("Gene level")
-      bustoolsGeneMatrix <- "gene"
-      system(sprintf('bustools count -o %s -g %s -e %s -t %s --genecounts %s',
-        file.path(gene_counts, bustoolsGeneMatrix), tx2gene_file, file.path(pathBusOut, "/matrix.ec"),
-        file.path(pathBusOut, "transcripts.txt"), file.path(pathBusOut, "output.correct.sort.bus")))
-      ## CPM level
-      message("CPM for genes without intergenic")
-      generateGenesCpm(tx2gene_file, pathBusOut, gene_counts, bustoolsGeneMatrix)
     }
   } else {
     message("Library ", library ," not present in the folder to process.")
