@@ -44,7 +44,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed....
-command_arg <- c("scRNASeq_Info","kallisto_bus_results", "folderSupport","infoFolder", "output")
+command_arg <- c("scRNASeq_Info", "kallisto_bus_results", "folderSupport", "infoFolder", "output")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -53,7 +53,7 @@ for( c_arg in command_arg ){
 
 ## Read scRNASeq_Info file. If file not exists, script stops
 if( file.exists(scRNASeq_Info) ){
-  scRNASeqAnnotation <- read.table(scRNASeq_Info, header = T, sep = "\t")
+  scRNASeqAnnotation <- read.table(scRNASeq_Info, header = TRUE, sep = "\t", quote = "\"")
 } else {
   stop( paste("The scRNASeq_Info file not found [", scRNASeq_Info, "]\n"))
 }
@@ -94,12 +94,14 @@ seuratObject <- function(m_filtered){
 ## function to target cells after knee filtering based on the barcode information (provide clustering information)
 targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
   
-  ## verify if barcode annotation exist
-  lenghtBarcodeFilter <- nrow(barcodeIDs)
-  
   ## select cells based on the barcode ID's
-  if (lenghtBarcodeFilter != 0){
+  if (nrow(barcodeIDs) != 0){
     
+    ##create data.frame mapping celltypeId to corresponding files
+    ## this file will have 3 columns
+    ## celltypeId       countType(raw or normalized)     filePath
+    mappingCellTypeToFiles <- data.frame()
+
     onlyBarcode <- barcodeIDs[,1]
     onlyBarcode <- unlist(onlyBarcode, use.names=FALSE)
     ## subset barcodes
@@ -117,10 +119,10 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
     
     barcode_cellName <- barcode_cell$cellTypeName
     barcode_cellName <- unlist(barcode_cellName, use.names=FALSE)
-    barcode_cellid <- barcode_cell$cellTypeId
-    barcode_cellid <- unlist(barcode_cellid, use.names=FALSE)
+    barcode_cellId <- barcode_cell$cellTypeId
+    barcode_cellId <- unlist(barcode_cellId, use.names=FALSE)
     myData$cell_type <- barcode_cellName
-    myData$cell_id <- barcode_cellid
+    myData$cell_id <- barcode_cellId
     #head(myData[[]])
     ## remove unsigned cells (this avoid the exportation of the file of unassigned cells)
     myData <- subset(myData,  cell_type != "Unassigned")
@@ -163,7 +165,7 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
       for (cellid in unique(myData$cell_id[myData$cell_type == cell])) {
         message("cell : ", cellid)
         ## split information
-        barcodesID <- colnames(myData)[myData$cell_type == cell & myData$cell_id == cellid] 
+        barcodesID <- colnames(myData)[myData$cell_type == cell & myData$cell_id == cellId] 
         ## export raw counts to each cell type
         rawCountsCell <- finalRaw[(names(finalRaw) %in% barcodesID)]
         rawCountsCell <- cbind(names = rownames(rawCountsCell), rawCountsCell)
@@ -173,7 +175,7 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
         ## add type info
         collectBiotypeRaw$type <- ifelse(is.na(collectBiotypeRaw$biotype), "intergenic", "genic")
         collectBiotypeRaw$cellTypeName <- cell
-        collectBiotypeRaw$cellTypeId <- cellid
+        collectBiotypeRaw$cellTypeId <- cellId
         
         ## export normalized counts to each cell type
         normalizedCountsCell <- finalCPM[(names(finalCPM) %in% barcodesID)]
@@ -184,18 +186,34 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
         ## add type info
         collectBiotypeNorm$type <- ifelse(is.na(collectBiotypeNorm$biotype), "intergenic", "genic")
         collectBiotypeNorm$cellTypeName <- cell
-        collectBiotypeNorm$cellTypeId <- cellid
-        cellIdModified <- gsub(":","-",cellid)
         ## write output information to integrate in Bgee
-        write.table(collectBiotypeRaw, file = paste0(output, "/", libraryID, "/Raw_Counts_",cellIdModified, ".tsv"), sep="\t", row.names = FALSE, quote = FALSE)
-        write.table(collectBiotypeNorm, file = paste0(output, "/", libraryID, "/Normalized_Counts_", cellIdModified, ".tsv"), sep="\t", row.names = FALSE, quote = FALSE)
+        rawCountFilePath <- file.path(output, libraryID, paste0("Raw_Counts_", cellIdModified,
+          ".tsv"))
+        normalizedCountFilePath <- file.path(output, libraryID, paste0("Normalized_Counts_",
+          cellIdModified, ".tsv"))
+        write.table(collectBiotypeRaw, file = rawCountFilePath, sep="\t", row.names = FALSE, 
+          quote = FALSE)
+        write.table(collectBiotypeNorm, file = normalizedCountFilePath, sep="\t", row.names = FALSE,
+          quote = FALSE)
+
+        ## add file info in mapping data.frame
+        mappingCellTypeToFiles <- rbind(mappingCellTypeToFiles, as.data.frame(c>(cellId, "raw",
+          rawCountFilePath)))
+        mappingCellTypeToFiles <- rbind(mappingCellTypeToFiles, as.data.frame(c>(cellId,
+          "normalized", normalizedCountFilePath)))
+        
         ## info per cell (-5 because of geneId, biotype, type columns and cellName and cellID)
-        cellInfo <- c(nrow(collectBiotypeNorm), ncol(collectBiotypeNorm)-5, cell, cellid)
+        cellInfo <- c(nrow(collectBiotypeNorm), ncol(collectBiotypeNorm)-5, cell, cellId)
         infoCollected <- rbind(infoCollected, cellInfo)
       }
     }
     infoCollected <- as.data.frame(infoCollected)
     colnames(infoCollected) <- c("Number_genes", "Number_cells", "Cell_Name", "Cell_Ontology")
+
+    colnames(mappingCellTypeToFiles) <- c("cellTypeId", "countType", "filePath")
+    write.table(mappingCellTypeToFiles, file.path(output, libraryId, "mappingCellTypeToFiles.tsv"),
+      sep = "\t", quote = FALSE, col.names = TRUE, row.names = FALSE)
+
     return(list(myData[[]],infoCollected))
   } else {
     message("Library", libraryID, "not take in consideration for posterior analysis.")
@@ -205,34 +223,34 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
 
 #############################################################################################################################
 ## collect information for all libraries
-globalInfoLibraries <- paste0(output, "/InformationAllLibraries.txt")
-
+globalInfoLibraries <- file.path(output, "InformationAllLibraries.txt")
 file.create(globalInfoLibraries)
-cat("library\texperimentID\tInitial_UMI_barcode\tInitial_tot_genes\tgenes_afterFiltering\tcells_afterFiltering\tcellTypeName\tcellTypeId\n",file = globalInfoLibraries, sep = "\t")
 
+fileHeader <- c("library", "experimentID", "Initial_UMI_barcode",
+  "Initial_tot_genes", "genes_afterFiltering", "cells_afterFiltering",
+  "cellTypeName", "cellTypeId")
 
+allInfo <- data.frame()
 ## For each library that belongs to each experiment do:
 for (libraryID in unique(scRNASeqAnnotation$libraryId)) {
   
   ## verify if library exist
-  if (file.exists(file.path(kallisto_bus_results, libraryID))){
+  if (file.exists(file.path(kallisto_bus_results, libraryID, "gene_counts"))){
 
     message("Treating library ", libraryID)
     
     ## info about species and experiment
-    speciesID <- unique(scRNASeqAnnotation$scientific_name[scRNASeqAnnotation$libraryId == libraryID])
-    speciesID <- gsub(" ", "_", speciesID)
+    speciesName <- unique(scRNASeqAnnotation$scientific_name[scRNASeqAnnotation$libraryId == libraryID])
+    speciesName <- gsub(" ", "_", speciesName)
     experimentID <- unique(scRNASeqAnnotation$experimentId[scRNASeqAnnotation$libraryId == libraryID])
 
     path2Files <- file.path(kallisto_bus_results, libraryID, "gene_counts/")
     
     ## create folder per library
-    if(!dir.exists(file.path(output,libraryID))) {
-      dir.create(file.path(output, libraryID))
-    }
+    dir.create(file.path(output, libraryID))
     ## Create a sparseMatrix
     sparseMatrix <- read_count_output(path2Files, "gene", tcc = FALSE)
-    message("created sparse matrix")    
+    message("created sparse matrix")
     ## export global information
     ## barcodes detected (cell per column) and genes detected (rows)
     ## How many UMIs per barcode (cell)
@@ -248,7 +266,7 @@ for (libraryID in unique(scRNASeqAnnotation$libraryId)) {
     object <- seuratObject(m_filtered = knee)
   
     ## read biotype information
-    biotypeInfoFile <- file.path(folderSupport, paste0(speciesID, "_gene_to_biotype_with_intergenic.tsv"))
+    biotypeInfoFile <- file.path(folderSupport, paste0(speciesName, "_gene_to_biotype_with_intergenic.tsv"))
     # the file is potentially compressed. Have to uncompress it first
     if (!file.exists(biotypeInfoFile)) {
       if (file.exists(paste0(biotypeInfoFile, ".xz"))) {
@@ -278,11 +296,13 @@ for (libraryID in unique(scRNASeqAnnotation$libraryId)) {
       message("The library will not be present in the informative files: InformationAllLibraries.txt, variabilityClusters.txt and markerGenes_Validated.txt file")
     } else {
       ## write all information for the library
-      allinfo <- data.frame(libraryID, experimentID, length(tot_counts) , length(tot_genes), infoCells$Number_genes, infoCells$Number_cells, infoCells$Cell_Name, infoCells$Cell_Ontology)
-      write.table(allinfo, file = globalInfoLibraries, quote = FALSE, sep = "\t", append = TRUE, col.names = FALSE, row.names = FALSE)
+      info <- data.frame(libraryID, experimentID, length(tot_counts) , length(tot_genes), infoCells$Number_genes, infoCells$Number_cells, infoCells$Cell_Name, infoCells$Cell_Ontology)
+      allInfo <- rbind(allInfo, info)
     }
   } else {
-      warning("This library ", libraryID, " not exist in the directory.")
+      warning("The library ", libraryID, " has not been porcessed by bustools")
   }
 }
-
+colnames(allInfo) <- fileHeader
+write.table(allinfo, file = globalInfoLibraries, quote = FALSE, sep = "\t", col.names = TRUE,
+  row.names = FALSE)
