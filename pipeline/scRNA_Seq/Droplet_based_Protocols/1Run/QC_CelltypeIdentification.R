@@ -97,10 +97,13 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
   ## select cells based on the barcode ID's
   if (nrow(barcodeIDs) != 0){
     
+    #TODO: probably to remove as celltypeId name is present in the file name
+    #header_cellTypeToFiles <- c("cellTypeId", "countType", "filePath")
     ##create data.frame mapping celltypeId to corresponding files
     ## this file will have 3 columns
     ## celltypeId       countType(raw or normalized)     filePath
-    mappingCellTypeToFiles <- data.frame()
+    #mappingCellTypeToFiles <- data.frame()
+    #colnames(mappingCellTypeToFiles) <- header_cellTypeToFiles
 
     onlyBarcode <- barcodeIDs[,1]
     onlyBarcode <- unlist(onlyBarcode, use.names=FALSE)
@@ -162,8 +165,8 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
     ## write in the output the info per cell type that is present in the library
     infoCollected <- c()
     for (cell in unique(myData$cell_type)) {
-      for (cellid in unique(myData$cell_id[myData$cell_type == cell])) {
-        message("cell : ", cellid)
+      for (cellId in unique(myData$cell_id[myData$cell_type == cell])) {
+        message("cell : ", cellId)
         ## split information
         barcodesID <- colnames(myData)[myData$cell_type == cell & myData$cell_id == cellId] 
         ## export raw counts to each cell type
@@ -186,6 +189,7 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
         ## add type info
         collectBiotypeNorm$type <- ifelse(is.na(collectBiotypeNorm$biotype), "intergenic", "genic")
         collectBiotypeNorm$cellTypeName <- cell
+	cellIdModified <- gsub(":", "_", cellId)
         ## write output information to integrate in Bgee
         rawCountFilePath <- file.path(output, libraryID, paste0("Raw_Counts_", cellIdModified,
           ".tsv"))
@@ -197,10 +201,12 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
           quote = FALSE)
 
         ## add file info in mapping data.frame
-        mappingCellTypeToFiles <- rbind(mappingCellTypeToFiles, as.data.frame(c>(cellId, "raw",
-          rawCountFilePath)))
-        mappingCellTypeToFiles <- rbind(mappingCellTypeToFiles, as.data.frame(c>(cellId,
-          "normalized", normalizedCountFilePath)))
+        #rawCellToFile <- as.data.frame(c(cellId, "raw", rawCountFilePath))
+	#colnames(rawCellToFile) <- header_cellTypeToFiles
+        #normalizedCellToFile <- as.data.frame(c(cellId, "normalized", normalizedCountFilePath))
+        #colnames(normalizedCellToFile)<-header_cellTypeToFiles
+	#mappingCellTypeToFiles <- rbind(mappingCellTypeToFiles, rawCellToFile)
+        #mappingCellTypeToFiles <- rbind(mappingCellTypeToFiles, normalizedCellToFile)
         
         ## info per cell (-5 because of geneId, biotype, type columns and cellName and cellID)
         cellInfo <- c(nrow(collectBiotypeNorm), ncol(collectBiotypeNorm)-5, cell, cellId)
@@ -210,9 +216,9 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
     infoCollected <- as.data.frame(infoCollected)
     colnames(infoCollected) <- c("Number_genes", "Number_cells", "Cell_Name", "Cell_Ontology")
 
-    colnames(mappingCellTypeToFiles) <- c("cellTypeId", "countType", "filePath")
-    write.table(mappingCellTypeToFiles, file.path(output, libraryId, "mappingCellTypeToFiles.tsv"),
-      sep = "\t", quote = FALSE, col.names = TRUE, row.names = FALSE)
+    #colnames(mappingCellTypeToFiles) <- c("cellTypeId", "countType", "filePath")
+    #write.table(mappingCellTypeToFiles, file.path(output, libraryId, "mappingCellTypeToFiles.tsv"),
+    #  sep = "\t", quote = FALSE, col.names = TRUE, row.names = FALSE)
 
     return(list(myData[[]],infoCollected))
   } else {
@@ -224,6 +230,12 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
 #############################################################################################################################
 ## collect information for all libraries
 globalInfoLibraries <- file.path(output, "InformationAllLibraries.txt")
+if (!dir.exists(output)) {
+  dir.create(output)
+}
+## create the file. If already present the file is overwritten
+## It is implemented like that because this rule is fast. It is not limitating to
+## process all libraries again
 file.create(globalInfoLibraries)
 
 fileHeader <- c("library", "experimentID", "Initial_UMI_barcode",
