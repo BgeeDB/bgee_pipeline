@@ -291,7 +291,7 @@ if (file.exists(file.path(kallisto_bus_results, libraryId, "gene_counts"))){
         "cellTypeName", "cellTypeId")
 
       # write file containing knee plot filtering stats
-      write.table(info, file = file.path(output, libraryId, "kneePlotFilteringInfo.txt",
+      write.table(info, file = file.path(output, libraryId, "kneePlotFilteringInfo.txt"),
         quote = FALSE, sep = "\t", col.names = TRUE, row.names = FALSE)
     }
   }
