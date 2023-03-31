@@ -1,11 +1,11 @@
 ## Julien Wollbrett March 28, 2023
-## This script creates a report iith number reads, number aligned, proportion aligned,
+## This script creates a report containing number reads, number aligned, proportion aligned,
 ## aligned unique, and number target sequences
 ## It loops through all libraries
 
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args metadata_file="/path/to/bgeecall_input.tsv" kallisto_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) fastq_dir=$(FASTQ_DIR) output_file=$(TARGET_BASED_STATS)' rna_seq_calls_plot.R rna_seq_calls_plot.Rout
-## filtered_library_annot     - path to file containing Bgee annotation for all libraries to process
+## metadata_file              - path to file containing Bgee annotation for all libraries to process
 ## kallisto_dir               - path to folder where BgeeCall wrote the calls.
 ## fastq_dir                  - path to the parent dir containing all fastq
 ## output_file                - path to output file containing report of kallisto and read size for all samples
@@ -26,7 +26,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed in command line
-command_arg <- c("filtered_library", "kallisto_dir", "fastq_dir", "output_file")
+command_arg <- c("metadata_file", "kallisto_dir", "fastq_dir", "output_file")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -34,7 +34,10 @@ for( c_arg in command_arg ){
 }
 
 ##load data
-libraries <- read.table(filtered_library_annot, sep = "\t", header = TRUE, comment.char = "")
+libraries <- read.table(metadata_file, sep = "\t", header = TRUE, comment.char = "")
+## in this file each row corrspond to one run. As we want info at library level, we have to remove
+## duplicated library IDs
+libraries <- libraries[!duplicated(libraries$library_id),]
 
 ## init variables for calls report
 kallisto_info_file   <- "run_info.json"
@@ -49,19 +52,21 @@ libraries_wo_calls <- 0
 lib_dirs <- list.dirs(path = kallisto_dir, full.names = FALSE, recursive = FALSE)
 message(nrow(libraries), " libraries in the bgeecall info file")
 for(line in seq(nrow(libraries))) {
-  library_id <- as.character(sample_info_data$libraryId[line])
-  species_id <- as.character(sample_info_data$speciesId[line])
-  if(library_id %in% lib_dirs) {
+  library_id <- as.character(libraries$library_id[line])
+  species_id <- as.character(libraries$tax_id[line])
+  if(dir.exists(file.path(kallisto_dir, library_id))) {
+  ##if(library_id %in% lib_dirs) {
 
     # retrieve info for kallisto report
     kallisto_info_file_path <- file.path(kallisto_dir, library_id, kallisto_info_file)
-    library_r_stat_files <- list.files(path = as.character((fastq_dir, species_id, library_id), 
+    library_r_stat_files <- list.files(path = file.path(fastq_dir, species_id, library_id), 
       pattern = reads_R_stat_suffix, full.names = TRUE, recursive = TRUE)
-    if(file.exists(kallisto_info_file_path) && (length(library_r_stat_files) > 0) ) {
+    if(file.exists(kallisto_info_file_path) & (length(library_r_stat_files) > 0) ) {
       json_info <- fromJSON(file = kallisto_info_file_path)
       min_reads <- Inf
       max_reads <- 0
       for (r_stat_file in library_r_stat_files) {
+	message("r stat file : ", r_stat_file)
         r_stats <- read.table(file = r_stat_file, header = TRUE, sep = "\t", comment.char = "")
         if (r_stats[1,1] < min_reads) {
           min_reads <- r_stats[1,1]
@@ -76,17 +81,17 @@ for(line in seq(nrow(libraries))) {
       names(kallisto_info) <- kallisto_info_report_columns
       kallisto_info_all_samples <- rbind(kallisto_info_all_samples, kallisto_info)
     } else {
-      warning(library_id, " : kallisto info file was not generated")
+      message(library_id, " : kallisto info file was not generated")
       libraries_wo_calls <- libraries_wo_calls + 1
     }
   } else {
-    warning(library_id, " : library directory not created")
+    message(library_id, " : library directory not created")
     libraries_wo_calls <- libraries_wo_calls + 1
   }
 }
 
 if (libraries_wo_calls > 0 ) {
-  stop("Calls were not generated for ", libraries_wo_calls, " libraries. If expected add those libraries to the rna_seq_sample_info.txt file and regenerate the bgeecall_input.tsv file")
+  warning("Calls were not generated for ", libraries_wo_calls, " libraries.")
 }
 
 # save kallisto report
