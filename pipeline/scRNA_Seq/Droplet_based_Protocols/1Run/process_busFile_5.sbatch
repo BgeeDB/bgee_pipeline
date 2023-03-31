@@ -14,8 +14,7 @@
 #SBATCH --export=NONE
 #SBATCH --job-name=process_busFile_5
 #SBATCH --mail-user sara.fonsecacosta@unil.ch
-
-module load Bioinformatics/Software/vital-it
+module use /software/module/;
 module add R/3.6.1;
 module add UHTS/Analysis/bustools/0.40.0;
 
