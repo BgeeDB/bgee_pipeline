@@ -212,6 +212,9 @@ collectSamplesStats <- data.frame()
 ## loop thought all libraries
 for (libraryId in unique(scRNASeqAnnotation$libraryId)) {
   
+  if (file.exists(file.path(output_folder, libraryId))) {
+    message("calls directory for library ", libraryId, " already processed.")
+  } else {
     message("Library: ", libraryId)
   
     ## collect all cell populations that belongs to the library
@@ -227,67 +230,68 @@ for (libraryId in unique(scRNASeqAnnotation$libraryId)) {
       
       message("Process celltype: ", cellTypeId)
 
-        ## collect the sumUMI + normalization for the target cellPop
-        cellPop_normalized <- sumUMICellPop(rawCountFile = rawCountFile)
-        ## Information about reference intergenic
-        referenceIntergenic <- refIntergenic(folder_refIntergenic = folder_refIntergenic, speciesId = speciesId)
-        ## calls with pValue theoretical
-        calculatePvalues <- theoretical_pValue(counts = cellPop_normalized,
-          refrenceIntergenic = referenceIntergenic)
-        calculationInfo <- calculatePvalues[[1]]
-        calculationInfo$calls_pValue <- ifelse(calculationInfo$pValue <=
-          as.numeric(desired_pValue_cutoff), "present", "absent" )
-        
-        ## add info also about genesID where CPM = 0 and were not used for the pValue calculation
-        ## (but are important for the final stats)
-        ##TODO: this part will have to be removed if we consider genes with CPM = 0 for pValue calculation.
-        ##      Otherwise, remove this todo
-        regionZero <- cellPop_normalized[!cellPop_normalized$gene_id %in% calculationInfo$gene_id,]
-        regionZero$zScore <- "NA"; regionZero$pValue <- "NA"; regionZero$calls_pValue <-"absent"
-        
-        allData <- rbind(calculationInfo, regionZero)
-        #TODO Actually, why bother reordering??
-        #What a creepy reordering.
-        #genicRegion <- dplyr::filter(allData, type=="genic")
-        #genicRegion <- genicRegion[order(genicRegion$gene_id),]
-        #finalData <- rbind(genicRegion, dplyr::filter(allData, type == "intergenic"))
-        #finalData$cellTypeName <- cellName
-        finalData <- allData[order(allData$type, allData$gene_id), ]
-        finalData$cellTypeId <- cellTypeId
-        
-        ## collect just genic region and re-calculate CPM
-        finalData_genic <- dplyr::filter(finalData, type == "genic")
-        finalData_genic$CPM <- finalData_genic$sumUMI / sum(finalData_genic$sumUMI) * 1e6
-        
-        ## Export cutoff information file + new files with calls
-        cutoff_info_file <- cutoff_info(libraryId, cellTypeName = cellName,
-          cellTypeId = gsub("-",":",cellID), counts = finalData,
-          desired_pValue_cutoff = as.numeric(desired_pValue_cutoff),
-          meanRefIntergenic = calculatePvalues[[2]], sdRefIntergenic = calculatePvalues[[3]])
-        CPM_threshold <- log2(as.numeric(cutoff_info_file[3]))
-        
-        ## export data
-        plotData(libraryId = libraryId, cellPopName = cellPop, counts = finalData,
-          refIntergenic = referenceIntergenic, CPM_threshold = CPM_threshold)
-        
-        pathExport <- file.path(output_folder, libraryId)
-        write.table(finalData,file = file.path(pathExport, paste0("Calls_cellPop_",libraryId,
-          "_",cellPop,"_genic+intergenic.tsv")),quote=FALSE, sep = "\t", col.names=TRUE,
-          row.names=FALSE)
-        write.table(finalData_genic,file = file.path(pathExport, paste0("Calls_cellPop_",
-          libraryId, "_",cellPop,"_genic.tsv")),quote=FALSE, sep = "\t", col.names=TRUE,
-          row.names=FALSE)
-        write.table(t(t(cutoff_info_file)),file = file.path(pathExport,
-          paste0("cutoff_info_file_",libraryId, "_",cellPop,".tsv")),quote=FALSE, sep = "\t",
-        col.names=FALSE, row.names=TRUE)
-        
-        ## add this to big data frame with all samples information
-        this_sample <- as.data.frame(t(cutoff_info_file), stringsAsFactors=F)
-        this_sample[, "species"]  <- speciesId
-        this_sample[, "organism"] <- as.character(unique(
-          scRNASeqAnnotation$scientific_name[scRNASeqAnnotation$speciesId == speciesId]))
-        collectSamplesStats <- rbind(collectSamplesStats, this_sample)
+      ## collect the sumUMI + normalization for the target cellPop
+      cellPop_normalized <- sumUMICellPop(rawCountFile = rawCountFile)
+      ## Information about reference intergenic
+      referenceIntergenic <- refIntergenic(folder_refIntergenic = folder_refIntergenic, speciesId = speciesId)
+      ## calls with pValue theoretical
+      calculatePvalues <- theoretical_pValue(counts = cellPop_normalized,
+        refrenceIntergenic = referenceIntergenic)
+      calculationInfo <- calculatePvalues[[1]]
+      calculationInfo$calls_pValue <- ifelse(calculationInfo$pValue <=
+        as.numeric(desired_pValue_cutoff), "present", "absent" )
+      
+      ## add info also about genesID where CPM = 0 and were not used for the pValue calculation
+      ## (but are important for the final stats)
+      ##TODO: this part will have to be removed if we consider genes with CPM = 0 for pValue calculation.
+      ##      Otherwise, remove this todo
+      regionZero <- cellPop_normalized[!cellPop_normalized$gene_id %in% calculationInfo$gene_id,]
+      regionZero$zScore <- "NA"; regionZero$pValue <- "NA"; regionZero$calls_pValue <-"absent"
+      
+      allData <- rbind(calculationInfo, regionZero)
+      #TODO Actually, why bother reordering??
+      #What a creepy reordering.
+      #genicRegion <- dplyr::filter(allData, type=="genic")
+      #genicRegion <- genicRegion[order(genicRegion$gene_id),]
+      #finalData <- rbind(genicRegion, dplyr::filter(allData, type == "intergenic"))
+      #finalData$cellTypeName <- cellName
+      finalData <- allData[order(allData$type, allData$gene_id), ]
+      finalData$cellTypeId <- cellTypeId
+      
+      ## collect just genic region and re-calculate CPM
+      finalData_genic <- dplyr::filter(finalData, type == "genic")
+      finalData_genic$CPM <- finalData_genic$sumUMI / sum(finalData_genic$sumUMI) * 1e6
+      
+      ## Export cutoff information file + new files with calls
+      cutoff_info_file <- cutoff_info(libraryId, cellTypeName = cellName,
+        cellTypeId = gsub("-",":",cellID), counts = finalData,
+        desired_pValue_cutoff = as.numeric(desired_pValue_cutoff),
+        meanRefIntergenic = calculatePvalues[[2]], sdRefIntergenic = calculatePvalues[[3]])
+      CPM_threshold <- log2(as.numeric(cutoff_info_file[3]))
+      
+      ## export data
+      plotData(libraryId = libraryId, cellPopName = cellPop, counts = finalData,
+        refIntergenic = referenceIntergenic, CPM_threshold = CPM_threshold)
+      
+      pathExport <- file.path(output_folder, libraryId)
+      write.table(finalData,file = file.path(pathExport, paste0("Calls_cellPop_",libraryId,
+        "_",cellPop,"_genic+intergenic.tsv")),quote=FALSE, sep = "\t", col.names=TRUE,
+        row.names=FALSE)
+      write.table(finalData_genic,file = file.path(pathExport, paste0("Calls_cellPop_",
+        libraryId, "_",cellPop,"_genic.tsv")),quote=FALSE, sep = "\t", col.names=TRUE,
+        row.names=FALSE)
+      write.table(t(t(cutoff_info_file)),file = file.path(pathExport,
+        paste0("cutoff_info_file_",libraryId, "_",cellPop,".tsv")),quote=FALSE, sep = "\t",
+      col.names=FALSE, row.names=TRUE)
+      
+      ## add this to big data frame with all samples information
+      this_sample <- as.data.frame(t(cutoff_info_file), stringsAsFactors=F)
+      this_sample[, "species"]  <- speciesId
+      this_sample[, "organism"] <- as.character(unique(
+        scRNASeqAnnotation$scientific_name[scRNASeqAnnotation$speciesId == speciesId]))
+      collectSamplesStats <- rbind(collectSamplesStats, this_sample)
     }
+  }
 }
 write.table(collectSamplesStats, file = file.path(output_folder, "All_cellPopulation_stats_10X.tsv"),
   col.names = FALSE, row.names = FALSE, append = TRUE, quote = FALSE, sep = "\t")
