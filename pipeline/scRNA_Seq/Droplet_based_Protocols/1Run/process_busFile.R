@@ -91,8 +91,8 @@ for (library in unique(scRNAInfo$libraryId)) {
 
     ## verify if busOutput exist for the library
     pathBusOut <-  paste0(kallisto_bus_results, library)
-    if (!dir.exists(pathBusOut)){
-      warning("The Kallisto bus folder doesn't exist for the library: ", library)
+    if (!file.exists(file.path(pathBusOut, "run_info.json"))) {
+      warning("kallisto was not run for the library : ", library)
     } else {
       ## the last step of this script for each library is to generate the gene cpm count matrix.
       ## The presence of the directory containing this count matrix is used as a marker to check
@@ -138,7 +138,7 @@ for (library in unique(scRNAInfo$libraryId)) {
         print(tx2gene_file)
         if (!file.exists(tx2gene_file)) {
           if(file.exists(paste0(tx2gene_file, ".xz"))) {
-	  sy stem(sprintf("unxz %s", paste0(tx2gene_file, ".xz")))
+	  system(sprintf("unxz %s", paste0(tx2gene_file, ".xz")))
           } else {
             stop("transcript to gene file [", tx2gene_file, "] not found.")
           }
