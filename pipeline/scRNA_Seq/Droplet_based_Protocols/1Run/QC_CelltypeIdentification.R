@@ -44,7 +44,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed....
-command_arg <- c("scRNASeq_Info", "kallisto_bus_results", "folderSupport", "infoFolder", "output")
+command_arg <- c("libraryId", "scRNASeq_Info", "kallisto_bus_results", "folderSupport", "infoFolder", "output")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -209,97 +209,93 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
 
 #############################################################################################################################
 ## collect information for all libraries
-globalInfoLibraries <- file.path(output, "InformationAllLibraries.txt")
 if (!dir.exists(output)) {
   dir.create(output)
 }
-## create the file. If already present the file is overwritten
-## It is implemented like that because this rule is fast. It is not limitating to
-## process all libraries again
-file.create(globalInfoLibraries)
 
-fileHeader <- c("library", "experimentID", "Initial_UMI_barcode",
-  "Initial_tot_genes", "genes_afterFiltering", "cells_afterFiltering",
-  "cellTypeName", "cellTypeId")
+## verify if library exist
+if (file.exists(file.path(kallisto_bus_results, libraryId, "gene_counts"))){
 
-allInfo <- data.frame()
-## For each library that belongs to each experiment do:
-for (libraryID in unique(scRNASeqAnnotation$libraryId)) {
+  message("Treating library ", libraryId)
   
-  ## verify if library exist
-  if (file.exists(file.path(kallisto_bus_results, libraryID, "gene_counts"))){
+  ## info about species and experiment
+  speciesName <- unique(scRNASeqAnnotation$scientific_name[scRNASeqAnnotation$libraryId == libraryId])
+  speciesName <- gsub(" ", "_", speciesName)
+  experimentID <- unique(scRNASeqAnnotation$experimentId[scRNASeqAnnotation$libraryId == libraryId])
 
-    message("Treating library ", libraryID)
-    
-    ## info about species and experiment
-    speciesName <- unique(scRNASeqAnnotation$scientific_name[scRNASeqAnnotation$libraryId == libraryID])
-    speciesName <- gsub(" ", "_", speciesName)
-    experimentID <- unique(scRNASeqAnnotation$experimentId[scRNASeqAnnotation$libraryId == libraryID])
+  path2Files <- file.path(kallisto_bus_results, libraryId, "gene_counts/")
 
-    path2Files <- file.path(kallisto_bus_results, libraryID, "gene_counts/")
+  if(file.exists(file.path(output, libraryId))) {
+    message("celltype identification already done for library : ", libraryId)
+  } else {
+  
+    ## create folder per library
+    dir.create(file.path(output, libraryId))
 
-    if(file.exists(file.path(output, libraryID))) {
-      message("celltype identification already done for library : ", libraryID)
-    } else {
-    
-      ## create folder per library
-      dir.create(file.path(output, libraryID))
-      ## Create a sparseMatrix
-      sparseMatrix <- read_count_output(path2Files, "gene", tcc = FALSE)
-      message("created sparse matrix")
-      ## export global information
-      ## barcodes detected (cell per column) and genes detected (rows)
-      ## How many UMIs per barcode (cell)
-      tot_counts <- Matrix::colSums(sparseMatrix)
-      message("created total counts variable")
-      ## How many genes detected
-      tot_genes <- rowSums(sparseMatrix)
-      message("created total genes variable")
-      ## filtering cells based on the knee plot
-      knee <- singlecellKnee(sparseMatrix = sparseMatrix, libraryID = libraryID)
-      message("created kneeplot")
-      ## perform the seurat object and get raw and normalized counts
-      object <- seuratObject(m_filtered = knee)
-    
-      ## read biotype information
-      biotypeInfoFile <- file.path(folderSupport, paste0(speciesName, "_gene_to_biotype_with_intergenic.tsv"))
-      # the file is potentially compressed. Have to uncompress it first
-      if (!file.exists(biotypeInfoFile)) {
-        if (file.exists(paste0(biotypeInfoFile, ".xz"))) {
-          system(sprintf("unxz %s", paste0(biotypeInfoFile,".xz")))
-        } else {
-          stop("gene to biotype file [", biotypeInfoFile, "] does not exist.")
-        }
-      }
-      biotypeInfo <- read.table(biotypeInfoFile)
-      ## hack needed for Bgee 15.1 as the gene to biotype file contain redundant genes
-      ##TODO: update script generating gene to biotype
-      biotypeInfo <- unique(biotypeInfo)
-      colnames(biotypeInfo) <- c("gene_id", "biotype")
-      ## get barcode information per experiment
-      barcodeExperiment <- read.table(file.path(infoFolder, paste0("scRNASeq_barcode_", experimentID,".tsv")), header = TRUE,
-        sep = "\t")
-      barcodeLibrary <- dplyr::filter(barcodeExperiment, library == libraryID)
-      
-      ## link barcode to cell ID and export information
-      finalInformationCells <- targetCells(objectNormalized = object, barcodeIDs = barcodeLibrary, biotypeInfo = biotypeInfo, libraryID = libraryID)
-      infoCells <- finalInformationCells[[2]]
-      
-      ## verify if function targetCells is NULL
-      if (is.null(finalInformationCells)){
-        message("The library", libraryID, " not contain barcodes.")
-        message("Any raw or normalized count is exported.")
-        message("The library will not be present in the informative files: InformationAllLibraries.txt, variabilityClusters.txt and markerGenes_Validated.txt file")
+    ## Create a sparseMatrix
+    sparseMatrix <- read_count_output(path2Files, "gene", tcc = FALSE)
+    message("created sparse matrix")
+    ## export global information
+    ## barcodes detected (cell per column) and genes detected (rows)
+    ## How many UMIs per barcode (cell)
+    tot_counts <- Matrix::colSums(sparseMatrix)
+    message("created total counts variable")
+    ## How many genes detected
+    tot_genes <- rowSums(sparseMatrix)
+    message("created total genes variable")
+    ## filtering cells based on the knee plot
+    knee <- singlecellKnee(sparseMatrix = sparseMatrix, libraryID = libraryId)
+    message("created kneeplot")
+    ## perform the seurat object and get raw and normalized counts
+    object <- seuratObject(m_filtered = knee)
+  
+    ## read biotype information
+    biotypeInfoFile <- file.path(folderSupport,
+      paste0(speciesName, "_gene_to_biotype_with_intergenic.tsv"))
+    # the file is potentially compressed. Have to uncompress it first
+    if (!file.exists(biotypeInfoFile)) {
+      if (file.exists(paste0(biotypeInfoFile, ".xz"))) {
+        system(sprintf("unxz %s", paste0(biotypeInfoFile,".xz")))
       } else {
-        ## write all information for the library
-        info <- data.frame(libraryID, experimentID, length(tot_counts) , length(tot_genes), infoCells$Number_genes, infoCells$Number_cells, infoCells$Cell_Name, infoCells$Cell_Ontology)
-        allInfo <- rbind(allInfo, info)
+        stop("gene to biotype file [", biotypeInfoFile, "] does not exist.")
       }
     }
-  } else {
-      warning("The library ", libraryID, " has not been porcessed by bustools")
+    biotypeInfo <- read.table(biotypeInfoFile)
+    ## hack needed for Bgee 15.1 as the gene to biotype file contain redundant genes
+    ##TODO: update script generating gene to biotype
+    biotypeInfo <- unique(biotypeInfo)
+    colnames(biotypeInfo) <- c("gene_id", "biotype")
+    ## get barcode information per experiment
+    barcodeExperiment <- read.table(file.path(infoFolder,
+      paste0("scRNASeq_barcode_", experimentID,".tsv")), header = TRUE,
+      sep = "\t")
+    barcodeLibrary <- dplyr::filter(barcodeExperiment, library == libraryId)
+    
+    ## link barcode to cell ID and export information
+    finalInformationCells <- targetCells(objectNormalized = object, barcodeIDs = barcodeLibrary,
+      biotypeInfo = biotypeInfo, libraryID = libraryId)
+    infoCells <- finalInformationCells[[2]]
+    
+    ## verify if function targetCells is NULL
+    if (is.null(finalInformationCells)){
+      message("The library", libraryId, " does not contain any barcode.")
+      message("Any raw or normalized count is exported.")
+      message("The library will not be present in the informative files: ",
+        "InformationAllLibraries.txt, variabilityClusters.txt and markerGenes_Validated.txt file")
+    } else {
+      ## write all information for the library
+      info <- data.frame(libraryId, experimentID, length(tot_counts) , length(tot_genes),
+        infoCells$Number_genes, infoCells$Number_cells, infoCells$Cell_Name, infoCells$Cell_Ontology)
+      colnames(info) <- c("library", "experimentID", "Initial_UMI_barcode",
+        "Initial_tot_genes", "genes_afterFiltering", "cells_afterFiltering",
+        "cellTypeName", "cellTypeId")
+
+      # write file containing knee plot filtering stats
+      write.table(info, file = file.path(output, libraryId, "kneePlotFilteringInfo.txt",
+        quote = FALSE, sep = "\t", col.names = TRUE, row.names = FALSE)
+    }
   }
+} else {
+    warning("The library ", libraryId, " has not been porcessed by bustools")
 }
-colnames(allInfo) <- fileHeader
-write.table(allinfo, file = globalInfoLibraries, quote = FALSE, sep = "\t", col.names = TRUE,
-  row.names = FALSE)
+
