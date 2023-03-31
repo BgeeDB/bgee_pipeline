@@ -32,15 +32,16 @@ $| = 1; # no buffering of output
 my ($bgee_connector) = ('');
 my ($targetBaseLibrary, $kallistoResults, $callsResults, $sexInfo)  = ('', '', '', '');
 my ($singleCellExperiment, $bgeeLibraryInfo, $sourceDir) = ('', '', '');
-my $pipelineCallsSummary = '';
+my ($pipelineCallsSummary, $pipelineReportFile) = ('', '');
 my $numberCore = 1;
 #my ($library_stats, $report_info = ('', '');
 my ($debug)                      = (0);
 my %opts = ('bgee=s'                 => \$bgee_connector,       # Bgee connector string
             'targetBaseLibrary=s'    => \$targetBaseLibrary,    # target base RNAseq library annotations
             'singleCellExperiment=s' => \$singleCellExperiment, # single cell RNASeq experiment annotations
-            'bgeeLibraryInfo=s'      => \$bgeeLibraryInfo,      # metadata_info_info_10X.txt file
+            'bgeeLibraryInfo=s'      => \$bgeeLibraryInfo,      # metadata_info_10X.txt file
             'pipelineCallsSummary=s' => \$pipelineCallsSummary, # path to the file containing a summary of processing calls info at library/celltype level (e.g percentage protein coding present, ...)
+            'pipelineReportFile=s'   => \$pipelineReportFile    # path to the file containing summary of kallisto (reads, reads mapped, ..,) and stats about read length
             'kallistoResults=s'      => \$kallistoResults,      # path to dir containing kallisto/bustools results for all libraries
             'callsResults=s'         => \$callsResults,         # path to dir containing calls results for all libraries
             'sourceDir=s'            => \$sourceDir,            # path to the directory containing source files of the target base pipeline
@@ -52,7 +53,7 @@ my %opts = ('bgee=s'                 => \$bgee_connector,       # Bgee connector
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $bgee_connector eq '' || $targetBaseLibrary eq '' || $singleCellExperiment eq '' ||
-    $bgeeLibraryInfo eq '' || $pipelineCallsSummary eq '' || $kallistoResults eq '' || $sourceDir eq '' ||
+    $bgeeLibraryInfo eq '' || $pipelineCallsSummary eq '' || $pipelineReportFile eq '' || $kallistoResults eq '' || $sourceDir eq '' ||
     $sexInfo eq '' || $numberCore eq '' || $callsResults eq ''){
     print "\n\tInvalid or missing argument:
 \te.g., $0  -bgee=\$(BGEECMD) -targetBaseLibrary=RNASeqLibrary_full.tsv -singleCellExperiment=RNASeqExperiment_full.tsv -bgeeLibraryInfo=metadata_info_10X.txt -sexInfo=\$(UBERON_SEX_INFO_FILE_PATH) > $@.tmp 2>warnings.$@
@@ -61,6 +62,7 @@ if ( !$test_options || $bgee_connector eq '' || $targetBaseLibrary eq '' || $sin
 \t-singleCellExperiment    singleCellExperiment file
 \t-bgeeLibraryInfo         metadata_info_10X.txt file
 \t-pipelineCallsSummary    path to the file containing a summary of processing calls info at library/celltype level
+\t-pipelineReportFile      path to the file containing summary of kallisto (reads, reads mapped, ..,) and stats about read length
 \t-kallistoResults         path to dir containing kallisto/bustools results for all libraries
 \t-callsResults            path to dir containing calls results for all libraries
 \t-sourceDir               path to the directory containing sources files of the target bas pipeline
@@ -99,8 +101,9 @@ my $insert_libraries =  'INSERT INTO rnaSeqLibraryDev (rnaSeqLibraryId, rnaSeqEx
                         'rnaSeqSequencerName, rnaSeqTechnologyName, rnaSeqTechnologyIsSIngleCell,'.
                         'sampleMultiplexing, libraryMultiplexing, strandSelection,'.
                         'cellCompartment, sequencedTranscriptPart, fragmentation,'.
-                        'rnaSeqPopulationCaptureId, libraryType)'.
-                        ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                        'rnaSeqPopulationCaptureId, genotype, allReadsCount, mappedReadsCount,'.
+                        ' minReadLength, maxReadLength, libraryType)'.
+                        ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
 my $insert_annotatedSamples =   'INSERT INTO rnaSeqLibraryAnnotatedSampleId (rnaSeqLibraryId,'.
                                 'conditionId, abundanceUnit,'.
@@ -161,6 +164,7 @@ my %experiments       = getSingleCellExperiments($singleCellExperiment,
     @experimentType);
 # Stats of pipeline processing for each library/celltype (libraryAnnotatedSample level)
 my %callsPipelineSummary = getCallsSummaryAtLibraryAnnotatedLevel($pipelineCallsSummary);
+my %pipelineReport = getAllRnaSeqReportInfo($pipelineReportFile);
 
 # sex-related information needed for sub 'insert_get_condition'
 my $anatSexInfo    = Utils::get_anat_sex_info($sexInfo);
@@ -306,6 +310,11 @@ for my $expId ( sort keys %processedLibraries ){
                   '0',                                                                           ' - ',
                   # rnaSeqPopulationCaptureId. For now all target base are polyA
                   'polyA',                                                                       ' - ',
+                  $libraries{$expId}->{$libraryId}->{'genotype'},                                ' - ',
+                  $pipelineReport{$libraryId}->{'allReadsCount'},
+                  $pipelineReport{$libraryId}->{'mappedReadsCount'},
+                  $pipelineReport{$libraryId}->{'minReadLength'},
+                  $pipelineReport{$libraryId}->{'maxReadLength'},
                   $processedLibraries{$expId}->{$libraryId}->{'libraryType'},"\n";
         } else {
             $insLib->execute($libraryId,
@@ -320,6 +329,11 @@ for my $expId ( sort keys %processedLibraries ){
                             $libraries{$expId}->{$libraryId}->{'sequencedTranscriptPart'},
                             0,
                             'polyA',
+                            $libraries{$expId}->{$libraryId}->{'genotype'},
+                            $pipelineReport{$libraryId}->{'allReadsCount'},
+                            $pipelineReport{$libraryId}->{'mappedReadsCount'},
+                            $pipelineReport{$libraryId}->{'minReadLength'},
+                            $pipelineReport{$libraryId}->{'maxReadLength'},
                             $processedLibraries{$expId}->{$libraryId}->{'libraryType'}
                         )  or die $insLib->errstr;
         }
