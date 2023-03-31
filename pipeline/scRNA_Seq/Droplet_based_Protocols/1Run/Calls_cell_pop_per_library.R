@@ -50,9 +50,9 @@ if (file.exists(scRNASeq_Info)) {
 }
 ##########################################################################################################################################################
 ## Sum the UMI of all barcodes and then compute the CPM normalization
-sumUMICellPop <- function(folder_data, library, cellPop){
-  
-  cellPop <- read.table(file.path(folder_data,library, paste0("Raw_Counts_",cellPop,".tsv")))
+sumUMICellPop <- function(rawCountFile) {
+  cellPop <- read.table(rawCountFile, header = TRUE, sep "\t")
+  # sum counts for all barcodes.
   cellPop$sumUMI <- rowSums(cellPop[ ,2:(length(cellPop)-4)])
   cellPop$CPM <- cellPop$sumUMI / sum(cellPop$sumUMI) * 1e6
   
@@ -68,11 +68,14 @@ sumUMICellPop <- function(folder_data, library, cellPop){
 }
 
 ## Provide the reference intergenic regions = TRUE
-refIntergenic <- function(counts, folder_refIntergenic, speciesID){
+##TODO Why bother retrieving ref. intergenic??? the ampping/quantification should already be donne
+## on the reference intergenic.
+##TODO: check that only ref intergenic were used for each step of the pipeline( e.g gene annotation, kallisto index, ....)
+refIntergenic <- function(folder_refIntergenic, speciesId){
   
-  referenceIntergenic <- file.path(folder_refIntergenic, paste0(speciesID, "_intergenic.fa.gz"))
+  referenceIntergenic <- file.path(folder_refIntergenic, paste0(speciesId, "_intergenic.fa.gz"))
   if(!file.exists(referenceIntergenic)) {
-    referenceIntergenic <- file.path(folder_refIntergenic, paste0(speciesID, "intergenic.fa"))
+    referenceIntergenic <- file.path(folder_refIntergenic, paste0(speciesId, "intergenic.fa"))
     if(!file.exists(referenceIntergenic)) {
       stop("reference intergenic file ", referenceIntergenic,
         "not available (compressed or not compressed)")
@@ -98,23 +101,26 @@ refIntergenic <- function(counts, folder_refIntergenic, speciesID){
 ## function to calculate pValue from the theoretical data
 theoretical_pValue <- function(counts, refrenceIntergenic){
   ## select all the intergenic region from the library
+  ##TODO: once again here it should only contain reference intergenic. To check...
   intergenicRegionsLibrary <- dplyr::filter(counts, type == "intergenic")
   ## select just the true intergenic
   intergenicRegions <- dplyr::filter(refrenceIntergenic, refIntergenic == "TRUE")
   ## keep just information about reference intergenic region detected in the counts file to the
   ## calculation
-  selected_Ref_Intergenic <- merge(intergenicRegionsLibrary, intergenicRegions, by="gene_id")
+  selectedRefIntergenic <- merge(intergenicRegionsLibrary, intergenicRegions, by="gene_id")
   ## select values with CPM > 0 (because we will use log2 scale)
-  selected_Ref_Intergenic <- dplyr::filter(selected_Ref_Intergenic, CPM > 0 & type == "intergenic")
+  ##TODO: what is the point of removing intergenic with 0 CPM it could drastically change the threshold
+  ## if huge proportion of intergenic have 0 CPM. Maybe better to add +1e06
+  selectedRefIntergenic <- dplyr::filter(selectedRefIntergenic, CPM > 0 & type == "intergenic")
   ## select genic and intergenic region from the library with CPM > 0
   regions <- dplyr::filter(counts, CPM > 0)
   ## calculate z-score for each gene_id using the reference intergenic
-  regions$zScore <- (log2(regions$CPM) - mean(log2(selected_Ref_Intergenic$CPM))) / 
-    sd(log2(selected_Ref_Intergenic$CPM))
+  regions$zScore <- (log2(regions$CPM) - mean(log2(selectedRefIntergenic$CPM))) / 
+    sd(log2(selectedRefIntergenic$CPM))
   ## calculate p-values for each gene_id
   regions$pValue <- pnorm(regions$zScore, lower.tail = FALSE)
-  return(list(regions, 2^(mean(log2(selected_Ref_Intergenic$CPM))), 
-    2^(sd(log2(selected_Ref_Intergenic$CPM)))))
+  return(list(regions, 2^(mean(log2(selectedRefIntergenic$CPM))), 
+    2^(sd(log2(selectedRefIntergenic$CPM)))))
 }
 
 cutoff_info <- function(library_id, cellTypeName, cellTypeId, counts, desired_pValue_cutoff,
@@ -204,35 +210,27 @@ if (!file.exists(All_samples)){
 
 collectSamplesStats <- data.frame()
 ## loop thought all libraries
-for (libraryid in unique(scRNASeqAnnotation$libraryId)) {
+for (libraryId in unique(scRNASeqAnnotation$libraryId)) {
   
-    message("Library: ", libraryid)
+    message("Library: ", libraryId)
   
     ## collect all cell populations that belongs to the library
-    ## TODO it is really ugly to retrieve celltype names from file names
-    filesCellPop <- list.files(path = file.path(folder_data, libraryid), pattern = "^Raw_Counts_")
-    allCellPop <- str_remove(filesCellPop, "Raw_Counts_")
-    allCellPop <- str_remove(allCellPop, ".tsv")
+    rawCountFiles <- list.files(path = file.path(folder_data, libraryId), pattern = "^Raw_Counts_", full.names = TRUE)
+    speciesId <- unique(scRNASeqAnnotation$speciesId[scRNASeqAnnotation$libraryId == libraryId])
 
-    speciesID <- unique(scRNASeqAnnotation$speciesId[scRNASeqAnnotation$libraryId == libraryid])
-   
-    message("AllCellPop: ", allCellPop)
-    message("speciesID: ", speciesID)
  
-    for (cellPop in allCellPop) {
+    for (rawCountFile in rawCountFiles) {
+
+      cellPop <- str_remove(basename(rawCountFile), "Raw_Counts_")
+      cellPop <- str_remove(cellPop, ".tsv")
+      cellTypeId <- gsub("-", ":", cellPop)
       
-      message("Doing cell population: ", cellPop)
-      
-        ## collect cellName and cellId
-        cellName <- sub("\\_.*", "", cellPop)
-        cellID <- sub(".*_", "", cellPop)
+      message("Process celltype: ", cellTypeId)
 
         ## collect the sumUMI + normalization for the target cellPop
-        cellPop_normalized <- sumUMICellPop(folder_data = folder_data, library = libraryid,
-          cellPop = cellPop)
+        cellPop_normalized <- sumUMICellPop(rawCountFile = rawCountFile)
         ## Information about reference intergenic
-        referenceIntergenic <- refIntergenic(counts = cellPop_normalized,
-          folder_refIntergenic = folder_refIntergenic, speciesID = speciesID)
+        referenceIntergenic <- refIntergenic(folder_refIntergenic = folder_refIntergenic, speciesId = speciesId)
         ## calls with pValue theoretical
         calculatePvalues <- theoretical_pValue(counts = cellPop_normalized,
           refrenceIntergenic = referenceIntergenic)
@@ -242,47 +240,52 @@ for (libraryid in unique(scRNASeqAnnotation$libraryId)) {
         
         ## add info also about genesID where CPM = 0 and were not used for the pValue calculation
         ## (but are important for the final stats)
+        ##TODO: this part will have to be removed if we consider genes with CPM = 0 for pValue calculation.
+        ##      Otherwise, remove this todo
         regionZero <- cellPop_normalized[!cellPop_normalized$gene_id %in% calculationInfo$gene_id,]
         regionZero$zScore <- "NA"; regionZero$pValue <- "NA"; regionZero$calls_pValue <-"absent"
         
         allData <- rbind(calculationInfo, regionZero)
-        genicRegion <- dplyr::filter(allData, type=="genic")
-        genicRegion <- genicRegion[order(genicRegion$gene_id),]
-        finalData <- rbind(genicRegion, dplyr::filter(allData, type == "intergenic"))
-        finalData$cellTypeName <- cellName
-        finalData$cellTypeId <- gsub("-",":",cellID)
+        #TODO Actually, why bother reordering??
+        #What a creepy reordering.
+        #genicRegion <- dplyr::filter(allData, type=="genic")
+        #genicRegion <- genicRegion[order(genicRegion$gene_id),]
+        #finalData <- rbind(genicRegion, dplyr::filter(allData, type == "intergenic"))
+        #finalData$cellTypeName <- cellName
+        finalData <- allData[order(allData$type, allData$gene_id), ]
+        finalData$cellTypeId <- cellTypeId
         
         ## collect just genic region and re-calculate CPM
         finalData_genic <- dplyr::filter(finalData, type == "genic")
         finalData_genic$CPM <- finalData_genic$sumUMI / sum(finalData_genic$sumUMI) * 1e6
         
         ## Export cutoff information file + new files with calls
-        cutoff_info_file <- cutoff_info(libraryid, cellTypeName = cellName,
+        cutoff_info_file <- cutoff_info(libraryId, cellTypeName = cellName,
           cellTypeId = gsub("-",":",cellID), counts = finalData,
           desired_pValue_cutoff = as.numeric(desired_pValue_cutoff),
           meanRefIntergenic = calculatePvalues[[2]], sdRefIntergenic = calculatePvalues[[3]])
         CPM_threshold <- log2(as.numeric(cutoff_info_file[3]))
         
         ## export data
-        plotData(libraryId = libraryid, cellPopName = cellPop, counts = finalData,
+        plotData(libraryId = libraryId, cellPopName = cellPop, counts = finalData,
           refIntergenic = referenceIntergenic, CPM_threshold = CPM_threshold)
         
-        pathExport <- file.path(output_folder, libraryid)
-        write.table(finalData,file = file.path(pathExport, paste0("Calls_cellPop_",libraryid,
+        pathExport <- file.path(output_folder, libraryId)
+        write.table(finalData,file = file.path(pathExport, paste0("Calls_cellPop_",libraryId,
           "_",cellPop,"_genic+intergenic.tsv")),quote=FALSE, sep = "\t", col.names=TRUE,
           row.names=FALSE)
         write.table(finalData_genic,file = file.path(pathExport, paste0("Calls_cellPop_",
-          libraryid, "_",cellPop,"_genic.tsv")),quote=FALSE, sep = "\t", col.names=TRUE,
+          libraryId, "_",cellPop,"_genic.tsv")),quote=FALSE, sep = "\t", col.names=TRUE,
           row.names=FALSE)
         write.table(t(t(cutoff_info_file)),file = file.path(pathExport,
-          paste0("cutoff_info_file_",libraryid, "_",cellPop,".tsv")),quote=FALSE, sep = "\t",
+          paste0("cutoff_info_file_",libraryId, "_",cellPop,".tsv")),quote=FALSE, sep = "\t",
         col.names=FALSE, row.names=TRUE)
         
         ## add this to big data frame with all samples information
         this_sample <- as.data.frame(t(cutoff_info_file), stringsAsFactors=F)
-        this_sample[, "species"]  <- speciesID
+        this_sample[, "species"]  <- speciesId
         this_sample[, "organism"] <- as.character(unique(
-          scRNASeqAnnotation$scientific_name[scRNASeqAnnotation$speciesId == speciesID]))
+          scRNASeqAnnotation$scientific_name[scRNASeqAnnotation$speciesId == speciesId]))
         collectSamplesStats <- rbind(collectSamplesStats, this_sample)
     }
 }
