@@ -19,24 +19,24 @@ use File::Basename;
 
 ## Define arguments & their default value
 my ($metadataFile, $parallelJobs, $gtfDir, $barcodeFolder, $kallistoResults, $outputDir,
-    $queue, $account, $pathToScript) = ('', '', '', '',  '', '', '' , '', '');
+    $queue, $account, $pathToScript, $rLibs) = ('', '', '', '', '',  '', '', '' , '', '');
 my %opts = ('metadataFile=s'                     => \$metadataFile,
             'parallelJobs=s'                     => \$parallelJobs,
             'gtfDir=s'                           => \$gtfDir,
             'barcodeFolder=s'                    => \$barcodeFolder,
             'kallistoResults=s'                  => \$kallistoResults,
             'outputDir=s'                        => \$outputDir,
-	        'queue=s'                            => \$queue,
-	        'account=s'                          => \$account,
-            'pathToScript=s'                     => \$pathToScript
+            'queue=s'                            => \$queue,
+            'account=s'                          => \$account,
+            'pathToScript=s'                     => \$pathToScript,
+            'rLibs=s'                            => \$rLibs
            );
-
-command_arg <- c("libraryId", "output")
 
 ######################## Check arguments ########################
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$metadataFile || $parallelJobs eq '' || $gtfDir eq '' || $barcodeFolder eq '' ||             
-    $kallistoResults eq '' || $outputDir eq '' || $queue eq '' || $account eq '' || $pathToScript eq '') {
+    $kallistoResults eq '' || $outputDir eq '' || $queue eq '' || $account eq '' || $pathToScript eq '' ||
+    $rLibs eq '') {
     print "\n\tInvalid or missing argument:
 \te.g. $0 -metadataFile=... -parallelJobs=50 -outputDir=...  >> $@.tmp 2> $@.warn
 \t-metadataFile                 file metadata_info containing all run to process
@@ -48,6 +48,7 @@ if ( !$metadataFile || $parallelJobs eq '' || $gtfDir eq '' || $barcodeFolder eq
 \t-queue                         queue to use to run jobs on the cluster
 \t-account                       account to use to run jobs on the cluster
 \t-pathToScript                  path to the R script that will run kallisto for each library
+\t-rLibs                         path to the directory containing R packages
 \n";
     exit 1;
 }
@@ -63,8 +64,8 @@ my %sbatchToRun = ();
 ## create directory necessary to store sbatch files
 make_path("$outputDir/sbatch");
 my $jobPrefix = "cellId_";
-my $clusterOutput = "${$outputDir}/clusterOutput/";
-my $sbatchLocation = "${$outputDir}/sbatch/";
+my $clusterOutput = "${outputDir}/clusterOutput/";
+my $sbatchLocation = "${outputDir}/sbatch/";
 if (! -d $clusterOutput) {
     mkdir($clusterOutput) or die "Couldn't create $clusterOutput directory, $!";
 }
@@ -78,18 +79,17 @@ foreach my $experimentId (keys %processedLibraries){
         #create sbatch file and
 	    my $jobName = "${jobPrefix}${libraryId}";
         my $speciesId = $processedLibraries{$experimentId}{$libraryId}{'speciesId'};
-        ## use 50Gb of memory. Should maybe be increase depending on the run to download
+        ## use 15Gb of memory. Should maybe be increase depending on the library to process
 	    my $sbatchTemplate = Utils::sbatch_template($queue, $account, 1,
-          50, "${clusterOutput}${jobName}.out", "${clusterOutput}/${jobName}.err",
+          15, "${clusterOutput}${jobName}.out", "${clusterOutput}/${jobName}.err",
           $jobName);
 
         #TODO: move modules management to a script attribute
         $sbatchTemplate .= "module use /software/module/\n";
-        $sbatchTemplate .= "export PATH=/software/bin:\$PATH\n";
-	    $sbatchTemplate .= "module add R/3.6.1\n";
-        $sbatchTemplate .= "module load UHTS/Analysis/kallisto/0.46.0\n";
+	$sbatchTemplate .= "module add R/3.6.1;\n";
+        $sbatchTemplate .= "\nexport R_LIBS_USER=$rLibs\n\n";
         my $commandToRun = "R CMD BATCH --no-save --no-restore \'--args libraryId=\"$libraryId\"".
-            " scRNASeq_Info=\"$scRNASeqInfoFile\" kallisto_bus_results=\"$kallistoResults\"".
+            " scRNASeq_Info=\"$metadataFile\" kallisto_bus_results=\"$kallistoResults\"".
             " folderSupport=\"$gtfDir\" infoFolder=\"$barcodeFolder\" output=\"$outputDir\"\'".
             " $pathToScript ${clusterOutput}/${jobName}.Rout";
 
@@ -111,8 +111,8 @@ foreach my $experimentId (keys %sbatchToRun){
     foreach my $libraryId (keys %{$sbatchToRun{$experimentId}}){
 	    $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
 	    while ($jobsRunning >= $parallelJobs) {
-             sleep(15);
-             $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
+            sleep(15);
+            $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
     	}
 	    system("sbatch $sbatchToRun{$experimentId}{$libraryId}");
         $numberJobRun++;
