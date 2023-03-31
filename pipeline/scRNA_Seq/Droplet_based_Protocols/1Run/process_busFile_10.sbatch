@@ -21,7 +21,7 @@ module add UHTS/Analysis/bustools/0.40.0;
 
 export SCRIPT_PATH=/home/jwollbre/Documents/git/bgee_pipeline/pipeline/scRNA_Seq/Droplet_based_Protocols/
 export scRNASeq_Info=../../../generated_files/scRNA_Seq/scRNA_Seq_info_TargetBased_10.txt
-export kallisto_bus_results=/scratch/beegfs/FAC/FBM/DEE/mrobinso/bgee_sensitive/bgee_v15_0/scRNA-Seq_all_results_bgee_v15_0/DROPLET_10X/kallisto_bus_results/
+export kallisto_bus_results=/scratch/beegfs/FAC/FBM/DEE/mrobinso/bgee_sensitive/bgee_v15_0/scRNA-Seq_all_results_bgee_v15_0/DROPLET_10X/kallisto_bus_results_bgee_v15_0/
 export folderSupport=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/rna_seq/GTF_15/
 export whiteList_Path=../../../source_files/scRNA_Seq/Target_based/
 export ROUT=/scratch/beegfs/FAC/FBM/DEE/mrobinso/bgee_sensitive/bgee_v15_0/scRNA-Seq_all_results_bgee_v15_0/DROPLET_10X/
