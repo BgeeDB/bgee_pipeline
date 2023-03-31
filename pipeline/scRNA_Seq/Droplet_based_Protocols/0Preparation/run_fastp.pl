@@ -46,7 +46,9 @@ my %metadata = get_processed_libraries_info($metadata_file);
 for my $experiment_id (sort keys %metadata) {
     for my $library_id (sort keys %{$metadata{$experiment_id}}) {
         for my $run_id (sort keys %{$metadata{$experiment_id}{$library_id}}) {
-            my $run_path = "$fastq_dir/EXPERIMENTS/$experiment_id/$library_id/$run_id/";
+            ## speciesId is a key used to retrieve the species ID of the library
+            next if ($run_id eq "speciesId");
+	    my $run_path = "$fastq_dir/EXPERIMENTS/$experiment_id/$library_id/$run_id/";
             my $fastq_path = "${run_path}FASTQ/";
             my $fastq_fastp = '';
             my $fastq_R     = '';
