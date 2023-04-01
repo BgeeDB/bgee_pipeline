@@ -27,7 +27,9 @@ library(ggExtra)
 ## reading arguments
 cmd_args = commandArgs(TRUE);
 print(cmd_args)
-if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
+if( length(cmd_args) == 0 ){
+  stop("no arguments provided\n")
+} else {
   for( i in 1:length(cmd_args) ){
     eval(parse(text=cmd_args[i]))
   }
@@ -49,24 +51,6 @@ if (file.exists(scRNASeq_Info)) {
   stop(paste("The scRNASeq information file was not found [", scRNASeq_Info, "]\n"))
 }
 ##########################################################################################################################################################
-## Sum the UMI of all barcodes and then compute the CPM normalization
-sumUMICellPop <- function(rawCountFile) {
-  cellPop <- read.table(rawCountFile, header = TRUE, sep "\t")
-  # sum counts for all barcodes.
-  cellPop$sumUMI <- rowSums(cellPop[ ,2:(length(cellPop)-4)])
-  cellPop$CPM <- cellPop$sumUMI / sum(cellPop$sumUMI) * 1e6
-  
-  ## export cell pop info table
-  cellPop <- data.frame(cellPop$gene_id, cellPop$sumUMI, cellPop$CPM, cellPop$type,
-    cellPop$biotype)
-  colnames(cellPop) <- c("gene_id", "sumUMI", "CPM", "type", "biotype")
-  ## just re-order
-  cellPopGenic <- data.frame(dplyr::filter(cellPop, type == "genic"))
-  cellPopGenic <- cellPopGenic[order(cellPopGenic$gene_id),]
-  cellPop <- rbind(cellPopGenic, dplyr::filter(cellPop, type == "intergenic"))
-  return(cellPop)
-}
-
 ## Provide the reference intergenic regions = TRUE
 ##TODO Why bother retrieving ref. intergenic??? the ampping/quantification should already be donne
 ## on the reference intergenic.
@@ -96,6 +80,24 @@ refIntergenic <- function(folder_refIntergenic, speciesId){
   seqNamesFinal$refIntergenic <- ifelse(is.na(seqNamesFinal$refIntergenic) == TRUE,
     "FALSE", seqNamesFinal$refIntergenic)
   return(seqNamesFinal)
+}
+
+## Sum the UMI of all barcodes and then compute the CPM normalization
+sumUMICellPop <- function(rawCountFile) {
+  cellPop <- read.table(rawCountFile, header = TRUE, sep = "\t")
+  # sum counts for all barcodes.
+  cellPop$sumUMI <- rowSums(cellPop[ ,2:(length(cellPop)-4)])
+  cellPop$CPM <- cellPop$sumUMI / sum(cellPop$sumUMI) * 1e6
+  
+  ## export cell pop info table
+  cellPop <- data.frame(cellPop$gene_id, cellPop$sumUMI, cellPop$CPM, cellPop$type,
+                        cellPop$biotype)
+  colnames(cellPop) <- c("gene_id", "sumUMI", "CPM", "type", "biotype")
+  ## just re-order
+  cellPopGenic <- data.frame(dplyr::filter(cellPop, type == "genic"))
+  cellPopGenic <- cellPopGenic[order(cellPopGenic$gene_id),]
+  cellPop <- rbind(cellPopGenic, dplyr::filter(cellPop, type == "intergenic"))
+  return(cellPop)
 }
 
 ## function to calculate pValue from the theoretical data
