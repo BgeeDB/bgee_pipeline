@@ -219,9 +219,9 @@ if (file.exists(file.path(kallisto_bus_results, libraryId, "gene_counts"))){
   message("Treating library ", libraryId)
   
   ## info about species and experiment
-  speciesName <- unique(scRNASeqAnnotation$scientific_name[scRNASeqAnnotation$libraryId == libraryId])
+  speciesName <- unique(scRNASeqAnnotation$scientific_name[scRNASeqAnnotation$library_id == libraryId])
   speciesName <- gsub(" ", "_", speciesName)
-  experimentID <- unique(scRNASeqAnnotation$experimentId[scRNASeqAnnotation$libraryId == libraryId])
+  experimentID <- unique(scRNASeqAnnotation$experiment_id[scRNASeqAnnotation$library_id == libraryId])
 
   path2Files <- file.path(kallisto_bus_results, libraryId, "gene_counts/")
 
