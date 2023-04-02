@@ -55,7 +55,7 @@ if (file.exists(scRNASeq_Info)) {
 ##TODO Why bother retrieving ref. intergenic??? the ampping/quantification should already be donne
 ## on the reference intergenic.
 ##TODO: check that only ref intergenic were used for each step of the pipeline( e.g gene annotation, kallisto index, ....)
-refIntergenic <- function(folder_refIntergenic, speciesId){
+refIntergenic <- function(counts, folder_refIntergenic, speciesId){
   
   referenceIntergenic <- file.path(folder_refIntergenic, paste0(speciesId, "_intergenic.fa.gz"))
   if(!file.exists(referenceIntergenic)) {
@@ -125,7 +125,7 @@ theoretical_pValue <- function(counts, refrenceIntergenic){
     2^(sd(log2(selectedRefIntergenic$CPM)))))
 }
 
-cutoff_info <- function(library_id, cellTypeName, cellTypeId, counts, desired_pValue_cutoff,
+cutoff_info <- function(library_id, cellTypeId, counts, desired_pValue_cutoff,
   meanRefIntergenic, sdRefIntergenic){
   ## collect stats using pValue_cutoff
   genic_region_present <- nrow(dplyr::filter(counts, type == "genic" & calls_pValue == "present"))
@@ -142,12 +142,12 @@ cutoff_info <- function(library_id, cellTypeName, cellTypeId, counts, desired_pV
   
   CPM_Threshold <- min(counts$CPM[counts$type == "genic" & counts$calls_pValue == "present"])
   ## Export cutoff_info_file
-  collectInfo <- c(library_id, cellTypeName, cellTypeId, CPM_Threshold, sum(counts$type == "genic"),
+  collectInfo <- c(library_id, cellTypeId, CPM_Threshold, sum(counts$type == "genic"),
     genic_region_present,proportion_genic_present, sum(counts$biotype %in% "protein_coding"),
     coding_region_present,proportion_coding_present, sum(counts$type %in% "intergenic"),
     intergenic_region_present,proportion_intergenic_present, desired_pValue_cutoff,
     meanRefIntergenic, sdRefIntergenic)
-  names(collectInfo) <- c("libraryId", "cellTypeName", "cellTypeId", "CPM_Threshold", "Genic",
+  names(collectInfo) <- c("libraryId", "cellTypeId", "CPM_Threshold", "Genic",
                           "Genic_region_present","Proportion_genic_present",
                           "Protein_coding","Coding_region_present","Proportion_coding_present",
                           "Intergenic","Intergenic_region_present","Proportion_intergenic_present",
@@ -157,7 +157,7 @@ cutoff_info <- function(library_id, cellTypeName, cellTypeId, counts, desired_pV
 
 
 ## export the plot
-plotData <- function(libraryId, cellPopName, counts, refIntergenic, CPM_threshold){
+plotData <- function(libraryId, cellTypeId, counts, refIntergenic, CPM_threshold){
   ## export distribution
   dens <- density(log2(counts$CPM+1e-6), na.rm=T)
   dens_genic <- density(log2(counts$CPM[counts$type == "genic"]+1e-6), na.rm=T)
@@ -176,11 +176,11 @@ plotData <- function(libraryId, cellPopName, counts, refIntergenic, CPM_threshol
   if(!dir.exists(file.path(output_folder, libraryId))) {
     dir.create(file.path(output_folder,libraryId))
   }
-  pdf(file.path(output_folder, libraryId, paste0("Distribution_", libraryId, "_",cellPopName,
+  pdf(file.path(output_folder, libraryId, paste0("Distribution_", libraryId, "_",cellTypeId,
     ".pdf")), width=10, height=6) 
   par(mfrow=c(1,2))
   plot(dens, lwd=2, main=paste0(libraryId), xlab="Log2(CPM)")
-  mtext(paste0(cellPopName))
+  mtext(paste0(cellTypeId))
   lines(dens_genic,col="red", lwd=2)
   lines(dens_coding,col="indianred", lwd=2)
   lines(dens_intergenic,col="darkblue", lwd=2)
@@ -193,7 +193,7 @@ plotData <- function(libraryId, cellPopName, counts, refIntergenic, CPM_threshol
   ## export frequency of pValue for all genic region
   genicRegion <- as.numeric(counts$pValue[counts$type == "genic"])
   hist(na.omit(genicRegion), main=paste0(libraryId), xlab="pValue", xlim=c(0,1))
-  mtext(paste0("Genic region_",cellPopName))
+  mtext(paste0("Genic region_",cellTypeId))
   abline(v=desired_pValue_cutoff, col="red", lwd=2)
   dev.off()
 }
@@ -205,7 +205,7 @@ if(!dir.exists(output_folder)) {
 All_samples <- file.path(output_folder, "All_cellPopulation_stats_10X.tsv")
 if (!file.exists(All_samples)){
   file.create(All_samples)
-  cat("libraryId\tcellTypeName\tCPM_Threshold\tGenic\tGenic_region_present\tProportion_genic_present\tProtein_coding","Coding_region_present\tProportion_coding_present\tIntergenic\tIntergenic_region_present\tProportion_intergenic_present\tpValue_cutoff\tmeanRefIntergenic\tsdRefIntergenic\tspecies\torganism\n",file = file.path(output_folder,"All_cellPopulation_stats_10X.tsv"), sep = "\t")
+  cat("libraryId\tcellTypeId\tCPM_Threshold\tGenic\tGenic_region_present\tProportion_genic_present\tProtein_coding","Coding_region_present\tProportion_coding_present\tIntergenic\tIntergenic_region_present\tProportion_intergenic_present\tpValue_cutoff\tmeanRefIntergenic\tsdRefIntergenic\tspecies\torganism\n",file = file.path(output_folder,"All_cellPopulation_stats_10X.tsv"), sep = "\t")
 } else {
   print("File already exist.....")
 }
@@ -235,7 +235,8 @@ for (libraryId in unique(scRNASeqAnnotation$libraryId)) {
       ## collect the sumUMI + normalization for the target cellPop
       cellPop_normalized <- sumUMICellPop(rawCountFile = rawCountFile)
       ## Information about reference intergenic
-      referenceIntergenic <- refIntergenic(folder_refIntergenic = folder_refIntergenic, speciesId = speciesId)
+      referenceIntergenic <- refIntergenic(counts = cellPop_normalized, folder_refIntergenic = folder_refIntergenic,
+        speciesId = speciesId)
       ## calls with pValue theoretical
       calculatePvalues <- theoretical_pValue(counts = cellPop_normalized,
         refrenceIntergenic = referenceIntergenic)
@@ -265,14 +266,13 @@ for (libraryId in unique(scRNASeqAnnotation$libraryId)) {
       finalData_genic$CPM <- finalData_genic$sumUMI / sum(finalData_genic$sumUMI) * 1e6
       
       ## Export cutoff information file + new files with calls
-      cutoff_info_file <- cutoff_info(libraryId, cellTypeName = cellName,
-        cellTypeId = gsub("-",":",cellID), counts = finalData,
+      cutoff_info_file <- cutoff_info(libraryId, cellTypeId = gsub("-",":",cellID), counts = finalData,
         desired_pValue_cutoff = as.numeric(desired_pValue_cutoff),
         meanRefIntergenic = calculatePvalues[[2]], sdRefIntergenic = calculatePvalues[[3]])
       CPM_threshold <- log2(as.numeric(cutoff_info_file[3]))
       
       ## export data
-      plotData(libraryId = libraryId, cellPopName = cellPop, counts = finalData,
+      plotData(libraryId = libraryId, cellTypeId = cellPop, counts = finalData,
         refIntergenic = referenceIntergenic, CPM_threshold = CPM_threshold)
       
       pathExport <- file.path(output_folder, libraryId)
