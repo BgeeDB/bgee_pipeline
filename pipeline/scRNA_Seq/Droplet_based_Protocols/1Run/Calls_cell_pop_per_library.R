@@ -59,10 +59,10 @@ refIntergenic <- function(counts, folder_refIntergenic, speciesId){
   
   referenceIntergenic <- file.path(folder_refIntergenic, paste0(speciesId, "_intergenic.fa.gz"))
   if(!file.exists(referenceIntergenic)) {
-    referenceIntergenic <- file.path(folder_refIntergenic, paste0(speciesId, "intergenic.fa"))
+    referenceIntergenic <- file.path(folder_refIntergenic, paste0(speciesId, "_intergenic.fa"))
     if(!file.exists(referenceIntergenic)) {
       stop("reference intergenic file ", referenceIntergenic,
-        "not available (compressed or not compressed)")
+        " not available (compressed or not compressed)")
     }
   }
   referenceIntergenic <- readDNAStringSet(referenceIntergenic)
@@ -86,7 +86,7 @@ refIntergenic <- function(counts, folder_refIntergenic, speciesId){
 sumUMICellPop <- function(rawCountFile) {
   cellPop <- read.table(rawCountFile, header = TRUE, sep = "\t")
   # sum counts for all barcodes.
-  cellPop$sumUMI <- rowSums(cellPop[ ,2:(length(cellPop)-4)])
+  cellPop$sumUMI <- rowSums(cellPop[ ,2:(length(cellPop)-4), drop = FALSE])
   cellPop$CPM <- cellPop$sumUMI / sum(cellPop$sumUMI) * 1e6
   
   ## export cell pop info table
@@ -170,7 +170,7 @@ plotData <- function(libraryId, cellTypeId, counts, refIntergenic, CPM_threshold
     length(counts$CPM)
   refIntergenic <- merge(dplyr::filter(counts, type == "intergenic"), referenceIntergenic,
     by = "gene_id")
-  refIntergenic <- as.data.table(dplyr::filter(refIntergenic, refIntergenic == "TRUE"))
+  refIntergenic <- as.data.frame(dplyr::filter(refIntergenic, refIntergenic == "TRUE"))
   dens_Refintergenic <- density(log2(refIntergenic$CPM+1e-6), na.rm=T)
   dens_Refintergenic$y <- dens_Refintergenic$y * nrow(refIntergenic) / length(counts$CPM)
   if(!dir.exists(file.path(output_folder, libraryId))) {
@@ -266,15 +266,21 @@ for (libraryId in unique(scRNASeqAnnotation$libraryId)) {
       finalData_genic$CPM <- finalData_genic$sumUMI / sum(finalData_genic$sumUMI) * 1e6
       
       ## Export cutoff information file + new files with calls
-      cutoff_info_file <- cutoff_info(libraryId, cellTypeId = gsub("-",":",cellID), counts = finalData,
+      cutoff_info_file <- cutoff_info(libraryId, cellTypeId = gsub("-",":",cellTypeId), counts = finalData,
         desired_pValue_cutoff = as.numeric(desired_pValue_cutoff),
         meanRefIntergenic = calculatePvalues[[2]], sdRefIntergenic = calculatePvalues[[3]])
       CPM_threshold <- log2(as.numeric(cutoff_info_file[3]))
       
       ## export data
-      plotData(libraryId = libraryId, cellTypeId = cellPop, counts = finalData,
-        refIntergenic = referenceIntergenic, CPM_threshold = CPM_threshold)
-      
+      tryCatch(
+        expr = {
+          plotData(libraryId = libraryId, cellTypeId = cellPop, counts = finalData,
+            refIntergenic = referenceIntergenic, CPM_threshold = CPM_threshold)
+        },
+        error = function(e) {
+	  message("Did not manage to generate a plot for library ", libraryId)
+        }
+      )
       pathExport <- file.path(output_folder, libraryId)
       write.table(finalData,file = file.path(pathExport, paste0("Calls_cellPop_",libraryId,
         "_",cellPop,"_genic+intergenic.tsv")),quote=FALSE, sep = "\t", col.names=TRUE,
