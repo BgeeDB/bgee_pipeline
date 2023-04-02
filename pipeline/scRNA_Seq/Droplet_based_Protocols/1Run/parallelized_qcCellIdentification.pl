@@ -79,9 +79,9 @@ foreach my $experimentId (keys %processedLibraries){
         #create sbatch file and
 	    my $jobName = "${jobPrefix}${libraryId}";
         my $speciesId = $processedLibraries{$experimentId}{$libraryId}{'speciesId'};
-        ## use 15Gb of memory. Should maybe be increase depending on the library to process
+        ## use 30Gb of memory. Should maybe be increase depending on the library to process
 	    my $sbatchTemplate = Utils::sbatch_template($queue, $account, 1,
-          15, "${clusterOutput}${jobName}.out", "${clusterOutput}/${jobName}.err",
+          30, "${clusterOutput}${jobName}.out", "${clusterOutput}/${jobName}.err",
           $jobName);
 
         #TODO: move modules management to a script attribute
