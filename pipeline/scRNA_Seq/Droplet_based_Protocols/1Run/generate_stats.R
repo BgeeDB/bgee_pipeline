@@ -61,25 +61,30 @@ for(line in seq(nrow(libraries))) {
     kallisto_info_file_path <- file.path(kallisto_dir, library_id, kallisto_info_file)
     library_r_stat_files <- list.files(path = file.path(fastq_dir, species_id, library_id), 
       pattern = reads_R_stat_suffix, full.names = TRUE, recursive = TRUE)
-    if(file.exists(kallisto_info_file_path) & (length(library_r_stat_files) > 0) ) {
-      json_info <- fromJSON(file = kallisto_info_file_path)
-      min_reads <- Inf
-      max_reads <- 0
-      for (r_stat_file in library_r_stat_files) {
-	message("r stat file : ", r_stat_file)
-        r_stats <- read.table(file = r_stat_file, header = TRUE, sep = "\t", comment.char = "")
-        if (r_stats[1,1] < min_reads) {
-          min_reads <- r_stats[1,1]
+    if(file.exists(kallisto_info_file_path)) {
+      if ((length(library_r_stat_files) > 0) ) {
+        json_info <- fromJSON(file = kallisto_info_file_path)
+        min_reads <- Inf
+        max_reads <- 0
+        for (r_stat_file in library_r_stat_files) {
+  	message("r stat file : ", r_stat_file)
+          r_stats <- read.table(file = r_stat_file, header = TRUE, sep = "\t", comment.char = "")
+          if (r_stats[1,1] < min_reads) {
+            min_reads <- r_stats[1,1]
+          }
+          if (r_stats[1,2] > max_reads) {
+            max_reads <- r_stats[1,2]
+          }
         }
-        if (r_stats[1,2] > max_reads) {
-          max_reads <- r_stats[1,2]
+        kallisto_info <- data.frame(library_id, json_info$n_processed, r_stats[1,1], r_stats[1,2], 
+          json_info$n_pseudoaligned, json_info$n_unique, json_info$p_pseudoaligned, json_info$p_unique, 
+          json_info$n_targets, json_info$start_time, json_info$kallisto_version)
+        names(kallisto_info) <- kallisto_info_report_columns
+        kallisto_info_all_samples <- rbind(kallisto_info_all_samples, kallisto_info)
+        } else {
+          message(library_id, " : R.stat file not generated")
+          libraries_wo_calls <- libraries_wo_calls + 1
         }
-      }
-      kallisto_info <- data.frame(library_id, json_info$n_processed, r_stats[1,1], r_stats[1,2], 
-        json_info$n_pseudoaligned, json_info$n_unique, json_info$p_pseudoaligned, json_info$p_unique, 
-        json_info$n_targets, json_info$start_time, json_info$kallisto_version)
-      names(kallisto_info) <- kallisto_info_report_columns
-      kallisto_info_all_samples <- rbind(kallisto_info_all_samples, kallisto_info)
     } else {
       message(library_id, " : kallisto info file was not generated")
       libraries_wo_calls <- libraries_wo_calls + 1
