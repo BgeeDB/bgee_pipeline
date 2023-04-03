@@ -272,15 +272,19 @@ for (libraryId in unique(scRNASeqAnnotation$libraryId)) {
       CPM_threshold <- log2(as.numeric(cutoff_info_file[3]))
       
       ## export data
-      tryCatch(
+      ## for some libraries it is not possible to create the plot. Use a try/catch to be able
+      ## to generate the plot for all possible libraries
+      ##TODO: check why it is not possible to generate the plot
+      trycatch(
         expr = {
           plotData(libraryId = libraryId, cellTypeId = cellPop, counts = finalData,
             refIntergenic = referenceIntergenic, CPM_threshold = CPM_threshold)
-        },
-        error = function(e) {
-	  message("Did not manage to generate a plot for library ", libraryId)
-        }
+          },
+          error = function(e) {
+            warning("did not manage to create plot for library ", libraryId)
+          }
       )
+      
       pathExport <- file.path(output_folder, libraryId)
       write.table(finalData,file = file.path(pathExport, paste0("Calls_cellPop_",libraryId,
         "_",cellPop,"_genic+intergenic.tsv")),quote=FALSE, sep = "\t", col.names=TRUE,
