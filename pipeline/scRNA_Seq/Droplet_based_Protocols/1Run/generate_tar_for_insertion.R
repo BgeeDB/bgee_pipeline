@@ -3,7 +3,7 @@
 
 ## example how to use it :
 
-md_args = commandArgs(TRUE);
+cmd_args = commandArgs(TRUE);
 print(cmd_args)
 if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
   for( i in 1:length(cmd_args) ){
