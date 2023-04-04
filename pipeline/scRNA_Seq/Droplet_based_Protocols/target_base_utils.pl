@@ -36,7 +36,7 @@ sub getTargetBaseCuratedLibrariesAnnotation {
 
     my %targetBaseLibrary;
     for my $line ( read_file("$targetBaseLibraryFile", chomp=>1) ){
-        next  if ( $line =~ /^#/ or $line =~ /^\"#/ );
+        next  if ( $line =~ /^#libraryId/ or $line =~ /^\"#libraryId/ or $line =~ /^libraryId/);
         # there is currently 32 columns in the target base library annotation file
         my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line, -1);
 
@@ -56,8 +56,7 @@ sub getTargetBaseCuratedLibrariesAnnotation {
         my $whiteList                       = $tmp[30];
         my $sampleName                      = $tmp[31];
 
-        print (scalar @tmp);
-        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 32 );
+        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 33 );
 
         if ( !defined $targetBaseLibrary{$experimentId}->{$libraryId} ){
             # Perform format checks
@@ -88,8 +87,7 @@ sub getTargetBaseCuratedLibrariesAnnotation {
                 $discarded = 1;
             }
             if ($sex eq '' ){
-                warn "Warning, wrong format for sex [$sex]\n";
-                $discarded = 1;
+                $sex = "NA";
             #TODO create hash with all potential sexes
             } else {
                 if ($sex eq "F") {
@@ -102,8 +100,7 @@ sub getTargetBaseCuratedLibrariesAnnotation {
                 }
             }
             if ($strain eq '' ){
-                warn "Warning, wrong format for strain [$strain]\n";
-                $discarded = 1;
+                $strain= "NA";
             }
             if ($speciesId eq '' ){
                 warn "Warning, wrong format for speciesId [$speciesId]\n";
