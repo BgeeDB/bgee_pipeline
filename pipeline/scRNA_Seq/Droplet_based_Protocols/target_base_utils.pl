@@ -56,6 +56,7 @@ sub getTargetBaseCuratedLibrariesAnnotation {
         my $whiteList                       = $tmp[30];
         my $sampleName                      = $tmp[31];
 
+        print (scalar @tmp);
         die "tsv field number problem [$line]\n"  if ( scalar @tmp != 32 );
 
         if ( !defined $targetBaseLibrary{$experimentId}->{$libraryId} ){
@@ -249,18 +250,18 @@ sub getCallsSummaryAtLibraryAnnotatedLevel {
         my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
 
         my $libraryId                        = $tmp[0];
-        my $cellTypeId                       = $tmp[2];
-        my $abundanceThreshold               = $tmp[3];
-        my $allGenesPercentPresent           = $tmp[6];
-        my $proteinCodingGenesPercentPresent = $tmp[9];
-        my $intergenicRegionsPercentPresent  = $tmp[12];
-        my $pValueThreshold                  = $tmp[13];
-        my $meanRefIntergenic                = $tmp[14];
-        my $sdRefIntergenic                  = $tmp[15];
+        my $cellTypeId                       = $tmp[1];
+        my $abundanceThreshold               = $tmp[2];
+        my $allGenesPercentPresent           = $tmp[5];
+        my $proteinCodingGenesPercentPresent = $tmp[8];
+        my $intergenicRegionsPercentPresent  = $tmp[11];
+        my $pValueThreshold                  = $tmp[12];
+        my $meanRefIntergenic                = $tmp[13];
+        my $sdRefIntergenic                  = $tmp[14];
         #my $mappedUMIs                      = $tmp[?];
 
 
-        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 18 );
+        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 17 );
 
         if ( !defined $callsSummary{$libraryId}{$cellTypeId} ){
             # Perform format checks
