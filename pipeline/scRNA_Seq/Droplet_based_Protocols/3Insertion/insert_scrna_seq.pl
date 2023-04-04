@@ -8,7 +8,7 @@ use Getopt::Long;
 use FindBin;
 use File::Slurp;
 use lib "$FindBin::Bin/../../../"; # Get lib path for Utils.pm
-##use Utils;
+use Utils;
 use Parallel::ForkManager;
 
 $| = 1; # no buffering of output
