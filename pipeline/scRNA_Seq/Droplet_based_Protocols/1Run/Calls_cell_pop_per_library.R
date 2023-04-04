@@ -86,7 +86,17 @@ refIntergenic <- function(counts, folder_refIntergenic, speciesId){
 sumUMICellPop <- function(rawCountFile) {
   cellPop <- read.table(rawCountFile, header = TRUE, sep = "\t")
   # sum counts for all barcodes.
-  cellPop$sumUMI <- rowSums(cellPop[ ,2:(length(cellPop)-4), drop = FALSE])
+  ## it is possible to have only one barcode per celltype. It is then not possible to
+  ## use the function rowSums.
+  ## In that case the sumUMI should be the value of the number of UMI for the only
+  ## available column.
+  ##TODO find a most elegant way to detect number of barcode per celltype
+  ##     maybe check the file barcode to UMI and count from that file.
+  if (ncol(cellPop) == 6) {
+    cellPop$sumUMI <- cellPop[ ,2]
+  } else {
+    cellPop$sumUMI <- rowSums(cellPop[ ,2:(length(cellPop)-4)])
+  }
   cellPop$CPM <- cellPop$sumUMI / sum(cellPop$sumUMI) * 1e6
   
   ## export cell pop info table
