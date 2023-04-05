@@ -33,7 +33,7 @@ sub getTargetBaseCuratedLibrariesAnnotation {
         'inDrop', 'MARS-Seq', 'Microwell-seq');
 
     my @validCellCompartments = ("scRNA-seq", "Sn-scRNA-seq");
-
+    
     my %targetBaseLibrary;
     for my $line ( read_file("$targetBaseLibraryFile", chomp=>1) ){
         next  if ( $line =~ /^#libraryId/ or $line =~ /^\"#libraryId/ or $line =~ /^libraryId/);
@@ -206,6 +206,13 @@ sub getSingleCellExperiments {
                 warn "Warning, wrong format for experiment type [$experimentType]\n";
                 $discarded = 1;
             }
+            
+            ## in order not to have "uninitialized value... warning, remove potentially
+            # undef value per empty string
+            $name = "" unless defined $name;
+            $description = "" unless defined $description;
+            $comment = "" unless defined $comment;
+            
             if ( $discarded ){
                 warn ' experiment: ', $experimentId, " discarded!\n";
             } else {
@@ -328,6 +335,8 @@ sub get_processed_libraries_info {
     my ($targetBaseLibraryFile) = @_;
     # $experiments{experimentId}->{libraryId}->{runId}->{'readCount'} = ...
     # $experiments{experimentId}->{libraryId}->{'libraryLayout'} = ...
+    
+    my @validLibraryType = ('paired', 'single', 'NA');
 
     my %libInfos = ();
     for my $line ( read_file("$targetBaseLibraryFile", chomp=>1) ){
@@ -361,7 +370,11 @@ sub get_processed_libraries_info {
                 warn "Warning, wrong format for experimentId [$experimentId]\n";
                 $discarded = 1;
             }
-            if ($libraryType eq '' ){
+            if ($libraryType eq 'PAIRED') {
+                $libraryType = 'paired';
+            } elsif ($libraryType eq 'SINGLE') {
+                $libraryType = 'single';
+            } elsif (all { $libraryType !~ /^$_/ } @validLibraryType) {
                 warn "Warning, wrong format for libraryType [$libraryType]\n";
                 $discarded = 1;
             }
@@ -411,9 +424,9 @@ sub getCallsInfoPerLibrary {
         my $cpm                       = $tmp[2];
         my $zScore                    = $tmp[5];
         my $pValue                    = $tmp[6];
-        my $cellTypeId                = $tmp[9];
+        my $cellTypeId                = $tmp[8];
 
-        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 10 );
+        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 9 );
 
         if (!defined $callsInfo{$cellTypeId}->{$geneId}) {
             # Perform format checks
@@ -433,16 +446,26 @@ sub getCallsInfoPerLibrary {
             if ($zScore eq '' ){
                 warn "Warning, wrong format for zScore [$zScore]\n";
                 $discarded = 1;
+            # non numerical values of zscore are stored as NULL in the database
+            # dbi iquivalent to null is undef so if value of zscore is NA we modified
+            # it to be inserted as NULL in the database
+            } elsif ($zScore eq "NA") {
+                $zScore = undef;
             }
             if ($pValue eq '' ){
                 warn "Warning, wrong format for pValue [$pValue]\n";
                 $discarded = 1;
+            } elsif ($pValue eq "NA") {
+                $pValue = 1;
             }
             if ($cellTypeId eq '' ){
                 warn "Warning, wrong format for cellTypeId [$cellTypeId]\n";
                 $discarded = 1;
+            } else {
+                ##TODO remove this hack once the script generating call files is modified to
+                ## use real cellTypeIds
+                $cellTypeId =~ tr/_/:/;
             }
-
             if ($discarded) {
                 warn 'gene: ', $geneId, ', cellTypeId', $cellTypeId, " discarded!\n";
             } else {
@@ -478,7 +501,7 @@ sub getBarcodeToCellType {
         my $cellTypeId                      = $tmp[7];
         my $cellTypeAnnotationStatus        = $tmp[9];
 
-        die "tsv field number problem [$line]\n"  if (scalar @tmp != 12);
+        die "tsv field number problem [$line]\n"  if (scalar @tmp != 13);
 
         if (!defined $barcodes{$libraryId}->{'barcodes'}->{$barcode}) {
             # Perform format checks

@@ -81,6 +81,8 @@ require("$FindBin::Bin/../target_base_utils.pl");
 # initialize variables
 
 my $barcodeToCelltypeFilePattern = "${filteredBarcodeDir}/scRNASeq_barcode_EXP_ID.tsv";
+my $ABSENT_CALL_NOT_RELIABLE = "absent call not reliable";
+my $NOT_EXCLUDED = "not excluded";
 
 ########################################################################
 ############################ Queries ###################################
@@ -131,8 +133,8 @@ my $insert_run = 'INSERT INTO rnaSeqRun (rnaSeqRunId, rnaSeqLibraryId) VALUES (?
 
 my $insert_annotatedSampleGeneResult =  'INSERT INTO rnaSeqLibraryAnnotatedSampleGeneResult ('.
                                         'rnaSeqLibraryAnnotatedSampleId, bgeeGeneId, abundanceUnit, abundance,'.
-                                        'readsCount, UMIsCount, zScore, pValue, rnaSeqData,'.
-                                        'reasonForExclusion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                                        'readsCount, UMIsCount, zScore, pValue,'.
+                                        'reasonForExclusion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
 my $insert_individualSampleGeneResult = 'INSERT INTO rnaSeqLibraryIndividualSampleGeneResult ('.
                                         'rnaSeqLibraryIndividualSampleId, bgeeGeneId, abundanceUnit, abundance,'.
@@ -288,6 +290,14 @@ for my $expId ( sort keys %processedLibraries ){
         }
 
         # insert libraries
+        my $runId = ();
+        for my $key (sort keys %{ $processedLibraries{$expId}->{$libraryId} }) {
+            if ($key ne "speciesId") {
+                $runId = $key;
+                last;
+            }
+        }
+        my $libraryType = $processedLibraries{$expId}->{$libraryId}->{$runId}->{'libraryType'};
         if ( $debug ){
             print 'INSERT INTO rnaSeqLibrary: ', $libraryId,                                     ' - ',
                   $expId, ' - ', $libraries{$expId}->{$libraryId}->{'platform'},                 ' - ',
@@ -312,11 +322,11 @@ for my $expId ( sort keys %processedLibraries ){
                   # rnaSeqPopulationCaptureId. For now all target base are polyA
                   'polyA',                                                                       ' - ',
                   $libraries{$expId}->{$libraryId}->{'genotype'},                                ' - ',
-                  $pipelineReport{$libraryId}->{'allReadsCount'},
-                  $pipelineReport{$libraryId}->{'mappedReadsCount'},
-                  $pipelineReport{$libraryId}->{'minReadLength'},
-                  $pipelineReport{$libraryId}->{'maxReadLength'},
-                  $processedLibraries{$expId}->{$libraryId}->{'libraryType'},"\n";
+                  $pipelineReport{$libraryId}->{'allReadsCount'},                                ' - ',
+                  $pipelineReport{$libraryId}->{'mappedReadsCount'},                             ' - ',
+                  $pipelineReport{$libraryId}->{'minReadLength'},                                ' - ',
+                  $pipelineReport{$libraryId}->{'maxReadLength'},                                ' - ',
+                  $libraryType,"\n";
         } else {
             $insLib->execute($libraryId,
                             $expId,
@@ -335,7 +345,7 @@ for my $expId ( sort keys %processedLibraries ){
                             $pipelineReport{$libraryId}->{'mappedReadsCount'},
                             $pipelineReport{$libraryId}->{'minReadLength'},
                             $pipelineReport{$libraryId}->{'maxReadLength'},
-                            $processedLibraries{$expId}->{$libraryId}->{'libraryType'}
+                            $libraryType
                         )  or die $insLib->errstr;
         }
 
@@ -347,7 +357,7 @@ for my $expId ( sort keys %processedLibraries ){
                 "for library $libraryId.\n";
             } else {
                 print "\t\tInsert celltype $cellTypeId for library $libraryId\n";
-                my $modifiedCellTypeId = $cellTypeId =~ s/:/-/r;
+                my $modifiedCellTypeId = $cellTypeId =~ s/:/_/r;
                 my $pathToCallFile = "${callsResults}/${libraryId}/Calls_cellPop_".
                 "${libraryId}_${modifiedCellTypeId}_genic.tsv";
                 my %callsOneAnnotatedSample = getCallsInfoPerLibrary($pathToCallFile);
@@ -401,21 +411,29 @@ for my $expId ( sort keys %processedLibraries ){
                 my $insAnnotatedSampleGeneResult = $bgee_data->prepare($insert_annotatedSampleGeneResult);
                 for my $geneId (sort keys %{$callsOneAnnotatedSample{$cellTypeId}} ) {
                     my $bgeeGeneId = $genes{$libraries{$expId}->{$libraryId}->{'speciesId'}}{$geneId};
+                    my $reasonForExclusion = $NOT_EXCLUDED;
+                    if ($callsOneAnnotatedSample{$cellTypeId}{$geneId}{'pValue'} > 0.05) {
+                        $reasonForExclusion = $ABSENT_CALL_NOT_RELIABLE;
+                    }
                     if ($debug) {
                         print 'INSERT INTO rnaSeqLibraryAnnotatedSampleGeneResult: ',
                         $annotatedSampleId, ' - ', $bgeeGeneId, ' - ', "cpm", ' - ',
+                        ## the 0 is for the readsCount. The only info we have for target base
+                        ## is the UMICounts so weleave readCounts at 0
                         $callsOneAnnotatedSample{$cellTypeId}{$geneId}{'cpm'}, ' - ', 0, ' - ',
                         $callsOneAnnotatedSample{$cellTypeId}{$geneId}{'sumUMI'}, ' - ',
                         $callsOneAnnotatedSample{$cellTypeId}{$geneId}{'zScore'}, ' - ',
                         $callsOneAnnotatedSample{$cellTypeId}{$geneId}{'pValue'}, ' - ',
-                        "high quality", ' - ', 'not excluded', "\n";
+                        $reasonForExclusion, "\n";
                     } else {
                         $insAnnotatedSampleGeneResult->execute($annotatedSampleId, $bgeeGeneId,
+                        ## the 0 is for the readsCount. The only info we have for target base
+                        ## is the UMICounts so weleave readCounts at 0
                         'cpm', $callsOneAnnotatedSample{$cellTypeId}{$geneId}{'cpm'}, 0,
                         $callsOneAnnotatedSample{$cellTypeId}{$geneId}{'sumUMI'},
                         $callsOneAnnotatedSample{$cellTypeId}{$geneId}{'zScore'},
                         $callsOneAnnotatedSample{$cellTypeId}{$geneId}{'pValue'},
-                        'high quality', 'not excluded')
+                        $reasonForExclusion)
                             or die $insAnnotatedSampleGeneResult->errstr;
                     }
                 }
