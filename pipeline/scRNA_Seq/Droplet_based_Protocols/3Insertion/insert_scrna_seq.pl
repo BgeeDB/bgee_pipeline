@@ -352,43 +352,63 @@ for my $expId ( sort keys %processedLibraries ){
         # Now start to insert annotated samples
         my %celltypeToAnnotatedSampleId;
         for my $cellTypeId (sort keys %{$barcodesToCellType{$libraryId}{'cellTypes'}} ) {
-            if ($callsPipelineSummary{$libraryId}{$cellTypeId}{'abundanceThreshold'} eq "NA") {
-                warn "Abundance threshold not available : cellTypeId $cellTypeId not inserted ",
-                "for library $libraryId.\n";
+            print "\t\tInsert celltype $cellTypeId for library $libraryId\n";
+
+            # Get conditionId/exprMappedConditionId for this library
+            # Updates also the hash of existing conditions
+            my $condKeyMap;
+            if ($debug) {
+                print 'If condition does not already exist run insert into cond',
+                $libraries{$expId}->{$libraryId}->{'anatEntityId'},    ' - ',
+                $libraries{$expId}->{$libraryId}->{'stageId'},         ' - ',
+                $cellTypeId,                                           ' - ',
+                $libraries{$expId}->{$libraryId}->{'sex'},             ' - ',
+                $libraries{$expId}->{$libraryId}->{'strain'},          ' - ',
+                $libraries{$expId}->{$libraryId}->{'speciesId'}, "\n";
             } else {
-                print "\t\tInsert celltype $cellTypeId for library $libraryId\n";
-                my $modifiedCellTypeId = $cellTypeId =~ s/:/_/r;
-                my $pathToCallFile = "${callsResults}/${libraryId}/Calls_cellPop_".
+                ($condKeyMap, $conditions) = Utils::insert_get_condition($bgee_metadata,
+                                                                 $conditions,
+                                                                 $stage_equivalences,
+                                                                 $libraries{$expId}->{$libraryId}->{'anatEntityId'},
+                                                                 $libraries{$expId}->{$libraryId}->{'stageId'},
+                                                                 $libraries{$expId}->{$libraryId}->{'speciesId'},
+                                                                 $libraries{$expId}->{$libraryId}->{'sex'},
+                                                                 $libraries{$expId}->{$libraryId}->{'strain'},
+                                                                 $anatSexInfo, $speciesSexInfo,
+                                                                 $libraryId, '',
+                                                                 $cellTypeId
+                                                                );
+    
+            }
+            # boolean used to define if calls will be inserted for this library/celltype
+            my $insertCalls = 1;
+
+            # generate path to file containing calls for this library/celltypeId
+            my $modifiedCellTypeId = $cellTypeId =~ s/:/_/r;
+            my $pathToCallFile = "${callsResults}/${libraryId}/Calls_cellPop_".
                 "${libraryId}_${modifiedCellTypeId}_genic.tsv";
-                my %callsOneAnnotatedSample = getCallsInfoPerLibrary($pathToCallFile);
-    
-                # Get conditionId/exprMappedConditionId for this library
-                # Updates also the hash of existing conditions
-                my $condKeyMap;
-                if ($debug) {
-                    print 'If condition does not already exist run insert into cond',
-                    $libraries{$expId}->{$libraryId}->{'anatEntityId'},    ' - ',
-                    $libraries{$expId}->{$libraryId}->{'stageId'},         ' - ',
-                    $cellTypeId,                                           ' - ',
-                    $libraries{$expId}->{$libraryId}->{'sex'},             ' - ',
-                    $libraries{$expId}->{$libraryId}->{'strain'},          ' - ',
-                    $libraries{$expId}->{$libraryId}->{'speciesId'}, "\n";
-                } else {
-                    ($condKeyMap, $conditions) = Utils::insert_get_condition($bgee_metadata,
-                                                                     $conditions,
-                                                                     $stage_equivalences,
-                                                                     $libraries{$expId}->{$libraryId}->{'anatEntityId'},
-                                                                     $libraries{$expId}->{$libraryId}->{'stageId'},
-                                                                     $libraries{$expId}->{$libraryId}->{'speciesId'},
-                                                                     $libraries{$expId}->{$libraryId}->{'sex'},
-                                                                     $libraries{$expId}->{$libraryId}->{'strain'},
-                                                                     $anatSexInfo, $speciesSexInfo,
-                                                                     $libraryId, '',
-                                                                     $cellTypeId
-                                                                    );
-    
-                }
-                # We consider the fine-grained (low-level) conditionId for insertion of annotated sample: $condKeyMap->{'conditionId'}
+            if (! -e $pathToCallFile) {
+                warn "calls file does not exist for library $libraryId and celltype $cellTypeId. ",
+                "Condition and annotated sample have been inserted in order to be able to save info at ",
+                "cell level but no calls will be generated.";
+                $insertCalls = 0;
+            }
+            if ($callsPipelineSummary{$libraryId}{$cellTypeId}{'abundanceThreshold'} eq "NA") {
+                warn "Abundance threshold not available for library $libraryId and cellType $cellTypeId. ",
+                "Condition and annotated sample have been inserted in order to be able to save info at ",
+                "cell level but no calls will be generated.";
+                $insertCalls = 0;
+            }
+
+            if (! $insertCalls) {
+                # only insert annotated sample Id and condition Id
+                my $annotatedSampleId = insert_get_annotated_sample($insAnnotatedSample,
+                    $selectAnnotatedSampleId, -1, 0, 0, 0, 0, 1, -1, -1, 0,
+                    ## 1 here means true for isSingleCell
+                    1, $condKeyMap->{'conditionId'}, $libraryId, $debug);
+            } else {
+
+                # first insert annotated sample with metrics from our pipeline
                 my $annotatedSampleId = insert_get_annotated_sample($insAnnotatedSample,
                     $selectAnnotatedSampleId, 
                     $callsPipelineSummary{$libraryId}{$cellTypeId}->{'abundanceThreshold'},
@@ -401,10 +421,12 @@ for my $expId ( sort keys %processedLibraries ){
                     $callsPipelineSummary{$libraryId}{$cellTypeId}->{'mappedUMIs'},
                     ## 1 here means true for isSingleCell
                     1, $condKeyMap->{'conditionId'}, $libraryId, $debug);
-    
-                $celltypeToAnnotatedSampleId{$cellTypeId} = $annotatedSampleId;
-    
-                # Then insert rnaSeqAnnotatedSampleGeneResult
+
+                # then load file containing all calls for this library/celltypeId
+                my %callsOneAnnotatedSample = getCallsInfoPerLibrary($pathToCallFile);
+
+                # create a connection to the database that does one unique commit once all calls for that
+                # library/celltypeId are inserted.
                 my $bgee_data = Utils::connect_bgee_db($bgee_connector);
                 # disable autocommit for $bgee_data. Allows to manually commit after each annotatedSample.
                 $bgee_data->{AutoCommit} = 0;
@@ -442,6 +464,9 @@ for my $expId ( sort keys %processedLibraries ){
                 $insAnnotatedSampleGeneResult->finish;
                 $bgee_data->disconnect;
             }
+
+            # map the celltypeId to the corresponding annotated sample 
+            $celltypeToAnnotatedSampleId{$cellTypeId} = $annotatedSampleId;
         }
 
         ## Now start to insert individual samples
@@ -451,10 +476,6 @@ for my $expId ( sort keys %processedLibraries ){
         my %barcodeToIndividualSampleId;
         my @barcodesArray;
         for my $barcode (sort keys %{$barcodesToCellType{$libraryId}{'barcodes'}}) {
-            ## if a barcode has no celltypeId associated it means we did not insert it.
-            ## in that case we do not insert corresponding counts at cell level and move
-            ## to the next barcode
-            next if (!exists($celltypeToAnnotatedSampleId{$barcode}));
             my $annotatedSampleId = $celltypeToAnnotatedSampleId{$barcodesToCellType{$libraryId}{'barcodes'}{$barcode}{'cellTypeId'}};
             my $individualSampleId = insert_get_individual_sample($insIndividualSample, $selectIndividualSampleId,
                 $annotatedSampleId, $barcode, "", $debug);
@@ -462,7 +483,7 @@ for my $expId ( sort keys %processedLibraries ){
             push (@barcodesArray, $barcode);
         }
 
-        # now start to insert abundance per cell. parallelized per celltype
+        # then start to insert abundance per cell. parallelized per celltype
         my $pm = new Parallel::ForkManager($numberCore);
         foreach (@barcodesArray) {
             my $pid = $pm->start and next;
