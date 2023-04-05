@@ -32,7 +32,7 @@ $| = 1; # no buffering of output
 my ($bgee_connector) = ('');
 my ($targetBaseLibrary, $kallistoResults, $callsResults, $sexInfo)  = ('', '', '', '');
 my ($singleCellExperiment, $bgeeLibraryInfo, $sourceDir) = ('', '', '');
-my ($pipelineCallsSummary, $pipelineReportFile) = ('', '');
+my ($pipelineCallsSummary, $pipelineReportFile, $filteredBarcodeDir) = ('', '', '');
 my $numberCore = 1;
 #my ($library_stats, $report_info = ('', '');
 my ($debug)                      = (0);
@@ -40,6 +40,7 @@ my %opts = ('bgee=s'                 => \$bgee_connector,       # Bgee connector
             'targetBaseLibrary=s'    => \$targetBaseLibrary,    # target base RNAseq library annotations
             'singleCellExperiment=s' => \$singleCellExperiment, # single cell RNASeq experiment annotations
             'bgeeLibraryInfo=s'      => \$bgeeLibraryInfo,      # metadata_info_10X.txt file
+            'filteredBarcodeDir=s'   => \$filteredBarcodeDir,   # path to the directory containing all filtered barcode to celltype files
             'pipelineCallsSummary=s' => \$pipelineCallsSummary, # path to the file containing a summary of processing calls info at library/celltype level (e.g percentage protein coding present, ...)
             'pipelineReportFile=s'   => \$pipelineReportFile,   # path to the file containing summary of kallisto (reads, reads mapped, ..,) and stats about read length
             'kallistoResults=s'      => \$kallistoResults,      # path to dir containing kallisto/bustools results for all libraries
@@ -53,7 +54,7 @@ my %opts = ('bgee=s'                 => \$bgee_connector,       # Bgee connector
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $bgee_connector eq '' || $targetBaseLibrary eq '' || $singleCellExperiment eq '' ||
-    $bgeeLibraryInfo eq '' || $pipelineCallsSummary eq '' || $pipelineReportFile eq '' || $kallistoResults eq '' || $sourceDir eq '' ||
+    $bgeeLibraryInfo eq '' || $filteredBarcodeDir eq '' || $pipelineCallsSummary eq '' || $pipelineReportFile eq '' || $kallistoResults eq '' || $sourceDir eq '' ||
     $sexInfo eq '' || $numberCore eq '' || $callsResults eq ''){
     print "\n\tInvalid or missing argument:
 \te.g., $0  -bgee=\$(BGEECMD) -targetBaseLibrary=RNASeqLibrary_full.tsv -singleCellExperiment=RNASeqExperiment_full.tsv -bgeeLibraryInfo=metadata_info_10X.txt -sexInfo=\$(UBERON_SEX_INFO_FILE_PATH) > $@.tmp 2>warnings.$@
@@ -61,6 +62,7 @@ if ( !$test_options || $bgee_connector eq '' || $targetBaseLibrary eq '' || $sin
 \t-targetBaseLibrary       targetBaseLibrary annotation file
 \t-singleCellExperiment    singleCellExperiment file
 \t-bgeeLibraryInfo         metadata_info_10X.txt containing libraries to process
+\t-filteredBarcodeDir      path to the directory containing all filtered barcode to celltype files
 \t-pipelineCallsSummary    path to the file containing a summary of processing calls info at library/celltype level
 \t-pipelineReportFile      path to the file containing summary of kallisto (reads, reads mapped, ..,) and stats about read length
 \t-kallistoResults         path to dir containing kallisto/bustools results for all libraries
@@ -78,7 +80,7 @@ require("$FindBin::Bin/../target_base_utils.pl");
 
 # initialize variables
 
-my $barcodeToCelltypeFilePattern = "$sourceDir/scRNASeq_barcode_EXP_ID.tsv";
+my $barcodeToCelltypeFilePattern = "${filteredBarcodeDir}/scRNASeq_barcode_EXP_ID.tsv";
 
 ########################################################################
 ############################ Queries ###################################
