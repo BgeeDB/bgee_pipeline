@@ -412,7 +412,7 @@ add foreign key (rnaSeqPopulationCaptureId) references rnaSeqPopulationCapture(r
 alter table rnaSeqLibraryAnnotatedSampleDev
 add foreign key (rnaSeqLibraryId) references rnaSeqLibraryDev(rnaSeqLibraryId) on delete cascade,
 add foreign key (conditionId) references cond(conditionId) on delete cascade;
-/*!40000 ALTER TABLE `rnaSeqLibraryAnnotatedSample` ENABLE KEYS */;
+/*!40000 ALTER TABLE `rnaSeqLibraryAnnotatedSampleDev` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `rnaSeqLibraryAnnotatedSampleGeneResultDev` DISABLE KEYS */;
 alter table rnaSeqLibraryAnnotatedSampleGeneResultDev
