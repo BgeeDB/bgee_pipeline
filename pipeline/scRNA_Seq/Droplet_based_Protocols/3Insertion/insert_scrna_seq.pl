@@ -312,8 +312,11 @@ for my $expId ( sort keys %processedLibraries ){
         # read count sparse matrix for all barcodes and genes of the library. It
         # corresponds to raw data per cell coming from kallisto/bustools. There was
         # no postprocessing filtering based on barcodes or celltype
-        my %sparseMatrixCount = read_sparse_matrix("$kallistoResults/$libraryId/gene_counts", "gene");
-        my %sparseMatrixCpm = read_sparse_matrix("$kallistoResults/$libraryId/cpm_counts", "cpm_counts");
+        my %sparseMatrix = ();
+        if ($insertBarcodes) {
+            %sparseMatrix = read_count_and_cpm_matrices("$kallistoResults/$libraryId/gene_counts", "gene",
+                "$kallistoResults/$libraryId/cpm_counts", "cpm_counts");
+        }
 
         if ($insertCalls) {
             print "\tInsert $libraryId from $expId\n";
@@ -546,13 +549,15 @@ for my $expId ( sort keys %processedLibraries ){
                 my $barcode = $_;
                 my $individualSampleId = $barcodeToIndividualSampleId{$barcode};
 
-                for my $geneId ( keys %{$sparseMatrixCount{$barcode}} ) {
+                my %subsetSparseMatrix = %sparseMatrix{$barcode};
+
+                for my $geneId ( keys %{$subsetSparseMatrix{$barcode}} ) {
                     # check that the gene is present in the database. It is both a
                     # security check and a way to remove intergenic regions
                     next if (! exists $genes{$libraries{$expId}->{$libraryId}->{'speciesId'}}{$geneId} ||
-                        ! exists $sparseMatrixCount{$barcode}{$geneId});
+                        ! exists $subsetSparseMatrix{$barcode}{$geneId}{'count'});
                     my $bgeeGeneId = $genes{$libraries{$expId}->{$libraryId}->{'speciesId'}}{$geneId};
-                    if (! exists $sparseMatrixCpm{$barcode}{$geneId}) {
+                    if (! exists $subsetSparseMatrix{$barcode}{$geneId}{'cpm'}) {
                         warn "Warning, gene $geneId has count for barcode $barcode but",
                             " no abundance was generated";
                         next;
@@ -560,13 +565,13 @@ for my $expId ( sort keys %processedLibraries ){
                     if ($debug) {
                         print 'INSERT INTO rnaSeqLibraryIndividualSampleGeneResult: ',
                         $individualSampleId, ' - ', $bgeeGeneId, ' - ', "cpm", ' - ',
-                        $sparseMatrixCpm{$barcode}{$geneId}, ' - ', 0, ' - ',
-                        $sparseMatrixCount{$barcode}{$geneId}, ' - ',
+                        $subsetSparseMatrix{$barcode}{$geneId}{'cpm'}, ' - ', 0, ' - ',
+                        $subsetSparseMatrix{$barcode}{$geneId}{'count'}, ' - ',
                         "high quality", ' - ', 'not excluded', "\n";
                     } else {
                         $insIndividualSampleGeneResult->execute($individualSampleId, $bgeeGeneId,
-                            'cpm', $sparseMatrixCpm{$barcode}{$geneId}, 0,
-                            $sparseMatrixCount{$barcode}{$geneId}, 'high quality', 'not excluded')
+                            'cpm', $subsetSparseMatrix{$barcode}{$geneId}{'cpm'}, 0,
+                            $subsetSparseMatrix{$barcode}{$geneId}{'count'}, 'high quality', 'not excluded')
                                 or die $insIndividualSampleGeneResult->errstr;
                     }
                 }

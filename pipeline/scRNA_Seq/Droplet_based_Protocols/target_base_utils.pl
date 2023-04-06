@@ -639,6 +639,25 @@ sub read_sparse_matrix {
 
 }
 
+# function loading both matrices in the same hash to reduce memory usage
+sub read_count_and_cpm_matrices {
+    my ($countDirectory, $countName, $cpmDirectory, $cpmName) = @_;
+    my %sparseMatrixCount = read_sparse_matrix($countDirectory, $countName);
+    my %sparseMatrixCpm = read_sparse_matrix($cpmDirectory, $cpmName);
+    my %sparseMatrixCombined;
+    for my $barcode (keys %sparseMatrixCount) {
+        for my $geneId (keys %{$sparseMatrixCount{$barcode}}) {
+            $sparseMatrixCombined{$barcode}->{$geneId}->{'count'} =
+                $sparseMatrixCount{$barcode}{$geneId};
+            if (exists $sparseMatrixCpm{$barcode}{$geneId}) {
+                $sparseMatrixCombined{$barcode}->{$geneId}->{'cpm'} =
+                $sparseMatrixCpm{$barcode}{$geneId};
+            }
+        }
+    }
+    return %sparseMatrixCombined;
+}
+
 sub read_bustools_index_matrix {
     my ($indexFile) = @_;
     my %indexHash;
