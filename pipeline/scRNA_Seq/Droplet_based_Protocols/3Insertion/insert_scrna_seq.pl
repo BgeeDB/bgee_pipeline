@@ -312,10 +312,11 @@ for my $expId ( sort keys %processedLibraries ){
         # read count sparse matrix for all barcodes and genes of the library. It
         # corresponds to raw data per cell coming from kallisto/bustools. There was
         # no postprocessing filtering based on barcodes or celltype
-        my %sparseMatrix = ();
+        my %cpmMatrix = ();
+        my %countMatrix = ();
         if ($insertBarcodes) {
-            %sparseMatrix = read_count_and_cpm_matrices("$kallistoResults/$libraryId/gene_counts", "gene",
-                "$kallistoResults/$libraryId/cpm_counts", "cpm_counts");
+            %countMatrix = read_sparse_matrix("$kallistoResults/$libraryId/gene_counts", "gene");
+            %cpmMatrix = read_sparse_matrix("$kallistoResults/$libraryId/cpm_counts", "cpm_counts");
         }
 
         if ($insertCalls) {
@@ -549,15 +550,16 @@ for my $expId ( sort keys %processedLibraries ){
                 my $barcode = $_;
                 my $individualSampleId = $barcodeToIndividualSampleId{$barcode};
 
-                my %subsetSparseMatrix = %sparseMatrix{$barcode};
+                my %subsetCpmMatrix = %cpmMatrix{$barcode};
+                my %subsetCountMatrix = %countMatrix{$barcode};
 
-                for my $geneId ( keys %{$subsetSparseMatrix{$barcode}} ) {
+                for my $geneId ( keys %{$subsetCountMatrix{$barcode}} ) {
                     # check that the gene is present in the database. It is both a
                     # security check and a way to remove intergenic regions
                     next if (! exists $genes{$libraries{$expId}->{$libraryId}->{'speciesId'}}{$geneId} ||
-                        ! exists $subsetSparseMatrix{$barcode}{$geneId}{'count'});
+                        ! exists $subsetCountMatrix{$barcode}{$geneId});
                     my $bgeeGeneId = $genes{$libraries{$expId}->{$libraryId}->{'speciesId'}}{$geneId};
-                    if (! exists $subsetSparseMatrix{$barcode}{$geneId}{'cpm'}) {
+                    if (! exists $subsetCpmMatrix{$barcode}{$geneId}) {
                         warn "Warning, gene $geneId has count for barcode $barcode but",
                             " no abundance was generated";
                         next;
@@ -565,13 +567,13 @@ for my $expId ( sort keys %processedLibraries ){
                     if ($debug) {
                         print 'INSERT INTO rnaSeqLibraryIndividualSampleGeneResult: ',
                         $individualSampleId, ' - ', $bgeeGeneId, ' - ', "cpm", ' - ',
-                        $subsetSparseMatrix{$barcode}{$geneId}{'cpm'}, ' - ', 0, ' - ',
-                        $subsetSparseMatrix{$barcode}{$geneId}{'count'}, ' - ',
+                        $subsetCpmMatrix{$barcode}{$geneId}, ' - ', 0, ' - ',
+                        $subsetCountMatrix{$barcode}{$geneId}, ' - ',
                         "high quality", ' - ', 'not excluded', "\n";
                     } else {
                         $insIndividualSampleGeneResult->execute($individualSampleId, $bgeeGeneId,
-                            'cpm', $subsetSparseMatrix{$barcode}{$geneId}{'cpm'}, 0,
-                            $subsetSparseMatrix{$barcode}{$geneId}{'count'}, 'high quality', 'not excluded')
+                            'cpm', $subsetCpmMatrix{$barcode}{$geneId}, 0,
+                            $subsetCountMatrix{$barcode}{$geneId}, 'high quality', 'not excluded')
                                 or die $insIndividualSampleGeneResult->errstr;
                     }
                 }
