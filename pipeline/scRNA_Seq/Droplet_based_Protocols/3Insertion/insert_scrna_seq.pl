@@ -119,8 +119,8 @@ my $insert_annotatedSamples =   'INSERT INTO rnaSeqLibraryAnnotatedSample (rnaSe
                                 ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
 my $select_annotatedSampleId =  'SELECT rnaSeqLibraryAnnotatedSampleId FROM '.
-                                'rnaSeqLibraryAnnotatedSample WHERE conditionId = ? AND '.
-                                'rnaSeqLibraryId = ?';
+                                'rnaSeqLibraryAnnotatedSample WHERE rnaSeqLibraryId = ? AND '.
+                                'conditionId = ?';
 
 my $insert_individualSamples =  'INSERT INTO rnaSeqLibraryIndividualSample (rnaSeqLibraryAnnotatedSampleId,'.
                                 'barcode, sampleName) VALUES (?, ?, ?)';
@@ -268,15 +268,14 @@ my $selectIndividualSampleId = $bgee_metadata->prepare($select_individualSampleI
 my $inserted = 0;
 
 for my $expId ( sort keys %processedLibraries ){
-
     # Load barcode to cell type mapping
     my $barcodeToCellTypeFile = $barcodeToCelltypeFilePattern =~ s/EXP_ID/$expId/r;
     #my %barcodesTsv = %{ Utils::read_spreadsheet("$barcodeToCellTypeFile", "\t", 'csv', '"', 1) };
     my %barcodesToCellType = getBarcodeToCellType($barcodeToCellTypeFile);
-
-    print "Start inserting libraries...\n";
+    print "Start inserting libraries for $expId...\n";
     LIBRARY:
     for my $libraryId ( sort keys %{$processedLibraries{$expId}} ){
+
         # read count sparse matrix for all barcodes and genes of the library. It
         # corresponds to raw data per cell coming from kallisto/bustools. There was
         # no postprocessing filtering based on barcodes or celltype
@@ -352,8 +351,8 @@ for my $expId ( sort keys %processedLibraries ){
         # Now start to insert annotated samples
         my %celltypeToAnnotatedSampleId;
         for my $cellTypeId (sort keys %{$barcodesToCellType{$libraryId}{'cellTypes'}} ) {
-            print "\t\tInsert celltype $cellTypeId for library $libraryId\n";
 
+            print "\t\tInsert celltype $cellTypeId for library $libraryId\n";
             # Get conditionId/exprMappedConditionId for this library
             # Updates also the hash of existing conditions
             my $condKeyMap;
@@ -383,6 +382,8 @@ for my $expId ( sort keys %processedLibraries ){
             # boolean used to define if calls will be inserted for this library/celltype
             my $insertCalls = 1;
 
+            my $annotatedSampleId = ();
+
             # generate path to file containing calls for this library/celltypeId
             my $modifiedCellTypeId = $cellTypeId =~ s/:/_/r;
             my $pathToCallFile = "${callsResults}/${libraryId}/Calls_cellPop_".
@@ -392,24 +393,22 @@ for my $expId ( sort keys %processedLibraries ){
                 "Condition and annotated sample have been inserted in order to be able to save info at ",
                 "cell level but no calls will be generated.";
                 $insertCalls = 0;
-            }
-            if ($callsPipelineSummary{$libraryId}{$cellTypeId}{'abundanceThreshold'} eq "NA") {
+            } elsif ($callsPipelineSummary{$libraryId}{$cellTypeId}{'abundanceThreshold'} eq "NA") {
                 warn "Abundance threshold not available for library $libraryId and cellType $cellTypeId. ",
                 "Condition and annotated sample have been inserted in order to be able to save info at ",
                 "cell level but no calls will be generated.";
                 $insertCalls = 0;
             }
-
             if (! $insertCalls) {
                 # only insert annotated sample Id and condition Id
-                my $annotatedSampleId = insert_get_annotated_sample($insAnnotatedSample,
-                    $selectAnnotatedSampleId, -1, 0, 0, 0, 0, 1, -1, -1, 0,
+                $annotatedSampleId = insert_get_annotated_sample($insAnnotatedSample,
+                    $selectAnnotatedSampleId, -1, 0, 0, 0, 1, -1, -1, 0,
                     ## 1 here means true for isSingleCell
                     1, $condKeyMap->{'conditionId'}, $libraryId, $debug);
             } else {
 
                 # first insert annotated sample with metrics from our pipeline
-                my $annotatedSampleId = insert_get_annotated_sample($insAnnotatedSample,
+                $annotatedSampleId = insert_get_annotated_sample($insAnnotatedSample,
                     $selectAnnotatedSampleId, 
                     $callsPipelineSummary{$libraryId}{$cellTypeId}->{'abundanceThreshold'},
                     $callsPipelineSummary{$libraryId}{$cellTypeId}->{'allGenesPercentPresent'},
@@ -495,7 +494,7 @@ for my $expId ( sort keys %processedLibraries ){
             my $barcode = $_;
             my $individualSampleId = $barcodeToIndividualSampleId{$barcode};
 
-            for my $geneId (sort keys %{$sparseMatrixCount{$barcode}} ) {
+            for my $geneId ( keys %{$sparseMatrixCount{$barcode}} ) {
                 # check that the gene is present in the database. It is both a
                 # security check and a way to remove intergenic regions
                 next if (! exists $genes{$libraries{$expId}->{$libraryId}->{'speciesId'}}{$geneId} ||

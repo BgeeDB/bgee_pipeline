@@ -10,14 +10,14 @@ SHELL = /bin/bash
 #  GENERAL PARAMETERS
 # ===================================
 MAJOR_RELEASE    := 15
-MINOR_RELEASE    := 0
+MINOR_RELEASE    := 1
 RELEASE          := $(MAJOR_RELEASE).$(MINOR_RELEASE)
 
 # MySQL database connection parameters
 # DBUSER and DBPASS defined in Makefile.Config
 # DBUSERV and DBPASSV defined in Makefile.Config
 DBNAME := bgee_v$(subst .,_,$(RELEASE))
-DBHOST := rbioinfo.unil.ch
+DBHOST := localhost
 DBPORT := 3306
 DBNAME_EASYBGEE := easybgee_v$(subst .,_,$(RELEASE))
 DBHOST_EASYBGEE := rbioinfo.unil.ch
@@ -172,7 +172,7 @@ CLUSTER_BUSTOOLS_CMD    := $(CLUSTER_SOFT_VITALIT) module add UHTS/Analysis/bust
 # ===================================
 
 # Tmp path (if not enough disk space)
-TMPDIR := /var/lib/mysql/tmp/
+TMPDIR := /var/lib/mysql/tmp/pipeline_results/
 
 # Path to the directory storing source files
 # PIPELINEROOT and DIR_NAME are specified by each individul Makefile
@@ -553,10 +553,10 @@ SC_RNASEQ_CLUSTER_CALLS_10X                   := $(SC_RNASEQ_CLUSTER_ALL_RES_DRO
 SC_RNASEQ_CLUSTER_INFO_CALLS_10X              := $(SC_RNASEQ_CLUSTER_CALLS_10X)All_cellPopulation_stats_10X.tsv
 
 ## On Bgee server
-SC_RNASEQ_SERVER_RES_KALLISTO_DROPLET        := $(TMPDIR)kallisto_bus_results_$(DBNAME)/
+SC_RNASEQ_SERVER_RES_KALLISTO_DROPLET        := $(TMPDIR)kallisto_bus_results/
 SC_RNASEQ_SERVER_CALLS_10X                    := $(TMPDIR)calls/
 SC_RNASEQ_SERVER_INFO_CALLS_10X               := $(SC_RNASEQ_SERVER_CALLS_10X)All_cellPopulation_stats_10X.tsv
-SC_RNASEQ_SERVER_STATS_LIBRARIES_10X          := $(OUTPUT_DIR)stats_libraries.txt
+SC_RNASEQ_SERVER_STATS_LIBRARIES_10X          := $(OUTPUT_DIR)/Target_based/stats_libraries.txt
 
 
 
