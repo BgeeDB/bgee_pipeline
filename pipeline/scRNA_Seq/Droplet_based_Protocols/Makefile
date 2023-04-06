@@ -328,7 +328,7 @@ final_commit: final_status
 ## Then, a perl script should take care of managing parallelization. It could also
 ## be possible to use the rslurm R package to manage parallelization
 insert_cell_abundance:
-	@perl 3Insertion/insert_scrna_seq.pl -bgee=$(BGEECMD) -targetBaseLibrary=$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED) -singleCellExperiment=$(SC_RNASEQ_EXPERIMENT_FILEPATH_FILTERED) -bgeeLibraryInfo=$(SC_RNASEQ_METADATA_10X_FILEPATH) -filteredBarcodeDir=$(SC_RNASEQ_CLEANED_BARCODES) -pipelineCallsSummary=$(SC_RNASEQ_SERVER_INFO_CALLS_10X) -pipelineReportFile=$(SC_RNASEQ_SERVER_STATS_LIBRARIES_10X)  -kallistoResults=$(SC_RNASEQ_SERVER_RES_KALLISTO_DROPLET) -callsResults=$(SC_RNASEQ_SERVER_CALLS_10X) -sourceDir=$(SC_RNASEQ_TB_FOLDER_SOURCE) -sexInfo=$(UBERON_SEX_INFO_FILE_PATH) -numberCore=100 > $@.tmp 2> $@.err
+	@perl 3Insertion/insert_scrna_seq.pl -bgee=$(BGEECMD) -targetBaseLibrary=$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED) -singleCellExperiment=$(SC_RNASEQ_EXPERIMENT_FILEPATH_FILTERED) -bgeeLibraryInfo=$(SC_RNASEQ_METADATA_10X_FILEPATH) -filteredBarcodeDir=$(SC_RNASEQ_CLEANED_BARCODES) -pipelineCallsSummary=$(SC_RNASEQ_SERVER_INFO_CALLS_10X) -pipelineReportFile=$(SC_RNASEQ_SERVER_STATS_LIBRARIES_10X)  -kallistoResults=$(SC_RNASEQ_SERVER_RES_KALLISTO_DROPLET) -callsResults=$(SC_RNASEQ_SERVER_CALLS_10X) -sourceDir=$(SC_RNASEQ_TB_FOLDER_SOURCE) -sexInfo=$(UBERON_SEX_INFO_FILE_PATH) -numberCore=50 > $@.tmp 2> $@.err
 	@if [[ ! -s $@.err ]]; then $(RM) $@.err; fi
 	@$(MV) $@.tmp $@
 

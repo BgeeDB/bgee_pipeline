@@ -96,6 +96,10 @@ my $select_populationCapture = "SELECT rnaSeqPopulationCaptureId FROM rnaSeqPopu
 
 my $select_biotype = "SELECT geneBioTypeId, geneBioTypeName FROM geneBioType";
 
+# retrieve experiment already inserted to not reinsert already existing ones (e.g in case
+# of experiment containing a mix of full length and target based RNA-Seq)
+my $select_experiments = 'select rnaSeqExperimentId from rnaSeqExperiment';
+
 # INSERT QUERIES
 my $insert_experiment = 'INSERT INTO rnaSeqExperiment (rnaSeqExperimentId,'.
                         'rnaSeqExperimentName, rnaSeqExperimentDescription, dataSourceId)'.
@@ -212,20 +216,31 @@ $selBiotypes->finish;
 # INSERT EXPERIMENTS #
 ######################
 print "Inserting experiments...\n";
+## retrieve already inserted experiment Ids to not try to reinsert them
+my $selExp = $bgee_metadata->prepare($select_experiments);
+$selExp->execute() or die $selExp->errstr;
+my @insertedExpIds = ();
+while ( my @data = $selExp->fetchrow_array ){
+    push(@insertedExpIds, $data[0]);
+}
 my $insExp = $bgee_metadata->prepare($insert_experiment);
 for my $expId ( sort keys %processedLibraries ){
-    print "\t$expId\n";
-    if ( $debug ){
-        binmode(STDOUT, ':utf8');
-        print 'INSERT INTO rnaSeqExperiment: ',
-            $expId, ' - ', $experiments{$expId}->{'name'}, ' - ',
-            $experiments{$expId}->{'description'}, ' - ',
-            $bgeeDataSources{$experiments{$expId}->{'source'}}, "\n";
-    }
-    else {
-        $insExp->execute($expId, $experiments{$expId}->{'name'},
-            $experiments{$expId}->{'description'},
-            $bgeeDataSources{$experiments{$expId}->{'source'}}) or die $insExp->errstr;
+    if (grep($expId, @insertedExpIds)) {
+        print "\t$expId already inserted\n";
+    } else {
+        print "\tinsert $expId\n";
+        if ( $debug ){
+            binmode(STDOUT, ':utf8');
+            print 'INSERT INTO rnaSeqExperiment: ',
+                $expId, ' - ', $experiments{$expId}->{'name'}, ' - ',
+                $experiments{$expId}->{'description'}, ' - ',
+                $bgeeDataSources{$experiments{$expId}->{'source'}}, "\n";
+        }
+        else {
+            $insExp->execute($expId, $experiments{$expId}->{'name'},
+                $experiments{$expId}->{'description'},
+                $bgeeDataSources{$experiments{$expId}->{'source'}}) or die $insExp->errstr;
+        }
     }
 }
 $insExp->finish();
