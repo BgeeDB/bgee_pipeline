@@ -238,7 +238,7 @@ if($insertCalls) {
     }
     my $insExp = $bgee_metadata->prepare($insert_experiment);
     for my $expId ( sort keys %processedLibraries ){
-        if (grep($expId, @insertedExpIds)) {
+        if (grep( /^$expId$/, @insertedExpIds)) {
             print "\t$expId already inserted\n";
         } else {
             print "\tinsert $expId\n";
