@@ -539,9 +539,9 @@ for my $expId ( sort keys %processedLibraries ){
             }
 
             # then start to insert abundance per cell. parallelized per celltype
-            my $pm = new Parallel::ForkManager($numberCore);
+            #my $pm = new Parallel::ForkManager($numberCore);
             foreach (@barcodesArray) {
-                my $pid = $pm->start and next;
+                #    my $pid = $pm->start and next;
                 my $bgee_data = Utils::connect_bgee_db($bgee_connector);
                 # disable autocommit for $bgee_data. Allows to manually commit after each library.
                 $bgee_data->{AutoCommit} = 0;
@@ -581,9 +581,9 @@ for my $expId ( sort keys %processedLibraries ){
                 $bgee_data->commit;
                 $insIndividualSampleGeneResult->finish;
                 $bgee_data->disconnect;
-                $pm->finish;
+                #    $pm->finish;
             }
-            $pm->wait_all_children
+            #$pm->wait_all_children
         }
     }
 }
