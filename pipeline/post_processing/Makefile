@@ -223,8 +223,8 @@ $(OUTPUT_DIR)ranksRnaSeq:
 	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult as t1 INNER JOIN rnaSeqLibraryAnnotatedSample as t2 ON t1.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId INNER JOIN rnaSeqLibrary as t3 ON t2.rnaSeqLibraryId = t3.rnaSeqLibraryId where t1.rawRank IS NULL and t1.reasonForExclusion = \"not excluded\" and t3.rnaSeqTechnologyIsSingleCell = 0 limit 1" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
-$(OUTPUT_DIR)ranksScRnaSeqFullLength:
-	@perl ranks_scrnaseqfulllength.pl -bgee=$(BGEECMD) -parallel_jobs=15 > $@.tmp 2> $@.warn
+$(OUTPUT_DIR)ranksScRnaSeq:
+	@perl ranks_scrnaseq.pl -bgee=$(BGEECMD) -parallel_jobs=15 > $@.tmp 2> $@.warn
 	@$(MYSQL) -e "UPDATE scRnaSeqFullLengthLibrary AS t0 INNER JOIN ( SELECT t1.scRnaSeqFullLengthLibraryId, MAX(t1.rawRank) AS maxRank, COUNT(DISTINCT t1.rawRank) AS distinctRankCount FROM scRnaSeqFullLengthResult AS t1 WHERE t1.rawRank IS NOT NULL GROUP BY t1.scRnaSeqFullLengthLibraryId ) AS ranks ON t0.scRnaSeqFullLengthLibraryId = ranks.scRnaSeqFullLengthLibraryId SET t0.libraryMaxRank = ranks.maxRank, t0.libraryDistinctRankCount = ranks.distinctRankCount WHERE EXISTS ( SELECT 1 FROM scRnaSeqFullLengthResult AS t2 WHERE t2.rawRank IS NOT NULL AND t2.scRnaSeqFullLengthLibraryId = t0.scRnaSeqFullLengthLibraryId )" >> $@.tmp 2>> $@.warn
 	@$(MYSQL) -e "INSERT INTO scRnaSeqFullLengthSpeciesMaxRank (speciesId, maxRank) SELECT t2.speciesId, MAX(t1.libraryMaxRank) FROM scRnaSeqFullLengthLibrary AS t1 INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId GROUP BY t2.speciesId" >> $@.tmp 2>> $@.warn
 	@printf "Min, max, average scRNA-Seq full-length rank and distinct rank count per species: \n" >> $@.tmp
@@ -235,7 +235,7 @@ $(OUTPUT_DIR)ranksScRnaSeqFullLength:
 
 # EST and in situ rank computations are now done as part of this step
 # It is also possible to generate global ranks using a slurm cluster with the script run_ranks_global_on_cluster.pl. This script only run ranks_global.pl. Do not forget to run mysql queries of this rule once processing finished on the cluster.
-$(OUTPUT_DIR)ranksGlobal: $(OUTPUT_DIR)ranksAffy $(OUTPUT_DIR)ranksRnaSeq $(OUTPUT_DIR)ranksScRnaSeqFullLength
+$(OUTPUT_DIR)ranksGlobal: $(OUTPUT_DIR)ranksAffy $(OUTPUT_DIR)ranksRnaSeq $(OUTPUT_DIR)ranksScRnaSeq
 	@perl ranks_global.pl -bgee=$(BGEECMD) -parallel_jobs=20 -conds_per_job=10 > $@.tmp 2> $@.warn
 	@echo "Min, max, average EST mean rank: \n" >> $@.tmp
 #	@$(MYSQL) -e "SELECT MIN(estRank), MAX(estRank), AVG(estRank) FROM globalExpression AS t1 WHERE estRank IS NOT NULL" >> $@.tmp 2>> $@.warn
@@ -246,7 +246,7 @@ $(OUTPUT_DIR)ranksGlobal: $(OUTPUT_DIR)ranksAffy $(OUTPUT_DIR)ranksRnaSeq $(OUTP
 	@$(MV) $@.tmp $@
 
 # This query takes time so we moved it to a separated rule
-$(OUTPUT_DIR)verificationRanksGlobal: $(OUTPUT_DIR)ranksAffy $(OUTPUT_DIR)ranksRnaSeq $(OUTPUT_DIR)ranksScRnaSeqFullLength
+$(OUTPUT_DIR)verificationRanksGlobal: $(OUTPUT_DIR)ranksAffy $(OUTPUT_DIR)ranksRnaSeq $(OUTPUT_DIR)ranksScRnaSeq
 	@echo "Check that each call have a rank information associated. Query should retrieve no data (stop when one call without any rank is found)\n" >> $@.tmp
 	@$(MYSQL) -e "SELECT * FROM globalExpression WHERE rnaSeqGlobalMeanRank IS NULL AND affymetrixGlobalMeanRank IS NULL AND estGlobalRank IS NULL AND scRnaSeqFullLengthGlobalMeanRank IS NULL AND inSituGlobalRank IS NULL limit 1" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
