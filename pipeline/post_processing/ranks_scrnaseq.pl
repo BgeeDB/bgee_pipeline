@@ -152,8 +152,8 @@ sub compute_update_rank_lib_batch {
 
 # Clean potentially already computed ranks
 #my $cleanRNASeq = $dbh->prepare("UPDATE scRnaSeqFullLengthResult SET rawRank = NULL");
-#my $cleanLib    = $dbh->prepare("UPDATE scRnaSeqFullLengthLibrary SET libraryMaxRank = NULL,
-#                                                              libraryDistinctRankCount = NULL");
+#my $cleanLib    = $dbh->prepare("UPDATE scRnaSeqFullLengthLibrary SET rnaSeqLibraryAnnotatedSampleMaxRank = NULL,
+#                                                              rnaSeqLibraryAnnotatedSampleDistinctRankCount = NULL");
 #printf("Cleaning existing data: ");
 #$cleanRNASeq->execute() or die $cleanRNASeq->errstr;
 #$cleanLib->execute() or die $cleanLib->errstr;

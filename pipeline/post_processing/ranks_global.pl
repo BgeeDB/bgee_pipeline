@@ -490,9 +490,9 @@ sub compute_update_global_ranks {
                  (bgeeGeneId, '.$rnaSeqRankField.', '.$rnaSeqDistinctRankSum.')
              SELECT STRAIGHT_JOIN
                    rnaSeqLibNormalizedRank.bgeeGeneId,
-                   SUM(rnaSeqLibNormalizedRank.rawRank * rnaSeqLibrary.libraryDistinctRankCount)
-                       /SUM(rnaSeqLibrary.libraryDistinctRankCount) AS meanRank,
-                   SUM(rnaSeqLibrary.libraryDistinctRankCount) AS distinctRankCountSum
+                   SUM(rnaSeqLibNormalizedRank.rawRank * rnaSeqLibrary.rnaSeqLibraryAnnotatedSampleDistinctRankCount)
+                       /SUM(rnaSeqLibrary.rnaSeqLibraryAnnotatedSampleDistinctRankCount) AS meanRank,
+                   SUM(rnaSeqLibrary.rnaSeqLibraryAnnotatedSampleDistinctRankCount) AS distinctRankCountSum
              FROM rnaSeqLibNormalizedRank
              INNER JOIN rnaSeqLibrary ON rnaSeqLibrary.rnaSeqLibraryId = rnaSeqLibNormalizedRank.rnaSeqLibraryId
              GROUP BY rnaSeqLibNormalizedRank.bgeeGeneId
@@ -522,9 +522,9 @@ sub compute_update_global_ranks {
                  (bgeeGeneId, '.$scRnaSeqFLRankField.', '.$scRnaSeqFLDistinctRankSum.')
              SELECT STRAIGHT_JOIN
                   scRnaSeqFullLengthResult.bgeeGeneId,
-                  SUM(scRnaSeqFullLengthResult.rawRank * scRnaSeqFullLengthLibrary.libraryDistinctRankCount)
-                      /SUM(scRnaSeqFullLengthLibrary.libraryDistinctRankCount) AS meanRank,
-                  SUM(scRnaSeqFullLengthLibrary.libraryDistinctRankCount) AS distinctRankCountSum
+                  SUM(scRnaSeqFullLengthResult.rawRank * scRnaSeqFullLengthLibrary.rnaSeqLibraryAnnotatedSampleDistinctRankCount)
+                      /SUM(scRnaSeqFullLengthLibrary.rnaSeqLibraryAnnotatedSampleDistinctRankCount) AS meanRank,
+                  SUM(scRnaSeqFullLengthLibrary.rnaSeqLibraryAnnotatedSampleDistinctRankCount) AS distinctRankCountSum
              FROM '.$scRnaSeqFLToGlobalCondTableName.'
              INNER JOIN scRnaSeqFullLengthLibrary
                  ON scRnaSeqFullLengthLibrary.scRnaSeqFullLengthLibraryId = '.$scRnaSeqFLToGlobalCondTableName.'.scRnaSeqFullLengthLibraryId

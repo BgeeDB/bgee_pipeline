@@ -182,8 +182,8 @@ sub compute_update_rank_lib_batch {
 
 # Clean potentially already computed ranks
 #my $cleanRNASeq = $dbh->prepare("UPDATE rnaSeqResult SET rawRank = NULL");
-#my $cleanLib    = $dbh->prepare("UPDATE rnaSeqLibrary SET libraryMaxRank = NULL,
-#                                                              libraryDistinctRankCount = NULL");
+#my $cleanLib    = $dbh->prepare("UPDATE rnaSeqLibrary SET rnaSeqLibraryAnnotatedSampleMaxRank = NULL,
+#                                                              rnaSeqLibraryAnnotatedSampleDistinctRankCount = NULL");
 #printf("Cleaning existing data: ");
 #$cleanRNASeq->execute() or die $cleanRNASeq->errstr;
 #$cleanLib->execute() or die $cleanLib->errstr;
@@ -281,7 +281,7 @@ print("Rank computations per library done\n");
 #         '$Utils::EXCLUDED_FOR_UNDEFINED', '$Utils::EXCLUDED_FOR_ABSENT_CALLS')
 #     GROUP BY t1.rnaSeqLibraryId
 # ) AS ranks ON t0.rnaSeqLibraryId = ranks.rnaSeqLibraryId
-# SET t0.libraryMaxRank = ranks.maxRank, t0.libraryDistinctRankCount = ranks.distinctRankCount
+# SET t0.rnaSeqLibraryAnnotatedSampleMaxRank = ranks.maxRank, t0.rnaSeqLibraryAnnotatedSampleDistinctRankCount = ranks.distinctRankCount
 # WHERE EXISTS (
 #     SELECT 1 FROM rnaSeqResult AS t2
 #     WHERE t2.expressionId IS NOT NULL AND t2.rnaSeqLibraryId = t0.rnaSeqLibraryId
