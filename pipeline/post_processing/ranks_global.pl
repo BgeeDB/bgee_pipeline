@@ -539,8 +539,8 @@ sub compute_update_global_ranks {
             'INSERT INTO '.$condResultsTempTable.'
                  (globalConditionId, '.$scRnaSeqFLMaxRankField.')
              VALUES(?,
-                 (SELECT scRnaSeqFullLengthSpeciesMaxRank.maxRank FROM scRnaSeqFullLengthSpeciesMaxRank
-                  INNER JOIN globalCond ON scRnaSeqFullLengthSpeciesMaxRank.speciesId = globalCond.speciesId
+                 (SELECT scRnaSeqSpeciesMaxRank.maxRank FROM scRnaSeqSpeciesMaxRank
+                  INNER JOIN globalCond ON scRnaSeqSpeciesMaxRank.speciesId = globalCond.speciesId
                   WHERE globalCond.globalConditionId = ? '.
                   # There will always be only one line returned but we need the LIMIT clause anyway
                  'LIMIT 1)
