@@ -54,15 +54,7 @@ UPDATE inSituSpot AS t1
 INNER JOIN remapExpression AS t2 ON t1.expressionId = t2.incorrectExpressionId
 SET t1.expressionId = t2.remappedExpressionId;
 
-UPDATE rnaSeqResult AS t1
-INNER JOIN remapExpression AS t2 ON t1.expressionId = t2.incorrectExpressionId
-SET t1.expressionId = t2.remappedExpressionId;
-
-UPDATE scRnaSeqFullLengthResult AS t1
-INNER JOIN remapExpression AS t2 ON t1.expressionId = t2.incorrectExpressionId
-SET t1.expressionId = t2.remappedExpressionId;
-
-UPDATE scRnaSeqTargetBasedResult AS t1
+UPDATE rnaSeqLibraryAnnotatedSampleGeneResult AS t1
 INNER JOIN remapExpression AS t2 ON t1.expressionId = t2.incorrectExpressionId
 SET t1.expressionId = t2.remappedExpressionId;
 
