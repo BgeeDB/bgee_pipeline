@@ -854,7 +854,7 @@ sub generateRnaSeqFiles {
     # $lib{'exprMappedStageName'}              = stage name remapped for expression table for this library
     # $lib{'exprMappedSex'}                    = sex info remapped for expression table
     # $lib{'exprMappedStrain'}                 = strain info remapped for expression table
-    # $lib{'libraryDistinctRankCount'}         = count of distinct ranks in the library
+    # $lib{'rnaSeqLibraryAnnotatedSampleDistinctRankCount'}         = count of distinct ranks in the library
     # $lib{'maxRank'}                          = maximum rank in the corresponding global condition
     # $lib{'sourceId'}                         = data source ID
     # $lib{'runIds'}                           = IDs of runs used, separated by '|'
@@ -870,7 +870,7 @@ sub generateRnaSeqFiles {
               .'t20.anatEntityId AS exprMappedAnatEntityId, t30.anatEntityName AS exprMappedAnatEntityName, '
               .'t20.stageId AS exprMappedStageId, t40.stageName AS exprMappedStageName, '
               .'t20.sex AS exprMappedSex, t20.strain AS exprMappedStrain, '
-              .'t1.libraryDistinctRankCount, '
+              .'t1.rnaSeqLibraryAnnotatedSampleDistinctRankCount, '
               # TODO to change if we ever use globalMaxRank instead of maxRank?
               # But then we would have ranks not only for conditions with data,
               # so I guess it would not be present in this file. To rethink in this case.
@@ -932,7 +932,7 @@ sub generateRnaSeqFiles {
         $lib{'exprMappedStageName'}              = $data[24];
         $lib{'exprMappedSex'}                    = $data[25];
         $lib{'exprMappedStrain'}                 = $data[26];
-        $lib{'libraryDistinctRankCount'}         = $data[27];
+        $lib{'rnaSeqLibraryAnnotatedSampleDistinctRankCount'}         = $data[27];
         $lib{'maxRank'}                          = $data[28];
         $lib{'sourceId'}                         = $data[29];
         $lib{'runIds'}                           = $data[30];
@@ -1006,7 +1006,7 @@ sub generateRnaSeqFiles {
         if(defined $lib->{'maxRank'}) {
             $maxRank = $lib->{'maxRank'};
         }
-        print $fh $lib->{'libraryDistinctRankCount'}."\t".$maxRank."\t";
+        print $fh $lib->{'rnaSeqLibraryAnnotatedSampleDistinctRankCount'}."\t".$maxRank."\t";
 
         if (defined $lib->{'runIds'} && $lib->{'runIds'}) {
             print $fh $lib->{'runIds'};
@@ -1396,7 +1396,7 @@ sub generateFullLenghthScRnaSeqFiles {
     # $lib{'exprMappedStageName'}              = stage name remapped for expression table for this library
     # $lib{'exprMappedSex'}                    = sex info remapped for expression table
     # $lib{'exprMappedStrain'}                 = strain info remapped for expression table
-    # $lib{'libraryDistinctRankCount'}         = count of distinct ranks in the library
+    # $lib{'rnaSeqLibraryAnnotatedSampleDistinctRankCount'}         = count of distinct ranks in the library
     # $lib{'maxRank'}                          = maximum rank in the corresponding global condition
     # $lib{'sourceId'}                         = data source ID
     # $lib{'runIds'}                           = IDs of runs used, separated by '|'
@@ -1412,7 +1412,7 @@ sub generateFullLenghthScRnaSeqFiles {
               .'t20.stageId AS exprMappedStageId, t40.stageName AS exprMappedStageName, '
               .'t20.cellTypeId AS exprMappedCellTypeId, t70.anatEntityName AS exprMappedCellTypeName, '
               .'t20.sex AS exprMappedSex, t20.strain AS exprMappedStrain, '
-              .'t1.libraryDistinctRankCount, '
+              .'t1.rnaSeqLibraryAnnotatedSampleDistinctRankCount, '
               # TODO to change if we ever use globalMaxRank instead of maxRank?
               # But then we would have ranks not only for conditions with data,
               # so I guess it would not be present in this file. To rethink in this case.
@@ -1478,7 +1478,7 @@ sub generateFullLenghthScRnaSeqFiles {
         $lib{'exprMappedCellTypeName'}           = $data[26];
         $lib{'exprMappedSex'}                    = $data[27];
         $lib{'exprMappedStrain'}                 = $data[28];
-        $lib{'libraryDistinctRankCount'}         = $data[29];
+        $lib{'rnaSeqLibraryAnnotatedSampleDistinctRankCount'}         = $data[29];
         $lib{'maxRank'}                          = $data[30];
         $lib{'sourceId'}                         = $data[31];
         $lib{'runIds'}                           = $data[32];
@@ -1568,7 +1568,7 @@ sub generateFullLenghthScRnaSeqFiles {
         if(defined $lib->{'maxRank'}) {
             $maxRank = $lib->{'maxRank'};
         }
-        print $fh $lib->{'libraryDistinctRankCount'}."\t".$maxRank."\t";
+        print $fh $lib->{'rnaSeqLibraryAnnotatedSampleDistinctRankCount'}."\t".$maxRank."\t";
 
         if (defined $lib->{'runIds'} && $lib->{'runIds'}) {
             print $fh $lib->{'runIds'};

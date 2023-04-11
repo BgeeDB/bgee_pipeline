@@ -80,15 +80,7 @@ UPDATE inSituSpot AS t1
 INNER JOIN remapCond AS t2 ON t1.conditionId = t2.incorrectConditionId
 SET t1.conditionId = t2.remappedConditionId;
 
-UPDATE rnaSeqLibrary AS t1
-INNER JOIN remapCond AS t2 ON t1.conditionId = t2.incorrectConditionId
-SET t1.conditionId = t2.remappedConditionId;
-
-UPDATE scRnaSeqFullLengthLibrary AS t1
-INNER JOIN remapCond AS t2 ON t1.conditionId = t2.incorrectConditionId
-SET t1.conditionId = t2.remappedConditionId;
-
-UPDATE scRnaSeqTargetBasedLibraryCellPopulation AS t1
+UPDATE rnaSeqLibraryAnnotatedSample AS t1
 INNER JOIN remapCond AS t2 ON t1.conditionId = t2.incorrectConditionId
 SET t1.conditionId = t2.remappedConditionId;
 

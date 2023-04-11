@@ -4,8 +4,9 @@ use warnings;
 use Time::HiRes qw( time );
 use diagnostics;
 
-# Updates the ranks in scRnaSeqFullLengthResult table.
+# Updates the ranks in rnaSeqLibraryAnnotatedSampleGeneResult table.
 # Frederic Bastian, created Apr. 2021.
+# Frederic Bastian, update Apr. 2023: adapt to new schema
 
 use Parallel::ForkManager;
 
@@ -78,6 +79,32 @@ sub compute_update_rank_lib_batch {
 
     for my $k ( 0..$batchLength-1 ) {
         my $rnaSeqLibraryId = ${$libBatchRef}[$k];
+        # Connection to database in the parent process must have been closed
+        # before calling this sub, otherwise it will generate errors
+        # (ForkManager and DBI don't go well together, see https://www.perlmonks.org/?node_id=752289).
+        # Get a new database connection for each thread.
+        my $dbh_thread = Utils::connect_bgee_db($bgee_connector);
+        # ======= Retrieve annotated samples for this library ========
+        my $rnaSeqAnnotSamplesStmt = $dbh_thread->prepare(
+            'SELECT DISTINCT rnaSeqLibraryAnnotatedSampleId
+             FROM rnaSeqLibraryAnnotatedSample
+             WHERE rnaSeqLibraryId = ?');
+        $rnaSeqAnnotSamplesStmt->execute($rnaSeqLibraryId) or die $rnaSeqAnnotSamplesStmt->errstr;
+
+        my @results = map { $_->[0] } @{$rnaSeqAnnotSamplesStmt->fetchall_arrayref};
+        # Disconnect the DBI connection open in this thread, otherwise it will generate errors
+        # (ForkManager and DBI don't go well together, see https://www.perlmonks.org/?node_id=752289)
+        $dbh_thread->disconnect();
+
+        compute_update_rank_annotated_sample_batch(\@results);
+    }
+}
+sub compute_update_rank_annotated_sample_batch {
+    my ($annotatedSampleBatchRef) = @_;
+    my $batchLength = scalar @{ $annotatedSampleBatchRef };
+
+    for my $k ( 0..$batchLength-1 ) {
+        my $rnaSeqLibraryAnnotatedSampleId = ${$annotatedSampleBatchRef}[$k];
 
         # Connection to database in the parent process must have been closed
         # before calling this sub, otherwise it will generate errors
@@ -88,12 +115,12 @@ sub compute_update_rank_lib_batch {
 
         # ======= Compute ranks ========
         my $rnaSeqResultsStmt = $dbh_thread->prepare(
-            'SELECT DISTINCT t1.bgeeGeneId, t1.tpm
-             FROM scRnaSeqFullLengthResult AS t1 
-             WHERE t1.scRnaSeqFullLengthLibraryId = ?
+            'SELECT DISTINCT t1.bgeeGeneId, t1.abundance
+             FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t1
+             WHERE t1.rnaSeqLibraryAnnotatedSampleId = ?
              AND t1.expressionId IS NOT NULL
-             ORDER BY t1.tpm DESC');
-        $rnaSeqResultsStmt->execute($rnaSeqLibraryId) or die $rnaSeqResultsStmt->errstr;
+             ORDER BY t1.abundance DESC');
+        $rnaSeqResultsStmt->execute($rnaSeqLibraryAnnotatedSampleId) or die $rnaSeqResultsStmt->errstr;
 
         my @results = map { {'id' => $_->[0], 'val' => $_->[1]} } @{$rnaSeqResultsStmt->fetchall_arrayref};
         my %sorted = Utils::fractionnal_ranking(@results);
@@ -102,12 +129,12 @@ sub compute_update_rank_lib_batch {
 
         # ======= Update ranks ========
         my $rnaSeqTmpTableStmt = $dbh_thread->prepare(
-                'CREATE TEMPORARY TABLE scRnaSeqFLLibRanking
-                 SELECT bgeeGeneId, scRnaSeqFullLengthLibraryId, rawRank
-                 FROM scRnaSeqFullLengthResult
+                'CREATE TEMPORARY TABLE rnaSeqAnnotSampleRanking
+                 SELECT bgeeGeneId, rnaSeqLibraryAnnotatedSampleId, rawRank
+                 FROM rnaSeqLibraryAnnotatedSampleGeneResult
                  LIMIT 0');
         $rnaSeqTmpTableStmt->execute() or die $rnaSeqTmpTableStmt->errstr;
-        my $sqlInsertTmpRanks = 'INSERT INTO scRnaSeqFLLibRanking (bgeeGeneId, scRnaSeqFullLengthLibraryId, rawRank)
+        my $sqlInsertTmpRanks = 'INSERT INTO rnaSeqAnnotSampleRanking (bgeeGeneId, rnaSeqLibraryAnnotatedSampleId, rawRank)
                 VALUES ';
         my @insertTmpRanksValues = ();
         my $valueCount = 0;
@@ -121,22 +148,22 @@ sub compute_update_rank_lib_batch {
                     $sqlInsertTmpRanks .= ', ';
                 }
                 $sqlInsertTmpRanks .= '(?, ?, ?)';
-                push (@insertTmpRanksValues, ($geneIds_arr[$i], $rnaSeqLibraryId, $rank));
+                push (@insertTmpRanksValues, ($geneIds_arr[$i], $rnaSeqLibraryAnnotatedSampleId, $rank));
                 $valueCount++;
             }
         }
         my $insertTmpRanksStmt = $dbh_thread->prepare($sqlInsertTmpRanks);
         $insertTmpRanksStmt->execute(@insertTmpRanksValues) or die $insertTmpRanksStmt->errstr;
 
-        my $updateRnaSeqLibsStmt = $dbh_thread->prepare('UPDATE scRnaSeqFullLengthResult AS t1
-                INNER JOIN scRnaSeqFLLibRanking AS t2
-                    ON t1.bgeeGeneId = t2.bgeeGeneId AND t1.scRnaSeqFullLengthLibraryId = t2.scRnaSeqFullLengthLibraryId '.
-                    # To be able to use the index on scRnaSeqFullLengthResult, plus this constraint is correct
+        my $updateRnaSeqLibsStmt = $dbh_thread->prepare('UPDATE rnaSeqLibraryAnnotatedSampleGeneResult AS t1
+                INNER JOIN rnaSeqAnnotSampleRanking AS t2
+                    ON t1.bgeeGeneId = t2.bgeeGeneId AND t1.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId '.
+                    # To be able to use the index on rnaSeqLibraryAnnotatedSampleGeneResult, plus this constraint is correct
                    'AND t1.expressionId IS NOT NULL
                 SET t1.rawRank = t2.rawRank');
         $updateRnaSeqLibsStmt->execute() or die $updateRnaSeqLibsStmt->errstr;
 
-        my $dropRnaSeqTmpTableStmt = $dbh_thread->prepare('DROP TABLE scRnaSeqFLLibRanking');
+        my $dropRnaSeqTmpTableStmt = $dbh_thread->prepare('DROP TABLE rnaSeqAnnotSampleRanking');
         $dropRnaSeqTmpTableStmt->execute() or die $dropRnaSeqTmpTableStmt->errstr;
 
         # ======= Commit ========
@@ -144,7 +171,7 @@ sub compute_update_rank_lib_batch {
         $dbh_thread->disconnect();
 
         #print status
-        printf("Lib: %s - PID: %s - %d/%d\n", $rnaSeqLibraryId, $$, $k+1, $batchLength);
+        printf("AnnotatedSampleId: %s - PID: %s - %d/%d\n", $rnaSeqLibraryAnnotatedSampleId, $$, $k+1, $batchLength);
     }
 }
 
@@ -152,8 +179,8 @@ sub compute_update_rank_lib_batch {
 
 # Clean potentially already computed ranks
 #my $cleanRNASeq = $dbh->prepare("UPDATE scRnaSeqFullLengthResult SET rawRank = NULL");
-#my $cleanLib    = $dbh->prepare("UPDATE scRnaSeqFullLengthLibrary SET libraryMaxRank = NULL,
-#                                                              libraryDistinctRankCount = NULL");
+#my $cleanLib    = $dbh->prepare("UPDATE scRnaSeqFullLengthLibrary SET rnaSeqLibraryAnnotatedSampleMaxRank = NULL,
+#                                                              rnaSeqLibraryAnnotatedSampleDistinctRankCount = NULL");
 #printf("Cleaning existing data: ");
 #$cleanRNASeq->execute() or die $cleanRNASeq->errstr;
 #$cleanLib->execute() or die $cleanLib->errstr;
@@ -169,15 +196,20 @@ if (!@lib_ids) {
     # We rank all genes that have received at least one read in any condition.
     # So we always rank the same set of gene in a given species over all libraries.
     # We assume that each library maps to only one species through its contained genes.
-    my $libSql = 'SELECT t1.scRnaSeqFullLengthLibraryId FROM scRnaSeqFullLengthLibrary AS t1
-                   WHERE EXISTS (SELECT 1 FROM scRnaSeqFullLengthResult AS t2
-                      WHERE t1.scRnaSeqFullLengthLibraryId = t2.scRnaSeqFullLengthLibraryId
-                      AND t2.expressionId IS NOT NULL
-                  ) AND NOT EXISTS (SELECT 1 FROM scRnaSeqFullLengthResult AS t2
-                      WHERE t1.scRnaSeqFullLengthLibraryId = t2.scRnaSeqFullLengthLibraryId
-                      AND t2.rawRank IS NOT NULL)';
+    my $libSql = 'SELECT t1.rnaSeqLibraryId FROM rnaSeqLibrary AS t1
+              WHERE rnaSeqTechnologyIsSingleCell = 1
+              AND EXISTS (SELECT 1 FROM rnaSeqLibraryAnnotatedSample AS t2
+                  INNER JOIN rnaSeqLibraryAnnotatedSampleGeneResult AS t3
+                  ON t3.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId
+                  WHERE t1.rnaSeqLibraryId = t2.rnaSeqLibraryId
+                  AND t3.expressionId IS NOT NULL
+              ) AND NOT EXISTS (SELECT 1 FROM rnaSeqLibraryAnnotatedSample AS t2
+                  INNER JOIN rnaSeqLibraryAnnotatedSampleGeneResult AS t3
+                  ON t3.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId
+                  WHERE t1.rnaSeqLibraryId = t2.rnaSeqLibraryId
+                  AND t3.rank IS NOT NULL)';
     if ($sample_count > 0) {
-        $libSql .= ' ORDER BY t1.scRnaSeqFullLengthLibraryId
+        $libSql .= ' ORDER BY t1.rnaSeqLibraryId
                      LIMIT '.$sample_offset.', '.$sample_count;
     }
     my $rnaSeqLibStmt = $dbh->prepare($libSql);
