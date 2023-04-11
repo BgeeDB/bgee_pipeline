@@ -444,7 +444,7 @@ sub compute_update_global_ranks {
     # ***
     # Query to store an association between each globalCondition and the RNA-Seq libs considered in it
     my $rnaSeqToGlobalCondTableName = 'rnaSeqToGlobalCond';
-    my $scRnaSeqToGlobalCondTableName = 'rnaSeqToGlobalCond';
+    my $scRnaSeqToGlobalCondTableName = 'scRnaSeqToGlobalCond';
     my $rnaSeqToGlobalCondStmt = getRnaSeqToGlobalCondStmt($dbh_thread,
             $rnaSeqToGlobalCondTableName, $batchLength, $selfRanks, 0);
     my $scRnaSeqToGlobalCondStmt = getRnaSeqToGlobalCondStmt($dbh_thread,
@@ -477,139 +477,22 @@ sub compute_update_global_ranks {
     my $dropScRNASeqLibNormRank = $dbh_thread->prepare('DROP TABLE scRnaSeqAnnotSampleNormalizedRank');
 
     # Queries to insert into temp tables
-    my $insertRnaSeqExprResultsPart = getInsertRnaSeqExprResults($dbh_thread, $exprResultsTempTable,
+    my $insertRnaSeqExprResults = getInsertRnaSeqExprResultsStmt($dbh_thread, $exprResultsTempTable,
             'rnaSeqAnnotSampleNormalizedRank', $rnaSeqRankField, $rnaSeqDistinctRankSum);
-    my $insertScRnaSeqExprResultsPart = getInsertRnaSeqExprResults($dbh_thread, $exprResultsTempTable,
+    my $insertScRnaSeqExprResults = getInsertRnaSeqExprResultsStmt($dbh_thread, $exprResultsTempTable,
             'scRnaSeqAnnotSampleNormalizedRank', $scRnaSeqRankField, $scRnaSeqDistinctRankSum);
 
-    my $insertBulkRnaSeqCondResults = $dbh_thread->prepare(
-            'INSERT INTO '.$condResultsTempTable.'
-                 (globalConditionId, '.$rnaSeqMaxRankField.')
-             VALUES(?, ?)
-             ON DUPLICATE KEY UPDATE '.$rnaSeqMaxRankField.' = VALUES('.$rnaSeqMaxRankField.')');
-    my $insertScRnaSeqCondResults = $dbh_thread->prepare(
-            'INSERT INTO '.$condResultsTempTable.'
-                 (globalConditionId, '.$scRnaSeqMaxRankField.')
-             VALUES(?, ?)
-             ON DUPLICATE KEY UPDATE '.$scRnaSeqMaxRankField.' = VALUES('.$scRnaSeqMaxRankField.')');
-
-    # *********************** REMOVE BETWEEN HERE ... *************************************3
-    # ***
-    # *** For RNA-Seq data ***
-    # ***
-    # Query to store an association between each globalCondition and the RNA-Seq libs considered in it
-    my $rnaSeqToGlobalCondTableName = 'rnaSeqToGlobalCond';
-    my $rnaSeqToGlobalCondStmt = $dbh_thread->prepare(cond_to_data_query_string(
-        $rnaSeqToGlobalCondTableName, 'rnaSeqLibrary', 'rnaSeqLibraryId', $batchLength, $selfRanks));
-    my $isRnaSeqDataInGlobalCondStmt = $dbh_thread->prepare('SELECT 1 FROM '
-            .$rnaSeqToGlobalCondTableName.' WHERE globalConditionId = ? LIMIT 1');
-    # For RNA-Seq data, we used to apply the same max rank to all conditions of a same species,
-    # because we considered that we always had access to all expression information
-    # for the same set of genes in all libraries. This is not true anymore (and it actually never was),
-    # as we do now distinguish between different RNA-Seq protocols targeting different biotypes.
-    #
-    # So we have a similar approach to Affymetrix data, where we store
-    # for each condition th max rank among the *chip types* present in a condition
-    # (and not the max rank among the actual chips present in a condition): we store
-    # the max rank among the *protocols* present in a condition. We will then do
-    # a first "between-protocol" normalization, as we do a first "between-chip-type" normalization
-    # in Affymetrix data.
-    my $rnaSeqCondMaxStmt = $dbh_thread->prepare(
-            'SELECT STRAIGHT_JOIN MAX(t3.maxRank) AS maxRank '.
-            # Retrieve all libraries present in the globalCondition
-            'FROM '.$rnaSeqToGlobalCondTableName.' AS t1 '.
-            # and the max rank from all rna-seq protocols present in this condition
-            'INNER JOIN rnaSeqLibrary AS t2 ON t1.rnaSeqLibraryId = t2.rnaSeqLibraryId
-             INNER JOIN globalCond AS t2bis ON t1.globalConditionId = t2bis.globalConditionId
-             INNER JOIN rnaSeqProtocolSpeciesMaxRank AS t3 ON t2.rnaSeqProtocolId = t3.rnaSeqProtocolId
-                 AND t2bis.speciesId = t3.speciesId
-             WHERE t1.globalConditionId = ?');
-
-    # Normalize ranks between protocols for the globalCondition
-    my $rnaSeqAnnotSampleNormRankStmt = $dbh_thread->prepare(
-            'CREATE TEMPORARY TABLE rnaSeqAnnotSampleNormalizedRank (
-                PRIMARY KEY(bgeeGeneId, rnaSeqLibraryId))
-             SELECT STRAIGHT_JOIN
-                 rnaSeqResult.bgeeGeneId, rnaSeqResult.rnaSeqLibraryId, '.
-             # between-protocols normalization:
-          '      (rnaSeqResult.rawRank +
-                       (rnaSeqResult.rawRank * (? / rnaSeqProtocolSpeciesMaxRank.maxRank)) )
-                  /2 AS rawRank
-             FROM '.$rnaSeqToGlobalCondTableName.' '.
-             # get the max rank of the protocol corresponding to each library
-             'INNER JOIN rnaSeqLibrary ON '.$rnaSeqToGlobalCondTableName.'.rnaSeqLibraryId = rnaSeqLibrary.rnaSeqLibraryId
-              INNER JOIN globalCond ON '.$rnaSeqToGlobalCondTableName.'.globalConditionId = globalCond.globalConditionId
-              INNER JOIN rnaSeqProtocolSpeciesMaxRank ON rnaSeqLibrary.rnaSeqProtocolId = rnaSeqProtocolSpeciesMaxRank.rnaSeqProtocolId
-                  AND globalCond.speciesId = rnaSeqProtocolSpeciesMaxRank.speciesId '.
-             # get for each gene and library the rank from the libraries
-             'INNER JOIN rnaSeqResult ON rnaSeqLibrary.rnaSeqLibraryId = rnaSeqResult.rnaSeqLibraryId '.
-             'WHERE rnaSeqResult.expressionId IS NOT NULL AND '.$rnaSeqToGlobalCondTableName.'.globalConditionId = ?');
-    my $dropRNASeqLibNormRank = $dbh_thread->prepare('DROP TABLE rnaSeqAnnotSampleNormalizedRank');
-
-    # Queries to insert into temp tables
-    my $insertRnaSeqExprResults = $dbh_thread->prepare(
-            'INSERT INTO '.$exprResultsTempTable.'
-                 (bgeeGeneId, '.$rnaSeqRankField.', '.$rnaSeqDistinctRankSum.')
-             SELECT STRAIGHT_JOIN
-                   rnaSeqAnnotSampleNormalizedRank.bgeeGeneId,
-                   SUM(rnaSeqAnnotSampleNormalizedRank.rawRank * rnaSeqLibrary.rnaSeqLibraryAnnotatedSampleDistinctRankCount)
-                       /SUM(rnaSeqLibrary.rnaSeqLibraryAnnotatedSampleDistinctRankCount) AS meanRank,
-                   SUM(rnaSeqLibrary.rnaSeqLibraryAnnotatedSampleDistinctRankCount) AS distinctRankCountSum
-             FROM rnaSeqAnnotSampleNormalizedRank
-             INNER JOIN rnaSeqLibrary ON rnaSeqLibrary.rnaSeqLibraryId = rnaSeqAnnotSampleNormalizedRank.rnaSeqLibraryId
-             GROUP BY rnaSeqAnnotSampleNormalizedRank.bgeeGeneId
-             ON DUPLICATE KEY UPDATE '.$rnaSeqRankField.' = VALUES('.$rnaSeqRankField.'),
-                 '.$rnaSeqDistinctRankSum.' = VALUES('.$rnaSeqDistinctRankSum.')');
     my $insertRnaSeqCondResults = $dbh_thread->prepare(
             'INSERT INTO '.$condResultsTempTable.'
                  (globalConditionId, '.$rnaSeqMaxRankField.')
              VALUES(?, ?)
              ON DUPLICATE KEY UPDATE '.$rnaSeqMaxRankField.' = VALUES('.$rnaSeqMaxRankField.')');
-
-
-    # ***
-    # *** For scRNA-Seq full-length data ***
-    # ***
-    # Query to store an association between each globalCondition and the scRNA-Seq libs considered in it
-    my $scRnaSeqToGlobalCondTableName = 'scRnaSeqToGlobalCond';
-    my $scRnaSeqToGlobalCondStmt = $dbh_thread->prepare(cond_to_data_query_string(
-        $scRnaSeqToGlobalCondTableName, 'scRnaSeqFullLengthLibrary', 'scRnaSeqFullLengthLibraryId',
-        $batchLength, $selfRanks));
-    my $isScRnaSeqDataInGlobalCondStmt = $dbh_thread->prepare('SELECT 1 FROM '
-            .$scRnaSeqToGlobalCondTableName.' WHERE globalConditionId = ? LIMIT 1');
-
-    # Queries to insert into temp tables
-    my $insertScRnaSeqExprResults = $dbh_thread->prepare(
-            'INSERT INTO '.$exprResultsTempTable.'
-                 (bgeeGeneId, '.$scRnaSeqRankField.', '.$scRnaSeqDistinctRankSum.')
-             SELECT STRAIGHT_JOIN
-                  scRnaSeqFullLengthResult.bgeeGeneId,
-                  SUM(scRnaSeqFullLengthResult.rawRank * scRnaSeqFullLengthLibrary.rnaSeqLibraryAnnotatedSampleDistinctRankCount)
-                      /SUM(scRnaSeqFullLengthLibrary.rnaSeqLibraryAnnotatedSampleDistinctRankCount) AS meanRank,
-                  SUM(scRnaSeqFullLengthLibrary.rnaSeqLibraryAnnotatedSampleDistinctRankCount) AS distinctRankCountSum
-             FROM '.$scRnaSeqToGlobalCondTableName.'
-             INNER JOIN scRnaSeqFullLengthLibrary
-                 ON scRnaSeqFullLengthLibrary.scRnaSeqFullLengthLibraryId = '.$scRnaSeqToGlobalCondTableName.'.scRnaSeqFullLengthLibraryId
-             INNER JOIN scRnaSeqFullLengthResult
-                 ON scRnaSeqFullLengthResult.scRnaSeqFullLengthLibraryId = scRnaSeqFullLengthLibrary.scRnaSeqFullLengthLibraryId
-             WHERE scRnaSeqFullLengthResult.expressionId IS NOT NULL
-                 AND '.$scRnaSeqToGlobalCondTableName.'.globalConditionId = ?
-             GROUP BY scRnaSeqFullLengthResult.bgeeGeneId
-             ON DUPLICATE KEY UPDATE '.$scRnaSeqRankField.' = VALUES('.$scRnaSeqRankField.'),
-                 '.$scRnaSeqDistinctRankSum.' = VALUES('.$scRnaSeqDistinctRankSum.')');
     my $insertScRnaSeqCondResults = $dbh_thread->prepare(
             'INSERT INTO '.$condResultsTempTable.'
                  (globalConditionId, '.$scRnaSeqMaxRankField.')
-             VALUES(?,
-                 (SELECT scRnaSeqSpeciesMaxRank.maxRank FROM scRnaSeqSpeciesMaxRank
-                  INNER JOIN globalCond ON scRnaSeqSpeciesMaxRank.speciesId = globalCond.speciesId
-                  WHERE globalCond.globalConditionId = ? '.
-                  # There will always be only one line returned but we need the LIMIT clause anyway
-                 'LIMIT 1)
-             )
+             VALUES(?, ?)
              ON DUPLICATE KEY UPDATE '.$scRnaSeqMaxRankField.' = VALUES('.$scRnaSeqMaxRankField.')');
-             
-    # *********************** ... AND HERE *************************************3
+
 
 
     #****************************************
@@ -618,7 +501,6 @@ sub compute_update_global_ranks {
     $estToGlobalCondStmt->execute(@{ $batchRef }) or die $estToGlobalCondStmt->errstr;
     $inSituToGlobalCondStmt->execute(@{ $batchRef }) or die $inSituToGlobalCondStmt->errstr;
     $affyToGlobalCondStmt->execute(@{ $batchRef }) or die $affyToGlobalCondStmt->errstr;
-    # Bulk RNA-Seq
     $rnaSeqToGlobalCondStmt->execute(@{ $batchRef }) or die $rnaSeqToGlobalCondStmt->errstr;
     $scRnaSeqToGlobalCondStmt->execute(@{ $batchRef }) or die $scRnaSeqToGlobalCondStmt->errstr;
 
@@ -715,7 +597,7 @@ sub compute_update_global_ranks {
             }
             # Since we checked if there was RNA-Seq data in the condition we should always have a max rank
             if (!$rnaSeqLibMax) {
-                die("Could not find rnaSeqLibMax for globalConditionId: $globalCondId\n");
+                die("Could not find bulk rnaSeqLibMax for globalConditionId: $globalCondId\n");
             }
             $rnaSeqAnnotSampleNormRankStmt->execute($rnaSeqLibMax, $globalCondId) or die $rnaSeqAnnotSampleNormRankStmt->errstr;
             # Insert the results in the temp result tables
@@ -726,14 +608,26 @@ sub compute_update_global_ranks {
         }
 
         # ***
-        # *** For scRNA-Seq full-length data ***
+        # *** For scRNA-Seq ***
         # ***
         $isScRnaSeqDataInGlobalCondStmt->execute($globalCondId) or die $isScRnaSeqDataInGlobalCondStmt->errstr;
         if ($isScRnaSeqDataInGlobalCondStmt->fetchrow_arrayref()) {
             $hasScRnaSeqData = 1;
+            $scRnaSeqCondMaxStmt->execute($globalCondId) or die $scRnaSeqCondMaxStmt->errstr;
+            my $rnaSeqLibMax = undef;
+            if (my @rnaSeqLibMaxRes = $scRnaSeqCondMaxStmt->fetchrow_array()) {
+                $rnaSeqLibMax = $rnaSeqLibMaxRes[0];
+            }
+            # Since we checked if there was RNA-Seq data in the condition we should always have a max rank
+            if (!$rnaSeqLibMax) {
+                die("Could not find single-cell rnaSeqLibMax for globalConditionId: $globalCondId\n");
+            }
+            $scRnaSeqAnnotSampleNormRankStmt->execute($rnaSeqLibMax, $globalCondId) or die $scRnaSeqAnnotSampleNormRankStmt->errstr;
             # Insert the results in the temp result tables
-            $insertScRnaSeqExprResults->execute($globalCondId) or die $insertScRnaSeqExprResults->errstr;
-            $insertScRnaSeqCondResults->execute($globalCondId, $globalCondId) or die $insertScRnaSeqCondResults->errstr;
+            $insertScRnaSeqExprResults->execute() or die $insertScRnaSeqExprResults->errstr;
+            $insertScRnaSeqCondResults->execute($globalCondId, $rnaSeqLibMax) or die $insertScRnaSeqCondResults->errstr;
+            # Drop the temp ranking table
+            $dropScRNASeqLibNormRank->execute() or die $dropScRNASeqLibNormRank->errstr;
         }
 
         # ***
@@ -796,6 +690,9 @@ sub compute_update_global_ranks {
 
     $scRnaSeqToGlobalCondStmt->finish or die('Failed finish');
     $isScRnaSeqDataInGlobalCondStmt->finish or die('Failed finish');
+    $scRnaSeqCondMaxStmt->finish or die('Failed finish');
+    $scRnaSeqAnnotSampleNormRankStmt->finish or die('Failed finish');
+    $dropScRNASeqLibNormRank->finish or die('Failed finish');
     $insertScRnaSeqExprResults->finish or die('Failed finish');
     $insertScRnaSeqCondResults->finish or die('Failed finish');
 
@@ -803,7 +700,7 @@ sub compute_update_global_ranks {
 }
 
 sub compute_dense_ranking_update_tmp_ranks {
-	my ($dbh, $resultArrRef, $updateRankingStmt, $updateRankingStmtStart) = @_;
+    my ($dbh, $resultArrRef, $updateRankingStmt, $updateRankingStmtStart) = @_;
 
     my %sorted = Utils::dense_ranking(@{ $resultArrRef });
     # we get ranks as keys, with reference to an array of expression IDs with that rank as value
@@ -832,7 +729,7 @@ sub compute_dense_ranking_update_tmp_ranks {
 }
 
 sub cond_to_data_query_string {
-	my ($tempTableName, $sourceDataTableName, $sourceDataIdName, $condCount, $selfRanks, $isRnaSeq, $isSingleCell) = @_;
+    my ($tempTableName, $sourceDataTableName, $sourceDataIdName, $condCount, $selfRanks, $isRnaSeq, $isSingleCell) = @_;
 
     my $sql = 'CREATE TEMPORARY TABLE '.$tempTableName.' (
                    PRIMARY KEY(globalConditionId, '.$sourceDataIdName.'))
@@ -849,10 +746,10 @@ sub cond_to_data_query_string {
             # retrieve the data present in this globalCondition
             'INNER JOIN '.$sourceDataTableName.' AS t4 ON t3.conditionId = t4.conditionId ';
     if ($isRnaSeq) {
-    	$sql .= 'INNER JOIN rnaSeqLibrary AS t5 ON t4.rnaSeqLibraryId = t5.rnaSeqLibraryId '.
-    	        'WHERE t5.rnaSeqTechnologyIsSingleCell = '.($isSingleCell ? '1' : '0').' AND ';
+        $sql .= 'INNER JOIN rnaSeqLibrary AS t5 ON t4.rnaSeqLibraryId = t5.rnaSeqLibraryId '.
+                'WHERE t5.rnaSeqTechnologyIsSingleCell = '.($isSingleCell ? '1' : '0').' AND ';
     } else {
-    	$sql .= 'WHERE ';
+        $sql .= 'WHERE ';
     }
     $sql .= 't1.globalConditionId';
     if ($condCount == 1) {
@@ -872,15 +769,15 @@ sub cond_to_data_query_string {
 }
 
 sub getRnaSeqToGlobalCondStmt {
-	my ($dbh, $rnaSeqToGlobalCondTableName, $batchLength, $selfRanks, $isSingleCell) = @_;
-	return $dbh->prepare(cond_to_data_query_string(
+    my ($dbh, $rnaSeqToGlobalCondTableName, $batchLength, $selfRanks, $isSingleCell) = @_;
+    return $dbh->prepare(cond_to_data_query_string(
         $rnaSeqToGlobalCondTableName, 'rnaSeqLibraryAnnotatedSample', 'rnaSeqLibraryAnnotatedSampleId',
         $batchLength, $selfRanks, 1, $isSingleCell));
 }
 
 sub getRnaSeqCondMaxStmt {
-	my ($dbh, $rnaSeqToGlobalCondTableName) = @_;
-	return $dbh->prepare(
+    my ($dbh, $rnaSeqToGlobalCondTableName) = @_;
+    return $dbh->prepare(
             'SELECT STRAIGHT_JOIN MAX(t4.maxRank) AS maxRank '.
             # Retrieve all libraries present in the globalCondition
             'FROM '.$rnaSeqToGlobalCondTableName.' AS t1 '.
@@ -894,8 +791,8 @@ sub getRnaSeqCondMaxStmt {
 }
 
 sub getRnaSeqAnnotSampleNormRankStmt {
-	my ($dbh, $rnaSeqToGlobalCondTableName, $rnaSeqAnnotSampleNormalizedRankTableName) = @_;
-	return $dbh->prepare(
+    my ($dbh, $rnaSeqToGlobalCondTableName, $rnaSeqAnnotSampleNormalizedRankTableName) = @_;
+    return $dbh->prepare(
             'CREATE TEMPORARY TABLE '.$rnaSeqAnnotSampleNormalizedRankTableName.' (
                 PRIMARY KEY(bgeeGeneId, rnaSeqLibraryAnnotatedSampleId))
              SELECT STRAIGHT_JOIN
@@ -916,9 +813,9 @@ sub getRnaSeqAnnotSampleNormRankStmt {
              'WHERE rnaSeqLibraryAnnotatedSampleGeneResult.expressionId IS NOT NULL AND '.$rnaSeqToGlobalCondTableName.'.globalConditionId = ?');
 }
 
-sub getInsertRnaSeqExprResults {
-	my ($dbh, $exprResultsTempTable, $rnaSeqAnnotSampleNormalizedRankTableName,
-	    $rnaSeqRankField, $rnaSeqDistinctRankSum) = @_;
+sub getInsertRnaSeqExprResultsStmt {
+    my ($dbh, $exprResultsTempTable, $rnaSeqAnnotSampleNormalizedRankTableName,
+        $rnaSeqRankField, $rnaSeqDistinctRankSum) = @_;
     return $dbh->prepare(
             'INSERT INTO '.$exprResultsTempTable.'
                  (bgeeGeneId, '.$rnaSeqRankField.', '.$rnaSeqDistinctRankSum.')
