@@ -3,9 +3,13 @@
 ## Julien Wollbrett, April 12, 2021
 ## Update Frederic Bastian, April 10 2023: add parameter to specify single-cell or not
 # This script generates sbatch files to run on cluster with slurm queuing system
-# It is possible to directly run all jobs with the parameter "-run_jobs".
 # A bash script called "generate_rnaseq_ranks_jobs.sh" is created at the same location than sbatch scripts.
 # It is possible to run this bash script to run all jobs
+
+# TODO: integrate in the pipeline by creating a rule in the Makefile
+# TODO: create a variable in the Makefile.common to store all slurm information
+# TODO: use bgee_connector variable present in the Makefile.common to connect to the DB
+# TODO: use the already existing function (in Utils.pm) allowing to generate a template of sbatch script
 
 # Perl core modules
 use strict;
@@ -35,7 +39,7 @@ my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $pipeline_cluster_dir eq '' || $script_relative_path eq '' || $output_dir eq ''|| $output_cluster_dir eq ''
     || $bgee_pwd eq '' || $database_name eq '' || ($is_single_cell != 0 && $is_single_cell != 1)){
     print "\n\tInvalid or missing argument:
-\te.g. $0 -jar_path=\$(PATH_TO_JAR) -output_dir=\$(PATH_TO_OUTPUT) -output_cluster_dir=\$(OUTPUT_CLUSTER_DIR)
+\te.g. $0 -script_relative_path=\$(PATH_TO_SCRIPT) -output_dir=\$(PATH_TO_OUTPUT) -bgee_pwd=\$(BGEE_PWD) -database_name=\$(DBNAME) -output_cluster_dir=\$(OUTPUT_CLUSTER_DIR) -is_single_cell=\$(IS_SINGLE_CELL)
 \t-pipeline_cluster_dir path to Bgee pipeline directory
 \t-script_relative_path relative path of the script ranks_rnaseq.pl from the root of bgee pipeline
 \t-output_dir           path to the directory (somewhere in our home directory of the cluster) where all
@@ -55,10 +59,10 @@ my $account         = 'mrobinso_bgee';
 my $bgee_user       = 'root';
 my $bgee_port       = 3306;
 my $nbr_processors  = 1;
-my $libs_per_thread = 10;
+my $libs_per_thread = 2;
 my $memory_usage    = 5;      # in GB
 my $time_limit      = '12:00:00';
-my $serveur_url     = 'rbioinfo.unil.ch';
+my $serveur_url     = 'dbbioinfo.unil.ch';
 
 my $bgee_connector= get_bgee_connector($bgee_user, $serveur_url, $bgee_pwd, $bgee_port, $database_name);
 my $script     = 'ranks_rnaseq.pl';
