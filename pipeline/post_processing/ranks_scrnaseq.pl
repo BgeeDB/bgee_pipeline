@@ -207,7 +207,7 @@ if (!@lib_ids) {
                   INNER JOIN rnaSeqLibraryAnnotatedSampleGeneResult AS t3
                   ON t3.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId
                   WHERE t1.rnaSeqLibraryId = t2.rnaSeqLibraryId
-                  AND t3.rank IS NOT NULL)';
+                  AND t3.rawRank IS NOT NULL)';
     if ($sample_count > 0) {
         $libSql .= ' ORDER BY t1.rnaSeqLibraryId
                      LIMIT '.$sample_offset.', '.$sample_count;
