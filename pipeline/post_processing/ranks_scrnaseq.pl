@@ -123,49 +123,51 @@ sub compute_update_rank_annotated_sample_batch {
         $rnaSeqResultsStmt->execute($rnaSeqLibraryAnnotatedSampleId) or die $rnaSeqResultsStmt->errstr;
 
         my @results = map { {'id' => $_->[0], 'val' => $_->[1]} } @{$rnaSeqResultsStmt->fetchall_arrayref};
-        my %sorted = Utils::fractionnal_ranking(@results);
-        # we get ranks as keys, with reference to an array of gene IDs with that rank as value
-        my %reverseHash = Utils::revhash(%sorted);
+        # some annotatedSamples have no geneResults, check if @results is non-empty
+        if (@results) {
+            my %sorted = Utils::fractionnal_ranking(@results);
+            # we get ranks as keys, with reference to an array of gene IDs with that rank as value
+            my %reverseHash = Utils::revhash(%sorted);
 
-        # ======= Update ranks ========
-        my $rnaSeqTmpTableStmt = $dbh_thread->prepare(
-                'CREATE TEMPORARY TABLE rnaSeqAnnotSampleRanking
-                 SELECT bgeeGeneId, rnaSeqLibraryAnnotatedSampleId, rawRank
-                 FROM rnaSeqLibraryAnnotatedSampleGeneResult
-                 LIMIT 0');
-        $rnaSeqTmpTableStmt->execute() or die $rnaSeqTmpTableStmt->errstr;
-        my $sqlInsertTmpRanks = 'INSERT INTO rnaSeqAnnotSampleRanking (bgeeGeneId, rnaSeqLibraryAnnotatedSampleId, rawRank)
-                VALUES ';
-        my @insertTmpRanksValues = ();
-        my $valueCount = 0;
-        # We use this reverseHash because we used to use UPDATE statements with IN(...) clause
-        for my $rank ( keys %reverseHash ){
-            my $geneIds_arrRef = $reverseHash{$rank};
-            my @geneIds_arr = @$geneIds_arrRef;
-            my $geneCount = scalar @geneIds_arr;
-            for ( my $i = 0; $i < $geneCount; $i++ ){
-                if ($valueCount > 0) {
-                    $sqlInsertTmpRanks .= ', ';
+            # ======= Update ranks ========
+            my $rnaSeqTmpTableStmt = $dbh_thread->prepare(
+                    'CREATE TEMPORARY TABLE rnaSeqAnnotSampleRanking
+                     SELECT bgeeGeneId, rnaSeqLibraryAnnotatedSampleId, rawRank
+                     FROM rnaSeqLibraryAnnotatedSampleGeneResult
+                     LIMIT 0');
+            $rnaSeqTmpTableStmt->execute() or die $rnaSeqTmpTableStmt->errstr;
+            my $sqlInsertTmpRanks = 'INSERT INTO rnaSeqAnnotSampleRanking (bgeeGeneId, rnaSeqLibraryAnnotatedSampleId, rawRank)
+                    VALUES ';
+            my @insertTmpRanksValues = ();
+            my $valueCount = 0;
+            # We use this reverseHash because we used to use UPDATE statements with IN(...) clause
+            for my $rank ( keys %reverseHash ){
+                my $geneIds_arrRef = $reverseHash{$rank};
+                my @geneIds_arr = @$geneIds_arrRef;
+                my $geneCount = scalar @geneIds_arr;
+                for ( my $i = 0; $i < $geneCount; $i++ ){
+                    if ($valueCount > 0) {
+                        $sqlInsertTmpRanks .= ', ';
+                    }
+                    $sqlInsertTmpRanks .= '(?, ?, ?)';
+                    push (@insertTmpRanksValues, ($geneIds_arr[$i], $rnaSeqLibraryAnnotatedSampleId, $rank));
+                    $valueCount++;
                 }
-                $sqlInsertTmpRanks .= '(?, ?, ?)';
-                push (@insertTmpRanksValues, ($geneIds_arr[$i], $rnaSeqLibraryAnnotatedSampleId, $rank));
-                $valueCount++;
             }
+            my $insertTmpRanksStmt = $dbh_thread->prepare($sqlInsertTmpRanks);
+            $insertTmpRanksStmt->execute(@insertTmpRanksValues) or die $insertTmpRanksStmt->errstr;
+
+            my $updateRnaSeqLibsStmt = $dbh_thread->prepare('UPDATE rnaSeqLibraryAnnotatedSampleGeneResult AS t1
+                    INNER JOIN rnaSeqAnnotSampleRanking AS t2
+                        ON t1.bgeeGeneId = t2.bgeeGeneId AND t1.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId '.
+                        # To be able to use the index on rnaSeqLibraryAnnotatedSampleGeneResult, plus this constraint is correct
+                       'AND t1.expressionId IS NOT NULL
+                    SET t1.rawRank = t2.rawRank');
+            $updateRnaSeqLibsStmt->execute() or die $updateRnaSeqLibsStmt->errstr;
+
+            my $dropRnaSeqTmpTableStmt = $dbh_thread->prepare('DROP TABLE rnaSeqAnnotSampleRanking');
+            $dropRnaSeqTmpTableStmt->execute() or die $dropRnaSeqTmpTableStmt->errstr;
         }
-        my $insertTmpRanksStmt = $dbh_thread->prepare($sqlInsertTmpRanks);
-        $insertTmpRanksStmt->execute(@insertTmpRanksValues) or die $insertTmpRanksStmt->errstr;
-
-        my $updateRnaSeqLibsStmt = $dbh_thread->prepare('UPDATE rnaSeqLibraryAnnotatedSampleGeneResult AS t1
-                INNER JOIN rnaSeqAnnotSampleRanking AS t2
-                    ON t1.bgeeGeneId = t2.bgeeGeneId AND t1.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId '.
-                    # To be able to use the index on rnaSeqLibraryAnnotatedSampleGeneResult, plus this constraint is correct
-                   'AND t1.expressionId IS NOT NULL
-                SET t1.rawRank = t2.rawRank');
-        $updateRnaSeqLibsStmt->execute() or die $updateRnaSeqLibsStmt->errstr;
-
-        my $dropRnaSeqTmpTableStmt = $dbh_thread->prepare('DROP TABLE rnaSeqAnnotSampleRanking');
-        $dropRnaSeqTmpTableStmt->execute() or die $dropRnaSeqTmpTableStmt->errstr;
-
         # ======= Commit ========
         $dbh_thread->commit() or die('Failed commit');
         $dbh_thread->disconnect();
