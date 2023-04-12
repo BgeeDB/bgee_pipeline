@@ -9,14 +9,12 @@ ALTER TABLE tempSafeToDropCondUsed ENGINE=InnoDB;
 
 INSERT INTO tempSafeToDropCondUsed
 SELECT DISTINCT t1.conditionId FROM cond AS t1
-LEFT OUTER JOIN estLibrary AS t2 ON t1.conditionId = t2.conditionId
-LEFT OUTER JOIN affymetrixChip AS t3 ON t1.conditionId = t3.conditionId
-LEFT OUTER JOIN inSituSpot AS t4 ON t1.conditionId = t4.conditionId
-LEFT OUTER JOIN rnaSeqLibraryAnnotatedSample AS t5 ON t1.conditionId = t5.conditionId
-LEFT OUTER JOIN expression AS t6 ON t1.conditionId = t6.conditionId
-LEFT OUTER JOIN globalCondToCond AS t7 ON t1.conditionId = t7.conditionId
-WHERE t2.conditionId IS NOT NULL OR t3.conditionId IS NOT NULL OR t4.conditionId IS NOT NULL
-OR t5.conditionId IS NOT NULL OR t6.conditionId IS NOT NULL OR t7.conditionId IS NOT NULL;
+WHERE EXISTS (SELECT 1 FROM estLibrary WHERE estLibrary.conditionId = t1.conditionId)
+OR EXISTS (SELECT 1 FROM affymetrixChip WHERE affymetrixChip.conditionId = t1.conditionId)
+OR EXISTS (SELECT 1 FROM inSituSpot WHERE inSituSpot.conditionId = t1.conditionId)
+OR EXISTS (SELECT 1 FROM rnaSeqLibraryAnnotatedSample WHERE rnaSeqLibraryAnnotatedSample.conditionId = t1.conditionId)
+OR EXISTS (SELECT 1 FROM expression WHERE expression.conditionId = t1.conditionId)
+OR EXISTS (SELECT 1 FROM globalCondToCond WHERE globalCondToCond.conditionId = t1.conditionId);
 
 -- Then, we delete the conditions unused.
 -- But because of how the query is built, we can't directly delete the conditions
