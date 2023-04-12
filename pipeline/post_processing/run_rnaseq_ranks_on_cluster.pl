@@ -174,9 +174,10 @@ sub sbatch_template {
 #SBATCH --error=$error_file
 #SBATCH --export=NONE
 #SBATCH --job-name=$job_name
-module add Bioinformatics/Software/vital-it;
+module use /software/module/
 module add Development/Ensembl_API/97;
 
+export PATH=/software/bin:$PATH;
 export PIPELINE_PATH=$pipeline_path
 
 ";
