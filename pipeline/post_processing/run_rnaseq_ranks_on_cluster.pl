@@ -41,7 +41,7 @@ if ( !$test_options || $pipeline_cluster_dir eq '' || $script_relative_path eq '
     print "\n\tInvalid or missing argument:
 \te.g. $0 -script_relative_path=\$(PATH_TO_SCRIPT) -output_dir=\$(PATH_TO_OUTPUT) -bgee_pwd=\$(BGEE_PWD) -database_name=\$(DBNAME) -output_cluster_dir=\$(OUTPUT_CLUSTER_DIR) -is_single_cell=\$(IS_SINGLE_CELL)
 \t-pipeline_cluster_dir path to Bgee pipeline directory
-\t-script_relative_path relative path of the script ranks_rnaseq.pl from the root of bgee pipeline
+\t-script_relative_path relative path from the root of bgee_pipeline to the directory containing the ranks generation script (e.g pipeline/post_processing/) from the root of bgee pipeline
 \t-output_dir           path to the directory (somewhere in our home directory of the cluster) where all
 \t                      sbatch files and the bash file allowing to run all jobs will be created
 \t-bgee_pwd             password to connect to bgee database
@@ -71,6 +71,9 @@ if ($is_single_cell == 1) {
     $script     = 'ranks_scrnaseq.pl';
     $log_prefix = 'generateScRnaSeqRanks_';
 }
+
+#concatenate script_relative_path and the name of the script to use
+$script_relative_path = "${script_relative_path}/${script}";
 
 # Connect to Bgee DB to retrieve all libraries for which no ranks have
 # been processed for now.
@@ -154,7 +157,7 @@ sub create_perl_command {
     if ($nbr_processors > 1) {
          $nbr_threads--;
     }
-    my $template = "perl ${pipeline_cluster_dir}${script_relative_path}${script} -bgee=${bgee_connector} -parallel_jobs=${nbr_threads} -libs_per_job=$libs_per_thread -lib_ids=${lib_ids}";
+    my $template = "perl ${pipeline_cluster_dir}${script_relative_path} -bgee=${bgee_connector} -parallel_jobs=${nbr_threads} -libs_per_job=$libs_per_thread -lib_ids=${lib_ids}";
     return $template;
 }
 
@@ -177,7 +180,7 @@ sub sbatch_template {
 module use /software/module/
 module add Development/Ensembl_API/97;
 
-export PATH=/software/bin:$PATH;
+export PATH=/software/bin:\$PATH;
 export PIPELINE_PATH=$pipeline_path
 
 ";
