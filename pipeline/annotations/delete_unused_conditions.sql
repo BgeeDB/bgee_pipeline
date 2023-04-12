@@ -1,6 +1,13 @@
+-- We create the tables in such a way to avoid system lock,
+-- see https://dba.stackexchange.com/a/15479
+
 -- First, we identify all conditions used in the database.
 -- We don't use a TEMP TABLE because they cannot be used twice in a same query
 CREATE TABLE tempSafeToDropCondUsed (PRIMARY KEY(conditionId))
+SELECT t1.conditionId FROM cond AS t1 LIMIT 0;
+ALTER TABLE tempSafeToDropCondUsed ENGINE=InnoDB;
+
+INSERT INTO tempSafeToDropCondUsed
 SELECT DISTINCT t1.conditionId FROM cond AS t1
 LEFT OUTER JOIN estLibrary AS t2 ON t1.conditionId = t2.conditionId
 LEFT OUTER JOIN affymetrixChip AS t3 ON t1.conditionId = t3.conditionId
@@ -17,6 +24,10 @@ OR t5.conditionId IS NOT NULL OR t6.conditionId IS NOT NULL OR t7.conditionId IS
 -- so we first store the conditions to delete in another table.
 -- Select a condition for deletion if:
 CREATE TEMPORARY TABLE condToDelete (PRIMARY KEY(conditionId))
+SELECT t1.conditionId FROM cond AS t1 LIMIT 0;
+ALTER TABLE condToDelete ENGINE=InnoDB;
+
+INSERT INTO condToDelete
 SELECT DISTINCT t1.conditionId FROM cond AS t1
 -- 1) the condition is itself not used, and;
 WHERE t1.conditionId NOT IN (SELECT conditionId from tempSafeToDropCondUsed)

@@ -1,6 +1,13 @@
+-- We create the tables in such a way to avoid system lock,
+-- see https://dba.stackexchange.com/a/15479
+
 -- First, we identify all expressions used in the database.
 -- We don't use a TEMP TABLE because they cannot be used twice in a same query
 CREATE TABLE tempSafeToDropExpressionUsed (PRIMARY KEY(expressionId))
+SELECT t1.expressionId FROM expression AS t1 LIMIT 0;
+ALTER TABLE tempSafeToDropExpressionUsed ENGINE=InnoDB;
+
+INSERT INTO tempSafeToDropExpressionUsed
 SELECT DISTINCT t1.expressionId FROM expression AS t1
 LEFT OUTER JOIN expressedSequenceTag AS t2 ON t1.expressionId = t2.expressionId
 LEFT OUTER JOIN affymetrixProbeset AS t3 ON t1.expressionId = t3.expressionId
@@ -14,6 +21,10 @@ OR t5.expressionId IS NOT NULL;
 -- (we get an error 'Can't specify target table for update in FROM clause'),
 -- so we first store the conditions to delete in another table.
 CREATE TEMPORARY TABLE expressionToDelete (PRIMARY KEY(expressionId))
+SELECT t1.expressionId FROM expression AS t1 LIMIT 0;
+ALTER TABLE expressionToDelete ENGINE=InnoDB;
+
+INSERT INTO expressionToDelete
 SELECT DISTINCT t1.expressionId FROM expression AS t1
 WHERE t1.expressionId NOT IN (SELECT expressionId from tempSafeToDropExpressionUsed);
 
