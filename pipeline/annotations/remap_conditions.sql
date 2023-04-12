@@ -76,8 +76,4 @@ UPDATE rnaSeqLibraryAnnotatedSample AS t1
 INNER JOIN remapCond AS t2 ON t1.conditionId = t2.incorrectConditionId
 SET t1.conditionId = t2.remappedConditionId;
 
-UPDATE deaSampleGroup AS t1
-INNER JOIN remapCond AS t2 ON t1.conditionId = t2.incorrectConditionId
-SET t1.conditionId = t2.remappedConditionId;
-
 -- Other scripts are used to delete the remaining unused conditions and expressions

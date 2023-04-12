@@ -6,14 +6,10 @@ LEFT OUTER JOIN estLibrary AS t2 ON t1.conditionId = t2.conditionId
 LEFT OUTER JOIN affymetrixChip AS t3 ON t1.conditionId = t3.conditionId
 LEFT OUTER JOIN inSituSpot AS t4 ON t1.conditionId = t4.conditionId
 LEFT OUTER JOIN rnaSeqLibraryAnnotatedSample AS t5 ON t1.conditionId = t5.conditionId
-LEFT OUTER JOIN expression AS t8 ON t1.conditionId = t8.conditionId
-LEFT OUTER JOIN differentialExpression AS t9 ON t1.conditionId = t9.conditionId
-LEFT OUTER JOIN deaSampleGroup AS t10 ON t1.conditionId = t10.conditionId
-LEFT OUTER JOIN globalCondToCond AS t11 ON t1.conditionId = t11.conditionId
+LEFT OUTER JOIN expression AS t6 ON t1.conditionId = t6.conditionId
+LEFT OUTER JOIN globalCondToCond AS t7 ON t1.conditionId = t7.conditionId
 WHERE t2.conditionId IS NOT NULL OR t3.conditionId IS NOT NULL OR t4.conditionId IS NOT NULL
-OR t5.conditionId IS NOT NULL OR t6.conditionId IS NOT NULL OR t7.conditionId IS NOT NULL
-OR t8.conditionId IS NOT NULL OR t9.conditionId IS NOT NULL OR t10.conditionId IS NOT NULL
-OR t11.conditionId IS NOT NULL;
+OR t5.conditionId IS NOT NULL OR t6.conditionId IS NOT NULL OR t7.conditionId IS NOT NULL;
 
 -- Then, we delete the conditions unused.
 -- But because of how the query is built, we can't directly delete the conditions
