@@ -333,7 +333,7 @@ insert_cell_abundance:
 	@$(MV) $@.tmp $@
 
 insert_expression:
-	@perl 3Insertion/insert_scrna_seq_expression.pl -bgee=$(BGEECMD) -number_threads=20> $@.tmp 2> $@.err
+	@perl 3Insertion/insert_scrna_seq_expression.pl -bgee=$(BGEECMD) -number_threads=40> $@.tmp 2> $@.err
 	@if [[ ! -s $@.err ]]; then $(RM) $@.err; fi
 	@$(MV) $@.tmp $@
 
