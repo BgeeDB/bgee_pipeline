@@ -1,4 +1,4 @@
--- SQL file used to add genomeAssemblyXRef column and insert corresponding values to the species table for Bgee 15.0
+-- SQL file used to add genomeAssemblyXRef column and insert corresponding values to the species table for Bgee 15.1
 -- In the future this values will be inserted automatically as part of the InsertTaxa.java code
 ALTER TABLE species ADD COLUMN genomeAssemblyXRef VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'XRef to the genome assembly'AFTER genomeVersion;
 UPDATE species SET genomeAssemblyXRef = "https://nov2020.archive.ensembl.org/Caenorhabditis_elegans/" WHERE speciesID = 6239;
