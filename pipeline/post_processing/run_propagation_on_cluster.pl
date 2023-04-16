@@ -171,7 +171,7 @@ sub sbatch_template {
 #SBATCH --export=NONE
 #SBATCH --job-name=$job_name
 module use /software/module/
-module add Development/java/1.8.0_242;
+module load openjdk/11.0.15_10;
 
 export JAR_PATH=$jar_path
 
