@@ -156,8 +156,7 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
 
         # As for Bgee 15.1 all target-based protocols have polyA as populationCapture
         #TODO: the script will have to be updated if other population captures are considered
-        if (!grep($results{$geneId}->{'geneBiotypeId'}, @polyAExcludedAbsentCalls)) {
-
+        if (grep(!/$results{$geneId}->{'geneBiotypeId'}/, @polyAExcludedAbsentCalls)) {
             # insert or update the expression table
             my $expressionId = insert_expression($insUpExpr, $bgee_thread, $geneId, $exprMappedConditionId);
 
