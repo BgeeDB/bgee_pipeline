@@ -68,7 +68,7 @@ my $log_prefix     = 'generatePropagatedCalls_';
 # TODO : REALLY NEED TO RETRIEVE THESE INFO FROM THE DATABASE WITH THE QUERY :
 # select speciesId, count(distinct bgeeGeneId) as geneNumber from cond as t1 inner join expression as t2 on t1.conditionId = t2.conditionIdg roup by speciesId order by speciesId;
 
-my $serveur_url = 'localhost';
+my $serveur_url = 'dbbioinfo.unil.ch';
 my $bgee_user   = 'root';
 my $bgee_port   = 3306;
 
