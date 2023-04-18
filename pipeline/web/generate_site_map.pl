@@ -53,7 +53,8 @@ print "Write main/static pages\n"  if ( $debug );
 my @static_pages;
 push @static_pages, "<loc>$homepage/</loc><priority>0.8</priority>";
 push @static_pages, "<loc>$homepage/sparql/</loc><priority>0.7</priority>";
-my @basic_about     = ('', 'news', 'collaborations', 'publications', 'source', 'privacy-policy');
+push @static_pages, "<loc>$homepage/ftp/</loc><priority>0.7</priority>";
+my @basic_about     = ('', 'news', 'collaborations', 'publications', 'videos', 'sources', 'team', 'bgeesab', 'privacy-policy');
 for my $baseUrlName ( sort @basic_about ){
     push @static_pages, "<loc>$homepage/about/$baseUrlName</loc><priority>0.7</priority>";
 }
@@ -73,12 +74,10 @@ my @basic_analysis  = ('top-anat', 'expr-comparison');
 for my $baseUrlName ( sort @basic_analysis ){
     push @static_pages, "<loc>$homepage/analysis/$baseUrlName</loc><priority>0.7</priority>";
 }
-my @basic_search    = ('genes', 'anatomical-homology', 'species');
+my @basic_search    = ('genes', 'anatomical-homology', 'species', 'raw-data', 'expression-calls');
 for my $baseUrlName ( sort @basic_search ){
     push @static_pages, "<loc>$homepage/search/$baseUrlName</loc><priority>0.7</priority>";
 }
-
-#NOTE FTP links are invalid because different namespace (not bgee.org)
 
 write_file("$sitemap_main", $sitemap_header, join("\n", map { "<url>$_</url>" } @static_pages), $sitemap_footer);
 push @index, $sitemap_main;
