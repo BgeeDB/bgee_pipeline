@@ -53,18 +53,19 @@ colnames(metadataCollect)[1] <- "libraryId"
 targetBased <- data.frame(dplyr::filter(annotation, protocol == "10X Genomics" & protocolType == "3'end"))
 ## generate the informative file of the target based protocols with all the information!
 scRNASeqInfo <- merge(targetBased, metadataCollect, by="libraryId", incomparables = NaN)
-write.table(scRNASeqInfo, file = paste0(output, "/scRNA_Seq_info_TargetBased.txt"), col.names = TRUE, row.names = FALSE , quote = FALSE, sep = "\t")
+write.table(scRNASeqInfo, file = paste0(output, "/scRNA_Seq_info_TargetBased.txt"), col.names = TRUE, row.names = FALSE ,
+  quote = FALSE, sep = "\t")
 
 for (species in unique(scRNASeqInfo$scientific_name)) {
   message("Species:", species)
   #TODO: transcriptome indexes will be generated using BgeeCall. Path to folder are outdated
   ## collect species info
   speciesName <- gsub(" ", "_", species)
-  transcriptomeIndexFile <- list.files(folderSupport, pattern = paste0("^", speciesName, ".*transcriptome.idx$"))
-  print(transcriptomeIndexFile)
+  transcriptomeIndexFiles <- list.files(folderSupport, pattern = paste0("^", speciesName, ".*transcriptome.idx$"))
+  print(transcriptomeIndexFiles)
   # transcriptome index can potentially be compressed with xz. If transcriptome index file does not exist
   # we try to find the xz file and uncompress it.
-  if (identical(transcriptomeIndexFile, character(0))) {
+  if (identical(transcriptomeIndexFiles, character(0))) {
     message("uncompress transcriptome index file")
     compressedTranscriptomeIndexFile <- list.files(folderSupport, 
       pattern = paste0("^", speciesName, ".*transcriptome.idx.xz$"))
@@ -72,7 +73,7 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
       stop("transcriptome index file does not exist for species ", speciesName)
     }
     system(sprintf("unxz %s", file.path(folderSupport, compressedTranscriptomeIndexFile)))
-    transcriptomeIndexFile <- list.files(folderSupport, pattern = paste0("^", speciesName, ".*transcriptome.idx$")) 
+    transcriptomeIndexFiles <- list.files(folderSupport, pattern = paste0("^", speciesName, ".*transcriptome.idx$"))
   }
   ## collect all libraries from the species
   collectLibrary <- scRNASeqInfo$libraryId[scRNASeqInfo$scientific_name == species]
@@ -146,9 +147,17 @@ for (species in unique(scRNASeqInfo$scientific_name)) {
         filesKallisto <- gsub(",", " " ,filesKallisto)
         message("Files to pass to Kallisto: ")
         message(filesKallisto)
-        
+
+        # select index depending on cell compartment used (cell or single nucléi)
+        transcriptomeIndexFile <- transcriptomeIndexFiles[grep(pattern = ".transcriptome.idx", x = transcriptomeIndexFiles)]
+        if (unique(targetBased$tags[targetBased$libraryId == i]) == "Sn-scRNA-seq") {
+          transcriptomeIndexFile <- transcriptomeIndexFiles[grep(pattern = ".single_nucleus_transcriptome.idx",
+            x = transcriptomeIndexFiles)]
+        }
+
         ## RUN Kallisto bus
-        system(sprintf('kallisto bus -i %s -o %s -x %s -t 4 %s', file.path(folderSupport, transcriptomeIndexFile), paste0(busOutput), paste0("10x",whiteLInfo), paste0(filesKallisto)))
+        system(sprintf('kallisto bus -m -i %s -o %s -x %s -t 4 %s', file.path(folderSupport, transcriptomeIndexFile),
+          paste0(busOutput), paste0("10x",whiteLInfo), paste0(filesKallisto)))
         ## control file
         file.create(file.path(kallisto_bus_results, i, "Done_kallisto_bus.txt"))
       }
