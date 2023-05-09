@@ -91,8 +91,8 @@ while (my $file = readdir(DIR)) {
                 $sbatch_commands .= "gtf_to_fasta $transcriptome_folder/$file $genome_file_path $transcriptome_nascent_file_path\n";
                 $sbatch_commands .= "# update transcriptome file to correct the header of each sequence\n";
                 $sbatch_commands .= 'perl -i -pe \'s/^>\\d+ +/>/\' '.$transcriptome_nascent_file_path."\n";
-                # paste transcriptome containing both matured and intergenic transcripts and the transcriptome contining ascent transcripts
-                $sbatch_commands .= "paste $transcriptome_file_path $transcriptome_nascent_file_path > $transcriptome_single_nucleus_file_path\n";
+                # concatenate transcriptome containing both matured and intergenic transcripts and the transcriptome contining ascent transcripts
+                $sbatch_commands .= "cat $transcriptome_file_path $transcriptome_nascent_file_path > $transcriptome_single_nucleus_file_path\n";
                 # remove nascent transcripts file
                 $sbatch_commands .= "rm $transcriptome_nascent_file_path\n";
                 # compress transcriptome file
@@ -107,7 +107,7 @@ while (my $file = readdir(DIR)) {
 
         # generate index with default kmer size
         if (!-e $transcriptome_single_nucleus_index_path) {
-            $sbatch_commands .= "generate index with default kmer size\n";
+            $sbatch_commands .= "# generate index with default kmer size\n";
             $sbatch_commands .= "kallisto index -i $transcriptome_single_nucleus_index_path $transcriptome_single_nucleus_file_path\n";
         }
 
