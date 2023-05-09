@@ -198,15 +198,8 @@ cleaning_barcodes: generate_info 0Preparation/cleaning_barcodes.R
 	@touch $@
 
 prepare_single_nucleus_index: cleaning_barcodes
-	#Preparing indexed transcriptome for every species
-	#Extract transcriptome.fa from gtf_all and genome.fa files
-	#perl one liner to remove arbitrary numbering in fasta header from gtf_to_fasta
-	# Prepare indexes for kallisto: one with default k-mer size $(RNASEQ_KALLISTO_KMER_DEFAULT), one with short k-mer size $(RNASEQ_KALLISTO_KMER_SHORT)
+	#Preparing single nucleus indexed transcriptome for every species
 	@perl 0Preparation/slurm_single_nucleus_index.pl -transcriptome_folder=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(OUTPUT_DIR) -account=$(CLUSTER_ACCOUNT_SENSITIVE) -partition=$(CLUSTER_PARTITION_SENSITIVE) -cluster_kallisto_cmd="$(CLUSTER_KALLISTO_CMD)" -cluster_tophat_cmd="$(CLUSTER_TOPHAT_CMD)" >$@.tmp 2>&1
-	#TODO Use short k-mer size = 21nt instead of 15
-	#TODO The gffread utility in cufflinks package seems more flexible and reliable
-	#TODO add step to copy .passw file to bbgee's home on cluster / or maybe just echo a message to tell the user scp it? Path and name of this file on cluster is stored in ENCRYPT_PASSWD_FILE. We should store this file somewhere (devbioinfo?) because it cannot be added to the gitlab project
-	#Or just put it in /home/bbgee/? in read only mode, only for bbgee user
 	@$(MV) $@.tmp $@
 
 ## Run Kallisto bus per taxon_iD/library
