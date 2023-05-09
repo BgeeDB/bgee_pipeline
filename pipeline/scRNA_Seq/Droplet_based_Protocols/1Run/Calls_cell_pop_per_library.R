@@ -238,7 +238,7 @@ for (libraryId in unique(scRNASeqAnnotation$libraryId)) {
 
       cellPop <- str_remove(basename(rawCountFile), "Raw_Counts_")
       cellPop <- str_remove(cellPop, ".tsv")
-      cellTypeId <- gsub("-", ":", cellPop)
+      cellTypeId <- gsub("_", ":", cellPop)
       
       message("Process celltype: ", cellTypeId)
 
@@ -276,7 +276,7 @@ for (libraryId in unique(scRNASeqAnnotation$libraryId)) {
       finalData_genic$CPM <- finalData_genic$sumUMI / sum(finalData_genic$sumUMI) * 1e6
       
       ## Export cutoff information file + new files with calls
-      cutoff_info_file <- cutoff_info(libraryId, cellTypeId = gsub("-",":",cellTypeId), counts = finalData,
+      cutoff_info_file <- cutoff_info(libraryId, cellTypeId = cellTypeId, counts = finalData,
         desired_pValue_cutoff = as.numeric(desired_pValue_cutoff),
         meanRefIntergenic = calculatePvalues[[2]], sdRefIntergenic = calculatePvalues[[3]])
       CPM_threshold <- log2(as.numeric(cutoff_info_file[3]))
@@ -285,7 +285,7 @@ for (libraryId in unique(scRNASeqAnnotation$libraryId)) {
       ## for some libraries it is not possible to create the plot. Use a try/catch to be able
       ## to generate the plot for all possible libraries
       ##TODO: check why it is not possible to generate the plot
-      trycatch(
+      tryCatch(
         expr = {
           plotData(libraryId = libraryId, cellTypeId = cellPop, counts = finalData,
             refIntergenic = referenceIntergenic, CPM_threshold = CPM_threshold)

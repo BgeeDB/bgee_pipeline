@@ -57,7 +57,7 @@ Done batch of 1 libraries, process ID 12048.
 Done batch of 1 libraries, process ID 12049.
 Rank computations per library done
 Min, max, average RNA-Seq rank and distinct rank count per species: 
-speciesId	MIN(t3.rank)	MAX(t3.rank)	AVG(t3.rank)	MIN(t2.libraryDistinctRankCount)	MAX(t2.libraryDistinctRankCount)	AVG(t2.libraryDistinctRankCount)
+speciesId	MIN(t3.rank)	MAX(t3.rank)	AVG(t3.rank)	MIN(t2.rnaSeqLibraryAnnotatedSampleDistinctRankCount)	MAX(t2.rnaSeqLibraryAnnotatedSampleDistinctRankCount)	AVG(t2.rnaSeqLibraryAnnotatedSampleDistinctRankCount)
 6239	1.00	23281.50	10552.081571	9124	20305	18148.2607
 7227	1.00	16625.50	7809.846592	7851	15986	13470.9548
 7237	1.00	15357.00	7462.442470	12478	15025	14015.0478

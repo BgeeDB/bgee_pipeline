@@ -988,8 +988,8 @@ create table rnaSeqLibraryAnnotatedSample (
     mappedUMIsCount int unsigned not null default 0,
 -- the following fields are used for rank computations, and are set after all expression data insertion,
 -- this is why null value is permitted.
-    libraryMaxRank decimal(9,2) unsigned COMMENT 'The max fractional rank in this library (see `rank` field in rnaSeqResult table)',
-    libraryDistinctRankCount mediumint unsigned COMMENT 'The count of distinct rank in this library (see `rank` field in rnaSeqResult table, used for weighted mean rank computations)',
+    rnaSeqLibraryAnnotatedSampleMaxRank decimal(9,2) unsigned COMMENT 'The max fractional rank in this sample (see `rank` field in rnaSeqLibraryAnnotatedSampleGeneResult table)',
+    rnaSeqLibraryAnnotatedSampleDistinctRankCount mediumint unsigned COMMENT 'The count of distinct rank in this sample (see `rank` field in rnaSeqLibraryAnnotatedSampleGeneResult table, used for weighted mean rank computations)',
     multipleLibraryIndividualSample boolean not null default 0 COMMENT 'boolean true if the annotated sample contains several individual samples. e.g true for 10x as one annotated sample corresponds to one cell population and individual sample will correspond to each cell of this cell population'
 ) engine = innodb;
 

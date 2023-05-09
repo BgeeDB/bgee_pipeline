@@ -197,10 +197,21 @@ cleaning_barcodes: generate_info 0Preparation/cleaning_barcodes.R
 	@echo --- DONE ---
 	@touch $@
 
+prepare_single_nucleus_index: cleaning_barcodes
+	#Preparing indexed transcriptome for every species
+	#Extract transcriptome.fa from gtf_all and genome.fa files
+	#perl one liner to remove arbitrary numbering in fasta header from gtf_to_fasta
+	# Prepare indexes for kallisto: one with default k-mer size $(RNASEQ_KALLISTO_KMER_DEFAULT), one with short k-mer size $(RNASEQ_KALLISTO_KMER_SHORT)
+	@perl 0Preparation/slurm_single_nucleus_index.pl -transcriptome_folder=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(OUTPUT_DIR) -account=$(CLUSTER_ACCOUNT_SENSITIVE) -partition=$(CLUSTER_PARTITION_SENSITIVE) -cluster_kallisto_cmd="$(CLUSTER_KALLISTO_CMD)" -cluster_tophat_cmd="$(CLUSTER_TOPHAT_CMD)" >$@.tmp 2>&1
+	#TODO Use short k-mer size = 21nt instead of 15
+	#TODO The gffread utility in cufflinks package seems more flexible and reliable
+	#TODO add step to copy .passw file to bbgee's home on cluster / or maybe just echo a message to tell the user scp it? Path and name of this file on cluster is stored in ENCRYPT_PASSWD_FILE. We should store this file somewhere (devbioinfo?) because it cannot be added to the gitlab project
+	#Or just put it in /home/bbgee/? in read only mode, only for bbgee user
+	@$(MV) $@.tmp $@
 
 ## Run Kallisto bus per taxon_iD/library
 ##TODO: since Bgee15 kallisto indexes containing transcripts and ref intergenic sequences are generated using BgeeCall. They will not be anymore in the $(RNASEQ_CLUSTER_GTF) folder. It has to be updated
-kallisto_bus: cleaning_barcodes 1Run/Kallisto_bus.R
+kallisto_bus: prepare_single_nucleus_index 1Run/Kallisto_bus.R
 	@echo --- Start running kallisto bus for all libraries ---
 	@sed -i 's@--output=.*@--output=${PWD}/Kallisto_bus.out@'                                                          1Run/Kallisto_bus.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/Kallisto_bus.err@'                                                            1Run/Kallisto_bus.sbatch
@@ -328,7 +339,12 @@ final_commit: final_status
 ## Then, a perl script should take care of managing parallelization. It could also
 ## be possible to use the rslurm R package to manage parallelization
 insert_cell_abundance:
-	@perl 3Insertion/insert_scrna_seq.pl -bgee=$(BGEECMD) -targetBaseLibrary=$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED) -singleCellExperiment=$(SC_RNASEQ_EXPERIMENT_FILEPATH_FILTERED) -bgeeLibraryInfo=$(SC_RNASEQ_METADATA_10X_FILEPATH) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -sourceDir=$(SC_RNASEQ_TB_FOLDER_SOURCE) -sexInfo=$(UBERON_SEX_INFO_FILE_PATH) -numberCore=15 > $@.tmp 2> $@.err
+	@perl 3Insertion/insert_scrna_seq.pl -bgee=$(BGEECMD) -targetBaseLibrary=$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED) -singleCellExperiment=$(SC_RNASEQ_EXPERIMENT_FILEPATH_FILTERED) -bgeeLibraryInfo=$(SC_RNASEQ_METADATA_10X_FILEPATH) -filteredBarcodeDir=$(SC_RNASEQ_CLEANED_BARCODES) -pipelineCallsSummary=$(SC_RNASEQ_SERVER_INFO_CALLS_10X) -pipelineReportFile=$(SC_RNASEQ_SERVER_STATS_LIBRARIES_10X)  -kallistoResults=$(SC_RNASEQ_SERVER_RES_KALLISTO_DROPLET) -callsResults=$(SC_RNASEQ_SERVER_CALLS_10X) -sourceDir=$(SC_RNASEQ_TB_FOLDER_SOURCE) -sexInfo=$(UBERON_SEX_INFO_FILE_PATH) -numberCore=20 > $@.tmp 2> $@.err
+	@if [[ ! -s $@.err ]]; then $(RM) $@.err; fi
+	@$(MV) $@.tmp $@
+
+insert_expression:
+	@perl 3Insertion/insert_scrna_seq_expression.pl -bgee=$(BGEECMD) -number_threads=40> $@.tmp 2> $@.err
 	@if [[ ! -s $@.err ]]; then $(RM) $@.err; fi
 	@$(MV) $@.tmp $@
 

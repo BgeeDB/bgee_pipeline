@@ -1146,3 +1146,4 @@ CL:1001509	ZFA:0009396					Mapping taken from ZFA by Fred without verification
 UBERON:0011150		XAO:0000120				We keep only the mapping to UBERON:0008891 "external gill", as in XAO
 FBbt:01000119	FBbt:00000094				missing child term	mapped by Fred to one of the parent of FBbt:00000094
 CL:0000373		FBbt:00001789				UBERON:6001789 "histoblast" and CL:0000373 "histoblast" seem equivalent, keep only the mapping to the UBERON term that have more relationships to parent terms
+UBERON:6003259		Fbbt:00003259				Fred’s message April 13 2023: FBbt:00003259 "adult somatic muscle cell" a un xref vers UBERON:6003259 "adult somatic muscle", qui n'est pas un cell type. Il faudrait corriger dans notre fichier de correction des xrefs.

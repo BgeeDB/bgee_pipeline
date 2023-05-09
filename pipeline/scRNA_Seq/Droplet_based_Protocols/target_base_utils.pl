@@ -33,10 +33,10 @@ sub getTargetBaseCuratedLibrariesAnnotation {
         'inDrop', 'MARS-Seq', 'Microwell-seq');
 
     my @validCellCompartments = ("scRNA-seq", "Sn-scRNA-seq");
-
+    
     my %targetBaseLibrary;
     for my $line ( read_file("$targetBaseLibraryFile", chomp=>1) ){
-        next  if ( $line =~ /^#/ or $line =~ /^\"#/ );
+        next  if ( $line =~ /^#libraryId/ or $line =~ /^\"#libraryId/ or $line =~ /^libraryId/);
         # there is currently 32 columns in the target base library annotation file
         my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line, -1);
 
@@ -56,7 +56,7 @@ sub getTargetBaseCuratedLibrariesAnnotation {
         my $whiteList                       = $tmp[30];
         my $sampleName                      = $tmp[31];
 
-        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 32 );
+        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 33 );
 
         if ( !defined $targetBaseLibrary{$experimentId}->{$libraryId} ){
             # Perform format checks
@@ -87,8 +87,7 @@ sub getTargetBaseCuratedLibrariesAnnotation {
                 $discarded = 1;
             }
             if ($sex eq '' ){
-                warn "Warning, wrong format for sex [$sex]\n";
-                $discarded = 1;
+                $sex = "NA";
             #TODO create hash with all potential sexes
             } else {
                 if ($sex eq "F") {
@@ -101,8 +100,7 @@ sub getTargetBaseCuratedLibrariesAnnotation {
                 }
             }
             if ($strain eq '' ){
-                warn "Warning, wrong format for strain [$strain]\n";
-                $discarded = 1;
+                $strain= "NA";
             }
             if ($speciesId eq '' ){
                 warn "Warning, wrong format for speciesId [$speciesId]\n";
@@ -208,6 +206,13 @@ sub getSingleCellExperiments {
                 warn "Warning, wrong format for experiment type [$experimentType]\n";
                 $discarded = 1;
             }
+            
+            ## in order not to have "uninitialized value... warning, remove potentially
+            # undef value per empty string
+            $name = "" unless defined $name;
+            $description = "" unless defined $description;
+            $comment = "" unless defined $comment;
+            
             if ( $discarded ){
                 warn ' experiment: ', $experimentId, " discarded!\n";
             } else {
@@ -249,18 +254,18 @@ sub getCallsSummaryAtLibraryAnnotatedLevel {
         my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
 
         my $libraryId                        = $tmp[0];
-        my $cellTypeId                       = $tmp[2];
-        my $abundanceThreshold               = $tmp[3];
-        my $allGenesPercentPresent           = $tmp[6];
-        my $proteinCodingGenesPercentPresent = $tmp[9];
-        my $intergenicRegionsPercentPresent  = $tmp[12];
-        my $pValueThreshold                  = $tmp[13];
-        my $meanRefIntergenic                = $tmp[14];
-        my $sdRefIntergenic                  = $tmp[15];
+        my $cellTypeId                       = $tmp[1];
+        my $abundanceThreshold               = $tmp[2];
+        my $allGenesPercentPresent           = $tmp[5];
+        my $proteinCodingGenesPercentPresent = $tmp[8];
+        my $intergenicRegionsPercentPresent  = $tmp[11];
+        my $pValueThreshold                  = $tmp[12];
+        my $meanRefIntergenic                = $tmp[13];
+        my $sdRefIntergenic                  = $tmp[14];
         #my $mappedUMIs                      = $tmp[?];
 
 
-        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 18 );
+        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 17 );
 
         if ( !defined $callsSummary{$libraryId}{$cellTypeId} ){
             # Perform format checks
@@ -330,6 +335,8 @@ sub get_processed_libraries_info {
     my ($targetBaseLibraryFile) = @_;
     # $experiments{experimentId}->{libraryId}->{runId}->{'readCount'} = ...
     # $experiments{experimentId}->{libraryId}->{'libraryLayout'} = ...
+    
+    my @validLibraryType = ('paired', 'single', 'NA');
 
     my %libInfos = ();
     for my $line ( read_file("$targetBaseLibraryFile", chomp=>1) ){
@@ -363,7 +370,11 @@ sub get_processed_libraries_info {
                 warn "Warning, wrong format for experimentId [$experimentId]\n";
                 $discarded = 1;
             }
-            if ($libraryType eq '' ){
+            if ($libraryType eq 'PAIRED') {
+                $libraryType = 'paired';
+            } elsif ($libraryType eq 'SINGLE') {
+                $libraryType = 'single';
+            } elsif (all { $libraryType !~ /^$_/ } @validLibraryType) {
                 warn "Warning, wrong format for libraryType [$libraryType]\n";
                 $discarded = 1;
             }
@@ -413,9 +424,9 @@ sub getCallsInfoPerLibrary {
         my $cpm                       = $tmp[2];
         my $zScore                    = $tmp[5];
         my $pValue                    = $tmp[6];
-        my $cellTypeId                = $tmp[9];
+        my $cellTypeId                = $tmp[8];
 
-        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 10 );
+        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 9 );
 
         if (!defined $callsInfo{$cellTypeId}->{$geneId}) {
             # Perform format checks
@@ -435,16 +446,26 @@ sub getCallsInfoPerLibrary {
             if ($zScore eq '' ){
                 warn "Warning, wrong format for zScore [$zScore]\n";
                 $discarded = 1;
+            # non numerical values of zscore are stored as NULL in the database
+            # dbi iquivalent to null is undef so if value of zscore is NA we modified
+            # it to be inserted as NULL in the database
+            } elsif ($zScore eq "NA") {
+                $zScore = undef;
             }
             if ($pValue eq '' ){
                 warn "Warning, wrong format for pValue [$pValue]\n";
                 $discarded = 1;
+            } elsif ($pValue eq "NA") {
+                $pValue = 1;
             }
             if ($cellTypeId eq '' ){
                 warn "Warning, wrong format for cellTypeId [$cellTypeId]\n";
                 $discarded = 1;
+            } else {
+                ##TODO remove this hack once the script generating call files is modified to
+                ## use real cellTypeIds
+                $cellTypeId =~ tr/_/:/;
             }
-
             if ($discarded) {
                 warn 'gene: ', $geneId, ', cellTypeId', $cellTypeId, " discarded!\n";
             } else {
@@ -480,7 +501,7 @@ sub getBarcodeToCellType {
         my $cellTypeId                      = $tmp[7];
         my $cellTypeAnnotationStatus        = $tmp[9];
 
-        die "tsv field number problem [$line]\n"  if (scalar @tmp != 12);
+        die "tsv field number problem [$line]\n"  if (scalar @tmp != 13);
 
         if (!defined $barcodes{$libraryId}->{'barcodes'}->{$barcode}) {
             # Perform format checks
@@ -616,6 +637,25 @@ sub read_sparse_matrix {
         \%indexToGene, \%indexToBarcode);
     return %coordinates_count;
 
+}
+
+# function loading both matrices in the same hash to reduce memory usage
+sub read_count_and_cpm_matrices {
+    my ($countDirectory, $countName, $cpmDirectory, $cpmName) = @_;
+    my %sparseMatrixCount = read_sparse_matrix($countDirectory, $countName);
+    my %sparseMatrixCpm = read_sparse_matrix($cpmDirectory, $cpmName);
+    my %sparseMatrixCombined;
+    for my $barcode (keys %sparseMatrixCount) {
+        for my $geneId (keys %{$sparseMatrixCount{$barcode}}) {
+            $sparseMatrixCombined{$barcode}->{$geneId}->{'count'} =
+                $sparseMatrixCount{$barcode}{$geneId};
+            if (exists $sparseMatrixCpm{$barcode}{$geneId}) {
+                $sparseMatrixCombined{$barcode}->{$geneId}->{'cpm'} =
+                $sparseMatrixCpm{$barcode}{$geneId};
+            }
+        }
+    }
+    return %sparseMatrixCombined;
 }
 
 sub read_bustools_index_matrix {

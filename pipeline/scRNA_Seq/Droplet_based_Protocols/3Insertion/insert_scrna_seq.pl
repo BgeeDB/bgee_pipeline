@@ -8,7 +8,7 @@ use Getopt::Long;
 use FindBin;
 use File::Slurp;
 use lib "$FindBin::Bin/../../../"; # Get lib path for Utils.pm
-##use Utils;
+use Utils;
 use Parallel::ForkManager;
 
 $| = 1; # no buffering of output
@@ -32,16 +32,18 @@ $| = 1; # no buffering of output
 my ($bgee_connector) = ('');
 my ($targetBaseLibrary, $kallistoResults, $callsResults, $sexInfo)  = ('', '', '', '');
 my ($singleCellExperiment, $bgeeLibraryInfo, $sourceDir) = ('', '', '');
-my ($pipelineCallsSummary, $pipelineReportFile) = ('', '');
+
+my ($pipelineCallsSummary, $pipelineReportFile, $filteredBarcodeDir) = ('', '', '');
 my $numberCore = 1;
 #my ($library_stats, $report_info = ('', '');
-my ($debug)                      = (0);
+my ($debug) = (0);
 my %opts = ('bgee=s'                 => \$bgee_connector,       # Bgee connector string
             'targetBaseLibrary=s'    => \$targetBaseLibrary,    # target base RNAseq library annotations
             'singleCellExperiment=s' => \$singleCellExperiment, # single cell RNASeq experiment annotations
             'bgeeLibraryInfo=s'      => \$bgeeLibraryInfo,      # metadata_info_10X.txt file
+            'filteredBarcodeDir=s'   => \$filteredBarcodeDir,   # path to the directory containing all filtered barcode to celltype files
             'pipelineCallsSummary=s' => \$pipelineCallsSummary, # path to the file containing a summary of processing calls info at library/celltype level (e.g percentage protein coding present, ...)
-            'pipelineReportFile=s'   => \$pipelineReportFile    # path to the file containing summary of kallisto (reads, reads mapped, ..,) and stats about read length
+            'pipelineReportFile=s'   => \$pipelineReportFile,   # path to the file containing summary of kallisto (reads, reads mapped, ..,) and stats about read length
             'kallistoResults=s'      => \$kallistoResults,      # path to dir containing kallisto/bustools results for all libraries
             'callsResults=s'         => \$callsResults,         # path to dir containing calls results for all libraries
             'sourceDir=s'            => \$sourceDir,            # path to the directory containing source files of the target base pipeline
@@ -53,14 +55,15 @@ my %opts = ('bgee=s'                 => \$bgee_connector,       # Bgee connector
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $bgee_connector eq '' || $targetBaseLibrary eq '' || $singleCellExperiment eq '' ||
-    $bgeeLibraryInfo eq '' || $pipelineCallsSummary eq '' || $pipelineReportFile eq '' || $kallistoResults eq '' || $sourceDir eq '' ||
+    $bgeeLibraryInfo eq '' || $filteredBarcodeDir eq '' || $pipelineCallsSummary eq '' || $pipelineReportFile eq '' || $kallistoResults eq '' || $sourceDir eq '' ||
     $sexInfo eq '' || $numberCore eq '' || $callsResults eq ''){
     print "\n\tInvalid or missing argument:
 \te.g., $0  -bgee=\$(BGEECMD) -targetBaseLibrary=RNASeqLibrary_full.tsv -singleCellExperiment=RNASeqExperiment_full.tsv -bgeeLibraryInfo=metadata_info_10X.txt -sexInfo=\$(UBERON_SEX_INFO_FILE_PATH) > $@.tmp 2>warnings.$@
 \t-bgee                    Bgee connector string
 \t-targetBaseLibrary       targetBaseLibrary annotation file
 \t-singleCellExperiment    singleCellExperiment file
-\t-bgeeLibraryInfo         metadata_info_10X.txt file
+\t-bgeeLibraryInfo         metadata_info_10X.txt containing libraries to process
+\t-filteredBarcodeDir      path to the directory containing all filtered barcode to celltype files
 \t-pipelineCallsSummary    path to the file containing a summary of processing calls info at library/celltype level
 \t-pipelineReportFile      path to the file containing summary of kallisto (reads, reads mapped, ..,) and stats about read length
 \t-kallistoResults         path to dir containing kallisto/bustools results for all libraries
@@ -78,7 +81,9 @@ require("$FindBin::Bin/../target_base_utils.pl");
 
 # initialize variables
 
-my $barcodeToCelltypeFilePattern = "$sourceDir/scRNASeq_barcode_EXP_ID.tsv";
+my $barcodeToCelltypeFilePattern = "${filteredBarcodeDir}/scRNASeq_barcode_EXP_ID.tsv";
+my $ABSENT_CALL_NOT_RELIABLE = "absent call not reliable";
+my $NOT_EXCLUDED = "not excluded";
 
 ########################################################################
 ############################ Queries ###################################
@@ -92,12 +97,16 @@ my $select_populationCapture = "SELECT rnaSeqPopulationCaptureId FROM rnaSeqPopu
 
 my $select_biotype = "SELECT geneBioTypeId, geneBioTypeName FROM geneBioType";
 
+# retrieve experiment already inserted to not reinsert already existing ones (e.g in case
+# of experiment containing a mix of full length and target based RNA-Seq)
+my $select_experiments = 'select rnaSeqExperimentId from rnaSeqExperiment';
+
 # INSERT QUERIES
-my $insert_experiment = 'INSERT INTO rnaSeqExperimentDev (rnaSeqExperimentId,'.
+my $insert_experiment = 'INSERT INTO rnaSeqExperiment (rnaSeqExperimentId,'.
                         'rnaSeqExperimentName, rnaSeqExperimentDescription, dataSourceId)'.
                         ' VALUES (?, ?, ?, ?)';
 
-my $insert_libraries =  'INSERT INTO rnaSeqLibraryDev (rnaSeqLibraryId, rnaSeqExperimentId,'.
+my $insert_libraries =  'INSERT INTO rnaSeqLibrary (rnaSeqLibraryId, rnaSeqExperimentId,'.
                         'rnaSeqSequencerName, rnaSeqTechnologyName, rnaSeqTechnologyIsSIngleCell,'.
                         'sampleMultiplexing, libraryMultiplexing, strandSelection,'.
                         'cellCompartment, sequencedTranscriptPart, fragmentation,'.
@@ -105,7 +114,7 @@ my $insert_libraries =  'INSERT INTO rnaSeqLibraryDev (rnaSeqLibraryId, rnaSeqEx
                         ' minReadLength, maxReadLength, libraryType)'.
                         ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
-my $insert_annotatedSamples =   'INSERT INTO rnaSeqLibraryAnnotatedSampleId (rnaSeqLibraryId,'.
+my $insert_annotatedSamples =   'INSERT INTO rnaSeqLibraryAnnotatedSample (rnaSeqLibraryId,'.
                                 'conditionId, abundanceUnit,'.
                                 'meanAbundanceReferenceIntergenicDistribution,'.
                                 'sdAbundanceReferenceIntergenicDistribution, tmmFactor,'.
@@ -115,24 +124,24 @@ my $insert_annotatedSamples =   'INSERT INTO rnaSeqLibraryAnnotatedSampleId (rna
                                 ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
 my $select_annotatedSampleId =  'SELECT rnaSeqLibraryAnnotatedSampleId FROM '.
-                                'rnaSeqLibraryAnnotatedSampleDev WHERE conditionId = ? AND '.
-                                'rnaSeqLibraryId = ?';
+                                'rnaSeqLibraryAnnotatedSample WHERE rnaSeqLibraryId = ? AND '.
+                                'conditionId = ?';
 
-my $insert_individualSamples =  'INSERT INTO rnaSeqLibraryIndividualSampleDev (rnaSeqLibraryAnnotatedSampleId,'.
+my $insert_individualSamples =  'INSERT INTO rnaSeqLibraryIndividualSample (rnaSeqLibraryAnnotatedSampleId,'.
                                 'barcode, sampleName) VALUES (?, ?, ?)';
 
 my $select_individualSampleId = 'SELECT rnaSeqLibraryIndividualSampleId FROM '.
-                                'rnaSeqLibraryIndividualSampleDev WHERE rnaSeqLibraryAnnotatedSampleId = ? AND '.
+                                'rnaSeqLibraryIndividualSample WHERE rnaSeqLibraryAnnotatedSampleId = ? AND '.
                                 'barcode = ? and sampleName = ?';
 
 my $insert_run = 'INSERT INTO rnaSeqRun (rnaSeqRunId, rnaSeqLibraryId) VALUES (?, ?)';
 
-my $insert_annotatedSampleGeneResult =  'INSERT INTO rnaSeqLibraryAnnotatedSampleGeneResultDev ('.
+my $insert_annotatedSampleGeneResult =  'INSERT INTO rnaSeqLibraryAnnotatedSampleGeneResult ('.
                                         'rnaSeqLibraryAnnotatedSampleId, bgeeGeneId, abundanceUnit, abundance,'.
-                                        'readsCount, UMIsCount, zScore, pValue, rnaSeqData,'.
-                                        'reasonForExclusion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                                        'readsCount, UMIsCount, zScore, pValue,'.
+                                        'reasonForExclusion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
-my $insert_individualSampleGeneResult = 'INSERT INTO rnaSeqLibraryIndividualSampleGeneResultDev ('.
+my $insert_individualSampleGeneResult = 'INSERT INTO rnaSeqLibraryIndividualSampleGeneResult ('.
                                         'rnaSeqLibraryIndividualSampleId, bgeeGeneId, abundanceUnit, abundance,'.
                                         'readsCount, UMIsCount, rnaSeqData, reasonForExclusion)'.
                                         'VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
@@ -204,28 +213,14 @@ while ( my @data = $selBiotypes->fetchrow_array ){
 }
 $selBiotypes->finish;
 
-######################
-# INSERT EXPERIMENTS #
-######################
-print "Inserting experiments...\n";
-my $insExp = $bgee_metadata->prepare($insert_experiment);
-for my $expId ( sort keys %processedLibraries ){
-    print "\t$expId\n";
-    if ( $debug ){
-        binmode(STDOUT, ':utf8');
-        print 'INSERT INTO rnaSeqExperiment: ',
-            $expId, ' - ', $experiments{$expId}->{'name'}, ' - ',
-            $experiments{$expId}->{'description'}, ' - ',
-            $bgeeDataSources{$experiments{$expId}->{'source'}}, "\n";
-    }
-    else {
-        $insExp->execute($expId, $experiments{$expId}->{'name'},
-            $experiments{$expId}->{'description'},
-            $bgeeDataSources{$experiments{$expId}->{'source'}}) or die $insExp->errstr;
-    }
+## retrieve already inserted experiment Ids to not try to reinsert them
+my $selExp = $bgee_metadata->prepare($select_experiments);
+$selExp->execute() or die $selExp->errstr;
+my @insertedExpIds = ();
+while ( my @data = $selExp->fetchrow_array ){
+    push(@insertedExpIds, $data[0]);
 }
-$insExp->finish();
-print "Done inserting experiments\n\n";
+
 
 ################################################
 # GET GENE INTERNAL IDS                        #
@@ -251,71 +246,89 @@ my $conditions = Utils::query_conditions($bgee_metadata);
 my $stage_equivalences = Utils::get_stage_equivalences($bgee_metadata);
 
 
-###################################################
-# INSERT LIBRARIES, CONDITION, ANNOTATED SAMPLES  #
-###################################################
-print "Inserting libraries condition and annotated samples...\n";
-# prepare queries
-my $insLib = $bgee_metadata->prepare($insert_libraries);
-my $insAnnotatedSample = $bgee_metadata->prepare($insert_annotatedSamples);
-my $selectAnnotatedSampleId = $bgee_metadata->prepare($select_annotatedSampleId);
-my $insIndividualSample = $bgee_metadata->prepare($insert_individualSamples);
-my $selectIndividualSampleId = $bgee_metadata->prepare($select_individualSampleId);
+####################
+# START INSERTION  #
+####################
+
 my $inserted = 0;
 
-for my $expId ( sort keys %processedLibraries ){
+my $insExp = $bgee_metadata->prepare($insert_experiment);
+my $insLib = $bgee_metadata->prepare($insert_libraries);
 
-    # Load barcode to cell type mapping
+
+for my $expId ( sort keys %processedLibraries ){
+    if (grep( /^$expId$/, @insertedExpIds)) {
+        print "\t$expId already inserted\n";
+    } else {
+        print "\tinsert $expId\n";
+        if ( $debug ){
+            binmode(STDOUT, ':utf8');
+            print 'INSERT INTO rnaSeqExperiment: ',
+                $expId, ' - ', $experiments{$expId}->{'name'}, ' - ',
+                $experiments{$expId}->{'description'}, ' - ',
+                $bgeeDataSources{$experiments{$expId}->{'source'}}, "\n";
+        }
+        else {
+            $insExp->execute($expId, $experiments{$expId}->{'name'},
+                $experiments{$expId}->{'description'},
+                $bgeeDataSources{$experiments{$expId}->{'source'}}) or die $insExp->errstr;
+        }
+    }
+    # Load barcode to cell type mapping for this experiment
     my $barcodeToCellTypeFile = $barcodeToCelltypeFilePattern =~ s/EXP_ID/$expId/r;
     #my %barcodesTsv = %{ Utils::read_spreadsheet("$barcodeToCellTypeFile", "\t", 'csv', '"', 1) };
     my %barcodesToCellType = getBarcodeToCellType($barcodeToCellTypeFile);
+    print "Start inserting libraries for $expId...\n";
 
-    print "Start inserting libraries...\n";
+    ## parse libraries a first time in order to be able to insert libraries and insert/get all condition
+    ## it is done to avoid key collision if creating condition in parallel
     LIBRARY:
     for my $libraryId ( sort keys %{$processedLibraries{$expId}} ){
-        # read count sparse matrix for all barcodes and genes of the library. It
-        # corresponds to raw data per cell coming from kallisto/bustools. There was
-        # no postprocessing filtering based on barcodes or celltype
-        my %sparseMatrixCount = read_sparse_matrix("$kallistoResults/$libraryId/gene_counts", "gene");
-        my %sparseMatrixCpm = read_sparse_matrix("$kallistoResults/$libraryId/cpm_counts", "cpm_counts");
-        my %callsPerLibrary = getCallsInfoPerLibrary("$callsResults/$libraryId/Calls_$libraryId.tsv");
 
-        print "\tInsert $libraryId from $expId\n";
+        print "\tInsert $libraryId and conditions from $expId\n";
         # For now all target base are polyA. Check that population capture polyA is already present in the database
         if ( !grep(/^polyA$/, @populationCapture ) ) {
             die "polyA population capture not found in the database";
         }
-
         # insert libraries
+        # retrieve one random runId of this library in order to access to libraryType info
+        my $runId = ();
+        for my $key (sort keys %{ $processedLibraries{$expId}->{$libraryId} }) {
+            if ($key ne "speciesId") {
+                $runId = $key;
+                last;
+            }
+        }
+        my $libraryType = $processedLibraries{$expId}->{$libraryId}->{$runId}->{'libraryType'};
         if ( $debug ){
-            print 'INSERT INTO rnaSeqLibrary: ', $libraryId,                                     ' - ',
-                  $expId, ' - ', $libraries{$expId}->{$libraryId}->{'platform'},                 ' - ',
+            print 'INSERT INTO rnaSeqLibrary: ', $libraryId,                              ' - ',
+                  $expId, ' - ', $libraries{$expId}->{$libraryId}->{'platform'},          ' - ',
                   #technologyName
-                  $libraries{$expId}->{$libraryId}->{'protocol'},                                ' - ',
+                  $libraries{$expId}->{$libraryId}->{'protocol'},                         ' - ',
                   # isSingleCell (always true for target base RNASeq)
-                  '1',                                                                           ' - ',
+                  '1',                                                                    ' - ',
                   # sampleMultiplexing (always true for target base)
-                  '1',                                                                           ' - ',
+                  '1',                                                                    ' - ',
                   # libraryMultiplexing (for now always false for target base)
-                  '0',                                                                           ' - ',
+                  '0',                                                                    ' - ',
                   # strandSelection. No information in annotation file.
                   # Could maybe be detected from the platform or the technology
-                  'NA',                                                                          ' - ',
+                  'NA',                                                                   ' - ',
                   # cellCompartment. No information in the annotation file.
                   # Could maybe be detected from the technology name
-                  $libraries{$expId}->{$libraryId}->{'cellCompartment'},                         ' - ',
-                  $libraries{$expId}->{$libraryId}->{'sequencedTranscriptPart'},                 ' - ',
+                  $libraries{$expId}->{$libraryId}->{'cellCompartment'},                  ' - ',
+                  $libraries{$expId}->{$libraryId}->{'sequencedTranscriptPart'},          ' - ',
                   # fragmentation.
                   # TODO. Left empty for now but should be updated to take read length info
-                  '0',                                                                           ' - ',
+                  '0',                                                                    ' - ',
                   # rnaSeqPopulationCaptureId. For now all target base are polyA
-                  'polyA',                                                                       ' - ',
-                  $libraries{$expId}->{$libraryId}->{'genotype'},                                ' - ',
-                  $pipelineReport{$libraryId}->{'allReadsCount'},
-                  $pipelineReport{$libraryId}->{'mappedReadsCount'},
-                  $pipelineReport{$libraryId}->{'minReadLength'},
-                  $pipelineReport{$libraryId}->{'maxReadLength'},
-                  $processedLibraries{$expId}->{$libraryId}->{'libraryType'},"\n";
+                  'polyA',                                                                ' - ',
+                  $libraries{$expId}->{$libraryId}->{'genotype'},                         ' - ',
+                  $pipelineReport{$libraryId}->{'allReadsCount'},                         ' - ',
+                  $pipelineReport{$libraryId}->{'mappedReadsCount'},                      ' - ',
+                  $pipelineReport{$libraryId}->{'minReadLength'},                         ' - ',
+                  $pipelineReport{$libraryId}->{'maxReadLength'},                         ' - ',
+                  $libraryType,"\n";
         } else {
             $insLib->execute($libraryId,
                             $expId,
@@ -334,22 +347,13 @@ for my $expId ( sort keys %processedLibraries ){
                             $pipelineReport{$libraryId}->{'mappedReadsCount'},
                             $pipelineReport{$libraryId}->{'minReadLength'},
                             $pipelineReport{$libraryId}->{'maxReadLength'},
-                            $processedLibraries{$expId}->{$libraryId}->{'libraryType'}
+                            $libraryType
                         )  or die $insLib->errstr;
         }
 
-        # Now start to insert annotated samples
-        # This script does not manage insertion of calls per cell type but only
-        # counts at cell (= barcode) level. In the database schema, counts at cell level
-        # ( table rnaSeqLibraryIndividualSample) are linked to a celltype (table rnaSeqLibraryAnnotatedSample).
-        # In order to be able to insert the counts at cell level we first insert all
-        # metadata at cell type level (table rnaSeqLibraryAnnotatedSample). However only mandatory
-        # information are inserted (libraryId, rnaSeqLibraryAnnotatedSAmpleId, conditionId)
-        # all information at celltype level that results from running our pipeline will
-        # be inserted in an other script.
-        my %celltypeToAnnotatedSampleId;
+        # Now start to insert conditions
         for my $cellTypeId (sort keys %{$barcodesToCellType{$libraryId}{'cellTypes'}} ) {
-            print "\t\tInsert celltype $cellTypeId for library $libraryId\n";
+
             # Get conditionId/exprMappedConditionId for this library
             # Updates also the hash of existing conditions
             my $condKeyMap;
@@ -363,76 +367,161 @@ for my $expId ( sort keys %processedLibraries ){
                 $libraries{$expId}->{$libraryId}->{'speciesId'}, "\n";
             } else {
                 ($condKeyMap, $conditions) = Utils::insert_get_condition($bgee_metadata,
-                                                                 $conditions,
-                                                                 $stage_equivalences,
-                                                                 $libraries{$expId}->{$libraryId}->{'anatEntityId'},
-                                                                 $libraries{$expId}->{$libraryId}->{'stageId'},
-                                                                 $libraries{$expId}->{$libraryId}->{'speciesId'},
-                                                                 $libraries{$expId}->{$libraryId}->{'sex'},
-                                                                 $libraries{$expId}->{$libraryId}->{'strain'},
-                                                                 $anatSexInfo, $speciesSexInfo,
-                                                                 $libraryId, '',
-                                                                 $cellTypeId
-                                                                );
-
+                                 $conditions,
+                                 $stage_equivalences,
+                                 $libraries{$expId}->{$libraryId}->{'anatEntityId'},
+                                 $libraries{$expId}->{$libraryId}->{'stageId'},
+                                 $libraries{$expId}->{$libraryId}->{'speciesId'},
+                                 $libraries{$expId}->{$libraryId}->{'sex'},
+                                 $libraries{$expId}->{$libraryId}->{'strain'},
+                                 $anatSexInfo, $speciesSexInfo,
+                                 $libraryId, '',
+                                 $cellTypeId
+                                );
+    
             }
-            # We consider the fine-grained (low-level) conditionId for insertion of annotated sample: $condKeyMap->{'conditionId'}
-            my $annotatedSampleId = insert_get_annotated_sample($insAnnotatedSample,
-                $selectAnnotatedSampleId, 
-                $callsPipelineSummary{libraryId}{cellTypeId}->{'abundanceThreshold'},
-                $callsPipelineSummary{libraryId}{cellTypeId}->{'allGenesPercentPresent'},
-                $callsPipelineSummary{libraryId}{cellTypeId}->{'proteinCodingGenesPercentPresent'},
-                $callsPipelineSummary{libraryId}{cellTypeId}->{'intergenicRegionsPercentPresent'},
-                $callsPipelineSummary{libraryId}{cellTypeId}->{'pValueThreshold'},
-                $callsPipelineSummary{libraryId}{cellTypeId}->{'meanRefIntergenic'},
-                $callsPipelineSummary{libraryId}{cellTypeId}->{'sdRefIntergenic'},
-                $callsPipelineSummary{libraryId}{cellTypeId}->{'mappedUMIs'},
-                ## 1 here means true for isSingleCell
-                1, $condKeyMap->{'conditionId'}, $libraryId, $debug);
+        }
+    }
+
+    # parse libraries a second time in parallel to fasten insertion
+    my $pm = new Parallel::ForkManager($numberCore);
+    for my $libraryId ( sort keys %{$processedLibraries{$expId}} ){
+        #start parallelization
+        my $pid = $pm->start and next;
+
+        #thread specific connection to the DB with autocommit
+        my $bgee_thread = Utils::connect_bgee_db($bgee_connector);
+        $bgee_thread->{AutoCommit} = 1;
+        #TODO remove these 2 connection and manually commit after each insertion
+        # bgee connection with autocommit disabled to be able to manually commit.
+        my $bgee_data = Utils::connect_bgee_db($bgee_connector);
+        $bgee_data->{AutoCommit} = 0;
+
+        # prepare queries
+        my $insAnnotatedSample = $bgee_thread->prepare($insert_annotatedSamples);
+        my $selectAnnotatedSampleId = $bgee_thread->prepare($select_annotatedSampleId);
+        my $insAnnotatedSampleGeneResult = $bgee_data->prepare($insert_annotatedSampleGeneResult);
 
 
-            # could create a hash celltype -> annotatedSampleId
-            $celltypeToAnnotatedSampleId{$cellTypeId} = $annotatedSampleId;
+        # read count sparse matrix for all barcodes and genes of the library. It
+        # corresponds to raw data per cell coming from kallisto/bustools. There was
+        # no postprocessing filtering based on barcodes or celltype
+        my %cpmMatrix =read_sparse_matrix("$kallistoResults/$libraryId/gene_counts", "gene");
+        my %countMatrix = read_sparse_matrix("$kallistoResults/$libraryId/cpm_counts", "cpm_counts");
 
-            # Then insert rnaSeqAnnotatedSampleGeneResult
-            # It is parallelized. Each thread will insert all calls for one annotatedSample
-            my $pm = new Parallel::ForkManager($numberCore);
-            for my $cellType (sort keys %callsPerLibrary) {
-                my $pid = $pm->start and next;
-                my $bgee_data = Utils::connect_bgee_db($bgee_connector);
-                # disable autocommit for $bgee_data. Allows to manually commit after each library.
-                $bgee_data->{AutoCommit} = 0;
-                my $insAnnotatedSampleGeneResult = $bgee_data->prepare($insert_annotatedSampleGeneResult);
-                for my $geneId (sort keys %{$callsPerLibrary{$cellType}} ) {
+        # Now start to insert annotated samples
+        my %celltypeToAnnotatedSampleId;
+        for my $cellTypeId (sort keys %{$barcodesToCellType{$libraryId}{'cellTypes'}} ) {
+
+            # condition were all inserted previously. Now we only retrieve $condKeyMap
+            my $condKeyMap = ();
+            if(! $debug) {
+                ($condKeyMap, $conditions) = Utils::insert_get_condition($bgee_metadata,
+                                 $conditions,
+                                 $stage_equivalences,
+                                 $libraries{$expId}->{$libraryId}->{'anatEntityId'},
+                                 $libraries{$expId}->{$libraryId}->{'stageId'},
+                                 $libraries{$expId}->{$libraryId}->{'speciesId'},
+                                 $libraries{$expId}->{$libraryId}->{'sex'},
+                                 $libraries{$expId}->{$libraryId}->{'strain'},
+                                 $anatSexInfo, $speciesSexInfo,
+                                 $libraryId, '',
+                                 $cellTypeId
+                                );
+    
+            }
+            # boolean used to define if calls can be inserted for this library/celltype
+            my $insertCalls = 1;
+
+
+            my $annotatedSampleId = ();
+
+            # generate path to file containing calls for this library/celltypeId
+            my $modifiedCellTypeId = $cellTypeId =~ s/:/_/r;
+            my $pathToCallFile = "${callsResults}/${libraryId}/Calls_cellPop_".
+                "${libraryId}_${modifiedCellTypeId}_genic.tsv";
+            if (! -e $pathToCallFile) {
+                warn "calls file does not exist for library $libraryId and celltype $cellTypeId. ",
+                "Condition and annotated sample have been inserted in order to be able to save info at ",
+                "cell level but no calls will be generated.";
+                $insertCalls = 0;
+            } elsif ($callsPipelineSummary{$libraryId}{$cellTypeId}{'abundanceThreshold'} eq "NA") {
+                warn "Abundance threshold not available for library $libraryId and cellType $cellTypeId. ",
+                "Condition and annotated sample have been inserted in order to be able to save info at ",
+                "cell level but no calls will be generated.";
+                $insertCalls = 0;
+            }
+            if (! $insertCalls) {
+                # only insert annotated sample Id and condition Id
+                $annotatedSampleId = insert_get_annotated_sample($insAnnotatedSample,
+                    $selectAnnotatedSampleId, -1, 0, 0, 0, 1, -1, -1, 0,
+                    ## 1 here means true for isSingleCell
+                    1, $condKeyMap->{'conditionId'}, $libraryId, $debug);
+            # otherwise annotated sample and calls have to be inserted
+            } else {
+
+                # first insert annotated sample with metrics from our pipeline
+                $annotatedSampleId = insert_get_annotated_sample($insAnnotatedSample,
+                    $selectAnnotatedSampleId, 
+                    $callsPipelineSummary{$libraryId}{$cellTypeId}->{'abundanceThreshold'},
+                    $callsPipelineSummary{$libraryId}{$cellTypeId}->{'allGenesPercentPresent'},
+                    $callsPipelineSummary{$libraryId}{$cellTypeId}->{'proteinCodingGenesPercentPresent'},
+                    $callsPipelineSummary{$libraryId}{$cellTypeId}->{'intergenicRegionsPercentPresent'},
+                    $callsPipelineSummary{$libraryId}{$cellTypeId}->{'pValueThreshold'},
+                    $callsPipelineSummary{$libraryId}{$cellTypeId}->{'meanRefIntergenic'},
+                    $callsPipelineSummary{$libraryId}{$cellTypeId}->{'sdRefIntergenic'},
+                    $callsPipelineSummary{$libraryId}{$cellTypeId}->{'mappedUMIs'},
+                    ## 1 here means true for isSingleCell
+                    1, $condKeyMap->{'conditionId'}, $libraryId, $debug);
+
+                # then load file containing all calls for this library/celltypeId
+                my %callsOneAnnotatedSample = getCallsInfoPerLibrary($pathToCallFile);
+
+                #Start transaction with TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+                for my $geneId (sort keys %{$callsOneAnnotatedSample{$cellTypeId}} ) {
                     my $bgeeGeneId = $genes{$libraries{$expId}->{$libraryId}->{'speciesId'}}{$geneId};
+                    my $reasonForExclusion = $NOT_EXCLUDED;
+                    if ($callsOneAnnotatedSample{$cellTypeId}{$geneId}{'pValue'} > 0.05) {
+                        $reasonForExclusion = $ABSENT_CALL_NOT_RELIABLE;
+                    }
                     if ($debug) {
                         print 'INSERT INTO rnaSeqLibraryAnnotatedSampleGeneResult: ',
                         $annotatedSampleId, ' - ', $bgeeGeneId, ' - ', "cpm", ' - ',
-                        $callsPerLibrary{$cellType}{$geneId}{'cpm'}, ' - ', 0, ' - ',
-                        $callsPerLibrary{$cellType}{$geneId}{'sumUMI'}, ' - ',
-                        $callsPerLibrary{$cellType}{$geneId}{'zScore'}, ' - ',
-                        $callsPerLibrary{$cellType}{$geneId}{'pValue'}, ' - ',
-                        "high quality", ' - ', 'not excluded', "\n";
+                        ## the 0 is for the readsCount. The only info we have for target base
+                        ## is the UMICounts so weleave readCounts at 0
+                        $callsOneAnnotatedSample{$cellTypeId}{$geneId}{'cpm'}, ' - ', 0, ' - ',
+                        $callsOneAnnotatedSample{$cellTypeId}{$geneId}{'sumUMI'}, ' - ',
+                        $callsOneAnnotatedSample{$cellTypeId}{$geneId}{'zScore'}, ' - ',
+                        $callsOneAnnotatedSample{$cellTypeId}{$geneId}{'pValue'}, ' - ',
+                        $reasonForExclusion, "\n";
                     } else {
                         $insAnnotatedSampleGeneResult->execute($annotatedSampleId, $bgeeGeneId,
-                        'cpm', $callsPerLibrary{$cellType}{$geneId}{'cpm'}, 0,
-                        $callsPerLibrary{$cellType}{$geneId}{'sumUMI'},
-                        $callsPerLibrary{$cellType}{$geneId}{'zScore'},
-                        $callsPerLibrary{$cellType}{$geneId}{'pValue'},
-                        'high quality', 'not excluded')
+                        ## the 0 is for the readsCount. The only info we have for target base
+                        ## is the UMICounts so weleave readCounts at 0
+                        'cpm', $callsOneAnnotatedSample{$cellTypeId}{$geneId}{'cpm'}, 0,
+                        $callsOneAnnotatedSample{$cellTypeId}{$geneId}{'sumUMI'},
+                        $callsOneAnnotatedSample{$cellTypeId}{$geneId}{'zScore'},
+                        $callsOneAnnotatedSample{$cellTypeId}{$geneId}{'pValue'},
+                        $reasonForExclusion)
                             or die $insAnnotatedSampleGeneResult->errstr;
                     }
                 }
                 #commit after each barcode
                 $bgee_data->commit;
-                $insAnnotatedSampleGeneResult->finish;
-                $bgee_data->disconnect;
-                $pm->finish;
             }
-            $pm->wait_all_children
-        }
 
-        ## Now start to insert individual samples
+            # map the celltypeId to the corresponding annotated sample 
+            $celltypeToAnnotatedSampleId{$cellTypeId} = $annotatedSampleId;
+        }
+        $insAnnotatedSampleGeneResult->finish;
+        $insAnnotatedSample->finish;
+        $selectAnnotatedSampleId->finish;
+
+        # finished insertion on annotted sample. Now start to insert individual smaples
+        my $insIndividualSample = $bgee_thread->prepare($insert_individualSamples);
+        my $selectIndividualSampleId = $bgee_thread->prepare($select_individualSampleId);
+        my $insIndividualSampleGeneResult = $bgee_data->prepare($insert_individualSampleGeneResult);
+        ## Now start to insert individual samples if needed
         # for now we only insert barcodes mapped to a cell type. It could be possible
         # to insert other cell types in a different table
         # (e.g rnaSeqLibraryIndevidualSampleNotAnnotated(rnaSeqLibraryId, barcode, ...))
@@ -446,25 +535,22 @@ for my $expId ( sort keys %processedLibraries ){
             push (@barcodesArray, $barcode);
         }
 
-        # now start to insert abundance per cell. parallelized per celltype
-        my $pm = new Parallel::ForkManager($numberCore);
-        foreach (@barcodesArray) {
-            my $pid = $pm->start and next;
-            my $bgee_data = Utils::connect_bgee_db($bgee_connector);
-            # disable autocommit for $bgee_data. Allows to manually commit after each library.
-            $bgee_data->{AutoCommit} = 0;
-            my $insIndividualSampleGeneResult = $bgee_data->prepare($insert_individualSampleGeneResult);
-            
-            my $barcode = $_;
+        # then start to insert abundance per cell. parallelized per celltype
+        foreach my $barcode (@barcodesArray) {
+
+            # For each barcode start a transaction with TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
             my $individualSampleId = $barcodeToIndividualSampleId{$barcode};
 
-            for my $geneId (sort keys %{$sparseMatrixCount{$barcode}} ) {
+            my %subsetCpmMatrix = %cpmMatrix{$barcode};
+            my %subsetCountMatrix = %countMatrix{$barcode};
+
+            for my $geneId ( keys %{$subsetCountMatrix{$barcode}} ) {
                 # check that the gene is present in the database. It is both a
                 # security check and a way to remove intergenic regions
                 next if (! exists $genes{$libraries{$expId}->{$libraryId}->{'speciesId'}}{$geneId} ||
-                    ! exists $sparseMatrixCount{$barcode}{$geneId});
+                    ! exists $subsetCountMatrix{$barcode}{$geneId});
                 my $bgeeGeneId = $genes{$libraries{$expId}->{$libraryId}->{'speciesId'}}{$geneId};
-                if (! exists $sparseMatrixCpm{$barcode}{$geneId}) {
+                if (! exists $subsetCpmMatrix{$barcode}{$geneId}) {
                     warn "Warning, gene $geneId has count for barcode $barcode but",
                         " no abundance was generated";
                     next;
@@ -472,32 +558,36 @@ for my $expId ( sort keys %processedLibraries ){
                 if ($debug) {
                     print 'INSERT INTO rnaSeqLibraryIndividualSampleGeneResult: ',
                     $individualSampleId, ' - ', $bgeeGeneId, ' - ', "cpm", ' - ',
-                    $sparseMatrixCpm{$barcode}{$geneId}, ' - ', 0, ' - ',
-                    $sparseMatrixCount{$barcode}{$geneId}, ' - ',
+                    $subsetCpmMatrix{$barcode}{$geneId}, ' - ', 0, ' - ',
+                    $subsetCountMatrix{$barcode}{$geneId}, ' - ',
                     "high quality", ' - ', 'not excluded', "\n";
                 } else {
                     $insIndividualSampleGeneResult->execute($individualSampleId, $bgeeGeneId,
-                        'cpm', $sparseMatrixCpm{$barcode}{$geneId}, 0,
-                        $sparseMatrixCount{$barcode}{$geneId}, 'high quality', 'not excluded')
+                        'cpm', $subsetCpmMatrix{$barcode}{$geneId}, 0,
+                        $subsetCountMatrix{$barcode}{$geneId}, 'high quality', 'not excluded')
                             or die $insIndividualSampleGeneResult->errstr;
                 }
             }
             #commit after each barcode
             $bgee_data->commit;
-            $insIndividualSampleGeneResult->finish;
-            $bgee_data->disconnect;
-            $pm->finish;
         }
-        $pm->wait_all_children
+        ## close prepared statements.
+        $insAnnotatedSample->finish;
+        $selectAnnotatedSampleId->finish;
+        $insIndividualSample->finish;
+        $selectIndividualSampleId->finish;
+        $insIndividualSampleGeneResult->finish;
+        $bgee_data->disconnect;
+        $bgee_thread->disconnect;
+        $pm->finish;
+
+
+
+
     }
+    $pm->wait_all_children
 }
 
-## close prepared statements.
-$insLib->finish;
-$insAnnotatedSample->finish;
-$selectAnnotatedSampleId->finish;
-$insIndividualSample->finish;
-$selectIndividualSampleId->finish;
 $bgee_metadata->disconnect;
 exit 0;
 

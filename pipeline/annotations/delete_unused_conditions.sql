@@ -1,21 +1,20 @@
+-- We create the tables in such a way to avoid system lock,
+-- see https://dba.stackexchange.com/a/15479
+
 -- First, we identify all conditions used in the database.
 -- We don't use a TEMP TABLE because they cannot be used twice in a same query
 CREATE TABLE tempSafeToDropCondUsed (PRIMARY KEY(conditionId))
+SELECT t1.conditionId FROM cond AS t1 LIMIT 0;
+ALTER TABLE tempSafeToDropCondUsed ENGINE=InnoDB;
+
+INSERT INTO tempSafeToDropCondUsed
 SELECT DISTINCT t1.conditionId FROM cond AS t1
-LEFT OUTER JOIN estLibrary AS t2 ON t1.conditionId = t2.conditionId
-LEFT OUTER JOIN affymetrixChip AS t3 ON t1.conditionId = t3.conditionId
-LEFT OUTER JOIN inSituSpot AS t4 ON t1.conditionId = t4.conditionId
-LEFT OUTER JOIN rnaSeqLibrary AS t5 ON t1.conditionId = t5.conditionId
-LEFT OUTER JOIN scRnaSeqFullLengthLibrary AS t6 ON t1.conditionId = t6.conditionId
-LEFT OUTER JOIN scRnaSeqTargetBasedLibraryCellPopulation AS t7 ON t1.conditionId = t7.conditionId
-LEFT OUTER JOIN expression AS t8 ON t1.conditionId = t8.conditionId
-LEFT OUTER JOIN differentialExpression AS t9 ON t1.conditionId = t9.conditionId
-LEFT OUTER JOIN deaSampleGroup AS t10 ON t1.conditionId = t10.conditionId
-LEFT OUTER JOIN globalCondToCond AS t11 ON t1.conditionId = t11.conditionId
-WHERE t2.conditionId IS NOT NULL OR t3.conditionId IS NOT NULL OR t4.conditionId IS NOT NULL
-OR t5.conditionId IS NOT NULL OR t6.conditionId IS NOT NULL OR t7.conditionId IS NOT NULL
-OR t8.conditionId IS NOT NULL OR t9.conditionId IS NOT NULL OR t10.conditionId IS NOT NULL
-OR t11.conditionId IS NOT NULL;
+WHERE EXISTS (SELECT 1 FROM estLibrary WHERE estLibrary.conditionId = t1.conditionId)
+OR EXISTS (SELECT 1 FROM affymetrixChip WHERE affymetrixChip.conditionId = t1.conditionId)
+OR EXISTS (SELECT 1 FROM inSituSpot WHERE inSituSpot.conditionId = t1.conditionId)
+OR EXISTS (SELECT 1 FROM rnaSeqLibraryAnnotatedSample WHERE rnaSeqLibraryAnnotatedSample.conditionId = t1.conditionId)
+OR EXISTS (SELECT 1 FROM expression WHERE expression.conditionId = t1.conditionId)
+OR EXISTS (SELECT 1 FROM globalCondToCond WHERE globalCondToCond.conditionId = t1.conditionId);
 
 -- Then, we delete the conditions unused.
 -- But because of how the query is built, we can't directly delete the conditions
@@ -23,6 +22,10 @@ OR t11.conditionId IS NOT NULL;
 -- so we first store the conditions to delete in another table.
 -- Select a condition for deletion if:
 CREATE TEMPORARY TABLE condToDelete (PRIMARY KEY(conditionId))
+SELECT t1.conditionId FROM cond AS t1 LIMIT 0;
+ALTER TABLE condToDelete ENGINE=InnoDB;
+
+INSERT INTO condToDelete
 SELECT DISTINCT t1.conditionId FROM cond AS t1
 -- 1) the condition is itself not used, and;
 WHERE t1.conditionId NOT IN (SELECT conditionId from tempSafeToDropCondUsed)
