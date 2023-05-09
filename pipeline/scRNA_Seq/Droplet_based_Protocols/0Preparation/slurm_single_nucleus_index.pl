@@ -17,12 +17,11 @@ use Getopt::Long;
 use Time::localtime;
 
 # Define arguments & their default value
-my ($transcriptome_folder, $output_log_folder, $account, $partition, $short_index_length, $cluster_kallisto_cmd, $cluster_tophat_cmd) = ('', '', '', '', '', '', '', '', '');
+my ($transcriptome_folder, $output_log_folder, $account, $partition, $cluster_kallisto_cmd, $cluster_tophat_cmd) = ('', '', '', '', '', '', '', '', '');
 my %opts = ('transcriptome_folder=s' => \$transcriptome_folder, # same as GTF folder
             'output_log_folder=s'    => \$output_log_folder,
             'account=s'              => \$account,
             'partition=s'            => \$partition,
-            'short_index_length=s'   => \$short_index_length,
             'cluster_kallisto_cmd=s' => \$cluster_kallisto_cmd,
             'cluster_tophat_cmd=s'   => \$cluster_tophat_cmd
            );
@@ -44,17 +43,17 @@ my $time_limit     = '12:00:00';
 
 opendir (DIR, $transcriptome_folder) or die "cannot open directory [$transcriptome_folder]";
 while (my $file = readdir(DIR)) {
-    if($file =~ ('_nascent.gtf$')) {
+    if($file =~ ('.nascent.gtf$')) {
 
         # initialise path to all files
-        my $genome_file_path = $transcriptome_folder.'/'.($file =~ s/_nascent.gtf/.genome.fa/r);
-        my $transcriptome_file_path = $transcriptome_folder.'/'.($file =~ s/_nascent.gtf/.transcriptome.fa/r);
-        my $transcriptome_nascent_file_path = $transcriptome_folder.'/'.($file =~ s/_nascent.gtf/.nascent_transcriptome.fa/r);
-        my $transcriptome_single_nucleus_file_path = $transcriptome_folder.'/'.($file =~ s/_nascent.gtf/.single_nucleus_transcriptome.fa/r);
-        my $transcriptome_single_nucleus_index_path = $transcriptome_folder.'/'.($file =~ s/_nascent.gtf/.single_nucleus_transcriptome.idx/r);
-        my $sbatch_file_path = $transcriptome_folder.'/'.($file =~ s/_nascent.gtf/.index_single_nucleus.sbatch/r);
-        my $output_file_path = $output_log_folder.'/'.($file =~ s/_nascent.gtf/.index_single_nucleus.out/r);
-        my $error_file_path = $output_log_folder.'/'.($file =~ s/_nascent.gtf/.index_single_nucleus.err/r);
+        my $genome_file_path = $transcriptome_folder.'/'.($file =~ s/.nascent.gtf/.genome.fa/r);
+        my $transcriptome_file_path = $transcriptome_folder.'/'.($file =~ s/.nascent.gtf/.transcriptome.fa/r);
+        my $transcriptome_nascent_file_path = $transcriptome_folder.'/'.($file =~ s/.nascent.gtf/.nascent_transcriptome.fa/r);
+        my $transcriptome_single_nucleus_file_path = $transcriptome_folder.'/'.($file =~ s/.nascent.gtf/.single_nucleus_transcriptome.fa/r);
+        my $transcriptome_single_nucleus_index_path = $transcriptome_folder.'/'.($file =~ s/.nascent.gtf/.single_nucleus_transcriptome.idx/r);
+        my $sbatch_file_path = $transcriptome_folder.'/'.($file =~ s/.nascent.gtf/.index_single_nucleus.sbatch/r);
+        my $output_file_path = $output_log_folder.'/'.($file =~ s/.nascent.gtf/.index_single_nucleus.out/r);
+        my $error_file_path = $output_log_folder.'/'.($file =~ s/.nascent.gtf/.index_single_nucleus.err/r);
 
         # generate sbatch commands
 
