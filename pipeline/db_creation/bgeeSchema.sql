@@ -942,8 +942,6 @@ create table rnaSeqLibraryAnnotatedSampleDev (
     rnaSeqLibraryId varchar(70) not null,
     conditionId mediumint unsigned not null,
 --  can be null as it is applicable only to pooled bulk samples like BRB-Seq
-    barcode varchar(70) COMMENT 'barcode used to pool several samples in the same library',
-    genotype varchar(70),
     abundanceUnit enum('tpm', 'cpm'),
     meanAbundanceReferenceIntergenicDistribution decimal(16, 6) not null default -1 COMMENT 'mean TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
     sdAbundanceReferenceIntergenicDistribution decimal(16, 6) not null default -1 COMMENT 'standard deviation in TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
@@ -974,7 +972,9 @@ create table rnaSeqLibraryAnnotatedSampleDev (
 -- this is why null value is permitted.
     libraryMaxRank decimal(9,2) unsigned COMMENT 'The max fractional rank in this library (see `rank` field in rnaSeqResult table)',
     libraryDistinctRankCount mediumint unsigned COMMENT 'The count of distinct rank in this library (see `rank` field in rnaSeqResult table, used for weighted mean rank computations)',
-    multipleLibraryIndividualSample boolean not null default 0 COMMENT 'boolean true if the annotated sample contains several individual samples. e.g true for 10x as one annotated sample corresponds to one cell population and individual sample will correspond to each cell of this cell population'
+    multipleLibraryIndividualSample boolean not null default 0 COMMENT 'boolean true if the annotated sample contains several individual samples. e.g true for 10x as one annotated sample corresponds to one cell population and individual sample will correspond to each cell of this cell population',
+    barcode varchar(70) COMMENT 'barcode used to pool several samples in the same library',
+    genotype varchar(70)
 ) engine = innodb;
 
 -- this table contains counts and abundance level for each gene at the level of an annotated
