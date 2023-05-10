@@ -42,8 +42,8 @@ species <- unique(as.character(scRNASeqInfo$scientific_name[scRNASeqInfo$library
 message("Species:", species)
 ## collect species info
 speciesName <- gsub(" ", "_", species)
-transcriptomeIndexFile <- list.files(gtfDir, pattern = paste0("^", speciesName, ".*transcriptome.idx$"))
-print(transcriptomeIndexFile)
+transcriptomeIndexFiles <- list.files(gtfDir, pattern = paste0("^", speciesName, ".*transcriptome.idx$"))
+print(transcriptomeIndexFiles)
 #TODO: transcriptome index can potentially be compressed with xz.
 
 if (! file.exists(file.path(kallisto_bus_results, libraryId))) {
@@ -82,9 +82,16 @@ if (file.exists(file.path(fastqDir, speciesId, libraryId))) {
     filesKallisto <- gsub(",", " " ,filesKallisto)
     message("Files to pass to Kallisto: ")
     message(filesKallisto)
-        
+    
+    # select index depending on cell compartment used (cell or single nucléus)
+    transcriptomeIndexFile <- transcriptomeIndexFiles[grep(pattern = "\\.transcriptome.idx", x = transcriptomeIndexFiles)]
+    if (unique(targetBased$tags[targetBased$libraryId == i]) == "Sn-scRNA-seq") {
+      transcriptomeIndexFile <- transcriptomeIndexFiles[grep(pattern = ".single_nucleus_transcriptome.idx$",
+        x = transcriptomeIndexFiles)]
+    }
+
     #RUN Kallisto bus
-    system(sprintf('kallisto bus -i %s -o %s -x %s -t 4 %s', file.path(gtfDir, transcriptomeIndexFile), paste0(busOutput), paste0("10x", whiteLInfo), paste0(filesKallisto)))
+    system(sprintf('kallisto bus -m -i %s -o %s -x %s -t 4 %s', file.path(gtfDir, transcriptomeIndexFile), paste0(busOutput), paste0("10x", whiteLInfo), paste0(filesKallisto)))
     ## control file
     file.create(file.path(kallisto_bus_results, libraryId, "Done_kallisto_bus.txt"))
   }
