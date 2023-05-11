@@ -1,5 +1,5 @@
 PIPELINEROOT := ../../
-DIR_NAME := scRNA_Seq/
+DIR_NAME := scRNA_Seq/Droplet_based_Protocols
 
 include $(PIPELINEROOT)Makefile.common
 
@@ -197,32 +197,22 @@ cleaning_barcodes: generate_info 0Preparation/cleaning_barcodes.R
 	@echo --- DONE ---
 	@touch $@
 
-prepare_single_nucleus_index: cleaning_barcodes
+## generate a gtf file containing non matured transcripts. This file will be used only
+## for single nucleus libraries
+generate_gtf_nascent: cleaning_barcodes 0Preparation/generate_GTF_nascent.R
+	@$(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args gtf_dir="$(RNASEQ_CLUSTER_GTF)" metadata_file="$(SC_RNASEQ_METADATA_10X_FILEPATH)"' 0Preparation/generate_GTF_nascent.R $(SC_RNASEQ_TB_FOLDER_GENERATED)generate_GTF_nascent.Rout
+	@touch $@
+
+prepare_single_nucleus_index: generate_gtf_nascent 0Preparation/slurm_single_nucleus_index.pl
 	#Preparing single nucleus indexed transcriptome for every species
 	@perl 0Preparation/slurm_single_nucleus_index.pl -transcriptome_folder=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(OUTPUT_DIR) -account=$(CLUSTER_ACCOUNT_SENSITIVE) -partition=$(CLUSTER_PARTITION_SENSITIVE) -cluster_kallisto_cmd="$(CLUSTER_KALLISTO_CMD)" -cluster_tophat_cmd="$(CLUSTER_TOPHAT_CMD)" >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
 
 ## Run Kallisto bus per taxon_iD/library
-##TODO: since Bgee15 kallisto indexes containing transcripts and ref intergenic sequences are generated using BgeeCall. They will not be anymore in the $(RNASEQ_CLUSTER_GTF) folder. It has to be updated
-kallisto_bus: prepare_single_nucleus_index 1Run/Kallisto_bus.R
+kallisto_bus: prepare_single_nucleus_index 1Run/kallisto_bus_one_lib.R
 	@echo --- Start running kallisto bus for all libraries ---
-	@sed -i 's@--output=.*@--output=${PWD}/Kallisto_bus.out@'                                                          1Run/Kallisto_bus.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/Kallisto_bus.err@'                                                            1Run/Kallisto_bus.sbatch
-	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION_SENSITIVE}@'                                             1Run/Kallisto_bus.sbatch
-	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                                                   1Run/Kallisto_bus.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                      1Run/Kallisto_bus.sbatch
-	@sed -i 's@export metadata_file=.*@export metadata_file=$(SC_RNASEQ_METADATA_10X_FILEPATH)@'                       1Run/Kallisto_bus.sbatch
-	@sed -i 's@export annotation_file=.*@export annotation_file=$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED)@'                1Run/Kallisto_bus.sbatch
-	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_FASTQ_DROPLET)@'                                   1Run/Kallisto_bus.sbatch
-	@sed -i 's@export folderSupport=.*@export folderSupport=$(RNASEQ_CLUSTER_GTF)@'                                    1Run/Kallisto_bus.sbatch
-	@sed -i 's@export output=.*@export output=$(SC_RNASEQ_PATH_GENERATED)@'                                            1Run/Kallisto_bus.sbatch
-	@sed -i 's@export kallisto_bus_results=.*@export kallisto_bus_results=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET)@'  1Run/Kallisto_bus.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                                       1Run/Kallisto_bus.sbatch
-	@sbatch 1Run/Kallisto_bus.sbatch
-	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
-	@echo --- DONE ---
+	@perl 1Run/parallelized_kallisto_bus.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -parallelJobs=100 -fastqDir=$(SC_RNASEQ_FASTQ_DROPLET) -gtfDir=$(RNASEQ_CLUSTER_GTF) -scRNASeqInfoFile=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/kallisto_bus_one_lib.R
 	@touch $@
-
 
 # NOTE: Before run the process_busFile rule (uncompress the barcodes files, because in github we cannot have files with more than 100Mb size)
 uncompress_barcodes: kallisto_bus $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whitelist_10X_v2.txt.zip $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whitelist_10X_v3.txt.zip
@@ -232,21 +222,9 @@ uncompress_barcodes: kallisto_bus $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whitelist
 	@touch $@
 
 ## Process bus files
-process_busFile: uncompress_barcodes 1Run/process_busFile.R
+process_busFile: uncompress_barcodes 1Run/process_busfile_one_lib.R
 	@echo --- Starting the process of bus files ---
-	@sed -i 's@--output=.*@--output=${PWD}/process_busFile.out@'                                                       1Run/process_busFile.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/process_busFile.err@'                                                         1Run/process_busFile.sbatch
-	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION_SENSITIVE}@'                                             1Run/process_busFile.sbatch
-	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                                                   1Run/process_busFile.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                      1Run/process_busFile.sbatch
-	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'                       1Run/process_busFile.sbatch
-	@sed -i 's@export kallisto_bus_results=.*@export kallisto_bus_results=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET)@'  1Run/process_busFile.sbatch
-	@sed -i 's@export folderSupport=.*@export folderSupport=$(RNASEQ_CLUSTER_GTF)@'                                    1Run/process_busFile.sbatch
-	@sed -i 's@export whiteList_Path=.*@export whiteList_Path=$(SC_RNASEQ_TB_FOLDER_SOURCE)@'                          1Run/process_busFile.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                                       1Run/process_busFile.sbatch
-	@sbatch 1Run/process_busFile.sbatch
-	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
-	@echo --- DONE ---
+	@perl 1Run/parallelized_process_busfile.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -parallelJobs=100 -fastqDir=$(SC_RNASEQ_FASTQ_DROPLET) -gtfDir=$(RNASEQ_CLUSTER_GTF) -scRNASeqInfoFile=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH) -whiteListPath=$(SC_RNASEQ_TB_FOLDER_SOURCE) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/process_busfile_one_lib.R
 	@touch $@
 
 
