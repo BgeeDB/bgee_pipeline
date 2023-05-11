@@ -62,10 +62,10 @@ my %processedLibraries = get_processed_libraries_info($metadataFile);
 my %sbatchToRun = ();
 
 ## create directory necessary to store sbatch files
-make_path("$kallistoResults/sbatch");
+make_path("$kallistoResults/sbatch_kallisto");
 my $jobPrefix = "kallisto_";
-my $clusterOutput = "${kallistoResults}/clusterOutput/";
-my $sbatchLocation = "${kallistoResults}/sbatch/";
+my $clusterOutput = "${kallistoResults}/clusterOutput_kallisto/";
+my $sbatchLocation = "${kallistoResults}/sbatch_kallisto/";
 if (! -d $clusterOutput) {
     mkdir($clusterOutput) or die "Couldn't create $clusterOutput directory, $!";
 }
