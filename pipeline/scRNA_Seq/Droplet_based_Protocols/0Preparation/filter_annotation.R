@@ -16,13 +16,18 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed....
-command_arg <- c("scRNASeqExperiment","scRNASeqTBLibrary", "acceptedProtocols", "outputDir")
+command_arg <- c("scRNASeqExperiment","scRNASeqTBLibrary", "acceptedProtocols", "strainMapping", "outputDir")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
   }
 }
 
+scRNASeqTBLibrary <- "~/Documents/git/bgee_pipeline/generated_files/scRNA_Seq/Target_based/scRNASeqTBLibrary.tsv"
+scRNASeqExperiment <- "~/Documents/git/bgee_pipeline/generated_files/scRNA_Seq/Target_based/scRNASeqExperiment.tsv"
+acceptedProtocols <- "~/Documents/git/bgee_pipeline/source_files//scRNA_Seq/acceptedProtocols.tsv"
+strainMapping <- "~/Documents/git/bgee_pipeline/source_files/Strains/StrainMapping.tsv"
+outputDir <- "~/Documents/temp/FCA/"
 ############################ Functions #################################
 
 readTsvFile<- function(fileToRead, header = TRUE, sep = "\t", quote = "",
@@ -42,6 +47,8 @@ readTsvFile<- function(fileToRead, header = TRUE, sep = "\t", quote = "",
 raw_lib_annot <- readTsvFile(scRNASeqTBLibrary, quote = "\"", commentChar="")
 raw_exp_annot <- readTsvFile(scRNASeqExperiment, quote = "\"", commentChar="")
 protocols <- readTsvFile(acceptedProtocols)
+standardised_strains <- readTsvFile(strainMapping, quote = "\"", commentChar = "")
+colnames(standardised_strains)[1] <- "sourceStrain"
 target_based_protocols <- protocols[protocols$Library_construction == "3'end",]
 
 ### Then filter on protocol accepted in Bgee pipeline
@@ -54,6 +61,12 @@ for (rowNumber in seq(nrow(raw_exp_annot))) {
 }
 filtered_lib_annot <- raw_lib_annot[raw_lib_annot$protocol %in% target_based_protocols$Protocols
   & raw_lib_annot$whiteList %in% target_based_protocols$target_whiteList & raw_lib_annot$speciesId == 7227,]
+
+## Then update Strain to fit standardized strain names
+for (i in seq(nrow(standardised_strains))) {
+  filtered_lib_annot$strain[filtered_lib_annot$strain == standardised_strains[i,]$sourceStrain
+    & filtered_lib_annot$speciesId == standardised_strains[i,]$speciesId] <- standardised_strains[i,]$targetStrain
+}
 
 ### Finally write filtered files in the output dir
 colnames(filtered_exp_annot)[1] <- "experimentId"
