@@ -170,8 +170,8 @@ generate_info: check_tools 0Preparation/generateInfo.R
 	@echo --- Start generating the informative files ---
 	@sed -i 's@--output=.*@--output=${PWD}/generateInfo.out@'                                                      0Preparation/generateInfo.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/generateInfo.err@'                                                        0Preparation/generateInfo.sbatch
-	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION_SENSITIVE}@'                                         0Preparation/generateInfo.sbatch
-	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                                               0Preparation/generateInfo.sbatch
+	@sed -i 's@--partition=.*@--partition=${SENSITIVE_CLUSTER_PARTITION}@'                                         0Preparation/generateInfo.sbatch
+	@sed -i 's@--account=.*@--account=${SENSITIVE_CLUSTER_ACCOUNT}@'                                               0Preparation/generateInfo.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                  0Preparation/generateInfo.sbatch
 	@sed -i 's@export folder_gtf=.*@export folder_gtf=$(RNASEQ_CLUSTER_GTF)@'                                      0Preparation/generateInfo.sbatch
 	@sed -i 's@export metadata_info_file=.*@export metadata_info_file=${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH)@'  0Preparation/generateInfo.sbatch
@@ -186,8 +186,8 @@ cleaning_barcodes: generate_info 0Preparation/cleaning_barcodes.R
 	@echo --- Cleaning duplicated barcodes per experimentID/libraryID ---
 	@sed -i 's@--output=.*@--output=${PWD}/cleaning_barcodes.out@'                                               0Preparation/cleaning_barcodes.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/cleaning_barcodes.err@'                                                 0Preparation/cleaning_barcodes.sbatch
-	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION_SENSITIVE}@'                                       0Preparation/cleaning_barcodes.sbatch
-	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                                             0Preparation/cleaning_barcodes.sbatch
+	@sed -i 's@--partition=.*@--partition=${SENSITIVE_CLUSTER_PARTITION}@'                                       0Preparation/cleaning_barcodes.sbatch
+	@sed -i 's@--account=.*@--account=${SENSITIVE_CLUSTER_ACCOUNT}@'                                             0Preparation/cleaning_barcodes.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                0Preparation/cleaning_barcodes.sbatch
 	@sed -i 's@export barcodesFolder=.*@export barcodesFolder=$(SC_RNASEQ_TB_FOLDER_SOURCE)@'                    0Preparation/cleaning_barcodes.sbatch
 	@sed -i 's@export output=.*@export output=${PWD}/$(SC_RNASEQ_CLEANED_BARCODES)@'                             0Preparation/cleaning_barcodes.sbatch
@@ -205,7 +205,7 @@ generate_gtf_nascent: cleaning_barcodes 0Preparation/generate_GTF_nascent.R
 
 prepare_single_nucleus_index: generate_gtf_nascent 0Preparation/slurm_single_nucleus_index.pl
 	#Preparing single nucleus indexed transcriptome for every species
-	@perl 0Preparation/slurm_single_nucleus_index.pl -transcriptome_folder=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(OUTPUT_DIR) -account=$(CLUSTER_ACCOUNT_SENSITIVE) -partition=$(CLUSTER_PARTITION_SENSITIVE) -cluster_kallisto_cmd="$(CLUSTER_KALLISTO_CMD)" -cluster_tophat_cmd="$(CLUSTER_TOPHAT_CMD)" >$@.tmp 2>&1
+	@perl 0Preparation/slurm_single_nucleus_index.pl -transcriptome_folder=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(OUTPUT_DIR) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -partition=$(SENSITIVE_CLUSTER_PARTITION) -cluster_kallisto_cmd="$(CLUSTER_KALLISTO_CMD)" -cluster_tophat_cmd="$(CLUSTER_TOPHAT_CMD)" >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
 
 ## Run Kallisto bus per taxon_iD/library
@@ -224,29 +224,15 @@ uncompress_barcodes: kallisto_bus $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whitelist
 ## Process bus files
 process_busFile: uncompress_barcodes 1Run/process_busfile_one_lib.R
 	@echo --- Starting the process of bus files ---
-	@perl 1Run/parallelized_process_busfile.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -parallelJobs=100 -fastqDir=$(SC_RNASEQ_FASTQ_DROPLET) -gtfDir=$(RNASEQ_CLUSTER_GTF) -scRNASeqInfoFile=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH) -whiteListPath=$(SC_RNASEQ_TB_FOLDER_SOURCE) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/process_busfile_one_lib.R
-	@touch $@
+	@perl 1Run/parallelized_process_busfile.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -parallelJobs=100 -fastqDir=$(SC_RNASEQ_FASTQ_DROPLET) -gtfDir=$(RNASEQ_CLUSTER_GTF) -scRNASeqInfoFile=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH) -whiteListPath=$(SC_RNASEQ_TB_FOLDER_SOURCE) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/process_busfile_one_lib.R > $@.tmp 2> $@.err
+	@mv $@.tmp $@
 
 
 ## Quality control (Knee + PCA + UMAP for each library) + cell type identification
 qc_cellType: process_busFile 1Run/QC_CelltypeIdentification.R
 	@echo --- Starting the quality control and the cell type identification ---
-	@sed -i 's@--output=.*@--output=${PWD}/QC_CelltypeIdentification.out@'                                             1Run/QC_CelltypeIdentification.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/QC_CelltypeIdentification.err@'                                               1Run/QC_CelltypeIdentification.sbatch
-	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION_SENSITIVE}@'                                             1Run/QC_CelltypeIdentification.sbatch
-	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                                                   1Run/QC_CelltypeIdentification.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                      1Run/QC_CelltypeIdentification.sbatch
-	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'                       1Run/QC_CelltypeIdentification.sbatch
-	@sed -i 's@export kallisto_bus_results=.*@export kallisto_bus_results=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET)@'  1Run/QC_CelltypeIdentification.sbatch
-	@sed -i 's@export folderSupport=.*@export folderSupport=$(RNASEQ_CLUSTER_GTF)@'                                    1Run/QC_CelltypeIdentification.sbatch
-	@sed -i 's@export infoFolder=.*@export infoFolder=$(SC_RNASEQ_TB_FOLDER_SOURCE)@'                                  1Run/QC_CelltypeIdentification.sbatch
-	@sed -i 's@export output=.*@export output=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)@'                                       1Run/QC_CelltypeIdentification.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                                       1Run/QC_CelltypeIdentification.sbatch
-	@sed -i 's@export R_LIBS_USER=.*@export R_LIBS_USER=$(R_LIBS_PATH_JURA)@'                                          1Run/QC_CelltypeIdentification.sbatch
-	@sbatch 1Run/QC_CelltypeIdentification.sbatch
-	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
-	@echo --- DONE ---
-	@touch $@
+	@perl 1Run/parallelized_qcCellIdentification.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH)  -parallelJobs=100 -gtfDir=$(RNASEQ_CLUSTER_GTF) -barcodeFolder=$(SC_RNASEQ_CLEANED_BARCODES) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -outputDir=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/cellIdentification.R > $@.out 2>> $@.err
+	@mv $@.tmp $@
 
 ## Quality control based on the bimodality of the cell-population per library/cell-type pop
 ## This QC is NOT USED ANYMORE to filter libraries because cell type annotation are not always
@@ -257,8 +243,8 @@ bimodality_cellPop: qc_cellType 1Run/QC_cellPop_bimodality.R
 	@echo --- Starting the quality control for the cell population based on the bimodality ---
 	@sed -i 's@--output=.*@--output=${PWD}/QC_cellPop_bimodality_TB.out@'                                 1Run/QC_cellPop_bimodality.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/QC_cellPop_bimodality_TB.err@'                                   1Run/QC_cellPop_bimodality.sbatch
-	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION_SENSITIVE}@'                                1Run/QC_cellPop_bimodality.sbatch
-	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                                      1Run/QC_cellPop_bimodality.sbatch
+	@sed -i 's@--partition=.*@--partition=${SENSITIVE_CLUSTER_PARTITION}@'                                1Run/QC_cellPop_bimodality.sbatch
+	@sed -i 's@--account=.*@--account=${SENSITIVE_CLUSTER_ACCOUNT}@'                                      1Run/QC_cellPop_bimodality.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                         1Run/QC_cellPop_bimodality.sbatch
 	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'          1Run/QC_cellPop_bimodality.sbatch
 	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)@'                1Run/QC_cellPop_bimodality.sbatch
@@ -270,12 +256,13 @@ bimodality_cellPop: qc_cellType 1Run/QC_cellPop_bimodality.R
 	@touch $@
 
 ## Call present and absent genes per library/cell population that pass the bimodality test
+## Not yet parallelized
 calls: qc_cellType 1Run/Calls_cell_pop_per_library.R
 	@echo --- Starting the calls of present and absent genes ---
 	@sed -i 's@--output=.*@--output=${PWD}/Calls_library_cellPop.out@'                                                       1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/Calls_library_cellPop.err@'                                                         1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION_SENSITIVE}@'                                                   1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                                                         1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@--partition=.*@--partition=${SENSITIVE_CLUSTER_PARTITION}@'                                                   1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@--account=.*@--account=${SENSITIVE_CLUSTER_ACCOUNT}@'                                                         1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                            1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'                             1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@export bimodalityFile=.*@export bimodalityFile=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)/bimodality_targetBased.txt@'  1Run/Calls_cell_pop_per_library.sbatch
@@ -303,14 +290,13 @@ final_commit: final_status
 	@echo -e "All information is ready, you can make a tar of the results. \n"
 	@touch $@
 
-## Insert expression at cell level. Run from bgee servers.
 ## Currently parallelize job using different thread to write in the database
 ## (argument coreNumber). Could optimize by also creating one Job per experiment
 ## (on unil cluster using slurm) if this rule takes too much time.
 ## Then, a perl script should take care of managing parallelization. It could also
 ## be possible to use the rslurm R package to manage parallelization
 insert_cell_abundance:
-	@perl 3Insertion/insert_scrna_seq.pl -bgee=$(BGEECMD) -targetBaseLibrary=$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED) -singleCellExperiment=$(SC_RNASEQ_EXPERIMENT_FILEPATH_FILTERED) -bgeeLibraryInfo=$(SC_RNASEQ_METADATA_10X_FILEPATH) -filteredBarcodeDir=$(SC_RNASEQ_CLEANED_BARCODES) -pipelineCallsSummary=$(SC_RNASEQ_SERVER_INFO_CALLS_10X) -pipelineReportFile=$(SC_RNASEQ_SERVER_STATS_LIBRARIES_10X)  -kallistoResults=$(SC_RNASEQ_SERVER_RES_KALLISTO_DROPLET) -callsResults=$(SC_RNASEQ_SERVER_CALLS_10X) -sourceDir=$(SC_RNASEQ_TB_FOLDER_SOURCE) -sexInfo=$(UBERON_SEX_INFO_FILE_PATH) -numberCore=20 > $@.tmp 2> $@.err
+	@perl 3Insertion/insert_scrna_seq.pl -bgee=$(BGEECMD) -targetBaseLibrary=$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED) -strainMapping=$(STRAIN_MAPPING_FILE) -singleCellExperiment=$(SC_RNASEQ_EXPERIMENT_FILEPATH_FILTERED) -bgeeLibraryInfo=$(SC_RNASEQ_METADATA_10X_FILEPATH) -filteredBarcodeDir=$(SC_RNASEQ_CLEANED_BARCODES) -pipelineCallsSummary=$(SC_RNASEQ_SERVER_INFO_CALLS_10X) -pipelineReportFile=$(SC_RNASEQ_SERVER_STATS_LIBRARIES_10X)  -kallistoResults=$(SC_RNASEQ_SERVER_RES_KALLISTO_DROPLET) -callsResults=$(SC_RNASEQ_SERVER_CALLS_10X) -sourceDir=$(SC_RNASEQ_TB_FOLDER_SOURCE) -sexInfo=$(UBERON_SEX_INFO_FILE_PATH) -numberCore=20 > $@.tmp 2> $@.err
 	@if [[ ! -s $@.err ]]; then $(RM) $@.err; fi
 	@$(MV) $@.tmp $@
 
