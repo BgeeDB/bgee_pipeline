@@ -98,7 +98,7 @@ if (dir.exists(file.path(kallisto_bus_results, libraryId))){
     ## if the library has already been processed
     cpm_dir <- file.path(pathBusOut, "cpm_counts")
     if (dir.exists(cpm_dir)) {
-      message("library ", library, " already processed. bustools is not run again")
+      message("library ", libraryId, " already processed. bustools is not run again")
     } else {  
       message("Start correction, sort and counts for the library: ", libraryId)
 
@@ -130,7 +130,7 @@ if (dir.exists(file.path(kallisto_bus_results, libraryId))){
         print("File already exist.....")
       }
 
-      collectSpecies <- unique(as.character(scRNAInfo$scientific_name[scRNAInfo$libraryId == library]))
+      collectSpecies <- unique(as.character(scRNAInfo$scientific_name[scRNAInfo$libraryId == libraryId]))
       collectSpecies <- gsub(" ", "_", collectSpecies)
 
       tx2gene_file = file.path(folder_gtf, paste0(collectSpecies, "_transcript_to_gene_with_intergenic.tsv"))
