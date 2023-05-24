@@ -16,9 +16,6 @@ use Utils;
 use File::Path qw(make_path);
 use File::Basename;
 
-
-"scRNASeq_Info", "kallisto_bus_results", "folder_gtf", "whiteList_Path"
-
 ## Define arguments & their default value
 my ($metadataFile, $parallelJobs, $fastqDir, $gtfDir, $scRNASeqInfoFile, $whiteListPath,
     $kallistoResults, $queue, $account, $pathToScript) = ('', '', '', '',  '', '', '' , '', '', '');
@@ -92,8 +89,8 @@ foreach my $experimentId (keys %processedLibraries){
         $sbatchTemplate .= "module add R/3.6.1\n";
         $sbatchTemplate .= "module add UHTS/Analysis/bustools/0.40.0;\n";
         my $commandToRun = "R CMD BATCH --no-save --no-restore \'--args libraryId=\"$libraryId\"".
-            "whiteList_Path=\"$whiteList_Path\" folder_gtf=\"$gtfDir\" scRNASeq_Info=\"$scRNASeqInfoFile\"".
-            "kallisto_bus_results=\"$kallistoResults\"\' $pathToScript ${clusterOutput}/${jobName}.Rout";
+            " whiteList_Path=\"$whiteListPath\" folder_gtf=\"$gtfDir\" scRNASeq_Info=\"$scRNASeqInfoFile\"".
+            " kallisto_bus_results=\"$kallistoResults\"\' $pathToScript ${clusterOutput}/${jobName}.Rout";
     $sbatchTemplate .= "$commandToRun\n";
         my $sbatchFilePath = "$sbatchLocation$jobName.sbatch";
         $sbatchToRun{$experimentId}{$libraryId} = $sbatchFilePath;

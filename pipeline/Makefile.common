@@ -543,6 +543,8 @@ SC_RNASEQ_CLUSTER_KALLISTO_STATS              := $(SC_RNASEQ_CLUSTER_BGEECALL)re
 
 ## Specific paths to results of target-based protocols
 
+SC_RNASEQ_STATS_LIBRARIES_10X                 := $(OUTPUT_DIR)/Target_based/stats_libraries.txt
+
 ## on Jura cluster
 SC_RNASEQ_CLUSTER_ALL_RES_DROPLET             := $(SC_RNASEQ_CLUSTER_ALL_RES)DROPLET_10X/
 SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET        := $(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)kallisto_bus_results/
@@ -553,12 +555,9 @@ SC_RNASEQ_CLUSTER_CALLS_10X                   := $(SC_RNASEQ_CLUSTER_ALL_RES_DRO
 SC_RNASEQ_CLUSTER_INFO_CALLS_10X              := $(SC_RNASEQ_CLUSTER_CALLS_10X)All_cellPopulation_stats_10X.tsv
 
 ## On Bgee server
-SC_RNASEQ_SERVER_RES_KALLISTO_DROPLET        := $(TMPDIR)kallisto_bus_results/
+SC_RNASEQ_SERVER_RES_KALLISTO_DROPLET         := $(TMPDIR)kallisto_bus_results/
 SC_RNASEQ_SERVER_CALLS_10X                    := $(TMPDIR)calls/
 SC_RNASEQ_SERVER_INFO_CALLS_10X               := $(SC_RNASEQ_SERVER_CALLS_10X)All_cellPopulation_stats_10X.tsv
-SC_RNASEQ_SERVER_STATS_LIBRARIES_10X          := $(OUTPUT_DIR)/Target_based/stats_libraries.txt
-
-
 
 # minimum number of cells in a full-length library
 MIN_CELLS_PER_LIBRARY_FULL_LENGTH             := 50
