@@ -35,7 +35,7 @@ my %opts = ('metadataFile=s'        => \$metadataFile,
 ######################## Check arguments ########################
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$metadataFile || $parallelJobs eq '' || $fastqDir eq '' || $gtfDir eq '' ||
-    $scRNASeqInfoFile eq '' || $kallistoResults eq '' || $queue eq '' || $account eq '' || $pathToScript eq '') {
+    $scRNASeqInfoFile eq '' || whiteListPath eq '' || $kallistoResults eq '' || $queue eq '' || $account eq '' || $pathToScript eq '') {
     print "\n\tInvalid or missing argument:
 \te.g. $0 -metatadataFile=... -parallelJobs=50 -outputDir=...  >> $@.tmp 2> $@.warn
 \t-metadataFile            file containing metadata necessary to download each run
