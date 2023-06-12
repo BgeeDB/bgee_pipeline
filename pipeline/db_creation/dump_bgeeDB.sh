@@ -45,17 +45,21 @@ MYSQL_OPTIONS='--skip-triggers --no-create-info --no-tablespaces --compact --ski
 
 
 # Dump all Bgee DB tables  BUT  the huge globalExpression table
-time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME --ignore-table=$DB_NAME.globalExpression $MYSQL_OPTIONS > $DB_NAME-allBut-globalExpression.sql
+time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME --ignore-table=$DB_NAME.globalExpression --ignore-table=$DB_NAME.globalCond --ignore-table=$DB_NAME.globalCondToCond $MYSQL_OPTIONS > $DB_NAME-allBut-globalExpression.sql
 
 # Dump the globalExpression table by chunk
 ## Human
-time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalExpression gene --where='(bgeeGeneId IN (SELECT bgeeGeneId FROM gene WHERE speciesId=9606))'  $MYSQL_OPTIONS > $DB_NAME-globalExpression-Human.sql
+time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalExpression gene       --where='(bgeeGeneId        IN (SELECT bgeeGeneId FROM gene WHERE speciesId=9606))'                                                                        $MYSQL_OPTIONS  > $DB_NAME-globalExpression-Human.sql
+time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalCond globalCondToCond --where='(globalConditionId IN (SELECT globalConditionId FROM globalExpression WHERE bgeeGeneId IN (SELECT bgeeGeneId FROM gene WHERE speciesId=9606)))'   $MYSQL_OPTIONS >> $DB_NAME-globalExpression-Human.sql
 ## Mouse
-time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalExpression gene --where='(bgeeGeneId IN (SELECT bgeeGeneId FROM gene WHERE speciesId=10090))' $MYSQL_OPTIONS > $DB_NAME-globalExpression-Mouse.sql
+time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalExpression gene       --where='(bgeeGeneId        IN (SELECT bgeeGeneId FROM gene WHERE speciesId=10090))'                                                                       $MYSQL_OPTIONS  > $DB_NAME-globalExpression-Mouse.sql
+time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalCond globalCondToCond --where='(globalConditionId IN (SELECT globalConditionId FROM globalExpression WHERE bgeeGeneId IN (SELECT bgeeGeneId FROM gene WHERE speciesId=10090)))'  $MYSQL_OPTIONS >> $DB_NAME-globalExpression-Mouse.sq
 ## D. melanogaster
-time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalExpression gene --where='(bgeeGeneId IN (SELECT bgeeGeneId FROM gene WHERE speciesId=7227))'  $MYSQL_OPTIONS > $DB_NAME-globalExpression-Dmelanogaster.sql
+time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalExpression gene       --where='(bgeeGeneId        IN (SELECT bgeeGeneId FROM gene WHERE speciesId=7227))'                                                                        $MYSQL_OPTIONS  > $DB_NAME-globalExpression-Dmelanogaster.sql
+time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalCond globalCondToCond --where='(globalConditionId IN (SELECT globalConditionId FROM globalExpression WHERE bgeeGeneId IN (SELECT bgeeGeneId FROM gene WHERE speciesId=7227)))'   $MYSQL_OPTIONS >> $DB_NAME-globalExpression-Dmelanogaster.sql
 ## Other species
-time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalExpression gene --where='(bgeeGeneId IN (SELECT bgeeGeneId FROM gene WHERE speciesId!=9606 AND speciesId!=10090 AND speciesId!=7227))' $MYSQL_OPTIONS > $DB_NAME-globalExpression-otherSpecies.sql
+time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalExpression gene       --where='(bgeeGeneId        IN (SELECT bgeeGeneId FROM gene WHERE speciesId!=9606 AND speciesId!=10090 AND speciesId!=7227))'                                                                      $MYSQL_OPTIONS  > $DB_NAME-globalExpression-otherSpecies.sql
+time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalCond globalCondToCond --where='(globalConditionId IN (SELECT globalConditionId FROM globalExpression WHERE bgeeGeneId IN (SELECT bgeeGeneId FROM gene WHERE speciesId!=9606 AND speciesId!=10090 AND speciesId!=7227))'  $MYSQL_OPTIONS >> $DB_NAME-globalExpression-otherSpecies.sql
 
 #NOTE because of --skip-add-drop-table think to DROP tables if not for a fresh db!
 #NOTE $DB_NAME-allBut-globalExpression.sql should be loaded last to deal with gene table duplication (and issue with gene table lock with chunks)
