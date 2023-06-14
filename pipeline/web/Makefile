@@ -11,7 +11,7 @@ sitemap.xml:
 	@echo
 	@echo 'Copy "sitemap*.xml" files to the htdocs/ folder, i.e. in "/var/www/html/bgee.unil.ch"'
 	@echo 'The file htdocs/robots.txt must contain a line linking to the index sitemap file "sitemap.xml":'
-	@echo '        Sitemap: https://bgee.org/sitemap.xml'
+	@echo '        Sitemap: https://www.bgee.org/sitemap.xml'
 	@echo
 	@echo 'Think to validate and submit your "sitemap.xml" in Google Dashboard anytime you modify it!'
 	@echo

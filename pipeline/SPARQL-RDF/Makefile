@@ -56,11 +56,11 @@ create_isql_load_script: generate_triples
 	@ls $(TTL_DIRECTORY_FULL_PATH)*.ttl > $(TTL_FILE_LIST)
 	@touch $(BGEE_VIRTUOSO_FILE)
 	while IFS= read -r line ; do \
-		echo "DB.DBA.TTLP_MT(file_to_string_output('$(TTL_DIRECTORY_FULL_PATH)$$line'), '', 'https://bgee.org/rdf_v$(FTP_RELEASE)');" >>  $(BGEE_VIRTUOSO_FILE) ; \
-		echo "SPARQL LOAD <http://purl.org/lscr#> INTO <https://bgee.org/rdf_v$(FTP_RELEASE)>;" >>  $(BGEE_VIRTUOSO_FILE)  ; \
+		echo "DB.DBA.TTLP_MT(file_to_string_output('$(TTL_DIRECTORY_FULL_PATH)$$line'), '', 'https://www.bgee.org/rdf_v$(FTP_RELEASE)');" >>  $(BGEE_VIRTUOSO_FILE) ; \
+		echo "SPARQL LOAD <http://purl.org/lscr#> INTO <https://www.bgee.org/rdf_v$(FTP_RELEASE)>;" >>  $(BGEE_VIRTUOSO_FILE)  ; \
 	done < $(TTL_FILE_LIST)
 
-	@echo "SPARQL LOAD <http://purl.org/genex#> INTO <https://bgee.org/rdf_v$(FTP_RELEASE)>;" >>  $(BGEE_VIRTUOSO_FILE)
+	@echo "SPARQL LOAD <http://purl.org/genex#> INTO <https://www.bgee.org/rdf_v$(FTP_RELEASE)>;" >>  $(BGEE_VIRTUOSO_FILE)
 	@$(RM) $(TTL_FILE_LIST) 
 	@touch $@
 

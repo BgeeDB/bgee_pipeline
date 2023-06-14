@@ -11,7 +11,7 @@ rdf:		http://www.w3.org/1999/02/22-rdf-syntax-ns#
 sio:		http://semanticscience.org/resource/
 xml:		http://www.w3.org/XML/1998/namespace
 xsd:		http://www.w3.org/2001/XMLSchema#
-bgee:		http://bgee.org/#
+bgee:		http://www.bgee.org/#
 lscr:		http://purl.org/lscr#
 obda:		https://w3id.org/obda/vocabulary#
 orth:		http://purl.org/net/orth#
@@ -72,7 +72,7 @@ source		SELECT g.geneId, gc.globalConditionId
 			ON g.bgeeGeneId = ge.bgeeGeneId WHERE ge.callType='EXPRESSED'
 
 mappingId	Gene
-target		oma:GENE_{geneId} a orth:Gene ; rdfs:seeAlso <https://bgee.org/?page=gene&gene_id={geneId}> ; rdfs:label {geneName}^^xsd:string ; terms:description {geneDescription}^^xsd:string ; terms:identifier {geneId}^^xsd:string ; orth:organism bgee:ORGANISM_{speciesId} ; lscr:xrefEnsemblGene <http://rdf.ebi.ac.uk/resource/ensembl/{geneId}> . 
+target		oma:GENE_{geneId} a orth:Gene ; rdfs:seeAlso <https://www.bgee.org/?page=gene&gene_id={geneId}> ; rdfs:label {geneName}^^xsd:string ; terms:description {geneDescription}^^xsd:string ; terms:identifier {geneId}^^xsd:string ; orth:organism bgee:ORGANISM_{speciesId} ; lscr:xrefEnsemblGene <http://rdf.ebi.ac.uk/resource/ensembl/{geneId}> . 
 source		select geneId, geneName, geneDescription, speciesId from gene
 
 mappingId	AbsenceExpression
