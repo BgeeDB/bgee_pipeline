@@ -55,7 +55,7 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
     'https://eg49-metazoa.ensembl.org/',
     'Source for gene annotations, mappings to the Gene Ontology, mappings to Affymetrix probeset IDs, and cross-references to other databases',
     1, 'Genomics database'),
-(25, 'Bgee', '', '', '', 'https://bgee.org/', 'Gene expression data in animals', 0, ''),
+(25, 'Bgee', '', '', '', 'https://www.bgee.org/', 'Gene expression data in animals', 0, ''),
 (26, 'Uberon', '', '', '',
     'http://uberon.org/', 'Integrated cross-species ontology covering anatomical structures in animals. Use of the subset "composite-metazoan".', 1, 'Ontology'),
 (27, 'Developmental stage ontologies', '', '', '',
