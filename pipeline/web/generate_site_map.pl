@@ -36,7 +36,7 @@ if ( !$test_options || $bgee_connector eq '' ){
 #NOTE see https://www.sitemaps.org/ and https://en.wikipedia.org/wiki/Site_map for spec and information
 #NOTE The produced **sitemap.xml** can be validated on different web sites, but has to be submitted and validated in Google Dashboard
 my $url_limit = 50_000; # If more than that, has to split in several sitemap files, indexed in a sitemapindex file!
-my $homepage  = 'https://bgee.org';
+my $homepage  = 'https://www.bgee.org';
 
 my $sitemap_idx  = 'sitemap.xml';
 my $sitemap_main = 'sitemap_main.xml';

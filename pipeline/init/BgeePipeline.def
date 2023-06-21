@@ -22,7 +22,7 @@ From: ubuntu:20.04
 ### Group:      Container
 ### Maintainer: Sebastien Moretti
 ### License:    GPL-3.0
-### URL:        https://bgee.org
+### URL:        https://www.bgee.org
 ###
 ###
 ### Description:
@@ -63,7 +63,7 @@ From: ubuntu:20.04
 	org.opencontainers.image.version       15.0-1
 	org.opencontainers.image.vendor        Bgee.org
 	org.opencontainers.image.authors       sebastien.moretti@sib.swiss
-	org.opencontainers.image.url           https://bgee.org/
+	org.opencontainers.image.url           https://www.bgee.org/
 	org.opencontainers.image.documentation https://github.com/BgeeDB/bgee_pipeline
 	org.opencontainers.image.licenses      GPL-3.0
 	org.opencontainers.image.description   External tools and libraries required by the Bgee Pipeline.

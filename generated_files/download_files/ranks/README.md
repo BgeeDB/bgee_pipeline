@@ -1,6 +1,6 @@
 # Download files with rank score information
 
-The files present in these directories provide information about rank scores computed for the Bgee database (https://bgee.org/).
+The files present in these directories provide information about rank scores computed for the Bgee database (https://www.bgee.org/).
 
 ## Ranks and max ranks
 

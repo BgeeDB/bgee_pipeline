@@ -71,15 +71,15 @@ exit 0;
 sub get_schema_default {
     return '{
     "@context": "https://schema.org/",
-    "@id": "https://bgee.org/",
+    "@id": "https://www.bgee.org/",
     "@graph": [
         {
             "@type": "Organization",
-            "@id": "https://bgee.org/",
+            "@id": "https://www.bgee.org/",
             "name": "Bgee - Bring Gene Expression Expertise",
-            "url": "https://bgee.org/",
+            "url": "https://www.bgee.org/",
             "description": "The aim of Bgee is to help biologists to use and understand gene expression",
-            "logo": "https://bgee.org/img/logo/bgee13_hp_logo.png",
+            "logo": "https://www.bgee.org/img/logo/bgee13_hp_logo.png",
             "sameAs": [
                 "https://twitter.com/Bgeedb",
                 "https://genomic.social/@bgeedb",
@@ -110,12 +110,12 @@ sub get_schema_default {
         },
         {
             "@type": "Dataset",
-            "@id": "https://bgee.org/",
+            "@id": "https://www.bgee.org/",
             "http://purl.org/dc/terms/conformsTo": {
                 "@id": "'.$bioschDataset.'",
                 "@type": "CreativeWork"
             },
-            "url": "https://bgee.org/",
+            "url": "https://www.bgee.org/",
             "name": "Bgee gene expression data",
             "description": "Bgee is a database for retrieval and comparison of gene expression patterns across multiple animal species. It provides an intuitive answer to the question -where is a gene expressed?- and supports research in cancer and agriculture as well as evolutionary biology.",
             "keywords": [
@@ -131,7 +131,7 @@ sub get_schema_default {
                 "gene expression evolution"
             ],
             "creator": {
-                "@id": "https://bgee.org/"
+                "@id": "https://www.bgee.org/"
             },
             "license": "'.$bgeeLicense.'",
             "version": "'.$bgee_version.'"
@@ -152,7 +152,7 @@ sub get_schema_species {
                     "dateModified": "'.$dateModified.'",
                     "creator": {
                         "@type": "Organization",
-                        "url": "https://bgee.org/",
+                        "url": "https://www.bgee.org/",
                         "name": "The Bgee Team"
                     },
                     "license": "'.$bgeeLicense.'",
@@ -160,7 +160,7 @@ sub get_schema_species {
                         {
                             "@type": "DataDownload",
                             "encodingFormat": "TSV",
-                            "contentUrl": "https://bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/affymetrix/__SPECIES_NAME__/__SPECIES_NAME___Affymetrix_experiments_chips.tar.gz"
+                            "contentUrl": "https://www.bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/affymetrix/__SPECIES_NAME__/__SPECIES_NAME___Affymetrix_experiments_chips.tar.gz"
                         }
                     ],
                     "name": "__SPECIES NAME__ Affymetrix experiments chips",
@@ -168,7 +168,7 @@ sub get_schema_species {
                         "Affymetrix"
                     ],
                     "description": "Affymetrix experiments/chips annotations and metadata.",
-                    "url": "https://bgee.org/species/__TAXID__#proc-values-affymetrix"
+                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-affymetrix"
                 },
                 {
                     "@type": "Dataset",
@@ -179,7 +179,7 @@ sub get_schema_species {
                     "dateModified": "'.$dateModified.'",
                     "creator": {
                         "@type": "Organization",
-                        "url": "https://bgee.org/",
+                        "url": "https://www.bgee.org/",
                         "name": "The Bgee Team"
                     },
                     "license": "'.$bgeeLicense.'",
@@ -187,12 +187,12 @@ sub get_schema_species {
                         {
                             "@type": "DataDownload",
                             "encodingFormat": "TSV",
-                            "contentUrl": "https://bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/affymetrix/__SPECIES_NAME__/__SPECIES_NAME___Affymetrix_probesets.tar.gz"
+                            "contentUrl": "https://www.bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/affymetrix/__SPECIES_NAME__/__SPECIES_NAME___Affymetrix_probesets.tar.gz"
                         }
                     ],
                     "name": "__SPECIES NAME__ Affymetrix probesets",
                     "description": "__SPECIES NAME__ Affymetrix probesets, data (signal intensities).",
-                    "url": "https://bgee.org/species/__TAXID__#proc-values-affymetrix"
+                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-affymetrix"
                 }';
     my $rnaseq_template = '                {
                     "@type": "Dataset",
@@ -203,7 +203,7 @@ sub get_schema_species {
                     "dateModified": "'.$dateModified.'",
                     "creator": {
                         "@type": "Organization",
-                        "url": "https://bgee.org/",
+                        "url": "https://www.bgee.org/",
                         "name": "The Bgee Team"
                     },
                     "license": "'.$bgeeLicense.'",
@@ -211,7 +211,7 @@ sub get_schema_species {
                         {
                             "@type": "DataDownload",
                             "encodingFormat": "TSV",
-                            "contentUrl": "https://bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/rna_seq/__SPECIES_NAME__/__SPECIES_NAME___RNA-Seq_experiments_libraries.tar.gz"
+                            "contentUrl": "https://www.bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/rna_seq/__SPECIES_NAME__/__SPECIES_NAME___RNA-Seq_experiments_libraries.tar.gz"
                         }
                     ],
                     "name": "__SPECIES NAME__ RNA-Seq experiment libraries",
@@ -219,7 +219,7 @@ sub get_schema_species {
                         "RNA-Seq"
                     ],
                     "description": "__SPECIES NAME__ RNA-Seq experiments/libraries annotations and metadata.",
-                    "url": "https://bgee.org/species/__TAXID__#proc-values-rna-seq"
+                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-rna-seq"
                 },
                 {
                     "@type": "Dataset",
@@ -230,7 +230,7 @@ sub get_schema_species {
                     "dateModified": "'.$dateModified.'",
                     "creator": {
                         "@type": "Organization",
-                        "url": "https://bgee.org/",
+                        "url": "https://www.bgee.org/",
                         "name": "The Bgee Team"
                     },
                     "license": "'.$bgeeLicense.'",
@@ -238,7 +238,7 @@ sub get_schema_species {
                         {
                             "@type": "DataDownload",
                             "encodingFormat": "TSV",
-                            "contentUrl": "https://bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/rna_seq/__SPECIES_NAME__/__SPECIES_NAME___RNA-Seq_read_counts_TPM_FPKM.tar.gz"
+                            "contentUrl": "https://www.bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/rna_seq/__SPECIES_NAME__/__SPECIES_NAME___RNA-Seq_read_counts_TPM_FPKM.tar.gz"
                         }
                     ],
                     "name": "__SPECIES NAME__ RNA-Seq read counts, TPM and FPKM",
@@ -246,14 +246,14 @@ sub get_schema_species {
                     "keywords": [
                         "RNA-Seq"
                     ],
-                    "url": "https://bgee.org/species/__TAXID__#proc-values-rna-seq"
+                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-rna-seq"
                 }';
     my $fulll_template  = '                {
                     "@type": "Dataset",
                     "dateModified": "'.$dateModified.'",
                     "creator": {
                         "@type": "Organization",
-                        "url": "https://bgee.org/",
+                        "url": "https://www.bgee.org/",
                         "name": "The Bgee Team"
                     },
                     "license": "'.$bgeeLicense.'",
@@ -261,7 +261,7 @@ sub get_schema_species {
                         {
                             "@type": "DataDownload",
                             "encodingFormat": "TSV",
-                            "contentUrl": "https://bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/sc_full_length/__SPECIES_NAME__/__SPECIES_NAME___Full-Length_SC_RNA-Seq_experiments_libraries.tar.gz"
+                            "contentUrl": "https://www.bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/sc_full_length/__SPECIES_NAME__/__SPECIES_NAME___Full-Length_SC_RNA-Seq_experiments_libraries.tar.gz"
                         }
                     ],
                     "name": "__SPECIES NAME__ full-length Single cell RNA-Seq experiment libraries",
@@ -270,14 +270,14 @@ sub get_schema_species {
                         "Single cell full length RNA-Seq",
                         "Single cell RNA-Seq"
                     ],
-                    "url": "https://bgee.org/species/__TAXID__#proc-values-fl-scrna-seq"
+                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-fl-scrna-seq"
                 },
                 {
                     "@type": "Dataset",
                     "dateModified": "'.$dateModified.'",
                     "creator": {
                         "@type": "Organization",
-                        "url": "https://bgee.org/",
+                        "url": "https://www.bgee.org/",
                         "name": "The Bgee Team"
                     },
                     "license": "'.$bgeeLicense.'",
@@ -285,7 +285,7 @@ sub get_schema_species {
                         {
                             "@type": "DataDownload",
                             "encodingFormat": "TSV",
-                            "contentUrl": "https://bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/sc_full_length/__SPECIES_NAME__/__SPECIES_NAME___Full-Length_SC_RNA-Seq_read_counts_TPM_FPKM.tar.gz"
+                            "contentUrl": "https://www.bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/sc_full_length/__SPECIES_NAME__/__SPECIES_NAME___Full-Length_SC_RNA-Seq_read_counts_TPM_FPKM.tar.gz"
                         }
                     ],
                     "name": "__SPECIES NAME__ Full-Length Single Cell RNA-Seq read counts, TPM and FPKM",
@@ -294,13 +294,13 @@ sub get_schema_species {
                         "Single cell full length RNA-Seq",
                         "Single cell RNA-Seq"
                     ],
-                    "url": "https://bgee.org/species/__TAXID__#proc-values-fl-scrna-seq"
+                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-fl-scrna-seq"
                 }';
 #TODO    my $target_template = '';
 
     my $template = '{
     "@context": "https://schema.org/",
-    "@id": "https://bgee.org/species/__TAXID__",
+    "@id": "https://www.bgee.org/species/__TAXID__",
     "@type": "Taxon",
     "http://purl.org/dc/terms/conformsTo": {
         "@id": "'.$bioschTaxon.'",
@@ -326,7 +326,7 @@ sub get_schema_species {
             "citation": "'.$bgeeCitation.'",
             "description": "__SPECIES NAME__ calls of presence/absence of expression. Each call corresponds to a unique combination of a gene, an anatomical entity, a life stage, a sex, and a strain, with reported presence or absence of expression.",
             "includedInDataCatalog": {
-                "@id": "https://bgee.org",
+                "@id": "https://www.bgee.org",
                 "@type": "DataCatalog",
                 "name": "Bgee"
             },
@@ -337,12 +337,12 @@ sub get_schema_species {
             ],
             "creator": {
                 "@type": "Organization",
-                "url": "https://bgee.org/",
+                "url": "https://www.bgee.org/",
                 "name": "The Bgee Team"
             },
             "license": "'.$bgeeLicense.'",
             "name": "__SPECIES NAME__ gene expression calls",
-            "url": "https://bgee.org/species/__TAXID__#expr-calls",
+            "url": "https://www.bgee.org/species/__TAXID__#expr-calls",
             "version": "'.$bgee_version.'",
             "hasPart": [
                 {
@@ -350,18 +350,18 @@ sub get_schema_species {
                     "dateModified": "'.$dateModified.'",
                     "creator": {
                         "@type": "Organization",
-                        "url": "https://bgee.org/",
+                        "url": "https://www.bgee.org/",
                         "name": "The Bgee Team"
                     },
                     "license": "'.$bgeeLicense.'",
                     "name": "__SPECIES NAME__ gene expression simple",
                     "description": "Anatomical entities only, file without advanced columns.",
-                    "url": "https://bgee.org/species/__TAXID__#expr-calls-anat-simple",
+                    "url": "https://www.bgee.org/species/__TAXID__#expr-calls-anat-simple",
                     "distribution": [
                         {
                             "@type": "DataDownload",
                             "encodingFormat": "TSV",
-                            "contentUrl": "https://bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/calls/expr_calls/__SPECIES_NAME___expr_simple.tsv.gz"
+                            "contentUrl": "https://www.bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/calls/expr_calls/__SPECIES_NAME___expr_simple.tsv.gz"
                         }
                     ]
                 },
@@ -370,18 +370,18 @@ sub get_schema_species {
                     "dateModified": "'.$dateModified.'",
                     "creator": {
                         "@type": "Organization",
-                        "url": "https://bgee.org/",
+                        "url": "https://www.bgee.org/",
                         "name": "The Bgee Team"
                     },
                     "license": "'.$bgeeLicense.'",
                     "name": "__SPECIES NAME__ gene expression advanced",
                     "description": "Anatomical entities only, file with advanced columns.",
-                    "url": "https://bgee.org/species/__TAXID__#expr-calls-anat-advanced",
+                    "url": "https://www.bgee.org/species/__TAXID__#expr-calls-anat-advanced",
                     "distribution": [
                         {
                             "@type": "DataDownload",
                             "encodingFormat": "TSV",
-                            "contentUrl": "https://bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/calls/expr_calls/__SPECIES_NAME___expr_advanced.tsv.gz"
+                            "contentUrl": "https://www.bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/calls/expr_calls/__SPECIES_NAME___expr_advanced.tsv.gz"
                         }
                     ]
                 },
@@ -390,18 +390,18 @@ sub get_schema_species {
                     "dateModified": "'.$dateModified.'",
                     "creator": {
                         "@type": "Organization",
-                        "url": "https://bgee.org/",
+                        "url": "https://www.bgee.org/",
                         "name": "The Bgee Team"
                     },
                     "license": "'.$bgeeLicense.'",
                     "name": "__SPECIES NAME__ gene expression simple with all conditions",
                     "description": "Anatomical entities, developmental stages, sexes and strains. File without advanced columns.",
-                    "url": "https://bgee.org/species/__TAXID__#expr-calls-cond-simple",
+                    "url": "https://www.bgee.org/species/__TAXID__#expr-calls-cond-simple",
                     "distribution": [
                         {
                             "@type": "DataDownload",
                             "encodingFormat": "TSV",
-                            "contentUrl": "https://bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/calls/expr_calls/__SPECIES_NAME___expr_simple_all_conditions.tsv.gz"
+                            "contentUrl": "https://www.bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/calls/expr_calls/__SPECIES_NAME___expr_simple_all_conditions.tsv.gz"
                         }
                     ]
                 },
@@ -410,18 +410,18 @@ sub get_schema_species {
                     "dateModified": "'.$dateModified.'",
                     "creator": {
                         "@type": "Organization",
-                        "url": "https://bgee.org/",
+                        "url": "https://www.bgee.org/",
                         "name": "The Bgee Team"
                     },
                     "license": "'.$bgeeLicense.'",
                     "name": "__SPECIES NAME__ gene expression advanced with all conditions",
                     "description": "Anatomical entities, developmental stages, sexes and strains. File with advanced columns.",
-                    "url": "https://bgee.org/species/__TAXID__#expr-calls-cond-advanced",
+                    "url": "https://www.bgee.org/species/__TAXID__#expr-calls-cond-advanced",
                     "distribution": [
                         {
                             "@type": "DataDownload",
                             "encodingFormat": "TSV",
-                            "contentUrl": "https://bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/calls/expr_calls/__SPECIES_NAME___expr_advanced_all_conditions.tsv.gz"
+                            "contentUrl": "https://www.bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/calls/expr_calls/__SPECIES_NAME___expr_advanced_all_conditions.tsv.gz"
                         }
                     ]
                 }
@@ -432,13 +432,13 @@ sub get_schema_species {
             "dateModified": "'.$dateModified.'",
             "creator": {
                 "@type": "Organization",
-                "url": "https://bgee.org/",
+                "url": "https://www.bgee.org/",
                 "name": "The Bgee Team"
             },
             "citation": "'.$bgeeCitation.'",
             "description": "Annotations and experiment information (e.g., annotations to anatomy and development, quality scores used in QCs, library information), and processed expression values (e.g., read counts, TPM and FPKM values) for __SPECIES NAME__",
             "includedInDataCatalog": {
-                "@id": "https://bgee.org/bgee'.$bgee_db_version.'",
+                "@id": "https://www.bgee.org/bgee'.$bgee_db_version.'",
                 "@type": "DataCatalog",
                 "name": "Bgee"
             },
@@ -450,7 +450,7 @@ sub get_schema_species {
             ],
             "license": "'.$bgeeLicense.'",
             "name": "__SPECIES NAME__ processed expression values",
-            "url": "https://bgee.org/species/__TAXID__#proc-values",
+            "url": "https://www.bgee.org/species/__TAXID__#proc-values",
             "version": "'.$bgee_version.'",
             "hasPart": [
 __DATATYPES__
@@ -458,7 +458,7 @@ __DATATYPES__
         },
         {
             "@type": "WebPage",
-            "url": "https://bgee.org/species/__TAXID__",
+            "url": "https://www.bgee.org/species/__TAXID__",
             "name": "Species: __SPECIES NAME____COMMON NAME2__"
         }
     ]
@@ -525,7 +525,7 @@ sub get_schema_genes {
     my $template = '{
     "@context": "https://schema.org/",
     "@type": "Gene",
-    "@id": "https://bgee.org/gene/__GENEID__",
+    "@id": "https://www.bgee.org/gene/__GENEID__",
     "http://purl.org/dc/terms/conformsTo": {
         "@id": "'.$bioschGene.'",
         "@type": "CreativeWork"
@@ -535,12 +535,12 @@ sub get_schema_genes {
     "name": "__GENENAME__",
     "subjectOf": {
         "@type": "WebPage",
-        "url": "https://bgee.org/bgee'.$bgee_db_version.'/gene/__GENEID__",
+        "url": "https://www.bgee.org/bgee'.$bgee_db_version.'/gene/__GENEID__",
         "name": "Gene: __GENENAME__ - __GENEID__ - __SPECIES NAME____COMMON NAME2__"
     },
     "taxonomicRange": {
         "@type": "Taxon",
-        "@id": "https://bgee.org/bgee'.$bgee_db_version.'/species/__TAXID__",
+        "@id": "https://www.bgee.org/bgee'.$bgee_db_version.'/species/__TAXID__",
         "name": "__SPECIES NAME____COMMON NAME2__",
         "identifier": __TAXID__,
         "sameAs": "http://purl.obolibrary.org/obo/NCBITaxon___TAXID__"
@@ -671,7 +671,7 @@ sub get_schema_gene_expression {
     my $template = '{
         "@context": "https://schema.org/",
         "@type": "Gene",
-        "@id": "https://bgee.org/gene/__GENEID__",
+        "@id": "https://www.bgee.org/gene/__GENEID__",
         "expressedIn": {
             "@type": "AnatomicalStructure",
             "@id": "http://purl.obolibrary.org/obo/__EXTIDURL__",
@@ -681,7 +681,7 @@ sub get_schema_gene_expression {
     }';
 
     #NOTE Use the HTTP API to catch only expressed in, without the parent terms with the same or lower score
-    my $URL = 'https://bgee.org/api/?display_type=json&page=gene&action=expression&gene_id='.$geneId.'&species_id='.$taxId.'&cond_param=anat_entity&cond_param=cell_type&data_type=all';
+    my $URL = 'https://www.bgee.org/api/?display_type=json&page=gene&action=expression&gene_id='.$geneId.'&species_id='.$taxId.'&cond_param=anat_entity&cond_param=cell_type&data_type=all';
     my $content = get($URL);
     my @expressed_json;
     if ( defined $content ){

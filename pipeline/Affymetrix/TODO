@@ -1,2 +1,2 @@
-- Integrate Marta's score (directly using her "IQRray" R library/method) (https://bgee.org/ftp/general/IQRray.R) (https://github.com/BgeeDB/IQRray)
+- Integrate Marta's score (directly using her "IQRray" R library/method) (https://www.bgee.org/ftp/general/IQRray.R) (https://github.com/BgeeDB/IQRray)
 - Try to not gunzip CEL files already analyzed, not valid, .... to save time at the *check_after* step that gzips them back

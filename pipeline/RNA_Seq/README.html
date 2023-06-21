@@ -807,7 +807,7 @@ out_folder=\&quot;$out_folder/output_present_absent\&quot; desired_r_cutoff=\&qu
 <ul>
 <li>Potential problems
 <ul>
-<li>Problem with <code>bigbgee</code> mounting</li>
+<li>Problem with <code>curnagl</code> mounting</li>
 <li>FastQC bug or streaming problem. Beware, these libraries can move to further steps and generate a <code>DONE.txt</code> (see below).</li>
 <li>Kallisto bug… Streaming too slow, streaming interrupted, sometimes everything is just fine but Kallisto bugs after reporting output… Beware, these libraries can move to further steps and generate a <code>DONE.txt</code>. Very important to check if number of reads processed corresponds to number of reads in FASTQ files (see below).</li>
 <li>How to track these bugs:</li>
@@ -900,15 +900,11 @@ grep 'Failed to process file stdin' $RNASEQ_CLUSTER_ALL_RES/*/*.err
 <div id="mapping-the-libraries-todos" class="section level2">
 <h2>Mapping the libraries: TODOs</h2>
 <ul>
-<li>Should we increase the number of parallel jobs (10) to a higher number (20 for example)? Maybe need to change SSH configuration on <code>bigbgee</code> to open more than 10 SSH ports. Need also to consider simultaneous accesses to Kallisto index files… Check machine status during run:</li>
+<li>Should we increase the number of parallel jobs (10) to a higher number (20 for example)? Maybe need to change SSH configuration on <code>curnagl</code> to open more than 10 SSH ports. Need also to consider simultaneous accesses to Kallisto index files… Check machine status during run:</li>
 </ul>
-<pre><code>  ssh bgee@bigbgee.unil.ch
-  # The 3 machines used on Vital-IT
-  ssh cpt172.prdclst.vital-it.ch
-  ssh cpt171.prdclst.vital-it.ch
-  ssh cpt133.prdclst.vital-it.ch</code></pre>
+<pre><code>ssh curnagl.dcsr.unil.ch</code></pre>
 <ul>
-<li>Transfer FastQC reports to <code>bigbgee</code>. Add a checking step to <a href="1Run/rna_seq_mapping_and_analysis.pl">1Run/rna_seq_mapping_and_analysis.pl</a> not to rerun it.</li>
+<li>Transfer FastQC reports to <code>curnagl</code>. Add a checking step to <a href="1Run/rna_seq_mapping_and_analysis.pl">1Run/rna_seq_mapping_and_analysis.pl</a> not to rerun it.</li>
 <li>Create a file, with number of lines for each FASTQ file. Add a checking step to <a href="1Run/rna_seq_mapping_and_analysis.pl">1Run/rna_seq_mapping_and_analysis.pl</a> to check if this is consistent with number of reads in FastQC reports and Kallisto input reads (# reads in fastq = 4 * #number of reads).</li>
 <li>Modify the download scripts, to use ENA instead of SRA when possible: FASTQ files are available directly there, so this would save us a lot of time!</li>
 <li>Add <code>check_pipeline</code> to Makefile to be sure to check many potential problems automatically</li>

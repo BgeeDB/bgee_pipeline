@@ -145,15 +145,15 @@ if (dir.exists(file.path(kallisto_bus_results, libraryId))){
       ## step 3 --> count with bustools count
       ## TCC level
       message("TCC level")
-      ## the -m parameter allows to include bus records that pseudoalign to multiple genes
-      system(sprintf('bustools count -m -o %s -g %s -e %s -t %s %s', file.path(tcc_counts, "tcc"),
+      ## the -em parameter estimates gene abundances using an EM algorithm for reads that pseudoalign to multiple genes.
+      system(sprintf('bustools count -em -o %s -g %s -e %s -t %s %s', file.path(tcc_counts, "tcc"),
         tx2gene_file, file.path(pathBusOut, "matrix.ec"), file.path(pathBusOut, "transcripts.txt"),
         file.path(pathBusOut, "output.correct.sort.bus")))
       ## GENE level
       message("Gene level")
       bustoolsGeneMatrix <- "gene"
-      ## the -m parameter allows to include bus records that pseudoalign to multiple genes
-      system(sprintf('bustools count -m -o %s -g %s -e %s -t %s --genecounts %s',
+      ## the -em parameter estimates gene abundances using an EM algorithm for reads that pseudoalign to multiple genes.
+      system(sprintf('bustools count -em -o %s -g %s -e %s -t %s --genecounts %s',
         file.path(gene_counts, bustoolsGeneMatrix), tx2gene_file, file.path(pathBusOut, "/matrix.ec"),
         file.path(pathBusOut, "transcripts.txt"), file.path(pathBusOut, "output.correct.sort.bus")))
       ## CPM level

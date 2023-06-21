@@ -123,7 +123,7 @@ REMOVE_SPECIES_PAIRS = False
 #For more information about the config template, please see the README.md file of the orthologs/paralogs app	
 define CONFIG_TEMPLATE
 [DEFAULT]
-bgee_sparql_endpoint = https://bgee.org/sparql/
+bgee_sparql_endpoint = https://www.bgee.org/sparql/
 oma_sparql_endpoint = https://sparql.omabrowser.org/sparql/
 ncbi_gene2ensembl_URL = $(NCBI_GENE2ENSEMBL_URL)
 log = $(LOG_HOMOLOGS)

@@ -543,7 +543,7 @@ SC_RNASEQ_CLUSTER_KALLISTO_STATS              := $(SC_RNASEQ_CLUSTER_BGEECALL)re
 
 ## Specific paths to results of target-based protocols
 
-SC_RNASEQ_STATS_LIBRARIES_10X                 := $(OUTPUT_DIR)/Target_based/stats_libraries.txt
+SC_RNASEQ_STATS_LIBRARIES_10X                 := $(SC_RNASEQ_TB_FOLDER_GENERATED)/stats_libraries.txt
 
 ## on Jura cluster
 SC_RNASEQ_CLUSTER_ALL_RES_DROPLET             := $(SC_RNASEQ_CLUSTER_ALL_RES)DROPLET_10X/
