@@ -1,5 +1,5 @@
 "Uberon ID"	"Uberon name"	"Only in Taxon IDs"	"Only in Taxon Names"	"Never in Taxon IDs"	"Never in Taxon Names"	"Comments"
-"//CEPH:"	"kk"	6605	"Cephalopoda"			"CEPH ontology for cephalopod"
+"//CEPH:"		6605	"Cephalopoda"			"CEPH ontology for cephalopod"
 "CEPH:"				1		"CEPH ontology for cephalopod"
 "CL:0000871"	"splenic macrophage"			"7740, 1206794"	"Branchiostoma lanceolatum, Ecdysozoa"	
 "CL:0000872"	"splenic marginal zone macrophage"			"7740, 1206794"	"Branchiostoma lanceolatum, Ecdysozoa"	
@@ -155,3 +155,4 @@
 "UBERON:0012119"	"vinculum tendon of wing"	436491	"Theropoda"			
 "UBERON:4300230"	"forelimb wing bud"	436491	"Theropoda"			
 "UBERON:4300231"	"forelimb wing bud mesenchyme"	436491	"Theropoda"			
+"UBERON:3010423"	"larval aorta"			9347	"Eutheria"	
