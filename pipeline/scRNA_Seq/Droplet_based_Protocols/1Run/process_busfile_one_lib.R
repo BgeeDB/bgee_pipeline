@@ -9,6 +9,7 @@
 ## 1) Correct the barcodes using bustools correct: fix the barcodes that are within one hamming distance of the barcodes in the whitelist using whitelist.txt
 ## 2) Sort the busfile using bustools sort: organize the busfile by barcode, UMI, set and multiplicity.
 ## 3) Count records in the BUS with bustools count: generate the UMI count matrix using transcripts_to_genes.txt.
+## 4) Normalized CPM expression level for all genes without intergenic regions
 
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNA_Seq_info_TargetBased.txt" kallisto_bus_results="kallisto_bus_results" folder_gtf="folder_gtf" whiteList_Path="whiteList_Path"' process_busFile.R process_busFile.Rout
