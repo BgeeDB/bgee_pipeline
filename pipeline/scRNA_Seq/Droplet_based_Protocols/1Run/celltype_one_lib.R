@@ -59,8 +59,11 @@ if( file.exists(scRNASeq_Info) ){
 }
 
 ##########################################################################################################################################################
-## function to filter the barcodes based on the inflection point
-singlecellKnee <- function(sparseMatrix, libraryID){
+## We decided not to filter data in our pipeline but rather to trust author
+## cluster/celltype analysis. Then, we do not anymore filter cells based on the kneeplot.
+## We still generate the kneeplot and provide number of cells that would have been
+## filtered if we were using this QC.
+singlecellKnee <- function(sparseMatrix, libraryID, tot_counts){
   ## rank barcodes to do the knee
   bc_rank <- barcodeRanks(sparseMatrix)
   kneePlot <- qplot(bc_rank$total, bc_rank$rank, geom = "line") +
@@ -77,7 +80,7 @@ singlecellKnee <- function(sparseMatrix, libraryID){
   ## Filtering all genes that are zero in all barcodes!
   ##m_filtered <- m_filtered[tot_genes > 0, ]
   
-  pdf(file = paste0(output, libraryID, "/kneePlot.pdf"), width = 16, height = 10)
+  pdf(file = file.path(output, libraryID, "kneePlot.pdf"), width = 16, height = 10)
   grid.arrange(kneePlot,ncol = 1, nrow = 1)
   dev.off()
   
@@ -92,75 +95,65 @@ seuratObject <- function(m_filtered){
 }
 
 ## function to target cells after knee filtering based on the barcode information (provide clustering information)
-targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
+targetCells <- function(objectNormalized, objectNormalized_filtered, barcodeInfo, biotypeInfo, libraryID){
   
   ## select cells based on the barcode ID's
-  if (nrow(barcodeIDs) != 0){
+  if (nrow(barcodeInfo) != 0){
     
-    onlyBarcode <- barcodeIDs[,1]
-    onlyBarcode <- unlist(onlyBarcode, use.names=FALSE)
-    ## subset barcodes
-    myData <- subset(objectNormalized,  cells = onlyBarcode)
-    
-    ## verify if all are present (this is dependent of the Knee plot - quality control)
-    presentSubset <- as.data.frame(colnames(myData))
-    colnames(presentSubset) <- "barcode"
-    #dim(presentSubset)
-    
-    ## change metadata: add info about the cell type for each barcode
-    ## select from barcode file: barcode ID (column 1) and cellTypeName (column 9)
-    barcode_cell <- barcodeIDs %>% dplyr::select(barcode, cellTypeName, cellTypeId)
-    barcode_cell <- barcode_cell[ barcode_cell$barcode %in% presentSubset$barcode, ]
-    
-    barcode_cellName <- barcode_cell$cellTypeName
-    barcode_cellName <- unlist(barcode_cellName, use.names=FALSE)
-    barcode_cellId <- barcode_cell$cellTypeId
-    barcode_cellId <- unlist(barcode_cellId, use.names=FALSE)
-    myData$cell_type <- barcode_cellName
-    myData$cell_id <- barcode_cellId
+    barcode_ids_having_celltype_annot <- barcodeInfo$barcode
+    ## subset barcodes for which celltype are provided
+    seurat_object_with_celltype <- subset(objectNormalized,  cells = barcode_ids_having_celltype_annot)
+    ##  subset barcodes that passed the kneeplot inflection point QC and that have celltype annotation
+    seurat_object_with_celltype_filtered <- subset(objectNormalized_filtered,  cells = barcode_ids_having_celltype_annot)
+    message(ncol(seurat_object_with_celltype) - ncol(seurat_object_with_celltype_filtered), " cells out of ",
+        ncol(seurat_object_with_celltype), " with celltype annotation would have been removed by filtering ",
+        "on the inflection point of the kneeplot.")
+
+    seurat_object_with_celltype$celltype_name <- barcodeInfo$cellTypeName
+    seurat_object_with_celltype$celltype_id <- barcodeInfo$cellTypeId
     #head(myData[[]])
     ## remove unsigned cells (this avoid the exportation of the file of unassigned cells)
-    myData <- subset(myData,  cell_type != "Unassigned")
+    seurat_object_with_celltype <- subset(seurat_object_with_celltype,  celltype_name != "Unassigned")
     
     set.seed(42)
-    myData <- FindVariableFeatures(myData, selection.method = "vst", nfeatures = 2000)
+    seurat_object_with_celltype <- FindVariableFeatures(seurat_object_with_celltype, selection.method = "vst", nfeatures = 2000)
     ## Identify the 20 most highly variable genes
-    top20 <- head(VariableFeatures(myData), 20)
+    message("20 most highly variable genes : ")
+    head(VariableFeatures(seurat_object_with_celltype), 20)
     ## scale the data
-    all.genes <- rownames(myData)
-    myData <- ScaleData(myData, features = all.genes)
+    seurat_object_with_celltype <- ScaleData(seurat_object_with_celltype, features = rownames(seurat_object_with_celltype))
     ## Run PCA
-    myData <- RunPCA(myData, features = VariableFeatures(object = myData))
-    myData <- FindNeighbors(myData, dims = 1:20)
-    myData <- FindClusters(myData, resolution = 1)
+    seurat_object_with_celltype <- RunPCA(seurat_object_with_celltype, features = VariableFeatures(object = seurat_object_with_celltype))
+    seurat_object_with_celltype <- FindNeighbors(seurat_object_with_celltype, dims = 1:20)
+    seurat_object_with_celltype <- FindClusters(seurat_object_with_celltype, resolution = 1)
     ## Run UMAP
-    myData <- RunUMAP(myData, dims = 1:20)
-    umapPlot <- DimPlot(myData, reduction = "umap", group.by='seurat_clusters')
+    seurat_object_with_celltype <- RunUMAP(seurat_object_with_celltype, dims = 1:20)
+    umapPlot <- DimPlot(seurat_object_with_celltype, reduction = "umap", group.by='seurat_clusters')
     pdf(file.path(output, libraryID, "UMAP_seurat_cluster.pdf"))
     print(umapPlot)
     dev.off()
-    umapPlot <- DimPlot(myData, reduction = "umap", group.by='cell_type')
+    umapPlot <- DimPlot(seurat_object_with_celltype, reduction = "umap", group.by='celltype_id')
     ## save UMAP information with cell_type
     pdf(file.path(output, libraryID, "UMAP_cellType_cluster.pdf"))
     print(umapPlot)
     dev.off()
-    umapPlot <- DimPlot(myData, reduction = "umap", group.by='cell_id')
+    umapPlot <- DimPlot(seurat_object_with_celltype, reduction = "umap", group.by='celltype_id')
     ## save UMAP information with cell_ontology
     pdf(file.path(output, libraryID, "UMAP_cellID_cluster.pdf"))
     print(umapPlot)
     dev.off()
     
     ## collect raw UMI counts and normalized data counts for each cell
-    finalRaw <- data.frame(myData@assays$RNA@counts)
-    finalCPM <- data.frame(myData@assays$RNA@data)
+    finalRaw <- data.frame(seurat_object_with_celltype@assays$RNA@counts)
+    finalCPM <- data.frame(seurat_object_with_celltype@assays$RNA@data)
     
     ## write in the output the info per cell type that is present in the library
     infoCollected <- c()
-    for (cell in unique(myData$cell_type)) {
-      for (cellId in unique(myData$cell_id[myData$cell_type == cell])) {
+    for (cell in unique(seurat_object_with_celltype$celltype_name)) {
+      for (cellId in unique(seurat_object_with_celltype$celltype_id[seurat_object_with_celltype$celltype_name == cell])) {
         message("cell : ", cellId)
         ## split information
-        barcodesID <- colnames(myData)[myData$cell_type == cell & myData$cell_id == cellId] 
+        barcodesID <- colnames(seurat_object_with_celltype)[seurat_object_with_celltype$celltype_name == cell & seurat_object_with_celltype$celltype_id == cellId] 
         ## export raw counts to each cell type
         rawCountsCell <- finalRaw[(names(finalRaw) %in% barcodesID)]
         rawCountsCell <- cbind(names = rownames(rawCountsCell), rawCountsCell)
@@ -200,7 +193,7 @@ targetCells <- function(objectNormalized, barcodeIDs, biotypeInfo, libraryID){
     infoCollected <- as.data.frame(infoCollected)
     colnames(infoCollected) <- c("Number_genes", "Number_cells", "Cell_Name", "Cell_Ontology")
 
-    return(list(myData[[]],infoCollected))
+    return(list(seurat_object_with_celltype[[]],infoCollected))
   } else {
     message("Library", libraryID, "not take in consideration for posterior analysis.")
     message("Barcode not provided!")
@@ -230,7 +223,9 @@ if (file.exists(file.path(kallisto_bus_results, libraryId, "gene_counts"))){
   } else {
   
     ## create folder per library
-    dir.create(file.path(output, libraryId))
+    if(!dir.exists()) {
+      dir.create(file.path(output, libraryId))
+    }
 
     ## Create a sparseMatrix
     sparseMatrix <- read_count_output(path2Files, "gene", tcc = FALSE)
@@ -239,15 +234,17 @@ if (file.exists(file.path(kallisto_bus_results, libraryId, "gene_counts"))){
     ## barcodes detected (cell per column) and genes detected (rows)
     ## How many UMIs per barcode (cell)
     tot_counts <- Matrix::colSums(sparseMatrix)
-    message("created total counts variable")
     ## How many genes detected
     tot_genes <- rowSums(sparseMatrix)
-    message("created total genes variable")
-    ## filtering cells based on the knee plot
-    knee <- singlecellKnee(sparseMatrix = sparseMatrix, libraryID = libraryId)
+    ## filter cells based on inflection point of the kneeplot.
+    ## this is not anymore used to filter the cells but just to generate a kneeplot
+    ## and provide filtering info in case we want to check proportion of cells with cell-type annotation
+    ## that would have been removed
+    sparseMatrix_filtered <- singlecellKnee(sparseMatrix = sparseMatrix, libraryID = libraryId, tot_counts = tot_counts)
     message("created kneeplot")
     ## perform the seurat object and get raw and normalized counts
-    object <- seuratObject(m_filtered = knee)
+    object_seurat <- seuratObject(m_filtered = sparseMatrix)
+    object_seurat_filtered <- seuratObject(m_filtered = sparseMatrix_filtered)
   
     ## read biotype information
     biotypeInfoFile <- file.path(folderSupport,
@@ -272,8 +269,8 @@ if (file.exists(file.path(kallisto_bus_results, libraryId, "gene_counts"))){
     barcodeLibrary <- dplyr::filter(barcodeExperiment, library == libraryId)
     
     ## link barcode to cell ID and export information
-    finalInformationCells <- targetCells(objectNormalized = object, barcodeIDs = barcodeLibrary,
-      biotypeInfo = biotypeInfo, libraryID = libraryId)
+    finalInformationCells <- targetCells(objectNormalized = object_seurat, objectNormalized_filtered = object_seurat_filtered,
+      barcodeInfo = barcodeLibrary, biotypeInfo = biotypeInfo, libraryID = libraryId)
     infoCells <- finalInformationCells[[2]]
     
     ## verify if function targetCells is NULL
