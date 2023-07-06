@@ -74,7 +74,7 @@ if (exists('speciesIds')) {
 # If libraryIds are provided then use them to filter libraries to process in the pipeline
 if (exists('libraryIds')) {
   libraryIds <- as.list(strsplit(x = libraryIds, split = ",")[[1]])
-  filtered_lib_annot <- filtered_lib_annot[filtered_lib_annot$libraryId %in% libraryIds,]
+  filtered_lib_annot <- filtered_lib_annot[filtered_lib_annot$X.libraryId %in% libraryIds,]
 }
 ### Finally write filtered files in the output dir
 colnames(filtered_exp_annot)[1] <- "experimentId"
