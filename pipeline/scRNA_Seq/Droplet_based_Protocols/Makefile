@@ -34,7 +34,8 @@ retrieve_metadata: get_annot 0Preparation/retrieve_metadata.R
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                   0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@export scRNASeqExperiment=.*@export scRNASeqExperiment=$(SC_RNASEQ_EXPERIMENT_FILEPATH_FILTERED)@'  0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@export scRNASeqTBLibrary=.*@export scRNASeqTBLibrary=$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED)@'        0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export output_file=.*@export output_file=$(SC_RNASEQ_METADATA_10X_FILEPATH)@'                       0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export metadata_file=.*@export metadata_file=$(SC_RNASEQ_METADATA_10X_FILEPATH)@'                   0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export information_file=.*@export information_file=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'             0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET)@'                                     0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@export R_LIBS_USER=.*@export R_LIBS_USER=$(R_LIBS_PATH_CURNAGL)@'                                   0Preparation/retrieve_metadata.sbatch
 	@sbatch 0Preparation/retrieve_metadata.sbatch

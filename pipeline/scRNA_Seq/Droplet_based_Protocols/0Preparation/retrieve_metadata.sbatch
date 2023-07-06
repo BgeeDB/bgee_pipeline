@@ -21,7 +21,8 @@ module add R/3.6.1;
 export SCRIPT_PATH=/scratch/jwollbre/git/bgee_pipeline/pipeline/scRNA_Seq/Droplet_based_Protocols
 export scRNASeqExperiment=../../../source_files/scRNA_Seq/scRNASeqExperiment.tsv
 export scRNASeqTBLibrary=../../../source_files/scRNA_Seq/Target_based/scRNASeqTBLibrary.tsv
-export output_file=../../../generated_files/scRNA_Seq/Target_based/metadata_info_10X.txt
+export metadata_file=../../../generated_files/scRNA_Seq/Target_based/metadata_info_10X.txt
+export information_file=../../../generated_files/scRNA_Seq/scRNA_Seq_info_TargetBased.txt
 export ROUT=/work/FAC/FBM/DEE/mrobinso/bgee/downloads/scRNA_Seq_All/scRNASeq_libraries_Droplet_10X/
 
 mkdir -p $ROUT
