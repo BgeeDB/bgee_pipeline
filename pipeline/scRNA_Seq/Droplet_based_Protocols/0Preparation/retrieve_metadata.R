@@ -61,7 +61,7 @@ SRA_metadata <- function(libraryID){
   ena.url <- paste("https://www.ebi.ac.uk/ena/portal/api/filereport?accession=",
                    PID,
                    "&result=read_run",
-                   "&fields=experiment_accession,run_accession,",
+                   "&fields=sample_accession,experiment_accession,run_accession,",
                    "read_count,tax_id,scientific_name,",
                    "instrument_model,library_layout,fastq_ftp,submitted_ftp,",
                    "&download=TRUE",
@@ -71,7 +71,7 @@ SRA_metadata <- function(libraryID){
 }
 
 # define header of SRA metadata files. Used to reorder columns before writing
-metadata_file_header <- c("sample_accession","experiment_id", "library_id", "run_accession",
+metadata_file_header <- c("sample_accession", "experiment_id", "library_id", "run_accession",
                           "read_count", "tax_id", "scientific_name", "instrument_model",
                           "library_layout", "fastq_ftp", "submitted_ftp", "source")
 
@@ -131,10 +131,12 @@ if (!is.null(metadata)) {
   metadata <- merge(metadata, selected_libraries[, c("libraryId","experimentId")],
     by.x="library_id", by.y="libraryId")
   names(metadata)[names(metadata) == 'experimentId'] <- 'experiment_id'
-  metadata <- metadata[, c(metadata_file_header)]
-  information <- merge(annotation, metadata[, c("library_id", "run_accession", "read_count", "tax_id",
-    "scientific_name", "library_layout")], by.x="libraryId", by.y="library_id")
+  metadata <- metadata[, metadata_file_header]
 }
+
+information <- merge(annotation, metadata[, c("library_id", "run_accession", "read_count", "tax_id",
+  "scientific_name", "library_layout")], by.x="libraryId", by.y="library_id")
+
 # write file with metadata from SRA
 write.table(metadata, file = metadata_file, quote = FALSE, sep = "\t", col.names = TRUE,
   row.names = FALSE)
