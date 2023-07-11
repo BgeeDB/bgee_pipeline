@@ -59,6 +59,7 @@ my %sbatchToRun = ();
 
 ## create directory necessary to store sbatch files
 make_path("$outputDir/sbatch");
+make_path("$outputDir/clusterOutput");
 my $jobPrefix = "download_";
 my $jobs_created = 0;
 ## first create sbatch files and add them to an array of sbatch to run
@@ -73,7 +74,7 @@ foreach my $experimentId (keys %processedLibraries){
             ## Use 4Gb of memory. Should maybe be increase depending on the run to download
             ## ask for 4 cpus as it is the number of threads used by the bamtofastq tool
             my $sbatchTemplate = Utils::sbatch_template($queue, $account, 4,
-              4, "$outputDir/$jobName.out", "$outputDir/$jobName.err",
+              4, "$outputDir/cluterOutput/$jobName.out", "$outputDir/clusterOutput/$jobName.err",
               $jobName);
             $sbatchTemplate .= "export bamtofastq=$bamtofastq\n";
             my $runDirectory = "$outputDir/$experimentId/$libraryId/$runId";
@@ -101,11 +102,11 @@ foreach my $experimentId (keys %processedLibraries){
                         #download
                         $sbatchTemplate .= "wget --no-verbose --directory-prefix=$runDirectory $bamInfo &&\n";
                         if ($bamInfo =~ m/_I1_/) {
-                            $sbatchTemplate .= "mv $runDirectory/".basename($bamInfo)." $runDirectory/FASTQ/$(runId)_I1.fastq.gz &&\n";
+                            $sbatchTemplate .= "mv $runDirectory/".basename($bamInfo)." $runDirectory/FASTQ/".$runId."_I1.fastq.gz &&\n";
                         } elsif ($bamInfo =~ m/_R1_/) {
-                            $sbatchTemplate .= "mv $runDirectory/".basename($bamInfo)." $runDirectory/FASTQ/$(runId)_R1.fastq.gz &&\n";
+                            $sbatchTemplate .= "mv $runDirectory/".basename($bamInfo)." $runDirectory/FASTQ/".$runId."_R1.fastq.gz &&\n";
                         } elsif ($bamInfo =~ m/_R2_/) {
-                            $sbatchTemplate .= "mv $runDirectory/".basename($bamInfo)." $runDirectory/FASTQ/$(runId)_R2.fastq.gz &&\n";
+                            $sbatchTemplate .= "mv $runDirectory/".basename($bamInfo)." $runDirectory/FASTQ/".$runId."_R2.fastq.gz &&\n";
                         } else {
                             warn "did not manage to rename the file $bamInfo";
                         }
@@ -114,7 +115,7 @@ foreach my $experimentId (keys %processedLibraries){
                     $sbatchTemplate .= "wget --no-verbose --directory-prefix=$runDirectory $bamInfos[0] &&\n";
                     $sbatchTemplate .= "if [ -d $runDirectory/FASTQ ]; then rm -rf $runDirectory/FASTQ; fi &&\n";
                     $sbatchTemplate .= "$bamtofastq --reads-per-fastq=90000000000 --nthreads=4 $runDirectory/".basename($bamInfos[0])." $runDirectory/FASTQ &&\n";
-                    $sbatchTemplate .= "find $runDirectory \\(-name '*.fastq.gz' -o -name '*.fq.gz'\\) -exec mv -t $runDirectory/FASTQ {} + &&\n";
+                    $sbatchTemplate .= "find $runDirectory -name '*.fastq.gz' -o -name '*.fq.gz' -exec mv -t $runDirectory/FASTQ {} + &&\n";
                     $sbatchTemplate .= "rm $runDirectory/".basename($bamInfos[0])." &&\n";
                 } else {
                     warn "unrecognized file extension for $bamInfos[0]";
