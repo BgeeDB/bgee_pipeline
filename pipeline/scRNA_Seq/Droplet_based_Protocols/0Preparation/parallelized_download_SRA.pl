@@ -109,6 +109,7 @@ foreach my $experimentId (keys %processedLibraries){
                         } else {
                             warn "did not manage to rename the file $bamInfo";
                         }
+                    }
                 } elsif ($bamInfos[0] =~ m/\.bam$/) {
                     $sbatchTemplate .= "wget --no-verbose --directory-prefix=$runDirectory $bamInfos[0] &&\n";
                     $sbatchTemplate .= "if [ -d $runDirectory/FASTQ ]; then rm -rf $runDirectory/FASTQ; fi &&\n";
