@@ -65,6 +65,7 @@ my $jobs_created = 0;
 foreach my $experimentId (keys %processedLibraries){
     foreach my $libraryId (keys %{$processedLibraries{$experimentId}}){
         foreach my $runId (keys %{$processedLibraries{$experimentId}{$libraryId}}){
+            next if $runId eq "speciesId";
             $jobs_created++;
             #create sbatch file and
             my $source = $processedLibraries{$experimentId}{$libraryId}{$runId}{'downloadSource'};
