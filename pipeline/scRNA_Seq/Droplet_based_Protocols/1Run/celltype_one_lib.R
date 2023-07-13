@@ -223,7 +223,7 @@ if (file.exists(file.path(kallisto_bus_results, libraryId, "gene_counts"))){
   } else {
   
     ## create folder per library
-    if(!dir.exists()) {
+    if(!dir.exists(file.path(output, libraryId))) {
       dir.create(file.path(output, libraryId))
     }
 
