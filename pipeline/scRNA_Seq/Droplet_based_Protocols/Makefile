@@ -50,7 +50,7 @@ retrieve_metadata: get_annot 0Preparation/retrieve_metadata.R
 
 ## Download from HCA
 #XXX: Why this rule is the only one already using the dcsr environment?
-download_HCA: retrieve_metadata 0Preparation/download_HCA.sbatch
+download_HCA: retrieve_metadata 0Preparation/download_HCA.R
 	@echo --- Starting downloading the data from Human Cell Atlas ---
 	@sed -i 's@--output=.*@--output=${PWD}/download_HCA.out@'                                                         0Preparation/download_HCA.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/download_HCA.err@'                                                           0Preparation/download_HCA.sbatch
@@ -82,22 +82,12 @@ download_EBI: retrieve_metadata 0Preparation/download_reformat_EBI.R
 	@echo --- DONE ---
 	@touch $@
 
-## Download from SRA
-download_SRA: retrieve_metadata 0Preparation/download_SRA.R
-	@echo --- Starting downloading the data from SRA ---
-	@sed -i 's@--output=.*@--output=${PWD}/download_SRA.out@'                                                        0Preparation/download_SRA.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/download_SRA.err@'                                                          0Preparation/download_SRA.sbatch
-	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                     0Preparation/download_SRA.sbatch
-	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                           0Preparation/download_SRA.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                     0Preparation/download_SRA.sbatch
-	@sed -i 's@export metadata_info=.*@export metadata_info=$(SC_RNASEQ_METADATA_10X_FILEPATH)@'                     0Preparation/download_SRA.sbatch
-	@sed -i 's@export librariesDownloadedJura=.*@export librariesDownloadedJura=$(SC_RNASEQ_JURA_LIB_FILEPATH)@'     0Preparation/download_SRA.sbatch
-	@sed -i 's@export output=.*@export output=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET)@'                                   0Preparation/download_SRA.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET)@'                                       0Preparation/download_SRA.sbatch
-	@sbatch 0Preparation/download_SRA.sbatch
-	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
-	@echo --- DONE ---
-	@touch $@
+# Rule used to parallelize download of libraries and to homogenize fastq file names
+# it replaces the old rules not parallelized and downloading files depending on the sources
+# (see scripts 0Preparation/download_SRA.R, 0Preparation/download_HCA.R and 0Preparation/download_reformat_EBI.R)
+parallelized_download:
+	@perl 0Preparation/parallelized_download_SRA.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -parallelJobs=50 -outputDir=$(CLUSTER_CURNAGL_PATH)scRNA_Seq_All/scRNASeq_libraries_Droplet_10X -bamtofastq=$(SCRNASEQ_SOFTWARE_BAMTOFASTQ) -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
+	@$(MV) $@.tmp $@
 
 ## Add new libraries download to the jura file list (run rule in front)
 #NOTE *make -j3 list_new_downloads*  should run the 3 downloads in parallel
@@ -238,7 +228,7 @@ process_busFile: uncompress_barcodes 1Run/process_busfile_one_lib.R
 ## Quality control (Knee + PCA + UMAP for each library) + cell type identification
 qc_cellType: process_busFile 1Run/parallelized_qcCellIdentification.pl
 	@echo --- Starting the quality control and the cell type identification ---
-	@perl 1Run/parallelized_qcCellIdentification.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH)  -parallelJobs=100 -gtfDir=$(RNASEQ_CLUSTER_GTF) -barcodeFolder=$(SC_RNASEQ_CLEANED_BARCODES) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -outputDir=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/celltype_one_lib.R -rLibs=$(R_LIBS_PATH_CURNAGL) > $@.out 2>> $@.err
+	@perl 1Run/parallelized_qcCellIdentification.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH)  -parallelJobs=100 -gtfDir=$(RNASEQ_CLUSTER_GTF) -barcodeFolder=$(SC_RNASEQ_CLEANED_BARCODES) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -outputDir=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/celltype_one_lib.R -rLibs=$(R_LIBS_PATH_JURA) > $@.out 2>> $@.err
 	@mv $@.tmp $@
 
 ## Quality control based on the bimodality of the cell-population per library/cell-type pop
