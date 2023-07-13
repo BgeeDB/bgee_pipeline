@@ -101,7 +101,7 @@ for (expId in unique(selected_experiments$experimentId)) {
       if (!identical(as.character(library$platform),as.character(unique(extractSRA$instrument_model)))) {
         warning("Mismatch platform for library ", library$libraryId, " expected", library$platform,
                 " but was ", unique(extractSRA$instrument_model))
-        metadata_with_mismatch <- rbind(metadata_with_mismatch, extractSRA)
+        metadata <- rbind(metadata, extractSRA)
       } else if (!identical(as.character(library$speciesId),as.character(unique(extractSRA$tax_id)))) {
         warning("Mismatch species for library ", library$libraryId, " expected", library$speciesId,
                 " but was ", unique(extractSRA$tax_id))
