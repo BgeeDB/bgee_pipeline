@@ -197,7 +197,7 @@ generate_gtf_nascent: cleaning_barcodes 0Preparation/generate_GTF_nascent.R
 
 prepare_single_nucleus_index: generate_gtf_nascent 0Preparation/slurm_single_nucleus_index.pl
 	#Preparing single nucleus indexed transcriptome for every species
-	@perl 0Preparation/slurm_single_nucleus_index.pl -transcriptome_folder=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(OUTPUT_DIR) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -partition=$(SENSITIVE_CLUSTER_PARTITION) -cluster_kallisto_cmd="$(CLUSTER_KALLISTO_CMD)" -cluster_tophat_cmd="$(CLUSTER_TOPHAT_CMD)" >$@.tmp 2>&1
+	@perl 0Preparation/slurm_single_nucleus_index.pl -transcriptome_folder=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(SC_RNASEQ_TB_FOLDER_GENERATED) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -partition=$(SENSITIVE_CLUSTER_PARTITION) -cluster_kallisto_cmd="$(CLUSTER_KALLISTO_CMD)" -cluster_tophat_cmd="$(CLUSTER_TOPHAT_CMD)" >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
 
 ## Run Kallisto bus per taxon_iD/library
