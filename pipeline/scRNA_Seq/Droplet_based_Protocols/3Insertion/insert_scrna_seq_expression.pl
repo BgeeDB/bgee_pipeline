@@ -10,8 +10,8 @@ use Data::Dumper;
 # Julien Wollbrett, created April 2023
 
 # USAGE: perl insert_scrna_seq_expression.pl -bgee=connection_string <OPTIONAL: -debug>
-# After the insertion of full length single cell RNA-Seq data, this script inserts the data
-# into the expression table and update the scRnaSeqFullLengthResult table.
+# After the insertion of target base single cell RNA-Seq data, this script inserts the data
+# into the expression table and update the rnaSeqLibraryAnnotatedSampleGeneResult table.
 # -debug: if provided, run in verbose mode (print the update/insert SQL queries, not executing them)
 
 #############################################################
