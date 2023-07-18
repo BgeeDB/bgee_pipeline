@@ -6,6 +6,9 @@
 ## TODO: As it is the same annotation file used for target based and full length single cell,
 ## this script will probably move to single_cell_utils.R and be used by both pipelines.
 
+## July 2023: added possibility to filter based on species and library IDs. the filtering is on speciesIds AND libraryIds.
+##            to to so use attributes speciesIds and libraryIds as a comma separated list without space (e.g speciesIds="7727,9606")
+
 ## reading arguments
 cmd_args = commandArgs(TRUE);
 print(cmd_args)
@@ -23,11 +26,6 @@ for( c_arg in command_arg ){
   }
 }
 
-scRNASeqTBLibrary <- "~/Documents/git/bgee_pipeline/generated_files/scRNA_Seq/Target_based/scRNASeqTBLibrary.tsv"
-scRNASeqExperiment <- "~/Documents/git/bgee_pipeline/generated_files/scRNA_Seq/Target_based/scRNASeqExperiment.tsv"
-acceptedProtocols <- "~/Documents/git/bgee_pipeline/source_files//scRNA_Seq/acceptedProtocols.tsv"
-strainMapping <- "~/Documents/git/bgee_pipeline/source_files/Strains/StrainMapping.tsv"
-outputDir <- "~/Documents/temp/FCA/"
 ############################ Functions #################################
 
 readTsvFile<- function(fileToRead, header = TRUE, sep = "\t", quote = "",
@@ -60,7 +58,7 @@ for (rowNumber in seq(nrow(raw_exp_annot))) {
   }
 }
 filtered_lib_annot <- raw_lib_annot[raw_lib_annot$protocol %in% target_based_protocols$Protocols
-  & raw_lib_annot$whiteList %in% target_based_protocols$target_whiteList & raw_lib_annot$speciesId == 7227,]
+  & raw_lib_annot$whiteList %in% target_based_protocols$target_whiteList,]
 
 ## Then update Strain to fit standardized strain names
 for (i in seq(nrow(standardised_strains))) {
@@ -68,6 +66,16 @@ for (i in seq(nrow(standardised_strains))) {
     & filtered_lib_annot$speciesId == standardised_strains[i,]$speciesId] <- standardised_strains[i,]$targetStrain
 }
 
+# If speciesIds are provided then use them to filter libraries to process in the pipeline
+if (exists('speciesIds')) {
+  speciesIds <- as.list(strsplit(x = speciesIds, split = ",")[[1]])
+  filtered_lib_annot <- filtered_lib_annot[filtered_lib_annot$speciesId %in% speciesIds,]
+}
+# If libraryIds are provided then use them to filter libraries to process in the pipeline
+if (exists('libraryIds')) {
+  libraryIds <- as.list(strsplit(x = libraryIds, split = ",")[[1]])
+  filtered_lib_annot <- filtered_lib_annot[filtered_lib_annot$X.libraryId %in% libraryIds,]
+}
 ### Finally write filtered files in the output dir
 colnames(filtered_exp_annot)[1] <- "experimentId"
 colnames(filtered_lib_annot)[1] <- "libraryId"

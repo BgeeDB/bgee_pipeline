@@ -1316,7 +1316,7 @@ sub sbatch_template {
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=$nbr_processors
 #SBATCH --mem=${memory_usage}G
-#SBATCH --time=12:00:00
+#SBATCH --time=2-00:00:00
 
 #SBATCH --output=$output_file
 #SBATCH --error=$error_file

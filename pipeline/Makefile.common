@@ -517,7 +517,7 @@ SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH     := $(SC_RNASEQ_DOWNLOAD_PATH_LIB_DIR)scR
 SC_RNASEQ_DOWNLOAD_PATH_DROPLET         := $(SC_RNASEQ_DOWNLOAD_PATH_LIB_DIR)scRNASeq_libraries_Droplet_10X/
 
 # scRNAseq cluster sofware
-SCRNASEQ_SOFTWARE_BAMTOFASTQ                  := /users/sfonseca1/bin/bamtofastq-1.2.0
+SCRNASEQ_SOFTWARE_BAMTOFASTQ                  := /users/jwollbre/tools/bamtofastq_linux
 
 # scRNAseq cluster paths (JURA)
 

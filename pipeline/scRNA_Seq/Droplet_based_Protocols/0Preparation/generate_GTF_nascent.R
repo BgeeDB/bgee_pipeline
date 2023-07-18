@@ -84,7 +84,7 @@ for (speciesName in speciesNames) {
   gtf_gz_file <- list.files(path = gtf_dir, pattern = paste0(speciesName, ".*gtf.gz$"), full.names = TRUE)
   gtf_gz_file <- gtf_gz_file[!grepl(pattern = "wo_intergenic.gtf.gz$|nascent.gtf.gz$", x = gtf_gz_file)]
   ## in case the gtf file is gzipped
-  if (isTRUE(gtf_gz_file)) {
+  if (!is.null(gtf_gz_file) && length(gtf_gz_file)) {
     gunzip(gtf_gz_file)
     gtf_file <- list.files(path = gtf_dir, pattern = paste0(speciesName, ".*gtf$"), full.names = TRUE)
   }
