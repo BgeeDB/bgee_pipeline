@@ -134,7 +134,12 @@ if (dir.exists(file.path(kallisto_bus_results, libraryId))){
       collectSpecies <- unique(as.character(scRNAInfo$scientific_name[scRNAInfo$libraryId == libraryId]))
       collectSpecies <- gsub(" ", "_", collectSpecies)
 
+      # has to choose the tx2gene file to use depending on single cell or single nuclei protocol preparation
       tx2gene_file = file.path(folder_gtf, paste0(collectSpecies, "_transcript_to_gene_with_intergenic.tsv"))
+      if (unique(as.character(scRNAInfo$tags[scRNAInfo$libraryId == libraryId])) == "Sn-scRNA-seq") {
+        tx2gene_file <- list.files(path = folder_gtf, pattern = paste0(collectSpecies, "*.single_nucleus.tx2gene*"))
+      }
+
       print(tx2gene_file)
       if (!file.exists(tx2gene_file)) {
         if(file.exists(paste0(tx2gene_file, ".xz"))) {
