@@ -85,8 +85,8 @@ if (file.exists(file.path(fastqDir, speciesId, libraryId))) {
     
     # select index depending on cell compartment used (cell or single nucléus)
     transcriptomeIndexFile <- transcriptomeIndexFiles[grep(pattern = "\\.transcriptome.idx", x = transcriptomeIndexFiles)]
-    if (unique(scRNASeqInfo$tags[scRNASeqInfo$libraryId == libraryId]) == "Sn-scRNA-seq") {
-      transcriptomeIndexFile <- transcriptomeIndexFiles[grep(pattern = ".single_nucleus_transcriptome.idx$",
+    if (unique(as.character(scRNASeqInfo$tags[scRNASeqInfo$libraryId == libraryId])) == "Sn-scRNA-seq") {
+      transcriptomeIndexFile <- transcriptomeIndexFiles[grep(pattern = "single_nucleus_transcriptome.idx$",
         x = transcriptomeIndexFiles)]
     }
 
