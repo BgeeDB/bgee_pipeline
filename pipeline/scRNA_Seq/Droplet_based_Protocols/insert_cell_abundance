@@ -90,7 +90,7 @@ Start inserting libraries for SRP125768...
 	Insert SRX3426783 and conditions from SRP125768
 	Insert SRX3426784 and conditions from SRP125768
 	Insert SRX3426785 and conditions from SRP125768
-	insert SRP162698
+	SRP162698 already inserted
 Start inserting libraries for SRP162698...
 	Insert SRX6936042 and conditions from SRP162698
 	Insert SRX6936043 and conditions from SRP162698
@@ -98,7 +98,10 @@ Start inserting libraries for SRP162698...
 Start inserting libraries for SRP184201...
 	Insert SRX5341906 and conditions from SRP184201
 	Insert SRX5341907 and conditions from SRP184201
-	insert SRP251970
+	SRP200614 already inserted
+Start inserting libraries for SRP200614...
+	Insert SRX5979983 and conditions from SRP200614
+	SRP251970 already inserted
 Start inserting libraries for SRP251970...
 	Insert SRX7869893 and conditions from SRP251970
 	Insert SRX7869895 and conditions from SRP251970
