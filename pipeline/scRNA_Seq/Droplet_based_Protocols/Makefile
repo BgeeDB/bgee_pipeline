@@ -192,7 +192,7 @@ cleaning_barcodes: generate_info 0Preparation/cleaning_barcodes.R
 ## generate a gtf file containing non matured transcripts. This file will be used only
 ## for single nucleus libraries
 generate_gtf_nascent: cleaning_barcodes 0Preparation/generate_GTF_nascent.R
-	@$(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args gtf_dir="$(RNASEQ_CLUSTER_GTF)" metadata_file="$(SC_RNASEQ_METADATA_10X_FILEPATH)"' 0Preparation/generate_GTF_nascent.R $(SC_RNASEQ_TB_FOLDER_GENERATED)generate_GTF_nascent.Rout
+	@$(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args gtf_dir="$(RNASEQ_CLUSTER_GTF)" metadata_file="$(SC_RNASEQ_METADATA_10X_FILEPATH)" scRNASeqInfoFile="$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)"' 0Preparation/generate_GTF_nascent.R $(SC_RNASEQ_TB_FOLDER_GENERATED)generate_GTF_nascent.Rout
 	@touch $@
 
 prepare_single_nucleus_index: generate_gtf_nascent 0Preparation/slurm_single_nucleus_index.pl

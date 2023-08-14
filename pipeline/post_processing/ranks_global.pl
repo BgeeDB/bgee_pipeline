@@ -825,7 +825,7 @@ sub getInsertRnaSeqExprResultsStmt {
                        /SUM(rnaSeqLibraryAnnotatedSample.rnaSeqLibraryAnnotatedSampleDistinctRankCount) AS meanRank,
                    SUM(rnaSeqLibraryAnnotatedSample.rnaSeqLibraryAnnotatedSampleDistinctRankCount) AS distinctRankCountSum
              FROM '.$rnaSeqAnnotSampleNormalizedRankTableName.
-            'INNER JOIN rnaSeqLibraryAnnotatedSample ON rnaSeqLibraryAnnotatedSample.rnaSeqLibraryAnnotatedSampleId = '.$rnaSeqAnnotSampleNormalizedRankTableName.'.rnaSeqLibraryAnnotatedSampleId
+            ' INNER JOIN rnaSeqLibraryAnnotatedSample ON rnaSeqLibraryAnnotatedSample.rnaSeqLibraryAnnotatedSampleId = '.$rnaSeqAnnotSampleNormalizedRankTableName.'.rnaSeqLibraryAnnotatedSampleId
              GROUP BY '.$rnaSeqAnnotSampleNormalizedRankTableName.'.bgeeGeneId
              ON DUPLICATE KEY UPDATE '.$rnaSeqRankField.' = VALUES('.$rnaSeqRankField.'),
                  '.$rnaSeqDistinctRankSum.' = VALUES('.$rnaSeqDistinctRankSum.')');

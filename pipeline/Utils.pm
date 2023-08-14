@@ -1339,12 +1339,12 @@ sub limit_number_jobs_cluster {
     my ($max_jobs, $sh_file, $job_prefix, $cluster_account) = @_;
     my $script_content = '#!/usr/bin/env perl'."\n\n";
 
-    $script_content .= 'use strict'."\n";
-    $script_content .= 'use warnings'."\n";
-    $script_content .= 'use diagnostics'."\n\n";
+    $script_content .= 'use strict;'."\n";
+    $script_content .= 'use warnings;'."\n";
+    $script_content .= 'use diagnostics;'."\n\n";
 
     $script_content .= 'my $job_limit       = '.$max_jobs.'; # Number of simultaneous jobs running'."\n";
-    $script_content .= 'my $cluster_account = "'.$cluster_account."\";\n";
+    $script_content .= 'my $account = "'.$cluster_account."\";\n";
     $script_content .= 'my $run_all_sh_file = "'.$sh_file."\";\n";
     $script_content .= 'my $job_name_prefix = "'.$job_prefix."\";\n\n";
 

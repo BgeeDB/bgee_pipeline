@@ -74,7 +74,7 @@ foreach my $experimentId (keys %processedLibraries){
             ## Use 4Gb of memory. Should maybe be increase depending on the run to download
             ## ask for 4 cpus as it is the number of threads used by the bamtofastq tool
             my $sbatchTemplate = Utils::sbatch_template($queue, $account, 4,
-              4, "$outputDir/cluterOutput/$jobName.out", "$outputDir/clusterOutput/$jobName.err",
+              4, "$outputDir/clusterOutput/$jobName.out", "$outputDir/clusterOutput/$jobName.err",
               $jobName);
             $sbatchTemplate .= "export bamtofastq=$bamtofastq\n";
             my $runDirectory = "$outputDir/$experimentId/$libraryId/$runId";

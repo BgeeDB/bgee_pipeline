@@ -65,7 +65,7 @@ my $nbr_processors  = 1;
 my $memory_usage    = 5;      # in GB
 my $time_limit      = '3-00:00:00';
 my $log_prefix      = 'nr_';
-my $max_jobs        = '20';
+my $max_jobs        = '100';
 
 my $dbh = Utils::connect_bgee_db($bgee_connector);
 
@@ -106,9 +106,9 @@ foreach my $species_id (@speciesList){
     my $length_conditionIds = $#conditionIds;
     # create sbatch files for subset of conditions
     while ($current_cond_number < $length_conditionIds) {
-        if($current_cond_number + $condition_number < $length_conditionIds) {
-            $conditionIds_string = join(',',@conditionIds[$start_cond_number..($start_cond_number + $condition_number)]);
-            $current_cond_number = $start_cond_number + $condition_number;
+        if($current_cond_number + $condition_number - 1< $length_conditionIds) {
+            $conditionIds_string = join(',',@conditionIds[$start_cond_number..($start_cond_number + $condition_number - 1)]);
+            $current_cond_number = $start_cond_number + $condition_number - 1;
         } else {
             $conditionIds_string = join(',',@conditionIds[$start_cond_number..$length_conditionIds]);
             $current_cond_number = $length_conditionIds;
@@ -127,7 +127,7 @@ foreach my $species_id (@speciesList){
         print $file_handler $template;
         close($file_handler);
         print $bash_file_handler "sbatch $file_name\n";
-        $start_cond_number = $current_cond_number;
+        $start_cond_number = $current_cond_number + 1;
     }
 }
 close($bash_file_handler);

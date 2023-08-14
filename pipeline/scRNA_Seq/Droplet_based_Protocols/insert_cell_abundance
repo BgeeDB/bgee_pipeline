@@ -1,5 +1,5 @@
 	7 experiments with libraries mapped.
-	insert ERP129698
+	ERP129698 already inserted
 Start inserting libraries for ERP129698...
 	Insert ERX5671923 and conditions from ERP129698
 	Insert ERX5671924 and conditions from ERP129698
@@ -98,6 +98,9 @@ Start inserting libraries for SRP162698...
 Start inserting libraries for SRP184201...
 	Insert SRX5341906 and conditions from SRP184201
 	Insert SRX5341907 and conditions from SRP184201
+	SRP200614 already inserted
+Start inserting libraries for SRP200614...
+	Insert SRX5979983 and conditions from SRP200614
 	SRP251970 already inserted
 Start inserting libraries for SRP251970...
 	Insert SRX7869893 and conditions from SRP251970
