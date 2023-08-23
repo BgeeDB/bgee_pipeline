@@ -90,7 +90,7 @@ for(line in seq(nrow(libraries))) {
       libraries_wo_calls <- libraries_wo_calls + 1
     }
   } else {
-    message(library_id, " : library directory not created")
+    message(library_id, " : library directory not created ", file.path(kallisto_dir, library_id))
     libraries_wo_calls <- libraries_wo_calls + 1
   }
 }

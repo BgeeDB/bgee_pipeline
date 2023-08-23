@@ -29,6 +29,16 @@ create table species (
 	UNIQUE(species, genus)
 ) engine = innodb;
 
+create table dataSource (
+    dataSourceId          smallInt unsigned not null,
+    dataSourceName        varchar(255)      not null            COMMENT 'Data source name',
+    XRefUrl               varchar(255)      not null default '' COMMENT 'URL for cross-references to data sources',
+    baseUrl               varchar(255)      not null default '' COMMENT 'URL to the home page of data sources',
+    releaseVersion        varchar(255)      not null default '' COMMENT 'Version of data source used',
+    dataSourceDescription TEXT                                  COMMENT 'Description of data source',
+    PRIMARY KEY(dataSourceId)
+) engine = innodb;
+
 create table gene (
 -- warning, maybe this bgeeGeneId will need to be changed to an 'int' when we reach around 200 species
     bgeeGeneId mediumint unsigned not null auto_increment COMMENT 'Numeric internal gene ID used for improving performances',
@@ -43,22 +53,11 @@ create table gene (
     FOREIGN KEY(dataSourceId) REFERENCES dataSource(dataSourceId) ON DELETE CASCADE
 ) engine = innodb;
 
-
 create table stage (
     stageId varchar(20) not null COMMENT 'Developmental stage id',
     stageName varchar(255) not null COMMENT 'Developmental stage name',
     stageDescription TEXT COMMENT 'Developmental stage description',
     PRIMARY KEY(stageId)
-) engine = innodb;
-
-create table dataSource (
-    dataSourceId          smallInt unsigned not null,
-    dataSourceName        varchar(255)      not null            COMMENT 'Data source name',
-    XRefUrl               varchar(255)      not null default '' COMMENT 'URL for cross-references to data sources',
-    baseUrl               varchar(255)      not null default '' COMMENT 'URL to the home page of data sources',
-    releaseVersion        varchar(255)      not null default '' COMMENT 'Version of data source used',
-    dataSourceDescription TEXT                                  COMMENT 'Description of data source',
-    PRIMARY KEY(dataSourceId)
 ) engine = innodb;
 
 create table globalCond (
@@ -96,4 +95,3 @@ create table globalExpression (
     FOREIGN KEY(globalConditionId) REFERENCES globalCond(globalConditionId) ON DELETE CASCADE
 ) engine = innodb;
 -- COMMENT = 'This table is a summary of expression calls for a given gene-condition (anatomical entity - developmental stage), over all the experiments and data types, with all data propagated and reconciled.';
-
