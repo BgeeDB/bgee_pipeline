@@ -18,6 +18,7 @@ create table species (
 -- In bgeelite we added a default value corresponding to an empty string ''
     speciesCommonName varchar(70) default '' COMMENT 'NCBI species common name',
     genomeVersion varchar(50) not null,
+    genomeAssemblyXRef varchar(250) not null default '' COMMENT 'XRef to the genome assembly',
 -- ID of the species whose the genome was used for this species. This is used
 -- when a genome is not in Ensembl. For instance, for bonobo (ID 9597), we use the chimp
 -- genome (ID 9598), because bonobo is not in Ensembl.
@@ -29,28 +30,24 @@ create table species (
 	UNIQUE(species, genus)
 ) engine = innodb;
 
-create table dataSource (
-    dataSourceId          smallInt unsigned not null,
-    dataSourceName        varchar(255)      not null            COMMENT 'Data source name',
-    XRefUrl               varchar(255)      not null default '' COMMENT 'URL for cross-references to data sources',
-    baseUrl               varchar(255)      not null default '' COMMENT 'URL to the home page of data sources',
-    releaseVersion        varchar(255)      not null default '' COMMENT 'Version of data source used',
-    dataSourceDescription TEXT                                  COMMENT 'Description of data source',
-    PRIMARY KEY(dataSourceId)
-) engine = innodb;
-
 create table gene (
 -- warning, maybe this bgeeGeneId will need to be changed to an 'int' when we reach around 200 species
     bgeeGeneId mediumint unsigned not null auto_increment COMMENT 'Numeric internal gene ID used for improving performances',
     geneId varchar(20) not null COMMENT 'Real gene id',
     geneName varchar(255) not null default '' COMMENT 'Gene name',
     geneDescription TEXT COMMENT 'Gene description',
-    dataSourceId smallInt unsigned not null,
     speciesId mediumint unsigned not null COMMENT 'NCBI species taxon id this gene belongs to',
     PRIMARY KEY (bgeeGeneId),
     UNIQUE(geneId, speciesId),
     FOREIGN KEY(speciesId) REFERENCES species(speciesId) ON DELETE CASCADE,
-    FOREIGN KEY(dataSourceId) REFERENCES dataSource(dataSourceId) ON DELETE CASCADE
+) engine = innodb;
+
+create table geneXRef (
+    bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
+    XRefUrl varchar(255) not null default '' COMMENT 'Cross-reference URL',
+    dataSourceName smallInt unsigned not null COMMENT 'Data Source name the cross-reference comes from',
+    PRIMARY KEY (bgeeGeneId,XRefUrl),
+    FOREIGN KEY(bgeeGeneId) REFERENCES gene(bgeeGeneId) ON DELETE CASCADE
 ) engine = innodb;
 
 create table stage (
