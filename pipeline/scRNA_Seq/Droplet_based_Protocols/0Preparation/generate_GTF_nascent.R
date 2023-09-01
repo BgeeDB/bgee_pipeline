@@ -95,7 +95,7 @@ for (species_id in species_ids) {
     gtf_file <- gtf_file[!grepl(pattern = "wo_intergenic.gtf$|nascent.gtf$|transcriptome.gtf$", x = gtf_file)]
     
     ## reading in gtf file (gzipped, no need to uncompress)
-    cat("Reading GTF file...\n")
+    message("Reading GTF file ", gtf_file,"... \n")
     gene_gtf <- as.matrix(read.table(file = gtf_file, sep = "\t", strip.white = TRUE, as.is = TRUE,
       colClasses = "character", comment.char = '#'))
 
@@ -153,7 +153,7 @@ for (species_id in species_ids) {
     tx2gene_single_nucleus_ids <- rbind(tx2gene_ids, tx2gene_nascent_ids)
 
     single_nucleus_tx2gene_file <- file.path(gtf_dir, gsub(pattern = ".gtf",
-      replacement = ".single_nucleus.tx2gene", x = basename(gtf_file)))
+      replacement = ".tx2gene_single_nucleus", x = basename(gtf_file)))
 
     message("write file : ", single_nucleus_tx2gene_file)
     write.table(x = tx2gene_single_nucleus_ids,

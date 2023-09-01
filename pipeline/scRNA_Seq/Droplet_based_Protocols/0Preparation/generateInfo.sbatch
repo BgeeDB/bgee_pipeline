@@ -1,11 +1,11 @@
 #!/bin/bash
 
-#SBATCH --partition=normal
+#SBATCH --partition=urblauna
 #SBATCH --account=mrobinso_bgee_sensitive
 
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=1
 #SBATCH --mem=2G
 #SBATCH --time=1-00:00:00
 

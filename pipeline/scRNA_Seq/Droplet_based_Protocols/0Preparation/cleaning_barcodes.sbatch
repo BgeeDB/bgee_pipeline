@@ -1,13 +1,13 @@
 #!/bin/bash
 
-#SBATCH --partition=cpu
+#SBATCH --partition=urblauna
 #SBATCH --account=mrobinso_bgee
 
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=2
 #SBATCH --mem=2G
-#SBATCH --time=3-00:00:00
+#SBATCH --time=2-00:00:00
 
 #SBATCH --output=/users/smoretti/bgee_pipeline.git/pipeline/scRNA_Seq/Droplet_based_Protocols/cleaning_barcodes.out
 #SBATCH --error=/users/smoretti/bgee_pipeline.git/pipeline/scRNA_Seq/Droplet_based_Protocols/cleaning_barcodes.err

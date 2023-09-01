@@ -73,7 +73,7 @@ download_EBI: retrieve_metadata 0Preparation/download_reformat_EBI.R
 	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                           0Preparation/download_reformat_EBI.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                     0Preparation/download_reformat_EBI.sbatch
 	@sed -i 's@export metadata_info=.*@export metadata_info=../$(SC_RNASEQ_METADATA_10X_FILEPATH)@'                  0Preparation/download_reformat_EBI.sbatch
-	@sed -i 's@export librariesDownloadedJura=.*@export librariesDownloadedJura=../$(SC_RNASEQ_JURA_LIB_FILEPATH)@'  0Preparation/download_reformat_EBI.sbatch
+	@sed -i 's@export librariesDownloadedJura=.*@export librariesDownloadedJura=../$(SC_RNASEQ_SENSITIVE_LIB_FILEPATH)@'  0Preparation/download_reformat_EBI.sbatch
 	@sed -i 's@export output=.*@export output=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET)@'                                   0Preparation/download_reformat_EBI.sbatch
 	@sed -i 's@export bamtofastq=.*@export bamtofastq=$(SCRNASEQ_SOFTWARE_BAMTOFASTQ)@'                              0Preparation/download_reformat_EBI.sbatch
 	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET)@'                                       0Preparation/download_reformat_EBI.sbatch
@@ -93,11 +93,11 @@ parallelized_download:
 #NOTE *make -j3 list_new_downloads*  should run the 3 downloads in parallel
 list_new_downloads: download_SRA download_EBI download_HCA
 	@find $(SC_RNASEQ_DOWNLOAD_PATH_DROPLET) -type f -name \*.fastq.gz\* | xargs -r dirname | sed -e 's@/FASTQ@@' -e 's@^.*/@@' | sort -u > /tmp/new_downloads
-	@cat $(SC_RNASEQ_JURA_LIB_FILEPATH) >>/tmp/new_downloads
-	@sort -u /tmp/new_downloads >$(SC_RNASEQ_JURA_LIB_FILEPATH)
+	@cat $(SC_RNASEQ_SENSITIVE_LIB_FILEPATH) >>/tmp/new_downloads
+	@sort -u /tmp/new_downloads >$(SC_RNASEQ_SENSITIVE_LIB_FILEPATH)
 	@rm -f /tmp/new_downloads
-	@$(GIT) add $(SC_RNASEQ_JURA_LIB_FILEPATH)
-	@$(GIT) commit -m 'Add new downloaded libraries' $(SC_RNASEQ_JURA_LIB_FILEPATH) || true
+	@$(GIT) add $(SC_RNASEQ_SENSITIVE_LIB_FILEPATH)
+	@$(GIT) commit -m 'Add new downloaded libraries' $(SC_RNASEQ_SENSITIVE_LIB_FILEPATH) || true
 	@touch $@
 
 # Commit the library information file that will be used for the rest of the pipeline
@@ -109,18 +109,18 @@ commit_annotation_and_metadata: list_new_downloads
 	@$(GIT) add $(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_notMatch_10X.txt
 	@$(GIT) commit -m 'Update metadata for droplet-based protocols for scRNASeq for $(DBNAME)' || true
 	@$(GIT) push
-	@echo -e "All information is ready, you can go to JURA cluster to continue the pipeline of the droplet protocols\n"
+	@echo -e "All information is ready, you can go to SENSITIVE cluster to continue the pipeline of the droplet protocols\n"
 	@touch $@
 
-## NOTE: Copy all git repository to JURA!
-################## STEPS TO RUN ON JURA SERVER ##################
+## NOTE: Copy all git repository to sensitive cluster!
+################## STEPS TO RUN ON SENSITIVE SERVER ##################
 
-clusterJURA:
+clusterSensitive:
 	@echo -e "\tBe sure everything is up-to-date before running single cell RNASeq pipeline for Droplet protocols\n"
 	@touch $@
 
 
-check_tools: clusterJURA
+check_tools: clusterSensitive
 	@echo -e "\tGo to 'cd pipeline/scRNA_Seq/Droplet_based_Protocols/' and be prepared to work\n"
 	@echo -e "\n\tRun this command to give access to all modules installed on vital-it\n\tmodule use /software/module/\n"
 	# Check if all required tools/libs are available
@@ -134,7 +134,7 @@ check_tools: clusterJURA
 	# this package does not exist. Is it still used?
 	#@$(CLUSTER_R_CMD) R -e 'library("HCAExplorer")'   >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("HelpersMG")'     >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("ggExtra")'       >> $@.tmp  2>/dev/null
+	#@$(CLUSTER_R_CMD) R -e 'library("ggExtra")'       >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("ggplot2")'       >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("gridExtra")'     >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("LaplacesDemon")' >> $@.tmp  2>/dev/null
@@ -146,9 +146,9 @@ check_tools: clusterJURA
 	@$(CLUSTER_R_CMD) R -e 'library("stringr")'       >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("tibble")'        >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("tools")'         >> $@.tmp  2>/dev/null
-	@export R_LIBS_USER=$(R_LIBS_PATH_JURA); $(CLUSTER_R_CMD) R -e 'library("BUSpaRse")'      >> $@.tmp  2>/dev/null
-	@export R_LIBS_USER=$(R_LIBS_PATH_JURA); $(CLUSTER_R_CMD) R -e 'library("DropletUtils")'  >> $@.tmp  2>/dev/null
-	@export R_LIBS_USER=$(R_LIBS_PATH_JURA); $(CLUSTER_R_CMD) R -e 'library("UniprotR")'      >> $@.tmp  2>/dev/null
+	@export R_LIBS_USER=$(R_LIBS_PATH_SENSITIVE); $(CLUSTER_R_CMD) R -e 'library("BUSpaRse")'      >> $@.tmp  2>/dev/null
+	@export R_LIBS_USER=$(R_LIBS_PATH_SENSITIVE); $(CLUSTER_R_CMD) R -e 'library("DropletUtils")'  >> $@.tmp  2>/dev/null
+	@export R_LIBS_USER=$(R_LIBS_PATH_SENSITIVE); $(CLUSTER_R_CMD) R -e 'library("UniprotR")'      >> $@.tmp  2>/dev/null
 	@which xz                                         >> $@.tmp
 	@which sbatch                                     >> $@.tmp
 	@$(CLUSTER_KALLISTO_CMD)   which kallisto         >> $@.tmp
@@ -203,7 +203,7 @@ prepare_single_nucleus_index: generate_gtf_nascent 0Preparation/slurm_single_nuc
 ## Run Kallisto bus per taxon_iD/library
 kallisto_bus: prepare_single_nucleus_index 1Run/kallisto_bus_one_lib.R
 	@echo --- Start running kallisto bus for all libraries ---
-	@perl 1Run/parallelized_kallisto_bus.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -parallelJobs=100 -fastqDir=$(SC_RNASEQ_FASTQ_DROPLET) -gtfDir=$(RNASEQ_CLUSTER_GTF) -scRNASeqInfoFile=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/kallisto_bus_one_lib.R
+	@$(SENSITIVE_PERL_CMD) perl 1Run/parallelized_kallisto_bus.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -parallelJobs=100 -fastqDir=$(SC_RNASEQ_FASTQ_DROPLET) -gtfDir=$(RNASEQ_CLUSTER_GTF) -scRNASeqInfoFile=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/kallisto_bus_one_lib.R
 	@touch $@
 
 # generate stats from fastp and kallisto (e.g. read length, reads mapped, ...)
@@ -228,7 +228,7 @@ process_busFile: uncompress_barcodes 1Run/process_busfile_one_lib.R
 ## Quality control (Knee + PCA + UMAP for each library) + cell type identification
 qc_cellType: process_busFile 1Run/parallelized_qcCellIdentification.pl
 	@echo --- Starting the quality control and the cell type identification ---
-	@perl 1Run/parallelized_qcCellIdentification.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH)  -parallelJobs=100 -gtfDir=$(RNASEQ_CLUSTER_GTF) -barcodeFolder=$(SC_RNASEQ_CLEANED_BARCODES) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -outputDir=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/celltype_one_lib.R -rLibs=$(R_LIBS_PATH_JURA) > $@.out 2>> $@.err
+	@perl 1Run/parallelized_qcCellIdentification.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH)  -parallelJobs=100 -gtfDir=$(RNASEQ_CLUSTER_GTF) -barcodeFolder=$(SC_RNASEQ_CLEANED_BARCODES) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -outputDir=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/celltype_one_lib.R -rLibs=$(R_LIBS_PATH_SENSITIVE) > $@.tmp 2>> $@.err
 	@mv $@.tmp $@
 
 ## Quality control based on the bimodality of the cell-population per library/cell-type pop
@@ -257,14 +257,14 @@ bimodality_cellPop: qc_cellType 1Run/QC_cellPop_bimodality.R
 calls: qc_cellType 1Run/Calls_cell_pop_per_library.R
 	@echo --- Starting the calls of present and absent genes ---
 	@sed -i 's@--output=.*@--output=${PWD}/Calls_library_cellPop.out@'                                                       1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/Calls_library_cellPop.err@'                                                         1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/Calls_library_cellPop.err@'                                                         2Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@--partition=.*@--partition=${SENSITIVE_CLUSTER_PARTITION}@'                                                   1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@--account=.*@--account=${SENSITIVE_CLUSTER_ACCOUNT}@'                                                         1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                            1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'                             1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@export bimodalityFile=.*@export bimodalityFile=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)/bimodality_targetBased.txt@'  1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)@'                                   1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@export folder_refIntergenic=.*@export folder_refIntergenic=$(CLUSTER_REF_INTERGENIC_FOLDER)@'                 1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@export folder_gtf=.*@export folder_gtf=$(RNASEQ_CLUSTER_GTF)@'  1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@export desired_pValue_cutoff=.*@export desired_pValue_cutoff=$(PVALUE_CUTOFF)@'                               1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_CLUSTER_CALLS_10X)@'                                 1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                                             1Run/Calls_cell_pop_per_library.sbatch

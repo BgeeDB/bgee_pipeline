@@ -52,8 +52,9 @@ if (! file.exists(file.path(kallisto_bus_results, libraryId))) {
 
 ## verify if library exist
 if (file.exists(file.path(fastqDir, speciesId, libraryId))) {
+  already_processed_file <- file.path(kallisto_bus_results, libraryId, "Done_kallisto_bus.txt");
   ## verify if kallisto_bus was already executed for the library
-  if (file.exists(file.path(kallisto_bus_results, libraryId, "Done_kallisto_bus.txt")) == TRUE){
+  if (file.exists(already_processed_file)){
     message("Kallisto was already executed for this library ",libraryId,"\n")
   } else {
     ## collect info about whitelist
@@ -93,7 +94,7 @@ if (file.exists(file.path(fastqDir, speciesId, libraryId))) {
     #RUN Kallisto bus
     system(sprintf('kallisto bus -m -i %s -o %s -x %s -t 4 %s', file.path(gtfDir, transcriptomeIndexFile), paste0(busOutput), paste0("10x", whiteLInfo), paste0(filesKallisto)))
     ## control file
-    file.create(file.path(kallisto_bus_results, libraryId, "Done_kallisto_bus.txt"))
+    file.create(already_processed_file)
   }
 } else {
   message("Library not present in the folder ", file.path(fastqDir, libraryId), " to run Kallisto bus!")
