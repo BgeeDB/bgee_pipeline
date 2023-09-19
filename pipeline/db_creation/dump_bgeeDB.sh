@@ -27,7 +27,7 @@ LOGIN=`grep '^DBUSER '  $DIR/../Makefile.Config | awk '{print $3}'`
 PASSWD=`grep '^DBPASS ' $DIR/../Makefile.Config | awk '{print $3}'`
 
 
-MYSQL_OPTIONS='--skip-triggers --no-create-info --no-tablespaces --compact --skip-add-drop-table'
+MYSQL_OPTIONS='--skip-triggers --no-create-info --no-tablespaces --compact --skip-add-drop-table --lock-all-tables'
 
 #TODO try mysqlpump instead of mysqldump? The --where option is the key point!
 #     https://dev.mysql.com/doc/refman/8.0/en/mysqlpump.html
