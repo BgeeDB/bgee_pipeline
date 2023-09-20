@@ -55,7 +55,7 @@ update dataSource set releaseDate = '2020-12-13', releaseVersion = '',          
 -- EnsemblMetazoa
 update dataSource set releaseDate = '2020-12-01', releaseVersion = '49',                           displayOrder = 1  where dataSourceId = 24;
 -- Bgee
-update dataSource set releaseDate = '2021-04-26', releaseVersion = '15.0',                         displayOrder = 1  where dataSourceId = 25;
+update dataSource set releaseDate = '2021-04-26', releaseVersion = '15.1',                         displayOrder = 1  where dataSourceId = 25;
 -- Uberon
 update dataSource set releaseDate = '2020-09-16', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 26;
 -- Developmental stage ontologies

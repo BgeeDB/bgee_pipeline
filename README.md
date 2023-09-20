@@ -1,4 +1,4 @@
-# Pipeline of Bgee release 15.0
+# Pipeline of Bgee release 15.1
 
 [![Twitter](https://img.shields.io/twitter/follow/Bgeedb?style=social&logo=twitter)](https://twitter.com/intent/follow?screen_name=Bgeedb)
 

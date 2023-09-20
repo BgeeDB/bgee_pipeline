@@ -3,7 +3,7 @@
 
 # Build Singularity image
 #NOTE build-date is builtin
-export RELEASE=15.0
+export RELEASE=15.1
 sudo singularity build BgeePipeline-${RELEASE}-1.sif BgeePipeline.def 2>&1 >BgeePipeline.singularity.log
 
 
