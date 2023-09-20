@@ -45,7 +45,7 @@ create table gene (
 create table geneXRef (
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
     XRefUrl varchar(255) not null default '' COMMENT 'Cross-reference URL',
-    dataSourceName smallInt unsigned not null COMMENT 'Data Source name the cross-reference comes from',
+    dataSourceName varchar(255) unsigned not null COMMENT 'Data Source name the cross-reference comes from',
     PRIMARY KEY (bgeeGeneId,XRefUrl),
     FOREIGN KEY(bgeeGeneId) REFERENCES gene(bgeeGeneId) ON DELETE CASCADE
 ) engine = innodb;
