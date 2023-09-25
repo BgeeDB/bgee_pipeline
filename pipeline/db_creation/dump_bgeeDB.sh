@@ -59,7 +59,7 @@ time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalExpression gene   
 time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalCond globalCondToCond --where='(globalConditionId IN (SELECT globalConditionId FROM globalExpression WHERE bgeeGeneId IN (SELECT bgeeGeneId FROM gene WHERE speciesId=7227)))'   $MYSQL_OPTIONS  > $DB_NAME-globalExpression-Dmelanogaster.sql2
 ## Other species
 time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalExpression gene       --where='(bgeeGeneId        IN (SELECT bgeeGeneId FROM gene WHERE speciesId!=9606 AND speciesId!=10090 AND speciesId!=7227))'                                                                      $MYSQL_OPTIONS  > $DB_NAME-globalExpression-otherSpecies.sql
-time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalCond globalCondToCond --where='(globalConditionId IN (SELECT globalConditionId FROM globalExpression WHERE bgeeGeneId IN (SELECT bgeeGeneId FROM gene WHERE speciesId!=9606 AND speciesId!=10090 AND speciesId!=7227))'  $MYSQL_OPTIONS  > $DB_NAME-globalExpression-otherSpecies.sql2
+time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalCond globalCondToCond --where='(globalConditionId IN (SELECT globalConditionId FROM globalExpression WHERE bgeeGeneId IN (SELECT bgeeGeneId FROM gene WHERE speciesId!=9606 AND speciesId!=10090 AND speciesId!=7227)))' $MYSQL_OPTIONS  > $DB_NAME-globalExpression-otherSpecies.sql2
 
 #NOTE because of --skip-add-drop-table think to DROP tables if not for a fresh db!
 #NOTE $DB_NAME-allBut-globalExpression.sql should be loaded last to deal with gene table duplication (and issue with gene table lock with chunks)
