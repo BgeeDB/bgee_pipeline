@@ -967,8 +967,6 @@ create table rnaSeqLibraryAnnotatedSample (
     rnaSeqLibraryAnnotatedSampleId mediumint unsigned not null,
     rnaSeqLibraryId varchar(70) not null,
     conditionId mediumint unsigned not null,
---  can be null as it is applicable only to pooled bulk samples like BRB-Seq
-    barcode varchar(70) COMMENT 'barcode used to pool several samples in the same library',
     abundanceUnit enum('tpm', 'cpm'),
     meanAbundanceReferenceIntergenicDistribution decimal(16, 6) not null default -1 COMMENT 'mean TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
     sdAbundanceReferenceIntergenicDistribution decimal(16, 6) not null default -1 COMMENT 'standard deviation in TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
@@ -990,7 +988,9 @@ create table rnaSeqLibraryAnnotatedSample (
 -- this is why null value is permitted.
     rnaSeqLibraryAnnotatedSampleMaxRank decimal(9,2) unsigned COMMENT 'The max fractional rank in this sample (see `rank` field in rnaSeqLibraryAnnotatedSampleGeneResult table)',
     rnaSeqLibraryAnnotatedSampleDistinctRankCount mediumint unsigned COMMENT 'The count of distinct rank in this sample (see `rank` field in rnaSeqLibraryAnnotatedSampleGeneResult table, used for weighted mean rank computations)',
-    multipleLibraryIndividualSample boolean not null default 0 COMMENT 'boolean true if the annotated sample contains several individual samples. e.g true for 10x as one annotated sample corresponds to one cell population and individual sample will correspond to each cell of this cell population'
+    multipleLibraryIndividualSample boolean not null default 0 COMMENT 'boolean true if the annotated sample contains several individual samples. e.g true for 10x as one annotated sample corresponds to one cell population and individual sample will correspond to each cell of this cell population',
+    --  can be null as it is applicable only to pooled bulk samples like BRB-Seq
+    barcode varchar(70) COMMENT 'barcode used to pool several samples in the same library'
 ) engine = innodb;
 
 -- TODO: This table contains abundance/read count values for each gene for each library
