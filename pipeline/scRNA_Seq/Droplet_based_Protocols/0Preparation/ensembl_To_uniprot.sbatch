@@ -15,7 +15,7 @@
 #SBATCH --job-name=ensembl_To_uniprot
 #SBATCH --mail-user sara.fonsecacosta@unil.ch
 
-module load Bioinformatics/Software/vital-it
+module use /softwate/module/
 module add R/3.6.1;
 
 

@@ -15,7 +15,7 @@
 #SBATCH --job-name=download_reformat_EBI
 #SBATCH --mail-user sara.fonsecacosta@unil.ch
 
-module load Bioinformatics/Software/vital-it
+module use /software/module/
 module add R/3.6.1;
 
 export SCRIPT_PATH=/users/smoretti/bgee_pipeline.git/pipeline/scRNA_Seq/Droplet_based_Protocols
