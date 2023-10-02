@@ -23,7 +23,7 @@ control_annotation: get_annot 0Preparation/pre_process_control_annotation.R
 	#load modules necessary to run the perl function
 	@module use /software/module/;
 	@export PATH=/software/bin:$PATH;
-	@module add Development/Ensembl_API/90;
+	@module add Development/Ensembl_API/97;
 	@perl -e 'use lib "../.."; use Utils; Utils::map_strain_names("$(SC_RNASEQ_LIB_PASS_FILEPATH)", "$(STRAIN_MAPPING_FILE)")' > $(SC_RNASEQ_LIB_PASS_FILEPATH).ori
 	@$(MV) $(SC_RNASEQ_LIB_PASS_FILEPATH).ori $(SC_RNASEQ_LIB_PASS_FILEPATH)
 	@$(MV) $@.tmp $@
