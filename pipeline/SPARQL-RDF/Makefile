@@ -61,6 +61,7 @@ create_isql_load_script: generate_triples
 	done < $(TTL_FILE_LIST)
 
 	@echo "SPARQL LOAD <http://purl.org/genex#> INTO <https://www.bgee.org/rdf_v$(FTP_RELEASE)>;" >>  $(BGEE_VIRTUOSO_FILE)
+	@echo "SPARQL LOAD <http://purl.org/lscr#> INTO <https://www.bgee.org/rdf_v$(FTP_RELEASE)>;" >>  $(BGEE_VIRTUOSO_FILE)
 	@$(RM) $(TTL_FILE_LIST) 
 	@touch $@
 
