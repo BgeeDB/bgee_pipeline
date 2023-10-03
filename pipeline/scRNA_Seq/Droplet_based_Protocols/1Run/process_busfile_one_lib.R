@@ -135,9 +135,9 @@ if (dir.exists(file.path(kallisto_bus_results, libraryId))){
       collectSpecies <- gsub(" ", "_", collectSpecies)
 
       # has to choose the tx2gene file to use depending on single cell or single nuclei protocol preparation
-      tx2gene_file <- file.path(folder_gtf, list.files(path = folder_gtf, pattern = paste0(collectSpecies, ".*transcript_to_gene_with_intergenic.tsv")))
+      tx2gene_file <- file.path(folder_gtf, list.files(path = folder_gtf, pattern = paste0(collectSpecies, ".*tx2gene$")))
       if (unique(as.character(scRNAInfo$tags[scRNAInfo$libraryId == libraryId])) == "Sn-scRNA-seq") {
-        tx2gene_file <- file.path(folder_gtf, list.files(path = folder_gtf, pattern = paste0(collectSpecies, "*.single_nucleus.tx2gene*")))
+        tx2gene_file <- file.path(folder_gtf, list.files(path = folder_gtf, pattern = paste0(collectSpecies, ".*tx2gene_single_nucleus$")))
       }
 
       print(tx2gene_file)
@@ -162,7 +162,7 @@ if (dir.exists(file.path(kallisto_bus_results, libraryId))){
       system(sprintf('bustools count --em -o %s -g %s -e %s -t %s --genecounts %s',
         file.path(gene_counts, bustoolsGeneMatrix), tx2gene_file, file.path(pathBusOut, "/matrix.ec"),
         file.path(pathBusOut, "transcripts.txt"), file.path(pathBusOut, "output.correct.sort.bus")))
-      ## CPM level
+      ## CPM level used to store data at cell level
       message("CPM for genes without intergenic")
       generateGenesCpm(tx2gene_file, cpm_dir, gene_counts, bustoolsGeneMatrix)
     }

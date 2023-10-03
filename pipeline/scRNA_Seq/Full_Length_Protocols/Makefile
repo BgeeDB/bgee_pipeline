@@ -23,7 +23,7 @@ control_annotation: get_annot 0Preparation/pre_process_control_annotation.R
 	#load modules necessary to run the perl function
 	@module use /software/module/;
 	@export PATH=/software/bin:$PATH;
-	@module add Development/Ensembl_API/90;
+	@module add Development/Ensembl_API/97;
 	@perl -e 'use lib "../.."; use Utils; Utils::map_strain_names("$(SC_RNASEQ_LIB_PASS_FILEPATH)", "$(STRAIN_MAPPING_FILE)")' > $(SC_RNASEQ_LIB_PASS_FILEPATH).ori
 	@$(MV) $(SC_RNASEQ_LIB_PASS_FILEPATH).ori $(SC_RNASEQ_LIB_PASS_FILEPATH)
 	@$(MV) $@.tmp $@
@@ -94,9 +94,9 @@ clusterJURA:
 
 check_tools: clusterJURA
 	@echo -e "\tGo to 'cd pipeline/scRNA_Seq/Full_Length_Protocols/' and be prepared to work\n"
-	@echo -e "\n\tRun this command to give access to all modules installed on vital-it\n\tmodule add Bioinformatics/Software/vital-it\n"
+	@echo -e "\n\tRun this command to give access to all modules installed on vital-it\n\tmodule use /software/module/\n"
 	# Check if all required tools/libs are available
-	@module add Bioinformatics/Software/vital-it || true
+	@module use /software/module/ || true
 	@$(CLUSTER_R_CMD) which R                          > $@.tmp
 	@$(CLUSTER_R_CMD) R -e 'library("Biostrings")'    >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("HelpersMG")'     >> $@.tmp  2>/dev/null

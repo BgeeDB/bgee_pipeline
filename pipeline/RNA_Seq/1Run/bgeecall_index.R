@@ -31,7 +31,7 @@ for( c_arg in command_arg ){
   }
 }
 #specific to UNIL clusters: load R module
-modules <- c("module add Bioinformatics/Software/vital-it;", "module add R/3.6.1;", "module add UHTS/Analysis/kallisto/0.46.0;")
+modules <- c("module use /software/module/", "module add R/3.6.1;", "module add UHTS/Analysis/kallisto/0.46.0;")
 #generate BgeeCall objects to download kallisto and define path where data at species level will be stored
 kallistoMetadata <- new("KallistoMetadata")
 userMetadata <- new("UserMetadata", working_path = working_path)

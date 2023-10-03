@@ -149,12 +149,12 @@ cluster1:
 check_tools: cluster1
 	@echo -e "\n\tFirst of all, go to '$(RNASEQ_CLUSTER_READONLY)GIT/' and do a 'git pull'"
 	@echo -e "\tThen 'cd pipeline/RNA_Seq/' and be prepared to work\n"
-	@echo -e "\n\tRun this command to give access to all modules installed on vital-it\n\tmodule add Bioinformatics/Software/vital-it\n"
+	@echo -e "\n\tRun this command to give access to all modules installed on vital-it\n\tmodule use /software/module/\n"
 	@echo -e "\n\tRun this command to prevent errors with Utils.pm\n\tmodule add Development/Ensembl_API/$(ENSRELEASE);\n"
 	# Check if logged on cluster
 	@if [[ `hostname -d` != 'chuv.vital-it.ch' ]]; then false; fi
 	# Check if all required tools/libs are available
-	@module add Bioinformatics/Software/vital-it
+	@module use /software/module/
 	@which perl                                          > $@.tmp
 	@perl -MBio::SeqIO            -e 1                  >> $@.tmp
 	@perl -MCpanel::JSON::XS      -e 1                  >> $@.tmp

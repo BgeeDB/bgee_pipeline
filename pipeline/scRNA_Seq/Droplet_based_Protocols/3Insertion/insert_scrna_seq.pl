@@ -32,6 +32,7 @@ $| = 1; # no buffering of output
 my ($bgee_connector) = ('');
 my ($targetBaseLibrary, $kallistoResults, $callsResults, $sexInfo)  = ('', '', '', '');
 my ($singleCellExperiment, $bgeeLibraryInfo, $sourceDir) = ('', '', '');
+
 my ($pipelineCallsSummary, $pipelineReportFile, $filteredBarcodeDir) = ('', '', '');
 my $numberCore = 1;
 #my ($library_stats, $report_info = ('', '');

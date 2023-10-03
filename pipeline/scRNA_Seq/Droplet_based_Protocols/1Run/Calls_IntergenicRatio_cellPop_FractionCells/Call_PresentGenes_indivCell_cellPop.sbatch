@@ -15,7 +15,7 @@
 #SBATCH --job-name=Call_PresentGenes_indivCell_cellPop
 #SBATCH --mail-user sara.fonsecacosta@unil.ch
 
-module load Bioinformatics/Software/vital-it
+module use /software/module/
 module add R/3.6.1;
 
 export SCRIPT_PATH=/data/unil/dee/dee_robi/bgee_pipeline/pipeline/scRNA_Seq/Droplet_based_Protocols

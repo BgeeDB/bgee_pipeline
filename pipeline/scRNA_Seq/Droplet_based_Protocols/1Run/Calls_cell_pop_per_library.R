@@ -9,10 +9,10 @@
 ## per library/cell-type pop and pass the bimodality test.
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNASeq_Info.txt" folder_data="folder_data" folder_refIntergenic="folder_refIntergenic" desired_pValue_cutoff="desired_pValue_cutoff" output_folder="output_folder"' Calls_cell_pop_per_library.R Calls_cell_pop_per_library.Rout
+## R CMD BATCH --no-save --no-restore '--args scRNASeq_Info="scRNASeq_Info.txt" folder_data="folder_data" folder_gtf="folder_gtf" desired_pValue_cutoff="desired_pValue_cutoff" output_folder="output_folder"' Calls_cell_pop_per_library.R Calls_cell_pop_per_library.Rout
 ## scRNASeq_Info --> File that results from annotation and metadata (libraries downloaded and with extra information as readlength or SRR) 
 ## folder_data --> Folder where are all the libraries after cell identification
-## folder_refIntergenic --> Folder where is located the reference intergenic files for each species
+## folder_gtf --> Folder where is located the reference intergenic files for each species
 ## desired_pValue_cutoff --> desired pValue cutoff to call present genes
 ## output_folder --> Folder where we should save the results
 
@@ -36,7 +36,7 @@ if( length(cmd_args) == 0 ){
 }
 
 ## checking if all necessary arguments were passed....
-command_arg <- c("scRNASeq_Info", "folder_data", "folder_refIntergenic" ,"desired_pValue_cutoff",
+command_arg <- c("scRNASeq_Info", "folder_data", "folder_gtf" ,"desired_pValue_cutoff",
   "output_folder")
 for (c_arg in command_arg) {
   if (!exists(c_arg)) {
@@ -55,31 +55,14 @@ if (file.exists(scRNASeq_Info)) {
 ##TODO Why bother retrieving ref. intergenic??? the ampping/quantification should already be donne
 ## on the reference intergenic.
 ##TODO: check that only ref intergenic were used for each step of the pipeline( e.g gene annotation, kallisto index, ....)
-refIntergenic <- function(counts, folder_refIntergenic, speciesId){
-  
-  referenceIntergenic <- file.path(folder_refIntergenic, paste0(speciesId, "_intergenic.fa.gz"))
-  if(!file.exists(referenceIntergenic)) {
-    referenceIntergenic <- file.path(folder_refIntergenic, paste0(speciesId, "_intergenic.fa"))
-    if(!file.exists(referenceIntergenic)) {
-      stop("reference intergenic file ", referenceIntergenic,
-        " not available (compressed or not compressed)")
-    }
-  }
-  referenceIntergenic <- readDNAStringSet(referenceIntergenic)
-  seq_name <- names(referenceIntergenic)
-  seq_name <- gsub( " .*$", "", seq_name )
-  seq_name <- gsub( "_", "-", seq_name)
-  seqNamesFinal <- as.data.frame(seq_name)
-  colnames(seqNamesFinal) <- "gene_id"
-  seqNamesFinal$refIntergenic <- "TRUE"
-  ## seqNamesFinal with same size that counts Table (here everything different refIntergenic is
-  ## FALSE)
-  collectIDs <- as.data.frame(counts$gene_id)
-  colnames(collectIDs) <- "gene_id"
-  seqNamesFinal <- merge(collectIDs, seqNamesFinal, by = "gene_id", all.x = TRUE)
-  seqNamesFinal$refIntergenic <- ifelse(is.na(seqNamesFinal$refIntergenic) == TRUE,
-    "FALSE", seqNamesFinal$refIntergenic)
-  return(seqNamesFinal)
+refIntergenic <- function(counts, folderGtf, speciesName){
+  gene2biotype_file <- list.files(path = folderGtf, pattern = paste0(speciesName, ".gene2biotype"), full.names = TRUE)
+  gene2biotype <- read.table(gene2biotype_file, sep = "\t", header = TRUE)
+  gene2biotype$refIntergenic <- ifelse(is.na(gene2biotype$biotype), FALSE, TRUE)
+  gene2biotype$gene_id <- ifelse(is.na(gene2biotype$biotype), gsub( "_", "-", gene2biotype$id),
+    gene2biotype$id)
+  ref_intergenic <- gene2biotype[,c("gene_id","refIntergenic"]
+  return(ref_intergenic)
 }
 
 ## Sum the UMI of all barcodes and then compute the CPM normalization
@@ -115,14 +98,11 @@ theoretical_pValue <- function(counts, refrenceIntergenic){
   ## select all the intergenic region from the library
   ##TODO: once again here it should only contain reference intergenic. To check...
   intergenicRegionsLibrary <- dplyr::filter(counts, type == "intergenic")
-  ## select just the true intergenic
   intergenicRegions <- dplyr::filter(refrenceIntergenic, refIntergenic == "TRUE")
   ## keep just information about reference intergenic region detected in the counts file to the
   ## calculation
   selectedRefIntergenic <- merge(intergenicRegionsLibrary, intergenicRegions, by="gene_id")
   ## select values with CPM > 0 (because we will use log2 scale)
-  ##TODO: what is the point of removing intergenic with 0 CPM it could drastically change the threshold
-  ## if huge proportion of intergenic have 0 CPM. Maybe better to add +1e06
   selectedRefIntergenic <- dplyr::filter(selectedRefIntergenic, CPM > 0 & type == "intergenic")
   ## select genic and intergenic region from the library with CPM > 0
   regions <- dplyr::filter(counts, CPM > 0)
@@ -228,14 +208,15 @@ for (libraryId in unique(scRNASeqAnnotation$libraryId)) {
     message("calls directory for library ", libraryId, " already processed.")
   } else {
     message("Library: ", libraryId)
-  
     ## collect all cell populations that belongs to the library
     rawCountFiles <- list.files(path = file.path(folder_data, libraryId), pattern = "^Raw_Counts_", full.names = TRUE)
+    if (length(rawCountFiles) > 0) {
+      dir.create(file.path(output_folder, libraryId))
+    }
+    species_name <- gsub(" ", "_", unique(scRNASeqAnnotation$scientific_name[scRNASeqAnnotation$libraryId == libraryId]))
     speciesId <- unique(scRNASeqAnnotation$speciesId[scRNASeqAnnotation$libraryId == libraryId])
-
- 
     for (rawCountFile in rawCountFiles) {
-
+      message(rawCountFile)
       cellPop <- str_remove(basename(rawCountFile), "Raw_Counts_")
       cellPop <- str_remove(cellPop, ".tsv")
       cellTypeId <- gsub("_", ":", cellPop)
@@ -245,8 +226,8 @@ for (libraryId in unique(scRNASeqAnnotation$libraryId)) {
       ## collect the sumUMI + normalization for the target cellPop
       cellPop_normalized <- sumUMICellPop(rawCountFile = rawCountFile)
       ## Information about reference intergenic
-      referenceIntergenic <- refIntergenic(counts = cellPop_normalized, folder_refIntergenic = folder_refIntergenic,
-        speciesId = speciesId)
+      referenceIntergenic <- refIntergenic(counts = cellPop_normalized, folderGtf = folder_gtf,
+        speciesName = species_name)
       ## calls with pValue theoretical
       calculatePvalues <- theoretical_pValue(counts = cellPop_normalized,
         refrenceIntergenic = referenceIntergenic)

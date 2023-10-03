@@ -40,19 +40,22 @@ for (i in all_files) {
   gtf_file_name <- basename(i)
   # check if current gtf_all file corresponds to a species for which single 
   # cell libraries exist. If not move to next gtf_all file
-  if (is.na(match(1,pmatch(species_to_use, gtf_file_name)))) {
-    next
-  }
+  if (is.na(match(1,pmatch(species_to_use, gtf_file_name)))) next
+  if (file.exists(str_replace(string = gtf_file_name, pattern = "gtf_all", replacement = "tx2gene")) &&
+      file.exists(str_replace(string = gtf_file_name, pattern = "gtf_all", replacement = "gene2biotype"))) next
   message("generate info using ", i)
   species_id <- data.frame(str_split(gtf_file_name, "\\."))[1,1]
 
   gtf_info <- import(i, format = "gtf")
 
   # extract all info from gtf. gene_name and gene_biotype can have NA values
-  extracted_gtf_info <- as.data.frame(mcols(gtf_info)[,c("gene_id","gene_name","transcript_id", "gene_biotype")])
-  
+  extracted_gtf_info <- unique(as.data.frame(mcols(gtf_info)[,c("gene_id","gene_name","transcript_id", "gene_biotype")]))
+  # create same gene2biotype file than in bulk RNA-Seq pipeline
+  gene2biotype <- extracted_gtf_info[,c("gene_id", "gene_biotype")]
+  gene2biotype$type <- ifelse(is.na(gene2biotype$biotype) == TRUE || gene2biotype$biotype == "NA", "intergenic", "genic")
   # generate output files  
-  write.table(extracted_gtf_info[,c("transcript_id", "gene_id")], file = file.path(folder_gtf, paste0(species_id, "_transcript_to_gene_with_intergenic.tsv")), quote = FALSE, sep = "\t", col.names = FALSE, row.names = FALSE)
-  write.table(extracted_gtf_info[,c("gene_id", "gene_biotype")], file = file.path(folder_gtf, paste0(species_id, "_gene_to_biotype_with_intergenic.tsv")), quote = FALSE, sep = "\t", col.names = FALSE, row.names = FALSE)
-  write.table(extracted_gtf_info[,c("gene_id", "gene_name")], file = file.path(folder_gtf, paste0(species_id, "_gene_to_geneName_with_intergenic.tsv")), quote = FALSE, sep = "\t", col.names = FALSE, row.names = FALSE)
+  write.table(extracted_gtf_info[,c("transcript_id", "gene_id")], file = file.path(folder_gtf, str_replace(string = gtf_file_name, pattern = "gtf_all", replacement = "tx2gene")),
+    quote = FALSE, sep = "\t", col.names = c("TXNAME", "GENEID"), row.names = FALSE)
+  write.table(extracted_gtf_info[,c("gene_id", "gene_biotype", "type")], file = file.path(folder_gtf, str_replace(string = gtf_file_name, pattern = "gtf_all", replacement = "gene2biotype")),
+    quote = FALSE, sep = "\t", col.names = c("id", "biotype", "type"), row.names = FALSE)
 }
