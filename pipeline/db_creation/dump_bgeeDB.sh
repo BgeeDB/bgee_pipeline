@@ -65,5 +65,14 @@ time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME globalCond globalCondToC
 #NOTE $DB_NAME-allBut-globalExpression.sql should be loaded last to deal with gene table duplication (and issue with gene table lock with chunks)
 # is it still with  --single-transaction  and data only?
 
+# Loading order:
+# - bgeeSchema.sql
+# - bgee_vX_Y-allBut-globalExpression.sql
+# - bgeeConstraint.sql
+# - bgeeIndex.sql
+# - bgeeForeignKey.sql
+# -> globalCond globalCondToCond
+# -> globalExpression
+
 exit 0
 
