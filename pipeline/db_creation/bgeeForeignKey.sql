@@ -141,8 +141,7 @@ add foreign key (taxonId) references taxon(taxonId) on delete cascade;
 /*!40000 ALTER TABLE `gene` DISABLE KEYS */;
 alter table gene
 add foreign key (speciesId) references species(speciesId) on delete cascade,
-add foreign key (geneBioTypeId) references geneBioType(geneBioTypeId) on delete set null,
-add foreign key (OMAParentNodeId) references OMAHierarchicalGroup(OMANodeId) on delete set null;
+add foreign key (geneBioTypeId) references geneBioType(geneBioTypeId) on delete set null;
 /*!40000 ALTER TABLE `gene` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `geneNameSynonym` DISABLE KEYS */;
