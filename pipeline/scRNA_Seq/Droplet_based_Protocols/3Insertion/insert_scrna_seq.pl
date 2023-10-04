@@ -77,7 +77,7 @@ if ( !$test_options || $bgee_connector eq '' || $targetBaseLibrary eq '' || $sin
 }
 
 require("$FindBin::Bin/../../rna_seq_utils.pl");
-require("$FindBin::Bin/../target_base_utils.pl");
+require("$FindBin::Bin/../../target_base_utils.pl");
 
 # initialize variables
 

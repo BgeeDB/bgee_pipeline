@@ -47,32 +47,10 @@ retrieve_metadata: control_annotation 0Preparation/retrieve_metadata.R
 	@echo --- DONE ---
 	@touch $@
 
-## Download cleaning data that still is not downloaded/present in Jura server (run rule with sbatch)
-download_cleaning_data: retrieve_metadata 0Preparation/download_cleaning_data.R
-	@echo --- Starting downloading the data ---
-	@sed -i 's@--output=.*@--output=${PWD}/download_cleaning_data.out@'                                              0Preparation/download_cleaning_data.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/download_cleaning_data.err@'                                                0Preparation/download_cleaning_data.sbatch
-	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                     0Preparation/download_cleaning_data.sbatch
-	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                           0Preparation/download_cleaning_data.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                     0Preparation/download_cleaning_data.sbatch
-	@sed -i 's@export metadata_info=.*@export metadata_info=$(SC_RNASEQ_METADATA_FILEPATH)@'                         0Preparation/download_cleaning_data.sbatch
-	@sed -i 's@export librariesDownloadedJura=.*@export librariesDownloadedJura=$(SC_RNASEQ_JURA_LIB_FILEPATH)@'     0Preparation/download_cleaning_data.sbatch
-	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH)@'                 0Preparation/download_cleaning_data.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_LIB_DIR)@'                                       0Preparation/download_cleaning_data.sbatch
-	@sbatch 0Preparation/download_cleaning_data.sbatch
-	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
-	@echo --- DONE ---
-	@touch $@
-
-## Add new libraries download to the jura file list (run rule in front)
-list_new_downloads: download_cleaning_data
-	@find $(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH) -type f -name \*.fastq.gz\* | xargs -r dirname | sed -e 's@^.*/@@' | sort -u > /tmp/new_downloads
-	@cat $(SC_RNASEQ_JURA_LIB_FILEPATH) >>/tmp/new_downloads
-	@sort -u /tmp/new_downloads >$(SC_RNASEQ_JURA_LIB_FILEPATH)
-	@rm -f /tmp/new_downloads
-	@$(GIT) add $(SC_RNASEQ_JURA_LIB_FILEPATH)
-	@$(GIT) commit -m 'Add new downloaded libraries' $(SC_RNASEQ_JURA_LIB_FILEPATH) || true
-	@touch $@
+# Parallelize download of libraries and do not download again already downloaded libraries
+parallelized_download: retrieve_metadata
+	@perl 0Preparation/parallelized_download_SRA.pl -metadataFile=$(SC_RNASEQ_METADATA_FILEPATH) -parallelJobs=50 -downloadedLibraries=$(SC_RNASEQ_SENSITIVE_LIB_FILEPATH) -outputDir=$(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH) -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
+	@$(MV) $@.tmp $@
 
 commit_annotation_and_metadata: list_new_downloads
 	# Commit the library information file that will be used for the rest of the pipeline
@@ -81,9 +59,10 @@ commit_annotation_and_metadata: list_new_downloads
 	@$(GIT) add $(SC_RNASEQ_LIB_NOT_PASS_FILEPATH)
 	@$(GIT) add $(SC_RNASEQ_METADATA_FILEPATH)
 	@$(GIT) add $(SC_RNASEQ_METADATA_NOT_MATCH_FILEPATH)
-	@$(GIT) commit -m 'Update metadata for scRNASeq for $(DBNAME)' $(SC_RNASEQ_LIB_FL_FILEPATH) $(SC_RNASEQ_LIB_PASS_FILEPATH) $(SC_RNASEQ_LIB_NOT_PASS_FILEPATH) $(SC_RNASEQ_METADATA_FILEPATH) $(SC_RNASEQ_METADATA_NOT_MATCH_FILEPATH) || true
+	@$(GIT) add $(SC_RNASEQ_SENSITIVE_LIB_FILEPATH)
+	@$(GIT) commit -m 'Update metadata for scRNASeq for $(DBNAME)' $(SC_RNASEQ_LIB_FL_FILEPATH) $(SC_RNASEQ_LIB_PASS_FILEPATH) $(SC_RNASEQ_LIB_NOT_PASS_FILEPATH) $(SC_RNASEQ_METADATA_FILEPATH) $(SC_RNASEQ_METADATA_NOT_MATCH_FILEPATH) $(SC_RNASEQ_SENSITIVE_LIB_FILEPATH) || true
 	@$(GIT) push
-	@echo -e "All information is ready, you can go to JURA cluster to prepare the scRNA-Seq information file and continue the pipeline \n"
+	@echo -e "All information is ready, you can go to the sensitive cluster to prepare the scRNA-Seq information file and continue the pipeline \n"
 	@touch $@
 
 

@@ -490,7 +490,7 @@ SC_RNASEQ_WHITELIST_10X_v3             := $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_w
 
 # scRNASeq github file paths in the generated_files directory
 SC_RNASEQ_PATH_GENERATED               := $(GENERATED_FILES_DIR)$(SC_RNASEQ_PATH)
-SC_RNASEQ_SENSITIVE_LIB_FILEPATH       := $(SC_RNASEQ_PATH_GENERATED)juraLibrariesDownloaded.tsv
+SC_RNASEQ_SENSITIVE_LIB_FILEPATH       := $(SC_RNASEQ_PATH_GENERATED)librariesDownloaded.tsv
 ### Full_length
 SC_RNASEQ_FL_FOLDER_GENERATED          := $(SC_RNASEQ_PATH_GENERATED)Full_length/
 SC_RNASEQ_LIB_PASS_FILEPATH            := $(SC_RNASEQ_FL_FOLDER_GENERATED)passScRNASeqLibrary.tsv

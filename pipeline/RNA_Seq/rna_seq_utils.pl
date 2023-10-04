@@ -4,7 +4,9 @@
 use strict;
 use warnings;
 use diagnostics;
-
+use FindBin;
+use lib "$FindBin::Bin/.."; # Get lib path for Utils.pm
+use Utils;
 # Frederic Bastian, created November 2012
 # Julien Roux, updated March 2016, October 2016
 # list of subs useful for analyzing RNA-Seq data

@@ -54,7 +54,7 @@ if ( !$metadataFile || $parallelJobs eq '' || $gtfDir eq '' || $barcodeFolder eq
 }
 
 require("$FindBin::Bin/../../rna_seq_utils.pl");
-require("$FindBin::Bin/../target_base_utils.pl");
+require("$FindBin::Bin/../../target_base_utils.pl");
 
 # Info of processed libraries coming from the pipeline
 my %processedLibraries = get_processed_libraries_info($metadataFile);
