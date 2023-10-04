@@ -5,7 +5,8 @@
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args pass_annotationControl="passScRNASeqLibrary.tsv" output_folder="output_folder"' retrieve_metadata.R retrieve_metadata.Rout
 ## pass_annotationControl -> File with all libraries annotated by bgee that pass the minimum requirement (>= 50 cells)
-## output_folder --> folder where the output files should be saved
+## metadata_info_file --> file where metadata info are saved
+## metadata_info_not_match_file --> file where metadata info are saved for libraries with metadata mismatch between Bgee and EBI
 
 ## reading arguments
 cmd_args = commandArgs(TRUE);
@@ -17,7 +18,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments exist....
-command_arg <- c("pass_annotationControl", "output_folder")
+command_arg <- c("pass_annotationControl", "metadata_info_file", "metadata_info_not_match_file")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -31,17 +32,6 @@ if( file.exists(pass_annotationControl) ){
 } else {
   stop( paste("The annotation file not found [", pass_annotationControl, "]\n"))
 }
-
-#create output dir if not already done
-if (!dir.exists(output_folder)) {
-  dir.create(output_folder, recursive = TRUE)
-}
-
-## Create the output files to write the comparison between annotation and metadata
-metadata_info <- file.path(output_folder,"metadata_info.tsv")
-file.create(metadata_info)
-metadata_info_not_match <- file.path(output_folder,"metadata_info_not_match.tsv")
-file.create(metadata_info_not_match)
 
 #create two data.frame for libraries passing/not passing the verification
 metadata_colnames <- c("sample_accession","experimentId","library_id","run_accession","read_count",
@@ -61,7 +51,7 @@ for (row in seq(nrow(annotation))) {
       ena.url <- paste("https://www.ebi.ac.uk/ena/portal/api/filereport?accession=",
                    libraryID,
                    "&result=read_run",
-                   "&fields=experiment_accession,run_accession,",
+                   "&fields=sample_accession,experiment_accession,run_accession,",
                    "read_count,tax_id,scientific_name,",
                    "instrument_model,library_layout,fastq_ftp,submitted_ftp,",
                    "&download=TRUE",
@@ -113,7 +103,7 @@ for (row in seq(nrow(annotation))) {
 }
 
 # write metadata files
-write.table(passed, metadata_info, sep = "\t", col.names = TRUE, row.names = FALSE, quote = FALSE)
-write.table(not_passed, metadata_info_not_match, sep = "\t", col.names = TRUE, row.names = FALSE,
+write.table(passed, metadata_info_file, sep = "\t", col.names = TRUE, row.names = FALSE, quote = FALSE)
+write.table(not_passed, metadata_info_not_match_file, sep = "\t", col.names = TRUE, row.names = FALSE,
   quote = FALSE)
 

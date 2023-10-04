@@ -20,8 +20,9 @@ module add R/3.6.1
 
 export SCRIPT_PATH=/users/jwollbre/bgee_pipeline/pipeline/scRNA_Seq/Full_Length_Protocols
 export pass_annotationControl=../../../generated_files/scRNA_Seq/Full_length/passScRNASeqLibrary.tsv
-export output_folder=../../../generated_files/scRNA_Seq/Full_length/
+export metadata_info_file=../../../generated_files/scRNA_Seq/Full_length/metadata_info.tsv
+export metadata_info_not_match_file=../../../generated_files/scRNA_Seq/Full_length/metadata_info_not_match.tsv
 export ROUT=/work/FAC/FBM/DEE/mrobinso/bgee_sensitive/downloads/scRNA_Seq_All/scRNASeq_libraries_FullLength/
 
 mkdir -p $ROUT
-R CMD BATCH --no-save --no-restore "--args pass_annotationControl=\"$pass_annotationControl\" output_folder=\"$output_folder\"" $SCRIPT_PATH/0Preparation/retrieve_metadata.R $ROUT/retrieve_metadata.Rout
+R CMD BATCH --no-save --no-restore "--args pass_annotationControl=\"$pass_annotationControl\" metadata_info_file=\"$metadata_info_file\" metadata_info_not_match_file=\"$metadata_info_not_match_file\"" $SCRIPT_PATH/0Preparation/retrieve_metadata.R $ROUT/retrieve_metadata.Rout
