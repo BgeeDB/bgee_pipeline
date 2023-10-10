@@ -12,7 +12,6 @@
 library(rjson)
 library(plyr)
 library(dplyr)
-library(taxizedb)
 
 ## reading arguments
 cmd_args = commandArgs(TRUE);
@@ -24,7 +23,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed....
-command_arg <- c("pass_annotationControl", "raw_cells_folder", "output_folder")
+command_arg <- c("pass_annotationControl", "metadata_file", "raw_cells_folder", "output_folder")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -38,6 +37,13 @@ if( file.exists(pass_annotationControl) ){
 } else {
   stop( paste("pass_annotationControl file not found [", pass_annotationControl, "]\n"))
 }
+
+if( file.exists(metadata_file) ){
+   metadata <- read.table(metadata_file, h=T, sep="\t", comment.char="")
+} else {
+  stop("metadata file not found [", metadata_file, "]")
+}
+
 
 ##################################################################### FUNCTION #############################################################################################
 ## run fastp and collect information
@@ -70,13 +76,13 @@ collectInformationFASTP <- function(raw_cells_folder, annotation, library){
       read1 <- rawFiles[1]
       read2 <- rawFiles[2]
       nameFile <-  nameRaw <- sub("\\_.*", "", rawFiles)
-      system(sprintf('%s -i %s -I %s -h %s -j %s', paste0("fastp"), file.path(fastp_dir, read1), file.path(fastp_dir, read2), file.path(fastp_dir, paste0(unique(nameFile)), ".fastp.html"),
+      system(sprintf('%s -i %s -I %s -h %s -j %s', paste0("fastp"), file.path(fastp_dir, read1), file.path(fastp_dir, read2), file.path(fastp_dir, paste0(unique(nameFile), ".fastp.html")),
           file.path(fastp_dir, paste0(unique(nameFile), ".fastp.json"))))
       libraryType <- "PAIRED"
       ## collect readLength
       readJsonOutput <- fromJSON(file = file.path(fastp_dir, list.files(path = fastp_dir, pattern = "*.fastp.json$")))
       readLength <- readJsonOutput$read1_before_filtering$total_cycles
-      system(sprintf('%s %s %s %s', paste0("xz"), paste0("-9"), paste0(nameRaw, ".fastp.html"), paste0(nameRaw, ".fastp.json")))
+      system(sprintf('%s %s %s %s', paste0("xz"), paste0("-9"), file.path(fastp_dir, paste0(nameRaw, ".fastp.html")), file.path(fastp_dir, paste0(nameRaw, ".fastp.json"))))
     }
   }
 
@@ -87,15 +93,8 @@ collectInformationFASTP <- function(raw_cells_folder, annotation, library){
 
 
 ## Function to add species name
-speciesName <- function(scrna_seq_sample_info){
-  
-  uniqueSpeciesIDs <- unique(scrna_seq_sample_info$speciesId)
-  taxon2name <- taxizedb::taxid2name(uniqueSpeciesIDs, db="ncbi")
-  allInfo <- data.frame(uniqueSpeciesIDs, taxon2name)
-  
-  for (taxon in unique(scrna_seq_sample_info$speciesId)) {
-    scrna_seq_sample_info$organism <- as.character(allInfo$taxon2name[allInfo$uniqueSpeciesIDs == taxon])
-  }
+addSpeciesName <- function(scrna_seq_sample_info, metadata){
+  scrna_seq_sample_info$organism <- metadata$scientific_name[metadata$tax_id == scrna_seq_sample_info$speciesId]
   return(scrna_seq_sample_info)
 }
 
@@ -123,7 +122,8 @@ scrna_seq_sample_info <- scrna_seq_sample_info %>% dplyr::select("libraryId", "e
                                                           "platform", "protocol", "protocolType", "libraryType", "infoOrgan", "stageId",
                                                           "anatId", "sex", "strain", "readLength", "speciesId", "genotype")
 scrna_seq_sample_info$organism <- "NaN"
-finalTable <- speciesName(scrna_seq_sample_info = scrna_seq_sample_info)
+finalTable <- addSpeciesName(scrna_seq_sample_info = scrna_seq_sample_info, metadata = metadata)
+message(finalTable)
 write.table(finalTable,file = file.path( output_folder, "scrna_seq_sample_info.tsv"), quote = FALSE, sep = "\t", col.names = TRUE, row.names = FALSE)
 ## remove intermediary file
 file.remove(tmpInfoFile)

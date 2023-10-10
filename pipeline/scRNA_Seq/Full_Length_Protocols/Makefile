@@ -94,7 +94,6 @@ check_tools: clusterJURA
 	@$(CLUSTER_R_CMD) R -e 'library("rjson")'         >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("stringr")'       >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("tools")'         >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("taxizedb")'      >> $@.tmp  2>/dev/null
 	@which xz                                         >> $@.tmp
 	@which sbatch                                     >> $@.tmp
 	@$(CLUSTER_KALLISTO_CMD)   which kallisto         >> $@.tmp
@@ -103,9 +102,9 @@ check_tools: clusterJURA
 
 ## Prepare single cell info file (run rule in front)
 prepare_singlecell_info: $(SC_RNASEQ_LIB_PASS_FILEPATH) 0Preparation/prepare_scrna_seq_sample_info.R
-	@$(RM) $(SC_RNASEQ_SAMPINFO_FILEPATH) > $@.tmp 2> $@.err
+	@$(RM) $(SC_RNASEQ_SAMPINFO_FILEPATH) > $@.tmp
 	@echo --- prepare single cell information file ---
-	@$(CLUSTER_FASTP_CMD) $(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args pass_annotationControl="$(SC_RNASEQ_LIB_PASS_FILEPATH)" raw_cells_folder="$(SC_RNASEQ_FASTQ_FULL_LENGTH)" output_folder="$(SC_RNASEQ_FL_FOLDER_GENERATED)"' 0Preparation/prepare_scrna_seq_sample_info.R 0Preparation/prepare_scrna_seq_sample_info.Rout > $@.tmp 2> $@.err
+	@$(CLUSTER_FASTP_CMD) $(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args pass_annotationControl="$(SC_RNASEQ_LIB_PASS_FILEPATH)" metadata_file="$(SC_RNASEQ_METADATA_FILEPATH)" raw_cells_folder="$(SC_RNASEQ_FASTQ_FULL_LENGTH)" output_folder="$(SC_RNASEQ_FL_FOLDER_GENERATED)"' 0Preparation/prepare_scrna_seq_sample_info.R 0Preparation/prepare_scrna_seq_sample_info.Rout > $@.tmp
 	@echo --- DONE ---
 	@$(MV) $@.tmp $@
 
