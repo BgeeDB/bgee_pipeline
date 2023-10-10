@@ -10,7 +10,7 @@ SHELL = /bin/bash
 #  GENERAL PARAMETERS
 # ===================================
 MAJOR_RELEASE    := 15
-MINOR_RELEASE    := 1
+MINOR_RELEASE    := new_intergenic
 RELEASE          := $(MAJOR_RELEASE).$(MINOR_RELEASE)
 
 # MySQL database connection parameters
@@ -146,7 +146,7 @@ include $(PIPELINEROOT)Makefile.taxon_info
 
 CLUSTER_DATA_PATH       := /data/FAC/FBM/DEE/mrobinso/bgee_sensitive
 # use the /data folder to avoid providing user scratch directory as there is currently no project scratch directory
-CLUSTER_SCRATCH_PATH    := $(CLUSTER_DATA_PATH)
+CLUSTER_SCRATCH_PATH    := /scratch/jwollbre/
 CLUSTER_SCRATCH_RESULTS := $(CLUSTER_SCRATCH_PATH)/$(DBNAME)/
 CLUSTER_ARCHIVE_PATH    := /archive/FAC/FBM/DEE/mrobinso/bgee_sensitive
 CLUSTER_CURNAGL_PATH    := /work/FAC/FBM/DEE/mrobinso/bgee_sensitive
@@ -157,7 +157,7 @@ PERL_LIBS_PATH_CURNAGL  := $(CLUSTER_CURNAGL_PATH)/PERL_LIBS/lib/perl5
 
 #NOTE Think to add ; at the end to ease insertion in other command lines
 CLUSTER_SOFT_VITALIT    := module use /software/module/;
-CLUSTER_SOFT_UNIL       := module load gcc/9.3.0;
+CLUSTER_SOFT_UNIL       := module load gcc/10.4.0;
 CLUSTER_KALLISTO_CMD    := $(CLUSTER_SOFT_VITALIT) module add UHTS/Analysis/kallisto/0.46.0;
 CLUSTER_R_CMD           := $(CLUSTER_SOFT_VITALIT) module add R/3.6.1;
 CLUSTER_R_CMD2          := $(CLUSTER_SOFT_UNIL)    module load r/4.0.5;
@@ -167,7 +167,7 @@ SENSITIVE_PERL_CMD      := $(CLUSTER_SOFT_VITALIT) $(CLUSTER_ENSEMBL_API) $(CLUS
 CLUSTER_PERL_CMD        := $(CLUSTER_SOFT_UNIL)    module load perl/5.32.1;
 CLUSTER_SRATOOLKIT_CMD  := $(CLUSTER_SOFT_UNIL)    module load sratoolkit/2.10.9;
 CLUSTER_TOPHAT_CMD      := $(CLUSTER_SOFT_VITALIT) module add UHTS/Aligner/tophat/2.1.1;
-CLUSTER_FASTP_CMD       := $(CLUSTER_SOFT_UNIL)    module load fastp/0.20.1;
+CLUSTER_FASTP_CMD       := $(CLUSTER_SOFT_UNIL)    module load fastp/0.23.2;
 CLUSTER_BUSTOOLS_CMD    := $(CLUSTER_SOFT_VITALIT) module add UHTS/Analysis/bustools/0.40.0;
 
 
@@ -415,7 +415,7 @@ RNASEQ_DOWNLOAD_LIB_DIR        := $(CLUSTER_CURNAGL_PATH)/downloads
 RNASEQ_CLUSTER_READONLY        := $(CLUSTER_DATA_PATH)/
 RNASEQ_CLUSTER_SCRIPTS         := $(RNASEQ_CLUSTER_READONLY)GIT/pipeline/
 RNASEQ_DOWNLOAD_GTF            := $(CLUSTER_CURNAGL_PATH)/downloads/GTF_$(MAJOR_RELEASE)/
-RNASEQ_CLUSTER_GTF             := $(RNASEQ_CLUSTER_READONLY)rna_seq/GTF_$(MAJOR_RELEASE)/
+RNASEQ_CLUSTER_GTF             := $(RNASEQ_CLUSTER_READONLY)rna_seq/GTF_new_intergenic_deconvoluted/
 RNASEQ_CLUSTER_ALL_RES_BACKUP  := $(RNASEQ_CLUSTER_READONLY)rna_seq/all_results_$(DBNAME)/
 
 RNASEQ_CLUSTER_SCRATCH         := $(CLUSTER_SCRATCH_RESULTS)rna_seq/
