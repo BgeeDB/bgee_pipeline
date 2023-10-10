@@ -59,7 +59,7 @@ collectInformationFASTP <- function(raw_cells_folder, annotation, library){
     cat("Need to run fastp", "\n")
     if (length(rawFiles) == 1){
       cat("The library, ", library ," is SINGLE-end ", "\n")
-      system(sprintf('%s -i %s -h %s -j %s', paste0("fastp"), file.path(fastp_dir, rawFiles), paste0(nameRaw, ".fastp.html"), paste0(nameRaw, ".fastp.json")))
+      system(sprintf('%s -i %s -h %s -j %s', paste0("fastp"), file.path(fastp_dir, rawFiles), file.path(fastp_dir, paste0(nameRaw, ".fastp.html")), file.path(fastp_dir, paste0(nameRaw, ".fastp.json"))))
       libraryType <- "SINGLE"
       ## collect readLength
       readJsonOutput <- fromJSON(file = file.path(fastp_dir, list.files(path = fastp_dir, pattern = "*.fastp.json$")))
@@ -70,10 +70,11 @@ collectInformationFASTP <- function(raw_cells_folder, annotation, library){
       read1 <- rawFiles[1]
       read2 <- rawFiles[2]
       nameFile <-  nameRaw <- sub("\\_.*", "", rawFiles)
-      system(sprintf('%s -i %s -I %s -h %s -j %s', paste0("fastp"), file.path(fastp_dir, read1), file.path(fastp_dir, read2), paste0(unique(nameFile), ".fastp.html"), paste0(unique(nameFile), ".fastp.json")))
+      system(sprintf('%s -i %s -I %s -h %s -j %s', paste0("fastp"), file.path(fastp_dir, read1), file.path(fastp_dir, read2), file.path(fastp_dir, paste0(unique(nameFile)), ".fastp.html"),
+          file.path(fastp_dir, paste0(unique(nameFile), ".fastp.json"))))
       libraryType <- "PAIRED"
       ## collect readLength
-      readJsonOutput <- fromJSON(file = file.path(fastp_dir, list.files(path = fatp_dir, pattern = "*.fastp.json$")))
+      readJsonOutput <- fromJSON(file = file.path(fastp_dir, list.files(path = fastp_dir, pattern = "*.fastp.json$")))
       readLength <- readJsonOutput$read1_before_filtering$total_cycles
       system(sprintf('%s %s %s %s', paste0("xz"), paste0("-9"), paste0(nameRaw, ".fastp.html"), paste0(nameRaw, ".fastp.json")))
     }
