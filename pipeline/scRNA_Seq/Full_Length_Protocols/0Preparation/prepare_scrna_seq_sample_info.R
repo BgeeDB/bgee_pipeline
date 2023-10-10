@@ -94,7 +94,7 @@ speciesName <- function(scrna_seq_sample_info){
   allInfo <- data.frame(uniqueSpeciesIDs, taxon2name)
   
   for (taxon in unique(scrna_seq_sample_info$speciesId)) {
-    scrna_seq_sample_info$organism <- allInfo$taxon2name[allInfo$uniqueSpeciesIDs == taxon]
+    scrna_seq_sample_info$organism <- as.character(allInfo$taxon2name[allInfo$uniqueSpeciesIDs == taxon])
   }
   return(scrna_seq_sample_info)
 }
