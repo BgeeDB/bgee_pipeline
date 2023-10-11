@@ -115,14 +115,14 @@ indexes_bgeecall: prepare_singlecell_info
 	# Run in front because it only parse a small file in order to create a new one.
 	@perl 1Run/sc_sample_info_to_bgeecall.pl -sc_sample_info_file=$(SC_RNASEQ_SAMPINFO_FILEPATH) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(SC_RNASEQ_FASTQ_FULL_LENGTH) -output_dir=$(SC_RNASEQ_CLUSTER_BGEECALL) -bgeecall_file=$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >>$@.tmp 2>&1
 	# generate kallisto indexes with BgeeCall. Use same working directory than bulk RNASeq as indexes are the same
-	@$(CLUSTER_R_CMD) $(CLUSTER_KALLISTO_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH)" account="$(CLUSTER_ACCOUNT_SENSITIVE)" time="10:00:00" partition="$(CLUSTER_PARTITION_SENSITIVE)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' $(PIPELINEROOT)$(RNASEQPATH)1Run/bgeecall_index.R 1Run/bgeecall_index.Rout
+	@$(CLUSTER_R_CMD) $(CLUSTER_KALLISTO_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH)" account="$(SENSITIVE_CLUSTER_ACCOUNT)" time="10:00:00" partition="$(SENSITIVE_CLUSTER_PARTITION)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' $(PIPELINEROOT)$(RNASEQPATH)1Run/bgeecall_index.R 1Run/bgeecall_index.Rout
 	@$(MV) $@.tmp $@
 
 # Use BgeeCall R package to generate present/absent calls.
 # run script from bulk RNASeq pipeline
 presence_absence_bgeecall: indexes_bgeecall
 	#use same working_directory than bulk RNASeq as indexes are the same
-	@$(CLUSTER_R_CMD) $(CLUSTER_KALLISTO_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH)" account="$(CLUSTER_ACCOUNT_SENSITIVE)" time="2-00:00:00" partition="$(CLUSTER_PARTITION_SENSITIVE)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)" decrypt_file_path=""' $(PIPELINEROOT)$(RNASEQPATH)1Run/bgeecall_calls.R 1Run/bgeecall_calls.Rout
+	@$(CLUSTER_R_CMD) $(CLUSTER_KALLISTO_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH)" account="$(SENSITIVE_CLUSTER_ACCOUNT)" time="2-00:00:00" partition="$(SENSITIVE_CLUSTER_PARTITION)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)" decrypt_file_path=""' $(PIPELINEROOT)$(RNASEQPATH)1Run/bgeecall_calls.R 1Run/bgeecall_calls.Rout
 	@touch $@
 
 ## Quality control by cell population to perform the calls (not pass if not bimodal)
@@ -130,8 +130,8 @@ QC_cellPopulation: presence_absence_bgeecall 1Run/QC_cellPopulation.R
 	@echo --- Starting the quality control per cell population ---
 	@sed -i 's@--output=.*@--output=${PWD}/QC_cellPopulation.out@'                                                     1Run/QC_cellPopulation.sbatch
 	@sed -i 's@--error=.*@--error=${PWD}/QC_cellPopulation.err@'                                                       1Run/QC_cellPopulation.sbatch
-	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION_SENSITIVE}@'                                             1Run/QC_cellPopulation.sbatch
-	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT_SENSITIVE}@'                                                   1Run/QC_cellPopulation.sbatch
+	@sed -i 's@--partition=.*@--partition=${SENSITIVE_CLUSTER_PARTITION}@'                                             1Run/QC_cellPopulation.sbatch
+	@sed -i 's@--account=.*@--account=${SENSITIVE_CLUSTER_ACCOUNT}@'                                                   1Run/QC_cellPopulation.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                      1Run/QC_cellPopulation.sbatch
 	@sed -i 's@export scrna_seq_sample_info=.*@export scrna_seq_sample_info=$(SC_RNASEQ_SAMPINFO_FILEPATH)@'           1Run/QC_cellPopulation.sbatch
 	@sed -i 's@export cells_folder=.*@export cells_folder=$(SC_RNASEQ_CLUSTER_BGEECALL)@'                              1Run/QC_cellPopulation.sbatch
