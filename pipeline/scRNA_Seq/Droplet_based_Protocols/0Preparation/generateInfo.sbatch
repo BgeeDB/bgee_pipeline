@@ -9,18 +9,16 @@
 #SBATCH --mem=2G
 #SBATCH --time=1-00:00:00
 
-#SBATCH --output=/scratch/beegfs/FAC/FBM/DEE/bgee_sensitive/bgee_v15_0/scRNA-Seq_all_results_bgee_v15_0/DROPLET_10X/
-#SBATCH --error=/scratch/beegfs/FAC/FBM/DEE/bgee_sensitive/bgee_v15_0/scRNA-Seq_all_results_bgee_v15_0/DROPLET_10X/
+#SBATCH --output=/scratch/jwollbre//bgee_v15_new_intergenic/scRNA-Seq_all_results_bgee_v15_new_intergenic/DROPLET_10X//generate_info/generateInfo.out
+#SBATCH --error=/scratch/jwollbre//bgee_v15_new_intergenic/scRNA-Seq_all_results_bgee_v15_new_intergenic/DROPLET_10X//generate_info/generateInfo.err
 #SBATCH --export=NONE
 #SBATCH --job-name=generateInfo_TB
 
-module load /software/module/
+module use /software/module/
 module add R/3.6.1;
 
-export SCRIPT_PATH=/home/jwollbre/Documents/git/bgee_pipeline_droplet_test/bgee_pipeline/pipeline/scRNA_Seq/Droplet_based_Protocols/
-export folder_gtf=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/rna_seq/GTF_15/
-export metadata_info_file=/home/jwollbre/Documents/git/bgee_pipeline_droplet_test/bgee_pipeline/pipeline/scRNA_Seq/Droplet_based_Protocols/../../../generated_files/scRNA_Seq/Target_based/metadata_info_10X.txt
-export ROUT=/scratch/beegfs/FAC/FBM/DEE/bgee_sensitive/bgee_v15_0/scRNA-Seq_all_results_bgee_v15_0/DROPLET_10X/
+export SCRIPT_PATH=/users/jwollbre/Documents/git/bgee_pipeline/pipeline/scRNA_Seq/Droplet_based_Protocols/
+export folder_gtf=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/rna_seq/GTF_new_intergenic_deconvoluted/
+export metadata_info_file=/users/jwollbre/Documents/git/bgee_pipeline/pipeline/scRNA_Seq/Droplet_based_Protocols/../../../generated_files/scRNA_Seq/Target_based/metadata_info_10X.txt
 
-mkdir -p /scratch/beegfs/FAC/FBM/DEE/bgee_sensitive/bgee_v15_0/scRNA-Seq_all_results_bgee_v15_0/DROPLET_10X/
-R CMD BATCH --no-save --no-restore "--args folder_gtf=\"$folder_gtf\" metadata_info_file=\"$metadata_info_file\"" $SCRIPT_PATH/0Preparation/generateInfo.R $ROUT/generateInfo.Rout
+Rscript $SCRIPT_PATH/0Preparation/generateInfo.R folder_gtf=\"$folder_gtf\" metadata_info_file=\"$metadata_info_file\"

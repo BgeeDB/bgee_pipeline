@@ -94,7 +94,7 @@ for (species_id in species_ids) {
     }
     gtf_file <- gtf_file[!grepl(pattern = "wo_intergenic.gtf$|nascent.gtf$|transcriptome.gtf$", x = gtf_file)]
     
-    ## reading in gtf file (gzipped, no need to uncompress)
+    ## reading in gtf file from ensembl
     message("Reading GTF file ", gtf_file,"... \n")
     gene_gtf <- as.matrix(read.table(file = gtf_file, sep = "\t", strip.white = TRUE, as.is = TRUE,
       colClasses = "character", comment.char = '#'))
@@ -140,7 +140,7 @@ for (species_id in species_ids) {
                 quote = FALSE)
 
     ## Table of mapping between transcript_id and gene_id
-    tx2gene_file <- file.path(gtf_dir, gsub(pattern = ".gtf", replacement = ".tx2gene",
+    tx2gene_file <- file.path(gtf_dir, gsub(pattern = ".gtf", replacement = "_transcript_to_gene_with_intergenic.tsv",
       x = basename(gtf_file)))
     if (!file.exists(tx2gene_file)) {
       if(file.exists(paste0(tx2gene_file, ".xz"))) {
