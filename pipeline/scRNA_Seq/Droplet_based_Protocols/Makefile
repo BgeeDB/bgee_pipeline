@@ -204,8 +204,8 @@ prepare_single_nucleus_index: generate_gtf_nascent 0Preparation/slurm_single_nuc
 ## Run Kallisto bus per taxon_iD/library
 kallisto_bus: prepare_single_nucleus_index 1Run/kallisto_bus_one_lib.R
 	@echo --- Start running kallisto bus for all libraries ---
-	@$(SENSITIVE_PERL_CMD) perl 1Run/parallelized_kallisto_bus.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -parallelJobs=100 -fastqDir=$(SC_RNASEQ_FASTQ_DROPLET) -gtfDir=$(RNASEQ_CLUSTER_GTF) -scRNASeqInfoFile=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/kallisto_bus_one_lib.R
-	@touch $@
+	@$(SENSITIVE_PERL_CMD) perl 1Run/parallelized_kallisto_bus.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -parallelJobs=100 -fastqDir=$(SC_RNASEQ_FASTQ_DROPLET) -gtfDir=$(RNASEQ_CLUSTER_GTF) -scRNASeqInfoFile=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/kallisto_bus_one_lib.R > $@.tmp 2> $@.err
+	@mv $@.tmp $@
 
 # generate stats from fastp and kallisto (e.g. read length, reads mapped, ...)
 generate_stats: kallisto_bus 1Run/generate_stats.R
@@ -222,14 +222,14 @@ uncompress_barcodes: generate_stats $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whiteli
 ## Process bus files
 process_busFile: uncompress_barcodes 1Run/process_busfile_one_lib.R
 	@echo --- Starting the process of bus files ---
-	@perl 1Run/parallelized_process_busfile.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -parallelJobs=100 -fastqDir=$(SC_RNASEQ_FASTQ_DROPLET) -gtfDir=$(RNASEQ_CLUSTER_GTF) -scRNASeqInfoFile=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH) -whiteListPath=$(SC_RNASEQ_TB_FOLDER_SOURCE) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/process_busfile_one_lib.R > $@.tmp 2> $@.err
+	@$(SENSITIVE_PERL_CMD) 1Run/parallelized_process_busfile.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -parallelJobs=100 -fastqDir=$(SC_RNASEQ_FASTQ_DROPLET) -gtfDir=$(RNASEQ_CLUSTER_GTF) -scRNASeqInfoFile=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH) -whiteListPath=$(SC_RNASEQ_TB_FOLDER_SOURCE) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/process_busfile_one_lib.R > $@.tmp 2> $@.err
 	@mv $@.tmp $@
 
 
 ## Quality control (Knee + PCA + UMAP for each library) + cell type identification
 qc_cellType: process_busFile 1Run/parallelized_qcCellIdentification.pl
 	@echo --- Starting the quality control and the cell type identification ---
-	@perl 1Run/parallelized_qcCellIdentification.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH)  -parallelJobs=100 -gtfDir=$(RNASEQ_CLUSTER_GTF) -barcodeFolder=$(SC_RNASEQ_CLEANED_BARCODES) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -outputDir=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/celltype_one_lib.R -rLibs=$(R_LIBS_PATH_SENSITIVE) > $@.tmp 2>> $@.err
+	@$(SENSITIVE_PERL_CMD) 1Run/parallelized_qcCellIdentification.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH)  -parallelJobs=100 -gtfDir=$(RNASEQ_CLUSTER_GTF) -barcodeFolder=$(SC_RNASEQ_CLEANED_BARCODES) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -outputDir=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/celltype_one_lib.R -rLibs=$(R_LIBS_PATH_SENSITIVE) > $@.tmp 2>> $@.err
 	@mv $@.tmp $@
 
 ## Quality control based on the bimodality of the cell-population per library/cell-type pop
@@ -265,7 +265,7 @@ calls: qc_cellType 1Run/Calls_cell_pop_per_library.R
 	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'                             1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@export bimodalityFile=.*@export bimodalityFile=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)/bimodality_targetBased.txt@'  1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)@'                                   1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@export folder_gtf=.*@export folder_gtf=$(RNASEQ_CLUSTER_GTF)@'  1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@export folder_gtf=.*@export folder_gtf=$(RNASEQ_CLUSTER_GTF)@'                                                1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@export desired_pValue_cutoff=.*@export desired_pValue_cutoff=$(PVALUE_CUTOFF)@'                               1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_CLUSTER_CALLS_10X)@'                                 1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                                             1Run/Calls_cell_pop_per_library.sbatch

@@ -527,7 +527,7 @@ SCRNASEQ_SOFTWARE_BAMTOFASTQ                  := /users/jwollbre/tools/bamtofast
 
 ## PATH to full length and 10X data
 SC_RNASEQ_FASTQ_FULL_LENGTH                   := $(CLUSTER_DATA_PATH)/FASTQ/scRNAseq/Full_length/
-SC_RNASEQ_FASTQ_DROPLET                       := $(CLUSTER_DATA_PATH)/FASTQ/target_base/
+SC_RNASEQ_FASTQ_DROPLET                       := $(CLUSTER_DATA_PATH)/FASTQ/scRNAseq/10X/
 
 ## PATH to all results of both of pipelines
 SC_RNASEQ_CLUSTER_ALL_RES                     := $(CLUSTER_SCRATCH_RESULTS)scRNA-Seq_all_results_$(DBNAME)/

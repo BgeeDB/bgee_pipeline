@@ -96,7 +96,7 @@ for(line in seq(nrow(libraries))) {
 }
 
 if (libraries_wo_calls > 0 ) {
-  warning("Calls were not generated for ", libraries_wo_calls, " libraries.")
+  warning("Calls or R.stat file were not generated for ", libraries_wo_calls, " libraries.")
 }
 
 # save kallisto report
