@@ -1,5 +1,5 @@
 PIPELINEROOT := ../../
-DIR_NAME := scRNA_Seq/Droplet_based_Protocols
+DIR_NAME := scRNA_Seq/Target_based/
 
 include $(PIPELINEROOT)Makefile.common
 
@@ -10,9 +10,9 @@ get_annot:
 	@$(GIT) submodule init
 	@$(GIT) submodule update
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/Strains/StrainMapping.tsv                 $(STRAIN_MAPPING_FILE)
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqTBLibrary.tsv           $(INPUT_DIR)/Target_based/scRNASeqTBLibrary.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqExperiment.tsv          $(INPUT_DIR)/scRNASeqExperiment.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_*.tsv          $(INPUT_DIR)/Target_based/
+	#@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqTBLibrary.tsv           $(INPUT_DIR)/Target_based/scRNASeqTBLibrary.tsv
+	#@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqExperiment.tsv          $(INPUT_DIR)/scRNASeqExperiment.tsv
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_*.tsv          $(INPUT_DIR)
 	@touch $@
 
 ## Run in the front as it does not require lots of CPU and GPU
