@@ -17,7 +17,7 @@ RELEASE          := $(MAJOR_RELEASE).$(MINOR_RELEASE)
 # DBUSER and DBPASS defined in Makefile.Config
 # DBUSERV and DBPASSV defined in Makefile.Config
 DBNAME := bgee_v$(subst .,_,$(RELEASE))
-DBHOST := localhost
+DBHOST := dbbioinfo.unil.ch
 DBPORT := 3306
 DBNAME_EASYBGEE := easybgee_v$(subst .,_,$(RELEASE))
 DBHOST_EASYBGEE := rbioinfo.unil.ch
@@ -145,26 +145,31 @@ include $(PIPELINEROOT)Makefile.taxon_info
 # ===================================
 
 CLUSTER_DATA_PATH       := /data/FAC/FBM/DEE/mrobinso/bgee_sensitive
-CLUSTER_SCRATCH_PATH    := /scratch/beegfs/FAC/FBM/DEE/mrobinso/bgee_sensitive
+# use the /data folder to avoid providing user scratch directory as there is currently no project scratch directory
+CLUSTER_SCRATCH_PATH    := $(CLUSTER_DATA_PATH)
 CLUSTER_SCRATCH_RESULTS := $(CLUSTER_SCRATCH_PATH)/$(DBNAME)/
 CLUSTER_ARCHIVE_PATH    := /archive/FAC/FBM/DEE/mrobinso/bgee_sensitive
 CLUSTER_CURNAGL_PATH    := /work/FAC/FBM/DEE/mrobinso/bgee_sensitive
+CLUSTER_TOOLS_DIR       := $(CLUSTER_CURNAGL_PATH)/tools/
 
-R_LIBS_PATH_JURA        := $(CLUSTER_DATA_PATH)/R_LIBS
+R_LIBS_PATH_SENSITIVE   := $(CLUSTER_DATA_PATH)/R_LIBS
 R_LIBS_PATH_CURNAGL     := $(CLUSTER_CURNAGL_PATH)/R_LIBS
 PERL_LIBS_PATH_CURNAGL  := $(CLUSTER_CURNAGL_PATH)/PERL_LIBS/lib/perl5
 
 #NOTE Think to add ; at the end to ease insertion in other command lines
 CLUSTER_SOFT_VITALIT    := module use /software/module/;
-CLUSTER_SOFT_UNIL       := module load gcc/9.3.0;
-CLUSTER_KALLISTO_CMD    := $(CLUSTER_SOFT_VITALIT) module add UHTS/Analysis/kallisto/0.46.0;
-CLUSTER_R_CMD           := $(CLUSTER_SOFT_VITALIT) module add R/3.6.1;
+CLUSTER_SOFT_UNIL       := module load gcc/10.4.0;
+CLUSTER_KALLISTO_CMD    := $(CLUSTER_SOFT_VITALIT) module load UHTS/Analysis/kallisto/0.46.0;
+CLUSTER_R_CMD           := $(CLUSTER_SOFT_VITALIT) module load R/3.6.1;
 CLUSTER_R_CMD2          := $(CLUSTER_SOFT_UNIL)    module load r/4.0.5;
+CLUSTER_ENSEMBL_API     := module load Development/Ensembl_API/97;
+CLUSTER_SOFTWARE_BIN    := export PATH=/software/bin:$$PATH;
+SENSITIVE_PERL_CMD      := $(CLUSTER_SOFT_VITALIT) $(CLUSTER_ENSEMBL_API) $(CLUSTER_SOFTWARE_BIN)
 CLUSTER_PERL_CMD        := $(CLUSTER_SOFT_UNIL)    module load perl/5.32.1;
 CLUSTER_SRATOOLKIT_CMD  := $(CLUSTER_SOFT_UNIL)    module load sratoolkit/2.10.9;
-CLUSTER_TOPHAT_CMD      := $(CLUSTER_SOFT_VITALIT) module add UHTS/Aligner/tophat/2.1.1;
-CLUSTER_FASTP_CMD       := $(CLUSTER_SOFT_UNIL)    module load fastp/0.20.1;
-CLUSTER_BUSTOOLS_CMD    := $(CLUSTER_SOFT_VITALIT) module add UHTS/Analysis/bustools/0.40.0;
+CLUSTER_TOPHAT_CMD      := $(CLUSTER_SOFT_VITALIT) module load UHTS/Aligner/tophat/2.1.1;
+CLUSTER_FASTP_CMD       := $(CLUSTER_SOFT_UNIL)    module load fastp/0.23.2;
+CLUSTER_BUSTOOLS_CMD    := $(CLUSTER_SOFT_VITALIT) module load UHTS/Analysis/bustools/0.40.0;
 
 
 # ===================================
@@ -486,7 +491,7 @@ SC_RNASEQ_WHITELIST_10X_v3             := $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_w
 
 # scRNASeq github file paths in the generated_files directory
 SC_RNASEQ_PATH_GENERATED               := $(GENERATED_FILES_DIR)$(SC_RNASEQ_PATH)
-SC_RNASEQ_JURA_LIB_FILEPATH            := $(SC_RNASEQ_PATH_GENERATED)juraLibrariesDownloaded.tsv
+SC_RNASEQ_SENSITIVE_LIB_FILEPATH       := $(SC_RNASEQ_PATH_GENERATED)librariesDownloaded.tsv
 ### Full_length
 SC_RNASEQ_FL_FOLDER_GENERATED          := $(SC_RNASEQ_PATH_GENERATED)Full_length/
 SC_RNASEQ_LIB_PASS_FILEPATH            := $(SC_RNASEQ_FL_FOLDER_GENERATED)passScRNASeqLibrary.tsv
@@ -519,11 +524,11 @@ SC_RNASEQ_DOWNLOAD_PATH_DROPLET         := $(SC_RNASEQ_DOWNLOAD_PATH_LIB_DIR)scR
 # scRNAseq cluster sofware
 SCRNASEQ_SOFTWARE_BAMTOFASTQ                  := /users/jwollbre/tools/bamtofastq_linux
 
-# scRNAseq cluster paths (JURA)
+# scRNAseq cluster paths (SENSITIVE)
 
 ## PATH to full length and 10X data
 SC_RNASEQ_FASTQ_FULL_LENGTH                   := $(CLUSTER_DATA_PATH)/FASTQ/scRNAseq/Full_length/
-SC_RNASEQ_FASTQ_DROPLET                       := $(CLUSTER_DATA_PATH)/FASTQ/target_base/
+SC_RNASEQ_FASTQ_DROPLET                       := $(CLUSTER_DATA_PATH)/FASTQ/scRNAseq/10X/
 
 ## PATH to all results of both of pipelines
 SC_RNASEQ_CLUSTER_ALL_RES                     := $(CLUSTER_SCRATCH_RESULTS)scRNA-Seq_all_results_$(DBNAME)/
