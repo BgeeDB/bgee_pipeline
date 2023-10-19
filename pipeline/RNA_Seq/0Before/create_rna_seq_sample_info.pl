@@ -41,6 +41,7 @@ use Utils;
 use File::Slurp;
 use List::MoreUtils qw(all any);
 use LWP::Simple;
+use Data::Dumper;
 
 # Define arguments & their default value
 my ($bgee_connector)         = ('');
@@ -50,7 +51,8 @@ my ($RNAseqLibWormExclusion) = ('');
 my ($extraMapping)           = ('');
 my ($outFile)                = ('');
 my ($debug)                  = (0);
-my ($sample)                 = '';
+my ($sample)                 = ('');
+my ($toolsPath)              = ('');
 my %opts = ('bgee=s'                   => \$bgee_connector,     # Bgee connector string
             'RNAseqLib=s'              => \$RNAseqLib,
             'RNAseqLibChecks=s'        => \$RNAseqLibChecks,
@@ -59,11 +61,13 @@ my %opts = ('bgee=s'                   => \$bgee_connector,     # Bgee connector
             'outFile=s'                => \$outFile,
             'debug'                    => \$debug,
             'sample=s'                 => \$sample,
+            'toolsPath=s'                => \$toolsPath,
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $bgee_connector eq '' || $RNAseqLib eq '' || $RNAseqLibChecks eq '' || $RNAseqLibWormExclusion eq '' || $outFile eq ''){
+if ( !$test_options || $bgee_connector eq '' || $RNAseqLib eq '' || $RNAseqLibChecks eq '' || $RNAseqLibWormExclusion eq '' ||
+    $outFile eq '' || $toolsPath eq ''){
     print "\n\tInvalid or missing argument:
 \te.g. $0  -bgee=\$(BGEECMD) -RNAseqLib=\$(RNASEQ_LIB_FILEPATH_FULL) -RNAseqLibChecks=\$(RNASEQ_LIB_CHECKS_FILEPATH_FULL) -RNAseqLibWormExclusion=\$(RNASEQ_LIB_EXCLUSION_FILEPATH_WORM) -outFile=\$(RNASEQ_SAMPINFO_FILEPATH) -extraMapping=\$(EXTRAMAPPING_FILEPATH)
 \t-bgee                   Bgee connector string
@@ -74,6 +78,7 @@ if ( !$test_options || $bgee_connector eq '' || $RNAseqLib eq '' || $RNAseqLibCh
 \t-extraMapping           Extra mapping file
 \t-debug                  more verbose output
 \t-sample                 Analyse this specific sample ONLY
+\t-toolsPath              Path to the directory where tools can be installed. Used to install entrez-direct
 \n";
     exit 1;
 }
@@ -102,6 +107,8 @@ my %stages = %{ Utils::getBgeedbStages($dbh) };
 my %extra = map  { my @tmp = split(/\t/, $_, -1); if ( $tmp[2] ne '' && $tmp[0] ne '' ){ $tmp[0] => $tmp[2] } else { 'nonono' => 'nonono' } }
             grep { !/^#/ }
             read_file("$extraMapping", chomp => 1);
+
+print Dumper(\%extra);
 
 $dbh->disconnect;
 print "Done\n";
@@ -152,7 +159,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
     my $libraryId    = $tsv{'libraryId'}[$i];
     my $experimentId = $tsv{'experimentId'}[$i];
     my $tag          = $tsv{'tags'}[$i] // '';
-    my $anatID       = $tsv{'uberonId'}[$i];
+    my $anatID       = $tsv{'anatId'}[$i];
     my $stageID      = $tsv{'stageId'}[$i];
 
     #NOTE Restrict analysis to this specific sample id (library or experiment)
@@ -185,8 +192,20 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         next SAMPLE;
     }
 
-    # perform query to NCBI
-    my $info = get("https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?email=bgee\@sib.swiss&api_key=a2546089861bb524068974de020c591a1307&save=efetch&db=sra&rettype=xml&term=$libraryId");
+    # metadata from NCBI are retrieved using entrez-direct
+    #entrez-direct first has to be installed.
+    if (!-e "$toolsPath/edirect") {
+        mkdir $toolsPath;
+        my $status = getstore("https://ftp.ncbi.nlm.nih.gov/entrez/entrezdirect/install-edirect.sh", "$toolsPath/install-edirect.sh");
+        if ($status ne "200") {
+            die "didn't manage to download entrez direct";
+        }
+        printf("sh -c %s", "$toolsPath/install-edirect.sh");
+
+    }
+    my $info = `$toolsPath/edirect/esearch -db sra -query '$libraryId' | $toolsPath/edirect/efetch -format xml`;
+    #remove return to line and space characters at the beginning of a new line
+    $info =~ s/\n\s+//g;
     my ($organism, $platform, $source, $series) = ('', '', '', '');
     my @SRR;
 
