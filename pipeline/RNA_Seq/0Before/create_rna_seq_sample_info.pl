@@ -41,7 +41,6 @@ use Utils;
 use File::Slurp;
 use List::MoreUtils qw(all any);
 use LWP::Simple;
-use Data::Dumper;
 
 # Define arguments & their default value
 my ($bgee_connector)         = ('');
@@ -107,8 +106,6 @@ my %stages = %{ Utils::getBgeedbStages($dbh) };
 my %extra = map  { my @tmp = split(/\t/, $_, -1); if ( $tmp[2] ne '' && $tmp[0] ne '' ){ $tmp[0] => $tmp[2] } else { 'nonono' => 'nonono' } }
             grep { !/^#/ }
             read_file("$extraMapping", chomp => 1);
-
-print Dumper(\%extra);
 
 $dbh->disconnect;
 print "Done\n";
