@@ -43,7 +43,7 @@ update dataSource set releaseDate = '2021-02-08', releaseVersion = ''           
 -- SRA (RNA-Seq)
 update dataSource set releaseDate = '2021-02-08', releaseVersion = '',                             displayOrder = 2  where dataSourceId = 19;
 -- SRA (scRNA-Seq)
-update dataSource set releaseDate = '2021-02-08', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 102;
+update dataSource set releaseDate = '2023-04-04', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 102;
 -- HGNC (taken from Ensembl xrefs)
 update dataSource set releaseDate = null,         releaseVersion = '',                             displayOrder = 1  where dataSourceId = 20;
 -- CCDS (taken from Ensembl xrefs)
@@ -55,7 +55,7 @@ update dataSource set releaseDate = '2020-12-13', releaseVersion = '',          
 -- EnsemblMetazoa
 update dataSource set releaseDate = '2020-12-01', releaseVersion = '49',                           displayOrder = 1  where dataSourceId = 24;
 -- Bgee
-update dataSource set releaseDate = '2021-04-26', releaseVersion = '15.1',                         displayOrder = 1  where dataSourceId = 25;
+update dataSource set releaseDate = '2023-11-21', releaseVersion = '15.1',                         displayOrder = 1  where dataSourceId = 25;
 -- Uberon
 update dataSource set releaseDate = '2020-09-16', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 26;
 -- Developmental stage ontologies
