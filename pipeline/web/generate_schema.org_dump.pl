@@ -248,7 +248,7 @@ sub get_schema_species {
                     ],
                     "url": "https://www.bgee.org/species/__TAXID__#proc-values-rna-seq"
                 }';
-    my $fulll_template  = '                {
+    my $scrnaseq_template  = '                {
                     "@type": "Dataset",
                     "dateModified": "'.$dateModified.'",
                     "creator": {
@@ -261,13 +261,12 @@ sub get_schema_species {
                         {
                             "@type": "DataDownload",
                             "encodingFormat": "TSV",
-                            "contentUrl": "https://www.bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/sc_full_length/__SPECIES_NAME__/__SPECIES_NAME___Full-Length_SC_RNA-Seq_experiments_libraries.tar.gz"
+                            "contentUrl": "https://www.bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/sc_rnaseq/__SPECIES_NAME__/__SPECIES_NAME___Full-Length_SC_RNA-Seq_experiments_libraries.tar.gz"
                         }
                     ],
-                    "name": "__SPECIES NAME__ full-length Single cell RNA-Seq experiment libraries",
-                    "description": "__SPECIES NAME__ full-length Single cell RNA-Seq experiments/ libraries annotations and metadata.",
+                    "name": "__SPECIES NAME__ Single cell RNA-Seq experiment libraries",
+                    "description": "__SPECIES NAME__ Single cell RNA-Seq experiments/ libraries annotations and metadata.",
                     "keywords": [
-                        "Single cell full length RNA-Seq",
                         "Single cell RNA-Seq"
                     ],
                     "url": "https://www.bgee.org/species/__TAXID__#proc-values-fl-scrna-seq"
@@ -285,13 +284,12 @@ sub get_schema_species {
                         {
                             "@type": "DataDownload",
                             "encodingFormat": "TSV",
-                            "contentUrl": "https://www.bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/sc_full_length/__SPECIES_NAME__/__SPECIES_NAME___Full-Length_SC_RNA-Seq_read_counts_TPM_FPKM.tar.gz"
+                            "contentUrl": "https://www.bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/sc_rnaseq/__SPECIES_NAME__/__SPECIES_NAME___Full-Length_SC_RNA-Seq_read_counts_TPM_FPKM.tar.gz"
                         }
                     ],
-                    "name": "__SPECIES NAME__ Full-Length Single Cell RNA-Seq read counts, TPM and FPKM",
-                    "description": "__SPECIES NAME__ Full-Length Single Cell RNA-Seq read counts, TPM (Transcript Per Million) and FPKM (Fragments Per Kilobase of transcript per Million mapped reads).",
+                    "name": "__SPECIES NAME__ Single Cell RNA-Seq read counts, TPM and FPKM",
+                    "description": "__SPECIES NAME__ Single Cell RNA-Seq read counts, TPM (Transcript Per Million) and FPKM (Fragments Per Kilobase of transcript per Million mapped reads).",
                     "keywords": [
-                        "Single cell full length RNA-Seq",
                         "Single cell RNA-Seq"
                     ],
                     "url": "https://www.bgee.org/species/__TAXID__#proc-values-fl-scrna-seq"
@@ -474,7 +472,7 @@ __DATATYPES__
         #Loop over data types with *Processed expression value files*, separated by *,*
         my @datatypes = split(',', $datatypes);
         my @dt_temp;
-        # can be: affymetrix,rna-seq,full-length single-cell RNA-Seq
+        # can be: affymetrix,rna-seq, single-cell RNA-Seq
         for my $dt ( sort @datatypes ){
             if ( $dt eq 'rna-seq' ){
                 push @dt_temp, $rnaseq_template;
@@ -482,8 +480,8 @@ __DATATYPES__
             elsif ( $dt eq 'affymetrix' ){
                 push @dt_temp, $affy_template;
             }
-            elsif ( $dt eq 'full-length single-cell RNA-Seq' ){
-                push @dt_temp, $fulll_template;
+            elsif ( $dt eq 'single-cell RNA-Seq' ){
+                push @dt_temp, $scrnaseq_template;
             }
             #TODO target based single-cell RNA-Seq!
         }
