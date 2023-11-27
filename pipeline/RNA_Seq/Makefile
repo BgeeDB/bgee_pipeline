@@ -6,7 +6,7 @@ include $(PIPELINEROOT)Makefile.common
 all: $(VERIFICATIONFILE)
 
 
-################################ RETRIEVE BGEE ANNOTATIONS ################################
+################################ RETRIEVE BGEE ANNOTATIONS FROM BGEE SERVER ################################
 
 get_annot:
 	@$(GIT) submodule init
@@ -23,26 +23,29 @@ get_annot:
 #TODO clarify the steps from WormBase raw files to formatted file: $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqLibrary_worm.tsv
 	@touch $@
 
+#For Bgee 15.2 we filtered annotation based on species already present in Bgee 15.1
+INSERTED_SPECIES_IDS := 9606$(LIST_SEP)10090$(LIST_SEP)7955$(LIST_SEP)7227$(LIST_SEP)6239$(LIST_SEP)9615$(LIST_SEP)9685$(LIST_SEP)9796$(LIST_SEP)9823$(LIST_SEP)9913$(LIST_SEP)9925$(LIST_SEP)9940$(LIST_SEP)9986$(LIST_SEP)10141$(LIST_SEP)9031$(LIST_SEP)9103$(LIST_SEP)9258$(LIST_SEP)9483$(LIST_SEP)9531$(LIST_SEP)9541$(LIST_SEP)9544$(LIST_SEP)9545$(LIST_SEP)9555$(LIST_SEP)9593$(LIST_SEP)9597$(LIST_SEP)9598$(LIST_SEP)30608$(LIST_SEP)60711$(LIST_SEP)9974$(LIST_SEP)10116$(LIST_SEP)10181$(LIST_SEP)13616$(LIST_SEP)8355$(LIST_SEP)8364$(LIST_SEP)28377$(LIST_SEP)7918$(LIST_SEP)7936$(LIST_SEP)7994$(LIST_SEP)8010$(LIST_SEP)8030$(LIST_SEP)8049$(LIST_SEP)8081$(LIST_SEP)8090$(LIST_SEP)8154$(LIST_SEP)32507$(LIST_SEP)52904$(LIST_SEP)69293$(LIST_SEP)105023$(LIST_SEP)7740$(LIST_SEP)7897$(LIST_SEP)7237$(LIST_SEP)7240
+
 check_annot: get_annot $(RNASEQ_EXPERIMENT_FILEPATH) $(RNASEQ_EXPERIMENT_FILEPATH_WORM) $(RNASEQ_LIB_FILEPATH) $(RNASEQ_LIBRARY_FILEPATH_WORM)
 	# Concatenate our annotation file with wormbase annotations (without header, and sorted by experiments and libraries)
 	@tail -n+2 $(RNASEQ_EXPERIMENT_FILEPATH_WORM) | sort -k1,1       | cat $(RNASEQ_EXPERIMENT_FILEPATH) - > $(RNASEQ_EXPERIMENT_FILEPATH_FULL)
 	@tail -n+2 $(RNASEQ_LIB_FILEPATH_WORM)        | sort -k2,2 -k1,1 | cat $(RNASEQ_LIB_FILEPATH)        - > $(RNASEQ_LIB_FILEPATH_FULL).ori
 	# Map strain names
-	@perl -e 'use lib ".."; use Utils; Utils::map_strain_names("$(RNASEQ_LIB_FILEPATH_FULL).ori", "$(STRAIN_MAPPING_FILE)")' >$(RNASEQ_LIB_FILEPATH_FULL).map
+	@$(SENSITIVE_PERL_CMD) perl -e 'use lib ".."; use Utils; Utils::map_strain_names("$(RNASEQ_LIB_FILEPATH_FULL).ori", "$(STRAIN_MAPPING_FILE)")' >$(RNASEQ_LIB_FILEPATH_FULL).map
 	@$(RM) $(RNASEQ_LIB_FILEPATH_FULL).ori
 	# Filter for a minimal number of conditions (+sort)
-	@perl 0Before/filter_annotation_file.pl -RNAlib=$(RNASEQ_LIB_FILEPATH_FULL).map -RNAlibFiltered=$(RNASEQ_LIB_FILEPATH_FULL) >$@.tmp 2>&1
+	@$(SENSITIVE_PERL_CMD) perl 0Before/filter_annotation_file.pl -RNAlib=$(RNASEQ_LIB_FILEPATH_FULL).map  -speciesIds=$(INSERTED_SPECIES_IDS) -RNAlibFiltered=$(RNASEQ_LIB_FILEPATH_FULL) >$@.tmp 2>&1
 	@$(RM) $(RNASEQ_LIB_FILEPATH_FULL).map
 	@echo >>$@.tmp
 	# First check of annotations
-	perl 0Before/check_rna_seq_curation.pl -bgee=$(BGEECMD) -RNAseqExperiment=$(RNASEQ_EXPERIMENT_FILEPATH_FULL) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -allRes=$(RNASEQALLRES) before >>$@.tmp 2>&1
+	@$(SENSITIVE_PERL_CMD) perl 0Before/check_rna_seq_curation.pl -bgee=$(BGEECMD) -RNAseqExperiment=$(RNASEQ_EXPERIMENT_FILEPATH_FULL) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -allRes=$(RNASEQALLRES) before >>$@.tmp 2>&1
 	@echo -e "Check file \"check_annot\" for the output of the script 0Before/check_rna_seq_curation.pl, which indicates potential errors to correct in the annotation files.\n"
 	@$(MV) $@.tmp $@
 #TODO the script needs better check of annotation files for leading and trailing spaces (only done for experimentId now, but needs to be done for other fields as well)
 
 create_rna_seq_sample_info: check_annot $(EXTRAMAPPING_FILEPATH)
 	# Generate rna_seq_sample_info.txt from RNASeq lib annotation file
-	@perl 0Before/create_rna_seq_sample_info.pl -bgee=$(BGEECMD) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -RNAseqLibChecks=$(RNASEQ_LIB_CHECKS_FILEPATH) -RNAseqLibWormExclusion=$(RNASEQ_LIB_EXCLUSION_FILEPATH_WORM) -extraMapping=$(EXTRAMAPPING_FILEPATH) -outFile=$(RNASEQ_SAMPINFO_FILEPATH) >$@.tmp 2>&1
+	@$(SENSITIVE_PERL_CMD) perl 0Before/create_rna_seq_sample_info.pl -bgee=$(BGEECMD) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -RNAseqLibChecks=$(RNASEQ_LIB_CHECKS_FILEPATH) -RNAseqLibWormExclusion=$(RNASEQ_LIB_EXCLUSION_FILEPATH_WORM) -extraMapping=$(EXTRAMAPPING_FILEPATH) -toolsPath=$(CLUSTER_TOOLS_DIR) -outFile=$(RNASEQ_SAMPINFO_FILEPATH) >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
 	@echo -e "Check file \"create_rna_seq_sample_info\" for the output of the script 0Before/create_rna_seq_sample_info.pl, which indicates potential errors to correct in the annotation files.\n"
 
@@ -73,7 +76,16 @@ send_files_to_cluster: commit_rna_seq_sample_info $(RNASEQ_LIB_FILEPATH_FULL) $(
 
 ##############################################################################################
 # RNASeq library download
+## For Bgee 15.2 there was 19000 run to download. As we did not know if there was enough space on the scratch partition we devided the download
+## per chunk of species
+## SPECIES ALREADY DOWNLOADED FOR BGEE 15.2 :
+# 7227$(LIST_SEP)9606$(LIST_SEP)10090$(LIST_SEP)7955$(LIST_SEP)6239$(LIST_SEP)9615$(LIST_SEP)9685$(LIST_SEP)9796$(LIST_SEP)9823$(LIST_SEP)9913(LIST_SEP)9925$(LIST_SEP)9940$(LIST_SEP)9986$(LIST_SEP)10141$(LIST_SEP)9031$(LIST_SEP)9103$(LIST_SEP)9258$(LIST_SEP)9483$(LIST_SEP)9531$(LIST_SEP)9541$(LIST_SEP)9544$(LIST_SEP)9545$(LIST_SEP)9555$(LIST_SEP)9593$(LIST_SEP)9597$(LIST_SEP)9598$(LIST_SEP)30608(LIST_SEP)60711$(LIST_SEP)9974$(LIST_SEP)10116$(LIST_SEP)10181$(LIST_SEP)13616$(LIST_SEP)8355$(LIST_SEP)8364$(LIST_SEP)28377$(LIST_SEP)7918$(LIST_SEP)7936$(LIST_SEP)7994$(LIST_SEP)8010$(LIST_SEP)8030$(LIST_SEP)8049$(LIST_SEP)8081$(LIST_SEP)8090$(LIST_SEP)8154$(LIST_SEP)32507$(LIST_SEP)52904$(LIST_SEP)69293$(LIST_SEP)105023$(LIST_SEP)7740$(LIST_SEP)7897$(LIST_SEP)7237$(LIST_SEP)7240
+
 #NOTE to be done on regular cluster, with network access
+get_sra_parallelized: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_ALREADY_DOWNLOADED)
+	$(SENSITIVE_PERL_CMD) perl 0Before/parallelized_download_SRA.pl -metadataFile=$(RNASEQ_SAMPINFO_FILEPATH) -parallelJobs=50 -downloadedLibraries=$(RNASEQ_ALREADY_DOWNLOADED) -outputDir=$(RNASEQ_DOWNLOAD_LIB_DIR_FASTQ) -encryptFile=$(ENCRYPT_PASSWD_FILE) -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
+	@mv $@.tmp $@
+
 get_sra: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_ALREADY_DOWNLOADED)
 	@$(GIT) pull
 	@sed -i 's@\(BASE *= \).*@\1"$(RNASEQ_DOWNLOAD_LIB_DIR)";@'                      0Before/get_SRA.pl
