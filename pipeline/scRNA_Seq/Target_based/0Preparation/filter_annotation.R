@@ -32,7 +32,7 @@ readTsvFile<- function(fileToRead, header = TRUE, sep = "\t", quote = "",
     commentChar = "") {
   if (file.exists(fileToRead)) {
     data <- read.table(fileToRead, sep = sep, header = header, quote = quote,
-      comment.char = commentChar)
+      comment.char = commentChar, stringsAsFactors = FALSE)
   } else  {
     stop(fileToRead, " file does not exist.")
   }
@@ -41,24 +41,21 @@ readTsvFile<- function(fileToRead, header = TRUE, sep = "\t", quote = "",
 
 #########################################################################
 
+single_cell_type = "3'end"
+
 ### First check that all files exist and read them
 raw_lib_annot <- readTsvFile(scRNASeqTBLibrary, quote = "\"", commentChar="")
 raw_exp_annot <- readTsvFile(scRNASeqExperiment, quote = "\"", commentChar="")
 protocols <- readTsvFile(acceptedProtocols)
 standardised_strains <- readTsvFile(strainMapping, quote = "\"", commentChar = "")
 colnames(standardised_strains)[1] <- "sourceStrain"
-target_based_protocols <- protocols[protocols$Library_construction == "3'end",]
+filtered_protocols <- protocols[protocols$Library_construction == single_cell_type,]
 
 ### Then filter on protocol accepted in Bgee pipeline
-filtered_exp_annot <- c()
-for (rowNumber in seq(nrow(raw_exp_annot))) {
-  protocols_used_in_exp <- unlist(strsplit(as.character(raw_exp_annot$protocol[rowNumber]), ", "))
-  if(any(protocols_used_in_exp %in% target_based_protocols$Protocols)) {
-    filtered_exp_annot <- rbind(filtered_exp_annot, raw_exp_annot[rowNumber,])
-  }
-}
-filtered_lib_annot <- raw_lib_annot[raw_lib_annot$protocol %in% target_based_protocols$Protocols
-  & raw_lib_annot$whiteList %in% target_based_protocols$target_whiteList,]
+filtered_lib_annot <- raw_lib_annot[raw_lib_annot$protocol %in% paste0(filtered_protocols$Protocols, " ", filtered_protocols$target_whiteList),]
+
+head(standardised_strains)
+head(filtered_lib_annot)
 
 ## Then update Strain to fit standardized strain names
 for (i in seq(nrow(standardised_strains))) {
@@ -76,10 +73,13 @@ if (exists('libraryIds')) {
   libraryIds <- as.list(strsplit(x = libraryIds, split = ",")[[1]])
   filtered_lib_annot <- filtered_lib_annot[filtered_lib_annot$X.libraryId %in% libraryIds,]
 }
-### Finally write filtered files in the output dir
-colnames(filtered_exp_annot)[1] <- "experimentId"
+
+colnames(raw_exp_annot)[1] <- "experimentId"
 colnames(filtered_lib_annot)[1] <- "libraryId"
 
+filtered_exp_annot <- raw_exp_annot[raw_exp_annot$experimentId %in% filtered_lib_annot$experimentId,]
+
+### Finally write filtered files in the output dir
 write.table(x = filtered_lib_annot, file.path(outputDir, basename(scRNASeqTBLibrary)), col.names = TRUE,
   row.names = FALSE, sep = "\t", quote = FALSE)
 write.table(x = filtered_exp_annot, file.path(outputDir, basename(scRNASeqExperiment)), col.names = TRUE,
