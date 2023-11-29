@@ -90,7 +90,7 @@ metadata_with_mismatch <- c()
 for (expId in unique(selected_experiments$experimentId)) {
   ## select source  of the experiment
   sourceId <- as.character(unique(selected_experiments$experimentSource[selected_experiments$experimentId == expId]))
-  if(sourceId == "SRA" || sourceId == "EBI"){
+  if(sourceId == "SRA" || sourceId == "EBI" || sourceId == "HCA"){
     for (libraryId in selected_libraries$libraryId[selected_libraries$experimentId == expId]) {
       library <- as.data.frame(selected_libraries[selected_libraries$libraryId == libraryId,])
       ## retrieve SRA metadata
@@ -110,16 +110,6 @@ for (expId in unique(selected_experiments$experimentId)) {
         metadata <- rbind(metadata,extractSRA)
       }
     }
-  } else if (sourceId == "HCA") {
-    ## add all HCA annotation because it is not possible to check the
-    ## annotation since HCAExplore R package was deprecated
-    message("HCA data! for experiment ", expId,
-            ". Do not retrieve metadata!")
-    hca_libraries <- annotation[annotation$experimentId == expId,]
-    hca_metadata <- data.frame(NA, NA, hca_libraries$libraryId, NA, NA, hca_libraries$speciesId,
-                               "Homo sapiens", hca_libraries$platform, NA, NA, NA, "HCA")
-    # merge lines of the two df. Do not use rbind as column names are different 
-    metadata <- as.data.frame(mapply(c, metadata, hca_metadata))
   }  else {
     stop("Unknown Source ", sourceId)
   }

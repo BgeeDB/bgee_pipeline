@@ -478,14 +478,18 @@ RNASEQTMMPATH                       := $(RNASEQDATAPATH)processed_TMM_$(DBNAME)/
 # scRNASeq github file paths in the source directory
 SC_RNASEQ_PATH                         := scRNA_Seq/
 SC_RNASEQ_PATH_SOURCE                  := $(SOURCE_FILES_DIR)$(SC_RNASEQ_PATH)
-SC_RNASEQ_EXPERIMENT_FILEPATH          := $(SC_RNASEQ_PATH_SOURCE)scRNASeqExperiment.tsv
 SC_RNASEQ_ACCEPTED_PROTOCOLS           := $(SC_RNASEQ_PATH_SOURCE)acceptedProtocols.tsv
 ### Full_length
 SC_RNASEQ_FL_FOLDER_SOURCE             := $(SC_RNASEQ_PATH_SOURCE)Full_length/
-SC_RNASEQ_LIB_FL_FILEPATH              := $(SC_RNASEQ_FL_FOLDER_SOURCE)scRNASeqFLLibrary.tsv
+# FL and TB annotations are in the same file. Kept FL and TB annotation in different directories in case only one out of the two single cell pipeline is run for a release of Bgee
+SC_RNASEQ_LIB_FL_FILEPATH              := $(SC_RNASEQ_FL_FOLDER_SOURCE)scRNASeqLibrary_merged.tsv
+SC_RNASEQ_EXP_FL_FILEPATH              := $(SC_RNASEQ_FL_FOLDER_SOURCE)scRNASeqExperiment.tsv
+
 ### Target_based
 SC_RNASEQ_TB_FOLDER_SOURCE             := $(SC_RNASEQ_PATH_SOURCE)Target_based/
-SC_RNASEQ_LIB_TB_FILEPATH              := $(SC_RNASEQ_TB_FOLDER_SOURCE)scRNASeqTBLibrary.tsv
+# FL and TB annotations are in the same file. Kept FL and TB annotation in different directories in case only one out of the two single cell pipeline is run for a release of Bgee
+SC_RNASEQ_LIB_TB_FILEPATH              := $(SC_RNASEQ_TB_FOLDER_SOURCE)scRNASeqLibrary_merged.tsv
+SC_RNASEQ_EXP_TB_FILEPATH              := $(SC_RNASEQ_TB_FOLDER_SOURCE)scRNASeqExperiment.tsv
 SC_RNASEQ_MANIFEST_FILE_FILEPATH       := $(SC_RNASEQ_TB_FOLDER_SOURCE)Manifest_file.tsv
 SC_RNASEQ_WHITELIST_10X_v2             := $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whitelist_10X_v2.txt.zip
 SC_RNASEQ_WHITELIST_10X_v3             := $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whitelist_10X_v3.txt.zip
@@ -508,8 +512,8 @@ SC_RNASEQ_SAMP_STATS_FL                := $(SC_RNASEQ_FL_FOLDER_GENERATED)presen
 SC_RNASEQ_REPORT_INFO_FL               := $(SC_RNASEQ_FL_FOLDER_GENERATED)reports_info_all_samples.txt
 ### Target_based
 SC_RNASEQ_TB_FOLDER_GENERATED               := $(SC_RNASEQ_PATH_GENERATED)Target_based/
-SC_RNASEQ_EXPERIMENT_FILEPATH_FILTERED      := $(SC_RNASEQ_TB_FOLDER_GENERATED)scRNASeqExperiment.tsv
-SC_RNASEQ_LIB_TB_FILEPATH_FILTERED          := $(SC_RNASEQ_TB_FOLDER_GENERATED)scRNASeqTBLibrary.tsv
+SC_RNASEQ_EXP_TB_FILEPATH_FILTERED          := $(SC_RNASEQ_TB_FOLDER_GENERATED)scRNASeqExperiment.tsv
+SC_RNASEQ_LIB_TB_FILEPATH_FILTERED          := $(SC_RNASEQ_TB_FOLDER_GENERATED)scRNASeqLibrary_merged.tsv
 SC_RNASEQ_CLEANED_BARCODES                  := $(SC_RNASEQ_TB_FOLDER_GENERATED)cleaned_barcodes/
 SC_RNASEQ_METADATA_10X_FILEPATH             := $(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_info_10X.txt
 SC_RNASEQ_METADATA_10X_NOT_MATCH_FILEPATH   := $(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_notMatch_10X.txt
