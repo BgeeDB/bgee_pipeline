@@ -86,6 +86,10 @@ get_sra_parallelized: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_ALREADY_DOWNLOADED)
 	$(SENSITIVE_PERL_CMD) perl 0Before/parallelized_download_SRA.pl -metadataFile=$(RNASEQ_SAMPINFO_FILEPATH) -parallelJobs=50 -downloadedLibraries=$(RNASEQ_ALREADY_DOWNLOADED) -outputDir=$(RNASEQ_DOWNLOAD_LIB_DIR_FASTQ) -encryptFile=$(ENCRYPT_PASSWD_FILE) -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
 	@mv $@.tmp $@
 
+#once all libraries have been downloaded run this rule to exclude libraries not properly downloaded from the next steps of the pipeline
+#TODO implement management of not downloaded libraries
+update_excluded_libraries
+	$(SENSITIVE_PERL_CMD) perl 0Before/update_excluded_libraries.R -metadataFile=$(RNASEQ_SAMPINFO_FILEPATH) -excludedFile=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -downloadedFile=$(RNASEQ_ALREADY_DOWNLOADED) >$@.tmp 2> $@.err
 get_sra: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_ALREADY_DOWNLOADED)
 	@$(GIT) pull
 	@sed -i 's@\(BASE *= \).*@\1"$(RNASEQ_DOWNLOAD_LIB_DIR)";@'                      0Before/get_SRA.pl
