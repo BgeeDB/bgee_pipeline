@@ -15,7 +15,7 @@ get_annot:
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeq_barcode_*.tsv          $(INPUT_DIR)
 	@touch $@
 
-## Run in the front as it does not require lots of CPU and GPU
+## Run in the front as it does not require lots of CPU
 ## Filter experiment/libraries to consider for the target-based pipeline
 ## This filtering :
 ##   - removes full-length experiment/libraries
@@ -33,7 +33,7 @@ retrieve_metadata: get_annot 0Preparation/retrieve_metadata.R
 	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                   0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                         0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                   0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export scRNASeqExperiment=.*@export scRNASeqExperiment=$(SC_RNASEQ_EXP_TB_FILEPATH_FILTERED)@'  0Preparation/retrieve_metadata.sbatch
+	@sed -i 's@export scRNASeqExperiment=.*@export scRNASeqExperiment=$(SC_RNASEQ_EXP_TB_FILEPATH_FILTERED)@'      0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@export scRNASeqTBLibrary=.*@export scRNASeqTBLibrary=$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED)@'        0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@export metadata_file=.*@export metadata_file=$(SC_RNASEQ_METADATA_10X_FILEPATH)@'                   0Preparation/retrieve_metadata.sbatch
 	@sed -i 's@export information_file=.*@export information_file=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'             0Preparation/retrieve_metadata.sbatch
@@ -44,69 +44,20 @@ retrieve_metadata: get_annot 0Preparation/retrieve_metadata.R
 	@echo --- DONE ---
 	@touch $@
 
-
-## Download cleaning data that still is not downloaded/present in Jura server (run rule with sbatch)
-## NOTE: Here in the Make file we have one rule after the another, but the download from the 3 repositories can be done in parallel
-
-## Download from HCA
-#XXX: Why this rule is the only one already using the dcsr environment?
-download_HCA: retrieve_metadata 0Preparation/download_HCA.R
-	@echo --- Starting downloading the data from Human Cell Atlas ---
-	@sed -i 's@--output=.*@--output=${PWD}/download_HCA.out@'                                                         0Preparation/download_HCA.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/download_HCA.err@'                                                           0Preparation/download_HCA.sbatch
-	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                      0Preparation/download_HCA.sbatch
-	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                            0Preparation/download_HCA.sbatch
-	@sed -i 's@export manifest_file=.*@export manifest_file=../${SC_RNASEQ_MANIFEST_FILE_FILEPATH}@'                  0Preparation/download_HCA.sbatch
-	@sed -i 's@export tmp_folder_Download_data=.*@export tmp_folder_Download_data=/tmp/DOWNLOAD_HCA_DATA.$$RANDOM@'   0Preparation/download_HCA.sbatch
-	@sed -i 's@export final_destination=.*@export final_destination=${SC_RNASEQ_DOWNLOAD_PATH_DROPLET}@'              0Preparation/download_HCA.sbatch
-	@sbatch 0Preparation/download_HCA.sbatch
-	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
-	@echo --- DONE ---
-	@touch $@
-
-## Download from EBI arrayExpress
-download_EBI: retrieve_metadata 0Preparation/download_reformat_EBI.R
-	@echo --- Starting downloading the data from EBI ArrayExpress ---
-	@sed -i 's@--output=.*@--output=${PWD}/download_reformat_EBI.out@'                                               0Preparation/download_reformat_EBI.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/download_reformat_EBI.err@'                                                 0Preparation/download_reformat_EBI.sbatch
-	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                     0Preparation/download_reformat_EBI.sbatch
-	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                           0Preparation/download_reformat_EBI.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                     0Preparation/download_reformat_EBI.sbatch
-	@sed -i 's@export metadata_info=.*@export metadata_info=../$(SC_RNASEQ_METADATA_10X_FILEPATH)@'                  0Preparation/download_reformat_EBI.sbatch
-	@sed -i 's@export librariesDownloadedJura=.*@export librariesDownloadedJura=../$(SC_RNASEQ_SENSITIVE_LIB_FILEPATH)@'  0Preparation/download_reformat_EBI.sbatch
-	@sed -i 's@export output=.*@export output=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET)@'                                   0Preparation/download_reformat_EBI.sbatch
-	@sed -i 's@export bamtofastq=.*@export bamtofastq=$(SCRNASEQ_SOFTWARE_BAMTOFASTQ)@'                              0Preparation/download_reformat_EBI.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET)@'                                       0Preparation/download_reformat_EBI.sbatch
-	@sbatch 0Preparation/download_reformat_EBI.sbatch
-	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
-	@echo --- DONE ---
-	@touch $@
-
 # Rule used to parallelize download of libraries and to homogenize fastq file names
 # it replaces the old rules not parallelized and downloading files depending on the sources
 # (see scripts 0Preparation/download_SRA.R, 0Preparation/download_HCA.R and 0Preparation/download_reformat_EBI.R)
-parallelized_download:
-	@perl 0Preparation/parallelized_download_SRA.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -parallelJobs=50 -outputDir=$(CLUSTER_CURNAGL_PATH)scRNA_Seq_All/scRNASeq_libraries_Droplet_10X -bamtofastq=$(SCRNASEQ_SOFTWARE_BAMTOFASTQ) -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
+parallelized_download: retrieve_metadata
+	@$(SENSITIVE_PERL_CMD) perl 0Preparation/parallelized_download_SRA.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -downloadedLibraries=$(SC_RNASEQ_DOWNLOADED_LIB_FILEPATH) -parallelJobs=50 -outputDir=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET) -bamtofastq=$(SCRNASEQ_SOFTWARE_BAMTOFASTQ) -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
 	@$(MV) $@.tmp $@
-
-## Add new libraries download to the jura file list (run rule in front)
-#NOTE *make -j3 list_new_downloads*  should run the 3 downloads in parallel
-list_new_downloads: download_SRA download_EBI download_HCA
-	@find $(SC_RNASEQ_DOWNLOAD_PATH_DROPLET) -type f -name \*.fastq.gz\* | xargs -r dirname | sed -e 's@/FASTQ@@' -e 's@^.*/@@' | sort -u > /tmp/new_downloads
-	@cat $(SC_RNASEQ_SENSITIVE_LIB_FILEPATH) >>/tmp/new_downloads
-	@sort -u /tmp/new_downloads >$(SC_RNASEQ_SENSITIVE_LIB_FILEPATH)
-	@rm -f /tmp/new_downloads
-	@$(GIT) add $(SC_RNASEQ_SENSITIVE_LIB_FILEPATH)
-	@$(GIT) commit -m 'Add new downloaded libraries' $(SC_RNASEQ_SENSITIVE_LIB_FILEPATH) || true
-	@touch $@
 
 # Commit the library information file that will be used for the rest of the pipeline
 commit_annotation_and_metadata: list_new_downloads
-	@$(GIT) add $(INPUT_DIR)/Target_based/scRNASeqTBLibrary.tsv
-	@$(GIT) add $(INPUT_DIR)scRNASeqExperiment.tsv
-	@$(GIT) add $(INPUT_DIR)/Target_based/scRNASeq_barcode_*
-	@$(GIT) add $(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_info_10X.txt
-	@$(GIT) add $(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_notMatch_10X.txt
+	@$(GIT) add $(SC_RNASEQ_METADATA_10X_FILEPATH)
+	@$(GIT) add $(SC_RNASEQ_EXP_TB_FILEPATH_FILTERED)
+	@$(GIT) add $(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED)
+	@$(GIT) add $(SC_RNASEQ_SAMPINFO_10X_FILEPATH)
+	@$(GIT) add $(SC_RNASEQ_DOWNLOADED_LIB_FILEPATH)
 	@$(GIT) commit -m 'Update metadata for droplet-based protocols for scRNASeq for $(DBNAME)' || true
 	@$(GIT) push
 	@echo -e "All information is ready, you can go to SENSITIVE cluster to continue the pipeline of the droplet protocols\n"

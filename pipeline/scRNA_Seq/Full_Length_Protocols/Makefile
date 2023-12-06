@@ -49,7 +49,7 @@ retrieve_metadata: control_annotation 0Preparation/retrieve_metadata.R
 
 # Parallelize download of libraries and do not download again already downloaded libraries
 parallelized_download: retrieve_metadata
-	@perl 0Preparation/parallelized_download_SRA.pl -metadataFile=$(SC_RNASEQ_METADATA_FILEPATH) -parallelJobs=50 -downloadedLibraries=$(SC_RNASEQ_SENSITIVE_LIB_FILEPATH) -outputDir=$(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH) -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
+	@perl 0Preparation/parallelized_download_SRA.pl -metadataFile=$(SC_RNASEQ_METADATA_FILEPATH) -parallelJobs=50 -downloadedLibraries=$(SC_RNASEQ_DOWNLOADED_LIB_FILEPATH) -outputDir=$(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH) -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
 	@$(MV) $@.tmp $@
 
 commit_annotation_and_metadata: list_new_downloads
@@ -59,8 +59,8 @@ commit_annotation_and_metadata: list_new_downloads
 	@$(GIT) add $(SC_RNASEQ_LIB_NOT_PASS_FILEPATH)
 	@$(GIT) add $(SC_RNASEQ_METADATA_FILEPATH)
 	@$(GIT) add $(SC_RNASEQ_METADATA_NOT_MATCH_FILEPATH)
-	@$(GIT) add $(SC_RNASEQ_SENSITIVE_LIB_FILEPATH)
-	@$(GIT) commit -m 'Update metadata for scRNASeq for $(DBNAME)' $(SC_RNASEQ_LIB_FL_FILEPATH) $(SC_RNASEQ_LIB_PASS_FILEPATH) $(SC_RNASEQ_LIB_NOT_PASS_FILEPATH) $(SC_RNASEQ_METADATA_FILEPATH) $(SC_RNASEQ_METADATA_NOT_MATCH_FILEPATH) $(SC_RNASEQ_SENSITIVE_LIB_FILEPATH) || true
+	@$(GIT) add $(SC_RNASEQ_DOWNLOADED_LIB_FILEPATH)
+	@$(GIT) commit -m 'Update metadata for scRNASeq for $(DBNAME)' $(SC_RNASEQ_LIB_FL_FILEPATH) $(SC_RNASEQ_LIB_PASS_FILEPATH) $(SC_RNASEQ_LIB_NOT_PASS_FILEPATH) $(SC_RNASEQ_METADATA_FILEPATH) $(SC_RNASEQ_METADATA_NOT_MATCH_FILEPATH) $(SC_RNASEQ_DOWNLOADED_LIB_FILEPATH) || true
 	@$(GIT) push
 	@echo -e "All information is ready, you can go to the sensitive cluster to prepare the scRNA-Seq information file and continue the pipeline \n"
 	@touch $@
