@@ -180,6 +180,7 @@ if(! $doNotDownload) {
             foreach my $runId (keys %{$sbatchToRun{$experimentId}{$libraryId}}){
                 my $runDirectory = "$libDirectory/$runId";
                 next if (-f "$runDirectory/done");
+                next if $runId eq "speciesId";
                 $numberJobRun++;
                 $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
                 while ($jobsRunning >= $parallelJobs) {
@@ -239,7 +240,7 @@ foreach my $experimentId (keys %sbatchToRun){
 chdir "$initialDir";
 print "Finally update the file containing downloaded libraries";
 open my $outFh, "> ", "$downloadedLibraries" or die "Cannot write: $! \n";
-foreach my $libraryId (keys %alreadyDownloaded) {
+foreach my $libraryId (sort keys %alreadyDownloaded) {
     print $outFh "$libraryId\n";
 }
 close $outFh;
