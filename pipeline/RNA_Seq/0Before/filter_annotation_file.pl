@@ -12,12 +12,10 @@ use Data::Dumper;
 my ($RNAlib)            = ('');
 my ($RNAlibFiltered)    = ('');
 my ($minConditionNbr)   = 6;
-my $speciesIds          = '';
 my ($debug)             = (0);
 my %opts = ('RNAlib=s'            => \$RNAlib,
             'RNAlibFiltered=s'    => \$RNAlibFiltered,
             'minConditionNbr=i'   => \$minConditionNbr,
-            'speciesIds=s'        => \$speciesIds,
             'debug'               => \$debug,
            );
 
@@ -29,13 +27,11 @@ if ( !$test_options || $RNAlib eq '' || $RNAlibFiltered eq '' ){
 \t-RNAlib              RNASeqLibrary_full.tsv before filtering
 \t-RNAlibFiltered      RNASeqLibrary_full.tsv that will be used, after condition number filtering
 \t-minConditionNbr     Minimal number of unique conditions per species
-\t-speciesIds          (Optional) IDs of species fo which we keep the libraries separated by a \",\". Useful to only keep species from a previous release of Bgee
 \t-debug               more verbose output
 \n";
     exit 1;
 }
 
-my %species_hash = my %hash = map { $_ => 1 } split(",", $speciesIds);
 # Read RNASeqLibrary_full.tsv before filtering
 my $header = '';
 my $store;
@@ -52,9 +48,7 @@ for my $annot ( read_file("$RNAlib", chomp=>1) ){
     my ($libraryId, $experimentId, $platform, undef, $uberonId, undef, $stageId, undef, undef,
         undef, undef, undef, undef, undef, $sex, $strain, undef, $speciesId)
         = split(/\t/, $annot, 30);
-    #filter based on provided speciesIds
-    next ANNOT if ($speciesIds ne '' && !exists($species_hash{$speciesId}));
-    
+
     push @{ $store->{$speciesId}->{'lib'} }, $annot;
     $store->{$speciesId}->{'cond'}->{"$uberonId--$stageId--$sex--$strain"}++;
     $store->{$speciesId}->{'organ'}->{$uberonId}++;

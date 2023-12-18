@@ -24,7 +24,6 @@ get_annot:
 	@touch $@
 
 #For Bgee 15.2 we filtered annotation based on species already present in Bgee 15.1
-INSERTED_SPECIES_IDS := 9606$(LIST_SEP)10090$(LIST_SEP)7955$(LIST_SEP)7227$(LIST_SEP)6239$(LIST_SEP)9615$(LIST_SEP)9685$(LIST_SEP)9796$(LIST_SEP)9823$(LIST_SEP)9913$(LIST_SEP)9925$(LIST_SEP)9940$(LIST_SEP)9986$(LIST_SEP)10141$(LIST_SEP)9031$(LIST_SEP)9103$(LIST_SEP)9258$(LIST_SEP)9483$(LIST_SEP)9531$(LIST_SEP)9541$(LIST_SEP)9544$(LIST_SEP)9545$(LIST_SEP)9555$(LIST_SEP)9593$(LIST_SEP)9597$(LIST_SEP)9598$(LIST_SEP)30608$(LIST_SEP)60711$(LIST_SEP)9974$(LIST_SEP)10116$(LIST_SEP)10181$(LIST_SEP)13616$(LIST_SEP)8355$(LIST_SEP)8364$(LIST_SEP)28377$(LIST_SEP)7918$(LIST_SEP)7936$(LIST_SEP)7994$(LIST_SEP)8010$(LIST_SEP)8030$(LIST_SEP)8049$(LIST_SEP)8081$(LIST_SEP)8090$(LIST_SEP)8154$(LIST_SEP)32507$(LIST_SEP)52904$(LIST_SEP)69293$(LIST_SEP)105023$(LIST_SEP)7740$(LIST_SEP)7897$(LIST_SEP)7237$(LIST_SEP)7240
 
 check_annot: get_annot $(RNASEQ_EXPERIMENT_FILEPATH) $(RNASEQ_EXPERIMENT_FILEPATH_WORM) $(RNASEQ_LIB_FILEPATH) $(RNASEQ_LIBRARY_FILEPATH_WORM)
 	# Concatenate our annotation file with wormbase annotations (without header, and sorted by experiments and libraries)
@@ -34,7 +33,7 @@ check_annot: get_annot $(RNASEQ_EXPERIMENT_FILEPATH) $(RNASEQ_EXPERIMENT_FILEPAT
 	@$(SENSITIVE_PERL_CMD) perl -e 'use lib ".."; use Utils; Utils::map_strain_names("$(RNASEQ_LIB_FILEPATH_FULL).ori", "$(STRAIN_MAPPING_FILE)")' >$(RNASEQ_LIB_FILEPATH_FULL).map
 	@$(RM) $(RNASEQ_LIB_FILEPATH_FULL).ori
 	# Filter for a minimal number of conditions (+sort)
-	@$(SENSITIVE_PERL_CMD) perl 0Before/filter_annotation_file.pl -RNAlib=$(RNASEQ_LIB_FILEPATH_FULL).map  -speciesIds=$(INSERTED_SPECIES_IDS) -RNAlibFiltered=$(RNASEQ_LIB_FILEPATH_FULL) >$@.tmp 2>&1
+	@$(SENSITIVE_PERL_CMD) perl 0Before/filter_annotation_file.pl -RNAlib=$(RNASEQ_LIB_FILEPATH_FULL).map -RNAlibFiltered=$(RNASEQ_LIB_FILEPATH_FULL) >$@.tmp 2>&1
 	@$(RM) $(RNASEQ_LIB_FILEPATH_FULL).map
 	@echo >>$@.tmp
 	# First check of annotations
@@ -88,8 +87,9 @@ get_sra_parallelized: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_ALREADY_DOWNLOADED)
 
 #once all libraries have been downloaded run this rule to exclude libraries not properly downloaded from the next steps of the pipeline
 #TODO implement management of not downloaded libraries
-update_excluded_libraries
+update_excluded_libraries:
 	$(SENSITIVE_PERL_CMD) perl 0Before/update_excluded_libraries.R -metadataFile=$(RNASEQ_SAMPINFO_FILEPATH) -excludedFile=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -downloadedFile=$(RNASEQ_ALREADY_DOWNLOADED) >$@.tmp 2> $@.err
+
 get_sra: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_ALREADY_DOWNLOADED)
 	@$(GIT) pull
 	@sed -i 's@\(BASE *= \).*@\1"$(RNASEQ_DOWNLOAD_LIB_DIR)";@'                      0Before/get_SRA.pl
