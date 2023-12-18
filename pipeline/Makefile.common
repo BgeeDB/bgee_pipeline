@@ -10,7 +10,7 @@ SHELL = /bin/bash
 #  GENERAL PARAMETERS
 # ===================================
 MAJOR_RELEASE    := 15
-MINOR_RELEASE    := 1
+MINOR_RELEASE    := 2
 RELEASE          := $(MAJOR_RELEASE).$(MINOR_RELEASE)
 
 # MySQL database connection parameters
