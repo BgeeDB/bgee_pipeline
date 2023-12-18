@@ -191,16 +191,12 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
 
     # metadata from NCBI are retrieved using entrez-direct
     #entrez-direct first has to be installed.
-    if (!-e "$toolsPath/edirect") {
-        mkdir $toolsPath;
-        my $status = getstore("https://ftp.ncbi.nlm.nih.gov/entrez/entrezdirect/install-edirect.sh", "$toolsPath/install-edirect.sh");
-        if ($status ne "200") {
-            die "didn't manage to download entrez direct";
-        }
-        printf("sh -c %s", "$toolsPath/install-edirect.sh");
-
+    if (!-e $ENV{"HOME"}."/edirect/") {
+        print "edirect has to be installed\n";
+        system("sh -c \"\$(curl -fsSL https://ftp.ncbi.nlm.nih.gov/entrez/entrezdirect/install-edirect.sh)\"");
+        system("export PATH=\${HOME}/edirect:\${PATH}");
     }
-    my $info = `$toolsPath/edirect/esearch -db sra -query '$libraryId' | $toolsPath/edirect/efetch -format xml`;
+    my $info = `~/edirect/esearch -db sra -query '$libraryId' | ~/edirect/efetch -format xml`;
     #remove return to line and space characters at the beginning of a new line
     $info =~ s/\n\s+//g;
     my ($organism, $platform, $source, $series) = ('', '', '', '');
