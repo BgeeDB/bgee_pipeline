@@ -58,7 +58,9 @@ if (file.exists(file.path(fastqDir, speciesId, libraryId))) {
     message("Kallisto was already executed for this library ",libraryId,"\n")
   } else {
     ## collect info about whitelist
-    whiteLInfo <- unique(as.character(scRNASeqInfo$whiteList[scRNASeqInfo$libraryId == libraryId]))
+    protocol <- unique(as.character(scRNASeqInfo$protocol[scRNASeqInfo$libraryId == libraryId]))
+    whiteLInfo <- sub(pattern = "10X Genomics ", replacement = "", x = protocol)
+
     message("The whitelist used is:", whiteLInfo)
 
     ## verify if exist FASTQ (with or without recursive folder) or SRR folder with fastq.gz files for the library
@@ -86,7 +88,7 @@ if (file.exists(file.path(fastqDir, speciesId, libraryId))) {
     
     # select index depending on cell compartment used (cell or single nucléus)
     transcriptomeIndexFile <- transcriptomeIndexFiles[grep(pattern = "\\.transcriptome.idx", x = transcriptomeIndexFiles)]
-    if (unique(as.character(scRNASeqInfo$tags[scRNASeqInfo$libraryId == libraryId])) == "Sn-scRNA-seq") {
+    if (unique(as.character(scRNASeqInfo$RNAseqTags[scRNASeqInfo$libraryId == libraryId])) == "Sn-scRNA-seq") {
       transcriptomeIndexFile <- transcriptomeIndexFiles[grep(pattern = "single_nucleus_transcriptome.idx$",
         x = transcriptomeIndexFiles)]
     }
