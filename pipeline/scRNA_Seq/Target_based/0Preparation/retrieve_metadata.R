@@ -131,7 +131,7 @@ information <- merge(annotation, metadata[, c("library_id", "run_accession", "re
 write.table(metadata, file = metadata_file, quote = FALSE, sep = "\t", col.names = TRUE,
   row.names = FALSE)
 # write file merging annotation and some metadata from SRA
-write.table(information, file = information_file, quote = FALSE, sep = "\t", col.names = TRUE,
+write.table(information, file = information_file, quote = TRUE, sep = "\t", col.names = TRUE,
   row.names = FALSE)
 
 # update name and order columns of mismatch metadata in case there was some
