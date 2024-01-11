@@ -73,7 +73,7 @@ update_transcript_id <- function(split_annotation){
 
 # read metadata file to retrieve all species for which single cell target base libraries are annotated
 metadata <- read.table(metadata_file, header = TRUE, sep = "\t", comment.char = "")
-sample_info <- read.table(scRNASeqInfoFile, header = TRUE, sep = "\t", comment.char = "")
+sample_info <- read.table(scRNASeqInfoFile, header = TRUE, sep = "\t")
 species_ids <- unique(metadata$tax_id)
 
 for (species_id in species_ids) {
@@ -140,7 +140,7 @@ for (species_id in species_ids) {
                 quote = FALSE)
 
     ## Table of mapping between transcript_id and gene_id
-    tx2gene_file <- file.path(gtf_dir, gsub(pattern = ".gtf", replacement = "_transcript_to_gene_with_intergenic.tsv",
+    tx2gene_file <- file.path(gtf_dir, gsub(pattern = ".gtf", replacement = ".tx2gene",
       x = basename(gtf_file)))
     if (!file.exists(tx2gene_file)) {
       if(file.exists(paste0(tx2gene_file, ".xz"))) {

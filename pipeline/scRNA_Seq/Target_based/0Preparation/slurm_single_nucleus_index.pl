@@ -129,6 +129,7 @@ while (my $file = readdir(DIR)) {
         print "run sbatch script $sbatch_file_path => ";
         system("sbatch $sbatch_file_path")==0  or print "Failed to submit job [$file]\n";
         # TODO: should check number of jobs running in order to remove .sbatch files once all indexes have been generate
+        # TODO: should also check number of jobs running in order not to finish the rule before all jobs jobs are over
     }
 
 }
