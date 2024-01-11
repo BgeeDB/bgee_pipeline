@@ -1301,6 +1301,24 @@ sub check_active_jobs_number_per_account_and_name {
     return $running_jobs;
 }
 
+sub count_status_finished_jobs {
+    my ($job_prefix, $starttime) = @_;
+    my $failed_jobs = `sacct --format="jobId, jobName%50, state" --starttime $starttime | grep \"$job_prefix\" | grep \"FAILED\" | wc -l` || 0;
+    my $completed_jobs = `sacct --format="jobId, jobName%50, state" --starttime $starttime | grep \"$job_prefix\" | grep \"COMPLETED\" | wc -l` || 0;
+    my $out_of_mem_jobs = `sacct --format="jobId, jobName%50, state" --starttime $starttime | grep \"$job_prefix\" | grep \"OUT_OF_M\" | wc -l` || 0;
+    my $cancelled = `sacct --format="jobId, jobName%50, state" --starttime $starttime | grep \"$job_prefix\" | grep \"CANCELLED\" | wc -l` || 0;
+    chomp($completed_jobs);
+    chomp($failed_jobs);
+    chomp($out_of_mem_jobs);
+    chomp($cancelled);
+    my %jobs;
+    $jobs{"completed"} = $completed_jobs;
+    $jobs{"failed"} = $failed_jobs;
+    $jobs{"out_of_memory"} = $out_of_mem_jobs;
+    $jobs{"cancelled"} = $cancelled;
+    return %jobs;
+}
+
 # Add main sbatch command and options
 sub sbatch_template {
     my ($queue, $account, $nbr_processors, $memory_usage, $output_file, $error_file, $job_name) = @_;
