@@ -44,11 +44,12 @@ retrieve_metadata: get_annot 0Preparation/retrieve_metadata.R
 	@echo --- DONE ---
 	@touch $@
 
-# Rule used to parallelize download of libraries and to homogenize fastq file names
+# Rule used to parallelize download of libraries and to standardize fastq file names
 # it replaces the old rules not parallelized and downloading files depending on the sources
 # (see scripts 0Preparation/download_SRA.R, 0Preparation/download_HCA.R and 0Preparation/download_reformat_EBI.R)
+
 parallelized_download: retrieve_metadata
-	@$(SENSITIVE_PERL_CMD) perl 0Preparation/parallelized_download_SRA.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -downloadedLibraries=$(SC_RNASEQ_DOWNLOADED_LIB_FILEPATH) -parallelJobs=50 -outputDir=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET) -bamtofastq=$(SCRNASEQ_SOFTWARE_BAMTOFASTQ) -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
+	@$(SENSITIVE_PERL_CMD) perl 0Preparation/parallelized_download_SRA.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -renameScriptPath=${PWD}/0Preparation/rename_fastq.pl -downloadedLibraries=$(SC_RNASEQ_TB_DOWNLOADED_LIB_FILEPATH) -parallelJobs=50 -outputDir=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET) --bamtofastq=$(SCRNASEQ_SOFTWARE_BAMTOFASTQ) -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
 	@$(MV) $@.tmp $@
 
 # Commit the library information file that will be used for the rest of the pipeline
@@ -57,7 +58,7 @@ commit_annotation_and_metadata: list_new_downloads
 	@$(GIT) add $(SC_RNASEQ_EXP_TB_FILEPATH_FILTERED)
 	@$(GIT) add $(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED)
 	@$(GIT) add $(SC_RNASEQ_SAMPINFO_10X_FILEPATH)
-	@$(GIT) add $(SC_RNASEQ_DOWNLOADED_LIB_FILEPATH)
+	@$(GIT) add $(SC_RNASEQ_TB_DOWNLOADED_LIB_FILEPATH)
 	@$(GIT) commit -m 'Update metadata for droplet-based protocols for scRNASeq for $(DBNAME)' || true
 	@$(GIT) push
 	@echo -e "All information is ready, you can go to SENSITIVE cluster to continue the pipeline of the droplet protocols\n"
