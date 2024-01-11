@@ -154,9 +154,9 @@ prepare_single_nucleus_index: generate_gtf_nascent 0Preparation/slurm_single_nuc
 	@$(MV) $@.tmp $@
 
 ## Run Kallisto bus per taxon_iD/library
-kallisto_bus: prepare_single_nucleus_index 1Run/kallisto_bus_one_lib.R
+kallisto_bus:
 	@echo --- Start running kallisto bus for all libraries ---
-	@$(SENSITIVE_PERL_CMD) perl 1Run/parallelized_kallisto_bus.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -parallelJobs=100 -fastqDir=$(SC_RNASEQ_FASTQ_DROPLET) -gtfDir=$(RNASEQ_CLUSTER_GTF) -scRNASeqInfoFile=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/kallisto_bus_one_lib.R > $@.tmp 2> $@.err
+	@$(SENSITIVE_PERL_CMD) perl 1Run/parallelized_kallisto_bus.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -parallelJobs=100 -fastqDir=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET) -gtfDir=$(RNASEQ_CLUSTER_GTF) -scRNASeqInfoFile=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/kallisto_bus_one_lib.R > $@.tmp 2> $@.err
 	@mv $@.tmp $@
 
 # generate stats from fastp and kallisto (e.g. read length, reads mapped, ...)

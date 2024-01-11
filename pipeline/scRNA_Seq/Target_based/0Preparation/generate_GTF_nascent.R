@@ -77,8 +77,18 @@ sample_info <- read.table(scRNASeqInfoFile, header = TRUE, sep = "\t")
 species_ids <- unique(metadata$tax_id)
 
 for (species_id in species_ids) {
+  # TODO :	for now the droplet pipeline does not download genome/annotation or generate intergenic regions. It is done as part of the
+  #       	bulk RNASeq pipeline. That's why it is not possible to analyse yet droplet libraries of species for which we do not
+  #		have bulk libraries. We should either export the steps described above to a different pipeline to run before processing
+  #		any RNASeq libraries (best option, time consuming) or at least filter droplet metadata for species having bulk libraries.
+  #		For now, as a quick fix to generate Bgee 15.2 we hardcoded the only species for which droplet libraries are annotated and
+  #		bulk doesn't in order not to process those libraries.	
+  #		Remove the line below once this issue is solved. 
+  if(species_id==9580) next
+  message(species_id)
   # check that at least one single nucleus library have to be processed for this species
-  if (length(grep(pattern = "Sn-scRNA-seq", x = unique(sample_info$tags[sample_info$speciesId == species_id]))) >= 1) {
+  if (length(grep(pattern = "Sn-scRNA-seq", x = unique(sample_info$RNAseqTags[sample_info$speciesId == species_id]))) >= 1) {
+    message("single nuclei exist for that species")
     speciesName <- gsub(" ", "_", unique(metadata$scientific_name[metadata$tax_id == species_id]))
     gtf_file <- list.files(path = gtf_dir, pattern = paste0(speciesName, ".*gtf$"), full.names = TRUE)
     ## there is potentially several gtf files already created.
