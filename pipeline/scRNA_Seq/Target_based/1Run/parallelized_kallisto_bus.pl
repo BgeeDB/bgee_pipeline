@@ -16,6 +16,7 @@ use Try::Tiny;
 use FindBin;
 use lib "$FindBin::Bin/../../.."; # Get lib path for Utils.pm
 use Utils;
+use Time::Piece;
 use File::Path qw(make_path);
 use File::Basename;
 
@@ -54,7 +55,7 @@ if ( !$metadataFile || $parallelJobs eq '' || $fastqDir eq '' || $gtfDir eq '' |
 }
 
 require("$FindBin::Bin/../../rna_seq_utils.pl");
-require("$FindBin::Bin/../../target_base_utils.pl");
+require("$FindBin::Bin/../../scRNA_Seq/target_base_utils.pl");
 
 # Info of processed libraries coming from the pipeline
 my %processedLibraries = get_processed_libraries_info($metadataFile, 1);
@@ -76,7 +77,7 @@ my $jobs_created = 0;
 ## first create sbatch files and add them to an array of sbatch to run
 foreach my $experimentId (keys %processedLibraries){
     foreach my $libraryId (keys %{$processedLibraries{$experimentId}}){
-        next if -e "$kallistoResults/$libraryId/done";
+        next if -e "$kallistoResults/$libraryId/Done_kallisto_bus.txt";
         #create sbatch file and
         my $jobName = "${jobPrefix}${libraryId}";
         my $speciesId = $processedLibraries{$experimentId}{$libraryId}{'speciesId'};
@@ -108,6 +109,7 @@ print "created $jobs_created sbatch files.\n";
 
 my $numberJobRun = 0;
 my $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
+my $startTime = localtime->strftime('%Y-%m-%dT%H:%M:%S');
 foreach my $experimentId (keys %sbatchToRun){
     foreach my $libraryId (keys %{$sbatchToRun{$experimentId}}){
 	    $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
@@ -120,12 +122,15 @@ foreach my $experimentId (keys %sbatchToRun){
     }
 }
 
-print "all jobs created properly. Run $numberJobRun jobs\n";
-
 while ($jobsRunning > 0) {
     sleep(15);
     $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
 }
+
+print "all jobs finished. Run $numberJobRun jobs\n";
+
+my %jobs_status = Utils::count_status_finished_jobs($jobPrefix, $startTime);
+print $jobs_status{"completed"}." jobs completed, ".$jobs_status{"failed"}." jobs failed, ".$jobs_status{"out_of_memory"}." jobs failed with an out of memory issue and ".$jobs_status{"cancelled"}." jobs have been cancelled.\n";
 
 print "all jobs finished\n";
 
