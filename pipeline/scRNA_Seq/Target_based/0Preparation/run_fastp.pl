@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 use diagnostics;
+use Getopt::Long;
 use File::Slurp;
 
 # Julien Wollbrett, created March 2023
@@ -25,27 +26,26 @@ if ($run_path eq '' || $run_id eq ''){
 \t-run_id                ID of the run \n";
     exit 1;
 }
-my $fastq_path = "${run_path}FASTQ/";
+my $fastq_path = "${run_path}/FASTQ/";
 my $fastq_fastp = '';
 my $fastq_R     = '';
-if ( -s "${fastq_path}${run_id}_R1.fastq.gz" && -s "${fastq_path}${run_id}_R2.fastq.gz" ){
+if ( -e "${fastq_path}${run_id}_R1.fastq.gz" && -e "${fastq_path}${run_id}_R2.fastq.gz" ){
     $fastq_fastp = "${fastq_path}${run_id}_R1.fastq.gz -I ${fastq_path}${run_id}_R2.fastq.gz";
     $fastq_R     = "${fastq_path}${run_id}_R1.fastq.gz    ${fastq_path}${run_id}_R2.fastq.gz";
 } else {
-    warn "FASTQ files were not properly downloaded for run : ", $run_id, "\n";
-    next;
+    die "FASTQ files ${fastq_path}${run_id}_R1.fastq.gz or ${fastq_path}${run_id}_R2.fastq.gz were not properly downloaded for run : ", $run_id, "\n";
 }
 # Run FastP (A quality control tool for high throughput sequence data) for ALL SRR (runs)
 # as well as basic read length statistics with R
 #NOTE Would be nice to have all basic stats from FastP (currently some are done in R)
-if ( !-e "${run_path}${run_id}.fastp.html.xz" || !-e "${run_path}${run_id}.fastp.json.xz" ){
-    system("fastp -i $fastq_fastp --json ${run_path}${run_id}.fastp.json --html ${run_path}${run_id}.fastp.html --thread 2  > ${run_path}${run_id}.fastp.log 2>&1")==0
+if ( !-e "${run_path}/${run_id}.fastp.html.xz" || !-e "${run_path}/${run_id}.fastp.json.xz" ){
+    system("fastp -i $fastq_fastp --json ${run_path}/${run_id}.fastp.json --html ${run_path}/${run_id}.fastp.html --thread 2  > ${run_path}/${run_id}.fastp.log 2>&1")==0
         or do { warn "\tfastp failed for [${run_path}${run_id}]\n" };
-    system("xz -9 ${run_path}${run_id}.fastp.html ${run_path}${run_id}.fastp.json");
+    system("xz -9 ${run_path}${run_id}.fastp.html ${run_path}/${run_id}.fastp.json");
 }
-if ( !-e "${run_path}${run_id}.R.stat" ){
-    system("/bin/echo \"#min\tmax\tmedian\tmean\" > ${run_path}${run_id}.R.stat");
+if ( !-e "${run_path}/${run_id}.R.stat" ){
+    system("/bin/echo \"#min\tmax\tmedian\tmean\" > ${run_path}/${run_id}.R.stat");
     #NOTE for cases like SRX1372530 with paired-end files coming with a single-end file in the same run, use ${prefix}*.fastq.gz ???
-    system("zcat $fastq_R | sed -n '2~4p' | awk '{print length(\$0)}' | Rscript -e 'd<-scan(\"stdin\", quiet=TRUE);cat(min(d), max(d), median(d), mean(d), sep=\"\\t\");cat(\"\\n\")' >> ${run_path}${run_id}.R.stat");
+    system("zcat $fastq_R | sed -n '2~4p' | awk '{print length(\$0)}' | Rscript -e 'd<-scan(\"stdin\", quiet=TRUE);cat(min(d), max(d), median(d), mean(d), sep=\"\\t\");cat(\"\\n\")' >> ${run_path}/${run_id}.R.stat");
 }
 
