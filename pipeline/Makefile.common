@@ -537,7 +537,7 @@ SC_RNASEQ_FASTQ_FULL_LENGTH                   := $(CLUSTER_DATA_PATH)/FASTQ/scRN
 SC_RNASEQ_FASTQ_DROPLET                       := $(CLUSTER_DATA_PATH)/FASTQ/scRNAseq/10X/
 
 ## PATH to all results of both of pipelines
-SC_RNASEQ_CLUSTER_ALL_RES                     := $(CLUSTER_SCRATCH_RESULTS)scRNA-Seq_all_results_$(DBNAME)/
+SC_RNASEQ_CLUSTER_ALL_RES                     := $(CLUSTER_DATA_PATH)/$(DBNAME)/scRNA-Seq_all_results/
 
 ## Specific paths to results of full-length protocols
 SC_RNASEQ_CLUSTER_ALL_RES_FULL_LENGTH         := $(SC_RNASEQ_CLUSTER_ALL_RES)FULL_LENGTH/
