@@ -150,9 +150,10 @@ foreach my $experimentId (keys %processedLibraries){
             $sbatchTemplate .= "export bamtofastq=$bamtofastq\n";
             my $submittedFtp = $processedLibraries{$experimentId}{$libraryId}{$runId}{'submittedFTP'};
             my @bamInfos = split(";", $submittedFtp);
+	    $sbatchTemplate .= "module load gcc/10.4.0;\nmodule load fastp/0.23.2;\nexport PATH=/software/bin:\$PATH;\n";
             if ($source eq "SRA" && $experimentId =~ m/^SRP/) {
                 ## load SRA sra-toolkit
-                $sbatchTemplate .= "module load gcc/10.4.0;\nmodule load sratoolkit/3.0.0;\nexport PATH=/software/bin:\$PATH;\n";
+                $sbatchTemplate .= "module load sratoolkit/3.0.0;\n";
                 ## download fastq from SRA
                 if ($submittedFtp eq 'NA') {
                     $sbatchTemplate .= "fastq-dump --outdir $runDirectory/FASTQ --split-files $runId &&\n";
@@ -181,7 +182,6 @@ foreach my $experimentId (keys %processedLibraries){
                     $sbatchTemplate .= "rm $runDirectory/".basename($bamInfos[0])." &&\n";
                 }
             } elsif ($source eq "EBI" || $source eq "HCA" || ($source eq "SRA" && $experimentId =~ m/^ERP/)) {
-                $sbatchTemplate .= "module load gcc/10.4.0;\nexport PATH=/software/bin:\$PATH;\n";
                 # if have to download fastq files
                 if ($bamInfos[0] =~ m/\.fastq\.gz$/) {
                     foreach my $bamInfo (@bamInfos) {
@@ -224,6 +224,7 @@ foreach my $experimentId (keys %processedLibraries){
                 warn "unrecognized source $source for run $runId\n";
                 next;
             }
+	    $sbatchTemplate .= "perl 0Preparation/run_fastp.pl -run_path=$runDirectory -run_id=$runId && \n";
             $jobs_created++;
             $sbatchTemplate .= "touch $runDirectory/done";
             ## create sbatch file and add its path to the hash of sbatch files
