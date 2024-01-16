@@ -57,7 +57,10 @@ while (my $file = readdir(DIR)) {
 
         # generate sbatch commands
 
-        next if (-e $transcriptome_single_nucleus_index_path);
+        if (-e $transcriptome_single_nucleus_index_path) {
+		print "$transcriptome_single_nucleus_index_path already exists. No needs to generate it again.\n";
+		next;
+	}
 
         # load vital-it softwares
         my $sbatch_commands = "module use /software/module/\n";
