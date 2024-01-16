@@ -48,8 +48,8 @@ retrieve_metadata: get_annot 0Preparation/retrieve_metadata.R
 # it replaces the old rules not parallelized and downloading files depending on the sources
 # (see scripts 0Preparation/download_SRA.R, 0Preparation/download_HCA.R and 0Preparation/download_reformat_EBI.R)
 
-parallelized_download: retrieve_metadata
-	@$(SENSITIVE_PERL_CMD) perl 0Preparation/parallelized_download_SRA.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -renameScriptPath=${PWD}/0Preparation/rename_fastq.pl -downloadedLibraries=$(SC_RNASEQ_TB_DOWNLOADED_LIB_FILEPATH) -parallelJobs=50 -outputDir=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET) --bamtofastq=$(SCRNASEQ_SOFTWARE_BAMTOFASTQ) -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
+parallelized_download:
+	@$(SENSITIVE_PERL_CMD) perl 0Preparation/parallelized_download_SRA.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -renameScriptPath=${PWD}/0Preparation/rename_fastq.pl -qualityScript=${PWD}/0Preparation/run_fastp.pl -downloadedLibraries=$(SC_RNASEQ_TB_DOWNLOADED_LIB_FILEPATH) -parallelJobs=50 -outputDir=$(SC_RNASEQ_FASTQ_DROPLET) --bamtofastq=$(SCRNASEQ_SOFTWARE_BAMTOFASTQ) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
 	@$(MV) $@.tmp $@
 
 # Commit the library information file that will be used for the rest of the pipeline
@@ -161,7 +161,7 @@ kallisto_bus:
 
 # generate stats from fastp and kallisto (e.g. read length, reads mapped, ...)
 generate_stats: kallisto_bus 1Run/generate_stats.R
-	@$(CLUSTER_R_CMD) RScript 1Run/generate_stats.R metadata_file="$(SC_RNASEQ_METADATA_10X_FILEPATH)" kallisto_dir="$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET)" fastq_dir="$(SC_RNASEQ_FASTQ_DROPLET)" output_file="$(SC_RNASEQ_STATS_LIBRARIES_10X)" > $@.tmp 2> $@.err
+	@$(CLUSTER_R_CMD) Rscript 1Run/generate_stats.R metadata_file="$(SC_RNASEQ_METADATA_10X_FILEPATH)" kallisto_dir="$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET)" fastq_dir="$(SC_RNASEQ_FASTQ_DROPLET)" output_file="$(SC_RNASEQ_STATS_LIBRARIES_10X)" > $@.tmp 2> $@.err
 	@mv $@.tmp $@
 
 # NOTE: Before run the process_busFile rule (uncompress the barcodes files, because in github we cannot have files with more than 100Mb size)
