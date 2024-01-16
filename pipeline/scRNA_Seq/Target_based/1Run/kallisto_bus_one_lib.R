@@ -44,6 +44,7 @@ message("Species:", species)
 speciesName <- gsub(" ", "_", species)
 transcriptomeIndexFiles <- list.files(gtfDir, pattern = paste0("^", speciesName, ".*transcriptome.idx$"))
 print(transcriptomeIndexFiles)
+
 #TODO: transcriptome index can potentially be compressed with xz.
 
 if (! file.exists(file.path(kallisto_bus_results, libraryId))) {
@@ -78,7 +79,9 @@ if (file.exists(file.path(fastqDir, speciesId, libraryId))) {
       full.names = TRUE, include.dirs = FALSE)
     print(readBarcodes)
     print(readSeq)
-
+    if (is.null(readBarcodes) || is.null(readSeq)) {
+      stop("no fastq.gz files found for R1 and/or R2 at ", detectFastqPath)
+    }
     ## collect all fastq.gz files
     filesKallisto <- rbind(readBarcodes, readSeq)
     filesKallisto <- toString(filesKallisto)
@@ -92,11 +95,20 @@ if (file.exists(file.path(fastqDir, speciesId, libraryId))) {
       transcriptomeIndexFile <- transcriptomeIndexFiles[grep(pattern = "single_nucleus_transcriptome.idx$",
         x = transcriptomeIndexFiles)]
     }
-
+    if (is.null(transcriptomeIndexFile)) {
+      stop("no transcriptome index file found. please check that the index exists and that it is not compressed")
+    }
+    message("Will use transcriptome index ", transcriptomeIndexFile)
+    message("kallisto bus -i ",file.path(gtfDir, transcriptomeIndexFile), " -o ", paste0(busOutput), " -x ", paste0("10x", whiteLInfo), " -t 4 ", paste0(filesKallisto))
     #RUN Kallisto bus
-    system(sprintf('kallisto bus -m -i %s -o %s -x %s -t 4 %s', file.path(gtfDir, transcriptomeIndexFile), paste0(busOutput), paste0("10x", whiteLInfo), paste0(filesKallisto)))
-    ## control file
-    file.create(already_processed_file)
+    system(sprintf('kallisto bus -i %s -o %s -x %s -t 4 %s', file.path(gtfDir, transcriptomeIndexFile), paste0(busOutput), paste0("10x", whiteLInfo), paste0(filesKallisto)), intern = TRUE)
+
+    ## control kallisto was run properly by checking presence of the run_info.json file
+    if (file.exists(file.path(kallisto_bus_results, libraryId, "run_info.json"))) {
+      file.create(already_processed_file)
+    } else {
+      stop("error while running kallisto")
+    }
   }
 } else {
   message("Library not present in the folder ", file.path(fastqDir, libraryId), " to run Kallisto bus!")
