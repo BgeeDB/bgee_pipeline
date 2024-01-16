@@ -156,13 +156,13 @@ prepare_single_nucleus_index: generate_gtf_nascent 0Preparation/slurm_single_nuc
 ## Run Kallisto bus per taxon_iD/library
 kallisto_bus:
 	@echo --- Start running kallisto bus for all libraries ---
-	@$(SENSITIVE_PERL_CMD) perl 1Run/parallelized_kallisto_bus.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -parallelJobs=100 -fastqDir=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET) -gtfDir=$(RNASEQ_CLUSTER_GTF) -scRNASeqInfoFile=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/kallisto_bus_one_lib.R > $@.tmp 2> $@.err
+	@$(SENSITIVE_PERL_CMD) perl 1Run/parallelized_kallisto_bus.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -parallelJobs=100 -fastqDir=$(SC_RNASEQ_FASTQ_DROPLET) -gtfDir=$(RNASEQ_CLUSTER_GTF) -scRNASeqInfoFile=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/kallisto_bus_one_lib.R > $@.tmp 2> $@.err
 	@mv $@.tmp $@
 
 # generate stats from fastp and kallisto (e.g. read length, reads mapped, ...)
 generate_stats: kallisto_bus 1Run/generate_stats.R
-	@$(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args metadata_file="$(SC_RNASEQ_METADATA_10X_FILEPATH)" kallisto_dir="$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET)" fastq_dir="$(SC_RNASEQ_FASTQ_DROPLET)" output_file="$(SC_RNASEQ_STATS_LIBRARIES_10X)"' 1Run/generate_stats.R $(SC_RNASEQ_TB_FOLDER_GENERATED)generate_stats.Rout
-	@touch $@
+	@$(CLUSTER_R_CMD) RScript 1Run/generate_stats.R metadata_file="$(SC_RNASEQ_METADATA_10X_FILEPATH)" kallisto_dir="$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET)" fastq_dir="$(SC_RNASEQ_FASTQ_DROPLET)" output_file="$(SC_RNASEQ_STATS_LIBRARIES_10X)" > $@.tmp 2> $@.err
+	@mv $@.tmp $@
 
 # NOTE: Before run the process_busFile rule (uncompress the barcodes files, because in github we cannot have files with more than 100Mb size)
 uncompress_barcodes: generate_stats $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whitelist_10X_v2.txt.zip $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whitelist_10X_v3.txt.zip
@@ -174,7 +174,7 @@ uncompress_barcodes: generate_stats $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whiteli
 ## Process bus files
 process_busFile: uncompress_barcodes 1Run/process_busfile_one_lib.R
 	@echo --- Starting the process of bus files ---
-	@$(SENSITIVE_PERL_CMD) 1Run/parallelized_process_busfile.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -parallelJobs=100 -fastqDir=$(SC_RNASEQ_FASTQ_DROPLET) -gtfDir=$(RNASEQ_CLUSTER_GTF) -scRNASeqInfoFile=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH) -whiteListPath=$(SC_RNASEQ_TB_FOLDER_SOURCE) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/process_busfile_one_lib.R > $@.tmp 2> $@.err
+	@$(SENSITIVE_PERL_CMD) perl 1Run/parallelized_process_busfile.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -parallelJobs=100 -fastqDir=$(SC_RNASEQ_FASTQ_DROPLET) -gtfDir=$(RNASEQ_CLUSTER_GTF) -scRNASeqInfoFile=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH) -whiteListPath=$(SC_RNASEQ_TB_FOLDER_SOURCE) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/process_busfile_one_lib.R > $@.tmp 2> $@.err
 	@mv $@.tmp $@
 
 
