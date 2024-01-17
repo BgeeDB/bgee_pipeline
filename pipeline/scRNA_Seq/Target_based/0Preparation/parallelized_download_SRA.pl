@@ -117,15 +117,15 @@ my %alreadyDownloaded = map { $_ => 1 } read_file("$downloadedLibraries", chomp=
 my %sbatchToRun = ();
 
 ## create directory
-my $sbatchDir = "$outputDir/sbatch";
-my $clusterOutputDir = "$outputDir/clusterOutput";
+my $jobPrefix = "download_";
+my $sbatchDir = "$outputDir/${jobPrefix}sbatch";
+my $clusterOutputDir = "$outputDir/${jobPrefix}clusterOutput";
 make_path("$sbatchDir");
 make_path("$clusterOutputDir");
 
 #store initial dir location to be able to move for symlink generation and then come back later
 my $initialDir = getcwd;
 
-my $jobPrefix = "download_";
 my $jobs_created = 0;
 ## first create sbatch files and add them to an array of sbatch to run
 foreach my $experimentId (keys %processedLibraries){
@@ -253,9 +253,9 @@ if ($jobs_created > 0) {
                 my $speciesId = $processedLibraries{$experimentId}{$libraryId}{'speciesId'};
                 my $libDirectory = "$outputDir/$speciesId/$libraryId";
                 foreach my $runId (keys %{$sbatchToRun{$experimentId}{$libraryId}}){
+                    next if $runId eq "speciesId";
                     my $runDirectory = "$libDirectory/$runId";
                     next if (-f "$runDirectory/done");
-                    next if $runId eq "speciesId";
                     $numberJobRun++;
                     while ($jobsRunning >= $parallelJobs) {
                             sleep(15);
