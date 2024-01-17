@@ -49,7 +49,7 @@ retrieve_metadata: get_annot 0Preparation/retrieve_metadata.R
 # (see scripts 0Preparation/download_SRA.R, 0Preparation/download_HCA.R and 0Preparation/download_reformat_EBI.R)
 
 parallelized_download:
-	@$(SENSITIVE_PERL_CMD) perl 0Preparation/parallelized_download_SRA.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -renameScriptPath=${PWD}/0Preparation/rename_fastq.pl -qualityScript=${PWD}/0Preparation/run_fastp.pl -downloadedLibraries=$(SC_RNASEQ_TB_DOWNLOADED_LIB_FILEPATH) -parallelJobs=50 -outputDir=$(SC_RNASEQ_FASTQ_DROPLET) --bamtofastq=$(SCRNASEQ_SOFTWARE_BAMTOFASTQ) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
+	@$(SENSITIVE_PERL_CMD) perl 0Preparation/parallelized_download_SRA.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -renameScriptPath=${PWD}/0Preparation/rename_fastq.pl -qualityScriptPath=${PWD}/0Preparation/run_fastp.pl -downloadedLibraries=$(SC_RNASEQ_TB_DOWNLOADED_LIB_FILEPATH) -parallelJobs=50 -outputDir=$(SC_RNASEQ_FASTQ_DROPLET) --bamtofastq=$(SCRNASEQ_SOFTWARE_BAMTOFASTQ) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
 	@$(MV) $@.tmp $@
 
 # Commit the library information file that will be used for the rest of the pipeline

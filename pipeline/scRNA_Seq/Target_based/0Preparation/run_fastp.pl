@@ -41,7 +41,7 @@ if ( -e "${fastq_path}${run_id}_R1.fastq.gz" && -e "${fastq_path}${run_id}_R2.fa
 if ( !-e "${run_path}/${run_id}.fastp.html.xz" || !-e "${run_path}/${run_id}.fastp.json.xz" ){
     system("fastp -i $fastq_fastp --json ${run_path}/${run_id}.fastp.json --html ${run_path}/${run_id}.fastp.html --thread 2  > ${run_path}/${run_id}.fastp.log 2>&1")==0
         or do { warn "\tfastp failed for [${run_path}${run_id}]\n" };
-    system("xz -9 ${run_path}${run_id}.fastp.html ${run_path}/${run_id}.fastp.json");
+    system("xz -9 ${run_path}/${run_id}.fastp.html ${run_path}/${run_id}.fastp.json");
 }
 if ( !-e "${run_path}/${run_id}.R.stat" ){
     system("/bin/echo \"#min\tmax\tmedian\tmean\" > ${run_path}/${run_id}.R.stat");
