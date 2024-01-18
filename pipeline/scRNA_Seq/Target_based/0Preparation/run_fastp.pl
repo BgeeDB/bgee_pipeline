@@ -43,9 +43,14 @@ if ( !-e "${run_path}/${run_id}.fastp.html.xz" || !-e "${run_path}/${run_id}.fas
         or do { warn "\tfastp failed for [${run_path}${run_id}]\n" };
     system("xz -9 ${run_path}/${run_id}.fastp.html ${run_path}/${run_id}.fastp.json");
 }
-if ( !-e "${run_path}/${run_id}.R.stat" ){
-    system("/bin/echo \"#min\tmax\tmedian\tmean\" > ${run_path}/${run_id}.R.stat");
-    #NOTE for cases like SRX1372530 with paired-end files coming with a single-end file in the same run, use ${prefix}*.fastq.gz ???
-    system("zcat $fastq_R | sed -n '2~4p' | awk '{print length(\$0)}' | Rscript -e 'd<-scan(\"stdin\", quiet=TRUE);cat(min(d), max(d), median(d), mean(d), sep=\"\\t\");cat(\"\\n\")' >> ${run_path}/${run_id}.R.stat");
+my $numberRstatLines = 0;
+my $rStatFile = "${run_path}/${run_id}.R.stat";
+if (-e "$rStatFile") {
+    $numberRstatLines = `wc -l < $rStatFile`;
+}
+# test number of lines as an out of memory issue while generating stats will leave the run with a R.stat file containing one single line
+if ($numberRstatLines != 2) {
+    system("/bin/echo \"#min\tmax\tmedian\tmean\" > $rStatFile");
+    system("zcat $fastq_R | sed -n '2~4p' | awk '{print length(\$0)}' | Rscript -e 'd<-scan(\"stdin\", quiet=TRUE);cat(min(d), max(d), median(d), mean(d), sep=\"\\t\");cat(\"\\n\")' >> $rStatFile");
 }
 
