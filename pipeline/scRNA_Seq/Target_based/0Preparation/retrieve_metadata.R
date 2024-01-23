@@ -1,10 +1,8 @@
 ## SFonsecaCosta, Sep 17 2019
 
 ## This script is used to retrieve the metadata for the target based
-## protocols from SRA source. And then to compare the annotation information (speciesId and protocol)
-## for each library with metadata.
-
-##XXX Is this script really useful??? Is it possible that libraries were not annotated to proper species? What does it mean? Bgee curation should be trusted
+## protocols from SRA, to compare the annotation information (speciesId and protocol). Those metadata are mandatory
+## to download fastq files.
 
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args scRNASeqExperiment="scRNASeqExperiment.tsv" scRNASeqTBLibrary="scRNASeqTBLibrary.tsv" output_folder="output_folder"' retrieve_metadata.R retrieve_metadata.Rout

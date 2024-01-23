@@ -21,6 +21,10 @@ get_annot:
 ##   - removes full-length experiment/libraries
 ##   - removes protocols not accepted in Bgee
 ##   - filter on speciesIds AND libraryIds if such arguments are provided (e.g speciesIds="7227,9606")
+##     TODO: this script should connect to the database to filter on species in the database and remove
+##     libraries already inserted in the database (if MINOR_RELEASE =! 0). It is probably faster to rewrite
+##     this code in perl in order to reuse code managing connection to the DB.
+##     /!\ For Bgee 15.2 this filtering was done manually directly on the metadata_info.txt file
 filter_annot:
 	@$(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args scRNASeqExperiment="$(SC_RNASEQ_EXP_TB_FILEPATH)" scRNASeqTBLibrary="$(SC_RNASEQ_LIB_TB_FILEPATH)" strainMapping="$(STRAIN_MAPPING_FILE)" acceptedProtocols="$(SC_RNASEQ_ACCEPTED_PROTOCOLS)" outputDir="$(SC_RNASEQ_TB_FOLDER_GENERATED)"' 0Preparation/filter_annotation.R $(SC_RNASEQ_TB_FOLDER_GENERATED)filter_annotation.Rout
 	@touch $@
