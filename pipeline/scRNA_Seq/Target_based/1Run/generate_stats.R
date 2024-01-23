@@ -67,7 +67,6 @@ for(line in seq(nrow(libraries))) {
         min_reads <- Inf
         max_reads <- 0
         for (r_stat_file in library_r_stat_files) {
-  	message("r stat file : ", r_stat_file)
           r_stats <- read.table(file = r_stat_file, header = TRUE, sep = "\t", comment.char = "")
           if (r_stats[1,1] < min_reads) {
             min_reads <- r_stats[1,1]
@@ -82,15 +81,15 @@ for(line in seq(nrow(libraries))) {
         names(kallisto_info) <- kallisto_info_report_columns
         kallisto_info_all_samples <- rbind(kallisto_info_all_samples, kallisto_info)
         } else {
-          message(library_id, " : R.stat file not generated")
+          warning(library_id, " : R.stat file not generated")
           libraries_wo_calls <- libraries_wo_calls + 1
         }
     } else {
-      message(library_id, " : kallisto info file was not generated")
+      warning(library_id, " : kallisto info file was not generated")
       libraries_wo_calls <- libraries_wo_calls + 1
     }
   } else {
-    message(library_id, " : library directory not created ", file.path(kallisto_dir, library_id))
+    warning(library_id, " : library directory not created ", file.path(kallisto_dir, library_id))
     libraries_wo_calls <- libraries_wo_calls + 1
   }
 }
