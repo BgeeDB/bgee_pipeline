@@ -31,7 +31,7 @@ my $fastq_fastp = '';
 my $fastq_R     = '';
 if ( -e "${fastq_path}${run_id}_R1.fastq.gz" && -e "${fastq_path}${run_id}_R2.fastq.gz" ){
     $fastq_fastp = "${fastq_path}${run_id}_R1.fastq.gz -I ${fastq_path}${run_id}_R2.fastq.gz";
-    $fastq_R     = "${fastq_path}${run_id}_R1.fastq.gz    ${fastq_path}${run_id}_R2.fastq.gz";
+    $fastq_R     = "${fastq_path}${run_id}_R2.fastq.gz";
 } else {
     die "FASTQ files ${fastq_path}${run_id}_R1.fastq.gz or ${fastq_path}${run_id}_R2.fastq.gz were not properly downloaded for run : ", $run_id, "\n";
 }
