@@ -173,10 +173,10 @@ generate_stats: #kallisto_bus 1Run/generate_stats.R
 	@mv $@.tmp $@
 
 # NOTE: Before run the process_busFile rule (uncompress the barcodes files, because in github we cannot have files with more than 100Mb size)
-uncompress_barcodes: generate_stats $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whitelist_10X_v2.txt.zip $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whitelist_10X_v3.txt.zip
+uncompress_barcodes: generate_stats $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whitelist_10X_Genomics_V2.txt.zip $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whitelist_10X_Genomics_V3.txt.zip
 	cd $(SC_RNASEQ_TB_FOLDER_SOURCE) && \
-	unzip -o barcode_whitelist_10X_v2.txt.zip && \
-	unzip -o barcode_whitelist_10X_v3.txt.zip
+	unzip -o barcode_whitelist_10X_Genomics_V2.txt.zip && \
+	unzip -o barcode_whitelist_10X_Genomics_V3.txt.zip
 	@touch $@
 
 ## Process bus files
