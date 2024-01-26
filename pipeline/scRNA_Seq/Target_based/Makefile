@@ -30,6 +30,9 @@ filter_annot:
 	@touch $@
 
 ## Retrieve metadata (run rule with sbatch)
+##TODO: this rule has to be updated as the rule finish when the job starts to run... not when the job ends.
+## Using such a logic does not allow to run a pipeline as metadata mandatory for next step are not
+## yet generated when the rule finishes.
 retrieve_metadata: get_annot 0Preparation/retrieve_metadata.R
 	@echo --- Retrieve metadata information ---
 	@sed -i 's@--output=.*@--output=${PWD}/retrieve_metadata.out@'                                                 0Preparation/retrieve_metadata.sbatch
@@ -51,13 +54,12 @@ retrieve_metadata: get_annot 0Preparation/retrieve_metadata.R
 # Rule used to parallelize download of libraries and to standardize fastq file names
 # it replaces the old rules not parallelized and downloading files depending on the sources
 # (see scripts 0Preparation/download_SRA.R, 0Preparation/download_HCA.R and 0Preparation/download_reformat_EBI.R)
-
 parallelized_download: retrieve_metadata
-	@$(SENSITIVE_PERL_CMD) perl 0Preparation/parallelized_download_SRA.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -renameScriptPath=${PWD}/0Preparation/rename_fastq.pl -qualityScriptPath=${PWD}/0Preparation/run_fastp.pl -downloadedLibraries=$(SC_RNASEQ_TB_DOWNLOADED_LIB_FILEPATH) -parallelJobs=50 -outputDir=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET) --bamtofastq=$(SCRNASEQ_SOFTWARE_BAMTOFASTQ) -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
+	@$(SENSITIVE_PERL_CMD) perl 0Preparation/parallelized_download_SRA.pl -metadataFile=${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH) -renameScriptPath=${PWD}/0Preparation/rename_fastq.pl -qualityScriptPath=${PWD}/0Preparation/run_fastp.pl -downloadedLibraries=${PWD}/$(SC_RNASEQ_TB_DOWNLOADED_LIB_FILEPATH) -parallelJobs=50 -outputDir=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET) --bamtofastq=$(SCRNASEQ_SOFTWARE_BAMTOFASTQ) -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
 	@$(MV) $@.tmp $@
 
 parallelized_quality_check:
-	@$(SENSITIVE_PERL_CMD) perl 0Preparation/parallelized_quality_check.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -qualityScriptPath=${PWD}/0Preparation/run_fastp.pl -parallelJobs=100 -outputDir=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET) -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
+	@$(SENSITIVE_PERL_CMD) perl 0Preparation/parallelized_quality_check.pl -metadataFile=${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH) -qualityScriptPath=${PWD}/0Preparation/run_fastp.pl -parallelJobs=100 -outputDir=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET) -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
 	@$(MV) $@.tmp $@
 
 # Commit the library information file that will be used for the rest of the pipeline
@@ -71,6 +73,10 @@ commit_annotation_and_metadata: list_new_downloads
 	@$(GIT) push
 	@echo -e "All information is ready, you can go to SENSITIVE cluster to continue the pipeline of the droplet protocols\n"
 	@touch $@
+
+#run all steps preliminary to expression processing before moving data to sensitive cluster
+make_curnagl: commit_annotation_and_metadata
+
 
 ## NOTE: Copy all git repository to sensitive cluster!
 ################## STEPS TO RUN ON SENSITIVE SERVER ##################
@@ -164,7 +170,7 @@ prepare_single_nucleus_index: generate_gtf_nascent 0Preparation/slurm_single_nuc
 ## Run Kallisto bus per taxon_iD/library
 kallisto_bus:
 	@echo --- Start running kallisto bus for all libraries ---
-	@$(SENSITIVE_PERL_CMD) perl 1Run/parallelized_kallisto_bus.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -parallelJobs=100 -fastqDir=$(SC_RNASEQ_FASTQ_DROPLET) -gtfDir=$(RNASEQ_CLUSTER_GTF) -scRNASeqInfoFile=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/kallisto_bus_one_lib.R > $@.tmp 2> $@.err
+	@$(SENSITIVE_PERL_CMD) perl 1Run/parallelized_kallisto_bus.pl -metadataFile=${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH) -parallelJobs=100 -fastqDir=$(SC_RNASEQ_FASTQ_DROPLET) -gtfDir=$(RNASEQ_CLUSTER_GTF) -scRNASeqInfoFile=${PWD}/$(SC_RNASEQ_SAMPINFO_10X_FILEPATH) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/kallisto_bus_one_lib.R > $@.tmp 2> $@.err
 	@mv $@.tmp $@
 
 # generate stats from fastp and kallisto (e.g. read length, reads mapped, ...)
@@ -182,14 +188,14 @@ uncompress_barcodes: generate_stats $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whiteli
 ## Process bus files
 process_busFile: uncompress_barcodes 1Run/process_busfile_one_lib.R
 	@echo --- Starting the process of bus files ---
-	@$(SENSITIVE_PERL_CMD) perl 1Run/parallelized_process_busfile.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH) -parallelJobs=100 -fastqDir=$(SC_RNASEQ_FASTQ_DROPLET) -gtfDir=$(RNASEQ_CLUSTER_GTF) -scRNASeqInfoFile=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH) -whiteListPath=$(SC_RNASEQ_TB_FOLDER_SOURCE) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/process_busfile_one_lib.R > $@.tmp 2> $@.err
+	@$(SENSITIVE_PERL_CMD) perl 1Run/parallelized_process_busfile.pl -metadataFile=${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH) -parallelJobs=100 -fastqDir=$(SC_RNASEQ_FASTQ_DROPLET) -gtfDir=$(RNASEQ_CLUSTER_GTF) -scRNASeqInfoFile=${PWD}/$(SC_RNASEQ_SAMPINFO_10X_FILEPATH) -whiteListPath=${PWD}/$(SC_RNASEQ_TB_FOLDER_SOURCE) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/process_busfile_one_lib.R > $@.tmp 2> $@.err
 	@mv $@.tmp $@
 
 
 ## Quality control (Knee + PCA + UMAP for each library) + cell type identification
 qc_cellType: process_busFile 1Run/parallelized_qcCellIdentification.pl
 	@echo --- Starting the quality control and the cell type identification ---
-	@$(SENSITIVE_PERL_CMD) 1Run/parallelized_qcCellIdentification.pl -metadataFile=$(SC_RNASEQ_METADATA_10X_FILEPATH)  -parallelJobs=100 -gtfDir=$(RNASEQ_CLUSTER_GTF) -barcodeFolder=$(SC_RNASEQ_CLEANED_BARCODES) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -outputDir=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/celltype_one_lib.R -rLibs=$(R_LIBS_PATH_SENSITIVE) > $@.tmp 2>> $@.err
+	@$(SENSITIVE_PERL_CMD) 1Run/parallelized_qcCellIdentification.pl -metadataFile=${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH)  -parallelJobs=100 -gtfDir=$(RNASEQ_CLUSTER_GTF) -barcodeFolder=${PWD}/$(SC_RNASEQ_CLEANED_BARCODES) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -outputDir=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/celltype_one_lib.R -rLibs=$(R_LIBS_PATH_SENSITIVE) > $@.tmp 2>> $@.err
 	@mv $@.tmp $@
 
 ## Quality control based on the bimodality of the cell-population per library/cell-type pop
@@ -253,7 +259,7 @@ final_commit: final_status
 ## (on unil cluster using slurm) if this rule takes too much time.
 ## Then, a perl script should take care of managing parallelization. It could also
 ## be possible to use the rslurm R package to manage parallelization
-insert_cell_abundance:
+insert_data:
 	@perl 3Insertion/insert_scrna_seq.pl -bgee=$(BGEECMD) -targetBaseLibrary=$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED) -singleCellExperiment=$(SC_RNASEQ_EXP_TB_FILEPATH_FILTERED) -bgeeLibraryInfo=$(SC_RNASEQ_METADATA_10X_FILEPATH) -filteredBarcodeDir=$(SC_RNASEQ_CLEANED_BARCODES) -pipelineCallsSummary=$(SC_RNASEQ_SERVER_INFO_CALLS_10X) -pipelineReportFile=$(SC_RNASEQ_STATS_LIBRARIES_10X)  -kallistoResults=$(SC_RNASEQ_SERVER_RES_KALLISTO_DROPLET) -callsResults=$(SC_RNASEQ_SERVER_CALLS_10X) -sourceDir=$(SC_RNASEQ_TB_FOLDER_SOURCE) -sexInfo=$(UBERON_SEX_INFO_FILE_PATH) -numberCore=20 > $@.tmp 2> $@.err
 	@if [[ ! -s $@.err ]]; then $(RM) $@.err; fi
 	@$(MV) $@.tmp $@
