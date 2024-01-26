@@ -163,7 +163,7 @@ for (species_id in species_ids) {
     tx2gene_single_nucleus_ids <- rbind(tx2gene_ids, tx2gene_nascent_ids)
 
     single_nucleus_tx2gene_file <- file.path(gtf_dir, gsub(pattern = ".gtf",
-      replacement = ".tx2gene_single_nucleus", x = basename(gtf_file)))
+      replacement = ".single_nucleus.tx2gene", x = basename(gtf_file)))
 
     message("write file : ", single_nucleus_tx2gene_file)
     write.table(x = tx2gene_single_nucleus_ids,

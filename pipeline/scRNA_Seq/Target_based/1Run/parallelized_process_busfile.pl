@@ -15,6 +15,7 @@ use lib "$FindBin::Bin/../../.."; # Get lib path for Utils.pm
 use Utils;
 use File::Path qw(make_path);
 use File::Basename;
+use Time::Piece;
 
 ## Define arguments & their default value
 my ($metadataFile, $parallelJobs, $fastqDir, $gtfDir, $scRNASeqInfoFile, $whiteListPath,
@@ -103,6 +104,10 @@ foreach my $experimentId (keys %processedLibraries){
 
 print "created $jobs_created sbatch files.\n";
 
+# tx2gene files have to be used by the scripts. As some of those files could be compressed
+# we uncompress all tx2gene files prior to running the jobs
+system("unxz $gtfDir/*.tx2gene.xz");
+my $startTime = localtime->strftime('%Y-%m-%dT%H:%M:%S');
 my $numberJobRun = 0;
 my $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
 foreach my $experimentId (keys %sbatchToRun){
@@ -112,7 +117,7 @@ foreach my $experimentId (keys %sbatchToRun){
              sleep(15);
              $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
         }
-        system("sbatch $sbatchToRun{$experimentId}{$libraryId}");
+        system("sbatch $sbatchToRun{$experimentId}{$libraryId} >/dev/null");
         $numberJobRun++;
     }
 }
@@ -124,7 +129,11 @@ while ($jobsRunning > 0) {
     $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
 }
 
+# now that all jobs have been finished we compress back all tx2gene files
+system("xz $gtfDir/*.tx2gene");
+
 print "all jobs finished\n";
 
-
+my %jobs_status = Utils::count_status_finished_jobs($jobPrefix, $startTime);
+    print $jobs_status{"completed"}." jobs completed, ".$jobs_status{"failed"}." jobs failed, ".$jobs_status{"out_of_memory"}." jobs failed with an out of memory issue and ".$jobs_status{"cancelled"}." jobs have been cancelled.\n";
 

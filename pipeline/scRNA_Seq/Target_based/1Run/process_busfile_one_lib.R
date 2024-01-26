@@ -104,13 +104,11 @@ if (dir.exists(file.path(kallisto_bus_results, libraryId))){
       message("Start correction, sort and counts for the library: ", libraryId)
 
       ## Note: the whiteList we use in this pipeline are the files provided by 10X platform (add to source files)
-      collectWhitelist <- unique(as.character(scRNAInfo$whiteList[scRNAInfo$libraryId == libraryId]))
-      selectedWhitheList <- paste0("10X_",collectWhitelist)
-      message("whitelist:  ", selectedWhitheList)
+      selectedWhiteList <- gsub(" ", "_", unique(as.character(scRNAInfo$protocol[scRNAInfo$libraryId == libraryId])))
 
       ## step 1 --> correct the barcodes
       message("Correct barcodes")
-      system(sprintf('%s -w %s -o %s %s', "bustools correct", paste0(whiteList_Path, "barcode_whitelist_", selectedWhitheList,".txt"), paste0(pathBusOut, "/output.correct.bus"), paste0(pathBusOut, "/output.bus")))
+      system(sprintf('%s -w %s -o %s %s', "bustools correct", paste0(whiteList_Path, "barcode_whitelist_", selectedWhiteList,".txt"), paste0(pathBusOut, "/output.correct.bus"), paste0(pathBusOut, "/output.bus")))
 
       ## step 2 --> sort the bus file
       message("Sort bus file")
@@ -135,11 +133,11 @@ if (dir.exists(file.path(kallisto_bus_results, libraryId))){
       collectSpecies <- gsub(" ", "_", collectSpecies)
 
       # has to choose the tx2gene file to use depending on single cell or single nuclei protocol preparation
-      tx2gene_file <- file.path(folder_gtf, list.files(path = folder_gtf, pattern = paste0(collectSpecies, ".*tx2gene$")))
-      if (unique(as.character(scRNAInfo$tags[scRNAInfo$libraryId == libraryId])) == "Sn-scRNA-seq") {
-        tx2gene_file <- file.path(folder_gtf, list.files(path = folder_gtf, pattern = paste0(collectSpecies, ".*tx2gene_single_nucleus$")))
+      tx2gene_files <- file.path(folder_gtf, list.files(path = folder_gtf, pattern = paste0(collectSpecies, ".*tx2gene$")))
+      tx2gene_file <- tx2gene_files[grep(pattern = "single_nucleus|nascent", x = tx2gene_files, invert = TRUE)]
+      if (unique(as.character(scRNAInfo$RNAseqTags[scRNAInfo$libraryId == libraryId])) == "Sn-scRNA-seq") {
+        tx2gene_file <- tx2gene_files[grep(pattern = "single_nucleus", x = tx2gene_files)]
       }
-
       print(tx2gene_file)
       if (!file.exists(tx2gene_file)) {
         if(file.exists(paste0(tx2gene_file, ".xz"))) {
