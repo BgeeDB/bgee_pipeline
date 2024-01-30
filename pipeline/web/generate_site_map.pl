@@ -25,7 +25,7 @@ my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $bgee_connector eq '' ){
     print "\n\tInvalid or missing argument:
 \te.g. $0  -bgee=\$(BGEECMD)
-\t-bgee     Bgee connector string
+\t-bgee     Bgee connector string (e.g. user=bgee__pass=bgee__host=127.0.0.1__port=3306__name=bgee_v15_1)
 \t-debug    show current status
 \n";
     exit 1;
@@ -54,11 +54,11 @@ my @static_pages;
 push @static_pages, "<loc>$homepage/</loc><priority>0.8</priority>";
 push @static_pages, "<loc>$homepage/sparql/</loc><priority>0.7</priority>";
 push @static_pages, "<loc>$homepage/ftp/</loc><priority>0.7</priority>";
-my @basic_about     = ('', 'news', 'collaborations', 'publications', 'videos', 'sources', 'team', 'bgeesab', 'privacy-policy');
+my @basic_about     = ('', 'news', 'collaborations', 'publications', 'sources', 'team', 'bgeesab', 'privacy-policy');
 for my $baseUrlName ( sort @basic_about ){
     push @static_pages, "<loc>$homepage/about/$baseUrlName</loc><priority>0.7</priority>";
 }
-my @basic_support   = ('data-sets', 'top-anat', 'gene-expression-calls', 'processed-expression-values', 'rnaseq-processed-expression-values', 'singlecell-rnaseq-fulllength-processed-expression-values', 'affymetrix-processed-expression-values', 'faq');
+my @basic_support   = ('tutorials', 'data-sets', 'scRNA-seq-protocols-comparison', 'videos', 'faq', 'tutorial-gene-page', 'tutorial-TopAnat', 'tutorial-expression-calls', 'tutorial-data-curation', 'tutorial-query-bgee-knowledge-graph-sparql', 'tutorial-expression-comparison', 'tutorial-raw-data', 'tutorial-anatomical-homology', 'tutorial-expression-call-download-documentation', 'tutorial-processed-expression-values-download-documentation', 'tutorial-processed-expression-values-download-RNA-seq', 'tutorial-processed-expression-values-download-scRNA-seq-full-length', 'tutorial-processed-expression-values-download-scRNA-seq-droplet-based', 'tutorial-processed-expression-values-download-affymetrix');
 for my $baseUrlName ( sort @basic_support ){
     push @static_pages, "<loc>$homepage/support/$baseUrlName</loc><priority>0.7</priority>";
 }
