@@ -132,6 +132,30 @@ write_file("$sitemap", $sitemap_header, join("\n", map { "<url>$_</url>" } @page
 push @index, $sitemap;
 
 
+# experiment pages
+print "Write experiment pages\n"  if ( $debug );
+my $expId = $bgee->prepare('SELECT experimentIds FROM (SELECT DISTINCT inSituExperimentId AS experimentIds FROM inSituEvidence) AS insitu UNION DISTINCT (SELECT DISTINCT microArrayExperimentId AS experimentIds FROM affymetrixChip) UNION DISTINCT (SELECT DISTINCT rnaSeqExperimentId AS experimentIds FROM rnaSeqLibrary) ORDER BY experimentIds');
+$expId->execute()  or die $expId->errstr;
+$count = 0;
+$split = 0;
+@pages = ();
+while ( my @data = $expId->fetchrow_array ){
+    $count++;
+    push @pages, "<loc>$homepage/experiment/$data[0]</loc>";
+    if ( $count > ($url_limit - 1000) ){
+        $split++;
+        my $sitemap = "sitemap_experiment$split.xml";
+        write_file("$sitemap", $sitemap_header, join("\n", map { "<url>$_</url>" } @pages), $sitemap_footer);
+        push @index, $sitemap;
+        $count = 0;
+        @pages = ();
+    }
+}
+$split++;
+$sitemap = "sitemap_experiment$split.xml";
+write_file("$sitemap", $sitemap_header, join("\n", map { "<url>$_</url>" } @pages), $sitemap_footer);
+push @index, $sitemap;
+
 
 # Write sitemap index
 my $index = "<?xml version='1.0' encoding='UTF-8'?>\n<sitemapindex xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>\n";
