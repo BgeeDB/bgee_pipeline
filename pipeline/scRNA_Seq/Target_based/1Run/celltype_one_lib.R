@@ -160,8 +160,6 @@ targetCells <- function(objectNormalized, objectNormalized_filtered, barcodeInfo
         colnames(rawCountsCell)[1] <- "gene_id"
         ## add biotype info to raw counts
         collectBiotypeRaw <- merge(rawCountsCell, biotypeInfo, by = "gene_id", all.x = TRUE)
-        ## add type info
-        collectBiotypeRaw$type <- ifelse(is.na(collectBiotypeRaw$biotype), "intergenic", "genic")
         collectBiotypeRaw$cellTypeName <- cell
         collectBiotypeRaw$cellTypeId <- cellId
         
@@ -218,7 +216,7 @@ if (file.exists(file.path(kallisto_bus_results, libraryId, "gene_counts"))){
 
   path2Files <- file.path(kallisto_bus_results, libraryId, "gene_counts/")
 
-  if(file.exists(file.path(output, libraryId))) {
+  if(file.exists(file.path(output, libraryId, "done"))) {
     message("celltype identification already done for library : ", libraryId)
   } else {
   
@@ -247,32 +245,23 @@ if (file.exists(file.path(kallisto_bus_results, libraryId, "gene_counts"))){
     object_seurat_filtered <- seuratObject(m_filtered = sparseMatrix_filtered)
   
     ## read biotype information
-    biotypeInfoFile <- file.path(folderSupport,
-      paste0(speciesName, "_gene_to_biotype_with_intergenic.tsv"))
-    # the file is potentially compressed. Have to uncompress it first
-    if (!file.exists(biotypeInfoFile)) {
-      if (file.exists(paste0(biotypeInfoFile, ".xz"))) {
-        system(sprintf("unxz %s", paste0(biotypeInfoFile,".xz")))
-      } else {
-        stop("gene to biotype file [", biotypeInfoFile, "] does not exist.")
-      }
+    biotypeInfoFile <- list.files(path = folderSupport, pattern = paste0("^", speciesName, ".*.gene2biotype$"),
+      full.names = TRUE)
+    message("biotype info file : ", biotypeInfoFile)
+    if (length(biotypeInfoFile) != 1) {
+      stop("No gene2biotype file found for the species ", speciesName)
     }
     biotypeInfo <- read.table(biotypeInfoFile)
-    ## hack needed for Bgee 15.1 as the gene to biotype file contain redundant genes
-    ##TODO: update script generating gene to biotype
-    biotypeInfo <- unique(biotypeInfo)
-    colnames(biotypeInfo) <- c("gene_id", "biotype")
+    colnames(biotypeInfo) <- c("gene_id", "biotype", "type")
     ## get barcode information per experiment
     barcodeExperiment <- read.table(file.path(infoFolder,
       paste0("scRNASeq_barcode_", experimentID,".tsv")), header = TRUE,
       sep = "\t")
     barcodeLibrary <- dplyr::filter(barcodeExperiment, library == libraryId)
-    
     ## link barcode to cell ID and export information
     finalInformationCells <- targetCells(objectNormalized = object_seurat, objectNormalized_filtered = object_seurat_filtered,
       barcodeInfo = barcodeLibrary, biotypeInfo = biotypeInfo, libraryID = libraryId)
     infoCells <- finalInformationCells[[2]]
-    
     ## verify if function targetCells is NULL
     if (is.null(finalInformationCells)){
       message("The library", libraryId, " does not contain any barcode.")
@@ -291,6 +280,8 @@ if (file.exists(file.path(kallisto_bus_results, libraryId, "gene_counts"))){
       write.table(info, file = file.path(output, libraryId, "kneePlotFilteringInfo.txt"),
         quote = FALSE, sep = "\t", col.names = TRUE, row.names = FALSE)
     }
+    # write an empty file to detect already processed libraries
+    file.create(file.path(output, libraryId, "done"))
   }
 } else {
     warning("The library ", libraryId, " has not been porcessed by bustools")

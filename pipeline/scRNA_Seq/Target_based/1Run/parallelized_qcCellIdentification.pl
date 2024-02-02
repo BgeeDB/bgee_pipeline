@@ -16,6 +16,7 @@ use lib "$FindBin::Bin/../../.."; # Get lib path for Utils.pm
 use Utils;
 use File::Path qw(make_path);
 use File::Basename;
+use Time::Piece;
 
 ## Define arguments & their default value
 my ($metadataFile, $parallelJobs, $gtfDir, $barcodeFolder, $kallistoResults, $outputDir,
@@ -63,6 +64,10 @@ my %sbatchToRun = ();
 
 ## create directory necessary to store sbatch files
 make_path("$outputDir/sbatch");
+
+## uncompress all gene2biotype files before running jobs. Redirect output to /dev/null as we don't want
+## to have an error if no .gene2biotype.xz file exist (they are potentially already uncompressed)
+system("unxz $gtfDir/*.gene2biotype.xz >/dev/null");
 my $jobPrefix = "cellId_";
 my $clusterOutput = "${outputDir}/clusterOutput/";
 my $sbatchLocation = "${outputDir}/sbatch/";
@@ -106,6 +111,7 @@ foreach my $experimentId (keys %processedLibraries){
 print "created $jobs_created sbatch files.\n";
 
 my $numberJobRun = 0;
+my $startTime = localtime->strftime('%Y-%m-%dT%H:%M:%S');
 my $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
 foreach my $experimentId (keys %sbatchToRun){
     foreach my $libraryId (keys %{$sbatchToRun{$experimentId}}){
@@ -114,7 +120,7 @@ foreach my $experimentId (keys %sbatchToRun){
             sleep(15);
             $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
     	}
-	    system("sbatch $sbatchToRun{$experimentId}{$libraryId}");
+	    system("sbatch $sbatchToRun{$experimentId}{$libraryId} >/dev/null");
         $numberJobRun++;
     }
 }
@@ -126,5 +132,8 @@ while ($jobsRunning > 0) {
     $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
 }
 
-print "all jobs finished\n";
+my %jobs_status = Utils::count_status_finished_jobs($jobPrefix, $startTime);
+print $jobs_status{"completed"}." jobs completed, ".$jobs_status{"failed"}." jobs failed, ".$jobs_status{"out_of_memory"}." jobs failed with an out of memory issue and ".$jobs_status{"cancelled"}." jobs have been cancelled.\n";
 
+## compress back all .gene2biotype files
+system("xz $gtfDir/*.gene2biotype >/dev/null");
