@@ -117,7 +117,7 @@ foreach my $experimentId (keys %sbatchToRun){
              sleep(15);
              $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
     	}
-	    system("sbatch $sbatchToRun{$experimentId}{$libraryId}");
+	    system("sbatch $sbatchToRun{$experimentId}{$libraryId} >/dev/null");
         $numberJobRun++;
     }
 }
