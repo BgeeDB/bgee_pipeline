@@ -29,6 +29,10 @@
 # }
 # Any other information we could get to help or to compare to annotation?
 
+# Feb 05, 2024
+# - Check libraries already inserted in the database and do not add them in the rna_seq_sample_info file. Those libraries will not be processed again
+# TODO should also remove already inserted libraries from the RNASeqLibraries.tsv file in the generated_files directory. The RNASeqExperiment.tsv file in the
+# generated_files directory should only contain experiment present in the filtered RNASeqLibraries.tsv file AND not yet inserted in the database
 # Perl core modules
 use strict;
 use warnings;
@@ -97,6 +101,13 @@ while ( my @data = $selSpecies->fetchrow_array ){
 }
 $selSpecies->finish;
 
+my @insertedLibraryIds;
+my $insertedLibraries = $dbh->prepare('SELECT rnaSeqLibraryId from rnaSeqLibrary where rnaSeqTechnologyIsSingleCell = 0');
+$insertedLibraries->execute() or die $insertedLibraries->errstr;
+while (my @data = $insertedLibraries->fetchrow_array ) {
+    push(@insertedLibraryIds, $data[0]);
+}
+
 # Retrieve all organs/stages from Bgee
 my %organs = %{ Utils::getBgeedbOrgans($dbh) };
 my %stages = %{ Utils::getBgeedbStages($dbh) };
@@ -149,6 +160,7 @@ print {$OUT} join("\t", '#libraryId', 'experimentId', 'speciesId', 'organism', '
 # Retrieve SRA information and IDs for each SRX ID, and write down output file. This was originally in script get_sra_id.pl, but it is simplified here (only 1 query, see email Sebastien 15/12/15). Example of a query URL: https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?email=bgee@sib.swiss&api_key=a2546089861bb524068974de020c591a1307&save=efetch&db=sra&rettype=xml&term=SRX1152842
 SAMPLE:
 for my $i ( 0..$#{$tsv{'libraryId'}} ) {
+    next if grep($tsv{'libraryId'}[$i], @insertedLibraryIds);
     my $strategy;
     my $libraryType  = '';
     my $libraryInfo  = '';
