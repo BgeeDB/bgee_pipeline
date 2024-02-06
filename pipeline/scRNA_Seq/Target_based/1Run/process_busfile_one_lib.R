@@ -91,14 +91,14 @@ if (dir.exists(file.path(kallisto_bus_results, libraryId))){
 
   ## verify if busOutput exist for the library
   pathBusOut <-  file.path(kallisto_bus_results, libraryId)
+  done_file <- file.path(pathBusOut, "done_bustools")
   if (!file.exists(file.path(pathBusOut, "run_info.json"))) {
     warning("kallisto was not run for the library : ", libraryId)
   } else {
     ## the last step of this script for each library is to generate the gene cpm count matrix.
     ## The presence of the directory containing this count matrix is used as a marker to check
     ## if the library has already been processed
-    cpm_dir <- file.path(pathBusOut, "cpm_counts")
-    if (dir.exists(cpm_dir)) {
+    if (file.exists(done_file)) {
       message("library ", libraryId, " already processed. bustools is not run again")
     } else {  
       message("Start correction, sort and counts for the library: ", libraryId)
@@ -162,9 +162,11 @@ if (dir.exists(file.path(kallisto_bus_results, libraryId))){
         file.path(pathBusOut, "transcripts.txt"), file.path(pathBusOut, "output.correct.sort.bus")))
       ## CPM level used to store data at cell level
       message("CPM for genes without intergenic")
+      cpm_dir <- file.path(pathBusOut, "cpm_counts")
       generateGenesCpm(tx2gene_file, cpm_dir, gene_counts, bustoolsGeneMatrix)
     }
   }
+  file.create(file.path(pathBusOut, "done_bustools"))
 } else {
   message("Library ", library ," not present in the folder to process.")
 }

@@ -76,11 +76,12 @@ my $jobs_created = 0;
 ## first create sbatch files and add them to an array of sbatch to run
 foreach my $experimentId (keys %processedLibraries){
     foreach my $libraryId (keys %{$processedLibraries{$experimentId}}){
-        #create sbatch file and
-    my $jobName = "${jobPrefix}${libraryId}";
+        next if -e "$kallistoResults/$libraryId/done_bustools";
+	#create sbatch file and
+        my $jobName = "${jobPrefix}${libraryId}";
         my $speciesId = $processedLibraries{$experimentId}{$libraryId}{'speciesId'};
         ## use 50Gb of memory. Should maybe be increase depending on the run to download
-    my $sbatchTemplate = Utils::sbatch_template($queue, $account, 1,
+        my $sbatchTemplate = Utils::sbatch_template($queue, $account, 1,
           50, "${clusterOutput}${jobName}.out", "${clusterOutput}/${jobName}.err",
           $jobName);
 
