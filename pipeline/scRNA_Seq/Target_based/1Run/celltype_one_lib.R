@@ -65,7 +65,19 @@ if( file.exists(scRNASeq_Info) ){
 ## filtered if we were using this QC.
 singlecellKnee <- function(sparseMatrix, libraryID, tot_counts){
   ## rank barcodes to do the knee
-  bc_rank <- barcodeRanks(sparseMatrix)
+  bc_rank <- NULL
+  tryCatch(
+    {
+      bc_rank <- barcodeRanks(sparseMatrix)
+    },
+    error=function(e){
+      if (grepl(pattern = "insufficient unique points for computing knee/inflection points", x = e)) {
+        warning("Not enough reads mapped to the transcriptome. This low number of reads did not allow to to compute the knee/inflection points.",
+		" This library will not be processed and will not be inserted in the database.")
+      }
+      stop("Not able to rank barcodes. The error message was : ", e)
+    }
+  )
   kneePlot <- qplot(bc_rank$total, bc_rank$rank, geom = "line") +
     geom_vline(xintercept = metadata(bc_rank)$knee, color = "blue", linetype = 2) +
     geom_vline(xintercept = metadata(bc_rank)$inflection, color = "green", linetype = 2) +
@@ -103,12 +115,10 @@ targetCells <- function(objectNormalized, objectNormalized_filtered, barcodeInfo
     barcode_ids_having_celltype_annot <- barcodeInfo$barcode
     ## subset barcodes for which celltype are provided
     seurat_object_with_celltype <- subset(objectNormalized,  cells = barcode_ids_having_celltype_annot)
-    ##  subset barcodes that passed the kneeplot inflection point QC and that have celltype annotation
     seurat_object_with_celltype_filtered <- subset(objectNormalized_filtered,  cells = barcode_ids_having_celltype_annot)
     message(ncol(seurat_object_with_celltype) - ncol(seurat_object_with_celltype_filtered), " cells out of ",
         ncol(seurat_object_with_celltype), " with celltype annotation would have been removed by filtering ",
         "on the inflection point of the kneeplot.")
-
     seurat_object_with_celltype$celltype_name <- barcodeInfo$cellTypeName
     seurat_object_with_celltype$celltype_id <- barcodeInfo$cellTypeId
     #head(myData[[]])
@@ -116,6 +126,7 @@ targetCells <- function(objectNormalized, objectNormalized_filtered, barcodeInfo
     seurat_object_with_celltype <- subset(seurat_object_with_celltype,  celltype_name != "Unassigned")
     
     set.seed(42)
+
     seurat_object_with_celltype <- FindVariableFeatures(seurat_object_with_celltype, selection.method = "vst", nfeatures = 2000)
     ## Identify the 20 most highly variable genes
     message("20 most highly variable genes : ")
@@ -123,25 +134,38 @@ targetCells <- function(objectNormalized, objectNormalized_filtered, barcodeInfo
     ## scale the data
     seurat_object_with_celltype <- ScaleData(seurat_object_with_celltype, features = rownames(seurat_object_with_celltype))
     ## Run PCA
-    seurat_object_with_celltype <- RunPCA(seurat_object_with_celltype, features = VariableFeatures(object = seurat_object_with_celltype))
-    seurat_object_with_celltype <- FindNeighbors(seurat_object_with_celltype, dims = 1:20)
-    seurat_object_with_celltype <- FindClusters(seurat_object_with_celltype, resolution = 1)
-    ## Run UMAP
-    seurat_object_with_celltype <- RunUMAP(seurat_object_with_celltype, dims = 1:20)
-    umapPlot <- DimPlot(seurat_object_with_celltype, reduction = "umap", group.by='seurat_clusters')
-    pdf(file.path(output, libraryID, "UMAP_seurat_cluster.pdf"))
-    print(umapPlot)
-    dev.off()
-    umapPlot <- DimPlot(seurat_object_with_celltype, reduction = "umap", group.by='celltype_id')
-    ## save UMAP information with cell_type
-    pdf(file.path(output, libraryID, "UMAP_cellType_cluster.pdf"))
-    print(umapPlot)
-    dev.off()
-    umapPlot <- DimPlot(seurat_object_with_celltype, reduction = "umap", group.by='celltype_id')
-    ## save UMAP information with cell_ontology
-    pdf(file.path(output, libraryID, "UMAP_cellID_cluster.pdf"))
-    print(umapPlot)
-    dev.off()
+    ## catch error specific to the version of Seurat we use when less than 50 cells per library. Updating Seurat should remove this error.
+    ## For now we continue processing libraries even if it contains less than 50 cells but throw a warning and do not generate the PCA and UMAP
+    tryCatch(
+      {
+        seurat_object_with_celltype <- RunPCA(seurat_object_with_celltype, features = VariableFeatures(object = seurat_object_with_celltype))
+        seurat_object_with_celltype <- FindNeighbors(seurat_object_with_celltype, dims = 1:20)
+        seurat_object_with_celltype <- FindClusters(seurat_object_with_celltype, resolution = 1)
+        ## Run UMAP
+        seurat_object_with_celltype <- RunUMAP(seurat_object_with_celltype, dims = 1:20)
+        umapPlot <- DimPlot(seurat_object_with_celltype, reduction = "umap", group.by='seurat_clusters')
+        pdf(file.path(output, libraryID, "UMAP_seurat_cluster.pdf"))
+        print(umapPlot)
+        dev.off()
+        umapPlot <- DimPlot(seurat_object_with_celltype, reduction = "umap", group.by='celltype_id')
+        ## save UMAP information with cell_type
+        pdf(file.path(output, libraryID, "UMAP_cellType_cluster.pdf"))
+        print(umapPlot)
+        dev.off()
+        umapPlot <- DimPlot(seurat_object_with_celltype, reduction = "umap", group.by='celltype_id')
+        ## save UMAP information with cell_ontology
+        pdf(file.path(output, libraryID, "UMAP_cellID_cluster.pdf"))
+        print(umapPlot)
+        dev.off()
+      },
+      error=function(e){
+        warning("an error occured while generating the PCA or the UMAP. No UMAP file will be created")
+        if (grepl(pattern = "max\\(nu, nv\\) must be strictly less than min\\(nrow\\(A\\), ncol\\(A\\)\\)", x = e)) {
+          message("Seurat can not generate a PCA for less than 50 cells")
+	}
+	message("the error message is : ", e)
+      }
+    )
     
     ## collect raw UMI counts and normalized data counts for each cell
     finalRaw <- data.frame(seurat_object_with_celltype@assays$RNA@counts)
@@ -239,11 +263,9 @@ if (file.exists(file.path(kallisto_bus_results, libraryId, "gene_counts"))){
     ## and provide filtering info in case we want to check proportion of cells with cell-type annotation
     ## that would have been removed
     sparseMatrix_filtered <- singlecellKnee(sparseMatrix = sparseMatrix, libraryID = libraryId, tot_counts = tot_counts)
-    message("created kneeplot")
     ## perform the seurat object and get raw and normalized counts
     object_seurat <- seuratObject(m_filtered = sparseMatrix)
     object_seurat_filtered <- seuratObject(m_filtered = sparseMatrix_filtered)
-  
     ## read biotype information
     biotypeInfoFile <- list.files(path = folderSupport, pattern = paste0("^", speciesName, ".*.gene2biotype$"),
       full.names = TRUE)
