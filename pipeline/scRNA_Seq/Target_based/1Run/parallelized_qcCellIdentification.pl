@@ -81,8 +81,10 @@ my $jobs_created = 0;
 ## first create sbatch files and add them to an array of sbatch to run
 foreach my $experimentId (keys %processedLibraries){
     foreach my $libraryId (keys %{$processedLibraries{$experimentId}}){
+        # do not consider libraries with celltype identification already processed properly
+	next if -e "${outputDir}/${libraryId}/done";
         #create sbatch file and
-	    my $jobName = "${jobPrefix}${libraryId}";
+        my $jobName = "${jobPrefix}${libraryId}";
         my $speciesId = $processedLibraries{$experimentId}{$libraryId}{'speciesId'};
         ## use 30Gb of memory. Should maybe be increase depending on the library to process
 	    my $sbatchTemplate = Utils::sbatch_template($queue, $account, 1,
