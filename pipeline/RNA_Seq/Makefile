@@ -377,14 +377,14 @@ generate_intergenic_sequences: sum_by_species
 indexes_bgeecall:
 	# generate BgeeCall input file from the rna_seq_sample_info.txt file
 	# TODO: run this script in a different rule
-	@perl 1Run/sample_info_to_bgeecall.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -sample_excluded=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >>$@.tmp 2>&1
+	@perl 1Run/sample_info_to_bgeecall.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -sample_excluded=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >$@.tmp 2>&1
 	# generate kallisto indexes with BgeeCall
-	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(RNASEQ_BGEECALL_FILE)" account="$(CLUSTER_ACCOUNT_SENSITIVE)" time="24:00:00" partition="$(CLUSTER_PARTITION_SENSITIVE)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' 1Run/bgeecall_index.R $(RNASEQ_CLUSTER_R_LOG)bgeecall_index.Rout
+	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(RNASEQ_BGEECALL_FILE)" account="$(SENSITIVE_CLUSTER_ACCOUNT)" time="24:00:00" partition="$(SENSITIVE_CLUSTER_PARTITION)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' 1Run/bgeecall_index.R $(RNASEQ_CLUSTER_R_LOG)bgeecall_index.Rout
 	@$(MV) $@.tmp $@
 
 presence_absence_bgeecall: indexes_bgeecall
 	# generate present/absent expression calls with BgeeCall
-	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(RNASEQ_BGEECALL_FILE)" account="$(CLUSTER_ACCOUNT_SENSITIVE)" time="2-00:00:00" partition="$(CLUSTER_PARTITION_SENSITIVE)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)" decrypt_file_path="$(ENCRYPT_PASSWD_FILE)"' 1Run/bgeecall_calls.R $(RNASEQ_CLUSTER_R_LOG)bgeecall_calls.Rout
+	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(RNASEQ_BGEECALL_FILE)" account="$(SENSITIVE_CLUSTER_ACCOUNT)" time="2-00:00:00" partition="$(SENSITIVE_CLUSTER_PARTITION)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)" decrypt_file_path="$(ENCRYPT_PASSWD_FILE)"' 1Run/bgeecall_calls.R $(RNASEQ_CLUSTER_R_LOG)bgeecall_calls.Rout
 	# TODO generate summary plot once all calls have been generated
 	@touch $@
 
