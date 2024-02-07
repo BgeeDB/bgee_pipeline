@@ -112,13 +112,13 @@ my $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account,
 my $startTime = localtime->strftime('%Y-%m-%dT%H:%M:%S');
 foreach my $experimentId (keys %sbatchToRun){
     foreach my $libraryId (keys %{$sbatchToRun{$experimentId}}){
-	    $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
 	    while ($jobsRunning >= $parallelJobs) {
              sleep(15);
              $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
     	}
 	    system("sbatch $sbatchToRun{$experimentId}{$libraryId} >/dev/null");
-        $numberJobRun++;
+            $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
+	    $numberJobRun++;
     }
 }
 
