@@ -224,11 +224,11 @@ bimodality_cellPop: qc_cellType 1Run/QC_cellPop_bimodality.R
 calls: qc_cellType 1Run/Calls_cell_pop_per_library.R
 	@echo --- Starting the calls of present and absent genes ---
 	@sed -i 's@--output=.*@--output=${PWD}/Calls_library_cellPop.out@'                                                       1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/Calls_library_cellPop.err@'                                                         2Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/Calls_library_cellPop.err@'                                                         1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@--partition=.*@--partition=${SENSITIVE_CLUSTER_PARTITION}@'                                                   1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@--account=.*@--account=${SENSITIVE_CLUSTER_ACCOUNT}@'                                                         1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                            1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'                             1Run/Calls_cell_pop_per_library.sbatch
+	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=${PWD}/$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'                      1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@export bimodalityFile=.*@export bimodalityFile=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)/bimodality_targetBased.txt@'  1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)@'                                   1Run/Calls_cell_pop_per_library.sbatch
 	@sed -i 's@export folder_gtf=.*@export folder_gtf=$(RNASEQ_CLUSTER_GTF)@'                                                1Run/Calls_cell_pop_per_library.sbatch
