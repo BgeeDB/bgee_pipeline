@@ -1,190 +1,207 @@
-#column_H	column_K	new_column_H
-HsapDv:0000087	adult	HsapDv:0000258
-HsapDv:0000087	42 weeks post-conception	HsapDv:0000258
-HsapDv:0000087	age: 40-49	HsapDv:0000239
-HsapDv:0000087	39, 70 and 52 years	HsapDv:0000258
-HsapDv:0000087	30, 44 and 55 years	HsapDv:0000226
-HsapDv:0000087	23-86 years	HsapDv:0000258
-HsapDv:0000088	23-36-year-old	HsapDv:0000266
-HsapDv:0000088	27yr± SD	HsapDv:0000237
-HsapDv:0000088	age: 20-29	HsapDv:0000237
-HsapDv:0000092	age: 50-59	HsapDv:0000240
-HsapDv:0000091	Age: 60-69	HsapDv:0000241
-HsapDv:0000090	age: 30-39	HsapDv:0000238
-HsapDv:0000094	age: 70-79	HsapDv:0000242
-MmusDv:0000052	adult, 8 weeks	MmusDv:0000154
-MmusDv:0000052	8 weeks	MmusDv:0000154
-MmusDv:0000052	Adult 8 weeks	MmusDv:0000154
-MmusDv:0000065	adult (16 weeks)	MmusDv:0000162
-MmusDv:0000055	11 weeks	MmusDv:0000157
-MmusDv:0000056	12 weeks	MmusDv:0000158
-MmusDv:0000113	Postnatal day 6	MmusDv:0000116
-MmusDv:0000045	Postnatal day 9	MmusDv:0000119
-MmusDv:0000074	Adult 24 weeks	MmusDv:0000170
-MmusDv:0000074	24 weeks	MmusDv:0000170
-OlatDv:0000140	st11	UBERON:0000108
-OlatDv:0000160	st13	UBERON:0000109
-OlatDv:0000220	st19	UBERON:0000111
-OlatDv:0000280	st25	UBERON:0000111
-AcarDv:0000001	lizard life cycle	UBERON:0000104
-AcarDv:0000002	prenatal stage	UBERON:0000068
-BtauDv:0000001	cow life cycle	UBERON:0000104
-BtauDv:0000003	immature stage	UBERON:0000112
-BtauDv:0000004	mature stage	UBERON:0000113
-BtauDv:0000005	adulthood stage	UBERON:0018241
-CfamDv:0000001	dog life cycle	UBERON:0000104
-CfamDv:0000003	immature stage	UBERON:0000112
-CfamDv:0000004	mature stage	UBERON:0000113
-CfamDv:0000005	adulthood stage	UBERON:0018241
-CfamDv:0000006	aged stage	UBERON:0007222
-CporDv:0000001	cavy life cycle	UBERON:0000104
-CporDv:0000002	prenatal stage	UBERON:0000068
-CporDv:0000004	mature stage	UBERON:0000113
-CporDv:0000005	adulthood stage	UBERON:0018241
-DsimDv:0000002	embryonic stage	UBERON:0000068
-EcabDv:0000001	horse life cycle	UBERON:0000104
-EcabDv:0000002	prenatal stage	UBERON:0000068
-EcabDv:0000003	immature stage	UBERON:0000112
-EcabDv:0000004	mature stage	UBERON:0000113
-EcabDv:0000005	adulthood stage	UBERON:0018241
-EcabDv:0000006	aged stage	UBERON:0007222
-FBdv:00005304	blastoderm stage (Drosophila)	UBERON:0000068
-Fbdv:00005318	embryonic stage 6 (fruit fly)	UBERON:0000109
-FBdv:00005321	extended germ band stage (Drosophila)	UBERON:0000068
-FBdv:00005331	dorsal closure stage (Drosophila)	UBERON:0000068
-FBdv:00005333	late embryonic stage	UBERON:0000068
-FBdv:00005336	larval stage	UBERON:0004730
-Fbdv:00005339	third instar larval stage	UBERON:0004730
-Fbdv:00005340	early third instar larval stage (Drosophila)	UBERON:0004730
-FBdv:00005349	pupal stage	UBERON:0000070
-FBdv:00005369	adult stage	UBERON:0000066
-Fbdv:00007082	day 7 of adulthood (Drosophila)	UBERON:0000066
-Fbdv:00007090	day 15 of adulthood (fruit fly)	UBERON:0000066
-FcatDv:0000001	cat life cycle	UBERON:0000104
-FcatDv:0000002	prenatal stage	UBERON:0000068
-FcatDv:0000003	immature stage	UBERON:0000112
-FcatDv:0000004	mature stage	UBERON:0000113
-FcatDv:0000005	adulthood stage	UBERON:0018241
-GgalDv:0000002	prenatal stage	UBERON:0000068
-GgalDv:0000005	juvenile stage	UBERON:0034919
-GgalDv:0000006	mature stage	UBERON:0000113
-GgalDv:0000077	prime adult stage	UBERON:0018241
-GgorDv:0000001	gorilla life cycle	UBERON:0000104
-HsapDv:0000001	life cycle	UBERON:0000104
-HsapDv:0000037	fetal stage	UBERON:0007220
-HsapDv:0000227	late adult stage	UBERON:0007222
-HsapDv:0000258	adult stage	UBERON:0000113
-HsapDv:0000262	newborn stage	UBERON:0007221
-MdomDv:0000001	opossum life cycle	UBERON:0000104
-MdomDv:0000002	prenatal stage	UBERON:0000068
-MdomDv:0000004	neonate stage	UBERON:0007221
-MdomDv:0000005	juvenile stage	UBERON:0034919
-MdomDv:0000006	mature stage	UBERON:0000113
-MdomDv:0000007	adulthood stage	UBERON:0018241
-MmulDv:0000001	rhesus life cycle	UBERON:0000104
-MmulDv:0000002	prenatal stage	UBERON:0000068
-MmulDv:0000021	mature stage	UBERON:0000113
-MmulDv:0000022	adulthood stage	UBERON:0018241
-MmulDv:0000046	newborn stage	UBERON:0007221
-MmusDv:0000001	mouse life cycle	UBERON:0000104
-MmusDv:0000003	Theiler stage 01	UBERON:0000106
-MmusDv:0000017	Theiler stage 11	UBERON:0000110
-MmusDv:0000036	Theiler stage 27	UBERON:0007221
-MmusDv:0000110	mouse mature stage	UBERON:0000113
-MmusDv:0000110	mature stage	UBERON:0000113
-MmusDv:0000136	prime adult stage	UBERON:0018241
-OanaDv:0000005	adulthood stage	UBERON:0018241
-OariDv:0000002	prenatal stage	UBERON:0000068
-OariDv:0000003	immature stage	UBERON:0000112
-OariDv:0000004	suckling stage	UBERON:0018685
-OariDv:0000005	juvenile stage	UBERON:0034919
-OariDv:0000006	mature stage	UBERON:0000113
-OariDv:0000007	adulthood stage	UBERON:0018241
-OcunDv:0000001	rabbit life cycle	UBERON:0000104
-OcunDv:0000002	prenatal stage	UBERON:0000068
-OcunDv:0000003	immature stage	UBERON:0000112
-OcunDv:0000004	mature stage	UBERON:0000113
-OcunDv:0000005	adulthood stage	UBERON:0018241
-OlatDv:0000010	developmental stage	UBERON:0000104
-OlatDv:0000060	Medaka stage 3	UBERON:0007232
-OlatDv:0000080	Medaka stage 5	UBERON:0007236
-OlatDv:0000100	Medaka stage 7	UBERON:0000107
-OlatDv:0000140	Medaka stage 11	UBERON:0000108
-OlatDv:0000160	Medaka stage 13	UBERON:0000109
-OlatDv:0000170	Medaka stage 14	UBERON:0000109
-OlatDv:0000180	Medaka stage 15	UBERON:0000109
-OlatDv:0000190	Medaka stage 16	UBERON:0000109
-OlatDv:0000200	Medaka stage 17	UBERON:0000110
-OlatDv:0000210	Medaka stage 18	UBERON:0000110
-OlatDv:0000220	Medaka stage 19	UBERON:0000111
-OlatDv:0000240	Medaka stage 21	UBERON:0000111
-OlatDv:0000260	Medaka stage 23	UBERON:0000111
-OlatDv:0000270	Medaka stage 24	UBERON:0000111
-OlatDv:0000280	Medaka stage 25	UBERON:0000111
-OlatDv:0000310	Medaka stage 28	UBERON:0000111
-OlatDv:0000350	Medaka stage 32	UBERON:0000111
-OlatDv:0000370	Medaka stage 34	UBERON:0000111
-OlatDv:0000390	Medaka stage 36	UBERON:0000111
-OlatDv:0000410	Medaka stage 38	UBERON:0000111
-OlatDv:0000430	Medaka stage 40	UBERON:0000066
-PpanDv:0000005	juvenile stage	UBERON:0034919
-PpanDv:0000016	mature stage	UBERON:0000113
-PtroDv:0000001	chimpanzee life cycle	UBERON:0000104
-PtroDv:0000001	life cycle	UBERON:0000104
-PtroDv:0000003	immature stage	UBERON:0000104
-PtroDv:0000004	nursing stage	UBERON:0018685
-PtroDv:0000053	45-year-old stage	UBERON:0007222
-RnorDv:0000001	rat life cycle	UBERON:0000104
-RnorDv:0000011	fetal stage	UBERON:0007220
-RnorDv:0000012	immature stage	UBERON:0000112
-RnorDv:0000013	early immature stage	UBERON:0007221
-RnorDv:0000015	mature stage	UBERON:0000113
-RnorDv:0000058	juvenile stage	UBERON:0034919
-SsalDv:0000045	fry stage	UBERON:0000066
-SsalDv:0000056	day 0 of fry stage	UBERON:0000066
-SsalDv:0000057	day 1 of fry stage	UBERON:0000066
-SsalDv:0000058	day 48 of fry stage	UBERON:0000066
-SsalDv:0000059	day 65 of fry stage	UBERON:0000066
-SsalDv:0000060	day 77 of fry stage	UBERON:0000066
-SsalDv:0000061	day 94 of fry stage	UBERON:0000066
-SsalDv:0000062	pre-smolt stage	UBERON:0000066
-SsalDv:0000063	post-smolt stage	UBERON:0000066
-SsalDv:0000064	juvenile stage	UBERON:0000066
-SsalDv:0000065	parr stage	UBERON:0000066
-SsalDv:0000067	adult stage	UBERON:0000066
-SscrDv:0000001	pig life cycle	UBERON:0000104
-SscrDv:0000002	prenatal stage	UBERON:0000068
-SscrDv:0000004	suckling stage	UBERON:0018685
-SscrDv:0000005	juvenile stage	UBERON:0034919
-SscrDv:0000006	mature stage	UBERON:0000113
-SscrDv:0000007	adulthood stage	UBERON:0018241
-SscrDv:0000009	first 0-6 postnatal days	UBERON:0007221
-SscrDv:0000080	late embryonic stage	UBERON:0007220
-SscrDv:0000085	infant stage	UBERON:0034920
-WBls:0000003	embryo Ce	UBERON:0000068
-WBls:0000004	proliferating embryo Ce	UBERON:0000068
-WBls:0000006	1-cell embryo Ce	UBERON:0000106
-Wbls:0000008	4-cell embryo Ce	UBERON:0019251
-WBls:0000010	gastrulating embryo Ce	UBERON:0000109
-Wbls:0000014	late cleavage stage embryo Ce	UBERON:0000107
-Wbls:0000016	bean embryo Ce	UBERON:0000068
-Wbls:0000017	comma embryo Ce	UBERON:0000068
-Wbls:0000018	1.5-fold embryo Ce	UBERON:0000068
-Wbls:0000019	2-fold embryo Ce	UBERON:0000068
-Wbls:0000020	3-fold embryo Ce	UBERON:0000068
-WBls:0000041	adult Ce	UBERON:0000066
-Wbls:0000088	86-cell embryo Ce (C elegans)	UBERON:0000109
-Wbls:0000089	190-cells embryo Ce (C elegans)	UBERON:0000109
-XAO:1000001	NF stage 1	UBERON:0000106
-XAO:1000011	NF stage 2 (2-cell)	UBERON:0007232
-XAO:1000013	NF stage 3 (4-cell)	UBERON:0007233
-XAO:1000014	NF stage 4 (8-cell)	UBERON:0007236
-XAO:1000093	adult frog stage	UBERON:0000113
-ZFS:0000002	Cleavage:2-cell	UBERON:0007232
-ZFS:0000004	Cleavage:8-cell	UBERON:0007236
-ZFS:0000044	adult	UBERON:0000113
-ZFS:0000044	5 month-old stage	UBERON:0000113
-ZFS:0000044	6 month-old stage and over	UBERON:0000113
-ZFS:0000046	cleavage	UBERON:0000107
-ZFS:0000048	larva	UBERON:0000069
-ZFS:0000050	pharyngula	UBERON:0004707
+"#column_H"	"column_K"	"new_column_H"
+"HsapDv:0000087"	"adult"	"HsapDv:0000258"
+"HsapDv:0000087"	"42 weeks post-conception"	"HsapDv:0000258"
+"HsapDv:0000087"	"age: 40-49"	"HsapDv:0000239"
+"HsapDv:0000087"	"39, 70 and 52 years"	"HsapDv:0000258"
+"HsapDv:0000087"	"30, 44 and 55 years"	"HsapDv:0000226"
+"HsapDv:0000087"	"23-86 years"	"HsapDv:0000258"
+"HsapDv:0000088"	"23-36-year-old"	"HsapDv:0000266"
+"HsapDv:0000088"	"27yr± SD"	"HsapDv:0000237"
+"HsapDv:0000088"	"age: 20-29"	"HsapDv:0000237"
+"HsapDv:0000092"	"age: 50-59"	"HsapDv:0000240"
+"HsapDv:0000091"	"Age: 60-69"	"HsapDv:0000241"
+"HsapDv:0000090"	"age: 30-39"	"HsapDv:0000238"
+"HsapDv:0000094"	"age: 70-79"	"HsapDv:0000242"
+"MmusDv:0000052"	"adult, 8 weeks"	"MmusDv:0000154"
+"MmusDv:0000052"	"8 weeks"	"MmusDv:0000154"
+"MmusDv:0000052"	"Adult 8 weeks"	"MmusDv:0000154"
+"MmusDv:0000065"	"adult (16 weeks)"	"MmusDv:0000162"
+"MmusDv:0000055"	"11 weeks"	"MmusDv:0000157"
+"MmusDv:0000056"	"12 weeks"	"MmusDv:0000158"
+"MmusDv:0000113"	"Postnatal day 6"	"MmusDv:0000116"
+"MmusDv:0000045"	"Postnatal day 9"	"MmusDv:0000119"
+"MmusDv:0000074"	"Adult 24 weeks"	"MmusDv:0000170"
+"MmusDv:0000074"	"24 weeks"	"MmusDv:0000170"
+"OlatDv:0000140"	"st11"	"UBERON:0000108"
+"OlatDv:0000160"	"st13"	"UBERON:0000109"
+"OlatDv:0000220"	"st19"	"UBERON:0000111"
+"OlatDv:0000280"	"st25"	"UBERON:0000111"
+"AcarDv:0000001"	"lizard life cycle"	"UBERON:0000104"
+"AcarDv:0000002"	"prenatal stage"	"UBERON:0000068"
+"BtauDv:0000001"	"cow life cycle"	"UBERON:0000104"
+"BtauDv:0000003"	"immature stage"	"UBERON:0000112"
+"BtauDv:0000004"	"mature stage"	"UBERON:0000113"
+"BtauDv:0000005"	"adulthood stage"	"UBERON:0018241"
+"CfamDv:0000001"	"dog life cycle"	"UBERON:0000104"
+"CfamDv:0000003"	"immature stage"	"UBERON:0000112"
+"CfamDv:0000004"	"mature stage"	"UBERON:0000113"
+"CfamDv:0000005"	"adulthood stage"	"UBERON:0018241"
+"CfamDv:0000006"	"aged stage"	"UBERON:0007222"
+"CporDv:0000001"	"cavy life cycle"	"UBERON:0000104"
+"CporDv:0000002"	"prenatal stage"	"UBERON:0000068"
+"CporDv:0000004"	"mature stage"	"UBERON:0000113"
+"CporDv:0000005"	"adulthood stage"	"UBERON:0018241"
+"DsimDv:0000002"	"embryonic stage"	"UBERON:0000068"
+"EcabDv:0000001"	"horse life cycle"	"UBERON:0000104"
+"EcabDv:0000002"	"prenatal stage"	"UBERON:0000068"
+"EcabDv:0000003"	"immature stage"	"UBERON:0000112"
+"EcabDv:0000004"	"mature stage"	"UBERON:0000113"
+"EcabDv:0000005"	"adulthood stage"	"UBERON:0018241"
+"EcabDv:0000006"	"aged stage"	"UBERON:0007222"
+"FBdv:00005304"	"blastoderm stage (Drosophila)"	"UBERON:0000068"
+"Fbdv:00005318"	"embryonic stage 6 (fruit fly)"	"UBERON:0000109"
+"FBdv:00005321"	"extended germ band stage (Drosophila)"	"UBERON:0000068"
+"FBdv:00005331"	"dorsal closure stage (Drosophila)"	"UBERON:0000068"
+"FBdv:00005333"	"late embryonic stage"	"UBERON:0000068"
+"FBdv:00005336"	"larval stage"	"UBERON:0004730"
+"Fbdv:00005339"	"third instar larval stage"	"UBERON:0004730"
+"Fbdv:00005340"	"early third instar larval stage (Drosophila)"	"UBERON:0004730"
+"FBdv:00005349"	"pupal stage"	"UBERON:0000070"
+"FBdv:00005369"	"adult stage"	"UBERON:0000066"
+"Fbdv:00007082"	"day 7 of adulthood (Drosophila)"	"UBERON:0000066"
+"Fbdv:00007090"	"day 15 of adulthood (fruit fly)"	"UBERON:0000066"
+"FcatDv:0000001"	"cat life cycle"	"UBERON:0000104"
+"FcatDv:0000002"	"prenatal stage"	"UBERON:0000068"
+"FcatDv:0000003"	"immature stage"	"UBERON:0000112"
+"FcatDv:0000004"	"mature stage"	"UBERON:0000113"
+"FcatDv:0000005"	"adulthood stage"	"UBERON:0018241"
+"GgalDv:0000002"	"prenatal stage"	"UBERON:0000068"
+"GgalDv:0000005"	"juvenile stage"	"UBERON:0034919"
+"GgalDv:0000006"	"mature stage"	"UBERON:0000113"
+"GgalDv:0000077"	"prime adult stage"	"UBERON:0018241"
+"GgorDv:0000001"	"gorilla life cycle"	"UBERON:0000104"
+"HsapDv:0000001"	"life cycle"	"UBERON:0000104"
+"HsapDv:0000037"	"fetal stage"	"UBERON:0007220"
+"HsapDv:0000227"	"late adult stage"	"UBERON:0007222"
+"HsapDv:0000258"	"adult stage"	"UBERON:0000113"
+"HsapDv:0000262"	"newborn stage"	"UBERON:0007221"
+"MdomDv:0000001"	"opossum life cycle"	"UBERON:0000104"
+"MdomDv:0000002"	"prenatal stage"	"UBERON:0000068"
+"MdomDv:0000004"	"neonate stage"	"UBERON:0007221"
+"MdomDv:0000005"	"juvenile stage"	"UBERON:0034919"
+"MdomDv:0000006"	"mature stage"	"UBERON:0000113"
+"MdomDv:0000007"	"adulthood stage"	"UBERON:0018241"
+"MmulDv:0000001"	"rhesus life cycle"	"UBERON:0000104"
+"MmulDv:0000002"	"prenatal stage"	"UBERON:0000068"
+"MmulDv:0000021"	"mature stage"	"UBERON:0000113"
+"MmulDv:0000022"	"adulthood stage"	"UBERON:0018241"
+"MmulDv:0000046"	"newborn stage"	"UBERON:0007221"
+"MmusDv:0000001"	"mouse life cycle"	"UBERON:0000104"
+"MmusDv:0000003"	"Theiler stage 01"	"UBERON:0000106"
+"MmusDv:0000017"	"Theiler stage 11"	"UBERON:0000110"
+"MmusDv:0000036"	"Theiler stage 27"	"UBERON:0007221"
+"MmusDv:0000110"	"mouse mature stage"	"UBERON:0000113"
+"MmusDv:0000110"	"mature stage"	"UBERON:0000113"
+"MmusDv:0000136"	"prime adult stage"	"UBERON:0018241"
+"OanaDv:0000005"	"adulthood stage"	"UBERON:0018241"
+"OariDv:0000002"	"prenatal stage"	"UBERON:0000068"
+"OariDv:0000003"	"immature stage"	"UBERON:0000112"
+"OariDv:0000004"	"suckling stage"	"UBERON:0018685"
+"OariDv:0000005"	"juvenile stage"	"UBERON:0034919"
+"OariDv:0000006"	"mature stage"	"UBERON:0000113"
+"OariDv:0000007"	"adulthood stage"	"UBERON:0018241"
+"OcunDv:0000001"	"rabbit life cycle"	"UBERON:0000104"
+"OcunDv:0000002"	"prenatal stage"	"UBERON:0000068"
+"OcunDv:0000003"	"immature stage"	"UBERON:0000112"
+"OcunDv:0000004"	"mature stage"	"UBERON:0000113"
+"OcunDv:0000005"	"adulthood stage"	"UBERON:0018241"
+"OlatDv:0000010"	"developmental stage"	"UBERON:0000104"
+"OlatDv:0000060"	"Medaka stage 3"	"UBERON:0007232"
+"OlatDv:0000080"	"Medaka stage 5"	"UBERON:0007236"
+"OlatDv:0000100"	"Medaka stage 7"	"UBERON:0000107"
+"OlatDv:0000140"	"Medaka stage 11"	"UBERON:0000108"
+"OlatDv:0000160"	"Medaka stage 13"	"UBERON:0000109"
+"OlatDv:0000170"	"Medaka stage 14"	"UBERON:0000109"
+"OlatDv:0000180"	"Medaka stage 15"	"UBERON:0000109"
+"OlatDv:0000190"	"Medaka stage 16"	"UBERON:0000109"
+"OlatDv:0000200"	"Medaka stage 17"	"UBERON:0000110"
+"OlatDv:0000210"	"Medaka stage 18"	"UBERON:0000110"
+"OlatDv:0000220"	"Medaka stage 19"	"UBERON:0000111"
+"OlatDv:0000240"	"Medaka stage 21"	"UBERON:0000111"
+"OlatDv:0000260"	"Medaka stage 23"	"UBERON:0000111"
+"OlatDv:0000270"	"Medaka stage 24"	"UBERON:0000111"
+"OlatDv:0000280"	"Medaka stage 25"	"UBERON:0000111"
+"OlatDv:0000310"	"Medaka stage 28"	"UBERON:0000111"
+"OlatDv:0000350"	"Medaka stage 32"	"UBERON:0000111"
+"OlatDv:0000370"	"Medaka stage 34"	"UBERON:0000111"
+"OlatDv:0000390"	"Medaka stage 36"	"UBERON:0000111"
+"OlatDv:0000410"	"Medaka stage 38"	"UBERON:0000111"
+"OlatDv:0000430"	"Medaka stage 40"	"UBERON:0000066"
+"PpanDv:0000005"	"juvenile stage"	"UBERON:0034919"
+"PpanDv:0000016"	"mature stage"	"UBERON:0000113"
+"PtroDv:0000001"	"chimpanzee life cycle"	"UBERON:0000104"
+"PtroDv:0000001"	"life cycle"	"UBERON:0000104"
+"PtroDv:0000003"	"immature stage"	"UBERON:0000104"
+"PtroDv:0000004"	"nursing stage"	"UBERON:0018685"
+"PtroDv:0000053"	"45-year-old stage"	"UBERON:0007222"
+"RnorDv:0000001"	"rat life cycle"	"UBERON:0000104"
+"RnorDv:0000011"	"fetal stage"	"UBERON:0007220"
+"RnorDv:0000012"	"immature stage"	"UBERON:0000112"
+"RnorDv:0000013"	"early immature stage"	"UBERON:0007221"
+"RnorDv:0000015"	"mature stage"	"UBERON:0000113"
+"RnorDv:0000058"	"juvenile stage"	"UBERON:0034919"
+"SsalDv:0000045"	"fry stage"	"UBERON:0000066"
+"SsalDv:0000056"	"day 0 of fry stage"	"UBERON:0000066"
+"SsalDv:0000057"	"day 1 of fry stage"	"UBERON:0000066"
+"SsalDv:0000058"	"day 48 of fry stage"	"UBERON:0000066"
+"SsalDv:0000059"	"day 65 of fry stage"	"UBERON:0000066"
+"SsalDv:0000060"	"day 77 of fry stage"	"UBERON:0000066"
+"SsalDv:0000061"	"day 94 of fry stage"	"UBERON:0000066"
+"SsalDv:0000062"	"pre-smolt stage"	"UBERON:0000066"
+"SsalDv:0000063"	"post-smolt stage"	"UBERON:0000066"
+"SsalDv:0000064"	"juvenile stage"	"UBERON:0000066"
+"SsalDv:0000065"	"parr stage"	"UBERON:0000066"
+"SsalDv:0000067"	"adult stage"	"UBERON:0000066"
+"SscrDv:0000001"	"pig life cycle"	"UBERON:0000104"
+"SscrDv:0000002"	"prenatal stage"	"UBERON:0000068"
+"SscrDv:0000004"	"suckling stage"	"UBERON:0018685"
+"SscrDv:0000005"	"juvenile stage"	"UBERON:0034919"
+"SscrDv:0000006"	"mature stage"	"UBERON:0000113"
+"SscrDv:0000007"	"adulthood stage"	"UBERON:0018241"
+"SscrDv:0000009"	"first 0-6 postnatal days"	"UBERON:0007221"
+"SscrDv:0000080"	"late embryonic stage"	"UBERON:0007220"
+"SscrDv:0000085"	"infant stage"	"UBERON:0034920"
+"WBls:0000003"	"embryo Ce"	"UBERON:0000068"
+"WBls:0000004"	"proliferating embryo Ce"	"UBERON:0000068"
+"WBls:0000006"	"1-cell embryo Ce"	"UBERON:0000106"
+"Wbls:0000008"	"4-cell embryo Ce"	"UBERON:0019251"
+"WBls:0000010"	"gastrulating embryo Ce"	"UBERON:0000109"
+"Wbls:0000014"	"late cleavage stage embryo Ce"	"UBERON:0000107"
+"Wbls:0000016"	"bean embryo Ce"	"UBERON:0000068"
+"Wbls:0000017"	"comma embryo Ce"	"UBERON:0000068"
+"Wbls:0000018"	"1.5-fold embryo Ce"	"UBERON:0000068"
+"Wbls:0000019"	"2-fold embryo Ce"	"UBERON:0000068"
+"Wbls:0000020"	"3-fold embryo Ce"	"UBERON:0000068"
+"WBls:0000041"	"adult Ce"	"UBERON:0000066"
+"Wbls:0000088"	"86-cell embryo Ce (C elegans)"	"UBERON:0000109"
+"Wbls:0000089"	"190-cells embryo Ce (C elegans)"	"UBERON:0000109"
+"XAO:1000001"	"NF stage 1"	"UBERON:0000106"
+"XAO:1000011"	"NF stage 2 (2-cell)"	"UBERON:0007232"
+"XAO:1000013"	"NF stage 3 (4-cell)"	"UBERON:0007233"
+"XAO:1000014"	"NF stage 4 (8-cell)"	"UBERON:0007236"
+"XAO:1000093"	"adult frog stage"	"UBERON:0000113"
+"ZFS:0000002"	"Cleavage:2-cell"	"UBERON:0007232"
+"ZFS:0000004"	"Cleavage:8-cell"	"UBERON:0007236"
+"ZFS:0000044"	"adult"	"UBERON:0000113"
+"ZFS:0000044"	"5 month-old stage"	"UBERON:0000113"
+"ZFS:0000044"	"6 month-old stage and over"	"UBERON:0000113"
+"ZFS:0000046"	"cleavage"	"UBERON:0000107"
+"ZFS:0000048"	"larva"	"UBERON:0000069"
+"ZFS:0000050"	"pharyngula"	"UBERON:0004707"
+"AcarDv:0000004"	"mature stage"	"UBERON:0000113"
+"MmusDv:0000047"	"3-week-old stage"	"UBERON:0000112"
+"OanaDv:0000004"	"mature stage"	"UBERON:0000113"
+"OlatDv:0000040"	"Medaka stage 2a"	"UBERON:0000068"
+"OlatDv:0000090"	"Medaka stage 6"	"UBERON:0000068"
+"OlatDv:0000320"	"Medaka stage 29"	"UBERON:0000068"
+"OlatDv:0000420"	"Medaka stage 39"	"UBERON:0000069"
+"OlatDv:0000440"	"Medaka stage 41"	"UBERON:0000069"
+"OlatDv:0000470"	"Medaka stage 44"	"UBERON:0000113"
+"RnorDv:0000057"	"infant stage"	"UBERON:0034920"
+"SsalDv:0000039"	"alevin stage"	"UBERON:0000069"
+"SsalDv:0000041"	"sexually immature stage"	"UBERON:0000112"
+"SsalDv:0000042"	"sexually mature stage"	"UBERON:0000113"
+"SsalDv:0000050"	"sexually immature post-smolt stage"	"UBERON:0000112"
+"SsalDv:0000051"	"sexually mature post-smolt stage"	"UBERON:0000113"
+"SsalDv:0000055"	"sexually mature adult stage"	"UBERON:0000113"
+"SsalDv:0000066"	"smolt stage"	"UBERON:0000066"
