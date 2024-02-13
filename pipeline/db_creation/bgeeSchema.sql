@@ -929,7 +929,8 @@ create table rnaSeqLibrary (
     maxReadLength int unsigned not null default 0,
     -- Is the library built using paired end?
 -- NA: info not used for pseudo-mapping. Default value in an enum is the first one.
-    libraryType enum('NA', 'single', 'paired') not null
+    libraryType enum('NA', 'single', 'paired') not null,
+    usedToGenerateCalls tinyint(1) not null default 0
 ) engine = innodb;
 
 -- XXX should we keep discarded info at rnaSeqLibrary level, at rnaSeqLibraryAnnotatedSample level,
