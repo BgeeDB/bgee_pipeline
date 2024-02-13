@@ -74,7 +74,7 @@ opendir (DIR, $gtf_dir) or die $!;
 
 JOB:
 while (my $file = readdir(DIR) ){
-    
+
     next JOB if (! ($file =~ /\.gtf\.gz$/i)); # header
 
     $count++;
