@@ -282,7 +282,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         elsif ( $selection =~ /size fractionation/i || $selection =~ /size-fractionation/i || $selection =~ /MSLL/ ){
             if ( $strategy !~ /^miRNA-Seq$/i ){#NOTE check with experimentalists if *size fractionation* is ok for miRNA-Seq
                 warn "\tProblem: [$libraryId][$experimentId] seems to be size-fractionated, which biases the expression estimates. Please comment out. This library was not printed in output file.\n";
-                next SAMPLE;
+                #next SAMPLE;
             }
         }
         elsif ( (all { $selection !~ /^$_$/ } @valid_selection_methods) && (all { $experimentId ne $_ } @valid_lib_selection) ){
