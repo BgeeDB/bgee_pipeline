@@ -78,10 +78,21 @@ while (my $line = <$sample_info>) {
     my $transcriptome_path = "$transcriptome_dir$prefixFilePath.transcriptome_wo_intergenic.fa";
     my $annotation_path = "$transcriptome_dir$prefixFilePath.transcriptome.gtf";
     my $fastq_path = "$fastq_dir$line[2]/$line[0]";
+    #retrieve mean read length from R.stat file. If more than one run then only the first one
+    #is considered to define mean read length
+    my $runId = split(/,/,$line[9])[0];
+    print "runId : $runId\n";
+    my $rstatFilePath = "$fastq_path/$runId.R.stat";
+    if (! -e $rstatFilePath) {
+        die "R.stat file $rstatFilePath does not exist.";
+    }
+    @linesRstatFile = <$rstatFilePath>;
+    $meanReadLength = split(/\t/,@linesRstatFile[1])[3];
+    next if ! -e "$fastq_path";
     my $intergenic_file = "$ref_intergenic_dir$line[2]_intergenic.fa.gz";
     my $lib_output_dir ="$output_dir/all_results/$line[0]";
     my $output_line = "$line[2]\t\t$line[9]\t$fastq_path\t$transcriptome_path\t$annotation_path\t$lib_output_dir\t$intergenic_file\n";
-
+    next if ( -e "$lib_output_dir/gene_level_abundance+calls.tsv");
     print {$FH} $output_line;
 
 }
