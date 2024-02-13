@@ -316,7 +316,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         # platform
         $info =~ /<PLATFORM><[^<]+><INSTRUMENT_MODEL>([^<]+)<\/INSTRUMENT_MODEL><\/[^<]+><\/PLATFORM>/;
         $platform = $1;
-        if (($platform ne $tsv{'platform'}[$i]) and (!exists $checked_libraries{$libraryId})) {
+        if ( (uc $platform ne uc $tsv{'platform'}[$i] || uc "Illumina $platform" ne uc $tsv{'platform'}[$i]) and (!exists $checked_libraries{$libraryId}) ){
             warn "\tProblem: the platform is not matching between the annotation file [", $tsv{'platform'}[$i], "] and the SRA record [$platform], please verify for [$libraryId][$experimentId] and update $RNAseqLibChecks. The information from the annotation file is printed in output file.\n";
         }
         # Run IDs
