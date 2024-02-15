@@ -45,9 +45,11 @@ if ( !$test_options || $sample_info_file eq '' || $output_dir eq '' || $sample_e
 }
 
 open(my $FH, '>', $bgeecall_file)  or die $!;
+open(my $FH_missing, '>', "./missing_fastq.sh")  or die $!;
+open(my $FH_processed, '>', "./already_processed")  or die $!;
 # write header
 print {$FH} "species_id\trun_ids\treads_size\trnaseq_lib_path\ttranscriptome_path\tannotation_path\toutput_directory\tcustom_intergenic_path\n";
-
+print {$FH_missing} "#!/usr/bin/env bash\n";
 open(my $excluded, $sample_excluded) || die "failed to read sample excluded file: $!";
 my @excluded_libraries;
 while (my $line = <$excluded>) {
@@ -61,6 +63,7 @@ while (my $line = <$excluded>) {
 }
 
 open(my $sample_info, $sample_info_file) || die "failed to read sample info file: $!";
+my %missingFastqSpeciesDir = ();
 while (my $line = <$sample_info>) {
     chomp $line;
      ## skip comment lines
@@ -80,21 +83,42 @@ while (my $line = <$sample_info>) {
     my $fastq_path = "$fastq_dir$line[2]/$line[0]";
     #retrieve mean read length from R.stat file. If more than one run then only the first one
     #is considered to define mean read length
-    my $runId = split(/,/,$line[9])[0];
-    print "runId : $runId\n";
-    my $rstatFilePath = "$fastq_path/$runId.R.stat";
+    my @runIds = split(/,/,$line[10]);
+    my $rstatFilePath = "$fastq_path/$runIds[0].R.stat";
+    my $meanReadLength = ();
     if (! -e $rstatFilePath) {
-        die "R.stat file $rstatFilePath does not exist.";
+        $meanReadLength = $line[9];
+    }else {
+        open RSTAT, "< $rstatFilePath";
+        chomp (my @linesRstatFile = <RSTAT>);
+        if (exists $linesRstatFile[1]) {
+            my @readStats = split(/\t/, $linesRstatFile[1]);
+            $meanReadLength = $readStats[3];
+        } else {
+	    $meanReadLength = $line[9];
+        }
+        close RSTAT;
     }
-    @linesRstatFile = <$rstatFilePath>;
-    $meanReadLength = split(/\t/,@linesRstatFile[1])[3];
-    next if ! -e "$fastq_path";
     my $intergenic_file = "$ref_intergenic_dir$line[2]_intergenic.fa.gz";
     my $lib_output_dir ="$output_dir/all_results/$line[0]";
-    my $output_line = "$line[2]\t\t$line[9]\t$fastq_path\t$transcriptome_path\t$annotation_path\t$lib_output_dir\t$intergenic_file\n";
-    next if ( -e "$lib_output_dir/gene_level_abundance+calls.tsv");
+    if ( -e "$lib_output_dir/gene_level_abundance+calls.tsv") {
+            print {$FH_processed} "$line[2] - $line[0]\n";
+            next;
+    }
+    if (! -e "$fastq_path") {
+        my $mkdirCmd = "mkdir -p $fastq_dir$line[2]";
+	if (! exists($missingFastqSpeciesDir{$mkdirCmd})) {
+            $missingFastqSpeciesDir{$mkdirCmd} = 1;
+	    print {$FH_missing} "$mkdirCmd\n";
+        }
+        print {$FH_missing} "cp -r /archive/FAC/FBM/DEE/mrobinso/bgee_sensitive/FASTQ/RNAseq/$line[2]/$line[0] $fastq_path\n";
+        next;
+    }
+    my $output_line = "$line[2]\t\t$meanReadLength\t$fastq_path\t$transcriptome_path\t$annotation_path\t$lib_output_dir\t$intergenic_file\n";
     print {$FH} $output_line;
 
 }
 close($FH);
+close($FH_missing);
+close($FH_processed);
 
