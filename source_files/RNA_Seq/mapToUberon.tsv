@@ -188,3 +188,20 @@ ZFS:0000044	6 month-old stage and over	UBERON:0000113
 ZFS:0000046	cleavage	UBERON:0000107
 ZFS:0000048	larva	UBERON:0000069
 ZFS:0000050	pharyngula	UBERON:0004707
+AcarDv:0000004	mature stage	UBERON:0000113
+MmusDv:0000047	3-week-old stage	UBERON:0000112
+OanaDv:0000004	mature stage	UBERON:0000113
+OlatDv:0000040	Medaka stage 2a	UBERON:0000068
+OlatDv:0000090	Medaka stage 6	UBERON:0000068
+OlatDv:0000320	Medaka stage 29	UBERON:0000068
+OlatDv:0000420	Medaka stage 39	UBERON:0000069
+OlatDv:0000440	Medaka stage 41	UBERON:0000069
+OlatDv:0000470	Medaka stage 44	UBERON:0000113
+RnorDv:0000057	infant stage	UBERON:0034920
+SsalDv:0000039	alevin stage	UBERON:0000069
+SsalDv:0000041	sexually immature stage	UBERON:0000112
+SsalDv:0000042	sexually mature stage	UBERON:0000113
+SsalDv:0000050	sexually immature post-smolt stage	UBERON:0000112
+SsalDv:0000051	sexually mature post-smolt stage	UBERON:0000113
+SsalDv:0000055	sexually mature adult stage	UBERON:0000113
+SsalDv:0000066	smolt stage	UBERON:0000066
