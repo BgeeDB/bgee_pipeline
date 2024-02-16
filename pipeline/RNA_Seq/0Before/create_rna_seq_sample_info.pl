@@ -107,7 +107,6 @@ $insertedLibraries->execute() or die $insertedLibraries->errstr;
 while (my @data = $insertedLibraries->fetchrow_array ) {
     push(@insertedLibraryIds, $data[0]);
 }
-
 # Retrieve all organs/stages from Bgee
 my %organs = %{ Utils::getBgeedbOrgans($dbh) };
 my %stages = %{ Utils::getBgeedbStages($dbh) };
@@ -160,7 +159,7 @@ print {$OUT} join("\t", '#libraryId', 'experimentId', 'speciesId', 'organism', '
 # Retrieve SRA information and IDs for each SRX ID, and write down output file. This was originally in script get_sra_id.pl, but it is simplified here (only 1 query, see email Sebastien 15/12/15). Example of a query URL: https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?email=bgee@sib.swiss&api_key=a2546089861bb524068974de020c591a1307&save=efetch&db=sra&rettype=xml&term=SRX1152842
 SAMPLE:
 for my $i ( 0..$#{$tsv{'libraryId'}} ) {
-    next if grep($tsv{'libraryId'}[$i], @insertedLibraryIds);
+    next if grep(/^$tsv{'libraryId'}[$i]$/, @insertedLibraryIds);
     my $strategy;
     my $libraryType  = '';
     my $libraryInfo  = '';
@@ -170,7 +169,6 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
     my $tag          = $tsv{'tags'}[$i] // '';
     my $anatID       = $tsv{'anatId'}[$i];
     my $stageID      = $tsv{'stageId'}[$i];
-
     #NOTE Restrict analysis to this specific sample id (library or experiment)
     if ( $sample ne '' ){
         next SAMPLE  if ( $libraryId ne $sample && $experimentId ne $sample );
@@ -281,8 +279,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         #MSLL: methylation-spanning linker library, which involves size-fractionation (size selection)
         elsif ( $selection =~ /size fractionation/i || $selection =~ /size-fractionation/i || $selection =~ /MSLL/ ){
             if ( $strategy !~ /^miRNA-Seq$/i ){#NOTE check with experimentalists if *size fractionation* is ok for miRNA-Seq
-                warn "\tProblem: [$libraryId][$experimentId] seems to be size-fractionated, which biases the expression estimates. Please comment out. This library was not printed in output file.\n";
-                #next SAMPLE;
+                warn "\tProblem: [$libraryId][$experimentId] seems to be size-fractionated, which biases the expression estimates. Please comment out if not miRNA. This library was printed in output file.\n";
             }
         }
         elsif ( (all { $selection !~ /^$_$/ } @valid_selection_methods) && (all { $experimentId ne $_ } @valid_lib_selection) ){
@@ -316,7 +313,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         # platform
         $info =~ /<PLATFORM><[^<]+><INSTRUMENT_MODEL>([^<]+)<\/INSTRUMENT_MODEL><\/[^<]+><\/PLATFORM>/;
         $platform = $1;
-        if ( (uc $platform ne uc $tsv{'platform'}[$i] || uc "Illumina $platform" ne uc $tsv{'platform'}[$i]) and (!exists $checked_libraries{$libraryId}) ){
+        if ( (uc $platform ne uc $tsv{'platform'}[$i] && uc "Illumina $platform" ne uc $tsv{'platform'}[$i]) and (!exists $checked_libraries{$libraryId}) ){
             warn "\tProblem: the platform is not matching between the annotation file [", $tsv{'platform'}[$i], "] and the SRA record [$platform], please verify for [$libraryId][$experimentId] and update $RNAseqLibChecks. The information from the annotation file is printed in output file.\n";
         }
         # Run IDs
