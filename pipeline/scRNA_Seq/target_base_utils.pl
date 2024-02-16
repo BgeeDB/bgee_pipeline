@@ -353,6 +353,7 @@ sub get_processed_libraries_info {
         my $experimentId                    = $tmp[1];
         my $libraryId                       = $tmp[2];
         my $speciesId                       = $tmp[5];
+        my $speciesName                     = $tmp[6];
         my $libraryType                     = $tmp[8];
         my $fastqFTP                        = $tmp[9];
         my $submittedFTP                    = $tmp[10];
@@ -391,6 +392,10 @@ sub get_processed_libraries_info {
                 warn "Warning, wrong format for speciesId [$speciesId]\n";
                 $discarded = 1;
             }
+            if ($speciesName eq '' ){
+                warn "Warning, wrong format for speciesId [$speciesName]\n";
+                $discarded = 1;
+            }
             if ($isTargetBased && $downloadSource eq '' ){
                 warn "Warning, wrong format for downloadSource [$downloadSource]\n";
                 $discarded = 1;
@@ -398,17 +403,18 @@ sub get_processed_libraries_info {
             if ( $discarded ){
                 warn ' experimentId: ', $experimentId, ", libraryId: ", $libraryId, " discarded!\n";
             } else {
-                $libInfos{$experimentId}->{$libraryId}->{$runId}->{'libraryType'} =
+                $libInfos{$experimentId}->{$libraryId}->{'runIds'}->{$runId}->{'libraryType'} =
                     $libraryType;
                 if ($isTargetBased) {
-                    $libInfos{$experimentId}->{$libraryId}->{$runId}->{'downloadSource'} =
+                    $libInfos{$experimentId}->{$libraryId}->{'runIds'}->{$runId}->{'downloadSource'} =
                         $downloadSource;
                 }
-                $libInfos{$experimentId}->{$libraryId}->{$runId}->{'submittedFTP'} =
+                $libInfos{$experimentId}->{$libraryId}->{'runIds'}->{$runId}->{'submittedFTP'} =
                     $submittedFTP;
-                $libInfos{$experimentId}->{$libraryId}->{$runId}->{'fastqFTP'} =
+                $libInfos{$experimentId}->{$libraryId}->{'runIds'}->{$runId}->{'fastqFTP'} =
                     $fastqFTP;
                 $libInfos{$experimentId}->{$libraryId}->{'speciesId'} = $speciesId;
+                $libInfos{$experimentId}->{$libraryId}->{'speciesName'} = $speciesName;
             }
         } else {
             warn 'Warning: run present several times in the metadata file: experiment: ',
