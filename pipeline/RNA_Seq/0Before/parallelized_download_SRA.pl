@@ -191,7 +191,7 @@ if(! $doNotDownload) {
                 }
                 make_path("$libDirectory");
                 chdir "$libDirectory";
-                system("sbatch $sbatchToRun{$experimentId}{$libraryId}{$runId}");
+                system("sbatch $sbatchToRun{$experimentId}{$libraryId}{$runId}>/dev/null");
             }
         }
     }
