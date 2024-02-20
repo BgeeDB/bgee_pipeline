@@ -44,12 +44,15 @@ if ( !$test_options || $sample_info_file eq '' || $output_dir eq '' || $sample_e
     exit 1;
 }
 
+my $renameFastqScript = "./rename_fastq.sh";
 open(my $FH, '>', $bgeecall_file)  or die $!;
 open(my $FH_missing, '>', "./missing_fastq.sh")  or die $!;
 open(my $FH_processed, '>', "./already_processed")  or die $!;
+open(my $FH_rename, '>', "$renameFastqScript")  or die $!;
 # write header
 print {$FH} "species_id\trun_ids\treads_size\trnaseq_lib_path\ttranscriptome_path\tannotation_path\toutput_directory\tcustom_intergenic_path\n";
 print {$FH_missing} "#!/usr/bin/env bash\n";
+print {$FH_rename} "#!/usr/bin/env bash\n";
 open(my $excluded, $sample_excluded) || die "failed to read sample excluded file: $!";
 my @excluded_libraries;
 while (my $line = <$excluded>) {
@@ -64,13 +67,13 @@ while (my $line = <$excluded>) {
 
 open(my $sample_info, $sample_info_file) || die "failed to read sample info file: $!";
 my %missingFastqSpeciesDir = ();
-while (my $line = <$sample_info>) {
+LIBRARY: while (my $line = <$sample_info>) {
     chomp $line;
      ## skip comment lines
-    next  if ( ($line =~ m/^#/) or ($line =~ m/^\"#/) );
+    next LIBRARY if ( ($line =~ m/^#/) or ($line =~ m/^\"#/) );
     my @line = split(/\t/, $line);
     # skip libraries present in the sample excluded file
-    next if (grep( /^$line[0]/, @excluded_libraries));
+    next LIBRARY if (grep( /^$line[0]/, @excluded_libraries));
     my $number_columns = 11;
     if (! scalar @line eq $number_columns) {
         die "all lines of sample info file should have $number_columns columns";
@@ -103,16 +106,36 @@ while (my $line = <$sample_info>) {
     my $lib_output_dir ="$output_dir/all_results/$line[0]";
     if ( -e "$lib_output_dir/gene_level_abundance+calls.tsv") {
             print {$FH_processed} "$line[2] - $line[0]\n";
-            next;
+            next LIBRARY;
     }
     if (! -e "$fastq_path") {
         my $mkdirCmd = "mkdir -p $fastq_dir$line[2]";
 	if (! exists($missingFastqSpeciesDir{$mkdirCmd})) {
-            $missingFastqSpeciesDir{$mkdirCmd} = 1;
+            #TODO: generate a bash script updating name of RUN_ID.fastq.gz file when both RUN_ID_1.fastq.gz file and RUN_ID.fastq.gz files exists AND the library is paired
+	    #the new name should be RUN_ID.fastq.gz.EXTRA in order to allow BgeeCall to detect how to run kallisto otherwise BgeeCall throw an error
+	    $missingFastqSpeciesDir{$mkdirCmd} = 1;
 	    print {$FH_missing} "$mkdirCmd\n";
         }
         print {$FH_missing} "cp -r /archive/FAC/FBM/DEE/mrobinso/bgee_sensitive/FASTQ/RNAseq/$line[2]/$line[0] $fastq_path\n";
-        next;
+        next LIBRARY;
+    }
+    my $findFastqIssue = 0;
+    for my $runId (@runIds) {
+      #check if there is both _1.fastq.gz and fastq.gz file for each run of a library. It causes an error while running BgeeCall so if the library is
+      # paired end and both files exist then we create a bash script allowing to rename the fastq.gz file to fastq.gz.EXTRA
+      if ($line[7] eq "PAIRED" and -e "$fastq_path/${runId}_1.fastq.gz" and -e "$fastq_path/${runId}.fastq.gz") {
+        $findFastqIssue = 1;
+	print {$FH_rename} "mv $fastq_path/${runId}.fastq.gz $fastq_path/${runId}.fastq.gz.EXTRA\n";
+      }
+      #now check that both R.stat file and .fastp.json.xz files exist"
+      if (! -e "$fastq_path/${runId}.R.stat" || ! -e "$fastq_path/${runId}.fastp.json.xz") {
+        warn "R.stat or fastp.json.xz file does not exist for the run $runId of library $line[0] (taxId: $line[2]). Generate those files to generate calls for that library";
+	next LIBRARY;
+      }
+    }
+    if ($findFastqIssue) {
+      warn "Found FASTQ files named both as single-end run and paired-end run for library $line[0](taxId: $line[2]). To process this library please first run the script $renameFastqScript and then generate again the generation of the BgeeCall input file";
+      next LIBRARY;
     }
     my $output_line = "$line[2]\t\t$meanReadLength\t$fastq_path\t$transcriptome_path\t$annotation_path\t$lib_output_dir\t$intergenic_file\n";
     print {$FH} $output_line;
