@@ -195,7 +195,7 @@ process_busFile: uncompress_barcodes 1Run/process_busfile_one_lib.R
 ## Quality control (Knee + PCA + UMAP for each library) + cell type identification
 qc_cellType: process_busFile 1Run/parallelized_qcCellIdentification.pl
 	@echo --- Starting the quality control and the cell type identification ---
-	@$(SENSITIVE_PERL_CMD) 1Run/parallelized_qcCellIdentification.pl -metadataFile=${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH)  -parallelJobs=100 -gtfDir=$(RNASEQ_CLUSTER_GTF) -barcodeFolder=${PWD}/$(SC_RNASEQ_CLEANED_BARCODES) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -outputDir=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/celltype_one_lib.R -rLibs=$(R_LIBS_PATH_SENSITIVE) > $@.tmp 2>> $@.err
+	@$(SENSITIVE_PERL_CMD) perl 1Run/parallelized_qcCellIdentification.pl -metadataFile=${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH)  -parallelJobs=100 -gtfDir=$(RNASEQ_CLUSTER_GTF) -barcodeFolder=${PWD}/$(SC_RNASEQ_CLEANED_BARCODES) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -outputDir=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/celltype_one_lib.R -rLibs=$(R_LIBS_PATH_SENSITIVE) > $@.tmp 2>> $@.err
 	@mv $@.tmp $@
 
 ## Quality control based on the bimodality of the cell-population per library/cell-type pop
@@ -220,25 +220,14 @@ bimodality_cellPop: qc_cellType 1Run/QC_cellPop_bimodality.R
 	@touch $@
 
 ## Call present and absent genes per library/cell population that pass the bimodality test
-## Not yet parallelized
-calls: qc_cellType 1Run/Calls_cell_pop_per_library.R
-	@echo --- Starting the calls of present and absent genes ---
-	@sed -i 's@--output=.*@--output=${PWD}/Calls_library_cellPop.out@'                                                       1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/Calls_library_cellPop.err@'                                                         1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@--partition=.*@--partition=${SENSITIVE_CLUSTER_PARTITION}@'                                                   1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@--account=.*@--account=${SENSITIVE_CLUSTER_ACCOUNT}@'                                                         1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                            1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@export scRNASeq_Info=.*@export scRNASeq_Info=${PWD}/$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'                      1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@export bimodalityFile=.*@export bimodalityFile=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)/bimodality_targetBased.txt@'  1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@export folder_data=.*@export folder_data=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)@'                                   1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@export folder_gtf=.*@export folder_gtf=$(RNASEQ_CLUSTER_GTF)@'                                                1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@export desired_pValue_cutoff=.*@export desired_pValue_cutoff=$(PVALUE_CUTOFF)@'                               1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@export output_folder=.*@export output_folder=$(SC_RNASEQ_CLUSTER_CALLS_10X)@'                                 1Run/Calls_cell_pop_per_library.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)@'                                             1Run/Calls_cell_pop_per_library.sbatch
-	@sbatch 1Run/Calls_cell_pop_per_library.sbatch
-	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
-	@echo --- DONE ---
-	@touch $@
+calls: qc_cellType 1Run/parallelized_calls.pl 1Run/calls_one_library.R 1Run/calls_summary.R
+	@echo --- Starting generation of droplet based calls
+	@$(SENSITIVE_PERL_CMD) perl 1Run/parallelized_calls.pl -metadataFile=${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH)  -parallelJobs=100 -refIntergenicFolder=$(CLUSTER_REF_INTERGENIC_FOLDER) -cellTypeFolder=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE) -outputDir=$(SC_RNASEQ_CLUSTER_CALLS_10X) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToCallsScript=${PWD}/1Run/calls_one_library.R -pathToSummaryScript=${PWD}/1Run/calls_summary.R -pValueCutoff=$(PVALUE_CUTOFF) -rLibs=$(R_LIBS_PATH_SENSITIVE) > $@.tmp 2> $@.err
+	#now that calls have been generated we generate a tsv file summarizing calls information for each library
+	# this script is run in the front of the cluster as it does requires lots of time, memory and cpu.
+	#TODO generate plots as commented at the end of the script calls_one_library.R
+	#@$(CLUSTER_R_CMD) Rscript 1Run/calls_summary.R metadata_file=\"$(SC_RNASEQ_METADATA_10X_FILEPATH)\" calls_dir=\"$(SC_RNASEQ_CLUSTER_CALLS_10X)\" summary_calls_file=\"$(SC_RNASEQ_CLUSTER_INFO_CALLS_10X)\" >> $@.tmp 2>> $@.err
+	@mv $@.tmp $@
 
 final_status: calls
 	@$(GIT) status

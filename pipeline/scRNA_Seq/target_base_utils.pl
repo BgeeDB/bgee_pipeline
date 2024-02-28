@@ -362,8 +362,6 @@ sub get_processed_libraries_info {
             $downloadSource                 = $tmp[11];
         }
 
-        
-
         if (!defined $libInfos{$experimentId}->{$libraryId}->{$runId}) {
             # Perform format checks
             # do not check format for genotype and whiteList as they can be empty

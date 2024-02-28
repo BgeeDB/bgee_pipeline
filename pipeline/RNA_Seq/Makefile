@@ -372,12 +372,16 @@ generate_intergenic_sequences: sum_by_species
 	@$(MV) $@.tmp $@
 
 ################################ GENERATE PRESENT/ABSENT CALLS WITH BgeeCall ################################
-
+# generation of calls uses BgeeCall and the RSlurm package. It is this package that manage job submisson based on the BgeeCall input file.
+# That file is generated in the indexes_bgeecall rule. Once presence_absence_bgeecall rule has been run you should run again the rule indexes_bgeecall
+# in order to generate a new BgeeCall input file and then allow RSlurm to create jobs only for library not processed properly. For that 2nd run
+# the number of rows in the BgeeCall input file correspond to the number of libraries for which calls were not processed in the previous attempt.
+# Please continue to run the 2 rules until the BgeeCall output file is empty (or contain only proplematic libraries that will not be inserted in the Bgee realease
 # As for Bgee 15 it was mandatory to increase memory to 120G to generate Human index with kmer size = 15bp
 indexes_bgeecall:
 	# generate BgeeCall input file from the rna_seq_sample_info.txt file
 	# TODO: run this script in a different rule
-	@perl 1Run/sample_info_to_bgeecall.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -sample_excluded=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >$@.tmp 2>&1
+	@perl 1Run/sample_info_to_bgeecall.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -sample_excluded=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >$@.tmp 2>$@.err
 	# generate kallisto indexes with BgeeCall
 	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(RNASEQ_BGEECALL_FILE)" account="$(SENSITIVE_CLUSTER_ACCOUNT)" time="24:00:00" partition="$(SENSITIVE_CLUSTER_PARTITION)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' 1Run/bgeecall_index.R $(RNASEQ_CLUSTER_R_LOG)bgeecall_index.Rout
 	@$(MV) $@.tmp $@
@@ -388,6 +392,7 @@ presence_absence_bgeecall: indexes_bgeecall
 	# TODO generate summary plot once all calls have been generated
 	@touch $@
 
+##############################################################################################################
 check_presence_absence: presence_absence_bgeecall
 	# check that presence absence calls have been generated for all libraries present in the rna_seq_sample_info file
 	# generate file containing calls info for all libraries and use this file to generate different plots
