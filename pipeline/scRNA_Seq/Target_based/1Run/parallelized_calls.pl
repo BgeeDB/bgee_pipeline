@@ -15,7 +15,7 @@ use Utils;
 use File::Path qw(make_path);
 use File::Basename;
 use Time::Piece;
-
+use Data::Dumper;
 ## Define arguments & their default value
 my ($metadataFile, $parallelJobs, $refIntergenicFolder, $cellTypeFolder, $outputDir,
     $queue, $account, $pathToCallsScript, $pathToSummaryScript, $pValueCutoff,
@@ -36,8 +36,8 @@ my %opts = ('metadataFile=s'                     => \$metadataFile,
 ######################## Check arguments ########################
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$metadataFile || $parallelJobs eq '' || $refIntergenicFolder eq '' ||             
-    $cellTypeFolder eq '' || $outputDir eq '' || $queue eq '' || $account eq '' || $pathToScript eq '' ||
-    $pValueCutoff eq '' || $rLibs eq '') {
+    $cellTypeFolder eq '' || $outputDir eq '' || $queue eq '' || $account eq '' || $pathToCallsScript eq '' ||
+    $pathToSummaryScript eq '' || $pValueCutoff eq '' || $rLibs eq '') {
     print "\n\tInvalid or missing argument:
 \t-metadataFile                 file metadata_info containing all run to process
 \t-parallelJobs                  maximum number of jobs to run in parallel
@@ -60,6 +60,7 @@ require("$FindBin::Bin/../../target_base_utils.pl");
 # Info of processed libraries coming from the pipeline
 my %processedLibraries = get_processed_libraries_info($metadataFile, 1);
 
+print Dumper(\%opts);
 my %sbatchToRun = ();
 
 my $jobPrefix = "calls_";
@@ -78,24 +79,25 @@ my $jobs_created = 0;
 foreach my $experimentId (keys %processedLibraries){
     foreach my $libraryId (keys %{$processedLibraries{$experimentId}}){
         # do not consider libraries with calls already processed properly
-	    next if -e "${outputDir}/${libraryId}/$libraryId_stats.tsv";
+	    next if -e "${outputDir}/${libraryId}/${libraryId}_stats.tsv";
         #create sbatch file and
         my $jobName = "${jobPrefix}${libraryId}";
         my $speciesId = $processedLibraries{$experimentId}{$libraryId}{'speciesId'};
         my $speciesName = $processedLibraries{$experimentId}{$libraryId}{'speciesName'};
-        ## use 30Gb of memory. Should maybe be increase depending on the library to process
+	## use 5Gb of memory.
 	    my $sbatchTemplate = Utils::sbatch_template($queue, $account, 1,
-          30, "${clusterOutput}${jobName}.out", "${clusterOutput}/${jobName}.err",
+          2, "${clusterOutput}${jobName}.out", "${clusterOutput}/${jobName}.err",
           $jobName);
 
         #TODO: move modules management to a script attribute
         $sbatchTemplate .= "module use /software/module/\n";
 	    $sbatchTemplate .= "module add R/3.6.1;\n";
         $sbatchTemplate .= "\nexport R_LIBS_USER=$rLibs\n\n";
-        my $commandToRun = "R CMD BATCH --no-save --no-restore \'--args libraryId=\"$libraryId\"".
-            " speciesId=\"$speciesId\" speciesName=\"$speciesName\"".
-            " celltypeFolder=\"$cellTypeFolder\" refIntergenicFolder=\"$refIntergenicFolder\"".
-            " pValueCutoff=\"$pValueCutoff\" callsOutputFolder=\"$outputDir\"\' $pathToScript ${clusterOutput}/${jobName}.Rout";
+	$speciesName =~ s/ /_/g;
+        my $commandToRun = "Rscript $pathToCallsScript libraryId=\\\"$libraryId\\\"".
+            " speciesId=\\\"$speciesId\\\" speciesName=\\\"$speciesName\\\"".
+            " celltypeFolder=\\\"$cellTypeFolder\\\" refIntergenicFolder=\\\"$refIntergenicFolder\\\"".
+            " pValueCutoff=\\\"$pValueCutoff\\\" callsOutputFolder=\\\"$outputDir\\\"";
 
 	    $sbatchTemplate .= "$commandToRun\n";
         my $sbatchFilePath = "$sbatchLocation$jobName.sbatch";
@@ -134,5 +136,3 @@ while ($jobsRunning > 0) {
 my %jobs_status = Utils::count_status_finished_jobs($jobPrefix, $startTime);
 print $jobs_status{"completed"}." jobs completed, ".$jobs_status{"failed"}." jobs failed, ".$jobs_status{"out_of_memory"}." jobs failed with an out of memory issue and ".$jobs_status{"cancelled"}." jobs have been cancelled.\n";
 
-## now that all jobs have been run generate summary files
-##TODO: generate summary files

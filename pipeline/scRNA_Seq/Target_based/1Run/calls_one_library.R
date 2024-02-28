@@ -49,6 +49,7 @@ for (c_arg in command_arg) {
   }
 }
 
+speciesName <- gsub(pattern = "_", replacement = " ", x = speciesName)
 ##########################################################################################################################################################
 ## Provide the reference intergenic regions = TRUE
 ##TODO Why bother retrieving ref. intergenic??? the mapping/quantification should already be done
@@ -56,8 +57,8 @@ for (c_arg in command_arg) {
 ##TODO: check that only ref intergenic were used for each step of the pipeline( e.g gene annotation, kallisto index, ....)
 refIntergenicIds <- function(refIntergenicFolder, speciesId){
   intergenicCoordinates <- read.table(file = file.path(refIntergenicFolder,
-    paste0(speciesId,"_coordinates.tsv"), sep = "\t", header = T)
-  intergenicIds <- paste0(intergenic$chr, "-", intergenic$start,"-",intergenic$end)
+    paste0(speciesId,"_coordinates.tsv")), sep = "\t", header = T)
+  intergenicIds <- paste0(intergenicCoordinates$chr, "-", intergenicCoordinates$start,"-",intergenicCoordinates$end)
   return(intergenicIds)
 }
 
@@ -77,20 +78,21 @@ sumUMICellPop <- function(rawCountFile, refIntergenicIds) {
     cellPop$sumUMI <- rowSums(cellPop[ ,2:(length(cellPop)-4)])
   }
   cellPop$CPM <- cellPop$sumUMI / sum(cellPop$sumUMI) * 1e6
-  
   ## export cell pop info table
   cellPop <- data.frame(cellPop$gene_id, cellPop$sumUMI, cellPop$CPM, cellPop$type,
                         cellPop$biotype)
   colnames(cellPop) <- c("gene_id", "sumUMI", "CPM", "type", "biotype")
   #TODO: filtering to remove for Bgee 16.0 as only ref. intergenic should be used
   # filter to keep ref. intergenic only
-  cellPop <- dplyr::filter(cellPop, (type == "genic") ||
-    (type == "intergenic" & ! gene_id %in% refIntergenicIds))$gene_id
+  cellPop <- dplyr::filter(cellPop, type == "genic" | gene_id %in% refIntergenicIds)
   ## just re-order, why bother reordering that way? couldn't we simply order on gene_id???
   cellPopGenic <- data.frame(dplyr::filter(cellPop, type == "genic"))
   cellPopGenic <- cellPopGenic[order(cellPopGenic$gene_id),]
-  cellPop <- rbind(cellPopGenic, dplyr::filter(cellPop, type == "intergenic"))
-  return(cellPop)
+  cellPopRefIntergenic <- dplyr::filter(cellPop, gene_id %in% refIntergenicIds)
+  cellPopRefIntergenic <- cellPopRefIntergenic[order(cellPopRefIntergenic$gene_id),]
+  cellPopRefIntergenic$type <- "intergenic"
+  cellPopFinal <- rbind(cellPopGenic, cellPopRefIntergenic)
+  return(cellPopFinal)
 }
 
 ## function to calculate pValue from the theoretical data
@@ -141,7 +143,7 @@ cutoff_info <- function(library_id, cellTypeId, counts, pValueCutoff,
 
 
 ## export the plot
-plotData <- function(libraryId, cellTypeId, counts, refIntergenic, CPM_threshold){
+plotData <- function(libraryId, cellTypeId, counts, CPM_threshold){
   ## export distribution
   dens <- density(log2(counts$CPM+1e-6), na.rm=T)
   dens_genic <- density(log2(counts$CPM[counts$type == "genic"]+1e-6), na.rm=T)
@@ -149,27 +151,21 @@ plotData <- function(libraryId, cellTypeId, counts, refIntergenic, CPM_threshold
   dens_coding <- density(log2(counts$CPM[counts$biotype == "protein_coding"]+1e-6), na.rm=T)
   dens_coding$y <- dens_coding$y * nrow(dplyr::filter(counts, biotype == "protein_coding")) /
     length(counts$CPM)
-  dens_intergenic <- density(log2(counts$CPM[counts$type == "intergenic"]+1e-6), na.rm=T)
-  dens_intergenic$y <- dens_intergenic$y * nrow(dplyr::filter(counts, type == "intergenic")) /
-    length(counts$CPM)
-  refIntergenic <- merge(dplyr::filter(counts, type == "intergenic"), referenceIntergenic,
-    by = "gene_id")
-  refIntergenic <- as.data.frame(dplyr::filter(refIntergenic, refIntergenic == "TRUE"))
+  refIntergenic <- dplyr::filter(counts, type == "intergenic")
   dens_Refintergenic <- density(log2(refIntergenic$CPM+1e-6), na.rm=T)
   dens_Refintergenic$y <- dens_Refintergenic$y * nrow(refIntergenic) / length(counts$CPM)
   pdf(file.path(libraryOutputFolder, paste0("Distribution_", libraryId, "_",cellTypeId,
-    ".pdf")), width=10, height=6) 
+                                            ".pdf")), width=10, height=6) 
   par(mfrow=c(1,2))
   plot(dens, lwd=2, main=paste0(libraryId), xlab="Log2(CPM)")
   mtext(paste0(cellTypeId))
   lines(dens_genic,col="red", lwd=2)
   lines(dens_coding,col="indianred", lwd=2)
-  lines(dens_intergenic,col="darkblue", lwd=2)
   lines(dens_Refintergenic,col="cyan", lwd=2)
   abline(v=CPM_threshold, col="gray", lty=2, lwd=2)
-  legend("topright", legend = c("All", "Genic" ,"PC", "Int", "RefInt", "cutoff"),
-    col=c("black", "red", "indianred", "darkblue", "cyan", "gray"),lty=c(1,1,1,1,1,2),
-    lwd=2, bty = "n")
+  legend("topright", legend = c("All", "Genic" ,"PC", "RefInt", "cutoff"),
+         col=c("black", "red", "indianred", "cyan", "gray"),lty=c(1,1,1,1,2),
+         lwd=2, bty = "n")
   
   ## export frequency of pValue for all genic region
   genicRegion <- as.numeric(counts$pValue[counts$type == "genic"])
@@ -190,15 +186,17 @@ stop_quietly <- function() {
 libraryOutputFolder <- file.path(callsOutputFolder, libraryId)
 libStatsFile <- file.path(libraryOutputFolder, paste0(libraryId,"_stats.tsv"))
 
-if (file.exists(file.path(libraryOutputFolder, libStatsFile))) {
+if (file.exists(libStatsFile)) {
   message("calls directory for library ", libraryId, " already processed.")
   stop_quietly()
 }
 
 ## collect all cell population files that belongs to the library
 rawCountFiles <- list.files(path = file.path(celltypeFolder, libraryId), pattern = "^Raw_Counts_", full.names = TRUE)
-if (length(rawCountFiles) > 0) {
-  dir.create(libraryOutputFolder, recursive = TRUE)
+if (length(rawCountFiles) > 0 ) {
+  if (!dir.exists(libraryOutputFolder)) {
+    dir.create(libraryOutputFolder, recursive = TRUE)
+  }
 } else {
   message("no celltype raw count file for library ", libraryId, ". No calls will be generated for that library")
   stop_quietly()
@@ -208,17 +206,16 @@ if (length(rawCountFiles) > 0) {
 referenceIntergenicIds <- refIntergenicIds(refIntergenicFolder, speciesId)
 allCelltypeInfo <- file.path(libraryOutputFolder, "All_cellPopulation_stats_10X.tsv")
 
-collectSamplesStats <- ()
+collectSamplesStats <- c()
 
 for (rawCountFile in rawCountFiles) {
-  message(rawCountFile)
   cellPop <- str_remove(basename(rawCountFile), "Raw_Counts_")
   cellPop <- str_remove(cellPop, ".tsv")
   cellTypeId <- gsub("_", ":", cellPop)
   
   message("Process celltype: ", cellTypeId)
   ## collect the sumUMI + normalization for the target cellPop
-  cellPop_normalized <- sumUMICellPop(rawCountFile = rawCountFile)
+  cellPop_normalized <- sumUMICellPop(rawCountFile = rawCountFile, refIntergenicIds = referenceIntergenicIds)
 
   ## calculate pValue of presence/absence of expression
   calculatePvalues <- theoretical_pValue(counts = cellPop_normalized)
@@ -258,7 +255,7 @@ for (rawCountFile in rawCountFiles) {
   tryCatch(
     expr = {
       plotData(libraryId = libraryId, cellTypeId = cellPop, counts = finalData,
-        refIntergenic = referenceIntergenic, CPM_threshold = CPM_threshold)
+        CPM_threshold = CPM_threshold)
       },
       error = function(e) {
         warning("did not manage to create plot for library ", libraryId)
@@ -277,21 +274,18 @@ for (rawCountFile in rawCountFiles) {
   
   ## add this to big data frame with all samples information
   this_sample <- as.data.frame(t(cutoff_info_file), stringsAsFactors=F)
-  this_sample[, "species"]  <- speciesId
-  this_sample[, "organism"] <- as.character(unique(
-    scRNASeqAnnotation$scientific_name[scRNASeqAnnotation$speciesId == speciesId]))
+  this_sample$species  <- speciesId
+  this_sample$organism <- speciesName
   collectSamplesStats <- rbind(collectSamplesStats, this_sample)
 }
 
 ## export info stats of all libraries/cell-population
 file.create(libStatsFile)
-cat("libraryId\tcellTypeId\tCPM_Threshold\tGenic\tGenic_region_present\tProportion_genic_present\tProtein_coding\t",
-  "Coding_region_present\tProportion_coding_present\tIntergenic\tIntergenic_region_present\tProportion_intergenic_present\t",
+cat("libraryId\tcellTypeId\tCPM_Threshold\tGenic\tGenic_region_present\tProportion_genic_present\tProtein_coding",
+  "Coding_region_present\tProportion_coding_present\tIntergenic\tIntergenic_region_present\tProportion_intergenic_present",
   "pValue_cutoff\tmeanRefIntergenic\tsdRefIntergenic\tspecies\torganism\n",
   file = libStatsFile, sep = "\t")
-} else {
-  print("File already exist.....")
-}
+
 write.table(collectSamplesStats, file = libStatsFile, col.names = FALSE, row.names = FALSE,
   append = TRUE, quote = FALSE, sep = "\t")
 
