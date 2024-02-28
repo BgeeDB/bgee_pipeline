@@ -26,7 +26,7 @@ my %opts = ('sample_info_file=s'    => \$sample_info_file,      # path to rna_se
             'bgeecall_file=s'       => \$bgeecall_file,         # path to the output file compatible with BgeeCall
             'ref_intergenic_dir=s'  => \$ref_intergenic_dir,    # path to directory containing all reference intergenic sequences
             'output_dir=s'          => \$output_dir,            # path to the directory where all library results will be saved
-            'keep_all_libraries'    => \$keep_all_libraries,    # boolean defining if already processed libraries and libraries for which 
+            'keep_all_libraries'    => \$keep_all_libraries,    # boolean defining if already processed libraries and libraries for which
                                                                 # fastq files are not available have to be present in the bgeecall input file.
                                                                 # Useful to check calls of all libraries once all calls have been generated
 );
@@ -45,7 +45,7 @@ if ( !$test_options || $sample_info_file eq '' || $output_dir eq '' || $sample_e
 \t-bgeecall_file        Path to the output file compatible with BgeeCall
 \t-ref_intergenic_dir   Path to directory containing all reference intergenic sequences
 \t-output_dir           Path to directory where all library results will be saved
-\t-keep_all_libraries   boolean defining if already processed libraries and libraries for which fastq files 
+\t-keep_all_libraries   boolean defining if already processed libraries and libraries for which fastq files
                         are not available will be in bgeecall input file (default 0)
 \n";
     exit 1;
@@ -105,7 +105,7 @@ LIBRARY: while (my $line = <$sample_info>) {
             my @readStats = split(/\t/, $linesRstatFile[1]);
             $mean_read_length = $readStats[3];
         } else {
-        $mean_read_length = $line[9];
+            $mean_read_length = $line[9];
         }
         close RSTAT;
     }
