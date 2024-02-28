@@ -46,7 +46,7 @@ for (c_arg in command_arg) {
 
 ## Read scRNASeq_Info file. If file not exists, script stops
 if (file.exists(scRNASeq_Info)) {
-  scRNASeqAnnotation <- read.table(scRNASeq_Info, h=T, sep="\t", comment.char="", quote = "")
+  scRNASeqAnnotation <- read.table(scRNASeq_Info, h=T, sep="\t", comment.char="", quote = "\"")
 } else {
   stop(paste("The scRNASeq information file was not found [", scRNASeq_Info, "]\n"))
 }
@@ -56,12 +56,12 @@ if (file.exists(scRNASeq_Info)) {
 ## on the reference intergenic.
 ##TODO: check that only ref intergenic were used for each step of the pipeline( e.g gene annotation, kallisto index, ....)
 refIntergenic <- function(counts, folderGtf, speciesName){
-  gene2biotype_file <- list.files(path = folderGtf, pattern = paste0(speciesName, ".gene2biotype"), full.names = TRUE)
+  gene2biotype_file <- list.files(path = folderGtf, pattern = paste0(speciesName, ".*gene2biotype"), full.names = TRUE)
   gene2biotype <- read.table(gene2biotype_file, sep = "\t", header = TRUE)
   gene2biotype$refIntergenic <- ifelse(is.na(gene2biotype$biotype), FALSE, TRUE)
   gene2biotype$gene_id <- ifelse(is.na(gene2biotype$biotype), gsub( "_", "-", gene2biotype$id),
     gene2biotype$id)
-  ref_intergenic <- gene2biotype[,c("gene_id","refIntergenic"]
+  ref_intergenic <- gene2biotype[,c("id","refIntergenic")]
   return(ref_intergenic)
 }
 
@@ -101,7 +101,7 @@ theoretical_pValue <- function(counts, refrenceIntergenic){
   intergenicRegions <- dplyr::filter(refrenceIntergenic, refIntergenic == "TRUE")
   ## keep just information about reference intergenic region detected in the counts file to the
   ## calculation
-  selectedRefIntergenic <- merge(intergenicRegionsLibrary, intergenicRegions, by="gene_id")
+  selectedRefIntergenic <- merge(intergenicRegionsLibrary, intergenicRegions, by.x="gene_id", by.y="id")
   ## select values with CPM > 0 (because we will use log2 scale)
   selectedRefIntergenic <- dplyr::filter(selectedRefIntergenic, CPM > 0 & type == "intergenic")
   ## select genic and intergenic region from the library with CPM > 0
