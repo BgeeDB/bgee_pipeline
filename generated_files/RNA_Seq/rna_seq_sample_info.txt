@@ -9711,20 +9711,20 @@ ERX455037	ERP005642	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illum
 ERX455038	ERP005642	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina HiSeq 2500	PAIRED		151	ERR489282
 ERX455039	ERP005642	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina HiSeq 2500	PAIRED		151	ERR489283
 ERX651335	ERP009105	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina HiSeq 2000	PAIRED		76	ERR707106
-SRX044554	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer Iix	PAIRED		75	SRR108991
-SRX044555	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer Iix	PAIRED		75	SRR108994
-SRX044556	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer Iix	PAIRED		75	SRR108996
-SRX044557	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer Iix	PAIRED		75	SRR108998
-SRX044558	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer Iix	PAIRED		75	SRR109000
-SRX044559	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer Iix	PAIRED		75	SRR109002
-SRX044560	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer Iix	PAIRED		75	SRR109004
-SRX044561	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer Iix	PAIRED		76	SRR109006
-SRX044562	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer Iix	PAIRED		76	SRR109008
-SRX044563	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer Iix	PAIRED		76	SRR109010
-SRX044564	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer Iix	PAIRED		76	SRR109012
-SRX044565	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer Iix	PAIRED		76	SRR109014
-SRX044566	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer Iix	PAIRED		76	SRR109016
-SRX044567	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer Iix	PAIRED		76	SRR109018
+SRX044554	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer IIx	PAIRED		75	SRR108991
+SRX044555	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer IIx	PAIRED		75	SRR108994
+SRX044556	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer IIx	PAIRED		75	SRR108996
+SRX044557	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer IIx	PAIRED		75	SRR108998
+SRX044558	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer IIx	PAIRED		75	SRR109000
+SRX044559	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer IIx	PAIRED		75	SRR109002
+SRX044560	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer IIx	PAIRED		75	SRR109004
+SRX044561	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer IIx	PAIRED		76	SRR109006
+SRX044562	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer IIx	PAIRED		76	SRR109008
+SRX044563	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer IIx	PAIRED		76	SRR109010
+SRX044564	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer IIx	PAIRED		76	SRR109012
+SRX044565	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer IIx	PAIRED		76	SRR109014
+SRX044566	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer IIx	PAIRED		76	SRR109016
+SRX044567	SRP005900	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina Genome Analyzer IIx	PAIRED		76	SRR109018
 SRX4610974	SRP158841	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina HiSeq X Ten	PAIRED		150	SRR7755410
 SRX4610975	SRP158841	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina HiSeq X Ten	PAIRED		150	SRR7755409
 SRX4610976	SRP158841	9940	Ovis aries	ovis_aries/Ovis_aries.Oar_v3.1	Ensembl	Illumina HiSeq X Ten	PAIRED		150	SRR7755408
