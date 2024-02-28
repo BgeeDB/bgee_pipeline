@@ -17,6 +17,7 @@ my $bgeecall_file = '';
 my $ref_intergenic_dir = '';
 my $sample_excluded = '';
 my $output_dir = '';
+my $keep_all_libraries = 0;
 my %opts = ('sample_info_file=s'    => \$sample_info_file,      # path to rna_seq_sample_info file
             'sample_excluded=s'     => \$sample_excluded,       # path to rna_seq_sqmple_excluded file
             'transcriptome_dir=s'   => \$transcriptome_dir,     # path to directory containing all transcriptomes
@@ -24,7 +25,10 @@ my %opts = ('sample_info_file=s'    => \$sample_info_file,      # path to rna_se
             'fastq_dir=s'           => \$fastq_dir,             # path to directory containing all fastq files
             'bgeecall_file=s'       => \$bgeecall_file,         # path to the output file compatible with BgeeCall
             'ref_intergenic_dir=s'  => \$ref_intergenic_dir,    # path to directory containing all reference intergenic sequences
-            'output_dir=s'          => \$output_dir             # path to the directory where all library results will be saved
+            'output_dir=s'          => \$output_dir,            # path to the directory where all library results will be saved
+            'keep_all_libraries'    => \$keep_all_libraries,    # boolean defining if already processed libraries and libraries for which 
+                                                                # fastq files are not available have to be present in the bgeecall input file.
+                                                                # Useful to check calls of all libraries once all calls have been generated
 );
 
 # test arguments
@@ -40,6 +44,9 @@ if ( !$test_options || $sample_info_file eq '' || $output_dir eq '' || $sample_e
 \t-output_dir           Path to directory that will contain calls for all libraries
 \t-bgeecall_file        Path to the output file compatible with BgeeCall
 \t-ref_intergenic_dir   Path to directory containing all reference intergenic sequences
+\t-output_dir           Path to directory where all library results will be saved
+\t-keep_all_libraries   boolean defining if already processed libraries and libraries for which fastq files 
+                        are not available will be in bgeecall input file (default 0)
 \n";
     exit 1;
 }
@@ -88,56 +95,58 @@ LIBRARY: while (my $line = <$sample_info>) {
     #is considered to define mean read length
     my @runIds = split(/,/,$line[10]);
     my $rstatFilePath = "$fastq_path/$runIds[0].R.stat";
-    my $meanReadLength = ();
+    my $mean_read_length = ();
     if (! -e $rstatFilePath) {
-        $meanReadLength = $line[9];
+        $mean_read_length = $line[9];
     }else {
         open RSTAT, "< $rstatFilePath";
         chomp (my @linesRstatFile = <RSTAT>);
         if (exists $linesRstatFile[1]) {
             my @readStats = split(/\t/, $linesRstatFile[1]);
-            $meanReadLength = $readStats[3];
+            $mean_read_length = $readStats[3];
         } else {
-	    $meanReadLength = $line[9];
+        $mean_read_length = $line[9];
         }
         close RSTAT;
     }
     my $intergenic_file = "$ref_intergenic_dir$line[2]_intergenic.fa.gz";
     my $lib_output_dir ="$output_dir/all_results/$line[0]";
     if ( -e "$lib_output_dir/gene_level_abundance+calls.tsv") {
-            print {$FH_processed} "$line[2] - $line[0]\n";
+        print {$FH_processed} "$line[2] - $line[0]\n";
+        if (! $keep_all_libraries) {
             next LIBRARY;
-    }
-    if (! -e "$fastq_path") {
+        }
+    } elsif (! -e "$fastq_path") {
         my $mkdirCmd = "mkdir -p $fastq_dir$line[2]";
-	if (! exists($missingFastqSpeciesDir{$mkdirCmd})) {
-            #TODO: generate a bash script updating name of RUN_ID.fastq.gz file when both RUN_ID_1.fastq.gz file and RUN_ID.fastq.gz files exists AND the library is paired
-	    #the new name should be RUN_ID.fastq.gz.EXTRA in order to allow BgeeCall to detect how to run kallisto otherwise BgeeCall throw an error
-	    $missingFastqSpeciesDir{$mkdirCmd} = 1;
-	    print {$FH_missing} "$mkdirCmd\n";
+        if (! exists($missingFastqSpeciesDir{$mkdirCmd})) {
+            $missingFastqSpeciesDir{$mkdirCmd} = 1;
+            print {$FH_missing} "$mkdirCmd\n";
         }
         print {$FH_missing} "cp -r /archive/FAC/FBM/DEE/mrobinso/bgee_sensitive/FASTQ/RNAseq/$line[2]/$line[0] $fastq_path\n";
-        next LIBRARY;
+        if (! $keep_all_libraries) {
+            next LIBRARY;
+        }
+    } else {
+        my $find_fastq_issue = 0;
+        for my $runId (@runIds) {
+            #check if there is both _1.fastq.gz and fastq.gz file for each run of a library. It causes an error while running BgeeCall so if the library is
+            # paired end and both files exist then we create a bash script allowing to rename the fastq.gz file to fastq.gz.EXTRA
+            if ($line[7] eq "PAIRED" and -e "$fastq_path/${runId}_1.fastq.gz" and -e "$fastq_path/${runId}.fastq.gz") {
+                $find_fastq_issue = 1;
+                print {$FH_rename} "mv $fastq_path/${runId}.fastq.gz $fastq_path/${runId}.fastq.gz.EXTRA\n";
+            }
+            #now check that both R.stat file and .fastp.json.xz files exist"
+            if (! -e "$fastq_path/${runId}.R.stat" || ! -e "$fastq_path/${runId}.fastp.json.xz") {
+                die "R.stat or fastp.json.xz file does not exist for the run $runId of library $line[0] (taxId: $line[2]). Generate those files to generate calls for that library";
+                next LIBRARY;
+            }
+        }
+        if ($find_fastq_issue) {
+            warn "Found FASTQ files named both as single-end run and paired-end run for library $line[0](taxId: $line[2]). To process this library please first run the script $renameFastqScript and then generate again the generation of the BgeeCall input file";
+            next LIBRARY;
+        }
     }
-    my $findFastqIssue = 0;
-    for my $runId (@runIds) {
-      #check if there is both _1.fastq.gz and fastq.gz file for each run of a library. It causes an error while running BgeeCall so if the library is
-      # paired end and both files exist then we create a bash script allowing to rename the fastq.gz file to fastq.gz.EXTRA
-      if ($line[7] eq "PAIRED" and -e "$fastq_path/${runId}_1.fastq.gz" and -e "$fastq_path/${runId}.fastq.gz") {
-        $findFastqIssue = 1;
-	print {$FH_rename} "mv $fastq_path/${runId}.fastq.gz $fastq_path/${runId}.fastq.gz.EXTRA\n";
-      }
-      #now check that both R.stat file and .fastp.json.xz files exist"
-      if (! -e "$fastq_path/${runId}.R.stat" || ! -e "$fastq_path/${runId}.fastp.json.xz") {
-        warn "R.stat or fastp.json.xz file does not exist for the run $runId of library $line[0] (taxId: $line[2]). Generate those files to generate calls for that library";
-	next LIBRARY;
-      }
-    }
-    if ($findFastqIssue) {
-      warn "Found FASTQ files named both as single-end run and paired-end run for library $line[0](taxId: $line[2]). To process this library please first run the script $renameFastqScript and then generate again the generation of the BgeeCall input file";
-      next LIBRARY;
-    }
-    my $output_line = "$line[2]\t\t$meanReadLength\t$fastq_path\t$transcriptome_path\t$annotation_path\t$lib_output_dir\t$intergenic_file\n";
+    my $output_line = "$line[2]\t\t$mean_read_length\t$fastq_path\t$transcriptome_path\t$annotation_path\t$lib_output_dir\t$intergenic_file\n";
     print {$FH} $output_line;
 
 }
