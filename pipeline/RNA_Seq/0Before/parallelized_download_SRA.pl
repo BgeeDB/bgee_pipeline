@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-## This script allows to download FASTQ files from SRA. It is highly inspired from the download script of the target based pipeline
+## This script allows to download FASTQ files from SRA. It also creates symlink in the EXPERIMENTS folder.
 
 use strict;
 use warnings;

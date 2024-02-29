@@ -164,10 +164,12 @@ SRX8138362	TRUE	Issues with fastq-dump. Only half of the reads were available	JW
 SRX8138364	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
 SRX8138365	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
 SRX3859996	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-29
-SRX3860006	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-09
-SRX3860007	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-09
-SRX3860008	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-09
-SRX3860009	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-09
-SRX3860010	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-09
-SRX3860011	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-09
-SRX3860012	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-09
+SRX3860006	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-29
+SRX3860007	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-29
+SRX3860008	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-29
+SRX3860009	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-29
+SRX3860010	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-29
+SRX3860011	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-29
+SRX3860012	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-29
+SRX5901068	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-29
+SRX6655253	TRUE	Missing _2.fastq.g. Error with fastp	JW	2024-02-29

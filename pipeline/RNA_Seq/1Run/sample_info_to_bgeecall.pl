@@ -6,8 +6,17 @@ use diagnostics;
 use Getopt::Long;
 
 # Julien Wollbrett, created March 2020
+# updated Feb. 2024
 
 # This script transform the rna_seq_sample_info.txt file into a file used as input to run BgeeCall.
+# Several output files are created from this file.
+# - A file used by BgeeCall to generate indexes and calls. It does not contain libraries present in the other files.
+# - A file called already_processed containing the list of all libraries present in the rna_seq_sample_info file and already processed
+# - A file called missing_fastq.sh. It contains all libraries not yet processed for which fastq files are not currently available
+#   in the proper directory. Running this bash script allows to copy missing libraries from /archive to /data
+# - A file called rename_fastq.sh. a fastq file is present in this file when both RUNID_1.fastq.gz and RUNID.fastq.gz files exist and
+#   the library is tagued as PAIRED. Running this bash file will rename all RUNID.fastq.gz to RUNID.fastq.gz.EXTRA
+# It is recommended to first look at the 2 .sh files and then run them. Once it is done, please rerun this script.
 
 my ($sample_info_file)    = ('');
 my ($transcriptome_dir) = ('');

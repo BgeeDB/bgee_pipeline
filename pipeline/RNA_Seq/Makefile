@@ -373,6 +373,8 @@ generate_intergenic_sequences: sum_by_species
 # the number of rows in the BgeeCall input file correspond to the number of libraries for which calls were not processed in the previous attempt.
 # Please continue to run the 2 rules until the BgeeCall output file is empty (or contain only proplematic libraries that will not be inserted in the Bgee realease
 # As for Bgee 15 it was mandatory to increase memory to 120G to generate Human index with kmer size = 15bp
+#
+# sample_info_to_bgeecall.pl creates several useful files. Please read the documentation of the script to understand how to use them
 indexes_bgeecall:
 	# generate BgeeCall input file from the rna_seq_sample_info.txt file
 	# TODO: run this script in a different rule
