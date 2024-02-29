@@ -75,14 +75,14 @@ send_files_to_cluster: commit_rna_seq_sample_info $(RNASEQ_LIB_FILEPATH_FULL) $(
 
 ##############################################################################################
 # RNASeq library download
-## For Bgee 15.2 there was 19000 run to download. As we did not know if there was enough space on the scratch partition we devided the download
+## For Bgee 15.2 there was 19000 run to download. As there was not enough space on the /work partition we devided the download
 ## per chunk of species
 ## SPECIES ALREADY DOWNLOADED FOR BGEE 15.2 :
 # 7227$(LIST_SEP)9606$(LIST_SEP)10090$(LIST_SEP)7955$(LIST_SEP)6239$(LIST_SEP)9615$(LIST_SEP)9685$(LIST_SEP)9796$(LIST_SEP)9823$(LIST_SEP)9913(LIST_SEP)9925$(LIST_SEP)9940$(LIST_SEP)9986$(LIST_SEP)10141$(LIST_SEP)9031$(LIST_SEP)9103$(LIST_SEP)9258$(LIST_SEP)9483$(LIST_SEP)9531$(LIST_SEP)9541$(LIST_SEP)9544$(LIST_SEP)9545$(LIST_SEP)9555$(LIST_SEP)9593$(LIST_SEP)9597$(LIST_SEP)9598$(LIST_SEP)30608(LIST_SEP)60711$(LIST_SEP)9974$(LIST_SEP)10116$(LIST_SEP)10181$(LIST_SEP)13616$(LIST_SEP)8355$(LIST_SEP)8364$(LIST_SEP)28377$(LIST_SEP)7918$(LIST_SEP)7936$(LIST_SEP)7994$(LIST_SEP)8010$(LIST_SEP)8030$(LIST_SEP)8049$(LIST_SEP)8081$(LIST_SEP)8090$(LIST_SEP)8154$(LIST_SEP)32507$(LIST_SEP)52904$(LIST_SEP)69293$(LIST_SEP)105023$(LIST_SEP)7740$(LIST_SEP)7897$(LIST_SEP)7237$(LIST_SEP)7240
 
 #NOTE to be done on regular cluster, with network access
 get_sra_parallelized: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_ALREADY_DOWNLOADED)
-	$(SENSITIVE_PERL_CMD) perl 0Before/parallelized_download_SRA.pl -metadataFile=$(RNASEQ_SAMPINFO_FILEPATH) -parallelJobs=50 -downloadedLibraries=$(RNASEQ_ALREADY_DOWNLOADED) -outputDir=$(RNASEQ_DOWNLOAD_LIB_DIR_FASTQ) -encryptFile=$(ENCRYPT_PASSWD_FILE) -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
+	$(SENSITIVE_PERL_CMD) perl 0Before/parallelized_download_SRA.pl -metadataFile=$(RNASEQ_SAMPINFO_FILEPATH) -parallelJobs=50 -excludedLibraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -downloadedLibraries=$(RNASEQ_ALREADY_DOWNLOADED) -outputDir=$(RNASEQ_DOWNLOAD_LIB_DIR_FASTQ) -encryptFile=$(ENCRYPT_PASSWD_FILE) -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
 	@mv $@.tmp $@
 
 #once all libraries have been downloaded run this rule to exclude libraries not properly downloaded from the next steps of the pipeline

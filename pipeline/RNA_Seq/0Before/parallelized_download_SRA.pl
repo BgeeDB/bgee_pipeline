@@ -15,11 +15,12 @@ use File::Path qw(make_path remove_tree);
 use File::Basename;
 
 ## Define arguments & their default value
-my ($metadataFile, $parallelJobs, $downloadedLibraries, $encryptFile, $outputDir, $queue, $account, $speciesIds) = ('', '', '', '', '', '',  '', '');
+my ($metadataFile, $parallelJobs, $excludedLibraries, $downloadedLibraries, $encryptFile, $outputDir, $queue, $account, $speciesIds) = ('', '', '', '', '', '',  '', '', '');
 my ($doNotDownload)          = (0);
 my %opts = ('metadataFile=s'        => \$metadataFile,
             'parallelJobs=s'        => \$parallelJobs,
             'downloadedLibraries=s' => \$downloadedLibraries,
+            'excludedLibraries=s'   => \$excludedLibraries,
             'encryptFile=s'         => \$encryptFile,
             'outputDir=s'           => \$outputDir,
             'queue=s'               => \$queue,
@@ -34,10 +35,10 @@ my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$metadataFile || $parallelJobs eq '' || $outputDir eq '' || $downloadedLibraries eq '' ||
     $queue eq '' || $account eq '' || $encryptFile eq '') {
     print "\n\tInvalid or missing argument:
-\te.g. $0 -metatadataFile=... -parallelJobs=50 -outputDir=...  >> $@.tmp 2> $@.warn
 \t-metadataFile            path to the rna_seq_sample_info.txt file
 \t-parallelJobs            maximum number of jobs to run in parallel
-\t-downloadedLibraries     file containing the ID of all alreaydy downloaded libraries for single cell
+\t-downloadedLibraries     file containing the ID of all alreaydy downloaded libraries
+\t-excludedLibraries       file containing the ID of all libraries not to download
 \t-outputDir               directory where FASTQ files are downloaded/generated
 \t-encryptFile             path to the encryption file for secure libraries (e.g GTEx)
 \t-queue                   queue to use to run jobs on the cluster
@@ -68,6 +69,19 @@ my $isTargetBased = 0;
 
 # Read already downloaded libraries
 my %alreadyDownloaded = map { $_ => 1 } read_file("$downloadedLibraries", chomp=>1);
+
+# Read excluded libraries
+open(my $excluded, $excludedLibraries) || die "failed to read sample excluded file: $!";
+my @excluded_libraries;
+while (my $line = <$excluded>) {
+    chomp $line;
+     ## skip comment lines
+    next  if ( ($line =~ m/^#/) or ($line =~ m/^\"#/) );
+    my @line = split(/\t/, $line);
+    if ($line[1] eq "TRUE") {
+        push(@excluded_libraries, $line[0])
+    }
+}
 
 my %sbatchToRun = ();
 
@@ -103,9 +117,14 @@ while (<$ANNOTATION>){
     my $speciesId     = $tmp[2];
     my $libraryType   = $tmp[7];
     my $libDirectory = "$outputDir/$speciesId/$libraryId";
-    next LIB  if ( ! grep(/$speciesId/, @speciesIdsToDownload)  && $speciesIds ne '');
-    next LIB  if ( $libraryId =~ /^#/ || $sra_list =~ /^#/ ); # Header or commented line
-    next LIB  if ( exists $alreadyDownloaded{$libraryId} );
+    #if speciesIds to download have been provided then consider only libraries ccorresponding to those species
+    next LIB if ( ! grep(/$speciesId/, @speciesIdsToDownload)  && $speciesIds ne '');
+    # Header or commented library
+    next LIB if ( $libraryId =~ /^#/ || $sra_list =~ /^#/ );
+    #do not consider already downloaded libraries
+    next LIB if ( exists $alreadyDownloaded{$libraryId} );
+    #do not consider excluded libraries
+    next LIB if ( grep( /^$libraryId$/, @excluded_libraries));
     SRA:
     for my $runId ( sort split(/,/, $sra_list) ){
         if ( $runId =~ /^[SEDC]RR\d+/ ){ #S: SRA/NCBI; E: EBI; D: DDBJ; C: GSA_China
@@ -140,7 +159,7 @@ while (<$ANNOTATION>){
             # as well as basic read length statistics with R
             #NOTE Would be nice to have all basic stats from FastP (currently some are done in R)
             if ( !-e "$prefix.fastp.html.xz" || !-e "$prefix.fastp.json.xz" ){
-                $sbatchTemplate .= "fastp -i $fastq_fastp --json $prefix.fastp.json --html $prefix.fastp.html --thread 2  > $prefix.fastp.log 2>$prefix.fastp.log &&\n";
+                $sbatchTemplate .= "fastp -i $fastq_fastp --json $prefix.fastp.json --html $prefix.fastp.html  > $prefix.fastp.log 2>$prefix.fastp.log &&\n";
                 $sbatchTemplate .= "xz -9 $prefix.fastp.html $prefix.fastp.json &&\n";
             }
             if ( !-e "$prefix.R.stat" ){

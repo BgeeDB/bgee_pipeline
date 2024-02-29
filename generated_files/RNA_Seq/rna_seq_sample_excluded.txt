@@ -62,7 +62,7 @@ SRX1464701	TRUE	0 reads pseudoaligned by kallisto.	JW	2021-02-22
 SRX3153270	TRUE	No information about RNA Seq protocol. Can not define for which biotypes absent calls could be generated	JW	2021-02-25
 SRX3153300	TRUE	No information about RNA Seq protocol. Can not define for which biotypes absent calls could be generated	JW	2021-02-25
 SRX3153343	TRUE	No information about RNA Seq protocol. Can not define for which biotypes absent calls could be generated	JW	2021-02-25
-SRX1438211	TRUE	mix of paired-end and single-end runs in the same library
+SRX1438211	TRUE	mix of paired-end and single-end runs in the same library. Not used for Bgee 15.2	JW	2024-02-28
 SRX2487421	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.2	JW	2024-02-28
 SRX2487422	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.2	JW	2024-02-28
 SRX2487427	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.2	JW	2024-02-28
@@ -73,58 +73,86 @@ SRX2487435	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.2	J
 SRX2487436	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.2	JW	2024-02-28
 SRX2487439	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.2	JW	2024-02-28
 SRX2487440	TRUE	running kallisto took more than 2 days. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875124	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875125	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875126	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875127	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875128	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875129	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875130	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875131	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875132	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875133	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875134	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875135	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875136	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875137	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875138	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875139	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875140	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875141	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875142	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875143	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875144	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875145	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875146	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875147	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875148	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875149	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875150	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875151	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875152	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875153	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875154	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875155	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875156	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875157	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875158	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875159	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875160	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875161	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875162	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875163	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875164	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875165	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875166	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875167	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875168	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875169	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875170	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875171	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875172	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875173	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875174	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875175	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875176	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875177	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
-ERX1875178	TRUE	Did not manage to download this library. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875124	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875125	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875126	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875127	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875128	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875129	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875130	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875131	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875132	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875133	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875134	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875135	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875136	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875137	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875138	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875139	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875140	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875141	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875142	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875143	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875144	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875145	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875146	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875147	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875148	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875149	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875150	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875151	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875152	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875153	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875154	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875155	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875156	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875157	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875158	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875159	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875160	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875161	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875162	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875163	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875164	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875165	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875166	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875167	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875168	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875169	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875170	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875171	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875172	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875173	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875174	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875175	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875176	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875177	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875178	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875179	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875180	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875181	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875182	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875183	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+ERX1875184	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
+SRX3859996	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138296	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138298	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138299	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138303	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138304	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138305	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138306	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138307	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138308	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138309	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138310	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138311	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138312	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138313	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX3860006	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-09
+SRX3860007	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-09
+SRX3860008	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-09
+SRX3860009	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-09
+SRX3860010	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-09
+SRX3860011	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-09
+SRX3860012	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-09
