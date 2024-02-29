@@ -134,8 +134,7 @@ ERX1875181	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	J
 ERX1875182	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
 ERX1875183	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
 ERX1875184	TRUE	Library not available using fastq-dump. Not used for Bgee 15.2	JW	2024-02-28
-SRX3859996	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
-SRX8138296	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138297	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
 SRX8138298	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
 SRX8138299	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
 SRX8138303	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
@@ -149,6 +148,22 @@ SRX8138310	TRUE	Issues with fastq-dump. Only half of the reads were available	JW
 SRX8138311	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
 SRX8138312	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
 SRX8138313	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138314	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138315	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138316	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138317	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138318	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138319	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138320	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138321	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138349	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138350	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138358	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138360	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138362	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138364	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX8138365	TRUE	Issues with fastq-dump. Only half of the reads were available	JW	2024-02-29
+SRX3859996	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-29
 SRX3860006	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-09
 SRX3860007	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-09
 SRX3860008	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-02-09
