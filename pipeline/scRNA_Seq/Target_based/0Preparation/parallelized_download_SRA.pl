@@ -150,7 +150,7 @@ foreach my $experimentId (keys %processedLibraries){
             $sbatchTemplate .= "export bamtofastq=$bamtofastq\n";
             my $submittedFtp = $processedLibraries{$experimentId}{$libraryId}{$runId}{'submittedFTP'};
             my @bamInfos = split(";", $submittedFtp);
-	    $sbatchTemplate .= "module load gcc/10.4.0;\nmodule load fastp/0.23.2;\nexport PATH=/software/bin:\$PATH;\n";
+            $sbatchTemplate .= "module load gcc/10.4.0;\nmodule load fastp/0.23.2;\nexport PATH=/software/bin:\$PATH;\n";
             if ($source eq "SRA" && $experimentId =~ m/^SRP/) {
                 ## load SRA sra-toolkit
                 $sbatchTemplate .= "module load sratoolkit/3.0.0;\n";
