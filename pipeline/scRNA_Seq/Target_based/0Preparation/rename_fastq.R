@@ -48,8 +48,8 @@ renameFastqFilesFromFastqDump <- function(fastqPath = NULL, whitelistFolder = NU
   #read whitelists
   ##TODO do not hardcode name of whitelists
   whitelists <- list(
-    readr::read_csv(file = file.path(whitelistFolder, "barcode_whitelist_10X_v2.txt.zip"), col_names = FALSE, show_col_types = FALSE),
-    readr::read_csv(file = file.path(whitelistFolder, "barcode_whitelist_10X_v3.txt.zip"), col_names = FALSE, show_col_types = FALSE))
+    readr::read_csv(file = file.path(whitelistFolder, "barcode_whitelist_10X_Genomics_V2.txt.zip"), col_names = FALSE),
+    readr::read_csv(file = file.path(whitelistFolder, "barcode_whitelist_10X_Genomics_V3.txt.zip"), col_names = FALSE))
   names(whitelists) <- c("10xV2", "10xV3")
   
   summary <- c()

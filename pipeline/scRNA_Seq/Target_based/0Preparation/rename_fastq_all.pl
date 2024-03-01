@@ -40,6 +40,7 @@ if ( !$metadataFile || $fastqDir eq '' || $excludedLibraries eq '' ||
     exit 1;
 }
 
+require("$FindBin::Bin/../../rna_seq_utils.pl");
 require("$FindBin::Bin/../../target_base_utils.pl");
 
 # Info of processed libraries coming from the pipeline
