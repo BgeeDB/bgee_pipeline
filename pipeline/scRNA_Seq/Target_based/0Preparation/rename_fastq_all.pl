@@ -5,6 +5,10 @@
 # should not happen again so this script could potentially be deleted.
 # Kept it for now...
 
+# example of command to run it :
+# nohup perl 0Preparation/rename_fastq_all.pl -metadataFile=../../../generated_files/scRNA_Seq/Target_based/metadata_info_10X.txt -excludedLibraries=../../../generated_files/scRNA_Seq/Target_based/librariesExcluded.tsv -whitelistFolder=../../../source_files/scRNA_Seq/Target_based/ -fastqDir=/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/FASTQ/scRNAseq/10X/ -queue=urblauna -account=mrobinso_bgee_sensitive &
+# 
+
 use strict;
 use warnings;
 use diagnostics;
@@ -12,6 +16,8 @@ use Getopt::Long;
 use FindBin;
 use lib "$FindBin::Bin/../../.."; # Get lib path for Utils.pm
 use Utils;
+use File::Path qw(make_path remove_tree);
+use Time::Piece;
 
 ## Define arguments & their default value
 my ($metadataFile, $excludedLibraries, $fastqDir, $whitelistFolder, $queue, $account) = ('', '', '', '', '', '');
@@ -54,9 +60,6 @@ my $clusterOutputDir = "$fastqDir/${jobPrefix}clusterOutput";
 make_path("$sbatchDir");
 make_path("$clusterOutputDir");
 
-system("module use /software/module/");
-system("module load R/3.6.1");
-
 my $jobs_created = 0;
 my %sbatchToRun = ();
 foreach my $experimentId (keys %processedLibraries){
@@ -67,11 +70,11 @@ foreach my $experimentId (keys %processedLibraries){
             my $fastqRunDir = "$libDirectory/$runId/FASTQ/";
             next if ! -e $fastqRunDir;
             my $jobName = "$jobPrefix$runId";
-            my $sbatchTemplate = Utils::sbatch_template($queue, $account, 4,
-              50, "$clusterOutputDir/$jobName.out", "$clusterOutputDir/$jobName.err",
+            my $sbatchTemplate = Utils::sbatch_template($queue, $account, 1,
+              5, "$clusterOutputDir/$jobName.out", "$clusterOutputDir/$jobName.err", $jobName);
             $sbatchTemplate .= "module use /software/module/;\nmodule load R/3.6.1;\nexport PATH=/software/bin:\$PATH;\n\n";
 
-            $sbatchTemplate .=  "Rscript rename_fastq.R fastqPath=${fastqRunDir} runId=$runId renaming=fastqdump whitelistFolder=$whitelistFolder || exit 1;";
+            $sbatchTemplate .=  "Rscript /users/jwollbre/Documents/git/bgee_pipeline/pipeline/scRNA_Seq/Target_based/0Preparation/rename_fastq.R fastqPath=\\\"${fastqRunDir}\\\" runId=\\\"$runId\\\" renaming=\\\"fastqdump\\\" whitelistFolder=\\\"$whitelistFolder\\\" || exit 1;";
             $jobs_created++;
             ## create sbatch file and add its path to the hash of sbatch files
             my $sbatchFilePath = "$sbatchDir/$jobName.sbatch";
@@ -85,7 +88,7 @@ foreach my $experimentId (keys %processedLibraries){
 }
 
 print "created $jobs_created sbatch files.\n";
-
+my $parallelJobs = 100;
 # if jobs had to be run
 if ($jobs_created > 0) {
     
@@ -96,14 +99,14 @@ if ($jobs_created > 0) {
     foreach my $experimentId (keys %sbatchToRun){
         foreach my $libraryId (keys %{$sbatchToRun{$experimentId}}){
             my $speciesId = $processedLibraries{$experimentId}{$libraryId}{'speciesId'};
-            my $libDirectory = "$outputDir/$speciesId/$libraryId";
+            my $libDirectory = "$fastqDir/$speciesId/$libraryId";
             foreach my $runId (keys %{$sbatchToRun{$experimentId}{$libraryId}{"runIds"}}){
                 $numberJobRun++;
                 while ($jobsRunning >= $parallelJobs) {
                     sleep(15);
                     $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
                 }
-                #system("sbatch $sbatchToRun{$experimentId}{$libraryId}{$runId}");
+                system("sbatch ".$sbatchToRun{$experimentId}{$libraryId}{"runIds"}{$runId});
                 $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
             }
         }

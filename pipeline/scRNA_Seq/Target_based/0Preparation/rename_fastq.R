@@ -91,10 +91,12 @@ renameFastqFilesFromFastqDump <- function(fastqPath = NULL, whitelistFolder = NU
   
   if (! identical(summary$fastqFile, summary$newFastqName)) {
     for (i in seq_len(nrow(summary))) {
-      file.rename(summary$fastqFile[i], paste0(summary$newFastqName[i],"_new"))
+      message("mv ",as.character(summary$fastqFile[i]), " ", paste0(as.character(summary$newFastqName[i]),"_new"))
+      file.rename(from = as.character(summary$fastqFile[i]), to = paste0(as.character(summary$newFastqName[i]),"_new"))
     }
     for (i in seq_len(nrow(summary))) {
-      file.rename(paste0(summary$newFastqName[i],"_new"), summary$newFastqName[i])
+      message("mv ",paste0(summary$fastqFile[i],"_new"), " ", summary$newFastqName[i])
+      file.rename(paste0(as.character(summary$newFastqName[i]),"_new"), as.character(summary$newFastqName[i]))
     }
     write.table(x = summary, file = renamingFileInfo, sep = "\t", quote = FALSE,
       col.names = TRUE, row.names = FALSE)
