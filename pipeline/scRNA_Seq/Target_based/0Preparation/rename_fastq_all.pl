@@ -46,9 +46,19 @@ require("$FindBin::Bin/../../target_base_utils.pl");
 # Info of processed libraries coming from the pipeline
 my $isTargetBased = 1;
 my %processedLibraries = get_processed_libraries_info($metadataFile, $isTargetBased);
+
+## create directory
+my $jobPrefix = "rename_";
+my $sbatchDir = "$fastqDir/${jobPrefix}sbatch";
+my $clusterOutputDir = "$fastqDir/${jobPrefix}clusterOutput";
+make_path("$sbatchDir");
+make_path("$clusterOutputDir");
+
 system("module use /software/module/");
 system("module load R/3.6.1");
 
+my $jobs_created = 0;
+my %sbatchToRun = ();
 foreach my $experimentId (keys %processedLibraries){
     foreach my $libraryId (keys %{$processedLibraries{$experimentId}}){
         my $speciesId = $processedLibraries{$experimentId}{$libraryId}{'speciesId'};
@@ -56,7 +66,55 @@ foreach my $experimentId (keys %processedLibraries){
         foreach my $runId (keys %{$processedLibraries{$experimentId}{$libraryId}{'runIds'}}){
             my $fastqRunDir = "$libDirectory/$runId/FASTQ/";
             next if ! -e $fastqRunDir;
-            print "Rscript rename_fastq.R fastqPath=${fastqRunDir} runId=$runId renaming=fastqdump whitelistFolder=$whitelistFolder\n";
+            my $jobName = "$jobPrefix$runId";
+            my $sbatchTemplate = Utils::sbatch_template($queue, $account, 4,
+              50, "$clusterOutputDir/$jobName.out", "$clusterOutputDir/$jobName.err",
+            $sbatchTemplate .= "module use /software/module/;\nmodule load R/3.6.1;\nexport PATH=/software/bin:\$PATH;\n\n";
+
+            $sbatchTemplate .=  "Rscript rename_fastq.R fastqPath=${fastqRunDir} runId=$runId renaming=fastqdump whitelistFolder=$whitelistFolder || exit 1;";
+            $jobs_created++;
+            ## create sbatch file and add its path to the hash of sbatch files
+            my $sbatchFilePath = "$sbatchDir/$jobName.sbatch";
+            $sbatchToRun{$experimentId}{$libraryId}{"runIds"}{$runId} = $sbatchFilePath;
+            $sbatchToRun{$experimentId}{$libraryId}{'speciesId'} = $speciesId;
+            open(FH, '>', $sbatchFilePath) or die $!;
+            print FH $sbatchTemplate;
+            close(FH);
         }
     }
+}
+
+print "created $jobs_created sbatch files.\n";
+
+# if jobs had to be run
+if ($jobs_created > 0) {
+    
+    my $numberJobRun = 0;
+    my $startTime = localtime->strftime('%Y-%m-%dT%H:%M:%S');
+
+    my $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
+    foreach my $experimentId (keys %sbatchToRun){
+        foreach my $libraryId (keys %{$sbatchToRun{$experimentId}}){
+            my $speciesId = $processedLibraries{$experimentId}{$libraryId}{'speciesId'};
+            my $libDirectory = "$outputDir/$speciesId/$libraryId";
+            foreach my $runId (keys %{$sbatchToRun{$experimentId}{$libraryId}{"runIds"}}){
+                $numberJobRun++;
+                while ($jobsRunning >= $parallelJobs) {
+                    sleep(15);
+                    $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
+                }
+                #system("sbatch $sbatchToRun{$experimentId}{$libraryId}{$runId}");
+                $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
+            }
+        }
+    }
+    while ($jobsRunning > 0) {
+        sleep(15);
+        $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
+    }
+
+    print "all download jobs finished. Run $numberJobRun jobs.\n";
+
+    my %jobs_status = Utils::count_status_finished_jobs($jobPrefix, $startTime);
+    print $jobs_status{"completed"}." jobs completed, ".$jobs_status{"failed"}." jobs failed, ".$jobs_status{"out_of_memory"}." jobs failed with an out of memory issue and ".$jobs_status{"cancelled"}." jobs have been cancelled.\n";
 }
