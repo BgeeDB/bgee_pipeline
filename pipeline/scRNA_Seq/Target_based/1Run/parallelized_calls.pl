@@ -86,7 +86,7 @@ foreach my $experimentId (keys %processedLibraries){
         my $speciesName = $processedLibraries{$experimentId}{$libraryId}{'speciesName'};
 	## use 5Gb of memory.
 	    my $sbatchTemplate = Utils::sbatch_template($queue, $account, 1,
-          2, "${clusterOutput}${jobName}.out", "${clusterOutput}/${jobName}.err",
+          20, "${clusterOutput}${jobName}.out", "${clusterOutput}/${jobName}.err",
           $jobName);
 
         #TODO: move modules management to a script attribute
