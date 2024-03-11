@@ -133,8 +133,7 @@ foreach my $experimentId (keys %processedLibraries){
         my $speciesId = $processedLibraries{$experimentId}{$libraryId}{'speciesId'};
         my $libDirectory = "$outputDir/$speciesId/$libraryId";
         next if ( exists $alreadyDownloaded{$libraryId} );
-        foreach my $runId (keys %{$processedLibraries{$experimentId}{$libraryId}}){
-            next if $runId eq "speciesId";
+        foreach my $runId (keys %{$processedLibraries{$experimentId}{$libraryId}{"runIds"}}){
             my $runDirectory = "$libDirectory/$runId";
             if(! $doNotDownload) {
                 next if (-f "$runDirectory/done");
@@ -224,12 +223,12 @@ foreach my $experimentId (keys %processedLibraries){
                 warn "unrecognized source $source for run $runId\n";
                 next;
             }
-	    $sbatchTemplate .= "perl 0Preparation/run_fastp.pl -run_path=$runDirectory -run_id=$runId && \n";
+	        $sbatchTemplate .= "perl 0Preparation/run_fastp.pl -run_path=$runDirectory -run_id=$runId && \n";
             $jobs_created++;
             $sbatchTemplate .= "touch $runDirectory/done";
             ## create sbatch file and add its path to the hash of sbatch files
             my $sbatchFilePath = "$sbatchDir/$jobName.sbatch";
-            $sbatchToRun{$experimentId}{$libraryId}{$runId} = $sbatchFilePath;
+            $sbatchToRun{$experimentId}{$libraryId}{"runIds"}{$runId} = $sbatchFilePath;
             $sbatchToRun{$experimentId}{$libraryId}{'speciesId'} = $speciesId;
             open(FH, '>', $sbatchFilePath) or die $!;
             print FH $sbatchTemplate;
@@ -252,8 +251,7 @@ if ($jobs_created > 0) {
             foreach my $libraryId (keys %{$sbatchToRun{$experimentId}}){
                 my $speciesId = $processedLibraries{$experimentId}{$libraryId}{'speciesId'};
                 my $libDirectory = "$outputDir/$speciesId/$libraryId";
-                foreach my $runId (keys %{$sbatchToRun{$experimentId}{$libraryId}}){
-                    next if $runId eq "speciesId";
+                foreach my $runId (keys %{$sbatchToRun{$experimentId}{$libraryId}{"runIds"}}){
                     my $runDirectory = "$libDirectory/$runId";
                     next if (-f "$runDirectory/done");
                     $numberJobRun++;
@@ -290,8 +288,7 @@ if ($jobs_created > 0) {
             my $speciesId = $sbatchToRun{$experimentId}{$libraryId}{'speciesId'};
             my $libDirectory = "$outputDir/$speciesId/$libraryId";
             my $done = 1;
-            foreach my $runId (keys %{$sbatchToRun{$experimentId}{$libraryId}}){
-                next if $runId eq "speciesId";
+            foreach my $runId (keys %{$sbatchToRun{$experimentId}{$libraryId}{"runIds"}}){
                 if(! -e "$libDirectory/$runId/done") {
                     $done = 0;
                 }
