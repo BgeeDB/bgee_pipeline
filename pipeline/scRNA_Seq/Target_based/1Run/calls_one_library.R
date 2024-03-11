@@ -288,21 +288,3 @@ cat("libraryId\tcellTypeId\tCPM_Threshold\tGenic\tGenic_region_present\tProporti
 
 write.table(collectSamplesStats, file = libStatsFile, col.names = FALSE, row.names = FALSE,
   append = TRUE, quote = FALSE, sep = "\t")
-
-## not anymore generated in this script. Need to create an other script to generate those plots
-## final plot per species
-#pdf(file.path(output_folder, paste0("All_libraries_stats_information_10X.pdf")), width=16, height=6) 
-#g1 <- ggplot(collectSamplesStats, aes(x=organism, y=as.numeric(Proportion_genic_present))) + 
-#  geom_boxplot()+ylim(0,100)+xlab(" ")+ylab("% Genic Present")
-#g2 <- ggplot(collectSamplesStats, aes(x=organism, y=as.numeric(Proportion_coding_present))) + 
-#  geom_boxplot(notch=TRUE)+ylim(0,100)+xlab(" ")+ylab("% Protein Coding Present")
-#g3 <- ggplot(collectSamplesStats, aes(x=organism, y=as.numeric(Proportion_intergenic_present))) + 
-#  geom_boxplot(notch=TRUE)+ylim(0,100)+xlab(" ")+ylab("% Intergenic Present")
-#g4 <- ggplot(collectSamplesStats, aes(x=organism, y=as.numeric(meanRefIntergenic))) + 
-#  geom_boxplot(notch=TRUE)+ylim(0,1)+xlab(" ")+ylab("Mean Reference Intergenic")
-#g5 <- ggplot(collectSamplesStats, aes(x=organism, y=as.numeric(sdRefIntergenic))) + 
-#  geom_boxplot(notch=TRUE)+ylim(0,10)+xlab(" ")+ylab("SD Reference Intergenic")
-#g6 <- ggplot(collectSamplesStats, aes(x=organism, y=as.numeric(pValue_cutoff))) + 
-#  geom_boxplot(notch=TRUE)+ylim(0,1)+xlab(" ")+ylab("pValue_cutoff")
-#grid.arrange(g1,g2,g3,g4,g5,g6, nrow = 2, ncol = 3)
-#dev.off()
