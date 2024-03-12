@@ -23,7 +23,7 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
 (9, 'MGI', 'https://www.informatics.jax.org/accession/[xref_id]', 'https://www.informatics.jax.org/assay/[experiment_id]',
     'https://www.informatics.jax.org/assay/[experiment_id]#[inSituEvidenceUrlPart]',
     'https://www.informatics.jax.org/expression.shtml', 'Mouse in situ data source', 1, 'In situ data source'),
-(10, 'FlyBase', 'https://flybase.org/reports/[gene_id].html', '', '',
+(10, 'FlyBase', 'https://flybase.org/reports/[gene_id].html', 'https://flybase.org/reports/[experiment_id].htm', '',
     'https://flybase.org/', 'Drosophila in situ data source', 1, 'In situ data source'),
 (11, 'ArrayExpress', '', 'https://www.ebi.ac.uk/arrayexpress/experiments/[experiment_id]', '',
     'https://www.ebi.ac.uk/arrayexpress/', 'Affymetrix data source for various species', 1, 'Affymetrix data source'),
