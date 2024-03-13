@@ -115,7 +115,7 @@ while ( my @data = $geneId->fetchrow_array ){
         push @pages, "<loc>$homepage/gene/$data[0]/$data[1]</loc>";
     }
     else {
-        push @pages, "<loc>$homepage/gene/$data[0]/</loc>";
+        push @pages, "<loc>$homepage/gene/$data[0]</loc>";
     }
     if ( $count > ($url_limit - 1000) ){
         $split++;
