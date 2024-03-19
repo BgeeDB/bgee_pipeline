@@ -117,6 +117,7 @@ sub getAllAnnotatedExperiments2 {
     my $totalLineCount = 0;
     for my $line ( 0..$#{$tsv{'experimentId'}} ){
         my $commented = 0;
+        my $experimentId = $tsv{'experimentId'}[$line];
         if ( ($tsv{'experimentId'}[$line] =~ /^#(.+)/) or ($tsv{'experimentId'}[$line] =~ /^\"#(.+)/) ){
             $tsv{'experimentId'}[$line] = $1;
             $commented = 1;
@@ -124,22 +125,33 @@ sub getAllAnnotatedExperiments2 {
 
         if ( length($tsv{'experimentId'}[$line]) < 255 && $tsv{'experimentId'}[$line] !~ /\s/ ){
             # Initialize the hash for this expId
-            $experiments{ $tsv{'experimentId'}[$line] }->{'name'}        = '';
-            $experiments{ $tsv{'experimentId'}[$line] }->{'description'} = '';
-            $experiments{ $tsv{'experimentId'}[$line] }->{'source'}      = '';
-            $experiments{ $tsv{'experimentId'}[$line] }->{'status'}      = '';
-            $experiments{ $tsv{'experimentId'}[$line] }->{'commented'}   = '';
+            $experiments{$experimentId}->{'name'}        = '';
+            $experiments{$experimentId}->{'description'} = '';
+            $experiments{$experimentId}->{'source'}      = '';
+            $experiments{$experimentId}->{'status'}      = '';
+            $experiments{$experimentId}->{'commented'}   = '';
         }
         else {
             warn "Badly formatted RNAseqExperiment file at line [$line]: [invalid experimentId]\n";
             next;
         }
-
-        $experiments{ $tsv{'experimentId'}[$line] }->{'name'}        = $tsv{'experimentName'}[$line];
-        $experiments{ $tsv{'experimentId'}[$line] }->{'description'} = $tsv{'experimentDescription'}[$line];
-        $experiments{ $tsv{'experimentId'}[$line] }->{'source'}      = $tsv{'experimentSource'}[$line];
-        $experiments{ $tsv{'experimentId'}[$line] }->{'status'}      = $tsv{'experimentStatus'}[$line];
-        $experiments{ $tsv{'experimentId'}[$line] }->{'commented'}   = $commented;
+        if ($tsv{'experimentName'}[$line] eq '') {
+            warn "experiment Name is emtpy for $experimentId";
+        }
+        if ($tsv{'experimentDescription'}[$line] eq '') {
+            warn "experiment description is emtpy for $experimentId";
+        }
+        if ($tsv{'experimentSource'}[$line] eq '') {
+            warn "experiment source is emtpy for $experimentId";
+        }
+        if ($tsv{'experimentStatus'}[$line] eq '') {
+            warn "experiment status is emtpy for $experimentId";
+        }
+        $experiments{$experimentId}->{'name'}        = $tsv{'experimentName'}[$line];
+        $experiments{$experimentId}->{'description'} = $tsv{'experimentDescription'}[$line];
+        $experiments{$experimentId}->{'source'}      = $tsv{'experimentSource'}[$line];
+        $experiments{$experimentId}->{'status'}      = $tsv{'experimentStatus'}[$line];
+        $experiments{$experimentId}->{'commented'}   = $commented;
     }
 
     return %experiments;
