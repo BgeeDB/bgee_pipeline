@@ -34,6 +34,7 @@ my ($targetBaseLibrary, $kallistoResults, $callsResults, $sexInfo)  = ('', '', '
 my ($singleCellExperiment, $bgeeLibraryInfo, $sourceDir) = ('', '', '');
 
 my ($pipelineCallsSummary, $pipelineReportFile, $filteredBarcodeDir) = ('', '', '');
+my $extraMapping = '';
 my $numberCore = 1;
 #my ($library_stats, $report_info = ('', '');
 my ($debug) = (0);
@@ -41,6 +42,7 @@ my %opts = ('bgee=s'                 => \$bgee_connector,       # Bgee connector
             'targetBaseLibrary=s'    => \$targetBaseLibrary,    # target base RNAseq library annotations
             'singleCellExperiment=s' => \$singleCellExperiment, # single cell RNASeq experiment annotations
             'bgeeLibraryInfo=s'      => \$bgeeLibraryInfo,      # metadata_info_10X.txt file
+            'extraMapping=s'         => \$extraMapping,         # file containing remapping of ontology terms to Uberon when initial term is not in the database yet
             'filteredBarcodeDir=s'   => \$filteredBarcodeDir,   # path to the directory containing all filtered barcode to celltype files
             'pipelineCallsSummary=s' => \$pipelineCallsSummary, # path to the file containing a summary of processing calls info at library/celltype level (e.g percentage protein coding present, ...)
             'pipelineReportFile=s'   => \$pipelineReportFile,   # path to the file containing summary of kallisto (reads, reads mapped, ..,) and stats about read length
@@ -56,13 +58,14 @@ my %opts = ('bgee=s'                 => \$bgee_connector,       # Bgee connector
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $bgee_connector eq '' || $targetBaseLibrary eq '' || $singleCellExperiment eq '' ||
     $bgeeLibraryInfo eq '' || $filteredBarcodeDir eq '' || $pipelineCallsSummary eq '' || $pipelineReportFile eq '' || $kallistoResults eq '' || $sourceDir eq '' ||
-    $sexInfo eq '' || $numberCore eq '' || $callsResults eq ''){
+    $sexInfo eq '' || $numberCore eq '' || $extraMapping eq '' || $callsResults eq ''){
     print "\n\tInvalid or missing argument:
 \te.g., $0  -bgee=\$(BGEECMD) -targetBaseLibrary=RNASeqLibrary_full.tsv -singleCellExperiment=RNASeqExperiment_full.tsv -bgeeLibraryInfo=metadata_info_10X.txt -sexInfo=\$(UBERON_SEX_INFO_FILE_PATH) > $@.tmp 2>warnings.$@
 \t-bgee                    Bgee connector string
 \t-targetBaseLibrary       targetBaseLibrary annotation file
 \t-singleCellExperiment    singleCellExperiment file
 \t-bgeeLibraryInfo         metadata_info_10X.txt containing libraries to process
+\t-extraMapping            file containing remapping for ontology terms not yet inserted in the database
 \t-filteredBarcodeDir      path to the directory containing all filtered barcode to celltype files
 \t-pipelineCallsSummary    path to the file containing a summary of processing calls info at library/celltype level
 \t-pipelineReportFile      path to the file containing summary of kallisto (reads, reads mapped, ..,) and stats about read length
@@ -123,12 +126,18 @@ my $insert_annotatedSamples =   'INSERT INTO rnaSeqLibraryAnnotatedSample (rnaSe
                                 'pValueThreshold, mappedUMIsCount, multipleLibraryIndividualSample)'.
                                 ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
+my $update_sumUMIs_annotatedSamples =  'UPDATE rnaSeqLibraryAnnotatedSample set mappedUMIsCount = ? where '.
+                                        'rnaSeqLibraryAnnotatedSampleId = ?';
+
 my $select_annotatedSampleId =  'SELECT rnaSeqLibraryAnnotatedSampleId FROM '.
                                 'rnaSeqLibraryAnnotatedSample WHERE rnaSeqLibraryId = ? AND '.
                                 'conditionId = ?';
 
 my $insert_individualSamples =  'INSERT INTO rnaSeqLibraryIndividualSample (rnaSeqLibraryAnnotatedSampleId,'.
                                 'barcode, sampleName) VALUES (?, ?, ?)';
+
+my $update_sumUMIs_individualSamples =  'UPDATE rnaSeqLibraryIndividualSample set mappedUMIsCount = ? where '.
+                                        'rnaSeqLibraryIndividualSampleId = ?';
 
 my $select_individualSampleId = 'SELECT rnaSeqLibraryIndividualSampleId FROM '.
                                 'rnaSeqLibraryIndividualSample WHERE rnaSeqLibraryAnnotatedSampleId = ? AND '.
@@ -178,6 +187,12 @@ my %pipelineReport = getAllRnaSeqReportInfo($pipelineReportFile);
 # sex-related information needed for sub 'insert_get_condition'
 my $anatSexInfo    = Utils::get_anat_sex_info($sexInfo);
 my $speciesSexInfo = Utils::get_species_sex_info($bgee_metadata);
+
+# Parse extra mapping info for currently too up-to-date annotations
+##UnmappedId    UnmappedName    UberonID    UberonName    Comment
+my %extra = map  { my @tmp = split(/\t/, $_, -1); if ( $tmp[2] ne '' && $tmp[0] ne '' ){ $tmp[0] => $tmp[2] } else { 'nonono' => 'nonono' } }
+            grep { !/^#/ }
+            read_file("$extraMapping", chomp => 1);
 
 ################
 # DATA SOURCES #
@@ -258,7 +273,7 @@ my $insLib = $bgee_metadata->prepare($insert_libraries);
 
 for my $expId ( sort keys %processedLibraries ){
     if (grep( /^$expId$/, @insertedExpIds)) {
-        print "\t$expId already inserted\n";
+        print "\t$expId already inserted. Will anyway insert not yet inserted libraries from this experiment\n";
     } else {
         print "\tinsert $expId\n";
         if ( $debug ){
@@ -284,7 +299,7 @@ for my $expId ( sort keys %processedLibraries ){
     ## it is done to avoid key collision if creating condition in parallel
     LIBRARY:
     for my $libraryId ( sort keys %{$processedLibraries{$expId}} ){
-
+        #No need to check already inserted libraries here as the pipeline removed them from the list of libraries to process
         print "\tInsert $libraryId and conditions from $expId\n";
         # For now all target base are polyA. Check that population capture polyA is already present in the database
         if ( !grep(/^polyA$/, @populationCapture ) ) {
@@ -352,6 +367,18 @@ for my $expId ( sort keys %processedLibraries ){
         }
 
         # Now start to insert conditions
+        # first remap ontology terms if required
+        my $anatEntityId = $libraries{$expId}->{$libraryId}->{'anatEntityId'};
+        if (exists $extra{$anatEntityId}) {
+
+            $anatEntityId = $extra{$anatEntityId};
+            $libraries{$expId}->{$libraryId}->{'anatEntityId'} = $anatEntityId;
+        }
+        my $stageId = $libraries{$expId}->{$libraryId}->{'stageId'};
+        if (exists $extra{$stageId}) {
+            $stageId = $extra{$stageId};
+            $libraries{$expId}->{$libraryId}->{'stageId'} = $stageId;
+        }
         for my $cellTypeId (sort keys %{$barcodesToCellType{$libraryId}{'cellTypes'}} ) {
 
             # Get conditionId/exprMappedConditionId for this library
@@ -359,8 +386,8 @@ for my $expId ( sort keys %processedLibraries ){
             my $condKeyMap;
             if ($debug) {
                 print 'If condition does not already exist run insert into cond',
-                $libraries{$expId}->{$libraryId}->{'anatEntityId'},    ' - ',
-                $libraries{$expId}->{$libraryId}->{'stageId'},         ' - ',
+                $anatEntityId,                                         ' - ',
+                $stageId,                                              ' - ',
                 $cellTypeId,                                           ' - ',
                 $libraries{$expId}->{$libraryId}->{'sex'},             ' - ',
                 $libraries{$expId}->{$libraryId}->{'strain'},          ' - ',
@@ -369,8 +396,8 @@ for my $expId ( sort keys %processedLibraries ){
                 ($condKeyMap, $conditions) = Utils::insert_get_condition($bgee_metadata,
                                  $conditions,
                                  $stage_equivalences,
-                                 $libraries{$expId}->{$libraryId}->{'anatEntityId'},
-                                 $libraries{$expId}->{$libraryId}->{'stageId'},
+                                 $anatEntityId,
+                                 $stageId,
                                  $libraries{$expId}->{$libraryId}->{'speciesId'},
                                  $libraries{$expId}->{$libraryId}->{'sex'},
                                  $libraries{$expId}->{$libraryId}->{'strain'},
@@ -399,6 +426,7 @@ for my $expId ( sort keys %processedLibraries ){
 
         # prepare queries
         my $insAnnotatedSample = $bgee_thread->prepare($insert_annotatedSamples);
+        my $updateUMIAnnotatedSample = $bgee_thread->prepare($update_sumUMIs_annotatedSamples);
         my $selectAnnotatedSampleId = $bgee_thread->prepare($select_annotatedSampleId);
         my $insAnnotatedSampleGeneResult = $bgee_data->prepare($insert_annotatedSampleGeneResult);
 
@@ -476,9 +504,13 @@ for my $expId ( sort keys %processedLibraries ){
 
                 # then load file containing all calls for this library/celltypeId
                 my %callsOneAnnotatedSample = getCallsInfoPerLibrary($pathToCallFile);
+                
+                # used to sum all UMI and then update the table annotatedSample to populate the mappedUMIsCount column
+                my $mappedUMIsAnnotatedSample = 0;
 
                 #Start transaction with TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
                 for my $geneId (sort keys %{$callsOneAnnotatedSample{$cellTypeId}} ) {
+                    $mappedUMIsAnnotatedSample += $callsInfo{$cellTypeId}->{$geneId}->{'sumUMI'};
                     my $bgeeGeneId = $genes{$libraries{$expId}->{$libraryId}->{'speciesId'}}{$geneId};
                     my $reasonForExclusion = $NOT_EXCLUDED;
                     if ($callsOneAnnotatedSample{$cellTypeId}{$geneId}{'pValue'} > 0.05) {
@@ -506,7 +538,15 @@ for my $expId ( sort keys %processedLibraries ){
                             or die $insAnnotatedSampleGeneResult->errstr;
                     }
                 }
+                #now update annotated sample to insert sumUMIs
+                if ($debug) {
+                    print "UDPATE rnaSeqLibraryAnnotatedSample SET mappedUMIsCount = $mappedUMIsAnnotatedSample".
+                    " WHERE rnaSeqLibraryAnnotatedSampleId = $annotatedSampleId;\n";
+                } else {
+                    $updateUMIAnnotatedSample->execute($mappedUMIsAnnotatedSample, $annotatedSampleId);
+                }
                 #commit after each barcode
+                $insAnnotatedSampleGeneResult->finish;
                 $bgee_data->commit;
             }
 
@@ -517,7 +557,7 @@ for my $expId ( sort keys %processedLibraries ){
         $insAnnotatedSample->finish;
         $selectAnnotatedSampleId->finish;
 
-        # finished insertion on annotted sample. Now start to insert individual smaples
+        # finished insertion on annotted sample. Now start to insert individual samples
         my $insIndividualSample = $bgee_thread->prepare($insert_individualSamples);
         my $selectIndividualSampleId = $bgee_thread->prepare($select_individualSampleId);
         my $insIndividualSampleGeneResult = $bgee_data->prepare($insert_individualSampleGeneResult);
@@ -536,6 +576,7 @@ for my $expId ( sort keys %processedLibraries ){
         }
 
         # then start to insert abundance per cell. parallelized per celltype
+        my %mappedUMIsIndividualSamples;
         foreach my $barcode (@barcodesArray) {
 
             # For each barcode start a transaction with TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
@@ -547,6 +588,7 @@ for my $expId ( sort keys %processedLibraries ){
             for my $geneId ( keys %{$subsetCountMatrix{$barcode}} ) {
                 # check that the gene is present in the database. It is both a
                 # security check and a way to remove intergenic regions
+                #TODO: using a for loop on %subsetCpmMatrix would avoid parsing intergenic. To test in a future release
                 next if (! exists $genes{$libraries{$expId}->{$libraryId}->{'speciesId'}}{$geneId} ||
                     ! exists $subsetCountMatrix{$barcode}{$geneId});
                 my $bgeeGeneId = $genes{$libraries{$expId}->{$libraryId}->{'speciesId'}}{$geneId};
@@ -554,6 +596,11 @@ for my $expId ( sort keys %processedLibraries ){
                     warn "Warning, gene $geneId has count for barcode $barcode but",
                         " no abundance was generated";
                     next;
+                }
+                if (exists $mappedUMIsIndividualSamples{$individualSampleId}) {
+                    $mappedUMIsIndividualSamples{$individualSampleId} += $subsetCountMatrix{$barcode}{$geneId};
+                } else {
+                    $mappedUMIsIndividualSamples{$individualSampleId} = $subsetCountMatrix{$barcode}{$geneId};
                 }
                 if ($debug) {
                     print 'INSERT INTO rnaSeqLibraryIndividualSampleGeneResult: ',
@@ -571,7 +618,16 @@ for my $expId ( sort keys %processedLibraries ){
             #commit after each barcode
             $bgee_data->commit;
         }
+
+        #now update the table rnaSeqIndividualSample to add mappedUMIsCount
+        my $updateUMIIndividualSample = $bgee_data->prepare($update_sumUMIs_individualSamples);
+        foreach my $individualSampleId (sort keys %mappedUMIsIndividualSamples) {
+            $updateUMIIndividualSample->execute($individualSampleId, $mappedUMIsIndividualSamples{$individualSampleId});
+        }
+        #commit only once update of all indifivudalsamples
+        $bgee_data->commit;
         ## close prepared statements.
+        $updateUMIIndividualSample->finish;
         $insAnnotatedSample->finish;
         $selectAnnotatedSampleId->finish;
         $insIndividualSample->finish;
