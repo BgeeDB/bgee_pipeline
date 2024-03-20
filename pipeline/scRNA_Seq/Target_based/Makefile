@@ -29,6 +29,30 @@ filter_annot:
 	@$(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args scRNASeqExperiment="$(SC_RNASEQ_EXP_TB_FILEPATH)" scRNASeqTBLibrary="$(SC_RNASEQ_LIB_TB_FILEPATH)" strainMapping="$(STRAIN_MAPPING_FILE)" acceptedProtocols="$(SC_RNASEQ_ACCEPTED_PROTOCOLS)" outputDir="$(SC_RNASEQ_TB_FOLDER_GENERATED)"' 0Preparation/filter_annotation.R $(SC_RNASEQ_TB_FOLDER_GENERATED)filter_annotation.Rout
 	@touch $@
 
+## Cleaning duplicates in the barcodes annotation files before mapping and analyis
+cleaning_barcodes: #filter_annot 0Preparation/cleaning_barcodes.R
+	@echo --- Cleaning duplicated barcodes per experimentID/libraryID ---
+	@sed -i 's@--output=.*@--output=${PWD}/$@.out@'                                                                0Preparation/cleaning_barcodes.sbatch
+	@sed -i 's@--error=.*@--error=${PWD}/$@.err@'                                                                  0Preparation/cleaning_barcodes.sbatch
+	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                   0Preparation/cleaning_barcodes.sbatch
+	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                         0Preparation/cleaning_barcodes.sbatch
+	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                  0Preparation/cleaning_barcodes.sbatch
+	@sed -i 's@export barcodesFolder=.*@export barcodesFolder=${PWD}/$(SC_RNASEQ_TB_FOLDER_SOURCE)@'               0Preparation/cleaning_barcodes.sbatch
+	@sed -i 's@export output=.*@export output=${PWD}/$(SC_RNASEQ_CLEANED_BARCODES)@'                               0Preparation/cleaning_barcodes.sbatch
+	@sbatch 0Preparation/cleaning_barcodes.sbatch
+	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
+	@echo --- DONE ---
+	@touch $@
+
+## check that annotation are present in the Bgee database or, if annotation are not in Bgee, that a remapping
+## has been done.
+##TODO: remapping strains, filtering and check on platform should also be done in perl in this rule
+check_annot: cleaning_barcodes
+	# First check of annotations
+	@$(SENSITIVE_PERL_CMD) perl 0Preparation/check_curation.pl -bgee=$(BGEECMD) -experiments=$(SC_RNASEQ_EXP_TB_FILEPATH_FILTERED) -libraries=$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED) -barcodeDir=$(SC_RNASEQ_CLEANED_BARCODES) -extraMapping=$(EXTRAMAPPING_FILEPATH) >$@.tmp 2>$@.err
+	@echo -e "Check file \"check_annot\" for the output of the script 0Before/check_curation.pl, which indicates potential errors to correct in the annotation files.\n"
+	@$(MV) $@.tmp $@
+
 ## Retrieve metadata (run rule with sbatch)
 ##TODO: this rule has to be updated as the rule finish when the job starts to run... not when the job ends.
 ## Using such a logic does not allow to run a pipeline as metadata mandatory for next step are not
@@ -136,22 +160,6 @@ generate_info: check_tools 0Preparation/generateInfo.R
 	@sed -i 's@export folder_gtf=.*@export folder_gtf=$(RNASEQ_CLUSTER_GTF)@'                                      0Preparation/generateInfo.sbatch
 	@sed -i 's@export metadata_info_file=.*@export metadata_info_file=${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH)@'  0Preparation/generateInfo.sbatch
 	@sbatch 0Preparation/generateInfo.sbatch
-	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
-	@echo --- DONE ---
-	@touch $@
-
-## Cleaning duplicates in the barcodes annotation files before mapping and analyis
-cleaning_barcodes: generate_info 0Preparation/cleaning_barcodes.R
-	@mkdir -p ${SC_RNASEQ_CLUSTER_ALL_RES_DROPLET}/cleaning_barcodes/
-	@echo --- Cleaning duplicated barcodes per experimentID/libraryID ---
-	@sed -i 's@--output=.*@--output=${SC_RNASEQ_CLUSTER_ALL_RES_DROPLET}/cleaning_barcodes/cleaning_barcode.out@'  0Preparation/cleaning_barcodes.sbatch
-	@sed -i 's@--error=.*@--error=${SC_RNASEQ_CLUSTER_ALL_RES_DROPLET}/cleaning_barcodes/cleaning_barcode.err@'    0Preparation/cleaning_barcodes.sbatch
-	@sed -i 's@--partition=.*@--partition=${SENSITIVE_CLUSTER_PARTITION}@'                                         0Preparation/cleaning_barcodes.sbatch
-	@sed -i 's@--account=.*@--account=${SENSITIVE_CLUSTER_ACCOUNT}@'                                               0Preparation/cleaning_barcodes.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                  0Preparation/cleaning_barcodes.sbatch
-	@sed -i 's@export barcodesFolder=.*@export barcodesFolder=${PWD}/$(SC_RNASEQ_TB_FOLDER_SOURCE)@'               0Preparation/cleaning_barcodes.sbatch
-	@sed -i 's@export output=.*@export output=${PWD}/$(SC_RNASEQ_CLEANED_BARCODES)@'                               0Preparation/cleaning_barcodes.sbatch
-	@sbatch 0Preparation/cleaning_barcodes.sbatch
 	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
 	@echo --- DONE ---
 	@touch $@
