@@ -930,7 +930,7 @@ create table rnaSeqLibrary (
     -- Is the library built using paired end?
 -- NA: info not used for pseudo-mapping. Default value in an enum is the first one.
     libraryType enum('NA', 'single', 'paired') not null,
-    usedToGenerateCalls tinyint(1) not null default 0
+    usedInPropagatedCalls tinyint(1) not null default 0
 ) engine = innodb;
 
 -- XXX should we keep discarded info at rnaSeqLibrary level, at rnaSeqLibraryAnnotatedSample level,
@@ -968,6 +968,15 @@ create table rnaSeqLibraryAnnotatedSample (
     rnaSeqLibraryAnnotatedSampleId mediumint unsigned not null,
     rnaSeqLibraryId varchar(70) not null,
     conditionId mediumint unsigned not null,
+--  all *AuthorAnnotation columns correspond to free text retrieved from paper by Bgee curators.
+--  anatEntityAuthorAnnotation and stageAuthorAnnotation are at the library level they are unique
+--  for a given combination of rnaSeqLibraryId and conditionId. However, it is possible to have different
+--  cellTypeAuthorAnnotation for a given combination of rnaSeqLibraryId and conditionId as different
+--  cellTypeAuthorAnnotation can be annotated with the same cellTypeId, especially when the cell ontology does
+--  not contain terms precise enough.
+    cellTypeAuthorAnnotation varchar(255) not null,
+    anatEntityAuthorAnnotation varchar(255) not null,
+    stageAuthorAnnotation varchar(255) not null,
     abundanceUnit enum('tpm', 'cpm'),
     meanAbundanceReferenceIntergenicDistribution decimal(16, 6) not null default -1 COMMENT 'mean TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
     sdAbundanceReferenceIntergenicDistribution decimal(16, 6) not null default -1 COMMENT 'standard deviation in TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
@@ -991,7 +1000,11 @@ create table rnaSeqLibraryAnnotatedSample (
     rnaSeqLibraryAnnotatedSampleDistinctRankCount mediumint unsigned COMMENT 'The count of distinct rank in this sample (see `rank` field in rnaSeqLibraryAnnotatedSampleGeneResult table, used for weighted mean rank computations)',
     multipleLibraryIndividualSample boolean not null default 0 COMMENT 'boolean true if the annotated sample contains several individual samples. e.g true for 10x as one annotated sample corresponds to one cell population and individual sample will correspond to each cell of this cell population',
     --  can be null as it is applicable only to pooled bulk samples like BRB-Seq
-    barcode varchar(70) COMMENT 'barcode used to pool several samples in the same library'
+    barcode varchar(70) COMMENT 'barcode used to pool several samples in the same library',
+-- these 3 columns have been added to be able to insert precise Salmon condition information
+    time int unsigned default null,
+    timeUnit varchar(35) default null,
+    freeTextAnnotation varchar(255) default null
 ) engine = innodb;
 
 -- TODO: This table contains abundance/read count values for each gene for each library
@@ -1045,7 +1058,9 @@ create table rnaSeqLibraryIndividualSample (
     rnaSeqLibraryIndividualSampleId int unsigned not null, 
     rnaSeqLibraryAnnotatedSampleId mediumint unsigned not null,
     barcode varchar(70) COMMENT 'barcode used to pool several samples in the same library',
-    sampleName varchar(70)
+    sampleName varchar(70),
+    -- total number of UMIs in library that were mapped to this individual sample
+    mappedUMIsCount int unsigned not null default 0
 ) engine = innodb;
 
 -- gene result at individual sample level (e.g for each cell for 10x)
