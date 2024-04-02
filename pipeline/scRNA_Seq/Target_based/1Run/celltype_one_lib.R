@@ -119,8 +119,9 @@ targetCells <- function(objectNormalized, objectNormalized_filtered, barcodeInfo
     message(ncol(seurat_object_with_celltype) - ncol(seurat_object_with_celltype_filtered), " cells out of ",
         ncol(seurat_object_with_celltype), " with celltype annotation would have been removed by filtering ",
         "on the inflection point of the kneeplot.")
-    seurat_object_with_celltype$celltype_name <- barcodeInfo$cellTypeName
+    seurat_object_with_celltype$internal_cluster_id <- barcodeInfo$internal_cluster_id
     seurat_object_with_celltype$celltype_id <- barcodeInfo$cellTypeId
+    seurat_object_with_celltype$celltype_name <- barcodeInfo$cellTypeName
     #head(myData[[]])
     ## remove unsigned cells (this avoid the exportation of the file of unassigned cells)
     seurat_object_with_celltype <- subset(seurat_object_with_celltype,  celltype_name != "Unassigned")
@@ -147,9 +148,11 @@ targetCells <- function(objectNormalized, objectNormalized_filtered, barcodeInfo
         pdf(file.path(output, libraryID, "UMAP_seurat_cluster.pdf"))
         print(umapPlot)
         dev.off()
-        umapPlot <- DimPlot(seurat_object_with_celltype, reduction = "umap", group.by='celltype_id')
+        # use the internal cluster ID to cluster as it is not possible to use the author free text celltype
+        # information for some dataset (e.g FCA)
+        umapPlot <- DimPlot(seurat_object_with_celltype, reduction = "umap", group.by='internal_cluster_id')
         ## save UMAP information with cell_type
-        pdf(file.path(output, libraryID, "UMAP_cellType_cluster.pdf"))
+        pdf(file.path(output, libraryID, "UMAP_cellType_author_annotation_cluster.pdf"))
         print(umapPlot)
         dev.off()
         umapPlot <- DimPlot(seurat_object_with_celltype, reduction = "umap", group.by='celltype_id')
@@ -171,37 +174,44 @@ targetCells <- function(objectNormalized, objectNormalized_filtered, barcodeInfo
     finalRaw <- data.frame(seurat_object_with_celltype@assays$RNA@counts)
     finalCPM <- data.frame(seurat_object_with_celltype@assays$RNA@data)
     
-    ## write in the output the info per cell type that is present in the library
+    ## write in the output the info per internal cluster ID
+    ##
     infoCollected <- c()
-    for (cell in unique(seurat_object_with_celltype$celltype_name)) {
-      for (cellId in unique(seurat_object_with_celltype$celltype_id[seurat_object_with_celltype$celltype_name == cell])) {
-        message("cell : ", cellId)
-        ## split information
-        barcodesID <- colnames(seurat_object_with_celltype)[seurat_object_with_celltype$celltype_name == cell & seurat_object_with_celltype$celltype_id == cellId] 
-        ## export raw counts to each cell type
-        rawCountsCell <- finalRaw[(names(finalRaw) %in% barcodesID)]
-        rawCountsCell <- cbind(names = rownames(rawCountsCell), rawCountsCell)
-        colnames(rawCountsCell)[1] <- "gene_id"
-        ## add biotype info to raw counts
-        collectBiotypeRaw <- merge(rawCountsCell, biotypeInfo, by = "gene_id", all.x = TRUE)
-        collectBiotypeRaw$cellTypeName <- cell
-        collectBiotypeRaw$cellTypeId <- cellId
+    for (internal_cluster_id in unique(seurat_object_with_celltype$internal_cluster_id)) {
+      cellId = unique(seurat_object_with_celltype$celltype_id[seurat_object_with_celltype$internal_cluster_id == internal_cluster_id])
+      cellName = unique(seurat_object_with_celltype$celltype_name[seurat_object_with_celltype$internal_cluster_id == internal_cluster_id])
+      if (is.na(cellId)) {
+        error("No cell-type ID for library ", libraryID, " and internal cluster ID ", internal_cluster_id)
+      }
+      if(length(cellId) > 1){
+        error("More than one cell-type ID for library ", libraryID, " and internal cluster ID ", internal_cluster_id)
+      }
+      message("cell : ", cellId)
+      ## split information
+      barcodesID <- colnames(seurat_object_with_celltype)[seurat_object_with_celltype$internal_cluster_id == internal_cluster_id] 
+      ## export raw counts to each cell type
+      rawCountsCell <- finalRaw[(names(finalRaw) %in% barcodesID)]
+      rawCountsCell <- cbind(names = rownames(rawCountsCell), rawCountsCell)
+      colnames(rawCountsCell)[1] <- "gene_id"
+      ## add biotype info to raw counts
+      collectBiotypeRaw <- merge(rawCountsCell, biotypeInfo, by = "gene_id", all.x = TRUE)
+      collectBiotypeRaw$internalClusterId <- internal_cluster_id
+      collectBiotypeRaw$cellTypeId <- cellId
         
-        ## export normalized counts to each cell type
-        normalizedCountsCell <- finalCPM[(names(finalCPM) %in% barcodesID)]
-        normalizedCountsCell <- cbind(names = rownames(normalizedCountsCell), normalizedCountsCell)
-        colnames(normalizedCountsCell)[1] <- "gene_id"
-        ## add biotype info to normalized counts
-        collectBiotypeNorm <- merge(normalizedCountsCell, biotypeInfo, by = "gene_id", all.x = TRUE)
-        ## add type info
-        collectBiotypeNorm$type <- ifelse(is.na(collectBiotypeNorm$biotype), "intergenic", "genic")
-        collectBiotypeNorm$cellTypeName <- cell
-	cellIdModified <- gsub(":", "_", cellId)
-        ## write output information to integrate in Bgee
-        rawCountFilePath <- file.path(output, libraryID, paste0("Raw_Counts_", cellIdModified,
+      ## export normalized counts to each internal cluster ID
+      normalizedCountsCell <- finalCPM[(names(finalCPM) %in% barcodesID)]
+      normalizedCountsCell <- cbind(names = rownames(normalizedCountsCell), normalizedCountsCell)
+      colnames(normalizedCountsCell)[1] <- "gene_id"
+      ## add biotype info to normalized counts
+      collectBiotypeNorm <- merge(normalizedCountsCell, biotypeInfo, by = "gene_id", all.x = TRUE)
+      ## add type info
+      collectBiotypeNorm$type <- ifelse(is.na(collectBiotypeNorm$biotype), "intergenic", "genic")
+      collectBiotypeNorm$cellTypeName <- cellName
+      ## write output information to integrate in Bgee
+      rawCountFilePath <- file.path(output, libraryID, paste0("Raw_Counts_", cellIdModified,
           ".tsv"))
         normalizedCountFilePath <- file.path(output, libraryID, paste0("Normalized_Counts_",
-          cellIdModified, ".tsv"))
+          internal_cluster_id, cellIdModified, ".tsv"))
         write.table(collectBiotypeRaw, file = rawCountFilePath, sep="\t", row.names = FALSE, 
           quote = FALSE)
         write.table(collectBiotypeNorm, file = normalizedCountFilePath, sep="\t", row.names = FALSE,
