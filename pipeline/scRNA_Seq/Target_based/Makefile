@@ -228,13 +228,13 @@ bimodality_cellPop: qc_cellType 1Run/QC_cellPop_bimodality.R
 	@touch $@
 
 ## Call present and absent genes per library/cell population that pass the bimodality test
-calls: qc_cellType 1Run/parallelized_calls.pl 1Run/calls_one_library.R 1Run/calls_summary.R
+calls: #qc_cellType 1Run/parallelized_calls.pl 1Run/calls_one_library.R 1Run/calls_summary.R
 	@echo --- Starting generation of droplet based calls
-	@$(SENSITIVE_PERL_CMD) perl 1Run/parallelized_calls.pl -metadataFile=${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH)  -parallelJobs=100 -refIntergenicFolder=$(CLUSTER_REF_INTERGENIC_FOLDER) -cellTypeFolder=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE) -outputDir=$(SC_RNASEQ_CLUSTER_CALLS_10X) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToCallsScript=${PWD}/1Run/calls_one_library.R -pathToSummaryScript=${PWD}/1Run/calls_summary.R -pValueCutoff=$(PVALUE_CUTOFF) -rLibs=$(R_LIBS_PATH_SENSITIVE) > $@.tmp 2> $@.err
+	#@$(SENSITIVE_PERL_CMD) perl 1Run/parallelized_calls.pl -metadataFile=${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH)  -parallelJobs=100 -refIntergenicFolder=$(CLUSTER_REF_INTERGENIC_FOLDER) -cellTypeFolder=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE) -outputDir=$(SC_RNASEQ_CLUSTER_CALLS_10X) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToCallsScript=${PWD}/1Run/calls_one_library.R -pathToSummaryScript=${PWD}/1Run/calls_summary.R -pValueCutoff=$(PVALUE_CUTOFF) -rLibs=$(R_LIBS_PATH_SENSITIVE) > $@.tmp 2> $@.err
 	#now that calls have been generated we generate a tsv file summarizing calls information for each library
 	# this script is run in the front of the cluster as it does requires lots of time, memory and cpu.
 	#TODO generate plots as commented at the end of the script calls_one_library.R
-	#@$(CLUSTER_R_CMD) Rscript 1Run/calls_summary.R metadata_file=\"$(SC_RNASEQ_METADATA_10X_FILEPATH)\" calls_dir=\"$(SC_RNASEQ_CLUSTER_CALLS_10X)\" summary_calls_file=\"$(SC_RNASEQ_CLUSTER_INFO_CALLS_10X)\" >> $@.tmp 2>> $@.err
+	@$(CLUSTER_R_CMD) Rscript 1Run/calls_summary.R metadata_file=\"$(SC_RNASEQ_METADATA_10X_FILEPATH)\" calls_dir=\"$(SC_RNASEQ_CLUSTER_CALLS_10X)\" summary_calls_file=\"$(SC_RNASEQ_CLUSTER_INFO_CALLS_10X)\" >> $@.tmp 2>> $@.err
 	@mv $@.tmp $@
 
 final_status: calls
