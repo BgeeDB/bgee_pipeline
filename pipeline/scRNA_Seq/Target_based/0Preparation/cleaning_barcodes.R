@@ -114,7 +114,7 @@ for (barcode_file_path in barcodes_files_path) {
     all_unique_barcodes <- rbind(all_unique_barcodes, unique_barcodes)
     saveDuplicatedBarcodes <- rbind(all_duplicated_barcodes, barcodes_duplicates)
   }
-  write.table(all_unique_barcodes, file = file.path(output, barcode_file_name), sep = "\t", row.names = FALSE, quote = FALSE)
+  write.table(all_unique_barcodes, file = file.path(output, barcode_file_name), sep = "\t", row.names = FALSE, quote = TRUE)
   if (isTRUE(all_duplicated_barcodes) && nrow(all_duplicated_barcodes) != 0){
     message("Exists barcode duplicates in 1 or more library of ", barcode_file_name)
     write.table(all_duplicated_barcodes, file = file.path(output, paste0("DuplicateBarcodes_", barcode_file_name)), sep = "\t", row.names = FALSE, quote = FALSE)
