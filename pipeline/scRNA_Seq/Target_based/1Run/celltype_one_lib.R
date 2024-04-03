@@ -177,25 +177,25 @@ targetCells <- function(objectNormalized, objectNormalized_filtered, barcodeInfo
     ## write in the output the info per internal cluster ID
     ##
     infoCollected <- c()
-    for (internal_cluster_id in unique(seurat_object_with_celltype$internal_cluster_id)) {
-      cellId = unique(seurat_object_with_celltype$celltype_id[seurat_object_with_celltype$internal_cluster_id == internal_cluster_id])
-      cellName = unique(seurat_object_with_celltype$celltype_name[seurat_object_with_celltype$internal_cluster_id == internal_cluster_id])
+    for (internalClusterId in unique(seurat_object_with_celltype$internal_cluster_id)) {
+      cellId = unique(seurat_object_with_celltype$celltype_id[seurat_object_with_celltype$internal_cluster_id == internalClusterId])
+      cellName = unique(seurat_object_with_celltype$celltype_name[seurat_object_with_celltype$internal_cluster_id == internalClusterId])
       if (is.na(cellId)) {
-        error("No cell-type ID for library ", libraryID, " and internal cluster ID ", internal_cluster_id)
+        error("No cell-type ID for library ", libraryID, " and internal cluster ID ", internalClusterId)
       }
       if(length(cellId) > 1){
-        error("More than one cell-type ID for library ", libraryID, " and internal cluster ID ", internal_cluster_id)
+        error("More than one cell-type ID for library ", libraryID, " and internal cluster ID ", internalClusterId)
       }
-      message("cell : ", cellId)
+      message("cluster : [internalClusterId=", internalClusterId, ",cellId=", cellId"]")
       ## split information
-      barcodesID <- colnames(seurat_object_with_celltype)[seurat_object_with_celltype$internal_cluster_id == internal_cluster_id] 
+      barcodesID <- colnames(seurat_object_with_celltype)[seurat_object_with_celltype$internal_cluster_id == internalClusterId] 
       ## export raw counts to each cell type
       rawCountsCell <- finalRaw[(names(finalRaw) %in% barcodesID)]
       rawCountsCell <- cbind(names = rownames(rawCountsCell), rawCountsCell)
       colnames(rawCountsCell)[1] <- "gene_id"
       ## add biotype info to raw counts
       collectBiotypeRaw <- merge(rawCountsCell, biotypeInfo, by = "gene_id", all.x = TRUE)
-      collectBiotypeRaw$internalClusterId <- internal_cluster_id
+      collectBiotypeRaw$internalClusterId <- internalClusterId
       collectBiotypeRaw$cellTypeId <- cellId
         
       ## export normalized counts to each internal cluster ID
@@ -208,10 +208,10 @@ targetCells <- function(objectNormalized, objectNormalized_filtered, barcodeInfo
       collectBiotypeNorm$type <- ifelse(is.na(collectBiotypeNorm$biotype), "intergenic", "genic")
       collectBiotypeNorm$cellTypeName <- cellName
       ## write output information to integrate in Bgee
-      rawCountFilePath <- file.path(output, libraryID, paste0("Raw_Counts_", cellIdModified,
+      rawCountFilePath <- file.path(output, libraryID, paste0("Raw_Counts_", internalClusterId,
           ".tsv"))
         normalizedCountFilePath <- file.path(output, libraryID, paste0("Normalized_Counts_",
-          internal_cluster_id, cellIdModified, ".tsv"))
+          internalClusterId, ".tsv"))
         write.table(collectBiotypeRaw, file = rawCountFilePath, sep="\t", row.names = FALSE, 
           quote = FALSE)
         write.table(collectBiotypeNorm, file = normalizedCountFilePath, sep="\t", row.names = FALSE,
