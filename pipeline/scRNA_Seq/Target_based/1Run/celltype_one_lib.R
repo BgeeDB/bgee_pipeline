@@ -111,7 +111,7 @@ targetCells <- function(objectNormalized, objectNormalized_filtered, barcodeInfo
   
   ## select cells based on the barcode ID's
   if (nrow(barcodeInfo) != 0){
-    
+    message("library ID ", unique(barcodeInfo$library), " has ", nrow(barcodeInfo), " barcodes with annotation")
     barcode_ids_having_celltype_annot <- barcodeInfo$barcode
     ## subset barcodes for which celltype are provided
     seurat_object_with_celltype <- subset(objectNormalized,  cells = barcode_ids_having_celltype_annot)
@@ -290,6 +290,7 @@ if (file.exists(file.path(kallisto_bus_results, libraryId, "gene_counts"))){
     barcodeExperiment <- read.table(file.path(infoFolder,
       paste0("scRNASeq_barcode_", experimentID,".tsv")), header = TRUE,
       sep = "\t", quote = "\"")
+    message("barcode experiment file has ", nrow(barcodeExperiment), " rows")
     barcodeLibrary <- dplyr::filter(barcodeExperiment, library == libraryId)
     ## link barcode to cell ID and export information
     finalInformationCells <- targetCells(objectNormalized = object_seurat, objectNormalized_filtered = object_seurat_filtered,
@@ -317,6 +318,6 @@ if (file.exists(file.path(kallisto_bus_results, libraryId, "gene_counts"))){
     file.create(file.path(output, libraryId, "done"))
   }
 } else {
-    warning("The library ", libraryId, " has not been porcessed by bustools")
+    stop("The library ", libraryId, " has not been porcessed by bustools")
 }
 
