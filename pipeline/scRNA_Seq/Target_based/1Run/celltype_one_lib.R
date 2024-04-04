@@ -122,6 +122,7 @@ targetCells <- function(objectNormalized, objectNormalized_filtered, barcodeInfo
     seurat_object_with_celltype$internal_cluster_id <- barcodeInfo$internal_cluster_id
     seurat_object_with_celltype$celltype_id <- barcodeInfo$cellTypeId
     seurat_object_with_celltype$celltype_name <- barcodeInfo$cellTypeName
+    seurat_object_with_celltype$celltype_author_annotation <- barcodeInfo$cell_type
     #head(myData[[]])
     ## remove unsigned cells (this avoid the exportation of the file of unassigned cells)
     seurat_object_with_celltype <- subset(seurat_object_with_celltype,  celltype_name != "Unassigned")
@@ -178,15 +179,16 @@ targetCells <- function(objectNormalized, objectNormalized_filtered, barcodeInfo
     ##
     infoCollected <- c()
     for (internalClusterId in unique(seurat_object_with_celltype$internal_cluster_id)) {
-      cellId = unique(seurat_object_with_celltype$celltype_id[seurat_object_with_celltype$internal_cluster_id == internalClusterId])
-      cellName = unique(seurat_object_with_celltype$celltype_name[seurat_object_with_celltype$internal_cluster_id == internalClusterId])
+      cellId = unique(as.character(seurat_object_with_celltype$celltype_id[seurat_object_with_celltype$internal_cluster_id == internalClusterId]))
+      cellName = unique(as.character(seurat_object_with_celltype$celltype_name[seurat_object_with_celltype$internal_cluster_id == internalClusterId]))
+      celltypeAuthorAnnotation = unique(as.character(seurat_object_with_celltype$celltype_author_annotation[seurat_object_with_celltype$internal_cluster_id == internalClusterId]))
       if (is.na(cellId)) {
-        error("No cell-type ID for library ", libraryID, " and internal cluster ID ", internalClusterId)
+        stop("No cell-type ID for library ", libraryID, " and internal cluster ID ", internalClusterId)
       }
       if(length(cellId) > 1){
-        error("More than one cell-type ID for library ", libraryID, " and internal cluster ID ", internalClusterId)
+        stop("More than one cell-type ID for library ", libraryID, ", internal cluster ID ", internalClusterId, " celltypeIds : ",cellId)
       }
-      message("cluster : [internalClusterId=", internalClusterId, ",cellId=", cellId"]")
+      message("cluster info[internalClusterId: ", internalClusterId, ", cellId: ", cellId, ", celltypeAuthorAnnotation= ", celltypeAuthorAnnotation, "]")
       ## split information
       barcodesID <- colnames(seurat_object_with_celltype)[seurat_object_with_celltype$internal_cluster_id == internalClusterId] 
       ## export raw counts to each cell type
@@ -210,20 +212,19 @@ targetCells <- function(objectNormalized, objectNormalized_filtered, barcodeInfo
       ## write output information to integrate in Bgee
       rawCountFilePath <- file.path(output, libraryID, paste0("Raw_Counts_", internalClusterId,
           ".tsv"))
-        normalizedCountFilePath <- file.path(output, libraryID, paste0("Normalized_Counts_",
-          internalClusterId, ".tsv"))
-        write.table(collectBiotypeRaw, file = rawCountFilePath, sep="\t", row.names = FALSE, 
-          quote = FALSE)
-        write.table(collectBiotypeNorm, file = normalizedCountFilePath, sep="\t", row.names = FALSE,
-          quote = FALSE)
-        
-        ## info per cell (-5 because of geneId, biotype, type columns and cellName and cellID)
-        cellInfo <- c(nrow(collectBiotypeNorm), ncol(collectBiotypeNorm)-5, cell, cellId)
-        infoCollected <- rbind(infoCollected, cellInfo)
-      }
+      normalizedCountFilePath <- file.path(output, libraryID, paste0("Normalized_Counts_",
+        internalClusterId, ".tsv"))
+      write.table(collectBiotypeRaw, file = rawCountFilePath, sep="\t", row.names = FALSE, 
+        quote = FALSE)
+      write.table(collectBiotypeNorm, file = normalizedCountFilePath, sep="\t", row.names = FALSE,
+        quote = FALSE)
+ 
+      ## info per cell (-5 because of geneId, biotype, type columns and cellName and cellID)
+      cellInfo <- c(nrow(collectBiotypeNorm), ncol(collectBiotypeNorm)-5, celltypeAuthorAnnotation, cellId)
+      infoCollected <- rbind(infoCollected, cellInfo)
     }
     infoCollected <- as.data.frame(infoCollected)
-    colnames(infoCollected) <- c("Number_genes", "Number_cells", "Cell_Name", "Cell_Ontology")
+    colnames(infoCollected) <- c("Number_genes", "Number_cells", "Celltype_author_annotation", "Celltype_id")
 
     return(list(seurat_object_with_celltype[[]],infoCollected))
   } else {
@@ -288,7 +289,7 @@ if (file.exists(file.path(kallisto_bus_results, libraryId, "gene_counts"))){
     ## get barcode information per experiment
     barcodeExperiment <- read.table(file.path(infoFolder,
       paste0("scRNASeq_barcode_", experimentID,".tsv")), header = TRUE,
-      sep = "\t")
+      sep = "\t", quote = "\"")
     barcodeLibrary <- dplyr::filter(barcodeExperiment, library == libraryId)
     ## link barcode to cell ID and export information
     finalInformationCells <- targetCells(objectNormalized = object_seurat, objectNormalized_filtered = object_seurat_filtered,
@@ -303,10 +304,10 @@ if (file.exists(file.path(kallisto_bus_results, libraryId, "gene_counts"))){
     } else {
       ## write all information for the library
       info <- data.frame(libraryId, experimentID, length(tot_counts) , length(tot_genes),
-        infoCells$Number_genes, infoCells$Number_cells, infoCells$Cell_Name, infoCells$Cell_Ontology)
+        infoCells$Number_genes, infoCells$Number_cells, as.character(infoCells$Celltype_author_annotation), as.character(infoCells$Celltype_id))
       colnames(info) <- c("library", "experimentID", "Initial_UMI_barcode",
         "Initial_tot_genes", "genes_afterFiltering", "cells_afterFiltering",
-        "cellTypeName", "cellTypeId")
+        "cellTypeAuthorAnnotation", "cellTypeId")
 
       # write file containing knee plot filtering stats
       write.table(info, file = file.path(output, libraryId, "kneePlotFilteringInfo.txt"),
