@@ -41,8 +41,8 @@ if( length(cmd_args) == 0 ){
 }
 
 ## checking if all necessary arguments were passed....
-command_arg <- c("libraryId", "speciesId", "speciesName" ,"celltypeFolder",
-  "refIntergenicFolder", "pValueCutoff", "callsOutputFolder")
+command_arg <- c("experimentId", "libraryId", "speciesId", "speciesName", "barcodeAnnotationFolder",
+  "celltypeFolder", "refIntergenicFolder", "pValueCutoff", "callsOutputFolder")
 for (c_arg in command_arg) {
   if (!exists(c_arg)) {
     stop(paste(c_arg,"command line argument not provided\n"))
@@ -111,8 +111,8 @@ theoretical_pValue <- function(counts){
     2^(sd(log2(selectedRefIntergenic$CPM)))))
 }
 
-cutoff_info <- function(library_id, cellTypeId, counts, pValueCutoff,
-  meanRefIntergenic, sdRefIntergenic){
+cutoff_info <- function(library_id, cellTypeId, cellTypeFreeTextAnnotation, counts, pValueCutoff,
+    meanRefIntergenic, sdRefIntergenic){
   ## collect stats using pValue_cutoff
   genic_region_present <- nrow(dplyr::filter(counts, type == "genic" & calls_pValue == "present"))
   proportion_genic_present <- (nrow(dplyr::filter(counts, type == "genic" &
@@ -128,12 +128,12 @@ cutoff_info <- function(library_id, cellTypeId, counts, pValueCutoff,
   
   CPM_Threshold <- min(counts$CPM[counts$type == "genic" & counts$calls_pValue == "present"])
   ## Export cutoff_info_file
-  collectInfo <- c(library_id, cellTypeId, CPM_Threshold, sum(counts$type == "genic"),
+  collectInfo <- c(library_id, cellTypeId, cellTypeFreeTextAnnotation, CPM_Threshold, sum(counts$type == "genic"),
     genic_region_present,proportion_genic_present, sum(counts$biotype %in% "protein_coding"),
     coding_region_present,proportion_coding_present, sum(counts$type %in% "intergenic"),
     intergenic_region_present,proportion_intergenic_present, pValueCutoff,
     meanRefIntergenic, sdRefIntergenic)
-  names(collectInfo) <- c("libraryId", "cellTypeId", "CPM_Threshold", "Genic",
+  names(collectInfo) <- c("libraryId", "cellTypeId", "cellTypeFreeTextAnnotation", "CPM_Threshold", "Genic",
                           "Genic_region_present","Proportion_genic_present",
                           "Protein_coding","Coding_region_present","Proportion_coding_present",
                           "Intergenic","Intergenic_region_present","Proportion_intergenic_present",
@@ -143,7 +143,8 @@ cutoff_info <- function(library_id, cellTypeId, counts, pValueCutoff,
 
 
 ## export the plot
-plotData <- function(libraryId, cellTypeId, counts, CPM_threshold){
+plotData <- function(libraryId, internalClusterId, cellTypeId, cellTypeFreeTextAnnotation, counts,
+    CPM_threshold){
   ## export distribution
   dens <- density(log2(counts$CPM+1e-6), na.rm=T)
   dens_genic <- density(log2(counts$CPM[counts$type == "genic"]+1e-6), na.rm=T)
@@ -154,11 +155,11 @@ plotData <- function(libraryId, cellTypeId, counts, CPM_threshold){
   refIntergenic <- dplyr::filter(counts, type == "intergenic")
   dens_Refintergenic <- density(log2(refIntergenic$CPM+1e-6), na.rm=T)
   dens_Refintergenic$y <- dens_Refintergenic$y * nrow(refIntergenic) / length(counts$CPM)
-  pdf(file.path(libraryOutputFolder, paste0("Distribution_", libraryId, "_",cellTypeId,
+  pdf(file.path(libraryOutputFolder, paste0("Distribution_", libraryId, "_",internalClusterId,
                                             ".pdf")), width=10, height=6) 
   par(mfrow=c(1,2))
   plot(dens, lwd=2, main=paste0(libraryId), xlab="Log2(CPM)")
-  mtext(paste0(cellTypeId))
+  mtext(paste0(cellTypeId," and ", cellTypeFreeTextAnnotation))
   lines(dens_genic,col="red", lwd=2)
   lines(dens_coding,col="indianred", lwd=2)
   lines(dens_Refintergenic,col="cyan", lwd=2)
@@ -170,7 +171,7 @@ plotData <- function(libraryId, cellTypeId, counts, CPM_threshold){
   ## export frequency of pValue for all genic region
   genicRegion <- as.numeric(counts$pValue[counts$type == "genic"])
   hist(na.omit(genicRegion), main=paste0(libraryId), xlab="pValue", xlim=c(0,1))
-  mtext(paste0("Genic region_",cellTypeId))
+  mtext(paste0("Genic region_",cellTypeId,"_", cellTypeFreeTextAnnotation))
   abline(v=pValueCutoff, col="red", lwd=2)
   dev.off()
 }
@@ -206,14 +207,25 @@ if (length(rawCountFiles) > 0 ) {
 referenceIntergenicIds <- refIntergenicIds(refIntergenicFolder, speciesId)
 allCelltypeInfo <- file.path(libraryOutputFolder, "All_cellPopulation_stats_10X.tsv")
 
+# load barcode annotation file to be able to retrieve the cell-type ID and the free-text cell-type annotation
+#TODO: celltype ID and freetext annotation should be provided somewhere else (e.g in a file created during the cell-type quantification step)
+barcodeAnnotations <- read.table(file.path(barcodeAnnotationFolder, paste0("scRNASeq_barcode_", experimentId, ".tsv")),
+  header = TRUE, sep = "\t", quote = "\"")
 collectSamplesStats <- c()
 
 for (rawCountFile in rawCountFiles) {
-  cellPop <- str_remove(basename(rawCountFile), "Raw_Counts_")
-  cellPop <- str_remove(cellPop, ".tsv")
-  cellTypeId <- gsub("_", ":", cellPop)
+  internalClusterId <- str_remove(basename(rawCountFile), "Raw_Counts_")
+  internalClusterId <- str_remove(internalClusterId, ".tsv")
+  cellTypeId <- unique(barcodeAnnotations$cellTypeId[barcodeAnnotations$library == libraryId &
+    barcodeAnnotations$internal_cluster_id = internalClusterId])
+  cellTypeFreeTextAnnotation <- unique(barcodeAnnotations$cell_type[barcodeAnnotations$library == libraryId &
+    barcodeAnnotations$internal_cluster_id = internalClusterId])
+  if (length(cellTypeFreeTextAnnotation) != 1 || length(cellTypeId) != 1) {
+    stop("More than one celltype ID or free-text celltype annotation for the internal cluster ID ", internalClusterId)
+  }
   
-  message("Process celltype: ", cellTypeId)
+  message("Process internal cluster ID ", internalClusterId, " with celltype ID ", cellTypeId,
+    " and celltype free-text annotation ", cellTypeFreeTextAnnotation)
   ## collect the sumUMI + normalization for the target cellPop
   cellPop_normalized <- sumUMICellPop(rawCountFile = rawCountFile, refIntergenicIds = referenceIntergenicIds)
 
@@ -237,15 +249,17 @@ for (rawCountFile in rawCountFiles) {
   #finalData$cellTypeName <- cellName
   finalData <- allData[order(allData$type, allData$gene_id), ]
   finalData$cellTypeId <- cellTypeId
+  finalData$cellTypeFreeText <- cellTypeFreeTextAnnotation
   
   ## collect just genic region and re-calculate CPM
   finalData_genic <- dplyr::filter(finalData, type == "genic")
   finalData_genic$CPM <- finalData_genic$sumUMI / sum(finalData_genic$sumUMI) * 1e6
   
   ## Export cutoff information file + new files with calls
-  cutoff_info_file <- cutoff_info(libraryId, cellTypeId = cellTypeId, counts = finalData,
-    pValueCutoff = as.numeric(pValueCutoff),
-    meanRefIntergenic = calculatePvalues[[2]], sdRefIntergenic = calculatePvalues[[3]])
+  cutoff_info_file <- cutoff_info(libraryId, cellTypeId = cellTypeId,
+    cellTypeFreeTextAnnotation = cellTypeFreeTextAnnotation, counts = finalData,
+    pValueCutoff = as.numeric(pValueCutoff), meanRefIntergenic = calculatePvalues[[2]],
+    sdRefIntergenic = calculatePvalues[[3]])
   CPM_threshold <- log2(as.numeric(cutoff_info_file[3]))
   
   ## export data
@@ -254,7 +268,8 @@ for (rawCountFile in rawCountFiles) {
   ##TODO: check why it is not possible to generate the plot
   tryCatch(
     expr = {
-      plotData(libraryId = libraryId, cellTypeId = cellPop, counts = finalData,
+      plotData(libraryId = libraryId, internalClusterId = internalClusterId, cellTypeId = cellTypeId,
+        cellTypeFreeTextAnnotation = cellTypeFreeTextAnnotation, counts = finalData,
         CPM_threshold = CPM_threshold)
       },
       error = function(e) {
@@ -263,13 +278,13 @@ for (rawCountFile in rawCountFiles) {
   )
   
   write.table(finalData,file = file.path(libraryOutputFolder, paste0("Calls_cellPop_",libraryId,
-    "_",cellPop,"_genic+intergenic.tsv")),quote=FALSE, sep = "\t", col.names=TRUE,
+    "_",internalClusterId,"_genic+intergenic.tsv")),quote=FALSE, sep = "\t", col.names=TRUE,
     row.names=FALSE)
   write.table(finalData_genic,file = file.path(libraryOutputFolder, paste0("Calls_cellPop_",
-    libraryId, "_",cellPop,"_genic.tsv")),quote=FALSE, sep = "\t", col.names=TRUE,
+    libraryId, "_",internalClusterId,"_genic.tsv")),quote=FALSE, sep = "\t", col.names=TRUE,
     row.names=FALSE)
   write.table(t(t(cutoff_info_file)),file = file.path(libraryOutputFolder,
-    paste0("cutoff_info_file_",libraryId, "_",cellPop,".tsv")),quote=FALSE, sep = "\t",
+    paste0("cutoff_info_file_",libraryId, "_",internalClusterId,".tsv")),quote=FALSE, sep = "\t",
   col.names=FALSE, row.names=TRUE)
   
   ## add this to big data frame with all samples information
@@ -281,8 +296,9 @@ for (rawCountFile in rawCountFiles) {
 
 ## export info stats of all libraries/cell-population
 file.create(libStatsFile)
-cat("libraryId\tcellTypeId\tCPM_Threshold\tGenic\tGenic_region_present\tProportion_genic_present\tProtein_coding",
-  "Coding_region_present\tProportion_coding_present\tIntergenic\tIntergenic_region_present\tProportion_intergenic_present",
+cat("libraryId\tcellTypeId\tcellTypeFreeTextAnnotation\tCPM_Threshold\tGenic\tGenic_region_present\t",
+  "Proportion_genic_present\tProtein_coding\tCoding_region_present\tProportion_coding_present\tIntergenic\t",
+  "Intergenic_region_present\tProportion_intergenic_present\t",
   "pValue_cutoff\tmeanRefIntergenic\tsdRefIntergenic\tspecies\torganism\n",
   file = libStatsFile, sep = "\t")
 

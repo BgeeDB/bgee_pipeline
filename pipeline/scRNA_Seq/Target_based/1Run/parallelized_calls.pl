@@ -25,6 +25,7 @@ my %opts = ('metadataFile=s'                     => \$metadataFile,
             'refIntergenicFolder=s'              => \$refIntergenicFolder,
             'cellTypeFolder=s'                   => \$cellTypeFolder,
             'outputDir=s'                        => \$outputDir,
+            'barcodeAnnotationFolder=s'          => \$barcodeAnnotationFolder,
             'queue=s'                            => \$queue,
             'account=s'                          => \$account,
             'pathToCallsScript=s'                => \$pathToCallsScript,
@@ -94,8 +95,8 @@ foreach my $experimentId (keys %processedLibraries){
 	    $sbatchTemplate .= "module add R/3.6.1;\n";
         $sbatchTemplate .= "\nexport R_LIBS_USER=$rLibs\n\n";
 	$speciesName =~ s/ /_/g;
-        my $commandToRun = "Rscript $pathToCallsScript libraryId=\\\"$libraryId\\\"".
-            " speciesId=\\\"$speciesId\\\" speciesName=\\\"$speciesName\\\"".
+        my $commandToRun = "Rscript $pathToCallsScript experimentId=\\\"$experimentId\\\" libraryId=\\\"$libraryId\\\"".
+            " speciesId=\\\"$speciesId\\\" speciesName=\\\"$speciesName\\\" barcodeAnnotationFolder=\\\"$barcodeAnnotationFolder\\\"".
             " celltypeFolder=\\\"$cellTypeFolder\\\" refIntergenicFolder=\\\"$refIntergenicFolder\\\"".
             " pValueCutoff=\\\"$pValueCutoff\\\" callsOutputFolder=\\\"$outputDir\\\"";
 
