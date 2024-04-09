@@ -66,7 +66,7 @@ my @basic_download  = ('gene-expression-calls', 'processed-expression-values', '
 for my $baseUrlName ( sort @basic_download ){
     push @static_pages, "<loc>$homepage/download/$baseUrlName</loc><priority>0.7</priority>";
 }
-my @basic_resources = ('r-packages', 'sparql', 'annotations', 'ontologies', 'source-code');
+my @basic_resources = ('r-packages', 'annotations', 'ontologies', 'source-code');
 for my $baseUrlName ( sort @basic_resources ){
     push @static_pages, "<loc>$homepage/resources/$baseUrlName</loc><priority>0.7</priority>";
 }
