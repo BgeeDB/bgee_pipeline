@@ -575,34 +575,44 @@ sub getBarcodeToCellType {
 # insert one rnaseq library annotated sample and retrieve the value
 # of internal autoincrement rnaSeqLibraryAnnotatedSampleId
 sub insert_get_annotated_sample {
-    my ($insAnnotatedSample, $selectAnnotatedSampleId, $abundanceThreshold,
-        $allGenesPercentPresent, $proteinCodingGenesPercentPresent,
-        $intergenicRegionsPercentPresent, $pValueThreshold, $meanRefIntergenic,
-        $sdRefIntergenic, $mappedUMIs, $isTargetBase, $conditionId, $libraryId,
-        $debug) = @_;
+    my ($libraryId, $conditionId, $cellTypeAuthorAnnotation, $anatEntityAuthorAnnotation,
+        $stageAuthorAnnotation, $abundanceUnit, $meanRefIntergenic, $sdRefIntergenic,
+        $abundanceThreshold, $allGenesPercentPresent, $proteinCodingGenesPercentPresent,
+        $intergenicRegionsPercentPresent, $pValueThreshold, $allUMIsCount, $mappedUMIsCount,
+        $isDropletBased, $barcode, $time, $timeUnit, $freeTextAnnotation, $insAnnotatedSample,
+        $selectAnnotatedSampleId, $debug) = @_;
 
     #insert annotated sample
     if ($debug) {
         print 'INSERT INTO rnaSeqLibraryAnnotatedSample: ',
                     $libraryId,                        ' - ',
                     $conditionId,                      ' - ',
-                    "cpm",                             ' - ',
+                    $cellTypeAuthorAnnotation,         ' - ',
+                    $anatEntityAuthorAnnotation,       ' - ',
+                    $stageAuthorAnnotation,            ' - ',
+                    $abundanceUnit,                    ' - ',
                     $meanRefIntergenic,                ' - ',
                     $sdRefIntergenic,                  ' - ',
-                    1,                                 ' - ',
                     $abundanceThreshold,               ' - ',
                     $allGenesPercentPresent,           ' - ',
                     $proteinCodingGenesPercentPresent, ' - ',
                     $intergenicRegionsPercentPresent,  ' - ',
                     $pValueThreshold,                  ' - ',
-                    "NULL",                            ' - ',
-                    $isTargetBase,                     ' - ',
+                    $allUMIsCount,                     ' - ',
+                    $mappedUMIsCount,                  ' - ',
+                    $isDropletBased,                   ' - ',
+                    $barcode,                          ' - ',
+                    $time,                             ' - ',
+                    $timeUnit,                         ' - ',
+                    $freeTextAnnotation,               ' - ',
                     "\n";
     } else {
-        $insAnnotatedSample->execute($libraryId, $conditionId, "cpm", $meanRefIntergenic,
-        $sdRefIntergenic, 1, $abundanceThreshold, $allGenesPercentPresent,
-        $proteinCodingGenesPercentPresent, $intergenicRegionsPercentPresent,
-        $pValueThreshold, "", $isTargetBase)
+        $insAnnotatedSample->execute($libraryId, $conditionId, $cellTypeAuthorAnnotation,
+        $anatEntityAuthorAnnotation, $stageAuthorAnnotation, $abundanceUnit, $meanRefIntergenic,
+        $sdRefIntergenic, $abundanceThreshold, $allGenesPercentPresent,
+        $proteinCodingGenesPercentPresent, $intergenicRegionsPercentPresent, $pValueThreshold,
+        $allUMIsCount, $mappedUMIsCount, $isDropletBased, $barcode, $time, $timeUnit,
+        $freeTextAnnotation)
             or die $insAnnotatedSample->errstr;
     }
     

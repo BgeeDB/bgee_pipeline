@@ -117,14 +117,14 @@ my $insert_libraries =  'INSERT INTO rnaSeqLibrary (rnaSeqLibraryId, rnaSeqExper
                         ' minReadLength, maxReadLength, libraryType)'.
                         ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
-my $insert_annotatedSamples =   'INSERT INTO rnaSeqLibraryAnnotatedSample (rnaSeqLibraryId,'.
-                                'conditionId, abundanceUnit,'.
-                                'meanAbundanceReferenceIntergenicDistribution,'.
-                                'sdAbundanceReferenceIntergenicDistribution, tmmFactor,'.
-                                'abundanceThreshold, allGenesPercentPresent,'.
-                                'proteinCodingGenesPercentPresent, intergenicRegionsPercentPresent,'.
-                                'pValueThreshold, mappedUMIsCount, multipleLibraryIndividualSample)'.
-                                ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+my $insert_annotatedSamples =   'INSERT INTO rnaSeqLibraryAnnotatedSample (rnaSeqLibraryId, conditionId,'.
+                                'cellTypeAuthorAnnotation, anatEntityAuthorAnnotation, stageAuthorAnnotation,'.
+                                'abundanceUnit, meanAbundanceReferenceIntergenicDistribution,'.
+                                'sdAbundanceReferenceIntergenicDistribution, abundanceThreshold,'.
+                                'allGenesPercentPresent, proteinCodingGenesPercentPresent,'.
+                                'intergenicRegionsPercentPresent, pValueThreshold, allUMIsCount, mappedUMIsCount,'.
+                                'multipleLibraryIndividualSample, barcode, time, timeUnit, freeTextAnnotation)'.
+                                ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
 my $update_sumUMIs_annotatedSamples =  'UPDATE rnaSeqLibraryAnnotatedSample set mappedUMIsCount = ? where '.
                                         'rnaSeqLibraryAnnotatedSampleId = ?';

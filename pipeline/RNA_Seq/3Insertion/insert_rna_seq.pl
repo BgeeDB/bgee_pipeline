@@ -157,9 +157,18 @@ $selBiotypes->finish;
 ######################
 # INSERT EXPERIMENTS #
 ######################
+#first need to retrieve already inserted experimentIds
+my $selExp = $bgee->prepare("select rnaSeqExperimentId from rneSeqExperiment");
+$selExp->execute()  or die $selExp->errstr;
+my %insertedExp = ();
+while ( my @data = $selExp->fetchrow_array ){
+    $insertedExp{$data[0]} = 1;
+}
 print "Inserting experiments...\n";
 my $insExp = $bgee->prepare('INSERT INTO rnaSeqExperiment (rnaSeqExperimentId, rnaSeqExperimentName, rnaSeqExperimentDescription, dataSourceId) VALUES (?, ?, ?, ?)');
 for my $expId ( sort keys %experiments ){
+    #do not insert the experiment if it is already in the database
+    next if exists $$insertedExp{$expId};
     print "\t$expId\n";
     if ( $debug ){
         binmode(STDOUT, ':utf8');
@@ -175,81 +184,52 @@ for my $expId ( sort keys %experiments ){
 $insExp->finish();
 print "Done\n\n";
 
-################################
-# INSERT PROTOCOLS AND MAPPING #
-# PROTOCOL TO BIOTYPE NOT USED #
-#   TO GENERATE ABSENT CALLS   #
-################################
+##########################################
+# INSERT POPULATION CAPTURE AND MAPPING  #
+# POPULATION CAPTURE TO BIOTYPE NOT USED #
+#        TO GENERATE ABSENT CALLS        #
+##########################################
 
-my %protocolToBiotypes = retrieveProtocolsToBiotypeExcludeAbsentCalls($excluded_biotypes);
+#first retrieve already inserted population captured
+my $selPopCapture = $bgee->prepare('SELECT rnaSeqPopulationCaptureId  from rnaSeqPopulationCapture');
+$selPopCapture->execute()  or die $selPopCapture->errstr;
+my %insertedPopCaptured = ();
+while ( my @data = $selPopCapture->fetchrow_array ){
+    $insertedPopCaptured{$data[0]} = 1;
+}
 
-# insert the protocols
-my $insProtocol = $bgee->prepare('INSERT INTO rnaSeqProtocol (rnaSeqProtocolName) VALUES (?)');
-for my $protocolName ( keys %protocolToBiotypes ){
+#retrieve population capture from population capture file
+my %popCaptureToBiotypes = retrieveProtocolsToBiotypeExcludeAbsentCalls($excluded_biotypes);
+
+# insert the new population captured
+my $insPopCapture = $bgee->prepare('INSERT INTO rnaSeqPopulationCapture (rnaSeqPopulationCaptureId) VALUES (?)');
+my $insPopCaptureToBiotype = $bgee->prepare(
+    'INSERT INTO rnaSeqPopulationCaptureToBiotypeExcludedAbsentCalls (rnaSeqPopulationCaptureId, geneBioTypeId) VALUES (?, ?)');
+for my $populationCaptureId ( keys %popCaptureToBiotypes ){
+    # skip insertion for already inserted population capture
+    next if exists $insertedPopCaptured{$populationCaptureId};
+    # insert population capture
     if($debug) {
-        print 'INSERT INTO rnaSeqLibrary: ', $protocolName, "\n";  
+        print 'INSERT INTO rnaSeqPopulationCapture: ', $populationCaptureId, "\n";  
     } else {
-        $insProtocol->execute($protocolName);
+        $insPopCapture->execute($populationCaptureId);
     }
-}
-$insProtocol->finish();
-
-# retrieve the protocols (from database to be compatible with incremental updates)
-my %protocolNameToProtocolId = ();
-my $selProtocols = $bgee->prepare("SELECT rnaSeqProtocolId, rnaSeqProtocolName FROM rnaSeqProtocol");
-$selProtocols->execute()  or die $selProtocols->errstr;
-while ( my @data = $selProtocols->fetchrow_array ){
-    $protocolNameToProtocolId{$data[1]} = $data[0];
-}
-$selProtocols->finish();
-
-# insert the mapping between protocol and biotypes not used to generate absent calls
-my $insProtocolToBiotype = $bgee->prepare('INSERT INTO rnaSeqProtocolToBiotypeExcludedAbsentCalls (rnaSeqProtocolId, geneBioTypeId) VALUES (?, ?)');
-for my $protocolName ( keys %protocolToBiotypes ){
-    my $protocolId = $protocolNameToProtocolId{$protocolName};
-    # convert each biotype name to the corresponding biotype ID
-    for my $biotypeName (@{$protocolToBiotypes{$protocolName}}) {
+    # insert pop. capture to excluded absent calls
+    for my $biotypeName (@{$popCaptureToBiotypes{$populationCaptureId}}) {
         my $biotypeId = $biotypeNameToBiotypId{$biotypeName};
         if($debug) {
-            print 'INSERT INTO rnaSeqProtocolToBiotypeExcludedAbsentCalls: ', $protocolId,  ' - ', 
+            print 'INSERT INTO rnaSeqProtocolToBiotypeExcludedAbsentCalls: ', $populationCaptureId,  ' - ', 
                                                                               $biotypeId,   "\n";
         } else {
-            $insProtocolToBiotype->execute($protocolId, $biotypeId) or die $insProtocolToBiotype->errstr;
+            $insPopCaptureToBiotype->execute($populationCaptureId, $biotypeId) or die $insProtocolToBiotype->errstr;
         }
     }
+    # add the population capture to the list of inserted ones
+    $insertedPopCaptured{$populationCaptureId} = 1;
 }
-$insProtocolToBiotype->finish();
-
-# use geneBiotype
-
-######################
-# INSERT PLATFORMS   #
-######################
-print "Inserting platforms...\n";
-# Retrieve all platforms used for the analyzed libraries
-my %platforms = ();
-for my $expId ( keys %libraries ){
-    foreach my $libraryId ( keys %{$libraries{$expId}} ){
-        if ( $libraries{$expId}->{$libraryId}->{'platform'} ne '' ){
-            $platforms{$libraries{$expId}->{$libraryId}->{'platform'}}++;
-        }
-    }
-}
-
-my $insPlatform = $bgee->prepare('INSERT INTO rnaSeqPlatform (rnaSeqPlatformId, rnaSeqPlatformDescription) VALUES (?, ?)');
-# now insert the platform(s)
-for my $platformId ( sort keys %platforms ){
-    print "\t$platformId\n";
-    if ( $debug ){
-        print 'INSERT INTO rnaSeqPlatform: ', $platformId, ' - ', "\n";
-    }
-    else {
-        $insPlatform->execute($platformId, '')  or die $insPlatform->errstr;
-    }
-}
-$insPlatform->finish();
-print "Done\n\n";
-
+$selPopCapture->finish();
+$insPopCapture->finish();
+$insPopCaptureToBiotype->finish();
 
 ################################################
 # GET GENE INTERNAL IDS                        #
@@ -298,14 +278,31 @@ my $stage_equivalences = Utils::get_stage_equivalences($bgee);
 ################################
 print "Inserting libraries and all results...\n";
 # query for samples insertion
-my $insLib = $bgee->prepare('INSERT INTO rnaSeqLibrary (rnaSeqLibraryId, rnaSeqExperimentId,
-                             rnaSeqPlatformId, rnaSeqProtocolId, conditionId, tpmThreshold,
-                             allGenesPercentPresent, proteinCodingGenesPercentPresent,
-                             intergenicRegionsPercentPresent, meanTpmReferenceIntergenicDistribution, 
-                             sdTpmReferenceIntergenicDistribution, pValueThreshold, allReadsCount, 
-                             mappedReadsCount, minReadLength, maxReadLength, libraryType, libraryOrientation)
-                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+my $insert_libraries =  'INSERT INTO rnaSeqLibrary (rnaSeqLibraryId, rnaSeqExperimentId,'.
+                        'rnaSeqSequencerName, rnaSeqTechnologyName, rnaSeqTechnologyIsSIngleCell,'.
+                        'sampleMultiplexing, libraryMultiplexing, strandSelection,'.
+                        'cellCompartment, sequencedTranscriptPart, fragmentation,'.
+                        'rnaSeqPopulationCaptureId, genotype, allReadsCount, mappedReadsCount,'.
+                        ' minReadLength, maxReadLength, libraryType)'.
+                        ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
+my $insert_annotatedSamples =   'INSERT INTO rnaSeqLibraryAnnotatedSample (rnaSeqLibraryId, conditionId,'.
+                                'cellTypeAuthorAnnotation, anatEntityAuthorAnnotation, stageAuthorAnnotation,'.
+                                'abundanceUnit, meanAbundanceReferenceIntergenicDistribution,'.
+                                'sdAbundanceReferenceIntergenicDistribution, abundanceThreshold,'.
+                                'allGenesPercentPresent, proteinCodingGenesPercentPresent,'.
+                                'intergenicRegionsPercentPresent, pValueThreshold, allUMIsCount, mappedUMIsCount,'.
+                                'multipleLibraryIndividualSample, barcode, time, timeUnit, freeTextAnnotation)'.
+                                ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+
+my $select_annotatedSampleId =  'SELECT rnaSeqLibraryAnnotatedSampleId FROM '.
+                                'rnaSeqLibraryAnnotatedSample WHERE rnaSeqLibraryId = ? AND '.
+                                'conditionId = ?';
+
+my $insert_annotatedSampleGeneResult =  'INSERT INTO rnaSeqLibraryAnnotatedSampleGeneResult ('.
+                                        'rnaSeqLibraryAnnotatedSampleId, bgeeGeneId, abundanceUnit, abundance,'.
+                                        'readsCount, UMIsCount, zScore, pValue,'.
+                                        'reasonForExclusion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
 # Excluded libraries
 my $insExcludedLib = $bgee->prepare('INSERT INTO rnaSeqLibraryDiscarded (rnaSeqLibraryId, rnaSeqLibraryDiscardReason) VALUES (?, ?)');
@@ -321,16 +318,17 @@ for my $libraryId ( sort keys %excludedLibraries ){
 # query for runs insertion
 my $insRun = $bgee->prepare('INSERT INTO rnaSeqRun (rnaSeqRunId, rnaSeqLibraryId) VALUES (?, ?)');
 
-# query for genes results insertion
-my $insResult = $bgee->prepare('INSERT INTO rnaSeqResult (rnaSeqLibraryId, bgeeGeneId, fpkm, tpm,
-                                readsCount, pValue, zScore, detectionFlag, reasonForExclusion)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
-
 my $inserted = 0;
 
 # used to commit after each library when condition and libraries were not inserted
-#print "disable autocommit. Manually commit for each library\n";
-#$bgee->{AutoCommit} = 0;
+print "disable autocommit. Manually commit for each library\n";
+$bgee->{AutoCommit} = 0;
+
+# prepare queries
+my $insLib = $bgee->prepare($insert_libraries);
+my $insAnnotatedSample = $bgee->prepare($insert_annotatedSamples);
+my $selectAnnotatedSampleId = $bgee->prepare($select_annotatedSampleId);
+my $insAnnotatedSampleGeneResult = $bgee->prepare($insert_annotatedSampleGeneResult);
 
 for my $expId ( sort keys %libraries ){
     LIBRARY:
@@ -376,47 +374,90 @@ for my $expId ( sort keys %libraries ){
                                                                 );
         # We consider the fine-grained (low-level) conditionId for insertion: $condKeyMap->{'conditionId'}
 
-        # insert sample
+        # insert library
         if ( $debug ){
-            print 'INSERT INTO rnaSeqLibrary: ', $libraryId,                                       ' - ',
-                  $expId, ' - ', $annotations{$expId}->{$libraryId}->{'platform'},                 ' - ',
-                  $protocolNameToProtocolId{$annotations{$expId}->{$libraryId}->{'protocol'}},     ' - ',
-                  $condKeyMap->{'conditionId'},                                                    ' - ',
-                  $librariesStats{$libraryId}->{'cutoffTPM'},                                      ' - ',
-                  $librariesStats{$libraryId}->{'allGenesPercentPresent'},                         ' - ',
-                  $librariesStats{$libraryId}->{'proteinCodingPercentPresent'},                    ' - ',
-                  $librariesStats{$libraryId}->{'intergenicRegionsPercentPresent'},                ' - ',
-                  $librariesStats{$libraryId}->{'meanIntergenic'},                                 ' - ',
-                  $librariesStats{$libraryId}->{'sdIntergenic'},                                   ' - ',
-                  $librariesStats{$libraryId}->{'pValueThreshold'},                                ' - ',
-                  $reportInfo{$libraryId}->{'allReadsCount'},                                      ' - ',
-                  $reportInfo{$libraryId}->{'mappedReadsCount'},                                   ' - ',
-                  $reportInfo{$libraryId}->{'minReadLength'},                                      ' - ',
-                  $reportInfo{$libraryId}->{'maxReadLength'},                                      ' - ',
-                  $libraries{$expId}->{$libraryId}->{'libraryType'},                               ' - ',
-                  "NA\n";
-        }
-        else {
+            print 'INSERT INTO rnaSeqLibrary: ', $libraryId,                              ' - ',
+                  $expId, ' - ', $libraries{$expId}->{$libraryId}->{'platform'},          ' - ',
+                  #technologyName always Illumina for now
+                  #TODO remove that hardcoded insertion when refactoring insertion scripts
+                  #Actually why this is information is required????
+                  "Illumina",                         ' - ',
+                  # isSingleCell (always true for target base RNASeq)
+                  '0',                                                                    ' - ',
+                  # sampleMultiplexing (always true for target base)
+                  '0',                                                                    ' - ',
+                  # libraryMultiplexing (for now always false for target base)
+                  '0',                                                                    ' - ',
+                  # strandSelection. No information in annotation file.
+                  # Could maybe be detected from the platform or the technology
+                  'NA',                                                                   ' - ',
+                  # cellCompartment. No information in the annotation file
+                  'cell',                  ' - ',
+                  # sequencedTranscriptPart is always full length for bulk RNA-Seq
+                  'full length',          ' - ',
+                  # fragmentation.
+                  $libraries{$expId}->{$libraryId}->{'readLength'},                       ' - ',
+                  # rnaSeqPopulationCaptureId. For now all target base are polyA
+                  $annotations{$expId}->{$libraryId}->{'populationCapture'},                                                                ' - ',
+                  $annotations{$expId}->{$libraryId}->{'genotype'},                       ' - ',
+                  $pipelineReport{$libraryId}->{'allReadsCount'},                         ' - ',
+                  $pipelineReport{$libraryId}->{'mappedReadsCount'},                      ' - ',
+                  $pipelineReport{$libraryId}->{'minReadLength'},                         ' - ',
+                  $pipelineReport{$libraryId}->{'maxReadLength'},                         ' - ',
+                  lc $libraries{$expId}->{$libraryId}->{'libraryType'},"\n";
+
+        } else {
             $insLib->execute($libraryId,
-                             $expId,
-                             $annotations{$expId}->{$libraryId}->{'platform'},
-                             $protocolNameToProtocolId{ $annotations{$expId}->{$libraryId}->{'protocol'} },
-                             $condKeyMap->{'conditionId'},
-                             $librariesStats{$libraryId}->{'cutoffTPM'},
-                             $librariesStats{$libraryId}->{'allGenesPercentPresent'},
-                             $librariesStats{$libraryId}->{'proteinCodingPercentPresent'},
-                             $librariesStats{$libraryId}->{'intergenicRegionsPercentPresent'},
-                             $librariesStats{$libraryId}->{'meanIntergenic'},
-                             $librariesStats{$libraryId}->{'sdIntergenic'},
-                             $librariesStats{$libraryId}->{'pValueThreshold'},
-                             $reportInfo{$libraryId}->{'allReadsCount'},
-                             $reportInfo{$libraryId}->{'mappedReadsCount'},
-                             $reportInfo{$libraryId}->{'minReadLength'},
-                             $reportInfo{$libraryId}->{'maxReadLength'},
-                             $libraries{$expId}->{$libraryId}->{'libraryType'},
+                            $expId,
+                            $libraries{$expId}->{$libraryId}->{'platform'},
+                            #TODO remove that hardcoded insertion when refactoring insertion scripts
+                            #Actually why this information is required????
+                            'Illumina',
+                            0,
+                            0,
+                            0,
+                            # strandSelection. No information in annotation file.
+                            # Could maybe be detected from the platform or the technology
                             'NA',
-                           )  or die $insLib->errstr;
+                            # cellCompartment. No information in the annotation file
+                            'cell',
+                            # sequencedTranscriptPart is always full length for bulk RNA-Seq
+                            'full length',
+                            $libraries{$expId}->{$libraryId}->{'readLength'},
+                            $annotations{$expId}->{$libraryId}->{'populationCapture'},
+                            $annotations{$expId}->{$libraryId}->{'genotype'},
+                            $reportInfo{$libraryId}->{'allReadsCount'},
+                            $reportInfo{$libraryId}->{'mappedReadsCount'},
+                            $reportInfo{$libraryId}->{'minReadLength'},
+                            $reportInfo{$libraryId}->{'maxReadLength'},
+                            lc $libraries{$expId}->{$libraryId}->{'libraryType'}
+                        )  or die $insLib->errstr;
         }
+
+        # Now insert rnaSeqLibraryAnnotatedSample
+        $annotatedSampleId = insert_get_annotated_sample($libraryId, $condKeyMap->{'conditionId'},
+                    #no celltype author annotation for bulk RNA-Seq
+                    '',
+                    $annotations{$expId}->{$libraryId}->{'freeTextOrgan'},
+                    $annotations{$expId}->{$libraryId}->{'freeTextStage'},
+                    #for now abundace unit is always tpm for bulk.
+                    'tpm', 
+                    $librariesStats{$libraryId}->{'meanRefIntergenic'},
+                    $librariesStats{$libraryId}->{'sdRefIntergenic'},
+                    $librariesStats{$libraryId}->{'cutoffTPM'},
+                    $librariesStats{$libraryId}->{'allGenesPercentPresent'},
+                    $librariesStats{$libraryId}->{'proteinCodingGenesPercentPresent'},
+                    $librariesStats{$libraryId}->{'intergenicRegionsPercentPresent'},
+                    $librariesStats{$libraryId}->{'pValueThreshold'},
+                    # no UMIs info for bulk. So allUMIsCount and mappedUMIsCount are 0
+                    0, 0,
+                    # multipleLibraryIndividualSample and barcode are false and empty for bulk
+                    0, '',
+                    # As of Bgee 15.2 time, timeUnit and freeTextAnnotation were not present in the annotation
+                    # files. Those fields have been added for the SalmoBase project.
+                    #TODO: implement the insertion of those metadata once they are available.
+                    '', '', '',
+                    $insAnnotatedSample, $selectAnnotatedSampleId, $debug);
 
         # insert runs
         for my $runId ( keys %{$libraries{$expId}->{$libraryId}->{'runIds'}} ){
@@ -435,14 +476,17 @@ for my $expId ( sort keys %libraries ){
             # Note: pre-filtering exclusion is now managed in the script insert_rna_seq_expression.pl,
             # it used to be managed here.
             my $exclusion = $Utils::CALL_NOT_EXCLUDED;
+
             if ( $debug ){
-                print 'INSERT INTO rnaSeqResult: ', $libraryId,   ' - ', $genes{ $libraries{$expId}->{$libraryId}->{'speciesId'}}->{ $geneId }, ' - ',
-                      $genesResults{$geneId}->{'FPKM'},           ' - ',
+                print 'INSERT INTO rnaSeqLibraryAnnotatedSampleGeneResult: ', $annotatedSampleId,   ' - ',
+                      $genes{ $libraries{$expId}->{$libraryId}->{'speciesId'}}->{ $geneId }, ' - ',
+                      'tpm',                                      ' - ',
                       $genesResults{$geneId}->{'TPM'},            ' - ',
                       $genesResults{$geneId}->{'estimatedCount'}, ' - ',
-                      $genesResults{$geneId}->{'pValue'},         ' - ',
+                      # no UMIs for bulk RNA-Seq
+                      0,
                       $genesResults{$geneId}->{'zscore'},         ' - ',
-                      $genesResults{$geneId}->{'expressionCall'}, ' - ',
+                      $genesResults{$geneId}->{'pValue'},         ' - ',
                       $exclusion, "\n";
             }
             else {
@@ -455,17 +499,18 @@ for my $expId ( sort keys %libraries ){
                 if ($genesResults{$geneId}->{'zscore'} eq "NA") {
                   $genesResults{$geneId}->{'zscore'} = undef;
                 }
-                $insResult->execute($libraryId,
+                $insAnnotatedSampleGeneResult->execute($annotatedSampleId,
                                     # geneId is an ensembl ID, we need to get the bgeeGeneId
                                     $genes{ $libraries{$expId}->{$libraryId}->{'speciesId'}}->{ $geneId },
-                                    $genesResults{$geneId}->{'FPKM'},
+                                    'tpm',
                                     $genesResults{$geneId}->{'TPM'},
                                     $genesResults{$geneId}->{'estimatedCount'},
+                                    # no UMIs for bulk RNA-Seq
+                                    0,
                                     $genesResults{$geneId}->{'pValue'},
-                                    $genesResults{$geneId}->{'zscore'},
-                                    $genesResults{$geneId}->{'expressionCall'},
+                                    $genesResults{$geneId}->{'pValue'},
                                     $exclusion,
-                                   )  or die $insResult->errstr;
+                                   )  or die $insAnnotatedSampleGeneResult->errstr;
             }
 
         }
@@ -474,12 +519,15 @@ for my $expId ( sort keys %libraries ){
     }
 }
 # used to commit after each library when condition and libraries were not inserted
-#print "reactivate autocommit\n";
-#$bgee->{AutoCommit} = 1;
+print "reactivate autocommit\n";
+$bgee->{AutoCommit} = 1;
 
 $insLib->finish();
 $insRun->finish();
-$insResult->finish();
+$insAnnotatedSample->finish();
+$selectAnnotatedSampleId->finish();
+$insAnnotatedSampleGeneResult->finish();
+
 print "Done. You should have $inserted rows in the rnaSeqResult table.\nExiting\n";
 
 exit 0;

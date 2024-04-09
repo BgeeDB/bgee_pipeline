@@ -383,15 +383,20 @@ sub getAllRnaSeqAnnotations {
                   map { s/^\"//; s/\"$//; $_ } # remove quotes
                   split(/\t/, $line);
 
-        my $libraryId    = $tmp[0];
-        my $experimentId = $tmp[1];
-        my $platform     = $tmp[2];
-        my $anatId       = $tmp[5];
-        my $stageId      = $tmp[7];
-        my $sex          = $tmp[19];
-        my $strain       = $tmp[20];
-        my $speciesId    = $tmp[21];
-        my $protocol     = $tmp[29];
+        my $libraryId     = $tmp[0];
+        my $experimentId  = $tmp[1];
+        my $platform      = $tmp[2];
+        my $anatId        = $tmp[4];
+        my $stageId       = $tmp[6];
+        my $freeTextOrgan = $tmp[9];
+        my $freeTextStage = $tmp[10];
+        my $sex           = $tmp[14];
+        my $strain        = $tmp[15];
+        my $genotype      = $tmp[16];
+        my $speciesId     = $tmp[17];
+        my $protocol      = $tmp[18];
+        my $protocolType  = $tmp[19];
+        my $popCapture    = $tmp[20];
 
         if ( !defined $rnaSeqAnnotations{$experimentId}->{$libraryId} ){
             $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'commented'} = $commented;
@@ -417,6 +422,9 @@ sub getAllRnaSeqAnnotations {
             else {
                 warn "Warning: no stageId specified for [$experimentId--$libraryId]. Commented: $commented\n";
             }
+            # free text author annotation. no warning throws if empty
+            $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'freeTextOrgan'} = $freeTextOrgan;
+            $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'freeTextStage'} = $freeTextStage;
             # sex
             if ( $sex ne '' ){
               # Normalize sex info
@@ -443,6 +451,8 @@ sub getAllRnaSeqAnnotations {
                 warn "Warning: no strain specified for [$experimentId--$libraryId]. Commented: $commented\n";
                 $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'strain'} = 'NA';
             }
+            # genotype information. Do not throw a warning if empty
+            $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'genotype'} = $genotype;
             # species
             if ( $speciesId ne '' ){
                 $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'speciesId'} = $speciesId;
@@ -451,13 +461,16 @@ sub getAllRnaSeqAnnotations {
                 warn "Warning: no species specified for [$experimentId--$libraryId]. Commented: $commented\n";
                 $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'speciesId'} = 'NA';
             }
-            # protocol
-            if ( !defined($protocol) || $protocol ne '' ){
-                $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'protocol'} = $protocol;
+            # protocol and protocol type are often empty. Do not throw a warning if empty
+            $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'protocol'} = $protocol;
+            $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'protocolType'} = $protocolType;
+            # population capture
+            if ( !defined($popCapture) || $popCapture ne '' ){
+                $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'populationCapture'} = $popCapture;
             }
             else {
-                $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'protocol'} = '';
-                warn "Warning: no protocol specified for [$experimentId--$libraryId]. Commented: $commented\n";
+                $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'populationCapture'} = '';
+                warn "Warning: no RNA population captured specified for [$experimentId--$libraryId]. Commented: $commented\n";
             }
         }
         else {
@@ -764,7 +777,7 @@ sub getAllRnaSeqReportInfo {
     return %rnaSeqLibraries;
 }
 
-# Retrieve for a sample the expression calls, TPM and FPKM values for all genes
+# Retrieve for a sample the expression calls, TPM values for all genes
 sub getGenesResults {
     my ($sampleExpCallsFile) = @_;
     # $expressionCalls{geneId}->{'estimatedCount'} = ...
@@ -790,7 +803,6 @@ sub getGenesResults {
         my $zscore         = $tmp[6];
         my $pValue         = $tmp[7];
         my $expressionCall = $tmp[8];
-        my $FPKM           = $tmp[9];
 
         if ( !defined $expressionCalls{$geneId} ){
             # Perform format checks
@@ -823,10 +835,6 @@ sub getGenesResults {
                 warn "Warning, wrong format for expressionCall [$expressionCall]\n";
                 $discarded = 1;
             }
-            if ( $FPKM !~ /$floatingPointRegex/ ){
-                warn "Warning, wrong format for FPKM [$FPKM]\n";
-                $discarded = 1;
-            }
             if ( $discarded ){
                 warn ' for gene: ', $geneId, "\n";
             }
@@ -837,7 +845,6 @@ sub getGenesResults {
                 $expressionCalls{$geneId}->{'zscore'}         = $zscore;
                 $expressionCalls{$geneId}->{'pValue'}         = $pValue;
                 $expressionCalls{$geneId}->{'expressionCall'} = $expressionCall;
-                $expressionCalls{$geneId}->{'FPKM'}           = $FPKM;
             }
         }
         else {
