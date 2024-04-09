@@ -216,10 +216,10 @@ collectSamplesStats <- c()
 for (rawCountFile in rawCountFiles) {
   internalClusterId <- str_remove(basename(rawCountFile), "Raw_Counts_")
   internalClusterId <- str_remove(internalClusterId, ".tsv")
-  cellTypeId <- unique(barcodeAnnotations$cellTypeId[barcodeAnnotations$library == libraryId &
-    barcodeAnnotations$internal_cluster_id = internalClusterId])
-  cellTypeFreeTextAnnotation <- unique(barcodeAnnotations$cell_type[barcodeAnnotations$library == libraryId &
-    barcodeAnnotations$internal_cluster_id = internalClusterId])
+  cellTypeId <- unique(as.character(barcodeAnnotations$cellTypeId[barcodeAnnotations$library == libraryId &
+    barcodeAnnotations$internal_cluster_id == internalClusterId]))
+  cellTypeFreeTextAnnotation <- unique(as.character(barcodeAnnotations$cell_type[barcodeAnnotations$library == libraryId &
+    barcodeAnnotations$internal_cluster_id == internalClusterId]))
   if (length(cellTypeFreeTextAnnotation) != 1 || length(cellTypeId) != 1) {
     stop("More than one celltype ID or free-text celltype annotation for the internal cluster ID ", internalClusterId)
   }
@@ -296,11 +296,10 @@ for (rawCountFile in rawCountFiles) {
 
 ## export info stats of all libraries/cell-population
 file.create(libStatsFile)
-cat("libraryId\tcellTypeId\tcellTypeFreeTextAnnotation\tCPM_Threshold\tGenic\tGenic_region_present\t",
-  "Proportion_genic_present\tProtein_coding\tCoding_region_present\tProportion_coding_present\tIntergenic\t",
-  "Intergenic_region_present\tProportion_intergenic_present\t",
-  "pValue_cutoff\tmeanRefIntergenic\tsdRefIntergenic\tspecies\torganism\n",
-  file = libStatsFile, sep = "\t")
+colnames(collectSamplesStats) <- c("libraryId","cellTypeId","cellTypeFreeTextAnnotation","CPM_Threshold","Genic","Genic_region_present",
+  "Proportion_genic_present","Protein_coding","Coding_region_present","Proportion_coding_present","Intergenic",
+  "Intergenic_region_present","Proportion_intergenic_present",
+  "pValue_cutoff","meanRefIntergenic","sdRefIntergenic","species","organism")
 
-write.table(collectSamplesStats, file = libStatsFile, col.names = FALSE, row.names = FALSE,
-  append = TRUE, quote = FALSE, sep = "\t")
+write.table(collectSamplesStats, file = libStatsFile, col.names = TRUE, row.names = FALSE,
+  append = TRUE, quote = TRUE, sep = "\t")

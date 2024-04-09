@@ -18,8 +18,8 @@ use Time::Piece;
 use Data::Dumper;
 ## Define arguments & their default value
 my ($metadataFile, $parallelJobs, $refIntergenicFolder, $cellTypeFolder, $outputDir,
-    $queue, $account, $pathToCallsScript, $pathToSummaryScript, $pValueCutoff,
-    $rLibs) = ('', '', '', '', '', '',  '', '', '' , '', '');
+    $queue, $account, $pathToCallsScript, $pValueCutoff,
+    $rLibs, $barcodeAnnotationFolder) = ('', '', '', '', '', '',  '', '', '' , '', '');
 my %opts = ('metadataFile=s'                     => \$metadataFile,
             'parallelJobs=s'                     => \$parallelJobs,
             'refIntergenicFolder=s'              => \$refIntergenicFolder,
@@ -29,7 +29,6 @@ my %opts = ('metadataFile=s'                     => \$metadataFile,
             'queue=s'                            => \$queue,
             'account=s'                          => \$account,
             'pathToCallsScript=s'                => \$pathToCallsScript,
-            'pathToSummaryScript=s'              => \$pathToSummaryScript,
             'pValueCutoff=s'                     => \$pValueCutoff,
             'rLibs=s'                            => \$rLibs
            );
@@ -37,18 +36,19 @@ my %opts = ('metadataFile=s'                     => \$metadataFile,
 ######################## Check arguments ########################
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$metadataFile || $parallelJobs eq '' || $refIntergenicFolder eq '' ||             
-    $cellTypeFolder eq '' || $outputDir eq '' || $queue eq '' || $account eq '' || $pathToCallsScript eq '' ||
-    $pathToSummaryScript eq '' || $pValueCutoff eq '' || $rLibs eq '') {
+    $cellTypeFolder eq '' || $barcodeAnnotationFolder eq '' || $outputDir eq '' || $queue eq '' ||
+    $account eq '' || $pathToCallsScript eq '' || $pValueCutoff eq '' ||
+    $rLibs eq '') {
     print "\n\tInvalid or missing argument:
-\t-metadataFile                 file metadata_info containing all run to process
+\t-metadataFile                  file metadata_info containing all run to process
 \t-parallelJobs                  maximum number of jobs to run in parallel
 \t-refIntergenicFolder           Path to the directory containing reference intergenic sequences
 \t-cellTypeFolder                Path to the directory containing celltype expression quantification
 \t-outputDir                     path where should be saved results of this script
+\t-barcodeAnnotationFolder       path to the directory containing cleaning barcode annotaiton files
 \t-queue                         queue to use to run jobs on the cluster
 \t-account                       account to use to run jobs on the cluster
 \t-pathToCallsScript             path to the R script that will generate calls for each library
-\t-pathToSummaryScript           path to the R script that will generate tsv and pdf summary
 \t-rLibs                         path to the directory containing R packages
 \t-pValueCutoff                  pValue cutoff used to consider a call present/absent
 \n";
@@ -85,9 +85,9 @@ foreach my $experimentId (keys %processedLibraries){
         my $jobName = "${jobPrefix}${libraryId}";
         my $speciesId = $processedLibraries{$experimentId}{$libraryId}{'speciesId'};
         my $speciesName = $processedLibraries{$experimentId}{$libraryId}{'speciesName'};
-	## use 5Gb of memory.
+	## use 30Gb of memory.
 	    my $sbatchTemplate = Utils::sbatch_template($queue, $account, 1,
-          20, "${clusterOutput}${jobName}.out", "${clusterOutput}/${jobName}.err",
+          30, "${clusterOutput}${jobName}.out", "${clusterOutput}/${jobName}.err",
           $jobName);
 
         #TODO: move modules management to a script attribute
