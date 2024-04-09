@@ -375,7 +375,7 @@ generate_intergenic_sequences: sum_by_species
 # As for Bgee 15 it was mandatory to increase memory to 120G to generate Human index with kmer size = 15bp
 #
 # sample_info_to_bgeecall.pl creates several useful files. Please read the documentation of the script to understand how to use them
-indexes_bgeecall:
+indexes_bgeecall: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH) 
 	# generate BgeeCall input file from the rna_seq_sample_info.txt file
 	# TODO: run this script in a different rule
 	@perl 1Run/sample_info_to_bgeecall.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -sample_excluded=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >$@.tmp 2>$@.err
@@ -393,11 +393,13 @@ presence_absence_bgeecall: indexes_bgeecall
 check_presence_absence: presence_absence_bgeecall
 	# check that presence absence calls have been generated for all libraries present in the rna_seq_sample_info file
 	# generate file containing calls info for all libraries and use this file to generate different plots
+	@perl 1Run/sample_info_to_bgeecall.pl -keep_all_libraries -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -sample_excluded=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >$@.tmp 2>$@.err
 	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_sample_info="$(RNASEQ_BGEECALL_FILE)" calls_dir="$(RNASEQ_CLUSTER_BGEECALL_CALLS)" presence_absence_report="$(RNASEQ_CLUSTER_CALLS_STATS)" kallisto_report="$(RNASEQ_CLUSTER_KALLISTO_STATS)"' 1Run/rna_seq_calls_plot.R $(RNASEQ_CLUSTER_R_LOG)rna_seq_calls_plot.Rout
-	@touch $@
+	@mv $@.tmp $@
 
+# not run for Bgee 15.1 and 15.2. To remove from the pipeline in the future major release.
 # Do not use slurm to run this light processing
-calculate_fpkm: presence_absence_bgeecall
+calculate_fpkm:
 	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args all_results_dir="$(RNASEQ_CLUSTER_BGEECALL_CALLS)" calls_file_name="$(ABUNDANCEFILE)"' 1Run/calculate_fpkm.R $(RNASEQ_CLUSTER_R_LOG)calculate_fpkm.Rout
 	@touch $@
 
@@ -407,7 +409,7 @@ calculate_fpkm: presence_absence_bgeecall
 # /bin/cp used because cp is an alias to cp -i
 # Also copy presence_absence_all_samples.txt, presence_absence_all_samples.RDa and presence_absence_boxplots.pdf
 
-save_and_send_results_back: calculate_fpkm check_presence_absence
+save_and_send_results_back: check_presence_absence
 	# Touch all files so that they are not removed from $(RNASEQ_CLUSTER_SCRATCH)
 	@find $(RNASEQ_CLUSTER_SCRATCH) -exec touch {} \; 2>warnings.$@
 	# Back-up all data
