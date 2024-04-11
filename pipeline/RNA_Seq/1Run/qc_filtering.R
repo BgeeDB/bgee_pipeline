@@ -1,11 +1,14 @@
 library(dplyr)
 
 #reports from kallisto for all libraries to insert
-reportsKallistoLibs <- read.table(file = "../../generated_files/RNA_Seq/reports_info_all_samples.txt", header = T, sep = "\t")
+reportsFile = "../../generated_files/RNA_Seq/reports_info_all_samples.txt"
+reportsKallistoLibs <- read.table(file = reportsFile, header = T, sep = "\t")
 #sample info file used by the pipeline
-sampleInfo <- read.table(file = "../../generated_files/RNA_Seq/rna_seq_sample_info.txt", header = T, sep = "\t", quote = "", comment.char = "!")
+sampleFile = "../../generated_files/RNA_Seq/rna_seq_sample_info.txt"
+sampleInfo <- read.table(file = sampleFile, header = T, sep = "\t", quote = "", comment.char = "!")
 #file summarizing present/absent calls proportions
-presenceAbsence <- read.table(file = "../../generated_files/RNA_Seq/presence_absence_all_samples.txt", header = T, sep = "\t")
+presenceAbsenceFile = "../../generated_files/RNA_Seq/presence_absence_all_samples.txt"
+presenceAbsence <- read.table(file = presenceAbsenceFile, header = T, sep = "\t")
 #annotation file coming from Bgee curators
 libAnnot <- read.table(file = "../../generated_files/RNA_Seq/RNASeqLibrary_full.tsv", header = TRUE, sep = "\t", quote = "\"")
 #update column name because R does not properly manage the # as 1st character of the header
