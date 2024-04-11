@@ -41,11 +41,26 @@ finalPresenceAbsence <- presenceAbsence %>% filter(libraryId %in% finalReportsKa
 #summary of libraries removed by bith filtering
 removedLibraries <-  reportsKallistoLibs %>% filter(!libraryId %in% finalReportsKallistoLibs$libraryId)
 removedLibrariesWithSpeciesAndExp <- merge(x = removedLibraries, y = sampleInfo[,c("libraryId", "experimentId", "speciesId")], by = "libraryId", all.x = T)
-print("Summary of libraries removed applying both filtering\n")
+message("Summary of libraries removed applying both filtering.")
 removedLibrariesWithSpeciesAndExp %>% group_by(speciesId) %>% summarize (count = n()) %>% arrange(count)
 
 #remove qc filtered libraries from the sample_info file
 finalSampleInfo <- sampleInfo %>% filter(!libraryId %in% removedLibraries$libraryId)
+
+#update read length of sample_info file for library that have no value for that field
+absent <- 0
+for(i in seq_len(nrow(finalSampleInfo))) {
+  if (is.na(finalSampleInfo$readLength[i]) || finalSampleInfo$readLength[i] == 0) {
+    print(finalSampleInfo$libraryId[i])
+    if (finalSampleInfo$libraryId[i] %in% finalReportsKallistoLibs$libraryId) {
+      readLength <- as.numeric(finalReportsKallistoLibs$max_read_size[finalReportsKallistoLibs$libraryId == finalSampleInfo$libraryId[i]])
+      finalSampleInfo$readLength[i] <- if_else(finalSampleInfo$libraryType[i] == "SINGLE", readLength, readLength*2)
+      absent <- absent + 1
+      finalSampleInfo$readLength[i] <- readLength
+    }
+  }
+}
+message("read length has been corrected for ", absent, " libraries")
 
 #save final version of the files
 write.table(x = finalReportsKallistoLibs, file = reportsFile, quote = FALSE, sep = "\t", col.names = TRUE,
