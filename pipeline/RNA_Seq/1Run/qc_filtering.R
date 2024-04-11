@@ -33,7 +33,6 @@ finalReportsKallistoLibs <- filteredReportsKallistoLibs %>% filter(libraryId %in
   libraryId %in% filteredPresenceAbsence$libraryId)
 message("filtering on proportion of protein coding gene present removed ",
         nrow(filteredReportsKallistoLibs)-nrow(finalReportsKallistoLibs), " libraries.")
-finalSampleInfo <- sampleInfo %>% filter(libraryId %in% finalReportsKallistoLibs$libraryId)
 finalPresenceAbsence <- presenceAbsence %>% filter(libraryId %in% finalReportsKallistoLibs$libraryId)
 
 #summary of libraries removed by bith filtering
@@ -42,6 +41,16 @@ removedLibrariesWithSpeciesAndExp <- merge(x = removedLibraries, y = sampleInfo[
 print("Summary of libraries removed applying both filtering\n")
 removedLibrariesWithSpeciesAndExp %>% group_by(speciesId) %>% summarize (count = n()) %>% arrange(count)
 
+#remove qc filtered libraries from the sample_info file
+finalSampleInfo <- sampleInfo %>% filter(!libraryId %in% removedLibraries$libraryId)
+
+#save final version of the files
+write.table(x = finalReportsKallistoLibs, file = reportsFile, quote = FALSE, sep = "\t", col.names = TRUE,
+            row.names = FALSE)
+write.table(x = finalPresenceAbsence, file = presenceAbsenceFile, quote = FALSE, sep = "\t", col.names = TRUE,
+            row.names = FALSE)
+write.table(x = finalSampleInfo, file = sampleFile, quote = FALSE, sep = "\t", col.names = TRUE,
+            row.names = FALSE)
 # save libraries removed by the filtering
 write.table(x = removedLibrariesWithSpeciesAndExp[,c("libraryId", "experimentId", "speciesId")],
   file = "../../generated_files/RNA_Seq/libraries_qc_filtered.tsv", quote = FALSE, sep = "\t", col.names = TRUE,
