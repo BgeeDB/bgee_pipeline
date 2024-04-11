@@ -436,6 +436,11 @@ save_and_send_results_back: check_presence_absence
 	@echo -e "\tYou can go out of the sensitive cluster now\n"
 	@touch $@
 
+# bgee 15.2 we applied a QC filtering based on the total number of reads, the number of reads mapped to the transcriptome,
+# and for libraries targeting protein coding genes, the percentage of protein coding genes with presence of expression.
+# this step has to be improved. To reproduce the filtering, please run the script 1Run/qc_filtering.R.
+# TODO: improve the QC filtering and then integrate this step in the Makefile. It could also be interesting to have a look
+# at the script 1Run/rna_seq_QC.R created by Sara Fonseca and never used in the pipeline.
 
 ################################ INSERT CALLS IN DATABASE ################################
 
