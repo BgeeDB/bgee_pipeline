@@ -100,10 +100,12 @@ sub map_strain_names {
         my @fields = map { s/"//g; $_ } split(/\t/, $line);
         # Case RNASeqLibrary_full.tsv: "strain"    taxid
         if ( $expression_annotation_file =~ /RNASeqLibrary_full\.tsv/ ){
-            if ( exists $strain_mapping->{ $fields[21] }->{ $fields[20] } ){
-                my $source = quotemeta($fields[20]);
-                my $target = $strain_mapping->{ $fields[21] }->{ $fields[20] };
-                $line =~ s{"$source"\t$fields[21]\t}{"$target"\t$fields[21]\t};
+            if ( exists $strain_mapping->{ $fields[17] }->{ $fields[15] } ){
+                #print "found in mapping file\n";
+                my $source = quotemeta($fields[15]);
+                my $genotype = $fields[16];
+                my $target = $strain_mapping->{ $fields[17] }->{ $fields[15] };
+                $line =~ s{"$source"\t[^\t]*\t$fields[17]\t}{"$target"\t$genotype\t$fields[17]\t};
             }
             print $line;
         }
