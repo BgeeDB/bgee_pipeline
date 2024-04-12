@@ -497,7 +497,7 @@ sub getAllRnaSeqLibrariesInfo {
     # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'readLength'} = ...
     # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'runIds'}->{$runId} = ()
 
-    my @valid_platforms = ('Illumina', 'NextSeq');
+    my @valid_platforms = ('Illumina', 'NextSeq', 'HiSeq X Ten');
 
     my %rnaSeqLibrary;
     for my $line ( read_file("$rnaSeqLibraryFile", chomp=>1) ){
