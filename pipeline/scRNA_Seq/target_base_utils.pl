@@ -604,7 +604,7 @@ sub insert_get_annotated_sample {
                     $barcode,                          ' - ',
                     $time,                             ' - ',
                     $timeUnit,                         ' - ',
-                    $freeTextAnnotation,               ' - ',
+                    $freeTextAnnotation,
                     "\n";
     } else {
         $insAnnotatedSample->execute($libraryId, $conditionId, $cellTypeAuthorAnnotation,
