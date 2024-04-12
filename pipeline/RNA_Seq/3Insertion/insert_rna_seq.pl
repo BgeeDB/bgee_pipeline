@@ -65,6 +65,7 @@ if ( !$test_options || $bgee_connector eq '' || $rnaSeqLibrary eq '' || $rnaSeqE
 }
 
 require("$FindBin::Bin/../rna_seq_utils.pl");
+require("$FindBin::Bin/../../target_base_utils.pl");
 
 # Bgee db connection
 my $bgee = Utils::connect_bgee_db($bgee_connector);
@@ -158,7 +159,7 @@ $selBiotypes->finish;
 # INSERT EXPERIMENTS #
 ######################
 #first need to retrieve already inserted experimentIds
-my $selExp = $bgee->prepare("select rnaSeqExperimentId from rneSeqExperiment");
+my $selExp = $bgee->prepare("select rnaSeqExperimentId from rnaSeqExperiment");
 $selExp->execute()  or die $selExp->errstr;
 my %insertedExp = ();
 while ( my @data = $selExp->fetchrow_array ){
@@ -168,7 +169,7 @@ print "Inserting experiments...\n";
 my $insExp = $bgee->prepare('INSERT INTO rnaSeqExperiment (rnaSeqExperimentId, rnaSeqExperimentName, rnaSeqExperimentDescription, dataSourceId) VALUES (?, ?, ?, ?)');
 for my $expId ( sort keys %experiments ){
     #do not insert the experiment if it is already in the database
-    next if exists $$insertedExp{$expId};
+    next if exists $insertedExp{$expId};
     print "\t$expId\n";
     if ( $debug ){
         binmode(STDOUT, ':utf8');
@@ -221,7 +222,7 @@ for my $populationCaptureId ( keys %popCaptureToBiotypes ){
             print 'INSERT INTO rnaSeqProtocolToBiotypeExcludedAbsentCalls: ', $populationCaptureId,  ' - ', 
                                                                               $biotypeId,   "\n";
         } else {
-            $insPopCaptureToBiotype->execute($populationCaptureId, $biotypeId) or die $insProtocolToBiotype->errstr;
+            $insPopCaptureToBiotype->execute($populationCaptureId, $biotypeId) or die $insPopCaptureToBiotype->errstr;
         }
     }
     # add the population capture to the list of inserted ones
@@ -257,7 +258,7 @@ my %extra = map  { my @tmp = split(/\t/, $_, -1); if ( $tmp[2] ne '' && $tmp[0] 
 # Get used stages & anatEntityId from annotation sheet
 %tsv = %{ Utils::read_spreadsheet("$rnaSeqLibrary", "\t", 'csv', '"', 1) };
 my @Stg  = @{ $tsv{'stageId'} };
-my @Anat = @{ $tsv{'uberonId'} };
+my @Anat = @{ $tsv{'anatId'} };
 
 # Fix mapping with extra mapping file
 @Stg  = map { $extra{$_} || $_ } @Stg;
@@ -305,8 +306,15 @@ my $insert_annotatedSampleGeneResult =  'INSERT INTO rnaSeqLibraryAnnotatedSampl
                                         'reasonForExclusion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
 # Excluded libraries
+my $selectDiscardedLib = $bgee->prepare('SELECT rnaSeqLibraryId FROM rnaSeqLibraryDiscarded');
+$selectDiscardedLib->execute()  or die $selectDiscardedLib->errstr;
+my %insertedDiscardedLib = ();
+while ( my @data = $selectDiscardedLib->fetchrow_array ){
+    $insertedDiscardedLib{$data[0]} = 1;
+}
 my $insExcludedLib = $bgee->prepare('INSERT INTO rnaSeqLibraryDiscarded (rnaSeqLibraryId, rnaSeqLibraryDiscardReason) VALUES (?, ?)');
 for my $libraryId ( sort keys %excludedLibraries ){
+    next if exists $insertedDiscardedLib{$libraryId};
     if ( $debug ){
         print 'INSERT INTO rnaSeqLibraryDiscarded: ', $libraryId, "\n";
     }
@@ -340,21 +348,15 @@ for my $expId ( sort keys %libraries ){
         print "\t$expId $libraryId\n";
 
         # Remap to extra mapping if any
-        $annotations{$expId}->{$libraryId}->{'uberonId'} = $extra{ $annotations{$expId}->{$libraryId}->{'uberonId'} } || $annotations{$expId}->{$libraryId}->{'uberonId'};
+        $annotations{$expId}->{$libraryId}->{'anatId'} = $extra{ $annotations{$expId}->{$libraryId}->{'anatId'} } || $annotations{$expId}->{$libraryId}->{'anatId'};
         $annotations{$expId}->{$libraryId}->{'stageId'}  = $extra{ $annotations{$expId}->{$libraryId}->{'stageId'} }  || $annotations{$expId}->{$libraryId}->{'stageId'};
 
-        if ( !exists $doneAnat->{$annotations{$expId}->{$libraryId}->{'uberonId'}} || $doneAnat->{$annotations{$expId}->{$libraryId}->{'uberonId'}} eq '' ){
-            warn "[$annotations{$expId}->{$libraryId}->{'uberonId'}] unmapped organ id for [$libraryId]\n";
+        if ( !exists $doneAnat->{$annotations{$expId}->{$libraryId}->{'anatId'}} || $doneAnat->{$annotations{$expId}->{$libraryId}->{'anatId'}} eq '' ){
+            warn "[$annotations{$expId}->{$libraryId}->{'anatId'}] unmapped organ id for [$libraryId]\n";
             next LIBRARY;
         }
         if ( !exists $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}}   || $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}}   eq '' ){
             warn "[$annotations{$expId}->{$libraryId}->{'stageId'}] unmapped stage id for [$libraryId]\n";
-            next LIBRARY;
-        }
-
-        # Check that protocol of current RNA-Seq library is already present in the database
-        if ( !defined $protocolNameToProtocolId{$annotations{$expId}->{$libraryId}->{'protocol'}}){
-            warn "Protocol [$annotations{$expId}->{$libraryId}->{'protocol'}] not present in the database for [$libraryId]\n";
             next LIBRARY;
         }
 
@@ -364,7 +366,7 @@ for my $expId ( sort keys %libraries ){
         ($condKeyMap, $conditions) = Utils::insert_get_condition($bgee,
                                                                  $conditions,
                                                                  $stage_equivalences,
-                                                                 $doneAnat->{$annotations{$expId}->{$libraryId}->{'uberonId'}},
+                                                                 $doneAnat->{$annotations{$expId}->{$libraryId}->{'anatId'}},
                                                                  $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}},
                                                                  $annotations{$expId}->{$libraryId}->{'speciesId'},
                                                                  $annotations{$expId}->{$libraryId}->{'sex'},
@@ -400,10 +402,10 @@ for my $expId ( sort keys %libraries ){
                   # rnaSeqPopulationCaptureId. For now all target base are polyA
                   $annotations{$expId}->{$libraryId}->{'populationCapture'},                                                                ' - ',
                   $annotations{$expId}->{$libraryId}->{'genotype'},                       ' - ',
-                  $pipelineReport{$libraryId}->{'allReadsCount'},                         ' - ',
-                  $pipelineReport{$libraryId}->{'mappedReadsCount'},                      ' - ',
-                  $pipelineReport{$libraryId}->{'minReadLength'},                         ' - ',
-                  $pipelineReport{$libraryId}->{'maxReadLength'},                         ' - ',
+                  $reportInfo{$libraryId}->{'allReadsCount'},                         ' - ',
+                  $reportInfo{$libraryId}->{'mappedReadsCount'},                      ' - ',
+                  $reportInfo{$libraryId}->{'minReadLength'},                         ' - ',
+                  $reportInfo{$libraryId}->{'maxReadLength'},                         ' - ',
                   lc $libraries{$expId}->{$libraryId}->{'libraryType'},"\n";
 
         } else {
@@ -435,18 +437,18 @@ for my $expId ( sort keys %libraries ){
         }
 
         # Now insert rnaSeqLibraryAnnotatedSample
-        $annotatedSampleId = insert_get_annotated_sample($libraryId, $condKeyMap->{'conditionId'},
+        my $annotatedSampleId = insert_get_annotated_sample($libraryId, $condKeyMap->{'conditionId'},
                     #no celltype author annotation for bulk RNA-Seq
                     '',
                     $annotations{$expId}->{$libraryId}->{'freeTextOrgan'},
                     $annotations{$expId}->{$libraryId}->{'freeTextStage'},
                     #for now abundace unit is always tpm for bulk.
                     'tpm', 
-                    $librariesStats{$libraryId}->{'meanRefIntergenic'},
-                    $librariesStats{$libraryId}->{'sdRefIntergenic'},
+                    $librariesStats{$libraryId}->{'meanIntergenic'},
+                    $librariesStats{$libraryId}->{'sdIntergenic'},
                     $librariesStats{$libraryId}->{'cutoffTPM'},
                     $librariesStats{$libraryId}->{'allGenesPercentPresent'},
-                    $librariesStats{$libraryId}->{'proteinCodingGenesPercentPresent'},
+                    $librariesStats{$libraryId}->{'proteinCodingPercentPresent'},
                     $librariesStats{$libraryId}->{'intergenicRegionsPercentPresent'},
                     $librariesStats{$libraryId}->{'pValueThreshold'},
                     # no UMIs info for bulk. So allUMIsCount and mappedUMIsCount are 0
@@ -484,7 +486,7 @@ for my $expId ( sort keys %libraries ){
                       $genesResults{$geneId}->{'TPM'},            ' - ',
                       $genesResults{$geneId}->{'estimatedCount'}, ' - ',
                       # no UMIs for bulk RNA-Seq
-                      0,
+                      0,                                          ' - ',
                       $genesResults{$geneId}->{'zscore'},         ' - ',
                       $genesResults{$geneId}->{'pValue'},         ' - ',
                       $exclusion, "\n";
