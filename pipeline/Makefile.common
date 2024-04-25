@@ -177,7 +177,7 @@ CLUSTER_BUSTOOLS_CMD    := $(CLUSTER_SOFT_VITALIT) module load UHTS/Analysis/bus
 # ===================================
 
 # Tmp path (if not enough disk space)
-TMPDIR := /var/lib/mysql/tmp/pipeline_results/
+TMPDIR := /var/lib/mysql/tmp/bgee_v15_2/
 
 # Path to the directory storing source files
 # PIPELINEROOT and DIR_NAME are specified by each individul Makefile
@@ -451,7 +451,7 @@ RNASEQ_KALLISTO_KMER_SHORT    := 15
 INTERGENIC_N_PROPORTION         := 0.05
 
 # RNAseq data path
-RNASEQDATAPATH             := /var/bgee/extra/pipeline/rna_seq/
+RNASEQDATAPATH             := $(TMPDIR)/RNA_Seq/
 ABUNDANCEFILE              := gene_level_abundance+calls.tsv
 RNASEQALLRES               := $(RNASEQDATAPATH)rna_seq_all_results_$(DBNAME)/
 SC_RNASEQ_ALL_RES_FL       := $(RNASEQDATAPATH)full_length_all_results_$(DBNAME)/
@@ -566,8 +566,8 @@ SC_RNASEQ_CLUSTER_CALLS_10X                   := $(SC_RNASEQ_CLUSTER_ALL_RES_DRO
 SC_RNASEQ_CLUSTER_INFO_CALLS_10X              := $(SC_RNASEQ_CLUSTER_CALLS_10X)All_cellPopulation_stats_10X.tsv
 
 ## On Bgee server
-SC_RNASEQ_SERVER_RES_KALLISTO_DROPLET         := $(TMPDIR)kallisto_bus_results/
-SC_RNASEQ_SERVER_CALLS_10X                    := $(TMPDIR)calls/
+SC_RNASEQ_SERVER_RES_KALLISTO_DROPLET         := $(TMPDIR)/DROPLET_10X/kallisto_bus_results/
+SC_RNASEQ_SERVER_CALLS_10X                    := $(TMPDIR)/DROPLET_10X/calls/
 SC_RNASEQ_SERVER_INFO_CALLS_10X               := $(SC_RNASEQ_SERVER_CALLS_10X)All_cellPopulation_stats_10X.tsv
 
 # minimum number of cells in a full-length library
