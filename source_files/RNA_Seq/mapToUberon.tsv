@@ -74,6 +74,7 @@ HsapDv:0000001	life cycle	UBERON:0000104
 HsapDv:0000037	fetal stage	UBERON:0007220
 HsapDv:0000227	late adult stage	UBERON:0007222
 HsapDv:0000258	adult stage	UBERON:0000113
+HsapDv:0000204	mature stage	UBERON:0000113
 HsapDv:0000262	newborn stage	UBERON:0007221
 MdomDv:0000001	opossum life cycle	UBERON:0000104
 MdomDv:0000002	prenatal stage	UBERON:0000068
