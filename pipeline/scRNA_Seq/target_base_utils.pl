@@ -170,8 +170,6 @@ sub getSingleCellExperiments {
     # $experiments{experimentId}->{'protocol'}
     # $experiments{experimentId}->{'experimentType'}
 
-    #@allowedExpTypes = ('3\'end', 'Full-length', 'Full-length and 3\'end'];
-
     my %experiments;
     for my $line ( read_file("$targetBaseExperimentFile", chomp=>1) ){
         next  if ( $line =~ /^#/ or $line =~ /^\"#/ );
