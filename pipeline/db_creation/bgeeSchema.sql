@@ -889,7 +889,8 @@ create table rnaSeqExperiment (
     rnaSeqExperimentId varchar(70) not null,
     rnaSeqExperimentName varchar(255) not null default '',
     rnaSeqExperimentDescription text,
-    dataSourceId smallInt unsigned not null
+    dataSourceId smallInt unsigned not null,
+    DOI varchar(255)
 ) engine = innodb;
 
 create table rnaSeqExperimentToKeyword (
