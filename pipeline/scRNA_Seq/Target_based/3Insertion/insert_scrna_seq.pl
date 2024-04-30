@@ -158,17 +158,7 @@ my $insert_individualSampleGeneResult = 'INSERT INTO rnaSeqLibraryIndividualSamp
 ########################################################################
 
 ## Initialize Bgee db connections
-# connection used to insert data in rnaSeqExperiment, rnaSeqLibrary, rnaSeqAnnotatedSample
-# and rnaSeqIndividualSample tables. Keep AutoCommit as each insert has to be done directly
-# to retrieve autoincrement IDs of conditionId, rnaSeqLibraryAnnotatedSampleId and
-# rnaSeqLibraryIndividualSampleId
-my $bgee_metadata = Utils::connect_bgee_db($bgee_connector);
-$bgee_metadata->{AutoCommit} = 1;
-# AutoInactiveDestroy = 1 avoid the connection to be automatically destroyed at the end of a connection
-# in a ForkManager. Then have to manually close the connection at the end of the script.
-$bgee_metadata->{AutoInactiveDestroy} = 1;
-# automatically reconnect when connection is lost
-$bgee_metadata->{mysql_auto_reconnect} = 1;
+my $bgee_connection = Utils::connect_bgee_db($bgee_connector);
 
 ## Load 
 # Library info from manual curation used to launch the pipeline
@@ -177,7 +167,8 @@ print "\t", scalar keys %libraries, " experiments with libraries mapped.\n";
 # Info of processed libraries coming from the pipeline
 my %processedLibraries = get_processed_libraries_info($bgeeLibraryInfo, 1);
 # Experiment annotation coming from flat files
-my @experimentType = ('3\'end', 'Full-length and 3\'end', '5\'end');
+#TODO should be harmonized at annotation level.
+my @experimentType = ('3\'end', 'Full-length and 3\'end', '5\'end', '3\'end, 5\'end', 'Full-length, 3\'end');
 my %experiments       = getSingleCellExperiments($singleCellExperiment,
     @experimentType);
 # Stats of pipeline processing for each library/celltype (libraryAnnotatedSample level)
@@ -186,7 +177,7 @@ my %pipelineReport = getAllRnaSeqReportInfo($pipelineReportFile);
 
 # sex-related information needed for sub 'insert_get_condition'
 my $anatSexInfo    = Utils::get_anat_sex_info($sexInfo);
-my $speciesSexInfo = Utils::get_species_sex_info($bgee_metadata);
+my $speciesSexInfo = Utils::get_species_sex_info($bgee_connection);
 
 # Parse extra mapping info for currently too up-to-date annotations
 ##UnmappedId    UnmappedName    UberonID    UberonName    Comment
@@ -198,7 +189,7 @@ my %extra = map  { my @tmp = split(/\t/, $_, -1); if ( $tmp[2] ne '' && $tmp[0] 
 # DATA SOURCES #
 ################
 my %bgeeDataSources = ();
-my $selSrc = $bgee_metadata->prepare($select_datasource);
+my $selSrc = $bgee_connection->prepare($select_datasource);
 $selSrc->execute()  or die $selSrc->errstr;
 while ( my @data = $selSrc->fetchrow_array ){
     $bgeeDataSources{$data[0]} = $data[1];
@@ -209,7 +200,7 @@ $selSrc->finish;
 # POPULATION CAPTURE #
 ######################
 my @populationCapture = ();
-my $selPopCapture = $bgee_metadata->prepare($select_populationCapture);
+my $selPopCapture = $bgee_connection->prepare($select_populationCapture);
 $selPopCapture->execute()  or die $selSrc->errstr;
 while ( my @data = $selPopCapture->fetchrow_array ){
     push(@populationCapture, $data[0])
@@ -221,7 +212,7 @@ $selPopCapture->finish;
 ############
 
 my %biotypeNameToBiotypeId = ();
-my $selBiotypes = $bgee_metadata->prepare($select_biotype);
+my $selBiotypes = $bgee_connection->prepare($select_biotype);
 $selBiotypes->execute()  or die $selBiotypes->errstr;
 while ( my @data = $selBiotypes->fetchrow_array ){
     $biotypeNameToBiotypeId{$data[1]} = $data[0];
@@ -229,13 +220,13 @@ while ( my @data = $selBiotypes->fetchrow_array ){
 $selBiotypes->finish;
 
 ## retrieve already inserted experiment Ids to not try to reinsert them
-my $selExp = $bgee_metadata->prepare($select_experiments);
+my $selExp = $bgee_connection->prepare($select_experiments);
 $selExp->execute() or die $selExp->errstr;
 my @insertedExpIds = ();
 while ( my @data = $selExp->fetchrow_array ){
     push(@insertedExpIds, $data[0]);
 }
-
+$selExp->finish;
 
 ################################################
 # GET GENE INTERNAL IDS                        #
@@ -251,15 +242,17 @@ for my $expId ( keys %processedLibraries ){
 }
 # Get hash of geneId to bgeeGeneId mapping per species
 for my $speciesId ( keys %genes ){
-    $genes{$speciesId} = Utils::query_bgeeGene($bgee_metadata, $speciesId);
+    $genes{$speciesId} = Utils::query_bgeeGene($bgee_connection, $speciesId);
 }
 
 # Get already known conditions
-my $conditions = Utils::query_conditions($bgee_metadata);
+my $conditions = Utils::query_conditions($bgee_connection);
 
 # Get simpler (upper level) stage equivalences
-my $stage_equivalences = Utils::get_stage_equivalences($bgee_metadata);
+my $stage_equivalences = Utils::get_stage_equivalences($bgee_connection);
 
+#close connection to database.
+$bgee_connection->disconnect;
 
 ####################
 # START INSERTION  #
@@ -267,11 +260,22 @@ my $stage_equivalences = Utils::get_stage_equivalences($bgee_metadata);
 
 my $inserted = 0;
 
-my $insExp = $bgee_metadata->prepare($insert_experiment);
-my $insLib = $bgee_metadata->prepare($insert_libraries);
-
-
 for my $expId ( sort keys %processedLibraries ){
+
+    # start a new connection to the database for each experiment in order to avoid connection timeout.
+    # connection used to insert data in rnaSeqExperiment, rnaSeqLibrary, rnaSeqAnnotatedSample
+    # and rnaSeqIndividualSample tables. Keep AutoCommit as each insert has to be done directly
+    # to retrieve autoincrement IDs of conditionId, rnaSeqLibraryAnnotatedSampleId and
+    # rnaSeqLibraryIndividualSampleId
+    my $bgee_metadata = Utils::connect_bgee_db($bgee_connector);
+    $bgee_metadata->{AutoCommit} = 1;
+    # AutoInactiveDestroy = 1 avoid the connection to be automatically destroyed at the end of a connection
+    # in a ForkManager. Then have to manually close the connection at the end of the script.
+    $bgee_metadata->{AutoInactiveDestroy} = 1;
+
+    my $insExp = $bgee_metadata->prepare($insert_experiment);
+    my $insLib = $bgee_metadata->prepare($insert_libraries);
+
     if (grep( /^$expId$/, @insertedExpIds)) {
         print "\t$expId already inserted. Will anyway insert not yet inserted libraries from this experiment\n";
     } else {
@@ -294,6 +298,7 @@ for my $expId ( sort keys %processedLibraries ){
                 $bgeeDataSources{$experiments{$expId}->{'source'}}) or die $insExp->errstr;
         }
     }
+    $insExp->finish;
     # Load barcode to cell type mapping for this experiment
     my $barcodeToCellTypeFile = $barcodeToCelltypeFilePattern =~ s/EXP_ID/$expId/r;
     #my %barcodesTsv = %{ Utils::read_spreadsheet("$barcodeToCellTypeFile", "\t", 'csv', '"', 1) };
@@ -469,7 +474,6 @@ for my $expId ( sort keys %processedLibraries ){
             $clusterToAnnotatedSampleId{$authorCellTypeAnnotation}{$cellTypeId} = $annotatedSampleId;
         }
 
-        #prepare query to update sumUMIs per rnaSeqLibraryAnnotatedSample
         $selectAnnotatedSampleId->finish;
         $insAnnotatedSample->finish;
 
@@ -498,6 +502,7 @@ for my $expId ( sort keys %processedLibraries ){
 
     }
 
+    $insLib->finish;
     # parse libraries a second time in parallel to fasten insertion
     my $pm = new Parallel::ForkManager($numberCore);
     for my $libraryId ( sort keys %{$processedLibraries{$expId}} ){
@@ -750,9 +755,9 @@ for my $expId ( sort keys %processedLibraries ){
 
 
     }
-    $pm->wait_all_children
+    $pm->wait_all_children;
+    $bgee_metadata->disconnect;
 }
 
-$bgee_metadata->disconnect;
 exit 0;
 
