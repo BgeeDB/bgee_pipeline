@@ -25,23 +25,25 @@ my ($libs_per_job)  = (100); # default 100 libraries per thread
 my (@lib_ids) = ();
 my ($sample_offset) = (0);
 my ($sample_count) = (0);
-my %opts = ('bgee=s'        => \$bgee_connector, # Bgee connector string
-            'parallel_jobs=i' => \$parallel_jobs,
-            'libs_per_job=i'  => \$libs_per_job,
-            'lib_ids=s'       => \@lib_ids,
-            'sample_offset=i' => \$sample_offset,
-            'sample_count=i'  => \$sample_count,
+my ($is_single_cell) = '';
+my %opts = ('bgee=s'           => \$bgee_connector, # Bgee connector string
+            'parallel_jobs=i'  => \$parallel_jobs,
+            'libs_per_job=i'   => \$libs_per_job,
+            'lib_ids=s'        => \@lib_ids,
+            'sample_offset=i'  => \$sample_offset,
+            'sample_count=i'   => \$sample_count,
+            'is_single_cell=s' => \$is_single_cell
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $bgee_connector eq ''){
+if ( !$test_options || $bgee_connector eq '' ){
     print "\n\tInvalid or missing argument:
 \te.g. $0 -bgee=\$(BGEECMD)
 \t-bgee             Bgee connector string
-\t-parallel_jobs    Number of threads used to compute ranks
-\t-libs_per_job     Number of libraries per thread
-\t-lib_ids          a comma-separated list of library IDs to treat, instead of providing sample_offset and sample_count
+\t-parallel_jobs    Number of threads used to compute ranks (optional)
+\t-libs_per_job     Number of libraries per thread (optional)
+\t-lib_ids          a comma-separated list of library IDs to treat, instead of providing sample_offset and sample_count (optional)
 \t-sample_offset    The offset parameter to retrieve libraries to compute ranks for
 \t-sample_count     The row_count parameter to retrieve libraries to compute ranks for
 \n";
@@ -62,6 +64,17 @@ if ($sample_offset > 0 && @lib_ids) {
     die("Not possible to provide library IDs and offset parameters at the same time\n");
 }
 
+if ($sample_offset == 0 && !@lib_ids) {
+    die("Should provide library IDs or offset parameters\n");
+}
+
+if (($is_single_cell ne 1 || $is_single_cell ne 0) AND !@lib_ids) {
+    die("is_single_cell should be equal to 0 for bulk RNA-Seq or equal to 1 for single cell when no library ID is provided");
+}
+
+if (($is_single_cell ne '' AND @lib_ids) {
+    die("not possible to provide is_single_cell and library IDs at the same time");
+}
 # Reasonning of the computations (as of Bgee 15.0 it's exactly the same reasoning as for
 # bulk RNA-Seq data):
 # * compute gene fractional ranks in table scRnaSeqFullLengthResult, for each scRNA-Seq library,
@@ -198,27 +211,27 @@ if (!@lib_ids) {
     # We rank all genes that have received at least one read in any condition.
     # So we always rank the same set of gene in a given species over all libraries.
     # We assume that each library maps to only one species through its contained genes.
-    my $libSql = 'SELECT t1.rnaSeqLibraryId FROM rnaSeqLibrary AS t1
-              WHERE rnaSeqTechnologyIsSingleCell = 1
-              AND EXISTS (SELECT 1 FROM rnaSeqLibraryAnnotatedSample AS t2
-                  INNER JOIN rnaSeqLibraryAnnotatedSampleGeneResult AS t3
-                  ON t3.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId
-                  WHERE t1.rnaSeqLibraryId = t2.rnaSeqLibraryId
-                  AND t3.expressionId IS NOT NULL
-              ) AND NOT EXISTS (SELECT 1 FROM rnaSeqLibraryAnnotatedSample AS t2
-                  INNER JOIN rnaSeqLibraryAnnotatedSampleGeneResult AS t3
-                  ON t3.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId
-                  WHERE t1.rnaSeqLibraryId = t2.rnaSeqLibraryId
-                  AND t3.rawRank IS NOT NULL)';
+    my $libSql = 'SELECT t1.rnaSeqLibraryId FROM rnaSeqLibrary AS t1 '.
+              'WHERE rnaSeqTechnologyIsSingleCell =  ? '.
+              'AND EXISTS (SELECT 1 FROM rnaSeqLibraryAnnotatedSample AS t2 '.
+                  'INNER JOIN rnaSeqLibraryAnnotatedSampleGeneResult AS t3 '.
+                  'ON t3.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId '.
+                  'WHERE t1.rnaSeqLibraryId = t2.rnaSeqLibraryId '.
+                  'AND t3.expressionId IS NOT NULL '.
+              ') AND NOT EXISTS (SELECT 1 FROM rnaSeqLibraryAnnotatedSample AS t2 '.
+                  'INNER JOIN rnaSeqLibraryAnnotatedSampleGeneResult AS t3 '.
+                  'ON t3.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId '.
+                  'WHERE t1.rnaSeqLibraryId = t2.rnaSeqLibraryId '.
+                  'AND t3.rawRank IS NOT NULL)';
     if ($sample_count > 0) {
-        $libSql .= ' ORDER BY t1.rnaSeqLibraryId
-                     LIMIT '.$sample_offset.', '.$sample_count;
+        $libSql .= ' ORDER BY t1.rnaSeqLibraryId '.
+                    'LIMIT '.$sample_offset.', '.$sample_count;
     }
     my $rnaSeqLibStmt = $dbh->prepare($libSql);
 
     my $t0 = time();
     # Get the list of all rna-seq libraries
-    $rnaSeqLibStmt->execute()  or die $rnaSeqLibStmt->errstr;
+    $rnaSeqLibStmt->execute($is_single_cell)  or die $rnaSeqLibStmt->errstr;
 
     @libs = map { $_->[0] } @{$rnaSeqLibStmt->fetchall_arrayref};
     # Disconnect the DBI connection open in parent process, otherwise it will generate errors
