@@ -1005,7 +1005,7 @@ create table rnaSeqLibraryAnnotatedSample (
 -- these 3 columns have been added to be able to insert precise Salmon condition information
     time int unsigned default null,
     timeUnit varchar(35) default null,
-    freeTextAnnotation varchar(255) default null
+    physiologicalStatus varchar(255) default null
 ) engine = innodb;
 
 -- TODO: This table contains abundance/read count values for each gene for each library
