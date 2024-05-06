@@ -483,13 +483,13 @@ check_conditions: insert_RNA_seq
 
 insert_expression: check_conditions insert_RNA_seq
 	# Insert the expression summaries
-	@perl 3Insertion/insert_rna_seq_expression.pl -bgee=$(BGEECMD) > $@.tmp 2>warnings.$@
+	@perl 3Insertion/insert_rna_seq_expression.pl -number_threads=20 -bgee=$(BGEECMD) > $@.tmp 2>warnings.$@
 	@echo
 	@echo "Searching for incorrect updates of rnaSeqResult/expression tables (there should be none)" >> $@.tmp
-	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult WHERE reasonForExclusion = 'not excluded' AND expressionId IS NULL" >> $@.tmp
-	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult WHERE reasonForExclusion != 'not excluded' AND expressionId IS NOT NULL" >> $@.tmp
-	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t1 WHERE expressionId IS NOT NULL AND NOT EXISTS(SELECT 1 FROM expression AS t2 WHERE t2.expressionId = t1.expressionId)" >> $@.tmp
-	@$(MYSQL) -e "SELECT * FROM expression AS t1 WHERE NOT EXISTS (SELECT 1 FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t2 WHERE t2.expressionId = t1.expressionId)" >> $@.tmp
+	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult as t1 INNER JOIN rnaSeqLibraryAnnotatedSample as t2 ON t1.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId INNER JOIN rnaSeqLibrary as t3 ON t2.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE t1.reasonForExclusion = 'not excluded' AND t1.expressionId IS NULL AND t3.rnaSeqTechnologyIsSingleCell = 0 limit 10" >> $@.tmp
+	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult as t1 INNER JOIN rnaSeqLibraryAnnotatedSample as t2 ON t1.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId INNER JOIN rnaSeqLibrary as t3 ON t2.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE reasonForExclusion != 'not excluded' AND expressionId IS NOT NULL AND t3.rnaSeqTechnologyIsSingleCell = 0 limit 10" >> $@.tmp
+	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t1 WHERE expressionId IS NOT NULL AND NOT EXISTS(SELECT 1 FROM expression AS t2 WHERE t2.expressionId = t1.expressionId) LIMIT 10" >> $@.tmp
+	@$(MYSQL) -e "SELECT * FROM expression AS t1 WHERE NOT EXISTS (SELECT 1 FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t2 WHERE t2.expressionId = t1.expressionId) AND NOT EXISTS (SELECT 1 FROM affymetrixProbeset AS t3 WHERE t3.expressionId = t1.expressionId) AND NOT EXISTS (SELECT * FROM expressedSequenceTag AS t4 WHERE t4.expressionId = t1.expressionId) AND NOT EXISTS (SELECT * FROM inSituSpot AS t5 WHERE t5.expressionId = t1.expressionId) LIMIT 10" >> $@.tmp
 	@echo >> $@.tmp
 	@echo "Statistics for rnaSeqLibraryAnnotatedSampleGeneResult" >> $@.tmp
 	@$(MYSQL) -e "SELECT t2.speciesId, t1.reasonForExclusion, t4.rnaSeqTechnologyIsSingleCell AS isSingleCell, t4.libraryMultiplexing AS isDropletBased, COUNT(*) AS absentGeneResultCount  FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t1 INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId INNER JOIN rnaSeqLibraryAnnotatedSample AS t3 ON t3.rnaSeqLibraryAnnotatedSampleId = t1.rnaSeqLibraryAnnotatedSampleId INNER JOIN rnaSeqLibrary as t4 ON t4.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE t1.pValue > 0.05 GROUP BY speciesId, reasonForExclusion, isSingleCell, isDropletBased ORDER BY speciesId;" >> $@.tmp
@@ -503,6 +503,7 @@ insert_expression: check_conditions insert_RNA_seq
 #     because with iterative updates the database may contain duplicates in regard to what you are inserting/updating/deleting!
 #XXX Why bothering inserting transcript info as we do not have expression associated to them? Furthermore transcript information should
 #    probably be inserted during the "genes" pipeline. To check for Bgee 16.0. A Jira issue has been created (BA-795)
+#    Not run for Bgee 15
 insert_feature_length: $(RNASEQ_LENGTH_INFO_FILEPATH)
 	# Insert the feature length information
 	@perl 3Insertion/insert_feature_length.pl -bgee=$(BGEECMD) -length_info=$(RNASEQ_LENGTH_INFO_FILEPATH) > $@.tmp 2>warnings.$@
@@ -514,7 +515,7 @@ insert_feature_length: $(RNASEQ_LENGTH_INFO_FILEPATH)
 launch_calculate_TMM_factors: insert_RNA_seq $(RNASEQALLRES)
 	# Launch calculation of TMM factors for RNA-seq
 	@mkdir -p $(RNASEQTMMTARG) $(RNASEQTMMPATH)
-	@perl 3Insertion/launch_calculate_TMM_factors.pl -bgee=$(BGEECMD) -path_generes=$(RNASEQALLRES) -path_target=$(RNASEQTMMTARG) -path_processed=$(RNASEQTMMPATH) >$@.tmp 2>warnings.$@
+	@perl 3Insertion/launch_calculate_TMM_factors.pl -bgee=$(BGEECMD) -path_generes=$(RNASEQALLRES) -path_target=$(RNASEQTMMTARG) -path_processed=$(RNASEQTMMPATH) -parallel_jobs=40>$@.tmp 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
@@ -529,7 +530,7 @@ check_TMM_factors: launch_calculate_TMM_factors $(RNASEQTMMPATH)
 # This should correspond to: SELECT count(*) FROM rnaSeqLibrary;
 
 insert_TMM_factors: check_TMM_factors $(RNASEQTMMPATH)
-	# Insert TMM factors into rnaSeqLibrary table
+	# Insert TMM factors into rnaSeqLibraryAnnotatedSample table
 	@perl 3Insertion/insert_TMM_factors.pl -bgee=$(BGEECMD) -tmm_results=$(RNASEQTMMPATH) >$@.tmp 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
