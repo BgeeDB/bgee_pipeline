@@ -84,7 +84,8 @@ JAVALIBDIR          := ../java/
 BGEEPIPELINEJARNAME := bgee-pipeline-$(RELEASE)-with-dependencies.jar
 BGEEPIPELINEJAR     := $(JAVALIBDIR)$(BGEEPIPELINEJARNAME)
 
-JAVA_NO_JAR := java -Xmx64g -Dbgee.dao.jdbc.username=$(DBUSER) -Dbgee.dao.jdbc.password=$(DBPASS) -Dbgee.dao.jdbc.driver.names=com.mysql.cj.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST):$(DBPORT)/$(DBNAME)?useSSL=false&allowPublicKeyRetrieval=True&enableQueryTimeouts=false&sessionVariables=net_write_timeout=260000,net_read_timeout=260000,wait_timeout=260000'
+# --add-opens java.base/java.lang=ALL-UNNAMED: see https://stackoverflow.com/a/77874779/1768736
+JAVA_NO_JAR := java -Xmx64g -Dbgee.dao.jdbc.username=$(DBUSER) -Dbgee.dao.jdbc.password=$(DBPASS) -Dbgee.dao.jdbc.driver.names=com.mysql.cj.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST):$(DBPORT)/$(DBNAME)?useSSL=false&allowPublicKeyRetrieval=True&enableQueryTimeouts=false&sessionVariables=net_write_timeout=260000,net_read_timeout=260000,wait_timeout=260000' --add-opens java.base/java.lang=ALL-UNNAMED
 # Java command allowing to connect to easyBgee without Jar. Never used without JAR for the moment but created to follow the same pattern than JAVA_NO_JAR/JAVA variables for Bgee
 JAVA_NO_JAR_EASYBGEE := java -Xmx64g -Dbgee.dao.jdbc.username=$(DBUSER_EASYBGEE) -Dbgee.dao.jdbc.password=$(DBPASS_EASYBGEE) -Dbgee.dao.jdbc.driver.names=com.mysql.cj.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST_EASYBGEE):$(DBPORT)/$(DBNAME_EASYBGEE)?useSSL=false&allowPublicKeyRetrieval=True&enableQueryTimeouts=false&sessionVariables=net_write_timeout=500000,net_read_timeout=500000,wait_timeout=500000'
 
