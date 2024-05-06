@@ -1,11 +1,16 @@
 #!/usr/bin/env perl
 
 # Frederic Bastian, May 2015
+# Julien Wollbrett, April 2024
 
 # This script is reponsible for generating the download files
 # containing our processed expression data (not the calls,
-# but the FPKM values, read counts, log signal intensities, etc).
+# but the CPM, TPM or FPKM values, read counts, log signal intensities, etc).
 # See opt debug message below for information about parameters.
+#
+# Since Bgee 15.1 all RNASeq datatypes (bulk, full length and droplet based)
+# are stored in the same tables in the database. The code has been refactored
+# to be able to use the same function for each of these datatypes
 
 #############################################################
 
@@ -34,6 +39,7 @@ my ($estDir)                        = ('');
 my ($inSituDir)                     = ('');
 my ($rnaSeqDir)                     = ('');
 my ($flScRnaSeqDir)                 = ('');
+my ($dbScRnaSeqDir)                 = ('');
 my ($bgeeVersion)                   = ('');
 my ($debug)                         = (0);
 my %opts = ('bgee=s'                => \$bgee_connector,     # Bgee connector string
@@ -43,15 +49,16 @@ my %opts = ('bgee=s'                => \$bgee_connector,     # Bgee connector st
             'inSituDir=s'          => \$inSituDir,
             'rnaSeqDir=s'          => \$rnaSeqDir,
             'flScRnaSeqDir=s'      => \$flScRnaSeqDir,
+            'dbScRnaSeqDir=s'      => \$dbScRnaSeqDir,
             'bgeeVersion=s'        => \$bgeeVersion,
-            'debug'                 => \$debug
+            'debug'                => \$debug
            );
 
 # Check arguments
 my $emptyArg = '-';
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $bgee_connector eq '' || $speciesArg eq '' ||
-     $affyDir eq '' || $estDir eq '' || $inSituDir eq '' || $rnaSeqDir eq '' || $flScRnaSeqDir eq '' || $bgeeVersion eq ''){
+     $affyDir eq '' || $estDir eq '' || $inSituDir eq '' || $rnaSeqDir eq '' || $flScRnaSeqDir eq '' || $dbScRnaSeqDir eq '' || $bgeeVersion eq ''){
     print "\n\tInvalid or missing argument:
 \te.g. $0  -bgee=\$(BGEE_CMD) -speciesArg=\$(SPECIES_ARG) -affyDir=\$(AFFY_DIR) -estDir=\$(EST_DIR) -inSituDir=\$(IN_SITU_DIR) -rnaSeqDir=\$(RNA_SEQ_DIR) -flScRnaSeqDir=\$(SC_RNA_SEQ_FL_DIR)
 \t-bgee                 Bgee    connector string
@@ -61,6 +68,7 @@ if ( !$test_options || $bgee_connector eq '' || $speciesArg eq '' ||
 \t-inSituDir            The path to generate in situ hybridization related files, or '-' for not generating data for in situ hybridization
 \t-rnaSeqDir            The path to generate RNA-Seq related files, or '-' for not generating data for RNA-Seq
 \t flScRnaSeqDir        The path to generate full length single cell RNA-Seq related files, or '-' for not generating data for full length single cell RNA-Seq
+\t dbScRnaSeqDir        The path to generate droplet based single cell RNA-Seq related files, or '-' for not generating data for droplet based single cell RNA-Seq
 \t-bgeeVersion          The Bgee release for which the files are being generated, to generate FTP links to correct version, e.g. 'bgee_v15'.
 \t-debug                more verbose output
 \n";
@@ -141,26 +149,43 @@ for my $speId ( keys %species ){
         print "Done generating Affymetrix files...\n";
     }
     # -----------------------
-    # RNA-Seq data
+    # bulk RNA-Seq data
     if ($rnaSeqDir ne $emptyArg) {
         print "Generating RNA-Seq files...\n";
+        my $isSingleCell = 0;
+        my $isSampleMultiplexing = 0;
         my $absDir = $rnaSeqDir;
         if ( !File::Spec->file_name_is_absolute($rnaSeqDir) ){
             $absDir = File::Spec->rel2abs($rnaSeqDir) ;
         }
-        generateRnaSeqFiles($speId, $species{$speId}{'name'}, \%dataSources, $absDir);
+        generateRnaSeqFiles($speId, $species{$speId}{'name'}, \%dataSources, $absDir, $isSingleCell, $isSampleMultiplexing);
         print "Done generating RNA-Seq files...\n";
     }
     # -----------------------
-    # Full Length RNA-Seq data
+    # Full Length single cell RNA-Seq data
     if ($flScRnaSeqDir ne $emptyArg) {
         print "Generating Full Length single cell RNA-Seq files...\n";
+        my $isSingleCell = 1;
+        my $isSampleMultiplexing = 0;
         my $absDir = $flScRnaSeqDir;
         if ( !File::Spec->file_name_is_absolute($flScRnaSeqDir) ){
             $absDir = File::Spec->rel2abs($flScRnaSeqDir) ;
         }
-        generateFullLenghthScRnaSeqFiles($speId, $species{$speId}{'name'}, \%dataSources, $absDir);
+        generateRnaSeqFiles($speId, $species{$speId}{'name'}, \%dataSources, $absDir, $isSingleCell, $isSampleMultiplexing);
         print "Done generating Full Length single cell RNA-Seq files...\n";
+    }
+    # -----------------------
+    # Droplet based single cell RNA-Seq data
+    if ($flScRnaSeqDir ne $emptyArg) {
+        print "Generating Full Length single cell RNA-Seq files...\n";
+        my $isSingleCell = 1;
+        my $isSampleMultiplexing = 1;
+        my $absDir = $dbScRnaSeqDir;
+        if ( !File::Spec->file_name_is_absolute($dbScRnaSeqDir) ){
+            $absDir = File::Spec->rel2abs($dbScRnaSeqDir) ;
+        }
+        generateRnaSeqFiles($speId, $species{$speId}{'name'}, \%dataSources, $absDir, $isSingleCell, $isSampleMultiplexing);
+        print "Done generating Droplet based single cell RNA-Seq files...\n";
     }
     print "Done generating files for species $speId.\n";
 }
@@ -690,26 +715,46 @@ sub generateAffyFiles {
 
 sub generateRnaSeqFiles {
     my @args = @_;
-    my $speciesId      = $args[0];
-    my $speciesName    = $args[1];
-    my $dataSourcesRef = $args[2];
-    my $filesDir       = $args[3];
+    my $speciesId             = $args[0];
+    my $speciesName           = $args[1];
+    my $dataSourcesRef        = $args[2];
+    my $filesDir              = $args[3];
+    my $isSingleCell          = $args[4];
+    my $isSampleMultiplexing = $args[5];
 
     my $speciesNameForFile = $speciesName;
     $speciesNameForFile =~ s/ /_/g;
     my $tmpDirName = $speciesNameForFile.'_tmp';
     my $speciesDirName = $speciesNameForFile;
-    my $expFileName = $speciesNameForFile.'_RNA-Seq_experiments.tsv';
-    my $libFileName = $speciesNameForFile.'_RNA-Seq_libraries.tsv';
+    my $expFileName = '';
+    my $libFileName = '';
+    my $fileNamePattern = '';
+    my $exprFilePath = $bgeeVersion.'/download/processed_expr_values/';
+    if (!$isSingleCell) {
+        $expFileName = $speciesNameForFile.'_RNA-Seq_libraries.tsv';
+        $libFileName = $speciesNameForFile.'_RNA-Seq_experiments.tsv';
+        $fileNamePattern = '_RNA-Seq_read_counts_TPM_';
+        $exprFilePath .= 'rna_seq/'.$speciesNameForFile.'/';
+    } elsif ($isSingleCell) {
+        if ($isSampleMultiplexing) {
+            $expFileName = $speciesNameForFile.'_droplet_based_RNA-Seq_libraries.tsv';
+            $libFileName = $speciesNameForFile.'_droplet_based_RNA-Seq_experiments.tsv';
+            $fileNamePattern = '_Full-Length_SC_RNA-Seq_read_counts_TPM_';
+            $exprFilePath .= 'full_length_sc_rna_seq/'.$speciesNameForFile.'/';
+        } elsif (!$isSampleMultiplexing) {
+            $expFileName = $speciesNameForFile.'_full_length_RNA-Seq_libraries.tsv';
+            $libFileName = $speciesNameForFile.'_droplet_based_RNA-Seq_experiments.tsv';
+            $fileNamePattern = '_Droplet-Based_SC_RNA-Seq_read_counts_CPM_';
+            $exprFilePath .= 'droplet_based_sc_rna_seq/'.$speciesNameForFile.'/';
+        }
+    }
+    if ($expFileName eq '' || $libFileName eq '') {
+        die "unrecognized RNASeq datatype";
+    }
     # recreate temp directory for experiment and library information
     remove_tree(File::Spec->catdir( $filesDir, $tmpDirName));
     make_path(File::Spec->catdir( $filesDir, $tmpDirName));
     
-
-    # path to processed expression data on FTP
-    my $exprFilePath = $bgeeVersion.'/download/processed_expr_values/rna_seq/'
-        .$speciesNameForFile.'/';
-
     # -------------------------------------------------
     # First, we retrieve information about experiments
     # $exp{'expId'}                = exp ID
@@ -735,18 +780,38 @@ sub generateRnaSeqFiles {
               .'COUNT(DISTINCT exprMappedConditionId) AS conditionCount, '
               .'COUNT(DISTINCT anatEntityId, stageId) AS anatEntityStageCount, '
               .'COUNT(DISTINCT anatEntityId) AS anatEntityCount, '
+              # distinct cellTypeIds are also exported to the bulk RNASeq files even if the
+              # number should always be 1 (root of the ontology)
+              .'COUNT(DISTINCT cellTypeId) AS cellTypeCount '
               .'COUNT(DISTINCT stageId) AS stageCount, '
               .'COUNT(DISTINCT sex)  AS sexCount, '
               .'COUNT(DISTINCT strain) AS strainCount '
               .'FROM rnaSeqExperiment AS t1 '
               .'INNER JOIN rnaSeqLibrary AS t2 ON t1.rnaSeqExperimentId = t2.rnaSeqExperimentId '
+              .'INNER JOIN rnaSeqLibraryAnnotatedSample AS t2 ON t1.rnaSeqLibraryId = t2.rnaSeqLibraryId '
               .'INNER JOIN cond AS t3 ON t2.conditionId = t3.conditionId '
-              .'WHERE speciesId = ? '
-              .'GROUP BY t1.rnaSeqExperimentId ';
+              .'WHERE speciesId = ? ';
+    # filter data corresponding to the expected datatype
+    if ($isSingleCell) {
+        $sqlExpPart .=
+               'AND rnaSeqTechnologyIsSingleCell = 1 ';
+        if ($isSampleMultiplexing) {
+            $sqlExpPart .=
+               'AND libraryMultiplexing = 1 ';
+        } else {
+            $sqlExpPart .=
+               'AND libraryMultiplexing = 0 ';
+        }
+    } else {
+        $sqlExpPart .=
+               'AND rnaSeqTechnologyIsSingleCell = 0 ';
+    }
+    $sqlExpPart .= 
+               'GROUP BY t1.rnaSeqExperimentId ';
     my $sql = $sqlExpPart
               .'ORDER BY libCount DESC, conditionCount DESC, anatEntityStageCount DESC, '
-              .'anatEntityCount DESC, stageCount DESC, sexCount DESC, strainCount DESC, '
-              .'t1.rnaSeqExperimentId';
+              .'anatEntityCount DESC, cellTypeCount DESC, stageCount DESC, sexCount DESC, '
+              .'strainCount DESC, t1.rnaSeqExperimentId';
 
     my $stmt = $dbh->prepare($sql);
     $stmt->execute($speciesId)  or die $stmt->errstr;
@@ -761,9 +826,10 @@ sub generateRnaSeqFiles {
         $exp{'conditionCount'}       = $data[5];
         $exp{'anatEntityStageCount'} = $data[6];
         $exp{'anatEntityCount'}      = $data[7];
-        $exp{'stageCount'}           = $data[8];
-        $exp{'sexCount'}             = $data[9];
-        $exp{'strainCount'}          = $data[10];
+        $exp{'cellTypeCount'}        = $data[8];
+        $exp{'stageCount'}           = $data[9];
+        $exp{'sexCount'}             = $data[10];
+        $exp{'strainCount'}          = $data[11];
 
         push @experiments, \%exp;
     }
@@ -779,7 +845,7 @@ sub generateRnaSeqFiles {
     open(my $fh, '>', $expFile) or die "Could not open file '$expFile' $!";
     print $fh "Experiment ID\tExperiment name\t"
               ."Library count\tCondition count\tOrgan-stage count\t"
-              ."Organ count\tStage count\tSex count\tStrain count\t"
+              ."Organ count\tCelltype Count\tStage count\tSex count\tStrain count\t"
               ."Data source\tData source URL\tBgee normalized data URL\t"
               ."Experiment description\n";
     for my $exp ( @experiments ){
@@ -795,6 +861,7 @@ sub generateRnaSeqFiles {
                   .$exp->{'conditionCount'}."\t"
                   .$exp->{'anatEntityStageCount'}."\t"
                   .$exp->{'anatEntityCount'}."\t"
+                  .$exp->{'cellTypeCount'}."\t"
                   .$exp->{'stageCount'}."\t"
                   .$exp->{'sexCount'}."\t"
                   .$exp->{'strainCount'}."\t";
@@ -809,7 +876,7 @@ sub generateRnaSeqFiles {
         }
         print $fh $sourceName."\t".$sourceUrl."\t";
 
-        my $resultsFileName = $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM_'.$exp->{'expId'}.'.tsv.gz';
+        my $resultsFileName = $speciesNameForFile.$fileNamePattern.$exp->{'expId'}.'.tsv.gz';
         $resultsFileName =~ s/ /_/g;
         print $fh $ftpFilePath.$exprFilePath.$resultsFileName."\t";
 
@@ -860,100 +927,144 @@ sub generateRnaSeqFiles {
     # $lib{'runIds'}                           = IDs of runs used, separated by '|'
     my @libs = ();
 
-    $sql = 'SELECT t1.rnaSeqExperimentId, t1.rnaSeqLibraryId, t1.rnaSeqPlatformId, '
-              .'(select rnaSeqProtocolName from rnaSeqProtocol where rnaSeqProtocolId = t1.rnaSeqProtocolId) as protocolName, '
-              .'t1.tmmFactor, t1.tpmThreshold, t1.allGenesPercentPresent, t1.proteinCodingGenesPercentPresent, '
-              .'t1.intergenicRegionsPercentPresent, t1.allReadsCount, t1.mappedReadsCount, '
-              .'t1.minReadLength, t1.maxReadLength, '
-              .'t1.libraryType, t1.libraryOrientation, '
-              .'t2.anatEntityId, t3.anatEntityName, t2.stageId, t4.stageName, t2.sex, t2.strain, '
+    $sql = 'SELECT t1.rnaSeqExperimentId, t1.rnaSeqLibraryId, t3.anatEntityId, t4.anatEntityName, ';
+    if ($isSingleCell) {
+        $sql .= 
+               't3.cellTypeId, t5.anatEntityName, t2.cellTypeAuthorAnnotation, '
+              .'t20.cellTypeId AS exprMappedCellTypeId, t40.anatEntityName AS exprMappedCellTypeName, ';
+    }
+    $sql .=    't3.stageId, t6.stageName, t3.sex, '
+              .'t3.strain, t2.anatEntityAuthorAnnotation, t2.stageAuthorAnnotation, '
+              .'t1.rnaSeqSequencerName, t1.strandSelection, t1.cellCompartment, '
+              .'t1.sequencedTranscriptPart, t1.rnaSeqPopulationCapture, t1.genotype, t1.allReadsCount, '
+              .'t1.mappedReadsCound, t1.minReadLength, t1.maxReadLength, t1.libraryType, t2.abundanceThreshold, '
+              .'t2.abundanceUnit, t2.tmmFactor, t2.allGenesPercentPresent, t1.proteinCodingGenesPercentPresent, '
+              .'t2.intergenicRegionsPercentPresent, '
               .'t20.anatEntityId AS exprMappedAnatEntityId, t30.anatEntityName AS exprMappedAnatEntityName, '
-              .'t20.stageId AS exprMappedStageId, t40.stageName AS exprMappedStageName, '
+              .'t20.stageId AS exprMappedStageId, t50.stageName AS exprMappedStageName, '
               .'t20.sex AS exprMappedSex, t20.strain AS exprMappedStrain, '
-              .'t1.rnaSeqLibraryAnnotatedSampleDistinctRankCount, '
+              .'t2.rnaSeqLibraryAnnotatedSampleDistinctRankCount, '
               # TODO to change if we ever use globalMaxRank instead of maxRank?
               # But then we would have ranks not only for conditions with data,
               # so I guess it would not be present in this file. To rethink in this case.
-              .'t60.rnaSeqMaxRank, '
+              .'t2.rnaSeqLibraryAnnotatedSampleMaxRank, '
               .'t5.dataSourceId, '
               .'GROUP_CONCAT(DISTINCT t6.rnaSeqRunId ORDER BY t6.rnaSeqRunId SEPARATOR "|") AS runIds '
               .'FROM rnaSeqLibrary AS t1 '
-              .'INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId '
-              .'INNER JOIN anatEntity AS t3 ON t2.anatEntityId = t3.anatEntityId '
-              .'INNER JOIN stage AS t4 ON t2.stageId = t4.stageId '
-              .'INNER JOIN cond AS t20 ON t2.exprMappedConditionId = t20.conditionId '
+              .'INNER JOIN rnaSeqLibraryAnnotatedSample AS t2 ON t1.rnaSeqLibraryId = t2.rnaSeqLibraryId '
+              .'INNER JOIN cond AS t3 ON t3.conditionId = t2.conditionId '
+              .'INNER JOIN anatEntity AS t4 ON t4.anatEntityId = t3.anatEntityId ';
+    if ($isSingleCell) {
+        $sql .= 
+               'INNER JOIN anatEntity AS t5 ON t5.cellTypeId = t3.anatEntityId '
+              .'INNER JOIN anatEntity AS t40 ON t20.cellTypeId = t40.anatEntityId ';
+    }
+    $sql .=    'INNER JOIN stage AS t6 ON t3.stageId = t6.stageId '
+              .'INNER JOIN cond AS t20 ON t3.exprMappedConditionId = t20.conditionId '
               .'INNER JOIN anatEntity AS t30 ON t20.anatEntityId = t30.anatEntityId '
-              .'INNER JOIN stage AS t40 ON t20.stageId = t40.stageId '
-              .'INNER JOIN globalCondToCond AS t50 '
-              .'ON t2.exprMappedConditionId = t50.conditionId AND t50.conditionRelationOrigin = "self" '
-              .'INNER JOIN globalCond AS t60 ON t50.globalConditionId = t60.globalConditionId '
-              .'INNER JOIN ('.$sqlExpPart.') AS t5 ON t1.rnaSeqExperimentId = t5.rnaSeqExperimentId '
-              .'LEFT OUTER JOIN rnaSeqRun AS t6 ON t1.rnaSeqLibraryId = t6.rnaSeqLibraryId '
-              .'WHERE t2.speciesId = ? '
-              # As of Bgee 15.0 anatEntityId, stageId, sex and strain should never be null
-              # TODO: remove these verifications from the query. They come from old bgee 14 logic
-              .'AND t60.anatEntityId IS NOT NULL AND t60.stageId IS NOT NULL '
-              .'AND t60.sex IS NOT NULL AND t60.strain IS NOT NULL '
-              .'GROUP BY t1.rnaSeqLibraryId '
+              .'INNER JOIN stage AS t50 ON t20.stageId = t40.stageId '
+              .'INNER JOIN ('.$sqlExpPart.') AS t7 ON t1.rnaSeqExperimentId =   t7.rnaSeqExperimentId '
+              .'LEFT OUTER JOIN rnaSeqRun AS t8 ON t1.rnaSeqLibraryId = t8.rnaSeqLibraryId '
+              .'WHERE t3.speciesId = ? ';
+    if ($isSingleCell) {
+        $sql .=
+              'AND rnaSeqTechnologyIsSingleCell = 1 ';
+        if ($isSampleMultiplexing) {
+            $sql .=
+              'AND libraryMultiplexing = 1 ';
+        } else {
+            $sql .=
+              'AND libraryMultiplexing = 0 ';
+        }
+    } else {
+        $sql .=
+              'AND rnaSeqTechnologyIsSingleCell = 0 ';
+    }
+    $sql .=     'GROUP BY t1.rnaSeqLibraryId '
               .'ORDER BY libCount DESC, conditionCount DESC, anatEntityStageCount DESC, '
-              .'anatEntityCount DESC, stageCount DESC, sexCount DESC, strainCount DESC, '
-              .'t1.rnaSeqExperimentId, t2.anatEntityId, t2.stageId, t2.sex, t2.strain, '
-              .'t1.rnaSeqLibraryId';
+              .'anatEntityCount DESC, cellTypeCount DESC, '
+              .'stageCount DESC, sexCount DESC, strainCount DESC, '
+              .'t1.rnaSeqExperimentId, t3.anatEntityId, t3.stageId, t3.cellTypeId, '
+              .'t3.sex, t3.strain, t1.rnaSeqLibraryId';
 
     $stmt = $dbh->prepare($sql);
     $stmt->execute($speciesId, $speciesId)  or die $stmt->errstr;
+    my $i = 0;
 
     while ( my @data = $stmt->fetchrow_array ){
         my %lib;
-        $lib{'expId'}                            = $data[0];
-        $lib{'libId'}                            = $data[1];
-        $lib{'platformId'}                       = $data[2];
-        $lib{'protocolName'}                     = $data[3];
-        $lib{'tmmNormalisation'}                 = $data[4];
-        $lib{'tpmThreshold'}                     = $data[5];
-        $lib{'allGenesPercentPresent'}           = $data[6];
-        $lib{'proteinCodingGenesPercentPresent'} = $data[7];
-        $lib{'intergenicRegionsPercentPresent'}  = $data[8];
-        $lib{'allReadsCount'}                    = $data[9];
-        $lib{'mappedReadsCount'}                 = $data[10];
-        $lib{'minReadLength'}                    = $data[11];
-        $lib{'maxReadLength'}                    = $data[12];
-        $lib{'libraryType'}                      = $data[13];
-        $lib{'libraryOrientation'}               = $data[14];
-        $lib{'anatEntityId'}                     = $data[15];
-        $lib{'anatEntityName'}                   = $data[16];
-        $lib{'stageId'}                          = $data[17];
-        $lib{'stageName'}                        = $data[18];
-        $lib{'sex'}                              = $data[19];
-        $lib{'strain'}                           = $data[20];
-        $lib{'exprMappedAnatEntityId'}           = $data[21];
-        $lib{'exprMappedAnatEntityName'}         = $data[22];
-        $lib{'exprMappedStageId'}                = $data[23];
-        $lib{'exprMappedStageName'}              = $data[24];
-        $lib{'exprMappedSex'}                    = $data[25];
-        $lib{'exprMappedStrain'}                 = $data[26];
-        $lib{'rnaSeqLibraryAnnotatedSampleDistinctRankCount'}         = $data[27];
-        $lib{'maxRank'}                          = $data[28];
-        $lib{'sourceId'}                         = $data[29];
-        $lib{'runIds'}                           = $data[30];
+
+        $lib{'expId'}                            = $data[$i++];
+        $lib{'libId'}                            = $data[$i++];
+        $lib{'anatEntityId'}                     = $data[$i++];
+        $lib{'anatEntityName'}                   = $data[$i++];
+        if ($isSingleCell) {
+            $lib{'cellTypeId'}                   = $data[$i++];
+            $lib{'cellTypeName'}                 = $data[$i++];
+            $lib{'cellTypeAuthorAnnotation'}     = $data[$i++];
+            $lib{'exprMappedCellTypeId'}         = $data[$i++];
+            $lib{'exprMappedCellTypeName'}       = $data[$i++];
+        }
+
+        $lib{'stageId'}                          = $data[$i++];
+        $lib{'stageName'}                        = $data[$i++];
+        $lib{'sex'}                              = $data[$i++];
+        $lib{'strain'}                           = $data[$i++];
+        $lib{'anatEntityAuthorAnnotation'}       = $data[$i++];
+        $lib{'stageAuthorAnnotation'}            = $data[$i++];
+        $lib{'sequencerName'}                    = $data[$i++];
+        $lib{'strandSelection'}                  = $data[$i++];
+        $lib{'cellCompartment'}                  = $data[$i++];
+        $lib{'sequencedTranscriptPart'}          = $data[$i++];
+        $lib{'rnaSeqPopulationCapture'}          = $data[$i++];
+        $lib{'genotype'}                         = $data[$i++];
+        $lib{'allReadsCount'}                    = $data[$i++];
+        $lib{'mappedReadsCound'}                 = $data[$i++];
+        $lib{'minReadLength'}                    = $data[$i++];
+        $lib{'maxReadLength'}                    = $data[$i++];
+        $lib{'libraryType'}                      = $data[$i++];
+        $lib{'abundanceThreshold'}               = $data[$i++];
+        $lib{'abundanceUnit'}                    = $data[$i++];
+        $lib{'tmmFactor'}                        = $data[$i++];
+        $lib{'allGenesPercentPresent'}           = $data[$i++];
+        $lib{'proteinCodingGenesPercentPresent'} = $data[$i++];
+        $lib{'intergenicRegionsPercentPresent'}  = $data[$i++];
+        $lib{'exprMappedAnatEntityId'}           = $data[$i++];
+        $lib{'exprMappedAnatEntityName'}         = $data[$i++];
+        $lib{'exprMappedStageId'}                = $data[$i++];
+        $lib{'exprMappedStageName'}              = $data[$i++];
+        $lib{'exprMappedSex'}                    = $data[$i++];
+        $lib{'exprMappedStrain'}                 = $data[$i++];
+        $lib{'rnaSeqLibraryAnnotatedSampleDistinctRankCount'}  = $data[$i++];
+        $lib{'rnaSeqLibraryAnnotatedSampleMaxRank'}            = $data[$i++];
+        $lib{'sourceId'}                         = $data[$i++];
+        $lib{'runIds'}                           = $data[$i++];
         push @libs, \%lib;
     }
-
     # Print library information into file
     my $libFile = File::Spec->catfile($filesDir, $tmpDirName, $libFileName);
     open($fh, '>', $libFile) or die "Could not open file '$libFile' $!";
-    print $fh "Experiment ID\tLibrary ID\tAnatomical entity ID\tAnatomical entity name\t"
-              ."Stage ID\tStage name\tSex\tStrain\t"
-              ."Expression mapped anatomical entity ID\tExpression mapped anatomical entity name\t"
-              ."Expression mapped stage ID\tExpression mapped stage name\t"
+    print $fh  "Experiment ID\tLibrary ID\tAnatomical entity ID\tAnatomical entity name\t"
+              ."Anatomical entity author annotation\t";
+    if ($isSingleCell) {
+        print $fh "Celltype ID\tCelltype name\tCelltype author annotation\t";
+    }
+    print $fh  "Stage ID\tStage name\tStage author annotation\tSex\tStrain\t"
+              ."Expression mapped anatomical entity ID\tExpression mapped anatomical entity name\t";
+    if ($isSingleCell) {
+        print $fh "Expression mapped celltype ID\tExpression mapped celltype name\t";
+    }
+    print $fh  "Expression mapped stage ID\tExpression mapped stage name\t"
               ."Expression mapped sex\tExpression mapped strain\t"
               ."Platform ID\tProtocol\tLibrary type\tLibrary orientation\t"
-              ."TMM normalization factor\tTPM expression threshold\t"
+              ."TMM normalization factor\tExpression threshold\tExpression unit\t"
+              ."Cell compartment\tSequenced transcript part\tGenotype\t"
               ."Read count\tMapped read count\t"
               ."Min. read length\tMax. read length\tAll genes percent present\t"
               ."Protein coding genes percent present\tIntergenic regions percent present\t"
               ."Distinct rank count\tMax rank in the expression mapped condition\tRun IDs\t"
               ."Data source\tData source URL\tBgee normalized data URL\tRaw file URL\n";
+
     for my $lib ( @libs ){
         print $fh $lib->{'expId'}."\t"
                   .$lib->{'libId'}."\t";
@@ -964,6 +1075,15 @@ sub generateRnaSeqFiles {
         my $toPrint = $lib->{'anatEntityName'};
         $toPrint =~ s/"/'/g;
         print $fh '"'.$toPrint.'"'."\t";
+        if ($isSingleCell) {
+            print $fh $lib->{'cellTypeId'}."\t";
+            $toPrint = $lib->{'cellTypeName'};
+            $toPrint =~ s/"/'/g;
+            print $fh '"'.$toPrint.'"'."\t";
+            $toPrint = $lib->{'cellTypeAuthorAnnotation'};
+            $toPrint =~ s/"/'/g;
+            print $fh '"'.$toPrint.'"'."\t";
+        }
 
         print $fh $lib->{'stageId'}."\t";
         $toPrint = $lib->{'stageName'};
@@ -994,8 +1114,9 @@ sub generateRnaSeqFiles {
         $toPrint =~ s/"/'/g;
         print $fh '"'.$toPrint.'"'."\t";
 
-        print $fh $lib->{'platformId'}."\t".$lib->{'protocolName'}."\t".$lib->{'libraryType'}."\t".$lib->{'libraryOrientation'}."\t"
-            .$lib->{'tmmNormalisation'}."\t".$lib->{'tpmThreshold'}."\t"
+        print $fh $lib->{'sequencerName'}."\t".$lib->{'rnaSeqPopulationCapture'}."\t".$lib->{'libraryType'}."\t".$lib->{'strandSelection'}."\t"
+            .$lib->{'tmmNormalisation'}."\t".$lib->{'abundanceThreshold'}."\t".$lib->{'abundanceUnit'}."\t"
+            .$lib->{'cellCompartment'}."\t".$lib->{'sequencedTranscriptPart'}."\t".$lib->{'genotype'}."\t"
             .$lib->{'allReadsCount'}."\t".$lib->{'mappedReadsCount'}."\t";
 
         print $fh $lib->{'minReadLength'}."\t".$lib->{'maxReadLength'}."\t"
@@ -1027,7 +1148,7 @@ sub generateRnaSeqFiles {
         }
         print $fh $sourceName."\t".$sourceUrl."\t";
 
-        my $resultsFileName = $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM_'.$lib->{'expId'}.'.tsv.gz';
+        my $resultsFileName = $speciesNameForFile.$fileNamePattern.$lib->{'expId'}.'.tsv.gz';
         $resultsFileName =~ s/ /_/g;
         print $fh $ftpFilePath.$exprFilePath.$resultsFileName."\t";
 
@@ -1058,38 +1179,62 @@ sub generateRnaSeqFiles {
         # we will store all names of files generated for an experiment, to pack all of them together
         my @resultsFileNames = ();
     
+        # UPDATES Bgee 15.2
+        # file header to update
+        # - read count -> can be "read count" or "UMI count"
+        # - TPM -> can be "TPM" or "CPM"
+        # - FPKM -> removed
+        # - cellTypeId -> new column
+        # - cellTypeName -> new column
+
         # Because we reopen the connection in the expId loop we cannot prepare the query outside the loop.
         # XXX: left outer join to expression to retrieve the global call quality?
-        $sql = 'SELECT t3.rnaSeqExperimentId, t1.rnaSeqLibraryId, t3.libraryType, t2.geneId, '
-              .'t4.anatEntityId, t5.anatEntityName, t4.stageId, t6.stageName, t4.sex, t4.strain, '
-              .'t1.readsCount, t1.tpm, t1.fpkm, t1.rawRank, t1.detectionFlag, t1.pValue, '
-              .'t1.expressionId, t1.reasonForExclusion, '
-              # FIXME retrieve call type
-              .'IF(t1.expressionId IS NOT NULL, "data", "no data") AS globalRnaSeqData '
-              .'FROM rnaSeqResult AS t1 '
-              .'INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId '
-              .'INNER JOIN rnaSeqLibrary AS t3 ON t1.rnaSeqLibraryId = t3.rnaSeqLibraryId '
-              .'INNER JOIN cond AS t4 ON t4.conditionId = t3.conditionId '
-              .'INNER JOIN anatEntity AS t5 ON t5.anatEntityId = t4.anatEntityId '
-              .'INNER JOIN stage AS t6 ON t6.stageId = t4.stageId '
-              .'LEFT OUTER JOIN expression AS t7 ON t1.expressionId = t7.expressionId '
-              .'WHERE t1.rnaSeqLibraryId = ? '
-              .'AND t4.speciesId = ? '
-              .'ORDER BY t2.geneId';
+        $sql =           'SELECT t4.rnaSeqExperimentId, t3.rnaSeqLibraryId, t4.libraryType, t2.geneId, '
+                        .'t5.anatEntityId, t6.anatEntityName, ';
+        if ($isSingleCell) {
+            $sql .=      't5.cellTypeId, t7.anatEntityName, ';
+        }
+        $sql .=          't5.stageId, t8.stageName, t5.sex, t5.strain, ';
+        if ($isSingleCell && $isSampleMultiplexing) {
+            $sql .=      't1.UMIsCount, ';
+        } else {
+            $sql .=      't1.ReadsCount, ';
+        }
+        $sql .=          't1.abundance, t1.rawRank, t1.pValue, t1.reasonForExclusion, '
+                        .'FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t1 '
+                        .'INNER JOIN gene AS t2 ON t2.bgeeGeneId = t1.bgeeGeneId '
+                        .'INNER JOIN rnaSeqLibraryAnnotatedSample AS t3 ON t3.rnaSeqLibraryAnnotatedSampleId = t1.rnaSeqLibraryAnnotatedSampleId '
+                        .'INNER JOIN rnaSeqLibrary AS t4 ON t4.rnaSeqLibraryId = t3.rnaSeqLibraryId '
+                        .'INNER JOIN cond AS t5 ON t5.conditionId = t3.conditionId '
+                        .'INNER JOIN anatEntity AS t6 ON t6.anatEntityId = t5.anatEntityId ';
+        if ($isSingleCell) {
+            $sql .=      'INNER JOIN anatEntity AS t7 ON t7.anatEntityId = t5.cellTypeId ';
+        }
+        $sql .=          'INNER JOIN stage AS t8 ON t8.stageId = t5.stageId '
+                        # removed that useless join as part of Bgee 15.2
+                        #.'LEFT OUTER JOIN expression AS t7 ON t1.expressionId = t7.expressionId '
+                        .'WHERE t1.rnaSeqLibraryId = ? '
+                        .'AND t1.expressionId IS NOT NULL '
+                        .'AND t5.speciesId = ? '
+                        .'ORDER BY t2.geneId';
         $stmt = $dbh->prepare($sql);
                 
         # Note: actually, it is not enough to simply sort the libraries based on their ID, 
         # we need to apply the same sorting as when generating the library info file. 
         # A simple solution is to redo a SQL query with the same ORDER BY clause. 
-        my $getExpLibs = $dbh->prepare('SELECT t1.rnaSeqLibraryId FROM rnaSeqLibrary AS t1 '
-                                       .'INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId '
+        my $selectOrderedLibraryIds =   'SELECT t1.rnaSeqLibraryId FROM rnaSeqLibrary AS t1 '
+                                       .'INNER JOIN rnaSeqLibraryAnnotatedSample AS t2 ON t1.rnaSeqLibraryId = t2.rnaSeqLibraryId '
+                                       .'INNER JOIN cond AS t3 ON t2.conditionId = t3.conditionId '
                                        .'WHERE t1.rnaSeqExperimentId = ? '
-                                       .'AND t2.speciesId = ? '
-                                       .'ORDER BY t2.anatEntityId, t2.stageId, t2.sex, t2.strain, '
-                                       .'t1.rnaSeqLibraryId');
+                                       .'AND t3.speciesId = ? '
+                                       .'ORDER BY t3.anatEntityId, ';
+        if ($isSingleCell) {
+            $selectOrderedLibraryIds .= 't3.cellTypeId, ';
+        }
+        $selectOrderedLibraryIds .=  't3.stageId, t3.sex, t3.strain, t1.rnaSeqLibraryId';
         
-
-        my $resultsFileName = $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM_'
+        my $getExpLibs = $dbh->prepare($selectOrderedLibraryIds);
+        my $resultsFileName = $speciesNameForFile.$fileNamePattern
             .$expId.'.tsv';
         $resultsFileName =~ s/ /_/g;
         push @resultsFileNames, $resultsFileName;
@@ -1097,9 +1242,17 @@ sub generateRnaSeqFiles {
             $resultsFileName);
         open(my $fh, '>', $resultsFile) or die "Could not open file '$resultsFile' $!";
         print $fh "Experiment ID\tLibrary ID\tLibrary type\tGene ID\t"
-                  ."Anatomical entity ID\tAnatomical entity name\t"
-                  ."Stage ID\tStage name\tSex\tStrain\tRead count\tTPM\tFPKM\t"
-                  ."Rank\tDetection flag\tpValue\tState in Bgee\n";
+                  ."Anatomical entity ID\tAnatomical entity name\t";
+        if ($isSingleCell) {
+            print $fh "Celltype ID\tCelltype name\t";
+        }
+        print $fh "Stage ID\tStage name\tSex\tStrain\t";
+        if ($isSampleMultiplexing) {
+            print $fh "UMI count\tCPM\t";
+        } else {
+            print $fh "Read count\tTPM\t";
+        }
+        print $fh "Rank\tDetection flag\tpValue\tState in Bgee\n";
         
         $getExpLibs->execute($expId, $speciesId) or die $getExpLibs->errstr;
 
@@ -1107,51 +1260,60 @@ sub generateRnaSeqFiles {
             my $libId = $libs[0];
             # Retrieve data from database.
             $stmt->execute($libId, $speciesId) or die $stmt->errstr;
-
+            my $i = 0;
             while ( my @data = $stmt->fetchrow_array ){
                 # we write the data directly to not store them in memory
-                print $fh $data[0]."\t".$data[1]."\t".$data[2]."\t".$data[3]."\t"
-                    .$data[4]."\t";
+                print $fh $data[$i++]."\t".$data[$i++]."\t".$data[$i++]."\t".$data[$i++]."\t"
+                    .$data[$i++]."\t";
                 # we replace double quotes with simple quotes, and we surround with double quotes
                 # the values to escape potential special characters
-                my $toPrint = $data[5];
+                my $toPrint = $data[$i++];
                 $toPrint =~ s/"/'/g;
                 print $fh '"'.$toPrint.'"'."\t";
-
-                print $fh $data[6]."\t";
-                $toPrint = $data[7];
+                #print celltypeId and celltypeName
+                if ($isSingleCell) {
+                    print $fh $data[$i++]."\t";
+                    my $toPrint = $data[$i++];
+                    $toPrint =~ s/"/'/g;
+                    print $fh '"'.$toPrint.'"'."\t";
+                }
+                print $fh $data[$i++]."\t";
+                $toPrint = $data[$i++];
                 $toPrint =~ s/"/'/g;
                 print $fh '"'.$toPrint.'"'."\t";
 
                 print $fh $data[8]."\t";
+                # print strain
                 $toPrint = $data[9];
                 $toPrint =~ s/"/'/g;
                 print $fh '"'.$toPrint.'"'."\t";
 
-                # Read count, TPM, FPKM, rank, detection
+                # Read count and abundance (TPM or CPM), rank, detection
+                print $fh $data[$i++]."\t".$data[$i++]."\t";
+                # rank, detection flag and pValue
                 my $rank = "NA";
-                if (defined $data[13]) {
-                    $rank = $data[13];
+                if (defined $data[$i]) {
+                    $rank = $data[$i];
                 }
+                $i++;
+                print $fh $rank."\t".$data[$i++]."\t";
                 my $pValue = "NA";
-                if(defined $data[15]) {
-                    $pValue = $data[15];
+                if(defined $data[$i]) {
+                    $pValue = $data[$i];
                 }
-                print $fh $data[10]."\t".$data[11]."\t".$data[12]."\t".$rank
-                         ."\t".$data[14]."\t".$pValue."\t";
-
-                if ($data[17] eq $Utils::CALL_NOT_EXCLUDED) {
-                	print $fh 'Part of a call';
-                    # TODO manage according to retrieved call type
-                    #if (defined $data[15] && $data[15]) {
-                    #    print $fh 'present ';
-                    #} else {
-                    #    print $fh 'absent ';
-                    #}
-                    #print $fh $data[18];
+                $i++;
+                print $fh $pValue."\t";
+                if ($pValue eq "NA" || $pValue > 0.05) {
+                    print $fh "absent\t";
                 } else {
-                    print $fh 'Result excluded, reason: '.$data[17];
+                    print $fh "present\t";
                 }
+                if ($data[$i] eq $Utils::CALL_NOT_EXCLUDED) {
+                	print $fh 'Part of a call';
+                } else {
+                    print $fh 'Result excluded, reason: '.$data[$i];
+                }
+                $i++;
                 print $fh "\n";
             }
         }
@@ -1215,571 +1377,6 @@ sub generateRnaSeqFiles {
 	        File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_RNA-Seq_read_counts_TPM_FPKM.tar.gz'),
 	        COMPRESS_GZIP);
 	}
-
-    remove_tree(File::Spec->catdir( $filesDir, $tmpDirName));
-    
-    # reopen the connection for further use 
-    $dbh = Utils::connect_bgee_db($bgee_connector);
-}
-
-
-# generate single cell full length RNA-Seq files
-sub generateFullLenghthScRnaSeqFiles {
-    my @args = @_;
-    my $speciesId      = $args[0];
-    my $speciesName    = $args[1];
-    my $dataSourcesRef = $args[2];
-    my $filesDir       = $args[3];
-
-    my $speciesNameForFile = $speciesName;
-    $speciesNameForFile =~ s/ /_/g;
-    my $tmpDirName = $speciesNameForFile.'_tmp';
-    my $speciesDirName = $speciesNameForFile;
-    my $expFileName = $speciesNameForFile.'_Full-Length_SC_RNA-Seq_experiments.tsv';
-    my $libFileName = $speciesNameForFile.'_Full-Length_SC_RNA-Seq_libraries.tsv';
-    # recreate temp directory for experiment and library information
-    remove_tree(File::Spec->catdir( $filesDir, $tmpDirName));
-    make_path(File::Spec->catdir( $filesDir, $tmpDirName));
-    
-
-    # path to processed expression data on FTP
-    my $exprFilePath = $bgeeVersion.'/download/processed_expr_values/full_length_sc_rna_seq/'
-        .$speciesNameForFile.'/';
-
-    # -------------------------------------------------
-    # First, we retrieve information about experiments
-    # $exp{'expId'}                = exp ID
-    # $exp{'name'}                 = exp name
-    # $exp{'desc'}                 = exp description
-    # $exp{'sourceId'}             = data source ID
-    # $exp{'libCount'}             = library count
-    # $exp{'conditionCount'}       = informative condition count (expression-mapped condition IDs)
-    # $exp{'anatEntityStageCount'} = count of couples organ/stage
-    # $exp{'anatEntityCount'}      = anatomical entity count
-    # $exp{'stageCount'}           = stage count
-    # sex types that are not 'not annotated' and 'NA'
-    # $exp{'sexCount'}             = informative sex information count
-    # strain count that are not 'not annotated', 'NA', 'confidential_restricted_data'
-    # $exp{'strainCount'}          = informative strain count
-    my @experiments = ();
-
-    my $sqlExpPart =
-    'SELECT t1.scRnaSeqFullLengthExperimentId, t1.scRnaSeqFullLengthExperimentName, t1.scRnaSeqFullLengthExperimentDescription, '
-              .'t1.dataSourceId, COUNT(DISTINCT scRnaSeqFullLengthLibraryId) AS libCount, '
-              # to count the number of conditions, we need to used the expression-mapped condition IDs, 
-              # which merge non-informative annotations such as 'not annotated' and 'NA'
-              .'COUNT(DISTINCT exprMappedConditionId) AS conditionCount, '
-              .'COUNT(DISTINCT anatEntityId, stageId) AS anatEntityStageCount, '
-              .'COUNT(DISTINCT anatEntityId) AS anatEntityCount, '
-              .'COUNT(DISTINCT stageId) AS stageCount, '
-              .'COUNT(DISTINCT cellTypeId) AS cellTypeCount, ' 
-              .'COUNT(DISTINCT sex) AS sexCount, '
-              .'COUNT(DISTINCT strain) AS strainCount '
-              .'FROM scRnaSeqFullLengthExperiment AS t1 '
-              .'INNER JOIN scRnaSeqFullLengthLibrary AS t2 ON t1.scRnaSeqFullLengthExperimentId = t2.scRnaSeqFullLengthExperimentId '
-              .'INNER JOIN cond AS t3 ON t2.conditionId = t3.conditionId '
-              .'WHERE speciesId = ? '
-              .'GROUP BY t1.scRnaSeqFullLengthExperimentId ';
-    my $sql = $sqlExpPart
-              .'ORDER BY libCount DESC, conditionCount DESC, anatEntityStageCount DESC, '
-              .'anatEntityCount DESC, stageCount DESC, sexCount DESC, strainCount DESC, '
-              .'t1.scRnaSeqFullLengthExperimentId';
-
-    my $stmt = $dbh->prepare($sql);
-    $stmt->execute($speciesId)  or die $stmt->errstr;
-
-    while ( my @data = $stmt->fetchrow_array ){
-        my %exp;
-        $exp{'expId'}                = $data[0];
-        $exp{'name'}                 = $data[1];
-        $exp{'desc'}                 = $data[2];
-        $exp{'sourceId'}             = $data[3];
-        $exp{'libCount'}             = $data[4];
-        $exp{'conditionCount'}       = $data[5];
-        $exp{'anatEntityStageCount'} = $data[6];
-        $exp{'anatEntityCount'}      = $data[7];
-        $exp{'stageCount'}           = $data[8];
-        $exp{'cellTypeCount'}        = $data[9];
-        $exp{'sexCount'}             = $data[10];
-        $exp{'strainCount'}          = $data[11];
-
-        push @experiments, \%exp;
-    }
-    
-    # recreate species directory for experiment and library information
-    if( @experiments > 0){
-      remove_tree(File::Spec->catdir( $filesDir, $speciesDirName));
-      make_path(File::Spec->catdir( $filesDir, $speciesDirName));
-    }
-
-    # Print experiment information into file
-    my $expFile = File::Spec->catfile($filesDir, $tmpDirName, $expFileName);
-    open(my $fh, '>', $expFile) or die "Could not open file '$expFile' $!";
-    print $fh "Experiment ID\tExperiment name\t"
-              ."Library count\tCondition count\tOrgan-stage count\t"
-              ."Organ count\tStage count\tCell-Type count\tSex count\tStrain count\t"
-              ."Data source\tData source URL\tBgee normalized data URL\t"
-              ."Experiment description\n";
-    for my $exp ( @experiments ){
-        print $fh $exp->{'expId'}."\t";
-        
-        # we replace double quotes with simple quotes, and we surround with double quotes
-        # the values to escape potential special characters
-        my $name = $exp->{'name'};
-        $name =~ s/"/'/g;
-        print $fh '"'.$name.'"'."\t";
-        
-        print $fh $exp->{'libCount'}."\t"
-                  .$exp->{'conditionCount'}."\t"
-                  .$exp->{'anatEntityStageCount'}."\t"
-                  .$exp->{'anatEntityCount'}."\t"
-                  .$exp->{'stageCount'}."\t"
-                  .$exp->{'cellTypeCount'}."\t"
-                  .$exp->{'sexCount'}."\t"
-                  .$exp->{'strainCount'}."\t";
-        my $sourceUrl  = 'NA';
-        my $sourceName = '';
-        if (defined $dataSourcesRef->{$exp->{'sourceId'}}) {
-            if ($dataSourcesRef->{$exp->{'sourceId'}}->{'experimentBaseUrl'}) {
-                $sourceUrl = $dataSourcesRef->{$exp->{'sourceId'}}->{'experimentBaseUrl'};
-                $sourceUrl =~ s/$expIdTag/$exp->{'expId'}/g;
-            }
-            $sourceName = $dataSourcesRef->{$exp->{'sourceId'}}->{'name'};
-        }
-        print $fh $sourceName."\t".$sourceUrl."\t";
-
-        my $resultsFileName = $speciesNameForFile.'_Full-Length_SC_RNA-Seq_read_counts_TPM_FPKM_'.$exp->{'expId'}.'.tsv.tar.gz';
-        $resultsFileName =~ s/ /_/g;
-        print $fh $ftpFilePath.$exprFilePath.$resultsFileName."\t";
-
-        # we replace double quotes with simple quotes, and we surround with double quotes
-        # the values to escape potential special characters
-        my $desc = $exp->{'desc'};
-        $desc =~ s/"/'/g;
-        print $fh '"'.$desc.'"';
-
-        print $fh "\n";
-
-    }
-    close $fh;
-
-    # -------------------------------------------------
-    # Now, information about libraries.
-    # TODO: add field allMappedReadsCount when database is updated
-    # $lib{'expId'}                            = experiment ID
-    # $lib{'libId'}                            = library ID
-    # $lib{'platformId'}                       = RNA-Seq  platform ID
-    #TODO: tmmfactor has to be implemented for single cell
-    # $lib{'tmmFactor'}                        = TMM normalization factor
-    # $lib{'tpmThreshold'}                     = Threshold of TPM value to consider a gene as expressed
-    # $lib{'fpkmThreshold'}                    = Threshold of FPKM value to consider a gene as expressed
-    # $lib{'allGenesPercentPresent'}           = percentage of genes called present
-    # $lib{'proteinCodingGenesPercentPresent'} = percentage of protein coding genes called present
-    # $lib{'intergenicRegionsPercentPresent'}  = percentage of intergenic regions called present
-    # $lib{'allReadsCount'}                    = total number of reads in library, including those not mapped.
-    # $lib{'mappedReadsCount'}                 = number of reads mapped by pseudo alignement.
-    # $lib{'minReadLength'}                    = min. length of the reads
-    # $lib{'maxReadLength'}                    = max. length of the reads
-    # $lib{'libraryType'}                      = enum('single','paired')
-    # $lib{'libraryOrientation'}               = enum('forward','reverse','unstranded')
-    # $lib{'anatEntityId'}                     = anat. entity ID annotated for this library
-    # $lib{'anatEntityName'}                   = anat. entity name annotated for this library
-    # $lib{'stageId'}                          = stage ID annotated for this library
-    # $lib{'stageName'}                        = stage name annotated for this library
-    # $lib{'cellTypeId'}                       = cell type ID annotated for this library
-    # $lib{'cellTypeName'}                     = cell type name annotated for this library
-    # $lib{'sex'}                              = annotated sex info (not mapped for expression table)
-    # $lib{'strain'}                           = annotated strain info (not mapped for expression table)
-    # $lib{'exprMappedAnatEntityId'}           = anat. entity ID remapped for expression table for this library
-    # $lib{'exprMappedAnatEntityName'}         = anat. entity name remapped for expression table for this library
-    # $lib{'exprMappedStageId'}                = stage ID remapped for expression table for this library
-    # $lib{'exprMappedStageName'}              = stage name remapped for expression table for this library
-    # $lib{'exprMappedSex'}                    = sex info remapped for expression table
-    # $lib{'exprMappedStrain'}                 = strain info remapped for expression table
-    # $lib{'rnaSeqLibraryAnnotatedSampleDistinctRankCount'}         = count of distinct ranks in the library
-    # $lib{'maxRank'}                          = maximum rank in the corresponding global condition
-    # $lib{'sourceId'}                         = data source ID
-    # $lib{'runIds'}                           = IDs of runs used, separated by '|'
-    my @libs = ();
-
-    $sql = 'SELECT t1.scRnaSeqFullLengthExperimentId, t1.scRnaSeqFullLengthLibraryId, t1.scRnaSeqFullLengthPlatformId, '
-              .'t1.tpmThreshold, t1.allGenesPercentPresent, t1.proteinCodingGenesPercentPresent, '
-              .'t1.intergenicRegionsPercentPresent, t1.allReadsCount, t1.mappedReadsCount, '
-              .'t1.minReadLength, t1.maxReadLength, '
-              .'t1.libraryType, t1.libraryOrientation, '
-              .'t2.anatEntityId, t3.anatEntityName, t2.stageId, t4.stageName, t2.cellTypeId, t7.anatEntityName, t2.sex, t2.strain, '
-              .'t20.anatEntityId AS exprMappedAnatEntityId, t30.anatEntityName AS exprMappedAnatEntityName, '
-              .'t20.stageId AS exprMappedStageId, t40.stageName AS exprMappedStageName, '
-              .'t20.cellTypeId AS exprMappedCellTypeId, t70.anatEntityName AS exprMappedCellTypeName, '
-              .'t20.sex AS exprMappedSex, t20.strain AS exprMappedStrain, '
-              .'t1.rnaSeqLibraryAnnotatedSampleDistinctRankCount, '
-              # TODO to change if we ever use globalMaxRank instead of maxRank?
-              # But then we would have ranks not only for conditions with data,
-              # so I guess it would not be present in this file. To rethink in this case.
-              .'t60.scRnaSeqFullLengthMaxRank, '
-              .'t5.dataSourceId, '
-              .'GROUP_CONCAT(DISTINCT t6.scRnaSeqFullLengthRunId ORDER BY t6.scRnaSeqFullLengthRunId SEPARATOR "|") AS runIds '
-              .'FROM scRnaSeqFullLengthLibrary AS t1 '
-              .'INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId '
-              .'INNER JOIN anatEntity AS t3 ON t2.anatEntityId = t3.anatEntityId '
-              .'INNER JOIN anatEntity AS t7 ON t2.cellTypeId = t7.anatEntityId '
-              .'INNER JOIN stage AS t4 ON t2.stageId = t4.stageId '
-              .'INNER JOIN cond AS t20 ON t2.exprMappedConditionId = t20.conditionId '
-              .'INNER JOIN anatEntity AS t30 ON t20.anatEntityId = t30.anatEntityId '
-              .'INNER JOIN stage AS t40 ON t20.stageId = t40.stageId '
-              .'INNER JOIN anatEntity AS t70 ON t20.cellTypeId = t70.anatEntityId '
-              .'INNER JOIN globalCondToCond AS t50 '
-              .'ON t2.exprMappedConditionId = t50.conditionId AND t50.conditionRelationOrigin = "self" '
-              .'INNER JOIN globalCond AS t60 ON t50.globalConditionId = t60.globalConditionId '
-              .'INNER JOIN ('.$sqlExpPart.') AS t5 ON t1.scRnaSeqFullLengthExperimentId = t5.scRnaSeqFullLengthExperimentId '
-              .'LEFT OUTER JOIN scRnaSeqFullLengthRun AS t6 ON t1.scRnaSeqFullLengthLibraryId = t6.scRnaSeqFullLengthLibraryId '
-              .'WHERE t2.speciesId = ? '
-              # As of Bgee 15.0 anatEntityId, stageId, sex and strain should never be null
-              # TODO: remove these verifications from the query. They come from old bgee 14 logic
-              .'AND t60.anatEntityId IS NOT NULL AND t60.stageId IS NOT NULL '
-              .'AND t60.sex IS NOT NULL AND t60.strain IS NOT NULL '
-              .'GROUP BY t1.scRnaSeqFullLengthLibraryId '
-              .'ORDER BY libCount DESC, conditionCount DESC, anatEntityStageCount DESC, '
-              .'anatEntityCount DESC, stageCount DESC, sexCount DESC, strainCount DESC, '
-              .'t1.scRnaSeqFullLengthExperimentId, t2.anatEntityId, t2.stageId, t2.cellTypeId, t2.sex, t2.strain, '
-              .'t1.scRnaSeqFullLengthLibraryId';
-
-    $stmt = $dbh->prepare($sql);
-    $stmt->execute($speciesId, $speciesId)  or die $stmt->errstr;
-
-    while ( my @data = $stmt->fetchrow_array ){
-        my %lib;
-        $lib{'expId'}                            = $data[0];
-        $lib{'libId'}                            = $data[1];
-        $lib{'platformId'}                       = $data[2];
-        $lib{'tpmThreshold'}                     = $data[3];
-        $lib{'allGenesPercentPresent'}           = $data[4];
-        $lib{'proteinCodingGenesPercentPresent'} = $data[5];
-        $lib{'intergenicRegionsPercentPresent'}  = $data[6];
-        $lib{'allReadsCount'}                    = $data[7];
-        $lib{'mappedReadsCount'}                 = $data[8];
-        $lib{'minReadLength'}                    = $data[9];
-        $lib{'maxReadLength'}                    = $data[10];
-        $lib{'libraryType'}                      = $data[11];
-        $lib{'libraryOrientation'}               = $data[12];
-        $lib{'anatEntityId'}                     = $data[13];
-        $lib{'anatEntityName'}                   = $data[14];
-        $lib{'stageId'}                          = $data[15];
-        $lib{'stageName'}                        = $data[16];
-        $lib{'cellTypeId'}                       = $data[17];
-        $lib{'cellTypeName'}                     = $data[18];
-        $lib{'sex'}                              = $data[19];
-        $lib{'strain'}                           = $data[20];
-        $lib{'exprMappedAnatEntityId'}           = $data[21];
-        $lib{'exprMappedAnatEntityName'}         = $data[22];
-        $lib{'exprMappedStageId'}                = $data[23];
-        $lib{'exprMappedStageName'}              = $data[24];
-        $lib{'exprMappedCellTypeId'}             = $data[25];
-        $lib{'exprMappedCellTypeName'}           = $data[26];
-        $lib{'exprMappedSex'}                    = $data[27];
-        $lib{'exprMappedStrain'}                 = $data[28];
-        $lib{'rnaSeqLibraryAnnotatedSampleDistinctRankCount'}         = $data[29];
-        $lib{'maxRank'}                          = $data[30];
-        $lib{'sourceId'}                         = $data[31];
-        $lib{'runIds'}                           = $data[32];
-
-        push @libs, \%lib;
-    }
-
-    # Print library information into file
-    my $libFile = File::Spec->catfile($filesDir, $tmpDirName, $libFileName);
-    open($fh, '>', $libFile) or die "Could not open file '$libFile' $!";
-    print $fh "Experiment ID\tLibrary ID\tAnatomical entity ID\tAnatomical entity name\t"
-              ."Stage ID\tStage name\tCell type ID\tCell type name\tSex\tStrain\t"
-              ."Expression mapped anatomical entity ID\tExpression mapped anatomical entity name\t"
-              ."Expression mapped stage ID\tExpression mapped stage name\t"
-              ."Expression mapped cell type ID\tExpression mapped cell type name\t"
-              ."Expression mapped sex\tExpression mapped strain\t"
-              ."Platform ID\tLibrary type\tLibrary orientation\t"
-              ."TPM expression threshold\tRead count\tMapped read count\t"
-              ."Min. read length\tMax. read length\tAll genes percent present\t"
-              ."Protein coding genes percent present\tIntergenic regions percent present\t"
-              ."Distinct rank count\tMax rank in the expression mapped condition\tRun IDs\t"
-              ."Data source\tData source URL\tBgee normalized data URL\tRaw file URL\n";
-    for my $lib ( @libs ){
-        print $fh $lib->{'expId'}."\t"
-                  .$lib->{'libId'}."\t";
-
-        print $fh $lib->{'anatEntityId'}."\t";
-        # we replace double quotes with simple quotes, and we surround with double quotes
-        # the values to escape potential special characters
-        my $toPrint = $lib->{'anatEntityName'};
-        $toPrint =~ s/"/'/g;
-        print $fh '"'.$toPrint.'"'."\t";
-
-        print $fh $lib->{'stageId'}."\t";
-        $toPrint = $lib->{'stageName'};
-        $toPrint =~ s/"/'/g;
-        print $fh '"'.$toPrint.'"'."\t";
-
-        print $fh $lib->{'cellTypeId'}."\t";
-        $toPrint = $lib->{'cellTypeName'};
-        $toPrint =~ s/"/'/g;
-        print $fh '"'.$toPrint.'"'."\t";
-        
-        print $fh $lib->{'sex'}."\t";
-        
-        $toPrint = $lib->{'strain'};
-        # in Bgee 15.0 missing strains are stored as "(Missing)" in the RDB
-        # in order to standardize the strain we replace this value by NA in download files
-        if ($toPrint eq "(Missing)") {
-            $toPrint = "NA";
-        }
-        $toPrint =~ s/"/'/g;
-        print $fh '"'.$toPrint.'"'."\t";
-
-        print $fh $lib->{'exprMappedAnatEntityId'}."\t";
-        # we replace double quotes with simple quotes, and we surround with double quotes
-        # the values to escape potential special characters
-        $toPrint = $lib->{'exprMappedAnatEntityName'};
-        $toPrint =~ s/"/'/g;
-        print $fh '"'.$toPrint.'"'."\t";
-
-        print $fh $lib->{'exprMappedStageId'}."\t";
-        $toPrint = $lib->{'exprMappedStageName'};
-        $toPrint =~ s/"/'/g;
-        print $fh '"'.$toPrint.'"'."\t";
-
-        print $fh $lib->{'exprMappedCellTypeId'}."\t";
-        $toPrint = $lib->{'exprMappedCellTypeName'};
-        $toPrint =~ s/"/'/g;
-        print $fh '"'.$toPrint.'"'."\t";
-
-        print $fh $lib->{'exprMappedSex'}."\t";
-
-        $toPrint = $lib->{'exprMappedStrain'};
-        $toPrint =~ s/"/'/g;
-        print $fh '"'.$toPrint.'"'."\t";
-
-        print $fh $lib->{'platformId'}."\t".$lib->{'libraryType'}."\t".$lib->{'libraryOrientation'}."\t"
-            .$lib->{'tpmThreshold'}."\t"
-            .$lib->{'allReadsCount'}."\t".$lib->{'mappedReadsCount'}."\t";
-
-        print $fh $lib->{'minReadLength'}."\t".$lib->{'maxReadLength'}."\t"
-            .$lib->{'allGenesPercentPresent'}."\t".$lib->{'proteinCodingGenesPercentPresent'}."\t"
-            .$lib->{'intergenicRegionsPercentPresent'}."\t";
-        
-        my $maxRank = "NA";
-        if(defined $lib->{'maxRank'}) {
-            $maxRank = $lib->{'maxRank'};
-        }
-        print $fh $lib->{'rnaSeqLibraryAnnotatedSampleDistinctRankCount'}."\t".$maxRank."\t";
-
-        if (defined $lib->{'runIds'} && $lib->{'runIds'}) {
-            print $fh $lib->{'runIds'};
-        } else {
-            print $fh 'NA';
-        }
-        print $fh "\t";
-
-        my $sourceUrl  = 'NA';
-        my $sourceName = '';
-        if (defined $dataSourcesRef->{$lib->{'sourceId'}}) {
-            if ($dataSourcesRef->{$lib->{'sourceId'}}->{'evidenceBaseUrl'}) {
-                $sourceUrl = $dataSourcesRef->{$lib->{'sourceId'}}->{'evidenceBaseUrl'};
-                $sourceUrl =~ s/$expIdTag/$lib->{'expId'}/g;
-                $sourceUrl =~ s/$evidenceIdTag/$lib->{'libId'}/g;
-            }
-            $sourceName = $dataSourcesRef->{$lib->{'sourceId'}}->{'name'};
-        }
-        print $fh $sourceName."\t".$sourceUrl."\t";
-
-        my $resultsFileName = $speciesNameForFile.'_Full-Length_SC_RNA-Seq_read_counts_TPM_FPKM_'.$lib->{'expId'}.'.tsv.tar.gz';
-        $resultsFileName =~ s/ /_/g;
-        print $fh $ftpFilePath.$exprFilePath.$resultsFileName."\t";
-
-        print $fh 'https://trace.ncbi.nlm.nih.gov/Traces/study/?acc='.$lib->{'libId'}."\n";
-    }
-    close $fh;
-
-    # -------------------------------------------------
-    # Now, we generate the full length single cell RNA-Seq results files,
-    # one file, per experiment.
-    # We query one library at a time.
-    # XXX: Do we normalize libraries of different types independently?
-    # First, we get the list of exp (and not the library types for now)
-    # $fileParams{expId} = 1;
-    my %fileParams;
-    for my $lib ( @libs ){
-      if (!exists $fileParams{$lib->{'expId'}}) {
-        $fileParams{$lib->{'expId'}} = ();
-      }
-      push @{$fileParams{$lib->{'expId'}}}, $lib->{'libId'};
-    }
-
-    # Now, generate the files. We'll store the path to all tar.gz files generated,
-    # to make one giant tar.gz at the end.
-    my @tarFileNames = ();
-    for my $expId ( keys %fileParams ){
-        # we will store all names of files generated for an experiment, to pack all of them together
-        my @resultsFileNames = ();
-    
-        # Because we reopen the connection in the expId loop we cannot prepare the query outside the loop.
-        # XXX: left outer join to expression to retrieve the global call quality?
-        $sql = 'SELECT t3.scRnaSeqFullLengthExperimentId, t1.scRnaSeqFullLengthLibraryId, t3.libraryType, t2.geneId, '
-              .'t4.anatEntityId, t5.anatEntityName, t4.stageId, t6.stageName, t4.cellTypeId, t8.anatEntityName, t4.sex, t4.strain, '
-              .'t1.readsCount, t1.tpm, t1.fpkm, t1.rawRank, t1.detectionFlag, t1.pValue, '
-              .'t1.expressionId, t1.reasonForExclusion, '
-              # FIXME retrieve call type
-              .'IF(t1.expressionId IS NOT NULL, "data", "no data") AS globalRnaSeqData '
-              .'FROM scRnaSeqFullLengthResult AS t1 '
-              .'INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId '
-              .'INNER JOIN scRnaSeqFullLengthLibrary AS t3 ON t1.scRnaSeqFullLengthLibraryId = t3.scRnaSeqFullLengthLibraryId '
-              .'INNER JOIN cond AS t4 ON t4.conditionId = t3.conditionId '
-              .'INNER JOIN anatEntity AS t5 ON t5.anatEntityId = t4.anatEntityId '
-              .'INNER JOIN anatEntity AS t8 ON t4.cellTypeId = t8.anatEntityId '
-              .'INNER JOIN stage AS t6 ON t6.stageId = t4.stageId '
-              .'LEFT OUTER JOIN expression AS t7 ON t1.expressionId = t7.expressionId '
-              .'WHERE t1.scRnaSeqFullLengthLibraryId = ? '
-              .'AND t4.speciesId = ? '
-              .'ORDER BY t2.geneId';
-        $stmt = $dbh->prepare($sql);
-                
-        # Note: actually, it is not enough to simply sort the libraries based on their ID, 
-        # we need to apply the same sorting as when generating the library info file. 
-        # A simple solution is to redo a SQL query with the same ORDER BY clause. 
-        my $getExpLibs = $dbh->prepare('SELECT t1.scRnaSeqFullLengthLibraryId FROM scRnaSeqFullLengthLibrary AS t1 '
-                                       .'INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId '
-                                       .'WHERE t1.scRnaSeqFullLengthExperimentId = ? '
-                                       .'AND t2.speciesId = ? '
-                                       .'ORDER BY t2.anatEntityId, t2.stageId, t2.cellTypeId, t2.sex, t2.strain, '
-                                       .'t1.scRnaSeqFullLengthLibraryId');
-        
-
-        my $resultsFileName = $speciesNameForFile.'_Full-Length_SC_RNA-Seq_read_counts_TPM_FPKM_'
-            .$expId.'.tsv';
-        $resultsFileName =~ s/ /_/g;
-        push @resultsFileNames, $resultsFileName;
-        my $resultsFile = File::Spec->catfile($filesDir, $tmpDirName,
-            $resultsFileName);
-        open(my $fh, '>', $resultsFile) or die "Could not open file '$resultsFile' $!";
-        print $fh "Experiment ID\tLibrary ID\tLibrary type\tGene ID\t"
-                  ."Anatomical entity ID\tAnatomical entity name\t"
-                  ."Stage ID\tStage name\tCell type ID\tCell type name\tSex\tStrain\tRead count\tTPM\tFPKM\t"
-                  ."Rank\tDetection flag\tpValue\tState in Bgee\n";
-             
-        $getExpLibs->execute($expId, $speciesId) or die $getExpLibs->errstr;
-        while ( my @libs = $getExpLibs->fetchrow_array ){
-            my $libId = $libs[0];
-            # Retrieve data from database.
-            $stmt->execute($libId, $speciesId) or die $stmt->errstr;
-            while ( my @data = $stmt->fetchrow_array ){
-                # we write the data directly to not store them in memory
-                print $fh $data[0]."\t".$data[1]."\t".$data[2]."\t".$data[3]."\t"
-                    .$data[4]."\t";
-                # we replace double quotes with simple quotes, and we surround with double quotes
-                # the values to escape potential special characters
-                my $toPrint = $data[5];
-                $toPrint =~ s/"/'/g;
-                print $fh '"'.$toPrint.'"'."\t";
-
-                print $fh $data[6]."\t";
-                $toPrint = $data[7];
-                $toPrint =~ s/"/'/g;
-                print $fh '"'.$toPrint.'"'."\t";
-
-                print $fh $data[8]."\t";
-                $toPrint = $data[9];
-                $toPrint =~ s/"/'/g;
-                print $fh '"'.$toPrint.'"'."\t";
-
-                print $fh $data[10]."\t";
-                $toPrint = $data[11];
-                # in Bgee 15.0 missing strains are stored as "(Missing)" in the RDB
-                # in order to standardize the strain we replace this value by NA in download files
-                if ($toPrint eq "(Missing)") {
-                    $toPrint = "NA";
-                }
-                $toPrint =~ s/"/'/g;
-                print $fh '"'.$toPrint.'"'."\t";
-
-                # Read count, TPM, FPKM, rank, detection
-                my $rank = "NA";
-                if (defined $data[15]) {
-                    $rank = $data[15];
-                }
-
-                my $pValue = "NA";
-                if (defined $data[17]) {
-                    $pValue = $data[17];
-                }
-                print $fh $data[12]."\t".$data[13]."\t".$data[14]."\t".$rank
-                         ."\t".$data[16]."\t".$pValue."\t";
-
-                if ($data[19] eq $Utils::CALL_NOT_EXCLUDED) {
-                  print $fh 'Part of a call';
-                } else {
-                    print $fh 'Result excluded, reason: '.$data[19];
-                }
-                print $fh "\n";
-            }
-        }
-        close $fh;
-        
-        # We close the connection before compressing the files, it can take quite some time
-        $dbh->disconnect;
-
-        # we compress all files for an experiment together, and delete the uncompressed files
-        # to save disk space
-        my $fileName = $speciesNameForFile.'_Full-Length_SC_RNA-Seq_read_counts_TPM_FPKM_'.$expId.'.tsv.gz';
-        $fileName =~ s/ /_/g;
-        unlink File::Spec->catfile($filesDir, $speciesDirName, $fileName);
-        # use shell command to compress files because perl compression modules load data in memory
-        # to compress. This is not possible because GTeX experiment is too big.
-        # https://metacpan.org/pod/distribution/Archive-Tar/lib/Archive/Tar.pm#FAQ
-        # https://www.perlmonks.org/?node_id=201013
-        system("gzip -cvf ".File::Spec->catfile($filesDir, $tmpDirName, $resultsFileName)
-            ." > ".File::Spec->catfile($filesDir, $speciesDirName,, $fileName));
-        #it is now safe to remove uncompressed file to save disk space
-        unlink File::Spec->catfile($filesDir, $tmpDirName, $resultsFileName);
-        # Store the name of this experiment gz file, to make one giant tar.gz of all experiments
-        # at the end.
-        push @tarFileNames, $fileName;
-
-        # reopen the connection for further use 
-        $dbh = Utils::connect_bgee_db($bgee_connector);
-    }
-
-
-    # -------------------------------------------------
-    #everything went fine, we move and zip the tmp files
-    
-    # We close the connection before compressing the files, it can take quite some time
-    $dbh->disconnect;
-
-  if (scalar(keys %fileParams) > 0){
-      unlink File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_Full-Length_SC_RNA-Seq_experiments_libraries.tar.gz');
-      my $tar = Archive::Tar->new();
-      $tar->add_files(File::Spec->catfile($filesDir, $tmpDirName, $expFileName),
-        File::Spec->catfile($filesDir, $tmpDirName, $libFileName));
-      for my $file_objs ($tar->get_files){
-        $tar->rename( $file_objs, basename($file_objs->full_path));
-      }
-      $tar->write(
-          File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_Full-Length_SC_RNA-Seq_experiments_libraries.tar.gz'), 
-            COMPRESS_GZIP);
-
-      # Compress each file with RNA-Seq results independently, and add them to a global tar.gz file
-      unlink File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_Full-Length_SC_RNA-Seq_read_counts_TPM_FPKM.tar.gz');
-      $tar = Archive::Tar->new();
-    
-      my @tarFilePaths = ();
-      for my $tarFileName ( @tarFileNames ) {
-          push @tarFilePaths, File::Spec->catfile($filesDir, $speciesDirName, $tarFileName);
-      }
-      $tar->add_files(@tarFilePaths);
-      for my $file_objs ($tar->get_files){
-          $tar->rename( $file_objs, basename($file_objs->full_path)));
-      }
-      $tar->write(
-          File::Spec->catfile($filesDir, $speciesDirName, $speciesNameForFile.'_Full-Length_SC_RNA-Seq_read_counts_TPM_FPKM.tar.gz'),
-          COMPRESS_GZIP);
-  }
 
     remove_tree(File::Spec->catdir( $filesDir, $tmpDirName));
     
