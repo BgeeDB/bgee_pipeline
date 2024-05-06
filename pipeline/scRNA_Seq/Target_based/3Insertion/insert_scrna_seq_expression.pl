@@ -5,12 +5,11 @@ use strict;
 use warnings;
 use diagnostics;
 use Parallel::ForkManager;
-use Data::Dumper;
 
 # Julien Wollbrett, created April 2023
 
 # USAGE: perl insert_scrna_seq_expression.pl -bgee=connection_string <OPTIONAL: -debug>
-# After the insertion of target base single cell RNA-Seq data, this script inserts the data
+# After the insertion of droplet base single cell RNA-Seq data, this script inserts the data
 # into the expression table and update the rnaSeqLibraryAnnotatedSampleGeneResult table.
 # -debug: if provided, run in verbose mode (print the update/insert SQL queries, not executing them)
 
@@ -54,10 +53,16 @@ $| = 1;
 ##########################################
 print "Retrieving conditions...\n";
 
-# multipleLibraryIndividualSample is equal to 1 only for target based RNA-Seq
-my $queryConditions = $bgee->prepare('SELECT DISTINCT t2.exprMappedConditionId FROM rnaSeqLibraryAnnotatedSample AS t1
-                                      INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId where 
-                                      t1.multipleLibraryIndividualSample = 1');
+# multipleLibraryIndividualSample is equal to 1 only for droplet based RNA-Seq
+my $queryConditions = $bgee->prepare('SELECT DISTINCT t2.exprMappedConditionId FROM rnaSeqLibraryAnnotatedSample AS t1 '.
+                                     'INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId where '.
+                                     't1.multipleLibraryIndividualSample = 1 '.
+                                     'ORDER BY t2.exprMappedConditionId');
+                                    #  'AND NOT EXISTS (SELECT 1 FROM rnaSeqLibraryAnnotatedSample AS t2 '.
+                                    #  'INNER JOIN rnaSeqLibraryAnnotatedSampleGeneResult AS t3 '.
+                                    #  'ON t3.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId '.
+                                    #  'WHERE t1.rnaSeqLibraryId = t2.rnaSeqLibraryId '.
+                                    #  'AND t3.expressionId IS NOT NULL)');
 $queryConditions->execute()  or die $queryConditions->errstr;
 my @exprMappedConditions = ();
 while ( my @data = $queryConditions->fetchrow_array ){
@@ -109,8 +114,8 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
     # Insert/update expression
     my $insUpExpr   = $bgee_thread->prepare('INSERT INTO expression (bgeeGeneId, conditionId) VALUES (?, ?)
                                 ON DUPLICATE KEY UPDATE expressionId=LAST_INSERT_ID(expressionId)');
-    # Query to update rnaSeqLibraryAnnotatedSampleGeneResult with the expressionId for target based
-    # to select only target based we filter on multipleLibraryIndividualSample = 1
+    # Query to update expressionId in rnaSeqLibraryAnnotatedSampleGeneResult for droplet based.
+    # to select only droplet based we filter on multipleLibraryIndividualSample = 1
     my $updResult = $bgee_thread->prepare("UPDATE rnaSeqLibraryAnnotatedSampleGeneResult AS t1
                                 INNER JOIN rnaSeqLibraryAnnotatedSample AS t2 ON t1.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId
                                 INNER JOIN cond AS t3 ON t2.conditionId = t3.conditionId

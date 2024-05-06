@@ -252,16 +252,18 @@ final_commit: final_status
 	@touch $@
 
 ## Currently parallelize job using different thread to write in the database
-## (argument coreNumber). Could optimize by also creating one Job per experiment
-## (on unil cluster using slurm) if this rule takes too much time.
-## Then, a perl script should take care of managing parallelization.
+## (argument coreNumber). 
+## Took less than 2 days to run for Bgee 15.2 with 10 threads. Not possible to increase number of threads
+## as each one can use lots of memory (until 250Gb for 10 threads) to load the sparse matrices. To fasten
+## that step we could run it on the cluster by creating one job per experiment.
 insert_data:
 	@perl 3Insertion/insert_scrna_seq.pl -bgee=$(BGEECMD) -targetBaseLibrary=$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED) -singleCellExperiment=$(SC_RNASEQ_EXP_TB_FILEPATH_FILTERED) -bgeeLibraryInfo=$(SC_RNASEQ_METADATA_10X_FILEPATH) -filteredBarcodeDir=$(SC_RNASEQ_CLEANED_BARCODES) -pipelineCallsSummary=$(SC_RNASEQ_SERVER_INFO_CALLS_10X) -pipelineReportFile=$(SC_RNASEQ_STATS_LIBRARIES_10X)  -kallistoResults=$(SC_RNASEQ_SERVER_RES_KALLISTO_DROPLET) -callsResults=$(SC_RNASEQ_SERVER_CALLS_10X) -sexInfo=$(UBERON_SEX_INFO_FILE_PATH) -extraMapping=$(EXTRAMAPPING_FILEPATH) -numberCore=10 > $@.tmp 2> $@.err
 	@if [[ ! -s $@.err ]]; then $(RM) $@.err; fi
 	@$(MV) $@.tmp $@
 
+#took ~ 12 hours to run for Bgee 15.2 with 20 threads
 insert_expression:
-	@perl 3Insertion/insert_scrna_seq_expression.pl -bgee=$(BGEECMD) -number_threads=40> $@.tmp 2> $@.err
+	@perl 3Insertion/insert_scrna_seq_expression.pl -bgee=$(BGEECMD) -number_threads=20> $@.tmp 2> $@.err
 	@if [[ ! -s $@.err ]]; then $(RM) $@.err; fi
 	@$(MV) $@.tmp $@
 
