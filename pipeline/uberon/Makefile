@@ -232,7 +232,7 @@ $(OUTPUT_DIR)check_root_second_run: $(OUTPUT_DIR)check_root_first_run
 # before doing anything else, otherwise the generated anatEntityRelationIds might become incorrect.
 # Also, check the file relationsToUpdate_directsIndirects.sql before inserting it.
 $(OUTPUT_DIR)relationsToUpdate_directsIndirects.sql: $(OUTPUT_DIR)check_root_second_run
-	@$(JAVA) OntologyTools RetrieveAnatIncorrectIndirectRels $(CUSTOM_UBERON_FILE_PATH) 0 $@.tmp
+	@$(JAVA) OntologyTools RetrieveAnatIncorrectIndirectRels $(CUSTOM_UBERON_FILE_PATH) 0 $@.tmp -
 	@$(MV) $@.tmp $@
 # THEN RUN THE COMMANDS IN THIS SQL FILE, THEY ARE NOT AUTOMATICALLY EXECUTED,
 # AND SOME LOG INFO MUST BE MANUALLY DELETED
