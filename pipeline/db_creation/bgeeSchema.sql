@@ -1003,7 +1003,7 @@ create table rnaSeqLibraryAnnotatedSample (
     --  can be null as it is applicable only to pooled bulk samples like BRB-Seq
     barcode varchar(70) COMMENT 'barcode used to pool several samples in the same library',
 -- these 3 columns have been added to be able to insert precise Salmon condition information
-    time int unsigned default null,
+    time decimal(5, 2) unsigned default null,
     timeUnit varchar(35) default null,
     physiologicalStatus varchar(255) default null
 ) engine = innodb;
