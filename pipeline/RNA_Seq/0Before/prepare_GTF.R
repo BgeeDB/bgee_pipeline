@@ -246,6 +246,7 @@ gene_biotypes <- cbind(
 gene_start <- sapply(split(as.numeric(gene_gtf_exon[,4]), gene_ids), function(x){ sort(as.numeric(x))[1] })
 gene_stop <- sapply(split(as.numeric(gene_gtf_exon[,5]), gene_ids), function(x){ rev(sort(as.numeric(x)))[1] })
 gene_chr <- sapply(split(gene_gtf_exon[,1], gene_ids), function(x){ x[1] })
+gene_strand <- sapply(split(gene_gtf[,7], gene_ids), function(x){ x[1] })
 
 ## chromosome/contig names from given gtf files
 chromosomes <- unique(gene_gtf_exon[,1])
@@ -268,6 +269,36 @@ rownames(summary_N_removal) <- c("before", "after")
 # To avoid scientific notation we change the value of option "scipen" to 999. At the end of the script we will change to its initial value
 scipen_initial_value <- getOption("scipen")
 options(scipen = 999)
+
+#Defining intergenic regions at 500bp upstream and downstream of genes
+for(gene_nrow in 1:nrow(gene_gtf)){
+  intergenic_chr =  append(intergenic_chr, as.character(gene_gtf[gene_nrow, 1]))
+  intergenic_chr =  append(intergenic_chr, as.character(gene_gtf[gene_nrow, 1]))
+  intergenic_strand = append(intergenic_strand, as.character(gene_gtf[gene_nrow, 7]))
+  intergenic_strand = append(intergenic_strand, as.character(gene_gtf[gene_nrow, 7]))
+  if(gene_gtf[gene_nrow, 7] == "+"){
+    #Getting intergenic region information for intergenic upstream of forward strand gene
+    intergenic_starts = append(intergenic_starts, max(0, as.numeric(gene_gtf[gene_nrow, 4]) - 1500))
+    intergenics_end = append(intergenics_end, max(0, as.numeric(gene_gtf[gene_nrow, 4]) - 500))
+    intergenic_name = append(intergenic_name, paste0("upstream_", gene_ids[gene_nrow]))
+    
+    #Getting information for downstream intergenic region
+    intergenic_starts = append(intergenic_starts, max(0, as.numeric(gene_gtf[gene_nrow, 5]) + 500))
+    intergenics_end = append(intergenics_end, max(0, as.numeric(gene_gtf[gene_nrow, 5]) + 1500))
+    intergenic_name = append(intergenic_name, paste0("downstream_", gene_ids[gene_nrow]))
+  } else {
+    #Getting intergenic region information for intergenic upstream of forward strand gene
+    intergenic_starts = append(intergenic_starts, max(0, as.numeric(gene_gtf[gene_nrow,4]) - 1500))
+    intergenics_end = append(intergenics_end, max(0, as.numeric(gene_gtf[gene_nrow, 4]) - 500))
+    intergenic_name = append(intergenic_name, paste0("downstream_", gene_ids[gene_nrow]))
+    
+    #Getting information for downstream intergenic region
+    intergenic_starts = append(intergenic_starts, max(0, as.numeric(gene_gtf[gene_nrow, 5]) + 500))
+    intergenics_end = append(intergenics_end, max(0, as.numeric(gene_gtf[gene_nrow, 5]) + 1500))
+    intergenic_name = append(intergenic_name, paste0("upstream_", gene_ids[gene_nrow]))
+  }
+
+}
 
 for(chr in chromosomes){
 
