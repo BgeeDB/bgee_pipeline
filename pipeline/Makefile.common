@@ -114,6 +114,7 @@ MV     := mv -f
 CP     := cp -f
 GUNZIP := gunzip -f
 
+LC_ALL = 'C'
 PYTHON3 = python3
 PIPENV = pipenv
 
