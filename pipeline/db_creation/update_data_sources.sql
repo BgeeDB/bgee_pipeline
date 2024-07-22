@@ -41,7 +41,7 @@ update dataSource set releaseDate = '2021-02-08', releaseVersion = '',          
 -- GO
 update dataSource set releaseDate = '2021-02-08', releaseVersion = ''                                                where dataSourceId = 18;
 -- SRA (RNA-Seq)
-update dataSource set releaseDate = '2021-02-08', releaseVersion = '',                             displayOrder = 2  where dataSourceId = 19;
+update dataSource set releaseDate = '2023-04-04', releaseVersion = '',                             displayOrder = 2  where dataSourceId = 19;
 -- SRA (scRNA-Seq)
 update dataSource set releaseDate = '2023-04-04', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 102;
 -- HGNC (taken from Ensembl xrefs)
