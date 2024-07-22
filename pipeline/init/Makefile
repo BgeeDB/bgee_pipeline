@@ -283,8 +283,8 @@ $(PIPELINEROOT)$(SIMILARITYFILEPATH): $(CONVERTER) $(PIPELINEROOT)$(SIMILARITY_C
 	@$(EXTRACLEANING) $@
 
 build_container:
-	@which singularity
-	sudo singularity build ${PIPELINE_CONTAINER_FILE} ${PIPELINE_CONTAINER_NAME}.def
+	@which apptainer
+	apptainer build ${PIPELINE_CONTAINER_FILE} ${PIPELINE_CONTAINER_NAME}.def
 	@touch $@
 
 test_container: build_container

@@ -1,0 +1,39 @@
+## BgeePipeline*.sif    is the built image
+## BgeePipeline*.def    is the Apptainer definition file, with the commands used to build the image
+
+# Build Apptainer image
+#NOTE build-date is builtin
+export RELEASE=16.0.0
+apptainer build BgeePipeline-${RELEASE}.sif BgeePipeline.def 2>&1 >BgeePipeline.apptainer.log
+
+
+# Inspect image (labels, ...)
+apptainer inspect   BgeePipeline-${RELEASE}.sif
+
+# Run image help message
+apptainer run-help  BgeePipeline-${RELEASE}.sif
+
+# Run image test run (if any)
+apptainer run       BgeePipeline-${RELEASE}.sif
+
+# Run bash in the Apptainer image
+apptainer shell     BgeePipeline-${RELEASE}.sif
+
+
+# Execute image
+apptainer exec      BgeePipeline-${RELEASE}.sif <commands>
+e.g. apptainer exec BgeePipeline-${RELEASE}.sif R
+
+
+# Import docker image/container
+#from docker hub:
+apptainer pull docker://user/image_name:version
+#From docker locally (https://github.com/hpcng/singularity/issues/4734)
+apptainer pull docker-daemon:image_name:version
+
+
+####### Container Security
+
+####### Signing and Verifying Containers
+#NOTE available in Apptainer 3+ only!
+
