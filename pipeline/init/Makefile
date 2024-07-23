@@ -284,8 +284,8 @@ $(PIPELINEROOT)$(SIMILARITYFILEPATH): $(CONVERTER) $(PIPELINEROOT)$(SIMILARITY_C
 
 build_container:
 	@which apptainer
-	apptainer build ${PIPELINE_CONTAINER_FILE} ${PIPELINE_CONTAINER_NAME}.def
-	@touch $@
+	apptainer build ${PIPELINE_CONTAINER_FILE} ${PIPELINE_CONTAINER_NAME}.def 2>&1 > $@.tmp
+	@$(MV) $@.tmp $@
 
 test_container: build_container
 # clients/interpretors
