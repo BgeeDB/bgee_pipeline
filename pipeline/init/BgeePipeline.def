@@ -316,8 +316,11 @@ From: ubuntu:24.04
 	cd /usr/local
 	wget 'https://github.com/pachterlab/kallisto/archive/refs/tags/V0.51.0.tar.gz'
 	tar xvfz V*.tar.gz && rm -f V*.tar.gz
-	cd kallisto-*/ext/htslib/ && autoheader && autoconf && ./configure --prefix=$PWD --disable-bz2 --disable-lzma --disable-libcurl && make lib-static
-	cd ../.. && mkdir build && cd build/ && cmake .. && make -j$THREADS && make install
+	#This htslib does not work any more and looks useless
+	#cd kallisto-*/ext/htslib/ && autoheader && autoconf && ./configure --prefix=$PWD --disable-bz2 --disable-lzma --disable-libcurl && make lib-static
+	#make -j$THREADS does not work with bifrost lib build
+	#cd ../.. && mkdir build && cd build/ && cmake .. && make -j$THREADS && make install
+	cd kallisto-*/ && mkdir build && cd build/ && cmake .. && make && make install
 	cd ../.. && rm -Rf kallisto-*/
 
 	# Install Bustools
