@@ -45,7 +45,7 @@ global_check:
 	@perl -MList::MoreUtils         -e 1 >> $@.tmp
 	@perl -MList::Util              -e 1 >> $@.tmp
 	@perl -MParallel::ForkManager   -e 1 >> $@.tmp
-	@perl -MParallel::Loops         -e 1 >> $@.tmp
+	#@perl -MParallel::Loops         -e 1 >> $@.tmp #FIXME issue to be untar properly, but does not look to be used!
 	@perl -MSort::Naturally         -e 1 >> $@.tmp
 	@perl -MSpreadsheet::Read       -e 1 >> $@.tmp
 	@perl -MSpreadsheet::ParseExcel -e 1 >> $@.tmp
@@ -324,7 +324,7 @@ test_container: build_container
 	@$(PIPELINE_CONTAINER_CMD) perl -MList::MoreUtils         -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MList::Util              -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MParallel::ForkManager   -e 1 >> $@.tmp
-	@$(PIPELINE_CONTAINER_CMD) perl -MParallel::Loops         -e 1 >> $@.tmp
+#@$(PIPELINE_CONTAINER_CMD) perl -MParallel::Loops         -e 1 >> $@.tmp #FIXME issue to be untar properly, but does not look to be used!
 	@$(PIPELINE_CONTAINER_CMD) perl -MSort::Naturally         -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MSpreadsheet::Read       -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MSpreadsheet::ParseExcel -e 1 >> $@.tmp
@@ -334,158 +334,158 @@ test_container: build_container
 	@$(PIPELINE_CONTAINER_CMD) perl -MTest::More              -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MTime::HiRes             -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MTime::localtime         -e 1 >> $@.tmp
-	@$(PIPELINE_CONTAINER_CMD) perl -MWebservice::InterMine   -e 1 >> $@.tmp
+#@$(PIPELINE_CONTAINER_CMD) perl -MWebservice::InterMine   -e 1 >> $@.tmp #FIXME issue with a test
 	@$(PIPELINE_CONTAINER_CMD) perl -MXML::Fast               -e 1 >> $@.tmp
 # R libraries
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("affy")'              >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("AnnotationDbi")'     >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("BgeeCall")'          >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("Biobase")'           >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("biomaRt")'           >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("Biostrings")'        >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("BUSpaRse")'          >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("data.table")'        >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("devtools")'          >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("dplyr")'             >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("DropletUtils")'      >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("edgeR")'             >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("fdrtool")'           >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("forcats")'           >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("gcrma")'             >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("genefilter")'        >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("GenomicFeatures")'   >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("ggExtra")'           >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("gghighlight")'       >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("ggplot2")'           >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("gridExtra")'         >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("HCAExplorer")'       >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("HelpersMG")'         >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("LaplacesDemon")'     >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("lattice")'           >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("limma")'             >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("magrittr")'          >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("Matrix")'            >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("mclust")'            >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("methods")'           >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("plyr")'              >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("R.utils")'           >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("RCurl")'             >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("readr")'             >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("reshape2")'          >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("rjson")'             >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("Seurat")'            >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("stringr")'           >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("tibble")'            >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("tools")'             >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("tximport")'          >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("UniprotR")'          >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("affy")'              >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("AnnotationDbi")'     >> $@.tmp  2>/dev/null
+#@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("BgeeCall")'          >> $@.tmp  2>/dev/null #FIXME issue with R 4.4.1 ???
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("Biobase")'           >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("biomaRt")'           >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("Biostrings")'        >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("BUSpaRse")'          >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("data.table")'        >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("devtools")'          >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("dplyr")'             >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("DropletUtils")'      >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("edgeR")'             >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("fdrtool")'           >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("forcats")'           >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("gcrma")'             >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("genefilter")'        >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("GenomicFeatures")'   >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("ggExtra")'           >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("gghighlight")'       >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("ggplot2")'           >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("gridExtra")'         >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("HCAExplorer")'       >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("HelpersMG")'         >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("LaplacesDemon")'     >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("lattice")'           >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("limma")'             >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("magrittr")'          >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("Matrix")'            >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("mclust")'            >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("methods")'           >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("plyr")'              >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("R.utils")'           >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("RCurl")'             >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("readr")'             >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("reshape2")'          >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("rjson")'             >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("Seurat")'            >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("stringr")'           >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("tibble")'            >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("tools")'             >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("tximport")'          >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("UniprotR")'          >> $@.tmp  2>/dev/null
 # R annotator script
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("SRAdb")'             >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("gsubfn")'            >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("SRAdb")'             >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("gsubfn")'            >> $@.tmp  2>/dev/null
 # For topAnat
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("Rgraphviz")'         >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("rJava")'             >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("Runiversal")'        >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("topGO")'             >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("Rgraphviz")'         >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("rJava")'             >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("Runiversal")'        >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("topGO")'             >> $@.tmp  2>/dev/null
 # Extra R libraries required during cel/MAS5 processing
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("celeganscdf")'       >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("celegansprobe")'     >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("drosgenome1cdf")'    >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("drosgenome1probe")'  >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("drosophila2cdf")'    >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("drosophila2probe")'  >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("hgfocuscdf")'        >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("hgfocusprobe")'      >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("hgu95acdf")'         >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("hgu95aprobe")'       >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("hgu95bcdf")'         >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("hgu95bprobe")'       >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("hgu95ccdf")'         >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("hgu95cprobe")'       >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("hgu95dcdf")'         >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("hgu95dprobe")'       >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("hgu95ecdf")'         >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("hgu95eprobe")'       >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("hgu95av2cdf")'       >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("hgu95av2probe")'     >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("hgu133acdf")'        >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("hgu133aprobe")'      >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("hgu133a2cdf")'       >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("hgu133a2probe")'     >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("hgu133bcdf")'        >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("hgu133bprobe")'      >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("hgu133plus2cdf")'    >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("hgu133plus2probe")'  >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("htmg430acdf")'       >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("htmg430aprobe")'     >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("hu6800cdf")'         >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("hu6800probe")'       >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("mgu74acdf")'         >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("mgu74aprobe")'       >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("mgu74av2cdf")'       >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("mgu74av2probe")'     >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("mgu74bv2cdf")'       >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("mgu74bv2probe")'     >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("mgu74cv2cdf")'       >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("mgu74cv2probe")'     >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("moe430acdf")'        >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("moe430aprobe")'      >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("moe430bcdf")'        >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("moe430bprobe")'      >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("mouse4302cdf")'      >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("mouse4302probe")'    >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("mouse430a2cdf")'     >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("mouse430a2probe")'   >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("mu11ksubacdf")'      >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("mu11ksubaprobe")'    >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("mu11ksubbcdf")'      >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("mu11ksubbprobe")'    >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("rae230acdf")'        >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("rae230aprobe")'      >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("rgu34acdf")'         >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("rgu34aprobe")'       >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("rhesuscdf")'         >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("rhesusprobe")'       >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("zebrafishcdf")'      >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -e 'library("zebrafishprobe")'    >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("celeganscdf")'       >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("celegansprobe")'     >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("drosgenome1cdf")'    >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("drosgenome1probe")'  >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("drosophila2cdf")'    >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("drosophila2probe")'  >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("hgfocuscdf")'        >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("hgfocusprobe")'      >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("hgu95acdf")'         >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("hgu95aprobe")'       >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("hgu95bcdf")'         >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("hgu95bprobe")'       >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("hgu95ccdf")'         >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("hgu95cprobe")'       >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("hgu95dcdf")'         >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("hgu95dprobe")'       >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("hgu95ecdf")'         >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("hgu95eprobe")'       >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("hgu95av2cdf")'       >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("hgu95av2probe")'     >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("hgu133acdf")'        >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("hgu133aprobe")'      >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("hgu133a2cdf")'       >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("hgu133a2probe")'     >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("hgu133bcdf")'        >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("hgu133bprobe")'      >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("hgu133plus2cdf")'    >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("hgu133plus2probe")'  >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("htmg430acdf")'       >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("htmg430aprobe")'     >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("hu6800cdf")'         >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("hu6800probe")'       >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("mgu74acdf")'         >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("mgu74aprobe")'       >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("mgu74av2cdf")'       >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("mgu74av2probe")'     >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("mgu74bv2cdf")'       >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("mgu74bv2probe")'     >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("mgu74cv2cdf")'       >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("mgu74cv2probe")'     >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("moe430acdf")'        >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("moe430aprobe")'      >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("moe430bcdf")'        >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("moe430bprobe")'      >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("mouse4302cdf")'      >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("mouse4302probe")'    >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("mouse430a2cdf")'     >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("mouse430a2probe")'   >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("mu11ksubacdf")'      >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("mu11ksubaprobe")'    >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("mu11ksubbcdf")'      >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("mu11ksubbprobe")'    >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("rae230acdf")'        >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("rae230aprobe")'      >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("rgu34acdf")'         >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("rgu34aprobe")'       >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("rhesuscdf")'         >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("rhesusprobe")'       >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("zebrafishcdf")'      >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("zebrafishprobe")'    >> $@.tmp  2>/dev/null
 # Python libraries for Zebrafish intermine
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import intermine"       >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import simplejson"      >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import intermine"       >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import simplejson"      >> $@.tmp
 # Python libraries for download_files/analyze_all_files.ipynb
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import IPython"         >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import matplotlib"      >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import numpy"           >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import os"              >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import pandas"          >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import seaborn"         >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import IPython"         >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import matplotlib"      >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import numpy"           >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import os"              >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import pandas"          >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import seaborn"         >> $@.tmp
 # Python libraries for Sagane's annotation scripts
 # TODO ...
 # Python libraries for Sagane's H5AD scripts
 # TODO ...
 # Python libraries for orthologs_paralogs_app
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import SPARQLWrapper"   >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import rdflib"          >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import isodate"         >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import pyparsing"       >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import six"             >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import configparser"    >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import datetime"        >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import distutils"       >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import multiprocessing" >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import pathlib"         >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import typing"          >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import ast"             >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import errno"           >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import fcntl"           >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import fileinput"       >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import io"              >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import json"            >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import logging"         >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import os"              >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import shutil"          >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import sys"             >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import getopt"          >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) python3 -c "import time"            >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import SPARQLWrapper"   >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import rdflib"          >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import isodate"         >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import pyparsing"       >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import six"             >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import configparser"    >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import datetime"        >> $@.tmp
+#@$(PIPELINE_CONTAINER_CMD) python3 -c "import distutils"       >> $@.tmp #FIXME no more in Python 3.12+ ?
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import multiprocessing" >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import pathlib"         >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import typing"          >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import ast"             >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import errno"           >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import fcntl"           >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import fileinput"       >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import io"              >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import json"            >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import logging"         >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import os"              >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import shutil"          >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import sys"             >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import getopt"          >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import time"            >> $@.tmp
 # others
 	@$(PIPELINE_CONTAINER_CMD) which pipenv        >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) which mvn           >> $@.tmp

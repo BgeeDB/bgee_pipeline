@@ -89,8 +89,8 @@ From: ubuntu:24.04
 	apt-get update  -y
 	apt-get upgrade -y
 	export DEBIAN_FRONTEND=noninteractive
-	apt install -y --no-install-recommends gnupg wget git cmake autoconf apt-utils ca-certificates libterm-readline-gnu-perl readline-common software-properties-common dirmngr build-essential libssl-dev libncurses5-dev libcurl4-openssl-dev liblzma-dev libbz2-dev libboost-all-dev sqlite3 libsqlite3-0 libsqlite3-dev libgsl0-dev zlib1g-dev libxml2-dev libgmp-dev libgmp10 libmpfr-dev libhdf5-dev libisal-dev libdeflate-dev libbam-dev libgeos-dev libmagick++-dev libharfbuzz-dev libfribidi-dev
-	apt install -y --no-install-recommends openjdk-21-jdk perl python3 python3-pip mysql-client maven ncbi-blast+
+	apt install -y --no-install-recommends gnupg wget git cmake autoconf apt-utils ca-certificates libterm-readline-gnu-perl bzip2 readline-common software-properties-common dirmngr build-essential libssl-dev libncurses5-dev libcurl4-openssl-dev liblzma-dev libbz2-dev libboost-all-dev sqlite3 libsqlite3-0 libsqlite3-dev libgsl0-dev zlib1g-dev libxml2-dev libgmp-dev libgmp10 libmpfr-dev libhdf5-dev libisal-dev libdeflate-dev libbam-dev libgeos-dev libmagick++-dev libharfbuzz-dev libfribidi-dev libaec-dev libsz2 libmagick++-6.q16-dev libmagick++-6.q16-9
+	apt install -y --no-install-recommends openjdk-21-jdk perl python3 python3-six python3-packaging python3-pyparsing python3-pip mysql-client maven ncbi-blast+
 
 	#Install R
 	wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
@@ -257,7 +257,7 @@ From: ubuntu:24.04
 	cpan List::MoreUtils
 	cpan List::Util
 	cpan Parallel::ForkManager
-	#cpan Parallel::Loops #FIXME issue to be untar
+	#cpan Parallel::Loops #FIXME issue to be untar properly, but does not look to be used!
 	cpan Sort::Naturally
 	cpan Spreadsheet::ParseExcel
 	cpan Spreadsheet::ParseXLSX
@@ -315,7 +315,7 @@ From: ubuntu:24.04
 	# Install Kallisto
 	cd /usr/local
 	wget 'https://github.com/pachterlab/kallisto/archive/refs/tags/V0.51.0.tar.gz'
-	tar xvfz v*.tar.gz && rm -f v*.tar.gz
+	tar xvfz V*.tar.gz && rm -f V*.tar.gz
 	cd kallisto-*/ext/htslib/ && autoheader && autoconf && ./configure --prefix=$PWD --disable-bz2 --disable-lzma --disable-libcurl && make lib-static
 	cd ../.. && mkdir build && cd build/ && cmake .. && make -j$THREADS && make install
 	cd ../.. && rm -Rf kallisto-*/
