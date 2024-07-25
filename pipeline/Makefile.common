@@ -9,8 +9,8 @@ SHELL = /bin/bash
 # ===================================
 #  GENERAL PARAMETERS
 # ===================================
-MAJOR_RELEASE    := 15
-MINOR_RELEASE    := 2
+MAJOR_RELEASE    := 16
+MINOR_RELEASE    := 0
 RELEASE          := $(MAJOR_RELEASE).$(MINOR_RELEASE)
 
 # MySQL database connection parameters
@@ -47,8 +47,8 @@ DATAHOST   := jura0.sib.swiss
 DATAPATH   := /data
 
 # Ensembl
-ENSRELEASE             := 102
-ENSMETAZOARELEASE      := 49
+ENSRELEASE             := 112
+ENSMETAZOARELEASE      := 59
 ENS_API_RELEASE        := $(ENSRELEASE)
 ENSMETAZOA_API_RELEASE := $(ENSRELEASE)
 #   Default, remote Ensembl db
