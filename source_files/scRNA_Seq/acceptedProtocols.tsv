@@ -1,5 +1,5 @@
 Protocols	Library_construction	target_whiteList	single_cell_isolation	Possible_Key_words_to_catch_protocols
 Smart-seq	Full-length	NA	Plate-based	TSO
 Smart-seq2	Full-length	NA	Plate-based	TSO
-10X Genomics	3'end	v2	Droplet-based	Poly(dt)VN, UMI, barcodes
-10X Genomics	3'end	v3	Droplet-based	Poly(dt)VN, UMI, barcodes
+10X Genomics	3'end	V2	Droplet-based	Poly(dt)VN, UMI, barcodes
+10X Genomics	3'end	V3	Droplet-based	Poly(dt)VN, UMI, barcodes

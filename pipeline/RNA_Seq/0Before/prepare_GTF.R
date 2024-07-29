@@ -98,7 +98,7 @@ get_annot_value <- function(split_annotation, field_name){
 ## - chr_number: the id of the chromosome/contig
 ## - chr_intergenic_regions: intergenic regions defined using gtf file
 ## - max_block_size : threshold on maximum size of a block of N. If a sequence contains a block of N bigger or equals to this threshold we remove the block and split the
-##	 sequence in 2. It will potentially create 2 intergenic sequences (if the block is not at the beginning nor the end of the sequence).
+##   sequence in 2. It will potentially create 2 intergenic sequences (if the block is not at the beginning nor the end of the sequence).
 ## - min_intergenic_length : minimum length of an intergenic region we want to keep. We remove all intergenic sequences smaller than this minimmum length.
 ## - max_proportion_N : maximum proportion of N in a sequence. If the proportion of N in a sequence is bigger than this threshold we do not keep the sequence.
 ## TODO: we should maybe also take into account the composition (GC content, ...?) or size distribution of genic regions to create/filter these intergenic regions.

@@ -10,17 +10,17 @@ SHELL = /bin/bash
 #  GENERAL PARAMETERS
 # ===================================
 MAJOR_RELEASE    := 15
-MINOR_RELEASE    := 1
+MINOR_RELEASE    := 2
 RELEASE          := $(MAJOR_RELEASE).$(MINOR_RELEASE)
 
 # MySQL database connection parameters
 # DBUSER and DBPASS defined in Makefile.Config
 # DBUSERV and DBPASSV defined in Makefile.Config
 DBNAME := bgee_v$(subst .,_,$(RELEASE))
-DBHOST := localhost
+DBHOST := dbbioinfo.unil.ch
 DBPORT := 3306
 DBNAME_EASYBGEE := easybgee_v$(subst .,_,$(RELEASE))
-DBHOST_EASYBGEE := rbioinfo.unil.ch
+DBHOST_EASYBGEE := localhost
 
 
 # Pipeline container
@@ -85,7 +85,7 @@ BGEEPIPELINEJARNAME := bgee-pipeline-$(RELEASE)-with-dependencies.jar
 BGEEPIPELINEJAR     := $(JAVALIBDIR)$(BGEEPIPELINEJARNAME)
 
 # --add-opens java.base/java.lang=ALL-UNNAMED: see https://stackoverflow.com/a/77874779/1768736
-JAVA_NO_JAR := java -Xmx64g -Dbgee.dao.jdbc.username=$(DBUSER) -Dbgee.dao.jdbc.password=$(DBPASS) -Dbgee.dao.jdbc.driver.names=com.mysql.cj.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST):$(DBPORT)/$(DBNAME)?useSSL=false&allowPublicKeyRetrieval=True&enableQueryTimeouts=false&sessionVariables=net_write_timeout=260000,net_read_timeout=260000,wait_timeout=260000' --add-opens java.base/java.lang=ALL-UNNAMED
+JAVA_NO_JAR := java -Xmx150g -Dbgee.dao.jdbc.username=$(DBUSER) -Dbgee.dao.jdbc.password=$(DBPASS) -Dbgee.dao.jdbc.driver.names=com.mysql.cj.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST):$(DBPORT)/$(DBNAME)?useSSL=false&allowPublicKeyRetrieval=True&enableQueryTimeouts=false&sessionVariables=net_write_timeout=260000,net_read_timeout=260000,wait_timeout=260000' --add-opens java.base/java.lang=ALL-UNNAMED
 # Java command allowing to connect to easyBgee without Jar. Never used without JAR for the moment but created to follow the same pattern than JAVA_NO_JAR/JAVA variables for Bgee
 JAVA_NO_JAR_EASYBGEE := java -Xmx64g -Dbgee.dao.jdbc.username=$(DBUSER_EASYBGEE) -Dbgee.dao.jdbc.password=$(DBPASS_EASYBGEE) -Dbgee.dao.jdbc.driver.names=com.mysql.cj.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST_EASYBGEE):$(DBPORT)/$(DBNAME_EASYBGEE)?useSSL=false&allowPublicKeyRetrieval=True&enableQueryTimeouts=false&sessionVariables=net_write_timeout=500000,net_read_timeout=500000,wait_timeout=500000'
 
@@ -113,6 +113,7 @@ RM     := rm -f
 MV     := mv -f
 CP     := cp -f
 GUNZIP := gunzip -f
+MKDIR  := mkdir -p
 
 LC_ALL = 'C'
 PYTHON3 = python3
@@ -147,26 +148,31 @@ include $(PIPELINEROOT)Makefile.taxon_info
 # ===================================
 
 CLUSTER_DATA_PATH       := /data/FAC/FBM/DEE/mrobinso/bgee_sensitive
-CLUSTER_SCRATCH_PATH    := /scratch/beegfs/FAC/FBM/DEE/mrobinso/bgee_sensitive
+# use the /data folder to avoid providing user scratch directory as there is currently no project scratch directory
+CLUSTER_SCRATCH_PATH    := $(CLUSTER_DATA_PATH)
 CLUSTER_SCRATCH_RESULTS := $(CLUSTER_SCRATCH_PATH)/$(DBNAME)/
 CLUSTER_ARCHIVE_PATH    := /archive/FAC/FBM/DEE/mrobinso/bgee_sensitive
-CLUSTER_CURNAGL_PATH    := /work/FAC/FBM/DEE/mrobinso/bgee_sensitive
+CLUSTER_CURNAGL_PATH    := /work/FAC/FBM/DEE/mrobinso/bgee/
+CLUSTER_TOOLS_DIR       := $(CLUSTER_CURNAGL_PATH)/tools/
 
-R_LIBS_PATH_JURA        := $(CLUSTER_DATA_PATH)/R_LIBS
+R_LIBS_PATH_SENSITIVE   := $(CLUSTER_DATA_PATH)/R_LIBS
 R_LIBS_PATH_CURNAGL     := $(CLUSTER_CURNAGL_PATH)/R_LIBS
 PERL_LIBS_PATH_CURNAGL  := $(CLUSTER_CURNAGL_PATH)/PERL_LIBS/lib/perl5
 
 #NOTE Think to add ; at the end to ease insertion in other command lines
 CLUSTER_SOFT_VITALIT    := module use /software/module/;
-CLUSTER_SOFT_UNIL       := module load gcc/9.3.0;
-CLUSTER_KALLISTO_CMD    := $(CLUSTER_SOFT_VITALIT) module add UHTS/Analysis/kallisto/0.46.0;
-CLUSTER_R_CMD           := $(CLUSTER_SOFT_VITALIT) module add R/3.6.1;
+CLUSTER_SOFT_UNIL       := module load gcc/10.4.0;
+CLUSTER_KALLISTO_CMD    := $(CLUSTER_SOFT_VITALIT) module load UHTS/Analysis/kallisto/0.46.0;
+CLUSTER_R_CMD           := $(CLUSTER_SOFT_VITALIT) module load R/3.6.1;
 CLUSTER_R_CMD2          := $(CLUSTER_SOFT_UNIL)    module load r/4.0.5;
+CLUSTER_ENSEMBL_API     := module load Development/Ensembl_API/97;
+CLUSTER_SOFTWARE_BIN    := export PATH=/software/bin:$$PATH;
+SENSITIVE_PERL_CMD      := $(CLUSTER_SOFT_VITALIT) $(CLUSTER_ENSEMBL_API) $(CLUSTER_SOFTWARE_BIN)
 CLUSTER_PERL_CMD        := $(CLUSTER_SOFT_UNIL)    module load perl/5.32.1;
 CLUSTER_SRATOOLKIT_CMD  := $(CLUSTER_SOFT_UNIL)    module load sratoolkit/2.10.9;
-CLUSTER_TOPHAT_CMD      := $(CLUSTER_SOFT_VITALIT) module add UHTS/Aligner/tophat/2.1.1;
-CLUSTER_FASTP_CMD       := $(CLUSTER_SOFT_UNIL)    module load fastp/0.20.1;
-CLUSTER_BUSTOOLS_CMD    := $(CLUSTER_SOFT_VITALIT) module add UHTS/Analysis/bustools/0.40.0;
+CLUSTER_TOPHAT_CMD      := $(CLUSTER_SOFT_VITALIT) module load UHTS/Aligner/tophat/2.1.1;
+CLUSTER_FASTP_CMD       := $(CLUSTER_SOFT_UNIL)    module load fastp/0.23.2;
+CLUSTER_BUSTOOLS_CMD    := $(CLUSTER_SOFT_VITALIT) module load UHTS/Analysis/bustools/0.40.0;
 
 
 # ===================================
@@ -174,7 +180,7 @@ CLUSTER_BUSTOOLS_CMD    := $(CLUSTER_SOFT_VITALIT) module add UHTS/Analysis/bust
 # ===================================
 
 # Tmp path (if not enough disk space)
-TMPDIR := /var/lib/mysql/tmp/pipeline_results/
+TMPDIR := /var/lib/mysql/tmp/bgee_v15_2/
 
 # Path to the directory storing source files
 # PIPELINEROOT and DIR_NAME are specified by each individul Makefile
@@ -409,10 +415,11 @@ RNASEQ_BGEECALL_FILE               := $(GENERATED_FILES_DIR)$(RNASEQPATH)bgeecal
 
 # RNAseq cluster paths
 # TODO clean-up and remove unused ones
-RNASEQ_DOWNLOAD_LIB_DIR        := $(CLUSTER_CURNAGL_PATH)/downloads
+RNASEQ_DOWNLOAD_LIB_DIR        := $(CLUSTER_CURNAGL_PATH)/downloads/
+RNASEQ_DOWNLOAD_LIB_DIR_FASTQ  := $(RNASEQ_DOWNLOAD_LIB_DIR)/FASTQ/RNAseq/
 RNASEQ_CLUSTER_READONLY        := $(CLUSTER_DATA_PATH)/
 RNASEQ_CLUSTER_SCRIPTS         := $(RNASEQ_CLUSTER_READONLY)GIT/pipeline/
-RNASEQ_DOWNLOAD_GTF            := $(CLUSTER_CURNAGL_PATH)/downloads/GTF_$(MAJOR_RELEASE)/
+RNASEQ_DOWNLOAD_GTF            := $(RNASEQ_DOWNLOAD_LIB_DIR)GTF_$(MAJOR_RELEASE)/
 RNASEQ_CLUSTER_GTF             := $(RNASEQ_CLUSTER_READONLY)rna_seq/GTF_$(MAJOR_RELEASE)/
 RNASEQ_CLUSTER_ALL_RES_BACKUP  := $(RNASEQ_CLUSTER_READONLY)rna_seq/all_results_$(DBNAME)/
 
@@ -426,7 +433,7 @@ RNASEQ_CLUSTER_R_LOG           := $(RNASEQ_CLUSTER_SCRATCH)Rout/
 RNASEQ_CLUSTER_SBATCH          := $(RNASEQ_CLUSTER_SCRATCH)sbatch/
 RNASEQ_CLUSTER_REPORT_ALL      := $(RNASEQ_CLUSTER_ABUNDANCE_ALL)reports_info_all_samples.txt
 RNASEQ_CLUSTER_BGEECALL_OUTPUT := $(RNASEQ_CLUSTER_SCRATCH)calls/
-RNASEQ_CLUSTER_BGEECALL_CALLS  := $(RNASEQ_CLUSTER_BGEECALL_OUTPUT)all_results_$(DBNAME)/
+RNASEQ_CLUSTER_BGEECALL_CALLS  := $(RNASEQ_CLUSTER_BGEECALL_OUTPUT)all_results/
 RNASEQ_CLUSTER_CALLS_STATS     := $(RNASEQ_CLUSTER_BGEECALL_CALLS)presence_absence_all_samples.txt
 RNASEQ_CLUSTER_KALLISTO_STATS  := $(RNASEQ_CLUSTER_BGEECALL_CALLS)reports_info_all_samples.txt
 
@@ -447,7 +454,7 @@ RNASEQ_KALLISTO_KMER_SHORT    := 15
 INTERGENIC_N_PROPORTION         := 0.05
 
 # RNAseq data path
-RNASEQDATAPATH             := /var/bgee/extra/pipeline/rna_seq/
+RNASEQDATAPATH             := $(TMPDIR)/RNA_Seq/
 ABUNDANCEFILE              := gene_level_abundance+calls.tsv
 RNASEQALLRES               := $(RNASEQDATAPATH)rna_seq_all_results_$(DBNAME)/
 SC_RNASEQ_ALL_RES_FL       := $(RNASEQDATAPATH)full_length_all_results_$(DBNAME)/
@@ -474,21 +481,25 @@ RNASEQTMMPATH                       := $(RNASEQDATAPATH)processed_TMM_$(DBNAME)/
 # scRNASeq github file paths in the source directory
 SC_RNASEQ_PATH                         := scRNA_Seq/
 SC_RNASEQ_PATH_SOURCE                  := $(SOURCE_FILES_DIR)$(SC_RNASEQ_PATH)
-SC_RNASEQ_EXPERIMENT_FILEPATH          := $(SC_RNASEQ_PATH_SOURCE)scRNASeqExperiment.tsv
 SC_RNASEQ_ACCEPTED_PROTOCOLS           := $(SC_RNASEQ_PATH_SOURCE)acceptedProtocols.tsv
 ### Full_length
 SC_RNASEQ_FL_FOLDER_SOURCE             := $(SC_RNASEQ_PATH_SOURCE)Full_length/
-SC_RNASEQ_LIB_FL_FILEPATH              := $(SC_RNASEQ_FL_FOLDER_SOURCE)scRNASeqFLLibrary.tsv
+# FL and TB annotations are in the same file. Kept FL and TB annotation in different directories in case only one out of the two single cell pipeline is run for a release of Bgee
+SC_RNASEQ_LIB_FL_FILEPATH              := $(SC_RNASEQ_FL_FOLDER_SOURCE)scRNASeqLibrary_merged.tsv
+SC_RNASEQ_EXP_FL_FILEPATH              := $(SC_RNASEQ_FL_FOLDER_SOURCE)scRNASeqExperiment.tsv
+
 ### Target_based
 SC_RNASEQ_TB_FOLDER_SOURCE             := $(SC_RNASEQ_PATH_SOURCE)Target_based/
-SC_RNASEQ_LIB_TB_FILEPATH              := $(SC_RNASEQ_TB_FOLDER_SOURCE)scRNASeqTBLibrary.tsv
+# FL and TB annotations are in the same file. Kept FL and TB annotation in different directories in case only one out of the two single cell pipeline is run for a release of Bgee
+SC_RNASEQ_LIB_TB_FILEPATH              := $(SC_RNASEQ_TB_FOLDER_SOURCE)scRNASeqLibrary_merged.tsv
+SC_RNASEQ_EXP_TB_FILEPATH              := $(SC_RNASEQ_TB_FOLDER_SOURCE)scRNASeqExperiment.tsv
 SC_RNASEQ_MANIFEST_FILE_FILEPATH       := $(SC_RNASEQ_TB_FOLDER_SOURCE)Manifest_file.tsv
 SC_RNASEQ_WHITELIST_10X_v2             := $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whitelist_10X_v2.txt.zip
 SC_RNASEQ_WHITELIST_10X_v3             := $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whitelist_10X_v3.txt.zip
 
 # scRNASeq github file paths in the generated_files directory
 SC_RNASEQ_PATH_GENERATED               := $(GENERATED_FILES_DIR)$(SC_RNASEQ_PATH)
-SC_RNASEQ_JURA_LIB_FILEPATH            := $(SC_RNASEQ_PATH_GENERATED)juraLibrariesDownloaded.tsv
+SC_RNASEQ_DOWNLOADED_LIB_FILEPATH      := $(SC_RNASEQ_PATH_GENERATED)librariesDownloaded.tsv
 ### Full_length
 SC_RNASEQ_FL_FOLDER_GENERATED          := $(SC_RNASEQ_PATH_GENERATED)Full_length/
 SC_RNASEQ_LIB_PASS_FILEPATH            := $(SC_RNASEQ_FL_FOLDER_GENERATED)passScRNASeqLibrary.tsv
@@ -504,8 +515,9 @@ SC_RNASEQ_SAMP_STATS_FL                := $(SC_RNASEQ_FL_FOLDER_GENERATED)presen
 SC_RNASEQ_REPORT_INFO_FL               := $(SC_RNASEQ_FL_FOLDER_GENERATED)reports_info_all_samples.txt
 ### Target_based
 SC_RNASEQ_TB_FOLDER_GENERATED               := $(SC_RNASEQ_PATH_GENERATED)Target_based/
-SC_RNASEQ_EXPERIMENT_FILEPATH_FILTERED      := $(SC_RNASEQ_TB_FOLDER_GENERATED)scRNASeqExperiment.tsv
-SC_RNASEQ_LIB_TB_FILEPATH_FILTERED          := $(SC_RNASEQ_TB_FOLDER_GENERATED)scRNASeqTBLibrary.tsv
+SC_RNASEQ_TB_DOWNLOADED_LIB_FILEPATH        := $(SC_RNASEQ_TB_FOLDER_GENERATED)librariesDownloaded.tsv
+SC_RNASEQ_EXP_TB_FILEPATH_FILTERED          := $(SC_RNASEQ_TB_FOLDER_GENERATED)scRNASeqExperiment.tsv
+SC_RNASEQ_LIB_TB_FILEPATH_FILTERED          := $(SC_RNASEQ_TB_FOLDER_GENERATED)scRNASeqLibrary_merged.tsv
 SC_RNASEQ_CLEANED_BARCODES                  := $(SC_RNASEQ_TB_FOLDER_GENERATED)cleaned_barcodes/
 SC_RNASEQ_METADATA_10X_FILEPATH             := $(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_info_10X.txt
 SC_RNASEQ_METADATA_10X_NOT_MATCH_FILEPATH   := $(SC_RNASEQ_TB_FOLDER_GENERATED)metadata_notMatch_10X.txt
@@ -521,14 +533,14 @@ SC_RNASEQ_DOWNLOAD_PATH_DROPLET         := $(SC_RNASEQ_DOWNLOAD_PATH_LIB_DIR)scR
 # scRNAseq cluster sofware
 SCRNASEQ_SOFTWARE_BAMTOFASTQ                  := /users/jwollbre/tools/bamtofastq_linux
 
-# scRNAseq cluster paths (JURA)
+# scRNAseq cluster paths (SENSITIVE)
 
 ## PATH to full length and 10X data
 SC_RNASEQ_FASTQ_FULL_LENGTH                   := $(CLUSTER_DATA_PATH)/FASTQ/scRNAseq/Full_length/
-SC_RNASEQ_FASTQ_DROPLET                       := $(CLUSTER_DATA_PATH)/FASTQ/target_base/
+SC_RNASEQ_FASTQ_DROPLET                       := $(CLUSTER_DATA_PATH)/FASTQ/scRNAseq/10X/
 
 ## PATH to all results of both of pipelines
-SC_RNASEQ_CLUSTER_ALL_RES                     := $(CLUSTER_SCRATCH_RESULTS)scRNA-Seq_all_results_$(DBNAME)/
+SC_RNASEQ_CLUSTER_ALL_RES                     := $(CLUSTER_DATA_PATH)/$(DBNAME)/scRNA-Seq_all_results/
 
 ## Specific paths to results of full-length protocols
 SC_RNASEQ_CLUSTER_ALL_RES_FULL_LENGTH         := $(SC_RNASEQ_CLUSTER_ALL_RES)FULL_LENGTH/
@@ -547,7 +559,7 @@ SC_RNASEQ_CLUSTER_KALLISTO_STATS              := $(SC_RNASEQ_CLUSTER_BGEECALL)re
 
 SC_RNASEQ_STATS_LIBRARIES_10X                 := $(SC_RNASEQ_TB_FOLDER_GENERATED)/stats_libraries.txt
 
-## on Jura cluster
+## on sensitive cluster
 SC_RNASEQ_CLUSTER_ALL_RES_DROPLET             := $(SC_RNASEQ_CLUSTER_ALL_RES)DROPLET_10X/
 SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET        := $(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)kallisto_bus_results/
 SC_RNASEQ_CLUSTER_QC_CELLTYPE                 := $(SC_RNASEQ_CLUSTER_ALL_RES_DROPLET)QC_CellType_identification/
@@ -557,8 +569,8 @@ SC_RNASEQ_CLUSTER_CALLS_10X                   := $(SC_RNASEQ_CLUSTER_ALL_RES_DRO
 SC_RNASEQ_CLUSTER_INFO_CALLS_10X              := $(SC_RNASEQ_CLUSTER_CALLS_10X)All_cellPopulation_stats_10X.tsv
 
 ## On Bgee server
-SC_RNASEQ_SERVER_RES_KALLISTO_DROPLET         := $(TMPDIR)kallisto_bus_results/
-SC_RNASEQ_SERVER_CALLS_10X                    := $(TMPDIR)calls/
+SC_RNASEQ_SERVER_RES_KALLISTO_DROPLET         := $(TMPDIR)/DROPLET_10X/kallisto_bus_results/
+SC_RNASEQ_SERVER_CALLS_10X                    := $(TMPDIR)/DROPLET_10X/calls/
 SC_RNASEQ_SERVER_INFO_CALLS_10X               := $(SC_RNASEQ_SERVER_CALLS_10X)All_cellPopulation_stats_10X.tsv
 
 # minimum number of cells in a full-length library
@@ -570,10 +582,14 @@ PVALUE_CUTOFF                                 := 0.05
 # =========== DOWNLOAD FILES ===============
 
 # path to the root of the directory to use to store generated download files
-DOWNLOAD_FILE_ROOT_PATH := $(GENERATED_FILES_DIR)download_files/
+DOWNLOAD_FILE_ROOT_PATH := $(TMPDIR)/download_files/
+XREFS_PATH              := $(TMPDIR)/xrefs/
+EASYBGEE_PATH           := $(TMPDIR)/$(DBNAME_EASYBGEE)/
+R_SPECIES_INFO          := $(TMPDIR)/rPackageSpeciesInfo.tsv
 
 # paths of the different file types, relative to DOWNLOAD_FILE_ROOT_PATH
-CALLS_PATH := calls/
+CALLS_PATH := calls/expr_calls/
+H5AD_PATH  := h5ad/
 EXPR_CALLS_PATH := $(CALLS_PATH)expr_calls/
 DIFF_EXPR_CALLS_PATH := $(CALLS_PATH)diff_expr_calls/
 PROC_EXPR_VALUES_PATH := processed_expr_values/
@@ -602,6 +618,12 @@ RNA_SEQ_COUNT_SUF_ZIP := _RNA-Seq_read_counts_TPM_FPKM.zip
 AFFYMETRIX_EXP_CHIP_SUF_ZIP := _Affymetrix_experiments_chips.zip
 AFFYMETRIX_PROBESET_SUF_ZIP := _Affymetrix_probesets.zip
 
+# FTP informations
+FTP_URL         := bgeeftp.unil.ch
+FTP_ROOT        := /u01/ftp/
+FTP_CURRENT     := $(FTP_ROOT)$(DBNAME)/
+FTP_DOWNLOAD    := $(FTP_CURRENT)download/
+
 # =========== RANK DOWNLOAD FILES ===============
 # Directories related to $(OUTPUT_DIR)
 RANKS_PER_ANAT := ranks/anat_entity/
@@ -622,7 +644,7 @@ ONTOP_INSTALL_DIR := /usr/local/ontop/
 ISQL_PATH := /usr/local/virtuoso-open-source/bin/isql
 VIRTUOSO_HOST := localhost:1111
 TTL_DIRECTORY_FULL_PATH := $(OUTPUT_DIR)
-FTP_SAVE_DUMP_PATH := /u01/ftp/$(DBNAME)/rdf_easybgee.zip
+FTP_SAVE_DUMP_PATH := $(FTP_CURRENT)rdf_easybgee.zip
 TTL_FILE_LIST      := $(TTL_DIRECTORY_FULL_PATH)ttl_files.txt
 BGEE_VIRTUOSO_FILE := $(TTL_DIRECTORY_FULL_PATH)add_bgee_virtuoso.sql
 ZIP_TTL_FILE       := $(TTL_DIRECTORY_FULL_PATH)rdf_easybgee.zip

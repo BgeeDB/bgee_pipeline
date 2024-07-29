@@ -5,6 +5,7 @@ use diagnostics;
 
 use Getopt::Long;
 use File::Slurp;
+use Data::Dumper;
 
 
 # Define arguments & their default value
@@ -31,24 +32,23 @@ if ( !$test_options || $RNAlib eq '' || $RNAlibFiltered eq '' ){
     exit 1;
 }
 
-
 # Read RNASeqLibrary_full.tsv before filtering
 my $header = '';
 my $store;
 ANNOT:
 for my $annot ( read_file("$RNAlib", chomp=>1) ){
-    #"#libraryId"    "experimentId"  "platform"  "organId"   "organName" "uberonId"  "uberonName"    "stageId"   "stageName" "infoOrgan" "infoStage" "sampleTitle"   "sampleSource"  "sampleDescription" "sampleCharacteristics" "organAnnotationStatus" "organBiologicalStatus" "stageAnnotationStatus" "stageBiologicalStatus" "sex"   "strain"    "speciesId" "comment"   "annotatorId"   "lastModificationDate"  "replicate" "infoReplicate" "SRSId" "tags"RNASeqProtocol"   "physiological status"  "globin_reduction"  "PATOid"    "PATOname"
-    #"SRX843135" "SRP051959" "Illumina HiSeq 2000"           "UBERON:0001871"    "temporal lobe" "UBERON:0000113"    "post-juvenile adult stage" "Brain Temporal Lobe"   2.91                    "perfect match" "not documented"    "missing child term"    "not documented"    "F" "NA"    9555    "library selection other but ok see PMID:25392405"  "AUC"   "2018-06-25"            "SRS819312"     "polyA"             
+    #"#libraryId"	"experimentId"	"platform"	"SRSId"	"anatId"	"anatName"	"stageId"	"stageName"	"url_GSM"	"infoOrgan"	"infoStage"	"anatAnnotationStatus"	"anatBiologicalStatus"	"stageAnnotationStatus"	"sex"	"strain"	"genotype"	"speciesId"	"protocol"	"protocolType"	"RNASelection"	"globin_reduction"	"replicate"	"sampleTitle"	"PATOid"	"PATOname"	"comment"	"condition"	"annotatorId"	"lastModificationDate"
+    #"SRX5028084"	"SRP169832"	"Illumina HiSeq 2500"	"SRS4059375"	"UBERON:0001046"	"hindgut"	"SsalDv:0000065"	"parr stage"		"Hindgut"	"1 yr"	"perfect match"	"partial sampling"	"missing child term"	"NA"	"Aqua Gen strain"		8030			"polyA"			"Control hindgut 2"			"PRJNA506138,1 year, parr,Ctrl_Hind_2,Fragments are taken to do histological analyses"		"WAH"	"29/03/2023"
 
     if ( $annot =~ /^"#/ && $header eq '' ){
         $header = $annot;
         next ANNOT;
     }
     next ANNOT  if ( $annot =~ /^#/ || $annot =~ /^"#/ );
+    my ($libraryId, $experimentId, $platform, undef, $uberonId, undef, $stageId, undef, undef,
+        undef, undef, undef, undef, undef, $sex, $strain, undef, $speciesId)
+        = split(/\t/, $annot, 30);
 
-    my ($libraryId, $experimentId, $platform, undef, undef, $uberonId, undef, $stageId, undef,
-        undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, $sex, $strain, $speciesId, undef)
-        = split(/\t/, $annot, 23);
     push @{ $store->{$speciesId}->{'lib'} }, $annot;
     $store->{$speciesId}->{'cond'}->{"$uberonId--$stageId--$sex--$strain"}++;
     $store->{$speciesId}->{'organ'}->{$uberonId}++;

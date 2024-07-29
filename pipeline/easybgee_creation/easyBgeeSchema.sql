@@ -39,13 +39,13 @@ create table gene (
     speciesId mediumint unsigned not null COMMENT 'NCBI species taxon id this gene belongs to',
     PRIMARY KEY (bgeeGeneId),
     UNIQUE(geneId, speciesId),
-    FOREIGN KEY(speciesId) REFERENCES species(speciesId) ON DELETE CASCADE,
+    FOREIGN KEY(speciesId) REFERENCES species(speciesId) ON DELETE CASCADE
 ) engine = innodb;
 
 create table geneXRef (
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
-    XRefUrl varchar(255) not null default '' COMMENT 'Cross-reference URL',
-    dataSourceName varchar(255) unsigned not null COMMENT 'Data Source name the cross-reference comes from',
+    XRefUrl varchar(255) COMMENT 'Cross-reference URL',
+    dataSourceName varchar(255) not null COMMENT 'Data Source name the cross-reference comes from',
     PRIMARY KEY (bgeeGeneId,XRefUrl),
     FOREIGN KEY(bgeeGeneId) REFERENCES gene(bgeeGeneId) ON DELETE CASCADE
 ) engine = innodb;

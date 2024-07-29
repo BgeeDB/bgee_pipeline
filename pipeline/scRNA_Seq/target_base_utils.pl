@@ -15,6 +15,8 @@ sub getTargetBaseCuratedLibrariesAnnotation {
     # $targetBaseLibrary{experimentId}->{libraryId (SRX...)}->{'anatEntityId'} = ...
     # $targetBaseLibrary{experimentId}->{libraryId (SRX...)}->{'cellTypeId'} = ...
     # $targetBaseLibrary{experimentId}->{libraryId (SRX...)}->{'stageId'} = ...
+    # $targetBaseLibrary{experimentId}->{libraryId (SRX...)}->{'authorAnatEntityAnnotation'} = ...
+    # $targetBaseLibrary{experimentId}->{libraryId (SRX...)}->{'authorStageAnnotation'} = ...
     # $targetBaseLibrary{experimentId}->{libraryId (SRX...)}->{'sex'} = ...
     # $targetBaseLibrary{experimentId}->{libraryId (SRX...)}->{'strain'} = ...
     # $targetBaseLibrary{experimentId}->{libraryId (SRX...)}->{'genotype'} = ...
@@ -26,10 +28,9 @@ sub getTargetBaseCuratedLibrariesAnnotation {
 
     my @valid_platforms = ('BGISEQ-500', 'HiSeq X Ten', 'Illumina HiSeq 2000',
         'Illumina HiSeq 2500', 'Illumina HiSeq 3000', 'Illumina HiSeq 4000',
-        'Illumina HiSeq X Ten', 'Illumina NovaSeq 6000', 'NextSeq 500');
+        'Illumina HiSeq X Ten', 'Illumina NovaSeq 6000', 'NextSeq 500', 'NextSeq 550');
 
-    my @valid_protocols = ('10X Genomics', 'CEL-seq2', 'Drop-seq',
-        'inDrop', 'MARS-Seq', 'Microwell-seq');
+    my @valid_protocols = ('10X Genomics V2', '10X Genomics V3');
 
     my @validCellCompartments = ("scRNA-seq", "Sn-scRNA-seq");
     
@@ -42,18 +43,19 @@ sub getTargetBaseCuratedLibrariesAnnotation {
         my $libraryId                       = $tmp[0];
         my $experimentId                    = $tmp[1];
         my $platform                        = $tmp[2];
-        my $anatEntityId                    = $tmp[3];
-        my $cellTypeId                      = $tmp[5];
+        my $anatEntityId                    = $tmp[4];
+        my $cellTypeId                      = $tmp[6];
         my $stageId                         = $tmp[8];
-        my $sex                             = $tmp[17];
-        my $strain                          = $tmp[18];
-        my $genotype                        = $tmp[19];
-        my $speciesId                       = $tmp[20];
-        my $cellCompartment                 = $tmp[27];
-        my $protocol                        = $tmp[28];
-        my $sequencedTranscriptPart         = $tmp[29];
-        my $whiteList                       = $tmp[30];
-        my $sampleName                      = $tmp[31];
+        my $authorAnatEntityAnnotation      = $tmp[11];
+        my $authorStageAnnotation           = $tmp[16];
+        my $sex                             = $tmp[20];
+        my $strain                          = $tmp[21];
+        my $genotype                        = $tmp[22];
+        my $speciesId                       = $tmp[23];
+        my $cellCompartment                 = $tmp[24];
+        my $protocol                        = $tmp[25];
+        my $sequencedTranscriptPart         = $tmp[26];
+        my $sampleName                      = $tmp[27];
 
         die "tsv field number problem [$line]\n"  if ( scalar @tmp != 33 );
 
@@ -118,7 +120,7 @@ sub getTargetBaseCuratedLibrariesAnnotation {
                 warn "Warning, wrong format for protocol [$protocol]\n";
                 $discarded = 1;
             }
-            if ($sequencedTranscriptPart ne '3\'end'){
+            if ($sequencedTranscriptPart ne '3\'end' && $sequencedTranscriptPart ne '5\'end'){
                 warn "Warning, wrong format for sequencedTranscriptPart",
                     "[$sequencedTranscriptPart]\n";
                 $discarded = 1;
@@ -134,6 +136,10 @@ sub getTargetBaseCuratedLibrariesAnnotation {
                 $targetBaseLibrary{$experimentId}->{$libraryId}->{'anatEntityId'} = $anatEntityId;
                 $targetBaseLibrary{$experimentId}->{$libraryId}->{'cellTypeId'} = $cellTypeId;
                 $targetBaseLibrary{$experimentId}->{$libraryId}->{'stageId'} = $stageId;
+                $targetBaseLibrary{$experimentId}->{$libraryId}->{'authorAnatEntityAnnotation'} =
+                    $authorAnatEntityAnnotation;
+                $targetBaseLibrary{$experimentId}->{$libraryId}->{'authorStageAnnotation'} =
+                    $authorStageAnnotation;
                 $targetBaseLibrary{$experimentId}->{$libraryId}->{'sex'} = $sex;
                 $targetBaseLibrary{$experimentId}->{$libraryId}->{'strain'} = $strain;
                 $targetBaseLibrary{$experimentId}->{$libraryId}->{'genotype'} = $genotype;
@@ -142,7 +148,6 @@ sub getTargetBaseCuratedLibrariesAnnotation {
                 $targetBaseLibrary{$experimentId}->{$libraryId}->{'protocol'} = $protocol;
                 $targetBaseLibrary{$experimentId}->{$libraryId}->{'sequencedTranscriptPart'} =
                     $sequencedTranscriptPart;
-                $targetBaseLibrary{$experimentId}->{$libraryId}->{'whiteList'} = $whiteList;
                 $targetBaseLibrary{$experimentId}->{$libraryId}->{'sampleName'} = $sampleName;
             }
         }
@@ -165,8 +170,6 @@ sub getSingleCellExperiments {
     # $experiments{experimentId}->{'protocol'}
     # $experiments{experimentId}->{'experimentType'}
 
-    #@allowedExpTypes = ('3\'end', 'Full-length', 'Full-length and 3\'end'];
-
     my %experiments;
     for my $line ( read_file("$targetBaseExperimentFile", chomp=>1) ){
         next  if ( $line =~ /^#/ or $line =~ /^\"#/ );
@@ -177,13 +180,14 @@ sub getSingleCellExperiments {
         my $name                            = $tmp[1];
         my $description                     = $tmp[2];
         my $source                          = $tmp[3];
+        # is it useful???
         my $status                          = $tmp[4];
-        my $comment                         = $tmp[5];
-        my $protocol                        = $tmp[8];
-        my $experimentType                  = $tmp[9];
+        my $protocol                        = $tmp[7];
+        my $protocolType                    = $tmp[8];
+        my $comment                         = $tmp[13];
 
 
-        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 10 );
+        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 14 );
 
         if ( !defined $experiments{$experimentId} ){
             # Perform format checks
@@ -197,12 +201,20 @@ sub getSingleCellExperiments {
                 warn "Warning, wrong format for source [$source]\n";
                 $discarded = 1;
             }
+            if ($source eq 'HCA' ){
+                warn "Warning, we remap HCA sources to SRA to be able to reuse the SRA experimentId\n";
+                $source = 'SRA';
+            }
+            if ($source eq 'EBI' ){
+                warn "Warning, we remap EBI source to ENA as it is the name of the source in the database\n";
+                $source = 'ENA';
+            }
             if ($protocol eq '' ){
                 warn "Warning, wrong format for protocol [$protocol]\n";
                 $discarded = 1;
             }
-            if ($experimentType eq ''){
-                warn "Warning, wrong format for experiment type [$experimentType]\n";
+            if ($protocolType eq ''){
+                warn "Warning, wrong format for experiment type [$protocolType]\n";
                 $discarded = 1;
             }
             
@@ -215,14 +227,14 @@ sub getSingleCellExperiments {
             if ( $discarded ){
                 warn ' experiment: ', $experimentId, " discarded!\n";
             } else {
-                if (grep(/^$experimentType$/, @experimentTypes)) {
+                if (grep(/^$protocolType$/, @experimentTypes)) {
                     $experiments{$experimentId}->{'name'} = $name;
                     $experiments{$experimentId}->{'description'} = $description;
                     $experiments{$experimentId}->{'source'} = $source;
                     $experiments{$experimentId}->{'status'} = $status;
                     $experiments{$experimentId}->{'comment'} = $comment;
                     $experiments{$experimentId}->{'protocol'} = $protocol;
-                    $experiments{$experimentId}->{'experimentType'} = $experimentType;
+                    $experiments{$experimentId}->{'experimentType'} = $protocolType;
                 }
             }
         } else {
@@ -237,14 +249,13 @@ sub getSingleCellExperiments {
 ## we just need to uncomment corresponding lines in the function
 sub getCallsSummaryAtLibraryAnnotatedLevel {
     my ($pipelineCallsSummary) = @_;
-    # $callsSummary{libraryId}{cellTypeId}->{'abundanceThreshold'}
-    # $callsSummary{libraryId}{cellTypeId}->{'allGenesPercentPresent'}
-    # $callsSummary{libraryId}{cellTypeId}->{'proteinCodingGenesPercentPresent'}
-    # $callsSummary{libraryId}{cellTypeId}->{'intergenicRegionsPercentPresent'}
-    # $callsSummary{libraryId}{cellTypeId}->{'pValueThreshold'}
-    # $callsSummary{libraryId}{cellTypeId}->{'meanRefIntergenic'}
-    # $callsSummary{libraryId}{cellTypeId}->{'sdRefIntergenic'}
-    # $callsSummary{libraryId}{cellTypeId}->{'mappedUMIs'}
+    # $callsSummary{libraryId}{cellTypeId}->{authorCellTypeAnnotation}->{'abundanceThreshold'}
+    # $callsSummary{libraryId}{cellTypeId}->{authorCellTypeAnnotation}->{'allGenesPercentPresent'}
+    # $callsSummary{libraryId}{cellTypeId}->{authorCellTypeAnnotation}->{'proteinCodingGenesPercentPresent'}
+    # $callsSummary{libraryId}{cellTypeId}->{authorCellTypeAnnotation}->{'intergenicRegionsPercentPresent'}
+    # $callsSummary{libraryId}{cellTypeId}->{authorCellTypeAnnotation}->{'pValueThreshold'}
+    # $callsSummary{libraryId}{cellTypeId}->{authorCellTypeAnnotation}->{'meanRefIntergenic'}
+    # $callsSummary{libraryId}{cellTypeId}->{authorCellTypeAnnotation}->{'sdRefIntergenic'}
 
     my %callsSummary;
     for my $line ( read_file("$pipelineCallsSummary", chomp=>1) ){
@@ -254,19 +265,19 @@ sub getCallsSummaryAtLibraryAnnotatedLevel {
 
         my $libraryId                        = $tmp[0];
         my $cellTypeId                       = $tmp[1];
-        my $abundanceThreshold               = $tmp[2];
-        my $allGenesPercentPresent           = $tmp[5];
-        my $proteinCodingGenesPercentPresent = $tmp[8];
-        my $intergenicRegionsPercentPresent  = $tmp[11];
-        my $pValueThreshold                  = $tmp[12];
-        my $meanRefIntergenic                = $tmp[13];
-        my $sdRefIntergenic                  = $tmp[14];
-        #my $mappedUMIs                      = $tmp[?];
+        my $authorCellTypeAnnotation         = $tmp[2];
+        my $abundanceThreshold               = $tmp[3];
+        my $allGenesPercentPresent           = $tmp[6];
+        my $proteinCodingGenesPercentPresent = $tmp[9];
+        my $intergenicRegionsPercentPresent  = $tmp[12];
+        my $pValueThreshold                  = $tmp[13];
+        my $meanRefIntergenic                = $tmp[14];
+        my $sdRefIntergenic                  = $tmp[15];
 
 
-        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 17 );
+        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 18 );
 
-        if ( !defined $callsSummary{$libraryId}{$cellTypeId} ){
+        if ( !defined $callsSummary{$libraryId}{$cellTypeId}{$authorCellTypeAnnotation} ){
             # Perform format checks
             my $discarded = 0;
             if ($libraryId eq '' ){
@@ -276,6 +287,9 @@ sub getCallsSummaryAtLibraryAnnotatedLevel {
             if ($cellTypeId eq '' ){
                 warn "Warning, wrong format for cellTypeId [$cellTypeId]\n";
                 $discarded = 1;
+            }
+            if ($authorCellTypeAnnotation eq '' ){
+                warn "authorCellTypeAnnotation is empty for library $libraryId and celltype $cellTypeId. The library/celltype is not discarded.\n";
             }
             if ($abundanceThreshold eq '' ){
                 warn "Warning, wrong format for abundanceThreshold [$abundanceThreshold]\n";
@@ -312,14 +326,13 @@ sub getCallsSummaryAtLibraryAnnotatedLevel {
             if ( $discarded ){
                 warn ' libraryId: ', $libraryId, ", cellTypeId: ", $cellTypeId, " discarded!\n";
             } else {
-                $callsSummary{$libraryId}{$cellTypeId}->{'abundanceThreshold'} = $abundanceThreshold;
-                $callsSummary{$libraryId}{$cellTypeId}->{'allGenesPercentPresent'} = $allGenesPercentPresent;
-                $callsSummary{$libraryId}{$cellTypeId}->{'proteinCodingGenesPercentPresent'} = $proteinCodingGenesPercentPresent;
-                $callsSummary{$libraryId}{$cellTypeId}->{'intergenicRegionsPercentPresent'} = $intergenicRegionsPercentPresent;
-                $callsSummary{$libraryId}{$cellTypeId}->{'pValueThreshold'} = $pValueThreshold;
-                $callsSummary{$libraryId}{$cellTypeId}->{'meanRefIntergenic'} = $meanRefIntergenic;
-                $callsSummary{$libraryId}{$cellTypeId}->{'sdRefIntergenic'} = $sdRefIntergenic;
-                # $callsSummary{libraryId}{cellTypeId}->{'mappedUMIs'} = $mappedUMIs;
+                $callsSummary{$libraryId}->{$cellTypeId}->{$authorCellTypeAnnotation}->{'abundanceThreshold'} = $abundanceThreshold;
+                $callsSummary{$libraryId}->{$cellTypeId}->{$authorCellTypeAnnotation}->{'allGenesPercentPresent'} = $allGenesPercentPresent;
+                $callsSummary{$libraryId}->{$cellTypeId}->{$authorCellTypeAnnotation}->{'proteinCodingGenesPercentPresent'} = $proteinCodingGenesPercentPresent;
+                $callsSummary{$libraryId}->{$cellTypeId}->{$authorCellTypeAnnotation}->{'intergenicRegionsPercentPresent'} = $intergenicRegionsPercentPresent;
+                $callsSummary{$libraryId}->{$cellTypeId}->{$authorCellTypeAnnotation}->{'pValueThreshold'} = $pValueThreshold;
+                $callsSummary{$libraryId}->{$cellTypeId}->{$authorCellTypeAnnotation}->{'meanRefIntergenic'} = $meanRefIntergenic;
+                $callsSummary{$libraryId}->{$cellTypeId}->{$authorCellTypeAnnotation}->{'sdRefIntergenic'} = $sdRefIntergenic;
             }
         } else {
             warn 'Warning: couple libraryId/cellTypeId present several times in the file: libraryId: ',
@@ -336,7 +349,7 @@ sub get_processed_libraries_info {
     # $experiments{experimentId}->{libraryId}->{runId}->{'readCount'} = ...
     # $experiments{experimentId}->{libraryId}->{'libraryLayout'} = ...
     
-    my @validLibraryType = ('paired', 'single', 'NA');
+    my @validLibraryType = ('paired', 'single');
 
     my %libInfos = ();
     for my $line ( read_file("$targetBaseLibraryFile", chomp=>1) ){
@@ -353,6 +366,7 @@ sub get_processed_libraries_info {
         my $experimentId                    = $tmp[1];
         my $libraryId                       = $tmp[2];
         my $speciesId                       = $tmp[5];
+        my $speciesName                     = $tmp[6];
         my $libraryType                     = $tmp[8];
         my $fastqFTP                        = $tmp[9];
         my $submittedFTP                    = $tmp[10];
@@ -361,9 +375,7 @@ sub get_processed_libraries_info {
             $downloadSource                 = $tmp[11];
         }
 
-        
-
-        if (!defined $libInfos{$experimentId}->{$libraryId}->{$runId}) {
+        if (!defined $libInfos{$experimentId}->{$libraryId}->{'runIds'}->{$runId}) {
             # Perform format checks
             # do not check format for genotype and whiteList as they can be empty
             my $discarded = 0;
@@ -391,6 +403,10 @@ sub get_processed_libraries_info {
                 warn "Warning, wrong format for speciesId [$speciesId]\n";
                 $discarded = 1;
             }
+            if ($speciesName eq '' ){
+                warn "Warning, wrong format for speciesId [$speciesName]\n";
+                $discarded = 1;
+            }
             if ($isTargetBased && $downloadSource eq '' ){
                 warn "Warning, wrong format for downloadSource [$downloadSource]\n";
                 $discarded = 1;
@@ -398,17 +414,18 @@ sub get_processed_libraries_info {
             if ( $discarded ){
                 warn ' experimentId: ', $experimentId, ", libraryId: ", $libraryId, " discarded!\n";
             } else {
-                $libInfos{$experimentId}->{$libraryId}->{$runId}->{'libraryType'} =
+                $libInfos{$experimentId}->{$libraryId}->{'runIds'}->{$runId}->{'libraryType'} =
                     $libraryType;
                 if ($isTargetBased) {
-                    $libInfos{$experimentId}->{$libraryId}->{$runId}->{'downloadSource'} =
+                    $libInfos{$experimentId}->{$libraryId}->{'runIds'}->{$runId}->{'downloadSource'} =
                         $downloadSource;
                 }
-                $libInfos{$experimentId}->{$libraryId}->{$runId}->{'submittedFTP'} =
+                $libInfos{$experimentId}->{$libraryId}->{'runIds'}->{$runId}->{'submittedFTP'} =
                     $submittedFTP;
-                $libInfos{$experimentId}->{$libraryId}->{$runId}->{'fastqFTP'} =
+                $libInfos{$experimentId}->{$libraryId}->{'runIds'}->{$runId}->{'fastqFTP'} =
                     $fastqFTP;
                 $libInfos{$experimentId}->{$libraryId}->{'speciesId'} = $speciesId;
+                $libInfos{$experimentId}->{$libraryId}->{'speciesName'} = $speciesName;
             }
         } else {
             warn 'Warning: run present several times in the metadata file: experiment: ',
@@ -421,10 +438,10 @@ sub get_processed_libraries_info {
 
 sub getCallsInfoPerLibrary {
     my ($callsInfoFile) = @_;
-    # $callsInfo{$cellTypeId}->{$geneId}->{'cpm'}
-    # $callsInfo{$cellTypeId}->{$geneId}->{'sumUMI'}
-    # $callsInfo{$cellTypeId}->{$geneId}->{'zScore'}
-    # $callsInfo{$cellTypeId}->{$geneId}->{'pValue'}
+    # $callsInfo{$geneId}->{'cpm'}
+    # $callsInfo{$geneId}->{'sumUMI'}
+    # $callsInfo{$geneId}->{'zScore'}
+    # $callsInfo{$geneId}->{'pValue'}
 
     my %callsInfo = ();
     for my $line ( read_file("$callsInfoFile", chomp=>1) ){
@@ -438,58 +455,46 @@ sub getCallsInfoPerLibrary {
         my $zScore                    = $tmp[5];
         my $pValue                    = $tmp[6];
         my $cellTypeId                = $tmp[8];
+        my $authorCellTypeAnnotation  = $tmp[9];
 
-        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 9 );
+        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 10 );
 
-        if (!defined $callsInfo{$cellTypeId}->{$geneId}) {
-            # Perform format checks
-            my $discarded = 0;
-            if ($geneId eq '' ){
-                warn "Warning, wrong format for geneId [$geneId]\n";
-                $discarded = 1;
-            }
-            if ($sumUMI eq '' ){
-                warn "Warning, wrong format for sumUMI [$sumUMI]\n";
-                $discarded = 1;
-            }
-            if ($cpm eq '' ){
-                warn "Warning, wrong format for cpm [$cpm]\n";
-                $discarded = 1;
-            }
-            if ($zScore eq '' ){
-                warn "Warning, wrong format for zScore [$zScore]\n";
-                $discarded = 1;
-            # non numerical values of zscore are stored as NULL in the database
-            # dbi iquivalent to null is undef so if value of zscore is NA we modified
-            # it to be inserted as NULL in the database
-            } elsif ($zScore eq "NA") {
-                $zScore = undef;
-            }
-            if ($pValue eq '' ){
-                warn "Warning, wrong format for pValue [$pValue]\n";
-                $discarded = 1;
-            } elsif ($pValue eq "NA") {
-                $pValue = 1;
-            }
-            if ($cellTypeId eq '' ){
-                warn "Warning, wrong format for cellTypeId [$cellTypeId]\n";
-                $discarded = 1;
-            } else {
-                ##TODO remove this hack once the script generating call files is modified to
-                ## use real cellTypeIds
-                $cellTypeId =~ tr/_/:/;
-            }
-            if ($discarded) {
-                warn 'gene: ', $geneId, ', cellTypeId', $cellTypeId, " discarded!\n";
-            } else {
-                $callsInfo{$cellTypeId}->{$geneId}->{'cpm'} = $cpm;
-                $callsInfo{$cellTypeId}->{$geneId}->{'sumUMI'} = $sumUMI;
-                $callsInfo{$cellTypeId}->{$geneId}->{'zScore'} = $zScore;
-                $callsInfo{$cellTypeId}->{$geneId}->{'pValue'} = $pValue;
-            }
+        # Perform format checks
+        my $discarded = 0;
+        if ($geneId eq '' ){
+            warn "Warning, wrong format for geneId [$geneId]\n";
+            $discarded = 1;
+        }
+        if ($sumUMI eq '' ){
+            warn "Warning, wrong format for sumUMI [$sumUMI]\n";
+            $discarded = 1;
+        }
+        if ($cpm eq '' ){
+            warn "Warning, wrong format for cpm [$cpm]\n";
+            $discarded = 1;
+        }
+        if ($zScore eq '' ){
+            warn "Warning, wrong format for zScore [$zScore]\n";
+            $discarded = 1;
+        # non numerical values of zscore are stored as NULL in the database
+        # dbi iquivalent to null is undef so if value of zscore is NA we modified
+        # it to be inserted as NULL in the database
+        } elsif ($zScore eq "NA") {
+            $zScore = undef;
+        }
+        if ($pValue eq '' ){
+            warn "Warning, wrong format for pValue [$pValue]\n";
+            $discarded = 1;
+        } elsif ($pValue eq "NA") {
+            $pValue = 1;
+        }
+        if ($discarded) {
+            warn "gene: $geneId, cellTypeId $cellTypeId, cell-type author annotation $authorCellTypeAnnotation discarded!\n";
         } else {
-            warn 'Warning: couple cellTypeId/geneId present several times in the file: cellTypeId: ',
-            $cellTypeId, ' - geneId: ', $geneId, "\n";
+            $callsInfo{$geneId}->{'cpm'} = $cpm;
+            $callsInfo{$geneId}->{'sumUMI'} = $sumUMI;
+            $callsInfo{$geneId}->{'zScore'} = $zScore;
+            $callsInfo{$geneId}->{'pValue'} = $pValue;
         }
     }
 
@@ -499,9 +504,11 @@ sub getCallsInfoPerLibrary {
 # Extract the mapping from barcodes to cell types. Also extract cell type Ids
 sub getBarcodeToCellType {
     my ($barcodeToCellTypeFile) = @_;
-    # $barcodes{libraryId}->{'barcodes'}->{barcode}->{'cellTypeId'} = ...
+    # $barcodes{libraryId}->{'barcodes'}->{barcode}->{'clusterId'} = ...
+    # $barcodes{libraryId}->{'barcodes'}->{barcode}->{'authorCellTypeAnnotation'} = ...
     # $barcodes{libraryId}->{'barcodes'}->{barcode}->{'annotationStatus'} = ...
-    # $barcodes{libraryId}->{'celltypes'}->{cellType} = ()
+    # $barcodes{libraryId}->{'celltypes'}->{clusterId}->{'cellTypeId'} = ()
+    # $barcodes{libraryId}->{'celltypes'}->{clusterId}->{'authorCellTypeAnnotation'} = ()
 
     my %barcodes = ();
     for my $line ( read_file("$barcodeToCellTypeFile", chomp=>1) ){
@@ -511,14 +518,15 @@ sub getBarcodeToCellType {
 
         my $barcode                         = $tmp[0];
         my $libraryId                       = $tmp[2];
-        my $cellTypeId                      = $tmp[7];
-        my $cellTypeAnnotationStatus        = $tmp[9];
+        my $authorCellTypeAnnotation        = $tmp[5];
+        my $cellTypeId                      = $tmp[9];
+        my $cellTypeAnnotationStatus        = $tmp[11];
+        my $bgeeClusterId                   = $tmp[14];
 
-        die "tsv field number problem [$line]\n"  if (scalar @tmp != 13);
+        die "tsv field number problem [$line]\n"  if (scalar @tmp != 15);
 
         if (!defined $barcodes{$libraryId}->{'barcodes'}->{$barcode}) {
             # Perform format checks
-            # do not check format for genotype and whiteList as they can be empty
             my $discarded = 0;
             if ($libraryId eq '' ){
                 warn "Warning, wrong format for libraryId [$libraryId]\n";
@@ -551,15 +559,30 @@ sub getBarcodeToCellType {
                 warn "Warning, wrong format for cellTypeAnnotationStatus [$cellTypeAnnotationStatus]\n";
                 $discarded = 1;
             }
+            if ($bgeeClusterId eq '' ){
+                warn "Warning, wrong format for bgeeClusterId [$bgeeClusterId]\n";
+                $discarded = 1;
+            }
+            if ($authorCellTypeAnnotation eq '' ){
+                warn "Warning, authorCellTypeAnnotation is empty. library : $libraryId celltype : $cellTypeId. The cluster has not been discarded\n";
+            }
             if ($discarded) {
-                warn 'libraryId: ', $libraryId, ', barcode', $barcode, ', cellTypeId', $cellTypeId,
-                    " discarded!\n";
+                warn 'libraryId: ', $libraryId, ', barcode ', $barcode, ', bgeeClusterId ', $bgeeClusterId,
+                ', authorCellTypeAnnotation ', $authorCellTypeAnnotation,
+                ', cellTypeId ', $cellTypeId, " discarded!\n";
             } else {
+                $barcodes{$libraryId}->{'barcodes'}->{$barcode}->{'clusterId'} =
+                    $bgeeClusterId;
+                $barcodes{$libraryId}->{'barcodes'}->{$barcode}->{'authorCellTypeAnnotation'} =
+                    $authorCellTypeAnnotation;
                 $barcodes{$libraryId}->{'barcodes'}->{$barcode}->{'cellTypeId'} =
                     $cellTypeId;
                 $barcodes{$libraryId}->{'barcodes'}->{$barcode}->{'annotationStatus'} =
                     $cellTypeAnnotationStatus;
-                $barcodes{$libraryId}->{'cellTypes'}->{$cellTypeId} = ();
+                $barcodes{$libraryId}->{'clusters'}->{$bgeeClusterId}->{'cellTypeId'} = $cellTypeId;
+                $barcodes{$libraryId}->{'clusters'}->{$bgeeClusterId}->{'authorCellTypeAnnotation'} =
+                    $authorCellTypeAnnotation;
+                $barcodes{$libraryId}->{'cellTypeIds'}->{$cellTypeId} = ();
             }
         } else {
             warn 'Warning: barcode described several times in the library : library: ',
@@ -571,41 +594,60 @@ sub getBarcodeToCellType {
 # insert one rnaseq library annotated sample and retrieve the value
 # of internal autoincrement rnaSeqLibraryAnnotatedSampleId
 sub insert_get_annotated_sample {
-    my ($insAnnotatedSample, $selectAnnotatedSampleId, $abundanceThreshold,
-        $allGenesPercentPresent, $proteinCodingGenesPercentPresent,
-        $intergenicRegionsPercentPresent, $pValueThreshold, $meanRefIntergenic,
-        $sdRefIntergenic, $mappedUMIs, $isTargetBase, $conditionId, $libraryId,
-        $debug) = @_;
+    my ($libraryId, $conditionId, $cellTypeAuthorAnnotation, $anatEntityAuthorAnnotation,
+        $stageAuthorAnnotation, $abundanceUnit, $meanRefIntergenic, $sdRefIntergenic,
+        $abundanceThreshold, $allGenesPercentPresent, $proteinCodingGenesPercentPresent,
+        $intergenicRegionsPercentPresent, $pValueThreshold, $allUMIsCount, $mappedUMIsCount,
+        $isDropletBased, $barcode, $time, $timeUnit, $physiologicalStatus, $insAnnotatedSample,
+        $selectAnnotatedSampleId, $debug) = @_;
 
     #insert annotated sample
     if ($debug) {
+        my $timeNullable = $time;
+        if (!defined $time) {
+            $timeNullable = 'undef';
+        }
         print 'INSERT INTO rnaSeqLibraryAnnotatedSample: ',
                     $libraryId,                        ' - ',
-                    $conditionId,                      ' - ',
-                    "cpm",                             ' - ',
+                    'conditionId',                      ' - ',
+                    $cellTypeAuthorAnnotation,         ' - ',
+                    $anatEntityAuthorAnnotation,       ' - ',
+                    $stageAuthorAnnotation,            ' - ',
+                    $abundanceUnit,                    ' - ',
                     $meanRefIntergenic,                ' - ',
                     $sdRefIntergenic,                  ' - ',
-                    1,                                 ' - ',
                     $abundanceThreshold,               ' - ',
                     $allGenesPercentPresent,           ' - ',
                     $proteinCodingGenesPercentPresent, ' - ',
                     $intergenicRegionsPercentPresent,  ' - ',
                     $pValueThreshold,                  ' - ',
-                    "NULL",                            ' - ',
-                    $isTargetBase,                     ' - ',
+                    $allUMIsCount,                     ' - ',
+                    $mappedUMIsCount,                  ' - ',
+                    $isDropletBased,                   ' - ',
+                    $barcode,                          ' - ',
+                    $timeNullable,                             ' - ',
+                    $timeUnit,                         ' - ',
+                    $physiologicalStatus,
                     "\n";
     } else {
-        $insAnnotatedSample->execute($libraryId, $conditionId, "cpm", $meanRefIntergenic,
-        $sdRefIntergenic, 1, $abundanceThreshold, $allGenesPercentPresent,
-        $proteinCodingGenesPercentPresent, $intergenicRegionsPercentPresent,
-        $pValueThreshold, "", $isTargetBase)
+        $insAnnotatedSample->execute($libraryId, $conditionId, $cellTypeAuthorAnnotation,
+        $anatEntityAuthorAnnotation, $stageAuthorAnnotation, $abundanceUnit, $meanRefIntergenic,
+        $sdRefIntergenic, $abundanceThreshold, $allGenesPercentPresent,
+        $proteinCodingGenesPercentPresent, $intergenicRegionsPercentPresent, $pValueThreshold,
+        $allUMIsCount, $mappedUMIsCount, $isDropletBased, $barcode, $time, $timeUnit,
+        $physiologicalStatus)
             or die $insAnnotatedSample->errstr;
     }
     
     #retrieve annotated sample ID
     my $annotatedSampleId = ();
-    $selectAnnotatedSampleId->execute($libraryId, $conditionId)
+    if ($cellTypeAuthorAnnotation eq '') {
+        $selectAnnotatedSampleId->execute($libraryId, $conditionId)
         or die $selectAnnotatedSampleId->errstr;
+    } else {
+        $selectAnnotatedSampleId->execute($libraryId, $conditionId, $cellTypeAuthorAnnotation)
+        or die $selectAnnotatedSampleId->errstr;
+    }
     while ( my @data = $selectAnnotatedSampleId->fetchrow_array ){
         $annotatedSampleId = $data[0];
     }
@@ -620,7 +662,7 @@ sub insert_get_individual_sample {
     my $indiviudalSampleId;
     # insert individual sample
     if ($debug) {
-        print 'INSERT INTO rnaSeqLibraryIndividualSample: ', $annotatedSampleId, ' - ', 
+        print 'INSERT INTO rnaSeqLibraryIndividualSample: ', 'annotatedSampleId', ' - ', 
                     $barcode, ' - ', $sampleName, "\n";
     } else {
         $insIndividualSample->execute($annotatedSampleId, $barcode, $sampleName)
