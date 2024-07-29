@@ -1,3 +1,8 @@
 Conditions with anat. entity not existing in related species:
+speciesId	conditionId	exprMappedConditionId	anatEntityId	anatEntityName	stageId	stageName	sex	strain
+9031	52863	52862	UBERON:0000956	cerebral cortex	GgalDv:0000045	Hamburger Hamilton stage 31 (chicken)	NA	White leghorn
+9031	52865	52864	UBERON:0000956	cerebral cortex	GgalDv:0000050	Hamburger Hamilton stage 36 (chicken)	NA	White leghorn
+9103	54412	54411	UBERON:0001301	epididymis	UBERON:0000113	post-juvenile	male	NA
+9103	54414	54413	UBERON:0001000	vas deferens	UBERON:0000113	post-juvenile	male	NA
 
 Conditions with dev. stage not existing in related species:
