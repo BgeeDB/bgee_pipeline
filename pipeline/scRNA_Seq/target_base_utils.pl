@@ -598,7 +598,7 @@ sub insert_get_annotated_sample {
         $stageAuthorAnnotation, $abundanceUnit, $meanRefIntergenic, $sdRefIntergenic,
         $abundanceThreshold, $allGenesPercentPresent, $proteinCodingGenesPercentPresent,
         $intergenicRegionsPercentPresent, $pValueThreshold, $allUMIsCount, $mappedUMIsCount,
-        $isDropletBased, $barcode, $time, $timeUnit, $freeTextAnnotation, $insAnnotatedSample,
+        $isDropletBased, $barcode, $time, $timeUnit, $physiologicalStatus, $insAnnotatedSample,
         $selectAnnotatedSampleId, $debug) = @_;
 
     #insert annotated sample
@@ -627,7 +627,7 @@ sub insert_get_annotated_sample {
                     $barcode,                          ' - ',
                     $timeNullable,                             ' - ',
                     $timeUnit,                         ' - ',
-                    $freeTextAnnotation,
+                    $physiologicalStatus,
                     "\n";
     } else {
         $insAnnotatedSample->execute($libraryId, $conditionId, $cellTypeAuthorAnnotation,
@@ -635,14 +635,19 @@ sub insert_get_annotated_sample {
         $sdRefIntergenic, $abundanceThreshold, $allGenesPercentPresent,
         $proteinCodingGenesPercentPresent, $intergenicRegionsPercentPresent, $pValueThreshold,
         $allUMIsCount, $mappedUMIsCount, $isDropletBased, $barcode, $time, $timeUnit,
-        $freeTextAnnotation)
+        $physiologicalStatus)
             or die $insAnnotatedSample->errstr;
     }
     
     #retrieve annotated sample ID
     my $annotatedSampleId = ();
-    $selectAnnotatedSampleId->execute($libraryId, $conditionId, $cellTypeAuthorAnnotation)
+    if ($cellTypeAuthorAnnotation eq '') {
+        $selectAnnotatedSampleId->execute($libraryId, $conditionId)
         or die $selectAnnotatedSampleId->errstr;
+    } else {
+        $selectAnnotatedSampleId->execute($libraryId, $conditionId, $cellTypeAuthorAnnotation)
+        or die $selectAnnotatedSampleId->errstr;
+    }
     while ( my @data = $selectAnnotatedSampleId->fetchrow_array ){
         $annotatedSampleId = $data[0];
     }
