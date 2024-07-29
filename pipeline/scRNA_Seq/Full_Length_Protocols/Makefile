@@ -202,6 +202,8 @@ insert_scRNA_seq: $(SCRNASEQALLRES) $(SCRNASEQSAMPSTATS) $(SCRNASEQREPORTINFO) $
 	@sleep 50 # sleep because mappers need time to load Uberon
 	# Insert RNA Seq data
 	@perl 3Insertion/insert_scrna_seq.pl -bgee=$(BGEECMD) -scRnaSeqExperiment=$(SC_RNASEQ_EXPERIMENT_FILEPATH) -library_info=$(SC_RNASEQ_SAMPINFO_PASS_FILEPATH) -excluded_libraries=$(SC_RNASEQ_SAMPINFO_NOT_PASS_FILEPATH) -library_stats=$(SCRNASEQSAMPSTATS) -report_info=$(SCRNASEQREPORTINFO) -all_results=$(SCRNASEQALLRES) -sex_info=$(UBERON_SEX_INFO_FILE_PATH) -extraMapping=$(EXTRAMAPPING_FILEPATH) -Aport=$(IDMAPPINGPORT) -Sport=$(STGMAPPINGPORT) > $@.tmp 2>warnings.$@
+	@echo "Delete RNA-Seq experiments for which no RNA-Seq libraries have been inserted" >> $@.tmp
+	@$(MYSQL) -e "DELETE t1 FROM rnaSeqExperiment AS t1 WHERE NOT EXISTS (SELECT 1 FROM rnaSeqLibrary AS t2 WHERE t1.rnaSeqExperimentId = t2.rnaSeqExperimentId)" >> $@.tmp
 	@echo "Check inconsistencies between condition species and gene species (there should be none): " >> $@.tmp
 	@$(MYSQL) -e "SELECT t1.* FROM scRnaSeqFullLengthResult AS t1 INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId INNER JOIN scRnaSeqFullLengthLibrary AS t3 ON t1.scRnaSeqFullLengthLibraryId = t3.scRnaSeqFullLengthLibraryId INNER JOIN cond AS t4 on t3.conditionId = t4.conditionId WHERE t2.speciesId != t4.speciesId" >> $@.tmp 2>>warnings.$@
 	@echo >> $@.tmp
