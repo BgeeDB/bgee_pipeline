@@ -283,7 +283,7 @@ sub getAllRnaSeqAnnotations2 {
         my $libraryId    = $tsv{'libraryId'}[$line];
         my $experimentId = $tsv{'experimentId'}[$line];
         my $platform     = $tsv{'platform'}[$line];
-        my $anatId     = $tsv{'anatId'}[$line];
+        my $anatId       = $tsv{'anatId'}[$line];
         my $stageId      = $tsv{'stageId'}[$line];
         my $sex          = $tsv{'sex'}[$line];
         my $strain       = $tsv{'strain'}[$line];
@@ -397,6 +397,7 @@ sub getAllRnaSeqAnnotations {
         my $protocol      = $tmp[18];
         my $protocolType  = $tmp[19];
         my $popCapture    = $tmp[20];
+        my $physiologicalStatus = $tmp[31];
 
         if ( !defined $rnaSeqAnnotations{$experimentId}->{$libraryId} ){
             $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'commented'} = $commented;
@@ -472,6 +473,7 @@ sub getAllRnaSeqAnnotations {
                 $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'populationCapture'} = '';
                 warn "Warning: no RNA population captured specified for [$experimentId--$libraryId]. Commented: $commented\n";
             }
+            $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'physiologicalStatus'} = $physiologicalStatus;
         }
         else {
             warn 'Warning: library present several times in the annotation file: experiment: ',
