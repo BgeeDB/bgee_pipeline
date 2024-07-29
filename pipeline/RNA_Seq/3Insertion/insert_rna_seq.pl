@@ -88,7 +88,7 @@ for my $expId ( sort keys %libraries ){
             $all_species{$libraries{$expId}->{$libraryId}->{'speciesId'}}++;
             $count_libs++;
             unless ( -s "$all_results/$libraryId/$abundance_file" ){
-                die "Missing or empty processed data file for library $libraryId! Please check that the transfer from cluster was successful. Otherwise this library should maybe be added to the file of excluded libraries?\n";
+                die "Missing or empty processed data file $all_results/$libraryId/$abundance_file for library $libraryId! Please check that the transfer from cluster was successful. Otherwise this library should maybe be added to the file of excluded libraries?\n";
             }
         }
     }
@@ -293,7 +293,7 @@ my $insert_annotatedSamples =   'INSERT INTO rnaSeqLibraryAnnotatedSample (rnaSe
                                 'sdAbundanceReferenceIntergenicDistribution, abundanceThreshold,'.
                                 'allGenesPercentPresent, proteinCodingGenesPercentPresent,'.
                                 'intergenicRegionsPercentPresent, pValueThreshold, allUMIsCount, mappedUMIsCount,'.
-                                'multipleLibraryIndividualSample, barcode, time, timeUnit, freeTextAnnotation)'.
+                                'multipleLibraryIndividualSample, barcode, time, timeUnit, physiologicalStatus)'.
                                 ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
 my $select_annotatedSampleId =  'SELECT rnaSeqLibraryAnnotatedSampleId FROM '.
@@ -355,10 +355,10 @@ for my $expId ( sort keys %libraries ){
             warn "[$annotations{$expId}->{$libraryId}->{'anatId'}] unmapped organ id for [$libraryId]\n";
             next LIBRARY;
         }
-        if ( !exists $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}}   || $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}}   eq '' ){
-            warn "[$annotations{$expId}->{$libraryId}->{'stageId'}] unmapped stage id for [$libraryId]\n";
-            next LIBRARY;
-        }
+        # if ( !exists $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}}   || $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}}   eq '' ){
+        #     warn "[$annotations{$expId}->{$libraryId}->{'stageId'}] unmapped stage id for [$libraryId]\n";
+        #     next LIBRARY;
+        # }
 
         # Get conditionId/exprMappedConditionId for this library
         # Updates also the hash of existing conditions
@@ -367,7 +367,7 @@ for my $expId ( sort keys %libraries ){
                                                                  $conditions,
                                                                  $stage_equivalences,
                                                                  $doneAnat->{$annotations{$expId}->{$libraryId}->{'anatId'}},
-                                                                 $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}},
+                                                                 $annotations{$expId}->{$libraryId}->{'stageId'},
                                                                  $annotations{$expId}->{$libraryId}->{'speciesId'},
                                                                  $annotations{$expId}->{$libraryId}->{'sex'},
                                                                  $annotations{$expId}->{$libraryId}->{'strain'},
@@ -455,10 +455,10 @@ for my $expId ( sort keys %libraries ){
                     0, 0,
                     # multipleLibraryIndividualSample and barcode are false and empty for bulk
                     0, '',
-                    # As of Bgee 15.2 time, timeUnit and freeTextAnnotation were not present in the annotation
+                    # As of Bgee 15.2 time and timeUnit were not present in the annotation
                     # files. Those fields have been added for the SalmoBase project.
                     #TODO: implement the insertion of those metadata once they are available.
-                    '', '', '',
+                    undef , undef , $annotations{$expId}->{$libraryId}->{'physiologicalStatus'},
                     $insAnnotatedSample, $selectAnnotatedSampleId, $debug);
 
         # insert runs
