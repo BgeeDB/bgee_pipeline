@@ -20,7 +20,7 @@ DBNAME := bgee_v$(subst .,_,$(RELEASE))
 DBHOST := dbbioinfo.unil.ch
 DBPORT := 3306
 DBNAME_EASYBGEE := easybgee_v$(subst .,_,$(RELEASE))
-DBHOST_EASYBGEE := rbioinfo.unil.ch
+DBHOST_EASYBGEE := localhost
 
 
 # Pipeline container
@@ -84,7 +84,7 @@ JAVALIBDIR          := ../java/
 BGEEPIPELINEJARNAME := bgee-pipeline-$(RELEASE)-with-dependencies.jar
 BGEEPIPELINEJAR     := $(JAVALIBDIR)$(BGEEPIPELINEJARNAME)
 
-JAVA_NO_JAR := java -Xmx64g -Dbgee.dao.jdbc.username=$(DBUSER) -Dbgee.dao.jdbc.password=$(DBPASS) -Dbgee.dao.jdbc.driver.names=com.mysql.cj.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST):$(DBPORT)/$(DBNAME)?useSSL=false&allowPublicKeyRetrieval=True&enableQueryTimeouts=false&sessionVariables=net_write_timeout=260000,net_read_timeout=260000,wait_timeout=260000'
+JAVA_NO_JAR := java -Xmx150g -Dbgee.dao.jdbc.username=$(DBUSER) -Dbgee.dao.jdbc.password=$(DBPASS) -Dbgee.dao.jdbc.driver.names=com.mysql.cj.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST):$(DBPORT)/$(DBNAME)?useSSL=false&allowPublicKeyRetrieval=True&enableQueryTimeouts=false&sessionVariables=net_write_timeout=260000,net_read_timeout=260000,wait_timeout=260000'
 # Java command allowing to connect to easyBgee without Jar. Never used without JAR for the moment but created to follow the same pattern than JAVA_NO_JAR/JAVA variables for Bgee
 JAVA_NO_JAR_EASYBGEE := java -Xmx64g -Dbgee.dao.jdbc.username=$(DBUSER_EASYBGEE) -Dbgee.dao.jdbc.password=$(DBPASS_EASYBGEE) -Dbgee.dao.jdbc.driver.names=com.mysql.cj.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST_EASYBGEE):$(DBPORT)/$(DBNAME_EASYBGEE)?useSSL=false&allowPublicKeyRetrieval=True&enableQueryTimeouts=false&sessionVariables=net_write_timeout=500000,net_read_timeout=500000,wait_timeout=500000'
 
@@ -112,6 +112,7 @@ RM     := rm -f
 MV     := mv -f
 CP     := cp -f
 GUNZIP := gunzip -f
+MKDIR  := mkdir -p
 
 PYTHON3 = python3
 PIPENV = pipenv
@@ -579,10 +580,14 @@ PVALUE_CUTOFF                                 := 0.05
 # =========== DOWNLOAD FILES ===============
 
 # path to the root of the directory to use to store generated download files
-DOWNLOAD_FILE_ROOT_PATH := $(GENERATED_FILES_DIR)download_files/
+DOWNLOAD_FILE_ROOT_PATH := $(TMPDIR)/download_files/
+XREFS_PATH              := $(TMPDIR)/xrefs/
+EASYBGEE_PATH           := $(TMPDIR)/$(DBNAME_EASYBGEE)/
+R_SPECIES_INFO          := $(TMPDIR)/rPackageSpeciesInfo.tsv
 
 # paths of the different file types, relative to DOWNLOAD_FILE_ROOT_PATH
-CALLS_PATH := calls/
+CALLS_PATH := calls/expr_calls/
+H5AD_PATH  := h5ad/
 EXPR_CALLS_PATH := $(CALLS_PATH)expr_calls/
 DIFF_EXPR_CALLS_PATH := $(CALLS_PATH)diff_expr_calls/
 PROC_EXPR_VALUES_PATH := processed_expr_values/
@@ -611,6 +616,12 @@ RNA_SEQ_COUNT_SUF_ZIP := _RNA-Seq_read_counts_TPM_FPKM.zip
 AFFYMETRIX_EXP_CHIP_SUF_ZIP := _Affymetrix_experiments_chips.zip
 AFFYMETRIX_PROBESET_SUF_ZIP := _Affymetrix_probesets.zip
 
+# FTP informations
+FTP_URL         := bgeeftp.unil.ch
+FTP_ROOT        := /u01/ftp/
+FTP_CURRENT     := $(FTP_ROOT)$(DBNAME)/
+FTP_DOWNLOAD    := $(FTP_CURRENT)download/
+
 # =========== RANK DOWNLOAD FILES ===============
 # Directories related to $(OUTPUT_DIR)
 RANKS_PER_ANAT := ranks/anat_entity/
@@ -631,7 +642,7 @@ ONTOP_INSTALL_DIR := /usr/local/ontop/
 ISQL_PATH := /usr/local/virtuoso-open-source/bin/isql
 VIRTUOSO_HOST := localhost:1111
 TTL_DIRECTORY_FULL_PATH := $(OUTPUT_DIR)
-FTP_SAVE_DUMP_PATH := /u01/ftp/$(DBNAME)/rdf_easybgee.zip
+FTP_SAVE_DUMP_PATH := $(FTP_CURRENT)rdf_easybgee.zip
 TTL_FILE_LIST      := $(TTL_DIRECTORY_FULL_PATH)ttl_files.txt
 BGEE_VIRTUOSO_FILE := $(TTL_DIRECTORY_FULL_PATH)add_bgee_virtuoso.sql
 ZIP_TTL_FILE       := $(TTL_DIRECTORY_FULL_PATH)rdf_easybgee.zip
