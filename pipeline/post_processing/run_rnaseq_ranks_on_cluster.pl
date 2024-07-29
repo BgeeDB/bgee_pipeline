@@ -8,8 +8,6 @@
 
 # TODO: integrate in the pipeline by creating a rule in the Makefile
 # TODO: create a variable in the Makefile.common to store all slurm information
-# TODO: use bgee_connector variable present in the Makefile.common to connect to the DB
-# TODO: use the already existing function (in Utils.pm) allowing to generate a template of sbatch script
 
 # Perl core modules
 use strict;
@@ -23,48 +21,57 @@ use Utils;
 use Getopt::Long;
 
 # Define arguments & their default value
-my ($pipeline_cluster_dir, $script_relative_path, $output_dir, $output_cluster_dir, $bgee_pwd, $database_name) = ('', '', '', '', '', '');
+my ($script_path, $output_cluster_dir, $bgee_connector) = ('', '', '',  '', '');
+my ($queue, $account) = ('', '');
 my $is_single_cell = -1;
-my %opts = ('output_dir=s'           => \$output_dir,
+my $parallelJobs = 1;
+my %opts = ('bgee=s'                 => \$bgee_connector,
             'output_cluster_dir=s'   => \$output_cluster_dir,,
-            'pipeline_cluster_dir=s' => \$pipeline_cluster_dir,
-            'script_relative_path=s' => \$script_relative_path,
-            'database_name=s'        => \$database_name,
-            'bgee_pwd=s'             => \$bgee_pwd,
+            'script_path=s'          => \$script_path,
             'is_single_cell=i'       => \$is_single_cell,
+            'queue=s'                => \$queue,
+            'account=s'              => \$account,
+            'parallelJobs=i'         => \$parallelJobs
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $pipeline_cluster_dir eq '' || $script_relative_path eq '' || $output_dir eq ''|| $output_cluster_dir eq ''
-    || $bgee_pwd eq '' || $database_name eq '' || ($is_single_cell != 0 && $is_single_cell != 1)){
+if ( !$test_options ||  $script_path eq '' || $output_cluster_dir eq ''
+    || $bgee_connector eq '' || $queue eq '' || $parallelJobs == 1 || $account eq '' || ($is_single_cell != 0 && $is_single_cell != 1)){
     print "\n\tInvalid or missing argument:
-\te.g. $0 -script_relative_path=\$(PATH_TO_SCRIPT) -output_dir=\$(PATH_TO_OUTPUT) -bgee_pwd=\$(BGEE_PWD) -database_name=\$(DBNAME) -output_cluster_dir=\$(OUTPUT_CLUSTER_DIR) -is_single_cell=\$(IS_SINGLE_CELL)
-\t-pipeline_cluster_dir path to Bgee pipeline directory
-\t-script_relative_path relative path from the root of bgee_pipeline to the directory containing the ranks generation script (e.g pipeline/post_processing/) from the root of bgee pipeline
-\t-output_dir           path to the directory (somewhere in our home directory of the cluster) where all
-\t                      sbatch files and the bash file allowing to run all jobs will be created
-\t-bgee_pwd             password to connect to bgee database
-\t-database_name        name of the database (e.g bgee_v15_0)
-\t-output_cluster_dir   path to the directory where log files should be written on the cluster
-\t                      (!! Be sure this path exists !!)
+\t-bgee                 connector allowing to connect to Bgee database
+\t-script_path          Absolute path to the directory containing the ranks generation script
+\t-output_cluster_dir   path to the directory where sbatch and log files will be written on the cluster
 \t-is_single_cell       0: target bulk RNA-Seq libraries; 1: target single-cell RNA-Seq libraries
+\t-queue                partition to use to run jobs on the cluster
+\t-account              account to use to run jobs on the cluster
+\t-parallelJobs         max number of jobs to run in parallel
 \n";
     exit 1;
 }
 
-# Setting up SLURM parameters #################################
-my $partition       = 'cpu';
-my $account         = 'mrobinso_bgee';
-my $bgee_user       = 'root';
-my $bgee_port       = 3306;
+
+####################### FUNCTIONS #######################
+
+sub create_perl_command {
+    my ($nbr_processors, $script_path, $bgee_connector,
+        $libs_per_thread, $lib_ids) = @_;
+
+    # the ranks_rnaseq script has one master thread to process data except if
+    # only 1 thread is asked.
+    my $nbr_threads = $nbr_processors;
+    if ($nbr_processors > 1) {
+         $nbr_threads--;
+    }
+    my $template = "perl $script_path -bgee=${bgee_connector} -parallel_jobs=${nbr_threads} -libs_per_job=$libs_per_thread -lib_ids=${lib_ids}";
+    return $template;
+}
+
+####################### Setting up SLURM parameters #######################
 my $nbr_processors  = 1;
 my $libs_per_thread = 2;
 my $memory_usage    = 5;      # in GB
-my $time_limit      = '12:00:00';
-my $serveur_url     = 'dbbioinfo.unil.ch';
 
-my $bgee_connector= get_bgee_connector($bgee_user, $serveur_url, $bgee_pwd, $bgee_port, $database_name);
 my $script     = 'ranks_rnaseq.pl';
 my $log_prefix = 'generateRnaSeqRanks_';
 if ($is_single_cell == 1) {
@@ -72,8 +79,8 @@ if ($is_single_cell == 1) {
     $log_prefix = 'generateScRnaSeqRanks_';
 }
 
-#concatenate script_relative_path and the name of the script to use
-$script_relative_path = "${script_relative_path}/${script}";
+#concatenate script_path and the name of the script to use
+$script_path = "${script_path}/$script";
 
 # Connect to Bgee DB to retrieve all libraries for which no ranks have
 # been processed for now.
@@ -90,7 +97,7 @@ my $libSql = 'SELECT t1.rnaSeqLibraryId FROM rnaSeqLibrary AS t1
                   INNER JOIN rnaSeqLibraryAnnotatedSampleGeneResult AS t3
                   ON t3.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId
                   WHERE t1.rnaSeqLibraryId = t2.rnaSeqLibraryId
-                  AND t3.rank IS NOT NULL)';
+                  AND t3.rawRank IS NOT NULL)';
 my $rnaSeqLibStmt = $dbh->prepare($libSql);
 $rnaSeqLibStmt->execute($is_single_cell == 1 ? '1' : '0')  or die $rnaSeqLibStmt->errstr;
 while ( my @data = $rnaSeqLibStmt->fetchrow_array ){
@@ -98,31 +105,26 @@ while ( my @data = $rnaSeqLibStmt->fetchrow_array ){
 }
 $rnaSeqLibStmt->finish;
 
-my $number_rnaSeq_libraries = @remainingLibraries;
 my $number_libraries_per_job = 10;
 
-
-
-
-# bash file containing all sbatch to run
-my $bash_file = "${output_dir}/run_all_jobs.sh";
-open(my $bash_file_handler, '>', $bash_file) or die $!;
-print $bash_file_handler "#!/usr/bin/env bash\n";
+# list of sbatch files to run
+my @sbatchCommands = ();
 
 my $libraries_offset = 0;
 
 my $job_number = 0;
 #create a new sbatch file
 while (@remainingLibraries != 0) {
-    my $file_name = "${output_dir}/${log_prefix}${libraries_offset}.sbatch";
+    my $jobName = "${log_prefix}${libraries_offset}";
+    my $file_name = "${output_cluster_dir}/sbatch/$jobName.sbatch";
     open(my $file_handler, '>', $file_name) or die $!;
-    my $job_name = "${log_prefix}${job_number}";
     # create template of the sbatch file
-    my $output_file = "${output_cluster_dir}${log_prefix}${libraries_offset}.out";
-    my $error_file = "${output_cluster_dir}${log_prefix}${libraries_offset}.err";
-    my $template = sbatch_template($partition, $account, $time_limit, $nbr_processors,
-        $memory_usage, $output_file, $error_file, $pipeline_cluster_dir, $job_name);
-
+    my $output_file = "${output_cluster_dir}/logs/${log_prefix}${libraries_offset}.out";
+    my $error_file = "${output_cluster_dir}/logs/${log_prefix}${libraries_offset}.err";
+    my $template = Utils::sbatch_template($queue, $account, 1,
+          50, "${clusterOutput}${jobName}.out", "${clusterOutput}/${jobName}.err",
+          $jobName);
+    $template .= "export PATH=/software/bin:\$PATH;\n";
     my $libraries_parameter = '';
     for my $i (1..$number_libraries_per_job){
         if(@remainingLibraries != 0) {
@@ -136,60 +138,42 @@ while (@remainingLibraries != 0) {
             $i = $number_libraries_per_job;
         }
     }
-    $template .= create_perl_command($nbr_processors, $pipeline_cluster_dir, $script_relative_path,
+    $template .= create_perl_command($nbr_processors, $script_path,
         $bgee_connector, $libs_per_thread, $libraries_parameter);
 
     print $file_handler $template;
     close($file_handler);
-    print $bash_file_handler "sbatch $file_name\n";
+    push @sbatchCommands "sbatch $file_name";
     $job_number++;
 }
-close($bash_file_handler);
+
+print "created $job_number sbatch files.\n";
+
+my $numberJobRun = 0;
+my $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $log_prefix);
+my $startTime = localtime->strftime('%Y-%m-%dT%H:%M:%S');
+foreach my $sbatchCommand (@sbatchCommands) {
+	while ($jobsRunning >= $parallelJobs) {
+        sleep(15);
+        $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $log_prefix);
+    }
+    #system("$sbatchCommand >/dev/null");
+    $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $log_prefix);
+	$numberJobRun++;
+    }
+}
+
+while ($jobsRunning > 0) {
+    sleep(15);
+    $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $log_prefix);
+}
+
+print "all jobs finished. Run $numberJobRun jobs\n";
+
+my %jobs_status = Utils::count_status_finished_jobs($log_prefix, $startTime);
+print $jobs_status{"completed"}." jobs completed, ".$jobs_status{"failed"}." jobs failed, ".$jobs_status{"out_of_memory"}." jobs failed with an out of memory issue and ".$jobs_status{"cancelled"}." jobs have been cancelled.\n";
+
+print "all jobs finished\n";
+
 exit 0;
 
-sub create_perl_command {
-    my ($nbr_processors, $pipeline_cluster_dir, $script_relative_path, $bgee_connector,
-        $libs_per_thread, $lib_ids) = @_;
-
-    # the ranks_rnaseq script has one master thread to process data except if
-    # only 1 thread is asked.
-    my $nbr_threads = $nbr_processors;
-    if ($nbr_processors > 1) {
-         $nbr_threads--;
-    }
-    my $template = "perl ${pipeline_cluster_dir}${script_relative_path} -bgee=${bgee_connector} -parallel_jobs=${nbr_threads} -libs_per_job=$libs_per_thread -lib_ids=${lib_ids}";
-    return $template;
-}
-
-# Add main sbatch command and options
-sub sbatch_template {
-    my ($partition, $account, $time_limit, $nbr_processors, $memory_usage, $output_file, $error_file, $pipeline_path, $job_name) = @_;
-
-    my $template="#!/bin/bash
-#SBATCH --partition=$partition
-#SBATCH --account=$account
-#SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=$nbr_processors
-#SBATCH --mem=${memory_usage}G
-#SBATCH --time=$time_limit
-#SBATCH --output=$output_file
-#SBATCH --error=$error_file
-#SBATCH --export=NONE
-#SBATCH --job-name=$job_name
-module use /software/module/
-module add Development/Ensembl_API/97;
-
-export PATH=/software/bin:\$PATH;
-export PIPELINE_PATH=$pipeline_path
-
-";
-
-    return $template;
-}
-
-sub get_bgee_connector {
-    my ($bgee_user, $serveur_url, $bgee_pwd, $bgee_port, $database_name) = @_;
-    my $bgee_cmd = "user=${bgee_user}__pass=${bgee_pwd}__host=${serveur_url}__port=${bgee_port}__name=${database_name}";
-    return $bgee_cmd;
-}

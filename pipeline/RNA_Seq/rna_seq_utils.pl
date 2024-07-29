@@ -117,6 +117,7 @@ sub getAllAnnotatedExperiments2 {
     my $totalLineCount = 0;
     for my $line ( 0..$#{$tsv{'experimentId'}} ){
         my $commented = 0;
+        my $experimentId = $tsv{'experimentId'}[$line];
         if ( ($tsv{'experimentId'}[$line] =~ /^#(.+)/) or ($tsv{'experimentId'}[$line] =~ /^\"#(.+)/) ){
             $tsv{'experimentId'}[$line] = $1;
             $commented = 1;
@@ -124,22 +125,33 @@ sub getAllAnnotatedExperiments2 {
 
         if ( length($tsv{'experimentId'}[$line]) < 255 && $tsv{'experimentId'}[$line] !~ /\s/ ){
             # Initialize the hash for this expId
-            $experiments{ $tsv{'experimentId'}[$line] }->{'name'}        = '';
-            $experiments{ $tsv{'experimentId'}[$line] }->{'description'} = '';
-            $experiments{ $tsv{'experimentId'}[$line] }->{'source'}      = '';
-            $experiments{ $tsv{'experimentId'}[$line] }->{'status'}      = '';
-            $experiments{ $tsv{'experimentId'}[$line] }->{'commented'}   = '';
+            $experiments{$experimentId}->{'name'}        = '';
+            $experiments{$experimentId}->{'description'} = '';
+            $experiments{$experimentId}->{'source'}      = '';
+            $experiments{$experimentId}->{'status'}      = '';
+            $experiments{$experimentId}->{'commented'}   = '';
         }
         else {
             warn "Badly formatted RNAseqExperiment file at line [$line]: [invalid experimentId]\n";
             next;
         }
-
-        $experiments{ $tsv{'experimentId'}[$line] }->{'name'}        = $tsv{'experimentName'}[$line];
-        $experiments{ $tsv{'experimentId'}[$line] }->{'description'} = $tsv{'experimentDescription'}[$line];
-        $experiments{ $tsv{'experimentId'}[$line] }->{'source'}      = $tsv{'experimentSource'}[$line];
-        $experiments{ $tsv{'experimentId'}[$line] }->{'status'}      = $tsv{'experimentStatus'}[$line];
-        $experiments{ $tsv{'experimentId'}[$line] }->{'commented'}   = $commented;
+        if ($tsv{'experimentName'}[$line] eq '') {
+            warn "experiment Name is emtpy for $experimentId";
+        }
+        if ($tsv{'experimentDescription'}[$line] eq '') {
+            warn "experiment description is emtpy for $experimentId";
+        }
+        if ($tsv{'experimentSource'}[$line] eq '') {
+            warn "experiment source is emtpy for $experimentId";
+        }
+        if ($tsv{'experimentStatus'}[$line] eq '') {
+            warn "experiment status is emtpy for $experimentId";
+        }
+        $experiments{$experimentId}->{'name'}        = $tsv{'experimentName'}[$line];
+        $experiments{$experimentId}->{'description'} = $tsv{'experimentDescription'}[$line];
+        $experiments{$experimentId}->{'source'}      = $tsv{'experimentSource'}[$line];
+        $experiments{$experimentId}->{'status'}      = $tsv{'experimentStatus'}[$line];
+        $experiments{$experimentId}->{'commented'}   = $commented;
     }
 
     return %experiments;
@@ -251,7 +263,7 @@ sub getAllRnaSeqAnnotations2 {
     my ($TSV) = @_;
     my %tsv = %$TSV;
     # $rnaSeqAnnotations{expId}->{libraryId (SRXxxx)}->{'platform'}   = platform
-    # $rnaSeqAnnotations{expId}->{libraryId (SRXxxx)}->{'uberonId'}   = uberonId
+    # $rnaSeqAnnotations{expId}->{libraryId (SRXxxx)}->{'anatId'}     = anatId
     # $rnaSeqAnnotations{expId}->{libraryId (SRXxxx)}->{'stageId'}    = stageId
     # $rnaSeqAnnotations{expId}->{libraryId (SRXxxx)}->{'sex'}        = sex
     # $rnaSeqAnnotations{expId}->{libraryId (SRXxxx)}->{'strain'}     = strain
@@ -266,12 +278,12 @@ sub getAllRnaSeqAnnotations2 {
         }
 
         # file format: libraryId experimentId platform ... organId stageId
-# #libraryId        experimentId   platform      organId organName       uberonId        uberonName      stageId stageName       infoOrgan       infoStage       libraryTitle     librarySource    libraryDescription       libraryCharacteristics    organAnnotationStatus   organBiologicalStatus   stageAnnotationStatus   stageBiologicalStatus   sex     strain  speciesId   comment annotatorId     lastModificationDate
+# #libraryId        experimentId   platform      organId organName      anatId        anatName      stageId stageName       infoOrgan       infoStage       libraryTitle     librarySource    libraryDescription       libraryCharacteristics    organAnnotationStatus   organBiologicalStatus   stageAnnotationStatus   stageBiologicalStatus   sex     strain  speciesId   comment annotatorId     lastModificationDate
         # file format: libraryId experimentId platform ... organId stageId
         my $libraryId    = $tsv{'libraryId'}[$line];
         my $experimentId = $tsv{'experimentId'}[$line];
         my $platform     = $tsv{'platform'}[$line];
-        my $uberonId     = $tsv{'uberonId'}[$line];
+        my $anatId       = $tsv{'anatId'}[$line];
         my $stageId      = $tsv{'stageId'}[$line];
         my $sex          = $tsv{'sex'}[$line];
         my $strain       = $tsv{'strain'}[$line];
@@ -287,12 +299,12 @@ sub getAllRnaSeqAnnotations2 {
                 $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'platform'} = '';
                 warn "Warning: no platform specified for [$experimentId--$libraryId]. Commented: $commented\n";
             }
-            # uberonId
-            if ( $uberonId ne '' ){
-                $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'uberonId'} = $uberonId;
+            # anatId
+            if ( $anatId ne '' ){
+                $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'anatId'} = $anatId;
             }
             else {
-                warn "Warning: no uberonId specified for [$experimentId--$libraryId]. Commented: $commented\n";
+                warn "Warning: no anatId specified for [$experimentId--$libraryId]. Commented: $commented\n";
             }
             # stageId
             if ( $stageId ne '' ){
@@ -348,7 +360,7 @@ sub getAllRnaSeqAnnotations2 {
 sub getAllRnaSeqAnnotations {
     my ($rnaSeqAnnotationFile) = @_;
     # $rnaSeqAnnotations{expId}->{libraryId (SRXxxx)}->{'platform'}   = platform
-    # $rnaSeqAnnotations{expId}->{libraryId (SRXxxx)}->{'uberonId'}   = uberonId
+    # $rnaSeqAnnotations{expId}->{libraryId (SRXxxx)}->{'anatId'}   = anatId
     # $rnaSeqAnnotations{expId}->{libraryId (SRXxxx)}->{'stageId'}    = stageId
     # $rnaSeqAnnotations{expId}->{libraryId (SRXxxx)}->{'sex'}        = sex
     # $rnaSeqAnnotations{expId}->{libraryId (SRXxxx)}->{'strain'}     = strain
@@ -366,20 +378,26 @@ sub getAllRnaSeqAnnotations {
         }
 
         # file format: 
-        # #libraryId    experimentId  platform  organId   organName uberonId  uberonName    stageId   stageName infoOrgan infoStage sampleTitle   sampleSource  sampleDescription sampleCharacteristics organAnnotationStatus organBiologicalStatus stageAnnotationStatus stageBiologicalStatus sex   strain    speciesId comment   annotatorId   lastModificationDate  replicate infoReplicate SRSId tags  RNASeqProtocol    physiological status  globin_reduction  PATOid    PATOname
+        # #libraryId    experimentId  platform  organId   organName anatId  uberonName    stageId   stageName infoOrgan infoStage sampleTitle   sampleSource  sampleDescription sampleCharacteristics organAnnotationStatus organBiologicalStatus stageAnnotationStatus stageBiologicalStatus sex   strain    speciesId comment   annotatorId   lastModificationDate  replicate infoReplicate SRSId tags  RNASeqProtocol    physiological status  globin_reduction  PATOid    PATOname
         my @tmp = map { bgeeTrim($_) }
                   map { s/^\"//; s/\"$//; $_ } # remove quotes
                   split(/\t/, $line);
 
-        my $libraryId    = $tmp[0];
-        my $experimentId = $tmp[1];
-        my $platform     = $tmp[2];
-        my $uberonId     = $tmp[5];
-        my $stageId      = $tmp[7];
-        my $sex          = $tmp[19];
-        my $strain       = $tmp[20];
-        my $speciesId    = $tmp[21];
-        my $protocol     = $tmp[29];
+        my $libraryId     = $tmp[0];
+        my $experimentId  = $tmp[1];
+        my $platform      = $tmp[2];
+        my $anatId        = $tmp[4];
+        my $stageId       = $tmp[6];
+        my $freeTextOrgan = $tmp[9];
+        my $freeTextStage = $tmp[10];
+        my $sex           = $tmp[14];
+        my $strain        = $tmp[15];
+        my $genotype      = $tmp[16];
+        my $speciesId     = $tmp[17];
+        my $protocol      = $tmp[18];
+        my $protocolType  = $tmp[19];
+        my $popCapture    = $tmp[20];
+        my $physiologicalStatus = $tmp[31];
 
         if ( !defined $rnaSeqAnnotations{$experimentId}->{$libraryId} ){
             $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'commented'} = $commented;
@@ -391,12 +409,12 @@ sub getAllRnaSeqAnnotations {
                 $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'platform'} = '';
                 warn "Warning: no platform specified for [$experimentId--$libraryId]. Commented: $commented\n";
             }
-            # uberonId
-            if ( $uberonId ne '' ){
-                $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'uberonId'} = $uberonId;
+            # anatId
+            if ( $anatId ne '' ){
+                $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'anatId'} = $anatId;
             }
             else {
-                warn "Warning: no uberonId specified for [$experimentId--$libraryId]. Commented: $commented\n";
+                warn "Warning: no anatId specified for [$experimentId--$libraryId]. Commented: $commented\n";
             }
             # stageId
             if ( $stageId ne '' ){
@@ -405,6 +423,9 @@ sub getAllRnaSeqAnnotations {
             else {
                 warn "Warning: no stageId specified for [$experimentId--$libraryId]. Commented: $commented\n";
             }
+            # free text author annotation. no warning throws if empty
+            $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'freeTextOrgan'} = $freeTextOrgan;
+            $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'freeTextStage'} = $freeTextStage;
             # sex
             if ( $sex ne '' ){
               # Normalize sex info
@@ -431,6 +452,8 @@ sub getAllRnaSeqAnnotations {
                 warn "Warning: no strain specified for [$experimentId--$libraryId]. Commented: $commented\n";
                 $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'strain'} = 'NA';
             }
+            # genotype information. Do not throw a warning if empty
+            $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'genotype'} = $genotype;
             # species
             if ( $speciesId ne '' ){
                 $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'speciesId'} = $speciesId;
@@ -439,14 +462,18 @@ sub getAllRnaSeqAnnotations {
                 warn "Warning: no species specified for [$experimentId--$libraryId]. Commented: $commented\n";
                 $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'speciesId'} = 'NA';
             }
-            # protocol
-            if ( !defined($protocol) || $protocol ne '' ){
-                $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'protocol'} = $protocol;
+            # protocol and protocol type are often empty. Do not throw a warning if empty
+            $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'protocol'} = $protocol;
+            $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'protocolType'} = $protocolType;
+            # population capture
+            if ( !defined($popCapture) || $popCapture ne '' ){
+                $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'populationCapture'} = $popCapture;
             }
             else {
-                $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'protocol'} = '';
-                warn "Warning: no protocol specified for [$experimentId--$libraryId]. Commented: $commented\n";
+                $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'populationCapture'} = '';
+                warn "Warning: no RNA population captured specified for [$experimentId--$libraryId]. Commented: $commented\n";
             }
+            $rnaSeqAnnotations{$experimentId}->{$libraryId}->{'physiologicalStatus'} = $physiologicalStatus;
         }
         else {
             warn 'Warning: library present several times in the annotation file: experiment: ',
@@ -472,7 +499,7 @@ sub getAllRnaSeqLibrariesInfo {
     # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'readLength'} = ...
     # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'runIds'}->{$runId} = ()
 
-    my @valid_platforms = ('Illumina', 'NextSeq');
+    my @valid_platforms = ('Illumina', 'NextSeq', 'HiSeq X Ten');
 
     my %rnaSeqLibrary;
     for my $line ( read_file("$rnaSeqLibraryFile", chomp=>1) ){
@@ -752,7 +779,7 @@ sub getAllRnaSeqReportInfo {
     return %rnaSeqLibraries;
 }
 
-# Retrieve for a sample the expression calls, TPM and FPKM values for all genes
+# Retrieve for a sample the expression calls, TPM values for all genes
 sub getGenesResults {
     my ($sampleExpCallsFile) = @_;
     # $expressionCalls{geneId}->{'estimatedCount'} = ...
@@ -778,7 +805,6 @@ sub getGenesResults {
         my $zscore         = $tmp[6];
         my $pValue         = $tmp[7];
         my $expressionCall = $tmp[8];
-        my $FPKM           = $tmp[9];
 
         if ( !defined $expressionCalls{$geneId} ){
             # Perform format checks
@@ -811,10 +837,6 @@ sub getGenesResults {
                 warn "Warning, wrong format for expressionCall [$expressionCall]\n";
                 $discarded = 1;
             }
-            if ( $FPKM !~ /$floatingPointRegex/ ){
-                warn "Warning, wrong format for FPKM [$FPKM]\n";
-                $discarded = 1;
-            }
             if ( $discarded ){
                 warn ' for gene: ', $geneId, "\n";
             }
@@ -825,7 +847,6 @@ sub getGenesResults {
                 $expressionCalls{$geneId}->{'zscore'}         = $zscore;
                 $expressionCalls{$geneId}->{'pValue'}         = $pValue;
                 $expressionCalls{$geneId}->{'expressionCall'} = $expressionCall;
-                $expressionCalls{$geneId}->{'FPKM'}           = $FPKM;
             }
         }
         else {
@@ -898,7 +919,7 @@ sub getAllFullLengthScRnaSeqLibrariesInfo {
     # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'libraryType'} = ...
     # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'libraryInfo'} = ...
     # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'readLength'} = ...
-    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'uberonId'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'anatId'} = ...
     # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'stageId'} = ...
     # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'cellTypeId'} = ...
     # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'sex'} = ...

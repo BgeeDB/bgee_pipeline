@@ -400,7 +400,8 @@ add primary key (rnaSeqRunId);
 
 /*!40000 ALTER TABLE `rnaSeqLibraryAnnotatedSample` DISABLE KEYS */;
 alter table rnaSeqLibraryAnnotatedSample
-modify rnaSeqLibraryAnnotatedSampleId mediumint unsigned not null auto_increment primary key;
+modify rnaSeqLibraryAnnotatedSampleId mediumint unsigned not null auto_increment primary key,
+add unique (rnaSeqLibraryId, conditionId, cellTypeAuthorAnnotation);
 /*!40000 ALTER TABLE `rnaSeqLibraryAnnotatedSample` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `rnaSeqLibraryAnnotatedSampleGeneResult` DISABLE KEYS */;

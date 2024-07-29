@@ -130,14 +130,14 @@ for my $line ( 0..$#{$tsv2{'libraryId'}} ) {
     if ( $tsv2{'libraryId'}[$line]    !~ /^[\w\-\.]+$/
       || $tsv2{'experimentId'}[$line] !~ /^[\w\-\.]+$/
       || $tsv2{'platform'}[$line]     !~ /^[ \w\-\.]+$/
-      || $tsv2{'uberonId'}[$line]     !~ /^[\w]+:[\w]+$/
+      || $tsv2{'anatId'}[$line]     !~ /^[\w]+:[\w]+$/
       || $tsv2{'stageId'}[$line]      !~ /^[\w]+:[\w]+$/ ) {
         warn "Problem! wrong character inserted in line $line \[$tsv2{'libraryId'}[$line]] [$tsv2{'experimentId'}[$line]] [$tsv2{'platform'}[$line]] [$tsv2{'uberonId'}[$line]] [$tsv2{'stageId'}[$line]]\n";
     }
 
     my $libraryId = $tsv2{'libraryId'}[$line];
     my $expId     = $tsv2{'experimentId'}[$line];
-    my $organId   = $tsv2{'uberonId'}[$line];
+    my $organId   = $tsv2{'anatId'}[$line];
     my $stageId   = $tsv2{'stageId'}[$line];
     warn "Warning, [$libraryId] used several times\n"    if ( exists $libraryIds{$libraryId} );
     warn "Warning, [$libraryId] char length too long\n"  if ( length($libraryId) > 255 );

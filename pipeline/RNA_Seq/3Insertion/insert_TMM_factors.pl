@@ -70,13 +70,13 @@ for my $file ( glob($tmm_results.'/*.tsv') ){
 ######################
 print "Inserting TMM factors...\n";
 
-my $insTMM = $bgee->prepare('UPDATE rnaSeqLibrary SET tmmFactor = ? WHERE rnaSeqLibraryId = ?');
+my $insTMM = $bgee->prepare('UPDATE rnaSeqLibraryAnnotatedSample SET tmmFactor = ? WHERE rnaSeqLibraryId = ?');
 for my $library ( keys %toInsert ){
     print "\t$library\n";
 
     # insert the TMM factor rounded to 6 decimals
     if ( $debug ){
-        print "\tUPDATE rnaSeqLibrary SET tmmFactor = ", int( $toInsert{$library}->{'tmmFactor'}*(10**6) +.5 ) / (10**6), ' WHERE rnaSeqLibraryId = ', $library, ";\n";
+        print "\tUPDATE rnaSeqLibraryAnnotatedSample SET tmmFactor = ", int( $toInsert{$library}->{'tmmFactor'}*(10**6) +.5 ) / (10**6), ' WHERE rnaSeqLibraryId = ', $library, ";\n";
     }
     else {
         $insTMM->execute(int( $toInsert{$library}->{'tmmFactor'}*(10**6) +.5 ) / (10**6), $library)  or die $insTMM->errstr;

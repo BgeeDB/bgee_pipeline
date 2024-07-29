@@ -96,4 +96,6 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
 (101, 'ArrayExpress', '', 'https://www.ebi.ac.uk/arrayexpress/experiments/[experiment_id]', '',
 	'https://www.ebi.ac.uk/arrayexpress/', 'RNA-Seq data source for various species', 1, 'RNA-Seq data source'),
 (102, 'SRA', '', 'https://www.ncbi.nlm.nih.gov/sra/[experiment_id]', 'https://www.ncbi.nlm.nih.gov/sra/[evidence_id]',
-    'https://www.ncbi.nlm.nih.gov/sra/', 'Single-cell RNA-Seq data source for various species', 1, 'Single-cell RNA-Seq data source');
+    'https://www.ncbi.nlm.nih.gov/sra/', 'Single-cell RNA-Seq data source for various species', 1, 'Single-cell RNA-Seq data source'),
+(103, 'ENA', '', 'https://www.ebi.ac.uk/ena/data/view/[experiment_id]', 'https://www.ebi.ac.uk/ena/data/view/[evidence_id]',
+     'https://www.ebi.ac.uk/ena', 'Single-cell RNA-Seq data source for various species', 1, 'Single-cell RNA-Seq data source');

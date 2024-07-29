@@ -100,10 +100,12 @@ sub map_strain_names {
         my @fields = map { s/"//g; $_ } split(/\t/, $line);
         # Case RNASeqLibrary_full.tsv: "strain"    taxid
         if ( $expression_annotation_file =~ /RNASeqLibrary_full\.tsv/ ){
-            if ( exists $strain_mapping->{ $fields[21] }->{ $fields[20] } ){
-                my $source = quotemeta($fields[20]);
-                my $target = $strain_mapping->{ $fields[21] }->{ $fields[20] };
-                $line =~ s{"$source"\t$fields[21]\t}{"$target"\t$fields[21]\t};
+            if ( exists $strain_mapping->{ $fields[17] }->{ $fields[15] } ){
+                #print "found in mapping file\n";
+                my $source = quotemeta($fields[15]);
+                my $genotype = $fields[16];
+                my $target = $strain_mapping->{ $fields[17] }->{ $fields[15] };
+                $line =~ s{"$source"\t[^\t]*\t$fields[17]\t}{"$target"\t$genotype\t$fields[17]\t};
             }
             print $line;
         }
@@ -1299,6 +1301,24 @@ sub check_active_jobs_number_per_account_and_name {
     my $running_jobs = `squeue --account=$account --noheader -o "%.18i %.20j %.8u %.2t" | grep $name | wc -l` || 0;
     chomp($running_jobs);
     return $running_jobs;
+}
+
+sub count_status_finished_jobs {
+    my ($job_prefix, $starttime) = @_;
+    my $failed_jobs = `sacct --format="jobId, jobName%50, state" --starttime $starttime | grep \"$job_prefix\" | grep \"FAILED\" | wc -l` || 0;
+    my $completed_jobs = `sacct --format="jobId, jobName%50, state" --starttime $starttime | grep \"$job_prefix\" | grep \"COMPLETED\" | wc -l` || 0;
+    my $out_of_mem_jobs = `sacct --format="jobId, jobName%50, state" --starttime $starttime | grep \"$job_prefix\" | grep \"OUT_OF_M\" | wc -l` || 0;
+    my $cancelled = `sacct --format="jobId, jobName%50, state" --starttime $starttime | grep \"$job_prefix\" | grep \"CANCELLED\" | wc -l` || 0;
+    chomp($completed_jobs);
+    chomp($failed_jobs);
+    chomp($out_of_mem_jobs);
+    chomp($cancelled);
+    my %jobs;
+    $jobs{"completed"} = $completed_jobs;
+    $jobs{"failed"} = $failed_jobs;
+    $jobs{"out_of_memory"} = $out_of_mem_jobs;
+    $jobs{"cancelled"} = $cancelled;
+    return %jobs;
 }
 
 # Add main sbatch command and options
