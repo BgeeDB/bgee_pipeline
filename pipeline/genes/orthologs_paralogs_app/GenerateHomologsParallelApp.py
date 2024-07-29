@@ -11,7 +11,6 @@ from util import Util
 import sys, getopt
 from pathlib import Path
 from DataReader import ConfigFileError, ConfigFileNotFoundError
-from distutils.util import strtobool
 import ast
 from multiprocessing import Process, Value
 
@@ -82,7 +81,11 @@ class GenerateHomologsParallel(Process):
             ENSEMBL_GENE_CROSSREF_PROPERTY = str(config['RDF_VOCABULARY']['ENSEMBL_GENE_CROSSREF_PROPERTY'])
             DEFAULT_PARAMETERS = config['DEFAULT']
             try:
-                IS_REMOVE_PAIRS = strtobool(config['DEFAULT']['remove_species_pairs'])
+                IS_REMOVE_PAIRS = config['DEFAULT']['remove_species_pairs']
+                if IS_REMOVE_PAIRS.lower() == 'true':
+                    IS_REMOVE_PAIRS = True 
+                else:
+                    IS_REMOVE_PAIRS = False
             except:
                 IS_REMOVE_PAIRS = False
             try:
