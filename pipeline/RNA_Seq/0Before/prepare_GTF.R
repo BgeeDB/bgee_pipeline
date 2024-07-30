@@ -106,10 +106,10 @@ get_annot_value <- function(split_annotation, field_name){
 ## - max_proportion_N : maximum proportion of N in a sequence. If the proportion of N in a sequence is bigger than this threshold we do not keep the sequence.
 ## TODO: we should maybe also take into account the composition (GC content, ...?) or size distribution of genic regions to create/filter these intergenic regions.
 
-remove_Ns_from_intergenic <- function (chr_number, chr_intergenic_regions, max_block_size = 31, max_proportion_N = 0.05, min_intergenic_length = 1000) {
+remove_Ns_from_intergenic <- function (chr_number, chr_intergenic_regions, max_block_size = 31, max_proportion_N = 0.05, min_intergenic_length = 999) {
   ## Intergenic regions after removing unwanted N
-  intergenic_regions_without_N <- matrix(ncol = 4, nrow = 0)
-  colnames(intergenic_regions_without_N) <- c("chr", "start", "end", "sequence")
+  intergenic_regions_without_N <- matrix(ncol = 6, nrow = 0)
+  colnames(intergenic_regions_without_N) <- c("chr", "start", "end", "upstream/downstream","strand", "sequence")
 
   # For each intergenic sequence
   for (line in 1 : nrow(chr_intergenic_regions)) {
@@ -226,13 +226,12 @@ gene_gtf <- gene_gtf[gene_gtf[,3] == "gene",]
 cat("Extracting gene informations...\n")
 ## splitting the annotation field using single space "; " as a pattern
 split_annotation_list <- strsplit(gene_gtf_exon[,9], "; ",  fixed  = T)
-split_transcript_annotation_list <- strsplit(gene_gtf_exon[,9], "; ",  fixed  = T)
 
 ## getting the vector of the gene IDs (1 for every exon)
 gene_ids <- sapply(split_annotation_list, function(x){ get_annot_value(x, 'gene_id') })
 
 ## getting the vector of the transcript IDs (1 for every exon)
-transcript_ids <- sapply(split_transcript_annotation_list, function(x){ get_annot_value(x, 'transcript_id') })
+transcript_ids <- sapply(split_annotation_list, function(x){ get_annot_value(x, 'transcript_id') })
 
 ## getting the table with mappings between gene IDs and transcript (for tximport)
 tx2gene_ids <- unique(cbind(transcript_ids, gene_ids), MARGIN = 1)
@@ -240,9 +239,9 @@ tx2gene_ids <- unique(cbind(transcript_ids, gene_ids), MARGIN = 1)
 ## getting the vector of gene_biotypes: splitting gene gtf
 split_annotation_list <- strsplit(gene_gtf[,9], "; ",  fixed  = T)
 gene_biotypes <- cbind(
-    sapply(split_annotation_list, function(x){ get_annot_value(x, 'gene_id') }),
-    sapply(split_annotation_list, function(x){ get_annot_value(x, 'gene_biotype') }),
-    "genic")
+  sapply(split_annotation_list, function(x){ get_annot_value(x, 'gene_id') }),
+  sapply(split_annotation_list, function(x){ get_annot_value(x, 'gene_biotype') }),
+  "genic")
 
 ## getting the chromosome, start and the end of the gene
 ## For start, take the minimum exon start position
@@ -250,7 +249,6 @@ gene_biotypes <- cbind(
 gene_start <- sapply(split(as.numeric(gene_gtf_exon[,4]), gene_ids), function(x){ sort(as.numeric(x))[1] })
 gene_stop <- sapply(split(as.numeric(gene_gtf_exon[,5]), gene_ids), function(x){ rev(sort(as.numeric(x)))[1] })
 gene_chr <- sapply(split(gene_gtf_exon[,1], gene_ids), function(x){ x[1] })
-gene_strand <- sapply(split(gene_gtf_exon[,7], gene_ids), function(x){ x[1] })
 
 ## chromosome/contig names from given gtf files
 chromosomes <- unique(gene_gtf_exon[,1])
@@ -266,6 +264,9 @@ rownames(summary_N_removal) <- c("before", "after")
 # To avoid scientific notation we change the value of option "scipen" to 999. At the end of the script we will change to its initial value
 scipen_initial_value <- getOption("scipen")
 options(scipen = 999)
+
+## getting the vector of the gene IDs (1 for every gene)
+gene_ids <- sapply(split_annotation_list, function(x){ get_annot_value(x, 'gene_id') }) 
 
 intergenic_chr = c()
 intergenic_starts = c()
@@ -300,7 +301,7 @@ for(gene_nrow in 1:nrow(gene_gtf)){
     intergenics_end = append(intergenics_end, max(0, as.numeric(gene_gtf[gene_nrow, 5]) + 1500))
     intergenic_name = append(intergenic_name, paste0("upstream_", gene_ids[gene_nrow]))
   }
-
+  
 }
 
 ## Select the set of intergenic regions
@@ -317,42 +318,42 @@ colnames(Reference_intergenic) <- c("chr", "start", "end", "upstream/downstream"
 #Subsetting intergenic regions to regions overlapping with gene proximity
 for(chr in chromosomes){
   print(chr)
-if(( sum(gene_chr == as.character(chr)) == 0 )){ print(paste0("skipped", chr)); next }
-gene_IR <- IRanges(start = gene_start[gene_chr == as.character(chr)], end = gene_stop[gene_chr == as.character(chr)])
-intergenic_all_IR <- slice(coverage(gene_IR), lower = 0, upper = 0, rangesOnly = TRUE)
-Max_chromosomal_distance = max(end(intergenic_all_IR)[length(intergenic_all_IR)], end(gene_IR)[length(gene_IR)])
-intergenic_gene1k_IR <- IRanges(start = intergenic_starts[intergenic_chr == as.character(chr)], end = intergenics_end[intergenic_chr == as.character(chr)])
-intergenic_ref_IR <- intersect(intergenic_all_IR, intergenic_gene1k_IR)
-intergenic_ref_IR <- intergenic_ref_IR[intergenic_ref_IR@width >= 1001]
-#print(intergenic_ref_IR@width)
-chr_intergenic_regions = final_intergenic_regions[final_intergenic_regions[,"chr"] == chr & final_intergenic_regions[, "start"] %in% intergenic_ref_IR@start & as.numeric(final_intergenic_regions[, "end"]) <= as.numeric(Max_chromosomal_distance), ]
-
-if(is.null(nrow(chr_intergenic_regions))){
-  print(paste0("skipped", chr)); next
+  if(( sum(gene_chr == as.character(chr)) == 0 )){ print(paste0("skipped", chr)); next }
+  gene_IR <- IRanges(start = gene_start[gene_chr == as.character(chr)], end = gene_stop[gene_chr == as.character(chr)])
+  intergenic_all_IR <- slice(coverage(gene_IR), lower = 0, upper = 0, rangesOnly = TRUE)
+  Max_chromosomal_distance = max(end(intergenic_all_IR)[length(intergenic_all_IR)], end(gene_IR)[length(gene_IR)])
+  intergenic_gene1k_IR <- IRanges(start = intergenic_starts[intergenic_chr == as.character(chr)], end = intergenics_end[intergenic_chr == as.character(chr)])
+  intergenic_ref_IR <- intersect(intergenic_all_IR, intergenic_gene1k_IR)
+  intergenic_ref_IR <- intergenic_ref_IR[intergenic_ref_IR@width >= 1001]
+  #print(intergenic_ref_IR@width)
+  chr_intergenic_regions = final_intergenic_regions[final_intergenic_regions[,"chr"] == chr & final_intergenic_regions[, "start"] %in% intergenic_ref_IR@start & as.numeric(final_intergenic_regions[, "end"]) <= as.numeric(Max_chromosomal_distance), ]
+  
+  if(is.null(nrow(chr_intergenic_regions))){
+    print(paste0("skipped", chr)); next
   } else if(length(duplicated(chr_intergenic_regions[, "start"])) != 0){
-chr_intergenic_regions = chr_intergenic_regions[!duplicated(chr_intergenic_regions[, "start"]), ]
-}
-
-if(( nrow(chr_intergenic_regions) == 0 || is.null(nrow(chr_intergenic_regions)) )){ print(paste0("skipped ", chr));next }
-
-chr_sequence <- as.character(ref_fasta_genome[[chr]])
-sequence = apply(chr_intergenic_regions, 1, function(x) substr(chr_sequence, x["start"], x["end"]))
-chr_intergenic_regions = cbind(chr_intergenic_regions, sequence)
-
-# Keep information of number of N, bp and number of intergenic regions before removing blocks of N
-summary_N_removal["before","total_N"] <- summary_N_removal["before","total_N"] + sum(apply(chr_intergenic_regions, 1, function(x) count_number_of_occurences("N", x["sequence"])))
-summary_N_removal["before","intergenic_regions"] <- summary_N_removal["before","intergenic_regions"] + nrow(chr_intergenic_regions)
-summary_N_removal["before","total_bp"] <- summary_N_removal["after","total_bp"] + sum(as.numeric(chr_intergenic_regions[,"end"]) - as.numeric(chr_intergenic_regions[,"start"]) + 1)
-
-
-# Remove blocks of N and intergenic regions with big proportion of N
-chr_intergenic_regions_after_N_removal <- remove_Ns_from_intergenic(chr, chr_intergenic_regions, as.numeric(N_block_size), as.numeric(N_proportion))
-
-# Keep information of number of N, bp and number of intergenic regions before removing blocks of N
-summary_N_removal["after","total_N"] <- summary_N_removal["after","total_N"] + sum(apply(chr_intergenic_regions_after_N_removal, 1, function(x) count_number_of_occurences("N", x["sequence"])))
-summary_N_removal["after","intergenic_regions"] <- summary_N_removal["after","intergenic_regions"] + nrow(chr_intergenic_regions_after_N_removal)
-summary_N_removal["after","total_bp"] <- summary_N_removal["after","total_bp"] + sum(as.numeric(chr_intergenic_regions_after_N_removal[,"end"]) - as.numeric(chr_intergenic_regions_after_N_removal[,"start"]) + 1)
-Reference_intergenic <- rbind(Reference_intergenic, chr_intergenic_regions_after_N_removal[,c(1:6)])
+    chr_intergenic_regions = chr_intergenic_regions[!duplicated(chr_intergenic_regions[, "start"]), ]
+  }
+  
+  if(( nrow(chr_intergenic_regions) == 0 || is.null(nrow(chr_intergenic_regions)) )){ print(paste0("skipped ", chr));next }
+  
+  chr_sequence <- as.character(ref_fasta_genome[[chr]])
+  sequence = apply(chr_intergenic_regions, 1, function(x) substr(chr_sequence, x["start"], x["end"]))
+  chr_intergenic_regions = cbind(chr_intergenic_regions, sequence)
+  
+  # Keep information of number of N, bp and number of intergenic regions before removing blocks of N
+  summary_N_removal["before","total_N"] <- summary_N_removal["before","total_N"] + sum(apply(chr_intergenic_regions, 1, function(x) count_number_of_occurences("N", x["sequence"])))
+  summary_N_removal["before","intergenic_regions"] <- summary_N_removal["before","intergenic_regions"] + nrow(chr_intergenic_regions)
+  summary_N_removal["before","total_bp"] <- summary_N_removal["after","total_bp"] + sum(as.numeric(chr_intergenic_regions[,"end"]) - as.numeric(chr_intergenic_regions[,"start"]) + 1)
+  
+  
+  # Remove blocks of N and intergenic regions with big proportion of N
+  chr_intergenic_regions_after_N_removal <- remove_Ns_from_intergenic(chr, chr_intergenic_regions, as.numeric(N_block_size), as.numeric(N_proportion))
+  
+  # Keep information of number of N, bp and number of intergenic regions before removing blocks of N
+  summary_N_removal["after","total_N"] <- summary_N_removal["after","total_N"] + sum(apply(chr_intergenic_regions_after_N_removal, 1, function(x) count_number_of_occurences("N", x["sequence"])))
+  summary_N_removal["after","intergenic_regions"] <- summary_N_removal["after","intergenic_regions"] + nrow(chr_intergenic_regions_after_N_removal)
+  summary_N_removal["after","total_bp"] <- summary_N_removal["after","total_bp"] + sum(as.numeric(chr_intergenic_regions_after_N_removal[,"end"]) - as.numeric(chr_intergenic_regions_after_N_removal[,"start"]) + 1)
+  Reference_intergenic <- rbind(Reference_intergenic, chr_intergenic_regions_after_N_removal[,c(1:6)])
 }
 options(scipen = scipen_initial_value)
 
@@ -381,10 +382,10 @@ output_file_path <- file.path(output_gtf_path, basename(substring(gene_gtf_path,
 
 ## Output:
 ##Intergenic only
-message("write file : ", paste(output_file_path, "gtf_interegenic", sep = ""))
+message("write file : ", paste(output_file_path, "_gtf_interegenic", sep = ""))
 
 write.table(x = intergenic_regions_gtf,
-            file = paste(output_file_path, "gtf_intergenic", sep = ""),
+            file = paste(output_file_path, "_gtf_intergenic", sep = ""),
             sep = "\t",
             row.names = FALSE,
             col.names = FALSE,
