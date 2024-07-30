@@ -1,0 +1,3 @@
+[submodule "source_files/bgee-expression-annotations.git"]
+	path = source_files/bgee-expression-annotations.git
+	url = https://gitlab.sib.swiss/Bgee/expression-annotations.git

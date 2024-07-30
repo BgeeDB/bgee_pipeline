@@ -6,42 +6,45 @@ include $(PIPELINEROOT)Makefile.common
 all: $(VERIFICATIONFILE)
 
 
-################################ RETRIEVE BGEE ANNOTATIONS ################################
+################################ RETRIEVE BGEE ANNOTATIONS FROM BGEE SERVER ################################
 
-#FIXME git submodule should allow the get_annot step to work while protecting the annotation git from unallowed users!
 get_annot:
-	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations. Store them in the source_files directory
-	@$(WGET) $(ANNOTATION_GIT_URL)/Strains/StrainMapping.tsv                && $(MV) StrainMapping.tsv                $(STRAIN_MAPPING_FILE)
-	@$(WGET) $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqLibrary.tsv                && $(MV) RNASeqLibrary.tsv                $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibrary.tsv                2>/dev/null  || rm -f RNASeqLibrary.tsv
-	@$(WGET) $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqExperiment.tsv             && $(MV) RNASeqExperiment.tsv             $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqExperiment.tsv             2>/dev/null  || rm -f RNASeqExperiment.tsv
-	@$(WGET) $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqLibraryPlatformChecks.tsv  && $(MV) RNASeqLibraryPlatformChecks.tsv  $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibraryPlatformChecks.tsv  2>/dev/null  || rm -f RNASeqLibraryPlatformChecks.tsv
+	@$(GIT) submodule init
+	@$(GIT) submodule update
+	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations submodule. Store them in the source_files directory
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/Strains/StrainMapping.tsv                 $(STRAIN_MAPPING_FILE)
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/RNA_Seq/RNASeqLibrary.tsv                 $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibrary.tsv
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/RNA_Seq/RNASeqExperiment.tsv              $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqExperiment.tsv
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/RNA_Seq/RNASeqLibraryPlatformChecks.tsv   $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibraryPlatformChecks.tsv
 # Download wormbase annotation as well. Will be merged with our annotation in create_rna_seq_sample_info step
-	@$(WGET) $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqLibrary_worm.tsv           && $(MV) RNASeqLibrary_worm.tsv           $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibrary_worm.tsv           2>/dev/null  || rm -f RNASeqLibrary_worm.tsv
-	@$(WGET) $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqLibrary_worm_exclusion.tsv && $(MV) RNASeqLibrary_worm_exclusion.tsv $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibrary_worm_exclusion.tsv 2>/dev/null  || rm -f RNASeqLibrary_worm_exclusion.tsv
-	@$(WGET) $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqExperiment_worm.tsv        && $(MV) RNASeqExperiment_worm.tsv        $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqExperiment_worm.tsv        2>/dev/null  || rm -f RNASeqExperiment_worm.tsv
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/RNA_Seq/RNASeqLibrary_worm.tsv            $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibrary_worm.tsv
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/RNA_Seq/RNASeqLibrary_worm_exclusion.tsv  $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibrary_worm_exclusion.tsv
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/RNA_Seq/RNASeqExperiment_worm.tsv         $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqExperiment_worm.tsv
 #TODO clarify the steps from WormBase raw files to formatted file: $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqLibrary_worm.tsv
 	@touch $@
+
+#For Bgee 15.2 we filtered annotation based on species already present in Bgee 15.1
 
 check_annot: get_annot $(RNASEQ_EXPERIMENT_FILEPATH) $(RNASEQ_EXPERIMENT_FILEPATH_WORM) $(RNASEQ_LIB_FILEPATH) $(RNASEQ_LIBRARY_FILEPATH_WORM)
 	# Concatenate our annotation file with wormbase annotations (without header, and sorted by experiments and libraries)
 	@tail -n+2 $(RNASEQ_EXPERIMENT_FILEPATH_WORM) | sort -k1,1       | cat $(RNASEQ_EXPERIMENT_FILEPATH) - > $(RNASEQ_EXPERIMENT_FILEPATH_FULL)
 	@tail -n+2 $(RNASEQ_LIB_FILEPATH_WORM)        | sort -k2,2 -k1,1 | cat $(RNASEQ_LIB_FILEPATH)        - > $(RNASEQ_LIB_FILEPATH_FULL).ori
 	# Map strain names
-	@perl -e 'use lib ".."; use Utils; Utils::map_strain_names("$(RNASEQ_LIB_FILEPATH_FULL).ori", "$(STRAIN_MAPPING_FILE)")' >$(RNASEQ_LIB_FILEPATH_FULL).map
+	@$(SENSITIVE_PERL_CMD) perl -e 'use lib ".."; use Utils; Utils::map_strain_names("$(RNASEQ_LIB_FILEPATH_FULL).ori", "$(STRAIN_MAPPING_FILE)")' >$(RNASEQ_LIB_FILEPATH_FULL).map
 	@$(RM) $(RNASEQ_LIB_FILEPATH_FULL).ori
 	# Filter for a minimal number of conditions (+sort)
-	@perl 0Before/filter_annotation_file.pl -RNAlib=$(RNASEQ_LIB_FILEPATH_FULL).map -RNAlibFiltered=$(RNASEQ_LIB_FILEPATH_FULL) >$@.tmp 2>&1
+	@$(SENSITIVE_PERL_CMD) perl 0Before/filter_annotation_file.pl -RNAlib=$(RNASEQ_LIB_FILEPATH_FULL).map -RNAlibFiltered=$(RNASEQ_LIB_FILEPATH_FULL) >$@.tmp 2>&1
 	@$(RM) $(RNASEQ_LIB_FILEPATH_FULL).map
 	@echo >>$@.tmp
 	# First check of annotations
-	perl 0Before/check_rna_seq_curation.pl -bgee=$(BGEECMD) -RNAseqExperiment=$(RNASEQ_EXPERIMENT_FILEPATH_FULL) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -allRes=$(RNASEQALLRES) before >>$@.tmp 2>&1
+	@$(SENSITIVE_PERL_CMD) perl 0Before/check_rna_seq_curation.pl -bgee=$(BGEECMD) -RNAseqExperiment=$(RNASEQ_EXPERIMENT_FILEPATH_FULL) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -allRes=$(RNASEQALLRES) before >>$@.tmp 2>&1
 	@echo -e "Check file \"check_annot\" for the output of the script 0Before/check_rna_seq_curation.pl, which indicates potential errors to correct in the annotation files.\n"
 	@$(MV) $@.tmp $@
 #TODO the script needs better check of annotation files for leading and trailing spaces (only done for experimentId now, but needs to be done for other fields as well)
 
 create_rna_seq_sample_info: check_annot $(EXTRAMAPPING_FILEPATH)
 	# Generate rna_seq_sample_info.txt from RNASeq lib annotation file
-	@perl 0Before/create_rna_seq_sample_info.pl -bgee=$(BGEECMD) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -RNAseqLibChecks=$(RNASEQ_LIB_CHECKS_FILEPATH) -RNAseqLibWormExclusion=$(RNASEQ_LIB_EXCLUSION_FILEPATH_WORM) -extraMapping=$(EXTRAMAPPING_FILEPATH) -outFile=$(RNASEQ_SAMPINFO_FILEPATH) >$@.tmp 2>&1
+	@$(SENSITIVE_PERL_CMD) perl 0Before/create_rna_seq_sample_info.pl -bgee=$(BGEECMD) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -RNAseqLibChecks=$(RNASEQ_LIB_CHECKS_FILEPATH) -RNAseqLibWormExclusion=$(RNASEQ_LIB_EXCLUSION_FILEPATH_WORM) -extraMapping=$(EXTRAMAPPING_FILEPATH) -toolsPath=$(CLUSTER_TOOLS_DIR) -outFile=$(RNASEQ_SAMPINFO_FILEPATH) >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
 	@echo -e "Check file \"create_rna_seq_sample_info\" for the output of the script 0Before/create_rna_seq_sample_info.pl, which indicates potential errors to correct in the annotation files.\n"
 
@@ -72,7 +75,16 @@ send_files_to_cluster: commit_rna_seq_sample_info $(RNASEQ_LIB_FILEPATH_FULL) $(
 
 ##############################################################################################
 # RNASeq library download
+## For Bgee 15.2 there was 19000 run to download. As there was not enough space on the /work partition we devided the download
+## per chunk of species
+## SPECIES ALREADY DOWNLOADED FOR BGEE 15.2 :
+# 7227$(LIST_SEP)9606$(LIST_SEP)10090$(LIST_SEP)7955$(LIST_SEP)6239$(LIST_SEP)9615$(LIST_SEP)9685$(LIST_SEP)9796$(LIST_SEP)9823$(LIST_SEP)9913(LIST_SEP)9925$(LIST_SEP)9940$(LIST_SEP)9986$(LIST_SEP)10141$(LIST_SEP)9031$(LIST_SEP)9103$(LIST_SEP)9258$(LIST_SEP)9483$(LIST_SEP)9531$(LIST_SEP)9541$(LIST_SEP)9544$(LIST_SEP)9545$(LIST_SEP)9555$(LIST_SEP)9593$(LIST_SEP)9597$(LIST_SEP)9598$(LIST_SEP)30608(LIST_SEP)60711$(LIST_SEP)9974$(LIST_SEP)10116$(LIST_SEP)10181$(LIST_SEP)13616$(LIST_SEP)8355$(LIST_SEP)8364$(LIST_SEP)28377$(LIST_SEP)7918$(LIST_SEP)7936$(LIST_SEP)7994$(LIST_SEP)8010$(LIST_SEP)8030$(LIST_SEP)8049$(LIST_SEP)8081$(LIST_SEP)8090$(LIST_SEP)8154$(LIST_SEP)32507$(LIST_SEP)52904$(LIST_SEP)69293$(LIST_SEP)105023$(LIST_SEP)7740$(LIST_SEP)7897$(LIST_SEP)7237$(LIST_SEP)7240
+
 #NOTE to be done on regular cluster, with network access
+get_sra_parallelized: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_ALREADY_DOWNLOADED)
+	$(SENSITIVE_PERL_CMD) perl 0Before/parallelized_download_SRA.pl -metadataFile=$(RNASEQ_SAMPINFO_FILEPATH) -parallelJobs=50 -excludedLibraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -downloadedLibraries=$(RNASEQ_ALREADY_DOWNLOADED) -outputDir=$(RNASEQ_DOWNLOAD_LIB_DIR_FASTQ) -encryptFile=$(ENCRYPT_PASSWD_FILE) -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
+	@mv $@.tmp $@
+
 get_sra: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_ALREADY_DOWNLOADED)
 	@$(GIT) pull
 	@sed -i 's@\(BASE *= \).*@\1"$(RNASEQ_DOWNLOAD_LIB_DIR)";@'                      0Before/get_SRA.pl
@@ -148,12 +160,12 @@ cluster1:
 check_tools: cluster1
 	@echo -e "\n\tFirst of all, go to '$(RNASEQ_CLUSTER_READONLY)GIT/' and do a 'git pull'"
 	@echo -e "\tThen 'cd pipeline/RNA_Seq/' and be prepared to work\n"
-	@echo -e "\n\tRun this command to give access to all modules installed on vital-it\n\tmodule add Bioinformatics/Software/vital-it\n"
+	@echo -e "\n\tRun this command to give access to all modules installed on vital-it\n\tmodule use /software/module/\n"
 	@echo -e "\n\tRun this command to prevent errors with Utils.pm\n\tmodule add Development/Ensembl_API/$(ENSRELEASE);\n"
 	# Check if logged on cluster
 	@if [[ `hostname -d` != 'chuv.vital-it.ch' ]]; then false; fi
 	# Check if all required tools/libs are available
-	@module add Bioinformatics/Software/vital-it
+	@module use /software/module/
 	@which perl                                          > $@.tmp
 	@perl -MBio::SeqIO            -e 1                  >> $@.tmp
 	@perl -MCpanel::JSON::XS      -e 1                  >> $@.tmp
@@ -355,30 +367,39 @@ generate_intergenic_sequences: sum_by_species
 	@$(MV) $@.tmp $@
 
 ################################ GENERATE PRESENT/ABSENT CALLS WITH BgeeCall ################################
-
+# generation of calls uses BgeeCall and the RSlurm package. It is this package that manage job submisson based on the BgeeCall input file.
+# That file is generated in the indexes_bgeecall rule. Once presence_absence_bgeecall rule has been run you should run again the rule indexes_bgeecall
+# in order to generate a new BgeeCall input file and then allow RSlurm to create jobs only for library not processed properly. For that 2nd run
+# the number of rows in the BgeeCall input file correspond to the number of libraries for which calls were not processed in the previous attempt.
+# Please continue to run the 2 rules until the BgeeCall output file is empty (or contain only proplematic libraries that will not be inserted in the Bgee realease
 # As for Bgee 15 it was mandatory to increase memory to 120G to generate Human index with kmer size = 15bp
-indexes_bgeecall:
+#
+# sample_info_to_bgeecall.pl creates several useful files. Please read the documentation of the script to understand how to use them
+indexes_bgeecall: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH) 
 	# generate BgeeCall input file from the rna_seq_sample_info.txt file
 	# TODO: run this script in a different rule
-	@perl 1Run/sample_info_to_bgeecall.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -sample_excluded=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >>$@.tmp 2>&1
+	@perl 1Run/sample_info_to_bgeecall.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -sample_excluded=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >$@.tmp 2>$@.err
 	# generate kallisto indexes with BgeeCall
-	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(RNASEQ_BGEECALL_FILE)" account="$(CLUSTER_ACCOUNT_SENSITIVE)" time="24:00:00" partition="$(CLUSTER_PARTITION_SENSITIVE)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' 1Run/bgeecall_index.R $(RNASEQ_CLUSTER_R_LOG)bgeecall_index.Rout
+	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(RNASEQ_BGEECALL_FILE)" account="$(SENSITIVE_CLUSTER_ACCOUNT)" time="24:00:00" partition="$(SENSITIVE_CLUSTER_PARTITION)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' 1Run/bgeecall_index.R $(RNASEQ_CLUSTER_R_LOG)bgeecall_index.Rout
 	@$(MV) $@.tmp $@
 
 presence_absence_bgeecall: indexes_bgeecall
 	# generate present/absent expression calls with BgeeCall
-	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(RNASEQ_BGEECALL_FILE)" account="$(CLUSTER_ACCOUNT_SENSITIVE)" time="2-00:00:00" partition="$(CLUSTER_PARTITION_SENSITIVE)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)" decrypt_file_path="$(ENCRYPT_PASSWD_FILE)"' 1Run/bgeecall_calls.R $(RNASEQ_CLUSTER_R_LOG)bgeecall_calls.Rout
+	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(RNASEQ_BGEECALL_FILE)" account="$(SENSITIVE_CLUSTER_ACCOUNT)" time="2-00:00:00" partition="$(SENSITIVE_CLUSTER_PARTITION)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)" decrypt_file_path="$(ENCRYPT_PASSWD_FILE)"' 1Run/bgeecall_calls.R $(RNASEQ_CLUSTER_R_LOG)bgeecall_calls.Rout
 	# TODO generate summary plot once all calls have been generated
 	@touch $@
 
+##############################################################################################################
 check_presence_absence: presence_absence_bgeecall
 	# check that presence absence calls have been generated for all libraries present in the rna_seq_sample_info file
 	# generate file containing calls info for all libraries and use this file to generate different plots
+	@perl 1Run/sample_info_to_bgeecall.pl -keep_all_libraries -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -sample_excluded=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >$@.tmp 2>$@.err
 	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_sample_info="$(RNASEQ_BGEECALL_FILE)" calls_dir="$(RNASEQ_CLUSTER_BGEECALL_CALLS)" presence_absence_report="$(RNASEQ_CLUSTER_CALLS_STATS)" kallisto_report="$(RNASEQ_CLUSTER_KALLISTO_STATS)"' 1Run/rna_seq_calls_plot.R $(RNASEQ_CLUSTER_R_LOG)rna_seq_calls_plot.Rout
-	@touch $@
+	@mv $@.tmp $@
 
+# not run for Bgee 15.1 and 15.2. To remove from the pipeline in the future major release.
 # Do not use slurm to run this light processing
-calculate_fpkm: presence_absence_bgeecall
+calculate_fpkm:
 	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args all_results_dir="$(RNASEQ_CLUSTER_BGEECALL_CALLS)" calls_file_name="$(ABUNDANCEFILE)"' 1Run/calculate_fpkm.R $(RNASEQ_CLUSTER_R_LOG)calculate_fpkm.Rout
 	@touch $@
 
@@ -388,7 +409,7 @@ calculate_fpkm: presence_absence_bgeecall
 # /bin/cp used because cp is an alias to cp -i
 # Also copy presence_absence_all_samples.txt, presence_absence_all_samples.RDa and presence_absence_boxplots.pdf
 
-save_and_send_results_back: calculate_fpkm check_presence_absence
+save_and_send_results_back: check_presence_absence
 	# Touch all files so that they are not removed from $(RNASEQ_CLUSTER_SCRATCH)
 	@find $(RNASEQ_CLUSTER_SCRATCH) -exec touch {} \; 2>warnings.$@
 	# Back-up all data
@@ -415,6 +436,11 @@ save_and_send_results_back: calculate_fpkm check_presence_absence
 	@echo -e "\tYou can go out of the sensitive cluster now\n"
 	@touch $@
 
+# bgee 15.2 we applied a QC filtering based on the total number of reads, the number of reads mapped to the transcriptome,
+# and for libraries targeting protein coding genes, the percentage of protein coding genes with presence of expression.
+# this step has to be improved. To reproduce the filtering, please run the script 1Run/qc_filtering.R.
+# TODO: improve the QC filtering and then integrate this step in the Makefile. It could also be interesting to have a look
+# at the script 1Run/rna_seq_QC.R created by Sara Fonseca and never used in the pipeline.
 
 ################################ INSERT CALLS IN DATABASE ################################
 
@@ -427,6 +453,8 @@ insert_RNA_seq: $(RNASEQALLRES) $(RNASEQSAMPSTATS) $(RNASEQREPORTINFO) $(RNASEQ_
 	@sleep 50 # sleep because mappers need time to load Uberon
 	# Insert RNA Seq data
 	@perl 3Insertion/insert_rna_seq.pl -bgee=$(BGEECMD) -rnaSeqLibrary=$(RNASEQ_LIB_FILEPATH_FULL) -rnaSeqExperiment=$(RNASEQ_EXPERIMENT_FILEPATH_FULL) -library_info=$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -excluded_biotypes=$(RNASEQ_BIOTYPE_EXCLUDED_FILEPATH) -library_stats=$(RNASEQSAMPSTATS) -report_info=$(RNASEQREPORTINFO) -all_results=$(RNASEQALLRES) -sex_info=$(UBERON_SEX_INFO_FILE_PATH) -extraMapping=$(EXTRAMAPPING_FILEPATH) -Aport=$(IDMAPPINGPORT) -Sport=$(STGMAPPINGPORT) > $@.tmp 2>warnings.$@
+	@echo "Delete RNA-Seq experiments for which no RNA-Seq libraries have been inserted" >> $@.tmp
+	@$(MYSQL) -e "DELETE t1 FROM rnaSeqExperiment AS t1 WHERE NOT EXISTS (SELECT 1 FROM rnaSeqLibrary AS t2 WHERE t1.rnaSeqExperimentId = t2.rnaSeqExperimentId)" >> $@.tmp
 	@echo "Check inconsistencies between condition species and gene species (there should be none): " >> $@.tmp
 	@$(MYSQL) -e "SELECT t1.* FROM rnaSeqResult AS t1 INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId INNER JOIN rnaSeqLibrary AS t3 ON t1.rnaSeqLibraryId = t3.rnaSeqLibraryId INNER JOIN cond AS t4 on t3.conditionId = t4.conditionId WHERE t2.speciesId != t4.speciesId" >> $@.tmp
 	@echo >> $@.tmp
@@ -449,36 +477,35 @@ insert_RNA_seq: $(RNASEQALLRES) $(RNASEQSAMPSTATS) $(RNASEQREPORTINFO) $(RNASEQ_
 
 check_conditions: insert_RNA_seq
 	@echo "Conditions with anat. entity not existing in related species:" > $@.tmp
-	@$(MYSQL) -e "SELECT DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.sex, t1.strain FROM cond AS t1 LEFT OUTER JOIN anatEntityTaxonConstraint AS t2 ON t1.anatEntityId = t2.anatEntityId AND (t2.speciesId IS NULL OR t1.speciesId = t2.speciesId) LEFT OUTER JOIN anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId LEFT OUTER JOIN rnaSeqLibrary AS t10 ON t1.conditionId = t10.conditionId WHERE t2.anatEntityId IS NULL AND t10.conditionId IS NOT NULL ORDER BY t1.speciesId" >> $@.tmp 2> $@.warn
+	@$(MYSQL) -e "SELECT DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.sex, t1.strain FROM cond AS t1 LEFT OUTER JOIN anatEntityTaxonConstraint AS t2 ON t1.anatEntityId = t2.anatEntityId AND (t2.speciesId IS NULL OR t1.speciesId = t2.speciesId) LEFT OUTER JOIN anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId LEFT OUTER JOIN rnaSeqLibraryAnnotatedSample AS t10 ON t1.conditionId = t10.conditionId WHERE t2.anatEntityId IS NULL AND t10.conditionId IS NOT NULL ORDER BY t1.speciesId" >> $@.tmp 2> $@.warn
 	@echo >> $@.tmp
 	@echo "Conditions with dev. stage not existing in related species:" >> $@.tmp
-	@$(MYSQL) -e "SELECT DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.sex, t1.strain FROM cond AS t1 LEFT OUTER JOIN stageTaxonConstraint AS t2 ON t1.stageId = t2.stageId AND (t2.speciesId IS NULL OR t1.speciesId = t2.speciesId) LEFT OUTER JOIN anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId LEFT OUTER JOIN rnaSeqLibrary AS t10 ON t1.conditionId = t10.conditionId WHERE t2.stageId IS NULL AND t10.conditionId IS NOT NULL ORDER BY t1.speciesId" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "SELECT DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.sex, t1.strain FROM cond AS t1 LEFT OUTER JOIN stageTaxonConstraint AS t2 ON t1.stageId = t2.stageId AND (t2.speciesId IS NULL OR t1.speciesId = t2.speciesId) LEFT OUTER JOIN anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId LEFT OUTER JOIN rnaSeqLibraryAnnotatedSample AS t10 ON t1.conditionId = t10.conditionId WHERE t2.stageId IS NULL AND t10.conditionId IS NOT NULL ORDER BY t1.speciesId" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
-
-TMP_TABLE_CLAUSE   := SELECT t10.expressionId, IF((SELECT COUNT(rnaSeqExperimentId) FROM rnaSeqExperimentExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.rnaSeqExperimentCallDirection = 'present' AND t11.rnaSeqExperimentCallQuality = 'high quality') >= 2, 'pstGold', IF((SELECT COUNT(rnaSeqExperimentId) FROM rnaSeqExperimentExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.rnaSeqExperimentCallDirection = 'present' AND t11.rnaSeqExperimentCallQuality = 'high quality') = 1, 'pstSilverFromHigh', IF((SELECT COUNT(rnaSeqExperimentId) FROM rnaSeqExperimentExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.rnaSeqExperimentCallDirection = 'present' AND t11.rnaSeqExperimentCallQuality = 'poor quality') >= 2, 'pstSilverFromLow', IF((SELECT COUNT(rnaSeqExperimentId) FROM rnaSeqExperimentExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.rnaSeqExperimentCallDirection = 'present' AND t11.rnaSeqExperimentCallQuality = 'poor quality') = 1, 'pstBronze', IF((SELECT COUNT(rnaSeqExperimentId) FROM rnaSeqExperimentExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.rnaSeqExperimentCallDirection = 'absent' AND t11.rnaSeqExperimentCallQuality = 'high quality') >= 2, 'absGold', IF((SELECT COUNT(rnaSeqExperimentId) FROM rnaSeqExperimentExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.rnaSeqExperimentCallDirection = 'absent' AND t11.rnaSeqExperimentCallQuality = 'high quality') = 1, 'absSilverFromHigh', IF((SELECT COUNT(rnaSeqExperimentId) FROM rnaSeqExperimentExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.rnaSeqExperimentCallDirection = 'absent' AND t11.rnaSeqExperimentCallQuality = 'poor quality') >= 2, 'absSilverFromLow', IF((SELECT COUNT(rnaSeqExperimentId) FROM rnaSeqExperimentExpression AS t11 WHERE t11.expressionId = t10.expressionId AND t11.rnaSeqExperimentCallDirection = 'absent' AND t11.rnaSeqExperimentCallQuality = 'poor quality') = 1, 'absBronze', 'IMPOSSIBLE')))))))) AS expressionCall FROM rnaSeqExperimentExpression AS t10
 
 insert_expression: check_conditions insert_RNA_seq
 	# Insert the expression summaries
-	@perl 3Insertion/insert_rna_seq_expression.pl -bgee=$(BGEECMD) > $@.tmp 2>warnings.$@
+	@perl 3Insertion/insert_rna_seq_expression.pl -number_threads=20 -bgee=$(BGEECMD) > $@.tmp 2>warnings.$@
 	@echo
 	@echo "Searching for incorrect updates of rnaSeqResult/expression tables (there should be none)" >> $@.tmp
-	@$(MYSQL) -e "SELECT * FROM rnaSeqResult WHERE reasonForExclusion = 'not excluded' AND expressionId IS NULL" >> $@.tmp
-	@$(MYSQL) -e "SELECT * FROM rnaSeqResult WHERE reasonForExclusion != 'not excluded' AND expressionId IS NOT NULL" >> $@.tmp
-	@$(MYSQL) -e "SELECT * FROM rnaSeqResult AS t1 WHERE expressionId IS NOT NULL AND NOT EXISTS(SELECT 1 FROM rnaSeqExperimentExpression AS t2 WHERE t2.expressionId = t1.expressionId)" >> $@.tmp
-	@$(MYSQL) -e "SELECT * FROM rnaSeqExperimentExpression AS t1 WHERE NOT EXISTS (SELECT 1 FROM rnaSeqResult AS t2 WHERE t2.expressionId = t1.expressionId)" >> $@.tmp
-	@$(MYSQL) -e "SELECT * FROM rnaSeqExperimentExpression WHERE (presentHighRNASeqLibraryCount + presentLowRNASeqLibraryCount + absentHighRNASeqLibraryCount + absentLowRNASeqLibraryCount) = 0" >> $@.tmp
-	@$(MYSQL) -e "SELECT * FROM rnaSeqExperimentExpression WHERE (presentHighRNASeqLibraryCount > 0 AND (rnaSeqExperimentCallDirection != 'present' OR rnaSeqExperimentCallQuality != 'high quality')) OR (presentHighRNASeqLibraryCount = 0 AND presentLowRNASeqLibraryCount > 0 AND (rnaSeqExperimentCallDirection != 'present' OR rnaSeqExperimentCallQuality != 'poor quality')) OR (presentHighRNASeqLibraryCount = 0 AND presentLowRNASeqLibraryCount = 0 AND absentHighRNASeqLibraryCount > 0 AND (rnaSeqExperimentCallDirection != 'absent' OR rnaSeqExperimentCallQuality != 'high quality')) OR (presentHighRNASeqLibraryCount = 0 AND presentLowRNASeqLibraryCount = 0 AND absentHighRNASeqLibraryCount = 0 AND (rnaSeqExperimentCallDirection != 'absent' OR rnaSeqExperimentCallQuality != 'poor quality'))" >> $@.tmp
-	@$(MYSQL) -e "SELECT t1.* FROM rnaSeqExperiment AS t1 WHERE NOT EXISTS (SELECT 1 FROM rnaSeqExperimentExpression AS t2 WHERE t2.rnaSeqExperimentId = t1.rnaSeqExperimentId)" >> $@.tmp
+	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult as t1 INNER JOIN rnaSeqLibraryAnnotatedSample as t2 ON t1.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId INNER JOIN rnaSeqLibrary as t3 ON t2.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE t1.reasonForExclusion = 'not excluded' AND t1.expressionId IS NULL AND t3.rnaSeqTechnologyIsSingleCell = 0 limit 10" >> $@.tmp
+	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult as t1 INNER JOIN rnaSeqLibraryAnnotatedSample as t2 ON t1.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId INNER JOIN rnaSeqLibrary as t3 ON t2.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE reasonForExclusion != 'not excluded' AND expressionId IS NOT NULL AND t3.rnaSeqTechnologyIsSingleCell = 0 limit 10" >> $@.tmp
+	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t1 WHERE expressionId IS NOT NULL AND NOT EXISTS(SELECT 1 FROM expression AS t2 WHERE t2.expressionId = t1.expressionId) LIMIT 10" >> $@.tmp
+	@$(MYSQL) -e "SELECT * FROM expression AS t1 WHERE NOT EXISTS (SELECT 1 FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t2 WHERE t2.expressionId = t1.expressionId) AND NOT EXISTS (SELECT 1 FROM affymetrixProbeset AS t3 WHERE t3.expressionId = t1.expressionId) AND NOT EXISTS (SELECT * FROM expressedSequenceTag AS t4 WHERE t4.expressionId = t1.expressionId) AND NOT EXISTS (SELECT * FROM inSituSpot AS t5 WHERE t5.expressionId = t1.expressionId) LIMIT 10" >> $@.tmp
 	@echo >> $@.tmp
-	@echo "Statistics for rnaSeqResult" >> $@.tmp
-	@$(MYSQL) -e "SELECT speciesId, expressionCall, detectionFlag, rnaSeqData, COUNT(*) AS rnaSeqResultCount FROM rnaSeqResult AS t1 INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId INNER JOIN ($(TMP_TABLE_CLAUSE)) AS tmpTable ON t1.expressionId = tmpTable.expressionId GROUP BY speciesId, expressionCall, detectionFlag, rnaSeqData ORDER BY speciesId, expressionCall, detectionFlag, rnaSeqData" >> $@.tmp
+	@echo "Statistics for rnaSeqLibraryAnnotatedSampleGeneResult" >> $@.tmp
+	@$(MYSQL) -e "SELECT t2.speciesId, t1.reasonForExclusion, t4.rnaSeqTechnologyIsSingleCell AS isSingleCell, t4.libraryMultiplexing AS isDropletBased, COUNT(*) AS absentGeneResultCount  FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t1 INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId INNER JOIN rnaSeqLibraryAnnotatedSample AS t3 ON t3.rnaSeqLibraryAnnotatedSampleId = t1.rnaSeqLibraryAnnotatedSampleId INNER JOIN rnaSeqLibrary as t4 ON t4.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE t1.pValue > 0.05 GROUP BY speciesId, reasonForExclusion, isSingleCell, isDropletBased ORDER BY speciesId;" >> $@.tmp
+	@$(MYSQL) -e "SELECT t2.speciesId, t1.reasonForExclusion, t4.rnaSeqTechnologyIsSingleCell AS isSingleCell, t4.libraryMultiplexing AS isDropletBased, COUNT(*) AS presentGeneResultCount  FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t1 INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId INNER JOIN rnaSeqLibraryAnnotatedSample AS t3 ON t3.rnaSeqLibraryAnnotatedSampleId = t1.rnaSeqLibraryAnnotatedSampleId INNER JOIN rnaSeqLibrary as t4 ON t4.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE t1.pValue <= 0.05 GROUP BY speciesId, reasonForExclusion, isSingleCell, isDropletBased ORDER BY speciesId;" >> $@.tmp
 	@echo "Statistics for expression table" >> $@.tmp
-	@$(MYSQL) -e "SELECT speciesId, expressionCall, COUNT(*), COUNT(DISTINCT t1.bgeeGeneId), COUNT(DISTINCT t1.conditionId), COUNT(DISTINCT t3.anatEntityId, t3.stageId), COUNT(DISTINCT t3.anatEntityId, t3.stageId, t3.sex) FROM expression AS t1 INNER JOIN cond AS t3 ON t1.conditionId = t3.conditionId INNER JOIN ($(TMP_TABLE_CLAUSE)) AS tmpTable ON t1.expressionId = tmpTable.expressionId GROUP BY speciesId, expressionCall ORDER BY speciesId, expressionCall" >> $@.tmp
+	@$(MYSQL) -e "SELECT t2.speciesId, COUNT(*) totalExpression , COUNT(DISTINCT t1.bgeeGeneId) as distinctGenes, COUNT(DISTINCT t1.conditionId) as distinctConditions, COUNT(DISTINCT t3.anatEntityId, t3.stageId) as DistinctStageAndAnat FROM expression AS t1 INNER JOIN gene AS t2 ON t2.bgeeGeneId = t1.bgeeGeneId INNER JOIN cond AS t3 ON t1.conditionId = t3.conditionId GROUP BY speciesId ORDER BY speciesId" >> $@.tmp
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
 #NOTE For iterative updates die commands after insert/update/delete statement failure have to be changed to warn
 #     because with iterative updates the database may contain duplicates in regard to what you are inserting/updating/deleting!
+#XXX Why bothering inserting transcript info as we do not have expression associated to them? Furthermore transcript information should
+#    probably be inserted during the "genes" pipeline. To check for Bgee 16.0. A Jira issue has been created (BA-795)
+#    Not run for Bgee 15
 insert_feature_length: $(RNASEQ_LENGTH_INFO_FILEPATH)
 	# Insert the feature length information
 	@perl 3Insertion/insert_feature_length.pl -bgee=$(BGEECMD) -length_info=$(RNASEQ_LENGTH_INFO_FILEPATH) > $@.tmp 2>warnings.$@
@@ -490,7 +517,7 @@ insert_feature_length: $(RNASEQ_LENGTH_INFO_FILEPATH)
 launch_calculate_TMM_factors: insert_RNA_seq $(RNASEQALLRES)
 	# Launch calculation of TMM factors for RNA-seq
 	@mkdir -p $(RNASEQTMMTARG) $(RNASEQTMMPATH)
-	@perl 3Insertion/launch_calculate_TMM_factors.pl -bgee=$(BGEECMD) -path_generes=$(RNASEQALLRES) -path_target=$(RNASEQTMMTARG) -path_processed=$(RNASEQTMMPATH) >$@.tmp 2>warnings.$@
+	@perl 3Insertion/launch_calculate_TMM_factors.pl -bgee=$(BGEECMD) -path_generes=$(RNASEQALLRES) -path_target=$(RNASEQTMMTARG) -path_processed=$(RNASEQTMMPATH) -parallel_jobs=40>$@.tmp 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
@@ -505,7 +532,7 @@ check_TMM_factors: launch_calculate_TMM_factors $(RNASEQTMMPATH)
 # This should correspond to: SELECT count(*) FROM rnaSeqLibrary;
 
 insert_TMM_factors: check_TMM_factors $(RNASEQTMMPATH)
-	# Insert TMM factors into rnaSeqLibrary table
+	# Insert TMM factors into rnaSeqLibraryAnnotatedSample table
 	@perl 3Insertion/insert_TMM_factors.pl -bgee=$(BGEECMD) -tmm_results=$(RNASEQTMMPATH) >$@.tmp 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@

@@ -29,6 +29,10 @@
 # }
 # Any other information we could get to help or to compare to annotation?
 
+# Feb 05, 2024
+# - Check libraries already inserted in the database and do not add them in the rna_seq_sample_info file. Those libraries will not be processed again
+# TODO should also remove already inserted libraries from the RNASeqLibraries.tsv file in the generated_files directory. The RNASeqExperiment.tsv file in the
+# generated_files directory should only contain experiment present in the filtered RNASeqLibraries.tsv file AND not yet inserted in the database
 # Perl core modules
 use strict;
 use warnings;
@@ -50,7 +54,8 @@ my ($RNAseqLibWormExclusion) = ('');
 my ($extraMapping)           = ('');
 my ($outFile)                = ('');
 my ($debug)                  = (0);
-my ($sample)                 = '';
+my ($sample)                 = ('');
+my ($toolsPath)              = ('');
 my %opts = ('bgee=s'                   => \$bgee_connector,     # Bgee connector string
             'RNAseqLib=s'              => \$RNAseqLib,
             'RNAseqLibChecks=s'        => \$RNAseqLibChecks,
@@ -59,11 +64,13 @@ my %opts = ('bgee=s'                   => \$bgee_connector,     # Bgee connector
             'outFile=s'                => \$outFile,
             'debug'                    => \$debug,
             'sample=s'                 => \$sample,
+            'toolsPath=s'                => \$toolsPath,
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $bgee_connector eq '' || $RNAseqLib eq '' || $RNAseqLibChecks eq '' || $RNAseqLibWormExclusion eq '' || $outFile eq ''){
+if ( !$test_options || $bgee_connector eq '' || $RNAseqLib eq '' || $RNAseqLibChecks eq '' || $RNAseqLibWormExclusion eq '' ||
+    $outFile eq '' || $toolsPath eq ''){
     print "\n\tInvalid or missing argument:
 \te.g. $0  -bgee=\$(BGEECMD) -RNAseqLib=\$(RNASEQ_LIB_FILEPATH_FULL) -RNAseqLibChecks=\$(RNASEQ_LIB_CHECKS_FILEPATH_FULL) -RNAseqLibWormExclusion=\$(RNASEQ_LIB_EXCLUSION_FILEPATH_WORM) -outFile=\$(RNASEQ_SAMPINFO_FILEPATH) -extraMapping=\$(EXTRAMAPPING_FILEPATH)
 \t-bgee                   Bgee connector string
@@ -74,6 +81,7 @@ if ( !$test_options || $bgee_connector eq '' || $RNAseqLib eq '' || $RNAseqLibCh
 \t-extraMapping           Extra mapping file
 \t-debug                  more verbose output
 \t-sample                 Analyse this specific sample ONLY
+\t-toolsPath              Path to the directory where tools can be installed. Used to install entrez-direct
 \n";
     exit 1;
 }
@@ -93,6 +101,12 @@ while ( my @data = $selSpecies->fetchrow_array ){
 }
 $selSpecies->finish;
 
+my @insertedLibraryIds;
+my $insertedLibraries = $dbh->prepare('SELECT rnaSeqLibraryId from rnaSeqLibrary where rnaSeqTechnologyIsSingleCell = 0');
+$insertedLibraries->execute() or die $insertedLibraries->errstr;
+while (my @data = $insertedLibraries->fetchrow_array ) {
+    push(@insertedLibraryIds, $data[0]);
+}
 # Retrieve all organs/stages from Bgee
 my %organs = %{ Utils::getBgeedbOrgans($dbh) };
 my %stages = %{ Utils::getBgeedbStages($dbh) };
@@ -145,6 +159,7 @@ print {$OUT} join("\t", '#libraryId', 'experimentId', 'speciesId', 'organism', '
 # Retrieve SRA information and IDs for each SRX ID, and write down output file. This was originally in script get_sra_id.pl, but it is simplified here (only 1 query, see email Sebastien 15/12/15). Example of a query URL: https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?email=bgee@sib.swiss&api_key=a2546089861bb524068974de020c591a1307&save=efetch&db=sra&rettype=xml&term=SRX1152842
 SAMPLE:
 for my $i ( 0..$#{$tsv{'libraryId'}} ) {
+    next if grep(/^$tsv{'libraryId'}[$i]$/, @insertedLibraryIds);
     my $strategy;
     my $libraryType  = '';
     my $libraryInfo  = '';
@@ -152,9 +167,8 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
     my $libraryId    = $tsv{'libraryId'}[$i];
     my $experimentId = $tsv{'experimentId'}[$i];
     my $tag          = $tsv{'tags'}[$i] // '';
-    my $anatID       = $tsv{'uberonId'}[$i];
+    my $anatID       = $tsv{'anatId'}[$i];
     my $stageID      = $tsv{'stageId'}[$i];
-
     #NOTE Restrict analysis to this specific sample id (library or experiment)
     if ( $sample ne '' ){
         next SAMPLE  if ( $libraryId ne $sample && $experimentId ne $sample );
@@ -185,8 +199,16 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         next SAMPLE;
     }
 
-    # perform query to NCBI
-    my $info = get("https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?email=bgee\@sib.swiss&api_key=a2546089861bb524068974de020c591a1307&save=efetch&db=sra&rettype=xml&term=$libraryId");
+    # metadata from NCBI are retrieved using entrez-direct
+    #entrez-direct first has to be installed.
+    if (!-e $ENV{"HOME"}."/edirect/") {
+        print "edirect has to be installed\n";
+        system("sh -c \"\$(curl -fsSL https://ftp.ncbi.nlm.nih.gov/entrez/entrezdirect/install-edirect.sh)\"");
+        system("export PATH=\${HOME}/edirect:\${PATH}");
+    }
+    my $info = `~/edirect/esearch -db sra -query '$libraryId' | ~/edirect/efetch -format xml`;
+    #remove return to line and space characters at the beginning of a new line
+    $info =~ s/\n\s+//g;
     my ($organism, $platform, $source, $series) = ('', '', '', '');
     my @SRR;
 
@@ -257,8 +279,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         #MSLL: methylation-spanning linker library, which involves size-fractionation (size selection)
         elsif ( $selection =~ /size fractionation/i || $selection =~ /size-fractionation/i || $selection =~ /MSLL/ ){
             if ( $strategy !~ /^miRNA-Seq$/i ){#NOTE check with experimentalists if *size fractionation* is ok for miRNA-Seq
-                warn "\tProblem: [$libraryId][$experimentId] seems to be size-fractionated, which biases the expression estimates. Please comment out. This library was not printed in output file.\n";
-                next SAMPLE;
+                warn "\tProblem: [$libraryId][$experimentId] seems to be size-fractionated, which biases the expression estimates. Please comment out if not miRNA. This library was printed in output file.\n";
             }
         }
         elsif ( (all { $selection !~ /^$_$/ } @valid_selection_methods) && (all { $experimentId ne $_ } @valid_lib_selection) ){
@@ -292,7 +313,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         # platform
         $info =~ /<PLATFORM><[^<]+><INSTRUMENT_MODEL>([^<]+)<\/INSTRUMENT_MODEL><\/[^<]+><\/PLATFORM>/;
         $platform = $1;
-        if (($platform ne $tsv{'platform'}[$i]) and (!exists $checked_libraries{$libraryId})) {
+        if ( (uc $platform ne uc $tsv{'platform'}[$i] && uc "Illumina $platform" ne uc $tsv{'platform'}[$i]) and (!exists $checked_libraries{$libraryId}) ){
             warn "\tProblem: the platform is not matching between the annotation file [", $tsv{'platform'}[$i], "] and the SRA record [$platform], please verify for [$libraryId][$experimentId] and update $RNAseqLibChecks. The information from the annotation file is printed in output file.\n";
         }
         # Run IDs
@@ -361,7 +382,7 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
         ## Issue warning is the XML entry includes keywords suggesting that the library is not classical RNA-seq
         #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
         #FIXME SRP070951 is kept till we know what to do with "globin reduction" see https://gitlab.sib.swiss/Bgee/expression-annotations/issues/30
-        my @not_traditional = ('DeepSAGE', 'DeepCAGE', 'LongSAGE', 'SuperSAGE', 'CAGE', 'RACE', 'SAGE', 'DpnII', 'DpnIII', 'NlaIII', 'capture', 'CEL-seq', 'DGE-Seq', 'TagSeq', 'globin reduction', 'globin depletion', 'UMI', 'UMIs', 'ATAC-seq', 'MAINE-Seq', 'Mnase-Seq', 'FAIRE-Seq', 'DNase-seq', 'MACE-Seq', 'QuantSeq', 'Quant-seq');
+        my @not_traditional = ('DeepSAGE', 'DeepCAGE', 'LongSAGE', 'SuperSAGE', 'CAGE', 'RACE', 'SAGE', 'DpnII', 'DpnIII', 'NlaIII', 'capture', 'CEL-seq', 'DGE-Seq', 'TagSeq', 'UMI', 'UMIs', 'ATAC-seq', 'MAINE-Seq', 'Mnase-Seq', 'FAIRE-Seq', 'DNase-seq', 'MACE-Seq', 'QuantSeq', 'Quant-seq');
         my @verified        = ('ERP000787', 'ERP001694', 'ERP013973', 'ERP104395',
                                'GSE22410', 'GSE64283',
                                'SRP000401', 'SRP013825', 'SRP021940', 'SRP022567', 'SRP030211', 'SRP041131', 'SRP076617', 'SRP082284', 'SRP090001',

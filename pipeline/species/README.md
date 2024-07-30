@@ -34,7 +34,7 @@ If a line starts with `#`, it is commented and the species will not be inserted
 * This pipeline step requires the NCBI taxonomy, provided as an ontology.
   * We cannot use the [official taxonomy ontology](http://www.obofoundry.org/cgi-bin/detail.cgi?id=ncbi_taxonomy) because, as of Bgee 13, it does not include the last modifications that we requested to NCBI, and that were accepted (e.g., addition of a _Dipnotetrapodomorpha_ term). Also, to correctly infer taxon constraints at later steps, we need this ontology to include disjoint classes axioms between sibling taxa, as explained in a Chris Mungall [blog post](http://douroucouli.wordpress.com/2012/04/24/taxon-constraints-in-owl). The default ontology does not include those.
 
-  * This pipeline step is thus capable of generating its own version of the NCBI taxonomy ontology, in the exact same way as for the official ontology, as described [on the OBOFoundry wiki](http://www.obofoundry.org/wiki/index.php/NCBITaxon:Main_Page#Methods) (see notably the [Makefile](https://sourceforge.net/p/obo/svn/HEAD/tree/ncbitaxon/trunk/src/ontology/Makefile) generating the ontology). It is based on files available from the NCBI FTP (ftp://ftp.ebi.ac.uk/pub/databases/taxonomy/taxonomy.dat). The code to generate disjoint classes axioms is based on the code from the [owltools](https://github.com/owlcollab/owltools) Java class `owltools.cli.TaxonCommandRunner`, in the module `OWLTools-Runner`.
+  * This pipeline step is thus capable of generating its own version of the NCBI taxonomy ontology, in the exact same way as for the official ontology, as described [on the OBOFoundry wiki](http://www.obofoundry.org/wiki/index.php/NCBITaxon:Main_Page#Methods) (see notably the [Makefile](https://sourceforge.net/p/obo/svn/HEAD/tree/ncbitaxon/trunk/src/ontology/Makefile) generating the ontology). It is based on files available from the NCBI FTP (https://ftp.ebi.ac.uk/pub/databases/taxonomy/taxonomy.dat). The code to generate disjoint classes axioms is based on the code from the [owltools](https://github.com/owlcollab/owltools) Java class `owltools.cli.TaxonCommandRunner`, in the module `OWLTools-Runner`.
 
   * This custom taxonomy will include the species used in Bgee and their ancestors, the taxa used in our annotations and their ancestors, the taxa used in Uberon an their ancestors. To extract taxa used in Uberon, we use the `ext` version (this is the one containing more taxa).
 
@@ -50,7 +50,7 @@ If a line starts with `#`, it is commented and the species will not be inserted
 * Run Makefile:
   `make`
 
-* Modify the file [pipeline/db_creation/update_data_sources.sql](../db_creation/update_data_sources.sql): you need to add the last modification date of the taxonomy used. This information can be found by looking at the file `taxonomy.dat` at ftp://ftp.ebi.ac.uk/pub/databases/taxonomy/.
+* Modify the file [pipeline/db_creation/update_data_sources.sql](../db_creation/update_data_sources.sql): you need to add the last modification date of the taxonomy used. This information can be found by looking at the file `taxonomy.dat` at https://ftp.ebi.ac.uk/pub/databases/taxonomy/.
 
 ## Data verification
 

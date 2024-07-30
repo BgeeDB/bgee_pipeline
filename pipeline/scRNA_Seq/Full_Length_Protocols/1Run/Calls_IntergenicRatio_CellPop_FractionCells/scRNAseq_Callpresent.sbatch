@@ -14,7 +14,7 @@
 #SBATCH --export=NONE
 #SBATCH --job-name=scRNAseq_Callpresent_FL
 
-module load Bioinformatics/Software/vital-it
+module use /software/module/
 
 module add R/3.6.1
 

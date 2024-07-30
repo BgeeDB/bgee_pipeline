@@ -54,18 +54,18 @@ while (my $line = <$sample_info>) {
      ## skip comment lines
     next  if ( ($line =~ m/^libraryId/) or ($line =~ m/^\"libraryId/) );
     my @line = split(/\t/, $line);
-    my $number_columns = 13;
+    my $number_columns = 17;
     if (! scalar @line eq $number_columns) {
         die "all lines of full length single cell sample info file should have $number_columns columns";
     }
     #column organism
-    my $species_name = $line[15];
+    my $species_name = $line[16] =~ s/ /_/r;
     opendir(my $dir, $transcriptome_dir);
     my @transcriptome_file = grep(/$species_name.*\.transcriptome_wo_intergenic.fa/, readdir($dir));
     closedir($dir);
-    my $transcriptome_path = "$transcriptome_dir$transcriptome_file[1]";
-    my $annotation_path = $transcriptome_path =~ s/transcriptome_wo_intergenic\.fa/transcriptome\.gtf/r;
-    my $fastq_path = "$fastq_dir$line[0]";
+    my $transcriptome_path = "$transcriptome_dir$transcriptome_file[0]";
+    my $annotation_path = $transcriptome_path =~ s/transcriptome_wo_intergenic\.fa/gtf/r;
+    my $fastq_path = "$fastq_dir/EXPERIMENTS/$line[1]/$line[0]";
     my $library_output_dir = "$output_dir$line[0]";
     my $intergenic_file = "$ref_intergenic_dir$line[4]_intergenic.fa.gz";
     my $output_line = "$line[4]\t\t$line[14]\t$fastq_path\t$transcriptome_path\t$annotation_path\t$library_output_dir\t$intergenic_file\n";

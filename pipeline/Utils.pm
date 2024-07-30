@@ -100,15 +100,17 @@ sub map_strain_names {
         my @fields = map { s/"//g; $_ } split(/\t/, $line);
         # Case RNASeqLibrary_full.tsv: "strain"    taxid
         if ( $expression_annotation_file =~ /RNASeqLibrary_full\.tsv/ ){
-            if ( exists $strain_mapping->{ $fields[21] }->{ $fields[20] } ){
-                my $source = quotemeta($fields[20]);
-                my $target = $strain_mapping->{ $fields[21] }->{ $fields[20] };
-                $line =~ s{"$source"\t$fields[21]\t}{"$target"\t$fields[21]\t};
+            if ( exists $strain_mapping->{ $fields[17] }->{ $fields[15] } ){
+                #print "found in mapping file\n";
+                my $source = quotemeta($fields[15]);
+                my $genotype = $fields[16];
+                my $target = $strain_mapping->{ $fields[17] }->{ $fields[15] };
+                $line =~ s{"$source"\t[^\t]*\t$fields[17]\t}{"$target"\t$genotype\t$fields[17]\t};
             }
             print $line;
         }
         # Case scRNASeqLibrary.tsv (NOT_PASS_scRNASeqLibrary.tsv / NEW_scRNASeqLibrary.tsv): strain    speciesId
-        elsif ( $expression_annotation_file =~ /_scRNASeqLibrary\.tsv/ ){
+        elsif ( $expression_annotation_file =~ /ScRNASeqLibrary\.tsv/ ){
             if ( exists $strain_mapping->{ $fields[22] }->{ $fields[21] } ){
                 my $source = quotemeta($fields[21]);
                 my $target = $strain_mapping->{ $fields[22] }->{ $fields[21] };
@@ -1293,6 +1295,32 @@ sub check_active_jobs_number {
     return $running_jobs;
 }
 
+# Return the number of active jobs for one account and with name containing provided string
+sub check_active_jobs_number_per_account_and_name {
+    my ($account, $name) = @_;
+    my $running_jobs = `squeue --account=$account --noheader -o "%.18i %.20j %.8u %.2t" | grep $name | wc -l` || 0;
+    chomp($running_jobs);
+    return $running_jobs;
+}
+
+sub count_status_finished_jobs {
+    my ($job_prefix, $starttime) = @_;
+    my $failed_jobs = `sacct --format="jobId, jobName%50, state" --starttime $starttime | grep \"$job_prefix\" | grep \"FAILED\" | wc -l` || 0;
+    my $completed_jobs = `sacct --format="jobId, jobName%50, state" --starttime $starttime | grep \"$job_prefix\" | grep \"COMPLETED\" | wc -l` || 0;
+    my $out_of_mem_jobs = `sacct --format="jobId, jobName%50, state" --starttime $starttime | grep \"$job_prefix\" | grep \"OUT_OF_M\" | wc -l` || 0;
+    my $cancelled = `sacct --format="jobId, jobName%50, state" --starttime $starttime | grep \"$job_prefix\" | grep \"CANCELLED\" | wc -l` || 0;
+    chomp($completed_jobs);
+    chomp($failed_jobs);
+    chomp($out_of_mem_jobs);
+    chomp($cancelled);
+    my %jobs;
+    $jobs{"completed"} = $completed_jobs;
+    $jobs{"failed"} = $failed_jobs;
+    $jobs{"out_of_memory"} = $out_of_mem_jobs;
+    $jobs{"cancelled"} = $cancelled;
+    return %jobs;
+}
+
 # Add main sbatch command and options
 sub sbatch_template {
     my ($queue, $account, $nbr_processors, $memory_usage, $output_file, $error_file, $job_name) = @_;
@@ -1308,7 +1336,7 @@ sub sbatch_template {
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=$nbr_processors
 #SBATCH --mem=${memory_usage}G
-#SBATCH --time=4:00:00
+#SBATCH --time=2-00:00:00
 
 #SBATCH --output=$output_file
 #SBATCH --error=$error_file
@@ -1331,12 +1359,12 @@ sub limit_number_jobs_cluster {
     my ($max_jobs, $sh_file, $job_prefix, $cluster_account) = @_;
     my $script_content = '#!/usr/bin/env perl'."\n\n";
 
-    $script_content .= 'use strict'."\n";
-    $script_content .= 'use warnings'."\n";
-    $script_content .= 'use diagnostics'."\n\n";
+    $script_content .= 'use strict;'."\n";
+    $script_content .= 'use warnings;'."\n";
+    $script_content .= 'use diagnostics;'."\n\n";
 
     $script_content .= 'my $job_limit       = '.$max_jobs.'; # Number of simultaneous jobs running'."\n";
-    $script_content .= 'my $cluster_account = "'.$cluster_account."\";\n";
+    $script_content .= 'my $account = "'.$cluster_account."\";\n";
     $script_content .= 'my $run_all_sh_file = "'.$sh_file."\";\n";
     $script_content .= 'my $job_name_prefix = "'.$job_prefix."\";\n\n";
 

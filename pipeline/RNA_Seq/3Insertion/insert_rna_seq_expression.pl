@@ -4,13 +4,17 @@
 use strict;
 use warnings;
 use diagnostics;
+use Parallel::ForkManager;
+
 
 # Frederic Bastian, created November 2012, last update Dec. 2016
 
 # USAGE: perl insert_rna_seq_expression.pl -bgee=connection_string <OPTIONAL: -debug>
-# After the insertion of RNA-Seq data, this script inserts the data
-# into the expression table and update the rnaSeqResult table.
+# After the insertion of bulk RNA-Seq data, this script inserts data
+# into the expression table and update the rnaSeqLibraryAnnotatedSampleGeneResult table.
 # -debug: if provided, run in verbose mode (print the update/insert SQL queries, not executing them)
+#TODO: for Bgee 16 we have to homogeneise how expression IDs are created among RNASeq datatypes and
+# refactor the code to run that step only once for all RNASeq (bulk, full-length, droplet)
 
 #############################################################
 
@@ -21,10 +25,12 @@ use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
 use Utils;
 
 # Define arguments & their default value
-my ($bgee_connector) = ('');
-my ($debug)          = (0);
-my %opts = ('bgee=s'     => \$bgee_connector,   # Bgee connector string
-            'debug'      => \$debug,
+my $bgee_connector = '';
+my $debug          = 0;
+my $number_threads = 0;
+my %opts = ('bgee=s'                => \$bgee_connector,   # Bgee connector string
+            'number_threads=s'      => \$number_threads,   # number of threads defining the number of parallel updates in the database
+            'debug'                 => \$debug,
            );
 
 # Check arguments
@@ -33,6 +39,7 @@ if ( !$test_options || $bgee_connector eq '' ){
     print "\n\tInvalid or missing argument:
 \te.g. $0  -bgee=\$(BGEECMD)
 \t-bgee             Bgee connector string
+\t-number_threads   Number of threads used to insert expression
 \t-debug            printing the update/insert SQL queries, not executing them
 \n";
     exit 1;
@@ -45,142 +52,114 @@ $| = 1;
 
 
 ##########################################
-# GET CONDITIONS STUDIED WITH RNA-SEQ    #
+# GET CONDITIONS STUDIED WITH BULK RNA-SEQ    #
 ##########################################
 print "Retrieving conditions...\n";
 
-my $queryConditions = $bgee->prepare('SELECT DISTINCT t2.exprMappedConditionId FROM rnaSeqLibrary AS t1
-                                      INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId');
+# retrieve conditions only for bulk RNASeq for which at least one library does not have any expressionId
+my $queryConditions = $bgee->prepare('SELECT DISTINCT t2.exprMappedConditionId'.
+                                     ' FROM rnaSeqLibraryAnnotatedSample AS t1'.
+                                     ' INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId'.
+                                     ' INNER JOIN rnaSeqLibrary AS t3 ON t3.rnaSeqLibraryId = t1.rnaSeqLibraryId'.
+                                     ' WHERE t3.rnaSeqTechnologyIsSingleCell = 0'.
+                                     ' AND NOT EXISTS (SELECT 1 FROM rnaSeqLibraryAnnotatedSample AS t4'.
+                                     ' INNER JOIN rnaSeqLibraryAnnotatedSampleGeneResult AS t5'.
+                                     ' ON t5.rnaSeqLibraryAnnotatedSampleId = t4.rnaSeqLibraryAnnotatedSampleId'.
+                                     ' WHERE t1.rnaSeqLibraryId = t4.rnaSeqLibraryId'.
+                                     ' AND t5.expressionId IS NOT NULL)');
 $queryConditions->execute()  or die $queryConditions->errstr;
 my @exprMappedConditions = ();
 while ( my @data = $queryConditions->fetchrow_array ){
     push(@exprMappedConditions, $data[0]);
 }
-
+$queryConditions->finish;
 print 'Done, ', scalar(@exprMappedConditions), " conditions retrieved.\n";
-
-
-#################################################
-# EXAMINE EXPRESSION CALLS ACROSS ALL SAMPLES   #
-# TO KNOW WHICH GENES ARE NEVER SEEN AS PRESENT #
-#################################################
-print "Examining all gene results to update genes never seen as 'present'...\n";
-my $findPresentGenes = $bgee->prepare('CREATE TEMPORARY TABLE tempPresentRnaSeq (PRIMARY KEY (bgeeGeneId)) ENGINE=InnoDB
-                                        AS (
-                                            SELECT DISTINCT bgeeGeneId
-                                            FROM rnaSeqResult WHERE detectionFlag = "'.$Utils::PRESENT_CALL.'"
-                                        )');
-if ( $debug ){
-    print 'CREATE TEMPORARY TABLE tempPresentRnaSeq (PRIMARY KEY (bgeeGeneId)) ENGINE=InnoDB
-           AS (SELECT DISTINCT bgeeGeneId FROM rnaSeqResult WHERE detectionFlag = "'.$Utils::PRESENT_CALL.'")'."\n";
-} else {
-    $findPresentGenes->execute()  or die $findPresentGenes->errstr;
-}
-
-# The "not excluded" status has to be set first, for the next query to properly take into account "undefined" status
-#XXX: Do not understand the point of this query as reasonForExclusion is always initialized with value $Utils::CALL_NOT_EXCLUDED
-#TODO: Should remove this query or initialize reasonForExclusion with value $Utils::EXCLUDED_FOR_UNDEFINED
-my $presentUp = $bgee->prepare('UPDATE rnaSeqResult AS t1
-                                INNER JOIN tempPresentRnaSeq AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId
-                                SET reasonForExclusion = "'.$Utils::CALL_NOT_EXCLUDED.'"');
-if ( $debug ){
-    print 'UPDATE rnaSeqResult AS t1
-                                INNER JOIN tempPresentRnaSeq AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId
-                                SET reasonForExclusion = "'.$Utils::CALL_NOT_EXCLUDED.'"'."\n";
-} else{
-    $presentUp->execute()  or die $presentUp->errstr;
-}
-#XXX at this point reasonForExclusion is always $Utils::CALL_NOT_EXCLUDED. should remove last where constraint
-my $preFilteringUp = $bgee->prepare('UPDATE rnaSeqResult AS t1
-                                     LEFT OUTER JOIN tempPresentRnaSeq AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId
-                                     SET reasonForExclusion = "'.$Utils::EXCLUDED_FOR_PRE_FILTERED.'"
-                                     WHERE t2.bgeeGeneId IS NULL AND reasonForExclusion != "'.$Utils::EXCLUDED_FOR_UNDEFINED.'"');
-if ( $debug ){
-    print 'UPDATE rnaSeqResult AS t1
-                                     LEFT OUTER JOIN tempPresentRnaSeq AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId
-                                     SET reasonForExclusion = "'.$Utils::EXCLUDED_FOR_PRE_FILTERED.'"
-                                     WHERE t2.bgeeGeneId IS NULL AND reasonForExclusion != "'.$Utils::EXCLUDED_FOR_UNDEFINED.'"'."\n";
-} else {
-    $preFilteringUp->execute()  or die $preFilteringUp->errstr;
-}
 
 # Absent calls are not considered for all biotypes depending on the protocol used to generate a library.
 # biotypes not considered for absent calls depending on the protocols are described in the table rnaSeqProtocolToBiotypeExcludedAbsentCalls.
 # This query update reason of exclusion for such calls if they are not already exluded for prefiltering (gene never present)
-my $updExclResult = $bgee->prepare('UPDATE rnaSeqResult AS t1 
-                                INNER JOIN rnaSeqLibrary AS t2 ON t1.rnaSeqLibraryId = t2.rnaSeqLibraryId 
-                                INNER JOIN gene as t3 on t1.bgeeGeneId = t3.bgeeGeneId 
-                                INNER JOIN rnaSeqProtocolToBiotypeExcludedAbsentCalls AS t4 ON t2.rnaSeqProtocolId = t4.rnaSeqProtocolId 
-                                  AND t3.geneBioTypeId = t4.geneBioTypeId 
-                                SET t1.reasonForExclusion = "'.$Utils::EXCLUDED_FOR_ABSENT_CALLS.'" 
-                                WHERE t1.detectionFlag = "absent" 
-                                  AND t1.reasonForExclusion !="'.$Utils::EXCLUDED_FOR_PRE_FILTERED.'"');
+my $updExclResult = $bgee->prepare( 'UPDATE rnaSeqLibraryAnnotatedSampleGeneResult AS t1'.
+                                    ' INNER JOIN rnaSeqLibraryAnnotatedSample AS t2 ON t1.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId'.
+                                    ' INNER JOIN rnaSeqLibrary AS t5 ON t2.rnaSeqLibraryId = t5.rnaSeqLibraryId'.
+                                    ' INNER JOIN gene as t3 on t1.bgeeGeneId = t3.bgeeGeneId'.
+                                    ' INNER JOIN rnaSeqPopulationCaptureToBiotypeExcludedAbsentCalls AS t4'.
+                                    ' ON t5.rnaSeqPopulationCaptureId = t4.rnaSeqPopulationCaptureId'.
+                                    ' AND t3.geneBioTypeId = t4.geneBioTypeId'.
+                                    ' SET t1.reasonForExclusion = "'.$Utils::EXCLUDED_FOR_ABSENT_CALLS.'"'.
+                                    ' WHERE t1.pValue > 0.05'.
+                                    ' AND t1.expressionId IS NULL'.
+                                    # condition to remove once the script is used for all RNASeq datatypes
+                                    ' AND t5.rnaSeqTechnologyIsSingleCell = 0 '.
+                                    #TODO: have to keep this condition as we do not generate calls for Bgee 15.2 and
+                                    # some genes were excluded for prefiltering for Bgee 15.0. No genes prefiltered anymore
+                                    # so this condition can be removed for the next major release.
+                                    ' AND t1.reasonForExclusion !="'.$Utils::EXCLUDED_FOR_PRE_FILTERED.'"'.
+                                    #for single cell all absent calls have already been inserted with a reason for exclusion
+                                    # equal to "absent calls not reliatble". This filtering avoid updating again those data
+                                    ' AND t1.reasonForExclusion !="'.$Utils::EXCLUDED_FOR_ABSENT_CALLS.'"');
 if ( $debug ){
-    print 'UPDATE rnaSeqResult AS t1 
-                                INNER JOIN rnaSeqLibrary AS t2 ON t1.rnaSeqLibraryId = t2.rnaSeqLibraryId 
-                                INNER JOIN gene as t3 on t1.bgeeGeneId = t3.bgeeGeneId 
-                                INNER JOIN rnaSeqProtocolToBiotypeExcludedAbsentCalls AS t4 ON t2.rnaSeqProtocolId = t4.rnaSeqProtocolId 
-                                  AND t3.geneBioTypeId = t4.geneBioTypeId 
-                                SET t1.reasonForExclusion = "'.$Utils::EXCLUDED_FOR_ABSENT_CALLS.'" 
-                                WHERE t1.detectionFlag = "absent" 
-                                  AND t1.reasonForExclusion !="'.$Utils::EXCLUDED_FOR_PRE_FILTERED.'"';
+    print                           'UPDATE rnaSeqLibraryAnnotatedSampleGeneResult AS t1'.
+                                    ' INNER JOIN rnaSeqLibraryAnnotatedSample AS t2 ON t1.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId'.
+                                    ' INNER JOIN rnaSeqLibrary AS t5 ON t2.rnaSeqLibraryId = t5.rnaSeqLibraryId'.
+                                    ' INNER JOIN gene as t3 on t1.bgeeGeneId = t3.bgeeGeneId'.
+                                    ' INNER JOIN rnaSeqPopulationCaptureToBiotypeExcludedAbsentCalls AS t4'.
+                                    ' ON t5.rnaSeqPopulationCaptureId = t4.rnaSeqPopulationCaptureId'.
+                                    ' AND t3.geneBioTypeId = t4.geneBioTypeId'.
+                                    ' SET t1.reasonForExclusion = "'.$Utils::EXCLUDED_FOR_ABSENT_CALLS.'"'.
+                                    ' WHERE t1.pValue > 0.05'.
+                                    ' AND t1.expressionId IS NULL'.
+                                    ' AND t5.rnaSeqTechnologyIsSingleCell = 0 '.
+                                    ' AND t1.reasonForExclusion !="'.$Utils::EXCLUDED_FOR_PRE_FILTERED.'"'.
+                                    ' AND t1.reasonForExclusion !="'.$Utils::EXCLUDED_FOR_ABSENT_CALLS.'"';
 } else {
     $updExclResult->execute()  or die $updExclResult->errstr;
 }
-my $dropTempPresent = $bgee->prepare('DROP TABLE tempPresentRnaSeq');
-if ( $debug ){
-    print 'DROP TABLE tempPresentRnaSeq';
-} else {
-    $dropTempPresent->execute()  or die $dropTempPresent->errstr;
-}
+$updExclResult->finish;
+$bgee->disconnect;
 
-print "Done\n";
+print "Done excluding absent calls based on biotype\n";
 
 ##########################################
 # PREPARE QUERIES                        #
 ##########################################
 
 # Insert/update expression
-my $insUpExpr   = $bgee->prepare('INSERT INTO expression (bgeeGeneId, conditionId) VALUES (?, ?)
-                                  ON DUPLICATE KEY UPDATE expressionId=LAST_INSERT_ID(expressionId)');
-
+my $insUpExprQuery =        'INSERT INTO expression (bgeeGeneId, conditionId) VALUES (?, ?) '.
+                            'ON DUPLICATE KEY UPDATE expressionId=LAST_INSERT_ID(expressionId)';
 
 # Query to update rnaSeqResult with the expressionId and reasonForExclusion for present calls
-my $updResult = $bgee->prepare('UPDATE rnaSeqResult AS t1
-                                INNER JOIN rnaSeqLibrary AS t2 ON t1.rnaSeqLibraryId = t2.rnaSeqLibraryId
-                                INNER JOIN cond AS t3 ON t2.conditionId = t3.conditionId
-                                SET expressionId = ?, reasonForExclusion = ?
-                                WHERE bgeeGeneId = ? and t3.exprMappedConditionId = ?
-                                AND t1.reasonForExclusion != "'.$Utils::EXCLUDED_FOR_PRE_FILTERED.'"');
+my $updResultQuery =        'UPDATE rnaSeqLibraryAnnotatedSampleGeneResult AS t1 '.
+                            ' INNER JOIN rnaSeqLibraryAnnotatedSample AS t2'.
+                            ' ON t1.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId'.
+                            ' INNER JOIN cond AS t3 ON t2.conditionId = t3.conditionId'.
+                            ' SET expressionId = ?'.
+                            ' WHERE bgeeGeneId = ? and t3.exprMappedConditionId = ?'.
+                            ' AND t1.reasonForExclusion = "'.$Utils::CALL_NOT_EXCLUDED.'"'.
+                            ' AND t1.expressionId IS NULL';
 
 # query to get all the RNA-Seq results for a condition
-my $queryResults = $bgee->prepare("SELECT t1.bgeeGeneId, t2.rnaSeqExperimentId, t1.rnaSeqLibraryId,
-                                          t1.detectionFlag, t1.pValue
-                                   FROM rnaSeqResult AS t1
-                                   INNER JOIN rnaSeqLibrary AS t2 ON t1.rnaSeqLibraryId = t2.rnaSeqLibraryId
-                                   INNER JOIN cond AS t3 ON t2.conditionId = t3.conditionId
-                                   WHERE t3.exprMappedConditionId = ? AND t1.reasonForExclusion = '".$Utils::CALL_NOT_EXCLUDED."'");
-
-
-##########################################
-# SUBROUTINES                            #
-##########################################
-# subroutine to insert/update in expression table
-# return the relevant expressionId
-sub add_expression {
-    my ($bgeeGeneId, $exprMappedConditionId) = @_;
-
-    $insUpExpr->execute($bgeeGeneId, $exprMappedConditionId)  or die $insUpExpr->errstr;
-    return $bgee->{'mysql_insertid'}; # expr_id
-}
-
+my $queryResultsQuery =     'SELECT distinct t1.bgeeGeneId FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t1'.
+                            ' INNER JOIN rnaSeqLibraryAnnotatedSample AS t2 ON t1.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId'.
+                            ' INNER JOIN cond AS t3 ON t2.conditionId = t3.conditionId'.
+                            ' WHERE t3.exprMappedConditionId = ? AND t1.reasonForExclusion = "'.$Utils::CALL_NOT_EXCLUDED.'"';
 
 ##########################################
 # ITERATING CONDITIONS TO INSERT DATA    #
 ##########################################
 
+my $pm = new Parallel::ForkManager($number_threads);
 print "Processing conditions...\n";
 for my $exprMappedConditionId ( @exprMappedConditions ){
+    #start parallelization
+    my $pid = $pm->start and next;
+
+    # start thread specific connection to the database
+    my $bgee_thread = Utils::connect_bgee_db($bgee_connector);
+
+    # prepare queries
+    my $queryResults = $bgee_thread->prepare($queryResultsQuery);
+    my $updResult = $bgee_thread->prepare($updResultQuery);
+    my $insUpExpr   = $bgee_thread->prepare($insUpExprQuery);
     print "\tconditionId: $exprMappedConditionId\n";
 
     # retrieve genes results for this condition
@@ -188,12 +167,8 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
     $queryResults->execute($exprMappedConditionId)  or die $queryResults->errstr;
     my %results = ();
     while ( my @data = $queryResults->fetchrow_array ){
-        #data[0] = bgeeGeneId, data[1] = rnaSeqExperimentId, data[2] = rnaSeqLibraryId, data[3] = detectionFlag, data[4] = pvalue
-        #XXX here it could be enough to create a hash like that : $results{$data[0]} = 1. However we kept 
-        # information about experiments/libraries in case we have to insert them as a JSON field in the 
-        # future. To update if pvalue is useless once full pipeline has been run for Bgee 15
-        $results{$data[0]}->{$data[1]}->{$data[2]}->{'call'}    = $data[3];
-        $results{$data[0]}->{$data[1]}->{$data[2]}->{'pvalue'}  = $data[4];
+        # $data[0] = bgeeGeneId
+        $results{$data[0]} = 1;
     }
     print "\t\tDone, ", scalar(keys %results), ' genes retrieved. ',
           "Generating expression summary...\n";
@@ -202,39 +177,42 @@ for my $exprMappedConditionId ( @exprMappedConditions ){
     # (one row for a gene-condition)
     for my $geneId ( keys %results ){
 
-        my $reasonForExclusion =  $Utils::CALL_NOT_EXCLUDED;
         my $expressionId = undef;
 
         # insert or update the expression table if not only undefined calls
-        #TODO remove this condition if default exlusion type is still $Utils::CALL_NOT_EXCLUDED once bgee 15.0 is created
-        if ( $reasonForExclusion eq $Utils::CALL_NOT_EXCLUDED ){
-            if ( $debug ){
-                print "INSERT INTO expression (bgeeGeneId, conditionId) VALUES ($geneId, $exprMappedConditionId)...\n";
-            } else {
-                $expressionId = add_expression($geneId, $exprMappedConditionId);
-            }
+        if ( $debug ){
+            print "INSERT INTO expression (bgeeGeneId, conditionId) VALUES ($geneId, $exprMappedConditionId)...\n";
         } else {
-            warn "No calls available for geneId $geneId in exprMappedConditionId $exprMappedConditionId\n";
+            $insUpExpr->execute($geneId, $exprMappedConditionId)  or die $insUpExpr->errstr;
+            $expressionId = $bgee_thread->{'mysql_insertid'};
         }
 
         # Now update the related rnaSeqResults
         if ( $debug ){
             my $printExprId = 'notRetrievedForLog';
-            print "UPDATE rnaSeqResult AS t1 ",
-                  "INNER JOIN rnaSeqLibrary AS t2 ON t1.rnaSeqLibraryId = t2.rnaSeqLibraryId ",
+            print "UPDATE rnaSeqLibraryAnnotatedSampleGeneResult AS t1 ",
+                  "INNER JOIN rnaSeqLibraryAnnotatedSample AS t2 ",
+                  "ON t1.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId ",
                   "INNER JOIN cond AS t3 ON t2.conditionId = t3.conditionId ",
-                  "SET expressionId=$printExprId, reasonForExclusion=$reasonForExclusion ",
-                  "WHERE bgeeGeneId=$geneId and t3.exprMappedConditionId = $exprMappedConditionId ",
-                  "and t1.reasonForExclusion != '".$Utils::EXCLUDED_FOR_PRE_FILTERED."'\n";
+                  "SET expressionId = $printExprId ",
+                  "WHERE bgeeGeneId = $geneId AND t3.exprMappedConditionId = $exprMappedConditionId ",
+                  "AND t1.reasonForExclusion = \"".$Utils::CALL_NOT_EXCLUDED."\"".
+                  "AND t1.expressionId IS NULL\n";
+
         } else {
-            $updResult->execute($expressionId, $reasonForExclusion, $geneId, $exprMappedConditionId)
+            $updResult->execute($expressionId, $geneId, $exprMappedConditionId)
                 or die $updResult->errstr;
         }
     }
+    $insUpExpr->finish;
+    $updResult->finish;
+    $queryResults->finish;
+    $bgee_thread->disconnect;
+    $pm->finish;
 }
+$pm->wait_all_children;
 
-$bgee->disconnect;
-print "Done\n"  if ( $debug );
+print "Done inserting expression IDs\n"  if ( $debug );
 
 exit 0;
 

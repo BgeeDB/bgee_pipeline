@@ -68,6 +68,12 @@ else {
 }
 
 
+my $speciesDataSource = $dbh->prepare('SELECT dataSourceId FROM species WHERE speciesId=?');
+$speciesDataSource->execute($speciesBgee)  or die $speciesDataSource->errstr;
+my @dataSources = map { $_->[0] } @{$speciesDataSource->fetchall_arrayref};
+$speciesDataSource->finish();
+die "Too many dataSources returned [@dataSources]\n"  if ( exists $dataSources[1] );
+
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #NOTE currently this script is tested only with RefSeq GTF as source!
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -224,8 +230,8 @@ $InsertedDataSources{'zfin_id'}          = $InsertedDataSources{'zfin'};
 
 ## Gene info (id, description)
 # Get individual gene info
-my $geneDB       = $dbh->prepare('INSERT INTO gene (geneId, geneName, geneDescription, geneBioTypeId, speciesId)
-                                  VALUES (?, ?, ?, (SELECT geneBioTypeId FROM geneBioType WHERE geneBioTypeName=?), ?)');
+my $geneDB       = $dbh->prepare('INSERT INTO gene (geneId, geneName, geneDescription, geneBioTypeId, speciesId, dataSourceId)
+                                  VALUES (?, ?, ?, (SELECT geneBioTypeId FROM geneBioType WHERE geneBioTypeName=?), ?, ?)');
 my $synonymDB    = $dbh->prepare('INSERT INTO geneNameSynonym (bgeeGeneId, geneNameSynonym)
                                   VALUES (?, ?)');
 my $xrefDB       = $dbh->prepare('INSERT INTO geneXRef (bgeeGeneId, XRefId, XRefName, dataSourceId)
@@ -344,7 +350,7 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
     ## Insert gene info
     my $bgeeGeneId;
     if ( ! $debug ){
-        $geneDB->execute($stable_id, $external_name, $description, $biotype, $speciesBgee)  or die "[$stable_id]", $geneDB->errstr;
+        $geneDB->execute($stable_id, $external_name, $description, $biotype, $speciesBgee, $dataSources[0])  or die "[$stable_id]", $geneDB->errstr;
         $bgeeGeneId = $dbh->{'mysql_insertid'};
         die "Cannot get bgeeGeneId [$bgeeGeneId]\n"  if ( $bgeeGeneId !~ /^\d+$/ );
     }
@@ -379,6 +385,21 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
         next  if ( $xref =~ /;/ );
         my ($dbname, $pid) = split(':', $xref);
         if ( ! $debug ){
+            #NOTE Catch particular RefSeq sections:
+            ## RefSeq ids: see https://ftp.ncbi.nih.gov/refseq/release/release-notes/
+            ##             protein      NP_  XP_  ZP_  AP_  YP_       WP_
+            ##              RNA/mRNA    NM_  NR_  XM_  XR_
+            ##             genomic/DNA  NC_  NG_  NT_  NW_  NS_  AC_  NZ_
+            ## ZP_ and NS_ look deprecated and unused now
+            if ( $pid =~ /^[NX][MR]_/ ){
+                $dbname = 'RefSeq nucleotide';
+            }
+            elsif ( $pid =~ /^[NXAYWZ]P_/ ){
+                $dbname = 'RefSeq protein';
+            }
+            elsif ( $pid =~ /^N[CGTWZS]_/ || $pid =~ /^AC_/ ){
+                $dbname = 'RefSeq genomic';
+            }
             $xrefDB->execute($bgeeGeneId, $pid, '', $InsertedDataSources{lc $dbname})  or die "[$stable_id]", $xrefDB->errstr;
         }
         else {

@@ -14,13 +14,13 @@
 #SBATCH --export=NONE
 #SBATCH --job-name=download_cleaning_data
 
-module load Bioinformatics/Software/vital-it
+module use /software/module/
 
 module add R/3.6.1
 
 
 export SCRIPT_PATH=/users/smoretti/bgee_pipeline.git/pipeline/scRNA_Seq/Full_Length_Protocols
-export metadata_info=../../../generated_files/scRNA_Seq/metadata_info.txt
+export metadata_info=../../../generated_files/scRNA_Seq/Full_length/metadata_info.txt
 export librariesDownloadedJura=../../../generated_files/scRNA_Seq/juraLibrariesDownloaded.tsv
 export output_folder=/work/FAC/FBM/DEE/mrobinso/bgee/downloads/scRNA_Seq_All/scRNASeq_libraries_FullLength/
 export ROUT=/work/FAC/FBM/DEE/mrobinso/bgee/downloads/scRNA_Seq_All/

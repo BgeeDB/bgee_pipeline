@@ -1,0 +1,15 @@
+#The application directory
+APP_DIR = ~/PycharmProjects/OMA_Bgee_xref
+APP_FILE = $(APP_DIR)/main.py
+
+#python 3 or superior version path
+PYTHON= python3
+
+#pipenv path associated to PYTHON (previous variable)
+PIPENV = pipenv
+
+define PARAMETERS
+from fixed_parameters import *
+bgee_genes_file = '/Users/tarcisio/Downloads/bgeeGenes.csv'
+output_file_path = './oma-bgee-xref'
+endef

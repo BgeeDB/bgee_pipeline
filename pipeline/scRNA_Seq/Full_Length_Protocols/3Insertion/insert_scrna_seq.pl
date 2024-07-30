@@ -55,7 +55,7 @@ my %opts = ('bgee=s'                => \$bgee_connector,           # Bgee connec
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $bgee_connector eq '' || $scRnaSeqExperiment eq '' || $library_info eq ''  || $excluded_libraries eq '' || $library_stats eq '' || $report_info eq '' || $all_results eq '' || $sex_info eq '' || $extraMapping eq '' || $Aport == 0 || $Sport == 0 ){
     print "\n\tInvalid or missing argument:
-\te.g., $0  -bgee=\$(BGEECMD) -scRnaSeqExperiment=scRNAseqExperiment.tsv -library_info=\$(SC_RNASEQ_SAMPINFO_PASS_FILEPATH) -excluded_libraries=\$(SC_RNASEQ_SAMPINFO_NOT_PASS_FILEPATH) -library_stats=\$(SCRNASEQSAMPSTATS) -report_info=\$(SCRNASEQREPORTINFO) -all_results=\$(SCRNASEQALLRES) -sex_info=\$(UBERON_SEX_INFO_FILE_PATH) -extraMapping=\$(EXTRAMAPPING_FILEPATH) -Aport=\$(IDMAPPINGPORT) -Sport=\$(STGMAPPINGPORT)    > $@.tmp 2>warnings.$@
+\te.g., $0  -bgee=\$(BGEECMD) -scRnaSeqExperiment=scRNAseqExperiment.tsv -library_info=\$(SC_RNASEQ_SAMPINFO_PASS_FILEPATH) -excluded_libraries=\$(SC_RNASEQ_SAMPINFO_NOT_PASS_FILEPATH) -library_stats=\$(SC_RNASEQ_SAMP_STATS_FL) -report_info=\$(SC_RNASEQ_REPORT_INFO_FL) -all_results=\$(SC_RNASEQ_ALL_RES_FL) -sex_info=\$(UBERON_SEX_INFO_FILE_PATH) -extraMapping=\$(EXTRAMAPPING_FILEPATH) -Aport=\$(IDMAPPINGPORT) -Sport=\$(STGMAPPINGPORT)    > $@.tmp 2>warnings.$@
 \t-bgee                Bgee connector string
 \t-scRnaSeqExperiment  single cell RNAseq experiment file
 \t-library_info        NEW_scRNASeq_sample_info.txt file
@@ -77,7 +77,7 @@ require("$FindBin::Bin/../../rna_seq_utils.pl");
 # Bgee db connection
 my $bgee = Utils::connect_bgee_db($bgee_connector);
 
-# Library info used to launch the pipeline
+# Library info generated after QC. Contains only library that passed the QCs
 my %libraries         = getAllFullLengthScRnaSeqLibrariesInfo($library_info);
 print "\t", scalar keys %libraries, " experiments with libraries mapped.\n";
 my %excludedLibraries = getAllFullLengthScRnaSeqLibrariesInfo($excluded_libraries);
@@ -187,6 +187,46 @@ for my $platformId ( sort keys %platforms ){
 $insPlatform->finish();
 print "Done\n\n";
 
+######################
+# INSERT ĜENOTYPES   #
+######################
+print "Inserting genotypes...\n";
+#Retrieve already inserted genotypes (useful for incremental updates)
+my %insertedGenotypes = ();
+my $retrieveGenotype = $bgee->prepare('SELECT genotypeId, genotypeName from genotype');
+$retrieveGenotype->execute()  or die $retrieveGenotype->errstr;
+while ( my @data = $retrieveGenotype->fetchrow_array ){
+    $insertedGenotypes{$data[1]} = $data[0];
+}
+# Retrieve all genotypes used for the analyzed libraries and not already inserted
+my %genotypes = ();
+for my $expId ( keys %libraries ){
+    foreach my $libraryId ( keys %{$libraries{$expId}} ){
+        if ( $libraries{$expId}->{$libraryId}->{'genotype'} ne '' &&
+            !exists $insertedGenotypes{$libraries{$expId}->{$libraryId}->{'genotype'}}){
+            $genotypes{$libraries{$expId}->{$libraryId}->{'genotype'}}++;
+        }
+    }
+}
+my $insGenotype = $bgee->prepare('INSERT INTO genotype (genotypeName) VALUES (?)');
+# now insert the genotype(s)
+for my $genotypeName ( sort keys %genotypes ){
+    if ( $debug ){
+        print 'INSERT INTO genotype: ', $genotypeName, "\n";
+    }
+    else {
+        $insGenotype->execute($genotypeName) or die $insGenotype->errstr;
+    }
+}
+$insGenotype->finish();
+#retrieve again genotypes present in the database now that all of them are inserted
+$retrieveGenotype->execute()  or die $retrieveGenotype->errstr;
+while ( my @data = $retrieveGenotype->fetchrow_array ){
+    $insertedGenotypes{$data[1]} = $data[0];
+}
+$retrieveGenotype->finish();
+print "Done\n\n";
+
 
 ################################################
 # GET GENE INTERNAL IDS                        #
@@ -244,12 +284,12 @@ my $stage_equivalences = Utils::get_stage_equivalences($bgee);
 print "Inserting libraries and all results...\n";
 # query for samples insertion
 my $insLib = $bgee->prepare('INSERT INTO scRnaSeqFullLengthLibrary (scRnaSeqFullLengthLibraryId, scRnaSeqFullLengthExperimentId,
-                             scRnaSeqFullLengthPlatformId, conditionId, tpmThreshold,
+                             scRnaSeqFullLengthPlatformId, genotypeId, conditionId, tpmThreshold,
                              allGenesPercentPresent, proteinCodingGenesPercentPresent,
                              intergenicRegionsPercentPresent, meanTpmReferenceIntergenicDistribution, 
                              sdTpmReferenceIntergenicDistribution, pValueThreshold, allReadsCount, 
                              mappedReadsCount, minReadLength, maxReadLength, libraryType, libraryOrientation)
-                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
 
 # Excluded libraries
@@ -326,6 +366,7 @@ for my $expId ( sort keys %libraries ){
         if ( $debug ){
             print 'INSERT INTO scRnaSeqFullLengthLibrary: ', $libraryId,                        ' - ',
                   $expId, ' - ', $libraries{$expId}->{$libraryId}->{'platform'},    ' - ',
+                  $insertedGenotypes{$libraries{$expId}->{$libraryId}->{'genotype'}}, ' - ',
                   $condKeyMap->{'conditionId'},                                     ' - ',
                   $librariesStats{$libraryId}->{'cutoffTPM'},                       ' - ',
                   $librariesStats{$libraryId}->{'allGenesPercentPresent'},          ' - ',
@@ -345,6 +386,7 @@ for my $expId ( sort keys %libraries ){
             $insLib->execute($libraryId,
                              $expId,
                              $libraries{$expId}->{$libraryId}->{'platform'},
+                             $insertedGenotypes{$libraries{$expId}->{$libraryId}->{'genotype'}},
                              $condKeyMap->{'conditionId'},
                              $librariesStats{$libraryId}->{'cutoffTPM'},
                              $librariesStats{$libraryId}->{'allGenesPercentPresent'},

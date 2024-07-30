@@ -18,6 +18,7 @@ create table species (
 -- In bgeelite we added a default value corresponding to an empty string ''
     speciesCommonName varchar(70) default '' COMMENT 'NCBI species common name',
     genomeVersion varchar(50) not null,
+    genomeAssemblyXRef varchar(250) not null default '' COMMENT 'XRef to the genome assembly',
 -- ID of the species whose the genome was used for this species. This is used
 -- when a genome is not in Ensembl. For instance, for bonobo (ID 9597), we use the chimp
 -- genome (ID 9598), because bonobo is not in Ensembl.
@@ -41,6 +42,13 @@ create table gene (
     FOREIGN KEY(speciesId) REFERENCES species(speciesId) ON DELETE CASCADE
 ) engine = innodb;
 
+create table geneXRef (
+    bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
+    XRefUrl varchar(255) COMMENT 'Cross-reference URL',
+    dataSourceName varchar(255) not null COMMENT 'Data Source name the cross-reference comes from',
+    PRIMARY KEY (bgeeGeneId,XRefUrl),
+    FOREIGN KEY(bgeeGeneId) REFERENCES gene(bgeeGeneId) ON DELETE CASCADE
+) engine = innodb;
 
 create table stage (
     stageId varchar(20) not null COMMENT 'Developmental stage id',
@@ -73,7 +81,7 @@ create table globalExpression (
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID, not stable between releases.',
     globalConditionId mediumint unsigned not null COMMENT 'ID of condition in the related condition table ("globalCond"), not stable between releases.',
     summaryQuality varchar(10) not null,
-    rawRank decimal(9, 2) unsigned not null COMMENT 'Normalized rank for this gene-condition after normalization over all data types, conditions and species',
+    globalRank decimal(9, 2) unsigned not null COMMENT 'Normalized rank for this gene-condition after normalization over all data types, conditions and species',
     score decimal(9, 5) unsigned not null COMMENT 'Use the minimum and maximum rank of the species to normalize the expression to a value between 0 and 100',
     pValue decimal(31, 30) unsigned default null,
 	propagationOrigin varchar(20) not null COMMENT 'The origin of the propagated expression calls : self, self and descendant, self and ancestor, or all',
@@ -84,4 +92,3 @@ create table globalExpression (
     FOREIGN KEY(globalConditionId) REFERENCES globalCond(globalConditionId) ON DELETE CASCADE
 ) engine = innodb;
 -- COMMENT = 'This table is a summary of expression calls for a given gene-condition (anatomical entity - developmental stage), over all the experiments and data types, with all data propagated and reconciled.';
-

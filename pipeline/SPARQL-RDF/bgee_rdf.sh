@@ -72,7 +72,7 @@ then
 fi
 
 #Run ontop tool
-$ontop_dir_path/ontop materialize --separate-files -m $obda_file_path -f turtle -o $output_dir_path -p $ontop_property_file -t $ontology_file  --disable-reasoning 
+$ontop_dir_path/ontop materialize --separate-files -m $obda_file_path -f turtle -o $output_dir_path -p $ontop_property_file -t $ontology_file 
 
 # for MacOS it has the empty string argument ''
 #sed -i '' 's," \.,"^^xsd:double.,g' $output_dir_path/http___purl_org_genex_hasExpressionLevelP_*.ttl 

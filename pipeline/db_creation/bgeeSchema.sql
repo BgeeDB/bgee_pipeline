@@ -32,21 +32,21 @@ create table author (
 
 create table dataSource (
     dataSourceId          smallInt unsigned not null,
-    dataSourceName        varchar(255)       not null             COMMENT 'Data source name',
+    dataSourceName        varchar(55)       not null             COMMENT 'Data source name',
     XRefUrl               varchar(255)      not null default ''  COMMENT 'URL for cross-references to data sources',
 -- path to experiment for expression data sources (ArrayExpress, GEO, NCBI, in situ databases, ...)
 -- parameters such as experimentId are defined by the syntax [experimentId] for instance
-    experimentUrl         varchar(255)      not null default ''  COMMENT 'URL to experiment for expression data sources',
+    experimentUrl         varchar(100)      not null default ''  COMMENT 'URL to experiment for expression data sources',
 -- path to in situ evidence for in situ databases,
 -- to Affymetrix chips for affymetrix data
 -- parameters such as experimentId are defined by the syntax [experimentId] for instance
-    evidenceUrl           varchar(255)      not null default ''  COMMENT 'URL to evidence for expression data sources',
+    evidenceUrl           varchar(100)      not null default ''  COMMENT 'URL to evidence for expression data sources',
 -- url to the home page of the ressource
-    baseUrl               varchar(255)      not null default ''  COMMENT 'URL to the home page of data sources',
+    baseUrl               varchar(100)      not null default ''  COMMENT 'URL to the home page of data sources',
     releaseDate           date                  null             COMMENT 'Date of data source used',
 -- e.g.: Ensembl 87, git version xxx
-    releaseVersion        varchar(255)       not null default ''  COMMENT 'Version of data source used',
-    dataSourceDescription TEXT                                   COMMENT 'Description of data source',
+    releaseVersion        varchar(35)       not null default ''  COMMENT 'Version of data source used',
+    dataSourceDescription varchar(200)                           COMMENT 'Description of data source',
 -- to define if this dataSource should be displayed on the page listing data sources
     toDisplay             boolean           not null default 0   COMMENT 'Display this data source in listing data source page?',
 -- a cat to organize the display
@@ -60,7 +60,7 @@ create table dataSource (
 create table dataSourceToSpecies (
     dataSourceId smallInt  unsigned  not null COMMENT 'Data source id',
     speciesId    mediumint unsigned  not null COMMENT 'NCBI species taxon id',
-    dataType     enum('affymetrix', 'est', 'in situ', 'rna-seq', 'full-length single-cell RNA-Seq') not null COMMENT 'Data type',
+    dataType     enum('affymetrix', 'est', 'in situ', 'rna-seq', 'single-cell RNA-Seq') not null COMMENT 'Data type',
     infoType     enum('data', 'annotation') not null COMMENT 'Information type'
 ) engine = innodb;
 
@@ -125,6 +125,7 @@ create table species (
 -- (for instance, chimp genome for bonobo species).
     genomeFilePath varchar(100) not null COMMENT 'GTF annotation path used to map this species in Ensembl FTP',
     genomeVersion varchar(50) not null,
+    genomeAssemblyXRef varchar(250) not null default '' COMMENT 'XRef to the genome assembly',
     dataSourceId smallInt unsigned not null COMMENT 'source for genome information',
 -- ID of the species whose the genome was used for this species. This is used
 -- when a genome is not in Ensembl. For instance, for bonobo (ID 9597), we use the chimp
@@ -283,6 +284,27 @@ create table anatEntityNameSynonym (
     anatEntityNameSynonym varchar(255) not null COMMENT 'Anatomical entity name synonym'
 ) engine = innodb;
 
+-- Note:
+-- * query to obtain list of tissues:
+-- we select the list of terms that are descendants of 'UBERON:0001062 anatomical entity',
+-- and that are not part of the cell type graph. Indeed, a term such as
+-- 'CL:0002252 epithelial cell of esophagus' is both a cell type,
+-- and part of esophagus. We don't want to retrieve those. The query is:
+-- ```
+-- select distinct t1.anatEntityId from anatEntity as t1
+-- inner join anatEntityRelation as t2 on t1.anatEntityId = t2.anatEntitySourceId
+--     and t2.anatEntityTargetId = 'UBERON:0001062' and t2.relationType = 'is_a part_of'
+-- left outer join anatEntityRelation as t3 on t1.anatEntityId = t3.anatEntitySourceId
+--     and t3.anatEntityTargetId = 'GO:0005575' and t3.relationType = 'is_a part_of'
+-- where t3.anatEntitySourceId is null;
+-- ```
+-- * query to obtain list of cell types:
+-- simply retrieve the descendants of 'GO:0005575 cellular component'. The query is:
+-- ```
+-- select distinct t1.anatEntityId from anatEntity as t1
+-- inner join anatEntityRelation as t2 on t1.anatEntityId = t2.anatEntitySourceId
+-- where t2.anatEntityTargetId = 'GO:0005575' and relationType = 'is_a part_of';
+-- ```
 create table anatEntityRelation (
     anatEntityRelationId int unsigned not null,
     anatEntitySourceId varchar(20) not null COMMENT 'Anatomical entity source id',
@@ -417,29 +439,6 @@ create table rawSimilarityAnnotation (
 -- ****************************************************
 -- GENE AND TRANSCRIPT INFO
 -- ****************************************************
--- Hierarchical Orthologous Groups from OMA.
-
--- All the nodes of a particular group are stored in a nested set model.
--- A node in the tree could be a speciation node or a duplication node.
--- The OMANodeLeftBound and OMANodeRightBound correspond to the left and right bound IDs of the nested set model.
--- Note: to use the nested set model, we often need to join this table to itself,
--- using a range condition on left and right bounds for the join clause; sadly,
--- there is a performance issue for such queries in MySQL, see
--- http://www.percona.com/blog/2010/05/17/joining-on-range-wrong/
-create table OMAHierarchicalGroup (
-    -- A unique ID for each node inside an OMA Hierarchical Orthologous Group.
-    -- Auto generated by us, unique over all groups (use as primary key)
-    OMANodeId int unsigned not null COMMENT 'OMA Hierarchical Orthologous node id',
-    -- The ID of Hierarchical Orthologous Group as provided by OMA.
-    -- Only for Xref purpose.
-    OMAGroupId varchar(255) not null COMMENT 'OMA Hierarchical Orthologous Group id',
-    -- Bounds generated over all groups.
-    OMANodeLeftBound int unsigned not null COMMENT 'OMA left bound id in the nested set model',
-    OMANodeRightBound int unsigned not null COMMENT 'OMA right bound id in the nested set model',
-    -- The ID corresponding to the level of taxonomy as in NCBI.
-    -- Some nodes have no taxonomy ID because they correspond to a duplication node (paralogy group).
-    taxonId mediumint unsigned COMMENT 'NCBI taxon id corresponding to the level of taxonomy'
-) engine = innodb;
 
 create table geneOntologyTerm (
     goId char(10) not null COMMENT 'Gene Ontology id',
@@ -488,10 +487,6 @@ create table gene (
 -- TODO: check if we should add 'not null' to geneBioTypeId.
 -- This depends on pipeline. If we update biotype after insertion of gene, it's not possible to set 'not null'.
     geneBioTypeId smallint unsigned COMMENT 'Gene BioType id (type of gene)',
--- can be null if the gene does not belong to a hierarchical group
--- a gene can belong to one and only one group
--- OMA parent node ID instead of OMA node ID to avoid create group for all genes
-    OMAParentNodeId int unsigned default null COMMENT 'OMA Hierarchical Orthologous parent node id',
 -- defines whether the gene ID is present in Ensembl. For some species, they are not
 -- (for instance, bonobo; we use chimp genome)
     ensemblGene boolean not null default 1 COMMENT 'Is the gene in Ensembl (default) (= 1), if not (= 0)',
@@ -699,19 +694,6 @@ create table chipType (
     chipTypeMaxRank decimal(9,2) unsigned COMMENT 'The max fractional rank in this chip type (see `rank` field in affymetrixProbeset table)'
 ) engine = innodb;
 
--- this table represents mapping of affymetrix probesets in general,
--- not constrainted by the tables chipType and afymetrixProbeset
--- (that means for instance that you can insert in this table a mapping
--- for a probeset not present in the table affymetrixProbeset)
--- => so, NO foreign keys to the tables affymetrixProbeset and chipType.
--- moreover, the probeset mapping can be use for other tables
--- (deaAffymetrixProbesetGroups)
--- create table affymetrixProbesetMapping(
--- chipTypeId varchar(70) not null,
--- affymetrixProbesetId varchar(70) not null,
--- bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID'
--- ) engine = innodb;
-
 create table affymetrixChip (
 -- affymetrixChipId are not unique (couple affymetrixChipId - microarrayExperimentId is)
 -- then we need an internal ID to link to affymetrixProbeset
@@ -768,8 +750,6 @@ create table affymetrixProbeset (
     pValue decimal(31, 30) unsigned default null,
 -- p-value adjusted by Benjamini-Hochberg procedure
     qValue decimal(31, 30) unsigned default 1,
--- detectionFlag after FDR correction
-    detectionFlag enum('undefined', 'absent', 'marginal', 'present') not null default 'undefined',
     expressionId int unsigned,
 -- rank is not "not null" because we update this information afterwards.
 -- note that this corresponds to the rank of the gene, not of the probeset
@@ -902,21 +882,27 @@ create table inSituExperimentExpression (
 comment = 'This table stores information about expression calls produced from in situ hybridization experiments, that is then used in Bgee to compute global summary expression calls and qualities.';
 
 -- ****************************************************
--- NEW RNA-Seq DATA
+-- RNA-Seq DATA
 -- ****************************************************
-create table rnaSeqExperimentDev (
+create table rnaSeqExperiment (
 -- primary exp ID, from GEO, patterns GSExxx
     rnaSeqExperimentId varchar(70) not null,
     rnaSeqExperimentName varchar(255) not null default '',
     rnaSeqExperimentDescription text,
-    dataSourceId smallInt unsigned not null
+    dataSourceId smallInt unsigned not null,
+    DOI varchar(255)
+) engine = innodb;
+
+create table rnaSeqExperimentToKeyword (
+    rnaSeqExperimentId varchar(70) not null,
+    keywordId int unsigned not null
 ) engine = innodb;
 
 -- Corresponds to one library in the sense of one sequencing library. It can contains several
 -- sample libraries each one of them potentially having different condition in case of library (e.g BRB-Seq)
 -- or sample (e.g 10x) multiplexing
 -- uses to produce several runs
-create table rnaSeqLibraryDev (
+create table rnaSeqLibrary (
 -- primary ID, from GEO, pattern GSMxxx
     rnaSeqLibraryId varchar(70) not null,
     rnaSeqExperimentId varchar(70) not null,
@@ -932,16 +918,66 @@ create table rnaSeqLibraryDev (
     sequencedTranscriptPart enum ('NA', '3prime', '5prime', 'full length'),
     fragmentation smallint unsigned not null default 0 COMMENT 'corresponds to fragmentation of cDNA. 0 for long reads', 
     rnaSeqPopulationCaptureId varchar(255) not null,
+    genotype varchar(70),
+    -- In case of single read, it's the total number of reads
+    allReadsCount int unsigned not null default 0,
+-- total number of reads in library that were mapped to anything.
+-- if it is not a paired-end library, this number is equal to leftMappedReadsCount
+    mappedReadsCount int unsigned not null default 0,
+-- a library is an assembly of different runs, and the runs can have different read lengths,
+-- so we store the min and max read lengths
+    minReadLength int unsigned not null default 0,
+    maxReadLength int unsigned not null default 0,
     -- Is the library built using paired end?
 -- NA: info not used for pseudo-mapping. Default value in an enum is the first one.
-    libraryType enum('NA', 'single', 'paired') not null
+    libraryType enum('NA', 'single', 'paired') not null,
+    usedInPropagatedCalls tinyint(1) not null default 0
 ) engine = innodb;
 
-create table rnaSeqLibraryAnnotatedSampleDev (
+-- XXX should we keep discarded info at rnaSeqLibrary level, at rnaSeqLibraryAnnotatedSample level,
+-- or at both levels? IfrnaSeqLibraryAnnotatedSample level or both do we want to provide condition ? 
+--
+-- We sometimes discard some runs associated to a library, because of low mappability.
+-- We keep track of these discarded runs in this table.
+-- UPDATE Bgee 14: for pseudo-mapping using Kallisto, runs are pooled, so we can only exclude libraries,
+-- not specific runs.
+create table rnaSeqLibraryDiscarded (
+    rnaSeqLibraryId varchar(70) not null,
+    rnaSeqLibraryDiscardReason varchar(255) not null default ''
+) engine = innodb;
+
+-- Store the information of runs used, pool together to generate the results
+-- for a given library.
+create table rnaSeqRun (
+-- same ID in GEO and SRA, pattern SRR...
+    rnaSeqRunId varchar(70) not null,
+    rnaSeqLibraryId varchar(70) not null
+) engine = innodb;
+
+-- corresponds to one library as it was annotated
+-- * for bulk RNA-Seq one library corresponds to one sample. For such data there is a 
+--   1-to-1 relation between rnaSeqLibrary and rnaSeqLibraryAnnotatedSample.
+-- * for BRB-Seq one library contains several libraries pooled together. Each pooled library has its
+--   own annotation. For such data there will be 1-to-many relation between rnaSeqLibrary and 
+--   rnaSeqLibraryAnnotatedSample.
+-- * for full length single cell RNA-Seq one library corresponds to one sample. For such data 
+--   there is a 1-to-1 relation between rnaSeqLibrary and rnaSeqLibraryAnnotatedSample.
+-- * for droplet base single cell RNA-Seq one library corresponds to a cell population. Each cell has
+--   been annotated with a different barcode and each barcode has its own annotation. For such data
+--   there will be 1-to-many relation between rnaSeqLibrary and rnaSeqLibraryAnnotatedSample.
+create table rnaSeqLibraryAnnotatedSample (
     rnaSeqLibraryAnnotatedSampleId mediumint unsigned not null,
     rnaSeqLibraryId varchar(70) not null,
     conditionId mediumint unsigned not null,
---  can be null as it is applicable only to pooled bulk samples like BRB-Seq
+--  all *AuthorAnnotation columns correspond to free text retrieved from paper by Bgee curators.
+--  anatEntityAuthorAnnotation and stageAuthorAnnotation are at the library level they are unique
+--  for a given combination of rnaSeqLibraryId and conditionId. However, it is possible to have different
+--  cellTypeAuthorAnnotation for a given combination of rnaSeqLibraryId and conditionId as different
+--  cellTypeAuthorAnnotation can be annotated with the same cellTypeId, especially when the cell ontology does
+--  not contain terms precise enough.
+    cellTypeAuthorAnnotation varchar(255) not null,
+    anatEntityAuthorAnnotation varchar(255) not null,
+    stageAuthorAnnotation varchar(255) not null,
     abundanceUnit enum('tpm', 'cpm'),
     meanAbundanceReferenceIntergenicDistribution decimal(16, 6) not null default -1 COMMENT 'mean TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
     sdAbundanceReferenceIntergenicDistribution decimal(16, 6) not null default -1 COMMENT 'standard deviation in TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
@@ -955,27 +991,25 @@ create table rnaSeqLibraryAnnotatedSampleDev (
     pValueThreshold decimal(5, 4) unsigned not null default 0 COMMENT 'pValue threshold used to consider genes present/absent. (for Bgee15 this threshold should always be 0.05)',
 -- total number of reads in library, including those not mapped.
 -- In case of paired-end libraries, it's the number of pairs of reads;
--- In case of single read, it's the total number of reads
-    allReadsCount int unsigned not null default 0,
 -- total number of UMIs in library, including those not mapped.
     allUMIsCount int unsigned not null default 0,
--- total number of reads in library that were mapped to anything.
--- if it is not a paired-end library, this number is equal to leftMappedReadsCount
-    mappedReadsCount int unsigned not null default 0,
 -- total number of UMIs in library that were mapped to anything.
     mappedUMIsCount int unsigned not null default 0,
--- a library is an assembly of different runs, and the runs can have different read lengths,
--- so we store the min and max read lengths
-    minReadLength int unsigned not null default 0,
-    maxReadLength int unsigned not null default 0,
 -- the following fields are used for rank computations, and are set after all expression data insertion,
 -- this is why null value is permitted.
-    libraryMaxRank decimal(9,2) unsigned COMMENT 'The max fractional rank in this library (see `rank` field in rnaSeqResult table)',
-    libraryDistinctRankCount mediumint unsigned COMMENT 'The count of distinct rank in this library (see `rank` field in rnaSeqResult table, used for weighted mean rank computations)',
+    rnaSeqLibraryAnnotatedSampleMaxRank decimal(9,2) unsigned COMMENT 'The max fractional rank in this sample (see `rank` field in rnaSeqLibraryAnnotatedSampleGeneResult table)',
+    rnaSeqLibraryAnnotatedSampleDistinctRankCount mediumint unsigned COMMENT 'The count of distinct rank in this sample (see `rank` field in rnaSeqLibraryAnnotatedSampleGeneResult table, used for weighted mean rank computations)',
     multipleLibraryIndividualSample boolean not null default 0 COMMENT 'boolean true if the annotated sample contains several individual samples. e.g true for 10x as one annotated sample corresponds to one cell population and individual sample will correspond to each cell of this cell population',
+    --  can be null as it is applicable only to pooled bulk samples like BRB-Seq
     barcode varchar(70) COMMENT 'barcode used to pool several samples in the same library',
-    genotype varchar(70)
+-- these 3 columns have been added to be able to insert precise Salmon condition information
+    time decimal(5, 2) unsigned default null,
+    timeUnit varchar(35) default null,
+    physiologicalStatus varchar(255) default null
 ) engine = innodb;
+
+-- TODO: This table contains abundance/read count values for each gene for each library
+--      and link them to an expressionId
 
 -- this table contains counts and abundance level for each gene at the level of an annotated
 -- sample. Each pair of bgeeGeneId and rnaSeqLibraryAnnotatedSampleId is unique.
@@ -983,7 +1017,7 @@ create table rnaSeqLibraryAnnotatedSampleDev (
 -- * for BRB-Seq one result corresponds to one gene at one organ level (after demultiplexing of pooled libraries)
 -- * for full length single cell RNA-Seq one result corresponds to one gene at one cell level
 -- * for droplet base single cell RNA-Seq one result corresponds to one gene at one cell-type population level (combine all counts of same cell-type per library)
-create table rnaSeqLibraryAnnotatedSampleGeneResultDev (
+create table rnaSeqLibraryAnnotatedSampleGeneResult (
     rnaSeqLibraryAnnotatedSampleId mediumint unsigned not null COMMENT 'Internal ID used to define one library at one annotated condition',
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
 --  abundance values inserted here are NOT TMM normalized,
@@ -1021,15 +1055,17 @@ create table rnaSeqLibraryAnnotatedSampleGeneResultDev (
 --  * my feeling : comes only from sample demultiplexing with barcodes describing each cell. For library demultiplexing like BRB-Seq all librariesq 
 --    are already described in the table `rnaSeqLibraryAnnotatedSample` So for me for BRB-Seq 
 --    rnaSeqLibraryAnnotatedSample.multipleLibraryIndividualSample == 0.
-create table rnaSeqLibraryIndividualSampleDev (
+create table rnaSeqLibraryIndividualSample (
     rnaSeqLibraryIndividualSampleId int unsigned not null, 
     rnaSeqLibraryAnnotatedSampleId mediumint unsigned not null,
     barcode varchar(70) COMMENT 'barcode used to pool several samples in the same library',
-    sampleName varchar(70)
+    sampleName varchar(70),
+    -- total number of UMIs in library that were mapped to this individual sample
+    mappedUMIsCount int unsigned not null default 0
 ) engine = innodb;
 
 -- gene result at individual sample level (e.g for each cell for 10x)
-create table rnaSeqLibraryIndividualSampleGeneResultDev (
+create table rnaSeqLibraryIndividualSampleGeneResult (
     rnaSeqLibraryIndividualSampleId int unsigned not null COMMENT 'Internal ID used to define one individual sample',
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
     abundanceUnit enum ('tpm','cpm'),
@@ -1041,7 +1077,7 @@ create table rnaSeqLibraryIndividualSampleGeneResultDev (
     'undefined') not null default 'not excluded'
 ) engine = innodb;
 
--- called protocol until Bgee 15, the name was updated because the concept "protocol" now regroups
+-- called protocol until Bgee 15 but updated the name as protocol now regroup
 -- a lot of different parameters (e.g population captured, strand, fragmentation size, ...)
 create table rnaSeqPopulationCapture (
     rnaSeqPopulationCaptureId varchar(255) not null
@@ -1056,464 +1092,6 @@ create table rnaSeqPopulationCaptureSpeciesMaxRank (
     rnaSeqPopulationCaptureId varchar(255) not null,
     speciesId mediumint unsigned not null,
     maxRank decimal(9,2) unsigned not null COMMENT 'The max fractional rank in this protocol and species (see `rank` field in rnaSeqResult table)'
-) engine = innodb;
-
--- ****************************************************
--- OLD RNA-Seq DATA
--- ****************************************************
-create table rnaSeqExperiment (
--- primary exp ID, from GEO, patterns GSExxx
-    rnaSeqExperimentId varchar(70) not null,
-    rnaSeqExperimentName varchar(255) not null default '',
-    rnaSeqExperimentDescription text,
-    dataSourceId smallInt unsigned not null
-) engine = innodb;
-
-create table rnaSeqExperimentToKeyword (
-    rnaSeqExperimentId varchar(70) not null,
-    keywordId int unsigned not null
-) engine = innodb;
-
-create table rnaSeqPlatform (
-    rnaSeqPlatformId varchar(255) not null,
-    rnaSeqPlatformDescription text
-) engine = innodb;
-
--- corresponds to one sample
--- uses to produce several runs
-create table rnaSeqLibrary (
--- primary ID, from GEO, pattern GSMxxx
-    rnaSeqLibraryId varchar(70) not null,
-    rnaSeqExperimentId varchar(70) not null,
-    rnaSeqPlatformId varchar(255) not null,
-    rnaSeqProtocolId smallint unsigned not null,
-    conditionId mediumint unsigned not null,
-    meanTpmReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'mean TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
-    sdTpmReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'standard deviation in TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
--- TMM normalization factor
-    tmmFactor decimal(8, 6) not null default 1.0,
--- TPM threshold to consider a gene as expressed
-    tpmThreshold decimal(16, 6) not null,
-    allGenesPercentPresent decimal(5, 2) unsigned not null default 0,
-    proteinCodingGenesPercentPresent decimal(5, 2) unsigned not null default 0,
-    intergenicRegionsPercentPresent decimal(5, 2) unsigned not null default 0,
-    pValueThreshold decimal(5, 4) unsigned not null default 0 COMMENT 'pValue threshold used to consider genes present/absent. (for Bgee15 this threshold should always be 0.05)',
--- total number of reads in library, including those not mapped.
--- In case of paired-end libraries, it's the number of pairs of reads;
--- In case of single read, it's the total number of reads
-    allReadsCount int unsigned not null default 0,
--- total number of reads in library that were mapped to anything.
--- if it is not a paired-end library, this number is equal to leftMappedReadsCount
-    mappedReadsCount int unsigned not null default 0,
--- a library is an assembly of different runs, and the runs can have different read lengths,
--- so we store the min and max read lengths
-    minReadLength int unsigned not null default 0,
-    maxReadLength int unsigned not null default 0,
--- Is the library built using paired end?
--- NA: info not used for pseudo-mapping. Default value in an enum is the first one.
-    libraryType enum('NA', 'single', 'paired') not null,
-    libraryOrientation enum('NA', 'forward', 'reverse', 'unstranded') not null,
-
--- the following fields are used for rank computations, and are set after all expression data insertion,
--- this is why null value is permitted.
-    libraryMaxRank decimal(9,2) unsigned COMMENT 'The max fractional rank in this library (see `rank` field in rnaSeqResult table)',
-    libraryDistinctRankCount mediumint unsigned COMMENT 'The count of distinct rank in this library (see `rank` field in rnaSeqResult table, used for weighted mean rank computations)'
-) engine = innodb;
-
--- Store the information of runs used, pool together to generate the results
--- for a given library.
-create table rnaSeqRun (
--- same ID in GEO and SRA, pattern SRR...
-    rnaSeqRunId varchar(70) not null,
-    rnaSeqLibraryId varchar(70) not null
-) engine = innodb;
-
--- We sometimes discard some runs associated to a library, because of low mappability.
--- We keep track of these discarded runs in this table.
--- UPDATE Bgee 14: for pseudo-mapping using Kallisto, runs are pooled, so we can only exclude libraries,
--- not specific runs.
-create table rnaSeqLibraryDiscarded (
-    rnaSeqLibraryId varchar(70) not null,
-    rnaSeqLibraryDiscardReason varchar(255) not null default ''
-) engine = innodb;
-
--- This table contains TPM/RPKM/read count values for each gene for each library
--- and link them to an expressionId
-create table rnaSeqResult (
-    rnaSeqLibraryId varchar(70) not null,
-    bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
--- FPKM and TPM values inserted here are NOT TMM normalized,
--- these are the raw data before any normalization
-    fpkm decimal(16, 6) not null COMMENT 'FPKM values, NOT log transformed',
-    tpm decimal(16, 6) not null COMMENT 'TPM values, NOT log transformed',
--- rank is not "not null" because we update this information afterwards
-    rawRank decimal(9, 2) unsigned,
--- for information, measure not normalized for reads or genes lengths
-    readsCount decimal(16, 6) unsigned not null COMMENT 'As of Bgee 14, read counts are "estimated counts" produced using the Kallisto software. They are not normalized for read or gene lengths.',
--- zScore can be negative
-    zScore decimal(35, 30),
-    pValue decimal(31, 30) unsigned default null COMMENT 'present calls are based on the pValue',
-    expressionId int unsigned,
-    detectionFlag enum('undefined', 'absent', 'present') default 'undefined',
--- When expressionId is null, the result is not used for the summary of expression.
--- Reasons are:
--- * pre filtering: Probesets always seen as "absent" or "marginal" over the whole dataset are removed
--- * noExpression conflict: a "noExpression" result has been removed because of expression in a sub-condition.
--- Note: as of Bgee 14, we haven't remove this reason for exclusion, but we don't use it for now,
--- as we might want to take into account noExpression in parent conditions for generating
--- a global expression calls, where there is expression in a sub-condition.
--- Maybe we'll discard them again, but I don't think so, it'll allow to present absolutely
--- all data available about a call to users.
--- * undefined: only 'undefined' calls have been seen
---
--- Note that, as of Bgee 14, 2 reasons for exclusion were removed: 'bronze quality' and 'absent low quality'.
--- 'bronze quality' exclusion was removed, because now we always propagate expression evidence,
--- so a 'bronze quality' call can provide additional evidence to a parent structure.
--- 'bronze quality' used to be: for a gene/condition, no "present high" and mix of "present low" and "absent".
--- 'absent low quality' was removed, because we now use a same consistent mechanism for present/absent calls,
--- taking also into account 'absent low quality' evidence.
--- 'absent low quality' used to be: probesets always "absent" for this gene/condition,
--- but only seen by MAS5 (that we do not trust = "low quality" - "noExpression" should always be "high quality").
-    rnaSeqData enum('no data','poor quality','high quality') default 'no data',
-    reasonForExclusion enum('not excluded', 'pre-filtering', 'absent call not reliable',
-    'undefined') not null default 'not excluded'
-) engine = innodb;
-
--- This table contains TPM/RPKM/read count values for each transcript for each library
--- NOTE Bgee 14: as of Bgee 14 this table is not filled
-create table rnaSeqTranscriptResult (
-    rnaSeqLibraryId varchar(70) not null,
-    bgeeTranscriptId int unsigned not null COMMENT 'Internal transcript ID',
-    fpkm decimal(16, 6) not null,
-    tpm decimal(16, 6) not null,
--- for information, measure not normalized for reads or genes lengths
-    readsCount int unsigned not null
-) engine = innodb;
-
-create table rnaSeqExperimentExpression (
-    expressionId int unsigned not null,
-    rnaSeqExperimentId varchar(70) not null,
-    presentHighRNASeqLibraryCount smallint unsigned not null default 0
-        comment 'number of RNA-Seq libraries in this experiment that produced this call as present high quality',
-    presentLowRNASeqLibraryCount  smallint unsigned not null default 0
-        comment 'number of RNA-Seq libraries in this experiment that produced this call as present low quality',
-    absentHighRNASeqLibraryCount  smallint unsigned not null default 0
-        comment 'number of RNA-Seq libraries in this experiment that produced this call as absent high quality',
-    absentLowRNASeqLibraryCount   smallint unsigned not null default 0
-        comment 'number of RNA-Seq libraries in this experiment that produced this call as absent low quality',
-    rnaSeqExperimentCallDirection enum('present', 'absent') not null
-        comment 'Inferred direction for this call based on this experiment ("present" libraries always win over "absent" libraries)',
-    rnaSeqExperimentCallQuality enum('poor quality', 'high quality') not null
-        comment 'Inferred quality for this call based on this experiment (from all libraries, "present high" > "present low" > "absent high" > "absent low"). Value "poor quality" instead of "low quality" for historical reasons.'
-) engine = innodb
-comment = 'This table stores information about expression calls produced from RNA-Seq experiments, that is then used in Bgee to compute global summary expression calls and qualities.';
-
-create table rnaSeqProtocol (
-    rnaSeqProtocolId smallint unsigned not null,
-    rnaSeqProtocolName varchar(255) not null default ''
-) engine = innodb;
-
-create table rnaSeqProtocolToBiotypeExcludedAbsentCalls (
-    rnaSeqProtocolId smallint unsigned not null COMMENT 'protocol ID for which a biotype will not be used to generate absent calls',
-    geneBioTypeId smallint unsigned not null COMMENT 'biotype ID for which absent calls will not be generated.'
-) engine = innodb;
-
-create table rnaSeqProtocolSpeciesMaxRank (
-    rnaSeqProtocolId smallint unsigned not null,
-    speciesId mediumint unsigned not null,
-    maxRank decimal(9,2) unsigned not null COMMENT 'The max fractional rank in this protocol and species (see `rank` field in rnaSeqResult table)'
-) engine = innodb;
-
--- ****************************************************
--- scRNA-Seq FULL LENGTH DATA
--- ****************************************************
-create table scRnaSeqFullLengthExperiment (
--- primary exp ID, from GEO, patterns GSExxx
-    scRnaSeqFullLengthExperimentId varchar(70) not null,
-    scRnaSeqFullLengthExperimentName varchar(255) not null default '',
-    scRnaSeqFullLengthExperimentDescription text,
-    dataSourceId smallInt unsigned not null
-) engine = innodb;
-
-create table scRnaSeqFullLengthPlatform (
-    scRnaSeqFullLengthPlatformId varchar(255) not null,
-    scRnaSeqFullLengthPlatformDescription text
-) engine = innodb;
-
-create table scRnaSeqFullLengthLibrary (
--- primary ID, from GEO, pattern GSMxxx
-    scRnaSeqFullLengthLibraryId varchar(70) not null,
-    scRnaSeqFullLengthExperimentId varchar(70) not null,
-    scRnaSeqFullLengthPlatformId varchar(255) not null,
-    conditionId mediumint unsigned not null,
-    meanTpmReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'mean TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
-    sdTpmReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'standard deviation in TPM of the distribution of the reference intergenics regions in this library, NOT log transformed',
--- TPM threshold to consider a gene as expressed,
--- which is the lowest TPM value associated with the p-value cutoff.
--- p-value is computed for each gene based notably on the mean and sd of the reference intergenics distribution;
--- the threshold is thus retrieved after computation of p-values
-    tpmThreshold decimal(16, 6) not null,
-    allGenesPercentPresent decimal(5, 2) unsigned not null default 0,
-    proteinCodingGenesPercentPresent decimal(5, 2) unsigned not null default 0,
-    intergenicRegionsPercentPresent decimal(5, 2) unsigned not null default 0,
-    pValueThreshold decimal(5, 4) unsigned not null default 0 COMMENT 'pValue threshold used to consider genes present/absent. (for Bgee15 this threshold should always be 0.05)',
--- total number of reads in library, including those not mapped.
--- In case of paired-end libraries, it's the number of pairs of reads;
--- In case of single end, it's the total number of reads
-    allReadsCount int unsigned not null default 0,
--- total number of reads in library that were mapped to anything.
-    mappedReadsCount int unsigned not null default 0,
--- a library is an assembly of different runs, and the runs can have different read lengths,
--- so we store the min and max read lengths
-    minReadLength int unsigned not null default 0,
-    maxReadLength int unsigned not null default 0,
--- Is the library built using paired end?
--- NA: info not used for pseudo-mapping. Default value in an enum is the first one.
-    libraryType enum('NA', 'single', 'paired') not null,
-    libraryOrientation enum('NA', 'forward', 'reverse', 'unstranded') not null,
-
--- the following fields are used for rank computations, and are set after all expression data insertion,
--- this is why null value is permitted.
-    libraryMaxRank decimal(9,2) unsigned COMMENT 'The max fractional rank in this library (see `rank` field in rnaSeqResult table)',
-    libraryDistinctRankCount mediumint unsigned COMMENT 'The count of distinct rank in this library (see `rank` field in rnaSeqResult table, used for weighted mean rank computations)'
-) engine = innodb;
-
--- Store the information of runs used, pool together to generate the results
--- for a given library.
-create table scRnaSeqFullLengthRun (
-    scRnaSeqFullLengthRunId varchar(70) not null,
-    scRnaSeqFullLengthLibraryId varchar(70) not null
-) engine = innodb;
-
-create table scRnaSeqFullLengthLibraryDiscarded (
-    scRnaSeqFullLengthLibraryId varchar(70) not null,
-    scRnaSeqFullLengthLibraryDiscardReason varchar(255) not null default ''
-) engine = innodb;
-
-create table scRnaSeqFullLengthResult (
-    scRnaSeqFullLengthLibraryId varchar(70) not null,
-    bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
--- FPKM and TPM values inserted here are NOT TMM normalized,
--- these are the raw data before any normalization
-    fpkm decimal(16, 6) not null COMMENT 'FPKM values, NOT log transformed',
-    tpm decimal(16, 6) not null COMMENT 'TPM values, NOT log transformed',
--- rank is not "not null" because we update this information afterwards
-    rawRank decimal(9, 2) unsigned,
--- for information, measure not normalized for reads or genes lengths
-    readsCount decimal(16, 6) unsigned not null COMMENT 'As of Bgee 14, read counts are "estimated counts" produced using the Kallisto software. They are not normalized for read or gene lengths.',
--- zScore can be negative
-    zScore decimal(35, 30),
-    pValue decimal(31, 30) unsigned default null COMMENT 'present calls are based on the pValue',
-    expressionId int unsigned,
-    detectionFlag enum('undefined', 'absent', 'present') default 'undefined' COMMENT 'absent calls are inserted but excluded for scRNA-Seq data',
-    reasonForExclusion enum('not excluded', 'absent call not reliable', 'undefined') not null default 'not excluded'
-) engine = innodb;
-
-
-create table scRnaSeqFullLengthSpeciesMaxRank (
-    speciesId mediumint unsigned not null,
-    maxRank decimal(9,2) unsigned not null COMMENT 'The max fractional rank in this protocol and species (see `rank` field in rnaSeqResult table)'
-) engine = innodb;
-
--- ****************************************************
--- scRNA-Seq TARGET-BASED DATA
--- ****************************************************
-create table scRnaSeqTargetBasedExperiment (
--- primary exp ID, from GEO, patterns GSExxx
-    scRnaSeqTargetBasedExperimentId varchar(70) not null,
-    scRnaSeqTargetBasedExperimentName varchar(255) not null default '',
-    scRnaSeqTargetBasedExperimentDescription text,
-    dataSourceId smallInt unsigned not null
-) engine = innodb;
-
-create table scRnaSeqTargetBasedPlatform (
-    scRnaSeqTargetBasedPlatformId varchar(255) not null,
-    scRnaSeqTargetBasedPlatformDescription text
-) engine = innodb;
-
-create table scRnaSeqTargetBasedLibrary (
--- primary ID, from GEO, pattern GSMxxx
-    scRnaSeqTargetBasedLibraryId varchar(70) not null,
-    scRnaSeqTargetBasedExperimentId varchar(70) not null,
-    scRnaSeqTargetBasedPlatformId varchar(255) not null,
--- total number of reads in library, including those not mapped.
--- In case of paired-end libraries, it's the number of pairs of reads;
--- In case of single end, it's the total number of reads,
-    allUmiCount mediumint unsigned not null default 0,
-    mappedUmiCount mediumint unsigned not null default 0,
--- so we store the min and max read lengths
-    minReadLength int unsigned not null default 0,
-    maxReadLength int unsigned not null default 0,
--- Is the library built using paired end?
--- NA: info not used for pseudo-mapping. Default value in an enum is the first one.
-    libraryType enum('NA', 'single', 'paired') not null,
-    libraryOrientation enum('NA', 'forward', 'reverse', 'unstranded') not null,
-
--- the following fields are used for rank computations, and are set after all expression data insertion,
--- this is why null value is permitted.
-    libraryMaxRank decimal(9,2) unsigned COMMENT 'The max fractional rank in this library (see `rank` field in rnaSeqResult table)',
-    libraryDistinctRankCount mediumint unsigned COMMENT 'The count of distinct rank in this library (see `rank` field in rnaSeqResult table, used for weighted mean rank computations)'
-) engine = innodb;
-
--- Store the information of runs used, pool together to generate the results
--- for a given library.
-create table scRnaSeqTargetBasedRun (
-    scRnaSeqTargetBasedRunId varchar(70) not null,
-    scRnaSeqTargetBasedLibraryId varchar(70) not null
-) engine = innodb;
-
-create table scRnaSeqTargetBasedLibraryDiscarded (
-    scRnaSeqTargetBasedLibraryId varchar(70) not null,
-    scRnaSeqTargetBasedLibraryDiscardReason varchar(255) not null default ''
-) engine = innodb;
-
-create table scRnaSeqTargetBasedLibraryCellPopulation (
-    scRnaSeqTargetBasedLibraryCellPopulationId int unsigned not null,
-    scRnaSeqTargetBasedLibraryId varchar(70) not null,
-    conditionId mediumint unsigned not null,
-    meanCpmReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'mean CPM of the distribution of the reference intergenics regions in this library',
-    sdCpmReferenceIntergenicDistribution decimal(16, 6) not null COMMENT 'standard deviation in CPM of the distribution of the reference intergenics regions in this library',
--- CPM threshold to consider a gene as expressed,
--- which is the lowest CPM value associated with the p-value cutoff.
--- p-value is computed for each gene based notably on the mean and sd of the reference intergenics distribution;
--- the threshold is thus retrieved after computation of p-values
-    cpmThreshold decimal(16, 6) not null,
-    allGenesPercentPresent decimal(5, 2) unsigned not null default 0,
-    proteinCodingGenesPercentPresent decimal(5, 2) unsigned not null default 0
-) engine = innodb;
-
-create table scRnaSeqTargetBasedResult (
-    scRnaSeqTargetBasedLibraryCellPopulationId int unsigned not null,
-    bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
-    umiCount smallint unsigned not null default 0,
-    cpm decimal(20, 13) not null default 0 COMMENT 'CPMs are usually not log transformed',
--- rank is not "not null" because we update this information afterwards
-    rawRank decimal(9, 2) unsigned,
--- zScore can be negative
-    zScore decimal(35, 30),
-    pValue decimal(31, 30) unsigned default null COMMENT 'present calls are based on the pValue',
-    expressionId int unsigned,
-    detectionFlag enum('undefined', 'present') default 'undefined' COMMENT 'we do not produce absent calls from scRNA-Seq data',
-    reasonForExclusion enum('not excluded', 'undefined') not null default 'not excluded'
-) engine = innodb;
-
-create table scRnaSeqTargetBasedPerCellCount (
-    scRnaSeqTargetBasedBarcodeId varchar(70) not null,
-    scRnaSeqTargetBasedLibraryCellPopulationId int unsigned not null,
-    umiCount smallint unsigned not null default 0,
-    cpm decimal(20, 13) not null default 0 COMMENT 'CPMs are usually not log transformed'
-) engine = innodb;
-
--- ****************************************************
--- RAW DIFFERENTIAL EXPRESSION ANALYSES
--- Note: dea = Differential Expression Analyses ;)
--- ****************************************************
-
--- several differential expression analyses can be performed
--- on the same experiment
-create table differentialExpressionAnalysis (
-    deaId smallint unsigned not null,
-    detectionType enum('Limma - MCM'),
--- defines whether different organs at a same (broad) developmental stage
--- were compared ('anatomy'), or a same organ at different developmental stages
--- ('development')
-    comparisonFactor enum('anatomy', 'development'),
--- microarrayExperimentId and rnaSeqExperimentId cannot be both null, ot both not null
--- at the same time. We use these fields rather than an association table,
--- because a DEA can belong to only one experiment, and because this would make
--- one join less needed.
-    microarrayExperimentId varchar(70) default null,
-    rnaSeqExperimentId varchar(70) default null
-) engine = innodb;
-
--- a DEA can only be performed by comparing different conditions
--- (a condition being an organ at a developmental stage), with each condition
--- represented by several replicates. Such a group of replicates of a same condition
--- in a same DEA is a 'deaSampleGroup'.
--- While it would be possible to determine the condition (anatEntityId + stageId)
--- of a deaSampleGroup by looking at the individual samples (for instance,
--- looking at the condition of an affymetrixChip member of a deaSampleGroup),
--- this information is also present in this table (see anatEntityId and stageId fields).
--- This is because, for the sake of performing the analyses, too granular
--- developmental stages can be mapped to a broader parent stage (for instance,
--- mapping '24 yo human' to 'young adult'), otherwise the analyses could be
--- meaningless (e.g., performing a DEA on '24 yo human' vs. '25 yo human').
--- So the anatEntityId and stageId in this table can actually be different than
--- the annotated anatDevId and stageId of the samples (meaning, different than
--- in the table affymetrixChip or rnaSeqLibrary).
--- As of Bgee 13, a deaSampleGroup can either be a group of affymetrixChips,
--- or a group of rnaSeqLibraries. Their related samples will then be find
--- respectively in deaSampleGroupToAffymetrixChip, or deaSampleGroupToRnaSeqLibrary.
--- this can be determined by checking in the table differentialExpressionAnalysis
--- the fields microarrayExperimentId and rnaSeqExperimentId, to determine whether
--- the DEA was using Affymetrix, or RNA-Seq.
-create table deaSampleGroup (
-    deaSampleGroupId mediumint unsigned not null,
-    deaId smallint unsigned not null,
-    conditionId mediumint unsigned not null
-) engine = innodb;
-
--- An association table to link an affymetrixChip to the deaSampleGroup it belongs to.
--- A same chip can be part of several groups, for instance if it was use for DEAs
--- with different comparisonFactors. But all the affymetrixChips inside a deaSampleGroup
--- are unique
-create table deaSampleGroupToAffymetrixChip (
-    deaSampleGroupId mediumint unsigned not null,
-    bgeeAffymetrixChipId mediumint unsigned not null
-) engine = innodb;
-
--- An association table to link a rnaSeqLibrary to the deaSampleGroup it belongs to.
--- A same library can be part of several groups, for instance if it was use for DEAs
--- with different comparisonFactors. But all the rnaSeqLibraries inside a deaSampleGroup
--- are unique
-create table deaSampleGroupToRnaSeqLibrary (
-    deaSampleGroupId mediumint unsigned not null,
-    rnaSeqLibraryId varchar(70) not null
-) engine = innodb;
-
--- differentialExpressionAnalysisProbesetsSummary
--- a line in this table is a summary of a set of probesets, used for the
--- differential expression analysis, belonging to different
--- affymetrix chips, corresponding to one group of chips
-create table deaAffymetrixProbesetSummary (
--- deaAffymetrixProbesetSummaryId corresponds to the IDs of the probesets used for this summary
--- (all of them have the same of course). These probesets belong to the affymetrix chips, retrieved using the field `deaChipsGroupId`
--- and the table `deaChipsGroupToAffymetrixChip`
-    deaAffymetrixProbesetSummaryId varchar(70) not null,
-    deaSampleGroupId mediumint unsigned not null,
-    bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
-    foldChange decimal(7,2) not null default 0,
-    differentialExpressionId int unsigned,
--- Warning, qualities must be ordered, the index in the enum is used in many queries
--- 'not expressed' = gene never seen as 'expressed' in the conditions studied ('marginal' is not considered)
--- 'no diff expression' = gene has expression, but no significant fold change observed
-    differentialExpressionAffymetrixData enum('no data', 'not expressed', 'no diff expression', 'poor quality', 'high quality') default 'no data',
--- p-value adjusted by Benjamini-Hochberg procedure
--- "number of digits to the right of the decimal point (the scale). It has a range of 0 to 30"
-    deaRawPValue decimal(31, 30) unsigned not null default 1,
--- excluded if not expressed in ALL samples in a given analysis
--- (it is not excluded if expressed in at least one condition)
-    reasonForExclusion enum('not excluded', 'not expressed') not null default 'not excluded'
-) engine = innodb;
-
--- deaRNASeqSummary
--- a line in this table is a summary of a set of RNA-Seq results, used for the
--- differential expression analysis, belonging to different runs, corresponding to one group of runs
-create table deaRNASeqSummary (
-    geneSummaryId mediumint unsigned not null,
-    deaSampleGroupId mediumint unsigned not null,
-    foldChange decimal(7,2) not null default 0,
-    differentialExpressionId int unsigned,
--- Warning, qualities must be ordered, the index in the enum is used in many queries
--- 'not expressed' = gene never seen as 'expressed' in the conditions studied ('marginal' is not considered)
--- 'no diff expression' = gene has expression, but no significant fold change observed
-    differentialExpressionRNASeqData enum('no data', 'not expressed', 'no diff expression', 'poor quality', 'high quality') default 'no data',
--- p-value adjusted by Benjamini-Hochberg procedure
--- "number of digits to the right of the decimal point (the scale). It has a range of 0 to 30"
-    deaRawPValue decimal(31, 30) unsigned not null default 1,
--- excluded if not expressed in ALL samples in a given analysis
--- (it is not excluded if expressed in at least one condition)
-    reasonForExclusion enum('not excluded', 'not expressed') not null default 'not excluded'
 ) engine = innodb;
 
 -- ****************************************************
@@ -1917,115 +1495,6 @@ create table globalExpression (
 ) engine = innodb
 comment = 'This table is a summary of expression calls for a given gene-condition (anatomical entity - developmental stage - sex- strain), over all the experiments and data types, with all data propagated and reconciled, and with experiment expression summaries computed.';
 
--- ****************************************************
--- SUMMARY DIFF EXPRESSION CALLS
--- ****************************************************
-
-create table differentialExpression (
-    differentialExpressionId int unsigned not null,
-    bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
-    conditionId mediumint unsigned not null,
--- defines whether different organs at a same (broad) developmental stage
--- were compared ('anatomy'), or a same organ at different developmental stages
--- ('development')
-    comparisonFactor enum('anatomy', 'development'),
--- *** Affymetrix ***
--- the diff expression call generated by Affymetrix
--- 'not expressed' = gene never seen as 'expressed' in the conditions studied ('marginal' is not considered)
--- 'no diff expression' = gene has expression, but no significant fold change observed
-    diffExprCallAffymetrix enum('no data', 'not expressed', 'no diff expression', 'under-expression', 'over-expression') not null default 'no data',
--- confidence in the call generated by Affymetrix data
--- 'no data' is redundant but it is kept to keep the same indexes for all data states (for instance, rnaSeqData in expression table)
-    diffExprAffymetrixData enum('no data', 'poor quality', 'high quality') default 'no data',
--- among all the analyses using Affymetrix comparing this condition, best p-value associated to this call
--- "number of digits to the right of the decimal point (the scale). It has a range of 0 to 30"
-    bestPValueAffymetrix decimal(31, 30) unsigned not null default 1,
--- number of analyses using Affymetrix data where the same call is found
-    consistentDEACountAffymetrix smallint unsigned not null default 0,
--- number of analyses using Affymetrix data where a different call is found
-    inconsistentDEACountAffymetrix smallint unsigned not null default 0,
--- *** RNA-Seq ***
--- the diff expression call generated by RNA-Seq
--- 'not expressed' = gene never seen as 'expressed' in the conditions studied ('marginal' is not considered)
--- 'no diff expression' = gene has expression, but no significant fold change observed
-    diffExprCallRNASeq enum('no data','not expressed', 'no diff expression', 'under-expression', 'over-expression') not null default 'no data',
--- confidence in the call generated by RNA-Seq data
--- 'no data' is redundant but it is kept to keep the same indexes for all data states (for instance, rnaSeqData in expression table)
-    diffExprRNASeqData enum('no data', 'poor quality', 'high quality') default 'no data',
--- among all the analyses using RNA-Seq comparing this condition, best p-value associated to this call
--- "number of digits to the right of the decimal point (the scale). It has a range of 0 to 30"
-    bestPValueRNASeq decimal(31, 30) unsigned not null default 1,
--- number of analyses using RNA-Seq data where the same call is found
-    consistentDEACountRNASeq smallint unsigned not null default 0,
--- number of analyses using RNA-Seq data where a different call is found
-    inconsistentDEACountRNASeq smallint unsigned not null default 0
-) engine = innodb;
-
--- this version of the diff expression table is not considered as of Bgee 13
-/*create table differentialExpression (
-    differentialExpressionId int unsigned not null,
-    bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
-    conditionId mediumint unsigned not null,
--- defines whether different organs at a same (broad) developmental stage
--- were compared ('anatomy'), or a same organ at different developmental stages
--- ('development')
-    comparisonFactor enum('anatomy', 'development'),
--- Warning, differentialExpressionCall must be ordered this way, the index in the enum
--- is used in many queries
-    differentialExpressionCall enum('no diff expression', 'under-expression', 'over-expression'),
--- the maximum number of conditions compared for which this differential expression call
--- is valid. For instance, if a differential expression analysis comparing 3 conditions
--- generated a call for a given gene-organ-stage, and another analysis comparing
--- 6 conditions generated another call for the same gene-organ-stage (with different
--- direction and/or qualities), then maxNumberOfConditions will be 3 for the call
--- generated by the first analysis, and 6 for the other call.
---
--- But if the two analyses were generating the same call, then they would be only
--- one call in this table for the given gene-organ-stade, with a maxNumberOfConditions
--- equals to 6
---
--- default is 3, because as of Bgee 13, this is the minimum number of conditions
--- to perform a diff expression analysis
---
--- Examples of queries:
---
--- query to retrieve diff expression calls for a given Gene with no minimum number
--- of conditions compared requested:
--- select * from differentialExpression as t1 inner join
--- (
--- select geneId, organId, stageId, comparisonFactor, min(maxNumberOfConditions) as min
--- from differentialExpression where geneId = ? group by geneId, organId, stageId,
--- comparisonFactor)
--- ) as t2 on t1.geneId = t2.geneId and t1.organId = t2.organId and t1.stageId = t2.stageId
--- and t1.comparisonFactor = t2.comparisonFactor and t1.maxNumberOfConditions = t2.min
--- where t1.geneId = ?;
---
--- Alternatively: TO TEST, IT SEEMS WRONG
---
--- select * from differentialExpression as t1
--- where t1.geneId = ? and t1.maxNumberOfConditions =
--- (select min(maxNumberOfConditions) from differentialExpression as t2 where
--- t2.geneId = t1.geneId and t2.organId = t1.organId and t2.stageId = t1.geneId and
--- t2.comparisonFactor = t1.comparisonFactor);
---
--- Example of query to select the calls with the maximum number of conditions compared
--- for a given gene-organ-stage, with no minimum defined (select only the "best" calls):
---
--- select * from differentialExpression as t1 inner join
--- (
--- select geneId, organId, stageId, comparisonFactor, max(maxNumberOfConditions) as max
--- from differentialExpression where geneId = ? group by geneId, organId, stageId,
--- comparisonFactor)
--- ) as t2 on t1.geneId = t2.geneId and t1.organId = t2.organId and t1.stageId = t2.stageId
--- and t1.comparisonFactor = t2.comparisonFactor and t1.maxNumberOfConditions = t2.max
--- where t1.geneId = ?;
-   maxNumberOfConditions smallint unsigned not null default 3,
--- Warning, qualities must be ordered this way, the index in the enum is used in many queries
-    differentialExpressionAffymetrixData enum('no data', 'poor quality', 'high quality') default 'no data',
-    differentialExpressionRnaSeqData enum('no data', 'poor quality', 'high quality') default 'no data'
-) engine = innodb;*/
-
-
 -- select((select count(1) from rnaSeqExperiment) + (select count(1) from rnaSeqLibrary) + (select count(1) from rnaSeqResults) + (select count(1) from rnaSeqExperimentToKeyword) + (select count(1) from affymetrixChip) + (select count(1) from affymetrixProbeset) + (select count(1) from author) + (select count(1) from chipType) + (select count(1) from dataSource) + (select count(1) from dataType) + (select count(1) from deaAffymetrixProbesetSummary) + (select count(1) from deaChipsGroup) + (select count(1) from deaChipsGroupToAffymetrixChip) + (select count(1) from detectionType) + (select count(1) from differentialExpression) + (select count(1) from differentialExpressionAnalysis) + (select count(1) from differentialExpressionAnalysisType) + (select count(1) from estLibrary) + (select count(1) from estLibraryToKeyword) + (select count(1) from expressedSequenceTag) + (select count(1) from expression) + (select count(1) from gene) + (select count(1) from geneBioType) + (select count(1) from geneFamily) + (select count(1) from geneFamilyPredictionMethod) + (select count(1) from geneNameSynonym) + (select count(1) from geneOntologyDescendants) + (select count(1) from geneOntologyTerm) + (select count(1) from geneToTerm) + (select count(1) from geneXRef) + (select count(1) from globalExpression) + (select count(1) from globalExpressionToExpression) + (select count(1) from hogDescendants) + (select count(1) from hogExpression) + (select count(1) from hogExpressionSummary) + (select count(1) from hogExpressionToExpression) + (select count(1) from hogNameSynonym) + (select count(1) from hogRelationship) + (select count(1) from hogXRef) + (select count(1) from homologousOrgansGroup) + (select count(1) from inSituEvidence) + (select count(1) from inSituExperiment) + (select count(1) from inSituExperimentToKeyword) + (select count(1) from inSituSpot) + (select count(1) from keyword) + (select count(1) from metaStage) + (select count(1) from metaStageNameSynonym) + (select count(1) from microarrayExperiment) + (select count(1) from microarrayExperimentToKeyword) + (select count(1) from normalizationType) + (select count(1) from organ) + (select count(1) from organDescendants) + (select count(1) from organNameSynonym) + (select count(1) from organRelationship) + (select count(1) from species) + (select count(1) from stage) + (select count(1) from stageNameSynonym) + (select count(1) from stageXRef));
 
 -- ******************************************
@@ -2041,7 +1510,8 @@ create table downloadFile (
   downloadFileDescription text,
   downloadFileCategory enum("expr_simple", "expr_complete", "diff_expr_anatomy_complete", "diff_expr_anatomy_simple"
    , "diff_expr_dev_complete", "diff_expr_dev_simple", "ortholog",
-   "affy_annot","rnaseq_annot","affy_data","rnaseq_data", "full_length_annot", "full_length_data"),
+   "affy_annot","rnaseq_annot","affy_data","rnaseq_data", "full_length_annot", "full_length_data", "droplet_based_annot",
+   "droplet_based_data", "droplet_based_h5ad", "full_length_h5ad"),
   speciesDataGroupId mediumint unsigned not null,
   downloadFileSize int unsigned not null,
   downloadFileConditionParameters set('anatomicalEntity', 'developmentalStage', 'sex', 'strain')

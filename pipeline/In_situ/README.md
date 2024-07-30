@@ -37,7 +37,7 @@ make
   * There may have some unmapped terms: `grep -v 'Could not find any OWLClass corresponding to' warnings.tsv`
   * There may have problems in our custom ontology and in annotations from data providers: `grep -v 'The start stage provided is actually a successor of the end stage provided' warnings.tsv`
   * **Other messages have to be fixed in our custom ontology !!!**
-* **Xenopus**: Check on the FTP that it is still the up-to-date directory: [ftp://ftp.xenbase.org/pub/GenePageReports/](ftp://ftp.xenbase.org/pub/GenePageReports/)
+* **Xenopus**: Check on the FTP that it is still the up-to-date directory: [https://ftp.xenbase.org/pub/GenePageReports/](https://ftp.xenbase.org/pub/GenePageReports/)
   * Some XenBase warnings may be due to out-dated mapping between Ensembl genes used by XenBase and current Ensembl version. Also, Xenbase modified its developmental ontology, and improperly assigned the already used ID XAO:1000009 (previously used for "adult" stage) to the new term "frog". In bgee_12 it messed up 2 spots, that was ok.
 * **MGI**: MGI stores only [normal conditions](http://www.informatics.jax.org/mgihome/homepages/tabContents/GXD_Curators.shtml) expression data (wild-type and mutants, but no treatment, etc)
 * Think to check how many 'BDGP' genes remained mapped: with time their old Ensembl mapping is more and more limited (and no remapping planed from their side).

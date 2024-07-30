@@ -1,0 +1,4 @@
+WARNING: sun.reflect.Reflection.getCallerClass is not supported. This will impact performance.
+13:45:15.197 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 10090...
+15:56:09.480 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 10090 contains 37842740 rows.
+15:56:09.497 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 10090.
