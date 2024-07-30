@@ -110,7 +110,6 @@ From: ubuntu:24.04
 	R -e 'BiocManager::install("Biostrings")'
 	R -e 'BiocManager::install("DropletUtils")'
 	R -e 'BiocManager::install("GenomicFeatures")'
-	#R -e 'BiocManager::install("HCAExplorer")'
 	R -e 'BiocManager::install("HelpersMG")'
 	R -e 'BiocManager::install("LaplacesDemon")'
 	R -e 'BiocManager::install("Matrix")'
@@ -120,13 +119,11 @@ From: ubuntu:24.04
 	#R -e 'BiocManager::install("Runiversal")'
 	R -e 'BiocManager::install("SRAdb")'
 	R -e 'BiocManager::install("Seurat")'
-	R -e 'BiocManager::install("UniprotR")'
 	R -e 'BiocManager::install("affy")'
 	R -e 'BiocManager::install("biomaRt")'
 	R -e 'BiocManager::install("celeganscdf")'
 	R -e 'BiocManager::install("celegansprobe")'
 	R -e 'BiocManager::install("data.table")'
-	R -e 'BiocManager::install("devtools")'
 	R -e 'BiocManager::install("dplyr")'
 	R -e 'BiocManager::install("drosgenome1cdf")'
 	R -e 'BiocManager::install("drosgenome1probe")'
@@ -168,9 +165,7 @@ From: ubuntu:24.04
 	R -e 'BiocManager::install("htmg430aprobe")'
 	R -e 'BiocManager::install("hu6800cdf")'
 	R -e 'BiocManager::install("hu6800probe")'
-	R -e 'BiocManager::install("lattice")'
 	R -e 'BiocManager::install("limma")'
-	R -e 'BiocManager::install("magrittr")'
 	R -e 'BiocManager::install("mclust")'
 	R -e 'BiocManager::install("methods")'
 	R -e 'BiocManager::install("mgu74acdf")'
@@ -197,7 +192,6 @@ From: ubuntu:24.04
 	R -e 'BiocManager::install("rJava")'
 	R -e 'BiocManager::install("rae230acdf")'
 	R -e 'BiocManager::install("rae230aprobe")'
-	R -e 'BiocManager::install("readr")'
 	R -e 'BiocManager::install("reshape2")'
 	R -e 'BiocManager::install("rgu34acdf")'
 	R -e 'BiocManager::install("rgu34aprobe")'
@@ -205,10 +199,8 @@ From: ubuntu:24.04
 	R -e 'BiocManager::install("rhesusprobe")'
 	R -e 'BiocManager::install("rjson")'
 	R -e 'BiocManager::install("stringr")'
-	R -e 'BiocManager::install("tibble")'
 	R -e 'BiocManager::install("tools")'
 	R -e 'BiocManager::install("topGO")'
-	R -e 'BiocManager::install("tximport")'
 	R -e 'BiocManager::install("zebrafishcdf")'
 	R -e 'BiocManager::install("zebrafishprobe")'
 	# Problematic R libs
@@ -216,15 +208,6 @@ From: ubuntu:24.04
 	wget 'https://cran.r-project.org/src/contrib/Archive/Runiversal/Runiversal_1.0.2.tar.gz'
 	R CMD INSTALL Runiversal_1.0.2.tar.gz
 	rm -f Runiversal_1.0.2.tar.gz
-	#HCAExplorer archived version in Bioconductor looks more recent than the one on https://github.com/Bioconductor/HCAExplore
-	R -e 'BiocManager::install("tidygraph")'
-	R -e 'BiocManager::install("LoomExperiment")'
-	R -e 'BiocManager::install("AnVIL")'
-	wget 'http://bioconductor.org/packages/3.12/bioc/src/contrib/HCAMatrixBrowser_1.0.1.tar.gz'
-	wget 'http://bioconductor.org/packages/3.12/bioc/src/contrib/HCAExplorer_1.4.0.tar.gz'
-	R CMD INSTALL HCAMatrixBrowser_1.0.1.tar.gz
-	R CMD INSTALL HCAExplorer_1.4.0.tar.gz
-	rm -f HCAMatrixBrowser_1.0.1.tar.gz HCAExplorer_1.4.0.tar.gz
 
 	# Install Perl lib
 	apt-get install -y --no-install-recommends  libipc-run-perl libio-compress-perl
@@ -259,7 +242,6 @@ From: ubuntu:24.04
 	cpan List::MoreUtils
 	cpan List::Util
 	cpan Parallel::ForkManager
-	#cpan Parallel::Loops #FIXME issue to be untar properly, but does not look to be used!
 	cpan Sort::Naturally
 	cpan Spreadsheet::ParseExcel
 	cpan Spreadsheet::ParseXLSX

@@ -25,6 +25,8 @@ global_check:
 	@perl -MCpanel::JSON::XS        -e 1 >> $@.tmp
 	@perl -MData::Dumper            -e 1 >> $@.tmp
 	@perl -MDBI                     -e 1 >> $@.tmp
+	@perl -MDBD::mysql              -e 1 >> $@.tmp
+	@perl -MDBD::Pg                 -e 1 >> $@.tmp
 	@perl -MDigest::SHA             -e 1 >> $@.tmp
 	@perl -MExporter                -e 1 >> $@.tmp
 	@perl -MFile::Basename          -e 1 >> $@.tmp
@@ -45,7 +47,6 @@ global_check:
 	@perl -MList::MoreUtils         -e 1 >> $@.tmp
 	@perl -MList::Util              -e 1 >> $@.tmp
 	@perl -MParallel::ForkManager   -e 1 >> $@.tmp
-	#@perl -MParallel::Loops         -e 1 >> $@.tmp #FIXME issue to be untar properly, but does not look to be used!
 	@perl -MSort::Naturally         -e 1 >> $@.tmp
 	@perl -MSpreadsheet::Read       -e 1 >> $@.tmp
 	@perl -MSpreadsheet::ParseExcel -e 1 >> $@.tmp
@@ -66,7 +67,6 @@ global_check:
 	@R -e 'library("Biostrings")'        >> $@.tmp  2>/dev/null
 	@R -e 'library("BUSpaRse")'          >> $@.tmp  2>/dev/null
 	@R -e 'library("data.table")'        >> $@.tmp  2>/dev/null
-	@R -e 'library("devtools")'          >> $@.tmp  2>/dev/null
 	@R -e 'library("dplyr")'             >> $@.tmp  2>/dev/null
 	@R -e 'library("DropletUtils")'      >> $@.tmp  2>/dev/null
 	@R -e 'library("edgeR")'             >> $@.tmp  2>/dev/null
@@ -79,26 +79,20 @@ global_check:
 	@R -e 'library("gghighlight")'       >> $@.tmp  2>/dev/null
 	@R -e 'library("ggplot2")'           >> $@.tmp  2>/dev/null
 	@R -e 'library("gridExtra")'         >> $@.tmp  2>/dev/null
-	@R -e 'library("HCAExplorer")'       >> $@.tmp  2>/dev/null
 	@R -e 'library("HelpersMG")'         >> $@.tmp  2>/dev/null
 	@R -e 'library("LaplacesDemon")'     >> $@.tmp  2>/dev/null
-	@R -e 'library("lattice")'           >> $@.tmp  2>/dev/null
 	@R -e 'library("limma")'             >> $@.tmp  2>/dev/null
-	@R -e 'library("magrittr")'          >> $@.tmp  2>/dev/null
 	@R -e 'library("Matrix")'            >> $@.tmp  2>/dev/null
 	@R -e 'library("mclust")'            >> $@.tmp  2>/dev/null
 	@R -e 'library("methods")'           >> $@.tmp  2>/dev/null
 	@R -e 'library("plyr")'              >> $@.tmp  2>/dev/null
 	@R -e 'library("R.utils")'           >> $@.tmp  2>/dev/null
 	@R -e 'library("RCurl")'             >> $@.tmp  2>/dev/null
-	@R -e 'library("readr")'             >> $@.tmp  2>/dev/null
 	@R -e 'library("reshape2")'          >> $@.tmp  2>/dev/null
 	@R -e 'library("rjson")'             >> $@.tmp  2>/dev/null
 	@R -e 'library("Seurat")'            >> $@.tmp  2>/dev/null
 	@R -e 'library("stringr")'           >> $@.tmp  2>/dev/null
-	@R -e 'library("tibble")'            >> $@.tmp  2>/dev/null
 	@R -e 'library("tools")'             >> $@.tmp  2>/dev/null
-	@R -e 'library("tximport")'          >> $@.tmp  2>/dev/null
 # R annotator script
 	@R -e 'library("SRAdb")'             >> $@.tmp  2>/dev/null
 	@R -e 'library("gsubfn")'            >> $@.tmp  2>/dev/null
@@ -304,6 +298,8 @@ test_container: build_container
 	@$(PIPELINE_CONTAINER_CMD) perl -MCpanel::JSON::XS        -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MData::Dumper            -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MDBI                     -e 1 >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) perl -MDBD::mysql              -e 1 >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) perl -MDBD::Pg                 -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MDigest::SHA             -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MExporter                -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MFile::Basename          -e 1 >> $@.tmp
@@ -324,7 +320,6 @@ test_container: build_container
 	@$(PIPELINE_CONTAINER_CMD) perl -MList::MoreUtils         -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MList::Util              -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MParallel::ForkManager   -e 1 >> $@.tmp
-#@$(PIPELINE_CONTAINER_CMD) perl -MParallel::Loops         -e 1 >> $@.tmp #FIXME issue to be untar properly, but does not look to be used!
 	@$(PIPELINE_CONTAINER_CMD) perl -MSort::Naturally         -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MSpreadsheet::Read       -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MSpreadsheet::ParseExcel -e 1 >> $@.tmp
@@ -334,23 +329,22 @@ test_container: build_container
 	@$(PIPELINE_CONTAINER_CMD) perl -MTest::More              -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MTime::HiRes             -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MTime::localtime         -e 1 >> $@.tmp
-#@$(PIPELINE_CONTAINER_CMD) perl -MWebservice::InterMine   -e 1 >> $@.tmp #FIXME issue with a test
+	@$(PIPELINE_CONTAINER_CMD) perl -MWebservice::InterMine   -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MXML::Fast               -e 1 >> $@.tmp
 # R libraries
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("affy")'              >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("AnnotationDbi")'     >> $@.tmp  2>/dev/null
-#@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("BgeeCall")'          >> $@.tmp  2>/dev/null #FIXME issue with R 4.4.1 ???
+#@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("BgeeCall")'          >> $@.tmp  2>/dev/null #FIXME issue with the source tarball build at Bioconductor
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("Biobase")'           >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("biomaRt")'           >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("Biostrings")'        >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("BUSpaRse")'          >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("data.table")'        >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("devtools")'          >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("dplyr")'             >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("DropletUtils")'      >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("edgeR")'             >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("fdrtool")'           >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("forcats")'           >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("forcats")'           >> $@.tmp  2>/dev/null #FIXME not loaded as usual, will maybe not be used!
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("gcrma")'             >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("genefilter")'        >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("GenomicFeatures")'   >> $@.tmp  2>/dev/null
@@ -358,27 +352,20 @@ test_container: build_container
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("gghighlight")'       >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("ggplot2")'           >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("gridExtra")'         >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("HCAExplorer")'       >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("HelpersMG")'         >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("LaplacesDemon")'     >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("lattice")'           >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("limma")'             >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("magrittr")'          >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("Matrix")'            >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("mclust")'            >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("methods")'           >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("plyr")'              >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("R.utils")'           >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("RCurl")'             >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("readr")'             >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("reshape2")'          >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("rjson")'             >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("Seurat")'            >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("stringr")'           >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("tibble")'            >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("tools")'             >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("tximport")'          >> $@.tmp  2>/dev/null
-	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("UniprotR")'          >> $@.tmp  2>/dev/null
 # R annotator script
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("SRAdb")'             >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("gsubfn")'            >> $@.tmp  2>/dev/null
