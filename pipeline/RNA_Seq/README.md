@@ -128,7 +128,7 @@ In order to run the pipeline 3 mandatory files should be present:
 * Species.dna.toplevel.fa
 
 This files can be downloaded from the following source:
-ftp://ftp.ensemblgenomes.org/pub/ or ftp://ftp.ensembl.org/pub/ (for vertebrates)
+https://ftp.ensemblgenomes.org/pub/ or https://ftp.ensembl.org/pub/ (for vertebrates)
 
 #### **Create info files**
 

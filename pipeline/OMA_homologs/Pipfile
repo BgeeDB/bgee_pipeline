@@ -1,0 +1,17 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+sparqlwrapper = "==1.8.5"
+rdflib = "==5.0.0"
+isodate = "==0.6.0"
+pyparsing = "==2.4.7"
+six = "==1.15.0"
+pandas = "==1.2.5"
+
+[dev-packages]
+
+[requires]
+python_version = "3.7"

@@ -49,8 +49,11 @@ genes: $(SPECIESFILEPATH) go.obsolete
 	@if [[ -s $@.err ]]; then echo -n; else $(RM) $@.err; fi
 	@$(MV) $@.tmp $@
 
+# Please check that GeneCards datasource ID did not change in the database before running updateXrefs
+GENECARDS_ID := 40
 
-updateUniprotXrefs : genes
+updateXrefs : genes
+	# UPDATE UNIPROT XREFS
 	# first remove already existing xrefs_from_uniprot file
 	@rm -f $(XREFS_FROM_UNIPROT_FILE)
 	# generate tsv file containing all information to update uniprot xrefs in the database. Also retrieve gene name.
@@ -62,6 +65,8 @@ updateUniprotXrefs : genes
 	@R CMD BATCH --no-save --no-restore '--args species_file="$(SPECIESFILEPATH)" number_cores=28 bgee="$(BGEECMD)" output_file="$(XREFS_FROM_UNIPROT_FILE)"' update_genes_from_UniProt.R > $@.tmp
 	# Now update/insert XRefs in the database
 	@perl insert_uniprot_xrefs.pl -bgee=$(BGEECMD) -uniprot_xrefs=$(XREFS_FROM_UNIPROT_FILE) > $@.tmp 2>>$@.err
+	# ADD GENECARDS XREFS
+	@$(MYSQL) -e "INSERT INTO geneXRef (bgeeGeneId, XRefId, dataSourceId) SELECT bgeeGeneId, geneId, $(GENECARDS_ID) from gene where speciesId = 9606;" > $@.tmp 2> $@.warning
 	@$(MV) $@.tmp $@
 
 sameIdGeneCount: genes
@@ -103,6 +108,61 @@ $(VERIFICATIONFILE): $(OUTPUT_DIR)go go.obsolete genes sameIdGeneCount hogs $(OU
 	-@$(GIT) add $@
 	-@$(GIT) commit $@ -m "Commit verification file for gene and hierarchical group insertion"
 	@$(GIT) push
+
+
+#number of processes, default is 3 maximum is 4
+N_PROCESSES = 4
+
+#Log mode (debug or info)
+LOG_HOMOLOGS = debug
+
+#Skip species pairs stated in the {orthologs|paralogs}_pairs_with_results.tmp (see README.md)
+#The tmp files should be placed in the TEMPORARY_CONFIG_FILES_DIRECTORY. Possible values: True and False
+REMOVE_SPECIES_PAIRS = False
+
+#For more information about the config template, please see the README.md file of the orthologs/paralogs app	
+define CONFIG_TEMPLATE
+[DEFAULT]
+bgee_sparql_endpoint = https://www.bgee.org/sparql/
+oma_sparql_endpoint = https://sparql.omabrowser.org/sparql/
+ncbi_gene2ensembl_URL = $(NCBI_GENE2ENSEMBL_URL)
+log = $(LOG_HOMOLOGS)
+remove_species_pairs = $(REMOVE_SPECIES_PAIRS)
+
+[OUTPUT]
+file_directory_output = $(HOMOLOGS_DIR)
+
+[RDF_VOCABULARY]
+ncbi_gene_crossref_property = lscr:xrefNCBIGene
+ensembl_gene_crossref_property = lscr:xrefEnsemblGene
+
+[SPECIES]
+species_file = $(ALL_SPECIES_FILE)
+ncbi_species_file = $(ONLY_NCBI_SPECIES_FILE)
+flybase_species_file = $(ONLY_FLYBASE_SPECIES_FILE)
+taxon_namespace = http://purl.uniprot.org/taxonomy/
+species_to_gene_id_prefix = {6239: 'WBGene', 7740: 'BL'}
+species_ncbi_to_ensembl = [105023]
+
+[SPECIES_MAPPING]
+7237 = 46245
+9593 = 9595
+endef
+
+export CONFIG_TEMPLATE
+
+$(OUTPUT_DIR)config_file:
+	@echo "$$CONFIG_TEMPLATE" > $(GENERATE_HOMOLOGS_APP_DIR)/template.properties
+	@touch $@
+
+$(OUTPUT_DIR)generate_homologs_app: config_file
+	@cd $(GENERATE_HOMOLOGS_APP_DIR)
+	@$(PIPENV) install 1>$@.tmp 2>$@.err
+	@$(PIPENV) run $(PYTHON3) $(GENERATE_HOMOLOGS_APP_FILE) -c $(TEMPORARY_CONFIG_FILES_DIR) -n $(N_PROCESSES) >> $@.tmp 2>> $@.err
+	@$(MV) $(HOMOLOGS_DIR)/orthologs* $(ORTHOLOGS_DIR) 
+	@$(MV) $(HOMOLOGS_DIR)/paralogs* $(PARALOGS_DIR)
+	@$(RM) -r $(HOMOLOGS_DIR)
+	@$(MV) $@.tmp $@
 
 $(OUTPUT_DIR)insert_gene_homology:
 	# Insert orthology/paralogy  into the database

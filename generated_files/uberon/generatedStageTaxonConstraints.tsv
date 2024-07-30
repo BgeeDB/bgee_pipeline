@@ -886,6 +886,41 @@ RnorDv:0000050	Witschi stage 2 (rat)	10116	Rattus norvegicus
 RnorDv:0000051	Witschi stage 3 (rat)	10116	Rattus norvegicus			
 RnorDv:0000052	Witschi stage 4 (rat)	10116	Rattus norvegicus			
 RnorDv:0000053	Witschi stage 5 (rat)	10116	Rattus norvegicus			
+SsalDv:0000008	16-cell stage (salmon)	8015	Salmonidae			
+SsalDv:0000009	32-cell stage (salmon)	8015	Salmonidae			
+SsalDv:0000010	64-cell stage (salmon)	8015	Salmonidae			
+SsalDv:0000011	128-cell stage (salmon)	8015	Salmonidae			
+SsalDv:0000013	early blastula stage (salmon)	8015	Salmonidae			
+SsalDv:0000014	mid blastula stage (salmon)	8015	Salmonidae			
+SsalDv:0000015	late blastula stage (salmon)	8015	Salmonidae			
+SsalDv:0000017	early gastrula:10% epiboly (salmon)	8015	Salmonidae			
+SsalDv:0000018	pre-mid gastrula:30% epiboly (salmon)	8015	Salmonidae			
+SsalDv:0000019	mid gastrula:50% epiboly (salmon)	8015	Salmonidae			
+SsalDv:0000020	late gastrula:90% epiboly (salmon)	8015	Salmonidae			
+SsalDv:0000023	10-somite-stage (salmon)	8015	Salmonidae			
+SsalDv:0000024	15-16-somite-stage (salmon)	8015	Salmonidae			
+SsalDv:0000025	18-21-somite-stage (salmon)	8015	Salmonidae			
+SsalDv:0000026	22-24-somite-stage (salmon)	8015	Salmonidae			
+SsalDv:0000027	27-28-somite-stage (salmon)	8015	Salmonidae			
+SsalDv:0000028	31-34-somite-stage (salmon)	8015	Salmonidae			
+SsalDv:0000029	36-37-somite-stage (salmon)	8015	Salmonidae			
+SsalDv:0000030	38-40-somite-stage (salmon)	8015	Salmonidae			
+SsalDv:0000031	41-44-somite-stage (salmon)	8015	Salmonidae			
+SsalDv:0000032	45-50-somite-stage (salmon)	8015	Salmonidae			
+SsalDv:0000033	49-52-somite-stage (salmon)	8015	Salmonidae			
+SsalDv:0000034	53-55-somite-stage (salmon)	8015	Salmonidae			
+SsalDv:0000035	62-64-somite-stage (salmon)	8015	Salmonidae			
+SsalDv:0000036	63-64-somite-stage (salmon)	8015	Salmonidae			
+SsalDv:0000037	65-somite-stage (salmon)	8015	Salmonidae			
+SsalDv:0000043	fry stage (salmon)			33213	Bilateria	
+SsalDv:0000044	day 0 of fry stage (salmon)			33213	Bilateria	
+SsalDv:0000045	day 1 of fry stage (salmon)			33213	Bilateria	
+SsalDv:0000046	day 48 of fry stage (salmon)			33213	Bilateria	
+SsalDv:0000047	day 65 of fry stage (salmon)			33213	Bilateria	
+SsalDv:0000048	day 77 of fry stage (salmon)			33213	Bilateria	
+SsalDv:0000049	day 94 of fry stage (salmon)			33213	Bilateria	
+SsalDv:0000051	parr stage (salmon)			33213	Bilateria	
+SsalDv:0000052	smolt stage (salmon)			33213	Bilateria	
 SscrDv:0000010	1-week-old stage (pig)			33213	Bilateria	
 SscrDv:0000011	2-week-old stage (pig)			33213	Bilateria	
 SscrDv:0000012	3-week-old stage (pig)			33213	Bilateria	

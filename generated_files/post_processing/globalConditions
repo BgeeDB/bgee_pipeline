@@ -1,451 +1,1301 @@
-07:30:40.131 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 8154 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:40.131 [ForkJoinPool.commonPool-worker-8] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 10090 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:40.131 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9593 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:40.131 [ForkJoinPool.commonPool-worker-13] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9823 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:40.131 [ForkJoinPool.commonPool-worker-4] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 7227 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:40.131 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9615 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:40.131 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 7240 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:40.131 [ForkJoinPool.commonPool-worker-6] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 28377 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:40.131 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 10141 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:40.131 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9913 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:40.131 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9597 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:40.220 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 25 raw data conditions for species 9593
-07:30:40.220 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 8 raw data conditions for species 7240
-07:30:40.220 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 34 raw data conditions for species 10141
-07:30:40.220 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 26 raw data conditions for species 8154
-07:30:40.220 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 25 raw data conditions for species 9597
-07:30:40.220 [ForkJoinPool.commonPool-worker-6] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 40 raw data conditions for species 28377
-07:30:40.220 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 10141...
-07:30:40.220 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9593...
-07:30:40.221 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 7240...
-07:30:40.221 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9597...
-07:30:40.221 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 8154...
-07:30:40.221 [ForkJoinPool.commonPool-worker-6] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 28377...
-07:30:40.222 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 161 raw data conditions for species 9615
-07:30:40.222 [ForkJoinPool.commonPool-worker-13] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 183 raw data conditions for species 9823
-07:30:40.222 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9615...
-07:30:40.222 [ForkJoinPool.commonPool-worker-13] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9823...
-07:30:40.222 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 381 raw data conditions for species 9913
-07:30:40.222 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9913...
-07:30:40.542 [ForkJoinPool.commonPool-worker-4] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 7379 raw data conditions for species 7227
-07:30:40.542 [ForkJoinPool.commonPool-worker-4] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 7227...
-07:30:40.626 [ForkJoinPool.commonPool-worker-8] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 14430 raw data conditions for species 10090
-07:30:40.626 [ForkJoinPool.commonPool-worker-8] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 10090...
-07:30:40.678 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 7240.
-07:30:40.679 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:40.701 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 103 conditions inserted for species 7240
-07:30:40.933 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 252 GlobalCondToRawCondTOs inserted for species 7240
-07:30:40.934 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 7237 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:40.947 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 6 raw data conditions for species 7237
-07:30:40.947 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 7237...
-07:30:42.198 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 7237.
-07:30:42.199 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:42.212 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 160 conditions inserted for species 7237
-07:30:42.229 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 310 GlobalCondToRawCondTOs inserted for species 7237
-07:30:42.230 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 7897 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:42.237 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 13 raw data conditions for species 7897
-07:30:42.237 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 7897...
-07:30:43.449 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 8154.
-07:30:43.449 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:43.467 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 302 conditions inserted for species 8154
-07:30:43.522 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 1228 GlobalCondToRawCondTOs inserted for species 8154
-07:30:43.523 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9103 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:43.546 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 42 raw data conditions for species 9103
-07:30:43.549 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9103...
-07:30:43.716 [ForkJoinPool.commonPool-worker-6] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 28377.
-07:30:43.717 [ForkJoinPool.commonPool-worker-6] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:43.743 [ForkJoinPool.commonPool-worker-6] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 328 conditions inserted for species 28377
-07:30:43.793 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 9593.
-07:30:43.793 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:43.793 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 10141.
-07:30:43.794 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:43.796 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 7897.
-07:30:43.797 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:43.805 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 80 conditions inserted for species 7897
-07:30:43.806 [ForkJoinPool.commonPool-worker-6] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 1508 GlobalCondToRawCondTOs inserted for species 28377
-07:30:43.808 [ForkJoinPool.commonPool-worker-6] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 8364 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:43.816 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 253 GlobalCondToRawCondTOs inserted for species 7897
-07:30:43.816 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 7740 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:43.821 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 9597.
-07:30:43.822 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:43.822 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 32 raw data conditions for species 7740
-07:30:43.822 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 7740...
-07:30:43.826 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 534 conditions inserted for species 9593
-07:30:43.839 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 764 conditions inserted for species 10141
-07:30:43.846 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 9615.
-07:30:43.846 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:43.859 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 597 conditions inserted for species 9597
-07:30:43.871 [ForkJoinPool.commonPool-worker-6] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 4851 raw data conditions for species 8364
-07:30:43.871 [ForkJoinPool.commonPool-worker-6] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 8364...
-07:30:43.900 [ForkJoinPool.commonPool-worker-13] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 9823.
-07:30:43.901 [ForkJoinPool.commonPool-worker-13] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:43.917 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 1278 conditions inserted for species 9615
-07:30:43.944 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 7740.
-07:30:43.944 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:43.956 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 2865 GlobalCondToRawCondTOs inserted for species 9593
-07:30:44.171 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 253 conditions inserted for species 7740
-07:30:44.171 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9544 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:44.171 [ForkJoinPool.commonPool-worker-13] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 1995 conditions inserted for species 9823
-07:30:44.177 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 137 raw data conditions for species 9544
-07:30:44.177 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9544...
-07:30:44.177 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 3391 GlobalCondToRawCondTOs inserted for species 10141
-07:30:44.178 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9258 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:44.178 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 2996 GlobalCondToRawCondTOs inserted for species 9597
-07:30:44.179 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9598 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:44.183 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 32 raw data conditions for species 9258
-07:30:44.183 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9258...
-07:30:44.185 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 168 raw data conditions for species 9598
-07:30:44.185 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9598...
-07:30:44.213 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 1030 GlobalCondToRawCondTOs inserted for species 7740
-07:30:44.214 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9031 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:44.224 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 60 raw data conditions for species 9031
-07:30:44.225 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9031...
-07:30:44.338 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 9913.
-07:30:44.339 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:44.548 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 3158 conditions inserted for species 9913
-07:30:44.708 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 10550 GlobalCondToRawCondTOs inserted for species 9615
-07:30:44.709 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9685 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:44.716 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 25 raw data conditions for species 9685
-07:30:44.716 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9685...
-07:30:45.354 [ForkJoinPool.commonPool-worker-13] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 16986 GlobalCondToRawCondTOs inserted for species 9823
-07:30:45.356 [ForkJoinPool.commonPool-worker-13] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9796 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:45.368 [ForkJoinPool.commonPool-worker-13] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 75 raw data conditions for species 9796
-07:30:45.368 [ForkJoinPool.commonPool-worker-13] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9796...
-07:30:46.641 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 9031.
-07:30:46.642 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:46.698 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 691 conditions inserted for species 9031
-07:30:47.606 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 4634 GlobalCondToRawCondTOs inserted for species 9031
-07:30:47.607 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9606 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:47.653 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 4891 raw data conditions for species 9606
-07:30:47.653 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9606...
-07:30:47.672 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 9544.
-07:30:47.673 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:47.703 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 9598.
-07:30:47.704 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:47.734 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 920 conditions inserted for species 9544
-07:30:47.766 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 1075 conditions inserted for species 9598
-07:30:48.246 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 11398 GlobalCondToRawCondTOs inserted for species 9544
-07:30:48.247 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 13616 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:48.454 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 105 raw data conditions for species 13616
-07:30:48.455 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 13616...
-07:30:48.462 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 33258 GlobalCondToRawCondTOs inserted for species 9913
-07:30:48.462 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 10116 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:48.468 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 121 raw data conditions for species 10116
-07:30:48.468 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 10116...
-07:30:48.506 [ForkJoinPool.commonPool-worker-13] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 9796.
-07:30:48.507 [ForkJoinPool.commonPool-worker-13] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:48.538 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 9258.
-07:30:48.539 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:48.582 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 596 conditions inserted for species 9258
-07:30:48.594 [ForkJoinPool.commonPool-worker-13] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 1312 conditions inserted for species 9796
-07:30:48.711 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 19824 GlobalCondToRawCondTOs inserted for species 9598
-07:30:48.712 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 6239 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:48.716 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 3102 GlobalCondToRawCondTOs inserted for species 9258
-07:30:48.717 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9986 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:48.724 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 64 raw data conditions for species 9986
-07:30:48.724 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9986...
-07:30:48.733 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 1640 raw data conditions for species 6239
-07:30:48.733 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 6239...
-07:30:48.839 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 9103.
-07:30:48.840 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:48.898 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 939 conditions inserted for species 9103
-07:30:48.946 [ForkJoinPool.commonPool-worker-13] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 5737 GlobalCondToRawCondTOs inserted for species 9796
-07:30:48.947 [ForkJoinPool.commonPool-worker-13] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 7955 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:48.993 [ForkJoinPool.commonPool-worker-13] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 8520 raw data conditions for species 7955
-07:30:48.993 [ForkJoinPool.commonPool-worker-13] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 7955...
-07:30:49.432 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 4054 GlobalCondToRawCondTOs inserted for species 9103
-07:30:49.432 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 8090 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:49.450 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 109 raw data conditions for species 8090
-07:30:49.450 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 8090...
-07:30:49.593 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 6239.
-07:30:49.594 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:49.618 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 9685.
-07:30:49.618 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:49.660 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 587 conditions inserted for species 9685
-07:30:49.707 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 1908 conditions inserted for species 6239
-07:30:49.755 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 2125 GlobalCondToRawCondTOs inserted for species 9685
-07:30:49.756 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 60711 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:49.761 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 54 raw data conditions for species 60711
-07:30:49.761 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 60711...
-07:30:49.832 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 10116.
-07:30:49.833 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:49.885 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 923 conditions inserted for species 10116
-07:30:50.300 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 10651 GlobalCondToRawCondTOs inserted for species 10116
-07:30:50.301 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 10181 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:50.310 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 64 raw data conditions for species 10181
-07:30:50.311 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 10181...
-07:30:50.392 [ForkJoinPool.commonPool-worker-4] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 7227.
-07:30:50.393 [ForkJoinPool.commonPool-worker-4] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:50.967 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 60711.
-07:30:50.968 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:51.174 [ForkJoinPool.commonPool-worker-4] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 12446 conditions inserted for species 7227
-07:30:51.203 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 709 conditions inserted for species 60711
-07:30:51.455 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 6678 GlobalCondToRawCondTOs inserted for species 60711
-07:30:51.456 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 69293 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:51.466 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 40 raw data conditions for species 69293
-07:30:51.466 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 69293...
-07:30:51.989 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 54142 GlobalCondToRawCondTOs inserted for species 6239
-07:30:51.990 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9925 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:52.005 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 46 raw data conditions for species 9925
-07:30:52.006 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9925...
-07:30:52.367 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 10181.
-07:30:52.368 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:52.409 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 652 conditions inserted for species 10181
-07:30:52.635 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 6282 GlobalCondToRawCondTOs inserted for species 10181
-07:30:52.636 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 32507 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:52.643 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 20 raw data conditions for species 32507
-07:30:52.643 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 32507...
-07:30:52.663 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 69293.
-07:30:52.663 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:52.697 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 401 conditions inserted for species 69293
-07:30:52.783 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 1996 GlobalCondToRawCondTOs inserted for species 69293
-07:30:52.783 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 52904 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:52.790 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 18 raw data conditions for species 52904
-07:30:52.790 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 52904...
-07:30:53.167 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 8090.
-07:30:53.167 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:53.197 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 498 conditions inserted for species 8090
-07:30:53.461 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 13616.
-07:30:53.462 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:53.515 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 818 conditions inserted for species 13616
-07:30:53.543 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 3679 GlobalCondToRawCondTOs inserted for species 8090
-07:30:53.543 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9541 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:53.550 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 29 raw data conditions for species 9541
-07:30:53.550 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9541...
-07:30:53.553 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 9986.
-07:30:53.553 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:53.594 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 763 conditions inserted for species 9986
-07:30:53.761 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 32507.
-07:30:53.762 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:53.780 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 220 conditions inserted for species 32507
-07:30:53.784 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 4088 GlobalCondToRawCondTOs inserted for species 9986
-07:30:53.785 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 30608 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:53.790 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 20 raw data conditions for species 30608
-07:30:53.790 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 30608...
-07:30:53.818 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 7619 GlobalCondToRawCondTOs inserted for species 13616
-07:30:53.818 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 884 GlobalCondToRawCondTOs inserted for species 32507
-07:30:53.818 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 8355 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:53.819 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9555 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:53.825 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 40 raw data conditions for species 8355
-07:30:53.826 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 8355...
-07:30:53.830 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 126 raw data conditions for species 9555
-07:30:53.830 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9555...
-07:30:53.907 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 9925.
-07:30:53.908 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:53.955 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 795 conditions inserted for species 9925
-07:30:53.957 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 52904.
-07:30:53.958 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:53.972 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 153 conditions inserted for species 52904
-07:30:54.023 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 704 GlobalCondToRawCondTOs inserted for species 52904
-07:30:54.024 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9940 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:54.034 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 170 raw data conditions for species 9940
-07:30:54.034 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9940...
-07:30:54.076 [ForkJoinPool.commonPool-worker-6] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 8364.
-07:30:54.077 [ForkJoinPool.commonPool-worker-6] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:54.208 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 5336 GlobalCondToRawCondTOs inserted for species 9925
-07:30:54.208 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 8030 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:54.221 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 36 raw data conditions for species 8030
-07:30:54.221 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 8030...
-07:30:54.488 [ForkJoinPool.commonPool-worker-6] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 7398 conditions inserted for species 8364
-07:30:55.886 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 30608.
-07:30:55.887 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:55.924 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 477 conditions inserted for species 30608
-07:30:56.023 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 2138 GlobalCondToRawCondTOs inserted for species 30608
-07:30:56.024 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 7994 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:56.043 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 54 raw data conditions for species 7994
-07:30:56.043 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 7994...
-07:30:56.237 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 8355.
-07:30:56.239 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:56.277 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 9940.
-07:30:56.278 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:56.286 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 607 conditions inserted for species 8355
-07:30:56.355 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 1144 conditions inserted for species 9940
-07:30:56.413 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 1942 GlobalCondToRawCondTOs inserted for species 8355
-07:30:56.414 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9974 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:56.423 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 20 raw data conditions for species 9974
-07:30:56.423 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9974...
-07:30:56.656 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 9606.
-07:30:56.657 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:56.798 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 10711 GlobalCondToRawCondTOs inserted for species 9940
-07:30:56.799 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 7918 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:56.810 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 38 raw data conditions for species 7918
-07:30:56.810 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 7918...
-07:30:57.201 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 9899 conditions inserted for species 9606
-07:30:57.371 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 8030.
-07:30:57.372 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:57.404 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 522 conditions inserted for species 8030
-07:30:57.516 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 2902 GlobalCondToRawCondTOs inserted for species 8030
-07:30:57.517 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 8081 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:57.526 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 14 raw data conditions for species 8081
-07:30:57.526 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 8081...
-07:30:57.589 [ForkJoinPool.commonPool-worker-13] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 7955.
-07:30:57.590 [ForkJoinPool.commonPool-worker-13] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:57.955 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 9974.
-07:30:57.956 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:57.990 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 422 conditions inserted for species 9974
-07:30:58.092 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 2260 GlobalCondToRawCondTOs inserted for species 9974
-07:30:58.094 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 7936 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:58.103 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 28 raw data conditions for species 7936
-07:30:58.103 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 7936...
-07:30:58.404 [ForkJoinPool.commonPool-worker-8] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 10090.
-07:30:58.405 [ForkJoinPool.commonPool-worker-8] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:58.481 [ForkJoinPool.commonPool-worker-13] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 15200 conditions inserted for species 7955
-07:30:58.675 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 9541.
-07:30:58.676 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:58.706 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 577 conditions inserted for species 9541
-07:30:58.836 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 2974 GlobalCondToRawCondTOs inserted for species 9541
-07:30:58.837 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9545 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:58.847 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 28 raw data conditions for species 9545
-07:30:58.847 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9545...
-07:30:58.957 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 9555.
-07:30:58.958 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:59.065 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 7994.
-07:30:59.066 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:59.122 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 424 conditions inserted for species 7994
-07:30:59.172 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 1898 conditions inserted for species 9555
-07:30:59.223 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 2380 GlobalCondToRawCondTOs inserted for species 7994
-07:30:59.224 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 8010 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:59.233 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 48 raw data conditions for species 8010
-07:30:59.233 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 8010...
-07:30:59.391 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 7936.
-07:30:59.392 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:59.407 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 232 conditions inserted for species 7936
-07:30:59.452 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 1018 GlobalCondToRawCondTOs inserted for species 7936
-07:30:59.453 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 105023 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:59.459 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 16 raw data conditions for species 105023
-07:30:59.459 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 105023...
-07:30:59.465 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 7918.
-07:30:59.465 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:30:59.504 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 446 conditions inserted for species 7918
-07:30:59.600 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 2360 GlobalCondToRawCondTOs inserted for species 7918
-07:30:59.600 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9531 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:30:59.607 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 28 raw data conditions for species 9531
-07:30:59.607 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9531...
-07:31:00.143 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 13130 GlobalCondToRawCondTOs inserted for species 9555
-07:31:00.143 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 8049 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:31:00.150 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 28 raw data conditions for species 8049
-07:31:00.150 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 8049...
-07:31:00.187 [ForkJoinPool.commonPool-worker-8] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 29739 conditions inserted for species 10090
-07:31:00.674 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 105023.
-07:31:00.675 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:31:00.690 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 194 conditions inserted for species 105023
-07:31:00.736 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 1414 GlobalCondToRawCondTOs inserted for species 105023
-07:31:00.737 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1979 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9483 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, SEX_ID, STRAIN_ID, STAGE_ID]...
-07:31:00.744 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1991 insertGlobalConditionsForOneSpecies - 24 raw data conditions for species 9483
-07:31:00.744 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1994 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9483...
-07:31:01.188 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 8081.
-07:31:01.189 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:31:01.248 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 91 conditions inserted for species 8081
-07:31:01.269 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 594 GlobalCondToRawCondTOs inserted for species 8081
-07:31:02.263 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 8010.
-07:31:02.264 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:31:02.297 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 531 conditions inserted for species 8010
-07:31:02.454 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 3254 GlobalCondToRawCondTOs inserted for species 8010
-07:31:03.798 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 9545.
-07:31:03.799 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:31:03.820 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 337 conditions inserted for species 9545
-07:31:03.904 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 1574 GlobalCondToRawCondTOs inserted for species 9545
-07:31:03.905 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 8049.
-07:31:03.905 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:31:03.935 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 235 conditions inserted for species 8049
-07:31:03.947 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 9531.
-07:31:03.947 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:31:03.984 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 557 conditions inserted for species 9531
-07:31:03.990 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 928 GlobalCondToRawCondTOs inserted for species 8049
-07:31:04.329 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 2850 GlobalCondToRawCondTOs inserted for species 9531
-07:31:05.268 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2009 insertGlobalConditionsForOneSpecies - Done condition inference for species 9483.
-07:31:05.269 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1712 startTransaction - Starting transaction
-07:31:05.302 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2016 insertGlobalConditionsForOneSpecies - 586 conditions inserted for species 9483
-07:31:05.441 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 2792 GlobalCondToRawCondTOs inserted for species 9483
-07:31:08.507 [ForkJoinPool.commonPool-worker-6] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 244876 GlobalCondToRawCondTOs inserted for species 8364
-07:31:27.851 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 571130 GlobalCondToRawCondTOs inserted for species 9606
-07:31:29.867 [ForkJoinPool.commonPool-worker-4] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 475568 GlobalCondToRawCondTOs inserted for species 7227
-07:31:43.151 [ForkJoinPool.commonPool-worker-13] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 586317 GlobalCondToRawCondTOs inserted for species 7955
-07:33:14.315 [ForkJoinPool.commonPool-worker-8] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 2056 insertGlobalConditionsForOneSpecies - 1194554 GlobalCondToRawCondTOs inserted for species 10090
-Stats:
-speciesId	COUNT(globalConditionId)
-6239	1908
-7227	12446
-7237	160
-7240	103
-7740	253
-7897	80
-7918	446
-7936	232
-7955	15200
-7994	424
-8010	531
-8030	522
-8049	235
-8081	91
-8090	498
-8154	302
-8355	607
-8364	7398
-9031	691
-9103	939
-9258	596
-9483	586
-9531	557
-9541	577
-9544	920
-9545	337
-9555	1898
-9593	534
-9597	597
-9598	1075
-9606	9899
-9615	1278
-9685	587
-9796	1312
-9823	1995
-9913	3158
-9925	795
-9940	1144
-9974	422
-9986	763
-10090	29739
-10116	923
-10141	764
-10181	652
-13616	818
-28377	328
-30608	477
-32507	220
-52904	153
-60711	709
-69293	401
-105023	194
-Distinct cell type IDs:
+WARNING: sun.reflect.Reflection.getCallerClass is not supported. This will impact performance.
+20:32:45.935 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1740 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 8030 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+20:32:46.000 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1752 insertGlobalConditionsForOneSpecies - 239 raw data conditions for species 8030
+20:32:46.001 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1755 insertGlobalConditionsForOneSpecies - Starting condition inference for species 8030...
+20:32:51.699 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1770 insertGlobalConditionsForOneSpecies - Done condition inference for species 8030.
+20:32:51.700 [main] INFO org.bgee.pipeline.expression.InsertPropagatedCalls 1484 startTransaction - Starting transaction
+Incorrect insertions (there should be none):
+Raw condition with incorrect corresponding global condition
+49733
+49735
+49737
+49739
+49741
+49743
+49745
+49747
+49749
+49751
+49753
+49755
+49757
+49759
+49761
+49763
+49765
+49767
+49769
+49771
+49773
+49775
+49777
+49779
+49781
+49783
+49785
+49787
+49789
+49791
+49793
+49795
+49798
+49800
+49802
+49804
+49806
+49808
+49810
+49812
+49814
+49816
+49818
+49821
+49823
+49829
+49831
+49835
+49837
+49839
+49841
+49842
+49843
+49844
+49845
+49846
+49847
+49848
+49849
+49850
+49851
+49852
+49853
+49854
+49855
+49856
+49857
+49858
+49859
+49860
+49861
+49862
+49863
+49864
+49865
+49866
+49867
+49868
+49869
+49870
+49871
+49872
+49873
+49874
+49875
+49876
+49877
+49878
+49879
+49880
+49881
+49882
+49883
+49884
+49885
+49886
+49887
+49888
+49889
+49890
+49891
+49893
+49894
+49895
+49896
+49897
+49898
+49899
+49900
+49901
+49903
+49907
+49909
+49910
+49911
+49912
+49913
+49914
+49915
+49916
+49917
+49918
+49919
+49920
+49921
+49922
+49923
+49924
+49925
+49926
+49927
+49928
+49929
+49930
+49931
+49932
+49933
+49934
+49935
+49936
+49937
+49938
+49939
+49940
+49941
+49942
+49943
+49944
+49945
+49946
+49947
+49948
+49949
+49950
+49951
+49952
+49953
+49954
+49955
+49956
+49957
+49958
+49959
+49960
+49961
+49962
+49963
+49964
+49965
+49966
+49967
+49968
+49969
+49970
+49971
+49972
+49973
+49974
+49975
+49976
+49977
+49978
+49979
+49980
+49981
+49982
+49983
+49984
+49985
+49986
+49987
+49988
+49989
+49990
+49991
+49992
+49994
+49996
+49998
+50000
+50002
+50009
+50011
+50013
+50015
+50017
+50019
+50021
+50023
+50025
+50027
+50029
+50031
+50032
+50034
+50036
+50038
+50039
+50041
+50043
+50044
+50045
+50046
+50047
+50048
+50049
+50050
+50051
+50052
+50054
+50056
+50058
+50060
+50062
+50064
+50066
+50068
+50069
+50070
+50071
+50072
+50073
+50074
+50075
+50076
+50077
+50078
+50079
+50080
+50081
+50083
+50087
+50088
+50089
+50090
+50091
+50092
+50093
+50094
+50095
+50096
+50097
+50098
+50099
+50100
+50101
+50102
+50103
+50104
+50105
+50106
+50107
+50108
+50109
+50110
+50111
+50112
+50113
+50114
+50115
+50116
+50117
+50118
+50119
+50120
+50121
+50122
+50123
+50124
+50125
+50126
+50127
+50128
+50129
+50130
+50131
+50132
+50133
+50134
+50135
+50136
+50137
+50138
+50139
+50140
+50141
+50142
+50143
+50144
+50145
+50146
+50147
+50149
+50151
+50153
+50155
+50157
+50159
+50161
+50163
+50165
+50167
+50169
+50171
+50172
+50173
+50174
+50175
+50176
+50177
+50178
+50179
+50180
+50181
+50182
+50183
+50185
+50187
+50189
+50191
+50193
+50195
+50197
+50199
+50201
+50203
+50205
+50207
+50208
+50209
+50210
+50211
+50212
+50213
+50214
+50215
+50216
+50217
+50218
+50219
+50220
+50221
+50222
+50223
+50224
+50225
+50226
+50227
+50228
+50229
+50230
+50231
+50232
+50233
+50234
+50235
+50236
+50237
+50238
+50239
+50240
+50241
+50242
+50243
+50244
+50245
+50246
+50247
+50248
+50249
+50250
+50251
+50252
+50253
+50254
+50255
+50256
+50257
+50258
+50259
+50260
+50261
+50262
+50263
+50264
+50265
+50266
+50267
+50268
+50269
+50270
+50271
+50272
+50273
+50274
+50275
+50276
+50277
+50278
+50279
+50280
+50281
+50282
+50283
+50284
+50285
+50286
+50287
+50288
+50289
+50290
+50291
+50292
+50293
+50294
+50295
+50296
+50297
+50298
+50299
+50300
+50301
+50302
+50303
+50304
+50305
+50306
+50307
+50308
+50309
+50310
+50311
+50312
+50313
+50314
+50315
+50316
+50317
+50318
+50319
+50320
+50321
+50322
+50323
+50324
+50325
+50326
+50327
+50328
+50329
+50330
+50331
+50332
+50333
+50334
+50335
+50336
+50337
+50338
+50339
+50340
+50341
+50342
+50343
+50344
+50345
+50346
+50347
+50348
+50349
+50350
+50351
+50352
+50353
+50354
+50355
+50356
+50357
+50358
+50359
+50360
+50361
+50362
+50363
+50364
+50365
+50366
+50367
+50368
+50369
+50370
+50371
+50372
+50373
+50374
+50375
+50376
+50377
+50378
+50379
+50380
+50381
+50382
+50383
+50384
+50385
+50386
+50387
+50388
+50389
+50390
+50391
+50392
+50393
+50394
+50395
+50396
+50397
+50398
+50399
+50400
+50401
+50402
+50403
+50404
+50405
+50406
+50407
+50408
+50409
+50410
+50411
+50412
+50413
+50414
+50415
+50416
+50417
+50418
+50419
+50420
+50421
+50422
+50423
+50424
+50425
+50426
+50427
+50428
+50429
+50430
+50431
+50432
+50433
+50434
+50435
+50436
+50437
+50438
+50439
+50440
+50441
+50442
+50443
+50444
+50445
+50446
+50447
+50448
+50449
+50450
+50451
+50452
+50453
+50454
+50455
+50456
+50457
+50458
+50459
+50460
+50462
+50464
+50466
+50468
+50470
+50472
+50474
+50476
+50478
+50480
+50482
+50575
+50577
+50579
+50581
+50583
+50585
+50587
+50589
+50591
+50593
+50595
+50597
+50599
+50601
+50603
+50605
+50607
+50609
+50630
+50632
+50634
+50636
+50638
+50640
+50642
+50644
+50648
+50654
+50656
+50660
+50662
+50664
+50666
+50669
+50671
+50675
+50677
+50679
+50681
+50683
+50685
+50687
+50689
+50691
+50693
+50695
+50697
+50699
+50701
+50703
+50705
+50707
+50709
+50711
+50713
+50715
+50717
+50719
+50721
+50723
+50725
+50727
+50729
+50731
+50733
+50735
+50737
+50739
+50741
+50743
+50745
+50747
+50749
+50751
+50753
+50755
+50757
+50759
+50761
+50763
+50765
+50767
+50769
+50771
+50773
+50775
+50777
+50779
+50781
+50783
+50785
+50787
+50789
+50791
+50793
+50795
+50797
+50799
+50801
+50803
+50805
+50807
+50809
+50811
+50813
+50820
+50824
+50826
+50829
+50831
+50833
+50837
+50839
+50842
+50844
+50846
+50850
+50854
+50856
+50859
+50861
+50864
+50871
+50876
+50878
+50880
+50882
+50885
+50887
+50890
+50892
+50894
+50900
+50902
+50905
+50907
+50909
+50911
+50913
+50915
+50917
+50919
+50923
+50926
+50929
+50931
+50933
+51046
+51048
+51050
+51051
+51053
+51054
+51056
+51058
+51060
+51062
+51064
+51065
+51067
+51069
+51070
+51071
+51072
+51073
+51074
+51076
+51078
+51080
+51085
+51086
+51087
+51088
+51090
+51092
+51094
+51096
+51097
+51100
+51102
+51105
+51107
+51112
+51114
+51116
+51117
+51119
+51121
+51123
+51124
+51125
+51127
+51131
+51133
+51135
+51136
+51137
+51139
+51141
+51142
+51144
+51145
+51147
+51148
+51150
+51152
+51153
+51155
+51157
+51159
+51169
+51170
+51171
+51172
+51173
+51174
+51175
+51176
+51177
+51179
+51181
+51184
+51185
+51187
+51189
+51191
+51193
+51195
+51197
+51199
+51201
+51203
+51205
+51207
+51209
+51213
+51215
+51217
+51219
+51225
+51227
+51229
+51231
+51233
+51235
+51237
+51239
+51241
+51243
+51245
+51247
+51249
+51251
+51253
+51255
+51256
+51257
+51258
+51259
+51260
+51264
+51265
+51266
+51267
+51268
+51269
+51270
+51271
+51274
+51276
+51278
+51280
+51282
+51284
+51286
+51287
+51288
+51289
+51290
+51291
+51292
+51293
+51294
+51295
+51296
+51297
+51298
+51299
+51301
+51302
+51303
+51304
+51306
+51308
+51309
+51311
+51313
+51314
+51315
+51316
+51317
+51318
+51319
+51320
+51321
+51322
+51323
+51324
+51325
+51327
+51329
+51331
+51337
+51339
+51341
+51343
+51344
+51345
+51347
+51349
+51350
+51351
+51355
+51357
+51358
+51360
+51361
+51363
+51365
+51366
+51368
+51370
+51371
+51372
+51374
+51376
+51377
+51385
+51386
+51389
+51390
+51391
+51392
+51393
+51394
+51396
+51397
+51399
+51400
+51401
+51402
+51403
+51404
+51405
+51406
+51407
+51408
+51409
+51411
+51412
+51413
+51414
+51415
+51416
+51418
+51420
+51421
+51436
+51437
+51438
+51439
+51440
+51441
+51442
+51443
+51444
+51445
+51446
+51447
+51448
+51450
+51451
+51453
+51455
+51457
+51459
+51461
+51463
+Number of globalConds per species:
+speciesId	COUNT(*)
+6239	2944
+7227	149010
+7237	496
+7240	407
+7740	260
+7897	62
+7918	554
+7936	171
+7955	27899
+7994	982
+8010	560
+8030	4601
+8049	233
+8081	948
+8090	1597
+8154	295
+8355	1618
+8364	16681
+9031	2130
+9103	1943
+9258	650
+9483	632
+9531	616
+9541	1853
+9544	2421
+9545	376
+9555	3144
+9593	1004
+9597	1123
+9598	4000
+9606	75824
+9615	4621
+9685	1225
+9796	4710
+9823	11702
+9913	13085
+9925	1099
+9940	3422
+9974	448
+9986	1228
+10090	165345
+10116	5888
+10141	1998
+10181	1615
+13616	1985
+28377	297
+30608	536
+32507	134
+52904	230
+60711	3082
+69293	815
+105023	514
+Distinct IDs used in cellTypeId column
 cellTypeId
 CL:0000000
 CL:0000003
-CL:0000007
-CL:0000014
-CL:0000015
-CL:0000016
-CL:0000034
+CL:0000017
+CL:0000018
+CL:0000020
 CL:0000039
-CL:0000052
-CL:0000085
+CL:0000066
 CL:0000089
+CL:0000101
+CL:0000187
+CL:0000210
 CL:0000219
 CL:0000222
 CL:0000255
 CL:0000352
 CL:0000353
+CL:0000372
+CL:0000381
+CL:0000387
+CL:0000394
+CL:0000395
+CL:0000477
+CL:0000540
 CL:0000548
-CL:0000586
+CL:0000565
 CL:0000670
-CL:0000723
+CL:0000674
+CL:0000700
+CL:0000718
+CL:0001658
+CL:0002319
 CL:0002321
 CL:0002371
-CL:0011115
+CL:0008004
+CL:0008007
+CL:2000029
+FBbt:00001252
+FBbt:00001258
+FBbt:00001297
+FBbt:00001327
+FBbt:00001690
+FBbt:00001889
+FBbt:00003185
+FBbt:00003361
+FBbt:00003629
+FBbt:00003686
+FBbt:00003702
+FBbt:00003718
+FBbt:00003719
+FBbt:00003720
+FBbt:00003721
+FBbt:00003722
+FBbt:00003725
+FBbt:00003726
+FBbt:00003727
+FBbt:00003728
+FBbt:00003729
+FBbt:00003730
+FBbt:00003732
+FBbt:00003733
+FBbt:00003734
+FBbt:00003735
+FBbt:00003737
+FBbt:00003738
+FBbt:00003739
+FBbt:00003740
+FBbt:00003741
+FBbt:00003743
+FBbt:00003744
+FBbt:00003767
+FBbt:00003770
+FBbt:00003776
+FBbt:00003779
+FBbt:00003784
+FBbt:00003788
+FBbt:00003789
+FBbt:00003790
+FBbt:00003791
+FBbt:00003792
+FBbt:00003793
+FBbt:00003797
+FBbt:00003808
+FBbt:00003821
+FBbt:00003823
+FBbt:00003826
+FBbt:00003832
+FBbt:00003835
+FBbt:00003837
+FBbt:00003838
+FBbt:00003839
+FBbt:00004046
+FBbt:00004101
+FBbt:00004186
+FBbt:00004207
+FBbt:00004225
+FBbt:00004227
+FBbt:00004242
+FBbt:00004860
+FBbt:00004907
+FBbt:00004908
+FBbt:00004931
+FBbt:00004933
+FBbt:00004960
+FBbt:00004961
+FBbt:00005040
+FBbt:00005090
+FBbt:00005153
+FBbt:00005209
+FBbt:00005222
+FBbt:00005248
+FBbt:00005402
+FBbt:00005406
+FBbt:00005735
+FBbt:00005782
+FBbt:00005899
+FBbt:00005919
+FBbt:00005926
+FBbt:00005927
+FBbt:00006007
+FBbt:00006009
+FBbt:00006048
+FBbt:00006049
+FBbt:00007037
+FBbt:00007038
+FBbt:00007039
+FBbt:00007254
+FBbt:00007319
+FBbt:00007352
+FBbt:00007353
+FBbt:00007422
+FBbt:00007438
+FBbt:00007684
+FBbt:00013185
+FBbt:00013774
+FBbt:00046036
+FBbt:00047054
+FBbt:00047095
+FBbt:00047102
+FBbt:00047147
+FBbt:00047149
+FBbt:00047182
+FBbt:00047527
+FBbt:00047767
+FBbt:00047836
+FBbt:00047841
+FBbt:00047955
+FBbt:00048012
+FBbt:00048035
+FBbt:00048274
+FBbt:00048298
+FBbt:00048313
+FBbt:00048471
+FBbt:00048554
+FBbt:00049280
+FBbt:00049281
+FBbt:00049283
+FBbt:00049284
+FBbt:00049472
+FBbt:00049474
+FBbt:00049477
+FBbt:00049478
+FBbt:00049526
+FBbt:00049568
+FBbt:00049825
+FBbt:00049828
+FBbt:00049916
+FBbt:00049977
+FBbt:00049980
+FBbt:00051053
+FBbt:00051299
+FBbt:00057000
+FBbt:00057003
+FBbt:00057004
+FBbt:00057009
+FBbt:00057175
+FBbt:00058000
+FBbt:00058001
+FBbt:00058002
+FBbt:00058003
+FBbt:00058004
+FBbt:00058005
+FBbt:00058006
+FBbt:00058144
+FBbt:00058147
+FBbt:00058200
+FBbt:00058202
+FBbt:00058203
+FBbt:00058204
+FBbt:00058205
+FBbt:00058206
+FBbt:00058222
+FBbt:00067011
+FBbt:00067016
+FBbt:00067031
+FBbt:00067056
+FBbt:00067057
+FBbt:00067059
+FBbt:00067064
+FBbt:00067350
+FBbt:00100000
+FBbt:00100214
+FBbt:00100247
+FBbt:00100249
+FBbt:00100482
+FBbt:00100484
+FBbt:00100497
+FBbt:00100501
+FBbt:00100504
+FBbt:00100505
+FBbt:00100506
+FBbt:00100525
+FBbt:00110065
+FBbt:00110066
+FBbt:00110074
+FBbt:00110107
+FBbt:00110135
+FBbt:00110205
+FBbt:00110207
+FBbt:00110862
+FBbt:00110887
+FBbt:00110910
+FBbt:00110912
+FBbt:00110924
+FBbt:00111271
+FBbt:00111272
+FBbt:00111273
+FBbt:00111282
+FBbt:00111285
+FBbt:00111286
+FBbt:00111302
+FBbt:00111316
+FBbt:00111752
 GO:0005575
-GO:0005623
-globalConditionId not used in table globalCondToCond (there should be none):
-conditionId not used in table globalCondToCond as SELF condition origin (there should be none):
-Count of conditionRelationOrigin:
-conditionRelationOrigin	COUNT(*)
-self	44572
-descendant	3310654
+Number of globalCondToCond rows, globalConditionIds, conditionIds, per conditionRelationOrigin:
+conditionRelationOrigin	COUNT(*)	COUNT(DISTINCT globalConditionId)	COUNT(DISTINCT conditionId)
+self	47058	42131	47058
+descendant	6997936	503584	47055

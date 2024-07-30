@@ -120,37 +120,13 @@ synonymtypedef: SENSU "taxonomic disambiguation"
 synonymtypedef: SMILES ""
 synonymtypedef: squid ""
 synonymtypedef: synonym ""
-synonymtypedef: systematic_synonym ""
 synonymtypedef: systematic_synonym "Systematic synonym" EXACT
 synonymtypedef: teleomorph ""
 synonymtypedef: TRAIT ""
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/acardv/acardv-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 138 Logical Axioms: 17]
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/btaudv/btaudv-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 1113 Logical Axioms: 298]
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/cfamdv/cfamdv-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 177 Logical Axioms: 20]
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/cpordv/cpordv-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 170 Logical Axioms: 17]
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/dpsedv/dpsedv-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 146 Logical Axioms: 26]
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/dsimdv/dsimdv-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 146 Logical Axioms: 26]
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/ecabdv/ecabdv-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 161 Logical Axioms: 20]
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/external_ontologies/fbdv/fbdv-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 2075 Logical Axioms: 631]
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/external_ontologies/wbls/wbls-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 1785 Logical Axioms: 339]
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/external_ontologies/zfs/zfs-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 466 Logical Axioms: 151]
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/fcatdv/fcatdv-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 177 Logical Axioms: 20]
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/ggaldv/ggaldv-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 1298 Logical Axioms: 331]
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/ggordv/ggordv-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 473 Logical Axioms: 116]
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/hsapdv/hsapdv-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 3617 Logical Axioms: 941]
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/mdomdv/mdomdv-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 651 Logical Axioms: 167]
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/mmuldv/mmuldv-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 739 Logical Axioms: 194]
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/mmusdv/mmusdv-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 2445 Logical Axioms: 548]
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/oanadv/oanadv-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 161 Logical Axioms: 20]
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/oaridv/oaridv-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 396 Logical Axioms: 95]
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/ocundv/ocundv-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 170 Logical Axioms: 17]
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/ppandv/ppandv-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 610 Logical Axioms: 151]
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/ptrodv/ptrodv-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 731 Logical Axioms: 194]
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/rnordv/rnordv-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 806 Logical Axioms: 216]
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/sscrdv/sscrdv-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 1229 Logical Axioms: 339]
-remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/life-stages-minimal.owl>) VersionIRI(<null>))) [Axioms: 2039 Logical Axioms: 168]
+remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/bridge/ssaldv/ssaldv-uberon.obo.owl>) VersionIRI(<null>))) [Axioms: 503 Logical Axioms: 179]
+remark: Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/uberon/ssso-merged-uberon.owl>) VersionIRI(<null>))) [Axioms: 17090 Logical Axioms: 3401]
 ontology: uberon/ssso-merged-uberon
-owl-axioms: Prefix(owl:=<http://www.w3.org/2002/07/owl#>)\nPrefix(rdf:=<http://www.w3.org/1999/02/22-rdf-syntax-ns#>)\nPrefix(xml:=<http://www.w3.org/XML/1998/namespace>)\nPrefix(xsd:=<http://www.w3.org/2001/XMLSchema#>)\nPrefix(rdfs:=<http://www.w3.org/2000/01/rdf-schema#>)\n\n\nOntology(\nDeclaration(Class(<http://purl.obolibrary.org/obo/FBdv_00005335>))\nDeclaration(Class(<http://purl.obolibrary.org/obo/FBdv_00007018>))\nDeclaration(Class(<http://purl.obolibrary.org/obo/NCBITaxon_7227>))\nDeclaration(Class(<http://purl.obolibrary.org/obo/UBERON_0000068>))\nDeclaration(Class(<http://purl.obolibrary.org/obo/UBERON_0000069>))\nDeclaration(Class(<http://purl.obolibrary.org/obo/UBERON_0000104>))\nDeclaration(Class(<http://purl.obolibrary.org/obo/UBERON_0000105>))\nDeclaration(Class(<http://purl.obolibrary.org/obo/UBERON_0004730>))\nDeclaration(ObjectProperty(<http://purl.obolibrary.org/obo/BFO_0000050>))\nDeclaration(ObjectProperty(<http://purl.obolibrary.org/obo/RO_0002087>))\nDeclaration(AnnotationProperty(<http://www.geneontology.org/formats/oboInOwl#id>))\n\n############################\n#   Object Properties\n############################\n\n# Object Property: <http://purl.obolibrary.org/obo/BFO_0000050> (<http://purl.obolibrary.org/obo/BFO_0000050>)\n\n\n\n# Object Property: <http://purl.obolibrary.org/obo/RO_0002087> (<http://purl.obolibrary.org/obo/RO_0002087>)\n\nAnnotationAssertion(<http://www.geneontology.org/formats/oboInOwl#id> <http://purl.obolibrary.org/obo/RO_0002087> \"immediately_preceded_by\"^^xsd:string)\n\n\n\n\nSubClassOf(ObjectIntersectionOf(<http://purl.obolibrary.org/obo/UBERON_0000069> <http://purl.obolibrary.org/obo/UBERON_0004730> ObjectSomeValuesFrom(<http://purl.obolibrary.org/obo/BFO_0000050> <http://purl.obolibrary.org/obo/NCBITaxon_7227>)) <http://purl.obolibrary.org/obo/UBERON_0000105>)\nSubClassOf(ObjectIntersectionOf(<http://purl.obolibrary.org/obo/UBERON_0000069> <http://purl.obolibrary.org/obo/UBERON_0004730> ObjectSomeValuesFrom(<http://purl.obolibrary.org/obo/BFO_0000050> <http://purl.obolibrary.org/obo/NCBITaxon_7227>)) ObjectSomeValuesFrom(<http://purl.obolibrary.org/obo/BFO_0000050> <http://purl.obolibrary.org/obo/UBERON_0000104>))\nSubClassOf(ObjectIntersectionOf(<http://purl.obolibrary.org/obo/UBERON_0000069> <http://purl.obolibrary.org/obo/UBERON_0004730> ObjectSomeValuesFrom(<http://purl.obolibrary.org/obo/BFO_0000050> <http://purl.obolibrary.org/obo/NCBITaxon_7227>)) ObjectSomeValuesFrom(<http://purl.obolibrary.org/obo/RO_0002087> <http://purl.obolibrary.org/obo/FBdv_00005335>))\nSubClassOf(ObjectIntersectionOf(<http://purl.obolibrary.org/obo/UBERON_0000069> <http://purl.obolibrary.org/obo/UBERON_0004730> ObjectSomeValuesFrom(<http://purl.obolibrary.org/obo/BFO_0000050> <http://purl.obolibrary.org/obo/NCBITaxon_7227>)) ObjectSomeValuesFrom(<http://purl.obolibrary.org/obo/RO_0002087> <http://purl.obolibrary.org/obo/FBdv_00007018>))\nSubClassOf(ObjectIntersectionOf(<http://purl.obolibrary.org/obo/UBERON_0000069> <http://purl.obolibrary.org/obo/UBERON_0004730> ObjectSomeValuesFrom(<http://purl.obolibrary.org/obo/BFO_0000050> <http://purl.obolibrary.org/obo/NCBITaxon_7227>)) ObjectSomeValuesFrom(<http://purl.obolibrary.org/obo/RO_0002087> <http://purl.obolibrary.org/obo/UBERON_0000068>))\nAnnotationAssertion(<http://www.geneontology.org/formats/oboInOwl#id> <http://purl.obolibrary.org/obo/RO_0002131> \"RO:0002131\"^^xsd:string)\n)
+owl-axioms: Prefix(owl:=<http://www.w3.org/2002/07/owl#>)\nPrefix(rdf:=<http://www.w3.org/1999/02/22-rdf-syntax-ns#>)\nPrefix(xml:=<http://www.w3.org/XML/1998/namespace>)\nPrefix(xsd:=<http://www.w3.org/2001/XMLSchema#>)\nPrefix(rdfs:=<http://www.w3.org/2000/01/rdf-schema#>)\n\n\nOntology(\nDeclaration(Class(<http://purl.obolibrary.org/obo/FBdv_00005335>))\nDeclaration(Class(<http://purl.obolibrary.org/obo/FBdv_00007018>))\nDeclaration(Class(<http://purl.obolibrary.org/obo/NCBITaxon_7227>))\nDeclaration(Class(<http://purl.obolibrary.org/obo/UBERON_0000068>))\nDeclaration(Class(<http://purl.obolibrary.org/obo/UBERON_0000069>))\nDeclaration(Class(<http://purl.obolibrary.org/obo/UBERON_0000104>))\nDeclaration(Class(<http://purl.obolibrary.org/obo/UBERON_0000105>))\nDeclaration(Class(<http://purl.obolibrary.org/obo/UBERON_0004730>))\nDeclaration(ObjectProperty(<http://purl.obolibrary.org/obo/BFO_0000050>))\nDeclaration(ObjectProperty(<http://purl.obolibrary.org/obo/RO_0002087>))\nDeclaration(AnnotationProperty(<http://www.geneontology.org/formats/oboInOwl#id>))\n\n\n\n\nSubClassOf(ObjectIntersectionOf(<http://purl.obolibrary.org/obo/UBERON_0000069> <http://purl.obolibrary.org/obo/UBERON_0004730> ObjectSomeValuesFrom(<http://purl.obolibrary.org/obo/BFO_0000050> <http://purl.obolibrary.org/obo/NCBITaxon_7227>)) <http://purl.obolibrary.org/obo/UBERON_0000105>)\nSubClassOf(ObjectIntersectionOf(<http://purl.obolibrary.org/obo/UBERON_0000069> <http://purl.obolibrary.org/obo/UBERON_0004730> ObjectSomeValuesFrom(<http://purl.obolibrary.org/obo/BFO_0000050> <http://purl.obolibrary.org/obo/NCBITaxon_7227>)) ObjectSomeValuesFrom(<http://purl.obolibrary.org/obo/BFO_0000050> <http://purl.obolibrary.org/obo/UBERON_0000104>))\nSubClassOf(ObjectIntersectionOf(<http://purl.obolibrary.org/obo/UBERON_0000069> <http://purl.obolibrary.org/obo/UBERON_0004730> ObjectSomeValuesFrom(<http://purl.obolibrary.org/obo/BFO_0000050> <http://purl.obolibrary.org/obo/NCBITaxon_7227>)) ObjectSomeValuesFrom(<http://purl.obolibrary.org/obo/RO_0002087> <http://purl.obolibrary.org/obo/FBdv_00005335>))\nSubClassOf(ObjectIntersectionOf(<http://purl.obolibrary.org/obo/UBERON_0000069> <http://purl.obolibrary.org/obo/UBERON_0004730> ObjectSomeValuesFrom(<http://purl.obolibrary.org/obo/BFO_0000050> <http://purl.obolibrary.org/obo/NCBITaxon_7227>)) ObjectSomeValuesFrom(<http://purl.obolibrary.org/obo/RO_0002087> <http://purl.obolibrary.org/obo/FBdv_00007018>))\nSubClassOf(ObjectIntersectionOf(<http://purl.obolibrary.org/obo/UBERON_0000069> <http://purl.obolibrary.org/obo/UBERON_0004730> ObjectSomeValuesFrom(<http://purl.obolibrary.org/obo/BFO_0000050> <http://purl.obolibrary.org/obo/NCBITaxon_7227>)) ObjectSomeValuesFrom(<http://purl.obolibrary.org/obo/RO_0002087> <http://purl.obolibrary.org/obo/UBERON_0000068>))\nAnnotationAssertion(<http://www.geneontology.org/formats/oboInOwl#id> <http://purl.obolibrary.org/obo/RO_0002131> \"RO:0002131\"^^xsd:string)\n)
 
 [Term]
 id: BtauDv:0000007
@@ -2360,7 +2336,7 @@ name: day 1 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "1st day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 810.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007075 ! day 0 of adulthood (fruit fly)
 
 [Term]
@@ -2369,7 +2345,7 @@ name: day 2 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "2nd day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 820.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007076 ! day 1 of adulthood (fruit fly)
 
 [Term]
@@ -2378,7 +2354,7 @@ name: day 3 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "3rd day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 830.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007077 ! day 2 of adulthood (fruit fly)
 
 [Term]
@@ -2387,7 +2363,7 @@ name: day 4 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "4th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 840.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007078 ! day 3 of adulthood (fruit fly)
 
 [Term]
@@ -2396,7 +2372,7 @@ name: day 5 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "5th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 850.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007079 ! day 4 of adulthood (fruit fly)
 
 [Term]
@@ -2405,7 +2381,7 @@ name: day 6 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "6th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 860.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007080 ! day 5 of adulthood (fruit fly)
 
 [Term]
@@ -2414,7 +2390,7 @@ name: day 7 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "7th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 870.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007081 ! day 6 of adulthood (fruit fly)
 
 [Term]
@@ -2423,7 +2399,7 @@ name: day 8 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "8th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 880.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007082 ! day 7 of adulthood (fruit fly)
 
 [Term]
@@ -2432,7 +2408,7 @@ name: day 9 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "9th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 890.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007083 ! day 8 of adulthood (fruit fly)
 
 [Term]
@@ -2441,7 +2417,7 @@ name: day 10 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "10th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 900.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007084 ! day 9 of adulthood (fruit fly)
 
 [Term]
@@ -2450,7 +2426,7 @@ name: day 11 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "11th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 910.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007085 ! day 10 of adulthood (fruit fly)
 
 [Term]
@@ -2459,7 +2435,7 @@ name: day 12 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "12th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 920.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007086 ! day 11 of adulthood (fruit fly)
 
 [Term]
@@ -2468,7 +2444,7 @@ name: day 13 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "13th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 930.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007087 ! day 12 of adulthood (fruit fly)
 
 [Term]
@@ -2477,7 +2453,7 @@ name: day 14 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "14th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 940.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007088 ! day 13 of adulthood (fruit fly)
 
 [Term]
@@ -2486,7 +2462,7 @@ name: day 15 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "15th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 950.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007089 ! day 14 of adulthood (fruit fly)
 
 [Term]
@@ -2495,7 +2471,7 @@ name: day 16 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "16th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 960.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007090 ! day 15 of adulthood (fruit fly)
 
 [Term]
@@ -2504,7 +2480,7 @@ name: day 17 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "17th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 970.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007091 ! day 16 of adulthood (fruit fly)
 
 [Term]
@@ -2513,7 +2489,7 @@ name: day 18 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "18th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 980.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007092 ! day 17 of adulthood (fruit fly)
 
 [Term]
@@ -2522,7 +2498,7 @@ name: day 19 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "19th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 990.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007093 ! day 18 of adulthood (fruit fly)
 
 [Term]
@@ -2531,7 +2507,7 @@ name: day 20 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "20th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1000.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007094 ! day 19 of adulthood (fruit fly)
 
 [Term]
@@ -2540,7 +2516,7 @@ name: day 21 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "21st day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1010.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007095 ! day 20 of adulthood (fruit fly)
 
 [Term]
@@ -2549,7 +2525,7 @@ name: day 22 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "22nd day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1020.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007096 ! day 21 of adulthood (fruit fly)
 
 [Term]
@@ -2558,7 +2534,7 @@ name: day 23 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "23rd day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1030.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007097 ! day 22 of adulthood (fruit fly)
 
 [Term]
@@ -2567,7 +2543,7 @@ name: day 24 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "24th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1040.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007098 ! day 23 of adulthood (fruit fly)
 
 [Term]
@@ -2576,7 +2552,7 @@ name: day 25 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "25th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1050.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007099 ! day 24 of adulthood (fruit fly)
 
 [Term]
@@ -2585,7 +2561,7 @@ name: day 26 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "26th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1060.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007100 ! day 25 of adulthood (fruit fly)
 
 [Term]
@@ -2594,7 +2570,7 @@ name: day 27 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "27th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1070.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007101 ! day 26 of adulthood (fruit fly)
 
 [Term]
@@ -2603,7 +2579,7 @@ name: day 28 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "28th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1080.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007102 ! day 27 of adulthood (fruit fly)
 
 [Term]
@@ -2612,7 +2588,7 @@ name: day 29 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "29th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1090.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007103 ! day 28 of adulthood (fruit fly)
 
 [Term]
@@ -2621,7 +2597,7 @@ name: day 30 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "30th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1100.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007104 ! day 29 of adulthood (fruit fly)
 
 [Term]
@@ -2630,7 +2606,7 @@ name: day 31 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "31st day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1110.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007105 ! day 30 of adulthood (fruit fly)
 
 [Term]
@@ -2639,7 +2615,7 @@ name: day 32 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "32nd day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1120.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007106 ! day 31 of adulthood (fruit fly)
 
 [Term]
@@ -2648,7 +2624,7 @@ name: day 33 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "33rd day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1130.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007107 ! day 32 of adulthood (fruit fly)
 
 [Term]
@@ -2657,7 +2633,7 @@ name: day 34 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "34th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1140.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007108 ! day 33 of adulthood (fruit fly)
 
 [Term]
@@ -2666,7 +2642,7 @@ name: day 35 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "35th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1150.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007109 ! day 34 of adulthood (fruit fly)
 
 [Term]
@@ -2675,7 +2651,7 @@ name: day 36 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "36th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1160.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007110 ! day 35 of adulthood (fruit fly)
 
 [Term]
@@ -2684,7 +2660,7 @@ name: day 37 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "37th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1170.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007111 ! day 36 of adulthood (fruit fly)
 
 [Term]
@@ -2693,7 +2669,7 @@ name: day 38 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "38th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1180.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007112 ! day 37 of adulthood (fruit fly)
 
 [Term]
@@ -2702,7 +2678,7 @@ name: day 39 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "39th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1190.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007113 ! day 38 of adulthood (fruit fly)
 
 [Term]
@@ -2711,7 +2687,7 @@ name: day 40 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "40th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1200.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007114 ! day 39 of adulthood (fruit fly)
 
 [Term]
@@ -2720,7 +2696,7 @@ name: day 41 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "41st day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1210.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007115 ! day 40 of adulthood (fruit fly)
 
 [Term]
@@ -2729,7 +2705,7 @@ name: day 42 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "42nd day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1220.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007116 ! day 41 of adulthood (fruit fly)
 
 [Term]
@@ -2738,7 +2714,7 @@ name: day 43 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "43rd day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1230.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007117 ! day 42 of adulthood (fruit fly)
 
 [Term]
@@ -2747,7 +2723,7 @@ name: day 44 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "44th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1240.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007118 ! day 43 of adulthood (fruit fly)
 
 [Term]
@@ -2756,7 +2732,7 @@ name: day 45 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "45th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1250.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007119 ! day 44 of adulthood (fruit fly)
 
 [Term]
@@ -2765,7 +2741,7 @@ name: day 46 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "46th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1260.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007120 ! day 45 of adulthood (fruit fly)
 
 [Term]
@@ -2774,7 +2750,7 @@ name: day 47 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "47th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1270.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007121 ! day 46 of adulthood (fruit fly)
 
 [Term]
@@ -2783,7 +2759,7 @@ name: day 48 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "48th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1280.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007122 ! day 47 of adulthood (fruit fly)
 
 [Term]
@@ -2792,7 +2768,7 @@ name: day 49 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "49th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1290.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007123 ! day 48 of adulthood (fruit fly)
 
 [Term]
@@ -2801,7 +2777,7 @@ name: day 50 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "50th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1300.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007124 ! day 49 of adulthood (fruit fly)
 
 [Term]
@@ -2810,7 +2786,7 @@ name: day 51 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "51st day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1310.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007125 ! day 50 of adulthood (fruit fly)
 
 [Term]
@@ -2819,7 +2795,7 @@ name: day 52 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "52nd day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1320.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007126 ! day 51 of adulthood (fruit fly)
 
 [Term]
@@ -2828,7 +2804,7 @@ name: day 53 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "53rd day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1330.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007127 ! day 52 of adulthood (fruit fly)
 
 [Term]
@@ -2837,7 +2813,7 @@ name: day 54 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "54th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1340.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007128 ! day 53 of adulthood (fruit fly)
 
 [Term]
@@ -2846,7 +2822,7 @@ name: day 55 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "55th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1350.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007129 ! day 54 of adulthood (fruit fly)
 
 [Term]
@@ -2855,7 +2831,7 @@ name: day 56 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "56th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1360.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007130 ! day 55 of adulthood (fruit fly)
 
 [Term]
@@ -2864,7 +2840,7 @@ name: day 57 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "57th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1370.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007131 ! day 56 of adulthood (fruit fly)
 
 [Term]
@@ -2873,7 +2849,7 @@ name: day 58 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "58th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1380.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007132 ! day 57 of adulthood (fruit fly)
 
 [Term]
@@ -2882,7 +2858,7 @@ name: day 59 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "59th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1390.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007133 ! day 58 of adulthood (fruit fly)
 
 [Term]
@@ -2891,7 +2867,7 @@ name: day 60 of adulthood (fruit fly)
 namespace: FlyBase_development_CV
 def: "60th day after eclosion." [FBC:DOS]
 comment: Temporal ordering number - 1400.
-relationship: part_of FBdv:00007026
+relationship: part_of FBdv:00007026 ! mature adult stage (fruit fly)
 relationship: preceded_by FBdv:00007134 ! day 59 of adulthood (fruit fly)
 
 [Term]
@@ -8632,8 +8608,8 @@ synonym: "Theiler stage 2" EXACT []
 synonym: "TS02" EXACT []
 synonym: "TS02 (E1-2.5)" RELATED [EMAPA:TS02]
 xref: EMAPA:TS02
-xref: XUO:0000046
 xref: TS02
+xref: XUO:0000046
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000107 ! cleavage stage
 relationship: preceded_by UBERON:0000106 ! zygote stage
@@ -8651,8 +8627,8 @@ synonym: "Theiler stage 3" EXACT []
 synonym: "TS03" EXACT []
 synonym: "TS03 (E1-3.5)" RELATED [EMAPA:TS03]
 xref: EMAPA:TS03
-xref: XUO:0000047
 xref: TS03
+xref: XUO:0000047
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000107 ! cleavage stage
 relationship: preceded_by MmusDv:0000005 ! Theiler stage 02 (mouse)
@@ -8670,8 +8646,8 @@ synonym: "Theiler stage 4" EXACT []
 synonym: "TS04" EXACT []
 synonym: "TS04 (E2-4)" RELATED [EMAPA:TS04]
 xref: EMAPA:TS04
-xref: XUO:0000048
 xref: TS04
+xref: XUO:0000048
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000108 ! blastula stage
 relationship: preceded_by MmusDv:0000006 ! Theiler stage 03 (mouse)
@@ -8689,12 +8665,12 @@ synonym: "Theiler stage 5" EXACT []
 synonym: "TS05" EXACT []
 synonym: "TS05 (E3-5.5)" RELATED [EMAPA:TS05]
 xref: EMAPA:TS05
-xref: XUO:0000049
 xref: TS05
+xref: XUO:0000049
+relationship: has_stage_marker GO:0001835
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000108 ! blastula stage
 relationship: preceded_by MmusDv:0000008 ! Theiler stage 04 (mouse)
-property_value: has_stage_marker GO:0001835
 property_value: IAO:0000589 "Theiler stage 05 (mouse)" xsd:string
 property_value: start_dpc "4.0" xsd:float
 
@@ -8709,8 +8685,8 @@ synonym: "Theiler stage 6" EXACT []
 synonym: "TS06" EXACT []
 synonym: "TS06 (E4-5.5)" RELATED [EMAPA:TS06]
 xref: EMAPA:TS06
-xref: XUO:0000050
 xref: TS06
+xref: XUO:0000050
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000108 ! blastula stage
 relationship: preceded_by MmusDv:0000009 ! Theiler stage 05 (mouse)
@@ -8728,12 +8704,12 @@ synonym: "Theiler stage 7" EXACT []
 synonym: "TS07" EXACT []
 synonym: "TS07 (E4.5-6)" RELATED [EMAPA:TS07]
 xref: EMAPA:TS07
-xref: XUO:0000051
 xref: TS07
+xref: XUO:0000051
+relationship: has_stage_marker GO:0007566
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000108 ! blastula stage
 relationship: preceded_by MmusDv:0000010 ! Theiler stage 06 (mouse)
-property_value: has_stage_marker GO:0007566
 property_value: IAO:0000589 "Theiler stage 07 (mouse)" xsd:string
 property_value: start_dpc "5.0" xsd:float
 
@@ -8748,8 +8724,8 @@ synonym: "Theiler stage 8" EXACT []
 synonym: "TS08" EXACT []
 synonym: "TS08 (E5-6.5)" RELATED [EMAPA:TS08]
 xref: EMAPA:TS08
-xref: XUO:0000052
 xref: TS08
+xref: XUO:0000052
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000108 ! blastula stage
 relationship: preceded_by MmusDv:0000011 ! Theiler stage 07 (mouse)
@@ -8767,12 +8743,12 @@ synonym: "Theiler stage 9" EXACT []
 synonym: "TS09" EXACT []
 synonym: "TS09 (E6.25-7.25)" RELATED [EMAPA:TS09]
 xref: EMAPA:TS09
-xref: XUO:0000053
 xref: TS09
+xref: XUO:0000053
+relationship: has_stage_marker UBERON:0000926
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000109 ! gastrula stage
 relationship: preceded_by MmusDv:0000012 ! Theiler stage 08 (mouse)
-property_value: has_stage_marker UBERON:0000926
 property_value: IAO:0000589 "Theiler stage 09 (mouse)" xsd:string
 property_value: start_dpc "6.5" xsd:float
 
@@ -8786,14 +8762,14 @@ synonym: "E6.5-7.75" EXACT []
 synonym: "TS10" EXACT []
 synonym: "TS10 (E6.5-7.75)" RELATED [EMAPA:TS10]
 xref: EMAPA:TS10
-xref: XUO:0000054
 xref: TS10
+xref: XUO:0000054
+relationship: has_stage_marker UBERON:0003888
+relationship: has_stage_marker UBERON:0004340
+relationship: has_stage_marker UBERON:0005971
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000109 ! gastrula stage
 relationship: preceded_by MmusDv:0000014 ! Theiler stage 09 (mouse)
-property_value: has_stage_marker UBERON:0003888
-property_value: has_stage_marker UBERON:0004340
-property_value: has_stage_marker UBERON:0005971
 property_value: IAO:0000589 "Theiler stage 10 (mouse)" xsd:string
 property_value: start_dpc "7.0" xsd:float
 
@@ -8819,12 +8795,12 @@ synonym: "E7.5-8.75" EXACT []
 synonym: "TS12" EXACT []
 synonym: "TS12 (E7.5-8.75)" RELATED [EMAPA:TS12]
 xref: EMAPA:TS12
-xref: XUO:0000056
 xref: TS12
+xref: XUO:0000056
+relationship: has_stage_marker EMAPA:16173
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000111 ! organogenesis stage
 relationship: preceded_by UBERON:0000110 ! neurula stage
-property_value: has_stage_marker EMAPA:16173
 property_value: IAO:0000589 "Theiler stage 12 (mouse)" xsd:string
 property_value: start_dpc "8.0" xsd:float
 
@@ -8838,14 +8814,14 @@ synonym: "E8-9.25" EXACT []
 synonym: "TS13" EXACT []
 synonym: "TS13 (E8-9.25)" RELATED [EMAPA:TS13]
 xref: EMAPA:TS13
-xref: XUO:0000057
 xref: TS13
+xref: XUO:0000057
+relationship: has_stage_marker EMAPA:16441
+relationship: has_stage_marker EMAPA:16445
+relationship: has_stage_marker EMAPA:16449
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000111 ! organogenesis stage
 relationship: preceded_by MmusDv:0000019 ! Theiler stage 12 (mouse)
-property_value: has_stage_marker EMAPA:16441
-property_value: has_stage_marker EMAPA:16445
-property_value: has_stage_marker EMAPA:16449
 property_value: IAO:0000589 "Theiler stage 13 (mouse)" xsd:string
 property_value: start_dpc "8.5" xsd:float
 
@@ -8859,15 +8835,15 @@ synonym: "E8.5-9.75" EXACT []
 synonym: "TS14" EXACT []
 synonym: "TS14 (E8.5-9.75)" RELATED [EMAPA:TS14]
 xref: EMAPA:TS14
-xref: XUO:0000058
 xref: TS14
+xref: XUO:0000058
+relationship: has_stage_marker EMAPA:16445
+relationship: has_stage_marker EMAPA:16449
+relationship: has_stage_marker EMAPA:16453
+relationship: has_stage_marker EMAPA:16457
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000111 ! organogenesis stage
 relationship: preceded_by MmusDv:0000020 ! Theiler stage 13 (mouse)
-property_value: has_stage_marker EMAPA:16445
-property_value: has_stage_marker EMAPA:16449
-property_value: has_stage_marker EMAPA:16453
-property_value: has_stage_marker EMAPA:16457
 property_value: IAO:0000589 "Theiler stage 14 (mouse)" xsd:string
 property_value: start_dpc "9.0" xsd:float
 
@@ -8881,12 +8857,12 @@ synonym: "E9-10.25" EXACT []
 synonym: "TS15" EXACT []
 synonym: "TS15 (E9-10.25)" RELATED [EMAPA:TS15]
 xref: EMAPA:TS15
-xref: XUO:0000059
 xref: TS15
+xref: XUO:0000059
+relationship: has_stage_marker UBERON:0005417
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000111 ! organogenesis stage
 relationship: preceded_by MmusDv:0000021 ! Theiler stage 14 (mouse)
-property_value: has_stage_marker UBERON:0005417
 property_value: IAO:0000589 "Theiler stage 15 (mouse)" xsd:string
 property_value: start_dpc "9.5" xsd:float
 
@@ -8900,12 +8876,12 @@ synonym: "E9.5-10.75" EXACT []
 synonym: "TS16" EXACT []
 synonym: "TS16 (E9.5-10.75)" RELATED [EMAPA:TS16]
 xref: EMAPA:TS16
-xref: XUO:0000060
 xref: TS16
+xref: XUO:0000060
+relationship: has_stage_marker UBERON:0005418
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000111 ! organogenesis stage
 relationship: preceded_by MmusDv:0000022 ! Theiler stage 15 (mouse)
-property_value: has_stage_marker UBERON:0005418
 property_value: IAO:0000589 "Theiler stage 16 (mouse)" xsd:string
 property_value: start_dpc "10.0" xsd:float
 
@@ -8919,13 +8895,13 @@ synonym: "E10-11.25" EXACT []
 synonym: "TS17" EXACT []
 synonym: "TS17 (E10-11.25)" RELATED [EMAPA:TS17]
 xref: EMAPA:TS17
-xref: XUO:0000061
 xref: TS17
+xref: XUO:0000061
+relationship: has_stage_marker EMAPA:18411
+relationship: has_stage_marker UBERON:0006259
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000111 ! organogenesis stage
 relationship: preceded_by MmusDv:0000023 ! Theiler stage 16 (mouse)
-property_value: has_stage_marker EMAPA:18411
-property_value: has_stage_marker UBERON:0006259
 property_value: IAO:0000589 "Theiler stage 17 (mouse)" xsd:string
 property_value: start_dpc "10.5" xsd:float
 
@@ -8939,12 +8915,12 @@ synonym: "E10.5-11.25" EXACT []
 synonym: "TS18" EXACT []
 synonym: "TS18 (E10.5-11.25)" RELATED [EMAPA:TS18]
 xref: EMAPA:TS18
-xref: XUO:0000062
 xref: TS18
+xref: XUO:0000062
+relationship: has_stage_marker UBERON:0005870
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000111 ! organogenesis stage
 relationship: preceded_by MmusDv:0000024 ! Theiler stage 17 (mouse)
-property_value: has_stage_marker UBERON:0005870
 property_value: IAO:0000589 "Theiler stage 18 (mouse)" xsd:string
 property_value: start_dpc "11.0" xsd:float
 
@@ -8958,8 +8934,8 @@ synonym: "E11-12.25" EXACT []
 synonym: "TS19" EXACT []
 synonym: "TS19 (E11-12.25)" RELATED [EMAPA:TS19]
 xref: EMAPA:TS19
-xref: XUO:0000063
 xref: TS19
+xref: XUO:0000063
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000111 ! organogenesis stage
 relationship: preceded_by MmusDv:0000025 ! Theiler stage 18 (mouse)
@@ -8976,8 +8952,8 @@ synonym: "E11.5-13" EXACT []
 synonym: "TS20" EXACT []
 synonym: "TS20 (E11.5-13)" RELATED [EMAPA:TS20]
 xref: EMAPA:TS20
-xref: XUO:0000064
 xref: TS20
+xref: XUO:0000064
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000111 ! organogenesis stage
 relationship: preceded_by MmusDv:0000026 ! Theiler stage 19 (mouse)
@@ -8994,8 +8970,8 @@ synonym: "E12.5-14" EXACT []
 synonym: "TS21" EXACT []
 synonym: "TS21 (E12.5-14)" RELATED [EMAPA:TS21]
 xref: EMAPA:TS21
-xref: XUO:0000065
 xref: TS21
+xref: XUO:0000065
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000111 ! organogenesis stage
 relationship: preceded_by MmusDv:0000027 ! Theiler stage 20 (mouse)
@@ -9012,12 +8988,12 @@ synonym: "E13.5-15" EXACT []
 synonym: "TS22" EXACT []
 synonym: "TS22 (E13.5-15)" RELATED [EMAPA:TS22]
 xref: EMAPA:TS22
-xref: XUO:0000066
 xref: TS22
+xref: XUO:0000066
+relationship: has_stage_marker UBERON:0003606
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0000111 ! organogenesis stage
 relationship: preceded_by MmusDv:0000028 ! Theiler stage 21 (mouse)
-property_value: has_stage_marker UBERON:0003606
 property_value: IAO:0000589 "Theiler stage 22 (mouse)" xsd:string
 property_value: start_dpc "14.0" xsd:float
 
@@ -9041,8 +9017,8 @@ synonym: "E15" EXACT []
 synonym: "TS23" EXACT []
 synonym: "TS23 (E15)" RELATED [EMAPA:TS23]
 xref: EMAPA:TS23
-xref: XUO:0000067
 xref: TS23
+xref: XUO:0000067
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0007220 ! late embryonic stage
 relationship: preceded_by MmusDv:0000029 ! Theiler stage 22 (mouse)
@@ -9059,8 +9035,8 @@ synonym: "E16" EXACT []
 synonym: "TS24" EXACT []
 synonym: "TS24 (E16)" RELATED [EMAPA:TS24]
 xref: EMAPA:TS24
-xref: XUO:0000068
 xref: TS24
+xref: XUO:0000068
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0007220 ! late embryonic stage
 relationship: preceded_by MmusDv:0000032 ! Theiler stage 23 (mouse)
@@ -9077,8 +9053,8 @@ synonym: "E17" EXACT []
 synonym: "TS25" EXACT []
 synonym: "TS25 (E17)" RELATED [EMAPA:TS25]
 xref: EMAPA:TS25
-xref: XUO:0000069
 xref: TS25
+xref: XUO:0000069
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0007220 ! late embryonic stage
 relationship: preceded_by MmusDv:0000033 ! Theiler stage 24 (mouse)
@@ -9095,8 +9071,8 @@ synonym: "E18" EXACT []
 synonym: "TS26" EXACT []
 synonym: "TS26 (E18)" RELATED [EMAPA:TS26]
 xref: EMAPA:TS26
-xref: XUO:0000070
 xref: TS26
+xref: XUO:0000070
 relationship: only_in_taxon NCBITaxon:10090
 relationship: part_of UBERON:0007220 ! late embryonic stage
 relationship: preceded_by MmusDv:0000034 ! Theiler stage 25 (mouse)
@@ -12293,7 +12269,7 @@ namespace: rat_developmental_stage
 def: "Rat developmental stage that refers to a sexually mature adult rat, which is over 18 and under 19 months old." [Bgee:curator]
 subset: granular_stage
 relationship: only_in_taxon NCBITaxon:10116
-relationship: part_of UBERON:0007222
+relationship: part_of UBERON:0007222 ! late adult stage
 relationship: preceded_by RnorDv:0000033 ! 17-month-old stage (rat)
 property_value: end_mpb "19.0" xsd:float
 property_value: IAO:0000589 "18-month-old stage (rat)" xsd:string
@@ -12306,7 +12282,7 @@ namespace: rat_developmental_stage
 def: "Rat developmental stage that refers to a sexually mature adult rat, which is over 19 and under 20 months old." [Bgee:curator]
 subset: granular_stage
 relationship: only_in_taxon NCBITaxon:10116
-relationship: part_of UBERON:0007222
+relationship: part_of UBERON:0007222 ! late adult stage
 relationship: preceded_by RnorDv:0000034 ! 18-month-old stage (rat)
 property_value: end_mpb "20.0" xsd:float
 property_value: IAO:0000589 "19-month-old stage (rat)" xsd:string
@@ -12319,7 +12295,7 @@ namespace: rat_developmental_stage
 def: "Rat developmental stage that refers to a sexually mature adult rat, which is over 20 and under 21 months old." [Bgee:curator]
 subset: granular_stage
 relationship: only_in_taxon NCBITaxon:10116
-relationship: part_of UBERON:0007222
+relationship: part_of UBERON:0007222 ! late adult stage
 relationship: preceded_by RnorDv:0000035 ! 19-month-old stage (rat)
 property_value: end_mpb "21.0" xsd:float
 property_value: IAO:0000589 "20-month-old stage (rat)" xsd:string
@@ -12332,7 +12308,7 @@ namespace: rat_developmental_stage
 def: "Rat developmental stage that refers to a sexually mature adult rat, which is over 21 and under 22 months old." [Bgee:curator]
 subset: granular_stage
 relationship: only_in_taxon NCBITaxon:10116
-relationship: part_of UBERON:0007222
+relationship: part_of UBERON:0007222 ! late adult stage
 relationship: preceded_by RnorDv:0000036 ! 20-month-old stage (rat)
 property_value: end_mpb "22.0" xsd:float
 property_value: IAO:0000589 "21-month-old stage (rat)" xsd:string
@@ -12345,7 +12321,7 @@ namespace: rat_developmental_stage
 def: "Rat developmental stage that refers to a sexually mature adult rat, which is over 22 and under 23 months old." [Bgee:curator]
 subset: granular_stage
 relationship: only_in_taxon NCBITaxon:10116
-relationship: part_of UBERON:0007222
+relationship: part_of UBERON:0007222 ! late adult stage
 relationship: preceded_by RnorDv:0000037 ! 21-month-old stage (rat)
 property_value: end_mpb "23.0" xsd:float
 property_value: IAO:0000589 "22-month-old stage (rat)" xsd:string
@@ -12358,7 +12334,7 @@ namespace: rat_developmental_stage
 def: "Rat developmental stage that refers to a sexually mature adult rat, which is over 23 and under 24 months old." [Bgee:curator]
 subset: granular_stage
 relationship: only_in_taxon NCBITaxon:10116
-relationship: part_of UBERON:0007222
+relationship: part_of UBERON:0007222 ! late adult stage
 relationship: preceded_by RnorDv:0000038 ! 22-month-old stage (rat)
 property_value: end_mpb "24.0" xsd:float
 property_value: IAO:0000589 "23-month-old stage (rat)" xsd:string
@@ -12372,7 +12348,7 @@ def: "Rat developmental stage that refers to a sexually mature adult rat, which 
 comment: This stage was created to match age provided by GEO Rat expression data.
 subset: granular_stage
 relationship: only_in_taxon NCBITaxon:10116
-relationship: part_of UBERON:0007222
+relationship: part_of UBERON:0007222 ! late adult stage
 relationship: preceded_by RnorDv:0000039 ! 23-month-old stage (rat)
 property_value: end_mpb "27.0" xsd:float
 property_value: IAO:0000589 "24-26-month-old stage (rat)" xsd:string
@@ -12424,7 +12400,7 @@ namespace: rat_developmental_stage
 def: "Rat developmental stage that refers to a sexually mature adult rat, which is over 27 and under 28 months old." [Bgee:curator]
 subset: granular_stage
 relationship: only_in_taxon NCBITaxon:10116
-relationship: part_of UBERON:0007222
+relationship: part_of UBERON:0007222 ! late adult stage
 relationship: preceded_by RnorDv:0000043 ! 26-month-old stage (rat)
 property_value: end_mpb "28.0" xsd:float
 property_value: IAO:0000589 "27-month-old stage (rat)" xsd:string
@@ -12437,7 +12413,7 @@ namespace: rat_developmental_stage
 def: "Rat developmental stage that refers to a sexually mature adult rat, which is over 28 and under 29 months old." [Bgee:curator]
 subset: granular_stage
 relationship: only_in_taxon NCBITaxon:10116
-relationship: part_of UBERON:0007222
+relationship: part_of UBERON:0007222 ! late adult stage
 relationship: preceded_by RnorDv:0000044 ! 27-month-old stage (rat)
 property_value: end_mpb "29.0" xsd:float
 property_value: IAO:0000589 "28-month-old stage (rat)" xsd:string
@@ -12450,7 +12426,7 @@ namespace: rat_developmental_stage
 def: "Rat developmental stage that refers to a sexually mature adult rat, which is over 29 and under 30 months old." [Bgee:curator]
 subset: granular_stage
 relationship: only_in_taxon NCBITaxon:10116
-relationship: part_of UBERON:0007222
+relationship: part_of UBERON:0007222 ! late adult stage
 relationship: preceded_by RnorDv:0000045 ! 28-month-old stage (rat)
 property_value: end_mpb "30.0" xsd:float
 property_value: IAO:0000589 "29-month-old stage (rat)" xsd:string
@@ -12463,7 +12439,7 @@ namespace: rat_developmental_stage
 def: "Rat developmental stage that refers to a sexually mature adult rat, which is over 30 and under 31 months old." [Bgee:curator]
 subset: granular_stage
 relationship: only_in_taxon NCBITaxon:10116
-relationship: part_of UBERON:0007222
+relationship: part_of UBERON:0007222 ! late adult stage
 relationship: preceded_by RnorDv:0000046 ! 29-month-old stage (rat)
 property_value: end_mpb "31.0" xsd:float
 property_value: IAO:0000589 "30-month-old stage (rat)" xsd:string
@@ -12520,6 +12496,356 @@ relationship: preceded_by RnorDv:0000052 ! Witschi stage 4 (rat)
 property_value: end_dpf "3.5" xsd:float
 property_value: IAO:0000589 "Witschi stage 5 (rat)" xsd:string
 property_value: start_dpf "3.25" xsd:float
+
+[Term]
+id: SsalDv:0000008
+name: 16-cell stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: at 51 hpf (hour post-fertilization) (PMID:23239145, Table 1).
+relationship: immediately_preceded_by UBERON:0007236 ! 8-cell
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000107 ! cleavage stage
+property_value: IAO:0000589 "16-cell stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000009
+name: 32-cell stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: at 56 hpf (hour post-fertilization) (PMID:23239145, Table 1).
+relationship: immediately_preceded_by SsalDv:0000008 ! 16-cell stage (salmon)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000107 ! cleavage stage
+property_value: IAO:0000589 "32-cell stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000010
+name: 64-cell stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: at 63 hpf (hour post-fertilization) (PMID:23239145, Table 1).
+relationship: immediately_preceded_by SsalDv:0000009 ! 32-cell stage (salmon)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000107 ! cleavage stage
+property_value: IAO:0000589 "64-cell stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000011
+name: 128-cell stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: at 69 hpf (hour post-fertilization) (PMID:23239145, Table 1).
+relationship: immediately_preceded_by SsalDv:0000010 ! 64-cell stage (salmon)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000107 ! cleavage stage
+property_value: IAO:0000589 "128-cell stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000013
+name: early blastula stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: at 5 dpf (day post-fertilization) (PMID:23239145, Table 1)
+relationship: immediately_preceded_by SsalDv:0000011 ! 128-cell stage (salmon)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000108 ! blastula stage
+property_value: IAO:0000589 "early blastula stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000014
+name: mid blastula stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: at 7 dpf (day post-fertilization) (PMID:23239145, Table 1)
+relationship: immediately_preceded_by SsalDv:0000013 ! early blastula stage (salmon)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000108 ! blastula stage
+property_value: IAO:0000589 "mid blastula stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000015
+name: late blastula stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: at 10 dpf (day post-fertilization) (PMID:23239145, Table 1)
+relationship: immediately_preceded_by SsalDv:0000014 ! mid blastula stage (salmon)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000108 ! blastula stage
+property_value: IAO:0000589 "late blastula stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000017
+name: early gastrula:10% epiboly (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: at 13 dpf (day post-fertilization) (PMID:23239145, Table 1)
+relationship: immediately_preceded_by SsalDv:0000015 ! late blastula stage (salmon)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000109 ! gastrula stage
+property_value: IAO:0000589 "early gastrula:10% epiboly (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000018
+name: pre-mid gastrula:30% epiboly (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: at 17 dpf (day post-fertilization) (PMID:23239145, Table 1)
+relationship: immediately_preceded_by SsalDv:0000017 ! early gastrula:10% epiboly (salmon)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000109 ! gastrula stage
+property_value: IAO:0000589 "pre-mid gastrula:30% epiboly (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000019
+name: mid gastrula:50% epiboly (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: at 21 dpf (day post-fertilization) (PMID:23239145, Table 1)
+relationship: immediately_preceded_by SsalDv:0000018 ! pre-mid gastrula:30% epiboly (salmon)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000109 ! gastrula stage
+property_value: IAO:0000589 "mid gastrula:50% epiboly (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000020
+name: late gastrula:90% epiboly (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: at 24 dpf (day post-fertilization) (PMID:23239145, Table 1); 24 days at water temperature 7 means 168 day-degree (contributor https://github.com/garethgillard)
+relationship: immediately_preceded_by SsalDv:0000019 ! mid gastrula:50% epiboly (salmon)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000109 ! gastrula stage
+property_value: IAO:0000589 "late gastrula:90% epiboly (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000023
+name: 10-somite-stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: at 27 dpf (day post-fertilization) (PMID:23239145, Table 1) but at about 18 dpf in PMID:10393816 (Table 1)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000111 ! organogenesis stage
+property_value: IAO:0000589 "10-somite-stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000024
+name: 15-16-somite-stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: development of eyes (visible laterally), at 19 dpf in PMID:10393816 (Table 1)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000111 ! organogenesis stage
+relationship: preceded_by SsalDv:0000023 ! 10-somite-stage (salmon)
+property_value: IAO:0000589 "15-16-somite-stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000025
+name: 18-21-somite-stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: otic vesicle formed; 90–100 % epiboly, at 20 dpf in PMID:10393816 (Table 1)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000111 ! organogenesis stage
+relationship: preceded_by SsalDv:0000024 ! 15-16-somite-stage (salmon)
+property_value: IAO:0000589 "18-21-somite-stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000026
+name: 22-24-somite-stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: start of segmentation of hindbrain into five rhombomeres; development of branchial chamber; cardiac tube in pericardial chamber, at 21 dpf in PMID:10393816 (Table 1)
+relationship: immediately_preceded_by SsalDv:0000025 ! 18-21-somite-stage (salmon)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000111 ! organogenesis stage
+property_value: IAO:0000589 "22-24-somite-stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000027
+name: 27-28-somite-stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: forebrain/midbrain boundary appearing; optic lens visible, at 22 dpf in PMID:10393816 (Table 1)
+relationship: immediately_preceded_by SsalDv:0000026 ! 22-24-somite-stage (salmon)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000111 ! organogenesis stage
+property_value: IAO:0000589 "27-28-somite-stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000028
+name: 31-34-somite-stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: gut and stomach primordia visible; myotomes acquiring chevron shape; midbrain/hindbrain boundary apparent; one branchial arch visible; heart tube bending forwards, at 23 dpf in PMID:10393816 (Table 1)
+relationship: immediately_preceded_by SsalDv:0000027 ! 27-28-somite-stage (salmon)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000111 ! organogenesis stage
+property_value: IAO:0000589 "31-34-somite-stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000029
+name: 36-37-somite-stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: choroid fissure complete; lumen in stomach and gut; operculum visible, at 24 dpf in PMID:10393816 (Table 1)
+relationship: immediately_preceded_by SsalDv:0000028 ! 31-34-somite-stage (salmon)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000111 ! organogenesis stage
+property_value: IAO:0000589 "36-37-somite-stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000030
+name: 38-40-somite-stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: hindgut formation; tail detached from yolk at most caudal somites; otoliths present in otic vesicles, at 25 dpf in PMID:10393816 (Table 1)
+relationship: immediately_preceded_by SsalDv:0000029 ! 36-37-somite-stage (salmon)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000111 ! organogenesis stage
+property_value: IAO:0000589 "38-40-somite-stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000031
+name: 41-44-somite-stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: separation of ventral mid-body from yolk; heart tube moved to the left; slow heart beat apparent; posterior end of pronephros level with end of gut; hindgut turned ventrally towards future anus, at 26 dpf in PMID:10393816 (Table 1)
+relationship: immediately_preceded_by SsalDv:0000030 ! 38-40-somite-stage (salmon)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000111 ! organogenesis stage
+property_value: IAO:0000589 "41-44-somite-stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000032
+name: 45-50-somite-stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: blood flow in dorsal aorta; two branchial arches; pectoral fin buds at somites 2–4 (45–47 somites), and weak sporadic contractions of the trunk (47–50 somites), at 27 dpf in PMID:10393816 (Table 1)
+relationship: immediately_preceded_by SsalDv:0000031 ! 41-44-somite-stage (salmon)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000111 ! organogenesis stage
+property_value: IAO:0000589 "45-50-somite-stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000033
+name: 49-52-somite-stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: two-chambered heart with double beat and faster heart rate; movement in response to dechorionation; lens separate from optic cup; rhombomere divisions starting to disappear; anus formed at level of somites 37–38, at 28 dpf in PMID:10393816 (Table 1)
+relationship: immediately_preceded_by SsalDv:0000032 ! 45-50-somite-stage (salmon)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000111 ! organogenesis stage
+property_value: IAO:0000589 "49-52-somite-stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000034
+name: 53-55-somite-stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: circulation visible along gut; rhombomere divisions almost disappeared; jaw developing; mesenchyme in caudal fin-fold, at 29 dpf in PMID:10393816 (Table 1)
+relationship: immediately_preceded_by SsalDv:0000033 ! 49-52-somite-stage (salmon)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000111 ! organogenesis stage
+property_value: IAO:0000589 "53-55-somite-stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000035
+name: 62-64-somite-stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: rhythmic movements observed in situ; strong movements in response to dechorionation; olfactory organ present; hatching glands apparent; dorsal and ventral fin-folds present; rhombomeres no longer distinct; three branchial arches; pectoral fin as high as it is wide, at 32 dpf in PMID:10393816 (Table 1)
+relationship: immediately_preceded_by SsalDv:0000034 ! 53-55-somite-stage (salmon)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000111 ! organogenesis stage
+property_value: IAO:0000589 "62-64-somite-stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000036
+name: 63-64-somite-stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: at 33 dpf in PMID:10393816 (Table 1)
+relationship: immediately_preceded_by SsalDv:0000035 ! 62-64-somite-stage (salmon)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000111 ! organogenesis stage
+property_value: IAO:0000589 "63-64-somite-stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000037
+name: 65-somite-stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: eyed, at 51 dpf (day post-fertilization) (PMID:23239145, Table 1)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000111 ! organogenesis stage
+relationship: preceded_by SsalDv:0000036 ! 63-64-somite-stage (salmon)
+property_value: IAO:0000589 "65-somite-stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000043
+name: fry stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: comment: stage description from G.Gillard (https://github.com/garethgillard), months 3-6, 5-8 cm. Approximately 4- 5 weeks after hatching the young fish makes its way through the gravel and begins active feeding. At this point they are approximately 3 inches long and are called "fry" or fingerlings. One year after hatching the fry change coloring and acquire distinctive markings on their flanks which now distinguishes them as "parr" (http://www.uky.edu/~agrdanny/flyfish/life.htm).
+relationship: immediately_preceded_by UBERON:0000069 ! larval stage
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000112 ! sexually immature stage
+property_value: IAO:0000589 "fry stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000044
+name: day 0 of fry stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+def: "The day of the alevin leaving its yolk sac and beginning to be a fry." [Bgee:curator]
+comment: dedicated to PMID:32293070; developmentally it makes sense to consider fry before feeding as a category. At least, when the yolk sac is depleted they are considered as at the fry stage. They fed then after that in experiments. They could feed before in the wild of course, so not completely tied to developmental stage, but a common point of difference the feeding (source: discussion with G.Gillard, https://github.com/garethgillard).
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of SsalDv:0000043 ! fry stage (salmon)
+property_value: IAO:0000589 "day 0 of fry stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000045
+name: day 1 of fry stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+def: "First day of the life of the Salmon salar living as a fry and actively feeding." [Bgee:curator]
+comment: dedicated to PMID:32293070
+relationship: immediately_preceded_by SsalDv:0000044 ! day 0 of fry stage (salmon)
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of SsalDv:0000043 ! fry stage (salmon)
+property_value: IAO:0000589 "day 1 of fry stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000046
+name: day 48 of fry stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: dedicated to PMID:32293070
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of SsalDv:0000043 ! fry stage (salmon)
+relationship: preceded_by SsalDv:0000045 ! day 1 of fry stage (salmon)
+property_value: IAO:0000589 "day 48 of fry stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000047
+name: day 65 of fry stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: dedicated to PMID:32293070
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of SsalDv:0000043 ! fry stage (salmon)
+relationship: preceded_by SsalDv:0000046 ! day 48 of fry stage (salmon)
+property_value: IAO:0000589 "day 65 of fry stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000048
+name: day 77 of fry stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: dedicated to PMID:32293070
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of SsalDv:0000043 ! fry stage (salmon)
+relationship: preceded_by SsalDv:0000047 ! day 65 of fry stage (salmon)
+property_value: IAO:0000589 "day 77 of fry stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000049
+name: day 94 of fry stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: dedicated to PMID:32293070
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of SsalDv:0000043 ! fry stage (salmon)
+relationship: preceded_by SsalDv:0000048 ! day 77 of fry stage (salmon)
+property_value: IAO:0000589 "day 94 of fry stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000051
+name: parr stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: stage description from G.Gillard (https://github.com/garethgillard), months 6-9, 10-15 cm.
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000112 ! sexually immature stage
+relationship: preceded_by SsalDv:0000043 ! fry stage (salmon)
+property_value: IAO:0000589 "parr stage (salmon)" xsd:string
+
+[Term]
+id: SsalDv:0000052
+name: smolt stage (salmon)
+namespace: atlantic_salmon_developmental_stage
+comment: stage description from G.Gillard (https://github.com/garethgillard), months 9-12, 10-20 cm.
+relationship: only_in_taxon NCBITaxon:8030
+relationship: part_of UBERON:0000112 ! sexually immature stage
+relationship: preceded_by SsalDv:0000051 ! parr stage (salmon)
+property_value: IAO:0000589 "smolt stage (salmon)" xsd:string
 
 [Term]
 id: SscrDv:0000010
@@ -13479,22 +13805,25 @@ xref: OariDv:0000024
 xref: PpanDv:0000041
 xref: PtroDv:0000052
 xref: RnorDv:0000061
+xref: SsalDv:0000040
 xref: SscrDv:0000084
 xref: WBls:0000041
 xref: WBls:0000056
 xref: WBls:0000057
 xref: WBls:0000104
+relationship: immediately_preceded_by UBERON:0000069 {gci_filler="NCBITaxon:8030", gci_relation="part_of"} ! larval stage
 relationship: part_of UBERON:0000092 ! post-embryonic stage
-relationship: preceded_by UBERON:0000068 ! embryo stage
-relationship: preceded_by UBERON:0000070 ! pupal stage
-relationship: preceded_by UBERON:0000111 ! organogenesis stage
-relationship: preceded_by UBERON:0004729 {gci_relation="part_of", gci_filler="NCBITaxon:6239"} ! nematode larval stage
-relationship: preceded_by WBls:0000038 {gci_relation="part_of", gci_filler="NCBITaxon:6239"} ! L4 larva Ce (C. elegans)
+relationship: part_of UBERON:0000092 {gci_filler="NCBITaxon:8030", gci_relation="part_of"} ! post-embryonic stage
 relationship: preceded_by BtauDv:0000018 {gci_relation="part_of", gci_filler="NCBITaxon:9913"} ! ninth and over month of gestation (cow)
 relationship: preceded_by FBdv:00005366 {gci_relation="part_of", gci_filler="NCBITaxon:7227"} ! pharate adult stage P15 (fruit fly)
 relationship: preceded_by FBdv:00005368 {gci_relation="part_of", gci_filler="NCBITaxon:7227"} ! pharate adult stage P15(ii) (fruit fly)
 relationship: preceded_by FBdv:00006011 {gci_relation="part_of", gci_filler="NCBITaxon:7227"} ! pharate adult stage (fruit fly)
 relationship: preceded_by OariDv:0000023 {gci_filler="NCBITaxon:9940", gci_relation="part_of"} ! day 21 and over embryonic stage (sheep)
+relationship: preceded_by UBERON:0000068 ! embryo stage
+relationship: preceded_by UBERON:0000070 ! pupal stage
+relationship: preceded_by UBERON:0000111 ! organogenesis stage
+relationship: preceded_by UBERON:0004729 {gci_relation="part_of", gci_filler="NCBITaxon:6239"} ! nematode larval stage
+relationship: preceded_by WBls:0000038 {gci_relation="part_of", gci_filler="NCBITaxon:6239"} ! L4 larva Ce (C. elegans)
 relationship: preceded_by WBls:0000040 {gci_relation="part_of", gci_filler="NCBITaxon:6239"} ! L4-adult molt Ce (C. elegans)
 property_value: seeAlso https://github.com/obophenotype/uberon/issues/566 xsd:anyURI
 
@@ -13503,18 +13832,11 @@ id: UBERON:0000068
 name: embryo stage
 def: "A life cycle stage that starts with fertilization and ends with the fully formed embryo." [http://orcid.org/0000-0002-6601-2165]
 comment: Temporal ordering number - 20. (FBdv comment)
+synonym: "embryo stage" BROAD []
 synonym: "embryogenesis" RELATED []
 synonym: "embryonic stage" BROAD []
 synonym: "embryonic stage" EXACT []
 synonym: "prenatal stage" BROAD []
-xref: HsapDv:0000002
-xref: MmusDv:0000002
-xref: RnorDv:0000003
-xref: SscrDv:0000079
-xref: EV:0300001
-xref: FMA:72652
-xref: HP:0011460
-xref: XAO:1000012
 xref: AcarDv:0000002
 xref: BtauDv:0000002
 xref: CfamDv:0000002
@@ -13522,13 +13844,18 @@ xref: CporDv:0000002
 xref: DpseDv:0000002
 xref: DsimDv:0000002
 xref: EcabDv:0000002
+xref: EV:0300001
 xref: FBdv:00005289
 xref: FcatDv:0000002
+xref: FMA:72652
 xref: GgalDv:0000002
 xref: GgorDv:0000002
+xref: HP:0011460
+xref: HsapDv:0000002
 xref: HsapDv:0000045
 xref: MdomDv:0000002
 xref: MmulDv:0000002
+xref: MmusDv:0000002
 xref: MmusDv:0000042
 xref: OanaDv:0000002
 xref: OariDv:0000002
@@ -13536,15 +13863,20 @@ xref: OcunDv:0000002
 xref: PpanDv:0000002
 xref: PtroDv:0000002
 xref: RnorDv:0000002
+xref: RnorDv:0000003
+xref: SsalDv:0000002
 xref: SscrDv:0000002
+xref: SscrDv:0000079
 xref: WBls:0000003
 xref: WBls:0000004
 xref: WBls:0000102
+xref: XAO:1000012
 disjoint_from: UBERON:0000092 ! post-embryonic stage
+relationship: immediately_preceded_by XAO:1000082 {gci_relation="part_of", gci_filler="NCBITaxon:8353"} ! unfertilized egg stage (Xenopus)
+relationship: part_of UBERON:0000104 {gci_filler="NCBITaxon:8030", gci_relation="part_of"} ! life cycle
 relationship: part_of UBERON:0000104 ! life cycle
 relationship: preceded_by FBdv:00005286 {gci_relation="part_of", gci_filler="NCBITaxon:7227"} ! egg stage (fruit fly)
 relationship: preceded_by WBls:0000669 {gci_relation="part_of", gci_filler="NCBITaxon:6239"} ! unfertilized egg Ce (C. elegans)
-relationship: immediately_preceded_by XAO:1000082 {gci_filler="NCBITaxon:8353", gci_relation="part_of"}
 
 [Term]
 id: UBERON:0000069
@@ -13552,6 +13884,7 @@ name: larval stage
 def: "A distinct juvenile stage many animals undergo before metamorphosis into adults. Animals with indirect development such as insects, amphibians, or cnidarians typically have a larval phase of their life cycle." [http://en.wikipedia.org/wiki/Larva]
 comment: Temporal ordering number - 400. (FBdv comment)
 subset: efo_slim
+synonym: "alevin stage" BROAD []
 synonym: "ammocoete" NARROW SENSU [http://en.wikipedia.org/wiki/Larva]
 synonym: "ammocoete stage" NARROW SENSU [http://en.wikipedia.org/wiki/Larva]
 synonym: "bipinnaria" NARROW SENSU [http://en.wikipedia.org/wiki/Larva]
@@ -13589,8 +13922,10 @@ synonym: "zoea" NARROW SENSU [http://en.wikipedia.org/wiki/Larva]
 synonym: "zoea stage" NARROW SENSU [http://en.wikipedia.org/wiki/Larva]
 xref: DpseDv:0000003
 xref: DsimDv:0000003
+xref: SsalDv:0000039
 xref: ZFS:0000048
 relationship: part_of UBERON:0000092 ! post-embryonic stage
+relationship: part_of UBERON:0000092 {gci_filler="NCBITaxon:8030", gci_relation="part_of"} ! post-embryonic stage
 relationship: preceded_by UBERON:0000068 ! embryo stage
 relationship: preceded_by ZFS:0007000 {gci_relation="part_of", gci_filler="NCBITaxon:7954"} ! hatching (Danio)
 property_value: curator_notes "Uberon includes clade-specific subclasses, e.g. nematod larva" xsd:string
@@ -13626,12 +13961,15 @@ property_value: taxon_notes "The pupal stage is found only in holometabolous ins
 id: UBERON:0000092
 name: post-embryonic stage
 def: "stage succeeding embryo, including mature structure" [https://orcid.org/0000-0002-6601-2165]
+synonym: "post-embryonic stage" BROAD []
 synonym: "post-hatching stage" NARROW []
 synonym: "postembryonic" RELATED []
 synonym: "postembryonic stage" EXACT []
 xref: FBdv:00007001
+xref: SsalDv:0000038
 xref: WBls:0000022
 xref: WBls:0000103
+relationship: part_of UBERON:0000104 {gci_filler="NCBITaxon:8030", gci_relation="part_of"} ! life cycle
 relationship: part_of UBERON:0000104 ! life cycle
 relationship: preceded_by UBERON:0000068 ! embryo stage
 property_value: seeAlso https://github.com/obophenotype/uberon/issues/344 xsd:anyURI
@@ -13654,54 +13992,52 @@ synonym: "lifespan" EXACT []
 synonym: "lizard life cycle" BROAD []
 synonym: "opossum life cycle" BROAD []
 synonym: "rabbit life cycle" BROAD []
-xref: XAO:1000081
-xref: XAO:1000094
-xref: XAO:1000000
+xref: AcarDv:0000000
 xref: AcarDv:0000001
+xref: BtauDv:0000000
 xref: BtauDv:0000001
+xref: CfamDv:0000000
 xref: CfamDv:0000001
+xref: CporDv:0000000
 xref: CporDv:0000001
+xref: DpseDv:0000000
 xref: DpseDv:0000001
+xref: DsimDv:0000000
 xref: DsimDv:0000001
+xref: EcabDv:0000000
 xref: EcabDv:0000001
 xref: FBdv:00000000
-xref: FcatDv:0000001
-xref: GgalDv:0000001
-xref: GgorDv:0000001
-xref: HsapDv:0000001
-xref: MdomDv:0000001
-xref: MmulDv:0000001
-xref: MmusDv:0000001
-xref: OanaDv:0000001
-xref: OariDv:0000001
-xref: OcunDv:0000001
-xref: PpanDv:0000001
-xref: PtroDv:0000001
-xref: RnorDv:0000001
-xref: SscrDv:0000001
-xref: WBls:0000825
-xref: AcarDv:0000000
-xref: BtauDv:0000000
-xref: CfamDv:0000000
-xref: CporDv:0000000
-xref: DpseDv:0000000
-xref: DsimDv:0000000
-xref: EcabDv:0000000
 xref: FBdv:00005259
+xref: FBdv:00007000
 xref: FcatDv:0000000
+xref: FcatDv:0000001
 xref: GgalDv:0000000
+xref: GgalDv:0000001
 xref: GgorDv:0000000
+xref: GgorDv:0000001
 xref: HsapDv:0000000
+xref: HsapDv:0000001
 xref: MdomDv:0000000
+xref: MdomDv:0000001
 xref: MmulDv:0000000
+xref: MmulDv:0000001
 xref: MmusDv:0000000
+xref: MmusDv:0000001
 xref: OanaDv:0000000
+xref: OanaDv:0000001
 xref: OariDv:0000000
+xref: OariDv:0000001
 xref: OcunDv:0000000
+xref: OcunDv:0000001
 xref: PpanDv:0000000
+xref: PpanDv:0000001
 xref: PtroDv:0000000
+xref: PtroDv:0000001
 xref: RnorDv:0000000
+xref: RnorDv:0000001
+xref: SsalDv:0000001
 xref: SscrDv:0000000
+xref: SscrDv:0000001
 xref: WBls:0000001
 xref: WBls:0000002
 xref: WBls:0000059
@@ -13729,9 +14065,12 @@ xref: WBls:0000821
 xref: WBls:0000822
 xref: WBls:0000823
 xref: WBls:0000824
+xref: WBls:0000825
+xref: XAO:1000000
+xref: XAO:1000081
+xref: XAO:1000094
 xref: ZFS:0000000
 xref: ZFS:0100000
-xref: FBdv:00007000
 property_value: seeAlso https://github.com/obophenotype/uberon/issues/532 xsd:anyURI
 
 [Term]
@@ -13752,18 +14091,20 @@ synonym: "Witschi stage 1" BROAD []
 synonym: "zygote" RELATED [VHOG:0000745]
 synonym: "zygote stage" BROAD []
 synonym: "zygotum" RELATED LATIN [http://en.wikipedia.org/wiki/Zygote]
-xref: XAO:1000001
 xref: FBdv:00005288
 xref: HsapDv:0000003
 xref: MmusDv:0000003
 xref: OariDv:0000009
 xref: RnorDv:0000048
+xref: SsalDv:0000003
 xref: SscrDv:0000087
-xref: WBls:0000006
-xref: ZFS:0000001
 xref: TS01
+xref: WBls:0000006
+xref: XAO:1000001
+xref: ZFS:0000001
+relationship: immediately_preceded_by XAO:1000082 {gci_relation="part_of", gci_filler="NCBITaxon:8353"} ! unfertilized egg stage (Xenopus)
 relationship: part_of UBERON:0000068 ! embryo stage
-relationship: immediately_preceded_by XAO:1000082 {gci_filler="NCBITaxon:8353", gci_relation="part_of"}
+relationship: part_of UBERON:0000068 {gci_filler="NCBITaxon:8030", gci_relation="part_of"} ! embryo stage
 property_value: homology_notes "As in all metazoans, eumetazoan development begins with a fertilized egg, or zygote.[well established][VHOG]" xsd:string {date_retrieved="2012-09-17", external_class="VHOG:0000745", ontology="VHOG", source="ISBN:978-0030259821 Ruppert EE, Fox RS, Barnes RD, Invertebrate zoology: a functional evolutionary approach (2003) p.107", source="http://bgee.unil.ch/"}
 
 [Term]
@@ -13774,15 +14115,18 @@ comment: Temporal ordering number - 25. (FBdv comment)
 subset: efo_slim
 synonym: "Carnegie stage 02" BROAD []
 synonym: "cleavage stage" BROAD []
-xref: XAO:1000004
 xref: FBdv:00000054
 xref: GgalDv:0000064
 xref: HsapDv:0000005
 xref: MmusDv:0000004
 xref: OariDv:0000010
 xref: RnorDv:0000049
+xref: SsalDv:0000004
 xref: SscrDv:0000088
+xref: XAO:1000004
 xref: ZFS:0000046
+relationship: immediately_preceded_by UBERON:0000106 {gci_filler="NCBITaxon:8030", gci_relation="part_of"} ! zygote stage
+relationship: part_of UBERON:0000068 {gci_filler="NCBITaxon:8030", gci_relation="part_of"} ! embryo stage
 relationship: part_of UBERON:0000068 ! embryo stage
 relationship: preceded_by UBERON:0000106 ! zygote stage
 
@@ -13793,13 +14137,13 @@ def: "An early stage of embryonic development in animals. It is produced by clea
 comment: Temporal ordering number - 160. (FBdv comment)
 subset: efo_slim
 synonym: "blastula stage" BROAD []
-xref: XAO:1000003
 xref: FBdv:00005304
 xref: GgalDv:0000091
 xref: HsapDv:0000006
 xref: MmusDv:0000007
 xref: OariDv:0000025
 xref: RnorDv:0000054
+xref: SsalDv:0000012
 xref: SscrDv:0000089
 xref: WBls:0000005
 xref: WBls:0000112
@@ -13902,14 +14246,17 @@ xref: WBls:0000208
 xref: WBls:0000209
 xref: WBls:0000210
 xref: WBls:0000211
+xref: XAO:1000003
 xref: ZFS:0000045
+relationship: part_of UBERON:0000068 {gci_filler="NCBITaxon:8030", gci_relation="part_of"} ! embryo stage
 relationship: part_of UBERON:0000068 ! embryo stage
-relationship: preceded_by UBERON:0000107 ! cleavage stage
 relationship: preceded_by FBdv:00005290 {gci_relation="part_of", gci_filler="NCBITaxon:7227"} ! pre-blastoderm stage (fruit fly)
 relationship: preceded_by FBdv:00005301 {gci_relation="part_of", gci_filler="NCBITaxon:7227"} ! embryonic stage 3 (fruit fly)
 relationship: preceded_by GgalDv:0000065 {gci_filler="NCBITaxon:9031", gci_relation="part_of"} ! late cleavage stage (chicken)
 relationship: preceded_by OariDv:0000012 {gci_filler="NCBITaxon:9940", gci_relation="part_of"} ! day 4-5 morula stage (sheep)
 relationship: preceded_by RnorDv:0000053 {gci_relation="part_of", gci_filler="NCBITaxon:10116"} ! Witschi stage 5 (rat)
+relationship: preceded_by UBERON:0000107 ! cleavage stage
+relationship: preceded_by UBERON:0000107 {gci_filler="NCBITaxon:8030", gci_relation="part_of"} ! cleavage stage
 property_value: depicted_by http://upload.wikimedia.org/wikipedia/commons/c/c6/Blastulation.png xsd:anyURI
 property_value: editor_note "consider adding a preceding stage 'morula stage' as part of cleavage" xsd:string
 
@@ -13926,13 +14273,13 @@ synonym: "trilaminar blastoderm stage" RELATED [https://orcid.org/0000-0002-6601
 synonym: "trilaminar disk stage" RELATED [https://orcid.org/0000-0002-6601-2165]
 synonym: "trilaminar germ stage" RELATED [https://orcid.org/0000-0002-6601-2165]
 synonym: "trilaminar stage" RELATED [https://orcid.org/0000-0002-6601-2165]
-xref: XAO:1000005
 xref: FBdv:00005317
 xref: GgalDv:0000092
 xref: HsapDv:0000010
 xref: MmusDv:0000013
 xref: OariDv:0000026
 xref: RnorDv:0000005
+xref: SsalDv:0000016
 xref: SscrDv:0000090
 xref: WBls:0000010
 xref: WBls:0000212
@@ -14125,13 +14472,16 @@ xref: WBls:0000398
 xref: WBls:0000399
 xref: WBls:0000400
 xref: WBls:0000401
+xref: XAO:1000005
 xref: ZFS:0000047
 relationship: only_in_taxon NCBITaxon:6072
 relationship: part_of UBERON:0000068 ! embryo stage
-relationship: preceded_by UBERON:0000108 {source="BILS"} ! blastula stage
+relationship: part_of UBERON:0000068 {gci_filler="NCBITaxon:8030", gci_relation="part_of"} ! embryo stage
 relationship: preceded_by FBdv:00005311 {gci_relation="part_of", gci_filler="NCBITaxon:7227"} ! embryonic stage 5 (fruit fly)
 relationship: preceded_by GgalDv:0000060 {gci_filler="NCBITaxon:9031", gci_relation="part_of"} ! Hamburger Hamilton stages 2 (chicken)
 relationship: preceded_by OariDv:0000015 {gci_filler="NCBITaxon:9940", gci_relation="part_of"} ! day 11 embryonic stage (sheep)
+relationship: preceded_by UBERON:0000108 {source="BILS"} ! blastula stage
+relationship: preceded_by UBERON:0000108 {gci_filler="NCBITaxon:8030", gci_relation="part_of"} ! blastula stage
 
 [Term]
 id: UBERON:0000110
@@ -14140,7 +14490,6 @@ def: "Staged defined by the formation of a tube from the flat layer of ectoderma
 comment: Temporal ordering number - 260. (FBdv comment)
 synonym: "neurula stage" BROAD []
 synonym: "Theiler stage 11" BROAD []
-xref: XAO:1000006
 xref: FBdv:00005321
 xref: GgalDv:0000093
 xref: HsapDv:0000012
@@ -14149,14 +14498,15 @@ xref: OariDv:0000027
 xref: RnorDv:0000007
 xref: SscrDv:0000091
 xref: TS11
+xref: XAO:1000006
 relationship: only_in_taxon NCBITaxon:6072
 relationship: part_of UBERON:0000068 ! embryo stage
-relationship: preceded_by UBERON:0000109 ! gastrula stage
 relationship: preceded_by FBdv:00005322 {gci_relation="part_of", gci_filler="NCBITaxon:7227"} ! embryonic stage 8 (fruit fly)
 relationship: preceded_by GgalDv:0000013 {gci_filler="NCBITaxon:9031", gci_relation="part_of"} ! Hamburger Hamilton stage 4 (chicken)
 relationship: preceded_by MmusDv:0000015 {gci_relation="part_of", gci_filler="NCBITaxon:10090"} ! Theiler stage 10 (mouse)
 relationship: preceded_by OariDv:0000017 {gci_filler="NCBITaxon:9940", gci_relation="part_of"} ! day 13 embryonic stage (sheep)
 relationship: preceded_by RnorDv:0000006 {gci_relation="part_of", gci_filler="NCBITaxon:10116"} ! primitive streak stage (rat)
+relationship: preceded_by UBERON:0000109 ! gastrula stage
 property_value: seeAlso https://github.com/obophenotype/uberon/issues/343 xsd:anyURI
 
 [Term]
@@ -14172,16 +14522,19 @@ xref: HsapDv:0000015
 xref: MmusDv:0000018
 xref: OariDv:0000028
 xref: RnorDv:0000055
+xref: SsalDv:0000022
 xref: SscrDv:0000086
 xref: XAO:1000007
+relationship: immediately_preceded_by SsalDv:0000020 {gci_filler="NCBITaxon:8030", gci_relation="part_of"} ! late gastrula:90% epiboly (salmon)
 relationship: only_in_taxon NCBITaxon:6072
 relationship: part_of UBERON:0000068 ! embryo stage
-relationship: preceded_by UBERON:0000110 ! neurula stage
+relationship: part_of UBERON:0000068 {gci_filler="NCBITaxon:8030", gci_relation="part_of"} ! embryo stage
 relationship: preceded_by FBdv:00004450 {gci_relation="part_of", gci_filler="NCBITaxon:7227"} ! late extended germ band stage (fruit fly)
 relationship: preceded_by FBdv:00005327 {gci_relation="part_of", gci_filler="NCBITaxon:7227"} ! embryonic stage 12 (fruit fly)
 relationship: preceded_by GgalDv:0000062 {gci_filler="NCBITaxon:9031", gci_relation="part_of"} ! Hamburger Hamilton stages 6 (chicken)
 relationship: preceded_by MmusDv:0000095 {gci_relation="part_of", gci_filler="NCBITaxon:10090"} ! Theiler stage 11d (mouse)
 relationship: preceded_by OariDv:0000020 {gci_filler="NCBITaxon:9940", gci_relation="part_of"} ! day 16 embryonic stage (sheep)
+relationship: preceded_by UBERON:0000110 ! neurula stage
 property_value: seeAlso https://github.com/obophenotype/uberon/issues/533 xsd:anyURI
 
 [Term]
@@ -14194,8 +14547,6 @@ synonym: "juvenile stage" NARROW [XAO:1000010]
 synonym: "pediatric stage" BROAD []
 synonym: "sexually immature stage" BROAD []
 synonym: "subadult stage" RELATED [http://eol.org/schema/terms/subadult]
-xref: WBls:0000058
-xref: XAO:1000010
 xref: AcarDv:0000003
 xref: BtauDv:0000003
 xref: CfamDv:0000003
@@ -14214,15 +14565,19 @@ xref: OcunDv:0000003
 xref: PpanDv:0000003
 xref: PtroDv:0000003
 xref: RnorDv:0000012
+xref: SsalDv:0000041
 xref: SscrDv:0000003
-xref: ZFS:0000051
 xref: TS28
+xref: WBls:0000058
+xref: XAO:1000010
+xref: ZFS:0000051
+relationship: part_of UBERON:0000066 {gci_filler="NCBITaxon:8030", gci_relation="part_of"} ! fully formed stage
 relationship: part_of UBERON:0000066 ! fully formed stage
-relationship: preceded_by UBERON:0000068 ! embryo stage
-relationship: preceded_by UBERON:0000069 {gci_relation="part_of", gci_filler="NCBITaxon:7955", source="ZFS"} ! larval stage
 relationship: preceded_by BtauDv:0000018 {gci_relation="part_of", gci_filler="NCBITaxon:9913"} ! ninth and over month of gestation (cow)
+relationship: preceded_by UBERON:0000068 ! embryo stage
 relationship: preceded_by UBERON:0000069 {gci_relation="part_of", gci_filler="NCBITaxon:7954"} ! larval stage
-relationship: preceded_by XAO:1000078 {gci_relation="part_of", gci_filler="NCBITaxon:8353"}
+relationship: preceded_by UBERON:0000069 {gci_relation="part_of", gci_filler="NCBITaxon:7955", source="ZFS"} ! larval stage
+relationship: preceded_by XAO:1000078 {gci_relation="part_of", gci_filler="NCBITaxon:8353"} ! NF stage 66 (Xenopus)
 property_value: external_definition "The stage of being a sexually immature adult animal[XAO:1000010]." xsd:string {source="XAO:1000010"}
 property_value: seeAlso https://github.com/obophenotype/uberon/issues/427 xsd:anyURI
 property_value: taxon_notes "In mammals this would include infant (nourishment from lactation) and juvenile (prepubertal no longer dependent on mother)" xsd:string
@@ -14235,7 +14590,7 @@ def: "The stage of being a sexually mature adult animal." [https://orcid.org/000
 synonym: "adult stage" BROAD []
 synonym: "mature stage" BROAD []
 synonym: "post-juvenile adult stage" BROAD []
-xref: XAO:1000093
+synonym: "sexually mature stage" BROAD []
 xref: AcarDv:0000004
 xref: BtauDv:0000004
 xref: CfamDv:0000004
@@ -14254,9 +14609,13 @@ xref: OcunDv:0000004
 xref: PpanDv:0000016
 xref: PtroDv:0000011
 xref: RnorDv:0000015
+xref: SsalDv:0000042
 xref: SscrDv:0000006
+xref: XAO:1000093
 xref: ZFS:0000044
 relationship: part_of UBERON:0000066 ! fully formed stage
+relationship: part_of UBERON:0000066 {gci_filler="NCBITaxon:8030", gci_relation="part_of"} ! fully formed stage
+relationship: preceded_by UBERON:0000112 {gci_filler="NCBITaxon:8030", gci_relation="part_of"} ! sexually immature stage
 relationship: preceded_by UBERON:0000112 ! sexually immature stage
 relationship: preceded_by ZFS:0000043 {gci_relation="part_of", gci_filler="NCBITaxon:7954"} ! Juvenile:Days 45-89 (Danio)
 property_value: seeAlso https://github.com/obophenotype/uberon/issues/345 xsd:anyURI
@@ -14288,8 +14647,8 @@ synonym: "polliwog stage" NARROW SENSU [http://en.wikipedia.org/wiki/Larva]
 synonym: "tadpole" NARROW SENSU [http://en.wikipedia.org/wiki/Larva]
 synonym: "tadpole stage" NARROW SENSU [http://en.wikipedia.org/wiki/Larva]
 xref: XAO:1000008
-relationship: part_of UBERON:0000069 ! larval stage
 relationship: only_in_taxon NCBITaxon:8292
+relationship: part_of UBERON:0000069 ! larval stage
 property_value: external_ontology_notes "the XAO class denotes a stage" xsd:string {external_ontology="XAO"}
 property_value: seeAlso https://github.com/obophenotype/uberon/issues/534 xsd:anyURI
 
@@ -14333,11 +14692,11 @@ xref: MmusDv:0000031
 xref: RnorDv:0000011
 xref: SscrDv:0000080
 relationship: part_of UBERON:0000068 ! embryo stage
+relationship: preceded_by FBdv:00005332 {gci_relation="part_of", gci_filler="NCBITaxon:7227"} ! embryonic stage 15 (fruit fly)
 relationship: preceded_by RnorDv:0000010 {gci_relation="part_of", gci_filler="NCBITaxon:10116"} ! metamorphosing embryo stage (rat)
 relationship: preceded_by UBERON:0000109 ! gastrula stage
 relationship: preceded_by UBERON:0000111 ! organogenesis stage
 relationship: preceded_by UBERON:0004707 ! pharyngula stage
-relationship: preceded_by FBdv:00005332 {gci_relation="part_of", gci_filler="NCBITaxon:7227"} ! embryonic stage 15 (fruit fly)
 property_value: seeAlso https://github.com/obophenotype/uberon/issues/355 xsd:anyURI
 
 [Term]
@@ -14367,8 +14726,8 @@ xref: RnorDv:0000013
 xref: SscrDv:0000009
 xref: TS27
 relationship: part_of UBERON:0018685 ! nursing stage
-relationship: preceded_by UBERON:0000068 ! embryo stage
 relationship: preceded_by MmusDv:0000035 {gci_relation="part_of", gci_filler="NCBITaxon:10090"} ! Theiler stage 26 (mouse)
+relationship: preceded_by UBERON:0000068 ! embryo stage
 property_value: editor_note "consider splitting infant/newborn" xsd:string
 property_value: seeAlso https://github.com/obophenotype/uberon/issues/350 xsd:anyURI
 
@@ -14381,7 +14740,6 @@ synonym: "elderly stage" RELATED [EV:0300123]
 synonym: "geriatric" RELATED [EV:0300123]
 synonym: "geriatric stage" RELATED [EV:0300123]
 synonym: "late adult stage" BROAD []
-xref: RnorDv:0000060
 xref: AcarDv:0000006
 xref: BtauDv:0000006
 xref: CfamDv:0000006
@@ -14400,40 +14758,49 @@ xref: OariDv:0000008
 xref: OcunDv:0000006
 xref: PpanDv:0000040
 xref: PtroDv:0000039
+xref: RnorDv:0000060
 xref: SscrDv:0000008
-relationship: part_of UBERON:0000113 ! post-juvenile
-relationship: preceded_by UBERON:0018241 ! prime adult stage
+relationship: part_of UBERON:0000113 ! post-juvenile adult stage
 relationship: preceded_by GgalDv:0000079 {gci_filler="NCBITaxon:9031", gci_relation="part_of"} ! middle adult stage (chicken)
 relationship: preceded_by MmusDv:0000088 {gci_relation="part_of", gci_filler="NCBITaxon:10090"} ! 17-month-old stage (mouse)
+relationship: preceded_by UBERON:0018241 ! prime adult stage
 property_value: seeAlso https://github.com/obophenotype/uberon/issues/495 xsd:anyURI
 
 [Term]
 id: UBERON:0007232
 name: 2 cell stage
 synonym: "2 cell stage" BROAD []
+synonym: "2-cell stage" BROAD []
 synonym: "2-cell stage" EXACT [XAO:1000011]
 synonym: "Cleavage:2-cell" NARROW [ZFS:0000002]
 synonym: "NF stage 2 (2-cell)" NARROW SENSU [XAO:1000011]
 synonym: "two-cell stage" EXACT [OBOL:automatic]
+xref: SsalDv:0000005
 xref: WBls:0000007
-xref: ZFS:0000002
 xref: XAO:1000011
+xref: ZFS:0000002
+relationship: immediately_preceded_by UBERON:0000106 {gci_filler="NCBITaxon:8030", gci_relation="part_of"} ! zygote stage
+relationship: immediately_preceded_by XAO:1000028 {gci_relation="part_of", gci_filler="NCBITaxon:8353"} ! NF stage 2- (Xenopus)
 relationship: part_of UBERON:0000107 ! cleavage stage
+relationship: part_of UBERON:0000107 {gci_filler="NCBITaxon:8030", gci_relation="part_of"} ! cleavage stage
 relationship: preceded_by UBERON:0000106 ! zygote stage
-relationship: immediately_preceded_by XAO:1000028 {gci_filler="NCBITaxon:8353", gci_relation="part_of"} ! NF stage 2-
 
 [Term]
 id: UBERON:0007233
 name: 4 cell stage
 synonym: "4 cell stage" BROAD []
+synonym: "4-cell stage" BROAD []
 synonym: "4-cell stage" EXACT [XAO:1000013]
 synonym: "Cleavage:4-cell" NARROW [ZFS:0000003]
 synonym: "four-cell stage" EXACT [OBOL:automatic]
 synonym: "NF stage 3 (4-cell)" NARROW SENSU [XAO:1000013]
+xref: SsalDv:0000006
 xref: WBls:0000008
-xref: ZFS:0000003
 xref: XAO:1000013
+xref: ZFS:0000003
+relationship: immediately_preceded_by UBERON:0007232 {gci_filler="NCBITaxon:8030", gci_relation="part_of"} ! 2 cell stage
 relationship: part_of UBERON:0000107 ! cleavage stage
+relationship: part_of UBERON:0000107 {gci_filler="NCBITaxon:8030", gci_relation="part_of"} ! cleavage stage
 relationship: preceded_by UBERON:0007232 ! 2 cell stage
 
 [Term]
@@ -14441,13 +14808,17 @@ id: UBERON:0007236
 name: 8 cell stage
 name: 8-cell
 synonym: "8 cell stage" BROAD []
+synonym: "8-cell stage" BROAD []
 synonym: "8-cell stage" EXACT [XAO:1000014]
 synonym: "Cleavage:8-cell" NARROW [ZFS:0000004]
 synonym: "eight-cell stage" EXACT [OBOL:automatic]
 synonym: "NF stage 4 (8-cell)" NARROW SENSU [XAO:1000014]
+xref: SsalDv:0000007
 xref: WBls:0000071
-xref: ZFS:0000004
 xref: XAO:1000014
+xref: ZFS:0000004
+relationship: immediately_preceded_by UBERON:0007233 {gci_filler="NCBITaxon:8030", gci_relation="part_of"} ! 4 cell stage
+relationship: part_of UBERON:0000107 {gci_filler="NCBITaxon:8030", gci_relation="part_of"} ! cleavage stage
 relationship: part_of UBERON:0000107 ! cleavage stage
 relationship: preceded_by UBERON:0007233 ! 4 cell stage
 
@@ -14490,9 +14861,9 @@ xref: SscrDv:0000007
 relationship: dc-contributor https://github.com/ANiknejad
 relationship: dc-contributor https://github.com/cmungall
 relationship: dc-contributor https://github.com/fbastian
-relationship: part_of UBERON:0000113 ! post-juvenile
-relationship: preceded_by UBERON:0000112 ! sexually immature stage
+relationship: part_of UBERON:0000113 ! post-juvenile adult stage
 relationship: preceded_by MmusDv:0000150 {gci_relation="part_of", gci_filler="NCBITaxon:10090"} ! 5-week-old stage (mouse)
+relationship: preceded_by UBERON:0000112 ! sexually immature stage
 relationship: preceded_by UBERON:0034919 {gci_filler="NCBITaxon:9031", gci_relation="part_of"} ! juvenile stage
 
 [Term]
@@ -14522,32 +14893,32 @@ id: UBERON:0034919
 name: juvenile stage
 def: "The stage of being no more dependent of the nest and/or from caregivers for subsistence while having not reach sexual maturity." [Bgee:AN, https://github.com/obophenotype/uberon/issues/645]
 synonym: "juvenile stage" BROAD []
-xref: MdomDv:0000005
 xref: GgalDv:0000005
 xref: GgorDv:0000005
 xref: HsapDv:0000271
+xref: MdomDv:0000005
 xref: MmulDv:0000014
 xref: MmusDv:0000178
+xref: OariDv:0000005
 xref: PpanDv:0000005
 xref: PtroDv:0000005
 xref: RnorDv:0000058
 xref: SscrDv:0000005
-xref: OariDv:0000005
 relationship: dc-contributor https://github.com/ANiknejad
 relationship: dc-contributor https://github.com/cmungall
 relationship: part_of UBERON:0000112 ! sexually immature stage
-relationship: preceded_by UBERON:0007221 {gci_relation="part_of", gci_filler="NCBITaxon:32524"} ! neonate stage
-relationship: preceded_by UBERON:0034920 {gci_filler="NCBITaxon:9544", gci_relation="part_of"} ! infant stage
 relationship: preceded_by GgalDv:0000004 {gci_filler="NCBITaxon:9031", gci_relation="part_of"} ! hatchling stage (chicken)
 relationship: preceded_by GgalDv:0000075 {gci_filler="NCBITaxon:9031", gci_relation="part_of"} ! 4-week-old stage (chicken)
 relationship: preceded_by HsapDv:0000265 {gci_relation="part_of", gci_filler="NCBITaxon:9606"} ! child stage (human)
 relationship: preceded_by UBERON:0007221 {gci_relation="part_of", gci_filler="NCBITaxon:10116"} ! neonate stage
-relationship: preceded_by UBERON:0018685 {gci_relation="part_of", gci_filler="NCBITaxon:9597"} ! nursing stage
-relationship: preceded_by UBERON:0018685 {gci_filler="NCBITaxon:9598", gci_relation="part_of"} ! nursing stage
-relationship: preceded_by UBERON:0018685 {gci_relation="part_of", gci_filler="NCBITaxon:9823"} ! nursing stage
+relationship: preceded_by UBERON:0007221 {gci_relation="part_of", gci_filler="NCBITaxon:32524"} ! neonate stage
 relationship: preceded_by UBERON:0018685 {gci_filler="NCBITaxon:9593", gci_relation="part_of"} ! nursing stage
+relationship: preceded_by UBERON:0018685 {gci_relation="part_of", gci_filler="NCBITaxon:9823"} ! nursing stage
+relationship: preceded_by UBERON:0018685 {gci_filler="NCBITaxon:9598", gci_relation="part_of"} ! nursing stage
 relationship: preceded_by UBERON:0018685 {gci_relation="part_of", gci_filler="NCBITaxon:40674"} ! nursing stage
+relationship: preceded_by UBERON:0018685 {gci_relation="part_of", gci_filler="NCBITaxon:9597"} ! nursing stage
 relationship: preceded_by UBERON:0034920 {gci_relation="part_of", gci_filler="NCBITaxon:10090"} ! infant stage
+relationship: preceded_by UBERON:0034920 {gci_filler="NCBITaxon:9544", gci_relation="part_of"} ! infant stage
 
 [Term]
 id: UBERON:0034920
@@ -14555,11 +14926,11 @@ name: infant stage
 def: "Nursing stage that follows the neonate stage in mammals and ends at weaning." [Bgee:AN, https://github.com/obophenotype/uberon/issues/644]
 synonym: "infant stage" BROAD []
 xref: HsapDv:0000261
+xref: MdomDv:0000033
 xref: MmulDv:0000053
 xref: MmusDv:0000177
 xref: RnorDv:0000057
 xref: SscrDv:0000085
-xref: MdomDv:0000033
 relationship: dc-contributor https://github.com/ANiknejad
 relationship: dc-contributor https://github.com/cmungall
 relationship: only_in_taxon NCBITaxon:40674
@@ -14669,8 +15040,8 @@ xref: WBls:0000459
 xref: WBls:0000460
 xref: WBls:0000461
 relationship: part_of WBls:0000014 ! late cleavage stage embryo Ce (C. elegans)
-relationship: preceded_by WBls:0000014 ! late cleavage stage embryo Ce (C. elegans)
 relationship: preceded_by UBERON:0000109 ! gastrula stage
+relationship: preceded_by WBls:0000014 ! late cleavage stage embryo Ce (C. elegans)
 
 [Term]
 id: WBls:0000014
@@ -15250,7 +15621,7 @@ name: reproductive stage adult hermaphrodite Ce (C. elegans)
 namespace: worm_development
 def: "Adult hermaphrodites continuously laying fertilized eggs. Hermaphrodite in egg laying stages--usually up to 4/5 days after L4-adult molt at Centigrade. From the first fertilized egg is laid, till all sperms are used. At 20 Centigrade: 13 hours after L4-adult molt until about 5.4 days after the L4-adult molt. 3-8.4 days after first cleavage." [WB:wjc]
 synonym: "reproductive stage adult hermaphrodite" BROAD []
-relationship: part_of UBERON:0000113 ! post-juvenile
+relationship: part_of UBERON:0000113 ! post-juvenile adult stage
 
 [Term]
 id: WBls:0000061
@@ -15258,7 +15629,7 @@ name: oocyte-laying stage adult hermaphrodite Ce (C. elegans)
 namespace: worm_development
 def: "When egg-laying is still going on but intermittent and during which a significant number of oocytes are laid. Included in reproductive stage adult hermaphrodite." [WB:wjc]
 synonym: "oocyte-laying stage adult hermaphrodite" BROAD []
-relationship: part_of UBERON:0000113 ! post-juvenile
+relationship: part_of UBERON:0000113 ! post-juvenile adult stage
 relationship: preceded_by WBls:0000060 ! reproductive stage adult hermaphrodite Ce (C. elegans)
 
 [Term]
@@ -15267,7 +15638,7 @@ name: post-reproductive stage adult hermaphrodite Ce (C. elegans)
 namespace: worm_development
 def: "Adult hermaphrodites that contain no more sperm, thus stop egg-laying, but still alive. At 20 Centigrade: 5.4 days after L4-adult molt until the death. 8.4 - 13.2 (average wild type life span) days after first cleavage." [WB:wjc]
 synonym: "post-reproductive stage adult hermaphrodite" BROAD []
-relationship: part_of UBERON:0000113 ! post-juvenile
+relationship: part_of UBERON:0000113 ! post-juvenile adult stage
 relationship: preceded_by WBls:0000061 ! oocyte-laying stage adult hermaphrodite Ce (C. elegans)
 
 [Term]
@@ -15277,7 +15648,7 @@ namespace: worm_development
 def: "At 20 Centigrade: 0-24 hours after L4-adult molt." [WB:wjc]
 synonym: "newly molted young adult hermaphrodite" BROAD []
 relationship: part_of UBERON:0000066 ! fully formed stage
-relationship: preceded_by UBERON:0000113 ! post-juvenile
+relationship: preceded_by UBERON:0000113 ! post-juvenile adult stage
 
 [Term]
 id: WBls:0000064
@@ -15349,7 +15720,7 @@ namespace: worm_development
 def: "The C. elegans life stage spanning ~55 min after first cleavage at 20 Centigrade.  Contains 12 cells." [WB:wjc]
 synonym: "12-cell embryo" BROAD []
 relationship: part_of UBERON:0000108 ! blastula stage
-relationship: preceded_by UBERON:0007236
+relationship: preceded_by UBERON:0007236 ! 8-cell
 
 [Term]
 id: WBls:0000074
@@ -15357,8 +15728,8 @@ name: 11-15 days post-L4 adult hermaphrodite Ce (C. elegans)
 namespace: worm_development
 def: "At 20 Centigrade: 11-15 days after L4-adult molt. 14-18 days after first cleavage." [WB:dr]
 relationship: part_of UBERON:0000066 ! fully formed stage
-relationship: preceded_by WBls:0000674 ! 10-days post-L4 adult hermaphrodite Ce (C. elegans)
 relationship: preceded_by WBls:0000070 ! 7-10 days post-L4 adult hermaphrodite Ce (C. elegans)
+relationship: preceded_by WBls:0000674 ! 10-days post-L4 adult hermaphrodite Ce (C. elegans)
 created_by: danielaraciti
 creation_date: 2012-05-22T14:35:04Z
 
@@ -15462,8 +15833,8 @@ namespace: worm_development
 def: "At 20 Centigrade: 16-18 days after L4-adult molt. 18-21 days after first cleavage." [WB:dr]
 synonym: "16-18 days post-L4 adult hermaphrodite" BROAD []
 relationship: part_of UBERON:0000066 ! fully formed stage
-relationship: preceded_by WBls:0000675 ! 15-days post-L4 adult hermaphrodite Ce (C. elegans)
 relationship: preceded_by WBls:0000074 ! 11-15 days post-L4 adult hermaphrodite Ce (C. elegans)
+relationship: preceded_by WBls:0000675 ! 15-days post-L4 adult hermaphrodite Ce (C. elegans)
 created_by: danielaraciti
 
 [Term]
@@ -15826,14 +16197,14 @@ id: XAO:1000002
 name: early tailbud stage (Xenopus)
 def: "Tailbud stage that refers to the earlier events associated with this stage, comprising Nieuwkoop and Faber stages 22 to 28." [Bgee:curator, ISBN:0815318960]
 synonym: "early tailbud" EXACT []
-relationship: part_of UBERON:0000111 ! organogenesis
+relationship: part_of UBERON:0000111 ! organogenesis stage
 
 [Term]
 id: XAO:1000015
 name: NF stage 5 (16-cell) (Xenopus)
 def: "Nieuwkoop and Faber stage 5, corresponding to an embryo of age 2 hr 45 min at 22-24 Celsius and having the following external morphological criteria: Advanced sixteen cell stage. Dorsal micromeres distinctly smaller and less pigmented than ventral ones. Macromeres entirely separated by cleavage grooves. Length: 1.4 - 1.5 mm." [ISBN:0815318960]
 synonym: "16-cell stage" EXACT []
-relationship: immediately_preceded_by UBERON:0007236 ! 8 cell stage
+relationship: immediately_preceded_by UBERON:0007236 ! 8-cell
 relationship: part_of UBERON:0000107 ! cleavage stage
 
 [Term]
@@ -16287,23 +16658,23 @@ id: XAO:1000079
 name: metamorphosing tadpole stage (Xenopus)
 def: "Tadpole stage during which toe differentiation and rapid hindlimb growth continue, followed by tail resorption; comprising Nieuwkoop and Faber stages 54 to 66." [Bgee:curator, ISBN:0815318960]
 synonym: "metamorphosing tadpole" EXACT []
+relationship: immediately_preceded_by XAO:1000089 ! premetamorphosis stage (Xenopus)
 relationship: part_of UBERON:0009849 ! tadpole stage
-relationship: immediately_preceded_by XAO:1000089
 
 [Term]
 id: XAO:1000080
 name: late tailbud stage (Xenopus)
 def: "Tailbud stage that refers to the later events associated with this stage, comprising Nieuwkoop and Faber stages 29/30 to 44." [Bgee:curator, ISBN:0815318960]
 synonym: "late tailbud" EXACT []
-relationship: part_of UBERON:0000111 ! organogenesis
 relationship: immediately_preceded_by XAO:1000002 ! early tailbud stage (Xenopus)
+relationship: part_of UBERON:0000111 ! organogenesis stage
 
 [Term]
 id: XAO:1000082
 name: unfertilized egg stage (Xenopus)
 def: "Xenopus developmental stage that corresponds to a developing or mature female germ cell." [XAO:EJS]
 synonym: "unfertilized egg" EXACT []
-relationship: part_of UBERON:0000104
+relationship: part_of UBERON:0000104 ! life cycle
 
 [Term]
 id: XAO:1000083
@@ -16315,36 +16686,36 @@ relationship: part_of XAO:1000082 ! unfertilized egg stage (Xenopus)
 id: XAO:1000084
 name: oocyte stage II (Xenopus)
 def: "Unfertilized-egg stage corresponding to the developing female gamete of the early vitellogenic stage." [XAO:EJS]
-relationship: part_of XAO:1000082 ! unfertilized egg stage (Xenopus)
 relationship: immediately_preceded_by XAO:1000083 ! oocyte stage I (Xenopus)
+relationship: part_of XAO:1000082 ! unfertilized egg stage (Xenopus)
 
 [Term]
 id: XAO:1000085
 name: oocyte stage III (Xenopus)
 def: "Unfertilized-egg stage corresponding to the developing female gamete of the mid-vitellogenic stage." [XAO:EJS]
-relationship: part_of XAO:1000082 ! unfertilized egg stage (Xenopus)
 relationship: immediately_preceded_by XAO:1000084 ! oocyte stage II (Xenopus)
+relationship: part_of XAO:1000082 ! unfertilized egg stage (Xenopus)
 
 [Term]
 id: XAO:1000086
 name: oocyte stage IV (Xenopus)
 def: "Unfertilized-egg stage corresponding to establishment of polarization along the animal-vegetal axis in the developing female gamete." [XAO:EJS]
-relationship: part_of XAO:1000082 ! unfertilized egg stage (Xenopus)
 relationship: immediately_preceded_by XAO:1000085 ! oocyte stage III (Xenopus)
+relationship: part_of XAO:1000082 ! unfertilized egg stage (Xenopus)
 
 [Term]
 id: XAO:1000087
 name: oocyte stage V (Xenopus)
 def: "Unfertilized-egg stage corresponding to the developing female gamete of the late-vitellogenic stage." [XAO:EJS]
-relationship: part_of XAO:1000082 ! unfertilized egg stage (Xenopus)
 relationship: immediately_preceded_by XAO:1000086 ! oocyte stage IV (Xenopus)
+relationship: part_of XAO:1000082 ! unfertilized egg stage (Xenopus)
 
 [Term]
 id: XAO:1000088
 name: oocyte stage VI (Xenopus)
 def: "Unfertilized-egg stage corresponding to the fully grown female gamete." [XAO:EJS]
-relationship: part_of XAO:1000082 ! unfertilized egg stage (Xenopus)
 relationship: immediately_preceded_by XAO:1000087 ! oocyte stage V (Xenopus)
+relationship: part_of XAO:1000082 ! unfertilized egg stage (Xenopus)
 
 [Term]
 id: XAO:1000089
@@ -16365,16 +16736,16 @@ id: XAO:1000091
 name: climax stage (Xenopus)
 def: "Metamorphosing tadpole stage during which tail resorption occurs, comprising Nieuwkoop and Faber stages 58 to 66." [ISBN:0124554032]
 synonym: "climax" EXACT []
+relationship: immediately_preceded_by XAO:1000090 ! prometamorphosis stage (Xenopus)
 relationship: part_of XAO:1000079 ! metamorphosing tadpole stage (Xenopus)
-relationship: immediately_preceded_by XAO:1000090
 
 [Term]
 id: XAO:1000092
 name: mature egg stage (Xenopus)
 def: "Unfertilized-egg stage corresponding to the mature female germ cell." [XAO:EJS]
 synonym: "mature egg" RELATED []
-relationship: part_of XAO:1000082 ! unfertilized egg stage (Xenopus)
 relationship: immediately_preceded_by XAO:1000088 ! oocyte stage VI (Xenopus)
+relationship: part_of XAO:1000082 ! unfertilized egg stage (Xenopus)
 
 [Term]
 id: ZFS:0000005
@@ -16382,7 +16753,7 @@ name: Cleavage:16-cell (Danio)
 namespace: zebrafish_stages
 xref: ZFIN:ZDB-STAGE-010723-20
 relationship: part_of UBERON:0000107 ! cleavage stage
-relationship: preceded_by UBERON:0007236 ! 8 cell stage
+relationship: preceded_by UBERON:0007236 ! 8-cell
 
 [Term]
 id: ZFS:0000006
@@ -16717,8 +17088,6 @@ is_transitive: true
 [Typedef]
 id: RO:0002225
 equivalent_to: develops_from
-equivalent_to: develops_from
-equivalent_to: develops_from
 
 [Typedef]
 id: action_notes
@@ -16947,13 +17316,6 @@ namespace: rabbit_stages_ontology
 def: "Count of number of days intervening between the end of the stage and the time of birth according to a reference model. Note that the first day of post-birth development has the value of 1 for this property, and the period during which the child is one day old has the value 2" []
 comment: This is a shortcut annotation that can be expanded to an OWL axiom, or to a set of OWL axioms. The exact translation has yet to be determined, and may be application-dependent.
 property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
 is_metadata_tag: true
 
 [Typedef]
@@ -16964,8 +17326,6 @@ namespace: rat_stages_ontology
 def: "Count of number of days intervening between the end of the stage and the time of coitum, assuming that it takes place around midnight during a 7pm to 5am dark cycle (noon of the day on which the vaginal plug is found, the embryos are aged 0.5 days post coitum)." [http://php.med.unsw.edu.au/embryology/index.php?title=Mouse_Stages#Timed_Pregnancy]
 def: "Count of number of days intervening between the end of the stage and the time of coitum, defined as the time the vaginal plug is found. Note that the vaginal plug persists for 16-24 hours and may lasts as long as 48 hours." [http://web.jhu.edu/animalcare/procedures/rat.html]
 comment: This is a shortcut annotation that can be expanded to an OWL axiom, or to a set of OWL axioms. The exact translation has yet to be determined, and may be application-dependent.
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
 property_value: has_unit UO:0000033
 is_metadata_tag: true
 
@@ -16995,23 +17355,6 @@ namespace: sheep_stages_ontology
 def: "Count of number of days intervening between the end of the stage and the time of fertilization according to a reference model. Note that the first day of development has the value of 1 for this property." []
 comment: This is a shortcut annotation that can be expanded to an OWL axiom, or to a set of OWL axioms. The exact translation has yet to be determined, and may be application-dependent.
 property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
 is_metadata_tag: true
 
 [Typedef]
@@ -17025,8 +17368,6 @@ namespace: Dvirilis_stages_ontology
 namespace: Dyakuba_stages_ontology
 def: "Count of number of days intervening between the end of the stage and the time of hatching according to a reference model. Note that the first day of post-birth development has the value of 1 for this property, and the period during which the organism is one day old has the value 2." []
 comment: This is a shortcut annotation that can be expanded to an OWL axiom, or to a set of OWL axioms. The exact translation has yet to be determined, and may be applirabbition-dependent.
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
 property_value: has_unit UO:0000033
 is_metadata_tag: true
 
@@ -17055,21 +17396,6 @@ def: "Count of number of months intervening between the end of the stage and the
 def: "Count of number of months intervening between the end of the stage and the time of birth according to a reference model. Note that the first month of post-birth development has the value of 1 for this property, and the period during which the organism is one month old has the value 2" []
 comment: This is a shortcut annotation that can be expanded to an OWL axiom, or to a set of OWL axioms. The exact translation has yet to be determined, and may be application-dependent.
 property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
 is_metadata_tag: true
 
 [Typedef]
@@ -17086,13 +17412,6 @@ namespace: sheep_stages_ontology
 def: "Count of number of months intervening between the end of the stage and the time of fertilization according to a reference model. Note that the first month of development has the value of 1 for this property, and the period during which the organism is one month old has the value 2" []
 comment: This is a shortcut annotation that can be expanded to an OWL axiom, or to a set of OWL axioms. The exact translation has yet to be determined, and may be application-dependent.
 property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
 is_metadata_tag: true
 
 [Typedef]
@@ -17102,8 +17421,6 @@ namespace: chicken_stages_ontology
 namespace: lizard_stages_ontology
 def: "Count of number of months intervening between the end of the stage and the time of hatching according to a reference model. Note that the first month of post-birth development has the value of 1 for this property, and the period during which the organism is one month old has the value 2" []
 comment: This is a shortcut annotation that can be expanded to an OWL axiom, or to a set of OWL axioms. The exact translation has yet to be determined, and may be application-dependent.
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
 property_value: has_unit UO:0000035
 is_metadata_tag: true
 
@@ -17119,12 +17436,6 @@ namespace: rat_stages_ontology
 def: "Count of number of weeks intervening between the end of the stage and the time of birth according to a reference model. Note that the first week of post-birth development has the value of 1 for this property, and the period during which the mouse is one week old has the value 2" []
 def: "Count of number of weeks intervening between the end of the stage and the time of birth according to a reference model. Note that the first week of post-birth development has the value of 1 for this property, and the period during which the rat is one week old has the value 2" []
 comment: This is a shortcut annotation that can be expanded to an OWL axiom, or to a set of OWL axioms. The exact translation has yet to be determined, and may be application-dependent.
-property_value: has_unit UO:0000034
-property_value: has_unit UO:0000034
-property_value: has_unit UO:0000034
-property_value: has_unit UO:0000034
-property_value: has_unit UO:0000034
-property_value: has_unit UO:0000034
 property_value: has_unit UO:0000034
 is_metadata_tag: true
 
@@ -17149,19 +17460,6 @@ namespace: sheep_stages_ontology
 def: "Count of number of years intervening between the end of the stage and the time of birth according to a reference model. Note that the first year of post-birth development has the value of 1 for this property, and the period during which the child is one year old has the value 2" []
 comment: This is a shortcut annotation that can be expanded to an OWL axiom, or to a set of OWL axioms. The exact translation has yet to be determined, and may be application-dependent.
 property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
 is_metadata_tag: true
 
 [Typedef]
@@ -17170,7 +17468,6 @@ name: end, years post hatching
 namespace: pufferfish_stages_ontology
 def: "Count of number of years intervening between the end of the stage and the time of hatching according to a reference model. Note that the first year of post-birth development has the value of 1 for this property, and the period during which the organism is one year old has the value 2" []
 comment: This is a shortcut annotation that can be expanded to an OWL axiom, or to a set of OWL axioms. The exact translation has yet to be determined, and may be application-dependent.
-property_value: has_unit UO:0000036
 property_value: has_unit UO:0000036
 is_metadata_tag: true
 
@@ -17451,8 +17748,57 @@ def: "x immediate transformation of y iff x immediately succeeds y temporally at
 synonym: "direct_transformation_of" EXACT [https://orcid.org/0000-0002-6601-2165]
 synonym: "immediately transforms from" EXACT [SIO:000658]
 xref: RO:0002495
-is_a: preceded_by ! immediately preceded by
+is_a: preceded_by ! preceded_by
 is_a: transformation_of ! transformation of
+
+[Typedef]
+id: immediately_preceded_by
+name: immediately preceded by
+name: immediately_preceded_by
+namespace: bonobo_stages_ontology
+namespace: cat_stages_ontology
+namespace: cavy_stages_ontology
+namespace: chicken_stages_ontology
+namespace: chimpanzee_stages_ontology
+namespace: cow_stages_ontology
+namespace: Dananassae_stages_ontology
+namespace: Dmojavensis_stages_ontology
+namespace: dog_stages_ontology
+namespace: Dpseudobscura_stages_ontology
+namespace: Dsimulans_stages_ontology
+namespace: Dvirilis_stages_ontology
+namespace: Dyakuba_stages_ontology
+namespace: FlyBase_development_CV
+namespace: gorilla_stages_ontology
+namespace: hedgehog_stages_ontology
+namespace: horse_stages_ontology
+namespace: human_stages_ontology
+namespace: lizard_stages_ontology
+namespace: medaka_ontology
+namespace: mouse_stages_ontology
+namespace: opossum_stages_ontology
+namespace: orangutan_stages_ontology
+namespace: pig_stages_ontology
+namespace: platypus_stages_ontology
+namespace: pufferfish_stages_ontology
+namespace: rabbit_stages_ontology
+namespace: rat_stages_ontology
+namespace: rhesus_macaque_stages_ontology
+namespace: sheep_stages_ontology
+namespace: uberon
+namespace: worm_development
+namespace: zebrafish_anatomical_ontology
+def: "X immediately_preceded_by Y iff: end(X) simultaneous_with start(Y)" []
+comment: X immediately_preceded_by Y iff: end(X) simultaneous_with start(Y)
+synonym: "directly preceded by" EXACT []
+synonym: "is directly preceded by" EXACT []
+synonym: "is immediately preceded by" EXACT [SIO:000251]
+synonym: "preceded_by" EXACT []
+xref: RO:0002087
+property_value: external_definition "A non-transitive temporal relation in which one process immediately precedes another process, such that there is no interval of time between the two processes[SIO:000251]." xsd:string {source="SIO:000251"}
+property_value: IAO:0000117 "David Osumi-Sutherland" xsd:string
+property_value: IAO:0000118 "preceded_by" xsd:string
+is_a: preceded_by ! preceded_by
 
 [Typedef]
 id: implements_design_pattern
@@ -17487,8 +17833,8 @@ is_a: part_of ! part_of
 id: in_deep_part_of
 name: in_deep_part_of
 namespace: uberon
-def: "X superficial_part_of Y <=> if Y is subdivided into two superficial and deep portions, X is part_of the deep portion." [http://orcid.org/0000-0002-6601-2165]
 def: "X superficial_part_of Y <=> if Y is subdivided into two superficial and deep portions, X is part_of the deep portion." [BSPO:cjm]
+def: "X superficial_part_of Y <=> if Y is subdivided into two superficial and deep portions, X is part_of the deep portion." [http://orcid.org/0000-0002-6601-2165]
 xref: BSPO:0001101
 is_a: part_of ! part_of
 
@@ -17519,8 +17865,8 @@ is_a: in_lateral_side_of ! in_lateral_side_of
 id: in_lateral_side_of
 name: in_lateral_side_of
 namespace: uberon
-def: "X in_lateral_side_of Y <=> if X is in_left_side_of Y or X is in_right_side_of Y. X is often, but not always a paired structure" [https://orcid.org/0000-0002-6601-2165]
 def: "X in_lateral_side_of Y <=> if X is in_left_side_of Y or X is in_right_side_of Y. X is often, but not always a paired structure" [UBERON:cjm]
+def: "X in_lateral_side_of Y <=> if X is in_left_side_of Y or X is in_right_side_of Y. X is often, but not always a paired structure" [https://orcid.org/0000-0002-6601-2165]
 xref: BSPO:0000126
 is_a: part_of ! part_of
 disjoint_from: in_central_side_of ! in_central_side_of
@@ -17577,6 +17923,32 @@ def: "X superficial_part_of Y <=> if Y is subdivided into two superficial and de
 def: "X superficial_part_of Y <=> if Y is subdivided into two superficial and deep portions, X is part_of the superficial portion." [BSPO:cjm]
 xref: BSPO:0001100
 is_a: part_of ! part_of
+
+[Typedef]
+id: in_taxon
+name: in taxon
+def: "x is in taxon y if an only if y is an organism, and the relationship between x and y is one of: part of (reflexive), developmentally preceded by, derives from, secreted by, expressed." []
+xref: RO:0002162
+holds_over_chain: attaches_to in_taxon
+holds_over_chain: capable_of in_taxon
+holds_over_chain: connected_to in_taxon
+holds_over_chain: connects in_taxon
+holds_over_chain: continuous_with in_taxon
+holds_over_chain: developmentally_induced_by in_taxon
+holds_over_chain: develops_from in_taxon
+holds_over_chain: develops_from_part_of in_taxon
+holds_over_chain: existence_ends_during in_taxon
+holds_over_chain: existence_starts_during in_taxon
+holds_over_chain: extends_fibers_into in_taxon
+holds_over_chain: has_developmental_contribution_from in_taxon
+holds_over_chain: has_part in_taxon
+holds_over_chain: has_potential_to_develop_into in_taxon
+holds_over_chain: innervated_by in_taxon
+holds_over_chain: overlaps in_taxon
+holds_over_chain: part_of in_taxon
+holds_over_chain: produced_by in_taxon
+holds_over_chain: produces in_taxon
+holds_over_chain: supplies in_taxon
 
 [Typedef]
 id: in_ventral_side_of
@@ -17642,7 +18014,6 @@ def: "Defines the start and end of a stage with a duration of 1 month, relative 
 comment: This is a shortcut annotation that can be expanded to an OWL axiom, or to a set of OWL axioms. The exact translation has yet to be determined, and may be application-dependent.
 xref: Wikipedia:Gestational_age
 property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
 is_metadata_tag: true
 
 [Typedef]
@@ -17671,32 +18042,6 @@ expand_assertion_to: "?X DisjointWith RO_0002162 some ?Y " []
 expand_assertion_to: "Class: <http://www.w3.org/2002/07/owl#Nothing> EquivalentTo: ?X and (RO_0002162 some ?Y)" []
 is_metadata_tag: true
 is_class_level: true
-
-[Typedef]
-id: in_taxon
-name: in taxon
-def: "x is in taxon y if an only if y is an organism, and the relationship between x and y is one of: part of (reflexive), developmentally preceded by, derives from, secreted by, expressed." []
-xref: RO:0002162
-holds_over_chain: attaches_to in_taxon
-holds_over_chain: capable_of in_taxon
-holds_over_chain: connected_to in_taxon
-holds_over_chain: connects in_taxon
-holds_over_chain: continuous_with in_taxon
-holds_over_chain: developmentally_induced_by in_taxon
-holds_over_chain: develops_from in_taxon
-holds_over_chain: develops_from_part_of in_taxon
-holds_over_chain: existence_ends_during in_taxon
-holds_over_chain: existence_starts_during in_taxon
-holds_over_chain: extends_fibers_into in_taxon
-holds_over_chain: has_developmental_contribution_from in_taxon
-holds_over_chain: has_part in_taxon
-holds_over_chain: has_potential_to_develop_into in_taxon
-holds_over_chain: innervated_by in_taxon
-holds_over_chain: overlaps in_taxon
-holds_over_chain: part_of in_taxon
-holds_over_chain: produced_by in_taxon
-holds_over_chain: produces in_taxon
-holds_over_chain: supplies in_taxon
 
 [Typedef]
 id: only_in_taxon
@@ -17767,6 +18112,7 @@ namespace: pufferfish_stages_ontology
 namespace: rabbit_stages_ontology
 namespace: rat_stages_ontology
 namespace: rhesus_macaque_stages_ontology
+namespace: salmo_salar_anatomical_ontology
 namespace: sheep_stages_ontology
 namespace: uberon
 namespace: worm_development
@@ -17868,6 +18214,7 @@ namespace: rabbit_stages_ontology
 namespace: rat_stages_ontology
 namespace: relationship
 namespace: rhesus_macaque_stages_ontology
+namespace: salmo_salar_anatomical_ontology
 namespace: sheep_stages_ontology
 namespace: uberon
 namespace: worm_development
@@ -18015,13 +18362,6 @@ namespace: rabbit_stages_ontology
 def: "Count of number of days intervening between the start of the stage and the time of birth according to a reference model. Note that the first day of post-birth development has the value of 0 for this property, and the period during which the child is one day old has the value 1." []
 comment: This is a shortcut annotation that can be expanded to an OWL axiom, or to a set of OWL axioms. The exact translation has yet to be determined, and may be application-dependent.
 property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
 is_metadata_tag: true
 
 [Typedef]
@@ -18032,8 +18372,6 @@ namespace: rat_stages_ontology
 def: "Count of number of days intervening between the start of the stage and the time of coitum, assuming that it takes place around midnight during a 7pm to 5am dark cycle (noon of the day on which the vaginal plug is found, the embryos are aged 0.5 days post coitum)." [http://php.med.unsw.edu.au/embryology/index.php?title=Mouse_Stages#Timed_Pregnancy]
 def: "Count of number of days intervening between the start of the stage and the time of coitum, defined as the time the vaginal plug is found. Note that the vaginal plug persists for 16-24 hours and may lasts as long as 48 hours." [http://web.jhu.edu/animalcare/procedures/rat.html]
 comment: This is a shortcut annotation that can be expanded to an OWL axiom, or to a set of OWL axioms. The exact translation has yet to be determined, and may be application-dependent.
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
 property_value: has_unit UO:0000033
 is_metadata_tag: true
 
@@ -18065,25 +18403,6 @@ namespace: sheep_stages_ontology
 def: "Count of number of days intervening between the start of the stage and the time of fertilization according to a reference model. Note that the first day of development has the value of 0 for this property." []
 comment: This is a shortcut annotation that can be expanded to an OWL axiom, or to a set of OWL axioms. The exact translation has yet to be determined, and may be application-dependent.
 property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
 is_metadata_tag: true
 
 [Typedef]
@@ -18097,8 +18416,6 @@ namespace: Dvirilis_stages_ontology
 namespace: Dyakuba_stages_ontology
 def: "Count of number of days intervening between the start of the stage and the time of hatching according to a reference model. Note that the first day of post-birth development has the value of 0 for this property, and the period during which the organism is one day old has the value 1." []
 comment: This is a shortcut annotation that can be expanded to an OWL axiom, or to a set of OWL axioms. The exact translation has yet to be determined, and may be application-dependent.
-property_value: has_unit UO:0000033
-property_value: has_unit UO:0000033
 property_value: has_unit UO:0000033
 is_metadata_tag: true
 
@@ -18127,21 +18444,6 @@ def: "Count of number of months intervening between the start of the stage and t
 def: "Count of number of months intervening between the start of the stage and the time of birth according to a reference model. Note that the first month of post-birth development has the value of 0 for this property, and the period during which the organism is one month old has the value 1." []
 comment: This is a shortcut annotation that can be expanded to an OWL axiom, or to a set of OWL axioms. The exact translation has yet to be determined, and may be application-dependent.
 property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
 is_metadata_tag: true
 
 [Typedef]
@@ -18158,13 +18460,6 @@ namespace: sheep_stages_ontology
 def: "Count of number of months intervening between the start of the stage and the time of fertilization according to a reference model. Note that the first month of development has the value of 1 for this property, and the period during which the organism is one month old has the value 1." []
 comment: This is a shortcut annotation that can be expanded to an OWL axiom, or to a set of OWL axioms. The exact translation has yet to be determined, and may be application-dependent.
 property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
 is_metadata_tag: true
 
 [Typedef]
@@ -18174,8 +18469,6 @@ namespace: chicken_stages_ontology
 namespace: lizard_stages_ontology
 def: "Count of number of months intervening between the start of the stage and the time of hatching according to a reference model. Note that the first month of post-birth development has the value of 0 for this property, and the period during which the organism is one month old has the value 1." []
 comment: This is a shortcut annotation that can be expanded to an OWL axiom, or to a set of OWL axioms. The exact translation has yet to be determined, and may be application-dependent.
-property_value: has_unit UO:0000035
-property_value: has_unit UO:0000035
 property_value: has_unit UO:0000035
 is_metadata_tag: true
 
@@ -18191,12 +18484,6 @@ namespace: rat_stages_ontology
 def: "Count of number of weeks intervening between the start of the stage and the time of birth according to a reference model. Note that the first week of post-birth development has the value of 0 for this property, and the period during which the mouse is one week old has the value 1." []
 def: "Count of number of weeks intervening between the start of the stage and the time of birth according to a reference model. Note that the first week of post-birth development has the value of 0 for this property, and the period during which the rat is one week old has the value 1." []
 comment: This is a shortcut annotation that can be expanded to an OWL axiom, or to a set of OWL axioms. The exact translation has yet to be determined, and may be application-dependent.
-property_value: has_unit UO:0000034
-property_value: has_unit UO:0000034
-property_value: has_unit UO:0000034
-property_value: has_unit UO:0000034
-property_value: has_unit UO:0000034
-property_value: has_unit UO:0000034
 property_value: has_unit UO:0000034
 is_metadata_tag: true
 
@@ -18221,19 +18508,6 @@ namespace: sheep_stages_ontology
 def: "Count of number of years intervening between the start of the stage and the time of birth according to a reference model. Note that the first year of post-birth development has the value of 0 for this property, and the period during which the child is one year old has the value 1." []
 comment: This is a shortcut annotation that can be expanded to an OWL axiom, or to a set of OWL axioms. The exact translation has yet to be determined, and may be application-dependent.
 property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
-property_value: has_unit UO:0000036
 is_metadata_tag: true
 
 [Typedef]
@@ -18242,7 +18516,6 @@ name: start, years post hatching
 namespace: pufferfish_stages_ontology
 def: "Count of number of years intervening between the start of the stage and the time of hatching according to a reference model. Note that the first year of post-birth development has the value of 0 for this property, and the period during which the organism is one year old has the value 1." []
 comment: This is a shortcut annotation that can be expanded to an OWL axiom, or to a set of OWL axioms. The exact translation has yet to be determined, and may be application-dependent.
-property_value: has_unit UO:0000036
 property_value: has_unit UO:0000036
 is_metadata_tag: true
 
@@ -18254,54 +18527,6 @@ def: "inverse of starts with" []
 def: "Relation between occurrents, shares a start boundary with." [Allen:starts, https://orcid.org/0000-0002-6601-2165]
 xref: RO:0002223
 is_a: part_of ! part_of
-
-[Typedef]
-id: immediately_preceded_by
-name: immediately preceded by
-namespace: bonobo_stages_ontology
-namespace: cat_stages_ontology
-namespace: cavy_stages_ontology
-namespace: chicken_stages_ontology
-namespace: chimpanzee_stages_ontology
-namespace: cow_stages_ontology
-namespace: Dananassae_stages_ontology
-namespace: Dmojavensis_stages_ontology
-namespace: dog_stages_ontology
-namespace: Dpseudobscura_stages_ontology
-namespace: Dsimulans_stages_ontology
-namespace: Dvirilis_stages_ontology
-namespace: Dyakuba_stages_ontology
-namespace: FlyBase_development_CV
-namespace: gorilla_stages_ontology
-namespace: hedgehog_stages_ontology
-namespace: horse_stages_ontology
-namespace: human_stages_ontology
-namespace: lizard_stages_ontology
-namespace: medaka_ontology
-namespace: mouse_stages_ontology
-namespace: opossum_stages_ontology
-namespace: orangutan_stages_ontology
-namespace: pig_stages_ontology
-namespace: platypus_stages_ontology
-namespace: pufferfish_stages_ontology
-namespace: rabbit_stages_ontology
-namespace: rat_stages_ontology
-namespace: rhesus_macaque_stages_ontology
-namespace: sheep_stages_ontology
-namespace: uberon
-namespace: worm_development
-namespace: zebrafish_anatomical_ontology
-def: "X immediately_preceded_by Y iff: end(X) simultaneous_with start(Y)" []
-comment: X immediately_preceded_by Y iff: end(X) simultaneous_with start(Y)
-synonym: "directly preceded by" EXACT []
-synonym: "is directly preceded by" EXACT []
-synonym: "is immediately preceded by" EXACT [SIO:000251]
-synonym: "preceded_by" EXACT []
-xref: RO:0002087
-property_value: external_definition "A non-transitive temporal relation in which one process immediately precedes another process, such that there is no interval of time between the two processes[SIO:000251]." xsd:string {source="SIO:000251"}
-property_value: IAO:0000117 "David Osumi-Sutherland" xsd:string
-property_value: IAO:0000118 "preceded_by" xsd:string
-is_a: preceded_by ! preceded_by
 
 [Typedef]
 id: structure_notes

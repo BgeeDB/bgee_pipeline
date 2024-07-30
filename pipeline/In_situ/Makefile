@@ -5,8 +5,10 @@ include $(PIPELINEROOT)Makefile.common
 all: $(VERIFICATIONFILE)
 
 get_annot:
-	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations
-	@$(WGET) $(ANNOTATION_GIT_URL)/Strains/StrainMapping.tsv  && $(MV) StrainMapping.tsv $(STRAIN_MAPPING_FILE)
+	@$(GIT) submodule init
+	@$(GIT) submodule update
+	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations submodule
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/Strains/StrainMapping.tsv  $(STRAIN_MAPPING_FILE)
 	@touch $@
 
 
@@ -52,15 +54,23 @@ tsv_mgi: map_mgi $(SOURCE_FILES_DIR)$(DIR_NAME)MouseMine.data
 
 #NOTE it looks there is no strain info
 #TODO It looks to have in situ data in XenMine now but it is extremely slow
-#FIXME issue with FTP passive mode to get GeneExpression_tropicalis.txt
 tsv_xenbase: get_annot
-	# Start in between stages socket
+	# Start in between stages socket for X. tropicalis
 	@$(INBETWEENSTAGES) 8364 $(INBETWEENSTAGESPORT) &
 	# Start anatomy id mapping socket
 	@$(IDMAPPING) $(IDMAPPINGPORT) &
 	@sleep 50
 	# Prepare XenBase tsv for insertion
-	@perl Xenbase/get_in_situ_xenbase.pl -bgee=$(BGEECMD) -Sport=$(INBETWEENSTAGESPORT) -Aport=$(IDMAPPINGPORT) -src_dir=$(SOURCE_FILES_DIR)$(DIR_NAME)  >$@.tmp  2>warnings.$@
+	@perl Xenbase/get_in_situ_xenbase.pl -taxid=8364 -bgee=$(BGEECMD) -Sport=$(INBETWEENSTAGESPORT) -Aport=$(IDMAPPINGPORT) -src_dir=$(SOURCE_FILES_DIR)$(DIR_NAME)  >$@.tmp  2>warnings.$@
+	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
+	#
+	# Start in between stages socket for X. laevis
+	@$(INBETWEENSTAGES) 8355 $(INBETWEENSTAGESPORT) &
+	# Start anatomy id mapping socket
+	@$(IDMAPPING) $(IDMAPPINGPORT) &
+	@sleep 50
+	# Prepare XenBase tsv for insertion
+	@perl Xenbase/get_in_situ_xenbase.pl -taxid=8355 -bgee=$(BGEECMD) -Sport=$(INBETWEENSTAGESPORT) -Aport=$(IDMAPPINGPORT) -src_dir=$(SOURCE_FILES_DIR)$(DIR_NAME) >>$@.tmp 2>>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
@@ -68,9 +78,9 @@ tsv_xenbase: get_annot
 #NOTE it looks there is no strain info, only 'wt' or 'transgenic line'
 data_BDGP: get_annot
 	# Download up-to-date BDGP in situ data
-	@$(WGET) 'http://insitu.fruitfly.org/insitu-mysql-dump/insitu.sql.gz'       -O $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz.tmp       && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz.tmp       $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz.tmp
+	@$(WGET) 'https://insitu.fruitfly.org/insitu-mysql-dump/insitu.sql.gz'       -O $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz.tmp       && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz.tmp       $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz.tmp
 	@$(GUNZIP) $(SOURCE_FILES_DIR)$(DIR_NAME)insitu.sql.gz
-	@$(WGET) 'http://insitu.fruitfly.org/insitu-mysql-dump/insitu_annot.csv.gz' -O $(SOURCE_FILES_DIR)$(DIR_NAME)insitu_annot.csv.gz.tmp && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)insitu_annot.csv.gz.tmp $(SOURCE_FILES_DIR)$(DIR_NAME)insitu_annot.csv.gz 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)insitu_annot.csv.gz.tmp
+	@$(WGET) 'https://insitu.fruitfly.org/insitu-mysql-dump/insitu_annot.csv.gz' -O $(SOURCE_FILES_DIR)$(DIR_NAME)insitu_annot.csv.gz.tmp && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)insitu_annot.csv.gz.tmp $(SOURCE_FILES_DIR)$(DIR_NAME)insitu_annot.csv.gz 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)insitu_annot.csv.gz.tmp
 	@$(GUNZIP) $(SOURCE_FILES_DIR)$(DIR_NAME)insitu_annot.csv.gz
 	# Create BDGP local db
 	@$(MYSQL) -e "DROP DATABASE IF EXISTS bdgp; CREATE DATABASE bdgp CHARACTER SET utf8; SHOW WARNINGS;" > $@.tmp
@@ -102,6 +112,7 @@ tsv_BDGP: map_BDGP $(SOURCE_FILES_DIR)$(DIR_NAME)$(BDGP2FBBT_MAPPING_FILE) $(SOU
 #TODO Data should be extracted from FlyMine in the future!
 	@$(MV) $@.out log.$@
 
+#TODO FlyFish data to add, or already in Flybase/Flymine?
 
 #TODO it looks there is no strain info
 map_flybase: get_annot

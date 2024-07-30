@@ -34,15 +34,17 @@ maintenance: new_annotation
 	@$(MV) $@.tmp $@
 
 get_annot: maintenance
-	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations
-	@$(WGET) $(ANNOTATION_GIT_URL)/Strains/StrainMapping.tsv                && $(MV) StrainMapping.tsv             $(STRAIN_MAPPING_FILE)
-	@$(WGET) $(ANNOTATION_GIT_URL)/Affymetrix/affymetrixChip.tsv            && $(MV) affymetrixChip.tsv            $(AFFY_CHIP_FILEPATH)                  2>/dev/null  || rm -f affymetrixChip.tsv
-	@$(WGET) $(ANNOTATION_GIT_URL)/Affymetrix/chipType.tsv                  && $(MV) chipType.tsv                  $(AFFY_CHIPTYPE_FILEPATH)              2>/dev/null  || rm -f chipType.tsv
-	@$(WGET) $(ANNOTATION_GIT_URL)/Affymetrix/microarrayExperiment.tsv      && $(MV) microarrayExperiment.tsv      $(MICROARRAY_EXPERIMENT_FILEPATH)      2>/dev/null  || rm -f microarrayExperiment.tsv
+	@$(GIT) submodule init
+	@$(GIT) submodule update
+	# Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations submodule
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/Strains/StrainMapping.tsv                 $(STRAIN_MAPPING_FILE)
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/Affymetrix/affymetrixChip.tsv             $(AFFY_CHIP_FILEPATH)
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/Affymetrix/chipType.tsv                   $(AFFY_CHIPTYPE_FILEPATH)
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/Affymetrix/microarrayExperiment.tsv       $(MICROARRAY_EXPERIMENT_FILEPATH)
 # Download wormbase annotation as well. Will be merged with our annotation
-	@$(WGET) $(ANNOTATION_GIT_URL)/Affymetrix/affymetrixChip_worm.tsv       && $(MV) affymetrixChip_worm.tsv       $(AFFY_CHIP_FILEPATH_WORM)             2>/dev/null  || rm -f affymetrixChip_worm.tsv
-	@$(WGET) $(ANNOTATION_GIT_URL)/Affymetrix/chipType_worm.tsv             && $(MV) chipType_worm.tsv             $(AFFY_CHIPTYPE_FILEPATH_WORM)         2>/dev/null  || rm -f chipType_worm.tsv
-	@$(WGET) $(ANNOTATION_GIT_URL)/Affymetrix/microarrayExperiment_worm.tsv && $(MV) microarrayExperiment_worm.tsv $(MICROARRAY_EXPERIMENT_FILEPATH_WORM) 2>/dev/null  || rm -f microarrayExperiment_worm.tsv
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/Affymetrix/affymetrixChip_worm.tsv        $(AFFY_CHIP_FILEPATH_WORM)
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/Affymetrix/chipType_worm.tsv              $(AFFY_CHIPTYPE_FILEPATH_WORM)
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/Affymetrix/microarrayExperiment_worm.tsv  $(MICROARRAY_EXPERIMENT_FILEPATH_WORM)
 	@touch $@
 
 prepare_annot: get_annot

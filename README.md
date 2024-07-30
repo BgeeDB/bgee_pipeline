@@ -1,6 +1,7 @@
-# Pipeline of Bgee release 15.0
+# Pipeline of Bgee release 15.1
 
 [![Twitter](https://img.shields.io/twitter/follow/Bgeedb?style=social&logo=twitter)](https://twitter.com/intent/follow?screen_name=Bgeedb)
+[![Mastodon](https://img.shields.io/mastodon/follow/109308703977124988?style=social&label=Follow%20%40bgeedb&domain=https%3A%2F%2Fgenomic.social)](https://genomic.social/%40bgeedb)
 
 # Bgee pipeline documentation: content
 

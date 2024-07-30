@@ -886,6 +886,41 @@ RnorDv:0000050	Witschi stage 2 (rat)	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
 RnorDv:0000051	Witschi stage 3 (rat)	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F
 RnorDv:0000052	Witschi stage 4 (rat)	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F
 RnorDv:0000053	Witschi stage 5 (rat)	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000008	16-cell stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000009	32-cell stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000010	64-cell stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000011	128-cell stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000013	early blastula stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000014	mid blastula stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000015	late blastula stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000017	early gastrula:10% epiboly (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000018	pre-mid gastrula:30% epiboly (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000019	mid gastrula:50% epiboly (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000020	late gastrula:90% epiboly (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000023	10-somite-stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000024	15-16-somite-stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000025	18-21-somite-stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000026	22-24-somite-stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000027	27-28-somite-stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000028	31-34-somite-stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000029	36-37-somite-stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000030	38-40-somite-stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000031	41-44-somite-stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000032	45-50-somite-stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000033	49-52-somite-stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000034	53-55-somite-stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000035	62-64-somite-stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000036	63-64-somite-stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000037	65-somite-stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000043	fry stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000044	day 0 of fry stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000045	day 1 of fry stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000046	day 48 of fry stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000047	day 65 of fry stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000048	day 77 of fry stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000049	day 94 of fry stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000051	parr stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+SsalDv:0000052	smolt stage (salmon)	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
 SscrDv:0000010	1-week-old stage (pig)	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
 SscrDv:0000011	2-week-old stage (pig)	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
 SscrDv:0000012	3-week-old stage (pig)	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
@@ -960,7 +995,7 @@ SscrDv:0000082	bud limb stage (pig)	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	
 SscrDv:0000083	paddle limb stage (pig)	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
 UBERON:0000066	fully formed stage	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T
 UBERON:0000068	embryo stage	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T
-UBERON:0000069	larval stage	T	T	T	T	T	F	T	T	T	F	F	F	T	F	T	F	T	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
+UBERON:0000069	larval stage	T	T	T	T	T	F	T	T	T	F	F	T	T	F	T	F	T	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
 UBERON:0000070	pupal stage	F	T	T	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
 UBERON:0000092	post-embryonic stage	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T
 UBERON:0000104	life cycle	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T
@@ -969,24 +1004,24 @@ UBERON:0000106	zygote stage	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	
 UBERON:0000107	cleavage stage	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T
 UBERON:0000108	blastula stage	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T
 UBERON:0000109	gastrula stage	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T
-UBERON:0000110	neurula stage	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T
+UBERON:0000110	neurula stage	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T
 UBERON:0000111	organogenesis stage	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T
 UBERON:0000112	sexually immature stage	T	F	F	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T
 UBERON:0000113	post-juvenile	T	F	F	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T
-UBERON:0004707	pharyngula stage	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	F	F	F	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	F	F	T	F	T	T	F	F	T	T	T	T	T	T	T	T	T	T
+UBERON:0004707	pharyngula stage	T	F	T	T	T	T	T	T	T	T	T	F	T	T	T	T	F	F	F	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	F	F	T	F	T	T	F	F	T	T	T	T	T	T	T	T	T	T
 UBERON:0004728	amphibian larval stage	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	T	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
 UBERON:0004729	nematode larval stage	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
 UBERON:0004730	instar larval stage	F	T	T	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
 UBERON:0007220	late embryonic stage	T	T	T	T	T	T	T	T	F	T	T	T	T	T	T	T	F	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T
 UBERON:0007221	neonate stage	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	T	T	T	T	T	T	F	T	F	F	T	F	F
-UBERON:0007222	late adult stage	F	F	F	F	T	T	T	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T
+UBERON:0007222	late adult stage	F	F	F	F	T	T	T	T	F	T	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T
 UBERON:0007232	2 cell stage	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	T	F	T	F	T	T	F	F	T	T	T	T	T	T	T	T	T	T
 UBERON:0007233	4 cell stage	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	T	F	T	F	T	T	F	F	T	T	T	T	T	T	T	T	T	T
 UBERON:0007236	8 cell stage	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	T	F	T	F	T	T	F	F	T	T	T	T	T	T	T	T	T	T
 UBERON:0009849	tadpole stage	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	T	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F
-UBERON:0018241	prime adult stage	F	F	F	F	T	T	T	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T
+UBERON:0018241	prime adult stage	F	F	F	F	T	T	T	T	F	T	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T
 UBERON:0018685	nursing stage	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	T	T	T	T	T	T	F	T	F	F	T	F	F
-UBERON:0034919	juvenile stage	F	F	F	F	F	F	T	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T
+UBERON:0034919	juvenile stage	F	F	F	F	F	F	T	T	F	T	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T
 UBERON:0034920	infant stage	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	T	F	T	T	T	T	T	T	T	T	T	F	T	F	F	T	F	F
 UBERON:0035946	start of neonate stage	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	T	T	T	T	T	T	T	T	T	T	T	T	T	T	F	F	T	T	T	T	T	T	T	T	T	F	T	F	F	T	F	F
 WBls:0000009	28-cell embryo Ce (C. elegans)	T	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F

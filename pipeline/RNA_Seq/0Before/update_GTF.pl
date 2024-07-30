@@ -7,17 +7,17 @@
 # modifications to the gtf file are :
 #- delete empty transcript_id "" attribute : in ensembl transcript_id attribut is not present for gene feature. This attribute is present in ncbi gene feature with an empty value. It has to be removed otherwise gffread and gtf_to_fasta detect the line as transcript info and generate the sequence for the full gene.
 #- delete line when transcript_id attribute is associated to value "unknown_transcript_1". As for Bgee 15 unknown transcript ids are always tag with unknown_transcript_1. they can be correspond to transcript
-#    1) "tRNA" or "rRNA" 
+#    1) "tRNA" or "rRNA"
 #    2) linked to the exception "rearrangement required for product" (ebi.ac.uk/ena/WebFeat/qualifiers/exception.html)
 #    3) created using The Vertebrate Mitochondrial Code (transl_table=2)
 #- add gene_biotype attribute at the end of lines corresponding to exon: in RefSeq gtf gene_biotype attribute is only present in the gene lines. Those lines are not kept in the gtf_all file generated later in the pipeline. It is then mandatory to add this info to exon lines (in order to be able to retrieve the mapping between gene and biotypes)
-#- create gene_name and change value of gene_id : in ncbi gtf files gene_id are actually names that are probably not unique and contain shity characters (e.g. '). 
-#    1) create an attribute gene_name with the value of gene_id 
+#- create gene_name and change value of gene_id : in ncbi gtf files gene_id are actually names that are probably not unique and contain shity characters (e.g. ').
+#    1) create an attribute gene_name with the value of gene_id
 #    2) remove gene_id attribute and create a new one with dbxref value
 #- delete genes with a duplicated "dbxref GeneID:..." attribute. Some genes are duplicated. They have a different gene_id but the same "dbxref GeneID:...".
 #    The name of all duplicated genes follow the pattern geneName, geneName_1, geneName_2, .....
 #    NCBI only integrates genes without the pattern "_number". We decided to do the same in order to be able to integrate these species in Bgee.
-#    NOTE from https://ftp.ncbi.nlm.nih.gov/genomes/README_GFF3.txt : 
+#    NOTE from https://ftp.ncbi.nlm.nih.gov/genomes/README_GFF3.txt :
 # There may be multiple gene features on a single assembly annotated with the same GeneID dbxref because they are considered to be different parts or alleles of the same gene. In these cases, it's possible for the gene features to be annotated with different gene_biotype values, such as protein_coding and transcribed_pseudogene or protein_coding and other."
 
 
@@ -36,7 +36,7 @@ use Data::Dumper;
 ## Define arguments & their default value
 my ($path_to_gtf_folder, $sample_info_file) = ('','');
 my %opts = ('path_to_gtf_folder=s'    => \$path_to_gtf_folder,
-            'sample_info_file=s'      => \$sample_info_file  
+            'sample_info_file=s'      => \$sample_info_file
            );
 
 
@@ -82,7 +82,7 @@ foreach my $key (keys %ref_seq_path) {
     print "parse file $file\n";
     #create temp file where updated GTF will be store
     my $tempFile = "$path_to_gtf_folder/temp.gtf";
-    
+
     #preliminary read of gtf file to check that gtf file was not already updated
     open(my $IN, "gunzip -c $file |") || die "can’t open pipe to $file";
     my $already_modified = 0;

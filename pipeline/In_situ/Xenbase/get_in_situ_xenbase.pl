@@ -23,26 +23,44 @@ $| = 1;
 my ($bgee_connector)  = ('');
 my ($Sport, $Aport)   = (0, 0);
 my ($debug, $src_dir) = (0, '');
+my ($taxid)           = (0);
 my %opts = ('debug'     => \$debug,            # more verbose
             'bgee=s'    => \$bgee_connector,   # Bgee connector string
             'Sport=i'   => \$Sport,            # Stage mapper socket port
             'Aport=i'   => \$Aport,            # Anatomy mapper socket port
             'src_dir=s' => \$src_dir,          # source_files/ path
+            'taxid=i'   => \$taxid,            # Taxid of X. tropicalis or X. laevis
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $bgee_connector eq '' || $Sport == 0 || $Aport == 0 ){
     print "\n\tInvalid or missing argument:
-\te.g. $0 -bgee=\$(BGEECMD) -Sport=\$(INBETWEENSTAGESPORT) -Aport=\$(IDMAPPINGPORT) -src_dir=\$(SOURCE_FILES_DIR)\$(DIR_NAME)
+\te.g. $0 -bgee=\$(BGEECMD) -Sport=\$(INBETWEENSTAGESPORT) -Aport=\$(IDMAPPINGPORT) -src_dir=\$(SOURCE_FILES_DIR)\$(DIR_NAME) -taxid=<TAXID>
 \t-bgee      Bgee    connector string
 \t-Sport     Stage   mapper socket port
 \t-Aport     Anatomy mapper socket port
 \t-src_dir   source_files/ path
+\t-taxid     Taxid of X. tropicalis or X. laevis
 \t-debug     More verbose
 \n";
     exit 1;
 }
+
+
+if ( $taxid == 0 ){
+    warn "The option  -taxid  is mandatory\n";
+    exit 1;
+}
+if ( $taxid != 8364 && $taxid != 8355 ){
+    warn "Only Xenopus species taxid in Bgee are allowed\n";
+    exit 1;
+}
+
+my %taxon = (8364 => 'GeneExpression_tropicalis.txt',
+             8355 => 'GeneExpression_laevis.txt',
+            );
+
 
 # Bgee db connection
 my $dbh = Utils::connect_bgee_db($bgee_connector);
@@ -62,14 +80,15 @@ $selSrc->finish;
 die "Data source Xenbase not found \n"  if ( !defined $data_source_id );
 
 my %ensembl_gene;
-my $retrieveEnsembl = $dbh->prepare('SELECT g.geneId, x.XRefId FROM geneXRef x, gene g WHERE x.dataSourceId = ? AND x.bgeeGeneId = g.bgeeGeneId AND g.speciesId=8364');
-$retrieveEnsembl->execute($data_source_id)  or die $retrieveEnsembl->errstr;
+my $retrieveEnsembl = $dbh->prepare('SELECT g.geneId, x.XRefId FROM geneXRef x, gene g WHERE x.dataSourceId = ? AND x.bgeeGeneId = g.bgeeGeneId AND g.speciesId=?');
+$retrieveEnsembl->execute($data_source_id, $taxid)  or die $retrieveEnsembl->errstr;
 while ( my @data = $retrieveEnsembl->fetchrow_array ){
     #xenbase ID -> Ensembl ID
     $ensembl_gene{$data[1]} = $data[0];
 }
 $retrieveEnsembl->finish;
 
+#TODO also for X. laevis!!!!
 print "Reading remote files...\n"  if ( $debug );
 print "\tGeneExpression_tropicalis.txt (can be long)\n"  if ( $debug );
 my $pattern_id = 1;
@@ -77,19 +96,19 @@ my %experiments;
 my %patterns;
 
 # all expression data for xenopus tropicalis
-my $statusCode = mirror('ftp://ftp.xenbase.org/pub/GenePageReports/GeneExpression_tropicalis.txt', "$src_dir/GeneExpression_tropicalis.txt");
+my $statusCode = mirror("https://ftp.xenbase.org/pub/GenePageReports/$taxon{$taxid}", "$src_dir/$taxon{$taxid}");
 if ( $statusCode != 200 && $statusCode != 304 ){ # OKs & Not Modified
-    die "Couldn't get file [GeneExpression_tropicalis.txt]!\n";
+    die "Couldn't get file [$taxon{$taxid}]!\n";
 }
 
 #NOTE No more XAO:\d+ in anatomy or stage terms !
-system("perl -i -pe 's/XAO([0-9]{7,})/XAO:\$1/g; s/,([0-9]{7,})/,XAO:\$1/g' $src_dir/GeneExpression_tropicalis.txt");
+system("perl -i -pe 's/XAO([0-9]{7,})/XAO:\$1/g; s/,([0-9]{7,})/,XAO:\$1/g' $src_dir/$taxon{$taxid}");
 
 
 # Get all start-end stages
 my @Stages;
 my @Anat;
-for my $line ( read_file("$src_dir/GeneExpression_tropicalis.txt", chomp=>1) ){
+for my $line ( read_file("$src_dir/$taxon{$taxid}", chomp=>1) ){
     my @tmp = split("\t", $line);
     next  if ( lc($tmp[6]) ne 'in situ hybridization' );
     next  if ( lc($tmp[2]) ne 'wild type' );
@@ -125,7 +144,7 @@ for my $line ( read_file("$src_dir/GeneExpression_tropicalis.txt", chomp=>1) ){
         if ( $tmp3[0] !~ /^XAO:/ && $tmp3[0] =~ /^\d{7}$/ ){
             $tmp3[0] = 'XAO:'.$tmp3[0];
         }
-        # XAO:0000059 is obsolete but may be used in ftp://ftp.xenbase.org/pub/GenePageReports/GeneExpression_tropicalis.txt  should be replaced by XAO:0002000
+        # XAO:0000059 is obsolete but may be used in  GeneExpression_*.txt  should be replaced by XAO:0002000
         $tmp3[0] =~ s{XAO:0000059}{XAO:0002000}  if ( $tmp3[0]     eq 'XAO:0000059' );
         $tmp3[0] = 'XAO:0003003'                 if ( lc($tmp3[0]) eq 'unspecified' );
         push @Anat, $tmp3[0];
@@ -136,7 +155,7 @@ my $doneAnat   = Utils::get_anatomy_mapping(\@Anat,     $Aport);
 
 
 SPOT:
-for my $line ( read_file("$src_dir/GeneExpression_tropicalis.txt", chomp=>1) ){
+for my $line ( read_file("$src_dir/$taxon{$taxid}", chomp=>1) ){
     my @tmp = split("\t", $line);
 
     # Conditions:
@@ -153,8 +172,9 @@ for my $line ( read_file("$src_dir/GeneExpression_tropicalis.txt", chomp=>1) ){
     # split field 4 using comma
     my %organs;
     for my $couple ( split(',', $tmp[3]) ){
+        next  if ( $couple =~ /^ / ); #NOTE avoid "fake" organs after split e.g. XAO:0000224 vegetal part**, early** involuting
         my @tmp3 = split(' ', $couple);
-        # XAO:0000059 is obsolete but may be used in ftp://ftp.xenbase.org/pub/GenePageReports/GeneExpression_tropicalis.txt  should be replaced by XAO:0002000
+        # XAO:0000059 is obsolete but may be used in  GeneExpression_*.txt  should be replaced by XAO:0002000
         $tmp3[0] =~ s{XAO:0000059}{XAO:0002000}  if ( $tmp3[0]     eq 'XAO:0000059' );
         $tmp3[0] = 'XAO:0003003'                 if ( lc($tmp3[0]) eq 'unspecified' );
         my $mapped_organ = $doneAnat->{$tmp3[0]} || '';
@@ -206,6 +226,10 @@ for my $line ( read_file("$src_dir/GeneExpression_tropicalis.txt", chomp=>1) ){
 
     my $experiment = $tmp[8];
     my $evidence   = $tmp[7];
+    if ( $evidence eq '' ){
+        warn "No evidence ID (image ID) for [$tmp[0]]\n";
+        next SPOT;
+    }
     if ( defined $tmp[10] ){
         $experiments{$experiment} = $tmp[10] eq 'XB-ART-' ? '' : $tmp[10];
     }
@@ -256,7 +280,7 @@ for my $pattern ( keys %patterns ){
                              'present',
                              'high quality',
                              $experiments{ $patterns{$pattern}->{'experiment'} },
-                             8364,
+                             $taxid,
                              $patterns{$pattern}->{'strain'} eq 'wild type' ? $Utils::WILD_TYPE_STRAIN : $patterns{$pattern}->{'strain'},
                              $patterns{$pattern}->{'sex'},
                              '',

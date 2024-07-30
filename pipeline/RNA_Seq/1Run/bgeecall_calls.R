@@ -39,7 +39,7 @@ if(libraries>1000) {
 }
 #specific to UNIL clusters: load R module
 #TODO: Maybe load kallisto from UNIL modules
-modules <- c("module add Bioinformatics/Software/vital-it;", "module add R/3.6.1;", "module add UHTS/Analysis/kallisto/0.46.0;")
+modules <- c("module use /software/module/;", "module add R/3.6.1;", "module add UHTS/Analysis/kallisto/0.46.0;")
 #generate BgeeCall objects
 encrypted_pattern <- paste0("<(cat FASTQ_PATH | openssl enc -aes-128-cbc -d -pass file:", decrypt_file_path, ")")
 kallistoMetadata <- new("KallistoMetadata", download_kallisto=FALSE)

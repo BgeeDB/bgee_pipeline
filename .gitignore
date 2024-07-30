@@ -70,3 +70,11 @@ pipeline/SPARQL-RDF/bgee_connection.properties
 .Rproj.user
 *.Rproj
 
+######################
+# Python related files
+######################
+*__pycache__/
+*.py[cod]
+*$py.class
+*.lock
+

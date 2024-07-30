@@ -1,0 +1,15 @@
+WARNING: sun.reflect.Reflection.getCallerClass is not supported. This will impact performance.
+09:58:21.015 [main] INFO org.bgee.pipeline.easybgee.BgeeToEasyBgee 945 tsvToEasyBgee - start integration of data from file species_easy_bgee.tsv
+09:58:21.024 [main] INFO org.bgee.pipeline.easybgee.BgeeToEasyBgee 958 tsvToEasyBgee - SQL query : INSERT INTO species (speciesId, genus, species, speciesCommonName, genomeVersion, genomeAssemblyXRef, genomeSpeciesId) VALUES (?, ?, ?, ?, ?, ?, ?)
+09:58:21.221 [main] INFO org.bgee.pipeline.easybgee.BgeeToEasyBgee 945 tsvToEasyBgee - start integration of data from file genes_easy_bgee.tsv
+09:58:21.222 [main] INFO org.bgee.pipeline.easybgee.BgeeToEasyBgee 958 tsvToEasyBgee - SQL query : INSERT INTO gene (bgeeGeneId, geneId, geneName, geneDescription, speciesId) VALUES (?, ?, ?, ?, ?)
+10:01:06.715 [main] INFO org.bgee.pipeline.easybgee.BgeeToEasyBgee 945 tsvToEasyBgee - start integration of data from file gene_xrefs_easy_bgee.tsv
+10:01:06.717 [main] INFO org.bgee.pipeline.easybgee.BgeeToEasyBgee 958 tsvToEasyBgee - SQL query : INSERT INTO geneXRef (bgeeGeneId, XRefUrl, dataSourceName) VALUES (?, ?, ?)
+10:10:31.450 [main] INFO org.bgee.pipeline.easybgee.BgeeToEasyBgee 945 tsvToEasyBgee - start integration of data from file anat_entities_easy_bgee.tsv
+10:10:31.453 [main] INFO org.bgee.pipeline.easybgee.BgeeToEasyBgee 958 tsvToEasyBgee - SQL query : INSERT INTO anatEntity (anatEntityId, anatEntityName, anatEntityDescription) VALUES (?, ?, ?)
+10:10:34.976 [main] INFO org.bgee.pipeline.easybgee.BgeeToEasyBgee 945 tsvToEasyBgee - start integration of data from file dev_stages_easy_bgee.tsv
+10:10:34.977 [main] INFO org.bgee.pipeline.easybgee.BgeeToEasyBgee 958 tsvToEasyBgee - SQL query : INSERT INTO stage (stageId, stageName, stageDescription) VALUES (?, ?, ?)
+10:10:35.109 [main] INFO org.bgee.pipeline.easybgee.BgeeToEasyBgee 945 tsvToEasyBgee - start integration of data from file global_cond_easy_bgee.tsv
+10:10:35.110 [main] INFO org.bgee.pipeline.easybgee.BgeeToEasyBgee 958 tsvToEasyBgee - SQL query : INSERT INTO globalCond (globalConditionId, anatEntityId, stageId, cellTypeId, sex, strain, speciesId) VALUES (?, ?, ?, ?, ?, ?, ?)
+10:10:49.821 [main] INFO org.bgee.pipeline.easybgee.BgeeToEasyBgee 945 tsvToEasyBgee - start integration of data from file global_expression_easy_bgee.tsv
+10:10:49.824 [main] INFO org.bgee.pipeline.easybgee.BgeeToEasyBgee 958 tsvToEasyBgee - SQL query : INSERT INTO globalExpression (bgeeGeneId, globalConditionId, summaryQuality, globalRank, score, pValue, propagationOrigin, callType) VALUES (?, ?, ?, ?, ?, ?, ?, ?)

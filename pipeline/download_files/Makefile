@@ -129,6 +129,7 @@ MULTI_SPE_CAT_TO_FILE_NAME_PATTERN := $(ORTHOLOG_CAT)$(KEY_VAL_SEP)$(ORTHOLOGS_P
 # Variables to create specific files
 ###########
 ORGAN_PARAM := ANAT_ENTITY_ID
+CELLTYPE_PARAM := CELL_TYPE_ID
 STAGE_PARAM := DEV_STAGE_ID
 SEX_PARAM := SEX_ID
 STRAIN_PARAM := STRAIN_ID
@@ -142,7 +143,7 @@ ALL_COND_PARAM := $(ORGAN_PARAM)$(ENTRY_SEP)$(STAGE_PARAM)$(ENTRY_SEP)$(SEX_PARA
 # Processed data download files
 # =========================
 $(OUTPUT_DIR)generate_processed_files:
-	@perl generate_ref_expr_files.pl -bgee=$(BGEECMD) -speciesArg=- -affyDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)affymetrix/ -estDir=- -inSituDir=- -rnaSeqDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)rna_seq_processed/ -flScRnaSeqDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)sc_rna_seq_fl_processed/ -bgeeVersion=$(DBNAME) > $@.tmp 2>$@.warnings
+	@perl generate_ref_expr_files.pl -bgee=$(BGEECMD) -speciesArg=- -parallelJobs=5 -affyDir=- -estDir=- -inSituDir=- -rnaSeqDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)rna_seq_processed/ -flScRnaSeqDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)sc_rna_seq_fl_processed/ -dbScRnaSeqDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)sc_rna_seq_db_processed/ -bgeeVersion=$(DBNAME) > $@.tmp 2>$@.warnings
 	@$(MV) $@.tmp $@
 
 # =========================
@@ -150,12 +151,27 @@ $(OUTPUT_DIR)generate_processed_files:
 # =========================
 #TODO remove usage of each ID and use variable.
 $(OUTPUT_DIR)generate_anatomy_call_files:
-	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)  GenerateBasicExprFile $(EMPTY_LIST) $(EXPR_SIMPLE_CAT)$(ENTRY_SEP)$(EXPR_COMPLETE_CAT) $(DOWNLOAD_FILE_ROOT_PATH)$(EXPR_CALLS_PATH) $(ORGAN_PARAM) 100 > $@.tmp 2>$@.warnings
+	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=10 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)  GenerateBasicExprFile $(EMPTY_LIST) $(EXPR_SIMPLE_CAT)$(ENTRY_SEP)$(EXPR_COMPLETE_CAT) $(DOWNLOAD_FILE_ROOT_PATH)$(EXPR_CALLS_PATH) $(ORGAN_PARAM) 100 > $@.tmp 2>$@.warnings
 	@$(MV) $@.tmp $@
 
 $(OUTPUT_DIR)generate_all_cond_params_call_files:
-	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=9 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)  GenerateBasicExprFile $(ENPTY_LIST) $(EXPR_SIMPLE_CAT)$(ENTRY_SEP)$(EXPR_COMPLETE_CAT) $(DOWNLOAD_FILE_ROOT_PATH)$(EXPR_CALLS_PATH) $(ALL_COND_PARAM) 30 > $@.tmp 2>$@.warnings
+	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=10 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)  GenerateBasicExprFile - $(EXPR_SIMPLE_CAT) $(DOWNLOAD_FILE_ROOT_PATH)$(EXPR_CALLS_PATH) $(ALL_COND_PARAM) 30 > $@.tmp 2>$@.warnings
 	@$(MV) $@.tmp $@
+
+# The file is generated to retrieve species information from the database. Until Bgee 15.2 the R package was querying the Java API to retrieve that info.
+# Since Bgee 15.2 we added droplet based data. As in the Java API we do not distinguish between full length and droplet based single cell data (they are
+# both considered single cell), we had either to create a new datatype EnumSet specific to the download file (called DownloadFileDatatypes) or to generate
+# a file available on the FTP containing all the information required (list of species, datatypes available for each species). We decided to go to the direction
+# of a file because it was less time consuming and we wanted the R package to be able to download single cell processed expression values and h5ad as soon as
+# possible.
+#TODO: In the future it would be cleaner to avoid generation of files (species file generated here and release_vX.tsv file) and always query the Java API.
+$(OUTPUT_DIR)bgeeDBRpackageSpeciesFile:
+	@$(MYSQL) -e "select t1.speciesId AS \`ID\`, t1.genus AS \`GENUS\`, t1.species AS \`SPECIES_NAME\`, t1.speciesCommonName AS \`COMMON_NAME\`, IF( EXISTS( select 1 from affymetrixChip as t2 inner join cond as t3 on t2.conditionId = t3.conditionId where t3.speciesId = t1.speciesId limit 1), 'T', 'F') AS \`AFFYMETRIX\`, IF( EXISTS( select 1 from estLibrary as t2 inner join cond as t3 on t2.conditionId = t3.conditionId where t3.speciesId = t1.speciesId limit 1), 'T', 'F') AS \`EST\`, IF( EXISTS( select 1 from inSituSpot as t2 inner join cond as t3 on t2.conditionId = t3.conditionId where t3.speciesId = t1.speciesId limit 1), 'T', 'F') AS \`IN_SITU\`, IF( EXISTS( select 1 from rnaSeqLibraryAnnotatedSample as t2 inner join cond as t3 on t2.conditionId = t3.conditionId inner join rnaSeqLibrary AS t4 ON t2.rnaSeqLibraryId = t4.rnaSeqLibraryId where t3.speciesId = t1.speciesId AND t4.rnaSeqTechnologyIsSingleCell = 0 limit 1), 'T', 'F') AS \`RNA_SEQ\`, IF( EXISTS( select 1 from rnaSeqLibraryAnnotatedSample as t2 inner join cond as t3 on t2.conditionId = t3.conditionId inner join rnaSeqLibrary AS t4 ON t2.rnaSeqLibraryId = t4.rnaSeqLibraryId where t3.speciesId = t1.speciesId AND t4.rnaSeqTechnologyIsSingleCell = 1 AND t2.multipleLibraryIndividualSample = 0 limit 1), 'T', 'F') AS \`SC_FULL_LENGTH\`, IF( EXISTS( select 1 from rnaSeqLibraryAnnotatedSample as t2 inner join cond as t3 on t2.conditionId = t3.conditionId inner join rnaSeqLibrary AS t4 ON t2.rnaSeqLibraryId = t4.rnaSeqLibraryId where t3.speciesId = t1.speciesId AND t4.rnaSeqTechnologyIsSingleCell = 1 AND t2.multipleLibraryIndividualSample = 1 limit 1), 'T', 'F') AS \`SC_DROPLET_BASED\` from species AS t1 group by ID" > $(R_SPECIES_INFO) 2> $@.warnings
+	@echo -e "\n\n\n\n\n" >> $(R_SPECIES_INFO)
+	@touch $@
+# commented as it requires sshpass that is not installed on all servers. Either install sshpass everywhere or continue to manually move files to the ftp
+#@scp -r $(R_SPECIES_INFO) $(FTPUSER):$(FTPPASS)@$(FTP_URL):$(FTP_CURRENT) > $@.tmp 2>> $@.warnings
+#@$(MV) $@.tmp $@
 
 #TODO check it, not used because of usage of different servers
 $(OUTPUT_DIR)gzip_call_files:
@@ -166,11 +182,11 @@ $(OUTPUT_DIR)gzip_call_files:
 # =========================
 #TODO add $(OUTPUT_DIR)gzip_call_files
 #TODO instead of using insert_download_file_info.sql to insert data into downloadFile table, fix InsertSpeciesDataGroups
-$(OUTPUT_DIR)insert_download_files_info: $(OUTPUT_DIR)generate_processed_files $(OUTPUT_DIR)generate_anatomy_call_files $(OUTPUT_DIR)generate_anatomy_development_call_files
+$(OUTPUT_DIR)insert_download_files_info: $(OUTPUT_DIR)generate_processed_files $(OUTPUT_DIR)generate_anatomy_call_files $(OUTPUT_DIR)generate_all_cond_params_call_files
 	#insert information about species data groups
 	@$(MYSQL) < insert_download_file_info.sql > $@.tmp 2>$@.warnings
 	#insert information about download files
-	@perl insert_download_file_info.pl -bgee=$(BGEE_CMD) -processed_dir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH) -calls_dir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH) > $@.tmp 2>$@.warnings
+	@perl insert_download_file_info.pl -bgee=$(BGEECMD) -processed_dir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH) -calls_dir=$(DOWNLOAD_FILE_ROOT_PATH)$(CALLS_PATH) --h5ad_dir=$(DOWNLOAD_FILE_ROOT_PATH)$(H5AD_PATH)> $@.tmp 2>$@.warnings
 	@$(MYSQL) -e "SELECT (SELECT COUNT(*) FROM speciesDataGroup) as \`data group count\`, (SELECT COUNT(distinct speciesId) FROM speciesToDataGroup) as \`species in data group count\`, (SELECT COUNT(*) FROM downloadFile) as \`download file count\`" >> $@.tmp 2>>$@.warnings
 	@$(MV) $@.tmp $@
 
@@ -213,7 +229,7 @@ XREF_FILE := $(OUTPUT_DIR)XRefBgee.txt
 
 XREF_SQL_QUERY := SELECT DISTINCT t1.XRefId as uniprotId, uniqueMapping.uniqueGeneId as geneId, uniqueMapping.speciesId as speciesId FROM geneXRef AS t1 INNER JOIN (SELECT t1.XRefId, (SELECT t4.geneId FROM geneXRef AS t2 INNER JOIN gene AS t4 ON t2.bgeeGeneId = t4.bgeeGeneId WHERE t2.XRefId = t1.XRefId AND EXISTS (SELECT 1 FROM expression as t3 WHERE t3.bgeeGeneId = t2.bgeeGeneId) ORDER BY t4.geneId LIMIT 1) AS uniqueGeneId, (SELECT t4.speciesId FROM geneXRef AS t2 INNER JOIN gene AS t4 ON t2.bgeeGeneId = t4.bgeeGeneId WHERE t2.XRefId = t1.XRefId AND EXISTS (SELECT 1 FROM expression as t3 WHERE t3.bgeeGeneId = t2.bgeeGeneId) ORDER BY t4.geneId LIMIT 1) AS speciesId  FROM geneXRef AS t1) AS uniqueMapping ON t1.XRefId = uniqueMapping.XRefId WHERE t1.dataSourceId IN ($(TREMBL_ID), $(SWISSPROT_ID)) AND t1.XRefId IS NOT NULL AND t1.XRefId != '' AND t1.XRefId NOT LIKE '%\_%' AND uniqueMapping.uniqueGeneId IS NOT NULL ORDER BY uniqueMapping.uniqueGeneId, t1.XRefId;
 
-WIKIDATA_UBERON_IDS := "https://bgee.org/sparql/?default-graph-uri=&query=%23%23%23%23%23%23%0D%0A%23%23+Wikidata+SPARQL+query+to+get+UBERON+ids.%0D%0A%23%23%23%23%23%23%0D%0APREFIX+wd%3A+%3Chttp%3A%2F%2Fwww.wikidata.org%2Fentity%2F%3E%0D%0APREFIX+wdt%3A+%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Fdirect%2F%3E%0D%0APREFIX+p%3A+%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2F%3E%0D%0APREFIX+pr%3A+%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Freference%2F%3E%0D%0APREFIX+prov%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fprov%23%3E%0D%0A%0D%0ASELECT+DISTINCT+%3Fuberon_id_prefixed%0D%0AWHERE+%0D%0A%7Bservice%3Chttps%3A%2F%2Fquery.wikidata.org%2Fbigdata%2Fnamespace%2Fwdq%2Fsparql%3E%7B%0D%0A++%7B%3Fitem+wdt%3AP1554+%3Fuberon_id.%0D%0A+++BIND%28CONCAT%28STR%28%22UBERON%3A%22%29%2CSTR%28%3Fuberon_id%29%29+as+%3Fuberon_id_prefixed%29+%7D%0D%0A++UNION%0D%0A+++%7B%0D%0A++++%3Fitem+wdt%3AP7963+%3Fonto_cl_id%0D%0A++++BIND%28REPLACE%28STR%28%3Fonto_cl_id%29%2C%22_%22%2C%22%3A%22%29+as+%3Fuberon_id_prefixed%29+%0D%0A+%7D+%7D%7D%0D%0A&should-sponge=&format=text%2Fcsv&timeout=0&debug=on&run=+Run+Query+"
+WIKIDATA_UBERON_IDS := "https://www.bgee.org/sparql/?default-graph-uri=&query=%23%23%23%23%23%23%0D%0A%23%23+Wikidata+SPARQL+query+to+get+UBERON+ids.%0D%0A%23%23%23%23%23%23%0D%0APREFIX+wd%3A+%3Chttp%3A%2F%2Fwww.wikidata.org%2Fentity%2F%3E%0D%0APREFIX+wdt%3A+%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Fdirect%2F%3E%0D%0APREFIX+p%3A+%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2F%3E%0D%0APREFIX+pr%3A+%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Freference%2F%3E%0D%0APREFIX+prov%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fprov%23%3E%0D%0A%0D%0ASELECT+DISTINCT+%3Fuberon_id_prefixed%0D%0AWHERE+%0D%0A%7Bservice%3Chttps%3A%2F%2Fquery.wikidata.org%2Fbigdata%2Fnamespace%2Fwdq%2Fsparql%3E%7B%0D%0A++%7B%3Fitem+wdt%3AP1554+%3Fuberon_id.%0D%0A+++BIND%28CONCAT%28STR%28%22UBERON%3A%22%29%2CSTR%28%3Fuberon_id%29%29+as+%3Fuberon_id_prefixed%29+%7D%0D%0A++UNION%0D%0A+++%7B%0D%0A++++%3Fitem+wdt%3AP7963+%3Fonto_cl_id%0D%0A++++BIND%28REPLACE%28STR%28%3Fonto_cl_id%29%2C%22_%22%2C%22%3A%22%29+as+%3Fuberon_id_prefixed%29+%0D%0A+%7D+%7D%7D%0D%0A&should-sponge=&format=text%2Fcsv&timeout=0&debug=on&run=+Run+Query+"
 
 UBERON_WIKIDATA_FILE_PATH := $(OUTPUT_DIR)uberon_wikidata.txt
 
@@ -222,9 +238,9 @@ XREFS_TO_GENERATE := WIKIDATA,UNIPROT,GENE_CARDS
 ##TODO Remove the XREF_SQL_QUERY query and implement all steps of uniprot XRef generation in Java
 #Generate XRefs for different datasources. As for Bgee 15.0 these datasources are uniprot, genecards and wikidata
 $(OUTPUT_DIR)generate_xrefs: 
-	#@$(MYSQL) -e "$(XREF_SQL_QUERY)" > $(XREF_FILE).tmp 2>$@.warnings
+	@$(MYSQL) -e "$(XREF_SQL_QUERY)" > $(XREF_FILE).tmp 2>$@.warnings
 	@$(WGET) -O $(UBERON_WIKIDATA_FILE_PATH) $(WIKIDATA_UBERON_IDS) > $@.temp 2> $@.warnings
-	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR) GenerateXRefs $(XREF_FILE).tmp /var/lib/mysql/tmp/xrefs/ $(UBERON_WIKIDATA_FILE_PATH) $(XREFS_TO_GENERATE) > $@.temp 2> $@.warnings
+	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.bgee.core.version.minor=$(MINOR_RELEASE) -Dorg.bgee.core.version.major=$(MAJOR_RELEASE) -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR) GenerateXRefs $(XREF_FILE).tmp $(XREFS_PATH) $(UBERON_WIKIDATA_FILE_PATH) $(XREFS_TO_GENERATE) > $@.temp 2> $@.warnings
 	# create a verification file
 	# First, we display the targeted data sources, so that we can detect 
 	# incorrect data source IDs used (TREMBL_ID and SWISSPROT_ID)

@@ -1,0 +1,39 @@
+## BgeePipeline*.sif    is the built image
+## BgeePipeline*.def    is the Singularity definition file, with the commands used to build the image
+
+# Build Singularity image
+#NOTE build-date is builtin
+export RELEASE=15.1
+sudo singularity build BgeePipeline-${RELEASE}-1.sif BgeePipeline.def 2>&1 >BgeePipeline.singularity.log
+
+
+# Inspect image (labels, ...)
+singularity inspect   BgeePipeline-${RELEASE}-1.sif
+
+# Run image help message
+singularity run-help  BgeePipeline-${RELEASE}-1.sif
+
+# Run image test run (if any)
+singularity run       BgeePipeline-${RELEASE}-1.sif
+
+# Run bash in the Singularity image
+singularity shell     BgeePipeline-${RELEASE}-1.sif
+
+
+# Execute image
+singularity exec      BgeePipeline-${RELEASE}-1.sif <commands>
+e.g. singularity exec BgeePipeline-${RELEASE}-1.sif R
+
+
+# Import docker image/container
+#from docker hub:
+singularity pull docker://user/image_name:version
+#From docker locally (https://github.com/hpcng/singularity/issues/4734)
+singularity pull docker-daemon:image_name:version
+
+
+####### Container Security
+
+####### Signing and Verifying Containers
+#NOTE available in Singularity 3+ only!
+

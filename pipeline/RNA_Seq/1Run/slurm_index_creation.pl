@@ -63,7 +63,7 @@ while (my $file = readdir(DIR)) {
 		next if (-e $short_transcriptome_index_path && -e $transcriptome_index_path);
 
 		# load vital-it softwares
-		my $sbatch_commands = "module add Bioinformatics/Software/vital-it\n";
+		my $sbatch_commands = "module use /software/module/\n";
 
 		# generate transcriptome with all intergenic sequences
 		if (!-e $transcriptome_file_path) {

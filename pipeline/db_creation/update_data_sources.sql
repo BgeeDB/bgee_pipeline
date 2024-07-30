@@ -41,9 +41,9 @@ update dataSource set releaseDate = '2021-02-08', releaseVersion = '',          
 -- GO
 update dataSource set releaseDate = '2021-02-08', releaseVersion = ''                                                where dataSourceId = 18;
 -- SRA (RNA-Seq)
-update dataSource set releaseDate = '2021-02-08', releaseVersion = '',                             displayOrder = 2  where dataSourceId = 19;
+update dataSource set releaseDate = '2023-04-04', releaseVersion = '',                             displayOrder = 2  where dataSourceId = 19;
 -- SRA (scRNA-Seq)
-update dataSource set releaseDate = '2021-02-08', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 102;
+update dataSource set releaseDate = '2023-04-04', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 102;
 -- HGNC (taken from Ensembl xrefs)
 update dataSource set releaseDate = null,         releaseVersion = '',                             displayOrder = 1  where dataSourceId = 20;
 -- CCDS (taken from Ensembl xrefs)
@@ -55,7 +55,7 @@ update dataSource set releaseDate = '2020-12-13', releaseVersion = '',          
 -- EnsemblMetazoa
 update dataSource set releaseDate = '2020-12-01', releaseVersion = '49',                           displayOrder = 1  where dataSourceId = 24;
 -- Bgee
-update dataSource set releaseDate = '2021-04-26', releaseVersion = '15.0',                         displayOrder = 1  where dataSourceId = 25;
+update dataSource set releaseDate = '2023-11-21', releaseVersion = '15.1',                         displayOrder = 1  where dataSourceId = 25;
 -- Uberon
 update dataSource set releaseDate = '2020-09-16', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 26;
 -- Developmental stage ontologies
@@ -68,10 +68,18 @@ update dataSource set releaseDate = '2016-07-14', releaseVersion = '',          
 update dataSource set releaseDate = '2015-03-10', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 30;
 -- GTEx-dbGAP
 update dataSource set releaseDate = '2015-10-03', releaseVersion = '6.p1',                         displayOrder = 3  where dataSourceId = 31;
--- RefSeq
+-- RefSeq genomic
 update dataSource set releaseDate = '2020-12-01', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 37;
 -- GenBank
 update dataSource set releaseDate = '2020-12-01', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 38;
 -- Amphiencode
 update dataSource set releaseDate = '2021-07-15', releaseVersion = '',                             displayOrder = 7  where dataSourceId = 39;
+-- RefSeq nucleotide
+update dataSource set releaseDate = '2020-12-01', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 41;
+-- RefSeq protein
+update dataSource set releaseDate = '2020-12-01', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 42;
+-- NCBI Gene ID
+update dataSource set releaseDate = '2020-12-01', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 43;
+-- Alliance of Genome Resources
+update dataSource set releaseDate = '2020-12-01', releaseVersion = '3.2',                          displayOrder = 1  where dataSourceId = 44;
 

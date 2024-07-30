@@ -14,7 +14,7 @@ $| = 1; # no buffering of output
 #####################################################################
 # This script takes notably as entry a TSV file used for remapping,
 # with the following columns:
-# Condition ID to remap - New anat. entity ID - New dev. stage ID - New sex - New strain.
+# Condition ID to remap - New anat. entity ID - New cell type ID - New dev. stage ID - New sex - New strain.
 # The species ID is assumed to stay the same and will not be changed.
 # This script will not update directly the conditions, rather, it will populate a table
 # in the database, named 'remapCond', storing the condition ID to remap,
@@ -22,6 +22,7 @@ $| = 1; # no buffering of output
 # update/delete the conditions. This allows more flexibility and controls.
 #
 # Frederic Bastian, created August 2019
+# Frederic Bastian, update Apr. 2023: takes into account cell type
 #####################################################################
 
 # Define arguments & their default value
@@ -64,8 +65,8 @@ my $stage_equivalences = Utils::get_stage_equivalences($bgee);
 my $insertMapping = $bgee->prepare("INSERT INTO remapCond (incorrectConditionId, remappedConditionId) VALUES (?, ?)");
 # TODO use column names rather than column order
 REMAP: for my $line ( grep { !/^#/ && !/^"#/ && !/^Condition ID/ && !/^"Condition ID/} read_file("$remapping_file", chomp => 1) ){
-    #Condition ID to remap  New anat. entity ID New dev. stage ID   New sex New strain
-    #40558  CL:0000094  UBERON:0000066  male    NA
+    #Condition ID to remap  New anat. entity ID	New cell type ID New dev. stage ID   New sex New strain
+    #40558  UBERON:xxx CL:xxx  UBERON:0000066  male    NA
     my @tmp = split(/\t/, $line);
 
     my $condIdToRemap = $tmp[0];
@@ -86,16 +87,18 @@ REMAP: for my $line ( grep { !/^#/ && !/^"#/ && !/^Condition ID/ && !/^"Conditio
     }
     # If the sex was inferred, we'll let the function infer it again,
     # so that the correct value of sexInferred will be inserted
-    my $sex = $tmp[3];
+    my $sex = $tmp[4];
     $sex =~ s/^"*([^"]+)"*$/$1/g;
     if ($sexInferred) {
         $sex = $Utils::NOT_ANNOTATED_SEX;
     }
 
     my $newAnatEntityId = $tmp[1];
-    my $newStageId = $tmp[2];
-    my $newStrain = $tmp[4];
+    my $newCellTypeId = $tmp[2];
+    my $newStageId = $tmp[3];
+    my $newStrain = $tmp[5];
     $newAnatEntityId =~ s/^"*([^"]+)"*$/$1/g;
+    $newCellTypeId =~ s/^"*([^"]+)"*$/$1/g;
     $newStageId =~ s/^"*([^"]+)"*$/$1/g;
     $newStrain =~ s/^"*([^"]+)"*$/$1/g;
     # Try to get or insert the new mapped condition
@@ -109,7 +112,7 @@ REMAP: for my $line ( grep { !/^#/ && !/^"#/ && !/^Condition ID/ && !/^"Conditio
                                                              $sex,
                                                              $newStrain,
                                                              $anatSexInfo, $speciesSexInfo,
-                                                             '', '',
+                                                             '', '', $newCellTypeId
                                                             );
     # If the sex was originally inferred, check that it is still the case
     if ($sexInferred && !$condKeyMap->{'sexInference'}) {

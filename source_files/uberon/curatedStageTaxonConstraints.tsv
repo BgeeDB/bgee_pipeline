@@ -25,9 +25,10 @@ SscrDv:		9823	Sus scrofa
 WBls:		6239	Caenorhabditis elegans			
 XAO:		8353	Xenopus			
 ZFS:		7955	Danio rerio			
+SsalDv:		8030	Salmo salar			
 UBERON:0000066	fully formed stage	33213	Bilateria			
 UBERON:0000068	embryo stage	33213	Bilateria			
-UBERON:0000069	larval stage	7740,7918,7936,8049,7955,8353,6239,8090,7227,7240,7237				
+UBERON:0000069	larval stage	7740,7918,7936,8049,7955,8353,6239,8090,7227,7240,7237,8030				
 UBERON:0000070	pupal stage	33392	Holometabola			
 UBERON:0000092	post-embryonic stage	33213	Bilateria			
 UBERON:0000104	life cycle	33213	Bilateria			
@@ -36,23 +37,23 @@ UBERON:0000106	zygote stage	33213	Bilateria	9913
 UBERON:0000107	cleavage stage	33213	Bilateria	9913		
 UBERON:0000108	blastula stage	33213	Bilateria	9913		
 UBERON:0000109	gastrula stage	33213	Bilateria	9913		
-UBERON:0000110	neurula stage	33213	Bilateria	9913		
+UBERON:0000110	neurula stage	33213	Bilateria	9913,8030		
 UBERON:0000111	organogenesis stage	33213	Bilateria	9913		
 UBERON:0000112	sexually immature stage	33213	Bilateria	7227,7237,7240		
 UBERON:0000113	post-juvenile	33213	Bilateria	7227,7237,7240		
-UBERON:0004707	pharyngula stage	6072	Eumetazoa	9606,10090,7227,10116,9913,9823,9031,9940,8353		
+UBERON:0004707	pharyngula stage	6072	Eumetazoa	9606,10090,7227,10116,9913,9823,9031,9940,8353,8030		
 UBERON:0004728	amphibian larval stage	8292	Amphibia			
 UBERON:0004729	nematode larval stage	6231	Nematoda			
 UBERON:0004730	instar larval stage	50557	Insecta			
 UBERON:0007220	late embryonic stage	33213	Bilateria	7955,9913,8353		
 UBERON:0007221	neonate stage	40674	Mammalia	9913		
-UBERON:0007222	late adult stage	33213	Bilateria	6239,7955,7227,7237,7240		
+UBERON:0007222	late adult stage	33213	Bilateria	6239,7955,7227,7237,7240,8030		
 UBERON:0007232	2 cell stage	33213	Bilateria	9606,10090,7227,10116,9913,9031,9940		
 UBERON:0007233	4 cell stage	33213	Bilateria	9606,10090,7227,10116,9913,9031,9940		
 UBERON:0007236	8 cell stage	33213	Bilateria	9606,10090,7227,10116,9913,9031,9940		
 UBERON:0009849	tadpole stage	8292	Amphibia			
-UBERON:0018241	prime adult stage	33213	Bilateria	6239,7955,7227,7237,7240		
+UBERON:0018241	prime adult stage	33213	Bilateria	6239,7955,7227,7237,7240,8030		
 UBERON:0018685	nursing stage	40674	Mammalia	9913		
-UBERON:0034919	juvenile stage	33213	Bilateria	6239,7955,9913,7227,7237,7240,7740,7897		
+UBERON:0034919	juvenile stage	33213	Bilateria	6239,7955,9913,7227,7237,7240,7740,7897,8030		
 UBERON:0034920	infant stage	40674	Mammalia	9913		
 UBERON:0035946	start of neonate stage	40674	Mammalia	9823,9913		

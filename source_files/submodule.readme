@@ -1,0 +1,6 @@
+http://blog.joncairns.com/2011/10/how-to-use-git-submodules/
+
+To get the repo locally:
+	git submodule init
+	git submodule update
+

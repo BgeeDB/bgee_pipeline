@@ -282,15 +282,17 @@ INSERT INTO dataSourceToSpecies (dataSourceId, speciesId, dataType, infoType) VA
 (25, 69293,  'rna-seq',    'annotation'),
 (25, 105023, 'rna-seq',    'annotation');
 
--- Bgee source of annotation for single cell full length data
+-- Bgee source of annotation for single cell data
 INSERT INTO dataSourceToSpecies (dataSourceId, speciesId, dataType, infoType) VALUES
-(25, 9606,   'full-length single-cell RNA-Seq', 'annotation'),
-(25, 10090,  'full-length single-cell RNA-Seq', 'annotation');
+(25, 9606,   'single-cell RNA-Seq', 'annotation'),
+(25, 10090,  'single-cell RNA-Seq', 'annotation'),
+(25, 7227,  'single-cell RNA-Seq', 'annotation');
 
--- source of data for single cell full length data
+-- source of data for single cell data
 INSERT INTO dataSourceToSpecies (dataSourceId, speciesId, dataType, infoType) VALUES
-(102, 9606,   'full-length single-cell RNA-Seq', 'data'),
-(102, 10090,  'full-length single-cell RNA-Seq', 'data');
+(102, 9606,   'single-cell RNA-Seq', 'data'),
+(102, 10090,  'single-cell RNA-Seq', 'data'),
+(102, 7227,  'single-cell RNA-Seq', 'data');
 
 -- GTEx data source
 INSERT INTO dataSourceToSpecies (dataSourceId, speciesId, dataType, infoType) VALUES
