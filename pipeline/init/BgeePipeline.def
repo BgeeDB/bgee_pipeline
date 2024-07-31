@@ -1,5 +1,5 @@
 Bootstrap: docker
-From: ubuntu:20.04
+From: ubuntu:24.04
 
 
 %environment
@@ -16,8 +16,8 @@ From: ubuntu:20.04
 ### Container metadata:
 ### ******************
 ### Name:       BgeePipeline
-### Version:    15.1
-### Release:    1
+### Version:    16.0
+### Release:    0
 ### Summary:    Bgee Pipeline external tools and libraries
 ### Group:      Container
 ### Maintainer: Sebastien Moretti
@@ -35,15 +35,15 @@ From: ubuntu:20.04
 ### Available commands: java, perl, R, python3, mysql, mvn, kallisto, bustools, fastp, fastq-dump, blastn, makeblastdb, gtf_to_fasta
 ###
 ### To run any command in the container, replace <command to run> in command below.:
-###   singularity exec BgeePipeline-15.1-1.sif <command> [<options>]
+###   apptainer exec BgeePipeline-16.0.0.sif <command> [<options>]
 ###
 ### To make a specific repository, such as "/scratch/<yourDirectory>", available
 ### inside the container add the option "--bind <directory>". Here is an example:
-###   singularity exec --bind <directory> BgeePipeline-15.1-1.sif <command> [<options>]
+###   apptainer exec --bind <directory> BgeePipeline-16.0.0.sif <command> [<options>]
 ###
 ### To run the default command for the container the command is the following. The default command
 ### generally displays the "help" section of the software installed in the container:
-###   singularity run-help BgeePipeline-15.1-1.sif
+###   apptainer run-help BgeePipeline-16.0.0.sif
 ###
 ####################################################################################################
 
@@ -58,27 +58,29 @@ From: ubuntu:20.04
 	# See https://rehansaeed.com/docker-labels-depth/
 	# See https://github.com/opencontainers/image-spec/blob/master/annotations.md
 	# Exist also another structured label initiative: http://label-schema.org/ superceded by OCI now
-	#NOTE Singularity uses label-schema labels internally!
+	#NOTE Apptainer uses label-schema labels internally!
 	org.opencontainers.image.title         Bgee Pipeline external tools and libraries
-	org.opencontainers.image.version       15.1-1
 	org.opencontainers.image.vendor        Bgee.org
 	org.opencontainers.image.authors       sebastien.moretti@sib.swiss
 	org.opencontainers.image.url           https://www.bgee.org/
 	org.opencontainers.image.documentation https://github.com/BgeeDB/bgee_pipeline
 	org.opencontainers.image.licenses      GPL-3.0
 	org.opencontainers.image.description   External tools and libraries required by the Bgee Pipeline.
-	soft.java.version        11.0.15+10
-	soft.perl.version        5.30.0
-	soft.R.version           4.2.1
-	soft.python3.version     3.8.10
-	soft.mysql.version       8.0.29
-	soft.maven.version       3.6.3
-	soft.kallisto.version    0.48.0
-	soft.bustools.version    0.41.0
-	soft.fastp.version       0.23.2
-	soft.sratoolkit.version  3.0.0
-	soft.blastplus.version   2.9.0+
+	bgee.pipeline.version    16.0.0
+	soft.java.version        21.0.3+9
+	soft.perl.version        5.38.2
+	soft.R.version           4.4.1
+	soft.python3.version     3.12.3
+	soft.mysql.version       8.0.37
+	soft.maven.version       3.8.7
+	soft.kallisto.version    0.51.0
+	soft.bustools.version    0.43.2
+	soft.fastp.version       0.23.4
+	soft.sratoolkit.version  3.1.1
+	soft.blastplus.version   2.12.0+
 	soft.tophat.version      2.1.2
+	soft.ensembl.version     112
+	soft.ubuntu.version      24.04LTS
 
 
 %post
@@ -87,8 +89,8 @@ From: ubuntu:20.04
 	apt-get update  -y
 	apt-get upgrade -y
 	export DEBIAN_FRONTEND=noninteractive
-	apt install -y --no-install-recommends gnupg wget git cmake autoconf apt-utils ca-certificates libterm-readline-gnu-perl readline-common software-properties-common dirmngr build-essential libssl-dev libncurses5-dev libcurl4-openssl-dev liblzma-dev libbz2-dev libboost-all-dev sqlite3 libsqlite3-0 libsqlite3-dev libgsl0-dev zlib1g-dev libxml2-dev libgmp-dev libgmp10 libmpfr-dev libhdf5-dev libisal-dev libdeflate-dev libbam-dev libgeos-dev libmagick++-dev
-	apt install -y --no-install-recommends openjdk-11-jdk perl python3 python3-pip mysql-client maven ncbi-blast+
+	apt install -y --no-install-recommends gnupg wget git cmake autoconf apt-utils ca-certificates libterm-readline-gnu-perl bzip2 readline-common software-properties-common dirmngr build-essential libssl-dev libncurses5-dev libcurl4-openssl-dev liblzma-dev libbz2-dev libboost-all-dev sqlite3 libsqlite3-0 libsqlite3-dev libgsl0-dev zlib1g-dev libxml2-dev libgmp-dev libgmp10 libmpfr-dev libhdf5-dev libisal-dev libdeflate-dev libbam-dev libgeos-dev libmagick++-dev libharfbuzz-dev libfribidi-dev libaec-dev libsz2 libmagick++-6.q16-dev libmagick++-6.q16-9
+	apt install -y --no-install-recommends openjdk-21-jdk perl python3 python3-six python3-packaging python3-pyparsing python3-pip mysql-client libmysqlclient-dev libmysqlclient21 libpq-dev libpq5 maven ncbi-blast+
 
 	#Install R
 	wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
@@ -108,7 +110,6 @@ From: ubuntu:20.04
 	R -e 'BiocManager::install("Biostrings")'
 	R -e 'BiocManager::install("DropletUtils")'
 	R -e 'BiocManager::install("GenomicFeatures")'
-	#R -e 'BiocManager::install("HCAExplorer")'
 	R -e 'BiocManager::install("HelpersMG")'
 	R -e 'BiocManager::install("LaplacesDemon")'
 	R -e 'BiocManager::install("Matrix")'
@@ -118,13 +119,11 @@ From: ubuntu:20.04
 	#R -e 'BiocManager::install("Runiversal")'
 	R -e 'BiocManager::install("SRAdb")'
 	R -e 'BiocManager::install("Seurat")'
-	R -e 'BiocManager::install("UniprotR")'
 	R -e 'BiocManager::install("affy")'
 	R -e 'BiocManager::install("biomaRt")'
 	R -e 'BiocManager::install("celeganscdf")'
 	R -e 'BiocManager::install("celegansprobe")'
 	R -e 'BiocManager::install("data.table")'
-	R -e 'BiocManager::install("devtools")'
 	R -e 'BiocManager::install("dplyr")'
 	R -e 'BiocManager::install("drosgenome1cdf")'
 	R -e 'BiocManager::install("drosgenome1probe")'
@@ -166,9 +165,7 @@ From: ubuntu:20.04
 	R -e 'BiocManager::install("htmg430aprobe")'
 	R -e 'BiocManager::install("hu6800cdf")'
 	R -e 'BiocManager::install("hu6800probe")'
-	R -e 'BiocManager::install("lattice")'
 	R -e 'BiocManager::install("limma")'
-	R -e 'BiocManager::install("magrittr")'
 	R -e 'BiocManager::install("mclust")'
 	R -e 'BiocManager::install("methods")'
 	R -e 'BiocManager::install("mgu74acdf")'
@@ -195,7 +192,6 @@ From: ubuntu:20.04
 	R -e 'BiocManager::install("rJava")'
 	R -e 'BiocManager::install("rae230acdf")'
 	R -e 'BiocManager::install("rae230aprobe")'
-	R -e 'BiocManager::install("readr")'
 	R -e 'BiocManager::install("reshape2")'
 	R -e 'BiocManager::install("rgu34acdf")'
 	R -e 'BiocManager::install("rgu34aprobe")'
@@ -203,10 +199,8 @@ From: ubuntu:20.04
 	R -e 'BiocManager::install("rhesusprobe")'
 	R -e 'BiocManager::install("rjson")'
 	R -e 'BiocManager::install("stringr")'
-	R -e 'BiocManager::install("tibble")'
 	R -e 'BiocManager::install("tools")'
 	R -e 'BiocManager::install("topGO")'
-	R -e 'BiocManager::install("tximport")'
 	R -e 'BiocManager::install("zebrafishcdf")'
 	R -e 'BiocManager::install("zebrafishprobe")'
 	# Problematic R libs
@@ -214,15 +208,6 @@ From: ubuntu:20.04
 	wget 'https://cran.r-project.org/src/contrib/Archive/Runiversal/Runiversal_1.0.2.tar.gz'
 	R CMD INSTALL Runiversal_1.0.2.tar.gz
 	rm -f Runiversal_1.0.2.tar.gz
-	#HCAExplorer archived version in Bioconductor looks more recent than the one on https://github.com/Bioconductor/HCAExplore
-	R -e 'BiocManager::install("tidygraph")'
-	R -e 'BiocManager::install("LoomExperiment")'
-	R -e 'BiocManager::install("AnVIL")'
-	wget 'http://bioconductor.org/packages/3.12/bioc/src/contrib/HCAMatrixBrowser_1.0.1.tar.gz'
-	wget 'http://bioconductor.org/packages/3.12/bioc/src/contrib/HCAExplorer_1.4.0.tar.gz'
-	R CMD INSTALL HCAMatrixBrowser_1.0.1.tar.gz
-	R CMD INSTALL HCAExplorer_1.4.0.tar.gz
-	rm -f HCAMatrixBrowser_1.0.1.tar.gz HCAExplorer_1.4.0.tar.gz
 
 	# Install Perl lib
 	apt-get install -y --no-install-recommends  libipc-run-perl libio-compress-perl
@@ -234,6 +219,8 @@ From: ubuntu:20.04
 	cpan Bio::SeqIO
 	cpan Cpanel::JSON::XS
 	cpan DBI
+	cpan DBD::mysql
+	cpan DBD::Pg
 	cpan Data::Dumper
 	cpan Digest::SHA
 	cpan Exporter
@@ -255,7 +242,6 @@ From: ubuntu:20.04
 	cpan List::MoreUtils
 	cpan List::Util
 	cpan Parallel::ForkManager
-	cpan Parallel::Loops
 	cpan Sort::Naturally
 	cpan Spreadsheet::ParseExcel
 	cpan Spreadsheet::ParseXLSX
@@ -267,59 +253,71 @@ From: ubuntu:20.04
 	cpan Time::localtime
 	cpan Webservice::InterMine
 	cpan XML::Fast
+	#Issue with a Webservice::InterMine test, so manual installation
+	wget 'https://cpan.metacpan.org/authors/id/I/IN/INTERMINE/Webservice-InterMine-1.0405.tar.gz'
+	tar xvfz Webservice-InterMine-*.tar.gz
+	cd Webservice-InterMine-*/
+	perl Build.PL
+	./Build install
+	cd ..
+	rm -rf Webservice-InterMine-*/ Webservice-InterMine-*.tar.gz
 	# Install Ensembl Perl API
 	mkdir /usr/local/ensembl
 	cd /usr/local/ensembl/
 	git clone https://github.com/Ensembl/ensembl-git-tools.git
 	export PATH=$PWD/ensembl-git-tools/bin:$PATH
 	git ensembl --clone api
+	git ensembl --checkout --branch release/112 api
 	#TODO Do we need Ensembl web API Perl lib???
 
 	# Install Python3 lib
-	pip3 install IPython
-	pip3 install intermine
-	pip3 install matplotlib
-	pip3 install numpy
-	#pip3 install os
-	pip3 install pandas
-	pip3 install seaborn
-	pip3 install simplejson
+	pip3 install --break-system-packages IPython
+	pip3 install --break-system-packages intermine
+	pip3 install --break-system-packages matplotlib
+	pip3 install --break-system-packages numpy
+	#pip3 install --break-system-packages os
+	pip3 install --break-system-packages pandas
+	pip3 install --break-system-packages seaborn
+	pip3 install --break-system-packages simplejson
 	#for orthologs_paralogs_app
-	pip3 install pipenv
-	pip3 install SPARQLWrapper
-	pip3 install rdflib
-	pip3 install isodate
-	pip3 install pyparsing
-	pip3 install six
-	#pip3 install configparser
-	#pip3 install datetime
-	#pip3 install distutils
-	#pip3 install multiprocessing
-	#pip3 install pathlib
-	#pip3 install typing
-	#pip3 install ast
-	#pip3 install errno
-	#pip3 install fcntl
-	#pip3 install fileinput
-	#pip3 install io
-	#pip3 install json
-	#pip3 install logging
-	#pip3 install shutil
-	#pip3 install sys
-	#pip3 install getopt
-	#pip3 install time
+	pip3 install --break-system-packages pipenv
+	pip3 install --break-system-packages SPARQLWrapper
+	pip3 install --break-system-packages rdflib
+	pip3 install --break-system-packages isodate
+	pip3 install --break-system-packages pyparsing
+	pip3 install --break-system-packages six
+	#pip3 install --break-system-packages configparser
+	#pip3 install --break-system-packages datetime
+	#pip3 install --break-system-packages distutils
+	#pip3 install --break-system-packages multiprocessing
+	#pip3 install --break-system-packages pathlib
+	#pip3 install --break-system-packages typing
+	#pip3 install --break-system-packages ast
+	#pip3 install --break-system-packages errno
+	#pip3 install --break-system-packages fcntl
+	#pip3 install --break-system-packages fileinput
+	#pip3 install --break-system-packages io
+	#pip3 install --break-system-packages json
+	#pip3 install --break-system-packages logging
+	#pip3 install --break-system-packages shutil
+	#pip3 install --break-system-packages sys
+	#pip3 install --break-system-packages getopt
+	#pip3 install --break-system-packages time
 
 	# Install Kallisto
 	cd /usr/local
-	wget 'https://github.com/pachterlab/kallisto/archive/refs/tags/v0.48.0.tar.gz'
-	tar xvfz v*.tar.gz && rm -f v*.tar.gz
-	cd kallisto-*/ext/htslib/ && autoheader && autoconf && ./configure --prefix=$PWD --disable-bz2 --disable-lzma --disable-libcurl && make lib-static
-	cd ../.. && mkdir build && cd build/ && cmake .. && make -j$THREADS && make install
+	wget 'https://github.com/pachterlab/kallisto/archive/refs/tags/V0.51.0.tar.gz'
+	tar xvfz V*.tar.gz && rm -f V*.tar.gz
+	#This htslib does not work any more and looks useless
+	#cd kallisto-*/ext/htslib/ && autoheader && autoconf && ./configure --prefix=$PWD --disable-bz2 --disable-lzma --disable-libcurl && make lib-static
+	#make -j$THREADS does not work with bifrost lib build
+	#cd ../.. && mkdir build && cd build/ && cmake .. && make -j$THREADS && make install
+	cd kallisto-*/ && mkdir build && cd build/ && cmake .. && make && make install
 	cd ../.. && rm -Rf kallisto-*/
 
 	# Install Bustools
 	cd /usr/local
-	wget 'https://github.com/BUStools/bustools/archive/refs/tags/v0.41.0.tar.gz'
+	wget 'https://github.com/BUStools/bustools/archive/refs/tags/v0.43.2.tar.gz'
 	tar xvfz v*.tar.gz && rm -f v*.tar.gz
 	cd bustools-*/
 	cmake . && make -j$THREADS && make install
@@ -327,7 +325,7 @@ From: ubuntu:20.04
 
 	# Install FastP
 	cd /usr/local
-	wget 'https://github.com/OpenGene/fastp/archive/refs/tags/v0.23.2.tar.gz'
+	wget 'https://github.com/OpenGene/fastp/archive/refs/tags/v0.23.4.tar.gz'
 	tar xvfz v*.tar.gz && rm -f v*.tar.gz
 	cd fastp-*/
 	make clean && make && install fastp /usr/local/bin/
@@ -335,7 +333,7 @@ From: ubuntu:20.04
 
 	# Install SRAtoolkit
 	cd /usr/local
-	wget 'https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/3.0.0/sratoolkit.3.0.0-ubuntu64.tar.gz'
+	wget 'https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/3.1.1/sratoolkit.3.1.1-ubuntu64.tar.gz'
 	tar xvfz sratoolkit*.tar.gz && rm -f sratoolkit*.tar.gz
 	cd sratoolkit.*-ubuntu64/bin/
 	ln -s $PWD/* /usr/local/bin/
@@ -345,6 +343,8 @@ From: ubuntu:20.04
 	wget 'https://github.com/infphilo/tophat/archive/refs/tags/v2.1.2.tar.gz'
 	tar xvfz v*.tar.gz && rm -f v*.tar.gz
 	cd tophat-*/
+	#Fix for recent automake (1.16.5+) versions: https://github.com/mikebrady/shairport-sync/issues/1368
+	sed -i -e '8d' configure.ac
 	./autogen.sh
 	./configure --with-boost --with-boost-thread=-lboost_thread
 	#FIXME looks to have issues at compile time with recent boost versions
@@ -356,7 +356,8 @@ From: ubuntu:20.04
 
 	# CLEANING
 	## So try to remove manually useless stuff
-	apt remove -y  *-dev wget cmake make swig autoconf check gcc g++ gfortran git python3-pip rpm2cpio cpio doxygen rsync
+	apt purge -y  *-dev wget cmake make swig autoconf check gcc g++ gfortran git python3-pip rpm2cpio cpio doxygen rsync
+	apt autoremove -y
 	apt-get clean
 	rm -rf /var/lib/apt/lists/*
 

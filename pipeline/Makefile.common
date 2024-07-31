@@ -9,8 +9,8 @@ SHELL = /bin/bash
 # ===================================
 #  GENERAL PARAMETERS
 # ===================================
-MAJOR_RELEASE    := 15
-MINOR_RELEASE    := 2
+MAJOR_RELEASE    := 16
+MINOR_RELEASE    := 0
 RELEASE          := $(MAJOR_RELEASE).$(MINOR_RELEASE)
 
 # MySQL database connection parameters
@@ -25,9 +25,9 @@ DBHOST_EASYBGEE := localhost
 
 # Pipeline container
 PIPELINE_CONTAINER_NAME    := BgeePipeline
-PIPELINE_CONTAINER_RELEASE := 1
-PIPELINE_CONTAINER_FILE    := $(PIPELINE_CONTAINER_NAME)-$(RELEASE)-$(PIPELINE_CONTAINER_RELEASE).sif
-PIPELINE_CONTAINER_CMD     := singularity exec $(PIPELINE_CONTAINER_FILE)
+PIPELINE_CONTAINER_RELEASE := 0
+PIPELINE_CONTAINER_FILE    := $(PIPELINE_CONTAINER_NAME)-$(RELEASE).$(PIPELINE_CONTAINER_RELEASE).sif
+PIPELINE_CONTAINER_CMD     := apptainer exec $(PIPELINE_CONTAINER_FILE)
 
 # Annotator machine
 # ANNOTATORLOGIN defined in Makefile.Config
@@ -47,8 +47,8 @@ DATAHOST   := jura0.sib.swiss
 DATAPATH   := /data
 
 # Ensembl
-ENSRELEASE             := 102
-ENSMETAZOARELEASE      := 49
+ENSRELEASE             := 112
+ENSMETAZOARELEASE      := 59
 ENS_API_RELEASE        := $(ENSRELEASE)
 ENSMETAZOA_API_RELEASE := $(ENSRELEASE)
 #   Default, remote Ensembl db

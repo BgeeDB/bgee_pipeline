@@ -139,7 +139,7 @@ while (<$ANNOTATION>){
             my $sbatchTemplate = Utils::sbatch_template($queue, $account, 1,
               30, "$clusterOutputDir/$jobName.out", "$clusterOutputDir/$jobName.err",
               $jobName);
-            $sbatchTemplate .= "module load gcc/10.4.0;\nmodule load sratoolkit/3.0.0;\nmodule load fastp/0.23.2\nmodule use /software/module;\nmodule load R/3.6.1;\n\n";
+            $sbatchTemplate .= "module load gcc/13.2.0;\nmodule load sratoolkit/3.0.0;\nmodule load fastp/0.23.4\nmodule use /software/module;\nmodule load R/3.6.1;\n\n";
             ## download fastq from SRA split into several FASTQ files if paired library and manage input files of fastp and R.stat
             my $prefix      = "$libDirectory/$runId";
             my $fastq_fastp = '';
