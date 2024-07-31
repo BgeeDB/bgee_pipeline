@@ -201,7 +201,6 @@ check_tools: cluster1
 	@$(CLUSTER_R_CMD) R -e 'library("reshape2")'        >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("rjson")'           >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("tools")'           >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("tximport")'        >> $@.tmp  2>/dev/null
 	@which xz                                           >> $@.tmp
 	@which sbatch                                       >> $@.tmp
 	@$(CLUSTER_TOPHAT_CMD)     which gtf_to_fasta       >> $@.tmp
