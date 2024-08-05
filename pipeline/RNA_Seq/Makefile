@@ -44,7 +44,7 @@ check_annot: get_annot $(RNASEQ_EXPERIMENT_FILEPATH) $(RNASEQ_EXPERIMENT_FILEPAT
 
 create_rna_seq_sample_info: check_annot $(EXTRAMAPPING_FILEPATH)
 	# Generate rna_seq_sample_info.txt from RNASeq lib annotation file
-	@$(SENSITIVE_PERL_CMD) perl 0Before/create_rna_seq_sample_info.pl -bgee=$(BGEECMD) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -RNAseqLibChecks=$(RNASEQ_LIB_CHECKS_FILEPATH) -RNAseqLibWormExclusion=$(RNASEQ_LIB_EXCLUSION_FILEPATH_WORM) -extraMapping=$(EXTRAMAPPING_FILEPATH) -toolsPath=$(CLUSTER_TOOLS_DIR) -outFile=$(RNASEQ_SAMPINFO_FILEPATH) >$@.tmp 2>&1
+	@$(SENSITIVE_PERL_CMD) perl 0Before/create_rna_seq_sample_info.pl -bgee=$(BGEECMD) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -RNAseqLibChecks=$(RNASEQ_LIB_CHECKS_FILEPATH) -RNAseqLibWormExclusion=$(RNASEQ_LIB_EXCLUSION_FILEPATH_WORM) -extraMapping=$(EXTRAMAPPING_FILEPATH) -toolsPath=$(CLUSTER_TOOLS_DIR) -outFile=$(RNASEQ_SAMPINFO_FILEPATH) -NewGenomes=$(NEW_GENOMES) >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
 	@echo -e "Check file \"create_rna_seq_sample_info\" for the output of the script 0Before/create_rna_seq_sample_info.pl, which indicates potential errors to correct in the annotation files.\n"
 

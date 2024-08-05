@@ -12,6 +12,7 @@ SHELL = /bin/bash
 MAJOR_RELEASE    := 16
 MINOR_RELEASE    := 0
 RELEASE          := $(MAJOR_RELEASE).$(MINOR_RELEASE)
+NEW_GENOMES      := 1
 
 # MySQL database connection parameters
 # DBUSER and DBPASS defined in Makefile.Config
