@@ -56,6 +56,7 @@ my ($outFile)                = ('');
 my ($debug)                  = (0);
 my ($sample)                 = ('');
 my ($toolsPath)              = ('');
+my ($newGenomes)             = ('');
 my %opts = ('bgee=s'                   => \$bgee_connector,     # Bgee connector string
             'RNAseqLib=s'              => \$RNAseqLib,
             'RNAseqLibChecks=s'        => \$RNAseqLibChecks,
@@ -65,12 +66,13 @@ my %opts = ('bgee=s'                   => \$bgee_connector,     # Bgee connector
             'debug'                    => \$debug,
             'sample=s'                 => \$sample,
             'toolsPath=s'                => \$toolsPath,
+            'newGenomes=i'             => \$newGenomes
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $bgee_connector eq '' || $RNAseqLib eq '' || $RNAseqLibChecks eq '' || $RNAseqLibWormExclusion eq '' ||
-    $outFile eq '' || $toolsPath eq ''){
+    $outFile eq '' || $toolsPath eq '' || $newGenomes eq '' ){
     print "\n\tInvalid or missing argument:
 \te.g. $0  -bgee=\$(BGEECMD) -RNAseqLib=\$(RNASEQ_LIB_FILEPATH_FULL) -RNAseqLibChecks=\$(RNASEQ_LIB_CHECKS_FILEPATH_FULL) -RNAseqLibWormExclusion=\$(RNASEQ_LIB_EXCLUSION_FILEPATH_WORM) -outFile=\$(RNASEQ_SAMPINFO_FILEPATH) -extraMapping=\$(EXTRAMAPPING_FILEPATH)
 \t-bgee                   Bgee connector string
@@ -82,6 +84,7 @@ if ( !$test_options || $bgee_connector eq '' || $RNAseqLib eq '' || $RNAseqLibCh
 \t-debug                  more verbose output
 \t-sample                 Analyse this specific sample ONLY
 \t-toolsPath              Path to the directory where tools can be installed. Used to install entrez-direct
+\t-newGenomes             Allows to add all libraries to rna_seq_sample_info instead of only the ones that are not already intregrated. To use when we update the genome version so that all libraries are recomputed and intergenic regions are redefined (1 if new genomes are used, 0 otherwise)
 \n";
     exit 1;
 }
@@ -159,7 +162,9 @@ print {$OUT} join("\t", '#libraryId', 'experimentId', 'speciesId', 'organism', '
 # Retrieve SRA information and IDs for each SRX ID, and write down output file. This was originally in script get_sra_id.pl, but it is simplified here (only 1 query, see email Sebastien 15/12/15). Example of a query URL: https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?email=bgee@sib.swiss&api_key=a2546089861bb524068974de020c591a1307&save=efetch&db=sra&rettype=xml&term=SRX1152842
 SAMPLE:
 for my $i ( 0..$#{$tsv{'libraryId'}} ) {
-    next if grep(/^$tsv{'libraryId'}[$i]$/, @insertedLibraryIds);
+    if ( $newGenomes == 0 ){
+        next if grep(/^$tsv{'libraryId'}[$i]$/, @insertedLibraryIds);
+    }
     my $strategy;
     my $libraryType  = '';
     my $libraryInfo  = '';
