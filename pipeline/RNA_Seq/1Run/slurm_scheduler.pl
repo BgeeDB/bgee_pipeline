@@ -120,7 +120,7 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
 
 
     #NOTE check memory usage with  grep 'Maximum resident set size' *.time
-    my $script_plus_args = "/software/bin/time -vo $output_log_folder/$library_id/$library_id.time  perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -exclude_sample_file=$exclude_sample_file -index_folder=$index_folder -fastq_folder='$fastq_folder/$taxa_id' -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -enc_passwd_file=$enc_passwd_file > $output_log_folder/$library_id/$library_id.txt 2>&1";
+    my $script_plus_args = "/software/bin/time -vo $output_log_folder/$library_id/$library_id.time  /software/bin/perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -exclude_sample_file=$exclude_sample_file -index_folder=$index_folder -fastq_folder='$fastq_folder/$taxa_id' -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -enc_passwd_file=$enc_passwd_file > $output_log_folder/$library_id/$library_id.txt 2>&1";
 
 
     # Wait for free places in job queue
