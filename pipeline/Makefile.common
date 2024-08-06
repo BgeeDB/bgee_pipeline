@@ -162,10 +162,9 @@ PERL_LIBS_PATH_CURNAGL  := $(CLUSTER_CURNAGL_PATH)/PERL_LIBS/lib/perl5
 
 #NOTE Think to add ; at the end to ease insertion in other command lines
 CLUSTER_SOFT_VITALIT    := module use /software/module/;
-CLUSTER_SOFT_UNIL       := module load gcc/10.4.0;
+CLUSTER_SOFT_UNIL       := module load gcc/11.4.0;
 CLUSTER_KALLISTO_CMD    := $(CLUSTER_SOFT_VITALIT) module load UHTS/Analysis/kallisto/0.46.0;
-CLUSTER_R_CMD           := $(CLUSTER_SOFT_VITALIT) module load R/3.6.1;
-CLUSTER_R_CMD2          := $(CLUSTER_SOFT_UNIL)    module load r/4.0.5;
+CLUSTER_R_CMD           := $(CLUSTER_SOFT_UNIL) module load r/4.3.2;
 CLUSTER_ENSEMBL_API     := module load Development/Ensembl_API/97;
 CLUSTER_SOFTWARE_BIN    := export PATH=/software/bin:$$PATH;
 SENSITIVE_PERL_CMD      := $(CLUSTER_SOFT_VITALIT) $(CLUSTER_ENSEMBL_API) $(CLUSTER_SOFTWARE_BIN)
