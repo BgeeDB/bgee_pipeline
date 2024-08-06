@@ -420,7 +420,7 @@ else {
 
 ############################################################################################
 # If everything was successful, we write a DONE.txt file in results folder
-open (my $REPORT6, '>', $kallisto_out_folder.'/DONE.txt')  or die "Cannot write DONE.txt file\n";
+open (my $REPORT6, '>', $output_log_folder.'/DONE.txt')  or die "Cannot write DONE.txt file\n";
 print {$REPORT6} "$library_id was succesfully processed!\n";
 close $REPORT6;
 ############################################################################################
