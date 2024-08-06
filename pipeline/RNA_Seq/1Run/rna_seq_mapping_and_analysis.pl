@@ -112,7 +112,9 @@ print "Treating library: $library_id from $exp_id in $organism (Run ID(s): ", jo
 # creating output directories if necessary:
 # Do a mkdir -p  +  set group & mode at each intermediary folder
 $kallisto_out_folder .= '/'.$library_id;
+my $output_log_path = $output_log_folder.'/'.$library_id;
 make_path $kallisto_out_folder, {verbose=>0, mode=>0775};
+make_path $output_log_path, {verbose=>0, mode=>0775};
 # Log file with commands submitted
 my $report_file = $output_log_folder.'/'.$library_id.'/'.$library_id.'.report';
 
@@ -420,7 +422,7 @@ else {
 
 ############################################################################################
 # If everything was successful, we write a DONE.txt file in results folder
-open (my $REPORT6, '>', $output_log_folder.'/DONE.txt')  or die "Cannot write DONE.txt file\n";
+open (my $REPORT6, '>', $output_log_path.'/DONE.txt')  or die "Cannot write DONE.txt file\n";
 print {$REPORT6} "$library_id was succesfully processed!\n";
 close $REPORT6;
 ############################################################################################
