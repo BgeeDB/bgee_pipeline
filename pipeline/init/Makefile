@@ -93,6 +93,7 @@ global_check:
 	@R -e 'library("Seurat")'            >> $@.tmp  2>/dev/null
 	@R -e 'library("stringr")'           >> $@.tmp  2>/dev/null
 	@R -e 'library("tools")'             >> $@.tmp  2>/dev/null
+	@R -e 'library("tximport")'          >> $@.tmp  2>/dev/null
 # R annotator script
 	@R -e 'library("SRAdb")'             >> $@.tmp  2>/dev/null
 	@R -e 'library("gsubfn")'            >> $@.tmp  2>/dev/null
@@ -334,7 +335,7 @@ test_container: build_container
 # R libraries
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("affy")'              >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("AnnotationDbi")'     >> $@.tmp  2>/dev/null
-#@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("BgeeCall")'          >> $@.tmp  2>/dev/null #FIXME issue with the source tarball build at Bioconductor
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("BgeeCall")'          >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("Biobase")'           >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("biomaRt")'           >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("Biostrings")'        >> $@.tmp  2>/dev/null
@@ -366,6 +367,7 @@ test_container: build_container
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("Seurat")'            >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("stringr")'           >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("tools")'             >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("tximport")'          >> $@.tmp  2>/dev/null
 # R annotator script
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("SRAdb")'             >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("gsubfn")'            >> $@.tmp  2>/dev/null
@@ -457,7 +459,7 @@ test_container: build_container
 	@$(PIPELINE_CONTAINER_CMD) python3 -c "import six"             >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) python3 -c "import configparser"    >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) python3 -c "import datetime"        >> $@.tmp
-#@$(PIPELINE_CONTAINER_CMD) python3 -c "import distutils"       >> $@.tmp #FIXME no more in Python 3.12+ ?
+#@$(PIPELINE_CONTAINER_CMD) python3 -c "import distutils"       >> $@.tmp #FIXME no more in Python 3.12+
 	@$(PIPELINE_CONTAINER_CMD) python3 -c "import multiprocessing" >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) python3 -c "import pathlib"         >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) python3 -c "import typing"          >> $@.tmp
