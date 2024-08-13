@@ -159,7 +159,7 @@ open (my $OUT, '>', "$outFile")  or die "Cannot write [$outFile]\n";
 # output file header
 print {$OUT} join("\t", '#libraryId', 'experimentId', 'speciesId', 'organism', 'genomeFilePath', 'database', 'platform', 'libraryType', 'libraryInfo', 'readLength' ,'runIds'), "\n";
 
-# Retrieve SRA information and IDs for each SRX ID, and write down output file. This was originally in script get_sra_id.pl, but it is simplified here (only 1 query, see email Sebastien 15/12/15). Example of a query URL: https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?email=bgee@sib.swiss&api_key=a2546089861bb524068974de020c591a1307&save=efetch&db=sra&rettype=xml&term=SRX1152842
+# Retrieve SRA information and IDs for each SRX ID, and write down output file. This was originally in script get_sra_id.pl, but it is simplified here (only 1 query, see email Sebastien 15/12/15). Example of a query URL: https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?save=efetch&db=sra&rettype=xml&term=SRX1152842
 SAMPLE:
 for my $i ( 0..$#{$tsv{'libraryId'}} ) {
     if ( $newGenomes == 0 ){
