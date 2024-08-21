@@ -920,10 +920,10 @@ create table rnaSeqLibrary (
     rnaSeqPopulationCaptureId varchar(255) not null,
     genotype varchar(70),
     -- In case of single read, it's the total number of reads
-    allReadsCount int unsigned not null default 0,
+    allReadsCount bigint unsigned not null default 0,
 -- total number of reads in library that were mapped to anything.
 -- if it is not a paired-end library, this number is equal to leftMappedReadsCount
-    mappedReadsCount int unsigned not null default 0,
+    mappedReadsCount bigint unsigned not null default 0,
 -- a library is an assembly of different runs, and the runs can have different read lengths,
 -- so we store the min and max read lengths
     minReadLength int unsigned not null default 0,
