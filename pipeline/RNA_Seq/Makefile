@@ -163,7 +163,7 @@ check_tools: cluster1
 	@echo -e "\n\tRun this command to give access to all modules installed on vital-it\n\tmodule use /software/module/\n"
 	@echo -e "\n\tRun this command to prevent errors with Utils.pm\n\tmodule add Development/Ensembl_API/$(ENSRELEASE);\n"
 	# Check if logged on cluster
-	@if [[ `hostname -d` != 'chuv.vital-it.ch' ]]; then false; fi
+	#@if [[ `hostname -d` != 'chuv.vital-it.ch' ]]; then false; fi
 	# Check if all required tools/libs are available
 	@module use /software/module/
 	@which perl                                          > $@.tmp
