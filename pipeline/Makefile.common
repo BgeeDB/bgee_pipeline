@@ -171,7 +171,7 @@ SENSITIVE_PERL_CMD      := $(CLUSTER_SOFT_VITALIT) $(CLUSTER_ENSEMBL_API) $(CLUS
 CLUSTER_PERL_CMD        := $(CLUSTER_SOFT_UNIL)    module load perl/5.32.1;
 CLUSTER_SRATOOLKIT_CMD  := $(CLUSTER_SOFT_UNIL)    module load sratoolkit/3.0.0;
 CLUSTER_TOPHAT_CMD      := $(CLUSTER_SOFT_VITALIT) module load UHTS/Aligner/tophat/2.1.1;
-CLUSTER_FASTP_CMD       := $(CLUSTER_SOFT_UNIL)    module load fastp/0.23.2;
+CLUSTER_FASTP_CMD       := $(CLUSTER_SOFT_UNIL)    module load fastp/0.23.4;
 CLUSTER_BUSTOOLS_CMD    := $(CLUSTER_SOFT_VITALIT) module load UHTS/Analysis/bustools/0.40.0;
 
 
