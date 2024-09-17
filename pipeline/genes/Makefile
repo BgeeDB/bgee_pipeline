@@ -5,6 +5,7 @@ include $(PIPELINEROOT)Makefile.common
 
 all: $(VERIFICATIONFILE)
 
+#FIXME is go still useful ???
 $(OUTPUT_DIR)go:
 	# Download Gene Ontology (obo format-version: 1.2)
 	@$(WGET) 'http://purl.obolibrary.org/obo/go/go-basic.obo' -O $(INPUT_DIR)go.tmp && $(MV) $(INPUT_DIR)go.tmp $(INPUT_DIR)go 2>/dev/null  || rm -f $(INPUT_DIR)go.tmp
