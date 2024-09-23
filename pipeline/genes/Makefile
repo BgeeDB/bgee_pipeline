@@ -44,7 +44,7 @@ genes: $(SPECIESFILEPATH) go.obsolete
 	@for sp in `cat $@.species | grep -vi __Ensembl`; do \
 		date; \
 		echo "species: $$sp"; \
-		perl insert_nonensembl_genes.pl -species=$$sp -bgee=$(BGEECMD) -bgeeSpecies=$(SPECIESFILEPATH) -obsGO=go.obsolete >> $@.tmp 2>>$@.err; \
+		perl insert_nonensembl_genes.pl -species=$$sp -bgee=$(BGEECMD) -bgeeSpecies=$(SPECIESFILEPATH) >> $@.tmp 2>>$@.err; \
 		sleep 60; \
 	done
 	@if [[ -s $@.err ]]; then echo -n; else $(RM) $@.err; fi

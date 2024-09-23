@@ -21,12 +21,10 @@ use Utils;
 
 # Define arguments & their default value
 my ($species, $bgee_connector, $bgee_species) = ('', '', '');
-my ($obsGO) = ('');
 my ($debug) = (0);
 my %opts = ('species=s'     => \$species,            # speciesCommonName from TSV for or Bgee db
             'bgee=s'        => \$bgee_connector,     # Bgee connector string
             'bgeeSpecies=s' => \$bgee_species,       # Bgee species main file
-            'obsGO=s'       => \$obsGO,              # go.obsolete file
             'debug'         => \$debug,              # debug mode, do not insert/update in database
            );
 
@@ -34,10 +32,9 @@ my %opts = ('species=s'     => \$species,            # speciesCommonName from TS
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $species eq '' || $bgee_connector eq '' || $bgee_species eq '' ){
     print "\n\tInvalid or missing argument:
-\te.g. $0  -species=9606__0__NonEnsembl  -bgee=\$(BGEECMD)  -obsGO=go.obsolete  -bgeeSpecies=\$(SPECIESFILEPATH)
+\te.g. $0  -species=9606__0__NonEnsembl  -bgee=\$(BGEECMD)  -bgeeSpecies=\$(SPECIESFILEPATH)
 \t-species     speciesId from Bgee db with the genomeSpeciesId concatenated
 \t-bgee        Bgee    connector string
-\t-obsGO       go.obsolete file
 \t-bgeeSpecies bgeeSpecies.tsv file
 \t-debug       Debug mode, do not insert/update in database
 \n";
@@ -199,13 +196,6 @@ $altgoDB->execute()  or die $altgoDB->errstr;
 my %altid_go = map { lc $_->[0] => lc $_->[1] }
                @{$altgoDB->fetchall_arrayref};
 $altgoDB->finish;
-
-
-## Obsolete GO
-# Get obsolete GO to not insert them later on
-die "Missing [go.obsolete] file\n"  if ( !-e 'go.obsolete' || -z 'go.obsolete' );
-my %obs_go = map { lc $_ => 1 }
-             read_file("$obsGO", chomp => 1);
 
 
 ## DataSources
