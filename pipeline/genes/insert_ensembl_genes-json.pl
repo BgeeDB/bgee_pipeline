@@ -9,6 +9,7 @@ use JSON::XS;
 use List::MoreUtils qw{uniq};
 use List::Compare;
 use File::Slurp;
+use LWP::Simple;
 
 use FindBin;
 use lib "$FindBin::Bin/.."; # Get lib path for Utils.pm
@@ -119,24 +120,21 @@ $InsertedDataSources{'xenopus_jamboree'} = $InsertedDataSources{'xenbase'};
 $InsertedDataSources{'zfin_id'}          = $InsertedDataSources{'zfin'};
 
 
-exit;
-## Gene info (id, description)
+##FIXME Gene info (id, description)
 # Get individual gene info
-my $geneDB       = $dbh->prepare('INSERT INTO gene (geneId, geneName, geneDescription, geneBioTypeId, speciesId, dataSourceId)
-                                  VALUES (?, ?, ?, (SELECT geneBioTypeId FROM geneBioType WHERE geneBioTypeName=?), ?, ?)');
-my $synonymDB    = $dbh->prepare('INSERT INTO geneNameSynonym (bgeeGeneId, geneNameSynonym)
-                                  VALUES (?, ?)');
-my $xrefDB       = $dbh->prepare('INSERT INTO geneXRef (bgeeGeneId, XRefId, XRefName, dataSourceId)
-                                  VALUES (?, ?, ?, ?)');
+my $geneDB;#       = $dbh->prepare('INSERT INTO gene (geneId, geneName, geneDescription, geneBioTypeId, speciesId, dataSourceId)
+#                                  VALUES (?, ?, ?, (SELECT geneBioTypeId FROM geneBioType WHERE geneBioTypeName=?), ?, ?)');
+my $synonymDB;#    = $dbh->prepare('INSERT INTO geneNameSynonym (bgeeGeneId, geneNameSynonym)
+#                                  VALUES (?, ?)');
+my $xrefDB;#       = $dbh->prepare('INSERT INTO geneXRef (bgeeGeneId, XRefId, XRefName, dataSourceId)
+#                                  VALUES (?, ?, ?, ?)');
 print "Inserting gene info...\n";
 GENE:
-for my $gene (sort {$a->stable_id cmp $b->stable_id} (@genes)) { #Sort to always get the same order
-    my $display_id    = $gene->display_id();
-    my $stable_id     = $gene->stable_id();
-    my $external_name = $gene->external_name() || '';
-    my $external_db   = $gene->external_db()   || '';
-    my $description   = $gene->description()   || '';
-    my $biotype       = $gene->biotype()       || die "Invalid BioType for $stable_id\n";
+for my $gene (sort {$a->{'id'} cmp $b->{'id'}} (@genes)) { #Sort to always get the same order
+    my $stable_id     = $gene->{'id'};
+    my $external_name = $gene->{'name'}        || '';
+    my $description   = $gene->{'description'} || '';
+    my $biotype       = $gene->{'biotype'}     || die "Invalid BioType for $stable_id\n";
 
     ## Cleaning
     # Remove useless whitespace(s)
@@ -144,38 +142,71 @@ for my $gene (sort {$a->stable_id cmp $b->stable_id} (@genes)) { #Sort to always
     $description     =~ s{[\.,]+ *\[Source:}{ \[Source:};
     # Remove HTML tags in gene names
     $external_name   =~ s{<[^>]+?>}{}g;
-
-    warn "Different ids [$display_id] [$stable_id]\n"  if ( $display_id ne $stable_id);
-
-    ## external genome mapping
-    my $id2insert = $stable_id;
+    $external_name   =~ s{ \[provisional:(.+?)\]$}{$1}; #e.g. XB5961369 [provisional:plpp3
 
     ## Insert gene info
     my $bgeeGeneId;
     if ( ! $debug ){
-        $geneDB->execute($id2insert, $external_name, $description, $biotype, $speciesBgee, $datasourceId)  or die $geneDB->errstr;
-        $bgeeGeneId = $dbh->{'mysql_insertid'};
-        die "Cannot get bgeeGeneId [$bgeeGeneId]\n"  if ( $bgeeGeneId !~ /^\d+$/ );
+#        $geneDB->execute($stable_id, $external_name, $description, $biotype, $speciesBgee, $datasourceId)  or die $geneDB->errstr;
+#        $bgeeGeneId = $dbh->{'mysql_insertid'};
+#        die "Cannot get bgeeGeneId [$bgeeGeneId]\n"  if ( $bgeeGeneId !~ /^\d+$/ );
     }
     else {
-        print "\n[$id2insert] [$external_name] [$description]   [$biotype] [$speciesBgee]\n";
+        print "\n[$stable_id] [$external_name] [$description]   [$biotype] [$speciesBgee]\n";
     }
-
 
     ## Get gene synonyms, if any
     #NOTE Synonyms shown on the web site appear to come from THE main gene xref synonyms
-    #     But we need all of them, so no filtering based on main external_db !!!
+    #     But we need all of them, so no filtering !!!
 #TODO Remove part of synonym within "{...}" and split the rest on "|" !!!
-    my @synonyms = uniq sort                                                              # non-redundant & sorted
-                   map  { s{^\s+}{}; s{\s+$}{}; lc $_ }                                   # Trim & lowercase
-                   grep { $_ ne $stable_id && $_ ne $display_id && $_ ne $external_name } # Avoid putting $display_id as synonym
-                   map  { @{$_->get_all_synonyms} }                                       # Official xref synonyms
-#                   grep { $_->dbname() eq $external_db }                                  # Only external_db that are main gene db source
-                   @{$gene->get_all_xrefs()};
+    #from xrefs
+    my @synonyms = map  { s{^\s+}{}; s{\s+$}{}; lc $_ }              # Trim & lowercase
+                   grep { $_ ne $stable_id && $_ ne $external_name } # Avoid putting main name/id as synonym
+                   map  {
+                          if ( exists $_->{'synonyms'}->[0] ){
+                            (
+                              $_->{'display_id'},
+                              @{ $_->{'synonyms'} },
+                            )
+                          }
+                          else {
+                            (
+                              $_->{'display_id'},
+                            )
+                          }
+                        } # Official xref synonyms
+                   @{ $gene->{'xrefs'} };
+    #from transcript id and xrefs
+    push @synonyms, map  { s{^\s+}{}; s{\s+$}{}; lc $_ }              # Trim & lowercase
+                    grep { $_ ne $stable_id && $_ ne $external_name } # Avoid putting main name/id as synonym
+                    map  { $_->{'display_id'} }
+                    map  { @{ $_->{'xrefs'} } }
+                    @{ $gene->{'transcripts'} };
+    push @synonyms, map  { s{^\s+}{}; s{\s+$}{}; lc $_ }              # Trim & lowercase
+                    map { $_->{'id'} }
+                    @{ $gene->{'transcripts'} };
+    #from exon id
+    push @synonyms, map  { s{^\s+}{}; s{\s+$}{}; lc $_ }              # Trim & lowercase
+                    map { $_->{'id'} }
+                    map { @{ $_->{'exons'} } }
+                    @{ $gene->{'transcripts'} };
+    #from translation id and xrefs
+    if ( exists $gene->{'transcripts'}->[0]->{'translations'}->[0] ){
+        push @synonyms, map  { s{^\s+}{}; s{\s+$}{}; lc $_ }              # Trim & lowercase
+                        grep { $_ ne $stable_id && $_ ne $external_name } # Avoid putting main name/id as synonym
+                        map  { $_->{'display_id'} }
+                        map  { @{ $_->{'xrefs'} } }
+                        map { @{ $_->{'translations'} } }
+                        @{ $gene->{'transcripts'} };
+        push @synonyms, map  { s{^\s+}{}; s{\s+$}{}; lc $_ }              # Trim & lowercase
+                        map { $_->{'id'} }
+                        map { @{ $_->{'translations'} } }
+                        @{ $gene->{'transcripts'} };
+    }
     SYNONYM:
-    for my $syn ( @synonyms ){
+    for my $syn ( uniq sort @synonyms ){
         if ( ! $debug ){
-            $synonymDB->execute($bgeeGeneId, $syn)  or die $synonymDB->errstr;
+#            $synonymDB->execute($bgeeGeneId, $syn)  or die $synonymDB->errstr;
         }
         else {
             print "synonym: [$syn]\n";
@@ -187,27 +218,55 @@ for my $gene (sort {$a->stable_id cmp $b->stable_id} (@genes)) { #Sort to always
     # Show all datasources (but GO)
     if ( $debug ){
         print join(' | ', uniq sort
-                          map  { $_->dbname() }
-                          grep { $_->dbname() ne 'GO' }
-                          @{$gene->get_all_xrefs()}
+                          map  { $_->{'dbname'} }
+                          grep { $_->{'dbname'} ne 'GO' }
+                          @{ $gene->{'xrefs'} }
                   ), "\n";
     }
-    my %xrefs = map  { my $dbname = $_->dbname();
-                       my $pid    = $_->primary_id();
-                       "$dbname##$pid" => $_->display_id() }           # Remove duplicates
-                grep { exists $InsertedDataSources{lc $_->dbname()} }  # Only external db in dataSource table
-                grep { $_->dbname() ne 'GO' }                          # GO xrefs have there own table, so not in XRefs
-                @{$gene->get_all_xrefs()};
+    my %xrefs = map  { my $dbname = $_->{'dbname'};
+                       my $pid    = $_->{'primary_id'};
+                       "$dbname##$pid" => $_->{'display_id'} }           # Remove duplicates
+#                grep { exists $InsertedDataSources{lc $_->{'dbname'}} }  # Only external db in dataSource table
+                @{ $gene->{'xrefs'} };
+    #from transcript id and xrefs
+    map { $xrefs{"Ensembl##$_"} = $_ }
+        map { $_->{'id'} }
+        @{ $gene->{'transcripts'} };
+    map { my $dbname = $_->{'dbname'};
+          my $pid    = $_->{'primary_id'};
+          $xrefs{"$dbname##$pid"} = $_->{'display_id'}
+        }
+        map  { @{ $_->{'xrefs'} } }
+        @{ $gene->{'transcripts'} };
+    #from exon id
+    map { $xrefs{"Ensembl##$_"} = $_ }
+        map { $_->{'id'} }
+        map { @{ $_->{'exons'} } }
+        @{ $gene->{'transcripts'} };
+    #from translation id and xrefs
+    if ( exists $gene->{'transcripts'}->[0]->{'translations'}->[0] ){
+        map { $xrefs{"Ensembl##$_"} = $_ }
+            map { $_->{'id'} }
+            map { @{ $_->{'translations'} } }
+            @{ $gene->{'transcripts'} };
+        map { my $dbname = $_->{'dbname'};
+              my $pid    = $_->{'primary_id'};
+              $xrefs{"$dbname##$pid"} = $_->{'display_id'}
+            }
+            map  { @{ $_->{'xrefs'} } }
+            map { @{ $_->{'translations'} } }
+            @{ $gene->{'transcripts'} };
+    }
 
     # Get UniProt ID, missing in Ensembl that contains only UniProt AC
     UNIPROT_ID:
     for my $uniprot ( sort grep { /^Uniprot\/SPTREMBL##/ || /^Uniprot\/SWISSPROT##/} keys %xrefs ){
         my ($dbname, $pid) = split('##', $uniprot);
-        my $content = get("http://www.uniprot.org/uniprot/?query=id:$pid&format=tab&columns=entry%20name");
+        my $content = get("https://rest.uniprot.org/uniprotkb/$pid.json");
         if ( defined $content ){
-            my (undef, $uniprot_id) = split("\n", $content, -1);
-            #TODO CHECK !!!
-            for my $uid ( split(/\s*;\s*/, $uniprot_id) ){
+            my $uniprot_json = decode_json($content);
+            if ( exists $uniprot_json->{'uniProtkbId'} ){
+                my $uid = $uniprot_json->{'uniProtkbId'};
                 $xrefs{"$dbname##$uid"} = $uid;
             }
         }
@@ -217,27 +276,27 @@ for my $gene (sort {$a->stable_id cmp $b->stable_id} (@genes)) { #Sort to always
     }
 
     XREF:
-    for my $xref ( uniq sort keys %xrefs ){
+    for my $xref ( uniq sort grep { !/^GO##/ } keys %xrefs ){
         #TODO CHECK !!!
         next  if ( $xref =~ /;/ );
         my ($dbname, $pid) = split('##', $xref);
         $xrefs{$xref} = ''  if ( $xrefs{$xref} eq $pid );
         if ( ! $debug ){
-            $xrefDB->execute($bgeeGeneId, $pid, $xrefs{$xref}, $InsertedDataSources{lc $dbname})  or die $xrefDB->errstr;
+#            $xrefDB->execute($bgeeGeneId, $pid, $xrefs{$xref}, $InsertedDataSources{lc $dbname})  or die $xrefDB->errstr;
         }
         else {
-            print "xref: [$id2insert] [$pid] [$xrefs{$xref}] [$dbname]\n";
+            print "xref: [$stable_id] [$pid] [$xrefs{$xref}] [$dbname]\n";
         }
     }
 }
-$geneDB->finish;
-$synonymDB->finish;
-$xrefDB->finish;
+#$geneDB->finish;
+#$synonymDB->finish;
+#$xrefDB->finish;
 print "Gene nbr for $scientific_name: ", scalar @genes, "\n\n";
 
 
 # Close db connections
-$dbh->disconnect;
+#$dbh->disconnect;
 
 exit 0;
 
