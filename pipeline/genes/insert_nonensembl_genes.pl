@@ -32,7 +32,7 @@ my %opts = ('species=s'     => \$species,            # speciesCommonName from TS
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $species eq '' || $bgee_connector eq '' || $bgee_species eq '' ){
     print "\n\tInvalid or missing argument:
-\te.g. $0  -species=9606__0__NonEnsembl  -bgee=\$(BGEECMD)  -bgeeSpecies=\$(SPECIESFILEPATH)
+\te.g. $0  -species=9606__0__Genera_species__NonEnsembl  -bgee=\$(BGEECMD)  -bgeeSpecies=\$(SPECIESFILEPATH)
 \t-species     speciesId from Bgee db with the genomeSpeciesId concatenated
 \t-bgee        Bgee    connector string
 \t-bgeeSpecies bgeeSpecies.tsv file
@@ -189,15 +189,6 @@ if ( exists $newBioTypes[0] ){
 }
 
 
-## Alt GO
-# Get alt_id GO
-my $altgoDB = $dbh->prepare('SELECT goAltId, goId FROM geneOntologyTermAltId');
-$altgoDB->execute()  or die $altgoDB->errstr;
-my %altid_go = map { lc $_->[0] => lc $_->[1] }
-               @{$altgoDB->fetchall_arrayref};
-$altgoDB->finish;
-
-
 ## DataSources
 # Get used dataSources
 my $sourceDB = $dbh->prepare('SELECT dataSourceId, dataSourceName FROM dataSource');
@@ -226,10 +217,6 @@ my $synonymDB    = $dbh->prepare('INSERT INTO geneNameSynonym (bgeeGeneId, geneN
                                   VALUES (?, ?)');
 my $xrefDB       = $dbh->prepare('INSERT INTO geneXRef (bgeeGeneId, XRefId, XRefName, dataSourceId)
                                   VALUES (?, ?, ?, ?)');
-my $goDB         = $dbh->prepare('INSERT INTO geneToGeneOntologyTerm (bgeeGeneId, goId, goEvidenceCode)
-                                  VALUES (?, ?, ?)');
-my $geneToTermDB = $dbh->prepare('INSERT INTO geneToTerm (bgeeGeneId, term)
-                                  VALUES (?, ?)');
 print "Inserting gene info...\n";
 GENE:
 for my $gene (sort keys %$annotations ){ #Sort to always get the same order
@@ -253,7 +240,6 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
     my @xrefs;
     @xrefs    = @{ $annotations->{$gene}->{'db_xref'} }       if ( exists $annotations->{$gene}->{'db_xref'} );
     my @aliases;
-    my @gos;
     # Get extra info from UniProt   (for protein_coding genes only!)
     if ( $biotype eq 'protein_coding' ){
         my $content = get('https://www.uniprot.org/uniprot/?query=GeneID:'.$annotations->{$gene}->{'GeneID'}.'&format=xml&force=true');
@@ -313,14 +299,6 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
                                 }
                             }
                         }
-                        elsif ( $dbref->{'-type'} eq 'GO' ){
-                            for my $property ( sort @{ $dbref->{'property'} } ){
-                                if ( $property->{'-type'} eq 'evidence' ){
-                                    push @gos, $dbref->{'-id'}.'___'.$property->{'-value'};
-                                    last;
-                                }
-                            }
-                        }
                         elsif ( $dbref->{'-type'} eq 'Ensembl' ){
                             push @xrefs, $dbref->{'-type'}.':'.$dbref->{'-id'};
                             for my $property ( sort @{ $dbref->{'property'} } ){
@@ -333,7 +311,6 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
         }
     }
     @xrefs    = map { s/GeneID:/GenBank:/; $_ } uniq @xrefs;
-    @gos      = uniq map { uc($_) } @gos;
     @synonyms = grep { $_ ne $display_id && $_ ne $external_name} uniq @synonyms;
 
 
@@ -396,57 +373,10 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
             print "xref: [$stable_id] [$pid] [$dbname]\n";
         }
     }
-
-
-    ## Get GO xref
-    #TODO alt_id GO test  GO:0007243
-    GO:
-    for my $go_ec ( sort @gos ){
-        my ($go, $ec) = split('___', $go_ec);
-        if ( ! $debug ){
-            $goDB->execute($bgeeGeneId, uc $go, $ec)  or do {warn "[$stable_id] [$go] [$ec]\n"};# die $goDB->errstr};
-        }
-        else {
-            print "go:   [$stable_id] [$go] [$ec]\n";
-        }
-    }
-
-
-    ## Everything in geneToTerm
-    my @all;
-    push @all, $display_id                      if ( $display_id );
-    push @all, $stable_id                       if ( $stable_id );
-    push @all, $external_name                   if ( $external_name );
-    push @all, @synonyms;
-    push @all, map { s/^.+?://; $_ } @xrefs;
-    #without version digit
-    push @all, map { s/^.+?://; $_ }
-               map  { s/\.\d+$//; $_ }
-               grep { /\.\d+$/ }
-               @xrefs;
-    push @all, map { s/___.*$//; $_ } @gos;
-
-    # Remove duplicates AND empty strings AND trim!!!
-    @all = uniq sort
-           grep { $_ ne '' && defined $_ }                    # Non-empty & non-undef
-           map  { s{^\s+}{}; s{\s+$}{}; lc $_ }               # Trim + lowercase because same entry in different cases
-           @all;
-
-    ALL:
-    for my $term ( @all ){
-        if ( ! $debug ){
-            $geneToTermDB->execute($bgeeGeneId, $term)  or die "[$stable_id]", $geneToTermDB->errstr;
-        }
-        else {
-            print "term: [$gene] [$term]\n";
-        }
-    }
 }
 $geneDB->finish;
 $synonymDB->finish;
 $xrefDB->finish;
-$goDB->finish;
-$geneToTermDB->finish;
 print "Gene nbr for $scientific_name: ", scalar %$annotations, "\n\n";
 
 
