@@ -92,14 +92,13 @@ hogs: genes
 $(VERIFICATIONFILE): $(OUTPUT_DIR)go go.obsolete genes sameIdGeneCount hogs $(OUTPUT_DIR)insert_oncoMX_XRefs
 	# Check overview for all species
 	@$(MYSQL) -e "SELECT t1.speciesId, COUNT(DISTINCT t1.geneId) AS geneCount, COUNT(t2.geneId) AS synonymCount, COUNT(t2.geneId)/COUNT(DISTINCT t1.geneId) AS synonymsByGene FROM gene AS t1 LEFT OUTER JOIN geneNameSynonym AS t2 ON t1.geneId = t2.geneId GROUP BY speciesId" > $@.temp
-	# Check insertion of genes & generation of geneToTerm
+	# Check insertion of genes
 	@$(MYSQL) -e "SELECT speciesId FROM species ORDER BY speciesId" | grep -v 'speciesId' >species
 	# Check insertion of oncoMX XRefs
 	@$(MYSQL) -e "select COUNT(DISTINCT t1.bgeeGeneId, t1.XRefId) AS "number of oncoMX XRefs" from geneXRef AS t1 INNER JOIN dataSource AS t2 ON t1.datasourceId = t2.datasourceId WHERE t2.dataSourceName = 'OncoMX' > $@.temp
 	@for sp in `cat species`; do \
 		$(MYSQL) -e "SELECT t1.speciesId, t2.geneBioTypeName, COUNT(DISTINCT t1.geneId) AS geneCount, COUNT(t3.geneId) AS xrefCount, COUNT(t3.geneId)/COUNT(DISTINCT t1.geneId) AS XRefsByGene FROM gene AS t1 LEFT OUTER JOIN geneBioType AS t2 ON t1.geneBioTypeId = t2.geneBioTypeId LEFT OUTER JOIN geneXRef AS t3 ON t1.geneId = t3.geneId WHERE t1.speciesId = $$sp GROUP BY t1.speciesId, t2.geneBioTypeName ORDER BY geneCount DESC, xrefCount DESC" >> $@.temp; \
 		$(MYSQL) -e "SELECT t1.speciesId, t2.dataSourceName, COUNT(DISTINCT t1.geneId) AS geneCount, COUNT(t3.geneId) AS xrefCount, COUNT(t3.geneId)/COUNT(DISTINCT t1.geneId) AS XRefsByGene FROM gene AS t1 LEFT OUTER JOIN geneXRef AS t3 ON t1.geneId = t3.geneId LEFT OUTER JOIN dataSource AS t2 ON t2.dataSourceId = t3.dataSourceId WHERE t1.speciesId = $$sp GROUP BY t1.speciesId, t2.dataSourceName ORDER BY geneCount DESC, xrefCount DESC" >> $@.temp; \
-		$(MYSQL) -e "SELECT t1.speciesId, t2.geneBioTypeName, COUNT(t3.geneId) AS termCount, COUNT(t3.geneId)/COUNT(DISTINCT t1.geneId) AS termsByGene FROM gene AS t1 LEFT OUTER JOIN geneBioType AS t2 ON t1.geneBioTypeId = t2.geneBioTypeId LEFT OUTER JOIN geneToTerm AS t3 ON t1.geneId = t3.geneId WHERE t1.speciesId = $$sp GROUP BY t1.speciesId, t2.geneBioTypeName ORDER BY termCount DESC" >> $@.temp; \
 	done
 	@$(RM) species
 	# Add output of check of insertion of hierarchical groups
@@ -198,7 +197,7 @@ clean:
 # special target to remove genes, geneBioTypes, geneNameSynonyms, geneOntologyTerms, geneToGeneOntolongyTerms from database.
 # It is not included in the clean target, to not wipe the database accidentally
 deleteGene:
-	@$(MYSQL) -e "DELETE FROM geneNameSynonym; DELETE FROM geneXRef; DELETE FROM geneToGeneOntologyTerm; DELETE FROM geneToTerm; \
+	@$(MYSQL) -e "DELETE FROM geneNameSynonym; DELETE FROM geneXRef; \
 		          DELETE FROM geneOntologyTermAltId; DELETE FROM geneOntologyTerm; DELETE FROM geneBioType; ALTER TABLE geneBioType AUTO_INCREMENT=1; DELETE FROM gene;"
 deleteOMAHierarchicalGroup:
 	@$(MYSQL) -e "UPDATE gene SET OMAParentNodeId=null; DELETE FROM OMAHierarchicalGroup;"

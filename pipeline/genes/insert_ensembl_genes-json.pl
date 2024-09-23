@@ -27,7 +27,7 @@ my %opts = ('species=s'    => \$species,            # speciesCommonName from TSV
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $species eq '' || $bgee_connector eq '' ){
     print "\n\tInvalid or missing argument:
-\te.g. $0  -species=9606__0__Ensembl  -bgee=\$(BGEECMD)
+\te.g. $0  -species=9606__0__Genera_species__Ensembl  -bgee=\$(BGEECMD)  <Ensembl species JSON>
 \t-species   speciesId from Bgee db with the genomeSpeciesId concatenated
 \t-bgee      Bgee    connector string
 \t-debug     Debug mode, do not insert/update in database
@@ -128,8 +128,6 @@ my $synonymDB    = $dbh->prepare('INSERT INTO geneNameSynonym (bgeeGeneId, geneN
                                   VALUES (?, ?)');
 my $xrefDB       = $dbh->prepare('INSERT INTO geneXRef (bgeeGeneId, XRefId, XRefName, dataSourceId)
                                   VALUES (?, ?, ?, ?)');
-my $geneToTermDB = $dbh->prepare('INSERT INTO geneToTerm (bgeeGeneId, term)
-                                  VALUES (?, ?)');
 print "Inserting gene info...\n";
 GENE:
 for my $gene (sort {$a->stable_id cmp $b->stable_id} (@genes)) { #Sort to always get the same order
@@ -231,69 +229,10 @@ for my $gene (sort {$a->stable_id cmp $b->stable_id} (@genes)) { #Sort to always
             print "xref: [$id2insert] [$pid] [$xrefs{$xref}] [$dbname]\n";
         }
     }
-
-
-    ## Everything in geneToTerm
-    # gene_id + version
-    my @all;
-    push @all, $display_id                      if ( $display_id );
-    push @all, $id2insert                       if ( $id2insert );
-    push @all, $external_name                   if ( $external_name );
-    #NOTE version() does not seem to return something for species with non Ensembl gene ids such as C. elegans WBGene00000001
-    push @all, $id2insert.'.'.$gene->version()  if ( $id2insert && $gene->version() );
-    # transcript ids
-    push @all, map  { if ( $_->version() ){ ($_->stable_id(), $_->stable_id().'.'.$_->version()) } else { $_->stable_id() } }
-               grep { defined $_->stable_id() }
-               @{$gene->get_all_Transcripts};
-    # exon ids
-    push @all, map  { if ( $_->version() ){ ($_->stable_id(), $_->stable_id().'.'.$_->version()) } else { $_->stable_id() } }
-               grep { defined $_->stable_id() }
-               @{$gene->get_all_Exons};
-    # translation ids
-    push @all, map  { if ( $_->version() ){ ($_->stable_id(), $_->stable_id().'.'.$_->version()) } else { $_->stable_id() } }
-               grep { defined $_->stable_id() }
-               map  { $_->translation() }
-               grep { defined $_->translation() }
-               @{$gene->get_all_Transcripts};
-    # Xref display ids
-    push @all, map  { $_->display_id() }
-               @{$gene->get_all_xrefs()};
-    # Xref primary ids
-    push @all, map  { $_->primary_id() }
-               @{$gene->get_all_xrefs()};
-    # Xref synonyms
-    push @all, map  { @{ $_->get_all_synonyms } }
-               @{$gene->get_all_xrefs()};
-    # Extra Xref in gene description
-    if ( $description ne '' ){
-        #EC number
-        while ( $description =~ /E\.?C\.?\s*([1-6]\.[\d\-]+\.[\d\-]+\.[\d\-]+)/g ){
-            push @all, $1;
-        }
-        #Entry source
-        while ( $description =~ /\[Source:\s*.+?\s*;Acc:\s*(.+?)\s*\]/g ){
-            push @all, $1;
-        }
-    }
-    # Remove duplicates AND empty strings AND trim!!!
-    @all = uniq sort                                          # non-redundant & sorted
-           grep { $_ ne '' && defined $_ }                    # Non-empty & non-undef
-           map  { s{^\s+}{}; s{\s+$}{}; lc $_ }               # Trim + lowercase because same entry in different cases
-           @all;
-    ALL:
-    for my $term ( @all ){
-        if ( ! $debug ){
-            $geneToTermDB->execute($bgeeGeneId, $term)  or die $geneToTermDB->errstr;
-        }
-        else {
-            print "term: [$id2insert] [$term]\n";
-        }
-    }
 }
 $geneDB->finish;
 $synonymDB->finish;
 $xrefDB->finish;
-$geneToTermDB->finish;
 print "Gene nbr for $scientific_name: ", scalar @genes, "\n\n";
 
 

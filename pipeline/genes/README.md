@@ -7,9 +7,9 @@
 * This script will insert species gene information based on already inserted species (in the table `species`). It takes between 15 and 60 min per species.
 * It uses the Ensembl API.
 * It will fill the gene table with `geneId`, `geneName` and `geneDescription` (+ `geneBioTypeId` + `speciesId`).
-* It will also fill the tables `geneBioType`, `geneOntologyTerm` + `geneOntologyTermAltId` (and provides a file for obsolete GO terms), `geneNameSynonym`, `geneToGeneOntologyTerm`, and `geneXRef`. The insertion in `geneXRef` makes use of the `dataSource` table.
+* It will also fill the tables `geneBioType`, `geneNameSynonym` and `geneXRef`. The insertion in `geneXRef` makes use of the `dataSource` table.
 * It will also insert OncoMX XRefs in the `geneXRef` table. This step has to be run separately using the command : `make ../../generated_file/insert_oncoMX_XRefs`
-* **Important note regarding bonobo genes**: for bonobo, we take the same genome as chimpanzee (there is no bonobo genome in Ensembl, and it is debatable whether bonobo and chimp represent the same species). We use a SQL query at the end of the Makefile, to duplicate all chimpanzee genes, while providing new IDs. Consequently, it also duplicates the entries in `geneNameSynonym`, `geneToTerm` and `geneToGeneOntologyTerm` (with the appropriate IDs). **As a result, if you add or modify any fields in any of the tables `gene`, `geneNameSynonym`, `geneToTerm`, or `geneToGeneOntologyTerm`, you might need to modify the query used in this Makefile.**
+* **Important note regarding bonobo genes**: for bonobo, we take the same genome as chimpanzee (there is no bonobo genome in Ensembl, and it is debatable whether bonobo and chimp represent the same species). We use a SQL query at the end of the Makefile, to duplicate all chimpanzee genes, while providing new IDs. Consequently, it also duplicates the entries in `geneNameSynonym` (with the appropriate IDs). **As a result, if you add or modify any fields in any of the tables `gene` or `geneNameSynonym`, you might need to modify the query used in this Makefile.**
 
 ## Data generation
 * If it is the first time you execute this step in this pipeline run:
