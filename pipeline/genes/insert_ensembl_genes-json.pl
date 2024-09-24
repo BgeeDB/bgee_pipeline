@@ -52,7 +52,7 @@ my @genes = @{ $ensembl_json->{'genes'} };
 
 
 # Bgee db connection
-my $dbh; #FIXME = Utils::connect_bgee_db($bgee_connector);
+my $dbh = Utils::connect_bgee_db($bgee_connector);
 
 
 # Need to map to another genomeSpeciesId? #NOTE currently not used
@@ -69,41 +69,40 @@ if ( $scientific_name eq 'Heterocephalus_glaber' ){
 my @specificBioTypes = uniq
                        map { $_->{'biotype'} }
                        @genes;
-#FIXME Get previously inserted BioTypes
-#my $biotypeDB = $dbh->prepare('SELECT geneBioTypeName FROM geneBioType');
-#$biotypeDB->execute()  or die $biotypeDB->errstr;
-#my @InsertedBioTypes = uniq map { $_->[0] } @{$biotypeDB->fetchall_arrayref};
-#$biotypeDB->finish;
-#
-#
+# Get previously inserted BioTypes
+my $biotypeDB = $dbh->prepare('SELECT geneBioTypeName FROM geneBioType');
+$biotypeDB->execute()  or die $biotypeDB->errstr;
+my @InsertedBioTypes = uniq map { $_->[0] } @{$biotypeDB->fetchall_arrayref};
+$biotypeDB->finish;
+
+
 ## Insert only new BioTypes
-#my $lc = List::Compare->new(\@specificBioTypes, \@InsertedBioTypes);
-#my @newBioTypes = $lc->get_unique; # Get entries in the 1st list not in the 2nd
-#if ( exists $newBioTypes[0] ){
-#    $biotypeDB = $dbh->prepare('INSERT INTO geneBioType (geneBioTypeName) VALUES (?)');
-#    for my $biotype ( @newBioTypes ){
-#        #NOTE Fix to avoid warning because different cases between Ensembl db
-#        # and we would like to keep the right case for names, not everything in lc or uc!
-#        next  if ( $biotype =~ /^3prime_overlapping_ncRNA$/i      && grep { /^3prime_overlapping_ncRNA$/i }      @InsertedBioTypes );
-#        next  if ( $biotype =~ /^bidirectional_promoter_lncRNA$/i && grep { /^bidirectional_promoter_lncRNA$/i } @InsertedBioTypes );
-#        next  if ( $biotype =~ /^miRNA$/i                         && grep { /^miRNA$/i }                         @InsertedBioTypes );
-#        if ( ! $debug ){
-#            $biotypeDB->execute($biotype)  or die $biotypeDB->errstr;
-#        }
-#    }
-#    $biotypeDB->finish;
-#
-#    print "Inserting new BioTypes\n", join("\t", @newBioTypes), "\n";
-#}
+my $lc = List::Compare->new(\@specificBioTypes, \@InsertedBioTypes);
+my @newBioTypes = $lc->get_unique; # Get entries in the 1st list not in the 2nd
+if ( exists $newBioTypes[0] ){
+    $biotypeDB = $dbh->prepare('INSERT INTO geneBioType (geneBioTypeName) VALUES (?)');
+    for my $biotype ( @newBioTypes ){
+        #NOTE Fix to avoid warning because different cases between Ensembl db
+        # and we would like to keep the right case for names, not everything in lc or uc!
+        next  if ( $biotype =~ /^3prime_overlapping_ncRNA$/i      && grep { /^3prime_overlapping_ncRNA$/i }      @InsertedBioTypes );
+        next  if ( $biotype =~ /^bidirectional_promoter_lncRNA$/i && grep { /^bidirectional_promoter_lncRNA$/i } @InsertedBioTypes );
+        next  if ( $biotype =~ /^miRNA$/i                         && grep { /^miRNA$/i }                         @InsertedBioTypes );
+        if ( ! $debug ){
+            $biotypeDB->execute($biotype)  or die $biotypeDB->errstr;
+        }
+    }
+    $biotypeDB->finish;
+
+    print "Inserting new BioTypes\n", join("\t", @newBioTypes), "\n";
+}
 
 
-##FIXME DataSources
-## Get used dataSources
-#my $sourceDB = $dbh->prepare('SELECT dataSourceId, dataSourceName FROM dataSource');
-#$sourceDB->execute()  or die $sourceDB->errstr;
-#my %InsertedDataSources = map { $_->[1] = lc $_->[1]; $_->[1] => $_->[0] } @{$sourceDB->fetchall_arrayref}; # List already inserted dataSources and return it in a hash dataSourceName (lowercase) => dataSourceId
-#$sourceDB->finish;
-my %InsertedDataSources;#FIXME
+## DataSources
+# Get used dataSources
+my $sourceDB = $dbh->prepare('SELECT dataSourceId, dataSourceName FROM dataSource');
+$sourceDB->execute()  or die $sourceDB->errstr;
+my %InsertedDataSources = map { $_->[1] = lc $_->[1]; $_->[1] => $_->[0] } @{$sourceDB->fetchall_arrayref}; # List already inserted dataSources and return it in a hash dataSourceName (lowercase) => dataSourceId
+$sourceDB->finish;
 my $datasourceId = $ensSource eq 'Ensembl'        ? $InsertedDataSources{'ensembl'}
                  : $ensSource eq 'EnsemblMetazoa' ? $InsertedDataSources{'ensemblmetazoa'}
                  : '';
@@ -120,14 +119,14 @@ $InsertedDataSources{'xenopus_jamboree'} = $InsertedDataSources{'xenbase'};
 $InsertedDataSources{'zfin_id'}          = $InsertedDataSources{'zfin'};
 
 
-##FIXME Gene info (id, description)
+## Gene info (id, description)
 # Get individual gene info
-my $geneDB;#       = $dbh->prepare('INSERT INTO gene (geneId, geneName, geneDescription, geneBioTypeId, speciesId, dataSourceId)
-#                                  VALUES (?, ?, ?, (SELECT geneBioTypeId FROM geneBioType WHERE geneBioTypeName=?), ?, ?)');
-my $synonymDB;#    = $dbh->prepare('INSERT INTO geneNameSynonym (bgeeGeneId, geneNameSynonym)
-#                                  VALUES (?, ?)');
-my $xrefDB;#       = $dbh->prepare('INSERT INTO geneXRef (bgeeGeneId, XRefId, XRefName, dataSourceId)
-#                                  VALUES (?, ?, ?, ?)');
+my $geneDB    = $dbh->prepare('INSERT INTO gene (geneId, geneName, geneDescription, geneBioTypeId, speciesId, dataSourceId)
+                                  VALUES (?, ?, ?, (SELECT geneBioTypeId FROM geneBioType WHERE geneBioTypeName=?), ?, ?)');
+my $synonymDB = $dbh->prepare('INSERT INTO geneNameSynonym (bgeeGeneId, geneNameSynonym)
+                                  VALUES (?, ?)');
+my $xrefDB    = $dbh->prepare('INSERT INTO geneXRef (bgeeGeneId, XRefId, XRefName, dataSourceId)
+                                  VALUES (?, ?, ?, ?)');
 print "Inserting gene info...\n";
 GENE:
 for my $gene (sort {$a->{'id'} cmp $b->{'id'}} (@genes)) { #Sort to always get the same order
@@ -144,12 +143,15 @@ for my $gene (sort {$a->{'id'} cmp $b->{'id'}} (@genes)) { #Sort to always get t
     $external_name   =~ s{<[^>]+?>}{}g;
     $external_name   =~ s{ \[provisional:(.+?)\]$}{$1}; #e.g. XB5961369 [provisional:plpp3
 
+#TODO from "[Source:", get the source id to allow to merge the same Ensembl genes coming from different locations: "official" chromosome and its alternative assemblies
+# https://bgee.atlassian.net/browse/BA-170
+
     ## Insert gene info
     my $bgeeGeneId;
     if ( ! $debug ){
-#        $geneDB->execute($stable_id, $external_name, $description, $biotype, $speciesBgee, $datasourceId)  or die $geneDB->errstr;
-#        $bgeeGeneId = $dbh->{'mysql_insertid'};
-#        die "Cannot get bgeeGeneId [$bgeeGeneId]\n"  if ( $bgeeGeneId !~ /^\d+$/ );
+        $geneDB->execute($stable_id, $external_name, $description, $biotype, $speciesBgee, $datasourceId)  or die $geneDB->errstr;
+        $bgeeGeneId = $dbh->{'mysql_insertid'};
+        die "Cannot get bgeeGeneId [$bgeeGeneId]\n"  if ( $bgeeGeneId !~ /^\d+$/ );
     }
     else {
         print "\n[$stable_id] [$external_name] [$description]   [$biotype] [$speciesBgee]\n";
@@ -206,7 +208,7 @@ for my $gene (sort {$a->{'id'} cmp $b->{'id'}} (@genes)) { #Sort to always get t
     SYNONYM:
     for my $syn ( uniq sort @synonyms ){
         if ( ! $debug ){
-#            $synonymDB->execute($bgeeGeneId, $syn)  or die $synonymDB->errstr;
+            $synonymDB->execute($bgeeGeneId, $syn)  or die $synonymDB->errstr;
         }
         else {
             print "synonym: [$syn]\n";
@@ -282,21 +284,21 @@ for my $gene (sort {$a->{'id'} cmp $b->{'id'}} (@genes)) { #Sort to always get t
         my ($dbname, $pid) = split('##', $xref);
         $xrefs{$xref} = ''  if ( $xrefs{$xref} eq $pid );
         if ( ! $debug ){
-#            $xrefDB->execute($bgeeGeneId, $pid, $xrefs{$xref}, $InsertedDataSources{lc $dbname})  or die $xrefDB->errstr;
+            $xrefDB->execute($bgeeGeneId, $pid, $xrefs{$xref}, $InsertedDataSources{lc $dbname})  or die $xrefDB->errstr;
         }
         else {
             print "xref: [$stable_id] [$pid] [$xrefs{$xref}] [$dbname]\n";
         }
     }
 }
-#$geneDB->finish;
-#$synonymDB->finish;
-#$xrefDB->finish;
+$geneDB->finish;
+$synonymDB->finish;
+$xrefDB->finish;
 print "Gene nbr for $scientific_name: ", scalar @genes, "\n\n";
 
 
 # Close db connections
-#$dbh->disconnect;
+$dbh->disconnect;
 
 exit 0;
 
