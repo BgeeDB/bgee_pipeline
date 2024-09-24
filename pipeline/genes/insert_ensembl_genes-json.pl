@@ -184,26 +184,26 @@ for my $gene (sort {$a->{'id'} cmp $b->{'id'}} (@genes)) { #Sort to always get t
                     map  { $_->{'display_id'} }
                     map  { @{ $_->{'xrefs'} } }
                     @{ $gene->{'transcripts'} };
-    push @synonyms, map  { s{^\s+}{}; s{\s+$}{}; lc $_ }              # Trim & lowercase
+    push @synonyms, map { s{^\s+}{}; s{\s+$}{}; lc $_ }              # Trim & lowercase
                     map { $_->{'id'} }
                     @{ $gene->{'transcripts'} };
     #from exon id
-    push @synonyms, map  { s{^\s+}{}; s{\s+$}{}; lc $_ }              # Trim & lowercase
+    push @synonyms, map { s{^\s+}{}; s{\s+$}{}; lc $_ }              # Trim & lowercase
                     map { $_->{'id'} }
                     map { @{ $_->{'exons'} } }
                     @{ $gene->{'transcripts'} };
     #from translation id and xrefs
-    if ( exists $gene->{'transcripts'}->[0]->{'translations'}->[0] ){
-        push @synonyms, map  { s{^\s+}{}; s{\s+$}{}; lc $_ }              # Trim & lowercase
-                        grep { $_ ne $stable_id && $_ ne $external_name } # Avoid putting main name/id as synonym
-                        map  { $_->{'display_id'} }
-                        map  { @{ $_->{'xrefs'} } }
-                        map { @{ $_->{'translations'} } }
-                        @{ $gene->{'transcripts'} };
-        push @synonyms, map  { s{^\s+}{}; s{\s+$}{}; lc $_ }              # Trim & lowercase
-                        map { $_->{'id'} }
-                        map { @{ $_->{'translations'} } }
-                        @{ $gene->{'transcripts'} };
+    for my $transcript ( @{ $gene->{'transcripts'} } ){ # Do like this because some gene may have some coding AND non-coding transcripts at the same time, e.g. ENSG00000000003
+        if ( exists $transcript->{'translations'} ){
+            push @synonyms, map  { s{^\s+}{}; s{\s+$}{}; lc $_ }              # Trim & lowercase
+                            grep { $_ ne $stable_id && $_ ne $external_name } # Avoid putting main name/id as synonym
+                            map  { $_->{'display_id'} }
+                            map  { @{ $_->{'xrefs'} } }
+                            @{ $transcript->{'translations'} };
+            push @synonyms, map { s{^\s+}{}; s{\s+$}{}; lc $_ }              # Trim & lowercase
+                            map { $_->{'id'} }
+                            @{ $transcript->{'translations'} };
+        }
     }
     SYNONYM:
     for my $syn ( uniq sort @synonyms ){
@@ -238,18 +238,18 @@ for my $gene (sort {$a->{'id'} cmp $b->{'id'}} (@genes)) { #Sort to always get t
         map { @{ $_->{'exons'} } }
         @{ $gene->{'transcripts'} };
     #from translation id and xrefs
-    if ( exists $gene->{'transcripts'}->[0]->{'translations'}->[0] ){
-        map { $xrefs{"Ensembl##$_"} = $_ }
-            map { $_->{'id'} }
-            map { @{ $_->{'translations'} } }
-            @{ $gene->{'transcripts'} };
-        map { my $dbname = $_->{'dbname'};
-              my $pid    = $_->{'primary_id'};
-              $xrefs{"$dbname##$pid"} = $_->{'display_id'}
-            }
-            map  { @{ $_->{'xrefs'} } }
-            map { @{ $_->{'translations'} } }
-            @{ $gene->{'transcripts'} };
+    for my $transcript ( @{ $gene->{'transcripts'} } ){ # Do like this because some gene may have some coding AND non-coding transcripts at the same time, e.g. ENSG00000000003
+        if ( exists $transcript->{'translations'} ){
+            map { $xrefs{"Ensembl##$_"} = $_ }
+                map { $_->{'id'} }
+                @{ $transcript->{'translations'} };
+            map { my $dbname = $_->{'dbname'};
+                  my $pid    = $_->{'primary_id'};
+                $xrefs{"$dbname##$pid"} = $_->{'display_id'}
+                }
+                map { @{ $_->{'xrefs'} } }
+                @{ $transcript->{'translations'} };
+        }
     }
 
     # Get UniProt ID, missing in Ensembl that contains only UniProt AC
