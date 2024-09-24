@@ -17,7 +17,7 @@ RELEASE          := $(MAJOR_RELEASE).$(MINOR_RELEASE)
 # DBUSER and DBPASS defined in Makefile.Config
 # DBUSERV and DBPASSV defined in Makefile.Config
 DBNAME := bgee_v$(subst .,_,$(RELEASE))
-DBHOST := dbbioinfo.unil.ch
+DBHOST := rbioinfo.unil.ch
 DBPORT := 3306
 DBNAME_EASYBGEE := easybgee_v$(subst .,_,$(RELEASE))
 DBHOST_EASYBGEE := localhost
