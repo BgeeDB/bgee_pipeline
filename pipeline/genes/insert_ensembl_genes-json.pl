@@ -217,14 +217,6 @@ for my $gene (sort {$a->{'id'} cmp $b->{'id'}} (@genes)) { #Sort to always get t
 
 
     ## Get Xref (linked in dataSource table BUT not GO)
-    # Show all datasources (but GO)
-    if ( $debug ){
-        print join(' | ', uniq sort
-                          map  { $_->{'dbname'} }
-                          grep { $_->{'dbname'} ne 'GO' }
-                          @{ $gene->{'xrefs'} }
-                  ), "\n";
-    }
     my %xrefs = map  { my $dbname = $_->{'dbname'};
                        my $pid    = $_->{'primary_id'};
                        "$dbname##$pid" => $_->{'display_id'} }           # Remove duplicates
