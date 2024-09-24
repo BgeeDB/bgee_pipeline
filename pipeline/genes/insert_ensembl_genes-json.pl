@@ -193,7 +193,7 @@ for my $gene (sort {$a->{'id'} cmp $b->{'id'}} (@genes)) { #Sort to always get t
                     map { @{ $_->{'exons'} } }
                     @{ $gene->{'transcripts'} };
     #from translation id and xrefs
-    for my $transcript ( @{ $gene->{'transcripts'} } ){ # Do like this because some gene may have some coding AND non-coding transcripts at the same time, e.g. ENSG00000000003
+    for my $transcript ( @{ $gene->{'transcripts'} } ){ # Do like this because some genes may have some coding AND non-coding transcripts at the same time, e.g. ENSG00000000003
         if ( exists $transcript->{'translations'} ){
             push @synonyms, map  { s{^\s+}{}; s{\s+$}{}; lc $_ }              # Trim & lowercase
                             grep { $_ ne $stable_id && $_ ne $external_name } # Avoid putting main name/id as synonym
@@ -238,7 +238,7 @@ for my $gene (sort {$a->{'id'} cmp $b->{'id'}} (@genes)) { #Sort to always get t
         map { @{ $_->{'exons'} } }
         @{ $gene->{'transcripts'} };
     #from translation id and xrefs
-    for my $transcript ( @{ $gene->{'transcripts'} } ){ # Do like this because some gene may have some coding AND non-coding transcripts at the same time, e.g. ENSG00000000003
+    for my $transcript ( @{ $gene->{'transcripts'} } ){ # Do like this because some genes may have some coding AND non-coding transcripts at the same time, e.g. ENSG00000000003
         if ( exists $transcript->{'translations'} ){
             map { $xrefs{"Ensembl##$_"} = $_ }
                 map { $_->{'id'} }
