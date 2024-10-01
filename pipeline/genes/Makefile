@@ -13,39 +13,25 @@ $(OUTPUT_DIR)go:
 	@$(JAVA) InsertGO $(INPUT_DIR)go >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
 
-go.obsolete: $(OUTPUT_DIR)go
-	# Get obsolete GO term list
-	@$(JAVA) OntologyTools ExtractObsoleteIds $(INPUT_DIR)go $@.tmp
-	@$(MV) $@.tmp $@
-
-# Deal with different Ensembl API versions for Ensembl and Ensembl Metazoa/Genomes
-# Keep default for Ensembl
-genes: $(SPECIESFILEPATH) go.obsolete
+genes: $(SPECIESFILEPATH)
 	@$(MYSQL) -e "SELECT CONCAT(s.speciesId, '__', s.genomeSpeciesId, '__', s.genus, '_', REPLACE(s.species, ' ', '_'), '__', d.dataSourceName) FROM species s, dataSource d WHERE s.dataSourceId=d.dataSourceId ORDER BY s.speciesId" | grep -v 'speciesId' >$@.species
 	@if [[ -s $@.species ]]; then echo -n; else echo "NO species in file"; exit 2; fi
 	# Insert gene information for Ensembl species (may be long: between 1 and 10 hours per species)
 	@for sp in `cat $@.species | grep -i __Ensembl`; do \
-		export ENSCMD=$(ENSCMD); \
-		export PERL5LIBORI=$$PERL5LIB; \
 		date; \
 		echo "species: $$sp"; \
-		if [[ `echo $$sp | grep 'Ensembl$$'` ]]; then \
-			export PERL5LIB=`echo $$PERL5LIB | perl -ne 'print join ":", map { s/\/ensembl\//\/ensembl_$(ENS_API_RELEASE)\//; $$_ } grep { /\w/ } split(/:/, $$_)'`; \
-		elif [[ `echo $$sp | grep 'EnsemblMetazoa$$'` ]]; then \
-			export ENSCMD=$${ENSCMD/$(ENSDBHOST)/$(ENSGDBHOST)}; \
-			export ENSCMD=$${ENSCMD/$(ENSDBPORT)/$(ENSGDBPORT)}; \
-			export PERL5LIB=`echo $$PERL5LIB | perl -ne 'print join ":", map { s/\/ensembl\//\/ensembl_$(ENSMETAZOA_API_RELEASE)\//; $$_ } grep { /\w/ } split(/:/, $$_)'`; \
-		fi; \
-		perl insert_ensembl_genes.pl -species=$$sp -bgee=$(BGEECMD) -ensembl=$$ENSCMD -obsGO=go.obsolete >> $@.tmp 2>>$@.err; \
-		export PERL5LIB=$$PERL5LIBORI; \
-		sleep 60; \
+		export spe=`echo $$sp | grep -i __Ensembl | sed -e 's|__Ensembl.*||; s|^.*__||' | tr 'A-Z' 'a-z'`; \
+		if [[ $$spe == 'heterocephalus_glaber' ]]; then export spe='heterocephalus_glaber_female'; fi; \
+		export url='https://ftp.ensembl.org/pub/release-$(ENSRELEASE)'; \
+		if [[ `echo $$sp | grep 'EnsemblMetazoa$$'` ]]; then export url='http://ftp.ensemblgenomes.org/pub/metazoa/release-$(ENSMETAZOARELEASE)'; fi; \
+		$(WGET) "$$url/json/$$spe/$$spe.json" -O $(INPUT_DIR)$$spe.tmp && $(MV) $(INPUT_DIR)$$spe.tmp $(INPUT_DIR)$$spe.json 2>/dev/null || rm -f $(INPUT_DIR)$$spe.tmp; \
+		perl insert_ensembl_genes.pl -species=$$sp -bgee=$(BGEECMD) $(INPUT_DIR)$$spe.json >> $@.tmp 2>>$@.err; \
 	done
 	# Insert gene information for non-Ensembl species
-	@for sp in `cat $@.species | grep -vi __Ensembl`; do \
+	@for sp in `cat $@.species | grep -vi __Ensembl | sed -e 's| .*||'`; do \
 		date; \
 		echo "species: $$sp"; \
 		perl insert_nonensembl_genes.pl -species=$$sp -bgee=$(BGEECMD) -bgeeSpecies=$(SPECIESFILEPATH) >> $@.tmp 2>>$@.err; \
-		sleep 60; \
 	done
 	@if [[ -s $@.err ]]; then echo -n; else $(RM) $@.err; fi
 	@$(MV) $@.tmp $@
@@ -53,6 +39,7 @@ genes: $(SPECIESFILEPATH) go.obsolete
 # Please check that GeneCards datasource ID did not change in the database before running updateXrefs
 GENECARDS_ID := 40
 
+#FIXME still needed with the Ensembl JSON parsing? Maybe only for non-Ensembl species
 updateXrefs : genes
 	# UPDATE UNIPROT XREFS
 	# first remove already existing xrefs_from_uniprot file
@@ -89,7 +76,7 @@ hogs: genes
 	@$(MV) $@.temp $@
 
 
-$(VERIFICATIONFILE): $(OUTPUT_DIR)go go.obsolete genes sameIdGeneCount hogs $(OUTPUT_DIR)insert_oncoMX_XRefs
+$(VERIFICATIONFILE): $(OUTPUT_DIR)go genes sameIdGeneCount hogs $(OUTPUT_DIR)insert_oncoMX_XRefs
 	# Check overview for all species
 	@$(MYSQL) -e "SELECT t1.speciesId, COUNT(DISTINCT t1.geneId) AS geneCount, COUNT(t2.geneId) AS synonymCount, COUNT(t2.geneId)/COUNT(DISTINCT t1.geneId) AS synonymsByGene FROM gene AS t1 LEFT OUTER JOIN geneNameSynonym AS t2 ON t1.geneId = t2.geneId GROUP BY speciesId" > $@.temp
 	# Check insertion of genes
@@ -120,7 +107,7 @@ LOG_HOMOLOGS = debug
 #The tmp files should be placed in the TEMPORARY_CONFIG_FILES_DIRECTORY. Possible values: True and False
 REMOVE_SPECIES_PAIRS = False
 
-#For more information about the config template, please see the README.md file of the orthologs/paralogs app	
+#For more information about the config template, please see the README.md file of the orthologs/paralogs app
 define CONFIG_TEMPLATE
 [DEFAULT]
 bgee_sparql_endpoint = https://www.bgee.org/sparql/
@@ -159,7 +146,7 @@ $(OUTPUT_DIR)generate_homologs_app: config_file
 	@cd $(GENERATE_HOMOLOGS_APP_DIR)
 	@$(PIPENV) install 1>$@.tmp 2>$@.err
 	@$(PIPENV) run $(PYTHON3) $(GENERATE_HOMOLOGS_APP_FILE) -c $(TEMPORARY_CONFIG_FILES_DIR) -n $(N_PROCESSES) >> $@.tmp 2>> $@.err
-	@$(MV) $(HOMOLOGS_DIR)/orthologs* $(ORTHOLOGS_DIR) 
+	@$(MV) $(HOMOLOGS_DIR)/orthologs* $(ORTHOLOGS_DIR)
 	@$(MV) $(HOMOLOGS_DIR)/paralogs* $(PARALOGS_DIR)
 	@$(RM) -r $(HOMOLOGS_DIR)
 	@$(MV) $@.tmp $@
@@ -188,7 +175,7 @@ $(OUTPUT_DIR)delete_oncoMX_XRefs:
 	@$(MV) $@.tmp $@
 
 clean:
-	-@$(RM) $(VERIFICATIONFILE) $(OUTPUT_DIR)go go.obsolete genes genes.err species *.tmp $(INPUT_DIR)$(ORTHOXMLFILE).gz $(INPUT_DIR)$(ORTHOXMLFILE) hogs
+	-@$(RM) $(VERIFICATIONFILE) $(OUTPUT_DIR)go genes genes.err species *.tmp $(INPUT_DIR)$(ORTHOXMLFILE).gz $(INPUT_DIR)$(ORTHOXMLFILE) hogs
 	-@$(GIT) rm $(VERIFICATIONFILE)
 	-@$(GIT) commit $(VERIFICATIONFILE) -m "Removing verification file for gene (and related) and hierarchical group insertion"
 	@$(GIT) push

@@ -47,8 +47,8 @@ DATAHOST   := jura0.sib.swiss
 DATAPATH   := /data
 
 # Ensembl
-ENSRELEASE             := 112
-ENSMETAZOARELEASE      := 59
+ENSRELEASE             := 113
+ENSMETAZOARELEASE      := 60
 ENS_API_RELEASE        := $(ENSRELEASE)
 ENSMETAZOA_API_RELEASE := $(ENSRELEASE)
 #   Default, remote Ensembl db
@@ -115,7 +115,7 @@ CP     := cp -f
 GUNZIP := gunzip -f
 MKDIR  := mkdir -p
 
-LC_ALL = 'C'
+#LC_ALL = 'C'
 PYTHON3 = python3
 PIPENV = pipenv
 
