@@ -18,10 +18,12 @@ use Utils;
 
 # Define arguments & their default value
 my ($species, $bgee_connector) = ('', '');
+my ($specific_gene) = ('');
 my ($debug) = (0);
 my %opts = ('species=s'    => \$species,            # speciesCommonName from TSV for or Bgee db
             'bgee=s'       => \$bgee_connector,     # Bgee connector string
             'debug'        => \$debug,              # debug mode, do not insert/update in database
+            'gene=s'       => \$specific_gene,      # Query a single gene
            );
 
 # Check arguments
@@ -32,6 +34,8 @@ if ( !$test_options || $species eq '' || $bgee_connector eq '' ){
 \t-species   speciesId from Bgee db with the genomeSpeciesId concatenated
 \t-bgee      Bgee    connector string
 \t-debug     Debug mode, do not insert/update in database
+\t
+\t-gene      Query a single specific gene (optional)
 \n";
     exit 1;
 }
@@ -129,6 +133,10 @@ my $xrefDB    = $dbh->prepare('INSERT INTO geneXRef (bgeeGeneId, XRefId, XRefNam
 print "Inserting gene info...\n";
 GENE:
 for my $gene (sort {$a->{'id'} cmp $b->{'id'}} (@genes)) { #Sort to always get the same order
+    if ( $specific_gene ){
+        next  if ( $gene->{'id'} ne $specific_gene );
+    }
+
     my $stable_id     = $gene->{'id'};
     my $external_name = $gene->{'name'}        || '';
     my $description   = $gene->{'description'} || '';
