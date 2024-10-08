@@ -6,6 +6,8 @@ use diagnostics;
 
 # mysql -u bgee -p -h bioinfo bgee_v15_2 -e "SELECT GROUP_CONCAT(geneId), bgeeGeneId, speciesId, geneName, geneDescription, COUNT(*) AS dupl_count FROM gene WHERE geneDescription != '' AND geneName != '' AND geneDescription NOT LIKE '%Source:RFAM;%' GROUP BY geneDescription, geneName, speciesId HAVING COUNT(*) > 1 ORDER BY dupl_count;"
 # ./check_duplicated_genes_because_of_alt_assemblies.pl  -gene=ENSG00000204371  -bgee=user=bgee__pass=bgee__host=bioinfo.unil.ch__port=3306__name=bgee_v15_2
+#TODO from "[Source:", get the source id to allow to merge the same Ensembl genes coming from different locations: "official" chromosome and its alternative assemblies
+# https://bgee.atlassian.net/browse/BA-170
 
 use FindBin;
 use lib "$FindBin::Bin/.."; # Get lib path for Utils.pm

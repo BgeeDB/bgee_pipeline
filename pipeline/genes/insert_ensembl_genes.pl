@@ -150,9 +150,7 @@ for my $gene (sort {$a->{'id'} cmp $b->{'id'}} (@genes)) { #Sort to always get t
     $external_name   =~ s{<[^>]+?>}{}g;
     $external_name   =~ s{ \[provisional:(.+?)\]$}{$1}; #e.g. XB5961369 [provisional:plpp3
 
-#TODO from "[Source:", get the source id to allow to merge the same Ensembl genes coming from different locations: "official" chromosome and its alternative assemblies
-# https://bgee.atlassian.net/browse/BA-170
-
+#TODO get chromosome info to ease duplicated genes identification later?
     ## Insert gene info
     my $bgeeGeneId;
     if ( ! $debug ){
