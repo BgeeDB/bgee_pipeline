@@ -16,20 +16,23 @@ use Utils;
 
 # Define arguments & their default value
 my ($gene, $bgee_connector) = ('', '');
+my ($all) = (0);
 my ($debug) = (0);
 my %opts = ('gene=s' => \$gene,            # gene to check for duplicates
             'bgee=s' => \$bgee_connector,  # Bgee connector string
             'debug'  => \$debug,           # debug mode, do not insert/update in database
+            'all'    => \$all,             # Return a global list of all potential duplicates
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $gene eq '' || $bgee_connector eq '' ){
+if ( !$test_options || ($gene eq '' && $all == 0) || $bgee_connector eq '' ){
     print "\n\tInvalid or missing argument:
 \te.g. $0  -gene=ENSG00000204371  -bgee=\$(BGEECMD)
 \t-gene     Gene to check for duplicates
 \t-bgee     Bgee connector string
 \t-debug    Debug mode, do not insert/update in database
+\t-all      Return a global list of all potential duplicates
 \n";
     exit 1;
 }
@@ -55,13 +58,12 @@ $duplicatesDB->finish;
 
 # Are there duplicates?
 my @duplicates = split(',', $dupl_geneIds || $gene);
-if ( exists $duplicates[1] ){
-    print "It looks $gene has $dupl_count duplicates: ", '[', join("]\t[", $dupl_geneIds, $geneDescription, $geneName), "]\n";
-}
-else {
+if ( ! exists $duplicates[1] ){
     print "It does not look $gene has duplicates: ", '[', join("]\t[", ($dupl_geneIds || $gene), $geneDescription, $geneName), "]\n";
     exit 0;
 }
+
+print "It looks $gene has $dupl_count duplicates: ", '[', join("]\t[", $dupl_geneIds, $geneDescription, $geneName), "]\n";
 
 
 # Close db connections
