@@ -150,7 +150,7 @@ for my $gene (sort {$a->{'id'} cmp $b->{'id'}} (@genes)) { #Sort to always get t
     $external_name   =~ s{<[^>]+?>}{}g;
     $external_name   =~ s{ \[provisional:(.+?)\]$}{$1}; #e.g. XB5961369 [provisional:plpp3
 
-#TODO get chromosome info to ease duplicated genes identification later?
+#TODO get chromosome info to ease duplicated genes identification later? `seq_region_name` field
     ## Insert gene info
     my $bgeeGeneId;
     if ( ! $debug ){

@@ -78,6 +78,12 @@ if ( ! exists $duplicates[1] ){
 }
 
 print "It looks $gene has $dupl_count duplicates: ", '[', join("]\t[", $dupl_geneIds, $geneDescription, $geneName), "]\n";
+#TODO How to merge duplicates in the db?
+#     -> easy for sphinx, we keep the original (but what is the original?) and move the duplicates as original's xrefs
+#     -> what happens if an URL with a duplicate is used? How to redirect to the original?
+#     -> in topAnat & Expression comparison, if duplicates are used as input, the originals must be used in the analysis
+#     Should it be done only for "mature" assembly, and original are those on non-alternative assemblies only?
+#     Better to be merged before call runs, to avoid to have to merge scores, ...
 
 
 # Close db connections
