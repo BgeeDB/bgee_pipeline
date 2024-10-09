@@ -42,6 +42,19 @@ if ( !$test_options || ($gene eq '' && $all == 0) || $bgee_connector eq '' ){
 my $dbh = Utils::connect_bgee_db($bgee_connector);
 
 
+# Return a global list of all potential duplicates
+if ( $all ){
+    my $allDB = $dbh->prepare("SELECT GROUP_CONCAT(geneId), bgeeGeneId, speciesId, geneName, geneDescription, COUNT(*) AS dupl_count FROM gene WHERE geneDescription != '' AND geneName != '' AND geneDescription NOT LIKE '%Source:RFAM;%' GROUP BY geneDescription, geneName, speciesId HAVING COUNT(*) > 1 ORDER BY dupl_count");
+    $allDB->execute()  or die $allDB->errstr;
+    for my $dupl ( @{ $allDB->fetchall_arrayref } ){
+        print '[', join("]\t[", @{$dupl}), "]\n";
+    }
+    $allDB->finish;
+    $dbh->disconnect;
+    exit 0;
+}
+
+
 # Get gene info
 my $geneDB = $dbh->prepare('SELECT geneName, geneDescription, geneBioTypeId, speciesId FROM gene WHERE geneId=?');
 $geneDB->execute($gene)  or die $geneDB->errstr;
@@ -60,6 +73,7 @@ $duplicatesDB->finish;
 my @duplicates = split(',', $dupl_geneIds || $gene);
 if ( ! exists $duplicates[1] ){
     print "It does not look $gene has duplicates: ", '[', join("]\t[", ($dupl_geneIds || $gene), $geneDescription, $geneName), "]\n";
+    $dbh->disconnect;
     exit 0;
 }
 
