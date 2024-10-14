@@ -42,6 +42,7 @@ if ( !$test_options || ($gene eq '' && $all == 0) || $bgee_connector eq '' ){
 my $dbh = Utils::connect_bgee_db($bgee_connector);
 
 
+#TODO display also the field "seqRegionName" to help decide
 # Return a global list of all potential duplicates
 if ( $all ){
     my $allDB = $dbh->prepare("SELECT GROUP_CONCAT(geneId), bgeeGeneId, speciesId, geneName, geneDescription, COUNT(*) AS dupl_count FROM gene WHERE geneDescription != '' AND geneName != '' AND geneDescription NOT LIKE '%Source:RFAM;%' GROUP BY geneDescription, geneName, speciesId HAVING COUNT(*) > 1 ORDER BY dupl_count");
@@ -78,12 +79,14 @@ if ( ! exists $duplicates[1] ){
 }
 
 print "It looks $gene has $dupl_count duplicates: ", '[', join("]\t[", $dupl_geneIds, $geneDescription, $geneName), "]\n";
-#TODO How to merge duplicates in the db?
-#     -> easy for sphinx, we keep the original (but what is the original?) and move the duplicates as original's xrefs
-#     -> what happens if an URL with a duplicate is used? How to redirect to the original?
-#     -> in topAnat & Expression comparison, if duplicates are used as input, the originals must be used in the analysis
-#     Should it be done only for "mature" assembly, and original are those on non-alternative assemblies only?
-#     Better to be merged before call runs, to avoid to have to merge scores, ...
+#TODO => for species we are sure it matches on alternative chromosome, simpler to remove genes on those alt chr!
+#        So, mainly human, zebrahish and ???? With https://ftp.ensembl.org/pub/current_fasta/*/dna/*.dna.alt* file
+#        human      EHMT2  gene on chr  *6* and Scaffold HSCHR*6*_MHC_QBL_CTG1
+#        zebrafish  prune  gene on chr *16* and CHR_ALT_CTG*16*_1_20
+
+#TODO Is there a cascade delete for genes from the gene table?
+#     to delete all those gene xrefs, terms, ...
+#TODO Before deleting, a check has to be done to see if there are some expression for the one(s) to delete!
 
 
 # Close db connections

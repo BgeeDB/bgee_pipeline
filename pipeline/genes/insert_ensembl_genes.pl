@@ -124,8 +124,8 @@ $InsertedDataSources{'zfin_id'}          = $InsertedDataSources{'zfin'};
 
 ## Gene info (id, description)
 # Get individual gene info
-my $geneDB    = $dbh->prepare('INSERT INTO gene (geneId, geneName, geneDescription, geneBioTypeId, speciesId, dataSourceId)
-                                  VALUES (?, ?, ?, (SELECT geneBioTypeId FROM geneBioType WHERE geneBioTypeName=?), ?, ?)');
+my $geneDB    = $dbh->prepare('INSERT INTO gene (geneId, geneName, geneDescription, geneBioTypeId, speciesId, dataSourceId, seqRegionName)
+                                  VALUES (?, ?, ?, (SELECT geneBioTypeId FROM geneBioType WHERE geneBioTypeName=?), ?, ?, ?)');
 my $synonymDB = $dbh->prepare('INSERT INTO geneNameSynonym (bgeeGeneId, geneNameSynonym)
                                   VALUES (?, ?)');
 my $xrefDB    = $dbh->prepare('INSERT INTO geneXRef (bgeeGeneId, XRefId, XRefName, dataSourceId)
@@ -137,10 +137,11 @@ for my $gene (sort {$a->{'id'} cmp $b->{'id'}} (@genes)) { #Sort to always get t
         next  if ( $gene->{'id'} ne $specific_gene );
     }
 
-    my $stable_id     = $gene->{'id'};
-    my $external_name = $gene->{'name'}        || '';
-    my $description   = $gene->{'description'} || '';
-    my $biotype       = $gene->{'biotype'}     || die "Invalid BioType for $stable_id\n";
+    my $stable_id       = $gene->{'id'};
+    my $external_name   = $gene->{'name'}             || '';
+    my $description     = $gene->{'description'}      || '';
+    my $biotype         = $gene->{'biotype'}          || die "Invalid BioType for $stable_id\n";
+    my $seq_region_name = $gene->{'seq_region_name'}  || '';
 
     ## Cleaning
     # Remove useless whitespace(s)
@@ -154,7 +155,7 @@ for my $gene (sort {$a->{'id'} cmp $b->{'id'}} (@genes)) { #Sort to always get t
     ## Insert gene info
     my $bgeeGeneId;
     if ( ! $debug ){
-        $geneDB->execute($stable_id, $external_name, $description, $biotype, $speciesBgee, $datasourceId)  or die $geneDB->errstr;
+        $geneDB->execute($stable_id, $external_name, $description, $biotype, $speciesBgee, $datasourceId, $seq_region_name)  or die $geneDB->errstr;
         $bgeeGeneId = $dbh->{'mysql_insertid'};
         die "Cannot get bgeeGeneId [$bgeeGeneId]\n"  if ( $bgeeGeneId !~ /^\d+$/ );
     }
