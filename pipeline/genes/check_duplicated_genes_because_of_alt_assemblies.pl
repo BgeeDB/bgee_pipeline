@@ -83,10 +83,15 @@ print "It looks $gene has $dupl_count duplicates: ", '[', join("]\t[", $dupl_gen
 #        So, mainly human, zebrahish and ???? With https://ftp.ensembl.org/pub/current_fasta/*/dna/*.dna.alt* file
 #        human      EHMT2  gene on chr  *6* and Scaffold HSCHR*6*_MHC_QBL_CTG1
 #        zebrafish  prune  gene on chr *16* and CHR_ALT_CTG*16*_1_20
+#        It may happen for mouse, on genome patches!
 
 #TODO Is there a cascade delete for genes from the gene table?
 #     to delete all those gene xrefs, terms, ...
 #TODO Before deleting, a check has to be done to see if there are some expression for the one(s) to delete!
+
+
+#NOTE Take care that some duplicates may be due to bad assemblies, and may be solved in future assemblies.
+#NOTE Take care that some duplicates may be linked to wrong gene models, and be splice variants. E.g. ENSMUSG00000007440 & ENSMUSG00000102206
 
 
 # Close db connections
