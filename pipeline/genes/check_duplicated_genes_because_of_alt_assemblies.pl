@@ -79,7 +79,7 @@ if ( ! exists $duplicates[1] ){
 }
 
 print "It looks $gene has $dupl_count duplicates: ", '[', join("]\t[", $dupl_geneIds, $geneDescription, $geneName), "]\n";
-#TODO => for species we are sure it matches on alternative chromosome, simpler to remove genes on those alt chr!
+#TODO => for species we are sure they match on alternative chromosome, simpler to remove genes on those alt chr!
 #        So, mainly human, zebrahish and ???? With https://ftp.ensembl.org/pub/current_fasta/*/dna/*.dna.alt* file
 #        human      EHMT2  gene on chr  *6* and Scaffold HSCHR*6*_MHC_QBL_CTG1
 #        zebrafish  prune  gene on chr *16* and CHR_ALT_CTG*16*_1_20
