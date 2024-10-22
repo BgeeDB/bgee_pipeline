@@ -131,7 +131,7 @@ check_sra: list_new_downloads
 ################################ DOWNLOAD GENOMES AND ANNOTATIONS ################################
 
 #NOTE to be done on regular cluster, with network access
-get_GTF: clean_cluster_folders create_rna_seq_sample_info
+get_GTF: create_rna_seq_sample_info
 	# Get GTF files from Ensembl and NCBI FTP
 	@perl 0Before/get_GTF_files.pl  -RNAseqSample=$(RNASEQ_SAMPINFO_FILEPATH) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_DOWNLOAD_GTF)  >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
@@ -201,6 +201,7 @@ check_tools: cluster1
 	@$(CLUSTER_R_CMD) R -e 'library("reshape2")'        >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("rjson")'           >> $@.tmp  2>/dev/null
 	@$(CLUSTER_R_CMD) R -e 'library("tools")'           >> $@.tmp  2>/dev/null
+	@$(CLUSTER_R_CMD) R -e 'library("tximport")'        >> $@.tmp  2>/dev/null
 	@which xz                                           >> $@.tmp
 	@which sbatch                                       >> $@.tmp
 	@$(CLUSTER_TOPHAT_CMD)     which gtf_to_fasta       >> $@.tmp
