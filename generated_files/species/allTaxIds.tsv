@@ -1,73 +1,379 @@
 speciesId	genus	species	speciesCommonName	displayOrder	genomeFilePath	genomeVersion	dataSourceId	genomeSpeciesId	fakeGeneIdPrefix	keywords	comment
-9606	Homo	sapiens	human	1	homo_sapiens/Homo_sapiens.GRCh38	GRCh38.p13	2	9606		man	
-10090	Mus	musculus	mouse	2	mus_musculus/Mus_musculus.GRCm38	GRCm38.p6	2	10090		house mouse|mice	
-7955	Danio	rerio	zebrafish	3	danio_rerio/Danio_rerio.GRCz11	GRCz11	2	7955		DANRE|leopard danio|zebra danio	
-7227	Drosophila	melanogaster	fruit fly	4	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.28	BDGP6.28	2	7227		DROME|vinegar fly|fruitfly	
-6239	Caenorhabditis	elegans	nematode	5	caenorhabditis_elegans/Caenorhabditis_elegans.WBcel235	WBcel235	2	6239		CAEEL|C. elegans|worm|roundworm	
-9598	Pan	troglodytes	chimpanzee	6	pan_troglodytes/Pan_troglodytes.Pan_tro_3.0	Pan_tro_3.0	2	9598		PANTR|chimp	
-9597	Pan	paniscus	bonobo	7	pan_paniscus/Pan_paniscus.panpan1.1	panpan1.1	2	9597		PANPA|pygmy chimpanzee	
-9593	Gorilla	gorilla	gorilla	8	gorilla_gorilla/Gorilla_gorilla.gorGor4	gorGor4	2	9593		western gorilla	
-9544	Macaca	mulatta	macaque	9	macaca_mulatta/Macaca_mulatta.Mmul_10	Mmul_10	2	9544		MACMU|rhesus monkey|rhesus macaques	
-10116	Rattus	norvegicus	rat	10	rattus_norvegicus/Rattus_norvegicus.Rnor_6.0	Rnor_6.0	2	10116		brown rat|Norway rat	
-9913	Bos	taurus	cattle	11	bos_taurus/Bos_taurus.ARS-UCD1.2	ARS-UCD1.2	2	9913		BOVIN|bovine|cow|domestic cow|domestic cattle|bovine cow	
-9823	Sus	scrofa	pig	12	sus_scrofa/Sus_scrofa.Sscrofa11.1	Sscrofa11.1	2	9823		domestic pig|swine	
-9796	Equus	caballus	horse	13	equus_caballus/Equus_caballus.EquCab3.0	EquCab3.0	2	9796		domestic horse|equine	
-9986	Oryctolagus	cuniculus	rabbit	14	oryctolagus_cuniculus/Oryctolagus_cuniculus.OryCun2.0	OryCun2.0	2	9986		RABIT	
-9615	Canis	lupus familiaris	dog	15	canis_lupus_familiaris/Canis_lupus_familiaris.CanFam3.1	CanFam3.1	2	9615		CANLF|Canis canis|Canis domesticus	
-9685	Felis	catus	cat	16	felis_catus/Felis_catus.Felis_catus_9.0	Felis_catus_9.0	2	9685		FELCA|Felis domesticus|domestic cat	
-10141	Cavia	porcellus	guinea pig	17	cavia_porcellus/Cavia_porcellus.Cavpor3.0	Cavpor3.0	2	10141		CAVPO	
-13616	Monodelphis	domestica	opossum	19	monodelphis_domestica/Monodelphis_domestica.ASM229v1	ASM229v1	2	13616		MONDO|gray short-tailed opossum|gray short tailed opossum	
-9258	Ornithorhynchus	anatinus	platypus	20	ornithorhynchus_anatinus/Ornithorhynchus_anatinus.mOrnAna1.p.v1	mOrnAna1.p.v1	2	9258		ORNAN|duckbill platypus|duck-billed platypus	
-9031	Gallus	gallus	chicken	21	gallus_gallus/Gallus_gallus.GRCg6a	GRCg6a	2	9031		CHICK|Gallus domesticus|Gallus gallus domesticus|bantam|red junglefowl|red jungle fowl	
-28377	Anolis	carolinensis	green anole	22	anolis_carolinensis/Anolis_carolinensis.AnoCar2.0	AnoCar2.0	2	28377		ANOCA|anolis|carolina anole	
-8364	Xenopus	tropicalis	western clawed frog	23	xenopus_tropicalis/Xenopus_tropicalis.Xenopus_tropicalis_v9.1	Xenopus_tropicalis_v9.1	2	8364		XENTR|xenopus	
-7237	Drosophila	pseudoobscura		26	drosophila_pseudoobscura/Drosophila_pseudoobscura.Dpse_3.0	Dpse_3.0	24	7237			
-7240	Drosophila	simulans		27	drosophila_simulans/Drosophila_simulans.ASM75419v3	ASM75419v3	24	7240		DROSI	
-7740	Branchiostoma	lanceolatum	Common lancelet	28	branchiostoma_lanceolatum/Branchiostoma_lanceolatum.BraLan2	BraLan2	24	7740		BRALA|amphioxus|amphoxius	
-7897	Latimeria	chalumnae	Coelacanth	29	latimeria_chalumnae/Latimeria_chalumnae.LatCha1	LatCha1	2	7897		LATCH	
-7918	Lepisosteus	oculatus	Spotted gar	30	lepisosteus_oculatus/Lepisosteus_oculatus.LepOcu1	LepOcu1	2	7918		LEPOC	
-7936	Anguilla	anguilla	European freshwater eel	53	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	fAngAng1.pri	37	7936		ANGAN|Angill angill|Anguilla anguilla anguilla|European eel|Muraena anguilla	Use RefSeq assembly
-7994	Astyanax	mexicanus	Blind cave fish	31	astyanax_mexicanus/Astyanax_mexicanus.Astyanax_mexicanus-2.0	Astyanax_mexicanus-2.0	2	7994		ASTMX|Mexican tetra	There are two genome assembly version in Ensembl, took the one that looks more recent
-8010	Esox	lucius	Northern pike	32	esox_lucius/Esox_lucius.Eluc_v4	Eluc_v4	2	8010		ESOLU	
-8030	Salmo	salar	Atlantic salmon	33	salmo_salar/Salmo_salar.ICSASG_v2	ICSASG_v2	2	8030		SALSA	
-8049	Gadus	morhua	Atlantic cod	34	gadus_morhua/Gadus_morhua.gadMor1	gadMor1	2	8049		GADMO	
-8081	Poecilia	reticulata	Guppy	35	poecilia_reticulata/Poecilia_reticulata.Guppy_female_1.0_MT	Guppy_female_1.0_MT	2	8081		Acanthophacelus reticulata|POERE|Poecilia (Acanthophacelus) reticulata|Poecilia latipinna reticulata	
-8090	Oryzias	latipes	Japanese rice fish	36	oryzias_latipes/Oryzias_latipes.ASM223467v1	ASM223467v1	2	8090		Japanese medaka|ORYLA|Orizias latipes|Poecilia latipes|medaka	
-8154	Astatotilapia	calliptera	Eastern happy	37	astatotilapia_calliptera/Astatotilapia_calliptera.fAstCal1.2	fAstCal1.2	2	8154		ASTCA|Ctenochromis callipterus|Haplochromis calliptera|Haplochromis callipterus	
-8355	Xenopus	laevis	African clawed frog	54	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	xenLae2	37	8355		Bufo laevis|XENLA|Xenopus leavis|clawed frog|common platanna|platanna	Use RefSeq assembly
-9103	Meleagris	gallopavo	Wild turkey	38	meleagris_gallopavo/Meleagris_gallopavo.Turkey_2.01	Turkey_2.01	2	9103		MELGA|common turkey|turkey	
-9483	Callithrix	jacchus	White-tufted-ear marmoset	39	callithrix_jacchus/Callithrix_jacchus.ASM275486v1	ASM275486v1	2	9483		CALJA|Callithrix jacchus jacchus|common marmoset|white ear-tufted marmoset	
-9531	Cercocebus	atys	Sooty mangabey	40	cercocebus_atys/Cercocebus_atys.Caty_1.0	Caty_1.0	2	9531		CERAT	
-9541	Macaca	fascicularis	Crab-eating macaque	41	macaca_fascicularis/Macaca_fascicularis.Macaca_fascicularis_5.0	Macaca_fascicularis_5.0	2	9541		MACFA|Macaca cynomolgus|Macaca irus|crab eating macaque|cynomolgus macaque|cynomolgus monkey|long-tailed macaque	
-9545	Macaca	nemestrina	Pig-tailed macaque	42	macaca_nemestrina/Macaca_nemestrina.Mnem_1.0	Mnem_1.0	2	9545		MACNE|pigtail macaque|pigtail monkey	
-9555	Papio	anubis	Olive baboon	43	papio_anubis/Papio_anubis.Panu_3.0	Panu_3.0	2	9555		Anubis baboon|Doguera baboon|Kenya baboon|PAPAN|Papio cynocephalus anubis|Papio doguera|Papio hamadryas anubis|Papio hamadryas doguera|baboon	
-9925	Capra	hircus	Goat	44	capra_hircus/Capra_hircus.ARS1	ARS1	2	9925		African dwarf goat|CAPHI|Capra aegagrus hircus|South African angora goat|domestic goat	
-9940	Ovis	aries	Sheep	45	ovis_aries/Ovis_aries.Oar_v3.1	Oar_v3.1	2	9940		Ovis ammon aries|Ovis orientalis aries|Ovis ovis|SHEEP|domestic sheep|lambs|wild sheep	It looks Ensembl mixed the assembly version with Sheep (texel)
-9974	Manis	javanica	Malayan pangolin	55	manis_javanica/manis_javanica_GCF_014570535.1_YNU_ManJav_2.0	YNU_ManJav_2.0	37	9974		MANJA	Use RefSeq assembly
-10181	Heterocephalus	glaber	Naked mole rat	46	heterocephalus_glaber_female/Heterocephalus_glaber_female.HetGla_female_1.0	HetGla_female_1.0	2	10181		HETGA|naked mole-rat	Exists a male and a female genome assembly in Ensembl, and a more recent assembly at NCBI. But according to NCBI the female assembly is the reference
-30608	Microcebus	murinus	Gray mouse lemur	47	microcebus_murinus/Microcebus_murinus.Mmur_3.0	Mmur_3.0	2	30608		MICMU|grey mouse lemur	
-32507	Neolamprologus	brichardi	Fairy cichlid	48	neolamprologus_brichardi/Neolamprologus_brichardi.NeoBri1.0	NeoBri1.0	2	32507		NEOBR|Neolaprologus brichardi|lyretail cichlid	
-52904	Scophthalmus	maximus	Turbot	49	scophthalmus_maximus/Scophthalmus_maximus.ASM318616v1	ASM318616v1	2	52904		Pleuronectes maximus|Psetta maxima|Rhombus maximus|SCOMX|Scopthalmus maximus	
-60711	Chlorocebus	sabaeus	Green monkey	50	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	ChlSab1.1	2	60711		CHLSB|Cercopithecus aethiops sabaeus|Cercopithecus sabeus|Chlorocebus aethiops sabaeus|Chlorocebus aethiops sabeus|Chlorocebus sabeus	
-69293	Gasterosteus	aculeatus	Three-spined stickleback	51	gasterosteus_aculeatus/Gasterosteus_aculeatus.BROADS1	BROAD S1	2	69293		GASAC|three spined stickleback	
-105023	Nothobranchius	furzeri	Turquoise killifish	52	nothobranchius_furzeri/Nothobranchius_furzeri.Nfu_20140520	Nfu_20140520	2	105023		NOTFU	
-10066
+109280	hippocampus	comes	tiger tail seahorse		hippocampus_comes/Hippocampus_comes.H_comes_QL1_v1	H_comes_QL1_v1	2	109280			
+1825980	gopherus	evgoodei	Goodes thornscrub tortoise		gopherus_evgoodei/Gopherus_evgoodei.rGopEvg1_v1.p	rGopEvg1_v1.p	2	1825980			
+10020	dipodomys	ordii	Ord's kangaroo rat		dipodomys_ordii/Dipodomys_ordii.Dord_2.0	Dord_2.0	2	10020		dipord|ord's kangaroo rat|kangaroo_rat|kangaroo rat|dordii|10020|dipodomysordii|ords kangaroo rat|dord|dipodomys ordii	
+37293	aotus	nancymaae	Ma's night monkey		aotus_nancymaae/Aotus_nancymaae.Anan_2.0	Anan_2.0	2	37293			
+61621	rhinopithecus	bieti	Black snub-nosed monkey		rhinopithecus_bieti/Rhinopithecus_bieti.ASM169854v1	ASM169854v1	2	61621			
+30732	oryzias	melastigma	Indian medaka		oryzias_melastigma/Oryzias_melastigma.Om_v0.7.RACA	Om_v0.7.RACA	2	30732			
+9305	sarcophilus	harrisii	Tasmanian devil		sarcophilus_harrisii/Sarcophilus_harrisii.mSarHar1.11	mSarHar1.11	2	9305			
+7719	ciona	intestinalis	Sea squirt Ciona intestinalis		ciona_intestinalis/Ciona_intestinalis.KH	KH	2	7719		cioint|ciona intestinalis|7719|c.intestinalis|sea squirt ciona intestinalis|cint|cintestinalis|ciona	
+10089	mus	caroli	Ryukyu mouse		mus_caroli/Mus_caroli.CAROLI_EIJ_v1.1	CAROLI_EIJ_v1.1	2	10089		mcar|mcaroli|ryukyu mouse|muscar|mus caroli|10089	
+210632	parambassis	ranga	Indian glassy fish		parambassis_ranga/Parambassis_ranga.fParRan2.2	fParRan2.2	2	210632			
+1608454	sinocyclocheilus	anshuiensis	blind barbel		sinocyclocheilus_anshuiensis/Sinocyclocheilus_anshuiensis.SAMN03320099.WGS_v1.1	SAMN03320099.WGS_v1.1	2	1608454			
+9691	panthera	pardus	leopard		panthera_pardus/Panthera_pardus.PanPar1.0	PanPar1.0	2	9691		leopard	
+299123	lonchura	striata domestica	Bengalese finch		lonchura_striata_domestica/Lonchura_striata_domestica.LonStrDom1	LonStrDom1	2	299123			
+13489	dicentrarchus	labrax	European seabass		dicentrarchus_labrax/Dicentrarchus_labrax.dlabrax2021	dlabrax2021	2	13489			
+56723	labrus	bergylta	ballan wrasse		labrus_bergylta/Labrus_bergylta.BallGen_V1	BallGen_V1	2	56723			
+61221	varanus	komodoensis	Komodo dragon		varanus_komodoensis/Varanus_komodoensis.ASM479886v1	ASM479886v1	2	61221			
+223781	aquila	chrysaetos chrysaetos	golden eagle		aquila_chrysaetos_chrysaetos/Aquila_chrysaetos_chrysaetos.bAquChr1.2	bAquChr1.2	2	223781			
+30611	otolemur	garnettii	small-eared galago		otolemur_garnettii/Otolemur_garnettii.OtoGar3	OtoGar3	2	30611		ogar|otogar|otolemur garnettii|galago|ogarnettii|small-eared galago|bushbaby|30611	
+7897	latimeria	chalumnae	coelacanth		latimeria_chalumnae/Latimeria_chalumnae.LatCha1	LatCha1	2	7897		latimeria chalumnae|coelacanth|lchalumnae|latcha|living fossil|lamineria|lcha|7897	
+75366	sinocyclocheilus	grahami	golden-line barbel		sinocyclocheilus_grahami/Sinocyclocheilus_grahami.SAMN03320097.WGS_v1.1	SAMN03320097.WGS_v1.1	2	75366			
+10047	meriones	unguiculatus	Mongolian gerbil		meriones_unguiculatus/Meriones_unguiculatus.MunDraft-v1.0	MunDraft-v1.0	2	10047			
+7764	eptatretus	burgeri	Inshore hagfish		eptatretus_burgeri/Eptatretus_burgeri.Eburgeri_3.2	Eburgeri_3.2	2	7764		hagfish	
+8005	electrophorus	electricus	electric eel		electrophorus_electricus/Electrophorus_electricus.fEleEle1.pri	fEleEle1.pri	2	8005			
+43700	monopterus	albus	swamp eel		monopterus_albus/Monopterus_albus.M_albus_1.0	M_albus_1.0	2	43700			
+72004	bos	mutus	wild yak		bos_mutus/Bos_mutus.BosGru_v2.0	BosGru_v2.0	2	72004			
+8083	xiphophorus	maculatus	southern platyfish		xiphophorus_maculatus/Xiphophorus_maculatus.X_maculatus-5.0-male	X_maculatus-5.0-male	2	8083		8083|platyfish|xiphophorus maculatus|xipmac|southern platyfish|xmac|xmaculatus	
+43346	bison	bison bison	American bison		bison_bison_bison/Bison_bison_bison.Bison_UMD1.0	Bison_UMD1.0	2	43346			
+94237	mola	mola	ocean sunfish		mola_mola/Mola_mola.ASM169857v1	ASM169857v1	2	94237			
+29073	ursus	maritimus	Polar bear		ursus_maritimus/Ursus_maritimus.UrsMar_1.0	UrsMar_1.0	2	29073			
+61383	lynx	canadensis	Canada lynx		lynx_canadensis/Lynx_canadensis.mLynCan4_v1.p	mLynCan4_v1.p	2	61383			
+39432	saimiri	boliviensis boliviensis	Bolivian squirrel monkey		saimiri_boliviensis_boliviensis/Saimiri_boliviensis_boliviensis.SaiBol1.0	SaiBol1.0	2	39432			
+308060	apteryx	rowi	Okarito brown kiwi		apteryx_rowi/Apteryx_rowi.aptRow1	aptRow1	2	308060			
+8153	haplochromis	burtoni	Burton's mouthbrooder		haplochromis_burtoni/Haplochromis_burtoni.AstBur1.0	AstBur1.0	2	8153			
+9258	ornithorhynchus	anatinus	platypus		ornithorhynchus_anatinus/Ornithorhynchus_anatinus.mOrnAna1.p.v1	mOrnAna1.p.v1	2	9258			
+37347	tupaia	belangeri	northern tree shrew		tupaia_belangeri/Tupaia_belangeri.TREESHREW	TREESHREW	2	37347		37347|tree shrew|tree_shrew|tbel|tupaia belangeri|tupbel|tbelangeri|northern tree shrew	
+8103	cyclopterus	lumpus	lumpfish		cyclopterus_lumpus/Cyclopterus_lumpus.fCycLum1.pri	fCycLum1.pri	2	8103			
+37548	cavia	aperea	Brazilian guinea pig		cavia_aperea/Cavia_aperea.CavAp1.0	CavAp1.0	2	37548		caperea|cavia aperea|cape|37548|brazilian guinea pig|cavape	
+10141	cavia	porcellus	domestic guinea pig		cavia_porcellus/Cavia_porcellus.Cavpor3.0	Cavpor3.0	2	10141		guinea pig|cpor|10141|guinea_pig|cavpor|cporcellus|cavia porcellus|domestic guinea pig	
+9823	sus	scrofa	pig		sus_scrofa/Sus_scrofa.Sscrofa11.1	Sscrofa11.1	2	9823		sscrofa|sscr|pig|wild boar|pigs|sus scrofa|9823|swine	
+283035	sander	lucioperca	pike-perch		sander_lucioperca/Sander_lucioperca.SLUC_FBN_1	SLUC_FBN_1	2	283035			
+61622	rhinopithecus	roxellana	Golden snub-nosed monkey		rhinopithecus_roxellana/Rhinopithecus_roxellana.Rrox_v1	Rrox_v1	2	61622			
+43179	ictidomys	tridecemlineatus	thirteen-lined ground squirrel		ictidomys_tridecemlineatus/Ictidomys_tridecemlineatus.SpeTri2.0	SpeTri2.0	2	43179		ictidomys tridecemlineatus|squirrel|spetri|spermophilus_tridecemlineatus|thirteen-lined ground squirrel|43179|stri|stridecemlineatus	
+31033	takifugu	rubripes	fugu		takifugu_rubripes/Takifugu_rubripes.fTakRub1.2	fTakRub1.2	2	31033			
+30608	microcebus	murinus	gray mouse lemur		microcebus_murinus/Microcebus_murinus.Mmur_3.0	Mmur_3.0	2	30608		micmur|gray mouse lemur|mouse_lemur|mmurinus|30608|mouse lemur|grey mouse lemur|mmur|microcebus murinus	
+198806	calidris	pugnax	ruff		calidris_pugnax/Calidris_pugnax.ASM143184v1	ASM143184v1	2	198806			
+87175	camarhynchus	parvulus	small tree finch		camarhynchus_parvulus/Camarhynchus_parvulus.Camarhynchus_parvulus_V1.1	Camarhynchus_parvulus_V1.1	2	87175			
+10181	heterocephalus	glaber	naked mole-rat		heterocephalus_glaber/Heterocephalus_glaber.Naked_mole-rat_maternal	Naked_mole-rat_maternal	2	10181			
+9986	oryctolagus	cuniculus	rabbit		oryctolagus_cuniculus/Oryctolagus_cuniculus.OryCun2.0	OryCun2.0	2	9986		ocun|rabbit|9986|orycun|ocuniculus|oryctolagus cuniculus	
+9646	ailuropoda	melanoleuca	giant panda		ailuropoda_melanoleuca/Ailuropoda_melanoleuca.ASM200744v2	ASM200744v2	2	9646			
+84702	cervus	hanglu yarkandensis	Yarkand deer		cervus_hanglu_yarkandensis/Cervus_hanglu_yarkandensis.CEY_v1	CEY_v1	2	84702			
+9796	equus	caballus	horse		equus_caballus/Equus_caballus.EquCab3.0	EquCab3.0	2	9796		equus caballus|equcab|9796|horse|equuscaballus|ecaballus|ecab	
+6239	caenorhabditis	elegans	C.elegans		caenorhabditis_elegans/Caenorhabditis_elegans.WBcel235	WBcel235	2	6239		celegans|elegans|caenorhabditis_elegans_prjna13758|cele|caeele|c.elegans	
+91951	catharus	ustulatus	Swainson's thrush		catharus_ustulatus/Catharus_ustulatus.bCatUst1.pri	bCatUst1.pri	2	91951			
+7918	lepisosteus	oculatus	Spotted gar		lepisosteus_oculatus/Lepisosteus_oculatus.LepOcu1	LepOcu1	2	7918		lepocu|spotted gar|locu|loculatus|7918|lepisosteus oculatus	
+8019	oncorhynchus	kisutch	coho salmon		oncorhynchus_kisutch/Oncorhynchus_kisutch.Okis_V2	Okis_V2	2	8019			
+9685	felis	catus	domestic cat		felis_catus/Felis_catus.Felis_catus_9.0	Felis_catus_9.0	2	9685		9685|domestic cat|cat|felcat|felis catus|fcatus|fcat	
+59894	ficedula	albicollis	Collared flycatcher		ficedula_albicollis/Ficedula_albicollis.FicAlb1.5	FicAlb1.5	2	59894			
+96440	salvator	merianae	Argentine black and white tegu		salvator_merianae/Salvator_merianae.HLtupMer3	HLtupMer3	2	96440			
+55149	sciurus	vulgaris	Eurasian red squirrel		sciurus_vulgaris/Sciurus_vulgaris.mSciVul1.1	mSciVul1.1	2	55149			
+8845	anser	cygnoides	swan goose		anser_cygnoides/Anser_cygnoides.GooseV1.0	GooseV1.0	2	8845			
+13146	melopsittacus	undulatus	budgerigar		melopsittacus_undulatus/Melopsittacus_undulatus.bMelUnd1.mat.Z	bMelUnd1.mat.Z	2	13146			
+375764	sphaeramia	orbicularis	orbiculate cardinalfish		sphaeramia_orbicularis/Sphaeramia_orbicularis.fSphaOr1.1	fSphaOr1.1	2	375764			
+80966	acanthochromis	polyacanthus	spiny chromis		acanthochromis_polyacanthus/Acanthochromis_polyacanthus.ASM210954v1	ASM210954v1	2	80966			
+1026970	nannospalax	galili	Upper Galilee mountains blind mole rat		nannospalax_galili/Nannospalax_galili.S.galili_v1.0	S.galili_v1.0	2	1026970		ngal|nannospalax galili|ngalili|upper galilee mountains blind mole rat|nangal|1026970	
+2587831	terrapene carolina	triunguis	Three-toed box turtle		terrapene_carolina_triunguis/Terrapene_carolina_triunguis.T_m_triunguis-2.0	T_m_triunguis-2.0	2	2587831			
+61853	nomascus	leucogenys	Northern white-cheeked gibbon		nomascus_leucogenys/Nomascus_leucogenys.Nleu_3.0	Nleu_3.0	2	61853		nomascus leucogenys|northern white-cheeked gibbon|nomleu|61853|gibbon|nleu|nleucogenys	
+47308	neogobius	melanostomus	round goby		neogobius_melanostomus/Neogobius_melanostomus.RGoby_Basel_V2	RGoby_Basel_V2	2	47308			
+311401	strix	occidentalis caurina	northern spotted owl		strix_occidentalis_caurina/Strix_occidentalis_caurina.Soccid_v01	Soccid_v01	2	311401			
+9541	macaca	fascicularis	Crab-eating macaque		macaca_fascicularis/Macaca_fascicularis.Macaca_fascicularis_6.0	Macaca_fascicularis_6.0	2	9541			
+885580	fukomys	damarensis	Damara mole rat		fukomys_damarensis/Fukomys_damarensis.DMR_v1.0	DMR_v1.0	2	885580		fukomys damarensi|fukdam|fdam|fdamarensi|fukomys_damarensi|damara mole rat|885580	
+586833	myripristis	murdjan	pinecone soldierfish		myripristis_murdjan/Myripristis_murdjan.fMyrMur1.1	fMyrMur1.1	2	586833			
+9643	ursus	americanus	American black bear		ursus_americanus/Ursus_americanus.ASM334442v1	ASM334442v1	2	9643			
+7955	danio	rerio	zebrafish		danio_rerio/Danio_rerio.GRCz11	GRCz11	2	7955		danio|zebrafish|d_rerio|7955|danrer|zfish|drer|drerio|danio rerio	
+9361	dasypus	novemcinctus	nine-banded armadillo		dasypus_novemcinctus/Dasypus_novemcinctus.Dasnov3.0	Dasnov3.0	2	9361		arma|dasypus novemcinctus|9361|dasypus novemcinctu|armadillo|nine-banded armadillo|dnov|dnovemcinctus|dasnov	
+8049	gadus	morhua	Atlantic cod		gadus_morhua/Gadus_morhua.gadMor3.0	gadMor3.0	2	8049			
+286419	canis	lupus dingo	dingo		canis_lupus_dingo/Canis_lupus_dingo.ASM325472v1	ASM325472v1	2	286419			
+9813	procavia	capensis	cape rock hyrax		procavia_capensis/Procavia_capensis.proCap1	proCap1	2	9813		procavia capensis|pcapensis|cape rock hyrax|rock_hyrax|pcap|9813|procap|hyrax|procaviacapensis	
+51154	catagonus	wagneri	Chacoan peccary		catagonus_wagneri/Catagonus_wagneri.CatWag_v2_BIUU_UCD	CatWag_v2_BIUU_UCD	2	51154			
+103695	pogona	vitticeps	central bearded dragon		pogona_vitticeps/Pogona_vitticeps.pvi1.1	pvi1.1	2	103695			
+68415	moschus	moschiferus	Siberian musk deer		moschus_moschiferus/Moschus_moschiferus.MosMos_v2_BIUU_UCD	MosMos_v2_BIUU_UCD	2	68415			
+9689	panthera	leo	lion		panthera_leo/Panthera_leo.PanLeo1.0	PanLeo1.0	2	9689			
+59463	myotis	lucifugus	little brown bat		myotis_lucifugus/Myotis_lucifugus.Myoluc2.0	Myoluc2.0	2	59463		little_brown_bat|little brown bat|microbat|myoluc|59463|myotis lucifugus|mluc|mlucifugus	
+9669	mustela	putorius furo	Domestic ferret		mustela_putorius_furo/Mustela_putorius_furo.MusPutFur1.0	MusPutFur1.0	2	9669		ferret|mustela putorius furo|mputorius_furo|9669|musput|domestic ferret|mput	
+10103	mus	spicilegus	steppe mouse		mus_spicilegus/Mus_spicilegus.MUSP714	MUSP714	2	10103			
+37003	kryptolebias	marmoratus	mangrove rivulus		kryptolebias_marmoratus/Kryptolebias_marmoratus.ASM164957v1	ASM164957v1	2	37003			
+9089	chrysolophus	pictus	golden pheasant		chrysolophus_pictus/Chrysolophus_pictus.Chrysolophus_pictus_GenomeV1.0	Chrysolophus_pictus_GenomeV1.0	2	9089			
+8175	sparus	aurata	gilthead seabream		sparus_aurata/Sparus_aurata.fSpaAur1.1	fSpaAur1.1	2	8175			
+9785	loxodonta	africana	African savanna elephant		loxodonta_africana/Loxodonta_africana.loxAfr3	loxAfr3	2	9785		african savanna elephant|loxafr|9785|lafricana|african_elephant|lafr|loxodonta africana|elephant	
+8090	oryzias	latipes	Japanese medaka HdrR		oryzias_latipes/Oryzias_latipes.ASM223467v1	ASM223467v1	2	8090		medaka|8090|olatipes|olat|oryzias latipes|japanese medaka|orylat	
+8840	anas	platyrhynchos platyrhynchos	common mallard		anas_platyrhynchos_platyrhynchos/Anas_platyrhynchos_platyrhynchos.CAU_duck1.0	CAU_duck1.0	2	8840			
+51338	castor	canadensis	American beaver		castor_canadensis/Castor_canadensis.C.can_genome_v1.0	C.can_genome_v1.0	2	51338			
+8032	salmo	trutta	brown trout		salmo_trutta/Salmo_trutta.fSalTru1.1	fSalTru1.1	2	8032			
+7957	carassius	auratus	goldfish		carassius_auratus/Carassius_auratus.ASM336829v1	ASM336829v1	2	7957			
+9978	ochotona	princeps	American pika		ochotona_princeps/Ochotona_princeps.OchPri2.0-Ens	OchPri2.0-Ens	2	9978		opri|pika|9978|oprinceps|ochotona princeps|american pika|ochpri	
+8839	anas	platyrhynchos	mallard		anas_platyrhynchos/Anas_platyrhynchos.ASM874695v1	ASM874695v1	2	8839			
+336983	colobus	angolensis palliatus	Angola colobus		colobus_angolensis_palliatus/Colobus_angolensis_palliatus.Cang.pa_1.0	Cang.pa_1.0	2	336983			
+9615	canis	lupus familiaris	dog		canis_lupus_familiaris/Canis_lupus_familiaris.ROS_Cfam_1.0	ROS_Cfam_1.0	2	9615		canis familiaris|dog|canis lupus familiaris	
+9544	macaca	mulatta	Macaque		macaca_mulatta/Macaca_mulatta.Mmul_10	Mmul_10	2	9544			
+123683	oryzias	javanicus	javanese ricefish		oryzias_javanicus/Oryzias_javanicus.OJAV_1.1	OJAV_1.1	2	123683			
+8022	oncorhynchus	mykiss	rainbow trout		oncorhynchus_mykiss/Oncorhynchus_mykiss.USDA_OmykA_1.1	USDA_OmykA_1.1	2	8022			
+244447	cynoglossus	semilaevis	tongue sole		cynoglossus_semilaevis/Cynoglossus_semilaevis.Cse_v1.0	Cse_v1.0	2	244447			
+9925	capra	hircus	Goat		capra_hircus/Capra_hircus.ARS1	ARS1	2	9925			
+183150	oryzias	sinensis	Chinese medaka		oryzias_sinensis/Oryzias_sinensis.ASM858656v1	ASM858656v1	2	183150			
+8187	lates	calcarifer	barramundi perch		lates_calcarifer/Lates_calcarifer.ASB_HGAPassembly_v1	ASB_HGAPassembly_v1	2	8187			
+173247	echeneis	naucrates	live sharksucker		echeneis_naucrates/Echeneis_naucrates.fEcheNa1.1	fEcheNa1.1	2	173247			
+328815	manacus	vitellinus	golden-collared manakin		manacus_vitellinus/Manacus_vitellinus.ASM171598v2	ASM171598v2	2	328815			
+44316	erythrura	gouldiae	Gouldian finch		erythrura_gouldiae/Erythrura_gouldiae.GouldianFinch	GouldianFinch	2	44316			
+379532	propithecus	coquereli	Coquerel's sifaka		propithecus_coquereli/Propithecus_coquereli.Pcoq_1.0	Pcoq_1.0	2	379532			
+106582	maylandia	zebra	zebra mbuna		maylandia_zebra/Maylandia_zebra.M_zebra_UMD2a	M_zebra_UMD2a	2	106582			
+230844	peromyscus	maniculatus bairdii	Northern American deer mouse		peromyscus_maniculatus_bairdii/Peromyscus_maniculatus_bairdii.HU_Pman_2.1	HU_Pman_2.1	2	230844		perman|pmaniculatus_bairdii|northern american deer mouse|230844|pman|peromyscus maniculatus bairdii	
+42100	phocoena	sinus	vaquita		phocoena_sinus/Phocoena_sinus.mPhoSin1.pri	mPhoSin1.pri	2	42100			
+38772	gopherus	agassizii	Agassiz's desert tortoise		gopherus_agassizii/Gopherus_agassizii.ASM289641v1	ASM289641v1	2	38772			
+1196302	corvus	moneduloides	New Caledonian crow		corvus_moneduloides/Corvus_moneduloides.bCorMon1.pri	bCorMon1.pri	2	1196302			
+113540	scleropages	formosus	Asian bonytongue		scleropages_formosus/Scleropages_formosus.fSclFor1.1	fSclFor1.1	2	113540			
+158456	betta	splendens	Siamese fighting fish		betta_splendens/Betta_splendens.fBetSpl5.2	fBetSpl5.2	2	158456			
+9704	zalophus	californianus	california sea lion		zalophus_californianus/Zalophus_californianus.mZalCal1.pri	mZalCal1.pri	2	9704			
+7868	callorhinchus	milii	elephant shark		callorhinchus_milii/Callorhinchus_milii.Callorhinchus_milii-6.1.3	Callorhinchus_milii-6.1.3	2	7868			
+7994	astyanax	mexicanus	Mexican tetra		astyanax_mexicanus/Astyanax_mexicanus.Astyanax_mexicanus-2.0	Astyanax_mexicanus-2.0	2	7994		astyanax mexicanus|astmex|amexicanus|amex|7994|cave fish	
+9793	equus	asinus	ass		equus_asinus/Equus_asinus.ASM1607732v2	ASM1607732v2	2	9793			
+307959	sinocyclocheilus	rhinocerous	horned golden-line barbel		sinocyclocheilus_rhinocerous/Sinocyclocheilus_rhinocerous.SAMN03320098_v1.1	SAMN03320098_v1.1	2	307959			
+8364	xenopus	tropicalis	tropical clawed frog		xenopus_tropicalis/Xenopus_tropicalis.UCB_Xtro_10.0	UCB_Xtro_10.0	2	8364			
+9568	mandrillus	leucophaeus	Drill		mandrillus_leucophaeus/Mandrillus_leucophaeus.Mleu.le_1.0	Mleu.le_1.0	2	9568			
+8663	notechis	scutatus	mainland tiger snake		notechis_scutatus/Notechis_scutatus.TS10Xv2-PRI	TS10Xv2-PRI	2	8663			
+9598	pan	troglodytes	chimpanzee		pan_troglodytes/Pan_troglodytes.Pan_tro_3.0	Pan_tro_3.0	2	9598		ptroglodytes|pan troglodytes|pantro|9598|chimpanzee|ptro|chimp|common chimpanzee	
+8673	pseudonaja	textilis	eastern brown snake		pseudonaja_textilis/Pseudonaja_textilis.EBS10Xv2-PRI	EBS10Xv2-PRI	2	8673			
+559292	saccharomyces	cerevisiae	baker's yeast		saccharomyces_cerevisiae/Saccharomyces_cerevisiae.R64-1-1	R64-1-1	2	559292		saccharomyces cerevisiae s288c|saccharomyces cerevisiae (baker's yeast)|saccharomyces cerevisiae|s_cerevisiae	
+9371	echinops	telfairi	small Madagascar hedgehog		echinops_telfairi/Echinops_telfairi.TENREC	TENREC	2	9371		lesser hedgehog tenrec|etelfairi|echinops telfairi|madagascar_hedgehog|9371|etel|tenrec|lesser_hedgehog|small madagascar hedgehog|echtel	
+1676925	paramormyrops	kingsleyae	Paramormyrops kingsleyae		paramormyrops_kingsleyae/Paramormyrops_kingsleyae.PKINGS_0.1	PKINGS_0.1	2	1676925			
+8078	fundulus	heteroclitus	mummichog		fundulus_heteroclitus/Fundulus_heteroclitus.Fundulus_heteroclitus-3.0.2	Fundulus_heteroclitus-3.0.2	2	8078			
+7227	drosophila	melanogaster	Fruit fly		drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	BDGP6.46	2	7227		d.mel|dmel|d. melanogaster	
+9365	erinaceus	europaeus	western European hedgehog		erinaceus_europaeus/Erinaceus_europaeus.HEDGEHOG	HEDGEHOG	2	9365		9365|eeuropaeus|hedgehog|eeur|erinaceus europaeus|erieur|western_european_hedgehog|western european hedgehog	
+10036	mesocricetus	auratus	Golden Hamster		mesocricetus_auratus/Mesocricetus_auratus.MesAur1.0	MesAur1.0	2	10036		mesaur|mesocricetus auratus|golden hamster|10036|maur|mauratus	
+132585	anser	brachyrhynchus	pink-footed goose		anser_brachyrhynchus/Anser_brachyrhynchus.ASM259213v1	ASM259213v1	2	132585			
+8823	apteryx	haastii	Great spotted kiwi		apteryx_haastii/Apteryx_haastii.aptHaa1	aptHaa1	2	8823			
+47969	oreochromis	aureus	blue tilapia		oreochromis_aureus/Oreochromis_aureus.ZZ_aureus	ZZ_aureus	2	47969			
+42514	pygocentrus	nattereri	red-bellied piranha		pygocentrus_nattereri/Pygocentrus_nattereri.fPygNat1.pri	fPygNat1.pri	2	42514			
+30538	vicugna	pacos	alpaca		vicugna_pacos/Vicugna_pacos.vicPac1	vicPac1	2	30538		30538|vicpac|vpac|vpacos|vicugnapacos|vicugna pacos|alpaca	
+32507	neolamprologus	brichardi	lyretail cichlid		neolamprologus_brichardi/Neolamprologus_brichardi.NeoBri1.0	NeoBri1.0	2	32507			
+7950	clupea	harengus	Atlantic herring		clupea_harengus/Clupea_harengus.Ch_v2.0.2v2	Ch_v2.0.2v2	2	7950			
+9627	vulpes	vulpes	red fox		vulpes_vulpes/Vulpes_vulpes.VulVul2.2	VulVul2.2	2	9627		fox|silver fox	
+9749	delphinapterus	leucas	beluga whale		delphinapterus_leucas/Delphinapterus_leucas.ASM228892v3	ASM228892v3	2	9749			
+224669	buteo	japonicus	eastern buzzard		buteo_japonicus/Buteo_japonicus.ButJap1.0	ButJap1.0	2	224669			
+9999	urocitellus	parryii	Arctic ground squirrel		urocitellus_parryii/Urocitellus_parryii.ASM342692v1	ASM342692v1	2	9999			
+1841481	seriola	lalandi dorsalis	yellowtail amberjack		seriola_lalandi_dorsalis/Seriola_lalandi_dorsalis.Sedor1	Sedor1	2	1841481			
+9031	gallus	gallus	chicken		gallus_gallus/Gallus_gallus.bGalGal1.mat.broiler.GRCg7b	bGalGal1.mat.broiler.GRCg7b	2	9031		gallus gallus|chicken|9031|ggallus|galgal|ggal|g_gallus	
+211598	accipiter	nisus	Eurasian sparrowhawk		accipiter_nisus/Accipiter_nisus.Accipiter_nisus_ver1.0	Accipiter_nisus_ver1.0	2	211598			
+452646	neovison	vison	American mink		neovison_vison/Neovison_vison.NNQGG.v01	NNQGG.v01	2	452646			
+48699	poecilia	latipinna	sailfin molly		poecilia_latipinna/Poecilia_latipinna.P_latipinna-1.0	P_latipinna-1.0	2	48699			
+367368	pelusios	castaneus	West African mud turtle		pelusios_castaneus/Pelusios_castaneus.Pelusios_castaneus-1.0	Pelusios_castaneus-1.0	2	367368			
+106734	chelonoidis	abingdonii	Abingdon island giant tortoise		chelonoidis_abingdonii/Chelonoidis_abingdonii.ASM359739v1	ASM359739v1	2	106734			
+8475	chelydra	serpentina	Common snapping turtle		chelydra_serpentina/Chelydra_serpentina.Chelydra_serpentina-1.0	Chelydra_serpentina-1.0	2	8475			
+59479	rhinolophus	ferrumequinum	greater horseshoe bat		rhinolophus_ferrumequinum/Rhinolophus_ferrumequinum.mRhiFer1_v1.p	mRhiFer1_v1.p	2	59479			
+10090	mus	musculus	mouse		mus_musculus/Mus_musculus.GRCm39	GRCm39	2	10090		10090|mus|house mouse|mus musculus|mmus|m_musculus|musmus|mmusculus|mouse|ensmm	
+215358	larimichthys	crocea	large yellow croaker		larimichthys_crocea/Larimichthys_crocea.L_crocea_2.0	L_crocea_2.0	2	215358			
+205130	mastacembelus	armatus	zig-zag eel		mastacembelus_armatus/Mastacembelus_armatus.fMasArm1.2	fMasArm1.2	2	205130			
+100819	falco	tinnunculus	common kestrel		falco_tinnunculus/Falco_tinnunculus.FalTin1.0	FalTin1.0	2	100819			
+8154	astatotilapia	calliptera	eastern happy		astatotilapia_calliptera/Astatotilapia_calliptera.fAstCal1.3	fAstCal1.3	2	8154			
+8502	crocodylus	porosus	Australian saltwater crocodile		crocodylus_porosus/Crocodylus_porosus.CroPor_comp1	CroPor_comp1	2	8502			
+35670	naja	naja	Indian cobra		naja_naja/Naja_naja.Nana_v5	Nana_v5	2	35670			
+9771	balaenoptera	musculus	Blue whale		balaenoptera_musculus/Balaenoptera_musculus.mBalMus1.v2	mBalMus1.v2	2	9771			
+9739	tursiops	truncatus	bottlenosed dolphin		tursiops_truncatus/Tursiops_truncatus.turTru1	turTru1	2	9739		ttru|bottlenose dolphin|dolphin|9739|tursiops truncatus|turtru|tursiopstruncatus|bottlenosed dolphin|ttruncatus	
+441894	struthio	camelus australis	African ostrich		struthio_camelus_australis/Struthio_camelus_australis.ASM69896v1	ASM69896v1	2	441894			
+8081	poecilia	reticulata	guppy		poecilia_reticulata/Poecilia_reticulata.Guppy_female_1.0_MT	Guppy_female_1.0_MT	2	8081			
+13616	monodelphis	domestica	gray short-tailed opossum		monodelphis_domestica/Monodelphis_domestica.ASM229v1	ASM229v1	2	13616		mdom|gray short-tailed opossum|mondom|opossum|13616|monodelphis domestica|mdomestica|broado5	
+161767	amphiprion	percula	orange clownfish		amphiprion_percula/Amphiprion_percula.Nemo_v1	Nemo_v1	2	161767			
+156563	cyanistes	caeruleus	blue tit		cyanistes_caeruleus/Cyanistes_caeruleus.cyaCae2	cyaCae2	2	156563			
+241587	amazona	collaria	yellow-billed parrot		amazona_collaria/Amazona_collaria.ASM394721v1	ASM394721v1	2	241587			
+64176	podarcis	muralis	common wall lizard		podarcis_muralis/Podarcis_muralis.PodMur_1.0	PodMur_1.0	2	64176			
+28377	anolis	carolinensis	green anole		anolis_carolinensis/Anolis_carolinensis.AnoCar2.0v2	AnoCar2.0v2	2	28377			
+2489341	strigops	habroptila	Kakapo		strigops_habroptila/Strigops_habroptila.bStrHab1_v1.p	bStrHab1_v1.p	2	2489341			
+9595	gorilla	gorilla	Western Lowland Gorilla		gorilla_gorilla/Gorilla_gorilla.gorGor4	gorGor4	2	9595		gorilla_gorilla_gorilla|gorilla|9595|gorilla gorilla|ggorilla|western gorilla|ggor|9593|gorgor|gorilla gorilla gorilla	
+60711	chlorocebus	sabaeus	African green monkey		chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	ChlSab1.1	2	60711		chlsab|agm|vervet monkey|vervet-agm|60711|chlorocebus_sabeus|chlorocebus sabeus|chlorocebus sabaeus|african green monkey|csab|csabaeus	
+8010	esox	lucius	northern pike		esox_lucius/Esox_lucius.fEsoLuc1.pri	fEsoLuc1.pri	2	8010			
+8508	sphenodon	punctatus	tuatara		sphenodon_punctatus/Sphenodon_punctatus.ASM311381v1	ASM311381v1	2	8508			
+9601	pongo	abelii	Sumatran orangutan		pongo_abelii/Pongo_abelii.Susie_PABv2	Susie_PABv2	2	9601		sumatran orangutan|pongo abelii|orangutan|bornean orangutan	
+10096	mus	spretus	algerian mouse		mus_spretus/Mus_spretus.SPRET_EiJ_v1	SPRET_EiJ_v1	2	10096		western mediterranean mouse|mus_spretus_spret_eij|mspretus|spreteij	
+40151	monodon	monoceros	narwhal		monodon_monoceros/Monodon_monoceros.NGI_Narwhal_1	NGI_Narwhal_1	2	40151			
+64144	anabas	testudineus	climbing perch		anabas_testudineus/Anabas_testudineus.fAnaTes1.3	fAnaTes1.3	2	64144			
+9483	callithrix	jacchus	white-tufted-ear marmoset		callithrix_jacchus/Callithrix_jacchus.mCalJac1.pat.X	mCalJac1.pat.X	2	9483		white-tufted-ear marmoset|marmoset|callithrix jacchus	
+303518	pundamilia	nyererei	Makobe Island cichlid		pundamilia_nyererei/Pundamilia_nyererei.PunNye1.0	PunNye1.0	2	303518			
+44394	zonotrichia	albicollis	white-throated sparrow		zonotrichia_albicollis/Zonotrichia_albicollis.Zonotrichia_albicollis-1.0.1	Zonotrichia_albicollis-1.0.1	2	44394			
+42254	sorex	araneus	European shrew		sorex_araneus/Sorex_araneus.COMMON_SHREW1	COMMON_SHREW1	2	42254		42254|european shrew|sara|european_shrew|ground_shrew|saraneus|sorara|shrew|sorex araneus	
+441215	ursus	thibetanus thibetanus	Asiatic black bear		ursus_thibetanus_thibetanus/Ursus_thibetanus_thibetanus.ASM966005v1	ASM966005v1	2	441215			
+257818	otus	sunia	Oriental scops-owl		otus_sunia/Otus_sunia.OtuSun1.0	OtuSun1.0	2	257818			
+8478	chrysemys	picta bellii	Western painted turtle		chrysemys_picta_bellii/Chrysemys_picta_bellii.Chrysemys_picta_bellii-3.0.3	Chrysemys_picta_bellii-3.0.3	2	8478			
+40217	junco	hyemalis	dark-eyed junco		junco_hyemalis/Junco_hyemalis.ASM382977v1	ASM382977v1	2	40217			
+9838	camelus	dromedarius	Arabian camel		camelus_dromedarius/Camelus_dromedarius.CamDro2	CamDro2	2	9838			
+445787	leptobrachium	leishanense	Leishan spiny toad		leptobrachium_leishanense/Leptobrachium_leishanense.ASM966780v1	ASM966780v1	2	445787			
+48883	geospiza	fortis	medium ground-finch		geospiza_fortis/Geospiza_fortis.GeoFor_1.0	GeoFor_1.0	2	48883			
+9315	notamacropus	eugenii	tammar wallaby		notamacropus_eugenii/Notamacropus_eugenii.Meug_1.0	Meug_1.0	2	9315		notamacropus|neugenii|noteug|neug|tammar wallaby|macropuseugenii|macropus_eugenii|meug|maceug|notamacropus eugenii|macropus|9315|macropus eugenii|notamacropuseugenii|wallaby|meugenii	
+441366	gouania	willdenowi	blunt-snouted clingfish		gouania_willdenowi/Gouania_willdenowi.fGouWil2.1	fGouWil2.1	2	441366			
+48698	poecilia	formosa	Amazon molly		poecilia_formosa/Poecilia_formosa.PoeFor_5.1.2	PoeFor_5.1.2	2	48698		pfor|poefor|48698|amazon molly|poecilia formosa|pformosa	
+2593467	malurus cyaneus	samueli	superb fairywren		malurus_cyaneus_samueli/Malurus_cyaneus_samueli.mCya_1.0	mCya_1.0	2	2593467			
+9606	homo	sapiens	human		homo_sapiens/Homo_sapiens.GRCh38	GRCh38	2	9606		homo|h_sapiens|homsap|homo sapiens|9606|hsap|enshs|human|hsapiens	
+41447	seriola	dumerili	greater amberjack		seriola_dumerili/Seriola_dumerili.Sdu_1.0	Sdu_1.0	2	41447			
+9135	serinus	canaria	common canary		serinus_canaria/Serinus_canaria.SCA1	SCA1	2	9135			
+7757	petromyzon	marinus	sea lamprey		petromyzon_marinus/Petromyzon_marinus.Pmarinus_7.0	Pmarinus_7.0	2	7757		sea lamprey|7757|pmar|lamprey|petromyzon marinus|petmar|pmarinus	
+132908	pteropus	vampyrus	large flying fox		pteropus_vampyrus/Pteropus_vampyrus.pteVam1	pteVam1	2	132908		ptevam|pteropus vampyrus|pvampyrus|large flying fox|132908|pteropusvampyrus|megabat|pvam	
+105023	nothobranchius	furzeri	turquoise killifish		nothobranchius_furzeri/Nothobranchius_furzeri.Nfu_20140520	Nfu_20140520	2	105023			
+29139	vombatus	ursinus	common wombat		vombatus_ursinus/Vombatus_ursinus.bare-nosed_wombat_genome_assembly	bare-nosed_wombat_genome_assembly	2	29139			
+32473	xiphophorus	couchianus	Monterrey platyfish		xiphophorus_couchianus/Xiphophorus_couchianus.Xiphophorus_couchianus-4.0.1	Xiphophorus_couchianus-4.0.1	2	32473			
+9994	marmota	marmota marmota	Alpine marmot		marmota_marmota_marmota/Marmota_marmota_marmota.marMar2.1	marMar2.1	2	9994			
+8824	apteryx	owenii	little spotted kiwi		apteryx_owenii/Apteryx_owenii.aptOwe1	aptOwe1	2	8824			
+10093	mus	pahari	Shrew mouse		mus_pahari/Mus_pahari.PAHARI_EIJ_v1.1	PAHARI_EIJ_v1.1	2	10093		mpah|mus pahari|10093|mpahari|muspah|shrew mouse	
+630221	cyprinus	carpio carpio	common carp		cyprinus_carpio_carpio/Cyprinus_carpio_carpio.Cypcar_WagV4.0	Cypcar_WagV4.0	2	630221			
+144197	stegastes	partitus	bicolor damselfish		stegastes_partitus/Stegastes_partitus.Stegastes_partitus-1.0.2	Stegastes_partitus-1.0.2	2	144197			
+591936	piliocolobus	tephrosceles	Ugandan red Colobus		piliocolobus_tephrosceles/Piliocolobus_tephrosceles.ASM277652v2	ASM277652v2	2	591936			
+30461	bubo	bubo	Eurasian eagle-owl		bubo_bubo/Bubo_bubo.BubBub1.0	BubBub1.0	2	30461			
+9755	physeter	catodon	sperm whale		physeter_catodon/Physeter_catodon.ASM283717v2	ASM283717v2	2	9755			
+181472	salarias	fasciatus	jewelled blenny		salarias_fasciatus/Salarias_fasciatus.fSalaFa1.1	fSalaFa1.1	2	181472			
+9565	theropithecus	gelada	gelada		theropithecus_gelada/Theropithecus_gelada.Tgel_1.0	Tgel_1.0	2	9565			
+75864	anas	zonorhyncha	Eastern spot-billed duck		anas_zonorhyncha/Anas_zonorhyncha.ASM222487v1	ASM222487v1	2	75864			
+181631	stachyris	ruficeps	rufous-capped babbler		stachyris_ruficeps/Stachyris_ruficeps.ASM869450v1	ASM869450v1	2	181631			
+409849	periophthalmus	magnuspinnatus	Periophthalmus magnuspinnatus		periophthalmus_magnuspinnatus/Periophthalmus_magnuspinnatus.PM.fa	PM.fa	2	409849			
+9049	pavo	cristatus	Indian peafowl		pavo_cristatus/Pavo_cristatus.AIIM_Pcri_1.0	AIIM_Pcri_1.0	2	9049			
+51511	ciona	savignyi	Sea squirt Ciona savignyi		ciona_savignyi/Ciona_savignyi.CSAV2.0	CSAV2.0	2	51511		ciona savignyi|sea squirt ciona savignyi|csav|ciosav|c.savignyi|51511|csavignyi	
+9555	papio	anubis	olive baboon		papio_anubis/Papio_anubis.Panubis1.0	Panubis1.0	2	9555		olive baboon|papio anubis|doguera baboon|kenya baboon	
+13735	pelodiscus	sinensis	Chinese softshell turtle		pelodiscus_sinensis/Pelodiscus_sinensis.PelSin_1.0	PelSin_1.0	2	13735		psinensis|13735|chinese soft shell turtle|p_sinensis|chinese softshell turtle|softshell turtle|pelodiscus sinensis	
+99837	spermophilus	dauricus	Daurian ground squirrel		spermophilus_dauricus/Spermophilus_dauricus.ASM240643v1	ASM240643v1	2	99837			
+99883	tetraodon	nigroviridis	spotted green pufferfish		tetraodon_nigroviridis/Tetraodon_nigroviridis.TETRAODON8	TETRAODON8	2	99883		tetnig|tnigroviridis|spotted green pufferfish|tetraodon|fresh water pufferfish|tetraodon nigroviridis|99883|tnig	
+9103	meleagris	gallopavo	turkey		meleagris_gallopavo/Meleagris_gallopavo.Turkey_5.1	Turkey_5.1	2	9103			
+2715852	cebus	imitator	Panamanian white-faced capuchin		cebus_imitator/Cebus_imitator.Cebus_imitator-1.0	Cebus_imitator-1.0	2	2715852		cebus_capucinus	
+1220523	zosterops	lateralis melanops	silver-eye		zosterops_lateralis_melanops/Zosterops_lateralis_melanops.ASM128173v1	ASM128173v1	2	1220523			
+33528	gambusia	affinis	western mosquitofish		gambusia_affinis/Gambusia_affinis.ASM309773v1	ASM309773v1	2	33528			
+8030	salmo	salar	Atlantic salmon		salmo_salar/Salmo_salar.Ssal_v3.1	Ssal_v3.1	2	8030			
+62062	hucho	hucho	huchen		hucho_hucho/Hucho_hucho.ASM331708v1	ASM331708v1	2	62062			
+8996	numida	meleagris	helmeted guineafowl		numida_meleagris/Numida_meleagris.NumMel1.0	NumMel1.0	2	8996			
+9597	pan	paniscus	bonobo		pan_paniscus/Pan_paniscus.panpan1.1	panpan1.1	2	9597			
+8128	oreochromis	niloticus	Nile tilapia		oreochromis_niloticus/Oreochromis_niloticus.O_niloticus_UMD_NMBU	O_niloticus_UMD_NMBU	2	8128			
+93934	coturnix	japonica	Japanese quail		coturnix_japonica/Coturnix_japonica.Coturnix_japonica_2.0	Coturnix_japonica_2.0	2	93934			
+8630	laticauda	laticaudata	blue-ringed sea krait		laticauda_laticaudata/Laticauda_laticaudata.latLat_1.0	latLat_1.0	2	8630			
+425635	calidris	pygmaea	Spoon-billed sandpiper		calidris_pygmaea/Calidris_pygmaea.ASM369795v1	ASM369795v1	2	425635			
+28743	cyprinodon	variegatus	sheepshead minnow		cyprinodon_variegatus/Cyprinodon_variegatus.C_variegatus-1.0	C_variegatus-1.0	2	28743			
+34839	chinchilla	lanigera	Long-tailed chinchilla		chinchilla_lanigera/Chinchilla_lanigera.ChiLan1.0	ChiLan1.0	2	34839		chinchilla lanigera|34839|long-tailed chinchilla|chilan|clanigera|clan	
+299321	denticeps	clupeoides	denticle herring		denticeps_clupeoides/Denticeps_clupeoides.fDenClu1.2	fDenClu1.2	2	299321			
+74533	panthera	tigris altaica	Tiger		panthera_tigris_altaica/Panthera_tigris_altaica.PanTig1.0	PanTig1.0	2	74533		tiger	
+59729	taeniopygia	guttata	zebra finch		taeniopygia_guttata/Taeniopygia_guttata.bTaeGut1_v1.p	bTaeGut1_v1.p	2	59729			
+52904	scophthalmus	maximus	turbot		scophthalmus_maximus/Scophthalmus_maximus.ASM1334776v1	ASM1334776v1	2	52904			
+51337	jaculus	jaculus	Lesser Egyptian jerboa		jaculus_jaculus/Jaculus_jaculus.JacJac1.0	JacJac1.0	2	51337		jjac|lesser egyptian jerboa|jaculus jaculus|jjaculus|jacjac|51337	
+1868482	carlito	syrichta	Philippine tarsier		carlito_syrichta/Carlito_syrichta.Tarsius_syrichta-2.0.1	Tarsius_syrichta-2.0.1	2	1868482		tsyr|carlito syrichta|csyrichta|tarsius_syrichta|tarsiussyrichta|carlitosyrichta|9478|tsyrichta|philippine tarsier|tarsius syrichta|tarsier|csyr|tarsyr|carlito|carsyr	
+27687	erpetoichthys	calabaricus	reedfish		erpetoichthys_calabaricus/Erpetoichthys_calabaricus.fErpCal1.1	fErpCal1.1	2	27687			
+1240228	cairina	moschata domestica	muscovy Duck (domestic type)		cairina_moschata_domestica/Cairina_moschata_domestica.CaiMos1.0	CaiMos1.0	2	1240228			
+9940	ovis	aries	sheep		ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	ARS-UI_Ramb_v2.0	2	9940			
+9545	macaca	nemestrina	Pig-tailed macaque		macaca_nemestrina/Macaca_nemestrina.Mnem_1.0	Mnem_1.0	2	9545			
+37032	suricata	suricatta	meerkat		suricata_suricatta/Suricata_suricatta.meerkat_22Aug2017_6uvM2_HiC	meerkat_22Aug2017_6uvM2_HiC	2	37032			
+9913	bos	taurus	cattle		bos_taurus/Bos_taurus.ARS-UCD1.3	ARS-UCD1.3	2	9913		domestic cow|cow|btaurus|cattle|bos taurus|bovine|btau|9913|domestic cattle|bos.tau	
+10160	octodon	degus	Degu		octodon_degus/Octodon_degus.OctDeg1.0	OctDeg1.0	2	10160		odegus|10160|degu|odeg|octodon degus|octdeg	
+10116	rattus	norvegicus	Norway rat		rattus_norvegicus/Rattus_norvegicus.mRatBN7.2	mRatBN7.2	2	10116		rattus norvegicus|rat	
+48701	poecilia	mexicana	shortfin molly		poecilia_mexicana/Poecilia_mexicana.P_mexicana-1.0	P_mexicana-1.0	2	48701			
+79684	microtus	ochrogaster	vole		microtus_ochrogaster/Microtus_ochrogaster.MicOch1.0	MicOch1.0	2	79684		m_ochrogaster|microtus ochrogaster|vole|moch|79684|mochrogaster|micoch|pvole|prairie vole	
+74940	oncorhynchus	tshawytscha	Chinook salmon		oncorhynchus_tshawytscha/Oncorhynchus_tshawytscha.Otsh_v2.0	Otsh_v2.0	2	74940			
+80972	amphiprion	ocellaris	clown anemonefish		amphiprion_ocellaris/Amphiprion_ocellaris.ASM2253959v1	ASM2253959v1	2	80972			
+9157	parus	major	Great Tit		parus_major/Parus_major.Parus_major1.1	Parus_major1.1	2	9157			
+9054	phasianus	colchicus	Ring-necked pheasant		phasianus_colchicus/Phasianus_colchicus.ASM414374v1	ASM414374v1	2	9054			
+7998	ictalurus	punctatus	channel catfish		ictalurus_punctatus/Ictalurus_punctatus.ASM400665v3	ASM400665v3	2	7998			
+30464	nothoprocta	perdicaria	Chilean tinamou		nothoprocta_perdicaria/Nothoprocta_perdicaria.notPer1	notPer1	2	30464			
+481459	gasterosteus	aculeatus	three-spined stickleback		gasterosteus_aculeatus/Gasterosteus_aculeatus.GAculeatus_UGA_version5	GAculeatus_UGA_version5	2	481459			
+9531	cercocebus	atys	Sooty mangabey		cercocebus_atys/Cercocebus_atys.Caty_1.0	Caty_1.0	2	9531			
+38626	phascolarctos	cinereus	koala		phascolarctos_cinereus/Phascolarctos_cinereus.phaCin_unsw_v4.1	phaCin_unsw_v4.1	2	38626			
+30521	bos	grunniens	domestic yak		bos_grunniens/Bos_grunniens.LU_Bosgru_v3.0	LU_Bosgru_v3.0	2	30521			
+56716	cottoperca	gobio	channel bull blenny		cottoperca_gobio/Cottoperca_gobio.fCotGob3.1	fCotGob3.1	2	56716			
+321398	lepidothrix	coronata	blue-crowned manakin		lepidothrix_coronata/Lepidothrix_coronata.Lepidothrix_coronata-1.0	Lepidothrix_coronata-1.0	2	321398			
+8790	dromaius	novaehollandiae	emu		dromaius_novaehollandiae/Dromaius_novaehollandiae.droNov1	droNov1	2	8790			
+9358	choloepus	hoffmanni	Hoffmann's two-fingered sloth		choloepus_hoffmanni/Choloepus_hoffmanni.choHof1	choHof1	2	9358		chof|two-toed sloth|hoffmann's two-fingered sloth|sloth|choloepus|9358|choffmanni|choloepus hoffmanni|chohof|choloepushoffmanni	
+194338	athene	cunicularia	burrowing owl		athene_cunicularia/Athene_cunicularia.athCun1	athCun1	2	194338			
+61819	amphilophus	citrinellus	Midas cichlid		amphilophus_citrinellus/Amphilophus_citrinellus.Midas_v5	Midas_v5	2	61819			
+1328070	prolemur	simus	greater bamboo lemur		prolemur_simus/Prolemur_simus.Prosim_1.0	Prosim_1.0	2	1328070			
+104782	adineta	vaga	Rotifer		adineta_vaga/Adineta_vaga.AMS_PRJEB1171_v1	AMS_PRJEB1171_v1	24	104782			
+135651	caenorhabditis	brenneri	Nematode		caenorhabditis_brenneri/Caenorhabditis_brenneri.C_brenneri-6.0.1b	C_brenneri-6.0.1b	24	135651			
+139723	anopheles	culicifacies	Mosquito		anopheles_culicifacies/Anopheles_culicifacies.AculA1	AculA1	24	139723			
+62324	anopheles	funestus	African malaria mosquito		anopheles_funestus/Anopheles_funestus.AfunF3	AfunF3	24	62324			
+6183	schistosoma	mansoni	Flatworm		schistosoma_mansoni/Schistosoma_mansoni.Smansoni_v7	Smansoni_v7	24	6183			
+139649	teleopsis	dalmanni	Malaysian stalk-eyed fly		teleopsis_dalmanni/Teleopsis_dalmanni.ASM223713v2	ASM223713v2	24	139649			
+85433	hymenolepis	microstoma	Rodent tapeworm		hymenolepis_microstoma/Hymenolepis_microstoma.HMN_v3	HMN_v3	24	85433			
+32264	tetranychus	urticae	Two-spotted spider mite		tetranychus_urticae/Tetranychus_urticae.ASM23943v1	ASM23943v1	24	32264			
+52283	sarcoptes	scabiei	Itch mite		sarcoptes_scabiei/Sarcoptes_scabiei.ASM1459567v1	ASM1459567v1	24	52283			
+45351	nematostella	vectensis	Starlet sea anemone		nematostella_vectensis/Nematostella_vectensis.ASM20922v1	ASM20922v1	24	45351			
+6238	caenorhabditis	briggsae	Nematode		caenorhabditis_briggsae/Caenorhabditis_briggsae.CB4	CB4	24	6238			
+7200	lutzomyia	longipalpis	Sand fly		lutzomyia_longipalpis/Lutzomyia_longipalpis.LlonJ1	LlonJ1	24	7200			
+69004	anopheles	farauti	Mosquito		anopheles_farauti/Anopheles_farauti.AfarF2	AfarF2	24	69004			
+6945	ixodes	scapularis	Black-legged tick		ixodes_scapularis/Ixodes_scapularis.IscaW1	IscaW1	24	6945			
+79782	cimex	lectularius	Bed bug		cimex_lectularius/Cimex_lectularius.Clec_2.0	Clec_2.0	24	79782			
+7070	tribolium	castaneum	Red flour beetle		tribolium_castaneum/Tribolium_castaneum.Tcas5.2	Tcas5.2	24	7070			
+179676	culicoides	sonorensis	Biting midge		culicoides_sonorensis/Culicoides_sonorensis.Cson1	Cson1	24	179676			
+7167	anopheles	albimanus	Mosquito		anopheles_albimanus/Anopheles_albimanus.AalbS2	AalbS2	24	7167			
+7217	drosophila	ananassae	Fruit fly		drosophila_ananassae/Drosophila_ananassae.dana_caf1	dana_caf1	24	7217			
+34506	strongyloides	ratti	Threadworm		strongyloides_ratti/Strongyloides_ratti.S_ratti_ED321_v5_0_4	S_ratti_ED321_v5_0_4	24	34506			
+7160	aedes	albopictus	Asian tiger mosquito		aedes_albopictus/Aedes_albopictus.AaloF1	AaloF1	24	7160			
+7165	anopheles	gambiae	African malaria mosquito		anopheles_gambiae/Anopheles_gambiae.AgamP4	AgamP4	24	7165		a.gam|a. gambiae|agam	
+7230	drosophila	mojavensis	Fruit fly		drosophila_mojavensis/Drosophila_mojavensis.dmoj_caf1	dmoj_caf1	24	7230			
+136037	zootermopsis	nevadensis	Nevada dampwood termite		zootermopsis_nevadensis/Zootermopsis_nevadensis.ZooNev1.0	ZooNev1.0	24	136037			
+217634	anoplophora	glabripennis	Asian long-horned beetle		anoplophora_glabripennis/Anoplophora_glabripennis.Agla_2.0	Agla_2.0	24	217634			
+158441	folsomia	candida	Springtail		folsomia_candida/Folsomia_candida.ASM221717v1	ASM221717v1	24	158441			
+7668	strongylocentrotus	purpuratus	Purple sea urchin		strongylocentrotus_purpuratus/Strongylocentrotus_purpuratus.Spur_5.0	Spur_5.0	24	7668			
+7740	branchiostoma	lanceolatum	Amphioxus		branchiostoma_lanceolatum/Branchiostoma_lanceolatum.BraLan2	BraLan2	24	7740			
+407821	stegodyphus	mimosarum	African social velvet spider		stegodyphus_mimosarum/Stegodyphus_mimosarum.Stegodyphus_mimosarum_v1	Stegodyphus_mimosarum_v1	24	407821			
+13686	solenopsis	invicta	Red fire ant		solenopsis_invicta/Solenopsis_invicta.UNIL_Sinv_3.0	UNIL_Sinv_3.0	24	13686			
+43151	anopheles	darlingi	American malaria mosquito		anopheles_darlingi/Anopheles_darlingi.AdarC3	AdarC3	24	43151			
+7220	drosophila	erecta	Fruit fly		drosophila_erecta/Drosophila_erecta.dere_caf1	dere_caf1	24	7220			
+669202	thelohanellus	kitauei	Myxozoan endoparasite		thelohanellus_kitauei/Thelohanellus_kitauei.ASM82789v1	ASM82789v1	24	669202			
+6279	brugia	malayi	Nematode		brugia_malayi/Brugia_malayi.Bmal-4.0	Bmal-4.0	24	6279			
+7240	drosophila	simulans	Fruit fly		drosophila_simulans/Drosophila_simulans.ASM75419v3	ASM75419v3	24	7240			
+34691	anopheles	quadriannulatus	Mosquito		anopheles_quadriannulatus/Anopheles_quadriannulatus.AquaS1	AquaS1	24	34691			
+7425	nasonia	vitripennis	Jewel wasp		nasonia_vitripennis/Nasonia_vitripennis.Nvit_psr_1.1	Nvit_psr_1.1	24	7425			
+442651	hofstenia	miamia	Panther worm		hofstenia_miamia/Hofstenia_miamia.HmiaM1	HmiaM1	24	442651			
+199890	anopheles	epiroticus	Mosquito		anopheles_epiroticus/Anopheles_epiroticus.AepiE1	AepiE1	24	199890			
+7209	loa	loa	Eye worm		loa_loa/Loa_loa.Loa_loa_V3	Loa_loa_V3	24	7209			
+36166	megaselia	scalaris	Coffin fly		megaselia_scalaris/Megaselia_scalaris.Msca1	Msca1	24	36166			
+30066	anopheles	merus	Mosquito		anopheles_merus/Anopheles_merus.AmerM2	AmerM2	24	30066			
+299467	leptotrombidium	deliense	Harvest mite		leptotrombidium_deliense/Leptotrombidium_deliense.LdelU1	LdelU1	24	299467			
+74869	anopheles	maculatus	Mosquito		anopheles_maculatus/Anopheles_maculatus.AmacM1	AmacM1	24	74869			
+126957	strigamia	maritima	Soil centipede		strigamia_maritima/Strigamia_maritima.Smar1	Smar1	24	126957			
+74873	anopheles	sinensis	Mosquito		anopheles_sinensis/Anopheles_sinensis.AsinS2	AsinS2	24	74873			
+7222	drosophila	grimshawi	Fruit fly		drosophila_grimshawi/Drosophila_grimshawi.dgri_caf1	dgri_caf1	24	7222			
+34740	heliconius	melpomene	Postman butterfly		heliconius_melpomene/Heliconius_melpomene.Hmel1	Hmel1	24	34740			
+37546	glossina	morsitans	Tsetse fly		glossina_morsitans/Glossina_morsitans.GmorY1	GmorY1	24	37546			
+39758	mayetiola	destructor	Hessian fly		mayetiola_destructor/Mayetiola_destructor.Mdes_1.0	Mdes_1.0	24	39758			
+67801	glossina	palpalis	Tsetse fly		glossina_palpalis/Glossina_palpalis.GpapI1	GpapI1	24	67801			
+7260	drosophila	willistoni	Fruit fly		drosophila_willistoni/Drosophila_willistoni.dwil_caf1	dwil_caf1	24	7260			
+7238	drosophila	sechellia	Fruit fly		drosophila_sechellia/Drosophila_sechellia.dsec_caf1	dsec_caf1	24	7238			
+7375	lucilia	cuprina	Australian sheep blowfly		lucilia_cuprina/Lucilia_cuprina.ASM118794v1	ASM118794v1	24	7375			
+7173	anopheles	arabiensis	Mosquito		anopheles_arabiensis/Anopheles_arabiensis.AaraD1	AaraD1	24	7173			
+7398	glossina	pallidipes	Tsetse fly		glossina_pallidipes/Glossina_pallidipes.GpalI1	GpalI1	24	7398			
+112268	anopheles	minimus	Mosquito		anopheles_minimus/Anopheles_minimus.AminM1	AminM1	24	112268			
+12957	atta	cephalotes	Leaf-cutter ant		atta_cephalotes/Atta_cephalotes.Attacep1.0	Attacep1.0	24	12957			
+7091	bombyx	mori	Domestic silkworm		bombyx_mori/Bombyx_mori.Bmori_2016v1.0	Bmori_2016v1.0	24	7091			
+7370	musca	domestica	House fly		musca_domestica/Musca_domestica.MdomA1	MdomA1	24	7370			
+281687	caenorhabditis	japonica	Nematode		caenorhabditis_japonica/Caenorhabditis_japonica.C_japonica-7.0.1	C_japonica-7.0.1	24	281687			
+6282	onchocerca	volvulus	Nematode		onchocerca_volvulus/Onchocerca_volvulus.ASM49940v2	ASM49940v2	24	6282			
+30195	bombus	terrestris	Buff-tailed bumblebee		bombus_terrestris/Bombus_terrestris.Bter_1.0	Bter_1.0	24	30195			
+7460	apis	mellifera	Honey bee		apis_mellifera/Apis_mellifera.Amel_HAv3.1	Amel_HAv3.1	24	7460			
+46245	drosophila	pseudoobscura	Fruit fly		drosophila_pseudoobscura/Drosophila_pseudoobscura.Dpse_3.0	Dpse_3.0	24	46245			
+315563	belgica	antarctica	Antarctic midge		belgica_antarctica/Belgica_antarctica.ASM77530v1	ASM77530v1	24	315563			
+70415	trichuris	muris	Nematode		trichuris_muris/Trichuris_muris.TMUE3.0	TMUE3.0	24	70415			
+13249	rhodnius	prolixus	Kissing bug		rhodnius_prolixus/Rhodnius_prolixus.RproC3	RproC3	24	13249			
+48709	orchesella	cincta	Springtail		orchesella_cincta/Orchesella_cincta.ASM171814v1	ASM171814v1	24	48709			
+6253	ascaris	suum	Pig roundworm		ascaris_suum/Ascaris_suum.ASM18702v3	ASM18702v3	24	6253			
+37001	glossina	brevipalpis	Tsetse fly		glossina_brevipalpis/Glossina_brevipalpis.GbreI1	GbreI1	24	37001			
+132113	bombus	impatiens	Common eastern bumblebee		bombus_impatiens/Bombus_impatiens.BIMP_2.2	BIMP_2.2	24	132113			
+10228	trichoplax	adhaerens	Placozoa		trichoplax_adhaerens/Trichoplax_adhaerens.ASM15027v1	ASM15027v1	24	10228			
+7244	drosophila	virilis	Fruit fly		drosophila_virilis/Drosophila_virilis.dvir_caf1	dvir_caf1	24	7244			
+121224	pediculus	humanus	Human body louse		pediculus_humanus/Pediculus_humanus.PhumU2	PhumU2	24	121224			
+6334	trichinella	spiralis	Pork worm		trichinella_spiralis/Trichinella_spiralis.Tspiralis1	Tspiralis1	24	6334			
+283909	capitella	teleta	Bristle worm		capitella_teleta/Capitella_teleta.Capitella_teleta_v1.0	Capitella_teleta_v1.0	24	283909			
+7234	drosophila	persimilis	Fruit fly		drosophila_persimilis/Drosophila_persimilis.dper_caf1	dper_caf1	24	7234			
+1518534	anopheles	coluzzii	Mosquito		anopheles_coluzzii/Anopheles_coluzzii.AcolM1	AcolM1	24	1518534			
+35570	stomoxys	calcitrans	Stable fly		stomoxys_calcitrans/Stomoxys_calcitrans.ScalU1	ScalU1	24	35570			
+7396	glossina	fuscipes	Tsetse fly		glossina_fuscipes/Glossina_fuscipes.Yale_Gfus_2	Yale_Gfus_2	24	7396			
+29159	crassostrea	gigas	Pacific oyster		crassostrea_gigas/Crassostrea_gigas.cgigas_uk_roslin_v1	cgigas_uk_roslin_v1	24	29159			
+30069	anopheles	stephensi	Asian malaria mosquito		anopheles_stephensi/Anopheles_stephensi.AsteS1	AsteS1	24	30069			
+54126	pristionchus	pacificus	Nematode		pristionchus_pacificus/Pristionchus_pacificus.El_Paco_fix	El_Paco_fix	24	54126			
+34690	anopheles	melas	Mosquito		anopheles_melas/Anopheles_melas.AmelC2	AmelC2	24	34690			
+29031	phlebotomus	papatasi	Sand fly		phlebotomus_papatasi/Phlebotomus_papatasi.PpapI1	PpapI1	24	29031			
+27923	mnemiopsis	leidyi	Warty comb jelly		mnemiopsis_leidyi/Mnemiopsis_leidyi.MneLei_Aug2011	MneLei_Aug2011	24	27923			
+7176	culex	quinquefasciatus	Southern house mosquito		culex_quinquefasciatus/Culex_quinquefasciatus.CpipJ2	CpipJ2	24	7176			
+7395	glossina	austeni	Tsetse fly		glossina_austeni/Glossina_austeni.GausT1	GausT1	24	7395			
+43041	anopheles	christyi	Mosquito		anopheles_christyi/Anopheles_christyi.AchrA1	AchrA1	24	43041			
+6412	helobdella	robusta	Freshwater leech		helobdella_robusta/Helobdella_robusta.Helro1	Helro1	24	6412			
+31234	caenorhabditis	remanei	Nematode		caenorhabditis_remanei/Caenorhabditis_remanei.C_remanei-15.0.1	C_remanei-15.0.1	24	31234			
+225164	lottia	gigantea	Owl limpet		lottia_gigantea/Lottia_gigantea.Lotgi1	Lotgi1	24	225164			
+7168	anopheles	dirus	Mosquito		anopheles_dirus/Anopheles_dirus.AdirW1	AdirW1	24	7168			
+1965070	dinothrombium	tinctorium	Red velvet mite		dinothrombium_tinctorium/Dinothrombium_tinctorium.DtinU1	DtinU1	24	1965070			
+6526	biomphalaria	glabrata	Bloodfluke planorb		biomphalaria_glabrata/Biomphalaria_glabrata.BglaB1	BglaB1	24	6526			
+278856	danaus	plexippus	Monarch butterfly		danaus_plexippus/Danaus_plexippus.Dplex_v4	Dplex_v4	24	278856			
+51031	necator	americanus	New World hookworm		necator_americanus/Necator_americanus.N_americanus_v1	N_americanus_v1	24	51031			
+9974	Manis	javanica	Malayan pangolin	29	manis_javanica/manis_javanica_GCF_014570535.1_YNU_ManJav_2.0	YNU_ManJav_2.0	37	9974		MANJA	Use RefSeq assembly
+8355	Xenopus	laevis	African clawed frog	33	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	xenLae2	37	8355		Bufo laevis|XENLA|Xenopus leavis|clawed frog|common platanna|platanna	Use RefSeq assembly BUT several GeneID are duplicated
+7936	Anguilla	anguilla	European freshwater eel	37	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	fAngAng1.pri	37	7936		ANGAN|Angill angill|Anguilla anguilla anguilla|European eel|Muraena anguilla	Use RefSeq assembly
 10088
 10090
 10114
 10116
-10139
-10140
-10141
 10197
 10219
 10220
-104431
-105389
-105391
-110551
-110555
-110814
 110815
 117565
 117569
@@ -76,248 +382,125 @@ speciesId	genus	species	speciesCommonName	displayOrder	genomeFilePath	genomeVers
 117893
 118040
 118072
-119089
 119203
-1206794
 1206795
-123365
-123366
-123367
-123368
-123369
-124129
-124130
-126287
 1294634
-1298654
-1312402
-1329799
-1329911
-1329912
-1329950
-1329961
-133550
-133551
-1338366
+131567
 1338369
-13615
 13616
 137529
-1437010
+142796
 147099
-1476529
-1489100
-1489340
-1489341
-1489343
-1489388
-1489872
-1489873
-1489908
-1489913
-1489922
-1547233
-1549675
+147537
+147554
 181400
-182222
-186622
-186623
-186624
-186625
-186626
-186627
 186634
 189497
-1963757
-1963758
-1963761
-197562
-197563
-198037
-2024747
+2
 207598
-2172821
-2182372
-262014
+215451
+2157
 2759
-27592
 27686
-28376
-28377
-28781
 29132
-30319
-30367
 30458
-30577
-30648
-30727
-31022
-31028
-31031
-31032
 31033
-31089
 311790
 314145
 314146
 314147
 314293
-314294
 314295
-32281
-32321
-32324
-32335
-32341
-32346
-32347
-32351
-32355
-32358
+3176
 32440
 32443
-32517
 32519
-32521
 32523
 32524
 32525
 32561
 32577
+33090
+3312
 33154
 33208
 33213
 33317
-33340
 33392
 33511
-33550
 33554
+33630
+33682
 337687
-338152
+3378
 338153
+3398
 34572
-34989
 35069
-35497
-35500
-35510
-35737
-37567
 37572
-376912
 376913
-378855
-379583
 379584
-38066
-38605
+38254
 38609
 39107
-40150
 40151
 40674
-41191
-41196
-41197
 41324
 41665
-41666
 41712
 43453
 436486
-436489
 436491
-436492
-43733
-43738
-43741
-43746
-43845
-44484
-46660
-46877
-47144
-47757
-480117
-480118
-48867
+451864
+4751
+4890
+4891
+4895
+4896
+4932
 50557
-51337
-545632
-55879
-55885
 57294
+5782
+58024
 6040
 6072
 6073
-607660
 6157
 61743
 6178
 6199
-6200
-6201
-6208
-6209
 6211
 6217
 6231
-6236
 6237
 6239
-6243
-63221
 6340
-6341
-6362
 6425
 6447
 6448
 6544
-6605
 6656
 6657
 6830
 6843
-6893
-6939
 6960
+70862
 7088
-7147
-7203
-72037
-7214
-7215
-7217
 7227
-7230
 7237
 7240
-7244
-7245
-7399
-7400
 7434
-7496
 7586
-7587
-76071
 7618
-7624
 7625
 7711
 7712
 7713
 7735
-7736
 7737
 7742
 7745
-7761
 7762
-7769
 7776
 7777
 7778
@@ -326,152 +509,82 @@ speciesId	genus	species	speciesCommonName	displayOrder	genomeFilePath	genomeVers
 7878
 7894
 7898
-7899
 7900
 7901
-7914
 7915
-7921
 7922
-7933
-7952
-7953
-7954
 7955
 8075
-8088
-8089
-8090
 81928
 8287
-8288
-8289
 8292
 8293
-8294
-8295
 8342
-8352
-8353
 8355
-8360
-8445
-8446
 8457
 8459
-8464
 8492
 8493
 8504
-8505
-8506
 8507
-8508
 8509
-8511
-85512
-85604
 8570
 8578
-862507
 8782
-8783
-8798
-8799
-8800
 8801
 8825
-8826
 8827
 88770
-8929
 8930
 89593
-8976
-9005
-9030
 9031
-9072
 9126
 91561
 9254
 9255
-9256
 9257
-9258
 9259
 9263
-9265
-9307
 9321
 9347
 9348
 9359
 9362
-9363
-9364
 9365
 9373
 9397
 9443
 9475
-9479
-948951
-94929
-9499
-9526
-9527
-9528
 9539
 9544
-9592
 9593
 9596
 9597
 9598
 9599
-9600
 9604
-9605
 9606
-9608
 9611
-9612
-9615
+9669
 9681
-9682
-9685
 9709
 9721
 9722
-9747
-9750
 9753
 9761
 9765
 9779
 9787
 9788
-9789
-9796
-9815
 9816
-9821
 9822
 9823
-9834
-9835
 9836
 9845
 9850
 9892
-9895
-9903
 9913
+9940
 9963
 9975
-9979
-9984
-9986
-99883
 9989
