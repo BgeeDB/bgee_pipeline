@@ -18,7 +18,7 @@ NEW_GENOMES      := 1
 # DBUSER and DBPASS defined in Makefile.Config
 # DBUSERV and DBPASSV defined in Makefile.Config
 DBNAME := bgee_v$(subst .,_,$(RELEASE))
-DBHOST := dbbioinfo.unil.ch
+DBHOST := rbioinfo.unil.ch
 DBPORT := 3306
 DBNAME_EASYBGEE := easybgee_v$(subst .,_,$(RELEASE))
 DBHOST_EASYBGEE := localhost
@@ -86,7 +86,7 @@ BGEEPIPELINEJARNAME := bgee-pipeline-$(RELEASE)-with-dependencies.jar
 BGEEPIPELINEJAR     := $(JAVALIBDIR)$(BGEEPIPELINEJARNAME)
 
 # --add-opens java.base/java.lang=ALL-UNNAMED: see https://stackoverflow.com/a/77874779/1768736
-JAVA_NO_JAR := java -Xmx150g -Dbgee.dao.jdbc.username=$(DBUSER) -Dbgee.dao.jdbc.password=$(DBPASS) -Dbgee.dao.jdbc.driver.names=com.mysql.cj.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST):$(DBPORT)/$(DBNAME)?useSSL=false&allowPublicKeyRetrieval=True&enableQueryTimeouts=false&sessionVariables=net_write_timeout=260000,net_read_timeout=260000,wait_timeout=260000' --add-opens java.base/java.lang=ALL-UNNAMED
+JAVA_NO_JAR := java -Xmx250g -Dbgee.dao.jdbc.username=$(DBUSER) -Dbgee.dao.jdbc.password=$(DBPASS) -Dbgee.dao.jdbc.driver.names=com.mysql.cj.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST):$(DBPORT)/$(DBNAME)?useSSL=false&allowPublicKeyRetrieval=True&enableQueryTimeouts=false&sessionVariables=net_write_timeout=260000,net_read_timeout=260000,wait_timeout=260000' --add-opens java.base/java.lang=ALL-UNNAMED
 # Java command allowing to connect to easyBgee without Jar. Never used without JAR for the moment but created to follow the same pattern than JAVA_NO_JAR/JAVA variables for Bgee
 JAVA_NO_JAR_EASYBGEE := java -Xmx64g -Dbgee.dao.jdbc.username=$(DBUSER_EASYBGEE) -Dbgee.dao.jdbc.password=$(DBPASS_EASYBGEE) -Dbgee.dao.jdbc.driver.names=com.mysql.cj.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST_EASYBGEE):$(DBPORT)/$(DBNAME_EASYBGEE)?useSSL=false&allowPublicKeyRetrieval=True&enableQueryTimeouts=false&sessionVariables=net_write_timeout=500000,net_read_timeout=500000,wait_timeout=500000'
 
@@ -116,7 +116,7 @@ CP     := cp -f
 GUNZIP := gunzip -f
 MKDIR  := mkdir -p
 
-LC_ALL = 'C'
+#LC_ALL = 'C'
 PYTHON3 = python3
 PIPENV = pipenv
 
@@ -180,7 +180,7 @@ CLUSTER_BUSTOOLS_CMD    := $(CLUSTER_SOFT_VITALIT) module load UHTS/Analysis/bus
 # ===================================
 
 # Tmp path (if not enough disk space)
-TMPDIR := /var/lib/mysql/tmp/bgee_v15_2/
+TMPDIR := /var/lib/mysql/tmp/$(DBNAME)/
 
 # Path to the directory storing source files
 # PIPELINEROOT and DIR_NAME are specified by each individul Makefile
@@ -232,19 +232,30 @@ WORMBASE_EXPR_DUMP            := expr_pattern.ace
 
 # =========== SPECIES FILES ===============
 
-# a TSV file containing the IDs of the species used in Bgee
-SPECIESFILEPATH     := $(SOURCE_FILES_DIR)species/bgeeSpecies.tsv
+# a TSV file containing the IDs of RefSeq species used in Bgee
+REFSEQ_SPECIES_FILEPATH     := $(SOURCE_FILES_DIR)species/refSeqSpecies.tsv
+BGEE_SPECIES_FILEPATH       := $(GENERATED_FILES_DIR)species/bgeeSpecies.tsv
 
 # file containing the IDs of all the taxa used in our annotations
-ANNOTTAXIDSFILEPATH := $(GENERATED_FILES_DIR)species/annotTaxIds.tsv
+ANNOTTAXIDSFILE := annotTaxIds.tsv
+ANNOTTAXIDSFILEPATH := $(GENERATED_FILES_DIR)species/$(ANNOTTAXIDSFILE)
 
 # file containing the IDs of the species used in Bgee, of all the taxa used in our annotations,
 # and of all the taxa used in Uberon
 ALLTAXIDSFILEPATH   := $(GENERATED_FILES_DIR)species/allTaxIds.tsv
 
 # our custom taxonomy ontology
-TAXONOMYFILEPATH    := $(GENERATED_FILES_DIR)species/bgee_ncbitaxon.owl
-TAX_DAT_DOWNLOAD_URL := ftp://ftp.ebi.ac.uk/pub/databases/taxonomy/taxonomy.dat
+TAXONOMY_FILE_PATH       := $(GENERATED_FILES_DIR)species/bgee_ncbitaxon.owl
+NCBITAXON_GITHUB_URL     := https://github.com/obophenotype/ncbitaxon
+NCBITAXON_OBOFOUNDRY_URL := http://purl.obolibrary.org/obo/ncbitaxon.owl
+NCBITAXON_DIR_PATH       := $(TMPDIR)ncbitaxon/
+
+# path to ROBOT
+ROBOT_JAR_URL       := https://github.com/ontodev/robot/releases/latest/download/robot.jar
+ROBOT_SH_URL        := https://raw.githubusercontent.com/ontodev/robot/master/bin/robot
+ROBOT_DIR_PATH      := $(PWD)/$(SOURCE_FILES_DIR)uberon/robot/
+ROBOT_JAR_PATH      := $(ROBOT_DIR_PATH)robot.jar
+ROBOT_SH_PATH       := $(ROBOT_DIR_PATH)robot
 
 # =========== GENE FILES ===============
 
@@ -336,6 +347,7 @@ STGMAPPING      := $(JAVA) UberonSocketTool idMapping $(DEV_STAGE_ONT_FILE_PATH)
 
 # =========== SIMILARITY ANNOTATION FILES ===============
 
+RAW_SIM_ANNOT_DOWNLOAD_URL := https://raw.githubusercontent.com/BgeeDB/anatomical-similarity-annotations/master/release/raw_similarity_annotations.tsv
 RAW_SIMILARITY_FILE := $(SOURCE_FILES_DIR)annotations/raw_similarity_annotations.tsv
 SUMMARY_SIMILARITY_FILE := $(SOURCE_FILES_DIR)annotations/summary_similarity_annotations.tsv
 

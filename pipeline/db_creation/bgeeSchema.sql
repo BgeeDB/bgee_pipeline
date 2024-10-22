@@ -490,6 +490,7 @@ create table gene (
 -- defines whether the gene ID is present in Ensembl. For some species, they are not
 -- (for instance, bonobo; we use chimp genome)
     ensemblGene boolean not null default 1 COMMENT 'Is the gene in Ensembl (default) (= 1), if not (= 0)',
+    seqRegionName varchar(255) not null default '' COMMENT 'Chromosomal or assembly name where this gene is',
     geneMappedToGeneIdCount tinyint unsigned not null default 1 COMMENT 'number of genes in the Bgee database with the same Ensembl gene ID. In Bgee, for some species with no genome available, we use the genome of a closely-related species, such as chimpanzee genome for analyzing bonobo data. For this reason, a same Ensembl gene ID can be mapped to several species in Bgee. The value returned here is equal to 1 when the Ensembl gene ID is uniquely used in the Bgee database.'
 ) engine = innodb;
 
@@ -909,21 +910,21 @@ create table rnaSeqLibrary (
     rnaSeqSequencerName varchar(255) not null,
     rnaSeqTechnologyName varchar(255) not null,
     rnaSeqTechnologyIsSingleCell tinyint(1) not null,
-    sampleMultiplexing boolean not null default 0, 
+    sampleMultiplexing boolean not null default 0,
     libraryMultiplexing boolean not null default 0,
 --  **** Columns related to the sampling protocol ***
 --  TODO: check validity of enum
     strandSelection enum ('NA', 'forward', 'revert', 'unstranded'),
     cellCompartment enum('NA', 'nucleus', 'cell'),
     sequencedTranscriptPart enum ('NA', '3prime', '5prime', 'full length'),
-    fragmentation smallint unsigned not null default 0 COMMENT 'corresponds to fragmentation of cDNA. 0 for long reads', 
+    fragmentation smallint unsigned not null default 0 COMMENT 'corresponds to fragmentation of cDNA. 0 for long reads',
     rnaSeqPopulationCaptureId varchar(255) not null,
     genotype varchar(70),
     -- In case of single read, it's the total number of reads
-    allReadsCount int unsigned not null default 0,
+    allReadsCount bigint unsigned not null default 0,
 -- total number of reads in library that were mapped to anything.
 -- if it is not a paired-end library, this number is equal to leftMappedReadsCount
-    mappedReadsCount int unsigned not null default 0,
+    mappedReadsCount bigint unsigned not null default 0,
 -- a library is an assembly of different runs, and the runs can have different read lengths,
 -- so we store the min and max read lengths
     minReadLength int unsigned not null default 0,
@@ -935,7 +936,7 @@ create table rnaSeqLibrary (
 ) engine = innodb;
 
 -- XXX should we keep discarded info at rnaSeqLibrary level, at rnaSeqLibraryAnnotatedSample level,
--- or at both levels? IfrnaSeqLibraryAnnotatedSample level or both do we want to provide condition ? 
+-- or at both levels? IfrnaSeqLibraryAnnotatedSample level or both do we want to provide condition ?
 --
 -- We sometimes discard some runs associated to a library, because of low mappability.
 -- We keep track of these discarded runs in this table.
@@ -955,12 +956,12 @@ create table rnaSeqRun (
 ) engine = innodb;
 
 -- corresponds to one library as it was annotated
--- * for bulk RNA-Seq one library corresponds to one sample. For such data there is a 
+-- * for bulk RNA-Seq one library corresponds to one sample. For such data there is a
 --   1-to-1 relation between rnaSeqLibrary and rnaSeqLibraryAnnotatedSample.
 -- * for BRB-Seq one library contains several libraries pooled together. Each pooled library has its
---   own annotation. For such data there will be 1-to-many relation between rnaSeqLibrary and 
+--   own annotation. For such data there will be 1-to-many relation between rnaSeqLibrary and
 --   rnaSeqLibraryAnnotatedSample.
--- * for full length single cell RNA-Seq one library corresponds to one sample. For such data 
+-- * for full length single cell RNA-Seq one library corresponds to one sample. For such data
 --   there is a 1-to-1 relation between rnaSeqLibrary and rnaSeqLibraryAnnotatedSample.
 -- * for droplet base single cell RNA-Seq one library corresponds to a cell population. Each cell has
 --   been annotated with a different barcode and each barcode has its own annotation. For such data
@@ -1050,13 +1051,13 @@ create table rnaSeqLibraryAnnotatedSampleGeneResult (
     'undefined') not null default 'not excluded'
 ) engine = innodb;
 
---  TO CLARIFY: 
+--  TO CLARIFY:
 --  * comment from Fred :comes from sample and library demultiplexing. In scRNA-Seq, 1 sample = 1 cell. In bulk, 1 sample = 1 organ for instance)
---  * my feeling : comes only from sample demultiplexing with barcodes describing each cell. For library demultiplexing like BRB-Seq all librariesq 
---    are already described in the table `rnaSeqLibraryAnnotatedSample` So for me for BRB-Seq 
+--  * my feeling : comes only from sample demultiplexing with barcodes describing each cell. For library demultiplexing like BRB-Seq all librariesq
+--    are already described in the table `rnaSeqLibraryAnnotatedSample` So for me for BRB-Seq
 --    rnaSeqLibraryAnnotatedSample.multipleLibraryIndividualSample == 0.
 create table rnaSeqLibraryIndividualSample (
-    rnaSeqLibraryIndividualSampleId int unsigned not null, 
+    rnaSeqLibraryIndividualSampleId int unsigned not null,
     rnaSeqLibraryAnnotatedSampleId mediumint unsigned not null,
     barcode varchar(70) COMMENT 'barcode used to pool several samples in the same library',
     sampleName varchar(70),

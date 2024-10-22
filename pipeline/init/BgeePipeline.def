@@ -201,6 +201,7 @@ From: ubuntu:24.04
 	R -e 'BiocManager::install("stringr")'
 	R -e 'BiocManager::install("tools")'
 	R -e 'BiocManager::install("topGO")'
+	R -e 'BiocManager::install("tximport")'
 	R -e 'BiocManager::install("zebrafishcdf")'
 	R -e 'BiocManager::install("zebrafishprobe")'
 	# Problematic R libs
@@ -288,7 +289,6 @@ From: ubuntu:24.04
 	pip3 install --break-system-packages six
 	#pip3 install --break-system-packages configparser
 	#pip3 install --break-system-packages datetime
-	#pip3 install --break-system-packages distutils
 	#pip3 install --break-system-packages multiprocessing
 	#pip3 install --break-system-packages pathlib
 	#pip3 install --break-system-packages typing

@@ -112,9 +112,7 @@ print "Treating library: $library_id from $exp_id in $organism (Run ID(s): ", jo
 # creating output directories if necessary:
 # Do a mkdir -p  +  set group & mode at each intermediary folder
 $kallisto_out_folder .= '/'.$library_id;
-my $output_log_path = $output_log_folder.'/'.$library_id;
 make_path $kallisto_out_folder, {verbose=>0, mode=>0775};
-make_path $output_log_path, {verbose=>0, mode=>0775};
 # Log file with commands submitted
 my $report_file = $output_log_folder.'/'.$library_id.'/'.$library_id.'.report';
 
@@ -407,7 +405,7 @@ else {
                               ' kallisto_count_folder="'.$kallisto_out_folder.'"'.
                               ' tx2gene_file="'.$gene2transcript.'"'.
                               ' gene2biotype_file="'.$gene2biotype.'"'.
-                              #' gene_count_file="'.$count_info_file.'"'.
+                              ' gene_count_file="'.$count_info_file.'"'.
                               ' library_id="'.$library_id.'"\' '.
                               $RealBin.'/rna_seq_analysis.R '.$R_log_file;
     print "\tAnalysis script rna_seq_analysis.R command was built: \"", $analyze_count_command, "\"\n\tNow launching R script...\n";
@@ -422,7 +420,7 @@ else {
 
 ############################################################################################
 # If everything was successful, we write a DONE.txt file in results folder
-open (my $REPORT6, '>', $output_log_path.'/DONE.txt')  or die "Cannot write DONE.txt file\n";
+open (my $REPORT6, '>', $kallisto_out_folder.'/DONE.txt')  or die "Cannot write DONE.txt file\n";
 print {$REPORT6} "$library_id was succesfully processed!\n";
 close $REPORT6;
 ############################################################################################
