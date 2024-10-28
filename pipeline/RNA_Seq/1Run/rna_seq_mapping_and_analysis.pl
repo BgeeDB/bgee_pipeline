@@ -401,7 +401,7 @@ if ( -s $count_info_file && -s $R_log_file ){
 }
 else {
     #creating and invoking command that launches rna_seq_analysis.R script
-    my $analyze_count_command = "R CMD BATCH --no-save --no-restore \'--args".
+    my $analyze_count_command = "bash -c 'module load gcc/11.4.0; module load r-light;' R CMD BATCH --no-save --no-restore \'--args".
                               ' kallisto_count_folder="'.$kallisto_out_folder.'"'.
                               ' tx2gene_file="'.$gene2transcript.'"'.
                               ' gene2biotype_file="'.$gene2biotype.'"'.
