@@ -13,6 +13,7 @@ $(OUTPUT_DIR)go:
 	@$(JAVA) InsertGO $(INPUT_DIR)go >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
 
+#NOTE Need a way to distinct species "hidden" in Bgee, and species with data in Bgee
 genes: $(SPECIESFILEPATH)
 	@$(MYSQL) -e "SELECT CONCAT(s.speciesId, '__', s.genomeSpeciesId, '__', s.genus, '_', REPLACE(s.species, ' ', '_'), '__', d.dataSourceName) FROM species s, dataSource d WHERE s.dataSourceId=d.dataSourceId ORDER BY s.speciesId" | grep -v 'speciesId' >$@.species
 	@if [[ -s $@.species ]]; then echo -n; else echo "NO species in file"; exit 2; fi
