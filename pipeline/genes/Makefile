@@ -28,7 +28,7 @@ genes: $(SPECIESFILEPATH)
 		if [[ `echo $$sp | grep 'EnsemblMetazoa$$'` ]]; then export url='http://ftp.ensemblgenomes.org/pub/metazoa/release-$(ENSMETAZOARELEASE)'; fi; \
 		$(WGET) "$$url/json/$$spe/$$spe.json" -O $(INPUT_DIR)$$spe.tmp && $(MV) $(INPUT_DIR)$$spe.tmp $(INPUT_DIR)$$spe.json 2>/dev/null || $(RM) $(INPUT_DIR)$$spe.tmp; \
 		perl insert_ensembl_genes.pl -species=$$sp -bgee=$(BGEECMD) $(INPUT_DIR)$$spe.json >> $@.tmp 2>>$@.err; \
-		$(RM) $(INPUT_DIR)$$spe.json \
+		$(RM) $(INPUT_DIR)$$spe.json; \
 	done
 	# Insert gene information for non-Ensembl species
 	@for sp in `cat $@.species | grep -vi __Ensembl | sed -e 's| .*||'`; do \
