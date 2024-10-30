@@ -1,6 +1,7 @@
 INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, evidenceUrl,
                         baseUrl, dataSourceDescription, toDisplay, category) VALUES
 -- [species_ensembl_link]: e.g., Drosophila_melanogaster
+-- FIXME should we keep Gene Ontology ???
 (1, 'NCBI Taxonomy', '', '', '',
     'https://www.ncbi.nlm.nih.gov/taxonomy', 'Source taxonomy used in Bgee', 1, ''),
 (2, 'Ensembl', 'https://May2024.archive.ensembl.org/[species_ensembl_link]/Gene/Summary?g=[gene_id]', '', '',

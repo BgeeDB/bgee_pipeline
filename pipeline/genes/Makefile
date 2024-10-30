@@ -5,14 +5,6 @@ include $(PIPELINEROOT)Makefile.common
 
 all: $(VERIFICATIONFILE)
 
-#FIXME is go still useful ???
-$(OUTPUT_DIR)go:
-	# Download Gene Ontology (obo format-version: 1.2)
-	@$(WGET) 'http://purl.obolibrary.org/obo/go/go-basic.obo' -O $(INPUT_DIR)go.tmp && $(MV) $(INPUT_DIR)go.tmp $(INPUT_DIR)go 2>/dev/null  || rm -f $(INPUT_DIR)go.tmp
-	# Insert Gene Ontology
-	@$(JAVA) InsertGO $(INPUT_DIR)go >$@.tmp 2>&1
-	@$(MV) $@.tmp $@
-
 #TODO Need a way to distinct species "hidden" in Bgee, and species with data in Bgee
 genes: $(BGEE_SPECIES_FILEPATH)
 	@$(MYSQL) -e "SELECT CONCAT(s.speciesId, '__', s.genomeSpeciesId, '__', s.genus, '_', REPLACE(s.species, ' ', '_'), '__', d.dataSourceName) FROM species s, dataSource d WHERE s.dataSourceId=d.dataSourceId ORDER BY s.speciesId" | grep -v 'speciesId' >$@.species
@@ -39,11 +31,11 @@ genes: $(BGEE_SPECIES_FILEPATH)
 	@if [[ -s $@.err ]]; then echo -n; else $(RM) $@.err; fi
 	@$(MV) $@.tmp $@
 
+
 # Please check that GeneCards datasource ID did not change in the database before running updateXrefs
 GENECARDS_ID := 40
-
 #FIXME still needed with the Ensembl JSON parsing? Maybe only for non-Ensembl species
-updateXrefs : genes
+updateXrefs: genes
 	# UPDATE UNIPROT XREFS
 	# first remove already existing xrefs_from_uniprot file
 	@rm -f $(XREFS_FROM_UNIPROT_FILE)
@@ -64,6 +56,7 @@ sameIdGeneCount: genes
 	@$(MYSQL) -e "CREATE TEMPORARY TABLE geneCount (PRIMARY KEY(geneId)) SELECT geneId, COUNT(*) AS geneCount FROM gene GROUP BY geneId; UPDATE gene INNER JOIN geneCount ON gene.geneId = geneCount.geneId SET gene.geneMappedToGeneIdCount = geneCount.geneCount;" > $@.tmp 2> $@.warning
 	@$(MV) $@.tmp $@
 
+
 #Name of the file on OMA server
 ORTHOXMLFILE := hogs_for_bgee.orthoxml
 hogs: genes
@@ -79,7 +72,7 @@ hogs: genes
 	@$(MV) $@.temp $@
 
 
-$(VERIFICATIONFILE): $(OUTPUT_DIR)go genes sameIdGeneCount hogs $(OUTPUT_DIR)insert_oncoMX_XRefs
+$(VERIFICATIONFILE): genes sameIdGeneCount hogs $(OUTPUT_DIR)insert_oncoMX_XRefs
 	# Check overview for all species
 	@$(MYSQL) -e "SELECT t1.speciesId, COUNT(DISTINCT t1.geneId) AS geneCount, COUNT(t2.geneId) AS synonymCount, COUNT(t2.geneId)/COUNT(DISTINCT t1.geneId) AS synonymsByGene FROM gene AS t1 LEFT OUTER JOIN geneNameSynonym AS t2 ON t1.geneId = t2.geneId GROUP BY speciesId" > $@.temp
 	# Check insertion of genes
@@ -160,9 +153,9 @@ $(OUTPUT_DIR)insert_gene_homology:
 	@if [[ -s $@.err ]]; then echo -n; else $(RM) $@.err; fi
 	@$(MV) $@.tmp $@
 
+
 # Init variables used to insert OncoMX XRefs in the database
 ONCOMX_DATASOURCE_NAME := OncoMX
-
 $(OUTPUT_DIR)insert_oncoMX_XRefs:
 	# Download oncoMX ids (uniprot ID and gene name)
 	# TODO : OncoMX is supposed to update the tsv file containing their IDs. Please be sure that the URL used to download this dataset is still up to date
@@ -177,8 +170,9 @@ $(OUTPUT_DIR)delete_oncoMX_XRefs:
 	@$(MYSQL) -e "DELETE FROM geneXRef INNER JOIN dataSource ON dataSource.dataSourceId = geneXRef.dataSourceId WHERE dataSource.dataSourceName = $(ONCOMX_DATASOURCE_NAME);" > $@.tmp
 	@$(MV) $@.tmp $@
 
+
 clean:
-	-@$(RM) $(VERIFICATIONFILE) $(OUTPUT_DIR)go genes genes.err species *.tmp $(INPUT_DIR)$(ORTHOXMLFILE).gz $(INPUT_DIR)$(ORTHOXMLFILE) hogs
+	-@$(RM) $(VERIFICATIONFILE) genes genes.err species *.tmp $(INPUT_DIR)$(ORTHOXMLFILE).gz $(INPUT_DIR)$(ORTHOXMLFILE) hogs
 	-@$(GIT) rm $(VERIFICATIONFILE)
 	-@$(GIT) commit $(VERIFICATIONFILE) -m "Removing verification file for gene (and related) and hierarchical group insertion"
 	@$(GIT) push
@@ -191,3 +185,4 @@ deleteGene:
 		          DELETE FROM geneOntologyTermAltId; DELETE FROM geneOntologyTerm; DELETE FROM geneBioType; ALTER TABLE geneBioType AUTO_INCREMENT=1; DELETE FROM gene;"
 deleteOMAHierarchicalGroup:
 	@$(MYSQL) -e "UPDATE gene SET OMAParentNodeId=null; DELETE FROM OMAHierarchicalGroup;"
+
