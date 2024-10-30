@@ -94,7 +94,7 @@ if ( ! $del ){
 }
 if ( ! exists $dupl_geneIds{$del} ){
     $dbh->disconnect;
-    print "Invalid [$del] gene, not related to [$gene]\n";
+    print "\nInvalid [$del] gene, not related to [$gene]\n";
     exit 1;
 }
 #NOTE => for species we are sure they match on alternative chromosome, simpler to remove genes on those alt chr!
@@ -102,19 +102,27 @@ if ( ! exists $dupl_geneIds{$del} ){
 #        human      EHMT2  gene on chr  *6* and Scaffold HSCHR*6*_MHC_QBL_CTG1
 #        zebrafish  prune  gene on chr *16* and CHR_ALT_CTG*16*_1_20
 #        It may happen for mouse, on genome patches!
+#NOTE Take care that some duplicates may be due to bad assemblies, and may be solved in future assemblies.
+#NOTE Take care that some duplicates may be linked to wrong gene models, and be splice variants. E.g. ENSMUSG00000007440 & ENSMUSG00000102206
 
 #TODO Is there a cascade delete for genes from the gene table?
 #     to delete all those gene xrefs, terms, ...
-#TODO Before deleting, a check has to be done to see if there are some expression for the one(s) to delete!
+
+#NOTE Before deleting, a check has to be done to see if there are some expression for the one(s) to delete!
+my $expressionDB = $dbh->prepare('SELECT * FROM expression WHERE bgeeGeneId=?');
+$expressionDB->execute( $dupl_geneIds{$del} )  or die $expressionDB->errstr;
+my $exprRows = $expressionDB->rows;
+$expressionDB->finish;
+if ( $exprRows > 0 ){
+    $dbh->disconnect;
+    print "\nExpression is found for [$gene], maybe you don't want to delete it!\n";
+    exit 1;
+}
 
 exit 0; #TODO Need to add extra checks!
 my $deleteGeneDB = $dbh->prepare('DELETE FROM gene WHERE bgeeGeneId=?');
 $deleteGeneDB->execute( $dupl_geneIds{$del} )  or die $deleteGeneDB->errstr;
 $deleteGeneDB->finish;
-
-#NOTE Take care that some duplicates may be due to bad assemblies, and may be solved in future assemblies.
-#NOTE Take care that some duplicates may be linked to wrong gene models, and be splice variants. E.g. ENSMUSG00000007440 & ENSMUSG00000102206
-
 
 # Close db connections
 $dbh->disconnect;
