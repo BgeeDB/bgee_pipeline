@@ -85,7 +85,19 @@ if ( $rows < 2 ){
 }
 
 print "It looks $gene has $rows duplicates: ", '[', join("]\t[", join(',', keys %dupl_geneIds), $geneDescription, $geneName), "]\n";
-#TODO => for species we are sure they match on alternative chromosome, simpler to remove genes on those alt chr!
+
+
+# Delete *one* duplicated entry (one by one)!
+if ( ! $del ){
+    $dbh->disconnect;
+    exit 0;
+}
+if ( ! exists $dupl_geneIds{$del} ){
+    $dbh->disconnect;
+    print "Invalid [$del] gene, not related to [$gene]\n";
+    exit 1;
+}
+#NOTE => for species we are sure they match on alternative chromosome, simpler to remove genes on those alt chr!
 #        So, mainly human, zebrahish and ???? With https://ftp.ensembl.org/pub/current_fasta/*/dna/*.dna.alt* file
 #        human      EHMT2  gene on chr  *6* and Scaffold HSCHR*6*_MHC_QBL_CTG1
 #        zebrafish  prune  gene on chr *16* and CHR_ALT_CTG*16*_1_20
@@ -95,6 +107,10 @@ print "It looks $gene has $rows duplicates: ", '[', join("]\t[", join(',', keys 
 #     to delete all those gene xrefs, terms, ...
 #TODO Before deleting, a check has to be done to see if there are some expression for the one(s) to delete!
 
+exit 0; #TODO Need to add extra checks!
+my $deleteGeneDB = $dbh->prepare('DELETE FROM gene WHERE bgeeGeneId=?');
+$deleteGeneDB->execute( $dupl_geneIds{$del} )  or die $deleteGeneDB->errstr;
+$deleteGeneDB->finish;
 
 #NOTE Take care that some duplicates may be due to bad assemblies, and may be solved in future assemblies.
 #NOTE Take care that some duplicates may be linked to wrong gene models, and be splice variants. E.g. ENSMUSG00000007440 & ENSMUSG00000102206
