@@ -32,7 +32,7 @@ my %opts = ('species=s'     => \$species,            # speciesCommonName from TS
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $species eq '' || $bgee_connector eq '' || $bgee_species eq '' ){
     print "\n\tInvalid or missing argument:
-\te.g. $0  -species=9606__0__Genera_species__NonEnsembl  -bgee=\$(BGEECMD)  -bgeeSpecies=\$(SPECIESFILEPATH)
+\te.g. $0  -species=9606__0__Genera_species__NonEnsembl  -bgee=\$(BGEECMD)  -bgeeSpecies=\$(BGEE_SPECIES_FILEPATH)
 \t-species     speciesId from Bgee db with the genomeSpeciesId concatenated
 \t-bgee        Bgee    connector string
 \t-bgeeSpecies bgeeSpecies.tsv file
