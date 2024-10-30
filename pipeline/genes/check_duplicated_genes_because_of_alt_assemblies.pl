@@ -17,11 +17,13 @@ use Utils;
 # Define arguments & their default value
 my ($gene, $bgee_connector) = ('', '');
 my ($all) = (0);
+my ($del) = ('');
 my ($debug) = (0);
 my %opts = ('gene=s' => \$gene,            # gene to check for duplicates
             'bgee=s' => \$bgee_connector,  # Bgee connector string
             'debug'  => \$debug,           # debug mode, do not insert/update in database
             'all'    => \$all,             # Return a global list of all potential duplicates
+            'del=s'  => \$del,             # Remove a gene from the database, with all its xrefs/terms
            );
 
 # Check arguments
@@ -33,6 +35,7 @@ if ( !$test_options || ($gene eq '' && $all == 0) || $bgee_connector eq '' ){
 \t-bgee     Bgee connector string
 \t-debug    Debug mode, do not insert/update in database
 \t-all      Return a global list of all potential duplicates
+\t-del      Gene to remove from the database, with all its xrefs/terms
 \n";
     exit 1;
 }
@@ -64,21 +67,24 @@ $geneDB->finish;
 
 
 # Search for duplicates
-my $duplicatesDB = $dbh->prepare('SELECT GROUP_CONCAT(geneId), COUNT(*) AS dupl_count, geneDescription, geneName FROM gene WHERE geneDescription=? AND geneName=? AND geneBioTypeId=? AND speciesId=? GROUP BY geneDescription, geneName, speciesId HAVING COUNT(*) > 1 ORDER BY dupl_count');
+my $duplicatesDB = $dbh->prepare('SELECT geneId, bgeeGeneId, geneDescription, geneName FROM gene WHERE geneDescription=? AND geneName=? AND geneBioTypeId=? AND speciesId=?');
 $duplicatesDB->execute($geneDescription, $geneName, $geneBioTypeId, $speciesId)  or die $duplicatesDB->errstr;
-my ($dupl_geneIds, $dupl_count) = $duplicatesDB->fetchrow_array;
+my $rows = $duplicatesDB->rows;
+my %dupl_geneIds;
+for my $row ( @{ $duplicatesDB->fetchall_arrayref } ){
+    $dupl_geneIds{$row->[0]} = $row->[1];
+}
 $duplicatesDB->finish;
 
 
 # Are there duplicates?
-my @duplicates = split(',', $dupl_geneIds || $gene);
-if ( ! exists $duplicates[1] ){
-    print "It does not look $gene has duplicates: ", '[', join("]\t[", ($dupl_geneIds || $gene), $geneDescription, $geneName), "]\n";
+if ( $rows < 2 ){
+    print "It does not look $gene has duplicates: ", '[', join("]\t[", $gene, $geneDescription, $geneName), "]\n";
     $dbh->disconnect;
     exit 0;
 }
 
-print "It looks $gene has $dupl_count duplicates: ", '[', join("]\t[", $dupl_geneIds, $geneDescription, $geneName), "]\n";
+print "It looks $gene has $rows duplicates: ", '[', join("]\t[", join(',', keys %dupl_geneIds), $geneDescription, $geneName), "]\n";
 #TODO => for species we are sure they match on alternative chromosome, simpler to remove genes on those alt chr!
 #        So, mainly human, zebrahish and ???? With https://ftp.ensembl.org/pub/current_fasta/*/dna/*.dna.alt* file
 #        human      EHMT2  gene on chr  *6* and Scaffold HSCHR*6*_MHC_QBL_CTG1
