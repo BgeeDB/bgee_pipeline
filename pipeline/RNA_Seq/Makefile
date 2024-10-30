@@ -354,7 +354,7 @@ generate_intergenic_sequences: sum_by_species
 
 	$(eval TIME_INTERGENIC := $(shell date +'%Y%m%d-%H%M%S'))
 	@echo "#!/usr/bin/env bash" > $(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_INTERGENIC).sh
-	@echo "perl 1Run/create_intergenic_fasta.pl -sample_info_path=$(RNASEQ_SAMPINFO_FILEPATH) -transcriptomes_folder=$(RNASEQ_CLUSTER_GTF) -transcriptome_compression_ext=$(TRANSCRIPTOME_COMPRESSION_EXT) -sum_abundance_file_path=$(SUM_ABUNDANCE_FILE_PATH) -gaussian_file_path=$(RNASEQ_CLUSTER_GAUSSIAN_CHOICE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) -other_intergenic_dir=$(CLUSTER_OTHER_INTERGENIC_FOLDER)" >> $(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_INTERGENIC).sh
+	@echo "perl 1Run/create_intergenic_fasta.pl -sample_info_path=$(RNASEQ_SAMPINFO_FILEPATH) -transcriptomes_folder=$(RNASEQ_CLUSTER_GTF) -transcriptome_compression_ext=$(TRANSCRIPTOME_COMPRESSION_EXT) -sum_abundance_file_path=$(SUM_ABUNDANCE_FILE_PATH) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) -other_intergenic_dir=$(CLUSTER_OTHER_INTERGENIC_FOLDER)" >> $(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_INTERGENIC).sh
 	@sbatch --account=$(SENSITIVE_CLUSTER_ACCOUNT) --time=2-00:00:00 --mem=5G --partition=$(SENSITIVE_CLUSTER_PARTITION) --error=$(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_INTERGENIC).err --output=$(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_INTERGENIC).out --nodes=1 --ntasks=1 --cpus-per-task=1 --job-name=$@_$(TIME_INTERGENIC) $(RNASEQ_CLUSTER_SBATCH)$@_$(TIME_INTERGENIC).sh > $@.tmp 2>$@.err
 	NUMBER_JOBS=$$(squeue --name=$@_$(TIME_INTERGENIC) --noheader | wc -l) ; \
 	while [ $$NUMBER_JOBS -gt 0 ] ; do \
