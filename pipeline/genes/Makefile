@@ -14,8 +14,7 @@ $(OUTPUT_DIR)go:
 	@$(MV) $@.tmp $@
 
 #TODO Need a way to distinct species "hidden" in Bgee, and species with data in Bgee
-#TODO SPECIESFILEPATH name has changed!
-genes: $(SPECIESFILEPATH)
+genes: $(BGEE_SPECIES_FILEPATH)
 	@$(MYSQL) -e "SELECT CONCAT(s.speciesId, '__', s.genomeSpeciesId, '__', s.genus, '_', REPLACE(s.species, ' ', '_'), '__', d.dataSourceName) FROM species s, dataSource d WHERE s.dataSourceId=d.dataSourceId ORDER BY s.speciesId" | grep -v 'speciesId' >$@.species
 	@if [[ -s $@.species ]]; then echo -n; else echo "NO species in file"; exit 2; fi
 	# Insert gene information for Ensembl species (may be long: between 1 and 10 hours per species)
@@ -35,7 +34,7 @@ genes: $(SPECIESFILEPATH)
 	@for sp in `cat $@.species | grep -vi __Ensembl | sed -e 's| .*||'`; do \
 		date; \
 		echo "species: $$sp"; \
-		perl insert_nonensembl_genes.pl -species=$$sp -bgee=$(BGEECMD) -bgeeSpecies=$(SPECIESFILEPATH) >> $@.tmp 2>>$@.err; \
+		perl insert_nonensembl_genes.pl -species=$$sp -bgee=$(BGEECMD) -bgeeSpecies=$(BGEE_SPECIES_FILEPATH) >> $@.tmp 2>>$@.err; \
 	done
 	@if [[ -s $@.err ]]; then echo -n; else $(RM) $@.err; fi
 	@$(MV) $@.tmp $@
@@ -54,7 +53,7 @@ updateXrefs : genes
 	#    in parallel
 	#XXX Could be updated to directly run on UNIL cluster
 	#XXX Could be updated to retrieve other information from Uniprot (e.g GeneCards XRefs,...)
-	@R CMD BATCH --no-save --no-restore '--args species_file="$(SPECIESFILEPATH)" number_cores=28 bgee="$(BGEECMD)" output_file="$(XREFS_FROM_UNIPROT_FILE)"' update_genes_from_UniProt.R > $@.tmp
+	@R CMD BATCH --no-save --no-restore '--args species_file="$(BGEE_SPECIES_FILEPATH)" number_cores=28 bgee="$(BGEECMD)" output_file="$(XREFS_FROM_UNIPROT_FILE)"' update_genes_from_UniProt.R > $@.tmp
 	# Now update/insert XRefs in the database
 	@perl insert_uniprot_xrefs.pl -bgee=$(BGEECMD) -uniprot_xrefs=$(XREFS_FROM_UNIPROT_FILE) > $@.tmp 2>>$@.err
 	# ADD GENECARDS XREFS
