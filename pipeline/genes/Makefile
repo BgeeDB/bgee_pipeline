@@ -26,7 +26,7 @@ genes: $(SPECIESFILEPATH)
 		if [[ $$spe == 'heterocephalus_glaber' ]]; then export spe='heterocephalus_glaber_female'; fi; \
 		export url='https://ftp.ensembl.org/pub/release-$(ENSRELEASE)'; \
 		if [[ `echo $$sp | grep 'EnsemblMetazoa$$'` ]]; then export url='http://ftp.ensemblgenomes.org/pub/metazoa/release-$(ENSMETAZOARELEASE)'; fi; \
-		$(WGET) "$$url/json/$$spe/$$spe.json" -O $(INPUT_DIR)$$spe.tmp && $(MV) $(INPUT_DIR)$$spe.tmp $(INPUT_DIR)$$spe.json 2>/dev/null || $(RM) $(INPUT_DIR)$$spe.tmp; \
+		$(WGET) "$$url/json/$$spe/$$spe.json" && $(MV) $$spe.json $(INPUT_DIR)$$spe.json 2>/dev/null || $(RM) $$spe.json; \
 		perl insert_ensembl_genes.pl -species=$$sp -bgee=$(BGEECMD) $(INPUT_DIR)$$spe.json >> $@.tmp 2>>$@.err; \
 		$(RM) $(INPUT_DIR)$$spe.json; \
 		sleep 60; \
