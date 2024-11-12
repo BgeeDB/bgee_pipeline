@@ -5,8 +5,19 @@ include $(PIPELINEROOT)Makefile.common
 
 all: $(VERIFICATIONFILE)
 
+# Get the UniProt AC <-> ID mapping missing in Ensembl xrefs
+uniprotAC_ID:
+	$(WGET) -q 'https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.dat.gz' -O - | zgrep -P '^(ID|AC|\/\/)' > $(INPUT_DIR)/trembl-ac-id.dat
+	$(WGET) -q 'https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz'  -O - | zgrep -P '^(ID|AC|\/\/)' > $(INPUT_DIR)/sprot-ac-id.dat
+	# Create a single file in generated/genes/uniprot.map  aka  $(OUTPUT_DIR)/uniprot.map with the AC -> ID mapping
+	@perl create_uniprot_ac-id_mapping.pl $(INPUT_DIR)/trembl-ac-id.dat > $(OUTPUT_DIR)/uniprot.map
+	@perl create_uniprot_ac-id_mapping.pl $(INPUT_DIR)/sprot-ac-id.dat >> $(OUTPUT_DIR)/uniprot.map
+	# Cleaning
+	xz -9 $(INPUT_DIR)/trembl-ac-id.dat $(INPUT_DIR)/sprot-ac-id.dat
+	@touch $@
+
 #TODO Need a way to distinct species "hidden" in Bgee, and species with data in Bgee
-genes: $(BGEE_SPECIES_FILEPATH)
+genes: $(BGEE_SPECIES_FILEPATH) uniprotAC_ID $(OUTPUT_DIR)/uniprot.map
 	@$(MYSQL) -e "SELECT CONCAT(s.speciesId, '__', s.genomeSpeciesId, '__', s.genus, '_', REPLACE(s.species, ' ', '_'), '__', d.dataSourceName) FROM species s, dataSource d WHERE s.dataSourceId=d.dataSourceId ORDER BY s.speciesId" | grep -v 'speciesId' >$@.species
 	@if [[ -s $@.species ]]; then echo -n; else echo "NO species in file"; exit 2; fi
 	# Insert gene information for Ensembl species (may be long: between 1 and 10 hours per species)
@@ -18,7 +29,7 @@ genes: $(BGEE_SPECIES_FILEPATH)
 		export url='https://ftp.ensembl.org/pub/release-$(ENSRELEASE)'; \
 		if [[ `echo $$sp | grep 'EnsemblMetazoa$$'` ]]; then export url='http://ftp.ensemblgenomes.org/pub/metazoa/release-$(ENSMETAZOARELEASE)'; fi; \
 		$(WGET) "$$url/json/$$spe/$$spe.json" && $(MV) $$spe.json $(INPUT_DIR)$$spe.json 2>/dev/null || $(RM) $$spe.json; \
-		perl insert_ensembl_genes.pl -species=$$sp -bgee=$(BGEECMD) $(INPUT_DIR)$$spe.json >> $@.tmp 2>>$@.err; \
+		perl insert_ensembl_genes.pl -species=$$sp -bgee=$(BGEECMD) -uni=$(OUTPUT_DIR)/uniprot.map  $(INPUT_DIR)$$spe.json >> $@.tmp 2>>$@.err; \
 		$(RM) $(INPUT_DIR)$$spe.json; \
 		sleep 60; \
 	done
@@ -172,7 +183,7 @@ $(OUTPUT_DIR)delete_oncoMX_XRefs:
 
 
 clean:
-	-@$(RM) $(VERIFICATIONFILE) genes genes.err species *.tmp $(INPUT_DIR)$(ORTHOXMLFILE).gz $(INPUT_DIR)$(ORTHOXMLFILE) hogs
+	-@$(RM) $(VERIFICATIONFILE) uniprotAC_ID genes genes.err species *.tmp $(INPUT_DIR)$(ORTHOXMLFILE).gz $(INPUT_DIR)$(ORTHOXMLFILE) hogs
 	-@$(GIT) rm $(VERIFICATIONFILE)
 	-@$(GIT) commit $(VERIFICATIONFILE) -m "Removing verification file for gene (and related) and hierarchical group insertion"
 	@$(GIT) push
