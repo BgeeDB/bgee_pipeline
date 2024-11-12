@@ -9,7 +9,6 @@ use JSON::XS;
 use List::MoreUtils qw{uniq};
 use List::Compare;
 use File::Slurp;
-use LWP::Simple;
 
 use FindBin;
 use lib "$FindBin::Bin/.."; # Get lib path for Utils.pm
@@ -18,10 +17,12 @@ use Utils;
 
 # Define arguments & their default value
 my ($species, $bgee_connector) = ('', '');
+my ($uniprot_mapping) = ('');
 my ($specific_gene) = ('');
 my ($debug) = (0);
 my %opts = ('species=s'    => \$species,            # speciesCommonName from TSV for or Bgee db
             'bgee=s'       => \$bgee_connector,     # Bgee connector string
+            'uni=s'        => \$uniprot_mapping,    # UniProt mapping AC -> ID
             'debug'        => \$debug,              # debug mode, do not insert/update in database
             'gene=s'       => \$specific_gene,      # Query a single gene
            );
@@ -30,9 +31,10 @@ my %opts = ('species=s'    => \$species,            # speciesCommonName from TSV
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $species eq '' || $bgee_connector eq '' ){
     print "\n\tInvalid or missing argument:
-\te.g. $0  -species=9606__0__Homo_sapiens__Ensembl  -bgee=\$(BGEECMD)  <Ensembl species JSON>
+\te.g. $0  -species=9606__0__Homo_sapiens__Ensembl  -bgee=\$(BGEECMD)  -uni=\$(OUTPUT_DIR)/uniprot.map  <Ensembl species JSON>
 \t-species   speciesId from Bgee db with the genomeSpeciesId concatenated
 \t-bgee      Bgee    connector string
+\t-uni       UniProt mapping file AC -> ID
 \t-debug     Debug mode, do not insert/update in database
 \t
 \t-gene      Query a single specific gene (optional)
@@ -52,6 +54,14 @@ my $ensembl_json = decode_json($json_text);
 #NOTE keep only the genes section of the JSON!
 map { delete( $ensembl_json->{$_} ) } grep { $_ ne 'genes' } keys %$ensembl_json;
 my @genes = @{ $ensembl_json->{'genes'} };
+
+
+# UniProt mapping
+my $uniprot_map;
+if ( -e "$uniprot_mapping" ){
+    #Format: AC\tID
+    map { my @tmp = split(/\t/, $_); $uniprot_map->{$tmp[0]} = $tmp[1]; } read_file("$uniprot_mapping", chomp => 1);
+}
 
 
 # Bgee db connection
@@ -261,22 +271,12 @@ for my $gene (sort {$a->{'id'} cmp $b->{'id'}} (@genes)) { #Sort to always get t
     UNIPROT_ID:
     for my $uniprot ( sort grep { /^Uniprot\/SPTREMBL##/ || /^Uniprot\/SWISSPROT##/} keys %xrefs ){
         my ($dbname, $pid) = split('##', $uniprot);
-        my $content = get("https://rest.uniprot.org/uniprotkb/$pid.json");
-        if ( defined $content ){
-            my $uniprot_json = decode_json($content);
-            if ( exists $uniprot_json->{'uniProtkbId'} ){
-                my $uid = $uniprot_json->{'uniProtkbId'};
-                $xrefs{"$dbname##$uid"} = $uid;
-            }
-        }
-        else {
-            warn "\tCannot get UniProt ID for [$pid]\n";
-        }
+        my $uid = $uniprot_map->{ $pid } || do { warn "\tCannot get UniProt ID for [$pid]\n"; next};
+        $xrefs{"$dbname##$uid"} = $uid;
     }
 
     XREF:
     for my $xref ( uniq sort grep { !/^GO##/ } keys %xrefs ){
-        #TODO CHECK !!!
         next  if ( $xref =~ /;/ );
         my ($dbname, $pid) = split('##', $xref);
         $xrefs{$xref} = ''  if ( $xrefs{$xref} eq $pid );
