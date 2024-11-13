@@ -24,14 +24,13 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed in command line
-command_arg <- c("bgeecall_input_file", "account", "time", "partition")
+command_arg <- c("bgeecall_input_file", "account", "time", "partition", "container_cmd")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
   }
 }
 #specific to UNIL clusters: load R module
-modules <- c("module use /software/module/", "module add R/3.6.1;", "module add UHTS/Analysis/kallisto/0.46.0;")
 #generate BgeeCall objects to download kallisto and define path where data at species level will be stored
 kallistoMetadata <- new("KallistoMetadata")
 userMetadata <- new("UserMetadata", working_path = working_path)
@@ -39,4 +38,4 @@ bgeeMetadata <- new("BgeeMetadata", intergenic_release="custom")
 # slurm options for index generation. 30G is enough for the majority of species. However as for Bgee15 it had to be increased to 90G for few species
 slurm_options_index <- list(account = account, time = time, partition = partition, mem = "90G")
 # generate indexes
-generate_slurm_indexes(userFile=bgeecall_input_file, slurm_options = slurm_options_index, modules = modules, kallistoMetadata = kallistoMetadata, bgeeMetadata=bgeeMetadata, userMetadata = userMetadata, nodes=50)
+generate_slurm_indexes(userFile=bgeecall_input_file, rscript_path = paste0(container_cmd, " Rscript"), slurm_options = slurm_options_index, modules = modules, kallistoMetadata = kallistoMetadata, bgeeMetadata=bgeeMetadata, userMetadata = userMetadata, nodes=50)
