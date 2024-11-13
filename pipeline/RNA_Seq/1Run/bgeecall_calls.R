@@ -25,7 +25,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed in command line
-command_arg <- c("bgeecall_input_file", "account", "time", "partition", "working_path", "decrypt_file_path")
+command_arg <- c("bgeecall_input_file", "account", "time", "partition", "working_path", "decrypt_file_path", "container_cmd")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -50,4 +50,5 @@ bgeeMetadata <- new("BgeeMetadata", intergenic_release="custom")
 # slurm options for index generation
 slurm_options_index <- list(account = account, time = time, partition = partition, mem = "60G")
 # generate calls
-generate_slurm_calls(userFile=bgeecall_input_file, slurm_options = slurm_options_index, modules = modules, kallistoMetadata = kallistoMetadata, bgeeMetadata = bgeeMetadata, userMetadata = userMetadata, nodes=libraries)
+generate_slurm_calls(userFile=bgeecall_input_file, rscript_path = paste0(container_cmd, " Rscript"), slurm_options = slurm_options_index,
+modules = modules, kallistoMetadata = kallistoMetadata, bgeeMetadata = bgeeMetadata, userMetadata = userMetadata, nodes=libraries)
