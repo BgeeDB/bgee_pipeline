@@ -37,9 +37,6 @@ libraries <- nrow(read.table(bgeecall_input_file, sep="\t", quote = "", header =
 if(libraries>1000) {
   libraries <- 1000
 }
-#specific to UNIL clusters: load R module
-#TODO: Maybe load kallisto from UNIL modules
-modules <- c("module use /software/module/;", "module add R/3.6.1;", "module add UHTS/Analysis/kallisto/0.46.0;")
 #generate BgeeCall objects
 encrypted_pattern <- paste0("<(cat FASTQ_PATH | openssl enc -aes-128-cbc -d -pass file:", decrypt_file_path, ")")
 kallistoMetadata <- new("KallistoMetadata", download_kallisto=FALSE)
@@ -51,4 +48,4 @@ bgeeMetadata <- new("BgeeMetadata", intergenic_release="custom")
 slurm_options_index <- list(account = account, time = time, partition = partition, mem = "60G")
 # generate calls
 generate_slurm_calls(userFile=bgeecall_input_file, rscript_path = paste0(container_cmd, " Rscript"), slurm_options = slurm_options_index,
-modules = modules, kallistoMetadata = kallistoMetadata, bgeeMetadata = bgeeMetadata, userMetadata = userMetadata, nodes=libraries)
+kallistoMetadata = kallistoMetadata, bgeeMetadata = bgeeMetadata, userMetadata = userMetadata, nodes=libraries)
