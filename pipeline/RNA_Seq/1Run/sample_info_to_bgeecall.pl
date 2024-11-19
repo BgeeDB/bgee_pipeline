@@ -98,7 +98,7 @@ LIBRARY: while (my $line = <$sample_info>) {
     $line[4] =~ m/.+\/(.+)/;
     my $prefixFilePath = $1;
     my $transcriptome_path = "$transcriptome_dir$prefixFilePath.transcriptome_wo_intergenic.fa";
-    my $annotation_path = "$transcriptome_dir$prefixFilePath.transcriptome.gtf";
+    my $annotation_path = "$transcriptome_dir$prefixFilePath.gtf";
     my $fastq_path = "$fastq_dir$line[2]/$line[0]";
     #retrieve mean read length from R.stat file. If more than one run then only the first one
     #is considered to define mean read length
