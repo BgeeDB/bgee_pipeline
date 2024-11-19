@@ -122,19 +122,31 @@ my $datasourceId = $ensSource eq 'Ensembl'        ? $InsertedDataSources{'ensemb
 
 # Add extra dataSource aliases
 # MUST be in lowercase to ease comparison
-#TODO Add other species specific dataSource variant names:
+#TODO Add other species specific dataSource variant names
 #TODO Add CGNC (Chichen Gene Nomenclature Consortium)?
-$InsertedDataSources{'flybasename_gene'} = $InsertedDataSources{'flybase'};
-$InsertedDataSources{'flybasecgid_gene'} = $InsertedDataSources{'flybase'};
-$InsertedDataSources{'flybase_symbol'}   = $InsertedDataSources{'flybase'};
-$InsertedDataSources{'wormbase_gene'}    = $InsertedDataSources{'wormbase'};
-$InsertedDataSources{'xenopus_jamboree'} = $InsertedDataSources{'xenbase'};
-$InsertedDataSources{'zfin_id'}          = $InsertedDataSources{'zfin'};
+$InsertedDataSources{'flybasename_gene'}    = $InsertedDataSources{'flybase'};
+$InsertedDataSources{'flybasecgid_gene'}    = $InsertedDataSources{'flybase'};
+$InsertedDataSources{'flybase_symbol'}      = $InsertedDataSources{'flybase'};
+$InsertedDataSources{'wormbase_gene'}       = $InsertedDataSources{'wormbase'};
+$InsertedDataSources{'wormbase_cds'}        = $InsertedDataSources{'wormbase'};
+$InsertedDataSources{'wormbase_transcript'} = $InsertedDataSources{'wormbase'};
+$InsertedDataSources{'wormpep_id'}          = $InsertedDataSources{'wormbase'};
+$InsertedDataSources{'xenopus_jamboree'}    = $InsertedDataSources{'xenbase'};
+$InsertedDataSources{'zfin_id'}             = $InsertedDataSources{'zfin'};
+# Not species specific
+$InsertedDataSources{'refseq_mrna'}         = $InsertedDataSources{'refseq nucleotide'};
+$InsertedDataSources{'refseq_ncrna'}        = $InsertedDataSources{'refseq nucleotide'};
+$InsertedDataSources{'refseq_peptide'}      = $InsertedDataSources{'refseq protein'};
+$InsertedDataSources{'protein_id'}          = $InsertedDataSources{'embl'};
+$InsertedDataSources{'mirbase_trans_name'}  = $InsertedDataSources{'mirbase'};
+$InsertedDataSources{'uniprot/swissprot'}   = $InsertedDataSources{'uniprotkb/swiss-prot'};
+$InsertedDataSources{'uniprot/sptrembl'}    = $InsertedDataSources{'uniprotkb/trembl'};
+my %UnknownDataSources;
 
 
 ## Gene info (id, description)
 # Get individual gene info
-my $geneDB    = $dbh->prepare('INSERT INTO gene (geneId, geneName, geneDescription, geneBioTypeId, speciesId, dataSourceId, seqRegionName)
+my $geneDB    = $dbh->prepare('INSERT INTO gene (geneId, geneName, geneDescription, geneBioTypeId, speciesId, ensemblGene, seqRegionName)
                                   VALUES (?, ?, ?, (SELECT geneBioTypeId FROM geneBioType WHERE geneBioTypeName=?), ?, ?, ?)');
 my $synonymDB = $dbh->prepare('INSERT INTO geneNameSynonym (bgeeGeneId, geneNameSynonym)
                                   VALUES (?, ?)');
@@ -164,7 +176,8 @@ for my $gene (sort {$a->{'id'} cmp $b->{'id'}} (@genes)) { #Sort to always get t
     ## Insert gene info
     my $bgeeGeneId;
     if ( ! $debug ){
-        $geneDB->execute($stable_id, $external_name, $description, $biotype, $speciesBgee, $datasourceId, $seq_region_name)  or die $geneDB->errstr;
+        #NOTE ensemblGene = 1 for Ensembl & EnsemblMetazoa
+        $geneDB->execute($stable_id, $external_name, $description, $biotype, $speciesBgee, 1, $seq_region_name)  or die $geneDB->errstr;
         $bgeeGeneId = $dbh->{'mysql_insertid'};
         die "Cannot get bgeeGeneId [$bgeeGeneId]\n"  if ( $bgeeGeneId !~ /^\d+$/ );
     }
@@ -280,6 +293,11 @@ for my $gene (sort {$a->{'id'} cmp $b->{'id'}} (@genes)) { #Sort to always get t
         next  if ( $xref =~ /;/ );
         my ($dbname, $pid) = split('##', $xref);
         $xrefs{$xref} = ''  if ( $xrefs{$xref} eq $pid );
+        if ( ! $InsertedDataSources{lc $dbname} ){
+            $UnknownDataSources{lc $dbname} = 1;
+            next XREF;
+        }
+
         if ( ! $debug ){
             $xrefDB->execute($bgeeGeneId, $pid, $xrefs{$xref}, $InsertedDataSources{lc $dbname})  or die $xrefDB->errstr;
         }
@@ -292,6 +310,7 @@ $geneDB->finish;
 $synonymDB->finish;
 $xrefDB->finish;
 print "Gene nbr for $scientific_name: ", scalar @genes, "\n\n";
+warn join(', ', sort keys %UnknownDataSources), "\n";
 
 
 # Close db connections
