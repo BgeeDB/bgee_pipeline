@@ -134,9 +134,11 @@ $InsertedDataSources{'wormpep_id'}          = $InsertedDataSources{'wormbase'};
 $InsertedDataSources{'xenopus_jamboree'}    = $InsertedDataSources{'xenbase'};
 $InsertedDataSources{'zfin_id'}             = $InsertedDataSources{'zfin'};
 # Not species specific
+$InsertedDataSources{'ensembl_metazoa'}     = $InsertedDataSources{'ensemblmetazoa'};
 $InsertedDataSources{'refseq_mrna'}         = $InsertedDataSources{'refseq nucleotide'};
 $InsertedDataSources{'refseq_ncrna'}        = $InsertedDataSources{'refseq nucleotide'};
 $InsertedDataSources{'refseq_peptide'}      = $InsertedDataSources{'refseq protein'};
+$InsertedDataSources{'refseq_dna'}          = $InsertedDataSources{'refseq genomic'};
 $InsertedDataSources{'protein_id'}          = $InsertedDataSources{'embl'};
 $InsertedDataSources{'mirbase_trans_name'}  = $InsertedDataSources{'mirbase'};
 $InsertedDataSources{'uniprot/swissprot'}   = $InsertedDataSources{'uniprotkb/swiss-prot'};
