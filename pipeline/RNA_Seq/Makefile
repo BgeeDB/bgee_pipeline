@@ -366,6 +366,7 @@ generate_intergenic_sequences: sum_by_species
 	@find $(CLUSTER_OTHER_INTERGENIC_FOLDER) -type f -name '*_intergenic.fa' -exec gzip --verbose --best {} \; >> $@.tmp 2> $@.warn
 	@$(MV) $@.tmp $@
 
+
 ################################ GENERATE PRESENT/ABSENT CALLS WITH BgeeCall ################################
 # generation of calls uses BgeeCall and the RSlurm package. It is this package that manage job submisson based on the BgeeCall input file.
 # That file is generated in the indexes_bgeecall rule. Once presence_absence_bgeecall rule has been run you should run again the rule indexes_bgeecall
@@ -385,7 +386,7 @@ indexes_bgeecall: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH)
 
 presence_absence_bgeecall: indexes_bgeecall
 	# generate present/absent expression calls with BgeeCall
-	$(CLUSTER_CONTAINER_CMD_WITH_BIND) Rscript 1Run/bgeecall_calls.R bgeecall_input_file=\"$(RNASEQ_BGEECALL_FILE)\" account=\"$(SENSITIVE_CLUSTER_ACCOUNT)\" container_cmd=\"$(CLUSTER_CONTAINER_CMD_WITHOUT_BIND)\" time=\"2-00:00:00\" partition=\"$(SENSITIVE_CLUSTER_PARTITION)\" working_path=\"$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)\" >> $@.tmp 2>> $@.err
+	$(CLUSTER_CONTAINER_CMD_WITH_BIND) Rscript 1Run/bgeecall_calls.R bgeecall_input_file=\"$(RNASEQ_BGEECALL_FILE)\" account=\"$(SENSITIVE_CLUSTER_ACCOUNT)\" container_cmd=\"$(CLUSTER_CONTAINER_CMD_WITHOUT_BIND)\" time=\"2-00:00:00\" partition=\"$(SENSITIVE_CLUSTER_PARTITION)\" working_path=\"$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)\" decrypt_file_path=\"$(ENCRYPT_PASSWD_FILE)\" >> $@.tmp 2>> $@.err
 	# TODO generate summary plot once all calls have been generated
 	@$(MV) $@.tmp $@
 
