@@ -301,7 +301,7 @@ for my $gene (sort {$a->{'id'} cmp $b->{'id'}} (@genes)) { #Sort to always get t
         }
 
         if ( ! $debug ){
-            $xrefDB->execute($bgeeGeneId, $pid, $xrefs{$xref}, $InsertedDataSources{lc $dbname})  or die $xrefDB->errstr;
+            $xrefDB->execute($bgeeGeneId, $pid, $xrefs{$xref}, $InsertedDataSources{lc $dbname})  or warn $xrefDB->errstr;
         }
         else {
             print "xref: [$stable_id] [$pid] [$xrefs{$xref}] [$dbname]\n";
