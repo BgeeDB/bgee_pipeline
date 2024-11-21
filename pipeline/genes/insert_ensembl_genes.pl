@@ -124,25 +124,31 @@ my $datasourceId = $ensSource eq 'Ensembl'        ? $InsertedDataSources{'ensemb
 # MUST be in lowercase to ease comparison
 #TODO Add other species specific dataSource variant names
 #TODO Add CGNC (Chichen Gene Nomenclature Consortium)?
-$InsertedDataSources{'flybasename_gene'}    = $InsertedDataSources{'flybase'};
-$InsertedDataSources{'flybasecgid_gene'}    = $InsertedDataSources{'flybase'};
-$InsertedDataSources{'flybase_symbol'}      = $InsertedDataSources{'flybase'};
-$InsertedDataSources{'wormbase_gene'}       = $InsertedDataSources{'wormbase'};
-$InsertedDataSources{'wormbase_cds'}        = $InsertedDataSources{'wormbase'};
-$InsertedDataSources{'wormbase_transcript'} = $InsertedDataSources{'wormbase'};
-$InsertedDataSources{'wormpep_id'}          = $InsertedDataSources{'wormbase'};
-$InsertedDataSources{'xenopus_jamboree'}    = $InsertedDataSources{'xenbase'};
-$InsertedDataSources{'zfin_id'}             = $InsertedDataSources{'zfin'};
+$InsertedDataSources{'flybasename_gene'}         = $InsertedDataSources{'flybase'};
+$InsertedDataSources{'flybasecgid_gene'}         = $InsertedDataSources{'flybase'};
+$InsertedDataSources{'flybase_symbol'}           = $InsertedDataSources{'flybase'};
+$InsertedDataSources{'wormbase_gene'}            = $InsertedDataSources{'wormbase'};
+$InsertedDataSources{'wormbase_cds'}             = $InsertedDataSources{'wormbase'};
+$InsertedDataSources{'wormbase_transcript'}      = $InsertedDataSources{'wormbase'};
+$InsertedDataSources{'wormpep_id'}               = $InsertedDataSources{'wormbase'};
+$InsertedDataSources{'xenopus_jamboree'}         = $InsertedDataSources{'xenbase'};
+$InsertedDataSources{'zfin_id_trans_name'}       = $InsertedDataSources{'zfin'};
+$InsertedDataSources{'zfin_id'}                  = $InsertedDataSources{'zfin'};
 # Not species specific
-$InsertedDataSources{'ensembl_metazoa'}     = $InsertedDataSources{'ensemblmetazoa'};
-$InsertedDataSources{'refseq_mrna'}         = $InsertedDataSources{'refseq nucleotide'};
-$InsertedDataSources{'refseq_ncrna'}        = $InsertedDataSources{'refseq nucleotide'};
-$InsertedDataSources{'refseq_peptide'}      = $InsertedDataSources{'refseq protein'};
-$InsertedDataSources{'refseq_dna'}          = $InsertedDataSources{'refseq genomic'};
-$InsertedDataSources{'protein_id'}          = $InsertedDataSources{'embl'};
-$InsertedDataSources{'mirbase_trans_name'}  = $InsertedDataSources{'mirbase'};
-$InsertedDataSources{'uniprot/swissprot'}   = $InsertedDataSources{'uniprotkb/swiss-prot'};
-$InsertedDataSources{'uniprot/sptrembl'}    = $InsertedDataSources{'uniprotkb/trembl'};
+$InsertedDataSources{'ensembl_metazoa'}          = $InsertedDataSources{'ensemblmetazoa'};
+$InsertedDataSources{'entrezgene'}               = $InsertedDataSources{'ncbi gene'};
+$InsertedDataSources{'hgnc_trans_name'}          = $InsertedDataSources{'hgnc'};
+$InsertedDataSources{'refseq_mrna'}              = $InsertedDataSources{'refseq nucleotide'};
+$InsertedDataSources{'refseq_ncrna'}             = $InsertedDataSources{'refseq nucleotide'};
+$InsertedDataSources{'refseq_peptide'}           = $InsertedDataSources{'refseq protein'};
+$InsertedDataSources{'refseq_dna'}               = $InsertedDataSources{'refseq genomic'};
+$InsertedDataSources{'refseq_mrna_predicted'}    = $InsertedDataSources{'refseq nucleotide'};
+$InsertedDataSources{'refseq_ncrna_predicted'}   = $InsertedDataSources{'refseq nucleotide'};
+$InsertedDataSources{'refseq_peptide_predicted'} = $InsertedDataSources{'refseq protein'};
+$InsertedDataSources{'protein_id'}               = $InsertedDataSources{'embl'};
+$InsertedDataSources{'mirbase_trans_name'}       = $InsertedDataSources{'mirbase'};
+$InsertedDataSources{'uniprot/swissprot'}        = $InsertedDataSources{'uniprotkb/swiss-prot'};
+$InsertedDataSources{'uniprot/sptrembl'}         = $InsertedDataSources{'uniprotkb/trembl'};
 my %UnknownDataSources;
 
 
