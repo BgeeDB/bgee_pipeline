@@ -149,6 +149,7 @@ $InsertedDataSources{'protein_id'}               = $InsertedDataSources{'embl'};
 $InsertedDataSources{'mirbase_trans_name'}       = $InsertedDataSources{'mirbase'};
 $InsertedDataSources{'uniprot/swissprot'}        = $InsertedDataSources{'uniprotkb/swiss-prot'};
 $InsertedDataSources{'uniprot/sptrembl'}         = $InsertedDataSources{'uniprotkb/trembl'};
+$InsertedDataSources{'uniprot_isoform'}          = $InsertedDataSources{'uniprotkb/swiss-prot'};
 my %UnknownDataSources;
 
 
