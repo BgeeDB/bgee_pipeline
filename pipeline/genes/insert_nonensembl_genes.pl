@@ -18,6 +18,7 @@ use Utils;
 
 #NOTE RefSeq/GenBank assembly information can be found here: https://www.ncbi.nlm.nih.gov/datasets/genomes/?taxon=7936
 # (before here https://www.ncbi.nlm.nih.gov/assembly/organism/7936/all/)
+#NOTE THINK TO UPDATE THE ASSEMBLY IF A NEW REFERENCE ONE IS AVAILABLE!
 
 # Define arguments & their default value
 my ($species, $bgee_connector, $bgee_species) = ('', '', '');
@@ -49,19 +50,6 @@ my $dbh = Utils::connect_bgee_db($bgee_connector);
 my ($speciesBgee, $newSpecies, $scientific_name, $NonEnsSource) = split('__', $species, -1);
 if ( $NonEnsSource eq 'Ensembl' || $NonEnsSource eq 'EnsemblMetazoa' ){
     die "This script is not for Ensembl sources\n";
-}
-my @prefix;
-if ( $speciesBgee == $newSpecies || $newSpecies == 0 ){
-    # No mapping to another species
-    $species = $speciesBgee;
-}
-else {
-    $species = $newSpecies;
-    my $selSpecies = $dbh->prepare('SELECT fakeGeneIdPrefix FROM species WHERE speciesId=? AND genomeSpeciesId=?');
-    $selSpecies->execute($speciesBgee, $newSpecies)  or die $selSpecies->errstr;
-    @prefix = map { $_->[0] } @{$selSpecies->fetchall_arrayref};
-    $selSpecies->finish();
-    die "Too many prefixes returned [@prefix]\n"  if ( exists $prefix[1] );
 }
 
 
