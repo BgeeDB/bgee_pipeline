@@ -4,7 +4,7 @@ speciesId	genus	species	speciesCommonName	displayOrder	genomeFilePath	genomeVers
 7955	danio	rerio	zebrafish	3	danio_rerio/Danio_rerio.GRCz11	GRCz11	2	7955	NA	zfish|danio|drer|drerio|danio rerio|zebrafish|7955|d_rerio|danrer	
 7227	drosophila	melanogaster	Fruit fly	4	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	BDGP6.46	2	7227	NA	dmel|d. melanogaster|d.mel	
 6239	caenorhabditis	elegans	C.elegans	5	caenorhabditis_elegans/Caenorhabditis_elegans.WBcel235	WBcel235	2	6239	NA	caeele|celegans|elegans|cele|caenorhabditis_elegans_prjna13758|c.elegans	
-8355	Xenopus	laevis	African clawed frog	33	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	xenLae2	37	8355	NA	Bufo laevis|XENLA|Xenopus leavis|clawed frog|common platanna|platanna	Use RefSeq assembly BUT several GeneID are duplicated
+8355	Xenopus	laevis	African clawed frog	33	xenopus_laevis/xenopus_laevis_GCF_017654675.1_Xenopus_laevis_v10.1	Xenopus_laevis_v10.1	37	8355	NA	Bufo laevis|XENLA|Xenopus leavis|clawed frog|common platanna|platanna	Use RefSeq assembly BUT several GeneID are duplicated
 60711	chlorocebus	sabaeus	African green monkey	28	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	ChlSab1.1	2	60711	NA	csab|african green monkey|chlsab|chlorocebus sabeus|vervet monkey|chlorocebus sabaeus|csabaeus|60711|vervet-agm|agm|chlorocebus_sabeus	
 7740	branchiostoma	lanceolatum	Amphioxus	49	branchiostoma_lanceolatum/Branchiostoma_lanceolatum.BraLan2	BraLan2	24	7740	NA		
 8049	gadus	morhua	Atlantic cod	41	gadus_morhua/Gadus_morhua.gadMor3.0	gadMor3.0	2	8049	NA		

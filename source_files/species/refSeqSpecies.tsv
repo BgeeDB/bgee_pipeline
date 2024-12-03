@@ -1,4 +1,4 @@
 speciesId	genus	species	speciesCommonName	displayOrder	genomeFilePath	genomeVersion	dataSourceId	genomeSpeciesId	fakeGeneIdPrefix	keywords	comment
 9974	Manis	javanica	Malayan pangolin		manis_javanica/manis_javanica_GCF_014570535.1_YNU_ManJav_2.0	YNU_ManJav_2.0	37	9974		MANJA	Use RefSeq assembly
-8355	Xenopus	laevis	African clawed frog		xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	xenLae2	37	8355		Bufo laevis|XENLA|Xenopus leavis|clawed frog|common platanna|platanna	Use RefSeq assembly BUT several GeneID are duplicated
+8355	Xenopus	laevis	African clawed frog		xenopus_laevis/xenopus_laevis_GCF_017654675.1_Xenopus_laevis_v10.1	Xenopus_laevis_v10.1	37	8355		Bufo laevis|XENLA|Xenopus leavis|clawed frog|common platanna|platanna	Use RefSeq assembly BUT several GeneID are duplicated
 7936	Anguilla	anguilla	European freshwater eel		anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	fAngAng1.pri	37	7936		ANGAN|Angill angill|Anguilla anguilla anguilla|European eel|Muraena anguilla	Use RefSeq assembly
