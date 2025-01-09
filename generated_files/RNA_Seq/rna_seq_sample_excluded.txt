@@ -27,7 +27,7 @@ SRX276212	TRUE	Kallisto results include only NAs	SM	2020-10-13
 SRX276214	TRUE	Kallisto results include only NAs	SM	2020-10-13
 SRX054597	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020-10-13
 SRX054598	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020-10-13
-SRX054599	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020SRX028836-10-13
+SRX054599	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020-10-13
 SRX054601	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020-10-13
 SRX054602	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020-10-13
 SRX054607	TRUE	less than 20% | less than 1,000,000 reads aligned + Short read size	SM	2020-10-13
@@ -187,3 +187,59 @@ ERX2296465	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-
 ERX2296470	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-03-19
 SRX3229487	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-03-19
 SRX3229512	TRUE	Not same number of reads on _1 and _2. Error with fastp	JW	2024-03-19
+ERX2819193	TRUE	Less than 20% mapped. SRA maps only 8% to Primates. not used for Bgee 16.0	ABC	2024-12-17
+SRX198329	TRUE	Less than 20% mapped. Mostly unidentified reads in SRA	ABC	2024-12-17
+SRX198348	TRUE	Less than 20% mapped. 100% unidentified reads in SRA	ABC	2024-12-17
+SRX199102	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX199168	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX199365	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX199681	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX203466	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX203502	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX203558	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX203738	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX203750	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX203775	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX203837	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX203861	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX203930	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX203933	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX204005	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX204033	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX204068	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX204072	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX221367	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX3436773	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX399465	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX399477	TRUE	Less than 20% mapped and less than 1M pseudoaligned	ABC	2024-12-17
+SRX4794846	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX4794847	TRUE	Less than 1M pseudoaligned	ABC	2024-12-17
+SRX4794852	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX4794857	TRUE	Less than 20% mapped and less than 1M pseudoaligned	ABC	2024-12-17
+SRX4794858	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX4794868	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX4794869	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX4794887	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX4794893	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX4794897	TRUE	Less than 20% mapped and less than 1M pseudoaligned	ABC	2024-12-17
+SRX4794898	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX4794900	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX4794903	TRUE	Less than 20% mapped and less than 1M pseudoaligned	ABC	2024-12-17
+SRX4794904	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX4794911	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX4794913	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX4794917	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX4794973	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX4794979	TRUE	Less than 20% mapped and less than 1M pseudoaligned	ABC	2024-12-17
+SRX4794996	TRUE	Less than 20% mapped.	ABC	2024-12-17
+SRX4795002	TRUE	Less than 20% mapped and less than 1M pseudoaligned	ABC	2024-12-17
+SRX589538	TRUE	Less than 1M pseudoaligned.	ABC	2024-12-17
+SRX764715	TRUE	Less than 20% mapped and less than 1M pseudoaligned	ABC	2024-12-17
+SRX764720	TRUE	Less than 20% mapped and less than 1M pseudoaligned	ABC	2024-12-17
+
+
+
+
+
+
+
