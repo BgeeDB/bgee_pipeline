@@ -43,7 +43,7 @@ genes: $(BGEE_SPECIES_FILEPATH) uniprotAC_ID $(OUTPUT_DIR)/uniprot.map
 	@$(MV) $@.tmp $@
 
 
-# Please check that GeneCards datasource ID did not change in the database before running updateXrefs
+#NOTE Please check that GeneCards datasource ID did not change in the database before running updateXrefs
 GENECARDS_ID := 40
 #FIXME still needed with the Ensembl JSON parsing? Maybe only for non-Ensembl species
 updateXrefs: genes

@@ -10,7 +10,7 @@ use File::Slurp;
 use List::MoreUtils qw{uniq any};
 use List::Compare;
 use LWP::Simple;
-use XML::Fast;
+use JSON::XS;
 
 use FindBin;
 use lib "$FindBin::Bin/.."; # Get lib path for Utils.pm
@@ -53,12 +53,6 @@ if ( $NonEnsSource eq 'Ensembl' || $NonEnsSource eq 'EnsemblMetazoa' ){
 }
 
 
-my $speciesDataSource = $dbh->prepare('SELECT dataSourceId FROM species WHERE speciesId=?');
-$speciesDataSource->execute($speciesBgee)  or die $speciesDataSource->errstr;
-my @dataSources = map { $_->[0] } @{$speciesDataSource->fetchall_arrayref};
-$speciesDataSource->finish();
-die "Too many dataSources returned [@dataSources]\n"  if ( exists $dataSources[1] );
-
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #NOTE currently this script is tested only with RefSeq GTF as source!
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -100,10 +94,12 @@ while(<$GTF>){
     #NC_030727.1	Gnomon	gene	141537768	141585606	.	+	.	gene_id "LOC108709019"; db_xref "GeneID:108709019"; gbkey "Gene"; gene "LOC108709019"; gene_biotype "protein_coding";
     #NC_030735.1	BestRefSeq%2CGnomon	gene	66815561	66907873	.	+	.	gene_id "bcl2.S"; db_xref "GeneID:100271914"; db_xref "Xenbase:XB-GENE-6251434"; description "B-cell CLL/lymphoma 2 S homeolog"; gbkey "Gene"; gene "bcl2.S"; gene_biotype "protein_coding"; gene_synonym "bcl-2"; gene_synonym "bcl2"; gene_synonym "xBcl-2"; gene_synonym "xbcl2";
     my @gene_info = split(/\t/, $_);
+    my $location  = $gene_info[0];
     my $GeneID;
     my %info;
     # Current list of possible annotations:
-    # db_xref, description, gbkey, gene, gene_biotype, gene_id, gene_synonym, partial, transcript_id
+    # db_xref, description, gbkey, gene, gene_biotype, gene_id, gene_synonym, partial, pseudo, transcript_id
+    #NOTE transcript_id is always empty; partial and pseudo are true when set, otherwise unset
     # You may have several  db_xref  and  gene_synonym
     for my $annot ( grep { /\w/ } split(/" *; +/, $gene_info[8]) ){
         if ( $annot =~ /^(\w+)\s+"([^"]+)$/ ){
@@ -139,6 +135,7 @@ while(<$GTF>){
     $info{'gene_biotype'} = map_refseq_biotype_to_ensembl_biotype( $info{'gene_biotype'} );
 
     $annotations->{ $info{'gene_id'} } = \%info;
+    $annotations->{ $info{'gene_id'} }->{'location'} = $location;
 }
 close $GTF;
 unlink "$gtf_file";
@@ -199,7 +196,7 @@ $InsertedDataSources{'zfin_id'}          = $InsertedDataSources{'zfin'};
 
 ## Gene info (id, description)
 # Get individual gene info
-my $geneDB       = $dbh->prepare('INSERT INTO gene (geneId, geneName, geneDescription, geneBioTypeId, speciesId, dataSourceId)
+my $geneDB       = $dbh->prepare('INSERT INTO gene (geneId, geneName, geneDescription, geneBioTypeId, speciesId, seqRegionName)
                                   VALUES (?, ?, ?, (SELECT geneBioTypeId FROM geneBioType WHERE geneBioTypeName=?), ?, ?)');
 my $synonymDB    = $dbh->prepare('INSERT INTO geneNameSynonym (bgeeGeneId, geneNameSynonym)
                                   VALUES (?, ?)');
@@ -214,6 +211,7 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
     my $external_db   = $NonEnsSource;
     my $description   = $annotations->{$gene}->{'description'}   || '';
     my $biotype       = $annotations->{$gene}->{'gene_biotype'};
+    my $seqRegionName = $annotations->{$gene}->{'location'}      || ''; #NOTE should always has one!
 
     ## Cleaning
     # Remove useless whitespace(s)
@@ -230,67 +228,50 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
     my @aliases;
     # Get extra info from UniProt   (for protein_coding genes only!)
     if ( $biotype eq 'protein_coding' ){
-        my $content = get('https://www.uniprot.org/uniprot/?query=GeneID:'.$annotations->{$gene}->{'GeneID'}.'&format=xml&force=true');
+        my $content = get('https://rest.uniprot.org/uniprotkb/stream?query=%28xref%3Ageneid-'.$annotations->{$gene}->{'GeneID'}.'%29');
         #WARNING some cases with one ensembl -> several ensembl xrefs: ENSG00000139618
-        if ( defined $content && $content ne '' && $content =~ /<\/uniprot>/ ){
-            my $hash = xml2hash $content;
+        if ( defined $content && $content ne '' && $content =~ /primaryAccession/ ){
+            my $hash = decode_json $content;
             #NOTE not easy to test if exists an array in hash ref. It works with eval!
             #NOTE may return several entries, keep the first one (the best one?)
-            my $root = eval { exists $hash->{'uniprot'}->{'entry'}->[0] } ? $hash->{'uniprot'}->{'entry'}->[0] : $hash->{'uniprot'}->{'entry'};
+            my $root = $hash->{'results'}->[0];
 
             # Check the UniProt entry contains the xref used to query it, and is for the right species
             print "GeneID:$annotations->{$gene}->{'GeneID'}\n"  if ( $debug );
-            if ( grep { $_->{'-type'} eq 'GeneID' && $_->{'-id'} eq "$annotations->{$gene}->{'GeneID'}" } @{ $root->{'dbReference'} } ){
-                if ( $root->{'organism'}->{'dbReference'}->{'-id'} == $speciesBgee ){
-                    my $dataset   = 'Uniprot/'.uc($root->{'-dataset'});
-                    my $uniprotID = $root->{'name'};
-                    my @uniprotAC = eval { exists $root->{'accession'}->[0] } ? @{ $root->{'accession'} } : ($root->{'accession'});
-
+            if ( grep { $_->{'database'} eq 'GeneID' && $_->{'id'} eq "$annotations->{$gene}->{'GeneID'}" } @{ $root->{'uniProtKBCrossReferences'} } ){
+                if ( $root->{'organism'}->{'taxonId'} == $speciesBgee ){
                     #Overwrite description if any
-                    my @prot_desc_type = sort keys %{ $root->{'protein'} };
-                    my $prot_root;
-                    if ( scalar @prot_desc_type >= 1 ){
-                        $prot_root = $root->{'protein'}->{'recommendedName'} || $root->{'protein'}->{ $prot_desc_type[0] };
-                    }
-                    if ( $prot_root ){
-                        my $prot_name = eval { exists $prot_root->[0] } ? $prot_root->[0] : $prot_root;
-                        my $prot_desc = eval { exists $prot_name->{'fullName'}->{'#text'} } ? $prot_name->{'fullName'}->{'#text'} : $prot_name->{'fullName'};
-                        $description = $prot_desc  if ( $prot_desc !~ /LOC\d+/ );
-                    }
+                    my $prot_desc = $root->{'proteinDescription'}->{'recommendedName'}->{'fullName'}->{'value'} || '';
+                    $description = $prot_desc  if ( $prot_desc && $prot_desc !~ /LOC\d+/ );
 
                     # Gene name and synonyms
-                    if ( ref $root->{'gene'} ne 'ARRAY' ){
-                        #NOTE to avoid some weird syntax such as GeneID:386601
-                        my @gene_names = eval { exists $root->{'gene'}->{'name'}->[0] } ? @{ $root->{'gene'}->{'name'} } : ($root->{'gene'}->{'name'});
-                        for my $gene_name ( sort @gene_names ){
-                            next  if ( ref $gene_name eq 'ARRAY' );
-                            if ( $gene_name->{'-type'} eq 'primary' ){
-                                $external_name = $gene_name->{'#text'};
-                            }
-                            else {
-                                push @synonyms, $gene_name->{'#text'};
-                            }
+                    if ( $root->{'genes'}->[0] ){
+                        #NOTE assume a genes array always of size 1
+                        if ( $root->{'genes'}->[0]->{'geneName'}->{'value'} ){
+                            $external_name = $root->{'genes'}->[0]->{'geneName'}->{'value'};
+                        }
+                        if ( $root->{'genes'}->[0]->{'synonyms'}->[0]->{'value'} ){
+                            push @synonyms, map { $_->{'value'} } @{ $root->{'genes'}->[0]->{'synonyms'} };
                         }
                     }
 
                     # Xrefs
-                    my @used_xref_db = ('EMBL', 'CCDS', 'RefSeq', 'Xenbase', 'ZFIN');
-                    for my $dbref ( sort @{ $root->{'dbReference'} }){
-                        if ( any { $dbref->{'-type'} eq $_ } @used_xref_db ){
-                            push @xrefs, $dbref->{'-type'}.':'.$dbref->{'-id'};
-                            if ( exists $dbref->{'property'} ){
-                                my @properties = eval { exists $dbref->{'property'}->[0] } ? @{ $dbref->{'property'} } : ($dbref->{'property'});
-                                for my $property ( sort @properties ){
-                                    if ( $property->{'-type'} =~ /sequence ID$/ ){
-                                        push @xrefs, $dbref->{'-type'}.':'.$property->{'-value'};
+                    my @used_xref_db = ('EMBL', 'CCDS', 'RefSeq', 'Xenbase', 'ZFIN', 'AGR');
+                    for my $dbref ( sort @{ $root->{'uniProtKBCrossReferences'} }){
+                        if ( any { $dbref->{'database'} eq $_ } @used_xref_db ){
+                            push @xrefs, $dbref->{'database'}.':'.$dbref->{'id'};
+                            if ( exists $dbref->{'properties'}->[0] ){
+                                for my $property ( sort @{ $dbref->{'properties'} } ){
+                                    if ( $property->{'key'} =~ /Id$/ ){
+                                        push @xrefs, $dbref->{'database'}.':'.$property->{'value'};
                                     }
                                 }
                             }
                         }
-                        elsif ( $dbref->{'-type'} eq 'Ensembl' ){
-                            push @xrefs, $dbref->{'-type'}.':'.$dbref->{'-id'};
-                            for my $property ( sort @{ $dbref->{'property'} } ){
-                                push @xrefs, $dbref->{'-type'}.':'.$property->{'-value'};
+                        elsif ( $dbref->{'database'} eq 'Ensembl' ){
+                            push @xrefs, $dbref->{'database'}.':'.$dbref->{'id'};
+                            for my $property ( sort @{ $dbref->{'properties'} } ){
+                               push @xrefs, $dbref->{'database'}.':'.$property->{'value'};
                             }
                         }
                     }
@@ -298,14 +279,15 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
             }
         }
     }
-    @xrefs    = map { s/GeneID:/GenBank:/; $_ } uniq @xrefs;
+    @xrefs    = map { s/GeneID:/NCBI Gene:/; $_ }                     uniq @xrefs;
+    @xrefs    = map { s/AGR:\w+:/Alliance of Genome Resources:/; $_ } uniq @xrefs;
     @synonyms = grep { $_ ne $display_id && $_ ne $external_name} uniq @synonyms;
 
 
     ## Insert gene info
     my $bgeeGeneId;
     if ( ! $debug ){
-        $geneDB->execute($stable_id, $external_name, $description, $biotype, $speciesBgee, $dataSources[0])  or die "[$stable_id]", $geneDB->errstr;
+        $geneDB->execute($stable_id, $external_name, $description, $biotype, $speciesBgee, $seqRegionName)  or die "[$stable_id]", $geneDB->errstr;
         $bgeeGeneId = $dbh->{'mysql_insertid'};
         die "Cannot get bgeeGeneId [$bgeeGeneId]\n"  if ( $bgeeGeneId !~ /^\d+$/ );
     }
