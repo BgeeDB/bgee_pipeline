@@ -79,7 +79,7 @@ From: ubuntu:24.04
 	soft.sratoolkit.version  3.1.1
 	soft.blastplus.version   2.12.0+
 	soft.tophat.version      2.1.2
-	soft.ensembl.version     112
+	soft.ensembl.version     113
 	soft.ubuntu.version      24.04LTS
 
 
@@ -89,7 +89,7 @@ From: ubuntu:24.04
 	apt-get update  -y
 	apt-get upgrade -y
 	export DEBIAN_FRONTEND=noninteractive
-	apt install -y --no-install-recommends gnupg wget git cmake autoconf apt-utils ca-certificates libterm-readline-gnu-perl bzip2 readline-common software-properties-common dirmngr build-essential libssl-dev libncurses5-dev libcurl4-openssl-dev liblzma-dev libbz2-dev libboost-all-dev sqlite3 libsqlite3-0 libsqlite3-dev libgsl0-dev zlib1g-dev libxml2-dev libgmp-dev libgmp10 libmpfr-dev libhdf5-dev libisal-dev libdeflate-dev libbam-dev libgeos-dev libmagick++-dev libharfbuzz-dev libfribidi-dev libaec-dev libsz2 libmagick++-6.q16-dev libmagick++-6.q16-9
+	apt install -y --no-install-recommends gnupg wget git cmake autoconf apt-utils ca-certificates libterm-readline-gnu-perl bzip2 readline-common software-properties-common dirmngr build-essential libssl-dev libncurses5-dev libcurl4-openssl-dev liblzma-dev libbz2-dev libboost-all-dev sqlite3 libsqlite3-0 libsqlite3-dev libgsl0-dev zlib1g-dev libxml2-dev libgmp-dev libgmp10 libmpfr-dev libhdf5-dev libisal-dev libdeflate-dev libbam-dev libgeos-dev libmagick++-dev libharfbuzz-dev libfribidi-dev libaec-dev libsz2 libmagick++-6.q16-dev libmagick++-6.q16-9 xz-utils
 	apt install -y --no-install-recommends openjdk-21-jdk perl python3 python3-six python3-packaging python3-pyparsing python3-pip mysql-client libmysqlclient-dev libmysqlclient21 libpq-dev libpq5 maven ncbi-blast+
 
 	#Install R
@@ -268,10 +268,11 @@ From: ubuntu:24.04
 	git clone https://github.com/Ensembl/ensembl-git-tools.git
 	export PATH=$PWD/ensembl-git-tools/bin:$PATH
 	git ensembl --clone api
-	git ensembl --checkout --branch release/112 api
+	git ensembl --checkout --branch release/113 api
 	#TODO Do we need Ensembl web API Perl lib???
 
 	# Install Python3 lib
+	#pip3 install --break-system-packages pyparsing
 	pip3 install --break-system-packages IPython
 	pip3 install --break-system-packages intermine
 	pip3 install --break-system-packages matplotlib
@@ -282,10 +283,10 @@ From: ubuntu:24.04
 	pip3 install --break-system-packages simplejson
 	#for orthologs_paralogs_app
 	pip3 install --break-system-packages pipenv
+	#NOTE last rdflib version needs to update pyparsing and there are issues to update the local one!
+	pip3 install --break-system-packages rdflib==7.1.1
 	pip3 install --break-system-packages SPARQLWrapper
-	pip3 install --break-system-packages rdflib
 	pip3 install --break-system-packages isodate
-	pip3 install --break-system-packages pyparsing
 	pip3 install --break-system-packages six
 	#pip3 install --break-system-packages configparser
 	#pip3 install --break-system-packages datetime
