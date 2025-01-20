@@ -210,6 +210,12 @@ global_check:
 	@which unxz          >> $@.tmp
 	@which makeblastdb   >> $@.tmp
 	@which blastn        >> $@.tmp
+	@which kallisto      >> $@.tmp
+	@which bustools      >> $@.tmp
+	@which fastp         >> $@.tmp
+	@which fasterq-dump  >> $@.tmp
+	@which gtf_to_fasta  >> $@.tmp
+	@which bamtofastq    >> $@.tmp
 	@which $(CONVERTER)  >> $@.tmp
 # tmpdir with enough free disk space available?
 	@mkdir -p $(TMPDIR)
@@ -489,6 +495,7 @@ test_container: build_container
 	@$(PIPELINE_CONTAINER_CMD) which fastp         >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) which fasterq-dump  >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) which gtf_to_fasta  >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) which bamtofastq    >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) which $(CONVERTER)  >> $@.tmp
 	@$(MV) $@.tmp $@
 

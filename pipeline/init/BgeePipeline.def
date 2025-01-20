@@ -79,6 +79,7 @@ From: ubuntu:24.04
 	soft.sratoolkit.version  3.1.1
 	soft.blastplus.version   2.12.0+
 	soft.tophat.version      2.1.2
+	soft.bamtofastq.version  1.4.1
 	soft.ensembl.version     113
 	soft.ubuntu.version      24.04LTS
 
@@ -353,6 +354,12 @@ From: ubuntu:24.04
 	#make && make check && make install
 	cd src/ && make gtf_to_fasta && install gtf_to_fasta /usr/local/bin/ && cd ..
 	cd .. && rm -Rf tophat-*/
+
+	# Install bamtofastq
+	cd /usr/local/bin
+	wget 'https://github.com/10XGenomics/bamtofastq/releases/download/v1.4.1/bamtofastq_linux'
+	ln -s bamtofastq_linux bamtofastq
+	chmod a+rx bamtofastq_linux
 
 
 	# CLEANING
