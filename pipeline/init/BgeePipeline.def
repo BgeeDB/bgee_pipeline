@@ -67,11 +67,11 @@ From: ubuntu:24.04
 	org.opencontainers.image.licenses      GPL-3.0
 	org.opencontainers.image.description   External tools and libraries required by the Bgee Pipeline.
 	bgee.pipeline.version    16.0.0
-	soft.java.version        21.0.3+9
+	soft.java.version        21.0.5
 	soft.perl.version        5.38.2
-	soft.R.version           4.4.1
+	soft.R.version           4.4.2
 	soft.python3.version     3.12.3
-	soft.mysql.version       8.0.37
+	soft.mysql.version       8.0.40
 	soft.maven.version       3.8.7
 	soft.kallisto.version    0.51.0
 	soft.bustools.version    0.43.2
@@ -90,7 +90,7 @@ From: ubuntu:24.04
 	apt-get update  -y
 	apt-get upgrade -y
 	export DEBIAN_FRONTEND=noninteractive
-	apt install -y --no-install-recommends gnupg wget git cmake autoconf apt-utils ca-certificates libterm-readline-gnu-perl bzip2 readline-common software-properties-common dirmngr build-essential libssl-dev libncurses5-dev libcurl4-openssl-dev liblzma-dev libbz2-dev libboost-all-dev sqlite3 libsqlite3-0 libsqlite3-dev libgsl0-dev zlib1g-dev libxml2-dev libgmp-dev libgmp10 libmpfr-dev libhdf5-dev libisal-dev libdeflate-dev libbam-dev libgeos-dev libmagick++-dev libharfbuzz-dev libfribidi-dev libaec-dev libsz2 libmagick++-6.q16-dev libmagick++-6.q16-9 xz-utils
+	apt install -y --no-install-recommends gnupg wget git cmake autoconf apt-utils ca-certificates libterm-readline-gnu-perl bzip2 readline-common software-properties-common dirmngr build-essential libssl-dev libncurses5-dev libcurl4-openssl-dev liblzma-dev libbz2-dev libboost-all-dev sqlite3 libsqlite3-0 libsqlite3-dev libgsl0-dev zlib1g-dev libxml2-dev libgmp-dev libgmp10 libmpfr-dev libhdf5-dev libisal2 libisal-dev libdeflate-dev libbam-dev libgeos-dev libmagick++-dev libharfbuzz-dev libfribidi-dev libaec-dev libsz2 libmagick++-6.q16-dev libmagick++-6.q16-9 xz-utils
 	apt install -y --no-install-recommends openjdk-21-jdk perl python3 python3-six python3-packaging python3-pyparsing python3-pip mysql-client libmysqlclient-dev libmysqlclient21 libpq-dev libpq5 maven ncbi-blast+
 
 	#Install R
