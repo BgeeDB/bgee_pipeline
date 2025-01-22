@@ -40,6 +40,7 @@ genes: $(BGEE_SPECIES_FILEPATH) uniprotAC_ID $(OUTPUT_DIR)/uniprot.map
 		perl insert_nonensembl_genes.pl -species=$$sp -bgee=$(BGEECMD) -bgeeSpecies=$(BGEE_SPECIES_FILEPATH) >> $@.tmp 2>>$@.err; \
 	done
 	@if [[ -s $@.err ]]; then echo -n; else $(RM) $@.err; fi
+	@$(RM) $@.species
 	@$(MV) $@.tmp $@
 
 
