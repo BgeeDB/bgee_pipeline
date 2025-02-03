@@ -1,4 +1,4 @@
-# Pipeline of Bgee release 15.2
+# Pipeline of Bgee release 16.0
 
 [![DOI](https://zenodo.org/badge/DOI/10.1093/nar/gkae1118.svg)](https://doi.org/10.1093/nar/gkae1118)
 [![DOI](https://zenodo.org/badge/DOI/10.1093/nar/gkaa793.svg)](https://doi.org/10.1093/nar/gkaa793)
