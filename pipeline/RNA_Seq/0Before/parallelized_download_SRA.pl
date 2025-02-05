@@ -171,7 +171,7 @@ while (<$ANNOTATION>){
             if ( (scalar grep { /^$experimentId$/ } @private_exp_id) >= 1 ){
                 for my $fastq ( glob("$libDirectory/*.gz") ){
                     #NOTE Replace -salt by -d for decrypting and gz.enc as input and gz as output
-                    $sbatchTemplate .= "openssl enc -aes-128-cbc -salt -in $fastq -out $fastq.enc -pass file:$encryptFile  &&  rm -f $fastq &&\n";
+                    $sbatchTemplate .= "openssl enc -aes-256-cbc -salt -pbkdf2 -in $fastq -out $fastq.enc -pass file:$encryptFile  &&  rm -f $fastq &&\n";
                 }
             }
             $sbatchTemplate .= "touch $libDirectory/$runId.done";

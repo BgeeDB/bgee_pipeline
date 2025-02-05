@@ -133,7 +133,7 @@ while (<$ANNOTATION>){
             if ( (scalar grep { /^$exp_id$/ } @private_exp_id) >= 1 ){
                 for my $fastq ( glob("$lib_dir/*.gz") ){
                     #NOTE Replace -salt by -d for decrypting and gz.enc as input and gz as output
-                    system("openssl enc -aes-128-cbc -salt -in $fastq -out $fastq.enc -pass file:$BASE/.passw  &&  rm -f $fastq")==0
+                    system("openssl enc -aes-256-cbc -salt -pbkdf2 -in $fastq -out $fastq.enc -pass file:$BASE/.passw  &&  rm -f $fastq")==0
                         or do { warn "\tFailed to encrypt [$library_id/$sra_id]\n"; next SRA };
                 }
             }

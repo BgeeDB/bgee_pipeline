@@ -289,7 +289,7 @@ else {
                 $kallisto_command .= $fastqSamplePath.'/'.$run.'.fastq.gz ';
             }
             if ( $exp_id eq $GTEX_exp_id ){
-                $kallisto_command .= '<(cat '.$fastqSamplePath.'/'.$run.'.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.') ';
+                $kallisto_command .= '<(cat '.$fastqSamplePath.'/'.$run.'.fastq.gz.enc | openssl enc -aes-256-cbc -d -pbkdf2 -pass file:'.$enc_passwd_file.') ';
             }
         }
     }
@@ -300,7 +300,7 @@ else {
                 $kallisto_command .= $fastqSamplePath.'/'.$run.'_1.fastq.gz '.$fastqSamplePath.'/'.$run.'_2.fastq.gz ';
             }
             if ( $exp_id eq $GTEX_exp_id ){
-                $kallisto_command .= '<(cat '.$fastqSamplePath.'/'.$run.'_1.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.') <(cat '.$fastqSamplePath.'/'.$run.'_2.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.') ';
+                $kallisto_command .= '<(cat '.$fastqSamplePath.'/'.$run.'_1.fastq.gz.enc | openssl enc -aes-256-cbc -d -pbkdf2 -pass file:'.$enc_passwd_file.') <(cat '.$fastqSamplePath.'/'.$run.'_2.fastq.gz.enc | openssl enc -aes-256-cbc -d -pbkdf2 -pass file:'.$enc_passwd_file.') ';
             }
         }
     }
