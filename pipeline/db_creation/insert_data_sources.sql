@@ -28,7 +28,7 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
     'https://flybase.org/', 'Drosophila in situ data source', 1, 'In situ data source'),
 (11, 'ArrayExpress', '', 'https://www.ebi.ac.uk/arrayexpress/experiments/[experiment_id]', '',
     'https://www.ebi.ac.uk/arrayexpress/', 'Affymetrix data source for various species', 1, 'Affymetrix data source'),
-(12, 'UniGene', '', '', 'https://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?db=nucest&id=[evidence_id]',
+(12, 'UniGene', '', '', 'https://www.ncbi.nlm.nih.gov/gene/?term=[evidence_id]%5BUniGene+Cluster+Number%5D',
     'https://ncbiinsights.ncbi.nlm.nih.gov/2019/07/30/the-unigene-web-pages-are-now-retired/', 'EST data source for various species', 1, 'EST data source'),
 (13, 'smiRNAdb', '', '', '',
     'https://mirz.unibas.ch/cloningprofiles/', 'EST data for miRNAs', 1, 'EST data source'),

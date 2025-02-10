@@ -28,8 +28,8 @@ unigene: get_annot $(EST_SPECIES_CURATION_FILEPATH)
 	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 2; fi
 	# Download UniGene species data set
 	-@for sp in `cat $@.temp`; do \
-		$(WGET) -nH -r --cut-dirs=3 -P $(SOURCE_FILES_DIR)/ESTs/  ftp://ftp.ncbi.nih.gov/repository/UniGene/$$sp/*.seq.uniq.gz; \
-		$(WGET) -nH -r --cut-dirs=3 -P $(SOURCE_FILES_DIR)/ESTs/  ftp://ftp.ncbi.nih.gov/repository/UniGene/$$sp/*.data.gz; \
+		$(WGET) -nH -r --cut-dirs=3 -P $(SOURCE_FILES_DIR)/ESTs/  https://ftp.ncbi.nlm.nih.gov/repository/UniGene/$$sp/*.seq.uniq.gz; \
+		$(WGET) -nH -r --cut-dirs=3 -P $(SOURCE_FILES_DIR)/ESTs/  https://ftp.ncbi.nlm.nih.gov/repository/UniGene/$$sp/*.data.gz; \
 	done
 	# Xenopus tropicalis UniGene file follow the former species name, so rename it for patterns used later
 	@$(MV) $(SOURCE_FILES_DIR)/ESTs/Str.seq.uniq.gz $(SOURCE_FILES_DIR)/ESTs/Xt.seq.uniq.gz
