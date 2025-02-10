@@ -41,9 +41,9 @@ for any purpose for which they are used.
 - source_files/ESTs/Dm.seq.uniq.gz
 	See https://ftp.ncbi.nlm.nih.gov/repository/UniGene/
 
-- source_files/ESTs/miRNA.dat.gz
+- source_files/ESTs/miRNA.dat
 	See http://www.mirbase.org/
-	    ftp://mirbase.org/pub/mirbase/CURRENT/README
+	    https://mirbase.org/download/CURRENT/README/
 
 
 ##########################  genes  #########################
