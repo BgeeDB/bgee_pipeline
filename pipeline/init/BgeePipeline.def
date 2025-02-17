@@ -7,8 +7,6 @@ From: ubuntu:24.04
 	# We use it to define the name, version and release of the container.
 	export CONTAINER_NAME="BgeePipeline"
 	export LC_ALL="C"
-	export ENSEMBLAPI=/usr/local/ensembl
-	export PERL5LIB=$PERL5LIB:$ENSEMBLAPI/ensembl/modules:$ENSEMBLAPI/ensembl-compara/modules:$ENSEMBLAPI/ensembl-variation/modules:$ENSEMBLAPI/ensembl-funcgen/modules:$ENSEMBLAPI/ensembl-io/modules:$ENSEMBLAPI/ensembl-metadata/modules:$ENSEMBLAPI/ensembl-taxonomy/modules
 
 
 %help
@@ -80,7 +78,6 @@ From: ubuntu:24.04
 	soft.blastplus.version   2.12.0+
 	soft.tophat.version      2.1.2
 	soft.bamtofastq.version  1.4.1
-	soft.ensembl.version     113
 	soft.ubuntu.version      24.04LTS
 
 
@@ -217,7 +214,6 @@ From: ubuntu:24.04
 	cpan Archive::Tar
 	cpan Archive::Zip
 	cpan Array::Utils
-	#cpan Bio::EnsEMBL::Registry
 	cpan Bio::SeqIO
 	cpan Cpanel::JSON::XS
 	cpan DBI
@@ -263,14 +259,6 @@ From: ubuntu:24.04
 	./Build install
 	cd ..
 	rm -rf Webservice-InterMine-*/ Webservice-InterMine-*.tar.gz
-	# Install Ensembl Perl API
-	mkdir /usr/local/ensembl
-	cd /usr/local/ensembl/
-	git clone https://github.com/Ensembl/ensembl-git-tools.git
-	export PATH=$PWD/ensembl-git-tools/bin:$PATH
-	git ensembl --clone api
-	git ensembl --checkout --branch release/113 api
-	#TODO Do we need Ensembl web API Perl lib???
 
 	# Install Python3 lib
 	#pip3 install --break-system-packages pyparsing

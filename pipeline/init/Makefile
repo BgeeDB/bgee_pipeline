@@ -15,8 +15,6 @@ global_check:
 	@which mysql         >> $@.tmp
 	@which R             >> $@.tmp
 	@which python3       >> $@.tmp
-# Ensembl API
-	@perl -MBio::EnsEMBL::Registry  -e 1 >> $@.tmp
 # other Perl modules
 	@perl -MArchive::Tar            -e 1 >> $@.tmp
 	@perl -MArchive::Zip            -e 1 >> $@.tmp
@@ -296,8 +294,6 @@ test_container: build_container
 	@$(PIPELINE_CONTAINER_CMD) which mysql         >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) which R             >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) which python3       >> $@.tmp
-# Ensembl API
-	@$(PIPELINE_CONTAINER_CMD) perl -MBio::EnsEMBL::Registry  -e 1 >> $@.tmp
 # other Perl modules
 	@$(PIPELINE_CONTAINER_CMD) perl -MArchive::Tar            -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MArchive::Zip            -e 1 >> $@.tmp

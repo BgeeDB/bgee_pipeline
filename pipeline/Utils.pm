@@ -7,7 +7,6 @@ use warnings;
 use diagnostics;
 
 use Array::Utils qw(:all);
-use Bio::EnsEMBL::Registry; # Require Ensembl API
 use DBI;
 use File::Basename;
 use File::Slurp;
@@ -308,26 +307,6 @@ sub get_fields_for_sql_join {
 }
 
 ## Connectors, from parsed command line
-sub connect_ensembl_registry {
-    my ($ensembl_connector, $verbose) = @_;
-    $verbose = $verbose || 0;
-
-    # Get ensembl db parameters from command line
-    my %ensembl = map { /^(.+?)=(.*?)$/; $1 => $2 }   # Split based on =  and assigned as key=>value
-                  split('__', $ensembl_connector);    # Split based on __
-
-    # Connection to Ensembl via Ensembl API/Registry
-    my $reg = 'Bio::EnsEMBL::Registry';
-    $reg->load_registry_from_db( -user    => $ensembl{'user'},
-                                 -pass    => $ensembl{'pass'},
-                                 -host    => $ensembl{'host'},
-                                 -port    => $ensembl{'port'},
-                                 -verbose => $verbose, # Verbose output
-                               );
-
-    return $reg;
-}
-
 sub connect_bgee_db {
     my ($bgee_connector)= @_;
 
@@ -1007,7 +986,7 @@ sub insert_get_condition {
         $mappedStrainToUse = $WILD_TYPE_STRAIN;
     }
 
-    my $exprMappedCondKey = generate_condition_key($anatEntityId, $stage_equivalences->{ $stageId }, 
+    my $exprMappedCondKey = generate_condition_key($anatEntityId, $stage_equivalences->{ $stageId },
         $speciesId, $mappedSexToUse, $sexNotInferred, $mappedStrainToUse, $cellTypeId);
     my $exprMappedCondId = $condId;
 
@@ -1022,7 +1001,7 @@ sub insert_get_condition {
             $condId = $exprMappedCondId + 1;
             # Not-too-granular conditions are mapped to themselves
             insert_condition($dbh, $exprMappedCondId, $exprMappedCondId, $anatEntityId,
-                    $stage_equivalences->{ $stageId }, $speciesId, $mappedSexToUse, $sexNotInferred, 
+                    $stage_equivalences->{ $stageId }, $speciesId, $mappedSexToUse, $sexNotInferred,
                     $mappedStrainToUse, $cellTypeId);
 
             # And update the $condition hash
@@ -1066,7 +1045,7 @@ sub insert_get_condition {
 # (no use of AUTO_INCREMENT)
 # If $sex or $sexInferred do not correspond to allowed values, die.
 sub insert_condition {
-    my ($dbh, $conditionId, $exprMappedConditionId, $anatEntityId, $stageId, $speciesId, $sex, 
+    my ($dbh, $conditionId, $exprMappedConditionId, $anatEntityId, $stageId, $speciesId, $sex,
         $sexInferred, $strain, $cellTypeId) = @_;
 
     if(!defined($cellTypeId) || $cellTypeId eq ''){
