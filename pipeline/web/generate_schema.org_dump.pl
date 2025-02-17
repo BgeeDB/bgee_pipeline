@@ -17,8 +17,8 @@ use Utils;
 
 
 #### constants ####
-my $dateModified  = '2024-05-21';
-my $bgeeCitation  = 'https://doi.org/10.1093/nar/gkaa793';
+my $dateModified  = '2024-12-11';
+my $bgeeCitation  = '["https://doi.org/10.1093/nar/gkaa793","https://doi.org/10.1093/nar/gkae1118"]';
 my $bgeeLicense   = 'https://creativecommons.org/publicdomain/zero/1.0/';
 my $bioschGene    = 'https://bioschemas.org/profiles/Gene/1.0-RELEASE';
 my $bioschDataset = 'https://bioschemas.org/profiles/Dataset/1.0-RELEASE';
@@ -81,9 +81,11 @@ sub get_schema_default {
             "description": "The aim of Bgee is to help biologists to use and understand gene expression",
             "logo": "https://www.bgee.org/img/logo/bgee13_hp_logo.png",
             "sameAs": [
-                "https://twitter.com/Bgeedb",
+                "https://bsky.app/profile/bgee.org",
                 "https://genomic.social/@bgeedb",
-                "https://bgeedb.wordpress.com/"
+                "https://www.linkedin.com/company/bgee/",
+                "https://www.youtube.com/@bgeedatabase",
+                "https://en.wikipedia.org/wiki/Bgee"
             ],
             "parentOrganization": [
                 {
@@ -137,149 +139,71 @@ sub get_schema_default {
                 "gene expression evolution"
             ],
             "creator": {
-                "@id": "https://www.bgee.org/"
+                "@id": "https://www.bgee.org/",
+                "@type": "Organization",
+                "url": "https://www.bgee.org/",
+                "name": "The Bgee Team"
             },
-            "citation": {
-                "@type": "CreativeWork",
-                "name": "The Bgee suite: integrated curated expression atlas and comparative transcriptomics in animals",
-                "headline": "The Bgee suite: integrated curated expression atlas and comparative transcriptomics in animals",
-                "author": [
-                    {
-                        "@type": "Person",
-                        "givenName": "Frederic",
-                        "familyName": "Bastian",
-                        "identifier": "https://orcid.org/0000-0002-9415-5104"
-                    },
-                    {
-                        "@type": "Person",
-                        "givenName": "Julien",
-                        "familyName": "Roux",
-                        "identifier": "https://orcid.org/0000-0002-4192-5099"
-                    },
-                    {
-                        "@type": "Person",
-                        "givenName": "Anne",
-                        "familyName": "Niknejad",
-                        "identifier": "https://orcid.org/0000-0003-3308-6245"
-                    },
-                    {
-                        "@type": "Person",
-                        "givenName": "Aurelie",
-                        "familyName": "Comte"
-                    },
-                    {
-                        "@type": "Person",
-                        "givenName": "Sara",
-                        "familyName": "Fonseca Costa",
-                        "identifier": "https://orcid.org/0000-0001-7794-7997"
-                    },
-                    {
-                        "@type": "Person",
-                        "givenName": "Tarcisio",
-                        "familyName": "Mendes de Farias",
-                        "identifier": "https://orcid.org/0000-0002-3175-5372"
-                    },
-                    {
-                        "@type": "Person",
-                        "givenName": "Sebastien",
-                        "familyName": "Moretti",
-                        "identifier": "https://orcid.org/0000-0003-3947-488X"
-                    },
-                    {
-                        "@type": "Person",
-                        "givenName": "Gilles",
-                        "familyName": "Parmentier"
-                    },
-                    {
-                        "@type": "Person",
-                        "givenName": "Valentine",
-                        "familyName": "Rech de Laval",
-                        "identifier": "https://orcid.org/0000-0002-3020-1490"
-                    },
-                    {
-                        "@type": "Person",
-                        "givenName": "Marta",
-                        "familyName": "Rosikiewicz"
-                    },
-                    {
-                        "@type": "Person",
-                        "givenName": "Julien",
-                        "familyName": "Wollbrett",
-                        "identifier": "https://orcid.org/0000-0002-3099-3117"
-                    },
-                    {
-                        "@type": "Person",
-                        "givenName": "Amina",
-                        "familyName": "Echchiki"
-                    },
-                    {
-                        "@type": "Person",
-                        "givenName": "Angelique",
-                        "familyName": "Escoriza"
-                    },
-                    {
-                        "@type": "Person",
-                        "givenName": "Walid",
-                        "familyName": "Gharib",
-                        "identifier": "https://orcid.org/0000-0003-4831-8408"
-                    },
-                    {
-                        "@type": "Person",
-                        "givenName": "Mar",
-                        "familyName": "Gonzalez-Porta",
-                        "identifier": "https://orcid.org/0000-0002-1661-7254"
-                    },
-                    {
-                        "@type": "Person",
-                        "givenName": "Yohan",
-                        "familyName": "Jarosz"
-                    },
-                    {
-                        "@type": "Person",
-                        "givenName": "Balazs",
-                        "familyName": "Laurenczy"
-                    },
-                    {
-                        "@type": "Person",
-                        "givenName": "Philippe",
-                        "familyName": "Moret",
-                        "identifier": "https://orcid.org/0000-0002-3810-2091"
-                    },
-                    {
-                        "@type": "Person",
-                        "givenName": "Emilie",
-                        "familyName": "Person"
-                    },
-                    {
-                        "@type": "Person",
-                        "givenName": "Patrick",
-                        "familyName": "Roelli"
-                    },
-                    {
-                        "@type": "Person",
-                        "givenName": "Komal",
-                        "familyName": "Sanjeev"
-                    },
-                    {
-                        "@type": "Person",
-                        "givenName": "Mathieu",
-                        "familyName": "Seppey",
-                        "identifier": "https://orcid.org/0000-0003-3248-011X"
-                    },
-                    {
-                        "@type": "Person",
-                        "givenName": "Marc",
-                        "familyName": "Robinson-Rechavi",
-                        "identifier": "https://orcid.org/0000-0002-3437-3329"
-                    }
-                ],
-                "identifier": "http://dx.doi.org/10.1093/nar/gkaa793",
-                "sameas": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7778977/"
-            },
+            "citation": [
+                {
+                    "@type": "CreativeWork",
+                    "name": "The Bgee suite: integrated curated expression atlas and comparative transcriptomics in animals",
+                    "headline": "The Bgee suite: integrated curated expression atlas and comparative transcriptomics in animals",
+                    "author": [
+                        {"@type": "Person", "givenName": "Frederic",  "familyName": "Bastian",          "identifier": "https://orcid.org/0000-0002-9415-5104"},
+                        {"@type": "Person", "givenName": "Julien",    "familyName": "Roux",             "identifier": "https://orcid.org/0000-0002-4192-5099"},
+                        {"@type": "Person", "givenName": "Anne",      "familyName": "Niknejad",         "identifier": "https://orcid.org/0000-0003-3308-6245"},
+                        {"@type": "Person", "givenName": "Aurelie",   "familyName": "Comte"                                                                  },
+                        {"@type": "Person", "givenName": "Sara",      "familyName": "Fonseca Costa",    "identifier": "https://orcid.org/0000-0001-7794-7997"},
+                        {"@type": "Person", "givenName": "Tarcisio",  "familyName": "Mendes de Farias", "identifier": "https://orcid.org/0000-0002-3175-5372"},
+                        {"@type": "Person", "givenName": "Sebastien", "familyName": "Moretti",          "identifier": "https://orcid.org/0000-0003-3947-488X"},
+                        {"@type": "Person", "givenName": "Gilles",    "familyName": "Parmentier"                                                             },
+                        {"@type": "Person", "givenName": "Valentine", "familyName": "Rech de Laval",    "identifier": "https://orcid.org/0000-0002-3020-1490"},
+                        {"@type": "Person", "givenName": "Marta",     "familyName": "Rosikiewicz"                                                            },
+                        {"@type": "Person", "givenName": "Julien",    "familyName": "Wollbrett",        "identifier": "https://orcid.org/0000-0002-3099-3117"},
+                        {"@type": "Person", "givenName": "Amina",     "familyName": "Echchiki"                                                               },
+                        {"@type": "Person", "givenName": "Angelique", "familyName": "Escoriza"                                                               },
+                        {"@type": "Person", "givenName": "Walid",     "familyName": "Gharib",           "identifier": "https://orcid.org/0000-0003-4831-8408"},
+                        {"@type": "Person", "givenName": "Mar",       "familyName": "Gonzalez-Porta",   "identifier": "https://orcid.org/0000-0002-1661-7254"},
+                        {"@type": "Person", "givenName": "Yohan",     "familyName": "Jarosz"                                                                 },
+                        {"@type": "Person", "givenName": "Balazs",    "familyName": "Laurenczy"                                                              },
+                        {"@type": "Person", "givenName": "Philippe",  "familyName": "Moret",            "identifier": "https://orcid.org/0000-0002-3810-2091"},
+                        {"@type": "Person", "givenName": "Emilie",    "familyName": "Person"                                                                 },
+                        {"@type": "Person", "givenName": "Patrick",   "familyName": "Roelli"                                                                 },
+                        {"@type": "Person", "givenName": "Komal",     "familyName": "Sanjeev"                                                                },
+                        {"@type": "Person", "givenName": "Mathieu",   "familyName": "Seppey",           "identifier": "https://orcid.org/0000-0003-3248-011X"},
+                        {"@type": "Person", "givenName": "Marc",      "familyName": "Robinson-Rechavi", "identifier": "https://orcid.org/0000-0002-3437-3329"}
+                    ],
+                    "identifier": "http://dx.doi.org/10.1093/nar/gkaa793",
+                    "sameas": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7778977/"
+                },
+                {
+                    "@type": "CreativeWork",
+                    "name": "Bgee in 2024: focus on curated single-cell RNA-seq datasets, and query tools",
+                    "headline": "Bgee in 2024: focus on curated single-cell RNA-seq datasets, and query tools",
+                    "author": [
+                        {"@type": "Person", "givenName": "Frederic",   "familyName": "Bastian",             "identifier": "https://orcid.org/0000-0002-9415-5104"},
+                        {"@type": "Person", "givenName": "Alessandro", "familyName": "Brandulas Cammarata", "identifier": "https://orcid.org/0009-0006-5956-9842"},
+                        {"@type": "Person", "givenName": "Sara",       "familyName": "Carsanaro",           "identifier": "https://orcid.org/0009-0002-8634-7138"},
+                        {"@type": "Person", "givenName": "Harald",     "familyName": "Detering",            "identifier": "https://orcid.org/0000-0002-0134-7618"},
+                        {"@type": "Person", "givenName": "Wan-Ting",   "familyName": "Huang",               "identifier": "https://orcid.org/0009-0006-7191-2455"},
+                        {"@type": "Person", "givenName": "Sagane",     "familyName": "Joye",                "identifier": "https://orcid.org/0000-0003-4771-6113"},
+                        {"@type": "Person", "givenName": "Anne",       "familyName": "Niknejad",            "identifier": "https://orcid.org/0000-0003-3308-6245"},
+                        {"@type": "Person", "givenName": "Marion",     "familyName": "Nyamari",             "identifier": "https://orcid.org/0000-0003-0004-9982"},
+                        {"@type": "Person", "givenName": "Tarcisio",   "familyName": "Mendes de Farias",    "identifier": "https://orcid.org/0000-0002-3175-5372"},
+                        {"@type": "Person", "givenName": "Sebastien",  "familyName": "Moretti",             "identifier": "https://orcid.org/0000-0003-3947-488X"},
+                        {"@type": "Person", "givenName": "Marianna",   "familyName": "Tzivanopoulou",       "identifier": "https://orcid.org/0000-0001-6931-2879"},
+                        {"@type": "Person", "givenName": "Julien",     "familyName": "Wollbrett",           "identifier": "https://orcid.org/0000-0002-3099-3117"},
+                        {"@type": "Person", "givenName": "Marc",       "familyName": "Robinson-Rechavi",    "identifier": "https://orcid.org/0000-0002-3437-3329"}
+                    ],
+                    "identifier": "https://doi.org/10.1093/nar/gkae1118",
+                    "sameas": "https://pubmed.ncbi.nlm.nih.gov/39656924/"
+                }
+            ],
             "license": {
                 "@type": "CreativeWork",
                 "name": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
-                "'.$bgeeLicense.'"
+                "url": "'.$bgeeLicense.'"
             },
             "isAccessibleForFree": "true",
             "version": "'.$bgee_version.'"
@@ -303,7 +227,11 @@ sub get_schema_species {
                         "url": "https://www.bgee.org/",
                         "name": "The Bgee Team"
                     },
-                    "license": "'.$bgeeLicense.'",
+                    "license": {
+                        "@type": "CreativeWork",
+                        "name": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+                        "url": "'.$bgeeLicense.'"
+                    },
                     "distribution": [
                         {
                             "@type": "DataDownload",
@@ -330,7 +258,11 @@ sub get_schema_species {
                         "url": "https://www.bgee.org/",
                         "name": "The Bgee Team"
                     },
-                    "license": "'.$bgeeLicense.'",
+                    "license": {
+                        "@type": "CreativeWork",
+                        "name": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+                        "url": "'.$bgeeLicense.'"
+                    },
                     "distribution": [
                         {
                             "@type": "DataDownload",
@@ -354,7 +286,11 @@ sub get_schema_species {
                         "url": "https://www.bgee.org/",
                         "name": "The Bgee Team"
                     },
-                    "license": "'.$bgeeLicense.'",
+                    "license": {
+                        "@type": "CreativeWork",
+                        "name": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+                        "url": "'.$bgeeLicense.'"
+                    },
                     "distribution": [
                         {
                             "@type": "DataDownload",
@@ -381,7 +317,11 @@ sub get_schema_species {
                         "url": "https://www.bgee.org/",
                         "name": "The Bgee Team"
                     },
-                    "license": "'.$bgeeLicense.'",
+                    "license": {
+                        "@type": "CreativeWork",
+                        "name": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+                        "url": "'.$bgeeLicense.'"
+                    },
                     "distribution": [
                         {
                             "@type": "DataDownload",
@@ -404,20 +344,24 @@ sub get_schema_species {
                         "url": "https://www.bgee.org/",
                         "name": "The Bgee Team"
                     },
-                    "license": "'.$bgeeLicense.'",
+                    "license": {
+                        "@type": "CreativeWork",
+                        "name": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+                        "url": "'.$bgeeLicense.'"
+                    },
                     "distribution": [
                         {
                             "@type": "DataDownload",
                             "encodingFormat": "TSV",
-                            "contentUrl": "https://www.bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/sc_rnaseq/__SPECIES_NAME__/__SPECIES_NAME___Full-Length_SC_RNA-Seq_experiments_libraries.tar.gz"
+                            "contentUrl": "https://www.bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/full_length/__SPECIES_NAME__/__SPECIES_NAME___Full_Length_SC_RNA-Seq_experiments_libraries.tar.gz"
                         }
                     ],
-                    "name": "__SPECIES NAME__ Single cell RNA-Seq experiment libraries",
-                    "description": "__SPECIES NAME__ Single cell RNA-Seq experiments/ libraries annotations and metadata.",
+                    "name": "__SPECIES NAME__ Full length Single cell RNA-Seq experiment libraries",
+                    "description": "__SPECIES NAME__ Full length Single cell RNA-Seq experiments/libraries annotations and metadata.",
                     "keywords": [
-                        "Single cell RNA-Seq"
+                        "Full length Single cell RNA-Seq", "Single cell RNA-Seq"
                     ],
-                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-fl-scrna-seq"
+                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-scrna-seq"
                 },
                 {
                     "@type": "Dataset",
@@ -427,22 +371,134 @@ sub get_schema_species {
                         "url": "https://www.bgee.org/",
                         "name": "The Bgee Team"
                     },
-                    "license": "'.$bgeeLicense.'",
+                    "license": {
+                        "@type": "CreativeWork",
+                        "name": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+                        "url": "'.$bgeeLicense.'"
+                    },
                     "distribution": [
                         {
                             "@type": "DataDownload",
                             "encodingFormat": "TSV",
-                            "contentUrl": "https://www.bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/sc_rnaseq/__SPECIES_NAME__/__SPECIES_NAME___Full-Length_SC_RNA-Seq_read_counts_TPM_FPKM.tar.gz"
+                            "contentUrl": "https://www.bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/full_length/__SPECIES_NAME__/__SPECIES_NAME___Full-Length_SC_RNA-Seq_read_counts_TPM.tar.gz"
                         }
                     ],
-                    "name": "__SPECIES NAME__ Single Cell RNA-Seq read counts, TPM and FPKM",
-                    "description": "__SPECIES NAME__ Single Cell RNA-Seq read counts, TPM (Transcript Per Million) and FPKM (Fragments Per Kilobase of transcript per Million mapped reads).",
+                    "name": "__SPECIES NAME__ Full length Single Cell RNA-Seq read counts, TPM and FPKM",
+                    "description": "__SPECIES NAME__ Full length Single Cell RNA-Seq read counts, TPM (Transcript Per Million) and FPKM (Fragments Per Kilobase of transcript per Million mapped reads).",
                     "keywords": [
-                        "Single cell RNA-Seq"
+                        "Full length Single cell RNA-Seq", "Single cell RNA-Seq"
                     ],
-                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-fl-scrna-seq"
+                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-scrna-seq"
+                },
+                                {
+                    "@type": "Dataset",
+                    "dateModified": "'.$dateModified.'",
+                    "creator": {
+                        "@type": "Organization",
+                        "url": "https://www.bgee.org/",
+                        "name": "The Bgee Team"
+                    },
+                    "license": {
+                        "@type": "CreativeWork",
+                        "name": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+                        "url": "'.$bgeeLicense.'"
+                    },
+                    "distribution": [
+                        {
+                            "@type": "DataDownload",
+                            "encodingFormat": "H5AD",
+                            "contentUrl": "https://www.bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/h5ad/full_length/__SPECIES_NAME__/__SPECIES_NAME___full_length_h5ad.tar.gz"
+                        }
+                    ],
+                    "name": "__SPECIES NAME__ Full length Single Cell RNA-Seq processed H5AD data per cell (read counts)",
+                    "description": "__SPECIES NAME__ Full length Single Cell RNA-Seq processed H5AD data per cell (read counts).",
+                    "keywords": [
+                        "Full length Single cell RNA-Seq", "Single cell RNA-Seq", "H5AD"
+                    ],
+                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-scrna-seq"
                 }';
-#TODO    my $target_template = '';
+
+    my $droplet_template = '                {
+                    "@type": "Dataset",
+                    "dateModified": "'.$dateModified.'",
+                    "creator": {
+                        "@type": "Organization",
+                        "url": "https://www.bgee.org/",
+                        "name": "The Bgee Team"
+                    },
+                    "license": {
+                        "@type": "CreativeWork",
+                        "name": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+                        "url": "'.$bgeeLicense.'"
+                    },
+                    "distribution": [
+                        {
+                            "@type": "DataDownload",
+                            "encodingFormat": "TSV",
+                            "contentUrl": "https://www.bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/droplet_based/__SPECIES_NAME__/__SPECIES_NAME___Droplet-Based_SC_RNA-Seq_experiments_libraries.tar.gz"
+                        }
+                    ],
+                    "name": "__SPECIES NAME__ Droplet based Single cell RNA-Seq experiment libraries",
+                    "description": "__SPECIES NAME__ Droplet based Single cell RNA-Seq experiments/libraries annotations and metadata.",
+                    "keywords": [
+                        "Droplet based Single cell RNA-Seq", "Single cell RNA-Seq"
+                    ],
+                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-scrna-seq"
+                },
+                {
+                    "@type": "Dataset",
+                    "dateModified": "'.$dateModified.'",
+                    "creator": {
+                        "@type": "Organization",
+                        "url": "https://www.bgee.org/",
+                        "name": "The Bgee Team"
+                    },
+                    "license": {
+                        "@type": "CreativeWork",
+                        "name": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+                        "url": "'.$bgeeLicense.'"
+                    },
+                    "distribution": [
+                        {
+                            "@type": "DataDownload",
+                            "encodingFormat": "TSV",
+                            "contentUrl": "https://www.bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/droplet_based/__SPECIES_NAME__/__SPECIES_NAME___Droplet-Based_SC_RNA-Seq_read_counts_CPM.tar.gz"
+                        }
+                    ],
+                    "name": "__SPECIES NAME__ Droplet based Single Cell RNA-Seq UMI counts, CPM",
+                    "description": "__SPECIES NAME__ Droplet based Single Cell RNA-Seq UMI counts, CPM (Counts Per Million).",
+                    "keywords": [
+                        "Droplet based Single cell RNA-Seq", "Single cell RNA-Seq"
+                    ],
+                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-scrna-seq"
+                },
+                                {
+                    "@type": "Dataset",
+                    "dateModified": "'.$dateModified.'",
+                    "creator": {
+                        "@type": "Organization",
+                        "url": "https://www.bgee.org/",
+                        "name": "The Bgee Team"
+                    },
+                    "license": {
+                        "@type": "CreativeWork",
+                        "name": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+                        "url": "'.$bgeeLicense.'"
+                    },
+                    "distribution": [
+                        {
+                            "@type": "DataDownload",
+                            "encodingFormat": "H5AD",
+                            "contentUrl": "https://www.bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/h5ad/droplet_based/__SPECIES_NAME__/__SPECIES_NAME___droplet_based_h5ad.tar.gz"
+                        }
+                    ],
+                    "name": "__SPECIES NAME__ Droplet based Single Cell RNA-Seq processed H5AD data per cell (UMI counts)",
+                    "description": "__SPECIES NAME__ Droplet based Single Cell RNA-Seq processed H5AD data per cell (UMI counts).",
+                    "keywords": [
+                        "Droplet based Single cell RNA-Seq", "Single cell RNA-Seq", "H5AD"
+                    ],
+                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-scrna-seq"
+                }';
 
     my $template = '{
     "@context": "https://schema.org/",
@@ -469,8 +525,8 @@ sub get_schema_species {
         {
             "@type": "Dataset",
             "dateModified": "'.$dateModified.'",
-            "citation": "'.$bgeeCitation.'",
-            "description": "__SPECIES NAME__ calls of presence/absence of expression. Each call corresponds to a unique combination of a gene, an anatomical entity, a life stage, a sex, and a strain, with reported presence or absence of expression.",
+            "citation": '.$bgeeCitation.',
+            "description": "__SPECIES NAME__ calls of presence/absence of expression. Each call corresponds to a unique combination of a gene, an anatomical entity, a life stage, a sex, and a strain/ethnicity, with reported presence or absence of expression.",
             "includedInDataCatalog": {
                 "@id": "https://www.bgee.org",
                 "@type": "DataCatalog",
@@ -489,7 +545,7 @@ sub get_schema_species {
             "license": {
                 "@type": "CreativeWork",
                 "name": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
-                "'.$bgeeLicense.'"
+                "url": "'.$bgeeLicense.'"
             },
             "isAccessibleForFree": "true",
             "name": "__SPECIES NAME__ gene expression calls",
@@ -507,7 +563,7 @@ sub get_schema_species {
                     "license": {
                         "@type": "CreativeWork",
                         "name": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
-                        "'.$bgeeLicense.'"
+                        "url": "'.$bgeeLicense.'"
                     },
                     "isAccessibleForFree": "true",
                     "name": "__SPECIES NAME__ gene expression simple",
@@ -532,7 +588,7 @@ sub get_schema_species {
                     "license": {
                         "@type": "CreativeWork",
                         "name": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
-                        "'.$bgeeLicense.'"
+                        "url": "'.$bgeeLicense.'"
                     },
                     "isAccessibleForFree": "true",
                     "name": "__SPECIES NAME__ gene expression advanced",
@@ -554,9 +610,13 @@ sub get_schema_species {
                         "url": "https://www.bgee.org/",
                         "name": "The Bgee Team"
                     },
-                    "license": "'.$bgeeLicense.'",
+                    "license": {
+                        "@type": "CreativeWork",
+                        "name": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+                        "url": "'.$bgeeLicense.'"
+                    },
                     "name": "__SPECIES NAME__ gene expression simple with all conditions",
-                    "description": "Anatomical entities, developmental stages, sexes and strains. File without advanced columns.",
+                    "description": "Anatomical entities, developmental stages, sexes and strains/ethnicities. File without advanced columns.",
                     "url": "https://www.bgee.org/species/__TAXID__#expr-calls-cond-simple",
                     "distribution": [
                         {
@@ -574,9 +634,13 @@ sub get_schema_species {
                         "url": "https://www.bgee.org/",
                         "name": "The Bgee Team"
                     },
-                    "license": "'.$bgeeLicense.'",
+                    "license": {
+                        "@type": "CreativeWork",
+                        "name": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+                        "url": "'.$bgeeLicense.'"
+                    },
                     "name": "__SPECIES NAME__ gene expression advanced with all conditions",
-                    "description": "Anatomical entities, developmental stages, sexes and strains. File with advanced columns.",
+                    "description": "Anatomical entities, developmental stages, sexes and strains/ethnicities. File with advanced columns.",
                     "url": "https://www.bgee.org/species/__TAXID__#expr-calls-cond-advanced",
                     "distribution": [
                         {
@@ -596,7 +660,7 @@ sub get_schema_species {
                 "url": "https://www.bgee.org/",
                 "name": "The Bgee Team"
             },
-            "citation": "'.$bgeeCitation.'",
+            "citation": '.$bgeeCitation.',
             "description": "Annotations and experiment information (e.g., annotations to anatomy and development, quality scores used in QCs, library information), and processed expression values (e.g., read counts, TPM and FPKM values) for __SPECIES NAME__",
             "includedInDataCatalog": {
                 "@id": "https://www.bgee.org/bgee'.$bgee_db_version.'",
@@ -609,7 +673,11 @@ sub get_schema_species {
                 "processed expression values",
                 "__SPECIES NAME__"__COMMON NAME1__
             ],
-            "license": "'.$bgeeLicense.'",
+            "license": {
+                "@type": "CreativeWork",
+                "name": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+                "url": "'.$bgeeLicense.'"
+            },
             "name": "__SPECIES NAME__ processed expression values",
             "url": "https://www.bgee.org/species/__TAXID__#proc-values",
             "version": "'.$bgee_version.'",
@@ -625,7 +693,7 @@ __DATATYPES__
     ]
 }';
 
-    my $speciesdbh = $bgee->prepare('SELECT DISTINCT s.speciesId, s.genus, s.species, s.speciesCommonName, s.dataSourceId, d.baseUrl, (SELECT GROUP_CONCAT(DISTINCT dataType) FROM dataSourceToSpecies WHERE speciesId=s.speciesId AND infoType="data" AND dataType !="est" AND dataType !="in situ") AS datatypes FROM species s, dataSource d, dataSourceToSpecies t WHERE s.dataSourceId=d.dataSourceId AND s.speciesId=t.speciesId ORDER BY s.speciesId');
+    my $speciesdbh = $bgee->prepare('SELECT DISTINCT s.speciesId, s.genus, s.species, s.speciesCommonName, s.dataSourceId, d.baseUrl, CONCAT_WS(",", IF(EXISTS(SELECT DISTINCT 1 FROM affymetrixChip AS t1 INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId AND t2.speciesId = s.speciesId), "affymetrix", NULL), IF(EXISTS(SELECT DISTINCT 1 FROM rnaSeqLibraryAnnotatedSample AS t1 INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId AND t2.speciesId = s.speciesId INNER JOIN rnaSeqLibrary AS t3 ON t1.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE rnaSeqTechnologyIsSingleCell = 0), "bulk", NULL), IF(EXISTS(SELECT DISTINCT 1 FROM rnaSeqLibraryAnnotatedSample AS t1 INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId AND t2.speciesId = s.speciesId INNER JOIN rnaSeqLibrary AS t3 ON t1.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE rnaSeqTechnologyIsSingleCell = 1 AND t1.multipleLibraryIndividualSample = 0), "full_length", NULL), IF(EXISTS(SELECT DISTINCT 1 FROM rnaSeqLibraryAnnotatedSample AS t1 INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId AND t2.speciesId = s.speciesId INNER JOIN rnaSeqLibrary AS t3 ON t1.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE rnaSeqTechnologyIsSingleCell = 1 AND t1.multipleLibraryIndividualSample = 1), "droplet_based", NULL)) AS datatypes FROM species AS s INNER JOIN dataSource AS d ON s.dataSourceId = d.dataSourceId GROUP BY s.speciesId');
     $speciesdbh->execute()  or die $speciesdbh->errstr;
     my @species_json;
     while ( my ($speciesId, $genus, $species, $speciesCommonName, $dataSourceId, $baseUrl, $datatypes) = $speciesdbh->fetchrow_array() ){
@@ -635,18 +703,20 @@ __DATATYPES__
         #Loop over data types with *Processed expression value files*, separated by *,*
         my @datatypes = split(',', $datatypes);
         my @dt_temp;
-        # can be: affymetrix,rna-seq, single-cell RNA-Seq
+        # can be: affymetrix, bulk, full_length, droplet_based
         for my $dt ( sort @datatypes ){
-            if ( $dt eq 'rna-seq' ){
+            if ( $dt eq 'bulk' ){
                 push @dt_temp, $rnaseq_template;
             }
             elsif ( $dt eq 'affymetrix' ){
                 push @dt_temp, $affy_template;
             }
-            elsif ( $dt eq 'single-cell RNA-Seq' ){
+            elsif ( $dt eq 'full_length' ){
                 push @dt_temp, $scrnaseq_template;
             }
-            #TODO target based single-cell RNA-Seq!
+            elsif ( $dt eq 'droplet_based' ){
+                push @dt_temp, $droplet_template;
+            }
         }
         warn "No datatypes for $genus $species\n"  if ( scalar @dt_temp == 0 );
         my $dt_temp = join(",\n", @dt_temp);
@@ -667,6 +737,8 @@ __DATATYPES__
         }
         #FIXME this is wrong on the Bgee web site for non www.ensembl.org: do not use ensembl metazoa link, and provide a link for refseq based genomes
         if ( $baseUrl =~ /ensembl\.org/ ){
+            #FIXME Heterocephalus glaber has a female and a male genome in Ensembl, so different species links
+            $species =~ s{glaber}{glaber_female}  if ( $genus eq 'Heterocephalus' && $species eq 'glaber' );
             $temp =~ s{__DBSRC_SPECIES_LINK__}{,\n        "$baseUrl${genus}_$species/"}g;
         }
         else {
@@ -711,7 +783,8 @@ __SAMEAS__
     ]
 }';
 
-    my $genesdbh = $bgee->prepare('SELECT DISTINCT g.bgeeGeneId, g.geneId, g.geneName, g.geneDescription, t.speciesId, t.genus, t.species, t.speciesCommonName,d.baseUrl FROM gene g, species t, dataSource d WHERE t.dataSourceId=d.dataSourceId AND g.speciesId=t.speciesId AND g.bgeeGeneId IN (1611228, 129767, 257884, 62875, 873906) ORDER BY g.geneId');
+    #NOTE currently limited to 6 genes!!!
+    my $genesdbh = $bgee->prepare('SELECT DISTINCT g.bgeeGeneId, g.geneId, g.geneName, g.geneDescription, t.speciesId, t.genus, t.species, t.speciesCommonName, d.baseUrl FROM gene g, species t, dataSource d WHERE t.dataSourceId=d.dataSourceId AND g.speciesId=t.speciesId AND g.bgeeGeneId IN (1611228, 129767, 257884, 62875, 873906, 1288025) ORDER BY g.geneId');
     $genesdbh->execute()  or die $genesdbh->errstr;
     my $genesSyndbh  = $bgee->prepare('SELECT GROUP_CONCAT(DISTINCT geneNameSynonym) AS syn FROM geneNameSynonym WHERE bgeeGeneId=?');
     my $genesXrefdbh = $bgee->prepare('SELECT GROUP_CONCAT(DISTINCT REPLACE(REPLACE(REPLACE(d.XRefUrl, "[xref_id]" ,x.XRefId), "[gene_id]", x.XRefId), "[species_ensembl_link]", "__SPECIES_NAME__")) AS geneXrefLink FROM geneXRef x, dataSource d WHERE x.bgeeGeneId = ? AND d.dataSourceId=x.dataSourceId AND x.dataSourceId!=101');
@@ -762,11 +835,15 @@ __SAMEAS__
                 $sameAs .= "        \"$baseUrl${genus}_$species/Transcript/ProteinSummary?g=$geneId\",\n";
             }
             else {
+                #NOTE Heterocephalus glaber has a female and a male genome in Ensembl, so different species links
+                $species =~ s{glaber}{glaber_female}  if ( $genus eq 'Heterocephalus' && $species eq 'glaber' );
                 $sameAs .= "        \"$baseUrl${genus}_$species/Gene/Summary?g=$geneId\",\n";
             }
         }
         $sameAs .= join(",\n", map { "        \"$_\"" } split(/,/, $genesXrefdbh->fetchrow_array()));
         $species =~ s{ }{_}g; # for Canis lupus familiaris
+        #NOTE Heterocephalus glaber has a female and a male genome in Ensembl, so different species links
+        $species =~ s{glaber}{glaber_female}  if ( $genus eq 'Heterocephalus' && $species eq 'glaber' );
         $sameAs =~ s{__SPECIES_NAME__}{${genus}_$species}g;
         #NOTE direct links to Ensembl protein/transcript
         if ( $sameAs =~ /ensembl\.org.+g=FBtr\d+/ ){
