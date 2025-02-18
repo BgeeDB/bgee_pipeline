@@ -119,7 +119,7 @@ sub get_schema_default {
         {
             "@type": "Dataset",
             "@id": "https://www.bgee.org/",
-            "http://purl.org/dc/terms/conformsTo": {
+            "https://purl.org/dc/terms/conformsTo": {
                 "@id": "'.$bioschDataset.'",
                 "@type": "CreativeWork"
             },
@@ -174,7 +174,7 @@ sub get_schema_default {
                         {"@type": "Person", "givenName": "Mathieu",   "familyName": "Seppey",           "identifier": "https://orcid.org/0000-0003-3248-011X"},
                         {"@type": "Person", "givenName": "Marc",      "familyName": "Robinson-Rechavi", "identifier": "https://orcid.org/0000-0002-3437-3329"}
                     ],
-                    "identifier": "http://dx.doi.org/10.1093/nar/gkaa793",
+                    "identifier": "https://doi.org/10.1093/nar/gkaa793",
                     "sameas": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7778977/"
                 },
                 {
@@ -217,7 +217,7 @@ sub get_schema_species {
 
     my $affy_template   = '                {
                     "@type": "Dataset",
-                    "http://purl.org/dc/terms/conformsTo": {
+                    "https://purl.org/dc/terms/conformsTo": {
                         "@id": "'.$bioschDataset.'",
                         "@type": "CreativeWork"
                     },
@@ -248,7 +248,7 @@ sub get_schema_species {
                 },
                 {
                     "@type": "Dataset",
-                    "http://purl.org/dc/terms/conformsTo": {
+                    "https://purl.org/dc/terms/conformsTo": {
                         "@id": "'.$bioschDataset.'",
                         "@type": "CreativeWork"
                     },
@@ -276,7 +276,7 @@ sub get_schema_species {
                 }';
     my $rnaseq_template = '                {
                     "@type": "Dataset",
-                    "http://purl.org/dc/terms/conformsTo": {
+                    "https://purl.org/dc/terms/conformsTo": {
                         "@id": "'.$bioschDataset.'",
                         "@type": "CreativeWork"
                     },
@@ -307,7 +307,7 @@ sub get_schema_species {
                 },
                 {
                     "@type": "Dataset",
-                    "http://purl.org/dc/terms/conformsTo": {
+                    "https://purl.org/dc/terms/conformsTo": {
                         "@id": "'.$bioschDataset.'",
                         "@type": "CreativeWork"
                     },
@@ -504,21 +504,21 @@ sub get_schema_species {
     "@context": "https://schema.org/",
     "@id": "https://www.bgee.org/species/__TAXID__",
     "@type": "Taxon",
-    "http://purl.org/dc/terms/conformsTo": {
+    "https://purl.org/dc/terms/conformsTo": {
         "@id": "'.$bioschTaxon.'",
         "@type": "CreativeWork"
     },
     "name": "__SPECIES NAME__",
     "identifier": __TAXID__,
     "sameAs": [
-        "http://purl.obolibrary.org/obo/NCBITaxon___TAXID__",
+        "https://purl.obolibrary.org/obo/NCBITaxon___TAXID__",
         "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?lvl=0&id=__TAXID__"__DBSRC_SPECIES_LINK__
     ],
     "taxonRank": [
-        "http://rs.tdwg.org/ontology/voc/TaxonRank#Species",
-        "http://purl.uniprot.org/core/Species",
-        "http://purl.obolibrary.org/obo/NCBITaxon_species",
-        "http://www.wikidata.org/entity/Q7432",
+        "https://rs.tdwg.org/ontology/voc/TaxonRank#Species",
+        "https://purl.uniprot.org/core/Species",
+        "https://purl.obolibrary.org/obo/NCBITaxon_species",
+        "https://www.wikidata.org/entity/Q7432",
         "species"
     ],
     "subjectOf": [
@@ -759,7 +759,7 @@ sub get_schema_genes {
     "@context": "https://schema.org/",
     "@type": "Gene",
     "@id": "https://www.bgee.org/gene/__GENEID__",
-    "http://purl.org/dc/terms/conformsTo": {
+    "https://purl.org/dc/terms/conformsTo": {
         "@id": "'.$bioschGene.'",
         "@type": "CreativeWork"
     },
@@ -776,7 +776,7 @@ sub get_schema_genes {
         "@id": "https://www.bgee.org/bgee'.$bgee_db_version.'/species/__TAXID__",
         "name": "__SPECIES NAME____COMMON NAME2__",
         "identifier": __TAXID__,
-        "sameAs": "http://purl.obolibrary.org/obo/NCBITaxon___TAXID__"
+        "sameAs": "https://purl.obolibrary.org/obo/NCBITaxon___TAXID__"
     },
     "sameAs": [
 __SAMEAS__
@@ -873,7 +873,7 @@ sub get_schema_gene_homologs {
         "@context": "https://schema.org/",
         "@type": "https://schema.org/Taxon",
         "@id": "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=__TAXIDANCESTOR__",
-        "http://purl.org/dc/terms/conformsTo": {
+        "https://purl.org/dc/terms/conformsTo": {
             "@id": "'.$bioschTaxon.'",
             "@type": "CreativeWork"
         },
@@ -912,13 +912,14 @@ sub get_schema_gene_expression {
         "@id": "https://www.bgee.org/gene/__GENEID__",
         "expressedIn": {
             "@type": "AnatomicalStructure",
-            "@id": "http://purl.obolibrary.org/obo/__EXTIDURL__",
+            "@id": "https://purl.obolibrary.org/obo/__EXTIDURL__",
             "identifier": "__EXTID__",
             "name": "__EXTNAME__"
         }
     }';
 
     #NOTE Use the HTTP API to catch only expressed in, without the parent terms with the same or lower score
+    #FIXME Better and faster if this can be done with a direct request to the database
     my $URL = 'https://www.bgee.org/api/?display_type=json&page=gene&action=expression&gene_id='.$geneId.'&species_id='.$taxId.'&cond_param=anat_entity&cond_param=cell_type&data_type=all';
     my $content = get($URL);
     my @expressed_json;
