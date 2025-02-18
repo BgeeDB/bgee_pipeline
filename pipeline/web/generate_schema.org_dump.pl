@@ -361,7 +361,7 @@ sub get_schema_species {
                     "keywords": [
                         "Full length Single cell RNA-Seq", "Single cell RNA-Seq"
                     ],
-                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-scrna-seq"
+                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-fl-scrna-seq"
                 },
                 {
                     "@type": "Dataset",
@@ -388,7 +388,7 @@ sub get_schema_species {
                     "keywords": [
                         "Full length Single cell RNA-Seq", "Single cell RNA-Seq"
                     ],
-                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-scrna-seq"
+                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-fl-scrna-seq"
                 },
                                 {
                     "@type": "Dataset",
@@ -415,7 +415,7 @@ sub get_schema_species {
                     "keywords": [
                         "Full length Single cell RNA-Seq", "Single cell RNA-Seq", "H5AD"
                     ],
-                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-scrna-seq"
+                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-fl-scrna-seq"
                 }';
 
     my $droplet_template = '                {
@@ -443,7 +443,7 @@ sub get_schema_species {
                     "keywords": [
                         "Droplet based Single cell RNA-Seq", "Single cell RNA-Seq"
                     ],
-                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-scrna-seq"
+                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-db-scrna-seq"
                 },
                 {
                     "@type": "Dataset",
@@ -470,7 +470,7 @@ sub get_schema_species {
                     "keywords": [
                         "Droplet based Single cell RNA-Seq", "Single cell RNA-Seq"
                     ],
-                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-scrna-seq"
+                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-db-scrna-seq"
                 },
                                 {
                     "@type": "Dataset",
@@ -497,7 +497,7 @@ sub get_schema_species {
                     "keywords": [
                         "Droplet based Single cell RNA-Seq", "Single cell RNA-Seq", "H5AD"
                     ],
-                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-scrna-seq"
+                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-db-scrna-seq"
                 }';
 
     my $template = '{
