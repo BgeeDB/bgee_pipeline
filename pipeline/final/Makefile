@@ -1,5 +1,5 @@
 PIPELINEROOT := ../
-DIR_NAME := web/
+DIR_NAME := final/
 include $(PIPELINEROOT)Makefile.common
 
 all: $(VERIFICATIONFILE)
