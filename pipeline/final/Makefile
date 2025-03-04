@@ -17,7 +17,10 @@ sitemap.xml:
 	@echo
 
 
-#TODO update sphinx.conf file and regenerate sphinx indexes
+#NOTE bgee user must be allowed to run indexer - via sudo - on $(DBHOST)
+sphinx_index:
+	@echo -e "\n\tThe /usr/local/etc/sphinx.conf file has to be updated first on $(DBHOST) with proper index names (versions)\n"
+	@ssh bgee@$(DBHOST) sudo indexer --rotate --config /usr/local/etc/sphinx.conf  bgee_genes_$(subst .,_,$(RELEASE)) bgee_autocomplete_$(subst .,_,$(RELEASE)) bgee_anat_auto_$(subst .,_,$(RELEASE)) bgee_strain_auto_$(subst .,_,$(RELEASE)) bgee_experiment_auto_$(subst .,_,$(RELEASE)) bgee_assay_auto_$(subst .,_,$(RELEASE))
 
 
 schema.org_dump:
