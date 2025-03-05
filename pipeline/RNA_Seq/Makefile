@@ -235,7 +235,7 @@ clean_cluster_folders: check_tools
 ################################ GENERATE INTERGENIC SEQUENCES FOR EACH SPECIES ################################
 prepare_GTF:
 	# Prepare GTF files : $(CLUSTER_R_CMD)
-	@perl 0Before/slurm_prepare_GTF.pl -gtf_dir=$(RNASEQ_CLUSTER_GTF) -block_size_N=31 -account=$(SENSITIVE_CLUSTER_ACCOUNT) -partition=$(SENSITIVE_CLUSTER_PARTITION) -proportion_N=0.05 -output_gtf_path=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(OUTPUT_DIR) -cluster_R_cmd="$(CLUSTER_R_CMD)" >$@.tmp 2>&1
+	@perl 0Before/slurm_prepare_GTF.pl -gtf_dir=$(RNASEQ_CLUSTER_GTF) -block_size_N=31 -account=$(SENSITIVE_CLUSTER_ACCOUNT) -partition=$(SENSITIVE_CLUSTER_PARTITION) -proportion_N=0.05 -output_gtf_path=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(OUTPUT_DIR) -container_cmd="$(CLUSTER_CONTAINER_CMD_WITH_BIND)" >$@.tmp 2>&1
 	@echo rm -f $(RNASEQ_CLUSTER_GTF)/*.gtf.gz
 	@$(MV) $@.tmp $@
 
@@ -344,7 +344,7 @@ sum_by_species: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH)
 ## variables used only to generate intergenic sequences.
 ## should potentialy be moved at the top of the file or in the Makefile.common file
 TRANSCRIPTOME_COMPRESSION_EXT	:= .xz
-SUM_ABUNDANCE_FILE_PATH			:= $(RNASEQ_CLUSTER_SUM_RES)sum_abundance_gene_level+fpkm+intergenic+classification_SPECIES_ID.tsv
+SUM_ABUNDANCE_FILE_PATH			:= $(RNASEQ_CLUSTER_SUM_RES)filtered_summed_data__SPECIES_ID.tsv
 ## Generate 2 intergenic fasta files for each species. One for reference intergenic sequences and one for other intergenic sequences
 ##
 generate_intergenic_sequences: sum_by_species
@@ -379,7 +379,7 @@ generate_intergenic_sequences: sum_by_species
 indexes_bgeecall: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_SAMPEXCLUDED_FILEPATH) 
 	# generate BgeeCall input file from the rna_seq_sample_info.txt file
 	# TODO: run this script in a different rule
-	@perl 1Run/sample_info_to_bgeecall.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -sample_excluded=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >$@.tmp 2>$@.err
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) perl 1Run/sample_info_to_bgeecall.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -sample_excluded=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >$@.tmp 2>$@.err
 	# generate kallisto indexes with BgeeCall
 	$(CLUSTER_CONTAINER_CMD_WITH_BIND) Rscript 1Run/bgeecall_index.R bgeecall_input_file=\"$(RNASEQ_BGEECALL_FILE)\" account=\"$(SENSITIVE_CLUSTER_ACCOUNT)\" container_cmd=\"$(CLUSTER_CONTAINER_CMD_WITHOUT_BIND)\" time=\"24:00:00\" partition=\"$(SENSITIVE_CLUSTER_PARTITION)\" working_path=\"$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)\" >> $@.tmp 2>> $@.err
 	@$(MV) $@.tmp $@
