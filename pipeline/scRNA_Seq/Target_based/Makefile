@@ -79,7 +79,7 @@ retrieve_metadata: get_annot 0Preparation/retrieve_metadata.R
 # it replaces the old rules not parallelized and downloading files depending on the sources
 # (see scripts 0Preparation/download_SRA.R, 0Preparation/download_HCA.R and 0Preparation/download_reformat_EBI.R)
 parallelized_download: retrieve_metadata
-	@$(SENSITIVE_PERL_CMD) perl 0Preparation/parallelized_download_SRA.pl -metadataFile=${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH) -renameScriptPath=${PWD}/0Preparation/rename_fastq.pl -qualityScriptPath=${PWD}/0Preparation/run_fastp.pl -downloadedLibraries=${PWD}/$(SC_RNASEQ_TB_DOWNLOADED_LIB_FILEPATH) -parallelJobs=50 -outputDir=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET) --bamtofastq=$(SCRNASEQ_SOFTWARE_BAMTOFASTQ) -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
+	@perl 0Preparation/parallelized_download_SRA.pl --metadataFile=${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH) --renameScriptPath=${PWD}/0Preparation/rename_fastq.pl --qualityScriptPath=${PWD}/0Preparation/run_fastp.pl --downloadedLibraries=${PWD}/$(SC_RNASEQ_TB_DOWNLOADED_LIB_FILEPATH) --parallelJobs=10 --outputDir=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET) --containerCmd="$(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL)" --queue=$(CLUSTER_PARTITION) --account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
 	@$(MV) $@.tmp $@
 
 parallelized_quality_check:
