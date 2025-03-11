@@ -133,7 +133,8 @@ create table species (
 -- We don't use a foreign key constraint here, because maybe the species whose the genome
 -- was used does not have any data in Bgee, and thus is not in the taxon table.
 -- If the correct genome of the species was used, the value of this field is 0.
-    genomeSpeciesId mediumint unsigned not null default 0 COMMENT 'NCBI species taxon id used for mapping (0 if the same species)'
+    genomeSpeciesId mediumint unsigned not null default 0 COMMENT 'NCBI species taxon id used for mapping (0 if the same species)',
+    devOntologyXRef varchar(250) not null default '' COMMENT 'XRef to the developmental stage ontology of that species'
 ) engine = innodb;
 
 -- which sex values are permitted for each species.
