@@ -23,7 +23,7 @@ $(ANNOTTAXIDSFILEPATH):
 # the NCBI Taxon ID of the species we want to insert in Bgee 16.0. This list has to be removed for future releases.
 BGEE_SPECIES_IDS := 9606$(LIST_SEP)10090$(LIST_SEP)7955$(LIST_SEP)7227$(LIST_SEP)6239$(LIST_SEP)9615$(LIST_SEP)9685$(LIST_SEP)9796$(LIST_SEP)9823$(LIST_SEP)9913$(LIST_SEP)9925$(LIST_SEP)9940$(LIST_SEP)9986$(LIST_SEP)10141$(LIST_SEP)9031$(LIST_SEP)9103$(LIST_SEP)9258$(LIST_SEP)9483$(LIST_SEP)9531$(LIST_SEP)9541$(LIST_SEP)9544$(LIST_SEP)9545$(LIST_SEP)9555$(LIST_SEP)9595$(LIST_SEP)9597$(LIST_SEP)9598$(LIST_SEP)30608$(LIST_SEP)60711$(LIST_SEP)9974$(LIST_SEP)10116$(LIST_SEP)10181$(LIST_SEP)13616$(LIST_SEP)8355$(LIST_SEP)8364$(LIST_SEP)28377$(LIST_SEP)7918$(LIST_SEP)7936$(LIST_SEP)7994$(LIST_SEP)8010$(LIST_SEP)8030$(LIST_SEP)8049$(LIST_SEP)8081$(LIST_SEP)8090$(LIST_SEP)8154$(LIST_SEP)32507$(LIST_SEP)52904$(LIST_SEP)481459$(LIST_SEP)105023$(LIST_SEP)7740$(LIST_SEP)7897$(LIST_SEP)46245$(LIST_SEP)7240
 $(OUTPUT_DIR)generate_species_file: $(ANNOTTAXIDSFILEPATH) $(REFSEQ_SPECIES_FILEPATH)
-	@perl get_ensembl_species_info.pl -ensembl_species_info_file=$(BGEE_SPECIES_FILEPATH).tmp -filter_species_ids=$(BGEE_SPECIES_IDS)> $@.tmp 2> $@.warnings
+	@perl get_ensembl_species_info.pl -ensembl_species_info_file=$(BGEE_SPECIES_FILEPATH).tmp -filter_species_ids=$(BGEE_SPECIES_IDS) > $@.tmp 2> $@.warnings
 # remove first line (header) of the file listing refseq species
 	@sed 1d $(REFSEQ_SPECIES_FILEPATH) > $(REFSEQ_SPECIES_FILEPATH).noheader
 # merge ensembl and refseq species info files
@@ -116,6 +116,7 @@ $(ALL_TAX_IDS_FOR_UBERON): $(TAXONOMY_FILE_PATH)
 # For Bgee 16.0 we inserted species and taxon using that pipeline but then we manually
 # deleted the taxon and inserted the same as Bgee 15.2. It allowed to update genome/annotation
 # versions but do not update the ontologies (as taxon constraints depend on the taxon inserted).
+# TODO Modify InsertTaxa to deal with the new field `devOntologyXRef`
 $(VERIFICATIONFILE): $(ALL_TAX_IDS_FOR_UBERON)
 	@$(JAVA) InsertTaxa $(BGEE_SPECIES_FILEPATH) $(ALLTAXIDSFILEPATH) $(TAXONOMY_FILE_PATH)
 # insert sex-related info

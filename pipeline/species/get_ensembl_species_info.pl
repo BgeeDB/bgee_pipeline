@@ -14,17 +14,17 @@ use Try::Tiny;
 my ($ensembl_species_info_file, $filter_species_ids) = ('', '');
 my ($verbose)                  = (0);
 my %opts = (
-            'ensembl_species_info_file=s'     => \$ensembl_species_info_file,
-            'filter_species_ids=s'            => \$filter_species_ids
+            'ensembl_species_info_file=s' => \$ensembl_species_info_file,
+            'filter_species_ids=s'        => \$filter_species_ids
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $ensembl_species_info_file eq ''){
     print "\n\tInvalid or missing argument:
-\te.g. $0  -_species_file=inputFile.tsv  -ensembl_species_info_file=outputFile.tsv
-\t-ensembl_species_info_file       final file containing info for all species to insert in Bgee
-\tfilter_species_ids               comma separated list of species IDs to filter out;
+\te.g. $0  -ensembl_species_info_file=outputFile.tsv
+\t-ensembl_species_info_file   final file containing info for all Ensembl species to insert in Bgee
+\t-filter_species_ids          comma separated list of species IDs to filter out
 \n";
     exit 1;
 }
@@ -46,6 +46,44 @@ sub create_filtered_species_hash {
     return %filtered_species_hash;
 }
 
+sub insert_devOntologyXRef {
+    my ($species_id) = @_;
+
+    my $default_devOntologyXRef = 'https://github.com/obophenotype/developmental-stage-ontologies/tree/master/src/ontology/components';
+    my %species_devOntologyXRef = (
+        6239  => 'https://downloads.wormbase.org/releases/current-production-release/ONTOLOGY/',
+        7227  => 'https://github.com/FlyBase/drosophila-anatomy-developmental-ontology',
+        7237  => $default_devOntologyXRef,
+        7240  => $default_devOntologyXRef,
+        7955  => $default_devOntologyXRef,
+        8030  => $default_devOntologyXRef,
+        8090  => $default_devOntologyXRef,
+        8364  => 'https://github.com/xenopus-anatomy/xao',
+        9031  => $default_devOntologyXRef,
+        9258  => $default_devOntologyXRef,
+        9544  => $default_devOntologyXRef,
+        9593  => $default_devOntologyXRef,
+        9597  => $default_devOntologyXRef,
+        9598  => $default_devOntologyXRef,
+        9606  => $default_devOntologyXRef,
+        9615  => $default_devOntologyXRef,
+        9685  => $default_devOntologyXRef,
+        9796  => $default_devOntologyXRef,
+        9823  => $default_devOntologyXRef,
+        9913  => $default_devOntologyXRef,
+        9925  => $default_devOntologyXRef,
+        9940  => $default_devOntologyXRef,
+        9986  => $default_devOntologyXRef,
+        10090 => $default_devOntologyXRef,
+        10116 => $default_devOntologyXRef,
+        10141 => $default_devOntologyXRef,
+        13616 => $default_devOntologyXRef,
+        28377 => $default_devOntologyXRef,
+    );
+
+    return $species_devOntologyXRef{$species_id} || '';
+}
+
 sub write_ensembl_species_info {
     my ($response, $user_agent, $ensembl_server, $fh, $datasource_id, $filtered_species_hash) = @_;
 
@@ -59,14 +97,14 @@ sub write_ensembl_species_info {
         }
         # have to manage different specific cases
         # 1. species corresponding to a strain (e.g. Mus musculus)
-        # we do not want to retrieve them. To do so we do 2 checks. The first one check that the name of 
+        # we do not want to retrieve them. To do so we do 2 checks. The first one check that the name of
         # the species ends with the name of the strain and the second is that no taxonomy info can be
         # retrieved using the species name.
         # 2. species name with two _ (e.g Canis lupus familiaris)
         # In that case we check if it is the genus or species name that contain a space.
         my $name = $species->{name};
 
-        # if there are two '_' in the species name. We have to understand why (strain or names with 
+        # if there are two '_' in the species name. We have to understand why (strain or names with
         # multiple spaces)
         my ($genus_string, $species_string) = ('', '');
         my @name_parts = split("_", $name);
@@ -129,7 +167,7 @@ sub write_ensembl_species_info {
             ucfirst($genus_with_underscore)."_".$species_with_underscore.".".$genomeVersion;
 
         # For D. pseudoobscura, we have do not want to use the subspecies so we have to hardcode
-        # a remapping to D. pseudoobscura... 
+        # a remapping to D. pseudoobscura...
         if ($speciesId == 46245) {
             $speciesId = 7237;
             $genomeVersion = "UCI_Dpse_MV25";
@@ -150,10 +188,12 @@ sub write_ensembl_species_info {
         if ($speciesId == 481459) {
             $speciesId = 69293;
         }
-        
+
         # add an empty column corresponding to comments. This column will be manually filled.
-        my$comments = '';
-        print $fh "$speciesId\t$genus_string\t$species_string\t$speciesCommonName\t\t$genomeFilePath\t$genomeVersion\t$datasource_id\t$speciesId\t\t$keywords\t$comments\n";
+        my $comments = '';
+        $genus_string = ucfirst lc $genus_string; # Uppercase letter for the first letter of the genus
+        my $devOntologyXRef = insert_devOntologyXRef($speciesId);
+        print $fh "$speciesId\t$genus_string\t$species_string\t$speciesCommonName\t\t$genomeFilePath\t$genomeVersion\t$datasource_id\t$speciesId\t\t$keywords\t$comments\t$devOntologyXRef\n";
     }
 }
 
@@ -164,7 +204,7 @@ $ua->agent("BgeeSpeciesGenerator/0.1");
 
 my $ensembl_dataSource_id = 2;
 my $ensembl_metazoa_datasource_id = 24;
- 
+
 # first retrieve info for all ensembl species
 my $ensembl_server = 'https://rest.ensembl.org';
 my $ensembl_species = '/info/species';
@@ -172,7 +212,7 @@ my $ensembl_species = '/info/species';
 my %filtered_species_hash = create_filtered_species_hash($filter_species_ids);
 
 open(my $fh, '>', $ensembl_species_info_file) or die "Could not open file $ensembl_species_info_file $!";
-print $fh "speciesId\tgenus\tspecies\tspeciesCommonName\tdisplayOrder\tgenomeFilePath\tgenomeVersion\tdataSourceId\tgenomeSpeciesId\tfakeGeneIdPrefix\tkeywords\tcomment\n";
+print $fh "speciesId\tgenus\tspecies\tspeciesCommonName\tdisplayOrder\tgenomeFilePath\tgenomeVersion\tdataSourceId\tgenomeSpeciesId\tfakeGeneIdPrefix\tkeywords\tcomment\tdevOntologyXRef\n";
 
 # get the species info for ensembl
 my $response = get_json($ua, $ensembl_server, $ensembl_species);
@@ -183,3 +223,4 @@ $response = get_json($ua, $ensembl_server, $ensembl_species.'?division=ensemblMe
 write_ensembl_species_info($response, $ua, $ensembl_server, $fh, $ensembl_metazoa_datasource_id, \%filtered_species_hash);
 
 close $fh;
+
