@@ -61,7 +61,7 @@ updateXrefs: genes
 	# Now update/insert XRefs in the database
 	@perl insert_uniprot_xrefs.pl -bgee=$(BGEECMD) -uniprot_xrefs=$(XREFS_FROM_UNIPROT_FILE) > $@.tmp 2>>$@.err
 	# ADD GENECARDS XREFS
-	@$(MYSQL) -e "INSERT INTO geneXRef (bgeeGeneId, XRefId, dataSourceId) SELECT bgeeGeneId, geneId, $(GENECARDS_ID) from gene where speciesId = 9606;" > $@.tmp 2> $@.warning
+	@$(MYSQL) -e "INSERT INTO geneXRef (bgeeGeneId, XRefId, dataSourceId) SELECT bgeeGeneId, geneId, $(GENECARDS_ID) FROM gene WHERE speciesId = 9606;" > $@.tmp 2> $@.warning
 	@$(MV) $@.tmp $@
 
 sameIdGeneCount: genes
