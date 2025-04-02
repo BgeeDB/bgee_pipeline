@@ -300,22 +300,16 @@ if (%sbatchToRun || %symlinksToCreate) {
                     my $runDirectory = "$libDirectory/$runId";
                     next if (-f "$runDirectory/done");
                     $numberJobRun++;
-                    print "wait for a new job to be run\n";
                     while ($jobsRunning >= $parallelJobs) {
                         sleep(15);
                         $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
                     }
-                    print "will create a new job\n";
                     make_path("$runDirectory/FASTQ");
-                    print "created the path\n";
                     chdir "$libDirectory";
-                    print "moved to $libDirectory\n";
                     system("sbatch $sbatchToRun{$experimentId}{$libraryId}{'runIds'}{$runId}");
-                    print "run $numberJobRun job(s)\n";
                     $symlinksToCreate{$experimentId}{$libraryId}{'runIds'}{$runId} = 1;
                     $symlinksToCreate{$experimentId}{$libraryId}{'speciesId'} = $speciesId;
                     $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
-                    print "checked again the number of jobs: $jobsRunning\n";
                 }
             }
         }
