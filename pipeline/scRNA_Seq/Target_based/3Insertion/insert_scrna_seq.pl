@@ -153,6 +153,8 @@ my $insert_individualSampleGeneResult = 'INSERT INTO rnaSeqLibraryIndividualSamp
                                         'readsCount, UMIsCount, rnaSeqData, reasonForExclusion)'.
                                         'VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
+my $insert_numberOfCellsPerExperiment = 'INSERT INTO rnaSeqExperiment (rnaSeqExperimentId, numberOfCells) VALUES (?, ?)';
+
 ########################################################################
 ########################### Main Script ################################
 ########################################################################
@@ -275,6 +277,8 @@ for my $expId ( sort keys %processedLibraries ){
 
     my $insExp = $bgee_metadata->prepare($insert_experiment);
     my $insLib = $bgee_metadata->prepare($insert_libraries);
+    my $insNumberOfCells = $bgee_metadata->prepare($insert_numberOfCellsPerExperiment
+    my $numberOfBarcodes = 0;
 
     if (grep( /^$expId$/, @insertedExpIds)) {
         print "\t$expId already inserted. Will anyway insert not yet inserted libraries from this experiment\n";
@@ -404,6 +408,7 @@ for my $expId ( sort keys %processedLibraries ){
         }
     
         my %clusterToAnnotatedSampleId;
+
         for my $clusterId (sort keys %{$barcodesToCellType{$libraryId}{'clusters'}} ) {
             my $cellTypeId = $barcodesToCellType{$libraryId}{'clusters'}{$clusterId}{'cellTypeId'};
             my $authorCellTypeAnnotation = $barcodesToCellType{$libraryId}{'clusters'}{$clusterId}{'authorCellTypeAnnotation'};
@@ -483,10 +488,11 @@ for my $expId ( sort keys %processedLibraries ){
         ## Now start to insert individual samples if needed
         # for now we only insert barcodes mapped to a cell type. It could be possible
         # to insert other cell types in a different table
-        # (e.g rnaSeqLibraryIndevidualSampleNotAnnotated(rnaSeqLibraryId, barcode, ...))
+        # (e.g rnaSeqLibraryIndividualSampleNotAnnotated(rnaSeqLibraryId, barcode, ...))
         my %barcodeToIndividualSampleId;
         my @barcodesArray;
         for my $barcode (sort keys %{$barcodesToCellType{$libraryId}{'barcodes'}}) {
+            $numberOfBarcodes++;
             my $cellTypeId = $barcodesToCellType{$libraryId}{'barcodes'}{$barcode}{'cellTypeId'};
             my $authorCellTypeAnnotation = $barcodesToCellType{$libraryId}{'barcodes'}{$barcode}{'authorCellTypeAnnotation'};
             my $annotatedSampleId = $clusterToAnnotatedSampleId{$authorCellTypeAnnotation}{$cellTypeId};
@@ -501,7 +507,9 @@ for my $expId ( sort keys %processedLibraries ){
         $insIndividualSample->finish;
 
     }
-
+    # insert the number of barcodes per experiment
+    $insNumberOfCells->execute($expId, $numberOfBarcodes);
+    $insNumberOfCells->finish;
     $insLib->finish;
     # parse libraries a second time in parallel to fasten insertion
     my $pm = new Parallel::ForkManager($numberCore);
