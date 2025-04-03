@@ -892,6 +892,7 @@ create table rnaSeqExperiment (
     rnaSeqExperimentName varchar(255) not null default '',
     rnaSeqExperimentDescription text,
     dataSourceId smallInt unsigned not null,
+    numberOfAnnotatedCells int unsigned not null default 0,
     DOI varchar(255)
 ) engine = innodb;
 
