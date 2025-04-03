@@ -536,8 +536,8 @@ for my $expId ( sort keys %processedLibraries ){
         # read count sparse matrix for all barcodes and genes of the library. It
         # corresponds to raw data per cell coming from kallisto/bustools. There was
         # no postprocessing filtering based on barcodes or celltype
-        my %cpmMatrix =read_sparse_matrix("$kallistoResults/$libraryId/gene_counts", "gene");
-        my %countMatrix = read_sparse_matrix("$kallistoResults/$libraryId/cpm_counts", "cpm_counts");
+        my %countMatrix =read_sparse_matrix("$kallistoResults/$libraryId/gene_counts", "gene");
+        my %cpmMatrix = read_sparse_matrix("$kallistoResults/$libraryId/cpm_counts", "cpm_counts");
 
         # Now start to insert annotated samples
         my %clusterToAnnotatedSampleId;
