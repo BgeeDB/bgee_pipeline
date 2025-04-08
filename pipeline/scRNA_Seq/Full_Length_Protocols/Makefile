@@ -162,7 +162,7 @@ final_status: scRNAseq_Calls
 	@$(GIT) status
 
 final_commit: final_status
-	# Touch all files so that they are not removed from $(RNASEQ_CLUSTER_SCRATCH)
+	# Touch all files so that they are not removed from $(RNASEQ_CLUSTER_DATA)
 	@find $(SC_RNASEQ_CLUSTER_ALL_RES_FULL_LENGTH) -exec touch {} \; 2>warnings.$@
 	# Back-up all data
 	@$(RM) $(SC_RNASEQ_CLUSTER_ALL_RES_FULL_LENGTH)full_length_all_results_$(DBNAME).tar* $(SC_RNASEQ_CLUSTER_ALL_RES_FULL_LENGTH)full_length_presence_absence_$(DBNAME).tar* $(SC_RNASEQ_CLUSTER_ALL_RES_FULL_LENGTH)full_length_qc_cell_population_$(DBNAME).tar*
