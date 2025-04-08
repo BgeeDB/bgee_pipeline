@@ -42,9 +42,9 @@ check_annot: get_annot $(RNASEQ_EXPERIMENT_FILEPATH) $(RNASEQ_EXPERIMENT_FILEPAT
 	@$(MV) $@.tmp $@
 #TODO the script needs better check of annotation files for leading and trailing spaces (only done for experimentId now, but needs to be done for other fields as well)
 
-create_rna_seq_sample_info: check_annot $(EXTRAMAPPING_FILEPATH)
+create_rna_seq_sample_info: #check_annot $(EXTRAMAPPING_FILEPATH)
 	# Generate rna_seq_sample_info.txt from RNASeq lib annotation file
-	@$(SENSITIVE_PERL_CMD) perl 0Before/create_rna_seq_sample_info.pl -bgee=$(BGEECMD) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -RNAseqLibChecks=$(RNASEQ_LIB_CHECKS_FILEPATH) -RNAseqLibWormExclusion=$(RNASEQ_LIB_EXCLUSION_FILEPATH_WORM) -extraMapping=$(EXTRAMAPPING_FILEPATH) -toolsPath=$(CLUSTER_TOOLS_DIR) -outFile=$(RNASEQ_SAMPINFO_FILEPATH) >$@.tmp 2>&1
+	@perl 0Before/create_rna_seq_sample_info.pl -bgee=$(BGEECMD) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -RNAseqLibChecks=$(RNASEQ_LIB_CHECKS_FILEPATH) -RNAseqLibWormExclusion=$(RNASEQ_LIB_EXCLUSION_FILEPATH_WORM) -extraMapping=$(EXTRAMAPPING_FILEPATH) -toolsPath=$(CLUSTER_TOOLS_DIR) -outFile=$(RNASEQ_SAMPINFO_FILEPATH) >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
 	@echo -e "Check file \"create_rna_seq_sample_info\" for the output of the script 0Before/create_rna_seq_sample_info.pl, which indicates potential errors to correct in the annotation files.\n"
 
@@ -82,7 +82,7 @@ send_files_to_cluster: commit_rna_seq_sample_info $(RNASEQ_LIB_FILEPATH_FULL) $(
 
 #NOTE to be done on regular cluster, with network access
 get_sra_parallelized: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_ALREADY_DOWNLOADED)
-	$(SENSITIVE_PERL_CMD) perl 0Before/parallelized_download_SRA.pl -metadataFile=$(RNASEQ_SAMPINFO_FILEPATH) -parallelJobs=50 -excludedLibraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -downloadedLibraries=$(RNASEQ_ALREADY_DOWNLOADED) -outputDir=$(RNASEQ_DOWNLOAD_LIB_DIR_FASTQ) -encryptFile=$(ENCRYPT_PASSWD_FILE) -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
+	@perl 0Before/parallelized_download_SRA.pl --metadataFile=$(RNASEQ_SAMPINFO_FILEPATH) --parallelJobs=50 --excludedLibraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) --downloadedLibraries=$(RNASEQ_ALREADY_DOWNLOADED) --outputDir=$(RNASEQ_DOWNLOAD_LIB_DIR_FASTQ) --loadApptainerModule="$(CLUSTER_LOAD_APPTAINER)" --containerCmd="$(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL)" --encryptFile=$(ENCRYPT_PASSWD_FILE) --queue=$(CLUSTER_PARTITION) --account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
 	@mv $@.tmp $@
 
 get_sra: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_ALREADY_DOWNLOADED)
@@ -211,9 +211,9 @@ check_tools: cluster1
 	@mkdir -p $(RNASEQ_CLUSTER_GTF)
 	@if [[ -d $(RNASEQ_CLUSTER_GTF) ]]; then echo -n; else echo "Directory [$(RNASEQ_CLUSTER_GTF)] does not exist"  >> $@.tmp; false; fi
 	@if [[ -w $(RNASEQ_CLUSTER_GTF) ]]; then echo -n; else echo "Directory [$(RNASEQ_CLUSTER_GTF)] is not writable" >> $@.tmp; false; fi
-	@mkdir -p $(RNASEQ_CLUSTER_SCRATCH)
-	@if [[ -d $(RNASEQ_CLUSTER_SCRATCH) ]]; then echo -n; else echo "Directory [$(RNASEQ_CLUSTER_SCRATCH)] does not exist"  >> $@.tmp; false; fi
-	@if [[ -w $(RNASEQ_CLUSTER_SCRATCH) ]]; then echo -n; else echo "Directory [$(RNASEQ_CLUSTER_SCRATCH)] is not writable" >> $@.tmp; false; fi
+	@mkdir -p $(RNASEQ_CLUSTER_DATA)
+	@if [[ -d $(RNASEQ_CLUSTER_DATA) ]]; then echo -n; else echo "Directory [$(RNASEQ_CLUSTER_DATA)] does not exist"  >> $@.tmp; false; fi
+	@if [[ -w $(RNASEQ_CLUSTER_DATA) ]]; then echo -n; else echo "Directory [$(RNASEQ_CLUSTER_DATA)] is not writable" >> $@.tmp; false; fi
 	@mkdir $(RNASEQ_CLUSTER_R_LOG)
 	@if [[ -d $(RNASEQ_CLUSTER_R_LOG) ]]; then echo -n; else echo "Directory [$(RNASEQ_CLUSTER_R_LOG)] does not exist"  >> $@.tmp; false; fi
 	@if [[ -w $(RNASEQ_CLUSTER_R_LOG) ]]; then echo -n; else echo "Directory [$(RNASEQ_CLUSTER_R_LOG)] is not writable" >> $@.tmp; false; fi
@@ -226,7 +226,7 @@ clean_cluster_folders: check_tools
 	# Clean folders on cluster
 	@echo "rm -Rf $(RNASEQ_CLUSTER_GTF)*.genome.* $(RNASEQ_CLUSTER_GTF)*.gtf.gz"
 	@echo "xz -9 $(RNASEQ_CLUSTER_GTF)*.gtf_all $(RNASEQ_CLUSTER_GTF)*.transcriptome.* $(RNASEQ_CLUSTER_GTF)*.gene2transcript $(RNASEQ_CLUSTER_GTF)*.gene2biotype"
-	@echo "rm -Rf $(RNASEQ_CLUSTER_SCRATCH)*"
+	@echo "rm -Rf $(RNASEQ_CLUSTER_DATA)*"
 	@echo
 	@echo "Those scripts have to be run from $(RNASEQ_CLUSTER_SCRIPTS)$(RNASEQPATH) on the frontal (can write on /data/)!"
 	@touch $@
@@ -296,19 +296,17 @@ create_reports_all_intergenic: check_abundance_all_intergenic
 		sleep 30 ; \
 		NUMBER_JOBS=$$(squeue --name=$@_$(TIME_FINALIZE) --noheader | wc -l) ; \
 	done ; \
-	# Touch all files so that they are not removed from /scratch/temporary
-	@find $(RNASEQ_CLUSTER_SCRATCH) -exec touch {} \;
 	# We use tail -n+1 instead of cat because it writes the name of the file in the concatenated file
 	@tail -n+1 $(RNASEQ_CLUSTER_LOG)/*/*.err    > $(RNASEQ_CLUSTER_LOG)/abundance_all_intergenic_std_err.txt 2>>warnings.$@
 	@tail -n+1 $(RNASEQ_CLUSTER_LOG)/*/*.out    > $(RNASEQ_CLUSTER_LOG)/abundance_all_intergenic_std_out.txt 2>>warnings.$@
 	@tail -n+1 $(RNASEQ_CLUSTER_LOG)/*/*.report > $(RNASEQ_CLUSTER_LOG)/abundance_all_intergenic_reports.txt 2>>warnings.$@
 	# Back-up all data (not final but it's worth doing an intermediate backup here)
-	@$(RM)    $(RNASEQ_CLUSTER_SCRATCH)abundance_all_intergenic_$(DBNAME).tar*
-	@tar -C $(RNASEQ_CLUSTER_SCRATCH)/ -cf $(RNASEQ_CLUSTER_SCRATCH)/abundance_all_intergenic_$(DBNAME).tar  abundance_all_intergenic_$(DBNAME)/  2>>warnings.$@
-	@gzip -9  $(RNASEQ_CLUSTER_SCRATCH)abundance_all_intergenic_$(DBNAME).tar                                                                     2>>warnings.$@
+	@$(RM)    $(RNASEQ_CLUSTER_DATA)abundance_all_intergenic_$(DBNAME).tar*
+	@tar -C $(RNASEQ_CLUSTER_DATA)/ -cf $(RNASEQ_CLUSTER_DATA)/abundance_all_intergenic_$(DBNAME).tar  abundance_all_intergenic_$(DBNAME)/  2>>warnings.$@
+	@gzip -9  $(RNASEQ_CLUSTER_DATA)abundance_all_intergenic_$(DBNAME).tar                                                                     2>>warnings.$@
 	# Move back-up data to /data/
 	@mkdir -p $(RNASEQ_CLUSTER_ALL_RES_BACKUP)/
-	@$(MV) $(RNASEQ_CLUSTER_SCRATCH)abundance_all_intergenic_$(DBNAME).tar.gz $(RNASEQ_CLUSTER_ALL_RES_BACKUP) 2>>warnings.$@
+	@$(MV) $(RNASEQ_CLUSTER_DATA)abundance_all_intergenic_$(DBNAME).tar.gz $(RNASEQ_CLUSTER_ALL_RES_BACKUP) 2>>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
@@ -410,20 +408,18 @@ calculate_fpkm:
 # Also copy presence_absence_all_samples.txt, presence_absence_all_samples.RDa and presence_absence_boxplots.pdf
 
 save_and_send_results_back: check_presence_absence
-	# Touch all files so that they are not removed from $(RNASEQ_CLUSTER_SCRATCH)
-	@find $(RNASEQ_CLUSTER_SCRATCH) -exec touch {} \; 2>warnings.$@
 	# Back-up all data
-	@$(RM) $(RNASEQ_CLUSTER_SCRATCH)all_results_$(DBNAME).tar* $(RNASEQ_CLUSTER_SCRATCH)presence_absence_$(DBNAME).tar* $(RNASEQ_CLUSTER_SCRATCH)sum_by_species_$(MAJOR_RELEASE).tar*
-	@tar -C $(RNASEQ_CLUSTER_SCRATCH) -cf $(RNASEQ_CLUSTER_SCRATCH)rna_seq_abundance_all_intergenic_$(DBNAME).tar      abundance_all_intergenic_$(DBNAME)/                                   2>>warnings.$@
-	@tar -C $(RNASEQ_CLUSTER_BGEECALL_OUTPUT) -cf $(RNASEQ_CLUSTER_SCRATCH)rna_seq_presence_absence_$(DBNAME).tar      all_results_$(DBNAME)/                                                2>>warnings.$@
-	@tar -C $(RNASEQ_CLUSTER_SCRATCH) -cf $(RNASEQ_CLUSTER_SCRATCH)rna_seq_sum_by_species_$(MAJOR_RELEASE).tar         sum_by_species_$(MAJOR_RELEASE)/                                      2>>warnings.$@
-	@tar -C $(RNASEQ_CLUSTER_SCRATCH) -cf $(RNASEQ_CLUSTER_SCRATCH)intergenic_$(MAJOR_RELEASE).tar                     ref_intergenic_$(MAJOR_RELEASE)/ other_intergenic_$(MAJOR_RELEASE)/   2>>warnings.$@
-	@gzip -9 $(RNASEQ_CLUSTER_SCRATCH)rna_seq_abundance_all_intergenic_$(DBNAME).tar   2>>warnings.$@
-	@gzip -9 $(RNASEQ_CLUSTER_SCRATCH)rna_seq_presence_absence_$(DBNAME).tar           2>>warnings.$@
-	@gzip -9 $(RNASEQ_CLUSTER_SCRATCH)rna_seq_sum_by_species_$(MAJOR_RELEASE).tar      2>>warnings.$@
-	@gzip -9 $(RNASEQ_CLUSTER_SCRATCH)intergenic_$(MAJOR_RELEASE).tar                  2>>warnings.$@
+	@$(RM) $(RNASEQ_CLUSTER_DATA)all_results_$(DBNAME).tar* $(RNASEQ_CLUSTER_DATA)presence_absence_$(DBNAME).tar* $(RNASEQ_CLUSTER_DATA)sum_by_species_$(MAJOR_RELEASE).tar*
+	@tar -C $(RNASEQ_CLUSTER_DATA) -cf $(RNASEQ_CLUSTER_DATA)rna_seq_abundance_all_intergenic_$(DBNAME).tar      abundance_all_intergenic_$(DBNAME)/                                   2>>warnings.$@
+	@tar -C $(RNASEQ_CLUSTER_BGEECALL_OUTPUT) -cf $(RNASEQ_CLUSTER_DATA)rna_seq_presence_absence_$(DBNAME).tar      all_results_$(DBNAME)/                                                2>>warnings.$@
+	@tar -C $(RNASEQ_CLUSTER_DATA) -cf $(RNASEQ_CLUSTER_DATA)rna_seq_sum_by_species_$(MAJOR_RELEASE).tar         sum_by_species_$(MAJOR_RELEASE)/                                      2>>warnings.$@
+	@tar -C $(RNASEQ_CLUSTER_DATA) -cf $(RNASEQ_CLUSTER_DATA)intergenic_$(MAJOR_RELEASE).tar                     ref_intergenic_$(MAJOR_RELEASE)/ other_intergenic_$(MAJOR_RELEASE)/   2>>warnings.$@
+	@gzip -9 $(RNASEQ_CLUSTER_DATA)rna_seq_abundance_all_intergenic_$(DBNAME).tar   2>>warnings.$@
+	@gzip -9 $(RNASEQ_CLUSTER_DATA)rna_seq_presence_absence_$(DBNAME).tar           2>>warnings.$@
+	@gzip -9 $(RNASEQ_CLUSTER_DATA)rna_seq_sum_by_species_$(MAJOR_RELEASE).tar      2>>warnings.$@
+	@gzip -9 $(RNASEQ_CLUSTER_DATA)intergenic_$(MAJOR_RELEASE).tar                  2>>warnings.$@
 	# Move back-up data to $(RNASEQ_CLUSTER_ALL_RES_BACKUP)
-	@$(MV) $(RNASEQ_CLUSTER_SCRATCH)rna_seq_abundance_all_intergenic_$(DBNAME).tar.gz $(RNASEQ_CLUSTER_SCRATCH)rna_seq_presence_absence_$(DBNAME).tar.gz $(RNASEQ_CLUSTER_SCRATCH)rna_seq_sum_by_species_$(MAJOR_RELEASE).tar.gz $(RNASEQ_CLUSTER_SCRATCH)intergenic_$(MAJOR_RELEASE).tar.gz $(RNASEQ_CLUSTER_ALL_RES_BACKUP) 2>>warnings.$@
+	@$(MV) $(RNASEQ_CLUSTER_DATA)rna_seq_abundance_all_intergenic_$(DBNAME).tar.gz $(RNASEQ_CLUSTER_DATA)rna_seq_presence_absence_$(DBNAME).tar.gz $(RNASEQ_CLUSTER_DATA)rna_seq_sum_by_species_$(MAJOR_RELEASE).tar.gz $(RNASEQ_CLUSTER_DATA)intergenic_$(MAJOR_RELEASE).tar.gz $(RNASEQ_CLUSTER_ALL_RES_BACKUP) 2>>warnings.$@
 	# Whole archive is probably too big to be copied to our servers (>100Gb). Commit only the final gene-level expression + calls files:
 	@$(CP) $(RNASEQ_CLUSTER_KALLISTO_STATS)            $(RNASEQREPORTINFO) 2>>warnings.$@
 	@$(CP) $(RNASEQ_CLUSTER_CALLS_STATS)               $(RNASEQSAMPSTATS)  2>>warnings.$@
