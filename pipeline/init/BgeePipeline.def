@@ -277,6 +277,13 @@ From: ubuntu:24.04
 	pip3 install --break-system-packages SPARQLWrapper
 	pip3 install --break-system-packages isodate
 	pip3 install --break-system-packages six
+	#for the H5AD script
+	pip3 install --break-system-packages mysql.connector
+	pip3 install --break-system-packages scipy
+	apt remove -y python3-packaging # Issue with the OS version
+	pip3 install --break-system-packages anndata
+	pip3 install --break-system-packages tqdm
+	pip3 install --break-system-packages argparse
 	#pip3 install --break-system-packages configparser
 	#pip3 install --break-system-packages datetime
 	#pip3 install --break-system-packages multiprocessing
@@ -348,6 +355,17 @@ From: ubuntu:24.04
 	wget 'https://github.com/10XGenomics/bamtofastq/releases/download/v1.4.1/bamtofastq_linux'
 	ln -s bamtofastq_linux bamtofastq
 	chmod a+rx bamtofastq_linux
+
+	# Install EDirect / Entrez direct
+	cd /usr/local/bin
+	wget 'https://ftp.ncbi.nlm.nih.gov/entrez/entrezdirect/install-edirect.sh'
+	sed -i -e 's@$response@@; s@read response@@' install-edirect.sh
+	sh install-edirect.sh
+	mv ~/edirect/ .
+	rm -f install-edirect.sh
+	cd edirect/
+	rm -rf cmd/ eutils/
+	ln -s $PWD/* /usr/local/bin/
 
 
 	# CLEANING

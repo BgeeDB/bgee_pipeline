@@ -195,6 +195,14 @@ global_check:
 	@python3 -c "import sys"             >> $@.tmp  2>/dev/null
 	@python3 -c "import getopt"          >> $@.tmp  2>/dev/null
 	@python3 -c "import time"            >> $@.tmp  2>/dev/null
+# Python libraries for H5AD script
+	@python3 -c "import pandas"          >> $@.tmp  2>/dev/null
+	@python3 -c "import mysql.connector" >> $@.tmp  2>/dev/null
+	@python3 -c "import numpy"           >> $@.tmp  2>/dev/null
+	@python3 -c "import scipy"           >> $@.tmp  2>/dev/null
+	@python3 -c "import anndata"         >> $@.tmp  2>/dev/null
+	@python3 -c "import tqdm"            >> $@.tmp  2>/dev/null
+	@python3 -c "import argparse"        >> $@.tmp  2>/dev/null
 ## Binaries
 # network
 	@which wget          >> $@.tmp
@@ -214,6 +222,8 @@ global_check:
 	@which fasterq-dump  >> $@.tmp
 	@which gtf_to_fasta  >> $@.tmp
 	@which bamtofastq    >> $@.tmp
+	@which esearch       >> $@.tmp
+	@which xtract        >> $@.tmp
 	@which $(CONVERTER)  >> $@.tmp
 # tmpdir with enough free disk space available?
 	@mkdir -p $(TMPDIR)
@@ -282,7 +292,7 @@ $(PIPELINEROOT)$(SIMILARITYFILEPATH): $(CONVERTER) $(PIPELINEROOT)$(SIMILARITY_C
 	@$(CONVERTER) $(CONVERTEROPT) 01 $(PIPELINEROOT)$(SIMILARITY_CURATION_FILEPATH) > $@
 	@$(EXTRACLEANING) $@
 
-build_container:
+build_container: ${PIPELINE_CONTAINER_NAME}.def
 	@which apptainer
 	apptainer build ${PIPELINE_CONTAINER_FILE} ${PIPELINE_CONTAINER_NAME}.def 2>&1 > $@.tmp
 	@$(MV) $@.tmp $@
@@ -453,7 +463,13 @@ test_container: build_container
 # Python libraries for Sagane's annotation scripts
 # TODO ...
 # Python libraries for Sagane's H5AD scripts
-# TODO ...
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import pandas"          >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import mysql.connector" >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import numpy"           >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import scipy"           >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import anndata"         >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import tqdm"            >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import argparse"        >> $@.tmp
 # Python libraries for orthologs_paralogs_app
 	@$(PIPELINE_CONTAINER_CMD) python3 -c "import SPARQLWrapper"   >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) python3 -c "import rdflib"          >> $@.tmp
@@ -492,6 +508,8 @@ test_container: build_container
 	@$(PIPELINE_CONTAINER_CMD) which fasterq-dump  >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) which gtf_to_fasta  >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) which bamtofastq    >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) which esearch       >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) which xtract        >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) which $(CONVERTER)  >> $@.tmp
 	@$(MV) $@.tmp $@
 
