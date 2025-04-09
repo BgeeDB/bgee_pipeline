@@ -171,7 +171,7 @@ while (<$ANNOTATION>){
             if ( !-e "$prefix.R.stat" ){
                 $sbatchTemplate .= "$containerCmd  /bin/echo \"#min\tmax\tmedian\tmean\" > $prefix.R.stat &&\n";
                 #NOTE for cases like SRX1372530 with paired-end files coming with a single-end file in the same run, use ${prefix}*.fastq.gz ???
-                $sbatchTemplate .= "$containerCmd zcat $fastq_R | sed -n '2~4p' | awk '{print length(\$0)}' | Rscript -e 'd<-scan(\"stdin\", quiet=TRUE);cat(min(d), max(d), median(d), mean(d), sep=\"\\t\");cat(\"\\n\")' >> $prefix.R.stat &&\n";
+                $sbatchTemplate .= "zcat $fastq_R | sed -n '2~4p' | awk '{print length(\$0)}' | $containerCmd Rscript -e 'd<-scan(\"stdin\", quiet=TRUE);cat(min(d), max(d), median(d), mean(d), sep=\"\\t\");cat(\"\\n\")' >> $prefix.R.stat &&\n";
             }
             # If private (need encryption):
             if ( (scalar grep { /^$experimentId$/ } @private_exp_id) >= 1 ){
