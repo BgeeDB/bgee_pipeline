@@ -86,14 +86,14 @@ def return_expIDs(species_ID, exp_ID, cursor):
         FROM cond AS cond2
         INNER JOIN rnaSeqLibraryAnnotatedSample AS annots2 ON annots2.conditionId = cond2.conditionId
         INNER JOIN rnaSeqLibrary AS lib2 ON lib2.rnaSeqLibraryId = annots2.rnaSeqLibraryId
-        WHERE lib2.rnaSeqExperimentId = lib.rnaSeqExperimentId AND cond2.speciesId = cond.speciesId
+        WHERE lib2.rnaSeqLibraryId = lib.rnaSeqLibraryId AND cond2.speciesId = cond.speciesId
         AND annots2.multipleLibraryIndividualSample = 0 LIMIT 1)
       , 1, 0) AS hasFullLength,
       IF(EXISTS(SELECT 1
         FROM cond AS cond2
         INNER JOIN rnaSeqLibraryAnnotatedSample AS annots2 ON annots2.conditionId = cond2.conditionId
         INNER JOIN rnaSeqLibrary AS lib2 ON lib2.rnaSeqLibraryId = annots2.rnaSeqLibraryId
-        WHERE lib2.rnaSeqExperimentId = lib.rnaSeqExperimentId AND cond2.speciesId = cond.speciesId
+        WHERE lib2.rnaSeqLibraryId = lib.rnaSeqLibraryId AND cond2.speciesId = cond.speciesId
         AND annots2.multipleLibraryIndividualSample = 1 LIMIT 1)
       , 1, 0) AS hasDropletBased
     FROM cond
