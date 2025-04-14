@@ -136,7 +136,7 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
     # Script can be launched! Construct SLURM sbatch command:
     my $sbatch_command = '';
     $sbatch_command .= "$cluster_kallisto_cmd\n";
-    $sbatch_command .= "$cluster_R_cmd\n\n";
+    $sbatch_command .= "\n\n";
     $sbatch_command .= $script_plus_args;
     print "Command submitted to cluster:\n$sbatch_command\n";
 
