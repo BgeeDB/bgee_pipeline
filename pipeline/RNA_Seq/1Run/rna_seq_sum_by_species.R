@@ -304,71 +304,75 @@ for(species in unique(sampleInfo$speciesId)){
   ## legend
   legend("topleft", c(paste0("all (", length(summed_filtered[,1]),")"), paste0("coding (", sum(summed_filtered$biotype %in% "protein_coding"), ")"), paste0("intergenic (", sum(summed_filtered$type == "intergenic"), ")")), lwd=2, col=c("black", "firebrick3", "dodgerblue3"), lty=c(1, 2, 1), bty="n")
   
-  
+  dev.off()
+
   ## Misclassification of intergenic regions based on protein coding overlap
   ## Removes intergenic regions which TPM is more likely to belong to a coding regions than an intergenic region (PDF coding >= PDF intergenic)
   
   #Points where the Kernel Density estimation will be evaluated (we use -15, 15 since by emperical evidence all RNAseq TPM data fall within that range)
   # Fit KDE for each distribution
-  kde1 <- density(intergenic_data, n=2048, from=-5, to=5)
-  kde2 <- density(pcoding_data, n=2048, from=-5, to=5)
-  
-  # Save the pdf of the kde of intergenic and protein coding into their own variables
+  # Compute the PDFs for both distributions
+  kde1 <- density(intergenic_data, n = 2048, from = -8, to = 10)
+  kde2 <- density(pcoding_data, n = 2048, from = -8, to = 10)
+
+  # Save the PDF of the KDEs
   pdf1 <- kde1$y
   pdf2 <- kde2$y
-  
-  # Find the crossover point where PDF of protein-coding is always higher than PDF of intergenics
-  crossover_index <- which(pdf2 > pdf1)[1]
-  # Throw an error if no crossover point is found
-  if (crossover_index == 0) {
-    stop("No crossover point found where pdf2 is higher than pdf1.")
-  }
+
+  # Calculate the 20th percentile of kde1
+  # This allows to check the difference between the two kde only for values that are above 20% of intergenic density to avoid really low filtering due to low sampling randomness
+  quantile_20 <- quantile(kde1$y, 0.20)
+
+  # Find the crossover point that satisfies both conditions
+  crossover_index <- which(pdf2 > pdf1 & kde1$x > quantile_20)[1]
+
+  if (is.na(crossover_index)) stop("No crossover point found where pdf2 is higher than pdf1.")
   crossover_value <- kde1$x[crossover_index]
-  
-  # Identify outlier intergenic regions based on the crossover value
+
+  # Interquartile Range (IQR) Filtering for low TPM values
+  #q1 <- quantile(intergenic_data, 0.25)
+  #q3 <- quantile(intergenic_data, 0.75)
+  #iqr <- q3 - q1
+  #low_tpm_threshold <- q1 - 1.5 * iqr
+
+  # Identify mislabelled values (both above crossover and below Tukey's threshold)
   mislabelled_values <- intergenic_data[intergenic_data >= crossover_value]
-  
-  print(paste("Crossover value where PDF of dist2 becomes higher than PDF of dist1:", crossover_value))
-  print(paste("Number of mislabelled intergenic regions identified by KDE crossover point:", length(mislabelled_values)))
-  #print(mislabelled_values)
-  
-  # Prepare data for visualization
-  data <- data.frame(value = c(intergenic_data, pcoding_data),
-                     distribution = factor(c(rep('intergenic PDF', length(intergenic_data)), rep('Protein Coding PDF', length(pcoding_data)))))
-  
-  mislabelled_df <- data.frame(value = mislabelled_values, y = rep(0, length(mislabelled_values)))
-  
-  ggplot() +
-    geom_density(data = data, aes(x = value, fill = distribution), alpha = 0.6, adjust = 1.5) +
-    geom_vline(aes(xintercept = crossover_value, color = 'Threshold of exclusion'), linetype = 'dashed', size = 1) +
-    #geom_point(data = mislabelled_df, aes(x = value, y = y), color = 'red', size = 3, alpha = 0.8) +
-    scale_color_manual(name = '', values = c('Threshold of exclusion' = 'black')) +
-    labs(title = 'Intergenic regions exclusion based on protein coding overlap', x = 'Value', y = 'Density') +
-    theme_minimal() +
-    scale_fill_manual(values = c('intergenic PDF' = 'blue', 'Protein Coding PDF' = 'green')) +
-    theme(
-      legend.title = element_blank(),
-      legend.position = c(0.2, 0.8),  
-      legend.text = element_text(size = 7),  
-      legend.background = element_rect(fill = alpha('white', 0.6)) 
-    )
-  
-   dev.off()
-  
-  ###########
-  
-  ## Export file with summed data and classification of intergenic and coding regions
-  cat("  Exporting aggregated data and classification of coding and intergenic regions\n")
-  ## Add new column to summed object
+  #mislabelled_low <- intergenic_data[intergenic_data < low_tpm_threshold]
+  #mislabelled_values <- c(mislabelled_high, mislabelled_low)
+
+  # Print diagnostics
+  cat("Crossover value where PDF of dist2 becomes higher than PDF of dist1:", crossover_value, "\n")
+  cat("Low TPM threshold (Tukey's outlier detector):", low_tpm_threshold, "\n")
+  cat("Number of mislabelled values:", length(mislabelled_values), "\n")
+
+  # Visualize the mislabelled values and KDEs
+  pdf(file = paste0(sum_by_species_folder, "/outlier_intergenic_", species, ".pdf"), width = 10, height = 6)
+  plot(kde1, col = "blue", lwd = 2, main = "Visualization of Outlier Intergenic Regions", xlab = "Value", ylab = "Density", xlim = range(kde1$x, kde2$x), ylim = c(0, max(c(pdf1, pdf2)) * 1.1))
+  lines(kde2, col = "green", lwd = 2)
+  abline(v = crossover_value, col = "black", lty = 2, lwd = 1.5)
+  points(mislabelled_values, rep(0.02, length(mislabelled_values)), col = "red", pch = 16, cex = 0.8)
+  legend("topright", legend = c("KDE of Intergenic Regions", "KDE of Protein-coding Regions", "Crossover Threshold", "Mislabelled Values"),
+        col = c("blue", "green", "black", "red"), lty = c(1, 1, 2, NA), pch = c(NA, NA, NA, 16), lwd = c(2, 2, 1.5, NA))
+  dev.off()
+
+  # Update the classification logic
   summed$classification <- NA
   summed$classification[summed$tpm > 10^-6 & summed$biotype %in% "protein_coding"] <- "coding"
-  summed$classification[(summed$tpm < 10^-6 | summed$tpm >= 2**crossover_value) & summed$type == "intergenic"] <- "Outlier_intergenic"
-  summed$classification[summed$tpm > 10^-6 & summed$tpm < 2**crossover_value & summed$type == "intergenic"] <- "Reference_intergenic"
-  write.table(summed, file = paste0(sum_by_species_folder, "/sum_abundance_gene_level+fpkm+intergenic+classification_", species, ".tsv"), quote = FALSE, sep = "\t", col.names = TRUE, row.names = FALSE)
-  
-  rm(summed)
-  rm(summed_filtered)
-  rm(numLibs)
+  summed$classification[summed$tpm < 10^-6 | summed$tpm >= 2^crossover_value] <- "Outlier_intergenic"
+  summed$classification[summed$tpm >= low_tpm_threshold & summed$tpm < 2^crossover_value & summed$type == "intergenic"] <- "Reference_intergenic"
+
+  # Export the filtered data
+  write.table(
+    summed,
+    file = paste0(sum_by_species_folder, "/filtered_summed_data_", species, ".tsv"),
+    quote = FALSE,
+    sep = "\t",
+    col.names = TRUE,
+    row.names = FALSE
+  )
+
+  # Clean up variables to avoid memory issues
+  rm(list = c("summed", "low_tpm_threshold", "kde1", "kde2", "pdf1", "pdf2"))
 }
 
 ## TODO export gaussian parameters for each species
