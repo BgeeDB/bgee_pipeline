@@ -289,7 +289,7 @@ else {
                 $kallisto_command .= $fastqSamplePath.'/'.$run.'.fastq.gz ';
             }
             if ( $exp_id eq $GTEX_exp_id ){
-                $kallisto_command .= '<(cat '.$fastqSamplePath.'/'.$run.'.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.') ';
+                $kallisto_command .= '<(cat '.$fastqSamplePath.'/'.$run.'.fastq.gz.enc | openssl enc -aes-256-cbc -d -pbkdf2 -d -pass file:'.$enc_passwd_file.') ';
             }
         }
     }
@@ -300,7 +300,7 @@ else {
                 $kallisto_command .= $fastqSamplePath.'/'.$run.'_1.fastq.gz '.$fastqSamplePath.'/'.$run.'_2.fastq.gz ';
             }
             if ( $exp_id eq $GTEX_exp_id ){
-                $kallisto_command .= '<(cat '.$fastqSamplePath.'/'.$run.'_1.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.') <(cat '.$fastqSamplePath.'/'.$run.'_2.fastq.gz.enc | openssl enc -aes-128-cbc -d -pass file:'.$enc_passwd_file.') ';
+                $kallisto_command .= '<(cat '.$fastqSamplePath.'/'.$run.'_1.fastq.gz.enc | openssl enc -aes-256-cbc -d -pbkdf2 -d -pass file:'.$enc_passwd_file.') <(cat '.$fastqSamplePath.'/'.$run.'_2.fastq.gz.enc | openssl enc -aes-256-cbc -d -pbkdf2 -d -pass file:'.$enc_passwd_file.') ';
             }
         }
     }
@@ -401,20 +401,36 @@ if ( -s $count_info_file && -s $R_log_file ){
 }
 else {
     #creating and invoking command that launches rna_seq_analysis.R script
-    my $analyze_count_command = "bash -c 'module load gcc/11.4.0; module load r-light;' R CMD BATCH --no-save --no-restore \'--args".
-                              ' kallisto_count_folder="'.$kallisto_out_folder.'"'.
-                              ' tx2gene_file="'.$gene2transcript.'"'.
-                              ' gene2biotype_file="'.$gene2biotype.'"'.
-                              #' gene_count_file="'.$count_info_file.'"'.
-                              ' library_id="'.$library_id.'"\' '.
-                              $RealBin.'/rna_seq_analysis.R '.$R_log_file;
+    my $user = $ENV{'USER'} || die "USER environment variable not set\n";
+    
+    # We replace potential multiple backslashes with only one (so that the container does not have potential problems due to them)
+    $kallisto_out_folder =~ s/\/+/\//g;
+    $gene2transcript =~ s/\/+/\//g;
+    $gene2biotype =~ s/\/+/\//g;
+    $R_log_file =~ s/\/+/\//g;
+    
+    # We build the R command we want to run
+    my $r_args = "--args kallisto_count_folder=\"$kallisto_out_folder\" tx2gene_file=\"$gene2transcript\" gene2biotype_file=\"$gene2biotype\" library_id=\"$library_id\"";
+    my $r_cmd = "R CMD BATCH --no-save --no-restore '$r_args' $RealBin/rna_seq_analysis.R $R_log_file";
+    
+    # We define the container command to launch the R script
+    my $analyze_count_command = "module load gcc/12.3.0; module load apptainer/1.1.9; apptainer exec --bind /etc/passwd,/var/run/munge,/usr/lib64/libmunge.so.2.0.0:/usr/lib64/libmunge.so.2,/run/slurm/conf/slurm.conf,/usr/lib64/slurm,/usr/bin/sbatch,/usr/bin/squeue,/usr/bin/scancel,/usr/bin/sacct,/usr/bin/scontrol,/usr/bin/seff,/work/FAC/FBM/DEE/mrobinso/bgee_sensitive/,/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/,/scratch/$user/,$RealBin:/scripts /work/FAC/FBM/DEE/mrobinso/bgee_sensitive/BgeePipeline-16.0.0.sif $r_cmd";
+    
     print "\tAnalysis script rna_seq_analysis.R command was built: \"", $analyze_count_command, "\"\n\tNow launching R script...\n";
     # Print command to .report file
     open (my $REPORT5, '>>', "$report_file")  or die "Cannot write [$report_file]\n";
     print {$REPORT5} "\nComputing node / R command submitted:\n$analyze_count_command\n";
     close $REPORT5;
-    # Submit command
-    system($analyze_count_command)==0  or die "Problem: System call to analyze_count_command failed\n";
+    
+    # Launch the script via container and retrieve log files
+    my $output = `$analyze_count_command 2>&1`;
+    my $exit_status = $?;
+    
+    if ($exit_status != 0) {
+        print "Error output:\n$output\n";
+        die "Problem: System call to analyze_count_command failed with exit status $exit_status\n";
+    }
+    
     print "\tDone\n";
 }
 
