@@ -38,7 +38,7 @@ if(libraries>1000) {
   libraries <- 1000
 }
 #generate BgeeCall objects
-encrypted_pattern <- paste0("<(cat FASTQ_PATH | openssl enc -aes-128-cbc -d -pass file:", decrypt_file_path, ")")
+encrypted_pattern <- paste0("<(cat FASTQ_PATH | openssl enc -aes-256-cbc -d -pbkdf2 -pass file:", decrypt_file_path, ")")
 kallistoMetadata <- new("KallistoMetadata", download_kallisto=FALSE)
 userMetadata <- new("UserMetadata", working_path = working_path)
 userMetadata@encripted_pattern <- encrypted_pattern
