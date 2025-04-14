@@ -163,7 +163,7 @@ PERL_LIBS_PATH_CURNAGL  := $(CLUSTER_CURNAGL_PATH)/PERL_LIBS/lib/perl5
 # new variables used to run the pipeline using a container
 # TODO: clean all variables not used anymore
 CLUSTER_SOFT_APPTAINER  := module load apptainer/1.1.9;
-CLUSTER_SOFT_UNIL       := module load gcc/11.4.0;
+CLUSTER_SOFT_UNIL       := module load gcc/12.3.0;
 CLUSTER_WORK_PATH       := /work/FAC/FBM/DEE/mrobinso/bgee_sensitive/
 CLUSTER_SCRATCH_PATH    := /scratch/$(USER)/
 CLUSTER_CONTAINER_PATH  := $(CLUSTER_WORK_PATH)BgeePipeline-16.0.0.sif
