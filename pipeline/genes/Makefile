@@ -40,6 +40,7 @@ genes: $(BGEE_SPECIES_FILEPATH) uniprotAC_ID $(OUTPUT_DIR)/uniprot.map
 		perl insert_nonensembl_genes.pl -species=$$sp -bgee=$(BGEECMD) -bgeeSpecies=$(BGEE_SPECIES_FILEPATH) >> $@.tmp 2>>$@.err; \
 	done
 	@if [[ -s $@.err ]]; then echo -n; else $(RM) $@.err; fi
+	@$(RM) $@.species
 	@$(MV) $@.tmp $@
 
 
@@ -60,7 +61,7 @@ updateXrefs: genes
 	# Now update/insert XRefs in the database
 	@perl insert_uniprot_xrefs.pl -bgee=$(BGEECMD) -uniprot_xrefs=$(XREFS_FROM_UNIPROT_FILE) > $@.tmp 2>>$@.err
 	# ADD GENECARDS XREFS
-	@$(MYSQL) -e "INSERT INTO geneXRef (bgeeGeneId, XRefId, dataSourceId) SELECT bgeeGeneId, geneId, $(GENECARDS_ID) from gene where speciesId = 9606;" > $@.tmp 2> $@.warning
+	@$(MYSQL) -e "INSERT INTO geneXRef (bgeeGeneId, XRefId, dataSourceId) SELECT bgeeGeneId, geneId, $(GENECARDS_ID) FROM gene WHERE speciesId = 9606;" > $@.tmp 2> $@.warning
 	@$(MV) $@.tmp $@
 
 sameIdGeneCount: genes

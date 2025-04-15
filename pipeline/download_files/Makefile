@@ -147,6 +147,14 @@ $(OUTPUT_DIR)generate_processed_files:
 	@$(MV) $@.tmp $@
 
 # =========================
+# full-length and droplet-based h5ad download files
+# =========================
+#TODO: manage script dependencies, generate files with directory structure and file names as in the FTP server
+$(OUTPUT_DIR)generate_h5ad_files:
+	@python3 generate_h5ad_download_files.py $(DOWNLOAD_FILE_ROOT_PATH)$(H5AD_PATH) --server $(DBHOST) --db $(DBNAME) --usr $(BDUSER) --pwd $(DBPASS) > $@.tmp 2>$@.warnings
+	@$(MV) $@.tmp $@
+
+# =========================
 # Gene expression call download files
 # =========================
 #TODO remove usage of each ID and use variable.

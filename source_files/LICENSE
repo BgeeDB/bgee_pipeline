@@ -24,7 +24,7 @@ for any purpose for which they are used.
 	See https://www.wormbase.org/
 
 - source_files/In_situ/GeneExpression_tropicalis.txt
-	See http://www.xenbase.org/
+	See https://www.xenbase.org/
 
 - source_files/In_situ/insitu.sql.gz
   source_files/In_situ/insitu_annot.csv
@@ -39,11 +39,11 @@ for any purpose for which they are used.
 	See ftp://ftp.ncbi.nih.gov/repository/UniLib/
 
 - source_files/ESTs/Dm.seq.uniq.gz
-	See https://www.ncbi.nlm.nih.gov/unigene/
+	See https://ftp.ncbi.nlm.nih.gov/repository/UniGene/
 
-- source_files/ESTs/miRNA.dat.gz
+- source_files/ESTs/miRNA.dat
 	See http://www.mirbase.org/
-	    ftp://mirbase.org/pub/mirbase/CURRENT/README
+	    https://mirbase.org/download/CURRENT/README/
 
 
 ##########################  genes  #########################

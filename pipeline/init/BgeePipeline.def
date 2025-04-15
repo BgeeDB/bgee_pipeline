@@ -7,8 +7,6 @@ From: ubuntu:24.04
 	# We use it to define the name, version and release of the container.
 	export CONTAINER_NAME="BgeePipeline"
 	export LC_ALL="C"
-	export ENSEMBLAPI=/usr/local/ensembl
-	export PERL5LIB=$PERL5LIB:$ENSEMBLAPI/ensembl/modules:$ENSEMBLAPI/ensembl-compara/modules:$ENSEMBLAPI/ensembl-variation/modules:$ENSEMBLAPI/ensembl-funcgen/modules:$ENSEMBLAPI/ensembl-io/modules:$ENSEMBLAPI/ensembl-metadata/modules:$ENSEMBLAPI/ensembl-taxonomy/modules
 
 
 %help
@@ -67,11 +65,11 @@ From: ubuntu:24.04
 	org.opencontainers.image.licenses      GPL-3.0
 	org.opencontainers.image.description   External tools and libraries required by the Bgee Pipeline.
 	bgee.pipeline.version    16.0.0
-	soft.java.version        21.0.3+9
+	soft.java.version        21.0.5
 	soft.perl.version        5.38.2
-	soft.R.version           4.4.1
+	soft.R.version           4.4.2
 	soft.python3.version     3.12.3
-	soft.mysql.version       8.0.37
+	soft.mysql.version       8.0.40
 	soft.maven.version       3.8.7
 	soft.kallisto.version    0.51.0
 	soft.bustools.version    0.43.2
@@ -79,7 +77,7 @@ From: ubuntu:24.04
 	soft.sratoolkit.version  3.1.1
 	soft.blastplus.version   2.12.0+
 	soft.tophat.version      2.1.2
-	soft.ensembl.version     112
+	soft.bamtofastq.version  1.4.1
 	soft.ubuntu.version      24.04LTS
 
 
@@ -89,7 +87,7 @@ From: ubuntu:24.04
 	apt-get update  -y
 	apt-get upgrade -y
 	export DEBIAN_FRONTEND=noninteractive
-	apt install -y --no-install-recommends gnupg wget git cmake autoconf apt-utils ca-certificates libterm-readline-gnu-perl bzip2 readline-common software-properties-common dirmngr build-essential libssl-dev libncurses5-dev libcurl4-openssl-dev liblzma-dev libbz2-dev libboost-all-dev sqlite3 libsqlite3-0 libsqlite3-dev libgsl0-dev zlib1g-dev libxml2-dev libgmp-dev libgmp10 libmpfr-dev libhdf5-dev libisal-dev libdeflate-dev libbam-dev libgeos-dev libmagick++-dev libharfbuzz-dev libfribidi-dev libaec-dev libsz2 libmagick++-6.q16-dev libmagick++-6.q16-9
+	apt install -y --no-install-recommends gnupg wget git cmake autoconf apt-utils ca-certificates libterm-readline-gnu-perl bzip2 readline-common software-properties-common dirmngr build-essential libssl-dev libncurses5-dev libcurl4-openssl-dev liblzma-dev libbz2-dev libboost-all-dev sqlite3 libsqlite3-0 libsqlite3-dev libgsl0-dev zlib1g-dev libxml2-dev libgmp-dev libgmp10 libmpfr-dev libhdf5-dev libisal2 libisal-dev libdeflate-dev libbam-dev libgeos-dev libmagick++-dev libharfbuzz-dev libfribidi-dev libaec-dev libsz2 libmagick++-6.q16-dev libmagick++-6.q16-9 xz-utils
 	apt install -y --no-install-recommends openjdk-21-jdk perl python3 python3-six python3-packaging python3-pyparsing python3-pip mysql-client libmysqlclient-dev libmysqlclient21 libpq-dev libpq5 maven ncbi-blast+
 
 	#Install R
@@ -216,7 +214,6 @@ From: ubuntu:24.04
 	cpan Archive::Tar
 	cpan Archive::Zip
 	cpan Array::Utils
-	#cpan Bio::EnsEMBL::Registry
 	cpan Bio::SeqIO
 	cpan Cpanel::JSON::XS
 	cpan DBI
@@ -262,16 +259,9 @@ From: ubuntu:24.04
 	./Build install
 	cd ..
 	rm -rf Webservice-InterMine-*/ Webservice-InterMine-*.tar.gz
-	# Install Ensembl Perl API
-	mkdir /usr/local/ensembl
-	cd /usr/local/ensembl/
-	git clone https://github.com/Ensembl/ensembl-git-tools.git
-	export PATH=$PWD/ensembl-git-tools/bin:$PATH
-	git ensembl --clone api
-	git ensembl --checkout --branch release/112 api
-	#TODO Do we need Ensembl web API Perl lib???
 
 	# Install Python3 lib
+	#pip3 install --break-system-packages pyparsing
 	pip3 install --break-system-packages IPython
 	pip3 install --break-system-packages intermine
 	pip3 install --break-system-packages matplotlib
@@ -282,11 +272,18 @@ From: ubuntu:24.04
 	pip3 install --break-system-packages simplejson
 	#for orthologs_paralogs_app
 	pip3 install --break-system-packages pipenv
+	#NOTE last rdflib version needs to update pyparsing and there are issues to update the local one!
+	pip3 install --break-system-packages rdflib==7.1.1
 	pip3 install --break-system-packages SPARQLWrapper
-	pip3 install --break-system-packages rdflib
 	pip3 install --break-system-packages isodate
-	pip3 install --break-system-packages pyparsing
 	pip3 install --break-system-packages six
+	#for the H5AD script
+	pip3 install --break-system-packages mysql.connector
+	pip3 install --break-system-packages scipy
+	apt remove -y python3-packaging # Issue with the OS version
+	pip3 install --break-system-packages anndata
+	pip3 install --break-system-packages tqdm
+	pip3 install --break-system-packages argparse
 	#pip3 install --break-system-packages configparser
 	#pip3 install --break-system-packages datetime
 	#pip3 install --break-system-packages multiprocessing
@@ -352,6 +349,23 @@ From: ubuntu:24.04
 	#make && make check && make install
 	cd src/ && make gtf_to_fasta && install gtf_to_fasta /usr/local/bin/ && cd ..
 	cd .. && rm -Rf tophat-*/
+
+	# Install bamtofastq
+	cd /usr/local/bin
+	wget 'https://github.com/10XGenomics/bamtofastq/releases/download/v1.4.1/bamtofastq_linux'
+	ln -s bamtofastq_linux bamtofastq
+	chmod a+rx bamtofastq_linux
+
+	# Install EDirect / Entrez direct
+	cd /usr/local/bin
+	wget 'https://ftp.ncbi.nlm.nih.gov/entrez/entrezdirect/install-edirect.sh'
+	sed -i -e 's@$response@@; s@read response@@' install-edirect.sh
+	sh install-edirect.sh
+	mv ~/edirect/ .
+	rm -f install-edirect.sh
+	cd edirect/
+	rm -rf cmd/ eutils/
+	ln -s $PWD/* /usr/local/bin/
 
 
 	# CLEANING

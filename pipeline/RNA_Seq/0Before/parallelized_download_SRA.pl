@@ -16,6 +16,7 @@ use File::Basename;
 
 ## Define arguments & their default value
 my ($metadataFile, $parallelJobs, $excludedLibraries, $downloadedLibraries, $encryptFile, $outputDir, $queue, $account, $speciesIds) = ('', '', '', '', '', '',  '', '', '');
+my ($loadApptainerModule, $containerCmd)= ('', '');
 my ($doNotDownload)          = (0);
 my %opts = ('metadataFile=s'        => \$metadataFile,
             'parallelJobs=s'        => \$parallelJobs,
@@ -23,6 +24,8 @@ my %opts = ('metadataFile=s'        => \$metadataFile,
             'excludedLibraries=s'   => \$excludedLibraries,
             'encryptFile=s'         => \$encryptFile,
             'outputDir=s'           => \$outputDir,
+            'loadApptainerModule=s' => \$loadApptainerModule,
+            'containerCmd=s'        => \$containerCmd,
             'queue=s'               => \$queue,
             'account=s'             => \$account,
             'speciesIds=s'          => \$speciesIds,
@@ -33,13 +36,15 @@ my %opts = ('metadataFile=s'        => \$metadataFile,
 ######################## Check arguments ########################
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$metadataFile || $parallelJobs eq '' || $outputDir eq '' || $downloadedLibraries eq '' ||
-    $queue eq '' || $account eq '' || $encryptFile eq '') {
+    $queue eq '' || $account eq '' || $encryptFile eq '' || $loadApptainerModule eq '' || $containerCmd eq '') {
     print "\n\tInvalid or missing argument:
 \t-metadataFile            path to the rna_seq_sample_info.txt file
 \t-parallelJobs            maximum number of jobs to run in parallel
 \t-downloadedLibraries     file containing the ID of all alreaydy downloaded libraries
 \t-excludedLibraries       file containing the ID of all libraries not to download
 \t-outputDir               directory where FASTQ files are downloaded/generated
+\t-loadApptainerModule     command loading all modules necessary to run apptainer
+\t-containerCmd            command to load the Bgee container with apptainer and provide all necessary bindings
 \t-encryptFile             path to the encryption file for secure libraries (e.g GTEx)
 \t-queue                   queue to use to run jobs on the cluster
 \t-account                 account to use to run jobs on the cluster
@@ -139,17 +144,18 @@ while (<$ANNOTATION>){
             my $sbatchTemplate = Utils::sbatch_template($queue, $account, 1,
               30, "$clusterOutputDir/$jobName.out", "$clusterOutputDir/$jobName.err",
               $jobName);
-            $sbatchTemplate .= "module load gcc/13.2.0;\nmodule load sratoolkit/3.0.0;\nmodule load fastp/0.23.4\nmodule use /software/module;\nmodule load R/3.6.1;\n\n";
+            $sbatchTemplate .= $loadApptainerModule =~ s/; /;\n/r;
+            $sbatchTemplate .= "\n\n";
             ## download fastq from SRA split into several FASTQ files if paired library and manage input files of fastp and R.stat
             my $prefix      = "$libDirectory/$runId";
             my $fastq_fastp = '';
             my $fastq_R     = '';
             if($libraryType eq "SINGLE") {
-                $sbatchTemplate .= "fastq-dump --outdir $libDirectory --gzip $runId &&\n";
+                $sbatchTemplate .= "$containerCmd fastq-dump --outdir $libDirectory --gzip $runId &&\n";
                 $fastq_fastp = "$prefix.fastq.gz";
                 $fastq_R     = $fastq_fastp;
             } elsif ($libraryType eq "PAIRED"){
-                $sbatchTemplate .= "fastq-dump --outdir $libDirectory --split-files --gzip $runId &&\n";
+                $sbatchTemplate .= "$containerCmd fastq-dump --outdir $libDirectory --split-files --gzip $runId &&\n";
                 $fastq_fastp = "${prefix}_1.fastq.gz -I ${prefix}_2.fastq.gz";
                 $fastq_R     = "${prefix}_1.fastq.gz    ${prefix}_2.fastq.gz";
             } else {
@@ -159,19 +165,19 @@ while (<$ANNOTATION>){
             # as well as basic read length statistics with R
             #NOTE Would be nice to have all basic stats from FastP (currently some are done in R)
             if ( !-e "$prefix.fastp.html.xz" || !-e "$prefix.fastp.json.xz" ){
-                $sbatchTemplate .= "fastp -i $fastq_fastp --json $prefix.fastp.json --html $prefix.fastp.html  > $prefix.fastp.log 2>$prefix.fastp.log &&\n";
+                $sbatchTemplate .= "$containerCmd fastp -i $fastq_fastp --json $prefix.fastp.json --html $prefix.fastp.html  > $prefix.fastp.log 2>$prefix.fastp.log &&\n";
                 $sbatchTemplate .= "xz -9 $prefix.fastp.html $prefix.fastp.json &&\n";
             }
             if ( !-e "$prefix.R.stat" ){
-                $sbatchTemplate .= "/bin/echo \"#min\tmax\tmedian\tmean\" > $prefix.R.stat &&\n";
+                $sbatchTemplate .= "$containerCmd  /bin/echo \"#min\tmax\tmedian\tmean\" > $prefix.R.stat &&\n";
                 #NOTE for cases like SRX1372530 with paired-end files coming with a single-end file in the same run, use ${prefix}*.fastq.gz ???
-                $sbatchTemplate .= "zcat $fastq_R | sed -n '2~4p' | awk '{print length(\$0)}' | Rscript -e 'd<-scan(\"stdin\", quiet=TRUE);cat(min(d), max(d), median(d), mean(d), sep=\"\\t\");cat(\"\\n\")' >> $prefix.R.stat &&\n";
+                $sbatchTemplate .= "zcat $fastq_R | sed -n '2~4p' | awk '{print length(\$0)}' | $containerCmd Rscript -e 'd<-scan(\"stdin\", quiet=TRUE);cat(min(d), max(d), median(d), mean(d), sep=\"\\t\");cat(\"\\n\")' >> $prefix.R.stat &&\n";
             }
             # If private (need encryption):
             if ( (scalar grep { /^$experimentId$/ } @private_exp_id) >= 1 ){
                 for my $fastq ( glob("$libDirectory/*.gz") ){
                     #NOTE Replace -salt by -d for decrypting and gz.enc as input and gz as output
-                    $sbatchTemplate .= "openssl enc -aes-128-cbc -salt -in $fastq -out $fastq.enc -pass file:$encryptFile  &&  rm -f $fastq &&\n";
+                    $sbatchTemplate .= "$containerCmd openssl enc -aes-256-cbc -salt -pbkdf2 -in $fastq -out $fastq.enc -pass file:$encryptFile  &&  rm -f $fastq &&\n";
                 }
             }
             $sbatchTemplate .= "touch $libDirectory/$runId.done";

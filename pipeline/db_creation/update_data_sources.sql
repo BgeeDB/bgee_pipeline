@@ -3,7 +3,7 @@
 -- NCBI Taxonomy
 update dataSource set releaseDate = '2020-12-14', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 1;
 -- Ensembl
-update dataSource set releaseDate = '2020-12-01', releaseVersion = '102',                          displayOrder = 1  where dataSourceId = 2;
+update dataSource set releaseDate = '2024-10-17', releaseVersion = '113',                          displayOrder = 1  where dataSourceId = 2;
 -- EMBL (taken from Ensembl xrefs)
 update dataSource set releaseDate = null,         releaseVersion = ''                                                where dataSourceId = 3;
 -- Uniprot/trEMBL (taken from Ensembl xrefs)
@@ -53,9 +53,9 @@ update dataSource set releaseDate = null,         releaseVersion = '',          
 -- WormBase
 update dataSource set releaseDate = '2020-12-13', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 23;
 -- EnsemblMetazoa
-update dataSource set releaseDate = '2020-12-01', releaseVersion = '49',                           displayOrder = 1  where dataSourceId = 24;
+update dataSource set releaseDate = '2024-10-17', releaseVersion = '60',                           displayOrder = 1  where dataSourceId = 24;
 -- Bgee
-update dataSource set releaseDate = '2023-11-21', releaseVersion = '15.1',                         displayOrder = 1  where dataSourceId = 25;
+update dataSource set releaseDate = '2023-11-21', releaseVersion = '16.0',                         displayOrder = 1  where dataSourceId = 25;
 -- Uberon
 update dataSource set releaseDate = '2020-09-16', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 26;
 -- Developmental stage ontologies

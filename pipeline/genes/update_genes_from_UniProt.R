@@ -25,7 +25,7 @@ for (c_arg in command_arg){
   if (!exists(c_arg)){
     stop(paste(c_arg, "  command line argument not provided\n"))
   } else {
-    cat(paste(c_arg,":\t", eval(c_arg),sep=""),"\n")
+    cat(paste(c_arg,":\t", eval(c_arg), sep=""), "\n")
   }
 }
 
@@ -38,7 +38,7 @@ hack_taxon_id <- function(bgeeSpecies) {
       bgeeSpecies$uniprotTaxId[i] <- 9595
     } else if (as.numeric(bgeeSpecies$speciesId[i]) == 7237){
       bgeeSpecies$uniprotTaxId[i] <- 46245
-    } 
+    }
     # for some species ensembl genes are in the ensembl_genome field (from ensembl metazoa).
     # Had to update the dataSourceId in order to retrieve the Uniprot XRefs
     if(as.numeric(bgeeSpecies$speciesId[i]) == 6239) {
@@ -57,17 +57,17 @@ connect_to_db <- function(bgee) {
     parameters <- rbind(parameters,as.data.frame(t(as.data.frame(strsplit(splited_bgee[i,],"=")))))
   }
   user <- toString(parameters[parameters[,1] == "user",][2])
-  pwd <- toString(parameters[parameters[,1] == "pass",][2])
+  pwd  <- toString(parameters[parameters[,1] == "pass",][2])
   host <- toString(parameters[parameters[,1] == "host",][2])
   name <- toString(parameters[parameters[,1] == "name",][2])
   return(dbConnect(MySQL(), user=user, password=pwd, dbname=name, host=host))
 }
 
 select_bgee_genes <- function(speciesId, mydb) {
-  #query <- paste0("SELECT DISTINCT t1.geneId FROM gene AS t1 WHERE NOT EXISTS (SELECT 1 FROM 
-  #geneXRef AS t2 WHERE t1.bgeegeneId = t2.bgeegeneId AND t2.dataSourceId IN (4,5)) 
+  #query <- paste0("SELECT DISTINCT t1.geneId FROM gene AS t1 WHERE NOT EXISTS (SELECT 1 FROM
+  #geneXRef AS t2 WHERE t1.bgeegeneId = t2.bgeegeneId AND t2.dataSourceId IN (4,5))
   #AND t1.speciesId = ",speciesId)
-  query <- paste0("SELECT DISTINCT geneId FROM gene WHERE speciesId = ",speciesId)
+  query <- paste0("SELECT DISTINCT geneId FROM gene WHERE speciesId = ", speciesId)
   return(dbGetQuery(mydb, query))
 }
 
@@ -86,10 +86,10 @@ retrieve_uniprot_mapping <- function(speciesId, dataSourceId, geneIDs) {
       already_tried <- already_tried + 1
     })
   }
-  
-  # init variable of the uniprot query taking into consideration the 
+
+  # init variable of the uniprot query taking into consideration the
   # dataSource of the species
-  query_columns <- c("UNIPROTKB", "UNIPROTKB_ID", "REVIEWED","GENENAME")
+  query_columns <- c("UNIPROTKB", "UNIPROTKB_ID", "REVIEWED", "GENENAME")
   if (dataSourceId == ENSEMBL_DS_ID) {
     query_keytype <- "ENSEMBL"
   } else if (dataSourceId == ENSEMBLMETAZOA_DS_ID) {
@@ -101,14 +101,14 @@ retrieve_uniprot_mapping <- function(speciesId, dataSourceId, geneIDs) {
   }
   # hardcoded for now but could be an attribute of the script
   chunk <- 99
-  
+
   current <- 1
   species_mapping <- NULL
   while (current < nrow(geneIDs)) {
     tryCatch(
       {
-        current_values <- select(x = uniprot_object, 
-          keys = geneIDs$geneId[current:(current+chunk)], 
+        current_values <- select(x = uniprot_object,
+          keys = geneIDs$geneId[current:(current+chunk)],
           columns = query_columns, keytype = query_keytype)
         species_mapping <-rbind(species_mapping, current_values)
       },
@@ -137,9 +137,9 @@ retrieve_uniprot_mapping <- function(speciesId, dataSourceId, geneIDs) {
 
 ############################## MAIN CODE ##################################
 
-# create constants that could have to be updated if dataSourceId change 
+# create constants that could have to be updated if dataSourceId change
 # in the bgeeSpecies.tsv file. Not exported as attribute of the script
-# because they are hardcoded in the file describing bgee species so they 
+# because they are hardcoded in the file describing bgee species so they
 # should be stable
 NCBI_DS_ID = 37
 ENSEMBL_DS_ID = 2
@@ -149,7 +149,7 @@ ENSEMBLMETAZOA_DS_ID = 24
 bgee_species <- read.table(file = species_file, sep = "\t", header = TRUE)
 
 # Some NCBI taxonId are not the same in Uniprot than in Bgee. We created a function
-# to hack these mismatches and allows retrieval of Uniprot XRefs 
+# to hack these mismatches and allows retrieval of Uniprot XRefs
 bgee_species <- hack_taxon_id(bgee_species)
 
 start_time <- Sys.time()
@@ -166,7 +166,7 @@ all_species <- foreach(x = iter(bgee_species, by="row"), .combine = "rbind") %do
   mydb <- connect_to_db(bgee)
   gene_ids <- select_bgee_genes(x["speciesId"], mydb)
   dbDisconnect(mydb)
-  species_mapping <- suppressWarnings(retrieve_uniprot_mapping(speciesId = as.numeric(x["uniprotTaxId"]), 
+  species_mapping <- suppressWarnings(retrieve_uniprot_mapping(speciesId = as.numeric(x["uniprotTaxId"]),
     dataSourceId = as.numeric(x["dataSourceId"]), geneIDs = gene_ids))
   if(nrow(species_mapping) > 0) {
     species_mapping$SpeciesId <- as.numeric(x["speciesId"])
@@ -184,7 +184,6 @@ end_time <- Sys.time()
 cat(end_time - start_time, " seconds")
 
 #write output file in order to insert data in the database using a perl script
-write.table(x=all_species, file = output_file, 
+write.table(x=all_species, file = output_file,
   sep = "\t", col.names = TRUE, quote = FALSE, row.names = FALSE)
-
 

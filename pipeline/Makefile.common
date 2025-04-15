@@ -150,42 +150,34 @@ include $(PIPELINEROOT)Makefile.taxon_info
 
 CLUSTER_DATA_PATH       := /data/FAC/FBM/DEE/mrobinso/bgee_sensitive/
 # use the /data folder to avoid providing user scratch directory as there is currently no project scratch directory
-CLUSTER_SCRATCH_PATH    := $(CLUSTER_DATA_PATH)
-CLUSTER_SCRATCH_RESULTS := $(CLUSTER_SCRATCH_PATH)/$(DBNAME)/
+CLUSTER_DATA_RESULTS    := $(CLUSTER_DATA_PATH)/$(DBNAME)/
 CLUSTER_ARCHIVE_PATH    := /archive/FAC/FBM/DEE/mrobinso/bgee_sensitive/
-CLUSTER_CURNAGL_PATH    := /work/FAC/FBM/DEE/mrobinso/bgee/
-CLUSTER_TOOLS_DIR       := $(CLUSTER_CURNAGL_PATH)/tools/
+CLUSTER_WORK_PATH       := /work/FAC/FBM/DEE/mrobinso/bgee/
+
+CLUSTER_TOOLS_DIR       := $(CLUSTER_WORK_PATH)/tools/
 
 R_LIBS_PATH_SENSITIVE   := $(CLUSTER_DATA_PATH)/R_LIBS
-R_LIBS_PATH_CURNAGL     := $(CLUSTER_CURNAGL_PATH)/R_LIBS
-PERL_LIBS_PATH_CURNAGL  := $(CLUSTER_CURNAGL_PATH)/PERL_LIBS/lib/perl5
+R_LIBS_PATH_CURNAGL     := $(CLUSTER_WORK_PATH)/R_LIBS
+PERL_LIBS_PATH_CURNAGL  := $(CLUSTER_WORK_PATH)/PERL_LIBS/lib/perl5
+
+CLUSTER_LOAD_APPTAINER  := $(CLUSTER_SOFT_UNIL) $(CLUSTER_SOFT_APPTAINER)
+CLUSTER_WORK_PATH       := /work/FAC/FBM/DEE/mrobinso/bgee/
+CLUSTER_WORK_SENSITIVE_PATH := /work/FAC/FBM/DEE/mrobinso/bgee_sensitive/
+CLUSTER_SCRATCH_PATH    := /scratch/$(USER)/
+CLUSTER_CONTAINER_PATH  := $(CLUSTER_WORK_SENSITIVE_PATH)$(PIPELINE_CONTAINER_FILE)
+CLUSTER_SLURM_BINDPATH  := /etc/passwd,/var/run/munge,/usr/lib64/libmunge.so.2.0.0:/usr/lib64/libmunge.so.2,/run/slurm/conf/slurm.conf,/usr/lib64/slurm,/usr/bin/sbatch,/usr/bin/squeue,/usr/bin/scancel,/usr/bin/sacct,/usr/bin/scontrol,/usr/bin/seff
+CLUSTER_CONTAINER_CMD_WITH_BIND    := $(CLUSTER_SOFT_UNIL) $(CLUSTER_SOFT_APPTAINER) apptainer exec --bind $(CLUSTER_SLURM_BINDPATH),$(CLUSTER_DATA_PATH),$(CLUSTER_SCRATCH_PATH),$(CLUSTER_WORK_PATH)  $(CLUSTER_CONTAINER_PATH)
+CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL := apptainer exec --bind $(CLUSTER_SLURM_BINDPATH),$(CLUSTER_SCRATCH_PATH),$(CLUSTER_WORK_PATH)  $(CLUSTER_CONTAINER_PATH)
+CLUSTER_CONTAINER_CMD_WITHOUT_BIND := "$(CLUSTER_SOFT_UNIL) $(CLUSTER_SOFT_APPTAINER) apptainer exec $(CLUSTER_CONTAINER_PATH)"
 
 # new variables used to run the pipeline using a container
 # TODO: clean all variables not used anymore
 CLUSTER_SOFT_APPTAINER  := module load apptainer/1.1.9;
 CLUSTER_SOFT_UNIL       := module load gcc/12.3.0;
-CLUSTER_WORK_PATH       := /work/FAC/FBM/DEE/mrobinso/bgee_sensitive/
-CLUSTER_SCRATCH_PATH    := /scratch/$(USER)/
-CLUSTER_CONTAINER_PATH  := $(CLUSTER_WORK_PATH)BgeePipeline-16.0.0.sif
-CLUSTER_CONTAINER_BIND  := $(CLUSTER_WORK_PATH),$(CLUSTER_DATA_PATH)
-CLUSTER_SLURM_BINDPATH  := /etc/passwd,/var/run/munge,/usr/lib64/libmunge.so.2.0.0:/usr/lib64/libmunge.so.2,/run/slurm/conf/slurm.conf,/usr/lib64/slurm,/usr/bin/sbatch,/usr/bin/squeue,/usr/bin/scancel,/usr/bin/sacct,/usr/bin/scontrol,/usr/bin/seff
-CLUSTER_CONTAINER_CMD_WITH_BIND    := $(CLUSTER_SOFT_UNIL) $(CLUSTER_SOFT_APPTAINER) apptainer exec --bind $(CLUSTER_SLURM_BINDPATH),$(CLUSTER_DATA_PATH),$(CLUSTER_SCRATCH_PATH),$(CLUSTER_WORK_PATH)  $(CLUSTER_CONTAINER_PATH)
-CLUSTER_CONTAINER_CMD_WITHOUT_BIND := "$(CLUSTER_SOFT_UNIL) $(CLUSTER_SOFT_APPTAINER) apptainer exec $(CLUSTER_CONTAINER_PATH)"
 
 #NOTE Think to add ; at the end to ease insertion in other command lines
-CLUSTER_SOFT_VITALIT    := module use /software/module/;
-CLUSTER_SOFT_UNIL       := module load gcc/11.4.0;
-CLUSTER_KALLISTO_CMD    := $(CLUSTER_SOFT_VITALIT) module load UHTS/Analysis/kallisto/0.46.0;
-CLUSTER_R_CMD           := $(CLUSTER_SOFT_UNIL) module load r-light;
-CLUSTER_ENSEMBL_API     := module load Development/Ensembl_API/97;
 CLUSTER_SOFTWARE_BIN    := export PATH=/software/bin:$$PATH;
-SENSITIVE_PERL_CMD      := $(CLUSTER_SOFT_VITALIT) $(CLUSTER_ENSEMBL_API) $(CLUSTER_SOFTWARE_BIN)
-CLUSTER_PERL_CMD        := $(CLUSTER_SOFT_UNIL)    module load perl/5.32.1;
-CLUSTER_SRATOOLKIT_CMD  := $(CLUSTER_SOFT_UNIL)    module load sratoolkit/3.0.0;
-CLUSTER_TOPHAT_CMD      := $(CLUSTER_SOFT_VITALIT) module load UHTS/Aligner/tophat/2.1.1;
-CLUSTER_FASTP_CMD       := $(CLUSTER_SOFT_UNIL)    module load fastp/0.23.4;
-CLUSTER_BUSTOOLS_CMD    := $(CLUSTER_SOFT_VITALIT) module load UHTS/Analysis/bustools/0.40.0;
-
+SENSITIVE_PERL_CMD      := $(CLUSTER_SOFT_VITALIT) $(CLUSTER_SOFTWARE_BIN)
 
 # ===================================
 #  PATHS TO FILES
@@ -324,7 +316,6 @@ ROOTS_OF_SUBGRAPHS_TO_IGNORE := NCBITaxon:1
 CELL_TYPE_ROOT_ID := GO:0005575
 
 ## Uberon
-UBERON_EXT_FILE_PATH       := $(UBERON_SOURCE_PATH)ext.owl
 UBERON_COMPOSITE_FILE_PATH := $(UBERON_SOURCE_PATH)composite-metazoan.owl
 UBERONFILE                 := $(UBERON_COMPOSITE_FILE_PATH)
 UBERONFILEPATH             := $(UBERON_SOURCE_PATH)$(UBERONFILE)
@@ -435,11 +426,11 @@ RNASEQ_BIOTYPE_EXCLUDED_FILEPATH   := $(SOURCE_FILES_DIR)$(RNASEQPATH)biotypes_e
 RNASEQ_LENGTH_INFO_FILEPATH        := $(GENERATED_FILES_DIR)$(RNASEQPATH)rna_seq_length_info.txt
 RNASEQ_ALREADY_DOWNLOADED          := $(GENERATED_FILES_DIR)$(RNASEQPATH)rna_seq_sample_downloaded.txt
 RNASEQ_GLOBIN_FILEPATH             := $(SOURCE_FILES_DIR)$(RNASEQPATH)globin_info_per_species.tsv
-RNASEQ_BGEECALL_FILE               := $(GENERATED_FILES_DIR)$(RNASEQPATH)bgeecall_input.tsv
+RNASEQ_BGEECALL_FILE               := $(GENERATED_FILESq_DIR)$(RNASEQPATH)bgeecall_input.tsv
 
 # RNAseq cluster paths
 # TODO clean-up and remove unused ones
-RNASEQ_DOWNLOAD_LIB_DIR        := $(CLUSTER_CURNAGL_PATH)/downloads/
+RNASEQ_DOWNLOAD_LIB_DIR        := $(CLUSTER_WORK_PATH)/downloads/
 RNASEQ_DOWNLOAD_LIB_DIR_FASTQ  := $(RNASEQ_DOWNLOAD_LIB_DIR)/FASTQ/RNAseq/
 RNASEQ_CLUSTER_READONLY        := $(CLUSTER_DATA_PATH)/
 RNASEQ_CLUSTER_SCRIPTS         := $(RNASEQ_CLUSTER_READONLY)GIT/pipeline/
@@ -447,28 +438,28 @@ RNASEQ_DOWNLOAD_GTF            := $(RNASEQ_DOWNLOAD_LIB_DIR)GTF_$(MAJOR_RELEASE)
 RNASEQ_CLUSTER_GTF             := $(RNASEQ_CLUSTER_READONLY)rna_seq/GTF_$(MAJOR_RELEASE)/
 RNASEQ_CLUSTER_ALL_RES_BACKUP  := $(RNASEQ_CLUSTER_READONLY)rna_seq/all_results_$(DBNAME)/
 
-RNASEQ_CLUSTER_SCRATCH         := $(CLUSTER_SCRATCH_RESULTS)rna_seq/
-RNASEQ_CLUSTER_ABUNDANCE_ALL   := $(RNASEQ_CLUSTER_SCRATCH)abundance_all_intergenic_$(DBNAME)/
-RNASEQ_CLUSTER_SUM_RES         := $(RNASEQ_CLUSTER_SCRATCH)sum_by_species_$(MAJOR_RELEASE)/
+RNASEQ_CLUSTER_DATA            := $(CLUSTER_DATA_RESULTS)rna_seq/
+RNASEQ_CLUSTER_ABUNDANCE_ALL   := $(RNASEQ_CLUSTER_DATA)abundance_all_intergenic_$(DBNAME)/
+RNASEQ_CLUSTER_SUM_RES         := $(RNASEQ_CLUSTER_DATA)sum_by_species_$(MAJOR_RELEASE)/
 RNASEQ_CLUSTER_GAUSSIAN_CHOICE := $(OUTPUT_DIR)gaussian_choice_by_species.txt
-RNASEQ_CLUSTER_PRESENCE_RES    := $(RNASEQ_CLUSTER_SCRATCH)presence_absence_$(DBNAME)/
+RNASEQ_CLUSTER_PRESENCE_RES    := $(RNASEQ_CLUSTER_DATA)presence_absence_$(DBNAME)/
 RNASEQ_CLUSTER_LOG             := $(RNASEQ_CLUSTER_ABUNDANCE_ALL)
-RNASEQ_CLUSTER_R_LOG           := $(RNASEQ_CLUSTER_SCRATCH)Rout/
-RNASEQ_CLUSTER_SBATCH          := $(RNASEQ_CLUSTER_SCRATCH)sbatch/
+RNASEQ_CLUSTER_R_LOG           := $(RNASEQ_CLUSTER_DATA)Rout/
+RNASEQ_CLUSTER_SBATCH          := $(RNASEQ_CLUSTER_DATA)sbatch/
 RNASEQ_CLUSTER_REPORT_ALL      := $(RNASEQ_CLUSTER_ABUNDANCE_ALL)reports_info_all_samples.txt
-RNASEQ_CLUSTER_BGEECALL_OUTPUT := $(RNASEQ_CLUSTER_SCRATCH)calls/
+RNASEQ_CLUSTER_BGEECALL_OUTPUT := $(RNASEQ_CLUSTER_DATA)calls/
 RNASEQ_CLUSTER_BGEECALL_CALLS  := $(RNASEQ_CLUSTER_BGEECALL_OUTPUT)all_results/
 RNASEQ_CLUSTER_CALLS_STATS     := $(RNASEQ_CLUSTER_BGEECALL_CALLS)presence_absence_all_samples.txt
 RNASEQ_CLUSTER_KALLISTO_STATS  := $(RNASEQ_CLUSTER_BGEECALL_CALLS)reports_info_all_samples.txt
 
-ENCRYPT_PASSWD_FILE            := $(RNASEQ_CLUSTER_READONLY).passw
+ENCRYPT_PASSWD_FILE            := $(CLUSTER_WORK_PATH).passw
 
 # RNAseq sensitive cluster path
 RNASEQ_SENSITIVE_FASTQ         := $(RNASEQ_CLUSTER_READONLY)FASTQ/RNAseq/
 
 # Intergenic folders
-CLUSTER_REF_INTERGENIC_FOLDER   := $(RNASEQ_CLUSTER_SCRATCH)ref_intergenic_$(MAJOR_RELEASE)/
-CLUSTER_OTHER_INTERGENIC_FOLDER := $(RNASEQ_CLUSTER_SCRATCH)other_intergenic_$(MAJOR_RELEASE)/
+CLUSTER_REF_INTERGENIC_FOLDER   := $(RNASEQ_CLUSTER_DATA)ref_intergenic_$(MAJOR_RELEASE)/
+CLUSTER_OTHER_INTERGENIC_FOLDER := $(RNASEQ_CLUSTER_DATA)other_intergenic_$(MAJOR_RELEASE)/
 
 # RNAseq kallisto index kmer size
 RNASEQ_KALLISTO_KMER_DEFAULT  := 31
@@ -549,7 +540,7 @@ SC_RNASEQ_SAMPINFO_10X_FILEPATH             := $(SC_RNASEQ_PATH_GENERATED)scRNA_
 SC_RNASEQ_REPORT_INFO_TB                    := $(SC_RNASEQ_FL_FOLDER_GENERATED)reports_info_all_samples.txt
 
 # scRNAseq cluster paths (CURNAGL)
-SC_RNASEQ_DOWNLOAD_PATH                 := $(CLUSTER_CURNAGL_PATH)/downloads/
+SC_RNASEQ_DOWNLOAD_PATH                 := $(CLUSTER_WORK_PATH)/downloads/
 SC_RNASEQ_DOWNLOAD_PATH_LIB_DIR         := $(SC_RNASEQ_DOWNLOAD_PATH)scRNA_Seq_All/
 SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH     := $(SC_RNASEQ_DOWNLOAD_PATH_LIB_DIR)scRNASeq_libraries_FullLength/
 SC_RNASEQ_DOWNLOAD_PATH_DROPLET         := $(SC_RNASEQ_DOWNLOAD_PATH_LIB_DIR)scRNASeq_libraries_Droplet_10X/

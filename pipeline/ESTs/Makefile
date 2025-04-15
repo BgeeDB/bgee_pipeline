@@ -28,8 +28,8 @@ unigene: get_annot $(EST_SPECIES_CURATION_FILEPATH)
 	@if [[ -s $@.temp ]]; then echo -n; else echo "NO species"; exit 2; fi
 	# Download UniGene species data set
 	-@for sp in `cat $@.temp`; do \
-		$(WGET) -nH -r --cut-dirs=3 -P $(SOURCE_FILES_DIR)/ESTs/  ftp://ftp.ncbi.nih.gov/repository/UniGene/$$sp/*.seq.uniq.gz; \
-		$(WGET) -nH -r --cut-dirs=3 -P $(SOURCE_FILES_DIR)/ESTs/  ftp://ftp.ncbi.nih.gov/repository/UniGene/$$sp/*.data.gz; \
+		$(WGET) -nH -r --cut-dirs=3 -P $(SOURCE_FILES_DIR)/ESTs/  https://ftp.ncbi.nlm.nih.gov/repository/UniGene/$$sp/*.seq.uniq.gz; \
+		$(WGET) -nH -r --cut-dirs=3 -P $(SOURCE_FILES_DIR)/ESTs/  https://ftp.ncbi.nlm.nih.gov/repository/UniGene/$$sp/*.data.gz; \
 	done
 	# Xenopus tropicalis UniGene file follow the former species name, so rename it for patterns used later
 	@$(MV) $(SOURCE_FILES_DIR)/ESTs/Str.seq.uniq.gz $(SOURCE_FILES_DIR)/ESTs/Xt.seq.uniq.gz
@@ -38,7 +38,7 @@ unigene: get_annot $(EST_SPECIES_CURATION_FILEPATH)
 
 library.report:
 	# Download the latest version of library.report
-	@$(WGET) 'ftp://ftp.ncbi.nih.gov/repository/UniLib/library.report' -O $(SOURCE_FILES_DIR)/ESTs/$@.tmp && $(MV) $(SOURCE_FILES_DIR)/ESTs/$@.tmp $(SOURCE_FILES_DIR)/ESTs/$@ 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)/ESTs/$@.tmp
+	@$(WGET) 'https://ftp.ncbi.nih.gov/repository/UniLib/library.report' -O $(SOURCE_FILES_DIR)/ESTs/$@.tmp && $(MV) $(SOURCE_FILES_DIR)/ESTs/$@.tmp $(SOURCE_FILES_DIR)/ESTs/$@ 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)/ESTs/$@.tmp
 	@touch $@
 
 ensembl_cdna:
@@ -97,7 +97,8 @@ smiRNAdb: get_annot $(SMIRNADB_CURATION_MAPFILEPATH) $(SOURCE_FILES_DIR)/ESTs/sm
 
 miRNA.dat: smiRNAdb
 	# Get miRNA.dat file
-	@$(WGET) 'ftp://mirbase.org/pub/mirbase/CURRENT/miRNA.dat.gz' -O $(SOURCE_FILES_DIR)/ESTs/$@.gz.tmp && $(MV) $(SOURCE_FILES_DIR)/ESTs/$@.gz.tmp $(SOURCE_FILES_DIR)/ESTs/$@.gz 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)/ESTs/$@.gz.tmp
+	@$(WGET) 'https://mirbase.org/download/CURRENT/miRNA.dat' -O $(SOURCE_FILES_DIR)/ESTs/$@.tmp && $(MV) $(SOURCE_FILES_DIR)/ESTs/$@.tmp $(SOURCE_FILES_DIR)/ESTs/$@ 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)/ESTs/$@.tmp
+	@gzip -9 $(SOURCE_FILES_DIR)/ESTs/$@
 	@$(GUNZIP) --to-stdout $(SOURCE_FILES_DIR)/ESTs/$@.gz > $@
 
 

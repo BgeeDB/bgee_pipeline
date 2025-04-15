@@ -1,0 +1,248 @@
+date
+echo species: 6239__0__Caenorhabditis_elegans__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/caenorhabditis_elegans/caenorhabditis_elegans.json" -O ../../source_files/genes/caenorhabditis_elegans.tmp && mv -f ../../source_files/genes/caenorhabditis_elegans.tmp ../../source_files/genes/caenorhabditis_elegans.json 2>/dev/null || rm -f ../../source_files/genes/caenorhabditis_elegans.tmp;
+time perl insert_ensembl_genes.pl -species=6239__0__Caenorhabditis_elegans__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/caenorhabditis_elegans.json
+rm -f ../../source_files/genes/caenorhabditis_elegans.json
+date
+echo species: 7227__0__Drosophila_melanogaster__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/drosophila_melanogaster/drosophila_melanogaster.json" -O ../../source_files/genes/drosophila_melanogaster.tmp && mv -f ../../source_files/genes/drosophila_melanogaster.tmp ../../source_files/genes/drosophila_melanogaster.json 2>/dev/null || rm -f ../../source_files/genes/drosophila_melanogaster.tmp;
+time perl insert_ensembl_genes.pl -species=7227__0__Drosophila_melanogaster__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/drosophila_melanogaster.json
+rm -f ../../source_files/genes/drosophila_melanogaster.json
+date
+echo species: 7237__0__Drosophila_pseudoobscura__EnsemblMetazoa
+wget -N -nv "http://ftp.ensemblgenomes.org/pub/metazoa/release-60/json/drosophila_pseudoobscura/drosophila_pseudoobscura.json" -O ../../source_files/genes/drosophila_pseudoobscura.tmp && mv -f ../../source_files/genes/drosophila_pseudoobscura.tmp ../../source_files/genes/drosophila_pseudoobscura.json 2>/dev/null || rm -f ../../source_files/genes/drosophila_pseudoobscura.tmp;
+time perl insert_ensembl_genes.pl -species=7237__0__Drosophila_pseudoobscura__EnsemblMetazoa -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/drosophila_pseudoobscura.json
+rm -f ../../source_files/genes/drosophila_pseudoobscura.json
+date
+echo species: 7240__0__Drosophila_simulans__EnsemblMetazoa
+wget -N -nv "http://ftp.ensemblgenomes.org/pub/metazoa/release-60/json/drosophila_simulans/drosophila_simulans.json" -O ../../source_files/genes/drosophila_simulans.tmp && mv -f ../../source_files/genes/drosophila_simulans.tmp ../../source_files/genes/drosophila_simulans.json 2>/dev/null || rm -f ../../source_files/genes/drosophila_simulans.tmp;
+time perl insert_ensembl_genes.pl -species=7240__0__Drosophila_simulans__EnsemblMetazoa -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/drosophila_simulans.json
+rm -f ../../source_files/genes/drosophila_simulans.json
+date
+echo species: 7740__0__Branchiostoma_lanceolatum__EnsemblMetazoa
+wget -N -nv "http://ftp.ensemblgenomes.org/pub/metazoa/release-60/json/branchiostoma_lanceolatum/branchiostoma_lanceolatum.json" -O ../../source_files/genes/branchiostoma_lanceolatum.tmp && mv -f ../../source_files/genes/branchiostoma_lanceolatum.tmp ../../source_files/genes/branchiostoma_lanceolatum.json 2>/dev/null || rm -f ../../source_files/genes/branchiostoma_lanceolatum.tmp;
+time perl insert_ensembl_genes.pl -species=7740__0__Branchiostoma_lanceolatum__EnsemblMetazoa -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/branchiostoma_lanceolatum.json
+rm -f ../../source_files/genes/branchiostoma_lanceolatum.json
+date
+echo species: 7897__0__Latimeria_chalumnae__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/latimeria_chalumnae/latimeria_chalumnae.json" -O ../../source_files/genes/latimeria_chalumnae.tmp && mv -f ../../source_files/genes/latimeria_chalumnae.tmp ../../source_files/genes/latimeria_chalumnae.json 2>/dev/null || rm -f ../../source_files/genes/latimeria_chalumnae.tmp;
+time perl insert_ensembl_genes.pl -species=7897__0__Latimeria_chalumnae__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/latimeria_chalumnae.json
+rm -f ../../source_files/genes/latimeria_chalumnae.json
+date
+echo species: 7918__0__Lepisosteus_oculatus__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/lepisosteus_oculatus/lepisosteus_oculatus.json" -O ../../source_files/genes/lepisosteus_oculatus.tmp && mv -f ../../source_files/genes/lepisosteus_oculatus.tmp ../../source_files/genes/lepisosteus_oculatus.json 2>/dev/null || rm -f ../../source_files/genes/lepisosteus_oculatus.tmp;
+time perl insert_ensembl_genes.pl -species=7918__0__Lepisosteus_oculatus__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/lepisosteus_oculatus.json
+rm -f ../../source_files/genes/lepisosteus_oculatus.json
+date
+echo species: 7955__0__Danio_rerio__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/danio_rerio/danio_rerio.json" -O ../../source_files/genes/danio_rerio.tmp && mv -f ../../source_files/genes/danio_rerio.tmp ../../source_files/genes/danio_rerio.json 2>/dev/null || rm -f ../../source_files/genes/danio_rerio.tmp;
+time perl insert_ensembl_genes.pl -species=7955__0__Danio_rerio__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/danio_rerio.json
+rm -f ../../source_files/genes/danio_rerio.json
+date
+echo species: 7994__0__Astyanax_mexicanus__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/astyanax_mexicanus/astyanax_mexicanus.json" -O ../../source_files/genes/astyanax_mexicanus.tmp && mv -f ../../source_files/genes/astyanax_mexicanus.tmp ../../source_files/genes/astyanax_mexicanus.json 2>/dev/null || rm -f ../../source_files/genes/astyanax_mexicanus.tmp;
+time perl insert_ensembl_genes.pl -species=7994__0__Astyanax_mexicanus__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/astyanax_mexicanus.json
+rm -f ../../source_files/genes/astyanax_mexicanus.json
+date
+echo species: 8010__0__Esox_lucius__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/esox_lucius/esox_lucius.json" -O ../../source_files/genes/esox_lucius.tmp && mv -f ../../source_files/genes/esox_lucius.tmp ../../source_files/genes/esox_lucius.json 2>/dev/null || rm -f ../../source_files/genes/esox_lucius.tmp;
+time perl insert_ensembl_genes.pl -species=8010__0__Esox_lucius__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/esox_lucius.json
+rm -f ../../source_files/genes/esox_lucius.json
+date
+echo species: 8030__0__Salmo_salar__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/salmo_salar/salmo_salar.json" -O ../../source_files/genes/salmo_salar.tmp && mv -f ../../source_files/genes/salmo_salar.tmp ../../source_files/genes/salmo_salar.json 2>/dev/null || rm -f ../../source_files/genes/salmo_salar.tmp;
+time perl insert_ensembl_genes.pl -species=8030__0__Salmo_salar__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/salmo_salar.json
+rm -f ../../source_files/genes/salmo_salar.json
+date
+echo species: 8049__0__Gadus_morhua__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/gadus_morhua/gadus_morhua.json" -O ../../source_files/genes/gadus_morhua.tmp && mv -f ../../source_files/genes/gadus_morhua.tmp ../../source_files/genes/gadus_morhua.json 2>/dev/null || rm -f ../../source_files/genes/gadus_morhua.tmp;
+time perl insert_ensembl_genes.pl -species=8049__0__Gadus_morhua__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/gadus_morhua.json
+rm -f ../../source_files/genes/gadus_morhua.json
+date
+echo species: 8081__0__Poecilia_reticulata__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/poecilia_reticulata/poecilia_reticulata.json" -O ../../source_files/genes/poecilia_reticulata.tmp && mv -f ../../source_files/genes/poecilia_reticulata.tmp ../../source_files/genes/poecilia_reticulata.json 2>/dev/null || rm -f ../../source_files/genes/poecilia_reticulata.tmp;
+time perl insert_ensembl_genes.pl -species=8081__0__Poecilia_reticulata__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/poecilia_reticulata.json
+rm -f ../../source_files/genes/poecilia_reticulata.json
+date
+echo species: 8090__0__Oryzias_latipes__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/oryzias_latipes/oryzias_latipes.json" -O ../../source_files/genes/oryzias_latipes.tmp && mv -f ../../source_files/genes/oryzias_latipes.tmp ../../source_files/genes/oryzias_latipes.json 2>/dev/null || rm -f ../../source_files/genes/oryzias_latipes.tmp;
+time perl insert_ensembl_genes.pl -species=8090__0__Oryzias_latipes__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/oryzias_latipes.json
+rm -f ../../source_files/genes/oryzias_latipes.json
+date
+echo species: 8154__0__Astatotilapia_calliptera__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/astatotilapia_calliptera/astatotilapia_calliptera.json" -O ../../source_files/genes/astatotilapia_calliptera.tmp && mv -f ../../source_files/genes/astatotilapia_calliptera.tmp ../../source_files/genes/astatotilapia_calliptera.json 2>/dev/null || rm -f ../../source_files/genes/astatotilapia_calliptera.tmp;
+time perl insert_ensembl_genes.pl -species=8154__0__Astatotilapia_calliptera__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/astatotilapia_calliptera.json
+rm -f ../../source_files/genes/astatotilapia_calliptera.json
+date
+echo species: 8364__0__Xenopus_tropicalis__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/xenopus_tropicalis/xenopus_tropicalis.json" -O ../../source_files/genes/xenopus_tropicalis.tmp && mv -f ../../source_files/genes/xenopus_tropicalis.tmp ../../source_files/genes/xenopus_tropicalis.json 2>/dev/null || rm -f ../../source_files/genes/xenopus_tropicalis.tmp;
+time perl insert_ensembl_genes.pl -species=8364__0__Xenopus_tropicalis__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/xenopus_tropicalis.json
+rm -f ../../source_files/genes/xenopus_tropicalis.json
+date
+echo species: 9031__0__Gallus_gallus__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/gallus_gallus/gallus_gallus.json" -O ../../source_files/genes/gallus_gallus.tmp && mv -f ../../source_files/genes/gallus_gallus.tmp ../../source_files/genes/gallus_gallus.json 2>/dev/null || rm -f ../../source_files/genes/gallus_gallus.tmp;
+time perl insert_ensembl_genes.pl -species=9031__0__Gallus_gallus__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/gallus_gallus.json
+rm -f ../../source_files/genes/gallus_gallus.json
+date
+echo species: 9103__0__Meleagris_gallopavo__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/meleagris_gallopavo/meleagris_gallopavo.json" -O ../../source_files/genes/meleagris_gallopavo.tmp && mv -f ../../source_files/genes/meleagris_gallopavo.tmp ../../source_files/genes/meleagris_gallopavo.json 2>/dev/null || rm -f ../../source_files/genes/meleagris_gallopavo.tmp;
+time perl insert_ensembl_genes.pl -species=9103__0__Meleagris_gallopavo__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/meleagris_gallopavo.json
+rm -f ../../source_files/genes/meleagris_gallopavo.json
+date
+echo species: 9258__0__Ornithorhynchus_anatinus__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/ornithorhynchus_anatinus/ornithorhynchus_anatinus.json" -O ../../source_files/genes/ornithorhynchus_anatinus.tmp && mv -f ../../source_files/genes/ornithorhynchus_anatinus.tmp ../../source_files/genes/ornithorhynchus_anatinus.json 2>/dev/null || rm -f ../../source_files/genes/ornithorhynchus_anatinus.tmp;
+time perl insert_ensembl_genes.pl -species=9258__0__Ornithorhynchus_anatinus__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/ornithorhynchus_anatinus.json
+rm -f ../../source_files/genes/ornithorhynchus_anatinus.json
+date
+echo species: 9483__0__Callithrix_jacchus__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/callithrix_jacchus/callithrix_jacchus.json" -O ../../source_files/genes/callithrix_jacchus.tmp && mv -f ../../source_files/genes/callithrix_jacchus.tmp ../../source_files/genes/callithrix_jacchus.json 2>/dev/null || rm -f ../../source_files/genes/callithrix_jacchus.tmp;
+time perl insert_ensembl_genes.pl -species=9483__0__Callithrix_jacchus__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/callithrix_jacchus.json
+rm -f ../../source_files/genes/callithrix_jacchus.json
+date
+echo species: 9531__0__Cercocebus_atys__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/cercocebus_atys/cercocebus_atys.json" -O ../../source_files/genes/cercocebus_atys.tmp && mv -f ../../source_files/genes/cercocebus_atys.tmp ../../source_files/genes/cercocebus_atys.json 2>/dev/null || rm -f ../../source_files/genes/cercocebus_atys.tmp;
+time perl insert_ensembl_genes.pl -species=9531__0__Cercocebus_atys__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/cercocebus_atys.json
+rm -f ../../source_files/genes/cercocebus_atys.json
+date
+echo species: 9541__0__Macaca_fascicularis__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/macaca_fascicularis/macaca_fascicularis.json" -O ../../source_files/genes/macaca_fascicularis.tmp && mv -f ../../source_files/genes/macaca_fascicularis.tmp ../../source_files/genes/macaca_fascicularis.json 2>/dev/null || rm -f ../../source_files/genes/macaca_fascicularis.tmp;
+time perl insert_ensembl_genes.pl -species=9541__0__Macaca_fascicularis__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/macaca_fascicularis.json
+rm -f ../../source_files/genes/macaca_fascicularis.json
+date
+echo species: 9544__0__Macaca_mulatta__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/macaca_mulatta/macaca_mulatta.json" -O ../../source_files/genes/macaca_mulatta.tmp && mv -f ../../source_files/genes/macaca_mulatta.tmp ../../source_files/genes/macaca_mulatta.json 2>/dev/null || rm -f ../../source_files/genes/macaca_mulatta.tmp;
+time perl insert_ensembl_genes.pl -species=9544__0__Macaca_mulatta__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/macaca_mulatta.json
+rm -f ../../source_files/genes/macaca_mulatta.json
+date
+echo species: 9545__0__Macaca_nemestrina__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/macaca_nemestrina/macaca_nemestrina.json" -O ../../source_files/genes/macaca_nemestrina.tmp && mv -f ../../source_files/genes/macaca_nemestrina.tmp ../../source_files/genes/macaca_nemestrina.json 2>/dev/null || rm -f ../../source_files/genes/macaca_nemestrina.tmp;
+time perl insert_ensembl_genes.pl -species=9545__0__Macaca_nemestrina__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/macaca_nemestrina.json
+rm -f ../../source_files/genes/macaca_nemestrina.json
+date
+echo species: 9555__0__Papio_anubis__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/papio_anubis/papio_anubis.json" -O ../../source_files/genes/papio_anubis.tmp && mv -f ../../source_files/genes/papio_anubis.tmp ../../source_files/genes/papio_anubis.json 2>/dev/null || rm -f ../../source_files/genes/papio_anubis.tmp;
+time perl insert_ensembl_genes.pl -species=9555__0__Papio_anubis__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/papio_anubis.json
+rm -f ../../source_files/genes/papio_anubis.json
+date
+echo species: 9593__0__Gorilla_gorilla__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/gorilla_gorilla/gorilla_gorilla.json" -O ../../source_files/genes/gorilla_gorilla.tmp && mv -f ../../source_files/genes/gorilla_gorilla.tmp ../../source_files/genes/gorilla_gorilla.json 2>/dev/null || rm -f ../../source_files/genes/gorilla_gorilla.tmp;
+time perl insert_ensembl_genes.pl -species=9593__0__Gorilla_gorilla__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/gorilla_gorilla.json
+rm -f ../../source_files/genes/gorilla_gorilla.json
+date
+echo species: 9597__0__Pan_paniscus__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/pan_paniscus/pan_paniscus.json" -O ../../source_files/genes/pan_paniscus.tmp && mv -f ../../source_files/genes/pan_paniscus.tmp ../../source_files/genes/pan_paniscus.json 2>/dev/null || rm -f ../../source_files/genes/pan_paniscus.tmp;
+time perl insert_ensembl_genes.pl -species=9597__0__Pan_paniscus__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/pan_paniscus.json
+rm -f ../../source_files/genes/pan_paniscus.json
+date
+echo species: 9598__0__Pan_troglodytes__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/pan_troglodytes/pan_troglodytes.json" -O ../../source_files/genes/pan_troglodytes.tmp && mv -f ../../source_files/genes/pan_troglodytes.tmp ../../source_files/genes/pan_troglodytes.json 2>/dev/null || rm -f ../../source_files/genes/pan_troglodytes.tmp;
+time perl insert_ensembl_genes.pl -species=9598__0__Pan_troglodytes__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/pan_troglodytes.json
+rm -f ../../source_files/genes/pan_troglodytes.json
+date
+echo species: 9606__0__Homo_sapiens__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/homo_sapiens/homo_sapiens.json" -O ../../source_files/genes/homo_sapiens.tmp && mv -f ../../source_files/genes/homo_sapiens.tmp ../../source_files/genes/homo_sapiens.json 2>/dev/null || rm -f ../../source_files/genes/homo_sapiens.tmp;
+time perl insert_ensembl_genes.pl -species=9606__0__Homo_sapiens__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/homo_sapiens.json
+rm -f ../../source_files/genes/homo_sapiens.json
+date
+echo species: 9615__0__Canis_lupus_familiaris__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/canis_lupus_familiaris/canis_lupus_familiaris.json" -O ../../source_files/genes/canis_lupus_familiaris.tmp && mv -f ../../source_files/genes/canis_lupus_familiaris.tmp ../../source_files/genes/canis_lupus_familiaris.json 2>/dev/null || rm -f ../../source_files/genes/canis_lupus_familiaris.tmp;
+time perl insert_ensembl_genes.pl -species=9615__0__Canis_lupus_familiaris__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/canis_lupus_familiaris.json
+rm -f ../../source_files/genes/canis_lupus_familiaris.json
+date
+echo species: 9685__0__Felis_catus__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/felis_catus/felis_catus.json" -O ../../source_files/genes/felis_catus.tmp && mv -f ../../source_files/genes/felis_catus.tmp ../../source_files/genes/felis_catus.json 2>/dev/null || rm -f ../../source_files/genes/felis_catus.tmp;
+time perl insert_ensembl_genes.pl -species=9685__0__Felis_catus__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/felis_catus.json
+rm -f ../../source_files/genes/felis_catus.json
+date
+echo species: 9796__0__Equus_caballus__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/equus_caballus/equus_caballus.json" -O ../../source_files/genes/equus_caballus.tmp && mv -f ../../source_files/genes/equus_caballus.tmp ../../source_files/genes/equus_caballus.json 2>/dev/null || rm -f ../../source_files/genes/equus_caballus.tmp;
+time perl insert_ensembl_genes.pl -species=9796__0__Equus_caballus__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/equus_caballus.json
+rm -f ../../source_files/genes/equus_caballus.json
+date
+echo species: 9823__0__Sus_scrofa__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/sus_scrofa/sus_scrofa.json" -O ../../source_files/genes/sus_scrofa.tmp && mv -f ../../source_files/genes/sus_scrofa.tmp ../../source_files/genes/sus_scrofa.json 2>/dev/null || rm -f ../../source_files/genes/sus_scrofa.tmp;
+time perl insert_ensembl_genes.pl -species=9823__0__Sus_scrofa__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/sus_scrofa.json
+rm -f ../../source_files/genes/sus_scrofa.json
+date
+echo species: 9913__0__Bos_taurus__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/bos_taurus/bos_taurus.json" -O ../../source_files/genes/bos_taurus.tmp && mv -f ../../source_files/genes/bos_taurus.tmp ../../source_files/genes/bos_taurus.json 2>/dev/null || rm -f ../../source_files/genes/bos_taurus.tmp;
+time perl insert_ensembl_genes.pl -species=9913__0__Bos_taurus__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/bos_taurus.json
+rm -f ../../source_files/genes/bos_taurus.json
+date
+echo species: 9925__0__Capra_hircus__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/capra_hircus/capra_hircus.json" -O ../../source_files/genes/capra_hircus.tmp && mv -f ../../source_files/genes/capra_hircus.tmp ../../source_files/genes/capra_hircus.json 2>/dev/null || rm -f ../../source_files/genes/capra_hircus.tmp;
+time perl insert_ensembl_genes.pl -species=9925__0__Capra_hircus__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/capra_hircus.json
+rm -f ../../source_files/genes/capra_hircus.json
+date
+echo species: 9940__0__Ovis_aries__Ensembl
+FIXME wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/ovis_aries/ovis_aries.json" -O ../../source_files/genes/ovis_aries.tmp && mv -f ../../source_files/genes/ovis_aries.tmp ../../source_files/genes/ovis_aries.json 2>/dev/null || rm -f ../../source_files/genes/ovis_aries.tmp;
+time perl insert_ensembl_genes.pl -species=9940__0__Ovis_aries__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/ovis_aries.json
+rm -f ../../source_files/genes/ovis_aries.json
+date
+echo species: 9986__0__Oryctolagus_cuniculus__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/oryctolagus_cuniculus/oryctolagus_cuniculus.json" -O ../../source_files/genes/oryctolagus_cuniculus.tmp && mv -f ../../source_files/genes/oryctolagus_cuniculus.tmp ../../source_files/genes/oryctolagus_cuniculus.json 2>/dev/null || rm -f ../../source_files/genes/oryctolagus_cuniculus.tmp;
+time perl insert_ensembl_genes.pl -species=9986__0__Oryctolagus_cuniculus__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/oryctolagus_cuniculus.json
+rm -f ../../source_files/genes/oryctolagus_cuniculus.json
+date
+echo species: 10090__0__Mus_musculus__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/mus_musculus/mus_musculus.json" -O ../../source_files/genes/mus_musculus.tmp && mv -f ../../source_files/genes/mus_musculus.tmp ../../source_files/genes/mus_musculus.json 2>/dev/null || rm -f ../../source_files/genes/mus_musculus.tmp;
+time perl insert_ensembl_genes.pl -species=10090__0__Mus_musculus__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/mus_musculus.json
+rm -f ../../source_files/genes/mus_musculus.json
+date
+echo species: 10116__0__Rattus_norvegicus__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/rattus_norvegicus/rattus_norvegicus.json" -O ../../source_files/genes/rattus_norvegicus.tmp && mv -f ../../source_files/genes/rattus_norvegicus.tmp ../../source_files/genes/rattus_norvegicus.json 2>/dev/null || rm -f ../../source_files/genes/rattus_norvegicus.tmp;
+time perl insert_ensembl_genes.pl -species=10116__0__Rattus_norvegicus__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/rattus_norvegicus.json
+rm -f ../../source_files/genes/rattus_norvegicus.json
+date
+echo species: 10141__0__Cavia_porcellus__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/cavia_porcellus/cavia_porcellus.json" -O ../../source_files/genes/cavia_porcellus.tmp && mv -f ../../source_files/genes/cavia_porcellus.tmp ../../source_files/genes/cavia_porcellus.json 2>/dev/null || rm -f ../../source_files/genes/cavia_porcellus.tmp;
+time perl insert_ensembl_genes.pl -species=10141__0__Cavia_porcellus__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/cavia_porcellus.json
+rm -f ../../source_files/genes/cavia_porcellus.json
+date
+echo species: 10181__0__Heterocephalus_glaber__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/heterocephalus_glaber_female/heterocephalus_glaber_female.json" -O ../../source_files/genes/heterocephalus_glaber_female.tmp && mv -f ../../source_files/genes/heterocephalus_glaber_female.tmp ../../source_files/genes/heterocephalus_glaber_female.json 2>/dev/null || rm -f ../../source_files/genes/heterocephalus_glaber_female.tmp;
+time perl insert_ensembl_genes.pl -species=10181__0__Heterocephalus_glaber__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/heterocephalus_glaber_female.json
+rm -f ../../source_files/genes/heterocephalus_glaber_female.json
+date
+echo species: 13616__0__Monodelphis_domestica__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/monodelphis_domestica/monodelphis_domestica.json" -O ../../source_files/genes/monodelphis_domestica.tmp && mv -f ../../source_files/genes/monodelphis_domestica.tmp ../../source_files/genes/monodelphis_domestica.json 2>/dev/null || rm -f ../../source_files/genes/monodelphis_domestica.tmp;
+time perl insert_ensembl_genes.pl -species=13616__0__Monodelphis_domestica__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/monodelphis_domestica.json
+rm -f ../../source_files/genes/monodelphis_domestica.json
+date
+echo species: 28377__0__Anolis_carolinensis__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/anolis_carolinensis/anolis_carolinensis.json" -O ../../source_files/genes/anolis_carolinensis.tmp && mv -f ../../source_files/genes/anolis_carolinensis.tmp ../../source_files/genes/anolis_carolinensis.json 2>/dev/null || rm -f ../../source_files/genes/anolis_carolinensis.tmp;
+time perl insert_ensembl_genes.pl -species=28377__0__Anolis_carolinensis__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/anolis_carolinensis.json
+rm -f ../../source_files/genes/anolis_carolinensis.json
+date
+echo species: 30608__0__Microcebus_murinus__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/microcebus_murinus/microcebus_murinus.json" -O ../../source_files/genes/microcebus_murinus.tmp && mv -f ../../source_files/genes/microcebus_murinus.tmp ../../source_files/genes/microcebus_murinus.json 2>/dev/null || rm -f ../../source_files/genes/microcebus_murinus.tmp;
+time perl insert_ensembl_genes.pl -species=30608__0__Microcebus_murinus__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/microcebus_murinus.json
+rm -f ../../source_files/genes/microcebus_murinus.json
+date
+echo species: 32507__0__Neolamprologus_brichardi__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/neolamprologus_brichardi/neolamprologus_brichardi.json" -O ../../source_files/genes/neolamprologus_brichardi.tmp && mv -f ../../source_files/genes/neolamprologus_brichardi.tmp ../../source_files/genes/neolamprologus_brichardi.json 2>/dev/null || rm -f ../../source_files/genes/neolamprologus_brichardi.tmp;
+time perl insert_ensembl_genes.pl -species=32507__0__Neolamprologus_brichardi__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/neolamprologus_brichardi.json
+rm -f ../../source_files/genes/neolamprologus_brichardi.json
+date
+echo species: 52904__0__Scophthalmus_maximus__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/scophthalmus_maximus/scophthalmus_maximus.json" -O ../../source_files/genes/scophthalmus_maximus.tmp && mv -f ../../source_files/genes/scophthalmus_maximus.tmp ../../source_files/genes/scophthalmus_maximus.json 2>/dev/null || rm -f ../../source_files/genes/scophthalmus_maximus.tmp;
+time perl insert_ensembl_genes.pl -species=52904__0__Scophthalmus_maximus__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/scophthalmus_maximus.json
+rm -f ../../source_files/genes/scophthalmus_maximus.json
+date
+echo species: 60711__0__Chlorocebus_sabaeus__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/chlorocebus_sabaeus/chlorocebus_sabaeus.json" -O ../../source_files/genes/chlorocebus_sabaeus.tmp && mv -f ../../source_files/genes/chlorocebus_sabaeus.tmp ../../source_files/genes/chlorocebus_sabaeus.json 2>/dev/null || rm -f ../../source_files/genes/chlorocebus_sabaeus.tmp;
+time perl insert_ensembl_genes.pl -species=60711__0__Chlorocebus_sabaeus__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/chlorocebus_sabaeus.json
+rm -f ../../source_files/genes/chlorocebus_sabaeus.json
+date
+echo species: 69293__0__Gasterosteus_aculeatus__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/gasterosteus_aculeatus/gasterosteus_aculeatus.json" -O ../../source_files/genes/gasterosteus_aculeatus.tmp && mv -f ../../source_files/genes/gasterosteus_aculeatus.tmp ../../source_files/genes/gasterosteus_aculeatus.json 2>/dev/null || rm -f ../../source_files/genes/gasterosteus_aculeatus.tmp;
+time perl insert_ensembl_genes.pl -species=69293__0__Gasterosteus_aculeatus__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/gasterosteus_aculeatus.json
+rm -f ../../source_files/genes/gasterosteus_aculeatus.json
+date
+echo species: 105023__0__Nothobranchius_furzeri__Ensembl
+wget -N -nv "https://ftp.ensembl.org/pub/release-113/json/nothobranchius_furzeri/nothobranchius_furzeri.json" -O ../../source_files/genes/nothobranchius_furzeri.tmp && mv -f ../../source_files/genes/nothobranchius_furzeri.tmp ../../source_files/genes/nothobranchius_furzeri.json 2>/dev/null || rm -f ../../source_files/genes/nothobranchius_furzeri.tmp;
+time perl insert_ensembl_genes.pl -species=105023__0__Nothobranchius_furzeri__Ensembl -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0  -uni=../../generated_files/genes/uniprot.map ../../source_files/genes/nothobranchius_furzeri.json
+rm -f ../../source_files/genes/nothobranchius_furzeri.json
+perl insert_nonensembl_genes.pl -species=7936__0__Anguilla_anguilla__RefSeq -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0 -bgeeSpecies=../../generated_files/species/bgeeSpecies.tsv  -d >/dev/null
+perl insert_nonensembl_genes.pl -species=8355__0__Xenopus_laevis__RefSeq -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0 -bgeeSpecies=../../generated_files/species/bgeeSpecies.tsv     -d >/dev/null
+perl insert_nonensembl_genes.pl -species=9974__0__Manis_javanica__RefSeq -bgee=user=root__pass=BdD.pw__host=rbioinfo.unil.ch__port=3306__name=bgee_v16_0 -bgeeSpecies=../../generated_files/species/bgeeSpecies.tsv     -d >/dev/null
