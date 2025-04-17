@@ -65,7 +65,7 @@ my %opts = ('bgee=s'                   => \$bgee_connector,     # Bgee connector
             'outFile=s'                => \$outFile,
             'debug'                    => \$debug,
             'sample=s'                 => \$sample,
-            'toolsPath=s'                => \$toolsPath,
+            'toolsPath=s'              => \$toolsPath,
             'newGenomes=i'             => \$newGenomes
            );
 
