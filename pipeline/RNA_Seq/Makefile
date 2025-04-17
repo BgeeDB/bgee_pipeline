@@ -235,7 +235,7 @@ clean_cluster_folders: check_tools
 ################################ GENERATE INTERGENIC SEQUENCES FOR EACH SPECIES ################################
 prepare_GTF:
 	# Prepare GTF files : $(CLUSTER_R_CMD)
-	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) perl 0Before/slurm_prepare_GTF.pl -gtf_dir=$(RNASEQ_CLUSTER_GTF) -block_size_N=31 -account=$(SENSITIVE_CLUSTER_ACCOUNT) -partition=$(SENSITIVE_CLUSTER_PARTITION) -proportion_N=0.05 -output_gtf_path=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(OUTPUT_DIR) -container_cmd="$(CLUSTER_CONTAINER_CMD_WITH_BIND)" >$@.tmp 2>&1
+	@$(CLUSTER_SOFTWARE_BIN) perl 0Before/slurm_prepare_GTF.pl -gtf_dir=$(RNASEQ_CLUSTER_GTF) -block_size_N=31 -account=$(SENSITIVE_CLUSTER_ACCOUNT) -partition=$(SENSITIVE_CLUSTER_PARTITION) -proportion_N=0.05 -output_gtf_path=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(OUTPUT_DIR) -container_cmd="$(CLUSTER_CONTAINER_CMD_WITH_BIND)" >$@.tmp 2>&1
 	@echo rm -f $(RNASEQ_CLUSTER_GTF)/*.gtf.gz
 	@$(MV) $@.tmp $@
 
@@ -245,7 +245,7 @@ prepare_indexed_transcriptome: prepare_GTF
 	#Extract transcriptome.fa from gtf_all and genome.fa files
 	#perl one liner to remove arbitrary numbering in fasta header from gtf_to_fasta
 	# Prepare indexes for kallisto: one with default k-mer size $(RNASEQ_KALLISTO_KMER_DEFAULT), one with short k-mer size $(RNASEQ_KALLISTO_KMER_SHORT)
-	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) perl 1Run/slurm_index_creation.pl -transcriptome_folder=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(OUTPUT_DIR) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -partition=$(SENSITIVE_CLUSTER_PARTITION) -short_index_length=$(RNASEQ_KALLISTO_KMER_SHORT)  -cluster_kallisto_cmd="$(CLUSTER_KALLISTO_CMD)" -cluster_tophat_cmd="$(CLUSTER_TOPHAT_CMD)" >$@.tmp 2>&1
+	@$(CLUSTER_SOFTWARE_BIN) perl 1Run/slurm_index_creation.pl -transcriptome_folder=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(OUTPUT_DIR) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -partition=$(SENSITIVE_CLUSTER_PARTITION) -short_index_length=$(RNASEQ_KALLISTO_KMER_SHORT)  -container_cmd="$(CLUSTER_CONTAINER_CMD_WITH_BIND)" >$@.tmp 2>&1
 	#TODO Use short k-mer size = 21nt instead of 15
 	#TODO The gffread utility in cufflinks package seems more flexible and reliable
 	#TODO add step to copy .passw file to bbgee's home on cluster / or maybe just echo a message to tell the user scp it? Path and name of this file on cluster is stored in ENCRYPT_PASSWD_FILE. We should store this file somewhere (devbioinfo?) because it cannot be added to the gitlab project
@@ -255,7 +255,6 @@ prepare_indexed_transcriptome: prepare_GTF
 #NOTE Better to run this step in screen or with nohup as submission is done X jobs per X jobs to not overload the system (and not decrease our user priority)!
 abundance_all_intergenic: prepare_indexed_transcriptome $(RNASEQ_SAMPINFO_FILEPATH)
 	# Running the pipeline
-	$(CLUSTER_CONTAINER_CMD_WITH_BIND) perl 1Run/slurm_scheduler.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=$(RNASEQ_CLUSTER_LOG) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -partition=$(SENSITIVE_CLUSTER_PARTITION) -index_folder=$(RNASEQ_CLUSTER_GTF) -fastq_folder=$(RNASEQ_SENSITIVE_FASTQ) -kallisto_out_folder=$(RNASEQ_CLUSTER_ABUNDANCE_ALL) -enc_passwd_file=$(ENCRYPT_PASSWD_FILE) -cluster_kallisto_cmd='$(CLUSTER_KALLISTO_CMD)' -cluster_R_cmd='$(CLUSTER_R_CMD)' >$@.tmp 2>&1
 	@echo "TODO: At the end it is sa good idea to relaunch the abundance_all_intergenic step to be sure everything was run!"
 	$(CLUSTER_CONTAINER_CMD_WITH_BIND) perl 1Run/slurm_scheduler.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=$(RNASEQ_CLUSTER_LOG) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -partition=$(SENSITIVE_CLUSTER_PARTITION) -index_folder=$(RNASEQ_CLUSTER_GTF) -fastq_folder=$(RNASEQ_SENSITIVE_FASTQ) -kallisto_out_folder=$(RNASEQ_CLUSTER_ABUNDANCE_ALL) -enc_passwd_file=$(ENCRYPT_PASSWD_FILE) -cluster_kallisto_cmd='$(CLUSTER_KALLISTO_CMD)' -cluster_R_cmd='$(CLUSTER_R_CMD)' >$@.tmp 2>&1
 	@echo "TODO: At the end it is sa good idea to relaunch the abundance_all_intergenic step to be sure everything was run!"
