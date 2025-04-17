@@ -160,20 +160,17 @@ R_LIBS_PATH_SENSITIVE   := $(CLUSTER_DATA_PATH)/R_LIBS
 R_LIBS_PATH_CURNAGL     := $(CLUSTER_WORK_PATH)/R_LIBS
 PERL_LIBS_PATH_CURNAGL  := $(CLUSTER_WORK_PATH)/PERL_LIBS/lib/perl5
 
+CLUSTER_SOFT_UNIL       := module load gcc/12.3.0;
+CLUSTER_SOFT_APPTAINER  := module load apptainer/1.1.9;
 CLUSTER_LOAD_APPTAINER  := $(CLUSTER_SOFT_UNIL) $(CLUSTER_SOFT_APPTAINER)
 CLUSTER_WORK_PATH       := /work/FAC/FBM/DEE/mrobinso/bgee/
 CLUSTER_WORK_SENSITIVE_PATH := /work/FAC/FBM/DEE/mrobinso/bgee_sensitive/
 CLUSTER_SCRATCH_PATH    := /scratch/$(USER)/
 CLUSTER_CONTAINER_PATH  := $(CLUSTER_WORK_SENSITIVE_PATH)$(PIPELINE_CONTAINER_FILE)
-CLUSTER_SLURM_BINDPATH  := /etc/passwd,/var/run/munge,/usr/lib64/libmunge.so.2.0.0:/usr/lib64/libmunge.so.2,/run/slurm/conf/slurm.conf,/usr/lib64/slurm,/usr/bin/sbatch,/usr/bin/squeue,/usr/bin/scancel,/usr/bin/sacct,/usr/bin/scontrol,/usr/bin/seff
+CLUSTER_SLURM_BINDPATH  := /etc/passwd,/var/run/munge,/usr/lib64/libmunge.so.2.0.0:/usr/lib64/libmunge.so.2,/run/slurm/conf/slurm.conf,/usr/lib64/slurm,/usr/bin/sbatch,/usr/bin/squeue,/usr/bin/scancel,/usr/bin/sacct,/usr/bin/scontrol,/usr/bin/seff,/dev
 CLUSTER_CONTAINER_CMD_WITH_BIND    := $(CLUSTER_SOFT_UNIL) $(CLUSTER_SOFT_APPTAINER) apptainer exec --bind $(CLUSTER_SLURM_BINDPATH),$(CLUSTER_DATA_PATH),$(CLUSTER_SCRATCH_PATH),$(CLUSTER_WORK_PATH)  $(CLUSTER_CONTAINER_PATH)
 CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL := apptainer exec --bind $(CLUSTER_SLURM_BINDPATH),$(CLUSTER_SCRATCH_PATH),$(CLUSTER_WORK_PATH)  $(CLUSTER_CONTAINER_PATH)
 CLUSTER_CONTAINER_CMD_WITHOUT_BIND := "$(CLUSTER_SOFT_UNIL) $(CLUSTER_SOFT_APPTAINER) apptainer exec $(CLUSTER_CONTAINER_PATH)"
-
-# new variables used to run the pipeline using a container
-# TODO: clean all variables not used anymore
-CLUSTER_SOFT_APPTAINER  := module load apptainer/1.1.9;
-CLUSTER_SOFT_UNIL       := module load gcc/12.3.0;
 
 #NOTE Think to add ; at the end to ease insertion in other command lines
 CLUSTER_SOFTWARE_BIN    := export PATH=/software/bin:$$PATH;
@@ -435,7 +432,7 @@ RNASEQ_DOWNLOAD_LIB_DIR_FASTQ  := $(RNASEQ_DOWNLOAD_LIB_DIR)/FASTQ/RNAseq/
 RNASEQ_CLUSTER_READONLY        := $(CLUSTER_DATA_PATH)/
 RNASEQ_CLUSTER_SCRIPTS         := $(RNASEQ_CLUSTER_READONLY)GIT/pipeline/
 RNASEQ_DOWNLOAD_GTF            := $(RNASEQ_DOWNLOAD_LIB_DIR)GTF_$(MAJOR_RELEASE)/
-RNASEQ_CLUSTER_GTF             := $(RNASEQ_CLUSTER_READONLY)rna_seq/GTF_$(MAJOR_RELEASE)/
+RNASEQ_CLUSTER_GTF             := $(RNASEQ_CLUSTER_READONLY)/rna_seq/GTF_$(MAJOR_RELEASE)/
 RNASEQ_CLUSTER_ALL_RES_BACKUP  := $(RNASEQ_CLUSTER_READONLY)rna_seq/all_results_$(DBNAME)/
 
 RNASEQ_CLUSTER_DATA            := $(CLUSTER_DATA_RESULTS)rna_seq/
@@ -452,7 +449,7 @@ RNASEQ_CLUSTER_BGEECALL_CALLS  := $(RNASEQ_CLUSTER_BGEECALL_OUTPUT)all_results/
 RNASEQ_CLUSTER_CALLS_STATS     := $(RNASEQ_CLUSTER_BGEECALL_CALLS)presence_absence_all_samples.txt
 RNASEQ_CLUSTER_KALLISTO_STATS  := $(RNASEQ_CLUSTER_BGEECALL_CALLS)reports_info_all_samples.txt
 
-ENCRYPT_PASSWD_FILE            := $(CLUSTER_WORK_PATH).passw
+ENCRYPT_PASSWD_FILE            := $(CLUSTER_DATA_PATH).passw
 
 # RNAseq sensitive cluster path
 RNASEQ_SENSITIVE_FASTQ         := $(RNASEQ_CLUSTER_READONLY)FASTQ/RNAseq/
