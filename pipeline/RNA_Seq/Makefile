@@ -256,8 +256,7 @@ prepare_indexed_transcriptome: prepare_GTF
 abundance_all_intergenic: prepare_indexed_transcriptome $(RNASEQ_SAMPINFO_FILEPATH)
 	# Running the pipeline
 	@echo "TODO: At the end it is sa good idea to relaunch the abundance_all_intergenic step to be sure everything was run!"
-	$(CLUSTER_CONTAINER_CMD_WITH_BIND) perl 1Run/slurm_scheduler.pl -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=$(RNASEQ_CLUSTER_LOG) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -partition=$(SENSITIVE_CLUSTER_PARTITION) -index_folder=$(RNASEQ_CLUSTER_GTF) -fastq_folder=$(RNASEQ_SENSITIVE_FASTQ) -kallisto_out_folder=$(RNASEQ_CLUSTER_ABUNDANCE_ALL) -enc_passwd_file=$(ENCRYPT_PASSWD_FILE) -cluster_kallisto_cmd='$(CLUSTER_KALLISTO_CMD)' -cluster_R_cmd='$(CLUSTER_R_CMD)' >$@.tmp 2>&1
-	@echo "TODO: At the end it is sa good idea to relaunch the abundance_all_intergenic step to be sure everything was run!"
+	@$(CLUSTER_SOFTWARE_BIN) perl 1Run/slurm_scheduler.pl -sample_info_file=$(CURDIR)/$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=$(CURDIR)/$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=$(RNASEQ_CLUSTER_LOG) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -partition=$(SENSITIVE_CLUSTER_PARTITION) -index_folder=$(RNASEQ_CLUSTER_GTF) -fastq_folder=$(RNASEQ_SENSITIVE_FASTQ) -kallisto_out_folder=$(RNASEQ_CLUSTER_ABUNDANCE_ALL) -enc_passwd_file=$(ENCRYPT_PASSWD_FILE) -container_cmd="$(CLUSTER_CONTAINER_CMD_WITH_BIND)" >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
 
 check_abundance_all_intergenic: abundance_all_intergenic
