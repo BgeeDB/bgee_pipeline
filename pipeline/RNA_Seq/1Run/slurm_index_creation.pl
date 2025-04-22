@@ -68,15 +68,15 @@ while (my $file = readdir(DIR)) {
 		if (!-e $transcriptome_file_path) {
 			if (-e "$transcriptome_file_path.xz") {
 				$sbatch_commands .= "# unxz already existing transcriptome file\n";
-				$sbatch_commands .= "unxz $transcriptome_file_path.xz\n";
+				$sbatch_commands .= "unxz $transcriptome_file_path.xz &&\n";
 			} else {
 				if (!-e $genome_file_path) {
 					die "can not acces to genome file $genome_file_path";
 				}
 				# generate transcriptome with tophat gtf_to_fasta
-				$sbatch_commands .= "$container_cmd gtf_to_fasta $transcriptome_folder/$file $genome_file_path $transcriptome_file_path\n";
+				$sbatch_commands .= "$container_cmd gtf_to_fasta $transcriptome_folder/$file $genome_file_path $transcriptome_file_path &&\n";
 				$sbatch_commands .= "# update transcriptome file to correct the header of each sequence\n";
-				$sbatch_commands .= 'perl -i -pe \'s/^>\\d+ +/>/\' '.$transcriptome_file_path."\n";
+				$sbatch_commands .= 'perl -i -pe \'s/^>\\d+ +/>/\' '.$transcriptome_file_path." &&\n";
 			}
 		}
 
@@ -84,35 +84,35 @@ while (my $file = readdir(DIR)) {
 		if (!-e $transcriptome_wo_intergenic_file_path) {
 			if (-e "$transcriptome_wo_intergenic_file_path.xz") {
 				$sbatch_commands .= "# unxz already existing transcriptome without intergenic file\n";
-				$sbatch_commands .= "unxz $transcriptome_wo_intergenic_file_path.xz\n";
+				$sbatch_commands .= "unxz $transcriptome_wo_intergenic_file_path.xz &&\n";
 			} else {
 				if (!-e $genome_file_path) {
 					die "can not acces to genome file $genome_file_path";
 				}
 				# generate transcriptome with tophat gtf_to_fasta
-				$sbatch_commands .= "$container_cmd gtf_to_fasta $annotation_wo_intergenic_file $genome_file_path $transcriptome_wo_intergenic_file_path\n";
+				$sbatch_commands .= "$container_cmd gtf_to_fasta $annotation_wo_intergenic_file $genome_file_path $transcriptome_wo_intergenic_file_path &&\n";
 				$sbatch_commands .= "# update transcriptome without intergenic file to correct the header of each sequence\n";
-				$sbatch_commands .= 'perl -i -pe \'s/^>\\d+ +/>/\' '.$transcriptome_wo_intergenic_file_path."\n";
+				$sbatch_commands .= 'perl -i -pe \'s/^>\\d+ +/>/\' '.$transcriptome_wo_intergenic_file_path." &&\n";
 			}
 		}
 
 		# generate index with default kmer size
 		if (!-e $transcriptome_index_path) {
 			$sbatch_commands .= "# generate index with default kmer size\n";
-			$sbatch_commands .= "$container_cmd kallisto index -i $transcriptome_index_path $transcriptome_file_path\n";
+			$sbatch_commands .= "$container_cmd kallisto index -i $transcriptome_index_path $transcriptome_file_path &&\n";
 		}
 
 		# generate index with short kmer size
 		if (!-e $short_transcriptome_index_path) {
 			$sbatch_commands .= "#generate index with a kmer size of $short_index_length\n";
-			$sbatch_commands .= "$container_cmd kallisto index -k $short_index_length -i $short_transcriptome_index_path $transcriptome_file_path\n";
+			$sbatch_commands .= "$container_cmd kallisto index -k $short_index_length -i $short_transcriptome_index_path $transcriptome_file_path &&\n";
 		}
 
 		# delete genome file not useful for next steps of the pipeline
 		$sbatch_commands .= "# rm -rf $genome_file_path\n";
 
 		# compress transcriptome file
-		$sbatch_commands .= "xz --threads=2 -9 $transcriptome_file_path\n";
+		$sbatch_commands .= "xz --threads=2 -9 $transcriptome_file_path &&\n";
 
 		# compress tlst transcriptome file
 		$sbatch_commands .= "if [ -f \"$transcriptome_file_path.tlst\" ]; then\n";
