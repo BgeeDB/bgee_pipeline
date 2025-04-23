@@ -1,5 +1,5 @@
 PIPELINEROOT := ../../
-DIR_NAME := scRNA_Seq/
+DIR_NAME := scRNA_Seq/Full_length/
 
 include $(PIPELINEROOT)Makefile.common
 
@@ -10,15 +10,15 @@ get_annot:
 	@$(GIT) submodule init
 	@$(GIT) submodule update
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/Strains/StrainMapping.tsv         $(STRAIN_MAPPING_FILE)
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqLibrary_merged.tsv   $(INPUT_DIR)/Full_length/scRNASeqLibrary_merged.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqExperiment.tsv  $(INPUT_DIR)/scRNASeqExperiment.tsv
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqLibrary_merged.tsv   $(INPUT_DIR)scRNASeqLibrary_merged.tsv
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqExperiment.tsv  $(INPUT_DIR)scRNASeqExperiment.tsv
 	@touch $@
 
 ## Control the annotation (run rule in front)
 control_annotation: get_annot 0Preparation/pre_process_control_annotation.R
 	@echo --- Starting the control of the annotation  ---
 	#It is possible to filter the minimum number of cells per cell population using the argument cellsThreshold
-	$(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args scRNASeqLibrary="$(SC_RNASEQ_LIB_FL_FILEPATH)" output_file_pass="$(SC_RNASEQ_LIB_PASS_FILEPATH)" output_file_not_pass="$(SC_RNASEQ_LIB_NOT_PASS_FILEPATH)" ' 0Preparation/pre_process_control_annotation.R 0Preparation/pre_process_control_annotation.Rout > $@.tmp 2>&1
+	$(CLUSTER_CONTAINER_CMD_WITH_BIND) R CMD BATCH --no-save --no-restore '--args scRNASeqLibrary="$(SC_RNASEQ_LIB_FL_FILEPATH)" output_file_pass="$(SC_RNASEQ_LIB_PASS_FILEPATH)" output_file_not_pass="$(SC_RNASEQ_LIB_NOT_PASS_FILEPATH)" ' 0Preparation/pre_process_control_annotation.R 0Preparation/pre_process_control_annotation.Rout > $@.tmp 2>&1
 	@echo --- DONE ---
 	#Map strain names
 	#load modules necessary to run the perl function
