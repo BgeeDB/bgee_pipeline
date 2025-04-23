@@ -9,24 +9,18 @@ include $(PIPELINEROOT)Makefile.common
 get_annot:
 	@$(GIT) submodule init
 	@$(GIT) submodule update
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/Strains/StrainMapping.tsv         $(STRAIN_MAPPING_FILE)
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqLibrary_merged.tsv   $(INPUT_DIR)scRNASeqLibrary_merged.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqExperiment.tsv  $(INPUT_DIR)scRNASeqExperiment.tsv
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/Strains/StrainMapping.tsv             $(STRAIN_MAPPING_FILE)
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqLibrary_merged.tsv  $(SC_RNASEQ_LIB_FL_FILEPATH)
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqExperiment.tsv      $(SC_RNASEQ_EXP_FL_FILEPATH)
 	@touch $@
 
 ## Control the annotation (run rule in front)
-control_annotation: get_annot 0Preparation/pre_process_control_annotation.R
-	@echo --- Starting the control of the annotation  ---
-	#It is possible to filter the minimum number of cells per cell population using the argument cellsThreshold
-	$(CLUSTER_CONTAINER_CMD_WITH_BIND) R CMD BATCH --no-save --no-restore '--args scRNASeqLibrary="$(SC_RNASEQ_LIB_FL_FILEPATH)" output_file_pass="$(SC_RNASEQ_LIB_PASS_FILEPATH)" output_file_not_pass="$(SC_RNASEQ_LIB_NOT_PASS_FILEPATH)" ' 0Preparation/pre_process_control_annotation.R 0Preparation/pre_process_control_annotation.Rout > $@.tmp 2>&1
-	@echo --- DONE ---
-	#Map strain names
-	#load modules necessary to run the perl function
-	@module use /software/module/;
-	@export PATH=/software/bin:$PATH;
-	@module add Development/Ensembl_API/97;
-	@perl -e 'use lib "../.."; use Utils; Utils::map_strain_names("$(SC_RNASEQ_LIB_PASS_FILEPATH)", "$(STRAIN_MAPPING_FILE)")' > $(SC_RNASEQ_LIB_PASS_FILEPATH).ori
-	@$(MV) $(SC_RNASEQ_LIB_PASS_FILEPATH).ori $(SC_RNASEQ_LIB_PASS_FILEPATH)
+filter_annotation: get_annot 0Preparation/filter_annotation.R
+	@echo --- Filter FL libraries from annotation files ---
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL) Rscript 0Preparation/filter_annotation.R scRNASeqLibrary=\"$(SC_RNASEQ_LIB_FL_FILEPATH)\" scRNASeqExperiment=\"$(SC_RNASEQ_EXP_FL_FILEPATH)\" filteredLibrariesFile=\"$(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)\" filteredExperimentsFile=\"$(SC_RNASEQ_FL_EXP_FILTERED_FILEPATH)\" > $@.tmp 2> $@.err
+	@echo --- Map strain names ---
+	@$(CLUSTER_SOFTWARE_BIN) perl -e 'use lib "../.."; use Utils; Utils::map_strain_names("$(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)", "$(STRAIN_MAPPING_FILE)")' > $(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH).ori
+	@$(MV) $(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH).ori $(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)
 	@$(MV) $@.tmp $@
 
 ## Retrieve metadata (run rule with sbatch)
