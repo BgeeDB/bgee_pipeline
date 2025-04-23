@@ -10,7 +10,7 @@ get_annot:
 	@$(GIT) submodule init
 	@$(GIT) submodule update
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/Strains/StrainMapping.tsv         $(STRAIN_MAPPING_FILE)
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqFLLibrary.tsv   $(INPUT_DIR)/Full_length/scRNASeqFLLibrary.tsv
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqLibrary_merged.tsv   $(INPUT_DIR)/Full_length/scRNASeqLibrary_merged.tsv
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqExperiment.tsv  $(INPUT_DIR)/scRNASeqExperiment.tsv
 	@touch $@
 
