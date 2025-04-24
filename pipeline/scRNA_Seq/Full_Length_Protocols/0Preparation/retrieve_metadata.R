@@ -47,7 +47,8 @@ colnames(not_passed) <- c(metadata_colnames, "exclusion_reason")
 cl <- makeCluster(threads)
 registerDoParallel(cl)
 
-for (row in seq(nrow(annotation))) {
+# Parallelized loop
+results <- foreach(row = seq(nrow(annotation)), .combine = rbind, .packages = c("utils")) %dopar% {
   library <- annotation[row,]
   libraryID <- library$libraryId
   metadata_info <- tryCatch(
@@ -64,8 +65,6 @@ for (row in seq(nrow(annotation))) {
       read.table(url(ena.url), header=TRUE, sep="\t")
     },
     error=function(cond) {
-      error <- TRUE
-      # Choose a return value in case of error
       return(NA)
     }
   )
@@ -75,7 +74,7 @@ for (row in seq(nrow(annotation))) {
     colnames(metadata_info) <- c(metadata_colnames, "exclusion_reason")
     metadata_info$library_id <- libraryID
     metadata_info$exclusion_reason <- "EBI URL error"
-    not_passed <- rbind(not_passed, metadata_info)
+    return(list(type = "not_passed", data = metadata_info))
   } else {
     ## What is called experiment_accession in ENA API is called library_id in our pipeline
     names(metadata_info)[names(metadata_info) == 'experiment_accession'] <- 'library_id' 
@@ -83,18 +82,13 @@ for (row in seq(nrow(annotation))) {
       as.character(metadata_info$instrument_model))
     compare_speciesID <- identical(as.character(library[['speciesId']]),
       as.character(metadata_info[['tax_id']]))
-    
-    ## before writing the line to the file we first update the line to fit the
-    ## experiment_id/library_id nomenclature used in the pipeline
+
     metadata_info <- merge(metadata_info, library[, c("libraryId","experimentId")],
       by.x="library_id", by.y="libraryId")
-    ## update column order
     metadata_info <- metadata_info[, metadata_colnames]
-    ## homogeneise use of snake case for column names
     names(metadata_info)[names(metadata_info) == 'experimentId'] <- 'experiment_id'      
     if (isTRUE(compare_machine) && isTRUE(compare_speciesID)) {
-      ## export libraries that pass and will be downloaded
-      passed <- rbind(passed, metadata_info)
+      return(list(type = "passed", data = metadata_info))
     } else {
       if(isFALSE(compare_machine)) {
         metadata_info$exclusion_reason <- "protocol_mismatch"
@@ -102,12 +96,15 @@ for (row in seq(nrow(annotation))) {
       if(isFALSE(compare_speciesID)) {
         metadata_info$exclusion_reason <- "species_mismatch"
       }
-      not_passed <- rbind(not_passed, metadata_info)
+      return(list(type = "not_passed", data = metadata_info))
     }
   }
 }
 
 stopCluster(cl)
+
+passed <- do.call(rbind, lapply(results, function(x) if (x$type == "passed") x$data else NULL))
+not_passed <- do.call(rbind, lapply(results, function(x) if (x$type == "not_passed") x$data else NULL))
 
 # write metadata files
 write.table(passed, metadataFile, sep = "\t", col.names = TRUE, row.names = FALSE, quote = FALSE)

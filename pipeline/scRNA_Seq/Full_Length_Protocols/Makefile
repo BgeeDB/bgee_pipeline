@@ -27,7 +27,7 @@ filter_annotation: get_annot 0Preparation/filter_annotation.R
 ## NOTE: metadata here are information allowing to download fastq libraries a posteriori
 THREADS_RETRIEVE_METADATA := 16
 retrieve_metadata: filter_annotation 0Preparation/retrieve_metadata.R
-	@srun --output=${PWD}/$@.out --error=${PWD}/$@.err --partition=${CLUSTER_PARTITION} --account=${CLUSTER_ACCOUNT} --job-name=retrieve_metadata_information_fulllength --cpus-per-task=$(THREADS_RETRIEVE_METADATA) --mem=2G --time=3-00:00:00 bash -c "$(CLUSTER_SOFT_UNIL) $(CLUSTER_SOFT_APPTAINER) $(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL) Rscript ${PWD}/0Preparation/retrieve_metadata.R pass_annotationControl=\'$(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)\' metadata_info_file=\'$(SC_RNASEQ_METADATA_FILEPATH)\' metadata_info_not_match_file=\'$(SC_RNASEQ_METADATA_NOT_MATCH_FILEPATH)\' threads=\'$(THREADS_RETRIEVE_METADATA)\'" 
+	@srun --output=${PWD}/$@.out --error=${PWD}/$@.err --partition=${CLUSTER_PARTITION} --account=${CLUSTER_ACCOUNT} --job-name=retrieve_metadata_fulllength --nodes=1 --ntasks=1 --export=NONE --cpus-per-task=$(THREADS_RETRIEVE_METADATA) --mem=2G --time=1-00:00:00 bash -c "$(CLUSTER_SOFT_UNIL) $(CLUSTER_SOFT_APPTAINER) $(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL) Rscript ${PWD}/0Preparation/retrieve_metadata.R filteredLibraryAnnotation=\'$(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)\' metadataFile=\'$(SC_RNASEQ_METADATA_FILEPATH)\' threads=\'$(THREADS_RETRIEVE_METADATA)\'"
 	@touch $@
 
 # Parallelize download of libraries and do not download again already downloaded libraries
@@ -49,8 +49,8 @@ commit_annotation_and_metadata: list_new_downloads
 	@touch $@
 
 
-## NOTE: Copy all git repository to JURA!
-################## STEPS TO RUN ON JURA SERVER ##################
+## NOTE: Copy all git repository to the sensitive cluster
+################## STEPS TO RUN ON SENSITIVE CLUSTER ##################
 
 clusterJURA:
 	@echo -e "\tBe sure everything is up-to-date before running single cell RNASeq pipeline\n"
