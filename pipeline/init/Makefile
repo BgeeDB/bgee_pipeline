@@ -66,10 +66,12 @@ global_check:
 	@R -e 'library("BUSpaRse")'          >> $@.tmp  2>/dev/null
 	@R -e 'library("data.table")'        >> $@.tmp  2>/dev/null
 	@R -e 'library("dplyr")'             >> $@.tmp  2>/dev/null
+	@R -e 'library("doParallel")'        >> $@.tmp  2>/dev/null
 	@R -e 'library("DropletUtils")'      >> $@.tmp  2>/dev/null
 	@R -e 'library("edgeR")'             >> $@.tmp  2>/dev/null
 	@R -e 'library("fdrtool")'           >> $@.tmp  2>/dev/null
 	@R -e 'library("forcats")'           >> $@.tmp  2>/dev/null
+	@R -e 'library("foreach")'           >> $@.tmp  2>/dev/null
 	@R -e 'library("gcrma")'             >> $@.tmp  2>/dev/null
 	@R -e 'library("genefilter")'        >> $@.tmp  2>/dev/null
 	@R -e 'library("GenomicFeatures")'   >> $@.tmp  2>/dev/null
@@ -355,10 +357,12 @@ test_container: build_container
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("BUSpaRse")'          >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("data.table")'        >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("dplyr")'             >> $@.tmp  2>/dev/null
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("doParallel")'        >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("DropletUtils")'      >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("edgeR")'             >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("fdrtool")'           >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("forcats")'           >> $@.tmp  2>/dev/null #FIXME not loaded as usual, will maybe not be used!
+	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("foreach")'           >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("gcrma")'             >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("genefilter")'        >> $@.tmp  2>/dev/null
 	@$(PIPELINE_CONTAINER_CMD) R -q -e 'library("GenomicFeatures")'   >> $@.tmp  2>/dev/null
