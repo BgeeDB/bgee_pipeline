@@ -25,20 +25,9 @@ filter_annotation: get_annot 0Preparation/filter_annotation.R
 
 ## Retrieve metadata (run rule with sbatch)
 ## NOTE: metadata here are information allowing to download fastq libraries a posteriori
-retrieve_metadata: control_annotation 0Preparation/retrieve_metadata.R
-	@echo --- Retrieve metadata information ---
-	@sed -i 's@--output=.*@--output=${PWD}/retrieve_metadata.out@'                                                   		0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/retrieve_metadata.err@'                                                     		0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                     		0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                           		0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                     		0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export pass_annotationControl=.*@export pass_annotationControl=$(SC_RNASEQ_LIB_PASS_FILEPATH)@'       		0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export metadata_info_file=.*@export metadata_info_file=$(SC_RNASEQ_METADATA_FILEPATH)@'               		0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export metadata_info_not_match_file=.*@export metadata_info_not_match_file=$(SC_RNASEQ_METADATA_NOT_MATCH_FILEPATH)@'  0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH)@'                                   		0Preparation/retrieve_metadata.sbatch
-	@sbatch 0Preparation/retrieve_metadata.sbatch
-	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
-	@echo --- DONE ---
+THREADS_RETRIEVE_METADATA := 16
+retrieve_metadata: filter_annotation 0Preparation/retrieve_metadata.R
+	@srun --output=${PWD}/$@.out --error=${PWD}/$@.err --partition=${CLUSTER_PARTITION} --account=${CLUSTER_ACCOUNT} --job-name=retrieve_metadata_information_fulllength --cpus-per-task=$(THREADS_RETRIEVE_METADATA) --mem=2G --time=3-00:00:00 bash -c "$(CLUSTER_SOFT_UNIL) $(CLUSTER_SOFT_APPTAINER) $(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL) Rscript ${PWD}/0Preparation/retrieve_metadata.R pass_annotationControl=\'$(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)\' metadata_info_file=\'$(SC_RNASEQ_METADATA_FILEPATH)\' metadata_info_not_match_file=\'$(SC_RNASEQ_METADATA_NOT_MATCH_FILEPATH)\' threads=\'$(THREADS_RETRIEVE_METADATA)\'" 
 	@touch $@
 
 # Parallelize download of libraries and do not download again already downloaded libraries

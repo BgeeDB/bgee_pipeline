@@ -2,11 +2,13 @@
 ## This script is used to retrieve the metadata from EBI
 ## Then to compare the annotation information from BGEE for each library with metadata from EBI.
 
-## Usage:
-## R CMD BATCH --no-save --no-restore '--args pass_annotationControl="passScRNASeqLibrary.tsv" output_folder="output_folder"' retrieve_metadata.R retrieve_metadata.Rout
-## pass_annotationControl -> File with all libraries annotated by bgee that pass the minimum requirement (>= 50 cells)
-## metadata_info_file --> file where metadata info are saved
-## metadata_info_not_match_file --> file where metadata info are saved for libraries with metadata mismatch between Bgee and EBI
+## parameters:
+## filteredLibraryAnnotation  --> File with RNASeq FL libraries annotation
+## metadataFile               --> file where metadata info are saved
+## threads                    --> number of threads used to retrieve metadata
+
+library(foreach)
+library(doParallel)
 
 ## reading arguments
 cmd_args = commandArgs(TRUE);
@@ -18,7 +20,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments exist....
-command_arg <- c("pass_annotationControl", "metadata_info_file", "metadata_info_not_match_file")
+command_arg <- c("filteredLibraryAnnotation", "metadataFile", "threads")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -26,11 +28,10 @@ for( c_arg in command_arg ){
 }
 
 ## Read annotation file. If file not exists, script stops
-if( file.exists(pass_annotationControl) ){
-  annotation <- read.table(pass_annotationControl, h=T, sep="\t", comment.char="")
-  names(annotation)[1] <- "libraryId"
+if( file.exists(filteredLibraryAnnotation) ){
+  annotation <- read.table(filteredLibraryAnnotation, h=TRUE, sep="\t", comment.char="")
 } else {
-  stop( paste("The annotation file not found [", pass_annotationControl, "]\n"))
+  stop( paste("Library annotation file not found [", filteredLibraryAnnotation, "]\n"))
 }
 
 #create two data.frame for libraries passing/not passing the verification
@@ -41,6 +42,10 @@ colnames(passed) <- metadata_colnames
 # add a column reason for exclusion to this file
 not_passed <- data.frame(matrix(nrow = 0, ncol = length(metadata_colnames) + 1))
 colnames(not_passed) <- c(metadata_colnames, "exclusion_reason")
+
+#set the number of threads to use
+cl <- makeCluster(threads)
+registerDoParallel(cl)
 
 for (row in seq(nrow(annotation))) {
   library <- annotation[row,]
@@ -102,8 +107,9 @@ for (row in seq(nrow(annotation))) {
   }
 }
 
+stopCluster(cl)
+
 # write metadata files
-write.table(passed, metadata_info_file, sep = "\t", col.names = TRUE, row.names = FALSE, quote = FALSE)
-write.table(not_passed, metadata_info_not_match_file, sep = "\t", col.names = TRUE, row.names = FALSE,
-  quote = FALSE)
+write.table(passed, metadataFile, sep = "\t", col.names = TRUE, row.names = FALSE, quote = FALSE)
+warning("Libraries for which metadata were not retrieved:\n", not_passed)
 
