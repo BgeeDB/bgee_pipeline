@@ -29,8 +29,7 @@ my %opts = ('bgee=s'                    => \$bgee_connector,     # Bgee connecto
            );
 
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $bgee_connector eq '' || $expression_summary_file eq '' ||
-     $calls_dir eq '' || $h5ad_dir eq ''){
+if ( !$test_options || $bgee_connector eq '' || $expression_summary_file eq ''){
     print "\n\tInvalid or missing argument:
 \te.g. $0  -bgee=\$(BGEE_CMD) -processed_dir=\$(PROCESSED_DIR) -calls_dir=\$(CALLS_DIR)
 \t-bgee                         Bgee connector string
@@ -53,11 +52,9 @@ while (my $line = <$expression_summary_fh>) {
     $expression_summary_hash{$gene_id}{$species_id} = $expression_summary_sentence;
 }
 close($expression_summary_fh);
-# print the expression summary hash
-print Dumper(\%expression_summary_hash);
 
 # connect to the database
-my $dbh = Utils::connect_to_bgee($bgee_connector);
+my $dbh = Utils::connect_bgee_db($bgee_connector);
 # check if the connection is successful
 
 # insert the expression summary sentence in the database
@@ -75,7 +72,5 @@ foreach my $gene_id (keys %expression_summary_hash) {
     }
 }
 $insert_stmt->finish();
-# close the statement
-$sth->finish();
 # close the database connection
 $dbh->disconnect();

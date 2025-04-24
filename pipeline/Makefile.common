@@ -602,6 +602,7 @@ PVALUE_CUTOFF                                 := 0.05
 # path to the root of the directory to use to store generated download files
 DOWNLOAD_FILE_ROOT_PATH := $(TMPDIR)/download_files/
 XREFS_PATH              := $(TMPDIR)/xrefs/
+GENE_SUMMARY_FILE_PATH  := $(XREFS_PATH)geneSummaryBgee.txt
 EASYBGEE_PATH           := $(TMPDIR)/$(DBNAME_EASYBGEE)/
 R_SPECIES_INFO          := $(TMPDIR)/rPackageSpeciesInfo.tsv
 

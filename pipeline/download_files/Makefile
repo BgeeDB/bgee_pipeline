@@ -241,7 +241,7 @@ WIKIDATA_UBERON_IDS := "https://www.bgee.org/sparql/?default-graph-uri=&query=%2
 
 UBERON_WIKIDATA_FILE_PATH := $(OUTPUT_DIR)uberon_wikidata.txt
 
-XREFS_TO_GENERATE := WIKIDATA,UNIPROT,GENE_CARDS
+XREFS_TO_GENERATE := WIKIDATA,UNIPROT,GENE_CARDS,BGEE_GENE_SUMMARY
 
 ##TODO Remove the XREF_SQL_QUERY query and implement all steps of uniprot XRef generation in Java
 #Generate XRefs for different datasources. As for Bgee 15.0 these datasources are uniprot, genecards and wikidata
@@ -265,6 +265,12 @@ $(OUTPUT_DIR)generate_xrefs:
 	@echo "\nTotal number of ambiguous mappings: " >> $@.temp
 	@$(MYSQL) -e "SELECT COUNT(*) FROM (SELECT t1.XRefId FROM geneXRef AS t1 WHERE t1.dataSourceId IN ($(TREMBL_ID), $(SWISSPROT_ID)) AND EXISTS (SELECT 1 FROM expression as t3 WHERE t3.bgeeGeneId = t1.bgeeGeneId) GROUP BY t1.XRefId HAVING COUNT(DISTINCT t1.bgeeGeneId) > 1) AS multipleGeneCount" >> $@.temp 2>>$@.warnings
 	@$(MV) $@.temp $@
+
+$(OUTPUT_DIR)insert_expression_summary:
+	@perl insert_expression_summary.pl -bgee=$(BGEECMD) -expression_summary_file=$(GENE_SUMMARY_FILE_PATH) > $@.tmp 2> $@.err
+	@$(MV) $@.tmp $@
+
+
 # =========================
 # Download files with rank info
 # =========================
