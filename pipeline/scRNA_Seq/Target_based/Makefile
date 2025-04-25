@@ -26,22 +26,12 @@ get_annot:
 ##     this code in perl in order to reuse code managing connection to the DB.
 ##     /!\ For Bgee 15.2 this filtering was done manually directly on the metadata_info.txt file
 filter_annot:
-	@$(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args scRNASeqExperiment="$(SC_RNASEQ_EXP_TB_FILEPATH)" scRNASeqTBLibrary="$(SC_RNASEQ_LIB_TB_FILEPATH)" strainMapping="$(STRAIN_MAPPING_FILE)" acceptedProtocols="$(SC_RNASEQ_ACCEPTED_PROTOCOLS)" outputDir="$(SC_RNASEQ_TB_FOLDER_GENERATED)"' 0Preparation/filter_annotation.R $(SC_RNASEQ_TB_FOLDER_GENERATED)filter_annotation.Rout
+	@$(CLUSTER_LOAD_APPTAINER) $(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL) R CMD BATCH --no-save --no-restore '--args scRNASeqExperiment="$(SC_RNASEQ_EXP_TB_FILEPATH)" scRNASeqTBLibrary="$(SC_RNASEQ_LIB_TB_FILEPATH)" strainMapping="$(STRAIN_MAPPING_FILE)" acceptedProtocols="$(SC_RNASEQ_ACCEPTED_PROTOCOLS)" outputDir="$(SC_RNASEQ_TB_FOLDER_GENERATED)"' 0Preparation/filter_annotation.R $(SC_RNASEQ_TB_FOLDER_GENERATED)filter_annotation.Rout
 	@touch $@
 
 ## Cleaning duplicates in the barcodes annotation files before mapping and analyis
 cleaning_barcodes: #filter_annot 0Preparation/cleaning_barcodes.R
-	@echo --- Cleaning duplicated barcodes per experimentID/libraryID ---
-	@sed -i 's@--output=.*@--output=${PWD}/$@.out@'                                                                0Preparation/cleaning_barcodes.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/$@.err@'                                                                  0Preparation/cleaning_barcodes.sbatch
-	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                   0Preparation/cleaning_barcodes.sbatch
-	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                         0Preparation/cleaning_barcodes.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}/@'                                                  0Preparation/cleaning_barcodes.sbatch
-	@sed -i 's@export barcodesFolder=.*@export barcodesFolder=${PWD}/$(SC_RNASEQ_TB_FOLDER_SOURCE)@'               0Preparation/cleaning_barcodes.sbatch
-	@sed -i 's@export output=.*@export output=${PWD}/$(SC_RNASEQ_CLEANED_BARCODES)@'                               0Preparation/cleaning_barcodes.sbatch
-	@sbatch 0Preparation/cleaning_barcodes.sbatch
-	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
-	@echo --- DONE ---
+	@srun --export=ALL --partition=${CLUSTER_PARTITION} --account=${CLUSTER_ACCOUNT} --job-name=cleaning_barcodes --output=${PWD}/cleaning_barcodes.out --error=${PWD}/cleaning_barcodes.err  --nodes=1 --time=12:00:00 --ntasks=1 --cpus-per-task=1 --mem=10G bash -c "$(CLUSTER_LOAD_APPTAINER) $(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL) Rscript ${PWD}/0Preparation/cleaning_barcodes.R barcodesFolder=\'${PWD}/$(SC_RNASEQ_TB_FOLDER_SOURCE)\' output=\'${PWD}/$(SC_RNASEQ_CLEANED_BARCODES)\'"
 	@touch $@
 
 ## check that annotation are present in the Bgee database or, if annotation are not in Bgee, that a remapping
@@ -49,7 +39,7 @@ cleaning_barcodes: #filter_annot 0Preparation/cleaning_barcodes.R
 ##TODO: remapping strains, filtering and check on platform should also be done in perl in this rule
 check_annot: cleaning_barcodes
 	# First check of annotations
-	@$(SENSITIVE_PERL_CMD) perl 0Preparation/check_curation.pl -bgee=$(BGEECMD) -experiments=$(SC_RNASEQ_EXP_TB_FILEPATH_FILTERED) -libraries=$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED) -barcodeDir=$(SC_RNASEQ_CLEANED_BARCODES) -extraMapping=$(EXTRAMAPPING_FILEPATH) >$@.tmp 2>$@.err
+	@$(CLUSTER_SOFTWARE_BIN) perl 0Preparation/check_curation.pl -bgee=$(BGEECMD) -experiments=$(SC_RNASEQ_EXP_TB_FILEPATH_FILTERED) -libraries=$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED) -barcodeDir=$(SC_RNASEQ_CLEANED_BARCODES) -extraMapping=$(EXTRAMAPPING_FILEPATH) >$@.tmp 2>$@.err
 	@echo -e "Check file \"check_annot\" for the output of the script 0Before/check_curation.pl, which indicates potential errors to correct in the annotation files.\n"
 	@$(MV) $@.tmp $@
 
@@ -58,21 +48,7 @@ check_annot: cleaning_barcodes
 ## Using such a logic does not allow to run a pipeline as metadata mandatory for next step are not
 ## yet generated when the rule finishes.
 retrieve_metadata: get_annot 0Preparation/retrieve_metadata.R
-	@echo --- Retrieve metadata information ---
-	@sed -i 's@--output=.*@--output=${PWD}/retrieve_metadata.out@'                                                 0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/retrieve_metadata.err@'                                                   0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                   0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                         0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                   0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export scRNASeqExperiment=.*@export scRNASeqExperiment=$(SC_RNASEQ_EXP_TB_FILEPATH_FILTERED)@'      0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export scRNASeqTBLibrary=.*@export scRNASeqTBLibrary=$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED)@'        0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export metadata_file=.*@export metadata_file=$(SC_RNASEQ_METADATA_10X_FILEPATH)@'                   0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export information_file=.*@export information_file=$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)@'             0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET)@'                                     0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export R_LIBS_USER=.*@export R_LIBS_USER=$(R_LIBS_PATH_CURNAGL)@'                                   0Preparation/retrieve_metadata.sbatch
-	@sbatch 0Preparation/retrieve_metadata.sbatch
-	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
-	@echo --- DONE ---
+	@srun --export=ALL --partition=${CLUSTER_PARTITION} --account=${CLUSTER_ACCOUNT} --job-name=$@ --output=${PWD}/$@.out --error=${PWD}/$@.err  --nodes=1 --time=12:00:00 --ntasks=1 --cpus-per-task=1 --mem=2G bash -c "$(CLUSTER_LOAD_APPTAINER) $(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL) Rscript ${PWD}/0Preparation/retrieve_metadata.R scRNASeqExperiment=\'$(SC_RNASEQ_EXP_TB_FILEPATH_FILTERED)\' scRNASeqTBLibrary=\'$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED)\' metadata_file=\'$(SC_RNASEQ_METADATA_10X_FILEPATH)\' information_file=\'$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)\'"
 	@touch $@
 
 # Rule used to parallelize download of libraries and to standardize fastq file names

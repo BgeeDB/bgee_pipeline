@@ -60,7 +60,7 @@ for (barcode_file_path in barcodes_files_path) {
     uniq_celltype_freetext <- unique(unique_barcodes$cell_type)
     # As the cell_type column is used to detect clusters of barcodes, we can not have cell_type that is NA
     contains_celltype_freeText <- TRUE
-    if (length(uniq_celltype_freetext) == 1 & (uniq_celltype_freetext == "" | is.na(uniq_celltype_freetext))) {
+    if (is.null(uniq_celltype_freetext) || all(is.na(uniq_celltype_freetext)) || (length(uniq_celltype_freetext) == 1 && uniq_celltype_freetext == "")) {
       unique_barcodes$cell_type <- ""
       print(paste0("free text cell-type information is always NA or empty. Will check if cluster info are available for file ",
         barcode_file_name, " and library ", library_id))
@@ -68,7 +68,7 @@ for (barcode_file_path in barcodes_files_path) {
     }
     contains_cluster <- TRUE
     uniq_cluster_id <- unique(unique_barcodes$cluster)
-    if (is.na(uniq_cluster_id) | (length(uniq_cluster_id) == 1 & uniq_cluster_id == "")) {
+    if (is.null(uniq_cluster_id) || all(is.na(uniq_cluster_id)) || (length(uniq_cluster_id) == 1 && uniq_cluster_id == "")) {
       unique_barcodes$cluster <- ""
       message("No cluster ID provided for file ", barcode_file_name, " and library ", library_id)
       contains_cluster <- FALSE
@@ -119,6 +119,6 @@ for (barcode_file_path in barcodes_files_path) {
     message("Exists barcode duplicates in 1 or more library of ", barcode_file_name)
     write.table(all_duplicated_barcodes, file = file.path(output, paste0("DuplicateBarcodes_", barcode_file_name)), sep = "\t", row.names = FALSE, quote = FALSE)
   } else {
-    message("Not exist barcode duplicates in any libraryID of the correspondent experimentID: ", barcode_file_name)
+    message("No barcode duplicates in any libraryID of the experiment: ", barcode_file_name)
   }
 }
