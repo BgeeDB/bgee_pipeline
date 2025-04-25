@@ -100,8 +100,20 @@ results <- foreach(row = seq(nrow(annotation)), .combine = list, .multicombine =
   }
 }
 
-passed <- do.call(rbind, lapply(results, function(x) if (!is.null(x) && x$type == "passed") x$data else NULL))
-not_passed <- do.call(rbind, lapply(results, function(x) if (!is.null(x) && x$type == "not_passed") x$data else NULL))
+passed <- do.call(rbind, lapply(results, function(x) {
+  if (!is.null(x) && is.list(x) && !is.null(x$type) && x$type == "passed") {
+    return(x$data)
+  } else {
+    return(NULL)
+  }
+}))
+
+not_passed <- do.call(rbind, lapply(results, function(x) {
+  if (!is.null(x) && is.list(x) && !is.null(x$type) && x$type == "not_passed") {
+    return(x$data)
+  } else {
+    return(NULL)
+  }
 # write metadata files
 write.table(passed, metadataFile, sep = "\t", col.names = TRUE, row.names = FALSE, quote = FALSE)
 warning("Libraries for which metadata were not retrieved:\n", not_passed)
