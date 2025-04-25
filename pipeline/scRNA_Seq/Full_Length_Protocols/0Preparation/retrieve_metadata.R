@@ -43,12 +43,11 @@ colnames(passed) <- metadata_colnames
 not_passed <- data.frame(matrix(nrow = 0, ncol = length(metadata_colnames) + 1))
 colnames(not_passed) <- c(metadata_colnames, "exclusion_reason")
 
-#set the number of threads to use
-cl <- makeCluster(threads)
-registerDoParallel(cl)
+print("Starting parallelized loop to retrieve metadata from EBI")
+registerDoParallel(cores = threads)
 
 # Parallelized loop
-results <- foreach(row = seq(nrow(annotation)), .combine = rbind, .packages = c("utils")) %dopar% {
+results <- foreach(row = seq(nrow(annotation)), .combine = list, .multicombine = TRUE, .packages = c("utils")) %dopar% {
   library <- annotation[row,]
   libraryID <- library$libraryId
   metadata_info <- tryCatch(
@@ -101,11 +100,8 @@ results <- foreach(row = seq(nrow(annotation)), .combine = rbind, .packages = c(
   }
 }
 
-stopCluster(cl)
-
-passed <- do.call(rbind, lapply(results, function(x) if (x$type == "passed") x$data else NULL))
-not_passed <- do.call(rbind, lapply(results, function(x) if (x$type == "not_passed") x$data else NULL))
-
+passed <- do.call(rbind, lapply(results, function(x) if (!is.null(x) && x$type == "passed") x$data else NULL))
+not_passed <- do.call(rbind, lapply(results, function(x) if (!is.null(x) && x$type == "not_passed") x$data else NULL))
 # write metadata files
 write.table(passed, metadataFile, sep = "\t", col.names = TRUE, row.names = FALSE, quote = FALSE)
 warning("Libraries for which metadata were not retrieved:\n", not_passed)
