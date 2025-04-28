@@ -1,0 +1,3 @@
+barcode	cluster	library	experiment	tissue	cell_type	anatId_a_posteriori	anatName_a_posteriori	anat_a_posteriori_annotationStatus	cellTypeId	cellTypeName	cellTypeAnnotationStatus	name_Library	comments
+#CGGACACCATGACATC	NA	SRX11559755	SRP329970	Mammary tissue	BL	NA	NA	NA	CL:0002325	mammary alveolar cell	missing child term	PM-L Individual_16	NA
+#CGGACACCATGACATC	NA	SRX11559755	SRP329970	Mammary tissue	HSa	NA	NA	NA	CL:0002326	luminal epithelial cell of mammary gland	missing child term	PM-L Individual_16	NA
