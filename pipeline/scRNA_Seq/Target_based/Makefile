@@ -125,12 +125,12 @@ generate_info: check_tools 0Preparation/generateInfo.R
 ## generate a gtf file containing non matured transcripts. This file will be used only
 ## for single nucleus libraries
 generate_gtf_nascent: cleaning_barcodes 0Preparation/generate_GTF_nascent.R
-	@$(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args gtf_dir="$(RNASEQ_CLUSTER_GTF)" metadata_file="$(SC_RNASEQ_METADATA_10X_FILEPATH)" scRNASeqInfoFile="$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)"' 0Preparation/generate_GTF_nascent.R $(SC_RNASEQ_TB_FOLDER_GENERATED)generate_GTF_nascent.Rout
-	@touch $@
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) Rscript  ${PWD}/0Preparation/generate_GTF_nascent.R gtf_dir=\"$(RNASEQ_CLUSTER_GTF)\" metadata_file=\"$(SC_RNASEQ_METADATA_10X_FILEPATH)\" scRNASeqInfoFile=\"$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)\" > $@.tmp 2> $@.err
+	@$(MV) $@.tmp $@
 
 prepare_single_nucleus_index: generate_gtf_nascent 0Preparation/slurm_single_nucleus_index.pl
 	#Preparing single nucleus indexed transcriptome for every species
-	@perl 0Preparation/slurm_single_nucleus_index.pl -transcriptome_folder=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(SC_RNASEQ_TB_FOLDER_GENERATED) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -partition=$(SENSITIVE_CLUSTER_PARTITION) -cluster_kallisto_cmd="$(CLUSTER_KALLISTO_CMD)" -cluster_tophat_cmd="$(CLUSTER_TOPHAT_CMD)" >$@.tmp 2>&1
+	@$(CLUSTER_SOFTWARE_BIN) perl 0Preparation/slurm_single_nucleus_index.pl -transcriptome_folder=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(SC_RNASEQ_TB_FOLDER_GENERATED) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -partition=$(SENSITIVE_CLUSTER_PARTITION) -cluster_kallisto_cmd="$(CLUSTER_KALLISTO_CMD)" -cluster_tophat_cmd="$(CLUSTER_TOPHAT_CMD)" >$@.tmp 2>$@.err
 	@$(MV) $@.tmp $@
 
 ## Run Kallisto bus per taxon_iD/library
