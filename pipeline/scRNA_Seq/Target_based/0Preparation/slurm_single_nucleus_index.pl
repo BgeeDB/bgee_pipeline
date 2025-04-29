@@ -17,13 +17,11 @@ use Getopt::Long;
 use Time::localtime;
 
 # Define arguments & their default value
-my ($transcriptome_folder, $output_log_folder, $account, $partition, $cluster_kallisto_cmd, $cluster_tophat_cmd) = ('', '', '', '', '', '', '', '', '');
+my ($transcriptome_folder, $output_log_folder, $account, $partition) = ('', '', '', '', '', '', '');
 my %opts = ('transcriptome_folder=s' => \$transcriptome_folder, # same as GTF folder
             'output_log_folder=s'    => \$output_log_folder,
             'account=s'              => \$account,
-            'partition=s'            => \$partition,
-            'cluster_kallisto_cmd=s' => \$cluster_kallisto_cmd,
-            'cluster_tophat_cmd=s'   => \$cluster_tophat_cmd
+            'partition=s'            => \$partition
            );
 
 my $test_options = Getopt::Long::GetOptions(%opts);
@@ -62,8 +60,8 @@ while (my $file = readdir(DIR)) {
 		next;
 	}
 
-        # load vital-it softwares
-        my $sbatch_commands = "module use /software/module/\n";
+        # init sbatch command
+        my $sbatch_commands = "";
 
         # generate transcriptome with all intergenic sequences
         if (!-e $transcriptome_single_nucleus_file_path) {
@@ -88,8 +86,6 @@ while (my $file = readdir(DIR)) {
                     }
                 }
                 # generate transcriptome with tophat gtf_to_fasta
-                # load tophat module
-                $sbatch_commands .= "$cluster_tophat_cmd\n";
                 # generate transcriptome
                 $sbatch_commands .= "gtf_to_fasta $transcriptome_folder/$file $genome_file_path $transcriptome_nascent_file_path\n";
                 $sbatch_commands .= "# update transcriptome file to correct the header of each sequence\n";
@@ -104,9 +100,6 @@ while (my $file = readdir(DIR)) {
                 $sbatch_commands .= "xz --threads=2 -9 $genome_file_path\n";
             }
         }
-
-        # load kallisto module
-        $sbatch_commands .= "$cluster_kallisto_cmd\n";
 
         # generate index with default kmer size
         if (!-e $transcriptome_single_nucleus_index_path) {
