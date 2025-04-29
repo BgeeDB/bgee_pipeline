@@ -48,7 +48,7 @@ check_annot: cleaning_barcodes
 ## Using such a logic does not allow to run a pipeline as metadata mandatory for next step are not
 ## yet generated when the rule finishes.
 retrieve_metadata: get_annot 0Preparation/retrieve_metadata.R
-	@srun --export=ALL --partition=${CLUSTER_PARTITION} --account=${CLUSTER_ACCOUNT} --job-name=$@ --output=${PWD}/$@.out --error=${PWD}/$@.err  --nodes=1 --time=12:00:00 --ntasks=1 --cpus-per-task=1 --mem=2G bash -c "$(CLUSTER_LOAD_APPTAINER) $(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL) Rscript ${PWD}/0Preparation/retrieve_metadata.R scRNASeqExperiment=\'$(SC_RNASEQ_EXP_TB_FILEPATH_FILTERED)\' scRNASeqTBLibrary=\'$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED)\' metadata_file=\'$(SC_RNASEQ_METADATA_10X_FILEPATH)\'"
+	@srun --export=ALL --partition=${CLUSTER_PARTITION} --account=${CLUSTER_ACCOUNT} --job-name=$@ --output=${PWD}/$@.out --error=${PWD}/$@.err  --nodes=1 --time=12:00:00 --ntasks=1 --cpus-per-task=1 --mem=2G bash -c "$(CLUSTER_LOAD_APPTAINER) $(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL) Rscript ${PWD}/0Preparation/retrieve_metadata.R scRNASeqExperiment=\'$(SC_RNASEQ_EXP_TB_FILEPATH_FILTERED)\' scRNASeqTBLibrary=\'$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED)\' metadata_file=\'$(SC_RNASEQ_METADATA_10X_FILEPATH)\' information_file=\'$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)\'"
 	@$(MV) $@.out $@
 
 # Rule used to parallelize download of libraries and to standardize fastq file names

@@ -9,6 +9,7 @@
 ## scRNASeqExperiment --> File with annotation about all experiments annotated
 ## scRNASeqTBLibrary  --> File with all libraries annotated by bgee
 ## metadata_file      --> Path to the location where the metadata file will be saved
+## information_file   --> Path to the location where the information file will be generated
 
 ## libraries used
 library(stringr)
@@ -24,7 +25,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed....
-command_arg <- c("scRNASeqExperiment","scRNASeqTBLibrary", "metadata_file")
+command_arg <- c("scRNASeqExperiment","scRNASeqTBLibrary", "metadata_file", "information_file")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -121,8 +122,14 @@ if (!is.null(metadata)) {
   metadata <- metadata[, metadata_file_header]
 }
 
+information <- merge(annotation, metadata[, c("library_id", "run_accession", "read_count", "tax_id",
+  "scientific_name", "library_layout")], by.x="libraryId", by.y="library_id")
+
 # write file with metadata from SRA
 write.table(metadata, file = metadata_file, quote = FALSE, sep = "\t", col.names = TRUE,
+  row.names = FALSE)
+# write file merging annotation and some metadata from SRA
+write.table(information, file = information_file, quote = TRUE, sep = "\t", col.names = TRUE,
   row.names = FALSE)
 
 # update name and order columns of mismatch metadata in case there was some
