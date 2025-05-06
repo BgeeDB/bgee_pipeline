@@ -39,7 +39,7 @@ my %opts = ('metadataFile=s'        => \$metadataFile,
 ######################## Check arguments ########################
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$metadataFile || $parallelJobs eq '' || $fastqDir eq '' || $gtfDir eq '' ||
-    $scRNASeqInfoFile eq '' || $kallistoResults eq '' || $queue eq '' || $account eq '' || $pathToScript eq '' || containerCmd eq '') {
+    $scRNASeqInfoFile eq '' || $kallistoResults eq '' || $queue eq '' || $account eq '' || $pathToScript eq '' || $containerCmd eq '') {
     print "\n\tInvalid or missing argument:
 \te.g. $0 -metatadataFile=... -parallelJobs=50 -outputDir=...  >> $@.tmp 2> $@.warn
 \t-metadataFile            file containing metadata necessary to download each run
@@ -89,9 +89,9 @@ foreach my $experimentId (keys %processedLibraries){
           $jobName);
 
         #TODO: move modules management to a script attribute
-        my $commandToRun = "$containerCmd Rscript $pathToScript libraryId=\"$libraryId\" speciesId=\"$speciesId\"".
-                           " fastqDir=\"$fastqDir\" gtfDir=\"$gtfDir\" scRNASeqInfoFile=\"$scRNASeqInfoFile\"".
-                           " kallisto_bus_results=\"$kallistoResults\"";
+        my $commandToRun = "$containerCmd bash -c \"Rscript $pathToScript libraryId=\\'$libraryId\\' speciesId=\\'$speciesId\\'".
+                           " fastqDir=\\'$fastqDir\\' gtfDir=\\'$gtfDir\\' scRNASeqInfoFile=\\'$scRNASeqInfoFile\\'".
+                           " kallisto_bus_results=\\'$kallistoResults\\'\"";
         $sbatchTemplate .= "$commandToRun\n";
         my $sbatchFilePath = "$sbatchLocation$jobName.sbatch";
         $sbatchToRun{$experimentId}{$libraryId} = $sbatchFilePath;
