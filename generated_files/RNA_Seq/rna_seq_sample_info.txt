@@ -1612,42 +1612,6 @@ SRX661022	SRP044782	7918	Lepisosteus oculatus	lepisosteus_oculatus/Lepisosteus_o
 SRX661023	SRP044782	7918	Lepisosteus oculatus	lepisosteus_oculatus/Lepisosteus_oculatus.LepOcu1	Ensembl	Illumina HiSeq 2000	PAIRED		200.0	SRR1524258
 SRX661024	SRP044782	7918	Lepisosteus oculatus	lepisosteus_oculatus/Lepisosteus_oculatus.LepOcu1	Ensembl	Illumina HiSeq 2000	PAIRED		200.0	SRR1524259
 SRX661025	SRP044782	7918	Lepisosteus oculatus	lepisosteus_oculatus/Lepisosteus_oculatus.LepOcu1	Ensembl	Illumina HiSeq 2000	PAIRED		200.0	SRR1524260
-SRX2398279	SRP094623	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		100.0	SRR5079856
-SRX2398495	SRP094623	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		100.0	SRR5080090
-SRX2398590	SRP094623	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		100.0	SRR5080235
-SRX2398713	SRP094623	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		100.0	SRR5080631
-SRX2398838	SRP094623	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		100.0	SRR5080633
-SRX2398840	SRP094623	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		100.0	SRR5080636
-SRX2398841	SRP094623	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		100.0	SRR5080637
-SRX2398842	SRP094623	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		100.0	SRR5080643
-SRX2401380	SRP094623	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		100.0	SRR5083524
-SRX2401388	SRP094623	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		100.0	SRR5083580
-SRX2401414	SRP094623	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		100.0	SRR5083648
-SRX2401438	SRP094623	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		100.0	SRR5083659
-SRX3058360	SRP114772	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		51.0	SRR5892668
-SRX3058361	SRP114772	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		51.0	SRR5892669
-SRX3058363	SRP114772	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		51.0	SRR5892671
-SRX3058366	SRP114772	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		51.0	SRR5892674
-SRX3058369	SRP114772	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		51.0	SRR5892677
-SRX3058370	SRP114772	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		51.0	SRR5892678
-SRX3058371	SRP114772	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		51.0	SRR5892679
-SRX3058372	SRP114772	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		51.0	SRR5892680
-SRX3058373	SRP114772	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		51.0	SRR5892681
-SRX3058374	SRP114772	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		51.0	SRR5892682
-SRX3058377	SRP114772	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		151.0	SRR5892687,SRR5892688
-SRX3058378	SRP114772	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		151.0	SRR5892689,SRR5892690
-SRX3058379	SRP114772	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2500	PAIRED		151.0	SRR5892691,SRR5892692
-SRX666380	SRP045099	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2000	PAIRED		200.0	SRR1532756
-SRX666381	SRP045099	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2000	PAIRED		200.0	SRR1532757
-SRX666382	SRP045099	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2000	PAIRED		200.0	SRR1532758
-SRX666383	SRP045099	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2000	PAIRED		200.0	SRR1532759
-SRX666384	SRP045099	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2000	PAIRED		200.0	SRR1532760
-SRX666385	SRP045099	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2000	PAIRED		200.0	SRR1532761
-SRX666386	SRP045099	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2000	PAIRED		200.0	SRR1532762
-SRX666387	SRP045099	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2000	PAIRED		200.0	SRR1532763
-SRX666388	SRP045099	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2000	PAIRED		200.0	SRR1532764
-SRX666389	SRP045099	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2000	PAIRED		200.0	SRR1532765
-SRX666390	SRP045099	7936	Anguilla anguilla	anguilla_anguilla/anguilla_anguilla_GCF_013347855.1_fAngAng1.pri	RefSeq	Illumina HiSeq 2000	PAIRED		200.0	SRR1532766
 DRX029536	DRP003810	7955	Danio rerio	danio_rerio/Danio_rerio.GRCz11	Ensembl	Illumina HiSeq 2000	SINGLE		100.0	DRR032730
 DRX029537	DRP003810	7955	Danio rerio	danio_rerio/Danio_rerio.GRCz11	Ensembl	Illumina HiSeq 2000	SINGLE		100.0	DRR032731
 DRX029538	DRP003810	7955	Danio rerio	danio_rerio/Danio_rerio.GRCz11	Ensembl	Illumina HiSeq 2000	SINGLE		100.0	DRR032732
@@ -2593,63 +2557,6 @@ ERX2018612	ERP016820	8154	Astatotilapia calliptera	astatotilapia_calliptera/Asta
 ERX2018655	ERP016820	8154	Astatotilapia calliptera	astatotilapia_calliptera/Astatotilapia_calliptera.fAstCal1.3	Ensembl	Illumina HiSeq 2500	PAIRED		75.0	ERR1953059
 ERX2018656	ERP016820	8154	Astatotilapia calliptera	astatotilapia_calliptera/Astatotilapia_calliptera.fAstCal1.3	Ensembl	Illumina HiSeq 2500	PAIRED		75.0	ERR1953060
 ERX2018657	ERP016820	8154	Astatotilapia calliptera	astatotilapia_calliptera/Astatotilapia_calliptera.fAstCal1.3	Ensembl	Illumina HiSeq 2500	PAIRED		75.0	ERR1953061
-SRX1054490	SRP059283	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina Genome Analyzer IIx	SINGLE		54.0	SRR2057655
-SRX1286458	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515135
-SRX1286459	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515136
-SRX1286460	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515137
-SRX1286461	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515138
-SRX1286462	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515139
-SRX1286463	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515140
-SRX1286464	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515141
-SRX1286465	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515142
-SRX1286466	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515143
-SRX1286467	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515144
-SRX1286468	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515145
-SRX1286469	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515146
-SRX1286470	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515147
-SRX1286471	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515148
-SRX1286472	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED			SRR2515149
-SRX1286473	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515150
-SRX1286474	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515151
-SRX1286475	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515152
-SRX1286476	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515153
-SRX1286477	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515154
-SRX1286478	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515155
-SRX1286479	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515156
-SRX1286480	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED			SRR2515157
-SRX1286481	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515158
-SRX1286482	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515159
-SRX1286483	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515160
-SRX1286484	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515161
-SRX1286485	SRP064167	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2515162
-SRX1287707	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2517972
-SRX1287708	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2517973
-SRX1287709	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2517974
-SRX1287710	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2517975
-SRX1287711	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2517976
-SRX1287712	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2517977
-SRX1287713	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		101.0	SRR2517978
-SRX1287714	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		101.0	SRR2517979
-SRX1287715	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		101.0	SRR2517980
-SRX1287716	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		101.0	SRR2517981
-SRX1287717	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		101.0	SRR2517982
-SRX1287718	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2517983
-SRX1287719	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2517984
-SRX1287720	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2517985
-SRX1287721	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2517986
-SRX1287722	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2517987
-SRX1287723	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2517988
-SRX1287724	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2517989
-SRX1287725	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2517990
-SRX1287726	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2517991
-SRX1287727	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2517992
-SRX1287728	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2517993
-SRX1287729	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2517994
-SRX1287730	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2517995
-SRX1287731	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2517996
-SRX1287732	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2517997
-SRX1287733	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2517998
-SRX1287734	SRP064186	8355	Xenopus laevis	xenopus_laevis/xenopus_laevis_GCF_001663975.1_Xenopus_laevis_v2	RefSeq	Illumina HiSeq 2000	PAIRED		100.0	SRR2517999
 SRX143516	GSE37452	8364	Xenopus tropicalis	xenopus_tropicalis/Xenopus_tropicalis.UCB_Xtro_10.0	Ensembl	Illumina HiSeq 2000	PAIRED		202.0	SRR489439
 SRX143517	GSE37452	8364	Xenopus tropicalis	xenopus_tropicalis/Xenopus_tropicalis.UCB_Xtro_10.0	Ensembl	Illumina HiSeq 2000	PAIRED		202.0	SRR489440
 SRX143518	GSE37452	8364	Xenopus tropicalis	xenopus_tropicalis/Xenopus_tropicalis.UCB_Xtro_10.0	Ensembl	Illumina HiSeq 2000	PAIRED		202.0	SRR489441
@@ -7150,7 +7057,6 @@ SRX014825	SRP001558	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	I
 SRX014826	SRP001558	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina Genome Analyzer II	SINGLE		35.0	SRR032124
 SRX014827	SRP001558	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina Genome Analyzer II	SINGLE		35.0	SRR032125
 SRX014828	SRP001558	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina Genome Analyzer II	SINGLE		35.0	SRR032126
-SRX014829	SRP001558	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina Genome Analyzer II	SINGLE		35.0	SRR032127
 SRX025578	SRP003276	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina Genome Analyzer II	SINGLE		36.0	SRR063981,SRR063982
 SRX080219	SRP007359	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina Genome Analyzer IIx	SINGLE		76.0	SRR299106
 SRX080220	SRP007359	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina Genome Analyzer IIx	SINGLE		76.0	SRR299107
@@ -9183,22 +9089,6 @@ SRX345508	SRP029592	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	I
 SRX345509	SRP029592	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina Genome Analyzer IIx	PAIRED		70.0	SRR968076
 SRX345510	SRP029592	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina Genome Analyzer IIx	PAIRED		70.0	SRR968077
 SRX345511	SRP029592	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	Illumina Genome Analyzer IIx	PAIRED		70.0	SRR968078
-SRX3503722	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.365	SRR6410618
-SRX3503723	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.33	SRR6410617
-SRX3503724	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.395	SRR6410616
-SRX3503725	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.34	SRR6410615
-SRX3503726	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.295	SRR6410614
-SRX3503727	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.185	SRR6410613
-SRX3503728	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.315	SRR6410612
-SRX3503729	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.24	SRR6410611
-SRX3503730	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.38	SRR6410610
-SRX3503731	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.355	SRR6410609
-SRX3503732	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.34	SRR6410608
-SRX3503733	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.34	SRR6410607
-SRX3503734	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.15	SRR6410606
-SRX3503735	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.35	SRR6410605
-SRX3503736	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.36	SRR6410604
-SRX3503737	SRP127360	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 500	PAIRED		75.42	SRR6410603
 SRX3529264	SRP127986	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 550	PAIRED		100.0	SRR6437953
 SRX3529265	SRP127986	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 550	PAIRED		100.0	SRR6437952
 SRX3529266	SRP127986	9606	Homo sapiens	homo_sapiens/Homo_sapiens.GRCh38	Ensembl	NextSeq 550	PAIRED		100.0	SRR6437951
@@ -13869,7 +13759,6 @@ DRX087020	DRP004191	9615	Canis lupus familiaris	canis_lupus_familiaris/Canis_lup
 DRX087070	DRP005124	9615	Canis lupus familiaris	canis_lupus_familiaris/Canis_lupus_familiaris.ROS_Cfam_1.0	Ensembl	Illumina Genome Analyzer Iix	SINGLE		36.0	DRR093572
 DRX087071	DRP005124	9615	Canis lupus familiaris	canis_lupus_familiaris/Canis_lupus_familiaris.ROS_Cfam_1.0	Ensembl	Illumina Genome Analyzer Iix	SINGLE		36.0	DRR093573
 DRX087072	DRP005124	9615	Canis lupus familiaris	canis_lupus_familiaris/Canis_lupus_familiaris.ROS_Cfam_1.0	Ensembl	Illumina Genome Analyzer Iix	SINGLE		36.0	DRR093574
-ERX016332	ERP000787	9615	Canis lupus familiaris	canis_lupus_familiaris/Canis_lupus_familiaris.ROS_Cfam_1.0	Ensembl	Illumina Genome Analyzer II	SINGLE		45.0	ERR039151
 ERX016350	ERP000787	9615	Canis lupus familiaris	canis_lupus_familiaris/Canis_lupus_familiaris.ROS_Cfam_1.0	Ensembl	Illumina Genome Analyzer II	SINGLE		36.0	ERR039166
 ERX016356	ERP000787	9615	Canis lupus familiaris	canis_lupus_familiaris/Canis_lupus_familiaris.ROS_Cfam_1.0	Ensembl	Illumina Genome Analyzer II	SINGLE		45.0	ERR039167
 ERX1277319	ERP011542	9615	Canis lupus familiaris	canis_lupus_familiaris/Canis_lupus_familiaris.ROS_Cfam_1.0	Ensembl	Illumina HiSeq 2000	PAIRED		125.0	ERR1205077
@@ -15959,12 +15848,10 @@ ERX240891	ERP001694	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Il
 ERX240895	ERP001694	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina Genome Analyzer II	PAIRED		102.0	ERR266361
 ERX240901	ERP001694	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina Genome Analyzer II	PAIRED		102.0	ERR266396
 ERX2680016	ERP109534	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 3000	PAIRED		150.0	ERR2664186
-ERX2680017	ERP109534	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 3000	PAIRED		150.0	ERR2664187
 ERX2680018	ERP109534	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 3000	PAIRED		150.0	ERR2664188
 ERX2680019	ERP109534	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 3000	PAIRED		150.0	ERR2664199
 ERX2680020	ERP109534	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 3000	PAIRED		150.0	ERR2664200
 ERX2680021	ERP109534	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 3000	PAIRED		150.0	ERR2664201
-ERX2680022	ERP109534	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 3000	PAIRED		150.0	ERR2664202
 ERX2680023	ERP109534	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 3000	PAIRED		150.0	ERR2664189
 ERX2680024	ERP109534	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 3000	PAIRED		150.0	ERR2664191
 ERX2680025	ERP109534	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 3000	PAIRED		150.0	ERR2664193
@@ -16088,7 +15975,6 @@ SRX054605	SRP006209	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Il
 SRX054606	SRP006209	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina Genome Analyzer	SINGLE		35.0	SRR167693
 SRX054607	SRP006209	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina Genome Analyzer	SINGLE		35.0	SRR167694
 SRX054608	SRP006209	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina Genome Analyzer	SINGLE		35.0	SRR167695
-SRX1016220	SRP057957	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	SINGLE		49.0	SRR2006107
 SRX1016221	SRP057957	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	SINGLE		49.0	SRR2006108
 SRX1027513	SRP058340	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	SINGLE		90.0	SRR2025299
 SRX1029941	SRP058401	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	SINGLE		200.0	SRR2016644
@@ -17587,12 +17473,6 @@ ERX1545691	ERP016257	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Il
 ERX1545692	ERP016257	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		150.385	ERR1474555
 ERX1545693	ERP016257	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		150.325	ERR1474556
 ERX1545694	ERP016257	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		150.42	ERR1474557
-ERX202566	ERP002220	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		101.0	ERR227910
-ERX202567	ERP002220	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		101.0	ERR227911
-ERX202568	ERP002220	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		101.0	ERR227909
-ERX202569	ERP002220	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		101.0	ERR227912
-ERX202570	ERP002220	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		101.0	ERR227907
-ERX202571	ERP002220	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		101.0	ERR227908
 ERX2073443	ERP023706	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		250.0	ERR2013771,ERR2013772,ERR2013773,ERR2013774
 ERX2073444	ERP023706	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		250.0	ERR2013775,ERR2013776,ERR2013777,ERR2013778
 ERX2073445	ERP023706	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		250.0	ERR2013779,ERR2013780,ERR2013781,ERR2013782
@@ -19753,10 +19633,8 @@ SRX2883376	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Il
 SRX2883377	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		100.0	SRR5645282
 SRX2883378	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		100.0	SRR5645283
 SRX2883379	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		100.0	SRR5645284
-SRX2883380	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		50.0	SRR5645285
 SRX2883381	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		100.0	SRR5645286
 SRX2883382	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		100.0	SRR5645287
-SRX2883383	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		100.0	SRR5645288
 SRX2883384	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		100.0	SRR5645289
 SRX2883385	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		100.0	SRR5645290
 SRX2883386	SRP108615	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		100.0	SRR5645291
@@ -21201,17 +21079,6 @@ SRX6655261	SRP042594	9925	Capra hircus	capra_hircus/Capra_hircus.ARS1	Ensembl	Il
 SRX6655262	SRP042594	9925	Capra hircus	capra_hircus/Capra_hircus.ARS1	Ensembl	Illumina HiSeq 2000	PAIRED		150.0	SRR9903435
 SRX6655263	SRP042594	9925	Capra hircus	capra_hircus/Capra_hircus.ARS1	Ensembl	Illumina HiSeq 2000	PAIRED		150.0	SRR9903434
 SRX6655264	SRP042594	9925	Capra hircus	capra_hircus/Capra_hircus.ARS1	Ensembl	Illumina HiSeq 2000	PAIRED		150.0	SRR9903433
-SRX1296747	SRP064341	9974	Manis javanica	manis_javanica/manis_javanica_GCF_014570535.1_YNU_ManJav_2.0	RefSeq	Illumina HiSeq 2000	PAIRED		400.0	SRR2547558
-SRX1296752	SRP064341	9974	Manis javanica	manis_javanica/manis_javanica_GCF_014570535.1_YNU_ManJav_2.0	RefSeq	Illumina HiSeq 2000	PAIRED		400.0	SRR2561209
-SRX1305722	SRP064341	9974	Manis javanica	manis_javanica/manis_javanica_GCF_014570535.1_YNU_ManJav_2.0	RefSeq	Illumina HiSeq 2000	PAIRED		400.0	SRR2561211
-SRX1305723	SRP064341	9974	Manis javanica	manis_javanica/manis_javanica_GCF_014570535.1_YNU_ManJav_2.0	RefSeq	Illumina HiSeq 2000	PAIRED		400.0	SRR2561212
-SRX1305724	SRP064341	9974	Manis javanica	manis_javanica/manis_javanica_GCF_014570535.1_YNU_ManJav_2.0	RefSeq	Illumina HiSeq 2000	PAIRED		400.0	SRR2561213
-SRX1305725	SRP064341	9974	Manis javanica	manis_javanica/manis_javanica_GCF_014570535.1_YNU_ManJav_2.0	RefSeq	Illumina HiSeq 2000	PAIRED		400.0	SRR2561214
-SRX1305726	SRP064341	9974	Manis javanica	manis_javanica/manis_javanica_GCF_014570535.1_YNU_ManJav_2.0	RefSeq	Illumina HiSeq 2000	PAIRED		400.0	SRR2561215
-SRX1305727	SRP064341	9974	Manis javanica	manis_javanica/manis_javanica_GCF_014570535.1_YNU_ManJav_2.0	RefSeq	Illumina HiSeq 2000	PAIRED		400.0	SRR2561216
-SRX2627147	SRP101596	9974	Manis javanica	manis_javanica/manis_javanica_GCF_014570535.1_YNU_ManJav_2.0	RefSeq	Illumina HiSeq 2000	PAIRED		500.0	SRR5328124
-SRX2627156	SRP101596	9974	Manis javanica	manis_javanica/manis_javanica_GCF_014570535.1_YNU_ManJav_2.0	RefSeq	Illumina HiSeq 2000	PAIRED		500.0	SRR5337837
-SRX2635178	SRP101596	9974	Manis javanica	manis_javanica/manis_javanica_GCF_014570535.1_YNU_ManJav_2.0	RefSeq	Illumina HiSeq 2000	PAIRED		500.0	SRR5341161
 ERX1403289	ERP014610	9986	Oryctolagus cuniculus	oryctolagus_cuniculus/Oryctolagus_cuniculus.OryCun2.0	Ensembl	Illumina HiSeq 2000	PAIRED		200.0	ERR1331669
 ERX1403290	ERP014610	9986	Oryctolagus cuniculus	oryctolagus_cuniculus/Oryctolagus_cuniculus.OryCun2.0	Ensembl	Illumina HiSeq 2000	PAIRED		200.0	ERR1331670
 ERX1403291	ERP014610	9986	Oryctolagus cuniculus	oryctolagus_cuniculus/Oryctolagus_cuniculus.OryCun2.0	Ensembl	Illumina HiSeq 2000	PAIRED		200.0	ERR1331671
@@ -23178,283 +23045,6 @@ SRX8937292	SRP277304	10141	Cavia porcellus	cavia_porcellus/Cavia_porcellus.Cavpo
 SRX8937293	SRP277304	10141	Cavia porcellus	cavia_porcellus/Cavia_porcellus.Cavpor3.0	Ensembl	Illumina HiSeq 2500	SINGLE		50.5	SRR12442784
 SRX8937294	SRP277304	10141	Cavia porcellus	cavia_porcellus/Cavia_porcellus.Cavpor3.0	Ensembl	Illumina HiSeq 2500	SINGLE		50.5	SRR12442783
 SRX8937295	SRP277304	10141	Cavia porcellus	cavia_porcellus/Cavia_porcellus.Cavpor3.0	Ensembl	Illumina HiSeq 2500	SINGLE		50.5	SRR12442782
-ERX1403285	ERP014610	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2000	PAIRED		200.0	ERR1331665
-ERX1403296	ERP014610	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2000	PAIRED		200.0	ERR1331676
-ERX1403321	ERP014610	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2000	PAIRED		200.0	ERR1331701
-ERX1403326	ERP014610	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2000	PAIRED		200.0	ERR1331706
-SRX081740	SRP007398	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2000	PAIRED		180.0	SRR306394
-SRX081741	SRP007398	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2000	PAIRED		180.0	SRR306395
-SRX081742	SRP007398	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2000	PAIRED		180.0	SRR306396
-SRX081743	SRP007398	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2000	PAIRED		180.0	SRR306397
-SRX081744	SRP007398	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2000	PAIRED		180.0	SRR306398
-SRX081745	SRP007398	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2000	PAIRED		180.0	SRR306399
-SRX081746	SRP007398	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2000	PAIRED		180.0	SRR306400
-SRX081747	SRP007398	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2000	PAIRED		180.0	SRR306401
-SRX081748	SRP007398	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2000	PAIRED		180.0	SRR306402
-SRX081749	SRP007398	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2000	PAIRED		180.0	SRR306403
-SRX084382	SRP007512	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina Genome Analyzer	SINGLE		76.0	SRR314827,SRR314828
-SRX1113845	SRP061363	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	PAIRED		400.0	SRR2120769,SRR2120770
-SRX1113863	SRP061363	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	PAIRED		400.0	SRR2120779,SRR2120811
-SRX1113893	SRP061363	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	PAIRED		400.0	SRR2120823,SRR2120824
-SRX1113910	SRP061363	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	PAIRED		400.0	SRR2120844,SRR2120910
-SRX1115280	SRP061363	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	PAIRED		400.0	SRR2123685,SRR2123686
-SRX1115329	SRP061363	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	PAIRED		400.0	SRR2123747,SRR2123748
-SRX1115559	SRP061363	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	PAIRED		400.0	SRR2123984,SRR2123985
-SRX1115772	SRP061363	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	PAIRED		400.0	SRR2124226,SRR2124227
-SRX1115774	SRP061363	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	PAIRED		400.0	SRR2124229,SRR2124230
-SRX1115775	SRP061363	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	PAIRED		400.0	SRR2124231,SRR2124232
-SRX1458825	SRP066912	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	PAIRED		101.0	SRR2969598
-SRX1458826	SRP066912	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	PAIRED		101.0	SRR2969599
-SRX1458827	SRP066912	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	PAIRED		101.0	SRR2969600
-SRX2790569	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517234
-SRX2790570	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517235
-SRX2790571	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517236
-SRX2790572	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517192
-SRX2790573	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE			SRR5517193
-SRX2790574	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517194
-SRX2790575	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517195
-SRX2790576	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517196
-SRX2790577	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517197
-SRX2790578	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517198
-SRX2790579	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517199
-SRX2790580	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517200
-SRX2790581	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517201
-SRX2790582	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517202
-SRX2790583	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517203
-SRX2790584	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517204
-SRX2790585	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517205
-SRX2790586	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517206
-SRX2790587	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517207
-SRX2790588	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517208
-SRX2790589	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517209
-SRX2790590	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517210
-SRX2790591	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517211
-SRX2790592	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517212
-SRX2790593	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517213
-SRX2790594	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517214
-SRX2790595	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517215
-SRX2790596	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517216
-SRX2790597	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517217
-SRX2790598	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517218
-SRX2790599	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517219
-SRX2790600	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517220
-SRX2790601	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517221
-SRX2790602	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517222
-SRX2790603	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517223
-SRX2790604	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517224
-SRX2790605	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517225
-SRX2790606	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517226
-SRX2790607	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517227
-SRX2790608	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517228
-SRX2790609	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517229
-SRX2790610	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517230
-SRX2790611	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517231
-SRX2790612	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517232
-SRX2790613	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517233
-SRX2790614	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517237
-SRX2790615	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517238
-SRX2790616	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517239
-SRX2790617	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517240
-SRX2790618	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517241
-SRX2790619	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517242
-SRX2790620	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517243
-SRX2790621	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517244
-SRX2790622	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517245
-SRX2790623	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517246
-SRX2790624	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517247
-SRX2790625	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517248
-SRX2790626	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517249
-SRX2790627	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517250
-SRX2790628	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517251
-SRX2790629	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517252
-SRX2790630	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517253
-SRX2790631	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517254
-SRX2790632	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517255
-SRX2790633	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517256
-SRX2790634	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517257
-SRX2790635	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517258
-SRX2790636	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517259
-SRX2790637	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517260
-SRX2790638	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517261
-SRX2790639	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517262
-SRX2790640	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517263
-SRX2790641	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517264
-SRX2790642	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517265
-SRX2790643	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517266
-SRX2790644	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517267
-SRX2790645	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517268
-SRX2790646	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517269
-SRX2790647	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517270
-SRX2790648	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517271
-SRX2790649	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517272
-SRX2790650	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517273
-SRX2790651	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517274
-SRX2790652	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517275
-SRX2790653	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517276
-SRX2790654	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517277
-SRX2790655	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517278
-SRX2790656	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517279
-SRX2790657	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517280
-SRX2790658	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517281
-SRX2790659	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517282
-SRX2790660	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517283
-SRX2790661	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517284
-SRX2790662	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517285
-SRX2790663	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517286
-SRX2790664	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517287
-SRX2790665	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517288
-SRX2790666	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517289
-SRX2790667	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517290
-SRX2790668	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517291
-SRX2790669	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517292
-SRX2790670	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517293
-SRX2790671	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517294
-SRX2790672	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517295
-SRX2790673	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517296
-SRX2790674	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517297
-SRX2790675	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517298
-SRX2790676	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517299
-SRX2790677	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517300
-SRX2790678	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517301
-SRX2790679	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517302
-SRX2790680	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517303
-SRX2790681	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517304
-SRX2790682	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517305
-SRX2790683	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517306
-SRX2790684	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517307
-SRX2790685	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517308
-SRX2790686	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517309
-SRX2790687	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517310
-SRX2790688	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517311
-SRX2790689	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517312
-SRX2790690	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517313
-SRX2790691	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517314
-SRX2790692	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517315
-SRX2790693	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517316
-SRX2790694	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517317
-SRX2790695	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517318
-SRX2790696	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517319
-SRX2790697	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517320
-SRX2790698	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517321
-SRX2790699	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517322
-SRX2790700	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517323
-SRX2790701	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517324
-SRX2790702	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517325
-SRX2790703	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517326
-SRX2790704	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517327
-SRX2790705	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517328
-SRX2790706	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517329
-SRX2790707	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517330
-SRX2790708	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517331
-SRX2790709	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517332
-SRX2790710	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517333
-SRX2790711	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517334
-SRX2790712	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517335
-SRX2790713	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517336
-SRX2790714	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517337
-SRX2790715	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517338
-SRX2790716	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517339
-SRX2790717	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517340
-SRX2790718	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517341
-SRX2790719	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517342
-SRX2790720	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517343
-SRX2790721	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517344
-SRX2790722	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517345
-SRX2790723	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517346
-SRX2790724	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517347
-SRX2790725	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517348
-SRX2790726	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517349
-SRX2790727	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517350
-SRX2790728	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517351
-SRX2790729	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517352
-SRX2790730	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517353
-SRX2790731	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517354
-SRX2790732	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517355
-SRX2790733	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517356
-SRX2790734	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517357
-SRX2790735	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517358
-SRX2790736	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517359
-SRX2790737	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517360
-SRX2790738	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517361
-SRX2790739	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517362
-SRX2790740	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517363
-SRX2790741	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517364
-SRX2790742	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517365
-SRX2790743	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517366
-SRX2790744	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517367
-SRX2790745	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517368
-SRX2790746	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517369
-SRX2790747	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517370
-SRX2790748	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517371
-SRX2790749	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517372
-SRX2790750	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517373
-SRX2790751	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517374
-SRX2790752	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517375
-SRX2790753	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517376
-SRX2790754	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517377
-SRX2790755	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517378
-SRX2790756	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517379
-SRX2790757	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517380
-SRX2790758	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517381
-SRX2790759	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517382
-SRX2790760	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517383
-SRX2790761	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517384
-SRX2790762	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517385
-SRX2790763	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517386
-SRX2790764	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517387
-SRX2790765	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517388
-SRX2790766	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517389
-SRX2790767	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517390
-SRX2790768	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517391
-SRX2790769	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517392
-SRX2790770	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517393
-SRX2790771	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517394
-SRX2790772	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517410
-SRX2790773	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517411
-SRX2790774	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517412,SRR5517413
-SRX2790775	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517414,SRR5517415
-SRX2790776	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517416,SRR5517417
-SRX2790777	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517418,SRR5517419
-SRX2790778	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517420,SRR5517421
-SRX2790779	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517422,SRR5517423
-SRX2790780	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517424,SRR5517425
-SRX2790781	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517426,SRR5517427
-SRX2790782	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517428,SRR5517429
-SRX2790783	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517430
-SRX2790801	SRP106650	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517432
-SRX2790802	SRP106650	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517433
-SRX2790803	SRP106650	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517434
-SRX2790804	SRP106650	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517435
-SRX2790805	SRP106650	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517436
-SRX2790806	SRP106650	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517437
-SRX2790807	SRP106650	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517438
-SRX2790808	SRP106650	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517439
-SRX2790809	SRP106650	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		50.0	SRR5517440
-SRX2790810	SRP106650	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517441
-SRX2790811	SRP106650	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517442
-SRX2790812	SRP106650	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517443
-SRX2790813	SRP106650	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517444
-SRX2790814	SRP106650	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517445
-SRX2790815	SRP106650	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517446
-SRX2790816	SRP106650	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517447
-SRX2790817	SRP106650	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517448
-SRX2790818	SRP106650	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517449
-SRX2790819	SRP106650	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517450
-SRX2790820	SRP106650	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517451
-SRX2790821	SRP106650	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517452
-SRX2790822	SRP106650	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517453
-SRX2790823	SRP106650	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5517454
-SRX2793921	SRP106851	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5520650
-SRX2793922	SRP106851	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5520651
-SRX2793923	SRP106851	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5520652
-SRX2793924	SRP106851	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5520653
-SRX2793925	SRP106851	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5520654
-SRX2793926	SRP106851	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5520655
-SRX2793927	SRP106851	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		25.5	SRR5520656,SRR5520657
-SRX2793928	SRP106851	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5520658
-SRX2793929	SRP106851	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51.0	SRR5520659
-SRX6060847	SRP201320	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 4000	PAIRED		150.0	SRR9291435
-SRX6060848	SRP201320	10181	Heterocephalus glaber	heterocephalus_glaber_female/Heterocephalus_glaber_female.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 4000	PAIRED		150.0	SRR9291436
 ERX016329	ERP000787	13616	Monodelphis domestica	monodelphis_domestica/Monodelphis_domestica.ASM229v1	Ensembl	Illumina Genome Analyzer II	SINGLE		36.0	ERR039159
 ERX016333	ERP000787	13616	Monodelphis domestica	monodelphis_domestica/Monodelphis_domestica.ASM229v1	Ensembl	Illumina Genome Analyzer II	SINGLE		35.0	ERR039158
 ERX016352	ERP000787	13616	Monodelphis domestica	monodelphis_domestica/Monodelphis_domestica.ASM229v1	Ensembl	Illumina Genome Analyzer II	SINGLE		36.0	ERR039164
