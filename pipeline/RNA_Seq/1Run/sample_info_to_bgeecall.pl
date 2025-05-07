@@ -1,4 +1,4 @@
-#!usr/bin/env perl
+#!/usr/bin/env perl
 
 use strict;
 use warnings;
@@ -61,7 +61,7 @@ if ( !$test_options || $sample_info_file eq '' || $output_dir eq '' || $sample_e
 }
 
 my $renameFastqScript = "./rename_fastq.sh";
-open(my $FH, '>', $bgeecall_file)  or die $!;
+open(my $FH, '>', $bgeecall_file)  or die "Cannot open '$bgeecall_file': $!\n";
 open(my $FH_missing, '>', "./missing_fastq.sh")  or die $!;
 open(my $FH_processed, '>', "./already_processed")  or die $!;
 open(my $FH_rename, '>', "$renameFastqScript")  or die $!;
