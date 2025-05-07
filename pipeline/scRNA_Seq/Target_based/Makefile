@@ -141,7 +141,7 @@ kallisto_bus:
 
 # generate stats from fastp and kallisto (e.g. read length, reads mapped, ...)
 generate_stats: #kallisto_bus 1Run/generate_stats.R
-	@$(CLUSTER_R_CMD) Rscript 1Run/generate_stats.R metadata_file=\"$(SC_RNASEQ_METADATA_10X_FILEPATH)\" kallisto_dir=\"$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET)\" fastq_dir=\"$(SC_RNASEQ_FASTQ_DROPLET)\" output_file=\"$(SC_RNASEQ_STATS_LIBRARIES_10X)\" > $@.tmp 2> $@.err
+	@$(CLUSTER_LOAD_APPTAINER) $(CLUSTER_CONTAINER_CMD_WITH_BIND) Rscript 1Run/generate_stats.R metadata_file=\"$(SC_RNASEQ_METADATA_10X_FILEPATH)\" kallisto_dir=\"$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET)\" fastq_dir=\"$(SC_RNASEQ_FASTQ_DROPLET)\" output_file=\"$(SC_RNASEQ_STATS_LIBRARIES_10X)\" > $@.tmp 2> $@.err
 	@mv $@.tmp $@
 
 # NOTE: Before run the process_busFile rule (uncompress the barcodes files, because in github we cannot have files with more than 100Mb size)
@@ -154,7 +154,7 @@ uncompress_barcodes: generate_stats $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_whiteli
 ## Process bus files
 process_busFile: uncompress_barcodes 1Run/process_busfile_one_lib.R
 	@echo --- Starting the process of bus files ---
-	@$(SENSITIVE_PERL_CMD) perl 1Run/parallelized_process_busfile.pl -metadataFile=${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH) -parallelJobs=100 -fastqDir=$(SC_RNASEQ_FASTQ_DROPLET) -gtfDir=$(RNASEQ_CLUSTER_GTF) -scRNASeqInfoFile=${PWD}/$(SC_RNASEQ_SAMPINFO_10X_FILEPATH) -whiteListPath=${PWD}/$(SC_RNASEQ_TB_FOLDER_SOURCE) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/process_busfile_one_lib.R > $@.tmp 2> $@.err
+	@$(CLUSTER_SOFTWARE_BIN) perl 1Run/parallelized_process_busfile.pl -metadataFile=${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH) -parallelJobs=100 -fastqDir=$(SC_RNASEQ_FASTQ_DROPLET) -gtfDir=$(RNASEQ_CLUSTER_GTF) -scRNASeqInfoFile=${PWD}/$(SC_RNASEQ_SAMPINFO_10X_FILEPATH) -whiteListPath=${PWD}/$(SC_RNASEQ_TB_FOLDER_SOURCE) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/process_busfile_one_lib.R -containerCmd="$(CLUSTER_CONTAINER_CMD_WITH_BIND)"> $@.tmp 2> $@.err
 	@mv $@.tmp $@
 
 
