@@ -312,8 +312,8 @@ for(species in unique(sampleInfo$speciesId)){
   #Points where the Kernel Density estimation will be evaluated (we use -15, 15 since by emperical evidence all RNAseq TPM data fall within that range)
   # Fit KDE for each distribution
   # Compute the PDFs for both distributions
-  kde1 <- density(intergenic_data, n = 2048, from = -8, to = 10)
-  kde2 <- density(pcoding_data, n = 2048, from = -8, to = 10)
+  kde1 <- density(intergenic_data, n = 2048, from = -10, to = 10)
+  kde2 <- density(pcoding_data, n = 2048, from = -10, to = 10)
 
   # Save the PDF of the KDEs
   pdf1 <- kde1$y
@@ -326,7 +326,7 @@ for(species in unique(sampleInfo$speciesId)){
   # Find the crossover point that satisfies both conditions
   crossover_index <- which(pdf2 > pdf1 & kde1$x > quantile_20)[1]
 
-  if (is.na(crossover_index)) stop("No crossover point found where pdf2 is higher than pdf1.")
+  if (is.na(crossover_index)) stop("No crossover point found where protein-coding pdf is higher than intergenic pdf.")
   crossover_value <- kde1$x[crossover_index]
 
   # Interquartile Range (IQR) Filtering for low TPM values
@@ -341,8 +341,8 @@ for(species in unique(sampleInfo$speciesId)){
   #mislabelled_values <- c(mislabelled_high, mislabelled_low)
 
   # Print diagnostics
-  cat("Crossover value where PDF of dist2 becomes higher than PDF of dist1:", crossover_value, "\n")
-  cat("Low TPM threshold (Tukey's outlier detector):", low_tpm_threshold, "\n")
+  cat("Crossover value where PDF of protein-coding becomes higher than PDF of intergenic regions:", crossover_value, "\n")
+  #cat("Low TPM threshold (Tukey's outlier detector):", low_tpm_threshold, "\n")
   cat("Number of mislabelled values:", length(mislabelled_values), "\n")
 
   # Visualize the mislabelled values and KDEs
@@ -351,7 +351,7 @@ for(species in unique(sampleInfo$speciesId)){
   lines(kde2, col = "green", lwd = 2)
   abline(v = crossover_value, col = "black", lty = 2, lwd = 1.5)
   points(mislabelled_values, rep(0.02, length(mislabelled_values)), col = "red", pch = 16, cex = 0.8)
-  legend("topright", legend = c("KDE of Intergenic Regions", "KDE of Protein-coding Regions", "Crossover Threshold", "Mislabelled Values"),
+  legend("topright", legend = c("KDE of Intergenic Regions", "KDE of Protein-coding Regions", "Crossover Threshold", "Outlier intergenics"),
         col = c("blue", "green", "black", "red"), lty = c(1, 1, 2, NA), pch = c(NA, NA, NA, 16), lwd = c(2, 2, 1.5, NA))
   dev.off()
 
@@ -359,7 +359,7 @@ for(species in unique(sampleInfo$speciesId)){
   summed$classification <- NA
   summed$classification[summed$tpm > 10^-6 & summed$biotype %in% "protein_coding"] <- "coding"
   summed$classification[summed$tpm < 10^-6 | summed$tpm >= 2^crossover_value] <- "Outlier_intergenic"
-  summed$classification[summed$tpm >= low_tpm_threshold & summed$tpm < 2^crossover_value & summed$type == "intergenic"] <- "Reference_intergenic"
+  summed$classification[summed$tpm < 2^crossover_value & summed$type == "intergenic"] <- "Reference_intergenic"
 
   # Export the filtered data
   write.table(
@@ -372,7 +372,7 @@ for(species in unique(sampleInfo$speciesId)){
   )
 
   # Clean up variables to avoid memory issues
-  rm(list = c("summed", "low_tpm_threshold", "kde1", "kde2", "pdf1", "pdf2"))
+  rm(list = c("summed", "kde1", "kde2", "pdf1", "pdf2"))
 }
 
 ## TODO export gaussian parameters for each species
