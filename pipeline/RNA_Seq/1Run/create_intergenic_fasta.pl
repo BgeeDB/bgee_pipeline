@@ -102,6 +102,7 @@ foreach my $species_name (keys %speNameToSpeId){
 
     # Remove archive extension to get uncompressed file name
     my $uncompressed_file = substr($file_path, 0, length($file_path) - length($transcriptome_compression_ext));
+    print("Uncompressed file path: $uncompressed_file\n");
     # If file already exists, remove it
     if (-e $uncompressed_file) {
         unlink $uncompressed_file;
@@ -180,3 +181,4 @@ foreach my $species_name (keys %speNameToSpeId){
     unlink $uncompressed_file;
 }
 closedir DIR;
+
