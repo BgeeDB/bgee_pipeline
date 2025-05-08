@@ -1,12 +1,7 @@
-created 7 sbatch files.
-Submitted batch job 51917297
-Submitted batch job 51917298
-Submitted batch job 51917299
-Submitted batch job 51917300
-Submitted batch job 51917301
-Submitted batch job 51917302
-Submitted batch job 51917303
-all download jobs finished. Run 7 jobs.
-0 jobs completed, 7 jobs failed, 0 jobs failed with an out of memory issue and 0 jobs have been cancelled.
+created 1 sbatch files.
+Submitted batch job 52222215
+all download jobs finished. Run 1 jobs.
+1 jobs completed, 0 jobs failed, 0 jobs failed with an out of memory issue and 0 jobs have been cancelled.
 now start to generate symlinks of libraries per species
+done download of library SRX22159793
 Finally update the file containing downloaded libraries
