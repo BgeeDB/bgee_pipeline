@@ -115,7 +115,7 @@ my $insert_annotatedSamples =   'INSERT INTO rnaSeqLibraryAnnotatedSample (rnaSe
                                 'sdAbundanceReferenceIntergenicDistribution, abundanceThreshold,'.
                                 'allGenesPercentPresent, proteinCodingGenesPercentPresent,'.
                                 'intergenicRegionsPercentPresent, pValueThreshold, allUMIsCount, mappedUMIsCount,'.
-                                'multipleLibraryIndividualSample, barcode, time, timeUnit, freeTextAnnotation)'.
+                                'multipleLibraryIndividualSample, barcode, time, timeUnit, physiologicalStatus)'.
                                 ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
 my $update_sumUMIs_annotatedSamples =  'UPDATE rnaSeqLibraryAnnotatedSample set mappedUMIsCount = ? where '.
