@@ -46,10 +46,17 @@ colnames(not_passed) <- c(metadata_colnames, "exclusion_reason")
 print("Starting parallelized loop to retrieve metadata from EBI")
 registerDoParallel(cores = threads)
 
+#create a counter for the number of libraries processed
+counter <- 0
+
 # Parallelized loop
-results <- foreach(row = seq(nrow(annotation)), .combine = list, .multicombine = TRUE, .packages = c("utils")) %dopar% {
+results <- foreach(row = seq(nrow(annotation)), .combine = c, .multicombine = TRUE, .packages = c("utils")) %dopar% {
   library <- annotation[row,]
   libraryID <- library$libraryId
+  if (startsWith(as.character(libraryID), "#")) {
+    return(NULL)
+  }
+  counter <<- counter + 1
   metadata_info <- tryCatch(
     {
       # retrieve information from EBI metadata for each library annotated
@@ -108,13 +115,7 @@ passed <- do.call(rbind, lapply(results, function(x) {
   }
 }))
 
-not_passed <- do.call(rbind, lapply(results, function(x) {
-  if (!is.null(x) && is.list(x) && !is.null(x$type) && x$type == "not_passed") {
-    return(x$data)
-  } else {
-    return(NULL)
-  }
 # write metadata files
 write.table(passed, metadataFile, sep = "\t", col.names = TRUE, row.names = FALSE, quote = FALSE)
-warning("Libraries for which metadata were not retrieved:\n", not_passed)
-
+# count retrieved metadata comparared to the number of processed libraries
+print(paste("Retrieved metadata for", nrow(passed), "libraries out of", counter, "processed libraries."))

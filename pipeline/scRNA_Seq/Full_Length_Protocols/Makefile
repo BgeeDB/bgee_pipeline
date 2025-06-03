@@ -17,7 +17,7 @@ get_annot:
 ## Control the annotation (run rule in front)
 filter_annotation: get_annot 0Preparation/filter_annotation.R
 	@echo --- Filter FL libraries from annotation files ---
-	@$(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL) Rscript 0Preparation/filter_annotation.R scRNASeqLibrary=\"$(SC_RNASEQ_LIB_FL_FILEPATH)\" scRNASeqExperiment=\"$(SC_RNASEQ_EXP_FL_FILEPATH)\" filteredLibrariesFile=\"$(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)\" filteredExperimentsFile=\"$(SC_RNASEQ_FL_EXP_FILTERED_FILEPATH)\" > $@.tmp 2> $@.err
+	@$(CLUSTER_LOAD_APPTAINER) $(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL) Rscript 0Preparation/filter_annotation.R scRNASeqLibrary=\"$(SC_RNASEQ_LIB_FL_FILEPATH)\" scRNASeqExperiment=\"$(SC_RNASEQ_EXP_FL_FILEPATH)\" filteredLibrariesFile=\"$(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)\" filteredExperimentsFile=\"$(SC_RNASEQ_FL_EXP_FILTERED_FILEPATH)\" > $@.tmp 2> $@.err
 	@echo --- Map strain names ---
 	@$(CLUSTER_SOFTWARE_BIN) perl -e 'use lib "../.."; use Utils; Utils::map_strain_names("$(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)", "$(STRAIN_MAPPING_FILE)")' > $(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH).ori
 	@$(MV) $(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH).ori $(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)
@@ -28,7 +28,7 @@ filter_annotation: get_annot 0Preparation/filter_annotation.R
 THREADS_RETRIEVE_METADATA := 16
 retrieve_metadata: filter_annotation 0Preparation/retrieve_metadata.R
 	@srun --output=${PWD}/$@.out --error=${PWD}/$@.err --partition=${CLUSTER_PARTITION} --account=${CLUSTER_ACCOUNT} --job-name=retrieve_metadata_fulllength --mem=2G --time=1-00:00:00 --nodes=1 --ntasks=1 --export=ALL --cpus-per-task=$(THREADS_RETRIEVE_METADATA) bash -c "$(CLUSTER_SOFT_UNIL) $(CLUSTER_SOFT_APPTAINER) $(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL) Rscript ${PWD}/0Preparation/retrieve_metadata.R filteredLibraryAnnotation=\'$(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)\' metadataFile=\'$(SC_RNASEQ_METADATA_FL_FILEPATH)\' threads=\'$(THREADS_RETRIEVE_METADATA)\'"
-	@touch $@
+	$(MV) $@.out $@
 
 # Parallelize download of libraries and do not download again already downloaded libraries
 parallelized_download: retrieve_metadata

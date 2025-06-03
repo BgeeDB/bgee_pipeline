@@ -1,5 +1,3 @@
-INFO:    Environment variable SINGULARITY_BINDPATH is set, but APPTAINER_BINDPATH is preferred
-/dcsrsoft/spack//20241118/spack/opt/spack/linux-rhel9-zen2/gcc-12.3.0/lmod-8.7.24-w3bic3ji3ghbqam3ne2upr4dduxckdta/lmod/lmod/init/bash: line 140: /dev/null: Permission denied
 sh: 1: cannot create /dev/null: Permission denied
 
 Attaching package: 'dplyr'
