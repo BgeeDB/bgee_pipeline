@@ -6,7 +6,7 @@ include $(PIPELINEROOT)Makefile.common
 ################## STEPS TO RUN ON THE CURNAGL SERVER ##################
 
 ## Retrieve up-to-date annotation files from https://gitlab.sib.swiss/Bgee/expression-annotations submodule and store them in the source_files directory
-get_annot:
+get_annot: 
 	@$(GIT) submodule init
 	@$(GIT) submodule update
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/Strains/StrainMapping.tsv                 $(STRAIN_MAPPING_FILE)
@@ -25,20 +25,22 @@ get_annot:
 ##     libraries already inserted in the database (if MINOR_RELEASE =! 0). It is probably faster to rewrite
 ##     this code in perl in order to reuse code managing connection to the DB.
 ##     /!\ For Bgee 15.2 this filtering was done manually directly on the metadata_info.txt file
-filter_annot:
+filter_annot: get_annot 0Preparation/filter_annotation.R
+	@echo -e "\nFiltering annotation files to keep only target-based protocols and libraries"
 	@$(CLUSTER_LOAD_APPTAINER) $(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL) R CMD BATCH --no-save --no-restore '--args scRNASeqExperiment="$(SC_RNASEQ_EXP_TB_FILEPATH)" scRNASeqTBLibrary="$(SC_RNASEQ_LIB_TB_FILEPATH)" strainMapping="$(STRAIN_MAPPING_FILE)" acceptedProtocols="$(SC_RNASEQ_ACCEPTED_PROTOCOLS)" outputDir="$(SC_RNASEQ_TB_FOLDER_GENERATED)"' 0Preparation/filter_annotation.R $(SC_RNASEQ_TB_FOLDER_GENERATED)filter_annotation.Rout
 	@touch $@
 
 ## Cleaning duplicates in the barcodes annotation files before mapping and analyis
-cleaning_barcodes: #filter_annot 0Preparation/cleaning_barcodes.R
+cleaning_barcodes: filter_annot 0Preparation/cleaning_barcodes.R
+	@echo -e "\nCleaning barcodes annotation files"
 	@srun --export=ALL --partition=${CLUSTER_PARTITION} --account=${CLUSTER_ACCOUNT} --job-name=cleaning_barcodes --output=${PWD}/cleaning_barcodes.out --error=${PWD}/cleaning_barcodes.err  --nodes=1 --time=12:00:00 --ntasks=1 --cpus-per-task=1 --mem=10G bash -c "$(CLUSTER_LOAD_APPTAINER) $(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL) Rscript ${PWD}/0Preparation/cleaning_barcodes.R barcodesFolder=\'${PWD}/$(SC_RNASEQ_TB_FOLDER_SOURCE)\' output=\'${PWD}/$(SC_RNASEQ_CLEANED_BARCODES)\'"
-	@touch $@
+	@$(MV) $@.out $@
 
 ## check that annotation are present in the Bgee database or, if annotation are not in Bgee, that a remapping
 ## has been done.
 ##TODO: remapping strains, filtering and check on platform should also be done in perl in this rule
-check_annot: cleaning_barcodes
-	# First check of annotations
+check_annot: cleaning_barcodes 0Preparation/check_curation.pl
+	@echo -e "\nChecking annotation files before running the pipeline"
 	@$(CLUSTER_SOFTWARE_BIN) perl 0Preparation/check_curation.pl -bgee=$(BGEECMD) -experiments=$(SC_RNASEQ_EXP_TB_FILEPATH_FILTERED) -libraries=$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED) -barcodeDir=$(SC_RNASEQ_CLEANED_BARCODES) -extraMapping=$(EXTRAMAPPING_FILEPATH) >$@.tmp 2>$@.err
 	@echo -e "Check file \"check_annot\" for the output of the script 0Before/check_curation.pl, which indicates potential errors to correct in the annotation files.\n"
 	@$(MV) $@.tmp $@
@@ -48,28 +50,26 @@ check_annot: cleaning_barcodes
 ## Using such a logic does not allow to run a pipeline as metadata mandatory for next step are not
 ## yet generated when the rule finishes.
 retrieve_metadata: get_annot 0Preparation/retrieve_metadata.R
+	@echo -e "\nRetrieving metadata for the target-based protocols"
 	@srun --export=ALL --partition=${CLUSTER_PARTITION} --account=${CLUSTER_ACCOUNT} --job-name=$@ --output=${PWD}/$@.out --error=${PWD}/$@.err  --nodes=1 --time=12:00:00 --ntasks=1 --cpus-per-task=1 --mem=2G bash -c "$(CLUSTER_LOAD_APPTAINER) $(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL) Rscript ${PWD}/0Preparation/retrieve_metadata.R scRNASeqExperiment=\'$(SC_RNASEQ_EXP_TB_FILEPATH_FILTERED)\' scRNASeqTBLibrary=\'$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED)\' metadata_file=\'$(SC_RNASEQ_METADATA_10X_FILEPATH)\' information_file=\'$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)\'"
 	@$(MV) $@.out $@
 
-# Rule used to parallelize download of libraries and to standardize fastq file names
-# it replaces the old rules not parallelized and downloading files depending on the sources
-# (see scripts 0Preparation/download_SRA.R, 0Preparation/download_HCA.R and 0Preparation/download_reformat_EBI.R)
-parallelized_download: retrieve_metadata
+#TODO: this rule uses the approach implented in 0Preparation/rename_fastq.pl to rename fastq files.
+#      A second script named 0Preparation/rename_fastq.R (called in 0Preparation/rename_fastq_all.pl)
+#      is also available to rename fastq files. Check which one is the best to use next time we run the pipeline.
+parallelized_download: retrieve_metadata 0Preparation/parallelized_download_SRA.pl 0Preparation/rename_fastq.pl 0Preparation/run_fastp.pl
+	@echo -e "\nDownloading libraries and renaming fastq files"
 	@$(CLUSTER_SOFTWARE_BIN) perl 0Preparation/parallelized_download_SRA.pl --metadataFile=${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH) --renameScriptPath=${PWD}/0Preparation/rename_fastq.pl --qualityScriptPath=${PWD}/0Preparation/run_fastp.pl --downloadedLibraries=${PWD}/$(SC_RNASEQ_TB_DOWNLOADED_LIB_FILEPATH) --parallelJobs=10 --outputDir=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET) --containerCmd="$(CLUSTER_LOAD_APPTAINER) $(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL)" --queue=$(CLUSTER_PARTITION) --account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
 	@$(MV) $@.tmp $@
 
-parallelized_quality_check:
-	@$(SENSITIVE_PERL_CMD) perl 0Preparation/parallelized_quality_check.pl -metadataFile=${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH) -qualityScriptPath=${PWD}/0Preparation/run_fastp.pl -parallelJobs=100 -outputDir=$(SC_RNASEQ_DOWNLOAD_PATH_DROPLET) -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
-	@$(MV) $@.tmp $@
-
 # Commit the library information file that will be used for the rest of the pipeline
-commit_annotation_and_metadata: list_new_downloads
+commit_annotation_and_metadata: parallelized_download
 	@$(GIT) add $(SC_RNASEQ_METADATA_10X_FILEPATH)
 	@$(GIT) add $(SC_RNASEQ_EXP_TB_FILEPATH_FILTERED)
 	@$(GIT) add $(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED)
 	@$(GIT) add $(SC_RNASEQ_SAMPINFO_10X_FILEPATH)
 	@$(GIT) add $(SC_RNASEQ_TB_DOWNLOADED_LIB_FILEPATH)
-	@$(GIT) commit -m 'Update metadata for droplet-based protocols for scRNASeq for $(DBNAME)' || true
+	@$(GIT) commit -m 'Update metadata and download fastq files for droplet-based protocols for scRNASeq for $(DBNAME)' || true
 	@$(GIT) push
 	@echo -e "All information is ready, you can go to SENSITIVE cluster to continue the pipeline of the droplet protocols\n"
 	@touch $@
