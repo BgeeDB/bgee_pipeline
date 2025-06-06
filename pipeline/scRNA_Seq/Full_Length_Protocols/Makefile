@@ -32,7 +32,7 @@ retrieve_metadata: filter_annotation 0Preparation/retrieve_metadata.R
 
 # Parallelize download of libraries and do not download again already downloaded libraries
 parallelized_download: retrieve_metadata
-	@perl 0Preparation/parallelized_download_SRA.pl -metadataFile=$(SC_RNASEQ_METADATA_FL_FILEPATH) -parallelJobs=50 -downloadedLibraries=$(SC_RNASEQ_DOWNLOADED_LIB_FILEPATH) -outputDir=$(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH) --loadApptainerModule="$(CLUSTER_LOAD_APPTAINER)" --containerCmd="$(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL)" -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
+	@$(CLUSTER_SOFTWARE_BIN) perl 0Preparation/parallelized_download_SRA.pl -metadataFile=$(SC_RNASEQ_METADATA_FL_FILEPATH) -parallelJobs=50 -downloadedLibraries=$(SC_RNASEQ_DOWNLOADED_LIB_FILEPATH) -excludedLibraries=$(SC_RNASEQ_EXCLUDED_LIB_FILEPATH) -outputDir=$(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH) --loadApptainerModule="$(CLUSTER_LOAD_APPTAINER)" --containerCmd="$(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL)" -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
 	@$(MV) $@.tmp $@
 
 commit_annotation_and_metadata: list_new_downloads
