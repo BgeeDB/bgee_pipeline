@@ -1,5 +1,5 @@
 PIPELINEROOT := ../../
-DIR_NAME := scRNA_Seq/
+DIR_NAME := scRNA_Seq/Full_length/
 
 include $(PIPELINEROOT)Makefile.common
 
@@ -9,47 +9,30 @@ include $(PIPELINEROOT)Makefile.common
 get_annot:
 	@$(GIT) submodule init
 	@$(GIT) submodule update
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/Strains/StrainMapping.tsv         $(STRAIN_MAPPING_FILE)
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqFLLibrary.tsv   $(INPUT_DIR)/Full_length/scRNASeqFLLibrary.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqExperiment.tsv  $(INPUT_DIR)/scRNASeqExperiment.tsv
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/Strains/StrainMapping.tsv             $(STRAIN_MAPPING_FILE)
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqLibrary_merged.tsv  $(SC_RNASEQ_LIB_FL_FILEPATH)
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqExperiment.tsv      $(SC_RNASEQ_EXP_FL_FILEPATH)
 	@touch $@
 
 ## Control the annotation (run rule in front)
-control_annotation: get_annot 0Preparation/pre_process_control_annotation.R
-	@echo --- Starting the control of the annotation  ---
-	#It is possible to filter the minimum number of cells per cell population using the argument cellsThreshold
-	$(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args scRNASeqLibrary="$(SC_RNASEQ_LIB_FL_FILEPATH)" output_file_pass="$(SC_RNASEQ_LIB_PASS_FILEPATH)" output_file_not_pass="$(SC_RNASEQ_LIB_NOT_PASS_FILEPATH)" ' 0Preparation/pre_process_control_annotation.R 0Preparation/pre_process_control_annotation.Rout > $@.tmp 2>&1
-	@echo --- DONE ---
-	#Map strain names
-	#load modules necessary to run the perl function
-	@module use /software/module/;
-	@export PATH=/software/bin:$PATH;
-	@module add Development/Ensembl_API/97;
-	@perl -e 'use lib "../.."; use Utils; Utils::map_strain_names("$(SC_RNASEQ_LIB_PASS_FILEPATH)", "$(STRAIN_MAPPING_FILE)")' > $(SC_RNASEQ_LIB_PASS_FILEPATH).ori
-	@$(MV) $(SC_RNASEQ_LIB_PASS_FILEPATH).ori $(SC_RNASEQ_LIB_PASS_FILEPATH)
+filter_annotation: get_annot 0Preparation/filter_annotation.R
+	@echo --- Filter FL libraries from annotation files ---
+	@$(CLUSTER_LOAD_APPTAINER) $(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL) Rscript 0Preparation/filter_annotation.R scRNASeqLibrary=\"$(SC_RNASEQ_LIB_FL_FILEPATH)\" scRNASeqExperiment=\"$(SC_RNASEQ_EXP_FL_FILEPATH)\" filteredLibrariesFile=\"$(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)\" filteredExperimentsFile=\"$(SC_RNASEQ_FL_EXP_FILTERED_FILEPATH)\" > $@.tmp 2> $@.err
+	@echo --- Map strain names ---
+	@$(CLUSTER_SOFTWARE_BIN) perl -e 'use lib "../.."; use Utils; Utils::map_strain_names("$(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)", "$(STRAIN_MAPPING_FILE)")' > $(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH).ori
+	@$(MV) $(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH).ori $(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)
 	@$(MV) $@.tmp $@
 
 ## Retrieve metadata (run rule with sbatch)
 ## NOTE: metadata here are information allowing to download fastq libraries a posteriori
-retrieve_metadata: control_annotation 0Preparation/retrieve_metadata.R
-	@echo --- Retrieve metadata information ---
-	@sed -i 's@--output=.*@--output=${PWD}/retrieve_metadata.out@'                                                   		0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/retrieve_metadata.err@'                                                     		0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                     		0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                           		0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                     		0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export pass_annotationControl=.*@export pass_annotationControl=$(SC_RNASEQ_LIB_PASS_FILEPATH)@'       		0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export metadata_info_file=.*@export metadata_info_file=$(SC_RNASEQ_METADATA_FILEPATH)@'               		0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export metadata_info_not_match_file=.*@export metadata_info_not_match_file=$(SC_RNASEQ_METADATA_NOT_MATCH_FILEPATH)@'  0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH)@'                                   		0Preparation/retrieve_metadata.sbatch
-	@sbatch 0Preparation/retrieve_metadata.sbatch
-	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
-	@echo --- DONE ---
-	@touch $@
+THREADS_RETRIEVE_METADATA := 16
+retrieve_metadata: filter_annotation 0Preparation/retrieve_metadata.R
+	@srun --output=${PWD}/$@.out --error=${PWD}/$@.err --partition=${CLUSTER_PARTITION} --account=${CLUSTER_ACCOUNT} --job-name=retrieve_metadata_fulllength --mem=2G --time=1-00:00:00 --nodes=1 --ntasks=1 --export=ALL --cpus-per-task=$(THREADS_RETRIEVE_METADATA) bash -c "$(CLUSTER_SOFT_UNIL) $(CLUSTER_SOFT_APPTAINER) $(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL) Rscript ${PWD}/0Preparation/retrieve_metadata.R filteredLibraryAnnotation=\'$(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)\' metadataFile=\'$(SC_RNASEQ_METADATA_FL_FILEPATH)\' threads=\'$(THREADS_RETRIEVE_METADATA)\'"
+	$(MV) $@.out $@
 
 # Parallelize download of libraries and do not download again already downloaded libraries
 parallelized_download: retrieve_metadata
-	@perl 0Preparation/parallelized_download_SRA.pl -metadataFile=$(SC_RNASEQ_METADATA_FILEPATH) -parallelJobs=50 -downloadedLibraries=$(SC_RNASEQ_DOWNLOADED_LIB_FILEPATH) -outputDir=$(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH) -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
+	@$(CLUSTER_SOFTWARE_BIN) perl 0Preparation/parallelized_download_SRA.pl -metadataFile=$(SC_RNASEQ_METADATA_FL_FILEPATH) -parallelJobs=50 -downloadedLibraries=$(SC_RNASEQ_DOWNLOADED_LIB_FILEPATH) -excludedLibraries=$(SC_RNASEQ_EXCLUDED_LIB_FILEPATH) -outputDir=$(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH) --loadApptainerModule="$(CLUSTER_LOAD_APPTAINER)" --containerCmd="$(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL)" -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
 	@$(MV) $@.tmp $@
 
 commit_annotation_and_metadata: list_new_downloads
@@ -66,8 +49,8 @@ commit_annotation_and_metadata: list_new_downloads
 	@touch $@
 
 
-## NOTE: Copy all git repository to JURA!
-################## STEPS TO RUN ON JURA SERVER ##################
+## NOTE: Copy all git repository to the sensitive cluster
+################## STEPS TO RUN ON SENSITIVE CLUSTER ##################
 
 clusterJURA:
 	@echo -e "\tBe sure everything is up-to-date before running single cell RNASeq pipeline\n"

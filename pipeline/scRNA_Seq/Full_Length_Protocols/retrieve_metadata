@@ -1,0 +1,4 @@
+[1] "filteredLibraryAnnotation='../../../generated_files/scRNA_Seq/Full_length/scRNASeqLibrary_merged.tsv'"
+[2] "metadataFile='../../../generated_files/scRNA_Seq/Full_length/metadata_info.tsv'"                      
+[3] "threads='16'"                                                                                         
+[1] "Starting parallelized loop to retrieve metadata from EBI"

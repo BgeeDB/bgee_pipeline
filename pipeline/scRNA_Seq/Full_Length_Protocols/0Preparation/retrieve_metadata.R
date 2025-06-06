@@ -2,11 +2,13 @@
 ## This script is used to retrieve the metadata from EBI
 ## Then to compare the annotation information from BGEE for each library with metadata from EBI.
 
-## Usage:
-## R CMD BATCH --no-save --no-restore '--args pass_annotationControl="passScRNASeqLibrary.tsv" output_folder="output_folder"' retrieve_metadata.R retrieve_metadata.Rout
-## pass_annotationControl -> File with all libraries annotated by bgee that pass the minimum requirement (>= 50 cells)
-## metadata_info_file --> file where metadata info are saved
-## metadata_info_not_match_file --> file where metadata info are saved for libraries with metadata mismatch between Bgee and EBI
+## parameters:
+## filteredLibraryAnnotation  --> File with RNASeq FL libraries annotation
+## metadataFile               --> file where metadata info are saved
+## threads                    --> number of threads used to retrieve metadata
+
+library(foreach)
+library(doParallel)
 
 ## reading arguments
 cmd_args = commandArgs(TRUE);
@@ -18,7 +20,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments exist....
-command_arg <- c("pass_annotationControl", "metadata_info_file", "metadata_info_not_match_file")
+command_arg <- c("filteredLibraryAnnotation", "metadataFile", "threads")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -26,11 +28,10 @@ for( c_arg in command_arg ){
 }
 
 ## Read annotation file. If file not exists, script stops
-if( file.exists(pass_annotationControl) ){
-  annotation <- read.table(pass_annotationControl, h=T, sep="\t", comment.char="")
-  names(annotation)[1] <- "libraryId"
+if( file.exists(filteredLibraryAnnotation) ){
+  annotation <- read.table(filteredLibraryAnnotation, h=TRUE, sep="\t", comment.char="")
 } else {
-  stop( paste("The annotation file not found [", pass_annotationControl, "]\n"))
+  stop( paste("Library annotation file not found [", filteredLibraryAnnotation, "]\n"))
 }
 
 #create two data.frame for libraries passing/not passing the verification
@@ -42,9 +43,20 @@ colnames(passed) <- metadata_colnames
 not_passed <- data.frame(matrix(nrow = 0, ncol = length(metadata_colnames) + 1))
 colnames(not_passed) <- c(metadata_colnames, "exclusion_reason")
 
-for (row in seq(nrow(annotation))) {
+print("Starting parallelized loop to retrieve metadata from EBI")
+registerDoParallel(cores = threads)
+
+#create a counter for the number of libraries processed
+counter <- 0
+
+# Parallelized loop
+results <- foreach(row = seq(nrow(annotation)), .combine = c, .multicombine = TRUE, .packages = c("utils")) %dopar% {
   library <- annotation[row,]
   libraryID <- library$libraryId
+  if (startsWith(as.character(libraryID), "#")) {
+    return(NULL)
+  }
+  counter <<- counter + 1
   metadata_info <- tryCatch(
     {
       # retrieve information from EBI metadata for each library annotated
@@ -59,8 +71,6 @@ for (row in seq(nrow(annotation))) {
       read.table(url(ena.url), header=TRUE, sep="\t")
     },
     error=function(cond) {
-      error <- TRUE
-      # Choose a return value in case of error
       return(NA)
     }
   )
@@ -70,7 +80,7 @@ for (row in seq(nrow(annotation))) {
     colnames(metadata_info) <- c(metadata_colnames, "exclusion_reason")
     metadata_info$library_id <- libraryID
     metadata_info$exclusion_reason <- "EBI URL error"
-    not_passed <- rbind(not_passed, metadata_info)
+    return(list(type = "not_passed", data = metadata_info))
   } else {
     ## What is called experiment_accession in ENA API is called library_id in our pipeline
     names(metadata_info)[names(metadata_info) == 'experiment_accession'] <- 'library_id' 
@@ -78,18 +88,13 @@ for (row in seq(nrow(annotation))) {
       as.character(metadata_info$instrument_model))
     compare_speciesID <- identical(as.character(library[['speciesId']]),
       as.character(metadata_info[['tax_id']]))
-    
-    ## before writing the line to the file we first update the line to fit the
-    ## experiment_id/library_id nomenclature used in the pipeline
+
     metadata_info <- merge(metadata_info, library[, c("libraryId","experimentId")],
       by.x="library_id", by.y="libraryId")
-    ## update column order
     metadata_info <- metadata_info[, metadata_colnames]
-    ## homogeneise use of snake case for column names
     names(metadata_info)[names(metadata_info) == 'experimentId'] <- 'experiment_id'      
     if (isTRUE(compare_machine) && isTRUE(compare_speciesID)) {
-      ## export libraries that pass and will be downloaded
-      passed <- rbind(passed, metadata_info)
+      return(list(type = "passed", data = metadata_info))
     } else {
       if(isFALSE(compare_machine)) {
         metadata_info$exclusion_reason <- "protocol_mismatch"
@@ -97,13 +102,20 @@ for (row in seq(nrow(annotation))) {
       if(isFALSE(compare_speciesID)) {
         metadata_info$exclusion_reason <- "species_mismatch"
       }
-      not_passed <- rbind(not_passed, metadata_info)
+      return(list(type = "not_passed", data = metadata_info))
     }
   }
 }
 
-# write metadata files
-write.table(passed, metadata_info_file, sep = "\t", col.names = TRUE, row.names = FALSE, quote = FALSE)
-write.table(not_passed, metadata_info_not_match_file, sep = "\t", col.names = TRUE, row.names = FALSE,
-  quote = FALSE)
+passed <- do.call(rbind, lapply(results, function(x) {
+  if (!is.null(x) && is.list(x) && !is.null(x$type) && x$type == "passed") {
+    return(x$data)
+  } else {
+    return(NULL)
+  }
+}))
 
+# write metadata files
+write.table(passed, metadataFile, sep = "\t", col.names = TRUE, row.names = FALSE, quote = FALSE)
+# count retrieved metadata comparared to the number of processed libraries
+print(paste("Retrieved metadata for", nrow(passed), "libraries out of", counter, "processed libraries."))
