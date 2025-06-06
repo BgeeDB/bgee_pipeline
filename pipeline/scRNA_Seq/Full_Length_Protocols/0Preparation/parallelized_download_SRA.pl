@@ -70,7 +70,6 @@ my @speciesIdsToDownload = split(',', $speciesIds);
 
 # Read already downloaded libraries
 my %alreadyDownloaded = map { $_ => 1 } read_file("$downloadedLibraries", chomp=>1);
-
 # Read excluded libraries
 open(my $excluded, $excludedLibraries) || die "failed to read sample excluded file: $!";
 my @excluded_libraries;
@@ -105,7 +104,7 @@ foreach my $experimentId (keys %processedLibraries){
         next if ( exists $alreadyDownloaded{$libraryId} );
         next if ( grep( /^$libraryId$/, @excluded_libraries));
         my $libDirectory = "$outputDir/$speciesId/$libraryId";
-        foreach my $runId (keys %{$processedLibraries{$experimentId}{$libraryId}{"runIds"}}){
+        foreach my $runId (keys %{$processedLibraries{$experimentId}{$libraryId}{'runIds'}}){
             if ( $runId =~ /^[SEDC]RR\d+/ ){ #S: SRA/NCBI; E: EBI; D: DDBJ; C: GSA_China
                 if(! $doNotDownload) {
                     next if (-f "$libDirectory/$runId.done");
@@ -113,23 +112,22 @@ foreach my $experimentId (keys %processedLibraries){
                 $jobs_created++;
                 #create sbatch file and
                 my $jobName = "$jobPrefix$runId";
-                ## Use 4Gb of memory. Should maybe be increase depending on the run to download
-                ## ask for 4 cpus as it is the number of threads used by the bamtofastq tool
+                ## Use 4Gb of memory. Should maybe be increase depending on the run to download.
                 my $sbatchTemplate = Utils::sbatch_template($queue, $account, 1,
                 4, "$outputDir/clusterOutput/$jobName.out", "$outputDir/clusterOutput/$jobName.err",
                 $jobName);
                 $sbatchTemplate .= $loadApptainerModule =~ s/; /;\n/r;
                 $sbatchTemplate .= "\n\n";
-                my $libDirectory = "$experimentOutputDir/$experimentId/$libraryId";
+                my $libDirectory = "$outputDir/$speciesId/$libraryId";
                 ## download fastq from SRA split into several FASTQ files if paired library
                 my $prefix      = "$libDirectory/$runId";
                 my $fastq_fastp = '';
                 my $fastq_R     = '';
-                if($processedLibraries{$experimentId}{$libraryId}{$runId}{'libraryType'} eq "single") {
+                if($processedLibraries{$experimentId}{$libraryId}{'runIds'}{$runId}{'libraryType'} eq "single") {
                     $sbatchTemplate .= "$containerCmd fastq-dump --outdir $libDirectory --gzip $runId &&\n";
                     $fastq_fastp = "$prefix.fastq.gz";
                     $fastq_R     = $fastq_fastp;
-                } elsif ($processedLibraries{$experimentId}{$libraryId}{$runId}{'libraryType'} eq "paired") {
+                } elsif ($processedLibraries{$experimentId}{$libraryId}{'runIds'}{$runId}{'libraryType'} eq "paired") {
                     $sbatchTemplate .= "$containerCmd fastq-dump --outdir $libDirectory --split-files --gzip $runId &&\n";
                     $fastq_fastp = "${prefix}_1.fastq.gz -I ${prefix}_2.fastq.gz";
                     $fastq_R     = "${prefix}_1.fastq.gz    ${prefix}_2.fastq.gz";
@@ -149,7 +147,7 @@ foreach my $experimentId (keys %processedLibraries){
 
                 ## create sbatch file and add its path to the hash of sbatch files
                 my $sbatchFilePath = "$outputDir/sbatch/$jobName.sbatch";
-                $sbatchToRun{$experimentId}{$libraryId}{$runId} = $sbatchFilePath;
+                $sbatchToRun{$experimentId}{$libraryId}{'runIds'}{$runId} = $sbatchFilePath;
                 $sbatchToRun{$experimentId}{$libraryId}{'speciesId'} = $speciesId;
                 open(FH, '>', $sbatchFilePath) or die $!;
                 print FH $sbatchTemplate;
@@ -168,8 +166,9 @@ if(! $doNotDownload) {
     my $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
     foreach my $experimentId (keys %sbatchToRun){
         foreach my $libraryId (keys %{$sbatchToRun{$experimentId}}){
-            my $libDirectory = "$experimentOutputDir/$experimentId/$libraryId";
-            foreach my $runId (keys %{$sbatchToRun{$experimentId}{$libraryId}}){
+            my $speciesId = $sbatchToRun{$experimentId}{$libraryId}{'speciesId'};
+            my $libDirectory = "$outputDir/$speciesId/$libraryId";
+            foreach my $runId (keys %{$sbatchToRun{$experimentId}{$libraryId}{'runIds'}}){
                 next if (-f "$libDirectory/$runId.done");
                 $numberJobRun++;
                 $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
@@ -179,7 +178,8 @@ if(! $doNotDownload) {
                 }
                 make_path("$libDirectory");
                 chdir "$libDirectory";
-                system("sbatch $sbatchToRun{$experimentId}{$libraryId}{$runId}");
+                system("sbatch $sbatchToRun{$experimentId}{$libraryId}{'runIds'}{$runId}");
+                $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
             }
         }
     }
@@ -196,10 +196,9 @@ print "now start to generate symlinks of libraries per species\n";
 foreach my $experimentId (keys %sbatchToRun){
     foreach my $libraryId (keys %{$sbatchToRun{$experimentId}}){
         my $speciesId = $sbatchToRun{$experimentId}{$libraryId}{'speciesId'};
-        my $libDirectory = "$experimentOutputDir/$experimentId/$libraryId";
+        my $libDirectory = "$outputDir/$speciesId/$libraryId";
         my $done = 1;
-        foreach my $runId (keys %{$sbatchToRun{$experimentId}{$libraryId}}){
-            next if $runId eq "speciesId";
+        foreach my $runId (keys %{$sbatchToRun{$experimentId}{$libraryId}{'runIds'}}){
             if(! -e "$libDirectory/$runId.done") {
                 $done = 0;
             }
