@@ -167,7 +167,7 @@ CLUSTER_WORK_PATH       := /work/FAC/FBM/DEE/mrobinso/bgee/
 CLUSTER_WORK_SENSITIVE_PATH := /work/FAC/FBM/DEE/mrobinso/bgee_sensitive/
 CLUSTER_SCRATCH_PATH    := /scratch/$(USER)/
 CLUSTER_CONTAINER_PATH  := $(CLUSTER_WORK_SENSITIVE_PATH)$(PIPELINE_CONTAINER_FILE)
-CLUSTER_SLURM_BINDPATH  := /etc/passwd,/var/run/munge,/usr/lib64/libmunge.so.2.0.0:/usr/lib64/libmunge.so.2,/run/slurm/conf/slurm.conf,/usr/lib64/slurm,/usr/bin/sbatch,/usr/bin/squeue,/usr/bin/scancel,/usr/bin/sacct,/usr/bin/scontrol,/usr/bin/seff,/dev
+CLUSTER_SLURM_BINDPATH  := /etc/passwd,/var/run/munge,/usr/lib64/libmunge.so.2.0.0:/usr/lib64/libmunge.so.2,/run/slurm/conf/slurm.conf,/usr/lib64/slurm,/usr/bin/sbatch,/usr/bin/squeue,/usr/bin/scancel,/usr/bin/sacct,/usr/bin/scontrol,/usr/bin/seff,/dev/
 CLUSTER_CONTAINER_CMD_WITH_BIND    := $(CLUSTER_SOFT_UNIL) $(CLUSTER_SOFT_APPTAINER) apptainer exec --bind $(CLUSTER_SLURM_BINDPATH),$(CLUSTER_DATA_PATH),$(CLUSTER_SCRATCH_PATH),$(CLUSTER_WORK_PATH),,$(CLUSTER_WORK_SENSITIVE_PATH)  $(CLUSTER_CONTAINER_PATH)
 CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL := apptainer exec --bind $(CLUSTER_SLURM_BINDPATH),$(CLUSTER_SCRATCH_PATH),$(CLUSTER_WORK_PATH)  $(CLUSTER_CONTAINER_PATH)
 CLUSTER_CONTAINER_CMD_WITHOUT_BIND := "$(CLUSTER_SOFT_UNIL) $(CLUSTER_SOFT_APPTAINER) apptainer exec $(CLUSTER_CONTAINER_PATH)"
@@ -514,6 +514,8 @@ SC_RNASEQ_WHITELIST_10X_v3             := $(SC_RNASEQ_TB_FOLDER_SOURCE)barcode_w
 # scRNASeq github file paths in the generated_files directory
 SC_RNASEQ_PATH_GENERATED               := $(GENERATED_FILES_DIR)$(SC_RNASEQ_PATH)
 SC_RNASEQ_DOWNLOADED_LIB_FILEPATH      := $(SC_RNASEQ_PATH_GENERATED)librariesDownloaded.tsv
+SC_RNASEQ_EXCLUDED_LIB_FILEPATH        := $(SC_RNASEQ_PATH_GENERATED)librariesExcluded.tsv
+
 ### Full_length
 SC_RNASEQ_FL_FOLDER_GENERATED          := $(SC_RNASEQ_PATH_GENERATED)Full_length/
 SC_RNASEQ_FL_LIB_FILTERED_FILEPATH     := $(SC_RNASEQ_FL_FOLDER_GENERATED)$(SC_RNASEQ_LIB_FILENAME)
