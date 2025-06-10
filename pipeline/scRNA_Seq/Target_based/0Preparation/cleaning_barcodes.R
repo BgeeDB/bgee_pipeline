@@ -17,7 +17,7 @@ library(dplyr)
 
 ## reading arguments
 cmd_args = commandArgs(TRUE);
-message(cmd_args)
+print(cmd_args)
 if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
   for( i in 1:length(cmd_args) ){
     eval(parse(text=cmd_args[i]))
@@ -36,8 +36,8 @@ if(!dir.exists(output)) {
   dir.create(output)
 }
 
-barcodes_files_path <-  list.files(barcodesFolder, pattern = "scRNASeq_barcode_", full.names = TRUE)
-
+barcodes_files_path <-  list.files(barcodesFolder, pattern = "scRNASeq_barcode.*.tsv", full.names = TRUE)
+print(paste("Found", length(barcodes_files_path), "barcode files in", barcodesFolder))
 for (barcode_file_path in barcodes_files_path) {
   
   barcodes <- tryCatch(
@@ -59,7 +59,9 @@ for (barcode_file_path in barcodes_files_path) {
     #select only unique barcodes/library. This check should be done at annotation level before running the pipeline
     unique_barcodes <- select_barcodes %>%
       group_by(barcode) %>% 
-      filter(n()==1)
+      # filter barcodes that are unique or that are duplicated but with the same cellTypeId.
+      # Keep only one occurance of deplicated barcodes with same cellTypeId
+      filter(n() == 1 | n_distinct(cell_type) == 1)
     
     uniq_celltype_freetext <- unique(unique_barcodes$cell_type)
     # As the cell_type column is used to detect clusters of barcodes, we can not have cell_type that is NA
@@ -110,10 +112,11 @@ for (barcode_file_path in barcodes_files_path) {
         cluster_id <- cluster_id + 1
       }
     }
+
     barcodes_duplicates <- select_barcodes %>% 
       group_by(barcode) %>% 
-      filter(n() != 1)
-  
+      filter(n() != 1 & n_distinct(cell_type) > 1)
+
     ## Append results to lists
     unique_barcodes_list[[library_id]] <- unique_barcodes
     duplicated_barcodes_list[[library_id]] <- barcodes_duplicates

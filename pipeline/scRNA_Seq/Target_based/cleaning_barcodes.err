@@ -10,7 +10,6 @@ The following objects are masked from 'package:base':
 
     intersect, setdiff, setequal, union
 
-barcodesFolder='/users/jwollbre/bgee_pipeline/pipeline/scRNA_Seq/Target_based/../../../source_files/scRNA_Seq/Target_based/'output='/users/jwollbre/bgee_pipeline/pipeline/scRNA_Seq/Target_based/../../../generated_files/scRNA_Seq/Target_based/cleaned_barcodes/'
 No cluster ID provided for file scRNASeq_barcode_ERP110801.tsv and library ERX2797474
 cell type for library ERX2797474 is Epiblast
 cell type for library ERX2797474 is Visceral endoderm
@@ -17157,6 +17156,7 @@ cell type for library SRX6859236 is Cones
 cell type for library SRX6859236 is Endo
 cell type for library SRX6859236 is HCs
 cell type for library SRX6859236 is Macroglia
+cell type for library SRX6859236 is Microglia
 cell type for library SRX6859236 is RGCs
 cell type for library SRX6859236 is Rods
 No cluster ID provided for file scRNASeq_barcode_SRP222001.tsv and library SRX6859237
@@ -17192,6 +17192,7 @@ cell type for library SRX6859239 is Rods
 No cluster ID provided for file scRNASeq_barcode_SRP222001.tsv and library SRX6859234
 cell type for library SRX6859234 is ACs
 cell type for library SRX6859234 is BPs
+cell type for library SRX6859234 is Cones
 cell type for library SRX6859234 is Endo
 cell type for library SRX6859234 is HCs
 cell type for library SRX6859234 is Macroglia
@@ -17202,6 +17203,7 @@ No cluster ID provided for file scRNASeq_barcode_SRP222001.tsv and library SRX68
 cell type for library SRX6859235 is ACs
 cell type for library SRX6859235 is BPs
 cell type for library SRX6859235 is Cones
+cell type for library SRX6859235 is Endo
 cell type for library SRX6859235 is Macroglia
 cell type for library SRX6859235 is Microglia
 cell type for library SRX6859235 is RGCs
@@ -19083,7 +19085,7 @@ cell type for library SRX12770672 is oligodendrocyte precursor cell
 cell type for library SRX12770672 is mossy cell
 cell type for library SRX12770672 is radial glia-like cell
 cell type for library SRX12770672 is neural intermediate progenitor cell
-Exists barcode duplicates in 1 or more library of scRNASeq_barcode_SRP343046.tsv
+No barcode duplicates in any libraryID of the experiment: scRNASeq_barcode_SRP343046.tsv
 No cluster ID provided for file scRNASeq_barcode_SRP372346.tsv and library SRX15003464
 cell type for library SRX15003464 is Satellite glia
 cell type for library SRX15003464 is Macrophage
