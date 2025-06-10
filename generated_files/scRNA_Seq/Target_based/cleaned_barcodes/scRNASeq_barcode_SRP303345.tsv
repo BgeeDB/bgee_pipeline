@@ -4363,6 +4363,7 @@
 "CCACCATGTCGAAGCA"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Ependymal cells"	NA	NA	NA	"CL:0000065"	"ependymal cell"	"perfect match"	"mixed sample (non-demultiplexed)"	8
 "CCACCATTCAGCGGAA"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"C cells"	NA	NA	NA	"CL:0011020"	"neural progenitor cell"	"other"	"mixed sample (non-demultiplexed)"	5
 "CCACGAGCAAGAAATC"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Ependymal cells"	NA	NA	NA	"CL:0000065"	"ependymal cell"	"perfect match"	"mixed sample (non-demultiplexed)"	8
+"CCACGAGCAGGTTCCG"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"OPC/Oligo"	NA	NA	NA	"CL:0000095"	"neuron associated cell"	"other"	"mixed sample (non-demultiplexed)"	7
 "CCACGTTCACTGATTG"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Ependymal cells"	NA	NA	NA	"CL:0000065"	"ependymal cell"	"perfect match"	"mixed sample (non-demultiplexed)"	8
 "CCACGTTTCAGCGCGT"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Microglia"	NA	NA	NA	"CL:0000129"	"microglial cell"	"perfect match"	"mixed sample (non-demultiplexed)"	9
 "CCACTTGCAGACATCT"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"C cells"	NA	NA	NA	"CL:0011020"	"neural progenitor cell"	"other"	"mixed sample (non-demultiplexed)"	5
@@ -6040,6 +6041,7 @@
 "TGCACGGCAACCAGAG"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Neuron"	NA	NA	NA	"CL:2000029"	"central nervous system neuron"	"perfect match"	"mixed sample (non-demultiplexed)"	12
 "TGCACGGTCGCTTACC"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Astrocytes"	NA	NA	NA	"CL:0000127"	"astrocyte"	"perfect match"	"mixed sample (non-demultiplexed)"	10
 "TGCAGATAGAATCGTA"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Pericytes/VSMC"	NA	NA	NA	"CL:0000183"	"contractile cell"	"other"	"mixed sample (non-demultiplexed)"	2
+"TGCAGATGTTACCGTA"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"A cells"	NA	NA	NA	"CL:0000031"	"neuroblast (sensu Vertebrata)"	"perfect match"	"mixed sample (non-demultiplexed)"	4
 "TGCAGATTCTACCTTA"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Mitosis"	NA	NA	NA	"CL:0002319"	"neural cell"	"other"	"mixed sample (non-demultiplexed)"	1
 "TGCAGGCTCCCTCTAG"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Microglia"	NA	NA	NA	"CL:0000129"	"microglial cell"	"perfect match"	"mixed sample (non-demultiplexed)"	9
 "TGCAGTAAGCGAATGC"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Ependymal cells"	NA	NA	NA	"CL:0000065"	"ependymal cell"	"perfect match"	"mixed sample (non-demultiplexed)"	8
@@ -10558,6 +10560,7 @@
 "CACGTTCGTTGCTTGA"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"OPC/Oligo"	NA	NA	NA	"CL:0000095"	"neuron associated cell"	"other"	"mixed sample (non-demultiplexed)"	7
 "CACGTTCTCCATCAGA"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Astrocytes"	NA	NA	NA	"CL:0000127"	"astrocyte"	"perfect match"	"mixed sample (non-demultiplexed)"	10
 "CACGTTCTCCGATAAC"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Microglia"	NA	NA	NA	"CL:0000129"	"microglial cell"	"perfect match"	"mixed sample (non-demultiplexed)"	9
+"CACTAAGCACAAACGG"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"A cells"	NA	NA	NA	"CL:0000031"	"neuroblast (sensu Vertebrata)"	"perfect match"	"mixed sample (non-demultiplexed)"	4
 "CACTAAGCACACCAGC"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"C cells"	NA	NA	NA	"CL:0011020"	"neural progenitor cell"	"other"	"mixed sample (non-demultiplexed)"	5
 "CACTGAACAGAGATTA"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Ependymal cells"	NA	NA	NA	"CL:0000065"	"ependymal cell"	"perfect match"	"mixed sample (non-demultiplexed)"	8
 "CACTGAACATCTATCT"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"B cells"	NA	NA	NA	"CL:0000047"	"neural stem cell"	"perfect match"	"mixed sample (non-demultiplexed)"	3
@@ -12518,6 +12521,7 @@
 "TGGAACTTCTGTTGGA"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Endothelial cells"	NA	NA	NA	"CL:0000115"	"endothelial cell"	"perfect match"	"mixed sample (non-demultiplexed)"	6
 "TGGAGAGCAACCGCTG"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"B cells"	NA	NA	NA	"CL:0000047"	"neural stem cell"	"perfect match"	"mixed sample (non-demultiplexed)"	3
 "TGGAGAGCATAGATGA"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"C cells"	NA	NA	NA	"CL:0011020"	"neural progenitor cell"	"other"	"mixed sample (non-demultiplexed)"	5
+"TGGAGAGTCATCGACA"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"A cells"	NA	NA	NA	"CL:0000031"	"neuroblast (sensu Vertebrata)"	"perfect match"	"mixed sample (non-demultiplexed)"	4
 "TGGAGAGTCGACCTAA"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Ependymal cells"	NA	NA	NA	"CL:0000065"	"ependymal cell"	"perfect match"	"mixed sample (non-demultiplexed)"	8
 "TGGAGGACAATTGCAC"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"B cells"	NA	NA	NA	"CL:0000047"	"neural stem cell"	"perfect match"	"mixed sample (non-demultiplexed)"	3
 "TGGAGGACAGGTGAGT"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Ependymal cells"	NA	NA	NA	"CL:0000065"	"ependymal cell"	"perfect match"	"mixed sample (non-demultiplexed)"	8
@@ -13605,6 +13609,7 @@
 "CACGTTCGTGTGCTTA"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Mitosis"	NA	NA	NA	"CL:0002319"	"neural cell"	"other"	"mixed sample (non-demultiplexed)"	1
 "CACGTTCTCAAGGAGC"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Mitosis"	NA	NA	NA	"CL:0002319"	"neural cell"	"other"	"mixed sample (non-demultiplexed)"	1
 "CACGTTCTCTCCGTGT"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"A cells"	NA	NA	NA	"CL:0000031"	"neuroblast (sensu Vertebrata)"	"perfect match"	"mixed sample (non-demultiplexed)"	4
+"CACTAAGCACAAACGG"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"A cells"	NA	NA	NA	"CL:0000031"	"neuroblast (sensu Vertebrata)"	"perfect match"	"mixed sample (non-demultiplexed)"	4
 "CACTAAGCAGAATTCC"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Microglia"	NA	NA	NA	"CL:0000129"	"microglial cell"	"perfect match"	"mixed sample (non-demultiplexed)"	9
 "CACTAAGCAGGTTCAT"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"A cells"	NA	NA	NA	"CL:0000031"	"neuroblast (sensu Vertebrata)"	"perfect match"	"mixed sample (non-demultiplexed)"	4
 "CACTAAGGTAAGGAGA"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"A cells"	NA	NA	NA	"CL:0000031"	"neuroblast (sensu Vertebrata)"	"perfect match"	"mixed sample (non-demultiplexed)"	4
@@ -15381,6 +15386,7 @@
 "TGCAGATAGCCGTAAG"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Astrocytes"	NA	NA	NA	"CL:0000127"	"astrocyte"	"perfect match"	"mixed sample (non-demultiplexed)"	10
 "TGCAGATCACGACGTC"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"OPC/Oligo"	NA	NA	NA	"CL:0000095"	"neuron associated cell"	"other"	"mixed sample (non-demultiplexed)"	7
 "TGCAGATGTACGACAG"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Microglia"	NA	NA	NA	"CL:0000129"	"microglial cell"	"perfect match"	"mixed sample (non-demultiplexed)"	9
+"TGCAGATGTTACCGTA"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"A cells"	NA	NA	NA	"CL:0000031"	"neuroblast (sensu Vertebrata)"	"perfect match"	"mixed sample (non-demultiplexed)"	4
 "TGCAGGCGTAACTGCT"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Pericytes/VSMC"	NA	NA	NA	"CL:0000183"	"contractile cell"	"other"	"mixed sample (non-demultiplexed)"	2
 "TGCAGGCGTAGGACTG"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"B cells"	NA	NA	NA	"CL:0000047"	"neural stem cell"	"perfect match"	"mixed sample (non-demultiplexed)"	3
 "TGCAGGCGTTGCATAC"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"OPC/Oligo"	NA	NA	NA	"CL:0000095"	"neuron associated cell"	"other"	"mixed sample (non-demultiplexed)"	7
@@ -16654,6 +16660,7 @@
 "CCACACTTCCACTGGG"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Mitosis"	NA	NA	NA	"CL:0002319"	"neural cell"	"other"	"mixed sample (non-demultiplexed)"	1
 "CCACCATCAGTGTGGA"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"B cells"	NA	NA	NA	"CL:0000047"	"neural stem cell"	"perfect match"	"mixed sample (non-demultiplexed)"	3
 "CCACCATGTTTCGTAG"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"OPC/Oligo"	NA	NA	NA	"CL:0000095"	"neuron associated cell"	"other"	"mixed sample (non-demultiplexed)"	7
+"CCACGAGCAGGTTCCG"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"OPC/Oligo"	NA	NA	NA	"CL:0000095"	"neuron associated cell"	"other"	"mixed sample (non-demultiplexed)"	7
 "CCACGAGGTCCGGATC"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"A cells"	NA	NA	NA	"CL:0000031"	"neuroblast (sensu Vertebrata)"	"perfect match"	"mixed sample (non-demultiplexed)"	4
 "CCACGTTCAGCTACAT"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Ependymal cells"	NA	NA	NA	"CL:0000065"	"ependymal cell"	"perfect match"	"mixed sample (non-demultiplexed)"	8
 "CCACGTTGTGACACGA"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Pericytes/VSMC"	NA	NA	NA	"CL:0000183"	"contractile cell"	"other"	"mixed sample (non-demultiplexed)"	2
@@ -21024,6 +21031,7 @@
 "TGGAACTTCTCATTGT"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"B cells"	NA	NA	NA	"CL:0000047"	"neural stem cell"	"perfect match"	"mixed sample (non-demultiplexed)"	3
 "TGGAGAGGTGGCATCC"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Endothelial cells"	NA	NA	NA	"CL:0000115"	"endothelial cell"	"perfect match"	"mixed sample (non-demultiplexed)"	6
 "TGGAGAGGTTTCTTAC"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Mitosis"	NA	NA	NA	"CL:0002319"	"neural cell"	"other"	"mixed sample (non-demultiplexed)"	1
+"TGGAGAGTCATCGACA"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"A cells"	NA	NA	NA	"CL:0000031"	"neuroblast (sensu Vertebrata)"	"perfect match"	"mixed sample (non-demultiplexed)"	4
 "TGGAGGATCTCAACCC"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Mitosis"	NA	NA	NA	"CL:0002319"	"neural cell"	"other"	"mixed sample (non-demultiplexed)"	1
 "TGGAGGATCTCGCGTT"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"A cells"	NA	NA	NA	"CL:0000031"	"neuroblast (sensu Vertebrata)"	"perfect match"	"mixed sample (non-demultiplexed)"	4
 "TGGATCAAGCTATCCA"	""	"SRX9940596"	"SRP303345"	"Ventricular-subventricular zone (brain)"	"Ependymal cells"	NA	NA	NA	"CL:0000065"	"ependymal cell"	"perfect match"	"mixed sample (non-demultiplexed)"	8
