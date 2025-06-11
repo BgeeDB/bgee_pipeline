@@ -61,48 +61,47 @@ foreach my $speciesId (keys %speciesId_to_name) {
     my @files = glob("$transcriptome_folder/${species_name}*.gtf_all");
     foreach my $file (@files) {
         if($file =~ ('.gtf_all$')) {
-            my $jobName = "${job_prefix}_${speciesId}";
-            my $annotation_transcriptome_ref_intergenic_file = $file =~ s/gtf_all/gtf_transcriptome_ref_intergenic/r;
-            my $transcriptome_ref_intergenic_file_path = $file =~ s/gtf_all/transcriptome_ref_intergenic.fa/r;
             my $transcriptome_ref_intergenic_index_path = $file =~ s/gtf_all/transcriptome_ref_intergenic.idx/r;
+            next if (-e $transcriptome_ref_intergenic_index_path || -e $transcriptome_ref_intergenic_index_path.'.xz');
 
-            if (-e $transcriptome_ref_intergenic_index_path.'.xz') {
-                system("unxz $transcriptome_ref_intergenic_index_path.xz");
+            my $jobName = "${job_prefix}_${speciesId}";
+            # name of the file to create that contain both the transcriptome and the intergenic sequences
+            my $transcriptome_ref_intergenic_file_path = $file =~ s/gtf_all/transcriptome_ref_intergenic.fa/r;
+            if (-e $transcriptome_ref_intergenic_file_path.'.gz') {
+                system("gunzip -c $transcriptome_ref_intergenic_file_path.gz > $transcriptome_ref_intergenic_file_path") == 0
+                    or die "Failed to gunzip $transcriptome_ref_intergenic_file_path.gz";
+            } elsif (-e $transcriptome_ref_intergenic_file_path.'xz') {
+                system("unxz $transcriptome_ref_intergenic_file_path.xz") == 0
+                    or die "Failed to unxz $transcriptome_ref_intergenic_file_path.xz";
             }
-            next if (-e $transcriptome_ref_intergenic_index_path);
             my $sbatch_commands = "";
-            if (-e $annotation_transcriptome_ref_intergenic_file.'.xz') {
-                $sbatch_commands .= "unxz $annotation_transcriptome_ref_intergenic_file.xz\n";
-            }
-            # part that generate the gtf annotation file containing the transcriptome + reference intergenic sequences
-            if (! -e $annotation_transcriptome_ref_intergenic_file) {
-                my $annotation_wo_intergenic_file = $file =~ s/gtf_all/gtf_transcriptome/r;
-                my $annotation_ref_intergenic = $ref_intergenic_folder.'/'.$speciesId.'_ref_intergenic.gtf';
-                # merge the two files annotation_wo_intergenic_file and annotation_ref_intergenic in $annotation_transcriptome_ref_intergenic_file
-                $sbatch_commands .= "cat $annotation_wo_intergenic_file $annotation_ref_intergenic > $annotation_transcriptome_ref_intergenic_file\n";
-            }
-            # part that generate the transcriptome file containing the transcriptome + reference intergenic sequences
-            if (-e $transcriptome_ref_intergenic_file_path.'.xz') {
-                $sbatch_commands .= "unxz $transcriptome_ref_intergenic_file_path.xz &&\n";
-            } else {
-                my $genome_file_path = $file =~ s/gtf_all/genome.fa/r;
-                if (!-e $genome_file_path) {
-                    if (-e "$genome_file_path.xz") {
-                        $sbatch_commands .= "unxz $genome_file_path.xz &&\n";
-                    } else {
-                        die "can not access to genome file $genome_file_path";
-                    }
+            if (! -e $transcriptome_ref_intergenic_file_path) {
+                # ref intergenic sequences are always gzipped
+                my $ref_intergenic_path = $ref_intergenic_folder.'/'.$speciesId.'_intergenic.fa.gz';
+                # transcriptome file without any intergenic sequences
+                my $transcriptome_wo_intergenic_path = $file =~ s/gtf_all/transcriptome_wo_intergenic.fa/r;
+                if (! -e $ref_intergenic_path) {
+                    warn "Reference intergenic file $ref_intergenic_path does not exist. Please provide it. No transcriptome with reference intergenic file will be generated for $species_name.\n";
+                    next;
                 }
-                if (!-e $transcriptome_ref_intergenic_file_path) {
-                    # generate transcriptome with tophat gtf_to_fasta
-                    $sbatch_commands .= "$container_cmd gtf_to_fasta $annotation_transcriptome_ref_intergenic_file $genome_file_path $transcriptome_ref_intergenic_file_path &&\n";
-                    $sbatch_commands .= "# update transcriptome file to correct the header of each sequence\n";
-                    $sbatch_commands .= 'perl -i -pe \'s/^>\\d+ +/>/\' '.$transcriptome_ref_intergenic_file_path." &&\n";
+                if (-e $transcriptome_wo_intergenic_path.'.gz') {
+                    system("gunzip -c $transcriptome_wo_intergenic_path.gz > $transcriptome_wo_intergenic_path") == 0
+                        or die "Failed to gunzip $transcriptome_wo_intergenic_path.gz";
+                } elsif (-e $transcriptome_wo_intergenic_path.'xz') {
+                    system("unxz $transcriptome_wo_intergenic_path.xz") == 0
+                        or die "Failed to unxz $transcriptome_wo_intergenic_path.xz";
                 }
+                if (! -e $transcriptome_wo_intergenic_path) {
+                    warn "Transcriptome file without intergenic sequences $transcriptome_wo_intergenic_path does not exist. Please provide it. No transcriptome with reference intergenic file will be generated for $species_name.\n";
+                    next;
+                }
+                system("cat $transcriptome_wo_intergenic_path <(zcat $ref_intergenic_path) > $transcriptome_ref_intergenic_file_path") == 0
+                    or die "Failed to concatenate $transcriptome_wo_intergenic_path and $ref_intergenic_path into $transcriptome_ref_intergenic_file_path";
+                next if (! -e $transcriptome_ref_intergenic_file_path);
             }
-            # part that generate the index file containing the transcriptome + reference intergenic sequences
             $sbatch_commands .= "# generate index with default kmer size\n";
             $sbatch_commands .= "$container_cmd kallisto index -i $transcriptome_ref_intergenic_index_path $transcriptome_ref_intergenic_file_path &&\n";
+            $sbatch_commands .= "$container_cmd gzip $transcriptome_ref_intergenic_file_path &&\n";
 
             # create the sbatch file
             my $sbatch_file_path = "$sbatch_folder/${species_name}.sbatch";
