@@ -8,9 +8,10 @@
 use strict;
 use warnings;
 use diagnostics;
-
+use FindBin;
+use lib "$FindBin::Bin/../../.."; # Get lib path for Utils.pm
+use Utils;
 use File::Path qw(make_path);
-use FindBin qw( $RealBin ); # directory where the script is lying
 use Getopt::Long;
 use Time::localtime;
 
@@ -35,6 +36,7 @@ my $memory_usage   = 40;  # in GB
 my $time_limit     = '12:00:00';
 my $job_prefix = 'ref_intergenic_index';
 
+require("$FindBin::Bin/../../rna_seq_utils.pl");
 require("$FindBin::Bin/../../target_base_utils.pl");
 
 # Info of processed libraries coming from the pipeline
@@ -46,6 +48,10 @@ foreach my $experimentId (keys %processedLibraries){
     }
 }
 
+my $sbatch_folder = $output_log_folder."/sbatch_ref_intergenic_index/";
+make_path($sbatch_folder);
+my $clusterOutput_folder = $output_log_folder."/clusterOutput_ref_intergenic_index/";
+make_path($clusterOutput_folder);
 foreach my $speciesId (keys %speciesId_to_name) {
     print "Species ID: $speciesId, Species Name: $speciesId_to_name{$speciesId}\n";
     # retrieve files from transcriptome_folder that start with the species name and end with .gtf_all
@@ -56,9 +62,9 @@ foreach my $speciesId (keys %speciesId_to_name) {
     foreach my $file (@files) {
         if($file =~ ('.gtf_all$')) {
             my $jobName = "${job_prefix}_${speciesId}";
-            my $annotation_transcriptome_ref_intergenic_file = $transcriptome_folder.'/'.($file =~ s/gtf_all/gtf_transcriptome_ref_intergenic/r);
-            my $transcriptome_ref_intergenic_file_path = $transcriptome_folder.'/'.($file =~ s/gtf_all/transcriptome_ref_intergenic.fa/r);
-            my $transcriptome_ref_intergenic_index_path = $transcriptome_folder.'/'.($file =~ s/gtf_all/transcriptome_ref_intergenic.idx/r);
+            my $annotation_transcriptome_ref_intergenic_file = $file =~ s/gtf_all/gtf_transcriptome_ref_intergenic/r;
+            my $transcriptome_ref_intergenic_file_path = $file =~ s/gtf_all/transcriptome_ref_intergenic.fa/r;
+            my $transcriptome_ref_intergenic_index_path = $file =~ s/gtf_all/transcriptome_ref_intergenic.idx/r;
 
             if (-e $transcriptome_ref_intergenic_index_path.'.xz') {
                 system("unxz $transcriptome_ref_intergenic_index_path.xz");
@@ -70,7 +76,7 @@ foreach my $speciesId (keys %speciesId_to_name) {
             }
             # part that generate the gtf annotation file containing the transcriptome + reference intergenic sequences
             if (! -e $annotation_transcriptome_ref_intergenic_file) {
-                my $annotation_wo_intergenic_file = $transcriptome_folder.'/'.($file =~ s/gtf_all/gtf_transcriptome/r);
+                my $annotation_wo_intergenic_file = $file =~ s/gtf_all/gtf_transcriptome/r;
                 my $annotation_ref_intergenic = $ref_intergenic_folder.'/'.$speciesId.'_ref_intergenic.gtf';
                 # merge the two files annotation_wo_intergenic_file and annotation_ref_intergenic in $annotation_transcriptome_ref_intergenic_file
                 $sbatch_commands .= "cat $annotation_wo_intergenic_file $annotation_ref_intergenic > $annotation_transcriptome_ref_intergenic_file\n";
@@ -79,7 +85,7 @@ foreach my $speciesId (keys %speciesId_to_name) {
             if (-e $transcriptome_ref_intergenic_file_path.'.xz') {
                 $sbatch_commands .= "unxz $transcriptome_ref_intergenic_file_path.xz &&\n";
             } else {
-                my $genome_file_path = $transcriptome_folder.'/'.($file =~ s/gtf_all/genome.fa/r);
+                my $genome_file_path = $file =~ s/gtf_all/genome.fa/r;
                 if (!-e $genome_file_path) {
                     if (-e "$genome_file_path.xz") {
                         $sbatch_commands .= "unxz $genome_file_path.xz &&\n";
@@ -99,9 +105,9 @@ foreach my $speciesId (keys %speciesId_to_name) {
             $sbatch_commands .= "$container_cmd kallisto index -i $transcriptome_ref_intergenic_index_path $transcriptome_ref_intergenic_file_path &&\n";
 
             # create the sbatch file
-            my $sbatch_file_path = "$output_log_folder/sbatch_ref_intergenic_index/${species_name}.sbatch";
-            my $output_file_path = "$output_log_folder/clusterOutput_ref_intergenic_index/${species_name}.out";
-            my $error_file_path = "$output_log_folder/clusterOutput_ref_intergenic_index/${species_name}.err";
+            my $sbatch_file_path = "$sbatch_folder/${species_name}.sbatch";
+            my $output_file_path = "$clusterOutput_folder/${species_name}.out";
+            my $error_file_path = "$clusterOutput_folder/${species_name}.err";
             open (my $OUT, '>', "$sbatch_file_path")  or die "Cannot write [$sbatch_file_path]\n";
             print {$OUT} Utils::sbatch_template($partition, $account, 1, $memory_usage, $output_file_path, $error_file_path,
                 $jobName);
