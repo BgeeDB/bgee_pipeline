@@ -125,9 +125,10 @@ generate_gtf_nascent: generate_info 0Preparation/generate_GTF_nascent.R
 	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) Rscript  ${PWD}/0Preparation/generate_GTF_nascent.R gtf_dir=\"$(RNASEQ_CLUSTER_GTF)\" metadata_file=\"$(SC_RNASEQ_METADATA_10X_FILEPATH)\" scRNASeqInfoFile=\"$(SC_RNASEQ_SAMPINFO_10X_FILEPATH)\" > $@.tmp 2> $@.err
 	@$(MV) $@.tmp $@
 
-prepare_single_nucleus_index: generate_gtf_nascent 0Preparation/slurm_single_nucleus_index.pl
+prepare_indexes: generate_gtf_nascent 0Preparation/slurm_single_nucleus_index.pl
 	#Preparing single nucleus indexed transcriptome for every species
-	@$(CLUSTER_SOFTWARE_BIN) perl 0Preparation/slurm_single_nucleus_index.pl -transcriptome_folder=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(SC_RNASEQ_TB_FOLDER_GENERATED) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -partition=$(SENSITIVE_CLUSTER_PARTITION) >$@.tmp 2>$@.err
+#@$(CLUSTER_SOFTWARE_BIN) perl 0Preparation/slurm_single_nucleus_index.pl -transcriptome_folder=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(SC_RNASEQ_TB_FOLDER_GENERATED) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -partition=$(SENSITIVE_CLUSTER_PARTITION) >$@.tmp 2>$@.err
+	@$(CLUSTER_SOFTWARE_BIN) perl 0Preparation/slurm_ref_intergenic_index.pl -transcriptome_folder=$(RNASEQ_CLUSTER_GTF) -output_log_folder=$(SC_RNASEQ_TB_FOLDER_GENERATED) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -metadata_file=${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH) -ref_intergenic_folder=$(CLUSTER_REF_INTERGENIC_FOLDER) -partition=$(SENSITIVE_CLUSTER_PARTITION) >$@.tmp 2>$@.err
 	@$(MV) $@.tmp $@
 
 ## Run Kallisto bus per taxon_iD/library
