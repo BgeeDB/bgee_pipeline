@@ -62,7 +62,10 @@ foreach my $speciesId (keys %speciesId_to_name) {
     foreach my $file (@files) {
         if($file =~ ('.gtf_all$')) {
             my $transcriptome_ref_intergenic_index_path = $file =~ s/gtf_all/transcriptome_ref_intergenic.idx/r;
-            next if (-e $transcriptome_ref_intergenic_index_path || -e $transcriptome_ref_intergenic_index_path.'.xz');
+            if (-e $transcriptome_ref_intergenic_index_path || -e $transcriptome_ref_intergenic_index_path.'.xz') {
+                print("index $transcriptome_ref_intergenic_index_path already exists for species $species_name");
+		next;
+            }
 
             my $jobName = "${job_prefix}_${speciesId}";
             # name of the file to create that contain both the transcriptome and the intergenic sequences
@@ -101,7 +104,7 @@ foreach my $speciesId (keys %speciesId_to_name) {
             }
             $sbatch_commands .= "# generate index with default kmer size\n";
             $sbatch_commands .= "$container_cmd kallisto index -i $transcriptome_ref_intergenic_index_path $transcriptome_ref_intergenic_file_path &&\n";
-            $sbatch_commands .= "$container_cmd gzip $transcriptome_ref_intergenic_file_path &&\n";
+            $sbatch_commands .= "$container_cmd gzip $transcriptome_ref_intergenic_file_path\n";
 
             # create the sbatch file
             my $sbatch_file_path = "$sbatch_folder/${species_name}.sbatch";
