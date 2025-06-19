@@ -81,7 +81,7 @@ if (!exists("N_proportion")) { stop("Threshold of N proportion in a sequence not
 get_annot_value <- function(split_annotation, field_name){
   ## find the right field
   field_all <- split_annotation[grep(field_name, split_annotation, fixed = T)];
-
+  if(length(field_all) == 0) message("field_all is null for field_name : ", field_name, " and split annotation : ", split_annotation)
   ## split the field
   field_value <- strsplit(field_all, ' ', fixed = T)[[1]][2];
 
