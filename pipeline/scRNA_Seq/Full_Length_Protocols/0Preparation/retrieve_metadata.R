@@ -50,7 +50,7 @@ registerDoParallel(cores = threads)
 counter <- 0
 
 # Parallelized loop
-results <- foreach(row = seq(nrow(annotation)), .combine = c, .multicombine = TRUE, .packages = c("utils")) %dopar% {
+results <- foreach(row = seq(nrow(annotation)), .multicombine = TRUE, .packages = c("utils")) %dopar% {
   library <- annotation[row,]
   libraryID <- library$libraryId
   if (startsWith(as.character(libraryID), "#")) {
