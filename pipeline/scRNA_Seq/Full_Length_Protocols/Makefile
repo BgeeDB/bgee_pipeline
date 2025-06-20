@@ -53,33 +53,31 @@ commit_annotation_and_metadata: list_new_downloads
 ################## STEPS TO RUN ON SENSITIVE CLUSTER ##################
 
 clusterJURA:
-	@echo -e "\tBe sure everything is up-to-date before running single cell RNASeq pipeline\n"
+	@echo -e "\tBe sure everything is up-to-date before running full-length single cell RNASeq pipeline\n"
 	@touch $@
 
 check_tools: clusterJURA
 	@echo -e "\tGo to 'cd pipeline/scRNA_Seq/Full_Length_Protocols/' and be prepared to work\n"
-	@echo -e "\n\tRun this command to give access to all modules installed on vital-it\n\tmodule use /software/module/\n"
 	# Check if all required tools/libs are available
-	@module use /software/module/ || true
-	@$(CLUSTER_R_CMD) which R                          > $@.tmp
-	@$(CLUSTER_R_CMD) R -e 'library("Biostrings")'    >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("HelpersMG")'     >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("LaplacesDemon")' >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("data.table")'    >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("dplyr")'         >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("forcats")'       >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("gghighlight")'   >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("ggplot2")'       >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("gridExtra")'     >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("plyr")'          >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("reshape2")'      >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("rjson")'         >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("stringr")'       >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("tools")'         >> $@.tmp  2>/dev/null
-	@which xz                                         >> $@.tmp
-	@which sbatch                                     >> $@.tmp
-	@$(CLUSTER_KALLISTO_CMD)   which kallisto         >> $@.tmp
-	@$(CLUSTER_FASTP_CMD)      which fastp            >> $@.tmp
+	#@$(CLUSTER_CONTAINER_CMD_WITH_BIND) which R                          > $@.tmp
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("Biostrings")'    >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("HelpersMG")'     >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("LaplacesDemon")' >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("data.table")'    >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("dplyr")'         >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("forcats")'       >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("gghighlight")'   >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("ggplot2")'       >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("gridExtra")'     >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("plyr")'          >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("reshape2")'      >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("rjson")'         >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("stringr")'       >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("tools")'         >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) which xz                        >> $@.tmp
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) which sbatch                    >> $@.tmp
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) which kallisto                  >> $@.tmp
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) which fastp                     >> $@.tmp
 	@$(MV) $@.tmp $@
 
 ## Prepare single cell info file (run rule in front)
