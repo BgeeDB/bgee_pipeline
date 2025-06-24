@@ -531,7 +531,7 @@ for my $exp ( keys %experiments ){
     # Get species taxid
     my $speciesId = $experiments{$exp}{'species'} eq 'D. melanogaster'  ? 7227 # Only D. melanogaster seen in bdgp database for now, but others are declared
                   : $experiments{$exp}{'species'} eq 'D. pseudoobscura' ? 7237
-                  : $experiments{$exp}{'species'} eq 'D. virilis'       ? 7244
+#                  : $experiments{$exp}{'species'} eq 'D. virilis'       ? 7244
                   : $experiments{$exp}{'species'} eq 'D. simulans'      ? 7240
                   :                                                       '';
     if ( $speciesId eq '' ){

@@ -5,9 +5,9 @@ use strict;
 use warnings;
 use diagnostics;
 
-$, = "\t";
+#$, = "\t";
 binmode(STDOUT, 'utf8');
-no warnings ('uninitialized');
+#no warnings ('uninitialized');
 use Webservice::InterMine 'http://intermine.wormbase.org/tools/wormmine';
 
 my $query = new_query(class => 'Strain');
@@ -41,9 +41,9 @@ while ( my $row = <$it> ){
     print join("\t", $row->{'primaryIdentifier'}, # strain code
                      $row->{'name'},              # human readable strain name
                      $row->{'species'},
-                     $row->{'remark'},
+                     $row->{'remark'}    || '',
                      $row->{'genotype'},
-                     $row->{'otherName'},
+                     $row->{'otherName'} || '',
               ), "\n";
 }
 

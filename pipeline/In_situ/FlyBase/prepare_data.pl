@@ -106,7 +106,7 @@ for my $line ( 0..$#{$tsv{'feid'}} ){
     # Species tax id
     my $speciesId = $tsv{'organism_id'}[$line] == 1   ? 7227 # Mostly Drosophila melanogaster                experiments
                   : $tsv{'organism_id'}[$line] == 214 ? 7237 # Few    Drosophila pseudoobscura pseudoobscura experiments
-                  : $tsv{'organism_id'}[$line] == 78  ? 7244 # No     Drosophila virilis                     experiments yet
+#                  : $tsv{'organism_id'}[$line] == 78  ? 7244 # No     Drosophila virilis                     experiments yet
                   :                                     '';
     if ( $speciesId eq '' ){
         warn "Problem with organism_id [$tsv{'organism_id'}[$line]]\n";

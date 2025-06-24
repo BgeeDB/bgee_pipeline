@@ -89,13 +89,13 @@ while ( my @data = $retrieveEnsembl->fetchrow_array ){
 $retrieveEnsembl->finish;
 
 #TODO also for X. laevis!!!!
-print "Reading remote files...\n"  if ( $debug );
-print "\tGeneExpression_tropicalis.txt (can be long)\n"  if ( $debug );
+print "Reading remote files...\n"         if ( $debug );
+print "\t$taxon{$taxid} (can be long)\n"  if ( $debug );
 my $pattern_id = 1;
 my %experiments;
 my %patterns;
 
-# all expression data for xenopus tropicalis
+# all expression data for xenopus tropicalis or laevis
 my $statusCode = mirror("https://ftp.xenbase.org/pub/GenePageReports/$taxon{$taxid}", "$src_dir/$taxon{$taxid}");
 if ( $statusCode != 200 && $statusCode != 304 ){ # OKs & Not Modified
     die "Couldn't get file [$taxon{$taxid}]!\n";

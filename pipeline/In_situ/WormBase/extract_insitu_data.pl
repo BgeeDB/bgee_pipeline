@@ -25,7 +25,7 @@ my ($wormb_data)               = ('');
 my ($strain_map, $strain_map2) = ('', '');
 my ($Aport, $Sport)            = (0, 0);
 my %opts = ('bgee=s'        => \$bgee_connector,     # Bgee connector string
-            'wormb_data=s'  => \$wormb_data,         # from ftp://caltech.wormbase.org/pub/wormbase/expr_dump/
+            'wormb_data=s'  => \$wormb_data,         # from http://caltech.wormbase.org/pub/wormbase/expr_dump/
             'strain_map=s'  => \$strain_map,         # from https://wormbase.org/species/all/strain/ Natural Isolates
             'strain_map2=s' => \$strain_map2,        # from WormMine
             'Aport=i'       => \$Aport,              # Anatomy mapper socket port

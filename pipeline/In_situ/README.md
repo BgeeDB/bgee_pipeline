@@ -184,7 +184,7 @@ With the file coming from WormBase AceDB ! Should be fixed with WormMine.
 
 
 
-Include data from WormBase. They provide their _in situ_ data to us here: [ftp://caltech.wormbase.org/pub/wormbase/expr_dump/](ftp://caltech.wormbase.org/pub/wormbase/expr_dump/). Note about their _in situ_ hybridizations, from Daniela Raciti:
+Include data from WormBase. They provide their _in situ_ data to us here: [http://caltech.wormbase.org/pub/wormbase/expr_dump/](http://caltech.wormbase.org/pub/wormbase/expr_dump/). Note about their _in situ_ hybridizations, from Daniela Raciti:
 
 
 "Generally, we capture the expression patterns without keeping a stage specific identity. I know it's not ideal but it was done historically like that and change it would mean revise all the previous annotations (I guess at some point we might as well do it). For example if the authors say: 'gene xyz is expressed in the pharynx at L1 stage and in neurons from embryo to adult' then the annotation would be pharynx and neuron in embryo, larva and adult. We loose stage specific info. Even when there is only one stage, the authors could still have said: 'gene xyz is expressed in the pharynx, vulva, and intestine. At stage L1 expression is observed in the nerve ring.' We might capture L1 for nerve ring but then you have all the other stuff. How about including the ones that have only one anatomical term and one -or multiple- life stages. That should be safe" (file on the git, `extra/pipeline/In_situ/WormBase/expr_pattern.ace.20140526`)
