@@ -59,7 +59,7 @@ clusterJURA:
 check_tools: clusterJURA
 	@echo -e "\tGo to 'cd pipeline/scRNA_Seq/Full_Length_Protocols/' and be prepared to work\n"
 	# Check if all required tools/libs are available
-	#@$(CLUSTER_CONTAINER_CMD_WITH_BIND) which R                          > $@.tmp
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) which R                          > $@.tmp
 	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("Biostrings")'    >> $@.tmp  2>/dev/null
 	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("HelpersMG")'     >> $@.tmp  2>/dev/null
 	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("LaplacesDemon")' >> $@.tmp  2>/dev/null
@@ -80,12 +80,11 @@ check_tools: clusterJURA
 	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) which fastp                     >> $@.tmp
 	@$(MV) $@.tmp $@
 
-## Prepare single cell info file (run rule in front)
+## Prepare single cell info file
 prepare_singlecell_info: $(SC_RNASEQ_LIB_PASS_FILEPATH) 0Preparation/prepare_scrna_seq_sample_info.R
 	@$(RM) $(SC_RNASEQ_SAMPINFO_FILEPATH) > $@.tmp
 	@echo --- prepare single cell information file ---
-	@$(CLUSTER_FASTP_CMD) $(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args pass_annotationControl="$(SC_RNASEQ_LIB_PASS_FILEPATH)" metadata_file="$(SC_RNASEQ_METADATA_FILEPATH)" raw_cells_folder="$(SC_RNASEQ_FASTQ_FULL_LENGTH)" output_folder="$(SC_RNASEQ_FL_FOLDER_GENERATED)"' 0Preparation/prepare_scrna_seq_sample_info.R 0Preparation/prepare_scrna_seq_sample_info.Rout > $@.tmp
-	@echo --- DONE ---
+	@srun --export=ALL --partition=${SENSITIVE_CLUSTER_PARTITION} --account=${SENSITIVE_CLUSTER_ACCOUNT} --job-name=$@ --output=${PWD}/$@.out --error=${PWD}/$@.err  --nodes=1 --time=12:00:00 --ntasks=1 --cpus-per-task=1 --mem=10G bash -c "$(CLUSTER_CONTAINER_CMD_WITH_BIND) Rscript $(PWD)/0Preparation/prepare_scrna_seq_sample_info.R pass_annotationControl=\'$(PWD)/$(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)\' metadata_file=\'$(PWD)/$(SC_RNASEQ_METADATA_FL_FILEPATH)\' raw_cells_folder=\'$(SC_RNASEQ_FASTQ_FULL_LENGTH)\' output_folder=\'$(SC_RNASEQ_FL_FOLDER_GENERATED)\'"
 	@$(MV) $@.tmp $@
 
 # generate kallisto indexes with BgeeCall. Indexes already generated during the bulk RNA-Seq pipeline can be reused.
@@ -93,9 +92,9 @@ prepare_singlecell_info: $(SC_RNASEQ_LIB_PASS_FILEPATH) 0Preparation/prepare_scr
 indexes_bgeecall: prepare_singlecell_info
 	# generate BgeeCall input file from the scrna_seq_sample_info.txt file
 	# Run in front because it only parse a small file in order to create a new one.
-	@perl 1Run/sc_sample_info_to_bgeecall.pl -sc_sample_info_file=$(SC_RNASEQ_SAMPINFO_FILEPATH) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(SC_RNASEQ_FASTQ_FULL_LENGTH) -output_dir=$(SC_RNASEQ_CLUSTER_BGEECALL) -bgeecall_file=$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >>$@.tmp 2>&1
+	@$(CLUSTER_SOFTWARE_BIN) $(CLUSTER_CONTAINER_CMD_WITH_BIND) perl 1Run/sc_sample_info_to_bgeecall.pl -sc_sample_info_file=$(SC_RNASEQ_SAMPINFO_FILEPATH) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(SC_RNASEQ_FASTQ_FULL_LENGTH) -output_dir=$(SC_RNASEQ_CLUSTER_BGEECALL) -bgeecall_file=$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >>$@.tmp 2>&1
 	# generate kallisto indexes with BgeeCall. Use same working directory than bulk RNASeq as indexes are the same
-	@$(CLUSTER_R_CMD) $(CLUSTER_KALLISTO_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH)" account="$(SENSITIVE_CLUSTER_ACCOUNT)" time="10:00:00" partition="$(SENSITIVE_CLUSTER_PARTITION)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' $(PIPELINEROOT)$(RNASEQPATH)1Run/bgeecall_index.R 1Run/bgeecall_index.Rout
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH)" account="$(SENSITIVE_CLUSTER_ACCOUNT)" time="10:00:00" partition="$(SENSITIVE_CLUSTER_PARTITION)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' $(PIPELINEROOT)$(RNASEQPATH)1Run/bgeecall_index.R 1Run/bgeecall_index.Rout
 	@$(MV) $@.tmp $@
 
 # Use BgeeCall R package to generate present/absent calls.
