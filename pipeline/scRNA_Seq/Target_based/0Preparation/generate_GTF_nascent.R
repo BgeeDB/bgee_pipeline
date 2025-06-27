@@ -85,12 +85,10 @@ for (species_id in species_ids) {
   #		bulk doesn't in order not to process those libraries.	
   #		Remove the line below once this issue is solved. 
   if(species_id==9580) next
-  message(species_id)
   # check that at least one single nucleus library have to be processed for this species
   if (length(grep(pattern = "Sn-scRNA-seq", x = unique(sample_info$RNAseqTags[sample_info$speciesId == species_id]))) >= 1) {
-    message("single nuclei exist for that species")
+    message("\nsingle nuclei exists for species ", species_id)
     speciesName <- gsub(" ", "_", unique(metadata$scientific_name[metadata$tax_id == species_id]))
-    gtf_file <- list.files(path = gtf_dir, pattern = paste0(speciesName, ".*gtf$"), full.names = TRUE)
     ## there is potentially several gtf files already created.
     ## All gtf files created from the original Ensembl one have a prefix to specify what they correspond to
     ## e.g "wo_intergenic" or "nascent". In order to select the proper one we filter on the already known file
@@ -100,12 +98,23 @@ for (species_id in species_ids) {
     ## in case the gtf file is gzipped
     if (!is.null(gtf_gz_file) && length(gtf_gz_file)) {
       gunzip(gtf_gz_file)
-      gtf_file <- list.files(path = gtf_dir, pattern = paste0(speciesName, ".*gtf$"), full.names = TRUE)
     }
+    gtf_file <- list.files(path = gtf_dir, pattern = paste0(speciesName, ".*\\.gtf$"), full.names = TRUE)
     gtf_file <- gtf_file[!grepl(pattern = "wo_intergenic.gtf$|nascent.gtf$|transcriptome.gtf$", x = gtf_file)]
+    if (length(gtf_file) != 1) stop("Expected exactly one gtf file for ", species_id, " but had : ", gtf_file)
+    
+    # path to files that have to be generated.
+    nascent_gtf_file <- file.path(gtf_dir, gsub(pattern = ".gtf", replacement = ".nascent.gtf",
+      x = basename(gtf_file)))
+    single_nucleus_tx2gene_file <- file.path(gtf_dir, gsub(pattern = ".gtf",
+      replacement = ".single_nucleus.tx2gene", x = basename(gtf_file)))
+    if (file.exists(nascent_gtf_file) && file.exists(single_nucleus_tx2gene_file)) {
+      message("all files had already been generated for ", species_id)
+      next
+    }
     
     ## reading in gtf file from ensembl
-    message("Reading GTF file ", gtf_file,"... \n")
+    message("Reading GTF file ", gtf_file,"...")
     gene_gtf <- as.matrix(read.table(file = gtf_file, sep = "\t", strip.white = TRUE, as.is = TRUE,
       colClasses = "character", comment.char = '#'))
 
@@ -138,9 +147,6 @@ for (species_id in species_ids) {
 
     ## Output:
     ## GTF file with both genic exons and intergenic regions
-    nascent_gtf_file <- file.path(gtf_dir, gsub(pattern = ".gtf", replacement = ".nascent.gtf",
-      x = basename(gtf_file)))
-
     message("write file : ", nascent_gtf_file)
     write.table(x = exon_gtf_nascent,
                 file = nascent_gtf_file,
