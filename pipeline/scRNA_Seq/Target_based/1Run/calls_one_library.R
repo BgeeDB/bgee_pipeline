@@ -98,7 +98,11 @@ sumUMICellPop <- function(rawCountFile, refIntergenicIds) {
 ## function to calculate pValue from the theoretical data
 theoretical_pValue <- function(counts){
   ##TODO: once again here it should only contain reference intergenic. To check...
-  ## select values with CPM > 0 (because we will use log2 scale)
+  ## select intergenic regions
+  selected_intergenic <- dplyr::filter(counts, type == "intergenic")
+  ## calculate the ratio of reference intergenic that receive reads
+  ratio_intergenic_overzero <- sum(selected_intergenic$abundance > 0) / nrow(selected_intergenic)
+  ## select intergenic values with CPM > 0 (because we will use log2 scale)
   selectedRefIntergenic <- dplyr::filter(counts, CPM > 0 & type == "intergenic")
   ## select genic and ref. intergenic region from the library with CPM > 0
   regions <- dplyr::filter(counts, CPM > 0)
@@ -106,7 +110,7 @@ theoretical_pValue <- function(counts){
   regions$zScore <- (log2(regions$CPM) - mean(log2(selectedRefIntergenic$CPM))) / 
     sd(log2(selectedRefIntergenic$CPM))
   ## calculate p-values for each gene_id
-  regions$pValue <- pnorm(regions$zScore, lower.tail = FALSE)
+  regions$pValue <- ratio_intergenic_overzero * pnorm(regions$zScore, lower.tail = FALSE)
   return(list(regions, 2^(mean(log2(selectedRefIntergenic$CPM))), 
     2^(sd(log2(selectedRefIntergenic$CPM)))))
 }
