@@ -63,7 +63,7 @@ foreach my $speciesId (keys %speciesId_to_name) {
         if($file =~ ('.gtf_all$')) {
             my $transcriptome_ref_intergenic_index_path = $file =~ s/gtf_all/transcriptome_ref_intergenic.idx/r;
             if (-e $transcriptome_ref_intergenic_index_path || -e $transcriptome_ref_intergenic_index_path.'.xz') {
-                print("index $transcriptome_ref_intergenic_index_path already exists for species $species_name");
+                print("index $transcriptome_ref_intergenic_index_path already exists for species $species_name\n");
 		next;
             }
 
