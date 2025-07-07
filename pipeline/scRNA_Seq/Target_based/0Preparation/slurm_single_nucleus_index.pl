@@ -32,9 +32,11 @@ my $test_options = Getopt::Long::GetOptions(%opts);
 # TO IMPLEMENT
 # kallisto index generation is no multithreaded
 my $nbr_processors = 1;
-# RAM needed: 10GB should be enough
-my $memory_usage   = 90;      # in GB
-my $time_limit     = '12:00:00';
+# RAM needed: 60GB should be enough
+my $memory_usage         = 60;      # in GB
+my $human_memory_usage   = 400;    # in GB
+my $time_limit           = '12:00:00';
+my $human_time_limit    = '1-12:00:00';
 
 require("$FindBin::Bin/../../rna_seq_utils.pl");
 require("$FindBin::Bin/../../target_base_utils.pl");
@@ -66,7 +68,7 @@ while (my $file = readdir(DIR)) {
 		print "$transcriptome_single_nucleus_index_path already exists. No needs to generate it again.\n";
 		next;
 	}
-
+	
         # init sbatch command
         my $sbatch_commands = "";
 
@@ -134,8 +136,14 @@ while (my $file = readdir(DIR)) {
         # generate sbatch file
 	my $job_name = $job_prefix.$file;
         open (my $OUT, '>', "$sbatch_file_path")  or die "Cannot write [$sbatch_file_path]\n";
-        print {$OUT} sbatch_header($partition, $account, $nbr_processors, $memory_usage, $output_file_path, $error_file_path, $job_name, $time_limit);
-        print {$OUT} $sbatch_commands;
+	#generation of human single nucleus index requires more memory and time.
+	#XXX: maybe overkill but it could be possible to define the quantity of RAM and time depending on the size of the files
+	if ($file =~ /Homo_sapiens/) {
+	    print {$OUT} sbatch_header($partition, $account, $nbr_processors, $human_memory_usage, $output_file_path, $error_file_path, $job_name, $human_time_limit);
+        } else {
+	    print {$OUT} sbatch_header($partition, $account, $nbr_processors, $memory_usage, $output_file_path, $error_file_path, $job_name, $time_limit);
+	}
+	print {$OUT} $sbatch_commands;
         close $OUT;
 
         # Then, run the job
