@@ -82,10 +82,9 @@ check_tools: clusterJURA
 
 ## Prepare single cell info file
 prepare_singlecell_info: $(SC_RNASEQ_LIB_PASS_FILEPATH) 0Preparation/prepare_scrna_seq_sample_info.R
-	@$(RM) $(SC_RNASEQ_SAMPINFO_FILEPATH) > $@.tmp
 	@echo --- prepare single cell information file ---
 	@srun --export=ALL --partition=${SENSITIVE_CLUSTER_PARTITION} --account=${SENSITIVE_CLUSTER_ACCOUNT} --job-name=$@ --output=${PWD}/$@.out --error=${PWD}/$@.err  --nodes=1 --time=12:00:00 --ntasks=1 --cpus-per-task=1 --mem=10G bash -c "$(CLUSTER_CONTAINER_CMD_WITH_BIND) Rscript $(PWD)/0Preparation/prepare_scrna_seq_sample_info.R filteredLibraryAnnotation=\'$(PWD)/$(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)\' metadataFile=\'$(PWD)/$(SC_RNASEQ_METADATA_FL_FILEPATH)\' fastqDir=\'$(SC_RNASEQ_FASTQ_FULL_LENGTH)\' outputDir=\'$(SC_RNASEQ_FL_FOLDER_GENERATED)\'"
-	@$(MV) $@.tmp $@
+	@$(MV) $@.out $@
 
 # generate kallisto indexes with BgeeCall. Indexes already generated during the bulk RNA-Seq pipeline can be reused.
 # run script from bulk RNASeq pipeline
