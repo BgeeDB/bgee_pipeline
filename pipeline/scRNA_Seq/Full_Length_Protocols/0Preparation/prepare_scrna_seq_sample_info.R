@@ -4,7 +4,7 @@
 
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args filteredLibraryAnnotation="passScRNASeqLibrary.tsv" fastqDir="fastqDir" outputDir="outputDir"' prepare_scrna_seq_sample_info.R prepare_scrna_seq_sample_info.Rout
-## filteredLibraryAnnotation --> list of raw libraries annotation filtered to contain only full-length scRNA-Seq libraries
+## filteredLibraryAnnotation --> list of raw libraries nnotation filtered to contain only full-length scRNA-Seq libraries
 ## fastqDir                  --> directory containing the fastq files
 ## metadataFile              --> file with the metadata information
 ## outputDir                 --> directory where the scrna_seq_sample_info.tsv should be saved
@@ -44,55 +44,47 @@ if( file.exists(metadataFile) ){
 } else {
   stop("metadata file not found [", metadataFile, "]")
 }
+#keep only library type and the library ID from the metadata file
+metadata <- metadata %>% dplyr::select("library_id", "library_layout", "scientific_name")
+colnames(metadata) <- c("libraryId", "libraryType", "scientific_name")
 
+# then merge those info with the annotation file
+scrna_seq_sample_info <- merge(annotation, metadata, by = "libraryId", incomparables = NaN)
 
 ##################################################################### FUNCTION #############################################################################################
 ## retrieve information from fastp
-collectInformationFASTP <- function(fastq_dir, annotation, library){
-  species <- annotation$speciesId[annotation$libraryId == library]
-  fastq_library_dir <- file.path(fastq_dir, species, library)
+collectReadLengthFASTP <- function(fastq_dir, speciesId, library){
+  fastq_library_dir <- file.path(fastq_dir, speciesId, library)
+  if (!dir.exists(fastq_library_dir)) {
+    cat(paste0("FASTQ files for library ", library, " are not available. The library will not be added to the sample info file.\n"))
+    return(NA)
+  }
   fastq_files <- (list.files(path = fastq_library_dir, pattern = "*.fastq.gz"))
 
   ## check if fastp has already run
   fastpJSON <- list.files(path=fastq_library_dir, pattern = "*.fastp.json.xz")
-
-  if (isTRUE(file.exists(file.path(fastq_library_dir, fastpJSON)))){
-    library_type <- ifelse(length(fastq_files) == 1, "SINGLE", "PAIRED")
-    json_output <- fromJSON(file = file.path(fastq_library_dir, fastpJSON))
-    read_length <- json_output$read1_before_filtering$total_cycles
-  } else {
-    stop("fastp has not been run for the library ", library)
+  if (length(fastpJSON) == 0) {
+    stop("No fastp JSON for library ", library, ".")
+    return(NA)
   }
-
+  json_output <- fromJSON(file = file.path(fastq_library_dir, fastpJSON))
+  read_length <- json_output$read1_before_filtering$total_cycles
+  return(read_length)
   ## collect information per library
-  information_file <- data.frame(library, library_type, read_length)
-  return(information_file)
-  }
-
-
-##################################### OUTPUT #############################################################################################
-## create a intermediary file to collect information about each library, or truncate already existing one....
-#TODO: Should not create a tmp file but directly collect data in memory
-tmp_info_file <- paste0(outputDir, ".tmp")
-file.create(tmp_info_file)
-cat("libraryId\tlibraryType\treadLength\n",file = tmp_info_file, sep = "\t")
-
-###################################### RUN PER lIBRARY ##################################################################################
-for (library_id in unique(annotation$libraryId)) {
-
-  fastp_info <- collectInformationFASTP(fastq_dir = fastqDir, annotation = annotation, library = library_id)
-
-  write.table(fastp_info, file = tmp_info_file, row.names = FALSE , col.names = FALSE , append = TRUE, quote = FALSE, sep = "\t")
 }
 
-### read final output file --> InfoFile
-file_info <- read.table(tmp_info_file, header=TRUE, sep="\t")
+# Collect fastp info in memory
+scrna_seq_sample_info$readLength <- NA
+for (library_id in unique(annotation$libraryId)) {
+  if (grepl("^#", library_id)) next  # Skip commented library_ids
+  species_id <- annotation$speciesId[annotation$libraryId == library_id]
+  scrna_seq_sample_info$readLength[scrna_seq_sample_info$libraryId == library_id] <- collectReadLengthFASTP(fastq_dir = fastqDir, speciesId = species_id, library = library_id)
+}
 
 ## Create the scrna_seq_sample_info
-scrna_seq_sample_info <- merge(annotation, file_info, by = "libraryId", incomparables = NaN)
-scrna_seq_sample_info <- scrna_seq_sample_info %>% dplyr::select("libraryId", "experimentId", "cellTypeName_abInitio", "cellTypeId_abInitio", "speciesId","platform", "protocol", "protocolType", "libraryType", "infoOrgan", "stageId", "anatId", "sex", "strain", "readLength", "speciesId", "genotype")
-scrna_seq_sample_info$organism <- "NaN"
-final_table <- metadata$scientific_name[metadata$tax_id == scrna_seq_sample_info$speciesId]
-write.table(final_table,file = file.path( outputDir, "scrna_seq_sample_info.tsv"), quote = FALSE, sep = "\t", col.names = TRUE, row.names = FALSE)
-## remove intermediary file
-file.remove(tmp_info_file)
+scrna_seq_sample_info <- scrna_seq_sample_info %>% dplyr::select("libraryId", "experimentId", "cellTypeName", "cellTypeId", "speciesId","platform", "protocol", "protocolType", "libraryType", "infoOrgan", "stageId", "anatId", "sex", "strain", "readLength", "genotype", "scientific_name")
+
+scrna_seq_sample_info$organism <- gsub(" ", "_", scrna_seq_sample_info$scientific_name)
+scrna_seq_sample_info$scientific_name <- NULL
+write.table(scrna_seq_sample_info, file = file.path( outputDir, "scrna_seq_sample_info.tsv"), quote = FALSE, sep = "\t", col.names = TRUE, row.names = FALSE)
+
