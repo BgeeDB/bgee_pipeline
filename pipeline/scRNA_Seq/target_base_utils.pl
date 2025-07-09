@@ -79,10 +79,6 @@ sub getTargetBaseCuratedLibrariesAnnotation {
                 warn "Warning, wrong format for anatEntityId [$anatEntityId]\n";
                 $discarded = 1;
             }
-            if ($cellTypeId eq '' ){
-                warn "Warning, wrong format for cellTypeId [$cellTypeId]\n";
-                $discarded = 1;
-            }
             if ($stageId eq '' ){
                 warn "Warning, wrong format for stageId [$stageId]\n";
                 $discarded = 1;
@@ -641,13 +637,8 @@ sub insert_get_annotated_sample {
     
     #retrieve annotated sample ID
     my $annotatedSampleId = ();
-    if ($cellTypeAuthorAnnotation eq '') {
-        $selectAnnotatedSampleId->execute($libraryId, $conditionId)
-        or die $selectAnnotatedSampleId->errstr;
-    } else {
-        $selectAnnotatedSampleId->execute($libraryId, $conditionId, $cellTypeAuthorAnnotation)
-        or die $selectAnnotatedSampleId->errstr;
-    }
+    $selectAnnotatedSampleId->execute($libraryId, $conditionId, $cellTypeAuthorAnnotation)
+    or die $selectAnnotatedSampleId->errstr;
     while ( my @data = $selectAnnotatedSampleId->fetchrow_array ){
         $annotatedSampleId = $data[0];
     }
@@ -661,13 +652,7 @@ sub insert_get_individual_sample {
         $barcode, $sampleName, $debug) = @_;
     my $indiviudalSampleId;
     # insert individual sample
-    if ($debug) {
-        print 'INSERT INTO rnaSeqLibraryIndividualSample: ', 'annotatedSampleId', ' - ', 
-                    $barcode, ' - ', $sampleName, "\n";
-    } else {
-        $insIndividualSample->execute($annotatedSampleId, $barcode, $sampleName)
-            or die $insIndividualSample->errstr;
-    }
+    insert_individual_sample($insIndividualSample, $annotatedSampleId, $barcode, $sampleName, $debug);
     # retrieve individual sample
     $selectIndividualSampleId->execute($annotatedSampleId, $barcode, $sampleName)
         or die $selectIndividualSampleId->errstr;
@@ -675,6 +660,18 @@ sub insert_get_individual_sample {
         $indiviudalSampleId = $data[0];
     }
     return $indiviudalSampleId;
+}
+
+sub insert_individual_sample {
+     my ($insIndividualSample, $annotatedSampleId, $barcode, $sampleName, $debug) = @_;
+     # insert individual sample
+    if ($debug) {
+        print 'INSERT INTO rnaSeqLibraryIndividualSample: ', 'annotatedSampleId', ' - ', 
+                    $barcode, ' - ', $sampleName, "\n";
+    } else {
+        $insIndividualSample->execute($annotatedSampleId, $barcode, $sampleName)
+            or die $insIndividualSample->errstr;
+    }
 }
 
 sub read_sparse_matrix {
