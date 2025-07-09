@@ -163,7 +163,7 @@ foreach my $key (keys %ref_seq_path) {
         if(exists $geneToBiotype{$gene_id[0]}) {
             # remove gene name as gene_id and put the real gene_id
             my $gene_xref_tag = "$geneToBiotype{$gene_id[0]}{'xref'}";
-            $line =~ s/$gene_id[0]/$gene_xref_tag/g;
+            $line =~ s/gene_id "$gene_id[0]"/gene_id "$gene_xref_tag"/g;
             #split at each " character in order to only keep the gene name itself
             my $gene_name_tag = "gene_name \"".$gene_id[0]."\";";
             $line .= $gene_name_tag;
