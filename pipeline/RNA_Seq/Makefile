@@ -131,19 +131,19 @@ check_sra: list_new_downloads
 ################################ DOWNLOAD GENOMES AND ANNOTATIONS ################################
 
 #NOTE to be done on regular cluster, with network access
-get_GTF: create_rna_seq_sample_info
+get_GTF:
 	# Get GTF files from Ensembl and NCBI FTP
-	@perl 0Before/get_GTF_files.pl  -RNAseqSample=$(RNASEQ_SAMPINFO_FILEPATH) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_DOWNLOAD_GTF)  >$@.tmp 2>&1
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) perl 0Before/get_GTF_files.pl  -RNAseqSample=$(RNASEQ_SAMPINFO_FILEPATH) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_DOWNLOAD_GTF)  >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
 
 # this rule is created to remove some elements from NCBI/RefSeq gtf files in order to make them compatible with our pipeline
 update_GTF: get_GTF
-	perl 0Before/update_GTF.pl -path_to_gtf_folder=$(RNASEQ_CLUSTER_GTF) -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH)>$@.tmp 2>&1
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) perl 0Before/update_GTF.pl -path_to_gtf_folder=$(RNASEQ_CLUSTER_GTF) -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH)>$@.tmp 2>&1
 	@$(MV) $@.tmp $@
 
 get_genome: update_GTF
 	# Download genomes from Ensembl and NCBI databases
-	@perl 0Before/get_genome_files.pl  -GTF_dir=$(RNASEQ_DOWNLOAD_GTF) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_DOWNLOAD_GTF) >$@.tmp 2>&1
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) perl 0Before/get_genome_files.pl  -GTF_dir=$(RNASEQ_DOWNLOAD_GTF) -ensRelease=$(ENSRELEASE) -ensMetazoaRelease=$(ENSMETAZOARELEASE) -outDir=$(RNASEQ_DOWNLOAD_GTF) >$@.tmp 2>&1
 	@echo "You can transfer GTF and genome files from UNIL cluster [$(RNASEQ_DOWNLOAD_GTF)] to sensitive cluster [$(RNASEQ_CLUSTER_GTF)]"
 	@$(MV) $@.tmp $@
 
