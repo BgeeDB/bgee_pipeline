@@ -1,3 +1,5 @@
+# prepare_GTF.R (modified to always delete existing files)
+
 # Marta Rosikiewicz
 # created: 30/10/2012
 # modified: 21/10/2013: removed intronic regions from analysis; size of intergenic regions limited to min 2000 max 20000
@@ -56,6 +58,7 @@ cmd_args = commandArgs(TRUE);
 print("command arguments\n")
 print(cmd_args)
 
+
 if (length(cmd_args) ==  0) {
   stop("no arguments provided")
 } else {
@@ -72,14 +75,13 @@ if (!exists("N_block_size")) { stop("Threshold of consecutive N in a sequence no
 if (!exists("N_proportion")) { stop("Threshold of N proportion in a sequence not defined") }
 
 ######################## Functions #############################
-
 ## Function for obtaining the part of the annotation field from gtf file
 ## Input: whole field, already splitted, for example: gene_id "FBgn0264003"; gene_name "mir-5613"; gene_source "FlyBase"; gene_biotype "pre_miRNA"
 ## Output: could be for example gene_id: FBgn0264003
 get_annot_value <- function(split_annotation, field_name){
   ## find the right field
   field_all <- split_annotation[grep(field_name, split_annotation, fixed = T)];
-
+  if(length(field_all) == 0) message("field_all is null for field_name : ", field_name, " and split annotation : ", split_annotation)
   ## split the field
   field_value <- strsplit(field_all, ' ', fixed = T)[[1]][2];
 
@@ -282,23 +284,23 @@ for(gene_nrow in 1:nrow(gene_gtf)){
   intergenic_strand = append(intergenic_strand, as.character(gene_gtf[gene_nrow, 7]))
   if(gene_gtf[gene_nrow, 7] == "+"){
     #Getting intergenic region information for intergenic upstream of forward strand gene
-    intergenic_starts = append(intergenic_starts, max(0, as.numeric(gene_gtf[gene_nrow, 4]) - 1500))
-    intergenics_end = append(intergenics_end, max(0, as.numeric(gene_gtf[gene_nrow, 4]) - 500))
+    intergenic_starts = append(intergenic_starts, max(0, as.numeric(gene_gtf[gene_nrow, 4]) - 2500))
+    intergenics_end = append(intergenics_end, max(0, as.numeric(gene_gtf[gene_nrow, 4]) - 1500))
     intergenic_name = append(intergenic_name, paste0("upstream_", gene_ids[gene_nrow]))
     
     #Getting information for downstream intergenic region
-    intergenic_starts = append(intergenic_starts, max(0, as.numeric(gene_gtf[gene_nrow, 5]) + 500))
-    intergenics_end = append(intergenics_end, max(0, as.numeric(gene_gtf[gene_nrow, 5]) + 1500))
+    intergenic_starts = append(intergenic_starts, max(0, as.numeric(gene_gtf[gene_nrow, 5]) + 1500))
+    intergenics_end = append(intergenics_end, max(0, as.numeric(gene_gtf[gene_nrow, 5]) + 2500))
     intergenic_name = append(intergenic_name, paste0("downstream_", gene_ids[gene_nrow]))
   } else {
     #Getting intergenic region information for intergenic upstream of forward strand gene
-    intergenic_starts = append(intergenic_starts, max(0, as.numeric(gene_gtf[gene_nrow,4]) - 1500))
-    intergenics_end = append(intergenics_end, max(0, as.numeric(gene_gtf[gene_nrow, 4]) - 500))
+    intergenic_starts = append(intergenic_starts, max(0, as.numeric(gene_gtf[gene_nrow,4]) - 2500))
+    intergenics_end = append(intergenics_end, max(0, as.numeric(gene_gtf[gene_nrow, 4]) - 1500))
     intergenic_name = append(intergenic_name, paste0("downstream_", gene_ids[gene_nrow]))
     
     #Getting information for downstream intergenic region
-    intergenic_starts = append(intergenic_starts, max(0, as.numeric(gene_gtf[gene_nrow, 5]) + 500))
-    intergenics_end = append(intergenics_end, max(0, as.numeric(gene_gtf[gene_nrow, 5]) + 1500))
+    intergenic_starts = append(intergenic_starts, max(0, as.numeric(gene_gtf[gene_nrow, 5]) + 1500))
+    intergenics_end = append(intergenics_end, max(0, as.numeric(gene_gtf[gene_nrow, 5]) + 2500))
     intergenic_name = append(intergenic_name, paste0("upstream_", gene_ids[gene_nrow]))
   }
   

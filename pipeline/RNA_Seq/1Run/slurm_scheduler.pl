@@ -16,7 +16,7 @@ use FindBin qw( $RealBin ); # directory where the script is lying
 use Getopt::Long;
 
 # Define arguments & their default value
-my ($sample_info_file, $exclude_sample_file, $output_log_folder, $index_folder, $fastq_folder, $partition, $account, $kallisto_out_folder, $enc_passwd_file, $cluster_kallisto_cmd, $cluster_R_cmd) = ('', '', '', '', '', '', '', '', '', '', '', '', '');
+my ($sample_info_file, $exclude_sample_file, $output_log_folder, $index_folder, $fastq_folder, $partition, $account, $kallisto_out_folder, $enc_passwd_file, $container_cmd) = ('', '', '', '', '', '', '', '', '', '', '', '');
 my %opts = ('sample_info_file=s'     => \$sample_info_file,
             'exclude_sample_file=s'  => \$exclude_sample_file,
             'output_log_folder=s'    => \$output_log_folder,
@@ -26,15 +26,14 @@ my %opts = ('sample_info_file=s'     => \$sample_info_file,
             'fastq_folder=s'         => \$fastq_folder,
             'kallisto_out_folder=s'  => \$kallisto_out_folder,
             'enc_passwd_file=s'      => \$enc_passwd_file,
-            'cluster_kallisto_cmd=s' => \$cluster_kallisto_cmd,
-            'cluster_R_cmd=s'        => \$cluster_R_cmd,
+            'container_cmd=s'        => \$container_cmd
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $sample_info_file eq '' || $output_log_folder eq '' || $index_folder eq '' || $fastq_folder eq '' || $kallisto_out_folder eq '' || $enc_passwd_file eq '' || $cluster_kallisto_cmd eq '' || $cluster_R_cmd eq ''){
+if ( !$test_options || $sample_info_file eq '' || $output_log_folder eq '' || $index_folder eq '' || $fastq_folder eq '' || $kallisto_out_folder eq '' || $enc_passwd_file eq '' || $container_cmd eq ''){
     print "\n\tInvalid or missing argument:
-\te.g. $0 -sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=\$(RNASEQ_CLUSTER_LOG) -index_folder=\$(RNASEQ_CLUSTER_GTF)  -fastq_folder=\$(RNASEQ_SENSITIVE_FASTQ) -kallisto_out_folder=\$(RNASEQ_CLUSTER_ALL_RES) -enc_passwd_file=\$(ENCRYPT_PASSWD_FILE) -cluster_kallisto_cmd=\$(CLUSTER_KALLISTO_CMD) -cluster_R_cmd=\$(CLUSTER_R_CMD)
+\te.g. $0 -sample_info_file=\$(RNASEQ_SAMPINFO_FILEPATH) -exclude_sample_file=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_log_folder=\$(RNASEQ_CLUSTER_LOG) -index_folder=\$(RNASEQ_CLUSTER_GTF)  -fastq_folder=\$(RNASEQ_SENSITIVE_FASTQ) -kallisto_out_folder=\$(RNASEQ_CLUSTER_ALL_RES) -enc_passwd_file=\$(ENCRYPT_PASSWD_FILE) -container_cmd=\$(CONTAINER_CMD)
 \t-sample_info_file       rna_seq_sample_info.txt
 \t-exclude_sample_file    rna_seq_sample_excluded.txt
 \t-output_log_folder      folder for .out and .err files (produced by queuing system), and .Rout files produced by R
@@ -42,8 +41,7 @@ if ( !$test_options || $sample_info_file eq '' || $output_log_folder eq '' || $i
 \t-fastq_folder=s         Folder with Fastq files on big bgee
 \t-kallisto_out_folder=s  Folder with Kallisto output and results
 \t-enc_passwd_file=s      File with password necessary to decrypt the GTEx data
-\t-cluster_kallisto_cmd=s Command to load kallisto module on cluster
-\t-cluster_R_cmd=s        Command to load R module on cluster
+\t-container_cmd=s 	  Command to load the container with all dependencies required by the Bgee pipeline
 \n";
     exit 1;
 }
@@ -55,14 +53,11 @@ make_path "$output_log_folder",   {verbose=>0, mode=>0775};
 
 # Setting up SLURM parameters #################################
 my $main_script = $RealBin.'/rna_seq_mapping_and_analysis.pl';
-## TODO launch slurm_scheduler.pl from /data/ul/dee/bgee/GIT/pipeline/RNA_Seq/
-##        Beware that git pull command should be executed before
-##        kallisto_out_folder should be on /scratch/temporary. If too slow, consider using /scratch/local/ + cp of results file to /scratch/temporary/ or /home/bbgee, or /data/ (read-only, but should be fine via scp)
 
 # kallisto is no multithreaded unless bootstraps are used
 my $nbr_processors = 1;
 # RAM needed: 10GB should be enough
-my $memory_usage   = 50;      # in GB
+my $memory_usage   = 120;      # in GB
 my $time_limit     = '12:00:00';
 
 my $job_limit      = 120; # Number of simultaneous jobs running
@@ -120,7 +115,7 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
 
 
     #NOTE check memory usage with  grep 'Maximum resident set size' *.time
-    my $script_plus_args = "/software/bin/time -vo $output_log_folder/$library_id/$library_id.time  perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -exclude_sample_file=$exclude_sample_file -index_folder=$index_folder -fastq_folder='$fastq_folder/$taxa_id' -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -enc_passwd_file=$enc_passwd_file > $output_log_folder/$library_id/$library_id.txt 2>&1";
+    my $script_plus_args = "$container_cmd perl $main_script -library_id=$library_id -sample_info_file=$sample_info_file -exclude_sample_file=$exclude_sample_file -index_folder=$index_folder -fastq_folder='$fastq_folder/$taxa_id' -kallisto_out_folder=$kallisto_out_folder -output_log_folder=$output_log_folder -enc_passwd_file=$enc_passwd_file -container_cmd=\"$container_cmd\"> $output_log_folder/$library_id/$library_id.txt 2>&1";
 
 
     # Wait for free places in job queue
@@ -134,10 +129,7 @@ for my $line ( read_file("$sample_info_file", chomp=>1) ){
 
 
     # Script can be launched! Construct SLURM sbatch command:
-    my $sbatch_command = '';
-    $sbatch_command .= "$cluster_kallisto_cmd\n";
-    $sbatch_command .= "$cluster_R_cmd\n\n";
-    $sbatch_command .= $script_plus_args;
+    my $sbatch_command = $script_plus_args;
     print "Command submitted to cluster:\n$sbatch_command\n";
 
     # Create the SBATCH script
@@ -168,7 +160,6 @@ sub sbatch_template {
 
 #SBATCH --partition=$partition
 #SBATCH --account=$account
-
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=$nbr_processors

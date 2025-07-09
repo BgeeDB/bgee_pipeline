@@ -22,7 +22,7 @@ my $GTEX_exp_id = 'SRP012682';
 ## All output files are written in the results folder, as well as log files (e.g. SRX081872.out, SRX081872.err, and SRX081872.Rout)
 
 # Define arguments & their default value
-my ($library_id, $sample_info_file, $exclude_sample_file, $index_folder, $fastq_folder, $kallisto_out_folder, $output_log_folder, $enc_passwd_file) = ('', '', '', '', '', '', '', '', '', '', '', '');
+my ($library_id, $sample_info_file, $exclude_sample_file, $index_folder, $fastq_folder, $kallisto_out_folder, $output_log_folder, $enc_passwd_file, $container_cmd) = ('', '', '', '', '', '', '', '', '', '', '', '', '');
 my %opts = ('library_id=s'           => \$library_id,
             'sample_info_file=s'     => \$sample_info_file,
             'exclude_sample_file=s'  => \$exclude_sample_file,
@@ -31,6 +31,7 @@ my %opts = ('library_id=s'           => \$library_id,
             'kallisto_out_folder=s'  => \$kallisto_out_folder,
             'output_log_folder=s'    => \$output_log_folder,
             'enc_passwd_file=s'      => \$enc_passwd_file,
+	    'container_cmd=s'        => \$container_cmd
            );
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
@@ -45,6 +46,7 @@ if ( !$test_options || $library_id eq '' || $sample_info_file eq '' || $index_fo
 \t-kallisto_out_folder=s  Folder with Kallisto output and results
 \t-output_log_folder=s    Folder where R output is written
 \t-enc_passwd_file=s      File with password necessary to decrypt the GTEx data
+\t-container_cmd=s        Path to the command running the container with all required bindings
 \n";
     exit 1;
 }
@@ -64,7 +66,6 @@ for my $line ( read_file("$exclude_sample_file", chomp=>1) ){
     $manually_excluded{$sampleId} = 1;
 }
 die "Excluded library [$library_id]\n"  if ( exists $manually_excluded{$library_id} );
-
 
 # Reading $sample_info_file
 my $libraryExists = 'FALSE';
@@ -283,7 +284,7 @@ else {
     # creating and invoking the full kallisto command
     my $kallisto_command = '';
     if ( $libraryType eq 'SINGLE' ){
-        $kallisto_command .= "kallisto quant -i $index -o $kallisto_out_folder -t 1 --single -l 180 -s 30 --bias ";
+        $kallisto_command .= "kallisto quant -i $index -o $kallisto_out_folder -t 1 --single -l 180 -s 30 ";
         for my $run ( @run_ids ){
             if ( $exp_id ne $GTEX_exp_id ){
                 $kallisto_command .= $fastqSamplePath.'/'.$run.'.fastq.gz ';
@@ -294,7 +295,7 @@ else {
         }
     }
     elsif ( $libraryType eq 'PAIRED' ){
-        $kallisto_command .= "kallisto quant -i $index -o $kallisto_out_folder -t 1 --bias ";
+        $kallisto_command .= "kallisto quant -i $index -o $kallisto_out_folder -t 1 ";
         for my $run ( @run_ids ){
             if ( $exp_id ne $GTEX_exp_id ){
                 $kallisto_command .= $fastqSamplePath.'/'.$run.'_1.fastq.gz '.$fastqSamplePath.'/'.$run.'_2.fastq.gz ';
@@ -401,20 +402,35 @@ if ( -s $count_info_file && -s $R_log_file ){
 }
 else {
     #creating and invoking command that launches rna_seq_analysis.R script
-    my $analyze_count_command = "R CMD BATCH --no-save --no-restore \'--args".
-                              ' kallisto_count_folder="'.$kallisto_out_folder.'"'.
-                              ' tx2gene_file="'.$gene2transcript.'"'.
-                              ' gene2biotype_file="'.$gene2biotype.'"'.
-                              ' gene_count_file="'.$count_info_file.'"'.
-                              ' library_id="'.$library_id.'"\' '.
-                              $RealBin.'/rna_seq_analysis.R '.$R_log_file;
+    my $user = $ENV{'USER'} || die "USER environment variable not set\n";
+    
+    # We replace potential multiple backslashes with only one (so that the container does not have potential problems due to them)
+    $kallisto_out_folder =~ s/\/+/\//g;
+    $gene2transcript =~ s/\/+/\//g;
+    $gene2biotype =~ s/\/+/\//g;
+    $R_log_file =~ s/\/+/\//g;
+    
+    # We build the R command we want to run
+    my $r_args = "--args kallisto_count_folder=\"$kallisto_out_folder\" tx2gene_file=\"$gene2transcript\" gene2biotype_file=\"$gene2biotype\" library_id=\"$library_id\"";
+    my $r_cmd = "R CMD BATCH --no-save --no-restore '$r_args' $RealBin/rna_seq_analysis.R $R_log_file";
+    
+    # We define the container command to launch the R script
+    my $analyze_count_command = $r_cmd;
     print "\tAnalysis script rna_seq_analysis.R command was built: \"", $analyze_count_command, "\"\n\tNow launching R script...\n";
     # Print command to .report file
     open (my $REPORT5, '>>', "$report_file")  or die "Cannot write [$report_file]\n";
     print {$REPORT5} "\nComputing node / R command submitted:\n$analyze_count_command\n";
     close $REPORT5;
-    # Submit command
-    system($analyze_count_command)==0  or die "Problem: System call to analyze_count_command failed\n";
+    
+    # Launch the script via container and retrieve log files
+    my $output = `$analyze_count_command 2>&1`;
+    my $exit_status = $?;
+    
+    if ($exit_status != 0) {
+        print "Error output:\n$output\n";
+        die "Problem: System call to analyze_count_command failed with exit status $exit_status\n";
+    }
+    
     print "\tDone\n";
 }
 

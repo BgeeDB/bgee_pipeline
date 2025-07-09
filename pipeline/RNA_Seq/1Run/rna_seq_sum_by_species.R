@@ -21,6 +21,7 @@ print(sessionInfo())
 
 ## libraries
 library(dplyr)
+library(ggplot2)
 
 ## reading in arguments provided in command line
 cmd_args = commandArgs(TRUE);
@@ -61,14 +62,9 @@ if( file.exists(rna_seq_sample_excluded) ){
 
 ## create files number_libraries.txt and gaussian_choice_by_species_TO_FILL.txt
 number_libraries_file <- file.path(sum_by_species_folder, "number_libraries.txt")
-gaussian_choice_file <- file.path(sum_by_species_folder, "gaussian_choice_by_species_TO_FILL.txt")
 file.create(number_libraries_file)
-file.create(gaussian_choice_file)
 ## write header of file number_libraries.txt
 cat("speciesId\tspeciesName\tnumberLibrariesUsed\tnumberLibraries\n", file = number_libraries_file, sep = "\t")
-## write header of file gaussian_choice_by_species.txt
-cat("speciesId\tnumberGaussiansCoding\tnumberGaussiansIntergenic\tselectedGaussianCoding\tselectionSideCoding\tselectedGaussianIntergenic\tselectionSideIntergenic\tcomment\tannotatorId\n", 
-    file = gaussian_choice_file, sep = "\t")
 
 for(species in unique(sampleInfo$speciesId)){
   cat(paste0("\nSumming data for ", as.character(unique(sampleInfo$organism[sampleInfo$speciesId == species])), " (species ID: ", species,")\n"))
@@ -196,7 +192,7 @@ for(species in unique(sampleInfo$speciesId)){
   ## intergenic
   dens_intergenic <- density(c(rep(-30, times=sum(summed$type != "intergenic")), log2(summed$tpm[summed$type == "intergenic"] + 10^-6)))
   ## Plot whole distribution
-  plot(dens, ylim=c(0, max(c(dens$y, dens_genic$y[dens_genic$x > -15], dens_coding$y[dens_coding$x > -15], dens_intergenic$y[dens_intergenic$x > -15]))*1.1), xlim=c(-23, 21), lwd=2, main=paste0(as.character(unique(sampleInfo$organism[sampleInfo$speciesId == species])), " (", numLibs, " libraries)"), bty="n", axes=T, xlab="log2(TPM + 10^-6)")
+  plot(dens, ylim=c(0, max(c(dens$y, dens_genic$y[dens_genic$x > -15], dens_coding$y[dens_coding$x > -15], dens_intergenic$y[dens_intergenic$x > -15]))*1.1), xlim=c(-23, 21), lwd=2, main=paste0("species summed TPM Density plot", " (", numLibs, " libraries)"), bty="n", axes=T, xlab="log2(TPM + 10^-6)")
   ## Add subgroups distributions (genic, intergenic, etc):
   ## genic
   lines(dens_genic, col="firebrick3", lwd=2)
@@ -221,7 +217,7 @@ for(species in unique(sampleInfo$speciesId)){
   ## intergenic
   dens_intergenic <- density(c(rep(-30, times=sum(summed$type != "intergenic")), log2(summed$fpkm[summed$type == "intergenic"] + 10^-6)))
   ## Plot whole distribution
-  plot(dens, ylim=c(0, max(c(dens$y, dens_genic$y[dens_genic$x > -15], dens_coding$y[dens_coding$x > -15], dens_intergenic$y[dens_intergenic$x > -15]))*1.1), xlim=c(-23, 21), lwd=2, main=paste0(as.character(unique(sampleInfo$organism[sampleInfo$speciesId == species])), " (", numLibs, " libraries)"), bty="n", axes=T, xlab="log2(FPKM + 10^-6)")
+  plot(dens, ylim=c(0, max(c(dens$y, dens_genic$y[dens_genic$x > -15], dens_coding$y[dens_coding$x > -15], dens_intergenic$y[dens_intergenic$x > -15]))*1.1), xlim=c(-23, 21), lwd=2, main=paste0("species summed FPKM Density plot", " (", numLibs, " libraries)"), bty="n", axes=T, xlab="log2(FPKM + 10^-6)")
   ## Add subgroups distributions (genic, intergenic, etc):
   ## genic
   lines(dens_genic, col="firebrick3", lwd=2)
@@ -246,7 +242,7 @@ for(species in unique(sampleInfo$speciesId)){
   ## intergenic
   dens_intergenic <- density(c(rep(-10, times=sum(summed$type != "intergenic")), log2(summed$est_counts[summed$type == "intergenic"] + 1)))
   ## Plot whole distribution
-  plot(dens, ylim=c(0, max(c(dens$y, dens_genic$y[dens_genic$x > -15], dens_coding$y[dens_coding$x > -15], dens_intergenic$y[dens_intergenic$x > -15]))*1.1), xlim=c(-1, 20), lwd=2, main=paste0(as.character(unique(sampleInfo$organism[sampleInfo$speciesId == species])), " (", numLibs, " libraries)"), bty="n", axes=T, xlab="log2(read counts + 1)")
+  plot(dens, ylim=c(0, max(c(dens$y, dens_genic$y[dens_genic$x > -15], dens_coding$y[dens_coding$x > -15], dens_intergenic$y[dens_intergenic$x > -15]))*1.1), xlim=c(-1, 20), lwd=2, main=paste0("species summed read counts Density plot", " (", numLibs, " libraries)"), bty="n", axes=T, xlab="log2(read counts + 1)")
   ## Add subgroups distributions (genic, intergenic, etc):
   ## genic
   lines(dens_genic, col="firebrick3", lwd=2)
@@ -259,12 +255,8 @@ for(species in unique(sampleInfo$speciesId)){
   dev.off()
   
   
-  ## Deconvolute TPM intergenic and genic distributions
-  ## As in Hebenstreit 2011 Mol Syst Biol: use clustering approach
-  ## Mclust: Normal Mixture Modelling for Model-Based Clustering, Classification, and Density Estimation
-  ## We do not chose the number of gaussians, and let mclust choose
-  cat("  Deconvoluting sub-distributions of genic and intergenic regions\n")
-  library(mclust)
+  ## Remove outlier intergenic regions that overlap too much with coding regions
+  cat("  Definition of Reference intergenic regions\n")
   
   ## Focus on regions with enough signal (remove TPM = 0 or very small)
   summed_filtered <- summed[summed$tpm > 10^-6, ]
@@ -274,24 +266,28 @@ for(species in unique(sampleInfo$speciesId)){
   
   set.seed(123)
   ## Coding regions
-  mod1 = densityMclust(log2(summed_filtered$tpm[summed_filtered$biotype %in% "protein_coding"]))
-  plot(mod1, what = "BIC")
-  cat("    Protein-coding genes:\n")
-  print(summary(mod1, parameters = TRUE))
-  plot(mod1, what = "density", data = log2(summed_filtered$tpm[summed_filtered$biotype %in% "protein_coding"]), breaks = 100, xlab="log2(TPM) - protein-coding genes")
+  # Filter for protein coding genes and log transform the TPM values
+  pcoding_data <- log2(summed_filtered$tpm[summed_filtered$biotype %in% "protein_coding"])
+  # Plot the TPM distribution of protein coding genes using a density plot
+  ggplot(data.frame(log2_TPM = pcoding_data), aes(x = log2_TPM)) +
+    geom_density() +
+    labs(x = "log2(TPM) - protein-coding genes", y = "Density") +
+    theme_minimal()
   
   ## Intergenic regions
-  mod2 = densityMclust(log2(summed_filtered$tpm[summed_filtered$type == "intergenic"]))
-  plot(mod2, what = "BIC")
-  cat("    Intergenic regions:\n")
-  print(summary(mod2, parameters = TRUE))
-  plot(mod2, what = "density", data = log2(summed_filtered$tpm[summed_filtered$type == "intergenic"]), breaks = 100, xlab="log2(TPM) - intergenic")
+  # Filter for intergenic regions and log transform the TPM values
+  intergenic_data <- log2(summed_filtered$tpm[summed_filtered$type %in% "intergenic"])
+  # Plot the TPM distribution of protein coding genes using a density plot
+  ggplot(data.frame(log2_TPM = intergenic_data), aes(x = log2_TPM)) +
+    geom_density() +
+    labs(x = "log2(TPM) - protein-coding genes", y = "Density") +
+    theme_minimal()
   
   ## Plot the density of the original data, and the density of regions classified to different gaussians
   cat("  Plotting density of deconvoluted genic and intergenic regions\n")
   dens <- density(log2(summed_filtered$tpm))
   ## Plot whole distribution
-  plot(dens, ylim=c(0, max(dens$y)*1.1), xlim=c(-20, 20), lwd=2, main=paste0(as.character(unique(sampleInfo$organism[sampleInfo$speciesId == species])), " (", numLibs, " libraries)"), bty="n", axes=T, xlab="log2(TPM)")
+  plot(dens, ylim=c(0, max(dens$y)*1.1), xlim=c(-20, 20), lwd=2, main=paste0("species summed TPM Density plot", " (", numLibs, " libraries)"), bty="n", axes=T, xlab="log2(TPM)")
   
   ## protein-coding genes only (had to take care of NAs strange behavior)
   dens_coding <- density(log2(summed_filtered$tpm[summed_filtered$biotype %in% "protein_coding"]))
@@ -299,52 +295,84 @@ for(species in unique(sampleInfo$speciesId)){
   dens_coding$y <- dens_coding$y * sum(summed_filtered$biotype %in% "protein_coding") / length(summed_filtered$tpm)
   lines(dens_coding, col="firebrick3", lwd=2, lty=2)
   
-  ## Sub-distributions
-  # for (i in 1:mod1$G){
-  #   ## if any point classified
-  #   if (sum(mod1$classification == i) >= 2){
-  #     dens_coding_sub <- density(log2(summed_filtered$tpm[summed_filtered$biotype %in% "protein_coding"][mod1$classification == i]))
-  #     ## y-axis scaling
-  #     dens_coding_sub$y <- dens_coding_sub$y * length(summed_filtered$tpm[summed_filtered$biotype %in% "protein_coding"][mod1$classification == i]) / length(summed_filtered$tpm)
-  #     lines(dens_coding_sub, col=paste0("grey", trunc(100/(mod1$G+1))*i), lwd=2, lty=2)
-  #     ## Print gaussian number on plot: at location of max value of gaussian (italics)
-  #     text(dens_coding_sub$x[dens_coding_sub$y == max(dens_coding_sub$y)], 0.005, labels = i, col=paste0("grey", trunc(100/(mod1$G+1))*i), font=3)
-  #   }
-  # }
   
   ## intergenic
   dens_intergenic <- density(log2(summed_filtered$tpm[summed_filtered$type == "intergenic"]))
   dens_intergenic$y <- dens_intergenic$y * sum(summed_filtered$type == "intergenic") / length(summed_filtered$tpm)
   lines(dens_intergenic, col="dodgerblue3", lwd=2)
-  for (i in 1:mod2$G){
-    ## if any point classified
-    if (sum(mod2$classification == i) >= 2){
-      dens_intergenic_sub <- density(log2(summed_filtered$tpm[summed_filtered$type == "intergenic"][mod2$classification == i]))
-      ## y-axis scaling
-      dens_intergenic_sub$y <- dens_intergenic_sub$y * length(summed_filtered$tpm[summed_filtered$type == "intergenic"][mod2$classification == i]) / length(summed_filtered$tpm)
-      lines(dens_intergenic_sub, col=paste0("grey", trunc(100/(mod2$G+1))*i), lwd=2)
-      ## Print gaussian number on plot: at location of max value of gaussian
-      text(dens_intergenic_sub$x[dens_intergenic_sub$y == max(dens_intergenic_sub$y)], 0.005, labels = i, col=paste0("grey", trunc(100/(mod2$G+1))*i))
-    }
-  }
+
   ## legend
   legend("topleft", c(paste0("all (", length(summed_filtered[,1]),")"), paste0("coding (", sum(summed_filtered$biotype %in% "protein_coding"), ")"), paste0("intergenic (", sum(summed_filtered$type == "intergenic"), ")")), lwd=2, col=c("black", "firebrick3", "dodgerblue3"), lty=c(1, 2, 1), bty="n")
+  
   dev.off()
+
+  ## Misclassification of intergenic regions based on protein coding overlap
+  ## Removes intergenic regions which TPM is more likely to belong to a coding regions than an intergenic region (PDF coding >= PDF intergenic)
   
-  ## Export file with summed data and classification of intergenic and coding regions
-  cat("  Exporting aggregated data and classification of coding and intergenic regions\n")
-  ## Add new column to summed object
+  #Points where the Kernel Density estimation will be evaluated (we use -15, 15 since by emperical evidence all RNAseq TPM data fall within that range)
+  # Fit KDE for each distribution
+  # Compute the PDFs for both distributions
+  kde1 <- density(intergenic_data, n = 2048, from = -10, to = 10)
+  kde2 <- density(pcoding_data, n = 2048, from = -10, to = 10)
+
+  # Save the PDF of the KDEs
+  pdf1 <- kde1$y
+  pdf2 <- kde2$y
+
+  # Calculate the 20th percentile of kde1
+  # This allows to check the difference between the two kde only for values that are above 20% of intergenic density to avoid really low filtering due to low sampling randomness
+  quantile_20 <- quantile(kde1$y, 0.20)
+
+  # Find the crossover point that satisfies both conditions
+  crossover_index <- which(pdf2 > pdf1 & kde1$x > quantile_20)[1]
+
+  if (is.na(crossover_index)) stop("No crossover point found where protein-coding pdf is higher than intergenic pdf.")
+  crossover_value <- kde1$x[crossover_index]
+
+  # Interquartile Range (IQR) Filtering for low TPM values
+  #q1 <- quantile(intergenic_data, 0.25)
+  #q3 <- quantile(intergenic_data, 0.75)
+  #iqr <- q3 - q1
+  #low_tpm_threshold <- q1 - 1.5 * iqr
+
+  # Identify mislabelled values (both above crossover and below Tukey's threshold)
+  mislabelled_values <- intergenic_data[intergenic_data >= crossover_value]
+  #mislabelled_low <- intergenic_data[intergenic_data < low_tpm_threshold]
+  #mislabelled_values <- c(mislabelled_high, mislabelled_low)
+
+  # Print diagnostics
+  cat("Crossover value where PDF of protein-coding becomes higher than PDF of intergenic regions:", crossover_value, "\n")
+  #cat("Low TPM threshold (Tukey's outlier detector):", low_tpm_threshold, "\n")
+  cat("Number of mislabelled values:", length(mislabelled_values), "\n")
+
+  # Visualize the mislabelled values and KDEs
+  pdf(file = paste0(sum_by_species_folder, "/outlier_intergenic_", species, ".pdf"), width = 10, height = 6)
+  plot(kde1, col = "blue", lwd = 2, main = "Visualization of Outlier Intergenic Regions", xlab = "Value", ylab = "Density", xlim = range(kde1$x, kde2$x), ylim = c(0, max(c(pdf1, pdf2)) * 1.1))
+  lines(kde2, col = "green", lwd = 2)
+  abline(v = crossover_value, col = "black", lty = 2, lwd = 1.5)
+  points(mislabelled_values, rep(0.02, length(mislabelled_values)), col = "red", pch = 16, cex = 0.8)
+  legend("topright", legend = c("KDE of Intergenic Regions", "KDE of Protein-coding Regions", "Crossover Threshold", "Outlier intergenics"),
+        col = c("blue", "green", "black", "red"), lty = c(1, 1, 2, NA), pch = c(NA, NA, NA, 16), lwd = c(2, 2, 1.5, NA))
+  dev.off()
+
+  # Update the classification logic
   summed$classification <- NA
-  summed$classification[summed$tpm > 10^-6 & summed$biotype %in% "protein_coding"] <- paste("coding_", mod1$classification, sep="")
-  summed$classification[summed$tpm > 10^-6 & summed$type == "intergenic"] <- paste("intergenic_", mod2$classification, sep="")
-  write.table(summed, file = paste0(sum_by_species_folder, "/sum_abundance_gene_level+fpkm+intergenic+classification_", species, ".tsv"), quote = FALSE, sep = "\t", col.names = TRUE, row.names = FALSE)
-  
-  ## Export file with speciesId and number of coding and intergenic gaussians (to be filled manually with selected gaussians)
-  cat(paste0(species, "\t", mod1$G, "\t", mod2$G, "\n"), file = gaussian_choice_file, sep = "\t", append=T)
-  
-  rm(summed)
-  rm(summed_filtered)
-  rm(numLibs)
+  summed$classification[summed$tpm > 10^-6 & summed$biotype %in% "protein_coding"] <- "coding"
+  summed$classification[summed$tpm < 10^-6 | summed$tpm >= 2^crossover_value] <- "Outlier_intergenic"
+  summed$classification[summed$tpm < 2^crossover_value & summed$type == "intergenic"] <- "Reference_intergenic"
+
+  # Export the filtered data
+  write.table(
+    summed,
+    file = paste0(sum_by_species_folder, "/filtered_summed_data_", species, ".tsv"),
+    quote = FALSE,
+    sep = "\t",
+    col.names = TRUE,
+    row.names = FALSE
+  )
+
+  # Clean up variables to avoid memory issues
+  rm(list = c("summed", "kde1", "kde2", "pdf1", "pdf2"))
 }
 
 ## TODO export gaussian parameters for each species

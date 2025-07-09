@@ -15,14 +15,13 @@ use Getopt::Long;
 use Time::localtime;
 
 # Define arguments & their default value
-my ($transcriptome_folder, $output_log_folder, $account, $partition, $short_index_length, $cluster_kallisto_cmd, $cluster_tophat_cmd) = ('', '', '', '', '', '', '', '', '');
+my ($transcriptome_folder, $output_log_folder, $account, $partition, $short_index_length, $container_cmd) = ('', '', '', '', '', '', '', '');
 my %opts = ('transcriptome_folder=s' => \$transcriptome_folder, # same as GTF folder
 			'output_log_folder=s'    => \$output_log_folder,
 			'account=s'              => \$account,
 			'partition=s'            => \$partition,
 			'short_index_length=s'   => \$short_index_length,
-            'cluster_kallisto_cmd=s' => \$cluster_kallisto_cmd,
-            'cluster_tophat_cmd=s'   => \$cluster_tophat_cmd
+            		'container_cmd=s'        => \$container_cmd,
            );
 
 my $test_options = Getopt::Long::GetOptions(%opts);
@@ -31,7 +30,7 @@ my $test_options = Getopt::Long::GetOptions(%opts);
 # kallisto index generation is no multithreaded
 my $nbr_processors = 1;
 # RAM needed: 10GB should be enough
-my $memory_usage   = 90;      # in GB
+my $memory_usage   = 160;      # in GB
 my $time_limit	   = '12:00:00';
 
 # retrieve path to all transcriptome
@@ -63,24 +62,21 @@ while (my $file = readdir(DIR)) {
 		next if (-e $short_transcriptome_index_path && -e $transcriptome_index_path);
 
 		# load vital-it softwares
-		my $sbatch_commands = "module use /software/module/\n";
+		my $sbatch_commands = "";
 
 		# generate transcriptome with all intergenic sequences
 		if (!-e $transcriptome_file_path) {
 			if (-e "$transcriptome_file_path.xz") {
 				$sbatch_commands .= "# unxz already existing transcriptome file\n";
-				$sbatch_commands .= "unxz $transcriptome_file_path.xz\n";
+				$sbatch_commands .= "unxz $transcriptome_file_path.xz &&\n";
 			} else {
 				if (!-e $genome_file_path) {
 					die "can not acces to genome file $genome_file_path";
 				}
 				# generate transcriptome with tophat gtf_to_fasta
-				# load tophat module
-				$sbatch_commands .= "$cluster_tophat_cmd\n";
-				# generate transcriptome
-				$sbatch_commands .= "gtf_to_fasta $transcriptome_folder/$file $genome_file_path $transcriptome_file_path\n";
+				$sbatch_commands .= "$container_cmd gtf_to_fasta $transcriptome_folder/$file $genome_file_path $transcriptome_file_path &&\n";
 				$sbatch_commands .= "# update transcriptome file to correct the header of each sequence\n";
-				$sbatch_commands .= 'perl -i -pe \'s/^>\\d+ +/>/\' '.$transcriptome_file_path."\n";
+				$sbatch_commands .= 'perl -i -pe \'s/^>\\d+ +/>/\' '.$transcriptome_file_path." &&\n";
 			}
 		}
 
@@ -88,41 +84,35 @@ while (my $file = readdir(DIR)) {
 		if (!-e $transcriptome_wo_intergenic_file_path) {
 			if (-e "$transcriptome_wo_intergenic_file_path.xz") {
 				$sbatch_commands .= "# unxz already existing transcriptome without intergenic file\n";
-				$sbatch_commands .= "unxz $transcriptome_wo_intergenic_file_path.xz\n";
+				$sbatch_commands .= "unxz $transcriptome_wo_intergenic_file_path.xz &&\n";
 			} else {
 				if (!-e $genome_file_path) {
 					die "can not acces to genome file $genome_file_path";
 				}
 				# generate transcriptome with tophat gtf_to_fasta
-				# load tophat module
-				$sbatch_commands .= "$cluster_tophat_cmd\n";
-				# generate transcriptome
-				$sbatch_commands .= "gtf_to_fasta $annotation_wo_intergenic_file $genome_file_path $transcriptome_wo_intergenic_file_path\n";
+				$sbatch_commands .= "$container_cmd gtf_to_fasta $annotation_wo_intergenic_file $genome_file_path $transcriptome_wo_intergenic_file_path &&\n";
 				$sbatch_commands .= "# update transcriptome without intergenic file to correct the header of each sequence\n";
-				$sbatch_commands .= 'perl -i -pe \'s/^>\\d+ +/>/\' '.$transcriptome_wo_intergenic_file_path."\n";
+				$sbatch_commands .= 'perl -i -pe \'s/^>\\d+ +/>/\' '.$transcriptome_wo_intergenic_file_path." &&\n";
 			}
 		}
 
-		# load kallisto module
-		$sbatch_commands .= "$cluster_kallisto_cmd\n";
-
 		# generate index with default kmer size
 		if (!-e $transcriptome_index_path) {
-			$sbatch_commands .= "generate index with default kmer size\n";
-			$sbatch_commands .= "kallisto index -i $transcriptome_index_path $transcriptome_file_path\n";
+			$sbatch_commands .= "# generate index with default kmer size\n";
+			$sbatch_commands .= "$container_cmd kallisto index -i $transcriptome_index_path $transcriptome_file_path &&\n";
 		}
 
 		# generate index with short kmer size
 		if (!-e $short_transcriptome_index_path) {
 			$sbatch_commands .= "#generate index with a kmer size of $short_index_length\n";
-			$sbatch_commands .= "kallisto index -k $short_index_length -i $short_transcriptome_index_path $transcriptome_file_path\n";
+			$sbatch_commands .= "$container_cmd kallisto index -k $short_index_length -i $short_transcriptome_index_path $transcriptome_file_path &&\n";
 		}
 
 		# delete genome file not useful for next steps of the pipeline
 		$sbatch_commands .= "# rm -rf $genome_file_path\n";
 
 		# compress transcriptome file
-		$sbatch_commands .= "xz --threads=2 -9 $transcriptome_file_path\n";
+		$sbatch_commands .= "xz --threads=2 -9 $transcriptome_file_path &&\n";
 
 		# compress tlst transcriptome file
 		$sbatch_commands .= "if [ -f \"$transcriptome_file_path.tlst\" ]; then\n";
