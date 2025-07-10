@@ -82,7 +82,7 @@ send_files_to_cluster: commit_rna_seq_sample_info $(RNASEQ_LIB_FILEPATH_FULL) $(
 
 #NOTE to be done on regular cluster, with network access
 get_sra_parallelized: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_ALREADY_DOWNLOADED)
-	@perl 0Before/parallelized_download_SRA.pl --metadataFile=$(RNASEQ_SAMPINFO_FILEPATH) --parallelJobs=50 --excludedLibraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) --downloadedLibraries=$(RNASEQ_ALREADY_DOWNLOADED) --outputDir=$(RNASEQ_DOWNLOAD_LIB_DIR_FASTQ) --loadApptainerModule="$(CLUSTER_LOAD_APPTAINER)" --containerCmd="$(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL)" --encryptFile=$(ENCRYPT_PASSWD_FILE) --queue=$(CLUSTER_PARTITION) --account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
+	@$(CLUSTER_SOFTWARE_BIN) perl 0Before/parallelized_download_SRA.pl --metadataFile=$(RNASEQ_SAMPINFO_FILEPATH) --parallelJobs=50 --excludedLibraries=$(RNASEQ_SAMPEXCLUDED_FILEPATH) --downloadedLibraries=$(RNASEQ_ALREADY_DOWNLOADED) --outputDir=$(RNASEQ_DOWNLOAD_LIB_DIR_FASTQ) --loadApptainerModule="$(CLUSTER_LOAD_APPTAINER)" --containerCmd="$(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL)" --encryptFile=$(ENCRYPT_PASSWD_FILE) --queue=$(CLUSTER_PARTITION) --account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
 	@mv $@.tmp $@
 
 get_sra: $(RNASEQ_SAMPINFO_FILEPATH) $(RNASEQ_ALREADY_DOWNLOADED)
