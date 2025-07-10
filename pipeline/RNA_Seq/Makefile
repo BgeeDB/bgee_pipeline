@@ -392,11 +392,11 @@ presence_absence_bgeecall: indexes_bgeecall
 	@$(MV) $@.tmp $@
 
 ##############################################################################################################
-check_presence_absence: presence_absence_bgeecall
+check_presence_absence:
 	# check that presence absence calls have been generated for all libraries present in the rna_seq_sample_info file
 	# generate file containing calls info for all libraries and use this file to generate different plots
-	@perl 1Run/sample_info_to_bgeecall.pl -keep_all_libraries -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -sample_excluded=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >$@.tmp 2>$@.err
-	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_sample_info="$(RNASEQ_BGEECALL_FILE)" calls_dir="$(RNASEQ_CLUSTER_BGEECALL_CALLS)" presence_absence_report="$(RNASEQ_CLUSTER_CALLS_STATS)" kallisto_report="$(RNASEQ_CLUSTER_KALLISTO_STATS)"' 1Run/rna_seq_calls_plot.R $(RNASEQ_CLUSTER_R_LOG)rna_seq_calls_plot.Rout
+	@$(CLUSTER_SOFTWARE_BIN) perl 1Run/sample_info_to_bgeecall.pl -keep_all_libraries -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -sample_excluded=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >$@.tmp 2>$@.err
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) Rscript 1Run/rna_seq_calls_plot.R bgeecall_sample_info=\"$(RNASEQ_BGEECALL_FILE)\" calls_dir=\"$(RNASEQ_CLUSTER_BGEECALL_CALLS)\" presence_absence_report=\"$(RNASEQ_CLUSTER_CALLS_STATS)\" kallisto_report=\"$(RNASEQ_CLUSTER_KALLISTO_STATS)\" >> $@.tmp 2>$@.err
 	@mv $@.tmp $@
 
 # not run for Bgee 15.1 and 15.2. To remove from the pipeline in the future major release.
