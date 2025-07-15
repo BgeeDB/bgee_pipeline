@@ -45,12 +45,22 @@ if( file.exists(metadataFile) ){
   stop("metadata file not found [", metadataFile, "]")
 }
 #keep only library type and the library ID from the metadata file
-metadata <- metadata %>% dplyr::select("library_id", "library_layout", "scientific_name")
-colnames(metadata) <- c("libraryId", "libraryType", "scientific_name")
+metadata <- metadata %>% dplyr::select("library_id", "library_layout", "scientific_name", "read_count")
+colnames(metadata) <- c("libraryId", "libraryType", "scientific_name", "read_count")
 
 # then merge those info with the annotation file
 scrna_seq_sample_info <- merge(annotation, metadata, by = "libraryId", incomparables = NaN)
 
+# For Bgee 16 we decided to keep only libraries with a minimum of 200'000 reads.
+# It has 2 impacts:
+#    1. Lots of libraries (5% as for Bgee 16) have such a low number of reads that no reads are mapped to the intergenic resulting in an error when trying to generate our calls.
+#       The threashold avoir such errors
+#    2. Putting a high threshold would decrease risks of generating absent calls because of low sequencing depth.
+# We decided to use 400'000 reads because it was close to the minimum number of reads for libraries inserted in Bgee 15.0.
+# This threshold removed a bit 13% of the full length libraries.
+#TODO analyse impact of this threshold on our ability to define absent calls for full-length single-cell.
+scrna_seq_sample_info <- scrna_seq_sample_info[scrna_seq_sample_info$read_count > 400000,]
+scrna_seq_sample_info$read_length <- NULL
 ##################################################################### FUNCTION #############################################################################################
 ## retrieve information from fastp
 collectReadLengthFASTP <- function(fastq_dir, speciesId, library){
