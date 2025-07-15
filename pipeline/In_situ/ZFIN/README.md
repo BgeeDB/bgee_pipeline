@@ -1,11 +1,10 @@
 ## AllianceMine
 * For now, the Alliance/AllianceMine only has expression data for wild-type fish under standard/generic control conditions.
 * The Alliance/AllianceMine doesn't have Images yet (it does include references/publications and links to ZFIN figure pages).
-* Instead of preserving start/end stages as curated by ZFIN, the Alliance opted to expand out the stage information in an expression row in ZFIN from something like this: 1-4 somites to 10-13 somites
-    to this:
-    1-4 somites
-    5-9 somites
-    10-13 somites
+* Instead of preserving start/end stages as curated by ZFIN, the Alliance opted to expand out the stage information in an expression row in ZFIN from something like this: 1-4 somites to 10-13 somites to this:
+    - 1-4 somites
+    - 5-9 somites
+    - 10-13 somites
 * AllianceMine data is loaded from the data that individual model organism databases submit to the Alliance. That data can be found here:
     https://www.alliancegenome.org/downloads
 
