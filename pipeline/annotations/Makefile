@@ -37,7 +37,7 @@ $(OUTPUT_DIR)delete_unused_conditions: $(OUTPUT_DIR)delete_unused_expressions
 
 # Actually this should be part of the similarity annotation repository,
 # not here.
-$(SIMILARITYCLEANFILE): $(SIMILARITYFILE) $(TAXONCONSTRAINTSFILEPATH) $(UBERONFILEPATH) $(TAXONOMYFILEPATH) $(HOMONTOLOGY) $(ECOONTOLOGY) $(CONFONTOLOGY)
+$(SIMILARITYCLEANFILE): $(SIMILARITYFILE) $(TAXONCONSTRAINTSFILEPATH) $(UBERONFILEPATH) $(TAXONOMY_FILE_PATH) $(HOMONTOLOGY) $(ECOONTOLOGY) $(CONFONTOLOGY)
 	@$(JAVA) SimilarityAnnotation generateReleaseFile $^ $@.tmp
 	@$(MV) $@.tmp $@
 

@@ -11,9 +11,9 @@ $(UBERON_EXT_FILE_PATH):
 	@$(CURL) $(EXT_DOWNLOAD_URL) $(APPEND_CURL_COMMAND)
 
 # Note: this step requires lots of memory (was run with 512 Go)
-$(OUTPUT_DIR)uberon_merged_with_taxonomy: $(UBERON_COMPOSITE_FILE_PATH) $(UBERON_EXT_FILE_PATH) $(TAXONOMYFILEPATH)
-	@$(JAVA) TaxonConstraints mergeUberonAndTaxonomy $(UBERON_COMPOSITE_FILE_PATH) $(TAXONOMYFILEPATH) $(OUTPUT_DIR)merged_composite-metazoan_taxonomy > $@.tmp 2> $@.warn
-	@$(JAVA) TaxonConstraints mergeUberonAndTaxonomy $(UBERON_EXT_FILE_PATH) $(TAXONOMYFILEPATH) $(OUTPUT_DIR)merged_ext_taxonomy >> $@.tmp 2>> $@.warn
+$(OUTPUT_DIR)uberon_merged_with_taxonomy: $(UBERON_COMPOSITE_FILE_PATH) $(UBERON_EXT_FILE_PATH) $(TAXONOMY_FILE_PATH)
+	@$(JAVA) TaxonConstraints mergeUberonAndTaxonomy $(UBERON_COMPOSITE_FILE_PATH) $(TAXONOMY_FILE_PATH) $(OUTPUT_DIR)merged_composite-metazoan_taxonomy > $@.tmp 2> $@.warn
+	@$(JAVA) TaxonConstraints mergeUberonAndTaxonomy $(UBERON_EXT_FILE_PATH) $(TAXONOMY_FILE_PATH) $(OUTPUT_DIR)merged_ext_taxonomy >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
 # As of Bgee_v15, the composite-metazoan.owl does not contain "never_in_taxon" relations,
@@ -39,7 +39,7 @@ $(OUTPUT_DIR)$(CUSTOM_UBERON_PREFIX)_without_curated_xref: $(OUTPUT_DIR)uberon_m
 	@$(JAVA) Uberon simplifyUberon $(OUTPUT_DIR)merged_composite-metazoan_taxonomy.owl $(OUTPUT_DIR)$(CUSTOM_UBERON_PREFIX)_without_curated_xref.tmp $(UBERON_OUTPUT_PATH)simplification_composite_info.tsv BFO:0000004,BFO:0000002 BFO:0000050$(LIST_SEP)RO:0002202$(LIST_SEP)RO:0002494 UBERON:0000481$(KEY_VAL_SEP)NCBITaxon:6072$(ENTRY_SEP)UBERON:0005212$(KEY_VAL_SEP)NCBITaxon:7742$(ENTRY_SEP)UBERON:6000004$(KEY_VAL_SEP)NCBITaxon:50557$(ENTRY_SEP)UBERON:6003007$(KEY_VAL_SEP)NCBITaxon:50557 NBO:0000313$(LIST_SEP)CEPH:0000300$(LIST_SEP)CHEBI:24431$(LIST_SEP)PATO:0000001$(LIST_SEP)BFO:0000019$(LIST_SEP)ENVO:01000254$(LIST_SEP)GO:0003674$(LIST_SEP)CHEBI:23367$(LIST_SEP)WBls:0000075$(LIST_SEP)BFO:0000003$(LIST_SEP)FBdv:00007008$(LIST_SEP)CS:0$(LIST_SEP)ZFS:0100000$(LIST_SEP)OlatDv:0000010$(LIST_SEP)UBERON:0000466$(LIST_SEP)PORO:0000019$(LIST_SEP)BFO:0000141$(LIST_SEP)UBERON:0000000$(LIST_SEP)PORO:0000923$(LIST_SEP)SO:0000704$(LIST_SEP)UBERON:0000466 UBERON:0001062$(LIST_SEP)$(CELL_TYPE_ROOT_ID) - UBERON:0013701$(LIST_SEP)UBERON:0000026$(LIST_SEP)UBERON:0000480$(LIST_SEP)FBbt:00007276$(LIST_SEP)UBERON:0000479$(LIST_SEP)UBERON:0011676$(LIST_SEP)UBERON:0005423$(LIST_SEP)UBERON:0000463$(LIST_SEP)$(CELL_TYPE_ROOT_ID)
 # We need to remerge with the taxonomy ontology after the simplification,
 # the simplification removes the taxa that are not directly used in the ontology and it is problematic afterwards
-	@$(JAVA) TaxonConstraints mergeUberonAndTaxonomy $(OUTPUT_DIR)$(CUSTOM_UBERON_PREFIX)_without_curated_xref.tmp.owl $(TAXONOMYFILEPATH) $(OUTPUT_DIR)$(CUSTOM_UBERON_PREFIX)_without_curated_xref > $@.tmp 2> $@.warn
+	@$(JAVA) TaxonConstraints mergeUberonAndTaxonomy $(OUTPUT_DIR)$(CUSTOM_UBERON_PREFIX)_without_curated_xref.tmp.owl $(TAXONOMY_FILE_PATH) $(OUTPUT_DIR)$(CUSTOM_UBERON_PREFIX)_without_curated_xref > $@.tmp 2> $@.warn
 	@$(RM) $(OUTPUT_DIR)$(CUSTOM_UBERON_PREFIX)_without_curated_xref.tmp.owl $(OUTPUT_DIR)$(CUSTOM_UBERON_PREFIX)_without_curated_xref.tmp.obo
 	@$(MV) $@.tmp $@
 
@@ -79,8 +79,8 @@ $(UBERON_SEX_INFO_FILE_PATH): $(CUSTOM_UBERON_FILE_PATH)
 $(DEV_STAGE_ONT_FILE_PATH):
 	@$(CURL) $(DEV_STAGE_DOWNLOAD_URL) $(APPEND_CURL_COMMAND)
 
-$(OUTPUT_DIR)dev_stage_merged_with_taxonomy: $(DEV_STAGE_ONT_FILE_PATH) $(TAXONOMYFILEPATH)
-	@$(JAVA) TaxonConstraints mergeUberonAndTaxonomy $(DEV_STAGE_ONT_FILE_PATH) $(TAXONOMYFILEPATH) $(OUTPUT_DIR)merged_dev_stage_taxonomy > $@.tmp 2> $@.warn
+$(OUTPUT_DIR)dev_stage_merged_with_taxonomy: $(DEV_STAGE_ONT_FILE_PATH) $(TAXONOMY_FILE_PATH)
+	@$(JAVA) TaxonConstraints mergeUberonAndTaxonomy $(DEV_STAGE_ONT_FILE_PATH) $(TAXONOMY_FILE_PATH) $(OUTPUT_DIR)merged_dev_stage_taxonomy > $@.tmp 2> $@.warn
 	@$(MV) $@.tmp $@
 
 $(OUTPUT_DIR)generatedStageTaxonConstraints.tsv: $(OUTPUT_DIR)dev_stage_merged_with_taxonomy $(SPECIESFILEPATH)
@@ -92,8 +92,8 @@ $(STAGETAXONCONSTRAINTSFILEPATH): $(OUTPUT_DIR)dev_stage_merged_with_taxonomy $(
 	@$(JAVA) TaxonConstraints generateCuratedTaxonConstraintsFromMergedOntology $(OUTPUT_DIR)merged_dev_stage_taxonomy.owl - $(OUTPUT_DIR)generatedStageTaxonConstraints.tsv $(INPUT_DIR)curatedStageTaxonConstraints.tsv $(SPECIESFILEPATH) $@.tmp
 	@$(MV) $@.tmp $@
 
-$(OUTPUT_DIR)insert_stages: $(DEV_STAGE_ONT_FILE_PATH) $(TAXONOMYFILEPATH) $(STAGETAXONCONSTRAINTSFILEPATH) $(SPECIESFILEPATH)
-	@$(JAVA) InsertUberon insertStages $(DEV_STAGE_ONT_FILE_PATH) $(TAXONOMYFILEPATH) $(STAGETAXONCONSTRAINTSFILEPATH) $(ROOTS_OF_SUBGRAPHS_TO_IGNORE),UBERON:0000105 $(SPECIESFILEPATH)
+$(OUTPUT_DIR)insert_stages: $(DEV_STAGE_ONT_FILE_PATH) $(TAXONOMY_FILE_PATH) $(STAGETAXONCONSTRAINTSFILEPATH) $(SPECIESFILEPATH)
+	@$(JAVA) InsertUberon insertStages $(DEV_STAGE_ONT_FILE_PATH) $(TAXONOMY_FILE_PATH) $(STAGETAXONCONSTRAINTSFILEPATH) $(ROOTS_OF_SUBGRAPHS_TO_IGNORE),UBERON:0000105 $(SPECIESFILEPATH)
 	@echo "----------Number of developmental stages inserted: " > $@.temp
 	@$(MYSQL) -e "SELECT count(*) from stage" >> $@.temp
 	@echo "----------Number of terms in the ontology: " >> $@.temp
