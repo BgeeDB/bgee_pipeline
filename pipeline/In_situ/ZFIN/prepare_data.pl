@@ -5,13 +5,7 @@ use strict;
 use warnings;
 use diagnostics;
 
-# Julien Roux, created 09/05/08, last modified 25/11/10
-# USAGE: perl insert_in_situ_zfin.pl ...
-########################################################
-
 use Getopt::Long;
-use LWP::Simple;
-use File::Slurp;
 
 use FindBin;
 use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
@@ -21,21 +15,23 @@ $| = 1;
 
 # Define arguments & their default value
 my ($bgee_connector) = ('');
-my ($data)           = ('');
+my ($data, $mapping) = ('', '');
 my ($Sport, $Aport)  = (0, 0);
 my %opts = ('bgee=s'   => \$bgee_connector,   # Bgee connector string
             'data=s'   => \$data,
+            'map=s'    => \$mapping,
             'Sport=i'  => \$Sport,            # Stage mapper socket port
             'Aport=i'  => \$Aport,            # Anatomy mapper socket port
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $bgee_connector eq '' || $data eq '' || $Sport == 0 || $Aport == 0 ){
+if ( !$test_options || $bgee_connector eq '' || $data eq '' || $mapping eq '' || $Sport == 0 || $Aport == 0 ){
     print "\n\tInvalid or missing argument:
-\te.g. $0 -bgee=\$(BGEECMD) -data=\$(SOURCE_FILES_DIR)\$(DIR_NAME)ZebrafishMine.data -Sport=\$(INBETWEENSTAGESPORT) -Aport=\$(IDMAPPINGPORT)
+\te.g. $0 -bgee=\$(BGEECMD) -data=\$(SOURCE_FILES_DIR)\$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz -map=\$(SOURCE_FILES_DIR)\$(DIR_NAME)stage_ontology.txt -Sport=\$(INBETWEENSTAGESPORT) -Aport=\$(IDMAPPINGPORT)
 \t-bgee      Bgee    connector string
 \t-data      map_zfin tsv data file
+\t-map       stage_ontology.txt file
 \t-Sport     Stage   mapper socket port
 \t-Aport     Anatomy mapper socket port
 \n";
@@ -69,89 +65,106 @@ $selGeneXref->finish; # Let this finish() because causes warnings
 $dbh->disconnect;
 
 
-# Read ZebrafishMine data
-my %tsv = %{ Utils::read_spreadsheet("$data", "\t", 'csv', '', 1) };
+# Read stage ontology mapping file
+my %stages;
+for my $line ( `cat $mapping` ){
+    chomp $line;
+    my @col = split(/\t/, $line);
+    $stages{ $col[2] } = $col[1];
+}
+
+
+# Read AllianceMine raw data
+my @Stages;
+my @Anat;
+my @tsv;
+# Only Danio rerio in ZFIN currently && ONLY in situ
+#NOTE no more start->end stages, all stages are enumerated
+for my $line ( `zcat $data | grep -v '^#' | grep -P '\tNCBITaxon:7955\t' | grep -P '\tribonucleic acid in situ hybridization assay\t'` ){
+    chomp $line;
+    push @tsv, $line;
+    my @col = split(/\t/, $line);
+    push @Anat,   $col[16];
+    push @Stages, $stages{ $col[5] } || '';
+    push @Stages, $stages{ $col[5] } || ''; #NOTE Double it for Utils::get_in_between_stages
+}
 
 
 # map_zfin file header
-# primaryIdentifier   expressions.expressionFound   symbol   expressions.anatomy.name   expressions.anatomy.identifier   expressions.startStage.name   expressions.startStage.identifier   expressions.endStage.name   expressions.endStage.identifier   expressions.figures.images.primaryIdentifier   expressions.figures.images.label   expressions.figures.primaryIdentifier   expressions.publication.primaryIdentifier   organism.taxonId   expressions.assay   probe.quality
-# Probe Quality (optional 0 - 5 rating)
-
-# Read all start_stage_id/end_stage_id to run the in between stages socket once
-my @Stages;
-for my $id ( 0..$#{$tsv{'expressions.startStage.identifier'}} ){
-    next  if ( $tsv{'expressions.startStage.identifier'}[$id] eq '' || $tsv{'expressions.endStage.identifier'}[$id] eq '' || $tsv{'expressions.startStage.identifier'}[$id] eq 'None' || $tsv{'expressions.endStage.identifier'}[$id] eq 'None' );
-    push @Stages, $tsv{'expressions.startStage.identifier'}[$id], $tsv{'expressions.endStage.identifier'}[$id];
-}
+# Species    SpeciesID    GeneID    GeneSymbol    Location    StageTerm    AssayID    AssayTermName    CellularComponentID    CellularComponentTerm    CellularComponentQualifierIDs    CellularComponentQualifierTermNames    SubStructureID    SubStructureName    SubStructureQualifierIDs    SubStructureQualifierTermNames    AnatomyTermID    AnatomyTermName    AnatomyTermQualifierIDs    AnatomyTermQualifierTermNames    SourceURL    Source    Reference
 my $doneStages = Utils::get_in_between_stages(\@Stages, $Sport);
-my @Anat = @{ $tsv{'expressions.anatomy.identifier'} };
 my $doneAnat   = Utils::get_anatomy_mapping(\@Anat, $Aport);
 
 
 # Output TSV
 print join("\t", '#data_source', qw(inSituExperimentId  inSituEvidenceId  organId  stageId  geneId  detectionFlag  inSituData  linked  speciesId  strain  sex)), "\n";
-for my $id ( 0..$#{$tsv{'primaryIdentifier'}} ){
-    # Some other constrains are set in the script querying ZebraFishMine!: StandardEnvironment/WildType/mRNA in situ hybridization
-    next  if ( $tsv{'organism.taxonId'}[$id]  != 7955 );                         # Only Tetraodon in ZFIN currently
-    next  if ( $tsv{'primaryIdentifier'}[$id] eq 'None' || $tsv{'primaryIdentifier'}[$id] eq '' );
+for my $line ( @tsv ){
+    my @col = split(/\t/, $line);
+    my $gene_id = $col[2];
+    $gene_id =~ s{^ZFIN:}{};
+    next  if ( $gene_id eq '' || $gene_id eq 'None' );
 
-    if ( !exists $ensembl_gene{ $tsv{'primaryIdentifier'}[$id] } ){
-        warn "No gene mapping for [$tsv{'primaryIdentifier'}[$id]]\n";
+    if ( !exists $ensembl_gene{ $gene_id } ){
+        warn "No gene mapping for [$gene_id]\n";
         next;        # Ensembl correspondance MUST exist
     }
 
-    my $inbetweenstages = $tsv{'expressions.startStage.identifier'}[$id].','.$tsv{'expressions.endStage.identifier'}[$id];
-
-    my $stage_id = $doneStages->{ $inbetweenstages }                          || '';
-    my $organ_id = $doneAnat->{ $tsv{'expressions.anatomy.identifier'}[$id] } || '';
+    my $inbetweenstages = $stages{ $col[5] }.','.$stages{ $col[5] };
+    my $stage_id = $doneStages->{ $inbetweenstages }  || '';
+    my $organ_id = $doneAnat->{ $col[16] }            || '';
     if ( $stage_id eq '' || $stage_id =~ /Could not find any OWLClass corresponding to/ ){
-        warn "No stage reference for [$inbetweenstages] in [$id / $tsv{'expressions.publication.primaryIdentifier'}[$id] | $tsv{'expressions.figures.primaryIdentifier'}[$id]]\n";
+        warn "No stage reference for [$col[5]] in [$gene_id / $ensembl_gene{ $gene_id } | $col[20]]\n";
+        next;
+    }
+    elsif ( $stage_id =~ /Exception/ || $stage_id =~ /Incorrect/ ){
+        chomp $stage_id;
+        warn "Problem for [$stages{ $col[5] }] [$stage_id] in [$col[16]]";
         next;
     }
     if ( $organ_id eq '' || $organ_id =~ /Could not find any OWLClass corresponding to/ ){
-        warn "Problem with anatId for [$tsv{'expressions.anatomy.identifier'}[$id]] in [$id / $tsv{'expressions.publication.primaryIdentifier'}[$id] | $tsv{'expressions.figures.primaryIdentifier'}[$id]]\n";
-        next
+        warn "Problem with anatId for [$col[16]] in [$gene_id / $ensembl_gene{ $gene_id } | $col[20]]\n";
+        next;
     }
 
-    #NOTE "None" is the value for an empty field (Python code only?)
+    # Few direct sex annotations available
+    my $sex = $col[17] eq 'female organism' ? 'female'
+            : $col[17] eq 'male organism'   ? 'male'
+            : 'not annotated';
+
+
+    my $publi = $col[22] || '';
+    $publi =~ s{PMID:}{}g;
+    my $fig   = $col[20] || '';
+    $fig   =~ s{https://zfin\.org/}{}g;
+    print join("\t", $data_source_id,
+                     $publi,
+                     $fig,
+                     $organ_id,
+                     $stage_id,
+                     $ensembl_gene{ $gene_id },
+                     '', #FIXME $tsv{'expressions.expressionFound'}[$id] eq 'true' ? 'present' : 'absent',
+                     '', #FIXME $quality,
+                     $fig,
+                     7955,
+                     #NOTE Of wild type lines defined in ZFIN (condition forced in zebra_query.py/pl)
+                     # because some wild type lines are not really "wild type" according to Leyla Ruzicka <leyla@zfin.org>
+                     # They are "wild type" according to papers' authors!
+                     # Should be better investigatd looking at https://zfin.org/action/feature/wildtype-list
+                     $Utils::WILD_TYPE_STRAIN, #NOTE and "normal conditions"
+                     $sex,
+              ), "\n";
+}
+
+exit 0;
+
+my %tsv;
+for my $id ( 0..$#{$tsv{'primaryIdentifier'}} ){
+    #FIXME Probe Quality (optional 0 - 5 rating)
+    #TODO ask to the zfin helpdesk!
     my $quality = defined $tsv{'probe.quality'}[$id] && $tsv{'probe.quality'}[$id] eq 'None' ? 'high quality'
                 : defined $tsv{'probe.quality'}[$id] && $tsv{'probe.quality'}[$id] >= 2      ? 'high quality'
                 : !defined $tsv{'probe.quality'}[$id]                                        ? 'high quality'
                 :                                                                              'poor quality';
-
-    # Few direct sex annotations available
-    my $sex = $tsv{'expressions.anatomy.name'}[$id] eq 'female organism' ? 'female'
-            : $tsv{'expressions.anatomy.name'}[$id] eq 'male organism'   ? 'male'
-            : 'not annotated';
-
-
-    STAGE_RANGE:
-    for my $stage ( split(/\t/, $stage_id) ){
-        # Skip this experiment if in between stage problem
-        if ( $stage =~ /Exception/ || $stage =~ /Incorrect/ ){
-            chomp $stage_id;
-            warn "Problem for [$inbetweenstages] [$stage_id] in [$tsv{'expressions.anatomy.identifier'}[$id]]";
-            next STAGE_RANGE;#  if ( $stage =~ /Could not find any OWLClass corresponding/ );
-        }
-
-        print join("\t", $data_source_id,
-                         $tsv{'expressions.publication.primaryIdentifier'}[$id] eq 'None' ? '' : $tsv{'expressions.publication.primaryIdentifier'}[$id],
-                         $tsv{'expressions.figures.primaryIdentifier'}[$id]     eq 'None' ? '' : $tsv{'expressions.figures.primaryIdentifier'}[$id],
-                         $organ_id,
-                         $stage,
-                         $ensembl_gene{ $tsv{'primaryIdentifier'}[$id] },
-                         $tsv{'expressions.expressionFound'}[$id] eq 'true' ? 'present' : 'absent',
-                         $quality,
-                         $tsv{'expressions.figures.images.primaryIdentifier'}[$id] eq 'None' ? '' : $tsv{'expressions.figures.images.primaryIdentifier'}[$id],
-                         $tsv{'organism.taxonId'}[$id],
-                         #NOTE Of wild type lines defined in ZFIN (condition forced in zebra_query.py/pl)
-                         # because some wild type lines are not really "wild type" according to Leyla Ruzicka <leyla@zfin.org>
-                         # They are "wild type" according to papers' authors!
-                         # Should be better investigatd looking at https://zfin.org/action/feature/wildtype-list
-                         $Utils::WILD_TYPE_STRAIN, #NOTE and "normal conditions"
-                         $sex,
-                  ), "\n";
-    }
 }
 
 exit 0;

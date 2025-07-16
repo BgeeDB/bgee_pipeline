@@ -1,5 +1,6 @@
 PIPELINEROOT := ../
 DIR_NAME := In_situ/
+ALLIANCEVERSION=8.1.0
 include $(PIPELINEROOT)Makefile.common
 
 all: $(VERIFICATIONFILE)
@@ -13,21 +14,22 @@ get_annot:
 
 
 #TODO it looks there is no strain info
-#TODO get Ensembl mapping directly from ZebrafishMine???
+#TODO get Ensembl mapping directly from AllianceMine???
 map_zfin: get_annot
-	# Get data from ZebrafishMine
-	@python3 ZFIN/zebra_query.py  > $(SOURCE_FILES_DIR)$(DIR_NAME)ZebrafishMine.data 2>warnings.$@
-	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
+	# Get data from AllianceMine
+	@$(WGET) 'https://download.alliancegenome.org/$(ALLIANCEVERSION)/EXPRESSION-ALLIANCE/ZFIN/EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz' -O $(SOURCE_FILES_DIR)$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz.tmp && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz.tmp $(SOURCE_FILES_DIR)$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz 2>/dev/null || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz.tmp
+	# Get stage ontology mapping
+	@$(WGET) 'https://zfin.org/downloads/stage_ontology.txt' -O $(SOURCE_FILES_DIR)$(DIR_NAME)stage_ontology.txt.tmp && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)stage_ontology.txt.tmp $(SOURCE_FILES_DIR)$(DIR_NAME)stage_ontology.txt 2>/dev/null || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)stage_ontology.txt.tmp
 	@touch $@
 
-tsv_zfin: map_zfin $(SOURCE_FILES_DIR)$(DIR_NAME)ZebrafishMine.data
+tsv_zfin: map_zfin $(SOURCE_FILES_DIR)$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz $(SOURCE_FILES_DIR)$(DIR_NAME)stage_ontology.txt
 	# Start in between stages socket
 	@$(INBETWEENSTAGES) 7955 $(INBETWEENSTAGESPORT) &
 	# Start anatomy id mapping socket
 	@$(IDMAPPING) $(IDMAPPINGPORT) &
 	@sleep 50
 	# Prepare ZFIN tsv for insertion
-	@perl ZFIN/prepare_data.pl -bgee=$(BGEECMD) -data=$(SOURCE_FILES_DIR)$(DIR_NAME)ZebrafishMine.data -Sport=$(INBETWEENSTAGESPORT) -Aport=$(IDMAPPINGPORT) >$@.tmp 2>warnings.$@
+	@perl ZFIN/prepare_data.pl -bgee=$(BGEECMD) -data=$(SOURCE_FILES_DIR)$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz -map=$(SOURCE_FILES_DIR)$(DIR_NAME)stage_ontology.txt -Sport=$(INBETWEENSTAGESPORT) -Aport=$(IDMAPPINGPORT) >$@.tmp 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 
