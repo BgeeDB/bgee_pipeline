@@ -60,6 +60,7 @@ while (my $line = <$sample_info>) {
     if (! scalar @line eq $number_columns) {
         die "all lines of full length single cell sample info file should have $number_columns columns";
     }
+    my $library_output_dir = "$output_dir$line[0]";
     if ($filter_processed) {
         next if (-e "$library_output_dir/S4_slots_summary.tsv");
     }
@@ -71,7 +72,6 @@ while (my $line = <$sample_info>) {
     my $transcriptome_path = "$transcriptome_dir$transcriptome_file[0]";
     my $annotation_path = $transcriptome_path =~ s/transcriptome_wo_intergenic\.fa/gtf/r;
     my $fastq_path = "$fastq_dir/EXPERIMENTS/$line[1]/$line[0]";
-    my $library_output_dir = "$output_dir$line[0]";
     my $intergenic_file = "$ref_intergenic_dir$line[4]_intergenic.fa.gz";
     my $output_line = "$line[4]\t\t$line[14]\t$fastq_path\t$transcriptome_path\t$annotation_path\t$library_output_dir\t$intergenic_file\n";
 
