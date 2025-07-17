@@ -51,7 +51,7 @@ colnames(metadata) <- c("libraryId", "libraryType", "scientific_name", "read_cou
 # then merge those info with the annotation file
 scrna_seq_sample_info <- merge(annotation, metadata, by = "libraryId", incomparables = NaN)
 
-# For Bgee 16 we decided to keep only libraries with a minimum of 200'000 reads.
+# For Bgee 16 we decided to keep only libraries with a minimum of 400'000 reads.
 # It has 2 impacts:
 #    1. Lots of libraries (5% as for Bgee 16) have such a low number of reads that no reads are mapped to the intergenic resulting in an error when trying to generate our calls.
 #       The threashold avoir such errors

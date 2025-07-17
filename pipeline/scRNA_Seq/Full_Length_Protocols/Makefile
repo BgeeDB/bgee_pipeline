@@ -101,7 +101,7 @@ indexes_bgeecall: prepare_singlecell_info
 presence_absence_bgeecall: indexes_bgeecall
 	# generate again the BgeeCall input file containing libraries to process. It allows to filter libraries already processed before running BgeeCall
 	$(CLUSTER_SOFTWARE_BIN) $(CLUSTER_CONTAINER_CMD_WITH_BIND) perl 1Run/sc_sample_info_to_bgeecall.pl -sc_sample_info_file=$(SC_RNASEQ_SAMPINFO_FL_FILEPATH) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(SC_RNASEQ_FASTQ_FULL_LENGTH) -output_dir=$(SC_RNASEQ_CLUSTER_BGEECALL) -bgeecall_file=$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) -filter_processed > $@.tmp 2> $@.err
-	$(CLUSTER_CONTAINER_CMD_WITH_BIND) Rscript $(PIPELINEROOT)$(RNASEQPATH)1Run/bgeecall_calls.R bgeecall_input_file=\"$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH)\" account=\"$(SENSITIVE_CLUSTER_ACCOUNT)\" container_cmd=\"$(CLUSTER_CONTAINER_CMD_WITHOUT_BIND)\" time=\"2-00:00:00\" partition=\"$(SENSITIVE_CLUSTER_PARTITION)\" working_path=\"$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)\" decrypt_file_path=\"\" > $@.tmp 2> $@.err
+	$(CLUSTER_CONTAINER_CMD_WITH_BIND) Rscript $(PIPELINEROOT)$(RNASEQPATH)1Run/bgeecall_calls.R bgeecall_input_file=\"$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH)\" account=\"$(SENSITIVE_CLUSTER_ACCOUNT)\" container_cmd=\"$(CLUSTER_CONTAINER_CMD_WITHOUT_BIND)\" time=\"2-00:00:00\" partition=\"$(SENSITIVE_CLUSTER_PARTITION)\" working_path=\"$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)\" decrypt_file_path=\"\" >> $@.tmp 2>> $@.err
 	@$(MV) $@.tmp $@
 
 ## Quality control by cell population to perform the calls (not pass if not bimodal)
