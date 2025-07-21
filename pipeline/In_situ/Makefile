@@ -14,7 +14,6 @@ get_annot:
 
 
 #TODO it looks there is no strain info
-#TODO get Ensembl mapping directly from AllianceMine???
 map_zfin: get_annot
 	# Get data from AllianceMine
 	@$(WGET) 'https://download.alliancegenome.org/$(ALLIANCEVERSION)/EXPRESSION-ALLIANCE/ZFIN/EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz' -O $(SOURCE_FILES_DIR)$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz.tmp && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz.tmp $(SOURCE_FILES_DIR)$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz 2>/dev/null || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz.tmp
@@ -36,8 +35,11 @@ tsv_zfin: map_zfin $(SOURCE_FILES_DIR)$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.
 
 #TODO it looks there is no strain info
 map_mgi: get_annot
-	# Get MGI main RNA in situ data for wild-type mice with Ensembl gene mapped
-	@perl MGI/get_mousemine_data.pl > $(SOURCE_FILES_DIR)$(DIR_NAME)MouseMine.data 2>warnings.$@
+	# Get MGI main RNA in situ data for wild-type mice with Ensembl gene mapped, from the API
+	@$(WGET) 'https://www.mousemine.org/mousemine/service/query/results?query=%3Cquery+name%3D%22%22+model%3D%22genomic%22+view%3D%22GXDExpression.assayType+GXDExpression.feature.symbol+GXDExpression.feature.primaryIdentifier+GXDExpression.feature.crossReferences.identifier+GXDExpression.stage+GXDExpression.age+GXDExpression.structure.name+GXDExpression.structure.identifier+GXDExpression.strength+GXDExpression.pattern+GXDExpression.assayId+GXDExpression.probe+GXDExpression.image+GXDExpression.specimenNum+GXDExpression.sex+GXDExpression.detected+GXDExpression.feature.organism.taxonId+GXDExpression.genotype.symbol%22+longDescription%3D%22Returns+expression+annotations+for+the+specified+gene%28s%29.%22+sortOrder%3D%22GXDExpression.assayType+asc%22+constraintLogic%3D%22B+and+C+and+A%22%3E%3Cconstraint+path%3D%22GXDExpression.genotype.alleles.isWildType%22+code%3D%22B%22+op%3D%22%3D%22+value%3D%22false%22%2F%3E%3Cconstraint+path%3D%22GXDExpression.feature.crossReferences.source.name%22+code%3D%22C%22+op%3D%22%3D%22+value%3D%22Ensembl+Gene+Model%22%2F%3E%3Cconstraint+path%3D%22GXDExpression.assayType%22+code%3D%22A%22+op%3D%22%3D%22+value%3D%22RNA+in+situ%22%2F%3E%3C%2Fquery%3E&format=tab' -O mgi_results-with_false.tsv.tmp && $(MV) mgi_results-with_false.tsv.tmp mgi_results-with_false.tsv 2>/dev/null || rm -f mgi_results-with_false.tsv.tmp
+	@$(WGET) 'https://www.mousemine.org/mousemine/service/query/results?query=%3Cquery+name%3D%22%22+model%3D%22genomic%22+view%3D%22GXDExpression.assayType+GXDExpression.feature.symbol+GXDExpression.feature.primaryIdentifier+GXDExpression.feature.crossReferences.identifier+GXDExpression.stage+GXDExpression.age+GXDExpression.structure.name+GXDExpression.structure.identifier+GXDExpression.strength+GXDExpression.pattern+GXDExpression.assayId+GXDExpression.probe+GXDExpression.image+GXDExpression.specimenNum+GXDExpression.sex+GXDExpression.detected+GXDExpression.feature.organism.taxonId+GXDExpression.genotype.symbol%22+longDescription%3D%22Returns+expression+annotations+for+the+specified+gene%28s%29.%22+sortOrder%3D%22GXDExpression.assayType+asc%22+constraintLogic%3D%22C+and+A%22%3E%3Cconstraint+path%3D%22GXDExpression.feature.crossReferences.source.name%22+code%3D%22C%22+op%3D%22%3D%22+value%3D%22Ensembl+Gene+Model%22%2F%3E%3Cconstraint+path%3D%22GXDExpression.assayType%22+code%3D%22A%22+op%3D%22%3D%22+value%3D%22RNA+in+situ%22%2F%3E%3C%2Fquery%3E&format=tab' -O mgi_results-without.tsv.tmp && $(MV) mgi_results-without.tsv.tmp mgi_results-without.tsv 2>/dev/null || rm -f mgi_results-without.tsv.tmp
+	@perl MGI/sort_results.pl mgi_results-with_false.tsv mgi_results-without.tsv >$(SOURCE_FILES_DIR)$(DIR_NAME)MouseMine.data 2>warnings.$@
+	@$(RM) mgi_results-with_false.tsv mgi_results-without.tsv
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@touch $@
 

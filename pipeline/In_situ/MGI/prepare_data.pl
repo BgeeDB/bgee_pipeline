@@ -69,7 +69,7 @@ my @Anat       = @{ $tsv{'structure.id'} };
 my $doneAnat   = Utils::get_anatomy_mapping(\@Anat, $Aport);
 
 
-#Assay type   feature.symbol feature.id  feature.xref.id     stage   age                 structure.name                                    structure.id  strength   pattern        assayId      probe        image         specimen  sex             detected   taxonId
+#Assay type   feature.symbol feature.id  feature.xref.id     stage   age                 structure.name                                    structure.id  strength   pattern        assayId      probe        image         specimen  sex             detected   taxonId genotype.symbol
 #RNA in situ  0610005C13Rik  MGI:1918911 ENSMUSG00000109644  TS23    embryonic day 15.5  anlage of loop of Henle of cortical renal tubule  EMAPA:31281   Ambiguous  Not Specified  MGI:5541511  MGI:5000953  GUDMAP:13955  1         Not Specified              10090
 #NOTE keep Assay type column to be sure to have a column without empty values
 print join("\t", '#data_source', qw(inSituExperimentId  inSituEvidenceId  organId  stageId  geneId  detectionFlag  inSituData  linked  speciesId  strain  sex)), "\n";
