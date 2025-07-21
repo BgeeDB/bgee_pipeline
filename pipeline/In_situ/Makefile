@@ -43,6 +43,7 @@ map_mgi: get_annot
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@touch $@
 
+#NOTE Need a lot of RAM for the mapping!
 tsv_mgi: map_mgi $(SOURCE_FILES_DIR)$(DIR_NAME)MouseMine.data
 	# Start in between stages socket
 	@$(INBETWEENSTAGES) 10090 $(INBETWEENSTAGESPORT) &
