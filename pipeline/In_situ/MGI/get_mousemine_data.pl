@@ -29,9 +29,10 @@ use List::Compare;
 # Print unicode to standard out
 binmode(STDOUT, 'utf8');
 
+#no warnings ('uninitialized');
 # This code makes use of the Webservice::InterMine library.
 # The following import statement sets MouseMine as your default
-use Webservice::InterMine 1.0405 'http://www.mousemine.org/mousemine';
+use Webservice::InterMine 'https://www.mousemine.org/mousemine';
 
 
 # Query to get all "RNA in situ" assays with isWildType field == false
@@ -58,10 +59,11 @@ $query_false->add_view(qw/
     sex
     detected
     feature.organism.taxonId
+    genotype.symbol
 /);
 
 # Your custom sort order is specified with the following code:
-$query_false->add_sort_order('assayId', 'ASC');
+$query_false->set_sort_order('assayId', 'ASC');
 
 #NOTE Exists also "In situ reporter (knock in)"
 $query_false->add_constraint(
@@ -111,10 +113,11 @@ $query->add_view(qw/
     sex
     detected
     feature.organism.taxonId
+    genotype.symbol
 /);
 
 # Your custom sort order is specified with the following code:
-$query->add_sort_order('assayId', 'ASC');
+$query->set_sort_order('assayId', 'ASC');
 
 $query->add_constraint(
     path  => 'GXDExpression.assayType',
@@ -128,6 +131,18 @@ $query->add_constraint(
     value => 'Ensembl Gene Model',
     code  => 'B',
 );
+
+#my $it = $query->iterator();
+#while (my $row = <$it>) {
+#    print "IN\n";
+#    print join("\t", $row->{'assayType'}, $row->{'feature.symbol'}, $row->{'feature.primaryIdentifier'},
+#       $row->{'feature.crossReferences.identifier'}, $row->{'stage'}, $row->{'age'},
+#        $row->{'structure.name'}, $row->{'structure.identifier'}, $row->{'strength'},
+#        $row->{'pattern'}, $row->{'assayId'}, $row->{'probe'}, $row->{'image'},
+#        $row->{'specimenNum'}, $row->{'sex'}, $row->{'detected'}, $row->{'feature.organism.taxonId'},
+#        $row->{'genotype.symbol'},), "\n";
+#}
+#exit;
 
 my @with_false = $query_false->results(['as' => 'strings',]);
 my @without    = $query->results(['as' => 'strings',]);
