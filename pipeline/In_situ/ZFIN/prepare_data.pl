@@ -134,37 +134,32 @@ for my $line ( @tsv ){
 
     my $publi = $col[22] || '';
     $publi =~ s{PMID:}{}g;
+    $publi =~ s{ZFIN:}{}g;
+    my @publis = split(/,/, $publi);
     my $fig   = $col[20] || '';
     $fig   =~ s{https://zfin\.org/}{}g;
-    print join("\t", $data_source_id,
-                     $publi,
-                     $fig,
-                     $organ_id,
-                     $stage_id,
-                     $ensembl_gene{ $gene_id },
-                     '', #FIXME $tsv{'expressions.expressionFound'}[$id] eq 'true' ? 'present' : 'absent',
-                     '', #FIXME $quality,
-                     $fig,
-                     7955,
-                     #NOTE Of wild type lines defined in ZFIN (condition forced in zebra_query.py/pl)
-                     # because some wild type lines are not really "wild type" according to Leyla Ruzicka <leyla@zfin.org>
-                     # They are "wild type" according to papers' authors!
-                     # Should be better investigatd looking at https://zfin.org/action/feature/wildtype-list
-                     $Utils::WILD_TYPE_STRAIN, #NOTE and "normal conditions"
-                     $sex,
-              ), "\n";
-}
-
-exit 0;
-
-my %tsv;
-for my $id ( 0..$#{$tsv{'primaryIdentifier'}} ){
-    #FIXME Probe Quality (optional 0 - 5 rating)
-    #TODO ask to the zfin helpdesk!
-    my $quality = defined $tsv{'probe.quality'}[$id] && $tsv{'probe.quality'}[$id] eq 'None' ? 'high quality'
-                : defined $tsv{'probe.quality'}[$id] && $tsv{'probe.quality'}[$id] >= 2      ? 'high quality'
-                : !defined $tsv{'probe.quality'}[$id]                                        ? 'high quality'
-                :                                                                              'poor quality';
+    my @figs = split(/,/, $fig);
+    #NOTE publi and fig may contain several ids, and some not of the same kind!
+    #NOTE iterate on figs because several publis can be linked to a single fig
+    for (my $i = 0; $i < scalar @figs; $i++){
+        print join("\t", $data_source_id,
+                         $publis[$i],
+                         $figs[$i],
+                         $organ_id,
+                         $stage_id,
+                         $ensembl_gene{ $gene_id },
+                         '', #FIXME $tsv{'expressions.expressionFound'}[$id] eq 'true' ? 'present' : 'absent',
+                         '', #FIXME $quality,
+                         $figs[$i],
+                         7955,
+                         #NOTE Of wild type lines defined in ZFIN (condition forced in zebra_query.py/pl)
+                         # because some wild type lines are not really "wild type" according to Leyla Ruzicka <leyla@zfin.org>
+                         # They are "wild type" according to papers' authors!
+                         # Should be better investigatd looking at https://zfin.org/action/feature/wildtype-list
+                         $Utils::WILD_TYPE_STRAIN, #NOTE and "normal conditions"
+                         $sex,
+                  ), "\n";
+    }
 }
 
 exit 0;

@@ -2,6 +2,8 @@
 
 When ZebrafishMine moved to AllianceMine, only the subset of data that had been harmonized between all of the Alliance model organism databases could be included. So quite a bit of what was in ZebrafishMine is missing from AllianceMine.
 
+* The expressions.expressionFound (present/absent) information is only available from ZFIN. The absence of expression is not represented in Alliance yet. Only the presence of expression in standard/control conditions and wild-type/standard fish is represented in Alliance/AllianceMine.
+* The probe ratings (quality) information is only available from ZFIN.
 * For now, the Alliance/AllianceMine only has expression data for wild-type fish under standard/generic control conditions.
 * The Alliance/AllianceMine doesn't have Images yet (it does include references/publications and links to ZFIN figure pages).
 * Instead of preserving start/end stages as curated by ZFIN, the Alliance opted to expand out the stage information in an expression row in ZFIN from something like this: 1-4 somites to 10-13 somites to this:
