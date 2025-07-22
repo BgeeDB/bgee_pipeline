@@ -117,7 +117,7 @@ tsv_BDGP: map_BDGP $(SOURCE_FILES_DIR)$(DIR_NAME)$(BDGP2FBBT_MAPPING_FILE) $(SOU
 #TODO Data should be extracted from FlyMine in the future!
 	@$(MV) $@.out log.$@
 
-#TODO FlyFish data to add, or already in Flybase/Flymine?
+#TODO FlyFish data to add, or already in Flybase/Flymine? See https://fly-fish.ccbr.utoronto.ca/exports/
 
 #TODO it looks there is no strain info
 map_flybase: get_annot
