@@ -146,6 +146,7 @@ map_wormbase: get_annot
 	#NOTE THINK to update WormBase dump file to last version
 	@$(WGET) 'http://caltech.wormbase.org/pub/wormbase/expr_dump/$(WORMBASE_EXPR_DUMP).20250331' -O $(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP).tmp && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP).tmp $(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP).ori 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)$(WORMBASE_EXPR_DUMP).tmp
 	# Get strain mapping from https://wormbase.org/species/all/strain/ natural isolates
+	#NOTE may be forbidden for scripts, not for "human"
 	@$(WGET) 'https://wormbase.org/rest/widget/strain/all/natural_isolates?download=1&content-type=application%2Fjson' -O $(SOURCE_FILES_DIR)$(DIR_NAME)wormbase_natural_strains.json.tmp && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)wormbase_natural_strains.json.tmp $(SOURCE_FILES_DIR)$(DIR_NAME)wormbase_natural_strains.json 2>/dev/null  || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)wormbase_natural_strains.json.tmp
 	# Get complementary strain mapping from WormMine
 	@perl WormBase/get_worm_wild_strains.pl >$(SOURCE_FILES_DIR)$(DIR_NAME)wormbase_wild_isolate.tsv
