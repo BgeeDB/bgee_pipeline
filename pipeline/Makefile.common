@@ -265,9 +265,9 @@ PARALOGS_DIR := $(OUTPUT_DIR)paralogs/
 ORTHOLOGS_DIR := $(OUTPUT_DIR)orthologs/
 XREFS_FROM_UNIPROT_FILE := $(OUTPUT_DIR)xrefs_from_uniprot.tsv
 
-#Where config files will be saved, these files are also used by the orthologs/paralogs app 
-#to restart from where it stopped in a previous execution or to execute it incrementally. 
-TEMPORARY_CONFIG_FILES_DIR = $(OUTPUT_DIR)temp 
+#Where config files will be saved, these files are also used by the orthologs/paralogs app
+#to restart from where it stopped in a previous execution or to execute it incrementally.
+TEMPORARY_CONFIG_FILES_DIR = $(OUTPUT_DIR)temp
 
 #The homology pairwise application directory and main file
 GENERATE_HOMOLOGS_APP_DIR = $(PIPELINEROOT)genes/orthologs_paralogs_app
@@ -324,6 +324,10 @@ CUSTOM_UBERON_FILE_PATH    := $(UBERON_OUTPUT_PATH)$(CUSTOM_UBERON_FILE)
 DEV_STAGE_ONT_PREFIX       := dev_stage_ontology
 DEV_STAGE_ONT_FILE         := $(DEV_STAGE_ONT_PREFIX).obo
 DEV_STAGE_ONT_FILE_PATH    := $(UBERON_SOURCE_PATH)$(DEV_STAGE_ONT_FILE)
+
+UBERON_MODIF_PREFIX        := uberon_modifications
+UBERON_MODIF_FILE          := $(UBERON_MODIF_PREFIX).tsv
+UBERON_MODIF_FILE_PATH     := $(UBERON_SOURCE_PATH)$(UBERON_MODIF_FILE)
 
 ## Strains
 STRAINS                    := Strains/
@@ -588,7 +592,7 @@ SC_RNASEQ_SERVER_INFO_CALLS_10X               := $(SC_RNASEQ_SERVER_CALLS_10X)Al
 # minimum number of cells in a full-length library
 MIN_CELLS_PER_LIBRARY_FULL_LENGTH             := 50
 
-# p-value used as cutoff 
+# p-value used as cutoff
 PVALUE_CUTOFF                                 := 0.05
 
 # =========== DOWNLOAD FILES ===============
