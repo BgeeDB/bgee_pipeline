@@ -1,0 +1,166 @@
+#!/usr/bin/env perl
+
+# Perl core modules
+use strict;
+use warnings;
+use diagnostics;
+
+use Getopt::Long;
+
+use FindBin;
+use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
+use Utils;
+
+$| = 1;
+
+# Define arguments & their default value
+my ($bgee_connector) = ('');
+my ($data, $mapping) = ('', '');
+my ($Sport, $Aport)  = (0, 0);
+my %opts = ('bgee=s'   => \$bgee_connector,   # Bgee connector string
+            'data=s'   => \$data,
+            'map=s'    => \$mapping,
+            'Sport=i'  => \$Sport,            # Stage mapper socket port
+            'Aport=i'  => \$Aport,            # Anatomy mapper socket port
+           );
+
+# Check arguments
+my $test_options = Getopt::Long::GetOptions(%opts);
+if ( !$test_options || $bgee_connector eq '' || $data eq '' || $mapping eq '' || $Sport == 0 || $Aport == 0 ){
+    print "\n\tInvalid or missing argument:
+\te.g. $0 -bgee=\$(BGEECMD) -data=\$(SOURCE_FILES_DIR)\$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz -map=\$(SOURCE_FILES_DIR)\$(DIR_NAME)stage_ontology.txt -Sport=\$(INBETWEENSTAGESPORT) -Aport=\$(IDMAPPINGPORT)
+\t-bgee      Bgee    connector string
+\t-data      map_zfin tsv data file
+\t-map       stage_ontology.txt file
+\t-Sport     Stage   mapper socket port
+\t-Aport     Anatomy mapper socket port
+\n";
+    exit 1;
+}
+
+# Bgee db connection
+my $dbh = Utils::connect_bgee_db($bgee_connector);
+
+
+# Retrieve data source id for ZFIN
+my $selSrc = $dbh->prepare('SELECT dataSourceId FROM dataSource WHERE dataSourceName = ?');
+$selSrc->execute('ZFIN')  or die $selSrc->errstr;
+my $data_source_id = $selSrc->fetchrow_array;
+$selSrc->finish;
+if ( !defined $data_source_id ){
+    die "Data source ZFIN not found\n";
+}
+
+
+# Correspondence ZFIN -> Ensembl gene Ids (one to many)
+#NOTE for Zebrafish forces speciesId=7955 to avoid insert of other fishes data (e.g. Tetraodon)
+my $selGeneXref = $dbh->prepare('SELECT x.XRefId, g.geneId FROM geneXRef x, gene g WHERE x.dataSourceId = ? AND x.bgeeGeneId = g.bgeeGeneId AND g.speciesId=7955');
+$selGeneXref->execute($data_source_id)  or die $selGeneXref->errstr;
+my %ensembl_gene;
+while ( my @data = $selGeneXref->fetchrow_array ){
+    # zfin geneId -> ensembl geneId
+    $ensembl_gene{$data[0]} = $data[1];
+}
+$selGeneXref->finish; # Let this finish() because causes warnings
+$dbh->disconnect;
+
+
+# Read stage ontology mapping file
+my %stages;
+for my $line ( `cat $mapping` ){
+    chomp $line;
+    my @col = split(/\t/, $line);
+    $stages{ $col[2] } = $col[1];
+}
+
+
+# Read AllianceMine raw data
+my @Stages;
+my @Anat;
+my @tsv;
+# Only Danio rerio in ZFIN currently && ONLY in situ
+#NOTE no more start->end stages, all stages are enumerated
+for my $line ( `zcat $data | grep -v '^#' | grep -P '\tNCBITaxon:7955\t' | grep -P '\tribonucleic acid in situ hybridization assay\t'` ){
+    chomp $line;
+    push @tsv, $line;
+    my @col = split(/\t/, $line);
+    push @Anat,   $col[16];
+    push @Stages, $stages{ $col[5] } || '';
+    push @Stages, $stages{ $col[5] } || ''; #NOTE Double it for Utils::get_in_between_stages
+}
+
+
+# map_zfin file header
+# Species    SpeciesID    GeneID    GeneSymbol    Location    StageTerm    AssayID    AssayTermName    CellularComponentID    CellularComponentTerm    CellularComponentQualifierIDs    CellularComponentQualifierTermNames    SubStructureID    SubStructureName    SubStructureQualifierIDs    SubStructureQualifierTermNames    AnatomyTermID    AnatomyTermName    AnatomyTermQualifierIDs    AnatomyTermQualifierTermNames    SourceURL    Source    Reference
+my $doneStages = Utils::get_in_between_stages(\@Stages, $Sport);
+my $doneAnat   = Utils::get_anatomy_mapping(\@Anat, $Aport);
+
+
+# Output TSV
+print join("\t", '#data_source', qw(inSituExperimentId  inSituEvidenceId  organId  stageId  geneId  detectionFlag  inSituData  linked  speciesId  strain  sex)), "\n";
+for my $line ( @tsv ){
+    my @col = split(/\t/, $line);
+    my $gene_id = $col[2];
+    $gene_id =~ s{^ZFIN:}{};
+    next  if ( $gene_id eq '' || $gene_id eq 'None' );
+
+    if ( !exists $ensembl_gene{ $gene_id } ){
+        warn "No gene mapping for [$gene_id]\n";
+        next;        # Ensembl correspondance MUST exist
+    }
+
+    my $inbetweenstages = $stages{ $col[5] }.','.$stages{ $col[5] };
+    my $stage_id = $doneStages->{ $inbetweenstages }  || '';
+    my $organ_id = $doneAnat->{ $col[16] }            || '';
+    if ( $stage_id eq '' || $stage_id =~ /Could not find any OWLClass corresponding to/ ){
+        warn "No stage reference for [$col[5]] in [$gene_id / $ensembl_gene{ $gene_id } | $col[20]]\n";
+        next;
+    }
+    elsif ( $stage_id =~ /Exception/ || $stage_id =~ /Incorrect/ ){
+        chomp $stage_id;
+        warn "Problem for [$stages{ $col[5] }] [$stage_id] in [$col[16]]";
+        next;
+    }
+    if ( $organ_id eq '' || $organ_id =~ /Could not find any OWLClass corresponding to/ ){
+        warn "Problem with anatId for [$col[16]] in [$gene_id / $ensembl_gene{ $gene_id } | $col[20]]\n";
+        next;
+    }
+
+    # Few direct sex annotations available
+    my $sex = $col[17] eq 'female organism' ? 'female'
+            : $col[17] eq 'male organism'   ? 'male'
+            : 'not annotated';
+
+
+    my $publi = $col[22] || '';
+    $publi =~ s{PMID:}{}g;
+    $publi =~ s{ZFIN:}{}g;
+    my @publis = split(/,/, $publi);
+    my $fig   = $col[20] || '';
+    $fig   =~ s{https://zfin\.org/}{}g;
+    my @figs = split(/,/, $fig);
+    #NOTE publi and fig may contain several ids, and some not of the same kind!
+    #NOTE iterate on figs because several publis can be linked to a single fig
+    for (my $i = 0; $i < scalar @figs; $i++){
+        print join("\t", $data_source_id,
+                         $publis[$i],
+                         $figs[$i],
+                         $organ_id,
+                         $stage_id,
+                         $ensembl_gene{ $gene_id },
+                         '', #FIXME $tsv{'expressions.expressionFound'}[$id] eq 'true' ? 'present' : 'absent',
+                         '', #FIXME $quality,
+                         $figs[$i],
+                         7955,
+                         #NOTE Of wild type lines defined in ZFIN (condition forced in zebra_query.py/pl)
+                         # because some wild type lines are not really "wild type" according to Leyla Ruzicka <leyla@zfin.org>
+                         # They are "wild type" according to papers' authors!
+                         # Should be better investigatd looking at https://zfin.org/action/feature/wildtype-list
+                         $Utils::WILD_TYPE_STRAIN, #NOTE and "normal conditions"
+                         $sex,
+                  ), "\n";
+    }
+}
+
+exit 0;
+

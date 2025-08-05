@@ -14,14 +14,42 @@ get_annot:
 
 
 #TODO it looks there is no strain info
+#NOTE currently, not all ZFIN data are available via AllianceMine: absence calls are missing, as well as the probe ratings information
+#map_zfin: get_annot
+#	# Get data from AllianceMine
+#	@$(WGET) 'https://download.alliancegenome.org/$(ALLIANCEVERSION)/EXPRESSION-ALLIANCE/ZFIN/EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz' -O $(SOURCE_FILES_DIR)$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz.tmp && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz.tmp $(SOURCE_FILES_DIR)$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz 2>/dev/null || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz.tmp
+#	# Get stage ontology mapping
+#	@$(WGET) 'https://zfin.org/downloads/stage_ontology.txt' -O $(SOURCE_FILES_DIR)$(DIR_NAME)stage_ontology.txt.tmp && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)stage_ontology.txt.tmp $(SOURCE_FILES_DIR)$(DIR_NAME)stage_ontology.txt 2>/dev/null || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)stage_ontology.txt.tmp
+#	@touch $@
+#
+#tsv_zfin: map_zfin $(SOURCE_FILES_DIR)$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz $(SOURCE_FILES_DIR)$(DIR_NAME)stage_ontology.txt
+#	# Start in between stages socket
+#	@$(INBETWEENSTAGES) 7955 $(INBETWEENSTAGESPORT) &
+#	# Start anatomy id mapping socket
+#	@$(IDMAPPING) $(IDMAPPINGPORT) &
+#	@sleep 50
+#	# Prepare ZFIN tsv for insertion
+#	@perl ZFIN/prepare_data.pl -bgee=$(BGEECMD) -data=$(SOURCE_FILES_DIR)$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz -map=$(SOURCE_FILES_DIR)$(DIR_NAME)stage_ontology.txt -Sport=$(INBETWEENSTAGESPORT) -Aport=$(IDMAPPINGPORT) >$@.tmp 2>warnings.$@
+#	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
+#	@$(MV) $@.tmp $@
+
+#NOTE use ZFIN raw data files to get all missing parts from alliance mine!
+#NOTE it looks there is no strain info, but wild-type genotypes
+#TODO only "standard conditions" and wild/type
 map_zfin: get_annot
-	# Get data from AllianceMine
-	@$(WGET) 'https://download.alliancegenome.org/$(ALLIANCEVERSION)/EXPRESSION-ALLIANCE/ZFIN/EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz' -O $(SOURCE_FILES_DIR)$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz.tmp && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz.tmp $(SOURCE_FILES_DIR)$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz 2>/dev/null || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz.tmp
+	# Get data from ZFIN: Expression data for wildtype fish
+	@$(WGET) 'https://zfin.org/downloads/wildtype-expression_fish.txt' -O $(SOURCE_FILES_DIR)$(DIR_NAME)wildtype-expression_fish.txt.tmp && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)wildtype-expression_fish.txt.tmp $(SOURCE_FILES_DIR)$(DIR_NAME)wildtype-expression_fish.txt 2>/dev/null || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)wildtype-expression_fish.txt.tmp
+	# Get data from ZFIN: ZFIN Genes with Expression Assay Records
+	@$(WGET) 'https://zfin.org/downloads/xpat_fish.txt' -O $(SOURCE_FILES_DIR)$(DIR_NAME)xpat_fish.txt.tmp && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)xpat_fish.txt.tmp $(SOURCE_FILES_DIR)$(DIR_NAME)xpat_fish.txt 2>/dev/null || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)xpat_fish.txt.tmp
+	# Get data from ZFIN: Expression Environment Description
+	@$(WGET) 'https://zfin.org/downloads/xpat_environment_fish.txt' -O $(SOURCE_FILES_DIR)$(DIR_NAME)xpat_environment_fish.txt.tmp && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)xpat_environment_fish.txt.tmp $(SOURCE_FILES_DIR)$(DIR_NAME)xpat_environment_fish.txt 2>/dev/null || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)xpat_environment_fish.txt.tmp
+	# Get data from ZFIN: Zebrafish Gene Expression by Stage and Anatomy Term
+	@$(WGET) 'https://zfin.org/downloads/xpat_stage_anatomy.txt' -O $(SOURCE_FILES_DIR)$(DIR_NAME)xpat_stage_anatomy.txt.tmp && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)xpat_stage_anatomy.txt.tmp $(SOURCE_FILES_DIR)$(DIR_NAME)xpat_stage_anatomy.txt 2>/dev/null || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)xpat_stage_anatomy.txt.tmp
 	# Get stage ontology mapping
 	@$(WGET) 'https://zfin.org/downloads/stage_ontology.txt' -O $(SOURCE_FILES_DIR)$(DIR_NAME)stage_ontology.txt.tmp && $(MV) $(SOURCE_FILES_DIR)$(DIR_NAME)stage_ontology.txt.tmp $(SOURCE_FILES_DIR)$(DIR_NAME)stage_ontology.txt 2>/dev/null || rm -f $(SOURCE_FILES_DIR)$(DIR_NAME)stage_ontology.txt.tmp
 	@touch $@
 
-tsv_zfin: map_zfin $(SOURCE_FILES_DIR)$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz $(SOURCE_FILES_DIR)$(DIR_NAME)stage_ontology.txt
+tsv_zfin: map_zfin $(SOURCE_FILES_DIR)$(DIR_NAME)wildtype-expression_fish.txt $(SOURCE_FILES_DIR)$(DIR_NAME)xpat_fish.txt $(SOURCE_FILES_DIR)$(DIR_NAME)xpat_environment_fish.txt $(SOURCE_FILES_DIR)$(DIR_NAME)xpat_stage_anatomy.txt $(SOURCE_FILES_DIR)$(DIR_NAME)stage_ontology.txt
 	# Start in between stages socket
 	@$(INBETWEENSTAGES) 7955 $(INBETWEENSTAGESPORT) &
 	# Start anatomy id mapping socket
