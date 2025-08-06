@@ -321,6 +321,7 @@ for my $gene (sort keys %$annotations ){ #Sort to always get the same order
     for my $xref ( sort @xrefs ){
         next  if ( $xref =~ /;/ );
         my ($dbname, $pid) = split(':', $xref);
+        next  if ( $pid eq '-' );
         if ( ! $debug ){
             #NOTE Catch particular RefSeq sections:
             ## RefSeq ids: see https://ftp.ncbi.nih.gov/refseq/release/release-notes/
