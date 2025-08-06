@@ -56,7 +56,7 @@ tsv_zfin: map_zfin $(SOURCE_FILES_DIR)$(DIR_NAME)wildtype-expression_fish.txt $(
 	@$(IDMAPPING) $(IDMAPPINGPORT) &
 	@sleep 50
 	# Prepare ZFIN tsv for insertion
-	@perl ZFIN/prepare_data.pl -bgee=$(BGEECMD) -data=$(SOURCE_FILES_DIR)$(DIR_NAME)EXPRESSION-ALLIANCE_ZFIN_7.tsv.gz -map=$(SOURCE_FILES_DIR)$(DIR_NAME)stage_ontology.txt -Sport=$(INBETWEENSTAGESPORT) -Aport=$(IDMAPPINGPORT) >$@.tmp 2>warnings.$@
+	@perl ZFIN/prepare_data.pl -bgee=$(BGEECMD) -wt_exp=$(SOURCE_FILES_DIR)$(DIR_NAME)wildtype-expression_fish.txt -assay=$(SOURCE_FILES_DIR)$(DIR_NAME)xpat_fish.txt -env=$(SOURCE_FILES_DIR)$(DIR_NAME)xpat_environment_fish.txt -cond=$(SOURCE_FILES_DIR)$(DIR_NAME)xpat_stage_anatomy.txt -map=$(SOURCE_FILES_DIR)$(DIR_NAME)stage_ontology.txt -Sport=$(INBETWEENSTAGESPORT) -Aport=$(IDMAPPINGPORT) >$@.tmp 2>warnings.$@
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 

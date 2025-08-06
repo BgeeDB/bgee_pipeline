@@ -155,7 +155,7 @@ for my $line ( @tsv ){
                          #NOTE Of wild type lines defined in ZFIN (condition forced in zebra_query.py/pl)
                          # because some wild type lines are not really "wild type" according to Leyla Ruzicka <leyla@zfin.org>
                          # They are "wild type" according to papers' authors!
-                         # Should be better investigatd looking at https://zfin.org/action/feature/wildtype-list
+                         # Should be better investigated looking at https://zfin.org/action/feature/wildtype-list
                          $Utils::WILD_TYPE_STRAIN, #NOTE and "normal conditions"
                          $sex,
                   ), "\n";
