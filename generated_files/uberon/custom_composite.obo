@@ -3283,6 +3283,7 @@ synonym: "NSC" EXACT []
 xref: BTO:0002881
 xref: CALOHA:TS-2360
 xref: FMA:86684
+xref: XAO:0005032
 xref: XAO:0005034
 xref: ZFA:0009019
 is_a: CL:0000048 ! multi fate stem cell
@@ -3654,6 +3655,7 @@ id: CL:0000080
 name: circulating cell
 namespace: cell
 def: "A cell which moves among different tissues of the body, via blood, lymph, or other medium." [GOC:add]
+xref: XAO:0005267
 xref: ZFA:0009043
 is_a: CL:0000003 ! native cell
 relationship: part_of UBERON:0000179 ! haemolymphatic fluid
@@ -5276,6 +5278,7 @@ xref: BTO:0000801
 xref: CALOHA:TS-0587
 xref: FMA:63261
 xref: FMA:83585
+xref: XAO:0005025
 xref: ZFA:0009141
 is_a: CL:0000145 ! professional antigen presenting cell
 is_a: CL:0000234 ! phagocyte
@@ -5933,6 +5936,7 @@ xref: CALOHA:TS-0283
 xref: FMA:62411
 xref: XAO:0004613
 xref: XAO:0004621
+xref: XAO:0005234
 xref: ZFA:0009183
 is_a: CL:0002159 ! general ecto-epithelial cell
 relationship: part_of UBERON:0007376 ! outer epithelium
@@ -7943,6 +7947,7 @@ name: skeletal muscle satellite cell
 namespace: cell
 def: "An elongated, spindle-shaped, cell that is located between the basal lamina and the plasmalemma of a muscle fiber. These cells are mostly quiescent, but upon activation they divide to produce cells that generate new muscle fibers." []
 comment: Skeletal muscle satellite cells are not traditionally referred to as myoblasts.  They are a heterogeneous population whose division, following activiation, contributes to the formation of skeletal muscle fibers and to maintenance of the skeletal muscle statelite cell population.
+xref: XAO:0005043
 is_a: CL:0000188 ! skeletal muscle cell
 is_a: CL:0000680 ! muscle precursor cell
 
@@ -8755,6 +8760,7 @@ namespace: cell
 def: "A cell present in the developing CNS. Functions as both a precursor cell and as a scaffold to support neuronal migration." []
 comment: Unlike that of mammals, the brain of adult teleost fish exhibits an intense and widespread neurogenic activity as a result of the persistence of\nradial glial cells acting as neural progenitors throughout life.
 synonym: "forebrain radial glial cell" NARROW []
+xref: XAO:0005031
 xref: ZFA:0009292
 is_a: CL:0000243 ! glial cell (sensu Vertebrata)
 relationship: develops_from CL:0000710 ! neurecto-epithelial cell
@@ -16786,6 +16792,7 @@ namespace: cell
 def: "A cell that is part of the nervous system." [GOC:tfm, ISBN:0618947256]
 xref: CALOHA:TS-2040
 xref: FMA:70333
+xref: XAO:0005037
 is_a: CL:0000548 ! animal cell
 is_a: CL:0002371 ! somatic cell
 relationship: part_of UBERON:0001016 ! nervous system
@@ -20953,6 +20960,7 @@ name: epidermal ciliary cell
 def: "Ciliated cell of the embryonic epidermis and functions in embryonic movements." []
 comment: Taxon specificity not clear -present in embryonic anurans.
 xref: XAO:0005017
+xref: XAO:0005139
 is_a: CL:0000067 ! ciliated epithelial cell
 is_a: CL:0000362 ! epidermal cell
 is_a: CL:0002321 ! embryonic cell
@@ -178140,6 +178148,8 @@ xref: TAO:0000117
 xref: UMLS:C1512561 {source="ncithesaurus:Hypoblast"}
 xref: VHOG:0001222
 xref: XAO:0003044
+xref: XAO:0005304
+xref: XAO:0005306
 xref: ZFA:0000117
 relationship: part_of UBERON:0004750 ! blastoderm
 property_value: curator_notes "this term groups together disparate structures with different relationships." xsd:string
@@ -178503,6 +178513,20 @@ xref: FMA:83686
 xref: NCIT:C13197
 xref: NLX:28443
 xref: Nucleus:(neuroanatomy)
+xref: XAO:0004534
+xref: XAO:0004536
+xref: XAO:0004537
+xref: XAO:0004538
+xref: XAO:0004544
+xref: XAO:0004546
+xref: XAO:0004557
+xref: XAO:0004582
+xref: XAO:0004591
+xref: XAO:0004595
+xref: XAO:0004609
+xref: XAO:0005052
+xref: XAO:0005053
+xref: XAO:0005054
 is_a: UBERON:0011215 ! central nervous system cell part cluster
 property_value: external_definition "Anatomical structure consisting of a discrete aggregate of neuronal soma[GO][GO_REF:0000021]." xsd:string {source="GO_REF:0000021"}
 property_value: external_ontology_notes "Proposed CUMBO def from MM: A subcortical part of the nervous system consisting of a relatively compact group of cells that is distinguishable histologically that share a commonality of cytoarchitecture, chemoarchitecturel and connectivity. (comments: I put in 'subcortical' because I don't think we consider either the cerebellar cortex or cerebral cortex to be nuclei. Some people distinguish between a nucleus and a laminar structure (see Wikipedia definition). However, there are structures identified as nuclei that are laminar, e.g., lateral geniculate nucleus, although they are not laminated in all species. Also, I put in 'relatively compact' and 'distiguishable by histology' because we have groups of cells, e.g., cholinergic cell groups, doparminergic cell groups that are related on the 3 criteria but which we don't tend to consider nuclei because they don't occupy an easily defined territory. But all is open to debate." xsd:string
@@ -181801,7 +181825,11 @@ xref: http://linkedlifedata.com/resource/umls/id/C0752060
 xref: MA:0000924
 xref: MESH:A08.186.211.577.750
 xref: UMLS:C0752060 {source="BIRNLEX:963"}
+xref: XAO:0004549
+xref: XAO:0004564
+xref: XAO:0004571
 xref: XAO:0004585
+xref: XAO:0005055
 is_a: UBERON:0005401 ! cerebral hemisphere gray matter
 property_value: external_definition "Subdivision of the telencephalon on the midline between the lateral ventricles which contains the septum pellucidum and the septal nuclei[FMA][FMA:61842]." xsd:string {source="FMA:61842"}
 
@@ -183275,6 +183303,7 @@ xref: TAO:0000017
 xref: UMLS:C0014144 {source="ncithesaurus:Endoderm"}
 xref: VHOG:0000154
 xref: XAO:0000090
+xref: XAO:0005301
 xref: XAO:0005302
 xref: XAO:0005303
 xref: ZFA:0000017
@@ -183841,6 +183870,7 @@ xref: OpenCyc:Mx4rvVjvTpwpEbGdrcN5Y29ycA
 xref: UMLS:C0003483 {source="ncithesaurus:Aorta"}
 xref: VHOG:0001523
 xref: XAO:0003010
+xref: XAO:0005019
 is_a: UBERON:0003473 {gci_relation="part_of", gci_filler="NCBITaxon:8353"} ! thoracic cavity artery
 is_a: UBERON:0003509 {source="MA"} ! arterial blood vessel
 is_a: UBERON:0003519 ! thoracic cavity blood vessel
@@ -186391,6 +186421,7 @@ xref: UMLS:C0231051 {source="ncithesaurus:Foregut"}
 xref: VHOG:0000285
 xref: XAO:0000232
 xref: XAO:0005125
+xref: XAO:0005126
 xref: XAO:0005127
 is_a: UBERON:0004185 {gci_relation="part_of", gci_filler="NCBITaxon:8353"} ! endodermal part of digestive tract
 is_a: UBERON:0004921 ! subdivision of digestive tract
@@ -186688,6 +186719,8 @@ xref: TAO:0001135
 xref: UMLS:C0231024 {source="ncithesaurus:Neural_Tube"}
 xref: VHOG:0000307
 xref: XAO:0003204
+xref: XAO:0004616
+xref: XAO:0004617
 xref: ZFA:0001135
 is_a: UBERON:0003914 {source="EHDAA2"} ! epithelial tube
 is_a: UBERON:0005291 ! embryonic tissue
@@ -192692,6 +192725,7 @@ xref: NCIT:C49240
 xref: TAO:0005124
 xref: UMLS:C0226890 {source="ncithesaurus:Intestinal_Epithelium"}
 xref: XAO:0005003
+xref: XAO:0005004
 xref: ZFA:0005124
 is_a: UBERON:0000485 ! columnar epithelium
 is_a: UBERON:0003350 ! epithelium of mucosa
@@ -206057,6 +206091,7 @@ xref: NCIT:C12760
 xref: Optic:disc
 xref: UMLS:C0029127 {source="ncithesaurus:Optic_Disc"}
 xref: VHOG:0000551
+xref: XAO:0005066
 relationship: develops_from UBERON:0003902 {gci_relation="part_of", gci_filler="NCBITaxon:9606"} ! retinal neural layer
 relationship: part_of UBERON:0000966 ! retina
 property_value: external_definition "The small blind spot on the surface of the retina. It is the point where the fibers of the retina leave the eye and become part of the optic nerve. [TFD][VHOG]" xsd:string {date_retrieved="2012-09-17", external_class="VHOG:0000551", ontology="VHOG", source="http://bgee.unil.ch/", source="http://medical-dictionary.thefreedictionary.com/optic+disc"}
@@ -215447,6 +215482,7 @@ xref: NCIT:C12728
 xref: TAO:0000471
 xref: UMLS:C0018792 {source="ncithesaurus:Cardiac_Atrium"}
 xref: VHOG:0000175
+xref: XAO:0005198
 xref: ZFA:0000471
 is_a: UBERON:0004151 ! cardiac chamber
 relationship: transformation_of UBERON:0010227 ! future cardiac atrium
@@ -215973,6 +216009,7 @@ xref: TAO:0001115
 xref: UMLS:C0460005 {source="ncithesaurus:Trunk"}
 xref: XAO:0000054
 xref: XAO:0003025
+xref: XAO:0005260
 xref: ZFA:0001115
 is_a: UBERON:0011676 ! subdivision of organism along main body axis
 relationship: develops_from UBERON:0002533 {gci_relation="part_of", gci_filler="NCBITaxon:7954"} ! post-anal tail bud
@@ -216330,6 +216367,7 @@ xref: TAO:0001323
 xref: UMLS:C0021852 {source="ncithesaurus:Small_Intestine"}
 xref: VHOG:0000055
 xref: XAO:0000130
+xref: XAO:0005063
 xref: ZFA:0001323
 is_a: UBERON:0004185 {gci_relation="part_of", gci_filler="NCBITaxon:8353"} ! endodermal part of digestive tract
 is_a: UBERON:0013765 ! digestive system element
@@ -216500,6 +216538,7 @@ xref: NCIT:C12415
 xref: OpenCyc:Mx4rvVjlYpwpEbGdrcN5Y29ycA
 xref: UMLS:C0022646 {source="ncithesaurus:Kidney"}
 xref: XAO:0003267
+xref: XAO:0005244
 is_a: UBERON:0000489 ! cavitated compound organ
 is_a: UBERON:0005172 ! abdomen element
 relationship: develops_from UBERON:0003918 {evidence="definitional"} ! kidney mesenchyme
@@ -220835,6 +220874,7 @@ xref: UMLS:C0028936 {source="ncithesaurus:Olfactory_Bulb"}
 xref: UMLS:C0028936 {source="BIRNLEX:1137"}
 xref: VHOG:0000033
 xref: XAO:0004180
+xref: XAO:0004552
 xref: ZFA:0000402
 relationship: part_of UBERON:0001893 ! telencephalon
 relationship: part_of UBERON:0005366 ! olfactory lobe
@@ -222479,6 +222519,8 @@ xref: UMLS:C0028439 {source="ncithesaurus:Notochord"}
 xref: VHOG:0000199
 xref: VSAO:0000032
 xref: XAO:0000055
+xref: XAO:0005423
+xref: XAO:0005424
 xref: ZFA:0000135
 is_a: UBERON:0000481 {source="VSAO"} ! multi-tissue structure
 is_a: UBERON:0004120 ! mesoderm-derived structure
@@ -222879,6 +222921,7 @@ xref: TAO:0000045
 xref: UMLS:C0027789 {source="ncithesaurus:Neural_Crest"}
 xref: VHOG:0000057
 xref: XAO:0000048
+xref: XAO:0005327
 xref: ZFA:0000045
 is_a: UBERON:0010314 ! structure with developmental contribution from neural crest
 relationship: develops_from UBERON:0005062 {source="http://www.ncbi.nlm.nih.gov/pubmed/11523831"} ! neural fold
@@ -222962,6 +223005,7 @@ xref: TAO:0001120
 xref: UMLS:C1518271 {source="ncithesaurus:Neuroectoderm"}
 xref: VHOG:0000150
 xref: XAO:0000042
+xref: XAO:0005241
 xref: XAO:0005263
 xref: ZFA:0001120
 is_a: UBERON:0000923 ! germ layer
@@ -230266,6 +230310,8 @@ xref: http://linkedlifedata.com/resource/umls/id/C0445620
 xref: http://www.snomedbrowser.com/Codes/Details/384763002
 xref: NCIT:C13031
 xref: UMLS:C0445620 {source="ncithesaurus:Brain_Part"}
+xref: XAO:0005046
+xref: XAO:0005051
 is_a: UBERON:0000073 ! regional part of nervous system
 relationship: part_of UBERON:0000955 ! brain
 
@@ -241429,6 +241475,7 @@ xref: TAO:0000121
 xref: UMLS:C1517749 {source="ncithesaurus:Lateral_Mesoderm"}
 xref: VHOG:0000118
 xref: XAO:0000311
+xref: XAO:0006001
 xref: ZFA:0000121
 is_a: UBERON:0004120 ! mesoderm-derived structure
 is_a: UBERON:0007524 {source="EHDAA2"} ! dense mesenchyme tissue
@@ -243836,6 +243883,7 @@ synonym: "hindgut endoderm" EXACT [OBOL:automatic]
 xref: EHDAA:979
 xref: RETIRED_EHDAA2:0000781
 xref: XAO:0005247
+xref: XAO:0005250
 is_a: UBERON:0000490 ! unilaminar epithelium
 is_a: UBERON:0003353 ! epithelium of hindgut
 is_a: UBERON:0005911 ! endo-epithelium
@@ -256432,6 +256480,7 @@ xref: EMAPA:16805
 xref: FMA:295864
 xref: http://en.wikipedia.org/wiki/Lateral_nasal_prominence
 xref: http://www.snomedbrowser.com/Codes/Details/308880000
+xref: XAO:0005193
 relationship: develops_from UBERON:0004066 {source="Wikipedia"} ! frontonasal prominence
 relationship: part_of UBERON:0004066 {source="EHDAA2"} ! frontonasal prominence
 
@@ -256453,6 +256502,7 @@ xref: FMA:295858
 xref: http://en.wikipedia.org/wiki/Medial_nasal_prominence
 xref: http://www.snomedbrowser.com/Codes/Details/308877001
 xref: VHOG:0000804
+xref: XAO:0005194
 is_a: UBERON:0015212 ! lateral structure
 relationship: develops_from UBERON:0004066 {source="Wikipedia"} ! frontonasal prominence
 relationship: part_of UBERON:0004066 {source="EHDAA2"} ! frontonasal prominence
@@ -257869,6 +257919,7 @@ def: "An embryonic group of progenitor cells that forms from an outpouching of t
 synonym: "proepicardial cluster" EXACT [ZFA:0005808]
 synonym: "proepicardial organ" EXACT [ZFIN:ZDB-PUB-080218-16]
 xref: EMAPA:36025
+xref: XAO:0005062
 xref: ZFA:0005808
 relationship: part_of UBERON:0004161 {notes="todo check other taxa"} ! septum transversum
 relationship: part_of UBERON:0004535 {source="ZFA"} ! cardiovascular system
@@ -260007,6 +260058,7 @@ xref: NCIT:C34140
 xref: TAO:0001513
 xref: UMLS:C1511786 {source="ncithesaurus:Dermomyotome"}
 xref: VHOG:0000676
+xref: XAO:0005080
 xref: ZFA:0001513
 is_a: UBERON:0000486 {source="AEO"} ! multilaminar epithelium
 is_a: UBERON:0012275 {gci_relation="part_of", gci_filler="NCBITaxon:7954"} ! meso-epithelium
@@ -268989,6 +269041,7 @@ synonym: "margins" RELATED PLURAL [TAO:0000038]
 xref: AAO:0010448
 xref: TAO:0000038
 xref: XAO:0000068
+xref: XAO:0005136
 xref: ZFA:0000038
 is_a: UBERON:0002050 ! embryonic structure
 
@@ -271997,6 +272050,7 @@ xref: Neural:fold
 xref: UMLS:C0814993 {source="ncithesaurus:Neural_Fold"}
 xref: XAO:0000293
 xref: XAO:0004087
+xref: XAO:0005242
 is_a: UBERON:0005157 ! epithelial fold
 is_a: UBERON:0015212 ! lateral structure
 relationship: develops_from EHDAA2:0001251 {gci_relation="part_of", gci_filler="NCBITaxon:9606"} ! trunk neural ectoderm (human)
@@ -277903,6 +277957,7 @@ synonym: "sulcus limitans" BROAD []
 xref: BAMS:slim
 xref: BAMS:slm
 xref: http://braininfo.rprc.washington.edu/centraldirectory.aspx?ID=629
+xref: XAO:0005070
 is_a: UBERON:0006846 ! surface groove
 relationship: part_of UBERON:0005496 {source="EHDAA2"} ! neural tube lateral wall
 
@@ -296697,6 +296752,8 @@ namespace: uberon
 def: "A vasculature that is part of a limb/fin." [OBOL:automatic]
 synonym: "fin vasculature" NARROW SENSU [ZFA:0005095]
 xref: TAO:0005095
+xref: XAO:0004625
+xref: XAO:0004626
 xref: ZFA:0005095
 is_a: UBERON:0002049 ! vasculature
 relationship: part_of UBERON:0000026 ! appendage
@@ -297227,6 +297284,7 @@ synonym: "roof of buccal cavity" EXACT []
 synonym: "roof of oral cavity" EXACT []
 xref: CALOHA:TS-2212
 xref: http://en.wikipedia.org/wiki/Palate
+xref: XAO:0005320
 is_a: UBERON:0000481 ! multi-tissue structure
 relationship: part_of UBERON:0000033 ! head
 property_value: editor_note "check subclasses to verify if they refer to a multi-tissue structure or a subdivision of the skeleton" xsd:string
@@ -299664,6 +299722,8 @@ xref: NCIT:C77663
 xref: TAO:0001117
 xref: UMLS:C0039259 {source="ncithesaurus:Tail"}
 xref: XAO:0003026
+xref: XAO:0005261
+xref: XAO:0005264
 xref: ZFA:0001117
 is_a: UBERON:0002415 ! tail
 relationship: part_of UBERON:0006071 ! caudal region
@@ -339042,6 +339102,7 @@ xref: EMAPA:36648
 xref: EMAPA:36649
 xref: FMA:61996
 xref: XAO:0004598
+xref: XAO:0004599
 is_a: UBERON:0004731 ! neuromere
 relationship: part_of UBERON:0006240 ! future forebrain
 
@@ -343034,6 +343095,7 @@ namespace: uberon
 def: "A epithelium that is part of a foregut." [OBOL:automatic]
 xref: EMAPA:32922
 xref: MA:0003204
+xref: XAO:0005297
 is_a: UBERON:0003929 ! digestive tract epithelium
 relationship: part_of UBERON:0001041 ! foregut
 
@@ -386388,6 +386450,7 @@ name: granular gland
 namespace: uberon/phenoscape-anatomy
 def: "A gland that contains toxic secretions within the lumen. In frogs and salamanders, this is the larger of the two types of gland, the other being the mucuous gland[Kardong]" [ISBN10:0073040584, UBERON:cjm]
 synonym: "poison gland" BROAD [ISBN10:0073040584, UBERON:cjm]
+xref: XAO:0005023
 is_a: UBERON:0002530 ! gland
 property_value: provenance_notes "This class was sourced from an external ontology (amphibian_anatomy). Its definitions, naming conventions and relationships may need to be checked for compatibility with uberon" xsd:string
 created_by: amphibian_anatomy_curators
@@ -442549,6 +442612,7 @@ id: XAO:0000094
 name: archenteron roof (Xenopus)
 def: "The layer of cells forming the dorsal surface of the archenteron space of the embryo." [PMID:17540356]
 synonym: "gastrocoel roof" EXACT []
+xref: XAO:0005155
 is_a: UBERON:0004119 ! endoderm-derived structure
 is_a: UBERON:0005291 ! embryonic tissue
 relationship: part_of UBERON:0004735 ! archenteron
@@ -442591,6 +442655,7 @@ id: XAO:0000200
 name: animal blastomere (Xenopus)
 def: "Pigmented, smaller blastomere of the animal (upper) hemisphere of the cleaving embryo." [ISBN:0471209627]
 synonym: "micromere" RELATED []
+xref: XAO:0005113
 is_a: XAO:0003016 ! blastoderm cell (Xenopus)
 relationship: develops_from UBERON:0012284 ! animal hemisphere
 
@@ -442650,6 +442715,7 @@ relationship: part_of UBERON:0000992 ! ovary
 id: XAO:0000233
 name: germ plasm (Xenopus)
 def: "A zone found in the cytoplasm of the egg cells which contains determinants that will give rise to the germ cell lineage. As the zygote undergoes mitotic divisions the germ plasm is ultimately restricted to a few cells of the embryo. These germ cells then migrate to the gonads." [XAO:curators]
+xref: XAO:0005117
 relationship: part_of UBERON:0012285 ! vegetal hemisphere
 
 [Term]
@@ -442695,6 +442761,10 @@ relationship: part_of UBERON:0000924 ! ectoderm
 id: XAO:0000256
 name: oocyte (Xenopus)
 def: "The developing female gamete, the differentiation of which is classified into six stages: I (pre-vitellogenic), II (early vitellogenic), III (mid-vitellogenic, formation of pigment), IV (polarization along animal-vegetal axis), V (late vitellogenic), and VI (post-vitellogenic, appearance of equatorial band)." [PMID:4109871]
+xref: XAO:0005118
+xref: XAO:0005119
+xref: XAO:0005123
+xref: XAO:0005138
 is_a: XAO:0000111 ! germ cell (Xenopus)
 relationship: develops_from XAO:0000268 ! secondary oogonium (Xenopus)
 
@@ -442773,6 +442843,7 @@ id: XAO:0000279
 name: vegetal blastomere (Xenopus)
 def: "Unpigmented, larger blastomere of the vegetal (lower) hemisphere of the cleaving embryo." [ISBN:0471209627]
 synonym: "macromere" RELATED []
+xref: XAO:0005112
 is_a: XAO:0003016 ! blastoderm cell (Xenopus)
 relationship: develops_from UBERON:0012285 ! vegetal hemisphere
 
@@ -443414,6 +443485,12 @@ id: XAO:0003016
 name: blastoderm cell (Xenopus)
 def: "An undifferentiated cell produced by early cleavages of the fertilized egg (zygote)." [CL:0000353]
 synonym: "blastomere" EXACT []
+xref: XAO:0005172
+xref: XAO:0005173
+xref: XAO:0005174
+xref: XAO:0005175
+xref: XAO:0005176
+xref: XAO:0005177
 is_a: XAO:0003241 ! early embryonic cell (Xenopus)
 
 [Term]
@@ -443908,12 +443985,17 @@ relationship: part_of UBERON:0003117 ! pharyngeal arch 6
 id: XAO:0003185
 name: anatomical direction (Xenopus)
 def: "Any spatial descriptor that describes the orientation of the anatomical features of an embryo." [XAO:curators]
+xref: XAO:0005006
 is_a: UBERON:0001062 ! anatomical entity
 
 [Term]
 id: XAO:0003186
 name: anatomical region (Xenopus)
 def: "A region of the whole organism that contains a recognizable set of structures or anatomical entities." [XAO:curators]
+xref: XAO:0005208
+xref: XAO:0005210
+xref: XAO:0005215
+xref: XAO:0005217
 relationship: develops_from UBERON:0000922 ! embryo
 relationship: part_of UBERON:0000468 ! multi-cellular organism
 
@@ -444358,6 +444440,7 @@ synonym: "migratory neural crest" RELATED []
 synonym: "migratory neural crest cells" RELATED PLURAL []
 synonym: "NCMC" RELATED []
 synonym: "neural crest migrating cells" RELATED PLURAL []
+xref: XAO:0005246
 is_a: CL:0000000 ! cell
 is_a: UBERON:0010313 ! neural crest-derived structure
 relationship: part_of UBERON:0002342 ! neural crest
@@ -445359,6 +445442,14 @@ relationship: part_of UBERON:0004288 ! skeleton
 id: XAO:0004290
 name: cell component (Xenopus)
 def: "Anatomical structure that is a direct part of the cell." [CARO:0000014]
+xref: XAO:0004614
+xref: XAO:0004615
+xref: XAO:0005009
+xref: XAO:0005010
+xref: XAO:0005015
+xref: XAO:0005038
+xref: XAO:0005039
+xref: XAO:0005154
 is_a: UBERON:0000061 ! anatomical structure
 relationship: part_of CL:0000000 ! cell
 
@@ -445459,6 +445550,7 @@ relationship: part_of UBERON:0001894 ! diencephalon
 id: XAO:0004307
 name: head mesenchyme (Xenopus)
 def: "Mesoderm that will give rise, along with cranial neural crest cells, to connective tissue, bone and musculature in the head." [XAO:EJS, ZFA:0000113]
+xref: XAO:0005316
 is_a: UBERON:0005253 ! head mesenchyme
 
 [Term]
@@ -446551,6 +446643,7 @@ is_a: XAO:0004455 ! cranial muscle primordium (Xenopus)
 id: XAO:0004455
 name: cranial muscle primordium (Xenopus)
 def: "The presumptive cells of any of the cranial muscles." [XAO:EJS]
+xref: XAO:0005287
 is_a: UBERON:0000481 ! multi-tissue structure
 relationship: part_of UBERON:0000383 ! musculature of body
 
