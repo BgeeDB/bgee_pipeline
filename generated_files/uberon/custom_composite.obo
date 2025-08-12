@@ -5729,6 +5729,7 @@ id: CL:0000338
 name: neuroblast (sensu Nematoda and Protostomia)
 namespace: cell
 synonym: "neuroblast" BROAD []
+xref: Fbbt:00005146
 is_a: CL:0000047 ! neuronal stem cell
 
 [Term]
@@ -6691,6 +6692,7 @@ name: epidermal cell (sensu arthropoda)
 namespace: cell
 def: "An epidermal cell that secretes chitinous cuticle from its apical side." []
 comment: While insect epidermis is generally columnar/cuboidal, there are certainly well studied cases where it is not (e.g.- Rhodnius prolixus when starved). So it would be safer to add this as a differentium for particular species where this is known. -DSJ.
+xref: FBbt:00058243
 is_a: CL:0000362 ! epidermal cell
 is_a: CL:0000710 ! neurecto-epithelial cell
 relationship: develops_from CL:0000464 ! epidermoblast
@@ -82674,6 +82676,7 @@ id: FBbt:00000464
 name: embryonic/larval somatic muscle (Drosophila)
 def: "Any somatic muscle (FBbt:00005073) that is part of some embryonic/larval muscle system (FBbt:00000462)." [FBC:auto_generated_definition]
 synonym: "larval somatic muscle" EXACT []
+xref: FBbt:00058297
 is_a: UBERON:0004120 ! mesoderm-derived structure
 is_a: UBERON:0014895 ! somatic muscle
 relationship: develops_from FBbt:00005518 ! somatic muscle primordium (Drosophila)
@@ -82808,6 +82811,7 @@ is_a: FBbt:00000465 ! embryonic/larval hypodermal muscle (Drosophila)
 id: FBbt:00000487
 name: pharyngeal muscle (Drosophila)
 def: "A hypodermal muscle of the larval head that is connected to the pharynx or some closely associated structure." [FBC:DOS]
+xref: FBbt:00058318
 is_a: FBbt:00000486 ! hypodermal muscle of head (Drosophila)
 
 [Term]
@@ -87605,6 +87609,10 @@ is_a: FBbt:00005216 ! chordotonal organ precursor cell (Drosophila)
 id: FBbt:00001139
 name: peripheral nervous system precursor cluster (Drosophila)
 def: "." [FlyBase:FBrf0047289]
+xref: FBbt:00059182
+xref: FBbt:00059197
+xref: FBbt:00059199
+xref: FBbt:00059202
 is_a: UBERON:0004121 ! ectoderm-derived structure
 relationship: develops_from FBbt:00005552 ! ventral sensory complex primordium (Drosophila)
 relationship: develops_from FBbt:00005553 ! dorsal sensory complex primordium (Drosophila)
@@ -87988,6 +87996,7 @@ relationship: part_of FBbt:00001204 ! lateral abdominal cluster (Drosophila)
 [Term]
 id: FBbt:00001213
 name: lateral abdominal ch (Drosophila)
+xref: FBbt:00052566
 is_a: FBbt:00001137 ! sensory mother cell (Drosophila)
 relationship: part_of FBbt:00001204 ! lateral abdominal cluster (Drosophila)
 
@@ -114938,6 +114947,7 @@ is_a: FBbt:00005209 ! multidendritic neuron (Drosophila)
 [Term]
 id: FBbt:00005216
 name: chordotonal organ precursor cell (Drosophila)
+xref: FBbt:00051426
 is_a: FBbt:00001137 ! sensory mother cell (Drosophila)
 
 [Term]
@@ -117125,6 +117135,7 @@ is_a: UBERON:6007116 ! presumptive embryonic/larval system
 [Term]
 id: FBbt:00005649
 name: embryonic somatic muscle (Drosophila)
+xref: FBbt:00059033
 is_a: UBERON:0014895 ! somatic muscle
 
 [Term]
@@ -119185,6 +119196,7 @@ relationship: part_of UBERON:6001778 ! wing disc
 id: FBbt:00006030
 name: somatic cell of ovary (Drosophila)
 def: "." [FBC:DOS]
+xref: FBbt:00048288
 is_a: FBbt:00100318 ! somatic cell (Drosophila)
 relationship: part_of FBbt:00004893 ! ovariole (Drosophila)
 
@@ -125697,6 +125709,7 @@ relationship: part_of UBERON:0002606 ! neuropil
 id: FBbt:00040006
 name: synaptic neuropil subdomain (Drosophila)
 def: "Synaptic neuropil region that is a subdivision of a synaptic neuropil domain." [FlyBase:FBrf0224194]
+xref: FBbt:00051393
 relationship: part_of UBERON:6040005 ! synaptic neuropil
 
 [Term]
@@ -133791,6 +133804,7 @@ def: "Neuropil associated glial cell of the adult brain that has a dendritic mor
 synonym: "astrocyte-like neuropil associated glial cell" EXACT [FlyBase:FBrf0206543]
 synonym: "dendritic neuropil associated glial cell" EXACT []
 synonym: "reticular neuropil-associated glial cell" EXACT [FlyBase:FBrf0214261]
+xref: FBbt:00047840
 is_a: FBbt:00100502 ! adult neuropil associated glial cell (Drosophila)
 
 [Term]
@@ -140691,6 +140705,7 @@ id: FBbt:00110569
 name: larval anteriolateral neurosecretory cell (Drosophila)
 def: "Neurosecretory cell of the larval pars lateralis that innervates the corpus cardiacum, corpus allatum and prothoracic gland (Siegmund and Korge, 2001; Velasco et al., 2007)." [FlyBase:FBrf0134726, FlyBase:FBrf0193772]
 synonym: "NSC" BROAD []
+xref: FBbt:00052005
 is_a: CL:2000029 ! central nervous system neuron
 is_a: FBbt:00004010 ! anteriolateral neurosecretory cell (Drosophila)
 relationship: part_of FBbt:00110567 ! pars lateralis (Drosophila)
@@ -143400,6 +143415,7 @@ relationship: part_of FBbt:00003128 ! adult pharynx (Drosophila)
 id: FBbt:00110887
 name: gustatory receptor neuron of the labellum (Drosophila)
 def: "Gustatory receptor neuron that innervates the adult labellum. It projects to distinct regions in the subesophageal zone, which include the anterior maxillary, posterior maxillary and labellar sensory centers, via specific terminal branches." [FlyBase:FBrf0137194, FlyBase:FBrf0152351, FlyBase:FBrf0179508, FlyBase:FBrf0211916, FlyBase:FBrf0212834]
+xref: FBbt:00051978
 is_a: FBbt:00005927 ! gustatory receptor neuron (Drosophila)
 relationship: part_of FBbt:00004531 ! labellum (Drosophila)
 
@@ -339908,6 +339924,7 @@ namespace: uberon
 def: "A muscle structure of invertebrates whose origin and insertion sites are in basal side of the epidermis or structures derived from it. The simplest somatic muscles consist of a single cell and associated extracellular structures." [GOC:DOS]
 synonym: "skeletal muscle" RELATED [FBbt:00005073]
 xref: FBbt:00005073
+xref: FBbt:00058111
 xref: HAO:0001922
 is_a: UBERON:0005090 ! muscle structure
 relationship: part_of UBERON:0007095 ! somatic musculature
@@ -393166,6 +393183,8 @@ name: ring gland
 namespace: uberon
 def: "A closely associated cluster of three neuroendocrine glands located anterior to the aorta and dorsal to the esophagus. At embryonic stage 17 and in larva it is found anterior to the brain and is formed by the corpus cardiacum ventrally, the prothoracic gland laterally and the corpus allatum dorsally. The adult ring gland is located anterior to the proventriculus and is formed by the corpus cardiacum ventrally, the corpus allatum dorsally and the hypocerebral ganglion posterior to the corpus cardiacum. It is innervated by neurons of the nervus corporis cardiaci (NccI-III)." [FlyBase:FBrf0064803, FlyBase:FBrf0089570, FlyBase:FBrf0179777, http://www.ncbi.nlm.nih.gov/pubmed/12966498]
 xref: FBbt:00001722
+xref: FBbt:00049277
+xref: FBbt:00049578
 is_a: FBbt:00007435 {gci_relation="part_of", gci_filler="NCBITaxon:7227"} ! endocrine system component (Drosophila)
 is_a: UBERON:0000477 ! anatomical cluster
 
