@@ -1199,3 +1199,4 @@
 "UBERON:0000982"	"ZFA:0007117"					"skeletal joint, missing child term for ZFA:0007117 Meckel's cartilage-palatoquadrate cartilage joint"
 "CL:0005000"	"ZFA:0007120"					"spinal cord interneuron, missing child term for ZFA:0007120 cerebrospinal fluid contacting neuron"
 "CL:0000215"	"ZFA:0009130"					"barrier cell, missing child term for ZFA:0009130 lining cell"
+"CL:0002371"	"ZFA:0009386"					"CL:0002371 somatic cell, is obsolete in last UBERON replaced_by: CL:0000000;  ZFA:0009386 somatic cell"
