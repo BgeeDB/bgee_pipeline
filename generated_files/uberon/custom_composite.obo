@@ -2860,6 +2860,7 @@ name: migratory cranial neural crest cell
 namespace: cell
 def: "Cell that is part of the migratory cranial neural crest population. Migratory cranial neural crest cells develop from premigratory cranial neural crest cells and have undergone epithelial to mesenchymal transition and delamination." []
 xref: ZFA:0007087
+xref: ZFA:0007091
 is_a: CL:0000333 ! migratory neural crest cell
 
 [Term]
@@ -2888,6 +2889,7 @@ id: CL:0000014
 name: germ line stem cell
 namespace: cell
 synonym: "germline stem cell" EXACT []
+xref: ZFA:0005956
 is_a: CL:0000034 ! stem cell
 is_a: CL:0000039 ! germ line cell
 
@@ -3140,6 +3142,7 @@ def: "A relatively undifferentiated cell that retains the ability to divide and 
 xref: CALOHA:TS-2086
 xref: FMA:63368
 xref: XAO:0003054
+xref: ZFA:0005957
 is_a: CL:0011115 ! precursor cell
 
 [Term]
@@ -3296,6 +3299,7 @@ synonym: "multifate stem cell" EXACT []
 synonym: "multipotent cell" EXACT []
 synonym: "multipotent stem cell" EXACT []
 xref: FMA:84789
+xref: ZFA:0009020
 is_a: CL:0000034 ! stem cell
 is_a: CL:0002371 ! somatic cell
 
@@ -3409,6 +3413,7 @@ xref: BTO:0000452
 xref: CALOHA:TS-0362
 xref: FMA:63877
 xref: VHOG:0001482
+xref: ZFA:0009026
 is_a: CL:0002320 ! connective tissue cell
 is_a: UBERON:0004120 {gci_relation="part_of", gci_filler="NCBITaxon:7954"} ! mesoderm-derived structure
 relationship: develops_from CL:0000134 ! mesenchymal cell
@@ -3510,6 +3515,7 @@ namespace: cell
 def: "A cell that has a filiform extrusion of the cell surface." []
 xref: VHOG:0001532
 xref: XAO:0000031
+xref: ZFA:0009032
 is_a: CL:0000003 ! native cell
 is_a: PORO:0000914 ! flagellated cell
 relationship: part_of UBERON:0001003 {gci_relation="part_of", gci_filler="NCBITaxon:8353"} ! skin epidermis
@@ -3552,6 +3558,7 @@ name: ciliated epithelial cell
 namespace: cell
 def: "An epithelial cell that has a cilia." []
 xref: FMA:70605
+xref: ZFA:0009035
 is_a: CL:0000064 ! ciliated cell
 is_a: CL:0000066 ! epithelial cell
 
@@ -3621,6 +3628,7 @@ namespace: cell
 def: "A flattened epithelial cell of mesenchymal origin that lines the serous cavity." []
 synonym: "mesotheliocyte" EXACT []
 xref: FMA:66773
+xref: ZFA:0009040
 is_a: CL:0000076 ! squamous epithelial cell
 is_a: CL:0000213 ! lining cell
 is_a: CL:0002078 ! meso-epithelial cell
@@ -3961,6 +3969,7 @@ def: "A neuron that uses acetylcholine as a vesicular neurotransmitter." []
 xref: BTO:0004902
 xref: FMA:84796
 xref: WBbt:0006840
+xref: ZFA:0009060
 is_a: CL:0000151 ! secretory cell
 is_a: CL:0000540 ! neuron
 
@@ -3975,6 +3984,7 @@ is_a: CL:0000540 ! neuron
 id: CL:0000110
 name: peptidergic neuron
 namespace: cell
+xref: ZFA:0009062
 is_a: CL:0000540 ! neuron
 
 [Term]
@@ -4066,6 +4076,7 @@ id: CL:0000120
 name: granule cell
 namespace: cell
 xref: BTO:0003393
+xref: XAO:0004553
 xref: ZFA:0009070
 is_a: CL:0000117 ! CNS neuron (sensu Vertebrata)
 relationship: part_of UBERON:0000955 {gci_relation="part_of", gci_filler="NCBITaxon:7954"} ! brain
@@ -4400,6 +4411,7 @@ is_a: CL:0000738 ! leukocyte
 id: CL:0000146
 name: simple columnar epithelial cell
 namespace: cell
+xref: ZFA:0009089
 is_a: CL:0000075 ! columnar/cuboidal epithelial cell
 
 [Term]
@@ -4588,6 +4600,7 @@ synonym: "neurosecretory cell" EXACT []
 synonym: "neurosecretory cell" RELATED []
 xref: BTO:0002691
 xref: FMA:83810
+xref: ZFA:0009098
 is_a: CL:0000163 ! endocrine cell
 is_a: CL:0000393 ! electrically responsive cell
 is_a: CL:0000710 ! neurecto-epithelial cell
@@ -5022,6 +5035,7 @@ namespace: cell
 def: "A cell type found in the spherical or ovoid clusters of receptor cells found mainly in the epithelium of the tongue and constituting the end organs of the sense of taste." []
 synonym: "taste bud cell" EXACT []
 xref: FMA:67910
+xref: ZFA:0009126
 is_a: CL:0000006 ! neuronal receptor cell
 is_a: CL:0000098 ! sensory epithelial cell
 is_a: CL:0000206 ! chemoreceptor cell
@@ -5048,6 +5062,7 @@ id: CL:0000211
 name: electrically active cell
 namespace: cell
 def: "A cell whose function is determined by the generation or the reception of an electric signal." [FB:ma]
+xref: ZFA:0009128
 is_a: CL:0000003 ! native cell
 
 [Term]
@@ -5085,6 +5100,7 @@ id: CL:0000215
 name: barrier cell
 namespace: cell
 def: "A cell whose primary function is to prevent the transport of stuff across compartments." []
+xref: ZFA:0009130
 is_a: CL:0000003 ! native cell
 
 [Term]
@@ -5686,6 +5702,7 @@ id: CL:0000335
 name: mesenchyme condensation cell
 namespace: cell
 def: "A mesenchymal cell in embryonic development found in a contracting mass and that gives rise to osteoprogenitors." [GOC:tfm, PMID:5025404]
+xref: ZFA:0009166
 is_a: CL:0000134 ! mesenchymal cell
 is_a: CL:0008019 ! mesenchymal cell
 relationship: develops_from CL:0000134 {gci_relation="part_of", gci_filler="NCBITaxon:7954"} ! mesenchymal cell
@@ -6028,6 +6045,7 @@ xref: FBbt:00005130
 xref: FBbt:00047127
 xref: FBbt:00047217
 xref: FBbt:00047427
+xref: ZFA:0009186
 is_a: CL:0000151 ! secretory cell
 is_a: CL:0000527 ! efferent neuron
 
@@ -6086,6 +6104,7 @@ namespace: cell
 def: "An elongated fibrocyte that is part of a tendon. The cytoplasm is stretched between the collagen fibres of the tendon. They have a central cell nucleus with a prominent nucleolus. Tendon cells have a well-developed rough endoplasmic reticulum and they are responsible for synthesis and turnover of tendon fibres and ground substance." []
 synonym: "muscle attachment cell" EXACT []
 synonym: "tenocyte" RELATED []
+xref: ZFA:0009189
 is_a: CL:0000135 ! fibrocyte
 is_a: CL:0000386 ! attachment cell
 is_a: CL:0002319 {gci_relation="part_of", gci_filler="NCBITaxon:7954"} ! neural cell
@@ -6645,6 +6664,7 @@ def: "A cell capable of producting norepiniphrine. Norepiniphrine is a catechola
 synonym: "noradrenaline secreting cell" EXACT []
 synonym: "norepinephrin secreting cell" EXACT []
 synonym: "norepinephrine secreting cell" EXACT []
+xref: ZFA:0009214
 is_a: CL:0000457 ! biogenic amine secreting cell
 
 [Term]
@@ -6880,6 +6900,7 @@ id: CL:0000488
 name: visible light photoreceptor cell
 namespace: cell
 def: "A photoreceptor cell that detects visible light." []
+xref: ZFA:0009219
 is_a: CL:0000210 ! photoreceptor cell
 
 [Term]
@@ -7115,6 +7136,7 @@ namespace: cell
 def: "A myoblast that differentiates into skeletal muscle fibers." []
 synonym: "skeletal myoblast" EXACT []
 xref: FMA:84799
+xref: ZFA:0009236
 is_a: CL:0000056 ! myoblast
 relationship: develops_from CL:0000355 ! multi-potent skeletal muscle stem cell
 
@@ -7230,6 +7252,7 @@ is_a: CL:0000540 ! neuron
 id: CL:0000529
 name: pigmented epithelial cell
 namespace: cell
+xref: ZFA:0009241
 is_a: CL:0000710 ! neurecto-epithelial cell
 relationship: develops_from CL:0000710 {gci_relation="part_of", gci_filler="NCBITaxon:7954"} ! neurecto-epithelial cell
 
@@ -7605,6 +7628,7 @@ comment: These cells are CD11b-negative, CD15-positive, CD16-negative, CD49d-pos
 synonym: "neutrophilic premyelocyte" EXACT []
 synonym: "neutrophilic progranulocyte" EXACT []
 xref: FMA:84196
+xref: ZFA:0009257
 is_a: CL:0000834 ! neutrophil progenitor cell
 is_a: CL:0000836 ! promyelocyte
 relationship: develops_from CL:0000042 ! neutrophilic myeloblast
@@ -7692,6 +7716,10 @@ def: "One of the two photoreceptor cell types in the vertebrate retina. In cones
 xref: BTO:0001036
 xref: CALOHA:TS-0866
 xref: FMA:67748
+xref: ZFA:0005945
+xref: ZFA:0005946
+xref: ZFA:0005947
+xref: ZFA:0005948
 xref: ZFA:0009262
 is_a: CL:0010009 ! camera-type eye photoreceptor cell
 relationship: develops_from CL:0002672 ! retinal progenitor cell
@@ -7778,6 +7806,7 @@ def: "A neutrophil precursor in the granulocytic series, being a cell intermedia
 comment: These cells are also CD15-positive, CD35-negative, CD49d-positive, and fMLP receptor-negative. They are found in the Band 2 fraction.
 xref: BTO:0003455
 xref: FMA:83540
+xref: ZFA:0009266
 is_a: CL:0000776 ! immature neutrophil
 is_a: CL:0002087 ! nongranular leukocyte
 is_a: CL:0002193 ! myelocyte
@@ -7826,6 +7855,7 @@ def: "An epithelial cell that has its apical plasma membrane folded into microvi
 xref: BTO:0000398
 xref: FBbt:00047147
 xref: FMA:62122
+xref: ZFA:0005942
 xref: ZFA:0009269
 is_a: CL:0000239 ! brush border epithelial cell
 is_a: CL:0000677 ! gut absorptive cell
@@ -8232,6 +8262,7 @@ name: supportive cell
 namespace: cell
 def: "A cell whose primary function is to support other cell types." []
 xref: BTO:0002315
+xref: ZFA:0009387
 is_a: CL:0000003 ! native cell
 relationship: part_of UBERON:0000004 {gci_relation="part_of", gci_filler="NCBITaxon:7954"} ! nose
 
@@ -9056,6 +9087,7 @@ namespace: cell
 def: "A stem cell that can give rise to cell types of the body other than those of the germ-line." []
 xref: CALOHA:TS-2086
 xref: FMA:63368
+xref: ZFA:0009307
 is_a: CL:0000034 ! stem cell
 is_a: CL:0002371 ! somatic cell
 
@@ -9226,6 +9258,7 @@ id: CL:0000744
 name: columnar chondrocyte
 namespace: cell
 def: "A columnar chondrocyte that differentiates in the late embryonic growth plate of bone. Columnar chondrocytes vigorously proliferate and form columns in the growth plate." []
+xref: ZFA:0009314
 is_a: CL:0000138 ! chondrocyte
 
 [Term]
@@ -9297,6 +9330,7 @@ id: CL:0000749
 name: ON-bipolar cell
 namespace: cell
 def: "A bipolar neuron found in the retina and having connections with photoreceptors cells and neurons in the inner half of the inner plexiform layer. These cells depolarize in response to light stimulation of their corresponding photoreceptors." []
+xref: ZFA:0009319
 is_a: CL:0000748 ! retinal bipolar neuron
 
 [Term]
@@ -9576,6 +9610,7 @@ synonym: "immature neutrocyte" EXACT []
 synonym: "immature neutrophil leucocyte" EXACT []
 synonym: "immature neutrophil leukocyte" EXACT []
 synonym: "immature neutrophilic leucocyte" EXACT []
+xref: ZFA:0009328
 is_a: CL:0000775 ! neutrophil
 is_a: UBERON:0004120 ! mesoderm-derived structure
 relationship: develops_from CL:0000564 ! neutrophilic promyelocyte
@@ -10250,6 +10285,7 @@ synonym: "progenitor B lymphocyte" EXACT []
 synonym: "progenitor B-cell" EXACT []
 synonym: "progenitor B-lymphocyte" EXACT []
 xref: BTO:0003104
+xref: ZFA:0009349
 is_a: CL:0000838 ! lymphoid lineage restricted progenitor cell
 is_a: UBERON:0004120 {gci_relation="part_of", gci_filler="NCBITaxon:7954"} ! mesoderm-derived structure
 relationship: develops_from CL:0000051 ! common lymphoid progenitor
@@ -10348,6 +10384,7 @@ namespace: cell
 def: "The most primitive precursor in the granulocytic series, having fine, evenly distributed chromatin, several nucleoli, a high nuclear-to-cytoplasmic ration (5:1-7:1), and a nongranular basophilic cytoplasm. They reside in the bone marrow." []
 xref: BTO:0000187
 xref: FMA:83524
+xref: ZFA:0009353
 is_a: CL:0000763 ! myeloid cell
 is_a: CL:0002191 ! granulocytopoietic cell
 is_a: UBERON:0004120 ! mesoderm-derived structure
@@ -13910,6 +13947,7 @@ name: ecto-epithelial cell
 namespace: cell
 def: "An epithelial cell derived from ectoderm." []
 xref: FMA:69074
+xref: ZFA:0009385
 is_a: CL:0000066 ! epithelial cell
 is_a: CL:0002371 ! somatic cell
 is_a: UBERON:0004121 ! ectoderm-derived structure
@@ -16778,6 +16816,7 @@ xref: CALOHA:TS-0263
 xref: FMA:82840
 xref: FMA:82841
 xref: WBbt:0007028
+xref: ZFA:0007089
 is_a: CL:0000548 ! animal cell
 created_by: tmeehan
 creation_date: 2010-09-15T03:39:21Z
@@ -17321,6 +17360,7 @@ xref: BTO:0001268
 xref: FBbt:00047703
 xref: FMA:72300
 xref: WBbt:0008378
+xref: ZFA:0009386
 is_a: CL:0000003 ! native cell
 created_by: tmeehan
 creation_date: 2010-09-24T09:44:42Z
@@ -18859,6 +18899,7 @@ name: kidney epithelial cell
 namespace: cell
 def: "An epithelial cell of the kidney." []
 xref: KUPO:0001019
+xref: ZFA:0009374
 is_a: CL:0000066 ! epithelial cell
 is_a: CL:1000497 ! kidney cell
 created_by: tmeehan
@@ -20501,6 +20542,7 @@ namespace: cell
 def: "A CNS interneuron located in the spinal cord." []
 comment: Is_a interneuron, part_of UBERON:0002240.
 xref: ZFA:0000778
+xref: ZFA:0007120
 is_a: CL:0000402 ! CNS interneuron
 relationship: part_of UBERON:0002240 ! spinal cord
 
@@ -20588,6 +20630,7 @@ id: CL:0005009
 name: renal principal cell
 namespace: cell
 def: "A cuboidal epithelial cell of the kidney which regulates sodium and potassium balance. The activity of sodium and potassium channels on the cells apical membrane is regulated by aldosterone and vasopressin. In mammals these cells are located in the renal collecting ducts." []
+xref: ZFA:0005322
 is_a: CL:0000068 {gci_relation="part_of", gci_filler="NCBITaxon:7954"} ! duct epithelial cell
 is_a: CL:0000075 ! columnar/cuboidal epithelial cell
 is_a: CL:0002518 ! kidney epithelial cell
@@ -20617,6 +20660,7 @@ name: multi-ciliated epithelial cell
 namespace: cell
 def: "A ciliated epithelial cell with many cilium." []
 xref: XAO:0005179
+xref: ZFA:0005242
 is_a: CL:0000067 ! ciliated epithelial cell
 
 [Term]
@@ -20624,6 +20668,7 @@ id: CL:0005013
 name: single ciliated epithelial cell
 namespace: cell
 def: "A ciliated epithelial cell with a single cilium." []
+xref: ZFA:0005243
 is_a: CL:0000067 ! ciliated epithelial cell
 
 [Term]
@@ -21132,6 +21177,7 @@ relationship: part_of UBERON:0001264 ! pancreas
 id: CL:0008025
 name: noradrenergic neuron
 def: "A neuron that release noradrenaline (noriphinephrine) as a neurotransmitter." []
+xref: ZFA:0005873
 is_a: CL:0000459 ! noradrenergic cell
 is_a: CL:0000540 ! neuron
 
@@ -21865,6 +21911,7 @@ is_a: CL:0000006 ! neuronal receptor cell
 id: CL:1000083
 name: stratified keratinized epithelial stem cell
 namespace: cell
+xref: ZFA:0009371
 is_a: CL:0000357 ! stratified epithelial stem cell
 
 [Term]
@@ -24689,6 +24736,7 @@ id: CL:1001502
 name: mitral cell
 namespace: cl
 def: "The large glutaminergic nerve cells whose dendrites synapse with axons of the olfactory receptor neurons in the glomerular layer of the olfactory bulb, and whose axons pass centrally in the olfactory tract to the olfactory cortex." []
+xref: XAO:0004573
 is_a: CL:1001434 ! olfactory bulb interneuron
 relationship: part_of UBERON:0004186 ! olfactory bulb mitral cell layer
 
@@ -181753,6 +181801,7 @@ xref: http://linkedlifedata.com/resource/umls/id/C0752060
 xref: MA:0000924
 xref: MESH:A08.186.211.577.750
 xref: UMLS:C0752060 {source="BIRNLEX:963"}
+xref: XAO:0004585
 is_a: UBERON:0005401 ! cerebral hemisphere gray matter
 property_value: external_definition "Subdivision of the telencephalon on the midline between the lateral ventricles which contains the septum pellucidum and the septal nuclei[FMA][FMA:61842]." xsd:string {source="FMA:61842"}
 
@@ -182407,6 +182456,8 @@ xref: TGMA:0001842
 xref: VHOG:0001737
 xref: XAO:0003160
 xref: ZFA:0001478
+xref: ZFA:0007115
+xref: ZFA:0007116
 is_a: UBERON:0000480 ! anatomical group
 property_value: editor_note "Will be obsoleted in CARO v2 [https://github.com/obophenotype/caro/issues/3]" xsd:string
 
@@ -183521,6 +183572,7 @@ xref: TAO:0001108
 xref: UMLS:C0152335 {source="BIRNLEX:1557"}
 xref: UMLS:C0152335 {source="ncithesaurus:Anterior_Commissure"}
 xref: VHOG:0001558
+xref: XAO:0004533
 xref: ZFA:0001108
 is_a: UBERON:0002473 {source="FMA", source="MA"} ! intercerebral commissure
 is_a: UBERON:0005341 {source="MP"} ! ventral commissure
@@ -183559,6 +183611,7 @@ xref: Posterior:commissure
 xref: TAO:0000320
 xref: UMLS:C0152327 {source="BIRNLEX:1026"}
 xref: UMLS:C0152327 {source="ncithesaurus:Posterior_Commissure"}
+xref: XAO:0004579
 xref: ZFA:0000320
 is_a: UBERON:0011590 ! commissure of diencephalon
 relationship: part_of UBERON:0003931 {source="FMA"} ! diencephalic white matter
@@ -184740,6 +184793,7 @@ xref: VSAO:0000101
 xref: XAO:0000171
 xref: ZFA:0001596
 xref: ZFA:0005860
+xref: ZFA:0007117
 is_a: UBERON:0004905 ! articulation
 relationship: part_of XAO:0004274 {gci_relation="part_of", gci_filler="NCBITaxon:8353"} ! articular system (Xenopus)
 relationship: part_of XAO:0004313 {gci_relation="part_of", gci_filler="NCBITaxon:8353"} ! joint region (Xenopus)
@@ -203540,6 +203594,7 @@ xref: MA:0000317
 xref: TAO:0001580
 xref: XAO:0003170
 xref: ZFA:0001580
+xref: ZFA:0005958
 is_a: UBERON:0011158 {source="FMA"} ! primary subdivision of skull
 relationship: develops_from UBERON:0004761 ! cartilaginous neurocranium
 relationship: part_of UBERON:0003128 ! cranium
@@ -208596,6 +208651,7 @@ xref: NCIT:C12449
 xref: PBA:10097
 xref: UMLS:C0017651 {source="ncithesaurus:Globus_Pallidus"}
 xref: UMLS:C0017651 {source="BIRNLEX:1234"}
+xref: XAO:0004578
 is_a: UBERON:0009663 ! telencephalic nucleus
 relationship: develops_from UBERON:0001894 ! diencephalon
 relationship: part_of UBERON:0001869 ! cerebral hemisphere
@@ -208656,6 +208712,7 @@ xref: PBA:4002
 xref: UMLS:C0002708 {source="ncithesaurus:Amygdala"}
 xref: UMLS:C0002708 {source="BIRNLEX:1241"}
 xref: VHOG:0001277
+xref: XAO:0004531
 is_a: UBERON:0002420 {source="FMA"} ! basal ganglion
 is_a: UBERON:0005401 ! cerebral hemisphere gray matter
 relationship: part_of UBERON:0000349 {source="FMA"} ! limbic system
@@ -208756,6 +208813,7 @@ xref: MBA:596
 xref: NCIT:C97342
 xref: UMLS:C0175227 {source="BIRNLEX:719"}
 xref: UMLS:C0175227 {source="ncithesaurus:Nucleus_of_Diagonal_Band"}
+xref: XAO:0004576
 is_a: UBERON:0009663 ! telencephalic nucleus
 relationship: part_of UBERON:0007629 {source="MA"} ! medial septal complex
 
@@ -208880,6 +208938,7 @@ xref: NCIT:C52733
 xref: Nucleus:accumbens
 xref: PBA:10092
 xref: UMLS:C0028633 {source="ncithesaurus:Accumbens_Nucleus"}
+xref: XAO:0004575
 is_a: UBERON:0009663 ! telencephalic nucleus
 relationship: develops_from EHDAA2:0000235 {gci_relation="part_of", gci_filler="NCBITaxon:9606"} ! paleopallium mantle layer (human)
 relationship: part_of UBERON:0000349 {source="FMA", source="GO"} ! limbic system
@@ -209857,6 +209916,7 @@ xref: MA:0000830
 xref: MESH:A08.186.211.577.200.360
 xref: TAO:0000213
 xref: UMLS:C0152362 {source="BIRNLEX:1611"}
+xref: XAO:0004556
 xref: ZFA:0000213
 relationship: part_of UBERON:0001899 ! epithalamus
 property_value: external_definition "The habenula relays impulses from limbic areas of the telencephalon to an unpaired midbrain nucleus, the interpeduncular nucleus.[TAO]" xsd:string {date_retrieved="2012-08-14", external_class="TAO:0000213", ontology="TAO", source="ZFIN:curator"}
@@ -210703,6 +210763,7 @@ xref: Preoptic:area
 xref: TAO:0000470
 xref: UMLS:C0033063 {source="BIRNLEX:1706"}
 xref: UMLS:C1284641 {source="BIRNLEX:1706"}
+xref: XAO:0004583
 xref: ZFA:0000470
 relationship: part_of UBERON:0001894 ! diencephalon
 relationship: part_of UBERON:0001898 {gci_relation="part_of", gci_filler="NCBITaxon:32524", source="PMC4038951"} ! hypothalamus
@@ -211051,6 +211112,7 @@ xref: http://www.snomedbrowser.com/Codes/Details/360452004
 xref: Lateral:hypothalamus
 xref: TAO:0000227
 xref: UMLS:C0086527 {source="BIRNLEX:1199"}
+xref: XAO:0004562
 xref: ZFA:0000227
 is_a: UBERON:0006568 ! hypothalamic nucleus
 relationship: part_of UBERON:0002430 ! lateral hypothalamic area
@@ -217201,6 +217263,7 @@ xref: MESH:A08.713.810
 xref: Subcommissural:organ
 xref: TAO:0000683
 xref: UMLS:C0038533 {source="BIRNLEX:1028"}
+xref: XAO:0004588
 xref: ZFA:0000683
 is_a: UBERON:0003296 {gci_relation="part_of", gci_filler="NCBITaxon:7954"} ! gland of diencephalon
 is_a: UBERON:0010134 {source="MA"} ! secretory circumventricular organ
@@ -217521,6 +217584,7 @@ xref: NCIT:C97333
 xref: TAO:0000539
 xref: UMLS:C0023951 {source="BIRNLEX:905"}
 xref: UMLS:C0023951 {source="ncithesaurus:Locus_Coeruleus"}
+xref: XAO:0004566
 xref: ZFA:0000539
 is_a: UBERON:0006331 ! brainstem nucleus
 is_a: UBERON:0007635 {gci_relation="part_of", gci_filler="NCBITaxon:7954"} ! nucleus of medulla oblongata
@@ -218419,6 +218483,7 @@ xref: http://braininfo.rprc.washington.edu/centraldirectory.aspx?ID=1673
 xref: http://www.snomedbrowser.com/Codes/Details/362434006
 xref: Lateral:funiculus
 xref: TAO:0000533
+xref: XAO:0004560
 xref: ZFA:0000533
 is_a: UBERON:0006127 ! funiculus of spinal cord
 
@@ -218443,6 +218508,7 @@ xref: http://www.snomedbrowser.com/Codes/Details/362429007
 xref: NLX:379
 xref: TAO:0000605
 xref: Ventral:funiculus
+xref: XAO:0004535
 xref: ZFA:0000605
 is_a: UBERON:0006127 ! funiculus of spinal cord
 is_a: UBERON:0015212 ! lateral structure
@@ -219245,6 +219311,7 @@ xref: TAO:0000334
 xref: UMLS:C0024670 {source="BIRNLEX:865"}
 xref: UMLS:C0024670 {source="ncithesaurus:Mamillary_Body"}
 xref: UMLS:C1305759 {source="BIRNLEX:865"}
+xref: XAO:0004605
 xref: ZFA:0000334
 relationship: part_of UBERON:0002272 {source="ABA"} ! medial zone of hypothalamus
 relationship: part_of UBERON:0002770 {source="GO definition"} ! posterior hypothalamic region
@@ -220560,6 +220627,7 @@ xref: FMA:77461
 xref: http://braininfo.rprc.washington.edu/centraldirectory.aspx?ID=1692
 xref: http://www.snomedbrowser.com/Codes/Details/362432005
 xref: TAO:0000501
+xref: XAO:0004580
 xref: ZFA:0000501
 is_a: UBERON:0006127 ! funiculus of spinal cord
 is_a: UBERON:0015212 ! lateral structure
@@ -221278,6 +221346,7 @@ xref: TAO:0000696
 xref: UMLS:C0152279 {source="ncithesaurus:Lateral_Ventricle"}
 xref: UMLS:C0152279 {source="BIRNLEX:1263"}
 xref: VHOG:0000643
+xref: XAO:0004607
 xref: ZFA:0000696
 is_a: UBERON:0004086 ! brain ventricle
 relationship: part_of UBERON:0001869 {gci_relation="part_of", gci_filler="NCBITaxon:32523", notes="evaginated"} ! cerebral hemisphere
@@ -221326,6 +221395,7 @@ xref: Third:ventricle
 xref: UMLS:C0149555 {source="BIRNLEX:714"}
 xref: UMLS:C0149555 {source="ncithesaurus:Third_Ventricle_of_Brain"}
 xref: VHOG:0000007
+xref: XAO:0004608
 xref: ZFA:0000161
 is_a: UBERON:0004086 ! brain ventricle
 relationship: develops_from UBERON:0006284 {source="EHDAA2"} ! early prosencephalic vesicle
@@ -221539,6 +221609,7 @@ xref: MBA:164
 xref: NCIT:C12891
 xref: TAO:0000938
 xref: UMLS:C0459414 {source="ncithesaurus:Central_Canal"}
+xref: XAO:0004543
 xref: ZFA:0000938
 is_a: UBERON:0004111 {source="cjm"} ! anatomical conduit
 relationship: develops_from EHDAA2:0004363 {gci_relation="part_of", gci_filler="NCBITaxon:9606"} ! future spinal cord lumen (human)
@@ -225309,6 +225380,7 @@ xref: DHBA:10332
 xref: EFO:0000904
 xref: FMA:62514
 xref: http://www.snomedbrowser.com/Codes/Details/244434001
+xref: XAO:0004540
 is_a: UBERON:0003528 ! brain gray matter
 is_a: UBERON:0007245 {source="FMA"} ! nuclear complex of neuraxis
 relationship: part_of UBERON:0010011 ! collection of basal ganglia
@@ -225791,6 +225863,7 @@ xref: NCIT:C111122
 xref: ncithesaurus:Striatum
 xref: PBA:10080
 xref: UMLS:C0162512 {source="BIRNLEX:1672"}
+xref: XAO:0004587
 is_a: UBERON:0011300 ! gray matter of telencephalon
 relationship: part_of UBERON:0000204 {source="GO"} ! ventral part of telencephalon
 relationship: part_of UBERON:0000369 {source="BTO"} ! corpus striatum
@@ -233574,6 +233647,7 @@ xref: HBA:4300
 xref: http://braininfo.rprc.washington.edu/centraldirectory.aspx?ID=1997
 xref: http://braininfo.rprc.washington.edu/centraldirectory.aspx?ID=1997 {source="BIRNLEX:1560"}
 xref: PBA:128012976
+xref: XAO:0004539
 is_a: UBERON:0010314 {gci_relation="part_of", gci_filler="NCBITaxon:9443"} ! structure with developmental contribution from neural crest
 relationship: part_of UBERON:0001890 {source="BTO"} ! forebrain
 relationship: part_of UBERON:0010011 {gci_relation="part_of", gci_filler="NCBITaxon:9443"} ! collection of basal ganglia
@@ -234420,6 +234494,7 @@ xref: FMA:77613
 xref: http://braininfo.rprc.washington.edu/centraldirectory.aspx?ID=794
 xref: http://braininfo.rprc.washington.edu/centraldirectory.aspx?ID=794 {source="BIRNLEX:1674"}
 xref: MBA:835
+xref: XAO:0004593
 is_a: UBERON:0005401 ! cerebral hemisphere gray matter
 relationship: part_of UBERON:0001875 {source="BTO", source="NIF-def"} ! globus pallidus
 relationship: part_of UBERON:0002743 {source="NIFSTD"} ! basal forebrain
@@ -236614,6 +236689,7 @@ xref: MA:0002926
 xref: MBA:131
 xref: PBA:10116
 xref: UMLS:C0175221 {source="BIRNLEX:2687"}
+xref: XAO:0004558
 is_a: UBERON:0009663 ! telencephalic nucleus
 relationship: part_of UBERON:0006107 {source="NIFSTD"} ! basolateral amygdaloid nuclear complex
 
@@ -236723,13 +236799,14 @@ xref: DMBA:15994
 xref: EMAPA:35127
 xref: FMA:61861
 xref: HBA:265504476
-xref: http://braininfo.rprc.washington.edu/centraldirectory.aspx?ID=239
 xref: http://braininfo.rprc.washington.edu/centraldirectory.aspx?ID=239 {source="BIRNLEX:2698"}
+xref: http://braininfo.rprc.washington.edu/centraldirectory.aspx?ID=239
 xref: http://linkedlifedata.com/resource/umls/id/C0175215
 xref: MA:0002919
 xref: MBA:23
 xref: PBA:10103
 xref: UMLS:C0175215 {source="BIRNLEX:2698"}
+xref: XAO:0004532
 relationship: part_of UBERON:0006108 {source="NIFSTD"} ! corticomedial nuclear complex
 
 [Term]
@@ -236794,6 +236871,7 @@ xref: http://linkedlifedata.com/resource/umls/id/C0175217
 xref: MA:0002927
 xref: MBA:403
 xref: UMLS:C0175217 {source="BIRNLEX:2701"}
+xref: XAO:0004568
 is_a: UBERON:0009663 ! telencephalic nucleus
 relationship: part_of UBERON:0006108 {source="NIFSTD"} ! corticomedial nuclear complex
 
@@ -238271,6 +238349,7 @@ xref: MA:0000993
 xref: MBA:1143
 xref: NCIT:C49138
 xref: UMLS:C1708253 {source="ncithesaurus:Granular_Layer_of_the_Cerebellum"}
+xref: XAO:0004554
 is_a: UBERON:0004130 ! cerebellar layer
 relationship: part_of UBERON:0002129 ! cerebellar cortex
 
@@ -256401,6 +256480,7 @@ xref: MA:0000966
 xref: MBA:151
 xref: NLX:53
 xref: NLXANAT:20090453
+xref: XAO:0004530
 relationship: part_of UBERON:0002264 {source="cjm"} ! olfactory bulb
 property_value: external_ontology_notes "NLXANAT:20090453 appears to be retired" xsd:string {external_ontology="NIF"}
 
@@ -258157,6 +258237,7 @@ xref: DMBA:15912
 xref: EMAPA:35611
 xref: MA:0000973
 xref: NLXANAT:100201
+xref: XAO:0004574
 is_a: UBERON:0004001 ! olfactory bulb layer
 property_value: external_ontology_notes "NIF divides this into main and accessory" xsd:string {external_ontology="NIF"}
 
@@ -265646,6 +265727,7 @@ xref: NLXANAT:20090205
 xref: Raphe:nuclei
 xref: TAO:0001429
 xref: UMLS:C0034671 {source="ncithesaurus:Raphe_Nuclei"}
+xref: XAO:0004584
 xref: ZFA:0001429
 is_a: UBERON:0003714 {gci_relation="part_of", gci_filler="NCBITaxon:7954"} ! neural tissue
 is_a: UBERON:0007635 {gci_relation="part_of", gci_filler="NCBITaxon:7954"} ! nucleus of medulla oblongata
@@ -272115,6 +272197,7 @@ def: "A hole in a tube[GO]." [GO:0060609]
 xref: AEO:0000078
 xref: EHDAA2:0004618
 xref: RETIRED_EHDAA2:0003078
+xref: ZFA:0005930
 is_a: UBERON:0000464 ! anatomical space
 
 [Term]
@@ -275772,6 +275855,7 @@ xref: http://braininfo.rprc.washington.edu/centraldirectory.aspx?ID=2714
 xref: MA:0000971
 xref: MBA:220
 xref: NLXANAT:20090404
+xref: XAO:0004555
 is_a: UBERON:0004001 ! olfactory bulb layer
 
 [Term]
@@ -288933,6 +289017,7 @@ xref: BTO:0004376
 xref: FMA:77619
 xref: http://braininfo.rprc.washington.edu/centraldirectory.aspx?ID=1604
 xref: MBA:818
+xref: XAO:0004547
 is_a: UBERON:0005401 ! cerebral hemisphere gray matter
 relationship: part_of UBERON:0001875 {source="BTO"} ! globus pallidus
 
@@ -321851,6 +321936,7 @@ def: "An acellular strand that runs from subcommissural organ caudally through t
 synonym: "Reissner's fibre" EXACT []
 xref: NLX:151878
 xref: Reissner's:fiber
+xref: ZFA:0005906
 is_a: UBERON:0000476 ! acellular anatomical structure
 relationship: part_of UBERON:0001017 ! central nervous system
 property_value: taxon_notes "Reissner's fiber is present in the central canal of species in all chordate subphyla[Olsson R. (1993) Reissner's fiber mechanisms: some common denominators. In The Subcommissural Organ: An Ependymal Brain Gland ]" xsd:string
@@ -338630,6 +338716,7 @@ synonym: "medial zone of dorsal telencephalic area" EXACT []
 synonym: "medial zone of dorsal telencephalon" EXACT []
 synonym: "MP" BROAD ABBREVIATION [http://www.ncbi.nlm.nih.gov/pubmed/23375746]
 xref: TAO:0000536
+xref: XAO:0004570
 xref: ZFA:0000536
 is_a: UBERON:0003714 {gci_relation="part_of", gci_filler="NCBITaxon:7954"} ! neural tissue
 relationship: part_of UBERON:0000203 ! pallium
@@ -338646,6 +338733,7 @@ synonym: "dorsal zone of dorsal telencephalic area" EXACT []
 synonym: "dorsal zone of dorsal telencephalon" EXACT []
 synonym: "DP" BROAD ABBREVIATION [http://www.ncbi.nlm.nih.gov/pubmed/23375746]
 xref: TAO:0000506
+xref: XAO:0004548
 xref: ZFA:0000506
 is_a: UBERON:0003714 {gci_relation="part_of", gci_filler="NCBITaxon:7954"} ! neural tissue
 relationship: part_of UBERON:0000203 ! pallium
@@ -338666,6 +338754,7 @@ synonym: "piriform pallium" RELATED [ISBN:0471888893]
 synonym: "proximal pallium (everted brain)" RELATED [ISBN:0471888893]
 xref: DMBA:15956
 xref: TAO:0000391
+xref: XAO:0004563
 xref: ZFA:0000391
 is_a: UBERON:0003714 {gci_relation="part_of", gci_filler="NCBITaxon:7954"} ! neural tissue
 relationship: part_of UBERON:0000203 ! pallium
@@ -338952,6 +339041,7 @@ synonym: "segment of forebrain" BROAD []
 xref: EMAPA:36648
 xref: EMAPA:36649
 xref: FMA:61996
+xref: XAO:0004598
 is_a: UBERON:0004731 ! neuromere
 relationship: part_of UBERON:0006240 ! future forebrain
 
@@ -339883,6 +339973,7 @@ namespace: uberon
 def: "The pallial region located next to the pallium-subpallium boundary." [https://doi.org/10.1371/journal.pone.0044716]
 synonym: "VP" BROAD ABBREVIATION [http://www.ncbi.nlm.nih.gov/pubmed/23375746]
 xref: DMBA:15904
+xref: XAO:0004594
 relationship: part_of UBERON:0000203 ! pallium
 
 [Term]
@@ -364707,6 +364798,7 @@ created_by: teleost_anatomy_curators
 id: UBERON:2000248
 name: magnocellular preoptic nucleus
 namespace: uberon/phenoscape-anatomy
+xref: XAO:0004567
 xref: ZFA:0000248
 is_a: UBERON:0007251 ! preoptic nucleus
 property_value: provenance_notes "This class was sourced from an external ontology (teleost_anatomy). Its definitions, naming conventions and relationships may need to be checked for compatibility with uberon" xsd:string
@@ -365764,6 +365856,7 @@ created_by: teleost_anatomy_curators
 id: UBERON:2000459
 name: ventromedial thalamic nucleus
 namespace: uberon/phenoscape-anatomy
+xref: XAO:0004596
 xref: ZFA:0000459
 is_a: UBERON:0015234 ! nucleus of ventral thalamus
 property_value: provenance_notes "This class was sourced from an external ontology (teleost_anatomy). Its definitions, naming conventions and relationships may need to be checked for compatibility with uberon" xsd:string
@@ -366521,6 +366614,7 @@ created_by: teleost_anatomy_curators
 id: UBERON:2000599
 name: torus semicircularis
 namespace: uberon/phenoscape-anatomy
+xref: XAO:0004590
 xref: ZFA:0000599
 relationship: develops_from UBERON:2001357 {gci_relation="part_of", gci_filler="NCBITaxon:7954"} ! alar plate midbrain
 relationship: part_of UBERON:0002314 ! midbrain tectum
@@ -366743,6 +366837,7 @@ name: caudal tuberculum
 namespace: uberon/phenoscape-anatomy
 synonym: "posterior tubercle" EXACT [TAO:0000633]
 synonym: "posterior tuberculum" EXACT [TAO:0000633]
+xref: XAO:0004606
 xref: ZFA:0000633
 xref: ZFA:0005909
 relationship: part_of UBERON:0001894 ! diencephalon
@@ -367092,6 +367187,7 @@ def: "Tooth that forms on ceratobranchial 5 cartilage or bone." [ZFIN:curator]
 comment: Ceratobranchial 5 teeth are the only teeth present in zebrafish and other cypriniforms.
 synonym: "pharyngeal teeth" EXACT [TAO:0000694]
 xref: ZFA:0000694
+xref: ZFA:0005849
 xref: ZFA:0005851
 is_a: UBERON:0001091 ! calcareous tooth
 relationship: develops_from UBERON:0005176 ! tooth enamel organ
@@ -379616,6 +379712,7 @@ created_by: teleost_anatomy_curators
 id: UBERON:2007012
 name: lateral forebrain bundle
 namespace: uberon/phenoscape-anatomy
+xref: XAO:0004559
 xref: ZFA:0007012
 is_a: UBERON:0002316 ! white matter
 property_value: provenance_notes "This class was sourced from an external ontology (teleost_anatomy). Its definitions, naming conventions and relationships may need to be checked for compatibility with uberon" xsd:string
