@@ -14646,7 +14646,6 @@ synonym: "polliwog" NARROW SENSU [http://en.wikipedia.org/wiki/Larva]
 synonym: "polliwog stage" NARROW SENSU [http://en.wikipedia.org/wiki/Larva]
 synonym: "tadpole" NARROW SENSU [http://en.wikipedia.org/wiki/Larva]
 synonym: "tadpole stage" NARROW SENSU [http://en.wikipedia.org/wiki/Larva]
-xref: XAO:1000008
 relationship: only_in_taxon NCBITaxon:8292
 relationship: part_of UBERON:0000069 ! larval stage
 property_value: external_ontology_notes "the XAO class denotes a stage" xsd:string {external_ontology="XAO"}
