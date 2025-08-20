@@ -31,6 +31,7 @@ retrieve_metadata: filter_annotation 0Preparation/retrieve_metadata.R
 	$(MV) $@.out $@
 
 # Parallelize download of libraries and do not download again already downloaded libraries
+#TODO: The filtering of libraries based on the number of reads is currently done in the rule prepare_singlecell_info. It should be done before downloading to avoid downloading/archiving libraries we will never use.
 parallelized_download: retrieve_metadata
 	@$(CLUSTER_SOFTWARE_BIN) perl 0Preparation/parallelized_download_SRA.pl -metadataFile=$(SC_RNASEQ_METADATA_FL_FILEPATH) -parallelJobs=50 -downloadedLibraries=$(SC_RNASEQ_DOWNLOADED_LIB_FILEPATH) -excludedLibraries=$(SC_RNASEQ_EXCLUDED_LIB_FILEPATH) -outputDir=$(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH) --loadApptainerModule="$(CLUSTER_LOAD_APPTAINER)" --containerCmd="$(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL)" -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
 	@$(MV) $@.tmp $@

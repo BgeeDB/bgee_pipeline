@@ -1,7 +1,7 @@
+#libraryId	excluded	comment	annotatorId	lastModificationDate
 SRX6936042	TRUE	0 reads mapped to the transcriptome	JW	2024-02-29
 SRX12770678	TRUE	No barcodes annotated for this library	JW	2024-03-05
 ERX6700419	TRUE	species not yet in Bgee 15.2	JW	2024-02-29
-#libraryId	excluded	comment	annotatorId	lastModificationDate
 SRX6936043	TRUE	0 reads mapped to the transcriptome	JW	2024-02-29
 SRX12770677	TRUE	No barcodes annotated for this library	JW	2024-03-05
 ERX6700418	TRUE	species not yet in Bgee 15.2	JW	2024-02-29
