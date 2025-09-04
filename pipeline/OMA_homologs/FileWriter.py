@@ -4,7 +4,7 @@ import logging, os
 import fcntl
 import time
 
-from typing.io import IO
+from typing import IO
 
 from util import Util
 from SPARQLWrapper import JSON, SPARQLWrapper

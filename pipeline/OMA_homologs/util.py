@@ -3,7 +3,7 @@ import fileinput
 import io
 import shutil
 
-from typing.io import TextIO
+from typing import TextIO
 
 
 class Util:

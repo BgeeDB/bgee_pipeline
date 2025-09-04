@@ -4,14 +4,14 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-sparqlwrapper = "==1.8.5"
-rdflib = "==5.0.0"
-isodate = "==0.6.0"
-pyparsing = "==2.4.7"
-six = "==1.15.0"
-pandas = "==1.2.5"
+sparqlwrapper = "2.0.0"
+rdflib = "7.1.4"
+isodate = "0.7.2"
+pyparsing = "3.2.3"
+six = "1.17.0"
+pandas = "2.3.2"
 
 [dev-packages]
 
 [requires]
-python_version = "3.7"
+python_version = "3"

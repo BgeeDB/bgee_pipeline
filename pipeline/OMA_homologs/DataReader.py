@@ -198,7 +198,7 @@ class GeneIDMapperDataReader:
             sparql_wrapper_endpoint.setQuery(query_oma)
             sparql_wrapper_endpoint.setReturnFormat(CSV)
             results_oma = sparql_wrapper_endpoint.query().response
-            csv_result_pd = pandas.read_csv(results_oma, sep=',', index_col=0, header=None, squeeze=True)
+            csv_result_pd = pandas.read_csv(results_oma, sep=',', index_col=0, header=None).squeeze()
             csv_result_dict = csv_result_pd.to_dict()
             self.mapper.update(csv_result_dict)
         for species in ncbi_species_ids:
