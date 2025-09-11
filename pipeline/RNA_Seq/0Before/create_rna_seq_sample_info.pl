@@ -123,11 +123,10 @@ my %extra = map  { my @tmp = split(/\t/, $_, -1); if ( $tmp[2] ne '' && $tmp[0] 
 $dbh->disconnect;
 print "Done\n";
 
-
 # Read annotation files
 print "Reading annotation file $RNAseqLib... ";
 die "[$RNAseqLib] file is empty\n"  if ( -z $RNAseqLib );
-my %tsv = %{ Utils::read_spreadsheet("$RNAseqLib", "\t", 'csv', '"', 1) };
+my %tsv = %{ Utils::read_spreadsheet("$RNAseqLib", "\t", 'csv', '', 1) };
 # See modified headers, issue #90 on gitHub:
 # libraryId    experimentId    chipTypeId    organId    organName    uberonId    uberonName    stageId    stageName    infoOrgan    infoStage    sampleTitle    sampleSource    sampleDescription    sampleCharacteristics    organAnnotationStatus    organBiologicalStatus    stageAnnotationStatus    stageBiologicalStatus    sex    strain    speciesId    comment    annotatorId    lastModificationDate    replicate    infoReplicate    SRSId    tags
 # SRX081869    GSE30352    Illumina Genome Analyzer IIx            UBERON:0000955    brain    GgalDv:0000008    1-year-old chicken stage    Brain    ~1 year, adult    gga br F 1                perfect match    not documented    other    partial sampling    F    Red Junglefowl    9031    Chicken    ANN    2013-08-23    1    GEO - [...] we generated RNA-Seq data [...] of brain (cerebral cortex or whole brain without cerebellum), cerebellum, heart, kidney, liver and testis (usually from one male and one female per somatic tissue and two males for testis)[...]
