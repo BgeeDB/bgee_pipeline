@@ -499,7 +499,49 @@ cat: -: Bad file descriptor
 	Library [ERX2162341] is PAIRED but looks not
 	ERX2162342	ERP024551
 cat: -: Bad file descriptor
-	Library [ERX2162342] is PAIRED but looks not
+Use of uninitialized value $strategy in lc at
+	0Before/create_rna_seq_sample_info.pl line 259 (#1)
+    (W uninitialized) An undefined value was used as if it were already
+    defined.  It was interpreted as a "" or a 0, but maybe it was a mistake.
+    To suppress this warning assign a defined value to your variables.
+    
+    To help you figure out what was undefined, perl will try to tell you
+    the name of the variable (if any) that was undefined.  In some cases
+    it cannot do this, so it also tells you what operation you used the
+    undefined value in.  Note, however, that perl optimizes your program
+    and the operation displayed in the warning may not necessarily appear
+    literally in your program.  For example, "that $foo" is usually
+    optimized into "that " . $foo, and the warning will refer to the
+    concatenation (.) operator, even though there is no . in
+    your program.
+    
+Use of uninitialized value $strategy in pattern match (m//) at
+	0Before/create_rna_seq_sample_info.pl line 263 (#1)
+Use of uninitialized value $strategy in concatenation (.) or string at
+	0Before/create_rna_seq_sample_info.pl line 264 (#1)
+	Problem: [ERX2162342][ERP024551] does not seem to be RNA-seq but []. Please check. This library was printed in output file.
+Use of uninitialized value $selection in pattern match (m//) at
+	0Before/create_rna_seq_sample_info.pl line 275 (#1)
+Use of uninitialized value $selection in pattern match (m//) at
+	0Before/create_rna_seq_sample_info.pl line 279 (#1)
+Use of uninitialized value $selection in pattern match (m//) at
+	0Before/create_rna_seq_sample_info.pl line 284 (#1)
+Use of uninitialized value $selection in pattern match (m//) at
+	0Before/create_rna_seq_sample_info.pl line 289 (#1)
+Use of uninitialized value $selection in concatenation (.) or string at
+	0Before/create_rna_seq_sample_info.pl line 290 (#1)
+	Warning: for [ERX2162342][ERP024551], the library selection is indicated as [], which could be incompatible with our pipeline. Please check (this library was printed in output file).
+	Problem: the organism (scientific name) is not matching between the annotation file [Drosophila melanogaster] and the SRA record [], please verify for [ERX2162342][ERP024551]. The information from the annotation file is printed in output file.
+Use of uninitialized value $platform in uc at
+	0Before/create_rna_seq_sample_info.pl line 320 (#1)
+Use of uninitialized value $platform in concatenation (.) or string at
+	0Before/create_rna_seq_sample_info.pl line 320 (#1)
+Use of uninitialized value $platform in concatenation (.) or string at
+	0Before/create_rna_seq_sample_info.pl line 321 (#1)
+	Problem: the platform is not matching between the annotation file [Illumina HiSeq 2500] and the SRA record [], please verify for [ERX2162342][ERP024551] and update ../../source_files/RNA_Seq/RNASeqLibraryPlatformChecks.tsv. The information from the annotation file is printed in output file.
+	Problem: no run ID found for ERX2162342.
+	Problem: no library type specified for ERX2162342.
+	Warning: read length is empty for [ERX2162342][ERP024551]
 	ERX2162343	ERP024551
 cat: -: Bad file descriptor
 	Library [ERX2162343] is PAIRED but looks not
@@ -541,6 +583,14 @@ cat: -: Bad file descriptor
 	Library [ERX2164585] is PAIRED but looks not
 	ERX2164586	ERP024551
 cat: -: Bad file descriptor
+curl: (22) The requested URL returned error: 500
+ ERROR:  curl command failed ( Thu Sep 11 13:04:33 CEST 2025 ) with: 22
+-X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=ERX2164586&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
+HTTP/1.1 500 Internal Server Error
+ WARNING:  FAILURE ( Thu Sep 11 13:04:33 CEST 2025 )
+nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term ERX2164586 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
+EMPTY RESULT
+SECOND ATTEMPT
 	Library [ERX2164586] is PAIRED but looks not
 	ERX2164587	ERP024551
 cat: -: Bad file descriptor
@@ -1079,6 +1129,14 @@ cat: -: Bad file descriptor
 cat: -: Bad file descriptor
 	SRX109256	SRP009459
 cat: -: Bad file descriptor
+curl: (22) The requested URL returned error: 400
+ ERROR:  curl command failed ( Thu Sep 11 13:10:46 CEST 2025 ) with: 22
+-X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi -d query_key=1&WebEnv=MCID_68c2ae36127e7a84410f79ac&retstart=0&retmax=1&db=sra&rettype=full&retmode=xml&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
+HTTP/1.1 400 Bad Request
+ WARNING:  FAILURE ( Thu Sep 11 13:10:46 CEST 2025 )
+nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ efetch.fcgi -query_key 1 -WebEnv MCID_68c2ae36127e7a84410f79ac -retstart 0 -retmax 1 -db sra -rettype full -retmode xml -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
+EMPTY RESULT
+SECOND ATTEMPT
 	SRX109260	SRP009459
 cat: -: Bad file descriptor
 	SRX109261	SRP009459
@@ -1446,6 +1504,14 @@ cat: -: Bad file descriptor
 cat: -: Bad file descriptor
 	SRX1720958	SRP073726
 cat: -: Bad file descriptor
+ WARNING:  FAILURE ( Thu Sep 11 13:16:51 CEST 2025 )
+nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX1720958 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
+<ERROR>Search Backend failed:</ERROR>
+SECOND ATTEMPT
+ WARNING:  FAILURE ( Thu Sep 11 13:16:53 CEST 2025 )
+nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX1720958 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
+<ERROR>Search Backend failed:</ERROR>
+LAST ATTEMPT
 	SRX1720959	SRP073726
 cat: -: Bad file descriptor
 	SRX1720960	SRP073726
@@ -1708,6 +1774,13 @@ cat: -: Bad file descriptor
 cat: -: Bad file descriptor
 	SRX494050	SRP001696
 cat: -: Bad file descriptor
+	Problem: [SRX494050][SRP001696] does not seem to be RNA-seq but []. Please check. This library was printed in output file.
+	Warning: for [SRX494050][SRP001696], the library selection is indicated as [], which could be incompatible with our pipeline. Please check (this library was printed in output file).
+	Problem: the organism (scientific name) is not matching between the annotation file [Drosophila melanogaster] and the SRA record [], please verify for [SRX494050][SRP001696]. The information from the annotation file is printed in output file.
+	Problem: the platform is not matching between the annotation file [Illumina HiSeq 2000] and the SRA record [], please verify for [SRX494050][SRP001696] and update ../../source_files/RNA_Seq/RNASeqLibraryPlatformChecks.tsv. The information from the annotation file is printed in output file.
+	Problem: no run ID found for SRX494050.
+	Problem: no library type specified for SRX494050.
+	Warning: read length is empty for [SRX494050][SRP001696]
 	SRX494051	SRP001696
 cat: -: Bad file descriptor
 	SRX494052	SRP001696
@@ -36053,24 +36126,6 @@ cat: -: Bad file descriptor
 cat: -: Bad file descriptor
 	SRX6608920	SRP216705
 cat: -: Bad file descriptor
-	SRX725595	GSE62098
-cat: -: Bad file descriptor
-	Library [SRX725595] is PAIRED but looks not
-	SRX725596	GSE62098
-cat: -: Bad file descriptor
-	Library [SRX725596] is PAIRED but looks not
-	SRX725597	GSE62098
-cat: -: Bad file descriptor
-	Library [SRX725597] is PAIRED but looks not
-	SRX725598	GSE62098
-cat: -: Bad file descriptor
-	Library [SRX725598] is PAIRED but looks not
-	SRX725600	GSE62098
-cat: -: Bad file descriptor
-	Library [SRX725600] is PAIRED but looks not
-	SRX725601	GSE62098
-cat: -: Bad file descriptor
-	Library [SRX725601] is PAIRED but looks not
 	SRX7397816	SRP237944
 cat: -: Bad file descriptor
 	Warning: [SRX7397816][SRP237944] may not be traditional RNA-seq, found word(s) [capture] subject to caution. Please check.
@@ -43262,22 +43317,6 @@ cat: -: Bad file descriptor
 	ERX1886725	E-MTAB-5895
 cat: -: Bad file descriptor
 	Library [ERX1886725] is PAIRED but looks not
-	ERX1958860	ERP022259
-cat: -: Bad file descriptor
-	ERX1958861	ERP022259
-cat: -: Bad file descriptor
-	ERX1958862	ERP022259
-cat: -: Bad file descriptor
-	ERX1958863	ERP022259
-cat: -: Bad file descriptor
-	ERX1958864	ERP022259
-cat: -: Bad file descriptor
-	ERX1958865	ERP022259
-cat: -: Bad file descriptor
-	ERX1958866	ERP022259
-cat: -: Bad file descriptor
-	ERX1958867	ERP022259
-cat: -: Bad file descriptor
 	ERX2244923	ERP105028
 cat: -: Bad file descriptor
 	ERX2244924	ERP105028
@@ -45429,24 +45468,6 @@ cat: -: Bad file descriptor
 	SRX2820052	SRP075519
 cat: -: Bad file descriptor
 	Library [SRX2820052] is PAIRED but looks not
-	SRX2835403	SRP107390
-cat: -: Bad file descriptor
-	Library [SRX2835403] is PAIRED but looks not
-	SRX2835404	SRP107390
-cat: -: Bad file descriptor
-	Library [SRX2835404] is PAIRED but looks not
-	SRX2835405	SRP107390
-cat: -: Bad file descriptor
-	Library [SRX2835405] is PAIRED but looks not
-	SRX2835406	SRP107390
-cat: -: Bad file descriptor
-	Library [SRX2835406] is PAIRED but looks not
-	SRX2835407	SRP107390
-cat: -: Bad file descriptor
-	Library [SRX2835407] is PAIRED but looks not
-	SRX2835408	SRP107390
-cat: -: Bad file descriptor
-	Library [SRX2835408] is PAIRED but looks not
 	SRX2888264	SRP108727
 cat: -: Bad file descriptor
 	Library [SRX2888264] is PAIRED but looks not
@@ -54174,168 +54195,6 @@ cat: -: Bad file descriptor
 	SRX2992431	SRP111412
 cat: -: Bad file descriptor
 	Library [SRX2992431] is PAIRED but looks not
-	SRX3145886	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145886] is PAIRED but looks not
-	SRX3145887	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145887] is PAIRED but looks not
-	SRX3145888	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145888] is PAIRED but looks not
-	SRX3145889	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145889] is PAIRED but looks not
-	SRX3145890	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145890] is PAIRED but looks not
-	SRX3145891	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145891] is PAIRED but looks not
-	SRX3145892	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145892] is PAIRED but looks not
-	SRX3145893	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145893] is PAIRED but looks not
-	SRX3145894	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145894] is PAIRED but looks not
-	SRX3145895	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145895] is PAIRED but looks not
-	SRX3145896	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145896] is PAIRED but looks not
-	SRX3145897	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145897] is PAIRED but looks not
-	SRX3145898	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145898] is PAIRED but looks not
-	SRX3145899	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145899] is PAIRED but looks not
-	SRX3145900	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145900] is PAIRED but looks not
-	SRX3145901	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145901] is PAIRED but looks not
-	SRX3145902	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145902] is PAIRED but looks not
-	SRX3145903	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145903] is PAIRED but looks not
-	SRX3145904	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145904] is PAIRED but looks not
-	SRX3145905	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145905] is PAIRED but looks not
-	SRX3145906	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145906] is PAIRED but looks not
-	SRX3145907	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145907] is PAIRED but looks not
-	SRX3145908	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145908] is PAIRED but looks not
-	SRX3145909	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145909] is PAIRED but looks not
-	SRX3145910	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145910] is PAIRED but looks not
-	SRX3145911	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145911] is PAIRED but looks not
-	SRX3145912	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145912] is PAIRED but looks not
-	SRX3145913	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145913] is PAIRED but looks not
-	SRX3145914	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145914] is PAIRED but looks not
-	SRX3145915	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145915] is PAIRED but looks not
-	SRX3145916	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145916] is PAIRED but looks not
-	SRX3145917	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145917] is PAIRED but looks not
-	SRX3145918	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145918] is PAIRED but looks not
-	SRX3145919	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145919] is PAIRED but looks not
-	SRX3145920	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145920] is PAIRED but looks not
-	SRX3145921	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145921] is PAIRED but looks not
-	SRX3145922	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145922] is PAIRED but looks not
-	SRX3145923	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145923] is PAIRED but looks not
-	SRX3145924	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145924] is PAIRED but looks not
-	SRX3145925	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145925] is PAIRED but looks not
-	SRX3145926	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145926] is PAIRED but looks not
-	SRX3145927	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145927] is PAIRED but looks not
-	SRX3145928	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145928] is PAIRED but looks not
-	SRX3145929	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145929] is PAIRED but looks not
-	SRX3145930	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145930] is PAIRED but looks not
-	SRX3145931	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145931] is PAIRED but looks not
-	SRX3145932	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145932] is PAIRED but looks not
-	SRX3145933	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145933] is PAIRED but looks not
-	SRX3145934	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145934] is PAIRED but looks not
-	SRX3145935	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145935] is PAIRED but looks not
-	SRX3145936	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145936] is PAIRED but looks not
-	SRX3145937	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145937] is PAIRED but looks not
-	SRX3145938	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145938] is PAIRED but looks not
-	SRX3145939	SRP116585
-cat: -: Bad file descriptor
-	Library [SRX3145939] is PAIRED but looks not
 	SRX317166	SRP026485
 cat: -: Bad file descriptor
 	Library [SRX317166] is PAIRED but looks not
@@ -55311,20 +55170,28 @@ cat: -: Bad file descriptor
 cat: -: Bad file descriptor
 	SRX672715	SRP045380
 cat: -: Bad file descriptor
+	Problem: No SRA information for [SRX672715] [SRP045380]: connection unsuccessful? Incorrect Id? This library was not printed in output file.
 	SRX672716	SRP045380
 cat: -: Bad file descriptor
+	Problem: No SRA information for [SRX672716] [SRP045380]: connection unsuccessful? Incorrect Id? This library was not printed in output file.
 	SRX672717	SRP045380
 cat: -: Bad file descriptor
+	Problem: No SRA information for [SRX672717] [SRP045380]: connection unsuccessful? Incorrect Id? This library was not printed in output file.
 	SRX672718	SRP045380
 cat: -: Bad file descriptor
+	Problem: No SRA information for [SRX672718] [SRP045380]: connection unsuccessful? Incorrect Id? This library was not printed in output file.
 	SRX672719	SRP045380
 cat: -: Bad file descriptor
+	Problem: No SRA information for [SRX672719] [SRP045380]: connection unsuccessful? Incorrect Id? This library was not printed in output file.
 	SRX672720	SRP045380
 cat: -: Bad file descriptor
+	Problem: No SRA information for [SRX672720] [SRP045380]: connection unsuccessful? Incorrect Id? This library was not printed in output file.
 	SRX672721	SRP045380
 cat: -: Bad file descriptor
+	Problem: No SRA information for [SRX672721] [SRP045380]: connection unsuccessful? Incorrect Id? This library was not printed in output file.
 	SRX672722	SRP045380
 cat: -: Bad file descriptor
+	Problem: No SRA information for [SRX672722] [SRP045380]: connection unsuccessful? Incorrect Id? This library was not printed in output file.
 	SRX684115	SRP045641
 cat: -: Bad file descriptor
 	Library [SRX684115] is PAIRED but looks not
@@ -60222,14 +60089,6 @@ cat: -: Bad file descriptor
 	Library [SRX4611119] is PAIRED but looks not
 	SRX4611120	SRP158841
 cat: -: Bad file descriptor
-curl: (22) The requested URL returned error: 500
- ERROR:  curl command failed ( Thu Jul 10 05:59:11 CEST 2025 ) with: 22
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX4611120&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
-HTTP/1.1 500 Internal Server Error
- WARNING:  FAILURE ( Thu Jul 10 05:59:11 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX4611120 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
 	Library [SRX4611120] is PAIRED but looks not
 	SRX4611121	SRP158841
 cat: -: Bad file descriptor
@@ -73035,13 +72894,6 @@ cat: -: Bad file descriptor
 	Library [SRX1602108] is PAIRED but looks not
 	SRX1602109	SRP070882
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:33:34 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX1602109&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:33:33 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX1602109 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
 	Library [SRX1602109] is PAIRED but looks not
 	SRX1602110	SRP070882
 cat: -: Bad file descriptor
@@ -73084,33 +72936,12 @@ cat: -: Bad file descriptor
 	Library [SRX1602122] is PAIRED but looks not
 	SRX1602123	SRP070882
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:34:08 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX1602123&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:34:08 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX1602123 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:34:10 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX1602123&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:34:09 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX1602123 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-LAST ATTEMPT
 	Library [SRX1602123] is PAIRED but looks not
 	SRX1602124	SRP070882
 cat: -: Bad file descriptor
 	Library [SRX1602124] is PAIRED but looks not
 	SRX1602125	SRP070882
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:34:15 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX1602125&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:34:15 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX1602125 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
 	Library [SRX1602125] is PAIRED but looks not
 	SRX1602126	SRP070882
 cat: -: Bad file descriptor
@@ -73120,13 +72951,6 @@ cat: -: Bad file descriptor
 	Library [SRX1602127] is PAIRED but looks not
 	SRX1602128	SRP070882
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:34:25 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX1602128&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:34:24 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX1602128 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
 	Library [SRX1602128] is PAIRED but looks not
 	SRX1602129	SRP070882
 cat: -: Bad file descriptor
@@ -73971,13 +73795,6 @@ cat: -: Bad file descriptor
 cat: -: Bad file descriptor
 	SRX471554	SRP037986
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:46:20 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX471554&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:46:19 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX471554 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
 	SRX471555	SRP037986
 cat: -: Bad file descriptor
 	SRX471556	SRP037986
@@ -74016,13 +73833,6 @@ cat: -: Bad file descriptor
 cat: -: Bad file descriptor
 	SRX471573	SRP037986
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:47:06 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX471573&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:47:05 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX471573 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
 	SRX471574	SRP037986
 cat: -: Bad file descriptor
 	SRX471575	SRP037986
@@ -74033,13 +73843,6 @@ cat: -: Bad file descriptor
 cat: -: Bad file descriptor
 	SRX471578	SRP037986
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:47:22 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX471578&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:47:22 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX471578 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
 	SRX471579	SRP037986
 cat: -: Bad file descriptor
 	SRX471580	SRP037986
@@ -74056,20 +73859,6 @@ cat: -: Bad file descriptor
 cat: -: Bad file descriptor
 	SRX471586	SRP037986
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:47:39 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX471586&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:47:39 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX471586 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:47:41 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX471586&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:47:41 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX471586 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-LAST ATTEMPT
 	SRX471587	SRP037986
 cat: -: Bad file descriptor
 	SRX471588	SRP037986
@@ -74078,13 +73867,6 @@ cat: -: Bad file descriptor
 cat: -: Bad file descriptor
 	SRX471590	SRP037986
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:47:54 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX471590&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:47:53 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX471590 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
 	SRX471591	SRP037986
 cat: -: Bad file descriptor
 	SRX471592	SRP037986
@@ -74109,13 +73891,6 @@ cat: -: Bad file descriptor
 cat: -: Bad file descriptor
 	SRX471602	SRP037986
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:48:24 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX471602&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:48:24 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX471602 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
 	SRX471603	SRP037986
 cat: -: Bad file descriptor
 	SRX471604	SRP037986
@@ -74388,13 +74163,6 @@ cat: -: Bad file descriptor
 	Warning: [SRX5279701][SRP181218] may not be traditional RNA-seq, found word(s) [SAGE/capture] subject to caution. Please check.
 	SRX5279702	SRP181218
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:52:11 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX5279702&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:52:11 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX5279702 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
 	Library [SRX5279702] is PAIRED but looks not
 	Warning: [SRX5279702][SRP181218] may not be traditional RNA-seq, found word(s) [SAGE/capture] subject to caution. Please check.
 	SRX5279703	SRP181218
@@ -74435,20 +74203,6 @@ cat: -: Bad file descriptor
 	Warning: [SRX5279711][SRP181218] may not be traditional RNA-seq, found word(s) [SAGE/capture] subject to caution. Please check.
 	SRX5279712	SRP181218
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:52:33 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX5279712&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:52:33 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX5279712 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:52:35 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX5279712&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:52:35 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX5279712 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-LAST ATTEMPT
 	Library [SRX5279712] is PAIRED but looks not
 	Warning: [SRX5279712][SRP181218] may not be traditional RNA-seq, found word(s) [SAGE/capture] subject to caution. Please check.
 	SRX5279713	SRP181218
@@ -74457,38 +74211,10 @@ cat: -: Bad file descriptor
 	Warning: [SRX5279713][SRP181218] may not be traditional RNA-seq, found word(s) [SAGE/capture] subject to caution. Please check.
 	SRX5279714	SRP181218
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:52:42 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX5279714&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:52:42 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX5279714 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
 	Library [SRX5279714] is PAIRED but looks not
 	Warning: [SRX5279714][SRP181218] may not be traditional RNA-seq, found word(s) [SAGE/capture] subject to caution. Please check.
 	SRX5279715	SRP181218
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:52:46 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX5279715&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:52:45 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX5279715 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:52:47 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX5279715&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:52:47 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX5279715 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-LAST ATTEMPT
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:52:49 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX5279715&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- ERROR:  FAILURE ( Thu Jul 10 08:52:48 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX5279715 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-QUERY FAILURE
 	Library [SRX5279715] is PAIRED but looks not
 	Warning: [SRX5279715][SRP181218] may not be traditional RNA-seq, found word(s) [SAGE/capture] subject to caution. Please check.
 	SRX5279716	SRP181218
@@ -74497,55 +74223,18 @@ cat: -: Bad file descriptor
 	Warning: [SRX5279716][SRP181218] may not be traditional RNA-seq, found word(s) [SAGE/capture] subject to caution. Please check.
 	SRX5279717	SRP181218
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:53:00 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX5279717&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:52:59 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX5279717 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:53:01 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX5279717&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:53:01 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX5279717 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-LAST ATTEMPT
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:53:03 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX5279717&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- ERROR:  FAILURE ( Thu Jul 10 08:53:02 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX5279717 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-QUERY FAILURE
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:53:04 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX5279717&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
-	Problem: No SRA information for [SRX5279717] [SRP181218]: connection unsuccessful? Incorrect Id? This library was not printed in output file.
+	Library [SRX5279717] is PAIRED but looks not
+	Warning: [SRX5279717][SRP181218] may not be traditional RNA-seq, found word(s) [SAGE/capture] subject to caution. Please check.
 	SRX5279718	SRP181218
 cat: -: Bad file descriptor
 	Library [SRX5279718] is PAIRED but looks not
 	Warning: [SRX5279718][SRP181218] may not be traditional RNA-seq, found word(s) [SAGE/capture] subject to caution. Please check.
 	SRX5279719	SRP181218
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:53:10 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX5279719&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:53:10 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX5279719 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
 	Library [SRX5279719] is PAIRED but looks not
 	Warning: [SRX5279719][SRP181218] may not be traditional RNA-seq, found word(s) [SAGE/capture] subject to caution. Please check.
 	SRX5279720	SRP181218
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:53:14 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX5279720&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:53:13 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX5279720 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
 	Library [SRX5279720] is PAIRED but looks not
 	Warning: [SRX5279720][SRP181218] may not be traditional RNA-seq, found word(s) [SAGE/capture] subject to caution. Please check.
 	SRX5279721	SRP181218
@@ -74570,13 +74259,6 @@ cat: -: Bad file descriptor
 	Warning: [SRX5279725][SRP181218] may not be traditional RNA-seq, found word(s) [SAGE/capture] subject to caution. Please check.
 	SRX5279726	SRP181218
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:53:27 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX5279726&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:53:27 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX5279726 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
 	Library [SRX5279726] is PAIRED but looks not
 	Warning: [SRX5279726][SRP181218] may not be traditional RNA-seq, found word(s) [SAGE/capture] subject to caution. Please check.
 	SRX5279727	SRP181218
@@ -74605,13 +74287,6 @@ cat: -: Bad file descriptor
 	Warning: [SRX5279732][SRP181218] may not be traditional RNA-seq, found word(s) [SAGE/capture] subject to caution. Please check.
 	SRX5279733	SRP181218
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:53:42 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX5279733&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:53:41 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX5279733 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
 	Library [SRX5279733] is PAIRED but looks not
 	Warning: [SRX5279733][SRP181218] may not be traditional RNA-seq, found word(s) [SAGE/capture] subject to caution. Please check.
 	SRX5279734	SRP181218
@@ -74636,13 +74311,6 @@ cat: -: Bad file descriptor
 	Warning: [SRX5279738][SRP181218] may not be traditional RNA-seq, found word(s) [SAGE/capture] subject to caution. Please check.
 	SRX5279739	SRP181218
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:53:55 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX5279739&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:53:54 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX5279739 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
 	Library [SRX5279739] is PAIRED but looks not
 	Warning: [SRX5279739][SRP181218] may not be traditional RNA-seq, found word(s) [SAGE/capture] subject to caution. Please check.
 	SRX5279740	SRP181218
@@ -74671,31 +74339,10 @@ cat: -: Bad file descriptor
 	Warning: [SRX5279745][SRP181218] may not be traditional RNA-seq, found word(s) [SAGE/capture] subject to caution. Please check.
 	SRX5279746	SRP181218
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:54:14 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX5279746&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:54:14 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX5279746 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:54:16 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX5279746&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:54:16 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX5279746 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-LAST ATTEMPT
 	Library [SRX5279746] is PAIRED but looks not
 	Warning: [SRX5279746][SRP181218] may not be traditional RNA-seq, found word(s) [SAGE/capture] subject to caution. Please check.
 	SRX5279747	SRP181218
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:54:20 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX5279747&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:54:19 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX5279747 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
 	Library [SRX5279747] is PAIRED but looks not
 	Warning: [SRX5279747][SRP181218] may not be traditional RNA-seq, found word(s) [SAGE/capture] subject to caution. Please check.
 	SRX5279748	SRP181218
@@ -74708,13 +74355,6 @@ cat: -: Bad file descriptor
 	Warning: [SRX5279749][SRP181218] may not be traditional RNA-seq, found word(s) [SAGE/capture] subject to caution. Please check.
 	SRX5279750	SRP181218
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:54:27 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX5279750&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:54:27 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX5279750 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
 	Library [SRX5279750] is PAIRED but looks not
 	Warning: [SRX5279750][SRP181218] may not be traditional RNA-seq, found word(s) [SAGE/capture] subject to caution. Please check.
 	SRX5279751	SRP181218
@@ -74730,13 +74370,6 @@ cat: -: Bad file descriptor
 	Library [SRX759817] is PAIRED but looks not
 	SRX759818	SRP049818
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:54:37 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX759818&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:54:36 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX759818 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
 	Library [SRX759818] is PAIRED but looks not
 	SRX759819	SRP049818
 cat: -: Bad file descriptor
@@ -74749,13 +74382,6 @@ cat: -: Bad file descriptor
 	Library [SRX759821] is PAIRED but looks not
 	SRX759822	SRP049818
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:54:47 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX759822&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:54:46 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX759822 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
 	Library [SRX759822] is PAIRED but looks not
 	SRX759841	SRP049818
 cat: -: Bad file descriptor
@@ -74771,13 +74397,6 @@ cat: -: Bad file descriptor
 	Library [SRX7911169] is PAIRED but looks not
 	SRX7911170	SRP252769
 cat: -: Bad file descriptor
-curl: (7) Failed to connect to eutils.ncbi.nlm.nih.gov port 443: Connection refused
- ERROR:  curl command failed ( Thu Jul 10 08:55:01 CEST 2025 ) with: 7
--X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi -d retmax=0&usehistory=y&db=sra&term=SRX7911170&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
- WARNING:  FAILURE ( Thu Jul 10 08:55:01 CEST 2025 )
-nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ esearch.fcgi -retmax 0 -usehistory y -db sra -term SRX7911170 -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
-EMPTY RESULT
-SECOND ATTEMPT
 	Library [SRX7911170] is PAIRED but looks not
 	SRX7911171	SRP252769
 cat: -: Bad file descriptor
@@ -78389,15 +78008,6 @@ cat: -: Bad file descriptor
 cat: -: Bad file descriptor
 	Warning: for [SRX5528159][SRP188583], the library selection is indicated as [other], which could be incompatible with our pipeline. Please check (this library was printed in output file).
 	Library [SRX5528159] is PAIRED but looks not
-	SRX797877	SRP050607
-cat: -: Bad file descriptor
-	Library [SRX797877] is PAIRED but looks not
-	SRX797881	SRP050607
-cat: -: Bad file descriptor
-	Library [SRX797881] is PAIRED but looks not
-	SRX797885	SRP050607
-cat: -: Bad file descriptor
-	Library [SRX797885] is PAIRED but looks not
 	ERX1403319	ERP014610
 cat: -: Bad file descriptor
 	ERX1403320	ERP014610
@@ -79822,8 +79432,6 @@ cat: -: Bad file descriptor
 	Warning: No species/genome assembly defined in the database for [SRX2973379] [SRP110799]: [61474]. This library was not printed in output file.
 	SRX2973380	SRP110799
 	Warning: No species/genome assembly defined in the database for [SRX2973380] [SRP110799]: [61474]. This library was not printed in output file.
-	SRX2949439	SRP110229
-	Warning: No species/genome assembly defined in the database for [SRX2949439] [SRP110229]: [61476]. This library was not printed in output file.
 	SRX2949440	SRP110229
 	Warning: No species/genome assembly defined in the database for [SRX2949440] [SRP110229]: [61476]. This library was not printed in output file.
 	SRX2949441	SRP110229
@@ -79832,10 +79440,6 @@ cat: -: Bad file descriptor
 	Warning: No species/genome assembly defined in the database for [SRX2949442] [SRP110229]: [61476]. This library was not printed in output file.
 	SRX2949443	SRP110229
 	Warning: No species/genome assembly defined in the database for [SRX2949443] [SRP110229]: [61476]. This library was not printed in output file.
-	SRX2949444	SRP110229
-	Warning: No species/genome assembly defined in the database for [SRX2949444] [SRP110229]: [61476]. This library was not printed in output file.
-	SRX2949445	SRP110229
-	Warning: No species/genome assembly defined in the database for [SRX2949445] [SRP110229]: [61476]. This library was not printed in output file.
 	SRX2949446	SRP110229
 	Warning: No species/genome assembly defined in the database for [SRX2949446] [SRP110229]: [61476]. This library was not printed in output file.
 	SRX2949476	SRP110229
@@ -80179,6 +79783,14 @@ cat: -: Bad file descriptor
 cat: -: Bad file descriptor
 	ERX713939	ERP009696
 cat: -: Bad file descriptor
+curl: (22) The requested URL returned error: 500
+ ERROR:  curl command failed ( Fri Sep 12 05:59:27 CEST 2025 ) with: 22
+-X POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi -d query_key=1&WebEnv=MCID_68c39a9effcfd0386d004c2b&retstart=0&retmax=1&db=sra&rettype=full&retmode=xml&tool=edirect&edirect=20.9&edirect_os=Linux&email=jwollbre%40curnagl
+HTTP/1.1 500 Internal Server Error
+ WARNING:  FAILURE ( Fri Sep 12 05:59:26 CEST 2025 )
+nquire -url https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ efetch.fcgi -query_key 1 -WebEnv MCID_68c39a9effcfd0386d004c2b -retstart 0 -retmax 1 -db sra -rettype full -retmode xml -tool edirect -edirect 20.9 -edirect_os Linux -email jwollbre@curnagl
+EMPTY RESULT
+SECOND ATTEMPT
 	ERX713940	ERP009696
 cat: -: Bad file descriptor
 	ERX713941	ERP009696
