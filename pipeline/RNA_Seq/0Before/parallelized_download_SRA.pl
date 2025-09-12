@@ -235,10 +235,33 @@ foreach my $experimentId (keys %sbatchToRun){
         my $speciesId = $sbatchToRun{$experimentId}{$libraryId}{'speciesId'};
         my $libDirectory = "$outputDir/$speciesId/$libraryId";
         my $done = 1;
+        my @meanReadLengths;
+        my $minRead_length = 10000;
+        my $maxRead_length = 0;
         foreach my $runId (keys %{$sbatchToRun{$experimentId}{$libraryId}}){
             next if $runId eq "speciesId";
             if(! -e "$libDirectory/$runId.done") {
                 $done = 0;
+            } else {
+                # if the run has been properly downloaded we get the read length information
+                if ( -e "$libDirectory/$runId.R.stat" ) {
+                    my @lines = read_file("$libDirectory/$runId.R.stat", chomp=>1);
+                    my $line = $lines[1];
+                    my @fields = split(/\t/, $line);
+                    if ( scalar @fields == 4 ) {
+                        push(@meanReadLengths, $fields[3]);
+                        if ( $fields[0] < $minRead_length ) {
+                            $minReadLength = $fields[0];
+                        }
+                        if ( $fields[1] > $maxRead_length ) {
+                            $maxReadLength = $fields[1];
+                        }
+                    } else {
+                        warn "unexpected format for file $libDirectory/$runId.R.stat\n";
+                    }
+                } else {
+                    warn "file $libDirectory/$runId.R.stat not found\n";
+                }
             }
         }
         if ($done) {
@@ -251,6 +274,16 @@ foreach my $experimentId (keys %sbatchToRun){
             system("ln -s ../../$speciesId/$libraryId $libraryId");
             # we also add this library to the list of already generated libraries
             $alreadyDownloaded{$libraryId} = 1;
+            # we calculate the mean read length for this library
+            my $sum = 0;
+            foreach my $runMeanReadLength (@meanReadLengths) {
+                $sum += $runMeanReadLength;
+            }
+            my $meanReadLength = $sum / scalar @meanReadLengths;
+            # and we add the mean read length to the already downloaded file
+            $alreadyDownloaded{$libraryId}{'meanReadLength'} = $meanReadLength;
+            $alreadyDownloaded{$libraryId}{'minReadLength'} = $minReadLength;
+            $alreadyDownloaded{$libraryId}{'maxReadLength'} = $maxReadLength;
         } else {
             warn "Did not properly download the library $libraryId";
             remove_tree("$libDirectory");
@@ -263,6 +296,6 @@ chdir "$initialDir";
 print "Finally update the file containing downloaded libraries";
 open my $outFh, "> ", "$downloadedLibraries" or die "Cannot write: $! \n";
 foreach my $libraryId (keys %alreadyDownloaded) {
-    print $outFh "$libraryId\n";
+    print $outFh "$libraryId\t$alreadyDownloaded{$libraryId}{'minReadLength'}\t$alreadyDownloaded{$libraryId}{'maxReadLength'}\t$alreadyDownloaded{$libraryId}{'meanReadLength'}\n";
 }
 close $outFh;

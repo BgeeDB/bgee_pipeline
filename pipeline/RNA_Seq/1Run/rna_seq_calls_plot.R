@@ -9,6 +9,7 @@
 ## R CMD BATCH --no-save --no-restore '--args sample_info="/path/to/bgeecall_input.tsv" calls_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) rna_seq_calls_plot.R rna_seq_calls_plot.Rout
 ## bgeecall_sample_info       - path to file with info about libraries processed with BgeeCall
 ## calls_dir                  - path to folder where BgeeCall wrote the calls.
+## downloaded_lib_file        - path to file containing list of libraries already downloaded (with min and max read size)
 ## presence_absence_report    - path to output file containing report of present/absent calls for all samples
 ## kallisto_report            - path to output file containing report of kallisto for all samples
 
@@ -28,7 +29,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed in command line
-command_arg <- c("bgeecall_sample_info", "calls_dir", "presence_absence_report", "kallisto_report")
+command_arg <- c("bgeecall_sample_info", "calls_dir", "presence_absence_report", "kallisto_report", "downloaded_lib_file")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -37,6 +38,7 @@ for( c_arg in command_arg ){
 
 ##load data
 sample_info_data <- read.table(bgeecall_sample_info, sep = "\t", header = TRUE, comment.char = "")
+downloaded_lib_file_data <- read.table(downloaded_lib_file, sep = "\t", header = TRUE, comment.char = "")
 
 ## init variables for calls report
 info_file <- "gene_cutoff_info_file.tsv"
@@ -48,7 +50,6 @@ names(all_samples) <- samples_columns
 
 ## init variables for calls report
 kallisto_info_file   <- "run_info.json"
-reads_R_stat_suffix  <- ".R.stat"
 kallisto_info_all_samples <- data.frame(matrix(nrow = 0, ncol = 11))
 kallisto_info_report_columns <- c("libraryId", "reads", "min_read_size", "max_read_size", "number_aligned", "number_unique_aligned", 
   "prop_aligned", "prop_unique_aligned", "number_targets", "start_time", "kallisto_version")
@@ -82,22 +83,16 @@ for(line in seq(nrow(sample_info_data))) {
 
     # retrieve info for kallisto report
     kallisto_info_file_path <- file.path(calls_dir, library_id, kallisto_info_file)
-    library_r_stat_files <- list.files(path = as.character(sample_info_data$rnaseq_lib_path[line]), 
-      pattern = reads_R_stat_suffix, full.names = TRUE)
-    if(file.exists(kallisto_info_file_path) && (length(library_r_stat_files) > 0) ) {
+    if(file.exists(kallisto_info_file_path) ) {
       json_info <- fromJSON(file = kallisto_info_file_path)
-      min_reads <- Inf
-      max_reads <- 0
-      for (r_stat_file in library_r_stat_files) {
-        r_stats <- read.table(file = r_stat_file, header = TRUE, sep = "\t", comment.char = "")
-        if (r_stats[1,1] < min_reads) {
-          min_reads <- r_stats[1,1]
-        }
-        if (r_stats[1,2] > max_reads) {
-          max_reads <- r_stats[1,2]
-        }
+      # check that library is in the downloaded lib file
+      if(!(library_id %in% downloaded_lib_file_data$libraryId)) {
+        warning(library_id, " not found in the downloaded libraries file")
       }
-      kallisto_info <- data.frame(library_id, json_info$n_processed, r_stats[1,1], r_stats[1,2], 
+      # get min and max read size from downloaded lib file
+      min_reads <- downloaded_lib_file_data[downloaded_lib_file_data$libraryId == library_id,]$min_read_size
+      max_reads <- downloaded_lib_file_data[downloaded_lib_file_data$libraryId == library_id,]$max_read_size
+      kallisto_info <- data.frame(library_id, json_info$n_processed, min_reads, max_reads, 
         json_info$n_pseudoaligned, json_info$n_unique, json_info$p_pseudoaligned, json_info$p_unique, 
         json_info$n_targets, json_info$start_time, json_info$kallisto_version)
       names(kallisto_info) <- kallisto_info_report_columns
