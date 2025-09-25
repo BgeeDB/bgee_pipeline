@@ -378,11 +378,11 @@ def main(argv):
         for process_number in proc_id_list:
             config['DYNAMIC_VARIABLES'] = {'max_index': str(round(chunk_size * process_number))}
             if args_dict['no_ortholog']:
-                config['DYNAMIC_VARIABLES']['START_INDEX_ORTHOLOG'] = str(number_orth_files)
+                config['DYNAMIC_VARIABLES']['START_INDEX_ORTHOLOG'] = str(int(number_orth_files))
             else:
                 config['DYNAMIC_VARIABLES']['START_INDEX_ORTHOLOG'] = str(round(chunk_size * (process_number - 1)))
             if args_dict['no_paralog']:
-                config['DYNAMIC_VARIABLES']['START_INDEX_PARALOG'] = str(number_paralog_files)
+                config['DYNAMIC_VARIABLES']['START_INDEX_PARALOG'] = str(int(number_paralog_files))
             else:
                 config['DYNAMIC_VARIABLES']['START_INDEX_PARALOG'] = str(round(chunk_size * (process_number - 1)))
             config_process_dir = os.path.join(dir_path, "process{}_tmp".format(process_number))
