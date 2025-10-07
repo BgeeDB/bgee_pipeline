@@ -1,1 +1,0 @@
-../Annotation_checking/check_affy_curation.pl

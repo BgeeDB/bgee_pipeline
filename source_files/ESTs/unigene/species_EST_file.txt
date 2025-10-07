@@ -1,5 +1,0 @@
-mouse	Mm.data
-human	Hs.data
-zebrafish	Dr.data
-xenopus	Str.data
-fruitfly	Dm.data
