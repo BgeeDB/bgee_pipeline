@@ -20,22 +20,14 @@ update dataSource set releaseDate = '2025-08-05', releaseVersion = '',          
 update dataSource set releaseDate = '2025-07-21', releaseVersion = '',                             displayOrder = 6  where dataSourceId = 9;
 -- FlyBase
 update dataSource set releaseDate = '2025-07-23', releaseVersion = ''                                                where dataSourceId = 10;
--- ArrayExpress Affymetrix
-update dataSource set releaseDate = '2016-08-21', releaseVersion = '',                             displayOrder = 4  where dataSourceId = 11;
 -- ArrayExpress RNA-Seq
 update dataSource set releaseDate = '2021-02-08', releaseVersion = '',                             displayOrder = 255  where dataSourceId = 101;
--- Unigene
-update dataSource set releaseDate = '2016-12-05', releaseVersion = '',                             displayOrder = 9  where dataSourceId = 12;
--- smiRNAdb
-update dataSource set releaseDate = '2009-04-23', releaseVersion = '2',                            displayOrder = 11 where dataSourceId = 13;
 -- BDGP
 update dataSource set releaseDate = '2021-08-31', releaseVersion = '',                             displayOrder = 8  where dataSourceId = 14;
 -- Xenbase
 update dataSource set releaseDate = '2025-09-03', releaseVersion = '',                             displayOrder = 7  where dataSourceId = 15;
 -- neXtProt
 update dataSource set releaseDate = null,         releaseVersion = ''                                                where dataSourceId = 16;
--- GEO (Affymetrix)
-update dataSource set releaseDate = '2016-08-22', releaseVersion = '',                             displayOrder = 3  where dataSourceId = 17;
 -- GEO (RNASeq)
 update dataSource set releaseDate = '2021-02-08', releaseVersion = '',                             displayOrder = 2  where dataSourceId = 100;
 -- GO

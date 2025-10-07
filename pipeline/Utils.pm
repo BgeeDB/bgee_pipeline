@@ -52,12 +52,10 @@ our @STANDARDIZED_STRAIN_INFO = ($WILD_TYPE_STRAIN, $NA_STRAIN, $NOT_ANNOTATED_S
 our @NO_ANNOT_STRAIN_INFO     = ($WILD_TYPE_STRAIN, $NOT_ANNOTATED_STRAIN, $NA_STRAIN, $CRD_STRAIN);
 
 
-our $EST_DATA_TYPE                 = 'est';
-our $AFFY_DATA_TYPE                = 'affymetrix';
 our $IN_SITU_DATA_TYPE             = 'inSitu';
 our $RNA_SEQ_DATA_TYPE             = 'rnaSeq';
 our $FULL_LENGTH_RNA_SEQ_DATA_TYPE = 'fullLengthRnaSeq';
-our @DATA_TYPES                    = ($EST_DATA_TYPE, $AFFY_DATA_TYPE, $IN_SITU_DATA_TYPE, $RNA_SEQ_DATA_TYPE, $FULL_LENGTH_RNA_SEQ_DATA_TYPE);
+our @DATA_TYPES                    = ($IN_SITU_DATA_TYPE, $RNA_SEQ_DATA_TYPE, $FULL_LENGTH_RNA_SEQ_DATA_TYPE);
 
 
 # Variables used for computing ranks
@@ -123,15 +121,6 @@ sub map_strain_names {
                 my $source = quotemeta($fields[14]);
                 my $target = $strain_mapping->{ $fields[4] }->{ $fields[14] };
                 $line =~ s{\t$source\t}{\t$target\t};
-            }
-            print $line;
-        }
-        # Case affymetrixChip_full.tsv: "strain"    speciesId
-        elsif ( $expression_annotation_file =~ /affymetrixChip_full\.tsv/ ){
-            if ( exists $strain_mapping->{ $fields[23] }->{ $fields[22] } ){
-                my $source = quotemeta($fields[22]);
-                my $target = $strain_mapping->{ $fields[23] }->{ $fields[22] };
-                $line =~ s{"$source"\t$fields[23]\t}{"$target"\t$fields[23]\t};
             }
             print $line;
         }
@@ -397,7 +386,7 @@ sub defineCallAndQualityNew {
     # A ref to a hash of hashes with two keys:
     # 'call' and 'quality'
     # The elements can come for instance from a list of in situ spots,
-    # or Affymetrix probesets, or Affymetrix summarized calls per chip, or RNA-Seq results
+    # or RNA-Seq results
     my ($callsRef) = @_;
 
     # New scoring scheme is based on two scores:

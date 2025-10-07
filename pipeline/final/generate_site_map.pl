@@ -58,7 +58,7 @@ my @basic_about     = ('', 'news', 'collaborations', 'publications', 'sources', 
 for my $baseUrlName ( sort @basic_about ){
     push @static_pages, "<loc>$homepage/about/$baseUrlName</loc><priority>0.7</priority>";
 }
-my @basic_support   = ('tutorials', 'data-sets', 'scRNA-seq-protocols-comparison', 'videos', 'faq', 'tutorial-gene-page', 'tutorial-TopAnat', 'tutorial-expression-calls', 'tutorial-data-curation', 'tutorial-query-bgee-knowledge-graph-sparql', 'tutorial-expression-comparison', 'tutorial-raw-data', 'tutorial-anatomical-homology', 'tutorial-expression-call-download-documentation', 'tutorial-processed-expression-values-download-documentation', 'tutorial-processed-expression-values-download-RNA-seq', 'tutorial-processed-expression-values-download-scRNA-seq-full-length', 'tutorial-processed-expression-values-download-scRNA-seq-droplet-based', 'tutorial-processed-expression-values-download-affymetrix');
+my @basic_support   = ('tutorials', 'data-sets', 'scRNA-seq-protocols-comparison', 'videos', 'faq', 'tutorial-gene-page', 'tutorial-TopAnat', 'tutorial-expression-calls', 'tutorial-data-curation', 'tutorial-query-bgee-knowledge-graph-sparql', 'tutorial-expression-comparison', 'tutorial-raw-data', 'tutorial-anatomical-homology', 'tutorial-expression-call-download-documentation', 'tutorial-processed-expression-values-download-documentation', 'tutorial-processed-expression-values-download-RNA-seq', 'tutorial-processed-expression-values-download-scRNA-seq-full-length', 'tutorial-processed-expression-values-download-scRNA-seq-droplet-based');
 for my $baseUrlName ( sort @basic_support ){
     push @static_pages, "<loc>$homepage/support/$baseUrlName</loc><priority>0.7</priority>";
 }
@@ -134,7 +134,7 @@ push @index, $sitemap;
 
 # experiment pages
 print "Write experiment pages\n"  if ( $debug );
-my $expId = $bgee->prepare('SELECT experimentIds FROM (SELECT DISTINCT inSituExperimentId AS experimentIds FROM inSituEvidence) AS insitu UNION DISTINCT (SELECT DISTINCT microArrayExperimentId AS experimentIds FROM affymetrixChip) UNION DISTINCT (SELECT DISTINCT rnaSeqExperimentId AS experimentIds FROM rnaSeqLibrary) ORDER BY experimentIds');
+my $expId = $bgee->prepare('SELECT experimentIds FROM (SELECT DISTINCT inSituExperimentId AS experimentIds FROM inSituEvidence) AS insitu UNION DISTINCT (SELECT DISTINCT rnaSeqExperimentId AS experimentIds FROM rnaSeqLibrary) ORDER BY experimentIds');
 $expId->execute()  or die $expId->errstr;
 $count = 0;
 $split = 0;

@@ -215,65 +215,6 @@ sub get_schema_default {
 sub get_schema_species {
     my ($bgee) = @_;
 
-    my $affy_template   = '                {
-                    "@type": "Dataset",
-                    "https://purl.org/dc/terms/conformsTo": {
-                        "@id": "'.$bioschDataset.'",
-                        "@type": "CreativeWork"
-                    },
-                    "dateModified": "'.$dateModified.'",
-                    "creator": {
-                        "@type": "Organization",
-                        "url": "https://www.bgee.org/",
-                        "name": "The Bgee Team"
-                    },
-                    "license": {
-                        "@type": "CreativeWork",
-                        "name": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
-                        "url": "'.$bgeeLicense.'"
-                    },
-                    "distribution": [
-                        {
-                            "@type": "DataDownload",
-                            "encodingFormat": "TSV",
-                            "contentUrl": "https://www.bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/affymetrix/__SPECIES_NAME__/__SPECIES_NAME___Affymetrix_experiments_chips.tar.gz"
-                        }
-                    ],
-                    "name": "__SPECIES NAME__ Affymetrix experiments chips",
-                    "keywords": [
-                        "Affymetrix"
-                    ],
-                    "description": "Affymetrix experiments/chips annotations and metadata.",
-                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-affymetrix"
-                },
-                {
-                    "@type": "Dataset",
-                    "https://purl.org/dc/terms/conformsTo": {
-                        "@id": "'.$bioschDataset.'",
-                        "@type": "CreativeWork"
-                    },
-                    "dateModified": "'.$dateModified.'",
-                    "creator": {
-                        "@type": "Organization",
-                        "url": "https://www.bgee.org/",
-                        "name": "The Bgee Team"
-                    },
-                    "license": {
-                        "@type": "CreativeWork",
-                        "name": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
-                        "url": "'.$bgeeLicense.'"
-                    },
-                    "distribution": [
-                        {
-                            "@type": "DataDownload",
-                            "encodingFormat": "TSV",
-                            "contentUrl": "https://www.bgee.org/ftp/bgee_v'.$bgee_db_version.'/download/processed_expr_values/affymetrix/__SPECIES_NAME__/__SPECIES_NAME___Affymetrix_probesets.tar.gz"
-                        }
-                    ],
-                    "name": "__SPECIES NAME__ Affymetrix probesets",
-                    "description": "__SPECIES NAME__ Affymetrix probesets, data (signal intensities).",
-                    "url": "https://www.bgee.org/species/__TAXID__#proc-values-affymetrix"
-                }';
     my $rnaseq_template = '                {
                     "@type": "Dataset",
                     "https://purl.org/dc/terms/conformsTo": {
@@ -693,7 +634,7 @@ __DATATYPES__
     ]
 }';
 
-    my $speciesdbh = $bgee->prepare('SELECT DISTINCT s.speciesId, s.genus, s.species, s.speciesCommonName, s.dataSourceId, d.baseUrl, CONCAT_WS(",", IF(EXISTS(SELECT DISTINCT 1 FROM affymetrixChip AS t1 INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId AND t2.speciesId = s.speciesId), "affymetrix", NULL), IF(EXISTS(SELECT DISTINCT 1 FROM rnaSeqLibraryAnnotatedSample AS t1 INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId AND t2.speciesId = s.speciesId INNER JOIN rnaSeqLibrary AS t3 ON t1.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE rnaSeqTechnologyIsSingleCell = 0), "bulk", NULL), IF(EXISTS(SELECT DISTINCT 1 FROM rnaSeqLibraryAnnotatedSample AS t1 INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId AND t2.speciesId = s.speciesId INNER JOIN rnaSeqLibrary AS t3 ON t1.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE rnaSeqTechnologyIsSingleCell = 1 AND t1.multipleLibraryIndividualSample = 0), "full_length", NULL), IF(EXISTS(SELECT DISTINCT 1 FROM rnaSeqLibraryAnnotatedSample AS t1 INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId AND t2.speciesId = s.speciesId INNER JOIN rnaSeqLibrary AS t3 ON t1.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE rnaSeqTechnologyIsSingleCell = 1 AND t1.multipleLibraryIndividualSample = 1), "droplet_based", NULL)) AS datatypes FROM species AS s INNER JOIN dataSource AS d ON s.dataSourceId = d.dataSourceId GROUP BY s.speciesId');
+    my $speciesdbh = $bgee->prepare('SELECT DISTINCT s.speciesId, s.genus, s.species, s.speciesCommonName, s.dataSourceId, d.baseUrl, CONCAT_WS(",", IF(EXISTS(SELECT DISTINCT 1 FROM rnaSeqLibraryAnnotatedSample AS t1 INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId AND t2.speciesId = s.speciesId INNER JOIN rnaSeqLibrary AS t3 ON t1.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE rnaSeqTechnologyIsSingleCell = 0), "bulk", NULL), IF(EXISTS(SELECT DISTINCT 1 FROM rnaSeqLibraryAnnotatedSample AS t1 INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId AND t2.speciesId = s.speciesId INNER JOIN rnaSeqLibrary AS t3 ON t1.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE rnaSeqTechnologyIsSingleCell = 1 AND t1.multipleLibraryIndividualSample = 0), "full_length", NULL), IF(EXISTS(SELECT DISTINCT 1 FROM rnaSeqLibraryAnnotatedSample AS t1 INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId AND t2.speciesId = s.speciesId INNER JOIN rnaSeqLibrary AS t3 ON t1.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE rnaSeqTechnologyIsSingleCell = 1 AND t1.multipleLibraryIndividualSample = 1), "droplet_based", NULL)) AS datatypes FROM species AS s INNER JOIN dataSource AS d ON s.dataSourceId = d.dataSourceId GROUP BY s.speciesId');
     $speciesdbh->execute()  or die $speciesdbh->errstr;
     my @species_json;
     while ( my ($speciesId, $genus, $species, $speciesCommonName, $dataSourceId, $baseUrl, $datatypes) = $speciesdbh->fetchrow_array() ){
@@ -703,13 +644,10 @@ __DATATYPES__
         #Loop over data types with *Processed expression value files*, separated by *,*
         my @datatypes = split(',', $datatypes);
         my @dt_temp;
-        # can be: affymetrix, bulk, full_length, droplet_based
+        # can be: bulk, full_length, droplet_based
         for my $dt ( sort @datatypes ){
             if ( $dt eq 'bulk' ){
                 push @dt_temp, $rnaseq_template;
-            }
-            elsif ( $dt eq 'affymetrix' ){
-                push @dt_temp, $affy_template;
             }
             elsif ( $dt eq 'full_length' ){
                 push @dt_temp, $scrnaseq_template;

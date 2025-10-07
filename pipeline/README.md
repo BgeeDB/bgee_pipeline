@@ -6,7 +6,7 @@
 2. [List of pipeline steps](#list-of-pipeline-steps)
    * [Pipeline and database initialization](#pipeline-and-database-initialization)
    * [Taxa, genomes, ontologies (e.g., Uberon)](#taxa-genomes-ontologies)
-   * [Raw expression data analyses and insertion](#raw-data-analyses-and-insertion): RNA-Seq, Affymetrix, _in situ_ hybridization, EST analyses.
+   * [Raw expression data analyses and insertion](#raw-data-analyses-and-insertion): RNA-Seq, _in situ_ hybridization.
    * [Bgee post-processing steps](#bgee-post-processing-steps)
 
 Shortcut note: for the RNA-Seq analysis pipeline, see [RNA_Seq/](RNA_Seq/).
@@ -53,10 +53,8 @@ They are not meant to be the output of the Makefiles, but, rather, small files t
 ### Raw data analyses and insertion
 
 1. RNA-Seq data analyses: see [RNA_Seq/](RNA_Seq/).
-2. Affymetrix data analyses: see [Affymetrix/](Affymetrix/).
-3. _In situ_ hybridization data analyses: see [In_situ/](In_situ/).
-4. EST data analyses: see [ESTs/](ESTs/).
-5. Differential expression analyses: see [Differential_expression/](Differential_expression/).
+2. _In situ_ hybridization data analyses: see [In_situ/](In_situ/).
+3. Differential expression analyses: see [Differential_expression/](Differential_expression/).
 
 ### Bgee post-processing steps
 
@@ -93,7 +91,6 @@ should not be versioned! (easier than to encrypt the file)
   * `TMP DIR`: where to store (potentially large) TMP files
   * Servers and ports configuration: 
     * `DBHOST` and `DBPORT` for MySQL database
-    * `ANNOTATORHOST` denoting the server storing Affymetrix raw data, and Ensembl local version
     * `DATAHOST` an additional backup machine
     * `PIPEHOST`, name of the machine on which the pipeline is run
   

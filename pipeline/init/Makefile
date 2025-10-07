@@ -102,67 +102,6 @@ global_check:
 	@R -e 'library("rJava")'             >> $@.tmp  2>/dev/null
 	@R -e 'library("Runiversal")'        >> $@.tmp  2>/dev/null
 	@R -e 'library("topGO")'             >> $@.tmp  2>/dev/null
-# Extra R libraries required during cel/MAS5 processing
-	@R -e 'library("celeganscdf")'       >> $@.tmp  2>/dev/null
-	@R -e 'library("celegansprobe")'     >> $@.tmp  2>/dev/null
-	@R -e 'library("drosgenome1cdf")'    >> $@.tmp  2>/dev/null
-	@R -e 'library("drosgenome1probe")'  >> $@.tmp  2>/dev/null
-	@R -e 'library("drosophila2cdf")'    >> $@.tmp  2>/dev/null
-	@R -e 'library("drosophila2probe")'  >> $@.tmp  2>/dev/null
-	@R -e 'library("hgfocuscdf")'        >> $@.tmp  2>/dev/null
-	@R -e 'library("hgfocusprobe")'      >> $@.tmp  2>/dev/null
-	@R -e 'library("hgu95acdf")'         >> $@.tmp  2>/dev/null
-	@R -e 'library("hgu95aprobe")'       >> $@.tmp  2>/dev/null
-	@R -e 'library("hgu95bcdf")'         >> $@.tmp  2>/dev/null
-	@R -e 'library("hgu95bprobe")'       >> $@.tmp  2>/dev/null
-	@R -e 'library("hgu95ccdf")'         >> $@.tmp  2>/dev/null
-	@R -e 'library("hgu95cprobe")'       >> $@.tmp  2>/dev/null
-	@R -e 'library("hgu95dcdf")'         >> $@.tmp  2>/dev/null
-	@R -e 'library("hgu95dprobe")'       >> $@.tmp  2>/dev/null
-	@R -e 'library("hgu95ecdf")'         >> $@.tmp  2>/dev/null
-	@R -e 'library("hgu95eprobe")'       >> $@.tmp  2>/dev/null
-	@R -e 'library("hgu95av2cdf")'       >> $@.tmp  2>/dev/null
-	@R -e 'library("hgu95av2probe")'     >> $@.tmp  2>/dev/null
-	@R -e 'library("hgu133acdf")'        >> $@.tmp  2>/dev/null
-	@R -e 'library("hgu133aprobe")'      >> $@.tmp  2>/dev/null
-	@R -e 'library("hgu133a2cdf")'       >> $@.tmp  2>/dev/null
-	@R -e 'library("hgu133a2probe")'     >> $@.tmp  2>/dev/null
-	@R -e 'library("hgu133bcdf")'        >> $@.tmp  2>/dev/null
-	@R -e 'library("hgu133bprobe")'      >> $@.tmp  2>/dev/null
-	@R -e 'library("hgu133plus2cdf")'    >> $@.tmp  2>/dev/null
-	@R -e 'library("hgu133plus2probe")'  >> $@.tmp  2>/dev/null
-	@R -e 'library("htmg430acdf")'       >> $@.tmp  2>/dev/null
-	@R -e 'library("htmg430aprobe")'     >> $@.tmp  2>/dev/null
-	@R -e 'library("hu6800cdf")'         >> $@.tmp  2>/dev/null
-	@R -e 'library("hu6800probe")'       >> $@.tmp  2>/dev/null
-	@R -e 'library("mgu74acdf")'         >> $@.tmp  2>/dev/null
-	@R -e 'library("mgu74aprobe")'       >> $@.tmp  2>/dev/null
-	@R -e 'library("mgu74av2cdf")'       >> $@.tmp  2>/dev/null
-	@R -e 'library("mgu74av2probe")'     >> $@.tmp  2>/dev/null
-	@R -e 'library("mgu74bv2cdf")'       >> $@.tmp  2>/dev/null
-	@R -e 'library("mgu74bv2probe")'     >> $@.tmp  2>/dev/null
-	@R -e 'library("mgu74cv2cdf")'       >> $@.tmp  2>/dev/null
-	@R -e 'library("mgu74cv2probe")'     >> $@.tmp  2>/dev/null
-	@R -e 'library("moe430acdf")'        >> $@.tmp  2>/dev/null
-	@R -e 'library("moe430aprobe")'      >> $@.tmp  2>/dev/null
-	@R -e 'library("moe430bcdf")'        >> $@.tmp  2>/dev/null
-	@R -e 'library("moe430bprobe")'      >> $@.tmp  2>/dev/null
-	@R -e 'library("mouse4302cdf")'      >> $@.tmp  2>/dev/null
-	@R -e 'library("mouse4302probe")'    >> $@.tmp  2>/dev/null
-	@R -e 'library("mouse430a2cdf")'     >> $@.tmp  2>/dev/null
-	@R -e 'library("mouse430a2probe")'   >> $@.tmp  2>/dev/null
-	@R -e 'library("mu11ksubacdf")'      >> $@.tmp  2>/dev/null
-	@R -e 'library("mu11ksubaprobe")'    >> $@.tmp  2>/dev/null
-	@R -e 'library("mu11ksubbcdf")'      >> $@.tmp  2>/dev/null
-	@R -e 'library("mu11ksubbprobe")'    >> $@.tmp  2>/dev/null
-	@R -e 'library("rae230acdf")'        >> $@.tmp  2>/dev/null
-	@R -e 'library("rae230aprobe")'      >> $@.tmp  2>/dev/null
-	@R -e 'library("rgu34acdf")'         >> $@.tmp  2>/dev/null
-	@R -e 'library("rgu34aprobe")'       >> $@.tmp  2>/dev/null
-	@R -e 'library("rhesuscdf")'         >> $@.tmp  2>/dev/null
-	@R -e 'library("rhesusprobe")'       >> $@.tmp  2>/dev/null
-	@R -e 'library("zebrafishcdf")'      >> $@.tmp  2>/dev/null
-	@R -e 'library("zebrafishprobe")'    >> $@.tmp  2>/dev/null
 # Python libraries for Zebrafish intermine
 	@python3 -c "import intermine"       >> $@.tmp  2>/dev/null
 	@python3 -c "import simplejson"      >> $@.tmp  2>/dev/null
@@ -266,29 +205,6 @@ $(PIPELINEROOT)$(BGEEPIPELINEJAR):
 #	@perl -MSpreadsheet::Read -e1 >$@.tmp
 #	@which $(CONVERTER) >> $@.tmp
 #	@$(MV) $@.tmp $@
-#
-#
-## Export Affymetrix annotation files
-#convert_annotAffy: check_converter $(PIPELINEROOT)$(AFFY_CURATION_FILEPATH)
-#	# Get xls sheetnames
-#	@$(CONVERTER) -i $(PIPELINEROOT)$(AFFY_CURATION_FILEPATH) >$@.tmp 2>&1
-#	@echo >>$@.tmp
-#	# Convert affymetrixChip       in TSV
-#	@$(CONVERTER) $(CONVERTEROPT) `grep ' affymetrixChip' $@.tmp       | sed -e 's/^.* - //; s/: \[.*$$//'` $(PIPELINEROOT)$(AFFY_CURATION_FILEPATH) > $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH)
-#	@$(EXTRACLEANING) $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH)
-#	@head -5 $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH)              >  $@.temp
-#	@echo >>$@.temp
-#	# Convert microarrayExperiment in TSV
-#	@$(CONVERTER) $(CONVERTEROPT) `grep ' microarrayExperiment' $@.tmp | sed -e 's/^.* - //; s/: \[.*$$//'` $(PIPELINEROOT)$(AFFY_CURATION_FILEPATH) > $(PIPELINEROOT)$(MICROARRAY_EXPERIMENT_FILEPATH)
-#	@$(EXTRACLEANING) $(PIPELINEROOT)$(MICROARRAY_EXPERIMENT_FILEPATH)
-#	@head -5 $(PIPELINEROOT)$(MICROARRAY_EXPERIMENT_FILEPATH)  >> $@.temp
-#	@echo >>$@.temp
-#	# Convert chipType             in TSV
-#	@$(CONVERTER) $(CONVERTEROPT) `grep ' chipType' $@.tmp             | sed -e 's/^.* - //; s/: \[.*$$//'` $(PIPELINEROOT)$(AFFY_CURATION_FILEPATH) > $(PIPELINEROOT)$(AFFY_CHIPTYPE_FILEPATH)
-#	@$(EXTRACLEANING) $(PIPELINEROOT)$(AFFY_CHIPTYPE_FILEPATH)
-#	@head -5 $(PIPELINEROOT)$(AFFY_CHIPTYPE_FILEPATH)          >> $@.temp
-#	@$(CAT) $@.tmp $@.temp > $@
-#	@$(RM) $@.tmp $@.temp
 #
 ## Export RNA_seq annotation files
 #convert_annotRNASeq: check_converter $(PIPELINEROOT)$(RNASEQ_CURATION_FILEPATH)
@@ -555,7 +471,7 @@ test_container: build_container
 	@$(PIPELINE_CONTAINER_CMD) which $(CONVERTER)  >> $@.tmp
 	@$(MV) $@.tmp $@
 
-$(VERIFICATIONFILE): global_check $(PIPELINEROOT)$(SIMILARITYFILEPATH) $(PIPELINEROOT)$(BGEEPIPELINEJAR) convert_annotAffy convert_annotRNASeq
+$(VERIFICATIONFILE): global_check $(PIPELINEROOT)$(SIMILARITYFILEPATH) $(PIPELINEROOT)$(BGEEPIPELINEJAR) convert_annotRNASeq
 # create empty file or clean existing file
 	@touch $@.tmp
 	@> $@.tmp
@@ -564,15 +480,8 @@ $(VERIFICATIONFILE): global_check $(PIPELINEROOT)$(SIMILARITYFILEPATH) $(PIPELIN
 	@{ echo "Line count: \c" && wc -l < $(PIPELINEROOT)$(SIMILARITYFILEPATH); } >> $@.tmp
 	@echo 5 first lines: >> $@.tmp
 	@head -5 $(PIPELINEROOT)$(SIMILARITYFILEPATH) >> $@.tmp
-# verifications for Affymetrix annotation file
-	@echo ---------- AFFYMETRIX ANNOTATIONS --------- >> $@.tmp
-	@{ echo "Line count in microarray experiments: \c" && wc -l < $(PIPELINEROOT)$(MICROARRAY_EXPERIMENT_FILEPATH); } >> $@.tmp
-	@{ echo "Line count in affymetrix chips: \c" && wc -l < $(PIPELINEROOT)$(AFFY_CHIP_FILEPATH); } >> $@.tmp
-	@{ echo "Line count in affymetrix chip types: \c" && wc -l < $(PIPELINEROOT)$(AFFY_CHIPTYPE_FILEPATH); } >> $@.tmp
-	@echo 5 first lines of each file: >> $@.tmp
-	@$(CAT) convert_annotAffy >> $@.tmp
 	@$(MV) $@.tmp $@
 
 clean:
-	-@$(RM) global_check $(CONVERTER) $(PIPELINEROOT)$(SIMILARITYFILEPATH) $(PIPELINEROOT)$(BGEEPIPELINEJAR) $(VERIFICATIONFILE) convert_annotAffy convert_annotRNASeq check_converter *.tmp *.temp
+	-@$(RM) global_check $(CONVERTER) $(PIPELINEROOT)$(SIMILARITYFILEPATH) $(PIPELINEROOT)$(BGEEPIPELINEJAR) $(VERIFICATIONFILE) convert_annotRNASeq check_converter *.tmp *.temp
 

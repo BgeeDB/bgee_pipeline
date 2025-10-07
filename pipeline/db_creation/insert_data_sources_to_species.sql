@@ -3,11 +3,7 @@
 
 -- *** query to retrieve species and data sources for RNA-Seq data ***
 -- select t2.dataSourceId,count(DISTINCT t1.rnaSeqExperimentId),(SELECT speciesId from gene where bgeeGeneId = (select bgeeGeneId from rnaSeqResult WHERE rnaSeqResult.rnaSeqLibraryId = t1.rnaSeqLibraryId LIMIT 1)) as speciesId FROM rnaSeqLibrary AS t1 INNER JOIN rnaSeqExperiment AS t2 ON t1.rnaSeqExperimentId = t2.rnaSeqExperimentId GROUP BY speciesId, dataSourceId;
--- *** query to retrieve species and data sources for Affymetrix data ***
--- select t2.dataSourceId, count(DISTINCT t1.microarrayExperimentId), (SELECT speciesId from gene where bgeeGeneId = (select bgeeGeneId from affymetrixProbeset WHERE affymetrixProbeset.bgeeAffymetrixChipId = t1.bgeeAffymetrixChipId LIMIT 1)) as speciesId FROM affymetrixChip AS t1 INNER JOIN microarrayExperiment AS t2 ON t1.microarrayExperimentId = t2.microarrayExperimentId GROUP BY speciesId, dataSourceId;
--- *** query to retrieve species and data sources for EST data ***
--- select t1.dataSourceId, count(DISTINCT estLibraryId), (SELECT speciesId from gene where bgeeGeneId = (select bgeeGeneId from expressedSequenceTag WHERE expressedSequenceTag.estLibraryId = t1.estLibraryId LIMIT 1)) as speciesId from estLibrary as t1 GROUP BY speciesId, dataSourceId;
--- ** in situ **
+-- *** query to retrieve species and data sources for in situ data ***
 -- select t2.dataSourceId, count(DISTINCT t1.inSituExperimentId), (SELECT speciesId from gene where bgeeGeneId = (select bgeeGeneId from inSituSpot WHERE inSituSpot.inSituEvidenceId = t1.inSituEvidenceId LIMIT 1)) as speciesId FROM inSituEvidence AS t1 INNER JOIN inSituExperiment AS t2 ON t1.inSituExperimentId = t2.inSituExperimentId GROUP BY speciesId, dataSourceId;
 
 DELETE FROM dataSourceToSpecies;
@@ -149,14 +145,14 @@ INSERT INTO dataSourceToSpecies (dataSourceId, speciesId, dataType, infoType) VA
 (100, 105023, 'rna-seq', 'data');
 
 -- wormbase source for in situ data and annot in c. elegans
--- also source of annotations for affymetrix and RNA-Seq
+-- also source of annotations for RNA-Seq
 INSERT INTO dataSourceToSpecies (dataSourceId, speciesId, dataType, infoType) VALUES
 (23, 6239, 'in situ',    'data'),
 (23, 6239, 'in situ',    'annotation'),
 (23, 6239, 'rna-seq',    'annotation');
 
 
--- Bgee source of annotation for EST, Affymetrix and RNA-Seq data in all species
+-- Bgee source of annotation for RNA-Seq data in all species
 INSERT INTO dataSourceToSpecies (dataSourceId, speciesId, dataType, infoType) VALUES
 (25, 6239,   'rna-seq',    'annotation'),
 (25, 7227,   'rna-seq',    'annotation'),

@@ -42,7 +42,7 @@ CLUSTERHOST  := curnagl.dcsr.unil.ch
 # PIPELOGIN and PIPEPASSWD defined in Makefile.Config
 PIPEHOST   := devbioinfo.unil.ch
 
-# Machine used for RNA-seq/Affymetrix data transfer
+# Machine used for RNA-seq data transfer
 # DATALOGIN and DATAPASSWD defined in Makefile.Config
 DATAHOST   := jura0.sib.swiss
 DATAPATH   := /data
@@ -206,22 +206,9 @@ VERIFICATIONFILE := $(OUTPUT_DIR)step_verification_$(RELEASE).txt
 # Directory with curator files, from the root directory of the pipeline
 #CURATIONPATH                  := ../../curation/
 
-## AFFYMETRIX
-#AFFY_CURATION_PATH            := $(CURATIONPATH)expression_data/affymetrix/
-#AFFY_CURATION_FILEPATH        := $(AFFY_CURATION_PATH)annotation.xls
-
 ## SIMILARITY
 #SIMILARITY_CURATION_PATH      := $(CURATIONPATH)similarity/
 #SIMILARITY_CURATION_FILEPATH  := $(SIMILARITY_CURATION_PATH)homology.xlsx
-
-## ESTs
-#EST_CURATION_PATH             := $(CURATIONPATH)expression_data/est/
-#EST_UNIGENE_CURATION_PATH     := $(EST_CURATION_PATH)unigene/
-#EST_SMIRNADB_CURATION_PATH    := $(EST_CURATION_PATH)smirnadb/
-# the list of species with UniGene/EST annotation
-EST_SPECIES_CURATION_FILEPATH := $(SOURCE_FILES_DIR)ESTs/unigene/species_EST_file.txt
-# smiRNAdb libs mapping file
-SMIRNADB_CURATION_MAPFILEPATH := $(SOURCE_FILES_DIR)ESTs/smirnadb/mapping_libs_smiRNAdb.csv
 
 ## In Situ
 #BDGP_PATH                     := $(CURATIONPATH)expression_data/in_situ/bdgp/
@@ -361,60 +348,6 @@ STGMAPPING      := $(JAVA) UberonSocketTool idMapping $(DEV_STAGE_ONT_FILE_PATH)
 RAW_SIM_ANNOT_DOWNLOAD_URL := https://raw.githubusercontent.com/BgeeDB/anatomical-similarity-annotations/master/release/raw_similarity_annotations.tsv
 RAW_SIMILARITY_FILE := $(SOURCE_FILES_DIR)annotations/raw_similarity_annotations.tsv
 SUMMARY_SIMILARITY_FILE := $(SOURCE_FILES_DIR)annotations/summary_similarity_annotations.tsv
-
-
-# =========== EST FILES ===============
-
-
-
-# =========== AFFYMETRIX FILES ===============
-AFFYPATH                            := Affymetrix/
-AFFY_CHIP_FILEPATH                  := $(SOURCE_FILES_DIR)$(AFFYPATH)affymetrixChip.tsv
-AFFY_CHIP_FILEPATH_WORM             := $(SOURCE_FILES_DIR)$(AFFYPATH)affymetrixChip_worm.tsv
-AFFY_CHIP_FILEPATH_FULL             := $(GENERATED_FILES_DIR)$(AFFYPATH)affymetrixChip_full.tsv
-AFFY_CHIPINFO_FILEPATH              := $(GENERATED_FILES_DIR)$(AFFYPATH)affymetrixChipInformation
-MICROARRAY_EXPERIMENT_FILEPATH      := $(SOURCE_FILES_DIR)$(AFFYPATH)microarrayExperiment.tsv
-MICROARRAY_EXPERIMENT_FILEPATH_WORM := $(SOURCE_FILES_DIR)$(AFFYPATH)microarrayExperiment_worm.tsv
-MICROARRAY_EXPERIMENT_FILEPATH_FULL := $(GENERATED_FILES_DIR)$(AFFYPATH)microarrayExperiment_full.tsv
-AFFY_CHIPTYPE_FILEPATH              := $(SOURCE_FILES_DIR)$(AFFYPATH)chipType.tsv
-AFFY_CHIPTYPE_FILEPATH_WORM         := $(SOURCE_FILES_DIR)$(AFFYPATH)chipType_worm.tsv
-AFFY_CHIPTYPE_FILEPATH_FULL         := $(GENERATED_FILES_DIR)$(AFFYPATH)chipType_full.tsv
-AFFY_CHIPTYPEQUAL_FILEPATH          := $(GENERATED_FILES_DIR)$(AFFYPATH)chipTypeCorrespondencesAndQualityThresholds
-AFFY_NORMTYPE_FILEPATH              := $(GENERATED_FILES_DIR)$(AFFYPATH)normalizationType
-AFFY_DETCTYPE_FILEPATH              := $(GENERATED_FILES_DIR)$(AFFYPATH)detectionType
-
-# Affymetrix data path
-#AFFYDATAPATH      := $(CLUSTER_DATA_PATH)/Affymetrix_v$(MAJOR_RELEASE)/
-AFFYDATAPATH      := /var/bgee/extra/pipeline/Affymetrix_v$(MAJOR_RELEASE)/
-AFFYNEWDATAPATH   := $(AFFYDATAPATH)new_files/
-AFFYANNOTATORPATH := /Users/anikneja/Documents/bgee/extra/pipeline/curation/Affymetrix/
-
-# Cel file path
-CELPATH           := $(AFFYDATAPATH)cel_data/
-CELNEWPATH        := $(AFFYNEWDATAPATH)cel_data/
-CELANNPATH        := $(AFFYANNOTATORPATH)cel_data/
-# MAS5 file path
-MAS5PATH          := $(AFFYDATAPATH)processed_mas5/
-MAS5NEWPATH       := $(AFFYNEWDATAPATH)processed_mas5/
-MAS5ANNPATH       := $(AFFYANNOTATORPATH)processed_mas5/
-# MAS5 original file path
-MAS5ORIPATH       := $(AFFYDATAPATH)processed_mas5_original_files/
-MAS5ORINEWPATH    := $(AFFYNEWDATAPATH)processed_mas5_original_files/
-MAS5ORIANNPATH    := $(AFFYANNOTATORPATH)processed_mas5_original_files/
-# SCHUSTER file path
-SCHUSTERPATH      := $(AFFYDATAPATH)processed_schuster/
-# Differential file path
-DIFFEXPRPATH      := $(AFFYDATAPATH)processed_differential/
-# Bioconductor file path
-BIOCONDUCTOR      := $(AFFYDATAPATH)bioconductor/
-BIOCONDUCTOROUT   := $(BIOCONDUCTOR)out/
-BIOCONDUCTORAFFIN := $(BIOCONDUCTOR)affinities/
-BIOCONDUCTORDIFF  := $(BIOCONDUCTOR)differential/
-BIOCONDUCTORTARG  := $(BIOCONDUCTOR)targets/
-# Annotation file path
-ANNOTATIONPATH    := $(AFFYDATAPATH)annotations/
-# Probsets to genes mapping file
-PROBSETMAPPINGDIR := $(GENERATED_FILES_DIR)$(AFFYPATH)biomart
 
 
 # =========== RNA_Seq FILES ===============
@@ -624,7 +557,6 @@ MULTI_SPE_DIFF_EXPR_CALL_PATH := $(CALLS_PATH)multi_species_diff_expr_calls/
 
 EXPR_VALUES_PATH := processed_expr_values/
 RNA_SEQ_EXPR_VALUES_PATH := $(EXPR_VALUES_PATH)rna_seq/
-AFFYMETRIX_EXPR_VALUES_PATH := $(EXPR_VALUES_PATH)affymetrix/
 
 # file suffixes
 EXPR_SIMPLE_SUF := _expr_simple.tsv
@@ -641,8 +573,6 @@ MULTI_SPE_DIFF_EXPR_ANATOMY_COMPLETE_SUF := _multi-diffexpr-anatomy-complete.tsv
 
 RNA_SEQ_EXP_LIB_SUF_ZIP := _RNA-Seq_experiments_libraries.zip
 RNA_SEQ_COUNT_SUF_ZIP := _RNA-Seq_read_counts_TPM_FPKM.zip
-AFFYMETRIX_EXP_CHIP_SUF_ZIP := _Affymetrix_experiments_chips.zip
-AFFYMETRIX_PROBESET_SUF_ZIP := _Affymetrix_probesets.zip
 
 # FTP informations
 FTP_URL         := bgeeftp.unil.ch
