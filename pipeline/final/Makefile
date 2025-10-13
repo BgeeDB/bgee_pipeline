@@ -23,6 +23,9 @@ sphinx_index:
 	@ssh bgee@$(DBHOST) sudo indexer --rotate --config /usr/local/etc/sphinx.conf  bgee_genes_$(subst .,_,$(RELEASE)) bgee_autocomplete_$(subst .,_,$(RELEASE)) bgee_anat_auto_$(subst .,_,$(RELEASE)) bgee_strain_auto_$(subst .,_,$(RELEASE)) bgee_experiment_auto_$(subst .,_,$(RELEASE)) bgee_assay_auto_$(subst .,_,$(RELEASE))
 
 
+#TODO EasyBuild is required to test, install and submit Bgee R packages!
+
+
 schema.org_dump:
 	@perl generate_schema.org_dump.pl  -bgee=$(BGEECMD)  >$(DBNAME).schema_org.jsonld 2>schema.org_dump.err
 	@if [[ ! -s schema.org_dump.err ]]; then $(RM) schema.org_dump.err; fi
