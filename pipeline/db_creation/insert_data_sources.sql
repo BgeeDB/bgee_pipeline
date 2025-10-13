@@ -80,7 +80,6 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
 (36, 'OncoMX', 'https://oncomx.org/searchview/?gene=[xref_id]', '', '', 'https://www.oncomx.org', 'Integrated cancer mutation and expression resource', 0, ''),
 (37, 'RefSeq genomic', 'https://www.ncbi.nlm.nih.gov/nuccore/[xref_id]/', '', '', 'https://www.ncbi.nlm.nih.gov/refseq/', 'Source for genome assembly and annotations', 1, 'Genomics database'),
 (38, 'GenBank', 'https://www.ncbi.nlm.nih.gov/nuccore/[xref_id]/', '', '', 'https://www.ncbi.nlm.nih.gov/genbank/', 'Source for genome assembly and annotations', 0, 'Genomics database'),
-(39, 'Amphiencode', '', '', '', 'https://amphiencode.github.io/Data/', 'Source for the European amphioxus annotations', 1, 'Genomics database'),
 (40, 'GeneCards', 'https://www.genecards.org/cgi-bin/carddisp.pl?gene=[xref_id]', '', '', 'https://www.genecards.org/', 'GeneCards is a searchable, integrative database that provides comprehensive, user-friendly information on all annotated and predicted human genes.', 0, ''),
 (41, 'RefSeq nucleotide', 'https://www.ncbi.nlm.nih.gov/nuccore/[xref_id]/', '', '', 'https://www.ncbi.nlm.nih.gov/refseq/', 'Source for RefSeq RNA sequences', 0, ''),
 (42, 'RefSeq protein', 'https://www.ncbi.nlm.nih.gov/protein/[xref_id]/', '', '', 'https://www.ncbi.nlm.nih.gov/refseq/', 'Source for RefSeq protein sequences', 0, ''),

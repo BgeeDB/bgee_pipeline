@@ -15,11 +15,11 @@ update dataSource set releaseDate = '2018-11-03', releaseVersion = '22.1',      
 -- 4DXpress
 update dataSource set releaseDate = null,         releaseVersion = ''                                                where dataSourceId = 7;
 -- ZFIN
-update dataSource set releaseDate = '2021-03-02', releaseVersion = '',                             displayOrder = 5  where dataSourceId = 8;
+update dataSource set releaseDate = '2025-08-05', releaseVersion = '',                             displayOrder = 5  where dataSourceId = 8;
 -- MGI
-update dataSource set releaseDate = '2021-03-02', releaseVersion = '',                             displayOrder = 6  where dataSourceId = 9;
+update dataSource set releaseDate = '2025-07-21', releaseVersion = '',                             displayOrder = 6  where dataSourceId = 9;
 -- FlyBase
-update dataSource set releaseDate = '2021-03-02', releaseVersion = ''                                                where dataSourceId = 10;
+update dataSource set releaseDate = '2025-07-23', releaseVersion = ''                                                where dataSourceId = 10;
 -- ArrayExpress Affymetrix
 update dataSource set releaseDate = '2016-08-21', releaseVersion = '',                             displayOrder = 4  where dataSourceId = 11;
 -- ArrayExpress RNA-Seq
@@ -29,9 +29,9 @@ update dataSource set releaseDate = '2016-12-05', releaseVersion = '',          
 -- smiRNAdb
 update dataSource set releaseDate = '2009-04-23', releaseVersion = '2',                            displayOrder = 11 where dataSourceId = 13;
 -- BDGP
-update dataSource set releaseDate = '2020-11-22', releaseVersion = '',                             displayOrder = 8  where dataSourceId = 14;
+update dataSource set releaseDate = '2021-08-31', releaseVersion = '',                             displayOrder = 8  where dataSourceId = 14;
 -- Xenbase
-update dataSource set releaseDate = '2021-03-11', releaseVersion = '',                             displayOrder = 7  where dataSourceId = 15;
+update dataSource set releaseDate = '2025-09-03', releaseVersion = '',                             displayOrder = 7  where dataSourceId = 15;
 -- neXtProt
 update dataSource set releaseDate = null,         releaseVersion = ''                                                where dataSourceId = 16;
 -- GEO (Affymetrix)
@@ -51,7 +51,7 @@ update dataSource set releaseDate = null,         releaseVersion = '',          
 -- RGD (taken from Ensembl xrefs)
 update dataSource set releaseDate = null,         releaseVersion = '',                             displayOrder = 1  where dataSourceId = 22;
 -- WormBase
-update dataSource set releaseDate = '2020-12-13', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 23;
+update dataSource set releaseDate = '2025-03-31', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 23;
 -- EnsemblMetazoa
 update dataSource set releaseDate = '2024-10-17', releaseVersion = '60',                           displayOrder = 1  where dataSourceId = 24;
 -- Bgee
@@ -72,8 +72,6 @@ update dataSource set releaseDate = '2015-10-03', releaseVersion = '6.p1',      
 update dataSource set releaseDate = '2020-12-01', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 37;
 -- GenBank
 update dataSource set releaseDate = '2020-12-01', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 38;
--- Amphiencode
-update dataSource set releaseDate = '2021-07-15', releaseVersion = '',                             displayOrder = 7  where dataSourceId = 39;
 -- RefSeq nucleotide
 update dataSource set releaseDate = '2020-12-01', releaseVersion = '',                             displayOrder = 1  where dataSourceId = 41;
 -- RefSeq protein
