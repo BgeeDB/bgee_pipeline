@@ -17,7 +17,7 @@ install_pipenv:
 running_app:
 	@cd $(GENERATE_HOMOLOGS_APP_DIR)
 	@$(PIPENV) install 1>$@.tmp 2>$@.err
-	@$(PIPENV) run $(PYTHON) $(GENERATE_HOMOLOGS_APP_FILE) -c $(TEMPORARY_CONFIG_FILES_DIRECTORY) -n $(N_PROCESSES) 1>> $@.tmp 2>> $@.err
+	@$(PIPENV) run $(PYTHON) $(GENERATE_HOMOLOGS_APP_FILE) -c $(TEMPORARY_CONFIG_FILES_DIRECTORY) -n $(N_PROCESSES) -i 1>> $@.tmp 2>> $@.err
 	@mv $@.tmp $@
 
 

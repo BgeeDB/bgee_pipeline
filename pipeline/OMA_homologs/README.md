@@ -28,11 +28,11 @@ It requires python 3.7 or superior version and the SPARQLWrapper library. Depend
 [Pipfile](Pipfile).
 
 **REMARK 2:** the execution of the app can take a long time depending on the number of genomes to process. 
-To avoid the overload of the public OMA SPARQL endpoint, the app only allows for executing 4 queries in parallel.
-From 1 to 4 processes maximum (default is 3), the variable to set it is in the [makefile.properties](makefile.properties) 
+To avoid the overload of the public OMA SPARQL endpoint, we recommend to only execute 4 queries in parallel.
+The variable to set the number of processes is in the [makefile.properties](makefile.properties) 
 is 
 ```bash
-#number of processes, default is 3 maximum is 4
+#number of processes, default is 3
 N_PROCESSES = 4
 ```
 
@@ -67,9 +67,11 @@ N_PROCESSES = 4
       the log file (i.e. *generate_homologs_app.log*) is saved in the same directory where this app is running.
   * **ncbi_species_file** is the file of species where the genomes considered are originally from NCBI.
   * **flybase_species_file** is the file of species where the genomes considered are originally from FlyBase.
-  * **species_ncbi_to_ensembl** is a list of NCBI species ids we want to map the output NCBI gene ids to Ensembl gene
-    ids (e.g. \[105023\]). This will only work if the species (e.g. 105023) is in **ncbi_species_file** and there 
-    is a corresponding mapping between the NCBI gene id to Ensembl id in the mapping file: **ncbi_gene2ensembl_URL**.
+  * **species_ncbi_to_ensembl** is a list of NCBI species ids that we want to map the output of NCBI gene ids to Ensembl
+  gene ids (e.g. \[105023\]). This will only work if the species (e.g. 105023) is in **ncbi_species_file** and there 
+  is a corresponding mapping between the NCBI gene id to Ensembl id in the mapping file: **ncbi_gene2ensembl_URL**. 
+  Defining this species list is highly recommended when the species genome used in OMA is from NCBI and in Bgee is from 
+  Ensembl.
   * **species_to_gene_id_prefix** is a dictionary with a key-value structure where the key is a species that can be
     represented as a [NCBI taxonomy identifier](https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi) and the value
     corresponds to the prefix used in the gene identifiers for this species. The syntax used is the same as the 
@@ -162,3 +164,19 @@ by a first draft of the life-sciences cross-reference (LSCR) ontology that is av
 at the Quest for Orthologs github repository [here](https://github.com/qfo/OrthologyOntology) - 
 [lscr.ttl](https://github.com/qfo/OrthologyOntology/blob/master/lscr.ttl) file.
 
+### Other optional application parameters
+There are other 3 parameters used to restrict the homologs generation, for example, to only output either orthologs or
+paralogs. In addition, it is also possible to only generate in-species paralogs, that is paralogs in the same species.
+See the description of parameters below that can be added to the line `$(GENERATE_HOMOLOGS_APP_FILE)` in the Makefile.
+Note that the `-i` parameter is defined by default in the makefile. If the parameter `-i` is removed, the paralogs of
+all species against all will be generated.
+
+```Makefile
+...
+@$(PIPENV) run $(PYTHON) $(GENERATE_HOMOLOGS_APP_FILE) -c $(TEMPORARY_CONFIG_FILES_DIRECTORY) -n $(N_PROCESSES) -i 
+...
+```
+
+* **-p** : only output paralogs <optional>
+* **-o** : only output orthologs <optional>
+* **-i** : restricted to same species paralogs <optional>
