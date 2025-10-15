@@ -50,7 +50,7 @@ class ProgressBar(Process):
 class GenerateHomologsParallel(Process):
     # Constants declarations
 
-    def __init__(self, path_config_file, counter, tmp_dir, stop_main, *args, **kwargs):
+    def __init__(self, path_config_file, counter, tmp_dir, stop_main, paralogs_same_species, *args, **kwargs):
         super(GenerateHomologsParallel, self).__init__(*args, **kwargs)
         self.config_file = path_config_file
         self.ORTHOLOGY_PREFIX = ORTHOLOGY_PREFIX
@@ -58,6 +58,7 @@ class GenerateHomologsParallel(Process):
         self.counter = counter
         self.tmp_dir = tmp_dir
         self.stop_main = stop_main
+        self.paralogs_same_species = paralogs_same_species
 
     def run(self):
         """
@@ -241,19 +242,20 @@ class GenerateHomologsParallel(Process):
                 MAX_INDEX = species_pairs_size
             count = PARALOG_INDEX + 1
             for (species1, species2) in values_species[PARALOG_INDEX:MAX_INDEX]:
-                query_OMA = pairwise_homologs.get_query_OMA_paralogs(species1, species2)
-                homolog_file_writer = HomologsFileWriter(species1, species2, TAXON_NAMESPACE,
+                if not self.paralogs_same_species or species1 == species2:
+                    query_OMA = pairwise_homologs.get_query_OMA_paralogs(species1, species2)
+                    homolog_file_writer = HomologsFileWriter(species1, species2, TAXON_NAMESPACE,
                                                          FILE_DIRECTORY, self.PARALOGY_PREFIX, count,
                                                          "gene1,gene2,tax_level,tax_level_id")
-                homolog_file_writer._create_homologs_output_file(sparql_OMA, query_OMA, tmp_dir, False,
+                    homolog_file_writer._create_homologs_output_file(sparql_OMA, query_OMA, tmp_dir, False,
                                                                  geneID_mapper_dict, geneID_mapper_species,
                                                                  ["gene1", "gene2"])
-                config['DYNAMIC_VARIABLES']['START_INDEX_PARALOG'] = str(count)
-                with open(config_file_path, 'w') as configfile:
-                    config.write(configfile)
-                count = count + 1
-                with self.counter.get_lock():
-                    self.counter.value += 1
+                    config['DYNAMIC_VARIABLES']['START_INDEX_PARALOG'] = str(count)
+                    with open(config_file_path, 'w') as configfile:
+                        config.write(configfile)
+                    count = count + 1
+                    with self.counter.get_lock():
+                        self.counter.value += 1
             # reinitialize to zero the array index of species pairs, because all pairs were processed with success
            # config['DYNAMIC_VARIABLES']['START_INDEX_PARALOG'] = '0'
            # config['DYNAMIC_VARIABLES']['START_INDEX_ORTHOLOG'] = '0'
@@ -293,6 +295,7 @@ def getArgs(argv):
     inputdir = ''
     no_ortholog = False
     no_paralog = False
+    paralogs_same_species = False
     process_number = 3
     try:
         opts, args = getopt.getopt(argv, "hopc:n:", ["configdir=", "process="])
@@ -312,10 +315,12 @@ def getArgs(argv):
             no_paralog = True
         elif opt in ("-p"):
             no_ortholog = True
+        elif opt in ("-i"):
+            paralogs_same_species = True
         elif opt in ("-n", "--process"):
             try:
                 process_number = int(arg)
-                if process_number > 4 or process_number < 1:
+                if process_number < 1:
                     process_number = 3
             except:
                 print("Number of processes (-n) must be an integer.")
@@ -323,7 +328,8 @@ def getArgs(argv):
     print('Configuration and temporary file directory is ', inputdir)
     print('In case no output directory for the created paralog and orhtolog files is provided in ',
           'template.properties file, <file_directory_output> parameter, ', inputdir, ' is used as default')
-    return {'dir': inputdir, 'no_paralog': no_paralog,'no_ortholog': no_ortholog, 'process_number':process_number }
+    return {'dir': inputdir, 'no_paralog': no_paralog, 'no_ortholog': no_ortholog, 'process_number': process_number,
+            'paralogs_same_species': paralogs_same_species}
 
 def main(argv):
     try:
@@ -333,6 +339,7 @@ def main(argv):
         counter = Value('i', 0)
         args_dict = getArgs(argv)
         dir_path = args_dict['dir']
+        paralogs_same_species = args_dict['paralogs_same_species']
         Path(dir_path).mkdir(parents=True, exist_ok=True)
         config = SpeciesConfigDataReader.load_config_file(
             os.path.join(os.path.dirname(__file__), 'template.properties'))
@@ -418,7 +425,8 @@ def main(argv):
                                 config_exist.write(configfile)
                 except:
                     raise
-            generator = GenerateHomologsParallel(config_process_dir, counter, dir_path, stop_main)
+            generator = GenerateHomologsParallel(config_process_dir, counter, dir_path, stop_main,
+                                                 paralogs_same_species)
             generator.daemon = True
             generator.start()
             procs.append(generator)
