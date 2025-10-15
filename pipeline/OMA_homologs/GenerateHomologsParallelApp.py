@@ -298,15 +298,16 @@ def getArgs(argv):
     paralogs_same_species = False
     process_number = 3
     try:
-        opts, args = getopt.getopt(argv, "hopc:n:", ["configdir=", "process="])
+        opts, args = getopt.getopt(argv, "hopic:n:", ["configdir=", "process="])
     except getopt.GetoptError:
-        print('GenerateHomologsParallelApp.py -c <configuration (config.properties) and temp file directory>')
+        print('GenerateHomologsParallelApp.py -c <configuration and temporary file directory>')
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print('GenerateHomologsParallelApp.py -c <configuration (config.properties) and temp file directory>')
+            print('GenerateHomologsParallelApp.py -c <configuration and temporary file directory>')
             print('-p : only output paralogs <optional>')
             print('-o : only output orthologs <optional>')
+            print('-i : restricted to same species paralogs <optional>')
             print('-n or --process : number of processes <the default value is -n 3>')
             sys.exit()
         elif opt in ("-c", "--configdir"):
@@ -326,8 +327,9 @@ def getArgs(argv):
                 print("Number of processes (-n) must be an integer.")
 
     print('Configuration and temporary file directory is ', inputdir)
-    print('In case no output directory for the created paralog and orhtolog files is provided in ',
-          'template.properties file, <file_directory_output> parameter, ', inputdir, ' is used as default')
+    print('In case no output directory for the created paralog and orhtolog files is provided in the ',
+          'template.properties file through the <file_directory_output> parameter, ', inputdir,
+          ' is used as the default value.')
     return {'dir': inputdir, 'no_paralog': no_paralog, 'no_ortholog': no_ortholog, 'process_number': process_number,
             'paralogs_same_species': paralogs_same_species}
 
@@ -439,15 +441,18 @@ def main(argv):
     except KeyboardInterrupt:
         print("Quiting the program and terminating all running processes...")
     except ValueError as e:
-        print("Value error: " + str(e.args[0]) )
+        print("Value error: " + str(e.args[0]))
     except:
         print("The application has unexpectedly quit.")
     finally:
-        for p in procs:
-            if p.is_alive():
-                p.terminate()
-        if pbar.is_alive():
-            pbar.terminate()
+        try:
+            for p in procs:
+                if p.is_alive():
+                    p.terminate()
+                if pbar.is_alive():
+                    pbar.terminate()
+        except Exception:
+            sys.exit(2)
     return
 
 
