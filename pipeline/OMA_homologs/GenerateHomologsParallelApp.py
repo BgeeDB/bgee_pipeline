@@ -381,9 +381,9 @@ def main(argv):
                 if number_orth_files > number_paralog_files:
                     number_paralog_files = number_orth_files
                 chunk_size = number_paralog_files / args_dict['process_number']
-        pbar = ProgressBar(total_max_files, counter, stop_error_msg)
-        pbar.daemon = True
-        pbar.start()
+        #pbar = ProgressBar(total_max_files, counter, stop_error_msg)
+        #pbar.daemon = True
+        #pbar.start()
         for process_number in proc_id_list:
             config['DYNAMIC_VARIABLES'] = {'max_index': str(round(chunk_size * process_number))}
             if args_dict['no_ortholog']:
@@ -437,7 +437,7 @@ def main(argv):
             p.join()
         if stop_main.is_set():
             stop_error_msg.set()
-        pbar.join()
+        #pbar.join()
     except KeyboardInterrupt:
         print("Quiting the program and terminating all running processes...")
     except ValueError as e:
@@ -449,8 +449,8 @@ def main(argv):
             for p in procs:
                 if p.is_alive():
                     p.terminate()
-                if pbar.is_alive():
-                    pbar.terminate()
+                #if pbar.is_alive():
+                #    pbar.terminate()
         except Exception:
             sys.exit(2)
     return
