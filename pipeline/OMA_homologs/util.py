@@ -190,13 +190,17 @@ class Util:
 
     @staticmethod
     def read_tmp_file(tmp_file: TextIO):
-        file_content = tmp_file.read().__str__()
+        file_content = tmp_file.read().__str__().rstrip('\n')
         try:
-            pairs_remove_list = list(json.loads(file_content))
+            if file_content.count('[') > 1:
+                pairs_remove_list = list(json.loads(file_content))
+            else:
+                pairs_remove_list = [list(json.loads(file_content))]
         except:
             try:
-                pairs_remove_list = list(json.loads(
-                    "[" + file_content.strip(',') + "]"))
+                file_content = file_content.replace('[[', '[').replace(']]', '],')
+                file_content = "[" + file_content.strip(',') + "]"
+                pairs_remove_list = list(json.loads(file_content))
             except json.JSONDecodeError as e:
                 raise e
         return pairs_remove_list
