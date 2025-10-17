@@ -14,11 +14,8 @@ from DataReader import ConfigFileError, ConfigFileNotFoundError
 import ast
 from multiprocessing import Process, Value
 
-
 ORTHOLOGY_PREFIX = "orthologs"
 PARALOGY_PREFIX = "paralogs"
-
-
 class ProgressBar(Process):
 
     def __init__(self, total_max_files: int, counter,  stop_error_msg, *args, **kwargs) -> object:
@@ -43,9 +40,6 @@ class ProgressBar(Process):
             print("You can try to rerun this application with the same template.properties file and parameters." +
                   " The application will try to continue from where it stopped. Activate the debug mode in the"
                   + " template.properties for more information about the error (log = debug).")
-
-
-
 
 class GenerateHomologsParallel(Process):
     # Constants declarations
@@ -263,14 +257,12 @@ class GenerateHomologsParallel(Process):
                 config.write(configfile)
             logging.info('Logging finished without errors\n')
         except ConfigFileError as e:
-            print()
-            print(e.message)
+            print("\n{}".format(e.message))
             logging.debug("Configuration file error: " + e.message)
             logging.info('Logging finished with errors\n')
             self.stop_main.set()
         except ConfigFileNotFoundError as e:
-            print()
-            print(e.message)
+            print("\n{}".format(e.message))
             logging.debug("Configuration file error: " + e.message)
             logging.info('Logging finished with errors\n')
             self.stop_main.set()
@@ -435,8 +427,6 @@ def main(argv):
             previous_max = int(chunk_size * process_number)
         for p in procs:
             p.join()
-        if stop_main.is_set():
-            stop_error_msg.set()
         #pbar.join()
     except KeyboardInterrupt:
         print("Quiting the program and terminating all running processes...")
@@ -445,6 +435,15 @@ def main(argv):
     except:
         print("The application has unexpectedly quit.")
     finally:
+        if stop_main.is_set():
+            stop_error_msg.set()
+            print("Some process raised errors. For further information, " +
+                      "check individual process logs.")
+            print("You can try to rerun this application with the same template.properties file and parameters." +
+                      " The application will try to continue from where it stopped. Activate the debug mode in the"
+                      + " template.properties for more information about the error (log = debug).")
+        if not stop_error_msg.is_set():
+                print("\nClosed application with success.")
         try:
             for p in procs:
                 if p.is_alive():
@@ -454,7 +453,6 @@ def main(argv):
         except Exception:
             sys.exit(2)
     return
-
 
 if __name__ == '__main__':
     main(sys.argv[1:])
