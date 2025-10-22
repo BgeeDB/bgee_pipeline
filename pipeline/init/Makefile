@@ -174,8 +174,6 @@ global_check:
 	@which gunzip        >> $@.tmp
 	@which bunzip2       >> $@.tmp
 	@which unxz          >> $@.tmp
-	@which makeblastdb   >> $@.tmp
-	@which blastn        >> $@.tmp
 	@which kallisto      >> $@.tmp
 	@which bustools      >> $@.tmp
 	@which fastp         >> $@.tmp
@@ -397,8 +395,6 @@ test_container: build_container
 	@$(PIPELINE_CONTAINER_CMD) which gunzip        >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) which bunzip2       >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) which unxz          >> $@.tmp
-	@$(PIPELINE_CONTAINER_CMD) which makeblastdb   >> $@.tmp
-	@$(PIPELINE_CONTAINER_CMD) which blastn        >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) which kallisto      >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) which bustools      >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) which fastp         >> $@.tmp
