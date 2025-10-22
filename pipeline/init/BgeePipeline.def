@@ -157,6 +157,7 @@ From: ubuntu:24.04
 	cpan DBD::mysql
 	cpan DBD::Pg
 	cpan Data::Dumper
+	cpan Data::Dump
 	cpan Digest::SHA
 	cpan Exporter
 	cpan File::Basename
@@ -167,10 +168,11 @@ From: ubuntu:24.04
 	cpan File::Spec
 	cpan FindBin
 	cpan Getopt::Long
-	cpan HTTP::Request
 	#cpan IO::Compress::Gzip
 	cpan IO::Socket
 	#cpan IO::Uncompress::Gunzip
+	cpan JSON
+	cpan JSON::XS
 	cpan LWP::Simple
 	cpan LWP::UserAgent
 	cpan List::Compare
@@ -184,8 +186,11 @@ From: ubuntu:24.04
 	cpan Spreadsheet::WriteExcel
 	cpan Test::More
 	cpan Text::CSV
+	cpan Tie::IxHash
 	cpan Time::HiRes
 	cpan Time::localtime
+	cpan Time::Piece
+	cpan Try::Tiny
 	cpan Webservice::InterMine
 	cpan XML::Fast
 	#Issue with a Webservice::InterMine test, so manual installation

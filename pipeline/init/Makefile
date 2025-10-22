@@ -22,6 +22,7 @@ global_check:
 	@perl -MBio::SeqIO              -e 1 >> $@.tmp
 	@perl -MCpanel::JSON::XS        -e 1 >> $@.tmp
 	@perl -MData::Dumper            -e 1 >> $@.tmp
+	@perl -MData::Dump              -e 1 >> $@.tmp
 	@perl -MDBI                     -e 1 >> $@.tmp
 	@perl -MDBD::mysql              -e 1 >> $@.tmp
 	@perl -MDBD::Pg                 -e 1 >> $@.tmp
@@ -35,10 +36,11 @@ global_check:
 	@perl -MFile::Spec              -e 1 >> $@.tmp
 	@perl -MFindBin                 -e 1 >> $@.tmp
 	@perl -MGetopt::Long            -e 1 >> $@.tmp
-	@perl -MHTTP::Request           -e 1 >> $@.tmp
 	@perl -MIO::Compress::Gzip      -e 1 >> $@.tmp
 	@perl -MIO::Socket              -e 1 >> $@.tmp
 	@perl -MIO::Uncompress::Gunzip  -e 1 >> $@.tmp
+	@perl -MJSON                    -e 1 >> $@.tmp
+	@perl -MJSON::XS                -e 1 >> $@.tmp
 	@perl -MLWP::UserAgent          -e 1 >> $@.tmp
 	@perl -MLWP::Simple             -e 1 >> $@.tmp
 	@perl -MList::Compare           -e 1 >> $@.tmp
@@ -52,8 +54,11 @@ global_check:
 	@perl -MSpreadsheet::ParseXLSX  -e 1 >> $@.tmp
 	@perl -MSpreadsheet::WriteExcel -e 1 >> $@.tmp
 	@perl -MTest::More              -e 1 >> $@.tmp
+	@perl -MTie::IxHash             -e 1 >> $@.tmp
 	@perl -MTime::HiRes             -e 1 >> $@.tmp
 	@perl -MTime::localtime         -e 1 >> $@.tmp
+	@perl -MTime::Piece             -e 1 >> $@.tmp
+	@perl -MTry::Tiny               -e 1 >> $@.tmp
 	@perl -MWebservice::InterMine   -e 1 >> $@.tmp
 	@perl -MXML::Fast               -e 1 >> $@.tmp
 # R libraries
@@ -243,6 +248,7 @@ test_container: build_container
 	@$(PIPELINE_CONTAINER_CMD) perl -MBio::SeqIO              -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MCpanel::JSON::XS        -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MData::Dumper            -e 1 >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) perl -MData::Dump              -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MDBI                     -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MDBD::mysql              -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MDBD::Pg                 -e 1 >> $@.tmp
@@ -256,10 +262,11 @@ test_container: build_container
 	@$(PIPELINE_CONTAINER_CMD) perl -MFile::Spec              -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MFindBin                 -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MGetopt::Long            -e 1 >> $@.tmp
-	@$(PIPELINE_CONTAINER_CMD) perl -MHTTP::Request           -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MIO::Compress::Gzip      -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MIO::Socket              -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MIO::Uncompress::Gunzip  -e 1 >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) perl -MJSON                    -e 1 >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) perl -MJSON::XS                -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MLWP::Simple             -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MLWP::UserAgent          -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MList::Compare           -e 1 >> $@.tmp
@@ -273,8 +280,11 @@ test_container: build_container
 	@$(PIPELINE_CONTAINER_CMD) perl -MSpreadsheet::ParseXLSX  -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MSpreadsheet::WriteExcel -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MTest::More              -e 1 >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) perl -MTie::IxHash             -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MTime::HiRes             -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MTime::localtime         -e 1 >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) perl -MTime::Piece             -e 1 >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) perl -MTry::Tiny               -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MWebservice::InterMine   -e 1 >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) perl -MXML::Fast               -e 1 >> $@.tmp
 # R libraries
