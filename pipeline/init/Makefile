@@ -181,7 +181,7 @@ global_check:
 	@python3 -c "import six"             >> $@.tmp  2>/dev/null
 	@python3 -c "import configparser"    >> $@.tmp  2>/dev/null
 	@python3 -c "import datetime"        >> $@.tmp  2>/dev/null
-	@python3 -c "import distutils"       >> $@.tmp  2>/dev/null
+#	@python3 -c "import distutils"       >> $@.tmp  2>/dev/null #FIXME no more in Python 3.12+
 	@python3 -c "import multiprocessing" >> $@.tmp  2>/dev/null
 	@python3 -c "import pathlib"         >> $@.tmp  2>/dev/null
 	@python3 -c "import typing"          >> $@.tmp  2>/dev/null
