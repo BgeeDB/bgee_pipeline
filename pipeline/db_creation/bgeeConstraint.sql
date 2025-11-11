@@ -271,7 +271,8 @@ add primary key (conditionId, subsetMask, globalConditionId);
 -- for this design of PK and UNIQUE indexes
 alter table expression
 modify expressionId int unsigned not null auto_increment,
-add primary key(bgeeGeneId, conditionId),
+-- we added the primary key in this order to be able to parallelize insertion per conditionId
+add primary key(conditionId, bgeeGeneId),
 add unique(expressionId);
 /*!40000 ALTER TABLE `expression` ENABLE KEYS */;
 
