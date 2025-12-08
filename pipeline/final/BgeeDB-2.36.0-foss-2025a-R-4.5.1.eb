@@ -1,27 +1,26 @@
 easyblock = 'Bundle'
 
 name = 'BgeeDB'
-version = '2.26.0'
+version = '2.36.0'
 versionsuffix = '-R-%(rver)s'
 
-# This library does not need last Bioconductor dependencies
-# but better to have its last version from the last Bioconductor version
-local_bioc_version = 3.17
+# While BgeeDB does not require the latest Bioconductor dependencies
+# we search the latest Bioconductor release archive for them
+local_bioc_version = '3.22'
 
 homepage = 'https://github.com/BgeeDB/BgeeDB_R'
 description = """Annotation and gene expression data retrieval from Bgee database.
 TopAnat, an anatomical entities Enrichment Analysis tool for UBERON ontology."""
 software_license = 'LicenseGPLv3'
 
-toolchain = {'name': 'foss', 'version': '2021a'}
+toolchain = {'name': 'foss', 'version': '2025a'}
 
 builddependencies = [
-    ('pkg-config', '0.29.2'),
-    ('R',          '4.1.0'),
+    ('R', '4.5.1'),
 ]
 
 dependencies = [
-    ('R-bundle-Bioconductor', '3.13', versionsuffix),
+    ('R-bundle-Bioconductor', local_bioc_version, versionsuffix),
 ]
 
 exts_default_options = {
@@ -48,11 +47,17 @@ exts_filter = ("R -q --no-save", "%s { %s }" % (local_ext_version_check, local_s
 # CRAN packages on which these Bioconductor packages depend are available in R module on which this depends
 # !! order of packages is important !!
 exts_list = [
-    ('topGO', '2.52.0', {
-        'checksums': ['c29815ef354c605ad01a856ba61e8bfa6063b0245f6e621187f8a001e396722b'],
+    ('topGO', '2.62.0', {
+        'checksums': ['6bca31c56f2e71b763f7540a1b5b0ab197d36fd876b5f3f8d37e3b9bc928e9e1'],
+    }),
+    ('bread', '0.4.1', {
+        'checksums': ['19a40d55b8be57be80d1fe4e4cba2a58cb3bf17fe6b777db65d28bf82eae5d6f'],
+    }),
+    ('anndata', '0.8.0', {
+        'checksums': ['4656521ae59ddad1387a2ffdcf5f37091d7c401603fcbc7b453b5517da392f35'],
     }),
     (name, version, {
-        'checksums': ['f0127b77c305ac0930fb412b5e18ea79f24acd5e242e058d77b4c5add609dbe8'],
+        'checksums': ['4cafe51f4207d07512995a43b6498c4c0df54b81c8436f6f8c48b115d56c1428'],
     }),
 ]
 

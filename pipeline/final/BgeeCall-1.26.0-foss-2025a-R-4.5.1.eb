@@ -1,26 +1,25 @@
 easyblock = 'Bundle'
 
 name = 'BgeeCall'
-version = '1.16.0'
+version = '1.26.0'
 versionsuffix = '-R-%(rver)s'
 
 # While BgeeCall does not require the latest Bioconductor dependencies
 # we search the latest Bioconductor release archive for them
-local_bioc_version = 3.17
+local_bioc_version = '3.22'
 
 homepage = 'https://github.com/BgeeDB/BgeeCall'
 description = """Automatic RNA-Seq present/absent gene expression calls generation"""
 software_license = 'LicenseGPLv3'
 
-toolchain = {'name': 'foss', 'version': '2021a'}
+toolchain = {'name': 'foss', 'version': '2025a'}
 
 builddependencies = [
-    ('pkg-config', '0.29.2'),
-    ('R',          '4.1.0'),
+    ('R', '4.5.1'),
 ]
 
 dependencies = [
-    ('R-bundle-Bioconductor', '3.13', versionsuffix),
+    ('R-bundle-Bioconductor', local_bioc_version, versionsuffix),
 ]
 
 exts_default_options = {
@@ -47,23 +46,17 @@ exts_filter = ("R -q --no-save", "%s { %s }" % (local_ext_version_check, local_s
 # CRAN packages on which these Bioconductor packages depend are available in R module on which this depends
 # !! order of packages is important !!
 exts_list = [
-    ('insight', '0.19.3', {
-        'checksums': ['ff1f39b15e84f671f1602e5f7ef646d0f1c25ea63ad87c272a58e25d8b8d887e'],
-    }),
-    ('datawizard', '0.8.0', {
-        'checksums': ['13a3ed4f36157b18955dcbcb5a1f81a0d913349312cd44141f0afde16a3d22a2'],
-    }),
     ('sjlabelled', '1.2.0', {
         'checksums': ['731c7e907361971dbc890ad80bc95a38ecc38455a0217fdbc3dbb7c60b3648ed'],
     }),
-    ('sjmisc', '2.8.9', {
-        'checksums': ['78b05741ce9e1cc783fda97a0f18caff689822fdd4bdf733dc20f7c94ac2f3bf'],
+    ('sjmisc', '2.8.11', {
+        'checksums': ['8ed1d6a2fb1555d62a8135465b2af0dbf2ea343010b4eafe817121cbb172152c'],
     }),
     ('rslurm', '0.6.2', {
         'checksums': ['540158ece7d838c9630886f37e0960353038fefa4f9cc374004240b767f6b47c'],
     }),
     (name, version, {
-        'checksums': ['80dabc64b8eb13f9937852f433ef6919ebcf1583ece8eb78872b147c3bd30349'],
+        'checksums': ['1721b316323a1aa3c9e2292f3274564722b60b0332abc5fd5690e140498b86e2'],
     }),
 ]
 
