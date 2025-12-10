@@ -9,9 +9,7 @@ ALTER TABLE tempSafeToDropCondUsed ENGINE=InnoDB;
 
 INSERT INTO tempSafeToDropCondUsed
 SELECT DISTINCT t1.conditionId FROM cond AS t1
-WHERE EXISTS (SELECT 1 FROM estLibrary WHERE estLibrary.conditionId = t1.conditionId)
-OR EXISTS (SELECT 1 FROM affymetrixChip WHERE affymetrixChip.conditionId = t1.conditionId)
-OR EXISTS (SELECT 1 FROM inSituSpot WHERE inSituSpot.conditionId = t1.conditionId)
+WHERE EXISTS (SELECT 1 FROM inSituSpot WHERE inSituSpot.conditionId = t1.conditionId)
 OR EXISTS (SELECT 1 FROM rnaSeqLibraryAnnotatedSample WHERE rnaSeqLibraryAnnotatedSample.conditionId = t1.conditionId)
 OR EXISTS (SELECT 1 FROM expression WHERE expression.conditionId = t1.conditionId)
 OR EXISTS (SELECT 1 FROM globalCondToCond WHERE globalCondToCond.conditionId = t1.conditionId);

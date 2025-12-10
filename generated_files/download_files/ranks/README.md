@@ -16,7 +16,7 @@ A lower rank score for a gene means that the gene is more highly expressed in a 
 
 ## Files
 
-For each species and data grouping, 5 files are generated: one considering all data available, one considering Affymetrix data only, one EST data only, one _in situ_ hybridization data only, one RNA-Seq data only.
+For each species and data grouping, 3 files are generated: one considering all data available, one _in situ_ hybridization data only, one RNA-Seq data only.
 
 ### File name pattern
 
@@ -28,8 +28,6 @@ File names follow the following pattern: `<NCBI_tax_id>_<grouping>_<data_type>_<
   * `condition`: rank scores provided for all conditions where genes are expressed.
 * `<data_type>`: the data types that were considered to produce the rank scores. Permitted values: 
   * `all_data`: all data types were considered to produce a global mean rank score. This is the score we recommend, used on the Bgee website. 
-  * `affymetrix`: scores based exclusively on Affymetrix data.
-  * `est`: scores based exclusively on EST data.
   * `rna_seq`: scores based exclusively on RNA-Seq data.
   * `in_situ`: scores based exclusively on _in situ_ hybridization data.
 * `<species_name>`: the scientific name of the species, with spaces replaced with `_`, e.g. `Homo_sapiens`.

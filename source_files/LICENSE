@@ -31,21 +31,6 @@ for any purpose for which they are used.
 	See https://insitu.fruitfly.org/
 
 
-##########################  ESTs  ##########################
-- source_files/ESTs/smirnadb/
-	See http://www.mirz.unibas.ch/
-
-- source_files/ESTs/library.report
-	See ftp://ftp.ncbi.nih.gov/repository/UniLib/
-
-- source_files/ESTs/Dm.seq.uniq.gz
-	See https://ftp.ncbi.nlm.nih.gov/repository/UniGene/
-
-- source_files/ESTs/miRNA.dat
-	See http://www.mirbase.org/
-	    https://mirbase.org/download/CURRENT/README/
-
-
 ##########################  genes  #########################
 - source_files/genes/go
 	See http://www.geneontology.org/page/use-and-license

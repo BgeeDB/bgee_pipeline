@@ -42,14 +42,6 @@ INNER JOIN expression AS t5
     ON t4.bgeeGeneId = t5.bgeeGeneId AND t3.exprMappedConditionId = t5.conditionId;
 
 -- Now we update all tables using an expressionId using the table remapExpression
-UPDATE expressedSequenceTag AS t1
-INNER JOIN remapExpression AS t2 ON t1.expressionId = t2.incorrectExpressionId
-SET t1.expressionId = t2.remappedExpressionId;
-
-UPDATE affymetrixProbeset AS t1
-INNER JOIN remapExpression AS t2 ON t1.expressionId = t2.incorrectExpressionId
-SET t1.expressionId = t2.remappedExpressionId;
-
 UPDATE inSituSpot AS t1
 INNER JOIN remapExpression AS t2 ON t1.expressionId = t2.incorrectExpressionId
 SET t1.expressionId = t2.remappedExpressionId;
@@ -60,14 +52,6 @@ SET t1.expressionId = t2.remappedExpressionId;
 
 -- And now we update all tables using a conditionId (except the table `expression` already updated)
 -- using the table remapCond
-UPDATE estLibrary AS t1
-INNER JOIN remapCond AS t2 ON t1.conditionId = t2.incorrectConditionId
-SET t1.conditionId = t2.remappedConditionId;
-
-UPDATE affymetrixChip AS t1
-INNER JOIN remapCond AS t2 ON t1.conditionId = t2.incorrectConditionId
-SET t1.conditionId = t2.remappedConditionId;
-
 UPDATE inSituSpot AS t1
 INNER JOIN remapCond AS t2 ON t1.conditionId = t2.incorrectConditionId
 SET t1.conditionId = t2.remappedConditionId;

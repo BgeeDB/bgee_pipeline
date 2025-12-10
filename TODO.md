@@ -20,15 +20,6 @@ Use the strain mapping file in the pipeline for inserting conditions
 * Get rid of all the "xxxExperimentExpression" tables and related code inserting data in them. For Bgee 15, confidence levels will be based on corrected p-values, not on number of experiments.
 * Modify the globalExpression table and related code accordingly.
 
-## Affymetrix
-
-* Rerun Affymetrix analyses to be able to store p-values (Sara, for new FDR correction)
-
-## EST
-
-* Use cdna.all.fa files from Ensembl FTP instead of Biomart cdna extraction that looks to have limits and be truncated
-* Use a tool more sensitive than blast to map ESTs (such as CD-HIT)
-
 ## RNA-Seq
 
 * Do not produce absent calls for some gene biotypes, depending on the library type
@@ -62,7 +53,7 @@ from 2020-04-07
 ## Post-processing
 
 * post-processing to remove genes never seen expressed anywhere.
-Note: this filter already exists for Affy and RNA-Seq data independently. EST only produce present calls.
+Note: this filter already exists for RNA-Seq data.
 Such a situation should then only happens from in situ data where only absence of expression of a gene was reported,
 and with no present calls from other data types. => Do we really need a post-processing filtering step for this?
   

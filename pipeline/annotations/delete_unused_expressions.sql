@@ -9,9 +9,7 @@ ALTER TABLE tempSafeToDropExpressionUsed ENGINE=InnoDB;
 
 INSERT INTO tempSafeToDropExpressionUsed
 SELECT DISTINCT t1.expressionId FROM expression AS t1
-WHERE EXISTS (SELECT 1 FROM expressedSequenceTag WHERE expressedSequenceTag.expressionId = t1.expressionId)
-OR EXISTS (SELECT 1 FROM affymetrixProbeset WHERE affymetrixProbeset.expressionId = t1.expressionId)
-OR EXISTS (SELECT 1 FROM inSituSpot WHERE inSituSpot.expressionId = t1.expressionId)
+WHERE EXISTS (SELECT 1 FROM inSituSpot WHERE inSituSpot.expressionId = t1.expressionId)
 OR EXISTS (SELECT 1 FROM rnaSeqLibraryAnnotatedSampleGeneResult WHERE rnaSeqLibraryAnnotatedSampleGeneResult.expressionId = t1.expressionId);
 
 -- Then, we delete the conditions unused.

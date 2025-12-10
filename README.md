@@ -25,7 +25,7 @@
 ## Introduction
 
 Bgee is a database to retrieve and compare gene expression patterns in multiple animal species, 
-produced from multiple data types (RNA-Seq, Affymetrix, _in situ_ hybridization, and EST data).
+produced from multiple data types (RNA-Seq, scRNA-Seq, and _in situ_ hybridization).
 
 Bgee is based exclusively on curated "normal", healthy, expression data (e.g., no gene knock-out, 
 no treatment, no disease), to provide a comparable reference of normal gene expression.

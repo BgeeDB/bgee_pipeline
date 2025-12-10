@@ -86,7 +86,7 @@ SET t1.conditionId = t2.remappedConditionId;
 ```
 
 Do this operation for every table containing annotations you want to update
-(`affymetrixChip`, `estLibrary`, `inSituSpot`, ...).
+(`inSituSpot`, ...).
 
 ### 5) Delete unused conditions
 
