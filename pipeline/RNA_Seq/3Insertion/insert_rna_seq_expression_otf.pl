@@ -22,9 +22,9 @@ use Utils;
 # Julien Wollbrett, updated Nov. 2025
 
 # Added new columns for bulk RNA-Seq expression data insertion:
-# now insert meanRank, meanPValue, weight and numberObs (number of observation) for each observed expression call
+# now insert meanScore, meanPValue, weight and numberObs (number of observation) for each observed expression call
 # this implementation has been done as part of the on the fly propagation revamp.
-# The new columns will be used to compute global expression calls/ranks without quesrying the datatype specific tables.
+# The new columns will be used to compute global expression calls/score without querying the datatype specific tables.
 # USAGE: perl insert_rna_seq_expression_otf.pl -bgee=connection_string -number_threads=N <OPTIONAL: -debug>
 
 # steps:
@@ -133,13 +133,15 @@ my $updResultQuery = 'UPDATE rnaSeqLibraryAnnotatedSampleGeneResult AS t1 '.
                      ' AND t1.expressionId IS NULL';
 
 my $queryResultsQuery = 'SELECT distinct t1.bgeeGeneId, t1.rnaSeqLibraryAnnotatedSampleId, t1.rawRank, t1.pValue, t4.mappedReadsCount'.
+                        ' t2.rnaSeqLibraryAnnotatedSampleMaxRank, t2.rnaSeqLibraryAnnotatedSampleDistinctRankCount'
                         ' FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t1'.
                         ' INNER JOIN rnaSeqLibraryAnnotatedSample AS t2 ON t1.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId'.
                         ' INNER JOIN cond AS t3 ON t2.conditionId = t3.conditionId'.
                         ' INNER JOIN rnaSeqLibrary AS t4 ON t2.rnaSeqLibraryId = t4.rnaSeqLibraryId'.
-                        ' WHERE t3.exprMappedConditionId = ? AND t1.reasonForExclusion = "'.$Utils::CALL_NOT_EXCLUDED.'"';
+                        ' WHERE t3.exprMappedConditionId = ? AND t1.reasonForExclusion = "'.$Utils::CALL_NOT_EXCLUDED.'"'.
+                        ' AND t4.rnaSeqTechnologyIsSingleCell = 0';
 
-my $updExprMetricsQuery = 'UPDATE expression SET bulkRank = ?, bulkPValue = ?, bulkWeight = ?, bulkNumberObs = ? WHERE expressionId = ?';
+my $updExprMetricsQuery = 'UPDATE expression SET bulkScore = ?, bulkPValue = ?, bulkWeight = ?, bulkNumberObs = ? WHERE expressionId = ?';
 
 ##########################################
 # PROCESS CONDITIONS IN PARALLEL         #
@@ -169,17 +171,20 @@ for my $exprMappedConditionId (@exprMappedConditions) {
         print "\t\t[child $$] Retrieving genes results...\n" unless $debug;
         $queryResults->execute($exprMappedConditionId) or die $queryResults->errstr;
         my %results;
+
         while ( my @data = $queryResults->fetchrow_array ){
             $results{$data[0]}{$data[1]}{'rawRank'}       = $data[2];
             $results{$data[0]}{$data[1]}{'pValue'}        = $data[3];
-            $results{$data[0]}{$data[1]}{'mappedReadsCount'} = $data[4] // 0;
+            $results{$data[0]}{$data[1]}{'mappedReadsCount'} = $data[4];
+            $results{$data[0]}{$data[1]}{'maxRank'} = $data[5];
+            $results{$data[0]}{$data[1]}{'distinctRankCount'} = $data[6];
         }
         $queryResults->finish;
         print "\t\t[child $$] Done, ", scalar(keys %results), " genes retrieved. Generating expression summary...\n" unless $debug;
 
         for my $geneId ( keys %results ) {
+            # Insert new expression ID or retrieve already existing one
             my $expressionId;
-
             if ($debug) {
                 print "INSERT INTO expression (bgeeGeneId, conditionId) VALUES ($geneId, $exprMappedConditionId)...\n";
             } else {
@@ -194,7 +199,7 @@ for my $exprMappedConditionId (@exprMappedConditions) {
             my %weightedExprMetrics = calculate_expression_summary(\%{ $results{$geneId} }, $geneId, $exprMappedConditionId);
 
             if ($debug) {
-                print "UPDATE expression SET meanRank = ".$weightedExprMetrics{'meanRank'}.
+                print "UPDATE expression SET meanScore = ".$weightedExprMetrics{'meanScore'}.
                       ", meanPValue = ".$weightedExprMetrics{'meanPValue'}.
                       ", weight = ".$weightedExprMetrics{'mappedReadsCount'}.
                       ", numberObs = ".$weightedExprMetrics{'numberObs'}.
@@ -254,32 +259,50 @@ sub calculate_expression_summary {
     my ($geneData, $geneId, $conditionId) = @_;
     my %summary;
 
-    my $weightedRank = 0;
-    my $weightedPValue = 0;
+    my $score = 0;
+    my $pValue = 0;
     my $weight = 0;
     my $obsCount = 0;
 
+    # for now we decided to use the distinct rank count as the weighting factor but at some point we descussed about using
+    # the mapped reads count instead
     foreach my $sampleId (keys %$geneData) {
         my $data = $geneData->{$sampleId};
-        my $mapped = $data->{'mappedReadsCount'} // 0;
-        $weightedRank   += ($data->{'rawRank'} // 0) * $mapped;
-        $weightedPValue += ($data->{'pValue'}   // 0) * $mapped;
-        $weight += $mapped;
-        $obsCount++;
+
+        my $rawRank = $data->{'rawRank'};
+        my $distinctRanks = $data->{'distinctRankCount'};
+        my $maxRank = $data->{'maxRank'};
+        my $obsPValue = $data->{'pValue'};
+
+        die "rawRank est null" if !defined $rawRank;
+        die "distinctRanks est null" if !defined $distinctRanks;
+        die "maxRank est null" if !defined $maxRank;
+        die "obsPValue est null" if !defined $obsPValue;
+
+        my $range = $maxRank - 1;
+        my $adjustedRank = $rawRank - 1;
+
+        # calculate the score for that sample
+        my $expressionScore = 100 - ($adjustedRank * 99 / $range);
+
+        # weight the score by the distinct rank count
+        $weight += $distinctRanks;
+        $score += $expressionScore * $weight;
+        $pValue += $obsPValue;
+        $obsCount += 1;
+
+
     }
 
     if ($obsCount == 0) {
         die "No observations found for geneId $geneId in conditionId $conditionId";
     }
-    if ($weight == 0) {
-        # avoid division by zero; set means to 0 (or choose NA/NULL depending on DB expectations)
-        $summary{'meanRank'} = 0;
-        $summary{'meanPValue'} = 0;
-    } else {
-        $summary{'meanRank'} = $weightedRank / $weight;
-        $summary{'meanPValue'} = $weightedPValue / $weight;
-    }
-    $summary{'mappedReadsCount'} = $weight;
+    $summary{'score'} = $score / $weight;
+    #XXX: the pValue has to be multiplied by 2 at some points. For now we decided not to multiply by 2 in the datatbase but to do it on the fly when retrieving the value for propagation
+    #TODO: confirm that the multiplication will be done on the fly
+    $summary{'pvalue'} = $pValue / $obsCount;
+
+    $summary{'weight'} = $weight;
     $summary{'numberObs'} = $obsCount;
 
     return %summary;
