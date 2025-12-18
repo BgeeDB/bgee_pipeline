@@ -485,7 +485,7 @@ check_conditions: insert_RNA_seq
 
 insert_expression: check_conditions insert_RNA_seq
 	# Insert the expression summaries
-	@perl 3Insertion/insert_rna_seq_expression.pl -number_threads=20 -bgee=$(BGEECMD) > $@.tmp 2>warnings.$@
+	@perl 3Insertion/insert_rna_seq_expression_otf.pl -number_threads=4 -bgee=$(BGEECMD) > $@.tmp 2>warnings.$@
 	@echo
 	@echo "Searching for incorrect updates of rnaSeqResult/expression tables (there should be none)" >> $@.tmp
 	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult as t1 INNER JOIN rnaSeqLibraryAnnotatedSample as t2 ON t1.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId INNER JOIN rnaSeqLibrary as t3 ON t2.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE t1.reasonForExclusion = 'not excluded' AND t1.expressionId IS NULL AND t3.rnaSeqTechnologyIsSingleCell = 0 limit 10" >> $@.tmp
