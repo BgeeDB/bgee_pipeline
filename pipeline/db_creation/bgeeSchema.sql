@@ -918,18 +918,18 @@ create table expression (
     expressionId int unsigned not null COMMENT 'Internal expression ID, not stable between releases.',
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID, not stable between releases.',
     conditionId mediumint unsigned not null COMMENT 'ID of condition in the related condition table ("cond"), not stable between releases.',
-    bulkRank decimal(9,2) unsigned not null COMMENT 'The rank of the expression call in the bulk RNA-Seq protocol',
-    bulkPValue decimal(9,2) unsigned not null COMMENT 'The p-value of the expression call in the bulk RNA-Seq protocol',
-    bulkWeight decimal(9,2) unsigned not null COMMENT 'The weight of the expression call in the bulk RNA-Seq protocol',
-    bulkNumberObs int unsigned not null COMMENT 'The number of observations for the expression call in the bulk RNA-Seq protocol',
-    singleCellRank decimal(9,2) unsigned not null COMMENT 'The rank of the expression call in the single-cell RNA-Seq protocol',
-    singleCellPValue decimal(9,2) unsigned not null COMMENT 'The p-value of the expression call in the single-cell RNA-Seq protocol',
-    singleCellWeight decimal(9,2) unsigned not null COMMENT 'The weight of the expression call in the single-cell RNA-Seq protocol',
-    singleCellNumberObs int unsigned not null COMMENT 'The number of observations for the expression call in the single-cell RNA-Seq protocol',
-    inSituRank decimal(9,2) unsigned not null COMMENT 'The rank of the expression call in the in situ hybridization protocol',
-    inSituPValue decimal(9,2) unsigned not null COMMENT 'The p-value of the expression call in the in situ hybridization protocol',
-    inSituWeight decimal(9,2) unsigned not null COMMENT 'The weight of the expression call in the in situ hybridization protocol',
-    inSituNumberObs int unsigned not null COMMENT 'The number of observations for the expression call in the in situ hybridization protocol'
+    bulkScore decimal(9,2) unsigned not null COMMENT 'The score of the expression call in the bulk RNA-Seq protocol',
+    bulkPValue decimal(31,30) unsigned not null COMMENT 'The p-value of the expression call in the bulk RNA-Seq protocol',
+    bulkWeight bigint unsigned not null COMMENT 'The weight of the expression call in the bulk RNA-Seq protocol',
+    bulkNumberObs smallint unsigned not null COMMENT 'The number of observations for the expression call in the bulk RNA-Seq protocol',
+    singleCellScore decimal(9,2) unsigned not null COMMENT 'The score of the expression call in the single-cell RNA-Seq protocol',
+    singleCellPValue decimal(31,30) unsigned not null COMMENT 'The p-value of the expression call in the single-cell RNA-Seq protocol',
+    singleCellWeight bigint unsigned not null COMMENT 'The weight of the expression call in the single-cell RNA-Seq protocol',
+    singleCellNumberObs smallint unsigned not null COMMENT 'The number of observations for the expression call in the single-cell RNA-Seq protocol',
+    inSituScore decimal(9,2) unsigned not null COMMENT 'The score of the expression call in the in situ hybridization protocol',
+    inSituPValue decimal(31,30) unsigned not null COMMENT 'The p-value of the expression call in the in situ hybridization protocol',
+    inSituWeight bigint unsigned not null COMMENT 'The weight of the expression call in the in situ hybridization protocol',
+    inSituNumberObs smallint unsigned not null COMMENT 'The number of observations for the expression call in the in situ hybridization protocol'
 ) engine = innodb
 comment = 'This table is a summary of expression calls for a given gene-condition (anatomical entity - developmental stage - sex- strain), over all the experiments and data types, with no propagation nor experiment expression summary.';
 
