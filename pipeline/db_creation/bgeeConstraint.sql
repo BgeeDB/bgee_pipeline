@@ -254,7 +254,7 @@ add unique(anatEntityId, cellTypeId, stageId, speciesId, sex, strain);
 
 /*!40000 ALTER TABLE `globalCondRelation` DISABLE KEYS */;
 alter table globalCondRelation
-add primary key (sourceConditionId, targetConditionId)
+add primary key (sourceGlobalConditionId, targetGlobalConditionId);
 /*!40000 ALTER TABLE `globalCondRelation` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `condToSelfGlobalCond` DISABLE KEYS */;
