@@ -50,7 +50,6 @@ use LWP::Simple;
 my ($bgee_connector)         = ('');
 my ($RNAseqLib)              = ('');
 my ($RNAseqLibChecks)        = ('');
-my ($RNAseqLibWormExclusion) = ('');
 my ($extraMapping)           = ('');
 my ($outFile)                = ('');
 my ($debug)                  = (0);
@@ -60,7 +59,6 @@ my ($newGenomes)             = ('');
 my %opts = ('bgee=s'                   => \$bgee_connector,     # Bgee connector string
             'RNAseqLib=s'              => \$RNAseqLib,
             'RNAseqLibChecks=s'        => \$RNAseqLibChecks,
-            'RNAseqLibWormExclusion=s' => \$RNAseqLibWormExclusion,
             'extraMapping=s'           => \$extraMapping,
             'outFile=s'                => \$outFile,
             'debug'                    => \$debug,
@@ -71,14 +69,13 @@ my %opts = ('bgee=s'                   => \$bgee_connector,     # Bgee connector
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $bgee_connector eq '' || $RNAseqLib eq '' || $RNAseqLibChecks eq '' || $RNAseqLibWormExclusion eq '' ||
+if ( !$test_options || $bgee_connector eq '' || $RNAseqLib eq '' || $RNAseqLibChecks eq '' ||
     $outFile eq '' || $toolsPath eq '' || $newGenomes eq '' ){
     print "\n\tInvalid or missing argument:
-\te.g. $0  -bgee=\$(BGEECMD) -RNAseqLib=\$(RNASEQ_LIB_FILEPATH_FULL) -RNAseqLibChecks=\$(RNASEQ_LIB_CHECKS_FILEPATH_FULL) -RNAseqLibWormExclusion=\$(RNASEQ_LIB_EXCLUSION_FILEPATH_WORM) -outFile=\$(RNASEQ_SAMPINFO_FILEPATH) -extraMapping=\$(EXTRAMAPPING_FILEPATH)
+\te.g. $0  -bgee=\$(BGEECMD) -RNAseqLib=\$(RNASEQ_LIB_FILEPATH_FULL) -RNAseqLibChecks=\$(RNASEQ_LIB_CHECKS_FILEPATH_FULL) -outFile=\$(RNASEQ_SAMPINFO_FILEPATH) -extraMapping=\$(EXTRAMAPPING_FILEPATH)
 \t-bgee                   Bgee connector string
 \t-RNAseqLib              RNAseq Libraries from annotation file
 \t-RNAseqLibChecks        RNAseq Libraries previously checked for platform annotation errors
-\t-RNAseqLibWormExclusion RNAseq Libraries excluded from WormBase annotation
 \t-outFile                Output file: TSV with all species and SRA information from NCBI
 \t-extraMapping           Extra mapping file
 \t-debug                  more verbose output
@@ -143,15 +140,6 @@ for my $library (@{$tsv_checks{'libraryId'}}){
 }
 print "Done\n";
 
-print "Reading annotation file $RNAseqLibWormExclusion... ";
-warn "Warning: [$RNAseqLibWormExclusion] file is empty.\n"  if ( -z $RNAseqLibWormExclusion );
-%tsv_checks = %{ Utils::read_spreadsheet("$RNAseqLibWormExclusion", "\t", 'csv', '"', 1) };
-#libraryId    excluded    comment    annotatorId    lastModificationDate
-my %checked_libraries_worm;
-for my $i ( 0..$#{$tsv_checks{'libraryId'}} ) {
-    $checked_libraries_worm{$tsv_checks{'libraryId'}[$i]} = $tsv_checks{'excluded'}[$i];
-}
-print "Done\n";
 
 print "For each library, retrieving SRA record information and writing in output file...\n";
 open (my $OUT, '>', "$outFile")  or die "Cannot write [$outFile]\n";
@@ -228,21 +216,6 @@ for my $i ( 0..$#{$tsv{'libraryId'}} ) {
 
     # if query was successful, an XML file is returned:
     else {
-        # If it is a Wormbase library that was previously manually checked for inclusion, do not make additional checks
-        if ( exists $checked_libraries_worm{$libraryId} ){
-            #NOTE See https://gitlab.sib.swiss/Bgee/expression-annotations/issues/33
-            # if the library was excluded:
-            #SRP000401(SRX035162, SRX036882, SRX036967, SRX036969, SRX036970, SRX047787), SRP001010, SRP015688
-            if ( $checked_libraries_worm{$libraryId} eq 'TRUE' ){
-                warn "\tInfo: [$libraryId] [$experimentId] from Wormbase was excluded following manual curation (see file $RNAseqLibWormExclusion). This library was not printed in output file.\n";
-                next SAMPLE
-            }
-            else {
-                # Validated in https://gitlab.sib.swiss/Bgee/expression-annotations/issues/33
-                #GSE16552, GSE22410, SRP000401(SRX037197, SRX050630), SRP015688
-                warn "\tInfo: [$libraryId] [$experimentId] from Wormbase was manually curated (see file $RNAseqLibWormExclusion), and it was decided to include it. Next warning messages can probably be ignored.\n";
-            }
-        }
         # Perform a series of sanity checks
         # Check it is a RNA-seq library
         my @valid_lib_strategy = ('ERP001524', 'ERP001525', 'ERP001954', 'ERP002055', 'GSE30606', 'GSE30617', 'SRP000401', 'E-MTAB-2449', 'SRP003905', 'SRP006208', 'SRP006209', 'GSE16552', 'DRP000571', 'SRP000304', 'SRP004363', 'SRP005402', 'SRP033585', 'SRP043163', 'SRP058340', 'SRP068231');

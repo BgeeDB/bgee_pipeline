@@ -16,19 +16,14 @@ get_annot:
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/RNA_Seq/RNASeqLibrary.tsv                 $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibrary.tsv
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/RNA_Seq/RNASeqExperiment.tsv              $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqExperiment.tsv
 	@$(CP) $(ANNOT_SUBMODULE_DIR)/RNA_Seq/RNASeqLibraryPlatformChecks.tsv   $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibraryPlatformChecks.tsv
-# Download wormbase annotation as well. Will be merged with our annotation in create_rna_seq_sample_info step
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/RNA_Seq/RNASeqLibrary_worm.tsv            $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibrary_worm.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/RNA_Seq/RNASeqLibrary_worm_exclusion.tsv  $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqLibrary_worm_exclusion.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/RNA_Seq/RNASeqExperiment_worm.tsv         $(SOURCE_FILES_DIR)/$(DIR_NAME)/RNASeqExperiment_worm.tsv
-#TODO clarify the steps from WormBase raw files to formatted file: $(ANNOTATION_GIT_URL)/RNA_Seq/RNASeqLibrary_worm.tsv
 	@touch $@
 
 #For Bgee 15.2 we filtered annotation based on species already present in Bgee 15.1
 
-check_annot: get_annot $(RNASEQ_EXPERIMENT_FILEPATH) $(RNASEQ_EXPERIMENT_FILEPATH_WORM) $(RNASEQ_LIB_FILEPATH) $(RNASEQ_LIBRARY_FILEPATH_WORM)
-	# Concatenate our annotation file with wormbase annotations (without header, and sorted by experiments and libraries)
-	@tail -n+2 $(RNASEQ_EXPERIMENT_FILEPATH_WORM) | sort -k1,1       | cat $(RNASEQ_EXPERIMENT_FILEPATH) - > $(RNASEQ_EXPERIMENT_FILEPATH_FULL)
-	@tail -n+2 $(RNASEQ_LIB_FILEPATH_WORM)        | sort -k2,2 -k1,1 | cat $(RNASEQ_LIB_FILEPATH)        - > $(RNASEQ_LIB_FILEPATH_FULL).ori
+check_annot: get_annot $(RNASEQ_EXPERIMENT_FILEPATH) $(RNASEQ_LIB_FILEPATH)
+	# Concatenate our annotation files
+	@cat $(RNASEQ_EXPERIMENT_FILEPATH) > $(RNASEQ_EXPERIMENT_FILEPATH_FULL)
+	@cat $(RNASEQ_LIB_FILEPATH)        > $(RNASEQ_LIB_FILEPATH_FULL).ori
 	# Map strain names
 	@$(SENSITIVE_PERL_CMD) perl -e 'use lib ".."; use Utils; Utils::map_strain_names("$(RNASEQ_LIB_FILEPATH_FULL).ori", "$(STRAIN_MAPPING_FILE)")' >$(RNASEQ_LIB_FILEPATH_FULL).map
 	@$(RM) $(RNASEQ_LIB_FILEPATH_FULL).ori
@@ -44,7 +39,7 @@ check_annot: get_annot $(RNASEQ_EXPERIMENT_FILEPATH) $(RNASEQ_EXPERIMENT_FILEPAT
 
 create_rna_seq_sample_info: check_annot $(EXTRAMAPPING_FILEPATH)
 	# Generate rna_seq_sample_info.txt from RNASeq lib annotation file
-	@$(CLUSTER_SOFTWARE_BIN) perl 0Before/create_rna_seq_sample_info.pl -bgee=$(BGEECMD) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -RNAseqLibChecks=$(RNASEQ_LIB_CHECKS_FILEPATH) -RNAseqLibWormExclusion=$(RNASEQ_LIB_EXCLUSION_FILEPATH_WORM) -extraMapping=$(EXTRAMAPPING_FILEPATH) -toolsPath=$(CLUSTER_TOOLS_DIR) -outFile=$(RNASEQ_SAMPINFO_FILEPATH) -newGenomes=$(NEW_GENOMES) >$@.tmp 2>&1
+	@$(CLUSTER_SOFTWARE_BIN) perl 0Before/create_rna_seq_sample_info.pl -bgee=$(BGEECMD) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -RNAseqLibChecks=$(RNASEQ_LIB_CHECKS_FILEPATH) -extraMapping=$(EXTRAMAPPING_FILEPATH) -toolsPath=$(CLUSTER_TOOLS_DIR) -outFile=$(RNASEQ_SAMPINFO_FILEPATH) -newGenomes=$(NEW_GENOMES) >$@.tmp 2>&1
 	@$(MV) $@.tmp $@
 	@echo -e "Check file \"create_rna_seq_sample_info\" for the output of the script 0Before/create_rna_seq_sample_info.pl, which indicates potential errors to correct in the annotation files.\n"
 
@@ -509,20 +504,6 @@ insert_TMM_factors: check_TMM_factors $(RNASEQTMMPATH)
 	@$(MV) $@.tmp $@
 
 
-#TODO Keep a way to use an external annotation file
-#FIXME Useful? As Wormbase annotations are merged within RNASeq*_full.tsv files used in the main part!
-wormbase:
-	# Get Annotation file from WormBase
-	@$(WGET) 'http://athena.caltech.edu/MrExpTable.csv' && $(MV) MrExpTable.csv 4External/$@.tsv 2>/dev/null  || rm -f MrExpTable.csv
-	# Filter useful experiments, species/strains, conditions, ...
-	@perl 4External/extract_rnaseq_info.pl 4External/$@.tsv > 4External/$@.map 2> warnings.$@
-	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
-	# Make them compatible with the pipeline
-	@echo TODO
-
-external: wormbase
-
-
 #TODO Add 1st steps
 #TODO add a verification that each transcriptId is uniquely used in a given species
 #(see comment for key 'unique(transcriptId, bgeeGeneId)' in bgeeConstraint.sql)
@@ -548,7 +529,7 @@ $(VERIFICATIONFILE): send_files_to_cluster check_conditions insert_expression
 #TODO Clean added/removed steps
 #TODO Remove unused scripts/files in folders and sub-folders
 clean:
-	-@$(RM) -R $(VERIFICATIONFILE)  check_annot check_tools create_rna_seq_sample_info get_annot get_GTF prepare_GTF get_genome prepare_indexed_transcriptome generate_genome_info prepare_run_info_final create_config_file cluster get_sra check_new_downloads list_new_downloads check_sra check_curation check_runs insert_RNA_seq insert_expression wormbase external $(RNASEQGTFDATAPATH)/*.gtf $(RNASEQGTFDATAPATH)/*.gtf.gz *.tmp check_conditions insert_expression
+	-@$(RM) -R $(VERIFICATIONFILE)  check_annot check_tools create_rna_seq_sample_info get_annot get_GTF prepare_GTF get_genome prepare_indexed_transcriptome generate_genome_info prepare_run_info_final create_config_file cluster get_sra check_new_downloads list_new_downloads check_sra check_curation check_runs insert_RNA_seq insert_expression $(RNASEQGTFDATAPATH)/*.gtf $(RNASEQGTFDATAPATH)/*.gtf.gz *.tmp check_conditions insert_expression
 	-@$(GIT) rm $(VERIFICATIONFILE)
 	-@$(GIT) commit $(VERIFICATIONFILE) -m "Removing verification file for RNA Seq" || true
 	-@$(GIT) push

@@ -19,7 +19,7 @@
 
 * [create_rna_seq_sample_info.pl](create_rna_seq_sample_info.pl)
   * This scripts parses the annotation file, and retrieves information on the species using the Bgee database, and on the SRA records (species, platform, SRR IDs) using NCBI e-utils
-  * The script is launched on our annotation merged with Wormbase annotation. An external file is checked for libraries which were manually checked (with decision to include them or not).
+  * The script is launched on our annotation files. An external file is checked for libraries which were manually checked (with decision to include them or not).
   * The script `get_sra_id.pl` from the old pipeline was merged into this script for simplification, and to create less intermediate information files.
   * The script issues warnings if the organism and platform information in the annotation do not match the information on the SRA record (before, TRUE or FALSE flags columns were written in output file).
   * **Thus the output of this script needs to be verified!**.

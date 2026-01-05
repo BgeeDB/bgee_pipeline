@@ -47,7 +47,7 @@ You can check the most up-to-date versions of all parameters, software, and scri
 
 ## Step 1: Data annotation
 
-RNA-Seq data present in SRA are selected and annotated using information present in GEO, or in papers, or provided by the Model Organism Database WormBase.
+RNA-Seq data present in SRA are selected and annotated using information present in GEO/SRA, or in papers.
 
 ## Step 2: Data download and preparation
 
@@ -706,7 +706,6 @@ in wildly used strain names.
     * Some libraries are from species not inserted in Bgee
     * Some libraries are excluded because not from RNA-Seq (e.g. CAGE-Seq, etc)
     * Some libraries are excluded because not found in SRA
-    * Some libraries are excluded from WormBase annotation file
     * The difference: number annotated libraries - all reasons above should give the number of libraries in `generated_files/RNA_Seq/rna_seq_sample_info.txt` file
     * In addition some libraries are excluded after mapping, usually because of low quality mapping
     * This gives the final number of libraries to be inserted for the Bgee release (5745 for Bgee v15)
