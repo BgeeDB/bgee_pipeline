@@ -183,7 +183,7 @@ ERX2159571	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosop
 ERX2160326	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2500	PAIRED		119.8	ERR2103035
 ERX2160327	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2500	PAIRED		119.59	ERR2103036
 ERX2160328	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2500	PAIRED		119.615	ERR2103037
-ERX2160329	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2500	PAIRED			ERR2103038
+ERX2160329	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2500	PAIRED		125	ERR2103038
 ERX2160330	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2500	PAIRED		125	ERR2103039
 ERX2160331	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2500	PAIRED		100	ERR2103040
 ERX2160332	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2500	PAIRED		100	ERR2103041
@@ -204,7 +204,7 @@ ERX2162338	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosop
 ERX2162339	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2500	PAIRED		125	ERR2105061
 ERX2162340	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2500	PAIRED		100	ERR2105062
 ERX2162341	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2500	PAIRED		100	ERR2105063
-ERX2162342	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2500				
+ERX2162342	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2500	PAIRED		125	ERR2105064
 ERX2162343	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2500	PAIRED		125	ERR2105065
 ERX2162344	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2500	PAIRED		100	ERR2105066
 ERX2162997	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2500	PAIRED		125	ERR2105719
@@ -282,7 +282,7 @@ ERX2173938	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosop
 ERX2173939	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2500	SINGLE		28.02	ERR2117081
 ERX2173940	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2500	SINGLE		28.72	ERR2117082
 ERX2173941	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2500	SINGLE		28.28	ERR2117083
-ERX2173942	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2500	SINGLE			ERR2117084
+ERX2173942	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2500	SINGLE		26.93	ERR2117084
 ERX2173943	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2500	SINGLE		26.72	ERR2117085
 ERX2173944	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2500	SINGLE		28.10	ERR2117086
 ERX2173945	ERP024551	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2500	SINGLE		30.14	ERR2117087
@@ -518,7 +518,7 @@ SRX1482975	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosop
 SRX1482976	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR3001845
 SRX1482977	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR3001846
 SRX1482978	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR3001847
-SRX1482979	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE			SRR3001848
+SRX1482979	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR3001848
 SRX1482980	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR3001849
 SRX1482981	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR3001850
 SRX1482982	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR3001851
@@ -715,7 +715,7 @@ SRX494045	SRP001696	7227	Drosophila melanogaster	drosophila_melanogaster/Drosoph
 SRX494046	SRP001696	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	PAIRED		200	SRR1197298,SRR1197378
 SRX494048	SRP001696	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	PAIRED		200	SRR1197413
 SRX494049	SRP001696	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	PAIRED		200	SRR1197429
-SRX494050	SRP001696	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000				
+SRX494050	SRP001696	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	PAIRED		200	ERR2105064
 SRX494051	SRP001696	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	PAIRED		200	SRR1197316
 SRX494052	SRP001696	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	PAIRED		200	SRR1197314,SRR1197394
 SRX494053	SRP001696	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	PAIRED		200	SRR1197469
@@ -982,7 +982,7 @@ SRX674944	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosoph
 SRX674945	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543446
 SRX674946	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543447
 SRX674947	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543448
-SRX674948	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE			SRR1543449
+SRX674948	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543449
 SRX674949	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543450
 SRX674950	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543451
 SRX674951	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543452
@@ -1036,7 +1036,7 @@ SRX674998	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosoph
 SRX674999	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543501
 SRX675000	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543502
 SRX675001	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543503
-SRX675002	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE			SRR1543504
+SRX675002	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543504
 SRX675003	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543505
 SRX675004	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543506
 SRX675005	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543507
@@ -1104,7 +1104,7 @@ SRX675066	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosoph
 SRX675067	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543569
 SRX675068	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543570
 SRX675069	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543571
-SRX675070	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE			SRR1543572
+SRX675070	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543572
 SRX675071	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543573
 SRX675072	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543574
 SRX675073	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543575
@@ -1232,7 +1232,7 @@ SRX675194	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosoph
 SRX675195	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543697
 SRX675196	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543698
 SRX675197	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543699
-SRX675198	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE			SRR1543700
+SRX675198	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543700
 SRX675199	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543701
 SRX675200	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		75	SRR1543702
 SRX675201	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543703
@@ -1438,7 +1438,7 @@ SRX675400	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosoph
 SRX675401	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543903
 SRX675402	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543904
 SRX675403	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543905
-SRX675404	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE			SRR1543906
+SRX675404	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543906
 SRX675405	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543907
 SRX675406	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543908
 SRX675407	SRP045429	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	SINGLE		76	SRR1543909
@@ -3311,7 +3311,7 @@ ERX1246771	ERP010463	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223
 ERX1246772	ERP010463	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina HiSeq 2000	PAIRED		125	ERR1173343
 ERX1246773	ERP010463	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina HiSeq 2000	PAIRED		125	ERR1173344
 ERX1265920	ERP010463	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina HiSeq 2000	PAIRED		125	ERR1192536
-ERX1265921	ERP010463	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina HiSeq 2000	PAIRED			ERR1192537
+ERX1265921	ERP010463	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina HiSeq 2000	PAIRED		125	ERR1192537
 ERX1265922	ERP010463	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina HiSeq 2000	PAIRED		125	ERR1192538
 ERX1265923	ERP010463	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina HiSeq 2000	PAIRED		125	ERR1192539
 ERX1265924	ERP010463	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina HiSeq 2000	PAIRED		125	ERR1192540
@@ -3425,7 +3425,7 @@ ERX1266031	ERP010463	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223
 ERX1266032	ERP010463	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina HiSeq 2000	PAIRED		125	ERR1192648
 ERX1266033	ERP010463	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina HiSeq 2000	PAIRED		125	ERR1192649
 ERX1266034	ERP010463	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina HiSeq 2000	PAIRED		125	ERR1192650
-ERX1266035	ERP010463	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina HiSeq 2000	PAIRED			ERR1192651
+ERX1266035	ERP010463	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina HiSeq 2000	PAIRED		125	ERR1192651
 ERX1266036	ERP010463	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina HiSeq 2000	PAIRED		125	ERR1192652
 ERX1266037	ERP010463	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina HiSeq 2000	PAIRED		125	ERR1192653
 ERX1266038	ERP010463	8090	Oryzias latipes	oryzias_latipes/Oryzias_latipes.ASM223467v1	Ensembl	Illumina HiSeq 2000	PAIRED		125	ERR1192654
@@ -6495,7 +6495,7 @@ SRX2829217	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ense
 SRX2829218	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		25.5	SRR5570029
 SRX2829219	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		25.5	SRR5570030
 SRX2829220	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		25.5	SRR5570031
-SRX2829221	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE			SRR5570032
+SRX2829221	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		25.5	SRR5570032
 SRX2829222	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		25.5	SRR5570033
 SRX2829223	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		25.5	SRR5570034
 SRX2829224	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		25.5	SRR5570035
@@ -6666,7 +6666,7 @@ SRX2829388	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ense
 SRX2829389	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		25.5	SRR5570200
 SRX2829390	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		25.5	SRR5570201
 SRX2829391	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		25.5	SRR5570202
-SRX2829392	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE			SRR5570203
+SRX2829392	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		25.5	SRR5570203
 SRX2829393	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		25.5	SRR5570204
 SRX2829394	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		25.5	SRR5570205
 SRX2829395	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		25.5	SRR5570206
@@ -6690,7 +6690,7 @@ SRX2829412	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ense
 SRX2829413	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		25.1	SRR5570224
 SRX2829414	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		21	SRR5570225
 SRX2829415	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		21	SRR5570226
-SRX2829416	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE			SRR5570227
+SRX2829416	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		21	SRR5570227
 SRX2829417	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		21	SRR5570228
 SRX2829418	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		21	SRR5570229
 SRX2829419	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		21	SRR5570230
@@ -6930,7 +6930,7 @@ SRX2829652	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ense
 SRX2829653	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		25.5	SRR5570464
 SRX2829654	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		25.5	SRR5570465
 SRX2829655	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		25.5	SRR5570466
-SRX2829656	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE			SRR5570467
+SRX2829656	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		25.5	SRR5570467
 SRX2829657	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		25.5	SRR5570468
 SRX2829658	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		25.5	SRR5570469
 SRX2829659	SRP107218	9555	Papio anubis	papio_anubis/Papio_anubis.Panubis1.0	Ensembl	Illumina HiSeq 2500	SINGLE		25.5	SRR5570470
@@ -15090,7 +15090,7 @@ SRX1629204	SRP071663	9615	Canis lupus familiaris	canis_lupus_familiaris/Canis_lu
 SRX1884091	SRP077559	9615	Canis lupus familiaris	canis_lupus_familiaris/Canis_lupus_familiaris.ROS_Cfam_1.0	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR3727705
 SRX1884092	SRP077559	9615	Canis lupus familiaris	canis_lupus_familiaris/Canis_lupus_familiaris.ROS_Cfam_1.0	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR3727706
 SRX1884093	SRP077559	9615	Canis lupus familiaris	canis_lupus_familiaris/Canis_lupus_familiaris.ROS_Cfam_1.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	SRR3727707
-SRX1884094	SRP077559	9615	Canis lupus familiaris	canis_lupus_familiaris/Canis_lupus_familiaris.ROS_Cfam_1.0	Ensembl	Illumina HiSeq 2000	PAIRED			SRR3727708
+SRX1884094	SRP077559	9615	Canis lupus familiaris	canis_lupus_familiaris/Canis_lupus_familiaris.ROS_Cfam_1.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	SRR3727708
 SRX1884095	SRP077559	9615	Canis lupus familiaris	canis_lupus_familiaris/Canis_lupus_familiaris.ROS_Cfam_1.0	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR3727709
 SRX1884096	SRP077559	9615	Canis lupus familiaris	canis_lupus_familiaris/Canis_lupus_familiaris.ROS_Cfam_1.0	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR3727710
 SRX1884097	SRP077559	9615	Canis lupus familiaris	canis_lupus_familiaris/Canis_lupus_familiaris.ROS_Cfam_1.0	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR3727711
@@ -15301,7 +15301,7 @@ ERX3441405	ERP116168	9685	Felis catus	felis_catus/Felis_catus.Felis_catus_9.0	En
 ERX3441417	ERP116168	9685	Felis catus	felis_catus/Felis_catus.Felis_catus_9.0	Ensembl	Illumina NovaSeq 6000	PAIRED		150	ERR3417979
 SRX1268863	SRP063937	9685	Felis catus	felis_catus/Felis_catus.Felis_catus_9.0	Ensembl	Illumina HiSeq 1000	PAIRED		101	SRR2470307
 SRX1610301	SRP071078	9685	Felis catus	felis_catus/Felis_catus.Felis_catus_9.0	Ensembl	Illumina HiSeq 2500	PAIRED		125	SRR3200448
-SRX1610303	SRP071078	9685	Felis catus	felis_catus/Felis_catus.Felis_catus_9.0	Ensembl	Illumina HiSeq 2500	PAIRED			SRR3200450
+SRX1610303	SRP071078	9685	Felis catus	felis_catus/Felis_catus.Felis_catus_9.0	Ensembl	Illumina HiSeq 2500	PAIRED		125	SRR3200450
 SRX1610307	SRP071078	9685	Felis catus	felis_catus/Felis_catus.Felis_catus_9.0	Ensembl	Illumina HiSeq 2500	PAIRED		125	SRR3200454
 SRX1610311	SRP071078	9685	Felis catus	felis_catus/Felis_catus.Felis_catus_9.0	Ensembl	Illumina HiSeq 2500	PAIRED		125	SRR3200458
 SRX1610313	SRP071078	9685	Felis catus	felis_catus/Felis_catus.Felis_catus_9.0	Ensembl	Illumina HiSeq 2500	PAIRED		125	SRR3200460
@@ -15651,7 +15651,7 @@ SRX211591	GSE43013	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	E
 SRX211639	GSE43013	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina Genome Analyzer IIx	PAIRED		51	SRR636899
 SRX211640	GSE43013	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina Genome Analyzer IIx	PAIRED		51	SRR636900
 SRX211641	GSE43013	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina Genome Analyzer IIx	PAIRED		51	SRR636901
-SRX211684	GSE43013	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina Genome Analyzer IIx	PAIRED			SRR636944
+SRX211684	GSE43013	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina Genome Analyzer IIx	PAIRED		51	SRR636944
 SRX211685	GSE43013	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina Genome Analyzer IIx	PAIRED		51	SRR636945
 SRX2252452	SRP091779	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina HiScanSQ	SINGLE		22.65	SRR4433007
 SRX2252453	SRP091779	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina HiScanSQ	SINGLE		22.66	SRR4433008
@@ -15672,7 +15672,7 @@ SRX2252467	SRP091779	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0
 SRX2252468	SRP091779	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina HiScanSQ	SINGLE		22.655	SRR4433023
 SRX2252469	SRP091779	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina HiScanSQ	SINGLE		22.655	SRR4433024
 SRX2252470	SRP091779	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina HiScanSQ	SINGLE		22.645	SRR4433025
-SRX2252471	SRP091779	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina HiScanSQ	SINGLE			SRR4433026
+SRX2252471	SRP091779	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina HiScanSQ	SINGLE		22.65	SRR4433026
 SRX2252472	SRP091779	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina HiScanSQ	SINGLE		22.66	SRR4433027
 SRX2252473	SRP091779	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina HiScanSQ	SINGLE		22.65	SRR4433028
 SRX2252474	SRP091779	9796	Equus caballus	equus_caballus/Equus_caballus.EquCab3.0	Ensembl	Illumina HiScanSQ	SINGLE		22.65	SRR4433029
@@ -17261,7 +17261,7 @@ SRX1115474	SRP061418	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	I
 SRX1115511	SRP061418	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		100	SRR2123933
 SRX1115512	SRP061418	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		100	SRR2123934
 SRX1115513	SRP061418	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		100	SRR2123935
-SRX1115514	SRP061418	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED			SRR2123936
+SRX1115514	SRP061418	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		100	SRR2123936
 SRX1115515	SRP061418	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		100	SRR2123937
 SRX1115516	SRP061418	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		100	SRR2123938
 SRX1115517	SRP061418	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		100	SRR2123939
@@ -17308,7 +17308,7 @@ SRX1295669	SRP064314	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	I
 SRX1295670	SRP064314	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR2536880
 SRX1295671	SRP064314	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR2536881
 SRX1295672	SRP064314	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR2536882
-SRX1295673	SRP064314	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED			SRR2536883
+SRX1295673	SRP064314	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR2536883
 SRX1295674	SRP064314	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR2536884
 SRX1295810	SRP064327	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2500	PAIRED		125	SRR2537252
 SRX1295811	SRP064327	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2500	PAIRED		125	SRR2537253
@@ -17330,7 +17330,7 @@ SRX1307220	SRP064513	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	I
 SRX1307221	SRP064513	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		100	SRR2564767,SRR2564768
 SRX1307222	SRP064513	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		100	SRR2564769,SRR2564770
 SRX1307223	SRP064513	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		100	SRR2564771,SRR2564772
-SRX1307224	SRP064513	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina Genome Analyzer II	PAIRED			SRR2564773
+SRX1307224	SRP064513	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina Genome Analyzer II	PAIRED		90	SRR2564773
 SRX1339815	SRP064897	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	SINGLE		50	SRR2662927
 SRX1339899	SRP064897	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	SINGLE		50	SRR2663407
 SRX1427684	SRP066092	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2500	SINGLE		51	SRR2920203,SRR2920204,SRR2920205,SRR2920206
@@ -17650,7 +17650,7 @@ SRX2140096	SRP086568	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	I
 SRX2140097	SRP086568	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR4173988
 SRX2140098	SRP086568	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR4173989
 SRX2140099	SRP086568	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR4173990
-SRX2140100	SRP086568	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED			SRR4173991
+SRX2140100	SRP086568	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR4173991
 SRX2140101	SRP086568	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR4173992
 SRX2140102	SRP086568	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR4173993
 SRX2140103	SRP086568	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2000	PAIRED		76	SRR4173994
@@ -18122,7 +18122,7 @@ SRX3973976	SRP141481	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	I
 SRX3973977	SRP141481	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR7041944
 SRX3973978	SRP141481	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR7041945
 SRX3973979	SRP141481	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR7041946
-SRX3973980	SRP141481	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2500	PAIRED			SRR7041947
+SRX3973980	SRP141481	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR7041947
 SRX3973981	SRP141481	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR7041948
 SRX3973982	SRP141481	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR7041949
 SRX3973983	SRP141481	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR7041950
@@ -18242,7 +18242,7 @@ SRX698217	SRP046752	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Il
 SRX698218	SRP046752	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2500	PAIRED		101	SRR1572027
 SRX698219	SRP046752	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2500	PAIRED		101	SRR1572028
 SRX698220	SRP046752	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2500	PAIRED		101	SRR1572029
-SRX698221	SRP046752	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2500	PAIRED			SRR1572030
+SRX698221	SRP046752	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2500	PAIRED		101	SRR1572030
 SRX698222	SRP046752	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2500	PAIRED		101	SRR1572031
 SRX698223	SRP046752	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2500	PAIRED		101	SRR1572032
 SRX698224	SRP046752	9823	Sus scrofa	sus_scrofa/Sus_scrofa.Sscrofa11.1	Ensembl	Illumina HiSeq 2500	PAIRED		101	SRR1572033
@@ -18762,7 +18762,7 @@ ERX2679988	ERP109534	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Il
 ERX2679989	ERP109534	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 3000	PAIRED		150	ERR2664181
 ERX2679991	ERP109534	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 3000	PAIRED		150	ERR2664212
 ERX2679992	ERP109534	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 3000	PAIRED		150	ERR2664213
-ERX2679993	ERP109534	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 3000	PAIRED			ERR2664182
+ERX2679993	ERP109534	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 3000	PAIRED		150	ERR2664182
 ERX2679994	ERP109534	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 3000	PAIRED		150	ERR2664183
 ERX2679995	ERP109534	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 3000	PAIRED		150	ERR2664184
 ERX2679996	ERP109534	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 3000	PAIRED		150	ERR2664185
@@ -18844,7 +18844,7 @@ ERX675437	ERP006696	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Ill
 ERX675438	ERP006696	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		100	ERR731492
 ERX675439	ERP006696	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		100	ERR731493
 ERX675449	ERP006696	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		100	ERR731503
-ERX675450	ERP006696	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED			ERR731504
+ERX675450	ERP006696	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		100	ERR731504
 ERX675451	ERP006696	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		100	ERR731505
 ERX675461	ERP006696	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		100	ERR731515
 ERX675462	ERP006696	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		100	ERR731516
@@ -19084,7 +19084,7 @@ SRX1372533	SRP065213	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Il
 SRX1372534	SRP065213	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		101	SRR2777556
 SRX1372535	SRP065213	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		101	SRR2777557
 SRX1372536	SRP065213	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		101	SRR2777558
-SRX1372537	SRP065213	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED			SRR2777559
+SRX1372537	SRP065213	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		101	SRR2777559
 SRX1372538	SRP065213	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		101	SRR2777560
 SRX1372539	SRP065213	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		101	SRR2777561
 SRX1372540	SRP065213	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		101	SRR2777562
@@ -20174,7 +20174,7 @@ SRX1812510	SRP075939	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Il
 SRX1812511	SRP075939	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		100	SRR3613426
 SRX1812512	SRP075939	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		100	SRR3613427
 SRX1812513	SRP075939	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		100	SRR3613428
-SRX1812514	SRP075939	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED			SRR3613429
+SRX1812514	SRP075939	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		100	SRR3613429
 SRX1812515	SRP075939	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		100	SRR3613430
 SRX1812516	SRP075939	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		100	SRR3613431
 SRX1812517	SRP075939	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		100	SRR3613432
@@ -20348,7 +20348,7 @@ SRX196353	GSE41637	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illu
 SRX196354	GSE41637	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		40	SRR594483
 SRX196355	GSE41637	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		36	SRR594484
 SRX196356	GSE41637	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		36	SRR594485
-SRX196357	GSE41637	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED			SRR594486
+SRX196357	GSE41637	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		36	SRR594486
 SRX196358	GSE41637	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		36	SRR594487
 SRX196359	GSE41637	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		36	SRR594488
 SRX196360	GSE41637	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		36	SRR594489
@@ -20820,7 +20820,7 @@ SRX2423017	SRP095120	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Il
 SRX2423018	SRP095120	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR5110632
 SRX2423019	SRP095120	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR5110633
 SRX2423020	SRP095120	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR5110634
-SRX2423021	SRP095120	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED			SRR5110635
+SRX2423021	SRP095120	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR5110635
 SRX2423022	SRP095120	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR5110636
 SRX2423023	SRP095120	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR5110637
 SRX2423024	SRP095120	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2500	PAIRED		100	SRR5110638
@@ -20933,7 +20933,7 @@ SRX2982310	SRP111067	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Il
 SRX2982311	SRP111067	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		101	SRR5802937
 SRX2982312	SRP111067	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		120	SRR5802936
 SRX2982313	SRP111067	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		120	SRR5802935
-SRX2982314	SRP111067	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED			SRR5802934
+SRX2982314	SRP111067	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		100.19	SRR5802934
 SRX2988004	SRP111067	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 3000	PAIRED		151	SRR5809451
 SRX2988005	SRP111067	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 3000	PAIRED		151	SRR5809450
 SRX2988006	SRP111067	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 3000	PAIRED		151	SRR5809449
@@ -20952,7 +20952,7 @@ SRX2988018	SRP111067	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Il
 SRX2988019	SRP111067	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 3000	PAIRED		151	SRR5809436
 SRX2988020	SRP111067	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 3000	PAIRED		151	SRR5809435
 SRX2988021	SRP111067	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 3000	PAIRED		151	SRR5809434
-SRX2992350	SRP111412	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED			SRR5813946
+SRX2992350	SRP111412	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		101	SRR5813946
 SRX2992351	SRP111412	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		101	SRR5813945
 SRX2992352	SRP111412	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		101	SRR5813944
 SRX2992353	SRP111412	9913	Bos taurus	bos_taurus/Bos_taurus.ARS-UCD1.3	Ensembl	Illumina HiSeq 2000	PAIRED		101	SRR5813943
@@ -22598,7 +22598,7 @@ ERX2133444	ERP021182	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ense
 ERX2133445	ERP021182	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED		125	ERR2074782,ERR2074783,ERR2074784,ERR2074785,ERR2074786,ERR2074787,ERR2074788,ERR2074789,ERR2074790
 ERX2133446	ERP021182	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED		125	ERR2074673,ERR2074674,ERR2074675,ERR2074676,ERR2074677,ERR2074678,ERR2074679,ERR2074680,ERR2074681
 ERX2133447	ERP021182	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED		125	ERR2074801,ERR2074802,ERR2074803,ERR2074804,ERR2074805,ERR2074806,ERR2074807,ERR2074808,ERR2074809
-ERX2133448	ERP021182	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED			ERR2074772
+ERX2133448	ERP021182	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED		125	ERR2074772
 ERX2133449	ERP021182	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED		125	ERR2074745,ERR2074746,ERR2074747,ERR2074748,ERR2074749,ERR2074750,ERR2074751,ERR2074752,ERR2074753
 ERX2133450	ERP021182	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED		125	ERR2074736,ERR2074737,ERR2074738,ERR2074739,ERR2074740,ERR2074741,ERR2074742,ERR2074743,ERR2074744
 ERX2133451	ERP021182	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED		125	ERR2074664,ERR2074665,ERR2074666,ERR2074667,ERR2074668,ERR2074669,ERR2074670,ERR2074671,ERR2074672
@@ -22654,82 +22654,82 @@ ERX2133512	ERP021182	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ense
 ERX2133513	ERP021182	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED		125	ERR2077092,ERR2077093,ERR2077094,ERR2077095,ERR2077096,ERR2077097,ERR2077098,ERR2077099,ERR2077100,ERR2077101,ERR2077102,ERR2077103,ERR2077104,ERR2077105,ERR2077106,ERR2077107,ERR2077108,ERR2077109,ERR2077110,ERR2077111,ERR2077112
 ERX2133514	ERP021182	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED		125	ERR2077491,ERR2077492,ERR2077493,ERR2077494,ERR2077495,ERR2077496,ERR2077497,ERR2077498,ERR2077499,ERR2077500,ERR2077501,ERR2077502,ERR2077503,ERR2077504,ERR2077505,ERR2077506,ERR2077507,ERR2077508,ERR2077509,ERR2077510,ERR2077511
 ERX2133515	ERP021182	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED		125	ERR2074313,ERR2074314,ERR2074315,ERR2074316,ERR2074317,ERR2074318,ERR2074319,ERR2074320,ERR2074321
-ERX2151343	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093929
-ERX2151344	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093930
-ERX2151345	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093931
-ERX2151346	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093932
-ERX2151347	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093933
-ERX2151348	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093934
-ERX2151349	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093935
-ERX2151350	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093936
-ERX2151351	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093937
-ERX2151352	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093938
-ERX2151353	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093939
-ERX2151354	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093940
-ERX2151355	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093941
-ERX2151356	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093942
-ERX2151357	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093943
-ERX2151358	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093944
-ERX2151359	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093945
-ERX2151360	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093946
-ERX2151361	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093947
-ERX2151362	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093948
-ERX2151363	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093949
-ERX2151364	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093950
-ERX2151365	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093951
-ERX2151366	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093952
-ERX2151367	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093953
-ERX2151368	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093954
-ERX2151369	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093955
-ERX2151370	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093956
-ERX2151371	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093957
-ERX2151372	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093958
-ERX2151373	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093959
-ERX2151374	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093960
-ERX2151375	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093961
-ERX2151376	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093962
-ERX2151377	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093963
-ERX2151378	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093964
-ERX2151379	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE			ERR2093965
-ERX2151623	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094189
-ERX2151624	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094190
-ERX2151625	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094191
-ERX2151626	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094192
-ERX2151627	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094193
-ERX2151628	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094194
-ERX2151629	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094195
-ERX2151630	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094196
-ERX2151631	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094197
-ERX2151632	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094198
-ERX2151633	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094199
-ERX2151634	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094200
-ERX2151635	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094201
-ERX2151636	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094202
-ERX2151637	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094203
-ERX2151638	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094204
-ERX2151639	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094205
-ERX2151640	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094206
-ERX2151641	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094207
-ERX2151642	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094208
-ERX2151643	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094209
-ERX2151644	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094210
-ERX2151645	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094211
-ERX2151646	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094212
-ERX2151647	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094213
-ERX2151648	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094214
-ERX2151649	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094215
-ERX2151650	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094216
-ERX2151651	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094217
-ERX2151652	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094218
-ERX2151653	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094219
-ERX2151654	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094220
-ERX2151655	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094221
-ERX2151656	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094222
-ERX2151657	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094223
-ERX2151658	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094224
-ERX2151659	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094225
-ERX2151660	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094226
-ERX2151661	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED			ERR2094227
+ERX2151343	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093929
+ERX2151344	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093930
+ERX2151345	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093931
+ERX2151346	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093932
+ERX2151347	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093933
+ERX2151348	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093934
+ERX2151349	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093935
+ERX2151350	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093936
+ERX2151351	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093937
+ERX2151352	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093938
+ERX2151353	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093939
+ERX2151354	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093940
+ERX2151355	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093941
+ERX2151356	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093942
+ERX2151357	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093943
+ERX2151358	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093944
+ERX2151359	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093945
+ERX2151360	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093946
+ERX2151361	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093947
+ERX2151362	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093948
+ERX2151363	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093949
+ERX2151364	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093950
+ERX2151365	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093951
+ERX2151366	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093952
+ERX2151367	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093953
+ERX2151368	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093954
+ERX2151369	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093955
+ERX2151370	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093956
+ERX2151371	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093957
+ERX2151372	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093958
+ERX2151373	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093959
+ERX2151374	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093960
+ERX2151375	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093961
+ERX2151376	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093962
+ERX2151377	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093963
+ERX2151378	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093964
+ERX2151379	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	SINGLE		51	ERR2093965
+ERX2151623	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094189
+ERX2151624	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094190
+ERX2151625	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094191
+ERX2151626	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094192
+ERX2151627	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094193
+ERX2151628	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094194
+ERX2151629	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094195
+ERX2151630	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094196
+ERX2151631	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094197
+ERX2151632	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094198
+ERX2151633	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094199
+ERX2151634	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094200
+ERX2151635	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094201
+ERX2151636	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094202
+ERX2151637	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094203
+ERX2151638	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094204
+ERX2151639	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094205
+ERX2151640	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094206
+ERX2151641	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094207
+ERX2151642	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094208
+ERX2151643	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094209
+ERX2151644	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094210
+ERX2151645	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094211
+ERX2151646	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094212
+ERX2151647	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094213
+ERX2151648	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094214
+ERX2151649	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094215
+ERX2151650	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094216
+ERX2151651	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094217
+ERX2151652	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094218
+ERX2151653	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094219
+ERX2151654	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094220
+ERX2151655	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094221
+ERX2151656	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094222
+ERX2151657	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094223
+ERX2151658	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094224
+ERX2151659	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094225
+ERX2151660	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094226
+ERX2151661	ERP024433	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		101	ERR2094227
 ERX232331	ERP002459	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		209	ERR257769
 ERX232332	ERP002459	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		209	ERR257751
 ERX232333	ERP002459	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2000	PAIRED		209	ERR257774
@@ -22836,7 +22836,7 @@ ERX454856	ERP005642	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensem
 ERX454857	ERP005642	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED		151	ERR489101
 ERX454858	ERP005642	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED		151	ERR489102
 ERX454859	ERP005642	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED		151	ERR489103
-ERX454860	ERP005642	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED			ERR489104
+ERX454860	ERP005642	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED		151	ERR489104
 ERX454861	ERP005642	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED		151	ERR489105
 ERX454862	ERP005642	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED		151	ERR489106
 ERX454863	ERP005642	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED		151	ERR489107
@@ -22890,7 +22890,7 @@ ERX454910	ERP005642	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensem
 ERX454911	ERP005642	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED		151	ERR489155
 ERX454912	ERP005642	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED		151	ERR489156
 ERX454913	ERP005642	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED		151	ERR489157
-ERX454914	ERP005642	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED			ERR489158
+ERX454914	ERP005642	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED		151	ERR489158
 ERX454915	ERP005642	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED		151	ERR489159
 ERX454916	ERP005642	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED		151	ERR489160
 ERX454917	ERP005642	9940	Ovis aries	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	Ensembl	Illumina HiSeq 2500	PAIRED		151	ERR489161
@@ -24690,7 +24690,7 @@ SRX1603276	SRP013027	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl
 SRX1603299	SRP013027	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2500	SINGLE		100	SRR3192285,SRR3192286
 SRX1603300	SRP013027	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2500	SINGLE		100	SRR3192287,SRR3192288
 SRX1603302	SRP013027	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2500	SINGLE		100	SRR3192290,SRR3192291,SRR3192292
-SRX1603303	SRP013027	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2500	SINGLE			SRR3192293
+SRX1603303	SRP013027	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2500	SINGLE		100	SRR3192293
 SRX1603308	SRP013027	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2500	SINGLE		100	SRR3192302,SRR3192303
 SRX1603309	SRP013027	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2500	SINGLE		100	SRR3192304,SRR3192305
 SRX1603311	SRP013027	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2500	SINGLE		100	SRR3192307
@@ -24803,7 +24803,7 @@ SRX1834257	SRP013027	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl
 SRX1834258	SRP013027	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2000	SINGLE		50	SRR3653088
 SRX1834259	SRP013027	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2000	SINGLE		50	SRR3653094
 SRX1834260	SRP013027	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2000	SINGLE		50	SRR3653095
-SRX1834287	SRP013027	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2000	SINGLE			SRR3653130
+SRX1834287	SRP013027	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2000	SINGLE		50	SRR3653130
 SRX1834288	SRP013027	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2000	SINGLE		50	SRR3653131
 SRX1834299	SRP013027	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2000	SINGLE		50	SRR3653145
 SRX1834300	SRP013027	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2000	SINGLE		50	SRR3653146
@@ -24856,7 +24856,7 @@ SRX211656	GSE43013	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	I
 SRX211657	GSE43013	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina Genome Analyzer IIx	PAIRED		51	SRR636917
 SRX211658	GSE43013	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina Genome Analyzer IIx	PAIRED		51	SRR636918
 SRX211701	GSE43013	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina Genome Analyzer IIx	PAIRED		51	SRR636961
-SRX211702	GSE43013	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina Genome Analyzer IIx	PAIRED			SRR636962
+SRX211702	GSE43013	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina Genome Analyzer IIx	PAIRED		51	SRR636962
 SRX211703	GSE43013	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina Genome Analyzer IIx	PAIRED		51	SRR636963
 SRX2140612	SRP086707	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2500	PAIRED		125	SRR4175391
 SRX2140613	SRP086707	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2500	PAIRED		125	SRR4175392
@@ -25276,7 +25276,7 @@ SRX4055840	SRP145002	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl
 SRX4055841	SRP145002	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2500	SINGLE		101	SRR7134967
 SRX4055842	SRP145002	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2500	SINGLE		101	SRR7134968
 SRX4055843	SRP145002	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2500	SINGLE		101	SRR7134969
-SRX4055844	SRP145002	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2500	SINGLE			SRR7134970
+SRX4055844	SRP145002	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2500	SINGLE		101	SRR7134970
 SRX4055845	SRP145002	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2500	SINGLE		101	SRR7134971
 SRX4744186	SRP162729	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2500	SINGLE		75	SRR7908060
 SRX4744187	SRP162729	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina HiSeq 2500	SINGLE		76	SRR7908061
@@ -25764,7 +25764,7 @@ SRX5899970	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl
 SRX5899971	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9126070
 SRX5899972	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9126069
 SRX5899973	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9126068
-SRX5899974	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED			SRR9126067
+SRX5899974	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9126067
 SRX5899975	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9126066
 SRX5899976	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9126065
 SRX5899977	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9126064
@@ -26358,7 +26358,7 @@ SRX5900680	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl
 SRX5900681	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9126936
 SRX5900682	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9126935
 SRX5900683	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9126934
-SRX5900684	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED			SRR9126933
+SRX5900684	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9126933
 SRX5900685	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9126932
 SRX5900686	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9126931
 SRX5900687	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9126930
@@ -26927,7 +26927,7 @@ SRX5901249	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl
 SRX5901250	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9127039
 SRX5901251	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9127038
 SRX5901252	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9127037
-SRX5901253	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED			SRR9127036
+SRX5901253	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9127036
 SRX5901254	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9127035
 SRX5901255	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9127034
 SRX5901256	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9127033
@@ -26985,7 +26985,7 @@ SRX5901307	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl
 SRX5901308	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9127592
 SRX5901309	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9127591
 SRX5901310	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9127590
-SRX5901311	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED			SRR9127589
+SRX5901311	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9127589
 SRX5901312	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9127588
 SRX5901313	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9127587
 SRX5901314	SRP199494	10090	Mus musculus	mus_musculus/Mus_musculus.GRCm39	Ensembl	Illumina NovaSeq 6000	PAIRED		100	SRR9127586
@@ -28763,7 +28763,7 @@ SRX2789459	SRP106639	10141	Cavia porcellus	cavia_porcellus/Cavia_porcellus.Cavpo
 SRX2789460	SRP106639	10141	Cavia porcellus	cavia_porcellus/Cavia_porcellus.Cavpor3.0	Ensembl	Illumina HiSeq 2500	SINGLE		51	SRR5516081
 SRX2789461	SRP106639	10141	Cavia porcellus	cavia_porcellus/Cavia_porcellus.Cavpor3.0	Ensembl	Illumina HiSeq 2500	SINGLE		51	SRR5516082
 SRX2789462	SRP106639	10141	Cavia porcellus	cavia_porcellus/Cavia_porcellus.Cavpor3.0	Ensembl	Illumina HiSeq 2500	SINGLE		51	SRR5516083
-SRX2789463	SRP106639	10141	Cavia porcellus	cavia_porcellus/Cavia_porcellus.Cavpor3.0	Ensembl	Illumina HiSeq 2500	SINGLE			SRR5516084
+SRX2789463	SRP106639	10141	Cavia porcellus	cavia_porcellus/Cavia_porcellus.Cavpor3.0	Ensembl	Illumina HiSeq 2500	SINGLE		51	SRR5516084
 SRX2789464	SRP106639	10141	Cavia porcellus	cavia_porcellus/Cavia_porcellus.Cavpor3.0	Ensembl	Illumina HiSeq 2500	SINGLE		51	SRR5516085
 SRX2789465	SRP106639	10141	Cavia porcellus	cavia_porcellus/Cavia_porcellus.Cavpor3.0	Ensembl	Illumina HiSeq 2500	SINGLE		51	SRR5516086
 SRX2789466	SRP106639	10141	Cavia porcellus	cavia_porcellus/Cavia_porcellus.Cavpor3.0	Ensembl	Illumina HiSeq 2500	SINGLE		51	SRR5516087
@@ -28924,7 +28924,7 @@ SRX2789620	SRP106639	10141	Cavia porcellus	cavia_porcellus/Cavia_porcellus.Cavpo
 SRX2789621	SRP106639	10141	Cavia porcellus	cavia_porcellus/Cavia_porcellus.Cavpor3.0	Ensembl	Illumina HiSeq 2500	SINGLE		51	SRR5516243
 SRX2789622	SRP106639	10141	Cavia porcellus	cavia_porcellus/Cavia_porcellus.Cavpor3.0	Ensembl	Illumina HiSeq 2500	SINGLE		51	SRR5516244
 SRX2789623	SRP106639	10141	Cavia porcellus	cavia_porcellus/Cavia_porcellus.Cavpor3.0	Ensembl	Illumina HiSeq 2500	SINGLE		51	SRR5516245
-SRX2789624	SRP106639	10141	Cavia porcellus	cavia_porcellus/Cavia_porcellus.Cavpor3.0	Ensembl	Illumina HiSeq 2500	SINGLE			SRR5516246
+SRX2789624	SRP106639	10141	Cavia porcellus	cavia_porcellus/Cavia_porcellus.Cavpor3.0	Ensembl	Illumina HiSeq 2500	SINGLE		51	SRR5516246
 SRX2789625	SRP106639	10141	Cavia porcellus	cavia_porcellus/Cavia_porcellus.Cavpor3.0	Ensembl	Illumina HiSeq 2500	SINGLE		51	SRR5516247
 SRX2789626	SRP106639	10141	Cavia porcellus	cavia_porcellus/Cavia_porcellus.Cavpor3.0	Ensembl	Illumina HiSeq 2500	SINGLE		51	SRR5516248
 SRX2789627	SRP106639	10141	Cavia porcellus	cavia_porcellus/Cavia_porcellus.Cavpor3.0	Ensembl	Illumina HiSeq 2500	SINGLE		51	SRR5516249
@@ -29031,7 +29031,7 @@ SRX2790569	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber/Heterocep
 SRX2790570	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber/Heterocephalus_glaber.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51	SRR5517235
 SRX2790571	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber/Heterocephalus_glaber.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51	SRR5517236
 SRX2790572	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber/Heterocephalus_glaber.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51	SRR5517192
-SRX2790573	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber/Heterocephalus_glaber.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE			SRR5517193
+SRX2790573	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber/Heterocephalus_glaber.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51	SRR5517193
 SRX2790574	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber/Heterocephalus_glaber.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51	SRR5517194
 SRX2790575	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber/Heterocephalus_glaber.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51	SRR5517195
 SRX2790576	SRP106647	10181	Heterocephalus glaber	heterocephalus_glaber/Heterocephalus_glaber.Naked_mole-rat_maternal	Ensembl	Illumina HiSeq 2500	SINGLE		51	SRR5517196
@@ -29892,7 +29892,7 @@ SRX843231	SRP051959	30608	Microcebus murinus	microcebus_murinus/Microcebus_murin
 SRX843232	SRP051959	30608	Microcebus murinus	microcebus_murinus/Microcebus_murinus.Mmur_3.0	Ensembl	Illumina HiSeq 2000	PAIRED		202	SRR1759001
 SRX843233	SRP051959	30608	Microcebus murinus	microcebus_murinus/Microcebus_murinus.Mmur_3.0	Ensembl	Illumina HiSeq 2000	PAIRED		202	SRR1759002
 SRX843234	SRP051959	30608	Microcebus murinus	microcebus_murinus/Microcebus_murinus.Mmur_3.0	Ensembl	Illumina HiSeq 2000	PAIRED		202	SRR1759003
-ERX2001036	ERP016820	32507	Neolamprologus brichardi	neolamprologus_brichardi/Neolamprologus_brichardi.NeoBri1.0	Ensembl	Illumina HiSeq 2500	PAIRED			ERR1940503
+ERX2001036	ERP016820	32507	Neolamprologus brichardi	neolamprologus_brichardi/Neolamprologus_brichardi.NeoBri1.0	Ensembl	Illumina HiSeq 2500	PAIRED		75	ERR1940503
 ERX2001037	ERP016820	32507	Neolamprologus brichardi	neolamprologus_brichardi/Neolamprologus_brichardi.NeoBri1.0	Ensembl	Illumina HiSeq 2500	PAIRED		75	ERR1940504
 ERX2001038	ERP016820	32507	Neolamprologus brichardi	neolamprologus_brichardi/Neolamprologus_brichardi.NeoBri1.0	Ensembl	Illumina HiSeq 2500	PAIRED		75	ERR1940505
 ERX2001081	ERP016820	32507	Neolamprologus brichardi	neolamprologus_brichardi/Neolamprologus_brichardi.NeoBri1.0	Ensembl	Illumina HiSeq 2500	PAIRED		75	ERR1940548
@@ -29992,7 +29992,7 @@ SRX2579283	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_s
 SRX2579284	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	Ensembl	Illumina HiSeq 4000	PAIRED		120	SRR5275348
 SRX2579285	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	Ensembl	Illumina HiSeq 4000	PAIRED		120	SRR5275349
 SRX2579286	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	Ensembl	Illumina HiSeq 4000	PAIRED		120	SRR5275350
-SRX2579287	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	Ensembl	Illumina HiSeq 4000	PAIRED			SRR5275351
+SRX2579287	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	Ensembl	Illumina HiSeq 4000	PAIRED		120	SRR5275351
 SRX2579288	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	Ensembl	Illumina HiSeq 4000	PAIRED		120	SRR5275352
 SRX2579289	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	Ensembl	Illumina HiSeq 4000	PAIRED		120	SRR5275353
 SRX2579290	SRP033127	60711	Chlorocebus sabaeus	chlorocebus_sabaeus/Chlorocebus_sabaeus.ChlSab1.1	Ensembl	Illumina HiSeq 4000	PAIRED		120	SRR5275354
@@ -30524,7 +30524,7 @@ ERX3898754	ERP119841	69293	Gasterosteus aculeatus	gasterosteus_aculeatus/Gastero
 ERX3898755	ERP119841	69293	Gasterosteus aculeatus	gasterosteus_aculeatus/Gasterosteus_aculeatus.GAculeatus_UGA_version5	Ensembl	Illumina HiScanSQ	PAIRED		101	ERR3888527
 ERX3898756	ERP119841	69293	Gasterosteus aculeatus	gasterosteus_aculeatus/Gasterosteus_aculeatus.GAculeatus_UGA_version5	Ensembl	Illumina HiScanSQ	PAIRED		101	ERR3888528
 ERX713871	ERP009696	69293	Gasterosteus aculeatus	gasterosteus_aculeatus/Gasterosteus_aculeatus.GAculeatus_UGA_version5	Ensembl	Illumina HiScanSQ	PAIRED		101	ERR770590
-ERX713872	ERP009696	69293	Gasterosteus aculeatus	gasterosteus_aculeatus/Gasterosteus_aculeatus.GAculeatus_UGA_version5	Ensembl	Illumina HiScanSQ	PAIRED			ERR770591
+ERX713872	ERP009696	69293	Gasterosteus aculeatus	gasterosteus_aculeatus/Gasterosteus_aculeatus.GAculeatus_UGA_version5	Ensembl	Illumina HiScanSQ	PAIRED		101	ERR770591
 ERX713873	ERP009696	69293	Gasterosteus aculeatus	gasterosteus_aculeatus/Gasterosteus_aculeatus.GAculeatus_UGA_version5	Ensembl	Illumina HiScanSQ	PAIRED		101	ERR770592
 ERX713874	ERP009696	69293	Gasterosteus aculeatus	gasterosteus_aculeatus/Gasterosteus_aculeatus.GAculeatus_UGA_version5	Ensembl	Illumina HiScanSQ	PAIRED		101	ERR770593
 ERX713875	ERP009696	69293	Gasterosteus aculeatus	gasterosteus_aculeatus/Gasterosteus_aculeatus.GAculeatus_UGA_version5	Ensembl	Illumina HiScanSQ	PAIRED		101	ERR770594
@@ -30668,7 +30668,7 @@ ERX714012	ERP009696	69293	Gasterosteus aculeatus	gasterosteus_aculeatus/Gasteros
 ERX714013	ERP009696	69293	Gasterosteus aculeatus	gasterosteus_aculeatus/Gasterosteus_aculeatus.GAculeatus_UGA_version5	Ensembl	Illumina HiScanSQ	PAIRED		101	ERR770732
 ERX714014	ERP009696	69293	Gasterosteus aculeatus	gasterosteus_aculeatus/Gasterosteus_aculeatus.GAculeatus_UGA_version5	Ensembl	Illumina HiScanSQ	PAIRED		101	ERR770733
 ERX714015	ERP009696	69293	Gasterosteus aculeatus	gasterosteus_aculeatus/Gasterosteus_aculeatus.GAculeatus_UGA_version5	Ensembl	Illumina HiScanSQ	PAIRED		101	ERR770734
-ERX714016	ERP009696	69293	Gasterosteus aculeatus	gasterosteus_aculeatus/Gasterosteus_aculeatus.GAculeatus_UGA_version5	Ensembl	Illumina HiScanSQ	PAIRED			ERR770735
+ERX714016	ERP009696	69293	Gasterosteus aculeatus	gasterosteus_aculeatus/Gasterosteus_aculeatus.GAculeatus_UGA_version5	Ensembl	Illumina HiScanSQ	PAIRED		101	ERR770735
 ERX714017	ERP009696	69293	Gasterosteus aculeatus	gasterosteus_aculeatus/Gasterosteus_aculeatus.GAculeatus_UGA_version5	Ensembl	Illumina HiScanSQ	PAIRED		101	ERR770736
 ERX714018	ERP009696	69293	Gasterosteus aculeatus	gasterosteus_aculeatus/Gasterosteus_aculeatus.GAculeatus_UGA_version5	Ensembl	Illumina HiScanSQ	PAIRED		101	ERR770737
 ERX714019	ERP009696	69293	Gasterosteus aculeatus	gasterosteus_aculeatus/Gasterosteus_aculeatus.GAculeatus_UGA_version5	Ensembl	Illumina HiScanSQ	PAIRED		101	ERR770738
@@ -30908,7 +30908,7 @@ SRX915113	SRP056008	105023	Nothobranchius furzeri	nothobranchius_furzeri/Nothobr
 SRX915114	SRP056008	105023	Nothobranchius furzeri	nothobranchius_furzeri/Nothobranchius_furzeri.Nfu_20140520	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR1873424
 SRX915115	SRP056008	105023	Nothobranchius furzeri	nothobranchius_furzeri/Nothobranchius_furzeri.Nfu_20140520	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR1873425
 SRX915116	SRP056008	105023	Nothobranchius furzeri	nothobranchius_furzeri/Nothobranchius_furzeri.Nfu_20140520	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR1873426
-SRX915117	SRP056008	105023	Nothobranchius furzeri	nothobranchius_furzeri/Nothobranchius_furzeri.Nfu_20140520	Ensembl	Illumina HiSeq 2500	SINGLE			SRR1873427
+SRX915117	SRP056008	105023	Nothobranchius furzeri	nothobranchius_furzeri/Nothobranchius_furzeri.Nfu_20140520	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR1873427
 SRX915118	SRP056008	105023	Nothobranchius furzeri	nothobranchius_furzeri/Nothobranchius_furzeri.Nfu_20140520	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR1873428
 SRX915119	SRP056008	105023	Nothobranchius furzeri	nothobranchius_furzeri/Nothobranchius_furzeri.Nfu_20140520	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR1873429
 SRX915120	SRP056008	105023	Nothobranchius furzeri	nothobranchius_furzeri/Nothobranchius_furzeri.Nfu_20140520	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR1873430
@@ -30967,7 +30967,7 @@ SRX915172	SRP056008	105023	Nothobranchius furzeri	nothobranchius_furzeri/Nothobr
 SRX915173	SRP056008	105023	Nothobranchius furzeri	nothobranchius_furzeri/Nothobranchius_furzeri.Nfu_20140520	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR1873483
 SRX915174	SRP056008	105023	Nothobranchius furzeri	nothobranchius_furzeri/Nothobranchius_furzeri.Nfu_20140520	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR1873484
 SRX915175	SRP056008	105023	Nothobranchius furzeri	nothobranchius_furzeri/Nothobranchius_furzeri.Nfu_20140520	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR1873485
-SRX915176	SRP056008	105023	Nothobranchius furzeri	nothobranchius_furzeri/Nothobranchius_furzeri.Nfu_20140520	Ensembl	Illumina HiSeq 2500	SINGLE			SRR1873486
+SRX915176	SRP056008	105023	Nothobranchius furzeri	nothobranchius_furzeri/Nothobranchius_furzeri.Nfu_20140520	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR1873486
 SRX915177	SRP056008	105023	Nothobranchius furzeri	nothobranchius_furzeri/Nothobranchius_furzeri.Nfu_20140520	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR1873487
 SRX915178	SRP056008	105023	Nothobranchius furzeri	nothobranchius_furzeri/Nothobranchius_furzeri.Nfu_20140520	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR1873488
 SRX915179	SRP056008	105023	Nothobranchius furzeri	nothobranchius_furzeri/Nothobranchius_furzeri.Nfu_20140520	Ensembl	Illumina HiSeq 2500	SINGLE		50	SRR1873489
