@@ -70,7 +70,7 @@ create_isql_load_script: generate_triples
 
 zip_and_store: create_isql_load_script
 	#zip TTL directory and copy resulting archive to Bgee FTP
-	@zip -r  $(ZIP_TTL_FILE) $(TTL_DIRECTORY_FULL_PATH) > $@.tmp $@.err && $(RM) $(TTL_DIRECTORY_FULL_PATH)*.ttl $(BGEE_VIRTUOSO_FILE)
+	@zip -9 -r  $(ZIP_TTL_FILE) $(TTL_DIRECTORY_FULL_PATH) > $@.tmp $@.err && $(RM) $(TTL_DIRECTORY_FULL_PATH)*.ttl $(BGEE_VIRTUOSO_FILE)
 	@scp $(ZIP_TTL_FILE) $(FTPUSER)@$(FTPHOST):$(FTP_SAVE_DUMP_PATH)
 	@echo "RDF file was stored on FTP. Please manually remove local version with the command : rm -f $(ZIP_TTL_FILE)"
 	@$(MV) $@.tmp $@

@@ -7,12 +7,12 @@ usage()
                 [ {-o | --output-dir-path} <Turtle file output> ]
                 [ {-p | --ontop-property-file} <property file>  ]
                 [ {-t | --ontology-file} <ontology file> ]
-                [ {-v | --bgee-version} <the bgee version, e.g. '14_1'> ]
+                [ {-v | --bgee-version} <the bgee version, e.g. '15_2'> ]
                 [ {-j | --java-ontop-args } <Java Ontop memory arguments > (optional) ]
                 [ {-h | --help} <usage help> ]
 
    Example:              
-    ./bgee_rdf.sh -m ./conf/genex_adapt.obda -o ./ttl -p  ./conf/genex_adapt.properties -x ./ontop-cli-3 -t ./conf/genex_adapt.owl -v '14_1' -j '-Xmx128G'
+    ./bgee_rdf.sh -m ./conf/genex_adapt.obda -o ./ttl -p  ./conf/genex_adapt.properties -x ./ontop-cli-3 -t ./conf/genex_adapt.owl -v '15_2' -j '-Xmx128G'
     "
 
 }

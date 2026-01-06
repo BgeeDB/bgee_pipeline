@@ -37,12 +37,12 @@ To run the bgee_rdf.sh bash script:
                 
                 [ {-t | --ontology-file} <ontology file> ]
                                 
-                [ {-v | --bgee-version} <the bgee version, e.g. '14_1'> ]
+                [ {-v | --bgee-version} <the bgee version, e.g. '15_2'> ]
                 
                 [ {-h | --help} <usage help> ]
 
    Example:              
-    ./bgee_rdf.sh -m ./conf/genex_adapt.obda -o **/new/path/bgee/ttl** -p  ./conf/genex_adapt.properties -x ./ontop-cli-3 -t ./conf/genex_adapt.owl -v '14_1'
+    ./bgee_rdf.sh -m ./conf/genex_adapt.obda -o **/new/path/bgee/ttl** -p  ./conf/genex_adapt.properties -x ./ontop-cli-3 -t ./conf/genex_adapt.owl -v '15_2'
 
 
 
