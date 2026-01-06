@@ -97,7 +97,7 @@ sub map_strain_names {
     open(my $ANNOT, '<', "$expression_annotation_file")  or die "Cannot open $expression_annotation_file: $!\n";
     while ( defined (my $line = <$ANNOT>) ){
         my @fields = map { s/"//g; $_ } split(/\t/, $line);
-        # Case RNASeqLibrary_full.tsv: "strain"    taxid
+        # Case RNASeqLibrary_full.tsv for bulk RNASeq pipeline: "strain"    taxid
         if ( $expression_annotation_file =~ /RNASeqLibrary_full\.tsv/ ){
             if ( exists $strain_mapping->{ $fields[17] }->{ $fields[15] } ){
                 #print "found in mapping file\n";
@@ -108,12 +108,13 @@ sub map_strain_names {
             }
             print $line;
         }
-        # Case scRNASeqLibrary.tsv (NOT_PASS_scRNASeqLibrary.tsv / NEW_scRNASeqLibrary.tsv): strain    speciesId
-        elsif ( $expression_annotation_file =~ /ScRNASeqLibrary\.tsv/ ){
-            if ( exists $strain_mapping->{ $fields[22] }->{ $fields[21] } ){
+        # Case scRNASeqLibrary_merged.tsv for scRNASeq pipeline: strain    speciesId
+        elsif ( $expression_annotation_file =~ /scRNASeqLibrary_merged\.tsv/ ){
+            if ( exists $strain_mapping->{ $fields[23] }->{ $fields[21] } ){
                 my $source = quotemeta($fields[21]);
-                my $target = $strain_mapping->{ $fields[22] }->{ $fields[21] };
-                $line =~ s{\t$source\t$fields[22]\t}{\t$target\t$fields[22]\t};
+                my $genotype = $fields[22];
+                my $target = $strain_mapping->{ $fields[23] }->{ $fields[21] };
+                $line =~ s{\t$source\t[^\t]*\t$fields[23]\t}{\t$target\t$genotype\t$fields[23]\t};
             }
             print $line;
         }
@@ -1277,7 +1278,7 @@ sub check_active_jobs_number {
 # Return the number of active jobs for one account and with name containing provided string
 sub check_active_jobs_number_per_account_and_name {
     my ($account, $name) = @_;
-    my $running_jobs = `squeue --account=$account --noheader -o "%.18i %.20j %.8u %.2t" | grep $name | wc -l` || 0;
+    my $running_jobs = `squeue --account=$account --noheader -o "%.18i %.40j %.8u %.2t" | grep $name | wc -l` || 0;
     chomp($running_jobs);
     return $running_jobs;
 }

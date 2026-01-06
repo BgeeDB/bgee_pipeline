@@ -1,0 +1,49 @@
+barcode	cluster	library	experiment	tissue	cell_type	anatId_a_posteriori	anatName_a_posteriori	anat_a_posteriori_annotationStatus	cellTypeId	cellTypeName	cellTypeAnnotationStatus	name_Library	comments
+#TGGGAAGTCCAAGGGA	NA	SRX6859237	SRP222001	region of mid-peripheral retina	ACs	NA	NA	NA	CL:0000561	amacrine cell	perfect match	PR2	NA
+#TTGGTTTGTGCATTAC	NA	SRX6859237	SRP222001	region of mid-peripheral retina	ACs	NA	NA	NA	CL:0000561	amacrine cell	perfect match	PR2	NA
+#TTGGTTTGTGCATTAC	NA	SRX6859237	SRP222001	region of mid-peripheral retina	BPs	NA	NA	NA	CL:0000748	retinal bipolar neuron	perfect match	PR2	NA
+#TGGGAAGTCCAAGGGA	NA	SRX6859237	SRP222001	region of mid-peripheral retina	BPs	NA	NA	NA	CL:0000748	retinal bipolar neuron	perfect match	PR2	NA
+#AATCGTGAGCTGACTT	NA	SRX6859237	SRP222001	region of mid-peripheral retina	RGCs	NA	NA	NA	CL:0000740	retinal ganglion cell	perfect match	PR2	NA
+#AATCGTGAGCTGACTT	NA	SRX6859237	SRP222001	region of mid-peripheral retina	Rods	NA	NA	NA	CL:0000604	retinal rod cell	perfect match	PR2	NA
+#TGAGGGAAGTAATCCC	NA	SRX6859238	SRP222001	macula in the central retina	BPs	NA	NA	NA	CL:0000748	retinal bipolar neuron	perfect match	MR3	NA
+#GTGAGGACACAGCATT	NA	SRX6859238	SRP222001	macula in the central retina	Endo	NA	NA	NA	CL:0000115	endothelial cell	perfect match	MR3	NA
+#CACAGGCCATACCGTA	NA	SRX6859238	SRP222001	macula in the central retina	Macroglia	NA	NA	NA	CL:0000126	macroglial cell	perfect match	MR3	NA
+#GTGAGGACACAGCATT	NA	SRX6859238	SRP222001	macula in the central retina	Microglia	NA	NA	NA	CL:0000129	microglial cell	perfect match	MR3	NA
+#CACAGGCCATACCGTA	NA	SRX6859238	SRP222001	macula in the central retina	RGCs	NA	NA	NA	CL:0000740	retinal ganglion cell	perfect match	MR3	NA
+#TGAGGGAAGTAATCCC	NA	SRX6859238	SRP222001	macula in the central retina	RGCs	NA	NA	NA	CL:0000740	retinal ganglion cell	perfect match	MR3	NA
+#TGAGCGCGTTTGTTGG	NA	SRX6859239	SRP222001	region of mid-peripheral retina	ACs	NA	NA	NA	CL:0000561	amacrine cell	perfect match	PR3	NA
+#TGAGCGCGTTTGTTGG	NA	SRX6859239	SRP222001	region of mid-peripheral retina	BPs	NA	NA	NA	CL:0000748	retinal bipolar neuron	perfect match	PR3	NA
+#TCTATACTCACAGAGG	NA	SRX6859239	SRP222001	region of mid-peripheral retina	BPs	NA	NA	NA	CL:0000748	retinal bipolar neuron	perfect match	PR3	NA
+#AGAGAGCGTATCGTTG	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Cones	NA	NA	NA	CL:0000573	retinal cone cell	perfect match	PR3	NA
+#AGGAAATAGGCATTTC	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Cones	NA	NA	NA	CL:0000573	retinal cone cell	perfect match	PR3	NA
+#AGGCCACCAGCGGATA	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Cones	NA	NA	NA	CL:0000573	retinal cone cell	perfect match	PR3	NA
+#ATGCGATTCTGACCCT	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Cones	NA	NA	NA	CL:0000573	retinal cone cell	perfect match	PR3	NA
+#CACAGATAGTTGAAAC	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Cones	NA	NA	NA	CL:0000573	retinal cone cell	perfect match	PR3	NA
+#CAGAGCCGTAAGGCTG	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Cones	NA	NA	NA	CL:0000573	retinal cone cell	perfect match	PR3	NA
+#CTCCACAAGATCACTC	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Cones	NA	NA	NA	CL:0000573	retinal cone cell	perfect match	PR3	NA
+#GAAGGACGTCTGTAAC	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Cones	NA	NA	NA	CL:0000573	retinal cone cell	perfect match	PR3	NA
+#GACTCTCAGCCACAAG	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Cones	NA	NA	NA	CL:0000573	retinal cone cell	perfect match	PR3	NA
+#GGAGGTAGTAACACCT	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Cones	NA	NA	NA	CL:0000573	retinal cone cell	perfect match	PR3	NA
+#GTAATCGGTTAGGGTG	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Cones	NA	NA	NA	CL:0000573	retinal cone cell	perfect match	PR3	NA
+#GTAGTACCAACTGCCG	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Cones	NA	NA	NA	CL:0000573	retinal cone cell	perfect match	PR3	NA
+#TCAAGCAGTCTGCCTT	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Cones	NA	NA	NA	CL:0000573	retinal cone cell	perfect match	PR3	NA
+#TGCTTGCAGCGGGTTA	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Cones	NA	NA	NA	CL:0000573	retinal cone cell	perfect match	PR3	NA
+#TGGGAGAGTATCTCGA	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Cones	NA	NA	NA	CL:0000573	retinal cone cell	perfect match	PR3	NA
+#TCTATACTCACAGAGG	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Endo	NA	NA	NA	CL:0000115	endothelial cell	perfect match	PR3	NA
+#AGAGAGCGTATCGTTG	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Rods	NA	NA	NA	CL:0000604	retinal rod cell	perfect match	PR3	NA
+#AGGAAATAGGCATTTC	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Rods	NA	NA	NA	CL:0000604	retinal rod cell	perfect match	PR3	NA
+#AGGCCACCAGCGGATA	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Rods	NA	NA	NA	CL:0000604	retinal rod cell	perfect match	PR3	NA
+#ATGCGATTCTGACCCT	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Rods	NA	NA	NA	CL:0000604	retinal rod cell	perfect match	PR3	NA
+#CACAGATAGTTGAAAC	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Rods	NA	NA	NA	CL:0000604	retinal rod cell	perfect match	PR3	NA
+#CAGAGCCGTAAGGCTG	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Rods	NA	NA	NA	CL:0000604	retinal rod cell	perfect match	PR3	NA
+#CTCCACAAGATCACTC	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Rods	NA	NA	NA	CL:0000604	retinal rod cell	perfect match	PR3	NA
+#GAAGGACGTCTGTAAC	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Rods	NA	NA	NA	CL:0000604	retinal rod cell	perfect match	PR3	NA
+#GACTCTCAGCCACAAG	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Rods	NA	NA	NA	CL:0000604	retinal rod cell	perfect match	PR3	NA
+#GGAGGTAGTAACACCT	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Rods	NA	NA	NA	CL:0000604	retinal rod cell	perfect match	PR3	NA
+#GTAATCGGTTAGGGTG	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Rods	NA	NA	NA	CL:0000604	retinal rod cell	perfect match	PR3	NA
+#GTAGTACCAACTGCCG	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Rods	NA	NA	NA	CL:0000604	retinal rod cell	perfect match	PR3	NA
+#TCAAGCAGTCTGCCTT	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Rods	NA	NA	NA	CL:0000604	retinal rod cell	perfect match	PR3	NA
+#TGCTTGCAGCGGGTTA	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Rods	NA	NA	NA	CL:0000604	retinal rod cell	perfect match	PR3	NA
+#TGGGAGAGTATCTCGA	NA	SRX6859239	SRP222001	region of mid-peripheral retina	Rods	NA	NA	NA	CL:0000604	retinal rod cell	perfect match	PR3	NA
+#GAAGCCCAGACCAGAC	NA	SRX6859235	SRP222001	region of mid-peripheral retina	ACs	NA	NA	NA	CL:0000561	amacrine cell	perfect match	PR	NA
+#GAAGCCCAGACCAGAC	NA	SRX6859235	SRP222001	region of mid-peripheral retina	BPs	NA	NA	NA	CL:0000748	retinal bipolar neuron	perfect match	PR	NA

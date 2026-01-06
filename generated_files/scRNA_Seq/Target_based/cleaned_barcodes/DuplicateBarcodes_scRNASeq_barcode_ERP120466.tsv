@@ -1,0 +1,13 @@
+barcode	cluster	library	experiment	tissue	cell_type	anatId_a_posteriori	anatName_a_posteriori	anat_a_posteriori_annotationStatus	cellTypeId	cellTypeName	cellTypeAnnotationStatus	name_Library	comments
+GCTCTGTCAAGCGTAG	NA	ERX3984863	ERP120466	fetal kidney	Proliferating stroma progenitor				CL:0000499	stromal cell	missing child term	FCAImmP7555850_F41_KI_45N	
+GCTCTGTCAAGCGTAG	NA	ERX3984863	ERP120466	fetal kidney	Proliferating B cell				CL:0000236	B cell	other	FCAImmP7555850_F41_KI_45N	
+CCCATACAGTGTGAAT	NA	ERX3984863	ERP120466	fetal kidney	Fibroblast 1				CL:0000057	fibroblast	other	FCAImmP7555850_F41_KI_45N	
+CCCATACAGTGTGAAT	NA	ERX3984863	ERP120466	fetal kidney	Erythroid				CL:0000764	erythroid lineage cell	other	FCAImmP7555850_F41_KI_45N	
+TTCGGTCGTCCTGCTT	NA	ERX3984859	ERP120466	fetal kidney	Myofibroblast 1				CL:0000186	myofibroblast cell	other	FCAImmP7555849_F41_KI_45P	
+GCATGTAGTATAATGG	NA	ERX3984859	ERP120466	fetal kidney	Endothelium				CL:0000115	endothelial cell	other	FCAImmP7555849_F41_KI_45P	
+GCATGTAGTATAATGG	NA	ERX3984859	ERP120466	fetal kidney	CD4 T cell				CL:0000624	CD4-positive, alpha-beta T cell	other	FCAImmP7555849_F41_KI_45P	
+TTCGGTCGTCCTGCTT	NA	ERX3984859	ERP120466	fetal kidney	CD4 T cell				CL:0000624	CD4-positive, alpha-beta T cell	other	FCAImmP7555849_F41_KI_45P	
+CTCTACGGTAGAAAGG	NA	ERX3984874	ERP120466	fetal kidney	pDC				CL:0000784	plasmacytoid dendritic cell	other	FCAImmP7528292_F38_KI_45P	
+CTCTACGGTAGAAAGG	NA	ERX3984874	ERP120466	fetal kidney	Myofibroblast 1				CL:0000186	myofibroblast cell	other	FCAImmP7528292_F38_KI_45P	
+AGCTCTCCACTGCCAG	NA	ERX3984872	ERP120466	fetal kidney	Innate like lymphocyte				CL:0001065	innate lymphoid cell	other	4834STDY7002881_F17_KI_TOT	
+AGCTCTCCACTGCCAG	NA	ERX3984872	ERP120466	fetal kidney	Cap mesenchyme	UBERON:0005107	metanephric cap	perfect match	CL:0008019	mesenchymal cell	other	4834STDY7002881_F17_KI_TOT	

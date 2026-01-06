@@ -17,15 +17,16 @@ my $fastq_dir = '';
 my $output_dir = '';
 my $bgeecall_file = '';
 my $ref_intergenic_dir = '';
-
+my $filter_processed = 0;
 my %opts = ('sc_sample_info_file=s' => \$sc_sample_info_file,           # path to scrna_seq_sample_info file
             'transcriptome_dir=s'   => \$transcriptome_dir,             # path to directory containing all transcriptomes
             'annotation_dir=s'      => \$annotation_dir,                # path to directory containing all annotations
             'fastq_dir=s'           => \$fastq_dir,                     # path to directory containing all fastq files
-            'output_dir=s'            => \$output_dir,                    # path to the directory where BgeeCall results should be stored
+            'output_dir=s'          => \$output_dir,                    # path to the directory where BgeeCall results should be stored
             'bgeecall_file=s'       => \$bgeecall_file,                 # path to the output file compatible with BgeeCall
-            'ref_intergenic_dir=s'  => \$ref_intergenic_dir             # path to directory containing all reference intergenic sequences
-           );
+            'ref_intergenic_dir=s'  => \$ref_intergenic_dir,            # path to directory containing all reference intergenic sequences
+            'filter_processed'      => \$filter_processed	        # (optional) allows to not process again already processed libraries by not adding them in the BgeeCall input file.
+    );
 
 # test arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
@@ -39,6 +40,7 @@ if ( !$test_options || $sc_sample_info_file eq '' || $transcriptome_dir eq '' ||
 \t-output_dir           Path to directory containing BgeeCall results
 \t-bgeecall_file        Path to the output file compatible with BgeeCall
 \t-ref_intergenic_dir   Path to directory containing all reference intergenic sequences
+\t-filter_processed  	(optional) do not add already processed libraries to the BgeeCall input file
 \n";
     exit 1;
 }
@@ -58,15 +60,18 @@ while (my $line = <$sample_info>) {
     if (! scalar @line eq $number_columns) {
         die "all lines of full length single cell sample info file should have $number_columns columns";
     }
+    my $library_output_dir = "$output_dir$line[0]";
+    if ($filter_processed) {
+        next if (-e "$library_output_dir/S4_slots_summary.tsv");
+    }
     #column organism
     my $species_name = $line[16] =~ s/ /_/r;
     opendir(my $dir, $transcriptome_dir);
-    my @transcriptome_file = grep(/$species_name.*\.transcriptome_wo_intergenic.fa/, readdir($dir));
+    my @transcriptome_file = grep(/$species_name.*\.transcriptome_wo_intergenic.fa$/, readdir($dir));
     closedir($dir);
     my $transcriptome_path = "$transcriptome_dir$transcriptome_file[0]";
     my $annotation_path = $transcriptome_path =~ s/transcriptome_wo_intergenic\.fa/gtf/r;
     my $fastq_path = "$fastq_dir/EXPERIMENTS/$line[1]/$line[0]";
-    my $library_output_dir = "$output_dir$line[0]";
     my $intergenic_file = "$ref_intergenic_dir$line[4]_intergenic.fa.gz";
     my $output_line = "$line[4]\t\t$line[14]\t$fastq_path\t$transcriptome_path\t$annotation_path\t$library_output_dir\t$intergenic_file\n";
 

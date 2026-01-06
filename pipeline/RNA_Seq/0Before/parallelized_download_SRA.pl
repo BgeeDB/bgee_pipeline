@@ -48,12 +48,14 @@ if ( !$metadataFile || $parallelJobs eq '' || $outputDir eq '' || $downloadedLib
 \t-encryptFile             path to the encryption file for secure libraries (e.g GTEx)
 \t-queue                   queue to use to run jobs on the cluster
 \t-account                 account to use to run jobs on the cluster
-\t-speciesIds              (optional) list of species for which FASTQ files have to be downloaded. It has to be formatted as speciesIds separated by a comma.
-                           If no speciesId is provided then all libraries are downloaded
-\t-doNotDownload           (optional) option used to check libraries that have to be downloaded without downloading them.It generates symlink for libraries
-                           properly downloaded and add them to the file listing already downloaded libraries. This option is useful if the script has been killed
-                           before generating symlink or updating the file listing download libraries. This can happen when the download is too long. The script can
-                           then be killed by cluster admins.
+\t-speciesIds              (optional) list of species for which FASTQ files have to be downloaded. It has to be
+                           formatted as speciesIds separated by a comma. If no speciesId is provided then all
+                           libraries are downloaded.
+\t-doNotDownload           (optional) option used to check libraries that have to be downloaded without downloading them.
+                           It generates symlink for libraries properly downloaded and add them to the file listing already
+                           downloaded libraries. This option is useful if the script has been killed before generating
+                           symlink or updating the file listing download libraries. This can happen when the download is
+                           too long. The script can then be killed by cluster admins.
 
 \n";
     exit 1;
@@ -68,9 +70,6 @@ my @speciesIdsToDownload = split(',', $speciesIds);
 (my $speciesIdsDirSuffix = $speciesIds) =~ s/,/_/g;
 
 print "speciesIds to filter on \"$speciesIds\"\n";
-
-# Info of processed libraries coming from the pipeline
-my $isTargetBased = 0;
 
 # Read already downloaded libraries
 my %alreadyDownloaded = map { $_ => 1 } read_file("$downloadedLibraries", chomp=>1);
@@ -184,7 +183,7 @@ while (<$ANNOTATION>){
 
             ## create sbatch file and add its path to the hash of sbatch files
             my $sbatchFilePath = "$sbatchDir/$jobName.sbatch";
-            $sbatchToRun{$experimentId}{$libraryId}{$runId} = $sbatchFilePath;
+            $sbatchToRun{$experimentId}{$libraryId}{'runIds'}{$runId} = $sbatchFilePath;
             $sbatchToRun{$experimentId}{$libraryId}{'speciesId'} = $speciesId;
             open(FH, '>', $sbatchFilePath) or die $!;
             print FH $sbatchTemplate;
@@ -205,9 +204,8 @@ if(! $doNotDownload) {
         foreach my $libraryId (keys %{$sbatchToRun{$experimentId}}){
             my $speciesId = $sbatchToRun{$experimentId}{$libraryId}{'speciesId'};
             my $libDirectory = "$outputDir/$speciesId/$libraryId";
-            foreach my $runId (keys %{$sbatchToRun{$experimentId}{$libraryId}}){
+            foreach my $runId (keys %{$sbatchToRun{$experimentId}{$libraryId}{'runIds'}}){
                 next if (-f "$libDirectory/$runId.done");
-                next if $runId eq "speciesId";
                 $numberJobRun++;
                 $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $jobPrefix);
                 while ($jobsRunning >= $parallelJobs) {

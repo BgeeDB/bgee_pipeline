@@ -172,8 +172,8 @@ targetCells <- function(objectNormalized, objectNormalized_filtered, barcodeInfo
     )
     
     ## collect raw UMI counts and normalized data counts for each cell
-    finalRaw <- data.frame(seurat_object_with_celltype@assays$RNA@counts)
-    finalCPM <- data.frame(seurat_object_with_celltype@assays$RNA@data)
+    finalRaw <- data.frame(GetAssayData(seurat_object_with_celltype, slot = "counts"))
+    finalCPM <- data.frame(GetAssayData(seurat_object_with_celltype, slot = "data"))
     
     ## write in the output the info per internal cluster ID
     ##

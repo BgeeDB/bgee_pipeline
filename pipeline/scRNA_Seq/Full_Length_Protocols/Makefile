@@ -1,5 +1,5 @@
 PIPELINEROOT := ../../
-DIR_NAME := scRNA_Seq/
+DIR_NAME := scRNA_Seq/Full_length/
 
 include $(PIPELINEROOT)Makefile.common
 
@@ -9,47 +9,31 @@ include $(PIPELINEROOT)Makefile.common
 get_annot:
 	@$(GIT) submodule init
 	@$(GIT) submodule update
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/Strains/StrainMapping.tsv         $(STRAIN_MAPPING_FILE)
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqFLLibrary.tsv   $(INPUT_DIR)/Full_length/scRNASeqFLLibrary.tsv
-	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqExperiment.tsv  $(INPUT_DIR)/scRNASeqExperiment.tsv
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/Strains/StrainMapping.tsv             $(STRAIN_MAPPING_FILE)
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqLibrary_merged.tsv  $(SC_RNASEQ_LIB_FL_FILEPATH)
+	@$(CP) $(ANNOT_SUBMODULE_DIR)/scRNA_Seq/scRNASeqExperiment.tsv      $(SC_RNASEQ_EXP_FL_FILEPATH)
 	@touch $@
 
 ## Control the annotation (run rule in front)
-control_annotation: get_annot 0Preparation/pre_process_control_annotation.R
-	@echo --- Starting the control of the annotation  ---
-	#It is possible to filter the minimum number of cells per cell population using the argument cellsThreshold
-	$(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args scRNASeqLibrary="$(SC_RNASEQ_LIB_FL_FILEPATH)" output_file_pass="$(SC_RNASEQ_LIB_PASS_FILEPATH)" output_file_not_pass="$(SC_RNASEQ_LIB_NOT_PASS_FILEPATH)" ' 0Preparation/pre_process_control_annotation.R 0Preparation/pre_process_control_annotation.Rout > $@.tmp 2>&1
-	@echo --- DONE ---
-	#Map strain names
-	#load modules necessary to run the perl function
-	@module use /software/module/;
-	@export PATH=/software/bin:$PATH;
-	@module add Development/Ensembl_API/97;
-	@perl -e 'use lib "../.."; use Utils; Utils::map_strain_names("$(SC_RNASEQ_LIB_PASS_FILEPATH)", "$(STRAIN_MAPPING_FILE)")' > $(SC_RNASEQ_LIB_PASS_FILEPATH).ori
-	@$(MV) $(SC_RNASEQ_LIB_PASS_FILEPATH).ori $(SC_RNASEQ_LIB_PASS_FILEPATH)
+filter_annotation: get_annot 0Preparation/filter_annotation.R
+	@echo --- Filter FL libraries from annotation files ---
+	@$(CLUSTER_LOAD_APPTAINER) $(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL) Rscript 0Preparation/filter_annotation.R scRNASeqLibrary=\"$(SC_RNASEQ_LIB_FL_FILEPATH)\" scRNASeqExperiment=\"$(SC_RNASEQ_EXP_FL_FILEPATH)\" filteredLibrariesFile=\"$(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)\" filteredExperimentsFile=\"$(SC_RNASEQ_FL_EXP_FILTERED_FILEPATH)\" > $@.tmp 2> $@.err
+	@echo --- Map strain names ---
+	@$(CLUSTER_SOFTWARE_BIN) perl -e 'use lib "../.."; use Utils; Utils::map_strain_names("$(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)", "$(STRAIN_MAPPING_FILE)")' > $(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH).ori
+	@$(MV) $(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH).ori $(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)
 	@$(MV) $@.tmp $@
 
 ## Retrieve metadata (run rule with sbatch)
 ## NOTE: metadata here are information allowing to download fastq libraries a posteriori
-retrieve_metadata: control_annotation 0Preparation/retrieve_metadata.R
-	@echo --- Retrieve metadata information ---
-	@sed -i 's@--output=.*@--output=${PWD}/retrieve_metadata.out@'                                                   		0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--error=.*@--error=${PWD}/retrieve_metadata.err@'                                                     		0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--partition=.*@--partition=${CLUSTER_PARTITION}@'                                                     		0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@--account=.*@--account=${CLUSTER_ACCOUNT}@'                                                           		0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export SCRIPT_PATH=.*@export SCRIPT_PATH=${PWD}@'                                                     		0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export pass_annotationControl=.*@export pass_annotationControl=$(SC_RNASEQ_LIB_PASS_FILEPATH)@'       		0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export metadata_info_file=.*@export metadata_info_file=$(SC_RNASEQ_METADATA_FILEPATH)@'               		0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export metadata_info_not_match_file=.*@export metadata_info_not_match_file=$(SC_RNASEQ_METADATA_NOT_MATCH_FILEPATH)@'  0Preparation/retrieve_metadata.sbatch
-	@sed -i 's@export ROUT=.*@export ROUT=$(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH)@'                                   		0Preparation/retrieve_metadata.sbatch
-	@sbatch 0Preparation/retrieve_metadata.sbatch
-	@echo 'Check with  squeue/sacct -j <JOB_ID>  the job status'
-	@echo --- DONE ---
-	@touch $@
+THREADS_RETRIEVE_METADATA := 16
+retrieve_metadata: filter_annotation 0Preparation/retrieve_metadata.R
+	@srun --output=${PWD}/$@.out --error=${PWD}/$@.err --partition=${CLUSTER_PARTITION} --account=${CLUSTER_ACCOUNT} --job-name=retrieve_metadata_fulllength --mem=2G --time=1-00:00:00 --nodes=1 --ntasks=1 --export=ALL --cpus-per-task=$(THREADS_RETRIEVE_METADATA) bash -c "$(CLUSTER_SOFT_UNIL) $(CLUSTER_SOFT_APPTAINER) $(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL) Rscript ${PWD}/0Preparation/retrieve_metadata.R filteredLibraryAnnotation=\'$(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)\' metadataFile=\'$(SC_RNASEQ_METADATA_FL_FILEPATH)\' threads=\'$(THREADS_RETRIEVE_METADATA)\'"
+	$(MV) $@.out $@
 
 # Parallelize download of libraries and do not download again already downloaded libraries
+#TODO: The filtering of libraries based on the number of reads is currently done in the rule prepare_singlecell_info. It should be done before downloading to avoid downloading/archiving libraries we will never use.
 parallelized_download: retrieve_metadata
-	@perl 0Preparation/parallelized_download_SRA.pl -metadataFile=$(SC_RNASEQ_METADATA_FILEPATH) -parallelJobs=50 -downloadedLibraries=$(SC_RNASEQ_DOWNLOADED_LIB_FILEPATH) -outputDir=$(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH) -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
+	@$(CLUSTER_SOFTWARE_BIN) perl 0Preparation/parallelized_download_SRA.pl -metadataFile=$(SC_RNASEQ_METADATA_FL_FILEPATH) -parallelJobs=50 -downloadedLibraries=$(SC_RNASEQ_DOWNLOADED_LIB_FILEPATH) -excludedLibraries=$(SC_RNASEQ_EXCLUDED_LIB_FILEPATH) -outputDir=$(SC_RNASEQ_DOWNLOAD_PATH_FULL_LENGTH) --loadApptainerModule="$(CLUSTER_LOAD_APPTAINER)" --containerCmd="$(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL)" -queue=$(CLUSTER_PARTITION) -account=$(CLUSTER_ACCOUNT) >$@.tmp 2> $@.err
 	@$(MV) $@.tmp $@
 
 commit_annotation_and_metadata: list_new_downloads
@@ -66,63 +50,60 @@ commit_annotation_and_metadata: list_new_downloads
 	@touch $@
 
 
-## NOTE: Copy all git repository to JURA!
-################## STEPS TO RUN ON JURA SERVER ##################
+## NOTE: Copy all git repository to the sensitive cluster
+################## STEPS TO RUN ON SENSITIVE CLUSTER ##################
 
 clusterJURA:
-	@echo -e "\tBe sure everything is up-to-date before running single cell RNASeq pipeline\n"
+	@echo -e "\tBe sure everything is up-to-date before running full-length single cell RNASeq pipeline\n"
 	@touch $@
 
 check_tools: clusterJURA
 	@echo -e "\tGo to 'cd pipeline/scRNA_Seq/Full_Length_Protocols/' and be prepared to work\n"
-	@echo -e "\n\tRun this command to give access to all modules installed on vital-it\n\tmodule use /software/module/\n"
 	# Check if all required tools/libs are available
-	@module use /software/module/ || true
-	@$(CLUSTER_R_CMD) which R                          > $@.tmp
-	@$(CLUSTER_R_CMD) R -e 'library("Biostrings")'    >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("HelpersMG")'     >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("LaplacesDemon")' >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("data.table")'    >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("dplyr")'         >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("forcats")'       >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("gghighlight")'   >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("ggplot2")'       >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("gridExtra")'     >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("plyr")'          >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("reshape2")'      >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("rjson")'         >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("stringr")'       >> $@.tmp  2>/dev/null
-	@$(CLUSTER_R_CMD) R -e 'library("tools")'         >> $@.tmp  2>/dev/null
-	@which xz                                         >> $@.tmp
-	@which sbatch                                     >> $@.tmp
-	@$(CLUSTER_KALLISTO_CMD)   which kallisto         >> $@.tmp
-	@$(CLUSTER_FASTP_CMD)      which fastp            >> $@.tmp
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) which R                          > $@.tmp
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("Biostrings")'    >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("HelpersMG")'     >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("LaplacesDemon")' >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("data.table")'    >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("dplyr")'         >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("forcats")'       >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("gghighlight")'   >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("ggplot2")'       >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("gridExtra")'     >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("plyr")'          >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("reshape2")'      >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("rjson")'         >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("stringr")'       >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) R -e 'library("tools")'         >> $@.tmp  2>/dev/null
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) which xz                        >> $@.tmp
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) which sbatch                    >> $@.tmp
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) which kallisto                  >> $@.tmp
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) which fastp                     >> $@.tmp
 	@$(MV) $@.tmp $@
 
-## Prepare single cell info file (run rule in front)
+## Prepare single cell info file
 prepare_singlecell_info: $(SC_RNASEQ_LIB_PASS_FILEPATH) 0Preparation/prepare_scrna_seq_sample_info.R
-	@$(RM) $(SC_RNASEQ_SAMPINFO_FILEPATH) > $@.tmp
 	@echo --- prepare single cell information file ---
-	@$(CLUSTER_FASTP_CMD) $(CLUSTER_R_CMD) R CMD BATCH --no-save --no-restore '--args pass_annotationControl="$(SC_RNASEQ_LIB_PASS_FILEPATH)" metadata_file="$(SC_RNASEQ_METADATA_FILEPATH)" raw_cells_folder="$(SC_RNASEQ_FASTQ_FULL_LENGTH)" output_folder="$(SC_RNASEQ_FL_FOLDER_GENERATED)"' 0Preparation/prepare_scrna_seq_sample_info.R 0Preparation/prepare_scrna_seq_sample_info.Rout > $@.tmp
-	@echo --- DONE ---
-	@$(MV) $@.tmp $@
+	@srun --export=ALL --partition=${SENSITIVE_CLUSTER_PARTITION} --account=${SENSITIVE_CLUSTER_ACCOUNT} --job-name=$@ --output=${PWD}/$@.out --error=${PWD}/$@.err  --nodes=1 --time=12:00:00 --ntasks=1 --cpus-per-task=1 --mem=10G bash -c "$(CLUSTER_CONTAINER_CMD_WITH_BIND) Rscript $(PWD)/0Preparation/prepare_scrna_seq_sample_info.R filteredLibraryAnnotation=\'$(PWD)/$(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)\' metadataFile=\'$(PWD)/$(SC_RNASEQ_METADATA_FL_FILEPATH)\' fastqDir=\'$(SC_RNASEQ_FASTQ_FULL_LENGTH)\' outputDir=\'$(SC_RNASEQ_FL_FOLDER_GENERATED)\'"
+	@$(MV) $@.out $@
 
 # generate kallisto indexes with BgeeCall. Indexes already generated during the bulk RNA-Seq pipeline can be reused.
 # run script from bulk RNASeq pipeline
 indexes_bgeecall: prepare_singlecell_info
 	# generate BgeeCall input file from the scrna_seq_sample_info.txt file
 	# Run in front because it only parse a small file in order to create a new one.
-	@perl 1Run/sc_sample_info_to_bgeecall.pl -sc_sample_info_file=$(SC_RNASEQ_SAMPINFO_FILEPATH) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(SC_RNASEQ_FASTQ_FULL_LENGTH) -output_dir=$(SC_RNASEQ_CLUSTER_BGEECALL) -bgeecall_file=$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >>$@.tmp 2>&1
-	# generate kallisto indexes with BgeeCall. Use same working directory than bulk RNASeq as indexes are the same
-	@$(CLUSTER_R_CMD) $(CLUSTER_KALLISTO_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH)" account="$(SENSITIVE_CLUSTER_ACCOUNT)" time="10:00:00" partition="$(SENSITIVE_CLUSTER_PARTITION)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)"' $(PIPELINEROOT)$(RNASEQPATH)1Run/bgeecall_index.R 1Run/bgeecall_index.Rout
+	$(CLUSTER_SOFTWARE_BIN) $(CLUSTER_CONTAINER_CMD_WITH_BIND) perl 1Run/sc_sample_info_to_bgeecall.pl -sc_sample_info_file=$(SC_RNASEQ_SAMPINFO_FL_FILEPATH) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(SC_RNASEQ_FASTQ_FULL_LENGTH) -output_dir=$(SC_RNASEQ_CLUSTER_BGEECALL) -bgeecall_file=$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) > $@.tmp 2> $@.err
+	# generate kallisto indexes with BgeeCall. Use same working directory than for bulk RNASeq
+	$(CLUSTER_CONTAINER_CMD_WITH_BIND) Rscript $(PIPELINEROOT)$(RNASEQPATH)1Run/bgeecall_index.R  bgeecall_input_file=\"$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH)\" account=\"$(SENSITIVE_CLUSTER_ACCOUNT)\" time=\"10:00:00\" partition=\"$(SENSITIVE_CLUSTER_PARTITION)\" working_path=\"$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)\" container_cmd=\"$(CLUSTER_CONTAINER_CMD_WITHOUT_BIND)\" >> $@.tmp 2>> $@.err
 	@$(MV) $@.tmp $@
 
 # Use BgeeCall R package to generate present/absent calls.
 # run script from bulk RNASeq pipeline
 presence_absence_bgeecall: indexes_bgeecall
-	#use same working_directory than bulk RNASeq as indexes are the same
-	@$(CLUSTER_R_CMD) $(CLUSTER_KALLISTO_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_input_file="$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH)" account="$(SENSITIVE_CLUSTER_ACCOUNT)" time="2-00:00:00" partition="$(SENSITIVE_CLUSTER_PARTITION)" working_path="$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)" decrypt_file_path=""' $(PIPELINEROOT)$(RNASEQPATH)1Run/bgeecall_calls.R 1Run/bgeecall_calls.Rout
-	@touch $@
+	# generate again the BgeeCall input file containing libraries to process. It allows to filter libraries already processed before running BgeeCall
+	$(CLUSTER_SOFTWARE_BIN) $(CLUSTER_CONTAINER_CMD_WITH_BIND) perl 1Run/sc_sample_info_to_bgeecall.pl -sc_sample_info_file=$(SC_RNASEQ_SAMPINFO_FL_FILEPATH) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(SC_RNASEQ_FASTQ_FULL_LENGTH) -output_dir=$(SC_RNASEQ_CLUSTER_BGEECALL) -bgeecall_file=$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) -filter_processed > $@.tmp 2> $@.err
+	$(CLUSTER_CONTAINER_CMD_WITH_BIND) Rscript $(PIPELINEROOT)$(RNASEQPATH)1Run/bgeecall_calls.R bgeecall_input_file=\"$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH)\" account=\"$(SENSITIVE_CLUSTER_ACCOUNT)\" container_cmd=\"$(CLUSTER_CONTAINER_CMD_WITHOUT_BIND)\" time=\"2-00:00:00\" partition=\"$(SENSITIVE_CLUSTER_PARTITION)\" working_path=\"$(RNASEQ_CLUSTER_BGEECALL_OUTPUT)\" decrypt_file_path=\"\" >> $@.tmp 2>> $@.err
+	@$(MV) $@.tmp $@
 
 ## Quality control by cell population to perform the calls (not pass if not bimodal)
 QC_cellPopulation: presence_absence_bgeecall 1Run/QC_cellPopulation.R

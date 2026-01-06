@@ -19,7 +19,7 @@ use Time::Piece;
 
 ## Define arguments & their default value
 my ($metadataFile, $parallelJobs, $fastqDir, $gtfDir, $scRNASeqInfoFile, $whiteListPath,
-    $kallistoResults, $queue, $account, $pathToScript) = ('', '', '', '',  '', '', '' , '', '', '');
+    $kallistoResults, $queue, $account, $pathToScript, $containerCmd) = ('', '', '', '', '',  '', '', '' , '', '', '');
 my %opts = ('metadataFile=s'        => \$metadataFile,
             'parallelJobs=s'        => \$parallelJobs,
             'fastqDir=s'            => \$fastqDir,
@@ -29,14 +29,16 @@ my %opts = ('metadataFile=s'        => \$metadataFile,
             'kallistoResults=s'     => \$kallistoResults,   
             'queue=s'               => \$queue,
             'account=s'             => \$account,
-            'pathToScript=s'        => \$pathToScript
+            'pathToScript=s'        => \$pathToScript,
+	    'containerCmd=s'        => \$containerCmd
            );
 
 
 ######################## Check arguments ########################
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$metadataFile || $parallelJobs eq '' || $fastqDir eq '' || $gtfDir eq '' ||
-    $scRNASeqInfoFile eq '' || $whiteListPath eq '' || $kallistoResults eq '' || $queue eq '' || $account eq '' || $pathToScript eq '') {
+    $scRNASeqInfoFile eq '' || $whiteListPath eq '' || $kallistoResults eq '' || $queue eq '' || $account eq '' || $pathToScript eq '' ||
+    $containerCmd eq '') {
     print "\n\tInvalid or missing argument:
 \te.g. $0 -metatadataFile=... -parallelJobs=50 -outputDir=...  >> $@.tmp 2> $@.warn
 \t-metadataFile            file containing metadata necessary to download each run
@@ -49,6 +51,7 @@ if ( !$metadataFile || $parallelJobs eq '' || $fastqDir eq '' || $gtfDir eq '' |
 \t-queue                   queue to use to run jobs on the cluster
 \t-account                 account to use to run jobs on the cluster
 \t-pathToScript            path to the R script that will run kallisto for each library
+\t-containerCmd            command used to launch the Bgee container
 \n";
     exit 1;
 }
@@ -86,13 +89,9 @@ foreach my $experimentId (keys %processedLibraries){
           $jobName);
 
         #TODO: move modules management to a script attribute
-        $sbatchTemplate .= "module use /software/module/\n";
-        $sbatchTemplate .= "export PATH=/software/bin:\$PATH\n";
-        $sbatchTemplate .= "module add R/3.6.1\n";
-        $sbatchTemplate .= "module add UHTS/Analysis/bustools/0.40.0;\n";
-        my $commandToRun = "R CMD BATCH --no-save --no-restore \'--args libraryId=\"$libraryId\"".
-            " whiteList_Path=\"$whiteListPath\" folder_gtf=\"$gtfDir\" scRNASeq_Info=\"$scRNASeqInfoFile\"".
-            " kallisto_bus_results=\"$kallistoResults\"\' $pathToScript ${clusterOutput}/${jobName}.Rout";
+        my $commandToRun = "$containerCmd bash -c \"Rscript $pathToScript libraryId=\\'$libraryId\\'".
+            " whiteList_Path=\\'$whiteListPath\\' folder_gtf=\\'$gtfDir\\' scRNASeq_Info=\\'$scRNASeqInfoFile\\'".
+            " kallisto_bus_results=\\'$kallistoResults\\'\"";
     $sbatchTemplate .= "$commandToRun\n";
         my $sbatchFilePath = "$sbatchLocation$jobName.sbatch";
         $sbatchToRun{$experimentId}{$libraryId} = $sbatchFilePath;

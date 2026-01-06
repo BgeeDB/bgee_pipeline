@@ -121,7 +121,7 @@ my $insert_annotatedSamples =   'INSERT INTO rnaSeqLibraryAnnotatedSample (rnaSe
                                 'sdAbundanceReferenceIntergenicDistribution, abundanceThreshold,'.
                                 'allGenesPercentPresent, proteinCodingGenesPercentPresent,'.
                                 'intergenicRegionsPercentPresent, pValueThreshold, allUMIsCount, mappedUMIsCount,'.
-                                'multipleLibraryIndividualSample, barcode, time, timeUnit, freeTextAnnotation)'.
+                                'multipleLibraryIndividualSample, barcode, time, timeUnit, physiologicalStatus)'.
                                 ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
 my $update_sumUMIs_annotatedSamples =  'UPDATE rnaSeqLibraryAnnotatedSample set mappedUMIsCount = ? where '.
@@ -153,8 +153,7 @@ my $insert_individualSampleGeneResult = 'INSERT INTO rnaSeqLibraryIndividualSamp
                                         'readsCount, UMIsCount, rnaSeqData, reasonForExclusion)'.
                                         'VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
-my $insert_numberOfCellsPerExperiment = 'INSERT INTO rnaSeqExperiment (rnaSeqExperimentId, numberOfCells) VALUES (?, ?)';
-
+my $update_numberOfCellsPerExperiment = 'UPDATE rnaSeqExperiment SET numberOfAnnotatedCells = ? where rnaSeqExperimentId = ?';
 ########################################################################
 ########################### Main Script ################################
 ########################################################################
@@ -277,7 +276,7 @@ for my $expId ( sort keys %processedLibraries ){
 
     my $insExp = $bgee_metadata->prepare($insert_experiment);
     my $insLib = $bgee_metadata->prepare($insert_libraries);
-    my $insNumberOfCells = $bgee_metadata->prepare($insert_numberOfCellsPerExperiment
+    my $updateNumberOfCells = $bgee_metadata->prepare($update_numberOfCellsPerExperiment);
     my $numberOfBarcodes = 0;
 
     if (grep( /^$expId$/, @insertedExpIds)) {
@@ -508,7 +507,7 @@ for my $expId ( sort keys %processedLibraries ){
 
     }
     # insert the number of barcodes per experiment
-    $insNumberOfCells->execute($expId, $numberOfBarcodes);
+    $insNumberOfCells->execute($numberOfBarcodes, $expId) or die $insNumberOfCells->errstr;
     $insNumberOfCells->finish;
     $insLib->finish;
     # parse libraries a second time in parallel to fasten insertion

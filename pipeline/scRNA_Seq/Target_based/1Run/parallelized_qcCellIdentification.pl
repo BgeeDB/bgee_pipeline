@@ -20,7 +20,7 @@ use Time::Piece;
 
 ## Define arguments & their default value
 my ($metadataFile, $parallelJobs, $gtfDir, $barcodeFolder, $kallistoResults, $outputDir,
-    $queue, $account, $pathToScript, $rLibs) = ('', '', '', '', '',  '', '', '' , '', '');
+    $queue, $account, $pathToScript, $containerCmd) = ('', '', '', '', '',  '', '', '' , '', '');
 my %opts = ('metadataFile=s'                     => \$metadataFile,
             'parallelJobs=s'                     => \$parallelJobs,
             'gtfDir=s'                           => \$gtfDir,
@@ -30,14 +30,14 @@ my %opts = ('metadataFile=s'                     => \$metadataFile,
             'queue=s'                            => \$queue,
             'account=s'                          => \$account,
             'pathToScript=s'                     => \$pathToScript,
-            'rLibs=s'                            => \$rLibs
+            'containerCmd=s'                     => \$containerCmd
            );
 
 ######################## Check arguments ########################
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$metadataFile || $parallelJobs eq '' || $gtfDir eq '' || $barcodeFolder eq '' ||             
     $kallistoResults eq '' || $outputDir eq '' || $queue eq '' || $account eq '' || $pathToScript eq '' ||
-    $rLibs eq '') {
+    $containerCmd eq '') {
     print "\n\tInvalid or missing argument:
 \te.g. $0 -metadataFile=... -parallelJobs=50 -outputDir=...  >> $@.tmp 2> $@.warn
 \t-metadataFile                 file metadata_info containing all run to process
@@ -49,7 +49,7 @@ if ( !$metadataFile || $parallelJobs eq '' || $gtfDir eq '' || $barcodeFolder eq
 \t-queue                         queue to use to run jobs on the cluster
 \t-account                       account to use to run jobs on the cluster
 \t-pathToScript                  path to the R script that will run kallisto for each library
-\t-rLibs                         path to the directory containing R packages
+\t-containerCmd                  command loading the Bgee container
 \n";
     exit 1;
 }
@@ -88,19 +88,14 @@ foreach my $experimentId (keys %processedLibraries){
         my $speciesId = $processedLibraries{$experimentId}{$libraryId}{'speciesId'};
         ## use 30Gb of memory. Should maybe be increase depending on the library to process
 	    my $sbatchTemplate = Utils::sbatch_template($queue, $account, 1,
-          30, "${clusterOutput}${jobName}.out", "${clusterOutput}/${jobName}.err",
+          60, "${clusterOutput}${jobName}.out", "${clusterOutput}/${jobName}.err",
           $jobName);
 
         #TODO: move modules management to a script attribute
-        $sbatchTemplate .= "module use /software/module/\n";
-	$sbatchTemplate .= "module add R/3.6.1;\n";
-        $sbatchTemplate .= "\nexport R_LIBS_USER=$rLibs\n\n";
-        my $commandToRun = "R CMD BATCH --no-save --no-restore \'--args libraryId=\"$libraryId\"".
-            " scRNASeq_Info=\"$metadataFile\" kallisto_bus_results=\"$kallistoResults\"".
-            " folderSupport=\"$gtfDir\" infoFolder=\"$barcodeFolder\" output=\"$outputDir\"\'".
-            " $pathToScript ${clusterOutput}/${jobName}.Rout";
-
-	    $sbatchTemplate .= "$commandToRun\n";
+        my $commandToRun = "$containerCmd bash -c \"Rscript $pathToScript libraryId=\\'$libraryId\\'".
+            " scRNASeq_Info=\\'$metadataFile\\' kallisto_bus_results=\\'$kallistoResults\\'".
+            " folderSupport=\\'$gtfDir\\' infoFolder=\\'$barcodeFolder\\' output=\\'$outputDir\\'\"";
+        $sbatchTemplate .= "$commandToRun\n";
         my $sbatchFilePath = "$sbatchLocation$jobName.sbatch";
         $sbatchToRun{$experimentId}{$libraryId} = $sbatchFilePath;
         open(FH, '>', $sbatchFilePath) or die $!;
