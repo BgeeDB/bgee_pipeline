@@ -90,8 +90,8 @@ for(line in seq(nrow(sample_info_data))) {
         warning(library_id, " not found in the downloaded libraries file")
       }
       # get min and max read size from downloaded lib file
-      min_reads <- downloaded_lib_file_data[downloaded_lib_file_data$libraryId == library_id,]$min_read_size
-      max_reads <- downloaded_lib_file_data[downloaded_lib_file_data$libraryId == library_id,]$max_read_size
+      min_reads <- downloaded_lib_file_data[downloaded_lib_file_data$libraryId == library_id,]$min_read_length
+      max_reads <- downloaded_lib_file_data[downloaded_lib_file_data$libraryId == library_id,]$max_read_length
       kallisto_info <- data.frame(library_id, json_info$n_processed, min_reads, max_reads, 
         json_info$n_pseudoaligned, json_info$n_unique, json_info$p_pseudoaligned, json_info$p_unique, 
         json_info$n_targets, json_info$start_time, json_info$kallisto_version)
