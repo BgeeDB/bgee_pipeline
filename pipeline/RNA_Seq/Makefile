@@ -358,19 +358,13 @@ presence_absence_bgeecall: indexes_bgeecall
 	@$(MV) $@.tmp $@
 
 ##############################################################################################################
-check_presence_absence:
+check_presence_absence: presence_absence_bgeecall
 	# check that presence absence calls have been generated for all libraries present in the rna_seq_sample_info file
 	# generate file containing calls info for all libraries and use this file to generate different plots
-	@$(CLUSTER_SOFTWARE_BIN) perl 1Run/sample_info_to_bgeecall.pl -keep_all_libraries -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -sample_excluded=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >$@.tmp 2>$@.err
-	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) Rscript 1Run/rna_seq_calls_plot.R bgeecall_sample_info=\"$(RNASEQ_BGEECALL_FILE)\" calls_dir=\"$(RNASEQ_CLUSTER_BGEECALL_CALLS)\" presence_absence_report=\"$(RNASEQ_CLUSTER_CALLS_STATS)\" kallisto_report=\"$(RNASEQ_CLUSTER_KALLISTO_STATS)\" >> $@.tmp 2>$@.err
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) perl 1Run/sample_info_to_bgeecall.pl -keep_all_libraries -sample_info_file=$(RNASEQ_SAMPINFO_FILEPATH) -sample_excluded=$(RNASEQ_SAMPEXCLUDED_FILEPATH) -output_dir=$(RNASEQ_CLUSTER_BGEECALL_OUTPUT) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(RNASEQ_SENSITIVE_FASTQ) -bgeecall_file=$(RNASEQ_BGEECALL_FILE) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) >$@.tmp 2>$@.err
+	# generate calls stats and summary files
+	@$(CLUSTER_CONTAINER_CMD_WITH_BIND) Rscript --vanilla 1Run/rna_seq_calls_plot.R bgeecall_sample_info=\"$(RNASEQ_BGEECALL_FILE)\" downloaded_lib_file=\"$(RNASEQ_ALREADY_DOWNLOADED)\" calls_dir=\"$(RNASEQ_CLUSTER_BGEECALL_CALLS)\" presence_absence_report=\"$(RNASEQ_CLUSTER_CALLS_STATS)\" kallisto_report=\"$(RNASEQ_CLUSTER_KALLISTO_STATS)\" >> $@.tmp 2>$@.err
 	@mv $@.tmp $@
-
-# not run for Bgee 15.1 and 15.2. To remove from the pipeline in the future major release.
-# Do not use slurm to run this light processing
-calculate_fpkm:
-	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args all_results_dir="$(RNASEQ_CLUSTER_BGEECALL_CALLS)" calls_file_name="$(ABUNDANCEFILE)"' 1Run/calculate_fpkm.R $(RNASEQ_CLUSTER_R_LOG)calculate_fpkm.Rout
-	@touch $@
-
 
 #NOTE if output directory is not $(RNASEQ_CLUSTER_BGEECALL_CALLS): copy all files with calls to this directory, as well as summary stats and plot files
 #for folder in *; do echo $folder; /bin/cp $folder/* ../all_results_bgee_v15/$folder/; done
