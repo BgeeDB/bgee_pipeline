@@ -8,6 +8,7 @@
 ## time                     - maximum time to run each job
 ## partition                - partition on which jobs have to be run
 ## working_path             - path to directory where species specific files will be created by BgeeCall
+## container_cmd            - path to the Bgee container
 
 library(BgeeCall)
 
@@ -24,7 +25,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed in command line
-command_arg <- c("bgeecall_input_file", "account", "time", "partition", "container_cmd")
+command_arg <- c("bgeecall_input_file", "account", "time", "partition", "working_path", "container_cmd")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )

@@ -3602,7 +3602,7 @@
 "TTTGCGCAGGGCTTCC"	4	"SRX6060800"	"SRP201320"	"spleen"	"Naive-CD8-T-cell"	NA	NA	NA	"CL:0000900"	"naive thymus-derived CD8-positive, alpha-beta T cell"	"other"	NA	NA	16
 "TTTGCGCGTCCGAAGA"	4	"SRX6060800"	"SRP201320"	"spleen"	"Naive-CD8-T-cell"	NA	NA	NA	"CL:0000900"	"naive thymus-derived CD8-positive, alpha-beta T cell"	"other"	NA	NA	16
 "TTTGGTTGTTCGCTAA"	4	"SRX6060800"	"SRP201320"	"spleen"	"Naive-CD8-T-cell"	NA	NA	NA	"CL:0000900"	"naive thymus-derived CD8-positive, alpha-beta T cell"	"other"	NA	NA	16
-"AAAGCAACATTGCGGC"	11	"SRX6060800"	"SRP201320"	"spleen"	"Neutrophil.1"	NA	NA	NA	"CL:0000775"	"neutrophil"	"other"	NA	NA	17
+"AAAGCAACATTGCGGC"	11	"SRX6060800"	"SRP201320"	"spleen"	"Neutrophil.1"	NA	NA	NA	"CL:0000775"	"Neutrophil"	"other"	NA	NA	17
 "ACGAGGAAGCTTTGGT"	11	"SRX6060800"	"SRP201320"	"spleen"	"Neutrophil.1"	NA	NA	NA	"CL:0000775"	"neutrophil"	"other"	NA	NA	17
 "ACGCCAGGTCATCCCT"	11	"SRX6060800"	"SRP201320"	"spleen"	"Neutrophil.1"	NA	NA	NA	"CL:0000775"	"neutrophil"	"other"	NA	NA	17
 "ACGGCCACATCTCGCT"	11	"SRX6060800"	"SRP201320"	"spleen"	"Neutrophil.1"	NA	NA	NA	"CL:0000775"	"neutrophil"	"other"	NA	NA	17

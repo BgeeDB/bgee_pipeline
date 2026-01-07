@@ -21,24 +21,25 @@ use File::Path qw(make_path);
 use File::Basename;
 
 ## Define arguments & their default value
-my ($metadataFile, $parallelJobs, $fastqDir, $gtfDir, $scRNASeqInfoFile, $kallistoResults, $queue, $account,
-    $pathToScript) = ('', '', '', '',  '', '', '' , '', '');
+my ($metadataFile, $parallelJobs, $fastqDir, $gtfDir, $scRNASeqInfoFile, $kallistoResults) = ('', '', '', '',  '', '');
+my ($queue, $account, $pathToScript, $containerCmd) = ('' , '', '', '');
 my %opts = ('metadataFile=s'        => \$metadataFile,
             'parallelJobs=s'        => \$parallelJobs,
             'fastqDir=s'            => \$fastqDir,
             'gtfDir=s'              => \$gtfDir,
             'scRNASeqInfoFile=s'    => \$scRNASeqInfoFile,
             'kallistoResults=s'     => \$kallistoResults,   
-	    'queue=s'               => \$queue,
-	    'account=s'             => \$account,
-            'pathToScript=s'        => \$pathToScript
+            'queue=s'               => \$queue,
+            'account=s'             => \$account,
+            'pathToScript=s'        => \$pathToScript,
+            'containerCmd=s'        => \$containerCmd
            );
 
 
 ######################## Check arguments ########################
 my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$metadataFile || $parallelJobs eq '' || $fastqDir eq '' || $gtfDir eq '' ||
-    $scRNASeqInfoFile eq '' || $kallistoResults eq '' || $queue eq '' || $account eq '' || $pathToScript eq '') {
+    $scRNASeqInfoFile eq '' || $kallistoResults eq '' || $queue eq '' || $account eq '' || $pathToScript eq '' || $containerCmd eq '') {
     print "\n\tInvalid or missing argument:
 \te.g. $0 -metatadataFile=... -parallelJobs=50 -outputDir=...  >> $@.tmp 2> $@.warn
 \t-metadataFile            file containing metadata necessary to download each run
@@ -50,6 +51,7 @@ if ( !$metadataFile || $parallelJobs eq '' || $fastqDir eq '' || $gtfDir eq '' |
 \t-queue                   queue to use to run jobs on the cluster
 \t-account                 account to use to run jobs on the cluster
 \t-pathToScript            path to the R script that will run kallisto for each library
+\t-containerCmd            command to use to run the container (e.g. singularity exec)
 \n";
     exit 1;
 }
@@ -87,14 +89,9 @@ foreach my $experimentId (keys %processedLibraries){
           $jobName);
 
         #TODO: move modules management to a script attribute
-        $sbatchTemplate .= "module use /software/module/\n";
-        $sbatchTemplate .= "export PATH=/software/bin:\$PATH\n";
-	    $sbatchTemplate .= "module add R/3.6.1\n";
-        $sbatchTemplate .= "module load UHTS/Analysis/kallisto/0.46.0\n";
-        my $commandToRun = "R CMD BATCH --no-save --no-restore \'--args libraryId=\"$libraryId\"".
-            " speciesId=\"$speciesId\" fastqDir=\"$fastqDir\" gtfDir=\"$gtfDir\"".
-            " scRNASeqInfoFile=\"$scRNASeqInfoFile\" kallisto_bus_results=\"$kallistoResults\"\'".
-            " $pathToScript ${clusterOutput}/${jobName}.Rout";
+        my $commandToRun = "$containerCmd bash -c \"Rscript $pathToScript libraryId=\\'$libraryId\\' speciesId=\\'$speciesId\\'".
+                           " fastqDir=\\'$fastqDir\\' gtfDir=\\'$gtfDir\\' scRNASeqInfoFile=\\'$scRNASeqInfoFile\\'".
+                           " kallisto_bus_results=\\'$kallistoResults\\'\"";
         $sbatchTemplate .= "$commandToRun\n";
         my $sbatchFilePath = "$sbatchLocation$jobName.sbatch";
         $sbatchToRun{$experimentId}{$libraryId} = $sbatchFilePath;

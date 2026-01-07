@@ -36,18 +36,22 @@ if(!dir.exists(output)) {
   dir.create(output)
 }
 
-barcodes_files_path <-  list.files(barcodesFolder, pattern = "scRNASeq_barcode_", full.names = TRUE)
-
+barcodes_files_path <-  list.files(barcodesFolder, pattern = "scRNASeq_barcode.*.tsv", full.names = TRUE)
+print(paste("Found", length(barcodes_files_path), "barcode files in", barcodesFolder))
 for (barcode_file_path in barcodes_files_path) {
   
-  barcodes <- read.table(barcode_file_path, header = TRUE, sep="\t")
-
+  barcodes <- tryCatch(
+    read.table(barcode_file_path, header = TRUE, sep = "\t"),
+    error = function(e) {
+      stop(paste("Error reading file:", barcode_file_path, "\n", e$message))
+    }
+  )
   #first we remove all rows with cellTypeId empty or NA as annotation of a barcode with a term coming from an ontology
   # is mandatory to insert data in Bgee
   barcodes <- barcodes %>% filter(!is.na(cellTypeId) & cellTypeId != "")
   barcode_file_name <- basename(barcode_file_path)
-  all_unique_barcodes <- c()
-  all_duplicated_barcodes <- c()
+  unique_barcodes_list <- list()
+  duplicated_barcodes_list <- list()
   for (library_id in unique(barcodes$library)) {
     cluster_id <- 1
     select_barcodes <- dplyr::filter(barcodes, barcodes$library == library_id)
@@ -55,20 +59,21 @@ for (barcode_file_path in barcodes_files_path) {
     #select only unique barcodes/library. This check should be done at annotation level before running the pipeline
     unique_barcodes <- select_barcodes %>%
       group_by(barcode) %>% 
-      filter(n()==1)
+      # filter barcodes that are unique or that are duplicated but with the same cellTypeId.
+      # Keep only one occurance of deplicated barcodes with same cellTypeId
+      filter(n() == 1 | n_distinct(cell_type) == 1)
     
     uniq_celltype_freetext <- unique(unique_barcodes$cell_type)
     # As the cell_type column is used to detect clusters of barcodes, we can not have cell_type that is NA
     contains_celltype_freeText <- TRUE
-    if (length(uniq_celltype_freetext) == 1 & (uniq_celltype_freetext == "" | is.na(uniq_celltype_freetext))) {
+    if (is.null(uniq_celltype_freetext) || all(is.na(uniq_celltype_freetext)) || (length(uniq_celltype_freetext) == 1 && uniq_celltype_freetext == "")) {
       unique_barcodes$cell_type <- ""
-      print(paste0("free text cell-type information is always NA or empty. Will check if cluster info are available for file ",
-        barcode_file_name, " and library ", library_id))
+      message("free text cell-type information is always NA or empty. Will check if cluster info are available for file ", barcode_file_name, " and library ", library_id)
       contains_celltype_freeText <- FALSE
     }
     contains_cluster <- TRUE
     uniq_cluster_id <- unique(unique_barcodes$cluster)
-    if (is.na(uniq_cluster_id) | (length(uniq_cluster_id) == 1 & uniq_cluster_id == "")) {
+    if (is.null(uniq_cluster_id) || all(is.na(uniq_cluster_id)) || (length(uniq_cluster_id) == 1 && uniq_cluster_id == "")) {
       unique_barcodes$cluster <- ""
       message("No cluster ID provided for file ", barcode_file_name, " and library ", library_id)
       contains_cluster <- FALSE
@@ -107,18 +112,32 @@ for (barcode_file_path in barcodes_files_path) {
         cluster_id <- cluster_id + 1
       }
     }
+
     barcodes_duplicates <- select_barcodes %>% 
       group_by(barcode) %>% 
-      filter(n() != 1)
-  
-    all_unique_barcodes <- rbind(all_unique_barcodes, unique_barcodes)
-    saveDuplicatedBarcodes <- rbind(all_duplicated_barcodes, barcodes_duplicates)
+      filter(n() != 1 & n_distinct(cell_type) > 1)
+
+    ## Append results to lists
+    unique_barcodes_list[[library_id]] <- unique_barcodes
+    duplicated_barcodes_list[[library_id]] <- barcodes_duplicates
+
   }
-  write.table(all_unique_barcodes, file = file.path(output, barcode_file_name), sep = "\t", row.names = FALSE, quote = TRUE)
-  if (isTRUE(all_duplicated_barcodes) && nrow(all_duplicated_barcodes) != 0){
+
+    ## Combine results from all libraries using bind_rows
+  all_unique_barcodes <- bind_rows(unique_barcodes_list)
+  all_duplicated_barcodes <- bind_rows(duplicated_barcodes_list)
+  
+  tryCatch(
+    write.table(all_unique_barcodes, file = file.path(output, barcode_file_name), sep = "\t", row.names = FALSE, quote = TRUE),
+    error = function(e) {
+      stop(paste("Error writing file:", barcode_file_name, "\n", e$message))
+    }
+  )
+
+  if (nrow(all_duplicated_barcodes) > 0){
     message("Exists barcode duplicates in 1 or more library of ", barcode_file_name)
     write.table(all_duplicated_barcodes, file = file.path(output, paste0("DuplicateBarcodes_", barcode_file_name)), sep = "\t", row.names = FALSE, quote = FALSE)
   } else {
-    message("Not exist barcode duplicates in any libraryID of the correspondent experimentID: ", barcode_file_name)
+    message("No barcode duplicates in any libraryID of the experiment: ", barcode_file_name)
   }
 }

@@ -6,7 +6,7 @@
 
 ## Usage:
 ## R CMD BATCH --no-save --no-restore '--args scRNASeqExperiment="scRNASeqExperiment.tsv" scRNASeqTBLibrary="scRNASeqTBLibrary.tsv" output_folder="output_folder"' retrieve_metadata.R retrieve_metadata.Rout
-## scRNASeqExperiment --> File with information about all experiments annotated
+## scRNASeqExperiment --> File with annotation about all experiments annotated
 ## scRNASeqTBLibrary  --> File with all libraries annotated by bgee
 ## metadata_file      --> Path to the location where the metadata file will be saved
 ## information_file   --> Path to the location where the information file will be generated

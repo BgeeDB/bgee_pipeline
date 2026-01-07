@@ -12,18 +12,19 @@ use warnings;
 use diagnostics;
 
 use File::Path qw(make_path);
-use FindBin qw( $RealBin ); # directory where the script is lying
+use FindBin;
+use lib "$FindBin::Bin/../../.."; # Get lib path for Utils.pm
+use Utils;
 use Getopt::Long;
 use Time::localtime;
 
 # Define arguments & their default value
-my ($transcriptome_folder, $output_log_folder, $account, $partition, $cluster_kallisto_cmd, $cluster_tophat_cmd) = ('', '', '', '', '', '', '', '', '');
+my ($transcriptome_folder, $output_log_folder, $account, $partition, $container_cmd) = ('', '', '', '', '');
 my %opts = ('transcriptome_folder=s' => \$transcriptome_folder, # same as GTF folder
             'output_log_folder=s'    => \$output_log_folder,
             'account=s'              => \$account,
             'partition=s'            => \$partition,
-            'cluster_kallisto_cmd=s' => \$cluster_kallisto_cmd,
-            'cluster_tophat_cmd=s'   => \$cluster_tophat_cmd
+	    'container_cmd=s'	     => \$container_cmd
            );
 
 my $test_options = Getopt::Long::GetOptions(%opts);
@@ -31,9 +32,14 @@ my $test_options = Getopt::Long::GetOptions(%opts);
 # TO IMPLEMENT
 # kallisto index generation is no multithreaded
 my $nbr_processors = 1;
-# RAM needed: 10GB should be enough
-my $memory_usage   = 90;      # in GB
-my $time_limit     = '12:00:00';
+# RAM needed: 60GB should be enough
+my $memory_usage         = 60;      # in GB
+my $human_memory_usage   = 400;    # in GB
+my $time_limit           = '12:00:00';
+my $human_time_limit    = '1-12:00:00';
+
+require("$FindBin::Bin/../../rna_seq_utils.pl");
+require("$FindBin::Bin/../../target_base_utils.pl");
 
 # retrieve path to all transcriptome
 # for each
@@ -42,12 +48,13 @@ my $time_limit     = '12:00:00';
 #   run jobs for one species ( k31 and k15)
 
 opendir (DIR, $transcriptome_folder) or die "cannot open directory [$transcriptome_folder]";
+my $job_prefix = "single_nuclei_transcriptome_";
 while (my $file = readdir(DIR)) {
     if($file =~ ('.nascent.gtf$')) {
 
         # initialise path to all files
         my $genome_file_path = $transcriptome_folder.'/'.($file =~ s/.nascent.gtf/.genome.fa/r);
-        my $transcriptome_file_path = $transcriptome_folder.'/'.($file =~ s/.nascent.gtf/.transcriptome.fa/r);
+        my $transcriptome_file_path = $transcriptome_folder.'/'.($file =~ s/.nascent.gtf/.transcriptome_ref_intergenic.fa/r);
         my $transcriptome_nascent_file_path = $transcriptome_folder.'/'.($file =~ s/.nascent.gtf/.nascent_transcriptome.fa/r);
         my $transcriptome_single_nucleus_file_path = $transcriptome_folder.'/'.($file =~ s/.nascent.gtf/.single_nucleus_transcriptome.fa/r);
         my $transcriptome_single_nucleus_index_path = $transcriptome_folder.'/'.($file =~ s/.nascent.gtf/.single_nucleus_transcriptome.idx/r);
@@ -61,20 +68,26 @@ while (my $file = readdir(DIR)) {
 		print "$transcriptome_single_nucleus_index_path already exists. No needs to generate it again.\n";
 		next;
 	}
-
-        # load vital-it softwares
-        my $sbatch_commands = "module use /software/module/\n";
+	
+        # init sbatch command
+        my $sbatch_commands = "";
 
         # generate transcriptome with all intergenic sequences
         if (!-e $transcriptome_single_nucleus_file_path) {
             if (-e "$transcriptome_single_nucleus_file_path.xz") {
                 $sbatch_commands .= "# unxz already existing transcriptome file\n";
                 $sbatch_commands .= "unxz $transcriptome_single_nucleus_file_path.xz\n";
+            } elsif (-e "$transcriptome_single_nucleus_file_path.gz") {
+                $sbatch_commands .= "# unxz already existing transcriptome file\n";
+                $sbatch_commands .= "gunzip $transcriptome_single_nucleus_file_path.gz\n";
             } else {
                 if (!-e $genome_file_path) {
                     if (-e "$genome_file_path.xz") {
                         $sbatch_commands .= "# unxz already existing genome file\n";
                         $sbatch_commands .= "unxz $genome_file_path.xz\n";
+                    } elsif (-e "$genome_file_path.gz") {
+                        $sbatch_commands .= "# gunzip already existing genome file\n";
+                        $sbatch_commands .= "gunzip $genome_file_path.gz\n";
                     } else {
                         die "can not acces to genome file $genome_file_path";
                     }
@@ -83,39 +96,37 @@ while (my $file = readdir(DIR)) {
                     if (-e "$transcriptome_file_path.xz") {
                         $sbatch_commands .= "# unxz already existing transcriptome file\n";
                         $sbatch_commands .= "unxz $transcriptome_file_path.xz\n";
+                    } elsif (-e "$transcriptome_file_path.gz") {
+                        $sbatch_commands .= "# gunzip already existing transcriptome file\n";
+                        $sbatch_commands .= "gunzip $transcriptome_file_path.gz\n";
                     } else {
                         die "can not acces to transcriptome file $transcriptome_file_path";
                     }
                 }
                 # generate transcriptome with tophat gtf_to_fasta
-                # load tophat module
-                $sbatch_commands .= "$cluster_tophat_cmd\n";
                 # generate transcriptome
-                $sbatch_commands .= "gtf_to_fasta $transcriptome_folder/$file $genome_file_path $transcriptome_nascent_file_path\n";
+                $sbatch_commands .= "$container_cmd gtf_to_fasta $transcriptome_folder/$file $genome_file_path $transcriptome_nascent_file_path\n";
                 $sbatch_commands .= "# update transcriptome file to correct the header of each sequence\n";
-                $sbatch_commands .= 'perl -i -pe \'s/^>\\d+ +/>/\' '.$transcriptome_nascent_file_path."\n";
+                $sbatch_commands .= $container_cmd.' perl -i -pe \'s/^>\\d+ +/>/\' '.$transcriptome_nascent_file_path."\n";
                 # concatenate transcriptome containing both matured and intergenic transcripts and the transcriptome contining ascent transcripts
-                $sbatch_commands .= "cat $transcriptome_file_path $transcriptome_nascent_file_path > $transcriptome_single_nucleus_file_path\n";
+                $sbatch_commands .= "$container_cmd cat $transcriptome_file_path $transcriptome_nascent_file_path > $transcriptome_single_nucleus_file_path\n";
                 # remove nascent transcripts file
-                $sbatch_commands .= "rm $transcriptome_nascent_file_path\n";
+		#$sbatch_commands .= "rm $transcriptome_nascent_file_path\n";
                 # compress transcriptome file
-                $sbatch_commands .= "xz --threads=2 -9 $transcriptome_file_path\n";
+                $sbatch_commands .= "gzip -9 $transcriptome_file_path\n";
                 # compress genome file
-                $sbatch_commands .= "xz --threads=2 -9 $genome_file_path\n";
+                $sbatch_commands .= "gzip -9 $genome_file_path\n";
             }
         }
-
-        # load kallisto module
-        $sbatch_commands .= "$cluster_kallisto_cmd\n";
 
         # generate index with default kmer size
         if (!-e $transcriptome_single_nucleus_index_path) {
             $sbatch_commands .= "# generate index with default kmer size\n";
-            $sbatch_commands .= "kallisto index -i $transcriptome_single_nucleus_index_path $transcriptome_single_nucleus_file_path\n";
+            $sbatch_commands .= "$container_cmd kallisto index -i $transcriptome_single_nucleus_index_path $transcriptome_single_nucleus_file_path\n";
         }
 
         # compress single nucleus transcriptome file
-        $sbatch_commands .= "xz --threads=2 -9 $transcriptome_single_nucleus_file_path\n";
+        $sbatch_commands .= "gzip -9 $transcriptome_single_nucleus_file_path\n";
 
         # compress tlst transcriptome file
         $sbatch_commands .= "if [ -f \"$transcriptome_file_path.tlst\" ]; then\n";
@@ -123,9 +134,16 @@ while (my $file = readdir(DIR)) {
         $sbatch_commands .= "fi\n";
 
         # generate sbatch file
+	my $job_name = $job_prefix.$file;
         open (my $OUT, '>', "$sbatch_file_path")  or die "Cannot write [$sbatch_file_path]\n";
-        print {$OUT} sbatch_header($partition, $account, $nbr_processors, $memory_usage, $output_file_path, $error_file_path, $file, $time_limit);
-        print {$OUT} $sbatch_commands;
+	#generation of human single nucleus index requires more memory and time.
+	#XXX: maybe overkill but it could be possible to define the quantity of RAM and time depending on the size of the files
+	if ($file =~ /Homo_sapiens/) {
+	    print {$OUT} sbatch_header($partition, $account, $nbr_processors, $human_memory_usage, $output_file_path, $error_file_path, $job_name, $human_time_limit);
+        } else {
+	    print {$OUT} sbatch_header($partition, $account, $nbr_processors, $memory_usage, $output_file_path, $error_file_path, $job_name, $time_limit);
+	}
+	print {$OUT} $sbatch_commands;
         close $OUT;
 
         # Then, run the job
@@ -135,6 +153,12 @@ while (my $file = readdir(DIR)) {
         # TODO: should also check number of jobs running in order not to finish the rule before all jobs jobs are over
     }
 
+}
+# count number of jobs running
+my $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $job_prefix);
+while ($jobsRunning > 0) {
+    sleep(15);
+    $jobsRunning = Utils::check_active_jobs_number_per_account_and_name($account, $job_prefix);
 }
 
 ############ Functions #############

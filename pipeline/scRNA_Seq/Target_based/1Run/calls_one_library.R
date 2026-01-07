@@ -12,12 +12,11 @@
 ## by creating jobs on a slurm cluster. Each job correspond to one library
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args libraryId="libraryId" speciesId="speciesId" speciesName="speciesName" celltypeFolder="celltypeFolder" refIntergenicFolder="refIntergenicFolder" pValueCutoff="pValueCutoff" callsOutputFolder="callsOutputFolder"' calls_one_library.R calls_one_library.Rout
+## R CMD BATCH --no-save --no-restore '--args libraryId="libraryId" speciesId="speciesId" speciesName="speciesName" celltypeFolder="celltypeFolder" pValueCutoff="pValueCutoff" callsOutputFolder="callsOutputFolder"' calls_one_library.R calls_one_library.Rout
 ## libraryId                --> ID of the library
 ## speciesId                --> NCBI taxon ID of the species (e.g 9606)
 ## speciesName              --> species name (e.g Homo sapiens)
 ## celltypeFolder           --> Folder containing celltype quantification for that library
-## refIntergenicFolder      --> Folder containing all ref intergenic
 ## pValueCutoff             --> desired pValue cutoff to call present genes
 ## callsOutputFolder        --> Folder where we should save the results
 
@@ -42,7 +41,7 @@ if( length(cmd_args) == 0 ){
 
 ## checking if all necessary arguments were passed....
 command_arg <- c("experimentId", "libraryId", "speciesId", "speciesName", "barcodeAnnotationFolder",
-  "celltypeFolder", "refIntergenicFolder", "pValueCutoff", "callsOutputFolder")
+  "celltypeFolder", "pValueCutoff", "callsOutputFolder")
 for (c_arg in command_arg) {
   if (!exists(c_arg)) {
     stop(paste(c_arg,"command line argument not provided\n"))
@@ -51,19 +50,9 @@ for (c_arg in command_arg) {
 
 speciesName <- gsub(pattern = "_", replacement = " ", x = speciesName)
 ##########################################################################################################################################################
-## Provide the reference intergenic regions = TRUE
-##TODO Why bother retrieving ref. intergenic??? the mapping/quantification should already be done
-## on the reference intergenic.
-##TODO: check that only ref intergenic were used for each step of the pipeline( e.g gene annotation, kallisto index, ....)
-refIntergenicIds <- function(refIntergenicFolder, speciesId){
-  intergenicCoordinates <- read.table(file = file.path(refIntergenicFolder,
-    paste0(speciesId,"_coordinates.tsv")), sep = "\t", header = T)
-  intergenicIds <- paste0(intergenicCoordinates$chr, "-", intergenicCoordinates$start,"-",intergenicCoordinates$end)
-  return(intergenicIds)
-}
 
 ## Sum the UMI of all barcodes and then compute the CPM normalization
-sumUMICellPop <- function(rawCountFile, refIntergenicIds) {
+sumUMICellPop <- function(rawCountFile) {
   cellPop <- read.table(rawCountFile, header = TRUE, sep = "\t")
   # sum counts for all barcodes.
   ## it is possible to have only one barcode per celltype. It is then not possible to
@@ -75,30 +64,33 @@ sumUMICellPop <- function(rawCountFile, refIntergenicIds) {
   if (ncol(cellPop) == 6) {
     cellPop$sumUMI <- cellPop[ ,2]
   } else {
-    cellPop$sumUMI <- rowSums(cellPop[ ,2:(length(cellPop)-4)])
+    numeric_barcodes <- as.data.frame(lapply(cellPop[ ,2:(length(cellPop)-4)], as.numeric))
+    cellPop$sumUMI <- rowSums(numeric_barcodes)
   }
   cellPop$CPM <- cellPop$sumUMI / sum(cellPop$sumUMI) * 1e6
   ## export cell pop info table
   cellPop <- data.frame(cellPop$gene_id, cellPop$sumUMI, cellPop$CPM, cellPop$type,
                         cellPop$biotype)
   colnames(cellPop) <- c("gene_id", "sumUMI", "CPM", "type", "biotype")
-  #TODO: filtering to remove for Bgee 16.0 as only ref. intergenic should be used
-  # filter to keep ref. intergenic only
-  cellPop <- dplyr::filter(cellPop, type == "genic" | gene_id %in% refIntergenicIds)
-  ## just re-order, why bother reordering that way? couldn't we simply order on gene_id???
+  #intergenic have an associated type defined as NA. Update it to be "intergenic"
+  cellPop <- cellPop %>%  mutate(type = if_else(is.na(type), "intergenic", type))
+  # reorder per genic and then intergenic
+  #XXX Is it really necessary? No side effect during insertion?
   cellPopGenic <- data.frame(dplyr::filter(cellPop, type == "genic"))
   cellPopGenic <- cellPopGenic[order(cellPopGenic$gene_id),]
-  cellPopRefIntergenic <- dplyr::filter(cellPop, gene_id %in% refIntergenicIds)
+  cellPopRefIntergenic <- data.frame(dplyr::filter(cellPop, type == "intergenic"))
   cellPopRefIntergenic <- cellPopRefIntergenic[order(cellPopRefIntergenic$gene_id),]
-  cellPopRefIntergenic$type <- "intergenic"
   cellPopFinal <- rbind(cellPopGenic, cellPopRefIntergenic)
   return(cellPopFinal)
 }
 
 ## function to calculate pValue from the theoretical data
 theoretical_pValue <- function(counts){
-  ##TODO: once again here it should only contain reference intergenic. To check...
-  ## select values with CPM > 0 (because we will use log2 scale)
+  ## select intergenic regions
+  selected_intergenic <- dplyr::filter(counts, type == "intergenic")
+  ## calculate the ratio of reference intergenic that receive reads
+  ratio_intergenic_overzero <- sum(selected_intergenic$CPM > 0) / nrow(selected_intergenic)
+  ## select intergenic values with CPM > 0 (because we will use log2 scale)
   selectedRefIntergenic <- dplyr::filter(counts, CPM > 0 & type == "intergenic")
   ## select genic and ref. intergenic region from the library with CPM > 0
   regions <- dplyr::filter(counts, CPM > 0)
@@ -106,7 +98,7 @@ theoretical_pValue <- function(counts){
   regions$zScore <- (log2(regions$CPM) - mean(log2(selectedRefIntergenic$CPM))) / 
     sd(log2(selectedRefIntergenic$CPM))
   ## calculate p-values for each gene_id
-  regions$pValue <- pnorm(regions$zScore, lower.tail = FALSE)
+  regions$pValue <- ratio_intergenic_overzero * pnorm(regions$zScore, lower.tail = FALSE)
   return(list(regions, 2^(mean(log2(selectedRefIntergenic$CPM))), 
     2^(sd(log2(selectedRefIntergenic$CPM)))))
 }
@@ -204,7 +196,6 @@ if (length(rawCountFiles) > 0 ) {
 }
 
 ## Information about reference intergenic
-referenceIntergenicIds <- refIntergenicIds(refIntergenicFolder, speciesId)
 allCelltypeInfo <- file.path(libraryOutputFolder, "All_cellPopulation_stats_10X.tsv")
 
 # load barcode annotation file to be able to retrieve the cell-type ID and the free-text cell-type annotation
@@ -227,7 +218,7 @@ for (rawCountFile in rawCountFiles) {
   message("Process internal cluster ID ", internalClusterId, " with celltype ID ", cellTypeId,
     " and celltype free-text annotation ", cellTypeFreeTextAnnotation)
   ## collect the sumUMI + normalization for the target cellPop
-  cellPop_normalized <- sumUMICellPop(rawCountFile = rawCountFile, refIntergenicIds = referenceIntergenicIds)
+  cellPop_normalized <- sumUMICellPop(rawCountFile = rawCountFile)
 
   ## calculate pValue of presence/absence of expression
   calculatePvalues <- theoretical_pValue(counts = cellPop_normalized)

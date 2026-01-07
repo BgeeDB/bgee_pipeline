@@ -17,12 +17,11 @@ use File::Basename;
 use Time::Piece;
 use Data::Dumper;
 ## Define arguments & their default value
-my ($metadataFile, $parallelJobs, $refIntergenicFolder, $cellTypeFolder, $outputDir,
+my ($metadataFile, $parallelJobs, $cellTypeFolder, $outputDir,
     $queue, $account, $pathToCallsScript, $pValueCutoff,
-    $rLibs, $barcodeAnnotationFolder) = ('', '', '', '', '', '',  '', '', '' , '', '');
+    $containerCmd, $barcodeAnnotationFolder) = ('', '', '', '', '', '',  '', '', '' , '', '');
 my %opts = ('metadataFile=s'                     => \$metadataFile,
             'parallelJobs=s'                     => \$parallelJobs,
-            'refIntergenicFolder=s'              => \$refIntergenicFolder,
             'cellTypeFolder=s'                   => \$cellTypeFolder,
             'outputDir=s'                        => \$outputDir,
             'barcodeAnnotationFolder=s'          => \$barcodeAnnotationFolder,
@@ -30,26 +29,25 @@ my %opts = ('metadataFile=s'                     => \$metadataFile,
             'account=s'                          => \$account,
             'pathToCallsScript=s'                => \$pathToCallsScript,
             'pValueCutoff=s'                     => \$pValueCutoff,
-            'rLibs=s'                            => \$rLibs
+            'containerCmd=s'                     => \$containerCmd
            );
 
 ######################## Check arguments ########################
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$metadataFile || $parallelJobs eq '' || $refIntergenicFolder eq '' ||             
+if ( !$metadataFile || $parallelJobs eq '' ||             
     $cellTypeFolder eq '' || $barcodeAnnotationFolder eq '' || $outputDir eq '' || $queue eq '' ||
     $account eq '' || $pathToCallsScript eq '' || $pValueCutoff eq '' ||
-    $rLibs eq '') {
+    $containerCmd eq '') {
     print "\n\tInvalid or missing argument:
 \t-metadataFile                  file metadata_info containing all run to process
 \t-parallelJobs                  maximum number of jobs to run in parallel
-\t-refIntergenicFolder           Path to the directory containing reference intergenic sequences
 \t-cellTypeFolder                Path to the directory containing celltype expression quantification
 \t-outputDir                     path where should be saved results of this script
 \t-barcodeAnnotationFolder       path to the directory containing cleaning barcode annotaiton files
 \t-queue                         queue to use to run jobs on the cluster
 \t-account                       account to use to run jobs on the cluster
 \t-pathToCallsScript             path to the R script that will generate calls for each library
-\t-rLibs                         path to the directory containing R packages
+\t-containerCmd                  path to the Bgee container providing all dependancies
 \t-pValueCutoff                  pValue cutoff used to consider a call present/absent
 \n";
     exit 1;
@@ -86,21 +84,16 @@ foreach my $experimentId (keys %processedLibraries){
         my $speciesId = $processedLibraries{$experimentId}{$libraryId}{'speciesId'};
         my $speciesName = $processedLibraries{$experimentId}{$libraryId}{'speciesName'};
 	## use 30Gb of memory.
-	    my $sbatchTemplate = Utils::sbatch_template($queue, $account, 1,
+	my $sbatchTemplate = Utils::sbatch_template($queue, $account, 1,
           30, "${clusterOutput}${jobName}.out", "${clusterOutput}/${jobName}.err",
           $jobName);
 
-        #TODO: move modules management to a script attribute
-        $sbatchTemplate .= "module use /software/module/\n";
-	    $sbatchTemplate .= "module add R/3.6.1;\n";
-        $sbatchTemplate .= "\nexport R_LIBS_USER=$rLibs\n\n";
 	$speciesName =~ s/ /_/g;
-        my $commandToRun = "Rscript $pathToCallsScript experimentId=\\\"$experimentId\\\" libraryId=\\\"$libraryId\\\"".
-            " speciesId=\\\"$speciesId\\\" speciesName=\\\"$speciesName\\\" barcodeAnnotationFolder=\\\"$barcodeAnnotationFolder\\\"".
-            " celltypeFolder=\\\"$cellTypeFolder\\\" refIntergenicFolder=\\\"$refIntergenicFolder\\\"".
-            " pValueCutoff=\\\"$pValueCutoff\\\" callsOutputFolder=\\\"$outputDir\\\"";
+        my $commandToRun = "$containerCmd bash -c \"Rscript $pathToCallsScript experimentId=\\'$experimentId\\' libraryId=\\'$libraryId\\'".
+            " speciesId=\\'$speciesId\\' speciesName=\\'$speciesName\\' barcodeAnnotationFolder=\\'$barcodeAnnotationFolder\\'".
+            " celltypeFolder=\\'$cellTypeFolder\\' pValueCutoff=\\'$pValueCutoff\\' callsOutputFolder=\\'$outputDir\\'\"";
 
-	    $sbatchTemplate .= "$commandToRun\n";
+	$sbatchTemplate .= "$commandToRun\n";
         my $sbatchFilePath = "$sbatchLocation$jobName.sbatch";
         $sbatchToRun{$experimentId}{$libraryId} = $sbatchFilePath;
         open(FH, '>', $sbatchFilePath) or die $!;

@@ -42,8 +42,7 @@ species <- unique(as.character(scRNASeqInfo$scientific_name[scRNASeqInfo$library
 message("Species:", species)
 ## collect species info
 speciesName <- gsub(" ", "_", species)
-transcriptomeIndexFiles <- list.files(gtfDir, pattern = paste0("^", speciesName, ".*transcriptome.idx$"))
-print(transcriptomeIndexFiles)
+transcriptomeIndexFiles <- list.files(gtfDir, pattern = paste0("^", speciesName, ".*transcriptome.*\\.idx$"))
 
 #TODO: transcriptome index can potentially be compressed with xz.
 
@@ -90,7 +89,7 @@ if (file.exists(file.path(fastqDir, speciesId, libraryId))) {
     message(filesKallisto)
     
     # select index depending on cell compartment used (cell or single nucléus)
-    transcriptomeIndexFile <- transcriptomeIndexFiles[grep(pattern = "\\.transcriptome.idx", x = transcriptomeIndexFiles)]
+    transcriptomeIndexFile <- transcriptomeIndexFiles[grep(pattern = "\\.transcriptome_ref_intergenic.idx", x = transcriptomeIndexFiles)]
     if (unique(as.character(scRNASeqInfo$RNAseqTags[scRNASeqInfo$libraryId == libraryId])) == "Sn-scRNA-seq") {
       transcriptomeIndexFile <- transcriptomeIndexFiles[grep(pattern = "single_nucleus_transcriptome.idx$",
         x = transcriptomeIndexFiles)]

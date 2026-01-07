@@ -1,0 +1,18 @@
+WARNING: Skipping /dev bind mount: source and destination must be identical when binding to /dev
+
+Attaching package: 'dplyr'
+
+The following objects are masked from 'package:stats':
+
+    filter, lag
+
+The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union
+
+Warning messages:
+1: Mismatch platform for library SRX5979983 expectedIllumina HiSeq X Ten but was HiSeq X Ten 
+2: Mismatch platform for library SRX9940565 expectedIllumina HiSeq 4000 but was Illumina NovaSeq 6000 
+3: Mismatch platform for library SRX9940564 expectedIllumina HiSeq 4000 but was Illumina NovaSeq 6000 
+4: Mismatch platform for library SRX9940563 expectedIllumina HiSeq 4000 but was Illumina NovaSeq 6000 
+5: Mismatch platform for library SRX9940562 expectedIllumina HiSeq 4000 but was Illumina NovaSeq 6000 

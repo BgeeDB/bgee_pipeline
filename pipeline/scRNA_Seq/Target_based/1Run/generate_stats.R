@@ -54,11 +54,9 @@ message(nrow(libraries), " libraries in the bgeecall info file")
 for(line in seq(nrow(libraries))) {
   library_id <- as.character(libraries$library_id[line])
   species_id <- as.character(libraries$tax_id[line])
-  if(dir.exists(file.path(kallisto_dir, library_id))) {
-  ##if(library_id %in% lib_dirs) {
-
+  kallisto_info_file_path <- as.character(file.path(kallisto_dir, library_id, kallisto_info_file))
+  if(file.exists(kallisto_info_file_path)) {
     # retrieve info for kallisto report
-    kallisto_info_file_path <- file.path(kallisto_dir, library_id, kallisto_info_file)
     library_r_stat_files <- list.files(path = file.path(fastq_dir, species_id, library_id), 
       pattern = reads_R_stat_suffix, full.names = TRUE, recursive = TRUE)
     if(file.exists(kallisto_info_file_path)) {
@@ -89,11 +87,10 @@ for(line in seq(nrow(libraries))) {
       libraries_wo_calls <- libraries_wo_calls + 1
     }
   } else {
-    warning(library_id, " : library directory not created ", file.path(kallisto_dir, library_id))
+    warning(library_id, " : kallisto info file not created ", kallisto_info_file_path)
     libraries_wo_calls <- libraries_wo_calls + 1
   }
 }
-
 if (libraries_wo_calls > 0 ) {
   warning("Calls or R.stat file were not generated for ", libraries_wo_calls, " libraries.")
 }
