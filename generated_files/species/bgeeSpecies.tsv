@@ -41,7 +41,7 @@ speciesId	genus	species	speciesCommonName	displayOrder	genomeFilePath	genomeVers
 9545	macaca	nemestrina	Pig-tailed macaque	22	macaca_nemestrina/Macaca_nemestrina.Mnem_1.0	Mnem_1.0	2	9545	NA		
 9258	ornithorhynchus	anatinus	platypus	17	ornithorhynchus_anatinus/Ornithorhynchus_anatinus.mOrnAna1.p.v1	mOrnAna1.p.v1	2	9258	NA		
 9986	oryctolagus	cuniculus	rabbit	13	oryctolagus_cuniculus/Oryctolagus_cuniculus.OryCun2.0	OryCun2.0	2	9986	NA	oryctolagus cuniculus|9986|orycun|ocuniculus|ocun|rabbit	
-9940	ovis	aries	sheep	12	ovis_aries/Ovis_aries.ARS-UI_Ramb_v2.0	ARS-UI_Ramb_v2.0	2	9940	NA		
+9940	ovis	aries	sheep	12	ovis_aries/Ovis_aries.Oar_v3.1	Oar_v3.1	2	9940	NA		
 9531	cercocebus	atys	Sooty mangabey	19	cercocebus_atys/Cercocebus_atys.Caty_1.0	Caty_1.0	2	9531	NA		
 7918	lepisosteus	oculatus	Spotted gar	36	lepisosteus_oculatus/Lepisosteus_oculatus.LepOcu1	LepOcu1	2	7918	NA	7918|locu|loculatus|lepisosteus oculatus|spotted gar|lepocu	
 69293	gasterosteus	aculeatus	three-spined stickleback	47	gasterosteus_aculeatus/Gasterosteus_aculeatus.GAculeatus_UGA_version5	GAculeatus_UGA_version5	2	69293	NA		
