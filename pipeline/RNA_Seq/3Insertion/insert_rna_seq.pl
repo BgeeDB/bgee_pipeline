@@ -9,6 +9,7 @@ use FindBin;
 use File::Slurp;
 use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
 use Utils;
+use Parallel::ForkManager;
 $| = 1; # no buffering of output
 
 # Frederic Bastian, created November 2012
@@ -25,6 +26,7 @@ my ($rnaSeqLibrary, $all_results, $sex_info)  = ('', '', '');
 my ($rnaSeqExperiment, $library_info, $excluded_libraries, $excluded_biotypes, $library_stats, $report_info) = ('', '', '', '', '', '');
 my ($debug)                      = (0);
 my ($Aport, $Sport)              = (0, 0);
+my $threads = 2; # default number of parallel threads
 my %opts = ('bgee=s'                => \$bgee_connector,     # Bgee connector string
             'rnaSeqLibrary=s'       => \$rnaSeqLibrary,      # RNAseqLibrary
             'rnaSeqExperiment=s'    => \$rnaSeqExperiment,   # RNAseqExperiment
@@ -39,6 +41,7 @@ my %opts = ('bgee=s'                => \$bgee_connector,     # Bgee connector st
             'debug'                 => \$debug,
             'Aport=i'               => \$Aport,              # ID MAPPING anatomy port socket
             'Sport=i'               => \$Sport,              # ID MAPPING stage   port socket
+            'threads=i'             => \$threads,            # number of parallel threads
            );
 
 # Check arguments
@@ -60,6 +63,7 @@ if ( !$test_options || $bgee_connector eq '' || $rnaSeqLibrary eq '' || $rnaSeqE
 \t-debug               insertions are not made, just printed
 \t-Aport               ID MAPPING anatomy port socket
 \t-Sport               ID MAPPING stage   port socket
+\t-threads             number of parallel threads (default: 2)
 \n";
     exit 1;
 }
@@ -326,8 +330,6 @@ for my $libraryId ( sort keys %excludedLibraries ){
 # query for runs insertion
 my $insRun = $bgee->prepare('INSERT INTO rnaSeqRun (rnaSeqRunId, rnaSeqLibraryId) VALUES (?, ?)');
 
-my $inserted = 0;
-
 # used to commit after each library when condition and libraries were not inserted
 print "disable autocommit. Manually commit for each library\n";
 $bgee->{AutoCommit} = 0;
@@ -336,7 +338,9 @@ $bgee->{AutoCommit} = 0;
 my $insLib = $bgee->prepare($insert_libraries);
 my $insAnnotatedSample = $bgee->prepare($insert_annotatedSamples);
 my $selectAnnotatedSampleId = $bgee->prepare($select_annotatedSampleId);
-my $insAnnotatedSampleGeneResult = $bgee->prepare($insert_annotatedSampleGeneResult);
+
+# Store annotated sample IDs for later parallel insertion
+my %annotatedSampleIds;
 
 for my $expId ( sort keys %libraries ){
     LIBRARY:
@@ -461,6 +465,12 @@ for my $expId ( sort keys %libraries ){
                     undef , undef , $annotations{$expId}->{$libraryId}->{'physiologicalStatus'},
                     $insAnnotatedSample, $selectAnnotatedSampleId, $debug);
 
+        # Store for parallel processing
+        $annotatedSampleIds{$libraryId} = {
+            annotatedSampleId => $annotatedSampleId,
+            speciesId => $libraries{$expId}->{$libraryId}->{'speciesId'}
+        };
+
         # insert runs
         for my $runId ( keys %{$libraries{$expId}->{$libraryId}->{'runIds'}} ){
             if ( $debug ){
@@ -471,66 +481,111 @@ for my $expId ( sort keys %libraries ){
             }
         }
 
-        # insert genes results
-        my %genesResults = getGenesResults("$all_results/$libraryId/$abundance_file");
-        for my $geneId ( keys %genesResults ){
-            $inserted++;
-            # Note: pre-filtering exclusion is now managed in the script insert_rna_seq_expression.pl,
-            # it used to be managed here.
-            my $exclusion = $Utils::CALL_NOT_EXCLUDED;
-
-            if ( $debug ){
-                print 'INSERT INTO rnaSeqLibraryAnnotatedSampleGeneResult: ', $annotatedSampleId,   ' - ',
-                      $genes{ $libraries{$expId}->{$libraryId}->{'speciesId'}}->{ $geneId }, ' - ',
-                      'tpm',                                      ' - ',
-                      $genesResults{$geneId}->{'TPM'},            ' - ',
-                      $genesResults{$geneId}->{'estimatedCount'}, ' - ',
-                      # no UMIs for bulk RNA-Seq
-                      0,                                          ' - ',
-                      $genesResults{$geneId}->{'zscore'},         ' - ',
-                      $genesResults{$geneId}->{'pValue'},         ' - ',
-                      $exclusion, "\n";
-            }
-            else {
-                # pvalue and zscore can be null (if no read mapped). In this case BgeeCall retrieve "NA".
-                # DBI use undef value to insert null in the database. That's why we modify "NA" to undef for zScore.
-                # For the pvalue we decided replace NA with 1 in order to use this value as a datapoint to generate propagated calls 
-                if ($genesResults{$geneId}->{'pValue'} eq "NA") {
-                  $genesResults{$geneId}->{'pValue'} = 1;
-                }
-                if ($genesResults{$geneId}->{'zscore'} eq "NA") {
-                  $genesResults{$geneId}->{'zscore'} = undef;
-                }
-                $insAnnotatedSampleGeneResult->execute($annotatedSampleId,
-                                    # geneId is an ensembl ID, we need to get the bgeeGeneId
-                                    $genes{ $libraries{$expId}->{$libraryId}->{'speciesId'}}->{ $geneId },
-                                    'tpm',
-                                    $genesResults{$geneId}->{'TPM'},
-                                    $genesResults{$geneId}->{'estimatedCount'},
-                                    # no UMIs for bulk RNA-Seq
-                                    0,
-                                    $genesResults{$geneId}->{'pValue'},
-                                    $genesResults{$geneId}->{'pValue'},
-                                    $exclusion,
-                                   )  or die $insAnnotatedSampleGeneResult->errstr;
-            }
-
-        }
-        # used to commit after each library when condition and libraries were not inserted
         $bgee->commit;
+
     }
 }
-# used to commit after each library when condition and libraries were not inserted
-print "reactivate autocommit\n";
-$bgee->{AutoCommit} = 1;
-
 $insLib->finish();
 $insRun->finish();
 $insAnnotatedSample->finish();
 $selectAnnotatedSampleId->finish();
-$insAnnotatedSampleGeneResult->finish();
 
-print "Done. You should have $inserted rows in the rnaSeqResult table.\nExiting\n";
+print "Reactivate autocommit\n";
+$bgee->{AutoCommit} = 1;
+$bgee->disconnect();
+
+print "Done inserting libraries and samples.\n\n";
+
+#######################################
+# INSERT GENE RESULTS IN PARALLEL     #
+#######################################
+print "Inserting gene results in parallel...\n";
+my $insertedGeneResults = 0;
+
+# Determine number of processes
+my $pm = Parallel::ForkManager->new($threads);
+
+# Callback to retrieve inserted gene results count from each thread
+$pm->run_on_finish(sub {
+    my ($pid, $exit_code, $ident, $exit_signal, $core_dump, $data_ref) = @_;
+    if (defined $data_ref) {
+        $insertedGeneResults += $data_ref->{inserted};
+    }
+});
+
+for my $libraryId ( sort keys %annotatedSampleIds ){
+    $pm->start and next;
+
+    # create new DB connection for each thread
+    my $child_bgee = Utils::connect_bgee_db($bgee_connector);
+    $child_bgee->{AutoCommit} = 0;
+
+    my $child_insAnnotatedSampleGeneResult = $child_bgee->prepare($insert_annotatedSampleGeneResult);
+
+    my $annotatedSampleId = $annotatedSampleIds{$libraryId}->{'annotatedSampleId'};
+    my $speciesId = $annotatedSampleIds{$libraryId}->{'speciesId'};
+
+    print "\tProcessing gene results for library: $libraryId\n";
+    
+    # insert genes results
+    my %genesResults = getGenesResults("$all_results/$libraryId/$abundance_file");
+    my $inserted = 0;
+    for my $geneId ( keys %genesResults ){
+        # Check if gene exists in database
+        if ( !exists $genes{$speciesId}->{$geneId} ){
+            die "Gene [$geneId] not found in Bgee database for species [$speciesId] in library [$libraryId].\n";
+        }
+
+        # Note: pre-filtering exclusion is now managed in the script insert_rna_seq_expression.pl,
+        # it used to be managed here.
+        my $exclusion = $Utils::CALL_NOT_EXCLUDED;
+
+        if ( $debug ){
+            print 'INSERT INTO rnaSeqLibraryAnnotatedSampleGeneResult: ', $annotatedSampleId,   ' - ',
+                  $genes{ $speciesId}->{ $geneId }, ' - ',
+                  'tpm',                                      ' - ',
+                  $genesResults{$geneId}->{'TPM'},            ' - ',
+                  $genesResults{$geneId}->{'estimatedCount'}, ' - ',
+                  # no UMIs for bulk RNA-Seq
+                  0,                                          ' - ',
+                  $genesResults{$geneId}->{'zscore'},         ' - ',
+                  $genesResults{$geneId}->{'pValue'},         ' - ',
+                  $exclusion, "\n";
+        }
+        else {
+            # pvalue and zscore can be null (if no read mapped). In this case BgeeCall retrieve "NA".
+            # DBI use undef value to insert null in the database. That's why we modify "NA" to undef for zScore.
+            # For the pvalue we decided replace NA with 1 in order to use this value as a datapoint to generate propagated calls 
+            my $pValue = $genesResults{$geneId}->{'pValue'} eq "NA" ? 1 : $genesResults{$geneId}->{'pValue'};
+            my $zscore = $genesResults{$geneId}->{'zscore'} eq "NA" ? undef : $genesResults{$geneId}->{'zscore'};
+            $child_insAnnotatedSampleGeneResult->execute($annotatedSampleId,
+                                # geneId is an ensembl ID, we need to get the bgeeGeneId
+                                $genes{ $speciesId}->{ $geneId },
+                                'tpm',
+                                $genesResults{$geneId}->{'TPM'},
+                                $genesResults{$geneId}->{'estimatedCount'},
+                                # no UMIs for bulk RNA-Seq
+                                0,
+                                $zscore,
+                                $pValue,
+                                $exclusion,
+                            )  or die $child_insAnnotatedSampleGeneResult->errstr;
+        }
+        $inserted++;
+
+    }
+    # used to commit after each library when condition and libraries were not inserted
+    $child_bgee->commit;
+    $child_insAnnotatedSampleGeneResult->finish();
+    $child_bgee->disconnect();
+
+    $pm->finish(0, { inserted => $inserted });
+
+}
+
+$pm->wait_all_children;
+
+print "Done. $insertedGeneResults rows have been inserted in the rnaSeqResult table.\n";
 
 exit 0;
 
