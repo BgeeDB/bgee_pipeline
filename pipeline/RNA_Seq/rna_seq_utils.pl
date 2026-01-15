@@ -513,6 +513,9 @@ sub getAllRnaSeqLibrariesInfo {
         my $organism                        = $tmp[3];
         my $genomeFilePath                  = $tmp[4];
         my $database                        = $tmp[5];
+        if ( $database eq 'RefSeq genomic' ){
+            $database = 'RefSeq';
+        }
         my $platform                        = $tmp[6];
         my $libraryType                     = $tmp[7];
         my $libraryInfo                     = $tmp[8];
