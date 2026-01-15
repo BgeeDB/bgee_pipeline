@@ -10,6 +10,8 @@ use File::Slurp;
 use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
 use Utils;
 use Parallel::ForkManager;
+use Data::Dumper;
+
 $| = 1; # no buffering of output
 
 # Frederic Bastian, created November 2012
@@ -302,7 +304,7 @@ my $insert_annotatedSamples =   'INSERT INTO rnaSeqLibraryAnnotatedSample (rnaSe
 
 my $select_annotatedSampleId =  'SELECT rnaSeqLibraryAnnotatedSampleId FROM '.
                                 'rnaSeqLibraryAnnotatedSample WHERE rnaSeqLibraryId = ? AND '.
-                                'conditionId = ?';
+                                'conditionId = ? AND cellTypeAuthorAnnotation = ?';
 
 my $insert_annotatedSampleGeneResult =  'INSERT INTO rnaSeqLibraryAnnotatedSampleGeneResult ('.
                                         'rnaSeqLibraryAnnotatedSampleId, bgeeGeneId, abundanceUnit, abundance,'.
@@ -355,10 +357,10 @@ for my $expId ( sort keys %libraries ){
         $annotations{$expId}->{$libraryId}->{'anatId'} = $extra{ $annotations{$expId}->{$libraryId}->{'anatId'} } || $annotations{$expId}->{$libraryId}->{'anatId'};
         $annotations{$expId}->{$libraryId}->{'stageId'}  = $extra{ $annotations{$expId}->{$libraryId}->{'stageId'} }  || $annotations{$expId}->{$libraryId}->{'stageId'};
 
-        if ( !exists $doneAnat->{$annotations{$expId}->{$libraryId}->{'anatId'}} || $doneAnat->{$annotations{$expId}->{$libraryId}->{'anatId'}} eq '' ){
-            warn "[$annotations{$expId}->{$libraryId}->{'anatId'}] unmapped organ id for [$libraryId]\n";
-            next LIBRARY;
-        }
+        #if ( !exists $doneAnat->{$annotations{$expId}->{$libraryId}->{'anatId'}} || $doneAnat->{$annotations{$expId}->{$libraryId}->{'anatId'}} eq '' ){
+        #    warn "[$annotations{$expId}->{$libraryId}->{'anatId'}] unmapped organ id for [$libraryId]\n";
+        #    next LIBRARY;
+        #}
         # if ( !exists $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}}   || $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}}   eq '' ){
         #     warn "[$annotations{$expId}->{$libraryId}->{'stageId'}] unmapped stage id for [$libraryId]\n";
         #     next LIBRARY;
