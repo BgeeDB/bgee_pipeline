@@ -715,7 +715,7 @@ SRX494045	SRP001696	7227	Drosophila melanogaster	drosophila_melanogaster/Drosoph
 SRX494046	SRP001696	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	PAIRED		200	SRR1197298,SRR1197378
 SRX494048	SRP001696	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	PAIRED		200	SRR1197413
 SRX494049	SRP001696	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	PAIRED		200	SRR1197429
-SRX494050	SRP001696	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	PAIRED		200	ERR2105064
+SRX494050	SRP001696	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	PAIRED		200	SRR1197416
 SRX494051	SRP001696	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	PAIRED		200	SRR1197316
 SRX494052	SRP001696	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	PAIRED		200	SRR1197314,SRR1197394
 SRX494053	SRP001696	7227	Drosophila melanogaster	drosophila_melanogaster/Drosophila_melanogaster.BDGP6.46	Ensembl	Illumina HiSeq 2000	PAIRED		200	SRR1197469
