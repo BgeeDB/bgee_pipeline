@@ -481,7 +481,7 @@ create table geneParalogs (
 create table gene (
 -- warning, maybe this bgeeGeneId will need to be changed to an 'int' when we reach around 200 species
     bgeeGeneId mediumint unsigned not null COMMENT 'Numeric internal gene ID used for improving performances',
-    geneId varchar(20) not null COMMENT 'Real gene id',
+    geneId varchar(64) not null COMMENT 'Real gene id',
     geneName varchar(255) not null default '' COMMENT 'Gene name',
     geneDescription TEXT COMMENT 'Gene description',
     speciesId mediumint unsigned not null COMMENT 'NCBI species taxon id this gene belongs to',
