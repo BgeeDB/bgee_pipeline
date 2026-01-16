@@ -31,7 +31,7 @@ speciesId	genus	species	speciesCommonName	displayOrder	genomeFilePath	genomeVers
 8090	oryzias	latipes	Japanese medaka HdrR	43	oryzias_latipes/Oryzias_latipes.ASM223467v1	ASM223467v1	2	8090	NA	olat|8090|orylat|oryzias latipes|medaka|japanese medaka|olatipes	
 32507	neolamprologus	brichardi	lyretail cichlid	45	neolamprologus_brichardi/Neolamprologus_brichardi.NeoBri1.0	NeoBri1.0	2	32507	NA		
 9544	macaca	mulatta	Macaque	21	macaca_mulatta/Macaca_mulatta.Mmul_10	Mmul_10	2	9544	NA		
-9974	Manis	javanica	Malayan pangolin	29	manis_javanica/manis_javanica_GCF_014570535.1_YNU_ManJav_2.0	YNU_ManJav_2.0	37	9974	NA	MANJA	Use RefSeq assembly
+9974	Manis	javanica	Malayan pangolin	29	manis_javanica/manis_javanica_GCF_040802235.1_MJ_LKY	MJ_LKY	37	9974	NA	MANJA	Use RefSeq assembly
 7994	astyanax	mexicanus	Mexican tetra	38	astyanax_mexicanus/Astyanax_mexicanus.Astyanax_mexicanus-2.0	Astyanax_mexicanus-2.0	2	7994	NA	amexicanus|astmex|amex|astyanax mexicanus|7994|cave fish	
 10181	heterocephalus	glaber	naked mole-rat	31	heterocephalus_glaber/Heterocephalus_glaber.Naked_mole-rat_maternal	Naked_mole-rat_maternal	2	10181	NA		
 8010	esox	lucius	northern pike	39	esox_lucius/Esox_lucius.fEsoLuc1.pri	fEsoLuc1.pri	2	8010	NA		
