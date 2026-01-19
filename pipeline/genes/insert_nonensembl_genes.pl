@@ -366,6 +366,7 @@ sub map_refseq_biotype_to_ensembl_biotype {
                    'guide_RNA'              => 'misc_RNA', # don't exist in animals as far as we know, so map to misc_RNA
                    'lncRNA'                 => 'lncRNA',
                    'misc_RNA'               => 'misc_RNA',
+                   'ncRNA'                  => 'ncRNA',
                    'other'                  => 'other', # not an Ensembl biotype, but is rare case where gene does not meet any of the above (other) criteria
                    'protein_coding'         => 'protein_coding',
                    'pseudogene'             => 'pseudogene',
