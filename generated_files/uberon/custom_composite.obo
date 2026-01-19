@@ -4845,6 +4845,7 @@ synonym: "myocyte" RELATED []
 xref: BTO:0000888
 xref: BTO:0000902
 xref: CALOHA:TS-2032
+xref: FBbt:00003259
 xref: FBbt:00005074
 xref: FMA:67328
 xref: WBbt:0003675
