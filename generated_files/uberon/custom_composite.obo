@@ -5729,7 +5729,7 @@ id: CL:0000338
 name: neuroblast (sensu Nematoda and Protostomia)
 namespace: cell
 synonym: "neuroblast" BROAD []
-xref: Fbbt:00005146
+xref: FBbt:00005146
 is_a: CL:0000047 ! neuronal stem cell
 
 [Term]
@@ -393809,7 +393809,6 @@ id: UBERON:6003259
 name: adult somatic muscle
 namespace: uberon
 def: "Muscle attached to the inner surface of the adult body wall, extending between articulated or flexibly joined areas, that serves to move the parts of the exoskeleton." [FlyBase:FBrf0007735]
-xref: FBbt:00003259
 is_a: UBERON:0005090 ! muscle structure
 relationship: part_of UBERON:6003218 ! adult muscle system
 
