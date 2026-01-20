@@ -357,14 +357,14 @@ for my $expId ( sort keys %libraries ){
         $annotations{$expId}->{$libraryId}->{'anatId'} = $extra{ $annotations{$expId}->{$libraryId}->{'anatId'} } || $annotations{$expId}->{$libraryId}->{'anatId'};
         $annotations{$expId}->{$libraryId}->{'stageId'}  = $extra{ $annotations{$expId}->{$libraryId}->{'stageId'} }  || $annotations{$expId}->{$libraryId}->{'stageId'};
 
-        #if ( !exists $doneAnat->{$annotations{$expId}->{$libraryId}->{'anatId'}} || $doneAnat->{$annotations{$expId}->{$libraryId}->{'anatId'}} eq '' ){
-        #    warn "[$annotations{$expId}->{$libraryId}->{'anatId'}] unmapped organ id for [$libraryId]\n";
-        #    next LIBRARY;
-        #}
-        # if ( !exists $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}}   || $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}}   eq '' ){
-        #     warn "[$annotations{$expId}->{$libraryId}->{'stageId'}] unmapped stage id for [$libraryId]\n";
-        #     next LIBRARY;
-        # }
+        if ( !exists $doneAnat->{$annotations{$expId}->{$libraryId}->{'anatId'}} || $doneAnat->{$annotations{$expId}->{$libraryId}->{'anatId'}} eq '' ){
+            warn "[$annotations{$expId}->{$libraryId}->{'anatId'}] unmapped organ id for [$libraryId]\n";
+            next LIBRARY;
+        }
+         if ( !exists $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}}   || $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}}   eq '' ){
+             warn "[$annotations{$expId}->{$libraryId}->{'stageId'}] unmapped stage id for [$libraryId]\n";
+             next LIBRARY;
+         }
 
         # Get conditionId/exprMappedConditionId for this library
         # Updates also the hash of existing conditions
