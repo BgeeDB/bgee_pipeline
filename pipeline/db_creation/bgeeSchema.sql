@@ -903,8 +903,10 @@ create table rnaSeqPopulationCaptureToBiotypeExcludedAbsentCalls (
 
 create table rnaSeqPopulationCaptureSpeciesMaxRank (
     rnaSeqPopulationCaptureId varchar(255) not null,
+    rnaSeqTechnologyIsSingleCell tinyint unsigned not null,
+    sampleMultiplexing tinyint unsigned not null,
     speciesId mediumint unsigned not null,
-    maxRank decimal(9,2) unsigned not null COMMENT 'The max fractional rank in this protocol and species (see `rank` field in rnaSeqResult table)'
+    maxRank decimal(9,2) unsigned not null COMMENT 'The max fractional rank in this protocol and species (see `rank` field in rnaSeqLibraryAnnotatedSampleGeneResult table)'
 ) engine = innodb;
 
 -- ****************************************************

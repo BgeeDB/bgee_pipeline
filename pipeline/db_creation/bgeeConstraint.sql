@@ -366,7 +366,7 @@ add primary key (rnaSeqPopulationCaptureId, geneBioTypeId);
 
 /*!40000 ALTER TABLE `rnaSeqPopulationCaptureSpeciesMaxRank` DISABLE KEYS */;
 alter table rnaSeqPopulationCaptureSpeciesMaxRank
-add primary key (speciesId, rnaSeqPopulationCaptureId);
+add primary key (speciesId, rnaSeqPopulationCaptureId, rnaSeqTechnologyIsSingleCell, sampleMultiplexing);
 /*!40000 ALTER TABLE `rnaSeqPopulationCaptureSpeciesMaxRank` ENABLE KEYS */;
 
 -- *****************************************
