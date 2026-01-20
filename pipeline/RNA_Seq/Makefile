@@ -483,34 +483,36 @@ check_conditions: insert_RNA_seq
 	@$(MYSQL) -e "SELECT DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.sex, t1.strain FROM cond AS t1 LEFT OUTER JOIN stageTaxonConstraint AS t2 ON t1.stageId = t2.stageId AND (t2.speciesId IS NULL OR t1.speciesId = t2.speciesId) LEFT OUTER JOIN anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId LEFT OUTER JOIN rnaSeqLibraryAnnotatedSample AS t10 ON t1.conditionId = t10.conditionId WHERE t2.stageId IS NULL AND t10.conditionId IS NOT NULL ORDER BY t1.speciesId" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
-insert_expression: check_conditions insert_RNA_seq
-	# Insert the expression summaries
-	@perl 3Insertion/insert_rna_seq_expression_otf.pl -number_threads=4 -bgee=$(BGEECMD) > $@.tmp 2>warnings.$@
-	@echo
-	@echo "Searching for incorrect updates of rnaSeqResult/expression tables (there should be none)" >> $@.tmp
-	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult as t1 INNER JOIN rnaSeqLibraryAnnotatedSample as t2 ON t1.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId INNER JOIN rnaSeqLibrary as t3 ON t2.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE t1.reasonForExclusion = 'not excluded' AND t1.expressionId IS NULL AND t3.rnaSeqTechnologyIsSingleCell = 0 limit 10" >> $@.tmp
-	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult as t1 INNER JOIN rnaSeqLibraryAnnotatedSample as t2 ON t1.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId INNER JOIN rnaSeqLibrary as t3 ON t2.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE reasonForExclusion != 'not excluded' AND expressionId IS NOT NULL AND t3.rnaSeqTechnologyIsSingleCell = 0 limit 10" >> $@.tmp
-	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t1 WHERE expressionId IS NOT NULL AND NOT EXISTS(SELECT 1 FROM expression AS t2 WHERE t2.expressionId = t1.expressionId) LIMIT 10" >> $@.tmp
-	@$(MYSQL) -e "SELECT * FROM expression AS t1 WHERE NOT EXISTS (SELECT 1 FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t2 WHERE t2.expressionId = t1.expressionId) AND NOT EXISTS (SELECT 1 FROM affymetrixProbeset AS t3 WHERE t3.expressionId = t1.expressionId) AND NOT EXISTS (SELECT * FROM expressedSequenceTag AS t4 WHERE t4.expressionId = t1.expressionId) AND NOT EXISTS (SELECT * FROM inSituSpot AS t5 WHERE t5.expressionId = t1.expressionId) LIMIT 10" >> $@.tmp
-	@echo >> $@.tmp
-	@echo "Statistics for rnaSeqLibraryAnnotatedSampleGeneResult" >> $@.tmp
-	@$(MYSQL) -e "SELECT t2.speciesId, t1.reasonForExclusion, t4.rnaSeqTechnologyIsSingleCell AS isSingleCell, t4.libraryMultiplexing AS isDropletBased, COUNT(*) AS absentGeneResultCount  FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t1 INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId INNER JOIN rnaSeqLibraryAnnotatedSample AS t3 ON t3.rnaSeqLibraryAnnotatedSampleId = t1.rnaSeqLibraryAnnotatedSampleId INNER JOIN rnaSeqLibrary as t4 ON t4.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE t1.pValue > 0.05 GROUP BY speciesId, reasonForExclusion, isSingleCell, isDropletBased ORDER BY speciesId;" >> $@.tmp
-	@$(MYSQL) -e "SELECT t2.speciesId, t1.reasonForExclusion, t4.rnaSeqTechnologyIsSingleCell AS isSingleCell, t4.libraryMultiplexing AS isDropletBased, COUNT(*) AS presentGeneResultCount  FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t1 INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId INNER JOIN rnaSeqLibraryAnnotatedSample AS t3 ON t3.rnaSeqLibraryAnnotatedSampleId = t1.rnaSeqLibraryAnnotatedSampleId INNER JOIN rnaSeqLibrary as t4 ON t4.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE t1.pValue <= 0.05 GROUP BY speciesId, reasonForExclusion, isSingleCell, isDropletBased ORDER BY speciesId;" >> $@.tmp
-	@echo "Statistics for expression table" >> $@.tmp
-	@$(MYSQL) -e "SELECT t2.speciesId, COUNT(*) totalExpression , COUNT(DISTINCT t1.bgeeGeneId) as distinctGenes, COUNT(DISTINCT t1.conditionId) as distinctConditions, COUNT(DISTINCT t3.anatEntityId, t3.stageId) as DistinctStageAndAnat FROM expression AS t1 INNER JOIN gene AS t2 ON t2.bgeeGeneId = t1.bgeeGeneId INNER JOIN cond AS t3 ON t1.conditionId = t3.conditionId GROUP BY speciesId ORDER BY speciesId" >> $@.tmp
-	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
-	@$(MV) $@.tmp $@
+# Starting from Bgee 16.0 we insert RNA-Seq expression n the post-processing step in order not to duplicate code
+# for each RNA-Seq datatype (bulk, single-cell droplet-based, single-cell full-length).
+# insert_expression: check_conditions insert_RNA_seq
+# 	# Insert the expression summaries
+# 	@perl 3Insertion/insert_rna_seq_expression_otf.pl -number_threads=4 -bgee=$(BGEECMD) -debug > $@.tmp 2>warnings.$@
+# 	@echo
+# 	@echo "Searching for incorrect updates of rnaSeqResult/expression tables (there should be none)" >> $@.tmp
+# 	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult as t1 INNER JOIN rnaSeqLibraryAnnotatedSample as t2 ON t1.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId INNER JOIN rnaSeqLibrary as t3 ON t2.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE t1.reasonForExclusion = 'not excluded' AND t1.expressionId IS NULL AND t3.rnaSeqTechnologyIsSingleCell = 0 limit 10" >> $@.tmp
+# 	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult as t1 INNER JOIN rnaSeqLibraryAnnotatedSample as t2 ON t1.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId INNER JOIN rnaSeqLibrary as t3 ON t2.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE reasonForExclusion != 'not excluded' AND expressionId IS NOT NULL AND t3.rnaSeqTechnologyIsSingleCell = 0 limit 10" >> $@.tmp
+# 	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t1 WHERE expressionId IS NOT NULL AND NOT EXISTS(SELECT 1 FROM expression AS t2 WHERE t2.expressionId = t1.expressionId) LIMIT 10" >> $@.tmp
+# 	@$(MYSQL) -e "SELECT * FROM expression AS t1 WHERE NOT EXISTS (SELECT 1 FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t2 WHERE t2.expressionId = t1.expressionId) AND NOT EXISTS (SELECT 1 FROM affymetrixProbeset AS t3 WHERE t3.expressionId = t1.expressionId) AND NOT EXISTS (SELECT * FROM expressedSequenceTag AS t4 WHERE t4.expressionId = t1.expressionId) AND NOT EXISTS (SELECT * FROM inSituSpot AS t5 WHERE t5.expressionId = t1.expressionId) LIMIT 10" >> $@.tmp
+# 	@echo >> $@.tmp
+# 	@echo "Statistics for rnaSeqLibraryAnnotatedSampleGeneResult" >> $@.tmp
+# 	@$(MYSQL) -e "SELECT t2.speciesId, t1.reasonForExclusion, t4.rnaSeqTechnologyIsSingleCell AS isSingleCell, t4.libraryMultiplexing AS isDropletBased, COUNT(*) AS absentGeneResultCount  FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t1 INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId INNER JOIN rnaSeqLibraryAnnotatedSample AS t3 ON t3.rnaSeqLibraryAnnotatedSampleId = t1.rnaSeqLibraryAnnotatedSampleId INNER JOIN rnaSeqLibrary as t4 ON t4.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE t1.pValue > 0.05 GROUP BY speciesId, reasonForExclusion, isSingleCell, isDropletBased ORDER BY speciesId;" >> $@.tmp
+# 	@$(MYSQL) -e "SELECT t2.speciesId, t1.reasonForExclusion, t4.rnaSeqTechnologyIsSingleCell AS isSingleCell, t4.libraryMultiplexing AS isDropletBased, COUNT(*) AS presentGeneResultCount  FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t1 INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId INNER JOIN rnaSeqLibraryAnnotatedSample AS t3 ON t3.rnaSeqLibraryAnnotatedSampleId = t1.rnaSeqLibraryAnnotatedSampleId INNER JOIN rnaSeqLibrary as t4 ON t4.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE t1.pValue <= 0.05 GROUP BY speciesId, reasonForExclusion, isSingleCell, isDropletBased ORDER BY speciesId;" >> $@.tmp
+# 	@echo "Statistics for expression table" >> $@.tmp
+# 	@$(MYSQL) -e "SELECT t2.speciesId, COUNT(*) totalExpression , COUNT(DISTINCT t1.bgeeGeneId) as distinctGenes, COUNT(DISTINCT t1.conditionId) as distinctConditions, COUNT(DISTINCT t3.anatEntityId, t3.stageId) as DistinctStageAndAnat FROM expression AS t1 INNER JOIN gene AS t2 ON t2.bgeeGeneId = t1.bgeeGeneId INNER JOIN cond AS t3 ON t1.conditionId = t3.conditionId GROUP BY speciesId ORDER BY speciesId" >> $@.tmp
+# 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
+# 	@$(MV) $@.tmp $@
 
 #NOTE For iterative updates die commands after insert/update/delete statement failure have to be changed to warn
 #     because with iterative updates the database may contain duplicates in regard to what you are inserting/updating/deleting!
 #XXX Why bothering inserting transcript info as we do not have expression associated to them? Furthermore transcript information should
 #    probably be inserted during the "genes" pipeline. To check for Bgee 16.0. A Jira issue has been created (BA-795)
-#    Not run for Bgee 15
-insert_feature_length: $(RNASEQ_LENGTH_INFO_FILEPATH)
-	# Insert the feature length information
-	@perl 3Insertion/insert_feature_length.pl -bgee=$(BGEECMD) -length_info=$(RNASEQ_LENGTH_INFO_FILEPATH) > $@.tmp 2>warnings.$@
-	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
-	@$(MV) $@.tmp $@
+#    Not run for Bgee 15. Do not plan to run it for Bgee 16.0 either.
+# insert_feature_length: $(RNASEQ_LENGTH_INFO_FILEPATH)
+# 	# Insert the feature length information
+# 	@perl 3Insertion/insert_feature_length.pl -bgee=$(BGEECMD) -length_info=$(RNASEQ_LENGTH_INFO_FILEPATH) > $@.tmp 2>warnings.$@
+# 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
+# 	@$(MV) $@.tmp $@
 
 #NOTE For iterative updates die commands to warn
 #     because with iterative updates tries to calculate TMM for already processed RNA-Seq libraries not available here!
