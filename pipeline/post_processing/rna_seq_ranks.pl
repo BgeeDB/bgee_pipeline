@@ -76,7 +76,7 @@ if (($is_single_cell != 1 && $is_single_cell  != 0) && !@lib_ids) {
     die("is_single_cell should be equal to 0 for bulk RNA-Seq or equal to 1 for single cell when no library ID is provided but was $is_single_cell");
 }
 
-if ($is_single_cell ne '' && @lib_ids) {
+if ($is_single_cell != -1 && @lib_ids) {
     die("not possible to provide is_single_cell and library IDs at the same time");
 }
 # Reasonning of the computations (as of Bgee 15.0 it's exactly the same reasoning as for
