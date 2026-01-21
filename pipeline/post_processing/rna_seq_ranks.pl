@@ -4,9 +4,13 @@ use warnings;
 use Time::HiRes qw( time );
 use diagnostics;
 
-# Updates the ranks in rnaSeqLibraryAnnotatedSampleGeneResult table.
-# Frederic Bastian, created Apr. 2021.
-# Frederic Bastian, update Apr. 2023: adapt to new schema
+# Updates the ranks in rnaSeqResult table.
+# Philippe Moret, created Oct 2015.
+# Frederic Bastian, updated June 2016.
+# Frederic Bastian, updated Feb. 2017: adapt to new conditions and new schema in Bgee 14
+# Frederic Bastian, updated Jan. 2020: parallelize rank computations
+# Frederic Bastian, updated Apr. 2021: this script is now responsible only for computing
+# ranks for RNA-Seq library; improve parallelization possibilities.
 
 use Parallel::ForkManager;
 
@@ -25,14 +29,14 @@ my ($libs_per_job)  = (100); # default 100 libraries per thread
 my (@lib_ids) = ();
 my ($sample_offset) = (0);
 my ($sample_count) = (0);
-my ($is_single_cell) = '';
+my ($is_single_cell) = -1;
 my %opts = ('bgee=s'           => \$bgee_connector, # Bgee connector string
             'parallel_jobs=i'  => \$parallel_jobs,
             'libs_per_job=i'   => \$libs_per_job,
             'lib_ids=s'        => \@lib_ids,
             'sample_offset=i'  => \$sample_offset,
             'sample_count=i'   => \$sample_count,
-            'is_single_cell=s' => \$is_single_cell
+            'is_single_cell=i' => \$is_single_cell 
            );
 
 # Check arguments
@@ -64,15 +68,15 @@ if ($sample_offset > 0 && @lib_ids) {
     die("Not possible to provide library IDs and offset parameters at the same time\n");
 }
 
-if ($sample_offset == 0 && !@lib_ids) {
-    die("Should provide library IDs or offset parameters\n");
+# if ($sample_offset == 0 && !@lib_ids) {
+#     die("Should provide library IDs or offset parameters\n");
+# }
+
+if (($is_single_cell != 1 && $is_single_cell  != 0) && !@lib_ids) {
+    die("is_single_cell should be equal to 0 for bulk RNA-Seq or equal to 1 for single cell when no library ID is provided but was $is_single_cell");
 }
 
-if (($is_single_cell ne 1 || $is_single_cell ne 0) AND !@lib_ids) {
-    die("is_single_cell should be equal to 0 for bulk RNA-Seq or equal to 1 for single cell when no library ID is provided");
-}
-
-if (($is_single_cell ne '' AND @lib_ids) {
+if ($is_single_cell != -1 && @lib_ids) {
     die("not possible to provide is_single_cell and library IDs at the same time");
 }
 # Reasonning of the computations (as of Bgee 15.0 it's exactly the same reasoning as for
@@ -190,19 +194,6 @@ sub compute_update_rank_annotated_sample_batch {
     }
 }
 
-
-
-# Clean potentially already computed ranks
-#my $cleanRNASeq = $dbh->prepare("UPDATE scRnaSeqFullLengthResult SET rawRank = NULL");
-#my $cleanLib    = $dbh->prepare("UPDATE scRnaSeqFullLengthLibrary SET rnaSeqLibraryAnnotatedSampleMaxRank = NULL,
-#                                                              rnaSeqLibraryAnnotatedSampleDistinctRankCount = NULL");
-#printf("Cleaning existing data: ");
-#$cleanRNASeq->execute() or die $cleanRNASeq->errstr;
-#$cleanLib->execute() or die $cleanLib->errstr;
-#printf("Done\n");
-
-
-
 my @libs = @lib_ids;
 if (!@lib_ids) {
     my $dbh = Utils::connect_bgee_db($bgee_connector);
@@ -210,6 +201,13 @@ if (!@lib_ids) {
     # Queries to compute gene ranks per library.
     # We rank all genes that have received at least one read in any condition.
     # So we always rank the same set of gene in a given species over all libraries.
+
+    #XXX the comment above is WRONG. We do not rank genes that have received at least one read in any condition
+    #    because genes with reasonOfExclusion = "absent calls not reliable" does not have any expressionId. As calls
+    #    with an expressionId NULL are not selected to generate ranks, the number of genes selected per library
+    #    are then different from one library to an other
+    #TODO: Investigate the impact of not always using the same set of genes
+
     # We assume that each library maps to only one species through its contained genes.
     my $libSql = 'SELECT t1.rnaSeqLibraryId FROM rnaSeqLibrary AS t1 '.
               'WHERE rnaSeqTechnologyIsSingleCell =  ? '.
