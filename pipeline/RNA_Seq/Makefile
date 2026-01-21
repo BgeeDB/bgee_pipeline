@@ -516,7 +516,7 @@ check_conditions: insert_RNA_seq
 
 #NOTE For iterative updates die commands to warn
 #     because with iterative updates tries to calculate TMM for already processed RNA-Seq libraries not available here!
-launch_calculate_TMM_factors: insert_RNA_seq $(RNASEQALLRES)
+launch_calculate_TMM_factors: #insert_RNA_seq $(RNASEQALLRES)
 	# Launch calculation of TMM factors for RNA-seq
 	@mkdir -p $(RNASEQTMMTARG) $(RNASEQTMMPATH)
 	@perl 3Insertion/launch_calculate_TMM_factors.pl -bgee=$(BGEECMD) -path_generes=$(RNASEQALLRES) -path_target=$(RNASEQTMMTARG) -path_processed=$(RNASEQTMMPATH) -parallel_jobs=40>$@.tmp 2>warnings.$@
@@ -587,6 +587,6 @@ clean:
 # special target to remove RNA_seq from database. We make the name long on purpose, and does not
 # incude it in the clean target, to not wipe the database accidentally
 .PHONY := $(.PHONY) deleteRNASeq
-deleteRNASeq:
-	@$(MYSQL) -e "DELETE FROM rnaSeqResult; DELETE FROM rnaSeqRun; DELETE FROM rnaSeqLibrary; DELETE FROM rnaSeqExperimentToKeyword; DELETE FROM rnaSeqExperiment; DELETE FROM rnaSeqPlatform;"
+deleteBulkANDSingleCellRNASeq:
+	@$(MYSQL) -e "TRUNCATE TABLE rnaSeqLibraryAnnotatedSampleGeneResult; TRUNCATE TABLE rnaSeqRun; TRUNCATE TABLE rnaSeqLibraryAnnotatedSample; TRUNCATE TABLE rnaSeqLibrary; TRUNCATE TABLE rnaSeqExperimentToKeyword; TRUNCATE TABLE rnaSeqExperiment;"
 #TODO check if new tables were added
