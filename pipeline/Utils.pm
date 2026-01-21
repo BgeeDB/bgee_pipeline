@@ -31,7 +31,7 @@ our $CALL_NOT_EXCLUDED             = 'not excluded';
 our $EXCLUDED_FOR_UNDEFINED        = 'undefined';
 our $EXCLUDED_FOR_PRE_FILTERED     = 'pre-filtering';
 our $EXCLUDED_FOR_NO_EXPR_CONFLICT = 'noExpression conflict';
-our $EXCLUDED_FOR_ABSENT_CALLS     = 'absent call not reliable';
+our $BIOTYPE_NOT_TARGETED          = 'biotype not targeted';
 
 
 # Define some variables to be used through the whole pipeline to consistently capture sex info,
