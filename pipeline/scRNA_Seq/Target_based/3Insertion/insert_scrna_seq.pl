@@ -481,29 +481,12 @@ for my $expId ( sort keys %processedLibraries ){
         $selectAnnotatedSampleId->finish;
         $insAnnotatedSample->finish;
 
-        # finished insertion on anotated sample. Now start to insert individual samples
-        my $insIndividualSample = $bgee_metadata->prepare($insert_individualSamples);
-        my $selectIndividualSampleId = $bgee_metadata->prepare($select_individualSampleId);
-        ## Now start to insert individual samples if needed
-        # for now we only insert barcodes mapped to a cell type. It could be possible
-        # to insert other cell types in a different table
-        # (e.g rnaSeqLibraryIndividualSampleNotAnnotated(rnaSeqLibraryId, barcode, ...))
-        my %barcodeToIndividualSampleId;
-        my @barcodesArray;
+        # Individual sample insertion moved to parallel section for performance
+        # (can be 4M+ cells per experiment, needs parallelization)
+        # Count barcodes for experiment statistics
         for my $barcode (sort keys %{$barcodesToCellType{$libraryId}{'barcodes'}}) {
             $numberOfBarcodes++;
-            my $cellTypeId = $barcodesToCellType{$libraryId}{'barcodes'}{$barcode}{'cellTypeId'};
-            my $authorCellTypeAnnotation = $barcodesToCellType{$libraryId}{'barcodes'}{$barcode}{'authorCellTypeAnnotation'};
-            my $annotatedSampleId = $clusterToAnnotatedSampleId{$authorCellTypeAnnotation}{$cellTypeId};
-            my $individualSampleId = insert_get_individual_sample($insIndividualSample, $selectIndividualSampleId,
-                $annotatedSampleId, $barcode, "", $debug);
-            $barcodeToIndividualSampleId{$barcode} = $individualSampleId;
-            push (@barcodesArray, $barcode);
         }
-
-        ## close prepared statements.
-        $selectIndividualSampleId->finish;
-        $insIndividualSample->finish;
 
     }
     # insert the number of barcodes per experiment
@@ -664,6 +647,23 @@ for my $expId ( sort keys %processedLibraries ){
             }            
         }
         $bgee_data->commit;
+        
+        # Now insert individual samples in parallel (can be 4M+ cells per experiment)
+        my $insIndividualSample = $bgee_data->prepare($insert_individualSamples);
+        my $selectIndividualSampleId = $bgee_data->prepare($select_individualSampleId);
+        
+        for my $barcode (sort keys %{$barcodesToCellType{$libraryId}{'barcodes'}}) {
+            my $cellTypeId = $barcodesToCellType{$libraryId}{'barcodes'}{$barcode}{'cellTypeId'};
+            my $authorCellTypeAnnotation = $barcodesToCellType{$libraryId}{'barcodes'}{$barcode}{'authorCellTypeAnnotation'};
+            my $annotatedSampleId = $clusterToAnnotatedSampleId{$authorCellTypeAnnotation}{$cellTypeId};
+            
+            my $individualSampleId = insert_get_individual_sample($insIndividualSample, $selectIndividualSampleId,
+                $annotatedSampleId, $barcode, "", $debug);
+        }
+        $bgee_data->commit;
+        
+        $selectIndividualSampleId->finish;
+        $insIndividualSample->finish;
         $selectAnnotatedSampleId->finish;
         $updateUMIAnnotatedSample->finish;
         $insAnnotatedSampleGeneResult->finish;
