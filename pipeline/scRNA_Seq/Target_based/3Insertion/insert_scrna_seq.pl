@@ -606,7 +606,7 @@ for my $expId ( sort keys %processedLibraries ){
                 # sum all UMI and then update the table annotatedSample to populate the mappedUMIsCount column
                 my $mappedUMIsAnnotatedSample = 0;
 
-                    my @geneIds = keys %callsOneAnnotatedSample;
+                my @geneIds = keys %callsOneAnnotatedSample;
                 my $batch_size = 1000;  # Process 1000 genes at a time
                 #Start transaction with TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
                 for (my $i = 0; $i < @geneIds; $i += $batch_size) {
@@ -642,7 +642,7 @@ for my $expId ( sort keys %processedLibraries ){
                         }
                     }
                     #commit after each batch
-                    $bgee_data->commit if ¨$debug;
+                    $bgee_data->commit if $debug;
                 }
                 #now update annotated sample to insert sumUMIs
                 $updateSumUMIs{$annotatedSampleId} = $mappedUMIsAnnotatedSample;
@@ -653,7 +653,7 @@ for my $expId ( sort keys %processedLibraries ){
         }
 
         #prepare query to update sumUMIs per rnaSeqLibraryAnnotatedSample
-        my $updateUMIAnnotatedSample = $bgee_thread->prepare($update_sumUMIs_annotatedSamples);
+        my $updateUMIAnnotatedSample = $bgee_data->prepare($update_sumUMIs_annotatedSamples);
 
         for my $annotatedSampleIdToUpdate (sort keys %updateSumUMIs) {
             if ($debug) {
@@ -663,6 +663,7 @@ for my $expId ( sort keys %processedLibraries ){
                 $updateUMIAnnotatedSample->execute($updateSumUMIs{$annotatedSampleIdToUpdate}, $annotatedSampleIdToUpdate);
             }            
         }
+        $bgee_data->commit;
         $selectAnnotatedSampleId->finish;
         $updateUMIAnnotatedSample->finish;
         $insAnnotatedSampleGeneResult->finish;
