@@ -56,7 +56,7 @@ my $species          = $tsv{'speciesId'}[0]    || die "Problem with speciesId in
 my $gene_mapping = Utils::query_bgeeGene($dbh, $species);
 
 # Get already known conditions
-my $conditions         = Utils::query_conditions($dbh);
+my $conditions   = Utils::query_conditions($dbh);
 
 # Get simpler (upper level) stage equivalences
 my $stage_equivalences = Utils::get_stage_equivalences($dbh);
