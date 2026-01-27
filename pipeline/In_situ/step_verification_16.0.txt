@@ -1,0 +1,56 @@
+dataSourceName	geneBioTypeName	expressionState	spotCount	spotsByGene
+BDGP	protein_coding	1	26599	8.7960
+COUNT(*)
+26599
+
+dataSourceName	geneBioTypeName	expressionState	spotCount	spotsByGene
+FlyBase	protein_coding	1	201596	29.9994
+FlyBase	ncRNA	1	938	10.5393
+FlyBase	pseudogene	1	59	14.7500
+FlyBase	snoRNA	1	23	23.0000
+FlyBase	rRNA	1	10	10.0000
+COUNT(*)
+202626
+
+dataSourceName	geneBioTypeName	expressionState	spotCount	spotsByGene
+MGI	protein_coding	1	1305535	103.2860
+MGI	miRNA	1	13656	46.6075
+MGI	lncRNA	1	7932	41.5288
+MGI	processed_pseudogene	1	435	54.3750
+MGI	transcribed_unprocessed_pseudogene	1	368	46.0000
+MGI	transcribed_unitary_pseudogene	1	303	60.6000
+MGI	TEC	1	247	17.6429
+MGI	transcribed_processed_pseudogene	1	247	22.4545
+MGI	unprocessed_pseudogene	1	228	114.0000
+MGI	snRNA	1	158	39.5000
+MGI	unitary_pseudogene	1	51	51.0000
+MGI	TR_V_gene	1	37	18.5000
+MGI	misc_RNA	1	20	20.0000
+MGI	rRNA	1	1	1.0000
+MGI	TR_C_gene	1	1	1.0000
+COUNT(*)
+1329219
+
+dataSourceName	geneBioTypeName	expressionState	spotCount	spotsByGene
+WormBase	protein_coding	1	2641	6.8420
+WormBase	lincRNA	1	8	8.0000
+WormBase	pseudogene	1	5	5.0000
+COUNT(*)
+2654
+
+dataSourceName	geneBioTypeName	expressionState	spotCount	spotsByGene
+Xenbase	protein_coding	1	24589	23.3071
+COUNT(*)
+24589
+
+dataSourceName	geneBioTypeName	expressionState	spotCount	spotsByGene
+ZFIN	protein_coding	1	367753	35.4768
+ZFIN	miRNA	1	575	8.4559
+ZFIN	processed_transcript	1	290	29.0000
+ZFIN	polymorphic_pseudogene	1	125	31.2500
+ZFIN	antisense	1	87	21.7500
+ZFIN	unprocessed_pseudogene	1	81	27.0000
+ZFIN	lincRNA	1	1	1.0000
+COUNT(*)
+368912
+
