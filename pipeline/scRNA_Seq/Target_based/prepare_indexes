@@ -1,0 +1,11 @@
+run sbatch script /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Sus_scrofa.Sscrofa11.1.index_single_nucleus.sbatch => Submitted batch job 28791417
+run sbatch script /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Gorilla_gorilla.gorGor4.index_single_nucleus.sbatch => Submitted batch job 28791418
+run sbatch script /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Homo_sapiens.GRCh38.index_single_nucleus.sbatch => Submitted batch job 28791419
+run sbatch script /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Monodelphis_domestica.ASM229v1.index_single_nucleus.sbatch => Submitted batch job 28791420
+run sbatch script /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Mus_musculus.GRCm39.index_single_nucleus.sbatch => Submitted batch job 28791421
+run sbatch script /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Pan_troglodytes.Pan_tro_3.0.index_single_nucleus.sbatch => Submitted batch job 28791422
+run sbatch script /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Gallus_gallus.bGalGal1.mat.broiler.GRCg7b.index_single_nucleus.sbatch => Submitted batch job 28791423
+run sbatch script /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Drosophila_melanogaster.BDGP6.46.index_single_nucleus.sbatch => Submitted batch job 28791424
+run sbatch script /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Macaca_mulatta.Mmul_10.index_single_nucleus.sbatch => Submitted batch job 28791425
+run sbatch script /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Callithrix_jacchus.mCalJac1.pat.X.index_single_nucleus.sbatch => Submitted batch job 28791426
+run sbatch script /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Ornithorhynchus_anatinus.mOrnAna1.p.v1.index_single_nucleus.sbatch => Submitted batch job 28791427

@@ -32,34 +32,56 @@ The following objects are masked from 'package:base':
 
 
 single nuclei exists for species 9606
-all files had already been generated for 9606
+Reading GTF file /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Homo_sapiens.GRCh38.gtf...
+write file : /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Homo_sapiens.GRCh38.nascent.gtf
+write file : /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Homo_sapiens.GRCh38.single_nucleus.tx2gene
 
 single nuclei exists for species 7227
-all files had already been generated for 7227
+Reading GTF file /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Drosophila_melanogaster.BDGP6.46.gtf...
+write file : /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Drosophila_melanogaster.BDGP6.46.nascent.gtf
+write file : /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Drosophila_melanogaster.BDGP6.46.single_nucleus.tx2gene
 
 single nuclei exists for species 9823
-all files had already been generated for 9823
+Reading GTF file /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Sus_scrofa.Sscrofa11.1.gtf...
+write file : /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Sus_scrofa.Sscrofa11.1.nascent.gtf
+write file : /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Sus_scrofa.Sscrofa11.1.single_nucleus.tx2gene
 
 single nuclei exists for species 9031
-all files had already been generated for 9031
+Reading GTF file /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Gallus_gallus.bGalGal1.mat.broiler.GRCg7b.gtf...
+write file : /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Gallus_gallus.bGalGal1.mat.broiler.GRCg7b.nascent.gtf
+write file : /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Gallus_gallus.bGalGal1.mat.broiler.GRCg7b.single_nucleus.tx2gene
 
 single nuclei exists for species 10090
-all files had already been generated for 10090
+Reading GTF file /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Mus_musculus.GRCm39.gtf...
+write file : /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Mus_musculus.GRCm39.nascent.gtf
+write file : /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Mus_musculus.GRCm39.single_nucleus.tx2gene
 
 single nuclei exists for species 9258
-all files had already been generated for 9258
+Reading GTF file /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Ornithorhynchus_anatinus.mOrnAna1.p.v1.gtf...
+write file : /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Ornithorhynchus_anatinus.mOrnAna1.p.v1.nascent.gtf
+write file : /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Ornithorhynchus_anatinus.mOrnAna1.p.v1.single_nucleus.tx2gene
 
 single nuclei exists for species 13616
-all files had already been generated for 13616
+Reading GTF file /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Monodelphis_domestica.ASM229v1.gtf...
+write file : /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Monodelphis_domestica.ASM229v1.nascent.gtf
+write file : /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Monodelphis_domestica.ASM229v1.single_nucleus.tx2gene
 
 single nuclei exists for species 9593
-all files had already been generated for 9593
+Reading GTF file /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Gorilla_gorilla.gorGor4.gtf...
+write file : /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Gorilla_gorilla.gorGor4.nascent.gtf
+write file : /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Gorilla_gorilla.gorGor4.single_nucleus.tx2gene
 
 single nuclei exists for species 9544
-all files had already been generated for 9544
+Reading GTF file /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Macaca_mulatta.Mmul_10.gtf...
+write file : /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Macaca_mulatta.Mmul_10.nascent.gtf
+write file : /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Macaca_mulatta.Mmul_10.single_nucleus.tx2gene
 
 single nuclei exists for species 9598
-all files had already been generated for 9598
+Reading GTF file /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Pan_troglodytes.Pan_tro_3.0.gtf...
+write file : /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Pan_troglodytes.Pan_tro_3.0.nascent.gtf
+write file : /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Pan_troglodytes.Pan_tro_3.0.single_nucleus.tx2gene
 
 single nuclei exists for species 9483
-all files had already been generated for 9483
+Reading GTF file /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Callithrix_jacchus.mCalJac1.pat.X.gtf...
+write file : /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Callithrix_jacchus.mCalJac1.pat.X.nascent.gtf
+write file : /data/FAC/FBM/DEE/mrobinso/bgee_sensitive///rna_seq/GTF_16//Callithrix_jacchus.mCalJac1.pat.X.single_nucleus.tx2gene
