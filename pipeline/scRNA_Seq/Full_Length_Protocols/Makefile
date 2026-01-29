@@ -17,7 +17,7 @@ get_annot:
 ## Control the annotation (run rule in front)
 filter_annotation: get_annot 0Preparation/filter_annotation.R
 	@echo --- Filter FL libraries from annotation files ---
-	@$(CLUSTER_LOAD_APPTAINER) $(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL) Rscript 0Preparation/filter_annotation.R scRNASeqLibrary=\"$(SC_RNASEQ_LIB_FL_FILEPATH)\" scRNASeqExperiment=\"$(SC_RNASEQ_EXP_FL_FILEPATH)\" filteredLibrariesFile=\"$(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)\" filteredExperimentsFile=\"$(SC_RNASEQ_FL_EXP_FILTERED_FILEPATH)\" > $@.tmp 2> $@.err
+	@$(CLUSTER_LOAD_APPTAINER) $(CLUSTER_CONTAINER_CMD_WITH_BIND_CURNAGL) Rscript ${PWD}/0Preparation/filter_annotation.R scRNASeqLibrary=\"$(SC_RNASEQ_LIB_FL_FILEPATH)\" scRNASeqExperiment=\"$(SC_RNASEQ_EXP_FL_FILEPATH)\" filteredLibrariesFile=\"$(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)\" filteredExperimentsFile=\"$(SC_RNASEQ_FL_EXP_FILTERED_FILEPATH)\" > $@.tmp 2> $@.err
 	@echo --- Map strain names ---
 	@$(CLUSTER_SOFTWARE_BIN) perl -e 'use lib "../.."; use Utils; Utils::map_strain_names("$(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)", "$(STRAIN_MAPPING_FILE)")' > $(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH).ori
 	@$(MV) $(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH).ori $(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH)
@@ -128,10 +128,11 @@ QC_cellPopulation: presence_absence_bgeecall 1Run/QC_cellPopulation.R
 
 # run script from bulk RNASeq pipeline
 check_presence_absence: presence_absence_bgeecall
+	$(CLUSTER_SOFTWARE_BIN) $(CLUSTER_CONTAINER_CMD_WITH_BIND) perl 1Run/sc_sample_info_to_bgeecall.pl -sc_sample_info_file=$(SC_RNASEQ_SAMPINFO_FL_FILEPATH) -transcriptome_dir=$(RNASEQ_CLUSTER_GTF) -annotation_dir=$(RNASEQ_CLUSTER_GTF) -fastq_dir=$(SC_RNASEQ_FASTQ_FULL_LENGTH) -output_dir=$(SC_RNASEQ_CLUSTER_BGEECALL) -bgeecall_file=$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH) -ref_intergenic_dir=$(CLUSTER_REF_INTERGENIC_FOLDER) > $@.tmp 2> $@.err
 	# check that presence absence calls have been generated for all libraries present in the rna_seq_sample_info file
 	# generate file containing calls info for all libraries and use this file to generate different plots
-	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args bgeecall_sample_info="$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH)" calls_dir="$(SC_RNASEQ_CLUSTER_BGEECALL)" presence_absence_report="$(SC_RNASEQ_CLUSTER_CALLS_STATS)" kallisto_report="$(SC_RNASEQ_CLUSTER_KALLISTO_STATS)"' $(PIPELINEROOT)$(RNASEQPATH)1Run/rna_seq_calls_plot.R $(SC_RNASEQ_FL_CLUSTER_R_LOG)rna_seq_calls_plot.Rout
-	@touch $@
+	$(CLUSTER_SOFTWARE_BIN) $(CLUSTER_CONTAINER_CMD_WITH_BIND) $(CLUSTER_R_CMD) Rscript $(PIPELINEROOT)$(RNASEQPATH)/1Run/rna_seq_calls_plot.R bgeecall_sample_info=\"$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH)\" calls_dir=\"$(SC_RNASEQ_CLUSTER_BGEECALL)\" presence_absence_report=\"$(SC_RNASEQ_CLUSTER_CALLS_STATS)\" downloaded_lib_file=\"$(SC_RNASEQ_DOWNLOADED_LIB_FILEPATH)\" kallisto_report=\"$(SC_RNASEQ_CLUSTER_KALLISTO_STATS)\" >> $@.tmp 2>> $@.err
+	@$(MV) $@.tmp $@
 
 # Do not use slurm to run this light processing
 # run script from bulk RNASeq pipeline
