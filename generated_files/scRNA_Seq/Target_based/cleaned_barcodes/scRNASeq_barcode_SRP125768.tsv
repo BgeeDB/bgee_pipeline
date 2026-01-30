@@ -138,14 +138,14 @@
 "AAAGATGTCGTTACAG"	NA	"SRX3426759"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_0d_r1"	NA	16
 "GTGTTAGTCTCCGGTT"	NA	"SRX3426759"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_0d_r1"	NA	16
 "TCATTTGCATTGGGCC"	NA	"SRX3426759"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_0d_r1"	NA	16
-"ACACCAAGTCGCATAT"	NA	"SRX3426759"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_0d_r1"	NA	17
-"ACGCAGCCATGCAACT"	NA	"SRX3426759"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_0d_r1"	NA	17
-"ACGTCAAGTTCAACCA"	NA	"SRX3426759"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_0d_r1"	NA	17
-"CAGCTAATCAACACGT"	NA	"SRX3426759"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_0d_r1"	NA	17
-"CTCAGAAAGGCATGTG"	NA	"SRX3426759"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_0d_r1"	NA	17
-"GACAGAGTCTTTAGGG"	NA	"SRX3426759"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_0d_r1"	NA	17
-"GCGCGATTCCACTGGG"	NA	"SRX3426759"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_0d_r1"	NA	17
-"TCACGAAAGAATTGTG"	NA	"SRX3426759"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_0d_r1"	NA	17
+"ACACCAAGTCGCATAT"	NA	"SRX3426759"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_0d_r1"	NA	17
+"ACGCAGCCATGCAACT"	NA	"SRX3426759"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_0d_r1"	NA	17
+"ACGTCAAGTTCAACCA"	NA	"SRX3426759"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_0d_r1"	NA	17
+"CAGCTAATCAACACGT"	NA	"SRX3426759"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_0d_r1"	NA	17
+"CTCAGAAAGGCATGTG"	NA	"SRX3426759"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_0d_r1"	NA	17
+"GACAGAGTCTTTAGGG"	NA	"SRX3426759"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_0d_r1"	NA	17
+"GCGCGATTCCACTGGG"	NA	"SRX3426759"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_0d_r1"	NA	17
+"TCACGAAAGAATTGTG"	NA	"SRX3426759"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_0d_r1"	NA	17
 "AACTCCCCAGCGAACA"	NA	"SRX3426759"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_0d_r1"	NA	18
 "AAGGAGCTCTTTAGGG"	NA	"SRX3426759"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_0d_r1"	NA	18
 "ACCCACTGTTCGCGAC"	NA	"SRX3426759"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_0d_r1"	NA	18
@@ -1826,16 +1826,16 @@
 "CAGCGACGTTCTGGTA"	NA	"SRX3426760"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_0d_r2"	NA	20
 "CCTTACGAGAGTCGGT"	NA	"SRX3426760"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_0d_r2"	NA	20
 "TCAGCTCAGCGCCTCA"	NA	"SRX3426760"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_0d_r2"	NA	20
-"ACGCAGCTCAGATAAG"	NA	"SRX3426760"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_0d_r2"	NA	21
-"ATCCGAATCAGCCTAA"	NA	"SRX3426760"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_0d_r2"	NA	21
-"CCTACCAAGATGTGTA"	NA	"SRX3426760"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_0d_r2"	NA	21
-"CGCCAAGGTCTAGTGT"	NA	"SRX3426760"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_0d_r2"	NA	21
-"CTTCTCTTCCATGAAC"	NA	"SRX3426760"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_0d_r2"	NA	21
-"GACTGCGCATATGCTG"	NA	"SRX3426760"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_0d_r2"	NA	21
-"GCGCAGTCAGTATGCT"	NA	"SRX3426760"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_0d_r2"	NA	21
-"GGAACTTTCCTTGCCA"	NA	"SRX3426760"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_0d_r2"	NA	21
-"TACCTATTCGCTGATA"	NA	"SRX3426760"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_0d_r2"	NA	21
-"TAGACCAGTCTCTTTA"	NA	"SRX3426760"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_0d_r2"	NA	21
+"ACGCAGCTCAGATAAG"	NA	"SRX3426760"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_0d_r2"	NA	21
+"ATCCGAATCAGCCTAA"	NA	"SRX3426760"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_0d_r2"	NA	21
+"CCTACCAAGATGTGTA"	NA	"SRX3426760"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_0d_r2"	NA	21
+"CGCCAAGGTCTAGTGT"	NA	"SRX3426760"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_0d_r2"	NA	21
+"CTTCTCTTCCATGAAC"	NA	"SRX3426760"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_0d_r2"	NA	21
+"GACTGCGCATATGCTG"	NA	"SRX3426760"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_0d_r2"	NA	21
+"GCGCAGTCAGTATGCT"	NA	"SRX3426760"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_0d_r2"	NA	21
+"GGAACTTTCCTTGCCA"	NA	"SRX3426760"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_0d_r2"	NA	21
+"TACCTATTCGCTGATA"	NA	"SRX3426760"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_0d_r2"	NA	21
+"TAGACCAGTCTCTTTA"	NA	"SRX3426760"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_0d_r2"	NA	21
 "AACCGCGTCCTGCCAT"	NA	"SRX3426760"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_0d_r2"	NA	22
 "AAGGAGCCAATCCGAT"	NA	"SRX3426760"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_0d_r2"	NA	22
 "AATCGGTCAGCTATTG"	NA	"SRX3426760"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_0d_r2"	NA	22
@@ -4597,35 +4597,35 @@
 "GCGCAACCACCAGCAC"	NA	"SRX3426761"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_1d_r1"	NA	21
 "TGGCGCAGTTCAGCGC"	NA	"SRX3426761"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_1d_r1"	NA	21
 "TGGCTGGGTGTATGGG"	NA	"SRX3426761"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_1d_r1"	NA	21
-"ACATGGTCATATGCTG"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"ACGATACCATCTGGTA"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"ACTGAGTGTGATAAGT"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"ATCGAGTGTAGGCATG"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"CCCAGTTGTTATTCTC"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"CCTATTAGTCCGACGT"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"CGATTGATCTGCCCTA"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"CGTAGGCCAATTCCTT"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"CTGCCTAAGGCCCGTT"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"CTGGTCTAGATGTGGC"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"CTGTGCTAGGCGACAT"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"GATGAAACACATCCGG"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"GCAGTTAAGGGCACTA"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"GCGACCAGTTAAGATG"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"GCTCCTACACAAGCCC"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"GCTGCAGGTTGGACCC"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"GTAGTCATCACATAGC"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"GTCCTCAAGTACGCCC"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"GTGCTTCAGCACCGTC"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"GTGTGCGTCAAAGACA"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"TAAGTGCTCGTAGGAG"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"TATGCCCGTCTAGCGC"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"TCACAAGGTTACCGAT"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"TCATTACCAATCCAAC"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"TCCACACGTTAAGGGC"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"TGACTTTTCACTCTTA"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"TGGGCGTCACTTAAGC"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"TGGGCGTTCTGGAGCC"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
-"TTAGTTCAGGCTATCT"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"ACATGGTCATATGCTG"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"ACGATACCATCTGGTA"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"ACTGAGTGTGATAAGT"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"ATCGAGTGTAGGCATG"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"CCCAGTTGTTATTCTC"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"CCTATTAGTCCGACGT"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"CGATTGATCTGCCCTA"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"CGTAGGCCAATTCCTT"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"CTGCCTAAGGCCCGTT"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"CTGGTCTAGATGTGGC"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"CTGTGCTAGGCGACAT"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"GATGAAACACATCCGG"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"GCAGTTAAGGGCACTA"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"GCGACCAGTTAAGATG"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"GCTCCTACACAAGCCC"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"GCTGCAGGTTGGACCC"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"GTAGTCATCACATAGC"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"GTCCTCAAGTACGCCC"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"GTGCTTCAGCACCGTC"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"GTGTGCGTCAAAGACA"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"TAAGTGCTCGTAGGAG"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"TATGCCCGTCTAGCGC"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"TCACAAGGTTACCGAT"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"TCATTACCAATCCAAC"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"TCCACACGTTAAGGGC"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"TGACTTTTCACTCTTA"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"TGGGCGTCACTTAAGC"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"TGGGCGTTCTGGAGCC"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
+"TTAGTTCAGGCTATCT"	NA	"SRX3426761"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_1d_r1"	NA	22
 "AAATGCCAGGCTACGA"	NA	"SRX3426761"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_1d_r1"	NA	23
 "AACACGTCACACGCTG"	NA	"SRX3426761"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_1d_r1"	NA	23
 "AAGGAGCTCATCGCTC"	NA	"SRX3426761"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_1d_r1"	NA	23
@@ -11432,13 +11432,13 @@
 "GTACGTATCCTGCTTG"	NA	"SRX3426762"	"SRP125768"	"brain"	"Dm8/Dm11"	NA	NA	NA	"FBbt:00003767"	"distal medullary amacrine neuron (Drosophila)"	"other"	"DGRP-551_3d_r1"	NA	12
 "TGGCGCAGTTCCACGG"	NA	"SRX3426762"	"SRP125768"	"brain"	"Dm8/Dm11"	NA	NA	NA	"FBbt:00003767"	"distal medullary amacrine neuron (Drosophila)"	"other"	"DGRP-551_3d_r1"	NA	12
 "AGCCTAACACCGGAAA"	NA	"SRX3426762"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_3d_r1"	NA	13
-"AACTGGTTCGGCTTGG"	NA	"SRX3426762"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_3d_r1"	NA	14
-"CTACATTAGTACGCCC"	NA	"SRX3426762"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_3d_r1"	NA	14
-"GAATGAAAGAATGTGT"	NA	"SRX3426762"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_3d_r1"	NA	14
-"TCAGCTCAGCTAGTCT"	NA	"SRX3426762"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_3d_r1"	NA	14
-"TCTCTAACAGCGATCC"	NA	"SRX3426762"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_3d_r1"	NA	14
-"TGACAACAGTAGTGCG"	NA	"SRX3426762"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_3d_r1"	NA	14
-"TTGAACGTCCATGAGT"	NA	"SRX3426762"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_3d_r1"	NA	14
+"AACTGGTTCGGCTTGG"	NA	"SRX3426762"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_3d_r1"	NA	14
+"CTACATTAGTACGCCC"	NA	"SRX3426762"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_3d_r1"	NA	14
+"GAATGAAAGAATGTGT"	NA	"SRX3426762"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_3d_r1"	NA	14
+"TCAGCTCAGCTAGTCT"	NA	"SRX3426762"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_3d_r1"	NA	14
+"TCTCTAACAGCGATCC"	NA	"SRX3426762"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_3d_r1"	NA	14
+"TGACAACAGTAGTGCG"	NA	"SRX3426762"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_3d_r1"	NA	14
+"TTGAACGTCCATGAGT"	NA	"SRX3426762"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_3d_r1"	NA	14
 "ACGGGCTCATACTACG"	NA	"SRX3426762"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_3d_r1"	NA	15
 "CGGAGTCGTCTGATCA"	NA	"SRX3426762"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_3d_r1"	NA	15
 "CGTCTACTCTGTTGAG"	NA	"SRX3426762"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_3d_r1"	NA	15
@@ -12520,14 +12520,14 @@
 "CCTCAGTTCCGAGCCA"	NA	"SRX3426763"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_3d_r2"	NA	20
 "GCTGCAGCACGGCTAC"	NA	"SRX3426763"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_3d_r2"	NA	20
 "TTCGGTCGTGATAAGT"	NA	"SRX3426763"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_3d_r2"	NA	20
-"AGAGCGATCGATGAGG"	NA	"SRX3426763"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_3d_r2"	NA	21
-"CAGATCAAGTAGCCGA"	NA	"SRX3426763"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_3d_r2"	NA	21
-"CATATGGCAACACCTA"	NA	"SRX3426763"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_3d_r2"	NA	21
-"CGTTGGGTCTGCCCTA"	NA	"SRX3426763"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_3d_r2"	NA	21
-"CTCGAAATCCAGAGGA"	NA	"SRX3426763"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_3d_r2"	NA	21
-"GCAGCCACACAGACTT"	NA	"SRX3426763"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_3d_r2"	NA	21
-"TGACTAGAGGGCACTA"	NA	"SRX3426763"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_3d_r2"	NA	21
-"TTGTAGGCATGAGCGA"	NA	"SRX3426763"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_3d_r2"	NA	21
+"AGAGCGATCGATGAGG"	NA	"SRX3426763"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_3d_r2"	NA	21
+"CAGATCAAGTAGCCGA"	NA	"SRX3426763"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_3d_r2"	NA	21
+"CATATGGCAACACCTA"	NA	"SRX3426763"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_3d_r2"	NA	21
+"CGTTGGGTCTGCCCTA"	NA	"SRX3426763"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_3d_r2"	NA	21
+"CTCGAAATCCAGAGGA"	NA	"SRX3426763"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_3d_r2"	NA	21
+"GCAGCCACACAGACTT"	NA	"SRX3426763"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_3d_r2"	NA	21
+"TGACTAGAGGGCACTA"	NA	"SRX3426763"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_3d_r2"	NA	21
+"TTGTAGGCATGAGCGA"	NA	"SRX3426763"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_3d_r2"	NA	21
 "AAAGTAGCATGTTGAC"	NA	"SRX3426763"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_3d_r2"	NA	22
 "AACACGTAGCTCCTCT"	NA	"SRX3426763"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_3d_r2"	NA	22
 "GAGTCCGTCGTAGGAG"	NA	"SRX3426763"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_3d_r2"	NA	22
@@ -14185,10 +14185,10 @@
 "TCGAGGCAGCGATATA"	NA	"SRX3426764"	"SRP125768"	"brain"	"Dm8/Dm11"	NA	NA	NA	"FBbt:00003767"	"distal medullary amacrine neuron (Drosophila)"	"other"	"DGRP-551_6d_r1"	NA	14
 "CAACTAGCAGACGTAG"	NA	"SRX3426764"	"SRP125768"	"brain"	"Dm9"	NA	NA	NA	"FBbt:00111271"	"distal medullary amacrine neuron Dm9 (Drosophila)"	"perfect match"	"DGRP-551_6d_r1"	NA	15
 "AATCGGTAGACTGGGT"	NA	"SRX3426764"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_6d_r1"	NA	16
-"ACTGAACGTTACCGAT"	NA	"SRX3426764"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_6d_r1"	NA	17
-"AGAGCGACAGTGACAG"	NA	"SRX3426764"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_6d_r1"	NA	17
-"AGTTGGTAGCCACGCT"	NA	"SRX3426764"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_6d_r1"	NA	17
-"GTGAAGGCATGGTTGT"	NA	"SRX3426764"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_6d_r1"	NA	17
+"ACTGAACGTTACCGAT"	NA	"SRX3426764"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_6d_r1"	NA	17
+"AGAGCGACAGTGACAG"	NA	"SRX3426764"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_6d_r1"	NA	17
+"AGTTGGTAGCCACGCT"	NA	"SRX3426764"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_6d_r1"	NA	17
+"GTGAAGGCATGGTTGT"	NA	"SRX3426764"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_6d_r1"	NA	17
 "AAGTCTGAGCTCTCGG"	NA	"SRX3426764"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_6d_r1"	NA	18
 "CACACTCGTAGCGTAG"	NA	"SRX3426764"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_6d_r1"	NA	18
 "CAGTAACAGTGGGATC"	NA	"SRX3426764"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_6d_r1"	NA	18
@@ -15239,10 +15239,10 @@
 "AGGTCATCACACGCTG"	NA	"SRX3426765"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_6d_r2"	NA	15
 "CTGTTTACATACTCTT"	NA	"SRX3426765"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_6d_r2"	NA	15
 "GAGCAGATCACTCCTG"	NA	"SRX3426765"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_6d_r2"	NA	15
-"CCAGCGACAGTAACGG"	NA	"SRX3426765"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_6d_r2"	NA	16
-"GGAGCAAGTTTAAGCC"	NA	"SRX3426765"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_6d_r2"	NA	16
-"TACGGATGTCAAAGAT"	NA	"SRX3426765"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_6d_r2"	NA	16
-"TGATTTCGTAAACGCG"	NA	"SRX3426765"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_6d_r2"	NA	16
+"CCAGCGACAGTAACGG"	NA	"SRX3426765"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_6d_r2"	NA	16
+"GGAGCAAGTTTAAGCC"	NA	"SRX3426765"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_6d_r2"	NA	16
+"TACGGATGTCAAAGAT"	NA	"SRX3426765"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_6d_r2"	NA	16
+"TGATTTCGTAAACGCG"	NA	"SRX3426765"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_6d_r2"	NA	16
 "AAGGTTCCAAACTGTC"	NA	"SRX3426765"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_6d_r2"	NA	17
 "AGAGTGGTCCTCAATT"	NA	"SRX3426765"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_6d_r2"	NA	17
 "CACCAGGCATACGCTA"	NA	"SRX3426765"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_6d_r2"	NA	17
@@ -17050,9 +17050,9 @@
 "GCGCGATAGACGCACA"	NA	"SRX3426766"	"SRP125768"	"brain"	"DN1"	NA	NA	NA	"FBbt:00003629"	"DN1 neuron (Drosophila)"	"perfect match"	"DGRP-551_9d_r1"	NA	15
 "AGGGAGTTCTTCATGT"	NA	"SRX3426766"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_9d_r1"	NA	16
 "TCGTAGACATTGAGCT"	NA	"SRX3426766"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_9d_r1"	NA	16
-"CACCAGGGTTATCCGA"	NA	"SRX3426766"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_9d_r1"	NA	17
-"GACGCGTCAATTGCTG"	NA	"SRX3426766"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_9d_r1"	NA	17
-"GACGCGTGTTAGGGTG"	NA	"SRX3426766"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_9d_r1"	NA	17
+"CACCAGGGTTATCCGA"	NA	"SRX3426766"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_9d_r1"	NA	17
+"GACGCGTCAATTGCTG"	NA	"SRX3426766"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_9d_r1"	NA	17
+"GACGCGTGTTAGGGTG"	NA	"SRX3426766"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_9d_r1"	NA	17
 "AACTGGTAGTGTGGCA"	NA	"SRX3426766"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_9d_r1"	NA	18
 "ACATGGTAGCTACCTA"	NA	"SRX3426766"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_9d_r1"	NA	18
 "ACGATGTTCGGAAACG"	NA	"SRX3426766"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_9d_r1"	NA	18
@@ -17761,10 +17761,10 @@
 "GAACCTACATCGGAAG"	NA	"SRX3426767"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_15d_r1"	NA	18
 "GATCGTAAGCGCTTAT"	NA	"SRX3426767"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_15d_r1"	NA	18
 "TACTCGCCACCAACCG"	NA	"SRX3426767"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_15d_r1"	NA	18
-"CAAGAAAGTTCCACGG"	NA	"SRX3426767"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_15d_r1"	NA	19
-"CTCTACGGTGCACCAC"	NA	"SRX3426767"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_15d_r1"	NA	19
-"GCGCGATTCTTTAGTC"	NA	"SRX3426767"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_15d_r1"	NA	19
-"GGACGTCAGGTGATAT"	NA	"SRX3426767"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_15d_r1"	NA	19
+"CAAGAAAGTTCCACGG"	NA	"SRX3426767"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_15d_r1"	NA	19
+"CTCTACGGTGCACCAC"	NA	"SRX3426767"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_15d_r1"	NA	19
+"GCGCGATTCTTTAGTC"	NA	"SRX3426767"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_15d_r1"	NA	19
+"GGACGTCAGGTGATAT"	NA	"SRX3426767"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_15d_r1"	NA	19
 "AACTCAGGTCTCTTAT"	NA	"SRX3426767"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_15d_r1"	NA	20
 "AACTTTCTCCAGGGCT"	NA	"SRX3426767"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_15d_r1"	NA	20
 "ACACCGGGTCGGGTCT"	NA	"SRX3426767"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_15d_r1"	NA	20
@@ -22227,12 +22227,12 @@
 "GTGCTTCGTCAACTGT"	NA	"SRX3426769"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_30d_r2"	NA	23
 "TATCAGGTCACGACTA"	NA	"SRX3426769"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_30d_r2"	NA	23
 "TGCGTGGGTCATGCAT"	NA	"SRX3426769"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_30d_r2"	NA	23
-"ACGAGGATCTTGTACT"	NA	"SRX3426769"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_30d_r2"	NA	24
-"CTGGTCTGTGAAATCA"	NA	"SRX3426769"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_30d_r2"	NA	24
-"GACGGCTGTGTTCGAT"	NA	"SRX3426769"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_30d_r2"	NA	24
-"GGTGTTAGTGGTAACG"	NA	"SRX3426769"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_30d_r2"	NA	24
-"TGAAAGACACGGTTTA"	NA	"SRX3426769"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_30d_r2"	NA	24
-"TGAGAGGGTCCGAGTC"	NA	"SRX3426769"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_30d_r2"	NA	24
+"ACGAGGATCTTGTACT"	NA	"SRX3426769"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_30d_r2"	NA	24
+"CTGGTCTGTGAAATCA"	NA	"SRX3426769"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_30d_r2"	NA	24
+"GACGGCTGTGTTCGAT"	NA	"SRX3426769"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_30d_r2"	NA	24
+"GGTGTTAGTGGTAACG"	NA	"SRX3426769"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_30d_r2"	NA	24
+"TGAAAGACACGGTTTA"	NA	"SRX3426769"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_30d_r2"	NA	24
+"TGAGAGGGTCCGAGTC"	NA	"SRX3426769"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_30d_r2"	NA	24
 "AAAGATGCATGCTGGC"	NA	"SRX3426769"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_30d_r2"	NA	25
 "AAAGTAGGTGACGCCT"	NA	"SRX3426769"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_30d_r2"	NA	25
 "AACCGCGCATTCACTT"	NA	"SRX3426769"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_30d_r2"	NA	25
@@ -26794,7 +26794,7 @@
 "GTAGTCAGTATATCCG"	NA	"SRX3426770"	"SRP125768"	"brain"	"DN1"	NA	NA	NA	"FBbt:00003629"	"DN1 neuron (Drosophila)"	"perfect match"	"DGRP-551_50d_r1"	NA	21
 "TCAGCAAGTCTGCGGT"	NA	"SRX3426770"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_50d_r1"	NA	22
 "TCTGAGACAGCGATCC"	NA	"SRX3426770"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"DGRP-551_50d_r1"	NA	22
-"CGTAGCGTCTTGTCAT"	NA	"SRX3426770"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"DGRP-551_50d_r1"	NA	23
+"CGTAGCGTCTTGTCAT"	NA	"SRX3426770"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"DGRP-551_50d_r1"	NA	23
 "AAACCTGCATTCTTAC"	NA	"SRX3426770"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_50d_r1"	NA	24
 "AAACGGGGTGGCTCCA"	NA	"SRX3426770"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_50d_r1"	NA	24
 "AAAGATGCATGGATGG"	NA	"SRX3426770"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"DGRP-551_50d_r1"	NA	24
@@ -29546,40 +29546,40 @@
 "TCTTCGGAGAGACTTA"	NA	"SRX3426771"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_0d_r1"	NA	20
 "TGACAACAGATCCGAG"	NA	"SRX3426771"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_0d_r1"	NA	20
 "TGACTTTCACATTTCT"	NA	"SRX3426771"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_0d_r1"	NA	20
-"AAGGTTCTCTCAAACG"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"ACACCAATCTTAGAGC"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"AGGTCCGAGCGATCCC"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"ATAACGCAGAAGGTTT"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"ATCACGAGTAGCAAAT"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"ATCATCTTCGTTTGCC"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"ATCCACCGTCCTCTTG"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"CACCACTGTGGTGTAG"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"CAGAATCGTCAACATC"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"CAGCATAGTACACCGC"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"CGAATGTCAATTCCTT"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"CGATCGGGTTTCGCTC"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"CGATTGAGTCTAACGT"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"CGCTGGAAGCTGTCTA"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"CGTCCATCACCACCAG"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"CTACATTAGTCCAGGA"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"GACGCGTGTGTAAGTA"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"GCATGTAAGAAACCAT"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"GCGACCAAGTGCCATT"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"GCGACCACAAAGGAAG"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"GCGCAACAGCCTTGAT"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"GCGCCAAGTCGGCATC"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"GCGCGATAGCGCTCCA"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"GCGGGTTAGTTCGCAT"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"GGACAGAGTTAGTGGG"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"GGATTACAGACGCACA"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"GGGAATGAGATATGGT"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"GTCAAGTAGTTACGGG"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"GTCACAAGTCTCTTTA"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"GTTAAGCGTTTGACAC"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"TACGGTAAGATGGGTC"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"TCAGATGTCCAGATCA"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"TCAGCAAAGCTGAAAT"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
-"TTGAACGTCTGCGACG"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"AAGGTTCTCTCAAACG"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"ACACCAATCTTAGAGC"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"AGGTCCGAGCGATCCC"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"ATAACGCAGAAGGTTT"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"ATCACGAGTAGCAAAT"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"ATCATCTTCGTTTGCC"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"ATCCACCGTCCTCTTG"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"CACCACTGTGGTGTAG"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"CAGAATCGTCAACATC"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"CAGCATAGTACACCGC"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"CGAATGTCAATTCCTT"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"CGATCGGGTTTCGCTC"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"CGATTGAGTCTAACGT"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"CGCTGGAAGCTGTCTA"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"CGTCCATCACCACCAG"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"CTACATTAGTCCAGGA"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"GACGCGTGTGTAAGTA"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"GCATGTAAGAAACCAT"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"GCGACCAAGTGCCATT"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"GCGACCACAAAGGAAG"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"GCGCAACAGCCTTGAT"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"GCGCCAAGTCGGCATC"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"GCGCGATAGCGCTCCA"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"GCGGGTTAGTTCGCAT"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"GGACAGAGTTAGTGGG"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"GGATTACAGACGCACA"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"GGGAATGAGATATGGT"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"GTCAAGTAGTTACGGG"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"GTCACAAGTCTCTTTA"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"GTTAAGCGTTTGACAC"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"TACGGTAAGATGGGTC"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"TCAGATGTCCAGATCA"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"TCAGCAAAGCTGAAAT"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
+"TTGAACGTCTGCGACG"	NA	"SRX3426771"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r1"	NA	21
 "AACCATGGTTCCATGA"	NA	"SRX3426771"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_0d_r1"	NA	22
 "AACCGCGGTGTTTGTG"	NA	"SRX3426771"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_0d_r1"	NA	22
 "AACTCAGCAGGGAGAG"	NA	"SRX3426771"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_0d_r1"	NA	22
@@ -34622,8 +34622,8 @@
 "GAGGTGACATTGGGCC"	NA	"SRX3426773"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_0d_r2"	NA	16
 "GTGGGTCCATAGACTC"	NA	"SRX3426773"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_0d_r2"	NA	16
 "TTCTTAGTCAGCGATT"	NA	"SRX3426773"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_0d_r2"	NA	16
-"AGCTTGAAGCGTGAGT"	NA	"SRX3426773"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r2"	NA	17
-"TGACTTTGTAGCGCAA"	NA	"SRX3426773"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_0d_r2"	NA	17
+"AGCTTGAAGCGTGAGT"	NA	"SRX3426773"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r2"	NA	17
+"TGACTTTGTAGCGCAA"	NA	"SRX3426773"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_0d_r2"	NA	17
 "AAACCTGGTCCAGTAT"	NA	"SRX3426773"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_0d_r2"	NA	18
 "AACACGTAGCCTTGAT"	NA	"SRX3426773"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_0d_r2"	NA	18
 "AACCGCGCACACATGT"	NA	"SRX3426773"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_0d_r2"	NA	18
@@ -37278,30 +37278,30 @@
 "TCTTCGGGTCGGGTCT"	NA	"SRX3426774"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_1d_r1"	NA	20
 "TGATTTCCACAAGTAA"	NA	"SRX3426774"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_1d_r1"	NA	20
 "TTGCCGTCATATGAGA"	NA	"SRX3426774"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_1d_r1"	NA	20
-"ACACCAAAGGCAGGTT"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
-"ACGATGTGTTCTGAAC"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
-"CACAGTATCTTCATGT"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
-"CCAATCCAGAGTAAGG"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
-"CCGTTCATCACCTTAT"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
-"CGACTTCTCGTTTATC"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
-"CGGACTGGTTGGAGGT"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
-"CTCATTAAGTGAATTG"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
-"CTCTACGGTGTGCGTC"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
-"GACCAATCAAAGTGCG"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
-"GCTCCTACATGACGGA"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
-"GGACGTCGTCGATTGT"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
-"GGATGTTTCGGATGTT"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
-"GTACTCCTCCGCTGTT"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
-"GTCAAGTCAATCTGCA"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
-"GTCGGGTCACGGTAAG"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
-"GTGCAGCTCCTGTACC"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
-"TATGCCCGTTGAGGTG"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
-"TCTATTGCACCTCGGA"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
-"TGACAACAGGCTCTTA"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
-"TGCGGGTCATAAGACA"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
-"TTAGGACTCAAACAAG"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
-"TTCTCAAGTTAAGACA"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
-"TTGAACGTCTGGTATG"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
+"ACACCAAAGGCAGGTT"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
+"ACGATGTGTTCTGAAC"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
+"CACAGTATCTTCATGT"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
+"CCAATCCAGAGTAAGG"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
+"CCGTTCATCACCTTAT"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
+"CGACTTCTCGTTTATC"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
+"CGGACTGGTTGGAGGT"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
+"CTCATTAAGTGAATTG"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
+"CTCTACGGTGTGCGTC"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
+"GACCAATCAAAGTGCG"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
+"GCTCCTACATGACGGA"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
+"GGACGTCGTCGATTGT"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
+"GGATGTTTCGGATGTT"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
+"GTACTCCTCCGCTGTT"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
+"GTCAAGTCAATCTGCA"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
+"GTCGGGTCACGGTAAG"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
+"GTGCAGCTCCTGTACC"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
+"TATGCCCGTTGAGGTG"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
+"TCTATTGCACCTCGGA"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
+"TGACAACAGGCTCTTA"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
+"TGCGGGTCATAAGACA"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
+"TTAGGACTCAAACAAG"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
+"TTCTCAAGTTAAGACA"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
+"TTGAACGTCTGGTATG"	NA	"SRX3426774"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_1d_r1"	NA	21
 "AAACCTGCATGATCCA"	NA	"SRX3426774"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_1d_r1"	NA	22
 "AAAGATGTCCTAGAAC"	NA	"SRX3426774"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_1d_r1"	NA	22
 "AAAGCAAAGTTCGCAT"	NA	"SRX3426774"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_1d_r1"	NA	22
@@ -39120,14 +39120,14 @@
 "TAAGTGCAGTGTCCCG"	NA	"SRX3426775"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_3d_r1"	NA	18
 "TGCACCTAGCTGATAA"	NA	"SRX3426775"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_3d_r1"	NA	18
 "TTAGGACGTCCAGTGC"	NA	"SRX3426775"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_3d_r1"	NA	18
-"AGATCTGGTTTGACTG"	NA	"SRX3426775"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r1"	NA	19
-"CAGATCACAATGGTCT"	NA	"SRX3426775"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r1"	NA	19
-"CCTACACAGACGCTTT"	NA	"SRX3426775"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r1"	NA	19
-"CTGCGGAAGAGCAATT"	NA	"SRX3426775"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r1"	NA	19
-"CTTGGCTCAGGTGCCT"	NA	"SRX3426775"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r1"	NA	19
-"GGACAGACATTAGGCT"	NA	"SRX3426775"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r1"	NA	19
-"GGTGCGTCAGACTCGC"	NA	"SRX3426775"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r1"	NA	19
-"TCCACACGTCCGACGT"	NA	"SRX3426775"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r1"	NA	19
+"AGATCTGGTTTGACTG"	NA	"SRX3426775"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r1"	NA	19
+"CAGATCACAATGGTCT"	NA	"SRX3426775"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r1"	NA	19
+"CCTACACAGACGCTTT"	NA	"SRX3426775"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r1"	NA	19
+"CTGCGGAAGAGCAATT"	NA	"SRX3426775"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r1"	NA	19
+"CTTGGCTCAGGTGCCT"	NA	"SRX3426775"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r1"	NA	19
+"GGACAGACATTAGGCT"	NA	"SRX3426775"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r1"	NA	19
+"GGTGCGTCAGACTCGC"	NA	"SRX3426775"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r1"	NA	19
+"TCCACACGTCCGACGT"	NA	"SRX3426775"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r1"	NA	19
 "ACATCAGGTCCATCCT"	NA	"SRX3426775"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_3d_r1"	NA	20
 "ACCTTTAAGCCCGAAA"	NA	"SRX3426775"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_3d_r1"	NA	20
 "ACGCAGCGTAAGAGAG"	NA	"SRX3426775"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_3d_r1"	NA	20
@@ -40165,19 +40165,19 @@
 "ACAGCCGCAGATCCAT"	NA	"SRX3426776"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_3d_r2"	NA	18
 "ATCCGAATCCACTGGG"	NA	"SRX3426776"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_3d_r2"	NA	18
 "GGAGCAAGTAGCTAAA"	NA	"SRX3426776"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_3d_r2"	NA	18
-"ACTGCTCTCATTGCCC"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
-"CAACCAATCGTCTGAA"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
-"CAAGATCGTCATATGC"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
-"CCGGTAGTCTTGTTTG"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
-"CGGACGTTCCTTTCTC"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
-"CGGAGCTAGCAACGGT"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
-"CGTTGGGCACCATGTA"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
-"GATGCTACACCCTATC"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
-"GCATACACAAACTGCT"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
-"GGACAAGAGTACGTAA"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
-"GGACGTCGTCGAATCT"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
-"GTCCTCAGTGTAAGTA"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
-"TTAGGCATCAGGCCCA"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
+"ACTGCTCTCATTGCCC"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
+"CAACCAATCGTCTGAA"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
+"CAAGATCGTCATATGC"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
+"CCGGTAGTCTTGTTTG"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
+"CGGACGTTCCTTTCTC"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
+"CGGAGCTAGCAACGGT"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
+"CGTTGGGCACCATGTA"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
+"GATGCTACACCCTATC"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
+"GCATACACAAACTGCT"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
+"GGACAAGAGTACGTAA"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
+"GGACGTCGTCGAATCT"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
+"GTCCTCAGTGTAAGTA"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
+"TTAGGCATCAGGCCCA"	NA	"SRX3426776"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r2"	NA	19
 "ACGGGTCAGCCAGGAT"	NA	"SRX3426776"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_3d_r2"	NA	20
 "CATCAAGCATTACGAC"	NA	"SRX3426776"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_3d_r2"	NA	20
 "CCGGTAGCAATCCAAC"	NA	"SRX3426776"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_3d_r2"	NA	20
@@ -42423,21 +42423,21 @@
 "TCGGGACTCCACTGGG"	NA	"SRX3426777"	"SRP125768"	"brain"	"DN1"	NA	NA	NA	"FBbt:00003629"	"DN1 neuron (Drosophila)"	"perfect match"	"w1118_3d_r3"	NA	17
 "ACGAGCCTCTGGTATG"	NA	"SRX3426777"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_3d_r3"	NA	18
 "TTGAACGGTAATAGCA"	NA	"SRX3426777"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_3d_r3"	NA	18
-"AACTCCCGTATGAAAC"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
-"ACTGAACTCTCCGGTT"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
-"AGATTGCAGTGACATA"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
-"ATGTGTGGTGTAAGTA"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
-"CAACCAACATTTGCTT"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
-"CACAGTACAGCGATCC"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
-"CAGCGACTCAGCTCTC"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
-"CCCTCCTTCCACGACG"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
-"CTCCTAGGTTCCGGCA"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
-"CTCGGGACAAGAGGCT"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
-"GCGAGAACAAGGACAC"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
-"GCGCAACAGAGTTGGC"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
-"GGTGCGTTCCACTCCA"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
-"GTCTCGTGTAAGAGAG"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
-"TTAGGACGTAGCACGA"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
+"AACTCCCGTATGAAAC"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
+"ACTGAACTCTCCGGTT"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
+"AGATTGCAGTGACATA"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
+"ATGTGTGGTGTAAGTA"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
+"CAACCAACATTTGCTT"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
+"CACAGTACAGCGATCC"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
+"CAGCGACTCAGCTCTC"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
+"CCCTCCTTCCACGACG"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
+"CTCCTAGGTTCCGGCA"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
+"CTCGGGACAAGAGGCT"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
+"GCGAGAACAAGGACAC"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
+"GCGCAACAGAGTTGGC"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
+"GGTGCGTTCCACTCCA"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
+"GTCTCGTGTAAGAGAG"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
+"TTAGGACGTAGCACGA"	NA	"SRX3426777"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_3d_r3"	NA	19
 "AGTAGTCCATGTCGAT"	NA	"SRX3426777"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_3d_r3"	NA	20
 "ATGGGAGTCAATACCG"	NA	"SRX3426777"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_3d_r3"	NA	20
 "CACACAAAGAATGTTG"	NA	"SRX3426777"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_3d_r3"	NA	20
@@ -44364,12 +44364,12 @@
 "GTGCAGCGTCGAATCT"	NA	"SRX3426778"	"SRP125768"	"brain"	"DN1"	NA	NA	NA	"FBbt:00003629"	"DN1 neuron (Drosophila)"	"perfect match"	"w1118_6d_r1"	NA	18
 "CGCTTCACACGACTCG"	NA	"SRX3426778"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_6d_r1"	NA	19
 "CGGAGCTTCAGGCGAA"	NA	"SRX3426778"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_6d_r1"	NA	19
-"AGCGTCGAGATCACGG"	NA	"SRX3426778"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_6d_r1"	NA	20
-"ATAGACCGTAGGCTGA"	NA	"SRX3426778"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_6d_r1"	NA	20
-"CGCCAAGTCCTTGACC"	NA	"SRX3426778"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_6d_r1"	NA	20
-"CTAATGGAGAAACGAG"	NA	"SRX3426778"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_6d_r1"	NA	20
-"GCTTGAATCATGTAGC"	NA	"SRX3426778"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_6d_r1"	NA	20
-"GGCAATTGTGATGTGG"	NA	"SRX3426778"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_6d_r1"	NA	20
+"AGCGTCGAGATCACGG"	NA	"SRX3426778"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_6d_r1"	NA	20
+"ATAGACCGTAGGCTGA"	NA	"SRX3426778"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_6d_r1"	NA	20
+"CGCCAAGTCCTTGACC"	NA	"SRX3426778"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_6d_r1"	NA	20
+"CTAATGGAGAAACGAG"	NA	"SRX3426778"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_6d_r1"	NA	20
+"GCTTGAATCATGTAGC"	NA	"SRX3426778"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_6d_r1"	NA	20
+"GGCAATTGTGATGTGG"	NA	"SRX3426778"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_6d_r1"	NA	20
 "AAACCTGCAGCATGAG"	NA	"SRX3426778"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_6d_r1"	NA	21
 "AACGTTGGTCTCTTTA"	NA	"SRX3426778"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_6d_r1"	NA	21
 "AACTTTCTCCCACTTG"	NA	"SRX3426778"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_6d_r1"	NA	21
@@ -45628,13 +45628,13 @@
 "TTCGAAGCAAGTAGTA"	NA	"SRX3426779"	"SRP125768"	"brain"	"DN1"	NA	NA	NA	"FBbt:00003629"	"DN1 neuron (Drosophila)"	"perfect match"	"w1118_6d_r2"	NA	19
 "GATCGCGTCCATGAGT"	NA	"SRX3426779"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_6d_r2"	NA	20
 "GTCCTCACACTACAGT"	NA	"SRX3426779"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_6d_r2"	NA	20
-"ACGGAGAAGGCGACAT"	NA	"SRX3426779"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_6d_r2"	NA	21
-"AGATCTGCATGATCCA"	NA	"SRX3426779"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_6d_r2"	NA	21
-"CGTTCTGGTACCATCA"	NA	"SRX3426779"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_6d_r2"	NA	21
-"CGTTCTGTCGTTGACA"	NA	"SRX3426779"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_6d_r2"	NA	21
-"GGACATTAGATGCGAC"	NA	"SRX3426779"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_6d_r2"	NA	21
-"GTAACTGAGACTAGAT"	NA	"SRX3426779"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_6d_r2"	NA	21
-"GTCGTAATCAGCGATT"	NA	"SRX3426779"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_6d_r2"	NA	21
+"ACGGAGAAGGCGACAT"	NA	"SRX3426779"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_6d_r2"	NA	21
+"AGATCTGCATGATCCA"	NA	"SRX3426779"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_6d_r2"	NA	21
+"CGTTCTGGTACCATCA"	NA	"SRX3426779"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_6d_r2"	NA	21
+"CGTTCTGTCGTTGACA"	NA	"SRX3426779"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_6d_r2"	NA	21
+"GGACATTAGATGCGAC"	NA	"SRX3426779"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_6d_r2"	NA	21
+"GTAACTGAGACTAGAT"	NA	"SRX3426779"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_6d_r2"	NA	21
+"GTCGTAATCAGCGATT"	NA	"SRX3426779"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_6d_r2"	NA	21
 "AAACCTGCACGAAAGC"	NA	"SRX3426779"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_6d_r2"	NA	22
 "AAACGGGAGTGTACTC"	NA	"SRX3426779"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_6d_r2"	NA	22
 "AAAGCAACAGTCAGAG"	NA	"SRX3426779"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_6d_r2"	NA	22
@@ -47236,17 +47236,17 @@
 "CCACGGATCGGAAATA"	NA	"SRX3426780"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_6d_r3"	NA	17
 "GCAGTTATCCTATGTT"	NA	"SRX3426780"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_6d_r3"	NA	17
 "GGGTTGCCAGACGCAA"	NA	"SRX3426780"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_6d_r3"	NA	17
-"AACTCCCGTACGACCC"	NA	"SRX3426780"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_6d_r3"	NA	18
-"ACTATCTCAACCGCCA"	NA	"SRX3426780"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_6d_r3"	NA	18
-"AGAGCTTCAGTTAACC"	NA	"SRX3426780"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_6d_r3"	NA	18
-"AGATTGCCATGTAAGA"	NA	"SRX3426780"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_6d_r3"	NA	18
-"AGTAGTCAGTGGAGTC"	NA	"SRX3426780"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_6d_r3"	NA	18
-"AGTCTTTCATCCTAGA"	NA	"SRX3426780"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_6d_r3"	NA	18
-"ATCTACTTCTCTAGGA"	NA	"SRX3426780"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_6d_r3"	NA	18
-"CATGCCTAGGCCGAAT"	NA	"SRX3426780"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_6d_r3"	NA	18
-"CTCTAATTCCGCATCT"	NA	"SRX3426780"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_6d_r3"	NA	18
-"GACAGAGAGGCGCTCT"	NA	"SRX3426780"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_6d_r3"	NA	18
-"GATTCAGGTGACTCAT"	NA	"SRX3426780"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_6d_r3"	NA	18
+"AACTCCCGTACGACCC"	NA	"SRX3426780"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_6d_r3"	NA	18
+"ACTATCTCAACCGCCA"	NA	"SRX3426780"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_6d_r3"	NA	18
+"AGAGCTTCAGTTAACC"	NA	"SRX3426780"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_6d_r3"	NA	18
+"AGATTGCCATGTAAGA"	NA	"SRX3426780"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_6d_r3"	NA	18
+"AGTAGTCAGTGGAGTC"	NA	"SRX3426780"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_6d_r3"	NA	18
+"AGTCTTTCATCCTAGA"	NA	"SRX3426780"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_6d_r3"	NA	18
+"ATCTACTTCTCTAGGA"	NA	"SRX3426780"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_6d_r3"	NA	18
+"CATGCCTAGGCCGAAT"	NA	"SRX3426780"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_6d_r3"	NA	18
+"CTCTAATTCCGCATCT"	NA	"SRX3426780"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_6d_r3"	NA	18
+"GACAGAGAGGCGCTCT"	NA	"SRX3426780"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_6d_r3"	NA	18
+"GATTCAGGTGACTCAT"	NA	"SRX3426780"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_6d_r3"	NA	18
 "AGTTGGTCACTTACGA"	NA	"SRX3426780"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_6d_r3"	NA	19
 "ATCCGAAAGACCCACC"	NA	"SRX3426780"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_6d_r3"	NA	19
 "CGGTTAATCACTCTTA"	NA	"SRX3426780"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_6d_r3"	NA	19
@@ -50108,12 +50108,12 @@
 "GGTGTTAGTTGATTCG"	NA	"SRX3426782"	"SRP125768"	"brain"	"DN1"	NA	NA	NA	"FBbt:00003629"	"DN1 neuron (Drosophila)"	"perfect match"	"w1118_9d_r2"	NA	18
 "CCTTACGCATTGGGCC"	NA	"SRX3426782"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_9d_r2"	NA	19
 "GGGCATCAGAACAATC"	NA	"SRX3426782"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_9d_r2"	NA	19
-"AACACGTCACACCGAC"	NA	"SRX3426782"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_9d_r2"	NA	20
-"ACATACGCACATCTTT"	NA	"SRX3426782"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_9d_r2"	NA	20
-"ACTATCTAGTCCTCCT"	NA	"SRX3426782"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_9d_r2"	NA	20
-"CAGAGAGCAGGTGCCT"	NA	"SRX3426782"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_9d_r2"	NA	20
-"CCTAGCTGTATCGCAT"	NA	"SRX3426782"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_9d_r2"	NA	20
-"CTTAACTTCACAAACC"	NA	"SRX3426782"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_9d_r2"	NA	20
+"AACACGTCACACCGAC"	NA	"SRX3426782"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_9d_r2"	NA	20
+"ACATACGCACATCTTT"	NA	"SRX3426782"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_9d_r2"	NA	20
+"ACTATCTAGTCCTCCT"	NA	"SRX3426782"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_9d_r2"	NA	20
+"CAGAGAGCAGGTGCCT"	NA	"SRX3426782"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_9d_r2"	NA	20
+"CCTAGCTGTATCGCAT"	NA	"SRX3426782"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_9d_r2"	NA	20
+"CTTAACTTCACAAACC"	NA	"SRX3426782"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_9d_r2"	NA	20
 "ACTGTCCAGATACACA"	NA	"SRX3426782"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_9d_r2"	NA	21
 "CCCAATCCAGTAAGAT"	NA	"SRX3426782"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_9d_r2"	NA	21
 "GACCTGGAGTGTTGAA"	NA	"SRX3426782"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_9d_r2"	NA	21
@@ -52063,18 +52063,18 @@
 "TGCTGCTAGCCAGGAT"	NA	"SRX3426783"	"SRP125768"	"brain"	"Dm9"	NA	NA	NA	"FBbt:00111271"	"distal medullary amacrine neuron Dm9 (Drosophila)"	"perfect match"	"w1118_9d_r3"	NA	19
 "CTTTGCGTCATAGCAC"	NA	"SRX3426783"	"SRP125768"	"brain"	"DN1"	NA	NA	NA	"FBbt:00003629"	"DN1 neuron (Drosophila)"	"perfect match"	"w1118_9d_r3"	NA	20
 "GTAGTCAAGGCAGGTT"	NA	"SRX3426783"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_9d_r3"	NA	21
-"AGGTCCGTCGCTTAGA"	NA	"SRX3426783"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_9d_r3"	NA	22
-"AGTCTTTTCCTCCTAG"	NA	"SRX3426783"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_9d_r3"	NA	22
-"ATGTGTGTCCGCAGTG"	NA	"SRX3426783"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_9d_r3"	NA	22
-"CAGTAACAGTGAACAT"	NA	"SRX3426783"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_9d_r3"	NA	22
-"CCGGTAGAGGCTCTTA"	NA	"SRX3426783"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_9d_r3"	NA	22
-"CGTCTACAGTCTCGGC"	NA	"SRX3426783"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_9d_r3"	NA	22
-"CTAGCCTTCTCCTATA"	NA	"SRX3426783"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_9d_r3"	NA	22
-"CTGCTGTTCCCACTTG"	NA	"SRX3426783"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_9d_r3"	NA	22
-"GCTGGGTTCTGTTTGT"	NA	"SRX3426783"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_9d_r3"	NA	22
-"TCTGAGATCAGTTCGA"	NA	"SRX3426783"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_9d_r3"	NA	22
-"TCTGGAACAAAGTGCG"	NA	"SRX3426783"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_9d_r3"	NA	22
-"TGGTTCCGTGTTTGGT"	NA	"SRX3426783"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_9d_r3"	NA	22
+"AGGTCCGTCGCTTAGA"	NA	"SRX3426783"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_9d_r3"	NA	22
+"AGTCTTTTCCTCCTAG"	NA	"SRX3426783"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_9d_r3"	NA	22
+"ATGTGTGTCCGCAGTG"	NA	"SRX3426783"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_9d_r3"	NA	22
+"CAGTAACAGTGAACAT"	NA	"SRX3426783"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_9d_r3"	NA	22
+"CCGGTAGAGGCTCTTA"	NA	"SRX3426783"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_9d_r3"	NA	22
+"CGTCTACAGTCTCGGC"	NA	"SRX3426783"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_9d_r3"	NA	22
+"CTAGCCTTCTCCTATA"	NA	"SRX3426783"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_9d_r3"	NA	22
+"CTGCTGTTCCCACTTG"	NA	"SRX3426783"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_9d_r3"	NA	22
+"GCTGGGTTCTGTTTGT"	NA	"SRX3426783"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_9d_r3"	NA	22
+"TCTGAGATCAGTTCGA"	NA	"SRX3426783"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_9d_r3"	NA	22
+"TCTGGAACAAAGTGCG"	NA	"SRX3426783"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_9d_r3"	NA	22
+"TGGTTCCGTGTTTGGT"	NA	"SRX3426783"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_9d_r3"	NA	22
 "AAGCCGCAGAATGTTG"	NA	"SRX3426783"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_9d_r3"	NA	23
 "ATTGGTGCACAAGACG"	NA	"SRX3426783"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_9d_r3"	NA	23
 "CAGCGACTCATCTGTT"	NA	"SRX3426783"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_9d_r3"	NA	23
@@ -54180,10 +54180,10 @@
 "AGAGCGACACGTGAGA"	NA	"SRX3426784"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_15d_r1"	NA	16
 "TAGAGCTGTCGCTTTC"	NA	"SRX3426784"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_15d_r1"	NA	16
 "TCACAAGCACGGATAG"	NA	"SRX3426784"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_15d_r1"	NA	16
-"ACGGGTCGTCGCATAT"	NA	"SRX3426784"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_15d_r1"	NA	17
-"CTAGCCTAGCCGGTAA"	NA	"SRX3426784"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_15d_r1"	NA	17
-"GTGAAGGCATATGCTG"	NA	"SRX3426784"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_15d_r1"	NA	17
-"TGCCCATTCAACGGGA"	NA	"SRX3426784"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_15d_r1"	NA	17
+"ACGGGTCGTCGCATAT"	NA	"SRX3426784"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_15d_r1"	NA	17
+"CTAGCCTAGCCGGTAA"	NA	"SRX3426784"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_15d_r1"	NA	17
+"GTGAAGGCATATGCTG"	NA	"SRX3426784"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_15d_r1"	NA	17
+"TGCCCATTCAACGGGA"	NA	"SRX3426784"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_15d_r1"	NA	17
 "AAGGCAGGTCCCGACA"	NA	"SRX3426784"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_15d_r1"	NA	18
 "AAGTCTGAGGTGTGGT"	NA	"SRX3426784"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_15d_r1"	NA	18
 "ACGAGCCCAGTTCATG"	NA	"SRX3426784"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_15d_r1"	NA	18
@@ -55462,11 +55462,11 @@
 "GTAACTGCATCTGGTA"	NA	"SRX3426781"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_9d_r1"	NA	15
 "GTCTCGTTCAACGCTA"	NA	"SRX3426781"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_9d_r1"	NA	15
 "TACTTGTTCAGAGCTT"	NA	"SRX3426781"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_9d_r1"	NA	15
-"ACGCCGATCACATAGC"	NA	"SRX3426781"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_9d_r1"	NA	16
-"CCTTCGAGTCGAAAGC"	NA	"SRX3426781"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_9d_r1"	NA	16
-"GTTTCTAAGGAGCGAG"	NA	"SRX3426781"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_9d_r1"	NA	16
-"TGAGAGGTCGCCAAAT"	NA	"SRX3426781"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_9d_r1"	NA	16
-"TGCCCATCATTCGACA"	NA	"SRX3426781"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_9d_r1"	NA	16
+"ACGCCGATCACATAGC"	NA	"SRX3426781"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_9d_r1"	NA	16
+"CCTTCGAGTCGAAAGC"	NA	"SRX3426781"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_9d_r1"	NA	16
+"GTTTCTAAGGAGCGAG"	NA	"SRX3426781"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_9d_r1"	NA	16
+"TGAGAGGTCGCCAAAT"	NA	"SRX3426781"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_9d_r1"	NA	16
+"TGCCCATCATTCGACA"	NA	"SRX3426781"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_9d_r1"	NA	16
 "AAGGCAGTCACTGGGC"	NA	"SRX3426781"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_9d_r1"	NA	17
 "AAGTCTGCAGATCTGT"	NA	"SRX3426781"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_9d_r1"	NA	17
 "ACACCCTTCAGTCCCT"	NA	"SRX3426781"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_9d_r1"	NA	17
@@ -56380,7 +56380,7 @@
 "GTGGGTCAGTGGAGAA"	NA	"SRX3426785"	"SRP125768"	"brain"	"Cortex_glia"	NA	NA	NA	"FBbt:00100501"	"adult cell body glial cell (Drosophila)"	"perfect match"	"w1118_30d_r1"	NA	9
 "GCGACCATCAACACCA"	NA	"SRX3426785"	"SRP125768"	"brain"	"Dm8/Dm11"	NA	NA	NA	"FBbt:00003767"	"distal medullary amacrine neuron (Drosophila)"	"other"	"w1118_30d_r1"	NA	10
 "GATGAGGAGTAGTGCG"	NA	"SRX3426785"	"SRP125768"	"brain"	"Dopaminergic"	NA	NA	NA	"FBbt:00058206"	"adult dopaminergic neuron (Drosophila)"	"perfect match"	"w1118_30d_r1"	NA	11
-"ACGGCCAGTGCCTGGT"	NA	"SRX3426785"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00049819"	"adult central complex neuron"	"other"	"w1118_30d_r1"	NA	12
+"ACGGCCAGTGCCTGGT"	NA	"SRX3426785"	"SRP125768"	"brain"	"dorsal_Fan-shaped_Body"	NA	NA	NA	"FBbt:00047095"	"adult central complex neuron"	"other"	"w1118_30d_r1"	NA	12
 "AAAGTAGGTGATGATA"	NA	"SRX3426785"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_30d_r1"	NA	13
 "AAATGCCGTCATCCCT"	NA	"SRX3426785"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_30d_r1"	NA	13
 "AACTCTTGTCTTGATG"	NA	"SRX3426785"	"SRP125768"	"brain"	"Ensheathing_glia"	NA	NA	NA	"FBbt:00100504"	"adult ensheathing glial cell (Drosophila)"	"perfect match"	"w1118_30d_r1"	NA	13
