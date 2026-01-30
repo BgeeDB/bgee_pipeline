@@ -49,17 +49,17 @@ EcabDv:0000004	mature stage	UBERON:0000113
 EcabDv:0000005	adulthood stage	UBERON:0018241
 EcabDv:0000006	aged stage	UBERON:0007222
 FBdv:00005304	blastoderm stage (Drosophila)	UBERON:0000068
-Fbdv:00005318	embryonic stage 6 (fruit fly)	UBERON:0000109
+FBdv:00005318	embryonic stage 6 (fruit fly)	UBERON:0000109
 FBdv:00005321	extended germ band stage (Drosophila)	UBERON:0000068
 FBdv:00005331	dorsal closure stage (Drosophila)	UBERON:0000068
 FBdv:00005333	late embryonic stage	UBERON:0000068
 FBdv:00005336	larval stage	UBERON:0004730
-Fbdv:00005339	third instar larval stage	UBERON:0004730
-Fbdv:00005340	early third instar larval stage (Drosophila)	UBERON:0004730
+FBdv:00005339	third instar larval stage	UBERON:0004730
+FBdv:00005340	early third instar larval stage (Drosophila)	UBERON:0004730
 FBdv:00005349	pupal stage	UBERON:0000070
 FBdv:00005369	adult stage	UBERON:0000066
-Fbdv:00007082	day 7 of adulthood (Drosophila)	UBERON:0000066
-Fbdv:00007090	day 15 of adulthood (fruit fly)	UBERON:0000066
+FBdv:00007082	day 7 of adulthood (Drosophila)	UBERON:0000066
+FBdv:00007090	day 15 of adulthood (fruit fly)	UBERON:0000066
 FcatDv:0000001	cat life cycle	UBERON:0000104
 FcatDv:0000002	prenatal stage	UBERON:0000068
 FcatDv:0000003	immature stage	UBERON:0000112
@@ -91,6 +91,7 @@ MmusDv:0000001	mouse life cycle	UBERON:0000104
 MmusDv:0000003	Theiler stage 01	UBERON:0000106
 MmusDv:0000017	Theiler stage 11	UBERON:0000110
 MmusDv:0000036	Theiler stage 27	UBERON:0007221
+MmusDv:0000049			MmusDv:0000150
 MmusDv:0000110	mouse mature stage	UBERON:0000113
 MmusDv:0000110	mature stage	UBERON:0000113
 MmusDv:0000136	prime adult stage	UBERON:0018241
@@ -209,5 +210,8 @@ SsalDv:0000066	smolt stage	UBERON:0000066
 FBbt:00003018		UBERON:6003018
 FBbt:00047143		UBERON:0001555
 UBERON:6005043		UBERON:0003127
-Fbdv:00007076		UBERON:0000066
-Fbdv:00007078		UBERON:0000066
+FBdv:00007076		UBERON:0000066
+FBdv:00007078		UBERON:0000066
+HsapDv:0000000		HsapDv:0000001
+CL:0010017		CL:0000365
+HsapDv:0000174		HsapDv:0000273
