@@ -1,2 +1,4 @@
 Conditions with anat. entity not existing in related species: 
 Conditions with dev. stage not existing in related species: 
+speciesId	conditionId	exprMappedConditionId	anatEntityId	anatEntityName	stageId	stageName	sex	strain
+7237	64999	64999	UBERON:0000468	multicellular organism	FBdv:00005312	embryonic cycle 14 (fruit fly)	not annotated	wild-type

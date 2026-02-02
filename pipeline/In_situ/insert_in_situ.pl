@@ -49,11 +49,19 @@ my %tsv = %{ Utils::read_spreadsheet("$tsv", "\t", 'csv', '', 1) };
 
 # Fill inSituExperiment table
 my $data_source_id   = $tsv{'data_source'}[0]  || die "Problem with data in [$tsv] file\n";
-my $species          = $tsv{'speciesId'}[0]    || die "Problem with speciesId in [$tsv] file\n";
-
-
+my @species = uniq @{$tsv{'speciesId'}};
+die "Problem with speciesId in [$tsv] file\n"  if ( scalar @species == 0 );
 # Get gene_mapping to bgeeGeneId
-my $gene_mapping = Utils::query_bgeeGene($dbh, $species);
+my $gene_mapping;
+for my $species ( @species ){
+#    print $species, "\n";
+    my $gene_mapping_per_species = Utils::query_bgeeGene($dbh, $species);
+    $gene_mapping->{$_} += $gene_mapping_per_species->{$_} for keys %$gene_mapping_per_species;
+#    my @keys = keys %$gene_mapping;
+#    print scalar @keys, "\n";
+#    print '[', $keys[0], "|", $keys[$#keys], "]\n";
+}
+
 
 # Get already known conditions
 my $conditions   = Utils::query_conditions($dbh);
@@ -105,7 +113,7 @@ for my $line ( 0..$#{$tsv{'data_source'}} ){
     my $condKeyMap;
     ($condKeyMap, $conditions) = Utils::insert_get_condition($dbh, $conditions, $stage_equivalences,
                                                              $tsv{'organId'}[$line], $tsv{'stageId'}[$line],
-                                                             $species, $tsv{'sex'}[$line], $tsv{'strain'}[$line],
+                                                             $tsv{'speciesId'}[$line], $tsv{'sex'}[$line], $tsv{'strain'}[$line],
                                                              $anatSexInfo, $speciesSexInfo,
                                                              $tsv{'inSituExperimentId'}[$line], $gene_mapping->{ $tsv{'geneId'}[$line] });
     #FIXME What to do with one to many XRefId / bgeeGeneId relationship
