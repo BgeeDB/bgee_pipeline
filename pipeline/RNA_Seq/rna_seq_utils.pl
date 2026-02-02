@@ -919,14 +919,18 @@ sub getAllFullLengthScRnaSeqLibrariesInfo {
     # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'speciesId'} = ...
     # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'organism'} = ...
     # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'platform'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'protocol'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'protocolType'} = ...
     # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'libraryType'} = ...
-    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'libraryInfo'} = ...
     # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'readLength'} = ...
-    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'anatId'} = ...
-    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'stageId'} = ...
     # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'cellTypeId'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'cellTypeName'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'anatId'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'infoOrgan'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'stageId'} = ...
     # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'sex'} = ...
     # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'strain'} = ...
+    # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'genotype'} = ...
 
     my @valid_platforms = ('Illumina HiSeq 2500', 'Illumina HiSeq 2000', 'Illumina MiSeq', 'NextSeq 500');
 
@@ -937,23 +941,26 @@ sub getAllFullLengthScRnaSeqLibrariesInfo {
     my %fullLengthScRnaSeqLibrary;
     for my $line ( read_file("$fullLengthScRnaSeqLibraryFile", chomp=>1) ){
         next  if ( $line =~ /^#/ or $line =~ /^libraryId/ );
-        #libraryId  experimentId    cellTypeName    cellTypeId  speciesId   platform    protocol    protocolType    libraryType infoOrgan   stageId uberonId    sex strain  readLength  organism
+        #libraryId	experimentId	cellTypeName	cellTypeId	speciesId	platform	protocol	protocolType	libraryType	infoOrgan	stageId	anatId	sex	strain	readLength	genotype	organism
         my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
 
         my $libraryId                       = $tmp[0];
         my $experimentId                    = $tmp[1];
+        my $cellTypeName                    = $tmp[2];
         my $cellTypeId                      = $tmp[3];
         my $speciesId                       = $tmp[4];
         my $platform                        = $tmp[5];
         my $protocol                        = $tmp[6];
+        my $protocolType                    = $tmp[7];
         my $libraryType                     = $tmp[8];
+        my $infoOrgan                       = $tmp[9];
         my $stageId                         = $tmp[10];
-        my $uberonId                        = $tmp[11];
+        my $anatId                          = $tmp[11];
         my $sex                             = $tmp[12];
         my $strain                          = $tmp[13];
         my $readLength                      = $tmp[14];
-        my $organism                        = $tmp[15];
-        my $genotype                        = $tmp[16];
+        my $genotype                        = $tmp[15];
+        my $organism                        = $tmp[16];
 
         #TODO: change the annotation to fit authorized sex values in the DB ('not annotated','hermaphrodite','female','male','mixed','NA')
         # it is ugly to have to manually modify the values in this script
@@ -964,7 +971,7 @@ sub getAllFullLengthScRnaSeqLibrariesInfo {
             $sex = $Utils::MALE_SEX;
         }
 
-        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 16 );
+        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 17 );
 
         if ( !defined $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId} ){
             # Perform format checks
@@ -1014,8 +1021,8 @@ sub getAllFullLengthScRnaSeqLibrariesInfo {
                 warn "Warning, wrong format for stageId [$stageId]\n";
                 $discarded = 1;
             }
-            if ( $uberonId eq '' ){
-                warn "Warning, wrong format for uberonId [$uberonId]\n";
+            if ( $anatId eq '' ){
+                warn "Warning, wrong format for anatId [$anatId]\n";
                 $discarded = 1;
             }
             if ( $sex eq '' ){
@@ -1039,11 +1046,14 @@ sub getAllFullLengthScRnaSeqLibrariesInfo {
                 $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'organism'}       = $organism;
                 $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'platform'}       = $platform;
                 $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'protocol'}       = $protocol;
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'protocolType'}   = $protocolType;
                 $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'libraryType'}    = lc($libraryType);
                 $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'readLength'}     = $readLength;
                 $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'cellTypeId'}     = $cellTypeId;
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'cellTypeName'}   = $cellTypeName;
                 $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'stageId'}        = $stageId;
-                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'uberonId'}       = $uberonId;
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'anatId'}         = $anatId;
+                $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'infoOrgan'}      = $infoOrgan;
                 $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'sex'}            = $sex;
                 $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'strain'}         = $strain;
                 $fullLengthScRnaSeqLibrary{$experimentId}->{$libraryId}->{'genotype'}       = $genotype;
