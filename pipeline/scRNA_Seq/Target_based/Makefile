@@ -208,13 +208,9 @@ final_commit: final_status
 	@echo -e "All information is ready, you can make a tar of the results. \n"
 	@touch $@
 
-## Currently parallelize job using different thread to write in the database
-## (argument coreNumber). 
-## Took less than 2 days to run for Bgee 15.2 with 10 threads. Not possible to increase number of threads
-## as each one can use lots of memory (until 250Gb for 10 threads) to load the sparse matrices. To fasten
-## that step we could run it on the cluster by creating one job per experiment.
+## Used 20 cores to run that step for Bgee 16.0.
 insert_data:
-	@perl 3Insertion/insert_scrna_seq.pl -bgee=$(BGEECMD) -targetBaseLibrary=$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED) -singleCellExperiment=$(SC_RNASEQ_EXP_TB_FILEPATH_FILTERED) -bgeeLibraryInfo=$(SC_RNASEQ_METADATA_10X_FILEPATH) -filteredBarcodeDir=$(SC_RNASEQ_CLEANED_BARCODES) -pipelineCallsSummary=$(SC_RNASEQ_SERVER_INFO_CALLS_10X) -pipelineReportFile=$(SC_RNASEQ_STATS_LIBRARIES_10X)  -kallistoResults=$(SC_RNASEQ_SERVER_RES_KALLISTO_DROPLET) -callsResults=$(SC_RNASEQ_SERVER_CALLS_10X) -sexInfo=$(UBERON_SEX_INFO_FILE_PATH) -extraMapping=$(EXTRAMAPPING_FILEPATH) -numberCore=10 > $@.tmp 2> $@.err
+	@perl 3Insertion/insert_scrna_seq.pl -bgee=$(BGEECMD) -targetBaseLibrary=$(SC_RNASEQ_LIB_TB_FILEPATH_FILTERED) -singleCellExperiment=$(SC_RNASEQ_EXP_TB_FILEPATH_FILTERED) -bgeeLibraryInfo=$(SC_RNASEQ_METADATA_10X_FILEPATH) -filteredBarcodeDir=$(SC_RNASEQ_CLEANED_BARCODES) -pipelineCallsSummary=$(SC_RNASEQ_SERVER_INFO_CALLS_10X) -pipelineReportFile=$(SC_RNASEQ_STATS_LIBRARIES_10X)   -callsResults=$(SC_RNASEQ_SERVER_CALLS_10X) -sexInfo=$(UBERON_SEX_INFO_FILE_PATH) -extraMapping=$(EXTRAMAPPING_FILEPATH) -numberCore=20 > $@.tmp 2> $@.err
 	@if [[ ! -s $@.err ]]; then $(RM) $@.err; fi
 	@echo "Delete RNA-Seq experiments for which no RNA-Seq libraries have been inserted" >> $@.tmp
 	@$(MYSQL) -e "DELETE t1 FROM rnaSeqExperiment AS t1 WHERE NOT EXISTS (SELECT 1 FROM rnaSeqLibrary AS t2 WHERE t1.rnaSeqExperimentId = t2.rnaSeqExperimentId)" >> $@.tmp

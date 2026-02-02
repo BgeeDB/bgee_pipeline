@@ -286,7 +286,7 @@ my $stage_equivalences = Utils::get_stage_equivalences($bgee);
 print "Inserting libraries and all results...\n";
 # query for samples insertion
 my $insert_libraries =  'INSERT INTO rnaSeqLibrary (rnaSeqLibraryId, rnaSeqExperimentId,'.
-                        'rnaSeqSequencerName, rnaSeqTechnologyName, rnaSeqTechnologyIsSIngleCell,'.
+                        'rnaSeqSequencerName, rnaSeqTechnologyName, rnaSeqTechnologyIsSingleCell,'.
                         'sampleMultiplexing, libraryMultiplexing, strandSelection,'.
                         'cellCompartment, sequencedTranscriptPart, fragmentation,'.
                         'rnaSeqPopulationCaptureId, genotype, allReadsCount, mappedReadsCount,'.
