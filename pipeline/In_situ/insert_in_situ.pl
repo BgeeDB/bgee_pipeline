@@ -38,6 +38,7 @@ if ( !$test_options || $bgee_connector eq '' || $tsv eq '' || $sex_info eq '' ){
     exit 1;
 }
 
+warn "$tsv\n";
 # Bgee db connection
 my $dbh = Utils::connect_bgee_db($bgee_connector);
 
@@ -103,7 +104,7 @@ for my $line ( 0..$#{$tsv{'data_source'}} ){
         my $evidenceDistinguishable = $tsv =~ /flybase$/ ? 0 : 1;
         my $linked                  = $tsv{'linked'}[$line] || '';
 
-        $insEvid->execute($tsv{'inSituEvidenceId'}[$line], $tsv{'inSituExperimentId'}[$line], $evidenceDistinguishable, $linked)  or die "[$tsv{'inSituEvidenceId'}[$line]] ".$insEvid->errstr;
+        $insEvid->execute($tsv{'inSituEvidenceId'}[$line], $tsv{'inSituExperimentId'}[$line], $evidenceDistinguishable, $linked)  or warn "[$tsv{'inSituEvidenceId'}[$line]] ".$insEvid->errstr;
         print "[$tsv{'inSituEvidenceId'}[$line]]\t[$tsv{'inSituExperimentId'}[$line]]\t[$evidenceDistinguishable]\t[$linked]\n"  if ( $debug );
         $evid_seen{ $tsv{'inSituExperimentId'}[$line].'-'.$tsv{'inSituEvidenceId'}[$line] }++;
     }

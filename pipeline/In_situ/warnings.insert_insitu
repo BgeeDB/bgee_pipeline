@@ -825,6 +825,7 @@ Unknown gene id (too old or too up-to-date) [FBgn0288888]
 Unknown gene id (too old or too up-to-date) [FBgn0288888]
 Unknown gene id (too old or too up-to-date) [FBgn0288888]
 Unknown gene id (too old or too up-to-date) [FBgn0288888]
+tsv_mgi
 Inconsistent sex inference as compared to annotation, annotation will have preceedence. Annotation: UBERON:0001333 - MmusDv:0000029 - 10090 - female - wild-type for experiment [MGI:5829746] and gene [1475870]. Inferred sex: male
 Inconsistent sex inference as compared to annotation, annotation will have preceedence. Annotation: UBERON:0001333 - MmusDv:0000029 - 10090 - female - wild-type for experiment [MGI:5829747] and gene [1475863]. Inferred sex: male
 Inconsistent sex inference as compared to annotation, annotation will have preceedence. Annotation: UBERON:0001333 - MmusDv:0000029 - 10090 - female - wild-type for experiment [MGI:5829749] and gene [1475897]. Inferred sex: male
@@ -880,6 +881,7 @@ Inconsistent sex inference as compared to annotation, annotation will have prece
 Inconsistent sex inference as compared to annotation, annotation will have preceedence. Annotation: UBERON:0016520 - UBERON:0000112 - 10090 - male - wild-type for experiment [MGI:5543127] and gene [1465290]. Inferred sex: female
 Inconsistent sex inference as compared to annotation, annotation will have preceedence. Annotation: UBERON:0016520 - UBERON:0000112 - 10090 - male - wild-type for experiment [MGI:5543129] and gene [1463916]. Inferred sex: female
 Inconsistent sex inference as compared to annotation, annotation will have preceedence. Annotation: UBERON:0016520 - UBERON:0000112 - 10090 - male - wild-type for experiment [MGI:5543138] and gene [1465839]. Inferred sex: female
+tsv_wormbase
 Inconsistent sex inference as compared to annotation, annotation will have preceedence. Annotation: UBERON:0003101 - UBERON:0000104 - 6239 - hermaphrodite - not annotated for experiment [WBPaper00006057] and gene [258719]. Inferred sex: male
 Inconsistent sex inference as compared to annotation, annotation will have preceedence. Annotation: UBERON:0003101 - UBERON:0000104 - 6239 - hermaphrodite - not annotated for experiment [WBPaper00004290] and gene [258730]. Inferred sex: male
 Inconsistent sex inference as compared to annotation, annotation will have preceedence. Annotation: UBERON:0003101 - UBERON:0000104 - 6239 - hermaphrodite - not annotated for experiment [WBPaper00006358] and gene [262875]. Inferred sex: male
@@ -895,7 +897,8 @@ Inconsistent sex inference as compared to annotation, annotation will have prece
 Inconsistent sex inference as compared to annotation, annotation will have preceedence. Annotation: UBERON:0003101 - UBERON:0000104 - 6239 - hermaphrodite - not annotated for experiment [WBPaper00006358] and gene [262876]. Inferred sex: male
 Inconsistent sex inference as compared to annotation, annotation will have preceedence. Annotation: UBERON:0003101 - UBERON:0000104 - 6239 - hermaphrodite - not annotated for experiment [WBPaper00006358] and gene [262876]. Inferred sex: male
 Inconsistent sex inference as compared to annotation, annotation will have preceedence. Annotation: UBERON:0003101 - UBERON:0000104 - 6239 - hermaphrodite - not annotated for experiment [WBPaper00006358] and gene [262876]. Inferred sex: male
-DBD::mysql::st execute failed: Duplicate entry 'XB-IMG-179611' for key 'inSituEvidence.PRIMARY' at insert_in_situ.pl line 106.
-Uncaught exception from user code:
-	[XB-IMG-179611] Duplicate entry 'XB-IMG-179611' for key 'inSituEvidence.PRIMARY' at insert_in_situ.pl line 106.
+tsv_xenbase
+DBD::mysql::st execute failed: Duplicate entry 'XB-IMG-179611' for key 'inSituEvidence.PRIMARY' at insert_in_situ.pl line 107.
+[XB-IMG-179611] Duplicate entry 'XB-IMG-179611' for key 'inSituEvidence.PRIMARY' at insert_in_situ.pl line 107.
+tsv_zfin
 Inconsistent sex inference as compared to annotation, annotation will have preceedence. Annotation: UBERON:0000992 - UBERON:0000113 - 7955 - male - wild-type for experiment [ZDB-PUB-100408-15] and gene [448548]. Inferred sex: female
