@@ -60,6 +60,9 @@ for(line in seq(nrow(libraries))) {
     library_r_stat_files <- list.files(path = file.path(fastq_dir, species_id, library_id), 
       pattern = reads_R_stat_suffix, full.names = TRUE, recursive = TRUE)
     if(file.exists(kallisto_info_file_path)) {
+      #TODO: Should not use the .R.stat files but the file containing downloaded libraries.
+      # The file containing downloaded libraries should be updated to contain these info as
+      # it is already done for the bulk and full-length pipelines.
       if ((length(library_r_stat_files) > 0) ) {
         json_info <- fromJSON(file = kallisto_info_file_path)
         min_reads <- Inf
