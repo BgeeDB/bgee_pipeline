@@ -12,6 +12,7 @@
 ## gtfDir               --> Folder where is placed the informative files as transcriptomes index + gtf_all
 ## scRNASeqInfoFile     --> Path to the scRNA_Seq_info_TargetBased file
 ## kallisto_bus_results --> Path where should be saved the kallisto bus results
+## number_threads	--> number of threads used by kallisto
 
 ## libraries used
 library(stringr)
@@ -27,7 +28,7 @@ if( length(cmd_args) == 0 ){ stop("no arguments provided\n") } else {
 }
 
 ## checking if all necessary arguments were passed.
-command_arg <- c("libraryId","speciesId", "fastqDir", "gtfDir", "scRNASeqInfoFile", "kallisto_bus_results")
+command_arg <- c("libraryId","speciesId", "fastqDir", "gtfDir", "scRNASeqInfoFile", "kallisto_bus_results", "number_threads")
 for( c_arg in command_arg ){
   if( !exists(c_arg) ){
     stop( paste(c_arg,"command line argument not provided\n") )
@@ -98,9 +99,9 @@ if (file.exists(file.path(fastqDir, speciesId, libraryId))) {
       stop("no transcriptome index file found. please check that the index exists and that it is not compressed")
     }
     message("Will use transcriptome index ", transcriptomeIndexFile)
-    message("kallisto bus -i ",file.path(gtfDir, transcriptomeIndexFile), " -o ", paste0(busOutput), " -x ", paste0("10x", whiteLInfo), " -t 4 ", paste0(filesKallisto))
+    message("kallisto bus -i ",file.path(gtfDir, transcriptomeIndexFile), " -o ", paste0(busOutput), " -x ", paste0("10x", whiteLInfo), " -t ", paste0(number_threads), " ", paste0(filesKallisto))
     #RUN Kallisto bus
-    system(sprintf('kallisto bus -i %s -o %s -x %s -t 4 %s', file.path(gtfDir, transcriptomeIndexFile), paste0(busOutput), paste0("10x", whiteLInfo), paste0(filesKallisto)), intern = TRUE)
+    system(sprintf('kallisto bus -i %s -o %s -x %s -t %s %s', file.path(gtfDir, transcriptomeIndexFile), paste0(busOutput), paste0("10x", whiteLInfo), number_threads, paste0(filesKallisto)), intern = TRUE)
 
     ## control kallisto was run properly by checking presence of the run_info.json file
     if (file.exists(file.path(kallisto_bus_results, libraryId, "run_info.json"))) {
