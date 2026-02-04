@@ -1,2 +1,7 @@
-sh: 1: cannot create /dev/null: Permission denied
-781 libraries in the bgeecall info file
+WARNING: Skipping /dev bind mount: source and destination must be identical when binding to /dev
+1277 libraries in the bgeecall info file
+Warning messages:
+1: ERX6700418 : kallisto info file not created /data/FAC/FBM/DEE/mrobinso/bgee_sensitive//bgee_v16_0/scRNA-Seq_all_results/DROPLET_10X/kallisto_bus_results//ERX6700418/run_info.json 
+2: ERX6700419 : kallisto info file not created /data/FAC/FBM/DEE/mrobinso/bgee_sensitive//bgee_v16_0/scRNA-Seq_all_results/DROPLET_10X/kallisto_bus_results//ERX6700419/run_info.json 
+Warning message:
+Calls or R.stat file were not generated for 2 libraries. 

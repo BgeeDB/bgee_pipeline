@@ -1,5 +1,6 @@
 R version 4.5.0 (2025-04-11)
 Platform: x86_64-pc-linux-gnu
+Running under: Ubuntu 24.04.2 LTS
 
 Matrix products: default
 BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.12.0 
@@ -21,5 +22,5 @@ loaded via a namespace (and not attached):
 [1] compiler_4.5.0
 [1] "metadata_file=\"../../../generated_files/scRNA_Seq/Target_based/metadata_info_10X.txt\""                                       
 [2] "kallisto_dir=\"/data/FAC/FBM/DEE/mrobinso/bgee_sensitive//bgee_v16_0/scRNA-Seq_all_results/DROPLET_10X/kallisto_bus_results/\""
-[3] "fastq_dir=\"/work/FAC/FBM/DEE/mrobinso/bgee/downloads/scRNA_Seq_All/scRNASeq_libraries_Droplet_10X/\""                         
+[3] "fastq_dir=\"/data/FAC/FBM/DEE/mrobinso/bgee_sensitive//FASTQ/scRNAseq/10X/\""                                                  
 [4] "output_file=\"../../../generated_files/scRNA_Seq/Target_based//stats_libraries.txt\""                                          

@@ -73,7 +73,7 @@ for(line in seq(nrow(libraries))) {
             max_reads <- r_stats[1,2]
           }
         }
-        kallisto_info <- data.frame(library_id, json_info$n_processed, r_stats[1,1], r_stats[1,2], 
+        kallisto_info <- data.frame(library_id, json_info$n_processed, min_reads, max_reads, 
           json_info$n_pseudoaligned, json_info$n_unique, json_info$p_pseudoaligned, json_info$p_unique, 
           json_info$n_targets, json_info$start_time, json_info$kallisto_version)
         names(kallisto_info) <- kallisto_info_report_columns
