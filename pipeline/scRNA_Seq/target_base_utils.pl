@@ -156,6 +156,76 @@ sub getTargetBaseCuratedLibrariesAnnotation {
     return %targetBaseLibrary;
 }
 
+sub loadFullLengthLibrariesAnnotation {
+    my ($fullLengthLibraryFile) = @_;
+    # $annotations{expId}->{libraryId}->{'commented'}  = commented
+    # $annotations{expId}->{libraryId}->{'speciesId'}  = speciesId
+    # $annotations{expId}->{libraryId}->{'anatId'}     = anatId
+    # $annotations{expId}->{libraryId}->{'stageId'}    = stageId
+    # $annotations{expId}->{libraryId}->{'cellTypeId'} = cellTypeId
+    # $annotations{expId}->{libraryId}->{'sex'}        = sex
+    # $annotations{expId}->{libraryId}->{'strain'}     = strain
+    # $annotations{expId}->{libraryId}->{'genotype'}   = genotype
+    # $annotations{expId}->{libraryId}->{'cellCompartment'} = 'whole cell' (always for full-length)
+    # $annotations{expId}->{libraryId}->{'authorCellTypeAnnotation'} = author annotation
+    # $annotations{expId}->{libraryId}->{'authorAnatEntityAnnotation'} = author annotation
+    # $annotations{expId}->{libraryId}->{'authorStageAnnotation'} = author annotation
+
+    my %annotations;
+    
+    for my $line ( read_file("$fullLengthLibraryFile", chomp=>1) ){
+        # Skip header line
+        next if ( $line =~ /^#libraryId/ or $line =~ /^\"#libraryId/ or $line =~ /^libraryId/ );
+        
+        my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line, -1);
+        
+        # Check we have the right number of columns (33 based on header)
+        die "tsv field number problem [$line]\n" if ( scalar @tmp != 33 );
+        
+        my $libraryId                       = $tmp[0];
+        my $experimentId                    = $tmp[1];
+        my $speciesId                       = $tmp[23];
+        # Author annotations for free text fields
+        my $authorAnatEntityAnnotation      = $tmp[11];
+        my $authorCellTypeAnnotation        = $tmp[12];
+        my $authorStageAnnotation           = $tmp[16];
+        my $rnaSeqTags                      = $tmp[24];
+
+        my $commented = 0;
+        # Check if commented
+        if ( $libraryId =~ /^#(.+)/ or $libraryId =~ /^\"#(.+)/ ){
+            $libraryId = $1;
+            $libraryId =~ s/^\"//;
+            $libraryId =~ s/\"$//;
+            $commented = 1;
+        }
+        my $cellCompartment = '';
+        if ( $rnaSeqTags =~ /scRNA-seq/ ){
+            $cellCompartment = 'cell';
+        } elsif ( $rnaSeqTags =~ /Sn-scRNA-seq/ ){
+            $cellCompartment = 'nucleus';
+        } else {
+            warn "Warning, wrong format for rnaSeqTags [$rnaSeqTags] for libraryId [$libraryId]\n";
+        }
+
+        if ( !defined $annotations{$experimentId}->{$libraryId} ){
+            $annotations{$experimentId}->{$libraryId}->{'commented'}                    = $commented;
+            $annotations{$experimentId}->{$libraryId}->{'speciesId'}                    = $speciesId;
+            # For full-length scRNA-Seq, cell compartment is always 'whole cell'
+            $annotations{$experimentId}->{$libraryId}->{'cellCompartment'}              = $cellCompartment;
+            $annotations{$experimentId}->{$libraryId}->{'authorCellTypeAnnotation'}     = $authorCellTypeAnnotation;
+            $annotations{$experimentId}->{$libraryId}->{'authorAnatEntityAnnotation'}   = $authorAnatEntityAnnotation;
+            $annotations{$experimentId}->{$libraryId}->{'authorStageAnnotation'}        = $authorStageAnnotation;
+        }
+        else {
+            warn 'Warning: library present several times in the annotation file: experiment: ',
+            $experimentId, ' - library: ', $libraryId, ". Commented: $commented\n";
+        }
+    }
+    
+    return %annotations;
+}
+
 sub getSingleCellExperiments {
     my ($targetBaseExperimentFile, @experimentTypes) = @_;
     # $experiments{experimentId}->{'name'}
@@ -167,23 +237,23 @@ sub getSingleCellExperiments {
     # $experiments{experimentId}->{'experimentType'}
 
     my %experiments;
-    for my $line ( read_file("$targetBaseExperimentFile", chomp=>1) ){
-        next  if ( $line =~ /^#/ or $line =~ /^\"#/ );
-        # there is currently 32 columns in the target base library annotation file
-        my @tmp = map { bgeeTrim($_) } map { s/^\"//; s/\"$//; $_ } split(/\t/, $line);
+    
+    # Use read_spreadsheet to properly handle multi-line quoted fields
+    my %tsv = %{ Utils::read_spreadsheet("$targetBaseExperimentFile", "\t", 'csv', '"', 1) };
+    
+    for my $line ( 0..$#{$tsv{'experimentId'}} ){
+        # Skip commented lines
+        my $experimentId = $tsv{'experimentId'}[$line];
+        next if ( $experimentId =~ /^#/ or $experimentId =~ /^\"#/ );
 
-        my $experimentId                    = $tmp[0];
-        my $name                            = $tmp[1];
-        my $description                     = $tmp[2];
-        my $source                          = $tmp[3];
+        my $name                            = $tsv{'experimentName'}[$line];
+        my $description                     = $tsv{'experimentDescription'}[$line];
+        my $source                          = $tsv{'experimentSource'}[$line];
         # is it useful???
-        my $status                          = $tmp[4];
-        my $protocol                        = $tmp[7];
-        my $protocolType                    = $tmp[8];
-        my $comment                         = $tmp[13];
-
-
-        die "tsv field number problem [$line]\n"  if ( scalar @tmp != 14 );
+        my $status                          = $tsv{'experimentStatus'}[$line];
+        my $protocol                        = $tsv{'protocol'}[$line];
+        my $protocolType                    = $tsv{'protocolType'}[$line];
+        my $comment                         = $tsv{'comment'}[$line];
 
         if ( !defined $experiments{$experimentId} ){
             # Perform format checks
@@ -600,8 +670,20 @@ sub insert_get_annotated_sample {
     #insert annotated sample
     if ($debug) {
         my $timeNullable = $time;
+        my $barcodeNullable = $barcode;
+        my $timeUnitNullable = $timeUnit;
+        my $physiologicalStatusNullable = $physiologicalStatus;
         if (!defined $time) {
             $timeNullable = 'undef';
+        }
+        if (!defined $barcode) {
+            $barcodeNullable = 'undef';
+        }
+        if (!defined $timeUnit) {
+            $timeUnitNullable = 'undef';
+        }
+        if (!defined $physiologicalStatus) {
+            $physiologicalStatusNullable = 'undef';
         }
         print 'INSERT INTO rnaSeqLibraryAnnotatedSample: ',
                     $libraryId,                        ' - ',
@@ -620,10 +702,10 @@ sub insert_get_annotated_sample {
                     $allUMIsCount,                     ' - ',
                     $mappedUMIsCount,                  ' - ',
                     $isDropletBased,                   ' - ',
-                    $barcode,                          ' - ',
-                    $timeNullable,                             ' - ',
-                    $timeUnit,                         ' - ',
-                    $physiologicalStatus,
+                    $barcodeNullable,                  ' - ',
+                    $timeNullable,                     ' - ',
+                    $timeUnitNullable,                 ' - ',
+                    $physiologicalStatusNullable,
                     "\n";
     } else {
         $insAnnotatedSample->execute($libraryId, $conditionId, $cellTypeAuthorAnnotation,

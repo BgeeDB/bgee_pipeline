@@ -666,11 +666,19 @@ sub getAllRnaSeqLibrariesStats {
                 warn "Warning, wrong format for pValueThreshold [$pValueThreshold]\n";
                 $discarded = 1;
             }
-            if ( $meanIntergenic !~ /$floatingPointRegex/ || $meanIntergenic < 0){
+            #TODO: NA value for meanIntergenic currently means no intergenic regions were found.
+            #   This should be fixed upstream to have 0 instead of NA.  For now, we convert NA to 0 here.
+            if ( $meanIntergenic eq "NA" ){
+                $meanIntergenic = 0;
+            } elsif ( $meanIntergenic !~ /$floatingPointRegex/ || $meanIntergenic < 0){
                 warn "Warning, wrong format for meanIntergenic [$meanIntergenic]\n";
                 $discarded = 1;
             }
-            if ( $sdIntergenic !~ /$floatingPointRegex/ || $sdIntergenic < 0){
+            # NA value for sdIntergenic means no intergenic regions were found.
+            if ( $sdIntergenic eq "NA" && $meanIntergenic != 0 ){
+                warn "Warning, wrong format. sdIntergenic can not be [$sdIntergenic] as meanIntergenic == $meanIntergenic\n";
+                $discarded = 1;
+            } elsif ($sdIntergenic ne "NA" && ($sdIntergenic !~ /$floatingPointRegex/ || $sdIntergenic < 0)) {
                 warn "Warning, wrong format for sdIntergenic [$sdIntergenic]\n";
                 $discarded = 1;
             }
@@ -724,8 +732,8 @@ sub getAllRnaSeqReportInfo {
         my $maxReadLength                   = $tmp[3];
         my $mappedReadsCount                = $tmp[4];
         #transform from potential scientific notation to integer
-        if ( $allReadsCount =~ /^[0-9]+e[+|-][0-9]+$/ ) {
-            $allReadsCount = sprintf("%.0f", $tmp[4]);
+        if ( $mappedReadsCount =~ /e[+|-][0-9]+$/ ) {
+            $mappedReadsCount = sprintf("%.0f", $mappedReadsCount);
         }
 
 
@@ -932,10 +940,12 @@ sub getAllFullLengthScRnaSeqLibrariesInfo {
     # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'strain'} = ...
     # $rnaSeqLibrary{experimentId}->{libraryId (SRX...)}->{'genotype'} = ...
 
-    my @valid_platforms = ('Illumina HiSeq 2500', 'Illumina HiSeq 2000', 'Illumina MiSeq', 'NextSeq 500');
+    my @valid_platforms = ('Illumina HiSeq 2500', 'Illumina HiSeq 2000', 'Illumina MiSeq', 'NextSeq 500',
+        'Illumina HiSeq 4000', 'Illumina NovaSeq 6000', 'NextSeq 550');
 
-    my @valid_protocols = ('Adapted_SMART_seq2', 'Fluidigm C1 instrument and Nextera XT protocol',
-        'NEBNext® Ultra™ DNA Library Prep Kit for Illumina®', 'SMARTer Ultra Low', 'SMART_seq', 'SMART_seq2');
+    my @valid_protocols = ('Adapted Smart-Seq2', 'C1 autoprep' , 'Fluidigm C1 instrument and Nextera XT protocol',
+        'Fluidigm C1 + SMARTer Ultra Low', 'NEBNext Ultra DNA Library Prep Kit for Illumina', 'SMARTer Ultra Low',
+        'Smart-Seq', 'Smart-Seq2', 'Smart-Seq v4');
 
 
     my %fullLengthScRnaSeqLibrary;
@@ -988,11 +998,11 @@ sub getAllFullLengthScRnaSeqLibrariesInfo {
                 warn "Warning, wrong format for speciesId [$speciesId]\n";
                 $discarded = 1;
             }
-            if ( $platform eq '' || all { $platform !~ /^$_/ } @valid_platforms ){
+            if ( $platform eq '' || all { $platform !~ /^\Q$_\E/ } @valid_platforms ){
                 warn "Warning, wrong format for platform [$platform]\n";
                 $discarded = 1;
             }
-            if ( $protocol eq '' || all { $protocol !~ /^$_/ } @valid_protocols ){
+            if ( $protocol eq '' || all { $protocol !~ /^\Q$_\E/ } @valid_protocols ){
                 warn "Warning, wrong format for protocol [$protocol]\n";
                 $discarded = 1;
             }
@@ -1009,29 +1019,39 @@ sub getAllFullLengthScRnaSeqLibrariesInfo {
                 warn "Warning, wrong format for organism [$organism]\n";
                 $discarded = 1;
             }
+            # $cellTypeId could be a comma separated list of cell type IDs like "CL:001, CL:002". Then we keep only the first one.
             if ( $cellTypeId eq '' ){
                 warn "Warning, wrong format for cellTypeId [$cellTypeId]\n";
                 $discarded = 1;
             }
-            if ( $cellTypeId eq '' ){
-                warn "Warning, wrong format for cellTypeId [$cellTypeId]\n";
-                $discarded = 1;
-            }
+            my ($firstCellTypeId) = split(/,/, $cellTypeId);
+            # Trim any whitespace from the first cell type ID
+            $cellTypeId = bgeeTrim($firstCellTypeId);
             if ( $stageId eq '' ){
                 warn "Warning, wrong format for stageId [$stageId]\n";
                 $discarded = 1;
             }
+            # $anatId could be a comma separated list of cell type IDs like "UBERON:001, UBERON:002". Then we keep only the first one.
             if ( $anatId eq '' ){
                 warn "Warning, wrong format for anatId [$anatId]\n";
                 $discarded = 1;
             }
+            my ($firstAnatId) = split(/,/, $anatId);
+            # Trim any whitespace from the first anat ID
+            $anatId = bgeeTrim($firstAnatId);
             if ( $sex eq '' ){
+                $sex = "not annotated";
+            } elsif($sex eq 'M') {
+                $sex = 'male';
+            } elsif($sex eq 'F') {
+                $sex = 'female';
+            }
+            if ($sex ne "not annotated" && $sex ne "male" && $sex ne "female" && $sex ne "hermaphrodite" && $sex ne "mixed") {
                 warn "Warning, wrong format for sex [$sex]\n";
                 $discarded = 1;
             }
             if ( $strain eq '' ){
-                warn "Warning, wrong format for strain [$strain]\n";
-                $discarded = 1;
+                $strain = "not annotated";
             }
             # genotype can be null if no information provided
             if ( $genotype eq '' ){
