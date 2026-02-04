@@ -7952,7 +7952,6 @@ disable autocommit. Manually commit for each library
 	GSE43520 SRX217694
 	GSE43520 SRX217695
 	GSE43520 SRX217696
-Using inferred sex info 'female' for organ 'UBERON:0001987' and species '13616' for experiment [SRX217696] and gene []
 	GSE43520 SRX217697
 	GSE43520 SRX217698
 	GSE43520 SRX217699
@@ -7976,7 +7975,6 @@ Using inferred sex info 'female' for organ 'UBERON:0001987' and species '13616' 
 	GSE43520 SRX328077
 	GSE43520 SRX328078
 	GSE43520 SRX328079
-Using inferred sex info 'female' for organ 'UBERON:0001987' and species '10090' for experiment [SRX328079] and gene []
 	GSE43520 SRX328080
 	GSE43520 SRX328081
 	GSE43520 SRX328082
@@ -8557,13 +8555,11 @@ Using inferred sex info 'female' for organ 'UBERON:0001987' and species '10090' 
 	SRP007359 SRX080234
 	SRP007359 SRX080235
 	SRP007359 SRX080236
-Using inferred sex info 'male' for organ 'UBERON:0000473' and species '10116' for experiment [SRX080236] and gene []
 	SRP007359 SRX080237
 	SRP007359 SRX080238
 	SRP007359 SRX080239
 	SRP007359 SRX080240
 	SRP007359 SRX080241
-Using inferred sex info 'male' for organ 'UBERON:0000473' and species '9544' for experiment [SRX080241] and gene []
 	SRP007398 SRX081740
 	SRP007398 SRX081741
 	SRP007398 SRX081742
@@ -13993,7 +13989,6 @@ Using inferred sex info 'male' for organ 'UBERON:0000473' and species '9544' for
 	SRP013027 SRX2370422
 	SRP013027 SRX2370423
 	SRP013027 SRX2370424
-Using inferred sex info 'female' for organ 'UBERON:0001987' and species '10090' for experiment [SRX2370424] and gene []
 	SRP013027 SRX2370425
 	SRP013027 SRX2370426
 	SRP013027 SRX2370427
@@ -16966,7 +16961,6 @@ Using inferred sex info 'female' for organ 'UBERON:0001987' and species '10090' 
 	SRP045471 SRX679293
 	SRP045471 SRX679294
 	SRP045471 SRX679295
-Using inferred sex info 'male' for organ 'UBERON:0008812' and species '28377' for experiment [SRX679295] and gene []
 	SRP045471 SRX679296
 	SRP045471 SRX679297
 	SRP045471 SRX679298
@@ -19211,7 +19205,6 @@ Using inferred sex info 'male' for organ 'UBERON:0008812' and species '28377' fo
 	SRP064186 SRX1287717
 	SRP064186 SRX1287718
 	SRP064186 SRX1287719
-Using inferred sex info 'female' for organ 'CL:0000023' and species '8355' for experiment [SRX1287719] and gene []
 	SRP064186 SRX1287720
 	SRP064186 SRX1287721
 	SRP064186 SRX1287722
@@ -19263,7 +19256,6 @@ Using inferred sex info 'female' for organ 'CL:0000023' and species '8355' for e
 	SRP064513 SRX1307217
 	SRP064513 SRX1307218
 	SRP064513 SRX1307219
-Using inferred sex info 'female' for organ 'UBERON:0000992' and species '9823' for experiment [SRX1307219] and gene []
 	SRP064513 SRX1307220
 	SRP064513 SRX1307221
 	SRP064513 SRX1307222
@@ -20959,7 +20951,6 @@ Using inferred sex info 'female' for organ 'UBERON:0000992' and species '9823' f
 	SRP086568 SRX2140116
 	SRP086568 SRX2140117
 	SRP086707 SRX2140612
-Using inferred sex info 'female' for organ 'CL:0000654' and species '10090' for experiment [SRX2140612] and gene []
 	SRP086707 SRX2140613
 	SRP086707 SRX2140614
 	SRP086707 SRX2140615
@@ -24432,11 +24423,8 @@ Using inferred sex info 'female' for organ 'CL:0000654' and species '10090' for 
 	SRP121212 SRX3316216
 	SRP121212 SRX3316219
 	SRP121212 SRX3316220
-Using inferred sex info 'male' for organ 'UBERON:0000473' and species '9986' for experiment [SRX3316220] and gene []
 	SRP121212 SRX3316221
-Using inferred sex info 'male' for organ 'UBERON:0000473' and species '9615' for experiment [SRX3316221] and gene []
 	SRP121212 SRX3316223
-Using inferred sex info 'male' for organ 'UBERON:0000473' and species '13616' for experiment [SRX3316223] and gene []
 	SRP122763 SRX3341240
 	SRP123447 SRX3353161
 	SRP123447 SRX3353162
@@ -24477,7 +24465,6 @@ Using inferred sex info 'male' for organ 'UBERON:0000473' and species '13616' fo
 	SRP123447 SRX3353197
 	SRP123447 SRX3353198
 	SRP123447 SRX3353199
-Using inferred sex info 'female' for organ 'UBERON:0000992' and species '7740' for experiment [SRX3353199] and gene []
 	SRP123447 SRX3353200
 	SRP123447 SRX3353201
 	SRP123447 SRX3353202
@@ -24485,7 +24472,6 @@ Using inferred sex info 'female' for organ 'UBERON:0000992' and species '7740' f
 	SRP123447 SRX3353204
 	SRP123447 SRX3353205
 	SRP123447 SRX3353206
-Using inferred sex info 'male' for organ 'UBERON:0000473' and species '7740' for experiment [SRX3353206] and gene []
 	SRP123447 SRX3353207
 	SRP123447 SRX3353208
 	SRP123447 SRX3353209
@@ -31294,8 +31280,8 @@ Inserting gene results in parallel...
 	Processing gene results for library: ERX10076656
 	Processing gene results for library: ERX10076657
 	Processing gene results for library: ERX10076658
-	Processing gene results for library: ERX10076659
 	Processing gene results for library: ERX10076660
+	Processing gene results for library: ERX10076659
 	Processing gene results for library: ERX10076661
 	Processing gene results for library: ERX10076662
 	Processing gene results for library: ERX10076663
@@ -31406,8 +31392,8 @@ Inserting gene results in parallel...
 	Processing gene results for library: ERX10076768
 	Processing gene results for library: ERX10076769
 	Processing gene results for library: ERX10076770
-	Processing gene results for library: ERX10076771
 	Processing gene results for library: ERX10076772
+	Processing gene results for library: ERX10076771
 	Processing gene results for library: ERX10076773
 	Processing gene results for library: ERX10076774
 	Processing gene results for library: ERX10076775
@@ -33658,8 +33644,8 @@ Inserting gene results in parallel...
 	Processing gene results for library: ERX2603671
 	Processing gene results for library: ERX2603672
 	Processing gene results for library: ERX2603673
-	Processing gene results for library: ERX2603675
 	Processing gene results for library: ERX2603674
+	Processing gene results for library: ERX2603675
 	Processing gene results for library: ERX2603676
 	Processing gene results for library: ERX2603677
 	Processing gene results for library: ERX2603678
@@ -35924,14 +35910,14 @@ Inserting gene results in parallel...
 	Processing gene results for library: ERX3495722
 	Processing gene results for library: ERX3495723
 	Processing gene results for library: ERX3495724
-	Processing gene results for library: ERX3495725
-	Processing gene results for library: ERX3495726
-	Processing gene results for library: ERX3495727
-	Processing gene results for library: ERX3495728
 	Processing gene results for library: ERX3541577
+	Processing gene results for library: ERX3495728
 	Processing gene results for library: ERX3541578
 	Processing gene results for library: ERX3542341
 	Processing gene results for library: ERX3542342
+	Processing gene results for library: ERX3495726
+	Processing gene results for library: ERX3495725
+	Processing gene results for library: ERX3495727
 	Processing gene results for library: ERX3542343
 	Processing gene results for library: ERX3542344
 	Processing gene results for library: ERX3542345
@@ -38299,8 +38285,8 @@ Inserting gene results in parallel...
 	Processing gene results for library: SRX1372508
 	Processing gene results for library: SRX1372509
 	Processing gene results for library: SRX1372510
-	Processing gene results for library: SRX1372512
 	Processing gene results for library: SRX1372511
+	Processing gene results for library: SRX1372512
 	Processing gene results for library: SRX1372513
 	Processing gene results for library: SRX1372514
 	Processing gene results for library: SRX1372515
@@ -40039,8 +40025,8 @@ Inserting gene results in parallel...
 	Processing gene results for library: SRX1798797
 	Processing gene results for library: SRX1798798
 	Processing gene results for library: SRX1798799
-	Processing gene results for library: SRX1799610
 	Processing gene results for library: SRX1798800
+	Processing gene results for library: SRX1799610
 	Processing gene results for library: SRX1799611
 	Processing gene results for library: SRX1799612
 	Processing gene results for library: SRX1799613
@@ -42070,8 +42056,8 @@ Inserting gene results in parallel...
 	Processing gene results for library: SRX2506234
 	Processing gene results for library: SRX2506235
 	Processing gene results for library: SRX2506236
-	Processing gene results for library: SRX2506238
 	Processing gene results for library: SRX2506237
+	Processing gene results for library: SRX2506238
 	Processing gene results for library: SRX2506239
 	Processing gene results for library: SRX2506240
 	Processing gene results for library: SRX2506241
@@ -45284,8 +45270,8 @@ Inserting gene results in parallel...
 	Processing gene results for library: SRX3050436
 	Processing gene results for library: SRX3050437
 	Processing gene results for library: SRX3050438
-	Processing gene results for library: SRX3050440
 	Processing gene results for library: SRX3050439
+	Processing gene results for library: SRX3050440
 	Processing gene results for library: SRX3055138
 	Processing gene results for library: SRX3055139
 	Processing gene results for library: SRX3055140
@@ -46169,9 +46155,9 @@ Inserting gene results in parallel...
 	Processing gene results for library: SRX3481894
 	Processing gene results for library: SRX3489880
 	Processing gene results for library: SRX3489881
-	Processing gene results for library: SRX3489884
 	Processing gene results for library: SRX3489882
 	Processing gene results for library: SRX3489883
+	Processing gene results for library: SRX3489884
 	Processing gene results for library: SRX3489885
 	Processing gene results for library: SRX3489886
 	Processing gene results for library: SRX3489887
@@ -48171,8 +48157,8 @@ Inserting gene results in parallel...
 	Processing gene results for library: SRX467709
 	Processing gene results for library: SRX471368
 	Processing gene results for library: SRX471369
-	Processing gene results for library: SRX471371
 	Processing gene results for library: SRX471370
+	Processing gene results for library: SRX471371
 	Processing gene results for library: SRX471372
 	Processing gene results for library: SRX471373
 	Processing gene results for library: SRX471374
@@ -52038,8 +52024,8 @@ Inserting gene results in parallel...
 	Processing gene results for library: SRX5900416
 	Processing gene results for library: SRX5900417
 	Processing gene results for library: SRX5900418
-	Processing gene results for library: SRX5900420
 	Processing gene results for library: SRX5900419
+	Processing gene results for library: SRX5900420
 	Processing gene results for library: SRX5900421
 	Processing gene results for library: SRX5900422
 	Processing gene results for library: SRX5900423
@@ -52515,8 +52501,8 @@ Inserting gene results in parallel...
 	Processing gene results for library: SRX5901021
 	Processing gene results for library: SRX5901022
 	Processing gene results for library: SRX5901023
-	Processing gene results for library: SRX5901025
 	Processing gene results for library: SRX5901024
+	Processing gene results for library: SRX5901025
 	Processing gene results for library: SRX5901026
 	Processing gene results for library: SRX5901027
 	Processing gene results for library: SRX5901028
@@ -52946,9 +52932,9 @@ Inserting gene results in parallel...
 	Processing gene results for library: SRX5901463
 	Processing gene results for library: SRX5901464
 	Processing gene results for library: SRX5901465
+	Processing gene results for library: SRX5901466
 	Processing gene results for library: SRX5901467
 	Processing gene results for library: SRX5901468
-	Processing gene results for library: SRX5901466
 	Processing gene results for library: SRX5901469
 	Processing gene results for library: SRX5901470
 	Processing gene results for library: SRX5901471
@@ -53020,8 +53006,8 @@ Inserting gene results in parallel...
 	Processing gene results for library: SRX5901539
 	Processing gene results for library: SRX5901540
 	Processing gene results for library: SRX5901541
-	Processing gene results for library: SRX5901543
 	Processing gene results for library: SRX5901542
+	Processing gene results for library: SRX5901543
 	Processing gene results for library: SRX5901544
 	Processing gene results for library: SRX5901545
 	Processing gene results for library: SRX5901546
@@ -55467,8 +55453,8 @@ Inserting gene results in parallel...
 	Processing gene results for library: SRX674856
 	Processing gene results for library: SRX674857
 	Processing gene results for library: SRX674858
-	Processing gene results for library: SRX674860
 	Processing gene results for library: SRX674859
+	Processing gene results for library: SRX674860
 	Processing gene results for library: SRX674861
 	Processing gene results for library: SRX674862
 	Processing gene results for library: SRX674863
@@ -57549,8 +57535,8 @@ Inserting gene results in parallel...
 	Processing gene results for library: SRX8138261
 	Processing gene results for library: SRX8138262
 	Processing gene results for library: SRX8138263
-	Processing gene results for library: SRX8138264
 	Processing gene results for library: SRX8138265
+	Processing gene results for library: SRX8138264
 	Processing gene results for library: SRX8138266
 	Processing gene results for library: SRX8138267
 	Processing gene results for library: SRX8138268
@@ -59416,6 +59402,6 @@ Inserting gene results in parallel...
 	Processing gene results for library: SRX999211
 	Processing gene results for library: SRX999212
 	Processing gene results for library: SRX999213
-Done. 1468304005 rows have been inserted in the rnaSeqResult table.
+Done. 1468667203 rows have been inserted in the rnaSeqResult table.
 Delete RNA-Seq experiments for which no RNA-Seq libraries have been inserted
 Check inconsistencies between condition species and gene species (there should be none): 
