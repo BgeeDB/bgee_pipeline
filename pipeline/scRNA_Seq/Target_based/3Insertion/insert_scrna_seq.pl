@@ -448,7 +448,8 @@ for my $expId ( sort keys %processedLibraries ){
             if (! -e $pathToCallFile) {
                 # only insert annotated sample Id and condition Id
                 $annotatedSampleId = insert_get_annotated_sample($libraryId, $condKeyMap->{'conditionId'},
-                    '', '', '', 'cpm', 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, '' , undef, '', '', $insAnnotatedSample,
+                    $authorCellTypeAnnotation, $libraries{$expId}->{$libraryId}->{'authorAnatEntityAnnotation'},
+                    $libraries{$expId}->{$libraryId}->{'authorStageAnnotation'}, 'cpm', 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, '' , undef, '', '', $insAnnotatedSample,
                     $selectAnnotatedSampleId, $debug);
             } else {
                 # first insert annotated sample with metrics from our pipeline
@@ -474,7 +475,7 @@ for my $expId ( sort keys %processedLibraries ){
                 # my $mappedUMIsAnnotatedSample = 0;
             }
 
-            # map the celltypeId to the corresponding annotated sample 
+            # map authorCellTypeAnnotation / cellTypeId to the corresponding annotated sample 
             $clusterToAnnotatedSampleId{$authorCellTypeAnnotation}{$cellTypeId} = $annotatedSampleId;
         }
 
@@ -625,7 +626,7 @@ for my $expId ( sort keys %processedLibraries ){
                         }
                     }
                     #commit after each batch
-                    $bgee_data->commit if $debug;
+                    $bgee_data->commit if !$debug;
                 }
                 #now update annotated sample to insert sumUMIs
                 $updateSumUMIs{$annotatedSampleId} = $mappedUMIsAnnotatedSample;
