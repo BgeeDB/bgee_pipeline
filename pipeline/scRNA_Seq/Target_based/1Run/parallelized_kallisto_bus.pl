@@ -23,6 +23,7 @@ use File::Basename;
 ## Define arguments & their default value
 my ($metadataFile, $parallelJobs, $fastqDir, $gtfDir, $scRNASeqInfoFile, $kallistoResults) = ('', '', '', '',  '', '');
 my ($queue, $account, $pathToScript, $containerCmd) = ('' , '', '', '');
+my $number_threads = 1;
 my %opts = ('metadataFile=s'        => \$metadataFile,
             'parallelJobs=s'        => \$parallelJobs,
             'fastqDir=s'            => \$fastqDir,
@@ -32,7 +33,8 @@ my %opts = ('metadataFile=s'        => \$metadataFile,
             'queue=s'               => \$queue,
             'account=s'             => \$account,
             'pathToScript=s'        => \$pathToScript,
-            'containerCmd=s'        => \$containerCmd
+            'containerCmd=s'        => \$containerCmd,
+	    'numberThreads=i'	    => \$number_threads
            );
 
 
@@ -52,6 +54,7 @@ if ( !$metadataFile || $parallelJobs eq '' || $fastqDir eq '' || $gtfDir eq '' |
 \t-account                 account to use to run jobs on the cluster
 \t-pathToScript            path to the R script that will run kallisto for each library
 \t-containerCmd            command to use to run the container (e.g. singularity exec)
+\t-numberThreads	   number of threads used by each job running kallisto bus
 \n";
     exit 1;
 }
@@ -84,14 +87,14 @@ foreach my $experimentId (keys %processedLibraries){
         my $jobName = "${jobPrefix}${libraryId}";
         my $speciesId = $processedLibraries{$experimentId}{$libraryId}{'speciesId'};
         ## use 50Gb of memory. Should maybe be increase depending on the run to download
-        my $sbatchTemplate = Utils::sbatch_template($queue, $account, 1,
+        my $sbatchTemplate = Utils::sbatch_template($queue, $account, $number_threads,
           50, "${clusterOutput}${jobName}.out", "${clusterOutput}/${jobName}.err",
           $jobName);
 
         #TODO: move modules management to a script attribute
         my $commandToRun = "$containerCmd bash -c \"Rscript $pathToScript libraryId=\\'$libraryId\\' speciesId=\\'$speciesId\\'".
                            " fastqDir=\\'$fastqDir\\' gtfDir=\\'$gtfDir\\' scRNASeqInfoFile=\\'$scRNASeqInfoFile\\'".
-                           " kallisto_bus_results=\\'$kallistoResults\\'\"";
+                           " kallisto_bus_results=\\'$kallistoResults\\' number_threads=\\'$number_threads\\'\"";
         $sbatchTemplate .= "$commandToRun\n";
         my $sbatchFilePath = "$sbatchLocation$jobName.sbatch";
         $sbatchToRun{$experimentId}{$libraryId} = $sbatchFilePath;
