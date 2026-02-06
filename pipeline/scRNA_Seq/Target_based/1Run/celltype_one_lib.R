@@ -116,17 +116,46 @@ targetCells <- function(objectNormalized, objectNormalized_filtered, barcodeInfo
     ## subset barcodes for which celltype are provided
     seurat_object_with_celltype <- subset(objectNormalized,  cells = barcode_ids_having_celltype_annot)
     seurat_object_with_celltype_filtered <- subset(objectNormalized_filtered,  cells = barcode_ids_having_celltype_annot)
+    
+    ## verify that at least some barcodes were found in the Seurat object
+    if (ncol(seurat_object_with_celltype) == 0) {
+      warning("None of the ", length(barcode_ids_having_celltype_annot), " barcodes from the annotation file were found in the Seurat object for library ", libraryID)
+      return(NULL)
+    }
+    
     message(ncol(seurat_object_with_celltype) - ncol(seurat_object_with_celltype_filtered), " cells out of ",
         ncol(seurat_object_with_celltype), " with celltype annotation would have been removed by filtering ",
         "on the inflection point of the kneeplot.")
-    seurat_object_with_celltype$internal_cluster_id <- barcodeInfo$internal_cluster_id
-    seurat_object_with_celltype$celltype_id <- barcodeInfo$cellTypeId
-    seurat_object_with_celltype$celltype_name <- barcodeInfo$cellTypeName
-    seurat_object_with_celltype$celltype_author_annotation <- barcodeInfo$cell_type
+    
+    ## Match barcodes to ensure metadata is assigned to correct cells
+    ## Create a lookup dataframe indexed by barcode
+    barcode_metadata <- data.frame(
+      barcode = barcodeInfo$barcode,
+      internal_cluster_id = barcodeInfo$internal_cluster_id,
+      celltype_id = barcodeInfo$cellTypeId,
+      celltype_name = barcodeInfo$cellTypeName,
+      celltype_author_annotation = barcodeInfo$cell_type,
+      stringsAsFactors = FALSE
+    )
+    rownames(barcode_metadata) <- barcode_metadata$barcode
+
+    ## Get cell names from Seurat object and match with barcode metadata
+    cell_names <- colnames(seurat_object_with_celltype)
+    seurat_object_with_celltype$internal_cluster_id <- barcode_metadata[cell_names, "internal_cluster_id"]
+    seurat_object_with_celltype$celltype_id <- barcode_metadata[cell_names, "celltype_id"]
+    seurat_object_with_celltype$celltype_name <- barcode_metadata[cell_names, "celltype_name"]
+    seurat_object_with_celltype$celltype_author_annotation <- barcode_metadata[cell_names, "celltype_author_annotation"]
+
     #head(myData[[]])
     ## remove unsigned cells (this avoid the exportation of the file of unassigned cells)
     seurat_object_with_celltype <- subset(seurat_object_with_celltype,  celltype_name != "Unassigned")
     
+    ## verify that at least some cells remain after removing Unassigned
+    if (ncol(seurat_object_with_celltype) == 0) {
+      warning("All cells were marked as Unassigned for library ", libraryID, ". No output files will be generated.")
+      return(NULL)
+    }
+
     set.seed(42)
 
     seurat_object_with_celltype <- FindVariableFeatures(seurat_object_with_celltype, selection.method = "vst", nfeatures = 2000)
@@ -179,9 +208,12 @@ targetCells <- function(objectNormalized, objectNormalized_filtered, barcodeInfo
     ##
     infoCollected <- c()
     for (internalClusterId in unique(seurat_object_with_celltype$internal_cluster_id)) {
-      cellId = unique(as.character(seurat_object_with_celltype$celltype_id[seurat_object_with_celltype$internal_cluster_id == internalClusterId]))
-      cellName = unique(as.character(seurat_object_with_celltype$celltype_name[seurat_object_with_celltype$internal_cluster_id == internalClusterId]))
-      celltypeAuthorAnnotation = unique(as.character(seurat_object_with_celltype$celltype_author_annotation[seurat_object_with_celltype$internal_cluster_id == internalClusterId]))
+      
+      cluster_mask <- seurat_object_with_celltype$internal_cluster_id == internalClusterId
+      cellId = unique(as.character(seurat_object_with_celltype$celltype_id[cluster_mask]))
+      cellName = unique(as.character(seurat_object_with_celltype$celltype_name[cluster_mask]))
+      celltypeAuthorAnnotation = unique(as.character(seurat_object_with_celltype$celltype_author_annotation[cluster_mask]))
+
       if (is.na(cellId)) {
         stop("No cell-type ID for library ", libraryID, " and internal cluster ID ", internalClusterId)
       }
@@ -190,22 +222,20 @@ targetCells <- function(objectNormalized, objectNormalized_filtered, barcodeInfo
       }
       message("cluster info[internalClusterId: ", internalClusterId, ", cellId: ", cellId, ", celltypeAuthorAnnotation= ", celltypeAuthorAnnotation, "]")
       ## split information
-      barcodesID <- colnames(seurat_object_with_celltype)[seurat_object_with_celltype$internal_cluster_id == internalClusterId] 
+      barcodesID <- colnames(seurat_object_with_celltype)[cluster_mask] 
       ## export raw counts to each cell type
       rawCountsCell <- finalRaw[(names(finalRaw) %in% barcodesID)]
-      rawCountsCell <- cbind(names = rownames(rawCountsCell), rawCountsCell)
-      colnames(rawCountsCell)[1] <- "gene_id"
+      rawCountsCell <- cbind(gene_id = rownames(rawCountsCell), rawCountsCell)
       ## add biotype info to raw counts
-      collectBiotypeRaw <- merge(rawCountsCell, biotypeInfo, by = "gene_id", all.x = TRUE)
+      collectBiotypeRaw <- dplyr::left_join(rawCountsCell, biotypeInfo, by = "gene_id")
       collectBiotypeRaw$internalClusterId <- internalClusterId
       collectBiotypeRaw$cellTypeId <- cellId
         
       ## export normalized counts to each internal cluster ID
       normalizedCountsCell <- finalCPM[(names(finalCPM) %in% barcodesID)]
-      normalizedCountsCell <- cbind(names = rownames(normalizedCountsCell), normalizedCountsCell)
-      colnames(normalizedCountsCell)[1] <- "gene_id"
-      ## add biotype info to normalized counts
-      collectBiotypeNorm <- merge(normalizedCountsCell, biotypeInfo, by = "gene_id", all.x = TRUE)
+      normalizedCountsCell <- cbind(gene_id = rownames(normalizedCountsCell), normalizedCountsCell)
+      ## add biotype info to normalized counts - use left_join to preserve column order
+      collectBiotypeNorm <- dplyr::left_join(normalizedCountsCell, biotypeInfo, by = "gene_id")
       ## add type info
       collectBiotypeNorm$type <- ifelse(is.na(collectBiotypeNorm$biotype), "intergenic", "genic")
       collectBiotypeNorm$cellTypeName <- cellName
@@ -228,8 +258,9 @@ targetCells <- function(objectNormalized, objectNormalized_filtered, barcodeInfo
 
     return(list(seurat_object_with_celltype[[]],infoCollected))
   } else {
-    message("Library", libraryID, "not take in consideration for posterior analysis.")
+    message("Library ", libraryID, " not taken in consideration for posterior analysis.")
     message("Barcode not provided!")
+    return(NULL)
   }
 }
 

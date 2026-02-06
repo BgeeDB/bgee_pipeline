@@ -163,6 +163,11 @@ qc_cellType: process_busFile 1Run/parallelized_qcCellIdentification.pl
 	@$(CLUSTER_SOFTWARE_BIN) perl 1Run/parallelized_qcCellIdentification.pl -metadataFile=${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH)  -parallelJobs=100 -gtfDir=$(RNASEQ_CLUSTER_GTF) -barcodeFolder=${PWD}/$(SC_RNASEQ_CLEANED_BARCODES) -kallistoResults=$(SC_RNASEQ_CLUSTER_RES_KALLISTO_DROPLET) -outputDir=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToScript=${PWD}/1Run/celltype_one_lib.R -containerCmd="$(CLUSTER_CONTAINER_CMD_WITH_BIND)" > $@.tmp 2> $@.err
 	@mv $@.tmp $@
 
+# Test to be sure we never reproduce the bug of not mapping cluster to proper barcodes............
+check_cellType: qc_cellType 1Run/validate_barcodes.R
+	@$(CLUSTER_LOAD_APPTAINER) $(CLUSTER_CONTAINER_CMD_WITH_BIND) Rscript 1Run/validate_barcodes.R barcodeFolder=\"${PWD}/$(SC_RNASEQ_CLEANED_BARCODES)\" outputDir=\"$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)\" metadataFile=\"${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH)\" > $@.tmp 2> $@.err
+	@mv $@.tmp $@
+
 ## Quality control based on the bimodality of the cell-population per library/cell-type pop
 ## This QC is NOT USED ANYMORE to filter libraries because cell type annotation are not always
 ## very granular. It means a celltype can correspond to different cells. Then gene expression
@@ -185,7 +190,7 @@ bimodality_cellPop: qc_cellType 1Run/QC_cellPop_bimodality.R
 	@touch $@
 
 ## Call present and absent genes per library/cell population that pass the bimodality test
-calls: qc_cellType 1Run/parallelized_calls.pl 1Run/calls_one_library.R 1Run/calls_summary.R
+calls: check_cellType 1Run/parallelized_calls.pl 1Run/calls_one_library.R 1Run/calls_summary.R
 	@echo --- Starting generation of droplet based calls
 	@$(CLUSTER_SOFTWARE_BIN) perl 1Run/parallelized_calls.pl -metadataFile=${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH)  -barcodeAnnotationFolder=${PWD}/$(SC_RNASEQ_CLEANED_BARCODES) -parallelJobs=100 -cellTypeFolder=$(SC_RNASEQ_CLUSTER_QC_CELLTYPE) -outputDir=$(SC_RNASEQ_CLUSTER_CALLS_10X) -queue=$(SENSITIVE_CLUSTER_PARTITION) -account=$(SENSITIVE_CLUSTER_ACCOUNT) -pathToCallsScript=${PWD}/1Run/calls_one_library.R -pValueCutoff=$(PVALUE_CUTOFF) -containerCmd="$(CLUSTER_CONTAINER_CMD_WITH_BIND)" > $@.tmp 2> $@.err
 	#now that calls have been generated we generate a tsv file summarizing calls information for each library
