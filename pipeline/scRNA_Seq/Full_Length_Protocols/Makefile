@@ -134,12 +134,6 @@ check_presence_absence: presence_absence_bgeecall
 	$(CLUSTER_SOFTWARE_BIN) $(CLUSTER_CONTAINER_CMD_WITH_BIND) $(CLUSTER_R_CMD) Rscript $(PIPELINEROOT)$(RNASEQPATH)/1Run/rna_seq_calls_plot.R bgeecall_sample_info=\"$(SC_RNASEQ_BGEECALL_FILE_FULL_LENGTH)\" calls_dir=\"$(SC_RNASEQ_CLUSTER_BGEECALL)\" presence_absence_report=\"$(SC_RNASEQ_CLUSTER_CALLS_STATS)\" downloaded_lib_file=\"$(SC_RNASEQ_DOWNLOADED_LIB_FILEPATH)\" kallisto_report=\"$(SC_RNASEQ_CLUSTER_KALLISTO_STATS)\" >> $@.tmp 2>> $@.err
 	@$(MV) $@.tmp $@
 
-# Do not use slurm to run this light processing
-# run script from bulk RNASeq pipeline
-calculate_fpkm: presence_absence_bgeecall
-	@$(CLUSTER_R_CMD) R CMD BATCH --vanilla --slave '--args all_results_dir="$(SC_RNASEQ_CLUSTER_BGEECALL)" calls_file_name="$(ABUNDANCEFILE)"' $(PIPELINEROOT)$(RNASEQPATH)1Run/calculate_fpkm.R $(SC_RNASEQ_FL_CLUSTER_R_LOG)calculate_fpkm.Rout
-	@touch $@
-
 final_status: scRNAseq_Calls
 	@$(GIT) status
 
@@ -176,29 +170,28 @@ final_commit: final_status
 #     To do so we had to drop foreign key library ID in the result table
 #     It could be nice to update the script to choose to insert everything, everything except libraries and conditions, or only libraries and conditions (e.g add script argument to manage that)
 #     It is not possible to disable autocommit when inserting conditions. It creates an sql error of duplicated entries
-insert_scRNA_seq: $(SCRNASEQALLRES) $(SCRNASEQSAMPSTATS) $(SCRNASEQREPORTINFO) $(SC_RNASEQ_EXPERIMENT_FILEPATH) $(UBERON_SEX_INFO_FILE_PATH) $(CUSTOM_UBERON_FILE_PATH) $(DEV_STAGE_ONT_FILE_PATH) $(SC_RNASEQ_SAMPINFO_PASS_FILEPATH) $(SC_RNASEQ_SAMPINFO_NOT_PASS_FILEPATH) $(EXTRAMAPPING_FILEPATH)
-	@perl 3Insertion/insert_scrna_seq.pl -bgee=$(BGEECMD) -scRnaSeqExperiment=$(SC_RNASEQ_EXPERIMENT_FILEPATH) -library_info=$(SC_RNASEQ_SAMPINFO_PASS_FILEPATH) -excluded_libraries=$(SC_RNASEQ_SAMPINFO_NOT_PASS_FILEPATH) -library_stats=$(SC_RNASEQ_SAMP_STATS_FL) -report_info=$(SC_RNASEQ_REPORT_INFO_FL) -all_results=$(SC_RNASEQ_ALL_RES_FL) -sex_info=$(UBERON_SEX_INFO_FILE_PATH) -extraMapping=$(EXTRAMAPPING_FILEPATH) -Aport=$(IDMAPPINGPORT) -Sport=$(STGMAPPINGPORT) > $@.tmp 2>warnings.$@
+insert_scRNA_seq:
 	@$(IDMAPPING)  $(IDMAPPINGPORT) &
 	@$(STGMAPPING) $(STGMAPPINGPORT) &
 	@sleep 50 # sleep because mappers need time to load Uberon
 	# Insert RNA Seq data
-	@perl 3Insertion/insert_scrna_seq.pl -bgee=$(BGEECMD) -scRnaSeqExperiment=$(SC_RNASEQ_EXPERIMENT_FILEPATH) -library_info=$(SC_RNASEQ_SAMPINFO_PASS_FILEPATH) -excluded_libraries=$(SC_RNASEQ_SAMPINFO_NOT_PASS_FILEPATH) -library_stats=$(SCRNASEQSAMPSTATS) -report_info=$(SCRNASEQREPORTINFO) -all_results=$(SCRNASEQALLRES) -sex_info=$(UBERON_SEX_INFO_FILE_PATH) -extraMapping=$(EXTRAMAPPING_FILEPATH) -Aport=$(IDMAPPINGPORT) -Sport=$(STGMAPPINGPORT) > $@.tmp 2>warnings.$@
+	@perl 3Insertion/insert_scrna_seq.pl -bgee=$(BGEECMD) -rnaSeqLibrary=$(SC_RNASEQ_FL_LIB_FILTERED_FILEPATH) -rnaSeqExperiment=$(SC_RNASEQ_FL_EXP_FILTERED_FILEPATH) -library_info=$(SC_RNASEQ_SAMPINFO_FL_FILEPATH) -excluded_libraries=$(SC_RNASEQ_FL_LIB_EXCLUDED) -library_stats=$(SC_RNASEQ_SAMP_STATS_FL) -report_info=$(SC_RNASEQ_REPORT_INFO_FL) -all_results=$(SC_RNASEQ_ALL_RES_FL) -sex_info=$(UBERON_SEX_INFO_FILE_PATH) -extraMapping=$(EXTRAMAPPING_FILEPATH) -Aport=$(IDMAPPINGPORT) -Sport=$(STGMAPPINGPORT) -threads=20 > $@.tmp 2>warnings.$@
 	@echo "Delete RNA-Seq experiments for which no RNA-Seq libraries have been inserted" >> $@.tmp
 	@$(MYSQL) -e "DELETE t1 FROM rnaSeqExperiment AS t1 WHERE NOT EXISTS (SELECT 1 FROM rnaSeqLibrary AS t2 WHERE t1.rnaSeqExperimentId = t2.rnaSeqExperimentId)" >> $@.tmp
 	@echo "Check inconsistencies between condition species and gene species (there should be none): " >> $@.tmp
-	@$(MYSQL) -e "SELECT t1.* FROM scRnaSeqFullLengthResult AS t1 INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId INNER JOIN scRnaSeqFullLengthLibrary AS t3 ON t1.scRnaSeqFullLengthLibraryId = t3.scRnaSeqFullLengthLibraryId INNER JOIN cond AS t4 on t3.conditionId = t4.conditionId WHERE t2.speciesId != t4.speciesId" >> $@.tmp 2>>warnings.$@
+	@$(MYSQL) -e "SELECT t1.* FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t1 INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId INNER JOIN rnaSeqLibraryAnnotatedSample AS t3 ON t1.rnaSeqLibraryAnnotatedSampleId = t3.rnaSeqLibraryAnnotatedSampleId INNER JOIN rnaSeqLibrary as t5 on t3.rnaSeqLibraryId = t5.rnaSeqLibraryId INNER JOIN cond AS t4 on t3.conditionId = t4.conditionId WHERE t2.speciesId != t4.speciesId and t5.rnaSeqTechnologyIsSingleCell = 1 and t5.sampleMultiplexing = 0" >> $@.tmp
 	@echo >> $@.tmp
-	@echo "Distinct strains in full length single cell RNA-Seq conditions, check that they are correct (e.g., no 'wild type' instead of 'wild-type')" >> $@.tmp
-	@$(MYSQL) -e "SELECT DISTINCT t1.strain, t1.speciesId FROM cond AS t1 INNER JOIN scRnaSeqFullLengthLibrary AS t2 ON t1.conditionId = t2.conditionId ORDER BY t1.strain" >> $@.tmp 2>>warnings.$@
+	@echo "Distinct strains in full length scRNA-Seq conditions, check that they are correct (e.g., no 'wild type' instead of 'wild-type')" >> $@.tmp
+	@$(MYSQL) -e "SELECT DISTINCT t1.strain, t1.speciesId FROM cond AS t1 INNER JOIN rnaSeqLibraryAnnotatedSample AS t2 ON t1.conditionId = t2.conditionId INNER JOIN rnaSeqLibrary as t5 on t3.rnaSeqLibraryId = t5.rnaSeqLibraryId where t5.rnaSeqTechnologyIsSingleCell = 1 and t5.sampleMultiplexing = 0 ORDER BY t1.strain" >> $@.tmp
 	@echo >> $@.tmp
-	@echo "Statistics on libraries" >> $@.tmp
-	@$(MYSQL) -e "SELECT t1.speciesId, COUNT(DISTINCT t2.scRnaSeqFullLengthLibraryId), MIN(t2.tpmThreshold), MAX(t2.tpmThreshold), AVG(t2.tpmThreshold), MIN(t2.allGenesPercentPresent), MAX(t2.allGenesPercentPresent), AVG(t2.allGenesPercentPresent), MIN(t2.proteinCodingGenesPercentPresent), MAX(t2.proteinCodingGenesPercentPresent), AVG(t2.proteinCodingGenesPercentPresent), MIN(t2.mappedReadsCount), MAX(t2.mappedReadsCount), AVG(t2.mappedReadsCount) FROM cond AS t1 INNER JOIN scRnaSeqFullLengthLibrary AS t2 ON t1.conditionId = t2.conditionId GROUP BY t1.speciesId ORDER BY COUNT(DISTINCT t2.scRnaSeqFullLengthLibraryId) DESC" >> $@.tmp 2>>warnings.$@
+	@echo "Statistics on full length scRNA-Seq libraries" >> $@.tmp
+	@$(MYSQL) -e "SELECT t1.speciesId, COUNT(DISTINCT t2.rnaSeqLibraryId), MIN(t2.abundanceThreshold), MAX(t2.abundanceThreshold), AVG(t2.abundanceThreshold), MIN(t2.allGenesPercentPresent), MAX(t2.allGenesPercentPresent), AVG(t2.allGenesPercentPresent), MIN(t2.proteinCodingGenesPercentPresent), MAX(t2.proteinCodingGenesPercentPresent), AVG(t2.proteinCodingGenesPercentPresent), MIN(t2.mappedReadsCount), MAX(t2.mappedReadsCount), AVG(t2.mappedReadsCount) FROM cond AS t1 INNER JOIN rnaSeqLibraryAnnotatedSample AS t2 ON t1.conditionId = t2.conditionId inner join rnaSeqLibrary as t3 on t2.rnaSeqLibraryId = t3.rnaSeqLibraryId where t3.rnaSeqTechnologyIsSingleCell = 1 and t3.sampleMultiplexing = 0 GROUP BY t1.speciesId ORDER BY COUNT(DISTINCT t2.rnaSeqLibraryId) DESC" >> $@.tmp
 	@echo >> $@.tmp
-	@echo "Statistics on conditions" >> $@.tmp
-	@$(MYSQL) -e "SELECT t1.speciesId, COUNT(DISTINCT t2.scRnaSeqFullLengthLibraryId), COUNT(DISTINCT t2.conditionId), COUNT(DISTINCT t1.exprMappedConditionId), COUNT(DISTINCT t1.anatEntityId), COUNT(DISTINCT t1.cellTypeId), COUNT(DISTINCT t1.stageId), COUNT(DISTINCT t1.anatEntityId, t1.cellTypeId), COUNT(DISTINCT t1.anatEntityId, t1.cellTypeId, t1.stageId, t1.sex), GROUP_CONCAT(DISTINCT t1.sex ORDER BY t1.sex SEPARATOR ', '), GROUP_CONCAT(DISTINCT t1.strain ORDER BY t1.strain SEPARATOR ', ') FROM cond AS t1 INNER JOIN scRnaSeqFullLengthLibrary AS t2 ON t1.conditionId = t2.conditionId GROUP BY t1.speciesId ORDER BY COUNT(DISTINCT t2.scRnaSeqFullLengthLibraryId) DESC" >> $@.tmp 2>>warnings.$@
+	@echo "Statistics on full length scRNA-Seq conditions" >> $@.tmp
+	@$(MYSQL) -e "SELECT t1.speciesId, COUNT(DISTINCT t2.rnaSeqLibraryId), COUNT(DISTINCT t2.conditionId), COUNT(DISTINCT t1.exprMappedConditionId), COUNT(DISTINCT t1.anatEntityId), COUNT(DISTINCT t1.stageId), COUNT(DISTINCT t1.anatEntityId, t1.stageId, t1.sex), GROUP_CONCAT(DISTINCT t1.sex ORDER BY t1.sex SEPARATOR ', '), GROUP_CONCAT(DISTINCT t1.strain ORDER BY t1.strain SEPARATOR ', ') FROM cond AS t1 INNER JOIN rnaSeqLibraryAnnotatedSample AS t2 ON t1.conditionId = t2.conditionId INNER JOIN rnaSeqLibrary as t5 on t2.rnaSeqLibraryId = t5.rnaSeqLibraryId where t5.rnaSeqTechnologyIsSingleCell = 1 and t5.sampleMultiplexing = 0 GROUP BY t1.speciesId ORDER BY COUNT(DISTINCT t2.rnaSeqLibraryId) DESC" >> $@.tmp
 	@echo >> $@.tmp
 	@echo "Same condition information, but for mapped conditions of expression tables" >> $@.tmp
-	@$(MYSQL) -e "SELECT t3.speciesId, COUNT(DISTINCT t2.scRnaSeqFullLengthLibraryId), COUNT(DISTINCT t3.anatEntityId), COUNT(DISTINCT t3.cellTypeId), COUNT(DISTINCT t3.stageId), COUNT(DISTINCT t3.anatEntityId, t3.cellTypeId), COUNT(DISTINCT t3.anatEntityId, t3.cellTypeId, t3.stageId, t3.sex), GROUP_CONCAT(DISTINCT t3.sex ORDER BY t3.sex SEPARATOR ', '), GROUP_CONCAT(DISTINCT t3.strain ORDER BY t3.strain SEPARATOR ', ') FROM cond AS t1 INNER JOIN scRnaSeqFullLengthLibrary AS t2 ON t1.conditionId = t2.conditionId INNER JOIN cond AS t3 ON t1.exprMappedConditionId = t3.conditionId GROUP BY t3.speciesId ORDER BY COUNT(DISTINCT t2.scRnaSeqFullLengthLibraryId) DESC" >> $@.tmp 2>>warnings.$@
+	@$(MYSQL) -e "SELECT t3.speciesId, COUNT(DISTINCT t2.rnaSeqLibraryId), COUNT(DISTINCT t3.anatEntityId), COUNT(DISTINCT t3.stageId), COUNT(DISTINCT t3.anatEntityId, t3.stageId, t3.sex), GROUP_CONCAT(DISTINCT t3.sex ORDER BY t3.sex SEPARATOR ', '), GROUP_CONCAT(DISTINCT t3.strain ORDER BY t3.strain SEPARATOR ', ') FROM cond AS t1 INNER JOIN rnaSeqLibraryAnnotatedSample AS t2 ON t1.conditionId = t2.conditionId INNER JOIN cond AS t3 ON t1.exprMappedConditionId = t3.conditionId INNER JOIN rnaSeqLibrary as t5 on t2.rnaSeqLibraryId = t5.rnaSeqLibraryId where t5.rnaSeqTechnologyIsSingleCell = 1 and t5.sampleMultiplexing = 0 GROUP BY t3.speciesId ORDER BY COUNT(DISTINCT t2.rnaSeqLibraryId) DESC" >> $@.tmp
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
 	@$(MV) $@.tmp $@
 

@@ -110,30 +110,11 @@ my %librariesStats    = getAllRnaSeqLibrariesStats($library_stats);
 my %reportInfo        = getAllRnaSeqReportInfo($report_info);
 
 # Library annotation coming from flat files
-my @experimentType = ('Full-length and 3\'end', 'Full-length');
+my @experimentType = ('Full-length and 3\'end', 'Full-length', 'Full-length, 3\'end');
 my %experiments       = getSingleCellExperiments($rnaSeqExperiment,
     @experimentType);
 
 my %annotations       = loadFullLengthLibrariesAnnotation($rnaSeqLibrary);
-my $commented = 0;
-my $species_not_included = 0;
-$count_libs = 0;
-for my $expId ( sort keys %annotations ){
-    for my $libraryId ( sort keys %{$annotations{$expId}} ){
-        $count_libs++;
-        if ( $annotations{$expId}->{$libraryId}->{'commented'} ){
-            $commented++;
-        } elsif ( !exists($all_species{ $annotations{$expId}->{$libraryId}->{'speciesId'} }) ){
-            $species_not_included++;
-        } elsif ( (!exists $libraries{$expId}->{$libraryId}) and (!exists $excludedLibraries{$libraryId}) ){
-            print "\t", $libraryId, " library annotated but not mapped. This may be for different reasons: Is it a CAGE/RACE/weird experiment? Is it in SRA format (SRX/ERX)?\n";
-        }
-    }
-}
-print "\t", scalar keys %annotations, " experiments annotated.\n";
-print "\t", $count_libs, " libraries annotated.\n";
-print "\t", $commented, " libraries commented.\n";
-print "\t", $species_not_included, " libraries from species not included into Bgee.\n";
 
 # Load sex-related information needed for sub 'insert_get_condition'
 my $anatSexInfo    = Utils::get_anat_sex_info($sex_info);
@@ -215,10 +196,14 @@ my %extra = map  { my @tmp = split(/\t/, $_, -1); if ( $tmp[2] ne '' && $tmp[0] 
             grep { !/^#/ }
             read_file("$extraMapping", chomp => 1);
 
-# Get used stages & anatEntityId from annotation sheet
-my %tsv = %{ Utils::read_spreadsheet("$rnaSeqLibrary", "\t", 'csv', '"', 1) };
-my @Stg  = @{ $tsv{'stageId'} };
-my @Anat = @{ $tsv{'anatId'} };
+# Get used stages & anatEntityId from libraries already loaded
+my (@Stg, @Anat);
+for my $expId ( keys %libraries ){
+    for my $libraryId ( keys %{$libraries{$expId}} ){
+        push @Stg, $libraries{$expId}->{$libraryId}->{'stageId'} if $libraries{$expId}->{$libraryId}->{'stageId'};
+        push @Anat, $libraries{$expId}->{$libraryId}->{'anatId'} if $libraries{$expId}->{$libraryId}->{'anatId'};
+    }
+}
 
 # Fix mapping with extra mapping file
 @Stg  = map { $extra{$_} || $_ } @Stg;
@@ -305,17 +290,18 @@ for my $expId ( sort keys %libraries ){
         print "\t$expId $libraryId\n";
 
         # Remap to extra mapping if any
-        $annotations{$expId}->{$libraryId}->{'anatId'} = $extra{ $annotations{$expId}->{$libraryId}->{'anatId'} } || $annotations{$expId}->{$libraryId}->{'anatId'};
-        $annotations{$expId}->{$libraryId}->{'stageId'}  = $extra{ $annotations{$expId}->{$libraryId}->{'stageId'} }  || $annotations{$expId}->{$libraryId}->{'stageId'};
+        $libraries{$expId}->{$libraryId}->{'anatId'} = $extra{ $libraries{$expId}->{$libraryId}->{'anatId'} } || $libraries{$expId}->{$libraryId}->{'anatId'};
+        $libraries{$expId}->{$libraryId}->{'stageId'}  = $extra{ $libraries{$expId}->{$libraryId}->{'stageId'} }  || $libraries{$expId}->{$libraryId}->{'stageId'};
+        $libraries{$expId}->{$libraryId}->{'cellTypeId'} = $extra{ $libraries{$expId}->{$libraryId}->{'cellTypeId'} } || $libraries{$expId}->{$libraryId}->{'cellTypeId'};
 
-        if ( !exists $doneAnat->{$annotations{$expId}->{$libraryId}->{'anatId'}} || $doneAnat->{$annotations{$expId}->{$libraryId}->{'anatId'}} eq '' ){
-            warn "[$annotations{$expId}->{$libraryId}->{'anatId'}] unmapped organ id for [$libraryId]\n";
+        if ( !exists $doneAnat->{$libraries{$expId}->{$libraryId}->{'anatId'}} || $doneAnat->{$libraries{$expId}->{$libraryId}->{'anatId'}} eq '' ){
+            warn "[$libraries{$expId}->{$libraryId}->{'anatId'}] unmapped organ id for [$libraryId]\n";
             next LIBRARY;
         }
-         if ( !exists $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}}   || $doneStg->{$annotations{$expId}->{$libraryId}->{'stageId'}}   eq '' ){
-             warn "[$annotations{$expId}->{$libraryId}->{'stageId'}] unmapped stage id for [$libraryId]\n";
+        if ( !exists $doneStg->{$libraries{$expId}->{$libraryId}->{'stageId'}}   || $doneStg->{$libraries{$expId}->{$libraryId}->{'stageId'}}   eq '' ){
+             warn "[$libraries{$expId}->{$libraryId}->{'stageId'}] unmapped stage id for [$libraryId]\n";
              next LIBRARY;
-         }
+        }
 
         # Get conditionId/exprMappedConditionId for this library
         # Updates also the hash of existing conditions
@@ -323,14 +309,14 @@ for my $expId ( sort keys %libraries ){
         ($condKeyMap, $conditions) = Utils::insert_get_condition($bgee,
                                                                  $conditions,
                                                                  $stage_equivalences,
-                                                                 $doneAnat->{$annotations{$expId}->{$libraryId}->{'anatId'}},
-                                                                 $annotations{$expId}->{$libraryId}->{'stageId'},
-                                                                 $annotations{$expId}->{$libraryId}->{'speciesId'},
-                                                                 $annotations{$expId}->{$libraryId}->{'sex'},
-                                                                 $annotations{$expId}->{$libraryId}->{'strain'},
+                                                                 $doneAnat->{$libraries{$expId}->{$libraryId}->{'anatId'}},
+                                                                 $libraries{$expId}->{$libraryId}->{'stageId'},
+                                                                 $libraries{$expId}->{$libraryId}->{'speciesId'},
+                                                                 $libraries{$expId}->{$libraryId}->{'sex'},
+                                                                 $libraries{$expId}->{$libraryId}->{'strain'},
                                                                  $anatSexInfo, $speciesSexInfo,
                                                                  $libraryId, '',
-                                                                 $annotations{$expId}->{$libraryId}->{'cellTypeId'}
+                                                                 $libraries{$expId}->{$libraryId}->{'cellTypeId'}
                                                                 );
         # We consider the fine-grained (low-level) conditionId for insertion: $condKeyMap->{'conditionId'}
 
@@ -356,7 +342,7 @@ for my $expId ( sort keys %libraries ){
                   $libraries{$expId}->{$libraryId}->{'readLength'},                       ' - ',
                   # rnaSeqPopulationCaptureId. For now all full-length scRNA-Seq annotated are polyA
                   'polyA',                                                                ' - ',
-                  $annotations{$expId}->{$libraryId}->{'genotype'},                       ' - ',
+                  $libraries{$expId}->{$libraryId}->{'genotype'},                       ' - ',
                   $reportInfo{$libraryId}->{'allReadsCount'},                         ' - ',
                   $reportInfo{$libraryId}->{'mappedReadsCount'},                      ' - ',
                   $reportInfo{$libraryId}->{'minReadLength'},                         ' - ',
@@ -380,7 +366,7 @@ for my $expId ( sort keys %libraries ){
                             'full length',
                             $libraries{$expId}->{$libraryId}->{'readLength'},
                             'polyA',
-                            $annotations{$expId}->{$libraryId}->{'genotype'},
+                            $libraries{$expId}->{$libraryId}->{'genotype'},
                             $reportInfo{$libraryId}->{'allReadsCount'},
                             $reportInfo{$libraryId}->{'mappedReadsCount'},
                             $reportInfo{$libraryId}->{'minReadLength'},
