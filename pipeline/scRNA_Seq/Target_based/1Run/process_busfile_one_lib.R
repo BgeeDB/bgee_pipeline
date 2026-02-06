@@ -108,12 +108,16 @@ if (dir.exists(file.path(kallisto_bus_results, libraryId))){
 
       ## step 1 --> correct the barcodes
       message("Correct barcodes")
-      system(sprintf('%s -w %s -o %s %s', "bustools correct", paste0(whiteList_Path, "barcode_whitelist_", selectedWhiteList,".txt"), paste0(pathBusOut, "/output.correct.bus"), paste0(pathBusOut, "/output.bus")))
-
+      exit_code <- system(sprintf('%s -w %s -o %s %s', "bustools correct", paste0(whiteList_Path, "barcode_whitelist_", selectedWhiteList,".txt"), paste0(pathBusOut, "/output.correct.bus"), paste0(pathBusOut, "/output.bus")))
+      if (exit_code != 0) {
+        stop("bustools correct failed with exit code ", exit_code, " for library ", libraryId)
+      }
       ## step 2 --> sort the bus file
       message("Sort bus file")
-      system(sprintf('%s -t 4 -o %s %s', "bustools sort", paste0(pathBusOut, "/output.correct.sort.bus"), paste0(pathBusOut, "/output.correct.bus")))
-
+      exit_code <- system(sprintf('%s -t 4 -o %s %s', "bustools sort", paste0(pathBusOut, "/output.correct.sort.bus"), paste0(pathBusOut, "/output.correct.bus")))
+      if (exit_code != 0) {
+        stop("bustools sort failed with exit code ", exit_code, " for library ", libraryId)
+      }
       ## Create folders to export the information per TCC and gene matrix (counts)
       tcc_counts <- file.path(pathBusOut, "tcc_counts")
       if (!dir.exists(tcc_counts)){
@@ -149,17 +153,23 @@ if (dir.exists(file.path(kallisto_bus_results, libraryId))){
       ## step 3 --> count with bustools count
       ## TCC level
       message("TCC level")
-      ## the --em parameter estimates gene abundances using an EM algorithm for reads that pseudoalign to multiple genes.
-      system(sprintf('bustools count --em -o %s -g %s -e %s -t %s %s', file.path(tcc_counts, "tcc"),
+      ## the --em parameter estimates transcript abundances using an EM algorithm for reads that pseudoalign to multiple genes.
+      exit_code <- system(sprintf('bustools count --em -o %s -g %s -e %s -t %s %s', file.path(tcc_counts, "tcc"),
         tx2gene_file, file.path(pathBusOut, "matrix.ec"), file.path(pathBusOut, "transcripts.txt"),
         file.path(pathBusOut, "output.correct.sort.bus")))
+      if (exit_code != 0) {
+        stop("bustools count for transcripts failed with exit code ", exit_code, " for library ", libraryId)
+      }
       ## GENE level
       message("Gene level")
       bustoolsGeneMatrix <- "gene"
       ## the --em parameter estimates gene abundances using an EM algorithm for reads that pseudoalign to multiple genes.
-      system(sprintf('bustools count --em -o %s -g %s -e %s -t %s --genecounts %s',
+      exit_code <- system(sprintf('bustools count --em -o %s -g %s -e %s -t %s --genecounts %s',
         file.path(gene_counts, bustoolsGeneMatrix), tx2gene_file, file.path(pathBusOut, "/matrix.ec"),
         file.path(pathBusOut, "transcripts.txt"), file.path(pathBusOut, "output.correct.sort.bus")))
+      if (exit_code != 0) {
+        stop("bustools count for genes failed with exit code ", exit_code, " for library ", libraryId)
+      }
       ## CPM level used to store data at cell level
       message("CPM for genes without intergenic")
       cpm_dir <- file.path(pathBusOut, "cpm_counts")
