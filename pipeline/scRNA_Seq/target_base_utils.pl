@@ -238,22 +238,47 @@ sub getSingleCellExperiments {
 
     my %experiments;
     
-    # Use read_spreadsheet to properly handle multi-line quoted fields
-    my %tsv = %{ Utils::read_spreadsheet("$targetBaseExperimentFile", "\t", 'csv', '"', 1) };
+    # Read TSV file directly using column names from header
+    my @lines = File::Slurp::read_file("$targetBaseExperimentFile", chomp => 1);
     
-    for my $line ( 0..$#{$tsv{'experimentId'}} ){
-        # Skip commented lines
-        my $experimentId = $tsv{'experimentId'}[$line];
+    # Parse header to get column names and their indices
+    my $header_line = shift @lines;
+    # Remove leading # if present
+    $header_line =~ s/^#//;
+    my @headers = split(/\t/, $header_line);
+    my %col_idx;
+    for my $i (0..$#headers) {
+        $col_idx{$headers[$i]} = $i;
+    }
+    
+    # Check that required columns exist
+    for my $required_col ('experimentId', 'experimentName', 'experimentDescription', 
+                          'experimentSource', 'experimentStatus', 'protocol', 'protocolType', 'comment') {
+        die "Missing required column: $required_col\n" unless exists $col_idx{$required_col};
+    }
+    
+    for my $line (@lines) {
+        # Skip empty lines and commented lines
+        next if ($line =~ /^\s*$/ || $line =~ /^#/);
+        
+        my @fields = split(/\t/, $line, -1);
+        
+        # Skip commented lines (experimentId starts with #)
+        my $experimentId = $fields[$col_idx{'experimentId'}];
         next if ( $experimentId =~ /^#/ or $experimentId =~ /^\"#/ );
+        # remove experimentIds not coming from SRA/ENA
+        if ( $experimentId !~ /^(SRP|ERP|DRP)/ ) {
+            warn "Skipping experimentId [$experimentId] not from SRA/ENA\n";
+            next;
+        }
 
-        my $name                            = $tsv{'experimentName'}[$line];
-        my $description                     = $tsv{'experimentDescription'}[$line];
-        my $source                          = $tsv{'experimentSource'}[$line];
-        # is it useful???
-        my $status                          = $tsv{'experimentStatus'}[$line];
-        my $protocol                        = $tsv{'protocol'}[$line];
-        my $protocolType                    = $tsv{'protocolType'}[$line];
-        my $comment                         = $tsv{'comment'}[$line];
+        my $name                            = $fields[$col_idx{'experimentName'}];
+        my $description                     = $fields[$col_idx{'experimentDescription'}];
+        my $source                          = $fields[$col_idx{'experimentSource'}];
+        my $status                          = $fields[$col_idx{'experimentStatus'}];
+        my $protocol                        = $fields[$col_idx{'protocol'}];
+        my $protocolType                    = $fields[$col_idx{'protocolType'}];
+        my $comment                         = $fields[$col_idx{'comment'}];
 
         if ( !defined $experiments{$experimentId} ){
             # Perform format checks
@@ -301,8 +326,10 @@ sub getSingleCellExperiments {
                     $experiments{$experimentId}->{'comment'} = $comment;
                     $experiments{$experimentId}->{'protocol'} = $protocol;
                     $experiments{$experimentId}->{'experimentType'} = $protocolType;
+                } else {
+                    print "not proper experimentType : $protocolType\n";
                 }
-            }
+            } 
         } else {
             warn 'Warning: experiment present several times in the experiment file: experiment: ',
             $experimentId, "\n";
