@@ -75,7 +75,7 @@ for(line in seq(nrow(sample_info_data))) {
       names(library_info) <- samples_columns
       all_samples <- rbind(all_samples, library_info)
     } else {
-      warning(library_id, " : calls info file was not generated")
+      message(library_id, " : calls info file was not generated")
       libraries_wo_calls <- libraries_wo_calls + 1
       # if no cutoff file do not add kallisto info neither. The code will stop and provide info for missing libraries
       next
