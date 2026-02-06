@@ -1,4 +1,8 @@
 barcode	cluster	library	experiment	tissue	cell_type	anatId_a_posteriori	anatName_a_posteriori	anat_a_posteriori_annotationStatus	cellTypeId	cellTypeName	cellTypeAnnotationStatus	name_Library
+CACTAAGCACAAACGG	NA	SRX9940596	SRP303345	Ventricular-subventricular zone (brain)	A cells	NA	NA	NA	CL:0000031	neuroblast (sensu Vertebrata)	perfect match	mixed sample (non-demultiplexed)
+CCACGAGCAGGTTCCG	NA	SRX9940596	SRP303345	Ventricular-subventricular zone (brain)	OPC/Oligo	NA	NA	NA	CL:0000095	neuron associated cell	other	mixed sample (non-demultiplexed)
+TGCAGATGTTACCGTA	NA	SRX9940596	SRP303345	Ventricular-subventricular zone (brain)	A cells	NA	NA	NA	CL:0000031	neuroblast (sensu Vertebrata)	perfect match	mixed sample (non-demultiplexed)
+TGGAGAGTCATCGACA	NA	SRX9940596	SRP303345	Ventricular-subventricular zone (brain)	A cells	NA	NA	NA	CL:0000031	neuroblast (sensu Vertebrata)	perfect match	mixed sample (non-demultiplexed)
 #AGGGTCCAGCCATCCG	NA	SRX9940596	SRP303345	Ventricular-subventricular zone (brain)	B cells	NA	NA	NA	CL:0000047	neural stem cell	perfect match	mixed sample (non-demultiplexed)
 #GAGGCCTTCCATCAGA	NA	SRX9940596	SRP303345	Ventricular-subventricular zone (brain)	Neuron	NA	NA	NA	CL:2000029	central nervous system neuron	perfect match	mixed sample (non-demultiplexed)
 #GAGTCTAAGTCAACAA	NA	SRX9940596	SRP303345	Ventricular-subventricular zone (brain)	A cells	NA	NA	NA	CL:0000031	neuroblast (sensu Vertebrata)	perfect match	mixed sample (non-demultiplexed)
