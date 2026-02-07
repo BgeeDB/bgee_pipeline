@@ -836,6 +836,12 @@ sub getGenesResults {
                 warn "Warning, wrong format for biotype [$biotype]\n";
                 $discarded = 1;
             }
+            # Convert Inf/-Inf directly to NA as these will be converted to NULL in the database
+            # Inf zscores occur when standard deviation is 0
+            # We use 'NA' here (not undef) because it needs to pass through validation and later conversion
+            if ( $zscore eq 'Inf' || $zscore eq '-Inf' ){
+                $zscore = 'NA';
+            }
              if ( !($zscore =~ /$floatingPointRegex/ || $zscore eq 'NA') ){
                 warn "Warning, wrong format for zscore [$zscore]\n";
                 $discarded = 1;

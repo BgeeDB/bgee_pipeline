@@ -566,11 +566,16 @@ sub getCallsInfoPerLibrary {
             warn "Warning, wrong format for cpm [$cpm]\n";
             $discarded = 1;
         }
+        # Convert Inf/-Inf directly to undef (NULL) as these cannot be stored in the database
+        # Inf zscores occur when standard deviation is 0
+        if ($zScore eq 'Inf' || $zScore eq '-Inf') {
+            $zScore = undef;
+        }
         if ($zScore eq '' ){
             warn "Warning, wrong format for zScore [$zScore]\n";
             $discarded = 1;
         # non numerical values of zscore are stored as NULL in the database
-        # dbi iquivalent to null is undef so if value of zscore is NA we modified
+        # dbi equivalent to null is undef so if value of zscore is NA we modify
         # it to be inserted as NULL in the database
         } elsif ($zScore eq "NA") {
             $zScore = undef;
