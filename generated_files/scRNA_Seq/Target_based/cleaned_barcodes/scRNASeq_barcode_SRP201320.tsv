@@ -35,7 +35,7 @@
 "AAAGCAAAGTGCTGCC"	7	"SRX6060800"	"SRP201320"	"spleen"	"Macrophage.1"	NA	NA	NA	"CL:0000871"	"splenic macrophage"	"perfect match"	NA	NA	7
 "AAAGCAACAAACGTGG"	2	"SRX6060800"	"SRP201320"	"spleen"	"B-cell"	NA	NA	NA	"CL:0000236"	"B cell"	"perfect match"	NA	NA	2
 "AAAGCAACAGATGAGC"	10	"SRX6060800"	"SRP201320"	"spleen"	"Macrophage.2"	NA	NA	NA	"CL:0000871"	"splenic macrophage"	"perfect match"	NA	NA	10
-"AAAGCAACATTGCGGC"	11	"SRX6060800"	"SRP201320"	"spleen"	"Neutrophil.1"	NA	NA	NA	"CL:0000775"	"Neutrophil"	"other"	NA	NA	11
+"AAAGCAACATTGCGGC"	11	"SRX6060800"	"SRP201320"	"spleen"	"Neutrophil.1"	NA	NA	NA	"CL:0000775"	"neutrophil"	"other"	NA	NA	11
 "AAAGCAAGTACTTGAC"	12	"SRX6060800"	"SRP201320"	"spleen"	"CD4-dendritic-cell"	NA	NA	NA	"CL:0000451"	"dendritic cell"	"missing child term"	NA	NA	12
 "AAAGCAATCGTGGTCG"	7	"SRX6060800"	"SRP201320"	"spleen"	"Macrophage.1"	NA	NA	NA	"CL:0000871"	"splenic macrophage"	"perfect match"	NA	NA	7
 "AAAGTAGAGGCCCTCA"	2	"SRX6060800"	"SRP201320"	"spleen"	"B-cell"	NA	NA	NA	"CL:0000236"	"B cell"	"perfect match"	NA	NA	2
