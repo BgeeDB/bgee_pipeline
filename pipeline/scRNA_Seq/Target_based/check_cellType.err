@@ -1,0 +1,104 @@
+WARNING: Skipping /dev bind mount: source and destination must be identical when binding to /dev
+
+Attaching package: 'dplyr'
+
+The following objects are masked from 'package:stats':
+
+    filter, lag
+
+The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union
+
+
+Attaching package: 'data.table'
+
+The following objects are masked from 'package:dplyr':
+
+    between, first, last
+
+Loading required package: iterators
+Loading required package: parallel
+Using 8 cores for parallel processing
+Found 1277 libraries across 41 experiments
+DEBUG: Length of all_issues: 41
+DEBUG: Class of all_issues: list
+DEBUG: Structure of first element: issues, diagnostics
+DEBUG: Collected 41 diagnostics
+DEBUG: Collected 9 library issues
+
+========================================
+Processing completed for 41 experiments
+Total libraries in metadata: 1277
+========================================
+✓ Experiment ERP111594 (5 libraries)
+✓ Experiment ERP115651 (24 libraries)
+✓ Experiment ERP117745 (69 libraries)
+✓ Experiment ERP119519 (1 libraries)
+⚠ Experiment ERP120466 (22 libraries)
+✓ Experiment ERP127795 (7 libraries)
+✓ Experiment ERP129698 (61 libraries)
+✓ Experiment ERP132576 (2 libraries)
+✓ Experiment ERP132577 (2 libraries)
+✓ Experiment ERP132578 (2 libraries)
+✓ Experiment ERP132579 (3 libraries)
+⚠ Experiment ERP132580 (2 libraries)
+✓ Experiment ERP132581 (2 libraries)
+✓ Experiment ERP132582 (2 libraries)
+✓ Experiment ERP132583 (3 libraries)
+✓ Experiment ERP132584 (5 libraries)
+✓ Experiment ERP132588 (2 libraries)
+✓ Experiment ERP136992 (30 libraries)
+✓ Experiment ERP139683 (26 libraries)
+✓ Experiment SRP329970 (3 libraries)
+✓ Experiment SRP337049 (11 libraries)
+⚠ Experiment SRP343046 (50 libraries)
+✓ Experiment SRP372346 (18 libraries)
+✓ Experiment SRP400422 (4 libraries)
+✓ Experiment SRP467631 (781 libraries)
+✓ Experiment SRP125768 (26 libraries)
+✓ Experiment SRP131661 (28 libraries)
+✓ Experiment SRP135999 (6 libraries)
+✓ Experiment SRP149989 (5 libraries)
+✓ Experiment SRP167086 (4 libraries)
+✓ Experiment SRP184201 (2 libraries)
+✓ Experiment SRP200614 (1 libraries)
+✓ Experiment SRP201320 (39 libraries)
+✓ Experiment SRP222001 (6 libraries)
+✓ Experiment SRP162698 (2 libraries)
+✓ Experiment SRP251970 (2 libraries)
+✓ Experiment SRP135922 (10 libraries)
+✓ Experiment SRP269263 (2 libraries)
+✓ Experiment SRP269777 (2 libraries)
+✓ Experiment SRP303343 (4 libraries)
+✓ Experiment SRP303345 (1 libraries)
+
+========================================
+DIAGNOSTIC DETAILS
+========================================
+
+Experiment ERP120466:
+  ⚠ 2 libraries with no barcodes: ERX3984854, ERX3984875
+
+Experiment ERP132580:
+  ⚠ 2 library folders not found
+    - /data/FAC/FBM/DEE/mrobinso/bgee_sensitive//bgee_v16_0/scRNA-Seq_all_results/DROPLET_10X/QC_CellType_identification//ERX6700418
+    - /data/FAC/FBM/DEE/mrobinso/bgee_sensitive//bgee_v16_0/scRNA-Seq_all_results/DROPLET_10X/QC_CellType_identification//ERX6700419
+
+Experiment SRP343046:
+  ⚠ 7 libraries with no barcodes: SRX12770673, SRX12770674, SRX12770675, SRX12770676, SRX12770677 ... +2
+
+3 experiments had diagnostic issues (shown above)
+========================================
+
+Warning messages:
+1: Library with barcode issues: SRX12770681 
+2: Library with barcode issues: SRX22231616 
+3: Library with barcode issues: SRX22231620 
+4: Library with barcode issues: SRX22231621 
+5: Library with barcode issues: SRX22231623 
+6: Library with barcode issues: SRX22231624 
+7: Library with barcode issues: SRX22231628 
+8: Library with barcode issues: SRX22232158 
+9: Library with barcode issues: SRX22232209 
+10: Total libraries with barcode issues: 9 
