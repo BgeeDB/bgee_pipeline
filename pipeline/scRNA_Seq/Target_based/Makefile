@@ -165,7 +165,7 @@ qc_cellType: process_busFile 1Run/parallelized_qcCellIdentification.pl
 
 # Test to be sure we never reproduce the bug of not mapping cluster to proper barcodes............
 check_cellType: qc_cellType 1Run/validate_barcodes.R
-	@srun --partition=$(SENSITIVE_CLUSTER_PARTITION)  --account=$(SENSITIVE_CLUSTER_ACCOUNT) --nodes=1 --ntasks=1 --cpus-per-task=16 --mem=30G --time=1-00:00:00 --job-name=validate_celltype --output=$(PWD)/validate_barcodes.out --error=$(PWD)/validate_barcodes.err --export=ALL /bin/bash -c '$(CLUSTER_CONTAINER_CMD_WITH_BIND) Rscript 1Run/validate_barcodes.R infoFolder=\"${PWD}/$(SC_RNASEQ_CLEANED_BARCODES)\" outputFolder=\"$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)\" scRNASeq_Info=\"${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH)\" ncores=\"16\"'
+	@srun --partition=$(SENSITIVE_CLUSTER_PARTITION)  --account=$(SENSITIVE_CLUSTER_ACCOUNT) --nodes=1 --ntasks=1 --cpus-per-task=32 --mem=30G --time=1-00:00:00 --job-name=validate_celltype --output=$(PWD)/check_cellType.out --error=$(PWD)/check_cellType.err --export=ALL /bin/bash -c '$(CLUSTER_CONTAINER_CMD_WITH_BIND) Rscript 1Run/validate_barcodes.R infoFolder=\"${PWD}/$(SC_RNASEQ_CLEANED_BARCODES)\" outputFolder=\"$(SC_RNASEQ_CLUSTER_QC_CELLTYPE)\" scRNASeq_Info=\"${PWD}/$(SC_RNASEQ_METADATA_10X_FILEPATH)\" ncores=\"31\"'
 	@mv $@.out $@
 
 ## Quality control based on the bimodality of the cell-population per library/cell-type pop
