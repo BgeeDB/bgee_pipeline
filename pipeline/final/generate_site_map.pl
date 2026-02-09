@@ -52,7 +52,7 @@ my $sitemap_footer = "\n</urlset>";
 print "Write main/static pages\n"  if ( $debug );
 my @static_pages;
 push @static_pages, "<loc>$homepage/</loc><priority>0.8</priority>";
-push @static_pages, "<loc>$homepage/sparql/</loc><priority>0.7</priority>";
+push @static_pages, "<loc>$homepage/sparql-editor/</loc><priority>0.7</priority>";
 push @static_pages, "<loc>$homepage/ftp/</loc><priority>0.7</priority>";
 my @basic_about     = ('', 'news', 'collaborations', 'publications', 'sources', 'team', 'bgeesab', 'privacy-policy');
 for my $baseUrlName ( sort @basic_about ){
