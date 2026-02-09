@@ -25,7 +25,7 @@ my $test_options = Getopt::Long::GetOptions(%opts);
 if ( !$test_options || $bgee_connector eq '' ){
     print "\n\tInvalid or missing argument:
 \te.g. $0  -bgee=\$(BGEECMD)
-\t-bgee     Bgee connector string (e.g. user=bgee__pass=bgee__host=127.0.0.1__port=3306__name=bgee_v15_1)
+\t-bgee     Bgee connector string (e.g. user=bgee__pass=bgee__host=127.0.0.1__port=3306__name=bgee_v16_0)
 \t-debug    show current status
 \n";
     exit 1;
