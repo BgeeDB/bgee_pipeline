@@ -1,0 +1,37 @@
+R version 4.5.0 (2025-04-11)
+Platform: x86_64-pc-linux-gnu
+Running under: Ubuntu 24.04.2 LTS
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.12.0 
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.12.0  LAPACK version 3.12.0
+
+locale:
+[1] C
+
+time zone: Etc/UTC
+tzcode source: system (glibc)
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+[1] compiler_4.5.0
+[1] "bgeecall_input_file=\"../../generated_files/RNA_Seq/bgeecall_input.tsv\""                                                                               
+[2] "account=\"mrobinso_bgee_sensitive\""                                                                                                                    
+[3] "container_cmd=\"module load gcc/12.3.0; module load apptainer/1.1.9; apptainer exec /work/FAC/FBM/DEE/mrobinso/bgee_sensitive/BgeePipeline-16.0.0.sif\""
+[4] "time=\"2-00:00:00\""                                                                                                                                    
+[5] "partition=\"urblauna\""                                                                                                                                 
+[6] "working_path=\"/data/FAC/FBM/DEE/mrobinso/bgee_sensitive//bgee_v16_0/rna_seq/calls/\""                                                                  
+[7] "decrypt_file_path=\"/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/.passw\""                                                                                 
+$jobname
+[1] "generate_calls"
+
+$jobid
+[1] "28712349"
+
+$nodes
+[1] 57
+
+attr(,"class")
+[1] "slurm_job"
