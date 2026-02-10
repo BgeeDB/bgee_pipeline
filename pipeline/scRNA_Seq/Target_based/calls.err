@@ -1,5 +1,11 @@
 WARNING: Skipping /dev bind mount: source and destination must be identical when binding to /dev
-There were 16 warnings (use warnings() to see them)
+There were 11 warnings (use warnings() to see them)
+Notch went outside hinges
+i Do you want `notch = FALSE`?
+Notch went outside hinges
+i Do you want `notch = FALSE`?
+Notch went outside hinges
+i Do you want `notch = FALSE`?
 Notch went outside hinges
 i Do you want `notch = FALSE`?
 Notch went outside hinges
@@ -25,9 +31,7 @@ i Do you want `notch = FALSE`?
 Notch went outside hinges
 i Do you want `notch = FALSE`?
 Warning messages:
-1: Removed 2099 rows containing non-finite outside the scale range
+1: Removed 41962 rows containing non-finite outside the scale range
 (`stat_boxplot()`). 
-2: Removed 41804 rows containing non-finite outside the scale range
-(`stat_boxplot()`). 
-3: Removed 2202 rows containing non-finite outside the scale range
+2: Removed 115 rows containing non-finite outside the scale range
 (`stat_boxplot()`). 

@@ -1,0 +1,18 @@
+WARNING: Skipping /dev bind mount: source and destination must be identical when binding to /dev
+29296 libraries in the bgeecall info file
+29296libraries found in the calls directory
+Warning messages:
+1: In (function (z, notch = FALSE, width = NULL, varwidth = FALSE,  :
+  some notches went outside hinges ('box'): maybe set notch=FALSE
+2: In (function (z, notch = FALSE, width = NULL, varwidth = FALSE,  :
+  some notches went outside hinges ('box'): maybe set notch=FALSE
+3: In (function (z, notch = FALSE, width = NULL, varwidth = FALSE,  :
+  some notches went outside hinges ('box'): maybe set notch=FALSE
+4: In (function (z, notch = FALSE, width = NULL, varwidth = FALSE,  :
+  some notches went outside hinges ('box'): maybe set notch=FALSE
+5: In (function (z, notch = FALSE, width = NULL, varwidth = FALSE,  :
+  some notches went outside hinges ('box'): maybe set notch=FALSE
+6: In (function (z, notch = FALSE, width = NULL, varwidth = FALSE,  :
+  some notches went outside hinges ('box'): maybe set notch=FALSE
+7: In (function (z, notch = FALSE, width = NULL, varwidth = FALSE,  :
+  some notches went outside hinges ('box'): maybe set notch=FALSE

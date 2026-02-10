@@ -1,0 +1,51 @@
+WARNING: Skipping /dev bind mount: source and destination must be identical when binding to /dev
+WARNING: skipping mount of sysfs: stat sysfs: no such file or directory
+WARNING: passwd file doesn't exist in container, not updating
+WARNING: group file doesn't exist in container, not updating
+WARNING: Skipping mount sysfs [kernel]: /sys doesn't exist in container
+FATAL:   stat /work/FAC/FBM/DEE/mrobinso/bgee_sensitive/BgeePipeline-16.0.0.sif: no such file or directory
+WARNING: Skipping /dev bind mount: source and destination must be identical when binding to /dev
+WARNING: skipping mount of /var/CCCCrun/munge: stat /var/CCCCrun/munge: no such file or directory
+FATAL:   container creation failed: mount hook function failure: mount /var/CCCCrun/munge->/var/CCCCrun/munge error: while mounting /var/CCCCrun/munge: mount source /var/CCCCrun/munge doesn't exist
+WARNING: Skipping /dev bind mount: source and destination must be identical when binding to /dev
+IMPORTANT : You decided to use your own reference intergenic sequences
+Submitted batch job 28688041
+Warning message:
+In rslurm::slurm_apply(f = calls_wrapper, params = user_df, jobname = "generate_calls",  :
+  Argument add_objects is deprecated; use global_objects instead.FALSE
+WARNING: Skipping /dev bind mount: source and destination must be identical when binding to /dev
+IMPORTANT : You decided to use your own reference intergenic sequences
+Submitted batch job 28688903
+Warning message:
+In rslurm::slurm_apply(f = calls_wrapper, params = user_df, jobname = "generate_calls",  :
+  Argument add_objects is deprecated; use global_objects instead.FALSE
+WARNING: Skipping /dev bind mount: source and destination must be identical when binding to /dev
+IMPORTANT : You decided to use your own reference intergenic sequences
+Submitted batch job 28688960
+Warning message:
+In rslurm::slurm_apply(f = calls_wrapper, params = user_df, jobname = "generate_calls",  :
+  Argument add_objects is deprecated; use global_objects instead.FALSE
+WARNING: Skipping /dev bind mount: source and destination must be identical when binding to /dev
+IMPORTANT : You decided to use your own reference intergenic sequences
+Submitted batch job 28689017
+Warning message:
+In rslurm::slurm_apply(f = calls_wrapper, params = user_df, jobname = "generate_calls",  :
+  Argument add_objects is deprecated; use global_objects instead.FALSE
+WARNING: Skipping /dev bind mount: source and destination must be identical when binding to /dev
+IMPORTANT : You decided to use your own reference intergenic sequences
+Submitted batch job 28710869
+Warning message:
+In rslurm::slurm_apply(f = calls_wrapper, params = user_df, jobname = "generate_calls",  :
+  Argument add_objects is deprecated; use global_objects instead.FALSE
+WARNING: Skipping /dev bind mount: source and destination must be identical when binding to /dev
+IMPORTANT : You decided to use your own reference intergenic sequences
+Submitted batch job 28710927
+Warning message:
+In rslurm::slurm_apply(f = calls_wrapper, params = user_df, jobname = "generate_calls",  :
+  Argument add_objects is deprecated; use global_objects instead.FALSE
+WARNING: Skipping /dev bind mount: source and destination must be identical when binding to /dev
+IMPORTANT : You decided to use your own reference intergenic sequences
+Submitted batch job 28712349
+Warning message:
+In rslurm::slurm_apply(f = calls_wrapper, params = user_df, jobname = "generate_calls",  :
+  Argument add_objects is deprecated; use global_objects instead.FALSE

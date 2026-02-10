@@ -1,0 +1,40 @@
+R version 4.5.0 (2025-04-11)
+Platform: x86_64-pc-linux-gnu
+Running under: Ubuntu 24.04.2 LTS
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.12.0 
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.12.0  LAPACK version 3.12.0
+
+locale:
+[1] C
+
+time zone: Etc/UTC
+tzcode source: system (glibc)
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] rjson_0.2.23
+
+loaded via a namespace (and not attached):
+[1] compiler_4.5.0
+[1] "bgeecall_sample_info=\"../../generated_files/RNA_Seq/bgeecall_input.tsv\""                                                                   
+[2] "downloaded_lib_file=\"../../generated_files/RNA_Seq/rna_seq_sample_downloaded.txt\""                                                         
+[3] "calls_dir=\"/data/FAC/FBM/DEE/mrobinso/bgee_sensitive//bgee_v16_0/rna_seq/calls/all_results/\""                                              
+[4] "presence_absence_report=\"/data/FAC/FBM/DEE/mrobinso/bgee_sensitive//bgee_v16_0/rna_seq/calls/all_results/presence_absence_all_samples.txt\""
+[5] "kallisto_report=\"/data/FAC/FBM/DEE/mrobinso/bgee_sensitive//bgee_v16_0/rna_seq/calls/all_results/reports_info_all_samples.txt\""            
+[1] "cutoffTPM"
+[1] "proportionGenicPresent"
+[1] "numberGenicPresent"
+[1] "numberGenic"
+[1] "proportionCodingPresent"
+[1] "numberPresentCoding"
+[1] "numberCoding"
+[1] "proportionIntergenicPresent"
+[1] "numberIntergenicPresent"
+[1] "numberIntergenic"
+[1] "pValueCutoff"
+null device 
+          1 
