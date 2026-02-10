@@ -1,11 +1,12 @@
+WARNING: Skipping /dev bind mount: source and destination must be identical when binding to /dev
 
-Attaching package: ‘dplyr’
+Attaching package: 'dplyr'
 
-The following objects are masked from ‘package:stats’:
+The following objects are masked from 'package:stats':
 
     filter, lag
 
-The following objects are masked from ‘package:base’:
+The following objects are masked from 'package:base':
 
     intersect, setdiff, setequal, union
 
@@ -17,13 +18,11 @@ Library ERX3984872: 1 barcodes were present more than once with different annota
 Total barcodes with duplicates (same annotation): 0
 Total barcodes with duplicates (different annotation): 6
 ================================================
-Exists barcode duplicates in 1 or more library of scRNASeq_barcode_ERP120466.tsv
 Library SRX6936043: 4 barcodes were present more than once with different annotations (all moved to Duplicated file)
 ====== SUMMARY for scRNASeq_barcode_SRP162698.tsv ======
 Total barcodes with duplicates (same annotation): 0
 Total barcodes with duplicates (different annotation): 4
 ================================================
-Exists barcode duplicates in 1 or more library of scRNASeq_barcode_SRP162698.tsv
 Library SRX6859236: 2311 barcodes were present more than once with same cellTypeId and cell_type (keeping one occurrence, others in Duplicated file)
 Library SRX6859237: 1679 barcodes were present more than once with same cellTypeId and cell_type (keeping one occurrence, others in Duplicated file)
 Library SRX6859237: 3 barcodes were present more than once with different annotations (all moved to Duplicated file)
@@ -38,23 +37,14 @@ Library SRX6859235: 1 barcodes were present more than once with different annota
 Total barcodes with duplicates (same annotation): 8482
 Total barcodes with duplicates (different annotation): 24
 ================================================
-Exists barcode duplicates in 1 or more library of scRNASeq_barcode_SRP222001.tsv
 Library SRX9940596: 4 barcodes were present more than once with same cellTypeId and cell_type (keeping one occurrence, others in Duplicated file)
 Library SRX9940596: 32 barcodes were present more than once with different annotations (all moved to Duplicated file)
 ====== SUMMARY for scRNASeq_barcode_SRP303345.tsv ======
 Total barcodes with duplicates (same annotation): 4
 Total barcodes with duplicates (different annotation): 32
 ================================================
-Exists barcode duplicates in 1 or more library of scRNASeq_barcode_SRP303345.tsv
 Library SRX11559755: 1 barcodes were present more than once with different annotations (all moved to Duplicated file)
 ====== SUMMARY for scRNASeq_barcode_SRP329970.tsv ======
 Total barcodes with duplicates (same annotation): 0
 Total barcodes with duplicates (different annotation): 1
 ================================================
-Exists barcode duplicates in 1 or more library of scRNASeq_barcode_SRP329970.tsv
-Library SRX12770681: 10 barcodes were present more than once with same cellTypeId and cell_type (keeping one occurrence, others in Duplicated file)
-====== SUMMARY for scRNASeq_barcode_SRP343046.tsv ======
-Total barcodes with duplicates (same annotation): 10
-Total barcodes with duplicates (different annotation): 0
-================================================
-Exists barcode duplicates in 1 or more library of scRNASeq_barcode_SRP343046.tsv
