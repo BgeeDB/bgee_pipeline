@@ -1,7 +1,15 @@
 WARNING: Skipping /dev bind mount: source and destination must be identical when binding to /dev
-There were 11 warnings (use warnings() to see them)
-Notch went outside hinges
-i Do you want `notch = FALSE`?
+Warning messages:
+1: an error happened in the generation of calls for library ERX3984854. The calls summary file for that library has not been generated. Please solve the issue or remove this library from the metadata file and rerun the rule. 
+2: an error happened in the generation of calls for library ERX3984875. The calls summary file for that library has not been generated. Please solve the issue or remove this library from the metadata file and rerun the rule. 
+3: an error happened in the generation of calls for library ERX6700418. The calls summary file for that library has not been generated. Please solve the issue or remove this library from the metadata file and rerun the rule. 
+4: an error happened in the generation of calls for library ERX6700419. The calls summary file for that library has not been generated. Please solve the issue or remove this library from the metadata file and rerun the rule. 
+5: an error happened in the generation of calls for library SRX12770673. The calls summary file for that library has not been generated. Please solve the issue or remove this library from the metadata file and rerun the rule. 
+6: an error happened in the generation of calls for library SRX12770674. The calls summary file for that library has not been generated. Please solve the issue or remove this library from the metadata file and rerun the rule. 
+7: an error happened in the generation of calls for library SRX12770675. The calls summary file for that library has not been generated. Please solve the issue or remove this library from the metadata file and rerun the rule. 
+8: an error happened in the generation of calls for library SRX12770676. The calls summary file for that library has not been generated. Please solve the issue or remove this library from the metadata file and rerun the rule. 
+9: an error happened in the generation of calls for library SRX12770677. The calls summary file for that library has not been generated. Please solve the issue or remove this library from the metadata file and rerun the rule. 
+10: an error happened in the generation of calls for library SRX12770678. The calls summary file for that library has not been generated. Please solve the issue or remove this library from the metadata file and rerun the rule. 
 Notch went outside hinges
 i Do you want `notch = FALSE`?
 Notch went outside hinges
@@ -31,7 +39,7 @@ i Do you want `notch = FALSE`?
 Notch went outside hinges
 i Do you want `notch = FALSE`?
 Warning messages:
-1: Removed 41962 rows containing non-finite outside the scale range
+1: Removed 41972 rows containing non-finite outside the scale range
 (`stat_boxplot()`). 
 2: Removed 115 rows containing non-finite outside the scale range
 (`stat_boxplot()`). 
