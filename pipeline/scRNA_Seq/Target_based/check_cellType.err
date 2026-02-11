@@ -19,13 +19,13 @@ The following objects are masked from 'package:dplyr':
 
 Loading required package: iterators
 Loading required package: parallel
-Using 8 cores for parallel processing
+Using 31 cores for parallel processing
 Found 1277 libraries across 41 experiments
 DEBUG: Length of all_issues: 41
 DEBUG: Class of all_issues: list
 DEBUG: Structure of first element: issues, diagnostics
 DEBUG: Collected 41 diagnostics
-DEBUG: Collected 9 library issues
+DEBUG: Collected 8 library issues
 
 ========================================
 Processing completed for 41 experiments
@@ -86,19 +86,18 @@ Experiment ERP132580:
     - /data/FAC/FBM/DEE/mrobinso/bgee_sensitive//bgee_v16_0/scRNA-Seq_all_results/DROPLET_10X/QC_CellType_identification//ERX6700419
 
 Experiment SRP343046:
-  ⚠ 7 libraries with no barcodes: SRX12770673, SRX12770674, SRX12770675, SRX12770676, SRX12770677 ... +2
+  ⚠ 6 libraries with no barcodes: SRX12770673, SRX12770674, SRX12770675, SRX12770676, SRX12770677 ... +1
 
 3 experiments had diagnostic issues (shown above)
 ========================================
 
 Warning messages:
-1: Library with barcode issues: SRX12770681 
-2: Library with barcode issues: SRX22231616 
-3: Library with barcode issues: SRX22231620 
-4: Library with barcode issues: SRX22231621 
-5: Library with barcode issues: SRX22231623 
-6: Library with barcode issues: SRX22231624 
-7: Library with barcode issues: SRX22231628 
-8: Library with barcode issues: SRX22232158 
-9: Library with barcode issues: SRX22232209 
-10: Total libraries with barcode issues: 9 
+1: Library with barcode issues: SRX22231616 
+2: Library with barcode issues: SRX22231620 
+3: Library with barcode issues: SRX22231621 
+4: Library with barcode issues: SRX22231623 
+5: Library with barcode issues: SRX22231624 
+6: Library with barcode issues: SRX22231628 
+7: Library with barcode issues: SRX22232158 
+8: Library with barcode issues: SRX22232209 
+9: Total libraries with barcode issues: 8 
