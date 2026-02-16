@@ -661,9 +661,6 @@ sub getBarcodeToCellType {
                 warn "Warning, wrong format for bgeeClusterId [$bgeeClusterId]\n";
                 $discarded = 1;
             }
-            if ($authorCellTypeAnnotation eq '' ){
-                warn "Warning, authorCellTypeAnnotation is empty. library : $libraryId celltype : $cellTypeId. The cluster has not been discarded\n";
-            }
             if ($discarded) {
                 warn 'libraryId: ', $libraryId, ', barcode ', $barcode, ', bgeeClusterId ', $bgeeClusterId,
                 ', authorCellTypeAnnotation ', $authorCellTypeAnnotation,
