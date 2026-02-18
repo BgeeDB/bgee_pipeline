@@ -1,18 +1,18 @@
 $VAR1 = {
-          'queue=s' => \'urblauna',
-          'pValueCutoff=s' => \'0.05',
-          'metadataFile=s' => \'/users/jwollbre/Documents/git/bgee_pipeline/pipeline/scRNA_Seq/Target_based/../../../generated_files/scRNA_Seq/Target_based/metadata_info_10X.txt',
-          'outputDir=s' => \'/data/FAC/FBM/DEE/mrobinso/bgee_sensitive//bgee_v16_0/scRNA-Seq_all_results/DROPLET_10X/calls/',
-          'containerCmd=s' => \'module load gcc/12.3.0; module load apptainer/1.1.9; apptainer exec --bind /etc/passwd,/var/run/munge,/usr/lib64/libmunge.so.2.0.0:/usr/lib64/libmunge.so.2,/run/slurm/conf/slurm.conf,/usr/lib64/slurm,/usr/bin/sbatch,/usr/bin/squeue,/usr/bin/scancel,/usr/bin/sacct,/usr/bin/scontrol,/usr/bin/seff,/dev/,/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/,/scratch/jwollbre/,/work/FAC/FBM/DEE/mrobinso/bgee/,/work/FAC/FBM/DEE/mrobinso/bgee_sensitive/  /work/FAC/FBM/DEE/mrobinso/bgee_sensitive/BgeePipeline-16.0.0.sif',
-          'barcodeAnnotationFolder=s' => \'/users/jwollbre/Documents/git/bgee_pipeline/pipeline/scRNA_Seq/Target_based/../../../generated_files/scRNA_Seq/Target_based/cleaned_barcodes/',
-          'parallelJobs=s' => \'100',
-          'cellTypeFolder=s' => \'/data/FAC/FBM/DEE/mrobinso/bgee_sensitive//bgee_v16_0/scRNA-Seq_all_results/DROPLET_10X/QC_CellType_identification/',
           'pathToCallsScript=s' => \'/users/jwollbre/Documents/git/bgee_pipeline/pipeline/scRNA_Seq/Target_based/1Run/calls_one_library.R',
-          'account=s' => \'mrobinso_bgee_sensitive'
+          'containerCmd=s' => \'module load gcc/12.3.0; module load apptainer/1.1.9; apptainer exec --bind /etc/passwd,/var/run/munge,/usr/lib64/libmunge.so.2.0.0:/usr/lib64/libmunge.so.2,/run/slurm/conf/slurm.conf,/usr/lib64/slurm,/usr/bin/sbatch,/usr/bin/squeue,/usr/bin/scancel,/usr/bin/sacct,/usr/bin/scontrol,/usr/bin/seff,/dev/,/data/FAC/FBM/DEE/mrobinso/bgee_sensitive/,/scratch/jwollbre/,/work/FAC/FBM/DEE/mrobinso/bgee/,/work/FAC/FBM/DEE/mrobinso/bgee_sensitive/  /work/FAC/FBM/DEE/mrobinso/bgee_sensitive/BgeePipeline-16.0.0.sif',
+          'outputDir=s' => \'/data/FAC/FBM/DEE/mrobinso/bgee_sensitive//bgee_v16_0/scRNA-Seq_all_results/DROPLET_10X/calls/',
+          'pValueCutoff=s' => \'0.05',
+          'queue=s' => \'urblauna',
+          'cellTypeFolder=s' => \'/data/FAC/FBM/DEE/mrobinso/bgee_sensitive//bgee_v16_0/scRNA-Seq_all_results/DROPLET_10X/QC_CellType_identification/',
+          'account=s' => \'mrobinso_bgee_sensitive',
+          'metadataFile=s' => \'/users/jwollbre/Documents/git/bgee_pipeline/pipeline/scRNA_Seq/Target_based/../../../generated_files/scRNA_Seq/Target_based/metadata_info_10X.txt',
+          'parallelJobs=s' => \'100',
+          'barcodeAnnotationFolder=s' => \'/users/jwollbre/Documents/git/bgee_pipeline/pipeline/scRNA_Seq/Target_based/../../../generated_files/scRNA_Seq/Target_based/cleaned_barcodes/'
         };
-created 12 sbatch files.
-all jobs created properly. Run 12 jobs
-2 jobs completed, 10 jobs failed, 0 jobs failed with an out of memory issue and 0 jobs have been cancelled.
+created 11 sbatch files.
+all jobs created properly. Run 11 jobs
+1 jobs completed, 10 jobs failed, 0 jobs failed with an out of memory issue and 0 jobs have been cancelled.
 [1] "metadata_file=\"../../../generated_files/scRNA_Seq/Target_based/metadata_info_10X.txt\""                                                              
 [2] "calls_dir=\"/data/FAC/FBM/DEE/mrobinso/bgee_sensitive//bgee_v16_0/scRNA-Seq_all_results/DROPLET_10X/calls/\""                                         
 [3] "summary_calls_file=\"/data/FAC/FBM/DEE/mrobinso/bgee_sensitive//bgee_v16_0/scRNA-Seq_all_results/DROPLET_10X/calls/All_cellPopulation_stats_10X.tsv\""

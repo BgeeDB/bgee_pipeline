@@ -13,10 +13,12 @@
 ## by creating jobs on a slurm cluster. Each job correspond to one library
 
 ## Usage:
-## R CMD BATCH --no-save --no-restore '--args libraryId="libraryId" speciesId="speciesId" speciesName="speciesName" celltypeFolder="celltypeFolder" pValueCutoff="pValueCutoff" callsOutputFolder="callsOutputFolder"' calls_one_library.R calls_one_library.Rout
+## R CMD BATCH --no-save --no-restore '--args experimentId="expID" libraryId="libraryId" speciesId="speciesId" speciesName="speciesName" celltypeFolder="celltypeFolder" pValueCutoff="pValueCutoff" callsOutputFolder="callsOutputFolder"' calls_one_library.R calls_one_library.Rout
+## experimentId             --> ID of the experiment
 ## libraryId                --> ID of the library
 ## speciesId                --> NCBI taxon ID of the species (e.g 9606)
 ## speciesName              --> species name (e.g Homo sapiens)
+## barcodeAnnotationFolder  --> folder containing the barcode to celltype annotation files
 ## celltypeFolder           --> Folder containing celltype quantification for that library
 ## pValueCutoff             --> desired pValue cutoff to call present genes
 ## callsOutputFolder        --> Folder where we should save the results
@@ -68,6 +70,9 @@ sumUMICellPop <- function(rawCountFile) {
     numeric_barcodes <- as.data.frame(lapply(cellPop[ ,2:(length(cellPop)-4)], as.numeric))
     cellPop$sumUMI <- rowSums(numeric_barcodes)
   }
+  if (sum(cellPop$sumUMI) == 0) {
+    stop("No UMI counts found for library ", libraryId, " for raw count file ", rawCountFile, ". No calls will be generated for that library.")
+  }
   cellPop$CPM <- cellPop$sumUMI / sum(cellPop$sumUMI) * 1e6
   ## export cell pop info table
   cellPop <- data.frame(cellPop$gene_id, cellPop$sumUMI, cellPop$CPM, cellPop$type,
@@ -89,27 +94,48 @@ sumUMICellPop <- function(rawCountFile) {
 theoretical_pValue <- function(counts){
   ## select intergenic regions
   selected_intergenic <- dplyr::filter(counts, type == "intergenic")
+  if(nrow(selected_intergenic) == 0) {
+    stop("No intergenic regions found. No calls will be generated for this library.")
+  }
   ## select intergenic values with CPM > 0 (because we will use log2 scale)
   selectedRefIntergenic <- dplyr::filter(counts, CPM > 0 & type == "intergenic")
   ## select genic and ref. intergenic region from the library with CPM > 0
   selected_count <- dplyr::filter(counts, CPM > 0 & type == "genic")
+  if(nrow(selected_count) == 0) {
+    stop("No genic regions with CPM values > 0. No calls will be generated for this library. How can one or several cell(s) be associated to a celltype with no reads mapped to the transcriptome????")
+  }
   ## calculate the ratio of reference intergenic that receive reads
   ratio_intergenic_overzero <- sum(selected_intergenic$CPM > 0) / nrow(selected_intergenic)
   # Edge-case: If no intergenic regions receive reads, all genes with at least 1 count have pValue 0
   if (nrow(selectedRefIntergenic) == 0) {
-    warning("No intergenic regions with TPM values > 0; setting pValue = 0 and zScore = NA for expressed genes")
+    warning("No intergenic regions with CPM values > 0; setting pValue = 0 and zScore = NA for expressed genes")
     selected_count$zScore <- NA
     selected_count$pValue <- 0
-    regions <- merge(counts, selected_count[, c("id", "zScore", "pValue")], 
-                                by = "id", all.x=TRUE)
+    #manage pValues and zScore for genic regions with CPM > 0
+    regions <- merge(counts, selected_count[, c("gene_id", "zScore", "pValue")], 
+                                by = "gene_id", all.x=TRUE)
+    # manage pValues and zScore for all regions with CPM = 0
     regions$pValue[is.na(regions$pValue)] <- 1
-    return(list(regions, NA, NA))
+    return(list(regions = regions, meanRefIntergenic = NA, sdRefIntergenic = NA))
   }
   # Remove outlier intergenic regions
   Q1 <- quantile(log2(selectedRefIntergenic$CPM), 0.25)
   Q3 <- quantile(log2(selectedRefIntergenic$CPM), 0.75)
   IQR <- Q3 - Q1
   selectedRefIntergenic <- selectedRefIntergenic[log2(selectedRefIntergenic$CPM) >= (Q1 - 1.5 * IQR) & log2(selectedRefIntergenic$CPM) <= (Q3 + 1.5 * IQR),]
+  
+  # Edge-case: All intergenic regions were removed as outliers. Should never happen... just in case
+  if (nrow(selectedRefIntergenic) == 0) {
+    warning("All intergenic regions were filtered as outliers; setting pValue = 0 and zScore = NA for expressed genes")
+    selected_count$zScore <- NA
+    selected_count$pValue <- 0
+    #manage pValues and zScore for genic regions with CPM > 0
+    regions <- merge(counts, selected_count[, c("gene_id", "zScore", "pValue")], 
+                                by = "gene_id", all.x=TRUE)
+    # manage pValues and zScore for all regions with CPM = 0
+    regions$pValue[is.na(regions$pValue)] <- 1
+    return(list(regions = regions, meanRefIntergenic = NA, sdRefIntergenic = NA))
+  }
   
   # Calculate intergenic regions mean and standard deviation
   intergenic_mean <- mean(log2(selectedRefIntergenic$CPM))
@@ -118,7 +144,7 @@ theoretical_pValue <- function(counts){
   # Edge-case: All intergenic regions have the same value (most likely 1 count)
   if (is.na(intergenic_sd) || intergenic_sd == 0) {
     intergenic_value <- unique(selectedRefIntergenic$CPM)
-    warning(paste0("All intergenic regions have the same TPM value (", intergenic_value, "); assigning heuristic p-values"))
+    warning(paste0("All intergenic regions have the same CPM value (", intergenic_value, "); assigning heuristic p-values"))
     selected_count$zScore <- NA
     selected_count$pValue <- ifelse(
       selected_count$CPM > intergenic_value, 0,
@@ -132,11 +158,11 @@ theoretical_pValue <- function(counts){
   }
   
   # Merge genes CPM values with zScores and pValues
-  regions <- merge(counts, selected_count[, c("id", "zScore", "pValue")], 
-                   by = "id", all.x=TRUE)
+  regions <- merge(counts, selected_count[, c("gene_id", "zScore", "pValue")], 
+                   by = "gene_id", all.x=TRUE)
   regions$pValue[is.na(regions$pValue)] <- 1
   
-  return(list(regions, 2^(intergenic_mean), 2^(intergenic_sd)))
+  return(list(regions = regions, meanRefIntergenic = 2^(intergenic_mean), sdRefIntergenic = 2^(intergenic_sd)))
 }
 
 cutoff_info <- function(library_id, cellTypeId, cellTypeFreeTextAnnotation, counts, pValueCutoff,
@@ -154,7 +180,9 @@ cutoff_info <- function(library_id, cellTypeId, cellTypeFreeTextAnnotation, coun
   proportion_intergenic_present <- (nrow(dplyr::filter(counts, type == "intergenic" &
     calls_pValue == "present"))/nrow(dplyr::filter(counts, type == "intergenic")))*100
   
-  CPM_Threshold <- min(counts$CPM[counts$type == "genic" & counts$calls_pValue == "present"])
+  ## Handle edge case where no genic regions are present
+  present_genic_cpm <- counts$CPM[counts$type == "genic" & counts$calls_pValue == "present"]
+  CPM_Threshold <- ifelse(length(present_genic_cpm) > 0, min(present_genic_cpm), Inf)
   ## Export cutoff_info_file
   collectInfo <- c(library_id, cellTypeId, cellTypeFreeTextAnnotation, CPM_Threshold, sum(counts$type == "genic"),
     genic_region_present,proportion_genic_present, sum(counts$biotype %in% "protein_coding"),
@@ -231,9 +259,6 @@ if (length(rawCountFiles) > 0 ) {
   stop_quietly()
 }
 
-## Information about reference intergenic
-allCelltypeInfo <- file.path(libraryOutputFolder, "All_cellPopulation_stats_10X.tsv")
-
 # load barcode annotation file to be able to retrieve the cell-type ID and the free-text cell-type annotation
 #TODO: celltype ID and freetext annotation should be provided somewhere else (e.g in a file created during the cell-type quantification step)
 barcodeAnnotations <- read.table(file.path(barcodeAnnotationFolder, paste0("scRNASeq_barcode_", experimentId, ".tsv")),
@@ -258,16 +283,9 @@ for (rawCountFile in rawCountFiles) {
 
   ## calculate pValue of presence/absence of expression
   calculatePvalues <- theoretical_pValue(counts = cellPop_normalized)
-  calculationInfo <- calculatePvalues[[1]]
-  calculationInfo$calls_pValue <- ifelse(calculationInfo$pValue <=
+  allData <- calculatePvalues$regions
+  allData$calls_pValue <- ifelse(allData$pValue <=
     as.numeric(pValueCutoff), "present", "absent" )
-  
-  ## add info also about genesID where CPM = 0 and were not used for the pValue calculation
-  ## (but are important for the final stats)
-  regionZero <- cellPop_normalized[!cellPop_normalized$gene_id %in% calculationInfo$gene_id,]
-  regionZero$zScore <- "NA"; regionZero$pValue <- "NA"; regionZero$calls_pValue <-"absent"
-  
-  allData <- rbind(calculationInfo, regionZero)
   #TODO Actually, why bother reordering??
   #What a creepy reordering.
   #genicRegion <- dplyr::filter(allData, type=="genic")
@@ -280,14 +298,18 @@ for (rawCountFile in rawCountFiles) {
   
   ## collect just genic region and re-calculate CPM
   finalData_genic <- dplyr::filter(finalData, type == "genic")
+  # already checked that sumUMI is not 0, but just in case the code above is updated...
+  if (sum(finalData_genic$sumUMI) == 0) {
+    stop("No UMI counts found for genic regions for library ", libraryId, " for raw count file ", rawCountFile, ". No calls will be generated for that library.")
+  }
   finalData_genic$CPM <- finalData_genic$sumUMI / sum(finalData_genic$sumUMI) * 1e6
   
   ## Export cutoff information file + new files with calls
   cutoff_info_file <- cutoff_info(libraryId, cellTypeId = cellTypeId,
     cellTypeFreeTextAnnotation = cellTypeFreeTextAnnotation, counts = finalData,
-    pValueCutoff = as.numeric(pValueCutoff), meanRefIntergenic = calculatePvalues[[2]],
-    sdRefIntergenic = calculatePvalues[[3]])
-  CPM_threshold <- log2(as.numeric(cutoff_info_file[3]))
+    pValueCutoff = as.numeric(pValueCutoff), meanRefIntergenic = calculatePvalues$meanRefIntergenic,
+    sdRefIntergenic = calculatePvalues$sdRefIntergenic)
+  CPM_threshold <- log2(as.numeric(cutoff_info_file["CPM_Threshold"]))
   
   ## export data
   ## for some libraries it is not possible to create the plot. Use a try/catch to be able
@@ -322,11 +344,15 @@ for (rawCountFile in rawCountFiles) {
 }
 
 ## export info stats of all libraries/cell-population
-file.create(libStatsFile)
-colnames(collectSamplesStats) <- c("libraryId","cellTypeId","cellTypeFreeTextAnnotation","CPM_Threshold","Genic","Genic_region_present",
-  "Proportion_genic_present","Protein_coding","Coding_region_present","Proportion_coding_present","Intergenic",
-  "Intergenic_region_present","Proportion_intergenic_present",
-  "pValue_cutoff","meanRefIntergenic","sdRefIntergenic","species","organism")
+if (length(collectSamplesStats) > 0) {
+  colnames(collectSamplesStats) <- c("libraryId","cellTypeId","cellTypeFreeTextAnnotation","CPM_Threshold","Genic","Genic_region_present",
+    "Proportion_genic_present","Protein_coding","Coding_region_present","Proportion_coding_present","Intergenic",
+    "Intergenic_region_present","Proportion_intergenic_present",
+    "pValue_cutoff","meanRefIntergenic","sdRefIntergenic","species","organism")
+  
+  write.table(collectSamplesStats, file = libStatsFile, col.names = TRUE, row.names = FALSE,
+    quote = TRUE, sep = "\t")
+} else {
+  stop("No sample statistics collected for library ", libraryId)
+}
 
-write.table(collectSamplesStats, file = libStatsFile, col.names = TRUE, row.names = FALSE,
-  append = TRUE, quote = TRUE, sep = "\t")
