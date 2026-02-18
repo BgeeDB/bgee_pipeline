@@ -152,11 +152,13 @@ CLUSTER_DATA_PATH       := /data/FAC/FBM/DEE/mrobinso/bgee_sensitive/
 # use the /data folder to avoid providing user scratch directory as there is currently no project scratch directory
 CLUSTER_DATA_RESULTS    := $(CLUSTER_DATA_PATH)/$(DBNAME)/
 CLUSTER_ARCHIVE_PATH    := /archive/FAC/FBM/DEE/mrobinso/bgee_sensitive/
+CLUSTER_ARCHIVE_DROPLET := $(CLUSTER_ARCHIVE_PATH)Pipeline_results_storage/scRNA-Seq_TB/$(DBNAME)/
+CLUSTER_ARCHIVE_FL	:= $(CLUSTER_ARCHIVE_PATH)Pipeline_results_storage/scRNA-Seq_FL/$(DBNAME)/
+CLUSTER_ARCHIVE_BULK	:= $(CLUSTER_ARCHIVE_PATH)Pipeline_results_storage/rna_seq/$(DBNAME)/
 CLUSTER_WORK_PATH       := /work/FAC/FBM/DEE/mrobinso/bgee/
 
 CLUSTER_TOOLS_DIR       := $(CLUSTER_WORK_PATH)/tools/
 
-R_LIBS_PATH_SENSITIVE   := $(CLUSTER_DATA_PATH)/R_LIBS
 R_LIBS_PATH_CURNAGL     := $(CLUSTER_WORK_PATH)/R_LIBS
 PERL_LIBS_PATH_CURNAGL  := $(CLUSTER_WORK_PATH)/PERL_LIBS/lib/perl5
 
