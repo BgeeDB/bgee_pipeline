@@ -734,7 +734,7 @@ create table rnaSeqLibraryAnnotatedSampleGeneResult (
 -- all data available about a call to users.
 -- * undefined: only 'undefined' calls have been seen
     rnaSeqData enum('no data','poor quality','high quality') default 'no data',
-    reasonForExclusion enum('not excluded', 'pre-filtering', 'absent call not reliable',
+    reasonForExclusion enum('not excluded', 'pre-filtering', 'biotype not targeted',
     'undefined') not null default 'not excluded'
 ) engine = innodb;
 
@@ -886,7 +886,7 @@ create table rnaSeqLibraryIndividualSampleGeneResult (
     readsCount decimal(16, 6) unsigned not null COMMENT 'As of Bgee 14, read counts are "estimated counts" produced using the Kallisto software. They are not normalized for read or gene lengths.',
     UMIsCount decimal(16, 6) unsigned not null ,
     rnaSeqData enum('no data','poor quality','high quality') default 'no data',
-    reasonForExclusion enum('not excluded', 'pre-filtering', 'absent call not reliable',
+    reasonForExclusion enum('not excluded', 'pre-filtering', 'biotype not targeted',
     'undefined') not null default 'not excluded'
 ) engine = innodb;
 
@@ -896,11 +896,13 @@ create table rnaSeqPopulationCapture (
     rnaSeqPopulationCaptureId varchar(255) not null
 ) engine = innodb;
 
-create table rnaSeqPopulationCaptureToBiotypeExcludedAbsentCalls (
+-- this table stores the biotypes for which calls will be generated in a given population captured (e.g. polyA, lncRNA, etc). For instance, for polyA, we might want to generate calls only for biotype having a polyA tail. This table allows to manage this information.
+create table rnaSeqPopulationCaptureToBiotype (
     rnaSeqPopulationCaptureId varchar(255) not null COMMENT 'protocol ID for which a biotype will not be used to generate absent calls',
     geneBioTypeId smallint unsigned not null COMMENT 'biotype ID for which absent calls will not be generated.'
 ) engine = innodb;
 
+-- this table stores the max rank for each population captured , presence or not of multiplexing, is single cell, and species. This max rank is used for normalization.
 create table rnaSeqPopulationCaptureSpeciesMaxRank (
     rnaSeqPopulationCaptureId varchar(255) not null,
     rnaSeqTechnologyIsSingleCell tinyint unsigned not null,
