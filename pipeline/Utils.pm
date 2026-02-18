@@ -30,7 +30,6 @@ our $HIGH_QUAL = 'high quality';
 our $CALL_NOT_EXCLUDED             = 'not excluded';
 our $EXCLUDED_FOR_UNDEFINED        = 'undefined';
 our $EXCLUDED_FOR_PRE_FILTERED     = 'pre-filtering';
-our $EXCLUDED_FOR_NO_EXPR_CONFLICT = 'noExpression conflict';
 our $BIOTYPE_NOT_TARGETED          = 'biotype not targeted';
 
 
