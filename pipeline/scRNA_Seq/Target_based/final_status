@@ -1,0 +1,28 @@
+On branch develop
+Your branch is ahead of 'origin/develop' by 3 commits.
+  (use "git push" to publish your local commits)
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   Makefile
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	../../../generated_files/scRNA_Seq/Target_based/cleaned_barcodes/scRNASeq_barcode_SRP467631.tsv
+	../Full_Length_Protocols/check_presence_absence.err
+	../Full_Length_Protocols/check_tools
+	../Full_Length_Protocols/clusterJURA
+	../Full_Length_Protocols/indexes_bgeecall
+	../Full_Length_Protocols/indexes_bgeecall.err
+	../Full_Length_Protocols/prepare_singlecell_info
+	../Full_Length_Protocols/prepare_singlecell_info.err
+	../Full_Length_Protocols/prepare_singlecell_info.out
+	../Full_Length_Protocols/presence_absence_bgeecall
+	../Full_Length_Protocols/presence_absence_bgeecall.err
+	check_cellType
+	final_status.err
+	../../../source_files/scRNA_Seq/Target_based/barcode_whitelist_10X_Genomics_V2.txt
+	../../../source_files/scRNA_Seq/Target_based/barcode_whitelist_10X_Genomics_V3.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")
