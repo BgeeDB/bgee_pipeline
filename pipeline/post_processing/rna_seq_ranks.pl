@@ -24,19 +24,25 @@ $|=1;
 
 # Define arguments and their default value
 my ($bgee_connector) = ('');
-my ($parallel_jobs) = (15); # default 15 parallel threads used to compute ranks
+my ($number_threads) = (8); # default 8 parallel threads used to compute ranks
 my ($libs_per_job)  = (100); # default 100 libraries per thread
 my (@lib_ids) = ();
 my ($sample_offset) = (0);
 my ($sample_count) = (0);
-my ($is_single_cell) = -1;
+my ($all_datatypes) = (0);
+my ($bulk) = (0);
+my ($full_length) = (0);
+my ($droplet) = (0);
 my %opts = ('bgee=s'           => \$bgee_connector, # Bgee connector string
-            'parallel_jobs=i'  => \$parallel_jobs,
+            'number_threads=i' => \$number_threads,
             'libs_per_job=i'   => \$libs_per_job,
             'lib_ids=s'        => \@lib_ids,
             'sample_offset=i'  => \$sample_offset,
             'sample_count=i'   => \$sample_count,
-            'is_single_cell=i' => \$is_single_cell 
+            'all_datatypes' => \$all_datatypes,
+            'bulk' => \$bulk,
+            'full_length' => \$full_length,
+            'droplet' => \$droplet
            );
 
 # Check arguments
@@ -45,22 +51,48 @@ if ( !$test_options || $bgee_connector eq '' ){
     print "\n\tInvalid or missing argument:
 \te.g. $0 -bgee=\$(BGEECMD)
 \t-bgee             Bgee connector string
-\t-parallel_jobs    Number of threads used to compute ranks (optional)
+\t-number_threads   Number of threads used to compute ranks (optional)
 \t-libs_per_job     Number of libraries per thread (optional)
 \t-lib_ids          a comma-separated list of library IDs to treat, instead of providing sample_offset and sample_count (optional)
 \t-sample_offset    The offset parameter to retrieve libraries to compute ranks for
 \t-sample_count     The row_count parameter to retrieve libraries to compute ranks for
+\t-all_datatypes    (optional) compute ranks for all datatypes (bulk RNA-Seq, full-length single cell RNA-Seq and droplet-based single cell RNA-Seq libraries)
+\t-bulk             (optional) compute ranks for bulk RNA-Seq libraries
+\t-full_length       (optional) compute ranks for full-length single cell RNA-Seq libraries
+\t-droplet           (optional) compute ranks for droplet-based single cell RNA-Seq libraries
 \n";
     exit 1;
 }
+
+# Validate number_threads
+if ( $number_threads < 0 || $number_threads =~ /\D/ ){
+    print "\tError: number_threads must be a non-negative integer\n";
+    exit 1;
+}
+$number_threads = 1 if $number_threads == 0;
+
 if ($sample_offset < 0 || $sample_count < 0) {
     die('sample_offset and sample_count cannot be negative');
 }
 if ($sample_offset > 0 && $sample_count == 0) {
     die('sample_count must be provided if sample_offset is provided');
 }
-if ($parallel_jobs <= 0 || $libs_per_job <= 0) {
-    die("Invalid argument parallel_jobs/libs_per_job\n");
+if ($number_threads <= 0 || $libs_per_job <= 0) {
+    die("Invalid argument number_threads/libs_per_job\n");
+}
+
+my $datatype_options_provided = 0;
+$datatype_options_provided = 3  if ( $all_datatypes );
+$datatype_options_provided++  if ( $bulk );
+$datatype_options_provided++  if ( $full_length );
+$datatype_options_provided++  if ( $droplet );
+if ( $datatype_options_provided == 0 ){
+    print "\tError: at least one datatype option must be provided among -all_datatypes, -bulk, -full_length, -droplet\n";
+    exit 1;
+}
+if ( $datatype_options_provided > 3 ){
+    print "\tError: if -all_datatypes is selected then  -bulk, -full_length, -droplet should not be selected\n";
+    exit 1;
 }
 
 @lib_ids = split(/,/, join(',', @lib_ids));
@@ -68,20 +100,12 @@ if ($sample_offset > 0 && @lib_ids) {
     die("Not possible to provide library IDs and offset parameters at the same time\n");
 }
 
-# if ($sample_offset == 0 && !@lib_ids) {
-#     die("Should provide library IDs or offset parameters\n");
-# }
-
-if (($is_single_cell != 1 && $is_single_cell  != 0) && !@lib_ids) {
-    die("is_single_cell should be equal to 0 for bulk RNA-Seq or equal to 1 for single cell when no library ID is provided but was $is_single_cell");
+if ($datatype_options_provided > 0 && @lib_ids) {
+    die("not possible to provide datatype options and library IDs at the same time");
 }
-
-if ($is_single_cell != -1 && @lib_ids) {
-    die("not possible to provide is_single_cell and library IDs at the same time");
-}
-# Reasonning of the computations (as of Bgee 15.0 it's exactly the same reasoning as for
-# bulk RNA-Seq data):
-# * compute gene fractional ranks in table scRnaSeqFullLengthResult, for each scRNA-Seq library,
+# Reasoning of the computations (as of Bgee 15.0 it's exactly the same reasoning for
+# bulk RNA-Seq and single-cell RNA-Seq data):
+# * compute gene fractional ranks in table rnaSeqLibraryAnnotatedSampleGeneResult, for each RNA-Seq library,
 #   based on TPM values.
 # * Store also number of distinct ranks per library
 
@@ -136,8 +160,10 @@ sub compute_update_rank_annotated_sample_batch {
              FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t1
              WHERE t1.rnaSeqLibraryAnnotatedSampleId = ?
              AND t1.expressionId IS NOT NULL
+             AND t1.reasonOfExclusion = ?
              ORDER BY t1.abundance DESC');
-        $rnaSeqResultsStmt->execute($rnaSeqLibraryAnnotatedSampleId) or die $rnaSeqResultsStmt->errstr;
+        #reason for exclusion should always be Utils::$CALL_NOT_EXCLUDED for genes with an expressionId, but we add this condition to be more explicit
+        $rnaSeqResultsStmt->execute($rnaSeqLibraryAnnotatedSampleId, Utils::$CALL_NOT_EXCLUDED) or die $rnaSeqResultsStmt->errstr;
 
         my @results = map { {'id' => $_->[0], 'val' => $_->[1]} } @{$rnaSeqResultsStmt->fetchall_arrayref};
         # some annotatedSamples have no geneResults, check if @results is non-empty
@@ -194,8 +220,8 @@ sub compute_update_rank_annotated_sample_batch {
     }
 }
 
-my @libs = @lib_ids;
-if (!@lib_ids) {
+sub get_libraries_to_process {
+    my ($single_cell, $sample_multiplexing) = @_;
     my $dbh = Utils::connect_bgee_db($bgee_connector);
 
     # Queries to compute gene ranks per library.
@@ -203,14 +229,14 @@ if (!@lib_ids) {
     # So we always rank the same set of gene in a given species over all libraries.
 
     #XXX the comment above is WRONG. We do not rank genes that have received at least one read in any condition
-    #    because genes with reasonOfExclusion = "absent calls not reliable" does not have any expressionId. As calls
-    #    with an expressionId NULL are not selected to generate ranks, the number of genes selected per library
-    #    are then different from one library to an other
-    #TODO: Investigate the impact of not always using the same set of genes
+    #    because genes with reasonOfExclusion = "biotype not targeted" does not have any expressionId. These genes are not ranked but are however
+    #    the same for all libraries of a given species and a given population captured.
+    #TODO: Investigate the impact of not always using the same set of genes considering that the score is then normalized by the max rank for the population captured, species, isSingleCell and isSampleMultiplexing (i.e a different max rank for bulk, droplet and full length depending on species and population captured by the library protocol).
 
     # We assume that each library maps to only one species through its contained genes.
     my $libSql = 'SELECT t1.rnaSeqLibraryId FROM rnaSeqLibrary AS t1 '.
               'WHERE rnaSeqTechnologyIsSingleCell =  ? '.
+              'AND rnaSeqTechnologyIsSampleMultiplexing = ? '.
               'AND EXISTS (SELECT 1 FROM rnaSeqLibraryAnnotatedSample AS t2 '.
                   'INNER JOIN rnaSeqLibraryAnnotatedSampleGeneResult AS t3 '.
                   'ON t3.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId '.
@@ -227,30 +253,46 @@ if (!@lib_ids) {
     }
     my $rnaSeqLibStmt = $dbh->prepare($libSql);
 
-    my $t0 = time();
     # Get the list of all rna-seq libraries
-    $rnaSeqLibStmt->execute($is_single_cell)  or die $rnaSeqLibStmt->errstr;
+    $rnaSeqLibStmt->execute($single_cell, $sample_multiplexing)  or die $rnaSeqLibStmt->errstr;
 
-    @libs = map { $_->[0] } @{$rnaSeqLibStmt->fetchall_arrayref};
+    my @libs = map { $_->[0] } @{$rnaSeqLibStmt->fetchall_arrayref};
     # Disconnect the DBI connection open in parent process, otherwise it will generate errors
     # (ForkManager and DBI don't go well together, see https://www.perlmonks.org/?node_id=752289)
     $dbh->disconnect();
+    return @libs;
 }
 
-my $l = @libs;
-if (!$l) {
+my @libs = @lib_ids;
+if (!@lib_ids) {
+    if ($all_datatypes || $bulk) {
+        ## add libraries to @libs
+        push(@libs, get_libraries_to_process(0, 0));
+    }
+    if ($all_datatypes || $full_length) {
+        ## add libraries to @libs
+        push(@libs, get_libraries_to_process(1, 0));
+    }
+    if ($all_datatypes || $droplet) {
+        ## add libraries to @libs
+        push(@libs, get_libraries_to_process(1, 1));
+    }
+}
+
+my $number_libs = @libs;
+if (!$number_libs) {
     print "Nothing to be done, exiting.\n";
     exit 0;
 }
-if ($l < $libs_per_job) {
-    $libs_per_job = $l;
+if ($number_libs < $libs_per_job) {
+    $libs_per_job = $number_libs;
 }
-printf("Found %d libraries\n", $l);
+printf("Found %d libraries\n", $number_libs);
 # We are going to compute/store ranks using parallelization,
 # each child process will be responsible to compute/update ranks for a batch of libraries
-my $iterationCount = ceil($l/$libs_per_job);
-my $parallel = $parallel_jobs;
-if ($iterationCount < $parallel_jobs) {
+my $iterationCount = ceil($number_libs/$libs_per_job);
+my $parallel = $number_threads;
+if ($iterationCount < $number_threads) {
     $parallel = $iterationCount;
 }
 
