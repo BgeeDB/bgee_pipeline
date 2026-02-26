@@ -25,7 +25,7 @@ my $abundance_file = 'gene_level_abundance+calls.tsv';
 my ($bgee_connector) = ('');
 my ($extraMapping)   = ('');
 my ($rnaSeqLibrary, $all_results, $sex_info)  = ('', '', '');
-my ($rnaSeqExperiment, $library_info, $excluded_libraries, $excluded_biotypes, $library_stats, $report_info) = ('', '', '', '', '', '');
+my ($rnaSeqExperiment, $library_info, $excluded_libraries, $biotypes_to_protocol_file, $library_stats, $report_info) = ('', '', '', '', '', '');
 my ($debug)                      = (0);
 my ($Aport, $Sport)              = (0, 0);
 my $threads = 2; # default number of parallel threads
@@ -34,7 +34,7 @@ my %opts = ('bgee=s'                => \$bgee_connector,     # Bgee connector st
             'rnaSeqExperiment=s'    => \$rnaSeqExperiment,   # RNAseqExperiment
             'library_info=s'        => \$library_info,       # rna_seq_sample_info.txt file
             'excluded_libraries=s'  => \$excluded_libraries, # rna_seq_sample_excluded.txt file
-            'excluded_biotypes=s'   => \$excluded_biotypes,  # biotypes_excluded_absent_calls.tsv file
+            'biotypes=s'            => \$biotypes_to_protocol_file,  # biotypes_per_pop_captured.tsv file
             'library_stats=s'       => \$library_stats,      # presence_absence_all_samples.txt
             'report_info=s'         => \$report_info,        # reports_info_all_samples.txt
             'all_results=s'         => \$all_results,        # /var/bgee/extra/pipeline/rna_seq/all_results_bgee_v15/
@@ -48,15 +48,15 @@ my %opts = ('bgee=s'                => \$bgee_connector,     # Bgee connector st
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $bgee_connector eq '' || $rnaSeqLibrary eq '' || $rnaSeqExperiment eq '' || $library_info eq ''  || $excluded_libraries eq '' || $excluded_biotypes eq '' || $library_stats eq '' || $report_info eq '' || $all_results eq '' || $sex_info eq '' || $Aport == 0 || $Sport == 0 ){
+if ( !$test_options || $bgee_connector eq '' || $rnaSeqLibrary eq '' || $rnaSeqExperiment eq '' || $library_info eq ''  || $excluded_libraries eq '' || $biotypes_to_protocol_file eq '' || $library_stats eq '' || $report_info eq '' || $all_results eq '' || $sex_info eq '' || $Aport == 0 || $Sport == 0 ){
     print "\n\tInvalid or missing argument:
-\te.g., $0  -bgee=\$(BGEECMD) -rnaSeqLibrary=RNASeqLibrary_full.tsv -rnaSeqExperiment=RNASeqExperiment_full.tsv -library_info=\$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -excluded_biotypes=\$(RNASEQ_BIOTYPEEXCLUDED_FILEPATH) -library_stats=\$(RNASEQSAMPSTATS) -report_info=\$(RNASEQREPORTINFO) -all_results=\$(RNASEQALLRES) -sex_info=\$(UBERON_SEX_INFO_FILE_PATH) -extraMapping=\$(EXTRAMAPPING_FILEPATH) -Aport=\$(IDMAPPINGPORT) -Sport=\$(STGMAPPINGPORT)    > $@.tmp 2>warnings.$@
+\te.g., $0  -bgee=\$(BGEECMD) -rnaSeqLibrary=RNASeqLibrary_full.tsv -rnaSeqExperiment=RNASeqExperiment_full.tsv -library_info=\$(RNASEQ_SAMPINFO_FILEPATH) -excluded_libraries=\$(RNASEQ_SAMPEXCLUDED_FILEPATH) -biotypes=\$(RNASEQ_BIOTYPE_FILEPATH) -library_stats=\$(RNASEQSAMPSTATS) -report_info=\$(RNASEQREPORTINFO) -all_results=\$(RNASEQALLRES) -sex_info=\$(UBERON_SEX_INFO_FILE_PATH) -extraMapping=\$(EXTRAMAPPING_FILEPATH) -Aport=\$(IDMAPPINGPORT) -Sport=\$(STGMAPPINGPORT)    > $@.tmp 2>warnings.$@
 \t-bgee                Bgee connector string
 \t-rnaSeqLibrary       RNAseqLibrary annotation file
 \t-rnaSeqExperiment    RNAseqExperiment file
 \t-library_info        rna_seq_sample_info.txt file
 \t-excluded_libraries  rna_seq_sample_excluded.txt file
-\t-excluded_biotypes   file containing the mapping between protocol and biotypes not used to generate absent calls
+\t-biotypes            file containing the mapping between protocol and biotypes considered
 \t-library_stats       presence_absence__all_samples.txt
 \t-report_info         reports_info_all_samples.txt
 \t-all_results         all_results directory
@@ -206,12 +206,12 @@ while ( my @data = $selPopCapture->fetchrow_array ){
 }
 
 #retrieve population capture from population capture file
-my %popCaptureToBiotypes = retrieveProtocolsToBiotypeExcludeAbsentCalls($excluded_biotypes);
+my %popCaptureToBiotypes = retrieveProtocolsToBiotype($biotypes_to_protocol_file);
 
 # insert the new population captured
 my $insPopCapture = $bgee->prepare('INSERT INTO rnaSeqPopulationCapture (rnaSeqPopulationCaptureId) VALUES (?)');
 my $insPopCaptureToBiotype = $bgee->prepare(
-    'INSERT INTO rnaSeqPopulationCaptureToBiotypeExcludedAbsentCalls (rnaSeqPopulationCaptureId, geneBioTypeId) VALUES (?, ?)');
+    'INSERT INTO rnaSeqPopulationCaptureToBiotype (rnaSeqPopulationCaptureId, geneBioTypeId) VALUES (?, ?)');
 for my $populationCaptureId ( keys %popCaptureToBiotypes ){
     # skip insertion for already inserted population capture
     next if exists $insertedPopCaptured{$populationCaptureId};
@@ -225,8 +225,8 @@ for my $populationCaptureId ( keys %popCaptureToBiotypes ){
     for my $biotypeName (@{$popCaptureToBiotypes{$populationCaptureId}}) {
         my $biotypeId = $biotypeNameToBiotypId{$biotypeName};
         if($debug) {
-            print 'INSERT INTO rnaSeqProtocolToBiotypeExcludedAbsentCalls: ', $populationCaptureId,  ' - ', 
-                                                                              $biotypeId,   "\n";
+            print 'INSERT INTO rnaSeqPopulationCaptureToBiotype: ', $populationCaptureId,  ' - ', 
+                                                                    $biotypeId,   "\n";
         } else {
             $insPopCaptureToBiotype->execute($populationCaptureId, $biotypeId) or die $insPopCaptureToBiotype->errstr;
         }
