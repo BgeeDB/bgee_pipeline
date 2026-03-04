@@ -25,14 +25,14 @@ check_annot: get_annot $(RNASEQ_EXPERIMENT_FILEPATH) $(RNASEQ_LIB_FILEPATH)
 	@cat $(RNASEQ_EXPERIMENT_FILEPATH) > $(RNASEQ_EXPERIMENT_FILEPATH_FULL)
 	@cat $(RNASEQ_LIB_FILEPATH)        > $(RNASEQ_LIB_FILEPATH_FULL).ori
 	# Map strain names
-	@$(SENSITIVE_PERL_CMD) perl -e 'use lib ".."; use Utils; Utils::map_strain_names("$(RNASEQ_LIB_FILEPATH_FULL).ori", "$(STRAIN_MAPPING_FILE)")' >$(RNASEQ_LIB_FILEPATH_FULL).map
+	@perl -e 'use lib ".."; use Utils; Utils::map_strain_names("$(RNASEQ_LIB_FILEPATH_FULL).ori", "$(STRAIN_MAPPING_FILE)")' >$(RNASEQ_LIB_FILEPATH_FULL).map
 	@$(RM) $(RNASEQ_LIB_FILEPATH_FULL).ori
 	# Filter for a minimal number of conditions (+sort)
-	@$(SENSITIVE_PERL_CMD) perl 0Before/filter_annotation_file.pl -RNAlib=$(RNASEQ_LIB_FILEPATH_FULL).map -RNAlibFiltered=$(RNASEQ_LIB_FILEPATH_FULL) >$@.tmp 2>&1
+	@perl 0Before/filter_annotation_file.pl -RNAlib=$(RNASEQ_LIB_FILEPATH_FULL).map -RNAlibFiltered=$(RNASEQ_LIB_FILEPATH_FULL) >$@.tmp 2>&1
 	@$(RM) $(RNASEQ_LIB_FILEPATH_FULL).map
 	@echo >>$@.tmp
 	# First check of annotations
-	@$(SENSITIVE_PERL_CMD) perl 0Before/check_rna_seq_curation.pl -bgee=$(BGEECMD) -RNAseqExperiment=$(RNASEQ_EXPERIMENT_FILEPATH_FULL) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -allRes=$(RNASEQALLRES) before >>$@.tmp 2>&1
+	@perl 0Before/check_rna_seq_curation.pl -bgee=$(BGEECMD) -RNAseqExperiment=$(RNASEQ_EXPERIMENT_FILEPATH_FULL) -RNAseqLib=$(RNASEQ_LIB_FILEPATH_FULL) -allRes=$(RNASEQALLRES) before >>$@.tmp 2>&1
 	@echo -e "Check file \"check_annot\" for the output of the script 0Before/check_rna_seq_curation.pl, which indicates potential errors to correct in the annotation files.\n"
 	@$(MV) $@.tmp $@
 #TODO the script needs better check of annotation files for leading and trailing spaces (only done for experimentId now, but needs to be done for other fields as well)
