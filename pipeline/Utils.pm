@@ -367,7 +367,7 @@ sub read_spreadsheet {
             $colu =~ s{^#}{};
         }
         shift @{ $Col[$col+1] }; # Remove first col value because is always undef to start spreadsheet cell number at 1 as in real spreadsheet
-        shift @{ $Col[$col+1] }  if ( $Col[$col+1][0] =~ /^#?$header[$col]$/ ); # Remove header, if any
+        shift @{ $Col[$col+1] }  if ( $Col[$col+1][0] =~ /^#?\Q$header[$col]\E$/ ); # Remove header, if any
         # Replace double or triple ' ' by a single ' '
         my @column = map { $_ =~ s/  +/ /g  if defined $_; $_ }
                      @{ $Col[$col+1] };
