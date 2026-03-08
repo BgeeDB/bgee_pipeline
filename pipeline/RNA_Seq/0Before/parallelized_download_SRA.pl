@@ -63,6 +63,39 @@ if ( !$metadataFile || $parallelJobs eq '' || $outputDir eq '' || $downloadedLib
 
 require("$FindBin::Bin/../rna_seq_utils.pl");
 
+# Function to read already downloaded libraries from file
+sub read_downloaded_libraries {
+    my ($file_path) = @_;
+    my %downloaded;
+    
+    if (-e $file_path && -s $file_path) {
+        my @lines = read_file("$file_path", chomp=>1);
+        if (@lines) {
+            my $header = shift @lines;
+            my @colNames = split(/\t/, $header);
+            my ($libraryIdIdx) = grep { $colNames[$_] eq 'libraryId' } 0..$#colNames;
+            my ($minReadLengthIdx) = grep { $colNames[$_] eq 'min_read_length' } 0..$#colNames;
+            my ($maxReadLengthIdx) = grep { $colNames[$_] eq 'max_read_length' } 0..$#colNames;
+            my ($meanReadLengthIdx) = grep { $colNames[$_] eq 'average_read_length' } 0..$#colNames;
+            
+            if (defined $libraryIdIdx) {
+                foreach my $line (@lines) {
+                    my @fields = split(/\t/, $line);
+                    my $libraryId = $fields[$libraryIdIdx];
+                    $downloaded{$libraryId} = {};
+                    $downloaded{$libraryId}{'minReadLength'} = $fields[$minReadLengthIdx] if defined $minReadLengthIdx;
+                    $downloaded{$libraryId}{'maxReadLength'} = $fields[$maxReadLengthIdx] if defined $maxReadLengthIdx;
+                    $downloaded{$libraryId}{'meanReadLength'} = $fields[$meanReadLengthIdx] if defined $meanReadLengthIdx;
+                }
+            } else {
+                warn "Column 'libraryId' not found in $file_path header\n";
+            }
+        }
+    }
+    
+    return %downloaded;
+}
+
 # Private experimentId to store encrypted
 my @private_exp_id     = ('SRP012682'); # E.g. GTEx
 
@@ -71,8 +104,8 @@ my @speciesIdsToDownload = split(',', $speciesIds);
 
 print "speciesIds to filter on \"$speciesIds\"\n";
 
-# Read already downloaded libraries
-my %alreadyDownloaded = map { $_ => 1 } read_file("$downloadedLibraries", chomp=>1);
+# Read already downloaded libraries using column name "libraryId"
+my %alreadyDownloaded = read_downloaded_libraries($downloadedLibraries);
 
 # Read excluded libraries
 open(my $excluded, $excludedLibraries) || die "failed to read sample excluded file: $!";
@@ -214,10 +247,13 @@ if(! $doNotDownload) {
                 }
                 make_path("$libDirectory");
                 chdir "$libDirectory";
-                system("sbatch $sbatchToRun{$experimentId}{$libraryId}{$runId}>/dev/null");
+                system("sbatch $sbatchToRun{$experimentId}{$libraryId}{'runIds'}{$runId}>/dev/null");
             }
         }
     }
+    
+    # Return to initial directory after submitting all jobs
+    chdir "$initialDir";
 
     while ($jobsRunning > 0) {
         sleep(15);
@@ -234,10 +270,9 @@ foreach my $experimentId (keys %sbatchToRun){
         my $libDirectory = "$outputDir/$speciesId/$libraryId";
         my $done = 1;
         my @meanReadLengths;
-        my $minRead_length = 10000;
-        my $maxRead_length = 0;
-        foreach my $runId (keys %{$sbatchToRun{$experimentId}{$libraryId}}){
-            next if $runId eq "speciesId";
+        my $minReadLength = 10000;
+        my $maxReadLength = 0;
+        foreach my $runId (keys %{$sbatchToRun{$experimentId}{$libraryId}{'runIds'}}){
             if(! -e "$libDirectory/$runId.done") {
                 $done = 0;
             } else {
@@ -248,10 +283,10 @@ foreach my $experimentId (keys %sbatchToRun){
                     my @fields = split(/\t/, $line);
                     if ( scalar @fields == 4 ) {
                         push(@meanReadLengths, $fields[3]);
-                        if ( $fields[0] < $minRead_length ) {
+                        if ( $fields[0] < $minReadLength ) {
                             $minReadLength = $fields[0];
                         }
-                        if ( $fields[1] > $maxRead_length ) {
+                        if ( $fields[1] > $maxReadLength ) {
                             $maxReadLength = $fields[1];
                         }
                     } else {
@@ -268,10 +303,10 @@ foreach my $experimentId (keys %sbatchToRun){
             print "done download of library $libraryId\n";
             my $currentExpDir = "$experimentOutputDir/$experimentId";
             make_path("$currentExpDir");
-            chdir "$currentExpDir";
-            system("ln -s ../../$speciesId/$libraryId $libraryId");
+            system("ln -s ../../$speciesId/$libraryId $currentExpDir/$libraryId");
             # we also add this library to the list of already generated libraries
-            $alreadyDownloaded{$libraryId} = 1;
+            # initialize the hash structure if not already present
+            $alreadyDownloaded{$libraryId} = {} unless exists $alreadyDownloaded{$libraryId};
             # we calculate the mean read length for this library
             my $sum = 0;
             foreach my $runMeanReadLength (@meanReadLengths) {
@@ -283,17 +318,27 @@ foreach my $experimentId (keys %sbatchToRun){
             $alreadyDownloaded{$libraryId}{'minReadLength'} = $minReadLength;
             $alreadyDownloaded{$libraryId}{'maxReadLength'} = $maxReadLength;
         } else {
-            warn "Did not properly download the library $libraryId";
-            remove_tree("$libDirectory");
+            warn "Did not properly download the library $libraryId\n";
+            # Only remove incomplete directories if we actually attempted downloads
+            if(! $doNotDownload) {
+                # Make sure we're not in the directory we're about to remove
+                chdir "$initialDir";
+                remove_tree("$libDirectory");
+            }
         }
     }
 }
 
 #now go back to original location to update file listing all downloaded libraries
 chdir "$initialDir";
-print "Finally update the file containing downloaded libraries";
+print "Finally update the file containing downloaded libraries\n";
 open my $outFh, "> ", "$downloadedLibraries" or die "Cannot write: $! \n";
+print $outFh "libraryId\tminReadLength\tmaxReadLength\tmeanReadLength\n";
 foreach my $libraryId (keys %alreadyDownloaded) {
-    print $outFh "$libraryId\t$alreadyDownloaded{$libraryId}{'minReadLength'}\t$alreadyDownloaded{$libraryId}{'maxReadLength'}\t$alreadyDownloaded{$libraryId}{'meanReadLength'}\n";
+    my $minRL = defined $alreadyDownloaded{$libraryId}{'minReadLength'} ? $alreadyDownloaded{$libraryId}{'minReadLength'} : '';
+    my $maxRL = defined $alreadyDownloaded{$libraryId}{'maxReadLength'} ? $alreadyDownloaded{$libraryId}{'maxReadLength'} : '';
+    my $meanRL = defined $alreadyDownloaded{$libraryId}{'meanReadLength'} ? $alreadyDownloaded{$libraryId}{'meanReadLength'} : '';
+    print $outFh "$libraryId\t$minRL\t$maxRL\t$meanRL\n";
 }
 close $outFh;
+
