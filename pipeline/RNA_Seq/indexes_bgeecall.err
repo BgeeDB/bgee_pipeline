@@ -1,7 +1,7 @@
 WARNING: Skipping /dev bind mount: source and destination must be identical when binding to /dev
 WARNING: Skipping /dev bind mount: source and destination must be identical when binding to /dev
 IMPORTANT : You decided to use your own reference intergenic sequences
-Error in `[<-.data.frame`(`*tmp*`, user_df$reads_size < read_length_threshold,  : 
-  replacement has 1 row, data has 0
-Calls: generate_slurm_indexes -> [<- -> [<-.data.frame
-Execution halted
+Submitted batch job 28994791
+Warning message:
+In rslurm::slurm_apply(f = index_wrapper, params = unique_df, jobname = "generate_index",  :
+  Argument add_objects is deprecated; use global_objects instead.FALSE

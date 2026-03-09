@@ -49,3 +49,15 @@ Submitted batch job 28712349
 Warning message:
 In rslurm::slurm_apply(f = calls_wrapper, params = user_df, jobname = "generate_calls",  :
   Argument add_objects is deprecated; use global_objects instead.FALSE
+WARNING: Skipping /dev bind mount: source and destination must be identical when binding to /dev
+IMPORTANT : You decided to use your own reference intergenic sequences
+Submitted batch job 28994795
+Warning message:
+In rslurm::slurm_apply(f = calls_wrapper, params = user_df, jobname = "generate_calls",  :
+  Argument add_objects is deprecated; use global_objects instead.FALSE
+WARNING: Skipping /dev bind mount: source and destination must be identical when binding to /dev
+IMPORTANT : You decided to use your own reference intergenic sequences
+Submitted batch job 28997077
+Warning message:
+In rslurm::slurm_apply(f = calls_wrapper, params = user_df, jobname = "generate_calls",  :
+  Argument add_objects is deprecated; use global_objects instead.FALSE
