@@ -203,7 +203,6 @@ insert_insitu: tsv_zfin  tsv_mgi  tsv_xenbase  tsv_BDGP  tsv_flybase  tsv_wormba
 	@$(RM) $@.tmp warnings.$@
 	@for tsv in `ls -1 tsv_*`; do \
 		echo $$tsv; \
-		>&2 echo $$tsv; \
 		perl insert_in_situ.pl -bgee=$(BGEECMD) -tsv=$$tsv -sex_info=$(UBERON_SEX_INFO_FILE_PATH) >> $@.tmp 2>> warnings.$@; \
 	done
 	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
@@ -217,7 +216,6 @@ check_conditions: insert_insitu
 	@$(MYSQL) -e "SELECT DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.sex, t1.strain FROM cond AS t1 LEFT OUTER JOIN stageTaxonConstraint AS t2 ON t1.stageId = t2.stageId AND (t2.speciesId IS NULL OR t1.speciesId = t2.speciesId) LEFT OUTER JOIN anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId LEFT OUTER JOIN inSituSpot AS t10 ON t1.conditionId = t10.conditionId WHERE t2.stageId IS NULL AND t10.conditionId IS NOT NULL ORDER BY t1.speciesId;" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
-#TODO replace inSituData by p-values
 insert_expression: check_conditions insert_insitu
 	# Insert the expression summary
 	@perl insert_expression_in_situ.pl -bgee=$(BGEECMD) > $@.tmp 2>warnings.$@
@@ -237,7 +235,7 @@ $(VERIFICATIONFILE): tsv_zfin  tsv_mgi  tsv_xenbase  tsv_BDGP  tsv_flybase  tsv_
 	# Check in situ data insertion and report statistics per dataSource
 	@$(RM) $@.tmp
 	@for src in `ls -1 tsv_*`; do \
-		$(MYSQL) -e "SELECT t6.dataSourceName, t3.geneBioTypeName, IF(t1.expressionId IS NOT NULL, 1, 0) AS expressionState, COUNT(DISTINCT t1.inSituSpotId) AS spotCount, COUNT(DISTINCT t1.inSituSpotId)/COUNT(DISTINCT t1.bgeeGeneId) AS spotsByGene FROM inSituSpot AS t1 INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId LEFT OUTER JOIN geneBioType AS t3 ON t2.geneBioTypeId = t3.geneBioTypeId LEFT OUTER JOIN inSituEvidence AS t4 ON t1.inSituEvidenceId=t4.inSituEvidenceId LEFT OUTER JOIN inSituExperiment AS t5 ON t4.inSituExperimentId=t5.inSituExperimentId LEFT OUTER JOIN dataSource AS t6 ON t6.dataSourceId=t5.dataSourceId WHERE t6.dataSourceName='$${src/tsv_/}' GROUP BY t6.dataSourceName, t3.geneBioTypeName, expressionState ORDER BY spotCount DESC" >> $@.tmp; \
+		$(MYSQL) -e "SELECT t6.dataSourceName, t2.speciesId, t3.geneBioTypeName, IF(t1.expressionId IS NOT NULL, 1, 0) AS expressionState, COUNT(DISTINCT t1.inSituSpotId) AS spotCount, COUNT(DISTINCT t1.inSituSpotId)/COUNT(DISTINCT t1.bgeeGeneId) AS spotsByGene FROM inSituSpot AS t1 INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId LEFT OUTER JOIN geneBioType AS t3 ON t2.geneBioTypeId = t3.geneBioTypeId LEFT OUTER JOIN inSituEvidence AS t4 ON t1.inSituEvidenceId=t4.inSituEvidenceId LEFT OUTER JOIN inSituExperiment AS t5 ON t4.inSituExperimentId=t5.inSituExperimentId LEFT OUTER JOIN dataSource AS t6 ON t6.dataSourceId=t5.dataSourceId WHERE t6.dataSourceName='$${src/tsv_/}' GROUP BY t6.dataSourceName, t2.speciesId, t3.geneBioTypeName, expressionState ORDER BY spotCount DESC" >> $@.tmp; \
 		$(MYSQL) -e "SELECT COUNT(*) FROM inSituSpot AS t1 INNER JOIN inSituEvidence AS t2 ON t1.inSituEvidenceId=t2.inSituEvidenceId LEFT OUTER JOIN inSituExperiment AS t3 ON t2.inSituExperimentId=t3.inSituExperimentId LEFT OUTER JOIN dataSource AS t4 ON t3.dataSourceId=t4.dataSourceId WHERE t4.dataSourceName='$${src/tsv_/}'" >> $@.tmp; \
 		echo >> $@.tmp; \
 	done
