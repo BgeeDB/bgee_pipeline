@@ -1,0 +1,61 @@
+dataSourceName	speciesId	geneBioTypeName	expressionState	spotCount	spotsByGene
+BDGP	7227	protein_coding	1	26599	8.7960
+COUNT(*)
+26599
+
+dataSourceName	speciesId	geneBioTypeName	expressionState	spotCount	spotsByGene
+FlyBase	7227	protein_coding	1	201596	29.9994
+FlyBase	7227	ncRNA	1	938	10.5393
+FlyBase	7227	pseudogene	1	59	14.7500
+FlyBase	7227	snoRNA	1	23	23.0000
+FlyBase	7227	rRNA	1	10	10.0000
+FlyBase	7237	protein_coding	1	2	2.0000
+COUNT(*)
+202628
+
+dataSourceName	speciesId	geneBioTypeName	expressionState	spotCount	spotsByGene
+MGI	10090	protein_coding	1	1305535	103.2860
+MGI	10090	miRNA	1	13656	46.6075
+MGI	10090	lncRNA	1	7932	41.5288
+MGI	10090	processed_pseudogene	1	435	54.3750
+MGI	10090	transcribed_unprocessed_pseudogene	1	368	46.0000
+MGI	10090	transcribed_unitary_pseudogene	1	303	60.6000
+MGI	10090	TEC	1	247	17.6429
+MGI	10090	transcribed_processed_pseudogene	1	247	22.4545
+MGI	10090	unprocessed_pseudogene	1	228	114.0000
+MGI	10090	snRNA	1	158	39.5000
+MGI	10090	unitary_pseudogene	1	51	51.0000
+MGI	10090	TR_V_gene	1	37	18.5000
+MGI	10090	misc_RNA	1	20	20.0000
+MGI	10090	rRNA	1	1	1.0000
+MGI	10090	TR_C_gene	1	1	1.0000
+COUNT(*)
+1329219
+
+dataSourceName	speciesId	geneBioTypeName	expressionState	spotCount	spotsByGene
+WormBase	6239	protein_coding	1	2641	6.8420
+WormBase	6239	lincRNA	1	8	8.0000
+WormBase	6239	pseudogene	1	5	5.0000
+COUNT(*)
+2654
+
+dataSourceName	speciesId	geneBioTypeName	expressionState	spotCount	spotsByGene
+Xenbase	8355	protein_coding	1	529295	68.4109
+Xenbase	8364	protein_coding	1	24589	23.3071
+Xenbase	8355	lncRNA	1	243	17.3571
+Xenbase	8355	misc_RNA	1	161	40.2500
+Xenbase	8355	transcribed_processed_pseudogene	1	95	23.7500
+COUNT(*)
+554383
+
+dataSourceName	speciesId	geneBioTypeName	expressionState	spotCount	spotsByGene
+ZFIN	7955	protein_coding	1	367753	35.4768
+ZFIN	7955	miRNA	1	575	8.4559
+ZFIN	7955	processed_transcript	1	290	29.0000
+ZFIN	7955	polymorphic_pseudogene	1	125	31.2500
+ZFIN	7955	antisense	1	87	21.7500
+ZFIN	7955	unprocessed_pseudogene	1	81	27.0000
+ZFIN	7955	lincRNA	1	1	1.0000
+COUNT(*)
+368912
+
