@@ -27,7 +27,7 @@ use Parallel::ForkManager;
 use Getopt::Long;
 
 use FindBin;
-use lib "$FindBin::Bin/../.."; # Get lib path for Utils.pm
+use lib "$FindBin::Bin/.."; # Get lib path for Utils.pm
 use Utils;
 
 # Define arguments & their default value
@@ -114,22 +114,21 @@ sub insert_expression_one_datatype {
 
     # retrieve conditions for which at least one library does not have any expressionId
     my $queryConditions = $bgee->prepare('SELECT DISTINCT c.exprMappedConditionId'.
-                                        ' FROM rnaSeqLibrary AS lib'.
-                                        ' JOIN rnaSeqLibraryAnnotatedSample AS las'.
+                                        ' FROM rnaSeqLibrary as lib'.
+                                        ' INNER JOIN rnaSeqLibraryAnnotatedSample AS las'.
                                         '   ON las.rnaSeqLibraryId = lib.rnaSeqLibraryId'.
-                                        ' JOIN cond AS c'.
+                                        ' INNER JOIN cond AS c'.
                                         '   ON c.conditionId = las.conditionId'.
-                                        ' LEFT JOIN ('.
-                                        '     SELECT DISTINCT as2.rnaSeqLibraryId'.
-                                        '     FROM rnaSeqLibraryAnnotatedSample AS as2'.
-                                        '     JOIN rnaSeqLibraryAnnotatedSampleGeneResult AS gr'.
-                                        '       ON gr.rnaSeqLibraryAnnotatedSampleId = as2.rnaSeqLibraryAnnotatedSampleId'.
-                                        '      AND gr.expressionId IS NOT NULL'.
-                                        ' ) AS has_expr'.
-                                        '   ON has_expr.rnaSeqLibraryId = lib.rnaSeqLibraryId'.
                                         ' WHERE lib.rnaSeqTechnologyIsSingleCell = '.$is_single_cell.
                                         '   AND lib.sampleMultiplexing = '.$is_sample_multiplexing.
-                                        '   AND has_expr.rnaSeqLibraryId IS NULL');
+                                        '   AND NOT EXISTS ('.
+                                        '     SELECT 1'.
+                                        '     FROM rnaSeqLibraryAnnotatedSample AS as2'.
+                                        '     INNER JOIN rnaSeqLibraryAnnotatedSampleGeneResult AS gr'.
+                                        '       ON gr.rnaSeqLibraryAnnotatedSampleId = as2.rnaSeqLibraryAnnotatedSampleId'.
+                                        '     WHERE as2.rnaSeqLibraryAnnotatedSampleId = las.rnaSeqLibraryAnnotatedSampleId'.
+                                        '       AND gr.expressionId IS NOT NULL'.
+                                        ' )');
     $queryConditions->execute()  or die $queryConditions->errstr;
     my @exprMappedConditions = ();
     while ( my @data = $queryConditions->fetchrow_array ){
@@ -183,6 +182,11 @@ sub insert_expression_one_datatype {
         # start thread specific connection to the database
         my $bgee_thread = Utils::connect_bgee_db($bgee_connector);
 
+        # Use READ COMMITTED to avoid gap locks on INSERT...ON DUPLICATE KEY UPDATE.
+        # Safe here because each thread processes a distinct exprMappedConditionId,
+        # so there are no phantom-read or non-repeatable-read concerns.
+        $bgee_thread->do('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED')  if ( !$debug );
+
         # Disable autocommit to do a single commit at the end of the condition
         $bgee_thread->{'AutoCommit'} = 0  if ( !$debug );
 
@@ -205,6 +209,7 @@ sub insert_expression_one_datatype {
 
         # now iterating the genes to insert expression data
         # (one row for a gene-condition)
+        my $had_error = 0;
         eval {
             for my $geneId ( keys %results ){
 
@@ -236,10 +241,11 @@ sub insert_expression_one_datatype {
             if ( !$debug ){
                 $bgee_thread->rollback();
             }
+            $had_error = 1;
         };
 
-        # Commit the transaction for this condition
-        if ( !$debug ){
+        # Commit the transaction for this condition only if no error/rollback occurred
+        if ( !$debug && !$had_error ){
             $bgee_thread->commit()  or die $bgee_thread->errstr;
         }
 
