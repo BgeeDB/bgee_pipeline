@@ -471,7 +471,7 @@ INTERGENIC_N_PROPORTION         := 0.05
 # RNAseq data path
 RNASEQDATAPATH             := $(TMPDIR)/RNA_Seq/
 ABUNDANCEFILE              := gene_level_abundance+calls.tsv
-RNASEQALLRES               := $(RNASEQDATAPATH)rna_seq_all_results_$(DBNAME)/
+RNASEQALLRES               := $(RNASEQDATAPATH)calls/
 FL_DATA_PATH               := $(TMPDIR)/FULL_LENGTH/
 SC_RNASEQ_ALL_RES_FL       := $(FL_DATA_PATH)BgeeCall/
 RNASEQLOGS                 := $(RNASEQALLRES)
