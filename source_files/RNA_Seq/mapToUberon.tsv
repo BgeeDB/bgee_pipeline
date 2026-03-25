@@ -139,6 +139,7 @@ RnorDv:0000012	immature stage	UBERON:0000112
 RnorDv:0000013	early immature stage	UBERON:0007221
 RnorDv:0000015	mature stage	UBERON:0000113
 RnorDv:0000058	juvenile stage	UBERON:0034919
+RnorDv:0000059	prime adult stage	UBERON:0018241
 SsalDv:0000045	fry stage	UBERON:0000066
 SsalDv:0000056	day 0 of fry stage	UBERON:0000066
 SsalDv:0000057	day 1 of fry stage	UBERON:0000066
