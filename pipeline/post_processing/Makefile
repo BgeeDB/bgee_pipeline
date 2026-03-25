@@ -27,17 +27,19 @@ $(OUTPUT_DIR)conditions_not_existing:
 
 # this step exclude calls coming from genes not targeted by the library preparation (e.g. non-polyA biotypes for polyA libraries) and also remove p-values for these excluded calls (optionnal). This step is important to run before inserting expression info for RNA-Seq as it will exclude some calls and update their p-value. It will impact the ranks and thus the scores, weight and numObs of the calls used to populate the expression table.
 $(OUTPUT_DIR)rnaseq_exclusion:
-	@perl rnaseq_exclusion.pl -bgee=$(BGEECMD) -numberThreads=60 > $@.tmp 2>$@.err
+	@perl rna_seq_exclusion.pl -bgee=$(BGEECMD) -initPostProcessing=0 -pre_filtering -biotype_filtering -speciesToProcess=- -numberThreads=40 > $@.tmp 2>$@.err
 	@if [[ ! -s $@.err ]]; then $(RM) $@.err; fi
 	@$(MV) $@.tmp $@
 
+# For Bgee 16 this rule took 3 days to run with 40 threads. Be careful to check the configuration parameter of mysql "innodb_thread_concurrency". This parameter allows to define the maximum number of parallel actions on the database. If this parameter is lower than your number of threads you will have lots of timeout on the insertion in the expression table. This parameter could be set to "0" to not limit number of active threads.
+#XXX The initial query retrieving the conditionIds per datatype took a LOT of time to run (more than 10 hours for the droplet base). We could maybe implement 2 different queries. One in case not a lot of conditions have already been processed (with left join checking for processed libraries) and one in case lots of conditions have already been processed (current query). It could drastically fasten the conditionIds retrieval.
 $(OUTPUT_DIR)insert_rna_seq_expression: $(OUTPUT_DIR)rnaseq_exclusion
 	# Insert the expression summaries
-	@perl 3Insertion/rna_seq_expression.pl -numberThreads=80 -allDatatypes -bgee=$(BGEECMD) -debug > $@.tmp 2>warnings.$@
+	@perl rna_seq_expression.pl -numberThreads=40 -allDatatypes -bgee=$(BGEECMD) > $@.tmp 2> $@.err
 	@echo
 	@echo "Searching for incorrect updates of rnaSeqLibraryAnnotatedSampleGeneResult/expression tables (there should be none)" >> $@.tmp
-	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult WHERE reasonForExclusion = 'not excluded' AND expressionId IS NULL limit 10" >> $@.tmp
-	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult WHERE reasonForExclusion != 'not excluded' AND expressionId IS NOT NULL LIMIT 10" >> $@.tmp
+	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult WHERE reasonForExclusion = 'not excluded' AND expressionId IS NULL limit 1" >> $@.tmp
+	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult WHERE reasonForExclusion != 'not excluded' AND expressionId IS NOT NULL LIMIT 1" >> $@.tmp
 ## Commented as we have a foreign key constraint between rnaSeqLibraryAnnotatedSampleGeneResult and expression, so we will never have any of these cases.
 # 	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t1 WHERE expressionId IS NOT NULL AND NOT EXISTS(SELECT 1 FROM expression AS t2 WHERE t2.expressionId = t1.expressionId) LIMIT 10" >> $@.tmp
 	@$(MYSQL) -e "SELECT * FROM expression AS t1 WHERE NOT EXISTS (SELECT 1 FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t2 WHERE t2.expressionId = t1.expressionId) AND NOT EXISTS (SELECT * FROM inSituSpot AS t2 WHERE t2.expressionId = t1.expressionId) LIMIT 10" >> $@.tmp
@@ -48,14 +50,14 @@ $(OUTPUT_DIR)insert_rna_seq_expression: $(OUTPUT_DIR)rnaseq_exclusion
 	@$(MYSQL) -e "SELECT t2.speciesId, t1.reasonForExclusion, t4.rnaSeqTechnologyIsSingleCell AS isSingleCell, t4.sampleMultiplexing AS isSampleMultiplexing, COUNT(*) AS callsExcludedBecauseOfBiotype  FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t1 INNER JOIN gene AS t2 ON t1.bgeeGeneId = t2.bgeeGeneId INNER JOIN rnaSeqLibraryAnnotatedSample AS t3 ON t3.rnaSeqLibraryAnnotatedSampleId = t1.rnaSeqLibraryAnnotatedSampleId INNER JOIN rnaSeqLibrary as t4 ON t4.rnaSeqLibraryId = t3.rnaSeqLibraryId WHERE t1.reasonForExclusion = 'biotype not targeted' GROUP BY speciesId, reasonForExclusion, isSingleCell, isSampleMultiplexing ORDER BY speciesId;" >> $@.tmp
 	@echo "Statistics for expression table" >> $@.tmp
 	@$(MYSQL) -e "SELECT t2.speciesId, COUNT(*) totalExpression , COUNT(DISTINCT t1.bgeeGeneId) as distinctGenes, COUNT(DISTINCT t1.conditionId) as distinctConditions, COUNT(DISTINCT t3.anatEntityId, t3.stageId) as DistinctStageAndAnat FROM expression AS t1 INNER JOIN gene AS t2 ON t2.bgeeGeneId = t1.bgeeGeneId INNER JOIN cond AS t3 ON t1.conditionId = t3.conditionId GROUP BY speciesId ORDER BY speciesId" >> $@.tmp
-	@if [[ ! -s warnings.$@ ]]; then $(RM) warnings.$@; fi
+	@if [[ ! -s $@.err ]]; then $(RM) $@.err; fi
 	@$(MV) $@.tmp $@
 
 # This step is responsible for computing ranks for each RNA-Seq library
-# and then store information abut max ranks/distinct rank counts
+# and then store information about max ranks/distinct rank counts
 # It is also possible to compute RNA-Seq ranks using a slurm cluster with the script run_rnaseq_ranks_on_cluster.pl. This script only run ranks_rnaseq.pl. Do not forget to run mysql queries of this rule once computation is over on the cluster.
 $(OUTPUT_DIR)ranksRnaSeq: $(OUTPUT_DIR)insert_rna_seq_expression
-	@perl rna_seq_ranks.pl -bgee=$(BGEECMD) -parallel_jobs=20 -all_datatypes> $@.tmp 2> $@.warn
+	@perl rna_seq_ranks.pl -bgee=$(BGEECMD) -number_threads=40 -all_datatypes -samples_per_job=40 > $@.tmp 2> $@.warn
 	@$(MYSQL) -e "UPDATE rnaSeqLibraryAnnotatedSample AS t0 INNER JOIN (SELECT t3.rnaSeqLibraryAnnotatedSampleId, MAX(t3.rawRank) AS maxRank, COUNT(DISTINCT t3.rawRank) AS distinctRankCount FROM rnaSeqLibrary AS t1 INNER JOIN rnaSeqLibraryAnnotatedSample AS t2 ON t1.rnaSeqLibraryId = t2.rnaSeqLibraryId INNER JOIN rnaSeqLibraryAnnotatedSampleGeneResult AS t3 ON  t2.rnaSeqLibraryAnnotatedSampleId = t3.rnaSeqLibraryAnnotatedSampleId WHERE t3.rawRank IS NOT NULL GROUP BY t3.rnaSeqLibraryAnnotatedSampleId) AS ranks ON t0.rnaSeqLibraryAnnotatedSampleId = ranks.rnaSeqLibraryAnnotatedSampleId SET t0.rnaSeqLibraryAnnotatedSampleMaxRank = ranks.maxRank, t0.rnaSeqLibraryAnnotatedSampleDistinctRankCount = ranks.distinctRankCount WHERE EXISTS (SELECT 1 FROM rnaSeqLibraryAnnotatedSampleGeneResult AS t4 WHERE t4.rawRank IS NOT NULL AND t4.rnaSeqLibraryAnnotatedSampleId = t0.rnaSeqLibraryAnnotatedSampleId)" >> $@.tmp 2>> $@.warn
 	@$(MYSQL) -e "INSERT INTO rnaSeqPopulationCaptureSpeciesMaxRank (rnaSeqPopulationCaptureId, rnaSeqTechnologyIsSingleCell, sampleMultiplexing, speciesId, maxRank) SELECT rnaSeqPopulationCaptureId, rnaSeqTechnologyIsSingleCell, sampleMultiplexing, speciesId, speciesMaxRank FROM (SELECT t1.rnaSeqPopulationCaptureId, t1.rnaSeqTechnologyIsSingleCell, t1.sampleMultiplexing, t3.speciesId, MAX(t2.rnaSeqLibraryAnnotatedSampleMaxRank) AS speciesMaxRank FROM rnaSeqLibrary AS t1 INNER JOIN rnaSeqLibraryAnnotatedSample AS t2 ON t1.rnaSeqLibraryId = t2.rnaSeqLibraryId INNER JOIN cond AS t3 ON t2.conditionId = t3.conditionId GROUP BY t1.rnaSeqPopulationCaptureId, t3.speciesId) AS popCapture where speciesMaxRank IS NOT NULL ON DUPLICATE KEY UPDATE maxRank = popCapture.speciesMaxRank" >> $@.tmp 2>> $@.warn
 	@printf "Min, max, average RNA-Seq rank and distinct rank count per species: \n" >> $@.tmp
@@ -64,6 +66,18 @@ $(OUTPUT_DIR)ranksRnaSeq: $(OUTPUT_DIR)insert_rna_seq_expression
 	@$(MYSQL) -e "SELECT * FROM rnaSeqLibraryAnnotatedSampleGeneResult as t1 INNER JOIN rnaSeqLibraryAnnotatedSample as t2 ON t1.rnaSeqLibraryAnnotatedSampleId = t2.rnaSeqLibraryAnnotatedSampleId INNER JOIN rnaSeqLibrary as t3 ON t2.rnaSeqLibraryId = t3.rnaSeqLibraryId where t1.rawRank IS NULL and t1.reasonForExclusion = \"not excluded\" limit 1" >> $@.tmp 2>> $@.warn
 	@printf "Check number of libraries per species with max rank NULL (should be none). If libraries are retrieved it means either that there is an error or that ranks have not been generated yet for single-cell RNA-Seq\n" >> $@.tmp
 	@${MYSQL} -e "SELECT speciesId, COUNT(distinct rnaSeqLibraryId) AS libsWithoutMaxRank FROM rnaSeqLibraryAnnotatedSample AS t1 INNER JOIN cond AS t2 ON t1.conditionId = t2.conditionId WHERE (t1.rnaSeqLibraryAnnotatedSampleMaxRank IS NULL OR t1.rnaSeqLibraryAnnotatedSampleDistinctRankCount IS NULL) AND EXISTS(select 1 from rnaSeqLibraryAnnotatedSampleGeneResult as t3 where t3.rnaSeqLibraryAnnotatedSampleId = t1.rnaSeqLibraryAnnotatedSampleId limit 1) GROUP BY speciesId" >> $@.tmp
+	@$(MV) $@.tmp $@
+
+# rule managing generation and insertion of PValue, Score, Weight and NumberObs in the expression table for all RNA-Seq datatypes.
+# This step tool less than one day to run for Bgee 16.0 with 76000 conditions
+$(OUTPUT_DIR)updateExpressionRnaSeq: #$(OUTPUT_DIR)ranksRnaSeq
+	@perl rna_seq_expression_update.pl -bgee=$(BGEECMD) -numberThreads=40 -allDatatypes -processAll> $@.tmp 2> $@.warn
+	@$(MV) $@.tmp $@
+
+# rule managing generation and insertion of PValue, Score, Weight and NumberObs in the expression table for in situ data
+#TODO: this script has to be implemented.
+$(OUTPUT_DIR)updateExpressionInSitu:$(OUTPUT_DIR)ranksRnaSeq
+	@perl in_situ_expression_update.pl -bgee=$(BGEECMD) -numberThreads=40 -debug > $@.tmp 2> $@.warn
 	@$(MV) $@.tmp $@
 
 # Since Bgee 15.0, to allow computations of global expression calls from different nodes, we first insert the global conditions,
