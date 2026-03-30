@@ -286,11 +286,29 @@ From: ubuntu:24.04
 	pip3 install --break-system-packages anndata
 	pip3 install --break-system-packages tqdm
 	pip3 install --break-system-packages argparse
+	#for other scripts (Sagane & Sara)
+	pip3 install --break-system-packages GEOparse
+	pip3 install --break-system-packages h5py
+	pip3 install --break-system-packages networkx
+	pip3 install --break-system-packages pyvis
+	pip3 install --break-system-packages requests
+	pip3 install --break-system-packages scanpy
 	#pip3 install --break-system-packages configparser
+	#pip3 install --break-system-packages collections
+	#pip3 install --break-system-packages concurrent
+	#pip3 install --break-system-packages csv
 	#pip3 install --break-system-packages datetime
+	#pip3 install --break-system-packages difflib
+	#pip3 install --break-system-packages math
 	#pip3 install --break-system-packages multiprocessing
 	#pip3 install --break-system-packages pathlib
+	#pip3 install --break-system-packages random
+	#pip3 install --break-system-packages re
+	#pip3 install --break-system-packages statistics
+	#pip3 install --break-system-packages subprocess
+	#pip3 install --break-system-packages tempfile
 	#pip3 install --break-system-packages typing
+	#pip3 install --break-system-packages xml
 	#pip3 install --break-system-packages ast
 	#pip3 install --break-system-packages errno
 	#pip3 install --break-system-packages fcntl

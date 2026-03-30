@@ -205,6 +205,25 @@ global_check:
 	@python3 -c "import anndata"         >> $@.tmp  2>/dev/null
 	@python3 -c "import tqdm"            >> $@.tmp  2>/dev/null
 	@python3 -c "import argparse"        >> $@.tmp  2>/dev/null
+# Sagane's scripts
+	@python3 -c "import collections"     >> $@.tmp  2>/dev/null
+	@python3 -c "import concurrent"      >> $@.tmp  2>/dev/null
+	@python3 -c "import csv"             >> $@.tmp  2>/dev/null
+	@python3 -c "import difflib"         >> $@.tmp  2>/dev/null
+	@python3 -c "import GEOparse"        >> $@.tmp  2>/dev/null
+	@python3 -c "import h5py"            >> $@.tmp  2>/dev/null
+	@python3 -c "import math"            >> $@.tmp  2>/dev/null
+	@python3 -c "import networkx"        >> $@.tmp  2>/dev/null
+	@python3 -c "import pandas"          >> $@.tmp  2>/dev/null
+	@python3 -c "import pyvis"           >> $@.tmp  2>/dev/null
+	@python3 -c "import random"          >> $@.tmp  2>/dev/null
+	@python3 -c "import re"              >> $@.tmp  2>/dev/null
+	@python3 -c "import requests"        >> $@.tmp  2>/dev/null
+	@python3 -c "import scanpy"          >> $@.tmp  2>/dev/null
+	@python3 -c "import statistics"      >> $@.tmp  2>/dev/null
+	@python3 -c "import subprocess"      >> $@.tmp  2>/dev/null
+	@python3 -c "import tempfile"        >> $@.tmp  2>/dev/null
+	@python3 -c "import xml"             >> $@.tmp  2>/dev/null
 ## Binaries
 # network
 	@which wget          >> $@.tmp
@@ -498,6 +517,25 @@ test_container: build_container
 	@$(PIPELINE_CONTAINER_CMD) python3 -c "import sys"             >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) python3 -c "import getopt"          >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) python3 -c "import time"            >> $@.tmp
+# Sagane's scripts
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import collections"     >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import concurrent"      >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import csv"             >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import difflib"         >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import GEOparse"        >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import h5py"            >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import math"            >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import networkx"        >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import pandas"          >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import pyvis"           >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import random"          >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import re"              >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import requests"        >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import scanpy"          >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import statistics"      >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import subprocess"      >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import tempfile"        >> $@.tmp
+	@$(PIPELINE_CONTAINER_CMD) python3 -c "import xml"             >> $@.tmp
 # others
 	@$(PIPELINE_CONTAINER_CMD) which pipenv        >> $@.tmp
 	@$(PIPELINE_CONTAINER_CMD) which mvn           >> $@.tmp
