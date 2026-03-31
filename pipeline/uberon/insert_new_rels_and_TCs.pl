@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use diagnostics;
 use Data::Dump qw(dump);
+use Tie::IxHash;
 
 # Frederic Bastian, created May 2024
 # Insert relations for new anatomical terms added to the database,
@@ -45,7 +46,7 @@ $| = 1;
 # RETRIEVE RELATIONS                     
 ##########################################
 my $fh;
-my %relations = ();
+tie(my %relations, 'Tie::IxHash');
 open($fh, '<', $file_path) || die "failed to read input file: $!";
 while (my $line = <$fh>) {
     chomp $line;
