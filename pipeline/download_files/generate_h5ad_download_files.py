@@ -62,7 +62,7 @@ def get_args():
             print(f"--{arg}")
         parser.print_help()
         exit(1)
-    return parser.parse_args()
+    return args
 
 def get_species_names(cursor):
     # define query
@@ -381,7 +381,7 @@ def main():
         # Process experiments with droplet-based if has_droplet is 1
         if has_droplet == 1 and expID not in ignore_dropletBased_exp:
             print(f"Processing droplet-based for experiment ID: {expID} and species ID: {species_id}")
-            exp_to_h5ad_dropletBased(species_id, expID, name, description, doi, output_path, species_id_to_name, cursor)
+            # exp_to_h5ad_dropletBased(species_id, expID, name, description, doi, output_path, species_id_to_name, cursor)
     # Close the cursor and connection
     cursor.close()
     cnx.close()
