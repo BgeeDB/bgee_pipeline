@@ -1,0 +1,94 @@
+ connector: user=root__pass=MySqL-Bgee.pwd.2__host=localhost__port=3306__name=bgee_v16_0
+Number of species in Bgee: 52
+
+Updating term UBERON:0001301 with new TC for species IDs: 9103
+Current TC of term UBERON:0001301: 9258, 9483, 9531, 9541, 9544, 9545, 9555, 9593, 9597, 9598, 9606, 9615, 9685, 9796, 9823, 9913, 9925, 9940, 9974, 9986, 10090, 10116, 10141, 10181, 13616, 28377, 30608, 60711
+Parent relations with at least the same TC as term UBERON:0001301: 1990872, 2376580, 87411, 2344891, 2404137, 230600, 799612, 700339, 834207, 1784331, 515703, 1520331, 1454666, 1847434, 1768045, 67419, 834944, 330167, 1544024, 494560, 854680, 42724, 737180, 310065, 27070, 375892, 155236, 1142426
+Parent terms with at least the same TC as term UBERON:0001301: UBERON:0001301
+Added TC for species ID 9103 to parent term UBERON:0001301
+Added TC for species ID 9103 to parent relation 1990872
+Added TC for species ID 9103 to parent relation 2376580
+Added TC for species ID 9103 to parent relation 87411
+Added TC for species ID 9103 to parent relation 2344891
+Added TC for species ID 9103 to parent relation 2404137
+Added TC for species ID 9103 to parent relation 230600
+Added TC for species ID 9103 to parent relation 799612
+Added TC for species ID 9103 to parent relation 700339
+Added TC for species ID 9103 to parent relation 834207
+Added TC for species ID 9103 to parent relation 1784331
+Added TC for species ID 9103 to parent relation 515703
+Added TC for species ID 9103 to parent relation 1520331
+Added TC for species ID 9103 to parent relation 1454666
+Added TC for species ID 9103 to parent relation 1847434
+Added TC for species ID 9103 to parent relation 1768045
+Added TC for species ID 9103 to parent relation 67419
+Added TC for species ID 9103 to parent relation 834944
+Added TC for species ID 9103 to parent relation 330167
+Added TC for species ID 9103 to parent relation 1544024
+Added TC for species ID 9103 to parent relation 494560
+Added TC for species ID 9103 to parent relation 854680
+Added TC for species ID 9103 to parent relation 42724
+Added TC for species ID 9103 to parent relation 737180
+Added TC for species ID 9103 to parent relation 310065
+Added TC for species ID 9103 to parent relation 27070
+Added TC for species ID 9103 to parent relation 375892
+Added TC for species ID 9103 to parent relation 155236
+Added TC for species ID 9103 to parent relation 1142426
+
+Updating term UBERON:0001000 with new TC for species IDs: 9103
+Current TC of term UBERON:0001000: 9258, 9483, 9531, 9541, 9544, 9545, 9555, 9593, 9597, 9598, 9606, 9615, 9685, 9796, 9823, 9913, 9925, 9940, 9974, 9986, 10090, 10116, 10141, 10181, 13616, 28377, 30608, 60711
+Parent relations with at least the same TC as term UBERON:0001000: 804824, 856445, 1298598, 834757, 2393567, 1298680, 217026, 212303, 1171780, 1631102, 2034606, 1138522, 982134, 1415511, 2329986, 437845, 1446253, 2290366, 1611322, 1022686, 212373, 1277981, 797743, 1275441, 2395533, 768968, 2311864, 1020556, 1610621, 1671434, 768895, 871729, 1545627, 1499069, 848378, 836652, 851081, 2289746, 1464086, 1631283, 1668925, 2032003, 217689, 1101495, 1690849, 2333669, 1952896, 1691609, 1953085, 1540843, 1493805
+Parent terms with at least the same TC as term UBERON:0001000: UBERON:0005352, UBERON:0001000
+Added TC for species ID 9103 to parent term UBERON:0005352
+Added TC for species ID 9103 to parent term UBERON:0001000
+Added TC for species ID 9103 to parent relation 804824
+Added TC for species ID 9103 to parent relation 856445
+Added TC for species ID 9103 to parent relation 1298598
+Added TC for species ID 9103 to parent relation 834757
+Added TC for species ID 9103 to parent relation 2393567
+Added TC for species ID 9103 to parent relation 1298680
+Added TC for species ID 9103 to parent relation 217026
+Added TC for species ID 9103 to parent relation 212303
+Added TC for species ID 9103 to parent relation 1171780
+Added TC for species ID 9103 to parent relation 1631102
+Added TC for species ID 9103 to parent relation 2034606
+Added TC for species ID 9103 to parent relation 1138522
+Added TC for species ID 9103 to parent relation 982134
+Added TC for species ID 9103 to parent relation 1415511
+Added TC for species ID 9103 to parent relation 2329986
+Added TC for species ID 9103 to parent relation 437845
+Added TC for species ID 9103 to parent relation 1446253
+Added TC for species ID 9103 to parent relation 2290366
+Added TC for species ID 9103 to parent relation 1611322
+Added TC for species ID 9103 to parent relation 1022686
+Added TC for species ID 9103 to parent relation 212373
+Added TC for species ID 9103 to parent relation 1277981
+Added TC for species ID 9103 to parent relation 797743
+Added TC for species ID 9103 to parent relation 1275441
+Added TC for species ID 9103 to parent relation 2395533
+Added TC for species ID 9103 to parent relation 768968
+Added TC for species ID 9103 to parent relation 2311864
+Added TC for species ID 9103 to parent relation 1020556
+Added TC for species ID 9103 to parent relation 1610621
+Added TC for species ID 9103 to parent relation 1671434
+Added TC for species ID 9103 to parent relation 768895
+Added TC for species ID 9103 to parent relation 871729
+Added TC for species ID 9103 to parent relation 1545627
+Added TC for species ID 9103 to parent relation 1499069
+Added TC for species ID 9103 to parent relation 848378
+Added TC for species ID 9103 to parent relation 836652
+Added TC for species ID 9103 to parent relation 851081
+Added TC for species ID 9103 to parent relation 2289746
+Added TC for species ID 9103 to parent relation 1464086
+Added TC for species ID 9103 to parent relation 1631283
+Added TC for species ID 9103 to parent relation 1668925
+Added TC for species ID 9103 to parent relation 2032003
+Added TC for species ID 9103 to parent relation 217689
+Added TC for species ID 9103 to parent relation 1101495
+Added TC for species ID 9103 to parent relation 1690849
+Added TC for species ID 9103 to parent relation 2333669
+Added TC for species ID 9103 to parent relation 1952896
+Added TC for species ID 9103 to parent relation 1691609
+Added TC for species ID 9103 to parent relation 1953085
+Added TC for species ID 9103 to parent relation 1540843
+Added TC for species ID 9103 to parent relation 1493805
