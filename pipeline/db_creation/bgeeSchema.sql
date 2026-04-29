@@ -199,7 +199,7 @@ create table CIOStatement (
     evidenceTypeConcordance enum('same type', 'different type') COMMENT 'Evidence type concordance for not "single" evidence: same/different types'
 ) engine = innodb;
 
--- Evidence Ontology (see http://www.evidenceontology.org/).
+-- Evidence Ontology (see https://evidenceontology.org/).
 -- Note that we do not insert pre-composed terms used to distinguish between
 -- evidence based on manual or automatic assertion (such terms have a relation 'used in'
 -- to either 'manual assertion' or 'automatic assertion', and are subclasses of either
@@ -384,7 +384,7 @@ create table similarityAnnotationToAnatEntityId (
 
 -- Represent raw similarity annotations, capturing one single evidence line,
 -- which corresponds to the GO guidelines to capture sources of annotations (see
--- http://geneontology.org/page/guide-go-evidence-codes). When several evidence lines are available
+-- https://geneontology.org/docs/guide-go-evidence-codes/). When several evidence lines are available
 -- related to a same assertion, they are captured in an summary annotation, summarizing
 -- all evidence lines available, see table 'summarySimilarityAnnotation';
 -- for convenience, annotations are all present in the table 'summarySimilarityAnnotation'
