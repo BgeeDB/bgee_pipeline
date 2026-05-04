@@ -4,7 +4,7 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
 -- FIXME should we keep Gene Ontology ???
 (1, 'NCBI Taxonomy', '', '', '',
     'https://www.ncbi.nlm.nih.gov/taxonomy', 'Source taxonomy used in Bgee', 1, ''),
-(2, 'Ensembl', 'https://Oct2024.archive.ensembl.org/[species_ensembl_link]/Gene/Summary?g=[gene_id]', '', '',
+(2, 'Ensembl', 'https://oct2024.archive.ensembl.org/[species_ensembl_link]/Gene/Summary?g=[gene_id]', '', '',
     'https://oct2024.archive.ensembl.org/',
     'Source for gene annotations, mappings to the Gene Ontology, mappings to Affymetrix probeset IDs, and cross-references to other databases',
     1, 'Genomics database'),
