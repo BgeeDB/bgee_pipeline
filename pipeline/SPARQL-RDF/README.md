@@ -5,7 +5,7 @@
 
 Edit [virtuoso.ini](http://docs.openlinksw.com/virtuoso/dbadm/) configuration file to allow for reading/writing files in the directory that contains the RDF-based files.
 
-virtuoso.ini line to edit: **DirsAllowed = ., ../vad, /new/path/bgee/ttl**
+`virtuoso.ini` line to edit: **DirsAllowed = ., ../vad, /new/path/bgee/ttl**
 
 **Goals**:
 * Set up the Bgee SPARQL endpoint
@@ -42,8 +42,9 @@ To run the bgee_rdf.sh bash script:
                 [ {-h | --help} <usage help> ]
 
    Example:
+```bash
     ./bgee_rdf.sh -m ./conf/genex_adapt.obda -o **/new/path/bgee/ttl** -p  ./conf/genex_adapt.properties -x ./ontop-cli-3 -t ./conf/genex_adapt.owl -v '15_2'
-
+```
 
 
 ## Data verification
