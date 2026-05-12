@@ -11,7 +11,7 @@ FTP_RELEASE   := $(subst .,_,$(RELEASE))
 all: $(VERIFICATIONFILE)
 
 
-download_mapping_file: 
+download_mapping_file:
 	# Download mapping file
 	@$(WGET) $(GENEX_MAPPING_URL) -O $(GENEX_MAPPING_FILE) && $(MV) $(GENEX_MAPPING_FILE) $(INPUT_DIR) > $@.tmp
 	@$(RM) $(GENEX_MAPPING_FILE)
@@ -62,7 +62,7 @@ create_isql_load_script: generate_triples
 
 	@echo "SPARQL LOAD <http://purl.org/genex#> INTO <https://www.bgee.org/rdf_v$(FTP_RELEASE)>;" >>  $(BGEE_VIRTUOSO_FILE)
 	@echo "SPARQL LOAD <http://purl.org/lscr#> INTO <https://www.bgee.org/rdf_v$(FTP_RELEASE)>;" >>  $(BGEE_VIRTUOSO_FILE)
-	@$(RM) $(TTL_FILE_LIST) 
+	@$(RM) $(TTL_FILE_LIST)
 	@touch $@
 
 	#@echo "Please execute manually iSQL script to load RDF data into a virtuoso data store..."

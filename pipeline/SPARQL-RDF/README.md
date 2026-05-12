@@ -1,6 +1,6 @@
 **Requirements**: having successfully run dblite_creation
 
-## Prerequirements 
+## Prerequirements
 [Install Virtuoso 7.2](http://vos.openlinksw.com/owiki/wiki/VOS#How%20Do%20I%20Install%20Virtuoso%3F)
 
 Edit [virtuoso.ini](http://docs.openlinksw.com/virtuoso/dbadm/) configuration file to allow for reading/writing files in the directory that contains the RDF-based files.
@@ -26,22 +26,22 @@ Generate triples to integrate in the triple store (virtuoso) with easyBgee_v*REL
 
 To run the bgee_rdf.sh bash script:
  easyBgee to RDF triples
- 
+
                 [ {-x | --ontop} <ontop directory> ]
-                
+
                 [ {-m | --mapping-file} <mapping file> ]
-                
+
                 [ {-o | --output-dir-path} <Turtle file output> ]
-                
+
                 [ {-p | --ontop-property-file} <property file>  ]
-                
+
                 [ {-t | --ontology-file} <ontology file> ]
-                                
+
                 [ {-v | --bgee-version} <the bgee version, e.g. '15_2'> ]
-                
+
                 [ {-h | --help} <usage help> ]
 
-   Example:              
+   Example:
     ./bgee_rdf.sh -m ./conf/genex_adapt.obda -o **/new/path/bgee/ttl** -p  ./conf/genex_adapt.properties -x ./ontop-cli-3 -t ./conf/genex_adapt.owl -v '15_2'
 
 
