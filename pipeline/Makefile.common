@@ -144,6 +144,7 @@ APPEND_CURL_COMMAND = -z $@ -o $@.tmp && mv -f $@.tmp $@ 2>/dev/null || rm -f $@
 # Needs to be included after we defined some variables used in the file
 include $(PIPELINEROOT)Makefile.taxon_info
 
+
 # ===================================
 #  CLUSTER  COMMANDS
 # ===================================
@@ -153,8 +154,8 @@ CLUSTER_DATA_PATH       := /data/FAC/FBM/DEE/mrobinso/bgee_sensitive/
 CLUSTER_DATA_RESULTS    := $(CLUSTER_DATA_PATH)/$(DBNAME)/
 CLUSTER_ARCHIVE_PATH    := /archive/FAC/FBM/DEE/mrobinso/bgee_sensitive/
 CLUSTER_ARCHIVE_DROPLET := $(CLUSTER_ARCHIVE_PATH)Pipeline_results_storage/scRNA-Seq_TB/$(DBNAME)/
-CLUSTER_ARCHIVE_FL	:= $(CLUSTER_ARCHIVE_PATH)Pipeline_results_storage/scRNA-Seq_FL/$(DBNAME)/
-CLUSTER_ARCHIVE_BULK	:= $(CLUSTER_ARCHIVE_PATH)Pipeline_results_storage/rna_seq/$(DBNAME)/
+CLUSTER_ARCHIVE_FL      := $(CLUSTER_ARCHIVE_PATH)Pipeline_results_storage/scRNA-Seq_FL/$(DBNAME)/
+CLUSTER_ARCHIVE_BULK    := $(CLUSTER_ARCHIVE_PATH)Pipeline_results_storage/rna_seq/$(DBNAME)/
 CLUSTER_WORK_PATH       := /work/FAC/FBM/DEE/mrobinso/bgee/
 
 CLUSTER_TOOLS_DIR       := $(CLUSTER_WORK_PATH)/tools/
@@ -177,6 +178,7 @@ CLUSTER_CONTAINER_CMD_WITHOUT_BIND := "$(CLUSTER_LOAD_APPTAINER) apptainer exec 
 #NOTE Think to add ; at the end to ease insertion in other command lines
 CLUSTER_SOFTWARE_BIN    := export PATH=/software/bin:$$PATH;
 SENSITIVE_PERL_CMD      := $(CLUSTER_SOFT_VITALIT) $(CLUSTER_SOFTWARE_BIN)
+
 
 # ===================================
 #  PATHS TO FILES
@@ -260,6 +262,7 @@ ROBOT_DIR_PATH      := $(PWD)/$(SOURCE_FILES_DIR)uberon/robot/
 ROBOT_JAR_PATH      := $(ROBOT_DIR_PATH)robot.jar
 ROBOT_SH_PATH       := $(ROBOT_DIR_PATH)robot
 
+
 # =========== GENE FILES ===============
 
 HOMOLOGS_DIR := $(OUTPUT_DIR)homologs
@@ -289,7 +292,9 @@ ONLY_FLYBASE_SPECIES_FILE = $(GENERATE_HOMOLOGS_APP_DIR)/species_lists/flybase_s
 #the URL or file path that contains ncbi gene ids mappings to ensembl gene ids
 NCBI_GENE2ENSEMBL_URL := https://ftp.ncbi.nih.gov/gene/DATA/gene2ensembl.gz
 
+
 # =========== UBERON FILES ===============
+
 UBERON_SOURCE_PATH := $(SOURCE_FILES_DIR)uberon/
 UBERON_OUTPUT_PATH := $(GENERATED_FILES_DIR)uberon/
 
@@ -493,6 +498,7 @@ RNASEQBIOCONDUCTOR                  := $(RNASEQDATAPATH)bioconductor_$(DBNAME)/
 RNASEQTMMTARG                       := $(RNASEQBIOCONDUCTOR)targets_TMM/
 RNASEQTMMPATH                       := $(RNASEQDATAPATH)processed_TMM_$(DBNAME)/
 
+
 # =========== SINGLE CELL RNA_Seq FILES  ===============
 # scRNASeq github file paths in the source directory
 SC_RNASEQ_LIB_FILENAME                 := scRNASeqLibrary_merged.tsv
@@ -597,6 +603,7 @@ MIN_CELLS_PER_LIBRARY_FULL_LENGTH             := 50
 # p-value used as cutoff
 PVALUE_CUTOFF                                 := 0.05
 
+
 # =========== DOWNLOAD FILES ===============
 
 # path to the root of the directory to use to store generated download files
@@ -643,7 +650,9 @@ FTP_ROOT        := /u01/ftp/
 FTP_CURRENT     := $(FTP_ROOT)$(DBNAME)/
 FTP_DOWNLOAD    := $(FTP_CURRENT)download/
 
+
 # =========== RANK DOWNLOAD FILES ===============
+
 # Directories related to $(OUTPUT_DIR)
 RANKS_PER_ANAT := ranks/anat_entity/
 RANKS_PER_CONDITION := ranks/condition/
@@ -655,7 +664,7 @@ ONTOP_BGEE_PROP_TEMPLATE := $(INPUT_DIR)bgee_connection.template
 GENEX_ONTOLOGY_URL := https://raw.githubusercontent.com/biosoda/genex/master/genex_reduced_subsumption.ttl
 ONTOP_DOWNLOAD_URL := https://netcologne.dl.sourceforge.net/project/ontop4obda/ontop-5.1.0/ontop-cli-5.1.0.zip
 ONTOP_MYSQL_JDBC_URL := https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.48/mysql-connector-java-5.1.48.jar
-GENEX_MAPPING_URL := https://raw.githubusercontent.com/biosoda/bioquery/master/Bgee_OBDA_mappings/bgee_v15_1_genex.obda
+GENEX_MAPPING_URL := https://raw.githubusercontent.com/biosoda/bioquery/master/Bgee_OBDA_mappings/bgee_v$(subst .,_,$(RELEASE))_genex.obda
 ONTOP_DOWNLOAD_FILE := ontop.zip
 GENEX_ONTOLOGY_FILE := genex.owl
 GENEX_MAPPING_FILE := bgee_genex.obda
@@ -667,3 +676,4 @@ FTP_SAVE_DUMP_PATH := $(FTP_CURRENT)rdf_easybgee.zip
 TTL_FILE_LIST      := $(TTL_DIRECTORY_FULL_PATH)ttl_files.txt
 BGEE_VIRTUOSO_FILE := $(TTL_DIRECTORY_FULL_PATH)add_bgee_virtuoso.sql
 ZIP_TTL_FILE       := $(TTL_DIRECTORY_FULL_PATH)rdf_easybgee.zip
+
