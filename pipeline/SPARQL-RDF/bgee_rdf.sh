@@ -11,7 +11,7 @@ usage()
                 [ {-j | --java-ontop-args } <Java Ontop memory arguments > (optional) ]
                 [ {-h | --help} <usage help> ]
 
-   Example:              
+   Example:
     ./bgee_rdf.sh -m ./conf/genex_adapt.obda -o ./ttl -p  ./conf/genex_adapt.properties -x ./ontop-cli-3 -t ./conf/genex_adapt.owl -v '15_2' -j '-Xmx128G'
     "
 
@@ -39,20 +39,20 @@ while [ "$1" != "" ]; do
                                 obda_file_path=${1%/}
                                 ;;
         -o | --output-dir-path ) shift
-                                 output_dir_path=${1%/}
+                                output_dir_path=${1%/}
                                 ;;
         -p | --ontop-property-file ) shift
-                                     ontop_property_file=${1%/}
-                                    ;;  
+                                ontop_property_file=${1%/}
+                                ;;
         -t | --ontology-file )  shift
                                 ontology_file=${1%/}
                                 ;;
         -v | --bgee-version )   shift
                                 bgee_version=${1%/}
-                                ;;     
-        -j | --java-ontop-args )   shift
+                                ;;
+        -j | --java-ontop-args ) shift
                                 java_ontop_args=${1%/}
-                                ;;                                                                                                          
+                                ;;
         -h | --help )           usage
                                 exit
                                 ;;
@@ -66,17 +66,17 @@ echo "Starting RDF creation and loading into Virtuoso data store..."
 echo "Creating RDF data and serializing them as TURTLE files..."
 #ontop edit java max memory
 if [ "$java_ontop_args" != "" ]
-then 
+then
     java_ontop_args=`echo $java_ontop_args | tr -d \"`
     sed -i  's,ONTOP_JAVA_ARGS=.*.,ONTOP_JAVA_ARGS="'$java_ontop_args'",g' $ontop_dir_path/ontop
 fi
 
 #Run ontop tool
-$ontop_dir_path/ontop materialize --separate-files -m $obda_file_path -f turtle -o $output_dir_path -p $ontop_property_file -t $ontology_file 
+$ontop_dir_path/ontop materialize --separate-files -m $obda_file_path -f turtle -o $output_dir_path -p $ontop_property_file -t $ontology_file
 
 # for MacOS it has the empty string argument ''
-#sed -i '' 's," \.,"^^xsd:double.,g' $output_dir_path/http___purl_org_genex_hasExpressionLevelP_*.ttl 
-#sed -i 's," \.,"^^xsd:double.,g' $output_dir_path/http___purl_org_genex_hasExpressionLevelP_*.ttl 
+#sed -i '' 's," \.,"^^xsd:double.,g' $output_dir_path/http___purl_org_genex_hasExpressionLevelP_*.ttl
+#sed -i 's," \.,"^^xsd:double.,g' $output_dir_path/http___purl_org_genex_hasExpressionLevelP_*.ttl
 
 echo "The RDF data were created and saved as TURTLE files..."
 
