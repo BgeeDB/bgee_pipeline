@@ -1,0 +1,712 @@
+WARNING: sun.reflect.Reflection.getCallerClass is not supported. This will impact performance.
+19:19:53.369 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9606 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+19:19:53.699 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 2791 raw data conditions for species 9606
+19:19:53.700 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9606...
+19:20:09.614 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 9606.
+19:20:09.616 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+19:20:31.997 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 304898 global conditions inserted for species 9606
+19:20:35.058 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 86521 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 9606
+19:20:35.058 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 304898 conditions...
+19:22:31.117 [ForkJoinPool.commonPool-worker-19] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 10000/304898 conditions processed (116058 ms elapsed)
+19:24:25.599 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 20000/304898 conditions processed (230541 ms elapsed)
+19:26:18.547 [ForkJoinPool.commonPool-worker-16] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 30000/304898 conditions processed (343489 ms elapsed)
+19:28:11.890 [ForkJoinPool.commonPool-worker-12] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 40000/304898 conditions processed (456831 ms elapsed)
+19:30:07.051 [ForkJoinPool.commonPool-worker-20] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 50000/304898 conditions processed (571993 ms elapsed)
+19:32:01.909 [ForkJoinPool.commonPool-worker-21] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 60000/304898 conditions processed (686851 ms elapsed)
+19:33:56.427 [ForkJoinPool.commonPool-worker-5] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 70000/304898 conditions processed (801368 ms elapsed)
+19:35:51.368 [ForkJoinPool.commonPool-worker-17] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 80000/304898 conditions processed (916310 ms elapsed)
+19:37:45.544 [ForkJoinPool.commonPool-worker-6] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 90000/304898 conditions processed (1030485 ms elapsed)
+19:39:39.814 [ForkJoinPool.commonPool-worker-4] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 100000/304898 conditions processed (1144755 ms elapsed)
+19:41:33.861 [ForkJoinPool.commonPool-worker-24] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 110000/304898 conditions processed (1258803 ms elapsed)
+19:43:27.615 [ForkJoinPool.commonPool-worker-12] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 120000/304898 conditions processed (1372557 ms elapsed)
+19:45:20.953 [ForkJoinPool.commonPool-worker-19] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 130000/304898 conditions processed (1485894 ms elapsed)
+19:47:13.732 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 140000/304898 conditions processed (1598674 ms elapsed)
+19:49:06.844 [ForkJoinPool.commonPool-worker-20] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 150000/304898 conditions processed (1711785 ms elapsed)
+19:51:00.569 [ForkJoinPool.commonPool-worker-12] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 160000/304898 conditions processed (1825511 ms elapsed)
+19:52:53.512 [ForkJoinPool.commonPool-worker-22] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 170000/304898 conditions processed (1938453 ms elapsed)
+19:54:46.168 [ForkJoinPool.commonPool-worker-21] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 180000/304898 conditions processed (2051110 ms elapsed)
+19:56:40.073 [ForkJoinPool.commonPool-worker-25] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 190000/304898 conditions processed (2165015 ms elapsed)
+19:58:33.812 [ForkJoinPool.commonPool-worker-15] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 200000/304898 conditions processed (2278754 ms elapsed)
+20:00:27.687 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 210000/304898 conditions processed (2392629 ms elapsed)
+20:02:21.452 [ForkJoinPool.commonPool-worker-22] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 220000/304898 conditions processed (2506393 ms elapsed)
+20:04:14.870 [ForkJoinPool.commonPool-worker-21] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 230000/304898 conditions processed (2619812 ms elapsed)
+20:06:08.519 [ForkJoinPool.commonPool-worker-18] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 240000/304898 conditions processed (2733461 ms elapsed)
+20:08:02.223 [ForkJoinPool.commonPool-worker-7] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 250000/304898 conditions processed (2847165 ms elapsed)
+20:09:59.448 [ForkJoinPool.commonPool-worker-16] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 260000/304898 conditions processed (2964390 ms elapsed)
+20:12:00.771 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 270000/304898 conditions processed (3085713 ms elapsed)
+20:14:02.053 [ForkJoinPool.commonPool-worker-23] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 280000/304898 conditions processed (3206994 ms elapsed)
+20:16:03.168 [ForkJoinPool.commonPool-worker-13] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 290000/304898 conditions processed (3328109 ms elapsed)
+20:18:05.506 [ForkJoinPool.commonPool-worker-22] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 300000/304898 conditions processed (3450447 ms elapsed)
+20:19:48.008 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 1304027 ancestor relationships in 3552950 ms total
+20:19:48.022 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+20:20:18.959 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 1304027 relations between global conndition and their direct ancestors have been inserted for species 9606
+20:20:18.983 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 10090 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+20:20:19.441 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 18781 raw data conditions for species 10090
+20:20:19.441 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 10090...
+20:21:05.877 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 10090.
+20:21:05.879 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+20:21:49.529 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 673451 global conditions inserted for species 10090
+20:22:06.743 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 582211 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 10090
+20:22:06.744 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 673451 conditions...
+20:27:29.260 [ForkJoinPool.commonPool-worker-18] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 10000/673451 conditions processed (322516 ms elapsed)
+20:32:54.565 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 20000/673451 conditions processed (647820 ms elapsed)
+20:38:22.214 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 30000/673451 conditions processed (975469 ms elapsed)
+20:43:49.074 [ForkJoinPool.commonPool-worker-23] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 40000/673451 conditions processed (1302329 ms elapsed)
+20:49:14.995 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 50000/673451 conditions processed (1628251 ms elapsed)
+20:54:37.646 [ForkJoinPool.commonPool-worker-17] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 60000/673451 conditions processed (1950901 ms elapsed)
+21:00:00.875 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 70000/673451 conditions processed (2274131 ms elapsed)
+21:05:26.154 [ForkJoinPool.commonPool-worker-26] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 80000/673451 conditions processed (2599410 ms elapsed)
+21:10:49.033 [ForkJoinPool.commonPool-worker-7] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 90000/673451 conditions processed (2922288 ms elapsed)
+21:16:11.937 [ForkJoinPool.commonPool-worker-3] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 100000/673451 conditions processed (3245193 ms elapsed)
+21:21:35.593 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 110000/673451 conditions processed (3568849 ms elapsed)
+21:26:59.093 [ForkJoinPool.commonPool-worker-25] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 120000/673451 conditions processed (3892348 ms elapsed)
+21:32:26.155 [ForkJoinPool.commonPool-worker-4] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 130000/673451 conditions processed (4219411 ms elapsed)
+21:37:50.973 [ForkJoinPool.commonPool-worker-23] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 140000/673451 conditions processed (4544229 ms elapsed)
+21:43:15.896 [ForkJoinPool.commonPool-worker-18] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 150000/673451 conditions processed (4869151 ms elapsed)
+21:48:40.671 [ForkJoinPool.commonPool-worker-13] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 160000/673451 conditions processed (5193926 ms elapsed)
+21:54:07.855 [ForkJoinPool.commonPool-worker-16] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 170000/673451 conditions processed (5521110 ms elapsed)
+21:59:35.031 [ForkJoinPool.commonPool-worker-18] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 180000/673451 conditions processed (5848287 ms elapsed)
+22:05:06.961 [ForkJoinPool.commonPool-worker-27] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 190000/673451 conditions processed (6180216 ms elapsed)
+22:10:30.771 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 200000/673451 conditions processed (6504027 ms elapsed)
+22:15:53.622 [ForkJoinPool.commonPool-worker-6] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 210000/673451 conditions processed (6826877 ms elapsed)
+22:21:15.836 [ForkJoinPool.commonPool-worker-23] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 220000/673451 conditions processed (7149092 ms elapsed)
+22:26:37.660 [ForkJoinPool.commonPool-worker-12] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 230000/673451 conditions processed (7470916 ms elapsed)
+22:31:59.778 [ForkJoinPool.commonPool-worker-18] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 240000/673451 conditions processed (7793033 ms elapsed)
+22:37:22.217 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 250000/673451 conditions processed (8115473 ms elapsed)
+22:42:46.912 [ForkJoinPool.commonPool-worker-18] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 260000/673451 conditions processed (8440168 ms elapsed)
+22:48:13.328 [ForkJoinPool.commonPool-worker-17] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 270000/673451 conditions processed (8766584 ms elapsed)
+22:53:37.098 [ForkJoinPool.commonPool-worker-3] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 280000/673451 conditions processed (9090353 ms elapsed)
+22:59:03.032 [ForkJoinPool.commonPool-worker-23] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 290000/673451 conditions processed (9416287 ms elapsed)
+23:04:27.430 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 300000/673451 conditions processed (9740685 ms elapsed)
+23:09:51.589 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 310000/673451 conditions processed (10064845 ms elapsed)
+23:15:16.715 [ForkJoinPool.commonPool-worker-7] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 320000/673451 conditions processed (10389971 ms elapsed)
+23:20:42.593 [ForkJoinPool.commonPool-worker-16] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 330000/673451 conditions processed (10715849 ms elapsed)
+23:26:07.914 [ForkJoinPool.commonPool-worker-3] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 340000/673451 conditions processed (11041170 ms elapsed)
+23:31:30.686 [ForkJoinPool.commonPool-worker-18] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 350000/673451 conditions processed (11363942 ms elapsed)
+23:36:52.934 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 360000/673451 conditions processed (11686189 ms elapsed)
+23:42:20.074 [ForkJoinPool.commonPool-worker-3] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 370000/673451 conditions processed (12013330 ms elapsed)
+23:47:44.388 [ForkJoinPool.commonPool-worker-18] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 380000/673451 conditions processed (12337644 ms elapsed)
+23:53:08.885 [ForkJoinPool.commonPool-worker-20] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 390000/673451 conditions processed (12662141 ms elapsed)
+23:58:33.016 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 400000/673451 conditions processed (12986271 ms elapsed)
+00:03:58.003 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 410000/673451 conditions processed (13311259 ms elapsed)
+00:09:24.049 [ForkJoinPool.commonPool-worker-26] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 420000/673451 conditions processed (13637304 ms elapsed)
+00:14:49.545 [ForkJoinPool.commonPool-worker-22] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 430000/673451 conditions processed (13962801 ms elapsed)
+00:20:13.213 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 440000/673451 conditions processed (14286469 ms elapsed)
+00:25:38.962 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 450000/673451 conditions processed (14612217 ms elapsed)
+00:31:04.913 [ForkJoinPool.commonPool-worker-22] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 460000/673451 conditions processed (14938168 ms elapsed)
+00:36:29.722 [ForkJoinPool.commonPool-worker-18] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 470000/673451 conditions processed (15262977 ms elapsed)
+00:41:53.749 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 480000/673451 conditions processed (15587004 ms elapsed)
+00:47:18.045 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 490000/673451 conditions processed (15911300 ms elapsed)
+00:52:43.438 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 500000/673451 conditions processed (16236694 ms elapsed)
+00:58:05.661 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 510000/673451 conditions processed (16558916 ms elapsed)
+01:03:29.824 [ForkJoinPool.commonPool-worker-4] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 520000/673451 conditions processed (16883079 ms elapsed)
+01:08:55.232 [ForkJoinPool.commonPool-worker-4] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 530000/673451 conditions processed (17208488 ms elapsed)
+01:14:19.672 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 540000/673451 conditions processed (17532928 ms elapsed)
+01:19:48.062 [ForkJoinPool.commonPool-worker-19] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 550000/673451 conditions processed (17861317 ms elapsed)
+01:25:29.717 [ForkJoinPool.commonPool-worker-7] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 560000/673451 conditions processed (18202972 ms elapsed)
+01:31:16.950 [ForkJoinPool.commonPool-worker-24] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 570000/673451 conditions processed (18550205 ms elapsed)
+01:37:09.305 [ForkJoinPool.commonPool-worker-17] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 580000/673451 conditions processed (18902561 ms elapsed)
+01:42:58.320 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 590000/673451 conditions processed (19251575 ms elapsed)
+01:48:43.188 [ForkJoinPool.commonPool-worker-6] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 600000/673451 conditions processed (19596444 ms elapsed)
+01:54:29.420 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 610000/673451 conditions processed (19942675 ms elapsed)
+02:00:14.889 [ForkJoinPool.commonPool-worker-21] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 620000/673451 conditions processed (20288145 ms elapsed)
+02:06:04.054 [ForkJoinPool.commonPool-worker-24] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 630000/673451 conditions processed (20637310 ms elapsed)
+02:11:49.698 [ForkJoinPool.commonPool-worker-17] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 640000/673451 conditions processed (20982953 ms elapsed)
+02:17:37.463 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 650000/673451 conditions processed (21330719 ms elapsed)
+02:23:25.197 [ForkJoinPool.commonPool-worker-16] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 660000/673451 conditions processed (21678452 ms elapsed)
+02:29:25.630 [ForkJoinPool.commonPool-worker-4] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 670000/673451 conditions processed (22038885 ms elapsed)
+02:34:55.594 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 3144364 ancestor relationships in 22368849 ms total
+02:34:55.606 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+02:36:21.898 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 3144364 relations between global conndition and their direct ancestors have been inserted for species 10090
+02:36:21.952 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 7955 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+02:36:22.363 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 16707 raw data conditions for species 7955
+02:36:22.364 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 7955...
+02:36:41.554 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 7955.
+02:36:41.555 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+02:36:46.438 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 85998 global conditions inserted for species 7955
+02:36:58.070 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 517917 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 7955
+02:36:58.071 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 85998 conditions...
+02:37:26.163 [ForkJoinPool.commonPool-worker-22] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 10000/85998 conditions processed (28092 ms elapsed)
+02:37:53.992 [ForkJoinPool.commonPool-worker-28] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 20000/85998 conditions processed (55920 ms elapsed)
+02:38:21.230 [ForkJoinPool.commonPool-worker-26] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 30000/85998 conditions processed (83159 ms elapsed)
+02:38:48.307 [ForkJoinPool.commonPool-worker-21] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 40000/85998 conditions processed (110235 ms elapsed)
+02:39:15.364 [ForkJoinPool.commonPool-worker-23] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 50000/85998 conditions processed (137292 ms elapsed)
+02:39:42.398 [ForkJoinPool.commonPool-worker-21] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 60000/85998 conditions processed (164327 ms elapsed)
+02:40:09.433 [ForkJoinPool.commonPool-worker-8] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 70000/85998 conditions processed (191362 ms elapsed)
+02:40:38.054 [ForkJoinPool.commonPool-worker-13] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 80000/85998 conditions processed (219983 ms elapsed)
+02:41:00.547 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 287662 ancestor relationships in 242476 ms total
+02:41:00.555 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+02:41:06.508 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 287662 relations between global conndition and their direct ancestors have been inserted for species 7955
+02:41:06.515 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 7227 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+02:41:06.754 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 8398 raw data conditions for species 7227
+02:41:06.754 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 7227...
+02:41:21.398 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 7227.
+02:41:21.399 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+02:41:32.686 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 173630 global conditions inserted for species 7227
+02:41:40.124 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 260338 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 7227
+02:41:40.124 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 173630 conditions...
+02:42:46.141 [ForkJoinPool.commonPool-worker-20] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 10000/173630 conditions processed (66016 ms elapsed)
+02:43:52.056 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 20000/173630 conditions processed (131931 ms elapsed)
+02:44:57.478 [ForkJoinPool.commonPool-worker-11] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 30000/173630 conditions processed (197354 ms elapsed)
+02:46:02.927 [ForkJoinPool.commonPool-worker-4] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 40000/173630 conditions processed (262803 ms elapsed)
+02:47:08.392 [ForkJoinPool.commonPool-worker-29] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 50000/173630 conditions processed (328268 ms elapsed)
+02:48:13.658 [ForkJoinPool.commonPool-worker-29] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 60000/173630 conditions processed (393534 ms elapsed)
+02:49:19.073 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 70000/173630 conditions processed (458949 ms elapsed)
+02:50:24.477 [ForkJoinPool.commonPool-worker-19] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 80000/173630 conditions processed (524353 ms elapsed)
+02:51:30.575 [ForkJoinPool.commonPool-worker-23] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 90000/173630 conditions processed (590450 ms elapsed)
+02:52:36.315 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 100000/173630 conditions processed (656191 ms elapsed)
+02:53:42.415 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 110000/173630 conditions processed (722291 ms elapsed)
+02:54:48.524 [ForkJoinPool.commonPool-worker-20] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 120000/173630 conditions processed (788400 ms elapsed)
+02:55:55.137 [ForkJoinPool.commonPool-worker-8] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 130000/173630 conditions processed (855013 ms elapsed)
+02:57:01.654 [ForkJoinPool.commonPool-worker-16] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 140000/173630 conditions processed (921530 ms elapsed)
+02:58:09.660 [ForkJoinPool.commonPool-worker-8] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 150000/173630 conditions processed (989536 ms elapsed)
+02:59:20.886 [ForkJoinPool.commonPool-worker-10] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 160000/173630 conditions processed (1060762 ms elapsed)
+03:00:32.790 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 170000/173630 conditions processed (1132666 ms elapsed)
+03:01:40.150 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 726618 ancestor relationships in 1200026 ms total
+03:01:40.159 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:01:59.215 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 726618 relations between global conndition and their direct ancestors have been inserted for species 7227
+03:01:59.231 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 6239 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:01:59.352 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 934 raw data conditions for species 6239
+03:01:59.353 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 6239...
+03:02:08.183 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 6239.
+03:02:08.184 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:02:08.429 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 3237 global conditions inserted for species 6239
+03:02:09.224 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 28954 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 6239
+03:02:09.224 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 3237 conditions...
+03:02:09.595 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 8717 ancestor relationships in 370 ms total
+03:02:09.599 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:02:09.784 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 8717 relations between global conndition and their direct ancestors have been inserted for species 6239
+03:02:09.787 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9615 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:02:09.809 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 241 raw data conditions for species 9615
+03:02:09.809 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9615...
+03:02:18.202 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 9615.
+03:02:18.203 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:02:18.845 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 9837 global conditions inserted for species 9615
+03:02:19.021 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 7471 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 9615
+03:02:19.021 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 9837 conditions...
+03:02:22.138 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 35336 ancestor relationships in 3116 ms total
+03:02:22.145 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:02:22.885 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 35336 relations between global conndition and their direct ancestors have been inserted for species 9615
+03:02:22.889 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9685 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:02:22.906 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 26 raw data conditions for species 9685
+03:02:22.907 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9685...
+03:02:30.984 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 9685.
+03:02:30.985 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:02:31.118 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 2130 global conditions inserted for species 9685
+03:02:31.145 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 806 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 9685
+03:02:31.145 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 2130 conditions...
+03:02:31.334 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 6838 ancestor relationships in 189 ms total
+03:02:31.339 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:02:31.505 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 6838 relations between global conndition and their direct ancestors have been inserted for species 9685
+03:02:31.508 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9796 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:02:31.527 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 121 raw data conditions for species 9796
+03:02:31.527 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9796...
+03:02:39.732 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 9796.
+03:02:39.733 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:02:40.370 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 10041 global conditions inserted for species 9796
+03:02:40.476 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 3751 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 9796
+03:02:40.476 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 10041 conditions...
+03:02:43.449 [ForkJoinPool.commonPool-worker-16] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 10000/10041 conditions processed (2973 ms elapsed)
+03:02:43.542 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 35145 ancestor relationships in 3066 ms total
+03:02:43.547 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:02:44.233 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 35145 relations between global conndition and their direct ancestors have been inserted for species 9796
+03:02:44.237 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9823 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:02:44.273 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 524 raw data conditions for species 9823
+03:02:44.273 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9823...
+03:02:53.093 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 9823.
+03:02:53.094 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:02:56.676 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 56011 global conditions inserted for species 9823
+03:02:57.135 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 16244 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 9823
+03:02:57.135 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 56011 conditions...
+03:03:16.024 [ForkJoinPool.commonPool-worker-16] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 10000/56011 conditions processed (18889 ms elapsed)
+03:03:33.987 [ForkJoinPool.commonPool-worker-17] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 20000/56011 conditions processed (36852 ms elapsed)
+03:03:51.834 [ForkJoinPool.commonPool-worker-3] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 30000/56011 conditions processed (54698 ms elapsed)
+03:04:09.616 [ForkJoinPool.commonPool-worker-25] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 40000/56011 conditions processed (72481 ms elapsed)
+03:04:27.648 [ForkJoinPool.commonPool-worker-27] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 50000/56011 conditions processed (90513 ms elapsed)
+03:04:43.694 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 208168 ancestor relationships in 106559 ms total
+03:04:43.701 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:04:48.081 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 208168 relations between global conndition and their direct ancestors have been inserted for species 9823
+03:04:48.087 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9913 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:04:48.123 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 499 raw data conditions for species 9913
+03:04:48.124 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9913...
+03:04:56.674 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 9913.
+03:04:56.675 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:04:58.055 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 22786 global conditions inserted for species 9913
+03:04:58.393 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 15469 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 9913
+03:04:58.393 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 22786 conditions...
+03:05:04.051 [ForkJoinPool.commonPool-worker-17] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 10000/22786 conditions processed (5658 ms elapsed)
+03:05:09.586 [ForkJoinPool.commonPool-worker-2] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 20000/22786 conditions processed (11193 ms elapsed)
+03:05:11.904 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 81248 ancestor relationships in 13511 ms total
+03:05:11.908 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:05:13.551 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 81248 relations between global conndition and their direct ancestors have been inserted for species 9913
+03:05:13.555 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9925 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:05:13.575 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 66 raw data conditions for species 9925
+03:05:13.575 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9925...
+03:05:21.711 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 9925.
+03:05:21.712 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:05:21.921 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 3309 global conditions inserted for species 9925
+03:05:21.975 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 2046 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 9925
+03:05:21.975 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 3309 conditions...
+03:05:22.351 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 10367 ancestor relationships in 376 ms total
+03:05:22.357 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:05:22.582 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 10367 relations between global conndition and their direct ancestors have been inserted for species 9925
+03:05:22.585 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9940 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:05:22.608 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 301 raw data conditions for species 9940
+03:05:22.609 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9940...
+03:05:30.967 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 9940.
+03:05:30.968 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:05:31.641 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 11251 global conditions inserted for species 9940
+03:05:31.848 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 9331 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 9940
+03:05:31.849 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 11251 conditions...
+03:05:34.592 [ForkJoinPool.commonPool-worker-8] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 10000/11251 conditions processed (2743 ms elapsed)
+03:05:35.195 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 39175 ancestor relationships in 3345 ms total
+03:05:35.198 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:05:35.966 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 39175 relations between global conndition and their direct ancestors have been inserted for species 9940
+03:05:35.970 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9986 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:05:35.990 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 193 raw data conditions for species 9986
+03:05:35.991 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9986...
+03:05:44.045 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 9986.
+03:05:44.046 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:05:44.405 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 5430 global conditions inserted for species 9986
+03:05:44.546 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 5983 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 9986
+03:05:44.546 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 5430 conditions...
+03:05:45.348 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 18366 ancestor relationships in 802 ms total
+03:05:45.352 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:05:45.682 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 18366 relations between global conndition and their direct ancestors have been inserted for species 9986
+03:05:45.684 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 10141 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:05:45.700 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 45 raw data conditions for species 10141
+03:05:45.700 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 10141...
+03:05:53.543 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 10141.
+03:05:53.544 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:05:53.736 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 2916 global conditions inserted for species 10141
+03:05:53.777 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 1395 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 10141
+03:05:53.777 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 2916 conditions...
+03:05:54.045 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 10182 ancestor relationships in 268 ms total
+03:05:54.051 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:05:54.274 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 10182 relations between global conndition and their direct ancestors have been inserted for species 10141
+03:05:54.277 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9031 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:05:54.294 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 190 raw data conditions for species 9031
+03:05:54.295 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9031...
+03:06:02.342 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 9031.
+03:06:02.343 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:06:03.159 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 11304 global conditions inserted for species 9031
+03:06:03.367 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 5890 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 9031
+03:06:03.367 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 11304 conditions...
+03:06:05.664 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 10000/11304 conditions processed (2296 ms elapsed)
+03:06:06.195 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 40315 ancestor relationships in 2828 ms total
+03:06:06.199 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:06:06.988 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 40315 relations between global conndition and their direct ancestors have been inserted for species 9031
+03:06:06.992 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9103 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:06:07.005 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 40 raw data conditions for species 9103
+03:06:07.005 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9103...
+03:06:14.962 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 9103.
+03:06:14.963 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:06:15.109 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 2169 global conditions inserted for species 9103
+03:06:15.146 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 1240 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 9103
+03:06:15.146 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 2169 conditions...
+03:06:15.363 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 7520 ancestor relationships in 217 ms total
+03:06:15.367 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:06:15.506 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 7520 relations between global conndition and their direct ancestors have been inserted for species 9103
+03:06:15.508 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9258 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:06:15.521 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 24 raw data conditions for species 9258
+03:06:15.521 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9258...
+03:06:23.489 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 9258.
+03:06:23.490 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:06:23.606 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 1679 global conditions inserted for species 9258
+03:06:23.629 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 744 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 9258
+03:06:23.630 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 1679 conditions...
+03:06:23.723 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 5293 ancestor relationships in 93 ms total
+03:06:23.727 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:06:23.823 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 5293 relations between global conndition and their direct ancestors have been inserted for species 9258
+03:06:23.826 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9483 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:06:23.842 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 60 raw data conditions for species 9483
+03:06:23.842 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9483...
+03:06:31.873 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 9483.
+03:06:31.874 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:06:32.166 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 4504 global conditions inserted for species 9483
+03:06:32.218 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 1860 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 9483
+03:06:32.219 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 4504 conditions...
+03:06:32.738 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 14861 ancestor relationships in 519 ms total
+03:06:32.743 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:06:33.029 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 14861 relations between global conndition and their direct ancestors have been inserted for species 9483
+03:06:33.031 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9531 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:06:33.045 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 15 raw data conditions for species 9531
+03:06:33.045 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9531...
+03:06:40.781 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 9531.
+03:06:40.782 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:06:40.830 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 706 global conditions inserted for species 9531
+03:06:40.844 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 465 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 9531
+03:06:40.844 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 706 conditions...
+03:06:40.865 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 2007 ancestor relationships in 21 ms total
+03:06:40.871 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:06:40.934 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 2007 relations between global conndition and their direct ancestors have been inserted for species 9531
+03:06:40.936 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9541 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:06:40.954 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 176 raw data conditions for species 9541
+03:06:40.954 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9541...
+03:06:49.066 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 9541.
+03:06:49.067 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:06:49.677 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 9814 global conditions inserted for species 9541
+03:06:49.809 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 5456 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 9541
+03:06:49.809 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 9814 conditions...
+03:06:52.743 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 35103 ancestor relationships in 2934 ms total
+03:06:52.747 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:06:53.476 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 35103 relations between global conndition and their direct ancestors have been inserted for species 9541
+03:06:53.479 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9544 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:06:53.511 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 242 raw data conditions for species 9544
+03:06:53.511 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9544...
+03:07:01.699 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 9544.
+03:07:01.700 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:07:02.440 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 11960 global conditions inserted for species 9544
+03:07:02.674 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 7502 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 9544
+03:07:02.674 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 11960 conditions...
+03:07:05.655 [ForkJoinPool.commonPool-worker-25] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 10000/11960 conditions processed (2980 ms elapsed)
+03:07:06.512 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 41038 ancestor relationships in 3838 ms total
+03:07:06.520 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:07:07.386 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 41038 relations between global conndition and their direct ancestors have been inserted for species 9544
+03:07:07.389 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9545 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:07:07.401 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 25 raw data conditions for species 9545
+03:07:07.401 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9545...
+03:07:15.308 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 9545.
+03:07:15.309 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:07:15.631 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 5181 global conditions inserted for species 9545
+03:07:15.677 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 775 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 9545
+03:07:15.677 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 5181 conditions...
+03:07:16.732 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 19436 ancestor relationships in 1055 ms total
+03:07:16.736 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:07:17.131 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 19436 relations between global conndition and their direct ancestors have been inserted for species 9545
+03:07:17.134 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9555 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:07:17.152 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 96 raw data conditions for species 9555
+03:07:17.152 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9555...
+03:07:25.233 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 9555.
+03:07:25.234 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:07:25.455 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 3306 global conditions inserted for species 9555
+03:07:25.544 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 2976 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 9555
+03:07:25.545 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 3306 conditions...
+03:07:25.984 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 10705 ancestor relationships in 438 ms total
+03:07:25.988 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:07:26.195 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 10705 relations between global conndition and their direct ancestors have been inserted for species 9555
+03:07:26.198 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9593 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:07:26.212 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 33 raw data conditions for species 9593
+03:07:26.212 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9593...
+03:07:33.955 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 9593.
+03:07:33.956 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:07:34.150 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 2885 global conditions inserted for species 9593
+03:07:34.194 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 1023 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 9593
+03:07:34.195 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 2885 conditions...
+03:07:34.447 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 9643 ancestor relationships in 252 ms total
+03:07:34.451 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:07:34.617 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 9643 relations between global conndition and their direct ancestors have been inserted for species 9593
+03:07:34.619 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9597 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:07:34.632 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 12 raw data conditions for species 9597
+03:07:34.632 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9597...
+03:07:42.299 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 9597.
+03:07:42.300 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:07:42.367 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 995 global conditions inserted for species 9597
+03:07:42.383 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 372 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 9597
+03:07:42.383 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 995 conditions...
+03:07:42.422 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 2853 ancestor relationships in 39 ms total
+03:07:42.428 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:07:42.503 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 2853 relations between global conndition and their direct ancestors have been inserted for species 9597
+03:07:42.504 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9598 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:07:42.519 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 111 raw data conditions for species 9598
+03:07:42.519 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9598...
+03:07:50.562 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 9598.
+03:07:50.563 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:07:50.838 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 4310 global conditions inserted for species 9598
+03:07:50.941 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 3441 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 9598
+03:07:50.941 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 4310 conditions...
+03:07:51.491 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 14180 ancestor relationships in 549 ms total
+03:07:51.494 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:07:51.757 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 14180 relations between global conndition and their direct ancestors have been inserted for species 9598
+03:07:51.759 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 30608 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:07:51.771 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 14 raw data conditions for species 30608
+03:07:51.772 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 30608...
+03:07:59.487 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 30608.
+03:07:59.487 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:07:59.548 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 782 global conditions inserted for species 30608
+03:07:59.565 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 434 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 30608
+03:07:59.565 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 782 conditions...
+03:07:59.611 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 2202 ancestor relationships in 46 ms total
+03:07:59.615 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:07:59.663 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 2202 relations between global conndition and their direct ancestors have been inserted for species 30608
+03:07:59.665 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 60711 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:07:59.677 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 61 raw data conditions for species 60711
+03:07:59.677 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 60711...
+03:08:07.566 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 60711.
+03:08:07.567 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:08:07.803 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 3446 global conditions inserted for species 60711
+03:08:07.868 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 1891 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 60711
+03:08:07.868 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 3446 conditions...
+03:08:08.297 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 12054 ancestor relationships in 429 ms total
+03:08:08.300 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:08:08.539 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 12054 relations between global conndition and their direct ancestors have been inserted for species 60711
+03:08:08.541 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 9974 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:08:08.554 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 10 raw data conditions for species 9974
+03:08:08.555 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 9974...
+03:08:16.780 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 9974.
+03:08:16.781 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:08:16.817 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 488 global conditions inserted for species 9974
+03:08:16.826 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 310 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 9974
+03:08:16.826 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 488 conditions...
+03:08:16.841 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 1402 ancestor relationships in 15 ms total
+03:08:16.846 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:08:16.889 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 1402 relations between global conndition and their direct ancestors have been inserted for species 9974
+03:08:16.891 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 10116 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:08:16.916 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 390 raw data conditions for species 10116
+03:08:16.916 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 10116...
+03:08:25.375 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 10116.
+03:08:25.376 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:08:26.698 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 19687 global conditions inserted for species 10116
+03:08:27.090 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 12090 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 10116
+03:08:27.090 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 19687 conditions...
+03:08:31.805 [ForkJoinPool.commonPool-worker-21] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 10000/19687 conditions processed (4715 ms elapsed)
+03:08:36.298 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 75209 ancestor relationships in 9208 ms total
+03:08:36.303 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:08:37.910 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 75209 relations between global conndition and their direct ancestors have been inserted for species 10116
+03:08:37.914 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 10181 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:08:37.932 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 84 raw data conditions for species 10181
+03:08:37.932 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 10181...
+03:08:46.043 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 10181.
+03:08:46.044 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:08:46.606 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 8951 global conditions inserted for species 10181
+03:08:46.703 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 2604 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 10181
+03:08:46.703 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 8951 conditions...
+03:08:49.079 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 35084 ancestor relationships in 2376 ms total
+03:08:49.085 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:08:49.759 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 35084 relations between global conndition and their direct ancestors have been inserted for species 10181
+03:08:49.762 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 13616 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:08:49.781 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 182 raw data conditions for species 13616
+03:08:49.782 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 13616...
+03:08:58.009 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 13616.
+03:08:58.010 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:08:58.277 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 4620 global conditions inserted for species 13616
+03:08:58.420 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 5642 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 13616
+03:08:58.421 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 4620 conditions...
+03:08:59.063 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 14600 ancestor relationships in 641 ms total
+03:08:59.067 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:08:59.429 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 14600 relations between global conndition and their direct ancestors have been inserted for species 13616
+03:08:59.432 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 8355 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:08:59.755 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 18538 raw data conditions for species 8355
+03:08:59.755 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 8355...
+03:09:14.820 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 8355.
+03:09:14.821 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:09:17.787 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 48763 global conditions inserted for species 8355
+03:09:31.673 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 574678 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 8355
+03:09:31.673 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 48763 conditions...
+03:09:46.307 [ForkJoinPool.commonPool-worker-21] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 10000/48763 conditions processed (14634 ms elapsed)
+03:09:59.640 [ForkJoinPool.commonPool-worker-23] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 20000/48763 conditions processed (27967 ms elapsed)
+03:10:13.101 [ForkJoinPool.commonPool-worker-9] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 30000/48763 conditions processed (41428 ms elapsed)
+03:10:26.665 [ForkJoinPool.commonPool-worker-3] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 40000/48763 conditions processed (54992 ms elapsed)
+03:10:41.547 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 134792 ancestor relationships in 69874 ms total
+03:10:41.554 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:10:44.379 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 134792 relations between global conndition and their direct ancestors have been inserted for species 8355
+03:10:44.384 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 8364 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:10:44.527 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 5353 raw data conditions for species 8364
+03:10:44.527 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 8364...
+03:10:54.940 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 8364.
+03:10:54.941 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:10:56.095 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 19736 global conditions inserted for species 8364
+03:10:59.635 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 165943 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 8364
+03:10:59.636 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 19736 conditions...
+03:11:04.055 [ForkJoinPool.commonPool-worker-1] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 323 lambda$insertGlobalConditionDirectRelation$9 - Progress: 10000/19736 conditions processed (4419 ms elapsed)
+03:11:08.884 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 53389 ancestor relationships in 9248 ms total
+03:11:08.889 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:11:10.034 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 53389 relations between global conndition and their direct ancestors have been inserted for species 8364
+03:11:10.037 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 28377 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:11:10.052 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 40 raw data conditions for species 28377
+03:11:10.053 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 28377...
+03:11:18.082 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 28377.
+03:11:18.083 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:11:18.157 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 977 global conditions inserted for species 28377
+03:11:18.194 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 1240 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 28377
+03:11:18.194 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 977 conditions...
+03:11:18.230 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 2836 ancestor relationships in 36 ms total
+03:11:18.236 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:11:18.306 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 2836 relations between global conndition and their direct ancestors have been inserted for species 28377
+03:11:18.308 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 7918 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:11:18.321 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 19 raw data conditions for species 7918
+03:11:18.321 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 7918...
+03:11:26.157 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 7918.
+03:11:26.157 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:11:26.204 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 624 global conditions inserted for species 7918
+03:11:26.221 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 589 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 7918
+03:11:26.221 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 624 conditions...
+03:11:26.239 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 1652 ancestor relationships in 17 ms total
+03:11:26.244 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:11:26.306 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 1652 relations between global conndition and their direct ancestors have been inserted for species 7918
+03:11:26.308 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 7936 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:11:26.320 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 14 raw data conditions for species 7936
+03:11:26.320 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 7936...
+03:11:34.648 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 7936.
+03:11:34.649 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:11:34.667 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 198 global conditions inserted for species 7936
+03:11:34.685 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 434 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 7936
+03:11:34.685 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 198 conditions...
+03:11:34.688 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 391 ancestor relationships in 3 ms total
+03:11:34.694 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:11:34.710 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 391 relations between global conndition and their direct ancestors have been inserted for species 7936
+03:11:34.712 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 7994 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:11:34.726 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 38 raw data conditions for species 7994
+03:11:34.726 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 7994...
+03:11:42.493 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 7994.
+03:11:42.493 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:11:42.563 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 1075 global conditions inserted for species 7994
+03:11:42.592 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 1178 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 7994
+03:11:42.593 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 1075 conditions...
+03:11:42.650 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 3086 ancestor relationships in 57 ms total
+03:11:42.653 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:11:42.710 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 3086 relations between global conndition and their direct ancestors have been inserted for species 7994
+03:11:42.711 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 8010 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:11:42.723 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 24 raw data conditions for species 8010
+03:11:42.723 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 8010...
+03:11:50.291 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 8010.
+03:11:50.292 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:11:50.340 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 625 global conditions inserted for species 8010
+03:11:50.360 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 744 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 8010
+03:11:50.360 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 625 conditions...
+03:11:50.380 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 1740 ancestor relationships in 20 ms total
+03:11:50.386 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:11:50.427 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 1740 relations between global conndition and their direct ancestors have been inserted for species 8010
+03:11:50.428 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 8030 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:11:50.445 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 116 raw data conditions for species 8030
+03:11:50.446 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 8030...
+03:11:58.343 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 8030.
+03:11:58.344 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:11:58.633 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 4310 global conditions inserted for species 8030
+03:11:58.728 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 3596 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 8030
+03:11:58.728 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 4310 conditions...
+03:11:59.379 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 14770 ancestor relationships in 651 ms total
+03:11:59.383 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:11:59.702 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 14770 relations between global conndition and their direct ancestors have been inserted for species 8030
+03:11:59.704 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 8049 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:11:59.718 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 16 raw data conditions for species 8049
+03:11:59.718 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 8049...
+03:12:07.573 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 8049.
+03:12:07.574 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:12:07.601 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 265 global conditions inserted for species 8049
+03:12:07.615 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 496 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 8049
+03:12:07.615 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 265 conditions...
+03:12:07.620 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 573 ancestor relationships in 5 ms total
+03:12:07.624 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:12:07.646 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 573 relations between global conndition and their direct ancestors have been inserted for species 8049
+03:12:07.648 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 8081 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:12:07.658 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 13 raw data conditions for species 8081
+03:12:07.658 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 8081...
+03:12:15.285 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 8081.
+03:12:15.286 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:12:15.352 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 940 global conditions inserted for species 8081
+03:12:15.369 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 403 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 8081
+03:12:15.369 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 940 conditions...
+03:12:15.412 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 2842 ancestor relationships in 43 ms total
+03:12:15.416 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:12:15.467 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 2842 relations between global conndition and their direct ancestors have been inserted for species 8081
+03:12:15.469 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 8090 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:12:15.487 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 129 raw data conditions for species 8090
+03:12:15.487 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 8090...
+03:12:23.112 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 8090.
+03:12:23.113 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:12:23.343 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 3646 global conditions inserted for species 8090
+03:12:23.446 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 3999 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 8090
+03:12:23.446 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 3646 conditions...
+03:12:23.884 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 12212 ancestor relationships in 437 ms total
+03:12:23.889 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:12:24.113 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 12212 relations between global conndition and their direct ancestors have been inserted for species 8090
+03:12:24.116 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 8154 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:12:24.128 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 13 raw data conditions for species 8154
+03:12:24.128 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 8154...
+03:12:32.118 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 8154.
+03:12:32.119 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:12:32.145 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 331 global conditions inserted for species 8154
+03:12:32.157 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 403 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 8154
+03:12:32.157 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 331 conditions...
+03:12:32.164 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 828 ancestor relationships in 7 ms total
+03:12:32.168 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:12:32.202 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 828 relations between global conndition and their direct ancestors have been inserted for species 8154
+03:12:32.204 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 32507 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:12:32.214 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 10 raw data conditions for species 32507
+03:12:32.215 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 32507...
+03:12:39.983 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 32507.
+03:12:39.984 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:12:39.996 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 145 global conditions inserted for species 32507
+03:12:40.004 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 310 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 32507
+03:12:40.004 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 145 conditions...
+03:12:40.007 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 284 ancestor relationships in 3 ms total
+03:12:40.011 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:12:40.022 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 284 relations between global conndition and their direct ancestors have been inserted for species 32507
+03:12:40.025 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 52904 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:12:40.034 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 9 raw data conditions for species 52904
+03:12:40.034 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 52904...
+03:12:48.056 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 52904.
+03:12:48.057 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:12:48.077 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 271 global conditions inserted for species 52904
+03:12:48.087 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 279 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 52904
+03:12:48.088 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 271 conditions...
+03:12:48.094 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 659 ancestor relationships in 6 ms total
+03:12:48.098 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:12:48.124 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 659 relations between global conndition and their direct ancestors have been inserted for species 52904
+03:12:48.126 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 69293 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:12:48.137 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 39 raw data conditions for species 69293
+03:12:48.137 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 69293...
+03:12:55.855 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 69293.
+03:12:55.856 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:12:55.946 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 1373 global conditions inserted for species 69293
+03:12:55.983 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 1209 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 69293
+03:12:55.983 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 1373 conditions...
+03:12:56.064 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 4119 ancestor relationships in 81 ms total
+03:12:56.069 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:12:56.173 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 4119 relations between global conndition and their direct ancestors have been inserted for species 69293
+03:12:56.174 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 105023 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:12:56.183 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 10 raw data conditions for species 105023
+03:12:56.184 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 105023...
+03:13:04.076 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 105023.
+03:13:04.076 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:13:04.126 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 562 global conditions inserted for species 105023
+03:13:04.137 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 310 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 105023
+03:13:04.137 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 562 conditions...
+03:13:04.152 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 1637 ancestor relationships in 15 ms total
+03:13:04.157 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:13:04.213 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 1637 relations between global conndition and their direct ancestors have been inserted for species 105023
+03:13:04.215 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 7740 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:13:04.225 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 16 raw data conditions for species 7740
+03:13:04.225 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 7740...
+03:13:11.433 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 7740.
+03:13:11.433 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:13:11.455 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 275 global conditions inserted for species 7740
+03:13:11.469 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 496 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 7740
+03:13:11.469 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 275 conditions...
+03:13:11.474 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 623 ancestor relationships in 5 ms total
+03:13:11.478 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:13:11.491 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 623 relations between global conndition and their direct ancestors have been inserted for species 7740
+03:13:11.492 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 7897 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:13:11.500 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 7 raw data conditions for species 7897
+03:13:11.500 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 7897...
+03:13:19.232 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 7897.
+03:13:19.233 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:13:19.241 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 71 global conditions inserted for species 7897
+03:13:19.247 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 217 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 7897
+03:13:19.248 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 71 conditions...
+03:13:19.250 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 125 ancestor relationships in 2 ms total
+03:13:19.254 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:13:19.260 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 125 relations between global conndition and their direct ancestors have been inserted for species 7897
+03:13:19.261 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 7237 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:13:19.271 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 7 raw data conditions for species 7237
+03:13:19.272 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 7237...
+03:13:26.404 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 7237.
+03:13:26.405 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:13:26.438 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 434 global conditions inserted for species 7237
+03:13:26.446 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 217 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 7237
+03:13:26.446 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 434 conditions...
+03:13:26.463 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 1300 ancestor relationships in 17 ms total
+03:13:26.469 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:13:26.519 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 1300 relations between global conndition and their direct ancestors have been inserted for species 7237
+03:13:26.521 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 380 insertGlobalConditionsForOneSpecies - Start inserting global conditions for the species 7240 with combinations of condition parameters [ANAT_ENTITY_ID, CELL_TYPE_ID, STAGE_ID, SEX_ID, STRAIN_ID]...
+03:13:26.529 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 392 insertGlobalConditionsForOneSpecies - 8 raw data conditions for species 7240
+03:13:26.530 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 395 insertGlobalConditionsForOneSpecies - Starting condition inference for species 7240...
+03:13:33.555 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 416 insertGlobalConditionsForOneSpecies - Done condition inference for species 7240.
+03:13:33.555 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:13:33.589 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 426 insertGlobalConditionsForOneSpecies - 467 global conditions inserted for species 7240
+03:13:33.599 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 439 insertGlobalConditionsForOneSpecies - 248 relations between raw condition and self propagated conditions for all combinations of condition parameters have been inserted for species 7240
+03:13:33.599 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 299 insertGlobalConditionDirectRelation - Computing direct ancestor relationships for 467 conditions...
+03:13:33.621 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 331 insertGlobalConditionDirectRelation - Generated 1387 ancestor relationships in 22 ms total
+03:13:33.626 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 229 startTransaction - Starting transaction
+03:13:33.677 [main] INFO org.bgee.pipeline.expression.InsertPropagatedConditions 446 insertGlobalConditionsForOneSpecies - 1387 relations between global conndition and their direct ancestors have been inserted for species 7240
