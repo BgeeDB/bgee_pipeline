@@ -143,7 +143,35 @@ ALL_COND_PARAM := $(ORGAN_PARAM)$(ENTRY_SEP)$(STAGE_PARAM)$(ENTRY_SEP)$(SEX_PARA
 # Processed data download files
 # =========================
 $(OUTPUT_DIR)generate_processed_files:
-	@perl generate_ref_expr_files.pl -bgee=$(BGEECMD) -speciesArg=- -parallelJobs=5 -affyDir=- -estDir=- -inSituDir=- -rnaSeqDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)rna_seq_processed/ -flScRnaSeqDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)sc_rna_seq_fl_processed/ -dbScRnaSeqDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)sc_rna_seq_db_processed/ -bgeeVersion=$(DBNAME) > $@.tmp 2>$@.warnings
+# 	@perl generate_ref_expr_files.pl -bgee=$(BGEECMD) -speciesArg=- -parallelJobs=10 -rnaSeqDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)rna_seq_processed/ -flScRnaSeqDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)sc_rna_seq_fl_processed/ -dbScRnaSeqDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)sc_rna_seq_db_processed/ -bgeeVersion=$(DBNAME) > $@.tmp 2>$@.warnings
+# 	# generate one tarball per species for bulk RNA-Seq. This tarball is used by the BgeeDB R package.
+# 	cd $(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)rna_seq_processed/ && \
+# 	for d in */ ; do \
+# 	  species="$$d"; species="$${species%/}"; \
+# 	  if compgen -G "$${species}/$${species}_RNA-Seq_read_counts_TPM_*.tsv.gz" > /dev/null; then \
+# 	    files=("$${species}/$${species}_RNA-Seq_read_counts_TPM_"*.tsv.gz); \
+# 	    tar -czvf "$${species}_RNA-Seq_read_counts_TPM.tar.gz" "$${files[@]}" >> $@.tmp 2>> $@.warnings; \
+# 	  fi; \
+# 	done
+	# generate one tarball per species for full-length single-cell RNA-Seq. This tarball is used by the BgeeDB R package.
+	@cd $(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)sc_rna_seq_fl_processed/ && \
+	for d in */ ; do \
+	  species="$$d"; species="$${species%/}"; \
+	  if compgen -G "$${species}/$${species}_Full-Length_SC_RNA-Seq_read_counts_TPM_*.tsv.gz" > /dev/null; then \
+	    files=("$${species}/$${species}_Full-Length_SC_RNA-Seq_read_counts_TPM_"*.tsv.gz); \
+	    tar -czvf "$${species}_Full-Length_SC_RNA-Seq_read_counts_TPM.tar.gz" "$${files[@]}" >> $@.tmp 2>> $@.warnings; \
+	  fi; \
+	done
+	# generate one tarball per species for droplet-based single-cell RNA-Seq. This tarball is used by the BgeeDB R package.
+	@cd $(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)sc_rna_seq_db_processed/ && \
+	for d in */ ; do \
+	  species="$$d"; species="$${species%/}"; \
+	  if compgen -G "$${species}/$${species}_Droplet-Based_SC_RNA-Seq_read_counts_CPM_*.tsv.gz" > /dev/null; then \
+	    files=("$${species}/$${species}_Droplet-Based_SC_RNA-Seq_read_counts_CPM_"*.tsv.gz); \
+	    tar -czvf "$${species}_Droplet-Based_SC_RNA-Seq_read_counts_CPM.tar.gz" "$${files[@]}" >> $@.tmp 2>> $@.warnings; \
+	  fi; \
+	done
+
 	@$(MV) $@.tmp $@
 
 # =========================
