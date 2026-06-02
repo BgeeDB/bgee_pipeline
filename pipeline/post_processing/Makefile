@@ -80,6 +80,13 @@ $(OUTPUT_DIR)updateExpressionInSitu:$(OUTPUT_DIR)ranksRnaSeq
 	@perl in_situ_expression_update.pl -bgee=$(BGEECMD) -numberThreads=40 -debug > $@.tmp 2> $@.warn
 	@$(MV) $@.tmp $@
 
+# Since Bgee 16.0 we do not propagate calls anymore. We need to insert globalCond condToSelfGlobalCond and globalCondRelation.
+# these info are used to generate On-the-fly propagation of calls in the API.
+# took 8 hours to run for Bgee 16.0 (6 hours just for mouse) with 25 threads
+$(OUTPUT_DIR)insertGlobalCond: #$(OUTPUT_DIR)updateExpressionInSitu $(OUTPUT_DIR)updateExpressionRnaSeq
+	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=25 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR) InsertPropagatedConditions insertGlobalConditions - - > $@.tmp 2> $@.warn
+	@$(MV) $@.tmp $@
+
 # Since Bgee 15.0, to allow computations of global expression calls from different nodes, we first insert the global conditions,
 # then we insert the global calls (previously it was all done in a same step)
 # If you want to tune the number of parallel threads, add:
