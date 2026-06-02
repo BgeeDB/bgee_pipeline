@@ -955,9 +955,8 @@ create table downloadFile (
 -- currently, just the name of the file
   downloadFileName varchar(255) not null,
   downloadFileDescription text,
-  downloadFileCategory enum('expr_simple', 'expr_complete', 'diff_expr_anatomy_complete', 'diff_expr_anatomy_simple'
-   , 'diff_expr_dev_complete', 'diff_expr_dev_simple', 'ortholog',
-   'affy_annot','rnaseq_annot','affy_data','rnaseq_data', 'full_length_annot', 'full_length_data', 'droplet_based_annot',
+  downloadFileCategory enum('expr_simple', 'expr_complete', 'ortholog',
+   'rnaseq_annot', 'rnaseq_data', 'full_length_annot', 'full_length_data', 'droplet_based_annot',
    'droplet_based_data', 'droplet_based_h5ad', 'full_length_h5ad'),
   speciesDataGroupId mediumint unsigned not null,
   downloadFileSize int unsigned not null,
