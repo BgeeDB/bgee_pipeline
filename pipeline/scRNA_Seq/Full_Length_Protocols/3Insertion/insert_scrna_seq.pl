@@ -250,6 +250,8 @@ my $insert_annotatedSampleGeneResult =  'INSERT INTO rnaSeqLibraryAnnotatedSampl
                                         'readsCount, UMIsCount, zScore, pValue,'.
                                         'reasonForExclusion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
+my $update_number_of_annotated_cells = 'UPDATE rnaSeqExperiment SET numberOfAnnotatedCells = ? WHERE rnaSeqExperimentId = ?';
+
 # Excluded libraries
 my $selectDiscardedLib = $bgee->prepare('SELECT rnaSeqLibraryId FROM rnaSeqLibraryDiscarded');
 $selectDiscardedLib->execute()  or die $selectDiscardedLib->errstr;
@@ -276,11 +278,13 @@ $bgee->{AutoCommit} = 0;
 my $insLib = $bgee->prepare($insert_libraries);
 my $insAnnotatedSample = $bgee->prepare($insert_annotatedSamples);
 my $selectAnnotatedSampleId = $bgee->prepare($select_annotatedSampleId);
+my $updExpLibCount = $bgee->prepare($update_number_of_annotated_cells);
 
 # Store annotated sample IDs for later parallel insertion
 my %annotatedSampleIds;
 
 for my $expId ( sort keys %libraries ){
+    my $inserted_lib_count = 0;
     LIBRARY:
     for my $libraryId ( sort keys %{$libraries{$expId}} ){
         if ( !exists $reportInfo{$libraryId} ){
@@ -374,6 +378,7 @@ for my $expId ( sort keys %libraries ){
                             lc $libraries{$expId}->{$libraryId}->{'libraryType'}
                         )  or die $insLib->errstr;
         }
+        $inserted_lib_count++;
 
         # Now insert rnaSeqLibraryAnnotatedSample
         my $annotatedSampleId = insert_get_annotated_sample($libraryId, $condKeyMap->{'conditionId'},
@@ -407,10 +412,19 @@ for my $expId ( sort keys %libraries ){
         $bgee->commit;
 
     }
+    # Update numberOfCells for this experiment with the count of inserted libraries
+    print "\tUpdating numberOfCells=$inserted_lib_count for experiment $expId\n";
+    if ( $debug ){
+        print "UPDATE rnaSeqExperiment SET numberOfCells = $inserted_lib_count WHERE rnaSeqExperimentId = '$expId'\n";
+    } else {
+        $updExpLibCount->execute($inserted_lib_count, $expId)  or die $updExpLibCount->errstr;
+        $bgee->commit;
+    }
 }
 $insLib->finish();
 $insAnnotatedSample->finish();
 $selectAnnotatedSampleId->finish();
+$updExpLibCount->finish();
 
 print "Reactivate autocommit\n";
 $bgee->{AutoCommit} = 1;
