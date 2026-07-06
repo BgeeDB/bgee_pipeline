@@ -196,9 +196,7 @@ for my $gene (sort {$a->{'id'} cmp $b->{'id'}} (@genes)) { #Sort to always get t
 
     ## Get gene synonyms, if any
     #NOTE Synonyms shown on the web site appear to come from THE main gene xref synonyms
-    #     But we need all of them, so no filtering !!!
 #TODO Remove part of synonym within "{...}" and split the rest on "|" !!!
-    #from xrefs
     my @synonyms = map  { s{^\s+}{}; s{\s+$}{}; lc $_ }              # Trim & lowercase
                    grep { $_ ne $stable_id && $_ ne $external_name } # Avoid putting main name/id as synonym
                    map  {
