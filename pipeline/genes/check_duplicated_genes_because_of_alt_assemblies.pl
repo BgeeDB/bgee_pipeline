@@ -98,7 +98,7 @@ if ( ! exists $dupl_geneIds{$del} ){
     exit 1;
 }
 #NOTE => for species we are sure they match on alternative chromosome, simpler to remove genes on those alt chr!
-#        So, mainly human, zebrahish and ???? With https://ftp.ensembl.org/pub/current_fasta/*/dna/*.dna.alt* file
+#        So, mainly human, zebrafish and ???? With https://ftp.ensembl.org/pub/current_fasta/*/dna/*.dna.alt* file
 #        human      EHMT2  gene on chr  *6* and Scaffold HSCHR*6*_MHC_QBL_CTG1
 #        zebrafish  prune  gene on chr *16* and CHR_ALT_CTG*16*_1_20
 #        It may happen for mouse, on genome patches!
