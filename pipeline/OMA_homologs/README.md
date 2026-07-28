@@ -118,16 +118,16 @@ N_PROCESSES = 4
 oma_sparql_endpoint = https://sparql.omabrowser.org/sparql/
 
 [OUTPUT]
-file_directory_output = ./Bgee_data/v15/gene_homology_data/
+file_directory_output = ./gene_homology_data/
 
 [RDF_VOCABULARY]
 ncbi_gene_crossref_property = lscr:xrefNCBIGene
 ensembl_gene_crossref_property = lscr:xrefEnsemblGene
 
 [SPECIES]
-species_file = ./species_lists/all_speciesId_bgee15.txt
-ncbi_species_file = ./species_lists/ncbi_speciesId_bgee15.txt
-flybase_species_file = ./species_lists/flybase_speciesId_bgee15.txt
+species_file = ./species_lists/all_speciesId_bgee16.csv
+ncbi_species_file = ./species_lists/ncbi_speciesId_bgee16.csv
+flybase_species_file = ./species_lists/flybase_speciesId_bgee16.csv
 taxon_namespace = http://purl.uniprot.org/taxonomy/
 ```
 
@@ -156,7 +156,7 @@ The [QueryCatalog](QueryCatalog.py) python module contains the SPARQL queries us
 paralogy pairwise relations from the hierarchical orthologous groups (HOGs). 
 
 The RDF serialisation of the OMA Hierarchical Orthologous Groups is based on the 
-[ORTH ontology specification](http://qfo.github.io/OrthologyOntology/) in the context of the Quest for Orthologs (QfO)
+[ORTH ontology specification](https://qfo.github.io/OrthologyOntology/) in the context of the Quest for Orthologs (QfO)
 consortium (see GitHub repository [here](https://github.com/qfo/OrthologyOntology)).
 
 To cross-reference other resources, this SPARQL endpoint contains annotation property assertions defined
