@@ -6,4 +6,7 @@
 -- DBA StackExchange issue : https://dba.stackexchange.com/questions/320207/optimization-with-subquery-not-working-as-expected
 -- the improvement provided by these index has not been tested
 ALTER TABLE rnaSeqLibraryAnnotatedSampleGeneResult ADD INDEX (rnaSeqLibraryAnnotatedSampleId, expressionId, bgeeGeneId, abundance);
+ALTER TABLE rnaSeqLibrary ADD INDEX (rnaSeqTechnologyIsSingleCell, rnaSeqExperimentId);
+ALTER TABLE rnaSeqLibrary ADD INDEX (rnaSeqLibraryId, rnaSeqTechnologyIsSingleCell);
 ALTER TABLE cond ADD INDEX(speciesId, conditionId);
+
