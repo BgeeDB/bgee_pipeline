@@ -43,6 +43,7 @@ def get_args():
     parser.add_argument("--usr", help=" mysql user name, e.g bgee", default=0)
     parser.add_argument("--pwd", help="password of the mysql user, e.g bgee", default=0)
     parser.add_argument("--result_dir", help="directory containing sparse matrices for all libraries", default=0)
+    parser.add_argument("--intergenic_prefixes", help="comma-separated list of prefixes used for intergenic regions in gene files (e.g. upstream_,downstream_)", default="upstream_,downstream_")
 
     args = parser.parse_args()
     # Check if all required arguments are provided
@@ -207,7 +208,7 @@ def exp_to_h5ad_full_length(species_ID, expID, name, description, doi, output, s
         adata.write(h5ad_file_path)
         adata.obs.to_csv(h5ad_file_path.replace(".h5ad", ".tsv"), sep="\t", index=True, header=True)
 
-def exp_to_h5ad_dropletBased(species_id, exp_id, name, description, doi, output, species_name, cursor, result_dir, logger):
+def exp_to_h5ad_dropletBased(species_id, exp_id, name, description, doi, output, species_name, cursor, result_dir, intergenic_prefixes, logger):
     """
     Generate an .h5ad file for a droplet-based single-cell RNA-seq experiment by
     combining data from matrices files. Loads UMI count matrices from one or
@@ -308,12 +309,26 @@ def exp_to_h5ad_dropletBased(species_id, exp_id, name, description, doi, output,
     # num_annotated_barcodes = num_barcodes_result[0] if num_barcodes_result else 0
     library_ids = sorted(library_barcode_info.keys())
 
-    # Genes are the same and in the same order for all libraries. We can load them from the first library's gene file.
+    # Genes are the same and in the same order for all libraries within the same experiment/species,
+    # because all libraries are processed with the same kallisto index. We load from the first library
+    # and assert consistency across all others.
     gene_file_path = os.path.join(result_dir, library_ids[0], "gene_counts", "gene.genes.txt")
-    genes = []
+    all_genes = []
     with open(gene_file_path, 'r') as gf:
-        genes = [line.strip() for line in gf]
+        all_genes = [line.strip() for line in gf]
+    # It is not safe to only assess the number of genes and gene order, because some libraries may have been processed with a different kallisto index. To ensure that all libraries are processed with the same kallisto index, we check that the gene files are identical across all libraries.
+    for lib_id in library_ids[1:]:
+        other_gene_file = os.path.join(result_dir, lib_id, "gene_counts", "gene.genes.txt")
+        with open(other_gene_file, 'r') as gf:
+            other_genes = [line.strip() for line in gf]
+        if other_genes != all_genes:
+            raise ValueError(f"Gene file mismatch between library {library_ids[0]} and {lib_id} for experiment {exp_id}. "
+                             "All libraries must be processed with the same kallisto index.")
+    # Filter out intergenic regions using prefixes defined in Makefile.common (INTERGENIC_PREFIXES)
+    gene_mask = np.array([not any(g.startswith(p) for p in intergenic_prefixes) for g in all_genes])
+    genes = [g for g, keep in zip(all_genes, gene_mask) if keep]
     n_vars = len(genes)
+    logger.debug(f"Loaded {len(all_genes)} features, kept {n_vars} genes after removing intergenic regions.")
 
     # init variables retrieved per library
     obs_metadata = []
@@ -341,8 +356,8 @@ def exp_to_h5ad_dropletBased(species_id, exp_id, name, description, doi, output,
         # Get the indices of the barcodes to keep using the mask
         indices_to_keep = np.where(mask)[0]
 
-        # Subset the sparse matrix and the barcodes using the indices to keep
-        subset_sparse_matrix = sparse.csr_matrix(matrix[indices_to_keep, :])
+        # Subset the sparse matrix and the barcodes using the indices to keep, and filter intergenic columns
+        subset_sparse_matrix = sparse.csr_matrix(matrix[indices_to_keep, :][:, gene_mask])
         subset_barcodes = [barcodes[i] for i in indices_to_keep]
         subset_matrices.append(subset_sparse_matrix)
         # log the max score of the subset_sparse_matrix
@@ -429,6 +444,7 @@ def main():
     species_id_to_name = get_species_names(cursor)
     # Get experiment info for the specified species and experiment
     experiments = return_experiment_ids(species_id, args.exp_id, cursor, logger)
+    intergenic_prefixes = [p.strip() for p in args.intergenic_prefixes.split(",") if p.strip()]
 
     for exp_id, name, description, doi, species_id, has_full_length, has_droplet in experiments:
         # Process experiments with full-length if has_full_length is 1
@@ -443,7 +459,7 @@ def main():
             droplet_output_path.mkdir(parents=True, exist_ok=True)
             logger.info(f"Processing droplet-based for experiment ID: {exp_id} and species ID: {species_id}")
             exp_to_h5ad_dropletBased(species_id, exp_id, name, description, doi, droplet_output_path, species_id_to_name[species_id],
-                                    cursor, args.result_dir, logger)
+                                    cursor, args.result_dir, intergenic_prefixes, logger)
     # Close the cursor and connection
     cursor.close()
     cnx.close()

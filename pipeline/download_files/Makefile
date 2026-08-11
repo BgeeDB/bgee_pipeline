@@ -187,7 +187,7 @@ $(H5AD_PYTHON):
 
 #TODO: generate files with directory structure and file names as in the FTP server
 $(OUTPUT_DIR)generate_h5ad_files: $(H5AD_PYTHON)
-	@$(H5AD_PYTHON) generate_h5ad_download_files.py --output_dir $(DOWNLOAD_FILE_ROOT_PATH)$(H5AD_PATH) --server $(DBHOST) --db $(DBNAME) --usr $(DBUSER) --pwd $(DBPASS) --result_dir $(SC_RNASEQ_SERVER_RES_KALLISTO_DROPLET) > $@.tmp 2>$@.warnings
+	@$(H5AD_PYTHON) generate_h5ad_download_files.py --output_dir $(DOWNLOAD_FILE_ROOT_PATH)$(H5AD_PATH) --server $(DBHOST) --db $(DBNAME) --usr $(DBUSER) --pwd $(DBPASS) --result_dir $(SC_RNASEQ_SERVER_RES_KALLISTO_DROPLET) --intergenic_prefixes $(INTERGENIC_PREFIXES) > $@.tmp 2>$@.warnings
 	@$(MV) $@.tmp $@
 
 # =========================
