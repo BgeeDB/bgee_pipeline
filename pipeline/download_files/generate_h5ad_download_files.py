@@ -30,7 +30,7 @@ def setup_logger(log_dir):
 
 # If some experiments are problematic you can put them on these list to avoid processing them.
 ignore_full_length_exp = []
-ignore_dropletBased_exp = ["SRP467631"]
+ignore_dropletBased_exp = []
 
 def get_args():
     """Parse the arguments """
@@ -100,7 +100,7 @@ def return_experiment_ids(species_id, exp_id, cursor, logger):
     return filtered_results
 
 def exp_to_h5ad_full_length(species_ID, expID, name, description, doi, output, species_name, cursor):
-    full_length_dir = "{output}/full_length/{species_name}".format(output=output, species_name=species_name)
+    full_length_dir = "{output}/{species_name}".format(output=output, species_name=species_name)
     if not os.path.exists(full_length_dir):
         os.makedirs(full_length_dir)
     h5ad_file_path = "{full_length_dir}/{species_name}_{expID}_full_length.h5ad".format(full_length_dir=full_length_dir, species_name=species_name, expID=expID)
@@ -442,8 +442,8 @@ def main():
             droplet_output_path = output_path / "droplet"
             droplet_output_path.mkdir(parents=True, exist_ok=True)
             logger.info(f"Processing droplet-based for experiment ID: {exp_id} and species ID: {species_id}")
-            #exp_to_h5ad_dropletBased(species_id, exp_id, name, description, doi, droplet_output_path, species_id_to_name[species_id],
-            #                         cursor, args.result_dir, logger)
+            exp_to_h5ad_dropletBased(species_id, exp_id, name, description, doi, droplet_output_path, species_id_to_name[species_id],
+                                    cursor, args.result_dir, logger)
     # Close the cursor and connection
     cursor.close()
     cnx.close()
