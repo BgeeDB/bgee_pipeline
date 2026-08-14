@@ -166,22 +166,25 @@ my $insertRelTCs = $bgee->prepare('INSERT IGNORE INTO anatEntityRelationTaxonCon
 my $queryAncestors = $bgee->prepare('SELECT anatEntityRelationId, anatEntityTargetId FROM anatEntityRelation WHERE anatEntitySourceId = ? AND relationType IN ("is_a part_of") AND relationStatus IN ("direct", "indirect")');
 my $queryRelTCsAncestors = $bgee->prepare('SELECT speciesId FROM anatEntityRelationTaxonConstraint WHERE anatEntityRelationId = ?');
 
-while(my ($newTerm, $tcs) = each(%newTermTCs)) {
+my $queryAncestors = $bgee->prepare('SELECT anatEntityRelationId, anatEntityTargetId FROM anatEntityRelation WHERE anatEntitySourceId = ? AND relationType IN ("is_a part_of") AND relationStatus IN ("direct", "indirect")');
+my $queryRelTCsAncestors = $bgee->prepare('SELECT speciesId FROM anatEntityRelationTaxonConstraint WHERE anatEntityRelationId = ?');
+
+while(my ($newTerm, $tcs) = each(%newTermTCs)) {    
     $maxRelId++;
     print "INSERT INTO anatEntityRelation $maxRelId, $newTerm, $newTerm, 'reflexive'\n";
     $insertRel->execute($maxRelId, $newTerm, $newTerm, 'reflexive')  or die $insertRel->errstr;
-    if (scalar(@$tcs) == 0) {
-        print "INSERT INTO anatEntityTaxonConstraint (anatEntityId, speciesId) VALUES ($newTerm, null)\n";
-        $insertAnatTCs->execute($newTerm, undef)  or die $insertAnatTCs->errstr;
-        print "INSERT INTO anatEntityRelationTaxonConstraint (anatEntityRelationId, speciesId) VALUES ($maxRelId, null)\n";
-        $insertRelTCs->execute($maxRelId, undef)  or die $insertRelTCs->errstr;
-    } else {
-        foreach my $tc (@$tcs) {
-            print "INSERT INTO anatEntityTaxonConstraint (anatEntityId, speciesId) VALUES ($newTerm, $tc)\n";
-            $insertAnatTCs->execute($newTerm, $tc)  or die $insertAnatTCs->errstr;
-            print "INSERT INTO anatEntityRelationTaxonConstraint (anatEntityRelationId, speciesId) VALUES ($maxRelId, $tc)\n";
-            $insertRelTCs->execute($maxRelId, $tc)  or die $insertRelTCs->errstr;
-        }
+	if (scalar(@$tcs) == 0) {
+		print "INSERT INTO anatEntityTaxonConstraint (anatEntityId, speciesId) VALUES ($newTerm, null)\n";
+		$insertAnatTCs->execute($newTerm, undef)  or die $insertAnatTCs->errstr;
+		print "INSERT INTO anatEntityRelationTaxonConstraint (anatEntityRelationId, speciesId) VALUES ($maxRelId, null)\n";
+		$insertRelTCs->execute($maxRelId, undef)  or die $insertRelTCs->errstr;
+	} else {
+	    foreach my $tc (@$tcs) {
+		    print "INSERT INTO anatEntityTaxonConstraint (anatEntityId, speciesId) VALUES ($newTerm, $tc)\n";
+	        $insertAnatTCs->execute($newTerm, $tc)  or die $insertAnatTCs->errstr;
+		    print "INSERT INTO anatEntityRelationTaxonConstraint (anatEntityRelationId, speciesId) VALUES ($maxRelId, $tc)\n";
+		    $insertRelTCs->execute($maxRelId, $tc)  or die $insertRelTCs->errstr;
+	    }
     }
     foreach my $parent (@{$relations{$newTerm}}) {
         $maxRelId++;
