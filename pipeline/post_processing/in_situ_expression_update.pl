@@ -12,17 +12,39 @@ use diagnostics;
 #     - Compute scoreSum per gene using the same scoring as ranks_global.pl:
 #         present/high  = +1,  present/low  = +0.5
 #         absent/low    = -0.5, absent/high  = -1
-#     - Also accumulate pValueSum and spotCount per gene.
+#     - Also accumulate, per gene, a per-spot evidence weight (2 for a HIGH_QUAL spot,
+#       1 for a LOW_QUAL spot), used both to weight the average p-value and as the
+#       stored inSituWeight. This mirrors how sampleDistinctRankCount weighs more
+#       informative RNA-Seq libraries more heavily, and is specific to the gene
+#       (unlike a condition-wide constant): a gene seen on more/better spots gets
+#       more weight than one seen on a single low-quality spot.
 #     - Dense-rank genes by scoreSum (descending) within the condition.
 # * Normalize the dense rank to a 0-100 score:
 #     rank 1 (highest scoreSum) -> 100,  rank maxRank -> ~1
 #     formula: score = 100 - (rawRank - 1) * 99 / (maxRank - 1)    [maxRank > 1]
 #              score = 100                                           [maxRank = 1]
-# * inSituPValue    = pValueSum / spotCount  (average pValue of spots)
-# * inSituWeight    = maxRank (number of distinct scoreSum groups in this condition
-#                    as it is the closest to sampleDistinctRankCount in RNA-Seq)
+# * inSituPValue    = weightedPValueSum / weightSum (weighted average pValue of spots,
+#                    weighted the same way as inSituWeight, mirroring the RNA-Seq formula)
+# * inSituWeight    = weightSum (per-gene evidence weight, see above)
 # * inSituNumberObs = spotCount (total number of spots observed)
 # * Update expression table with these values.
+#
+# TODO (weighting change, needs review before running on production data):
+#   inSituWeight used to be maxRank, a value constant across all genes of a condition
+#   (the number of distinct scoreSum groups in that condition), unrelated to how much
+#   evidence backs any specific gene. It is now weightSum, a per-gene weight (2 points per
+#   HIGH_QUAL spot, 1 point per LOW_QUAL spot observed for that gene), mirroring how
+#   sampleDistinctRankCount weighs RNA-Seq libraries. inSituPValue is now this same
+#   per-spot weight applied to the average (weightedPValueSum / weightSum), instead of the
+#   previous unweighted average (pValueSum / spotCount).
+#   Please verify: (1) the 2:1 HIGH_QUAL:LOW_QUAL ratio is the intended relative
+#   confidence between spot qualities, (2) weighting inSituPValue itself (not just
+#   inSituWeight) by spot quality is desired, and (3) this stays an arithmetic mean on
+#   purpose (unlike bulk/single-cell RNA-Seq, in situ is not expected to suffer from
+#   dropout, so no harmonic mean is used here for now).
+#   Since this changes previously computed values, conditions already processed will need
+#   to be reprocessed (e.g. via -processAll, or by resetting the relevant columns to NULL)
+#   for the new formula to apply.
 
 use Parallel::ForkManager;
 
@@ -182,8 +204,9 @@ sub compute_update_insitu_scores {
         'SELECT 1 FROM '.$inSituToExprCondTableName.' WHERE exprMappedConditionId = ? LIMIT 1');
 
     # Create inSituRanking temp table for one condition.
-    # Mirrors inSituRankingStmt in ranks_global.pl, with the addition of pValueSum and spotCount
-    # (used to compute inSituPValue and inSituNumberObs/Weight after ranking).
+    # Mirrors inSituRankingStmt in ranks_global.pl, with the addition of weightedPValueSum,
+    # weightSum and spotCount (used to compute inSituPValue, inSituWeight and inSituNumberObs
+    # after ranking).
     my $inSituRankingStmt = $dbh_thread->prepare(
         "CREATE TEMPORARY TABLE inSituRanking (PRIMARY KEY(bgeeGeneId))
          SELECT STRAIGHT_JOIN s.bgeeGeneId,
@@ -193,7 +216,13 @@ sub compute_update_insitu_scores {
                  IF(s.detectionFlag = '$Utils::ABSENT_CALL'  AND s.inSituData = '$Utils::HIGH_QUAL', -1,
                  IF(s.detectionFlag = '$Utils::ABSENT_CALL',                                         -0.5, 0))))
              ) AS scoreSum,
-             SUM(s.pValue)        AS pValueSum,
+             -- Per-spot evidence weight: 2 for a HIGH_QUAL spot, 1 for a LOW_QUAL spot.
+             -- Kept as integers (rather than 1/0.5) so the sum fits the 'bigint unsigned'
+             -- inSituWeight column without a schema migration; the 2:1 ratio is
+             -- mathematically equivalent to 1:0.5 for a weighted average or a weighted
+             -- harmonic mean (a uniform scale factor on all weights cancels out).
+             SUM(s.pValue * IF(s.inSituData = '$Utils::HIGH_QUAL', 2, 1)) AS weightedPValueSum,
+             SUM(IF(s.inSituData = '$Utils::HIGH_QUAL', 2, 1))            AS weightSum,
              COUNT(s.inSituSpotId) AS spotCount,
              0000000.00           AS rawRank
          FROM $inSituToExprCondTableName
@@ -212,7 +241,7 @@ sub compute_update_insitu_scores {
     # Retrieve max rank (for score normalization) and per-gene data after ranking
     my $getMaxRankStmt = $dbh_thread->prepare('SELECT MAX(rawRank) FROM inSituRanking');
     my $getResultsStmt = $dbh_thread->prepare(
-        'SELECT bgeeGeneId, rawRank, pValueSum, spotCount FROM inSituRanking');
+        'SELECT bgeeGeneId, rawRank, weightedPValueSum, weightSum, spotCount FROM inSituRanking');
 
     # Update the expression table
     my $updateExprStmt = $dbh_thread->prepare(
@@ -250,15 +279,18 @@ sub compute_update_insitu_scores {
             my ($maxRank) = $getMaxRankStmt->fetchrow_array();
 
             # Compute score/pValue/weight/numberObs for each gene and update expression table.
-            # weight = maxRank (= number of distinct scoreSum groups = discriminatory power of the
-            # in situ data in this condition), analogous to sampleDistinctRankCount in RNA-Seq.
+            # weight = weightSum, the per-gene sum of per-spot quality weights (2 for HIGH_QUAL,
+            # 1 for LOW_QUAL), analogous to sampleDistinctRankCount in RNA-Seq: unlike the
+            # previous maxRank-based weight (constant for every gene in the condition), this
+            # scales with how many spots observed this gene and how reliable those spots are.
+            # pValue is the weighted average of per-spot pValues, using the same weights.
             # numberObs = spotCount (total number of spots observed).
             $getResultsStmt->execute() or die $getResultsStmt->errstr;
             while ( my @row = $getResultsStmt->fetchrow_array() ) {
-                my ($geneId, $rawRank, $pValueSum, $spotCount) = @row;
+                my ($geneId, $rawRank, $weightedPValueSum, $weightSum, $spotCount) = @row;
                 my $score     = calculate_score($rawRank, $maxRank);
-                my $pValue    = $pValueSum / $spotCount;
-                my $weight    = $maxRank;
+                my $pValue    = $weightedPValueSum / $weightSum;
+                my $weight    = $weightSum;
                 my $numberObs = $spotCount;
                 $updateExprStmt->execute($score, $pValue, $weight, $numberObs, $condId, $geneId)
                     or die $updateExprStmt->errstr;
