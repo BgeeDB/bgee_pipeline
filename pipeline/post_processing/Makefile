@@ -69,15 +69,14 @@ $(OUTPUT_DIR)ranksRnaSeq: $(OUTPUT_DIR)insert_rna_seq_expression
 	@$(MV) $@.tmp $@
 
 # rule managing generation and insertion of PValue, Score, Weight and NumberObs in the expression table for all RNA-Seq datatypes.
-# This step tool less than one day to run for Bgee 16.0 with 76000 conditions
+# This step took less than one day to run for Bgee 16.0 with 76000 conditions
 $(OUTPUT_DIR)updateExpressionRnaSeq: #$(OUTPUT_DIR)ranksRnaSeq
 	@perl rna_seq_expression_update.pl -bgee=$(BGEECMD) -numberThreads=40 -allDatatypes -processAll> $@.tmp 2> $@.warn
 	@$(MV) $@.tmp $@
 
 # rule managing generation and insertion of PValue, Score, Weight and NumberObs in the expression table for in situ data
-#TODO: this script has to be implemented.
-$(OUTPUT_DIR)updateExpressionInSitu:$(OUTPUT_DIR)ranksRnaSeq
-	@perl in_situ_expression_update.pl -bgee=$(BGEECMD) -numberThreads=40 -debug > $@.tmp 2> $@.warn
+$(OUTPUT_DIR)updateExpressionInSitu:
+	@perl in_situ_expression_update.pl -bgee=$(BGEECMD) -parallel_jobs=40 -processAll> $@.tmp 2> $@.warn
 	@$(MV) $@.tmp $@
 
 # Since Bgee 16.0 we do not propagate calls anymore. We need to insert globalCond condToSelfGlobalCond and globalCondRelation.
