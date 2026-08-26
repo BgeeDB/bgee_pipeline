@@ -11,7 +11,7 @@ use Utils;
 
 
 # -----------------------------------------------------------------------------
-# Script: update_rna_seq_expression.pl
+# Script: insert_rna_seq_expression_otf.pl
 # Author: Julien Wollbrett
 # Created: Mar. 2026
 #
@@ -24,7 +24,7 @@ use Utils;
 #   combinations for all RNA-Seq datatypes.
 #
 # Usage Example:
-#   perl update_rna_seq_expression.pl -bgee=<BGEECMD> -numberThreads=4 -bulk
+#   perl insert_rna_seq_expression_otf.pl -bgee=<BGEECMD> -numberThreads=4 -bulk
 #
 #   Options:
 #     -bgee             Bgee connector string (required)
@@ -34,8 +34,6 @@ use Utils;
 #     -fullLength       Process full-length single-cell RNA-Seq data
 #     -droplet          Process droplet-based single-cell RNA-Seq data
 #     -allDatatypes     Process all RNA-Seq datatypes (bulk, full-length sc, droplet-based sc)
-#     -processAll       Process all conditions, not only those with missing scores (default: only
-#                       conditions with missing scores are processed)
 #
 # Steps performed by the script:
 #   1. Retrieve all relevant conditionIds from the 'expression' table (exprMappedConditionId).
@@ -120,12 +118,6 @@ if ( $datatype_options_provided > 3 ){
     exit 1;
 }
 
-# Datatypes to process, as [columnPrefix, isSingleCell, isSampleMultiplexing]
-my @datatypesToProcess = ();
-push @datatypesToProcess, [$BULK_COLUMN_PREFIX, 0, 0]         if ( $all_datatypes || $bulk );
-push @datatypesToProcess, [$FULL_LENGTH_COLUMN_PREFIX, 1, 0]  if ( $all_datatypes || $full_length );
-push @datatypesToProcess, [$DROPLET_COLUMN_PREFIX, 1, 1]      if ( $all_datatypes || $droplet );
-
 # -----------------------------------------------------------------------------
 # Database connection and data retrieval
 # -----------------------------------------------------------------------------
@@ -138,9 +130,6 @@ $| = 1;
 
 # Retrieve max rank values for each species/datatype combination
 print "Retrieving species/datatype max ranks...\n";
-# For each species: the max rank of each protocol (population capture / single-cell /
-# multiplexing), plus under the 'speciesMaxRank' key the max rank of the species over
-# all RNA-Seq protocols, used as the common scale to normalize protocols between them
 my %speciesMaxRanks = ();
 my $queryMaxRanks = $bgee->prepare(
     'SELECT speciesId, rnaSeqPopulationCaptureId, rnaSeqTechnologyIsSingleCell, sampleMultiplexing, maxRank '.
@@ -149,20 +138,13 @@ my $queryMaxRanks = $bgee->prepare(
 $queryMaxRanks->execute() or die $queryMaxRanks->errstr;
 while ( my @data = $queryMaxRanks->fetchrow_array ){
     $speciesMaxRanks{$data[0]}{$data[1]}{$data[2]}{$data[3]} = $data[4];
-    if ( !exists $speciesMaxRanks{$data[0]}{'speciesMaxRank'}
-            || $speciesMaxRanks{$data[0]}{'speciesMaxRank'} < $data[4] ){
-        $speciesMaxRanks{$data[0]}{'speciesMaxRank'} = $data[4];
-    }
 }
 $queryMaxRanks->finish;
 
 # Retrieve all conditionIds that need to be processed
 print "Retrieving conditions...\n";
 
-# Without -processAll, keep the conditions for which at least one of the requested
-# datatypes still has no score
-my $sqlConditionFilter = $process_all ? ''
-    : 'WHERE '.join(' OR ', map { $_->[0].'Score IS NULL' } @datatypesToProcess);
+my $sqlConditionFilter = $process_all ? '' : 'WHERE '.$BULK_COLUMN_PREFIX.'Score IS NULL AND '.$FULL_LENGTH_COLUMN_PREFIX.'Score IS NULL AND '.$DROPLET_COLUMN_PREFIX.'Score IS NULL';
 my $queryConditions = $bgee->prepare(
     'SELECT DISTINCT conditionId FROM expression ' . $sqlConditionFilter
 );
@@ -198,9 +180,14 @@ for my $exprMappedConditionId (@exprMappedConditions) {
     my $pid = $pm->start and next;
     my $bgee_thread = Utils::connect_bgee_db($bgee_connector);
     # For each datatype, call the insert_expression_scores subroutine
-    for my $datatype (@datatypesToProcess) {
-        insert_expression_scores($bgee_thread, $exprMappedConditionId, $datatype->[1], $datatype->[2],
-            $sqlQuery, \%speciesMaxRanks);
+    if ($all_datatypes || $bulk) {
+        insert_expression_scores($bgee_thread, $exprMappedConditionId, 0, 0, $sqlQuery, \%speciesMaxRanks);
+    }
+    if ($all_datatypes || $full_length) {
+        insert_expression_scores($bgee_thread, $exprMappedConditionId, 1, 0, $sqlQuery, \%speciesMaxRanks);
+    }
+    if ($all_datatypes || $droplet) {
+        insert_expression_scores($bgee_thread, $exprMappedConditionId, 1, 1, $sqlQuery, \%speciesMaxRanks);
     }
     $bgee_thread->disconnect;
     $pm->finish; # Terminates the child process
@@ -228,25 +215,23 @@ sub insert_expression_scores {
         my $populationCaptureId = $data[4];
         my $pValue = $data[5];
         my $rawRank = $data[6];
-        my $protocolMaxRank = $speciesMaxRanks->{$speciesId}->{$populationCaptureId}->{$isSingleCell}->{$isSampleMultiplexing};
-        my $speciesMaxRank  = $speciesMaxRanks->{$speciesId}->{'speciesMaxRank'};
-        if (!defined $protocolMaxRank || !defined $speciesMaxRank) {
-            warn "Undefined maxRank for speciesId=$speciesId, populationCaptureId=$populationCaptureId, isSingleCell=$isSingleCell, isSampleMultiplexing=$isSampleMultiplexing (geneId=$geneId, conditionId=$exprMappedConditionId) no score will be computed for this geneId/conditionId/datatype combination\n";
+        my $maxRank = $speciesMaxRanks->{$speciesId}->{$populationCaptureId}->{$isSingleCell}->{$isSampleMultiplexing};
+        if (!defined $maxRank) {
+            warn "Undefined maxRank for populationCaptureId=$populationCaptureId, isSingleCell=$isSingleCell, isSampleMultiplexing=$isSampleMultiplexing (geneId=$geneId, conditionId=$exprMappedConditionId) no score will be computed for this geneId/conditionId/datatype combination\n";
             next;
         }
-        my $score = calculate_score($rawRank, $sampleMaxRank, $protocolMaxRank, $speciesMaxRank);
         # For each geneId, accumulate weighted sums and counts
         if ($geneId != $previousGeneId) {
             $previousGeneId = $geneId;
             $results{$geneId}{'pValue'} = $pValue * $sampleDistinctRankCount;
             $results{$geneId}{'weight'} = $sampleDistinctRankCount;
             $results{$geneId}{'numberObs'} = 1;
-            $results{$geneId}{'score'} = $score * $sampleDistinctRankCount;
+            $results{$geneId}{'score'} = calculate_score($rawRank, $sampleMaxRank, $maxRank) * $sampleDistinctRankCount;
         } else {
             $results{$geneId}{'pValue'} += $pValue * $sampleDistinctRankCount;
             $results{$geneId}{'weight'} += $sampleDistinctRankCount;
             $results{$geneId}{'numberObs'} += 1;
-            $results{$geneId}{'score'} += $score * $sampleDistinctRankCount;
+            $results{$geneId}{'score'} += calculate_score($rawRank, $sampleMaxRank, $maxRank) * $sampleDistinctRankCount;
         }
     }
     $sth->finish;
@@ -284,27 +269,18 @@ sub insert_expression_scores {
 
 # -----------------------------------------------------------------------------
 # Subroutine: calculate_score
-#   Normalizes the raw rank of a sample between protocols, then maps it to a
-#   1-100 score.
-#   Between-protocol normalization (same formula as normalize_ranks.pl and
-#   ranks_global.pl): the raw rank is averaged with the same rank rescaled from
-#   the max rank of the protocol of the library to the max rank of the species
-#   over all RNA-Seq protocols:
-#       rankNorm = (rawRank + rawRank * speciesMaxRank / protocolMaxRank) / 2
-#   As rawRank <= protocolMaxRank <= speciesMaxRank, rankNorm stays in
-#   [1, speciesMaxRank], so the score stays in [1, 100].
-#   Returns the score, and dies if input is invalid.
+#   Normalizes the raw rank to a 0-100 scale based on sample and species max ranks.
+#   Returns the normalized score, or undef if input is invalid.
 # -----------------------------------------------------------------------------
 sub calculate_score {
-    my ($rawRank, $sampleMaxRank, $protocolMaxRank, $speciesMaxRank) = @_;
-    if (defined $rawRank && $rawRank >= 1 && defined $sampleMaxRank && $sampleMaxRank >= 1
-            && defined $protocolMaxRank && $protocolMaxRank >= 1
-            && defined $speciesMaxRank && $speciesMaxRank > 1
-            && $rawRank <= $sampleMaxRank && $sampleMaxRank <= $protocolMaxRank
-            && $protocolMaxRank <= $speciesMaxRank) {
-        my $normalizedRank = ($rawRank + ($rawRank * $speciesMaxRank / $protocolMaxRank)) / 2;
-        return 100 - (($normalizedRank - 1) * 99 / ($speciesMaxRank - 1));
+    my ($rawRank, $sampleMaxRank, $speciesMaxRank) = @_;
+    if (defined $rawRank && $rawRank >= 1 && defined $sampleMaxRank && $sampleMaxRank >= 1 && defined $speciesMaxRank && $speciesMaxRank >= 1 && $rawRank <= $sampleMaxRank && $sampleMaxRank <= $speciesMaxRank) {
+        my $normalizedRank = $rawRank / $sampleMaxRank * $speciesMaxRank;
+        my $range = $speciesMaxRank - 1;
+        my $adjustedRank = $normalizedRank - 1;
+        return 100 - ($adjustedRank * 99 / $range);
     } else {
-        die "Invalid input for score calculation: rawRank=$rawRank, sampleMaxRank=$sampleMaxRank, protocolMaxRank=$protocolMaxRank, speciesMaxRank=$speciesMaxRank\n";
+        warn "Invalid input for score calculation: rawRank=$rawRank, sampleMaxRank=$sampleMaxRank, speciesMaxRank=$speciesMaxRank\n";
+        return undef;
     }
 }
