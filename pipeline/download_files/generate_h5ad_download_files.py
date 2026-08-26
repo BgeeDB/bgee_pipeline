@@ -205,8 +205,16 @@ def exp_to_h5ad_full_length(species_ID, expID, name, description, doi, output, s
         }
         adata.obs_names = SampleId # comme for loop ils seront dans le bon ordre
         adata.var_names = unique_gene_ids
-        adata.write(h5ad_file_path)
-        adata.obs.to_csv(h5ad_file_path.replace(".h5ad", ".tsv"), sep="\t", index=True, header=True)
+        # Same as for droplet-based data: write to temporary paths and rename them only once both
+        # files are complete, so that a run killed mid-write does not leave a truncated .h5ad that
+        # the "file already exist" check at the top of this function would skip on the next run.
+        tsv_file_path = h5ad_file_path.replace(".h5ad", ".tsv")
+        tmp_h5ad_file_path = h5ad_file_path + ".tmp"
+        tmp_tsv_file_path = tsv_file_path + ".tmp"
+        adata.write(tmp_h5ad_file_path)
+        adata.obs.to_csv(tmp_tsv_file_path, sep="\t", index=True, header=True)
+        os.replace(tmp_h5ad_file_path, h5ad_file_path)
+        os.replace(tmp_tsv_file_path, tsv_file_path)
 
 def exp_to_h5ad_dropletBased(species_id, exp_id, name, description, doi, output, species_name, cursor, result_dir, intergenic_prefixes, logger):
     """
@@ -328,6 +336,12 @@ def exp_to_h5ad_dropletBased(species_id, exp_id, name, description, doi, output,
     gene_mask = np.array([not any(g.startswith(p) for p in intergenic_prefixes) for g in all_genes])
     genes = [g for g, keep in zip(all_genes, gene_mask) if keep]
     n_vars = len(genes)
+    # A malformed --intergenic_prefixes value (e.g. INTERGENIC_PREFIXES containing a space, in which
+    # case argparse only receives the first prefix) would keep every feature and silently ship the
+    # intergenic regions in the h5ad file. Fail loudly instead.
+    if n_vars == len(all_genes):
+        raise ValueError(f"No intergenic region matched the prefixes {intergenic_prefixes} in {gene_file_path}. "
+                         "Check the value of INTERGENIC_PREFIXES in Makefile.common.")
     logger.debug(f"Loaded {len(all_genes)} features, kept {n_vars} genes after removing intergenic regions.")
 
     # init variables retrieved per library
@@ -413,10 +427,18 @@ def exp_to_h5ad_dropletBased(species_id, exp_id, name, description, doi, output,
     adata.var = gene_metadata
     adata.var_names = genes
 
-    # Write the AnnData file on disk
+    # Write the AnnData file on disk. We write to temporary paths and rename them only once both
+    # files are complete: these matrices are large enough to hit memory limits, and a run killed
+    # mid-write would otherwise leave a truncated .h5ad at the final path, which the "file already
+    # exists" check at the top of this function would silently skip on the next run.
+    tsv_file_path = h5ad_file_path.replace(".h5ad", ".tsv")
+    tmp_h5ad_file_path = h5ad_file_path + ".tmp"
+    tmp_tsv_file_path = tsv_file_path + ".tmp"
     logger.debug(f"Start to write h5ad file to {h5ad_file_path}")
-    adata.write(h5ad_file_path, compression="gzip")
-    adata.obs.to_csv(h5ad_file_path.replace(".h5ad",".tsv"), sep="\t", index=True, header=True)
+    adata.write(tmp_h5ad_file_path, compression="gzip")
+    adata.obs.to_csv(tmp_tsv_file_path, sep="\t", index=True, header=True)
+    os.replace(tmp_h5ad_file_path, h5ad_file_path)
+    os.replace(tmp_tsv_file_path, tsv_file_path)
     del adata
     gc.collect()
     logger.info(f"AnnData .h5ad file saved to {h5ad_file_path}")
