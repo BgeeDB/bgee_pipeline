@@ -120,6 +120,12 @@ if ( $datatype_options_provided > 3 ){
     exit 1;
 }
 
+# Datatypes to process, as [columnPrefix, isSingleCell, isSampleMultiplexing]
+my @datatypesToProcess = ();
+push @datatypesToProcess, [$BULK_COLUMN_PREFIX, 0, 0]         if ( $all_datatypes || $bulk );
+push @datatypesToProcess, [$FULL_LENGTH_COLUMN_PREFIX, 1, 0]  if ( $all_datatypes || $full_length );
+push @datatypesToProcess, [$DROPLET_COLUMN_PREFIX, 1, 1]      if ( $all_datatypes || $droplet );
+
 # -----------------------------------------------------------------------------
 # Database connection and data retrieval
 # -----------------------------------------------------------------------------
@@ -153,7 +159,10 @@ $queryMaxRanks->finish;
 # Retrieve all conditionIds that need to be processed
 print "Retrieving conditions...\n";
 
-my $sqlConditionFilter = $process_all ? '' : 'WHERE '.$BULK_COLUMN_PREFIX.'Score IS NULL AND '.$FULL_LENGTH_COLUMN_PREFIX.'Score IS NULL AND '.$DROPLET_COLUMN_PREFIX.'Score IS NULL';
+# Without -processAll, keep the conditions for which at least one of the requested
+# datatypes still has no score
+my $sqlConditionFilter = $process_all ? ''
+    : 'WHERE '.join(' OR ', map { $_->[0].'Score IS NULL' } @datatypesToProcess);
 my $queryConditions = $bgee->prepare(
     'SELECT DISTINCT conditionId FROM expression ' . $sqlConditionFilter
 );
@@ -189,14 +198,9 @@ for my $exprMappedConditionId (@exprMappedConditions) {
     my $pid = $pm->start and next;
     my $bgee_thread = Utils::connect_bgee_db($bgee_connector);
     # For each datatype, call the insert_expression_scores subroutine
-    if ($all_datatypes || $bulk) {
-        insert_expression_scores($bgee_thread, $exprMappedConditionId, 0, 0, $sqlQuery, \%speciesMaxRanks);
-    }
-    if ($all_datatypes || $full_length) {
-        insert_expression_scores($bgee_thread, $exprMappedConditionId, 1, 0, $sqlQuery, \%speciesMaxRanks);
-    }
-    if ($all_datatypes || $droplet) {
-        insert_expression_scores($bgee_thread, $exprMappedConditionId, 1, 1, $sqlQuery, \%speciesMaxRanks);
+    for my $datatype (@datatypesToProcess) {
+        insert_expression_scores($bgee_thread, $exprMappedConditionId, $datatype->[1], $datatype->[2],
+            $sqlQuery, \%speciesMaxRanks);
     }
     $bgee_thread->disconnect;
     $pm->finish; # Terminates the child process
