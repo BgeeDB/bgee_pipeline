@@ -100,14 +100,14 @@ def return_experiment_ids(species_id, exp_id, cursor, logger):
     logger.info(f"Number of experiments/species to process: {len(filtered_results)}")
     return filtered_results
 
-def exp_to_h5ad_full_length(species_ID, expID, name, description, doi, output, species_name, cursor):
+def exp_to_h5ad_full_length(species_ID, expID, name, description, doi, output, species_name, cursor, logger):
     full_length_dir = "{output}/{species_name}".format(output=output, species_name=species_name)
     if not os.path.exists(full_length_dir):
         os.makedirs(full_length_dir)
     h5ad_file_path = "{full_length_dir}/{species_name}_{expID}_full_length.h5ad".format(full_length_dir=full_length_dir, species_name=species_name, expID=expID)
     # check if file already exist
     if os.path.isfile(h5ad_file_path):
-        print("There is already an existing H5ad file for {exp_id} experiment and species {species_id}".format(exp_id=expID, species_id=species_ID))
+        logger.info(f"There is already an existing H5ad file for {expID} experiment and species {species_ID}")
     else:
         # Define 1st query (retrieve all metadata for one experiment)
         query_per_library = """
@@ -473,8 +473,9 @@ def main():
         if has_full_length == 1 and exp_id not in ignore_full_length_exp:
             full_length_output_path = output_path / "full_length"
             full_length_output_path.mkdir(parents=True, exist_ok=True)
-            print(f"Processing full-length for experiment ID: {exp_id} and species ID: {species_id}")
-            exp_to_h5ad_full_length(species_id, exp_id, name, description, doi, full_length_output_path, species_id_to_name[species_id], cursor)
+            logger.info(f"Processing full-length for experiment ID: {exp_id} and species ID: {species_id}")
+            exp_to_h5ad_full_length(species_id, exp_id, name, description, doi, full_length_output_path, species_id_to_name[species_id],
+                                    cursor, logger)
         # Process experiments with droplet-based if has_droplet is 1
         if has_droplet == 1 and exp_id not in ignore_dropletBased_exp:
             droplet_output_path = output_path / "droplet"
