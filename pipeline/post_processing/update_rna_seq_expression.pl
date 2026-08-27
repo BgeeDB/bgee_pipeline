@@ -34,6 +34,8 @@ use Utils;
 #     -fullLength       Process full-length single-cell RNA-Seq data
 #     -droplet          Process droplet-based single-cell RNA-Seq data
 #     -allDatatypes     Process all RNA-Seq datatypes (bulk, full-length sc, droplet-based sc)
+#     -processAll       Reset the columns of the selected datatypes to NULL before processing, in order to
+#                       reprocess all conditions. Without it, only conditions with missing scores are processed
 #
 # Steps performed by the script:
 #   1. Retrieve all relevant conditionIds from the 'expression' table (exprMappedConditionId).
@@ -90,7 +92,9 @@ if ( !$test_options || $bgee_connector eq '' ){
 	-fullLength       Process full-length single-cell RNA-Seq data
 	-droplet          Process droplet-based single-cell RNA-Seq data
 	-allDatatypes     Process all RNA-Seq datatypes (bulk, full-length sc, droplet-based sc)
-    -processAll       Process all conditions, not only those with missing scores (default: only conditions with missing scores are processed)
+    -processAll       Reset pValue, score, weight and numberObs to NULL for the selected datatypes before processing,
+                      so that all conditions are reprocessed. Without it, only conditions with missing scores are processed
+                      (relaunch without -processAll to resume an interrupted run).
 \n";
     exit 1;
 }
@@ -118,6 +122,12 @@ if ( $datatype_options_provided > 3 ){
     exit 1;
 }
 
+# Datatypes to process: [column prefix, rnaSeqTechnologyIsSingleCell, sampleMultiplexing]
+my @datatypesToProcess = ();
+push @datatypesToProcess, [$BULK_COLUMN_PREFIX,        0, 0]  if ( $all_datatypes || $bulk );
+push @datatypesToProcess, [$FULL_LENGTH_COLUMN_PREFIX, 1, 0]  if ( $all_datatypes || $full_length );
+push @datatypesToProcess, [$DROPLET_COLUMN_PREFIX,     1, 1]  if ( $all_datatypes || $droplet );
+
 # -----------------------------------------------------------------------------
 # Database connection and data retrieval
 # -----------------------------------------------------------------------------
@@ -141,10 +151,36 @@ while ( my @data = $queryMaxRanks->fetchrow_array ){
 }
 $queryMaxRanks->finish;
 
+# -----------------------------------------------------------------------------
+# With -processAll, all rows of the datatypes to process are first reset to NULL.
+# The list of conditions to process is then always retrieved with the same
+# "IS NULL" filter, whether -processAll was provided or not. It means that if the
+# run is interrupted (e.g. some queries end with an out of time error because too
+# many threads overloaded the database), it can be relaunched without -processAll
+# and will continue from where it stopped.
+# -----------------------------------------------------------------------------
+if ( $process_all ){
+    for my $datatype (@datatypesToProcess) {
+        my $prefix = $datatype->[0];
+        my $resetQuery = 'UPDATE expression SET '.
+            $prefix.'PValue = NULL, '.$prefix.'Score = NULL, '.
+            $prefix.'Weight = NULL, '.$prefix.'NumberObs = NULL '.
+            'WHERE '.$prefix.'PValue IS NOT NULL OR '.$prefix.'Score IS NOT NULL OR '.
+            $prefix.'Weight IS NOT NULL OR '.$prefix.'NumberObs IS NOT NULL';
+        if ( $debug ){
+            print "[DEBUG] $resetQuery\n";
+        } else {
+            print "Resetting $prefix columns to NULL...\n";
+            my $resetRows = $bgee->do($resetQuery);
+            print "Done, $resetRows rows reset.\n";
+        }
+    }
+}
+
 # Retrieve all conditionIds that need to be processed
 print "Retrieving conditions...\n";
 
-my $sqlConditionFilter = $process_all ? '' : 'WHERE '.$BULK_COLUMN_PREFIX.'Score IS NULL AND '.$FULL_LENGTH_COLUMN_PREFIX.'Score IS NULL AND '.$DROPLET_COLUMN_PREFIX.'Score IS NULL';
+my $sqlConditionFilter = 'WHERE '.join(' OR ', map { $_->[0].'Score IS NULL' } @datatypesToProcess);
 my $queryConditions = $bgee->prepare(
     'SELECT DISTINCT conditionId FROM expression ' . $sqlConditionFilter
 );
@@ -180,14 +216,9 @@ for my $exprMappedConditionId (@exprMappedConditions) {
     my $pid = $pm->start and next;
     my $bgee_thread = Utils::connect_bgee_db($bgee_connector);
     # For each datatype, call the insert_expression_scores subroutine
-    if ($all_datatypes || $bulk) {
-        insert_expression_scores($bgee_thread, $exprMappedConditionId, 0, 0, $sqlQuery, \%speciesMaxRanks);
-    }
-    if ($all_datatypes || $full_length) {
-        insert_expression_scores($bgee_thread, $exprMappedConditionId, 1, 0, $sqlQuery, \%speciesMaxRanks);
-    }
-    if ($all_datatypes || $droplet) {
-        insert_expression_scores($bgee_thread, $exprMappedConditionId, 1, 1, $sqlQuery, \%speciesMaxRanks);
+    for my $datatype (@datatypesToProcess) {
+        insert_expression_scores($bgee_thread, $exprMappedConditionId, $datatype->[1], $datatype->[2],
+                                 $sqlQuery, \%speciesMaxRanks);
     }
     $bgee_thread->disconnect;
     $pm->finish; # Terminates the child process
