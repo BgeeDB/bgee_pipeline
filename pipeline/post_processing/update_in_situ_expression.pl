@@ -37,14 +37,14 @@ use diagnostics;
 #   condition gets finer). This is what makes in situ scores comparable between
 #   conditions, and comparable with the RNA-Seq scores.
 # * inSituPValue    = pValueSum / spotCount (plain mean of the p-values of the spots)
-# * inSituWeight    = condMaxRank, the number of distinct ranks in the condition. As
-#                    documented in bgeeSchema.sql for the in situ max ranks, this is the
-#                    counterpart of the sum of sampleDistinctRankCount used for RNA-Seq:
-#                    in situ data is pooled per condition instead of being averaged over
-#                    samples, and the ranking being dense, the max rank is the number of
-#                    distinct ranks. It is therefore the same for all the genes of a
-#                    condition, just as sampleDistinctRankCount is the same for all the
-#                    genes of an RNA-Seq sample.
+# * inSituWeight    = condMaxRank * spotCount, the total weight of the score: the ranking
+#                    resolution of the condition (condMaxRank, the number of distinct ranks,
+#                    the ranking being dense) multiplied by the number of spots backing that
+#                    gene. This is the counterpart of the sum of sampleDistinctRankCount used
+#                    for RNA-Seq, which is also a resolution multiplied by a number of
+#                    observations. ExpressionCallLoader.java weights the score of each
+#                    datatype by this total weight as is, so the number of observations must
+#                    be included here and is not applied again on the Java side.
 # * inSituNumberObs = spotCount, the number of spots observed for that gene in the condition
 # * Update expression table with these values.
 #
@@ -306,17 +306,16 @@ sub compute_update_insitu_scores {
 
             # Compute score/pValue/weight/numberObs for each gene and update expression table.
             # pValue = plain mean of the p-values of the spots of that gene.
-            # weight = condMaxRank, the number of distinct ranks in the condition, counterpart
-            # of the sum of sampleDistinctRankCount used for RNA-Seq (see header comment): it is
-            # the same for all the genes of the condition, the per-gene amount of evidence being
-            # reported by numberObs.
+            # weight = condMaxRank * spotCount, the ranking resolution of the condition times the
+            # number of spots backing that gene, counterpart of the sum of sampleDistinctRankCount
+            # used for RNA-Seq (see header comment).
             # numberObs = spotCount, the number of spots observed for that gene.
             $getResultsStmt->execute() or die $getResultsStmt->errstr;
             while ( my @row = $getResultsStmt->fetchrow_array() ) {
                 my ($geneId, $rawRank, $pValueSum, $spotCount) = @row;
                 my $score     = calculate_score($rawRank, $condMaxRank, $speciesMaxRank);
                 my $pValue    = $pValueSum / $spotCount;
-                my $weight    = $condMaxRank;
+                my $weight    = $condMaxRank * $spotCount;
                 my $numberObs = $spotCount;
                 $updateExprStmt->execute($score, $pValue, $weight, $numberObs, $condId, $geneId)
                     or die $updateExprStmt->errstr;
