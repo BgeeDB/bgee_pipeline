@@ -19,10 +19,20 @@ use diagnostics;
 #       (unlike a condition-wide constant): a gene seen on more/better spots gets
 #       more weight than one seen on a single low-quality spot.
 #     - Dense-rank genes by scoreSum (descending) within the condition.
-# * Normalize the dense rank to a 0-100 score:
-#     rank 1 (highest scoreSum) -> 100,  rank maxRank -> ~1
-#     formula: score = 100 - (rawRank - 1) * 99 / (maxRank - 1)    [maxRank > 1]
-#              score = 100                                           [maxRank = 1]
+# * Normalize the dense rank between datatypes, then map it to a 1-100 score:
+#     - condMaxRank    = max dense rank in the condition (MAX(rawRank) of inSituRanking)
+#     - speciesMaxRank = max rank of the species over all datatypes. In practice the max
+#                        of rnaSeqPopulationCaptureSpeciesMaxRank for that species, the
+#                        RNA-Seq max ranks being far above the in situ ones.
+#     - rankNorm = (rawRank + rawRank * speciesMaxRank / condMaxRank) / 2
+#                  (same formula as normalize_ranks.pl and ranks_global.pl)
+#     - score    = 100 - (rankNorm - 1) * 99 / (speciesMaxRank - 1)
+#   The score is no longer stretched over the whole 1-100 range inside each condition:
+#   a condition with few distinct scoreSum groups has a low ranking resolution, so its
+#   genes stay in the upper part of the scale (the worst-ranked gene of a condition tends
+#   to ~50 as soon as condMaxRank << speciesMaxRank, and rank 1 tends to 100 as the
+#   condition gets finer). This is what makes in situ scores comparable between
+#   conditions, and comparable with the RNA-Seq scores.
 # * inSituPValue    = weightedPValueSum / weightSum (weighted average pValue of spots,
 #                    weighted the same way as inSituWeight, mirroring the RNA-Seq formula)
 # * inSituWeight    = weightSum (per-gene evidence weight, see above)
@@ -106,8 +116,10 @@ if ($process_all) {
 
 # Retrieve conditions to process
 my @conditions = ();
+# speciesId of each condition to process, needed to normalize its ranks
+my %conditionSpecies = ();
 my $dbh = Utils::connect_bgee_db($bgee_connector);
-my $condSql = 'SELECT DISTINCT c.exprMappedConditionId '.
+my $condSql = 'SELECT DISTINCT c.exprMappedConditionId, c.speciesId '.
               'FROM inSituSpot AS s '.
               'INNER JOIN cond AS c ON s.conditionId = c.conditionId '.
               'INNER JOIN expression AS e '.
@@ -117,7 +129,32 @@ my $condSql = 'SELECT DISTINCT c.exprMappedConditionId '.
               'AND e.inSituNumberObs IS NULL';
 my $queryConditions = $dbh->prepare($condSql);
 $queryConditions->execute()  or die $queryConditions->errstr;
-@conditions = map { $_->[0] } @{$queryConditions->fetchall_arrayref};
+for my $row ( @{$queryConditions->fetchall_arrayref} ){
+    push @conditions, $row->[0];
+    $conditionSpecies{$row->[0]} = $row->[1];
+}
+
+# Max rank of each species over all datatypes, used as the common scale onto which the
+# ranks of each condition are normalized. Only RNA-Seq stores per species max ranks, but
+# they are far above the in situ ones (dense ranks over scoreSum), so the max over all
+# RNA-Seq protocols of a species is its max rank over all datatypes.
+my %speciesMaxRanks = ();
+my $queryMaxRanks = $dbh->prepare(
+    'SELECT speciesId, MAX(maxRank) FROM rnaSeqPopulationCaptureSpeciesMaxRank GROUP BY speciesId');
+$queryMaxRanks->execute()  or die $queryMaxRanks->errstr;
+while ( my @data = $queryMaxRanks->fetchrow_array ){
+    $speciesMaxRanks{$data[0]} = $data[1];
+}
+$queryMaxRanks->finish;
+
+# Check all species up front, to fail before starting rather than in the middle of a run
+my %speciesToProcess = map { $_ => 1 } values %conditionSpecies;
+for my $speciesId ( sort keys %speciesToProcess ){
+    if ( !defined $speciesMaxRanks{$speciesId} || $speciesMaxRanks{$speciesId} <= 1 ){
+        die "No usable max rank for species $speciesId in rnaSeqPopulationCaptureSpeciesMaxRank, ".
+            "in situ ranks can not be normalized\n";
+    }
+}
 $dbh->disconnect();
 
 
@@ -268,9 +305,11 @@ sub compute_update_insitu_scores {
             compute_dense_ranking_update_tmp_ranks($dbh_thread, \@inSituResults,
                     $inSituUpdateRankingStmt, $inSituRankUpdateStart);
 
-            # Get maxRank for 0-100 normalization
+            # Max rank of the condition and max rank of the species over all datatypes,
+            # both needed to normalize the ranks between datatypes
             $getMaxRankStmt->execute() or die $getMaxRankStmt->errstr;
-            my ($maxRank) = $getMaxRankStmt->fetchrow_array();
+            my ($condMaxRank) = $getMaxRankStmt->fetchrow_array();
+            my $speciesMaxRank = $speciesMaxRanks{ $conditionSpecies{$condId} };
 
             # Compute score/pValue/weight/numberObs for each gene and update expression table.
             # weight = weightSum, the per-gene sum of per-spot quality weights (2 for HIGH_QUAL,
@@ -282,7 +321,7 @@ sub compute_update_insitu_scores {
             $getResultsStmt->execute() or die $getResultsStmt->errstr;
             while ( my @row = $getResultsStmt->fetchrow_array() ) {
                 my ($geneId, $rawRank, $weightedPValueSum, $weightSum, $spotCount) = @row;
-                my $score     = calculate_score($rawRank, $maxRank);
+                my $score     = calculate_score($rawRank, $condMaxRank, $speciesMaxRank);
                 my $pValue    = $weightedPValueSum / $weightSum;
                 my $weight    = $weightSum;
                 my $numberObs = $spotCount;
@@ -311,18 +350,28 @@ sub compute_update_insitu_scores {
 }
 
 
-# Normalize dense rank to a 0-100 score (same direction as RNA-Seq):
-#   rank 1        -> 100.00  (highest scoreSum = most expressed)
-#   rank maxRank  ->   1.00  (lowest scoreSum  = least expressed)
-#   maxRank = 1   -> 100.00  (single gene in condition)
+# Normalize the dense rank of a condition between datatypes, then map it to a 1-100 score
+# (same direction and same formula as the RNA-Seq scores):
+#   rankNorm = (rawRank + rawRank * speciesMaxRank / condMaxRank) / 2
+#   score    = 100 - (rankNorm - 1) * 99 / (speciesMaxRank - 1)
+# As rawRank <= condMaxRank <= speciesMaxRank, rankNorm stays in [1, speciesMaxRank] and
+# the score in [1, 100]. Only a condition ranking as many genes as the species max rank
+# can reach the bottom of the scale: the lowest rank of a coarser condition tends to ~50,
+# which is the point of the normalization (a gene ranked last among a handful of distinct
+# scoreSum groups is far less informative than one ranked last among thousands).
+# A condition with a single rank group (condMaxRank = 1) therefore scores ~50.5, and no
+# longer 100 as when each condition was normalized on its own max rank.
+# Dies if input is invalid.
 sub calculate_score {
-    my ($rawRank, $maxRank) = @_;
-    unless (defined $rawRank && defined $maxRank && $maxRank >= 1 && $rawRank >= 1) {
-        warn "Invalid input for score calculation: rawRank=$rawRank, maxRank=$maxRank\n";
-        return undef;
+    my ($rawRank, $condMaxRank, $speciesMaxRank) = @_;
+    unless (defined $rawRank && $rawRank >= 1 && defined $condMaxRank && $condMaxRank >= 1
+            && defined $speciesMaxRank && $speciesMaxRank > 1
+            && $rawRank <= $condMaxRank && $condMaxRank <= $speciesMaxRank) {
+        die "Invalid input for score calculation: rawRank=$rawRank, condMaxRank=$condMaxRank, ".
+            "speciesMaxRank=$speciesMaxRank\n";
     }
-    return 100.00 if $maxRank == 1;
-    return sprintf("%.2f", 100.0 - ($rawRank - 1) * 99.0 / ($maxRank - 1));
+    my $rankNorm = ($rawRank + ($rawRank * $speciesMaxRank / $condMaxRank)) / 2;
+    return sprintf("%.2f", 100.0 - ($rankNorm - 1) * 99.0 / ($speciesMaxRank - 1));
 }
 
 
