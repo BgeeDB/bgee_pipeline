@@ -43,8 +43,7 @@ use diagnostics;
 #   purpose (unlike bulk/single-cell RNA-Seq, in situ is not expected to suffer from
 #   dropout, so no harmonic mean is used here for now).
 #   Since this changes previously computed values, conditions already processed will need
-#   to be reprocessed (e.g. via -processAll, or by resetting the relevant columns to NULL)
-#   for the new formula to apply.
+#   to be reprocessed (e.g. via -processAll) for the new formula to apply.
 
 use Parallel::ForkManager;
 
@@ -59,17 +58,11 @@ $|=1;
 my ($bgee_connector) = ('');
 my ($parallel_jobs)  = (10);
 my ($conds_per_job)  = (100);
-my (@cond_ids)       = ();
-my ($cond_offset)    = (0);
-my ($cond_count)     = (0);
 my ($process_all)    = (0);
 
 my %opts = ('bgee=s'          => \$bgee_connector,
             'parallel_jobs=i' => \$parallel_jobs,
             'conds_per_job=i' => \$conds_per_job,
-            'cond_ids=s'      => \@cond_ids,
-            'cond_offset=i'   => \$cond_offset,
-            'cond_count=i'    => \$cond_count,
             'processAll'      => \$process_all,
            );
 
@@ -80,52 +73,53 @@ if ( !$test_options || $bgee_connector eq '' ){
 \t-bgee           Bgee connector string
 \t-parallel_jobs  Number of parallel threads (default: 10)
 \t-conds_per_job  Number of conditions per thread (default: 100)
-\t-cond_ids       Comma-separated list of exprMappedConditionIds to process
-\t-cond_offset    Offset for condition retrieval (requires -cond_count)
-\t-cond_count     Row count for condition retrieval
-\t-processAll     Process all conditions, not only those with inSituNumberObs = 0
+\t-processAll     Reset inSituScore, inSituPValue, inSituWeight and inSituNumberObs to NULL before
+\t                processing, so that all conditions are reprocessed. Without it, only conditions
+\t                with missing scores are processed (relaunch without -processAll to resume an
+\t                interrupted run)
 \n";
     exit 1;
-}
-if ($cond_offset < 0 || $cond_count < 0) {
-    die('cond_offset and cond_count cannot be negative');
-}
-if ($cond_offset > 0 && $cond_count == 0) {
-    die('cond_count must be provided if cond_offset is provided');
 }
 if ($parallel_jobs <= 0 || $conds_per_job <= 0) {
     die("Invalid argument parallel_jobs/conds_per_job\n");
 }
 
-@cond_ids = split(/,/, join(',', @cond_ids));
-if ($cond_offset > 0 && @cond_ids) {
-    die("Not possible to provide condition IDs and offset parameters at the same time\n");
+# -----------------------------------------------------------------------------
+# With -processAll, the in situ columns are first reset to NULL. The conditions to
+# process are then always retrieved with the same "IS NULL" filter, whether
+# -processAll was provided or not. It means that if the run is interrupted (e.g.
+# some queries end with an out of time error because too many threads overloaded
+# the database), it can be relaunched without -processAll and will continue from
+# where it stopped.
+# -----------------------------------------------------------------------------
+if ($process_all) {
+    my $dbh = Utils::connect_bgee_db($bgee_connector);
+    my $resetSql = 'UPDATE expression SET inSituScore = NULL, inSituPValue = NULL, '.
+                   'inSituWeight = NULL, inSituNumberObs = NULL '.
+                   'WHERE inSituScore IS NOT NULL OR inSituPValue IS NOT NULL '.
+                   'OR inSituWeight IS NOT NULL OR inSituNumberObs IS NOT NULL';
+    print "Resetting in situ columns to NULL...\n";
+    my $resetRows = $dbh->do($resetSql)  or die $dbh->errstr;
+    print "Done, $resetRows rows reset.\n";
+    $dbh->disconnect();
 }
 
 # Retrieve conditions to process
-my @conditions = @cond_ids;
-if (!@cond_ids) {
-    my $dbh = Utils::connect_bgee_db($bgee_connector);
+my @conditions = ();
+my $dbh = Utils::connect_bgee_db($bgee_connector);
+my $condSql = 'SELECT DISTINCT c.exprMappedConditionId '.
+              'FROM inSituSpot AS s '.
+              'INNER JOIN cond AS c ON s.conditionId = c.conditionId '.
+              'INNER JOIN expression AS e '.
+              '    ON e.conditionId = c.exprMappedConditionId AND e.bgeeGeneId = s.bgeeGeneId '.
+              "WHERE s.reasonForExclusion = '".$Utils::CALL_NOT_EXCLUDED."' ".
+              'AND s.expressionId IS NOT NULL '.
+              'AND e.inSituNumberObs IS NULL';
+my $queryConditions = $dbh->prepare($condSql);
+$queryConditions->execute()  or die $queryConditions->errstr;
+@conditions = map { $_->[0] } @{$queryConditions->fetchall_arrayref};
+$dbh->disconnect();
 
-    my $condSql = 'SELECT DISTINCT c.exprMappedConditionId '.
-                  'FROM inSituSpot AS s '.
-                  'INNER JOIN cond AS c ON s.conditionId = c.conditionId '.
-                  'INNER JOIN expression AS e '.
-                  '    ON e.conditionId = c.exprMappedConditionId AND e.bgeeGeneId = s.bgeeGeneId '.
-                  "WHERE s.reasonForExclusion = '".$Utils::CALL_NOT_EXCLUDED."' ".
-                  'AND s.expressionId IS NOT NULL';
-    if (!$process_all) {
-        $condSql .= ' AND e.inSituNumberObs IS NULL';
-    }
-    if ($cond_count > 0) {
-        $condSql .= ' ORDER BY c.exprMappedConditionId LIMIT '.$cond_offset.', '.$cond_count;
-    }
-
-    my $queryConditions = $dbh->prepare($condSql);
-    $queryConditions->execute()  or die $queryConditions->errstr;
-    @conditions = map { $_->[0] } @{$queryConditions->fetchall_arrayref};
-    $dbh->disconnect();
-}
 
 my $conditionCount = @conditions;
 if ($conditionCount == 0) {
