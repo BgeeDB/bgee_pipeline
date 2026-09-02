@@ -141,6 +141,42 @@ class SpeciesConfigDataReader:
             raise ConfigFileError(file_path, msg_error)
         return config
 
+class TaxonomicRangeDataReader:
+    """Class that provides the taxonomic range identifier of every taxonomic range label.
+    This class only contains static methods. No internal attributes.
+    """
+
+    @staticmethod
+    def get_tax_level_to_id(sparql_wrapper: SPARQLWrapper, query_catalog: QueryCatalogOMA = None) -> dict:
+        """Get a dictionary mapping a taxonomic range label to its taxonomic range identifier.
+
+        The homology queries do not join on orth:taxRangeId any more: a large subset of the
+        orth:TaxonomicRange nodes do not state it, and requiring it silently discards every
+        cluster attached to those nodes. The identifier is resolved from the range label instead,
+        which both node forms state.
+
+        :param sparql_wrapper: (SPARQLWrapper)
+            Wrapper around an online access to the OMA SPARQL endpoint.
+        :param query_catalog: The QueryCatalogOMA object providing the query. A default one is built when None.
+        :return:
+            dict : a taxonomic range label to taxonomic range identifier dictionary.
+        """
+        if query_catalog is None:
+            query_catalog = QueryCatalogOMA()
+        sparql_wrapper.setQuery(query_catalog.query_taxonomic_range_ids())
+        sparql_wrapper.setReturnFormat(JSON)
+        results = sparql_wrapper.query().convert()
+        tax_level_to_id = {}
+        for entry in results["results"]["bindings"]:
+            tax_level_to_id[entry["tax_level"]["value"]] = entry["tax_id"]["value"]
+        if not tax_level_to_id:
+            raise ValueError("No taxonomic range identifier was returned by the OMA SPARQL endpoint. "
+                             "Without them every homology relation would be written with an empty "
+                             "tax_level_id and silently dropped when inserted into Bgee.")
+        logging.info("Loaded {} taxonomic range identifiers".format(len(tax_level_to_id)))
+        return tax_level_to_id
+
+
 class GeneIDMapperDataReader:
     """Class that provides a gene identifier mapper as a dictionary.
     This class only contains static methods. No internal attributes.

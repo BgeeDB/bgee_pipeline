@@ -44,12 +44,15 @@ class HomologsFileWriter:
 
     def _create_homologs_output_file(self, sparql_wrapper_endpoint: SPARQLWrapper, sparql_query: str,
                                      tmp_dir: str = '', drop_duplicates: bool = False, mapper: dict = None,
-                                     species_mapper: list = None, query_projection_to_map: list = None):
+                                     species_mapper: list = None, query_projection_to_map: list = None,
+                                     tax_level_to_id: dict = None):
         """Create text files with either orthology or paralogy relationships.
 
         :param sparql_wrapper_endpoint: The SPARQLWrapper object that contains info about the SPARQL endpoint.
         :param sparql_query: The query to be executed by the SPARQL endpoint via the sparql_wrapper_endpoint.
         :param tmp_dir: The directory path where temporary files containing the processed species are saved. (optional)
+        :param tax_level_to_id: a dictionary mapping a taxonomic range label to its identifier, used to write the
+            tax_level_id column. (optional)
         """
         # set the query to be executed against the OMA endpoint and set the return format to JSON
         sparql_wrapper_endpoint.setQuery(sparql_query)
@@ -65,9 +68,11 @@ class HomologsFileWriter:
             logging.debug("{} - ".format(datetime.now()) + str(self.file_index) +' Writing file ...\n' + file)
             if species_mapper is not None and (self.species1 in species_mapper or self.species2 in species_mapper):
                 Util.rewrite_results_csv(self.output, file, results_OMA, query_projection_to_map,
-                                         mapper, drop_duplicates=drop_duplicates)
+                                         mapper, drop_duplicates=drop_duplicates,
+                                         tax_level_to_id=tax_level_to_id)
             else:
-                Util.rewrite_results_csv(self.output, file, results_OMA, drop_duplicates=drop_duplicates)
+                Util.rewrite_results_csv(self.output, file, results_OMA, drop_duplicates=drop_duplicates,
+                                         tax_level_to_id=tax_level_to_id)
             self.__write_pairs_tmp_file(os.path.join(tmp_dir, self.file_name_prefix + "_pairs_with_results.tmp"),
                                    [self.species1,self.species2].__str__().replace("'", "\"") + ",")
             logging.info("{} - Saved file".format(datetime.now()) + file)

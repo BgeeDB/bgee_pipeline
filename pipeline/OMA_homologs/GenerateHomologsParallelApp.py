@@ -4,7 +4,7 @@ import time
 from os import path
 from SPARQLWrapper import SPARQLWrapper
 import logging
-from DataReader import SpeciesConfigDataReader, GeneIDMapperDataReader
+from DataReader import SpeciesConfigDataReader, GeneIDMapperDataReader, TaxonomicRangeDataReader
 from PairwiseHomology import PairwiseHomologyOMA
 from FileWriter import HomologsFileWriter
 from util import Util
@@ -197,6 +197,9 @@ class GenerateHomologsParallel(Process):
                                                    NCBI_GENE2ENSEMBL_URL, SPECIES_NCBI_TO_ENSEMBL_IDS)
             geneID_mapper_dict = geneID_mapper.get_gene_id_mapper()
             geneID_mapper_species = geneID_mapper.get_mapper_species()
+            # The homology queries do not join on orth:taxRangeId any more, see
+            # QueryCatalogOMA.query_taxonomic_range_ids, so the identifiers are resolved from this map.
+            tax_level_to_id = TaxonomicRangeDataReader.get_tax_level_to_id(sparql_OMA)
             species_pairs_size = len(values_species)
             if ORTHOLOG_INDEX > species_pairs_size:
                 ORTHOLOG_INDEX = species_pairs_size
@@ -212,9 +215,10 @@ class GenerateHomologsParallel(Process):
                     species2 in geneID_mapper.species_url_ncbi_to_ensembl:
                     homolog_file_writer._create_homologs_output_file(sparql_OMA, query_OMA, tmp_dir, False,
                                                                      geneID_mapper_dict, geneID_mapper_species,
-                                                                     ["gene1", "gene2"])
+                                                                     ["gene1", "gene2"], tax_level_to_id)
                 else:
-                    homolog_file_writer._create_homologs_output_file(sparql_OMA, query_OMA, tmp_dir)
+                    homolog_file_writer._create_homologs_output_file(sparql_OMA, query_OMA, tmp_dir,
+                                                                    tax_level_to_id=tax_level_to_id)
                 config['DYNAMIC_VARIABLES']['START_INDEX_ORTHOLOG'] = str(count) 
                 with open(config_file_path, 'w') as configfile:
                     config.write(configfile)
@@ -243,7 +247,7 @@ class GenerateHomologsParallel(Process):
                                                          "gene1,gene2,tax_level,tax_level_id")
                     homolog_file_writer._create_homologs_output_file(sparql_OMA, query_OMA, tmp_dir, False,
                                                                  geneID_mapper_dict, geneID_mapper_species,
-                                                                 ["gene1", "gene2"])
+                                                                 ["gene1", "gene2"], tax_level_to_id)
                     config['DYNAMIC_VARIABLES']['START_INDEX_PARALOG'] = str(count)
                     with open(config_file_path, 'w') as configfile:
                         config.write(configfile)

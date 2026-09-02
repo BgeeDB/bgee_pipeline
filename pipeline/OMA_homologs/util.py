@@ -38,7 +38,7 @@ class Util:
     @staticmethod
     def rewrite_results_csv(output_header: str, file_path: str, results: object,
                             columns_to_replace: list = None, mapping: dict = None,
-                            drop_duplicates: bool = False):
+                            drop_duplicates: bool = False, tax_level_to_id: dict = None):
         """Rewrite JSON-like SPARQL results of a projected variable (i.e. column_to_replace)
          based on a mapping dictionary. If no column_to_replace is provided then this method will write a CSV file
          with the results without performing any mapping.
@@ -51,6 +51,10 @@ class Util:
             Default is None.
         :param mapping: a dictionary to map all cell values in the column_to_replace to a corresponding one
          defined in this mapping. Default is None.
+        :param tax_level_to_id: a dictionary mapping a taxonomic range label to its identifier. When provided,
+         the identifier of the 'tax_level' column is appended as a last column. The homology queries do not join
+         on orth:taxRangeId any more, because a large subset of the orth:TaxonomicRange nodes do not state it,
+         so the identifier is resolved here instead. Default is None.
         """
         header = results["results"]["bindings"][0].keys()
         output = io.StringIO()
@@ -78,6 +82,9 @@ class Util:
                 else:
                     line += entry[column]["value"] + ','
             line = line[:-1]
+            if tax_level_to_id is not None:
+                tax_level = entry["tax_level"]["value"] if "tax_level" in entry else ""
+                line += ',' + str(tax_level_to_id.get(tax_level, ""))
             if mapped_value is not None and isinstance(mapped_value, list) and len(mapped_value) > 1:
                 line_list = []
                 for value in mapped_value:

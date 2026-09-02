@@ -55,14 +55,13 @@ PREFIX lscr: <http://purl.org/lscr#>
         :return: str : The OMA SPARQL query.
         """
         query_OMA = self.get_all_prefixes() + """
-select distinct ?gene1 ?gene2  ?tax_level ?tax_id
+select distinct ?gene1 ?gene2  ?tax_level
 where {
 values ?species1 {<""" + species1 + """>}
 values ?species2 {<""" + species2 + """>}
 ?cluster a orth:OrthologsCluster.
 ?cluster orth:hasTaxonomicRange ?taxRange.
-?taxRange orth:taxRange ?tax_level;
-          orth:taxRangeId ?tax_id.
+?taxRange orth:taxRange ?tax_level.
 ?cluster orth:hasHomologousMember ?node1.
 ?cluster orth:hasHomologousMember ?node2. 
 ?node2 orth:hasHomologousMember* ?protein2. 
@@ -96,14 +95,13 @@ filter(?node1 != ?node2  )
         :return: str : The OMA SPARQL query.
         """
         query_OMA = self.get_all_prefixes() + """
-select distinct ?gene1 ?gene2 ?tax_level ?tax_id
+select distinct ?gene1 ?gene2 ?tax_level
 where {
 values ?species1 {<""" + species1 + """>}
 values ?species2 {<""" + species2 + """>}
 ?cluster a orth:OrthologsCluster.
 ?cluster orth:hasTaxonomicRange ?taxRange.
-?taxRange orth:taxRange ?tax_level;
-          orth:taxRangeId ?tax_id.
+?taxRange orth:taxRange ?tax_level.
 ?cluster orth:hasHomologousMember ?node1.
 ?cluster orth:hasHomologousMember ?node2. 
 ?node2 orth:hasHomologousMember* ?protein2. 
@@ -143,14 +141,13 @@ filter(?node1 != ?node2  )
         else:
             gene_projection = "(?gene_1 as ?gene1) (?gene_2 as ?gene2)"
         query_OMA = self.get_all_prefixes() + """
-select distinct """ + gene_projection + """ ?tax_level ?tax_id
+select distinct """ + gene_projection + """ ?tax_level
 where {
 values ?species1 {<""" + species1 + """>}
 values ?species2 {<""" + species2 + """>}
 ?cluster a orth:OrthologsCluster.
 ?cluster orth:hasTaxonomicRange ?taxRange.
-?taxRange orth:taxRange ?tax_level;
-          orth:taxRangeId ?tax_id.
+?taxRange orth:taxRange ?tax_level.
 ?cluster orth:hasHomologousMember ?node1.
 ?cluster orth:hasHomologousMember ?node2. 
 ?node2 orth:hasHomologousMember* ?protein2. 
@@ -191,14 +188,13 @@ filter regex(?gene_1, '""" + gene1_prefix + """[0-9]*$')
         else:
             gene_projection = "(?gene_1 as ?gene1) (?gene_2 as ?gene2)"
         query_OMA = self.get_all_prefixes() + """
-    select distinct """ + gene_projection + """ ?tax_level ?tax_id
+    select distinct """ + gene_projection + """ ?tax_level
     where {
     values ?species1 {<""" + species1 + """>}
     values ?species2 {<""" + species2 + """>}
     ?cluster a orth:OrthologsCluster.
     ?cluster orth:hasTaxonomicRange ?taxRange.
-    ?taxRange orth:taxRange ?tax_level;
-              orth:taxRangeId ?tax_id.
+    ?taxRange orth:taxRange ?tax_level.
     ?cluster orth:hasHomologousMember ?node1.
     ?cluster orth:hasHomologousMember ?node2. 
     ?node2 orth:hasHomologousMember* ?protein2. 
@@ -236,14 +232,13 @@ filter regex(?gene_1, '""" + gene1_prefix + """[0-9]*$')
         else:
             gene_projection = "(?gene_1 as ?gene1) (?gene_2 as ?gene2)"
         query_OMA = self.get_all_prefixes() + """
-select distinct """ + gene_projection + """ ?tax_level ?tax_id
+select distinct """ + gene_projection + """ ?tax_level
 where {
 values ?species1 {<""" + species1 + """>}
 values ?species2 {<""" + species2 + """>}
 ?cluster a orth:OrthologsCluster.
 ?cluster orth:hasTaxonomicRange ?taxRange.
-?taxRange orth:taxRange ?tax_level;
-          orth:taxRangeId ?tax_id.
+?taxRange orth:taxRange ?tax_level.
 ?cluster orth:hasHomologousMember ?node1.
 ?cluster orth:hasHomologousMember ?node2. 
 ?node2 orth:hasHomologousMember* ?protein2. 
@@ -269,15 +264,14 @@ filter regex(?gene_1, '""" + gene1_prefix + """[0-9]*$')
         :return: str : The OMA SPARQL query.
         """
         query_OMA = self.get_all_prefixes() + """
-select distinct ?gene1 ?gene2  ?tax_level ?tax_id
+select distinct ?gene1 ?gene2  ?tax_level
 where {
 values ?species1 {<""" + species1 + """>}
 values ?species2 {<""" + species2 + """>}
 ?cluster_speciation a orth:OrthologsCluster.
 ?cluster orth:hasHomologousMember ?cluster_speciation.
 ?cluster_speciation orth:hasTaxonomicRange ?taxRange.
-?taxRange orth:taxRange ?tax_level;
-          orth:taxRangeId ?tax_id.
+?taxRange orth:taxRange ?tax_level.
 ?cluster a orth:ParalogsCluster.
 ?cluster orth:hasHomologousMember ?node1.
 ?cluster orth:hasHomologousMember ?node2. 
@@ -308,15 +302,14 @@ filter(?node1 != ?node2  )
         :return: str : The OMA SPARQL query.
         """
         query_OMA = self.get_all_prefixes() + """
-select distinct ?gene1 ?gene2  ?tax_level ?tax_id
+select distinct ?gene1 ?gene2  ?tax_level
 where {
 values ?species1 {<""" + species1 + """>}
 values ?species2 {<""" + species2 + """>}
 ?cluster_speciation a orth:OrthologsCluster.
 ?cluster orth:hasHomologousMember ?cluster_speciation.
 ?cluster_speciation orth:hasTaxonomicRange ?taxRange.
-?taxRange orth:taxRange ?tax_level;
-          orth:taxRangeId ?tax_id.
+?taxRange orth:taxRange ?tax_level.
 ?cluster a orth:ParalogsCluster.
 ?cluster orth:hasHomologousMember ?node1.
 ?cluster orth:hasHomologousMember ?node2. 
@@ -352,15 +345,14 @@ filter(?node1 != ?node2  )
         :return: str : The OMA SPARQL query.
                 """
         query_OMA = self.get_all_prefixes() + """
-select distinct ?gene1 ?gene2  ?tax_level ?tax_id
+select distinct ?gene1 ?gene2  ?tax_level
 where {
 values ?species1 {<""" + species1 + """>}
 values ?species2 {<""" + species2 + """>}
 ?cluster_speciation a orth:OrthologsCluster.
 ?cluster orth:hasHomologousMember ?cluster_speciation.
 ?cluster_speciation orth:hasTaxonomicRange ?taxRange.
-?taxRange orth:taxRange ?tax_level;
-          orth:taxRangeId ?tax_id.
+?taxRange orth:taxRange ?tax_level.
 ?cluster a orth:ParalogsCluster.
 ?cluster orth:hasHomologousMember ?node1.
 ?cluster orth:hasHomologousMember ?node2. 
@@ -399,15 +391,14 @@ filter(?node1 != ?node2  )
         else:
             gene_projection = "(?protein1 as ?gene1) (?gene_2 as ?gene2)"
         query_OMA = self.get_all_prefixes() + """
-select distinct """ + gene_projection + """ ?tax_level ?tax_id
+select distinct """ + gene_projection + """ ?tax_level
 where {
 values ?species1 {<""" + species1 + """>}
 values ?species2 {<""" + species2 + """>}
 ?cluster_speciation a orth:OrthologsCluster.
 ?cluster orth:hasHomologousMember ?cluster_speciation.
 ?cluster_speciation orth:hasTaxonomicRange ?taxRange.
-?taxRange orth:taxRange ?tax_level;
-          orth:taxRangeId ?tax_id.
+?taxRange orth:taxRange ?tax_level.
 ?cluster a orth:ParalogsCluster.
 ?cluster orth:hasHomologousMember ?node1.
 ?cluster orth:hasHomologousMember ?node2. 
@@ -446,15 +437,14 @@ filter(?node1 != ?node2)
         else:
             gene_projection = "(?protein1 as ?gene1) (?gene_2 as ?gene2)"
         query_OMA = self.get_all_prefixes() + """
-select distinct """ + gene_projection + """ ?tax_level ?tax_id
+select distinct """ + gene_projection + """ ?tax_level
 where {
 values ?species1 {<""" + species1 + """>}
 values ?species2 {<""" + species2 + """>}
 ?cluster_speciation a orth:OrthologsCluster.
 ?cluster orth:hasHomologousMember ?cluster_speciation.
 ?cluster_speciation orth:hasTaxonomicRange ?taxRange.
-?taxRange orth:taxRange ?tax_level;
-          orth:taxRangeId ?tax_id.
+?taxRange orth:taxRange ?tax_level.
 ?cluster a orth:ParalogsCluster.
 ?cluster orth:hasHomologousMember ?node1.
 ?cluster orth:hasHomologousMember ?node2. 
@@ -495,15 +485,14 @@ filter(?node1 != ?node2)
         else:
             gene_projection = "(?protein1 as ?gene1) (?protein2 as ?gene2)"
         query_OMA = self.get_all_prefixes() + """
-select distinct """ + gene_projection + """ ?tax_level ?tax_id
+select distinct """ + gene_projection + """ ?tax_level
 where {
 values ?species1 {<""" + species1 + """>}
 values ?species2 {<""" + species2 + """>}
 ?cluster_speciation a orth:OrthologsCluster.
 ?cluster orth:hasHomologousMember ?cluster_speciation.
 ?cluster_speciation orth:hasTaxonomicRange ?taxRange.
-?taxRange orth:taxRange ?tax_level;
-          orth:taxRangeId ?tax_id.
+?taxRange orth:taxRange ?tax_level.
 ?cluster a orth:ParalogsCluster.
 ?cluster orth:hasHomologousMember ?node1.
 ?cluster orth:hasHomologousMember ?node2. 
@@ -519,6 +508,26 @@ filter(?node1 != ?node2)
 }
 """
         return query_OMA
+
+    def query_taxonomic_range_ids(self) -> str:
+        """Get the OMA SPARQL query returning the taxonomic range identifier of every range label.
+
+        The homology queries no longer join on orth:taxRangeId, because a large subset of the
+        orth:TaxonomicRange nodes do not state it: OMA exposes the same clade both as a taxonomy IRI
+        carrying the identifier and as an oma:TAX_RANGE_* node without it, and requiring the
+        identifier silently discards every cluster attached to the latter. The identifier is
+        therefore resolved from the range label, which is stated by both forms.
+
+        :return: str : The OMA SPARQL query.
+        """
+        query = self.get_all_prefixes() + """
+select distinct ?tax_level ?tax_id
+where {
+?taxRange orth:taxRange ?tax_level;
+          orth:taxRangeId ?tax_id.
+}
+"""
+        return query
 
     def get_mapper_OMA_IRI_to_prefixed_id(self, species, id_prefix) -> str:
         query = self.get_all_prefixes() + """
