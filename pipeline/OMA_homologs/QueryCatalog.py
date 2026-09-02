@@ -204,7 +204,7 @@ values ?species2 {<""" + species2 + """>}
 """ + self._gene_binding("protein2", "gene_2", gene_xref_lscr_term_s2) + """
 ?protein2 orth:organism/obo:RO_0002162 ?species2 .
 filter(?node1 != ?node2)
-filter regex(?gene_1, '""" + gene1_prefix + """[0-9]*$') 
+filter regex(?gene_1, '^""" + gene1_prefix + """[0-9]+$') 
 }
 """
         return query_OMA
@@ -250,8 +250,8 @@ filter regex(?gene_1, '""" + gene1_prefix + """[0-9]*$')
     ?protein2 dct:identifier ?gene_2. 
     ?protein2 orth:organism/obo:RO_0002162 ?species2 .
     filter(?node1 != ?node2)
-    filter regex(?gene_1, '""" + gene1_prefix + """[0-9]*$') 
-    filter regex(?gene_2, '""" + gene2_prefix + """[0-9]*$') 
+    filter regex(?gene_1, '^""" + gene1_prefix + """[0-9]+$') 
+    filter regex(?gene_2, '^""" + gene2_prefix + """[0-9]+$') 
     }
     """
         return query_OMA
@@ -294,7 +294,7 @@ values ?species2 {<""" + species2 + """>}
 """ + self._gene_binding("protein2", "gene_2", id_pattern=self.FLYBASE_GENE_ID_PATTERN) + """
 ?protein2 orth:organism/obo:RO_0002162 ?species2 .
 filter(?node1 != ?node2)
-filter regex(?gene_1, '""" + gene1_prefix + """[0-9]*$') 
+filter regex(?gene_1, '^""" + gene1_prefix + """[0-9]+$') 
 }
 """
         return query_OMA
@@ -572,7 +572,7 @@ where {
             ?protein a orth:Protein.
             ?protein dct:identifier ?gene. 
             ?protein orth:organism/obo:RO_0002162 <""" + species + """> .
-            filter regex(?gene, '""" + id_prefix + """[0-9]*$')
+            filter regex(?gene, '^""" + id_prefix + """[0-9]+$')
             }"""
         return query
 
