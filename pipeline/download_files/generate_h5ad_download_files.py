@@ -10,7 +10,6 @@ import anndata as ad
 import argparse
 import gc
 import logging
-from statistics import median
 from tqdm import tqdm
 
 desc="""Generates .h5ad files from single-cell data"""
@@ -36,15 +35,13 @@ ignore_dropletBased_exp = []
 # ---------------------------------------------------------------------------
 # scFAIR schema support
 #
-# The .h5ad files we publish must follow the scFAIR schema (a fork of the CZI
-# CELLxGENE schema), see https://github.com/scFAIR/scFAIR_schema.
+# The .h5ad files we publish must follow the scFAIR schema , see https://github.com/scFAIR/scFAIR_schema.
 # Compliance is checked at https://www.sc-fair.org/stats/compliance_all.
 #
-# The schema reserves a set of obs/var/uns keys. We ADD those keys rather than
-# renaming the Bgee-native ones, so that consumers of the .tsv companion file
-# keep working. The only exception is obs["sex"], which the schema reserves for
-# the human-readable label of the PATO term: the raw Bgee value is kept in
-# obs["bgee_sex"].
+# The schema reserves a set of obs/var/uns keys. The Bgee-native columns are renamed
+# into those keys rather than duplicated, so a column never appears twice under two
+# names. Bgee columns with no scFAIR counterpart are kept untouched, which the schema
+# allows. Note that the .tsv companion file follows obs, so its header changes too.
 #
 # ---------------------------------------------------------------------------
 SCFAIR_SCHEMA_VERSION = "7.1.0+scfair1.0"
@@ -139,33 +136,6 @@ def get_species_info(cursor):
     return species_info
 
 
-def get_feature_lengths(cursor, species_id, logger):
-    """Return, per gene, the median length of its isoforms, as required by the
-    schema for var["feature_length"]. transcript.transcriptLength is the "length"
-    column Kallisto reports, i.e. the real target length, not the estimated
-    "eff_length".
-
-    The transcript table is currently empty: insert_feature_length is commented
-    out in pipeline/RNA_Seq/Makefile and was not run for Bgee 15 (see BA-795).
-    Until it is repopulated, feature_length cannot be filled and the .h5ad files
-    stay non-compliant with scFAIR on that single field."""
-    cursor.execute("""
-    SELECT gene.geneId, transcript.transcriptLength
-    FROM transcript
-    INNER JOIN gene ON transcript.bgeeGeneId = gene.bgeeGeneId
-    WHERE gene.speciesId = %s
-    """, [species_id])
-    lengths_per_gene = {}
-    for gene_id, transcript_length in cursor.fetchall():
-        lengths_per_gene.setdefault(gene_id, []).append(transcript_length)
-    if not lengths_per_gene:
-        logger.warning(f"The transcript table holds no length for species {species_id}, so "
-                       "var[\"feature_length\"] is set to 0 for every gene and the file does not "
-                       "comply with scFAIR on that field. Repopulating it requires re-enabling "
-                       "insert_feature_length in pipeline/RNA_Seq/Makefile (see BA-795).")
-    return {gene_id: int(median(lengths)) for gene_id, lengths in lengths_per_gene.items()}
-
-
 # Gene annotations are the same for every experiment of a species, and the
 # transcript join is expensive, so they are queried once per species.
 gene_metadata_per_species = {}
@@ -176,10 +146,8 @@ def get_gene_metadata(cursor, species_id, logger):
     Ensembl gene ID."""
     if species_id in gene_metadata_per_species:
         return gene_metadata_per_species[species_id]
-    # Fetched first because the gene query below reuses the same cursor.
-    feature_lengths = get_feature_lengths(cursor, species_id, logger)
     cursor.execute("""
-    SELECT gene.geneId, gene.geneName, gene.seqRegionName, bioType.geneBioTypeName
+    SELECT gene.geneId, gene.geneName, gene.seqRegionName, bioType.geneBioTypeName, gene.geneLength
     FROM gene
     LEFT JOIN geneBioType AS bioType ON gene.geneBioTypeId = bioType.geneBioTypeId
     WHERE gene.speciesId = %s
@@ -189,11 +157,13 @@ def get_gene_metadata(cursor, species_id, logger):
             "feature_name": gene_name if gene_name else gene_id,
             "feature_type": biotype if biotype else "unknown",
             "feature_chromosome": normalize_chromosome(seq_region_name),
-            # 0 flags a gene with no transcript in the Bgee transcriptome; the
-            # schema has no "unknown" value for a length.
-            "feature_length": feature_lengths.get(gene_id, 0),
+            # gene.geneLength is the median of the lengths of the isoforms of the gene,
+            # which is what the schema asks for. It is NULL for the species inserted
+            # from a non-Ensembl source; the schema has no "unknown" value for a
+            # length, so 0 flags those.
+            "feature_length": gene_length if gene_length else 0,
         }
-        for gene_id, gene_name, seq_region_name, biotype in cursor.fetchall()
+        for gene_id, gene_name, seq_region_name, biotype, gene_length in cursor.fetchall()
     }
     return gene_metadata_per_species[species_id]
 
@@ -206,12 +176,12 @@ def build_scfair_var(gene_ids, gene_metadata, species_info, logger):
                        f"(e.g. {missing[:5]}); their var annotations default to placeholders.")
     without_length = [gene_id for gene_id in gene_ids
                       if gene_metadata.get(gene_id, {}).get("feature_length", 0) == 0]
-    if without_length and len(without_length) < len(gene_ids):
-        logger.warning(f"{len(without_length)} feature(s) have no transcript length in Bgee "
-                       f"(e.g. {without_length[:5]}); their feature_length is set to 0.")
+    if without_length:
+        logger.warning(f"{len(without_length)} of {len(gene_ids)} feature(s) have no geneLength in "
+                       f"Bgee (e.g. {without_length[:5]}); their feature_length is set to 0, which "
+                       "does not comply with scFAIR. geneLength is filled by the genes pipeline, "
+                       "and stays NULL for species inserted from a non-Ensembl source.")
     var = pd.DataFrame({
-        # Kept for backward compatibility: the schema identifies features by the index.
-        "gene_id": gene_ids,
         "feature_name": [gene_metadata.get(g, {}).get("feature_name", g) for g in gene_ids],
         "feature_type": [gene_metadata.get(g, {}).get("feature_type", "unknown") for g in gene_ids],
         "feature_chromosome": [gene_metadata.get(g, {}).get("feature_chromosome", "unknown")
@@ -228,15 +198,14 @@ def build_scfair_var(gene_ids, gene_metadata, species_info, logger):
     return var
 
 
-def add_scfair_obs_fields(obs, species_info, experiment_id):
-    """Add the obs columns reserved by the schema, derived from the Bgee-native
-    columns already present in `obs`. Expects the unified column names
-    anatEntityId / rnaSeqLibraryId (see the callers)."""
-    obs["experiment_id"] = experiment_id
-    # Bgee only annotates samples taken from a tissue, never cell lines or organoids.
-    obs["tissue_type"] = "tissue"
-    obs["tissue_ontology_term_id"] = obs["anatEntityId"]
-    obs["tissue"] = obs["anatEntityName"]
+def to_scfair_obs(obs, species_info, experiment_id):
+    """Rename the Bgee-native obs columns into the names the schema reserves, and
+    derive the fields Bgee does not store as such. Expects the unified column names
+    anatEntityId / rnaSeqLibraryId (see the callers). Columns that have no scFAIR
+    counterpart (the author annotations, the sequencer, the barcode...) are kept as
+    they are: the schema allows additional metadata."""
+    # Derive the columns that are not a plain rename first, while their source
+    # columns are still around.
     if obs["cellTypeId"].isna().any() or (obs["cellTypeId"].astype(str).str.strip() == "").any():
         raise ValueError(f"Experiment {experiment_id} has annotated samples without a cell type. "
                          "Every single-cell annotated sample in Bgee must have one.")
@@ -255,35 +224,56 @@ def add_scfair_obs_fields(obs, species_info, experiment_id):
                          "Add them to ASSAY_TO_EFO.")
     obs["assay_ontology_term_id"] = [ASSAY_TO_EFO[protocol][0] for protocol in protocols]
     obs["assay"] = [ASSAY_TO_EFO[protocol][1] for protocol in protocols]
-    obs["development_stage_ontology_term_id"] = obs["stageId"]
-    obs["development_stage"] = obs["stageName"]
     unexpected_sexes = set(obs["sex"]) - set(SEX_TO_PATO)
     if unexpected_sexes:
         raise ValueError(f"Unexpected value(s) {sorted(unexpected_sexes)} in cond.sex. "
                          "Update SEX_TO_PATO to cover the whole enum.")
-    # The schema reserves "sex" for the label of the PATO term. The raw Bgee value
-    # moves to its own column, because it distinguishes cases the schema collapses
-    # into "unknown" ('mixed' is not the same as 'not annotated').
-    obs["bgee_sex"] = obs["sex"]
-    obs["sex_ontology_term_id"] = [SEX_TO_PATO[sex][0] for sex in obs["bgee_sex"]]
-    obs["sex"] = [SEX_TO_PATO[sex][1] for sex in obs["bgee_sex"]]
-    # Bgee only integrates samples from healthy, wild-type-like individuals.
-    obs["disease_ontology_term_id"] = "PATO:0000461"
-    obs["disease"] = "normal"
-    ethnicity = "unknown" if species_info["organism_ontology_term_id"] == \
-        f"NCBITaxon:{HUMAN_SPECIES_ID}" else "na"
-    obs["self_reported_ethnicity_ontology_term_id"] = ethnicity
-    obs["self_reported_ethnicity"] = ethnicity
-    # Free text in Bgee, so only the non-ontologized column can be filled.
-    obs["strain_or_genetic_background"] = obs["strain"]
-    # Bgee does not track individuals; a library is the finest-grained proxy we have.
-    obs["donor_id"] = obs["rnaSeqLibraryId"].astype(str)
-    obs["is_primary_data"] = True
+    # The schema reserves "sex" for the label of the PATO term, so the Bgee value is
+    # replaced in place. It is kept in its own column because the schema collapses
+    # 'mixed' and 'not annotated' into the same "unknown".
+    obs["bgeeSex"] = obs["sex"]
+    obs["sex_ontology_term_id"] = [SEX_TO_PATO[sex][0] for sex in obs["bgeeSex"]]
+    obs["sex"] = [SEX_TO_PATO[sex][1] for sex in obs["bgeeSex"]]
     obs["suspension_type"] = [
         CELL_COMPARTMENT_TO_SUSPENSION_TYPE.get(compartment, "na")
         for compartment in obs["cellCompartment"]
     ]
-    categorical_columns = ["physiologicalStatus", "assay_ontology_term_id", "assay", "tissue_type", "tissue_ontology_term_id", "tissue",
+
+    # Plain renames, then drop the columns the derived ones consumed.
+    obs.rename(columns={
+        "anatEntityId": "tissue_ontology_term_id",
+        "anatEntityName": "tissue",
+        "stageId": "development_stage_ontology_term_id",
+        "stageName": "development_stage",
+        # Free text in Bgee, so the ontologized counterpart cannot be filled.
+        "strain": "strain_or_genetic_background",
+    }, inplace=True)
+    # cellCompartment maps one to one onto suspension_type, and the cell type columns
+    # only differ from their scFAIR counterparts by the unannotated placeholder, so
+    # nothing is lost by dropping them. rnaSeqTechnologyName and sequencedTranscriptPart
+    # are kept: several of them share one EFO term, so assay alone loses the protocol.
+    obs.drop(columns=["cellTypeId", "cellTypeName", "cellCompartment"], inplace=True)
+    # Bgee does not track individuals; a library is the finest-grained proxy we have.
+    obs["donor_id"] = obs["rnaSeqLibraryId"].astype(str)
+
+    # Fields Bgee has no column for.
+    obs["experiment_id"] = experiment_id
+    # Bgee only annotates samples taken from a tissue, never cell lines or organoids.
+    obs["tissue_type"] = "tissue"
+    # Bgee only integrates samples from healthy, wild-type-like individuals.
+    obs["disease_ontology_term_id"] = "PATO:0000461"
+    obs["disease"] = "normal"
+    # Bgee holds no self-reported ancestry as such, and the schema mandates "na"
+    # outside of Homo sapiens.
+    ethnicity = "unknown" if species_info["organism_ontology_term_id"] == \
+        f"NCBITaxon:{HUMAN_SPECIES_ID}" else "na"
+    obs["self_reported_ethnicity_ontology_term_id"] = ethnicity
+    obs["self_reported_ethnicity"] = ethnicity
+    obs["is_primary_data"] = True
+
+    categorical_columns = ["physiologicalStatus", "bgeeSex", "rnaSeqTechnologyName",
+                           "sequencedTranscriptPart", "assay_ontology_term_id", "assay",
+                           "tissue_type", "tissue_ontology_term_id", "tissue",
                            "cell_type_ontology_term_id", "cell_type",
                            "development_stage_ontology_term_id", "development_stage",
                            "sex_ontology_term_id", "sex", "disease_ontology_term_id", "disease",
@@ -417,7 +407,7 @@ def exp_to_h5ad_full_length(species_ID, expID, name, description, doi, output, s
         sequencedTranscriptPart = [result[19] for result in results]
         libID=[result[7] for result in results]
         query_per_lib = """
-        SELECT gene.geneId, result.abundanceUnit, result.abundance, result.readsCount, result.UMIsCount
+        SELECT gene.geneId, result.readsCount
         FROM rnaSeqLibraryAnnotatedSampleGeneResult AS result
         INNER JOIN gene ON result.bgeeGeneId = gene.bgeeGeneId
         WHERE result.rnaSeqLibraryAnnotatedSampleId = %s
@@ -428,34 +418,16 @@ def exp_to_h5ad_full_length(species_ID, expID, name, description, doi, output, s
             cursor.execute(query_per_lib, [libSamp])
             results = cursor.fetchall()
             #print(results)
-            for j, result in enumerate(results):
-                gene_id = result[0]
-                count = result[3]
-                tpm = result[2]
+            for gene_id, count in results:
                 if libSamp not in counts_dict:
                     counts_dict[libSamp] = {}
-                if gene_id not in counts_dict[libSamp]:
-                    counts_dict[libSamp][gene_id] = {}
-                counts_dict[libSamp][gene_id]["count"] = count
-                counts_dict[libSamp][gene_id]["tpm"] = tpm
+                counts_dict[libSamp][gene_id] = count
         # Create the count matrix by iterating over the libSam and gene IDs
         unique_gene_ids = list(set(gene_id for libSamp in counts_dict for gene_id in counts_dict[libSamp]))
         count_matrix = []
-        tpm_matrix = []
         for libSamp in tqdm(SampleId):
-            libSamp_counts = []
-            libSamp_tpms = []
-            for gene_id in unique_gene_ids:
-                if gene_id in counts_dict[libSamp]:
-                    libSamp_counts.append(counts_dict[libSamp][gene_id]["count"])
-                    libSamp_tpms.append(counts_dict[libSamp][gene_id]["tpm"])
-                else:
-                    libSamp_counts.append(0)
-                    libSamp_tpms.append(0)
-            count_matrix.append(libSamp_counts)
-            tpm_matrix.append(libSamp_tpms)
+            count_matrix.append([counts_dict[libSamp].get(gene_id, 0) for gene_id in unique_gene_ids])
         count_matrix= csr_matrix(count_matrix, dtype=np.float32)
-        tpm_matrix= csr_matrix(tpm_matrix, dtype=np.float32)
         # Create a dictionary libSamp IDs to metadata values, then transform to df for anndata implementation
         metadata_dict = {SampleId: {"library_id": libID, "anatEntityId": anatEntityId, "anatEntityName": anatEntityName, "anatEntityAuthorAnnotation": anatEntityAuthorAnnotation, "stageId": stageId, "stageName": stageName, "stageAuthorAnnotation": stageAuthorAnnotation, "cellTypeId":cellTypeId, "cellTypeName": cellTypeName, "cellTypeAuthorAnnotation": cellTypeAuthorAnnotation, "strain": strain, "sex":sex, "speciesId":speciesId, "rnaSeqSequencerName":rnaSeqSequencerName, "libraryType": libraryType, "cellCompartment":cellCompartment, "physiologicalStatus": physiologicalStatus, "rnaSeqTechnologyName": rnaSeqTechnologyName, "sequencedTranscriptPart": sequencedTranscriptPart } for SampleId, libID, anatEntityId, anatEntityName, stageId, stageName, cellTypeId, cellTypeName, strain, sex, speciesId, anatEntityAuthorAnnotation, stageAuthorAnnotation, cellTypeAuthorAnnotation,rnaSeqSequencerName, cellCompartment, libraryType, physiologicalStatus, rnaSeqTechnologyName, sequencedTranscriptPart in zip(SampleId, libID, anatEntityId, anatEntityName, stageId, stageName, cellTypeId, cellTypeName, strain, sex, speciesId, anatEntityAuthorAnnotation, stageAuthorAnnotation, cellTypeAuthorAnnotation, rnaSeqSequencerName, cellCompartment, libraryType, physiologicalStatus, rnaSeqTechnologyName, sequencedTranscriptPart)}
         metadata_df = pd.DataFrame.from_dict(metadata_dict, orient='index') # index automatically libSamp_ids
@@ -463,21 +435,17 @@ def exp_to_h5ad_full_length(species_ID, expID, name, description, doi, output, s
         # Use the same column names as the droplet-based path, so that a single
         # function can add the scFAIR obs fields for both.
         metadata_df.rename(columns={"library_id": "rnaSeqLibraryId"}, inplace=True)
-        metadata_df = add_scfair_obs_fields(metadata_df, species_info, expID)
+        metadata_df = to_scfair_obs(metadata_df, species_info, expID)
         # Create a DataFrame with the gene metadata (for anndata implementation)
         gene_metadata = build_scfair_var(unique_gene_ids, get_gene_metadata(cursor, species_ID, logger),
                                          species_info, logger)
         #Create anndata object
         adata = ad.AnnData(X=count_matrix, obs=metadata_df, var=gene_metadata) #as metadata dict same order than libSamp_ids from which the count table have been created it's ok
-        adata.layers["abundance"] = tpm_matrix
         set_scfair_uns(adata, species_info, expID, name, doi, "full-length")
-        # Document what each matrix contains
-        adata.uns['matrix_descriptions'] = {
-            'X': 'Raw read counts',
-            'layers': {
-                'abundance': 'Transcripts Per Million',
-            }
-        }
+        # Only the raw counts are published: rnaSeqLibraryAnnotatedSample.abundanceUnit
+        # is an enum('tpm','cpm'), so a single "abundance" layer could not be labelled
+        # with one unit without lying about the libraries using the other one.
+        adata.uns['matrix_descriptions'] = {'X': 'Raw read counts'}
         adata.obs_names = SampleId # comme for loop ils seront dans le bon ordre
         adata.var_names = unique_gene_ids
         # Same as for droplet-based data: write to temporary paths and rename them only once both
@@ -700,12 +668,12 @@ def exp_to_h5ad_dropletBased(species_id, exp_id, name, description, doi, output,
     logger.debug(f"Start to generate h5ad object with {len(all_barcode_names)} observations and {n_vars} variables.")
     # log the memory usage in GB
     logger.debug(f"Memory usage before creating AnnData object: {psutil.Process(os.getpid()).memory_info().rss / (1024**3):.2f} GB")
-    adata = ad.AnnData(X=final_matrix, dtype=np.float32)
+    adata = ad.AnnData(X=final_matrix)
     # now that we created the AnnData object, we can delete the final_matrix to save memory
     del final_matrix
     gc.collect()
     obs = pd.DataFrame(obs_metadata, index=all_barcode_names)
-    adata.obs = add_scfair_obs_fields(obs, species_info, exp_id)
+    adata.obs = to_scfair_obs(obs, species_info, exp_id)
     adata.obs_names = all_barcode_names
     adata.var = build_scfair_var(genes, get_gene_metadata(cursor, species_id, logger), species_info, logger)
     adata.var_names = genes
