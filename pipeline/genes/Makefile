@@ -44,6 +44,43 @@ genes: $(BGEE_SPECIES_FILEPATH) uniprotAC_ID $(OUTPUT_DIR)/uniprot.map
 	@$(MV) $@.tmp $@
 
 
+# ============================================================================
+# ONE-OFF FIX FOR Bgee 16.0 -- DELETE fix_gene_length_bgee_16.pl AND THIS RULE
+# ONCE IT HAS BEEN RUN ON THE RELEASE DATABASE.
+#
+# The genes of Bgee 16.0 were inserted before the gene.geneLength column existed, so it
+# has to be filled afterwards. From Bgee 16.1 onwards insert_ensembl_genes.pl fills it
+# on its own as part of the "genes" rule above, and keeping this rule would only be a
+# second, divergent way of writing that column.
+#
+# The column must exist first, on the release database:
+#   ALTER TABLE gene
+#       ADD COLUMN geneLength mediumint unsigned default null
+#       COMMENT 'Median of the lengths of the isoforms of this gene, an isoform length being the summed length of its exons. Reproduces the median calculation of GTFtools, as required for feature_length by the scFAIR schema. NULL for species inserted from a non-Ensembl source, for which no Ensembl JSON is available'
+#       AFTER seqRegionName;
+#
+# The 3 species inserted from a non-Ensembl source have no Ensembl JSON, so their
+# geneLength stays NULL.
+fix_gene_length:
+	@$(MYSQL) -e "SELECT CONCAT(s.speciesId, '__', s.genomeSpeciesId, '__', s.genus, '_', REPLACE(s.species, ' ', '_'), '__', d.dataSourceName) FROM species s, dataSource d WHERE s.dataSourceId=d.dataSourceId ORDER BY s.speciesId" | grep -v 'speciesId' >$@.species
+	@if [[ -s $@.species ]]; then echo -n; else echo "NO species in file"; exit 2; fi
+	# Fill gene.geneLength for Ensembl species (the JSON is the one the "genes" rule uses)
+	@for sp in `cat $@.species | grep -i __Ensembl`; do \
+		date; \
+		echo "species: $$sp"; \
+		export spe=`echo $$sp | grep -i __Ensembl | sed -e 's|__Ensembl.*||; s|^.*__||' | tr 'A-Z' 'a-z'`; \
+		if [[ $$spe == 'heterocephalus_glaber' ]]; then export spe='heterocephalus_glaber_female'; fi; \
+		export url='https://ftp.ensembl.org/pub/release-$(ENSRELEASE)'; \
+		if [[ `echo $$sp | grep 'EnsemblMetazoa$$'` ]]; then export url='http://ftp.ensemblgenomes.org/pub/metazoa/release-$(ENSMETAZOARELEASE)'; fi; \
+		$(WGET) "$$url/json/$$spe/$$spe.json" && $(MV) $$spe.json $(INPUT_DIR)$$spe.json 2>/dev/null || $(RM) $$spe.json; \
+		perl fix_gene_length_bgee_16.pl -species=$$sp -bgee=$(BGEECMD) $(INPUT_DIR)$$spe.json >> $@.tmp 2>>$@.err; \
+		$(RM) $(INPUT_DIR)$$spe.json; \
+		sleep 60; \
+	done
+	@if [[ -s $@.err ]]; then echo -n; else $(RM) $@.err; fi
+	@$(RM) $@.species
+	@$(MV) $@.tmp $@
+
 # Please check that GeneCards datasource ID did not change in the database before running updateXrefs
 GENECARDS_ID := 40
 #FIXME still needed with the Ensembl JSON parsing? Maybe only for non-Ensembl species

@@ -153,29 +153,6 @@ $InsertedDataSources{'uniprot_isoform'}          = $InsertedDataSources{'uniprot
 my %UnknownDataSources;
 
 
-# The scFAIR schema requires var["feature_length"] of the h5ad download files to be the
-# median of the lengths of the isoforms of a gene, an isoform length being the summed
-# length of its exons, reusing the median calculation of GTFtools. The Ensembl JSON
-# already carries the exons of every transcript, so neither the GTF nor GTFtools itself
-# is needed here.
-sub median_isoform_length {
-    my ($gene) = @_;
-
-    my @lengths;
-    for my $transcript ( @{ $gene->{'transcripts'} || [] } ){
-        my $length = 0;
-        $length += $_->{'end'} - $_->{'start'} + 1  for @{ $transcript->{'exons'} || [] };
-        push @lengths, $length  if ( $length > 0 );
-    }
-    # e.g. a gene whose transcripts carry no exon in the JSON
-    return undef  if ( !@lengths );
-
-    @lengths = sort { $a <=> $b } @lengths;
-    my $middle = int(@lengths / 2);
-    return @lengths % 2 ? $lengths[$middle]
-                        : int( ($lengths[$middle - 1] + $lengths[$middle]) / 2 );
-}
-
 ## Gene info (id, description)
 # Get individual gene info
 my $geneDB    = $dbh->prepare('INSERT INTO gene (geneId, geneName, geneDescription, geneBioTypeId, speciesId, ensemblGene, seqRegionName, geneLength)
@@ -196,7 +173,7 @@ for my $gene (sort {$a->{'id'} cmp $b->{'id'}} (@genes)) { #Sort to always get t
     my $description     = $gene->{'description'}      || '';
     my $biotype         = $gene->{'biotype'}          || die "Invalid BioType for $stable_id\n";
     my $seq_region_name = $gene->{'seq_region_name'}  || '';
-    my $gene_length     = median_isoform_length($gene);
+    my $gene_length     = Utils::median_isoform_length($gene);
 
     ## Cleaning
     # Remove useless whitespace(s)

@@ -1365,5 +1365,31 @@ sub check_running_jobs {
 }';
 }
 
+# The scFAIR schema requires var["feature_length"] of the h5ad download files to be the
+# median of the lengths of the isoforms of a gene, an isoform length being the summed
+# length of its exons, reusing the median calculation of GTFtools. The Ensembl JSON
+# carries the exons of every transcript, so neither the GTF nor GTFtools itself is
+# needed. Shared by insert_ensembl_genes.pl and insert_gene_length.pl so that the
+# one-off fix cannot drift from what the pipeline inserts.
+# Takes a gene of the 'genes' section of an Ensembl JSON dump, returns undef when no
+# length can be computed.
+sub median_isoform_length {
+    my ($gene) = @_;
+
+    my @lengths;
+    for my $transcript ( @{ $gene->{'transcripts'} || [] } ){
+        my $length = 0;
+        $length += $_->{'end'} - $_->{'start'} + 1  for @{ $transcript->{'exons'} || [] };
+        push @lengths, $length  if ( $length > 0 );
+    }
+    # e.g. a gene whose transcripts carry no exon in the JSON
+    return undef  if ( !@lengths );
+
+    @lengths = sort { $a <=> $b } @lengths;
+    my $middle = int(@lengths / 2);
+    return @lengths % 2 ? $lengths[$middle]
+                        : int( ($lengths[$middle - 1] + $lengths[$middle]) / 2 );
+}
+
 1;
 
