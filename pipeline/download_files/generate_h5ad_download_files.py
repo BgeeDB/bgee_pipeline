@@ -45,7 +45,7 @@ ignore_dropletBased_exp = []
 #
 # ---------------------------------------------------------------------------
 SCFAIR_SCHEMA_VERSION = "7.1.0+scfair1.0"
-SCFAIR_SCHEMA_REFERENCE = "https://github.com/scFAIR/scFAIR/edit/main/schema/7.1.0/schema.md"
+SCFAIR_SCHEMA_REFERENCE = "https://github.com/scFAIR/scFAIR/blob/main/schema/7.1.0/schema.md"
 
 # cond.sex is an enum, so every possible value is mapped here and an unexpected
 # value means the enum changed in the schema and this mapping must be updated.
