@@ -202,6 +202,21 @@ $(OUTPUT_DIR)generate_all_cond_params_call_files:
 	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=10 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)  GenerateBasicExprFile - $(EXPR_SIMPLE_CAT) $(DOWNLOAD_FILE_ROOT_PATH)$(EXPR_CALLS_PATH) $(ALL_COND_PARAM) 30 > $@.tmp 2>$@.warnings
 	@$(MV) $@.tmp $@
 
+# =========================
+# topAnat expression call files
+# =========================
+# Two files per species, holding the propagated calls topAnat reads: it cannot propagate a whole
+# species inside a web request. The web application generates the missing ones at start-up, one
+# gene batch at a time; this step produces them all beforehand, several batches at a time.
+# The parallelism is passed to the jar rather than set through the parallelism of the common
+# ForkJoinPool, the generation using a pool of its own.
+$(OUTPUT_DIR)generate_topanat_call_files:
+	@mkdir -p $(TOPANAT_CALL_FILES_PATH)
+	@$(JAVA) GenerateTopAnatFiles $(TOPANAT_CALL_FILES_PATH) $(EMPTY_LIST) false $(TOPANAT_PARALLELISM) > $@.temp 2>$@.warnings
+	@echo "Content of directory $(TOPANAT_CALL_FILES_PATH)topanat_calls/" >> $@.temp
+	@ls -l $(TOPANAT_CALL_FILES_PATH)topanat_calls/ >> $@.temp
+	@$(MV) $@.temp $@
+
 # The file is generated to retrieve species information from the database. Until Bgee 15.2 the R package was querying the Java API to retrieve that info.
 # Since Bgee 15.2 we added droplet based data. As in the Java API we do not distinguish between full length and droplet based single cell data (they are
 # both considered single cell), we had either to create a new datatype EnumSet specific to the download file (called DownloadFileDatatypes) or to generate
@@ -333,7 +348,7 @@ $(OUTPUT_DIR)rank_files_info:
 # ======================
 # Verification file
 # ======================
-$(VERIFICATIONFILE): $(OUTPUT_DIR)insert_download_files_info $(OUTPUT_DIR)xref_uniprot_info $(OUTPUT_DIR)rank_files_info $(OUTPUT_DIR)generate_processed_files $(OUTPUT_DIR)generate_anatomy_call_files $(OUTPUT_DIR)generate_anatomy_development_call_files $(OUTPUT_DIR)gzip_call_files
+$(VERIFICATIONFILE): $(OUTPUT_DIR)insert_download_files_info $(OUTPUT_DIR)xref_uniprot_info $(OUTPUT_DIR)rank_files_info $(OUTPUT_DIR)generate_processed_files $(OUTPUT_DIR)generate_anatomy_call_files $(OUTPUT_DIR)generate_anatomy_development_call_files $(OUTPUT_DIR)gzip_call_files $(OUTPUT_DIR)generate_topanat_call_files
 
 clean:
-	-@$(RM) -R $(VERIFICATIONFILE) $(OUTPUT_DIR)xref_uniprot_info.tmp $(OUTPUT_DIR)xref_uniprot_info $(XREF_FILE).tmp.noheader $(XREF_FILE).tmp $(XREF_FILE) $(OUTPUT_DIR)insert_download_files_info $(OUTPUT_DIR)rank_files_info $(OUTPUT_DIR)generate_processed_files $(OUTPUT_DIR)generate_anatomy_call_files $(OUTPUT_DIR)generate_anatomy_development_call_files $(OUTPUT_DIR)gzip_call_files
+	-@$(RM) -R $(VERIFICATIONFILE) $(OUTPUT_DIR)xref_uniprot_info.tmp $(OUTPUT_DIR)xref_uniprot_info $(XREF_FILE).tmp.noheader $(XREF_FILE).tmp $(XREF_FILE) $(OUTPUT_DIR)insert_download_files_info $(OUTPUT_DIR)rank_files_info $(OUTPUT_DIR)generate_processed_files $(OUTPUT_DIR)generate_anatomy_call_files $(OUTPUT_DIR)generate_anatomy_development_call_files $(OUTPUT_DIR)gzip_call_files $(OUTPUT_DIR)generate_topanat_call_files
