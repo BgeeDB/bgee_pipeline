@@ -601,7 +601,17 @@ create table globalCond (
 -- Note: these values are the same for all genes in a condition-species, this is why they are stored in this table.
     bulkMaxRank decimal(9,2) unsigned,
     singleCellMaxRank decimal(9,2) unsigned,
-    inSituMaxRank decimal(9,2) unsigned
+    inSituMaxRank decimal(9,2) unsigned,
+
+-- ** OBSERVED CONDITION PARAMETERS **
+-- These fields are not set when the global conditions are inserted: they are updated afterwards
+-- from the raw conditions of the table cond, by the rule insertGlobalCond of the post_processing
+-- Makefile. The filtering of the calls on observed data relies on them.
+    condObservedAnatEntity tinyint(1) not null default 0 COMMENT 'A boolean defining whether this condition has been observed in annotations, in any species (maybe a different one from the species of this global condition), considering only the anat. entity parameter.',
+    condObservedCellType tinyint(1) not null default 0 COMMENT 'A boolean defining whether this condition has been observed in annotations, in any species (maybe a different one from the species of this global condition), considering only the cell type parameter.',
+    condObservedStage tinyint(1) not null default 0 COMMENT 'A boolean defining whether this condition has been observed in annotations, in any species (maybe a different one from the species of this global condition), considering only the dev. stage parameter.',
+    condObservedSex tinyint(1) not null default 0 COMMENT 'A boolean defining whether this condition has been observed in annotations, in any species (maybe a different one from the species of this global condition), considering only the sex parameter.',
+    condObservedStrain tinyint(1) not null default 0 COMMENT 'A boolean defining whether this condition has been observed in annotations, in any species (maybe a different one from the species of this global condition), considering only the strain parameter.'
 ) engine = innodb COMMENT 'This table includes "real" conditions used in the raw expression table, but mostly conditions resulting from the propagation of expression calls. It results from the computation of propagated calls according to different condition parameters combination (e.g., grouping all data in a same anat. entity, or all data in a same anat. entity - stage, or data in anat. entity - sex). A condition parameter that is not part of the combination is never null: it is set to the root of that parameter (anatEntityId BGEE:0000000, cellTypeId GO:0005575, stageId UBERON:0000104, sex any, strain wild-type).';
 
 CREATE TABLE globalCondRelation (
