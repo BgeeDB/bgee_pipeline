@@ -248,7 +248,9 @@ add primary key(incorrectExpressionId, remappedExpressionId);
 /*!40000 ALTER TABLE `globalCond` DISABLE KEYS */;
 alter table globalCond
 modify globalConditionId mediumint unsigned not null auto_increment primary key,
--- not a primary key as for table cond, because some field can be null
+-- The fields of this key are never null (a condition parameter that is not used is set
+-- to its root), so this key does prevent duplicated conditions: a unique key does not
+-- when one of its fields is null.
 add unique(anatEntityId, cellTypeId, stageId, speciesId, sex, strain);
 /*!40000 ALTER TABLE `globalCond` ENABLE KEYS */;
 

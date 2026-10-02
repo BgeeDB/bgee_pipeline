@@ -572,22 +572,23 @@ create table remapExpression (
 
 create table globalCond (
     globalConditionId mediumint unsigned not null,
-    anatEntityId          varchar(20)  COMMENT 'Uberon anatomical entity ID. Can be null in this table if this condition aggregates data according to other condition parameters (e.g., grouping all data in a same stage whatever the organ is).',
-    cellTypeId            varchar(20)  default null COMMENT 'A second uberon anatomical entity ID used to manage composition of anatomical entities. Used only for single cell data for postcomposition of anatomical entity ID and cell type ID',
-    stageId               varchar(20)  COMMENT 'Uberon stage ID. Can be null in this table if this condition aggregates data according to other condition parameters (e.g., grouping all data in a same organ whatever the dev. stage is).',
+    anatEntityId          varchar(20)  not null COMMENT 'Uberon anatomical entity ID. Never null: the root of the anatomical entities, BGEE:0000000, is used when this condition aggregates data according to other condition parameters (e.g., grouping all data in a same stage whatever the organ is).',
+    cellTypeId            varchar(20)  not null COMMENT 'A second uberon anatomical entity ID used to manage composition of anatomical entities. Used only for single cell data for postcomposition of anatomical entity ID and cell type ID. Never null: the root of the cell types, GO:0005575, is used when this condition has no cell type.',
+    stageId               varchar(20)  not null COMMENT 'Uberon stage ID. Never null: the root of the stages, UBERON:0000104, is used when this condition aggregates data according to other condition parameters (e.g., grouping all data in a same organ whatever the dev. stage is).',
     speciesId             mediumint unsigned not null COMMENT 'NCBI species taxon ID',
 -- NA: not available from source information
 -- not annotated: information not captured by Bgee
 -- If an ENUM column is declared NOT NULL, its default value is the first element of the list
 -- In this table, only 'any' is used to replace 'not annotated', 'NA', 'mixed'
 -- and also represents the propagation of calls along the sex 'ontology'.
-    sex enum('any', 'hermaphrodite', 'female', 'male'),
+-- Never null: 'any' is the root of the sexes, used when this condition aggregates data whatever the sex is.
+    sex enum('any', 'hermaphrodite', 'female', 'male') not null,
 -- For now, strains are captured as free-text format, only 4 term are "standardized":
 -- 'NA', 'not annotated', 'wild-type', 'confidential_restricted_data'.
 -- In this table, only 'wild-type' is used to replace 'NA', 'not annotated', and
 -- 'confidential_restricted_data', as for conditions used in expression table.
-    strain varchar(100)
-    COMMENT 'Strain information. NA: not available from source information; not annotated: information not captured by Bgee; confidential_restricted_data: information cannot be disclosed publicly',
+    strain varchar(100) not null
+    COMMENT 'Strain information. NA: not available from source information; not annotated: information not captured by Bgee; confidential_restricted_data: information cannot be disclosed publicly. Never null: wild-type is used when this condition aggregates data whatever the strain is.',
 
 -- ** RANKS **
 -- max ranks in each data type and condition, notably used to allow normalization
@@ -601,7 +602,7 @@ create table globalCond (
     bulkMaxRank decimal(9,2) unsigned,
     singleCellMaxRank decimal(9,2) unsigned,
     inSituMaxRank decimal(9,2) unsigned
-) engine = innodb COMMENT 'This table includes "real" conditions used in the raw expression table, but mostly conditions resulting from the propagation of expression calls. It results from the computation of propagated calls according to different condition parameters combination (e.g., grouping all data in a same anat. entity, or all data in a same anat. entity - stage, or data in anat. entity - sex). This is why the fields anatEntityId, stageId, sex, strain, can be null in this table (but not all of them at the same time).';
+) engine = innodb COMMENT 'This table includes "real" conditions used in the raw expression table, but mostly conditions resulting from the propagation of expression calls. It results from the computation of propagated calls according to different condition parameters combination (e.g., grouping all data in a same anat. entity, or all data in a same anat. entity - stage, or data in anat. entity - sex). A condition parameter that is not part of the combination is never null: it is set to the root of that parameter (anatEntityId BGEE:0000000, cellTypeId GO:0005575, stageId UBERON:0000104, sex any, strain wild-type).';
 
 CREATE TABLE globalCondRelation (
     sourceGlobalConditionId mediumint unsigned NOT NULL,
