@@ -361,10 +361,10 @@ alter table rnaSeqPopulationCapture
 add primary key (rnaSeqPopulationCaptureId);
 /*!40000 ALTER TABLE `rnaSeqPopulationCapture` ENABLE KEYS */;
 
-/*!40000 ALTER TABLE `rnaSeqPopulationCaptureToBiotypeExcludedAbsentCalls` DISABLE KEYS */;
-alter table rnaSeqPopulationCaptureToBiotypeExcludedAbsentCalls
+/*!40000 ALTER TABLE `rnaSeqPopulationCaptureToBiotype` DISABLE KEYS */;
+alter table rnaSeqPopulationCaptureToBiotype
 add primary key (rnaSeqPopulationCaptureId, geneBioTypeId);
-/*!40000 ALTER TABLE `rnaSeqPopulationCaptureToBiotypeExcludedAbsentCalls` ENABLE KEYS */;
+/*!40000 ALTER TABLE `rnaSeqPopulationCaptureToBiotype` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `rnaSeqPopulationCaptureSpeciesMaxRank` DISABLE KEYS */;
 alter table rnaSeqPopulationCaptureSpeciesMaxRank

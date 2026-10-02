@@ -305,11 +305,11 @@ add foreign key (rnaSeqLibraryIndividualSampleId) references rnaSeqLibraryIndivi
 add foreign key (bgeeGeneId) references gene(bgeeGeneId) on delete cascade;
 /*!40000 ALTER TABLE `rnaSeqLibraryIndividualSampleGeneResult` ENABLE KEYS */;
 
-/*!40000 ALTER TABLE `rnaSeqPopulationCaptureToBiotypeExcludedAbsentCalls` DISABLE KEYS */;
-alter table rnaSeqPopulationCaptureToBiotypeExcludedAbsentCalls
+/*!40000 ALTER TABLE `rnaSeqPopulationCaptureToBiotype` DISABLE KEYS */;
+alter table rnaSeqPopulationCaptureToBiotype
 add foreign key (rnaSeqPopulationCaptureId) references rnaSeqPopulationCapture(rnaSeqPopulationCaptureId) on delete cascade,
 add foreign key (geneBioTypeId) references geneBioType(geneBioTypeId) on delete cascade;
-/*!40000 ALTER TABLE `rnaSeqPopulationCaptureToBiotypeExcludedAbsentCalls` ENABLE KEYS */;
+/*!40000 ALTER TABLE `rnaSeqPopulationCaptureToBiotype` ENABLE KEYS */;
 
 /*!40000 ALTER TABLE `rnaSeqPopulationCaptureSpeciesMaxRank` DISABLE KEYS */;
 alter table rnaSeqPopulationCaptureSpeciesMaxRank
