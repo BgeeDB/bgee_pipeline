@@ -84,6 +84,17 @@ $(OUTPUT_DIR)updateExpressionInSitu:
 # took 8 hours to run for Bgee 16.0 (6 hours just for mouse) with 25 threads
 $(OUTPUT_DIR)insertGlobalCond: #$(OUTPUT_DIR)updateExpressionInSitu $(OUTPUT_DIR)updateExpressionRnaSeq
 	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=25 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR) InsertPropagatedConditions insertGlobalConditions - - > $@.tmp 2> $@.warn
+# The condObservedXXX fields of globalCond are not written by InsertPropagatedConditions:
+# they say, per condition parameter, whether that parameter value was annotated in a raw
+# condition, and every filter on observed data compares them to 1. Without these updates
+# they keep their default of 0 and such a filter returns nothing.
+# Written as IN/EXISTS rather than as a join on cond: a join enumerates every matching
+# raw condition per global condition, while these forms stop at the first match.
+	@$(MYSQL) -e "UPDATE globalCond g SET condObservedAnatEntity = 1 WHERE g.condObservedAnatEntity = 0 AND g.anatEntityId IN (SELECT DISTINCT c.anatEntityId FROM cond c);" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "UPDATE globalCond g SET condObservedCellType = 1 WHERE g.condObservedCellType = 0 AND (g.cellTypeId IN (SELECT DISTINCT c.cellTypeId FROM cond c WHERE c.cellTypeId IS NOT NULL) OR g.cellTypeId = 'GO:0005575' AND EXISTS (SELECT 1 FROM cond c2 WHERE c2.cellTypeId IS NULL));" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "UPDATE globalCond g SET condObservedStage = 1 WHERE g.condObservedStage = 0 AND g.stageId IN (SELECT DISTINCT c.stageId FROM cond c);" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "UPDATE globalCond g SET condObservedSex = 1 WHERE g.condObservedSex = 0 AND (g.sex IN (SELECT DISTINCT c.sex FROM cond c) OR g.sex = 'any' AND EXISTS (SELECT 1 FROM cond c2 WHERE c2.sex IN ('not annotated', 'mixed', 'NA')));" >> $@.tmp 2>> $@.warn
+	@$(MYSQL) -e "UPDATE globalCond g SET condObservedStrain = 1 WHERE g.condObservedStrain = 0 AND (g.strain IN (SELECT DISTINCT c.strain FROM cond c) OR g.strain = 'wild-type' AND EXISTS (SELECT 1 FROM cond c2 WHERE c2.strain IN ('mix of breed', 'not annotated', 'NA', 'multiple breeds', '(Missing)', 'confidential_restricted_data', 'wild-type', 'mixed-breed')));" >> $@.tmp 2>> $@.warn
 	@$(MV) $@.tmp $@
 
 # Since Bgee 15.0, to allow computations of global expression calls from different nodes, we first insert the global conditions,
