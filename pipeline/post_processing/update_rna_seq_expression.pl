@@ -19,6 +19,7 @@ use Utils;
 #   This script updates the 'expression' table in the Bgee database with summarized
 #   RNA-Seq expression metrics (p-value, score, weight, numberObs) for each geneId/conditionId
 #   combination and for each RNA-Seq datatype (bulk, full-length single-cell, droplet-based single-cell).
+#   The p-values are floored at 1e-15, the precision of the p-value columns of the 'expression' table.
 #
 #   It must be run after the 'expression' table is already populated with all bgeeGeneId/conditionId
 #   combinations for all RNA-Seq datatypes.
@@ -68,6 +69,8 @@ my $process_all    = 0;
 my $BULK_COLUMN_PREFIX        = "bulk";
 my $FULL_LENGTH_COLUMN_PREFIX = "fullLength";
 my $DROPLET_COLUMN_PREFIX     = "droplet";
+# Smallest p-value stored, the precision of the p-value columns of the 'expression' table (decimal(16,15))
+my $P_VALUE_FLOOR = 0.000000000000001;
 
 
 my %opts = (
@@ -288,6 +291,9 @@ sub insert_expression_scores {
         my $weight = $results{$geneId}{'weight'};
         my $numberObs = $results{$geneId}{'numberObs'};
         my $weightedPValue = $pValue / $weight;
+        # A lower mean would be stored as 0, which is not a valid p-value: the propagation combines
+        # the p-values with a harmonic mean, where a single 0 makes the p-value of every ancestor 0
+        $weightedPValue = $P_VALUE_FLOOR  if ( $weightedPValue < $P_VALUE_FLOOR );
         my $weightedScore = $score / $weight;
         if ($debug) {
             print "[DEBUG] update expression set $datatypePrefix"."PValue = $weightedPValue, $datatypePrefix"."Score = $weightedScore, $datatypePrefix"."Weight = $weight, $datatypePrefix"."NumberObs = $numberObs where conditionId = $exprMappedConditionId and bgeeGeneId = $geneId\n";
