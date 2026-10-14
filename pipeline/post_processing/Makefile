@@ -26,6 +26,7 @@ $(OUTPUT_DIR)conditions_not_existing:
 ## - insert global conditions, global conditions to self cond and global cond direct relations to be able to generate the condition graph at API startup
 
 # this step exclude calls coming from genes not targeted by the library preparation (e.g. non-polyA biotypes for polyA libraries) and also remove p-values for these excluded calls (optionnal). This step is important to run before inserting expression info for RNA-Seq as it will exclude some calls and update their p-value. It will impact the ranks and thus the scores, weight and numObs of the calls used to populate the expression table.
+#XXX this step is one of the longuest from post_processing. It could maybe be removed. To discuss before taking any decision.
 $(OUTPUT_DIR)rnaseq_exclusion:
 	@perl rna_seq_exclusion.pl -bgee=$(BGEECMD) -initPostProcessing=0 -pre_filtering -biotype_filtering -speciesToProcess=- -numberThreads=40 > $@.tmp 2>$@.err
 	@if [[ ! -s $@.err ]]; then $(RM) $@.err; fi
