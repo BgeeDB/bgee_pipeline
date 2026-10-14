@@ -83,10 +83,18 @@ $(OUTPUT_DIR)updateExpressionInSitu:
 	@perl update_in_situ_expression.pl -bgee=$(BGEECMD) -parallel_jobs=40 > $@.tmp 2> $@.warn
 	@$(MV) $@.tmp $@
 
-# Since Bgee 16.0 we do not propagate calls anymore in the globalExpression table. We need to insert globalCond condToSelfGlobalCond and globalCondRelation.
+# Checks the expression table once the RNA-Seq and in situ data are inserted: no row without data, no p-value of 0
+# (the RNA-Seq p-values are floored at 1e-15), and maximum scores, weights and numbers of observations fitting their
+# columns. Scans the whole table: 13 minutes for Bgee 16.0.
+$(OUTPUT_DIR)checkExpressionPvalues: $(OUTPUT_DIR)updateExpressionRnaSeq $(OUTPUT_DIR)updateExpressionInSitu
+	@printf "Checks of the expression table: rows_without_data and the *_zero columns should be 0, the *_max_score columns at most 100\n" > $@.tmp
+	@$(MYSQL) -E -e "SELECT COUNT(*) AS nb_rows, SUM(bulkScore IS NULL AND fullLengthScore IS NULL AND dropletScore IS NULL AND inSituScore IS NULL) AS rows_without_data, SUM(bulkPValue IS NOT NULL) AS bulk_n, SUM(bulkPValue = 0) AS bulk_zero, SUM(bulkPValue = 0.000000000000001) AS bulk_at_floor, MAX(bulkWeight) AS bulk_max_weight, MAX(bulkNumberObs) AS bulk_max_obs, MAX(bulkScore) AS bulk_max_score, SUM(fullLengthPValue IS NOT NULL) AS fullLength_n, SUM(fullLengthPValue = 0) AS fullLength_zero, SUM(fullLengthPValue = 0.000000000000001) AS fullLength_at_floor, MAX(fullLengthWeight) AS fullLength_max_weight, MAX(fullLengthNumberObs) AS fullLength_max_obs, MAX(fullLengthScore) AS fullLength_max_score, SUM(dropletPValue IS NOT NULL) AS droplet_n, SUM(dropletPValue = 0) AS droplet_zero, SUM(dropletPValue = 0.000000000000001) AS droplet_at_floor, MAX(dropletWeight) AS droplet_max_weight, MAX(dropletNumberObs) AS droplet_max_obs, MAX(dropletScore) AS droplet_max_score, SUM(inSituPValue IS NOT NULL) AS inSitu_n, SUM(inSituPValue = 0) AS inSitu_zero, SUM(inSituPValue = 0.000000000000001) AS inSitu_at_floor, MAX(inSituWeight) AS inSitu_max_weight, MAX(inSituNumberObs) AS inSitu_max_obs, MAX(inSituScore) AS inSitu_max_score FROM expression;" >> $@.tmp 2> $@.warn
+	@$(MV) $@.tmp $@
+
+# Since Bgee 16.0 we do not propagate calls anymore. We need to insert globalCond condToSelfGlobalCond and globalCondRelation.
 # these info are used to generate On-the-fly propagation of calls in the API.
 # took 8 hours to run for Bgee 16.0 (6 hours just for mouse) with 25 threads
-$(OUTPUT_DIR)insertGlobalCond: $(OUTPUT_DIR)updateExpressionInSitu $(OUTPUT_DIR)updateExpressionRnaSeq
+$(OUTPUT_DIR)insertGlobalCond: $(OUTPUT_DIR)checkExpressionPvalues
 	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=25 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR) InsertPropagatedConditions insertGlobalConditions - - > $@.tmp 2> $@.warn
 # The condObservedXXX fields of globalCond are not written by InsertPropagatedConditions:
 # they say, per condition parameter, whether that parameter value was annotated in a raw
