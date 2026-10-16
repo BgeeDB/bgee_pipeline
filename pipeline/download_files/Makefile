@@ -212,8 +212,6 @@ $(OUTPUT_DIR)generate_all_cond_params_call_files:
 # The parallelism is passed to the jar rather than set through the parallelism of the common
 # ForkJoinPool, the generation using a pool of its own.
 # Bgee 16, parallelism of 10: about 16 h for mouse, the largest species, and 6 h 40 for human.
-# Call files of the former format, one TSV row per gene, stage and condition, can be converted
-# rather than generated again: $(JAVA) GenerateTopAnatFiles convert $(TOPANAT_CALL_FILES_PATH)
 $(OUTPUT_DIR)generate_topanat_call_files:
 	@mkdir -p $(TOPANAT_CALL_FILES_PATH)
 	@$(JAVA) GenerateTopAnatFiles $(TOPANAT_CALL_FILES_PATH) $(EMPTY_LIST) false $(TOPANAT_PARALLELISM) > $@.temp 2>$@.warnings
