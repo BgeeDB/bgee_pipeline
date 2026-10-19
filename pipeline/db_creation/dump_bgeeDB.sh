@@ -13,12 +13,12 @@ done
 
 ##### Check db name passed as argument
 if [ ${#DB_NAME} -lt 1 ]; then
-    echo -e "\n\tMissing db name as argument\n\te.g. $0 -d bgee_v15_1 -h rbioinfo.unil.ch\n"
+    echo -e "\n\tMissing db name as argument\n\te.g. $0 -d bgee_v16_0 -h rbioinfo.unil.ch\n"
     exit 2
 fi
 ##### Check db host passed as argument
 if [ ${#DB_HOST} -lt 1 ]; then
-    echo -e "\n\tMissing db host as argument\n\te.g. $0 -d bgee_v15_1 -h rbioinfo.unil.ch\n"
+    echo -e "\n\tMissing db host as argument\n\te.g. $0 -d bgee_v16_0 -h rbioinfo.unil.ch\n"
     exit 2
 fi
 
@@ -44,24 +44,17 @@ MYSQL_OPTIONS='--skip-triggers --no-create-info --no-tablespaces --compact --ski
 #       --watch-progress
 
 
-# Dump all Bgee DB tables  BUT  the large rnaSeqLibraryAnnotatedSampleGeneResult table
-time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME --ignore-table=$DB_NAME.rnaSeqLibraryAnnotatedSampleGeneResult $MYSQL_OPTIONS > $DB_NAME-allBut-rnaSeqLibraryAnnotatedSampleGeneResult.sql
-
-# Dump the rnaSeqLibraryAnnotatedSampleGeneResult tabl
-## Other species
-time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME rnaSeqLibraryAnnotatedSampleGeneResult      $MYSQL_OPTIONS  > $DB_NAME-rnaSeqLibraryAnnotatedSampleGeneResult.sql
+# Dump all Bgee DB tables
+time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME $MYSQL_OPTIONS > $DB_NAME-all.sql
 
 #NOTE because of --skip-add-drop-table think to DROP tables if not for a fresh db!
-#NOTE $DB_NAME-allBut-rnaSeqLibraryAnnotatedSampleGeneResult.sql should be loaded last to deal with gene table duplication (and issue with gene table lock with chunks)
-# is it still with  --single-transaction  and data only?
 
 # Loading order:
 # - bgeeSchema.sql
-# - bgee_vX_Y-allBut-rnaSeqLibraryAnnotatedSampleGeneResult.sql
+# - bgee_vX_Y-all.sql
 # - bgeeConstraint.sql
 # - bgeeIndex.sql
 # - bgeeForeignKey.sql
-# -> rnaSeqLibraryAnnotatedSampleGeneResult
 
 exit 0
 
