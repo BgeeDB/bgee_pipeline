@@ -60,7 +60,7 @@ if ( !defined $data_source_id ){
 
 # Correspondence ZFIN -> Ensembl gene Ids (one to many)
 #NOTE for Zebrafish forces speciesId=7955 to avoid insert of other fishes data (e.g. Tetraodon)
-my $selGeneXref = $dbh->prepare('SELECT x.XRefId, g.geneId FROM geneXRef x, gene g WHERE x.dataSourceId = ? AND x.bgeeGeneId = g.bgeeGeneId AND g.speciesId=7955');
+my $selGeneXref = $dbh->prepare('SELECT x.XRefId, g.geneId FROM geneXRef x, gene g WHERE x.dataSourceId = ? AND g.seqRegionName NOT LIKE "ALT_%" AND x.bgeeGeneId = g.bgeeGeneId AND g.speciesId=7955');
 $selGeneXref->execute($data_source_id)  or die $selGeneXref->errstr;
 my %ensembl_gene;
 while ( my @data = $selGeneXref->fetchrow_array ){
