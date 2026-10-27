@@ -207,8 +207,9 @@ $(OUTPUT_DIR)generate_all_cond_params_call_files:
 # =========================
 # Six files per species, read by topAnat: two call files, gzip files with one member per stage,
 # with their index, and two files describing the conditions. topAnat cannot propagate a whole
-# species inside a web request. The web application generates the missing files at start-up, one
-# gene batch at a time; this step produces them all beforehand, several batches at a time.
+# species inside a web request. The web application only generates missing files at start-up when
+# its property org.bgee.webapp.generateTopAnatCallFiles is true, one gene batch at a time; this
+# step produces them all, several batches at a time.
 # The parallelism is passed to the jar rather than set through the parallelism of the common
 # ForkJoinPool, the generation using a pool of its own.
 # Bgee 16, parallelism of 10: about 16 h for mouse, the largest species, and 6 h 40 for human.
