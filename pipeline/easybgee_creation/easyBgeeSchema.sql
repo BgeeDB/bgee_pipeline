@@ -33,7 +33,7 @@ create table species (
 create table gene (
 -- warning, maybe this bgeeGeneId will need to be changed to an 'int' when we reach around 200 species
     bgeeGeneId mediumint unsigned not null auto_increment COMMENT 'Numeric internal gene ID used for improving performances',
-    geneId varchar(20) not null COMMENT 'Real gene id',
+    geneId varchar(64) not null COMMENT 'Real gene id',
     geneName varchar(255) not null default '' COMMENT 'Gene name',
     geneDescription TEXT COMMENT 'Gene description',
     speciesId mediumint unsigned not null COMMENT 'NCBI species taxon id this gene belongs to',
@@ -46,7 +46,7 @@ create table geneXRef (
     bgeeGeneId mediumint unsigned not null COMMENT 'Internal gene ID',
     XRefUrl varchar(255) COMMENT 'Cross-reference URL',
     dataSourceName varchar(255) not null COMMENT 'Data Source name the cross-reference comes from',
-    PRIMARY KEY (bgeeGeneId,XRefUrl),
+    PRIMARY KEY (bgeeGeneId,XRefUrl,dataSourceName),
     FOREIGN KEY(bgeeGeneId) REFERENCES gene(bgeeGeneId) ON DELETE CASCADE
 ) engine = innodb;
 
