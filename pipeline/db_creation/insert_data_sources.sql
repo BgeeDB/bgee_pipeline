@@ -28,8 +28,6 @@ INSERT INTO dataSource (dataSourceId, dataSourceName, XRefUrl, experimentUrl, ev
     'https://insitu.fruitfly.org/', 'Drosophila in situ data source', 1, 'In situ data source'),
 (15, 'Xenbase', 'https://www.xenbase.org/gene/showgene.do?method=displayGeneSummary&geneId=[xref_id]', '', '',
     'https://www.xenbase.org/', 'Xenopus in situ data source', 1, 'In situ data source'),
-(16, 'neXtProt', 'https://www.nextprot.org/entry/[xref_id]', '', '',
-    'https://www.nextprot.org/', 'Exploring the universe of human proteins', 0, ''),
 (18, 'Gene Ontology', 'https://amigo.geneontology.org/amigo/term/[xref_id]', '', '',
     'https://geneontology.org/docs/download-ontology/', 'Filtered Gene Ontology', 1, 'Ontology'),
 (19, 'SRA', '', 'https://www.ncbi.nlm.nih.gov/sra/[experiment_id]', 'https://www.ncbi.nlm.nih.gov/sra/[evidence_id]',
