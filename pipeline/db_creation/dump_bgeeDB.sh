@@ -55,6 +55,7 @@ time mysqldump -u $LOGIN -p$PASSWD -h $DB_HOST $DB_NAME $MYSQL_OPTIONS > $DB_NAM
 # - bgeeConstraint.sql
 # - bgeeIndex.sql
 # - bgeeForeignKey.sql
+# - update_data_sources.sql
 
 exit 0
 
