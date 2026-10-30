@@ -559,7 +559,7 @@ TOPANAT_PARALLELISM     := 10
 R_SPECIES_INFO          := $(TMPDIR)/rPackageSpeciesInfo.tsv
 
 # paths of the different file types, relative to DOWNLOAD_FILE_ROOT_PATH
-CALLS_PATH := calls/expr_calls/
+CALLS_PATH := calls/
 H5AD_PATH  := h5ad/
 EXPR_CALLS_PATH := $(CALLS_PATH)expr_calls/
 DIFF_EXPR_CALLS_PATH := $(CALLS_PATH)diff_expr_calls/
