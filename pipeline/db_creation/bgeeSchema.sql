@@ -599,9 +599,13 @@ create table globalCond (
 -- it is irrelevant to consider a sum of the number of distinct ranks in each sample for weighting
 -- the mean.
 -- Note: these values are the same for all genes in a condition-species, this is why they are stored in this table.
-    bulkMaxRank decimal(9,2) unsigned,
-    singleCellMaxRank decimal(9,2) unsigned,
-    inSituMaxRank decimal(9,2) unsigned,
+  affymetrixMaxRank decimal(9,2) unsigned DEFAULT NULL,
+  rnaSeqMaxRank decimal(9,2) unsigned DEFAULT NULL,
+  scRnaSeqFullLengthMaxRank decimal(9,2) unsigned DEFAULT NULL,
+  scRnaSeqTargetBasedMaxRank decimal(9,2) unsigned DEFAULT NULL,
+  estMaxRank decimal(9,2) unsigned DEFAULT NULL,
+  inSituMaxRank decimal(9,2) unsigned DEFAULT NULL,
+
 
 -- ** OBSERVED CONDITION PARAMETERS **
 -- These fields are not set when the global conditions are inserted: they are updated afterwards
