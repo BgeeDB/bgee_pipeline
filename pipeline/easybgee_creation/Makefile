@@ -17,12 +17,12 @@ $(OUTPUT_DIR)create_schema: easyBgeeSchema.sql
 
 $(OUTPUT_DIR)extract_data_from_bgee:
 	# extract data from the $(DBNAME) database in $(DBHOST)
-	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=30 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR) GenerateEasyBgee extractFromBgee $(EASYBGEE_PATH) - true > $@.tmp 2>> $@.warnings
+	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=10 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR) GenerateEasyBgee extractFromBgee $(EASYBGEE_PATH) - true > $@.tmp 2>> $@.warnings
 	@$(MV) $@.tmp $@
 
 $(OUTPUT_DIR)import_to_easybgee: $(OUTPUT_DIR)create_schema
 	# import data to the $(DBNAME_EASYBGEE) database in $(DBHOST_EASYBGEE)
-	@$(JAVA_EASYBGEE) GenerateEasyBgee tsvToEasyBgee $(EASYBGEE_PATH) 1 > $@.tmp 2> $@.warnings
+	@$(JAVA_EASYBGEE) GenerateEasyBgee tsvToEasyBgee $(EASYBGEE_PATH) 6 > $@.tmp 2> $@.warnings
 	@$(MV) $@.tmp $@
 
 clean:
