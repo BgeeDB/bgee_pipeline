@@ -1,157 +1,137 @@
 WARNING: sun.reflect.Reflection.getCallerClass is not supported. This will impact performance.
-20:11:30.495 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 7936...
-20:29:04.768 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 7936 contains 340860 rows.
-20:29:04.774 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 7936.
-20:29:04.774 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 9986...
-20:46:03.043 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 9986 contains 460944 rows.
-20:46:03.043 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 9986.
-20:46:03.043 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 10116...
-21:03:37.052 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 10116 contains 500607 rows.
-21:03:37.053 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 10116.
-21:03:37.053 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 9606...
-21:54:28.671 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 9606 contains 9261154 rows.
-21:54:28.671 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 9606.
-21:54:28.671 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 9483...
-22:19:06.486 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 9483 contains 152272 rows.
-22:19:06.487 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 9483.
-22:19:06.487 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 9615...
-22:37:03.906 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 9615 contains 1287060 rows.
-22:37:03.907 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 9615.
-22:37:03.908 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 9103...
-22:45:32.917 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 9103 contains 266632 rows.
-22:45:32.918 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 9103.
-22:45:32.918 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 30608...
-23:02:22.534 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 30608 contains 214660 rows.
-23:02:22.534 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 30608.
-23:02:22.534 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 8081...
-23:14:45.077 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 8081 contains 40667 rows.
-23:14:45.077 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 8081.
-23:14:45.077 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 7955...
-23:35:54.614 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 7955 contains 820554 rows.
-23:35:54.615 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 7955.
-23:35:54.615 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 8090...
-23:50:35.862 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 8090 contains 385739 rows.
-23:50:35.863 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 8090.
-23:50:35.863 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 10141...
-00:07:38.895 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 10141 contains 301893 rows.
-00:07:38.896 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 10141.
-00:07:38.896 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 8355...
-00:29:07.648 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 8355 contains 676056 rows.
-00:29:07.648 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 8355.
-00:29:07.648 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 60711...
-00:46:17.650 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 60711 contains 196088 rows.
-00:46:17.651 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 60711.
-00:46:17.651 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 52904...
-00:58:55.246 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 52904 contains 143464 rows.
-00:58:55.247 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 52904.
-00:58:55.247 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 9258...
-01:15:02.681 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 9258 contains 157774 rows.
-01:15:02.681 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 9258.
-01:15:02.681 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 8364...
-01:27:38.438 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 8364 contains 333163 rows.
-01:27:38.438 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 8364.
-01:27:38.438 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 69293...
-01:40:26.286 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 69293 contains 302775 rows.
-01:40:26.286 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 69293.
-01:40:26.286 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 13616...
-02:01:44.440 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 13616 contains 611964 rows.
-02:01:44.441 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 13616.
-02:01:44.441 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 9913...
-02:22:23.856 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 9913 contains 2988540 rows.
-02:22:23.857 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 9913.
-02:22:23.857 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 7994...
-02:38:55.403 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 7994 contains 377239 rows.
-02:38:55.404 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 7994.
-02:38:55.404 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 7227...
-03:07:26.503 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 7227 contains 1801251 rows.
-03:07:26.503 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 7227.
-03:07:26.504 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 9531...
-03:23:56.068 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 9531 contains 311115 rows.
-03:23:56.069 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 9531.
-03:23:56.069 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 7740...
-03:44:26.912 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 7740 contains 470182 rows.
-03:44:26.912 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 7740.
-03:44:26.912 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 105023...
-04:01:09.442 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 105023 contains 85704 rows.
-04:01:09.443 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 105023.
-04:01:09.443 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 9796...
-04:18:40.915 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 9796 contains 603735 rows.
-04:18:40.916 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 9796.
-04:18:40.916 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 10181...
-04:35:42.101 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 10181 contains 273702 rows.
-04:35:42.102 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 10181.
-04:35:42.102 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 9925...
-04:52:36.662 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 9925 contains 396998 rows.
-04:52:36.663 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 9925.
-04:52:36.663 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 7237...
-05:02:44.481 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 7237 contains 59106 rows.
-05:02:44.482 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 7237.
-05:02:44.482 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 9541...
-05:19:29.719 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 9541 contains 350909 rows.
-05:19:29.720 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 9541.
-05:19:29.720 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 9031...
-05:34:00.957 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 9031 contains 275587 rows.
-05:34:00.957 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 9031.
-05:34:00.957 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 7240...
-05:42:09.994 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 7240 contains 58652 rows.
-05:42:09.994 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 7240.
-05:42:09.994 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 9544...
-06:03:09.992 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 9544 contains 722547 rows.
-06:03:09.993 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 9544.
-06:03:09.993 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 9545...
-06:19:44.009 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 9545 contains 325992 rows.
-06:19:44.010 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 9545.
-06:19:44.010 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 8010...
-06:36:17.640 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 8010 contains 392609 rows.
-06:36:17.642 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 8010.
-06:36:17.642 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 9555...
-06:54:07.819 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 9555 contains 1664416 rows.
-06:54:07.820 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 9555.
-06:54:07.820 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 9940...
-07:12:00.044 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 9940 contains 1368332 rows.
-07:12:00.045 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 9940.
-07:12:00.045 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 9685...
-07:28:50.595 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 9685 contains 263795 rows.
-07:28:50.596 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 9685.
-07:28:50.596 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 28377...
-07:45:34.870 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 28377 contains 304241 rows.
-07:45:34.872 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 28377.
-07:45:34.872 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 7897...
-07:57:45.034 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 7897 contains 95454 rows.
-07:57:45.035 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 7897.
-07:57:45.035 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 8154...
-08:14:09.431 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 8154 contains 239334 rows.
-08:14:09.432 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 8154.
-08:14:09.432 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 8030...
-08:49:12.673 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 8030 contains 1524879 rows.
-08:49:12.674 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 8030.
-08:49:12.674 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 9823...
-09:08:01.507 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 9823 contains 1318344 rows.
-09:08:01.508 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 9823.
-09:08:01.508 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 6239...
-09:32:32.040 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 6239 contains 139877 rows.
-09:32:32.040 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 6239.
-09:32:32.040 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 10090...
-10:20:45.236 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 10090 contains 7552607 rows.
-10:20:45.237 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 10090.
-10:20:45.237 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 7918...
-10:33:11.747 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 7918 contains 269257 rows.
-10:33:11.747 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 7918.
-10:33:11.747 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 8049...
-10:45:36.628 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 8049 contains 300298 rows.
-10:45:36.628 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 8049.
-10:45:36.628 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 9974...
-11:02:25.562 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 9974 contains 209378 rows.
-11:02:25.563 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 9974.
-11:02:25.564 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 9593...
-11:19:02.405 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 9593 contains 170114 rows.
-11:19:02.406 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 9593.
-11:19:02.406 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 32507...
-11:33:42.506 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 32507 contains 216067 rows.
-11:33:42.507 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 32507.
-11:33:42.507 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 9597...
-11:50:13.898 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 9597 contains 143896 rows.
-11:50:13.899 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 9597.
-11:50:13.899 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 348 generateExprFiles - Start generating of expression files for the species 9598...
-12:11:10.127 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 602 generateExprFilesForOneSpecies - Each expression file for the species 9598 contains 677091 rows.
-12:11:10.128 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 360 generateExprFiles - Done generating of expression files for the species 9598.
+19:24:07.646 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 466 generateExprFiles - Skip the species 7936: all the requested expression files already exist.
+19:24:07.651 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 466 generateExprFiles - Skip the species 9986: all the requested expression files already exist.
+19:24:07.652 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 466 generateExprFiles - Skip the species 10116: all the requested expression files already exist.
+19:24:07.653 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 9606...
+19:24:11.755 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 9606: 78932 genes to process by batches of at most 50.
+19:53:54.022 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 9606 contains 10567596 rows.
+19:53:54.033 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 9606.
+19:53:54.034 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 9483...
+19:53:57.470 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 9483: 40188 genes to process by batches of at most 50.
+19:54:25.624 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 9483 contains 685108 rows.
+19:54:25.625 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 9483.
+19:54:25.625 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 466 generateExprFiles - Skip the species 9103: all the requested expression files already exist.
+19:54:25.625 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 9615...
+19:54:29.011 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 9615: 31121 genes to process by batches of at most 50.
+19:55:45.406 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 9615 contains 2516938 rows.
+19:55:45.406 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 9615.
+19:55:45.407 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 466 generateExprFiles - Skip the species 30608: all the requested expression files already exist.
+19:55:45.407 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 466 generateExprFiles - Skip the species 8081: all the requested expression files already exist.
+19:55:45.407 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 7955...
+19:55:48.561 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 7955: 34489 genes to process by batches of at most 50.
+20:26:44.803 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 7955 contains 847809 rows.
+20:26:44.804 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 7955.
+20:26:44.804 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 466 generateExprFiles - Skip the species 8090: all the requested expression files already exist.
+20:26:44.804 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 10141...
+20:26:48.251 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 10141: 26855 genes to process by batches of at most 50.
+20:27:03.152 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 10141 contains 395483 rows.
+20:27:03.152 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 10141.
+20:27:03.153 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 466 generateExprFiles - Skip the species 8355: all the requested expression files already exist.
+20:27:03.153 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 60711...
+20:27:06.551 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 60711: 27985 genes to process by batches of at most 50.
+20:27:22.140 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 60711 contains 212675 rows.
+20:27:22.140 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 60711.
+20:27:22.141 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 466 generateExprFiles - Skip the species 52904: all the requested expression files already exist.
+20:27:22.141 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 466 generateExprFiles - Skip the species 9258: all the requested expression files already exist.
+20:27:22.141 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 466 generateExprFiles - Skip the species 8364: all the requested expression files already exist.
+20:27:22.141 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 69293...
+20:27:25.215 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 69293: 30416 genes to process by batches of at most 50.
+20:27:38.093 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 69293 contains 360087 rows.
+20:27:38.094 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 69293.
+20:27:38.094 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 466 generateExprFiles - Skip the species 13616: all the requested expression files already exist.
+20:27:38.094 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 9913...
+20:27:41.507 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 9913: 36075 genes to process by batches of at most 50.
+20:30:05.436 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 9913 contains 3472108 rows.
+20:30:05.437 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 9913.
+20:30:05.438 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 7994...
+20:30:08.508 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 7994: 27420 genes to process by batches of at most 50.
+20:30:22.371 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 7994 contains 400621 rows.
+20:30:22.372 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 7994.
+20:30:22.372 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 7227...
+20:30:24.825 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 7227: 24278 genes to process by batches of at most 50.
+20:43:15.723 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 7227 contains 1897438 rows.
+20:43:15.724 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 7227.
+20:43:15.724 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 9531...
+20:43:19.136 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 9531: 28459 genes to process by batches of at most 50.
+20:43:30.470 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 9531 contains 316040 rows.
+20:43:30.471 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 9531.
+20:43:30.471 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 7740...
+20:43:32.914 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 7740: 35955 genes to process by batches of at most 50.
+20:43:50.393 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 7740 contains 535520 rows.
+20:43:50.394 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 7740.
+20:43:50.394 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 466 generateExprFiles - Skip the species 105023: all the requested expression files already exist.
+20:43:50.395 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 9796...
+20:43:53.704 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 9796: 38849 genes to process by batches of at most 50.
+20:44:52.186 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 9796 contains 1484427 rows.
+20:44:52.187 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 9796.
+20:44:52.187 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 7237...
+20:44:54.557 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 7237: 17296 genes to process by batches of at most 50.
+20:44:56.838 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 7237 contains 59305 rows.
+20:44:56.839 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 7237.
+20:44:56.839 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 466 generateExprFiles - Skip the species 9541: all the requested expression files already exist.
+20:44:56.839 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 9925...
+20:45:00.090 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 9925: 27271 genes to process by batches of at most 50.
+20:45:29.421 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 9925 contains 724330 rows.
+20:45:29.422 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 9925.
+20:45:29.422 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 10181...
+20:45:32.857 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 10181: 35328 genes to process by batches of at most 50.
+20:46:13.617 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 10181 contains 410467 rows.
+20:46:13.618 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 10181.
+20:46:13.618 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 9031...
+20:46:16.882 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 9031: 30108 genes to process by batches of at most 50.
+20:46:57.311 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 9031 contains 605450 rows.
+20:46:57.312 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 9031.
+20:46:57.312 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 466 generateExprFiles - Skip the species 9544: all the requested expression files already exist.
+20:46:57.312 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 7240...
+20:46:59.673 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 7240: 15546 genes to process by batches of at most 50.
+20:47:01.913 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 7240 contains 57345 rows.
+20:47:01.913 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 7240.
+20:47:01.914 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 466 generateExprFiles - Skip the species 9545: all the requested expression files already exist.
+20:47:01.914 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 8010...
+20:47:05.014 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 8010: 30964 genes to process by batches of at most 50.
+20:47:20.174 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 8010 contains 410288 rows.
+20:47:20.175 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 8010.
+20:47:20.176 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 466 generateExprFiles - Skip the species 9555: all the requested expression files already exist.
+20:47:20.176 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 466 generateExprFiles - Skip the species 9940: all the requested expression files already exist.
+20:47:20.176 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 9685...
+20:47:23.560 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 9685: 29550 genes to process by batches of at most 50.
+20:47:38.739 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 9685 contains 432581 rows.
+20:47:38.741 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 9685.
+20:47:38.741 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 7897...
+20:47:41.803 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 7897: 22628 genes to process by batches of at most 50.
+20:47:46.066 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 7897 contains 134737 rows.
+20:47:46.067 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 7897.
+20:47:46.067 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 28377...
+20:47:49.157 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 28377: 26479 genes to process by batches of at most 50.
+20:48:04.308 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 28377 contains 445258 rows.
+20:48:04.309 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 28377.
+20:48:04.309 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 8154...
+20:48:07.535 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 8154: 33341 genes to process by batches of at most 50.
+20:48:15.951 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 8154 contains 254934 rows.
+20:48:15.953 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 8154.
+20:48:15.953 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 466 generateExprFiles - Skip the species 8030: all the requested expression files already exist.
+20:48:15.953 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 466 generateExprFiles - Skip the species 9823: all the requested expression files already exist.
+20:48:15.953 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 6239...
+20:48:18.528 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 6239: 46926 genes to process by batches of at most 50.
+20:50:37.916 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 6239 contains 372618 rows.
+20:50:37.917 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 6239.
+20:50:37.918 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 10090...
+20:50:41.606 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 10090: 78298 genes to process by batches of at most 50.
+22:29:22.418 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 10090 contains 17374399 rows.
+22:29:22.419 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 10090.
+22:29:22.420 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 7918...
+22:29:25.623 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 7918: 23315 genes to process by batches of at most 50.
+22:29:32.775 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 7918 contains 257327 rows.
+22:29:32.775 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 7918.
+22:29:32.776 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 8049...
+22:29:35.917 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 8049: 29063 genes to process by batches of at most 50.
+22:29:45.032 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 8049 contains 355261 rows.
+22:29:45.033 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 8049.
+22:29:45.033 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 466 generateExprFiles - Skip the species 9974: all the requested expression files already exist.
+22:29:45.033 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 470 generateExprFiles - Start generating of expression files for the species 9593...
+22:29:48.282 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 671 generateExprFilesForOneSpecies - Species 9593: 30084 genes to process by batches of at most 50.
+22:30:07.945 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 758 generateExprFilesForOneSpecies - Each expression file for the species 9593 contains 386945 rows.
+22:30:07.945 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 482 generateExprFiles - Done generating of expression files for the species 9593.
+22:30:07.946 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 466 generateExprFiles - Skip the species 32507: all the requested expression files already exist.
+22:30:07.946 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 466 generateExprFiles - Skip the species 9597: all the requested expression files already exist.
+22:30:07.946 [main] INFO org.bgee.pipeline.expression.downloadfile.GenerateExprFile2 466 generateExprFiles - Skip the species 9598: all the requested expression files already exist.
