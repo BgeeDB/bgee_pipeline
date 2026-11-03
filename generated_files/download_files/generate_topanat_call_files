@@ -1,0 +1,524 @@
+WARNING: sun.reflect.Reflection.getCallerClass is not supported. This will impact performance.
+21:18:48.660 [main] INFO org.bgee.pipeline.topanat.GenerateTopAnatFiles 63 main - Generating the topAnat call files with a parallelism of 10
+21:18:48.952 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 10090...
+21:19:06.111 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 10090: 14034 conditions and 37018 relations written
+15:05:09.539 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 10090: 78298 genes processed, 419727143 propagated rows, 55193580 observed rows written
+15:05:09.541 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 10090 in 63980588 ms
+15:05:09.541 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 7918...
+15:05:09.838 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 7918: 74 conditions and 109 relations written
+15:05:49.137 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 7918: 23315 genes processed, 4618239 propagated rows, 748205 observed rows written
+15:05:49.138 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 7918 in 39596 ms
+15:05:49.138 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 8049...
+15:05:49.438 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 8049: 69 conditions and 99 relations written
+15:06:19.279 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 8049: 29063 genes processed, 1604308 propagated rows, 327490 observed rows written
+15:06:19.279 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 8049 in 30141 ms
+15:06:19.279 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 9974...
+15:06:19.710 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 9974: 61 conditions and 99 relations written
+15:06:49.033 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 9974: 33018 genes processed, 3721108 propagated rows, 577540 observed rows written
+15:06:49.034 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 9974 in 29755 ms
+15:06:49.034 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 9593...
+15:06:49.433 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 9593: 255 conditions and 524 relations written
+15:08:22.733 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 9593: 30084 genes processed, 14054989 propagated rows, 1071189 observed rows written
+15:08:22.734 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 9593 in 93700 ms
+15:08:22.734 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 32507...
+15:08:23.000 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 32507: 67 conditions and 98 relations written
+15:08:41.309 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 32507: 24411 genes processed, 736710 propagated rows, 105066 observed rows written
+15:08:41.309 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 32507 in 18575 ms
+15:08:41.310 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 9597...
+15:08:41.617 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 9597: 63 conditions and 93 relations written
+15:09:20.118 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 9597: 30258 genes processed, 5440878 propagated rows, 548291 observed rows written
+15:09:20.118 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 9597 in 38808 ms
+15:09:20.119 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 9598...
+15:09:20.617 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 9598: 317 conditions and 629 relations written
+15:12:47.169 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 9598: 33729 genes processed, 23938515 propagated rows, 2383172 observed rows written
+15:12:47.169 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 9598 in 207051 ms
+15:12:47.170 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 7936...
+15:12:47.452 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 7936: 62 conditions and 90 relations written
+15:13:14.532 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 7936: 31451 genes processed, 1910767 propagated rows, 305032 observed rows written
+15:13:14.532 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 7936 in 27363 ms
+15:13:14.532 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 9986...
+15:13:14.936 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 9986: 695 conditions and 1589 relations written
+15:17:20.440 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 9986: 29587 genes processed, 10818000 propagated rows, 1719039 observed rows written
+15:17:20.441 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 9986 in 245909 ms
+15:17:20.441 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 10116...
+15:17:21.151 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 10116: 311 conditions and 595 relations written
+15:25:06.014 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 10116: 30562 genes processed, 25008837 propagated rows, 5868951 observed rows written
+15:25:06.014 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 10116 in 465573 ms
+15:25:06.014 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 9606...
+15:25:13.450 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 9606: 8454 conditions and 22148 relations written
+22:09:24.510 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 9606: 78932 genes processed, 339493137 propagated rows, 28956547 observed rows written
+22:09:24.510 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 9606 in 24258496 ms
+22:09:24.510 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 9483...
+22:09:25.033 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 9483: 386 conditions and 793 relations written
+22:12:52.720 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 9483: 40188 genes processed, 20496297 propagated rows, 1625789 observed rows written
+22:12:52.720 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 9483 in 208210 ms
+22:12:52.720 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 9615...
+22:12:53.214 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 9615: 269 conditions and 454 relations written
+22:17:31.628 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 9615: 31121 genes processed, 17325223 propagated rows, 4837404 observed rows written
+22:17:31.628 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 9615 in 278908 ms
+22:17:31.628 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 9103...
+22:17:31.905 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 9103: 98 conditions and 163 relations written
+22:18:17.464 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 9103: 17970 genes processed, 4647296 propagated rows, 910458 observed rows written
+22:18:17.465 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 9103 in 45837 ms
+22:18:17.465 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 30608...
+22:18:17.741 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 30608: 73 conditions and 109 relations written
+22:18:50.999 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 30608: 26798 genes processed, 3030914 propagated rows, 315933 observed rows written
+22:18:50.999 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 30608 in 33534 ms
+22:18:51.000 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 8081...
+22:18:51.258 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 8081: 11 conditions and 10 relations written
+22:19:08.412 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 8081: 23254 genes processed, 781702 propagated rows, 125726 observed rows written
+22:19:08.413 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 8081 in 17412 ms
+22:19:08.413 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 7955...
+22:19:10.407 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 7955: 1897 conditions and 3610 relations written
+00:58:08.656 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 7955: 34489 genes processed, 9218434 propagated rows, 1964484 observed rows written
+00:58:08.657 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 7955 in 9540244 ms
+00:58:08.657 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 8090...
+00:58:08.914 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 8090: 111 conditions and 171 relations written
+01:00:10.796 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 8090: 24365 genes processed, 6906584 propagated rows, 2186117 observed rows written
+01:00:10.796 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 8090 in 122139 ms
+01:00:10.796 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 10141...
+01:00:11.141 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 10141: 97 conditions and 152 relations written
+01:01:22.281 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 10141: 26855 genes processed, 6098467 propagated rows, 1090954 observed rows written
+01:01:22.282 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 10141 in 71486 ms
+01:01:22.282 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 8355...
+01:01:23.497 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 8355: 1182 conditions and 2046 relations written
+03:39:02.958 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 8355: 44456 genes processed, 8666870 propagated rows, 1569052 observed rows written
+03:39:02.958 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 8355 in 13060676 ms
+03:39:02.959 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 60711...
+03:39:03.291 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 60711: 72 conditions and 111 relations written
+03:40:26.117 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 60711: 27985 genes processed, 5560290 propagated rows, 576866 observed rows written
+03:40:26.117 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 60711 in 83158 ms
+03:40:26.118 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 52904...
+03:40:26.423 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 52904: 47 conditions and 71 relations written
+03:40:49.725 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 52904: 34453 genes processed, 2339754 propagated rows, 292883 observed rows written
+03:40:49.725 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 52904 in 23607 ms
+03:40:49.725 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 9258...
+03:40:50.019 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 9258: 179 conditions and 342 relations written
+03:41:46.994 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 9258: 26272 genes processed, 8219840 propagated rows, 692558 observed rows written
+03:41:46.994 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 9258 in 57269 ms
+03:41:46.995 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 8364...
+03:41:47.831 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 8364: 746 conditions and 1299 relations written
+04:17:24.288 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 8364: 24614 genes processed, 4609716 propagated rows, 875102 observed rows written
+04:17:24.288 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 8364 in 2137293 ms
+04:17:24.288 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 69293...
+04:17:24.531 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 69293: 92 conditions and 148 relations written
+04:18:22.557 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 69293: 30416 genes processed, 5456917 propagated rows, 756136 observed rows written
+04:18:22.557 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 69293 in 58269 ms
+04:18:22.557 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 13616...
+04:18:22.967 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 13616: 294 conditions and 573 relations written
+04:22:58.696 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 13616: 34985 genes processed, 20221068 propagated rows, 2738495 observed rows written
+04:22:58.697 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 13616 in 276139 ms
+04:22:58.697 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 9913...
+04:22:59.496 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 9913: 357 conditions and 600 relations written
+04:34:26.323 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 9913: 36075 genes processed, 26748174 propagated rows, 9058877 observed rows written
+04:34:26.323 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 9913 in 687626 ms
+04:34:26.324 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 7994...
+04:34:26.595 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 7994: 92 conditions and 145 relations written
+04:35:29.907 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 7994: 27420 genes processed, 4155298 propagated rows, 537083 observed rows written
+04:35:29.908 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 7994 in 63584 ms
+04:35:29.908 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 9531...
+04:35:30.200 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 9531: 86 conditions and 138 relations written
+04:36:08.363 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 9531: 28459 genes processed, 2921294 propagated rows, 452138 observed rows written
+04:36:08.363 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 9531 in 38455 ms
+04:36:08.363 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 7227...
+04:36:12.355 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 7227: 7156 conditions and 18509 relations written
+05:54:47.608 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 7227: 24278 genes processed, 75775110 propagated rows, 5318364 observed rows written
+05:54:47.608 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 7227 in 4719245 ms
+05:54:47.608 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 7740...
+05:54:47.956 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 7740: 57 conditions and 80 relations written
+05:55:33.705 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 7740: 35955 genes processed, 2118722 propagated rows, 437508 observed rows written
+05:55:33.706 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 7740 in 46098 ms
+05:55:33.707 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 105023...
+05:55:33.945 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 105023: 33 conditions and 45 relations written
+05:56:02.858 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 105023: 25475 genes processed, 2270841 propagated rows, 257705 observed rows written
+05:56:02.859 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 105023 in 29152 ms
+05:56:02.859 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 9796...
+05:56:03.506 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 9796: 240 conditions and 393 relations written
+05:59:40.723 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 9796: 38849 genes processed, 17819978 propagated rows, 3878350 observed rows written
+05:59:40.723 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 9796 in 217864 ms
+05:59:40.724 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 9541...
+05:59:41.328 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 9541: 683 conditions and 1583 relations written
+06:06:37.737 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 9541: 38550 genes processed, 13969876 propagated rows, 3382464 observed rows written
+06:06:37.737 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 9541 in 417013 ms
+06:06:37.737 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 10181...
+06:06:38.198 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 10181: 662 conditions and 1689 relations written
+06:10:44.147 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 10181: 35328 genes processed, 14340267 propagated rows, 1278829 observed rows written
+06:10:44.148 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 10181 in 246411 ms
+06:10:44.148 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 9925...
+06:10:44.463 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 9925: 146 conditions and 229 relations written
+06:12:26.156 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 9925: 27271 genes processed, 10499334 propagated rows, 1923874 observed rows written
+06:12:26.156 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 9925 in 102008 ms
+06:12:26.156 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 7237...
+06:12:26.343 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 7237: 16 conditions and 18 relations written
+06:12:33.993 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 7237: 17296 genes processed, 497990 propagated rows, 116546 observed rows written
+06:12:33.994 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 7237 in 7838 ms
+06:12:33.994 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 9031...
+06:12:34.495 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 9031: 446 conditions and 948 relations written
+06:16:45.626 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 9031: 30108 genes processed, 17792970 propagated rows, 1976310 observed rows written
+06:16:45.627 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 9031 in 251633 ms
+06:16:45.627 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 9544...
+06:16:46.161 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 9544: 867 conditions and 1867 relations written
+06:26:16.762 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 9544: 35432 genes processed, 51373686 propagated rows, 6244644 observed rows written
+06:26:16.763 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 9544 in 571135 ms
+06:26:16.763 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 7240...
+06:26:16.925 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 7240: 13 conditions and 14 relations written
+06:26:24.928 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 7240: 15546 genes processed, 435463 propagated rows, 104303 observed rows written
+06:26:24.928 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 7240 in 8165 ms
+06:26:24.929 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 9545...
+06:26:25.357 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 9545: 543 conditions and 1329 relations written
+06:28:51.918 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 9545: 28865 genes processed, 3473691 propagated rows, 491902 observed rows written
+06:28:51.919 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 9545 in 146990 ms
+06:28:51.919 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 8010...
+06:28:52.230 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 8010: 78 conditions and 123 relations written
+06:29:44.343 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 8010: 30964 genes processed, 4969428 propagated rows, 883573 observed rows written
+06:29:44.344 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 8010 in 52425 ms
+06:29:44.344 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 9555...
+06:29:44.699 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 9555: 244 conditions and 395 relations written
+06:32:05.472 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 9555: 33835 genes processed, 9590973 propagated rows, 2441060 observed rows written
+06:32:05.472 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 9555 in 141128 ms
+06:32:05.472 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 9940...
+06:32:05.951 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 9940: 257 conditions and 420 relations written
+06:38:11.092 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 9940: 27054 genes processed, 21614210 propagated rows, 5889659 observed rows written
+06:38:11.092 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 9940 in 365620 ms
+06:38:11.093 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 9685...
+06:38:11.404 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 9685: 106 conditions and 165 relations written
+06:39:18.550 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 9685: 29550 genes processed, 6669028 propagated rows, 870330 observed rows written
+06:39:18.550 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 9685 in 67457 ms
+06:39:18.551 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 7897...
+06:39:18.785 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 7897: 38 conditions and 48 relations written
+06:39:30.703 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 7897: 22628 genes processed, 97991 propagated rows, 16705 observed rows written
+06:39:30.704 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 7897 in 12153 ms
+06:39:30.704 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 28377...
+06:39:30.995 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 28377: 99 conditions and 158 relations written
+06:40:39.174 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 28377: 26479 genes processed, 3996294 propagated rows, 639056 observed rows written
+06:40:39.175 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 28377 in 68471 ms
+06:40:39.175 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 8154...
+06:40:39.472 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 8154: 63 conditions and 93 relations written
+06:41:08.109 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 8154: 33341 genes processed, 2198174 propagated rows, 214599 observed rows written
+06:41:08.109 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 8154 in 28934 ms
+06:41:08.109 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 8030...
+06:41:08.919 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 8030: 103 conditions and 162 relations written
+06:45:52.556 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 8030: 69389 genes processed, 12332024 propagated rows, 2780694 observed rows written
+06:45:52.556 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 8030 in 284447 ms
+06:45:52.557 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 9823...
+06:45:53.911 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 9823: 1100 conditions and 2312 relations written
+07:04:22.883 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 9823: 35682 genes processed, 73298111 propagated rows, 9039569 observed rows written
+07:04:22.884 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 9823 in 1110326 ms
+07:04:22.884 [main] INFO org.bgee.model.topanat.TopAnatService 764 generateFiles - Generating the topAnat call files of species 6239...
+07:04:23.313 [main] INFO org.bgee.model.topanat.TopAnatService 965 generateConditionFiles - Species 6239: 504 conditions and 1122 relations written
+07:15:58.510 [main] INFO org.bgee.model.topanat.TopAnatService 892 generateFiles - Species 6239: 46926 genes processed, 1484113 propagated rows, 319736 observed rows written
+07:15:58.511 [main] INFO org.bgee.model.topanat.TopAnatService 767 generateFiles - Done generating the topAnat call files of species 6239 in 695626 ms
+Content of directory /var/lib/mysql/tmp/bgee_v16_0//topanat_call_files_full_harmonic/topanat_calls/
+total 2399104
+-rw-rw-r-- 1 bgee bgee     547657 Oct 24 15:05 topanat_calls_observed_species_10090.index.tsv
+-rw-rw-r-- 1 bgee bgee   84088208 Oct 24 15:05 topanat_calls_observed_species_10090.tsv.gz
+-rw-rw-r-- 1 bgee bgee      10385 Oct 24 15:25 topanat_calls_observed_species_10116.index.tsv
+-rw-rw-r-- 1 bgee bgee    4309731 Oct 24 15:25 topanat_calls_observed_species_10116.tsv.gz
+-rw-rw-r-- 1 bgee bgee       3041 Oct 25 01:01 topanat_calls_observed_species_10141.index.tsv
+-rw-rw-r-- 1 bgee bgee     815231 Oct 25 01:01 topanat_calls_observed_species_10141.tsv.gz
+-rw-rw-r-- 1 bgee bgee      25998 Oct 25 06:10 topanat_calls_observed_species_10181.index.tsv
+-rw-rw-r-- 1 bgee bgee    1140798 Oct 25 06:10 topanat_calls_observed_species_10181.tsv.gz
+-rw-rw-r-- 1 bgee bgee       1243 Oct 25 05:56 topanat_calls_observed_species_105023.index.tsv
+-rw-rw-r-- 1 bgee bgee     415222 Oct 25 05:56 topanat_calls_observed_species_105023.tsv.gz
+-rw-rw-r-- 1 bgee bgee      10636 Oct 25 04:22 topanat_calls_observed_species_13616.index.tsv
+-rw-rw-r-- 1 bgee bgee    2304921 Oct 25 04:22 topanat_calls_observed_species_13616.tsv.gz
+-rw-rw-r-- 1 bgee bgee       3062 Oct 25 06:40 topanat_calls_observed_species_28377.index.tsv
+-rw-rw-r-- 1 bgee bgee     613148 Oct 25 06:40 topanat_calls_observed_species_28377.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2363 Oct 24 22:18 topanat_calls_observed_species_30608.index.tsv
+-rw-rw-r-- 1 bgee bgee     426785 Oct 24 22:18 topanat_calls_observed_species_30608.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2027 Oct 24 15:08 topanat_calls_observed_species_32507.index.tsv
+-rw-rw-r-- 1 bgee bgee     136209 Oct 24 15:08 topanat_calls_observed_species_32507.tsv.gz
+-rw-rw-r-- 1 bgee bgee       1567 Oct 25 03:40 topanat_calls_observed_species_52904.index.tsv
+-rw-rw-r-- 1 bgee bgee     355370 Oct 25 03:40 topanat_calls_observed_species_52904.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2421 Oct 25 03:40 topanat_calls_observed_species_60711.index.tsv
+-rw-rw-r-- 1 bgee bgee     719532 Oct 25 03:40 topanat_calls_observed_species_60711.tsv.gz
+-rw-rw-r-- 1 bgee bgee      14166 Oct 25 07:15 topanat_calls_observed_species_6239.index.tsv
+-rw-rw-r-- 1 bgee bgee     591964 Oct 25 07:15 topanat_calls_observed_species_6239.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2952 Oct 25 04:18 topanat_calls_observed_species_69293.index.tsv
+-rw-rw-r-- 1 bgee bgee     769974 Oct 25 04:18 topanat_calls_observed_species_69293.tsv.gz
+-rw-rw-r-- 1 bgee bgee     285445 Oct 25 05:54 topanat_calls_observed_species_7227.index.tsv
+-rw-rw-r-- 1 bgee bgee    5866851 Oct 25 05:54 topanat_calls_observed_species_7227.tsv.gz
+-rw-rw-r-- 1 bgee bgee        695 Oct 25 06:12 topanat_calls_observed_species_7237.index.tsv
+-rw-rw-r-- 1 bgee bgee     167215 Oct 25 06:12 topanat_calls_observed_species_7237.tsv.gz
+-rw-rw-r-- 1 bgee bgee        614 Oct 25 06:26 topanat_calls_observed_species_7240.index.tsv
+-rw-rw-r-- 1 bgee bgee     168523 Oct 25 06:26 topanat_calls_observed_species_7240.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2001 Oct 25 05:55 topanat_calls_observed_species_7740.index.tsv
+-rw-rw-r-- 1 bgee bgee     675483 Oct 25 05:55 topanat_calls_observed_species_7740.tsv.gz
+-rw-rw-r-- 1 bgee bgee       1213 Oct 25 06:39 topanat_calls_observed_species_7897.index.tsv
+-rw-rw-r-- 1 bgee bgee      23956 Oct 25 06:39 topanat_calls_observed_species_7897.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2430 Oct 24 15:05 topanat_calls_observed_species_7918.index.tsv
+-rw-rw-r-- 1 bgee bgee     657232 Oct 24 15:05 topanat_calls_observed_species_7918.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2056 Oct 24 15:13 topanat_calls_observed_species_7936.index.tsv
+-rw-rw-r-- 1 bgee bgee     443802 Oct 24 15:13 topanat_calls_observed_species_7936.tsv.gz
+-rw-rw-r-- 1 bgee bgee      55344 Oct 25 00:58 topanat_calls_observed_species_7955.index.tsv
+-rw-rw-r-- 1 bgee bgee    2614252 Oct 25 00:58 topanat_calls_observed_species_7955.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2968 Oct 25 04:35 topanat_calls_observed_species_7994.index.tsv
+-rw-rw-r-- 1 bgee bgee     759880 Oct 25 04:35 topanat_calls_observed_species_7994.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2440 Oct 25 06:29 topanat_calls_observed_species_8010.index.tsv
+-rw-rw-r-- 1 bgee bgee     697332 Oct 25 06:29 topanat_calls_observed_species_8010.tsv.gz
+-rw-rw-r-- 1 bgee bgee       3286 Oct 25 06:45 topanat_calls_observed_species_8030.index.tsv
+-rw-rw-r-- 1 bgee bgee    2563079 Oct 25 06:45 topanat_calls_observed_species_8030.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2270 Oct 24 15:06 topanat_calls_observed_species_8049.index.tsv
+-rw-rw-r-- 1 bgee bgee     504621 Oct 24 15:06 topanat_calls_observed_species_8049.tsv.gz
+-rw-rw-r-- 1 bgee bgee        593 Oct 24 22:19 topanat_calls_observed_species_8081.index.tsv
+-rw-rw-r-- 1 bgee bgee     284142 Oct 24 22:19 topanat_calls_observed_species_8081.tsv.gz
+-rw-rw-r-- 1 bgee bgee       3744 Oct 25 01:00 topanat_calls_observed_species_8090.index.tsv
+-rw-rw-r-- 1 bgee bgee    1950116 Oct 25 01:00 topanat_calls_observed_species_8090.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2016 Oct 25 06:41 topanat_calls_observed_species_8154.index.tsv
+-rw-rw-r-- 1 bgee bgee     350578 Oct 25 06:41 topanat_calls_observed_species_8154.tsv.gz
+-rw-rw-r-- 1 bgee bgee      33847 Oct 25 03:39 topanat_calls_observed_species_8355.index.tsv
+-rw-rw-r-- 1 bgee bgee    2037510 Oct 25 03:39 topanat_calls_observed_species_8355.tsv.gz
+-rw-rw-r-- 1 bgee bgee      21631 Oct 25 04:17 topanat_calls_observed_species_8364.index.tsv
+-rw-rw-r-- 1 bgee bgee    1145249 Oct 25 04:17 topanat_calls_observed_species_8364.tsv.gz
+-rw-rw-r-- 1 bgee bgee      16618 Oct 25 06:16 topanat_calls_observed_species_9031.index.tsv
+-rw-rw-r-- 1 bgee bgee    1407442 Oct 25 06:16 topanat_calls_observed_species_9031.tsv.gz
+-rw-rw-r-- 1 bgee bgee       3034 Oct 24 22:18 topanat_calls_observed_species_9103.index.tsv
+-rw-rw-r-- 1 bgee bgee     576093 Oct 24 22:18 topanat_calls_observed_species_9103.tsv.gz
+-rw-rw-r-- 1 bgee bgee       6634 Oct 25 03:41 topanat_calls_observed_species_9258.index.tsv
+-rw-rw-r-- 1 bgee bgee     593936 Oct 25 03:41 topanat_calls_observed_species_9258.tsv.gz
+-rw-rw-r-- 1 bgee bgee      14585 Oct 24 22:12 topanat_calls_observed_species_9483.index.tsv
+-rw-rw-r-- 1 bgee bgee    1738294 Oct 24 22:12 topanat_calls_observed_species_9483.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2698 Oct 25 04:36 topanat_calls_observed_species_9531.index.tsv
+-rw-rw-r-- 1 bgee bgee     504719 Oct 25 04:36 topanat_calls_observed_species_9531.tsv.gz
+-rw-rw-r-- 1 bgee bgee      25157 Oct 25 06:06 topanat_calls_observed_species_9541.index.tsv
+-rw-rw-r-- 1 bgee bgee    2975424 Oct 25 06:06 topanat_calls_observed_species_9541.tsv.gz
+-rw-rw-r-- 1 bgee bgee      32724 Oct 25 06:26 topanat_calls_observed_species_9544.index.tsv
+-rw-rw-r-- 1 bgee bgee    4019383 Oct 25 06:26 topanat_calls_observed_species_9544.tsv.gz
+-rw-rw-r-- 1 bgee bgee      20903 Oct 25 06:28 topanat_calls_observed_species_9545.index.tsv
+-rw-rw-r-- 1 bgee bgee     567579 Oct 25 06:28 topanat_calls_observed_species_9545.tsv.gz
+-rw-rw-r-- 1 bgee bgee       7340 Oct 25 06:32 topanat_calls_observed_species_9555.index.tsv
+-rw-rw-r-- 1 bgee bgee    1896892 Oct 25 06:32 topanat_calls_observed_species_9555.tsv.gz
+-rw-rw-r-- 1 bgee bgee       9560 Oct 24 15:08 topanat_calls_observed_species_9593.index.tsv
+-rw-rw-r-- 1 bgee bgee     860136 Oct 24 15:08 topanat_calls_observed_species_9593.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2117 Oct 24 15:09 topanat_calls_observed_species_9597.index.tsv
+-rw-rw-r-- 1 bgee bgee     613606 Oct 24 15:09 topanat_calls_observed_species_9597.tsv.gz
+-rw-rw-r-- 1 bgee bgee      11485 Oct 24 15:12 topanat_calls_observed_species_9598.index.tsv
+-rw-rw-r-- 1 bgee bgee    2019928 Oct 24 15:12 topanat_calls_observed_species_9598.tsv.gz
+-rw-rw-r-- 1 bgee bgee     340714 Oct 24 22:09 topanat_calls_observed_species_9606.index.tsv
+-rw-rw-r-- 1 bgee bgee   28081989 Oct 24 22:09 topanat_calls_observed_species_9606.tsv.gz
+-rw-rw-r-- 1 bgee bgee       8012 Oct 24 22:17 topanat_calls_observed_species_9615.index.tsv
+-rw-rw-r-- 1 bgee bgee    3457162 Oct 24 22:17 topanat_calls_observed_species_9615.tsv.gz
+-rw-rw-r-- 1 bgee bgee       3333 Oct 25 06:39 topanat_calls_observed_species_9685.index.tsv
+-rw-rw-r-- 1 bgee bgee     843722 Oct 25 06:39 topanat_calls_observed_species_9685.tsv.gz
+-rw-rw-r-- 1 bgee bgee       7239 Oct 25 05:59 topanat_calls_observed_species_9796.index.tsv
+-rw-rw-r-- 1 bgee bgee    2307372 Oct 25 05:59 topanat_calls_observed_species_9796.tsv.gz
+-rw-rw-r-- 1 bgee bgee      40757 Oct 25 07:04 topanat_calls_observed_species_9823.index.tsv
+-rw-rw-r-- 1 bgee bgee    6446937 Oct 25 07:04 topanat_calls_observed_species_9823.tsv.gz
+-rw-rw-r-- 1 bgee bgee      10496 Oct 25 04:34 topanat_calls_observed_species_9913.index.tsv
+-rw-rw-r-- 1 bgee bgee    5374605 Oct 25 04:34 topanat_calls_observed_species_9913.tsv.gz
+-rw-rw-r-- 1 bgee bgee       4562 Oct 25 06:12 topanat_calls_observed_species_9925.index.tsv
+-rw-rw-r-- 1 bgee bgee    1316793 Oct 25 06:12 topanat_calls_observed_species_9925.tsv.gz
+-rw-rw-r-- 1 bgee bgee       7894 Oct 25 06:38 topanat_calls_observed_species_9940.index.tsv
+-rw-rw-r-- 1 bgee bgee    4339006 Oct 25 06:38 topanat_calls_observed_species_9940.tsv.gz
+-rw-rw-r-- 1 bgee bgee       1964 Oct 24 15:06 topanat_calls_observed_species_9974.index.tsv
+-rw-rw-r-- 1 bgee bgee     408628 Oct 24 15:06 topanat_calls_observed_species_9974.tsv.gz
+-rw-rw-r-- 1 bgee bgee      26659 Oct 24 15:17 topanat_calls_observed_species_9986.index.tsv
+-rw-rw-r-- 1 bgee bgee    1468037 Oct 24 15:17 topanat_calls_observed_species_9986.tsv.gz
+-rw-rw-r-- 1 bgee bgee     547693 Oct 24 15:05 topanat_calls_propagated_species_10090.index.tsv
+-rw-rw-r-- 1 bgee bgee 1025493478 Oct 24 15:05 topanat_calls_propagated_species_10090.tsv.gz
+-rw-rw-r-- 1 bgee bgee      10403 Oct 24 15:25 topanat_calls_propagated_species_10116.index.tsv
+-rw-rw-r-- 1 bgee bgee   16037794 Oct 24 15:25 topanat_calls_propagated_species_10116.tsv.gz
+-rw-rw-r-- 1 bgee bgee       3045 Oct 25 01:01 topanat_calls_propagated_species_10141.index.tsv
+-rw-rw-r-- 1 bgee bgee    3111674 Oct 25 01:01 topanat_calls_propagated_species_10141.tsv.gz
+-rw-rw-r-- 1 bgee bgee      26012 Oct 25 06:10 topanat_calls_propagated_species_10181.index.tsv
+-rw-rw-r-- 1 bgee bgee    8130130 Oct 25 06:10 topanat_calls_propagated_species_10181.tsv.gz
+-rw-rw-r-- 1 bgee bgee       1250 Oct 25 05:56 topanat_calls_propagated_species_105023.index.tsv
+-rw-rw-r-- 1 bgee bgee     860770 Oct 25 05:56 topanat_calls_propagated_species_105023.tsv.gz
+-rw-rw-r-- 1 bgee bgee      10649 Oct 25 04:22 topanat_calls_propagated_species_13616.index.tsv
+-rw-rw-r-- 1 bgee bgee   10471446 Oct 25 04:22 topanat_calls_propagated_species_13616.tsv.gz
+-rw-rw-r-- 1 bgee bgee       3066 Oct 25 06:40 topanat_calls_propagated_species_28377.index.tsv
+-rw-rw-r-- 1 bgee bgee    2592002 Oct 25 06:40 topanat_calls_propagated_species_28377.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2372 Oct 24 22:18 topanat_calls_propagated_species_30608.index.tsv
+-rw-rw-r-- 1 bgee bgee    1583257 Oct 24 22:18 topanat_calls_propagated_species_30608.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2027 Oct 24 15:08 topanat_calls_propagated_species_32507.index.tsv
+-rw-rw-r-- 1 bgee bgee     558126 Oct 24 15:08 topanat_calls_propagated_species_32507.tsv.gz
+-rw-rw-r-- 1 bgee bgee       1573 Oct 25 03:40 topanat_calls_propagated_species_52904.index.tsv
+-rw-rw-r-- 1 bgee bgee    1006717 Oct 25 03:40 topanat_calls_propagated_species_52904.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2438 Oct 25 03:40 topanat_calls_propagated_species_60711.index.tsv
+-rw-rw-r-- 1 bgee bgee    3058006 Oct 25 03:40 topanat_calls_propagated_species_60711.tsv.gz
+-rw-rw-r-- 1 bgee bgee      14167 Oct 25 07:15 topanat_calls_propagated_species_6239.index.tsv
+-rw-rw-r-- 1 bgee bgee     697166 Oct 25 07:15 topanat_calls_propagated_species_6239.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2958 Oct 25 04:18 topanat_calls_propagated_species_69293.index.tsv
+-rw-rw-r-- 1 bgee bgee    2265732 Oct 25 04:18 topanat_calls_propagated_species_69293.tsv.gz
+-rw-rw-r-- 1 bgee bgee     285477 Oct 25 05:54 topanat_calls_propagated_species_7227.index.tsv
+-rw-rw-r-- 1 bgee bgee  168087828 Oct 25 05:54 topanat_calls_propagated_species_7227.tsv.gz
+-rw-rw-r-- 1 bgee bgee        695 Oct 25 06:12 topanat_calls_propagated_species_7237.index.tsv
+-rw-rw-r-- 1 bgee bgee     236781 Oct 25 06:12 topanat_calls_propagated_species_7237.tsv.gz
+-rw-rw-r-- 1 bgee bgee        614 Oct 25 06:26 topanat_calls_propagated_species_7240.index.tsv
+-rw-rw-r-- 1 bgee bgee     206582 Oct 25 06:26 topanat_calls_propagated_species_7240.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2006 Oct 25 05:55 topanat_calls_propagated_species_7740.index.tsv
+-rw-rw-r-- 1 bgee bgee    1537505 Oct 25 05:55 topanat_calls_propagated_species_7740.tsv.gz
+-rw-rw-r-- 1 bgee bgee       1213 Oct 25 06:39 topanat_calls_propagated_species_7897.index.tsv
+-rw-rw-r-- 1 bgee bgee      58704 Oct 25 06:39 topanat_calls_propagated_species_7897.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2435 Oct 24 15:05 topanat_calls_propagated_species_7918.index.tsv
+-rw-rw-r-- 1 bgee bgee    2343638 Oct 24 15:05 topanat_calls_propagated_species_7918.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2056 Oct 24 15:13 topanat_calls_propagated_species_7936.index.tsv
+-rw-rw-r-- 1 bgee bgee     923849 Oct 24 15:13 topanat_calls_propagated_species_7936.tsv.gz
+-rw-rw-r-- 1 bgee bgee      55349 Oct 25 00:58 topanat_calls_propagated_species_7955.index.tsv
+-rw-rw-r-- 1 bgee bgee    7834639 Oct 25 00:58 topanat_calls_propagated_species_7955.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2974 Oct 25 04:35 topanat_calls_propagated_species_7994.index.tsv
+-rw-rw-r-- 1 bgee bgee    2847858 Oct 25 04:35 topanat_calls_propagated_species_7994.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2443 Oct 25 06:29 topanat_calls_propagated_species_8010.index.tsv
+-rw-rw-r-- 1 bgee bgee    2636352 Oct 25 06:29 topanat_calls_propagated_species_8010.tsv.gz
+-rw-rw-r-- 1 bgee bgee       3292 Oct 25 06:45 topanat_calls_propagated_species_8030.index.tsv
+-rw-rw-r-- 1 bgee bgee    7903854 Oct 25 06:45 topanat_calls_propagated_species_8030.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2270 Oct 24 15:06 topanat_calls_propagated_species_8049.index.tsv
+-rw-rw-r-- 1 bgee bgee     954626 Oct 24 15:06 topanat_calls_propagated_species_8049.tsv.gz
+-rw-rw-r-- 1 bgee bgee        593 Oct 24 22:19 topanat_calls_propagated_species_8081.index.tsv
+-rw-rw-r-- 1 bgee bgee     332667 Oct 24 22:19 topanat_calls_propagated_species_8081.tsv.gz
+-rw-rw-r-- 1 bgee bgee       3751 Oct 25 01:00 topanat_calls_propagated_species_8090.index.tsv
+-rw-rw-r-- 1 bgee bgee    4562953 Oct 25 01:00 topanat_calls_propagated_species_8090.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2020 Oct 25 06:41 topanat_calls_propagated_species_8154.index.tsv
+-rw-rw-r-- 1 bgee bgee     842094 Oct 25 06:41 topanat_calls_propagated_species_8154.tsv.gz
+-rw-rw-r-- 1 bgee bgee      33856 Oct 25 03:39 topanat_calls_propagated_species_8355.index.tsv
+-rw-rw-r-- 1 bgee bgee    6255417 Oct 25 03:39 topanat_calls_propagated_species_8355.tsv.gz
+-rw-rw-r-- 1 bgee bgee      21642 Oct 25 04:17 topanat_calls_propagated_species_8364.index.tsv
+-rw-rw-r-- 1 bgee bgee    2629789 Oct 25 04:17 topanat_calls_propagated_species_8364.tsv.gz
+-rw-rw-r-- 1 bgee bgee      16634 Oct 25 06:16 topanat_calls_propagated_species_9031.index.tsv
+-rw-rw-r-- 1 bgee bgee    8572176 Oct 25 06:16 topanat_calls_propagated_species_9031.tsv.gz
+-rw-rw-r-- 1 bgee bgee       3039 Oct 24 22:18 topanat_calls_propagated_species_9103.index.tsv
+-rw-rw-r-- 1 bgee bgee    2137460 Oct 24 22:18 topanat_calls_propagated_species_9103.tsv.gz
+-rw-rw-r-- 1 bgee bgee       6638 Oct 25 03:41 topanat_calls_propagated_species_9258.index.tsv
+-rw-rw-r-- 1 bgee bgee    3222188 Oct 25 03:41 topanat_calls_propagated_species_9258.tsv.gz
+-rw-rw-r-- 1 bgee bgee      14601 Oct 24 22:12 topanat_calls_propagated_species_9483.index.tsv
+-rw-rw-r-- 1 bgee bgee   10584792 Oct 24 22:12 topanat_calls_propagated_species_9483.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2702 Oct 25 04:36 topanat_calls_propagated_species_9531.index.tsv
+-rw-rw-r-- 1 bgee bgee    2237845 Oct 25 04:36 topanat_calls_propagated_species_9531.tsv.gz
+-rw-rw-r-- 1 bgee bgee      25167 Oct 25 06:06 topanat_calls_propagated_species_9541.index.tsv
+-rw-rw-r-- 1 bgee bgee   13228736 Oct 25 06:06 topanat_calls_propagated_species_9541.tsv.gz
+-rw-rw-r-- 1 bgee bgee      32745 Oct 25 06:26 topanat_calls_propagated_species_9544.index.tsv
+-rw-rw-r-- 1 bgee bgee   29711693 Oct 25 06:26 topanat_calls_propagated_species_9544.tsv.gz
+-rw-rw-r-- 1 bgee bgee      20911 Oct 25 06:28 topanat_calls_propagated_species_9545.index.tsv
+-rw-rw-r-- 1 bgee bgee    3122016 Oct 25 06:28 topanat_calls_propagated_species_9545.tsv.gz
+-rw-rw-r-- 1 bgee bgee       7344 Oct 25 06:32 topanat_calls_propagated_species_9555.index.tsv
+-rw-rw-r-- 1 bgee bgee    6425964 Oct 25 06:32 topanat_calls_propagated_species_9555.tsv.gz
+-rw-rw-r-- 1 bgee bgee       9570 Oct 24 15:08 topanat_calls_propagated_species_9593.index.tsv
+-rw-rw-r-- 1 bgee bgee    6145687 Oct 24 15:08 topanat_calls_propagated_species_9593.tsv.gz
+-rw-rw-r-- 1 bgee bgee       2130 Oct 24 15:09 topanat_calls_propagated_species_9597.index.tsv
+-rw-rw-r-- 1 bgee bgee    2350742 Oct 24 15:09 topanat_calls_propagated_species_9597.tsv.gz
+-rw-rw-r-- 1 bgee bgee      11499 Oct 24 15:12 topanat_calls_propagated_species_9598.index.tsv
+-rw-rw-r-- 1 bgee bgee   11918634 Oct 24 15:12 topanat_calls_propagated_species_9598.tsv.gz
+-rw-rw-r-- 1 bgee bgee     340750 Oct 24 22:09 topanat_calls_propagated_species_9606.index.tsv
+-rw-rw-r-- 1 bgee bgee  753176073 Oct 24 22:09 topanat_calls_propagated_species_9606.tsv.gz
+-rw-rw-r-- 1 bgee bgee       8021 Oct 24 22:17 topanat_calls_propagated_species_9615.index.tsv
+-rw-rw-r-- 1 bgee bgee   12165673 Oct 24 22:17 topanat_calls_propagated_species_9615.tsv.gz
+-rw-rw-r-- 1 bgee bgee       3338 Oct 25 06:39 topanat_calls_propagated_species_9685.index.tsv
+-rw-rw-r-- 1 bgee bgee    3695675 Oct 25 06:39 topanat_calls_propagated_species_9685.tsv.gz
+-rw-rw-r-- 1 bgee bgee       7248 Oct 25 05:59 topanat_calls_propagated_species_9796.index.tsv
+-rw-rw-r-- 1 bgee bgee    8620008 Oct 25 05:59 topanat_calls_propagated_species_9796.tsv.gz
+-rw-rw-r-- 1 bgee bgee      40775 Oct 25 07:04 topanat_calls_propagated_species_9823.index.tsv
+-rw-rw-r-- 1 bgee bgee   47622020 Oct 25 07:04 topanat_calls_propagated_species_9823.tsv.gz
+-rw-rw-r-- 1 bgee bgee      10501 Oct 25 04:34 topanat_calls_propagated_species_9913.index.tsv
+-rw-rw-r-- 1 bgee bgee   15312482 Oct 25 04:34 topanat_calls_propagated_species_9913.tsv.gz
+-rw-rw-r-- 1 bgee bgee       4572 Oct 25 06:12 topanat_calls_propagated_species_9925.index.tsv
+-rw-rw-r-- 1 bgee bgee    5098141 Oct 25 06:12 topanat_calls_propagated_species_9925.tsv.gz
+-rw-rw-r-- 1 bgee bgee       7911 Oct 25 06:38 topanat_calls_propagated_species_9940.index.tsv
+-rw-rw-r-- 1 bgee bgee   14503315 Oct 25 06:38 topanat_calls_propagated_species_9940.tsv.gz
+-rw-rw-r-- 1 bgee bgee       1965 Oct 24 15:06 topanat_calls_propagated_species_9974.index.tsv
+-rw-rw-r-- 1 bgee bgee    1309782 Oct 24 15:06 topanat_calls_propagated_species_9974.tsv.gz
+-rw-rw-r-- 1 bgee bgee      26664 Oct 24 15:17 topanat_calls_propagated_species_9986.index.tsv
+-rw-rw-r-- 1 bgee bgee    7351306 Oct 24 15:17 topanat_calls_propagated_species_9986.tsv.gz
+-rw-rw-r-- 1 bgee bgee    1804990 Oct 23 21:19 topanat_condition_relations_species_10090.tsv
+-rw-rw-r-- 1 bgee bgee      21722 Oct 24 15:17 topanat_condition_relations_species_10116.tsv
+-rw-rw-r-- 1 bgee bgee       4578 Oct 25 01:00 topanat_condition_relations_species_10141.tsv
+-rw-rw-r-- 1 bgee bgee      84941 Oct 25 06:06 topanat_condition_relations_species_10181.tsv
+-rw-rw-r-- 1 bgee bgee       1368 Oct 25 05:55 topanat_condition_relations_species_105023.tsv
+-rw-rw-r-- 1 bgee bgee      24617 Oct 25 04:18 topanat_condition_relations_species_13616.tsv
+-rw-rw-r-- 1 bgee bgee       4758 Oct 25 06:39 topanat_condition_relations_species_28377.tsv
+-rw-rw-r-- 1 bgee bgee       3288 Oct 24 22:18 topanat_condition_relations_species_30608.tsv
+-rw-rw-r-- 1 bgee bgee       2958 Oct 24 15:08 topanat_condition_relations_species_32507.tsv
+-rw-rw-r-- 1 bgee bgee       2148 Oct 25 03:40 topanat_condition_relations_species_52904.tsv
+-rw-rw-r-- 1 bgee bgee       3310 Oct 25 03:39 topanat_condition_relations_species_60711.tsv
+-rw-rw-r-- 1 bgee bgee      28800 Oct 25 07:04 topanat_condition_relations_species_6239.tsv
+-rw-rw-r-- 1 bgee bgee       4408 Oct 25 04:17 topanat_condition_relations_species_69293.tsv
+-rw-rw-r-- 1 bgee bgee     938992 Oct 25 04:36 topanat_condition_relations_species_7227.tsv
+-rw-rw-r-- 1 bgee bgee        558 Oct 25 06:12 topanat_condition_relations_species_7237.tsv
+-rw-rw-r-- 1 bgee bgee        438 Oct 25 06:26 topanat_condition_relations_species_7240.tsv
+-rw-rw-r-- 1 bgee bgee       2376 Oct 25 05:54 topanat_condition_relations_species_7740.tsv
+-rw-rw-r-- 1 bgee bgee       1458 Oct 25 06:39 topanat_condition_relations_species_7897.tsv
+-rw-rw-r-- 1 bgee bgee       3288 Oct 24 15:05 topanat_condition_relations_species_7918.tsv
+-rw-rw-r-- 1 bgee bgee       2718 Oct 24 15:12 topanat_condition_relations_species_7936.tsv
+-rw-rw-r-- 1 bgee bgee     104375 Oct 24 22:19 topanat_condition_relations_species_7955.tsv
+-rw-rw-r-- 1 bgee bgee       4368 Oct 25 04:34 topanat_condition_relations_species_7994.tsv
+-rw-rw-r-- 1 bgee bgee       3708 Oct 25 06:28 topanat_condition_relations_species_8010.tsv
+-rw-rw-r-- 1 bgee bgee       4878 Oct 25 06:41 topanat_condition_relations_species_8030.tsv
+-rw-rw-r-- 1 bgee bgee       2954 Oct 24 15:05 topanat_condition_relations_species_8049.tsv
+-rw-rw-r-- 1 bgee bgee        318 Oct 24 22:18 topanat_condition_relations_species_8081.tsv
+-rw-rw-r-- 1 bgee bgee       5114 Oct 25 00:58 topanat_condition_relations_species_8090.tsv
+-rw-rw-r-- 1 bgee bgee       2808 Oct 25 06:40 topanat_condition_relations_species_8154.tsv
+-rw-rw-r-- 1 bgee bgee      58549 Oct 25 01:01 topanat_condition_relations_species_8355.tsv
+-rw-rw-r-- 1 bgee bgee      37565 Oct 25 03:41 topanat_condition_relations_species_8364.tsv
+-rw-rw-r-- 1 bgee bgee      43967 Oct 25 06:12 topanat_condition_relations_species_9031.tsv
+-rw-rw-r-- 1 bgee bgee       4908 Oct 24 22:17 topanat_condition_relations_species_9103.tsv
+-rw-rw-r-- 1 bgee bgee      15587 Oct 25 03:40 topanat_condition_relations_species_9258.tsv
+-rw-rw-r-- 1 bgee bgee      36705 Oct 24 22:09 topanat_condition_relations_species_9483.tsv
+-rw-rw-r-- 1 bgee bgee       4158 Oct 25 04:35 topanat_condition_relations_species_9531.tsv
+-rw-rw-r-- 1 bgee bgee      73918 Oct 25 05:59 topanat_condition_relations_species_9541.tsv
+-rw-rw-r-- 1 bgee bgee      89470 Oct 25 06:16 topanat_condition_relations_species_9544.tsv
+-rw-rw-r-- 1 bgee bgee      65352 Oct 25 06:26 topanat_condition_relations_species_9545.tsv
+-rw-rw-r-- 1 bgee bgee      11868 Oct 25 06:29 topanat_condition_relations_species_9555.tsv
+-rw-rw-r-- 1 bgee bgee      24699 Oct 24 15:06 topanat_condition_relations_species_9593.tsv
+-rw-rw-r-- 1 bgee bgee       2808 Oct 24 15:08 topanat_condition_relations_species_9597.tsv
+-rw-rw-r-- 1 bgee bgee      27811 Oct 24 15:09 topanat_condition_relations_species_9598.tsv
+-rw-rw-r-- 1 bgee bgee    1131426 Oct 24 15:25 topanat_condition_relations_species_9606.tsv
+-rw-rw-r-- 1 bgee bgee      13460 Oct 24 22:12 topanat_condition_relations_species_9615.tsv
+-rw-rw-r-- 1 bgee bgee       4968 Oct 25 06:38 topanat_condition_relations_species_9685.tsv
+-rw-rw-r-- 1 bgee bgee      11750 Oct 25 05:56 topanat_condition_relations_species_9796.tsv
+-rw-rw-r-- 1 bgee bgee     107553 Oct 25 06:45 topanat_condition_relations_species_9823.tsv
+-rw-rw-r-- 1 bgee bgee      17652 Oct 25 04:22 topanat_condition_relations_species_9913.tsv
+-rw-rw-r-- 1 bgee bgee       6798 Oct 25 06:10 topanat_condition_relations_species_9925.tsv
+-rw-rw-r-- 1 bgee bgee      12512 Oct 25 06:32 topanat_condition_relations_species_9940.tsv
+-rw-rw-r-- 1 bgee bgee       2988 Oct 24 15:06 topanat_condition_relations_species_9974.tsv
+-rw-rw-r-- 1 bgee bgee      78121 Oct 24 15:13 topanat_condition_relations_species_9986.tsv
+-rw-rw-r-- 1 bgee bgee    1262985 Oct 23 21:19 topanat_conditions_species_10090.tsv
+-rw-rw-r-- 1 bgee bgee      19840 Oct 24 15:17 topanat_conditions_species_10116.tsv
+-rw-rw-r-- 1 bgee bgee       5686 Oct 25 01:00 topanat_conditions_species_10141.tsv
+-rw-rw-r-- 1 bgee bgee      55571 Oct 25 06:06 topanat_conditions_species_10181.tsv
+-rw-rw-r-- 1 bgee bgee       1937 Oct 25 05:55 topanat_conditions_species_105023.tsv
+-rw-rw-r-- 1 bgee bgee      21300 Oct 25 04:18 topanat_conditions_species_13616.tsv
+-rw-rw-r-- 1 bgee bgee       5825 Oct 25 06:39 topanat_conditions_species_28377.tsv
+-rw-rw-r-- 1 bgee bgee       4336 Oct 24 22:18 topanat_conditions_species_30608.tsv
+-rw-rw-r-- 1 bgee bgee       3917 Oct 24 15:08 topanat_conditions_species_32507.tsv
+-rw-rw-r-- 1 bgee bgee       2760 Oct 25 03:40 topanat_conditions_species_52904.tsv
+-rw-rw-r-- 1 bgee bgee       4206 Oct 25 03:39 topanat_conditions_species_60711.tsv
+-rw-rw-r-- 1 bgee bgee      28504 Oct 25 07:04 topanat_conditions_species_6239.tsv
+-rw-rw-r-- 1 bgee bgee       5342 Oct 25 04:17 topanat_conditions_species_69293.tsv
+-rw-rw-r-- 1 bgee bgee     733088 Oct 25 04:36 topanat_conditions_species_7227.tsv
+-rw-rw-r-- 1 bgee bgee       1009 Oct 25 06:12 topanat_conditions_species_7237.tsv
+-rw-rw-r-- 1 bgee bgee        837 Oct 25 06:26 topanat_conditions_species_7240.tsv
+-rw-rw-r-- 1 bgee bgee       3286 Oct 25 05:54 topanat_conditions_species_7740.tsv
+-rw-rw-r-- 1 bgee bgee       2214 Oct 25 06:39 topanat_conditions_species_7897.tsv
+-rw-rw-r-- 1 bgee bgee       4298 Oct 24 15:05 topanat_conditions_species_7918.tsv
+-rw-rw-r-- 1 bgee bgee       3685 Oct 24 15:12 topanat_conditions_species_7936.tsv
+-rw-rw-r-- 1 bgee bgee     117386 Oct 24 22:19 topanat_conditions_species_7955.tsv
+-rw-rw-r-- 1 bgee bgee       5459 Oct 25 04:34 topanat_conditions_species_7994.tsv
+-rw-rw-r-- 1 bgee bgee       4513 Oct 25 06:28 topanat_conditions_species_8010.tsv
+-rw-rw-r-- 1 bgee bgee       5980 Oct 25 06:41 topanat_conditions_species_8030.tsv
+-rw-rw-r-- 1 bgee bgee       4010 Oct 24 15:05 topanat_conditions_species_8049.tsv
+-rw-rw-r-- 1 bgee bgee        677 Oct 24 22:18 topanat_conditions_species_8081.tsv
+-rw-rw-r-- 1 bgee bgee       6258 Oct 25 00:58 topanat_conditions_species_8090.tsv
+-rw-rw-r-- 1 bgee bgee       3647 Oct 25 06:40 topanat_conditions_species_8154.tsv
+-rw-rw-r-- 1 bgee bgee      71603 Oct 25 01:01 topanat_conditions_species_8355.tsv
+-rw-rw-r-- 1 bgee bgee      44478 Oct 25 03:41 topanat_conditions_species_8364.tsv
+-rw-rw-r-- 1 bgee bgee      34522 Oct 25 06:12 topanat_conditions_species_9031.tsv
+-rw-rw-r-- 1 bgee bgee       5679 Oct 24 22:17 topanat_conditions_species_9103.tsv
+-rw-rw-r-- 1 bgee bgee      13548 Oct 25 03:40 topanat_conditions_species_9258.tsv
+-rw-rw-r-- 1 bgee bgee      30286 Oct 24 22:09 topanat_conditions_species_9483.tsv
+-rw-rw-r-- 1 bgee bgee       5058 Oct 25 04:35 topanat_conditions_species_9531.tsv
+-rw-rw-r-- 1 bgee bgee      58040 Oct 25 05:59 topanat_conditions_species_9541.tsv
+-rw-rw-r-- 1 bgee bgee      72833 Oct 25 06:16 topanat_conditions_species_9544.tsv
+-rw-rw-r-- 1 bgee bgee      49324 Oct 25 06:26 topanat_conditions_species_9545.tsv
+-rw-rw-r-- 1 bgee bgee      14235 Oct 25 06:29 topanat_conditions_species_9555.tsv
+-rw-rw-r-- 1 bgee bgee      20118 Oct 24 15:06 topanat_conditions_species_9593.tsv
+-rw-rw-r-- 1 bgee bgee       3722 Oct 24 15:08 topanat_conditions_species_9597.tsv
+-rw-rw-r-- 1 bgee bgee      23644 Oct 24 15:09 topanat_conditions_species_9598.tsv
+-rw-rw-r-- 1 bgee bgee     768043 Oct 24 15:25 topanat_conditions_species_9606.tsv
+-rw-rw-r-- 1 bgee bgee      15417 Oct 24 22:12 topanat_conditions_species_9615.tsv
+-rw-rw-r-- 1 bgee bgee       6169 Oct 25 06:38 topanat_conditions_species_9685.tsv
+-rw-rw-r-- 1 bgee bgee      14012 Oct 25 05:56 topanat_conditions_species_9796.tsv
+-rw-rw-r-- 1 bgee bgee      91763 Oct 25 06:45 topanat_conditions_species_9823.tsv
+-rw-rw-r-- 1 bgee bgee      20504 Oct 25 04:22 topanat_conditions_species_9913.tsv
+-rw-rw-r-- 1 bgee bgee       8198 Oct 25 06:10 topanat_conditions_species_9925.tsv
+-rw-rw-r-- 1 bgee bgee      14958 Oct 25 06:32 topanat_conditions_species_9940.tsv
+-rw-rw-r-- 1 bgee bgee       3621 Oct 24 15:06 topanat_conditions_species_9974.tsv
+-rw-rw-r-- 1 bgee bgee      60589 Oct 24 15:13 topanat_conditions_species_9986.tsv
