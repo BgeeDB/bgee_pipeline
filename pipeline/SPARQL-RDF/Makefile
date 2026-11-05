@@ -28,8 +28,8 @@ download_and_install_ontop: download_ontology_file
 	# Download ontop
 	@wget $(ONTOP_DOWNLOAD_URL) -O $(ONTOP_DOWNLOAD_FILE) && $(MV) $(ONTOP_DOWNLOAD_FILE) $(INPUT_DIR) 1>$@.tmp 2>$@.err
 	#check ontop dir already exists
-	[ -d "$(ONTOP_INSTALL_DIR)" ] && rm -rf $(ONTOP_INSTALL_DIR)
-	@mkdir $(ONTOP_INSTALL_DIR)
+	@rm -rf $(ONTOP_INSTALL_DIR)
+	@mkdir -p $(ONTOP_INSTALL_DIR)
 	# Uncompress ontop
 	@unzip $(INPUT_DIR)$(ONTOP_DOWNLOAD_FILE) -d $(ONTOP_INSTALL_DIR) 1>> $@.tmp 2>> $@.err
 	#add MySQL connector lib for Ontop

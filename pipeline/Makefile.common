@@ -604,13 +604,13 @@ RANKS_PER_CONDITION := ranks/condition/
 
 ONTOP_BGEE_PROP_TEMPLATE := $(INPUT_DIR)bgee_connection.template
 GENEX_ONTOLOGY_URL := https://raw.githubusercontent.com/biosoda/genex/master/genex_reduced_subsumption.ttl
-ONTOP_DOWNLOAD_URL := https://netcologne.dl.sourceforge.net/project/ontop4obda/ontop-5.1.0/ontop-cli-5.1.0.zip
+ONTOP_DOWNLOAD_URL := https://downloads.sourceforge.net/project/ontop4obda/ontop-5.1.0/ontop-cli-5.1.0.zip
 ONTOP_MYSQL_JDBC_URL := https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.48/mysql-connector-java-5.1.48.jar
 GENEX_MAPPING_URL := https://raw.githubusercontent.com/biosoda/bioquery/master/Bgee_OBDA_mappings/bgee_v$(subst .,_,$(RELEASE))_genex.obda
 ONTOP_DOWNLOAD_FILE := ontop.zip
 GENEX_ONTOLOGY_FILE := genex.owl
 GENEX_MAPPING_FILE := bgee_genex.obda
-ONTOP_INSTALL_DIR := /usr/local/ontop/
+ONTOP_INSTALL_DIR := $(TMPDIR)/ontop/
 ISQL_PATH := /usr/local/virtuoso-open-source/bin/isql
 VIRTUOSO_HOST := localhost:1111
 TTL_DIRECTORY_FULL_PATH := $(OUTPUT_DIR)
