@@ -39,8 +39,10 @@ download_and_install_ontop: download_ontology_file
 
 create_property_file: $(ONTOP_BGEE_PROP_TEMPLATE)
 	# Create a property file for server connection to database
+	# useCursorFetch and defaultFetchSize make the MySQL driver read the rows of a query 10,000 at a time,
+	# instead of loading the whole result into memory, which exceeds the Java heap for the largest tables
 	@$(CP) $(ONTOP_BGEE_PROP_TEMPLATE) $(OUTPUT_DIR)bgee_connection.properties
-	@echo -e 'jdbc.url=jdbc:mysql://$(DBHOST_EASYBGEE):$(DBPORT)/$(DBNAME_EASYBGEE)\njdbc.driver=com.mysql.jdbc.Driver\njdbc.user=$(DBUSER_EASYBGEE)\njdbc.name=$(DBNAME_EASYBGEE)\njdbc.password=$(DBPASS_EASYBGEE)' >> $(OUTPUT_DIR)bgee_connection.properties
+	@echo -e 'jdbc.url=jdbc:mysql://$(DBHOST_EASYBGEE):$(DBPORT)/$(DBNAME_EASYBGEE)?useCursorFetch=true&defaultFetchSize=10000\njdbc.driver=com.mysql.jdbc.Driver\njdbc.user=$(DBUSER_EASYBGEE)\njdbc.name=$(DBNAME_EASYBGEE)\njdbc.password=$(DBPASS_EASYBGEE)' >> $(OUTPUT_DIR)bgee_connection.properties
 	@touch $@
 
 generate_triples: create_property_file download_and_install_ontop download_ontology_file download_mapping_file
