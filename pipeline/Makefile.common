@@ -86,7 +86,7 @@ BGEEPIPELINEJARNAME := bgee-pipeline-$(RELEASE)-with-dependencies.jar
 BGEEPIPELINEJAR     := $(JAVALIBDIR)$(BGEEPIPELINEJARNAME)
 
 # --add-opens java.base/java.lang=ALL-UNNAMED: see https://stackoverflow.com/a/77874779/1768736
-JAVA_NO_JAR := java -Xmx110g -Dbgee.dao.jdbc.username=$(DBUSER) -Dbgee.dao.jdbc.password=$(DBPASS) -Dbgee.dao.jdbc.driver.names=com.mysql.cj.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST):$(DBPORT)/$(DBNAME)?useSSL=false&allowPublicKeyRetrieval=True&enableQueryTimeouts=false&sessionVariables=net_write_timeout=260000,net_read_timeout=260000,wait_timeout=260000' --add-opens java.base/java.lang=ALL-UNNAMED
+JAVA_NO_JAR := java -Xmx130g -Dbgee.dao.jdbc.username=$(DBUSER) -Dbgee.dao.jdbc.password=$(DBPASS) -Dbgee.dao.jdbc.driver.names=com.mysql.cj.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST):$(DBPORT)/$(DBNAME)?useSSL=false&allowPublicKeyRetrieval=True&enableQueryTimeouts=false&sessionVariables=net_write_timeout=260000,net_read_timeout=260000,wait_timeout=260000' --add-opens java.base/java.lang=ALL-UNNAMED
 # Java command allowing to connect to easyBgee without Jar. Never used without JAR for the moment but created to follow the same pattern than JAVA_NO_JAR/JAVA variables for Bgee
 JAVA_NO_JAR_EASYBGEE := java -Xmx4g -Dbgee.dao.jdbc.username=$(DBUSER_EASYBGEE) -Dbgee.dao.jdbc.password=$(DBPASS_EASYBGEE) -Dbgee.dao.jdbc.driver.names=com.mysql.cj.jdbc.Driver,net.sf.log4jdbc.sql.jdbcapi.DriverSpy -Dbgee.dao.jdbc.url='jdbc:log4jdbc:mysql://$(DBHOST_EASYBGEE):$(DBPORT)/$(DBNAME_EASYBGEE)?useSSL=false&allowPublicKeyRetrieval=True&enableQueryTimeouts=false&rewriteBatchedStatements=true&sessionVariables=net_write_timeout=500000,net_read_timeout=500000,wait_timeout=500000'
 
@@ -606,14 +606,15 @@ ONTOP_BGEE_PROP_TEMPLATE := $(INPUT_DIR)bgee_connection.template
 GENEX_ONTOLOGY_URL := https://raw.githubusercontent.com/biosoda/genex/master/genex_reduced_subsumption.ttl
 ONTOP_DOWNLOAD_URL := https://downloads.sourceforge.net/project/ontop4obda/ontop-5.1.0/ontop-cli-5.1.0.zip
 ONTOP_MYSQL_JDBC_URL := https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.48/mysql-connector-java-5.1.48.jar
-GENEX_MAPPING_URL := https://raw.githubusercontent.com/biosoda/bioquery/master/Bgee_OBDA_mappings/bgee_v$(subst .,_,$(RELEASE))_genex.obda
+#TODO this file has been created for Bgee 15.2 and contains an URL speciefic to that specific release in seeAlso. Should be updated or at least that URL should be automotically adapted to the release to generate
+GENEX_MAPPING_URL := https://raw.githubusercontent.com/biosoda/bioquery/master/Bgee_OBDA_mappings/bgee_v15_2_genex.obda
 ONTOP_DOWNLOAD_FILE := ontop.zip
 GENEX_ONTOLOGY_FILE := genex.owl
 GENEX_MAPPING_FILE := bgee_genex.obda
 ONTOP_INSTALL_DIR := $(TMPDIR)/ontop/
 ISQL_PATH := /usr/local/virtuoso-open-source/bin/isql
 VIRTUOSO_HOST := localhost:1111
-TTL_DIRECTORY_FULL_PATH := $(OUTPUT_DIR)
+TTL_DIRECTORY_FULL_PATH := $(TMPDIR)/ttl/
 FTP_SAVE_DUMP_PATH := $(FTP_CURRENT)rdf_easybgee.zip
 TTL_FILE_LIST      := $(TTL_DIRECTORY_FULL_PATH)ttl_files.txt
 BGEE_VIRTUOSO_FILE := $(TTL_DIRECTORY_FULL_PATH)add_bgee_virtuoso.sql
