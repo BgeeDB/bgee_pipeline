@@ -86,7 +86,7 @@ source		SELECT g.geneId, gc.globalConditionId
 			ON g.bgeeGeneId = ge.bgeeGeneId WHERE ge.callType='EXPRESSED' 
 
 mappingId	Gene
-target		oma:GENE_{geneId} a orth:Gene ; a obo:SO_0000704 ; a orth:SequenceUnit ; rdfs:seeAlso <https://www.bgee.org/bgee15_2/gene/{geneId}> ; rdfs:label {geneName}^^xsd:string ; terms:description {geneDescription}^^xsd:string ; terms:identifier {geneId}^^xsd:string ; orth:organism <https://bgee.org/species/{speciesId}> . 
+target		oma:GENE_{geneId} a orth:Gene ; a obo:SO_0000704 ; a orth:SequenceUnit ; rdfs:seeAlso <https://www.bgee.org/bgee16_0/gene/{geneId}> ; rdfs:label {geneName}^^xsd:string ; terms:description {geneDescription}^^xsd:string ; terms:identifier {geneId}^^xsd:string ; orth:organism <https://bgee.org/species/{speciesId}> . 
 source		select geneId, geneName, geneDescription, speciesId from gene
 
 mappingId	Gene_xref_ensembl
