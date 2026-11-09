@@ -4,130 +4,17 @@ include $(PIPELINEROOT)Makefile.common
 
 all: $(VERIFICATIONFILE)
 
-######################################################
-# CREATE VARIABLES FOR INSERTING DOWNLOAD FILES INFO
-#######################################################
-# Creates the variables needed to insert information about generated download files, 
-# using Makefile foreach function.
-# The order of the file name prefixes is important, it defines the preferred 
-# display order of the groups.
-SPECIES_GROUP_VAR_PREFIXES := HUMAN MOUSE ZEBRAFISH FLY C_ELEGANS CHIMPANZEE BONOBO GORILLA MACACA RAT COW PIG HORSE RABBIT DOG CAT CAVY HEDGEHOG OPOSSUM PLATYPUS CHICKEN ANOLIS XENOPUS D_ANA D_MOJ D_PSE D_SIM D_VIR D_YAK
-
-# We will need to replace spaces produce by the Makefile foreach method with $(ENTRY_SEP), 
-# we need the following variables: 
-empty:=
-space:= $(empty) $(empty)
-
-############
-# Variables to create a Map species data group names -> species IDs 
-###########
-# Create a variable storing the parameter group names to species for single species data groups. 
-# We replace spaces in display names with __, to be replaced afterwards with an escaped space 
-# (because, see next line)
-SINGLE_SPE_GROUP_NAME_TO_SPECIES := $(strip $(foreach prefix, $(SPECIES_GROUP_VAR_PREFIXES), $(subst $(space),__,$($(prefix)_DISPLAY_NAME))$(KEY_VAL_SEP)$($(prefix)_ID)))
-# Now, we replace the spaces produce by the Makefile 'foreach' method with $(ENTRY_SEP)
-SINGLE_SPE_GROUP_NAME_TO_SPECIES := $(subst $(space),$(ENTRY_SEP),$(SINGLE_SPE_GROUP_NAME_TO_SPECIES))
-# We put back the spaces in display names
-SINGLE_SPE_GROUP_NAME_TO_SPECIES := $(subst __,$(space),$(SINGLE_SPE_GROUP_NAME_TO_SPECIES))
-
-# create the "real" variable MULTI_SPE_GROUP_NAME_TO_SPECIES, if we had data in all necessay species
-# TODO: add many more groups, try all possible interesting groupings
-# MULTI_SPE_GROUP_NAME_TO_SPECIES := $(HUMAN_DISPLAY_NAME)/$(MOUSE_DISPLAY_NAME)$(KEY_VAL_SEP)$(HUMAN_ID)$(VAL_SEP)$(MOUSE_ID)$(ENTRY_SEP)Murinae$(KEY_VAL_SEP)$(MOUSE_ID)$(VAL_SEP)$(RAT_ID)$(ENTRY_SEP)Primates$(KEY_VAL_SEP)$(PRIMATES_IDS)$(ENTRY_SEP)Theria$(KEY_VAL_SEP)$(THERIA_IDS)$(ENTRY_SEP)Mammalia$(KEY_VAL_SEP)$(MAMMALIA_IDS)$(ENTRY_SEP)Amniota$(KEY_VAL_SEP)$(AMNIOTA_IDS)$(ENTRY_SEP)Tetrapoda$(KEY_VAL_SEP)$(TETRAPODA_IDS)$(ENTRY_SEP)Euteleostomi$(KEY_VAL_SEP)$(EUTELEOSTOMI_IDS)
-
-# create temporary variables because we don't have the multi-species present/absent expression files for now, allowing to include more species
-CURRENT_THERIA_IDS := $(HUMAN_ID)$(VAL_SEP)$(CHIMPANZEE_ID)$(VAL_SEP)$(GORILLA_ID)$(VAL_SEP)$(MACACA_ID)$(VAL_SEP)$(RAT_ID)$(VAL_SEP)$(MOUSE_ID)$(VAL_SEP)$(COW_ID)$(VAL_SEP)$(OPOSSUM_ID)
-CURRENT_MAMMALIA_IDS := $(CURRENT_THERIA_IDS)$(VAL_SEP)$(PLATYPUS_ID)
-CURRENT_AMNIOTA_IDS := $(CURRENT_MAMMALIA_IDS)$(VAL_SEP)$(CHICKEN_ID)
-CURRENT_TETRAPODA_IDS := $(CURRENT_AMNIOTA_IDS)$(VAL_SEP)$(XENOPUS_ID)
-
-MULTI_SPE_GROUP_NAME_TO_SPECIES := $(HUMAN_DISPLAY_NAME)/$(MOUSE_DISPLAY_NAME)$(KEY_VAL_SEP)$(HUMAN_ID)$(VAL_SEP)$(MOUSE_ID)$(ENTRY_SEP)Murinae$(KEY_VAL_SEP)$(MOUSE_ID)$(VAL_SEP)$(RAT_ID)$(ENTRY_SEP)$(MACACA_DISPLAY_NAME)/$(CHIMPANZEE_DISPLAY_NAME)$(KEY_VAL_SEP)$(MACACA_ID)$(VAL_SEP)$(CHIMPANZEE_ID)$(ENTRY_SEP)Theria$(KEY_VAL_SEP)$(CURRENT_THERIA_IDS)$(ENTRY_SEP)Mammalia$(KEY_VAL_SEP)$(CURRENT_MAMMALIA_IDS)$(ENTRY_SEP)Amniota$(KEY_VAL_SEP)$(CURRENT_AMNIOTA_IDS)$(ENTRY_SEP)Tetrapoda$(KEY_VAL_SEP)$(CURRENT_TETRAPODA_IDS)
-
-
-GROUP_NAME_TO_SPECIES := $(SINGLE_SPE_GROUP_NAME_TO_SPECIES)
-# FIXME: enable when multi-species file generation will be possible
-#$(ENTRY_SEP)$(MULTI_SPE_GROUP_NAME_TO_SPECIES)
-
-############
-# Variables to create a Map species data group names -> requested file categories 
-###########
-EXPR_SIMPLE_CAT := expr_simple
-EXPR_COMPLETE_CAT := expr_advanced
-DIFF_EXPR_ANAT_SIMPLE_CAT := diff_expr_anatomy_simple
-DIFF_EXPR_ANAT_COMPLETE_CAT := diff_expr_anatomy_complete
-DIFF_EXPR_DEV_SIMPLE_CAT := diff_expr_dev_simple
-DIFF_EXPR_DEV_COMPLETE_CAT := diff_expr_dev_complete
-ALL_CALLS_CATS := $(EXPR_SIMPLE_CAT)$(VAL_SEP)$(EXPR_COMPLETE_CAT)
-# FIXME: enable when diff expression file generation will be possible
-#$(VAL_SEP)$(DIFF_EXPR_ANAT_SIMPLE_CAT)$(VAL_SEP)$(DIFF_EXPR_ANAT_COMPLETE_CAT)$(VAL_SEP)$(DIFF_EXPR_DEV_SIMPLE_CAT)$(VAL_SEP)$(DIFF_EXPR_DEV_COMPLETE_CAT)
-
-RNA_SEQ_ANNOT_CAT := rnaseq_annot
-RNA_SEQ_DATA_CAT := rnaseq_data
-AFFY_ANNOT_CAT := affy_annot
-AFFY_DATA_CAT := affy_data
-ALL_RAW_DATA_CATS := $(RNA_SEQ_ANNOT_CAT)$(VAL_SEP)$(RNA_SEQ_DATA_CAT)$(VAL_SEP)$(AFFY_ANNOT_CAT)$(VAL_SEP)$(AFFY_DATA_CAT)
-ORTHOLOG_CAT := ortholog
-
-# Create a variable storing the parameter group names to file categories for single species data groups. 
-# We replace spaces in display names with __, to be replaced afterwards with an escaped space 
-# (because, see next line)
-SINGLE_SPE_GROUP_NAME_TO_CAT := $(strip $(foreach prefix, $(SPECIES_GROUP_VAR_PREFIXES), $(subst $(space),__,$($(prefix)_DISPLAY_NAME))$(KEY_VAL_SEP)$(ALL_CALLS_CATS)$(VAL_SEP)$(ALL_RAW_DATA_CATS)))
-# Now, we replace the spaces produce by the Makefile 'foreach' method with $(ENTRY_SEP)
-SINGLE_SPE_GROUP_NAME_TO_CAT := $(subst $(space),$(ENTRY_SEP),$(SINGLE_SPE_GROUP_NAME_TO_CAT))
-# We put back the spaces in display names
-SINGLE_SPE_GROUP_NAME_TO_CAT := $(subst __,$(space),$(SINGLE_SPE_GROUP_NAME_TO_CAT))
-
-# Same for multi-species
-# create the "real" variable MULTI_SPE_GROUP_NAME_TO_CAT, if we had data in all necessay species
-# TODO: add many more groups, try all possible interesting groupings
-# MULTI_SPE_GROUP_NAME_TO_CAT := $(HUMAN_DISPLAY_NAME)/$(MOUSE_DISPLAY_NAME)$(KEY_VAL_SEP)$(ALL_CALLS_CATS)$(VAL_SEP)$(ORTHOLOG_CAT)$(ENTRY_SEP)Murinae$(KEY_VAL_SEP)$(ALL_CALLS_CATS)$(VAL_SEP)$(ORTHOLOG_CAT)$(ENTRY_SEP)Primates$(KEY_VAL_SEP)$(ALL_CALLS_CATS)$(VAL_SEP)$(ORTHOLOG_CAT)$(ENTRY_SEP)Theria$(KEY_VAL_SEP)$(ALL_CALLS_CATS)$(VAL_SEP)$(ORTHOLOG_CAT)$(ENTRY_SEP)Mammalia$(KEY_VAL_SEP)$(ALL_CALLS_CATS)$(VAL_SEP)$(ORTHOLOG_CAT)$(ENTRY_SEP)Amniota$(KEY_VAL_SEP)$(ALL_CALLS_CATS)$(VAL_SEP)$(ORTHOLOG_CAT)$(ENTRY_SEP)Tetrapoda$(KEY_VAL_SEP)$(ALL_CALLS_CATS)$(VAL_SEP)$(ORTHOLOG_CAT)$(ENTRY_SEP)Euteleostomi$(KEY_VAL_SEP)$(ALL_CALLS_CATS)$(VAL_SEP)$(ORTHOLOG_CAT)
-
-# create temporary variables because we don't have the multi-species present/absent expression files for now, allowing to include more species
-MULTI_SPE_GROUP_NAME_TO_CAT := $(HUMAN_DISPLAY_NAME)/$(MOUSE_DISPLAY_NAME)$(KEY_VAL_SEP)$(DIFF_EXPR_ANAT_SIMPLE_CAT)$(VAL_SEP)$(DIFF_EXPR_ANAT_COMPLETE_CAT)$(VAL_SEP)$(ORTHOLOG_CAT)$(ENTRY_SEP)Murinae$(KEY_VAL_SEP)$(DIFF_EXPR_ANAT_SIMPLE_CAT)$(VAL_SEP)$(DIFF_EXPR_ANAT_COMPLETE_CAT)$(VAL_SEP)$(ORTHOLOG_CAT)$(ENTRY_SEP)$(MACACA_DISPLAY_NAME)/$(CHIMPANZEE_DISPLAY_NAME)$(KEY_VAL_SEP)$(DIFF_EXPR_ANAT_SIMPLE_CAT)$(VAL_SEP)$(DIFF_EXPR_ANAT_COMPLETE_CAT)$(VAL_SEP)$(ORTHOLOG_CAT)$(ENTRY_SEP)Theria$(KEY_VAL_SEP)$(DIFF_EXPR_ANAT_SIMPLE_CAT)$(VAL_SEP)$(DIFF_EXPR_ANAT_COMPLETE_CAT)$(VAL_SEP)$(ORTHOLOG_CAT)$(ENTRY_SEP)Mammalia$(KEY_VAL_SEP)$(DIFF_EXPR_ANAT_SIMPLE_CAT)$(VAL_SEP)$(DIFF_EXPR_ANAT_COMPLETE_CAT)$(VAL_SEP)$(ORTHOLOG_CAT)$(ENTRY_SEP)Amniota$(KEY_VAL_SEP)$(DIFF_EXPR_ANAT_SIMPLE_CAT)$(VAL_SEP)$(DIFF_EXPR_ANAT_COMPLETE_CAT)$(VAL_SEP)$(ORTHOLOG_CAT)$(ENTRY_SEP)Tetrapoda$(KEY_VAL_SEP)$(DIFF_EXPR_ANAT_SIMPLE_CAT)$(VAL_SEP)$(DIFF_EXPR_ANAT_COMPLETE_CAT)$(VAL_SEP)$(ORTHOLOG_CAT)
-
-
-GROUP_NAME_TO_CAT := $(SINGLE_SPE_GROUP_NAME_TO_CAT)
-# FIXME: enable when multi-species file generation will be possible
-#$(ENTRY_SEP)$(MULTI_SPE_GROUP_NAME_TO_CAT)
-
-############
-# Variables to create a Map species data group names -> replacement string (to replace REPLACE_PATTERN in file names)
-###########
-
-# Create a variable storing the parameter group names to replacements for single species data groups. 
-# We replace spaces in display names with __, to be replaced afterwards with an escaped space 
-# (because, see next line)
-SINGLE_SPE_GROUP_NAME_TO_REPLACEMENT := $(strip $(foreach prefix, $(SPECIES_GROUP_VAR_PREFIXES), $(subst $(space),__,$($(prefix)_DISPLAY_NAME))$(KEY_VAL_SEP)$(subst $(space),_,$($(prefix)_SCIENTIFIC_NAME))))
-# Now, we replace the spaces produce by the Makefile 'foreach' method with $(ENTRY_SEP)
-SINGLE_SPE_GROUP_NAME_TO_REPLACEMENT := $(subst $(space),$(ENTRY_SEP),$(SINGLE_SPE_GROUP_NAME_TO_REPLACEMENT))
-# We put back the spaces in display names
-SINGLE_SPE_GROUP_NAME_TO_REPLACEMENT := $(subst __,$(space),$(SINGLE_SPE_GROUP_NAME_TO_REPLACEMENT))
-
-MULTI_SPE_GROUP_NAME_TO_REPLACEMENT := $(HUMAN_DISPLAY_NAME)/$(MOUSE_DISPLAY_NAME)$(KEY_VAL_SEP)$(subst $(space),_,$(HUMAN_DISPLAY_NAME))_$(subst $(space),_,$(MOUSE_DISPLAY_NAME))$(ENTRY_SEP)Murinae$(KEY_VAL_SEP)murinae$(ENTRY_SEP)$(MACACA_DISPLAY_NAME)/$(CHIMPANZEE_DISPLAY_NAME)$(KEY_VAL_SEP)$(subst $(space),_,$(MACACA_DISPLAY_NAME))_$(subst $(space),_,$(CHIMPANZEE_DISPLAY_NAME))$(ENTRY_SEP)Theria$(KEY_VAL_SEP)theria$(ENTRY_SEP)Mammalia$(KEY_VAL_SEP)mammalia$(ENTRY_SEP)Amniota$(KEY_VAL_SEP)amniota$(ENTRY_SEP)Tetrapoda$(KEY_VAL_SEP)tetrapoda
-
-GROUP_NAME_TO_REPLACEMENT := $(SINGLE_SPE_GROUP_NAME_TO_REPLACEMENT)
-# FIXME enable when multi-species file generation will be possible
-#$(ENTRY_SEP)$(MULTI_SPE_GROUP_NAME_TO_REPLACEMENT)
-
-############
-# Variables to create a Map category -> file name pattern, for single species data groups, and a Map category -> file name pattern, for multi-species data groups
-########### 
-REPLACE_PATTERN := {REPLACE}
-
-ZIP_EXT := .zip
-
-SINGLE_SPE_CAT_TO_FILE_NAME_PATTERN := $(EXPR_SIMPLE_CAT)$(KEY_VAL_SEP)$(EXPR_CALLS_PATH)$(REPLACE_PATTERN)$(EXPR_SIMPLE_SUF)$(ZIP_EXT)$(ENTRY_SEP)$(EXPR_SIMPLE_CAT)$(KEY_VAL_SEP)$(EXPR_CALLS_PATH)$(REPLACE_PATTERN)$(EXPR_SIMPLE_DEV_SUF)$(ZIP_EXT)$(ENTRY_SEP)$(EXPR_SIMPLE_CAT)$(KEY_VAL_SEP)$(EXPR_CALLS_PATH)$(REPLACE_PATTERN)$(EXPR_COMPLETE_SUF)$(ZIP_EXT)$(ENTRY_SEP)$(EXPR_COMPLETE_CAT)$(KEY_VAL_SEP)$(EXPR_CALLS_PATH)$(REPLACE_PATTERN)$(EXPR_COMPLETE_DEV_SUF)$(ZIP_EXT)$(ENTRY_SEP)$(RNA_SEQ_ANNOT_CAT)$(KEY_VAL_SEP)$(RNA_SEQ_EXPR_VALUES_PATH)$(REPLACE_PATTERN)/$(REPLACE_PATTERN)$(RNA_SEQ_EXP_LIB_SUF_ZIP)$(ENTRY_SEP)$(RNA_SEQ_DATA_CAT)$(KEY_VAL_SEP)$(RNA_SEQ_EXPR_VALUES_PATH)$(REPLACE_PATTERN)/$(REPLACE_PATTERN)$(RNA_SEQ_COUNT_SUF_ZIP)$(ENTRY_SEP)$(AFFY_ANNOT_CAT)$(KEY_VAL_SEP)$(AFFYMETRIX_EXPR_VALUES_PATH)$(REPLACE_PATTERN)/$(REPLACE_PATTERN)$(AFFYMETRIX_EXP_CHIP_SUF_ZIP)$(ENTRY_SEP)$(AFFY_DATA_CAT)$(KEY_VAL_SEP)$(AFFYMETRIX_EXPR_VALUES_PATH)$(REPLACE_PATTERN)/$(REPLACE_PATTERN)$(AFFYMETRIX_PROBESET_SUF_ZIP)
-# FIXME: enable when diff-expr file generation will be possible
-#$(DIFF_EXPR_ANAT_SIMPLE_CAT)$(KEY_VAL_SEP)$(DIFF_EXPR_CALLS_PATH)$(REPLACE_PATTERN)$(DIFF_EXPR_ANATOMY_SIMPLE_SUF)$(ZIP_EXT)$(ENTRY_SEP)$(DIFF_EXPR_ANAT_COMPLETE_CAT)$(KEY_VAL_SEP)$(DIFF_EXPR_CALLS_PATH)$(REPLACE_PATTERN)$(DIFF_EXPR_ANATOMY_COMPLETE_SUF)$(ZIP_EXT)$(ENTRY_SEP)$(DIFF_EXPR_DEV_SIMPLE_CAT)$(KEY_VAL_SEP)$(DIFF_EXPR_CALLS_PATH)$(REPLACE_PATTERN)$(DIFF_EXPR_DEV_SIMPLE_SUF)$(ZIP_EXT)$(ENTRY_SEP)$(DIFF_EXPR_DEV_COMPLETE_CAT)$(KEY_VAL_SEP)$(DIFF_EXPR_CALLS_PATH)$(REPLACE_PATTERN)$(DIFF_EXPR_DEV_COMPLETE_SUF)$(ZIP_EXT)$(ENTRY_SEP)
-
-
-# we don't have all categories for multi-species for now
-# MULTI_SPE_CAT_TO_FILE_NAME_PATTERN := $(EXPR_SIMPLE_CAT)$(KEY_VAL_SEP)$(MULTI_SPE_EXPR_CALLS_PATH)$(REPLACE_PATTERN)$(MULTI_SPE_EXPR_SIMPLE_SUF)$(ZIP_EXT)$(ENTRY_SEP)$(EXPR_COMPLETE_CAT)$(KEY_VAL_SEP)$(MULTI_SPE_EXPR_CALLS_PATH)$(REPLACE_PATTERN)$(MULTI_SPE_EXPR_COMPLETE_SUF)$(ZIP_EXT)$(ENTRY_SEP)$(DIFF_EXPR_ANAT_SIMPLE_CAT)$(KEY_VAL_SEP)$(MULTI_SPE_DIFF_EXPR_CALLS_PATH)$(REPLACE_PATTERN)$(MULTI_SPE_DIFF_EXPR_ANATOMY_SIMPLE_SUF)$(ZIP_EXT)$(ENTRY_SEP)$(DIFF_EXPR_ANAT_COMPLETE_CAT)$(KEY_VAL_SEP)$(MULTI_SPE_DIFF_EXPR_CALLS_PATH)$(REPLACE_PATTERN)$(MULTI_SPE_DIFF_EXPR_ANATOMY_COMPLETE_SUF)$(ZIP_EXT)$(ENTRY_SEP)$(DIFF_EXPR_DEV_SIMPLE_CAT)$(KEY_VAL_SEP)$(MULTI_SPE_DIFF_EXPR_CALLS_PATH)$(REPLACE_PATTERN)$(MULTI_SPE_DIFF_EXPR_DEV_SIMPLE_SUF)$(ZIP_EXT)$(ENTRY_SEP)$(DIFF_EXPR_DEV_COMPLETE_CAT)$(KEY_VAL_SEP)$(MULTI_SPE_DIFF_EXPR_CALLS_PATH)$(REPLACE_PATTERN)$(MULTI_SPE_DIFF_EXPR_DEV_COMPLETE_SUF)$(ZIP_EXT)
-
-MULTI_SPE_CAT_TO_FILE_NAME_PATTERN := $(ORTHOLOG_CAT)$(KEY_VAL_SEP)$(ORTHOLOGS_PATH)$(REPLACE_PATTERN)$(ORTHOLOGS_SUF)$(ZIP_EXT)$(ENTRY_SEP)$(DIFF_EXPR_ANAT_SIMPLE_CAT)$(KEY_VAL_SEP)$(MULTI_SPE_DIFF_EXPR_CALL_PATH)$(REPLACE_PATTERN)$(MULTI_SPE_DIFF_EXPR_ANATOMY_SIMPLE_SUF)$(ZIP_EXT)$(ENTRY_SEP)$(DIFF_EXPR_ANAT_COMPLETE_CAT)$(KEY_VAL_SEP)$(MULTI_SPE_DIFF_EXPR_CALL_PATH)$(REPLACE_PATTERN)$(MULTI_SPE_DIFF_EXPR_ANATOMY_COMPLETE_SUF)$(ZIP_EXT)
-
 ############
 # Variables to create specific files
 ###########
+EXPR_SIMPLE_CAT := expr_simple
+EXPR_COMPLETE_CAT := expr_advanced
+ALL_CALLS_CATS := $(EXPR_SIMPLE_CAT)$(VAL_SEP)$(EXPR_COMPLETE_CAT)
+
+RNA_SEQ_ANNOT_CAT := rnaseq_annot
+RNA_SEQ_DATA_CAT := rnaseq_data
+ALL_RAW_DATA_CATS := $(RNA_SEQ_ANNOT_CAT)$(VAL_SEP)$(RNA_SEQ_DATA_CAT)
+
 ORGAN_PARAM := ANAT_ENTITY_ID
 CELLTYPE_PARAM := CELL_TYPE_ID
 STAGE_PARAM := DEV_STAGE_ID
@@ -143,16 +30,16 @@ ALL_COND_PARAM := $(ORGAN_PARAM)$(ENTRY_SEP)$(STAGE_PARAM)$(ENTRY_SEP)$(SEX_PARA
 # Processed data download files
 # =========================
 $(OUTPUT_DIR)generate_processed_files:
-# 	@perl generate_ref_expr_files.pl -bgee=$(BGEECMD) -speciesArg=- -parallelJobs=10 -rnaSeqDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)rna_seq_processed/ -flScRnaSeqDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)sc_rna_seq_fl_processed/ -dbScRnaSeqDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)sc_rna_seq_db_processed/ -bgeeVersion=$(DBNAME) > $@.tmp 2>$@.warnings
-# 	# generate one tarball per species for bulk RNA-Seq. This tarball is used by the BgeeDB R package.
-# 	cd $(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)rna_seq_processed/ && \
-# 	for d in */ ; do \
-# 	  species="$$d"; species="$${species%/}"; \
-# 	  if compgen -G "$${species}/$${species}_RNA-Seq_read_counts_TPM_*.tsv.gz" > /dev/null; then \
-# 	    files=("$${species}/$${species}_RNA-Seq_read_counts_TPM_"*.tsv.gz); \
-# 	    tar -czvf "$${species}_RNA-Seq_read_counts_TPM.tar.gz" "$${files[@]}" >> $@.tmp 2>> $@.warnings; \
-# 	  fi; \
-# 	done
+	@perl generate_ref_expr_files.pl -bgee=$(BGEECMD) -speciesArg=- -parallelJobs=10 -rnaSeqDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)rna_seq_processed/ -flScRnaSeqDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)sc_rna_seq_fl_processed/ -dbScRnaSeqDir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)sc_rna_seq_db_processed/ -bgeeVersion=$(DBNAME) > $@.tmp 2>$@.warnings
+	# generate one tarball per species for bulk RNA-Seq. This tarball is used by the BgeeDB R package.
+	cd $(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)rna_seq_processed/ && \
+	for d in */ ; do \
+	  species="$$d"; species="$${species%/}"; \
+	  if compgen -G "$${species}/$${species}_RNA-Seq_read_counts_TPM_*.tsv.gz" > /dev/null; then \
+	    files=("$${species}/$${species}_RNA-Seq_read_counts_TPM_"*.tsv.gz); \
+	    tar -czvf "$${species}_RNA-Seq_read_counts_TPM.tar.gz" "$${files[@]}" >> $@.tmp 2>> $@.warnings; \
+	  fi; \
+	done
 	# generate one tarball per species for full-length single-cell RNA-Seq. This tarball is used by the BgeeDB R package.
 	@cd $(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH)sc_rna_seq_fl_processed/ && \
 	for d in */ ; do \
@@ -178,11 +65,11 @@ $(OUTPUT_DIR)generate_processed_files:
 # full-length and droplet-based h5ad download files
 # =========================
 # Path to the uv project containing the Python environment for h5ad generation
-H5AD_PROJECT_DIR := /var/lib/mysql/tmp/h5ad_env
+H5AD_PROJECT_DIR := $(TMPDIR)/h5ad_env
 H5AD_PYTHON := $(H5AD_PROJECT_DIR)/.venv/bin/python
 
 # Create the virtual environment from the uv project (installs dependencies from pyproject.toml)
-$(H5AD_PYTHON):
+$(H5AD_PYTHON): $(OUTPUT_DIR)generate_processed_files
 	cd $(H5AD_PROJECT_DIR) && uv sync
 
 #TODO: generate files with directory structure and file names as in the FTP server
@@ -193,13 +80,21 @@ $(OUTPUT_DIR)generate_h5ad_files: $(H5AD_PYTHON)
 # =========================
 # Gene expression call download files
 # =========================
-#TODO remove usage of each ID and use variable.
-$(OUTPUT_DIR)generate_anatomy_call_files:
+# With the new OTF approach of Bgee 16.0 all observed data are used to generate these files but 2 fitlering are used before writing the calls:
+#     * keep only calls with a meta stages (starting with the UBERON namespace)
+#     * keep only calls with an observed anat. entity.
+#XXX generation of all_cond files are memory intensive especially for the M. musculus one. Options to avoid OOM are:
+#     * increase Xmx in Makefile.common
+#     * decrease threads used
+#     * decrease number of genes in a batch (last attribut of GenerateBasicExprFile)
+# The generation of the anatomy call files took less than 1 day and the generation of the all cond. calls files took ~ 3 days for Bgee 16.0 (with 20 threads and 10 genes per batch).
+# The generation of the M. musculus all_cond $(EXPR_COMPLETE_CAT) file alone took more than 1.5 days. That file was 98Gb big before compression.
+$(OUTPUT_DIR)generate_anatomy_call_files: $(OUTPUT_DIR)generate_h5ad_files
 	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=10 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)  GenerateBasicExprFile $(EMPTY_LIST) $(EXPR_SIMPLE_CAT)$(ENTRY_SEP)$(EXPR_COMPLETE_CAT) $(DOWNLOAD_FILE_ROOT_PATH)$(EXPR_CALLS_PATH) $(ORGAN_PARAM) 100 > $@.tmp 2>$@.warnings
 	@$(MV) $@.tmp $@
 
-$(OUTPUT_DIR)generate_all_cond_params_call_files:
-	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=10 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)  GenerateBasicExprFile - $(EXPR_SIMPLE_CAT) $(DOWNLOAD_FILE_ROOT_PATH)$(EXPR_CALLS_PATH) $(ALL_COND_PARAM) 30 > $@.tmp 2>$@.warnings
+$(OUTPUT_DIR)generate_all_cond_params_call_files: $(OUTPUT_DIR)generate_anatomy_call_files
+	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=20 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR)  GenerateBasicExprFile - $(EXPR_SIMPLE_CAT) $(DOWNLOAD_FILE_ROOT_PATH)$(EXPR_CALLS_PATH) $(ALL_COND_PARAM) 10 > $@.tmp 2>$@.warnings
 	@$(MV) $@.tmp $@
 
 # =========================
@@ -213,7 +108,7 @@ $(OUTPUT_DIR)generate_all_cond_params_call_files:
 # The parallelism is passed to the jar rather than set through the parallelism of the common
 # ForkJoinPool, the generation using a pool of its own.
 # Bgee 16, parallelism of 10: about 16 h for mouse, the largest species, and 6 h 40 for human.
-$(OUTPUT_DIR)generate_topanat_call_files:
+$(OUTPUT_DIR)generate_topanat_call_files: $(OUTPUT_DIR)generate_all_cond_params_call_files
 	@mkdir -p $(TOPANAT_CALL_FILES_PATH)
 	@$(JAVA) GenerateTopAnatFiles $(TOPANAT_CALL_FILES_PATH) $(EMPTY_LIST) false $(TOPANAT_PARALLELISM) > $@.temp 2>$@.warnings
 	@echo "Content of directory $(TOPANAT_CALL_FILES_PATH)topanat_calls/" >> $@.temp
@@ -233,20 +128,16 @@ $(OUTPUT_DIR)bgeeDBRpackageSpeciesFile:
 	@$(MYSQL) -e "select t1.speciesId AS \`ID\`, t1.genus AS \`GENUS\`, t1.species AS \`SPECIES_NAME\`, t1.speciesCommonName AS \`COMMON_NAME\`, 'F' AS \`AFFYMETRIX\`, 'F' AS \`EST\`, IF( EXISTS( select 1 from inSituSpot as t2 inner join cond as t3 on t2.conditionId = t3.conditionId where t3.speciesId = t1.speciesId limit 1), 'T', 'F') AS \`IN_SITU\`, IF( EXISTS( select 1 from rnaSeqLibraryAnnotatedSample as t2 inner join cond as t3 on t2.conditionId = t3.conditionId inner join rnaSeqLibrary AS t4 ON t2.rnaSeqLibraryId = t4.rnaSeqLibraryId where t3.speciesId = t1.speciesId AND t4.rnaSeqTechnologyIsSingleCell = 0 limit 1), 'T', 'F') AS \`RNA_SEQ\`, IF( EXISTS( select 1 from rnaSeqLibraryAnnotatedSample as t2 inner join cond as t3 on t2.conditionId = t3.conditionId inner join rnaSeqLibrary AS t4 ON t2.rnaSeqLibraryId = t4.rnaSeqLibraryId where t3.speciesId = t1.speciesId AND t4.rnaSeqTechnologyIsSingleCell = 1 AND t2.multipleLibraryIndividualSample = 0 limit 1), 'T', 'F') AS \`SC_FULL_LENGTH\`, IF( EXISTS( select 1 from rnaSeqLibraryAnnotatedSample as t2 inner join cond as t3 on t2.conditionId = t3.conditionId inner join rnaSeqLibrary AS t4 ON t2.rnaSeqLibraryId = t4.rnaSeqLibraryId where t3.speciesId = t1.speciesId AND t4.rnaSeqTechnologyIsSingleCell = 1 AND t2.multipleLibraryIndividualSample = 1 limit 1), 'T', 'F') AS \`SC_DROPLET_BASED\` from species AS t1 group by ID" > $(R_SPECIES_INFO) 2> $@.warnings
 	@echo -e "\n\n\n\n\n" >> $(R_SPECIES_INFO)
 	@touch $@
-# commented as it requires sshpass that is not installed on all servers. Either install sshpass everywhere or continue to manually move files to the ftp
-#@scp -r $(R_SPECIES_INFO) $(FTPUSER):$(FTPPASS)@$(FTP_URL):$(FTP_CURRENT) > $@.tmp 2>> $@.warnings
-#@$(MV) $@.tmp $@
 
 #TODO check it, not used because of usage of different servers
-$(OUTPUT_DIR)gzip_call_files:
+$(OUTPUT_DIR)gzip_call_files: $(OUTPUT_DIR)bgeeDBRpackageSpeciesFile
 	@find $(DOWNLOAD_FILE_ROOT_PATH)$(EXPR_CALLS_PATH) -type f ! -name '*.gz' ! -name '*.tmp' -exec gzip --verbose --best {} \;
 
 # =========================
 # Insert info about download files
 # =========================
-#TODO add $(OUTPUT_DIR)gzip_call_files
 #TODO instead of using insert_download_file_info.sql to insert data into downloadFile table, fix InsertSpeciesDataGroups
-$(OUTPUT_DIR)insert_download_files_info: $(OUTPUT_DIR)generate_processed_files $(OUTPUT_DIR)generate_anatomy_call_files $(OUTPUT_DIR)generate_all_cond_params_call_files
+$(OUTPUT_DIR)insert_download_files_info: $(OUTPUT_DIR)gzip_call_files $(OUTPUT_DIR)generate_processed_files $(OUTPUT_DIR)generate_anatomy_call_files $(OUTPUT_DIR)generate_all_cond_params_call_files
 	#insert information about species data groups
 	@$(MYSQL) < insert_download_file_info.sql > $@.tmp 2>$@.warnings
 	#insert information about download files
@@ -303,7 +194,7 @@ XREFS_TO_GENERATE := WIKIDATA,UNIPROT,GENE_CARDS,BGEE_GENE_SUMMARY
 
 ##TODO Remove the XREF_SQL_QUERY query and implement all steps of uniprot XRef generation in Java
 #Generate XRefs for different datasources. As for Bgee 15.0 these datasources are uniprot, genecards and wikidata
-$(OUTPUT_DIR)generate_xrefs: 
+$(OUTPUT_DIR)generate_xrefs: $(OUTPUT_DIR)insert_download_files_info
 	@$(MYSQL) -e "$(XREF_SQL_QUERY)" > $(XREF_FILE).tmp 2>$@.warnings
 	@$(WGET) --header="Accept: text/csv" -O $(UBERON_WIKIDATA_FILE_PATH) $(WIKIDATA_UBERON_IDS) > $@.temp 2> $@.warnings
 	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.bgee.core.version.minor=$(MINOR_RELEASE) -Dorg.bgee.core.version.major=$(MAJOR_RELEASE) -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR) GenerateXRefs $(XREF_FILE).tmp $(XREFS_PATH) $(UBERON_WIKIDATA_FILE_PATH) $(XREFS_TO_GENERATE) > $@.temp 2> $@.warnings
@@ -327,30 +218,6 @@ $(OUTPUT_DIR)generate_xrefs:
 $(OUTPUT_DIR)insert_expression_summary:
 	@perl insert_expression_summary.pl -bgee=$(BGEECMD) -expression_summary_file=$(GENE_SUMMARY_FILE_PATH) > $@.tmp 2> $@.err
 	@$(MV) $@.tmp $@
-
-
-# =========================
-# Download files with rank info
-# =========================
-$(OUTPUT_DIR)rank_files_info: 
-# Create subdirectories if they don't exist
-	@mkdir -p $(OUTPUT_DIR)$(RANKS_PER_ANAT); mkdir -p $(OUTPUT_DIR)$(RANKS_PER_CONDITION)
-# Launch generation of files.
-# First, files with data grouped per anat. entities
-	@$(JAVA) GenerateRankFile generateRankFiles - $(UBERONFILEPATH) true $(OUTPUT_DIR)$(RANKS_PER_ANAT) > $@.temp 2>> $@.warnings
-# Now, files with all conditions
-	@$(JAVA) GenerateRankFile generateRankFiles - $(UBERONFILEPATH) false $(OUTPUT_DIR)$(RANKS_PER_CONDITION) >> $@.temp 2>> $@.warnings
-# gzip all files
-	@find $(OUTPUT_DIR)$(RANKS_PER_ANAT) -type f -not -name '*.gz' -not -name '*.tmp' -execdir gzip --verbose --best {} \;
-	@find $(OUTPUT_DIR)$(RANKS_PER_CONDITION) -type f -not -name '*.gz' -not -name '*.tmp' -execdir gzip --verbose --best {} \;
-# generate a step verification file
-	@echo "Content of directory $(OUTPUT_DIR)$(RANKS_PER_ANAT)" >> $@.temp
-	@ls -lh $(OUTPUT_DIR)$(RANKS_PER_ANAT) >> $@.temp
-	@echo -e "\nContent of directory $(OUTPUT_DIR)$(RANKS_PER_CONDITION)" >> $@.temp
-	@ls -lh $(OUTPUT_DIR)$(RANKS_PER_CONDITION) >> $@.temp
-	@$(MV) $@.temp $@
-	
-	
 
 # ======================
 # Verification file
