@@ -1,4 +1,212 @@
 Loading class `com.mysql.jdbc.Driver'. This is deprecated. The new driver class is `com.mysql.cj.jdbc.Driver'. The driver is automatically registered via the SPI and manual loading of the driver class is generally unnecessary.
+Nov 05, 2026 1:30:23 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 6239 — building on-demand.
+Nov 05, 2026 1:30:23 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 1:31:25 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 7227 — building on-demand.
+Nov 05, 2026 1:31:25 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 1:36:31 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 7237 — building on-demand.
+Nov 05, 2026 1:36:31 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 1:36:32 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 7240 — building on-demand.
+Nov 05, 2026 1:36:32 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 1:36:32 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 7740 — building on-demand.
+Nov 05, 2026 1:36:32 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 1:36:34 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 7897 — building on-demand.
+Nov 05, 2026 1:36:34 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 1:36:35 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 7918 — building on-demand.
+Nov 05, 2026 1:36:35 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 1:36:37 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 7936 — building on-demand.
+Nov 05, 2026 1:36:37 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 1:36:39 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 7955 — building on-demand.
+Nov 05, 2026 1:36:39 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 1:49:32 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 7994 — building on-demand.
+Nov 05, 2026 1:49:32 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 1:49:36 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 8010 — building on-demand.
+Nov 05, 2026 1:49:36 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 1:49:38 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 8030 — building on-demand.
+Nov 05, 2026 1:49:38 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 1:49:57 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 8049 — building on-demand.
+Nov 05, 2026 1:49:57 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 1:49:58 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 8081 — building on-demand.
+Nov 05, 2026 1:49:58 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 1:49:59 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 8090 — building on-demand.
+Nov 05, 2026 1:49:59 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 1:50:08 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 8154 — building on-demand.
+Nov 05, 2026 1:50:08 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 1:50:10 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 8355 — building on-demand.
+Nov 05, 2026 1:50:10 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 2:11:48 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 8364 — building on-demand.
+Nov 05, 2026 2:11:48 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 2:17:15 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 9031 — building on-demand.
+Nov 05, 2026 2:17:15 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 2:17:30 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 9103 — building on-demand.
+Nov 05, 2026 2:17:30 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 2:17:32 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 9258 — building on-demand.
+Nov 05, 2026 2:17:32 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 2:17:35 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 9483 — building on-demand.
+Nov 05, 2026 2:17:35 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 2:17:43 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 9531 — building on-demand.
+Nov 05, 2026 2:17:43 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 2:17:44 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 9541 — building on-demand.
+Nov 05, 2026 2:17:44 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 2:18:11 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 9544 — building on-demand.
+Nov 05, 2026 2:18:11 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 2:18:38 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 9545 — building on-demand.
+Nov 05, 2026 2:18:38 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 2:18:44 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 9555 — building on-demand.
+Nov 05, 2026 2:18:44 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 2:18:54 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 9593 — building on-demand.
+Nov 05, 2026 2:18:54 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 2:18:58 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 9597 — building on-demand.
+Nov 05, 2026 2:18:58 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 2:18:59 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 9598 — building on-demand.
+Nov 05, 2026 2:18:59 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 2:19:10 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 9606 — building on-demand.
+Nov 05, 2026 2:19:10 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 2:29:41 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 9615 — building on-demand.
+Nov 05, 2026 2:29:41 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 2:30:03 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 9685 — building on-demand.
+Nov 05, 2026 2:30:03 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 2:30:06 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 9796 — building on-demand.
+Nov 05, 2026 2:30:06 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 2:30:19 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 9823 — building on-demand.
+Nov 05, 2026 2:30:19 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 2:31:11 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 9913 — building on-demand.
+Nov 05, 2026 2:31:11 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 2:31:54 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 9925 — building on-demand.
+Nov 05, 2026 2:31:54 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 2:32:00 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 9940 — building on-demand.
+Nov 05, 2026 2:32:00 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 2:32:22 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 9974 — building on-demand.
+Nov 05, 2026 2:32:22 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 2:32:23 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 9986 — building on-demand.
+Nov 05, 2026 2:32:23 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 2:32:42 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 10090 — building on-demand.
+Nov 05, 2026 2:32:42 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 3:24:27 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 10116 — building on-demand.
+Nov 05, 2026 3:24:27 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 3:25:00 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 10141 — building on-demand.
+Nov 05, 2026 3:25:00 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 3:25:03 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 10181 — building on-demand.
+Nov 05, 2026 3:25:03 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 3:25:15 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 13616 — building on-demand.
+Nov 05, 2026 3:25:15 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 3:25:30 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 28377 — building on-demand.
+Nov 05, 2026 3:25:30 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 3:25:33 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 30608 — building on-demand.
+Nov 05, 2026 3:25:33 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 3:25:34 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 32507 — building on-demand.
+Nov 05, 2026 3:25:34 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 3:25:36 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 52904 — building on-demand.
+Nov 05, 2026 3:25:36 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 3:25:37 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 60711 — building on-demand.
+Nov 05, 2026 3:25:37 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 3:25:41 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 69293 — building on-demand.
+Nov 05, 2026 3:25:41 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
+Nov 05, 2026 3:25:44 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService lambda$getOrLoadGraph$0
+WARNING: ConditionGraphCache not pre-loaded for species 105023 — building on-demand.
+Nov 05, 2026 3:25:44 PM org.bgee.model.expressiondata.call.ConditionGraphCacheService buildConditionGraph
+INFO: start to retrieve relations
 mysql: [Warning] Using a password on the command line interface can be insecure.
 mysql: [Warning] Using a password on the command line interface can be insecure.
 mysql: [Warning] Using a password on the command line interface can be insecure.
