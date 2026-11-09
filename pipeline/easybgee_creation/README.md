@@ -51,10 +51,12 @@ The new database is named `easybgee_vRELEASE` (e.g., `easybgee_v15`).
 * `make create_schema`: create the schema of the Easy Bgee database
 * `make extract_data_from_bgee`: create a tsv file containing all data extracted from Bgee database that should be persisted in the Easy Bgee database
 * `make import_to_easybgee`: use the previously generated tsv file and import all data it contains in the Easy Bgee database
-* `make drop_easybgee`: drop the Easy Bgee database.
+* `make dump_easybgee`: create a compressed dump (`easybgee_vRELEASE.sql.gz`) of the Easy Bgee database in `generated_files/easybgee_creation/`
+* `make drop_easybgee`: drop the Easy Bgee database (and remove the marker files of the steps that fill it, so that they can be run again).
 
 ## Data verification
 
-* Check all tsv files in `generated_files/easybgee_creation/`. One file is created for each table of the Bgee lite database
+* Check all tsv files in `generated_files/easybgee_creation/`. One file is created for each table of the Easy Bgee database
+* Check that the dump `generated_files/easybgee_creation/easybgee_vRELEASE.sql.gz` is not empty (`gzip -t` is already run by the `dump_easybgee` rule)
 
 
