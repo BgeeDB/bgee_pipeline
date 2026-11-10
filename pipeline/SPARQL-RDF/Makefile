@@ -55,7 +55,7 @@ create_property_file: $(ONTOP_BGEE_PROP_TEMPLATE)
 # To check the split on a few genes first, see the test mode (-l) of bgee_rdf_parallel.sh.
 generate_triples: create_property_file download_and_install_ontop download_ontology_file download_mapping_file
 	@bounds=$$($(MYSQL_EASYBGEE) -N -e "SELECT GROUP_CONCAT(first_gene ORDER BY k) FROM (SELECT k, MIN(bgeeGeneId) AS first_gene FROM (SELECT bgeeGeneId, FLOOR((SUM(n) OVER (ORDER BY bgeeGeneId) - n) * $(RDF_SLICES) / SUM(n) OVER ()) AS k FROM (SELECT bgeeGeneId, COUNT(*) AS n FROM globalExpression GROUP BY bgeeGeneId) AS t) AS s GROUP BY k) AS b") && \
-	./bgee_rdf_parallel.sh -m $(INPUT_DIR)$(GENEX_MAPPING_FILE) -o $(TTL_DIRECTORY_FULL_PATH) -p $(OUTPUT_DIR)bgee_connection.properties -x $(ONTOP_INSTALL_DIR) -t $(INPUT_DIR)$(GENEX_ONTOLOGY_FILE) -g "$$bounds" -j '-Xmx12G' > $@.tmp 2> $@.err
+	./bgee_rdf_parallel.sh -m $(INPUT_DIR)$(GENEX_MAPPING_FILE) -o $(TTL_DIRECTORY_FULL_PATH) -p $(OUTPUT_DIR)bgee_connection.properties -x $(ONTOP_INSTALL_DIR) -t $(INPUT_DIR)$(GENEX_ONTOLOGY_FILE) -c $(INPUT_DIR)catalog-v001.xml -g "$$bounds" -j '-Xmx12G' > $@.tmp 2> $@.err
 	$(MV) $@.tmp $@
 
 

@@ -8,6 +8,7 @@ usage()
                 [ {-o | --output-dir-path} <Turtle file output> ]
                 [ {-p | --ontop-property-file} <property file>  ]
                 [ {-t | --ontology-file} <ontology file> ]
+                [ {-c | --xml-catalog} <XML catalog of the imported ontologies, to read them from local files> (optional) ]
                 [ {-g | --gene-bounds} <first bgeeGeneId of each slice, comma-separated and ascending> ]
                 [ {-d | --delay} <seconds between the start of two Ontop processes> (optional, default 30) ]
                 [ {-j | --java-ontop-args } <Java Ontop memory arguments > (optional) ]
@@ -33,6 +34,7 @@ obda_file_path=
 output_dir_path=
 ontop_property_file=
 ontology_file=
+xml_catalog=
 gene_bounds=
 slice_count=3
 delay=30
@@ -60,6 +62,9 @@ while [ "$1" != "" ]; do
                                 ;;
         -t | --ontology-file )  shift
                                 ontology_file=${1%/}
+                                ;;
+        -c | --xml-catalog )    shift
+                                xml_catalog=${1%/}
                                 ;;
         -g | --gene-bounds )    shift
                                 gene_bounds=$1
@@ -110,6 +115,10 @@ elif [ -z "$gene_bounds" ]; then
     usage
     exit 1
 fi
+if [ -n "$xml_catalog" ] && [ ! -f "$xml_catalog" ]; then
+    echo "XML catalog not found: $xml_catalog"
+    exit 1
+fi
 
 here=$(cd "$(dirname "$0")" && pwd)
 work_dir="$output_dir_path/parts"
@@ -139,6 +148,11 @@ fi
 # The working directory was created just above and holds nothing else yet
 mapping_files=$(perl "$here/slice_mapping.pl" "${slicer_args[@]}") || { echo "The mapping file could not be split"; rm -rf "$work_dir"; exit 1; }
 
+# The ontologies imported are read from the files of the XML catalog rather than downloaded
+catalog_args=()
+if [ -n "$xml_catalog" ]; then
+    catalog_args=(-x "$xml_catalog")
+fi
 echo "Creating RDF data and serializing them as TURTLE files, in parallel..."
 pids=()
 names=()
@@ -151,7 +165,7 @@ for mapping_file in $mapping_files; do
     fi
     mkdir -p "$work_dir/$name"
     echo "Starting Ontop for the part $name"
-    "$ontop_dir_path/ontop" materialize --separate-files -m "$mapping_file" -f turtle -o "$work_dir/$name" -p "$ontop_property_file" -t "$ontology_file" > "$work_dir/$name.log" 2>&1 &
+    "$ontop_dir_path/ontop" materialize --separate-files -m "$mapping_file" -f turtle -o "$work_dir/$name" -p "$ontop_property_file" -t "$ontology_file" "${catalog_args[@]}" > "$work_dir/$name.log" 2>&1 &
     pids+=($!)
     names+=("$name")
 done

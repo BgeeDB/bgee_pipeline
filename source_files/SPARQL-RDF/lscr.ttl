@@ -1,0 +1,230 @@
+@prefix : <http://purl.org/lscr#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix up: <http://purl.uniprot.org/core/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix ebi: <http://rdf.ebi.ac.uk/terms/ensembl/> .
+@prefix obo: <http://purl.obolibrary.org/obo/> .
+@prefix oma: <http://omabrowser.org/ontology/oma#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix lscr: <http://purl.org/lscr#> .
+@prefix mbgd: <http://mbgd.genome.ad.jp/owl/mbgd#> .
+@prefix orth: <http://purl.org/net/orth#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ensembl: <http://rdf.ebi.ac.uk/resource/ensembl/> .
+@prefix upuniprot: <http://purl.uniprot.org/uniprot/> .
+@prefix ensemblprot: <http://rdf.ebi.ac.uk/resource/ensembl.protein/> .
+@prefix ensembltrascript: <http://rdf.ebi.ac.uk/resource/ensembl.transcript/> .
+@base <http://purl.org/lscr> .
+
+<http://purl.org/lscr> rdf:type owl:Ontology ;
+                        owl:versionIRI <http://purl.org/lscr/0.1> .
+
+#################################################################
+#    Annotation properties
+#################################################################
+
+###  http://purl.org/lscr#xrefEMBLSequence
+lscr:xrefEMBLSequence rdf:type owl:AnnotationProperty ;
+                      rdfs:comment "This cross-reference relates a given resource to any EMBL sequence database resource."@en ;
+                      rdfs:label "see also EMBL sequence"@en ;
+                      rdfs:subPropertyOf rdfs:seeAlso .
+
+
+###  http://purl.org/lscr#xrefEnsembl
+lscr:xrefEnsembl rdf:type owl:AnnotationProperty ;
+                 rdfs:comment "This cross-reference relates a given resource to any Ensembl database resource."@en ;
+                 rdfs:label "see also Ensembl cross-reference"@en ;
+                 rdfs:subPropertyOf rdfs:seeAlso .
+
+
+###  http://purl.org/lscr#xrefEnsemblGene
+lscr:xrefEnsemblGene rdf:type owl:AnnotationProperty ;
+                     rdfs:comment """This cross-reference relates a given resource to an Ensembl gene.
+
+URI RDF instance template to assign this property: http://rdf.ebi.ac.uk/resource/ensembl/{ENSEMBL_GENE_ID}. Example: :ANY_URI lscr:xrefEnsemblGene http://rdf.ebi.ac.uk/resource/ensembl/ENSG00000139618"""@en ;
+                     rdfs:label "see also Ensembl gene"@en ;
+                     rdfs:subPropertyOf lscr:xrefEnsembl ;
+                     rdfs:range obo:SO_0000704 .
+
+
+###  http://purl.org/lscr#xrefEnsemblProtein
+lscr:xrefEnsemblProtein rdf:type owl:AnnotationProperty ;
+                        rdfs:comment """This cross-reference relates a given resource to an Ensembl protein.
+
+URI RDF instance template to assign this property: http://rdf.ebi.ac.uk/resource/ensembl.protein/{ENSEMBL_PROTEIN_ID}. Example: :ANY_URI lscr:xrefEnsemblProtein http://rdf.ebi.ac.uk/resource/ensembl.protein/ENSP00000296370"""@en ;
+                        rdfs:label "see also Ensembl protein"@en ;
+                        rdfs:subPropertyOf lscr:xrefEnsembl ;
+                        rdfs:range ebi:protein .
+
+
+###  http://purl.org/lscr#xrefEnsemblTranscript
+lscr:xrefEnsemblTranscript rdf:type owl:AnnotationProperty ;
+                           rdfs:comment """This cross-reference relates a given resource to an Ensembl transcript.
+
+URI RDF instance template to assign this property: http://rdf.ebi.ac.uk/resource/ensembl.transcript/{ENSEMBL_TRANSCRIPT_ID}. Example: :ANY_URI lscr:xrefEnsemblTranscript http://rdf.ebi.ac.uk/resource/ensembl.transcript/ENST00000380152"""@en ;
+                           rdfs:label "see also Ensembl transcript"@en ;
+                           rdfs:subPropertyOf lscr:xrefEnsembl ;
+                           rdfs:range obo:SO_0000673 .
+
+
+###  http://purl.org/lscr#xrefMBGD
+lscr:xrefMBGD rdf:type owl:AnnotationProperty ;
+              rdfs:comment "This cross-reference relates a given resource to any MBGD database resource.  MBGD: Microbial Genome Database for Comparative Analysis - mbgd.genome.ad.jp ."@en ;
+              rdfs:label "see also MBGD cross-reference"@en ;
+              rdfs:subPropertyOf rdfs:seeAlso .
+
+
+###  http://purl.org/lscr#xrefMBGDGene
+lscr:xrefMBGDGene rdf:type owl:AnnotationProperty ;
+                  rdfs:comment "This cross-reference relates a given resource to an MBGD gene.  MBGD: Microbial Genome Database for Comparative Analysis - mbgd.genome.ad.jp ."@en ;
+                  rdfs:label "see also MBGD gene"@en ;
+                  rdfs:subPropertyOf lscr:xrefMBGD .
+
+
+###  http://purl.org/lscr#xrefMBGDGroup
+lscr:xrefMBGDGroup rdf:type owl:AnnotationProperty ;
+                   rdfs:comment "This cross-reference relates a given resource to an MBGD group of genes.  MBGD: Microbial Genome Database for Comparative Analysis - mbgd.genome.ad.jp ."@en ;
+                   rdfs:label "see also MBGD gene group"@en ;
+                   rdfs:subPropertyOf lscr:xrefMBGD .
+
+
+###  http://purl.org/lscr#xrefNCBI
+lscr:xrefNCBI rdf:type owl:AnnotationProperty ;
+              rdfs:comment """This cross-reference relates a given resource to any NCBI database resource. NCBI: National Center for Biotechnology Information -
+https://www.ncbi.nlm.nih.gov/ ."""@en ;
+              rdfs:label "see also NCBI cross-reference"@en ;
+              rdfs:subPropertyOf rdfs:seeAlso .
+
+
+###  http://purl.org/lscr#xrefNCBIGene
+lscr:xrefNCBIGene rdf:type owl:AnnotationProperty ;
+                  rdfs:comment """This cross-reference relates a given resource to an NCBI gene resource. NCBI: National Center for Biotechnology Information -
+https://www.ncbi.nlm.nih.gov/ ."""@en ;
+                  rdfs:label "see also NCBI gene"@en ;
+                  rdfs:subPropertyOf lscr:xrefNCBI .
+
+
+###  http://purl.org/lscr#xrefNCBIProtein
+lscr:xrefNCBIProtein rdf:type owl:AnnotationProperty ;
+                     rdfs:comment """This cross-reference relates a given resource to an NCBI protein resource. NCBI: National Center for Biotechnology Information -
+https://www.ncbi.nlm.nih.gov/ ."""@en ;
+                     rdfs:label "see also NCBI protein"@en ;
+                     rdfs:subPropertyOf lscr:xrefNCBI .
+
+
+###  http://purl.org/lscr#xrefNCBIRefSeq
+lscr:xrefNCBIRefSeq rdf:type owl:AnnotationProperty ;
+                    rdfs:comment """This cross-reference relates a given resource to an NCBI Reference Sequence Database (RefSeq) resource. NCBI: National Center for Biotechnology Information -
+https://www.ncbi.nlm.nih.gov/ ."""@en ;
+                    rdfs:label "see also NCBI RefSeq"@en ;
+                    rdfs:subPropertyOf lscr:xrefNCBI .
+
+
+###  http://purl.org/lscr#xrefOMA
+lscr:xrefOMA rdf:type owl:AnnotationProperty ;
+             rdfs:comment "This cross-reference relates a given resource to an OMA database resource."@en ;
+             rdfs:label "see also OMA cross-reference"@en ;
+             rdfs:subPropertyOf rdfs:seeAlso .
+
+
+###  http://purl.org/lscr#xrefOMAGroup
+lscr:xrefOMAGroup rdf:type owl:AnnotationProperty ;
+                  rdfs:comment "This cross-reference relates a given resource to an OMA group of sequences (e.g.: proteins)."@en ;
+                  rdfs:label "see also OMA group"@en ;
+                  rdfs:subPropertyOf lscr:xrefOMA ;
+                  rdfs:range orth:HomologsCluster .
+
+
+###  http://purl.org/lscr#xrefOMAProtein
+lscr:xrefOMAProtein rdf:type owl:AnnotationProperty ;
+                    rdfs:comment """This cross-reference relates a given resource to an OMA proteins.
+
+URI RDF instance template to assign this property: http://omabrowser.org/ontology/oma#PROTEIN_{OMA_ID}. Example: :ANY_URI lscr:xrefOMAProtein http://omabrowser.org/ontology/oma#PROTEIN_HUMAN22168"""@en ;
+                    rdfs:label "see also OMA protein"@en ;
+                    rdfs:subPropertyOf lscr:xrefOMA ;
+                    rdfs:range orth:Protein .
+
+
+###  http://purl.org/lscr#xrefUniprot
+lscr:xrefUniprot rdf:type owl:AnnotationProperty ;
+                 rdfs:comment """This cross-reference relates a given resource to  a UniProt protein.
+URI RDF instance template to assign this property: http://purl.uniprot.org/uniprot/{UNIPROT_ID}. Example: :ANY_URI lscr:xrefUniprot http://purl.uniprot.org/uniprot/P68871"""@en ;
+                 rdfs:label "see also UniProt cross-reference"@en ;
+                 rdfs:subPropertyOf rdfs:seeAlso ;
+                 rdfs:range up:Protein .
+
+###  http://purl.org/lscr#xrefSwissProt
+lscr:xrefSwissProt rdf:type owl:AnnotationProperty ;
+                 rdfs:comment """This cross-reference relates a given resource to a UniProt/SwissProt protein.
+URI RDF instance template to assign this property: http://purl.uniprot.org/uniprot/{UNIPROT_ID}. Example: :ANY_URI lscr:xrefSwissProt http://purl.uniprot.org/uniprot/P68871"""@en ;
+                 rdfs:label "see also UniProt/SwissProt cross-reference"@en ;
+                 rdfs:subPropertyOf lscr:xrefUniprot ;
+                 rdfs:range up:Protein .
+
+###  http://purl.org/lscr#xrefSwissProt
+lscr:xrefTrEMBL rdf:type owl:AnnotationProperty ;
+                 rdfs:comment """This cross-reference relates a given resource to a UniProt/TrEMBL protein.
+URI RDF instance template to assign this property: http://purl.uniprot.org/uniprot/{UNIPROT_ID}. Example: :ANY_URI lscr:xrefTrEMBL http://purl.uniprot.org/uniprot/H3BS01"""@en ;
+                 rdfs:label "see also UniProt/TrEMBL cross-reference"@en ;
+                 rdfs:subPropertyOf lscr:xrefUniprot ;
+                 rdfs:range up:Protein .
+
+
+#################################################################
+#    RDF properties
+#################################################################
+
+###  http://purl.org/dc/terms/identifier
+dct:identifier
+    a rdf:Property ;
+    rdfs:comment "An unambiguous reference to the resource within a given context."@en ;
+    rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+    rdfs:label "Identifier"@en ;
+    rdfs:range rdfs:Literal .
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://purl.obolibrary.org/obo/SO_0000673
+obo:SO_0000673 rdf:type owl:Class ;
+               rdfs:isDefinedBy "https://www.ebi.ac.uk/rdf/documentation/ensembl/" ;
+               rdfs:label "Transcript" .
+
+
+###  http://purl.obolibrary.org/obo/SO_0000704
+obo:SO_0000704 rdf:type owl:Class ;
+               rdfs:isDefinedBy "http://www.ontobee.org/ontology/SO?iri=http://purl.obolibrary.org/obo/SO_0000704" ;
+               rdfs:label "Gene" .
+
+
+###  http://purl.org/net/orth#Gene
+orth:Gene rdf:type owl:Class ;
+          rdfs:isDefinedBy "https://github.com/qfo/OrthologyOntology" .
+
+
+###  http://purl.org/net/orth#HomologsCluster
+orth:HomologsCluster rdf:type owl:Class ;
+                     rdfs:comment "Set of homologous sequences"@en ;
+                     rdfs:label "Cluster of homologous sequences"@en .
+
+
+###  http://purl.org/net/orth#Protein
+orth:Protein rdf:type owl:Class ;
+             rdfs:isDefinedBy "https://github.com/qfo/OrthologyOntology" .
+
+
+###  http://purl.uniprot.org/core/Protein
+up:Protein rdf:type owl:Class ;
+           rdfs:isDefinedBy "http://purl.uniprot.org/core/" .
+
+
+###  http://rdf.ebi.ac.uk/terms/ensembl/protein
+ebi:protein rdf:type owl:Class ;
+            rdfs:isDefinedBy "https://www.ebi.ac.uk/rdf/documentation/ensembl/" .
+
+
+###  Generated by the OWL API (version 4.2.8.20170104-2310) https://github.com/owlcs/owlapi
