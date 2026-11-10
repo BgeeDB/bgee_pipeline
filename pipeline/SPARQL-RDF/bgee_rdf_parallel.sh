@@ -2,29 +2,29 @@
 usage()
 {
     echo "usage: easyBgee to RDF triples with several Ontop processes working in parallel.
-                The mapping is split by slice of globalExpressionId (see slice_mapping.pl)
+                The mapping is split by slice of genes (see slice_mapping.pl)
                 [ {-x | --ontop} <ontop directory> ]
                 [ {-m | --mapping-file} <mapping file> ]
                 [ {-o | --output-dir-path} <Turtle file output> ]
                 [ {-p | --ontop-property-file} <property file>  ]
                 [ {-t | --ontology-file} <ontology file> ]
-                [ {-i | --id-range} <\"lowest highest\" globalExpressionId of easyBgee> ]
-                [ {-n | --slices} <number of slices, i.e. Ontop processes reading globalExpression> (optional, default 12) ]
+                [ {-g | --gene-bounds} <first bgeeGeneId of each slice, comma-separated and ascending> ]
                 [ {-d | --delay} <seconds between the start of two Ontop processes> (optional, default 30) ]
                 [ {-j | --java-ontop-args } <Java Ontop memory arguments > (optional) ]
-                [ {-l | --test-id-limit} <globalExpressionId> (optional, test mode) ]
+                [ {-l | --test-genes} <\"low high\" bgeeGeneId> (optional, test mode) ]
+                [ {-n | --slices} <number of slices in test mode> (optional, default 3) ]
                 [ {-h | --help} <usage help> ]
 
-   The range of identifiers is retrieved with:
-    SELECT MIN(globalExpressionId), MAX(globalExpressionId) FROM globalExpression;
+   One Ontop process reads each slice of genes, plus one for the other tables. The rule generate_triples
+   of the Makefile computes bounds giving slices with about the same number of rows of globalExpression.
 
    Example:
-    ./bgee_rdf_parallel.sh -m ./conf/genex_adapt.obda -o ./ttl -p ./conf/genex_adapt.properties -x ./ontop-cli-3 -t ./conf/genex_adapt.owl -i '1 1385000000' -n 12 -j '-Xmx16G'
+    ./bgee_rdf_parallel.sh -m ./conf/genex_adapt.obda -o ./ttl -p ./conf/genex_adapt.properties -x ./ontop-cli-3 -t ./conf/genex_adapt.owl -g '257972,410322,523117' -j '-Xmx16G'
 
-   Test mode: the identifiers are limited to those lower than the value given, e.g. the lowest identifier + 200000.
-   The mapping is materialized in one go and in slices, and the triples obtained are compared.
+   Test mode: only the genes with low <= bgeeGeneId < high are materialized, e.g. a hundred genes.
+   They are materialized in one go and in -n slices, and the triples obtained are compared.
    Nothing is written to the output directory but the working files.
-    ./bgee_rdf_parallel.sh -m ... -o ./ttl_test -i '1 1385000000' -l 200001
+    ./bgee_rdf_parallel.sh -m ... -o ./ttl_test -l '300000 300100' -n 3
     "
 }
 #Variables to be assigned, currently the default is no value.
@@ -33,11 +33,11 @@ obda_file_path=
 output_dir_path=
 ontop_property_file=
 ontology_file=
-id_range=
-slice_count=12
+gene_bounds=
+slice_count=3
 delay=30
 java_ontop_args=
-test_id_limit=
+test_genes=
 
 if [ "$1" == "" ]
 then usage
@@ -61,8 +61,8 @@ while [ "$1" != "" ]; do
         -t | --ontology-file )  shift
                                 ontology_file=${1%/}
                                 ;;
-        -i | --id-range )       shift
-                                id_range=$1
+        -g | --gene-bounds )    shift
+                                gene_bounds=$1
                                 ;;
         -n | --slices )         shift
                                 slice_count=$1
@@ -73,8 +73,8 @@ while [ "$1" != "" ]; do
         -j | --java-ontop-args ) shift
                                 java_ontop_args=${1%/}
                                 ;;
-        -l | --test-id-limit )  shift
-                                test_id_limit=$1
+        -l | --test-genes )     shift
+                                test_genes=$1
                                 ;;
         -h | --help )           usage
                                 exit
@@ -85,23 +85,36 @@ while [ "$1" != "" ]; do
     shift
 done
 
-for required in ontop_dir_path obda_file_path output_dir_path ontop_property_file ontology_file id_range; do
+for required in ontop_dir_path obda_file_path output_dir_path ontop_property_file ontology_file; do
     if [ -z "${!required}" ]; then
         echo "Missing argument: $required"
         usage
         exit 1
     fi
 done
-read -r min_id max_id <<< "$id_range"
-if [ -z "$min_id" ] || [ -z "$max_id" ]; then
-    echo "Invalid id range, expected \"lowest highest\": $id_range"
+if [ -n "$test_genes" ]; then
+    read -r test_low test_high <<< "$test_genes"
+    if ! [[ "$test_low" =~ ^[0-9]+$ && "$test_high" =~ ^[0-9]+$ && "$slice_count" =~ ^[1-9][0-9]*$ ]] ||
+            [ "$test_low" -ge "$test_high" ]; then
+        echo "Invalid test mode, expected \"low high\" bgeeGeneId with low < high, and a number of slices: $test_genes, $slice_count"
+        exit 1
+    fi
+    # Slices of the same number of genes: the window holds only a few genes
+    step=$(( (test_high - test_low + slice_count - 1) / slice_count ))
+    gene_bounds=$test_low
+    for (( first = test_low + step; first < test_high; first += step )); do
+        gene_bounds+=",$first"
+    done
+elif [ -z "$gene_bounds" ]; then
+    echo "Missing argument: gene_bounds"
+    usage
     exit 1
 fi
 
 here=$(cd "$(dirname "$0")" && pwd)
 work_dir="$output_dir_path/parts"
 
-if [ -z "$test_id_limit" ] && compgen -G "$output_dir_path/*.ttl" > /dev/null; then
+if [ -z "$test_genes" ] && compgen -G "$output_dir_path/*.ttl" > /dev/null; then
     echo "$output_dir_path already contains TTL files, remove them or use another directory"
     exit 1
 fi
@@ -119,11 +132,12 @@ then
 fi
 
 echo "Splitting the mapping file..."
-slicer_args=(-mapping "$obda_file_path" -prefix "$work_dir/mapping" -slices "$slice_count" -min_id "$min_id" -max_id "$max_id")
-if [ -n "$test_id_limit" ]; then
-    slicer_args+=(-id_limit "$test_id_limit")
+slicer_args=(-mapping "$obda_file_path" -prefix "$work_dir/mapping" -bounds "$gene_bounds")
+if [ -n "$test_genes" ]; then
+    slicer_args+=(-test_window "$test_low $test_high")
 fi
-mapping_files=$(perl "$here/slice_mapping.pl" "${slicer_args[@]}") || { echo "The mapping file could not be split"; exit 1; }
+# The working directory was created just above and holds nothing else yet
+mapping_files=$(perl "$here/slice_mapping.pl" "${slicer_args[@]}") || { echo "The mapping file could not be split"; rm -rf "$work_dir"; exit 1; }
 
 echo "Creating RDF data and serializing them as TURTLE files, in parallel..."
 pids=()
@@ -156,7 +170,7 @@ if [ $failed -ne 0 ]; then
     exit 1
 fi
 
-if [ -n "$test_id_limit" ]; then
+if [ -n "$test_genes" ]; then
     # Prefix declarations are not triples, and the duplicates are not significant in RDF
     for name in "${names[@]}"; do
         if [ "$name" == "ref" ]; then

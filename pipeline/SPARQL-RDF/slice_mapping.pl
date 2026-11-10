@@ -13,9 +13,12 @@ use Getopt::Long;
 # One Ontop process serializes the RDF triples with a single thread: the materialization of the
 # globalExpression table of easyBgee, with more than a billion rows, takes days while MySQL stays
 # almost idle. The mappings reading this table (aliased "ge" in their SQL query) are thus copied
-# once per slice of globalExpressionId, a condition on ge.globalExpressionId being appended to their
-# query. The slices partition the range of identifiers: each row of globalExpression is read by
-# exactly one slice. The other mappings, reading small tables, go together in a part named "dim".
+# once per slice of genes, a condition on ge.bgeeGeneId being appended to their query.
+# The slices are ranges of bgeeGeneId, the first column of the primary key of globalExpression, so
+# that MySQL reads only the rows of the slice (with a condition on globalExpressionId, it read the
+# whole table for each slice). The first slice has no lower limit and the last one no upper limit:
+# each row of globalExpression is read by exactly one slice, whatever the bounds given.
+# The other mappings, reading small tables, go together in a part named "dim".
 # The triples produced by a mapping depend only on the rows its query returns, so the union of the
 # triples of all parts is the one of the whole mapping, asserted or inferred from the ontology
 # (the test mode of bgee_rdf_parallel.sh checks it).
@@ -23,28 +26,30 @@ use Getopt::Long;
 #############################################################
 
 # Define arguments & their default value
-my ($mapping, $prefix, $slice_count, $min_id, $max_id, $id_limit) = ('', '', 0, 0, 0, 0);
-my %opts = ('mapping=s'  => \$mapping,     # Path to the Ontop mapping file
-            'prefix=s'   => \$prefix,      # Prefix of the paths of the mapping files written
-            'slices=i'   => \$slice_count, # Number of slices of the globalExpression table
-            'min_id=i'   => \$min_id,      # Lowest globalExpressionId
-            'max_id=i'   => \$max_id,      # Highest globalExpressionId
-            'id_limit=i' => \$id_limit     # Test mode: only the rows with a lower globalExpressionId
+my ($mapping, $prefix, $bounds, $test_window) = ('', '', '', '');
+my %opts = ('mapping=s'     => \$mapping,     # Path to the Ontop mapping file
+            'prefix=s'      => \$prefix,      # Prefix of the paths of the mapping files written
+            'bounds=s'      => \$bounds,      # First bgeeGeneId of each slice, comma-separated and ascending
+            'test_window=s' => \$test_window  # Test mode: "low high", only the genes with low <= bgeeGeneId < high
            );
 
 # Check arguments
 my $test_options = Getopt::Long::GetOptions(%opts);
-if ( !$test_options || $mapping eq '' || $prefix eq '' || $slice_count < 1 || $max_id < 1 ||
-        $min_id > $max_id || ($id_limit && $id_limit <= $min_id) ) {
+my @first_genes = split(/,/, $bounds);
+my ($test_low, $test_high) = $test_window =~ /^\s*(\d+)\s+(\d+)\s*$/;
+my $valid_bounds = @first_genes && !grep { !/^\d+$/ } @first_genes;
+$valid_bounds &&= !grep { $first_genes[$_] <= $first_genes[$_ - 1] } 1 .. $#first_genes;
+# In test mode the slices must stay within the window, to be compared with the whole window
+my $valid_window = $test_window eq '' || ($valid_bounds && defined $test_high && $test_low < $test_high &&
+                                          $first_genes[0] >= $test_low && $first_genes[-1] < $test_high);
+if ( !$test_options || $mapping eq '' || $prefix eq '' || !$valid_bounds || !$valid_window ) {
     print "\n\tInvalid or missing argument:
-\te.g. $0 -mapping=/path/to/mapping.obda -prefix=/path/to/parts/mapping -slices=12 -min_id=1 -max_id=1385000000
-\t-mapping    Path to the Ontop mapping file
-\t-prefix     Prefix of the paths of the mapping files written
-\t-slices     Number of slices of the globalExpression table
-\t-min_id     Lowest globalExpressionId
-\t-max_id     Highest globalExpressionId
-\t-id_limit   Test mode (optional): keep only the rows with a globalExpressionId lower than this
-\t            value, the mappings of the other tables are not written
+\te.g. $0 -mapping=/path/to/mapping.obda -prefix=/path/to/parts/mapping -bounds=257972,410322,523117
+\t-mapping      Path to the Ontop mapping file
+\t-prefix       Prefix of the paths of the mapping files written
+\t-bounds       First bgeeGeneId of each slice, comma-separated and ascending
+\t-test_window  Test mode (optional): \"low high\", keep only the genes with low <= bgeeGeneId < high,
+\t              the bounds being within this window. The mappings of the other tables are not written
 \n";
     exit 1;
 }
@@ -122,24 +127,30 @@ sub write_mapping {
     print "$file\n";
 }
 
-# In test mode the identifiers are limited, and the reference part reads them all in one go
-my $last_id = $id_limit? $id_limit - 1: $max_id;
-my $total = $last_id - $min_id + 1;
-my $width = int(($total + $slice_count - 1) / $slice_count);
-
-if ($id_limit) {
+# In test mode only the genes of the window are read, and the reference part reads them all in one go
+if ($test_window ne '') {
     write_mapping("$prefix.ref.obda", map { restrict_entry($_,
-        "ge.globalExpressionId >= $min_id AND ge.globalExpressionId < $id_limit") } @expression_entries);
+        "ge.bgeeGeneId >= $test_low AND ge.bgeeGeneId < $test_high") } @expression_entries);
 } else {
     write_mapping("$prefix.dim.obda", @dim_entries);
 }
-for my $slice (0 .. $slice_count - 1) {
-    my $low = $min_id + $slice * $width;
-    last if $low > $last_id;
-    my $high = $low + $width > $last_id? $last_id + 1: $low + $width;
-    printf STDERR "Slice %02d: globalExpressionId from %d to %d\n", $slice, $low, $high - 1;
-    write_mapping(sprintf('%s.s%02d.obda', $prefix, $slice), map { restrict_entry($_,
-        "ge.globalExpressionId >= $low AND ge.globalExpressionId < $high") } @expression_entries);
+for my $slice (0 .. $#first_genes) {
+    # Outside the test mode, the first slice has no lower limit and the last one no upper limit
+    my @conditions = ();
+    if ($slice > 0) {
+        push @conditions, "ge.bgeeGeneId >= $first_genes[$slice]";
+    } elsif ($test_window ne '') {
+        push @conditions, "ge.bgeeGeneId >= $test_low";
+    }
+    if ($slice < $#first_genes) {
+        push @conditions, "ge.bgeeGeneId < $first_genes[$slice + 1]";
+    } elsif ($test_window ne '') {
+        push @conditions, "ge.bgeeGeneId < $test_high";
+    }
+    my $condition = join(' AND ', @conditions);
+    printf STDERR "Slice %02d: %s\n", $slice, $condition || 'all the rows';
+    write_mapping(sprintf('%s.s%02d.obda', $prefix, $slice),
+        map { $condition? restrict_entry($_, $condition): $_ } @expression_entries);
 }
 
 exit 0;
