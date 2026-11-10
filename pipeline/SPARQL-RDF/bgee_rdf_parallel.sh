@@ -148,10 +148,33 @@ fi
 # The working directory was created just above and holds nothing else yet
 mapping_files=$(perl "$here/slice_mapping.pl" "${slicer_args[@]}") || { echo "The mapping file could not be split"; rm -rf "$work_dir"; exit 1; }
 
-# The ontologies imported are read from the files of the XML catalog rather than downloaded
-catalog_args=()
+# The ontologies imported are read from the local files of the XML catalog rather than downloaded.
+# The command materialize of Ontop ignores its option -x (from Ontop 5.1.0 to 5.5.0 at least): the
+# owl:imports of a copy of the ontology are thus pointed at these files.
 if [ -n "$xml_catalog" ]; then
-    catalog_args=(-x "$xml_catalog")
+    local_ontology="$work_dir/${ontology_file##*/}"
+    perl -MCwd=abs_path -e '
+        my ($catalog, $ontology) = @ARGV;
+        my $dir = $catalog =~ m{^(.*)/}? $1: ".";
+        open(my $fh, "<", $catalog) or die "$catalog: $!\n";
+        my $xml = do { local $/; <$fh> };
+        open($fh, "<", $ontology) or die "$ontology: $!\n";
+        my $text = do { local $/; <$fh> };
+        while ($xml =~ /<uri\b([^>]*)>/g) {
+            my $attributes = $1;
+            my ($iri) = $attributes =~ /\bname="([^"]+)"/;
+            my ($file) = $attributes =~ /\buri="([^"]+)"/;
+            die "invalid uri entry in $catalog\n" if !defined $iri || !defined $file;
+            my $path = abs_path($file =~ m{^/}? $file: "$dir/$file");
+            die "local file of $iri not found: $file\n" if !defined $path || !-f $path;
+            die "unexpected character in the path $path\n" if $path =~ /[\s%#?]/;
+            $text =~ s/(owl:imports\s+)<\Q$iri\E>/$1<file:\/\/$path>/g
+                or die "no owl:imports <$iri> in $ontology\n";
+        }
+        print $text;
+    ' "$xml_catalog" "$ontology_file" > "$local_ontology" ||
+        { echo "The imports of the ontology could not be redirected"; rm -rf "$work_dir"; exit 1; }
+    ontology_file=$local_ontology
 fi
 echo "Creating RDF data and serializing them as TURTLE files, in parallel..."
 pids=()
@@ -165,7 +188,7 @@ for mapping_file in $mapping_files; do
     fi
     mkdir -p "$work_dir/$name"
     echo "Starting Ontop for the part $name"
-    "$ontop_dir_path/ontop" materialize --separate-files -m "$mapping_file" -f turtle -o "$work_dir/$name" -p "$ontop_property_file" -t "$ontology_file" "${catalog_args[@]}" > "$work_dir/$name.log" 2>&1 &
+    "$ontop_dir_path/ontop" materialize --separate-files -m "$mapping_file" -f turtle -o "$work_dir/$name" -p "$ontop_property_file" -t "$ontology_file" > "$work_dir/$name.log" 2>&1 &
     pids+=($!)
     names+=("$name")
 done
