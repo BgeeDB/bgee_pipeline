@@ -730,7 +730,7 @@ def main():
                                     species_info_by_id[species_id], cursor, logger)
         # Process experiments with droplet-based if has_droplet is 1
         if has_droplet == 1 and exp_id not in ignore_dropletBased_exp:
-            droplet_output_path = output_path / "droplet"
+            droplet_output_path = output_path / "droplet_based"
             droplet_output_path.mkdir(parents=True, exist_ok=True)
             logger.info(f"Processing droplet-based for experiment ID: {exp_id} and species ID: {species_id}")
             exp_to_h5ad_dropletBased(species_id, exp_id, name, description, doi, droplet_output_path,

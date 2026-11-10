@@ -65,6 +65,17 @@ $(H5AD_PYTHON):
 #TODO: generate files with directory structure and file names as in the FTP server
 $(OUTPUT_DIR)generate_h5ad_files: $(H5AD_PYTHON) | $(OUTPUT_DIR)generate_processed_files
 	@$(H5AD_PYTHON) generate_h5ad_download_files.py --output_dir $(DOWNLOAD_FILE_ROOT_PATH)$(H5AD_PATH) --server $(DBHOST) --db $(DBNAME) --usr $(DBUSER) --pwd $(DBPASS) --result_dir $(SC_RNASEQ_SERVER_RES_KALLISTO_DROPLET) --intergenic_prefixes $(INTERGENIC_PREFIXES) > $@.tmp 2>$@.warnings
+	# generate one tarball per species and per single-cell type holding all the h5ad files of the species. It only holds file names
+	# (no directory) and stays in the species directory. These tarballs are the h5ad files registered in the database.
+	@(cd $(DOWNLOAD_FILE_ROOT_PATH)$(H5AD_PATH) && \
+	for datatype in droplet_based full_length; do \
+	  for d in $${datatype}/*/ ; do \
+	    species="$${d%/}"; species="$${species##*/}"; \
+	    if compgen -G "$${d}*.h5ad" > /dev/null; then \
+	      (cd "$$d" && tar -czvf "$${species}_$${datatype}_h5ad.tar.gz" *.h5ad) || exit 1; \
+	    fi; \
+	  done; \
+	done) >> $@.tmp 2>> $@.warnings
 	@$(MV) $@.tmp $@
 
 # =========================
