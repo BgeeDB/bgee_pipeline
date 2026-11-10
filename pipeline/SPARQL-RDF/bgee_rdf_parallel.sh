@@ -23,7 +23,7 @@ usage()
     ./bgee_rdf_parallel.sh -m ./conf/genex_adapt.obda -o ./ttl -p ./conf/genex_adapt.properties -x ./ontop-cli-3 -t ./conf/genex_adapt.owl -g '257972,410322,523117' -j '-Xmx16G'
 
    Test mode: only the genes with low <= bgeeGeneId < high are materialized, e.g. a hundred genes.
-   They are materialized in one go and in -n slices, and the triples obtained are compared.
+   They are materialized in one go and in -n slices, in N-Triples, and the triples obtained are compared.
    Nothing is written to the output directory but the working files.
     ./bgee_rdf_parallel.sh -m ... -o ./ttl_test -l '300000 300100' -n 3
     "
@@ -176,7 +176,15 @@ if [ -n "$xml_catalog" ]; then
         { echo "The imports of the ontology could not be redirected"; rm -rf "$work_dir"; exit 1; }
     ontology_file=$local_ontology
 fi
-echo "Creating RDF data and serializing them as TURTLE files, in parallel..."
+# In test mode the triples are written one per line (N-Triples), to compare them as lines: in Turtle,
+# Ontop groups the objects of a subject and a predicate differently from one process to another
+rdf_format=turtle
+rdf_extension=ttl
+if [ -n "$test_genes" ]; then
+    rdf_format=ntriples
+    rdf_extension=nt
+fi
+echo "Creating RDF data and serializing them in $rdf_format, in parallel..."
 pids=()
 names=()
 for mapping_file in $mapping_files; do
@@ -188,7 +196,7 @@ for mapping_file in $mapping_files; do
     fi
     mkdir -p "$work_dir/$name"
     echo "Starting Ontop for the part $name"
-    "$ontop_dir_path/ontop" materialize --separate-files -m "$mapping_file" -f turtle -o "$work_dir/$name" -p "$ontop_property_file" -t "$ontology_file" > "$work_dir/$name.log" 2>&1 &
+    "$ontop_dir_path/ontop" materialize --separate-files -m "$mapping_file" -f "$rdf_format" -o "$work_dir/$name" -p "$ontop_property_file" -t "$ontology_file" > "$work_dir/$name.log" 2>&1 &
     pids+=($!)
     names+=("$name")
 done
@@ -208,16 +216,20 @@ if [ $failed -ne 0 ]; then
 fi
 
 if [ -n "$test_genes" ]; then
-    # Prefix declarations are not triples, and the duplicates are not significant in RDF
+    # The duplicates are not significant in RDF
     for name in "${names[@]}"; do
         if [ "$name" == "ref" ]; then
-            cat "$work_dir/ref/"*.ttl | grep -v '^@' | LC_ALL=C sort -u > "$work_dir/ref.sorted"
+            cat "$work_dir/ref/"*."$rdf_extension" 2> /dev/null | LC_ALL=C sort -u > "$work_dir/ref.sorted"
         else
-            cat "$work_dir/$name/"*.ttl
+            cat "$work_dir/$name/"*."$rdf_extension" 2> /dev/null
         fi
-    done | grep -v '^@' | LC_ALL=C sort -u > "$work_dir/slices.sorted"
+    done | LC_ALL=C sort -u > "$work_dir/slices.sorted"
     echo "Distinct triples, whole mapping: $(wc -l < "$work_dir/ref.sorted" | tr -d ' ')"
     echo "Distinct triples, union of the slices: $(wc -l < "$work_dir/slices.sorted" | tr -d ' ')"
+    if [ ! -s "$work_dir/ref.sorted" ]; then
+        echo "TEST FAILED: no triple written for the whole mapping, see $work_dir/ref.log"
+        exit 1
+    fi
     if diff "$work_dir/ref.sorted" "$work_dir/slices.sorted" > "$work_dir/ref_vs_slices.diff"; then
         echo "TEST OK: the slices give the same triples as the whole mapping"
         exit 0
