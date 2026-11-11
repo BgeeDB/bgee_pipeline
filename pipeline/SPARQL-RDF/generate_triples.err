@@ -1,0 +1,21 @@
+8 mappings read globalExpression, 8 do not
+Slice 00: ge.bgeeGeneId < 318383
+Slice 01: ge.bgeeGeneId >= 318383 AND ge.bgeeGeneId < 748636
+Slice 02: ge.bgeeGeneId >= 748636 AND ge.bgeeGeneId < 925171
+Slice 03: ge.bgeeGeneId >= 925171 AND ge.bgeeGeneId < 1026475
+Slice 04: ge.bgeeGeneId >= 1026475 AND ge.bgeeGeneId < 1118634
+Slice 05: ge.bgeeGeneId >= 1118634 AND ge.bgeeGeneId < 1122094
+Slice 06: ge.bgeeGeneId >= 1122094 AND ge.bgeeGeneId < 1125876
+Slice 07: ge.bgeeGeneId >= 1125876 AND ge.bgeeGeneId < 1129943
+Slice 08: ge.bgeeGeneId >= 1129943 AND ge.bgeeGeneId < 1137326
+Slice 09: ge.bgeeGeneId >= 1137326 AND ge.bgeeGeneId < 1272107
+Slice 10: ge.bgeeGeneId >= 1272107 AND ge.bgeeGeneId < 1320122
+Slice 11: ge.bgeeGeneId >= 1320122 AND ge.bgeeGeneId < 1454496
+Slice 12: ge.bgeeGeneId >= 1454496 AND ge.bgeeGeneId < 1466817
+Slice 13: ge.bgeeGeneId >= 1466817 AND ge.bgeeGeneId < 1469790
+Slice 14: ge.bgeeGeneId >= 1469790 AND ge.bgeeGeneId < 1472833
+Slice 15: ge.bgeeGeneId >= 1472833 AND ge.bgeeGeneId < 1476003
+Slice 16: ge.bgeeGeneId >= 1476003 AND ge.bgeeGeneId < 1480683
+Slice 17: ge.bgeeGeneId >= 1480683 AND ge.bgeeGeneId < 1515409
+Slice 18: ge.bgeeGeneId >= 1515409 AND ge.bgeeGeneId < 1648353
+Slice 19: ge.bgeeGeneId >= 1648353
