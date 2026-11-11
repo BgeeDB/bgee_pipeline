@@ -1,3 +1,4 @@
+mysql: [Warning] Using a password on the command line interface can be insecure.
 Use of uninitialized value $cond in concatenation (.) or string at
 	insert_download_file_info.pl line 352 (#1)
     (W uninitialized) An undefined value was used as if it were already

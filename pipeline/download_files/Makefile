@@ -150,7 +150,7 @@ $(OUTPUT_DIR)insert_download_files_info: $(OUTPUT_DIR)generate_processed_files $
 	#insert information about species data groups
 	@$(MYSQL) < insert_download_file_info.sql > $@.tmp 2>$@.warnings
 	#insert information about download files
-	@perl insert_download_file_info.pl -bgee=$(BGEECMD) -processed_dir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH) -calls_dir=$(DOWNLOAD_FILE_ROOT_PATH)$(CALLS_PATH) --h5ad_dir=$(DOWNLOAD_FILE_ROOT_PATH)$(H5AD_PATH) >> $@.tmp 2>> $@.warnings
+	@perl insert_download_file_info.pl -bgee=$(BGEECMD) -processed_dir=$(DOWNLOAD_FILE_ROOT_PATH)$(PROC_EXPR_VALUES_PATH) -calls_dir=$(DOWNLOAD_FILE_ROOT_PATH)$(EXPR_CALLS_PATH) --h5ad_dir=$(DOWNLOAD_FILE_ROOT_PATH)$(H5AD_PATH) >> $@.tmp 2>> $@.warnings
 	@$(MYSQL) -e "SELECT (SELECT COUNT(*) FROM speciesDataGroup) as \`data group count\`, (SELECT COUNT(distinct speciesId) FROM speciesToDataGroup) as \`species in data group count\`, (SELECT COUNT(*) FROM downloadFile) as \`download file count\`" >> $@.tmp 2>>$@.warnings
 	@$(MV) $@.tmp $@
 
