@@ -54,16 +54,19 @@ $(OUTPUT_DIR)generate_processed_files:
 # =========================
 # full-length and droplet-based h5ad download files
 # =========================
-# Path to the uv project containing the Python environment for h5ad generation
-H5AD_PROJECT_DIR := $(TMPDIR)/h5ad_env
-H5AD_PYTHON := $(H5AD_PROJECT_DIR)/.venv/bin/python
+# uv project (versioned in this repository) listing the Python dependencies for h5ad generation
+H5AD_PROJECT_DIR := h5ad_env
+# The virtual environment itself is created in the temporary directory, not in the repository
+H5AD_VENV := $(TMPDIR)/h5ad_env/.venv
+H5AD_PYTHON := $(H5AD_VENV)/bin/python
 
 # Create the virtual environment from the uv project (installs dependencies from pyproject.toml)
-$(H5AD_PYTHON):
-	cd $(H5AD_PROJECT_DIR) && uv sync
+$(OUTPUT_DIR)create_h5ad_python_env: $(H5AD_PROJECT_DIR)/pyproject.toml
+	@UV_PROJECT_ENVIRONMENT=$(H5AD_VENV) uv sync --project $(H5AD_PROJECT_DIR) > $@.tmp 2>$@.warnings
+	@$(MV) $@.tmp $@
 
 #TODO: generate files with directory structure and file names as in the FTP server
-$(OUTPUT_DIR)generate_h5ad_files: $(H5AD_PYTHON) | $(OUTPUT_DIR)generate_processed_files
+$(OUTPUT_DIR)generate_h5ad_files: $(OUTPUT_DIR)create_h5ad_python_env |$(OUTPUT_DIR)generate_processed_files
 	@$(H5AD_PYTHON) generate_h5ad_download_files.py --output_dir $(DOWNLOAD_FILE_ROOT_PATH)$(H5AD_PATH) --server $(DBHOST) --db $(DBNAME) --usr $(DBUSER) --pwd $(DBPASS) --result_dir $(SC_RNASEQ_SERVER_RES_KALLISTO_DROPLET) --intergenic_prefixes $(INTERGENIC_PREFIXES) > $@.tmp 2>$@.warnings
 	# generate one tarball per species and per single-cell type holding all the h5ad files of the species. It only holds file names
 	# (no directory) and stays in the species directory. These tarballs are the h5ad files registered in the database.

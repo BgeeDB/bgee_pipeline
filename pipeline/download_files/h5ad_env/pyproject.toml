@@ -1,0 +1,13 @@
+[project]
+name = "h5ad-env"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+    "psutil",
+    "mysql-connector-python",
+    "pandas",
+    "numpy",
+    "scipy",
+    "anndata",
+    "tqdm",
+]
