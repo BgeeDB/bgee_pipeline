@@ -1,0 +1,51 @@
+Using CPython 3.12.3 interpreter at: /usr/bin/python3
+Creating virtual environment at: /var/lib/mysql/tmp/bgee_v16_0//h5ad_env/.venv
+Resolved 46 packages in 781ms
+Downloading pydantic-core (2.2MiB)
+Downloading scipy (33.7MiB)
+Downloading pandas (11.5MiB)
+Downloading numpy (16.0MiB)
+Downloading h5py (5.2MiB)
+Downloading numcodecs (1.4MiB)
+Downloading mysql-connector-python (20.5MiB)
+ Downloaded numcodecs
+ Downloaded pydantic-core
+ Downloaded h5py
+ Downloaded mysql-connector-python
+ Downloaded numpy
+ Downloaded pandas
+ Downloaded scipy
+Prepared 27 packages in 1.96s
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 29 packages in 505ms
+ + anndata==0.13.4
+ + annotated-types==0.8.0
+ + array-api-compat==1.16.0
+ + donfig==0.8.1.post1
+ + google-crc32c==1.9.0
+ + h5py==3.16.0
+ + legacy-api-wrap==1.5
+ + msgspec==0.22.0
+ + mysql-connector-python==26.10.0
+ + natsort==8.4.0
+ + numcodecs==0.17.1
+ + numpy==2.5.4
+ + packaging==26.3
+ + pandas==3.1.1
+ + psutil==7.2.2
+ + pydantic==2.14.3
+ + pydantic-core==2.50.4
+ + pydantic-settings==2.16.2
+ + python-dateutil==4.0.0
+ + python-dotenv==1.2.4
+ + pyyaml==6.0.3
+ + scipy==1.18.1
+ + scverse-misc==0.1.8
+ + session-info2==0.4.2
+ + tqdm==4.70.1
+ + typing-extensions==4.16.0
+ + typing-inspection==0.4.5
+ + tzdata==2026.6
+ + zarr==3.4.2
