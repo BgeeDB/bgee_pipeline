@@ -5,15 +5,29 @@ include $(PIPELINEROOT)Makefile.common
 all: $(VERIFICATIONFILE)
 
 ## first we check that all condition used in annotation are valid for the species
+## then that the is_a part_of relations of the anat. entities and cell types they use match the chains
+## of direct relations valid in the species (see check_condition_terms_relations.sql). Terms added by hand
+## to follow the last release of UBERON or CL can lack indirect relations, or be disconnected from the root.
+## The propagation of the conditions reads the stored relations without walking the graph, so this step
+## fails on any problem, and no condition is propagated until the relations are fixed (for instance with
+## the step relationsToUpdate_directsIndirects.sql of the uberon pipeline).
 $(OUTPUT_DIR)conditions_not_existing:
 	@printf "Conditions with anat. entity not existing in related species:\n" > $@.tmp
 	@$(MYSQL) -e "SELECT DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.sex, t1.strain FROM cond AS t1 LEFT OUTER JOIN anatEntityTaxonConstraint AS t2 ON t1.anatEntityId = t2.anatEntityId AND (t2.speciesId IS NULL OR t1.speciesId = t2.speciesId) LEFT OUTER JOIN anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId LEFT OUTER JOIN rnaSeqLibraryAnnotatedSample AS t12 ON t12.conditionId = t1.conditionId LEFT OUTER JOIN inSituSpot AS t13 ON t13.conditionId = t1.conditionId WHERE t2.anatEntityId IS NULL AND (t12.conditionId IS NOT NULL OR t13.conditionId IS NOT NULL) ORDER BY t1.speciesId LIMIT 1000;" >> $@.tmp 2> $@.warn
 	@echo >> $@.tmp
 	@printf "Conditions with dev. stage not existing in related species:\n" >> $@.tmp
 	@$(MYSQL) -e "SELECT DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.stageId, t4.stageName, t1.sex, t1.strain FROM cond AS t1 LEFT OUTER JOIN stageTaxonConstraint AS t2 ON t1.stageId = t2.stageId AND (t2.speciesId IS NULL OR t1.speciesId = t2.speciesId) LEFT OUTER JOIN anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId LEFT OUTER JOIN rnaSeqLibraryAnnotatedSample AS t12 ON t12.conditionId = t1.conditionId LEFT OUTER JOIN inSituSpot AS t13 ON t13.conditionId = t1.conditionId WHERE t2.stageId IS NULL AND (t12.conditionId IS NOT NULL OR t13.conditionId IS NOT NULL) ORDER BY t1.speciesId LIMIT 1000;" >> $@.tmp 2>> $@.warn
-	@$(MV) $@.tmp $@
+	@echo >> $@.tmp
 	@printf "Conditions with celltype not existing in related species:\n" >> $@.tmp
-	@$(MYSQL) -e "SELECT DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.cellTypeId, t5.anatEntityId, t1.stageId, t4.stageName, t1.sex, t1.strain FROM cond AS t1 LEFT OUTER JOIN anatEntityTaxonConstraint AS t2 ON t1.cellTypeId = t2.anatEntityId AND (t2.speciesId IS NULL OR t1.speciesId = t2.speciesId) LEFT OUTER JOIN anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId LEFT OUTER JOIN anatEntity AS t5 ON t5.anatEntityId = t1.cellTypeId LEFT OUTER JOIN rnaSeqLibraryAnnotatedSample AS t12 ON t12.conditionId = t1.conditionId LEFT OUTER JOIN inSituSpot AS t13 ON t13.conditionId = t1.conditionId WHERE t2.anatEntityId IS NULL AND (t12.conditionId IS NOT NULL OR t13.conditionId IS NOT NULL) ORDER BY t1.speciesId LIMIT 1000;" >> $@.tmp 2> $@.warn
+	@$(MYSQL) -e "SELECT DISTINCT t1.speciesId, t1.conditionId, t1.exprMappedConditionId, t1.anatEntityId, t3.anatEntityName, t1.cellTypeId, t5.anatEntityName AS cellTypeName, t1.stageId, t4.stageName, t1.sex, t1.strain FROM cond AS t1 LEFT OUTER JOIN anatEntityTaxonConstraint AS t2 ON t1.cellTypeId = t2.anatEntityId AND (t2.speciesId IS NULL OR t1.speciesId = t2.speciesId) LEFT OUTER JOIN anatEntity AS t3 ON t3.anatEntityId = t1.anatEntityId LEFT OUTER JOIN stage AS t4 ON t1.stageId = t4.stageId LEFT OUTER JOIN anatEntity AS t5 ON t5.anatEntityId = t1.cellTypeId LEFT OUTER JOIN rnaSeqLibraryAnnotatedSample AS t12 ON t12.conditionId = t1.conditionId LEFT OUTER JOIN inSituSpot AS t13 ON t13.conditionId = t1.conditionId WHERE t1.cellTypeId IS NOT NULL AND t2.anatEntityId IS NULL AND (t12.conditionId IS NOT NULL OR t13.conditionId IS NOT NULL) ORDER BY t1.speciesId LIMIT 1000;" >> $@.tmp 2>> $@.warn
+	@echo >> $@.tmp
+	@printf "Anat. entities and cell types of the conditions whose relations do not match the chains of direct relations (there should be none):\n" >> $@.tmp
+	@for speciesId in `$(MYSQL) -N -e "SELECT speciesId FROM species ORDER BY speciesId"`; do \
+		(echo "SET @speciesId = $$speciesId;"; cat check_condition_terms_relations.sql) | $(MYSQL) -N || exit 1; \
+	done > $@.relations 2>> $@.warn
+	@cat $@.relations >> $@.tmp
+	@if [[ -s $@.relations ]]; then $(RM) $@.relations; echo "Relations of condition terms to fix, see $@.tmp" >&2; exit 1; fi
+	@$(RM) $@.relations
 	@$(MV) $@.tmp $@
 
 
@@ -95,7 +109,7 @@ $(OUTPUT_DIR)checkExpressionPvalues: $(OUTPUT_DIR)updateExpressionRnaSeq $(OUTPU
 # Since Bgee 16.0 we do not propagate calls anymore. We need to insert globalCond condToSelfGlobalCond and globalCondRelation.
 # these info are used to generate On-the-fly propagation of calls in the API.
 # took 8 hours to run for Bgee 16.0 (6 hours just for mouse) with 25 threads
-$(OUTPUT_DIR)insertGlobalCond: $(OUTPUT_DIR)checkExpressionPvalues
+$(OUTPUT_DIR)insertGlobalCond: $(OUTPUT_DIR)checkExpressionPvalues $(OUTPUT_DIR)conditions_not_existing
 	@$(JAVA_NO_JAR) -Djava.util.concurrent.ForkJoinPool.common.parallelism=25 -jar $(PIPELINEROOT)$(BGEEPIPELINEJAR) InsertPropagatedConditions insertGlobalConditions - - > $@.tmp 2> $@.warn
 # The condObservedXXX fields of globalCond are not written by InsertPropagatedConditions:
 # they say, per condition parameter, whether that parameter value was annotated in a raw
