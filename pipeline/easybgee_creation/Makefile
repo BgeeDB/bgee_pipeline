@@ -3,7 +3,7 @@ DIR_NAME := easybgee_creation/
 include $(PIPELINEROOT)Makefile.common
 
 # compressed dump of the Easy Bgee database
-EASYBGEE_DUMP_FILE := $(OUTPUT_DIR)$(DBNAME_EASYBGEE).sql.gz
+EASYBGEE_DUMP_FILE := $(TMPDIR)$(DBNAME_EASYBGEE).sql.gz
 
 all: $(OUTPUT_DIR)extract_data_from_bgee $(OUTPUT_DIR)import_to_easybgee $(OUTPUT_DIR)dump_easybgee
 
