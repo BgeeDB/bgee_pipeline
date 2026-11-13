@@ -1,0 +1,3 @@
+dump easybgee_v16_0 from localhost to /var/lib/mysql/tmp/bgee_v16_0/easybgee_v16_0.sql.gz
+check the integrity of the compressed dump
+-rw-rw-r-- 1 bgee bgee 21G Nov 11 18:48 /var/lib/mysql/tmp/bgee_v16_0/easybgee_v16_0.sql.gz
