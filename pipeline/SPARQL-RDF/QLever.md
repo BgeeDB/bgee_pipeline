@@ -42,15 +42,18 @@ Also, qlever run a container, so it cannot see symlinks (e.g. the ttl file) link
 
 ```bash
 cd $QLEVER_HOME
+qlever stop
 time qlever  index  --parallel-parsing false --overwrite-existing --stxxl-memory 50G
 ```
 
 QLever options could be optimised on the command line AND in the `Qleverfile` file!
 
-According to Jerven, the void data have to be loaded afterward:
-
-"I use the void generator at the end and then use a sparql update load to insert it".
+According to Jerven, the void data have to be loaded afterward: "I use the void generator at the end and then use a sparql update load to insert it".
 
 ## Run the endpoint
 
+```bash
+cd $QLEVER_HOME
+qlever start
+```
 
