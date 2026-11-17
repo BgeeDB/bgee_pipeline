@@ -36,7 +36,7 @@ gzip bgee.ttl
 
 ## Index ttl
 
-To index `ttl` for QLever, you have to be in the folder where the `Qleverfile` file is located !!! 
+To index `ttl` for QLever, you have to be in the folder where the `Qleverfile` file is located !!!
 
 Also, qlever run a container, so it cannot see symlinks (e.g. the ttl file) linked outside the running directory !!!
 
@@ -51,6 +51,8 @@ QLever options could be optimised on the command line AND in the `Qleverfile` fi
 According to Jerven, the void data have to be loaded afterward: "I use the void generator at the end and then use a sparql update load to insert it".
 
 ## Run the endpoint
+
+To run QLever, you have to be in the folder where the `Qleverfile` file is located !!!
 
 ```bash
 cd $QLEVER_HOME
