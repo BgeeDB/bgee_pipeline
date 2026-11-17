@@ -1,0 +1,41 @@
+# Qleverfile for Bgee, use with https://github.com/ad-freiburg/qlever-control
+#
+# cd $QLEVER_DATADIR  # <= critical, and make sure it is writable by docker
+#
+# qlever index --system podman --overwrite-existing  #
+# qlever index --parallel-parsing false --overwrite-existing
+# qlever start --system podman                       # starts the server (instant)
+# qlever ui    --ui-system podman                    # starts the UI (instant)
+
+[data]
+NAME              = bgee
+# GET_DATA_CMD      = # riot --syntax=TriG --stream=N-Quads bgee.trig.gz | xz -c -9 > ./bgee.nq.xz
+DESCRIPTION       = Bgee
+TEXT_DESCRIPTION  = Bgee Knowledge Graph
+FORMAT            = ttl
+
+[index]
+INPUT_FILES      = bgee.ttl.gz
+CAT_INPUT_FILES  = gunzip -c ${INPUT_FILES}
+SETTINGS_JSON    = { "ascii-prefixes-only": false, "num-triples-per-batch": 10000000 }
+TEXT_INDEX       = from_text_records_and_literals
+PARALLEL_PARSING = false
+STXXL_MEMORY     = 50G
+
+[server]
+PORT               = 7030
+ACCESS_TOKEN       = bgee_7643543846_jF2Qbx44B9xv
+MEMORY_FOR_QUERIES = 12G
+CACHE_MAX_SIZE     = 5G
+TIMEOUT            = 180s
+
+[runtime]
+SYSTEM = podman
+IMAGE  = docker.io/adfreiburg/qlever:latest
+
+[ui]
+# UI_CONFIG      = BgeeGUI
+UI_PORT        = 7031
+UI_TITLE       = Bgee UI
+UI_DESCRIPTION = Bgee User Interface
+UI_SYSTEM      = podman
