@@ -29,6 +29,8 @@ Bgee SIB SPARQL examples are available at [https://github.com/sib-swiss/sparql-e
 unzip rdf_easybgee.zip
 git clone https://github.com/sib-swiss/sparql-examples.git
 cat rdf_data/*.ttl sparql-examples/examples/Bgee/[0-9]*.ttl >bgee.ttl
+# or if too many files
+find rdf_data/ -type f -name \*.ttl -exec cat {} \; > bgee.ttl; cat sparql-examples/examples/Bgee/[0-9]*.ttl >>bgee.ttl
 gzip bgee.ttl
 ```
 
@@ -36,7 +38,7 @@ gzip bgee.ttl
 
 To index `ttl` for QLever, you have to be in the folder where the `Qleverfile` file is located !!! 
 
-Also, qlever run a container, so it cannot see symlinks (e.g. the ttl file) linked outside of the running directory !!!
+Also, qlever run a container, so it cannot see symlinks (e.g. the ttl file) linked outside the running directory !!!
 
 ```bash
 cd $QLEVER_HOME
