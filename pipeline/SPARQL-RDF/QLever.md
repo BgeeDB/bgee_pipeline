@@ -36,6 +36,8 @@ gzip bgee.ttl
 
 To index `ttl` for QLever, you have to be in the folder where the `Qleverfile` file is located !!! 
 
+Also, qlever run a container, so it cannot see symlinks (e.g. the ttl file) linked outside of the running directory !!!
+
 ```bash
 cd $QLEVER_HOME
 time qlever  index  --parallel-parsing false --overwrite-existing --stxxl-memory 50G
