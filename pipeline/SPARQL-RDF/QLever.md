@@ -59,3 +59,11 @@ cd $QLEVER_HOME
 qlever start
 ```
 
+### The void generator
+
+TODO
+
+### Daemonize/service
+
+TODO
+
