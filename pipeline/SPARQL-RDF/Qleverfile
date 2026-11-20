@@ -11,7 +11,7 @@
 NAME              = bgee
 # GET_DATA_CMD      = # riot --syntax=TriG --stream=N-Quads bgee.trig.gz | xz -c -9 > ./bgee.nq.xz
 DESCRIPTION       = Bgee
-TEXT_DESCRIPTION  = Bgee Knowledge Graph
+TEXT_DESCRIPTION  = Bgee v16.0 Knowledge Graph
 FORMAT            = ttl
 
 [index]
@@ -24,7 +24,6 @@ STXXL_MEMORY     = 50G
 
 [server]
 PORT               = 7030
-ACCESS_TOKEN       = bgee_7643543846_jF2Qbx44B9xv
 MEMORY_FOR_QUERIES = 12G
 CACHE_MAX_SIZE     = 5G
 TIMEOUT            = 180s
