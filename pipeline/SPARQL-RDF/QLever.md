@@ -63,10 +63,12 @@ qlever start --access-token 'XYZ'
 
 Download the jar file of the void generator from https://github.com/sib-swiss/void-generator
 
+ACHTUNG!!! the time of the void generator runs, you may have to increase the server TIMEOUT in the `Qleverfile` file!
+
 ```bash
 ln -s void-generator-X.YZ-uber.jar void-generator-latest.jar
-java -jar void-generator-latest.jar  -f -r http://localhost:7030 --void-file=bgee_v16_0_void-generator.ttl --iri-of-void=https://www.bgee.org/sparql/.well-known/void
-perl -i -pe "s|http://localhost:7030|https://www.bgee.org/sparql/|g" void.ttl # OK only valid for prod
+java -jar void-generator-latest.jar  -f -p http://localhost:7030 -r http://localhost:7030 --void-file=bgee_v16_0_void-generator.ttl --iri-of-void=https://www.bgee.org/sparql/.well-known/void --optimize-for=Qlever
+perl -i -pe "s|http://localhost:7030|https://www.bgee.org/sparql/|g" bgee_v16_0_void-generator.ttl  # OK only valid for prod
 ```
 
 
