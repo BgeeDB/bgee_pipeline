@@ -53,12 +53,13 @@ print "Write main/static pages\n"  if ( $debug );
 my @static_pages;
 push @static_pages, "<loc>$homepage/</loc><priority>0.8</priority>";
 push @static_pages, "<loc>$homepage/sparql-editor/</loc><priority>0.7</priority>";
+push @static_pages, "<loc>$homepage/doc-api/</loc><priority>0.7</priority>";
 push @static_pages, "<loc>$homepage/ftp/</loc><priority>0.7</priority>";
 my @basic_about     = ('', 'news', 'collaborations', 'publications', 'sources', 'team', 'bgeesab', 'privacy-policy');
 for my $baseUrlName ( sort @basic_about ){
     push @static_pages, "<loc>$homepage/about/$baseUrlName</loc><priority>0.7</priority>";
 }
-my @basic_support   = ('tutorials', 'data-sets', 'scRNA-seq-protocols-comparison', 'videos', 'faq', 'tutorial-gene-page', 'tutorial-TopAnat', 'tutorial-expression-calls', 'tutorial-data-curation', 'tutorial-query-bgee-knowledge-graph-sparql', 'tutorial-expression-comparison', 'tutorial-raw-data', 'tutorial-anatomical-homology', 'tutorial-expression-call-download-documentation', 'tutorial-processed-expression-values-download-documentation', 'tutorial-processed-expression-values-download-RNA-seq', 'tutorial-processed-expression-values-download-scRNA-seq-full-length', 'tutorial-processed-expression-values-download-scRNA-seq-droplet-based');
+my @basic_support   = ('tutorials', 'data-sets', 'scRNA-seq-protocols-comparison', 'videos', 'faq', 'tutorial-gene-page', 'tutorial-TopAnat', 'tutorial-expression-calls', 'tutorial-data-curation', 'tutorial-query-bgee-knowledge-graph-sparql', 'tutorial-expression-graph', 'tutorial-raw-data', 'tutorial-anatomical-homology', 'tutorial-expression-call-download-documentation', 'tutorial-processed-expression-values-download-documentation', 'tutorial-processed-expression-values-download-RNA-seq', 'tutorial-processed-expression-values-download-scRNA-seq-full-length', 'tutorial-processed-expression-values-download-scRNA-seq-droplet-based');
 for my $baseUrlName ( sort @basic_support ){
     push @static_pages, "<loc>$homepage/support/$baseUrlName</loc><priority>0.7</priority>";
 }
@@ -70,11 +71,11 @@ my @basic_resources = ('r-packages', 'annotations', 'ontologies', 'source-code')
 for my $baseUrlName ( sort @basic_resources ){
     push @static_pages, "<loc>$homepage/resources/$baseUrlName</loc><priority>0.7</priority>";
 }
-my @basic_analysis  = ('top-anat', 'expr-comparison');
+my @basic_analysis  = ('top-anat');
 for my $baseUrlName ( sort @basic_analysis ){
     push @static_pages, "<loc>$homepage/analysis/$baseUrlName</loc><priority>0.7</priority>";
 }
-my @basic_search    = ('genes', 'anatomical-homology', 'species', 'raw-data', 'expression-calls');
+my @basic_search    = ('genes', 'anatomical-homology', 'species', 'raw-data', 'expression-calls', 'expression-matrix', 'species-anatomy-overview');
 for my $baseUrlName ( sort @basic_search ){
     push @static_pages, "<loc>$homepage/search/$baseUrlName</loc><priority>0.7</priority>";
 }
